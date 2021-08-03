@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaConstraint/config.h>
 
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <sofa/core/behavior/BaseConstraint.h>
 #include <sofa/core/behavior/ConstraintResolution.h>
 #include <Eigen/Core>
@@ -68,14 +68,14 @@ class BilateralConstraintResolution3Dof : public ConstraintResolution
 {
 public:
 
-    BilateralConstraintResolution3Dof(sofa::defaulttype::Vec3d* vec = nullptr)
+    BilateralConstraintResolution3Dof(sofa::type::Vec3d* vec = nullptr)
         : ConstraintResolution(3)
         , _f(vec)
     {
     }
     void init(int line, double** w, double *force) override
     {
-        sofa::defaulttype::Mat<3,3,double> temp;
+        sofa::type::Mat<3,3,double> temp;
         temp[0][0] = w[line][line];
         temp[0][1] = w[line][line+1];
         temp[0][2] = w[line][line+2];
@@ -87,6 +87,8 @@ public:
         temp[2][2] = w[line+2][line+2];
 
         sofa::type::invertMatrix(invW, temp);
+        // invW is unsused in this scope, remove the warning:
+        SOFA_UNUSED(invW);
 
         if(_f)
         {
@@ -124,8 +126,8 @@ public:
     }
 
 protected:
-    sofa::defaulttype::Mat<3,3,double> invW;
-    sofa::defaulttype::Vec3d* _f;
+    sofa::type::Mat<3,3,double> invW;
+    sofa::type::Vec3d* _f;
 };
 
 class BilateralConstraintResolutionNDof : public ConstraintResolution

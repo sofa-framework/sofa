@@ -26,7 +26,7 @@
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <sofa/core/topology/Topology.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <set>
 
 namespace sofa::core::topology
@@ -49,11 +49,11 @@ class SOFA_SOFANONUNIFORMFEM_API MultilevelHexahedronSetTopologyContainer : publ
 public:
     SOFA_CLASS(MultilevelHexahedronSetTopologyContainer,HexahedronSetTopologyContainer);
 
-    typedef defaulttype::Vec<3,int>			Vec3i;
+    typedef type::Vec<3,int>			Vec3i;
 protected:
     MultilevelHexahedronSetTopologyContainer();
 
-    MultilevelHexahedronSetTopologyContainer(const helper::vector< Hexahedron > &hexahedra);
+    MultilevelHexahedronSetTopologyContainer(const type::vector< Hexahedron > &hexahedra);
 
     ~MultilevelHexahedronSetTopologyContainer() override;
 public:
@@ -62,15 +62,15 @@ public:
     void clear() override;
 
     void getHexaNeighbors(const Index hexaId,
-            helper::vector<Index> &neighbors);
+            type::vector<Index> &neighbors);
 
     void getHexaFaceNeighbors(const Index hexaId,
             const Index faceId,
-            helper::vector<Index> &neighbors);
+            type::vector<Index> &neighbors);
 
     void getHexaVertexNeighbors(const Index hexaId,
             const Index vertexId,
-            helper::vector<Index> &neighbors);
+            type::vector<Index> &neighbors);
 
     void addTopologyChangeFine(const core::topology::TopologyChange *topologyChange)
     {
@@ -108,7 +108,7 @@ public:
 
     const Vec3i& getCoarseResolution() const { return _coarseResolution; }
 
-    bool getHexaContainsPosition(const Index hexaId, const defaulttype::Vector3& baryC) const;
+    bool getHexaContainsPosition(const Index hexaId, const type::Vector3& baryC) const;
 
     const Vec3i& getHexaIdxInCoarseRegularGrid(const Index hexaId) const;
     int getHexaIdInCoarseRegularGrid(const Index hexaId) const;
@@ -117,7 +117,7 @@ public:
     Index getHexaIdInFineRegularGrid(const Index hexaId) const;
 
     // gets a vector of fine hexahedra inside a specified coarse hexa
-    Index getHexaChildren(const Index hexaId, helper::vector<Index>& children) const;
+    Index getHexaChildren(const Index hexaId, type::vector<Index>& children) const;
 
     // gets a coarse hexa for a specified fine hexa
     Index getHexaParent(const Index hexaId) const;
@@ -128,7 +128,7 @@ public:
 
     Data<int> _level; ///< Number of resolution levels between the fine and coarse mesh
     Data<Vec3i>	fineResolution;		///< width, height, depth (number of hexa in each direction)
-    Data<helper::vector<Index> > hexaIndexInRegularGrid; ///< indices of the hexa in the grid.
+    Data<type::vector<Index> > hexaIndexInRegularGrid; ///< indices of the hexa in the grid.
 
 private:
     void setCoarseResolution(const Vec3i& res) { _coarseResolution = res; }
@@ -188,14 +188,14 @@ private:
 
     std::list<const core::topology::TopologyChange *>	m_changeListFine;
 
-    HexahedronData<sofa::helper::vector<Component*> >		_coarseComponents;	///< map between hexahedra and components - coarse
-    HexahedronData<sofa::helper::vector<Component*> >		_fineComponents;	///< map between hexahedra and components - fine
+    HexahedronData<sofa::type::vector<Component*> >		_coarseComponents;	///< map between hexahedra and components - coarse
+    HexahedronData<sofa::type::vector<Component*> >		_fineComponents;	///< map between hexahedra and components - fine
 
     // the fine mesh must be a regular grid - store its parameters here
 
     Vec3i	_coarseResolution;
 
-    sofa::helper::vector<Component*>	_fineComponentInRegularGrid;
+    sofa::type::vector<Component*>	_fineComponentInRegularGrid;
 };
 
 /** notifies change in the multilevel structure other than adding or removing coarse hexahedra */
@@ -204,17 +204,17 @@ class SOFA_SOFANONUNIFORMFEM_API MultilevelModification : public core::topology:
 public:
     static const int MULTILEVEL_MODIFICATION = core::topology::TOPOLOGYCHANGE_LASTID + 1;
 
-    typedef defaulttype::Vec<3,int>	Vec3i;
+    typedef type::Vec<3,int>	Vec3i;
     using Index = sofa::Index;
 
-    MultilevelModification(const sofa::helper::vector<Index>& _tArray,
+    MultilevelModification(const sofa::type::vector<Index>& _tArray,
             const std::map<Index, std::list<Vec3i> >& removedVoxels)
         : core::topology::TopologyChange((core::topology::TopologyChangeType) MULTILEVEL_MODIFICATION)
         , _modifiedHexahedraArray(_tArray)
         , _removedFineVoxels(removedVoxels)
     {}
 
-    const sofa::helper::vector<Index> &getArray() const
+    const sofa::type::vector<Index> &getArray() const
     {
         return _modifiedHexahedraArray;
     }
@@ -234,7 +234,7 @@ public:
     }
 
 private:
-    sofa::helper::vector<Index>		_modifiedHexahedraArray;
+    sofa::type::vector<Index>		_modifiedHexahedraArray;
     std::map<Index, std::list<Vec3i> > _removedFineVoxels;
 
     const std::list<Vec3i>	__dummyList;

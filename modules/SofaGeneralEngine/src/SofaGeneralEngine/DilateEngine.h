@@ -28,7 +28,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
@@ -68,7 +68,7 @@ protected:
     Data<SeqTriangles> d_triangles; ///< input triangles
     Data<SeqQuads> d_quads; ///< input quads
     Data<VecCoord> d_normals; ///< ouput normals
-    Data<helper::vector<Real> > d_thickness; ///< point thickness
+    Data<type::vector<Real> > d_thickness; ///< point thickness
     Data<Real> d_distance; ///< distance to move the points (positive for dilatation, negative for erosion)
     Data<Real> d_minThickness; ///< minimal thickness to enforce
 };

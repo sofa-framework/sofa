@@ -79,8 +79,8 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
     const unsigned& max_iter = f_maxIter.getValue();
 
 
-    std::map < std::string, sofa::helper::vector<SReal> >& graph = *f_graph.beginEdit();
-    sofa::helper::vector<SReal>& graph_error = graph[std::string("Error")];
+    std::map < std::string, sofa::type::vector<SReal> >& graph = *f_graph.beginEdit();
+    sofa::type::vector<SReal>& graph_error = graph[std::string("Error")];
     graph_error.clear();
     graph_error.push_back(1);
 

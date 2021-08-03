@@ -29,6 +29,7 @@
 #include <limits>
 #include <type_traits>
 #include <sofa/type/fwd.h>
+#include <cmath>
 
 #define EQUALITY_THRESHOLD 1e-6
 
@@ -431,20 +432,6 @@ public:
     }
 
     /// Cast into a const array of values.
-    /// CHANGE(Jeremie A.): removed it as it confuses some compilers. Use ptr() or data() instead
-    //operator const real*() const
-    //{
-    //    return this->elems;
-    //}
-
-    /// Cast into an array of values.
-    /// CHANGE(Jeremie A.): removed it as it confuses some compilers. Use ptr() or data() instead
-    //operator real*()
-    //{
-    //    return this->elems;
-    //}
-
-    /// Cast into a const array of values.
     const ValueType* ptr() const
     {
         return this->elems;
@@ -783,19 +770,7 @@ public:
     {
     }
 
-    /// Assignment operator from an array of values.
-    template<typename real2>
-    void operator=(const real2* p)
-    {
-        this->Vec<N,real>::operator=(p);
-    }
-
-    /// Assignment from a vector with different dimensions.
-    template<sofa::Size M, typename real2>
-    void operator=(const Vec<M,real2>& v)
-    {
-        this->Vec<N,real>::operator=(v);
-    }
+    using Vec<N,real>::operator=; // make every = from Vec available
 
     /// Scalar vector multiplication operator.
     friend Vec<N,real> operator*(real r, const Vec<N,real>& v)

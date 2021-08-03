@@ -24,7 +24,7 @@
 
 #include "CudaVisualModel.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/template.h>
 
 namespace sofa
 {
@@ -326,10 +326,10 @@ void CudaVisualModel< TDataTypes >::internalDraw(const core::visual::VisualParam
     //Enable<GL_BLEND> blending;
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    defaulttype::Vec4f ambient = matAmbient.getValue();
-    defaulttype::Vec4f diffuse = matDiffuse.getValue();
-    defaulttype::Vec4f specular = matSpecular.getValue();
-    defaulttype::Vec4f emissive = matEmissive.getValue();
+    type::Vec4f ambient = matAmbient.getValue();
+    type::Vec4f diffuse = matDiffuse.getValue();
+    type::Vec4f specular = matSpecular.getValue();
+    type::Vec4f emissive = matEmissive.getValue();
     float shininess = matShininess.getValue();
 
     if (shininess == 0.0f)
@@ -436,9 +436,9 @@ void CudaVisualModel< TDataTypes >::internalDraw(const core::visual::VisualParam
         for (unsigned int i = 0; i < x.size(); i++)
         {
             glBegin(GL_LINES);
-            helper::gl::glVertexT(x[i]);
+            sofa::gl::glVertexT(x[i]);
             Coord p = x[i] + vnormals[i]*0.01;
-            helper::gl::glVertexT(p);
+            sofa::gl::glVertexT(p);
             glEnd();
         }
     }
@@ -465,7 +465,7 @@ void CudaVisualModel< TDataTypes >::computeBBox(const core::ExecParams* params, 
             if (p[c] < minBBox[c]) minBBox[c] = p[c];
         }
     }
-    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<SReal>(minBBox,maxBBox));
 }
 
 

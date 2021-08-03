@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/topology/BaseTopology.h>
-#include <sofa/core/topology/TopologyEngine.h>
+#include <sofa/core/topology/TopologyHandler.h>
 
 namespace sofa
 {
@@ -36,8 +36,8 @@ void GeometryAlgorithms::init()
 {
 }
 
-void GeometryAlgorithms::initPointsAdded(const helper::vector< sofa::Index >& /*indices*/, const helper::vector< PointAncestorElem >& /*ancestorElems*/
-    , const helper::vector< core::VecCoordId >& /*coordVecs*/, const helper::vector< core::VecDerivId >& /*derivVecs */)
+void GeometryAlgorithms::initPointsAdded(const type::vector< sofa::Index >& /*indices*/, const type::vector< PointAncestorElem >& /*ancestorElems*/
+    , const type::vector< core::VecCoordId >& /*coordVecs*/, const type::vector< core::VecDerivId >& /*derivVecs */)
 {
 }
 
@@ -61,7 +61,7 @@ void TopologyModifier::addStateChange(const TopologyChange *topologyChange)
 void TopologyModifier::propagateStateChanges() {}
 void TopologyModifier::propagateTopologicalChanges() {}
 void TopologyModifier::notifyEndingEvent() {}
-void TopologyModifier::removeItems(const sofa::helper::vector< Index >& /*items*/) {}
+void TopologyModifier::removeItems(const sofa::type::vector< Index >& /*items*/) {}
 
 // TopologyContainer implementation
 
@@ -70,7 +70,7 @@ TopologyContainer::~TopologyContainer()
 {
     resetTopologyChangeList();
     resetStateChangeList();
-    resetTopologyEngineList();
+    resetTopologyHandlerList();
 }
 
 void TopologyContainer::init()
@@ -94,11 +94,10 @@ void TopologyContainer::addStateChange(const TopologyChange *topologyChange)
     m_stateChangeList.endEdit();
 }
 
-void TopologyContainer::addTopologyEngine(TopologyEngine *_topologyEngine)
+void TopologyContainer::addTopologyHandler(TopologyHandler *_TopologyHandler)
 {
-    m_topologyEngineList.push_back(_topologyEngine);
-    m_topologyEngineList.back()->m_changeList.setParent(&this->m_changeList);
-    this->updateTopologyEngineGraph();
+    m_TopologyHandlerList.push_back(_TopologyHandler);
+    this->updateTopologyHandlerGraph();
 }
 
 
@@ -120,16 +119,6 @@ std::list<const TopologyChange *>::const_iterator TopologyContainer::endStateCha
 std::list<const TopologyChange *>::const_iterator TopologyContainer::beginStateChange() const
 {
     return (m_stateChangeList.getValue()).begin();
-}
-
-std::list<TopologyEngine *>::const_iterator TopologyContainer::endTopologyEngine() const
-{
-    return m_topologyEngineList.end();
-}
-
-std::list<TopologyEngine *>::const_iterator TopologyContainer::beginTopologyEngine() const
-{
-    return m_topologyEngineList.begin();
 }
 
 void TopologyContainer::resetTopologyChangeList()
@@ -158,16 +147,16 @@ void TopologyContainer::resetStateChangeList()
     m_stateChangeList.endEdit();
 }
 
-void TopologyContainer::resetTopologyEngineList()
+void TopologyContainer::resetTopologyHandlerList()
 {
-    for (std::list<TopologyEngine *>::iterator it=m_topologyEngineList.begin();
-            it!=m_topologyEngineList.end(); ++it)
+    for (std::list<TopologyHandler *>::iterator it=m_TopologyHandlerList.begin();
+            it!=m_TopologyHandlerList.end(); ++it)
     {
         //delete (*it);
         *it = nullptr;
     }
 
-    m_topologyEngineList.clear();
+    m_TopologyHandlerList.clear();
 }
 
 

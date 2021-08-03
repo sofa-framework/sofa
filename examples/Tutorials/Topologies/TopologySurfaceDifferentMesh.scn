@@ -5,7 +5,8 @@
     <!-- Basic Components to perform the collision detection -->
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <DefaultPipeline name="DefaultCollisionPipeline" depth="6" />
-    <BruteForceDetection name="Detection" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <DefaultContactManager name="Response" />
     <DefaultCollisionGroupManager name="Group" />

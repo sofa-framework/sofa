@@ -23,7 +23,7 @@
 
 namespace sofa::gl
 {
-using namespace sofa::defaulttype;
+using namespace sofa::type;
 using std::string;
 
 SOFA_GL_API const std::string GlText::ASCII_TEXTURE_PATH("textures/texture_ascii_smooth.png");
@@ -51,13 +51,13 @@ GlText::GlText ( const string& text )
     this->text = text;
 }
 
-GlText::GlText ( const string& text, const defaulttype::Vector3& position )
+GlText::GlText ( const string& text, const type::Vector3& position )
 {
     this->text = text;
     this->position = position;
 }
 
-GlText::GlText ( const string& text, const defaulttype::Vector3& position, const double& scale )
+GlText::GlText ( const string& text, const type::Vector3& position, const double& scale )
 {
     this->text = text;
     this->position = position;
@@ -74,7 +74,7 @@ void GlText::setText ( const string& text )
     this->text = text;
 }
 
-void GlText::update ( const defaulttype::Vector3& position )
+void GlText::update ( const type::Vector3& position )
 {
     this->position = position;
 }
@@ -171,14 +171,14 @@ void GlText::textureDraw_Overlay(const char* text, const double scale)
 
 }
 
-void GlText::textureDraw_Indices(const helper::vector<defaulttype::Vector3>& positions, const float& scale)
+void GlText::textureDraw_Indices(const type::vector<type::Vector3>& positions, const float& scale)
 {
     if (!s_asciiTexture)
     {
         GlText::initTexture();
         s_asciiTexture->init();
     }
-    defaulttype::Mat<4, 4, GLfloat> modelviewM;
+    type::Mat<4, 4, GLfloat> modelviewM;
 
     static const unsigned int nb_char_width = 16;
     static const unsigned int nb_char_height = 16;
@@ -214,7 +214,7 @@ void GlText::textureDraw_Indices(const helper::vector<defaulttype::Vector3>& pos
         glGetFloatv(GL_MODELVIEW_MATRIX, modelviewM.ptr());
         modelviewM.transpose();
 
-        defaulttype::Vec3f temp(positions[i][0], positions[i][1], positions[i][2]);
+        type::Vec3f temp(positions[i][0], positions[i][1], positions[i][2]);
         temp = modelviewM.transform(temp);
 
         glLoadIdentity();

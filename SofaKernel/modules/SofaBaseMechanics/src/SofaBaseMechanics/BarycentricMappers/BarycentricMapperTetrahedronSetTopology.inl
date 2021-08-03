@@ -37,7 +37,7 @@ template <class In, class Out>
 typename BarycentricMapperTetrahedronSetTopology<In, Out>::Index
 BarycentricMapperTetrahedronSetTopology<In,Out>::addPointInTetra ( const Index tetraIndex, const SReal* baryCoords )
 {
-    helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
+    type::vector<MappingData>& vectorData = *(d_map.beginEdit());
     vectorData.resize ( d_map.getValue().size() +1 );
     MappingData& data = *vectorData.rbegin();
     d_map.endEdit();
@@ -49,21 +49,21 @@ BarycentricMapperTetrahedronSetTopology<In,Out>::addPointInTetra ( const Index t
 }
 
 template <class In, class Out>
-helper::vector<Tetrahedron> BarycentricMapperTetrahedronSetTopology<In,Out>::getElements()
+type::vector<Tetrahedron> BarycentricMapperTetrahedronSetTopology<In,Out>::getElements()
 {
     return this->m_fromTopology->getTetrahedra();
 }
 
 template <class In, class Out>
-helper::vector<SReal> BarycentricMapperTetrahedronSetTopology<In,Out>::getBaryCoef(const Real* f)
+type::vector<SReal> BarycentricMapperTetrahedronSetTopology<In,Out>::getBaryCoef(const Real* f)
 {
     return getBaryCoef(f[0],f[1],f[2]);
 }
 
 template <class In, class Out>
-helper::vector<SReal> BarycentricMapperTetrahedronSetTopology<In,Out>::getBaryCoef(const Real fx, const Real fy, const Real fz)
+type::vector<SReal> BarycentricMapperTetrahedronSetTopology<In,Out>::getBaryCoef(const Real fx, const Real fy, const Real fz)
 {
-    helper::vector<SReal> tetrahedronCoef{(1-fx-fy-fz),fx,fy,fz};
+    type::vector<SReal> tetrahedronCoef{(1-fx-fy-fz),fx,fy,fz};
     return tetrahedronCoef;
 }
 
@@ -107,7 +107,7 @@ void BarycentricMapperTetrahedronSetTopology<In, Out>::processTopologicalChanges
     auto itBegin = m_toTopology->beginChange();
     auto itEnd = m_toTopology->endChange();
 
-    helper::WriteAccessor < Data< helper::vector<MappingData > > > vectorData = d_map;
+    helper::WriteAccessor < Data< type::vector<MappingData > > > vectorData = d_map;
     vectorData.resize(out.size());
 
     for (auto changeIt = itBegin; changeIt != itEnd; ++changeIt) {
@@ -163,21 +163,21 @@ void BarycentricMapperTetrahedronSetTopology<In, Out>::processTopologicalChanges
 }
 
 template <class In, class Out>
-void BarycentricMapperTetrahedronSetTopology<In, Out>::processAddPoint(const sofa::defaulttype::Vec3d & pos, const typename In::VecCoord& in, MappingData & vectorData)
+void BarycentricMapperTetrahedronSetTopology<In, Out>::processAddPoint(const sofa::type::Vec3d & pos, const typename In::VecCoord& in, MappingData & vectorData)
 {
-    const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
+    const sofa::type::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
 
-    sofa::defaulttype::Vector3 coefs;
+    sofa::type::Vector3 coefs;
     int index = -1;
     double distance = std::numeric_limits<double>::max();
     for (unsigned int t = 0; t < tetrahedra.size(); t++)
     {
-        sofa::defaulttype::Mat3x3d base;
-        sofa::defaulttype::Vector3 center;
+        sofa::type::Mat3x3d base;
+        sofa::type::Vector3 center;
         computeBase(base, in, tetrahedra[t]);
         computeCenter(center, in, tetrahedra[t]);
 
-        sofa::defaulttype::Vec3d v = base * (pos - in[tetrahedra[t][0]]);
+        sofa::type::Vec3d v = base * (pos - in[tetrahedra[t][0]]);
         double d = std::max(std::max(-v[0], -v[1]), std::max(-v[2], v[0] + v[1] + v[2] - 1));
 
         if (d>0) d = (pos - center).norm2();

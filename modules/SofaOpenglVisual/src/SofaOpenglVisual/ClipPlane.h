@@ -25,7 +25,7 @@
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/gl/template.h>
 
 namespace sofa
 {
@@ -41,8 +41,8 @@ class SOFA_OPENGL_VISUAL_API ClipPlane : public core::visual::VisualModel
 public:
     SOFA_CLASS(ClipPlane, core::visual::VisualModel);
 
-    Data<sofa::defaulttype::Vector3> position; ///< Point crossed by the clipping plane
-    Data<sofa::defaulttype::Vector3> normal; ///< Normal of the clipping plane, pointing toward the clipped region
+    Data<sofa::type::Vector3> position; ///< Point crossed by the clipping plane
+    Data<sofa::type::Vector3> normal; ///< Normal of the clipping plane, pointing toward the clipped region
     Data<int> id; ///< Clipping plane OpenGL ID
     Data<bool> active; ///< Control whether the clipping plane should be applied or not
 

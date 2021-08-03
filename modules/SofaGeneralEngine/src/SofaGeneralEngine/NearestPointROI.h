@@ -29,8 +29,8 @@
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/vector.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <sofa/type/vector.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 #include <set>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -60,13 +60,15 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    typedef helper::vector<unsigned int> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef type::vector<unsigned int> SetIndexArray;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
 
 public:
     SetIndex f_indices1; ///< Indices of the source points on the first model
     SetIndex f_indices2; ///< Indices of the fixed points on the second model
     Data<Real> f_radius; ///< Radius to search corresponding fixed point if no indices are given
+    Data<bool> d_useRestPosition; ///< If true will use rest position only at init. Otherwise will recompute the maps at each update. Default is true.
+    
     SingleLink<NearestPointROI<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;
     SingleLink<NearestPointROI<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
 
@@ -77,6 +79,9 @@ public:
     void init() override;
     void reinit() override;
     void doUpdate() override;
+
+protected:
+    void computeNearestPointMaps(const VecCoord& x1, const VecCoord& x2);
 };
 
 

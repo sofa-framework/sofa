@@ -22,13 +22,14 @@
 #include <SofaGeneralLoader/SphereLoader.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/Locale.h>
-#include <sofa/helper/Quater.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Quat.h>
+#include <sofa/type/Mat.h>
 #include <sofa/core/ObjectFactory.h>
 
 using namespace sofa::core::loader;
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
+using namespace sofa::type;
 
 namespace sofa::component::loader
 {
@@ -47,9 +48,9 @@ SphereLoader::SphereLoader()
     addAlias(&d_positions,"sphere_centers");
     addAlias(&d_scale, "scale3d");
 
-    addUpdateCallback("updateFileNameAndTransformPosition", { &m_filename, &d_translation, &d_rotation, &d_scale}, [this](const core::DataTracker& tracker)
+    addUpdateCallback("updateFileNameAndTransformPosition", { &d_filename, &d_translation, &d_rotation, &d_scale}, [this](const core::DataTracker& tracker)
     {
-        if(tracker.hasChanged(m_filename))
+        if(tracker.hasChanged(d_filename))
         {
             if (load()) {
                 clearLoggedMessages();
@@ -85,7 +86,7 @@ void SphereLoader::applyTransform()
             }
         }
         Matrix4 transformation = Matrix4::transformTranslation(translation) *
-            Matrix4::transformRotation(helper::Quater< SReal >::createQuaterFromEuler(rotation * M_PI / 180.0)) *
+            Matrix4::transformRotation(type::Quat< SReal >::createQuaterFromEuler(rotation * M_PI / 180.0)) *
             Matrix4::transformScale(scale);
 
         auto my_positions = getWriteOnlyAccessor(d_positions);
@@ -111,7 +112,7 @@ bool SphereLoader::load()
     // Make sure that fscanf() uses a dot '.' as the decimal separator.
     helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
 
-    const char* filename = m_filename.getFullPath().c_str();
+    const char* filename = d_filename.getFullPath().c_str();
     std::string fname = std::string(filename);
 
     if (!sofa::helper::system::DataRepository.findFile(fname))

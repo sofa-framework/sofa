@@ -24,20 +24,20 @@
 #include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Integer.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa::defaulttype
 {
 
 template<sofa::Size N, typename real>
-struct DataTypeInfo< sofa::defaulttype::Vec<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::Vec<N,real> >
+struct DataTypeInfo< sofa::type::Vec<N,real> > : public FixedArrayTypeInfo< sofa::type::Vec<N,real> >
 {
     static std::string GetTypeName() { std::ostringstream o; o << "Vec<" << N << "," << DataTypeInfo<real>::GetTypeName() << ">"; return o.str(); }
     static std::string name() { std::ostringstream o; o << "Vec" << N << DataTypeInfo<real>::name() ; return o.str(); }
 };
 
 template<sofa::Size N, typename real>
-struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::VecNoInit<N,real> >
+struct DataTypeInfo< sofa::type::VecNoInit<N,real> > : public FixedArrayTypeInfo<sofa::type::VecNoInit<N,real> >
 {
     static std::string name() { std::ostringstream o; o << "VecNoInit" << N << DataTypeInfo<real>::name(); return o.str(); }
     static std::string GetTypeName() { std::ostringstream o; o << "VecNoInit" << N << "" << DataTypeInfo<real>::GetTypeName() ; return o.str(); }

@@ -179,7 +179,7 @@ public:
     bool operator==(const MatSym<D,real>& b) const
     {
         for (int i=0; i<D*(D+1)/2; i++)
-            if (!(this->elems[i]==b[i])) return false;
+            if (this->elems[i] != b[i]) return false;
         return true;
     }
 

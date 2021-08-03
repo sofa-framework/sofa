@@ -21,13 +21,13 @@
 ******************************************************************************/
 
 #include "fake_TopologyScene.h"
-#include <sofa/helper/testing/BaseTest.h>
+#include <sofa/testing/BaseTest.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 #include <sofa/helper/system/FileRepository.h>
 
 using namespace sofa::component::topology;
-using namespace sofa::helper::testing;
+using namespace sofa::testing;
 
 
 class TetrahedronSetTopology_test : public BaseTest
@@ -106,12 +106,12 @@ bool TetrahedronSetTopology_test::testTetrahedronBuffers()
     EXPECT_EQ(topoCon->getEdges().size(), nbrEdge);
 
     // The first 2 elements in this file should be :
-    sofa::helper::fixed_array<TetrahedronSetTopologyContainer::PointID, 4> elemTruth0(22, 2, 11, 25);
-    sofa::helper::fixed_array<TetrahedronSetTopologyContainer::PointID, 4> elemTruth1(22, 2, 24, 11);
+    sofa::type::fixed_array<TetrahedronSetTopologyContainer::PointID, 4> elemTruth0(22, 2, 11, 25);
+    sofa::type::fixed_array<TetrahedronSetTopologyContainer::PointID, 4> elemTruth1(22, 2, 24, 11);
 
 
     // check topology element buffer
-    const sofa::helper::vector<TetrahedronSetTopologyContainer::Tetrahedron>& elements = topoCon->getTetrahedronArray();
+    const sofa::type::vector<TetrahedronSetTopologyContainer::Tetrahedron>& elements = topoCon->getTetrahedronArray();
     if (elements.empty())
         return false;
     
@@ -161,7 +161,7 @@ bool TetrahedronSetTopology_test::testTriangleBuffers()
     }
 
     // create and check triangles
-    const sofa::helper::vector< TetrahedronSetTopologyContainer::TetrahedraAroundTriangle >& elemAroundTriangles = topoCon->getTetrahedraAroundTriangleArray();
+    const sofa::type::vector< TetrahedronSetTopologyContainer::TetrahedraAroundTriangle >& elemAroundTriangles = topoCon->getTetrahedraAroundTriangleArray();
 
     // check only the triangle buffer size: Full test on triangles are done in TriangleSetTopology_test
     EXPECT_EQ(topoCon->getNumberOfTriangles(), nbrTriangle);
@@ -190,7 +190,7 @@ bool TetrahedronSetTopology_test::testTriangleBuffers()
 
 
     // check TrianglesInTetrahedron buffer acces
-    const sofa::helper::vector< TetrahedronSetTopologyContainer::TrianglesInTetrahedron > & triangleInTetrahedra = topoCon->getTrianglesInTetrahedronArray();
+    const sofa::type::vector< TetrahedronSetTopologyContainer::TrianglesInTetrahedron > & triangleInTetrahedra = topoCon->getTrianglesInTetrahedronArray();
     EXPECT_EQ(triangleInTetrahedra.size(), nbrTetrahedron);
 
     const TetrahedronSetTopologyContainer::TrianglesInTetrahedron& triangleInElem = triangleInTetrahedra[0];
@@ -200,7 +200,7 @@ bool TetrahedronSetTopology_test::testTriangleBuffers()
     for (size_t i = 0; i < triangleInElem.size(); i++)
         EXPECT_EQ(triangleInElem[i], triangleInElemM[i]);
 
-    sofa::helper::fixed_array<int, 4> triangleInElemTruth(3, 2, 1, 0);
+    sofa::type::fixed_array<int, 4> triangleInElemTruth(3, 2, 1, 0);
     for (size_t i = 0; i<triangleInElemTruth.size(); ++i)
         EXPECT_EQ(triangleInElem[i], triangleInElemTruth[i]);
 
@@ -257,7 +257,7 @@ bool TetrahedronSetTopology_test::testEdgeBuffers()
     }
 
     // create and check edges
-    const sofa::helper::vector< TetrahedronSetTopologyContainer::TetrahedraAroundEdge >& elemAroundEdges = topoCon->getTetrahedraAroundEdgeArray();
+    const sofa::type::vector< TetrahedronSetTopologyContainer::TetrahedraAroundEdge >& elemAroundEdges = topoCon->getTetrahedraAroundEdgeArray();
         
     // check only the edge buffer size: Full test on edges are done in EdgeSetTopology_test
     EXPECT_EQ(topoCon->getNumberOfEdges(), nbrEdge);
@@ -287,7 +287,7 @@ bool TetrahedronSetTopology_test::testEdgeBuffers()
 
 
     // check EdgesInTetrahedron buffer acces
-    const sofa::helper::vector< TetrahedronSetTopologyContainer::EdgesInTetrahedron > & edgeInTetrahedra = topoCon->getEdgesInTetrahedronArray();
+    const sofa::type::vector< TetrahedronSetTopologyContainer::EdgesInTetrahedron > & edgeInTetrahedra = topoCon->getEdgesInTetrahedronArray();
     EXPECT_EQ(edgeInTetrahedra.size(), nbrTetrahedron);
 
     const TetrahedronSetTopologyContainer::EdgesInTetrahedron& edgeInElem = edgeInTetrahedra[2];
@@ -297,7 +297,7 @@ bool TetrahedronSetTopology_test::testEdgeBuffers()
     for (size_t i = 0; i < edgeInElem.size(); i++)
         EXPECT_EQ(edgeInElem[i], edgeInElemM[i]);
     
-    sofa::helper::fixed_array<int, 6> edgeInElemTruth(6, 10, 8, 9, 0, 11);
+    sofa::type::fixed_array<int, 6> edgeInElemTruth(6, 10, 8, 9, 0, 11);
     for (size_t i = 0; i<edgeInElemTruth.size(); ++i)
         EXPECT_EQ(edgeInElem[i], edgeInElemTruth[i]);
     
@@ -354,7 +354,7 @@ bool TetrahedronSetTopology_test::testVertexBuffers()
     }
 
     // create and check vertex buffer
-    const sofa::helper::vector< TetrahedronSetTopologyContainer::TetrahedraAroundVertex >& elemAroundVertices = topoCon->getTetrahedraAroundVertexArray();
+    const sofa::type::vector< TetrahedronSetTopologyContainer::TetrahedraAroundVertex >& elemAroundVertices = topoCon->getTetrahedraAroundVertexArray();
 
     //// check only the vertex buffer size: Full test on vertics are done in PointSetTopology_test
     EXPECT_EQ(topoCon->d_initPoints.getValue().size(), nbrVertex);
@@ -434,7 +434,7 @@ bool TetrahedronSetTopology_test::testTetrahedronGeometry()
         return false;
     }
     
-    const sofa::helper::vector <sofa::core::topology::BaseMeshTopology::TetraID>& badTetra = tetraAlgo->computeBadTetrahedron();
+    const sofa::type::vector<sofa::core::topology::BaseMeshTopology::TetraID>& badTetra = tetraAlgo->computeBadTetrahedron();
 
     EXPECT_EQ(badTetra.size(), 4);
 

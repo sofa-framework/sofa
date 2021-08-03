@@ -108,7 +108,7 @@ def createScene(node):
     rigidFile.write( 'cntr 0 0 0\n' )
     rigidFile.close()
 
-    #node.createObject('EulerSolver',name='odesolver')
+    #node.createObject('EulerExplicitSolver',name='odesolver')
     #node.createObject('RequiredPlugin', pluginName = 'Compliant')
     #node.createObject('CompliantImplicitSolver',name='odesolver',stabilization='0')
     #node.createObject('LDLTSolver',name = 'numsolver')

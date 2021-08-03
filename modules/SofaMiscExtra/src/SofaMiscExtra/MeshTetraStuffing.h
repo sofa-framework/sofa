@@ -23,8 +23,8 @@
 #include <SofaMiscExtra/config.h>
 
 #include <string>
-#include <sofa/helper/fixed_array.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/fixed_array.h>
+#include <sofa/type/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -66,7 +66,7 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    Data< helper::fixed_array<Point,2> > vbbox; ///< BBox to restrict the volume to
+    Data< type::fixed_array<Point,2> > vbbox; ///< BBox to restrict the volume to
     Data< Real > size; ///< Size of the generate tetrahedra. If negative, number of grid cells in the largest bbox dimension
     Data<SeqPoints> inputPoints; ///< Input surface mesh points
     Data<SeqTriangles> inputTriangles; ///< Input surface mesh triangles
@@ -92,8 +92,8 @@ public:
     int getEdgeSize2(int e);
     Point getEdgeDir(int e);
 
-    helper::vector<int> pInside;
-    helper::vector< helper::fixed_array<Real,EDGESHELL> > eBDist;
+    type::vector<int> pInside;
+    type::vector< type::fixed_array<Real,EDGESHELL> > eBDist;
     std::map<std::pair<int,int>, int> splitPoints;
 
     SeqPoints rays;

@@ -148,18 +148,18 @@ SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* /*mparams*/, c
 
 
 template<class DataTypes>
-defaulttype::Vector6 Mass<DataTypes>::getMomentum( const MechanicalParams* mparams ) const
+type::Vector6 Mass<DataTypes>::getMomentum( const MechanicalParams* mparams ) const
 {
     if (this->mstate)
         return getMomentum(mparams, *mparams->readX(this->mstate), *mparams->readV(this->mstate));
-    return defaulttype::Vector6();
+    return type::Vector6();
 }
 
 template<class DataTypes>
-defaulttype::Vector6 Mass<DataTypes>::getMomentum( const MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ ) const
+type::Vector6 Mass<DataTypes>::getMomentum( const MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ ) const
 {
     msg_warning() << "Method getMomentum( const MechanicalParams*, const DataVecCoord&, const DataVecDeriv& ) not implemented.";
-    return defaulttype::Vector6();
+    return type::Vector6();
 }
 
 
@@ -188,11 +188,6 @@ void Mass<DataTypes>::addMBKToMatrix(const MechanicalParams* mparams, const sofa
     this->ForceField<DataTypes>::addMBKToMatrix(mparams, matrix);
     if (mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()) != 0.0)
         addMToMatrix(mparams, matrix);
-}
-
-template<class DataTypes>
-void Mass<DataTypes>::addSubMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> /*subMatrixIndex*/) {
-    addMBKToMatrix(mparams,matrix); // default implementation use full addMFunction
 }
 
 template<class DataTypes>

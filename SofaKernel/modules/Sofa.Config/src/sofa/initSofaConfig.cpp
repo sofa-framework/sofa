@@ -30,7 +30,6 @@ namespace sofa
 // once Sofa.Config becomes a header-only library, this can be deleted.
 SOFA_EXPORT_DYNAMIC_LIBRARY void initSofaConfig()
 {
-    ;
 }
 
 } // namespace sofa

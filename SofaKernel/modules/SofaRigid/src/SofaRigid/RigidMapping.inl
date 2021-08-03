@@ -159,7 +159,7 @@ sofa::Size RigidMapping<TIn, TOut>::addPoint(const Coord& c, sofa::Index indexFr
     points.push_back(c);
     this->points.endEdit();
 
-    helper::vector<unsigned int>& rigidIndexPerPoint = *this->rigidIndexPerPoint.beginEdit();
+    type::vector<unsigned int>& rigidIndexPerPoint = *this->rigidIndexPerPoint.beginEdit();
 
     if( i && rigidIndexPerPoint.size()!=i )
     {
@@ -233,7 +233,7 @@ void RigidMapping<TIn, TOut>::setRepartition(sofa::Size value)
 {
     msg_deprecated()<<"setRepartition function. Fill rigidIndexPerPoint instead.";
 
-    helper::vector<unsigned int>& rigidIndexPerPoint = *this->rigidIndexPerPoint.beginWriteOnly();
+    type::vector<unsigned int>& rigidIndexPerPoint = *this->rigidIndexPerPoint.beginWriteOnly();
 
     size_t size = this->toModel->getSize();
 
@@ -253,11 +253,11 @@ void RigidMapping<TIn, TOut>::setRepartition(sofa::Size value)
 }
 
 template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::setRepartition(sofa::helper::vector<sofa::Size> values)
+void RigidMapping<TIn, TOut>::setRepartition(sofa::type::vector<sofa::Size> values)
 {
     msg_deprecated()<<"setRepartition function. Fill rigidIndexPerPoint instead.";
 
-    helper::vector<unsigned int>& rigidIndexPerPoint = *this->rigidIndexPerPoint.beginWriteOnly();
+    type::vector<unsigned int>& rigidIndexPerPoint = *this->rigidIndexPerPoint.beginWriteOnly();
 
     size_t size = this->toModel->getSize();
 
@@ -491,7 +491,7 @@ void fill_block(Eigen::Matrix<U, 2, 3>& block, const Coord& v) {
 }
 
 template <class TIn, class TOut>
-const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::getJs()
+const type::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::getJs()
 {
     const VecCoord& out =this->toModel->read(core::ConstVecCoordId::position())->getValue();
     const InVecCoord& in =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
@@ -582,7 +582,7 @@ void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, co
     const VecDeriv& childForces = childForceId[this->toModel.get()].read()->getValue();
 
     // sorted in-out
-    typedef std::map<unsigned, helper::vector<unsigned> > in_out_type;
+    typedef std::map<unsigned, type::vector<unsigned> > in_out_type;
     in_out_type in_out;
 
     // wahoo it is heavy, can't we find lighter?
@@ -595,13 +595,13 @@ void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, co
 
         static const unsigned rotation_dimension = TIn::deriv_total_size - TIn::spatial_dimensions;
 
-        defaulttype::Mat<rotation_dimension,rotation_dimension,Real> block;
+        type::Mat<rotation_dimension,rotation_dimension,Real> block;
 
 
         for( unsigned int w=0 ; w<it->second.size() ; ++w )
         {
             const unsigned pointIdx = it->second[w];
-            block += defaulttype::crossProductMatrix<Real>( childForces[pointIdx] ) * defaulttype::crossProductMatrix<Real>( rotatedPoints[pointIdx] );
+            block += type::crossProductMatrix<Real>( childForces[pointIdx] ) * type::crossProductMatrix<Real>( rotatedPoints[pointIdx] );
         }
 
         if( geomStiff == 2 )
@@ -713,8 +713,8 @@ void RigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowMappings() || this->toModel==nullptr )
         return;
-    std::vector<defaulttype::Vector3> points;
-    defaulttype::Vector3 point;
+    std::vector<type::Vector3> points;
+    type::Vector3 point;
 
     const VecCoord& x =this->toModel->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i = 0; i < x.size(); i++)
@@ -722,7 +722,7 @@ void RigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
         point = OutDataTypes::getCPos(x[i]);
         points.push_back(point);
     }
-    vparams->drawTool()->drawPoints(points, 7, sofa::helper::types::RGBAColor::yellow() );
+    vparams->drawTool()->drawPoints(points, 7, sofa::type::RGBAColor::yellow() );
 }
 
 
@@ -737,7 +737,7 @@ void RigidMapping<TIn, TOut>::parse(core::objectmodel::BaseObjectDescription* ar
     {
         msg_deprecated() << "parse: You are using a deprecated Data 'repartition', please use the new structure data rigidIndexPerPoint";
 
-        helper::vector< unsigned int > repartition;
+        type::vector< unsigned int > repartition;
         std::istringstream ss( repartitionChar );
         repartition.read( ss );
         setRepartition( repartition );

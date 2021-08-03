@@ -65,7 +65,7 @@ struct  LMCONSTRAINT_API ConstraintEquation
  **/
 class LMCONSTRAINT_API  ConstraintGroup
 {
-    typedef sofa::helper::vector< ConstraintEquation > VecEquations;
+    typedef sofa::type::vector< ConstraintEquation > VecEquations;
 public:
     typedef VecEquations::const_iterator EquationConstIterator;
     typedef VecEquations::iterator       EquationIterator;
@@ -162,14 +162,14 @@ public:
 
 
     /// Get the internal structure: return all the constraint stored by their nature in a map
-    virtual void getConstraints( std::map< ConstraintParams::ConstOrder, helper::vector< ConstraintGroup* > >  &i) { i=constraintOrder;}
+    virtual void getConstraints( std::map< ConstraintParams::ConstOrder, type::vector< ConstraintGroup* > >  &i) { i=constraintOrder;}
     /// Get all the constraints stored of a given nature
-    virtual const helper::vector< ConstraintGroup* > &getConstraintsOrder(ConstraintParams::ConstOrder Order) const
+    virtual const type::vector< ConstraintGroup* > &getConstraintsOrder(ConstraintParams::ConstOrder Order) const
     {
         constraintOrder_t::const_iterator c = constraintOrder.find( Order );
         if( c == constraintOrder.end())
         {
-            static helper::vector<ConstraintGroup*> emptyVector;
+            static type::vector<ConstraintGroup*> emptyVector;
             return emptyVector;
         }
         return c->second;
@@ -192,7 +192,7 @@ public:
         constraintOrder_t::const_iterator g = constraintOrder.find(Order);
         if (g == constraintOrder.end()) return;
 
-        const helper::vector< ConstraintGroup* > &constraints = g->second;
+        const type::vector< ConstraintGroup* > &constraints = g->second;
         for (unsigned int idxGroupConstraint=0; idxGroupConstraint<constraints.size(); ++idxGroupConstraint)
         {
             ConstraintGroup *group=constraints[idxGroupConstraint];
@@ -236,7 +236,7 @@ protected:
 
     /// Constraints stored depending on their nature
     /// @see ConstraintGroup
-    typedef std::map< ConstraintParams::ConstOrder, helper::vector< ConstraintGroup* > > constraintOrder_t;
+    typedef std::map< ConstraintParams::ConstOrder, type::vector< ConstraintGroup* > > constraintOrder_t;
     constraintOrder_t constraintOrder;
 
     Data<std::string> pathObject1; ///< First Object to constrain

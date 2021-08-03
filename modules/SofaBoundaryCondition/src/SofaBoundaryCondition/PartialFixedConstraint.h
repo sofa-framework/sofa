@@ -30,8 +30,8 @@
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/vector.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <sofa/type/vector.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 
 namespace sofa::component::projectiveconstraintset
 {
@@ -58,12 +58,12 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef helper::vector<sofa::Index> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef type::vector<sofa::Index> SetIndexArray;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
 
 public:
     enum { NumDimensions = Deriv::total_size };
-    typedef sofa::helper::fixed_array<bool,NumDimensions> VecBool;
+    typedef sofa::type::fixed_array<bool,NumDimensions> VecBool;
     Data<VecBool> d_fixedDirections;  ///< Defines the directions in which the particles are fixed: true (or 1) for fixed, false (or 0) for free.
     Data<bool> d_projectVelocity; ///< activate project velocity to set velocity to zero
 

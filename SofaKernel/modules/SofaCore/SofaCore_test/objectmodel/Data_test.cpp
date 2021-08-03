@@ -19,12 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/testing/config.h>
+
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/helper/vectorData.h>
+#include <sofa/core/objectmodel/vectorData.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/helper/types/RGBAColor.h>
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+#include <sofa/type/RGBAColor.h>
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest ;
 
 
 namespace sofa {
@@ -37,9 +39,9 @@ public:
     Data<int> dataInt;
     Data<float> dataFloat;
     Data<bool> dataBool;
-    Data<sofa::defaulttype::Vec3> dataVec3;
-    Data<sofa::helper::vector<sofa::defaulttype::Vec3>> dataVectorVec3;
-    Data<sofa::helper::vector<sofa::helper::types::RGBAColor>> dataVectorColor;
+    Data<sofa::type::Vec3> dataVec3;
+    Data<sofa::type::vector<sofa::type::Vec3>> dataVectorVec3;
+    Data<sofa::type::vector<sofa::type::RGBAColor>> dataVectorColor;
 };
 
 TEST_F(Data_test, getValueTypeString)
@@ -69,7 +71,7 @@ TEST_F(Data_test, getNameWithValueTypeInfo)
 struct vectorData_test: public ::testing::Test
 {
     Data<int> data1;
-    helper::vectorData<int> vDataInt;
+    core::objectmodel::vectorData<int> vDataInt;
 
     vectorData_test()
         : vDataInt(nullptr,"","")
@@ -131,13 +133,13 @@ struct DataFileNameVector_test: public ::testing::Test
 
 TEST_F(DataFileNameVector_test , setValueAsString_spaces )
 {
-    dataFileNameVector.setValueAsString( "['"+std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/file with spaces.txt' ]" );
+    dataFileNameVector.setValueAsString( "['"+std::string(SOFA_TESTING_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(SOFA_TESTING_RESOURCES_DIR) + "/file with spaces.txt' ]" );
     ASSERT_EQ( dataFileNameVector.getValue().size(), 2u );
 }
 
 TEST_F(DataFileNameVector_test , read_spaces )
 {
-    dataFileNameVector.read( "['" + std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/file with spaces.txt' ]" );
+    dataFileNameVector.read( "['" + std::string(SOFA_TESTING_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(SOFA_TESTING_RESOURCES_DIR) + "/file with spaces.txt' ]" );
     ASSERT_EQ( dataFileNameVector.getValue().size(), 2u );
 }
 

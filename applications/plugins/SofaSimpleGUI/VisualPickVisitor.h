@@ -1,7 +1,7 @@
 #ifndef SOFA_SIMPLEGUI_VisualPickVisitor_H
 #define SOFA_SIMPLEGUI_VisualPickVisitor_H
 #include <sofa/simulation/VisualVisitor.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 namespace sofa
 {
@@ -31,7 +31,7 @@ public:
     virtual void bwdVisualModel(simulation::Node* node, core::visual::VisualModel* vm);
     const char* getClassName() const override { return "VisualPickVisitor"; }
 
-    sofa::helper::vector<std::string> names; // names of the object displayed
+    sofa::type::vector<std::string> names; // names of the object displayed
 
 private:
     int pickedId;

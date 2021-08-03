@@ -23,24 +23,15 @@ list(APPEND SOURCE_FILES
     ${SOFAMISCFORCEFIELD_SRC}/MeshMatrixMass.cpp
     )
 
-if(SOFA_WITH_DEPRECATED_COMPONENTS)
-    list(APPEND HEADER_FILES
-        ${SOFAMISCFORCEFIELD_SRC}/LennardJonesForceField.h
-        ${SOFAMISCFORCEFIELD_SRC}/LennardJonesForceField.inl
-        )
-    list(APPEND SOURCE_FILES
-        ${SOFAMISCFORCEFIELD_SRC}/LennardJonesForceField.cpp
-        )
-endif()
-
 sofa_find_package(SofaFramework REQUIRED) # SofaHelper
+sofa_find_package(SofaBaseMechanics REQUIRED)
 sofa_find_package(SofaDeformable REQUIRED)
 sofa_find_package(SofaBoundaryCondition REQUIRED)
 sofa_find_package(SofaGeneralTopology REQUIRED) 
 sofa_find_package(SofaMiscTopology REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDeformable SofaBoundaryCondition SofaMiscTopology SofaGeneralTopology)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDeformable SofaBoundaryCondition SofaMiscTopology SofaGeneralTopology SofaBaseMechanics)
 
 if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Silence attribute warnings (for example, ignored already defined external template)

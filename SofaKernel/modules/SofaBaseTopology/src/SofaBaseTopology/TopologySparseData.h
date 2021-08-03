@@ -20,105 +20,30 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+// TODO: Backward compability header, to be removed for v21.12
 #include <SofaBaseTopology/config.h>
-
-#include <SofaBaseTopology/TopologyData.h>
-#include <SofaBaseTopology/TopologyDataEngine.h>
-#include <SofaBaseTopology/TopologySparseDataHandler.h>
+#include <SofaBaseTopology/TopologySubsetData.h>
 
 namespace sofa::component::topology
 {
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////   Generic Topology Data Implementation   /////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//SOFA_ATTRIBUTE_DISABLED("v21.06", "PR#2114", "This class has been removed. TopologySubsetData should be used instead.")
+template< class VecT > using PointSparseData SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2114)", "v22.06", 
+    "This class has been removed. TopologySubsetData should be used instead.") = TopologySubsetData<core::topology::BaseMeshTopology::Point, VecT>;
 
-template< class TopologyElementType, class VecT>
-class TopologySparseData : public sofa::component::topology::TopologyData<TopologyElementType, VecT>
-{
+template< class VecT > using EdgeSparseData SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2114)", "v22.06",
+    "This class has been removed. TopologySubsetData should be used instead.") = TopologySubsetData<core::topology::BaseMeshTopology::Edge, VecT>;
 
-public:
-    typedef VecT container_type;
-    typedef typename container_type::value_type value_type;
+template< class VecT > using TriangleSparseData SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2114)", "v22.06",
+    "This class has been removed. TopologySubsetData should be used instead.") = TopologySubsetData<core::topology::BaseMeshTopology::Triangle, VecT>;
 
-    /// Size
-    typedef typename container_type::Size Size;
-    /// reference to a value (read-write)
-    typedef typename container_type::reference reference;
-    /// const reference to a value (read only)
-    typedef typename container_type::const_reference const_reference;
-    /// const iterator
-    typedef typename container_type::const_iterator const_iterator;
+template< class VecT > using QuadSparseData SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2114)", "v22.06",
+    "This class has been removed. TopologySubsetData should be used instead.") = TopologySubsetData<core::topology::BaseMeshTopology::Quad, VecT>;
 
-    using Index = sofa::Index;
+template< class VecT > using TetrahedronSparseData SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2114)", "v22.06",
+    "This class has been removed. TopologySubsetData should be used instead.") = TopologySubsetData<core::topology::BaseMeshTopology::Tetrahedron, VecT>;
 
-
-    /// Constructor
-    TopologySparseData( const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-        : sofa::component::topology::TopologyData< TopologyElementType, VecT >(data)
-        , m_topologyHandler(nullptr)
-        , m_isConcerned(false)
-    {}
-
-    virtual ~TopologySparseData();
-
-    /** Public functions to handle topological engine creation */
-    /// To create topological engine link to this Data. Pointer to current topology is needed.
-    virtual void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyHandler* _topologyHandler);
-
-    /** Public functions to handle topological engine creation */
-    /// To create topological engine link to this Data. Pointer to current topology is needed.
-    virtual void createTopologicalEngine(sofa::core::topology::BaseMeshTopology* _topology);
-
-
-
-    void setMap2Elements(const sofa::helper::vector<Index> _map2Elements)
-    {
-        m_map2Elements = _map2Elements;
-    }
-
-    sofa::helper::vector<Index>& getMap2Elements() {return m_map2Elements;}
-
-    bool getSparseDataStatus() {return m_isConcerned;}
-
-    void activateSparseData() {m_isConcerned = true;}
-    void desactivateSparseData() {m_isConcerned = false;}
-
-    size_t size() {return m_map2Elements.size();}
-
-    Index indexOfElement(Index index)
-    {
-        for (unsigned int i=0; i<m_map2Elements.size(); ++i)
-            if (index == m_map2Elements[i])
-                return i;
-
-        return sofa::core::topology::Topology::InvalidID;
-    }
-
-
-protected:
-
-    virtual void createTopologyHandler() {}
-
-    // same size as SparseData but contain id of element link to each data[]
-    sofa::helper::vector<Index> m_map2Elements;
-    sofa::component::topology::TopologySparseDataHandler<TopologyElementType,VecT>* m_topologyHandler;
-
-    bool m_isConcerned;
-
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////   Element Topology Data Implementation   ////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template< class VecT > using PointSparseData = TopologySparseData<core::topology::BaseMeshTopology::Point, VecT>;
-template< class VecT > using EdgeSparseData = TopologySparseData<core::topology::BaseMeshTopology::Edge, VecT>;
-template< class VecT > using TriangleSparseData = TopologySparseData<core::topology::BaseMeshTopology::Triangle, VecT>;
-template< class VecT > using QuadSparseData = TopologySparseData<core::topology::BaseMeshTopology::Quad, VecT>;
-template< class VecT > using TetrahedronSparseData = TopologySparseData<core::topology::BaseMeshTopology::Tetrahedron, VecT>;
-template< class VecT > using HexahedronSparseData = TopologySparseData<core::topology::BaseMeshTopology::Hexahedron, VecT>;
-
+template< class VecT > using HexahedronSparseData SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2114)", "v22.06",
+    "This class has been removed. TopologySubsetData should be used instead.") = TopologySubsetData<core::topology::BaseMeshTopology::Hexahedron, VecT>;
 
 } //namespace sofa::component::topology

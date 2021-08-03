@@ -19,7 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
 
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -27,12 +28,14 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 
+#include <SofaComponentAll/initSofaComponentAll.h>
+
 namespace sofa {
 
 /** Test a scene: load a given scene with the xml file contained in the sub-directories Scenes and init it.
 To test a new scene add the xml file in the Scenes directory and add the TEST_F for your scene (see below the example for BilinearConstraint scene). 
  */
-struct LoadScene_test: public Sofa_test<>
+struct LoadScene_test: public BaseTest
 {
     // root
    simulation::Node::SPtr root;
@@ -81,9 +84,11 @@ struct LoadScene_test: public Sofa_test<>
 
 TEST_F( LoadScene_test,PatchTestConstraint)
 {
-     ASSERT_TRUE(this->LoadScene("PatchTestConstraint.scn"));
-     ASSERT_TRUE(this->initScene("PatchTestConstraint.scn"));
-     ASSERT_NO_THROW(this->initScene("PatchTestConstraint.scn"));
+    sofa::component::initSofaComponentAll();
+
+    ASSERT_TRUE(this->LoadScene("PatchTestConstraint.scn"));
+    ASSERT_TRUE(this->initScene("PatchTestConstraint.scn"));
+    ASSERT_NO_THROW(this->initScene("PatchTestConstraint.scn"));
 }
 
 }// namespace sofa

@@ -12,6 +12,10 @@ set(HEADER_FILES
     src/MultiThreading/DataExchange.inl
     src/MultiThreading/MeanComputation.h
     src/MultiThreading/MeanComputation.inl
+    src/MultiThreading/ParallelBruteForceBroadPhase.h
+    src/MultiThreading/ParallelBVHNarrowPhase.h
+    src/MultiThreading/ParallelHexahedronFEMForceField.h
+    src/MultiThreading/ParallelHexahedronFEMForceField.inl
     )
 
 set(SOURCE_FILES
@@ -21,6 +25,9 @@ set(SOURCE_FILES
     src/MultiThreading/BeamLinearMapping_mt.cpp
     src/MultiThreading/DataExchange.cpp
     src/MultiThreading/MeanComputation.cpp
+    src/MultiThreading/ParallelBruteForceBroadPhase.cpp
+    src/MultiThreading/ParallelBVHNarrowPhase.cpp
+    src/MultiThreading/ParallelHexahedronFEMForceField.cpp
     )
 
 find_package(SofaMiscMapping REQUIRED)

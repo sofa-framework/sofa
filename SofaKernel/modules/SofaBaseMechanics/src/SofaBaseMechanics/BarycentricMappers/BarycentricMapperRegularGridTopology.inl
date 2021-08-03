@@ -29,7 +29,7 @@
 namespace sofa::component::mapping
 {
 
-using sofa::defaulttype::Vector3;
+using sofa::type::Vector3;
 
 template <class In, class Out>
 BarycentricMapperRegularGridTopology<In,Out>::BarycentricMapperRegularGridTopology(RegularGridTopology* fromTopology,
@@ -264,14 +264,7 @@ void BarycentricMapperRegularGridTopology<In,Out>::draw  (const core::visual::Vi
             }
         }
     }
-    vparams->drawTool()->drawLines ( points, 1, sofa::helper::types::RGBAColor::blue());
-}
-
-template <class In, class Out>
-void BarycentricMapperRegularGridTopology<In,Out>::addMatrixContrib(MatrixType* m,
-                                                                    int row, int col, Real value)
-{
-    Inherit1::addMatrixContrib(m, row, col, value);
+    vparams->drawTool()->drawLines ( points, 1, sofa::type::RGBAColor::blue());
 }
 
 template <class In, class Out>

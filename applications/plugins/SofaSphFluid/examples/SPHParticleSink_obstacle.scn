@@ -3,10 +3,12 @@
     <RequiredPlugin name="SofaOpenglVisual"/> 
     <RequiredPlugin name='SofaSphFluid' />
     <RequiredPlugin name='SofaExplicitOdeSolver'/>
+    <RequiredPlugin name='SofaLoader'/>
     <VisualStyle displayFlags="hideBehaviorModels hideForceFields hideWireframe" />
 
     <DefaultPipeline depth="15" verbose="0" draw="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <NewProximityIntersection name="Proximity" alarmDistance="1.0" contactDistance="0.5" />
     <DefaultContactManager name="Response" response="default" /> 
 

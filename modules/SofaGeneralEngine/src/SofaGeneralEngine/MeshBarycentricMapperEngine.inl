@@ -85,10 +85,10 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
     if (d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
 
-    using sofa::defaulttype::Vector3;
-    using sofa::defaulttype::Matrix3;
-    using sofa::defaulttype::Mat3x3d;
-    using sofa::defaulttype::Vec3d;
+    using sofa::type::Vector3;
+    using sofa::type::Matrix3;
+    using sofa::type::Mat3x3d;
+    using sofa::type::Vec3d;
 
     const VecCoord& in = d_inputPositions.getValue();
     const VecCoord& out = d_mappedPointPositions.getValue();
@@ -125,8 +125,8 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
 
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = l_topology->getTriangles();
     const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = l_topology->getQuads();
-    sofa::helper::vector<Matrix3> bases;
-    sofa::helper::vector<Vector3> centers;
+    sofa::type::vector<Matrix3> bases;
+    sofa::type::vector<Vector3> centers;
 
     if ( tetrahedra.empty() && cubes.empty() )
     {
@@ -137,8 +137,8 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
             const sofa::core::topology::BaseMeshTopology::SeqEdges& edges = l_topology->getEdges();
             if ( edges.empty() ) return;
 
-            sofa::helper::vector< SReal >   lengthEdges;
-            sofa::helper::vector< Vector3 > unitaryVectors;
+            sofa::type::vector< SReal >   lengthEdges;
+            sofa::type::vector< Vector3 > unitaryVectors;
 
             unsigned int e;
             for ( e=0; e<edges.size(); e++ )

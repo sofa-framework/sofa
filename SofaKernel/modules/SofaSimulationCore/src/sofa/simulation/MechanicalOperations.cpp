@@ -21,8 +21,32 @@
 ******************************************************************************/
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/MechanicalMatrixVisitor.h>
-#include <sofa/simulation/MechanicalComputeEnergyVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorToBaseVectorVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorFromBaseVectorVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorPeqBaseVectorVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalComputeEnergyVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateDxVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateDxAndResetForceVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyVelocityVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndResetForceVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectVelocityVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalApplyConstraintsVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalAddMDxVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalAccFromFVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalResetForceVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalComputeForceVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalComputeDfVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalAddMBKdxVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalAddSeparateGravityVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalComputeContactForceVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalGetMatrixDimensionVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalAddMBK_ToMatrixVisitor.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalApplyProjectiveConstraint_ToMatrixVisitor.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/VecId.h>
 
@@ -30,15 +54,18 @@
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
 
+#include <sofa/core/ObjectFactory.h>
+
+#include <numeric>
+
 using namespace sofa::core;
-namespace sofa
+
+namespace sofa::simulation::common
 {
 
-namespace simulation
-{
+using namespace sofa::simulation::mechanicalvisitor;
 
-namespace common
-{
+std::map<core::objectmodel::BaseContext*, bool> MechanicalOperations::hasShownMissingLinearSolverMap;
 
 MechanicalOperations::MechanicalOperations(const sofa::core::MechanicalParams* mparams, sofa::core::objectmodel::BaseContext* ctx, bool precomputedTraversalOrder)
     :mparams(*mparams),ctx(ctx),executeVisitor(*ctx,precomputedTraversalOrder)
@@ -172,7 +199,7 @@ void MechanicalOperations::computeEnergy(SReal &kineticEnergy, SReal &potentialE
 {
     kineticEnergy=0;
     potentialEnergy=0;
-    sofa::simulation::MechanicalComputeEnergyVisitor *energyVisitor = new sofa::simulation::MechanicalComputeEnergyVisitor(&mparams);
+    MechanicalComputeEnergyVisitor *energyVisitor = new MechanicalComputeEnergyVisitor(&mparams);
     executeVisitor(energyVisitor);
     kineticEnergy=energyVisitor->getKineticEnergy();
     potentialEnergy=energyVisitor->getPotentialEnergy();
@@ -392,17 +419,13 @@ void MechanicalOperations::solveConstraint(MultiVecId id, core::ConstraintParams
 {
     cparams.setOrder(order);
 
-    helper::vector< core::behavior::ConstraintSolver* > constraintSolverList;
+    type::vector< core::behavior::ConstraintSolver* > constraintSolverList;
 
     ctx->get<core::behavior::ConstraintSolver>(&constraintSolverList, ctx->getTags(), BaseContext::Local);
-    if (constraintSolverList.empty())
-    {
-        return;
-    }
 
-    for (helper::vector< core::behavior::ConstraintSolver* >::iterator it=constraintSolverList.begin(); it!=constraintSolverList.end(); ++it)
+    for (auto* constraintSolver : constraintSolverList)
     {
-        (*it)->solveConstraint(&cparams, id);
+        constraintSolver->solveConstraint(&cparams, id);
     }
 }
 
@@ -411,7 +434,7 @@ void MechanicalOperations::m_resetSystem()
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        msg_error(ctx) << "Requires a LinearSolver.";
+        showMissingLinearSolverError();
         return;
     }
     s->resetSystem();
@@ -422,7 +445,7 @@ void MechanicalOperations::m_setSystemMBKMatrix(SReal mFact, SReal bFact, SReal 
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        msg_error(ctx) << "Requires a LinearSolver.";
+        showMissingLinearSolverError();
         return;
     }
     mparams.setMFactor(mFact);
@@ -436,7 +459,7 @@ void MechanicalOperations::m_setSystemRHVector(core::MultiVecDerivId v)
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        msg_error(ctx) << "Requires a LinearSolver.";
+
         return;
     }
     s->setSystemRHVector(v);
@@ -447,7 +470,7 @@ void MechanicalOperations::m_setSystemLHVector(core::MultiVecDerivId v)
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        msg_error(ctx) << "Requires a LinearSolver.";
+        showMissingLinearSolverError();
         return;
     }
     s->setSystemLHVector(v);
@@ -459,7 +482,7 @@ void MechanicalOperations::m_solveSystem()
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        msg_error(ctx) << "Requires a LinearSolver.";
+        showMissingLinearSolverError();
         return;
     }
     s->solveSystem();
@@ -470,7 +493,7 @@ void MechanicalOperations::m_print( std::ostream& out )
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        msg_error(ctx) << "Requires a LinearSolver.";
+        showMissingLinearSolverError();
         return;
     }
     defaulttype::BaseMatrix* m = s->getSystemBaseMatrix();
@@ -504,18 +527,6 @@ void MechanicalOperations::addMBK_ToMatrix(const sofa::core::behavior::MultiMatr
     if (matrix != nullptr)
     {
         executeVisitor( MechanicalAddMBK_ToMatrixVisitor(&mparams, matrix) );
-        executeVisitor( MechanicalApplyProjectiveConstraint_ToMatrixVisitor(&mparams, matrix) );
-    }
-}
-
-void MechanicalOperations::addSubMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix,const helper::vector<unsigned> & subMatrixIndex, SReal mFact, SReal bFact, SReal kFact)
-{
-    mparams.setMFactor(mFact);
-    mparams.setBFactor(bFact);
-    mparams.setKFactor(kFact);
-    if (matrix != nullptr)
-    {
-        executeVisitor( MechanicalAddSubMBK_ToMatrixVisitor(&mparams, matrix, subMatrixIndex) );
         executeVisitor( MechanicalApplyProjectiveConstraint_ToMatrixVisitor(&mparams, matrix) );
     }
 }
@@ -558,8 +569,16 @@ void MechanicalOperations::printWithElapsedTime( core::ConstMultiVecId /*v*/, un
 {
 }
 
-}
-
+void MechanicalOperations::showMissingLinearSolverError() const
+{
+    if (!hasShownMissingLinearSolverMap[ctx])
+    {
+        const auto solvers = sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::BaseLinearSolver>();
+        msg_error(ctx) << "A linear solver is required, but has not been found. Add a linear solver to your scene to "
+                          "fix this issue. The list of available linear solver components "
+                          "is: [" << solvers << "].";
+        hasShownMissingLinearSolverMap[ctx] = true;
+    }
 }
 
 }

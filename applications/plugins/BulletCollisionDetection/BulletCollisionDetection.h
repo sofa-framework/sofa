@@ -26,7 +26,7 @@
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/core/CollisionElement.h>
 #include <SofaBaseCollision/CubeModel.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include "BulletCollisionModel.h"
 #include "BulletTriangleModel.h"
@@ -42,7 +42,7 @@
 
 
 #include <iostream>
-//#include <sofa/helper/system/gl.h>
+//#include <sofa/gl/gl.h>
 //#include <sofa/helper/system/glut.h>
 
 #include "BulletSphereModel.h"
@@ -178,7 +178,7 @@ public:
     //Data<bool> useMultiSAP;
     //Data<bool> useBdvt;
 
-    Data< helper::fixed_array<defaulttype::Vector3,2> > box; ///< box used if using sweep and prune
+    Data< type::fixed_array<type::Vector3,2> > box; ///< box used if using sweep and prune
 
 private:
     //sofa::set< > collisionModels;

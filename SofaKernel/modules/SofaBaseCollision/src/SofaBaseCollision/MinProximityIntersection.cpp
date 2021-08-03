@@ -23,15 +23,8 @@
 #include <SofaBaseCollision/MinProximityIntersection.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/proximity.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/collision/Intersection.inl>
-#include <iostream>
-#include <algorithm>
-#include <SofaBaseCollision/BaseIntTool.h>
-
-#define DYNAMIC_CONE_ANGLE_COMPUTATION
 
 namespace sofa::core::collision
 {
@@ -63,30 +56,32 @@ void MinProximityIntersection::init()
 {
     intersectors.add<CubeCollisionModel, CubeCollisionModel, MinProximityIntersection>(this);
     intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, MinProximityIntersection>(this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, MinProximityIntersection> (this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,SphereCollisionModel<sofa::defaulttype::Vec3Types>, MinProximityIntersection> (this);
-    intersectors.add<OBBCollisionModel<sofa::defaulttype::Rigid3Types>,OBBCollisionModel<sofa::defaulttype::Rigid3Types>, MinProximityIntersection> (this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,OBBCollisionModel<sofa::defaulttype::Rigid3Types>, MinProximityIntersection> (this);
-    intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>,OBBCollisionModel<sofa::defaulttype::Rigid3Types>, MinProximityIntersection> (this);
     intersectors.add<RigidSphereModel,RigidSphereModel, MinProximityIntersection> (this);
-    intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>,RigidSphereModel, MinProximityIntersection> (this);
-    intersectors.add<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>,RigidSphereModel, MinProximityIntersection> (this);
-    intersectors.add<RigidSphereModel,OBBCollisionModel<sofa::defaulttype::Rigid3Types>, MinProximityIntersection> (this);
+    intersectors.add<SphereCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel, MinProximityIntersection>(this);
 
+    //By default, all the previous pairs of collision models are supported,
+    //but other C++ components are able to add a list of pairs to be supported.
+    //In the following function, all the C++ components that registered to
+    //MinProximityIntersection are created. In their constructors, they add
+    //new supported pairs of collision models. For example, see MeshMinProximityIntersection.
     IntersectorFactory::getInstance()->addIntersectors(this);
 
 	BaseProximityIntersection::init();
 }
 
-
-bool MinProximityIntersection::getUseSurfaceNormals(){
-    return useSurfaceNormals.getValue();
+bool MinProximityIntersection::testIntersection(Cube& cube1, Cube& cube2)
+{
+    return BaseProximityIntersection::testIntersection(cube1, cube2);
 }
 
-void MinProximityIntersection::draw(const core::visual::VisualParams* vparams)
+int MinProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts)
 {
-    if (!vparams->displayFlags().getShowCollisionModels())
-        return;
+    return BaseProximityIntersection::computeIntersection(cube1, cube2, contacts);
+}
+
+bool MinProximityIntersection::getUseSurfaceNormals() const
+{
+    return useSurfaceNormals.getValue();
 }
 
 } // namespace sofa::component::collision

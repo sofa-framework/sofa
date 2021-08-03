@@ -27,8 +27,8 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/visual/Shader.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/GLSLShader.h>
+#include <sofa/gl/template.h>
+#include <sofa/gl/GLSLShader.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa
@@ -102,7 +102,7 @@ public:
 
 protected:
     ///OpenGL shader
-    std::vector<sofa::helper::gl::GLSLShader*> shaderVector;
+    std::vector<sofa::gl::GLSLShader*> shaderVector;
 
     OglShader();
     ~OglShader() override;

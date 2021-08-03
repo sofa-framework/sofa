@@ -37,6 +37,8 @@
 #include <sofa/helper/ScopedAdvancedTimer.h>
 using sofa::helper::ScopedAdvancedTimer ;
 
+#include <sofa/helper/AdvancedTimer.h>
+
 
 namespace sofa::component::collision
 {
@@ -51,6 +53,8 @@ int DefaultPipelineClass = core::RegisterObject("The default collision detection
         .addAlias("CollisionPipeline")
         ;
 
+const int DefaultPipeline::defaultDepthValue = 6;
+
 DefaultPipeline::DefaultPipeline()
     : d_doPrintInfoMessage(initData(&d_doPrintInfoMessage, false, "verbose",
                                     "Display extra informations at each computation step. (default=false)"))
@@ -58,8 +62,8 @@ DefaultPipeline::DefaultPipeline()
                              "Draw the detected collisions. (default=false)"))
 
     //TODO(dmarchal 2017-05-16) Fix the min & max value with response from a github issue. Remove in 1 year if not done.
-    , d_depth(initData(&d_depth, 6, "depth",
-                       "Max depth of bounding trees. (default=6, min=?, max=?)"))
+    , d_depth(initData(&d_depth, defaultDepthValue, "depth",
+               ("Max depth of bounding trees. (default=" + std::to_string(defaultDepthValue) + ", min=?, max=?)").c_str()))
 {
 }
 
@@ -69,7 +73,22 @@ typedef simulation::Visitor::ctime_t ctime_t;
 
 void DefaultPipeline::init()
 {
-    Inherit1::init() ;
+    Inherit1::init();
+
+    if (broadPhaseDetection == nullptr)
+    {
+        msg_warning() << "A BroadPhase component is required to compute collision detection and was not found in the current scene";
+    }
+
+    if (narrowPhaseDetection == nullptr)
+    {
+        msg_warning() << "A NarrowPhase component is required to compute collision detection and was not found in the current scene";
+    }
+
+    if (contactManager == nullptr)
+    {
+        msg_warning() << "A ContactManager component is required to compute collision response and was not found in the current scene";
+    }
 
     /// Insure that all the value provided by the user are valid and report message if it is not.
     checkDataValues() ;
@@ -79,9 +98,9 @@ void DefaultPipeline::checkDataValues()
 {
     if(d_depth.getValue() < 0)
     {
-        msg_warning() << "Invalid value 'depth'="<<d_depth.getValue() << "." << msgendl
-                      << "Replaced with the default value = 6." ;
-        d_depth.setValue(6) ;
+        msg_warning() << "Invalid value 'depth'=" << d_depth.getValue() << "." << msgendl
+                      << "Replaced with the default value = " << defaultDepthValue;
+        d_depth.setValue(defaultDepthValue) ;
     }
 }
 
@@ -90,24 +109,28 @@ void DefaultPipeline::doCollisionReset()
     msg_info_when(d_doPrintInfoMessage.getValue())
             << "DefaultPipeline::doCollisionReset" ;
 
-    core::objectmodel::BaseContext* scene = getContext();
     // clear all contacts
-    if (contactManager!=nullptr)
+    if (contactManager != nullptr)
     {
-        const helper::vector<Contact::SPtr>& contacts = contactManager->getContacts();
-        for (helper::vector<Contact::SPtr>::const_iterator it = contacts.begin(); it!=contacts.end(); ++it)
+        const type::vector<Contact::SPtr>& contacts = contactManager->getContacts();
+        for (const auto& contact : contacts)
         {
-            (*it)->removeResponse();
+            if (contact != nullptr)
+            {
+                contact->removeResponse();
+            }
         }
     }
+
     // clear all collision groups
-    if (groupManager!=nullptr)
+    if (groupManager != nullptr)
     {
+        core::objectmodel::BaseContext* scene = getContext();
         groupManager->clearGroups(scene);
     }
 }
 
-void DefaultPipeline::doCollisionDetection(const helper::vector<core::CollisionModel*>& collisionModels)
+void DefaultPipeline::doCollisionDetection(const type::vector<core::CollisionModel*>& collisionModels)
 {
     ScopedAdvancedTimer docollisiontimer("doCollisionDetection");
 
@@ -117,7 +140,7 @@ void DefaultPipeline::doCollisionDetection(const helper::vector<core::CollisionM
     // First, we compute a bounding volume for the collision model (for example bounding sphere)
     // or we have loaded a collision model that knows its other model
 
-    helper::vector<CollisionModel*> vectBoundingVolume;
+    type::vector<CollisionModel*> vectBoundingVolume;
     {
         ScopedAdvancedTimer bboxtimer("ComputeBoundingTree");
 
@@ -127,9 +150,14 @@ void DefaultPipeline::doCollisionDetection(const helper::vector<core::CollisionM
         const bool continuous = intersectionMethod->useContinuous();
         const SReal dt       = getContext()->getDt();
 
-        helper::vector<CollisionModel*>::const_iterator it;
-        const helper::vector<CollisionModel*>::const_iterator itEnd = collisionModels.end();
+        type::vector<CollisionModel*>::const_iterator it;
+        const type::vector<CollisionModel*>::const_iterator itEnd = collisionModels.end();
         int nActive = 0;
+
+        const int used_depth = (
+                    (broadPhaseDetection && broadPhaseDetection->needsDeepBoundingTree()) ||
+                    (narrowPhaseDetection && narrowPhaseDetection->needsDeepBoundingTree())
+            ) ? d_depth.getValue() : 0;
 
         for (it = collisionModels.begin(); it != itEnd; ++it)
         {
@@ -138,14 +166,14 @@ void DefaultPipeline::doCollisionDetection(const helper::vector<core::CollisionM
 
             if (!(*it)->isActive()) continue;
 
-            int used_depth = broadPhaseDetection->needsDeepBoundingTree() ? d_depth.getValue() : 0;
-
-            if (continuous){
-                std::string msg = "Compute Continuous BoundingTree: " + (*it)->getName();
+            if (continuous)
+            {
+                const std::string msg = "Compute Continuous BoundingTree: " + (*it)->getName();
                 ScopedAdvancedTimer bboxtimer(msg.c_str());
                 (*it)->computeContinuousBoundingTree(dt, used_depth);
             }
-            else {
+            else
+            {
                 std::string msg = "Compute BoundingTree: " + (*it)->getName();
                 ScopedAdvancedTimer bboxtimer(msg.c_str());
                 (*it)->computeBoundingTree(used_depth);
@@ -163,7 +191,10 @@ void DefaultPipeline::doCollisionDetection(const helper::vector<core::CollisionM
                 << "doCollisionDetection, Computed "<<nActive<<" BBoxs" ;
     }
     // then we start the broad phase
-    if (broadPhaseDetection==nullptr) return; // can't go further
+    if (broadPhaseDetection == nullptr)
+    {
+        return; // can't go further
+    }
 
     msg_info_when(d_doPrintInfoMessage.getValue())
             << "doCollisionDetection, BroadPhaseDetection "<<broadPhaseDetection->getName();
@@ -184,7 +215,10 @@ void DefaultPipeline::doCollisionDetection(const helper::vector<core::CollisionM
 #endif
 
     // then we start the narrow phase
-    if (narrowPhaseDetection==nullptr) return; // can't go further
+    if (narrowPhaseDetection == nullptr)
+    {
+        return; // can't go further
+    }
 
     msg_info_when(d_doPrintInfoMessage.getValue())
         << "doCollisionDetection, NarrowPhaseDetection "<<narrowPhaseDetection->getName();
@@ -196,7 +230,7 @@ void DefaultPipeline::doCollisionDetection(const helper::vector<core::CollisionM
         ScopedAdvancedTimer narrowphase("NarrowPhase");
         intersectionMethod->beginNarrowPhase();
         narrowPhaseDetection->beginNarrowPhase();
-        helper::vector<std::pair<CollisionModel*, CollisionModel*> >& vectCMPair = broadPhaseDetection->getCollisionModelPairs();
+        type::vector<std::pair<CollisionModel*, CollisionModel*> >& vectCMPair = broadPhaseDetection->getCollisionModelPairs();
 
         msg_info_when(d_doPrintInfoMessage.getValue())
                 << "doCollisionDetection, "<< vectCMPair.size()<<" colliding model pairs" ;
@@ -215,43 +249,54 @@ void DefaultPipeline::doCollisionResponse()
 {
     core::objectmodel::BaseContext* scene = getContext();
     // then we start the creation of contacts
-    if (contactManager==nullptr) return; // can't go further
+    if (narrowPhaseDetection == nullptr || contactManager == nullptr)
+    {
+        return; // can't go further
+    }
 
     msg_info_when(d_doPrintInfoMessage.getValue())
-        << "Create Contacts "<<contactManager->getName() ;
+        << "Create Contacts " << contactManager->getName() ;
 
+    sofa::helper::AdvancedTimer::stepBegin("CreateContacts");
     contactManager->createContacts(narrowPhaseDetection->getDetectionOutputs());
+    sofa::helper::AdvancedTimer::stepEnd("CreateContacts");
 
     // finally we start the creation of collisionGroup
 
-    const helper::vector<Contact::SPtr>& contacts = contactManager->getContacts();
+    const type::vector<Contact::SPtr>& contacts = contactManager->getContacts();
 
     // First we remove all contacts with non-simulated objects and directly add them
-    helper::vector<Contact::SPtr> notStaticContacts;
+    type::vector<Contact::SPtr> notStaticContacts;
 
-    for (helper::vector<Contact::SPtr>::const_iterator it = contacts.begin(); it!=contacts.end(); ++it)
+    sofa::helper::AdvancedTimer::stepBegin("CreateStaticObjectsResponse");
+    for (const auto& contact : contacts)
     {
-        Contact::SPtr c = *it;
-        if (!c->getCollisionModels().first->isSimulated())
+        const auto collisionModels = contact->getCollisionModels();
+        if (collisionModels.first != nullptr && !collisionModels.first->isSimulated())
         {
-            c->createResponse(c->getCollisionModels().second->getContext());
+            contact->createResponse(collisionModels.second->getContext());
         }
-        else if (!c->getCollisionModels().second->isSimulated())
+        else if (collisionModels.second != nullptr && !collisionModels.second->isSimulated())
         {
-            c->createResponse(c->getCollisionModels().first->getContext());
+            contact->createResponse(collisionModels.first->getContext());
         }
         else
-            notStaticContacts.push_back(c);
+        {
+            notStaticContacts.push_back(contact);
+        }
     }
+    sofa::helper::AdvancedTimer::stepEnd("CreateStaticObjectsResponse");
 
-    if (groupManager==nullptr)
+    if (groupManager == nullptr)
     {
+        ScopedAdvancedTimer createResponseTimer("CreateMovingObjectsResponse");
+
         msg_info_when(d_doPrintInfoMessage.getValue())
             << "Linking all contacts to Scene" ;
 
-        for (helper::vector<Contact::SPtr>::const_iterator it = notStaticContacts.begin(); it!=notStaticContacts.end(); ++it)
+        for (const auto& contact : notStaticContacts)
         {
-            (*it)->createResponse(scene);
+            contact->createResponse(scene);
         }
     }
     else
@@ -272,12 +317,6 @@ std::set< std::string > DefaultPipeline::getResponseList() const
         listResponse.insert(it->first);
     }
     return listResponse;
-}
-
-void DefaultPipeline::draw(const core::visual::VisualParams* )
-{
-    if (!d_doDebugDraw.getValue()) return;
-    if (!narrowPhaseDetection) return;
 }
 
 } // namespace sofa::component::collision

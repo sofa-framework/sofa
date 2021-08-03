@@ -41,7 +41,7 @@ public:
     bool canLoad() override { return true; }
     bool doLoad() override; ///< create the grid
 
-    Data< defaulttype::Vec2i > resolution;  ///< Number of vertices in each direction
+    Data< type::Vec2i > resolution;  ///< Number of vertices in each direction
     Data< int > trianglePattern;            ///< 0: no triangles, 1: alternate triangles, 2: upward triangles, 3: downward triangles.
 
 protected:

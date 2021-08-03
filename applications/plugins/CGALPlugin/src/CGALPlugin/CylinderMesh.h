@@ -38,8 +38,8 @@ public:
     typedef typename DataTypes::Coord Point;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
-    typedef sofa::helper::fixed_array<int, 3> Index;
-    //    typedef sofa::helper::vector<Real> VecReal;
+    typedef sofa::type::fixed_array<int, 3> Index;
+    //    typedef sofa::type::vector<Real> VecReal;
 
 //        typedef sofa::core::topology::BaseMeshTopology::PointID PointID;
     //    typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
@@ -102,7 +102,7 @@ public:
 };
 
 #if !defined(CGALPLUGIN_CYLINDERMESH_CPP)
-extern template class SOFA_CGALPLUGIN_API CylinderMesh<defaulttype::Vec3Types>;
+extern template class SOFA_CGALPLUGIN_API CylinderMesh<sofa::defaulttype::Vec3Types>;
 #endif
 
 } //cgal

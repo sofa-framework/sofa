@@ -28,9 +28,9 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/gl/BasicShapes.h>
-#include <sofa/helper/gl/glText.inl>
+#include <sofa/gl/gl.h>
+#include <sofa/gl/BasicShapes.h>
+#include <sofa/gl/glText.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
@@ -81,11 +81,11 @@ public:
 
     Data< double > scale; ///< Default scale applied to the Leap Motion Coordinates. 
     Data< Vec3d > translation; ///< Position of the tool/hand in the Leap Motion reference frame
-    Data< sofa::defaulttype::Vector3 > rotation; ///< Rotation of the DOFs of the hand
+    Data< sofa::type::Vector3 > rotation; ///< Rotation of the DOFs of the hand
     Data< Rigid3dTypes::Coord > handPalmCoordinate; ///< Coordinate of the hand detected by the Leap Motion
     Data< Vec3d > sphereCenter; ///< Center of the sphere of the hand detected by the Leap Motion
     Data< double > sphereRadius; ///< Radius of the sphere of the hand detected by the Leap Motion
-    Data< sofa::helper::vector< Rigid3dTypes::Coord > > fingersCoordinates; ///< Coordinate of the fingers detected by the Leap Motion
+    Data< sofa::type::vector< Rigid3dTypes::Coord > > fingersCoordinates; ///< Coordinate of the fingers detected by the Leap Motion
     Data< int > gestureType; ///< Type of the current gesture detected by the Leap Motion
     Data< Vec3d > gesturePosition; ///< Position of the current gesture detected by the Leap Motion
     Data< Vec3d > gestureDirection; ///< Direction of the current gesture detected by the Leap Motion
@@ -104,7 +104,7 @@ public:
     void cleanup();
 
     Vec3d verticeOnRadius(Vec3d center, Vec3d vecOnCirclePlane, Vec3d orthoVecOnCirclePlane, double radius, double radAngle);
-    void computeFingerJoints(int i, sofa::helper::WriteAccessor<Data<sofa::helper::vector<RigidCoord<3,double> > > >* fingersCoordsArray);
+    void computeFingerJoints(int i, sofa::helper::WriteAccessor<Data<sofa::type::vector<RigidCoord<3,double> > > >* fingersCoordsArray);
     void draw(const sofa::core::visual::VisualParams* vparams);
     void computeBBox(const sofa::core::ExecParams *, bool);
     void applyRotation (Rigid3dTypes::Coord* rigidToRotate);

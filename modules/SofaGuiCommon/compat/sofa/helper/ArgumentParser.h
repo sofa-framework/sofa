@@ -23,7 +23,7 @@
 
 #include <sofa/gui/ArgumentParser.h>
 
-SOFA_DEPRECATED_HEADER(v21.12, "sofa/gui/ArgumentParser")
+SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/gui/ArgumentParser.h")
 
 namespace sofa::helper
 {

@@ -20,36 +20,26 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "sofa/config.h"
-
 #include <sofa/gui/config.h>
 
 #include "ColourPickingVisitor.h"
 
 #include <sofa/helper/Factory.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/core/CollisionModel.h>
-
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-
-#include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/core/objectmodel/KeyreleasedEvent.h>
-#include <sofa/core/objectmodel/MouseEvent.h>
-#include <SofaGraphComponent/ViewerSetting.h>
-
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
-
-//instruments handling
-#include <SofaUserInteraction/Controller.h>
-#include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/Node.h>
-#include <SofaBaseVisual/InteractiveCamera.h>
 
-#include <sofa/helper/io/Image.h>
+#include <SofaBaseVisual/BaseCamera.h>
 
 #include <string>
+
+namespace sofa::component::configurationsetting
+{
+    class ViewerSetting;
+
+} // namespace sofa::component::configurationsetting
 
 namespace sofa::gui
 {
@@ -101,9 +91,9 @@ public:
     virtual void setPrefix(const std::string& prefix, bool prependDirectory = true);
     virtual void screenshot(const std::string& filename, int compression_level =-1);
 
-    virtual void getView(sofa::defaulttype::Vector3& pos, sofa::defaulttype::Quat& ori) const;
-    virtual void setView(const sofa::defaulttype::Vector3& pos, const sofa::defaulttype::Quat &ori);
-    virtual void moveView(const sofa::defaulttype::Vector3& pos, const sofa::defaulttype::Quat &ori);
+    virtual void getView(sofa::type::Vector3& pos, sofa::type::Quat<SReal>& ori) const;
+    virtual void setView(const sofa::type::Vector3& pos, const sofa::type::Quat<SReal> &ori);
+    virtual void moveView(const sofa::type::Vector3& pos, const sofa::type::Quat<SReal> &ori);
     virtual void newView();
     virtual void resetView();
 
@@ -149,10 +139,10 @@ protected:
     int _background;
     bool initTexturesDone;
 
-    sofa::defaulttype::Vector3 backgroundColour;
+    sofa::type::Vector3 backgroundColour;
     std::string backgroundImageFile;
 
-    sofa::defaulttype::Vector3 ambientColour;
+    sofa::type::Vector3 ambientColour;
 
     PickHandler *pick;
 

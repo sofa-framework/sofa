@@ -19,11 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/testing/config.h>
+
 #include <sofa/helper/io/MeshOBJ.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest ;
 
 namespace sofa {
 
@@ -32,11 +34,11 @@ class MeshOBJ_test : public BaseTest
 protected:
     void SetUp() override
     {
-        sofa::helper::system::DataRepository.addFirstPath(FRAMEWORK_TEST_RESOURCES_DIR);
+        sofa::helper::system::DataRepository.addFirstPath(SOFA_TESTING_RESOURCES_DIR);
     }
     void TearDown() override
     {
-        sofa::helper::system::DataRepository.removePath(FRAMEWORK_TEST_RESOURCES_DIR);
+        sofa::helper::system::DataRepository.removePath(SOFA_TESTING_RESOURCES_DIR);
     }
 
     struct MeshOBJTestData

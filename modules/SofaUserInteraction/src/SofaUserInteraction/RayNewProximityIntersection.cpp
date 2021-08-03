@@ -20,19 +20,20 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaUserInteraction/RayNewProximityIntersection.h>
-#include <sofa/helper/FnDispatcher.inl>
+
 #include <sofa/core/collision/Intersection.inl>
 #include <sofa/helper/proximity.h>
 #include <iostream>
 #include <algorithm>
 #include <sofa/core/collision/IntersectorFactory.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 
 #include <SofaUserInteraction/RayContact.h>
 
 namespace sofa::component::collision
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 using sofa::helper::DistanceSegTri;

@@ -24,10 +24,10 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/gl/Transformation.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/fixed_array.h>
-#include <sofa/helper/system/glu.h>
+#include <sofa/helper/visual/Transformation.h>
+#include <sofa/gl/template.h>
+#include <sofa/type/fixed_array.h>
+#include <sofa/gl/glu.h>
 #include <SofaBaseVisual/VisualStyle.h>
 
 namespace sofa
@@ -39,6 +39,7 @@ namespace component
 namespace visualmodel
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 //Register OglViewport in the Object Factory
@@ -51,7 +52,7 @@ OglViewport::OglViewport()
     :p_screenPosition(initData(&p_screenPosition, "screenPosition", "Viewport position"))
     ,p_screenSize(initData(&p_screenSize, "screenSize", "Viewport size"))
     ,p_cameraPosition(initData(&p_cameraPosition, Vec3f(0.0,0.0,0.0), "cameraPosition", "Camera's position in eye's space"))
-    ,p_cameraOrientation(initData(&p_cameraOrientation,Quat(), "cameraOrientation", "Camera's orientation"))
+    ,p_cameraOrientation(initData(&p_cameraOrientation,Quat<SReal>(), "cameraOrientation", "Camera's orientation"))
     ,p_cameraRigid(initData(&p_cameraRigid, "cameraRigid", "Camera's rigid coord"))
     ,p_zNear(initData(&p_zNear, "zNear", "Camera's ZNear"))
     ,p_zFar(initData(&p_zFar, "zFar", "Camera's ZFar"))
@@ -87,7 +88,7 @@ void OglViewport::initVisual()
     if (p_useFBO.getValue())
     {
         const Vec<2, unsigned int> screenSize = p_screenSize.getValue();
-        fbo = std::unique_ptr<helper::gl::FrameBufferObject>(new helper::gl::FrameBufferObject());
+        fbo = std::unique_ptr<sofa::gl::FrameBufferObject>(new sofa::gl::FrameBufferObject());
         fbo->init(screenSize[0],screenSize[1]);
     }
 }
@@ -112,9 +113,9 @@ void OglViewport::preDrawScene(core::visual::VisualParams* vp)
 
     if (p_swapMainView.getValue())
     {
-        const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
+        const sofa::type::BoundingBox& sceneBBox = vp->sceneBBox();
         Vec3f cameraPosition;
-        Quat cameraOrientation;
+        Quat<SReal> cameraOrientation;
 
         //Take the rigid if it is connected to something
         if (p_cameraRigid.isDisplayed())
@@ -130,7 +131,7 @@ void OglViewport::preDrawScene(core::visual::VisualParams* vp)
         }
 
         cameraOrientation.normalize();
-        helper::gl::Transformation transform;
+        sofa::helper::visual::Transformation transform;
 
         cameraOrientation.buildRotationMatrix(transform.rotation);
         //cameraOrientation.writeOpenGlMatrix((SReal*) transform.rotation);
@@ -191,9 +192,9 @@ void OglViewport::preDrawScene(core::visual::VisualParams* vp)
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         glLoadIdentity();
-        helper::gl::glMultMatrix((SReal *)transform.rotation);
+        sofa::gl::glMultMatrix((SReal *)transform.rotation);
 
-        helper::gl::glTranslate(transform.translation[0], transform.translation[1], transform.translation[2]);
+        sofa::gl::glTranslate(transform.translation[0], transform.translation[1], transform.translation[2]);
     }
 }
 
@@ -220,7 +221,7 @@ void OglViewport::postDrawScene(core::visual::VisualParams* vp)
 
 void OglViewport::renderToViewport(core::visual::VisualParams* vp)
 {
-    const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
+    const sofa::type::BoundingBox& sceneBBox = vp->sceneBBox();
 
     const Viewport viewport = vp->viewport();
     //Launch FBO process
@@ -264,12 +265,12 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
     }
     else
     {
-        helper::gl::Transformation transform;
+        sofa::helper::visual::Transformation transform;
         double zNear=1e10, zFar=-1e10;
 //        double fovy = 0;
 
         Vec3f cameraPosition;
-        Quat cameraOrientation;
+        Quat<SReal> cameraOrientation;
 
         //Take the rigid if it is connected to something
         if (p_cameraRigid.isDisplayed())
@@ -341,9 +342,9 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         glLoadIdentity();
-        helper::gl::glMultMatrix((SReal *)transform.rotation);
+        sofa::gl::glMultMatrix((SReal *)transform.rotation);
 
-        helper::gl::glTranslate(transform.translation[0], transform.translation[1], transform.translation[2]);
+        sofa::gl::glTranslate(transform.translation[0], transform.translation[1], transform.translation[2]);
 
         //gluLookAt(cameraPosition[0], cameraPosition[1], cameraPosition[2],0 ,0 ,0, cameraDirection[0], cameraDirection[1], cameraDirection[2]);
     }

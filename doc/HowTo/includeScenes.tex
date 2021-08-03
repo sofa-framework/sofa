@@ -70,7 +70,8 @@ One benefit would be to describe the components needed to perform the collision 
 \begin{verbatim}
 <Node name="Group">
         <Object type="CollisionPipeline" name="DefaultCollisionPipeline" depth="6"/>
-        <Object type="BruteForceDetection" name="Detection" />
+        <Object type="BruteForceBroadPhase" />
+        <Object type="BVHNarrowPhase" />
         <Object type="MinProximityIntersection" name="Proximity" 
                 alarmDistance="0.3" contactDistance="0.2" />
         <Object type="CollisionResponse" name="Response" response="default" />

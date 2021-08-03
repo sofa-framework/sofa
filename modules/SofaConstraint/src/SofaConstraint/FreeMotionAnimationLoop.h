@@ -23,7 +23,12 @@
 #include <SofaConstraint/config.h>
 
 #include <sofa/simulation/CollisionAnimationLoop.h>
-#include <SofaConstraint/LCPConstraintSolver.h>
+#include <sofa/core/MultiVecId.h>
+
+namespace sofa::core::behavior
+{
+    class ConstraintSolver;
+}
 
 namespace sofa::component::animationloop
 {
@@ -50,16 +55,26 @@ public:
         return obj;
     }
 
-    Data<bool> displayTime;
     Data<bool> m_solveVelocityConstraintFirst; ///< solve separately velocity constraint violations before position constraint violations
     Data<bool> d_threadSafeVisitor;
+    Data<bool> d_parallelCollisionDetectionAndFreeMotion; ///<If true, executes free motion and collision detection in parallel
+    Data<bool> d_parallelODESolving; ///<If true, executes all free motions in parallel
 
 protected:
     FreeMotionAnimationLoop(simulation::Node* gnode);
     ~FreeMotionAnimationLoop() override ;
 
+    ///< pointer towards a possible ConstraintSolver present in the scene graph
     sofa::core::behavior::ConstraintSolver *constraintSolver;
-    component::constraintset::LCPConstraintSolver::SPtr defaultSolver;
+
+    ///< pointer towards a default ConstraintSolver (LCPConstraintSolver) used in case none was found in the scene graph
+    sofa::core::sptr<sofa::core::behavior::ConstraintSolver> defaultSolver;
+
+    void FreeMotionAndCollisionDetection(const sofa::core::ExecParams* params, const core::ConstraintParams& cparams, SReal dt,
+                                         sofa::core::MultiVecId pos,
+                                         sofa::core::MultiVecId freePos,
+                                         sofa::core::MultiVecDerivId freeVel,
+                                         simulation::common::MechanicalOperations* mop);
 };
 
 } // namespace sofa::component::animationloop

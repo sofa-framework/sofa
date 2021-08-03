@@ -28,10 +28,10 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/helper/OptionsGroup.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/rmath.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/gl/template.h>
+#include <sofa/type/Vec.h>
 #include <SofaBaseVisual/BackgroundSetting.h>
 
 namespace sofa
@@ -55,7 +55,7 @@ public:
     Data<unsigned int>           d_x; ///< The x position of the text on the screen
     Data<unsigned int>           d_y; ///< The y position of the text on the screen
     Data<unsigned int>           d_fontsize; ///< The size of the font used to display the text on the screen
-    Data<sofa::helper::types::RGBAColor> d_color; ///< The color of the text to display. (default='gray')
+    Data<sofa::type::RGBAColor> d_color; ///< The color of the text to display. (default='gray')
     Data<bool>                   d_selectContrastingColor ; ///< Overide the color value but one that contrast with the background color
     Data<unsigned int>           d_updateLabelEveryNbSteps; ///< Update the display of the label every nb of time steps
     Data<bool>                   d_visible; ///< Is label displayed

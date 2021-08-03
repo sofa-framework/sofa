@@ -27,7 +27,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
@@ -77,9 +77,9 @@ public:
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
     enum { N=DataTypes::spatial_dimensions };
-    typedef defaulttype::Mat<N,N,Real> Mat;
+    typedef type::Mat<N,N,Real> Mat;
 
-    typedef helper::fixed_array <unsigned int,3> tri;
+    typedef type::fixed_array <unsigned int,3> tri;
     typedef helper::kdTree<Coord> KDT;
     typedef typename KDT::distanceSet distanceSet;
     typedef typename KDT::distanceToPoint distanceToPoint;
@@ -114,7 +114,7 @@ protected :
     void updateClosestPoints();
 
     VecCoord closestPos;
-    helper::vector<unsigned int>  cnt;
+    type::vector<unsigned int>  cnt;
     SReal m_potentialEnergy;
 
     Real min,max;
@@ -128,26 +128,26 @@ protected :
     Data<bool> projectToPlane; ///< project closest points in the plane defined by the normal.
     Data<bool> rejectBorders; ///< ignore border vertices.
     Data<bool> rejectOutsideBbox; ///< ignore source points outside bounding box of target points.
-    defaulttype::BoundingBox targetBbox;
+    type::BoundingBox targetBbox;
 
     // source mesh data
-    Data< helper::vector< tri > > sourceTriangles; ///< Triangles of the source mesh.
+    Data< type::vector< tri > > sourceTriangles; ///< Triangles of the source mesh.
     Data< VecCoord > sourceNormals; ///< Normals of the source mesh.
-    helper::vector< distanceSet >  closestSource; // CacheSize-closest target points from source
-    helper::vector< distanceToPoint > cacheThresh_max;	helper::vector< distanceToPoint > cacheThresh_min; VecCoord previousX; // storage for cache acceleration
+    type::vector< distanceSet >  closestSource; // CacheSize-closest target points from source
+    type::vector< distanceToPoint > cacheThresh_max;	type::vector< distanceToPoint > cacheThresh_min; VecCoord previousX; // storage for cache acceleration
     KDT sourceKdTree;
-    helper::vector< bool > sourceBorder;
-    helper::vector< bool > sourceIgnored;  // flag ignored vertices
-    helper::vector< bool > targetIgnored;  // flag ignored vertices
+    type::vector< bool > sourceBorder;
+    type::vector< bool > sourceIgnored;  // flag ignored vertices
+    type::vector< bool > targetIgnored;  // flag ignored vertices
     void initSource(); // built k-d tree and identify border vertices
 
     // target mesh data
     Data< VecCoord > targetPositions; ///< Vertices of the target mesh.
     Data< VecCoord > targetNormals; ///< Normals of the target mesh.
-    Data< helper::vector< tri > > targetTriangles; ///< Triangles of the target mesh.
-    helper::vector< distanceSet >  closestTarget; // CacheSize-closest source points from target
+    Data< type::vector< tri > > targetTriangles; ///< Triangles of the target mesh.
+    type::vector< distanceSet >  closestTarget; // CacheSize-closest source points from target
     KDT targetKdTree;
-    helper::vector< bool > targetBorder;
+    type::vector< bool > targetBorder;
     void initTarget();  // built k-d tree and identify border vertices
 
     Data<float> showArrowSize; ///< size of the axis.
@@ -155,7 +155,7 @@ protected :
     Data<bool> drawColorMap; ///< Hue mapping of distances to closest point
     Data<bool> theCloserTheStiffer; ///< Modify stiffness according to distance
 
-    void detectBorder(helper::vector<bool> &border,const helper::vector< tri > &triangles);
+    void detectBorder(type::vector<bool> &border,const type::vector< tri > &triangles);
 };
 
 

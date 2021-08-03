@@ -26,11 +26,11 @@
 
 #include <sofa/simulation/fwd.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/visual/DrawToolGL.h>
+#include <sofa/gl/DrawToolGL.h>
 #include <SofaBaseVisual/InteractiveCamera.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <signal.h>
+#include <csignal>
 
 #include <iostream>
 #include <chrono>
@@ -47,50 +47,42 @@
 #include <sofa/helper/io/Image.h>
 #include <sofa/helper/system/SetDirectory.h>
 
-#include <sofa/helper/gl/VideoRecorderFFMPEG.h>
-#include <sofa/helper/gl/Capture.h>
+#include <sofa/gl/VideoRecorderFFMPEG.h>
+#include <sofa/gl/Capture.h>
 
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace hRecorder
+namespace sofa::gui::hRecorder
 {
 
 enum class RecordMode { wallclocktime, simulationtime, timeinterval };
-
-class VideoRecorderFFmpeg;
 
 class HeadlessRecorder : public sofa::gui::BaseGUI
 {
 
 public:
     typedef sofa::core::visual::VisualParams VisualParams;
-    typedef sofa::core::visual::DrawToolGL   DrawToolGL;
+    typedef sofa::gl::DrawToolGL   DrawToolGL;
 
     HeadlessRecorder();
-    ~HeadlessRecorder();
+    ~HeadlessRecorder() override;
 
     int mainLoop() override;
 
     void step();
     void redraw() override;
     void resetView();
-    void saveView();
     void initializeGL();
     void paintGL();
-    void setScene(sofa::simulation::NodeSPtr scene, const char* filename=NULL, bool temporaryFile=false) override;
+    void setScene(sofa::simulation::NodeSPtr scene, const char* filename=nullptr, bool temporaryFile=false) override;
     void newView();
 
     // Virtual from BaseGUI
     virtual sofa::simulation::Node* currentSimulation() override;
     virtual int closeGUI() override;
     virtual void setViewerResolution(int width, int height) override;
+    virtual void setBackgroundColor(const sofa::type::RGBAColor& color) override;
 
     // Needed for the registration
-    static BaseGUI* CreateGUI(const char* name, sofa::simulation::NodeSPtr groot = NULL, const char* filename = NULL);
+    static BaseGUI* CreateGUI(const char* name, sofa::simulation::NodeSPtr groot = nullptr, const char* filename = nullptr);
     static int RegisterGUIParameters(ArgumentParser* argumentParser);
     static void parseRecordingModeOption();
 
@@ -99,12 +91,14 @@ public:
 
 private:
     void record();
-    bool canRecord();
-    bool keepFrame();
+    bool canRecord() const;
+    bool keepFrame() const;
 
     void displayOBJs();
     void drawScene();
     void calcProjection();
+
+    void initVideoRecorder();
 
     VisualParams* vparams;
     DrawToolGL   drawTool;
@@ -113,18 +107,20 @@ private:
     std::string sceneFileName;
     sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
 
-    sofa::helper::gl::VideoRecorderFFMPEG m_videorecorder;
+    sofa::gl::VideoRecorderFFMPEG m_videorecorder;
     int m_nFrames;
 
-    GLuint fbo;
-    GLuint rbo_color, rbo_depth;
-    double lastProjectionMatrix[16];
-    double lastModelviewMatrix[16];
+    GLuint fbo{};
+    GLuint rbo_color{}, rbo_depth{};
+    double lastProjectionMatrix[16]{};
     bool initTexturesDone;
-    bool initVideoRecorder;
-    sofa::helper::gl::Capture m_screencapture;
+    bool requestVideoRecorderInit;
+    sofa::gl::Capture m_screencapture;
+    type::RGBAColor m_backgroundColor;
 
-    static GLsizei width, height;
+
+    static GLsizei s_height;
+    static GLsizei s_width;
     static unsigned int fps;
     static std::string fileName;
     static bool saveAsScreenShot, saveAsVideo;
@@ -133,10 +129,6 @@ private:
     static RecordMode recordType;
     static float skipTime;
 };
-
-} // namespace hRecorder
-
-} // namespace gui
 
 } // namespace sofa
 

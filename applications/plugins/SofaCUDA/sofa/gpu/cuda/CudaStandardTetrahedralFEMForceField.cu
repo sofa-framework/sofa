@@ -1271,7 +1271,7 @@ void StandardTetrahedralFEMForceFieldCuda3f_addForce(int nbTetra, int nbPoints, 
     dim3 threads2(BSIZE);
     dim3 grid2((nbPoints+BSIZE-1)/BSIZE,1);
 
-    StandardTetrahedralFEMForceFieldCuda_PointsAccumulation_kernel<float><<<grid2, threads>>>(nbPoints, nbMaxTetraPerNode, (const float*) contribTetra, (const int*) neighbourhoodPoints, (float*) f);
+    StandardTetrahedralFEMForceFieldCuda_PointsAccumulation_kernel<float><<<grid2, threads2>>>(nbPoints, nbMaxTetraPerNode, (const float*) contribTetra, (const int*) neighbourhoodPoints, (float*) f);
     mycudaDebugError("StandardTetrahedralFEMForceFieldCuda_GPUGEMS_PointsAccumulation_kernel<float>");
 
     if(TIMING)

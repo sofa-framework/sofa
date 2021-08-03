@@ -44,6 +44,7 @@ namespace component
 namespace visualmodel
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using sofa::component::visualmodel::OglColorMap;
 
@@ -58,8 +59,8 @@ DataDisplay::DataDisplay()
     , f_quadData(initData(&f_quadData, "quadData", "Data associated with quads"))
     , f_pointTriangleData(initData(&f_pointTriangleData, "pointTriangleData", "Data associated with nodes per triangle"))
     , f_pointQuadData(initData(&f_pointQuadData, "pointQuadData", "Data associated with nodes per quad"))
-    , f_colorNaN(initData(&f_colorNaN, sofa::helper::types::RGBAColor(0.0f,0.0f,0.0f,1.0f), "colorNaN", "Color used for NaN values.(default=[0.0,0.0,0.0,1.0])"))
-    , d_userRange(initData(&d_userRange, defaulttype::Vec2f(1,-1), "userRange", "Clamp to this values (if max>min)"))
+    , f_colorNaN(initData(&f_colorNaN, sofa::type::RGBAColor(0.0f,0.0f,0.0f,1.0f), "colorNaN", "Color used for NaN values.(default=[0.0,0.0,0.0,1.0])"))
+    , d_userRange(initData(&d_userRange, type::Vec2f(1,-1), "userRange", "Clamp to this values (if max>min)"))
     , d_currentMin(initData(&d_currentMin, Real(0.0), "currentMin", "Current min range"))
     , d_currentMax(initData(&d_currentMax, Real(0.0), "currentMax", "Current max range"))
     , d_shininess(initData(&d_shininess, -1.f, "shininess", "Shininess for rendering point-based data [0,128].  <0 means no specularity"))
@@ -116,7 +117,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
     const VecCellData &quadData = f_quadData.getValue();
     const VecPointData &pointTriData = f_pointTriangleData.getValue();
     const VecPointData &pointQuadData = f_pointQuadData.getValue();
-    typedef sofa::helper::types::RGBAColor RGBAColor;
+    typedef sofa::type::RGBAColor RGBAColor;
     const float& transparency = d_transparency.getValue();
 
     glEnable ( GL_LIGHTING );
@@ -303,15 +304,15 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
 
                 glNormal3fv(m_normals[t[0]].ptr());
                 glMaterialfv(GL_FRONT,GL_DIFFUSE,color0.data());
-                helper::gl::glVertexNv<3>(x[t[0]].ptr());
+                sofa::gl::glVertexNv<3>(x[t[0]].ptr());
 
                 glNormal3fv(m_normals[t[1]].ptr());
                 glMaterialfv(GL_FRONT,GL_DIFFUSE,color1.data());
-                helper::gl::glVertexNv<3>(x[t[1]].ptr());
+                sofa::gl::glVertexNv<3>(x[t[1]].ptr());
 
                 glNormal3fv(m_normals[t[2]].ptr());
                 glMaterialfv(GL_FRONT,GL_DIFFUSE,color2.data());
-                helper::gl::glVertexNv<3>(x[t[2]].ptr());
+                sofa::gl::glVertexNv<3>(x[t[2]].ptr());
 
             }
             glEnd();
@@ -360,19 +361,19 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
 
                 glNormal3fv(m_normals[q[0]].ptr());
                 glMaterialfv(GL_FRONT,GL_DIFFUSE,color0.data());
-                helper::gl::glVertexNv<3>(x[q[0]].ptr());
+                sofa::gl::glVertexNv<3>(x[q[0]].ptr());
 
                 glNormal3fv(m_normals[q[1]].ptr());
                 glMaterialfv(GL_FRONT,GL_DIFFUSE,color1.data());
-                helper::gl::glVertexNv<3>(x[q[1]].ptr());
+                sofa::gl::glVertexNv<3>(x[q[1]].ptr());
 
                 glNormal3fv(m_normals[q[2]].ptr());
                 glMaterialfv(GL_FRONT,GL_DIFFUSE,color2.data());
-                helper::gl::glVertexNv<3>(x[q[2]].ptr());
+                sofa::gl::glVertexNv<3>(x[q[2]].ptr());
 
                 glNormal3fv(m_normals[q[3]].ptr());
                 glMaterialfv(GL_FRONT,GL_DIFFUSE,color3.data());
-                helper::gl::glVertexNv<3>(x[q[3]].ptr());
+                sofa::gl::glVertexNv<3>(x[q[3]].ptr());
 
             }
             glEnd();
@@ -410,15 +411,15 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             }
             glNormal3fv(m_normals[t[0]].ptr());
             glMaterialfv(GL_FRONT,GL_DIFFUSE,color[0].data());
-            helper::gl::glVertexNv<3>(x[t[0]].ptr());
+            sofa::gl::glVertexNv<3>(x[t[0]].ptr());
 
             glNormal3fv(m_normals[t[1]].ptr());
             glMaterialfv(GL_FRONT,GL_DIFFUSE,color[1].data());
-            helper::gl::glVertexNv<3>(x[t[1]].ptr());
+            sofa::gl::glVertexNv<3>(x[t[1]].ptr());
 
             glNormal3fv(m_normals[t[2]].ptr());
             glMaterialfv(GL_FRONT,GL_DIFFUSE,color[2].data());
-            helper::gl::glVertexNv<3>(x[t[2]].ptr());
+            sofa::gl::glVertexNv<3>(x[t[2]].ptr());
 
         }
         glEnd();
@@ -439,19 +440,19 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
 
             glNormal3fv(m_normals[q[0]].ptr());
             glMaterialfv(GL_FRONT,GL_DIFFUSE,color[0].data());
-            helper::gl::glVertexNv<3>(x[q[0]].ptr());
+            sofa::gl::glVertexNv<3>(x[q[0]].ptr());
 
             glNormal3fv(m_normals[q[1]].ptr());
             glMaterialfv(GL_FRONT,GL_DIFFUSE,color[1].data());
-            helper::gl::glVertexNv<3>(x[q[1]].ptr());
+            sofa::gl::glVertexNv<3>(x[q[1]].ptr());
 
             glNormal3fv(m_normals[q[2]].ptr());
             glMaterialfv(GL_FRONT,GL_DIFFUSE,color[2].data());
-            helper::gl::glVertexNv<3>(x[q[2]].ptr());
+            sofa::gl::glVertexNv<3>(x[q[2]].ptr());
 
             glNormal3fv(m_normals[q[3]].ptr());
             glMaterialfv(GL_FRONT,GL_DIFFUSE,color[3].data());
-            helper::gl::glVertexNv<3>(x[q[3]].ptr());
+            sofa::gl::glVertexNv<3>(x[q[3]].ptr());
 
         }
         glEnd();

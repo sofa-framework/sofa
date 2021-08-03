@@ -33,7 +33,7 @@
 #include <cstring>
 #include <cmath>
 
-#include <sofa/helper/gl/RAII.h>
+#include <sofa/gl/RAII.h>
 
 #include <sofa/helper/system/thread/CTime.h>
 #include <thread>
@@ -65,7 +65,7 @@ namespace glut
 using std::cout;
 using std::endl;
 using namespace sofa::defaulttype;
-using namespace sofa::helper::gl;
+using namespace sofa::gl;
 using sofa::simulation::getSimulation;
 
 SimpleGUI* SimpleGUI::instance = nullptr;
@@ -398,7 +398,7 @@ void SimpleGUI::initializeGL(void)
                 msg_error("SimpleGUI") << "Could not open sofa logo, " << filename ;
                 return;
             }
-            texLogo = new helper::gl::Texture(img);
+            texLogo = new sofa::gl::Texture(img);
             texLogo->init();
         }
 

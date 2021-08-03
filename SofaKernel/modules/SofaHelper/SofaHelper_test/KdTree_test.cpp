@@ -25,8 +25,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/random.h>
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest ;
 
 
 namespace sofa {
@@ -40,7 +40,7 @@ namespace sofa {
 struct KdTreeTest: public BaseTest
 {
     typedef SReal Real;
-    typedef defaulttype::Vec<3,Real> Coord;
+    typedef type::Vec<3,Real> Coord;
     typedef std::vector<Coord> VecCoord;
 
     typedef sofa::helper::kdTree<Coord> kdT;

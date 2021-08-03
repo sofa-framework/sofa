@@ -23,11 +23,12 @@
 #include "GenerateCylinder.h"
 #include <sofa/helper/rmath.h> //M_PI
 
+#include <sofa/core/topology/Topology.h>
+
 namespace sofa::component::engine
 {
 
-
-    const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
+using sofa::core::topology::edgesInTetrahedronArray;
 
 template <class DataTypes>
 GenerateCylinder<DataTypes>::GenerateCylinder()
@@ -190,12 +191,12 @@ void GenerateCylinder<DataTypes>::doUpdate()
 
         size_t degreeTetrahedron=f_bezierTetrahedronDegree.getValue();
         // fill the bezier tetrahedra weight to 1 for integral  tetrahedron vertices
-        sofa::helper::vector<Real> & bezierTetrahedronWeight=*(f_bezierTetrahedronWeight.beginEdit());
+        sofa::type::vector<Real> & bezierTetrahedronWeight=*(f_bezierTetrahedronWeight.beginEdit());
         // initialize the weight to 1
         bezierTetrahedronWeight.resize(out.size());
         std::fill(bezierTetrahedronWeight.begin(),bezierTetrahedronWeight.end(),(Real)1.0);
         // initialize the rational flag for each tetrahedron to false
-        helper::WriteOnlyAccessor<Data <sofa::helper::vector<bool> > >  isRationalSpline=f_isBezierTetrahedronRational;
+        helper::WriteOnlyAccessor<Data <sofa::type::vector<bool> > >  isRationalSpline=f_isBezierTetrahedronRational;
         isRationalSpline.resize(nbTetrahedra);
         std::fill(isRationalSpline.begin(),isRationalSpline.end(),false);
         // set the tetrahedra next to the circular surface to true
@@ -529,12 +530,12 @@ void GenerateCylinder<DataTypes>::doUpdate()
 
         size_t degreeTriangle=f_bezierTriangleDegree.getValue();
         // fill the bezier triangle weight to 1 for regular triangle vertices
-        sofa::helper::vector<Real> & bezierTriangleWeight=*(f_bezierTriangleWeight.beginEdit());
+        sofa::type::vector<Real> & bezierTriangleWeight=*(f_bezierTriangleWeight.beginEdit());
         // initialize the weight to 1
         bezierTriangleWeight.resize(outTrian.size());
         std::fill(bezierTriangleWeight.begin(),bezierTriangleWeight.end(),(Real)1.0);
         // initialize the rational flag for each triangle to false
-        helper::WriteOnlyAccessor<Data <sofa::helper::vector<bool> > >  isRationalSpline=f_isBezierTriangleRational;
+        helper::WriteOnlyAccessor<Data <sofa::type::vector<bool> > >  isRationalSpline=f_isBezierTriangleRational;
         isRationalSpline.resize(nbTriangles);
         // sets the first set of triangles to be rational
         std::fill(isRationalSpline.begin(),isRationalSpline.end(),false);

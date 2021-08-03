@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaDefaultType)
+project(Sofa.DefaultType)
 
 set(SRC_ROOT "src/sofa/defaulttype")
 
@@ -21,7 +21,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/TypeInfoRegistryTools.h
     ${SRC_ROOT}/TopologyTypes.h
     ${SRC_ROOT}/VecTypes.h
-    ${SRC_ROOT}/defaulttype.h
     ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/fwd.h
@@ -82,42 +81,25 @@ set(SOURCE_FILES
     ${SRC_ROOT}/typeinfo/TypeInfo_Topology.cpp
 )
 
-# Compatibility files
-set (COMPATSRC_ROOT "compat/")
-set(COMPAT_HEADER_FILES
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Vec.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/MatSym.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_Cholesky.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_LU.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Mat_solve_SVD.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Quat.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Quat.inl
-    ${COMPATSRC_ROOT}/sofa/defaulttype/BoundingBox.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Color.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Frame.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/Ray.h
-    ${COMPATSRC_ROOT}/sofa/defaulttype/RGBAColor.h
-)
-
+sofa_find_package(Sofa.Helper REQUIRED)
 sofa_find_package(Eigen3 REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper)
+# Create alias to support compatibility, starting from v21.06
+# This alias will be deleted in v21.12
+add_library(SofaDefaultType ALIAS Sofa.DefaultType)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.Type)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_DEFAULTTYPE")
 
-target_include_directories(${PROJECT_NAME} PUBLIC
-                           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>
-                           $<INSTALL_INTERFACE:include/SofaFramework/compat>)
-source_group("compat" FILES ${COMPAT_HEADER_FILES})
-
-sofa_add_targets_to_package(
-    PACKAGE_NAME SofaFramework
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
-    INCLUDE_INSTALL_DIR "SofaFramework"
-    )
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+)
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaDefaultType_test)

@@ -76,7 +76,7 @@ public:
 
 protected:
     SofaOutputMesh::SPtr sObj;
-    sofa::helper::vector<SofaVAttribute::SPtr> sVA;
+    sofa::type::vector<SofaVAttribute::SPtr> sVA;
 
 public:
     SofaOutputMesh* getObject() { return sObj.get(); }

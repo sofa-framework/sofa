@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaHelper)
+project(Sofa.Helper)
 
 # DEPENDENCIES
 # sofa_find_package(Sofa.Type REQUIRED)
@@ -9,11 +9,11 @@ sofa_find_package(Boost REQUIRED
     COMPONENTS filesystem
     OPTIONAL_COMPONENTS thread
     BOTH_SCOPES)
-if(SOFAHELPER_HAVE_BOOST_FILESYSTEM
-   AND SOFAHELPER_HAVE_BOOST_THREAD)
-    sofa_set_01(SOFAHELPER_HAVE_BOOST VALUE TRUE BOTH_SCOPES)
+if(SOFA_HELPER_HAVE_BOOST_FILESYSTEM
+   AND SOFA_HELPER_HAVE_BOOST_THREAD)
+    sofa_set_01(SOFA_HELPER_HAVE_BOOST VALUE TRUE BOTH_SCOPES)
 else()
-    sofa_set_01(SOFAHELPER_HAVE_BOOST VALUE FALSE BOTH_SCOPES)
+    sofa_set_01(SOFA_HELPER_HAVE_BOOST VALUE FALSE BOTH_SCOPES)
 endif()
 
 # Eigen (header only)
@@ -26,7 +26,6 @@ set(SRC_ROOT "src/sofa/helper")
 # HEADERS + SOURCES
 set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
-    ${SRC_ROOT}/helper.h
     ${SRC_ROOT}/AdvancedTimer.h
     ${SRC_ROOT}/BackTrace.h
     ${SRC_ROOT}/cast.h
@@ -39,8 +38,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/FnDispatcher.inl
     ${SRC_ROOT}/GenerateRigid.h
     ${SRC_ROOT}/IndexOpenMP.h
-    ${SRC_ROOT}/LCPSolver.h
-    ${SRC_ROOT}/LCPSolver.inl
     ${SRC_ROOT}/LCPcalc.h
     ${SRC_ROOT}/MarchingCubeUtility.h
     ${SRC_ROOT}/MatEigen.h
@@ -57,7 +54,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/SortedPermutation.h
     ${SRC_ROOT}/StringUtils.h
     ${SRC_ROOT}/TagFactory.h
-    ${SRC_ROOT}/UnitTest.h
     ${SRC_ROOT}/Utils.h
     ${SRC_ROOT}/accessor.h
     ${SRC_ROOT}/decompose.h
@@ -97,8 +93,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/system/PluginManager.h
     ${SRC_ROOT}/system/SetDirectory.h
     ${SRC_ROOT}/system/SofaOStream.h
-    ${SRC_ROOT}/system/atomic.h
-    ${SRC_ROOT}/system/config.h
     ${SRC_ROOT}/system/console.h
     ${SRC_ROOT}/system/console_internal.h
     ${SRC_ROOT}/system/thread/CTime.h
@@ -148,7 +142,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/RandomGenerator.cpp
     ${SRC_ROOT}/StringUtils.cpp
     ${SRC_ROOT}/TagFactory.cpp
-    ${SRC_ROOT}/UnitTest.cpp
     ${SRC_ROOT}/Utils.cpp
     ${SRC_ROOT}/decompose.cpp
     ${SRC_ROOT}/init.cpp
@@ -215,62 +208,15 @@ if(Boost_FILESYSTEM_FOUND)
     list(APPEND SOURCE_FILES ${SRC_ROOT}/system/FileRepository.cpp)
 endif()
 
-# Compatibility files
-set (COMPATSRC_ROOT "compat/")
-set (COMPAT_HEADER_FILES
-    ${COMPATSRC_ROOT}/sofa/core/visual/DrawTool.h
-    ${COMPATSRC_ROOT}/sofa/core/visual/DrawToolGL.h
-    ${COMPATSRC_ROOT}/sofa/helper/system/gl.h
-    ${COMPATSRC_ROOT}/sofa/helper/system/glu.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/Trackball.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/template.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/Texture.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/FrameBufferObject.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/GLSLShader.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/Transformation.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/RAII.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/BasicShapes.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/Capture.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/VideoRecorderFFMPEG.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/Axis.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/glText.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/glText.inl
-    ${COMPATSRC_ROOT}/sofa/helper/gl/Color.h
-    ${COMPATSRC_ROOT}/sofa/helper/gl/Cylinder.h
-    ${COMPATSRC_ROOT}/sofa/helper/fixed_array.h
-    ${COMPATSRC_ROOT}/sofa/helper/fixed_array_algorithms.h
-    ${COMPATSRC_ROOT}/sofa/helper/Quater.h
-    ${COMPATSRC_ROOT}/sofa/helper/Quater.inl
-    ${COMPATSRC_ROOT}/sofa/helper/DualQuat.h
-    ${COMPATSRC_ROOT}/sofa/helper/DualQuat.inl
-    ${COMPATSRC_ROOT}/sofa/helper/types/RGBAColor.h
-    ${COMPATSRC_ROOT}/sofa/helper/types/RGBAColor_fwd.h
-    ${COMPATSRC_ROOT}/sofa/helper/types/Material.h
-    ${COMPATSRC_ROOT}/sofa/helper/types/PrimitiveGroup.h
-    ${COMPATSRC_ROOT}/sofa/helper/vector.h
-    ${COMPATSRC_ROOT}/sofa/helper/vector_device.h
-    ${COMPATSRC_ROOT}/sofa/helper/SVector.h
-    ${COMPATSRC_ROOT}/sofa/helper/stable_vector.h
-    ${COMPATSRC_ROOT}/sofa/helper/vector_algebra.h
-    ${COMPATSRC_ROOT}/sofa/helper/vector_algorithm.h
-    )
-
-
 sofa_find_package(Sofa.Config REQUIRED)
+sofa_find_package(Sofa.Type REQUIRED)
+sofa_find_package(Sofa.Topology REQUIRED)
 
 # LIBRARY
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaSimulationCore/src>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaDefaultType/src>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaCore/src>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../Sofa.Type/src>")
-
-target_include_directories(${PROJECT_NAME} PUBLIC
-                           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>
-                           $<INSTALL_INTERFACE:include/SofaFramework/compat>)
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../SofaDefaultType/compat>")
-source_group("compat" FILES ${COMPAT_HEADER_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+# Create alias to support compatibility, starting from v21.06
+# This alias will be deleted in v21.12
+add_library(SofaHelper ALIAS Sofa.Helper)
 
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
     target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>")
@@ -282,8 +228,8 @@ endif()
 set_property(SOURCE ${SRC_ROOT}/system/PluginManager.cpp APPEND PROPERTY COMPILE_DEFINITIONS_DEBUG "SOFA_LIBSUFFIX=_d" )
 
 # DEPENDENCY LINKS AND INCLUDE DIRS
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Type Sofa.Topology)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config )
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Type Sofa.Topology)
 
 # System libs
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
@@ -323,12 +269,13 @@ if(JSON_FOUND)
     target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${JSON_INCLUDE_DIR}>")
 endif()
 
-sofa_add_targets_to_package(
-    PACKAGE_NAME SofaFramework
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
-    INCLUDE_INSTALL_DIR "SofaFramework"
-    )
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+)
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaHelper_test)

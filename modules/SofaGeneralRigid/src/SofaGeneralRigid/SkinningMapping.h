@@ -26,9 +26,9 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <vector>
-#include <sofa/helper/SVector.h>
+#include <sofa/type/SVector.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 namespace sofa::component::mapping
@@ -70,7 +70,7 @@ public:
     typedef Data<OutVecDeriv> OutDataVecDeriv;
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
 
-    typedef sofa::defaulttype::Mat<OutDeriv::total_size,InDeriv::total_size,Real>     MatBlock;
+    typedef sofa::type::Mat<OutDeriv::total_size,InDeriv::total_size,Real>     MatBlock;
     typedef sofa::component::linearsolver::EigenSparseMatrix<In, Out> SparseJMatrixEigen;
 
     typedef typename Inherit::ForceMask ForceMask;
@@ -79,18 +79,18 @@ protected:
     Data<OutVecCoord> f_initPos;  ///< initial child coordinates in the world reference frame
 
     // data for linear blending
-    helper:: vector<helper::vector<OutCoord> > f_localPos; /// initial child coordinates in local frame x weight :   dp = dMa_i (w_i \bar M_i f_localPos)
-    helper::vector<helper::vector<OutCoord> > f_rotatedPos;  /// rotated child coordinates :  dp = Omega_i x f_rotatedPos  :
+    type::vector<type::vector<OutCoord> > f_localPos; /// initial child coordinates in local frame x weight :   dp = dMa_i (w_i \bar M_i f_localPos)
+    type::vector<type::vector<OutCoord> > f_rotatedPos;  /// rotated child coordinates :  dp = Omega_i x f_rotatedPos  :
     SparseJMatrixEigen   _J; /// jacobian matrix for compliant API
 
     // data for dual quat blending
-    Data< helper::vector<unsigned int> > nbRef; ///< Number of primitives influencing each point.
-    Data< helper::vector<sofa::helper::SVector<unsigned int> > > f_index; ///< indices of primitives influencing each point.
-    Data< helper::vector<sofa::helper::SVector<InReal> > > weight; ///< influence weights of the Dofs.
+    Data< type::vector<unsigned int> > nbRef; ///< Number of primitives influencing each point.
+    Data< type::vector<sofa::type::SVector<unsigned int> > > f_index; ///< indices of primitives influencing each point.
+    Data< type::vector<sofa::type::SVector<InReal> > > weight; ///< influence weights of the Dofs.
     void updateWeights();
 
 public:
-    void setWeights(const helper::vector<sofa::helper::SVector<InReal> >& weights, const helper::vector<sofa::helper::SVector<unsigned int> >& indices, const helper::vector<unsigned int>& nbrefs);
+    void setWeights(const type::vector<sofa::type::SVector<InReal> >& weights, const type::vector<sofa::type::SVector<unsigned int> >& indices, const type::vector<unsigned int>& nbrefs);
 
 public:
     Data<unsigned int> showFromIndex; ///< Displayed From Index.
@@ -116,7 +116,7 @@ public:
     //void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
 
     // additional Compliant methods
-    const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
     const sofa::defaulttype::BaseMatrix* getJ() override;
 
     SeqTriangles triangles; // Topology of toModel (used for weight display)

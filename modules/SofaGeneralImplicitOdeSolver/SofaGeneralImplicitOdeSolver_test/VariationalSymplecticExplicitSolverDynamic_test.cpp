@@ -19,10 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Elasticity_test.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest;
+
+#include <SofaExplicitOdeSolver_test/MassSpringSystemCreation.h>
+
 #include <SceneCreator/SceneCreator.h>
-
-
 
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
@@ -31,7 +35,7 @@
 
 // Including mechanical object
 #include <SofaBaseMechanics/MechanicalObject.h>
-using MechanicalObject3 = sofa::component::container::MechanicalObject<Vec3Types> ;
+using MechanicalObject3 = sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> ;
 
 // Solvers
 #include <SofaGeneralImplicitOdeSolver/VariationalSymplecticSolver.h>
@@ -56,7 +60,7 @@ Then it compares the effective mass position to the computed mass position every
 */
 
 template <typename _DataTypes>
-struct VariationalSymplecticExplicitSolverDynamic_test : public Elasticity_test<_DataTypes>
+struct VariationalSymplecticExplicitSolverDynamic_test : public BaseSimulationTest
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
@@ -72,9 +76,9 @@ struct VariationalSymplecticExplicitSolverDynamic_test : public Elasticity_test<
     /// Tested simulation
     simulation::Simulation* simulation;  
     /// Position and velocity array
-    helper::vector<Real> positionsArray;
-    helper::vector<Real> velocitiesArray;
-    helper::vector<Real> energiesArray;
+    type::vector<Real> positionsArray;
+    type::vector<Real> velocitiesArray;
+    type::vector<Real> energiesArray;
     
     /// Create the context for the scene
     void createScene(double K, double m, double l0, double rm=0)
@@ -93,9 +97,9 @@ struct VariationalSymplecticExplicitSolverDynamic_test : public Elasticity_test<
         variationalSolver->f_rayleighMass.setValue(rm);
 
         CGLinearSolver::SPtr cgLinearSolver = addNew<CGLinearSolver> (root);
-        cgLinearSolver->f_maxIter=3000;
-        cgLinearSolver->f_tolerance =1e-9;
-        cgLinearSolver->f_smallDenominatorThreshold=1e-9;
+        cgLinearSolver->d_maxIter.setValue(3000);
+        cgLinearSolver->d_tolerance.setValue(1e-9);
+        cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-9);
 
         // Set initial positions and velocities of fixed point and mass
         MechanicalObject3::VecCoord xFixed(1);
@@ -108,7 +112,7 @@ struct VariationalSymplecticExplicitSolverDynamic_test : public Elasticity_test<
         MechanicalObject3::DataTypes::set( vFixed[0], 0.,0.,0.);
 
         // Mass spring system
-        root = this-> createMassSpringSystem(
+        root = sofa::createMassSpringSystem<DataTypes>(
                 root,   // add mass spring system to the node containing solver
                 K,      // stiffness
                 m,      // mass

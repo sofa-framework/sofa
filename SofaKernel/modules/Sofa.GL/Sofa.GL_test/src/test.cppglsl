@@ -1,9 +1,6 @@
 namespace sofa
 {
 
-namespace helper
-{
-
 namespace gl
 {
 
@@ -54,8 +51,6 @@ void main()
 
 } // shader
 
-} //gl
+} // gl
 
-} //helper
-
-} //sofa
+} // sofa

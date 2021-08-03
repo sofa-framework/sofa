@@ -138,7 +138,7 @@ void BulletCollisionDetection::draw(const core::visual::VisualParams* /*vparams*
 
 //        for (DetectionOutputMap::iterator it = outputsMap.begin(); it!=outputsMap.end(); it++)
 //        {
-//            sofa::helper::vector<sofa::core::collision::DetectionOutput>& outputs_ = *(dynamic_cast<sofa::helper::vector<sofa::core::collision::DetectionOutput>* >(it->second));
+//            sofa::type::vector<sofa::core::collision::DetectionOutput>& outputs_ = *(dynamic_cast<sofa::type::vector<sofa::core::collision::DetectionOutput>* >(it->second));
 //            for (int i = 0 ; i < outputs_.size() ; ++i)
 //            {
 //                outputs_[i].elem.first.draw(vparams);

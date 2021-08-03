@@ -78,7 +78,7 @@ void TextureInterpolation<DataTypes>::doUpdate()
     if (!_inputField.isSet())
         return;
 
-    const sofa::helper::vector <Coord>& realInputs = _inputField.getValue();
+    const sofa::type::vector<Coord>& realInputs = _inputField.getValue();
 
     VecCoord2D& outputs = *(_outputCoord.beginWriteOnly());
     outputs.resize (realInputs.size());
@@ -89,7 +89,7 @@ void TextureInterpolation<DataTypes>::doUpdate()
         return;
     }
 
-    sofa::helper::vector < Coord1D > inputs;
+    sofa::type::vector< Coord1D > inputs;
     inputs.resize(realInputs.size());
 
     if (!_scalarField.getValue() && (realInputs[0].size() > 1)) // > 1D template and use all dim.
@@ -149,15 +149,15 @@ void TextureInterpolation<DataTypes>::doUpdate()
 template <class DataTypes>
 void TextureInterpolation<DataTypes>::updateGraph()
 {
-    std::map < std::string, sofa::helper::vector<Real> >& graph = *f_graph.beginEdit();
-    const sofa::helper::vector <Coord>& realInputs = _inputField.getValue();
+    std::map < std::string, sofa::type::vector<Real> >& graph = *f_graph.beginEdit();
+    const sofa::type::vector<Coord>& realInputs = _inputField.getValue();
 
-    sofa::helper::vector<Real>& graph_val1 = graph["potential1"];
+    sofa::type::vector<Real>& graph_val1 = graph["potential1"];
     graph_val1.push_back( realInputs[ _vertexPloted.getValue()][0] +1); //+1 kick hack for scale resizing probleme with 0.000.. values.
 
     if (realInputs[0].size() > 1) // Hack for 2D models
     {
-        sofa::helper::vector<Real>& graph_val2 = graph["potential2"];
+        sofa::type::vector<Real>& graph_val2 = graph["potential2"];
         graph_val2.push_back( realInputs[ _vertexPloted.getValue() ][1] +1 );
     }
 
@@ -168,16 +168,16 @@ void TextureInterpolation<DataTypes>::updateGraph()
 template <class DataTypes>
 void TextureInterpolation<DataTypes>::resetGraph()
 {
-    std::map < std::string, sofa::helper::vector<Real> >& graph = *f_graph.beginEdit();
+    std::map < std::string, sofa::type::vector<Real> >& graph = *f_graph.beginEdit();
 
-    sofa::helper::vector<Real>& graph_val1 = graph["potential1"];
+    sofa::type::vector<Real>& graph_val1 = graph["potential1"];
     graph_val1.clear();
 
     Coord test;
 
     if (test.size() > 1) // Hack for 2D models
     {
-        sofa::helper::vector<Real>& graph_val2 = graph["potential2"];
+        sofa::type::vector<Real>& graph_val2 = graph["potential2"];
         graph_val2.clear();
     }
 
@@ -248,8 +248,8 @@ void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* vpa
 
     if (drawPotentiels.getValue())
     {
-        sofa::defaulttype::Mat<4,4, GLfloat> modelviewM;
-        sofa::defaulttype::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
+        sofa::type::Mat<4,4, GLfloat> modelviewM;
+        sofa::type::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
 
         const VecCoord& realPotentiels = _inputField.getValue();
         const VecCoord3D& coords = _inputCoords.getValue();
@@ -257,7 +257,7 @@ void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* vpa
         if (realPotentiels.size() == 0)
             return;
 
-        sofa::helper::vector< Coord1D > potentiels;
+        sofa::type::vector< Coord1D > potentiels;
         potentiels.resize(realPotentiels.size());
 
         if (!_scalarField.getValue() && (realPotentiels[0].size() > 1)) // > 1D template and use all dim.
@@ -296,7 +296,7 @@ void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* vpa
 
         // Recompute, in case Box has moved.
         float scale = (float)(sceneMaxBBox - sceneMinBBox).norm() * showIndicesScale.getValue();
-        sofa::helper::types::RGBAColor color4(1.0,1.0,1.0,1.0);
+        sofa::type::RGBAColor color4(1.0,1.0,1.0,1.0);
         for (unsigned int i = 0; i<nbr; i++)
         {
             std::ostringstream oss;

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaSimulationGraph/config.h>
-#include <sofa/simulation/init.h>
+#include <SofaSimulationCommon/init.h>
 #include <sofa/helper/init.h>
 
 namespace sofa::simulation::graph
@@ -33,7 +33,7 @@ SOFA_SOFASIMULATIONGRAPH_API void init()
 {
     if (!s_initialized)
     {
-        sofa::simulation::core::init();
+        sofa::simulation::common::init();
         s_initialized = true;
     }
 }
@@ -47,7 +47,7 @@ SOFA_SOFASIMULATIONGRAPH_API void cleanup()
 {
     if (!s_cleanedUp)
     {
-        sofa::simulation::core::cleanup();
+        sofa::simulation::common::cleanup();
         s_cleanedUp = true;
     }
 }

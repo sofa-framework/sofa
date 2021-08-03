@@ -26,10 +26,10 @@
 
 
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/helper/fixed_array.h>
-#include <sofa/helper/vector.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/fixed_array.h>
+#include <sofa/type/vector.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <SofaBaseTopology/TopologyData.h>
 
 
@@ -57,7 +57,7 @@ public:
 
     using Index = sofa::Index;
 
-    class Mat3 : public helper::fixed_array<Deriv,3>
+    class Mat3 : public type::fixed_array<Deriv,3>
     {
     public:
         Deriv operator*(const Deriv& v) const
@@ -153,15 +153,15 @@ public:
 
         void applyCreateFunction(Index edgeIndex, EdgeRestInformation& ei,
                 const core::topology::BaseMeshTopology::Edge &,
-                const sofa::helper::vector< Index > &,
-                const sofa::helper::vector< double > &);
+                const sofa::type::vector< Index > &,
+                const sofa::type::vector< double > &);
 
-        void applyTetrahedronCreation(const sofa::helper::vector<Index> &edgeAdded,
-                const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron> &,
-                const sofa::helper::vector<sofa::helper::vector<Index> > &,
-                const sofa::helper::vector<sofa::helper::vector<double> > &);
+        void applyTetrahedronCreation(const sofa::type::vector<Index> &edgeAdded,
+                const sofa::type::vector<core::topology::BaseMeshTopology::Tetrahedron> &,
+                const sofa::type::vector<sofa::type::vector<Index> > &,
+                const sofa::type::vector<sofa::type::vector<double> > &);
 
-        void applyTetrahedronDestruction(const sofa::helper::vector<Index> &edgeRemoved);
+        void applyTetrahedronDestruction(const sofa::type::vector<Index> &edgeRemoved);
 
         using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,edgeRestInfoVector >::ApplyTopologyChange;
         /// Callback to add tetrahedron elements.

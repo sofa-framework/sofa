@@ -22,12 +22,8 @@
 #pragma once
 #include <SofaUserInteraction/config.h>
 
-#include <sofa/core/collision/BroadPhaseDetection.h>
-#include <sofa/core/collision/NarrowPhaseDetection.h>
-#include <sofa/core/CollisionElement.h>
-#include <sofa/defaulttype/Vec.h>
-#include <set>
-
+#include <SofaBaseCollision/BruteForceBroadPhase.h>
+#include <SofaGeneralMeshCollision/RayTraceNarrowPhase.h>
 
 namespace sofa::component::collision
 {
@@ -39,40 +35,37 @@ namespace sofa::component::collision
  *   up to find a triangle in the other object. Both triangles are tested to evaluate if they are in
  *   colliding state. It must be used with a TriangleOctreeModel,as an octree is used to traverse the object.
  */
-class SOFA_SOFAUSERINTERACTION_API RayTraceDetection :public core::collision::BroadPhaseDetection,
-    public core::collision::NarrowPhaseDetection
+class SOFA_SOFAUSERINTERACTION_API RayTraceDetection final :
+    public sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS2(RayTraceDetection, core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
+    SOFA_CLASS(RayTraceDetection, sofa::core::objectmodel::BaseObject);
 
-private:
-    sofa::helper::vector < core::CollisionModel * >collisionModels;
-    Data < bool > bDraw;
+    void init() override;
 
-public:
-    typedef sofa::helper::vector<sofa::core::collision::DetectionOutput>    OutputVector;
+    /// Construction method called by ObjectFactory.
+    template<class T>
+    static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
+    {
+        BruteForceBroadPhase::SPtr broadPhase = sofa::core::objectmodel::New<BruteForceBroadPhase>();
+        broadPhase->setName("bruteForceBroadPhase");
+        if (context) context->addObject(broadPhase);
+
+        RayTraceNarrowPhase::SPtr narrowPhase = sofa::core::objectmodel::New<RayTraceNarrowPhase>();
+        narrowPhase->setName("rayTraceNarrowPhase");
+        if (context) context->addObject(narrowPhase);
+
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
+        if (context) context->addObject(obj);
+        if (arg) obj->parse(arg);
+
+        return obj;
+    }
+
 protected:
-    RayTraceDetection ();
-public:
-    void setDraw (bool val)
-    {
-        bDraw.setValue (val);
-    }
-    void selfCollision (TriangleOctreeModel * cm1);
-    void addCollisionModel (core::CollisionModel * cm) override;
-    void addCollisionPair (const std::pair < core::CollisionModel *,
-            core::CollisionModel * >&cmPair) override;
+    RayTraceDetection() = default;
+    ~RayTraceDetection() override = default;
 
-    void findPairsVolume (CubeCollisionModel * cm1,
-            CubeCollisionModel * cm2);
-
-    void beginBroadPhase() override
-    {
-        core::collision::BroadPhaseDetection::beginBroadPhase();
-        collisionModels.clear();
-    }
-
-    void draw (const core::visual::VisualParams* vparams) override;
 };
 
 } // namespace sofa::component::collision

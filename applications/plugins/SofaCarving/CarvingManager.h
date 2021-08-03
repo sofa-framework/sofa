@@ -58,7 +58,7 @@ public:
     typedef DataTypes::Coord Coord;
     typedef DataTypes::Real Real;
     
-    typedef helper::vector<core::collision::DetectionOutput> ContactVector;
+    typedef type::vector<core::collision::DetectionOutput> ContactVector;
     
     /// Sofa API init method of the component
     void init() override;

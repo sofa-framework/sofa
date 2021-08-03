@@ -49,9 +49,7 @@ public:
         : simulation::BaseMechanicalVisitor(_cparams)
         , res(_res)
         , cparams(_cparams)
-    {
-
-    }
+    {}
 
     void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override
     {
@@ -73,12 +71,6 @@ public:
     {
         return false; // !map->isMechanical();
     }
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-    }
-#endif
 
 protected:
     core::MultiMatrixDerivId res;
@@ -152,7 +144,7 @@ public:
 
 protected:
 
-    Data<helper::vector<std::string>> d_forceFieldList;
+    Data<type::vector<std::string>> d_forceFieldList;
     SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::simulation::Node , BaseLink::FLAG_STOREPATH > l_nodeToParse;
     Data <bool> d_stopAtNodeToParse;
     Data <bool> d_skipJ1tKJ1;

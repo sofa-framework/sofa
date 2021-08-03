@@ -25,7 +25,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa::component::forcefield
 {
@@ -38,9 +38,9 @@ using core::behavior::ForceField;
 using defaulttype::BaseMatrix;
 using core::VecCoordId;
 using core::MechanicalParams;
-using defaulttype::Vector3;
-using defaulttype::Vec4f;
-using helper::vector;
+using type::Vector3;
+using type::Vec4f;
+using type::vector;
 using core::visual::VisualParams;
 
 template<class DataTypes>
@@ -52,7 +52,7 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     , d_external_points(initData(&d_external_points, "external_points", "points from the external Mechancial State that define the rest shape springs"))
     , d_recompute_indices(initData(&d_recompute_indices, true, "recompute_indices", "Recompute indices (should be false for BBOX)"))
     , d_drawSpring(initData(&d_drawSpring,false,"drawSpring","draw Spring"))
-    , d_springColor(initData(&d_springColor, sofa::helper::types::RGBAColor::green(), "springColor","spring color. (default=[0.0,1.0,0.0,1.0])"))
+    , d_springColor(initData(&d_springColor, sofa::type::RGBAColor::green(), "springColor","spring color. (default=[0.0,1.0,0.0,1.0])"))
     , l_restMState(initLink("external_rest_shape", "rest_shape can be defined by the position of an external Mechanical State"))
 {
 }
@@ -422,53 +422,6 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
         for (sofa::Index index = 0; index < m_indices.size(); index++)
         {
             curIndex = m_indices[index];
-
-            for(sofa::Index i = 0; i < N; i++)
-            {
-                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[index]);
-            }
-        }
-    }
-}
-
-template<class DataTypes>
-void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix, const vector<unsigned> & addSubIndex )
-{
-    MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
-    BaseMatrix* mat = mref.matrix;
-    unsigned int offset = mref.offset;
-    Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-
-    const VecReal& k = d_stiffness.getValue();
-    const sofa::Size N = Coord::total_size;
-
-    sofa::Index curIndex = 0;
-
-    if (k.size() != m_indices.size())
-    {
-        const Real k0 = -k[0] * (Real)kFact;
-
-        for (sofa::Index index = 0; index < m_indices.size(); index++)
-        {
-            curIndex = m_indices[index];
-
-            if (std::find(addSubIndex.begin(), addSubIndex.end(), curIndex) == addSubIndex.end())
-                continue;
-
-            for(sofa::Index i = 0; i < N; i++)
-            {
-                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, k0);
-            }
-        }
-    }
-    else
-    {
-        for (unsigned int index = 0; index < m_indices.size(); index++)
-        {
-            curIndex = m_indices[index];
-
-            if (std::find(addSubIndex.begin(), addSubIndex.end(), curIndex) == addSubIndex.end())
-                continue;
 
             for(sofa::Index i = 0; i < N; i++)
             {

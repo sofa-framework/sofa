@@ -78,11 +78,11 @@ public:
     Data<SeqTriangles> f_triangles; ///< Output triangles
 
     Data<size_t> f_bezierTetrahedronDegree; ///< Degree of Bezier tetrahedra
-    Data<sofa::helper::vector<Real> > f_bezierTetrahedronWeight; ///<  Output weight for rational Bezier triangles
-    Data<sofa::helper::vector<bool> > f_isBezierTetrahedronRational; ///<  For each Bezier tetrahedron, indicates if it is rational
+    Data<sofa::type::vector<Real> > f_bezierTetrahedronWeight; ///<  Output weight for rational Bezier triangles
+    Data<sofa::type::vector<bool> > f_isBezierTetrahedronRational; ///<  For each Bezier tetrahedron, indicates if it is rational
     Data<size_t> f_bezierTriangleDegree; ///< Degree of Bezier triangles
-    Data<sofa::helper::vector<Real> > f_bezierTriangleWeight; ///< Output weight for rational Bezier triangles
-    Data<sofa::helper::vector<bool> > f_isBezierTriangleRational; ///< For each Bezier triangle indicates, if it is rational or integral
+    Data<sofa::type::vector<Real> > f_bezierTriangleWeight; ///< Output weight for rational Bezier triangles
+    Data<sofa::type::vector<bool> > f_isBezierTriangleRational; ///< For each Bezier triangle indicates, if it is rational or integral
 
     Data<Real > f_radius; ///< Radius of the sphere
     Data<Coord> f_origin; ///< Origin

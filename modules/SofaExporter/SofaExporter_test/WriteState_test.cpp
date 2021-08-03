@@ -24,8 +24,8 @@
 #include <iterator>
 #include <algorithm>
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 
@@ -108,7 +108,7 @@ namespace sofa {
             childNode->addObject(mass);
 
             sofa::component::misc::WriteState::SPtr writeState =New<sofa::component::misc::WriteState>();
-            helper::vector<double> time;
+            type::vector<double> time;
             time.resize(1);
             time[0] = 0.0;
             writeState->d_period.setValue(timeStep);

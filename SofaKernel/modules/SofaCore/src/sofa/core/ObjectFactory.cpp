@@ -26,9 +26,7 @@
 #include <sofa/helper/ComponentChange.h>
 #include <sofa/helper/StringUtils.h>
 
-namespace sofa
-{
-namespace core
+namespace sofa::core
 {
 
 ObjectFactory::~ObjectFactory()
@@ -274,12 +272,25 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     /// The object has been created, but not with the template given by the user
     if (!usertemplatename.empty() && object->getTemplateName() != userresolved)
     {
-        std::string w = "Template " + usertemplatename + std::string(" incorrect, used ") + object->getTemplateName();
+        std::vector<std::string> templateList;
+        if (entry)
+            for (const auto& cr : entry->creatorMap)
+                templateList.push_back(cr.first);
+        std::stringstream ss;
+        for(unsigned int i = 0; i < templateList.size(); ++i)
+        {
+            ss << templateList[i];
+            if (i != templateList.size() - 1)
+                ss << ", ";
+        }
+        const std::string w = "Template '" + usertemplatename + "' cannot be found in the list of available templates ["
+                              + ss.str() + "].\n\t"
+                              + "Falling back to default template '" + object->getTemplateName() + "'.";
         msg_warning(object.get()) << w;
     }
     else if (creators.size() > 1)
     {	// There was multiple possibilities, we used the first one (not necessarily the default, as it can be incompatible)
-        std::string w = "Template " + templatename + std::string(" incorrect, used ") + object->getTemplateName() + std::string(" in the list:");
+        std::string w = "Template '" + templatename + std::string("' incorrect, used ") + object->getTemplateName() + std::string(" in the list:");
         for(unsigned int i = 0; i < creators.size(); ++i)
             w += std::string("\n\t* ") + creators[i].first;
         msg_warning(object.get()) << w;
@@ -418,12 +429,12 @@ static std::string xmlencode(const std::string& str)
     {
         switch(str[i])
         {
-        case '<': res += "&lt;"; break;
-        case '>': res += "&gt;"; break;
-        case '&': res += "&amp;"; break;
-        case '"': res += "&quot;"; break;
-        case '\'': res += "&apos;"; break;
-        default:  res += str[i];
+            case '<': res += "&lt;"; break;
+            case '>': res += "&gt;"; break;
+            case '&': res += "&amp;"; break;
+            case '"': res += "&quot;"; break;
+            case '\'': res += "&apos;"; break;
+            default:  res += str[i];
         }
     }
     return res;
@@ -597,6 +608,4 @@ RegisterObject::operator int()
     }
 }
 
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core

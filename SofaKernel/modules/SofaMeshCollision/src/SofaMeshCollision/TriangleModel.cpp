@@ -28,14 +28,6 @@ namespace sofa::component::collision
 
 int TriangleCollisionModelClass = core::RegisterObject("collision model using a triangular mesh, as described in BaseMeshTopology")
         .add< TriangleCollisionModel<defaulttype::Vec3Types> >()
-
-        .addAlias("TTriangleModel")
-        .addAlias("TriangleModel")
-        .addAlias("TriangleMeshModel")
-        .addAlias("TriangleSetModel")
-        .addAlias("TriangleMesh")
-        .addAlias("TriangleSet")
-        .addAlias("Triangle")
         ;
 
 template class SOFA_SOFAMESHCOLLISION_API TTriangle<defaulttype::Vec3Types>;

@@ -4,7 +4,8 @@
     <!-- Basic Components to perform the collision detection -->
     <VisualStyle displayFlags="showForceFields showCollisionModels" />
     <DefaultPipeline />
-    <BruteForceDetection />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager />
     <MinProximityIntersection alarmDistance="0.5" contactDistance="0.2" />
     <Node name="SolverNode">

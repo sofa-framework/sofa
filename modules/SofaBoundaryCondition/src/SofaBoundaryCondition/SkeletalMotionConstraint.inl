@@ -26,7 +26,6 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <iostream>
 
@@ -144,7 +143,7 @@ void SkeletalMotionConstraint<DataTypes>::projectVelocity(const core::Mechanical
     if( !active.getValue() ) return;
 
     helper::WriteAccessor<DataVecDeriv> dx = vData;
-    helper::ReadAccessor<DataVecCoord> x =((MechanicalObject*)this->getContext()->getMechanicalState())->readPositions();
+    helper::ReadAccessor<DataVecCoord> x = ((MechanicalState*)this->getContext()->getMechanicalState())->readPositions();
     Real cT = (Real) this->getContext()->getTime() * animationSpeed.getValue();
     Real dt = (Real) this->getContext()->getDt();
 
@@ -200,7 +199,7 @@ void SkeletalMotionConstraint<DataTypes>::interpolatePosition(Real cT, typename 
             {
                 Real dt = (Real)((cT - skeletonJoint.mPreviousMotionTime) / (skeletonJoint.mNextMotionTime - skeletonJoint.mPreviousMotionTime));
 
-                const helper::vector<defaulttype::RigidCoord<3, Real> >& channels = skeletonJoint.mChannels;
+                const type::vector<defaulttype::RigidCoord<3, Real> >& channels = skeletonJoint.mChannels;
 
                 if(channels.empty())
                     continue;
@@ -212,7 +211,7 @@ void SkeletalMotionConstraint<DataTypes>::interpolatePosition(Real cT, typename 
             }
             else
             {
-                const helper::vector<defaulttype::RigidCoord<3, Real> >& channels = skeletonJoint.mChannels;
+                const type::vector<defaulttype::RigidCoord<3, Real> >& channels = skeletonJoint.mChannels;
 
                 if(channels.empty())
                     continue;
@@ -229,7 +228,7 @@ void SkeletalMotionConstraint<DataTypes>::interpolatePosition(Real cT, typename 
         {
             SkeletonJoint<DataTypes>& skeletonJoint = (*skeletonJoints.beginEdit())[i];
 
-            const helper::vector<defaulttype::RigidCoord<3, Real> >& channels = skeletonJoint.mChannels;
+            const type::vector<defaulttype::RigidCoord<3, Real> >& channels = skeletonJoint.mChannels;
 
             if(channels.empty())
                 continue;
@@ -289,7 +288,7 @@ void SkeletalMotionConstraint<DataTypes>::localToGlobal(typename std::enable_if<
 }
 
 template <class DataTypes>
-void SkeletalMotionConstraint<DataTypes>::setSkeletalMotion(const helper::vector<SkeletonJoint<DataTypes> >& skeletonJoints, const helper::vector<SkeletonBone>& skeletonBones)
+void SkeletalMotionConstraint<DataTypes>::setSkeletalMotion(const type::vector<SkeletonJoint<DataTypes> >& skeletonJoints, const type::vector<SkeletonBone>& skeletonBones)
 {
     this->skeletonJoints.setValue(skeletonJoints);
     this->skeletonBones.setValue(skeletonBones);
@@ -358,14 +357,14 @@ void SkeletalMotionConstraint<DataTypes>::draw(const core::visual::VisualParams*
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    sofa::helper::vector<defaulttype::Vector3> points;
-    sofa::helper::vector<defaulttype::Vector3> linesX;
-    sofa::helper::vector<defaulttype::Vector3> linesY;
-    sofa::helper::vector<defaulttype::Vector3> linesZ;
-    sofa::helper::vector<defaulttype::Vector3> colorFalloff;
+    sofa::type::vector<type::Vector3> points;
+    sofa::type::vector<type::Vector3> linesX;
+    sofa::type::vector<type::Vector3> linesY;
+    sofa::type::vector<type::Vector3> linesZ;
+    sofa::type::vector<type::Vector3> colorFalloff;
 
-    defaulttype::Vector3 point;
-    defaulttype::Vector3 line;
+    type::Vector3 point;
+    type::Vector3 line;
 
     // draw joints (not bones we draw them differently later)
     {
@@ -385,21 +384,21 @@ void SkeletalMotionConstraint<DataTypes>::draw(const core::visual::VisualParams*
             points.push_back(point);
 
             linesX.push_back(point);
-            line = point + DataTypes::getCRot(jointWorldRigid).rotate(defaulttype::Vec3f(0.1f, 0.0f, 0.0f));
+            line = point + DataTypes::getCRot(jointWorldRigid).rotate(type::Vec3f(0.1f, 0.0f, 0.0f));
             linesX.push_back(line);
 
             linesY.push_back(point);
-            line = point + DataTypes::getCRot(jointWorldRigid).rotate(defaulttype::Vec3f(0.0f, 0.1f, 0.0f));
+            line = point + DataTypes::getCRot(jointWorldRigid).rotate(type::Vec3f(0.0f, 0.1f, 0.0f));
             linesY.push_back(line);
 
             linesZ.push_back(point);
-            line = point + DataTypes::getCRot(jointWorldRigid).rotate(defaulttype::Vec3f(0.0f, 0.0f, 0.1f));
+            line = point + DataTypes::getCRot(jointWorldRigid).rotate(type::Vec3f(0.0f, 0.0f, 0.1f));
             linesZ.push_back(line);
         }
-        vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor (1.0f , 0.5f , 0.5f , 1.0f));
-        vparams->drawTool()->drawLines (linesX,  2, sofa::helper::types::RGBAColor (0.75f, 0.0f , 0.0f , 1.0f));
-        vparams->drawTool()->drawLines (linesY,  2, sofa::helper::types::RGBAColor (0.0f , 0.75f, 0.0f , 1.0f));
-        vparams->drawTool()->drawLines (linesZ,  2, sofa::helper::types::RGBAColor (0.0f , 0.0f , 0.75f, 1.0f));
+        vparams->drawTool()->drawPoints(points, 10, sofa::type::RGBAColor (1.0f , 0.5f , 0.5f , 1.0f));
+        vparams->drawTool()->drawLines (linesX,  2, sofa::type::RGBAColor (0.75f, 0.0f , 0.0f , 1.0f));
+        vparams->drawTool()->drawLines (linesY,  2, sofa::type::RGBAColor (0.0f , 0.75f, 0.0f , 1.0f));
+        vparams->drawTool()->drawLines (linesZ,  2, sofa::type::RGBAColor (0.0f , 0.0f , 0.75f, 1.0f));
     }
 
     points.clear();
@@ -417,21 +416,21 @@ void SkeletalMotionConstraint<DataTypes>::draw(const core::visual::VisualParams*
             points.push_back(point);
 
             linesX.push_back(point);
-            line = point + DataTypes::getCRot(boneWorldRigid).rotate(defaulttype::Vec3f(0.1f, 0.0f, 0.0f));
+            line = point + DataTypes::getCRot(boneWorldRigid).rotate(type::Vec3f(0.1f, 0.0f, 0.0f));
             linesX.push_back(line);
 
             linesY.push_back(point);
-            line = point + DataTypes::getCRot(boneWorldRigid).rotate(defaulttype::Vec3f(0.0f, 0.1f, 0.0f));
+            line = point + DataTypes::getCRot(boneWorldRigid).rotate(type::Vec3f(0.0f, 0.1f, 0.0f));
             linesY.push_back(line);
 
             linesZ.push_back(point);
-            line = point + DataTypes::getCRot(boneWorldRigid).rotate(defaulttype::Vec3f(0.0f, 0.0f, 0.1f));
+            line = point + DataTypes::getCRot(boneWorldRigid).rotate(type::Vec3f(0.0f, 0.0f, 0.1f));
             linesZ.push_back(line);
         }
-        vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor (1.0f, 0.5f, 0.5f, 1.0f));
-        vparams->drawTool()->drawLines (linesX, 2 , sofa::helper::types::RGBAColor (1.0f, 0.0f, 0.0f, 1.0f));
-        vparams->drawTool()->drawLines (linesY, 2 , sofa::helper::types::RGBAColor (0.0f, 1.0f, 0.0f, 1.0f));
-        vparams->drawTool()->drawLines (linesZ, 2 , sofa::helper::types::RGBAColor (0.0f, 0.0f, 1.0f, 1.0f));
+        vparams->drawTool()->drawPoints(points, 10, sofa::type::RGBAColor (1.0f, 0.5f, 0.5f, 1.0f));
+        vparams->drawTool()->drawLines (linesX, 2 , sofa::type::RGBAColor (1.0f, 0.0f, 0.0f, 1.0f));
+        vparams->drawTool()->drawLines (linesY, 2 , sofa::type::RGBAColor (0.0f, 1.0f, 0.0f, 1.0f));
+        vparams->drawTool()->drawLines (linesZ, 2 , sofa::type::RGBAColor (0.0f, 0.0f, 1.0f, 1.0f));
     }
 }
 

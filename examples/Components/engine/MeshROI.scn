@@ -7,7 +7,8 @@
     <RequiredPlugin pluginName='SofaMiscCollision'/>
     <VisualStyle displayFlags="showBehaviorModels showWireframe" />
     <DefaultPipeline />
-    <BruteForceDetection  />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager response="default" />
     <MinProximityIntersection  alarmDistance="0.8" contactDistance="0.5" />
     <DefaultCollisionGroupManager  />

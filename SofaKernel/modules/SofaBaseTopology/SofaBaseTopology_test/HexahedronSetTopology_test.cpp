@@ -21,12 +21,12 @@
 ******************************************************************************/
 
 #include "fake_TopologyScene.h"
-#include <sofa/helper/testing/BaseTest.h>
+#include <sofa/testing/BaseTest.h>
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 #include <sofa/helper/system/FileRepository.h>
 
 using namespace sofa::component::topology;
-using namespace sofa::helper::testing;
+using namespace sofa::testing;
 
 
 class HexahedronSetTopology_test : public BaseTest
@@ -104,12 +104,12 @@ bool HexahedronSetTopology_test::testHexahedronBuffers()
     EXPECT_EQ(topoCon->getEdges().size(), nbrEdge);
 
     // The first 2 elements in this file should be :
-    sofa::helper::fixed_array<HexahedronSetTopologyContainer::PointID, 8> elemTruth0(0, 1, 5, 4, 16, 17, 21, 20);
-    sofa::helper::fixed_array<HexahedronSetTopologyContainer::PointID, 8> elemTruth1(1, 2, 6, 5, 17, 18, 22, 21);
+    sofa::type::fixed_array<HexahedronSetTopologyContainer::PointID, 8> elemTruth0(0, 1, 5, 4, 16, 17, 21, 20);
+    sofa::type::fixed_array<HexahedronSetTopologyContainer::PointID, 8> elemTruth1(1, 2, 6, 5, 17, 18, 22, 21);
 
 
     // check topology element buffer
-    const sofa::helper::vector<HexahedronSetTopologyContainer::Hexahedron>& elements = topoCon->getHexahedronArray();
+    const sofa::type::vector<HexahedronSetTopologyContainer::Hexahedron>& elements = topoCon->getHexahedronArray();
     if (elements.empty())
         return false;
     
@@ -159,7 +159,7 @@ bool HexahedronSetTopology_test::testQuadBuffers()
     }
 
     // create and check quads
-    const sofa::helper::vector< HexahedronSetTopologyContainer::HexahedraAroundQuad >& elemAroundQuads = topoCon->getHexahedraAroundQuadArray();
+    const sofa::type::vector< HexahedronSetTopologyContainer::HexahedraAroundQuad >& elemAroundQuads = topoCon->getHexahedraAroundQuadArray();
 
     // check only the quad buffer size: Full test on quads are done in QuadSetTopology_test
     EXPECT_EQ(topoCon->getNumberOfQuads(), nbrQuad);
@@ -190,7 +190,7 @@ bool HexahedronSetTopology_test::testQuadBuffers()
 
 
     // check QuadsInHexahedron buffer acces
-    const sofa::helper::vector< HexahedronSetTopologyContainer::QuadsInHexahedron > & quadInHexahedra = topoCon->getQuadsInHexahedronArray();
+    const sofa::type::vector< HexahedronSetTopologyContainer::QuadsInHexahedron > & quadInHexahedra = topoCon->getQuadsInHexahedronArray();
     EXPECT_EQ(quadInHexahedra.size(), nbrHexahedron);
 
     const HexahedronSetTopologyContainer::QuadsInHexahedron& quadInElem = quadInHexahedra[1];
@@ -200,7 +200,7 @@ bool HexahedronSetTopology_test::testQuadBuffers()
     for (size_t i = 0; i < quadInElem.size(); i++)
         EXPECT_EQ(quadInElem[i], quadInElemM[i]);
 
-    sofa::helper::fixed_array<int, 6> quadInElemTruth(6, 7, 8, 9, 10, 3);
+    sofa::type::fixed_array<int, 6> quadInElemTruth(6, 7, 8, 9, 10, 3);
     for (size_t i = 0; i<quadInElemTruth.size(); ++i)
         EXPECT_EQ(quadInElem[i], quadInElemTruth[i]);
 
@@ -257,7 +257,7 @@ bool HexahedronSetTopology_test::testEdgeBuffers()
     }
 
     // create and check edges
-    const sofa::helper::vector< HexahedronSetTopologyContainer::HexahedraAroundEdge >& elemAroundEdges = topoCon->getHexahedraAroundEdgeArray();
+    const sofa::type::vector< HexahedronSetTopologyContainer::HexahedraAroundEdge >& elemAroundEdges = topoCon->getHexahedraAroundEdgeArray();
         
     // check only the edge buffer size: Full test on edges are done in EdgeSetTopology_test
     EXPECT_EQ(topoCon->getNumberOfEdges(), nbrEdge);
@@ -285,7 +285,7 @@ bool HexahedronSetTopology_test::testEdgeBuffers()
 
 
     // check EdgesInHexahedron buffer acces
-    const sofa::helper::vector< HexahedronSetTopologyContainer::EdgesInHexahedron > & edgeInHexahedra = topoCon->getEdgesInHexahedronArray();
+    const sofa::type::vector< HexahedronSetTopologyContainer::EdgesInHexahedron > & edgeInHexahedra = topoCon->getEdgesInHexahedronArray();
     EXPECT_EQ(edgeInHexahedra.size(), nbrHexahedron);
 
     const HexahedronSetTopologyContainer::EdgesInHexahedron& edgeInElem = edgeInHexahedra[2];
@@ -295,7 +295,7 @@ bool HexahedronSetTopology_test::testEdgeBuffers()
     for (size_t i = 0; i < edgeInElem.size(); i++)
         EXPECT_EQ(edgeInElem[i], edgeInElemM[i]);
     
-    sofa::helper::fixed_array<int, 10> edgeInElemTruth(22, 13, 18, 21, 26, 20, 27, 19, 25, 15); // Test only 10 out of 12 edges as no fixed_array<12>
+    sofa::type::fixed_array<int, 10> edgeInElemTruth(22, 13, 18, 21, 26, 20, 27, 19, 25, 15); // Test only 10 out of 12 edges as no fixed_array<12>
     for (size_t i = 0; i<edgeInElemTruth.size(); ++i)
         EXPECT_EQ(edgeInElem[i], edgeInElemTruth[i]);
     
@@ -352,7 +352,7 @@ bool HexahedronSetTopology_test::testVertexBuffers()
     }
 
     // create and check vertex buffer
-    const sofa::helper::vector< HexahedronSetTopologyContainer::HexahedraAroundVertex >& elemAroundVertices = topoCon->getHexahedraAroundVertexArray();
+    const sofa::type::vector< HexahedronSetTopologyContainer::HexahedraAroundVertex >& elemAroundVertices = topoCon->getHexahedraAroundVertexArray();
 
     //// check only the vertex buffer size: Full test on vertics are done in PointSetTopology_test
     EXPECT_EQ(topoCon->d_initPoints.getValue().size(), nbrVertex);

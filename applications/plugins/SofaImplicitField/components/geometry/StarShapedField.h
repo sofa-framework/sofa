@@ -22,7 +22,7 @@
 #pragma once
 
 #include "ScalarField.h"
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 
 namespace sofa::component::geometry
 {
@@ -30,8 +30,8 @@ namespace sofa::component::geometry
 namespace _StarShapedField_
 {
 
-using sofa::defaulttype::Vec3d;
-using sofa::defaulttype::Mat3x3;
+using sofa::type::Vec3d;
+using sofa::type::Mat3x3;
 
 /**
  * This component emulates an implicit field that looks like some kind of star.

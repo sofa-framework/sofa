@@ -238,11 +238,11 @@ void MeshGenerationFromPolyhedron<DataTypes>::doUpdate()
     //    Mesh generation random or deterministic
     if (constantMeshProcess.getValue())
     {
-        CGAL::default_random = CGAL::Random(meshingSeed.getValue());
+        CGAL::get_default_random() = CGAL::Random(meshingSeed.getValue());
     }
     else
     {
-        CGAL::default_random = CGAL::Random();
+        CGAL::get_default_random() = CGAL::Random();
     }
 
 #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,6,0)
@@ -364,11 +364,11 @@ void MeshGenerationFromPolyhedron<DataTypes>::doUpdate()
         for (int c=1; c<3; c++)
             if (bbmax[c]-bbmin[c] > bbmax[axis]-bbmin[axis]) axis=c;
         msg_info() << "Ordering along the " << (char)('X'+axis) << " axis.";
-        helper::vector< std::pair<float,int> > sortArray;
+        type::vector< std::pair<float,int> > sortArray;
         for (size_t i=0; i<nbp; ++i)
             sortArray.push_back(std::make_pair((float)newPoints[i][axis], i));
         std::sort(sortArray.begin(), sortArray.end(), compare_pair_first<float,int>);
-        helper::vector<int> old2newP;
+        type::vector<int> old2newP;
         old2newP.resize(nbp);
         VecCoord oldPoints = newPoints.ref();
         for (size_t i=0; i<nbp; ++i)
@@ -381,7 +381,7 @@ void MeshGenerationFromPolyhedron<DataTypes>::doUpdate()
             for (int i=0; i<4; i++)
                 tetrahedra[e][i] = old2newP[tetrahedra[e][i]];
         }
-        helper::vector< std::pair<int,int> > sortArray2;
+        type::vector< std::pair<int,int> > sortArray2;
         for (size_t e=0; e<nbe; ++e)
         {
             unsigned p = tetrahedra[e][0];
@@ -403,7 +403,7 @@ void MeshGenerationFromPolyhedron<DataTypes>::doUpdate()
     msg_info() << "Generated mesh: " << nbp << " points, " << nbe << " tetrahedra.";
 
     frozen.setValue(true);
-    meshingSeed.setValue(CGAL::default_random.get_seed());
+    meshingSeed.setValue(CGAL::get_default_random().get_seed());
 }
 
 template <class DataTypes>
@@ -415,7 +415,7 @@ void MeshGenerationFromPolyhedron<DataTypes>::draw(const sofa::core::visual::Vis
         helper::ReadAccessor< Data<SeqTetrahedra> > tetrahedra = f_tetrahedra;
 
         vparams->drawTool()->setLightingEnabled(false);
-        std::vector< defaulttype::Vector3 > points[4];
+        std::vector< type::Vector3 > points[4];
         for(size_t i=0; i<tetrahedra.size(); ++i)
         {
             int a = tetrahedra[i][0];
@@ -445,10 +445,10 @@ void MeshGenerationFromPolyhedron<DataTypes>::draw(const sofa::core::visual::Vis
             points[3].push_back(pb);
         }
 
-        vparams->drawTool()->drawTriangles(points[0], defaulttype::Vec<4,float>(0.0,0.0,1.0,1.0));
-        vparams->drawTool()->drawTriangles(points[1], defaulttype::Vec<4,float>(0.0,0.5,1.0,1.0));
-        vparams->drawTool()->drawTriangles(points[2], defaulttype::Vec<4,float>(0.0,1.0,1.0,1.0));
-        vparams->drawTool()->drawTriangles(points[3], defaulttype::Vec<4,float>(0.5,1.0,1.0,1.0));
+        vparams->drawTool()->drawTriangles(points[0], sofa::type::RGBAColor(0.0,0.0,1.0,1.0));
+        vparams->drawTool()->drawTriangles(points[1], sofa::type::RGBAColor(0.0,0.5,1.0,1.0));
+        vparams->drawTool()->drawTriangles(points[2], sofa::type::RGBAColor(0.0,1.0,1.0,1.0));
+        vparams->drawTool()->drawTriangles(points[3], sofa::type::RGBAColor(0.5,1.0,1.0,1.0));
 
     }
     if (drawSurface.getValue())
@@ -461,7 +461,7 @@ void MeshGenerationFromPolyhedron<DataTypes>::draw(const sofa::core::visual::Vis
             vparams->drawTool()->setPolygonMode(0,true);
 
         vparams->drawTool()->setLightingEnabled(false);
-        std::vector< defaulttype::Vector3 > points;
+        std::vector< type::Vector3 > points;
         for(size_t i=0; i<triangles.size(); ++i)
         {
             int a = triangles[i][0];
@@ -492,7 +492,7 @@ void MeshGenerationFromPolyhedron<DataTypes>::draw(const sofa::core::visual::Vis
             points.push_back(pd);
         }
 
-        vparams->drawTool()->drawTriangles(points, defaulttype::Vec<4,float>(1.0,0.5,0.0,1.0));
+        vparams->drawTool()->drawTriangles(points, sofa::type::RGBAColor(1.0,0.5,0.0,1.0));
 
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0,false);

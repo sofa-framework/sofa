@@ -59,6 +59,7 @@ int FFDDistanceGridCollisionModelClass = core::RegisterObject("Grid-based deform
         .addAlias("FFDDistanceGrid")
         ;
 
+using namespace sofa::type;
 using namespace defaulttype;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -545,7 +546,7 @@ void FFDDistanceGridCollisionModel::init()
     resize(c);
 
     /// compute neighbors
-    helper::vector<std::set<int> > shells;
+    type::vector<std::set<int> > shells;
     shells.resize(ffdMesh->getNbPoints());
     for (unsigned i = 0; i < elems.size(); ++i)
     {
@@ -629,7 +630,7 @@ void FFDDistanceGridCollisionModel::updateGrid()
     for (Size index=0; index<size; index++)
     {
         DeformedCube& cube = getDeformCube( index );
-        const sofa::helper::vector<core::topology::BaseMeshTopology::Hexa>& cubeCorners = ffdMesh->getHexahedra();
+        const sofa::type::vector<core::topology::BaseMeshTopology::Hexa>& cubeCorners = ffdMesh->getHexahedra();
 
         const Vec3Types::VecCoord& x = ffd->read(core::ConstVecCoordId::position())->getValue();
         {
@@ -777,7 +778,7 @@ void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpara
                 {
                     SReal c = cube.radius*(SReal)cos(r*M_PI/8);
                     SReal s = cube.radius*(SReal)sin(r*M_PI/8);
-                    sofa::defaulttype::Vec<3, SReal> p = cube.center;
+                    sofa::type::Vec<3, SReal> p = cube.center;
                     p[j] += c;
                     p[(j+1)%3] += s;
                     sofa::gl::glVertexT(p);

@@ -25,9 +25,9 @@
 #include "OglTetrahedralModel.h"
 
 #include <sstream>
-#include <sofa/helper/gl/GLSLShader.h>
+#include <sofa/gl/GLSLShader.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <limits>
 
@@ -63,8 +63,8 @@ void OglTetrahedralModel<DataTypes>::init()
 
     //instanciate the mapping tables
     //Useful for the PT algorithm only
-    sofa::helper::vector<sofa::component::visualmodel::OglFloatVector4Variable::SPtr > listVec4Variables;
-    this->getContext()->core::objectmodel::BaseContext::template get<sofa::component::visualmodel::OglFloatVector4Variable, sofa::helper::vector<sofa::component::visualmodel::OglFloatVector4Variable::SPtr> >
+    sofa::type::vector<sofa::component::visualmodel::OglFloatVector4Variable::SPtr > listVec4Variables;
+    this->getContext()->core::objectmodel::BaseContext::template get<sofa::component::visualmodel::OglFloatVector4Variable, sofa::type::vector<sofa::component::visualmodel::OglFloatVector4Variable::SPtr> >
         (&listVec4Variables, core::objectmodel::BaseContext::Local);
     for (unsigned int i = 0; i<listVec4Variables.size(); i++)
     {
@@ -147,12 +147,12 @@ void OglTetrahedralModel<DataTypes>::init()
 template<class DataTypes>
 void OglTetrahedralModel<DataTypes>::initVisual()
 {
-    const helper::vector<Coord> tmpvertices = m_positions.getValue();
-    helper::vector<defaulttype::Vec3f> vertices;
+    const type::vector<Coord> tmpvertices = m_positions.getValue();
+    type::vector<type::Vec3f> vertices;
 
     for (unsigned int i = 0; i<tmpvertices.size(); i++)
     {
-        vertices.push_back(defaulttype::Vec3f(tmpvertices[i][0], tmpvertices[i][1], tmpvertices[i][2]));
+        vertices.push_back(type::Vec3f(tmpvertices[i][0], tmpvertices[i][1], tmpvertices[i][2]));
     }
 
     m_mappingTableValues->initVisual();
@@ -215,7 +215,7 @@ void OglTetrahedralModel<DataTypes>::computeMesh()
     if (m_topology->hasPos())
     {
         msg_info() << "Copying " << m_topology->getNbPoints() << "points from topology.";
-        helper::WriteAccessor<  Data<helper::vector<Coord> > > position = m_positions;
+        helper::WriteAccessor<  Data<type::vector<Coord> > > position = m_positions;
         position.resize(m_topology->getNbPoints());
         for (unsigned int i = 0; i<position.size(); i++) 
         {
@@ -227,7 +227,7 @@ void OglTetrahedralModel<DataTypes>::computeMesh()
     else if (BaseMechanicalState* mstate = dynamic_cast< BaseMechanicalState* >(m_topology->getContext()->getMechanicalState()))
     {
         msg_info() << "Copying " << mstate->getSize() << " points from mechanical state.";
-        helper::WriteAccessor< Data<helper::vector<Coord> > > position = m_positions;
+        helper::WriteAccessor< Data<type::vector<Coord> > > position = m_positions;
         position.resize(mstate->getSize());
         for (unsigned int i = 0; i<position.size(); i++)
         {
@@ -245,7 +245,7 @@ void OglTetrahedralModel<DataTypes>::computeMesh()
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& inputTetrahedrons = m_topology->getTetrahedra();
     if (this->f_printLog.getValue())
         msg_info() << "Copying " << inputTetrahedrons.size() << " tetrahedrons from topology.";
-    helper::WriteAccessor< Data< helper::vector<Tetrahedron> > > tetrahedrons = m_tetrahedrons;
+    helper::WriteAccessor< Data< type::vector<Tetrahedron> > > tetrahedrons = m_tetrahedrons;
     tetrahedrons.resize(inputTetrahedrons.size());
     for (unsigned int i = 0; i<inputTetrahedrons.size(); i++) {
         tetrahedrons[i] = inputTetrahedrons[i];
@@ -319,7 +319,7 @@ void OglTetrahedralModel<DataTypes>::computeBBox(const core::ExecParams * params
         const core::topology::BaseMeshTopology::SeqTetrahedra& vec = m_topology->getTetrahedra();
         core::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
         Coord v;
-        const helper::vector<Coord>& position = m_positions.getValue();
+        const type::vector<Coord>& position = m_positions.getValue();
         const SReal max_real = std::numeric_limits<SReal>::max();
         const SReal min_real = std::numeric_limits<SReal>::min();
 
@@ -342,18 +342,18 @@ void OglTetrahedralModel<DataTypes>::computeBBox(const core::ExecParams * params
             }
         }
 
-        this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<SReal>(minBBox, maxBBox));
+        this->f_bbox.setValue(sofa::type::TBoundingBox<SReal>(minBBox, maxBBox));
     }
 }
 
 template<class DataTypes>
 void OglTetrahedralModel<DataTypes>::updateVertexBuffer()
 {
-    const helper::vector<Coord> tmpvertices = m_positions.getValue();
-    helper::vector<defaulttype::Vec3f> vertices;
+    const type::vector<Coord> tmpvertices = m_positions.getValue();
+    type::vector<type::Vec3f> vertices;
     for (unsigned int i = 0; i<tmpvertices.size(); i++)
     {
-        vertices.push_back(defaulttype::Vec3f(tmpvertices[i][0], tmpvertices[i][1], tmpvertices[i][2]));
+        vertices.push_back(type::Vec3f(tmpvertices[i][0], tmpvertices[i][1], tmpvertices[i][2]));
     }
 
     unsigned positionsBufferSize;

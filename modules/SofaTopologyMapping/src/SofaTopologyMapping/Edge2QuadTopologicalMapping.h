@@ -24,15 +24,12 @@
 
 #include <sofa/core/topology/TopologicalMapping.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <map>
 
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
-
-#include <SofaGeneralSimpleFem/RadiusContainer.h>
-
 
 namespace sofa::component::topology
 {
@@ -55,9 +52,9 @@ public:
     typedef sofa::core::State<defaulttype::Rigid3Types>::Coord Coord;
     typedef Coord::value_type Real;
     enum { M=Coord::spatial_dimensions };
-    typedef defaulttype::Mat<M,M,Real> Mat;
-    typedef defaulttype::Vec<M,Real> Vec;
-    typedef helper::vector<unsigned int> VecIndex;
+    typedef type::Mat<M,M,Real> Mat;
+    typedef type::Vec<M,Real> Vec;
+    typedef type::vector<unsigned int> VecIndex;
 
     typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
     typedef sofa::core::topology::BaseMeshTopology::Quad Quad;
@@ -105,8 +102,6 @@ protected:
     Data<VecIndex> d_edgeList; ///< list of input edges for the topological mapping: by default, all considered
     Data<bool> d_flipNormals; ///< Flip Normal ? (Inverse point order when creating quad)
 
-    
-    container::RadiusContainer* m_radiusContainer;
 };
 
 } //namespace sofa::component::topology

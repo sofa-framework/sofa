@@ -38,12 +38,12 @@ public:
     typedef TMatrix Matrix;
     typedef TVector Vector;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
-    Data<unsigned> f_maxIter; ///< maximum number of iterations of the Conjugate Gradient solution
-    Data<SReal> f_tolerance; ///< desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)
-    Data<SReal> f_smallDenominatorThreshold; ///< minimum value of the denominator in the conjugate Gradient solution
-    Data<bool> f_warmStart; ///< Use previous solution as initial solution
-    Data<bool> f_verbose; ///< Dump system state at each iteration
-    Data<std::map < std::string, sofa::helper::vector<SReal> > > f_graph; ///< Graph of residuals at each iteration
+
+    Data<unsigned> d_maxIter; ///< maximum number of iterations of the Conjugate Gradient solution
+    Data<SReal> d_tolerance; ///< desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)
+    Data<SReal> d_smallDenominatorThreshold; ///< minimum value of the denominator in the conjugate Gradient solution
+    Data<bool> d_warmStart; ///< Use previous solution as initial solution
+    Data<std::map < std::string, sofa::type::vector<SReal> > > d_graph; ///< Graph of residuals at each iteration
 
 protected:
 
@@ -56,20 +56,42 @@ protected:
     /// It computes: x += p*alpha, r -= q*alpha
     inline void cgstep_alpha(const core::ExecParams* params, Vector& x, Vector& r, Vector& p, Vector& q, SReal alpha);
 
-    int timeStepCount;
-    bool equilibriumReached;
+    int timeStepCount{0};
+    bool equilibriumReached{false};
 
 public:
     void init() override;
-    void reinit() override;
+    void reinit() override {};
 
     void resetSystem() override;
 
     void setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams) override;
 
-    /// Solve Mx=b
-    void solve (Matrix& M, Vector& x, Vector& b) override;
+    /// Solve iteratively the linear system Ax=b following a conjugate gradient descent
+    void solve (Matrix& A, Vector& x, Vector& b) override;
 
+    //Temporary function to warn the user when old attribute names are used until v21.12
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
+    {
+        Inherit::parse(arg);
+
+        if (arg->getAttribute("verbose"))
+        {
+            msg_warning() << "input data 'verbose' changed for 'printLog', please update your scene (see PR#2098)";
+        }
+    }
+
+
+    SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_maxIter")
+    DeprecatedAndRemoved f_maxIter;
+    SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_tolerance")
+    DeprecatedAndRemoved f_tolerance;
+    SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_smallDenominatorThreshold")
+    DeprecatedAndRemoved f_smallDenominatorThreshold;
+    SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_warmStart")
+    DeprecatedAndRemoved f_warmStart;
+    SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_graph")
+    DeprecatedAndRemoved f_graph;
 };
 
 template<>
@@ -83,11 +105,11 @@ extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< GraphScatter
 extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< FullMatrix<double>, FullVector<double> >;
 extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< SparseMatrix<double>, FullVector<double> >;
 extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< CompressedRowSparseMatrix<double>, FullVector<double> >;
-extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<2,2,double> >, FullVector<double> >;
-extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> >, FullVector<double> >;
-extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<4,4,double> >, FullVector<double> >;
-extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<6,6,double> >, FullVector<double> >;
-extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< CompressedRowSparseMatrix<defaulttype::Mat<8,8,double> >, FullVector<double> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<2,2,double> >, FullVector<double> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<3,3,double> >, FullVector<double> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<4,4,double> >, FullVector<double> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<6,6,double> >, FullVector<double> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<8,8,double> >, FullVector<double> >;
 
 
 #endif

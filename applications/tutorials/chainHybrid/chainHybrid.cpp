@@ -20,18 +20,18 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types;
-using Coord3 = sofa::defaulttype::Vector3;
+using Coord3 = sofa::type::Vector3;
 using Deriv3 = sofa::defaulttype::Vec3Types::Deriv;
-using VecCoord3 = sofa::helper::vector<Coord3>;
+using VecCoord3 = sofa::type::vector<Coord3>;
 #include <sofa/defaulttype/RigidTypes.h>
 using sofa::defaulttype::Rigid3Types;
 using sofa::defaulttype::Rigid3Mass;
 #include <sofa/gui/GUIManager.h>
 #include <SofaGui/initSofaGui.h>
-#include <sofa/helper/ArgumentParser.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/simulation/Node.h>
@@ -56,9 +56,9 @@ using RegularGridSpringForceField3 = sofa::component::interactionforcefield::Reg
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
 using TetrahedronFEMForceField3 = sofa::component::forcefield::TetrahedronFEMForceField<Vec3Types>;
 #include <SofaSimulationGraph/SimpleApi.h>
+#include <SofaComponentAll/initSofaComponentAll.h>
 
 using sofa::core::objectmodel::New;
-
 #include <SceneCreator/SceneCreator.h>
 
 
@@ -66,7 +66,7 @@ Node *createChainHybrid(Node *root)
 {
     const std::string visualModel="mesh/torus.obj";
     const std::string collisionModel="mesh/torus_for_collision.obj";
-    std::vector<std::string> collisionModelTypes = { "Triangle", "Line", "Point" };
+    std::vector<std::string> collisionModelTypes = { "TriangleCollisionModel", "LineCollisionModel", "PointCollisionModel" };
 
     // Elements of the scene
     //------------------------------------
@@ -94,7 +94,8 @@ Node *createChainHybrid(Node *root)
         const Deriv3 translation(2.5,0,0);
         const Deriv3 rotation(90,0,0);
 
-        MechanicalObject3::SPtr dofFEM = sofa::core::objectmodel::New<MechanicalObject3>(); dofFEM->setName("FEM Object");
+        MechanicalObject3::SPtr dofFEM = sofa::core::objectmodel::New<MechanicalObject3>(); 
+        dofFEM->setName("FEM Object");
         dofFEM->setTranslation(translation[0],translation[1],translation[2]);
         dofFEM->setRotation(rotation[0],rotation[1],rotation[2]);
         torusFEM->addObject(dofFEM);
@@ -136,7 +137,8 @@ Node *createChainHybrid(Node *root)
         const Deriv3 translation(5,0,0);
         const Deriv3 rotation(0,0,0);
 
-        MechanicalObject3::SPtr dofSpring = sofa::core::objectmodel::New<MechanicalObject3>(); dofSpring->setName("Spring Object");
+        MechanicalObject3::SPtr dofSpring = sofa::core::objectmodel::New<MechanicalObject3>(); 
+        dofSpring->setName("Spring Object");
 
         dofSpring->setTranslation(translation[0],translation[1],translation[2]);
         dofSpring->setRotation(rotation[0],rotation[1],rotation[2]);
@@ -168,7 +170,8 @@ Node *createChainHybrid(Node *root)
         const Deriv3 translation(7.5,0,0);
         const Deriv3 rotation(90,0,0);
 
-        MechanicalObject3::SPtr dofFFD = sofa::core::objectmodel::New<MechanicalObject3>(); dofFFD->setName("FFD Object");
+        MechanicalObject3::SPtr dofFFD = sofa::core::objectmodel::New<MechanicalObject3>(); 
+        dofFFD->setName("FFD Object");
         dofFFD->setTranslation(translation[0],translation[1],translation[2]);
         dofFFD->setRotation(rotation[0],rotation[1],rotation[2]);
         torusFFD->addObject(dofFFD);
@@ -206,7 +209,8 @@ Node *createChainHybrid(Node *root)
         const Deriv3 translation(10,0,0);
         const Deriv3 rotation(0,0,0);
 
-        MechanicalObjectRigid3::SPtr dofRigid = sofa::core::objectmodel::New<MechanicalObjectRigid3>(); dofRigid->setName("Rigid Object");
+        MechanicalObjectRigid3::SPtr dofRigid = sofa::core::objectmodel::New<MechanicalObjectRigid3>(); 
+        dofRigid->setName("Rigid_Object");
         dofRigid->setTranslation(translation[0],translation[1],translation[2]);
         dofRigid->setRotation(rotation[0],rotation[1],rotation[2]);
         torusRigid->addObject(dofRigid);
@@ -228,10 +232,15 @@ Node *createChainHybrid(Node *root)
 
 int main(int argc, char** argv)
 {
-    ArgumentParser argParser(argc, argv);
+    sofa::gui::ArgumentParser argParser(argc, argv);
     sofa::gui::GUIManager::RegisterParameters(&argParser);
     argParser.parse();
+
+    //force load SofaComponentAll
+    sofa::component::initSofaComponentAll();
+    //force load SofaGui (registering guis)
     sofa::gui::initSofaGui();
+
     sofa::gui::GUIManager::Init(argv[0]);
 
     auto simulation = sofa::simpleapi::createSimulation();

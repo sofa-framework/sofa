@@ -79,13 +79,15 @@ public :
     std::string getDefaultResponseType() const { return response.getValue().getSelectedItem(); }
 
 protected:
-    typedef sofa::helper::map_ptr_stable_compare<std::pair<core::CollisionModel*,
-    core::CollisionModel*>,core::collision::Contact::SPtr> ContactMap;
+    typedef sofa::helper::map_ptr_stable_compare<
+                /* key */  std::pair<core::CollisionModel*, core::CollisionModel*>,
+                /* value */core::collision::Contact::SPtr
+            > ContactMap;
 
     DefaultContactManager();
-    ~DefaultContactManager() override;
+    ~DefaultContactManager() override = default;
 
-    void setContactTags(core::CollisionModel* model1, core::CollisionModel* model2,
+    static void setContactTags(core::CollisionModel* model1, core::CollisionModel* model2,
                         core::collision::Contact::SPtr contact);
 
     ContactMap contactMap;
@@ -97,6 +99,20 @@ protected:
 
     // count failure messages, so we don't continuously repeat them
     std::map<std::pair<std::string,std::pair<std::string,std::string> >, int> errorMsgCount;
+
+    /// Write messages in stringstream in case a contact failed to be created
+    void contactCreationError(std::stringstream &errorStream, const core::CollisionModel *model1,
+                              const core::CollisionModel *model2, std::string &responseUsed);
+
+    /// Create contacts if it has not been created before
+    void createNewContacts(const DetectionOutputMap &outputsMap, Size &nbContact);
+
+    void removeInactiveContacts(const DetectionOutputMap &outputsMap, Size& nbContact);
+
+    /// compute and set the number of contacts attached to each collision model
+    /// The number of contacts corresponds to the number of collision models
+    /// currently in contact with a collision model.
+    void setNumberOfContacts() const;
 };
 
 } // namespace sofa::component::collision

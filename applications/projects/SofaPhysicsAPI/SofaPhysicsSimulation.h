@@ -30,9 +30,9 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/visual/DrawToolGL.h>
+#include <sofa/gl/DrawToolGL.h>
 #include <SofaBaseVisual/InteractiveCamera.h>
-#include <sofa/helper/gl/Texture.h>
+#include <sofa/gl/Texture.h>
 #include <sofa/simulation/Node.h>
 
 #include <map>
@@ -101,7 +101,7 @@ protected:
     std::vector<SofaDataController*> sofaDataControllers;
     std::vector<SofaPhysicsDataController*> dataControllers;
 
-    sofa::helper::gl::Texture *texLogo;
+    sofa::gl::Texture *texLogo;
     double lastProjectionMatrix[16];
     double lastModelviewMatrix[16];
     GLint lastW, lastH;

@@ -25,7 +25,7 @@
 
 #include <sofa/core/visual/VisualManager.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/FrameBufferObject.h>
+#include <sofa/gl/FrameBufferObject.h>
 #include <SofaOpenglVisual/OglShader.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
@@ -48,7 +48,7 @@ private:
     static const std::string DEPTH_OF_FIELD_FRAGMENT_SHADER;
     Data<double> zNear; ///< Set zNear distance (for Depth Buffer)
     Data<double> zFar; ///< Set zFar distance (for Depth Buffer)
-    std::unique_ptr<helper::gl::FrameBufferObject> fbo;
+    std::unique_ptr<sofa::gl::FrameBufferObject> fbo;
     OglShader* dofShader;
     bool postProcessEnabled;
 

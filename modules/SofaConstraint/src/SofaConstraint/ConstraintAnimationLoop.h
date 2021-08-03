@@ -23,6 +23,7 @@
 #include <SofaConstraint/config.h>
 
 
+#include <sofa/helper/map.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/VecId.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
@@ -44,21 +45,12 @@ class SOFA_SOFACONSTRAINT_API MechanicalGetConstraintResolutionVisitor : public 
 public:
     MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params, std::vector<core::behavior::ConstraintResolution*>& res, unsigned int offset)
         : simulation::BaseMechanicalVisitor(params), _res(res),_offset(offset), _cparams(params)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
+    {}
 
     Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override;
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override;
 
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-    }
-#endif
 private:
     std::vector<core::behavior::ConstraintResolution*>& _res;
     unsigned int _offset;
@@ -74,11 +66,7 @@ public:
         , res(_res)
         , contactId(_contactId)
         , cparams(_cparams)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
+    {}
 
     Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c) override;
     /// Return a class name for this visitor
@@ -87,12 +75,6 @@ public:
     bool isThreadSafe() const override;
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override;
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-    }
-#endif
 
 protected:
 
@@ -109,11 +91,7 @@ public:
         : simulation::BaseMechanicalVisitor(_cparams)
         , res(_res)
         , cparams(_cparams)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
+    {}
 
     void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
     /// Return a class name for this visitor
@@ -123,12 +101,6 @@ public:
     bool isThreadSafe() const override;
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override;
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-    }
-#endif
 
 protected:
     core::MultiMatrixDerivId res;
@@ -145,7 +117,6 @@ protected:
     double _tol;
     int _dim;
     sofa::helper::system::thread::CTime *_timer;
-    bool m_printLog;
 
 public:
     ConstraintProblem(bool printLog=false);
@@ -194,11 +165,11 @@ public:
 
     Data<bool> d_activateSubGraph;
 
-    Data<std::map < std::string, sofa::helper::vector<double> > > d_graphErrors; ///< Sum of the constraints' errors at each iteration
-    Data<std::map < std::string, sofa::helper::vector<double> > > d_graphConstraints; ///< Graph of each constraint's error at the end of the resolution
-    Data<std::map < std::string, sofa::helper::vector<double> > > d_graphForces; ///< Graph of each constraint's force at each step of the resolution
+    Data<std::map < std::string, sofa::type::vector<double> > > d_graphErrors; ///< Sum of the constraints' errors at each iteration
+    Data<std::map < std::string, sofa::type::vector<double> > > d_graphConstraints; ///< Graph of each constraint's error at the end of the resolution
+    Data<std::map < std::string, sofa::type::vector<double> > > d_graphForces; ///< Graph of each constraint's force at each step of the resolution
 
-    ConstraintProblem *getConstraintProblem(void) {return (bufCP1 == true) ? &CP1 : &CP2;}
+    ConstraintProblem *getConstraintProblem() {return bufCP1 ? &CP1 : &CP2;}
 
     /// Construction method called by ObjectFactory.
     template<class T>

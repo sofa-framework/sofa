@@ -23,7 +23,7 @@
 
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/topology/TopologyEngine.h>
+#include <sofa/core/topology/TopologyHandler.h>
 
 #include <algorithm>
 
@@ -69,7 +69,7 @@ void PointSetTopologyContainer::setNbPoints(Size n)
 {
 
     int diffSize = n - nbPoints.getValue();
-    sofa::helper::WriteAccessor< sofa::Data< sofa::helper::vector<PointID> > > points = this->points;
+    sofa::helper::WriteAccessor< sofa::Data< sofa::type::vector<PointID> > > points = this->points;
     points.resize(n);
 
     if( diffSize > 0 )
@@ -96,7 +96,7 @@ void PointSetTopologyContainer::clear()
     nbPoints.setValue(0);
     helper::WriteAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     initPoints.clear();
-    sofa::helper::WriteAccessor< sofa::Data< sofa::helper::vector<PointID> > > points = this->points;
+    sofa::helper::WriteAccessor< sofa::Data< sofa::type::vector<PointID> > > points = this->points;
     points.clear();
 }
 
@@ -184,18 +184,18 @@ void PointSetTopologyContainer::removePoint()
 }
 
 
-void PointSetTopologyContainer::updateTopologyEngineGraph()
+void PointSetTopologyContainer::updateTopologyHandlerGraph()
 {
     this->updateDataEngineGraph(this->d_initPoints, this->m_enginesList);
 }
 
 
-void PointSetTopologyContainer::addEngineToList(sofa::core::topology::TopologyEngine *_engine)
+void PointSetTopologyContainer::addTopologyHandler(sofa::core::topology::TopologyHandler * _TopologyHandler)
 {
-    this->m_enginesList.push_back(_engine);
+    this->m_enginesList.push_back(_TopologyHandler);
 }
 
-const sofa::helper::vector< PointSetTopologyContainer::PointID >& PointSetTopologyContainer::getPoints() const
+const sofa::type::vector< PointSetTopologyContainer::PointID >& PointSetTopologyContainer::getPoints() const
 {
     return points.getValue();
 }
@@ -206,12 +206,12 @@ void PointSetTopologyContainer::setPointTopologyToDirty()
     m_pointTopologyDirty = true;
 
     // set all engines link to this container to dirty
-    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
     for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
     {
-        sofa::core::topology::TopologyEngine* topoEngine = (*it);
+        sofa::core::topology::TopologyHandler* topoEngine = (*it);
         topoEngine->setDirtyValue();
-        msg_info() << "Point Topology Set dirty engine: " << topoEngine->name;
+        msg_info() << "Point Topology Set dirty engine: " << topoEngine->getName();
     }
 }
 
@@ -220,19 +220,19 @@ void PointSetTopologyContainer::cleanPointTopologyFromDirty()
     m_pointTopologyDirty = false;
 
     // security, clean all engines to avoid loops
-    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
     for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
     {
         if ((*it)->isDirty())
         {
-            msg_warning() << "Point Topology update did not clean engine: " << (*it)->name;
+            msg_warning() << "Point Topology update did not clean engine: " << (*it)->getName();
             (*it)->cleanDirty();
         }
     }
 }
 
 
-void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::BaseData &my_Data, std::list<sofa::core::topology::TopologyEngine *> &my_enginesList)
+void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::BaseData &my_Data, std::list<sofa::core::topology::TopologyHandler *> &my_enginesList)
 {
     // clear data stored by previous call of this function
     my_enginesList.clear();
@@ -246,31 +246,28 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
     bool allDone = false;
 
     unsigned int cpt_security = 0;
-    std::list<sofa::core::topology::TopologyEngine *> _engines;
-    std::list<sofa::core::topology::TopologyEngine *>::iterator it_engines;
+    std::list<sofa::core::topology::TopologyHandler *> _engines;
+    std::list<sofa::core::topology::TopologyHandler *>::iterator it_engines;
 
     while (!allDone && cpt_security < 1000)
     {
         std::list<sofa::core::objectmodel::DDGNode* > next_GraphLevel;
-        std::list<sofa::core::topology::TopologyEngine *> next_enginesLevel;
+        std::list<sofa::core::topology::TopologyHandler *> next_enginesLevel;
 
         // for drawing graph
-        sofa::helper::vector <std::string> enginesNames;
-        sofa::helper::vector <std::string> dataNames;
+        sofa::type::vector<std::string> enginesNames;
+        sofa::type::vector<std::string> dataNames;
 
         // doing one level of data outputs, looking for engines
         for ( it = _outs.begin(); it!=_outs.end(); ++it)
         {
-            sofa::core::topology::TopologyEngine* topoEngine = dynamic_cast <sofa::core::topology::TopologyEngine*> ( (*it));
+            sofa::core::topology::TopologyHandler* topoEngine = dynamic_cast <sofa::core::topology::TopologyHandler*> ( (*it));
 
             if (topoEngine)
             {
                 next_enginesLevel.push_back(topoEngine);
                 enginesNames.push_back(topoEngine->getName());
             }
-
-            sofa::core::objectmodel::BaseData* data = dynamic_cast<sofa::core::objectmodel::BaseData*>( (*it) );
-            msg_warning_when(data) << "Data alone linked: " << data->getName();
         }
 
         _outs.clear();
@@ -320,11 +317,11 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
 
     // check good loop escape
     if (cpt_security >= 1000)
-        msg_error() << "PointSetTopologyContainer::updateTopologyEngineGraph reach end loop security.";
+        msg_error() << "PointSetTopologyContainer::updateTopologyHandlerGraph reach end loop security.";
 
 
     // Reorder engine graph by inverting order and avoiding duplicate engines
-    std::list<sofa::core::topology::TopologyEngine *>::reverse_iterator it_engines_rev;
+    std::list<sofa::core::topology::TopologyHandler *>::reverse_iterator it_engines_rev;
 
     for ( it_engines_rev = _engines.rbegin(); it_engines_rev != _engines.rend(); ++it_engines_rev)
     {
@@ -359,7 +356,7 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
 
     for (unsigned int i=0; i<this->m_enginesGraph.size(); ++i ) // per engine level
     {
-        sofa::helper::vector <std::string> enginesNames = this->m_enginesGraph[i];
+        sofa::type::vector<std::string> enginesNames = this->m_enginesGraph[i];
 
         unsigned int cpt_engine_tmp = cpt_engine;
         for (unsigned int j=0; j<enginesNames.size(); ++j) // per engine on the same level
@@ -377,7 +374,7 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
 
         for (unsigned int j=0; j<enginesNames.size(); ++j) // per engine on the same level
         {
-            sofa::helper::vector <std::string> dataNames = this->m_dataGraph[cpt_engine];
+            sofa::type::vector<std::string> dataNames = this->m_dataGraph[cpt_engine];
             for (unsigned int k=0; k<dataNames.size(); ++k)
                 tmpmsg << dataNames[k] << "     " ;
             tmpmsg << "            ";

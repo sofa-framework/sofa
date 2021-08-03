@@ -131,7 +131,6 @@ ColorMap* ColorMap::getDefault()
     if (defaultColorMap == nullptr) {
         defaultColorMap = new ColorMap();
         std::string tmp("");
-        //defaultOglColorMap->initOld(tmp); // TODO: replace initOld() with init()
         defaultColorMap->init();
     }
     return defaultColorMap;

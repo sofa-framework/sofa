@@ -25,7 +25,7 @@
 #include "config.h"
 
 #include <sofa/core/visual/VisualManager.h>
-#include <sofa/helper/gl/GLSLShader.h>
+#include <sofa/gl/GLSLShader.h>
 #include <SofaOpenglVisual/OglOITShader.h>
 
 namespace sofa
@@ -97,12 +97,12 @@ public:
 
 protected:
     void drawOpaques(core::visual::VisualParams* vp);
-    void drawTransparents(core::visual::VisualParams* vp, helper::gl::GLSLShader* oitShader);
+    void drawTransparents(core::visual::VisualParams* vp, sofa::gl::GLSLShader* oitShader);
 
 private:
     FrameBufferObject            fbo;
-    sofa::helper::gl::GLSLShader accumulationShader;
-    sofa::helper::gl::GLSLShader compositionShader;
+    sofa::gl::GLSLShader accumulationShader;
+    sofa::gl::GLSLShader compositionShader;
 
 };
 

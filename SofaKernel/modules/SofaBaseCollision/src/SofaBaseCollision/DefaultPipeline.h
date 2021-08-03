@@ -39,7 +39,6 @@ protected:
     DefaultPipeline();
 public:
     void init() override;
-    void draw(const core::visual::VisualParams* vparams) override;
 
     /// get the set of response available with the current collision pipeline
     std::set< std::string > getResponseList() const override;
@@ -48,11 +47,14 @@ protected:
     /// Remove collision response from last step
     void doCollisionReset() override;
     /// Detect new collisions. Note that this step must not modify the simulation graph
-    void doCollisionDetection(const sofa::helper::vector<core::CollisionModel*>& collisionModels) override;
+    void doCollisionDetection(const sofa::type::vector<core::CollisionModel*>& collisionModels) override;
     /// Add collision response in the simulation graph
     void doCollisionResponse() override;
 
     virtual void checkDataValues() ;
+
+public:
+    static const int defaultDepthValue;
 };
 
 } // namespace sofa::component::collision

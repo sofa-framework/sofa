@@ -194,7 +194,7 @@ protected:
     {
         if (!idMap_ptr)
             idMap_ptr.reset(new IdMap());
-        else if(!idMap_ptr.unique())
+        else if(!(idMap_ptr.use_count() == 1))
             idMap_ptr.reset(new IdMap(*idMap_ptr));
         return *idMap_ptr;
     }

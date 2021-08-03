@@ -29,8 +29,8 @@
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/vector.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <sofa/type/vector.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 #include <SofaEigen2Solver/EigenBaseSparseMatrix.h>
 #include <set>
 
@@ -65,9 +65,9 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef helper::vector<Index> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
-    typedef sofa::defaulttype::Vector3 Vector3;
+    typedef type::vector<Index> SetIndexArray;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
+    typedef sofa::type::Vector3 Vector3;
 
 protected:
     ProjectToPointConstraint();
@@ -116,29 +116,7 @@ public:
 
     bool fixAllDOFs() const { return f_fixAll.getValue(); }
 
-    class FCPointHandler : public component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
-    {
-    public:
-        typedef typename ProjectToPointConstraint<DataTypes>::SetIndexArray SetIndexArray;
-        typedef sofa::core::topology::Point Point;
-        FCPointHandler(ProjectToPointConstraint<DataTypes>* _fc, component::topology::PointSubsetData<SetIndexArray>* _data)
-            : component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
-
-
-        using component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >::applyDestroyFunction;
-        void applyDestroyFunction(Index /*index*/, core::objectmodel::Data<value_type>& /*T*/);
-
-
-        bool applyTestCreateFunction(Index /*index*/,
-                const sofa::helper::vector< Index > & /*ancestors*/,
-                const sofa::helper::vector< double > & /*coefs*/);
-    protected:
-        ProjectToPointConstraint<DataTypes> *fc;
-    };
-
 protected :
-    /// Handler for subset Data
-    FCPointHandler* m_pointHandler;
 
     /// Matrix used in getJ
 //    linearsolver::EigenBaseSparseMatrix<SReal> jacobian;

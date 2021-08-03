@@ -6,6 +6,7 @@ set(SOFASIMPLEFEM_SRC "src/${PROJECT_NAME}")
 set(HEADER_FILES
     ${SOFASIMPLEFEM_SRC}/config.h.in
     ${SOFASIMPLEFEM_SRC}/initSofaSimpleFem.h
+    ${SOFASIMPLEFEM_SRC}/fwd.h
     ${SOFASIMPLEFEM_SRC}/HexahedronFEMForceField.h
     ${SOFASIMPLEFEM_SRC}/HexahedronFEMForceField.inl
     ${SOFASIMPLEFEM_SRC}/TetrahedronFEMForceField.h

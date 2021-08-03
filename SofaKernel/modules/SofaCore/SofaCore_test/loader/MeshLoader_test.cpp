@@ -21,8 +21,8 @@
 ******************************************************************************/
 #include <sofa/core/loader/MeshLoader.h>
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest ;
 
 namespace sofa {
 
@@ -34,9 +34,9 @@ class MeshTestLoader : public MeshLoader
 {
 public:
     friend class MeshLoader_test;
-    typedef helper::WriteAccessor< Data<helper::vector<sofa::defaulttype::Vector3> > > waPositions;
-    typedef helper::WriteAccessor< Data< helper::vector< Triangle > > > waTtriangles;
-    typedef helper::WriteAccessor< Data< helper::vector< Tetrahedron > > > waTetrahedra;
+    typedef helper::WriteAccessor< Data<type::vector<sofa::type::Vector3> > > waPositions;
+    typedef helper::WriteAccessor< Data< type::vector< Triangle > > > waTtriangles;
+    typedef helper::WriteAccessor< Data< type::vector< Tetrahedron > > > waTetrahedra;
 
     bool doLoad() override
     {

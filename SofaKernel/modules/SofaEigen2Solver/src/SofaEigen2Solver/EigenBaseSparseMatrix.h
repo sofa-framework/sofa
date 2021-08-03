@@ -25,7 +25,7 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <Eigen/Sparse>
 
@@ -81,7 +81,7 @@ public:
 
 private:
 
-    helper::vector<Triplet> incoming;             ///< Scheduled additions
+    type::vector<Triplet> incoming;             ///< Scheduled additions
 
 
 public:

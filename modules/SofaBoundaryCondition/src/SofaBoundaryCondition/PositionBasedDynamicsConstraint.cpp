@@ -30,6 +30,7 @@
 namespace sofa::component::projectiveconstraintset
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 

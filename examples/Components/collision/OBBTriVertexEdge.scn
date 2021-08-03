@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
 <Node 	 name="Root"  gravity="0 0 -9.81"  >
+  <RequiredPlugin name='SofaMiscCollision'/>
   <VisualStyle name="displayFlags"  displayFlags="showAll" />
   <DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
-  <BruteForceDetection name="Detection" />
+  <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
   <DefaultContactManager name="Response"  response="default" />
   <TreeCollisionGroupManager name="Group" />
   <EulerImplicitSolver name="Implicit Euler Solver"  rayleighStiffness="0.1" rayleighMass="0.1" />
@@ -23,6 +25,6 @@
 	<MechanicalObject template="Rigid3d" name="mObject37"  position="0 0 -8  0.17592 0.424708 0.339851 0.820473"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />
 	<UniformMass template="Rigid3d" name="uniformMass0"  mass="1 1 [1 0 0,0 1 0,0 0 1]" />
 	<FixedConstraint template="Rigid3d" name="fixedConstraint0"  indices="0" />
-	<TOBBModel template="Rigid3d" name="tOBBModel16" />
+	<OBBCollisionModel template="Rigid3d" name="tOBBModel16" />
   </Node>
 </Node>

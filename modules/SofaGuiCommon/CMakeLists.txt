@@ -28,7 +28,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/MouseOperations.h
     ${SRC_ROOT}/OperationFactory.h
     ${SRC_ROOT}/PickHandler.h
-    ${SRC_ROOT}/SofaGUI.h
     ${SRC_ROOT}/ViewerFactory.h
     ${SRC_ROOT}/ArgumentParser.h
 )

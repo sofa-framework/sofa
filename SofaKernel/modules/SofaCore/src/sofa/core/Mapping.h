@@ -102,9 +102,9 @@ public:
     State< Out >* getToModel();
 
     /// Return the pointer to the input model.
-    helper::vector<BaseState*> getFrom() override;
+    type::vector<BaseState*> getFrom() override;
     /// Return the pointer to the output model.
-    helper::vector<BaseState*> getTo() override;
+    type::vector<BaseState*> getTo() override;
 
     /// Apply ///
     /// Apply the mapping to position vectors.
@@ -174,10 +174,10 @@ public:
     ///<TO REMOVE>  FF:why would we remove this, is there any alternative function ?
     // Useful ?
     /// Get the source (upper) model.
-    virtual helper::vector<behavior::BaseMechanicalState*> getMechFrom() override;
+    virtual type::vector<behavior::BaseMechanicalState*> getMechFrom() override;
 
     /// Get the destination (lower, mapped) model.
-    virtual helper::vector<behavior::BaseMechanicalState*> getMechTo() override;
+    virtual type::vector<behavior::BaseMechanicalState*> getMechTo() override;
 
     //Create a matrix for mapped mechanical objects
     //If the two mechanical objects is identical, create a new stiffness matrix for this mapped objects

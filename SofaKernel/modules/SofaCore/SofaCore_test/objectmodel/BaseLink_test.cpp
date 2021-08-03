@@ -32,8 +32,8 @@ using sofa::core::objectmodel::BaseLink ;
 using sofa::core::objectmodel::SingleLink;
 using sofa::core::objectmodel::MultiLink;
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest ;
 
 #include "BaseLink_test.h"
 

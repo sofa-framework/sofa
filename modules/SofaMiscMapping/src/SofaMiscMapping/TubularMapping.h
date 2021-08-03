@@ -26,7 +26,6 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <SofaGeneralSimpleFem/RadiusContainer.h>
 #include <vector>
 
 namespace sofa::component::mapping
@@ -73,8 +72,8 @@ public:
         NOut = sofa::defaulttype::DataTypeInfo<OutDeriv>::Size
     };
 
-    typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef defaulttype::Vec<N,Real> Vec;
+    typedef type::Mat<N,N,Real> Mat;
+    typedef type::Vec<N,Real> Vec;
 
     void init() override;
 
@@ -90,7 +89,6 @@ public:
     Data<double> m_radius; ///< radius of the circles around each point of the input object (1 by default)
     Data<int> m_peak; ///< if 1 or 2 creates a peak at the end
 
-    container::RadiusContainer* radiusContainer;
 protected:
 
     TubularMapping ( );

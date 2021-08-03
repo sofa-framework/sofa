@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaBaseTopology/config.h>
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/BaseTopology.h>
 
@@ -67,8 +67,6 @@ public:
      */
     virtual Size getNumberOfElements() const;
 
-    /** \brief Returns a reference to the Data of points array container. */
-    Data<InitTypes::VecCoord>& getPointDataArray() {return d_initPoints;}
 
     /** \brief Set the number of vertices in this topology. */
     void setNbPoints(Size n) override;
@@ -138,14 +136,17 @@ public:
         return in;
     }
 
-    const sofa::helper::vector<PointID>& getPoints() const;
+    const sofa::type::vector<PointID>& getPoints() const;
+
+    /// \brief function to add a TopologyHandler to the current list of engines.
+    void addTopologyHandler(sofa::core::topology::TopologyHandler* _TopologyHandler);
 
 protected:
     /// \brief Function creating the data graph linked to d_point
-    void updateTopologyEngineGraph() override;
+    void updateTopologyHandlerGraph() override;
 
     /// \brief functions to really update the graph of Data/DataEngines linked to the different Data array, using member variable.
-    virtual void updateDataEngineGraph(sofa::core::objectmodel::BaseData& my_Data, std::list<sofa::core::topology::TopologyEngine *>& my_enginesList);
+    virtual void updateDataEngineGraph(sofa::core::objectmodel::BaseData& my_Data, std::list<sofa::core::topology::TopologyHandler *>& my_enginesList);
 
 
     /// Use a specific boolean @see m_pointTopologyDirty in order to know if topology Data is dirty or not.
@@ -153,9 +154,6 @@ protected:
     void setPointTopologyToDirty();
     void cleanPointTopologyFromDirty();
     const bool& isPointTopologyDirty() {return m_pointTopologyDirty;}
-
-    /// \brief function to add a topologyEngine to the current list of engines.
-    void addEngineToList(sofa::core::topology::TopologyEngine * _engine);
 
     /// \brief functions to display the graph of Data/DataEngines linked to the different Data array, using member variable.
     virtual void displayDataGraph(sofa::core::objectmodel::BaseData& my_Data);
@@ -172,17 +170,17 @@ protected:
     bool m_pointTopologyDirty;
 
     /// List of engines related to this specific container
-    std::list<sofa::core::topology::TopologyEngine *> m_enginesList;
+    std::list<sofa::core::topology::TopologyHandler *> m_enginesList;
 
     /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
-    sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;
-    sofa::helper::vector < sofa::helper::vector <std::string> > m_enginesGraph;
+    sofa::type::vector< sofa::type::vector<std::string> > m_dataGraph;
+    sofa::type::vector< sofa::type::vector<std::string> > m_enginesGraph;
 
 private:
     
     Data<Size> nbPoints; ///< Number of points
 
-    Data<sofa::helper::vector<PointID> > points; ///< List of point indices
+    Data<sofa::type::vector<PointID> > points; ///< List of point indices
 };
 
 } //namespace sofa::component::topology

@@ -3,8 +3,11 @@
 #include "VisualPickVisitor.h"
 #include <sofa/core/objectmodel/Tag.h>
 #include <sofa/core/visual/VisualLoop.h>
-#include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/core/visual/VisualParams.h>
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalPickParticlesVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalPickParticlesVisitor;
+
 using std::cout;
 using std::cerr;
 using std::endl;
@@ -46,10 +49,10 @@ void SofaGL::draw()
 
     if(_vparams)
     {
-        _vparams->viewport() = sofa::helper::fixed_array<int, 4>(_viewport[0], _viewport[1], _viewport[2], _viewport[3]);
+        _vparams->viewport() = sofa::type::fixed_array<int, 4>(_viewport[0], _viewport[1], _viewport[2], _viewport[3]);
         SReal xmin,xmax,ymin,ymax,zmin,zmax;
         _sofaScene->getBoundingBox(&xmin,&xmax,&ymin,&ymax,&zmin,&zmax);
-        _vparams->sceneBBox() = sofa::defaulttype::BoundingBox(xmin,xmax,ymin,ymax,zmin,zmax);
+        _vparams->sceneBBox() = sofa::type::BoundingBox(xmin,xmax,ymin,ymax,zmin,zmax);
         _vparams->setProjectionMatrix(_projmatrix);
         _vparams->setModelViewMatrix(_mvmatrix);
     }
@@ -161,12 +164,12 @@ void SofaGL::glPick(int x, int y )
 
 PickedPoint SofaGL::pick(GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
 {
-    defaulttype::Vec3d origin(ox,oy,oz), direction;
+    type::Vec3d origin(ox,oy,oz), direction;
     getPickDirection(&direction[0],&direction[1],&direction[2],x,y);
 
     double distance = 10.5, distanceGrowth = 0.1; // cone around the ray ????
     //    cout<< "SofaGL::rayPick from origin " << origin << ", in direction " << direction << endl;
-    sofa::simulation::MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance(), origin, direction, distance, distanceGrowth );
+    MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance(), origin, direction, distance, distanceGrowth );
     picker.execute( _sofaScene->groot()->getContext() );
 
     PickedPoint pickedPoint;
@@ -205,11 +208,11 @@ Interactor* SofaGL::getInteractor( const PickedPoint& glpicked )
 Interactor* SofaGL::pickInteractor( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
 {
 
-    defaulttype::Vec3d origin(ox,oy,oz), direction;
+    type::Vec3d origin(ox,oy,oz), direction;
     getPickDirection(&direction[0],&direction[1],&direction[2],x,y);
     double distance = 10.5, distanceGrowth = 0.1; // cone around the ray ????
     //    cout<< "SofaScene::rayPick from origin " << origin << ", in direction " << direction << endl;
-    sofa::simulation::MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance(), origin, direction, distance, distanceGrowth, sofa::core::objectmodel::Tag("!NoPicking") );
+    MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance(), origin, direction, distance, distanceGrowth, sofa::core::objectmodel::Tag("!NoPicking") );
     picker.execute(_sofaScene->groot()->getContext());
 
     if (!picker.particles.empty())

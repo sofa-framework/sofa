@@ -22,10 +22,9 @@
 #pragma once
 #include <SofaGeneralEngine/NearestPointROI.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/simulation/Node.h>
 
 namespace sofa::component::engine
@@ -38,9 +37,11 @@ NearestPointROI<DataTypes>::NearestPointROI()
     : f_indices1( initData(&f_indices1,"indices1","Indices of the points on the first model") )
     , f_indices2( initData(&f_indices2,"indices2","Indices of the points on the second model") )
     , f_radius( initData(&f_radius,(Real)1,"radius", "Radius to search corresponding fixed point") )
+    , d_useRestPosition(initData(&d_useRestPosition, true, "useRestPosition", "If true will use restPosition only at init"))
     , mstate1(initLink("object1", "First object to constrain"))
     , mstate2(initLink("object2", "Second object to constrain"))
 {
+
 }
 
 template <class DataTypes>
@@ -51,22 +52,56 @@ NearestPointROI<DataTypes>::~NearestPointROI()
 template <class DataTypes>
 void NearestPointROI<DataTypes>::init()
 {
-    if(!mstate1 || !mstate2) {
-        msg_error() << "Cannot Initialize without valid objects";
-        //mstate1->set(static_cast<simulation::Node*>(this->getContext())->getMechanicalState());
+    // Test inputs
+    bool success = true;
+    if (mstate1 && !mstate1.get())
+    {
+        msg_error_when(!mstate1.get()) << "Cannot Initialize, mstate1 link is pointing to invalid object!";
+        success = false;
+    }
+    else if (!mstate1)
+    {
+        msg_error_when(!mstate1) << "Cannot Initialize, mstate1 link is invalid!";
+        success = false;
     }
 
-    addInput(this->mstate1->findData("rest_position"));
-    addInput(this->mstate2->findData("rest_position"));
+    if (mstate2 && !mstate2.get())
+    {
+        msg_error_when(!mstate2.get()) << "Cannot Initialize, mstate2 link is pointing to invalid object!";
+        success = false;
+    }
+    else if (!mstate2)
+    {
+        msg_error_when(!mstate2) << "Cannot Initialize, mstate2 link is invalid!";
+        success = false;
+    }
+
+    if (!success)
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
+
+    if (d_useRestPosition.getValue())
+    {
+        addInput(this->mstate1->findData("rest_position"));
+        addInput(this->mstate2->findData("rest_position"));
+    }
+    else
+    {
+        addInput(this->mstate1->findData("position"));
+        addInput(this->mstate2->findData("position"));
+    }
+
     addOutput(&f_indices1);
     addOutput(&f_indices2);
-
-    reinit();
 }
 
 template <class DataTypes>
 void NearestPointROI<DataTypes>::reinit()
 {
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
     if(f_radius.getValue() <= 0){
         msg_error() << "Radius must be a positive real.";
         return;
@@ -75,11 +110,27 @@ void NearestPointROI<DataTypes>::reinit()
         msg_error() << "2 valid mechanicalobjects are required.";
         return;
     }
+
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
     doUpdate();
 }
 
 template <class DataTypes>
 void NearestPointROI<DataTypes>::doUpdate()
+{
+    const auto vecCoordId = d_useRestPosition.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+    const VecCoord& x1 = this->mstate1->read(vecCoordId)->getValue();
+    const VecCoord& x2 = this->mstate2->read(vecCoordId)->getValue();
+
+    if (x1.size() == 0 || x2.size() == 0)
+        return;
+
+    computeNearestPointMaps(x1, x2);
+}
+
+
+template <class DataTypes>
+void NearestPointROI<DataTypes>::computeNearestPointMaps(const VecCoord& x1, const VecCoord& x2)
 {
     Coord pt2;
     auto dist = [](const Coord& a, const Coord& b) { return (b - a).norm(); };
@@ -93,24 +144,23 @@ void NearestPointROI<DataTypes>::doUpdate()
     indices2->clear();
 
     const Real maxR = f_radius.getValue();
-    
-    const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::restPosition())->getValue();
-    const VecCoord& x2 = this->mstate2->read(core::ConstVecCoordId::restPosition())->getValue();
 
-    for (unsigned int i2=0; i2<x2.size(); ++i2)
+    for (unsigned int i2 = 0; i2 < x2.size(); ++i2)
     {
         pt2 = x2[i2];
         auto el = std::min_element(std::begin(x1), std::end(x1), cmp);
-        if(dist(*el, pt2) < maxR) {
+        if (dist(*el, pt2) < maxR) 
+        {
             indices1->push_back(std::distance(std::begin(x1), el));
             indices2->push_back(i2);
         }
     }
+    
     f_indices1.endEdit();
     f_indices2.endEdit();
 
     // Check coherency of size between indices vectors 1 and 2
-    if(f_indices1.getValue().size() != f_indices2.getValue().size())
+    if (f_indices1.getValue().size() != f_indices2.getValue().size())
     {
         msg_error() << "Size mismatch between indices1 and indices2";
     }

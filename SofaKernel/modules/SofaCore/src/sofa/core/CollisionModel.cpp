@@ -21,9 +21,9 @@
 ******************************************************************************/
 #include "CollisionModel.h"
 #include <sofa/core/objectmodel/BaseNode.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
-using sofa::helper::types::RGBAColor ;
+using sofa::type::RGBAColor ;
 namespace sofa
 {
 
@@ -60,7 +60,7 @@ void CollisionModel::bwdInit()
 
 void CollisionModel::setColor4f(const float *c)
 {
-    color.setValue(sofa::helper::types::RGBAColor(c[0],c[1],c[2],c[3]));
+    color.setValue(sofa::type::RGBAColor(c[0],c[1],c[2],c[3]));
 }
 
 
@@ -111,15 +111,16 @@ CollisionModel::CollisionModel()
     , contactFriction(initData(&contactFriction, (SReal)0.0, "contactFriction", "Contact friction coefficient (dry or viscous or unused depending on the contact method)"))
     , contactRestitution(initData(&contactRestitution, (SReal)0.0, "contactRestitution", "Contact coefficient of restitution"))
     , contactResponse(initData(&contactResponse, "contactResponse", "if set, indicate to the ContactManager that this model should use the given class of contacts.\nNote that this is only indicative, and in particular if both collision models specify a different class it is up to the manager to choose."))
-    , color(initData(&color, sofa::helper::types::RGBAColor(1,0,0,1), "color", "color used to display the collision model if requested"))
+    , color(initData(&color, sofa::type::RGBAColor(1,0,0,1), "color", "color used to display the collision model if requested"))
     , group(initData(&group,"group","IDs of the groups containing this model. No collision can occur between collision models included in a common group (e.g. allowing the same object to have multiple collision models)"))
     , size(0)
-    , numberOfContacts(0)
+    , d_numberOfContacts(initData(&d_numberOfContacts, (Size)0, "numberOfContacts", "Number of collision models this collision model is currently attached to"))
     , previous(initLink("previous", "Previous (coarser / upper / parent level) CollisionModel in the hierarchy."))
     , next(initLink("next", "Next (finer / lower / child level) CollisionModel in the hierarchy."))
     , userData(nullptr)
     , l_collElemActiver(initLink("collisionElementActiver", "CollisionElementActiver component that activates or deactivates collision element(s) during execution"))
 {
+    d_numberOfContacts.setReadOnly(true);
 }
 
 /// Set the previous (coarser / upper / parent level) CollisionModel in the hierarchy.

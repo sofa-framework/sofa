@@ -31,4 +31,33 @@ BaseProximityIntersection::BaseProximityIntersection()
 	contactDistance.setRequired(true);
 }
 
+
+bool BaseProximityIntersection::testIntersection(Cube& cube1, Cube& cube2)
+{
+    const auto& minVect1 = cube1.minVect();
+    const auto& minVect2 = cube2.minVect();
+    const auto& maxVect1 = cube1.maxVect();
+    const auto& maxVect2 = cube2.maxVect();
+
+    const auto alarmDist = getAlarmDistance() + cube1.getProximity() + cube2.getProximity();
+
+    for (int i = 0; i < 3; i++)
+    {
+        if (minVect1[i] > maxVect2[i] + alarmDist || minVect2[i] > maxVect1[i] + alarmDist)
+            return false;
+    }
+
+    return true;
+}
+
+int BaseProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts)
+{
+    SOFA_UNUSED(cube1);
+    SOFA_UNUSED(cube2);
+    SOFA_UNUSED(contacts);
+
+    return 0;
+}
+
+
 } // namespace sofa::component::collision
