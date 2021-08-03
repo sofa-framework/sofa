@@ -490,9 +490,18 @@ public:
             m_simulation->animate(m_root.get(), 0.01);
         }
 
-        EXPECT_NEAR(positions[1515][0], 8.9135, 1e-4);
-        EXPECT_NEAR(positions[1515][1], 14.2499, 1e-4);
-        EXPECT_NEAR(positions[1515][2], 0, 1e-4);
+        if (FEMType == 0 || FEMType == 1)
+        {
+            EXPECT_NEAR(positions[1515][0], 8.9135, 1e-4);
+            EXPECT_NEAR(positions[1515][1], 14.2499, 1e-4);
+            EXPECT_NEAR(positions[1515][2], 0, 1e-4);
+        }
+        else
+        {            
+            EXPECT_NEAR(positions[1515][0], 9.03591, 1e-4); // TODO: epernod 2021-08-03: there is a diff here compare to TriangleFEMForceField
+            EXPECT_NEAR(positions[1515][1], 12.8705, 1e-4); // TODO: epernod 2021-08-03: there is a diff here compare to TriangleFEMForceField
+            EXPECT_NEAR(positions[1515][2], 0, 1e-4);
+        }
 
         // 1st value expected values (square 2D triangle)
         static const Mat33 exp_rotatedInitPos = Mat33(Vec3(0, 0, 0), Vec3(0.25641, 0, 0), Vec3(0.25641, 0.25641, 0));
@@ -501,15 +510,16 @@ public:
         Mat63 exp_strainDispl;
         exp_strainDispl[0] = Vec3(-3.89456, 0, -0.00185328); exp_strainDispl[1] = Vec3(0, -0.00185328, -3.89456); exp_strainDispl[2] = Vec3(3.89456, 0, -3.89816);
         exp_strainDispl[3] = Vec3(0, -3.89816, 3.89456); exp_strainDispl[4] = Vec3(0, 0, 3.90001); exp_strainDispl[5] = Vec3(0, 3.90001, 0);
+        int idTri = 42;
 
         if (FEMType == 0)
         {
             typename TriangleFEM::SPtr triFEM = m_root->getTreeObject<TriangleFEM>();
 
-            const type::fixed_array <Coord, 3>& rotatedInitPos = triFEM->getRotatedInitialElement(42);
-            const Mat33& rotMat = triFEM->getRotationMatrix(42);
-            const Mat33& stiffnessMat = triFEM->getMaterialStiffness(42);
-            const Mat63& strainDispl = triFEM->getStrainDisplacements(42);
+            const type::fixed_array <Coord, 3>& rotatedInitPos = triFEM->getRotatedInitialElement(idTri);
+            const Mat33& rotMat = triFEM->getRotationMatrix(idTri);
+            const Mat33& stiffnessMat = triFEM->getMaterialStiffness(idTri);
+            const Mat63& strainDispl = triFEM->getStrainDisplacements(idTri);
 
             for (int i = 0; i < 3; ++i)
             {
@@ -528,7 +538,7 @@ public:
         {
             typename TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
             
-            typename TriangularFEM::TriangleInformation triangleInfo = triFEM->triangleInfo.getValue()[42];
+            typename TriangularFEM::TriangleInformation triangleInfo = triFEM->triangleInfo.getValue()[idTri];
             const type::fixed_array <Coord, 3>& rotatedInitPos = triangleInfo.rotatedInitialElements;
             const Mat33& rotMat = triangleInfo.initialTransformation; // rotMat: [1 0 0,0 1 0,0 0 1]
             const Mat33& stiffnessMat = triangleInfo.materialMatrix;
@@ -544,6 +554,45 @@ public:
 
                     EXPECT_NEAR(strainDispl[i][j], exp_strainDispl[i][j], 1e-4);
                     EXPECT_NEAR(strainDispl[i + 3][j], exp_strainDispl[i + 3][j], 1e-4);
+                }
+            }
+        }
+        else if (FEMType == 2)
+        {
+            typename TriangularFEMOptim::SPtr triFEM = m_root->getTreeObject<TriangularFEMOptim>();
+            type::fixed_array <Coord, 3> rotatedInitPos = triFEM->getRotatedInitialElement(idTri);
+            Mat23 rotMat = triFEM->getRotationMatrix(idTri);
+            Mat33 stiffnessMat = triFEM->getMaterialStiffness(idTri);
+            type::Vec< 3, Real> sDFactor = triFEM->getStrainDisplacementFactors(idTri); // beta2, gamma2, gamma3
+
+            // | beta2  0        0      0      |
+            // | 0      gamma2   0      gamma3 | 
+            // | gamma2 beta2    gamma3 0      |
+            Mat63 strainDispl;
+            strainDispl[0] = Vec3(0, 0, 0); strainDispl[1] = Vec3(0, 0, 0); strainDispl[2] = Vec3(sDFactor[0], 0, sDFactor[1]);
+            strainDispl[3] = Vec3(0, sDFactor[1], sDFactor[0]); strainDispl[4] = Vec3(0, 0, sDFactor[2]); strainDispl[5] = Vec3(0, sDFactor[2], 0);
+
+            Real factor = triFEM->getTriangleFactor(idTri); // ((Real)0.5)/(ti.bx*ti.cy); -> 1/(2 * det) = 1/area                
+            Real correctiveFactorStiff = 1 / (4 * factor); // TODO: epernod 2021-08-03: there is a big diff here regarding the equation used in TriangleFEMForceField
+            Real correctiveFactorStrainD = factor * 2; // TODO: epernod 2021-08-03: there is a big diff here regarding the equation used in TriangleFEMForceField
+
+            for (int i = 0; i < 3; ++i)
+            {
+                for (int j = 0; j < 3; ++j)
+                {
+                    EXPECT_NEAR(rotatedInitPos[i][j], exp_rotatedInitPos[i][j], 1e-4);
+                    EXPECT_NEAR(stiffnessMat[i][j] * correctiveFactorStiff, exp_stiffnessMat[i][j], 1e-4);
+                }
+            }
+
+            for (int i = 0; i < 2; ++i)
+            {
+                for (int j = 0; j < 3; ++j)
+                {
+                    EXPECT_NEAR(rotMat[i][j], exp_rotMat[j][i], 1e-1); // TODO: epernod 2021-08-03: there is a diff here compare to TriangleFEMForceField ~ 0.1
+                    // Do not test the 2 firts column of StrainDisplacement which are related to position A (ignored in optim version)
+                    EXPECT_NEAR(strainDispl[i + 2][j] * correctiveFactorStrainD, exp_strainDispl[i + 2][j], 1e-1); // TODO: epernod 2021-08-03: there is a diff here compare to TriangleFEMForceField ~ 0.1
+                    EXPECT_NEAR(strainDispl[i + 4][j] * correctiveFactorStrainD, exp_strainDispl[i + 4][j], 1e-1); // TODO: epernod 2021-08-03: there is a diff here compare to TriangleFEMForceField ~ 0.1
                 }
             }
         }
