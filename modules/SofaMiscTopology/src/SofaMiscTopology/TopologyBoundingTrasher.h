@@ -51,7 +51,7 @@ namespace sofa::component::misc
  *
 */
 template <class DataTypes>
-class SOFA_SOFAMISCTOPOLOGY_API TopologyBoundingTrasher: public core::objectmodel::BaseObject
+class SOFA_SOFAMISCTOPOLOGY_API TopologyBoundingTrasher: public virtual core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(TopologyBoundingTrasher, DataTypes), core::objectmodel::BaseObject);
@@ -103,6 +103,10 @@ protected:
 
     type::vector<Index> m_indicesToRemove;
 };
+
+#if  !defined(SOFA_COMPONENT_MISC_TOPOLOGYBOUNDINGTRASHER_CPP)
+extern template class SOFA_SOFAMISCTOPOLOGY_API TopologyBoundingTrasher<sofa::defaulttype::Vec3Types>;
+#endif //  !defined(SOFA_COMPONENT_MISC_TOPOLOGYBOUNDINGTRASHER_CPP)
 
 
 } // namespace sofa::component::misc
