@@ -1454,7 +1454,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     {
         type::vector<VertexInformation>& vertexInf = *(vertexInfo.beginEdit());
         Real minStress = std::numeric_limits<Real>::max();
-        double maxStress = 0.0;
+        Real maxStress = 0.0;
         for ( unsigned int i = 0 ; i < vertexInf.size() ; i++)
         {
             const core::topology::BaseMeshTopology::TrianglesAroundVertex& triangles = m_topology->getTrianglesAroundVertex(i);
