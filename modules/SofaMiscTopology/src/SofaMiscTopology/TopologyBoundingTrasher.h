@@ -72,7 +72,7 @@ protected:
     void filterElementsToRemove();
     void removeElements();
 
-    bool isPointOutside(const Coord& value, const Vec6& bb);
+    constexpr bool isPointOutside(const Coord& value, const Vec6& bb);
 
 public:
     void init() override;

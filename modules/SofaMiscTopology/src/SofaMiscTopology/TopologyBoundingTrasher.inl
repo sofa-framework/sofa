@@ -269,7 +269,7 @@ void TopologyBoundingTrasher<DataTypes>::removeElements()
 
 
 template <class DataTypes>
-bool TopologyBoundingTrasher<DataTypes>::isPointOutside(const Coord& value, const Vec6& bb)
+constexpr bool TopologyBoundingTrasher<DataTypes>::isPointOutside(const Coord& value, const Vec6& bb)
 {
     if (value[0] < bb[0] || value[0] > bb[3]) // check x
         return true;
