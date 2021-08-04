@@ -11,21 +11,7 @@
     <DefaultPipeline verbose="0" />
     
 <!--
-    <RegularGridTopology name="grid" n="40 40 1" min="0 0 0" max="10 10 0" />
-    <Node name="TriangularFEMForceField">
-        <EulerImplicitSolver />
-        <CGLinearSolver iterations="25" threshold="1.0e-9"/>
-        
-        <MechanicalObject name="TriangularFEMForceField_dof" position="@../grid.position"/>
-        
-        <TriangleSetTopologyContainer name="Triangle_topo" src="@../grid"/>
-        <TriangleSetTopologyModifier name="Modifier" />
-        <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
-        <TriangularFEMForceField name="FEM" youngModulus="100" poissonRatio="0.3" method="large" />
-        
-        <DiagonalMass massDensity="0.1" />
-        <FixedConstraint indices="0 39" />
-    </Node>
+
     -->
 
     
