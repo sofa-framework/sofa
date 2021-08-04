@@ -1453,7 +1453,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     if (showStressValue.getValue())
     {
         type::vector<VertexInformation>& vertexInf = *(vertexInfo.beginEdit());
-        double minStress = std::numeric_limits<double>::max();
+        Real minStress = std::numeric_limits<Real>::max();
         double maxStress = 0.0;
         for ( unsigned int i = 0 ; i < vertexInf.size() ; i++)
         {
