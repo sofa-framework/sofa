@@ -1197,7 +1197,7 @@ void HexahedronFEMForceField<DataTypes>::addKToBlocMatrix(
                         Coord(Ke[3*n1+0][3*n2+0],Ke[3*n1+0][3*n2+1],Ke[3*n1+0][3*n2+2]),
                         Coord(Ke[3*n1+1][3*n2+0],Ke[3*n1+1][3*n2+1],Ke[3*n1+1][3*n2+2]),
                         Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * Rot;
-                *crsmat->wbloc(offset + node1, offset + node2, true) += tmp * (-k);
+                *crsmat->wbloc(offset / 3 + node1, offset / 3 + node2, true) += tmp * (-k);
             }
         }
     }
