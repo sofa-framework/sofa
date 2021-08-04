@@ -29,7 +29,7 @@
 using sofa::helper::Utils;
 using sofa::helper::system::FileSystem;
 
-TEST(UtilsTest, string_to_widestring_to_string)
+TEST(UtilsTest, DISABLED_string_to_widestring_to_string)
 {
     std::string ascii_chars;
     for (char c = 32 ; c <= 126 ; c++)

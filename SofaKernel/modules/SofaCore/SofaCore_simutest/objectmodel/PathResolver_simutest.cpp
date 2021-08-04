@@ -74,7 +74,7 @@ public:
 
 
 class PathResolverToBaseObject : public PathResolver_simutest{};
-TEST_P(PathResolverToBaseObject, CheckPathToBaseObject)
+TEST_P(PathResolverToBaseObject, DISABLED_CheckPathToBaseObject)
 {
     ASSERT_NE(node,nullptr);
     auto& t = GetParam();

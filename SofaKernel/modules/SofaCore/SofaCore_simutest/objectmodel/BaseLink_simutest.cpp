@@ -101,7 +101,7 @@ INSTANTIATE_TEST_SUITE_P(CheckPaths,
 //////////////////////// Testing invalid path //////////////////////////////////////
 class SingleLink_simutest : public BaseLink_test {};
 
-TEST_P(SingleLink_simutest, CheckPath)
+TEST_P(SingleLink_simutest, DISABLED_CheckPath)
 {
     ASSERT_NE(node,nullptr);
     auto& t = GetParam();

@@ -131,7 +131,7 @@ TEST_F( Link_test, setLinkedBase_test)
     this->setLinkedBase_test() ;
 }
 
-TEST_F( Link_test, read_test)
+TEST_F( Link_test, DISABLED_read_test)
 {
     this->read_test() ;
 }
