@@ -10,10 +10,6 @@
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <DefaultPipeline verbose="0" />
     
-<!--
-
-    -->
-
     
     <RegularGridTopology name="grid" n="40 1 40" min="0 0 0" max="10 0 10" />
     
