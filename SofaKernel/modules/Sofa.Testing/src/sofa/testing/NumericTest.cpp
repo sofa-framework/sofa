@@ -22,4 +22,5 @@
 
 #include <sofa/testing/NumericTest.h>
 
+template struct SOFA_TESTING_API sofa::testing::NumericTest<float>;
 template struct SOFA_TESTING_API sofa::testing::NumericTest<double>;
