@@ -39,7 +39,7 @@ void addBloc(TMatrix& self, Index row, Index col, const TBlocMatrix & _M)
     }
     else
     {
-        self.BaseMatrix::add(row, col, _M);
+        self.defaulttype::BaseMatrix::add(row, col, _M);
     }
 }
 
