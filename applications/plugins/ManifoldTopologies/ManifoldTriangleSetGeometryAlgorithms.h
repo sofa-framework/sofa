@@ -134,7 +134,6 @@ private:
 #if  !defined(SOFA_MANIFOLD_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_CPP)
 extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetGeometryAlgorithms<sofa::defaulttype::Vec3Types>;
 extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetGeometryAlgorithms<sofa::defaulttype::Vec2Types>;
-extern template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetGeometryAlgorithms<sofa::defaulttype::Vec1Types>;
 #endif
 
 } // namespace topology
