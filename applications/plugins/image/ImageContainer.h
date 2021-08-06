@@ -95,7 +95,7 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
                 if( !container->loadCamera() )
                 {
                     wimage->getCImgList().push_back(cimg_library::CImg<T>());
-                    container->serr << "no input image" << container->sendl;
+                    msg_error(container) << "no input image" ;
                 }
     }
 
@@ -160,7 +160,7 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
                 // nfo files are used for compatibility with gridmaterial of frame and voxelize rplugins
 
                 std::ifstream fileStream (fname.c_str(), std::ifstream::in);
-                if (!fileStream.is_open()) { container->serr << "Cannot open " << fname << container->sendl; return false; }
+                if (!fileStream.is_open()) { msg_error(container) << "Cannot open " << fname ; return false; }
                 std::string str;
                 fileStream >> str;	char vtype[32]; fileStream.getline(vtype,32);
                 type::Vec<3,unsigned int> dim;  fileStream >> str; fileStream >> dim;
@@ -463,7 +463,7 @@ protected:
         std::string fname(this->m_filename.getFullPath());
         if (!sofa::helper::system::DataRepository.findFile(fname))
         {
-            serr << "ImageContainer: cannot find "<<fname<<sendl;
+            msg_error() << "ImageContainer: cannot find "<<fname;
             return false;
         }
         fname=sofa::helper::system::DataRepository.getFile(fname);
@@ -570,7 +570,7 @@ protected:
 
         if (!sofa::helper::system::DataRepository.findFile(nextFname))
         {
-            serr << "ImageContainer: cannot find "<<fname<<sendl;
+            msg_error() << "ImageContainer: cannot find "<<fname;
             return false;
         }
 
@@ -602,8 +602,8 @@ protected:
 
         if(lastUnderscorePosition == std::string::npos)
         {
-            serr << filenameError << currentFname << sendl;
-            serr << filenameDescription << sendl;
+            msg_error() << filenameError << currentFname;
+            msg_error() << filenameDescription;
             return "";
         }
 
@@ -613,8 +613,8 @@ protected:
 
         if(nextDotPosition == std::string::npos)
         {
-            serr << filenameError << currentFname << sendl;
-            serr << filenameDescription << sendl;
+            msg_error() << filenameError << currentFname;
+            msg_error() << filenameDescription;
             return "";
         }
 

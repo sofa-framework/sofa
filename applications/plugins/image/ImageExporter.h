@@ -78,12 +78,12 @@ struct ImageExporterSpecialization<defaulttype::Image<T>>
     {
         typedef typename ImageExporterT::Real Real;
 
-        if (!exporter.m_filename.isSet()) { exporter.serr << "ImageExporter: file not set"<<exporter.name<<exporter.sendl; return false; }
+        if (!exporter.m_filename.isSet()) { msg_error(&exporter) << "ImageExporter: file not set"<<exporter.name; return false; }
         std::string fname(exporter.m_filename.getFullPath());
 
         typename ImageExporterT::raImage rimage(exporter.image);
         typename ImageExporterT::raTransform rtransform(exporter.transform);
-        if (rimage->isEmpty()) { exporter.serr << "ImageExporter: no image "<<exporter.name<<exporter.sendl; return false; }
+        if (rimage->isEmpty()) { msg_error(&exporter) << "ImageExporter: no image "<<exporter.name; return false; }
 
         if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
            || fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)
@@ -105,7 +105,7 @@ struct ImageExporterSpecialization<defaulttype::Image<T>>
         {
             // nfo files are used for compatibility with gridmaterial of frame and voxelizer plugins
             std::ofstream fileStream (fname.c_str(), std::ofstream::out);
-            if (!fileStream.is_open()) { exporter.serr << "GridMaterial, Can not open " << fname << exporter.sendl; return false; }
+            if (!fileStream.is_open()) { msg_error(&exporter) << "GridMaterial, Can not open " << fname ; return false; }
             fileStream << "voxelType: " << cimg_library::CImg<T>::pixel_type() << std::endl;
             fileStream << "dimensions: " << rimage->getDimensions()[0] << " " << rimage->getDimensions()[1]<< " " << rimage->getDimensions()[2]  << std::endl;
             fileStream << "origin: " << rtransform->getTranslation()[0] << " " << rtransform->getTranslation()[1]<< " " << rtransform->getTranslation()[2]<< std::endl;

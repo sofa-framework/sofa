@@ -218,7 +218,7 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
     size_t nbParticlesToCreate = (int)((time - m_lastTime) / d_delay.getValue());    
     if (nbParticlesToCreate > 0)
     {
-        msg_info() << "ParticleSource: animate begin time= " << time << " | size: " << i0 << sendl;
+        msg_info() << "ParticleSource: animate begin time= " << time << " | size: " << i0;
         msg_info() << "nbParticlesToCreate: " << nbParticlesToCreate << " m_maxdist: " << m_maxdist;
         SetIndexArray& _lastparticles = *m_lastparticles.beginEdit(); ///< lastparticles indices
 

@@ -210,7 +210,7 @@ void PenalityContactForceField<CudaVec3fTypes>::addDForce(const core::Mechanical
 //template<>
 SReal PenalityContactForceField<CudaVec3fTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const
 {
-    serr<<"PenalityContactForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
+    msg_error()<<"PenalityContactForceField::getPotentialEnergy-not-implemented !!!";
     return 0;
 }
 

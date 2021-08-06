@@ -88,7 +88,7 @@ public:
     {
         container = this->getContext()->template get<ImageContainer>(core::objectmodel::BaseContext::SearchUp);
         if (!container)
-            serr << "No ImageContainer found" << sendl;
+            msg_error() << "No ImageContainer found";
 
         reinit();
     }

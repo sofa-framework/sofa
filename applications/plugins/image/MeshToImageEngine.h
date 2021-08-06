@@ -178,7 +178,7 @@ public:
                 if(meshId>=this->vf_FillInside.size() || this->vf_FillInside[meshId]->getValue())
                 {
                     this->vf_InsideValues[meshId]->setValue(this->vf_values[meshId]->getValue()[0]);
-                    serr<<"InsideValue["<<meshId<<"] is not set -> used Value["<<meshId<<"]="<<this->vf_values[meshId]->getValue()[0]<<" instead"<<sendl;
+                    msg_error()<<"InsideValue["<<meshId<<"] is not set -> used Value["<<meshId<<"]="<<this->vf_values[meshId]->getValue()[0]<<" instead";
                 }
 
 
