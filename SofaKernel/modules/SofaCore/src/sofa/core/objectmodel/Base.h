@@ -370,13 +370,13 @@ private:
 public:
     /// write into component buffer + Message processedby message handlers
     /// default message type = Warning
-    /*SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()*/ helper::system::SofaOStream<helper::logging::Message::Warning> serr;
+    /*SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()*/ mutable helper::system::SofaOStream<helper::logging::Message::Warning> serr;
     /// write into component buffer.
     /// Message is processed by message handlers only if printLog==true
     /// /// default message type = Info
-    /*SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()*/ helper::system::SofaOStream<helper::logging::Message::Info> sout;
+    /*SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()*/ mutable helper::system::SofaOStream<helper::logging::Message::Info> sout;
     /// runs the stream processing
-    /*SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()*/ helper::system::SofaEndl<Base> sendl;
+    /*SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()*/ mutable helper::system::SofaEndl<Base> sendl;
 
     void processStream(std::ostream& out);
 
