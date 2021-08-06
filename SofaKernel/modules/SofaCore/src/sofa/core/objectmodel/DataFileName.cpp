@@ -71,7 +71,10 @@ void DataFileName::updatePath()
         // Update the fullpath.
         std::string fullpath = m_value.getValue();
         if (!fullpath.empty())
-            DataRepository.findFile(fullpath,"", &std::cerr);
+        {
+            std::ostringstream tempOss;
+            DataRepository.findFile(fullpath, "", &tempOss);
+        }
 
         if (getPathType() != PathType::BOTH && (fs::FileSystem::exists(fullpath) && ((getPathType() == PathType::DIRECTORY) != fs::FileSystem::isDirectory(fullpath))))
         {
@@ -124,7 +127,8 @@ void DataFileNameVector::updatePath()
             }
             else
             {
-                DataRepository.findFile(m_fullpath[i],"",&std::cerr);
+                std::ostringstream tempOss;
+                DataRepository.findFile(m_fullpath[i], "", &tempOss);
                 if (getPathType() != PathType::BOTH && (fs::FileSystem::exists(m_fullpath[i]) && ((getPathType() == PathType::DIRECTORY) != fs::FileSystem::isDirectory(m_fullpath[i]))))
                 {
                     msg_error(this->getName()) << "This DataFileName only accepts " << (getPathType() == PathType::DIRECTORY ? "directories" : "files");
