@@ -26,6 +26,8 @@
 #include <sstream>
 #include <sofa/helper/logging/Message.h>
 
+// SOFA_DEPRECATED_HEADER_NOT_REPLACED("v21.12 (PR#XXXX)", "v22.06")
+
 namespace sofa
 {
 
@@ -47,6 +49,7 @@ protected:
 
 public:
 
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
     friend inline std::ostream &operator << (std::ostream& out, const SofaEndl<Container> & s)
     {
         if (s.parent)
@@ -60,6 +63,7 @@ public:
     {
     }
 
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
     void setParent(Container* p)
     {
         parent = p;
@@ -79,21 +83,22 @@ public:
     SofaOStream(std::ostringstream& os) : m_ostream(os), m_messageType((logging::Message::Type)DefaultMessageType) {}
 
     bool operator==(const std::ostream& os) { return &os == &m_ostream; }
-
-    // operator std::ostream&() const { return m_ostream; }
-
+    
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
     friend inline SofaOStream& operator<<( SofaOStream& out, const logging::FileInfo::SPtr& fi )
     {
         out.m_fileInfo = fi;
         return out;
     }
 
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
     friend inline SofaOStream& operator<<( SofaOStream& out, const logging::Message::Type& mt )
     {
         out.m_messageType = mt;
         return out;
     }
 
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
     friend inline SofaOStream& operator<<( SofaOStream& out, const logging::Message::Class& mc )
     {
         out.m_messageClass = mc;
@@ -101,6 +106,7 @@ public:
     }
 
     template<class T>
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
     friend inline std::ostringstream& operator<<( SofaOStream& out, const T& t )
     {
         out.m_ostream << t;
@@ -108,17 +114,32 @@ public:
     }
 
     // a few useful functions on ostringstream, for a complete API, convert this in a ostringstream
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
     std::string str() const { return m_ostream.str(); }
+
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
     void str(const std::string& s) { m_ostream.str(s); }
+
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
     std::streamsize precision() const { return m_ostream.precision(); }
+
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
     std::streamsize precision( std::streamsize p ) { return m_ostream.precision(p); }
 
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
     std::ostringstream& ostringstream() const { return m_ostream; }
+
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
     const logging::FileInfo::SPtr& fileInfo() const { return m_fileInfo; }
+
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
     const logging::Message::Type& messageType() const { return m_messageType; }
+
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
     const logging::Message::Class& messageClass() const { return m_messageClass; }
 
     /// clearing the SofaOStream (set empty string, empty FileInfo, default Message type)
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
     void clear()
     {
         str("");
