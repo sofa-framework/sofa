@@ -28,6 +28,11 @@
 
 // SOFA_DEPRECATED_HEADER_NOT_REPLACED("v21.12 (PR#XXXX)", "v22.06")
 
+// The methods in SofaOStream have been deprecated, but we still want it to work.
+// Its usage in Base.h would generate warnings.
+// That is why the deprecation is set between SOFA_BUILD_SOFA_CORE macro, to disable the warnings only when building Sofa.Core.
+// Warning messages will appear when used outside of Sofa.Core (logically in the components)
+
 namespace sofa
 {
 
@@ -49,7 +54,9 @@ protected:
 
 public:
 
+#ifndef SOFA_BUILD_SOFA_CORE
     SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+#endif // SOFA_BUILD_SOFA_CORE
     friend inline std::ostream &operator << (std::ostream& out, const SofaEndl<Container> & s)
     {
         if (s.parent)
@@ -63,7 +70,9 @@ public:
     {
     }
 
+#ifndef SOFA_BUILD_SOFA_CORE
     SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+#endif // SOFA_BUILD_SOFA_CORE
     void setParent(Container* p)
     {
         parent = p;
@@ -84,21 +93,27 @@ public:
 
     bool operator==(const std::ostream& os) { return &os == &m_ostream; }
     
+#ifndef SOFA_BUILD_SOFA_CORE
     SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+#endif // SOFA_BUILD_SOFA_CORE
     friend inline SofaOStream& operator<<( SofaOStream& out, const logging::FileInfo::SPtr& fi )
     {
         out.m_fileInfo = fi;
         return out;
     }
 
+#ifndef SOFA_BUILD_SOFA_CORE
     SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+#endif // SOFA_BUILD_SOFA_CORE
     friend inline SofaOStream& operator<<( SofaOStream& out, const logging::Message::Type& mt )
     {
         out.m_messageType = mt;
         return out;
     }
 
+#ifndef SOFA_BUILD_SOFA_CORE
     SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+#endif // SOFA_BUILD_SOFA_CORE
     friend inline SofaOStream& operator<<( SofaOStream& out, const logging::Message::Class& mc )
     {
         out.m_messageClass = mc;
@@ -106,7 +121,9 @@ public:
     }
 
     template<class T>
+#ifndef SOFA_BUILD_SOFA_CORE
     SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+#endif // SOFA_BUILD_SOFA_CORE
     friend inline std::ostringstream& operator<<( SofaOStream& out, const T& t )
     {
         out.m_ostream << t;
@@ -114,32 +131,50 @@ public:
     }
 
     // a few useful functions on ostringstream, for a complete API, convert this in a ostringstream
+#ifndef SOFA_BUILD_SOFA_CORE
     SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+#endif // SOFA_BUILD_SOFA_CORE
     std::string str() const { return m_ostream.str(); }
 
+#ifndef SOFA_BUILD_SOFA_CORE
     SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+#endif // SOFA_BUILD_SOFA_CORE
     void str(const std::string& s) { m_ostream.str(s); }
 
+#ifndef SOFA_BUILD_SOFA_CORE
     SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+#endif // SOFA_BUILD_SOFA_CORE
     std::streamsize precision() const { return m_ostream.precision(); }
 
+#ifndef SOFA_BUILD_SOFA_CORE
     SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+#endif // SOFA_BUILD_SOFA_CORE
     std::streamsize precision( std::streamsize p ) { return m_ostream.precision(p); }
 
+#ifndef SOFA_BUILD_SOFA_CORE
     SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+#endif // SOFA_BUILD_SOFA_CORE
     std::ostringstream& ostringstream() const { return m_ostream; }
 
+#ifndef SOFA_BUILD_SOFA_CORE
     SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+#endif // SOFA_BUILD_SOFA_CORE
     const logging::FileInfo::SPtr& fileInfo() const { return m_fileInfo; }
 
+#ifndef SOFA_BUILD_SOFA_CORE
     SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+#endif // SOFA_BUILD_SOFA_CORE
     const logging::Message::Type& messageType() const { return m_messageType; }
 
+#ifndef SOFA_BUILD_SOFA_CORE
     SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+#endif // SOFA_BUILD_SOFA_CORE
     const logging::Message::Class& messageClass() const { return m_messageClass; }
 
     /// clearing the SofaOStream (set empty string, empty FileInfo, default Message type)
+#ifndef SOFA_BUILD_SOFA_CORE
     SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+#endif // SOFA_BUILD_SOFA_CORE
     void clear()
     {
         str("");
