@@ -317,7 +317,7 @@ class DeprecatedAndRemoved {};
 
 #define SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM() \
     SOFA_ATTRIBUTE_DEPRECATED( \
-        "v21.12 (PR#XXXX)", "v22.06", \
+        "v21.12 (PR#2292)", "v22.06", \
         "Use the Messaging API instead of using SofaOStream and sout/serr/sendl.")
 
 /**********************************************/

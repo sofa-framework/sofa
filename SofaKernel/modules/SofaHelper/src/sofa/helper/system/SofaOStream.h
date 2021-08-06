@@ -26,7 +26,7 @@
 #include <sstream>
 #include <sofa/helper/logging/Message.h>
 
-// SOFA_DEPRECATED_HEADER_NOT_REPLACED("v21.12 (PR#XXXX)", "v22.06")
+// SOFA_DEPRECATED_HEADER_NOT_REPLACED("v21.12 (PR#2292)", "v22.06")
 
 // The methods in SofaOStream have been deprecated, but we still want it to work.
 // Its usage in Base.h would generate warnings.
@@ -38,10 +38,10 @@
 // (and does not choke when using the msvc keyword __declspec(deprecated("xxx"))
 
 #ifndef SOFA_BUILD_SOFA_CORE
-#if defined(_MSC_VER) && (_MSC_VER < 1920) // if less than VS 2017
+#if defined(_MSC_VER) && (_MSC_VER < 1920) // if less than VS 2019
 #define SOFA_OVERRIDE_ATTRIBUTE_DEPRECATED__SOFAOSTREAM() \
     __declspec(deprecated(\
-        "It is still usable but has been DEPRECATED since v21.12 (PR#XXXX). " \
+        "It is still usable but has been DEPRECATED since v21.12 (PR#2292). " \
         "You have until v22.06 to fix your code. " \
         "Use the Messaging API instead of using SofaOStream and sout/serr/sendl."))
 #else // _MSC_VER
