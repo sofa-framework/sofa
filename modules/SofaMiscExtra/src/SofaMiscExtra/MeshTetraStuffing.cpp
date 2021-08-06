@@ -253,13 +253,13 @@ void MeshTetraStuffing::init()
                         {
                             eBDist[p1][e] = results[i].t - d;
                             if (eBDist[p1][e] < 0.00001)
-                                msg_info() << "WARNING: point " << p1 << " is too close to the surface on edge " << e << " : alpha = " << eBDist[p1][e]<<sendl;
+                                msg_info() << "WARNING: point " << p1 << " is too close to the surface on edge " << e << " : alpha = " << eBDist[p1][e];
                         }
                         if (i > 0)
                         {
                             eBDist[p1][e+1] = d - results[i-1].t;
                             if (eBDist[p1][e+1] < 0.00001)
-                                msg_info() << "WARNING: point " << p1 << " is too close to the surface on edge " << e+1 << " : alpha = " << eBDist[p1][e+1]<<sendl;
+                                msg_info() << "WARNING: point " << p1 << " is too close to the surface on edge " << e+1 << " : alpha = " << eBDist[p1][e+1];
                         }
 
                         p1 = getEdgePoint2(p1,e);

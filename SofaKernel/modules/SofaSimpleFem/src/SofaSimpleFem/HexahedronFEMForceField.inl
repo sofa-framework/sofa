@@ -535,7 +535,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
                 }
                 tmp<<" |  "<<std::endl;
             }
-            tmp<<"  "<<sendl;
+            tmp<<"  "<< std::endl;
         }
         tmp<<"===============================================================" << msgendl;
         msg_info() << tmp.str() ;

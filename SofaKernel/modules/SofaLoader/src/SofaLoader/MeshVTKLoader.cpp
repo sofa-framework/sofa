@@ -471,7 +471,7 @@ bool MeshVTKLoader::setInputsMesh()
                 break;
                 // more types are defined in vtkCellType.h in libvtk
             default:
-                msg_error() << "ERROR: unsupported cell type " << t << sendl;
+                msg_error() << "ERROR: unsupported cell type " << t;
             }
 
             if (!offsets)
@@ -615,7 +615,7 @@ bool LegacyVTKReader::readFile(const char* filename)
     if (line != "DATASET POLYDATA" && line != "DATASET UNSTRUCTURED_GRID"
             && line != "DATASET POLYDATA\r" && line != "DATASET UNSTRUCTURED_GRID\r" )
     {
-        msg_error() << "Error: Unsupported data type in file '" << filename << "'." << sendl;
+        msg_error() << "Error: Unsupported data type in file '" << filename << "'.";
         return false;
     }
 
@@ -641,7 +641,7 @@ bool LegacyVTKReader::readFile(const char* filename)
             int n;
             string typestr;
             ln >> n >> typestr;
-            msg_info() << "Found " << n << " " << typestr << " points" << sendl;
+            msg_info() << "Found " << n << " " << typestr << " points";
             inputPoints = newVTKDataIO(typestr);
             if (inputPoints == nullptr)
             {

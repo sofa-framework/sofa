@@ -106,16 +106,17 @@ void RigidDistanceGridCollisionModel::init()
     DistanceGrid* grid = NULL;
     if (fileRigidDistanceGrid.getValue().empty())
     {
-        if (elems.size()==0 || elems[0].grid==NULL)
-            serr << "ERROR: RigidDistanceGridCollisionModel requires an input filename." << sendl;
+        if (elems.size() == 0 || elems[0].grid == NULL)
+            msg_error() << "RigidDistanceGridCollisionModel requires an input filename.";
         // else the grid has already been set
         return;
     }
-    sout << "RigidDistanceGridCollisionModel: creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<<" DistanceGrid from file "<<fileRigidDistanceGrid.getValue();
-    if (scale.getValue()!=1.0) sout<<" scale="<<scale.getValue();
-    if (sampling.getValue()!=0.0) sout<<" sampling="<<sampling.getValue();
-    if (box.getValue()[0][0]<box.getValue()[1][0]) sout<<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
-    sout << sendl;
+    msg_info() << "RigidDistanceGridCollisionModel: creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<<" DistanceGrid from file "<<fileRigidDistanceGrid.getValue();
+
+    if (scale.getValue()!=1.0) msg_info()<<" scale="<<scale.getValue();
+    if (sampling.getValue()!=0.0) msg_info()<<" sampling="<<sampling.getValue();
+    if (box.getValue()[0][0]<box.getValue()[1][0]) msg_info()<<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
+
     grid = DistanceGrid::loadShared(fileRigidDistanceGrid.getFullPath(), scale.getValue(), sampling.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
     if (grid->getNx() != this->nx.getValue())
         this->nx.setValue(grid->getNx());
@@ -127,11 +128,11 @@ void RigidDistanceGridCollisionModel::init()
     elems[0].grid = grid;
     if (grid && !dumpfilename.getValue().empty())
     {
-        sout << "RigidDistanceGridCollisionModel: dump grid to "<<dumpfilename.getValue()<<sendl;
+        msg_info() << "RigidDistanceGridCollisionModel: dump grid to "<<dumpfilename.getValue();
         grid->save(dumpfilename.getFullPath());
     }
     updateState();
-    sout << "< RigidDistanceGridCollisionModel::init()"<<sendl;
+    msg_info() << "< RigidDistanceGridCollisionModel::init()";
 }
 
 void RigidDistanceGridCollisionModel::resize(Size s)
@@ -474,31 +475,31 @@ void FFDDistanceGridCollisionModel::init()
     ffdSGrid = dynamic_cast< topology::SparseGridTopology* > (ffdMesh);
     if (!ffd || (!ffdRGrid && !ffdSGrid))
     {
-        serr <<"FFDDistanceGridCollisionModel requires a Vec3-based deformable model with associated RegularGridTopology or SparseGridTopology" << sendl;
+        msg_error() << "FFDDistanceGridCollisionModel requires a Vec3-based deformable model with associated RegularGridTopology or SparseGridTopology";
         return;
     }
 
     DistanceGrid* grid = NULL;
     if (fileFFDDistanceGrid.getValue().empty())
     {
-        serr<<"ERROR: FFDDistanceGridCollisionModel requires an input filename" << sendl;
+        msg_error() << "ERROR: FFDDistanceGridCollisionModel requires an input filename";
         return;
     }
-    sout << "FFDDistanceGridCollisionModel: creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<<" DistanceGrid from file "<<fileFFDDistanceGrid.getValue();
-    if (scale.getValue()!=1.0) sout<<" scale="<<scale.getValue();
-    if (sampling.getValue()!=0.0) sout<<" sampling="<<sampling.getValue();
-    if (box.getValue()[0][0]<box.getValue()[1][0]) sout<<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
-    sout << sendl;
+    msg_info() << "FFDDistanceGridCollisionModel: creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<<" DistanceGrid from file "<<fileFFDDistanceGrid.getValue();
+    if (scale.getValue()!=1.0) msg_info()<<" scale="<<scale.getValue();
+    if (sampling.getValue()!=0.0) msg_info()<<" sampling="<<sampling.getValue();
+    if (box.getValue()[0][0]<box.getValue()[1][0]) msg_info()<<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
+
     grid = DistanceGrid::loadShared(fileFFDDistanceGrid.getFullPath(), scale.getValue(), sampling.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
     if (!dumpfilename.getValue().empty())
     {
-        sout << "FFDDistanceGridCollisionModel: dump grid to "<<dumpfilename.getValue()<<sendl;
+        msg_info() << "FFDDistanceGridCollisionModel: dump grid to "<<dumpfilename.getValue();
         grid->save(dumpfilename.getFullPath());
     }
     /// place points in ffd elements
     int nbp = grid->meshPts.size();
     elems.resize(ffdMesh->getNbHexahedra());
-    sout << "FFDDistanceGridCollisionModel: placing "<<nbp<<" points in "<<ffdMesh->getNbHexahedra()<<" cubes."<<sendl;
+    msg_info() << "FFDDistanceGridCollisionModel: placing "<<nbp<<" points in "<<ffdMesh->getNbHexahedra()<<" cubes.";
 
     for (int i=0; i<nbp; i++)
     {
@@ -508,7 +509,7 @@ void FFDDistanceGridCollisionModel::init()
         if (elem == sofa::InvalidID) continue;
         if (elem >= elems.size())
         {
-            serr << "ERROR (FFDDistanceGridCollisionModel): point "<<i<<" "<<p0<<" in invalid cube "<<elem<<sendl;
+            msg_error() << "point "<<i<<" "<<p0<<" in invalid cube "<<elem;
         }
         else
         {
@@ -523,7 +524,7 @@ void FFDDistanceGridCollisionModel::init()
     }
     /// fill other data and remove inactive elements
 
-    sout << "FFDDistanceGridCollisionModel: initializing "<<ffdMesh->getNbHexahedra()<<" cubes."<<sendl;
+    msg_info() << "FFDDistanceGridCollisionModel: initializing "<<ffdMesh->getNbHexahedra()<<" cubes.";
     Size c=0;
     for (Size e=0; e<ffdMesh->getNbHexahedra(); e++)
     {
@@ -571,7 +572,7 @@ void FFDDistanceGridCollisionModel::init()
         elems[i].neighbors.erase(i);
     }
 
-    sout << "FFDDistanceGridCollisionModel: "<<c<<" active cubes."<<sendl;
+    msg_info() << "FFDDistanceGridCollisionModel: "<<c<<" active cubes.";
 }
 
 void FFDDistanceGridCollisionModel::resize(Size s)

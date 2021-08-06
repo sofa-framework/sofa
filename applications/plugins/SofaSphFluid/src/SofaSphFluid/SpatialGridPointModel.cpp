@@ -51,7 +51,7 @@ void SpatialGridPointModel::init()
 
     if (grid==NULL)
     {
-        serr <<"SpatialGridPointModel requires a Vec3 SpatialGridContainer" << sendl;
+        msg_error() <<"SpatialGridPointModel requires a Vec3 SpatialGridContainer";
         return;
     }
 }
@@ -163,7 +163,7 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
     }
     if (!sorted)
     {
-        serr << "ERROR(SpatialGridPointModel): points are not sorted in spatial grid."<<sendl;
+        msg_error() << "ERROR(SpatialGridPointModel): points are not sorted in spatial grid.";
     }
     //sout << sendl;
     cubeModel->resize(cells.size());
@@ -192,7 +192,7 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
     int depth = 0;
     while (depth < maxDepth && cells.size() > 8)
     {
-        msg_info() << "SpatialGridPointModel: cube depth "<<depth<<": "<<cells.size()<<" cells ("<<(size*100/cells.size())*0.01<<" points/cell)."<<sendl;
+        msg_info() << "SpatialGridPointModel: cube depth "<<depth<<": "<<cells.size()<<" cells ("<<(size*100/cells.size())*0.01<<" points/cell).";
         // compact cells inplace
         int parent = -1;
         for (unsigned int i=0; i<cells.size(); ++i)

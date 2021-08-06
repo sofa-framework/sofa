@@ -146,7 +146,7 @@ protected:
         }
         else
         {
-            serr << "ERROR: Invalid face "<<p1<<" "<<p2<<" "<<p3<<sendl;
+           msg_error() << "ERROR: Invalid face "<<p1<<" "<<p2<<" "<<p3;
             return -1;
         }
     }

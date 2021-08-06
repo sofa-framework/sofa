@@ -2002,7 +2002,7 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
         }
         *out << '\n';
     }
-    *out << sendl;
+    *out << '\n';
     vindex+=nbv;
     nindex+=nbn;
     tindex+=nbt;

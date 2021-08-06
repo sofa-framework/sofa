@@ -69,7 +69,7 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
     if (!grid1->inBBox( p1, margin )) return 0;
     if (!grid1->inGrid( p1 ))
     {
-        intersection->serr << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e1.getCollisionModel()->getName()<<intersection->sendl;
+        msg_error(intersection) << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e1.getCollisionModel()->getName();
         return 0;
     }
 
