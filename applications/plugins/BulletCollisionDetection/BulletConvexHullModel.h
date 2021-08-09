@@ -70,7 +70,7 @@ public:
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
     typedef typename DataTypes::Coord::Pos Coord;
-    typedef helper::vector<Coord> VecCoord;
+    typedef type::vector<Coord> VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecReal VecReal;
     typedef typename DataTypes::Quat Quaternion;
@@ -170,11 +170,11 @@ protected:
 
     sofa::core::topology::BaseMeshTopology* bmsh;
 
-    std::vector<std::vector< defaulttype::Vector3 > > _ch_deco_pts;//convex hull decomposition triangles, used only for drawing convex hulls
-    std::vector<std::vector< sofa::defaulttype::Vec<3,int> > > _ch_deco_tri;
-    std::vector<std::vector< defaulttype::Vector3 > > _ch_deco_norms;
+    std::vector<std::vector< type::Vector3 > > _ch_deco_pts;//convex hull decomposition triangles, used only for drawing convex hulls
+    std::vector<std::vector< sofa::type::Vec<3,int> > > _ch_deco_tri;
+    std::vector<std::vector< type::Vector3 > > _ch_deco_norms;
 
-    std::vector<defaulttype::Vec<4,float> > _ch_deco_colors;
+    std::vector<type::Vec<4,float> > _ch_deco_colors;
 
 };
 

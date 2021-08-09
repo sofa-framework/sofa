@@ -35,7 +35,7 @@ using sofa::simulation::graph::DAGSimulation;
 #include <SofaGeneralEngine/SmoothMeshEngine.h>
 using sofa::component::engine::SmoothMeshEngine ;
 
-using sofa::helper::vector;
+using sofa::type::vector;
 
 
 namespace sofa
@@ -48,7 +48,7 @@ struct SmoothMeshEngine_test : public BaseSimulationTest,
 	typedef SmoothMeshEngine<_DataTypes> ThisClass ;
 	typedef _DataTypes DataTypes;
 	typedef typename DataTypes::Real Real;
-	typedef sofa::defaulttype::Vec<3,Real> Vec3;
+	typedef sofa::type::Vec<3,Real> Vec3;
 
 	Simulation* m_simu;
 	Node::SPtr m_node;

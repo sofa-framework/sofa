@@ -23,7 +23,7 @@
 #include <SofaBoundaryCondition/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
-#include <SofaBaseTopology/TopologySparseData.h>
+#include <SofaBaseTopology/TopologySubsetData.h>
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 
@@ -44,7 +44,7 @@ public:
     typedef typename DataTypes::VecReal     VecReal     ;
     typedef Data<VecCoord>                  DataVecCoord;
     typedef Data<VecDeriv>                  DataVecDeriv;
-    typedef sofa::defaulttype::Vec3d        Vec3d;
+    typedef sofa::type::Vec3d        Vec3d;
 
     using Index = sofa::Index;
 protected:
@@ -78,19 +78,19 @@ protected:
         }
     };
 
-    sofa::component::topology::EdgeSparseData<sofa::helper::vector< EdgePressureInformation> > edgePressureMap; ///< map between edge indices and their pressure
+    sofa::component::topology::EdgeSubsetData<sofa::type::vector< EdgePressureInformation> > edgePressureMap; ///< map between edge indices and their pressure
 
     sofa::component::topology::TriangleSetTopologyContainer* _completeTopology;
     sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
 
     Data<Deriv> pressure; ///< Pressure force per unit area
-    Data<helper::vector<Index> > edgeIndices; ///< Indices of edges separated with commas where a pressure is applied
-    Data<helper::vector<sofa::core::topology::Edge> > edges; ///< List of edges where a pressure is applied
+    Data<type::vector<Index> > edgeIndices; ///< Indices of edges separated with commas where a pressure is applied
+    Data<type::vector<sofa::core::topology::Edge> > edges; ///< List of edges where a pressure is applied
     Data<Deriv> normal; ///< the normal used to define the edge subjected to the pressure force
     Data<Real> dmin; ///< coordinates min of the plane for the vertex selection
     Data<Real> dmax;///< coordinates max of the plane for the vertex selection
     Data< SReal > arrowSizeCoef; ///< for drawing. The sign changes the direction, 0 doesn't draw arrow
-    Data< helper::vector<Real> > p_intensity; ///< pressure intensity on edge normal
+    Data< type::vector<Real> > p_intensity; ///< pressure intensity on edge normal
     Data<Coord> p_binormal; ///< binormal of the 2D plane
     Data<bool> p_showForces; ///< draw arrows of edge pressures
 
@@ -119,7 +119,7 @@ public:
 
 protected :
     void selectEdgesAlongPlane();
-    void selectEdgesFromIndices(const helper::vector<Index>& inputIndices);
+    void selectEdgesFromIndices(const type::vector<Index>& inputIndices);
     void selectEdgesFromString();
     void selectEdgesFromEdgeList();
     void updateEdgeInformation();

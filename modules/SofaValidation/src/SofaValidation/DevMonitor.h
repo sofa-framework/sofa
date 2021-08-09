@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaValidation/config.h>
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/DevBaseMonitor.h>
@@ -42,7 +42,7 @@ public:
     typedef typename std::pair< Coord,Real > TData;
 
     Data < double > f_period; ///< period between outputs
-    Data< sofa::helper::vector< unsigned int > > f_indices; ///< Indices of the points which will be monitored
+    Data< sofa::type::vector< unsigned int > > f_indices; ///< Indices of the points which will be monitored
 
     DevMonitor():
         f_period( initData(&f_period, 1.0, "period", "period between outputs"))
@@ -51,9 +51,9 @@ public:
     {
     }
 
-    sofa::helper::vector<TData> getData()
+    sofa::type::vector<TData> getData()
     {
-        sofa::helper::vector<TData> copy;
+        sofa::type::vector<TData> copy;
         copy = data;
         data.clear();
         return copy;
@@ -76,7 +76,7 @@ public:
 protected:
     double lastTime;
     double timestamp;
-    sofa::helper::vector<TData> data;
+    sofa::type::vector<TData> data;
 };
 
 } // namespace sofa::component::misc

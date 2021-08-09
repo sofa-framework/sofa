@@ -79,7 +79,7 @@ public:
     virtual sofa::simulation::Node* currentSimulation() override;
     virtual int closeGUI() override;
     virtual void setViewerResolution(int width, int height) override;
-    virtual void setBackgroundColor(const sofa::helper::types::RGBAColor& color) override;
+    virtual void setBackgroundColor(const sofa::type::RGBAColor& color) override;
 
     // Needed for the registration
     static BaseGUI* CreateGUI(const char* name, sofa::simulation::NodeSPtr groot = nullptr, const char* filename = nullptr);
@@ -116,7 +116,7 @@ private:
     bool initTexturesDone;
     bool requestVideoRecorderInit;
     sofa::gl::Capture m_screencapture;
-    helper::types::RGBAColor m_backgroundColor;
+    type::RGBAColor m_backgroundColor;
 
 
     static GLsizei s_height;

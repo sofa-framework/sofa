@@ -27,7 +27,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
-#include <SofaBaseTopology/TopologySubsetData.inl>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 namespace sofa::component::projectiveconstraintset
 {
@@ -129,32 +129,43 @@ void PointConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /
 }
 
 template <class DataTypes>
-void PointConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
+void PointConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    const unsigned int N = Deriv::size();
-    const SetIndexArray & indices = f_indices.getValue();
-
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    SOFA_UNUSED(mparams);
+    core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get());
+    if(r)
     {
-        // Reset Fixed Row and Col
-        for (unsigned int c=0; c<N; ++c)
-            mat->clearRowCol(offset + N * (*it) + c);
-        // Set Fixed Vertex
-        for (unsigned int c=0; c<N; ++c)
-            mat->set(offset + N * (*it) + c, offset + N * (*it) + c, 1.0);
+        const unsigned int N = Deriv::size();
+        const SetIndexArray & indices = f_indices.getValue();
+
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            // Reset Fixed Row and Col
+            for (unsigned int c=0; c<N; ++c)
+                r.matrix->clearRowCol(r.offset + N * (*it) + c);
+            // Set Fixed Vertex
+            for (unsigned int c=0; c<N; ++c)
+                r.matrix->set(r.offset + N * (*it) + c, r.offset + N * (*it) + c, 1.0);
+        }
     }
 }
 
 template <class DataTypes>
-void PointConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset)
+void PointConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    const unsigned int N = Deriv::size();
-
-    const SetIndexArray & indices = f_indices.getValue();
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    SOFA_UNUSED(mparams);
+    int o = matrix->getGlobalOffset(this->mstate.get());
+    if (o >= 0)
     {
-        for (unsigned int c=0; c<N; ++c)
-            vect->clear(offset + N * (*it) + c);
+        unsigned int offset = (unsigned int)o;
+        const unsigned int N = Deriv::size();
+
+        const SetIndexArray & indices = f_indices.getValue();
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            for (unsigned int c=0; c<N; ++c)
+                vector->clear(offset + N * (*it) + c);
+        }
     }
 }
 
@@ -175,8 +186,8 @@ void PointConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
     if( _drawSize.getValue() == 0) // old classical drawing by points
     {
-        std::vector< sofa::defaulttype::Vector3 > points;
-        sofa::defaulttype::Vector3 point;
+        std::vector< sofa::type::Vector3 > points;
+        sofa::type::Vector3 point;
         for (SetIndexArray::const_iterator it = indices.begin();
                 it != indices.end();
                 ++it)
@@ -184,18 +195,18 @@ void PointConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
             point = DataTypes::getCPos(x[*it]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, sofa::type::RGBAColor(1,0.5,0.5,1));
     }
     else // new drawing by spheres
     {
-        std::vector< sofa::defaulttype::Vector3 > points;
-        sofa::defaulttype::Vector3 point;
+        std::vector< sofa::type::Vector3 > points;
+        sofa::type::Vector3 point;
         for (unsigned int index : indices)
         {
             point = DataTypes::getCPos(x[index]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), sofa::helper::types::RGBAColor(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), sofa::type::RGBAColor(1.0f,0.35f,0.35f,1.0f));
     }
     vparams->drawTool()->restoreLastState();
 

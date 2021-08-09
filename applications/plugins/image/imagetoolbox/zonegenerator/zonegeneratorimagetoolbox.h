@@ -21,9 +21,10 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
-using defaulttype::Vec;
-using defaulttype::Vector3;
+using type::vector;
+using type::Vec;
+using type::Vector3;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 
@@ -33,9 +34,9 @@ public:
     SOFA_CLASS(ZoneGeneratorImageToolBoxNoTemplated,LabelImageToolBox);
 
     typedef Vec<2,unsigned int> PixCoord;
-    typedef sofa::defaulttype::Vec3d Vec3d;
-    typedef sofa::defaulttype::Vec2d Vec2d;
-    typedef sofa::defaulttype::Vec2i Vec2i;
+    typedef sofa::type::Vec3d Vec3d;
+    typedef sofa::type::Vec2d Vec2d;
+    typedef sofa::type::Vec2i Vec2i;
     typedef vector<Vec3d> VecCoord;
     typedef vector<Vec2d> VecVec2d;
     typedef vector<PixCoord> VecPixCoord;

@@ -22,10 +22,10 @@
 #pragma once
 
 #include <SofaBoundaryCondition/EdgePressureForceField.h>
-#include <SofaBaseTopology/TopologySparseData.inl>
+#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <vector>
 #include <set>
 
@@ -97,7 +97,6 @@ void EdgePressureForceField<DataTypes>::init()
 
     // init edgesubsetData engine
     edgePressureMap.createTopologyHandler(m_topology);
-    edgePressureMap.registerTopologicalData();
 
     if (dmin.getValue()!=dmax.getValue())
     {
@@ -122,8 +121,8 @@ void EdgePressureForceField<DataTypes>::addForce(const sofa::core::MechanicalPar
     Deriv force;
 
     //edgePressureMap.activateSubsetData();
-    const sofa::helper::vector <Index>& my_map = edgePressureMap.getMap2Elements();
-    const sofa::helper::vector<EdgePressureInformation>& my_subset = edgePressureMap.getValue();
+    const sofa::type::vector<Index>& my_map = edgePressureMap.getMap2Elements();
+    const sofa::type::vector<EdgePressureInformation>& my_subset = edgePressureMap.getValue();
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
         force=my_subset[i].force/2;
@@ -176,11 +175,12 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
     if (x.empty())
         return;
 
-    const helper::vector<Real>& intensities = p_intensity.getValue();
+    const type::vector<Real>& intensities = p_intensity.getValue();
 
-    const sofa::helper::vector <Index>& my_map = edgePressureMap.getMap2Elements();
+    const sofa::type::vector<Index>& my_map = edgePressureMap.getMap2Elements();
+    helper::WriteAccessor< Data<sofa::type::vector< EdgePressureInformation> > > edgePMap(edgePressureMap);
 
-    sofa::helper::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
+    sofa::type::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
 
     if(pressure.getValue().norm() > 0 )
     {
@@ -209,7 +209,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
                 Real intensity = (intensities.size() > 1 && intensities.size() > (unsigned int) i) ? intensities[i] : intensities[0];
                 ei.length = edgeGeo->computeRestEdgeLength(i);
                 ei.force = normal * intensity * ei.length ;
-                edgePressureMap[i] = ei;
+                edgePMap[i] = ei;
             }
         }
         else
@@ -271,7 +271,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
                     Real intensity = (intensities.size() > 1 && intensities.size() > (unsigned int) i) ? intensities[i] : intensities[0];
                     ei.length = edgeGeo->computeRestEdgeLength(i);
                     ei.force = n1 * ei.length * intensity;
-                    edgePressureMap[i] = ei;
+                    edgePMap[i] = ei;
                 }
             }
         }
@@ -294,15 +294,15 @@ void EdgePressureForceField<DataTypes>::updateEdgeInformation()
         return;
     }
 
-    const sofa::helper::vector <Index>& my_map = edgePressureMap.getMap2Elements();
-    sofa::helper::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
+    const sofa::type::vector<Index>& my_map = edgePressureMap.getMap2Elements();
+    sofa::type::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
-        sofa::defaulttype::Vec3d p1 = x[m_topology->getEdge(my_map[i])[0]];
-        sofa::defaulttype::Vec3d p2 = x[m_topology->getEdge(my_map[i])[1]];
-        sofa::defaulttype::Vec3d orig(0,0,0);
+        sofa::type::Vec3d p1 = x[m_topology->getEdge(my_map[i])[0]];
+        sofa::type::Vec3d p2 = x[m_topology->getEdge(my_map[i])[1]];
+        sofa::type::Vec3d orig(0,0,0);
 
-        sofa::defaulttype::Vec3d tang = p2 - p1;
+        sofa::type::Vec3d tang = p2 - p1;
         tang.norm(); /// @todo: shouldn't this be normalize() ?
 
         Deriv myPressure;
@@ -339,8 +339,8 @@ void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
         vArray[i]=isPointInPlane(x[i]);
     }
 
-    sofa::helper::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
-    helper::vector<Index> inputEdges;
+    sofa::type::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
+    type::vector<Index> inputEdges;
 
 
     for (size_t n=0; n<m_topology->getNbEdges(); ++n)
@@ -360,11 +360,11 @@ void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
 }
 
 template <class DataTypes>
-void EdgePressureForceField<DataTypes>::selectEdgesFromIndices(const helper::vector<Index>& inputIndices)
+void EdgePressureForceField<DataTypes>::selectEdgesFromIndices(const type::vector<Index>& inputIndices)
 {
     edgePressureMap.setMap2Elements(inputIndices);
 
-    sofa::helper::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
+    sofa::type::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
 
     unsigned int sizeTest = m_topology->getNbEdges();
 
@@ -384,17 +384,17 @@ void EdgePressureForceField<DataTypes>::selectEdgesFromIndices(const helper::vec
 template <class DataTypes>
 void EdgePressureForceField<DataTypes>::selectEdgesFromString()
 {
-    const helper::vector<Index>& inputString = edgeIndices.getValue();
+    const type::vector<Index>& inputString = edgeIndices.getValue();
     selectEdgesFromIndices(inputString);
 }
 
 template<class DataTypes>
 void EdgePressureForceField<DataTypes>::selectEdgesFromEdgeList()
 {
-    const helper::vector<core::topology::BaseMeshTopology::Edge>& inputEdges = edges.getValue();
-    const helper::vector<core::topology::BaseMeshTopology::Edge>& topologyEdges = m_topology->getEdges();
+    const type::vector<core::topology::BaseMeshTopology::Edge>& inputEdges = edges.getValue();
+    const type::vector<core::topology::BaseMeshTopology::Edge>& topologyEdges = m_topology->getEdges();
 
-    helper::vector<Index> indices(inputEdges.size());
+    type::vector<Index> indices(inputEdges.size());
 
     for(unsigned int i=0; i<inputEdges.size(); i++)
     {
@@ -426,19 +426,19 @@ void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     vparams->drawTool()->disableLighting();
 
-    const sofa::helper::types::RGBAColor& color = sofa::helper::types::RGBAColor::yellow();
+    const sofa::type::RGBAColor& color = sofa::type::RGBAColor::yellow();
 
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vector3> vertices;
 
-    const sofa::helper::vector <Index>& my_map = edgePressureMap.getMap2Elements();
-    const sofa::helper::vector<EdgePressureInformation>& my_subset = edgePressureMap.getValue();
+    const sofa::type::vector<Index>& my_map = edgePressureMap.getMap2Elements();
+    const sofa::type::vector<EdgePressureInformation>& my_subset = edgePressureMap.getValue();
 
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
-        sofa::defaulttype::Vector3 p = (x[m_topology->getEdge(my_map[i])[0]] + x[m_topology->getEdge(my_map[i])[1]]) / 2.0;
+        sofa::type::Vector3 p = (x[m_topology->getEdge(my_map[i])[0]] + x[m_topology->getEdge(my_map[i])[1]]) / 2.0;
         vertices.push_back(p);
 
-        sofa::defaulttype::Vec3d f = my_subset[i].force;
+        sofa::type::Vec3d f = my_subset[i].force;
         //f.normalize();
         f *= aSC;
         vertices.push_back(p + f);

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Quat.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_FixedArray.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
 
@@ -29,7 +29,7 @@ namespace sofa::defaulttype
 {
 
 template<class T>
-struct DataTypeInfo< sofa::helper::Quater<T> > : public FixedArrayTypeInfo< sofa::helper::Quater<T> >
+struct DataTypeInfo< sofa::type::Quat<T> > : public FixedArrayTypeInfo< sofa::type::Quat<T> >
 {
     static std::string GetTypeName() { std::ostringstream o; o << "Quat<" << DataTypeInfo<T>::GetTypeName() << ">"; return o.str(); }
     static std::string name() { std::ostringstream o; o << "Quat" << DataTypeInfo<T>::name() ; return o.str(); }

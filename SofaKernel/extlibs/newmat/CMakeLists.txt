@@ -46,6 +46,11 @@ else()
     target_compile_definitions(${PROJECT_NAME} PUBLIC "USING_DOUBLE")
 endif()
 
+if(WIN32)
+    # remove warnings about deprecation (CRT,etc)
+    target_compile_options(${PROJECT_NAME} PRIVATE "/wd4996")
+endif()
+
 # The code must be relocatable if we want to link a shared library against it
 if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xClang")
     target_compile_options(${PROJECT_NAME} PRIVATE "-fPIC")

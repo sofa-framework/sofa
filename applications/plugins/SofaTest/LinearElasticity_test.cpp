@@ -28,7 +28,6 @@
 
 #include <SofaMiscFem/TetrahedralTensorMassForceField.h>
 #include <SofaGeneralSimpleFem/TetrahedralCorotationalFEMForceField.h>
-#include <SofaBaseTopology/TopologySparseData.inl>
 #include <SofaBoundaryCondition/TrianglePressureForceField.h>
 #include <SofaBoundaryCondition/AffineMovementConstraint.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>

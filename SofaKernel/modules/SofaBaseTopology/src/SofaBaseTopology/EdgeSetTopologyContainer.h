@@ -41,7 +41,7 @@ public:
     typedef BaseMeshTopology::Edge                  Edge;
     typedef BaseMeshTopology::SeqEdges              SeqEdges;
     typedef BaseMeshTopology::EdgesAroundVertex     EdgesAroundVertex;
-    typedef sofa::helper::vector<EdgeID>            VecEdgeID;
+    typedef sofa::type::vector<EdgeID>            VecEdgeID;
 
 
 protected:
@@ -128,20 +128,20 @@ public:
      * @param components the array containing the optimal vertex permutation according to the Reverse CuthillMckee algorithm
      * @return The number of components connected together.
      */
-    virtual int getNumberConnectedComponents(sofa::helper::vector<EdgeID>& components);
+    virtual int getNumberConnectedComponents(sofa::type::vector<EdgeID>& components);
 
 
     /** \brief Returns the Edge array.
      *
      */
-    virtual const sofa::helper::vector<Edge>& getEdgeArray();
+    virtual const sofa::type::vector<Edge>& getEdgeArray();
 
 
     /** \brief Returns the list of Edge indices around each DOF.
      *
      * @return EdgesAroundVertex lists.
      */
-    virtual const sofa::helper::vector< sofa::helper::vector<EdgeID> >& getEdgesAroundVertexArray();
+    virtual const sofa::type::vector< sofa::type::vector<EdgeID> >& getEdgesAroundVertexArray();
 
 
     bool hasEdges() const;
@@ -174,6 +174,8 @@ public:
     /** \brief Returns the type of the topology */
     sofa::core::topology::TopologyElementType getTopologyType() const override {return sofa::core::topology::TopologyElementType::EDGE;}
     
+    /// \brief function to add a TopologyHandler to the current list of engines.
+    void addTopologyHandler(sofa::core::topology::TopologyHandler* _TopologyHandler);
 
 protected:
 
@@ -220,7 +222,7 @@ protected:
 protected:
 
     /** the array that stores the set of edge-vertex shells, ie for each vertex gives the set of adjacent edges */
-    sofa::helper::vector< EdgesAroundVertex > m_edgesAroundVertex;
+    sofa::type::vector< EdgesAroundVertex > m_edgesAroundVertex;
 
 
     /// Boolean used to know if the topology Data of this container is dirty
@@ -230,12 +232,12 @@ protected:
     std::list<sofa::core::topology::TopologyHandler *> m_enginesList;
 
     /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
-    sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;
-    sofa::helper::vector < sofa::helper::vector <std::string> > m_enginesGraph;
+    sofa::type::vector< sofa::type::vector<std::string> > m_dataGraph;
+    sofa::type::vector< sofa::type::vector<std::string> > m_enginesGraph;
 
 public:
     /** The array that stores the set of edges in the edge set */
-    Data< sofa::helper::vector<Edge> > d_edge; ///< List of edge indices
+    Data< sofa::type::vector<Edge> > d_edge; ///< List of edge indices
 
     Data <bool> m_checkConnexity; ///< It true, will check the connexity of the mesh.
 

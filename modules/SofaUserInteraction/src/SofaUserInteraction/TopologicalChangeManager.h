@@ -30,7 +30,7 @@
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaBaseCollision/SphereModel.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -50,7 +50,7 @@ public:
     /// Handles Removing of topological element (from any type of topology)
     Index removeItemsFromCollisionModel(sofa::core::CollisionElementIterator) const;
     Index removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const Index& index) const;
-    Index removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const helper::vector<Index>& indices) const;
+    Index removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const type::vector<Index>& indices) const;
 
 
     /** Handles Cutting (activated only for a triangular topology)
@@ -70,7 +70,7 @@ public:
      * @return bool - true if incision has been performed.
      */
     bool incisionCollisionModel(sofa::core::CollisionElementIterator elem,
-                                defaulttype::Vector3& pos, bool firstInput,
+                                type::Vector3& pos, bool firstInput,
                                 int snapingValue = 0,
                                 int snapingBorderValue = 0);
 
@@ -93,10 +93,10 @@ public:
      */
     bool incisionCollisionModel(sofa::core::CollisionModel* model1,
                                 Index idx1,
-                                const defaulttype::Vector3& firstPoint,
+                                const type::Vector3& firstPoint,
                                 sofa::core::CollisionModel *model2,
                                 Index idx2,
-                                const defaulttype::Vector3& secondPoint,
+                                const type::Vector3& secondPoint,
                                 int snapingValue = 0,
                                 int snapingBorderValue = 0);
 
@@ -127,17 +127,17 @@ private:
      */
     bool incisionTriangleModel(TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model1,
                                Index idx1,
-                               const defaulttype::Vector3& firstPoint,
+                               const type::Vector3& firstPoint,
                                TriangleCollisionModel<sofa::defaulttype::Vec3Types> *model2,
                                Index idx2,
-                               const defaulttype::Vector3& secondPoint,
+                               const type::Vector3& secondPoint,
                                int snapingValue = 0,
                                int snapingBorderValue = 0);
 
 
-    Index removeItemsFromTriangleModel(sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<Index>& indices) const;
-    Index removeItemsFromPointModel(sofa::component::collision::PointCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<Index>& indices) const;
-    Index removeItemsFromSphereModel(sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model, const helper::vector<Index>& indices) const;
+    Index removeItemsFromTriangleModel(sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const;
+    Index removeItemsFromPointModel(sofa::component::collision::PointCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const;
+    Index removeItemsFromSphereModel(sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const;
 
 
 private:
@@ -148,7 +148,7 @@ private:
         sofa::core::topology::BaseMeshTopology::PointID indexPoint;
 
         /// Temporary point coordinate for successive incisions
-        defaulttype::Vector3 coordPoint;
+        type::Vector3 coordPoint;
 
         /// Temporary triangle index for successive incisions
         sofa::core::topology::BaseMeshTopology::TriangleID indexTriangle;

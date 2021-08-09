@@ -89,7 +89,7 @@ public:
     virtual SReal getPotentialEnergy(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
 
     /// (Mv,xMv+Iw) (linear and angular momenta against world origin)
-    virtual defaulttype::Vector6 getMomentum(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
+    virtual type::Vector6 getMomentum(const MechanicalParams* mparams = mechanicalparams::defaultInstance()) const = 0;
 
     /// @}
 

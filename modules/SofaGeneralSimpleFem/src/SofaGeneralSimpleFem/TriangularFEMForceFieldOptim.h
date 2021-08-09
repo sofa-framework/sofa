@@ -27,7 +27,7 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <SofaBaseTopology/TopologyData.h>
 
 #include <map>
@@ -86,12 +86,12 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::SeqTriangles VecElement;
     typedef sofa::core::topology::BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
 
-    typedef sofa::helper::Quater<Real> Quat;
+    typedef sofa::type::Quat<Real> Quat;
 
 protected:
-    typedef defaulttype::Mat<2, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
+    typedef type::Mat<2, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
     enum { DerivSize = DataTypes::deriv_total_size };
-    typedef defaulttype::Mat<DerivSize, DerivSize, Real> MatBloc;
+    typedef type::Mat<DerivSize, DerivSize, Real> MatBloc;
 
     typedef TriangularFEMForceFieldOptimInternalData<DataTypes> InternalData;
     InternalData data;
@@ -237,8 +237,8 @@ public:
 
         void applyCreateFunction(Index triangleIndex, TriangleInfo& ,
                 const Triangle & t,
-                const sofa::helper::vector< Index > &,
-                const sofa::helper::vector< double > &);
+                const sofa::type::vector< Index > &,
+                const sofa::type::vector< double > &);
 
     protected:
         TriangularFEMForceFieldOptim<DataTypes>* ff;
@@ -263,8 +263,8 @@ public:
 
         void applyCreateFunction(Index triangleIndex, TriangleState& ,
                 const Triangle & t,
-                const sofa::helper::vector< Index > &,
-                const sofa::helper::vector< double > &);
+                const sofa::type::vector< Index > &,
+                const sofa::type::vector< double > &);
 
     protected:
         TriangularFEMForceFieldOptim<DataTypes>* ff;

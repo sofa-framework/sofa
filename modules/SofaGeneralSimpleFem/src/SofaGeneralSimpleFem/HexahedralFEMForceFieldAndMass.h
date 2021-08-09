@@ -53,7 +53,6 @@ public:
     typedef typename HexahedralFEMForceFieldT::Mat33 Mat33;
     typedef typename HexahedralFEMForceFieldT::Displacement Displacement;
     typedef typename HexahedralFEMForceFieldT::VecElement VecElement;
-    typedef typename HexahedralFEMForceFieldT::VecElementStiffness VecElementMass;
     typedef typename HexahedralFEMForceFieldT::ElementStiffness ElementMass;
     typedef core::topology::BaseMeshTopology::Index Index;
     typedef typename HexahedralFEMForceFieldT::HexahedronInformation HexahedronInformation;
@@ -116,7 +115,7 @@ public:
 protected:
     virtual void computeElementMasses( ); ///< compute the mass matrices
     Real integrateVolume( int signx, int signy, int signz, Real l0, Real l1, Real l2 );
-    virtual void computeElementMass( ElementMass &Mass, Real& totalMass, const helper::fixed_array<Coord,8> &nodes); ///< compute the mass matrix of an element
+    virtual void computeElementMass( ElementMass &Mass, Real& totalMass, const type::fixed_array<Coord,8> &nodes); ///< compute the mass matrix of an element
 
     void computeParticleMasses();
 
@@ -126,11 +125,11 @@ protected:
     Data<Real> _density; ///< density == volumetric mass in english (kg.m-3)
     Data<bool> _useLumpedMass; ///< Does it use lumped masses?
 
-    topology::HexahedronData<sofa::helper::vector<ElementMass> > _elementMasses; ///< mass matrices per element
-    topology::HexahedronData<sofa::helper::vector<Real> > _elementTotalMass; ///< total mass per element
+    topology::HexahedronData<sofa::type::vector<ElementMass> > _elementMasses; ///< mass matrices per element
+    topology::HexahedronData<sofa::type::vector<Real> > _elementTotalMass; ///< total mass per element
 
-    topology::PointData<sofa::helper::vector<Real> > _particleMasses; ///< masses per particle in order to compute gravity
-    topology::PointData<sofa::helper::vector<Coord> > _lumpedMasses; ///< masses per particle computed by lumping mass matrices
+    topology::PointData<sofa::type::vector<Real> > _particleMasses; ///< masses per particle in order to compute gravity
+    topology::PointData<sofa::type::vector<Coord> > _lumpedMasses; ///< masses per particle computed by lumping mass matrices
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_CPP)

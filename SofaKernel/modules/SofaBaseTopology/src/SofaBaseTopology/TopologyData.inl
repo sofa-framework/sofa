@@ -56,7 +56,7 @@ void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core:
     this->m_topologyHandler->init();
 
     // Register the engine
-    m_isTopologyDynamic = this->m_topologyHandler->registerTopology();
+    m_isTopologyDynamic = this->m_topologyHandler->registerTopology(_topology);
     if (m_isTopologyDynamic)
     {
         this->linkToElementDataArray((TopologyElementType*)nullptr);
@@ -91,31 +91,12 @@ void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core:
         this->linkToElementDataArray((TopologyElementType*)nullptr);
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " initialized with dynamic " << this->m_topology->getClassName() << "Topology.";
     }
+    else
+        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " has no engine. Topological changes will be disabled. Use createTopologicalEngine method before registerTopologicalData to allow topological changes.";
     
     //if (this->getOwner() && dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())) 
     //    dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())->addSlave(this->m_topologyHandler);   
 }
-
-
-template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::registerTopologicalData()
-{
-    if (this->m_topologyHandler)
-        this->m_topologyHandler->registerTopology(this->m_topology);
-    else if (!this->m_topology)
-        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " has no engine. Topological changes will be disabled. Use createTopologyHandler method before registerTopologicalData to allow topological changes." ;
-}
-
-template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::addInputData(sofa::core::objectmodel::BaseData *_data)
-{
-    if (this->m_topologyHandler)
-        this->m_topologyHandler->addInput(_data);
-    else if (!this->m_topology)
-        msg_info(this->getOwner()) <<"Warning: TopologyData: " << this->getName() << " has no engine. Use createTopologyHandler function before addInputData." ;
-}
-
-
 
 
 /// Method used to link Data to point Data array, using the engine's method
@@ -211,7 +192,7 @@ void TopologyData <TopologyElementType, VecT>::swap(Index i1, Index i2)
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::remove(const sofa::helper::vector<Index>& index)
+void TopologyData <TopologyElementType, VecT>::remove(const sofa::type::vector<Index>& index)
 {
 
     container_type& data = *(this->beginEdit());
@@ -224,6 +205,12 @@ void TopologyData <TopologyElementType, VecT>::remove(const sofa::helper::vector
             if (this->m_topologyHandler) {
                 this->m_topologyHandler->applyDestroyFunction(index[i], data[index[i]]);
             }
+
+            if (p_onDestructionCallback)
+            {
+                p_onDestructionCallback(index[i], data[index[i]]);
+            }
+
             this->swap(index[i], last);
             --last;
         }
@@ -235,11 +222,11 @@ void TopologyData <TopologyElementType, VecT>::remove(const sofa::helper::vector
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::add(const sofa::helper::vector<Index>& index,
-    const sofa::helper::vector< TopologyElementType >& elems,
-    const sofa::helper::vector<sofa::helper::vector<Index> >& ancestors,
-    const sofa::helper::vector<sofa::helper::vector<double> >& coefs,
-    const sofa::helper::vector< AncestorElem >& ancestorElems)
+void TopologyData <TopologyElementType, VecT>::add(const sofa::type::vector<Index>& index,
+    const sofa::type::vector< TopologyElementType >& elems,
+    const sofa::type::vector<sofa::type::vector<Index> >& ancestors,
+    const sofa::type::vector<sofa::type::vector<double> >& coefs,
+    const sofa::type::vector< AncestorElem >& ancestorElems)
 {
     std::size_t nbElements = index.size();
     if (nbElements == 0) return;
@@ -257,8 +244,8 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::helper::vector<In
     }
     data.resize(i0 + nbElements);
 
-    const sofa::helper::vector< Index > empty_vecint;
-    const sofa::helper::vector< double > empty_vecdouble;
+    const sofa::type::vector< Index > empty_vecint;
+    const sofa::type::vector< double > empty_vecdouble;
 
     if (this->m_topologyHandler)
     {
@@ -270,7 +257,13 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::helper::vector<In
                     (ancestors.empty() || coefs.empty()) ? empty_vecint : ancestors[i],
                     (ancestors.empty() || coefs.empty()) ? empty_vecdouble : coefs[i],
                     (ancestorElems.empty()) ? nullptr : &ancestorElems[i]);
-        
+            
+            if (p_onCreationCallback)
+            {
+                p_onCreationCallback(Index(i0 + i), t, elems[i],
+                    (ancestors.empty() || coefs.empty()) ? empty_vecint : ancestors[i],
+                    (ancestors.empty() || coefs.empty()) ? empty_vecdouble : coefs[i]);
+            }
         }
     }
     this->endEdit();
@@ -278,9 +271,9 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::helper::vector<In
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::move(const sofa::helper::vector<Index>& indexList,
-    const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
-    const sofa::helper::vector< sofa::helper::vector< double > >& coefs)
+void TopologyData <TopologyElementType, VecT>::move(const sofa::type::vector<Index>& indexList,
+    const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
+    const sofa::type::vector< sofa::type::vector< double > >& coefs)
 {
     container_type& data = *(this->beginEdit());
 
@@ -299,7 +292,7 @@ void TopologyData <TopologyElementType, VecT>::move(const sofa::helper::vector<I
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::renumber(const sofa::helper::vector<Index>& index)
+void TopologyData <TopologyElementType, VecT>::renumber(const sofa::type::vector<Index>& index)
 {
     container_type& data = *(this->beginEdit());
 
@@ -312,14 +305,14 @@ void TopologyData <TopologyElementType, VecT>::renumber(const sofa::helper::vect
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::addOnMovedPosition(const sofa::helper::vector<Index>& indexList,
-    const sofa::helper::vector<TopologyElementType>& elems)
+void TopologyData <TopologyElementType, VecT>::addOnMovedPosition(const sofa::type::vector<Index>& indexList,
+    const sofa::type::vector<TopologyElementType>& elems)
 {
     container_type& data = *(this->beginEdit());
 
     // Recompute data
-    sofa::helper::vector< Index > ancestors;
-    sofa::helper::vector< double >  coefs;
+    sofa::type::vector< Index > ancestors;
+    sofa::type::vector< double >  coefs;
     coefs.push_back(1.0);
     ancestors.resize(1);
 
@@ -336,7 +329,7 @@ void TopologyData <TopologyElementType, VecT>::addOnMovedPosition(const sofa::he
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::helper::vector<Index>& indices)
+void TopologyData <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::type::vector<Index>& indices)
 {
     container_type& data = *(this->beginEdit());
 

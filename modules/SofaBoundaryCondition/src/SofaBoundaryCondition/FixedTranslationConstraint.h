@@ -23,8 +23,8 @@
 #include <SofaBoundaryCondition/config.h>
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
-#include <sofa/helper/vector.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
+#include <sofa/type/vector.h>
 
 namespace sofa::component::projectiveconstraintset
 {
@@ -54,8 +54,8 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef helper::vector<Index> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef type::vector<Index> SetIndexArray;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
 protected:
     FixedTranslationConstraintInternalData<DataTypes> data;
     friend class FixedTranslationConstraintInternalData<DataTypes>;
@@ -89,32 +89,9 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    class FCPointHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
-    {
-    public:
-        typedef typename FixedTranslationConstraint<DataTypes>::SetIndexArray SetIndexArray;
-        typedef sofa::core::topology::Point Point;
-        FCPointHandler(FixedTranslationConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
-            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
-
-
-
-        void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
-
-
-        bool applyTestCreateFunction(Index /*index*/,
-                const sofa::helper::vector< Index > & /*ancestors*/,
-                const sofa::helper::vector< double > & /*coefs*/);
-    protected:
-        FixedTranslationConstraint<DataTypes> *fc;
-    };
-
 protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
-
-    /// Handler for subset Data
-    FCPointHandler* m_pointHandler;
 
 };
 

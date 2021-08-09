@@ -52,7 +52,7 @@ OglAttribute< size, type, DataTypes>::OglAttribute() :
 template < int size, unsigned int type, class DataTypes>
 int OglAttribute< size, type, DataTypes >::getSETotalSize()
 {
-    const helper::vector<DataTypes>& data = value.getValue();
+    const type::vector<DataTypes>& data = value.getValue();
     unsigned int totalSize = data.size() *sizeof ( data[0] );
     return totalSize;
 }
@@ -74,7 +74,6 @@ void OglAttribute< size, type, DataTypes>::init()
     if (_topology!= nullptr && handleDynamicTopology.getValue())
     {
         value.createTopologyHandler(_topology);
-        value.registerTopologicalData();
     }
 }
 
@@ -82,7 +81,7 @@ template < int size, unsigned int type, class DataTypes>
 void OglAttribute< size, type, DataTypes>::initVisual ()
 {
     if ( _abo == GLuint(-1) ) glGenBuffers ( 1, &_abo );
-    const helper::vector<DataTypes>& data = value.getValue();
+    const type::vector<DataTypes>& data = value.getValue();
     unsigned int totalSize = data.size() *sizeof ( data[0] );
     _aboSize = totalSize;
     glBindBufferARB ( GL_ARRAY_BUFFER, _abo );
@@ -118,7 +117,7 @@ void OglAttribute< size, type, DataTypes>::updateVisual()
 {
      if ( _abo == GLuint(-1) )
          return; // initVisual not yet called
-    const helper::vector<DataTypes>& data = value.getValue();
+    const type::vector<DataTypes>& data = value.getValue();
     unsigned int totalSize = data.size() *sizeof ( data[0] );
     int dataCounter = value.getCounter();
     if (!_needUpdate && totalSize == _aboSize && dataCounter == _lastUpdateDataCounter)
@@ -144,7 +143,7 @@ void OglAttribute< size, type, DataTypes>::updateVisual()
 }
 
 template < int size, unsigned int type, class DataTypes>
-helper::vector<DataTypes>* OglAttribute< size, type, DataTypes>::beginEdit()
+type::vector<DataTypes>* OglAttribute< size, type, DataTypes>::beginEdit()
 {
     return value.beginEdit();
 }
@@ -158,16 +157,16 @@ void OglAttribute< size, type, DataTypes>::endEdit()
 
 
 template < int size, unsigned int type, class DataTypes>
-const helper::vector<DataTypes>& OglAttribute< size, type, DataTypes>::getValue() const
+const type::vector<DataTypes>& OglAttribute< size, type, DataTypes>::getValue() const
 {
     return value.getValue();
 }
 
 
 template < int size, unsigned int type, class DataTypes>
-void OglAttribute< size, type, DataTypes>::setValue ( const helper::vector<DataTypes>& value )
+void OglAttribute< size, type, DataTypes>::setValue ( const type::vector<DataTypes>& value )
 {
-    helper::vector<DataTypes>& val = * ( this->value.beginEdit() );
+    type::vector<DataTypes>& val = * ( this->value.beginEdit() );
     val = value;
     this->value.endEdit();
 }

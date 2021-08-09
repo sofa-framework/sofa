@@ -30,7 +30,6 @@
 //Including Simulation
 #include <SofaSimulationGraph/DAGSimulation.h>
 
-#include <SofaBaseTopology/TopologySparseData.inl>
 #include <SofaBoundaryCondition/TrianglePressureForceField.h>
 #include <SofaBoundaryCondition/AffineMovementConstraint.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -82,9 +81,9 @@ PatchTestStruct<DataTypes> createRegularGridScene(
         int numX,
         int numY,
         int numZ,
-        sofa::defaulttype::Vec<6,SReal> entireBoxRoi,
-        sofa::defaulttype::Vec<6,SReal> inclusiveBox,
-        sofa::defaulttype::Vec<6,SReal> includedBox);
+        sofa::type::Vec<6,SReal> entireBoxRoi,
+        sofa::type::Vec<6,SReal> inclusiveBox,
+        sofa::type::Vec<6,SReal> includedBox);
 
 CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
         int resolutionCircumferential,

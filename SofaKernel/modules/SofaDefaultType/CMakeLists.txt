@@ -21,7 +21,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/TypeInfoRegistryTools.h
     ${SRC_ROOT}/TopologyTypes.h
     ${SRC_ROOT}/VecTypes.h
-    ${SRC_ROOT}/defaulttype.h
     ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/fwd.h
@@ -103,6 +102,7 @@ sofa_create_package_with_targets(
 )
 
 if(SOFA_BUILD_TESTS)
+    add_subdirectory(SofaDefaultType.Testing)
     add_subdirectory(SofaDefaultType_test)
     add_subdirectory(SofaDefaultType_simutest)
 endif()

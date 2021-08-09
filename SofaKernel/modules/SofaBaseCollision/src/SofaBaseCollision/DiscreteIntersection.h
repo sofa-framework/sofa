@@ -46,17 +46,17 @@ public:
     typedef core::collision::IntersectorFactory<DiscreteIntersection> IntersectorFactory;
 
     //Intersectors
-    // // Cube
-    bool testIntersection(Cube& cube1, Cube& cube2);
-    int computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts);
+    // Cube
+    virtual bool testIntersection(Cube& cube1, Cube& cube2);
+    virtual int computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts);
 
     //Sphere
-    bool testIntersection(Sphere& sph1, Sphere& sph2);
-    int computeIntersection(Sphere& sph1, Sphere& sph2, OutputVector* contacts);
-    bool testIntersection(RigidSphere& sph1, RigidSphere& sph2);
-    int computeIntersection(RigidSphere& sph1, RigidSphere& sph2, OutputVector* contacts);
-    bool testIntersection(Sphere& sph1, RigidSphere& sph2);
-    int computeIntersection(Sphere& sph1, RigidSphere& sph2, OutputVector* contacts);
+    virtual bool testIntersection(Sphere& sph1, Sphere& sph2);
+    virtual int computeIntersection(Sphere& sph1, Sphere& sph2, OutputVector* contacts);
+    virtual bool testIntersection(RigidSphere& sph1, RigidSphere& sph2);
+    virtual int computeIntersection(RigidSphere& sph1, RigidSphere& sph2, OutputVector* contacts);
+    virtual bool testIntersection(Sphere& sph1, RigidSphere& sph2);
+    virtual int computeIntersection(Sphere& sph1, RigidSphere& sph2, OutputVector* contacts);
 
 protected:
 
@@ -72,7 +72,7 @@ protected:
     {
         SReal r = sph1.r() + sph2.r();
         SReal myAlarmDist = alarmDist + r;
-        defaulttype::Vector3 dist = sph2.center() - sph1.center();
+        type::Vector3 dist = sph2.center() - sph1.center();
         SReal norm2 = dist.norm2();
 
         if (norm2 > myAlarmDist * myAlarmDist)

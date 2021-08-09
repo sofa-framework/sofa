@@ -22,12 +22,11 @@
 #pragma once
 
 #include "LinearForceField.h"
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/core/MechanicalParams.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 
 namespace sofa::component::forcefield
 {
@@ -63,7 +62,6 @@ void LinearForceField<DataTypes>::init()
         
         // Initialize functions and parameters for topology data and handler
         points.createTopologyHandler(_topology);
-        points.registerTopologicalData();
     }
     else
     {
@@ -131,7 +129,7 @@ void LinearForceField<DataTypes>::addForce(const core::MechanicalParams* /*mpara
 
             bool finished = false;
 
-            typename helper::vector< Real >::const_iterator it_t = d_keyTimes.getValue().begin();
+            typename type::vector< Real >::const_iterator it_t = d_keyTimes.getValue().begin();
             typename VecDeriv::const_iterator it_f = d_keyForces.getValue().begin();
 
             // WARNING : we assume that the key-events are in chronological order

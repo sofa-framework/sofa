@@ -36,22 +36,20 @@ class MultiMatrix
 public:
     typedef sofa::core::VecId VecId;
 
+    /// Copy-constructor is forbidden
+    MultiMatrix(const MultiMatrix<Parent>&) = delete;
+
 protected:
     /// Solver who is using this matrix
-    Parent* parent;
-
-    /// Copy-constructor is forbidden
-    MultiMatrix(const MultiMatrix<Parent>&);
+    Parent* parent { nullptr };
 
 public:
 
-    MultiMatrix(Parent* parent) : parent(parent)
+    explicit MultiMatrix(Parent* parent) : parent(parent)
     {
     }
 
-    ~MultiMatrix()
-    {
-    }
+    ~MultiMatrix() = default;
 
     /// m = 0
     void clear()

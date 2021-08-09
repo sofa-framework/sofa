@@ -47,12 +47,8 @@ namespace sofa {
 
 
 ////////////////////////////////// DECLARATION /////////////////////////////////////////////////////
-namespace sofa
+namespace sofa::component
 {
-
-namespace component
-{
-
 namespace _meshexporter_
 {
 
@@ -76,13 +72,13 @@ public:
     Data<bool> d_writeTetras; ///< write tetra topology
     Data<bool> d_writeHexas; ///< write hexa topology
 
-    helper::vector<std::string> pointsDataObject;
-    helper::vector<std::string> pointsDataField;
-    helper::vector<std::string> pointsDataName;
+    type::vector<std::string> pointsDataObject;
+    type::vector<std::string> pointsDataField;
+    type::vector<std::string> pointsDataName;
 
-    helper::vector<std::string> cellsDataObject;
-    helper::vector<std::string> cellsDataField;
-    helper::vector<std::string> cellsDataName;
+    type::vector<std::string> cellsDataObject;
+    type::vector<std::string> cellsDataField;
+    type::vector<std::string> cellsDataName;
 
     void doInit() override ;
     void doReInit() override ;
@@ -109,21 +105,20 @@ protected:
     std::string getMeshFilename(const char* ext);
 };
 
-} /// namespace _meshexporter_
+} // namespace _meshexporter_
 
-//todo(18.06): remove the old namespaces...
-/// Import the object in the "old" namespace to allow smooth update of code base.
-namespace misc {
-    using _meshexporter_::MeshExporter ;
-}
-
-/// Import the object in the exporter namespace to avoid having all the object straight in component.
+// Import the object in the exporter namespace to avoid having all the object straight in component.
 namespace exporter {
-    using _meshexporter_::MeshExporter ;
-}
+    using MeshExporter = _meshexporter_::MeshExporter;
+} // namespace exporter
 
-} /// namespace component
+// Import the object in the "old" namespace to allow smooth update of code base.
+namespace misc {
+    using MeshExporter
+        SOFA_ATTRIBUTE_DEPRECATED__SOFAEXPORTER_NAMESPACE_1712()
+        = _meshexporter_::MeshExporter;
+} // namespace misc
 
-} /// namespace sofa
+} // namespace sofa::component
 
 #endif // SOFA_COMPONENT_MISC_MESHEXPORTER_H

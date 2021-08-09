@@ -125,13 +125,12 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
     /// Compute the norm of the right-hand-side vector b
     double normb = b.norm();
 
-
-    std::map < std::string, sofa::helper::vector<SReal> >& graph = *d_graph.beginEdit();
-    sofa::helper::vector<SReal>& graph_error = graph[std::string("Error")];
+    std::map < std::string, sofa::type::vector<SReal> >& graph = *d_graph.beginEdit();
+    sofa::type::vector<SReal>& graph_error = graph[std::string("Error")];
     graph_error.clear();
     graph_error.push_back(1);
 
-    sofa::helper::vector<SReal>& graph_den = graph[std::string("Denominator")];
+    sofa::type::vector<SReal>& graph_den = graph[std::string("Denominator")];
     graph_den.clear();
 
 
@@ -218,6 +217,11 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
             msg_info() << "p : " << p;
 
             /// Compute the matrix-vector product A p to compute the denominator
+            /// This matrix-vector product depends on the type of matrix:
+            /// 1) The matrix is assembled (e.g. CompressedRowSparseMatrix): traditional matrix-vector product
+            /// 2) The matrix is not assembled (e.g. GraphScattered): visitors run and call addMBKdx on force
+            /// fields (usually force fields implement addDForce). This method performs the matrix-vector product and
+            /// store it in another vector without building explicitly the matrix. Projective constraints are also applied.
             q = A*p;
             msg_info() << "q = A p : " << q;
 

@@ -79,8 +79,8 @@ std::string cleanPath( const std::string& path )
 FileRepository PluginRepository(
     "SOFA_PLUGIN_PATH",
     {
-        Utils::getSofaPathTo("plugins"),
         Utils::getSofaPathTo("bin"),
+        Utils::getSofaPathTo("plugins"),
         Utils::getExecutableDirectory(),
     }
 );
@@ -327,7 +327,7 @@ const std::string FileRepository::getPathsJoined()
 }
 
 /*static*/
-std::string FileRepository::relativeToPath(std::string path, std::string refPath, bool doLowerCaseOnWin32)
+std::string FileRepository::relativeToPath(std::string path, std::string refPath)
 {
     /// This condition replace the #ifdef in the code.
     /// The advantage is that the code is compiled and is
@@ -344,25 +344,14 @@ std::string FileRepository::relativeToPath(std::string path, std::string refPath
 
     /// WIN32 is a pain here because of mixed case formatting with randomly
     /// picked slash and backslash to separate dirs.
-    ///TODO(dmarchal 2017-05-01): remove the deprecated part in one year.
     std::string tmppath;
     std::replace(path.begin(),path.end(),'\\' , '/' );
     std::replace(refPath.begin(),refPath.end(),'\\' , '/' );
 
     std::transform(refPath.begin(), refPath.end(), refPath.begin(), ::tolower );
 
-    if( doLowerCaseOnWin32 )
-    {
-        dmsg_deprecated("FileRepository") << "Using relativePath(doLowerCaseOnWin32=true) is a deprecated behavior since 2017-05-01. "
-                                             "This behavior will be removed in 2018-05-01 and you need to update your code to use new "
-                                             "API";
-        /// The complete path is lowered... and copied into the tmppath;
-        std::transform(path.begin(), path.end(), path.begin(), ::tolower );
-        tmppath = path ;
-    }else{
-        tmppath = path ;
-        std::transform(tmppath.begin(), tmppath.end(), tmppath.begin(), ::tolower );
-    }
+    tmppath = path ;
+    std::transform(tmppath.begin(), tmppath.end(), tmppath.begin(), ::tolower );
 
     std::string::size_type loc = tmppath.find( refPath, 0 );
     if (loc==0)

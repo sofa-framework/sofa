@@ -27,8 +27,8 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include "TriangularFEMForceField.h"
 #include <SofaBaseTopology/TopologyData.h>
 #include <newmat/newmat.h>
@@ -76,30 +76,30 @@ public:
 
     //Data<Real> f_poisson2;
     //Data<Real> f_young2; ///< Young modulus along transverse direction
-    Data<helper::vector<Real> > f_poisson2;
-    Data<helper::vector<Real> > f_young2; ///< Young modulus along transverse direction
+    Data<type::vector<Real> > f_poisson2;
+    Data<type::vector<Real> > f_young2; ///< Young modulus along transverse direction
     Data<Real> f_theta; ///< Fiber angle in global reference frame (in degrees)
     Data<VecCoord> f_fiberCenter; ///< Concentric fiber center in global reference frame
     Data<bool> showFiber; ///< Flag activating rendering of fiber directions within each triangle
 
-    topology::TriangleData <helper::vector< Deriv> > localFiberDirection; ///< Computed fibers direction within each triangle
+    topology::TriangleData <type::vector< Deriv> > localFiberDirection; ///< Computed fibers direction within each triangle
 
     /// Link to be set to the topology container in the component graph.
     using Inherit1::l_topology;
 
-    class TRQSTriangleHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,helper::vector<Deriv> >
+    class TRQSTriangleHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,type::vector<Deriv> >
     {
     public:
         typedef typename TriangularAnisotropicFEMForceField::Deriv triangleInfo;
 
-        TRQSTriangleHandler(TriangularAnisotropicFEMForceField<DataTypes>* _ff, topology::TriangleData<helper::vector<triangleInfo> >*  _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle, helper::vector<triangleInfo> >(_data), ff(_ff) {}
+        TRQSTriangleHandler(TriangularAnisotropicFEMForceField<DataTypes>* _ff, topology::TriangleData<type::vector<triangleInfo> >*  _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle, type::vector<triangleInfo> >(_data), ff(_ff) {}
 
-        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,helper::vector<Deriv> >::applyCreateFunction;
+        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,type::vector<Deriv> >::applyCreateFunction;
         void applyCreateFunction(unsigned int triangleIndex,
-                                 helper::vector<triangleInfo> & ,
+                                 type::vector<triangleInfo> & ,
                                  const core::topology::BaseMeshTopology::Triangle & t,
-                                 const sofa::helper::vector< unsigned int > &,
-                                 const sofa::helper::vector< double > &);
+                                 const sofa::type::vector< unsigned int > &,
+                                 const sofa::type::vector< double > &);
 
     protected:
         TriangularAnisotropicFEMForceField<DataTypes>* ff;

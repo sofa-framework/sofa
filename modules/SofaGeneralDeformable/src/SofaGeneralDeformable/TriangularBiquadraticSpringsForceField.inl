@@ -25,7 +25,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 
@@ -39,8 +39,8 @@ template< class DataTypes >
 void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::applyCreateFunction(Index triangleIndex,
         TriangleRestInformation &tinfo,
         const Triangle &,
-        const sofa::helper::vector<Index> &,
-        const sofa::helper::vector<double> &)
+        const sofa::type::vector<Index> &,
+        const sofa::type::vector<double> &)
 {
     using namespace sofa::defaulttype;
     using namespace	sofa::component::topology;
@@ -50,12 +50,12 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::app
 
         unsigned int j,k,l;
 
-        EdgeData<helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation> > &edgeInfo=ff->getEdgeInfo();
+        EdgeData<type::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation> > &edgeInfo=ff->getEdgeInfo();
         typename DataTypes::Real area,restSquareLength[3],cotangent[3];
         typename DataTypes::Real lambda=ff->getLambda();
         typename DataTypes::Real mu=ff->getMu();
         const typename DataTypes::VecCoord restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-        helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+        type::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
         ///describe the indices of the 3 triangle vertices
         const Triangle &t= ff->m_topology->getTriangle(triangleIndex);
@@ -109,9 +109,9 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::app
 
         unsigned int j;
 
-        EdgeData<helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation> > &edgeInfo=ff->getEdgeInfo();
+        EdgeData<type::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation> > &edgeInfo=ff->getEdgeInfo();
 
-        helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+        type::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
         /// describe the jth edge index of triangle no i
         const EdgesInTriangle &te= ff->m_topology->getEdgesInTriangle(triangleIndex);
@@ -129,8 +129,8 @@ template< class DataTypes >
 void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSEdgeHandler::applyCreateFunction(Index edgeIndex,
         EdgeRestInformation &ei,
         const core::topology::Edge &,
-        const sofa::helper::vector<Index> &,
-        const sofa::helper::vector<double> &)
+        const sofa::type::vector<Index> &,
+        const sofa::type::vector<double> &)
 
 {
     if (ff)
@@ -203,11 +203,11 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
     updateLameCoefficients();
 
     /// prepare to store info in the triangle array
-    helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::TriangleRestInformation>& triangleInf = *(triangleInfo.beginEdit());
+    type::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::TriangleRestInformation>& triangleInf = *(triangleInfo.beginEdit());
 
     triangleInf.resize(m_topology->getNbTriangles());
     /// prepare to store info in the edge array
-    helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+    type::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
     edgeInf.resize(m_topology->getNbEdges());
 
@@ -220,24 +220,22 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
     unsigned int i;
     for (i=0; i<m_topology->getNbEdges(); ++i)
     {
-        edgeHandler->applyCreateFunction(i,edgeInf[i], m_topology->getEdge(i),  (const sofa::helper::vector< Index > )0,
-                (const sofa::helper::vector< double >)0 );
+        edgeHandler->applyCreateFunction(i,edgeInf[i], m_topology->getEdge(i),  (const sofa::type::vector< Index > )0,
+                (const sofa::type::vector< double >)0 );
     }
     for (i=0; i<m_topology->getNbTriangles(); ++i)
     {
         triangleHandler->applyCreateFunction(i, triangleInf[i],
-                m_topology->getTriangle(i),  (const sofa::helper::vector< Index > )0,
-                (const sofa::helper::vector< double >)0);
+                m_topology->getTriangle(i),  (const sofa::type::vector< Index > )0,
+                (const sofa::type::vector< double >)0);
     }
 
     // Edge info
     edgeInfo.createTopologyHandler(m_topology,edgeHandler);
-    edgeInfo.registerTopologicalData();
     edgeInfo.endEdit();
 
     // Triangle info
     triangleInfo.createTopologyHandler(m_topology,triangleHandler);
-    triangleInfo.registerTopologicalData();
     triangleInfo.endEdit();
 }
 
@@ -260,9 +258,9 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
     TriangleRestInformation *tinfo;
     EdgeRestInformation *einfo;
 
-    helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::TriangleRestInformation>& triangleInf = *(triangleInfo.beginEdit());
+    type::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::TriangleRestInformation>& triangleInf = *(triangleInfo.beginEdit());
 
-    helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+    type::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
     assert(this->mstate);
 
@@ -386,9 +384,9 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(const core::Me
 
     Deriv deltax,res;
 
-    helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::TriangleRestInformation>& triangleInf = *(triangleInfo.beginEdit());
+    type::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::TriangleRestInformation>& triangleInf = *(triangleInfo.beginEdit());
 
-    helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+    type::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
 
     if (updateMatrix)
@@ -556,9 +554,9 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::draw(const core::visual:
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     size_t nbTriangles=m_topology->getNbTriangles();
 
-    std::vector<sofa::defaulttype::Vector3> vertices;
-    std::vector<sofa::helper::types::RGBAColor> colors;
-    std::vector<sofa::defaulttype::Vector3> normals;
+    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::RGBAColor> colors;
+    std::vector<sofa::type::Vector3> normals;
 
     vparams->drawTool()->disableLighting();
 
@@ -568,11 +566,11 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::draw(const core::visual:
         int b = m_topology->getTriangle(i)[1];
         int c = m_topology->getTriangle(i)[2];
 
-        colors.push_back(sofa::helper::types::RGBAColor::green());
+        colors.push_back(sofa::type::RGBAColor::green());
         vertices.push_back(x[a]);
-        colors.push_back(sofa::helper::types::RGBAColor(0,0.5,0.5,1));
+        colors.push_back(sofa::type::RGBAColor(0,0.5,0.5,1));
         vertices.push_back(x[b]);
-        colors.push_back(sofa::helper::types::RGBAColor::blue());
+        colors.push_back(sofa::type::RGBAColor::blue());
         vertices.push_back(x[c]);
     }
     vparams->drawTool()->drawTriangles(vertices, normals, colors);

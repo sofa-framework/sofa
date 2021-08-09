@@ -25,7 +25,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
 namespace sofa::component::forcefield
@@ -37,8 +37,8 @@ template< class DataTypes >
 void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyCreateFunction(Index /*edgeIndex*/,
         EdgeRestInformation & ei,
         const core::topology::Edge &/*e*/,
-        const sofa::helper::vector<Index> &,
-        const sofa::helper::vector<double> &)
+        const sofa::type::vector<Index> &,
+        const sofa::type::vector<double> &)
 {
     if(ff)
     {
@@ -55,10 +55,10 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyCr
 }
 
 template< class DataTypes >
-void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTriangleCreation(const sofa::helper::vector<Index> &triangleAdded,
-        const sofa::helper::vector<core::topology::Triangle> &,
-        const sofa::helper::vector<sofa::helper::vector<Index> > &,
-        const sofa::helper::vector<sofa::helper::vector<double> > &)
+void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTriangleCreation(const sofa::type::vector<Index> &triangleAdded,
+        const sofa::type::vector<core::topology::Triangle> &,
+        const sofa::type::vector<sofa::type::vector<Index> > &,
+        const sofa::type::vector<sofa::type::vector<double> > &)
 {
     using namespace core::topology;
     if(ff)
@@ -71,7 +71,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTr
         typename DataTypes::Real mu=ff->getMu();
         typename DataTypes::Real lambdastar, mustar;
         typename DataTypes::Coord point[3],dpk,dpl;
-        helper::vector<EdgeRestInformation> &edgeData = *ff->edgeInfo.beginEdit();
+        type::vector<EdgeRestInformation> &edgeData = *ff->edgeInfo.beginEdit();
 
         const typename DataTypes::VecCoord& restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
@@ -147,7 +147,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTr
 }
 
 template< class DataTypes>
-void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTriangleDestruction(const sofa::helper::vector<Index> &triangleRemoved)
+void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTriangleDestruction(const sofa::type::vector<Index> &triangleRemoved)
 {
     using namespace core::topology;
     if (ff)
@@ -161,7 +161,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTr
         typename DataTypes::Real lambdastar, mustar;
         typename DataTypes::Coord point[3],dpk,dpl;
 
-        helper::vector<EdgeRestInformation> &edgeData = *ff->edgeInfo.beginEdit();
+        type::vector<EdgeRestInformation> &edgeData = *ff->edgeInfo.beginEdit();
         const typename DataTypes::VecCoord& restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
         for (i=0; i<triangleRemoved.size(); ++i)
@@ -240,9 +240,9 @@ template<class DataTypes>
 void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::ApplyTopologyChange(const core::topology::TrianglesAdded* e)
 {
     const auto &triangleAdded = e->getIndexArray();
-    const sofa::helper::vector<core::topology::Triangle> &elems = e->getElementArray();
+    const sofa::type::vector<core::topology::Triangle> &elems = e->getElementArray();
     const auto & ancestors = e->ancestorsList;
-    const sofa::helper::vector<sofa::helper::vector<double> > & coefs = e->coefs;
+    const sofa::type::vector<sofa::type::vector<double> > & coefs = e->coefs;
 
     applyTriangleCreation(triangleAdded, elems, ancestors, coefs);
 }
@@ -304,7 +304,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
 
 
 
-    helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+    type::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
     /// prepare to store info in the edge array
     edgeInf.resize(m_topology->getNbEdges());
@@ -321,24 +321,23 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
     for (i=0; i<m_topology->getNbEdges(); ++i)
     {
         edgeHandler->applyCreateFunction(i,edgeInf[i],m_topology->getEdge(i),
-                (const sofa::helper::vector<Index>)0,
-                (const sofa::helper::vector<double>)0
+                (const sofa::type::vector<Index>)0,
+                (const sofa::type::vector<double>)0
                                         );
     }
     // create edge tensor by calling the triangle creation function
-    sofa::helper::vector<Index> triangleAdded;
+    sofa::type::vector<Index> triangleAdded;
     for (i=0; i<m_topology->getNbTriangles(); ++i)
         triangleAdded.push_back(i);
 
     edgeHandler->applyTriangleCreation(triangleAdded,
-            (const sofa::helper::vector<core::topology::Triangle>)0,
-            (const sofa::helper::vector<sofa::helper::vector<Index> >)0,
-            (const sofa::helper::vector<sofa::helper::vector<double> >)0
+            (const sofa::type::vector<core::topology::Triangle>)0,
+            (const sofa::type::vector<sofa::type::vector<Index> >)0,
+            (const sofa::type::vector<sofa::type::vector<double> >)0
                                       );
 
     edgeInfo.createTopologyHandler(m_topology,edgeHandler);
     edgeInfo.linkToTriangleDataArray();
-    edgeInfo.registerTopologicalData();
     edgeInfo.endEdit();
 }
 
@@ -352,7 +351,7 @@ void TriangularTensorMassForceField<DataTypes>::addForce(const core::MechanicalP
     unsigned int nbEdges=m_topology->getNbEdges();
     EdgeRestInformation *einfo;
 
-    helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+    type::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
     Deriv force;
     Coord dp0,dp1,dp;
@@ -386,7 +385,7 @@ void TriangularTensorMassForceField<DataTypes>::addDForce(const core::Mechanical
     size_t nbEdges=m_topology->getNbEdges();
     EdgeRestInformation *einfo;
 
-    helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+    type::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
     Deriv force;
     Coord dp0,dp1,dp;
@@ -431,9 +430,9 @@ void TriangularTensorMassForceField<DataTypes>::draw(const core::visual::VisualP
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     size_t nbTriangles=m_topology->getNbTriangles();
 
-    std::vector<sofa::defaulttype::Vector3> vertices;
-    std::vector<sofa::helper::types::RGBAColor> colors;
-    std::vector<sofa::defaulttype::Vector3> normals;
+    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::RGBAColor> colors;
+    std::vector<sofa::type::Vector3> normals;
 
     vparams->drawTool()->disableLighting();
 
@@ -443,11 +442,11 @@ void TriangularTensorMassForceField<DataTypes>::draw(const core::visual::VisualP
         int b = m_topology->getTriangle(i)[1];
         int c = m_topology->getTriangle(i)[2];
 
-        colors.push_back(sofa::helper::types::RGBAColor::green());
+        colors.push_back(sofa::type::RGBAColor::green());
         vertices.push_back(x[a]);
-        colors.push_back(sofa::helper::types::RGBAColor(0,0.5,0.5,1));
+        colors.push_back(sofa::type::RGBAColor(0,0.5,0.5,1));
         vertices.push_back(x[b]);
-        colors.push_back(sofa::helper::types::RGBAColor::blue());
+        colors.push_back(sofa::type::RGBAColor::blue());
         vertices.push_back(x[c]);
     }
     vparams->drawTool()->drawTriangles(vertices, normals, colors);

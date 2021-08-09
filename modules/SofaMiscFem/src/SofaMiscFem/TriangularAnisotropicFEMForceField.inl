@@ -23,7 +23,7 @@
 
 #include "TriangularAnisotropicFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseTopology/TopologyData.inl>
@@ -39,7 +39,7 @@ namespace sofa::component::forcefield
 
 template <class DataTypes>
 TriangularAnisotropicFEMForceField<DataTypes>::TriangularAnisotropicFEMForceField()
-    : f_young2(initData(&f_young2,helper::vector<Real>(1,1000.0),"transverseYoungModulus","transverseYoungModulus","Young modulus along transverse direction"))
+    : f_young2(initData(&f_young2,type::vector<Real>(1,1000.0),"transverseYoungModulus","transverseYoungModulus","Young modulus along transverse direction"))
     , f_theta(initData(&f_theta,(Real)(0.0),"fiberAngle","Fiber angle in global reference frame (in degrees)"))
     , f_fiberCenter(initData(&f_fiberCenter,"fiberCenter","Concentric fiber center in global reference frame"))
     , showFiber(initData(&showFiber,true,"showFiber","Flag activating rendering of fiber directions within each triangle"))
@@ -59,7 +59,7 @@ TriangularAnisotropicFEMForceField<DataTypes>::~TriangularAnisotropicFEMForceFie
 }
 
 template< class DataTypes>
-void TriangularAnisotropicFEMForceField<DataTypes>::TRQSTriangleHandler::applyCreateFunction(unsigned int triangleIndex, helper::vector<triangleInfo> &, const core::topology::BaseMeshTopology::Triangle &t, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+void TriangularAnisotropicFEMForceField<DataTypes>::TRQSTriangleHandler::applyCreateFunction(unsigned int triangleIndex, type::vector<triangleInfo> &, const core::topology::BaseMeshTopology::Triangle &t, const sofa::type::vector<unsigned int> &, const sofa::type::vector<double> &)
 {
     if (ff)
     {
@@ -103,7 +103,6 @@ void TriangularAnisotropicFEMForceField<DataTypes>::init()
 
     // Create specific handler for TriangleData
     localFiberDirection.createTopologyHandler(m_topology, triangleHandler);
-    localFiberDirection.registerTopologicalData();
 
     Inherited::init();
     reinit();
@@ -114,10 +113,10 @@ void TriangularAnisotropicFEMForceField<DataTypes>::reinit()
 {
     localFiberDirection.beginEdit();
     //f_poisson2.setValue(Inherited::f_poisson.getValue()*(f_young2.getValue()/Inherited::f_young.getValue()));
-    helper::vector<Real> poiss2;
-    const helper::vector<Real> & youngArray = Inherited::f_young.getValue();
-    const helper::vector<Real> & young2Array = f_young2.getValue();
-    const helper::vector<Real> & poissonArray = Inherited::f_poisson.getValue();
+    type::vector<Real> poiss2;
+    const type::vector<Real> & youngArray = Inherited::f_young.getValue();
+    const type::vector<Real> & young2Array = f_young2.getValue();
+    const type::vector<Real> & poissonArray = Inherited::f_poisson.getValue();
 
     for (unsigned int i = 0; i < poissonArray.size(); i++)
     {
@@ -126,7 +125,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::reinit()
 
     f_poisson2.setValue(poiss2);
 
-    helper::vector<Deriv>& lfd = *(localFiberDirection.beginEdit());
+    type::vector<Deriv>& lfd = *(localFiberDirection.beginEdit());
     lfd.resize(m_topology->getNbTriangles());
     localFiberDirection.endEdit();
     Inherited::reinit();
@@ -136,7 +135,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::reinit()
 template <class DataTypes>
 void TriangularAnisotropicFEMForceField<DataTypes>::getFiberDir(int element, Deriv& dir)
 {
-    helper::vector<Deriv>& lfd = *(localFiberDirection.beginEdit());
+    type::vector<Deriv>& lfd = *(localFiberDirection.beginEdit());
 
     if ((unsigned)element < lfd.size())
     {
@@ -161,9 +160,9 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     Coord fiberDirGlobal;  // orientation of the fiber in the global frame of reference
 
     Coord fiberDirLocalOrtho; //  // orientation of the fiber in the local orthonormal frame of the element
-    defaulttype::Mat<3,3,Real> T, Tinv;
+    type::Mat<3,3,Real> T, Tinv;
 
-    helper::vector<TriangleInformation>& triangleInf = *(Inherited::triangleInfo.beginEdit());
+    type::vector<TriangleInformation>& triangleInf = *(Inherited::triangleInfo.beginEdit());
 
     TriangleInformation *tinfo = &triangleInf[i];
 
@@ -173,10 +172,10 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     Q22 = f_young2.getValue()/(1-Inherited::f_poisson.getValue()*f_poisson2.getValue());
     Q66 = (Real)(Inherited::f_young.getValue() / (2.0*(1 + Inherited::f_poisson.getValue())));*/
 
-    const helper::vector<Real> & youngArray = Inherited::f_young.getValue();
-    const helper::vector<Real> & young2Array = f_young2.getValue();
-    const helper::vector<Real> & poissonArray = Inherited::f_poisson.getValue();
-    const helper::vector<Real> & poisson2Array = f_poisson2.getValue();
+    const type::vector<Real> & youngArray = Inherited::f_young.getValue();
+    const type::vector<Real> & young2Array = f_young2.getValue();
+    const type::vector<Real> & poissonArray = Inherited::f_poisson.getValue();
+    const type::vector<Real> & poisson2Array = f_poisson2.getValue();
 
     unsigned int index = 0;
     if (i < (int) youngArray.size() )
@@ -209,7 +208,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
         fiberDirGlobal = Coord((Real)cos(theta), (Real)sin(theta), 0); // was fiberDir
     }
 
-    helper::vector<Deriv>& lfd = *(localFiberDirection.beginEdit());
+    type::vector<Deriv>& lfd = *(localFiberDirection.beginEdit());
 
     if ((unsigned int)i >= lfd.size())
     {
@@ -301,13 +300,13 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::Vis
     if (!vparams->displayFlags().getShowForceFields())
         return;
 
-    helper::vector<Deriv>& lfd = *(localFiberDirection.beginEdit());
+    type::vector<Deriv>& lfd = *(localFiberDirection.beginEdit());
 
     if (showFiber.getValue() && lfd.size() >= (unsigned)m_topology->getNbTriangles())
     {
         vparams->drawTool()->saveLastState();
-        sofa::helper::types::RGBAColor color(0, 0, 0, 1.0);
-        std::vector<sofa::defaulttype::Vector3> vertices;
+        sofa::type::RGBAColor color(0, 0, 0, 1.0);
+        std::vector<sofa::type::Vector3> vertices;
 
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
         int nbTriangles=m_topology->getNbTriangles();
@@ -324,8 +323,8 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::Vis
                 Coord center = (x[a]+x[b]+x[c])/3;
                 Coord d = (x[b]-x[a])*lfd[i][0] + (x[c]-x[a])*lfd[i][1];
                 d*=0.25;
-                vertices.push_back(sofa::defaulttype::Vector3(center-d));
-                vertices.push_back(sofa::defaulttype::Vector3(center+d));
+                vertices.push_back(sofa::type::Vector3(center-d));
+                vertices.push_back(sofa::type::Vector3(center+d));
             }
         }
         vparams->drawTool()->drawLines(vertices,1,color);

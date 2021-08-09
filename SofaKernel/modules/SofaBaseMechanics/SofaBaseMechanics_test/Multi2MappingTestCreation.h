@@ -47,7 +47,7 @@ using namespace core;
 using namespace component;
 using defaulttype::Vec;
 using defaulttype::Mat;
-using sofa::helper::vector;
+using sofa::type::vector;
 typedef std::size_t Index;
 
 /**  Test suite for Multi2Mapping.

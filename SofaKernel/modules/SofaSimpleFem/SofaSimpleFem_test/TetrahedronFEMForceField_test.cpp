@@ -53,7 +53,7 @@ struct TetrahedronFEMForceField_test : public ForceField_test<_TetrahedronFEMFor
     typedef typename ForceType::Coord Coord;
     typedef typename ForceType::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef defaulttype::Vec<3,Real> Vec3;
+    typedef type::Vec<3,Real> Vec3;
 
     typedef ForceType Spring;
     typedef component::container::MechanicalObject<DataTypes> DOF;
@@ -91,7 +91,7 @@ struct TetrahedronFEMForceField_test : public ForceField_test<_TetrahedronFEMFor
 
         // Set force parameters
         Inherited::force->_poissonRatio.setValue(0);
-        helper::vector<Real> youngModulusVec;youngModulusVec.push_back(40);
+        type::vector<Real> youngModulusVec;youngModulusVec.push_back(40);
         Inherited::force->_youngModulus.setValue(youngModulusVec);
         Inherited::force->f_method.setValue("small");
 

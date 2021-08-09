@@ -27,34 +27,10 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <iostream>
-#include <sofa/helper/vector_algorithm.h>
-
-#include <SofaBaseTopology/TopologySubsetData.inl>
+#include <sofa/type/vector_algorithm.h>
 
 namespace sofa::component::projectiveconstraintset
 {
-
-template< class DataTypes>
-bool ProjectToPlaneConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
-{
-    if (fc)
-    {
-        return false;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-template< class DataTypes>
-void ProjectToPlaneConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, core::objectmodel::Data<value_type> &)
-{
-    if (fc)
-    {
-        fc->removeConstraint((Index) pointIndex);
-    }
-}
 
 template <class DataTypes>
 ProjectToPlaneConstraint<DataTypes>::ProjectToPlaneConstraint()
@@ -65,7 +41,6 @@ ProjectToPlaneConstraint<DataTypes>::ProjectToPlaneConstraint()
     , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , l_topology(initLink("topology", "link to the topology container"))
     , data(new ProjectToPlaneConstraintInternalData<DataTypes>())    
-    , m_pointHandler(nullptr)
 {
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
@@ -75,9 +50,6 @@ ProjectToPlaneConstraint<DataTypes>::ProjectToPlaneConstraint()
 template <class DataTypes>
 ProjectToPlaneConstraint<DataTypes>::~ProjectToPlaneConstraint()
 {
-    if (m_pointHandler)
-        delete m_pointHandler;
-
     delete data;
 }
 
@@ -98,7 +70,7 @@ void ProjectToPlaneConstraint<DataTypes>::addConstraint(Index index)
 template <class DataTypes>
 void ProjectToPlaneConstraint<DataTypes>::removeConstraint(Index index)
 {
-    sofa::helper::removeValue(*f_indices.beginEdit(),index);
+    sofa::type::removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
 }
 
@@ -122,10 +94,8 @@ void ProjectToPlaneConstraint<DataTypes>::init()
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-        // Initialize functions and parameters
-        m_pointHandler = new FCPointHandler(this, &f_indices);
-        f_indices.createTopologyHandler(_topology, m_pointHandler);
-        f_indices.registerTopologicalData();
+        // Initialize topological changes support
+        f_indices.createTopologyHandler(_topology);
     }
     else
     {
@@ -256,15 +226,15 @@ void ProjectToPlaneConstraint<DataTypes>::projectPosition(const core::Mechanical
 }
 
 template <class DataTypes>
-void ProjectToPlaneConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix * /*mat*/, unsigned int /*offset*/)
+void ProjectToPlaneConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
     msg_error() << "applyConstraint is not implemented ";
 }
 
 template <class DataTypes>
-void ProjectToPlaneConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector * /*vect*/, unsigned int /*offset*/)
+void ProjectToPlaneConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, defaulttype::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
-    msg_error() << "ProjectToPlaneConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is not implemented ";
+    msg_error() << "ProjectToPlaneConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) is not implemented ";
 }
 
 template <class DataTypes>
@@ -280,26 +250,26 @@ void ProjectToPlaneConstraint<DataTypes>::draw(const core::visual::VisualParams*
 
     if( f_drawSize.getValue() == 0) // old classical drawing by points
     {
-        std::vector< sofa::defaulttype::Vector3 > points;
-        sofa::defaulttype::Vector3 point;
+        std::vector< sofa::type::Vector3 > points;
+        sofa::type::Vector3 point;
         for (unsigned int index : indices)
         {
             point = DataTypes::getCPos(x[index]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, sofa::type::RGBAColor(1,0.5,0.5,1));
     }
     else // new drawing by spheres
     {
-        std::vector< sofa::defaulttype::Vector3 > points;
-        sofa::defaulttype::Vector3 point;
+        std::vector< sofa::type::Vector3 > points;
+        sofa::type::Vector3 point;
 
         for (unsigned int index : indices)
         {
             point = DataTypes::getCPos(x[index]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::helper::types::RGBAColor(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::type::RGBAColor(1.0f,0.35f,0.35f,1.0f));
     }
 
     vparams->drawTool()->restoreLastState();

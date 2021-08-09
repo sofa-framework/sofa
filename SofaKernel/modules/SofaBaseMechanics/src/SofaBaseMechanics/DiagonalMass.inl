@@ -66,14 +66,14 @@ DiagonalMass<DataTypes, MassType>::~DiagonalMass()
 
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyCreateFunction(PointID, MassType &m, const Point &, const sofa::helper::vector<PointID> &, const sofa::helper::vector<double> &)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyCreateFunction(PointID, MassType &m, const Point &, const sofa::type::vector<PointID> &, const sofa::type::vector<double> &)
 {
     m=0;
 }
 
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyPointDestruction(const sofa::helper::vector<PointID> & pointsRemoved)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyPointDestruction(const sofa::type::vector<PointID> & pointsRemoved)
 {
     helper::WriteAccessor<Data<MassVector> > masses(dm->d_vertexMass);
     helper::WriteAccessor<Data<Real> > totalMass(dm->d_totalMass);
@@ -116,10 +116,10 @@ void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(con
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyEdgeCreation(const sofa::helper::vector< EdgeID >& edgeAdded,
-        const sofa::helper::vector< Edge >& /*elems*/,
-        const sofa::helper::vector< sofa::helper::vector< EdgeID > >& /*ancestors*/,
-        const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyEdgeCreation(const sofa::type::vector< EdgeID >& edgeAdded,
+        const sofa::type::vector< Edge >& /*elems*/,
+        const sofa::type::vector< sofa::type::vector< EdgeID > >& /*ancestors*/,
+        const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/)
 {
     if (dm->getMassTopologyType() == TopologyElementType::EDGE)
     {
@@ -149,7 +149,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyEdgeCreation(const
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyEdgeDestruction(const sofa::helper::vector<EdgeID> & edgeRemoved)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyEdgeDestruction(const sofa::type::vector<EdgeID> & edgeRemoved)
 {
     if (dm->getMassTopologyType() == TopologyElementType::EDGE)
     {
@@ -182,9 +182,9 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(const core::topology::EdgesAdded* e)
 {
     const auto& edgeIndex = e->getIndexArray();
-    const sofa::helper::vector< Edge >& edges = e->getArray();
+    const sofa::type::vector< Edge >& edges = e->getArray();
     const auto& ancestors = e->ancestorsList;
-    const sofa::helper::vector< sofa::helper::vector< double > >& coeffs = e->coefs;
+    const sofa::type::vector< sofa::type::vector< double > >& coeffs = e->coefs;
 
     if(dm->edgeGeo)
     {
@@ -220,10 +220,10 @@ void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(con
 
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyTriangleCreation(const sofa::helper::vector< TriangleID >& triangleAdded,
-        const sofa::helper::vector< Triangle >& /*elems*/,
-        const sofa::helper::vector< sofa::helper::vector< TriangleID > >& /*ancestors*/,
-        const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyTriangleCreation(const sofa::type::vector< TriangleID >& triangleAdded,
+        const sofa::type::vector< Triangle >& /*elems*/,
+        const sofa::type::vector< sofa::type::vector< TriangleID > >& /*ancestors*/,
+        const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/)
 {
     if (dm->getMassTopologyType() == TopologyElementType::TRIANGLE)
     {
@@ -254,7 +254,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyTriangleCreation(c
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyTriangleDestruction(const sofa::helper::vector<TriangleID > & triangleRemoved)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyTriangleDestruction(const sofa::type::vector<TriangleID > & triangleRemoved)
 {
     if (dm->getMassTopologyType() == TopologyElementType::TRIANGLE)
     {
@@ -290,9 +290,9 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(const core::topology::TrianglesAdded* e)
 {
     const auto& triangleAdded = e->getIndexArray();
-    const sofa::helper::vector< Triangle >& elems = e->getElementArray();
+    const sofa::type::vector< Triangle >& elems = e->getElementArray();
     const auto& ancestors = e->ancestorsList;
-    const sofa::helper::vector< sofa::helper::vector< double > >& coefs = e->coefs;
+    const sofa::type::vector< sofa::type::vector< double > >& coefs = e->coefs;
 
     if(dm->triangleGeo)
     {
@@ -326,10 +326,10 @@ void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(con
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyTetrahedronCreation(const sofa::helper::vector< TetrahedronID >& tetrahedronAdded,
-        const sofa::helper::vector< Tetrahedron >& /*elems*/,
-        const sofa::helper::vector< sofa::helper::vector< TetrahedronID > >& /*ancestors*/,
-        const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyTetrahedronCreation(const sofa::type::vector< TetrahedronID >& tetrahedronAdded,
+        const sofa::type::vector< Tetrahedron >& /*elems*/,
+        const sofa::type::vector< sofa::type::vector< TetrahedronID > >& /*ancestors*/,
+        const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/)
 {
     if (dm->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
     {
@@ -364,7 +364,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyTetrahedronCreatio
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyTetrahedronDestruction(const sofa::helper::vector<TetrahedronID> & tetrahedronRemoved)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyTetrahedronDestruction(const sofa::type::vector<TetrahedronID> & tetrahedronRemoved)
 {
     if (dm->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
     {
@@ -400,9 +400,9 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(const core::topology::TetrahedraAdded* e)
 {
     const auto& tetrahedronAdded = e->getIndexArray();
-    const sofa::helper::vector< Tetrahedron >& elems = e->getElementArray();
+    const sofa::type::vector< Tetrahedron >& elems = e->getElementArray();
     const auto& ancestors = e->ancestorsList;
-    const sofa::helper::vector< sofa::helper::vector< double > >& coefs = e->coefs;
+    const sofa::type::vector< sofa::type::vector< double > >& coefs = e->coefs;
 
     if(dm->tetraGeo)
     {
@@ -436,10 +436,10 @@ void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(con
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyHexahedronCreation(const sofa::helper::vector< HexahedronID >& hexahedronAdded,
-        const sofa::helper::vector< Hexahedron >& /*elems*/,
-        const sofa::helper::vector< sofa::helper::vector< HexahedronID > >& /*ancestors*/,
-        const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyHexahedronCreation(const sofa::type::vector< HexahedronID >& hexahedronAdded,
+        const sofa::type::vector< Hexahedron >& /*elems*/,
+        const sofa::type::vector< sofa::type::vector< HexahedronID > >& /*ancestors*/,
+        const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/)
 {
     if (dm->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
     {
@@ -470,7 +470,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyHexahedronCreation
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyHexahedronDestruction(const sofa::helper::vector<HexahedronID> & hexahedronRemoved)
+void DiagonalMass<DataTypes,MassType>::DMassPointEngine::applyHexahedronDestruction(const sofa::type::vector<HexahedronID> & hexahedronRemoved)
 {
     if (dm->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
     {
@@ -503,9 +503,9 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes,MassType>::DMassPointEngine::ApplyTopologyChange(const core::topology::HexahedraAdded* e)
 {
     const auto& hexahedronAdded = e->getIndexArray();
-    const sofa::helper::vector< Hexahedron >& elems = e->getElementArray();
+    const sofa::type::vector< Hexahedron >& elems = e->getElementArray();
     const auto& ancestors = e->ancestorsList;
-    const sofa::helper::vector< sofa::helper::vector< double > >& coefs = e->coefs;
+    const sofa::type::vector< sofa::type::vector< double > >& coefs = e->coefs;
 
     if(dm->hexaGeo)
     {
@@ -626,7 +626,7 @@ SReal DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const core::Mechani
     helper::ReadAccessor< DataVecCoord > _x = x;
     SReal e = 0;
     // gravity
-    defaulttype::Vec3d g ( this->getContext()->getGravity() );
+    type::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set ( theGravity, g[0], g[1], g[2]);
     for (unsigned int i=0; i<masses.size(); i++)
@@ -638,10 +638,10 @@ SReal DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const core::Mechani
 
 // does nothing by default, need to be specialized in .cpp
 template <class DataTypes, class MassType>
-defaulttype::Vector6
+type::Vector6
 DiagonalMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
 {
-    return defaulttype::Vector6();
+    return type::Vector6();
 }
 
 template <class DataTypes, class MassType>
@@ -698,7 +698,6 @@ void DiagonalMass<DataTypes, MassType>::initTopologyHandlers()
         d_vertexMass.linkToTetrahedronDataArray();
     if (hexaGeo)
         d_vertexMass.linkToHexahedronDataArray();
-    d_vertexMass.registerTopologicalData();
 }
 
 template <class DataTypes, class MassType>
@@ -1413,7 +1412,7 @@ void DiagonalMass<DataTypes, MassType>::initFromTotalMass()
 
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::setVertexMass(sofa::helper::vector< Real > vertexMass)
+void DiagonalMass<DataTypes, MassType>::setVertexMass(sofa::type::vector< Real > vertexMass)
 {
     const MassVector currentVertexMass = d_vertexMass.getValue();
     helper::WriteAccessor<Data<MassVector> > vertexMassWrite = d_vertexMass;
@@ -1530,7 +1529,7 @@ void DiagonalMass<DataTypes, MassType>::addGravityToV(const core::MechanicalPara
     {
         VecDeriv& v = *d_v.beginEdit();
         // gravity
-        sofa::defaulttype::Vec3d g ( this->getContext()->getGravity() );
+        sofa::type::Vec3d g ( this->getContext()->getGravity() );
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2]);
         Deriv hg = theGravity * typename DataTypes::Real(sofa::core::mechanicalparams::dt(mparams));
@@ -1555,7 +1554,7 @@ void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /
     helper::WriteAccessor< DataVecDeriv > _f = f;
 
     // gravity
-    sofa::defaulttype::Vec3d g ( this->getContext()->getGravity() );
+    sofa::type::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set ( theGravity, g[0], g[1], g[2]);
 
@@ -1581,11 +1580,11 @@ void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* v
     Coord gravityCenter;
     Real totalMass=0.0;
 
-    std::vector<  sofa::defaulttype::Vector3 > points;
+    std::vector<  sofa::type::Vector3 > points;
 
     for (unsigned int i=0; i<x.size(); i++)
     {
-        sofa::defaulttype::Vector3 p;
+        sofa::type::Vector3 p;
         p = DataTypes::getCPos(x[i]);
 
         points.push_back(p);
@@ -1598,13 +1597,13 @@ void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* v
         gravityCenter /= totalMass;
 
         Real axisSize = d_showAxisSize.getValue();
-        sofa::defaulttype::Vector3 temp;
+        sofa::type::Vector3 temp;
 
         for ( unsigned int i=0 ; i<3 ; i++ )
             if(i < Coord::spatial_dimensions )
                 temp[i] = gravityCenter[i];
 
-        vparams->drawTool()->drawCross(temp, float(axisSize), sofa::helper::types::RGBAColor::yellow());
+        vparams->drawTool()->drawCross(temp, float(axisSize), sofa::type::RGBAColor::yellow());
     }
 }
 

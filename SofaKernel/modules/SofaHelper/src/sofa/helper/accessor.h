@@ -74,7 +74,7 @@ public:
 };
 
 template<class U>
-[[deprecated("Custom operator<< for accessor have been deprecated in #PR1808. Just replace std::cout << myaccessor by std::cout << myccessor.ref()")]]
+SOFA_ATTRIBUTE_DEPRECATED__CUSTOM_OPERATOR()
 std::ostream& operator<<( std::ostream& os, const ReadAccessor<U>& vec ) = delete;
 
 
@@ -131,11 +131,11 @@ public:
 };
 
 template<class U>
-[[deprecated("Custom operator<< for accessor have been deprecated in #PR1808. Just replace std::cout << myaccessor by std::cout << myccessor.ref()")]]
+SOFA_ATTRIBUTE_DEPRECATED__CUSTOM_OPERATOR()
 std::ostream& operator<< ( std::ostream& os, const WriteAccessor<U>& vec ) = delete;
 
 template<class U>
-[[deprecated("Custom operator<< for accessor have been deprecated in #PR1808. Just replace std::cout << myaccessor by std::cout << myccessor.ref()")]]
+SOFA_ATTRIBUTE_DEPRECATED__CUSTOM_OPERATOR()
 std::istream& operator>> ( std::istream& in, WriteAccessor<U>& vec ) = delete;
 
 /** Identical to WriteAccessor for default implementation, but different for some template specializations such as  core::objectmodel::Data<T>
@@ -190,7 +190,7 @@ public:
 };
 
 template<class U>
-[[deprecated("Custom operator<< for accessor have been deprecated in #PR1808. Just replace std::cout << myaccessor by std::cout << myccessor.ref()")]]
+SOFA_ATTRIBUTE_DEPRECATED__CUSTOM_OPERATOR()
 std::ostream& operator<< ( std::ostream& os, const ReadAccessorVector<U>& vec ) = delete;
 
 
@@ -278,36 +278,6 @@ public:
     typedef typename Inherit::container_type container_type;
     WriteOnlyAccessor(container_type& c) : Inherit(c) {}
 };
-
-/// Returns a read accessor from the provided Data<>
-/// Example of use:
-///   auto points = getReadAccessor(d_points)
-template<class D>
-sofa::helper::ReadAccessor<D> getReadAccessor(D& c)
-{
-    return sofa::helper::ReadAccessor<D>{ c };
-}
-
-/// Returns a write only accessor from the provided Data<>
-/// Example of use:
-///   auto points = getWriteOnlyAccessor(d_points)
-template<class D>
-sofa::helper::WriteAccessor<D> getWriteAccessor(D& c)
-{
-    return sofa::helper::WriteAccessor<D>{ c };
-}
-
-/// Returns a write only accessor from the provided Data<>
-/// WriteOnly accessors are faster than WriteAccessor because
-/// as the data is only read this means there is no need to pull
-/// the data from the parents
-/// Example of use:
-///   auto points = getWriteOnlyAccessor(d_points)
-template<class D>
-sofa::helper::WriteOnlyAccessor<D> getWriteOnlyAccessor(D& c)
-{
-    return sofa::helper::WriteOnlyAccessor<D>{ c };
-}
 
 } /// namespace sofa::core
 

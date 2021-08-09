@@ -193,7 +193,7 @@ SofaWindowProfiler::AnimationStepData::AnimationStepData(int step, const std::st
 
 bool SofaWindowProfiler::AnimationStepData::processData(const std::string& idString)
 {
-    helper::vector<Record> _records = sofa::helper::AdvancedTimer::getRecords(idString);
+    type::vector<Record> _records = sofa::helper::AdvancedTimer::getRecords(idString);
 
     //AnimationSubStepData* currentSubStep = nullptr;
     std::stack<AnimationSubStepData*> processStack;

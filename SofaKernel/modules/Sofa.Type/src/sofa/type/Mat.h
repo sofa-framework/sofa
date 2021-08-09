@@ -280,7 +280,7 @@ public:
     /// Cast into a standard C array of elements (stored per line) (read-only).
     const real* ptr() const
     {
-        return this->elems[0].ptr();;
+        return this->elems[0].ptr();
     }
 
     /// Cast into a standard C array of elements (stored per line).
@@ -392,7 +392,7 @@ public:
     bool operator==(const Mat<L,C,real>& b) const
     {
         for (Size i=0; i<L; i++)
-            if (!(this->elems[i]==b[i])) return false;
+            if (this->elems[i] != b[i]) return false;
         return true;
     }
 
@@ -683,10 +683,21 @@ public:
     template<class Quat>
     static Mat<L,C,real> transformRotation(const Quat& q)
     {
+        static_assert(L == C && (L ==4 || L == 3), "transformRotation can only be called with 3x3 or 4x4 matrices.");
+
         Mat<L,C,real> m;
         m.identity();
-        q.toMatrix(m);
-        return m;
+
+        if constexpr(L == 4 && C == 4)
+        {
+            q.toHomogeneousMatrix(m);
+            return m;
+        }
+        else // if constexpr(L == 3 && C == 3)
+        {
+            q.toMatrix(m);
+            return m;
+        }
     }
 
     /// @return True if and only if the Matrix is a transformation matrix

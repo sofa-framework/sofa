@@ -23,6 +23,7 @@
 #include <SofaMeshCollision/BarycentricPenalityContact.inl>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <SofaMeshCollision/RigidContactMapper.inl>
+#include <sofa/helper/Factory.inl>
 
 namespace sofa::component::collision
 {

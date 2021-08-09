@@ -661,7 +661,7 @@ public:
 
 
 template<class T>
-class vector_data_trait < sofa::helper::vector<T> > : public vector_data_trait< std::vector<T> >
+class vector_data_trait < sofa::type::vector<T> > : public vector_data_trait< std::vector<T> >
 {
 };
 

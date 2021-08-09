@@ -24,10 +24,6 @@
 
 #include <SofaBaseCollision/BruteForceBroadPhase.h>
 #include <SofaGeneralMeshCollision/RayTraceNarrowPhase.h>
-#include <sofa/core/CollisionElement.h>
-#include <sofa/defaulttype/Vec.h>
-#include <set>
-
 
 namespace sofa::component::collision
 {
@@ -39,12 +35,37 @@ namespace sofa::component::collision
  *   up to find a triangle in the other object. Both triangles are tested to evaluate if they are in
  *   colliding state. It must be used with a TriangleOctreeModel,as an octree is used to traverse the object.
  */
-class SOFA_SOFAUSERINTERACTION_API RayTraceDetection :
-    public BruteForceBroadPhase,
-    public RayTraceNarrowPhase
+class SOFA_SOFAUSERINTERACTION_API RayTraceDetection final :
+    public sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS2(RayTraceDetection, BruteForceBroadPhase, RayTraceNarrowPhase);
+    SOFA_CLASS(RayTraceDetection, sofa::core::objectmodel::BaseObject);
+
+    void init() override;
+
+    /// Construction method called by ObjectFactory.
+    template<class T>
+    static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
+    {
+        BruteForceBroadPhase::SPtr broadPhase = sofa::core::objectmodel::New<BruteForceBroadPhase>();
+        broadPhase->setName("bruteForceBroadPhase");
+        if (context) context->addObject(broadPhase);
+
+        RayTraceNarrowPhase::SPtr narrowPhase = sofa::core::objectmodel::New<RayTraceNarrowPhase>();
+        narrowPhase->setName("rayTraceNarrowPhase");
+        if (context) context->addObject(narrowPhase);
+
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
+        if (context) context->addObject(obj);
+        if (arg) obj->parse(arg);
+
+        return obj;
+    }
+
+protected:
+    RayTraceDetection() = default;
+    ~RayTraceDetection() override = default;
+
 };
 
 } // namespace sofa::component::collision

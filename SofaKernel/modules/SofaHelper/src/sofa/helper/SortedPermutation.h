@@ -27,7 +27,7 @@
   Francois Faure, April 2012
   */
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <iostream>
 #include <algorithm>
 
@@ -52,9 +52,9 @@ struct CompareIndirect
 
 /// Return a sorted permutation of the container, i.e. a list of indices corresponding to increasing entries.
 template<class Container>
-helper::vector<unsigned> sortedPermutation( const Container& values )
+type::vector<unsigned> sortedPermutation( const Container& values )
 {
-    helper::vector<unsigned> permutation;
+    type::vector<unsigned> permutation;
     permutation.resize(values.size());
     for(unsigned i=0; i<permutation.size(); i++)
         permutation[i] = i;
@@ -66,7 +66,7 @@ helper::vector<unsigned> sortedPermutation( const Container& values )
 }
 
 ////Example:
-///    helper::vector<double> values;
+///    type::vector<double> values;
 ///     values.push_back(24);
 ///     values.push_back(55);
 ///     values.push_back(22);

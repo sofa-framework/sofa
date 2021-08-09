@@ -7,14 +7,10 @@
     <RequiredPlugin name="SofaTopologyMapping"/>
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
-    <DefaultPipeline verbose="0" />
-    <BruteForceBroadPhase/>
-    <BVHNarrowPhase/>
-    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     
     <Node name="BeamFEM_SMALL">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"/>
         
         <RegularGridTopology name="grid" min="-5 -5 0" max="5 5 40" n="5 5 20"/>
         <MechanicalObject template="Vec3d" />
@@ -26,7 +22,7 @@
         
         <DiagonalMass massDensity="0.2" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" 
-        method="small" computeVonMisesStress="2" />
+        method="small" computeVonMisesStress="2" showVonMisesStressPerElement="true"/>
         
         <BoxROI template="Vec3d" name="box_roi" box="-6 -6 -1 50 6 0.1" drawBoxes="1" />
         <FixedConstraint template="Vec3d" indices="@box_roi.indices" />
@@ -47,7 +43,7 @@
         
         <DiagonalMass massDensity="0.2" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" 
-        method="large" computeVonMisesStress="1" />
+        method="large" computeVonMisesStress="1" showVonMisesStressPerElement="true"/>
         
         <BoxROI template="Vec3d" name="box_roi" box="-6 -6 -1 50 6 0.1" drawBoxes="1" />
         <FixedConstraint template="Vec3d" indices="@box_roi.indices" />
@@ -67,7 +63,7 @@
         
         <DiagonalMass massDensity="0.2" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" 
-        method="polar" computeVonMisesStress="1"/>
+        method="polar" computeVonMisesStress="1" showVonMisesStressPerElement="true"/>
         
         <BoxROI template="Vec3d" name="box_roi" box="-6 -6 -1 50 6 0.1" drawBoxes="1" />
         <FixedConstraint template="Vec3d" indices="@box_roi.indices" />
@@ -87,7 +83,7 @@
         
         <DiagonalMass massDensity="0.2" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" 
-        method="svd" computeVonMisesStress="1"/>
+        method="svd" computeVonMisesStress="1" showVonMisesStressPerElement="true"/>
         
         <BoxROI template="Vec3d" name="box_roi" box="-6 -6 -1 50 6 0.1" drawBoxes="1" />
         <FixedConstraint template="Vec3d" indices="@box_roi.indices" />

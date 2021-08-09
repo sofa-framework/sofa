@@ -763,7 +763,7 @@ int RealGUI::closeGUI()
 {
     QSettings settings;
     QScreen* screen = widget->window()->windowHandle()->screen();
-    settings.beginGroup("viewer"); ;
+    settings.beginGroup("viewer");
     settings.setValue("screenNumber", QGuiApplication::screens().indexOf(screen));
     settings.endGroup();
     delete this;
@@ -870,7 +870,7 @@ void RealGUI::emitIdle()
     }
 
     if(isEmbeddedViewer())
-        getQtViewer()->getQWidget()->update();;
+        getQtViewer()->getQWidget()->update();
 }
 
 /// This open popup the file selection windows.
@@ -989,13 +989,13 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
     if (root)
     {
         //Check the validity of the BBox
-        const sofa::defaulttype::BoundingBox& nodeBBox = root->getContext()->f_bbox.getValue();
+        const sofa::type::BoundingBox& nodeBBox = root->getContext()->f_bbox.getValue();
         if(nodeBBox.isNegligeable())
         {
             msg_warning("RealGUI") << "Global Bounding Box seems very small; Your viewer settings (based on the bbox) are likely invalid, switching to default value of [-1,-1,-1,1,1,1]."
                                    << "This is caused by using component which does not implement properly the updateBBox function."
                                    << "You can remove this warning by manually forcing a value in the parameter bbox=\"minX minY minZ maxX maxY maxZ\" in your root node \n";
-            sofa::defaulttype::BoundingBox b(-1.0,-1.0,-1.0,1.0,1.0,1.0);
+            sofa::type::BoundingBox b(-1.0,-1.0,-1.0,1.0,1.0,1.0);
             root->f_bbox.setValue(b);
         }
 
@@ -1324,7 +1324,7 @@ void RealGUI::setFullScreen (bool enable)
 
 //------------------------------------
 
-void RealGUI::setBackgroundColor(const sofa::helper::types::RGBAColor& c)
+void RealGUI::setBackgroundColor(const sofa::type::RGBAColor& c)
 {
     background[0]->setText(QString::number(c[0]));
     background[1]->setText(QString::number(c[1]));
@@ -1344,7 +1344,7 @@ void RealGUI::setBackgroundImage(const std::string& c)
 
 void RealGUI::setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* viewerConf)
 {
-    const defaulttype::Vec<2,int> &res=viewerConf->resolution.getValue();
+    const type::Vec<2,int> &res=viewerConf->resolution.getValue();
 
     if (viewerConf->fullscreen.getValue())
         setFullScreen();
@@ -1800,16 +1800,14 @@ void RealGUI::initViewer(BaseViewer* _viewer)
 
 void RealGUI::parseOptions()
 {
-    if (mArgumentParser) {
-        boost::program_options::variables_map vm = mArgumentParser->getVariableMap();
-        if(vm.find("interactive") != vm.end())
-            m_enableInteraction = vm["interactive"].as<bool>();
-        if(vm.find("msaa") != vm.end())
-            m_viewerMSAANbSampling = vm["msaa"].as<unsigned int>();
 
-        if(m_enableInteraction)
+    if (mArgumentParser) {
+        mArgumentParser->getValueFromKey("interactive", m_enableInteraction);
+        mArgumentParser->getValueFromKey("msaa", m_viewerMSAANbSampling);
+
+        if (m_enableInteraction)
             msg_warning("runSofa") << "you activated the interactive mode. This is currently an experimental feature "
-                                      "that may change or be removed in the future. ";
+            "that may change or be removed in the future. ";
     }
 }
 
@@ -1971,7 +1969,7 @@ void RealGUI::NewRootNode(sofa::simulation::Node* root, const char* path)
         getViewer()->load();
         getViewer()->resetView();
         if(isEmbeddedViewer())
-            getQtViewer()->getQWidget()->update();;
+            getQtViewer()->getQWidget()->update();
         statWidget->CreateStats(root);
     }
 }
@@ -2300,7 +2298,7 @@ void RealGUI::showhideElements()
 {
     displayFlag->updateDataValue();
     if(isEmbeddedViewer())
-        getQtViewer()->getQWidget()->update();;
+        getQtViewer()->getQWidget()->update();
 }
 
 //------------------------------------
@@ -2308,7 +2306,7 @@ void RealGUI::showhideElements()
 void RealGUI::Update()
 {
     if(isEmbeddedViewer())
-        getQtViewer()->getQWidget()->update();;
+        getQtViewer()->getQWidget()->update();
     statWidget->CreateStats(currentSimulation());
 }
 
@@ -2319,7 +2317,7 @@ void RealGUI::updateBackgroundColour()
     if(getViewer())
         getViewer()->setBackgroundColour(background[0]->text().toFloat(),background[1]->text().toFloat(),background[2]->text().toFloat());
     if(isEmbeddedViewer())
-        getQtViewer()->getQWidget()->update();;
+        getQtViewer()->getQWidget()->update();
 }
 
 //------------------------------------
@@ -2329,7 +2327,7 @@ void RealGUI::updateBackgroundImage()
     if(getViewer())
         getViewer()->setBackgroundImage( backgroundImage->text().toStdString() );
     if(isEmbeddedViewer())
-        getQtViewer()->getQWidget()->update();;
+        getQtViewer()->getQWidget()->update();
 }
 
 //------------------------------------
@@ -2522,18 +2520,18 @@ void RealGUI::changeViewer()
 void RealGUI::updateViewerList()
 {
     // the current list of viewer key with associate QAction
-    helper::vector< helper::SofaViewerFactory::Key > currentKeys;
+    type::vector< helper::SofaViewerFactory::Key > currentKeys;
     std::map< helper::SofaViewerFactory::Key, QAction*>::const_iterator iter_map;
     for ( iter_map = viewerMap.begin(); iter_map != viewerMap.end(); ++iter_map )
         currentKeys.push_back((*iter_map).first);
     std::sort(currentKeys.begin(),currentKeys.end());
 
     // the new list (most recent since we load/unload viewer plugin)
-    helper::vector< helper::SofaViewerFactory::Key > updatedKeys;
+    type::vector< helper::SofaViewerFactory::Key > updatedKeys;
     helper::SofaViewerFactory::getInstance()->uniqueKeys(std::back_inserter(updatedKeys));
     std::sort(updatedKeys.begin(),updatedKeys.end());
 
-    helper::vector< helper::SofaViewerFactory::Key > diffKeys;
+    type::vector< helper::SofaViewerFactory::Key > diffKeys;
     std::set_symmetric_difference(currentKeys.begin(),
                                   currentKeys.end(),
                                   updatedKeys.begin(),
@@ -2542,7 +2540,7 @@ void RealGUI::updateViewerList()
                                   );
 
     bool viewerRemoved=false;
-    helper::vector< helper::SofaViewerFactory::Key >::const_iterator it;
+    type::vector< helper::SofaViewerFactory::Key >::const_iterator it;
     for( it = diffKeys.begin(); it != diffKeys.end(); ++it)
     {
         // delete old

@@ -39,7 +39,7 @@ namespace
 template<Size N, typename Real, class VecReal>
 inline double UncoupledConstraintCorrection_computeCompliance(
     Index index,
-    const sofa::defaulttype::Vec<N, Real>& n1, const sofa::defaulttype::Vec<N, Real>& n2,
+    const sofa::type::Vec<N, Real>& n1, const sofa::type::Vec<N, Real>& n2,
     const Real comp0, const VecReal& comp)
 {
     return (n1 * n2) * ((index < comp.size()) ? comp[index] : comp0);
@@ -67,9 +67,9 @@ inline double UncoupledConstraintCorrection_computeCompliance(
 
 /// Compute displacement from constraint force for Vec types
 template<Size N, typename Real, class VecReal>
-inline sofa::defaulttype::Vec<N, Real> UncoupledConstraintCorrection_computeDx(
+inline sofa::type::Vec<N, Real> UncoupledConstraintCorrection_computeDx(
     Index index,
-    const sofa::defaulttype::Vec<N, Real>& f,
+    const sofa::type::Vec<N, Real>& f,
     const Real comp0, const VecReal& comp)
 {
     return (f) * ((index < comp.size()) ? comp[index] : comp0);
@@ -164,7 +164,6 @@ void UncoupledConstraintCorrection<DataTypes>::init()
             if (_topology != nullptr)
             {
                 compliance.createTopologyHandler(_topology);
-                compliance.registerTopologicalData();
             }
         }
     }
@@ -211,10 +210,10 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 
     // look for the number of group;
     unsigned int numGroup = 0;
-    for (unsigned int cm = 0; cm < constraint_merge.size(); cm++)
+    for (int cm : constraint_merge)
     {
-        if (constraint_merge[cm] > (int) numGroup)
-            numGroup = (unsigned int) constraint_merge[cm];
+        if (cm > (int) numGroup)
+            numGroup = (unsigned int) cm;
     }
     numGroup += 1;
 
@@ -410,6 +409,8 @@ void UncoupledConstraintCorrection<DataTypes>::computeDx(const Data< VecDeriv > 
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::computeMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, core::MultiVecDerivId f)
 {
+    SOFA_UNUSED(cparams);
+
     auto writeDx = sofa::helper::getWriteAccessor( *dx[this->getMState()].write() );
     const Data<VecDeriv>& f_d = *f[this->getMState()].read();
     computeDx(f_d, writeDx.wref());

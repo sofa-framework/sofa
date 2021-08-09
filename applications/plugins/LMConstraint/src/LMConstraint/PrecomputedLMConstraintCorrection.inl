@@ -60,9 +60,9 @@ void PrecomputedLMConstraintCorrection<DataTypes>::bwdInit()
         this->invM->data = new Real[this->nbRows * this->nbCols];
 
         // for the intial computation, the gravity has to be put at 0
-        const sofa::defaulttype::Vec3d gravity = this->getContext()->getGravity();
+        const sofa::type::Vec3d gravity = this->getContext()->getGravity();
 
-        const sofa::defaulttype::Vec3d gravity_zero(0.0,0.0,0.0);
+        const sofa::type::Vec3d gravity_zero(0.0,0.0,0.0);
         this->getContext()->setGravity(gravity_zero);
 
         sofa::component::odesolver::EulerImplicitSolver* eulerSolver;
@@ -96,9 +96,9 @@ void PrecomputedLMConstraintCorrection<DataTypes>::bwdInit()
             return;
         }
 
-        helper::vector< sofa::component::constraintset::LMConstraintSolver* > listLMConstraintSolver;
+        type::vector< sofa::component::constraintset::LMConstraintSolver* > listLMConstraintSolver;
         solvernode->get< sofa::component::constraintset::LMConstraintSolver >(&listLMConstraintSolver, core::objectmodel::BaseContext::SearchDown);
-        helper::vector< sofa::component::constraintset::ConstraintActivation > listConstraintActivation(listLMConstraintSolver.size());
+        type::vector< sofa::component::constraintset::ConstraintActivation > listConstraintActivation(listLMConstraintSolver.size());
         for (unsigned int i=0; i<listLMConstraintSolver.size(); ++i)
         {
             listConstraintActivation[i].acc=listLMConstraintSolver[i]->constraintAcc.getValue();

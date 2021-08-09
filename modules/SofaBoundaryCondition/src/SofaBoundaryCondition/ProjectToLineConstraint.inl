@@ -27,33 +27,10 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <iostream>
-#include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/helper/vector_algorithm.h>
+#include <sofa/type/vector_algorithm.h>
 
 namespace sofa::component::projectiveconstraintset
 {
-
-template< class DataTypes>
-bool ProjectToLineConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
-{
-    if (fc)
-    {
-        return false;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-template< class DataTypes>
-void ProjectToLineConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, core::objectmodel::Data<value_type> &)
-{
-    if (fc)
-    {
-        fc->removeConstraint((Index) pointIndex);
-    }
-}
 
 template <class DataTypes>
 ProjectToLineConstraint<DataTypes>::ProjectToLineConstraint()
@@ -64,7 +41,6 @@ ProjectToLineConstraint<DataTypes>::ProjectToLineConstraint()
     , f_direction( initData(&f_direction,CPos(),"direction","Direction of the line"))
     , l_topology(initLink("topology", "link to the topology container"))
     , data(new ProjectToLineConstraintInternalData<DataTypes>())    
-    , m_pointHandler(nullptr)
 {
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
@@ -74,9 +50,6 @@ ProjectToLineConstraint<DataTypes>::ProjectToLineConstraint()
 template <class DataTypes>
 ProjectToLineConstraint<DataTypes>::~ProjectToLineConstraint()
 {
-    if (m_pointHandler)
-        delete m_pointHandler;
-
     delete data;
 }
 
@@ -97,7 +70,7 @@ void ProjectToLineConstraint<DataTypes>::addConstraint(Index index)
 template <class DataTypes>
 void ProjectToLineConstraint<DataTypes>::removeConstraint(Index index)
 {
-    sofa::helper::removeValue(*f_indices.beginEdit(),index);
+    sofa::type::removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
 }
 
@@ -121,10 +94,8 @@ void ProjectToLineConstraint<DataTypes>::init()
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
         
-        // Initialize functions and parameters
-        m_pointHandler = new FCPointHandler(this, &f_indices);
-        f_indices.createTopologyHandler(_topology, m_pointHandler);
-        f_indices.registerTopologicalData();        
+        // Initialize topological changes support
+        f_indices.createTopologyHandler(_topology);
     }
     else
     {
@@ -144,11 +115,17 @@ void ProjectToLineConstraint<DataTypes>::init()
         }
     }
 
-    reinit();
+    updateJacobian();
 }
 
 template <class DataTypes>
 void  ProjectToLineConstraint<DataTypes>::reinit()
+{
+    updateJacobian();
+}
+
+template <class DataTypes>
+void  ProjectToLineConstraint<DataTypes>::updateJacobian()
 {
     // normalize the normal vector
     CPos n = f_direction.getValue();
@@ -208,8 +185,13 @@ template <class DataTypes>
 void ProjectToLineConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     SOFA_UNUSED(mparams);
+    
+    helper::WriteAccessor<DataVecDeriv> res(resData);
+    if( (jacobian.colSize() / DataTypes::deriv_total_size) != res.size())
+    {
+        updateJacobian();
+    }
 
-    helper::WriteAccessor<DataVecDeriv> res ( resData );
     jacobian.mult(res.wref(),res.ref());
 }
 
@@ -247,15 +229,15 @@ void ProjectToLineConstraint<DataTypes>::projectPosition(const core::MechanicalP
 
 // Matrix Integration interface
 template <class DataTypes>
-void ProjectToLineConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix * /*mat*/, unsigned int /*offset*/)
+void ProjectToLineConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
     msg_error() << "applyConstraint is not implemented ";
 }
 
 template <class DataTypes>
-void ProjectToLineConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector * /*vect*/, unsigned int /*offset*/)
+void ProjectToLineConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, defaulttype::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
-    msg_error() << "ProjectToLineConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is not implemented ";
+    msg_error() << "ProjectToLineConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) is not implemented ";
 }
 
 
@@ -274,8 +256,8 @@ void ProjectToLineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
 
     if( f_drawSize.getValue() == 0) // old classical drawing by points
     {
-        std::vector< sofa::defaulttype::Vector3 > points;
-        sofa::defaulttype::Vector3 point;
+        std::vector< sofa::type::Vector3 > points;
+        sofa::type::Vector3 point;
         
         for (Indices::const_iterator it = indices.begin();
                 it != indices.end();
@@ -284,18 +266,18 @@ void ProjectToLineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
             point = DataTypes::getCPos(x[*it]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, sofa::type::RGBAColor(1,0.5,0.5,1));
     }
     else // new drawing by spheres
     {
-        std::vector< sofa::defaulttype::Vector3 > points;
-        sofa::defaulttype::Vector3 point;
+        std::vector< sofa::type::Vector3 > points;
+        sofa::type::Vector3 point;
         for (unsigned int index : indices)
         {
             point = DataTypes::getCPos(x[index]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::helper::types::RGBAColor(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::type::RGBAColor(1.0f,0.35f,0.35f,1.0f));
     }
     vparams->drawTool()->restoreLastState();
 

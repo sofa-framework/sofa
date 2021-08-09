@@ -81,8 +81,8 @@ public:
     *
     * \param ancestorElems are the ancestors topology info used in the points modifications
     */
-    virtual void initPointsAdded(const helper::vector< sofa::Index > &indices, const helper::vector< PointAncestorElem > &ancestorElems
-        , const helper::vector< core::VecCoordId >& coordVecs, const helper::vector< core::VecDerivId >& derivVecs );
+    virtual void initPointsAdded(const type::vector< sofa::Index > &indices, const type::vector< PointAncestorElem > &ancestorElems
+        , const type::vector< core::VecCoordId >& coordVecs, const type::vector< core::VecDerivId >& derivVecs );
 };
 
 /** A class that contains a set of low-level methods that perform topological changes */
@@ -136,7 +136,7 @@ public:
 
     /** \brief Generic method to remove a list of items.
     */
-    virtual void removeItems(const sofa::helper::vector<Index> & /*items*/);
+    virtual void removeItems(const sofa::type::vector<Index> & /*items*/);
 
 protected:
     /** \brief Adds a TopologyChange object to the list of the topology this object describes.
@@ -250,16 +250,8 @@ public:
 
     /** \brief Adds a TopologyHandler to the list.
     */
-    void addTopologyHandler(TopologyHandler* _TopologyHandler) override;
+    void addTopologyHandler(TopologyHandler* _TopologyHandler);
 
-
-    /** \brief Provides an iterator on the first element in the list of TopologyHandler objects.
-     */
-    std::list<TopologyHandler *>::const_iterator beginTopologyHandler() const override;
-
-    /** \brief Provides an iterator on the last element in the list of TopologyHandler objects.
-     */
-    std::list<TopologyHandler *>::const_iterator endTopologyHandler() const override;
 
     /** \brief Free each Topology changes in the list and remove them from the list
     *
@@ -269,8 +261,7 @@ public:
     ///@}
 
 
-protected:
-
+public:
     virtual void updateTopologyHandlerGraph() {}
 
     /// Array of topology modifications that have already occured (addition) or will occur next (deletion).

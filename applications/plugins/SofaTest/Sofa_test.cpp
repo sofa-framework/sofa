@@ -38,7 +38,7 @@ using sofa::helper::Utils;
 
 namespace sofa {
 namespace {
-    static struct raii {
+    struct raii {
       raii() {
           PluginManager::getInstance().loadPlugin("SceneCreator") ;
           PluginManager::getInstance().loadPlugin("SofaComponentAll") ;
@@ -65,6 +65,6 @@ void BaseSofa_test::clearSceneGraph()
 
 
 
-template struct SOFA_SOFATEST_API Sofa_test<double>;
+template class SOFA_SOFATEST_API Sofa_test<double>;
 
 }

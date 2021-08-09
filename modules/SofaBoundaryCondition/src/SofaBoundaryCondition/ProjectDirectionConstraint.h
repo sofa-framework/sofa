@@ -30,9 +30,9 @@
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/VecTypes.h>
 //#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/vector.h>
-#include <sofa/defaulttype/Mat.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <sofa/type/vector.h>
+#include <sofa/type/Mat.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <set>
 
@@ -66,9 +66,9 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef helper::vector<Index> Indices;
-    typedef sofa::defaulttype::Vector3 Vector3;
-    typedef sofa::component::topology::PointSubsetData< Indices > IndexSubsetData;
+    typedef type::vector<Index> Indices;
+    typedef sofa::type::Vector3 Vector3;
+    typedef sofa::component::topology::TopologySubsetIndices IndexSubsetData;
     typedef linearsolver::EigenBaseSparseMatrix<SReal> BaseSparseMatrix;
     typedef linearsolver::EigenSparseMatrix<DataTypes,DataTypes> SparseMatrix;
     typedef typename SparseMatrix::Block Block;                                       ///< projection matrix of a particle displacement to the plane
@@ -92,7 +92,7 @@ protected:
     ProjectDirectionConstraintInternalData<DataTypes>* data;
     friend class ProjectDirectionConstraintInternalData<DataTypes>;
 
-    helper::vector<CPos> m_origin;
+    type::vector<CPos> m_origin;
 
 
 public:
@@ -109,40 +109,16 @@ public:
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
-    using core::behavior::ProjectiveConstraintSet<DataTypes>::applyConstraint;
-    void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset);
-    void applyConstraint(defaulttype::BaseVector *vect, unsigned int offset);
+    void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
-    /// Project the the given matrix (Experimental API, see the spec in sofa::core::behavior::BaseProjectiveConstraintSet).
+    /// Project the given matrix (Experimental API, see the spec in sofa::core::behavior::BaseProjectiveConstraintSet).
     void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
 
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-
-    class FCPointHandler : public component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, Indices >
-    {
-    public:
-        typedef typename ProjectDirectionConstraint<DataTypes>::Indices Indices;
-        typedef sofa::core::topology::Point Point;
-        FCPointHandler(ProjectDirectionConstraint<DataTypes>* _fc, component::topology::PointSubsetData<Indices>* _data)
-            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, Indices >(_data), fc(_fc) {}
-
-
-        using component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, Indices >::applyDestroyFunction;
-        void applyDestroyFunction(Index /*index*/, core::objectmodel::Data<value_type>& /*T*/);
-
-
-        bool applyTestCreateFunction(Index /*index*/,
-                const sofa::helper::vector< Index > & /*ancestors*/,
-                const sofa::helper::vector< double > & /*coefs*/);
-    protected:
-        ProjectDirectionConstraint<DataTypes> *fc;
-    };
-
 protected :
-    /// Handler for subset Data
-    FCPointHandler* m_pointHandler;
 
     SparseMatrix jacobian; ///< projection matrix in local state
     SparseMatrix J;        ///< auxiliary variable

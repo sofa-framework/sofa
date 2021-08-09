@@ -24,7 +24,7 @@
 
 
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -47,9 +47,9 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
-    typedef helper::vector<Real> VecReal;
+    typedef type::vector<Real> VecReal;
     typedef typename DataTypes::CPos CPos;
-    typedef defaulttype::Vec<3, Real> Vec3;
+    typedef type::Vec<3, Real> Vec3;
 
     typedef unsigned int PointID;
     typedef core::topology::BaseMeshTopology::Edge Edge;
@@ -117,9 +117,9 @@ public:
     Data<VecReal> f_inputValues; ///< Input values
     Data<CPos> f_direction; ///< Direction along which the values are interpolated
     Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
-    Data<helper::vector<Edge> > f_edges; ///< Edge Topology
-    Data<helper::vector<Triangle> > f_triangles; ///< Triangle Topology
-    Data<helper::vector<Tetra> > f_tetrahedra; ///< Tetrahedron Topology
+    Data<type::vector<Edge> > f_edges; ///< Edge Topology
+    Data<type::vector<Triangle> > f_triangles; ///< Triangle Topology
+    Data<type::vector<Tetra> > f_tetrahedra; ///< Tetrahedron Topology
 
     //Output scalars
     Data<VecReal> f_values; ///< Values of the points contained in the ROI
@@ -128,10 +128,10 @@ public:
     Data<VecReal> f_tetrahedronValues; ///< Values of the tetrahedra contained in the ROI
 
     //Output vectors
-    Data<sofa::helper::vector<Vec3> > f_pointVectors; ///< Vectors of the points contained in the ROI
-    Data<sofa::helper::vector<Vec3> > f_edgeVectors; ///< Vectors of the edges contained in the ROI
-    Data<sofa::helper::vector<Vec3> > f_triangleVectors; ///< Vectors of the triangles contained in the ROI
-    Data<sofa::helper::vector<Vec3> > f_tetrahedronVectors; ///< Vectors of the tetrahedra contained in the ROI
+    Data<sofa::type::vector<Vec3> > f_pointVectors; ///< Vectors of the points contained in the ROI
+    Data<sofa::type::vector<Vec3> > f_edgeVectors; ///< Vectors of the edges contained in the ROI
+    Data<sofa::type::vector<Vec3> > f_triangleVectors; ///< Vectors of the triangles contained in the ROI
+    Data<sofa::type::vector<Vec3> > f_tetrahedronVectors; ///< Vectors of the tetrahedra contained in the ROI
 
     // parameters
     sofa::core::objectmodel::Data< sofa::helper::OptionsGroup > p_fieldType; ///< field type of output elements

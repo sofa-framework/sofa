@@ -21,8 +21,8 @@
 ******************************************************************************/
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <climits>
 
@@ -60,14 +60,14 @@ struct BaseMatrixLinearOpMV_BlockDiagonal
     typedef typename M::ColBlockConstIterator ColBlockConstIterator;
     typedef typename M::BlockConstAccessor BlockConstAccessor;
     typedef typename M::Index Index;
-    typedef Mat<NL,NC,Real> BlockData;
+    typedef type::Mat<NL,NC,Real> BlockData;
     void operator()(const M* mat, V1& result, const V2& v)
     {
         const Index rowSize = mat->rowSize();
         const Index colSize = mat->colSize();
         BlockData buffer;
-        Vec<NC,Real> vtmpj;
-        Vec<NL,Real> vtmpi;
+        type::Vec<NC,Real> vtmpj;
+        type::Vec<NL,Real> vtmpi;
         if (!add)
             opVresize(result, (transpose ? colSize : rowSize));
         for (std::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = mat->bRowsRange();
@@ -83,10 +83,10 @@ struct BaseMatrixLinearOpMV_BlockDiagonal
                 const Index j = block.getCol() * NC;
                 if (!transpose)
                 {
-                    VecNoInit<NC,Real> vj;
+                    type::VecNoInit<NC,Real> vj;
                     for (int bj = 0; bj < NC; ++bj)
                         vj[bj] = (Real)opVget(v, j+bj);
-                    Vec<NL,Real> resi;
+                    type::Vec<NL,Real> resi;
                     for (int bi = 0; bi < NL; ++bi)
                         for (int bj = 0; bj < NC; ++bj)
                             resi[bi] += bdata[bi][bj] * vj[bj];
@@ -95,10 +95,10 @@ struct BaseMatrixLinearOpMV_BlockDiagonal
                 }
                 else
                 {
-                    VecNoInit<NL,Real> vi;
+                    type::VecNoInit<NL,Real> vi;
                     for (int bi = 0; bi < NL; ++bi)
                         vi[bi] = (Real)opVget(v, i+bi);
-                    Vec<NC,Real> resj;
+                    type::Vec<NC,Real> resj;
                     for (int bi = 0; bi < NL; ++bi)
                         for (int bj = 0; bj < NC; ++bj)
                             resj[bj] += bdata[bi][bj] * vi[bi];
@@ -111,28 +111,28 @@ struct BaseMatrixLinearOpMV_BlockDiagonal
 };
 
 ///Adding values from a 3x3d matrix this function may be overload to obtain better performances
-void BaseMatrix::add(Index _i, Index _j, const defaulttype::Mat3x3d & _M) {
+void BaseMatrix::add(Index _i, Index _j, const type::Mat3x3d & _M) {
     for (unsigned i=0;i<3;i++)
         for (unsigned j=0;j<3;j++)
             add(_i+i,_j+j,_M[i][j]);
 }
 
 ///Adding values from a 3x3f matrix this function may be overload to obtain better performances
-void BaseMatrix::add(Index _i, Index _j, const defaulttype::Mat3x3f & _M) {
+void BaseMatrix::add(Index _i, Index _j, const type::Mat3x3f & _M) {
     for (unsigned i=0;i<3;i++)
         for (unsigned j=0;j<3;j++)
             add(_i+i,_j+j,_M[i][j]);
 }
 
 ///Adding values from a 2x2d matrix this function may be overload to obtain better performances
-void BaseMatrix::add(Index _i, Index _j, const defaulttype::Mat2x2d & _M) {
+void BaseMatrix::add(Index _i, Index _j, const type::Mat2x2d & _M) {
     for (unsigned i=0;i<2;i++)
         for (unsigned j=0;j<2;j++)
             add(_i+i,_j+j,_M[i][j]);
 }
 
 ///Adding values from a 2x2f matrix this function may be overload to obtain better performances
-void BaseMatrix::add(Index _i, Index _j, const defaulttype::Mat2x2f & _M) {
+void BaseMatrix::add(Index _i, Index _j, const type::Mat2x2f & _M) {
     for (unsigned i=0;i<2;i++)
         for (unsigned j=0;j<2;j++)
             add(_i+i,_j+j,_M[i][j]);
@@ -165,15 +165,15 @@ struct BaseMatrixLinearOpMV_BlockSparse
     typedef typename M::RowBlockConstIterator RowBlockConstIterator;
     typedef typename M::ColBlockConstIterator ColBlockConstIterator;
     typedef typename M::BlockConstAccessor BlockConstAccessor;
-    typedef Mat<NL,NC,Real> BlockData;
+    typedef type::Mat<NL,NC,Real> BlockData;
     typedef typename M::Index Index;
     void operator()(const M* mat, V1& result, const V2& v)
     {
         const Index rowSize = mat->rowSize();
         const Index colSize = mat->colSize();
         BlockData buffer;
-        Vec<NC,Real> vtmpj;
-        Vec<NL,Real> vtmpi;
+        type::Vec<NC,Real> vtmpj;
+        type::Vec<NL,Real> vtmpi;
         if (!add)
             opVresize(result, (transpose ? colSize : rowSize));
         for (std::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = mat->bRowsRange();
@@ -478,7 +478,7 @@ struct BaseMatrixLinearOpAM_BlockSparse
     typedef typename M1::ColBlockConstIterator ColBlockConstIterator;
     typedef typename M1::BlockConstAccessor BlockConstAccessor;
     typedef typename M1::Index Index;
-    typedef Mat<NL,NC,Real> BlockData;
+    typedef type::Mat<NL,NC,Real> BlockData;
 
     void operator()(const M1* m1, M2* m2, double & fact)
     {
@@ -524,7 +524,7 @@ struct BaseMatrixLinearOpAMS_BlockSparse
     typedef typename M1::ColBlockConstIterator ColBlockConstIterator;
     typedef typename M1::BlockConstAccessor BlockConstAccessor;
     typedef typename M1::Index Index;
-    typedef Mat<NL,NC,Real> BlockData;
+    typedef type::Mat<NL,NC,Real> BlockData;
 
     void operator()(const M1* m1, M1* m2, double & fact)
     {

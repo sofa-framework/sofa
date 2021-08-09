@@ -2305,8 +2305,8 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addFrom
                 DataTypeInfo<Coord>::setValue((*vDest)[i],j,tmp + src->element(offset + i * coordDim + j));
             }
 
-            helper::Quater<double> q_src;
-            helper::Quater<double> q_dest;
+            type::Quat<double> q_src;
+            type::Quat<double> q_dest;
             for (unsigned int j=0; j<4; j++)
             {
                 Real tmp;

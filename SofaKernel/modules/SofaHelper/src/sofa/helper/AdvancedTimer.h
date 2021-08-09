@@ -23,7 +23,7 @@
 #include <sofa/helper/config.h>
 #include <sofa/helper/system/thread/thread_specific_ptr.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 
 #include <ostream>
@@ -342,7 +342,7 @@ public:
      * @param processData bool, if true, will force timer data to be processed
      * @return The timer steps iterator inside a vector
      */
-    static helper::vector<AdvancedTimer::IdStep> getSteps(IdTimer id, bool processData = false);
+    static type::vector<AdvancedTimer::IdStep> getSteps(IdTimer id, bool processData = false);
 
     /**
      * @brief getStepData Return the map of StepData of the AdvancedTimer given execution
@@ -357,7 +357,7 @@ public:
      * @param id IdTimer, id of the timer
      * @return The timer full records inside a vector of Record
      */
-    static helper::vector<Record> getRecords(IdTimer id);
+    static type::vector<Record> getRecords(IdTimer id);
 
     /**
      * @brief clearDatato clear a specific Timer Data
@@ -386,8 +386,7 @@ public:
      * @param node simulation::Node* 
      * @return std::string, the output if JSON format is set
      */
-    [[deprecated("This function has been deleted in #PR 1770 because of simulation::Node dependency." \
-        "Use end(id, node->getTime(), node->getDt()) instead.")]]
+    SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1770)", "v21.12", "Use end(id, node->getTime(), node->getDt()) instead.")
     static std::string end(IdTimer id, simulation::Node* node) = delete;
 
     static bool isActive();

@@ -46,6 +46,7 @@
 namespace sofa::component::misc
 {
 
+using namespace sofa::type;
 using namespace defaulttype;
 
 
@@ -217,17 +218,17 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
             return;
 
         // process topological changes
-        helper::ReadAccessor< Data<helper::vector<Index> > > edges = m_edgesToRemove;
-        helper::ReadAccessor< Data<helper::vector<Index> > > triangles = m_trianglesToRemove;
-        helper::ReadAccessor< Data<helper::vector<Index> > > quads = m_quadsToRemove;
-        helper::ReadAccessor< Data<helper::vector<Index> > > tetrahedra = m_tetrahedraToRemove;
-        helper::ReadAccessor< Data<helper::vector<Index> > > hexahedra = m_hexahedraToRemove;
+        helper::ReadAccessor< Data<type::vector<Index> > > edges = m_edgesToRemove;
+        helper::ReadAccessor< Data<type::vector<Index> > > triangles = m_trianglesToRemove;
+        helper::ReadAccessor< Data<type::vector<Index> > > quads = m_quadsToRemove;
+        helper::ReadAccessor< Data<type::vector<Index> > > tetrahedra = m_tetrahedraToRemove;
+        helper::ReadAccessor< Data<type::vector<Index> > > hexahedra = m_hexahedraToRemove;
 
         if (!hexahedra.empty())
         {
             sofa::component::topology::HexahedronSetTopologyModifier* topoMod;
             m_topology->getContext()->get(topoMod);
-            helper::vector <Index> vitems;
+            type::vector<Index> vitems;
             vitems.assign(hexahedra.begin(), hexahedra.end());
 
             if (topoMod)
@@ -240,7 +241,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
         {
             sofa::component::topology::TetrahedronSetTopologyModifier* topoMod;
             m_topology->getContext()->get(topoMod);
-            helper::vector <Index> vitems;
+            type::vector<Index> vitems;
             vitems.assign(tetrahedra.begin(), tetrahedra.end());
 
             if (topoMod)
@@ -253,7 +254,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
         {
             sofa::component::topology::QuadSetTopologyModifier* topoMod;
             m_topology->getContext()->get(topoMod);
-            helper::vector <Index> vitems;
+            type::vector<Index> vitems;
             vitems.assign(quads.begin(), quads.end());
 
             if (topoMod)
@@ -266,7 +267,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
         {
             sofa::component::topology::TriangleSetTopologyModifier* topoMod;
             m_topology->getContext()->get(topoMod);
-            sofa::helper::vector <Index> vitems;
+            sofa::type::vector<Index> vitems;
             vitems.assign(triangles.begin(), triangles.end());
 
             if (topoMod)
@@ -279,7 +280,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
         {
             sofa::component::topology::EdgeSetTopologyModifier* topoMod;
             m_topology->getContext()->get(topoMod);
-            helper::vector <Index> vitems;
+            type::vector<Index> vitems;
             vitems.assign(edges.begin(), edges.end());
 
             if (topoMod)
@@ -420,9 +421,9 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     continue;
                 }
 
-                helper::vector< Vector2 > baryCoords;
+                type::vector< Vector2 > baryCoords;
                 baryCoords.resize(nbElements);
-                helper::vector < Index > triangles;
+                type::vector< Index > triangles;
                 triangles.resize(nbElements);
 
                 for(size_t i=0;i<nbElements;++i)
@@ -433,8 +434,8 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 }
 
 
-                helper::vector< helper::vector< Index > > p_ancestors(nbElements);
-                sofa::helper::vector< helper::vector< double > > p_baryCoefs(nbElements);
+                type::vector< type::vector< Index > > p_ancestors(nbElements);
+                sofa::type::vector< type::vector< double > > p_baryCoefs(nbElements);
                 for(size_t i=0; i<nbElements; ++i)
                 {
                     auto& ancestor = p_ancestors[i];
@@ -443,7 +444,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     ancestor[0] = t[0];
                     ancestor[1] = t[1];
                     ancestor[2] = t[2];
-                    helper::vector<double>& baryCoef = p_baryCoefs[i];
+                    type::vector<double>& baryCoef = p_baryCoefs[i];
                     baryCoef.resize(3);
                     baryCoef[0] = baryCoords[i][0];
                     baryCoef[1] = baryCoords[i][1];
@@ -463,7 +464,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     continue;
                 }
 
-                helper::vector<core::topology::Topology::Edge > vitems;
+                type::vector<core::topology::Topology::Edge > vitems;
                 vitems.resize (nbElements);
 
                 for (size_t i = 0; i<nbElements; ++i)
@@ -475,8 +476,8 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             else if ( EleType == "Triangle" || EleType == "Triangles")
             {
 
-                helper::vector<helper::vector<Index> >  p_ancestors(nbElements);
-                helper::vector<helper::vector<double> >        p_baryCoefs(nbElements);
+                type::vector<type::vector<Index> >  p_ancestors(nbElements);
+                type::vector<type::vector<double> >        p_baryCoefs(nbElements);
 
                 if(!str.eof() )
                 {
@@ -486,7 +487,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     {
                         for(size_t i = 0; i<nbElements; ++i)
                         {
-                            helper::vector<Index>& ancestor = p_ancestors[i];
+                            type::vector<Index>& ancestor = p_ancestors[i];
                             ancestor.resize(1);
                             str >> ancestor[0];
                         }
@@ -502,7 +503,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     continue;
                 }
 
-                helper::vector<core::topology::Topology::Triangle > vitems;
+                type::vector<core::topology::Topology::Triangle > vitems;
                 vitems.resize (nbElements);
 
                 for (size_t i = 0; i<nbElements; ++i)
@@ -528,7 +529,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     continue;
                 }
 
-                helper::vector<core::topology::Topology::Quad > vitems;
+                type::vector<core::topology::Topology::Quad > vitems;
                 vitems.resize (nbElements);
 
                 for (size_t i = 0; i<nbElements; ++i)
@@ -547,7 +548,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     continue;
                 }
 
-                helper::vector<core::topology::Topology::Tetrahedron > vitems;
+                type::vector<core::topology::Topology::Tetrahedron > vitems;
                 vitems.resize (nbElements);
 
                 for (size_t i = 0; i<nbElements; ++i)
@@ -566,7 +567,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     continue;
                 }
 
-                helper::vector<core::topology::Topology::Hexahedron > vitems;
+                type::vector<core::topology::Topology::Hexahedron > vitems;
                 vitems.resize (nbElements);
 
                 for (size_t i = 0; i<nbElements; ++i)
@@ -595,7 +596,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             sofa::core::topology::TopologyModifier* topoMod;
             m_topology->getContext()->get(topoMod);
 
-            helper::vector <Index> vitems;
+            type::vector<Index> vitems;
             vitems.resize (nbElements);
 
             for (size_t i = 0; i<nbElements; ++i)
@@ -676,9 +677,9 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 }
 
                 // Output declarations
-                sofa::helper::vector<sofa::core::topology::TopologyElementType>       topoPath_list;
-                sofa::helper::vector<Index> indices_list;
-                sofa::helper::vector<Vec<3, double> > coords2_list;
+                sofa::type::vector<sofa::core::topology::TopologyElementType>       topoPath_list;
+                sofa::type::vector<Index> indices_list;
+                sofa::type::vector<Vec<3, double> > coords2_list;
 
                 if (firstCut)
                     a_last
@@ -688,7 +689,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     core::behavior::MechanicalState<Vec3Types> * mstate =
                         m_topology->getContext()->get< core::behavior::MechanicalState<Vec3Types> > ();
                     //get the coordinates of the mechanical state
-                    const helper::vector<Vector3> &v_coords = mstate->read(core::ConstVecCoordId::position())->getValue();
+                    const type::vector<Vector3> &v_coords = mstate->read(core::ConstVecCoordId::position())->getValue();
                     a = v_coords[a_last];
                 }
 
@@ -708,15 +709,15 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     break;
                 }
 
-                sofa::helper::vector<Index> new_edges;
+                sofa::type::vector<Index> new_edges;
 
                 //Split triangles to create edges along a path given as a the list of existing edges and triangles crossed by it.
                 triangleGeo->SplitAlongPath(a_last, a, b_last, b,
                         topoPath_list, indices_list, coords2_list,
                         new_edges, 0.1, 0.25);
 
-                sofa::helper::vector<Index> new_points;
-                sofa::helper::vector<Index> end_points;
+                sofa::type::vector<Index> new_points;
+                sofa::type::vector<Index> end_points;
                 bool reachBorder = false;
 
                 //Duplicates the given edges
@@ -875,7 +876,7 @@ void TopologicalChangeProcessor::saveIndices()
             sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
             m_topology->getContext()->get(triangleGeo);
 
-            sofa::helper::vector< double > baryCoef = triangleGeo->computeTriangleBarycoefs( triInd, constCoord);
+            sofa::type::vector< double > baryCoef = triangleGeo->computeTriangleBarycoefs( triInd, constCoord);
 
             Vector3 barycentricCoordinates(baryCoef[0], baryCoef[1], baryCoef[2]);
             Vec3Types::Coord aCoord[3];
@@ -936,7 +937,7 @@ void TopologicalChangeProcessor::saveIndices()
 
                 triangleIncisionInformation[i].triangleIndices[0] = triIndex;
 
-                sofa::helper::vector< double > newBaryCoef = triangleGeo->computeTriangleBarycoefs( triangleIncisionInformation[i].triangleIndices[0], newPosition);
+                sofa::type::vector< double > newBaryCoef = triangleGeo->computeTriangleBarycoefs( triangleIncisionInformation[i].triangleIndices[0], newPosition);
 
                 for (unsigned int j = 0 ; j < 3 ; j++)
                     triangleIncisionInformation[i].barycentricCoordinates.front()[j] = newBaryCoef[j];
@@ -1244,9 +1245,9 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
         b = coordinates[i];
 
         // Output declarations
-        sofa::helper::vector< sofa::core::topology::TopologyElementType> topoPath_list;
-        sofa::helper::vector<Index> indices_list;
-        sofa::helper::vector< Vec<3, double> > coords2_list;
+        sofa::type::vector< sofa::core::topology::TopologyElementType> topoPath_list;
+        sofa::type::vector<Index> indices_list;
+        sofa::type::vector< Vec<3, double> > coords2_list;
 
         if(firstCut)
             a_last = sofa::InvalidID;
@@ -1254,7 +1255,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
         {
             core::behavior::MechanicalState<Vec3Types>* mstate = m_topology->getContext()->get<core::behavior::MechanicalState<Vec3Types> >();
             //get the coordinates of the mechanical state
-            const helper::vector<Vector3> &v_coords =  mstate->read(core::ConstVecCoordId::position())->getValue();
+            const type::vector<Vector3> &v_coords =  mstate->read(core::ConstVecCoordId::position())->getValue();
             a = v_coords[a_last];
         }
 
@@ -1280,13 +1281,13 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
             errorTrianglesIndices.pop_back();
         }
 
-        sofa::helper::vector< Index > new_edges;
+        sofa::type::vector< Index > new_edges;
 
         //Split triangles to create edges along a path given as a the list of existing edges and triangles crossed by it.
         triangleGeo->SplitAlongPath(a_last, a, b_last, b, topoPath_list, indices_list, coords2_list, new_edges, m_epsilonSnapPath.getValue(), m_epsilonSnapBorder.getValue());
 
-        sofa::helper::vector<Index> new_points;
-        sofa::helper::vector<Index> end_points;
+        sofa::type::vector<Index> new_points;
+        sofa::type::vector<Index> end_points;
         bool reachBorder = false;
 
         //Duplicates the given edges
@@ -1349,7 +1350,7 @@ void TopologicalChangeProcessor::updateTriangleIncisionInformation()
 
             //update the triangle barycentric coordinates corresponding to the current coordinates
             const Vector3 constCoord = triangleIncisionInformation[i].coordinates[j];
-            sofa::helper::vector< double > baryCoef = triangleGeo->computeTriangleBarycoefs( newTriangleIndexb, constCoord);
+            sofa::type::vector< double > baryCoef = triangleGeo->computeTriangleBarycoefs( newTriangleIndexb, constCoord);
             triangleIncisionInformation[i].barycentricCoordinates[j] = Vector3(baryCoef[0], baryCoef[1], baryCoef[2]);
         }
     }
@@ -1402,8 +1403,8 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
         }
     }
 
-    vparams->drawTool()->drawTriangles(trianglesToDraw, sofa::helper::types::RGBAColor::blue());
-    vparams->drawTool()->drawPoints(pointsToDraw, 15.0,  sofa::helper::types::RGBAColor::magenta());
+    vparams->drawTool()->drawTriangles(trianglesToDraw, sofa::type::RGBAColor::blue());
+    vparams->drawTool()->drawPoints(pointsToDraw, 15.0,  sofa::type::RGBAColor::magenta());
 
     if (!errorTrianglesIndices.empty())
     {
@@ -1421,7 +1422,7 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
         }
 
         vparams->drawTool()->drawTriangles(trianglesToDraw,
-                sofa::helper::types::RGBAColor(1.0f,(float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, 1.0f));
+                sofa::type::RGBAColor(1.0f,(float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, 1.0f));
     }
 }
 

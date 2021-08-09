@@ -71,6 +71,7 @@ public:
 
     bool shareSameVertex(const TCapsule<TDataTypes> & other)const;
 };
+using Capsule = TCapsule<sofa::defaulttype::Vec3Types>;
 
 /**
   *A capsule model is a set of capsules. It is linked to a topology more precisely edge topology since a capsule
@@ -96,7 +97,7 @@ public:
 protected:
     Data<VecReal > _capsule_radii; ///< Radius of each capsule
     Data<Real> _default_radius; ///< The default radius
-    sofa::helper::vector<std::pair<Index, Index> > _capsule_points;
+    sofa::type::vector<std::pair<Index, Index> > _capsule_points;
 
     CapsuleCollisionModel();
     CapsuleCollisionModel(core::behavior::MechanicalState<TDataTypes>* mstate );
@@ -129,7 +130,7 @@ public:
     //Returns the point1-point2 normalized vector
     Coord axis(Index index)const;
 
-    sofa::defaulttype::Quaternion orientation(Index index)const;
+    sofa::type::Quat<SReal> orientation(Index index)const;
 
     Index point1Index(Index index)const;
 
@@ -187,15 +188,9 @@ inline TCapsule<DataTypes>::TCapsule(ParentModel* model, Index index)
 template<class DataTypes>
 inline TCapsule<DataTypes>::TCapsule(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<ParentModel>(static_cast<ParentModel*>(i.getCollisionModel()), i.getIndex())
-{
-}
+{}
 
-template <class TDataTypes> using TCapsuleModel [[deprecated("The TCapsuleModel is now deprecated, please use CapsuleCollisionModel instead. Compatibility stops at v20.06")]] = CapsuleCollisionModel<TDataTypes>;
-using CapsuleModel [[deprecated("The CapsuleModel is now deprecated, please use CapsuleCollisionModel<sofa::defaulttype::Vec3Types> instead. Compatibility stops at v20.06")]] = CapsuleCollisionModel<sofa::defaulttype::Vec3Types>;
-using Capsule = TCapsule<sofa::defaulttype::Vec3Types>;
-
-
-#if  !defined(SOFA_COMPONENT_COLLISION_CAPSULECOLLISIONMODEL_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_CAPSULECOLLISIONMODEL_CPP)
 extern template class SOFA_MISC_COLLISION_API TCapsule<defaulttype::Vec3Types>;
 extern template class SOFA_MISC_COLLISION_API CapsuleCollisionModel<defaulttype::Vec3Types>;
 #endif

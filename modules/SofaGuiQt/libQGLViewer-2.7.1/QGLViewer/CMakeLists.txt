@@ -99,6 +99,7 @@ target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<INSTALL_INTERFACE:in
 
 if(WIN32)
     target_compile_options(${PROJECT_NAME} PRIVATE "-DCREATE_QGLVIEWER_DLL")
+    target_compile_options(${PROJECT_NAME} PRIVATE "/wd4996") # remove warnings about deprecation (CRT,etc)
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")

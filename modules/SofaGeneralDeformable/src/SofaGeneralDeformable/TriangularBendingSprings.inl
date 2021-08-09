@@ -24,7 +24,7 @@
 #include <SofaGeneralDeformable/TriangularBendingSprings.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologyChange.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 
@@ -36,11 +36,9 @@ namespace sofa::component::forcefield
 typedef core::topology::BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 template< class DataTypes>
-void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyCreateFunction(Index , EdgeInformation &ei, const core::topology::Edge &, 
-    const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
+void TriangularBendingSprings<DataTypes>::applyEdgeCreation(Index , EdgeInformation &ei, const core::topology::Edge &,
+    const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
 {
-    if (ff)
-    {
         unsigned int u,v;
         /// set to zero the edge stiffness matrix
         for (u=0; u<N; ++u)
@@ -53,43 +51,38 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyCreateFu
 
         ei.is_activated=false;
         ei.is_initialized=false;
-
-    }
 }
 
 
 
 template< class DataTypes>
-void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangleCreation(const sofa::helper::vector<Index> &triangleAdded, const sofa::helper::vector<core::topology::Triangle> &, 
-    const sofa::helper::vector<sofa::helper::vector<Index> > &, const sofa::helper::vector<sofa::helper::vector<double> > &)
+void TriangularBendingSprings<DataTypes>::applyTriangleCreation(const sofa::type::vector<Index> &triangleAdded, const sofa::type::vector<core::topology::Triangle> &, 
+    const sofa::type::vector<sofa::type::vector<Index> > &, const sofa::type::vector<sofa::type::vector<double> > &)
 {
     using namespace core::topology;
-    if (ff)
-    {
-
-        double m_ks=ff->getKs();
-        double m_kd=ff->getKd();
+        double m_ks=getKs();
+        double m_kd=getKd();
 
         unsigned int u,v;
 
         unsigned int nb_activated = 0;
 
-        const typename DataTypes::VecCoord& restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+        const typename DataTypes::VecCoord& restPosition = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-        helper::vector<EdgeInformation>& edgeData = *(ff->edgeInfo.beginEdit());
+        type::vector<EdgeInformation>& edgeData = *(edgeInfo.beginEdit());
 
         for (unsigned int i=0; i<triangleAdded.size(); ++i)
         {
 
             /// describe the jth edge index of triangle no i
-            EdgesInTriangle te2 = ff->m_topology->getEdgesInTriangle(triangleAdded[i]);
+            EdgesInTriangle te2 = m_topology->getEdgesInTriangle(triangleAdded[i]);
             /// describe the jth vertex index of triangle no i
-            Triangle t2 = ff->m_topology->getTriangle(triangleAdded[i]);
+            Triangle t2 = m_topology->getTriangle(triangleAdded[i]);
 
             for(unsigned int j=0; j<3; ++j)
             {
 
-                EdgeInformation &ei = edgeData[te2[j]]; // ff->edgeInfo
+                EdgeInformation &ei = edgeData[te2[j]]; // edgeInfo
                 if(!(ei.is_initialized))
                 {
 
@@ -105,7 +98,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangle
                         }
                     }
 
-                    const auto& shell = ff->m_topology->getTrianglesAroundEdge(edgeIndex);
+                    const auto& shell = m_topology->getTrianglesAroundEdge(edgeIndex);
                     if (shell.size()==2)
                     {
 
@@ -117,19 +110,19 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangle
                         if(shell[0] == triangleAdded[i])
                         {
 
-                            te1 = ff->m_topology->getEdgesInTriangle(shell[1]);
-                            t1 = ff->m_topology->getTriangle(shell[1]);
+                            te1 = m_topology->getEdgesInTriangle(shell[1]);
+                            t1 = m_topology->getTriangle(shell[1]);
 
                         }
                         else   // shell[1] == triangleAdded[i]
                         {
 
-                            te1 = ff->m_topology->getEdgesInTriangle(shell[0]);
-                            t1 = ff->m_topology->getTriangle(shell[0]);
+                            te1 = m_topology->getEdgesInTriangle(shell[0]);
+                            t1 = m_topology->getTriangle(shell[0]);
                         }
 
-                        int i1 = ff->m_topology->getEdgeIndexInTriangle(te1, edgeIndex); //edgeIndex //te1[j]
-                        int i2 = ff->m_topology->getEdgeIndexInTriangle(te2, edgeIndex); // edgeIndex //te2[j]
+                        int i1 = m_topology->getEdgeIndexInTriangle(te1, edgeIndex); //edgeIndex //te1[j]
+                        int i2 = m_topology->getEdgeIndexInTriangle(te2, edgeIndex); // edgeIndex //te2[j]
 
                         ei.m1 = t1[i1];
                         ei.m2 = t2[i2];
@@ -159,46 +152,41 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangle
             }
 
         }
-
-        ff->edgeInfo.endEdit();
-    }
-
+        edgeInfo.endEdit();    
 }
 
 
 template< class DataTypes>
-void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangleDestruction(const sofa::helper::vector<Index> &triangleRemoved)
+void TriangularBendingSprings<DataTypes>::applyTriangleDestruction(const sofa::type::vector<Index> &triangleRemoved)
 {
     using namespace core::topology;
-    if (ff)
-    {
 
-        double m_ks=ff->getKs(); // typename DataTypes::
-        double m_kd=ff->getKd(); // typename DataTypes::
+        double m_ks=getKs(); // typename DataTypes::
+        double m_kd=getKd(); // typename DataTypes::
 
         //unsigned int u,v;
 
-        const typename DataTypes::VecCoord& restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-        helper::vector<EdgeInformation>& edgeData = *(ff->edgeInfo.beginEdit());
+        const typename DataTypes::VecCoord& restPosition = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+        type::vector<EdgeInformation>& edgeData = *(edgeInfo.beginEdit());
 
         for (unsigned int i=0; i<triangleRemoved.size(); ++i)
         {
             /// describe the jth edge index of triangle no i
-            EdgesInTriangle te = ff->m_topology->getEdgesInTriangle(triangleRemoved[i]);
+            EdgesInTriangle te = m_topology->getEdgesInTriangle(triangleRemoved[i]);
             /// describe the jth vertex index of triangle no i
-            //Triangle t = ff->m_topology->getTriangle(triangleRemoved[i]);
+            //Triangle t = m_topology->getTriangle(triangleRemoved[i]);
 
 
             for(unsigned int j=0; j<3; ++j)
             {
 
-                EdgeInformation &ei = edgeData[te[j]]; // ff->edgeInfo
+                EdgeInformation &ei = edgeData[te[j]]; // edgeInfo
                 if(ei.is_initialized)
                 {
 
                     unsigned int edgeIndex = te[j];
 
-                    const auto& shell = ff->m_topology->getTrianglesAroundEdge(edgeIndex);
+                    const auto& shell = m_topology->getTrianglesAroundEdge(edgeIndex);
                     if (shell.size()==3)
                     {
 
@@ -209,10 +197,10 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangle
 
                         if(shell[0] == triangleRemoved[i])
                         {
-                            te1 = ff->m_topology->getEdgesInTriangle(shell[1]);
-                            t1 = ff->m_topology->getTriangle(shell[1]);
-                            te2 = ff->m_topology->getEdgesInTriangle(shell[2]);
-                            t2 = ff->m_topology->getTriangle(shell[2]);
+                            te1 = m_topology->getEdgesInTriangle(shell[1]);
+                            t1 = m_topology->getTriangle(shell[1]);
+                            te2 = m_topology->getEdgesInTriangle(shell[2]);
+                            t2 = m_topology->getTriangle(shell[2]);
 
                         }
                         else
@@ -221,25 +209,25 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangle
                             if(shell[1] == triangleRemoved[i])
                             {
 
-                                te1 = ff->m_topology->getEdgesInTriangle(shell[2]);
-                                t1 = ff->m_topology->getTriangle(shell[2]);
-                                te2 = ff->m_topology->getEdgesInTriangle(shell[0]);
-                                t2 = ff->m_topology->getTriangle(shell[0]);
+                                te1 = m_topology->getEdgesInTriangle(shell[2]);
+                                t1 = m_topology->getTriangle(shell[2]);
+                                te2 = m_topology->getEdgesInTriangle(shell[0]);
+                                t2 = m_topology->getTriangle(shell[0]);
 
                             }
                             else   // shell[2] == triangleRemoved[i]
                             {
 
-                                te1 = ff->m_topology->getEdgesInTriangle(shell[0]);
-                                t1 = ff->m_topology->getTriangle(shell[0]);
-                                te2 = ff->m_topology->getEdgesInTriangle(shell[1]);
-                                t2 = ff->m_topology->getTriangle(shell[1]);
+                                te1 = m_topology->getEdgesInTriangle(shell[0]);
+                                t1 = m_topology->getTriangle(shell[0]);
+                                te2 = m_topology->getEdgesInTriangle(shell[1]);
+                                t2 = m_topology->getTriangle(shell[1]);
 
                             }
                         }
 
-                        int i1 = ff->m_topology->getEdgeIndexInTriangle(te1, edgeIndex);
-                        int i2 = ff->m_topology->getEdgeIndexInTriangle(te2, edgeIndex);
+                        int i1 = m_topology->getEdgeIndexInTriangle(te1, edgeIndex);
+                        int i2 = m_topology->getEdgeIndexInTriangle(te2, edgeIndex);
 
                         ei.m1 = t1[i1];
                         ei.m2 = t2[i2];
@@ -276,46 +264,22 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangle
 
         }
 
-        ff->edgeInfo.endEdit();
-    }
-
+        edgeInfo.endEdit();
 }
 
+
 template<class DataTypes>
-void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopologyChange(const core::topology::TrianglesAdded* e)
+void TriangularBendingSprings<DataTypes>::applyPointDestruction(const sofa::type::vector<Index> &tab)
 {
     using namespace core::topology;
-    const auto &triangleAdded = e->getIndexArray();
-    const sofa::helper::vector<Triangle> &elems = e->getElementArray();
-    const auto & ancestors = e->ancestorsList;
-    const sofa::helper::vector<sofa::helper::vector<double> > & coefs = e->coefs;
-
-    applyTriangleCreation(triangleAdded, elems, ancestors, coefs);
-}
-
-template<class DataTypes>
-void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopologyChange(const core::topology::TrianglesRemoved* e)
-{
-    const auto &triangleRemoved = e->getArray();
-
-    applyTriangleDestruction(triangleRemoved);
-}
-
-
-template<class DataTypes>
-void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointDestruction(const sofa::helper::vector<Index> &tab)
-{
-    using namespace core::topology;
-    if(ff)
-    {
         bool debug_mode = false;
 
-        unsigned int last = ff->m_topology->getNbPoints() -1;
+        unsigned int last = m_topology->getNbPoints() -1;
         unsigned int i,j;
 
-        helper::vector<EdgeInformation>& edgeInf = *(ff->edgeInfo.beginEdit());
+        type::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
 
-        sofa::helper::vector<unsigned int> lastIndexVec;
+        sofa::type::vector<unsigned int> lastIndexVec;
         for(unsigned int i_init = 0; i_init < tab.size(); ++i_init)
         {
 
@@ -341,15 +305,15 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointDes
 
             }
 
-            const auto &shell= ff->m_topology->getTrianglesAroundVertex(lastIndexVec[i]);
+            const auto &shell= m_topology->getTrianglesAroundVertex(lastIndexVec[i]);
             for (j=0; j<shell.size(); ++j)
             {
 
-                Triangle tj = ff->m_topology->getTriangle(shell[j]);
+                Triangle tj = m_topology->getTriangle(shell[j]);
 
-                int vertexIndex = ff->m_topology->getVertexIndexInTriangle(tj, lastIndexVec[i]);
+                int vertexIndex = m_topology->getVertexIndexInTriangle(tj, lastIndexVec[i]);
 
-                EdgesInTriangle tej = ff->m_topology->getEdgesInTriangle(shell[j]);
+                EdgesInTriangle tej = m_topology->getEdgesInTriangle(shell[j]);
 
                 unsigned int ind_j = tej[vertexIndex];
 
@@ -396,18 +360,15 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointDes
             --last;
         }
 
-        ff->edgeInfo.endEdit();
-    }
+        edgeInfo.endEdit();
 }
 
 
 template<class DataTypes>
-void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointRenumbering(const sofa::helper::vector<Index> &tab)
+void TriangularBendingSprings<DataTypes>::applyPointRenumbering(const sofa::type::vector<Index> &tab)
 {
-    if(ff)
-    {
-        helper::vector<EdgeInformation>& edgeInf = *(ff->edgeInfo.beginEdit());
-        for (unsigned int i = 0; i < ff->m_topology->getNbEdges(); ++i)
+        type::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
+        for (unsigned int i = 0; i < m_topology->getNbEdges(); ++i)
         {
             if(edgeInf[i].is_activated)
             {
@@ -415,22 +376,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointRen
                 edgeInf[i].m2  = tab[edgeInf[i].m2];
             }
         }
-        ff->edgeInfo.endEdit();
-    }
-}
-
-template<class DataTypes>
-void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopologyChange(const core::topology::PointsRemoved* e)
-{
-    const auto & tab = e->getArray();
-    applyPointDestruction(tab);
-}
-
-template<class DataTypes>
-void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopologyChange(const core::topology::PointsRenumbering* e)
-{
-    const auto &newIndices = e->getIndexArray();
-    applyPointRenumbering(newIndices);
+        edgeInfo.endEdit();
 }
 
 
@@ -445,7 +391,7 @@ TriangularBendingSprings<DataTypes>::TriangularBendingSprings(/*double _ks, doub
     , m_topology(nullptr)
 {
     // Create specific handler for EdgeData
-    edgeHandler = new TriangularBSEdgeHandler(this, &edgeInfo);
+    edgeHandler = new TriangularBSEdgeHandler(&edgeInfo);
     //msg_error()<<"TriangularBendingSprings<DataTypes>::TriangularBendingSprings";
 }
 
@@ -487,7 +433,35 @@ void TriangularBendingSprings<DataTypes>::init()
     edgeInfo.createTopologyHandler(m_topology,edgeHandler);
     edgeInfo.linkToPointDataArray();
     edgeInfo.linkToTriangleDataArray();
-    edgeInfo.registerTopologicalData();
+
+    edgeInfo.setCreationCallback([this](Index edgeIndex, EdgeInformation& ei,
+        const core::topology::BaseMeshTopology::Edge& edge,
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs)
+    {
+        applyEdgeCreation(edgeIndex, ei, edge, ancestors, coefs);
+    });
+
+
+    edgeHandler->addCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESADDED, [this](const core::topology::TopologyChange* eventTopo) {
+        const core::topology::TrianglesAdded* triAdd = static_cast<const core::topology::TrianglesAdded*>(eventTopo);
+        applyTriangleCreation(triAdd->getIndexArray(), triAdd->getElementArray(), triAdd->ancestorsList, triAdd->coefs);
+    });
+
+    edgeHandler->addCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
+        const core::topology::TrianglesRemoved* triRemove = static_cast<const core::topology::TrianglesRemoved*>(eventTopo);
+        applyTriangleDestruction(triRemove->getArray());
+    });
+
+    edgeHandler->addCallBack(sofa::core::topology::TopologyChangeType::POINTSREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
+        const core::topology::PointsRemoved* pRemove = static_cast<const core::topology::PointsRemoved*>(eventTopo);
+        applyPointDestruction(pRemove->getArray());
+    });
+
+    edgeHandler->addCallBack(sofa::core::topology::TopologyChangeType::POINTSRENUMBERING, [this](const core::topology::TopologyChange* eventTopo) {
+        const core::topology::PointsRenumbering* pRenum = static_cast<const core::topology::PointsRenumbering*>(eventTopo);
+        applyPointRenumbering(pRenum->getIndexArray());
+    });
 
     this->reinit();
 }
@@ -498,27 +472,27 @@ void TriangularBendingSprings<DataTypes>::reinit()
 {
     using namespace core::topology;
     /// prepare to store info in the edge array
-    helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
+    type::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
     edgeInf.resize(m_topology->getNbEdges());
     Index i;
     // set edge tensor to 0
     for (i=0; i<m_topology->getNbEdges(); ++i)
     {
 
-        edgeHandler->applyCreateFunction(i, edgeInf[i],
-                m_topology->getEdge(i),  (const sofa::helper::vector< Index > )0,
-                (const sofa::helper::vector< double >)0);
+        applyEdgeCreation(i, edgeInf[i],
+            m_topology->getEdge(i),  (const sofa::type::vector< Index > )0,
+            (const sofa::type::vector< double >)0);
     }
 
     // create edge tensor by calling the triangle creation function
-    sofa::helper::vector<Index> triangleAdded;
+    sofa::type::vector<Index> triangleAdded;
     for (i=0; i<m_topology->getNbTriangles(); ++i)
         triangleAdded.push_back(i);
 
-    edgeHandler->applyTriangleCreation(triangleAdded,
-            (const sofa::helper::vector<Triangle>)0,
-            (const sofa::helper::vector<sofa::helper::vector<Index> >)0,
-            (const sofa::helper::vector<sofa::helper::vector<double> >)0);
+    applyTriangleCreation(triangleAdded,
+        (const sofa::type::vector<Triangle>)0,
+        (const sofa::type::vector<sofa::type::vector<Index> >)0,
+        (const sofa::type::vector<sofa::type::vector<double> >)0);
 
     edgeInfo.endEdit();
 }
@@ -540,9 +514,9 @@ void TriangularBendingSprings<DataTypes>::addForce(const core::MechanicalParams*
 
     size_t nbEdges=m_topology->getNbEdges();
     EdgeInformation *einfo;
-    helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
+    type::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
 
-    //const helper::vector<Spring>& m_springs= this->springs.getValue();
+    //const type::vector<Spring>& m_springs= this->springs.getValue();
     //this->dfdx.resize(nbEdges); //m_springs.size()
     f.resize(x.size());
     m_potentialEnergy = 0;
@@ -560,7 +534,7 @@ void TriangularBendingSprings<DataTypes>::addForce(const core::MechanicalParams*
 #if 0
         {
             EdgeInformation e2;
-            const sofa::helper::vector< unsigned int > shell = m_topology->getTrianglesAroundEdge(i);
+            const sofa::type::vector< unsigned int > shell = m_topology->getTrianglesAroundEdge(i);
             if (shell.size() != 2)
                 e2.is_activated = false;
             else
@@ -663,12 +637,12 @@ void TriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams
 
     size_t nbEdges=m_topology->getNbEdges();
     const EdgeInformation *einfo;
-    const helper::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
+    const type::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
 
     df.resize(dx.size());
     //msg_error()<<"TriangularBendingSprings<DataTypes>::addDForce, dx1 = "<<dx1;
     //msg_error()<<"TriangularBendingSprings<DataTypes>::addDForce, df1 before = "<<f1;
-    //const helper::vector<Spring>& springs = this->springs.getValue();
+    //const type::vector<Spring>& springs = this->springs.getValue();
 
     for(unsigned int i=0; i<nbEdges; i++ )
     {
@@ -711,11 +685,11 @@ void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams*
     }
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    std::vector<sofa::defaulttype::Vector3> vertices;
-    std::vector<sofa::helper::types::RGBAColor> colors;
+    std::vector<sofa::type::Vector3> vertices;
+    std::vector<sofa::type::RGBAColor> colors;
 
     vparams->drawTool()->disableLighting();
-    const helper::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
+    const type::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
     for(i=0; i<edgeInf.size(); ++i)
     {
         if(edgeInf[i].is_activated)
@@ -726,22 +700,22 @@ void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams*
             {
                 if (d<edgeInf[i].restlength*0.9999)
                 {
-                    colors.push_back(sofa::helper::types::RGBAColor::red());
+                    colors.push_back(sofa::type::RGBAColor::red());
                 }
                 else
                 {
-                    colors.push_back(sofa::helper::types::RGBAColor::green());
+                    colors.push_back(sofa::type::RGBAColor::green());
                 }
             }
             else
             {
                 if (d<edgeInf[i].restlength*0.9999)
                 {
-                    colors.push_back(sofa::helper::types::RGBAColor(1,0.5, 0,1));
+                    colors.push_back(sofa::type::RGBAColor(1,0.5, 0,1));
                 }
                 else
                 {
-                    colors.push_back(sofa::helper::types::RGBAColor(0,1,0.5,1));
+                    colors.push_back(sofa::type::RGBAColor(0,1,0.5,1));
                 }
             }
 

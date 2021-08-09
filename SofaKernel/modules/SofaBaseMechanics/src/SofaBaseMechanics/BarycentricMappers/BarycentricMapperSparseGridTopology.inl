@@ -28,9 +28,9 @@
 namespace sofa::component::mapping
 {
 
-using sofa::defaulttype::Vector3;
+using sofa::type::Vector3;
 using sofa::core::visual::VisualParams;
-using sofa::defaulttype::Vec;
+using sofa::type::Vec;
 
 template<class In, class Out>
 BarycentricMapperSparseGridTopology<In, Out>::BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology,
@@ -47,15 +47,6 @@ BarycentricMapperSparseGridTopology<In, Out>::~BarycentricMapperSparseGridTopolo
     if (m_matrixJ)
         delete m_matrixJ;
 }
-
-template<class In, class Out>
-void BarycentricMapperSparseGridTopology<In, Out>::addMatrixContrib(MatrixType* m,
-                                                                    int row, int col, Real value)
-{
-    Inherit1::addMatrixContrib(m, row, col, value);
-}
-
-
 
 template <class In, class Out>
 void BarycentricMapperSparseGridTopology<In,Out>::clear ( std::size_t size )
@@ -147,7 +138,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::draw  (const VisualParams* vpa
             }
         }
     }
-    vparams->drawTool()->drawLines ( points, 1, sofa::helper::types::RGBAColor::blue());
+    vparams->drawTool()->drawLines ( points, 1, sofa::type::RGBAColor::blue());
 }
 
 
@@ -323,7 +314,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::apply ( typename Out::VecCoord
 {
     out.resize( m_map.size() );
 
-    typedef helper::vector< CubeData > CubeDataVector;
+    typedef type::vector< CubeData > CubeDataVector;
     typedef typename CubeDataVector::const_iterator CubeDataVectorIt;
 
     CubeDataVectorIt it = m_map.begin();

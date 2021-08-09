@@ -335,7 +335,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
 void ModifyObject::clearMessages()
 {
-    basenode->clearWarnings();
+    basenode->clearLoggedMessages();
     messageEdit->clear();
 
     std::stringstream tmp;

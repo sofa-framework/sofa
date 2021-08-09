@@ -25,31 +25,14 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <iostream>
-#include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/helper/vector_algorithm.h>
+#include <sofa/type/vector_algorithm.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 
 namespace sofa::component::projectiveconstraintset
 {
-
-// Define TestNewPointFunction
-template< class DataTypes>
-bool LinearMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
-{
-    return lc != 0;
-}
-
-// Define RemovalFunction
-template< class DataTypes>
-void LinearMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, value_type &)
-{
-    if (lc)
-    {
-        lc->removeIndex(pointIndex);
-    }
-}
 
 template <class DataTypes>
 LinearMovementConstraint<DataTypes>::LinearMovementConstraint()
@@ -61,7 +44,6 @@ LinearMovementConstraint<DataTypes>::LinearMovementConstraint()
     , d_relativeMovements( initData(&d_relativeMovements, bool(true), "relativeMovements", "If true, movements are relative to first position, absolute otherwise") )
     , showMovement( initData(&showMovement, bool(false), "showMovement", "Visualization of the movement to be applied to constrained dofs."))
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_pointHandler(nullptr)
 {
     // default to indice 0
     m_indices.beginEdit()->push_back(0);
@@ -79,8 +61,7 @@ LinearMovementConstraint<DataTypes>::LinearMovementConstraint()
 template <class DataTypes>
 LinearMovementConstraint<DataTypes>::~LinearMovementConstraint()
 {
-    if (m_pointHandler)
-        delete m_pointHandler;
+
 }
 
 template <class DataTypes>
@@ -100,7 +81,7 @@ void LinearMovementConstraint<DataTypes>::addIndex(Index index)
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::removeIndex(Index index)
 {
-    sofa::helper::removeValue(*m_indices.beginEdit(),index);
+    sofa::type::removeValue(*m_indices.beginEdit(),index);
     m_indices.endEdit();
 }
 
@@ -140,10 +121,8 @@ void LinearMovementConstraint<DataTypes>::init()
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-        // Initialize functions and parameters
-        m_pointHandler = new FCPointHandler(this, &m_indices);
-        m_indices.createTopologyHandler(_topology, m_pointHandler);
-        m_indices.registerTopologicalData();        
+        // Initialize topological changes support
+        m_indices.createTopologyHandler(_topology);
     }
     else
     {
@@ -284,8 +263,8 @@ void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename 
 
     Real dt = (cT - prevT) / (nextT - prevT);
     Deriv m = prevM + (nextM-prevM)*dt;
-    helper::Quater<Real> prevOrientation = helper::Quater<Real>::createQuaterFromEuler(getVOrientation(prevM));
-    helper::Quater<Real> nextOrientation = helper::Quater<Real>::createQuaterFromEuler(getVOrientation(nextM));
+    type::Quat<Real> prevOrientation = type::Quat<Real>::createQuaterFromEuler(getVOrientation(prevM));
+    type::Quat<Real> nextOrientation = type::Quat<Real>::createQuaterFromEuler(getVOrientation(nextM));
 
     //set the motion to the Dofs
     if (d_relativeMovements.getValue())
@@ -332,7 +311,7 @@ void LinearMovementConstraint<DataTypes>::findKeyTimes()
         nextT = *m_keyTimes.getValue().begin();
         prevT = nextT;
 
-        typename helper::vector<Real>::const_iterator it_t = m_keyTimes.getValue().begin();
+        typename type::vector<Real>::const_iterator it_t = m_keyTimes.getValue().begin();
         typename VecDeriv::const_iterator it_m = m_keyMovements.getValue().begin();
 
         //WARNING : we consider that the key-events are in chronological order
@@ -373,32 +352,43 @@ void LinearMovementConstraint<DataTypes>::projectMatrix( sofa::defaulttype::Base
 
 // Matrix Integration interface
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
+void LinearMovementConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    const unsigned int N = Deriv::size();
-    const SetIndexArray & indices = m_indices.getValue();
-
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    SOFA_UNUSED(mparams);
+    core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get());
+    if(r)
     {
-        // Reset Fixed Row and Col
-        for (unsigned int c=0; c<N; ++c)
-            mat->clearRowCol(offset + N * (*it) + c);
-        // Set Fixed Vertex
-        for (unsigned int c=0; c<N; ++c)
-            mat->set(offset + N * (*it) + c, offset + N * (*it) + c, 1.0);
+        const unsigned int N = Deriv::size();
+        const SetIndexArray & indices = m_indices.getValue();
+
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            // Reset Fixed Row and Col
+            for (unsigned int c=0; c<N; ++c)
+                r.matrix->clearRowCol(r.offset + N * (*it) + c);
+            // Set Fixed Vertex
+            for (unsigned int c=0; c<N; ++c)
+                r.matrix->set(r.offset + N * (*it) + c, r.offset + N * (*it) + c, 1.0);
+        }
     }
 }
 
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset)
+void LinearMovementConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    const unsigned int N = Deriv::size();
-
-    const SetIndexArray & indices = m_indices.getValue();
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    SOFA_UNUSED(mparams);
+    int o = matrix->getGlobalOffset(this->mstate.get());
+    if (o >= 0)
     {
-        for (unsigned int c=0; c<N; ++c)
-            vect->clear(offset + N * (*it) + c);
+        unsigned int offset = (unsigned int)o;
+        const unsigned int N = Deriv::size();
+
+        const SetIndexArray & indices = m_indices.getValue();
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            for (unsigned int c=0; c<N; ++c)
+                vector->clear(offset + N * (*it) + c);
+        }
     }
 }
 
@@ -410,13 +400,13 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
         return;
 
     vparams->drawTool()->saveLastState();
-    sofa::helper::types::RGBAColor color(1, 0.5, 0.5, 1);
+    sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
 
     if (showMovement.getValue())
     {
         vparams->drawTool()->disableLighting();
 
-        std::vector<sofa::defaulttype::Vector3> vertices;
+        std::vector<sofa::type::Vector3> vertices;
 
         const SetIndexArray & indices = m_indices.getValue();
         const VecDeriv& keyMovements = m_keyMovements.getValue();
@@ -428,8 +418,8 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
                 {
                     auto tmp0 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i]);
                     auto tmp1 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i + 1]);
-                    sofa::defaulttype::Vector3 v0(tmp0[0], tmp0[1], tmp0[2]);
-                    sofa::defaulttype::Vector3 v1(tmp1[0], tmp1[1], tmp1[2]);
+                    sofa::type::Vector3 v0(tmp0[0], tmp0[1], tmp0[2]);
+                    sofa::type::Vector3 v1(tmp1[0], tmp1[1], tmp1[2]);
                     vertices.push_back(v0);
                     vertices.push_back(v1);
                 }
@@ -443,8 +433,8 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
                 {
                     auto tmp0 = DataTypes::getDPos(keyMovements[i]);
                     auto tmp1 = DataTypes::getDPos(keyMovements[i + 1]);
-                    sofa::defaulttype::Vector3 v0(tmp0[0], tmp0[1], tmp0[2]);
-                    sofa::defaulttype::Vector3 v1(tmp1[0], tmp1[1], tmp1[2]);
+                    sofa::type::Vector3 v0(tmp0[0], tmp0[1], tmp0[2]);
+                    sofa::type::Vector3 v1(tmp1[0], tmp1[1], tmp1[2]);
                     vertices.push_back(v0);
                     vertices.push_back(v1);
                 }
@@ -456,8 +446,8 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
     {
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-        sofa::helper::vector<defaulttype::Vector3> points;
-        defaulttype::Vector3 point;
+        sofa::type::vector<type::Vector3> points;
+        type::Vector3 point;
         const SetIndexArray & indices = m_indices.getValue();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {

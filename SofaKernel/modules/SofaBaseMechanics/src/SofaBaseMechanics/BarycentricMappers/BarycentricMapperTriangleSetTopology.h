@@ -29,8 +29,8 @@ namespace sofa::component::mapping
 {
 
 
-using sofa::defaulttype::Mat3x3d;
-using sofa::defaulttype::Vector3;
+using sofa::type::Mat3x3d;
+using sofa::type::Vector3;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 
@@ -60,9 +60,9 @@ protected:
     topology::TriangleSetTopologyContainer*			m_fromContainer;
     topology::TriangleSetGeometryAlgorithms<In>*	m_fromGeomAlgo;
 
-    virtual helper::vector<Triangle> getElements() override;
-    virtual helper::vector<SReal> getBaryCoef(const Real* f) override;
-    helper::vector<SReal> getBaryCoef(const Real fx, const Real fy);
+    virtual type::vector<Triangle> getElements() override;
+    virtual type::vector<SReal> getBaryCoef(const Real* f) override;
+    type::vector<SReal> getBaryCoef(const Real fx, const Real fy);
     void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Triangle& element) override;
     void computeCenter(Vector3& center, const typename In::VecCoord& in, const Triangle& element) override;
     void computeDistance(double& d, const Vector3& v) override;

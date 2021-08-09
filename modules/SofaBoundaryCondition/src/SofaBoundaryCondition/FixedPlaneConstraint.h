@@ -27,7 +27,7 @@
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 
 namespace sofa::component::projectiveconstraintset
 {
@@ -64,8 +64,8 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef helper::vector<Index> SetIndexArray;
-    typedef component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef type::vector<Index> SetIndexArray;
+    typedef component::topology::TopologySubsetIndices SetIndex;
 public:
     Data<Coord> d_direction; ///< direction on which the constraint applied
     Data<Real> d_dmin; ///< coordinates min of the plane for the vertex selection
@@ -109,12 +109,6 @@ protected:
 
     FixedPlaneConstraintInternalData<DataTypes> data;
     friend class FixedPlaneConstraintInternalData<DataTypes>;
-
-    /// Forward class declaration, definition is in the .inl
-    class FCPointHandler;
-
-    /// Handler for subset Data
-    FCPointHandler* m_pointHandler {nullptr};
 
     /// whether vertices should be selected from 2 parallel planes
     bool m_selectVerticesFromPlanes {false};

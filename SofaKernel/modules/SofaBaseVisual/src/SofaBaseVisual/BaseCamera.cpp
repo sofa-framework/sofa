@@ -25,9 +25,9 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/defaulttype/Mat.h>
-using Mat3 = sofa::defaulttype::Mat3x3;
-using Mat4 = sofa::defaulttype::Mat4x4;
+#include <sofa/type/Mat.h>
+using Mat3 = sofa::type::Mat3x3;
+using Mat4 = sofa::type::Mat4x4;
 
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
@@ -38,7 +38,7 @@ using sofa::helper::isEqual;
 #include <cmath>
 #include <tinyxml.h>
 
-using sofa::helper::types::RGBAColor ;
+using sofa::type::RGBAColor ;
 
 namespace sofa::component::visualmodel
 {
@@ -76,8 +76,8 @@ BaseCamera::BaseCamera()
     type.setSelectedItem(sofa::core::visual::VisualParams::PERSPECTIVE_TYPE);
     p_type.setValue(type);
 
-    helper::vector<SReal>& wModelViewMatrix = *p_modelViewMatrix.beginEdit();
-    helper::vector<SReal>& wProjectionMatrix = *p_projectionMatrix.beginEdit();
+    type::vector<SReal>& wModelViewMatrix = *p_modelViewMatrix.beginEdit();
+    type::vector<SReal>& wProjectionMatrix = *p_projectionMatrix.beginEdit();
 
     wModelViewMatrix.resize(16);
     wProjectionMatrix.resize(16);
@@ -246,14 +246,14 @@ template<class Real>
 bool glhUnProjectf(Real winx, Real winy, Real winz, Real *modelview, Real *projection, const core::visual::VisualParams::Viewport& viewport, Real *objectCoordinate)
 {
     //Transformation matrices
-    sofa::defaulttype::Mat<4,4, Real> matModelview(modelview);
-    sofa::defaulttype::Mat<4, 4, Real> matProjection(projection);
+    sofa::type::Mat<4,4, Real> matModelview(modelview);
+    sofa::type::Mat<4, 4, Real> matProjection(projection);
 
-    sofa::defaulttype::Mat<4, 4, Real> m, A;
-    sofa::defaulttype::Vec<4, Real> in, out;
+    sofa::type::Mat<4, 4, Real> m, A;
+    sofa::type::Vec<4, Real> in, out;
 
     A = matProjection * matModelview ;
-    sofa::defaulttype::invertMatrix(m, A);
+    sofa::type::invertMatrix(m, A);
 
     //Transformation of normalized coordinates between -1 and 1
     in[0] = (winx - (Real)viewport[0]) / (Real)viewport[2] * 2.0 - 1.0;
@@ -350,9 +350,9 @@ BaseCamera::Vec2 BaseCamera::worldToScreenCoordinates(const BaseCamera::Vec3& po
     const sofa::core::visual::VisualParams* vp = sofa::core::visual::VisualParams::defaultInstance();
 
     const core::visual::VisualParams::Viewport viewport = vp->viewport();
-    sofa::defaulttype::Vector4 clipSpacePos = {pos.x(), pos.y(), pos.z(), 1.0};
-    sofa::defaulttype::Mat4x4d modelview;
-    sofa::defaulttype::Mat4x4d projection;
+    sofa::type::Vector4 clipSpacePos = {pos.x(), pos.y(), pos.z(), 1.0};
+    sofa::type::Mat4x4d modelview;
+    sofa::type::Mat4x4d projection;
 
     this->getModelViewMatrix(modelview.ptr());
     this->getProjectionMatrix(projection.ptr());
@@ -361,7 +361,7 @@ BaseCamera::Vec2 BaseCamera::worldToScreenCoordinates(const BaseCamera::Vec3& po
     if (isEqual(clipSpacePos.w(), 0.0))
         return Vec2(std::nan(""), std::nan(""));
 
-    sofa::defaulttype::Vec3 ndcSpacePos = sofa::defaulttype::Vec3(clipSpacePos.x(),clipSpacePos.y(), clipSpacePos.z()) * clipSpacePos.w();
+    sofa::type::Vec3 ndcSpacePos = sofa::type::Vec3(clipSpacePos.x(),clipSpacePos.y(), clipSpacePos.z()) * clipSpacePos.w();
     Vec2 screenCoord = Vec2((ndcSpacePos.x() + 1.0) / 2.0 * viewport[2], (ndcSpacePos.y() + 1.0) / 2.0 * viewport[3]);
     return screenCoord + Vec2(viewport[0], viewport[1]);
 }
@@ -417,7 +417,7 @@ void BaseCamera::getProjectionMatrix(double mat[16])
         mat[0] = pm00; // FocalX
         mat[5] = pm11; // FocalY
         mat[10] = -(currentZFar + currentZNear) / (currentZFar - currentZNear);
-        mat[11] = -2.0 * currentZFar * currentZNear / (currentZFar - currentZNear);;
+        mat[11] = -2.0 * currentZFar * currentZNear / (currentZFar - currentZNear);
         mat[14] = -1.0;
     }
     else
@@ -889,8 +889,8 @@ bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
 void BaseCamera::updateOutputData()
 {
     //Matrices
-    helper::vector<SReal>& wModelViewMatrix = *p_modelViewMatrix.beginEdit();
-    helper::vector<SReal>& wProjectionMatrix = *p_projectionMatrix.beginEdit();
+    type::vector<SReal>& wModelViewMatrix = *p_modelViewMatrix.beginEdit();
+    type::vector<SReal>& wProjectionMatrix = *p_projectionMatrix.beginEdit();
 
     double modelViewMatrix[16];
     double projectionMatrix[16];
@@ -933,21 +933,21 @@ void BaseCamera::drawCamera(const core::visual::VisualParams* vparams)
     dt->setLightingEnabled(false);
 
     Vec3 camPos = getPosition();
-    sofa::defaulttype::Vector3 p1, p2, p3, p4;
+    sofa::type::Vector3 p1, p2, p3, p4;
     p1 = viewportToWorldPoint(Vec3(0,0,0.994));
     p2 = viewportToWorldPoint(Vec3(1,0,0.994));
     p3 = viewportToWorldPoint(Vec3(1,1,0.994));
     p4 = viewportToWorldPoint(Vec3(0,1,0.994));
 
-    dt->drawLine(camPos, p1, sofa::helper::types::RGBAColor::black());
-    dt->drawLine(camPos, p2, sofa::helper::types::RGBAColor::black());
-    dt->drawLine(camPos, p3, sofa::helper::types::RGBAColor::black());
-    dt->drawLine(camPos, p4, sofa::helper::types::RGBAColor::black());
+    dt->drawLine(camPos, p1, sofa::type::RGBAColor::black());
+    dt->drawLine(camPos, p2, sofa::type::RGBAColor::black());
+    dt->drawLine(camPos, p3, sofa::type::RGBAColor::black());
+    dt->drawLine(camPos, p4, sofa::type::RGBAColor::black());
 
-    dt->drawLine(p1, p2, sofa::helper::types::RGBAColor::black());
-    dt->drawLine(p2, p3, sofa::helper::types::RGBAColor::black());
-    dt->drawLine(p3, p4, sofa::helper::types::RGBAColor::black());
-    dt->drawLine(p4, p1, sofa::helper::types::RGBAColor::black());
+    dt->drawLine(p1, p2, sofa::type::RGBAColor::black());
+    dt->drawLine(p2, p3, sofa::type::RGBAColor::black());
+    dt->drawLine(p3, p4, sofa::type::RGBAColor::black());
+    dt->drawLine(p4, p1, sofa::type::RGBAColor::black());
 
     dt->setPolygonMode(0, false);
     dt->drawTriangles({camPos, p1, p2}, RGBAColor::black());

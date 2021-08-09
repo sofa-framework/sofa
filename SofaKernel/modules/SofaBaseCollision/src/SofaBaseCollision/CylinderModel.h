@@ -64,6 +64,7 @@ public:
 
     const Coord & v()const;
 };
+using Cylinder = TCylinder<sofa::defaulttype::Rigid3Types>;
 
 
 /**
@@ -83,7 +84,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecReal VecReal;
-    typedef typename helper::vector<typename DataTypes::Vec3> VecAxisCoord;
+    typedef typename type::vector<typename DataTypes::Vec3> VecAxisCoord;
 
     typedef TCylinder<DataTypes> Element;
     friend class TCylinder<DataTypes>;
@@ -124,7 +125,7 @@ public:
     //Returns the direction of the cylinder at index in local coordinates
     Coord local_axis(Index index) const;
 
-    const sofa::defaulttype::Quaternion orientation(Index index)const;
+    const sofa::type::Quat<SReal> orientation(Index index)const;
 
     Real height(Index index)const;
 
@@ -153,14 +154,9 @@ inline TCylinder<DataTypes>::TCylinder(ParentModel* model, Index index)
 template<class DataTypes>
 inline TCylinder<DataTypes>::TCylinder(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<ParentModel>(static_cast<ParentModel*>(i.getCollisionModel()), i.getIndex())
-{
-}
+{}
 
-
-using CylinderModel [[deprecated("The CylinderModel is now deprecated, please use CylinderCollisionModel instead. Compatibility stops at v20.06")]] = CylinderCollisionModel<sofa::defaulttype::Rigid3Types>;
-using Cylinder = TCylinder<sofa::defaulttype::Rigid3Types>;
-
-#if  !defined(SOFA_COMPONENT_COLLISION_CYLINDERCOLLISIONMODEL_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_CYLINDERCOLLISIONMODEL_CPP)
 extern template class SOFA_SOFABASECOLLISION_API TCylinder<defaulttype::Rigid3Types>;
 extern template class SOFA_SOFABASECOLLISION_API CylinderCollisionModel<defaulttype::Rigid3Types>;
 #endif

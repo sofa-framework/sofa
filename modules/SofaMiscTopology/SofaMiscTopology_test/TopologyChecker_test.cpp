@@ -1075,7 +1075,7 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
-        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Hexahedron> > > hexa = topoCon->d_hexahedron;
+        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::type::vector<Topology::Hexahedron> > > hexa = topoCon->d_hexahedron;
 
         // Add triangle without updating cross container
         hexa.push_back(Topology::Hexahedron(0, 2, 4, 12, 14, 18, 20, 22));
@@ -1145,7 +1145,7 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
-        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Hexahedron> > > hexa = topoCon->d_hexahedron;
+        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::type::vector<Topology::Hexahedron> > > hexa = topoCon->d_hexahedron;
 
         // Add triangle without updating cross container
         hexa.push_back(Topology::Hexahedron(0, 2, 4, 12, 14, 18, 20, 22));
@@ -1206,7 +1206,7 @@ struct HexahedronTopologyChecker_test : TopologyChecker_test
         TopologyChecker* checker = dynamic_cast<TopologyChecker*>(obj.get());
         checker->init();
 
-        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::helper::vector<Topology::Hexahedron> > > hexa = topoCon->d_hexahedron;
+        sofa::helper::WriteAccessor< sofa::core::objectmodel::Data<sofa::type::vector<Topology::Hexahedron> > > hexa = topoCon->d_hexahedron;
 
         // Add triangle without updating cross container
         hexa.push_back(Topology::Hexahedron(0, 2, 4, 12, 14, 18, 20, 22));

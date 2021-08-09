@@ -29,7 +29,6 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
-#include <sofa/simulation/Node.h>
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
@@ -47,7 +46,7 @@ using namespace component;
 using namespace defaulttype;
 using namespace simulation;
 using namespace modeling;
-using helper::vector;
+using type::vector;
 
 /**  Dynamic solver test.
 Test the dynamic behavior of solver: study a mass-spring system under gravity initialize with spring rest length it will oscillate around its equilibrium position if there is no damping.

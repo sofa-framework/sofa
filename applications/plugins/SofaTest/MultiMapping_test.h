@@ -33,7 +33,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/core/MultiMapping.h>
 
 namespace sofa {
@@ -78,11 +78,11 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
 
 
     core::MultiMapping<In,Out>* mapping; ///< the mapping to be tested
-    helper::vector<InDOFs*>  inDofs;  ///< mapping input
+    type::vector<InDOFs*>  inDofs;  ///< mapping input
     OutDOFs* outDofs; ///< mapping output
     simulation::Node::SPtr root;         ///< Root of the scene graph, created by the constructor an re-used in the tests
     simulation::Node::SPtr child; ///< Child node, created by setupScene
-    helper::vector<simulation::Node::SPtr> parents; ///< Parent nodes, created by setupScene
+    type::vector<simulation::Node::SPtr> parents; ///< Parent nodes, created by setupScene
     simulation::Simulation* simulation;  ///< created by the constructor an re-used in the tests
     std::pair<Real,Real> deltaRange; ///< The minimum and maximum magnitudes of the change of each scalar value of the small displacement is deltaRange * numeric_limits<Real>::epsilon. This epsilon is 1.19209e-07 for float and 2.22045e-16 for double.
     Real errorMax;     ///< The test is successfull if the (infinite norm of the) difference is less than  maxError * numeric_limits<Real>::epsilon
@@ -143,7 +143,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
      *\param parentCoords Parent positions (one InVecCoord per parent)
      *\param expectedChildCoords expected position of the child corresponding to the parent positions
      */
-    bool runTest( const helper::vector<InVecCoord>& parentCoords,
+    bool runTest( const type::vector<InVecCoord>& parentCoords,
                   const OutVecCoord& expectedChildCoords)
     {
         if( deltaRange.second / errorMax <= g_minDeltaErrorRatio )
@@ -188,12 +188,12 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
 
         /// test applyJ and everything related to Jacobians. First, create auxiliary vectors.
         const Index Nc=outDofs->getSize();
-        helper::vector<Index> Np(inDofs.size());
+        type::vector<Index> Np(inDofs.size());
         for(Index i=0; i<Np.size(); i++)
             Np[i] = inDofs[i]->getSize();
 
-        helper::vector<InVecCoord> xp(Np.size()),xp1(Np.size());
-        helper::vector<InVecDeriv> vp(Np.size()),fp(Np.size()),dfp(Np.size()),fp2(Np.size());
+        type::vector<InVecCoord> xp(Np.size()),xp1(Np.size());
+        type::vector<InVecDeriv> vp(Np.size()),fp(Np.size()),dfp(Np.size()),fp2(Np.size());
         OutVecCoord xc(Nc),xc1(Nc);
         OutVecDeriv vc(Nc),fc(Nc);
 
@@ -263,7 +263,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         }
 
         // Jacobian will be obsolete after applying new positions
-        const helper::vector<defaulttype::BaseMatrix*>* J = mapping->getJs();
+        const type::vector<defaulttype::BaseMatrix*>* J = mapping->getJs();
         OutVecDeriv Jv(Nc);
         for( Index p=0; p<Np.size(); p++ ){
             //cout<<"J["<< p <<"] = "<< endl << *(*J)[p] << endl;
@@ -273,7 +273,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         }
 
         // ================ test applyJT()
-        helper::vector<InVecDeriv> jfc;
+        type::vector<InVecDeriv> jfc;
         jfc.resize(Np.size());
         for( Index p=0; p<Np.size(); p++ ) {
             jfc[p].resize(Np[p]);
@@ -350,7 +350,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         }
         copyToData( fout, fc );
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
-        helper::vector<InVecDeriv> fp12(Np.size());
+        type::vector<InVecDeriv> fp12(Np.size());
         for( Index p=0; p<Np.size(); p++ ){
             copyFromData( fp2[p], inDofs[p]->readForces() );
 //            cout<<"updated parent forces fp2["<< p <<"] = "<< fp2[p] << endl;

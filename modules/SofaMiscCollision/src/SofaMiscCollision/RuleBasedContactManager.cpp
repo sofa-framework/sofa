@@ -130,8 +130,8 @@ std::string RuleBasedContactManager::getContactResponse(core::CollisionModel* mo
     if (!response1.empty()) return response1;
     else if (!response2.empty()) return response2;
 
-    const helper::vector<Rule>& r = rules.getValue();
-    for (helper::vector<Rule>::const_iterator it = r.begin(), itend = r.end(); it != itend; ++it)
+    const type::vector<Rule>& r = rules.getValue();
+    for (type::vector<Rule>::const_iterator it = r.begin(), itend = r.end(); it != itend; ++it)
     {
         if (it->match(model1, model2) || it->match(model2, model1))
             return replaceVariables(it->response); // rule it matched

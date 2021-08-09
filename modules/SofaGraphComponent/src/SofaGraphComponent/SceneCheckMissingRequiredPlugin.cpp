@@ -102,7 +102,7 @@ void SceneCheckMissingRequiredPlugin::doPrintSummary()
 
 void SceneCheckMissingRequiredPlugin::doInit(Node* node)
 {
-    helper::vector< RequiredPlugin* > plugins;
+    type::vector< RequiredPlugin* > plugins;
     node->getTreeObjects< RequiredPlugin >(&plugins);
 
     m_requiredPlugins.clear();

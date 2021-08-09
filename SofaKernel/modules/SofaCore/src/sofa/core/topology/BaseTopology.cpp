@@ -36,8 +36,8 @@ void GeometryAlgorithms::init()
 {
 }
 
-void GeometryAlgorithms::initPointsAdded(const helper::vector< sofa::Index >& /*indices*/, const helper::vector< PointAncestorElem >& /*ancestorElems*/
-    , const helper::vector< core::VecCoordId >& /*coordVecs*/, const helper::vector< core::VecDerivId >& /*derivVecs */)
+void GeometryAlgorithms::initPointsAdded(const type::vector< sofa::Index >& /*indices*/, const type::vector< PointAncestorElem >& /*ancestorElems*/
+    , const type::vector< core::VecCoordId >& /*coordVecs*/, const type::vector< core::VecDerivId >& /*derivVecs */)
 {
 }
 
@@ -61,7 +61,7 @@ void TopologyModifier::addStateChange(const TopologyChange *topologyChange)
 void TopologyModifier::propagateStateChanges() {}
 void TopologyModifier::propagateTopologicalChanges() {}
 void TopologyModifier::notifyEndingEvent() {}
-void TopologyModifier::removeItems(const sofa::helper::vector< Index >& /*items*/) {}
+void TopologyModifier::removeItems(const sofa::type::vector< Index >& /*items*/) {}
 
 // TopologyContainer implementation
 
@@ -97,7 +97,6 @@ void TopologyContainer::addStateChange(const TopologyChange *topologyChange)
 void TopologyContainer::addTopologyHandler(TopologyHandler *_TopologyHandler)
 {
     m_TopologyHandlerList.push_back(_TopologyHandler);
-    m_TopologyHandlerList.back()->m_changeList.setParent(&this->m_changeList);
     this->updateTopologyHandlerGraph();
 }
 
@@ -120,16 +119,6 @@ std::list<const TopologyChange *>::const_iterator TopologyContainer::endStateCha
 std::list<const TopologyChange *>::const_iterator TopologyContainer::beginStateChange() const
 {
     return (m_stateChangeList.getValue()).begin();
-}
-
-std::list<TopologyHandler *>::const_iterator TopologyContainer::endTopologyHandler() const
-{
-    return m_TopologyHandlerList.end();
-}
-
-std::list<TopologyHandler *>::const_iterator TopologyContainer::beginTopologyHandler() const
-{
-    return m_TopologyHandlerList.begin();
 }
 
 void TopologyContainer::resetTopologyChangeList()

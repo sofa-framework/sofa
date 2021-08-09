@@ -34,8 +34,6 @@ namespace sofa::component::collision
 template<class DataTypes>
 class PointCollisionModel;
 
-class PointLocalMinDistanceFilter;
-
 template<class TDataTypes>
 class TPoint : public core::TCollisionElementIterator<PointCollisionModel<TDataTypes> >
 {
@@ -58,8 +56,9 @@ public:
     /// Return true if the element stores a free position vector
     bool hasFreePosition() const;
 
-    bool testLMD(const sofa::defaulttype::Vector3 &, double &, double &);
+    bool testLMD(const sofa::type::Vector3 &, double &, double &);
 };
+using Point = TPoint<sofa::defaulttype::Vec3Types>;
 
 template<class TDataTypes>
 class SOFA_SOFAMESHCOLLISION_API PointCollisionModel : public core::CollisionModel
@@ -75,7 +74,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef TPoint<DataTypes> Element;
-    typedef helper::vector<Index> VecIndex;
+    typedef type::vector<Index> VecIndex;
 
     friend class TPoint<DataTypes>;
 protected:
@@ -99,10 +98,6 @@ public:
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
 
     Deriv getNormal(Index index){ return (normals.size()) ? normals[index] : Deriv();}
-
-    PointLocalMinDistanceFilter *getFilter() const;
-
-    void setFilter(PointLocalMinDistanceFilter * /*lmdFilter*/);
 
     const Deriv& velocity(Index index) const;
 
@@ -137,8 +132,6 @@ protected:
     Data<bool> computeNormals; ///< activate computation of normal vectors (required for some collision detection algorithms)
 
     VecDeriv normals;
-
-    PointLocalMinDistanceFilter *m_lmdFilter;
 
     Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)
                                       
@@ -186,15 +179,8 @@ inline typename DataTypes::Deriv TPoint<DataTypes>::n() const { return ((unsigne
 template<class DataTypes>
 inline bool TPoint<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
 
-template <class TDataTypes> using TPointModel [[deprecated("The TPointModel is now deprecated, please use PointCollisionModel instead. Compatibility stops at v20.06")]] = PointCollisionModel<TDataTypes>;
-using PointModel [[deprecated("The PointModel is now deprecated, please use PointCollisionModel<sofa::defaulttype::Vec3Types> instead. Compatibility stops at v20.06")]] = PointCollisionModel<sofa::defaulttype::Vec3Types>;
-using Point = TPoint<sofa::defaulttype::Vec3Types>;
-
-#if  !defined(SOFA_COMPONENT_COLLISION_POINTCOLLISIONMODEL_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_POINTCOLLISIONMODEL_CPP)
 extern template class SOFA_SOFAMESHCOLLISION_API PointCollisionModel<defaulttype::Vec3Types>;
-
 #endif
-
-//bool Point::testLMD(const Vector3 &PQ, double &coneFactor, double &coneExtension);
 
 } //namespace sofa::component::collision

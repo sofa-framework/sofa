@@ -12,7 +12,7 @@
 
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> MechanicalObjectRigid3;
 
-typedef sofa::defaulttype::Vector3 Vec3;
+typedef sofa::type::Vector3 Vec3;
 
 using namespace sofa::PrimitiveCreationTest;
 using sofa::core::objectmodel::New;
@@ -67,7 +67,7 @@ sofa::component::collision::BulletOBBCollisionModel<sofa::defaulttype::Rigid3Typ
 
 
     //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
-    positions[0] = sofa::defaulttype::Rigid3Types::Coord(p, sofa::defaulttype::Quaternion::createQuaterFromFrame(x,y,z));
+    positions[0] = sofa::defaulttype::Rigid3Types::Coord(p, sofa::type::Quat<SReal>::createQuaterFromFrame(x,y,z));
 
     dpositions.endEdit();
 
@@ -113,7 +113,7 @@ static void transMechaRigid(const Vec3 & angles,const Vec3 & new_pos,sofa::simul
     Data<MechanicalObjectRigid3::VecCoord> & dpositions = *mecha->write( sofa::core::VecId::position() );
     MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
 
-    sofa::defaulttype::Quat & quat = positions[0].getOrientation();
+    auto & quat = positions[0].getOrientation();
     Vec3 & pos  = positions[0].getCenter();
 
     quat.rotate(angles);

@@ -27,9 +27,9 @@
 #include <sofa/core/MultiMapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/RGBAColor.h>
 
 
 namespace sofa::component::mapping
@@ -80,13 +80,13 @@ public:
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
     typedef topology::EdgeSetTopologyContainer::SeqEdges SeqEdges;
-    typedef defaulttype::Vec<In::spatial_dimensions,Real> Direction;
+    typedef type::Vec<In::spatial_dimensions,Real> Direction;
 
 
     Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
-    Data< helper::vector< Real > > f_restLengths;		///< rest length of each link
+    Data< type::vector< Real > > f_restLengths;		///< rest length of each link
     Data< Real >           d_showObjectScale;   ///< drawing size
-    Data< sofa::helper::types::RGBAColor > d_color;         ///< drawing color
+    Data< sofa::type::RGBAColor > d_color;         ///< drawing color
     Data< unsigned >       d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
     /// Link to be set to the topology container in the component graph. 
@@ -109,7 +109,7 @@ public:
     void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce ) override;
 
     const sofa::defaulttype::BaseMatrix* getJ() override;
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
 
     void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce ) override;
     const defaulttype::BaseMatrix* getK() override;
@@ -124,10 +124,10 @@ protected:
 
     topology::EdgeSetTopologyContainer* m_edgeContainer;  ///< where the edges are defined
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
-    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    type::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
     SparseKMatrixEigen K;                               ///< Assembled geometric stiffness matrix
-    helper::vector<Direction> directions;                         ///< Unit vectors in the directions of the lines
-    helper::vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
+    type::vector<Direction> directions;                         ///< Unit vectors in the directions of the lines
+    type::vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
 
     /// r=b-a only for position (eventual rotation, affine transform... remains null)
     void computeCoordPositionDifference( Direction& r, const InCoord& a, const InCoord& b );
@@ -178,15 +178,15 @@ public:
     typedef linearsolver::EigenSparseMatrix<TIn,TIn>    SparseKMatrixEigen;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
     typedef topology::EdgeSetTopologyContainer::SeqEdges SeqEdges;
-    typedef typename helper::vector <const InVecCoord*> vecConstInVecCoord;
-    typedef defaulttype::Vec<In::spatial_dimensions,Real> Direction;
+    typedef typename type::vector<const InVecCoord*> vecConstInVecCoord;
+    typedef type::Vec<In::spatial_dimensions,Real> Direction;
 
 
     Data< bool >		                       f_computeDistance;	///< computeDistance = true ---> restDistance = 0
-    Data< helper::vector< Real > >             f_restLengths;		///< rest length of each link
+    Data< type::vector< Real > >             f_restLengths;		///< rest length of each link
     Data< Real >                               d_showObjectScale;   ///< drawing size
-    Data< sofa::helper::types::RGBAColor >             d_color;         ///< drawing color
-    Data< helper::vector<defaulttype::Vec2i> > d_indexPairs;  ///< for each child, its parent and index in parent
+    Data< sofa::type::RGBAColor >             d_color;         ///< drawing color
+    Data< type::vector<type::Vec2i> > d_indexPairs;  ///< for each child, its parent and index in parent
     Data< unsigned >                           d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
     /// Link to be set to the topology container in the component graph. 
@@ -202,16 +202,16 @@ public:
 
     void init() override;
 
-    void apply(const core::MechanicalParams *mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos) override
+    void apply(const core::MechanicalParams *mparams, const type::vector<OutDataVecCoord*>& dataVecOutPos, const type::vector<const InDataVecCoord*>& dataVecInPos) override
     {
         SOFA_UNUSED(mparams);
 
         //Not optimized at all...
-        helper::vector<OutVecCoord*> vecOutPos;
+        type::vector<OutVecCoord*> vecOutPos;
         for(unsigned int i=0; i<dataVecOutPos.size(); i++)
             vecOutPos.push_back(dataVecOutPos[i]->beginEdit());
 
-        helper::vector<const InVecCoord*> vecInPos;
+        type::vector<const InVecCoord*> vecInPos;
         for(unsigned int i=0; i<dataVecInPos.size(); i++)
             vecInPos.push_back(&dataVecInPos[i]->getValue());
 
@@ -223,16 +223,16 @@ public:
 
     }
 
-    void applyJ(const core::MechanicalParams *mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel) override
+    void applyJ(const core::MechanicalParams *mparams, const type::vector<OutDataVecDeriv*>& dataVecOutVel, const type::vector<const InDataVecDeriv*>& dataVecInVel) override
     {
         SOFA_UNUSED(mparams);
 
         //Not optimized at all...
-        helper::vector<OutVecDeriv*> vecOutVel;
+        type::vector<OutVecDeriv*> vecOutVel;
         for(unsigned int i=0; i<dataVecOutVel.size(); i++)
             vecOutVel.push_back(dataVecOutVel[i]->beginEdit());
 
-        helper::vector<const InVecDeriv*> vecInVel;
+        type::vector<const InVecDeriv*> vecInVel;
         for(unsigned int i=0; i<dataVecInVel.size(); i++)
             vecInVel.push_back(&dataVecInVel[i]->getValue());
 
@@ -244,16 +244,16 @@ public:
 
     }
 
-    void applyJT(const core::MechanicalParams *mparams, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce) override
+    void applyJT(const core::MechanicalParams *mparams, const type::vector<InDataVecDeriv*>& dataVecOutForce, const type::vector<const OutDataVecDeriv*>& dataVecInForce) override
     {
         SOFA_UNUSED(mparams);
 
         //Not optimized at all...
-        helper::vector<InVecDeriv*> vecOutForce;
+        type::vector<InVecDeriv*> vecOutForce;
         for(unsigned int i=0; i<dataVecOutForce.size(); i++)
             vecOutForce.push_back(dataVecOutForce[i]->beginEdit());
 
-        helper::vector<const OutVecDeriv*> vecInForce;
+        type::vector<const OutVecDeriv*> vecInForce;
         for(unsigned int i=0; i<dataVecInForce.size(); i++)
             vecInForce.push_back(&dataVecInForce[i]->getValue());
 
@@ -269,13 +269,13 @@ public:
     using Inherit::applyJ;
     using Inherit::applyJT;
 
-    virtual void apply(const helper::vector<OutVecCoord*>& outPos, const vecConstInVecCoord& inPos);
-    virtual void applyJ(const helper::vector<OutVecDeriv*>& outDeriv, const helper::vector<const  InVecDeriv*>& inDeriv);
-    virtual void applyJT(const helper::vector< InVecDeriv*>& outDeriv, const helper::vector<const OutVecDeriv*>& inDeriv);
-    void applyJT( const core::ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const helper::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ ) override {}
+    virtual void apply(const type::vector<OutVecCoord*>& outPos, const vecConstInVecCoord& inPos);
+    virtual void applyJ(const type::vector<OutVecDeriv*>& outDeriv, const type::vector<const  InVecDeriv*>& inDeriv);
+    virtual void applyJT(const type::vector< InVecDeriv*>& outDeriv, const type::vector<const OutVecDeriv*>& inDeriv);
+    void applyJT( const core::ConstraintParams* /* cparams */, const type::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const type::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ ) override {}
     void applyDJT(const core::MechanicalParams*, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce) override;
 
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
 
     void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce ) override;
     const defaulttype::BaseMatrix* getK() override;
@@ -289,9 +289,9 @@ protected:
     virtual ~DistanceMultiMapping();
 
     topology::EdgeSetTopologyContainer* m_edgeContainer;  ///< where the edges are defined
-    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
-    helper::vector<Direction> directions;                         ///< Unit vectors in the directions of the lines
-    helper::vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
+    type::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    type::vector<Direction> directions;                         ///< Unit vectors in the directions of the lines
+    type::vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
 
     SparseKMatrixEigen K;
 

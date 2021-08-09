@@ -24,10 +24,10 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/vectorData.h>
+#include <sofa/core/objectmodel/vectorData.h>
 
 namespace sofa::component::engine
 {
@@ -68,16 +68,16 @@ public:
     Data< SeqTetrahedra > inputTets; ///< input tetrahedra
     Data< SeqHexahedra > inputHexa; ///< input hexahedra
     Data<unsigned int> nbInputs; ///< Number of input vectors
-    helper::vectorData<SetIndices> indices;
-    helper::vectorData<SetIndices> edgeIndices;
-    helper::vectorData<SetIndices> triangleIndices;
-    helper::vectorData<SetIndices> quadIndices;
-    helper::vectorData<SetIndices> tetrahedronIndices;
-    helper::vectorData<SetIndices> hexahedronIndices;
+    core::objectmodel::vectorData<SetIndices> indices;
+    core::objectmodel::vectorData<SetIndices> edgeIndices;
+    core::objectmodel::vectorData<SetIndices> triangleIndices;
+    core::objectmodel::vectorData<SetIndices> quadIndices;
+    core::objectmodel::vectorData<SetIndices> tetrahedronIndices;
+    core::objectmodel::vectorData<SetIndices> hexahedronIndices;
 
     /// outputs
-    Data< helper::vector<unsigned int> > indexPairs;
-    helper::vectorData<SeqPositions> position;
+    Data< type::vector<unsigned int> > indexPairs;
+    core::objectmodel::vectorData<SeqPositions> position;
 
 protected:
 

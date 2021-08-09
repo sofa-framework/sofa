@@ -611,13 +611,13 @@ public:
 
 
 template<class T>
-class vector_data_trait < sofa::helper::vector<T> > : public vector_data_trait< std::vector<T> >
+class vector_data_trait < sofa::type::vector<T> > : public vector_data_trait< std::vector<T> >
 {
 };
 
 
 // template<class T>
-// class vector_data_trait < sofa::component::topology::PointData<T> > //: public vector_data_trait < sofa::helper::vector<T> >
+// class vector_data_trait < sofa::component::topology::PointData<T> > //: public vector_data_trait < sofa::type::vector<T> >
 // {
 // public:
 //     typedef sofa::component::topology::PointData<T> data_type;
@@ -637,14 +637,14 @@ class vector_data_trait < sofa::helper::vector<T> > : public vector_data_trait< 
 //     {
 // 	if ((unsigned)i < (unsigned)size(d.getValue()))
 // 	{
-// 	    sofa::helper::vector<T>& d_data = *(d.beginEdit());
+// 	    sofa::type::vector<T>& d_data = *(d.beginEdit());
 // 	    d_data[i] = v;
 // 	    d.endEdit();
 // 	}
 //     }
 //     static void resize( int s, data_type& d)
 //     {
-//         sofa::helper::vector<T>& d_data = *(d.beginEdit());
+//         sofa::type::vector<T>& d_data = *(d.beginEdit());
 // 	d_data.resize(s);
 // 	d.endEdit();
 //     }

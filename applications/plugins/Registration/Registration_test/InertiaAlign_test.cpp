@@ -63,12 +63,12 @@ using namespace modeling;
             meshLoaderSource->applyTranslation(translation_x, translation_y, translation_z);
             meshLoaderSource->applyRotation(rotation_x, rotation_y, rotation_z);
             defaulttype::Rigid3Mass massSource;
-            defaulttype::Vec3d centerSource ;
+            type::Vec3d centerSource ;
 
             //GenerateRigid (massSource, centerSource, &meshSource);
 
-            defaulttype::Vec3d centerTarget ;
-            sofa::defaulttype::Vector3 translation;
+            type::Vec3d centerTarget ;
+            sofa::type::Vector3 translation;
             defaulttype::Rigid3Mass massTarget;
 
             GenerateRigidMass::SPtr rigidSource = New<GenerateRigidMass>();

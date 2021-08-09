@@ -29,7 +29,7 @@ template<typename T>
 struct MathOpAdd
 {
     static const char* Name() { return "+"; }
-    void operator()(T* out, const helper::vector<T>& in)
+    void operator()(T* out, const type::vector<T>& in)
     {
         *out = in[0];
         for (unsigned int i=1;i<in.size();++i)
@@ -41,7 +41,7 @@ template<typename T>
 struct MathOpSub
 {
     static const char* Name() { return "-"; }
-    void operator()(T* out, const helper::vector<T>& in)
+    void operator()(T* out, const type::vector<T>& in)
     {
         if (in.size() == 1)
         {
@@ -60,7 +60,7 @@ template<typename T>
 struct MathOpMul
 {
     static const char* Name() { return "*"; }
-    void operator()(T* out, const helper::vector<T>& in)
+    void operator()(T* out, const type::vector<T>& in)
     {
         *out = in[0];
         for (unsigned int i=1;i<in.size();++i)
@@ -74,7 +74,7 @@ template<typename T>
 struct MathOpDiv
 {
     static const char* Name() { return "/"; }
-    void operator()(T* out, const helper::vector<T>& in)
+    void operator()(T* out, const type::vector<T>& in)
     {
         if (in.size() == 1)
         {
@@ -93,7 +93,7 @@ template<typename T>
 struct MathOpMin
 {
     static const char* Name() { return "<"; }
-    void operator()(T* out, const helper::vector<T>& in)
+    void operator()(T* out, const type::vector<T>& in)
     {
         *out = in[0];
         for (unsigned int i=1;i<in.size();++i)
@@ -108,7 +108,7 @@ template<typename T>
 struct MathOpMax
 {
     static const char* Name() { return ">"; }
-    void operator()(T* out, const helper::vector<T>& in)
+    void operator()(T* out, const type::vector<T>& in)
     {
         *out = in[0];
         for (unsigned int i=1;i<in.size();++i)
@@ -123,7 +123,7 @@ template<typename T>
 struct MathOpNot
 {
     static const char* Name() { return "!"; }
-    void operator()(T* out, const helper::vector<T>& in)
+    void operator()(T* out, const type::vector<T>& in)
     {
         *out = !in[0];
     }
@@ -133,7 +133,7 @@ template<typename T>
 struct MathOpAnd
 {
     static const char* Name() { return "&"; }
-    void operator()(T* out, const helper::vector<T>& in)
+    void operator()(T* out, const type::vector<T>& in)
     {
         *out = in[0];
         for (unsigned int i=1;i<in.size();++i)
@@ -145,7 +145,7 @@ template<typename T>
 struct MathOpOr
 {
     static const char* Name() { return "|"; }
-    void operator()(T* out, const helper::vector<T>& in)
+    void operator()(T* out, const type::vector<T>& in)
     {
         *out = in[0];
         for (unsigned int i=1;i<in.size();++i)
@@ -157,7 +157,7 @@ template<typename T>
 struct MathOpXor
 {
     static const char* Name() { return "^"; }
-    void operator()(T* out, const helper::vector<T>& in)
+    void operator()(T* out, const type::vector<T>& in)
     {
         *out = in[0];
         for (unsigned int i=1;i<in.size();++i)
@@ -169,7 +169,7 @@ template<typename T>
 struct MathOpNAnd
 {
     static const char* Name() { return "!&"; }
-    void operator()(T* out, const helper::vector<T>& in)
+    void operator()(T* out, const type::vector<T>& in)
     {
         *out = in[0];
         for (unsigned int i=1;i<in.size();++i)
@@ -182,7 +182,7 @@ template<typename T>
 struct MathOpNOr
 {
     static const char* Name() { return "!|"; }
-    void operator()(T* out, const helper::vector<T>& in)
+    void operator()(T* out, const type::vector<T>& in)
     {
         *out = in[0];
         for (unsigned int i=1;i<in.size();++i)
@@ -195,7 +195,7 @@ template<typename T>
 struct MathOpXNor
 {
     static const char* Name() { return "!^"; }
-    void operator()(T* out, const helper::vector<T>& in)
+    void operator()(T* out, const type::vector<T>& in)
     {
         *out = in[0];
         for (unsigned int i=1;i<in.size();++i)
@@ -242,7 +242,7 @@ struct MathOpTraitsVecReal
 };
 
 template< std::size_t N, typename Real>
-class MathOpTraits< defaulttype::Vec<N,Real> > : public MathOpTraitsVecReal< defaulttype::Vec<N,Real> > {};
+class MathOpTraits< type::Vec<N,Real> > : public MathOpTraitsVecReal< type::Vec<N,Real> > {};
 
 /// Bool-like ops
 template<typename T>
@@ -261,7 +261,7 @@ class MathOpTraits<bool> : public MathOpTraitsBool<bool> {};
 template<typename TOps>
 struct MathOpNames
 {
-    static void get(helper::vector<std::string>& out)
+    static void get(type::vector<std::string>& out)
     {
         out.push_back(TOps::Name());
     }
@@ -270,7 +270,7 @@ struct MathOpNames
 template<typename TOps1,typename TOps2>
 struct MathOpNames< std::pair<TOps1, TOps2> >
 {
-    static void get(helper::vector<std::string>& out)
+    static void get(type::vector<std::string>& out)
     {
         MathOpNames<TOps1>::get(out);
         MathOpNames<TOps2>::get(out);
@@ -285,14 +285,14 @@ struct MathOpApply
         return op == TOps::Name();
     }
     template<class VecValue>
-    static bool apply(const std::string& op, Data<VecValue>* d_out, const helper::vector<Data<VecValue>*>& d_in)
+    static bool apply(const std::string& op, Data<VecValue>* d_out, const type::vector<Data<VecValue>*>& d_in)
     {
         typedef typename VecValue::value_type Value;
         if (op == TOps::Name())
         {
             TOps op;
             helper::WriteAccessor<Data<VecValue> > out = *d_out;
-            helper::vector<const VecValue*> in;
+            type::vector<const VecValue*> in;
             unsigned int nbin = d_in.size();
             in.reserve(nbin);
             for (unsigned int idin = 0; idin < nbin; ++idin)
@@ -312,7 +312,7 @@ struct MathOpApply
                 }
             }
             out.resize(size);
-            helper::vector<Value> values;
+            type::vector<Value> values;
             values.resize(nbin);
             for (unsigned int idv = 0; idv < size; ++idv)
             {
@@ -341,7 +341,7 @@ struct MathOpApply< std::pair<TOps1, TOps2> >
         return  MathOpApply<TOps1>::isSupported(op) ||  MathOpApply<TOps2>::isSupported(op);
     }
     template<class VecValue>
-    static bool apply(const std::string& op, Data<VecValue>* d_out, const helper::vector<Data<VecValue>*>& d_in)
+    static bool apply(const std::string& op, Data<VecValue>* d_out, const type::vector<Data<VecValue>*>& d_in)
     {
         return  MathOpApply<TOps1>::apply(op, d_out, d_in) ||  MathOpApply<TOps2>::apply(op, d_out, d_in);
     }
@@ -355,7 +355,7 @@ MathOp<VecT>::MathOp()
 {
     
     sofa::helper::OptionsGroup& ops = *f_op.beginEdit();
-    helper::vector<std::string> opnames;
+    type::vector<std::string> opnames;
     MathOpNames< typename MathOpTraits<Value>::Ops >::get(opnames);
     ops.setNbItems(opnames.size());
     for (unsigned int i = 0; i < opnames.size(); ++i)

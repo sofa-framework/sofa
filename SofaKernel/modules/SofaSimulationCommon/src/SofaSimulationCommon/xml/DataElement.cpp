@@ -55,7 +55,7 @@ Creator<BaseElement::NodeFactory, DataElement> DataNodeClass("Data");
 
 const char* DataElement::getClass() const
 {
-    return DataNodeClass.c_str();
+    return DataNodeClass.getKey().c_str();
 }
 
 } // namespace sofa::simulation::xml

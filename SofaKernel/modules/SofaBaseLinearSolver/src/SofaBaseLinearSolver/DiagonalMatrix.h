@@ -326,7 +326,7 @@ class BlockDiagonalMatrix : public defaulttype::BaseMatrix
 {
 public:
     typedef T Real;
-    typedef defaulttype::Mat<LC,LC,Real> Bloc;
+    typedef type::Mat<LC,LC,Real> Bloc;
     typedef matrix_bloc_traits<Bloc, Index> traits;
 
     enum { BSIZE = LC };
@@ -499,10 +499,10 @@ public:
         for (sofa::Index b=0; b<(sofa::Size) nblocs; b++)
         {
             sofa::Index i = b*LC;
-            for (sofa::Index bj=0; bj<LC; bj++)
+            for (sofa::Index bj=0; bj<Index(LC); bj++)
             {
                 Real2 r = 0;
-                for (sofa::Index bi=0; bi<LC; bi++)
+                for (sofa::Index bi=0; bi<Index(LC); bi++)
                 {
                     r += (Real2)(traits::v(data[b],bi,bj) * v[i+bi]);
                 }

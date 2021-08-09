@@ -85,8 +85,7 @@ void DataFileName::updatePath()
             {
                 if( m_fullpath.find(path) == 0 )
                 {
-                    m_relativepath=DataRepository.relativeToPath(m_fullpath, path,
-                                                                 false /*option for backward compatibility*/);
+                    m_relativepath = DataRepository.relativeToPath(m_fullpath, path);
                     break;
                 }
             }
@@ -105,7 +104,7 @@ void DataFileName::updatePath()
 
 void DataFileNameVector::updatePath()
 {
-    DataFileNameVector* parentDataFileNameVector = dynamic_cast<DataFileNameVector*>(parentData.getTarget());;
+    DataFileNameVector* parentDataFileNameVector = dynamic_cast<DataFileNameVector*>(parentData.getTarget());
     if (parentDataFileNameVector)
     {
         if (getPathType() != PathType::BOTH && getPathType() != parentDataFileNameVector->getPathType())

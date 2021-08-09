@@ -27,9 +27,9 @@
 #include <sofa/core/MultiMapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/RGBAColor.h>
 
 
 namespace sofa::component::mapping
@@ -81,13 +81,13 @@ public:
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
     typedef topology::EdgeSetTopologyContainer::SeqEdges SeqEdges;
-    typedef defaulttype::Vec<In::spatial_dimensions,Real> Direction;
+    typedef type::Vec<In::spatial_dimensions,Real> Direction;
 
 
 //    Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
-//    Data< helper::vector< Real > > f_restLengths;		///< rest length of each link
+//    Data< type::vector< Real > > f_restLengths;		///< rest length of each link
     Data< Real >           d_showObjectScale;   ///< drawing size
-    Data< sofa::helper::types::RGBAColor > d_color;         ///< drawing color
+    Data< sofa::type::RGBAColor > d_color;         ///< drawing color
     Data< unsigned >       d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
     void init() override;
@@ -105,7 +105,7 @@ public:
     void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce ) override;
 
     const sofa::defaulttype::BaseMatrix* getJ() override;
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
 
     void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce ) override;
     const defaulttype::BaseMatrix* getK() override;
@@ -120,7 +120,7 @@ protected:
 
     topology::EdgeSetTopologyContainer* edgeContainer;  ///< where the edges are defined
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
-    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    type::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
     SparseKMatrixEigen K;                               ///< Assembled geometric stiffness matrix
 
     /// r=b-a only for position (eventual rotation, affine transform... remains null)

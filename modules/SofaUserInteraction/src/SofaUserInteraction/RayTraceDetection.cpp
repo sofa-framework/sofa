@@ -21,12 +21,26 @@
 ******************************************************************************/
 
 #include <SofaUserInteraction/RayTraceDetection.h>
+
 #include <sofa/core/ObjectFactory.h>
+#include <numeric>
 
 namespace sofa::component::collision
 {
 
 int RayTraceDetectionClass = core::RegisterObject(
         "Collision detection using TriangleOctreeModel").add<RayTraceDetection>();
+
+
+void RayTraceDetection::init()
+{
+    const std::string broadPhaseComponentsString = sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::collision::BroadPhaseDetection>();
+    const std::string narrowPhaseComponentsString = sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::collision::NarrowPhaseDetection>();
+
+    msg_deprecated() << "As a replacement, use a BroadPhase component, such as [" << broadPhaseComponentsString
+                     << "]," << msgendl
+                     << "  AND a NarrowPhase component, such as [" << narrowPhaseComponentsString << "]." << msgendl
+                     << "  " << BruteForceBroadPhase::GetClass()->className << " and " << RayTraceNarrowPhase::GetClass()->className << " have been automatically added to your scene for backward compatibility.";
+}
 
 } // namespace sofa::component::collision

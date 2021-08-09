@@ -108,7 +108,7 @@ void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3fTypes>::addDForce(cons
 	Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
 	unsigned int nbEdges=m_topology->getNbEdges();
-    const helper::vector< core::topology::BaseMeshTopology::Edge> &edgeArray=m_topology->getEdges() ;
+    const type::vector< core::topology::BaseMeshTopology::Edge> &edgeArray=m_topology->getEdges() ;
 
     unsigned int nbTetrahedra=m_topology->getNbTetrahedra();
 
@@ -163,7 +163,7 @@ void StandardTetrahedralFEMForceField<CudaVec3fTypes>::initNeighbourhoodPoints()
 
     StandardTetrahedralFEMForceField_nbMaxTetraPerNode() = 0;
 
-    for(int i=0; i<m_topology->getNbPoints();++i)
+    for(Size i=0; i<m_topology->getNbPoints();++i)
     {
         if( (int)m_topology->getTetrahedraAroundVertex(i).size() > StandardTetrahedralFEMForceField_nbMaxTetraPerNode())
             StandardTetrahedralFEMForceField_nbMaxTetraPerNode() = m_topology->getTetrahedraAroundVertex(i).size();
@@ -171,7 +171,7 @@ void StandardTetrahedralFEMForceField<CudaVec3fTypes>::initNeighbourhoodPoints()
 
     StandardTetrahedralFEMForceField_neighbourhoodPoints().resize( (m_topology->getNbPoints())*StandardTetrahedralFEMForceField_nbMaxTetraPerNode());
 
-    for(int i=0; i<m_topology->getNbPoints();++i)
+    for(Size i=0; i<m_topology->getNbPoints();++i)
     {
         for(int j=0; j<StandardTetrahedralFEMForceField_nbMaxTetraPerNode(); ++j)
         {
@@ -281,7 +281,7 @@ void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3dTypes>::addDForce(cons
 	Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
 	unsigned int nbEdges=m_topology->getNbEdges();
-    const helper::vector< core::topology::BaseMeshTopology::Edge> &edgeArray=m_topology->getEdges() ;
+    const type::vector< core::topology::BaseMeshTopology::Edge> &edgeArray=m_topology->getEdges() ;
 
     unsigned int nbTetrahedra=m_topology->getNbTetrahedra();
 
@@ -338,7 +338,7 @@ void StandardTetrahedralFEMForceField<CudaVec3dTypes>::initNeighbourhoodPoints()
 
     StandardTetrahedralFEMForceField_nbMaxTetraPerNode() = 0;
 
-    for(int i=0; i<m_topology->getNbPoints();++i)
+    for(Size i=0; i<m_topology->getNbPoints();++i)
     {
         if( (int)m_topology->getTetrahedraAroundVertex(i).size() > StandardTetrahedralFEMForceField_nbMaxTetraPerNode())
             StandardTetrahedralFEMForceField_nbMaxTetraPerNode() = m_topology->getTetrahedraAroundVertex(i).size();
@@ -346,7 +346,7 @@ void StandardTetrahedralFEMForceField<CudaVec3dTypes>::initNeighbourhoodPoints()
 
     StandardTetrahedralFEMForceField_neighbourhoodPoints().resize( (m_topology->getNbPoints())*StandardTetrahedralFEMForceField_nbMaxTetraPerNode());
 
-    for(int i=0; i<m_topology->getNbPoints();++i)
+    for(Size i=0; i<m_topology->getNbPoints();++i)
     {
         for(int j=0; j<StandardTetrahedralFEMForceField_nbMaxTetraPerNode(); ++j)
         {
@@ -374,7 +374,7 @@ void StandardTetrahedralFEMForceField<CudaVec3dTypes>::initNeighbourhoodEdges()
 {
     StandardTetrahedralFEMForceField_nbMaxTetraPerEdge() = 0;
 
-    for(int i=0; i<m_topology->getNbEdges(); ++i)
+    for(Size i=0; i<m_topology->getNbEdges(); ++i)
     {
         if( (int)m_topology->getTetrahedraAroundEdge(i).size() > StandardTetrahedralFEMForceField_nbMaxTetraPerEdge())
             StandardTetrahedralFEMForceField_nbMaxTetraPerEdge() = m_topology->getTetrahedraAroundEdge(i).size();
@@ -382,7 +382,7 @@ void StandardTetrahedralFEMForceField<CudaVec3dTypes>::initNeighbourhoodEdges()
 
     StandardTetrahedralFEMForceField_neighbourhoodEdges().resize((m_topology->getNbEdges())*StandardTetrahedralFEMForceField_nbMaxTetraPerEdge());
 
-    for(int i=0; i<m_topology->getNbEdges(); ++i)
+    for(Size i=0; i<m_topology->getNbEdges(); ++i)
     {
         for(int j=0; j<StandardTetrahedralFEMForceField_nbMaxTetraPerEdge(); ++j)
         {

@@ -32,12 +32,10 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 
-#include <SofaSimpleFem/TetrahedronFEMForceField.inl>
-
 #include <sofa/core/behavior/RotationFinder.h>
 
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Quat.h>
 
 #include <sofa/simulation/fwd.h>
 
@@ -226,9 +224,9 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         invM->data = new Real[nbRows * nbCols];
 
         // for the intial computation, the gravity has to be put at 0
-        const sofa::defaulttype::Vec3d gravity = this->getContext()->getGravity();
+        const sofa::type::Vec3d gravity = this->getContext()->getGravity();
 
-        const sofa::defaulttype::Vec3d gravity_zero(0.0,0.0,0.0);
+        const sofa::type::Vec3d gravity_zero(0.0,0.0,0.0);
         this->getContext()->setGravity(gravity_zero);
 
         sofa::component::odesolver::EulerImplicitSolver* eulerSolver;
@@ -239,22 +237,17 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         this->getContext()->get(cgLinearSolver);
         this->getContext()->get(linearSolver);
 
-        simulation::Node *solvernode = nullptr;
-
         if (eulerSolver && cgLinearSolver)
         {
             msg_info() << "use EulerImplicitSolver & CGLinearSolver" ;
-            solvernode = (simulation::Node*)eulerSolver->getContext();
         }
         else if (eulerSolver && linearSolver)
         {
             msg_info() << "use EulerImplicitSolver & LinearSolver";
-            solvernode = (simulation::Node*)eulerSolver->getContext();
         }
         else if(eulerSolver)
         {
             msg_info() << "use EulerImplicitSolver";
-            solvernode = (simulation::Node*)eulerSolver->getContext();
         }
         else
         {
@@ -803,56 +796,40 @@ void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::Visu
 
     vparams->drawTool()->saveLastState();
 
-    using sofa::component::forcefield::TetrahedronFEMForceField;
     using sofa::core::behavior::RotationFinder;
 
     // we draw the rotations associated to each node //
 
     simulation::Node *node = dynamic_cast< simulation::Node* >(this->getContext());
 
-    TetrahedronFEMForceField< DataTypes >* forceField = nullptr;
     RotationFinder< DataTypes > * rotationFinder = nullptr;
 
     if (node != nullptr)
     {
-        forceField = node->get< TetrahedronFEMForceField< DataTypes > > ();
-        if (forceField == nullptr)
+        rotationFinder = node->get< RotationFinder< DataTypes > > ();
+        if (rotationFinder == nullptr)
         {
-            rotationFinder = node->get< RotationFinder< DataTypes > > ();
-            if (rotationFinder == nullptr)
-            {
-                msg_warning() << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
-                return;
-            }
+            return;
         }
     }
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const auto& rotations = rotationFinder->getRotations();
     for (unsigned int i=0; i< x.size(); i++)
     {
-        Transformation Ri;
-        if (forceField != nullptr)
-        {
-            forceField->getRotation(Ri, i);
-        }
-        else // rotationFinder has been defined
-        {
-            Ri = rotationFinder->getRotations()[i];
-        }
-
-        sofa::defaulttype::Matrix3 RotMat;
+        sofa::type::Matrix3 RotMat;
 
         for (unsigned int a=0; a<3; a++)
         {
             for (unsigned int b=0; b<3; b++)
             {
-                RotMat[a][b] = Ri(a,b);
+                RotMat[a][b] = rotations[i](a,b);
             }
         }
 
-        sofa::defaulttype::Quat q;
+        sofa::type::Quat<SReal> q;
         q.fromMatrix(RotMat);
-        vparams->drawTool()->drawFrame(DataTypes::getCPos(x[i]), q, sofa::defaulttype::Vec3f(this->debugViewFrameScale.getValue(),this->debugViewFrameScale.getValue(),this->debugViewFrameScale.getValue()));
+        vparams->drawTool()->drawFrame(DataTypes::getCPos(x[i]), q, sofa::type::Vec3f(this->debugViewFrameScale.getValue(),this->debugViewFrameScale.getValue(),this->debugViewFrameScale.getValue()));
 
     }
 
@@ -863,7 +840,6 @@ void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::Visu
 template< class DataTypes >
 void PrecomputedConstraintCorrection< DataTypes >::rotateConstraints(bool back)
 {
-    using sofa::component::forcefield::TetrahedronFEMForceField;
     using sofa::core::behavior::RotationFinder;
 
     helper::WriteAccessor<Data<MatrixDeriv> > cData = *this->mstate->write(core::MatrixDerivId::constraintJacobian());
@@ -871,20 +847,15 @@ void PrecomputedConstraintCorrection< DataTypes >::rotateConstraints(bool back)
 
     simulation::Node *node = dynamic_cast< simulation::Node * >(this->getContext());
 
-    TetrahedronFEMForceField< DataTypes >* forceField = nullptr;
     RotationFinder< DataTypes >* rotationFinder = nullptr;
 
     if (node != nullptr)
     {
-        forceField = node->get< TetrahedronFEMForceField< DataTypes > > ();
-        if (forceField == nullptr)
+        rotationFinder = node->get< RotationFinder< DataTypes > > ();
+        if (rotationFinder == nullptr)
         {
-            rotationFinder = node->get< RotationFinder< DataTypes > > ();
-            if (rotationFinder == nullptr)
-            {
-                msg_warning() << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
-                return;
-            }
+            msg_warning() << "No rotation defined : only applicable for components implementing RotationFinder!";
+            return;
         }
     }
     else
@@ -896,6 +867,8 @@ void PrecomputedConstraintCorrection< DataTypes >::rotateConstraints(bool back)
     // on fait tourner les normales (en les ramenant dans le "pseudo" repere initial) //
     MatrixDerivRowIterator rowItEnd = c.end();
 
+    Transformation Ri;
+    const auto& rotations = rotationFinder->getRotations();
     for (MatrixDerivRowIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
     {
         MatrixDerivColIterator colItEnd = rowIt.end();
@@ -904,22 +877,15 @@ void PrecomputedConstraintCorrection< DataTypes >::rotateConstraints(bool back)
         {
             Deriv& n = colIt.val();
             const int localRowNodeIdx = colIt.index();
-            Transformation Ri;
 
-            if (forceField != nullptr)
-            {
-                forceField->getRotation(Ri, localRowNodeIdx);
-            }
-            else // rotationFinder has been defined
-            {
-                Ri = rotationFinder->getRotations()[localRowNodeIdx];
-            }
+            // rotationFinder has been defined
+            Ri = rotations[localRowNodeIdx];
 
             if(!back)
                 Ri.transpose();
 
             // on passe les normales du repere global au repere local
-            Deriv n_i = Ri * n;
+            const Deriv n_i = Ri * n;
             n.x() =  n_i.x();
             n.y() =  n_i.y();
             n.z() =  n_i.z();
@@ -935,20 +901,15 @@ void PrecomputedConstraintCorrection<DataTypes>::rotateResponse()
 
     using sofa::core::behavior::RotationFinder;
 
-    sofa::component::forcefield::TetrahedronFEMForceField<DataTypes>* forceField = nullptr;
     RotationFinder< DataTypes >* rotationFinder = nullptr;
 
     if (node != nullptr)
     {
-        forceField = node->get<component::forcefield::TetrahedronFEMForceField<DataTypes> > ();
-        if (forceField == nullptr)
+        rotationFinder = node->get< RotationFinder< DataTypes > > ();
+        if (rotationFinder == nullptr)
         {
-            rotationFinder = node->get< RotationFinder< DataTypes > > ();
-            if (rotationFinder == nullptr)
-            {
-                msg_warning() << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
-                return;
-            }
+            msg_warning() << "No rotation defined : only applicable for components implementing RotationFinder!";
+            return;
         }
     }
     else
@@ -959,20 +920,12 @@ void PrecomputedConstraintCorrection<DataTypes>::rotateResponse()
 
     helper::WriteAccessor<Data<VecDeriv> > dxData = *this->mstate->write(core::VecDerivId::dx());
     VecDeriv& dx = dxData.wref();
+    const auto& rotations = rotationFinder->getRotations();
+
     for(unsigned int j = 0; j < dx.size(); j++)
     {
-        Transformation Rj;
-        if (forceField != nullptr)
-        {
-            forceField->getRotation(Rj, j);
-        }
-        else // rotationFinder has been defined
-        {
-            Rj = rotationFinder->getRotations()[j];
-        }
         // on passe les deplacements du repere local au repere global
-        Deriv temp = Rj * dx[j];
-        dx[j] = temp;
+        dx[j] = rotations[j] * dx[j];
     }
 }
 
@@ -1081,9 +1034,9 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
 
     _sparseCompliance.resize(constraint_dofs.size() * nbConstraints);
 
-    std::list< int >::iterator dofsItEnd = constraint_dofs.end();
+    auto dofsItEnd = constraint_dofs.end();
 
-    for (std::list< int >::iterator dofsIt = constraint_dofs.begin(); dofsIt != dofsItEnd; ++dofsIt)
+    for (auto dofsIt = constraint_dofs.begin(); dofsIt != dofsItEnd; ++dofsIt)
     {
         int NodeIdx = (*dofsIt);
         _indexNodeSparseCompliance[NodeIdx] = it;
@@ -1191,7 +1144,7 @@ void PrecomputedConstraintCorrection<DataTypes>::addConstraintDisplacement(doubl
         int c = id_to_localIndex[i];
         double dc = d[i];
 
-        for (std::list<unsigned int>::iterator it = itBegin; it != itEnd; ++it)
+        for (auto it = itBegin; it != itEnd; ++it)
         {
             int id = localIndex_to_id[*it];
             dc += localW.element(c, *it) * constraint_force[id];

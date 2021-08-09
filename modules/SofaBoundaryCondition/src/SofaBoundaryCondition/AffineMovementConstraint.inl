@@ -24,34 +24,14 @@
 #include <sofa/simulation/fwd.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/BaseMatrix.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <iostream>
 #include <sofa/helper/cast.h>
-#include <sofa/helper/vector_algorithm.h>
+#include <sofa/type/vector_algorithm.h>
 
 #include <SofaBoundaryCondition/AffineMovementConstraint.h>
 
 namespace sofa::component::projectiveconstraintset
 {
-
-// Define TestFunction
-template< class DataTypes>
-bool AffineMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
-{
-    return fc != 0;
-}
-
-
-// Define RemovalFunction
-template< class DataTypes>
-void AffineMovementConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, core::objectmodel::Data<value_type>&)
-{
-    if (fc)
-    {
-        fc->removeConstraint(pointIndex);
-    }
-}
-
 
 template <class DataTypes>
 AffineMovementConstraint<DataTypes>::AffineMovementConstraint()
@@ -66,7 +46,6 @@ AffineMovementConstraint<DataTypes>::AffineMovementConstraint()
     , m_translation(  initData(&m_translation,"translation","translation applied to border points") )
     , m_drawConstrainedPoints(  initData(&m_drawConstrainedPoints,"drawConstrainedPoints","draw constrained points") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_pointHandler(nullptr)
 {
     if(!m_beginConstraintTime.isSet())
         m_beginConstraintTime = 0;
@@ -79,8 +58,7 @@ AffineMovementConstraint<DataTypes>::AffineMovementConstraint()
 template <class DataTypes>
 AffineMovementConstraint<DataTypes>::~AffineMovementConstraint()
 {
-    if (m_pointHandler)
-        delete m_pointHandler;
+
 }
 
 template <class DataTypes>
@@ -124,10 +102,8 @@ void AffineMovementConstraint<DataTypes>::init()
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";        
 
-        // Initialize functions and parameters
-        m_pointHandler = new FCPointHandler(this, &m_indices);
-        m_indices.createTopologyHandler(_topology, m_pointHandler);
-        m_indices.registerTopologicalData();
+        // Initialize topological changes support
+        m_indices.createTopologyHandler(_topology);
     }
     else
     {
@@ -328,7 +304,7 @@ void AffineMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
             point = DataTypes::getCPos(x[index]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, sofa::type::RGBAColor(1,0.5,0.5,1));
     }
 }
 

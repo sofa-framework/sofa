@@ -28,61 +28,13 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/vector_algorithm.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
+#include <sofa/type/vector_algorithm.h>
 
 namespace sofa::component::projectiveconstraintset
 {
 
 using sofa::helper::WriteAccessor;
-using sofa::defaulttype::Vec;
-using sofa::component::topology::PointSubsetData;
-using sofa::component::topology::TopologyDataHandler;
-
-
-/////////////////////////// DEFINITION OF FCPointHandler (INNER CLASS) /////////////////////////////
-template <class DataTypes>
-class FixedPlaneConstraint<DataTypes>::FCPointHandler :
-        public TopologyDataHandler<BaseMeshTopology::Point, SetIndexArray >
-{
-public:
-    typedef typename FixedPlaneConstraint<DataTypes>::SetIndexArray SetIndexArray;
-
-    FCPointHandler(FixedPlaneConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray>* _data)
-        : TopologyDataHandler<BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
-
-    void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
-
-    bool applyTestCreateFunction(Index /*index*/,
-                                 const helper::vector< Index > & /*ancestors*/,
-                                 const helper::vector< double > & /*coefs*/);
-protected:
-    FixedPlaneConstraint<DataTypes> *fc;
-};
-
-/// Define RemovalFunction
-template< class DataTypes>
-void FixedPlaneConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, value_type &)
-{
-    if (fc)
-    {
-        fc->removeConstraint((Index) pointIndex);
-    }
-}
-
-/// Define TestNewPointFunction
-template< class DataTypes>
-bool FixedPlaneConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const helper::vector<Index> &, const helper::vector<double> &)
-{
-    if (fc)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
+using sofa::type::Vec;
 
 /////////////////////////// DEFINITION OF FixedPlaneConstraint /////////////////////////////////////
 template <class DataTypes>
@@ -92,7 +44,6 @@ FixedPlaneConstraint<DataTypes>::FixedPlaneConstraint()
     , d_dmax( initData(&d_dmax,(Real)0,"dmax","Maximum plane distance from the origin") )
     , d_indices( initData(&d_indices,"indices","Indices of the fixed points"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_pointHandler(nullptr)
 {
     m_selectVerticesFromPlanes=false;   
 }
@@ -100,8 +51,7 @@ FixedPlaneConstraint<DataTypes>::FixedPlaneConstraint()
 template <class DataTypes>
 FixedPlaneConstraint<DataTypes>::~FixedPlaneConstraint()
 {
-    if (m_pointHandler)
-        delete m_pointHandler;
+
 }
 
 /// Matrix Integration interface
@@ -166,7 +116,7 @@ void FixedPlaneConstraint<DataTypes>::addConstraint(Index index)
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::removeConstraint(Index index)
 {
-    sofa::helper::removeValue(*d_indices.beginEdit(),(unsigned int)index);
+    sofa::type::removeValue(*d_indices.beginEdit(),(unsigned int)index);
     d_indices.endEdit();
 }
 
@@ -254,10 +204,8 @@ void FixedPlaneConstraint<DataTypes>::init()
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
         
-        /// Initialize functions and parameters
-        m_pointHandler = new FCPointHandler(this, &d_indices);
-        d_indices.createTopologyHandler(_topology, m_pointHandler);
-        d_indices.registerTopologicalData();
+        // Initialize topological changes support
+        d_indices.createTopologyHandler(_topology);
     }
     else
     {
@@ -287,13 +235,13 @@ void FixedPlaneConstraint<DataTypes>::draw(const VisualParams* vparams)
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
     vparams->drawTool()->disableLighting();
 
-    helper::vector<sofa::defaulttype::Vector3> points;
+    type::vector<sofa::type::Vector3> points;
     for(auto& index : d_indices.getValue())
     {
         points.push_back({x[index][0], x[index][1], x[index][2]});
     }
 
-    vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor{1,1.0,0.5,1});
+    vparams->drawTool()->drawPoints(points, 10, sofa::type::RGBAColor{1,1.0,0.5,1});
 }
 
 /// This function are there to provide kind of type translation to the vector one so we can
@@ -301,21 +249,21 @@ void FixedPlaneConstraint<DataTypes>::draw(const VisualParams* vparams)
 /// this solution is not really satisfactory but for the moment it does the job.
 /// A better solution would that all the used types are following the same iterface which
 /// requires to touch core sofa classes.
-sofa::defaulttype::Vec3d& getVec(sofa::defaulttype::Rigid3dTypes::Deriv& i){ return i.getVCenter(); }
-sofa::defaulttype::Vec3d& getVec(sofa::defaulttype::Rigid3dTypes::Coord& i){ return i.getCenter(); }
-const sofa::defaulttype::Vec3d& getVec(const sofa::defaulttype::Rigid3dTypes::Coord& i){ return i.getCenter(); }
-sofa::defaulttype::Vec3d& getVec(sofa::defaulttype::Vec3dTypes::Deriv& i){ return i; }
-const sofa::defaulttype::Vec3d& getVec(const sofa::defaulttype::Vec3dTypes::Deriv& i){ return i; }
-sofa::defaulttype::Vec6d& getVec(sofa::defaulttype::Vec6dTypes::Deriv& i){ return i; }
-const sofa::defaulttype::Vec6d& getVec(const sofa::defaulttype::Vec6dTypes::Deriv& i){ return i; }
+sofa::type::Vec3d& getVec(sofa::defaulttype::Rigid3dTypes::Deriv& i){ return i.getVCenter(); }
+sofa::type::Vec3d& getVec(sofa::defaulttype::Rigid3dTypes::Coord& i){ return i.getCenter(); }
+const sofa::type::Vec3d& getVec(const sofa::defaulttype::Rigid3dTypes::Coord& i){ return i.getCenter(); }
+sofa::type::Vec3d& getVec(sofa::defaulttype::Vec3dTypes::Deriv& i){ return i; }
+const sofa::type::Vec3d& getVec(const sofa::defaulttype::Vec3dTypes::Deriv& i){ return i; }
+sofa::type::Vec6d& getVec(sofa::defaulttype::Vec6dTypes::Deriv& i){ return i; }
+const sofa::type::Vec6d& getVec(const sofa::defaulttype::Vec6dTypes::Deriv& i){ return i; }
 
-sofa::defaulttype::Vec3f& getVec(sofa::defaulttype::Rigid3fTypes::Deriv& i){ return i.getVCenter(); }
-sofa::defaulttype::Vec3f& getVec(sofa::defaulttype::Rigid3fTypes::Coord& i){ return i.getCenter(); }
-const sofa::defaulttype::Vec3f& getVec(const sofa::defaulttype::Rigid3fTypes::Coord& i){ return i.getCenter(); }
-sofa::defaulttype::Vec3f& getVec(sofa::defaulttype::Vec3fTypes::Deriv& i){ return i; }
-const sofa::defaulttype::Vec3f& getVec(const sofa::defaulttype::Vec3fTypes::Deriv& i){ return i; }
-sofa::defaulttype::Vec6f& getVec(sofa::defaulttype::Vec6fTypes::Deriv& i){ return i; }
-const sofa::defaulttype::Vec6f& getVec(const sofa::defaulttype::Vec6fTypes::Deriv& i){ return i; }
+sofa::type::Vec3f& getVec(sofa::defaulttype::Rigid3fTypes::Deriv& i){ return i.getVCenter(); }
+sofa::type::Vec3f& getVec(sofa::defaulttype::Rigid3fTypes::Coord& i){ return i.getCenter(); }
+const sofa::type::Vec3f& getVec(const sofa::defaulttype::Rigid3fTypes::Coord& i){ return i.getCenter(); }
+sofa::type::Vec3f& getVec(sofa::defaulttype::Vec3fTypes::Deriv& i){ return i; }
+const sofa::type::Vec3f& getVec(const sofa::defaulttype::Vec3fTypes::Deriv& i){ return i; }
+sofa::type::Vec6f& getVec(sofa::defaulttype::Vec6fTypes::Deriv& i){ return i; }
+const sofa::type::Vec6f& getVec(const sofa::defaulttype::Vec6fTypes::Deriv& i){ return i; }
 
 template<class DataTypes>
 bool FixedPlaneConstraint<DataTypes>::isPointInPlane(Coord p) const

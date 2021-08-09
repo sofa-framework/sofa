@@ -33,13 +33,13 @@
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/Quat.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/types/Material.h>
+#include <sofa/type/Material.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sstream>
@@ -48,12 +48,13 @@
 
 namespace sofa::component::visualmodel
 {
-using sofa::helper::types::RGBAColor;
-using sofa::helper::types::Material;
-using sofa::helper::types::PrimitiveGroup;
+using sofa::type::RGBAColor;
+using sofa::type::Material;
+using sofa::type::PrimitiveGroup;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
-using helper::vector;
+using type::vector;
 
 Vec3State::Vec3State()
     : m_positions(initData(&m_positions, "position", "Vertices coordinates"))
@@ -234,6 +235,14 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
 
     // add one identity matrix
     xforms.resize(1);
+
+    addUpdateCallback("updateTextures", { &texturename },
+        [&](const core::DataTracker& tracker) -> sofa::core::objectmodel::ComponentState
+    {
+        SOFA_UNUSED(tracker);
+        m_textureChanged = true;
+        return sofa::core::objectmodel::ComponentState::Loading;
+    }, { &d_componentState });
 }
 
 VisualModelImpl::~VisualModelImpl()
@@ -243,8 +252,8 @@ VisualModelImpl::~VisualModelImpl()
 bool VisualModelImpl::hasTransparent()
 {
     const Material& material = this->material.getValue();
-    helper::ReadAccessor< Data< helper::vector<FaceGroup> > > groups = this->groups;
-    helper::ReadAccessor< Data< helper::vector<Material> > > materials = this->materials;
+    helper::ReadAccessor< Data< type::vector<FaceGroup> > > groups = this->groups;
+    helper::ReadAccessor< Data< type::vector<Material> > > materials = this->materials;
     if (groups.empty())
         return (material.useDiffuse && material.diffuse[3] < 1.0);
     else
@@ -262,8 +271,8 @@ bool VisualModelImpl::hasTransparent()
 bool VisualModelImpl::hasOpaque()
 {
     const Material& material = this->material.getValue();
-    helper::ReadAccessor< Data< helper::vector<FaceGroup> > > groups = this->groups;
-    helper::ReadAccessor< Data< helper::vector<Material> > > materials = this->materials;
+    helper::ReadAccessor< Data< type::vector<FaceGroup> > > groups = this->groups;
+    helper::ReadAccessor< Data< type::vector<Material> > > materials = this->materials;
     if (groups.empty())
         return !(material.useDiffuse && material.diffuse[3] < 1.0);
     else
@@ -280,6 +289,18 @@ bool VisualModelImpl::hasOpaque()
 
 void VisualModelImpl::drawVisual(const core::visual::VisualParams* vparams)
 {
+    if (d_componentState.getValue() == sofa::core::objectmodel::ComponentState::Loading)
+    {
+        if (m_textureChanged)
+        {
+            deleteTextures();
+            m_textureChanged = false;
+        }
+        init();
+        initVisual();
+        updateBuffers();
+        d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+    }
     //Update external buffers (like VBO) if the mesh change AFTER doing the updateVisual() process
     if(m_vertices2.isDirty())
     {
@@ -321,8 +342,8 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     if (!objLoader.getGroups().empty())
     {
         // Get informations about the multiple materials
-        helper::WriteAccessor< Data< helper::vector<Material> > > materials = this->materials;
-        helper::WriteAccessor< Data< helper::vector<FaceGroup> > > groups = this->groups;
+        helper::WriteAccessor< Data< type::vector<Material> > > materials = this->materials;
+        helper::WriteAccessor< Data< type::vector<FaceGroup> > > groups = this->groups;
         materials.resize(objLoader.getMaterials().size());
         for (std::size_t i=0; i<materials.size(); ++i)
             materials[i] = objLoader.getMaterials()[i];
@@ -330,8 +351,8 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         // compute the edge / triangle / quad index corresponding to each facet
         // convert the groups info
         enum { NBE = 0, NBT = 1, NBQ = 2 };
-        helper::fixed_array<visual_index_type, 3> nbf{ 0,0,0 };
-        helper::vector< helper::fixed_array<visual_index_type, 3> > facet2tq;
+        type::fixed_array<visual_index_type, 3> nbf{ 0,0,0 };
+        type::vector< type::fixed_array<visual_index_type, 3> > facet2tq;
         facet2tq.resize(facetsImport.size()+1);
         for (std::size_t i = 0; i < facetsImport.size(); i++)
         {
@@ -407,7 +428,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     VecDeriv& vnormals = *(m_vnormals.beginEdit());
     VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
     auto& vertPosIdx = (*m_vertPosIdx.beginEdit());
-    auto& vertNormIdx = (*m_vertNormIdx.beginEdit());;
+    auto& vertNormIdx = (*m_vertNormIdx.beginEdit());
 
     positions.resize(nbVIn);
 
@@ -686,11 +707,11 @@ void VisualModelImpl::applyTranslation(const SReal dx, const SReal dy, const SRe
 
 void VisualModelImpl::applyRotation(const SReal rx, const SReal ry, const SReal rz)
 {
-    Quaternion q = helper::Quater<SReal>::createQuaterFromEuler( Vec<3,SReal>(rx,ry,rz)*M_PI/180.0);
+    auto q = type::Quat<SReal>::createQuaterFromEuler( Vec<3,SReal>(rx,ry,rz)*M_PI/180.0);
     applyRotation(q);
 }
 
-void VisualModelImpl::applyRotation(const Quat q)
+void VisualModelImpl::applyRotation(const Quat<SReal> q)
 {
     Data< VecCoord >* d_x = this->write(core::VecCoordId::position());
     VecCoord &x = *d_x->beginEdit();
@@ -785,8 +806,8 @@ public:
         : sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point, VecCoord >(data), obj(obj), algo(algo) {}
 
     void applyCreateFunction(Index /*pointIndex*/, Coord& dest, const sofa::core::topology::Point &,
-                             const sofa::helper::vector< Index > &ancestors,
-                             const sofa::helper::vector< double > &coefs)
+                             const sofa::type::vector< Index > &ancestors,
+                             const sofa::type::vector< double > &coefs)
     {
         const VecCoord& x = this->m_topologyData->getValue();
         if (!ancestors.empty())
@@ -827,7 +848,6 @@ template<class VecType>
 void VisualModelImpl::addTopoHandler(topology::PointData<VecType>* data, int algo)
 {
     data->createTopologyHandler(m_topology, new VisualModelPointHandler<VecType>(this, data, algo));
-    data->registerTopologicalData();
 }
 
 void VisualModelImpl::init()
@@ -851,7 +871,7 @@ void VisualModelImpl::init()
         }
         helper::WriteAccessor<Data<VecCoord>> vIn = m_positions;
         helper::ReadAccessor<Data<VecCoord>> vOut = m_vertices2;
-        helper::ReadAccessor<Data<helper::vector<visual_index_type>>> vertPosIdx = m_vertPosIdx;
+        helper::ReadAccessor<Data<type::vector<visual_index_type>>> vertPosIdx = m_vertPosIdx;
         std::size_t nbVIn = 0;
         for (std::size_t i = 0; i < vertPosIdx.size(); ++i)
         {
@@ -912,7 +932,7 @@ void VisualModelImpl::computeNormals()
 
     const VecVisualTriangle& triangles = m_triangles.getValue();
     const VecVisualQuad& quads = m_quads.getValue();
-    const helper::vector<visual_index_type> &vertNormIdx = m_vertNormIdx.getValue();
+    const type::vector<visual_index_type> &vertNormIdx = m_vertNormIdx.getValue();
 
     if (vertNormIdx.empty())
     {
@@ -1119,8 +1139,8 @@ void VisualModelImpl::computeTangents()
         Coord& t = tangents[i];
         Coord& b = bitangents[i];
 
-        b = sofa::defaulttype::cross(n, t.normalized());
-        t = sofa::defaulttype::cross(b, n);
+        b = sofa::type::cross(n, t.normalized());
+        t = sofa::type::cross(b, n);
     }
     m_vtangents.endEdit();
     m_vbitangents.endEdit();
@@ -1141,7 +1161,7 @@ void VisualModelImpl::computeBBox(const core::ExecParams*, bool)
             if (p[c] < minBBox[c]) minBBox[c] = p[c];
         }
     }
-    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<SReal>(minBBox,maxBBox));
 }
 
 
@@ -1315,7 +1335,7 @@ void VisualModelImpl::updateVisual()
 
 void VisualModelImpl::computePositions()
 {
-    const helper::vector<visual_index_type> &vertPosIdx = m_vertPosIdx.getValue();
+    const type::vector<visual_index_type> &vertPosIdx = m_vertPosIdx.getValue();
 
     if (!vertPosIdx.empty())
     {
@@ -1335,7 +1355,7 @@ void VisualModelImpl::computeMesh()
     using sofa::component::topology::SparseGridTopology;
     using sofa::core::behavior::BaseMechanicalState;
 
-//	sofa::helper::vector<Coord> bezierControlPointsArray;
+//	sofa::type::vector<Coord> bezierControlPointsArray;
 
     if ((m_positions.getValue()).empty() && (m_vertices2.getValue()).empty())
     {
@@ -1488,7 +1508,6 @@ void VisualModelImpl::handleTopologyChange()
 
             const sofa::core::topology::QuadsAdded *qa = static_cast< const sofa::core::topology::QuadsAdded * >( *itBegin );
 
-            VisualQuad q;
             const std::size_t nbAddedQuads = qa->getNbAddedQuads();
             const std::size_t nbQuaduads = quads.size();
 
@@ -1599,7 +1618,7 @@ void VisualModelImpl::handleTopologyChange()
 
                 const auto& tab = ( static_cast< const sofa::core::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
-                sofa::helper::vector<Index> lastIndexVec;
+                sofa::type::vector<Index> lastIndexVec;
 
                 for(Size i_init = 0; i_init < tab.size(); ++i_init)
                 {
@@ -1701,7 +1720,7 @@ void VisualModelImpl::handleTopologyChange()
 
                 const auto& tab = ( static_cast< const sofa::core::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
-                sofa::helper::vector<Index> lastIndexVec;
+                sofa::type::vector<Index> lastIndexVec;
                 for(Index i_init = 0; i_init < tab.size(); ++i_init)
                 {
                     lastIndexVec.push_back(last - i_init);
@@ -1838,7 +1857,7 @@ void VisualModelImpl::handleTopologyChange()
         default:
             // Ignore events that are not Triangle  related.
             break;
-        }; // switch( changeType )
+        } // switch( changeType )
 
         ++itBegin;
     } // while( changeIt != last; )
@@ -1889,8 +1908,8 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
     const VecVisualTriangle& triangles = m_triangles.getValue();
     const VecVisualQuad& quads = m_quads.getValue();
 
-    const helper::vector<visual_index_type> &vertPosIdx = m_vertPosIdx.getValue();
-    const helper::vector<visual_index_type> &vertNormIdx = m_vertNormIdx.getValue();
+    const type::vector<visual_index_type> &vertPosIdx = m_vertPosIdx.getValue();
+    const type::vector<visual_index_type> &vertNormIdx = m_vertNormIdx.getValue();
 
     auto nbv = Size(x.size());
 

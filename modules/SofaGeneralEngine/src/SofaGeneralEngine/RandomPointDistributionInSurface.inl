@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaGeneralEngine/RandomPointDistributionInSurface.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <cstdlib>
 #include <ctime>
 #include <climits>
@@ -135,7 +135,7 @@ void RandomPointDistributionInSurface<DataTypes>::generateRandomDirections()
 }
 
 template <class DataTypes>
-defaulttype::Vec<3,typename DataTypes::Real> RandomPointDistributionInSurface<DataTypes>::generateRandomPoint(const Vec3 &minBBox, const Vec3 &maxBBox)
+type::Vec<3,typename DataTypes::Real> RandomPointDistributionInSurface<DataTypes>::generateRandomPoint(const Vec3 &minBBox, const Vec3 &maxBBox)
 {
     Vec3 r;
     for (unsigned int i= 0 ; i<3 ; i++)
@@ -151,7 +151,7 @@ bool RandomPointDistributionInSurface<DataTypes>::isInside(Coord p)
     using sofa::core::topology::BaseMeshTopology;
 
     const VecCoord& vertices = f_vertices.getValue();
-    const helper::vector<BaseMeshTopology::Triangle>& triangles = f_triangles.getValue();
+    const type::vector<BaseMeshTopology::Triangle>& triangles = f_triangles.getValue();
 
     unsigned int numberOfInsideTest=0;
     collision::TriangleOctree::traceResult result;
@@ -194,7 +194,7 @@ template <class DataTypes>
 void RandomPointDistributionInSurface<DataTypes>::doUpdate()
 {
     const VecCoord& vertices = f_vertices.getValue();
-    const helper::vector<sofa::core::topology::BaseMeshTopology::Triangle>& triangles = f_triangles.getValue();
+    const type::vector<sofa::core::topology::BaseMeshTopology::Triangle>& triangles = f_triangles.getValue();
 
     if (triangles.size() <= 1 ||  vertices.size() <= 1)
     {
@@ -208,7 +208,7 @@ void RandomPointDistributionInSurface<DataTypes>::doUpdate()
     outPoints->clear();
 
 
-    helper::vector<defaulttype::Vector3> verticesD;
+    type::vector<type::Vector3> verticesD;
     for (unsigned int i=0 ; i<vertices.size() ; i++)
         verticesD.push_back(vertices[i]);
 
@@ -258,12 +258,12 @@ void RandomPointDistributionInSurface<DataTypes>::draw(const core::visual::Visua
     const VecCoord& out = f_outPoints.getValue();
     vparams->drawTool()->disableLighting();
 
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::Vector3> vertices;
 
     for (unsigned int i=0 ; i<in.size() ; i++)
         vertices.push_back(in[i]);
 
-    vparams->drawTool()->drawPoints(vertices, 5.0, sofa::helper::types::RGBAColor::red());
+    vparams->drawTool()->drawPoints(vertices, 5.0, sofa::type::RGBAColor::red());
     vertices.clear();
 
     if (drawOutputPoints.getValue())
@@ -271,7 +271,7 @@ void RandomPointDistributionInSurface<DataTypes>::draw(const core::visual::Visua
         for (unsigned int i=0 ; i<out.size() ; i++)
             vertices.push_back(out[i]);
 
-        vparams->drawTool()->drawPoints(vertices, 5.0, sofa::helper::types::RGBAColor::blue());
+        vparams->drawTool()->drawPoints(vertices, 5.0, sofa::type::RGBAColor::blue());
     }
 
     vparams->drawTool()->restoreLastState();

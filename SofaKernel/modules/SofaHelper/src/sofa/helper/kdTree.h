@@ -26,7 +26,7 @@
 
 #include <sofa/helper/config.h>
 #include <sofa/type/Vec.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 
 namespace sofa::helper
@@ -49,7 +49,7 @@ class kdTree
 public:
     typedef typename Coord::value_type Real;
     enum { dim=Coord::total_size };
-    typedef helper::vector<Coord> VecCoord;
+    typedef type::vector<Coord> VecCoord;
 
     typedef std::pair<Real,unsigned int> distanceToPoint;
     typedef std::set<distanceToPoint> distanceSet;
@@ -65,7 +65,7 @@ public:
 
     bool isEmpty() const {return tree.size()==0;}
     void build(const VecCoord& positions);       ///< update tree (to be used whenever positions have changed)
-    void build(const VecCoord& positions, const helper::vector<unsigned int> &ROI);       ///< update tree based on positions subset (to be used whenever points p have changed)
+    void build(const VecCoord& positions, const type::vector<unsigned int> &ROI);       ///< update tree based on positions subset (to be used whenever points p have changed)
     void getNClosest(distanceSet &cl, const Coord &x, const VecCoord& positions, const unsigned int n) const;  ///< get an ordered set of n distance/index pairs between positions and x
     unsigned int getClosest(const Coord &x, const VecCoord& positions) const; ///< get the index of the closest point between positions and x
     bool getNClosestCached(distanceSet &cl, distanceToPoint &cacheThresh_max, distanceToPoint &cacheThresh_min, Coord &previous_x, const Coord &x, const VecCoord& positions, const unsigned int n) const;  ///< use distance caching to accelerate closest point computation when positions are fixed (see simon96 thesis)
@@ -80,7 +80,7 @@ public:
 protected :
     void print(const unsigned int index);
 
-    helper::vector< TREENODE > tree; unsigned int firstNode;
+    type::vector< TREENODE > tree; unsigned int firstNode;
 
     unsigned int build(UIlist &list, unsigned char direction, const VecCoord& positions); // recursive function to build the kdtree
     void closest(distanceSet &cl, const Coord &x, const unsigned int &currentnode, const VecCoord& positions, unsigned N) const;     // recursive function to get closest points

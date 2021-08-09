@@ -152,7 +152,7 @@ void QSofaListView::modifyUnlock(void* Id)
 }
 
 /// Traverse the item tree and retrive the item that are expanded. The path of the node
-/// that are expanded are stored in the the pathes std::vector::std::string>.
+/// that are expanded are stored in the pathes std::vector::std::string>.
 void QSofaListView::getExpandedNodes(QTreeWidgetItem* item, std::vector<std::string>& pathes)
 {
     if(!item)

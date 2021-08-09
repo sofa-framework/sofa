@@ -64,7 +64,7 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
     m_root = createRootNode(m_simu, "root");
    
     // set scene variables
-    m_root->setGravity(sofa::defaulttype::Vector3(0.0, 0.0, -0.9));
+    m_root->setGravity(sofa::type::Vector3(0.0, 0.0, -0.9));
     m_root->setDt(0.01);
     createObject(m_root, "RequiredPlugin", { { "name","SofaGeneralSimpleFem" } });
     createObject(m_root, "RequiredPlugin", { { "name","SofaTopologyMapping" } });
@@ -173,13 +173,13 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
         { "output", "@Container" }
         });
 
-    createObject(nodeSurface, "TriangleSet", {
+    createObject(nodeSurface, "TriangleCollisionModel", {
         { "name", "Triangle Model" },
         { "tags", "CarvingSurface" },
         { "group", "0" }
         });
 
-    createObject(nodeSurface, "PointSet", {
+    createObject(nodeSurface, "PointCollisionModel", {
         { "name", "Point Model" },
         { "tags", "CarvingSurface" },
         { "group", "0" }

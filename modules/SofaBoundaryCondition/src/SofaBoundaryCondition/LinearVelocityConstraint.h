@@ -28,8 +28,8 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
-#include <sofa/helper/vector.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <sofa/type/vector.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
@@ -58,14 +58,14 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef helper::vector<Index> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef type::vector<Index> SetIndexArray;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
 
 public :
     /// indices of the DOFs the constraint is applied to
     SetIndex d_indices;
     /// the key frames when the motion is defined by the user
-    Data<helper::vector<Real> > d_keyTimes;
+    Data<type::vector<Real> > d_keyTimes;
     /// the motions corresponding to the key frames
     Data<VecDeriv > d_keyVelocities;
     /// the coordinates on which to applay velocities
@@ -111,26 +111,6 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    class FCPointHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
-    {
-    public:
-        typedef typename LinearVelocityConstraint<DataTypes>::SetIndexArray SetIndexArray;
-
-        FCPointHandler(LinearVelocityConstraint<DataTypes>* _lc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
-            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), lc(_lc) {}
-
-
-
-        void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
-
-
-        bool applyTestCreateFunction(Index /*index*/,
-                const sofa::helper::vector< Index > & /*ancestors*/,
-                const sofa::helper::vector< double > & /*coefs*/);
-    protected:
-        LinearVelocityConstraint<DataTypes> *lc;
-    };
-
 private:
 
     /// to keep the time corresponding to the key times
@@ -141,9 +121,6 @@ private:
 
     /// find previous and next time keys
     void findKeyTimes();
-
-    /// Handler for subset Data
-    FCPointHandler* m_pointHandler;
 };
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARVELOCITYCONSTRAINT_CPP)

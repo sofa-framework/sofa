@@ -24,29 +24,11 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBoundaryCondition/FixedTranslationConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/types/RGBAColor.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/helper/vector_algorithm.h>
+#include <sofa/type/RGBAColor.h>
+#include <sofa/type/vector_algorithm.h>
 
 namespace sofa::component::projectiveconstraintset
 {
-
-// Define TestNewPointFunction
-template< class DataTypes>
-bool FixedTranslationConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index, const sofa::helper::vector<Index> &, const sofa::helper::vector<double> &)
-{
-    return fc != 0;
-}
-
-// Define RemovalFunction
-template< class DataTypes>
-void FixedTranslationConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, value_type &)
-{
-    if (fc)
-    {
-        fc->removeIndex((Index) pointIndex);
-    }
-}
 
 template< class DataTypes>
 FixedTranslationConstraint<DataTypes>::FixedTranslationConstraint()
@@ -56,7 +38,6 @@ FixedTranslationConstraint<DataTypes>::FixedTranslationConstraint()
     , _drawSize( initData(&_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , f_coordinates( initData(&f_coordinates,"coordinates","Coordinates of the fixed points") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_pointHandler(nullptr)
 {
     // default to indice 0
     f_indices.beginEdit()->push_back(0);
@@ -67,8 +48,7 @@ FixedTranslationConstraint<DataTypes>::FixedTranslationConstraint()
 template <class DataTypes>
 FixedTranslationConstraint<DataTypes>::~FixedTranslationConstraint()
 {
-    if (m_pointHandler)
-        delete m_pointHandler;
+
 }
 
 template <class DataTypes>
@@ -88,7 +68,7 @@ void FixedTranslationConstraint<DataTypes>::addIndex(Index index)
 template <class DataTypes>
 void FixedTranslationConstraint<DataTypes>::removeIndex(Index index)
 {
-    sofa::helper::removeValue(*f_indices.beginEdit(),index);
+    sofa::type::removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
 }
 
@@ -110,13 +90,9 @@ void FixedTranslationConstraint<DataTypes>::init()
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-        // Initialize functions and parameters
-        m_pointHandler = new FCPointHandler(this, &f_indices);
-        f_indices.createTopologyHandler(_topology, m_pointHandler);
-        f_indices.registerTopologicalData();
-
+        // Initialize topological changes support
+        f_indices.createTopologyHandler(_topology);
         f_coordinates.createTopologyHandler(_topology);
-        f_coordinates.registerTopologicalData();
     }
     else
     {
@@ -132,7 +108,7 @@ static inline void clearPos(defaulttype::RigidDeriv<N,T>& v)
 }
 
 template<class T>
-static inline void clearPos(defaulttype::Vec<6,T>& v)
+static inline void clearPos(type::Vec<6,T>& v)
 {
     for (unsigned int i=0; i<3; ++i)
         v[i] = 0;
@@ -206,14 +182,14 @@ void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParam
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
 
-    std::vector<sofa::defaulttype::Vector3> vertices;
-    sofa::helper::types::RGBAColor color(1, 0.5, 0.5, 1);
+    std::vector<sofa::type::Vector3> vertices;
+    sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
 
     if (f_fixAll.getValue() == true)
     {
         for (unsigned i = 0; i < x.size(); i++)
         {
-            sofa::defaulttype::Vector3 v;
+            sofa::type::Vector3 v;
             const typename DataTypes::CPos& cpos = DataTypes::getCPos(x[i]);
             for(Size j=0 ; j<cpos.size() && j<3; j++)
                 v[j] = cpos[j];
@@ -225,7 +201,7 @@ void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParam
     {
         for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            sofa::defaulttype::Vector3 v;
+            sofa::type::Vector3 v;
             const typename DataTypes::CPos& cpos = DataTypes::getCPos(x[*it]);
             for(Size j=0 ; j<cpos.size() && j<3; j++)
                 v[j] = cpos[j];

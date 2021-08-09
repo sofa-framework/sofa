@@ -119,7 +119,7 @@ void OBBCollisionModel<DataTypes>::computeBoundingTree(int maxDepth){
                     if(minElem[jj] > vs[j][jj])
                         minElem[jj] = vs[j][jj];
                     else if(maxElem[jj] < vs[j][jj])
-                        maxElem[jj] = vs[j][jj];;
+                        maxElem[jj] = vs[j][jj];
                 }
             }
 
@@ -138,12 +138,13 @@ void OBBCollisionModel<DataTypes>::computeBoundingTree(int maxDepth){
 template<class DataTypes>
 void OBBCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vparams, Index index){
 
+    using namespace sofa::type;
     using namespace sofa::defaulttype;
 
     std::vector<Coord> p;
     vertices(index,p);
 
-    sofa::helper::types::RGBAColor col4f(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
+    sofa::type::RGBAColor col4f(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
 
     std::vector<Vector3> n;
     n.push_back(axis(index,1));
@@ -449,7 +450,7 @@ void OBBCollisionModel<DataTypes>::computeBBox(const core::ExecParams*, bool onl
         }
     }
 
-    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
 
 }
 

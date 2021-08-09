@@ -25,8 +25,8 @@
 #include <sofa/core/fwd.h>
 #include <sofa/core/BaseState.h>
 #include <sofa/core/MultiVecId.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Quat.h>
 #include <sofa/helper/StateMask.h>
 #include <sofa/defaulttype/fwd.h> /// For BaseMatrix
 
@@ -133,14 +133,18 @@ public:
     /// \li v = a
     /// \li v = a + b
     /// \li v = b * f
-    virtual void vOp(const ExecParams* params, VecId v, ConstVecId a = ConstVecId::null(), ConstVecId b = ConstVecId::null(), SReal f = 1.0 ) = 0;
+    virtual void vOp(const ExecParams* params, VecId v,
+                     ConstVecId a = ConstVecId::null(),
+                     ConstVecId b = ConstVecId::null(),
+                     SReal f = 1.0 ) = 0;
+
     /// Data structure describing a set of linear operation on vectors
     /// \see vMultiOp
-    class VMultiOpEntry : public std::pair< MultiVecId, helper::vector< std::pair< ConstMultiVecId, SReal > > >
+    class VMultiOpEntry : public std::pair< MultiVecId, type::vector< std::pair< ConstMultiVecId, SReal > > >
     {
     public:
         typedef std::pair< ConstMultiVecId, SReal > Fact;
-        typedef helper::vector< Fact > VecFact;
+        typedef type::vector< Fact > VecFact;
         typedef std::pair< MultiVecId, VecFact > Inherit;
         VMultiOpEntry() : Inherit(MultiVecId::null(), VecFact()) {}
         VMultiOpEntry(MultiVecId v) : Inherit(v, VecFact()) {}
@@ -152,7 +156,7 @@ public:
         { this->second.push_back(Fact(a, af));  this->second.push_back(Fact(b, bf)); }
     };
 
-    typedef helper::vector< VMultiOpEntry > VMultiOp;
+    typedef type::vector< VMultiOpEntry > VMultiOp;
 
     /// \brief Perform a sequence of linear vector accumulation operation $r_i = sum_j (v_j*f_{ij})$
     ///
@@ -221,7 +225,7 @@ public:
     virtual void getConstraintJacobian(const ConstraintParams* params, sofa::defaulttype::BaseMatrix* J,unsigned int & off) = 0;
 
     /// fill the jacobian matrix (of the constraints) with identity blocks on the provided list of nodes(dofs)
-    virtual void buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID) = 0;
+    virtual void buildIdentityBlocksInJacobian(const sofa::type::vector<unsigned int>& list_n, core::MatrixDerivId &mID) = 0;
 
     class ConstraintBlock
     {
@@ -281,12 +285,12 @@ public:
     virtual void applyRotation (const SReal /*rx*/, const SReal /*ry*/, const SReal /*rz*/) {}
 
     /// Rotate the current state
-    virtual void applyRotation(const defaulttype::Quat q)=0;
+    virtual void applyRotation(const type::Quat<SReal> q)=0;
 
     /// Scale the current state
     virtual void applyScale(const SReal /*sx*/,const SReal /*sy*/,const SReal /*sz*/)=0;
 
-    virtual defaulttype::Vector3 getScale() const { return defaulttype::Vector3(1.0,1.0,1.0); }
+    virtual type::Vector3 getScale() const { return type::Vector3(1.0,1.0,1.0); }
 
     virtual bool addBBox(SReal* /*minBBox*/, SReal* /*maxBBox*/)
     {

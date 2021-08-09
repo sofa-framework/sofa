@@ -37,12 +37,12 @@ DAGNodeMultiMappingElement::DAGNodeMultiMappingElement(const std::string &name,
 
 void DAGNodeMultiMappingElement::updateSceneGraph(
     sofa::core::BaseMapping* multiMapping,
-    const helper::vector<simulation::Node*>& /*ancestorInputs*/,
-    helper::vector<simulation::Node*>& otherInputs,
-    helper::vector<simulation::Node*>& /*outputs*/)
+    const type::vector<simulation::Node*>& /*ancestorInputs*/,
+    type::vector<simulation::Node*>& otherInputs,
+    type::vector<simulation::Node*>& /*outputs*/)
 {
 
-    helper::vector<simulation::Node*>::const_iterator it;
+    type::vector<simulation::Node*>::const_iterator it;
     for( it = otherInputs.begin(); it != otherInputs.end(); ++it)
     {
         msg_error(multiMapping) << "Node: " << (*it)->getName() << " does not belong to "
@@ -55,7 +55,7 @@ helper::Creator<sofa::simulation::xml::BaseElement::NodeFactory, DAGNodeMultiMap
 
 const char* DAGNodeMultiMappingElement::getClass() const
 {
-    return DAGNodeMultiMappingClass.c_str();
+    return DAGNodeMultiMappingClass.getKey().c_str();
 }
 
 

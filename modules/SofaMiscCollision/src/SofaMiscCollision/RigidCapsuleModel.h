@@ -79,6 +79,7 @@ public:
 
     bool shareSameVertex(const TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> > & other)const;
 };
+using RigidCapsule = TCapsule<sofa::defaulttype::Rigid3Types>;
 
 
 /**
@@ -108,7 +109,7 @@ protected:
     Data<Real> d_default_radius; ///< The default radius
     Data<Real> d_default_height; ///< The default height
 
-    sofa::helper::vector<std::pair<int,int> > _capsule_points;
+    sofa::type::vector<std::pair<int,int> > _capsule_points;
 
     CapsuleCollisionModel();
     CapsuleCollisionModel(core::behavior::MechanicalState<DataTypes>* mstate );
@@ -141,7 +142,7 @@ public:
     //Returns the point1-point2 normalized vector
     Coord axis(Index index)const;
 
-    const sofa::defaulttype::Quaternion orientation(Index index)const;
+    const sofa::type::Quat<SReal> orientation(Index index)const;
 
     Real height(Index index)const;
 
@@ -180,17 +181,11 @@ inline TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::TCapsule(ParentMod
 template<class MyReal>
 inline TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::TCapsule(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<ParentModel>(static_cast<ParentModel*>(i.getCollisionModel()), i.getIndex())
-{
-}
+{}
 
-using RigidCapsuleModel [[deprecated("The RigidCapsuleModel is now deprecated, please use CapsuleCollisionModel<sofa::defaulttype::Rigid3Types> instead. Compatibility stops at v20.06")]] = CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>;
-using RigidCapsuleCollisionModel  [[deprecated("The RigidCapsuleCollisionModel is now deprecated, please use CapsuleCollisionModel<sofa::defaulttype::Rigid3Types> instead. Compatibility stops at v20.06")]] = CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>;
-using RigidCapsule = TCapsule<sofa::defaulttype::Rigid3Types>;
-
-#if  !defined(SOFA_COMPONENT_COLLISION_RIGIDCAPSULECOLLISIONMODEL_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_RIGIDCAPSULECOLLISIONMODEL_CPP)
 extern template class SOFA_MISC_COLLISION_API TCapsule<defaulttype::Rigid3Types>;
 extern template class SOFA_MISC_COLLISION_API CapsuleCollisionModel<defaulttype::Rigid3Types>;
-
 #endif
 
 } // namespace sofa::component::collision

@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaBaseCollision/config.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa::component::collision
 {
@@ -30,7 +30,7 @@ namespace sofa::component::collision
 template <class Real>
 class Intersector{
 public:
-    typedef sofa::defaulttype::Vec<3,Real> Vec3;
+    typedef sofa::type::Vec<3,Real> Vec3;
 
     inline const Vec3 & separatingAxis()const{
         return _sep_axis;

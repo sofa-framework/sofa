@@ -76,9 +76,9 @@ public:
     void init() override;
 
     
-    virtual helper::vector< core::BaseState* > getModels() override
+    virtual type::vector< core::BaseState* > getModels() override
     {
-        helper::vector< core::BaseState* > models;
+        type::vector< core::BaseState* > models;
         models.push_back( getMState() );
         return models;
     }

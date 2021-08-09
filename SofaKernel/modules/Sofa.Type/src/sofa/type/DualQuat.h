@@ -73,8 +73,7 @@ public:
 
     template<typename real2>
     // Deprecated flag is commented, as MSVC2017 cannot handle the associated template syntax. (works well with MSVC2019)
-    //[[deprecated("This constructor has been deleted in #PR 1790 because of dependency on Defaulttype." \
-    //    "Use DualQuatCoord3(c.getCenter(), c.getOrientation()) instead.")]]
+    //SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1790)", "v21.12", "Use DualQuatCoord3(c.getCenter(), c.getOrientation()) instead.")
     DualQuatCoord3(const sofa::defaulttype::RigidCoord<3, real2>& c) = delete;
 
     DualQuatCoord3(const Pos& p, const sofa::type::Quat<real>& q)
@@ -275,9 +274,6 @@ public:
     DualQuatCoord3<real> pointToParent_applyHT( const type::Mat<3,8,real>& dJ ,const Vec3& p) ;
 
 };
-
-using DualQuatCoordd = DualQuatCoord3<double>;
-using DualQuatCoordf = DualQuatCoord3<double>;
 
 #if !defined(SOFA_TYPE_DUALQUAT_CPP)
 extern template class SOFA_TYPE_API DualQuatCoord3<double>;

@@ -5,16 +5,7 @@ project(Sofa.Helper)
 # sofa_find_package(Sofa.Type REQUIRED)
 
 # Boost
-sofa_find_package(Boost REQUIRED
-    COMPONENTS filesystem
-    OPTIONAL_COMPONENTS thread
-    BOTH_SCOPES)
-if(SOFA_HELPER_HAVE_BOOST_FILESYSTEM
-   AND SOFA_HELPER_HAVE_BOOST_THREAD)
-    sofa_set_01(SOFA_HELPER_HAVE_BOOST VALUE TRUE BOTH_SCOPES)
-else()
-    sofa_set_01(SOFA_HELPER_HAVE_BOOST VALUE FALSE BOTH_SCOPES)
-endif()
+sofa_find_package(Boost REQUIRED COMPONENTS filesystem BOTH_SCOPES)
 
 # Eigen (header only)
 sofa_find_package(Eigen3 REQUIRED)
@@ -26,7 +17,6 @@ set(SRC_ROOT "src/sofa/helper")
 # HEADERS + SOURCES
 set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
-    ${SRC_ROOT}/helper.h
     ${SRC_ROOT}/AdvancedTimer.h
     ${SRC_ROOT}/BackTrace.h
     ${SRC_ROOT}/cast.h
@@ -39,8 +29,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/FnDispatcher.inl
     ${SRC_ROOT}/GenerateRigid.h
     ${SRC_ROOT}/IndexOpenMP.h
-    ${SRC_ROOT}/LCPSolver.h
-    ${SRC_ROOT}/LCPSolver.inl
     ${SRC_ROOT}/LCPcalc.h
     ${SRC_ROOT}/MarchingCubeUtility.h
     ${SRC_ROOT}/MatEigen.h
@@ -96,7 +84,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/system/PluginManager.h
     ${SRC_ROOT}/system/SetDirectory.h
     ${SRC_ROOT}/system/SofaOStream.h
-    ${SRC_ROOT}/system/config.h
     ${SRC_ROOT}/system/console.h
     ${SRC_ROOT}/system/console_internal.h
     ${SRC_ROOT}/system/thread/CTime.h
@@ -203,10 +190,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
 elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
     list(APPEND SOURCE_FILES  ${SRC_ROOT}/system/FileMonitor_windows.cpp)
 endif()
-if(Boost_THREAD_FOUND)
-    list(APPEND HEADER_FILES ${SRC_ROOT}/system/thread/TimeoutWatchdog.h)
-    list(APPEND SOURCE_FILES ${SRC_ROOT}/system/thread/TimeoutWatchdog.cpp)
-endif()
 if(Boost_FILESYSTEM_FOUND)
     list(APPEND HEADER_FILES ${SRC_ROOT}/system/FileRepository.h)
     list(APPEND SOURCE_FILES ${SRC_ROOT}/system/FileRepository.cpp)
@@ -252,9 +235,7 @@ endif()
 # Boost
 if(Boost_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost Boost::filesystem)
-    if(Boost_THREAD_FOUND)
-        target_link_libraries(${PROJECT_NAME} PUBLIC Boost::thread)
-    endif()
+
     if (SOFA_BUILD_RELEASE_PACKAGE OR CMAKE_SYSTEM_NAME STREQUAL Windows)
         sofa_install_libraries(PATHS ${Boost_LIBRARIES}) # Boost_LIBRARIES covers Boost internal dependencies
     endif()
