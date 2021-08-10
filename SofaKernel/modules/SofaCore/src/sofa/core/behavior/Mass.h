@@ -68,7 +68,7 @@ public:
 
     /// Retrieve the associated MechanicalState
     MechanicalState<DataTypes>* getMState() { return this->mstate.get(); }
-    const MechanicalState<DataTypes>* getMState() { return this->mstate.get(); }
+    const MechanicalState<DataTypes>* getMState() const { return this->mstate.get(); }
 
 
     /// @name Vector operations
