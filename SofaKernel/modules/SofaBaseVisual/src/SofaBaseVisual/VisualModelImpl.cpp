@@ -797,60 +797,6 @@ void VisualModelImpl::applyUVScale(const Real scaleU, const Real scaleV)
 }
 
 
-template<class VecCoord>
-class VisualModelPointHandler : public sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point,VecCoord >
-{
-public:
-    typedef typename VecCoord::value_type Coord;
-    typedef typename Coord::value_type Real;
-    VisualModelPointHandler(VisualModelImpl* obj, sofa::component::topology::PointData<VecCoord>* data, int algo)
-        : sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point, VecCoord >(data), obj(obj), algo(algo) {}
-
-    void applyCreateFunction(Index /*pointIndex*/, Coord& dest, const sofa::core::topology::Point &,
-                             const sofa::type::vector< Index > &ancestors,
-                             const sofa::type::vector< double > &coefs)
-    {
-        const VecCoord& x = this->m_topologyData->getValue();
-        if (!ancestors.empty())
-        {
-            if (algo == 1 && ancestors.size() > 1) //fixMergedUVSeams
-            {
-                Coord c0 = x[ancestors[0]];
-                dest = c0*coefs[0];
-                for (Index i=1; i<ancestors.size(); ++i)
-                {
-                    Coord ci = x[ancestors[i]];
-                    for (Index j=0; j<ci.size(); ++j)
-                        ci[j] += helper::rnear(c0[j]-ci[j]);
-                    dest += ci*coefs[i];
-                }
-            }
-            else
-            {
-                dest = x[ancestors[0]]*coefs[0];
-                for (std::size_t i=1; i<ancestors.size(); ++i)
-                    dest += x[ancestors[i]]*coefs[i];
-            }
-        }
-        // BUGFIX: remove link to the Data as it is now specific to this instance
-        this->m_topologyData->setParent(nullptr);
-    }
-
-    void applyDestroyFunction(Index, Coord& )
-    {
-    }
-
-protected:
-    VisualModelImpl* obj;
-    int algo;
-};
-
-template<class VecType>
-void VisualModelImpl::addTopoHandler(topology::PointData<VecType>* data, int algo)
-{
-    data->createTopologyHandler(m_topology, new VisualModelPointHandler<VecType>(this, data, algo));
-}
-
 void VisualModelImpl::init()
 {
     if (l_topology.empty())
@@ -905,7 +851,6 @@ void VisualModelImpl::init()
             //addTopoHandler(&m_positions);
             //addTopoHandler(&m_restPositions);
             //addTopoHandler(&m_vnormals);
-            addTopoHandler(&m_vtexcoords,(m_fixMergedUVSeams.getValue()?1:0));
             //addTopoHandler(&m_vtangents);
             //addTopoHandler(&m_vbitangents);
         }
@@ -2007,8 +1952,5 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
     nindex+=nbn;
     tindex+=nbt;
 }
-
-template class SOFA_SOFABASEVISUAL_API VisualModelPointHandler< VisualModelImpl::VecCoord>;
-template class SOFA_SOFABASEVISUAL_API VisualModelPointHandler< VisualModelImpl::VecTexCoord>;
 
 } // namespace sofa::component::visualmodel
