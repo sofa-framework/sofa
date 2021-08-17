@@ -236,13 +236,6 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     // add one identity matrix
     xforms.resize(1);
 
-    addUpdateCallback("updateTextures", { &texturename },
-        [&](const core::DataTracker& tracker) -> sofa::core::objectmodel::ComponentState
-    {
-        SOFA_UNUSED(tracker);
-        m_textureChanged = true;
-        return sofa::core::objectmodel::ComponentState::Loading;
-    }, { &d_componentState });
 }
 
 VisualModelImpl::~VisualModelImpl()
@@ -294,13 +287,14 @@ void VisualModelImpl::drawVisual(const core::visual::VisualParams* vparams)
         if (m_textureChanged)
         {
             deleteTextures();
+            loadTexture(texturename.getFullPath());
             m_textureChanged = false;
         }
-        init();
         initVisual();
         updateBuffers();
         d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
     }
+
     //Update external buffers (like VBO) if the mesh change AFTER doing the updateVisual() process
     if(m_vertices2.isDirty())
     {
@@ -861,6 +855,13 @@ void VisualModelImpl::init()
     m_topology = l_topology.get();
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
+    addUpdateCallback("updateTextures", { &texturename },
+        [&](const core::DataTracker& tracker) -> sofa::core::objectmodel::ComponentState
+    {
+        SOFA_UNUSED(tracker);
+        m_textureChanged = true;
+        return sofa::core::objectmodel::ComponentState::Loading;
+    }, { &d_componentState });
 
     if (m_vertPosIdx.getValue().size() > 0 && m_vertices2.getValue().empty())
     { // handle case where vertPosIdx was initialized through a loader
