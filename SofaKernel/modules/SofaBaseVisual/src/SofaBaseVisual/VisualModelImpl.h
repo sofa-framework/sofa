@@ -30,7 +30,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
-#include <SofaBaseTopology/TopologyData.inl>
+#include <SofaBaseTopology/TopologyData.h>
 #include <string>
 
 namespace sofa::component::visualmodel
@@ -118,9 +118,9 @@ public:
     topology::PointData< VecTexCoord > m_vtexcoords; ///< coordinates of the texture
     topology::PointData< VecCoord > m_vtangents; ///< tangents for normal mapping
     topology::PointData< VecCoord > m_vbitangents; ///< tangents for normal mapping
-    Data< VecVisualEdge > m_edges; ///< edges of the model
-    Data< VecVisualTriangle > m_triangles; ///< triangles of the model
-    Data< VecVisualQuad > m_quads; ///< quads of the model
+    topology::EdgeData< VecVisualEdge > m_edges; ///< edges of the model
+    topology::TriangleData< VecVisualTriangle > m_triangles; ///< triangles of the model
+    topology::QuadData< VecVisualQuad > m_quads; ///< quads of the model
 
     bool m_textureChanged {false};
 

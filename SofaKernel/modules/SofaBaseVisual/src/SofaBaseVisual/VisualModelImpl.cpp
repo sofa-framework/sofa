@@ -920,6 +920,49 @@ void VisualModelImpl::initFromTopology()
     {
         m_handleDynamicTopology.setValue(false);
     }
+    // add the functions to handle topology changes.
+    if (m_handleDynamicTopology.getValue())
+    {
+        if (!m_triangles.getValue().empty())
+        {
+            m_triangles.createTopologyHandler(m_topology);
+            m_triangles.setCreationCallback([this](Index elemID, VisualTriangle& visuTri,
+                const core::topology::BaseMeshTopology::Triangle& topoTri,
+                const sofa::type::vector< Index >& ancestors,
+                const sofa::type::vector< double >& coefs)
+            {
+                SOFA_UNUSED(elemID);
+                visuTri = topoTri; // simple copy from topology Data
+            });
+        }
+
+        if (!m_edges.getValue().empty())
+        {
+            m_edges.createTopologyHandler(m_topology);
+            m_edges.setCreationCallback([this](Index elemID, VisualEdge& visuEdge,
+                const core::topology::BaseMeshTopology::Edge& topoEdge,
+                const sofa::type::vector< Index >& ancestors,
+                const sofa::type::vector< double >& coefs)
+            {
+                SOFA_UNUSED(elemID);
+                visuEdge = topoEdge; // simple copy from topology Data
+            });
+        }
+
+        if (!m_quads.getValue().empty())
+        {
+            m_quads.createTopologyHandler(m_topology);
+            m_quads.setCreationCallback([this](Index elemID, VisualQuad& visuQuad,
+                const core::topology::BaseMeshTopology::Quad& topoQuad,
+                const sofa::type::vector< Index >& ancestors,
+                const sofa::type::vector< double >& coefs)
+            {
+                SOFA_UNUSED(elemID);
+                visuQuad = topoQuad; // simple copy from topology Data
+            });
+        }
+    }
+
 }
 
 
@@ -946,31 +989,33 @@ void VisualModelImpl::computeNormals()
 
         for (std::size_t i = 0; i < triangles.size(); i++)
         {
-            const Coord& v1 = vertices[triangles[i][0]];
-            const Coord& v2 = vertices[triangles[i][1]];
-            const Coord& v3 = vertices[triangles[i][2]];
+            const VisualTriangle& triangle = triangles[i];
+            const Coord& v1 = vertices[ triangle[0] ];
+            const Coord& v2 = vertices[ triangle[1] ];
+            const Coord& v3 = vertices[ triangle[2] ];
             Coord n = cross(v2-v1, v3-v1);
 
-            normals[triangles[i][0]] += n;
-            normals[triangles[i][1]] += n;
-            normals[triangles[i][2]] += n;
+            normals[ triangle[0] ] += n;
+            normals[ triangle[1] ] += n;
+            normals[ triangle[2] ] += n;
         }
 
         for (std::size_t i = 0; i < quads.size(); i++)
         {
-            const Coord & v1 = vertices[quads[i][0]];
-            const Coord & v2 = vertices[quads[i][1]];
-            const Coord & v3 = vertices[quads[i][2]];
-            const Coord & v4 = vertices[quads[i][3]];
+            const VisualQuad& quad = quads[i];
+            const Coord & v1 = vertices[ quad[0] ];
+            const Coord & v2 = vertices[ quad[1] ];
+            const Coord & v3 = vertices[ quad[2] ];
+            const Coord & v4 = vertices[ quad[3] ];
             Coord n1 = cross(v2-v1, v4-v1);
             Coord n2 = cross(v3-v2, v1-v2);
             Coord n3 = cross(v4-v3, v2-v3);
             Coord n4 = cross(v1-v4, v3-v4);
 
-            normals[quads[i][0]] += n1;
-            normals[quads[i][1]] += n2;
-            normals[quads[i][2]] += n3;
-            normals[quads[i][3]] += n4;
+            normals[ quad[0] ] += n1;
+            normals[ quad[1] ] += n2;
+            normals[ quad[2] ] += n3;
+            normals[ quad[3] ] += n4;
         }
 
         for (std::size_t i = 0; i < normals.size(); i++)
@@ -994,31 +1039,33 @@ void VisualModelImpl::computeNormals()
 
         for (std::size_t i = 0; i < triangles.size() ; i++)
         {
-            const Coord & v1 = vertices[triangles[i][0]];
-            const Coord & v2 = vertices[triangles[i][1]];
-            const Coord & v3 = vertices[triangles[i][2]];
+            const VisualTriangle& triangle = triangles[i];
+            const Coord & v1 = vertices[ triangle[0] ];
+            const Coord & v2 = vertices[ triangle[1] ];
+            const Coord & v3 = vertices[ triangle[2] ];
             Coord n = cross(v2-v1, v3-v1);
 
-            normals[vertNormIdx[triangles[i][0]]] += n;
-            normals[vertNormIdx[triangles[i][1]]] += n;
-            normals[vertNormIdx[triangles[i][2]]] += n;
+            normals[vertNormIdx[ triangle[0] ]] += n;
+            normals[vertNormIdx[ triangle[1] ]] += n;
+            normals[vertNormIdx[ triangle[2] ]] += n;
         }
 
         for (std::size_t i = 0; i < quads.size() ; i++)
         {
-            const Coord & v1 = vertices[quads[i][0]];
-            const Coord & v2 = vertices[quads[i][1]];
-            const Coord & v3 = vertices[quads[i][2]];
-            const Coord & v4 = vertices[quads[i][3]];
+            const VisualQuad& quad = quads[i];
+            const Coord & v1 = vertices[ quad[0] ];
+            const Coord & v2 = vertices[ quad[1] ];
+            const Coord & v3 = vertices[ quad[2] ];
+            const Coord & v4 = vertices[ quad[3] ];
             Coord n1 = cross(v2-v1, v4-v1);
             Coord n2 = cross(v3-v2, v1-v2);
             Coord n3 = cross(v4-v3, v2-v3);
             Coord n4 = cross(v1-v4, v3-v4);
 
-            normals[vertNormIdx[quads[i][0]]] += n1;
-            normals[vertNormIdx[quads[i][1]]] += n2;
-            normals[vertNormIdx[quads[i][2]]] += n3;
-            normals[vertNormIdx[quads[i][3]]] += n4;
+            normals[vertNormIdx[ quad[0] ]] += n1;
+            normals[vertNormIdx[ quad[1] ]] += n2;
+            normals[vertNormIdx[ quad[2] ]] += n3;
+            normals[vertNormIdx[ quad[3] ]] += n4;
         }
 
         for (std::size_t i = 0; i < normals.size(); i++)
@@ -1450,142 +1497,6 @@ void VisualModelImpl::handleTopologyChange()
             break;
         }
 
-        case core::topology::TRIANGLESADDED:
-        {
-            if (!groups.getValue().empty())
-            {
-                groups.beginEdit()->clear();
-                groups.endEdit();
-            }
-
-            const sofa::core::topology::TrianglesAdded *ta = static_cast< const sofa::core::topology::TrianglesAdded * >( *itBegin );
-
-            VisualTriangle t;
-            const std::size_t nbAddedTriangles = ta->getNbAddedTriangles();
-            const std::size_t nbTririangles = triangles.size();
-
-            triangles.resize(nbTririangles + nbAddedTriangles);
-
-            for (std::size_t i = 0; i < nbAddedTriangles; ++i)
-            {
-                t[0] = visual_index_type(ta->triangleArray[i][0]);
-                t[1] = visual_index_type(ta->triangleArray[i][1]);
-                t[2] = visual_index_type(ta->triangleArray[i][2]);
-                triangles[nbTririangles + i] = t;
-            }
-
-            break;
-        }
-
-        case core::topology::QUADSADDED:
-        {
-            if (!groups.getValue().empty())
-            {
-                groups.beginEdit()->clear();
-                groups.endEdit();
-            }
-
-            const sofa::core::topology::QuadsAdded *qa = static_cast< const sofa::core::topology::QuadsAdded * >( *itBegin );
-
-            const std::size_t nbAddedQuads = qa->getNbAddedQuads();
-            const std::size_t nbQuaduads = quads.size();
-
-            quads.resize(nbQuaduads + nbAddedQuads);
-
-            for (std::size_t i = 0; i < nbAddedQuads; ++i)
-            {
-                const auto& rQuad = qa->getQuad(Size(i));
-
-                quads[nbQuaduads + i][0] = visual_index_type(rQuad[0]);
-                quads[nbQuaduads + i][1] = visual_index_type(rQuad[1]);
-                quads[nbQuaduads + i][2] = visual_index_type(rQuad[2]);
-                quads[nbQuaduads + i][3] = visual_index_type(rQuad[3]);
-            }
-
-            break;
-        }
-
-        case core::topology::TRIANGLESREMOVED:
-        {
-            if (!groups.getValue().empty())
-            {
-                groups.beginEdit()->clear();
-                groups.endEdit();
-            }
-
-            std::size_t last;
-
-            last = m_topology->getNbTriangles() - 1;
-
-            const auto &tab = ( static_cast< const sofa::core::topology::TrianglesRemoved *>( *itBegin ) )->getArray();
-
-            VisualTriangle tmp;
-
-            for (std::size_t i = 0; i <tab.size(); ++i)
-            {
-                visual_index_type ind_k = visual_index_type(tab[i]);
-
-                tmp = triangles[ind_k];
-                triangles[ind_k] = triangles[last];
-                triangles[last] = tmp;
-
-                std::size_t ind_last = triangles.size() - 1;
-
-                if(last != ind_last)
-                {
-                    tmp = triangles[last];
-                    triangles[last] = triangles[ind_last];
-                    triangles[ind_last] = tmp;
-                }
-
-                triangles.resize( triangles.size() - 1 );
-
-                --last;
-            }
-
-            break;
-        }
-
-        case core::topology::QUADSREMOVED:
-        {
-            if (!groups.getValue().empty())
-            {
-                groups.beginEdit()->clear();
-                groups.endEdit();
-            }
-
-            std::size_t last;
-
-            last = m_topology->getNbQuads() - 1;
-
-            const auto &tab = ( static_cast< const sofa::core::topology::QuadsRemoved *>( *itBegin ) )->getArray();
-
-            VisualQuad tmp;
-
-            for (std::size_t i = 0; i <tab.size(); ++i)
-            {
-                visual_index_type ind_k = visual_index_type(tab[i]);
-
-                tmp = quads[ind_k];
-                quads[ind_k] = quads[last];
-                quads[last] = tmp;
-
-                std::size_t ind_last = quads.size() - 1;
-
-                if(last != ind_last)
-                {
-                    tmp = quads[last];
-                    quads[last] = quads[ind_last];
-                    quads[ind_last] = tmp;
-                }
-
-                quads.resize( quads.size() - 1 );
-
-                --last;
-            }
-
-            break;
-        }
 
         case core::topology::POINTSREMOVED:
         {
