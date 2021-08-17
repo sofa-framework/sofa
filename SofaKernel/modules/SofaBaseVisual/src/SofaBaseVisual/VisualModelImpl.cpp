@@ -961,6 +961,48 @@ void VisualModelImpl::initFromTopology()
                 visuQuad = topoQuad; // simple copy from topology Data
             });
         }
+        m_positions.createTopologyHandler(m_topology);
+        m_positions.setDestructionCallback([this](Index pointIndex, Coord& coord)
+        {
+            auto last = m_positions.getLastElementIndex();
+            if (m_topology->getNbTriangles() > 0)
+            {
+                VecVisualTriangle& triangles = *(m_triangles.beginEdit());
+
+                const auto& shell = m_topology->getTrianglesAroundVertex(last);
+                for (Index j = 0; j < shell.size(); ++j)
+                {
+                    auto ind_j = shell[j];
+                    VisualTriangle& tri = triangles[ind_j];
+                    if (tri[0] == last)
+                        tri[0] = visual_index_type(pointIndex);
+                    else if (tri[1] == last)
+                        tri[1] = visual_index_type(pointIndex);
+                    else if (tri[2] == last)
+                        tri[2] = visual_index_type(pointIndex);
+                }
+                m_triangles.endEdit();
+            }
+            else if (m_topology->getNbQuads() > 0)
+            {
+                VecVisualQuad& quads = *(m_quads.beginEdit());
+                
+                const auto& shell = m_topology->getQuadsAroundVertex(last);
+                for (Index j = 0; j < shell.size(); ++j)
+                {
+                    Index ind_j = shell[j];
+                    VisualQuad& quad = quads[ind_j];
+                    if (quad[0] == last)
+                        quad[0] = visual_index_type(pointIndex);
+                    else if (quad[1] == last)
+                        quad[1] = visual_index_type(pointIndex);
+                    else if (quad[2] == last)
+                        quad[2] = visual_index_type(pointIndex);
+                    else if (quad[3] == last)
+                        quad[3] = visual_index_type(pointIndex);
+                }
+            }
+        });
     }
 
 }
@@ -1386,7 +1428,7 @@ void VisualModelImpl::computeMesh()
     if ((m_positions.getValue()).empty() && (m_vertices2.getValue()).empty())
     {
         VecCoord& vertices = *(m_positions.beginEdit());
-
+        
         if (m_topology->hasPos())
         {
             if (SparseGridTopology *spTopo = dynamic_cast< SparseGridTopology *>(m_topology))
@@ -1472,290 +1514,6 @@ void VisualModelImpl::computeMesh()
     m_quads.endEdit();
 }
 
-void VisualModelImpl::handleTopologyChange()
-{
-    if (!m_topology) return;
-
-    bool debug_mode = false;
-
-    VecVisualTriangle& triangles = *(m_triangles.beginEdit());
-    VecVisualQuad& quads = *(m_quads.beginEdit());
-    m_positions.beginEdit();
-
-    std::list<const TopologyChange *>::const_iterator itBegin=m_topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=m_topology->endChange();
-
-    while( itBegin != itEnd )
-    {
-        core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
-
-        switch( changeType )
-        {
-        case core::topology::ENDING_EVENT:
-        {
-            updateVisual();
-            break;
-        }
-
-
-        case core::topology::POINTSREMOVED:
-        {
-            if (m_topology->getNbTriangles()>0)
-            {
-                auto last = m_topology->getNbPoints() -1;
-
-                Size i,j;
-
-                const auto& tab = ( static_cast< const sofa::core::topology::PointsRemoved * >( *itBegin ) )->getArray();
-
-                sofa::type::vector<Index> lastIndexVec;
-
-                for(Size i_init = 0; i_init < tab.size(); ++i_init)
-                {
-                    lastIndexVec.push_back(last - i_init);
-                }
-
-                for ( i = 0; i < tab.size(); ++i)
-                {
-                    std::size_t i_next = i;
-                    bool is_reached = false;
-
-                    while( (!is_reached) && (i_next < lastIndexVec.size() - 1))
-                    {
-                        i_next += 1 ;
-                        is_reached = is_reached || (lastIndexVec[i_next] == tab[i]);
-                    }
-
-                    if(is_reached)
-                    {
-                        lastIndexVec[i_next] = lastIndexVec[i];
-                    }
-
-                    const auto &shell= m_topology->getTrianglesAroundVertex(lastIndexVec[i]);
-                    for (j=0; j<shell.size(); ++j)
-                    {
-                        auto ind_j = shell[j];
-
-                        if ((unsigned)triangles[ind_j][0]==last)
-                            triangles[ind_j][0]= visual_index_type(tab[i]);
-                        else if ((unsigned)triangles[ind_j][1]==last)
-                            triangles[ind_j][1]= visual_index_type(tab[i]);
-                        else if ((unsigned)triangles[ind_j][2]==last)
-                            triangles[ind_j][2]= visual_index_type(tab[i]);
-                    }
-
-                    if (debug_mode)
-                    {
-                        for (std::size_t j_loc=0; j_loc<triangles.size(); ++j_loc)
-                        {
-                            bool is_forgotten = false;
-                            if ((unsigned)triangles[j_loc][0]==last)
-                            {
-                                triangles[j_loc][0]= visual_index_type(tab[i]);
-                                is_forgotten=true;
-                            }
-                            else
-                            {
-                                if ((unsigned)triangles[j_loc][1]==last)
-                                {
-                                    triangles[j_loc][1]= visual_index_type(tab[i]);
-                                    is_forgotten=true;
-                                }
-                                else
-                                {
-                                    if ((unsigned)triangles[j_loc][2]==last)
-                                    {
-                                        triangles[j_loc][2]= visual_index_type(tab[i]);
-                                        is_forgotten=true;
-                                    }
-                                }
-                            }
-
-                            if(is_forgotten)
-                            {
-                                Index ind_forgotten = Size(j_loc);
-
-                                bool is_in_shell = false;
-                                for (std::size_t j_glob=0; j_glob<shell.size(); ++j_glob)
-                                {
-                                    is_in_shell = is_in_shell || (shell[j_glob] == ind_forgotten);
-                                }
-
-                                if(!is_in_shell)
-                                {
-                                    msg_info() << "INFO_print : Vis - triangle is forgotten in SHELL !!! global indices (point, triangle) = ( "  << last << " , " << ind_forgotten  << " )";
-
-                                    if(ind_forgotten<m_topology->getNbTriangles())
-                                    {
-                                        const auto& t_forgotten = m_topology->getTriangle(ind_forgotten);
-                                        msg_info() << "Vis - last = " << last << msgendl
-                                                   << "Vis - lastIndexVec[i] = " << lastIndexVec[i] << msgendl
-                                                   << "Vis - tab.size() = " << tab.size() << " , tab = " << tab << msgendl
-                                                   << "Vis - t_local rectified = " << triangles[j_loc] << msgendl
-                                                   << "Vis - t_global = " << t_forgotten;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    --last;
-                }
-            }
-            else if (m_topology->getNbQuads()>0)
-            {
-                sofa::Index last = m_topology->getNbPoints() -1;
-
-                Index i,j;
-
-                const auto& tab = ( static_cast< const sofa::core::topology::PointsRemoved * >( *itBegin ) )->getArray();
-
-                sofa::type::vector<Index> lastIndexVec;
-                for(Index i_init = 0; i_init < tab.size(); ++i_init)
-                {
-                    lastIndexVec.push_back(last - i_init);
-                }
-
-                for ( i = 0; i < tab.size(); ++i)
-                {
-                    Index i_next = i;
-                    bool is_reached = false;
-                    while( (!is_reached) && (i_next < lastIndexVec.size() - 1))
-                    {
-                        i_next += 1 ;
-                        is_reached = is_reached || (lastIndexVec[i_next] == tab[i]);
-                    }
-
-                    if(is_reached)
-                    {
-                        lastIndexVec[i_next] = lastIndexVec[i];
-                    }
-
-                    const auto &shell= m_topology->getQuadsAroundVertex(lastIndexVec[i]);
-                    for (j=0; j<shell.size(); ++j)
-                    {
-                        Index ind_j = shell[j];
-
-                        if (quads[ind_j][0]==last)
-                            quads[ind_j][0]=visual_index_type(tab[i]);
-                        else if (quads[ind_j][1]==last)
-                            quads[ind_j][1]= visual_index_type(tab[i]);
-                        else if (quads[ind_j][2]==last)
-                            quads[ind_j][2]= visual_index_type(tab[i]);
-                        else if (quads[ind_j][3]==last)
-                            quads[ind_j][3]= visual_index_type(tab[i]);
-                    }
-
-                    --last;
-                }
-            }
-
-            break;
-        }
-
-        case core::topology::POINTSRENUMBERING:
-        {
-            if (m_topology->getNbTriangles()>0)
-            {
-                const auto& tab = ( static_cast< const sofa::core::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
-
-                for (std::size_t i = 0; i < triangles.size(); ++i)
-                {
-                    triangles[i][0]  = visual_index_type(tab[triangles[i][0]]);
-                    triangles[i][1]  = visual_index_type(tab[triangles[i][1]]);
-                    triangles[i][2]  = visual_index_type(tab[triangles[i][2]]);
-                }
-
-            }
-            else if (m_topology->getNbQuads()>0)
-            {
-                const auto& tab = ( static_cast< const sofa::core::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
-
-                for (std::size_t i = 0; i < quads.size(); ++i)
-                {
-                    quads[i][0]  = visual_index_type(tab[quads[i][0]]);
-                    quads[i][1]  = visual_index_type(tab[quads[i][1]]);
-                    quads[i][2]  = visual_index_type(tab[quads[i][2]]);
-                    quads[i][3]  = visual_index_type(tab[quads[i][3]]);
-                }
-            }
-
-            break;
-        }
-
-        case core::topology::POINTSMOVED:
-        {
-            updateVisual();
-            break;
-        }
-
-        case core::topology::POINTSADDED:
-        {
-#if 0
-            using sofa::core::behavior::BaseMechanicalState;
-            BaseMechanicalState* mstate;
-            //const Index nbPoints = ( static_cast< const sofa::component::topology::PointsAdded * >( *itBegin ) )->getNbAddedVertices();
-            m_topology->getContext()->get(mstate);
-            /* fjourdes:
-            ! THIS IS OBVIOUSLY NOT THE APPROPRIATE WAY TO DO IT !
-            However : VisualModelImpl stores in two separates data the vertices
-              - Data position in inherited Vec3State
-              - Data vertices
-            I don t know what is the purpose of the Data vertices (except at the init maybe ? )
-            When doing topological operations on a graph like
-            (removal points triangles / add of points triangles for instance)
-            + Hexas
-            ...
-            + Triangles
-            + - MechObj Triangles
-            + - TriangleSetTopologyContainer Container
-            + - Hexa2TriangleTopologycalMapping
-            + + VisualModel
-            + + - OglModel visual
-            + + - IdentityMapping
-
-            The IdentityMapping reflects the changes in topology by updating the Data position of the OglModel
-            knowing the Data position of the MechObj named Triangles.
-            However the Data vertices which is used to compute the normals is not updated, and the next computeNormals will
-            fail. BTW this is odd that normals are computed using Data vertices since Data normals it belongs to Vec3State
-            (like Data position) ...
-            So my question is how the changes in the Data position of and OglModel are reflected to its Data vertices?
-            It must be done somewhere since ultimately visual models are drawn correctly by OglModel::internalDraw !
-            */
-
-            if (mstate)
-            {
-
-                dmsg_info() << " changing size.  " << msgendl
-                            << " oldsize    " << this->getSize() << msgendl
-                            << " copying " << mstate->getSize() << " points from mechanical state.";
-
-                vertices.resize(mstate->getSize());
-
-                for (Index i=0; i<vertices.size(); i++)
-                {
-                    vertices[i][0] = (Real)mstate->getPX(i);
-                    vertices[i][1] = (Real)mstate->getPY(i);
-                    vertices[i][2] = (Real)mstate->getPZ(i);
-                }
-            }
-            updateVisual();
-#endif
-            break;
-        }
-
-        default:
-            // Ignore events that are not Triangle  related.
-            break;
-        } // switch( changeType )
-
-        ++itBegin;
-    } // while( changeIt != last; )
-
-    m_triangles.endEdit();
-    m_quads.endEdit();
-    m_positions.endEdit();
-}
 
 void VisualModelImpl::initVisual()
 {
