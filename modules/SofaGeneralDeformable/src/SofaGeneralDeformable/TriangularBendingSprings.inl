@@ -384,6 +384,7 @@ template<class DataTypes>
 TriangularBendingSprings<DataTypes>::TriangularBendingSprings(/*double _ks, double _kd*/)
     : f_ks(initData(&f_ks,(double) 100000.0,"stiffness","uniform stiffness for the all springs")) //(Real)0.3 ??
     , f_kd(initData(&f_kd,(double) 1.0,"damping","uniform damping for the all springs")) // (Real)1000. ??
+    , d_showSprings(initData(&d_showSprings, true, "showSprings", "option to draw springs"))
     , l_topology(initLink("topology", "link to the topology container"))
     , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
     , updateMatrix(true)
@@ -675,6 +676,7 @@ template<class DataTypes>
 void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     unsigned int i;
+    if (!d_showSprings.getValue()) { return; }
     if (!vparams->displayFlags().getShowForceFields()) {return;}
     if (!this->mstate) {return;}
 
