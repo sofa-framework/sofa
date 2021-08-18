@@ -51,7 +51,7 @@ namespace sofa::component::misc
  *
 */
 template <class DataTypes>
-class SOFA_SOFAMISCTOPOLOGY_API TopologyBoundingTrasher: public virtual core::objectmodel::BaseObject
+class SOFA_SOFAMISCTOPOLOGY_API TopologyBoundingTrasher: public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(TopologyBoundingTrasher, DataTypes), core::objectmodel::BaseObject);
