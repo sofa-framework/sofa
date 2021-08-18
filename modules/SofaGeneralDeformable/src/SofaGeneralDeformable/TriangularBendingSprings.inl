@@ -675,7 +675,6 @@ void TriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams
 template<class DataTypes>
 void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    unsigned int i;
     if (!d_showSprings.getValue()) { return; }
     if (!vparams->displayFlags().getShowForceFields()) {return;}
     if (!this->mstate) {return;}
@@ -691,16 +690,16 @@ void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams*
     std::vector<sofa::type::RGBAColor> colors;
 
     vparams->drawTool()->disableLighting();
-    const type::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
-    for(i=0; i<edgeInf.size(); ++i)
+    const type::vector<EdgeInformation>& edgeInfos = edgeInfo.getValue();
+    for(auto& edgeInfo : edgeInfos)
     {
-        if(edgeInf[i].is_activated)
+        if(edgeInfo.is_activated)
         {
             bool external=true;
-            Real d = (x[edgeInf[i].m2]-x[edgeInf[i].m1]).norm();
+            Real d = (x[edgeInfo.m2]-x[edgeInfo.m1]).norm();
             if (external)
             {
-                if (d<edgeInf[i].restlength*0.9999)
+                if (d<edgeInfo.restlength*0.9999)
                 {
                     colors.push_back(sofa::type::RGBAColor::red());
                 }
@@ -711,7 +710,7 @@ void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams*
             }
             else
             {
-                if (d<edgeInf[i].restlength*0.9999)
+                if (d<edgeInfo.restlength*0.9999)
                 {
                     colors.push_back(sofa::type::RGBAColor(1,0.5, 0,1));
                 }
@@ -721,8 +720,8 @@ void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams*
                 }
             }
 
-            vertices.push_back( x[edgeInf[i].m1] );
-            vertices.push_back( x[edgeInf[i].m2] );
+            vertices.push_back( x[edgeInfo.m1] );
+            vertices.push_back( x[edgeInfo.m2] );
         }
     }
     vparams->drawTool()->drawLines(vertices, 1, colors);
