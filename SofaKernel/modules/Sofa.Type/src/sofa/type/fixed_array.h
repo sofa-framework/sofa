@@ -164,7 +164,7 @@ public:
     }
 
     // size is constant
-    static size_type size() noexcept
+    static constexpr size_type size() noexcept
     {
         return N;
     }
@@ -172,7 +172,7 @@ public:
     {
         return false;
     }
-    static size_type max_size() noexcept
+    static constexpr size_type max_size() noexcept
     {
         return N;
     }

@@ -153,12 +153,6 @@ public:
 
     void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
-    /// Specialized addKToMatrix implementation for CRS 3x3 bloc matrices
-    template<class BlocReal>
-    void addKToBlocMatrix(
-            sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,BlocReal>,  type::vector<type::Mat<3,3,BlocReal> >, type::vector<sofa::Index> > *crsmat,
-            SReal k, unsigned int &offset);
-
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
