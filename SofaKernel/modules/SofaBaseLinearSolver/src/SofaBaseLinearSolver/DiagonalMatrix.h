@@ -102,6 +102,8 @@ public:
         if (i==j) data[i] = (Real)v;
     }
 
+    using defaulttype::BaseMatrix::add;
+
     void add(Index i, Index j, double v) override
     {
         if (i==j) data[i] += (Real)v;
