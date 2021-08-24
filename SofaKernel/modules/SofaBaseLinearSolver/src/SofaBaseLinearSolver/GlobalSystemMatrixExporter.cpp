@@ -68,10 +68,8 @@ bool GlobalSystemMatrixExporter::write()
             {
                 const std::string filename = basename + "." + exporter->first;
                 msg_info() << "Writing global system matrix from linear solver '" << l_linearSolver->getName() << "' in " << filename;
-                exporter->second(filename, l_linearSolver->getSystemBaseMatrix());
+                return exporter->second(filename, l_linearSolver->getSystemBaseMatrix());
             }
-
-            return true;
         }
         else
         {
