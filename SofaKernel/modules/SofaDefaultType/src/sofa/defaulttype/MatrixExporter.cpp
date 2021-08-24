@@ -19,31 +19,53 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaBaseLinearSolver/config.h>
-#include <sofa/simulation/BaseSimulationExporter.h>
-#include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/helper/OptionsGroup.h>
+#include <sofa/defaulttype/MatrixExporter.h>
+#include <sofa/defaulttype/BaseMatrix.h>
 
-namespace sofa::component::linearsolver
+#include <fstream>
+
+namespace sofa::defaulttype
 {
 
-/**
- * @brief Exports the global system matrix of the current context into a text file. The matrix is printed in its dense format.
- */
-class SOFA_SOFABASELINEARSOLVER_API GlobalSystemMatrixExporter : public sofa::simulation::BaseSimulationExporter
+bool writeMatrixTxt(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix)
 {
-public:
-    SOFA_CLASS(GlobalSystemMatrixExporter, sofa::simulation::BaseSimulationExporter);
+    if (matrix)
+    {
+        std::ofstream file(filename);
+        file << *matrix;
+        file.close();
 
-    bool write() override;
-    void doInit() override;
+        return true;
+    }
+    return false;
+}
 
-protected:
-    Data<sofa::helper::OptionsGroup> d_fileFormat;
+bool writeMatrixCsv(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix)
+{
+    if (matrix)
+    {
+        std::ofstream file(filename);
 
-    GlobalSystemMatrixExporter();
+        const auto nx = matrix->colSize();
+        const auto ny = matrix->rowSize();
 
-    SingleLink<GlobalSystemMatrixExporter, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_linearSolver;
-};
+        if (nx > 0)
+        {
+            for (sofa::SignedIndex y = 0; y<ny; ++y)
+            {
+                for (sofa::SignedIndex x = 0; x < nx - 1; ++x)
+                {
+                    file << matrix->element(y, x) << ",";
+                }
+                file << matrix->element(y, nx - 1) << "\n";
+            }
+        }
+
+        file.close();
+
+        return true;
+    }
+    return false;
+}
+
 }

@@ -20,30 +20,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseLinearSolver/config.h>
-#include <sofa/simulation/BaseSimulationExporter.h>
-#include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/helper/OptionsGroup.h>
 
-namespace sofa::component::linearsolver
+#include <sofa/defaulttype/fwd.h>
+#include <string>
+
+namespace sofa::defaulttype
 {
+bool writeMatrixImage(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix);
+} //namespace sofa::defaulttype
 
-/**
- * @brief Exports the global system matrix of the current context into a text file. The matrix is printed in its dense format.
- */
-class SOFA_SOFABASELINEARSOLVER_API GlobalSystemMatrixExporter : public sofa::simulation::BaseSimulationExporter
+namespace sofa::component
 {
-public:
-    SOFA_CLASS(GlobalSystemMatrixExporter, sofa::simulation::BaseSimulationExporter);
-
-    bool write() override;
-    void doInit() override;
-
-protected:
-    Data<sofa::helper::OptionsGroup> d_fileFormat;
-
-    GlobalSystemMatrixExporter();
-
-    SingleLink<GlobalSystemMatrixExporter, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_linearSolver;
-};
-}
+void initializeMatrixExporterComponents();
+} //namespace sofa::component

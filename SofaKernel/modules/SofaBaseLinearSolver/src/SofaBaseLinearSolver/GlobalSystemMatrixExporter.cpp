@@ -22,6 +22,7 @@
 #include <SofaBaseLinearSolver/GlobalSystemMatrixExporter.h>
 #include <sofa/core/ObjectFactory.h>
 #include <fstream>
+#include <sofa/defaulttype/MatrixExporter.h>
 
 namespace sofa::component::linearsolver
 {
@@ -31,6 +32,7 @@ int GlobalSystemMatrixExporterClass = core::RegisterObject("Export the global sy
 
 GlobalSystemMatrixExporter::GlobalSystemMatrixExporter()
 : Inherit1()
+, d_fileFormat(initData(&d_fileFormat, sofa::defaulttype::matrixExporterOptionsGroup, "format", "File format"))
 , l_linearSolver(initLink("linearSolver", "Linear solver used to export its matrix"))
 {
     d_exportAtBegin.setReadOnly(true);
@@ -59,13 +61,15 @@ bool GlobalSystemMatrixExporter::write()
         {
             const std::string basename = getOrCreateTargetPath(d_filename.getValue(),
                                                                d_exportEveryNbSteps.getValue());
-            const std::string filename = basename + ".mat";
 
-            msg_info() << "Writing global system matrix from linear solver '" << l_linearSolver->getName() << "' in " << filename;
-
-            std::ofstream file(filename);
-            file << *l_linearSolver->getSystemBaseMatrix();
-            file.close();
+            const auto selectedExporter = d_fileFormat.getValue().getSelectedItem();
+            const auto exporter = sofa::defaulttype::matrixExporterMap.find(selectedExporter);
+            if (exporter != sofa::defaulttype::matrixExporterMap.end())
+            {
+                const std::string filename = basename + "." + exporter->first;
+                msg_info() << "Writing global system matrix from linear solver '" << l_linearSolver->getName() << "' in " << filename;
+                exporter->second(filename, l_linearSolver->getSystemBaseMatrix());
+            }
 
             return true;
         }
