@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<Node name="root" dt="0.02">
+<Node name="root" dt="0.005">
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName='SofaBoundaryCondition'/>
     <RequiredPlugin pluginName='SofaGeneralLoader'/>
@@ -17,25 +17,25 @@
     <MeshObjLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
 
     <Node name="Liver" depend="topo dofs">
-        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MechanicalObject src="@../loader" name="dofs" />
+        <EulerImplicitSolver name="integration scheme" />
+        <CGLinearSolver name="linear solver" iterations="1000" tolerance="1e-9" threshold="1e-9"/>
+        <MechanicalObject name="dofs" src="@../loader" />
         <!-- Container for the tetrahedra-->
-        <TetrahedronSetTopologyContainer src="@../loader" name="topo" />
+        <TetrahedronSetTopologyContainer name="TetraTopo" src="@../loader" />
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
         <UniformMass totalMass="60"  name="uniformlyConstantMass" />
-        <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="3000" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
+        <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.45" youngModulus="5000" />
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
         
         <Node name="Visu">
-            <OglModel name="VisualModel" src="@../../meshLoader_0" color="red" />
-            <BarycentricMapping input="@.." output="@VisualModel" name="visual mapping" />
+            <OglModel name="VisualModel" src="@../../meshLoader_0" color="yellow" />
+            <BarycentricMapping name="VisualMapping" input="@../dofs" output="@VisualModel" />
         </Node>
         <Node name="Surf">
     	    <SphereLoader filename="mesh/liver.sph" />
-            <MechanicalObject position="@[-1].position" />
+            <MechanicalObject name="spheres" position="@[-1].position" />
             <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius" />
-            <BarycentricMapping name="sphere mapping" />
+            <BarycentricMapping name="CollisionMapping" input="@../dofs" output="@spheres" />
         </Node>
     </Node>
 </Node>
