@@ -12,29 +12,29 @@
     <BVHNarrowPhase/>
     <DefaultContactManager response="default" name="collision response" />
     <DiscreteIntersection />
-    <!--<DefaultCollisionGroupManager />-->
+
+    <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
+    <MeshObjLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
+
     <Node name="Liver" depend="topo dofs">
-        <!--<CGImplicit iterations="25"/>-->
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
-        <MechanicalObject src="@loader" name="dofs" />
+        <MechanicalObject src="@../loader" name="dofs" />
         <!-- Container for the tetrahedra-->
-        <TetrahedronSetTopologyContainer src="@loader" name="topo" />
-        <!-- Algorithms: used in DiagonalMass to compute the mass -->
+        <TetrahedronSetTopologyContainer src="@../loader" name="topo" />
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
-        <UniformMass vertexMass="0.05" />
+        <UniformMass totalMass="60"  name="uniformlyConstantMass" />
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="3000" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
+        
         <Node name="Visu">
-            <MeshObjLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
-            <OglModel name="VisualModel" src="@meshLoader_0" color="red" />
+            <OglModel name="VisualModel" src="@../../meshLoader_0" color="red" />
             <BarycentricMapping input="@.." output="@VisualModel" name="visual mapping" />
         </Node>
         <Node name="Surf">
-	    <SphereLoader filename="mesh/liver.sph" />
+    	    <SphereLoader filename="mesh/liver.sph" />
             <MechanicalObject position="@[-1].position" />
-            <SphereCollisionModel listRadius="@[-2].listRadius" />
+            <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius" />
             <BarycentricMapping name="sphere mapping" />
         </Node>
     </Node>
