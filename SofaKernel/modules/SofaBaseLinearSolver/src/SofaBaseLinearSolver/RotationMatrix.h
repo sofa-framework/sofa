@@ -53,6 +53,8 @@ public:
     /// Write the value of the element at row i, column j (using 0-based indices)
     void set(sofa::SignedIndex i, sofa::SignedIndex j, double v) override;
 
+    using defaulttype::BaseMatrix::add;
+
     /// Add v to the existing value of the element at row i, column j (using 0-based indices)
     void add(sofa::SignedIndex i, sofa::SignedIndex j, double v) override;
 
