@@ -30,8 +30,8 @@
 namespace sofa::defaulttype
 {
 
-bool writeMatrixTxt(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix);
-bool writeMatrixCsv(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix);
+bool SOFA_DEFAULTTYPE_API writeMatrixTxt(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix);
+bool SOFA_DEFAULTTYPE_API writeMatrixCsv(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix);
 
 inline std::unordered_map<std::string, std::function<bool(const std::string&, sofa::defaulttype::BaseMatrix*)> > matrixExporterMap =
 {
