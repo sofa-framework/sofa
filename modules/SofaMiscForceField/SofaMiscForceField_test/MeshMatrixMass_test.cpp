@@ -1747,12 +1747,12 @@ TEST_F(MeshMatrixMass3_test, singleTriangle)
     TriangleSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<TriangleSetGeometryAlgorithms<Vec3Types> >();
 
-    static const MassType volume = 0.5;
+    static const MassType surface = 0.5;
     static const MassType expectedTotalMass = 1.0f;
-    static const MassType density = expectedTotalMass / volume;
+    static const MassType density = expectedTotalMass / surface;
 
-    static const VecMass expectedVMass(3, (MassType)(density * volume * 1 / 6));
-    static const VecMass expectedEMass(3, (MassType)(density * volume * 1 / 12));
+    static const VecMass expectedVMass(3, (MassType)(density * surface * 1 / 6));
+    static const VecMass expectedEMass(3, (MassType)(density * surface * 1 / 12));
 
     runTest(positions, topologyContainer, geometryAlgorithms, expectedTotalMass, density, expectedVMass, expectedEMass);
 }
@@ -1771,11 +1771,11 @@ TEST_F(MeshMatrixMass3_test, singleQuad)
     QuadSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<QuadSetGeometryAlgorithms<Vec3Types> >();
 
-    static const MassType volume = 1.0;
+    static const MassType surface = 1.0;
     static const MassType expectedTotalMass = 1.0f;
-    static const MassType density = expectedTotalMass / volume;
-    static const VecMass expectedVMass(4, (MassType)(density * volume * 1 / 8));
-    static const VecMass expectedEMass(4, (MassType)(density * volume * 1 / 16));
+    static const MassType density = expectedTotalMass / surface;
+    static const VecMass expectedVMass(4, (MassType)(density * surface * 1 / 8));
+    static const VecMass expectedEMass(4, (MassType)(density * surface * 1 / 16));
 
     runTest(positions, topologyContainer, geometryAlgorithms, expectedTotalMass, density, expectedVMass, expectedEMass);
 }
