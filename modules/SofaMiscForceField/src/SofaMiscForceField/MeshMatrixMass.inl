@@ -107,8 +107,13 @@ template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyDestroyFunction(Index id, MassType& EdgeMass)
 {
     SOFA_UNUSED(id);
-    helper::WriteAccessor<Data<Real> > totalMass(this->m->d_totalMass);
-    totalMass -= EdgeMass;
+    if(!this->m->isLumped())
+    {
+        helper::WriteAccessor<Data<Real> > totalMass(this->m->d_totalMass);
+        totalMass -= EdgeMass;
+    }
+    else
+        SOFA_UNUSED(EdgeMass);
 }
 
 
@@ -166,7 +171,12 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleCreati
                 VertexMasses[ t[j] ] += mass;
 
             // update total mass: 
-            totalMass += 3.0 * mass * MMM->m_massLumpingCoeff;
+            if(!this->m->isLumped())
+            {
+                totalMass += 3.0 * mass;
+            }
+            else
+                totalMass += 3.0 * mass * MMM->m_massLumpingCoeff;
         }
     }
 }
@@ -218,8 +228,11 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleCreation
             for (unsigned int j=0; j<3; ++j)
                 EdgeMasses[ te[j] ] += mass;
 
-            // update total mass: *2 because added to 2 vertices
-            totalMass += 3.0 * 2.0 * mass;
+            // update total mass
+            if(!this->m->isLumped())
+            {
+                totalMass += 3.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+            }
         }
     }
 }
@@ -261,7 +274,12 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleDestru
                 VertexMasses[ t[j] ] -= mass;
 
             // update total mass
-            totalMass -= 3.0 * mass * MMM->m_massLumpingCoeff;
+            if(!this->m->isLumped())
+            {
+                totalMass -= 3.0 * mass;
+            }
+            else
+                totalMass -= 3.0 * mass * MMM->m_massLumpingCoeff;
         }
     }
 }
@@ -302,8 +320,11 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleDestruct
             for (unsigned int j=0; j<3; ++j)
                 EdgeMasses[ te[j] ] -= mass;
 
-            // update total mass: *2 because added to 2 vertices
-            totalMass -= 3.0 * 2.0 * mass;
+            // update total mass
+            if(!this->m->isLumped())
+            {
+                totalMass -= 3.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+            }
         }
     }
 }
@@ -401,7 +422,12 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadCreation(c
                 VertexMasses[ q[j] ] += mass;
 
             // update total mass
-            totalMass += 4.0 * mass * MMM->m_massLumpingCoeff;
+            if(!this->m->isLumped())
+            {
+                totalMass += 4.0 * mass;
+            }
+            else
+                totalMass += 4.0 * mass * MMM->m_massLumpingCoeff;
         }
     }
 }
@@ -453,8 +479,11 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadCreation(con
             for (unsigned int j=0; j<4; ++j)
                 EdgeMasses[ qe[j] ] += mass;
 
-            // update total mass: *2 because added to 2 vertices
-            totalMass += 4.0 * mass * 2.0;
+            // update total mass
+            if(!this->m->isLumped())
+            {
+                totalMass += 4.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+            }
         }
     }
 }
@@ -496,7 +525,12 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadDestructio
                 VertexMasses[ q[j] ] -= mass;
 
             // update total mass
-            totalMass -= 4.0 * mass * MMM->m_massLumpingCoeff;
+            if(!this->m->isLumped())
+            {
+                totalMass -= 4.0 * mass;
+            }
+            else
+                totalMass -= 4.0 * mass * MMM->m_massLumpingCoeff;
         }
     }
 }
@@ -537,8 +571,11 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadDestruction(
             for (unsigned int j=0; j<4; ++j)
                 EdgeMasses[ qe[j] ] -= mass;
 
-            // update total mass: *2 because added to 2 vertices
-            totalMass -= 4.0 * mass * 2.0;
+            // update total mass
+            if(!this->m->isLumped())
+            {
+                totalMass -= 4.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+            }
         }
     }
 }
@@ -638,7 +675,12 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronCre
                 VertexMasses[ t[j] ] += mass;
 
             // update total mass
-            totalMass += 4.0 * mass * MMM->m_massLumpingCoeff;
+            if(!this->m->isLumped())
+            {
+                totalMass += 4.0 * mass;
+            }
+            else
+                totalMass += 4.0 * mass * MMM->m_massLumpingCoeff;
         }
     }
 }
@@ -691,7 +733,10 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronCreat
                 EdgeMasses[ te[j] ] += mass;
 
             // update total mass
-            totalMass += 6.0 * mass * 2.0;
+            if(!this->m->isLumped())
+            {
+                totalMass += 6.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+            }
         }
     }
 }
@@ -733,7 +778,12 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronDes
                 VertexMasses[ t[j] ] -= mass;
 
             // update total mass
-            totalMass -= 4.0 * mass * MMM->m_massLumpingCoeff;
+            if(!this->m->isLumped())
+            {
+                totalMass -= 4.0 * mass;
+            }
+            else
+                totalMass -= 4.0 * mass * MMM->m_massLumpingCoeff;
         }
     }
 }
@@ -775,7 +825,10 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronDestr
                 EdgeMasses[ te[j] ] -= mass;
 
             // update total mass
-            totalMass -= 6.0 * mass * 2.0;
+            if(!this->m->isLumped())
+            {
+                totalMass -= 6.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+            }
         }
     }
 }
@@ -874,7 +927,12 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronCrea
                 VertexMasses[ h[j] ] += mass;
 
             // update total mass
-            totalMass += 8.0 * mass * MMM->m_massLumpingCoeff;
+            if(!this->m->isLumped())
+            {
+                totalMass += 8.0 * mass;
+            }
+            else
+                totalMass += 8.0 * mass * MMM->m_massLumpingCoeff;
         }
     }
 }
@@ -927,7 +985,10 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronCreati
                 EdgeMasses[ he[j] ] += mass;
 
             // update total mass
-            totalMass += 12.0 * mass * 2.0;
+            if(!this->m->isLumped())
+            {
+                totalMass += 12.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+            }
         }
     }
 }
@@ -969,7 +1030,12 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronDest
                 VertexMasses[ h[j] ] -= mass;
 
             // update total mass
-            totalMass -= 8.0 * mass * MMM->m_massLumpingCoeff;
+            if(!this->m->isLumped())
+            {
+                totalMass -= 8.0 * mass;
+            }
+            else
+                totalMass -= 8.0 * mass * MMM->m_massLumpingCoeff;
         }
     }
 }
@@ -1011,7 +1077,10 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronDestru
                 EdgeMasses[ he[j] ] -= mass;
 
             // update total mass
-            totalMass -= 12.0 * mass * 2.0;
+            if(!this->m->isLumped())
+            {
+                totalMass -= 12.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+            }
         }
     }
 }
@@ -1283,7 +1352,7 @@ void MeshMatrixMass<DataTypes, MassType>::massInitialization()
                     initFromVertexAndEdgeMass();
                 }
             }
-            else if(d_lumping.getValue() && !d_edgeMass.isSet())
+            else if(isLumped() && !d_edgeMass.isSet())
             {
                 if(!checkVertexMass())
                 {
@@ -1412,7 +1481,6 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
         if (!isLumped())
         {
             m_edgeMassHandler->applyHexahedronCreation(hexahedraAdded, m_topology->getHexahedra(), emptyAncestors, emptyCoefficients);
-            m_massLumpingCoeff = 1.0;
         }
         
         m_vertexMassHandler->applyHexahedronCreation(hexahedraAdded, m_topology->getHexahedra(), emptyAncestors, emptyCoefficients);
@@ -1431,7 +1499,6 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
         if (!isLumped())
         {
             m_edgeMassHandler->applyTetrahedronCreation(tetrahedraAdded, m_topology->getTetrahedra(), emptyAncestors, emptyCoefficients);
-            m_massLumpingCoeff = 1.0;
         }
 
         m_vertexMassHandler->applyTetrahedronCreation(tetrahedraAdded, m_topology->getTetrahedra(), emptyAncestors, emptyCoefficients);
@@ -1450,7 +1517,6 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
         if (!isLumped())
         {
             m_edgeMassHandler->applyQuadCreation(quadsAdded, m_topology->getQuads(), emptyAncestors, emptyCoefficients);
-            m_massLumpingCoeff = 1.0;
         }
 
         m_vertexMassHandler->applyQuadCreation(quadsAdded, m_topology->getQuads(), emptyAncestors, emptyCoefficients);
@@ -1469,7 +1535,6 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
         if (!isLumped())
         {
             m_edgeMassHandler->applyTriangleCreation(trianglesAdded, m_topology->getTriangles(), emptyAncestors, emptyCoefficients);
-            m_massLumpingCoeff = 1.0;
         }
 
         m_vertexMassHandler->applyTriangleCreation(trianglesAdded, m_topology->getTriangles(), emptyAncestors, emptyCoefficients);
@@ -1515,42 +1580,6 @@ void MeshMatrixMass<DataTypes, MassType>::doUpdateInternal()
             this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         }
     }
-
-    /*else if(this->hasDataChanged(d_vertexMass))
-    {
-        if(this->hasDataChanged(d_edgeMass))
-        {
-            if(checkVertexMass() && checkEdgeMass() )
-            {
-                initFromVertexAndEdgeMass();
-                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
-            }
-            else
-            {
-                msg_error() << "doUpdateInternal: incorrect update from vertex and edgeMass";
-                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-            }
-        }
-        else if(d_lumping.getValue() && (!this->hasDataChanged(d_edgeMass)))
-        {
-            if(checkVertexMass())
-            {
-                initFromVertexMass();
-                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
-            }
-            else
-            {
-                msg_error() << "doUpdateInternal: incorrect update from vertexMass (lumping)";
-                this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-            }
-        }
-        else
-        {
-            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-            msg_error() << "Initialization using vertexMass requires the lumping option or the edgeMass information";
-        }
-    }*/
-
 
     //Info post-init
     msg_info() << "mass information updated";
@@ -1630,14 +1659,14 @@ void MeshMatrixMass<DataTypes, MassType>::initFromVertexMass()
     computeMass();
 
     helper::WriteAccessor<Data<MassVector> > vertexMassInfo = d_vertexMass;
-    //Compute volume = mass since massDensity = 1.0
+    //Compute mass (which is equal to the volume since massDensity = 1.0)
     Real volume = 0.0;
     for(size_t i=0; i<vertexMassInfo.size(); i++)
     {
         volume += vertexMassInfo[i]*m_massLumpingCoeff;
         vertexMassInfo[i] = vertexMass[i];
     }
-    m_massLumpingCoeff = 1.0;
+
     //Update all computed values
     setMassDensity(Real(totalMassSave/volume));
     d_totalMass.setValue(totalMassSave);
@@ -1812,13 +1841,17 @@ void MeshMatrixMass<DataTypes, MassType>::initFromMassDensity()
     const MassVector &vertexMassInfo = d_vertexMass.getValue();
     
     // Sum the mass per vertices and apply massLumping coef
-    Real sumMass = std::accumulate(vertexMassInfo.begin(), vertexMassInfo.end(), Real(0)) * m_massLumpingCoeff;
+    Real sumMass = std::accumulate(vertexMassInfo.begin(), vertexMassInfo.end(), Real(0));
 
-    if (!d_lumping.getValue())
+    if (!isLumped())
     {
         // Add mass per edges if not lumped, *2 as it is added to both edge vertices
         helper::WriteAccessor<Data<MassVector> > edgeMass = d_edgeMass;
-        sumMass += std::accumulate(edgeMass.begin(), edgeMass.end(), Real(0)) * 2;
+        sumMass += std::accumulate(edgeMass.begin(), edgeMass.end(), Real(0)) * 2.0;
+    }
+    else
+    {
+        sumMass *= m_massLumpingCoeff;
     }
 
     d_totalMass.setValue(sumMass);
@@ -2009,7 +2042,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams*, 
     SReal massTotal = 0.0;
 
     //using a lumped matrix (default)-----
-    if(d_lumping.getValue())
+    if(isLumped())
     {
         for (size_t i=0; i<dx.size(); i++)
         {
@@ -2066,7 +2099,7 @@ template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f)
 {
     SOFA_UNUSED(mparams);
-    if( !d_lumping.getValue() )
+    if( !isLumped() )
     {
         msg_error() << "the method 'accFromF' can't be used with MeshMatrixMass as this SPARSE mass matrix can't be inversed easily. "
                     << "Please proceed to mass lumping or use a DiagonalMass (both are equivalent).";
@@ -2213,7 +2246,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
 
     SReal massTotal=0.0;
 
-    if(d_lumping.getValue())
+    if(isLumped())
     {
         for (size_t i=0; i<vertexMass.size(); i++)
         {
