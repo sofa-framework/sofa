@@ -29,7 +29,10 @@ namespace sofa::component::linearsolver
 {
 
 /**
- * @brief Exports the global system matrix of the current context into a text file. The matrix is printed in its dense format.
+ * @brief Exports the global system matrix of the current context into a file. The exporter allows to write the file
+ * under several formats.
+ *
+ * The class is designed so more file format can be supported. For example, image export is added in the CImg plugin.
  */
 class SOFA_SOFABASELINEARSOLVER_API GlobalSystemMatrixExporter : public sofa::simulation::BaseSimulationExporter
 {
