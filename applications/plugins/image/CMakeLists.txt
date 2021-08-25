@@ -43,6 +43,7 @@ set(SOURCE_FILES
     )
 set(HEADER_FILES
     config.h.in
+    CImgData.h
     CollisionToCarvingEngine.h
     Containers.h
     ImageAccumulator.h
