@@ -85,21 +85,21 @@ public:
 public:
     Data<VecCoord> d_positions;
     Data<Vec6>  d_borders;
-    Data<bool>  m_drawBox; ///< draw bounding box
+    Data<bool>  d_drawBox; ///< draw bounding box
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<TopologyBoundingTrasher, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 
 protected:
-    core::topology::BaseMeshTopology* m_topology;
+    core::topology::BaseMeshTopology::SPtr m_topology;
     sofa::core::topology::TopologyElementType m_topologyType;
 
-    sofa::component::topology::EdgeSetTopologyModifier* edgeModifier;
-    sofa::component::topology::TriangleSetTopologyModifier* triangleModifier;
-    sofa::component::topology::QuadSetTopologyModifier* quadModifier;
-    sofa::component::topology::TetrahedronSetTopologyModifier* tetraModifier;
-    sofa::component::topology::HexahedronSetTopologyModifier* hexaModifier;
+    sofa::component::topology::EdgeSetTopologyModifier::SPtr edgeModifier;
+    sofa::component::topology::TriangleSetTopologyModifier::SPtr triangleModifier;
+    sofa::component::topology::QuadSetTopologyModifier::SPtr quadModifier;
+    sofa::component::topology::TetrahedronSetTopologyModifier::SPtr tetraModifier;
+    sofa::component::topology::HexahedronSetTopologyModifier::SPtr hexaModifier;
 
     type::vector<Index> m_indicesToRemove;
 };

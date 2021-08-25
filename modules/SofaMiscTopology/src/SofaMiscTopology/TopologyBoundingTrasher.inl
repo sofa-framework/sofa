@@ -41,7 +41,7 @@ template <class DataTypes>
 TopologyBoundingTrasher<DataTypes>::TopologyBoundingTrasher()
     : d_positions(initData(&d_positions, "position", "position coordinates of the topology object to interact with."))
     , d_borders(initData(&d_borders, Vec6(-1000, -1000, -1000, 1000, 1000, 1000), "box", "List of boxes defined by xmin,ymin,zmin, xmax,ymax,zmax"))
-    , m_drawBox(initData(&m_drawBox, false, "drawBox", "Draw Boxes. (default = false)"))
+    , d_drawBox(initData(&d_drawBox, false, "drawBox", "Draw Boxes. (default = false)"))
     , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
     , edgeModifier(nullptr)
@@ -297,7 +297,7 @@ void TopologyBoundingTrasher<DataTypes>::handleEvent(sofa::core::objectmodel::Ev
 template <class DataTypes>
 void TopologyBoundingTrasher<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (m_drawBox.getValue())
+    if (d_drawBox.getValue())
     {
         const Vec6& border = d_borders.getValue();
         auto color = sofa::type::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f);
