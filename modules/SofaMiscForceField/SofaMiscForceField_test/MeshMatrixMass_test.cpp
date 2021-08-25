@@ -1241,21 +1241,39 @@ public:
     }
 
 
-    void checkTopologicalChanges_Hexa()
+    void checkTopologicalChanges_Hexa(bool lumped)
     {
-        static const string scene =
-            "<?xml version='1.0'?>                                                                              "
-            "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-            "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-            "    <Node name='Hexa' >                                                                            "
-            "            <MechanicalObject position = '@../grid.position' />                                    "
-            "            <HexahedronSetTopologyContainer name='Container' src='@../grid' />                     "
-            "            <HexahedronSetTopologyModifier name='Modifier' />                                      "
-            "            <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                   "
-            "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                        "
-            "    </Node>                                                                                        "
-            "</Node>                                                                                            ";
-
+        string scene;
+        if(!lumped)
+        {
+            scene =
+                    "<?xml version='1.0'?>                                                                              "
+                    "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                    "    <Node name='Hexa' >                                                                            "
+                    "            <MechanicalObject position = '@../grid.position' />                                    "
+                    "            <HexahedronSetTopologyContainer name='Container' src='@../grid' />                     "
+                    "            <HexahedronSetTopologyModifier name='Modifier' />                                      "
+                    "            <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                   "
+                    "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                      "
+                    "    </Node>                                                                                        "
+                    "</Node>                                                                                            ";
+        }
+        else
+        {
+            scene =
+                    "<?xml version='1.0'?>                                                                              "
+                    "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                    "    <Node name='Hexa' >                                                                            "
+                    "            <MechanicalObject position = '@../grid.position' />                                    "
+                    "            <HexahedronSetTopologyContainer name='Container' src='@../grid' />                     "
+                    "            <HexahedronSetTopologyModifier name='Modifier' />                                      "
+                    "            <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                   "
+                    "            <MeshMatrixMass name='m_mass' massDensity='1.0' lumping='true'                         "
+                    "    </Node>                                                                                        "
+                    "</Node>                                                                                            ";
+        }
         Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
             scene.c_str(),
             sofa::Size(scene.size()));
@@ -1345,22 +1363,43 @@ public:
     }
 
 
-    void checkTopologicalChanges_Tetra()
+    void checkTopologicalChanges_Tetra(bool lumped)
     {
-        static const string scene =
-            "<?xml version='1.0'?>                                                                              "
-            "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-            "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
-            "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-            "    <Node name='Tetra' >                                                                           "
-            "            <MechanicalObject position='@../grid.position' />                                      "
-            "            <TetrahedronSetTopologyContainer name='Container' />                                   "
-            "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
-            "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
-            "            <Hexa2TetraTopologicalMapping input='@../grid' output='@Container' />                  "
-            "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                        "
-            "    </Node>                                                                                        "
-            "</Node>                                                                                            ";
+        string scene;
+        if(!lumped)
+        {
+             scene =
+                    "<?xml version='1.0'?>                                                                              "
+                    "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                    "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                    "    <Node name='Tetra' >                                                                           "
+                    "            <MechanicalObject position='@../grid.position' />                                      "
+                    "            <TetrahedronSetTopologyContainer name='Container' />                                   "
+                    "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
+                    "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
+                    "            <Hexa2TetraTopologicalMapping input='@../grid' output='@Container' />                  "
+                    "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                      "
+                    "    </Node>                                                                                        "
+                    "</Node>                                                                                            ";
+        }
+        else
+        {
+            scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "            <MechanicalObject position='@../grid.position' />                                      "
+                "            <TetrahedronSetTopologyContainer name='Container' />                                   "
+                "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
+                "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
+                "            <Hexa2TetraTopologicalMapping input='@../grid' output='@Container' />                  "
+                "            <MeshMatrixMass name='m_mass' massDensity='1.0' lumping='true'/>                       "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            ";
+        }
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
             scene.c_str(),
@@ -1449,20 +1488,39 @@ public:
         EXPECT_NEAR(mass->getTotalMass(), 0, 1e-4);
     }
 
-    void checkTopologicalChanges_Quad()
+    void checkTopologicalChanges_Quad(bool lumped)
     {
-        static const string scene =
-            "<?xml version='1.0'?>                                                                              "
-            "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-            "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-            "    <Node name='Quad' >                                                                            "
-            "            <MechanicalObject position = '@../grid.position' />                                    "
-            "            <QuadSetTopologyContainer name='Container' src='@../grid' />                     "
-            "            <QuadSetTopologyModifier name='Modifier' />                                      "
-            "            <QuadSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                   "
-            "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                        "
-            "    </Node>                                                                                        "
-            "</Node>                                                                                            ";
+        string scene;
+        if(!lumped)
+        {
+            scene =
+                    "<?xml version='1.0'?>                                                                              "
+                    "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                    "    <Node name='Quad' >                                                                            "
+                    "            <MechanicalObject position = '@../grid.position' />                                    "
+                    "            <QuadSetTopologyContainer name='Container' src='@../grid' />                           "
+                    "            <QuadSetTopologyModifier name='Modifier' />                                            "
+                    "            <QuadSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                         "
+                    "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                      "
+                    "    </Node>                                                                                        "
+                    "</Node>                                                                                            ";
+        }
+        else
+        {
+            scene =
+                    "<?xml version='1.0'?>                                                                              "
+                    "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                    "    <Node name='Quad' >                                                                            "
+                    "            <MechanicalObject position = '@../grid.position' />                                    "
+                    "            <QuadSetTopologyContainer name='Container' src='@../grid' />                           "
+                    "            <QuadSetTopologyModifier name='Modifier' />                                            "
+                    "            <QuadSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                         "
+                    "            <MeshMatrixMass name='m_mass' massDensity='1.0' lumping='true'/>                       "
+                    "    </Node>                                                                                        "
+                    "</Node>                                                                                            ";
+        }
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
             scene.c_str(),
@@ -1537,20 +1595,39 @@ public:
     }
 
 
-    void checkTopologicalChanges_Triangle()
+    void checkTopologicalChanges_Triangle(bool lumped)
     {
-        static const string scene =
-            "<?xml version='1.0'?>                                                                              "
-            "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-            "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-            "    <Node name='Triangle' >                                                                            "
-            "            <MechanicalObject position = '@../grid.position' />                                    "
-            "            <TriangleSetTopologyContainer name='Container' src='@../grid' />                     "
-            "            <TriangleSetTopologyModifier name='Modifier' />                                      "
-            "            <TriangleSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                   "
-            "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                        "
-            "    </Node>                                                                                        "
-            "</Node>                                                                                            ";
+        string scene;
+        if(!lumped)
+        {
+            scene =
+                    "<?xml version='1.0'?>                                                                              "
+                    "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                    "    <Node name='Triangle' >                                                                        "
+                    "            <MechanicalObject position = '@../grid.position' />                                    "
+                    "            <TriangleSetTopologyContainer name='Container' src='@../grid' />                       "
+                    "            <TriangleSetTopologyModifier name='Modifier' />                                        "
+                    "            <TriangleSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                     "
+                    "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                      "
+                    "    </Node>                                                                                        "
+                    "</Node>                                                                                            ";
+        }
+        else
+        {
+            scene =
+                    "<?xml version='1.0'?>                                                                              "
+                    "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                    "    <Node name='Triangle' >                                                                        "
+                    "            <MechanicalObject position = '@../grid.position' />                                    "
+                    "            <TriangleSetTopologyContainer name='Container' src='@../grid' />                       "
+                    "            <TriangleSetTopologyModifier name='Modifier' />                                        "
+                    "            <TriangleSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                     "
+                    "            <MeshMatrixMass name='m_mass' massDensity='1.0' lumping='true'/>                       "
+                    "    </Node>                                                                                        "
+                    "</Node>                                                                                            ";
+        }
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
             scene.c_str(),
@@ -1639,20 +1716,39 @@ public:
         EXPECT_NEAR(mass->getTotalMass(), 0, 1e-4);
     }
 
-    void checkTopologicalChanges_Edge()
+    void checkTopologicalChanges_Edge(bool lumped)
     {
-        static const string scene =
-            "<?xml version='1.0'?>                                                                              "
-            "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-            "    <RegularGridTopology name='grid' n='4 1 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-            "    <Node name='Edge' >                                                                            "
-            "            <MechanicalObject position = '@../grid.position' />                                    "
-            "            <EdgeSetTopologyContainer name='Container' src='@../grid' />                     "
-            "            <EdgeSetTopologyModifier name='Modifier' />                                      "
-            "            <EdgeSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                   "
-            "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                        "
-            "    </Node>                                                                                        "
-            "</Node>                                                                                            ";
+        string scene;
+        if(!lumped)
+        {
+            scene =
+                    "<?xml version='1.0'?>                                                                              "
+                    "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <RegularGridTopology name='grid' n='4 1 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                    "    <Node name='Edge' >                                                                            "
+                    "            <MechanicalObject position = '@../grid.position' />                                    "
+                    "            <EdgeSetTopologyContainer name='Container' src='@../grid' />                           "
+                    "            <EdgeSetTopologyModifier name='Modifier' />                                            "
+                    "            <EdgeSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                         "
+                    "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                      "
+                    "    </Node>                                                                                        "
+                    "</Node>                                                                                            ";
+        }
+        else
+        {
+            scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <RegularGridTopology name='grid' n='4 1 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Edge' >                                                                            "
+                "            <MechanicalObject position = '@../grid.position' />                                    "
+                "            <EdgeSetTopologyContainer name='Container' src='@../grid' />                           "
+                "            <EdgeSetTopologyModifier name='Modifier' />                                            "
+                "            <EdgeSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                         "
+                "            <MeshMatrixMass name='m_mass' massDensity='1.0' lumping='true'/>                       "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            ";
+        }
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
             scene.c_str(),
@@ -1969,29 +2065,54 @@ TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndMassDensity_Wro
 }
 
 
-TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Hexa) {
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Hexa_sparse) {
     EXPECT_MSG_NOEMIT(Error);
-    checkTopologicalChanges_Hexa();
+    checkTopologicalChanges_Hexa(false);
 }
 
-TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Tetra) {
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Tetra_sparse) {
     EXPECT_MSG_NOEMIT(Error);
-    checkTopologicalChanges_Tetra();
+    checkTopologicalChanges_Tetra(false);
 }
 
-TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Quad) {
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Quad_sparse) {
     EXPECT_MSG_NOEMIT(Error);
-    checkTopologicalChanges_Quad();
+    checkTopologicalChanges_Quad(false);
 }
 
-TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Triangle) {
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Triangle_sparse) {
     EXPECT_MSG_NOEMIT(Error);
-    checkTopologicalChanges_Triangle();
+    checkTopologicalChanges_Triangle(false);
 }
 
-TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Edge) {
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Edge_sparse) {
     EXPECT_MSG_NOEMIT(Error);
-    checkTopologicalChanges_Edge();
+    checkTopologicalChanges_Edge(false);
+}
+
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Hexa_lumped) {
+    EXPECT_MSG_NOEMIT(Error);
+    checkTopologicalChanges_Hexa(true);
+}
+
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Tetra_lumped) {
+    EXPECT_MSG_NOEMIT(Error);
+    checkTopologicalChanges_Tetra(true);
+}
+
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Quad_lumped) {
+    EXPECT_MSG_NOEMIT(Error);
+    checkTopologicalChanges_Quad(true);
+}
+
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Triangle_lumped) {
+    EXPECT_MSG_NOEMIT(Error);
+    checkTopologicalChanges_Triangle(true);
+}
+
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Edge_lumped) {
+    EXPECT_MSG_NOEMIT(Error);
+    checkTopologicalChanges_Edge(true);
 }
 
 
