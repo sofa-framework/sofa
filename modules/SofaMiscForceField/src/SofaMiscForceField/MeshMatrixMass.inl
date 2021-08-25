@@ -112,8 +112,6 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyDestroyFunction(
         helper::WriteAccessor<Data<Real> > totalMass(this->m->d_totalMass);
         totalMass -= EdgeMass;
     }
-    else
-        SOFA_UNUSED(EdgeMass);
 }
 
 
@@ -176,7 +174,9 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleCreati
                 totalMass += 3.0 * mass;
             }
             else
+            {
                 totalMass += 3.0 * mass * MMM->m_massLumpingCoeff;
+            }
         }
     }
 }
@@ -279,7 +279,9 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleDestru
                 totalMass -= 3.0 * mass;
             }
             else
+            {
                 totalMass -= 3.0 * mass * MMM->m_massLumpingCoeff;
+            }
         }
     }
 }
@@ -427,7 +429,9 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadCreation(c
                 totalMass += 4.0 * mass;
             }
             else
+            {
                 totalMass += 4.0 * mass * MMM->m_massLumpingCoeff;
+            }
         }
     }
 }
@@ -530,7 +534,9 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadDestructio
                 totalMass -= 4.0 * mass;
             }
             else
+            {
                 totalMass -= 4.0 * mass * MMM->m_massLumpingCoeff;
+            }
         }
     }
 }
@@ -680,7 +686,9 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronCre
                 totalMass += 4.0 * mass;
             }
             else
+            {
                 totalMass += 4.0 * mass * MMM->m_massLumpingCoeff;
+            }
         }
     }
 }
@@ -783,7 +791,9 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronDes
                 totalMass -= 4.0 * mass;
             }
             else
+            {
                 totalMass -= 4.0 * mass * MMM->m_massLumpingCoeff;
+            }
         }
     }
 }
@@ -932,7 +942,9 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronCrea
                 totalMass += 8.0 * mass;
             }
             else
+            {
                 totalMass += 8.0 * mass * MMM->m_massLumpingCoeff;
+            }
         }
     }
 }
@@ -1035,7 +1047,9 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronDest
                 totalMass -= 8.0 * mass;
             }
             else
+            {
                 totalMass -= 8.0 * mass * MMM->m_massLumpingCoeff;
+            }
         }
     }
 }
