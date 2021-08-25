@@ -235,7 +235,14 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
 
     // add one identity matrix
     xforms.resize(1);
-
+        
+    addUpdateCallback("updateTextures", { &texturename },
+        [&](const core::DataTracker& tracker) -> sofa::core::objectmodel::ComponentState
+    {
+        SOFA_UNUSED(tracker);
+        m_textureChanged = true;
+        return sofa::core::objectmodel::ComponentState::Loading;
+    }, { &d_componentState });    
 }
 
 VisualModelImpl::~VisualModelImpl()
@@ -854,14 +861,6 @@ void VisualModelImpl::init()
 
     m_topology = l_topology.get();
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
-
-    addUpdateCallback("updateTextures", { &texturename },
-        [&](const core::DataTracker& tracker) -> sofa::core::objectmodel::ComponentState
-    {
-        SOFA_UNUSED(tracker);
-        m_textureChanged = true;
-        return sofa::core::objectmodel::ComponentState::Loading;
-    }, { &d_componentState });
 
     if (m_vertPosIdx.getValue().size() > 0 && m_vertices2.getValue().empty())
     { // handle case where vertPosIdx was initialized through a loader
