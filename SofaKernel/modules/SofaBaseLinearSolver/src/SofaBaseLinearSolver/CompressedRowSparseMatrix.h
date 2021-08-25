@@ -1838,10 +1838,10 @@ public:
 #undef SPARSEMATRIX_VERBOSE
 #endif
 
-template<> template<> void CompressedRowSparseMatrix<double>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,double> > >(CompressedRowSparseMatrix<type::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref);
-template<> template<> void CompressedRowSparseMatrix<double>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,float> > >(CompressedRowSparseMatrix<type::Mat<3,3,float> >& M, filter_fn* filter, const Bloc& ref);
-template<> template<> void CompressedRowSparseMatrix<float>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,float> > >(CompressedRowSparseMatrix<type::Mat<3,3,float> >& M, filter_fn* filter, const Bloc& ref);
-template<> template<> void CompressedRowSparseMatrix<float>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,double> > >(CompressedRowSparseMatrix<type::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref);
+template<> template<> void SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<double>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,double> > >(CompressedRowSparseMatrix<type::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref);
+template<> template<> void SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<double>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,float> > >(CompressedRowSparseMatrix<type::Mat<3,3,float> >& M, filter_fn* filter, const Bloc& ref);
+template<> template<> void SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<float>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,float> > >(CompressedRowSparseMatrix<type::Mat<3,3,float> >& M, filter_fn* filter, const Bloc& ref);
+template<> template<> void SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<float>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,double> > >(CompressedRowSparseMatrix<type::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref);
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_COMPRESSEDROWSPARSEMATRIX_CPP)
 
