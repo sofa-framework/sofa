@@ -504,7 +504,7 @@ public:
     {
         for (Index bi = 0; bi < NL; ++bi)
             for (Index bj = 0; bj < NC; ++bj)
-                if (helper::rabs(traits::v(val, bi, bj)) >= ref) return true;
+                if (helper::rabs(traits::v(val, bi, bj)) >= traits::v(ref, bi, bj)) return true;
         return false;
     }
     static bool upper         (Index   i  , Index   j  , Bloc& val, const Bloc& /*ref*/)
@@ -561,7 +561,7 @@ public:
             for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
             {
                 Index j = M.colsIndex[xj];
-                Bloc b = M.colsValue[xj];
+                Bloc& b = M.colsValue[xj];
                 if ((*filter)(i,j,b,ref))
                 {
                     colsIndex.push_back(j);
@@ -1836,6 +1836,28 @@ public:
 #endif
 #ifdef SPARSEMATRIX_VERBOSE
 #undef SPARSEMATRIX_VERBOSE
+#endif
+
+template<> template<> void CompressedRowSparseMatrix<double>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,double> > >(CompressedRowSparseMatrix<type::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref);
+template<> template<> void CompressedRowSparseMatrix<double>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,float> > >(CompressedRowSparseMatrix<type::Mat<3,3,float> >& M, filter_fn* filter, const Bloc& ref);
+template<> template<> void CompressedRowSparseMatrix<float>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,float> > >(CompressedRowSparseMatrix<type::Mat<3,3,float> >& M, filter_fn* filter, const Bloc& ref);
+template<> template<> void CompressedRowSparseMatrix<float>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,double> > >(CompressedRowSparseMatrix<type::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref);
+
+#if !defined(SOFA_COMPONENT_LINEARSOLVER_COMPRESSEDROWSPARSEMATRIX_CPP)
+
+extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<float>;
+extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<double>;
+extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<2,2,float> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<2,2,double> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<3,3,float> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<3,3,double> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<4,4,float> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<4,4,double> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<6,6,float> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<6,6,double> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<8,8,float> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<8,8,double> >;
+
 #endif
 
 } // namespace sofa::component::linearsolver

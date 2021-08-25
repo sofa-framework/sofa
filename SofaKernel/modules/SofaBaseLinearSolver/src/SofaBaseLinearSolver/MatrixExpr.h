@@ -557,8 +557,6 @@ public:
     typedef MatrixInverse<M1> Expr;
     typedef MatrixInvertOp<M1> Op;
     enum { operand = 0 };
-    enum { category = Op::category };
-    typedef typename Op::matrix_type matrix_type;
 
     const M1& m1;
     MatrixInverse(const M1& m1) : m1(m1)
