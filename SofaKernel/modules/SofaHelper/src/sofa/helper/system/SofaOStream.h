@@ -39,17 +39,17 @@
 
 #ifndef SOFA_BUILD_SOFA_CORE
 #if defined(_MSC_VER) && (_MSC_VER < 1920) // if less than VS 2019
-#define SOFA_OVERRIDE_ATTRIBUTE_DEPRECATED__SOFAOSTREAM() \
+#define SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM__OVERRIDE() \
     __declspec(deprecated(\
         "It is still usable but has been DEPRECATED since v21.12 (PR#2292). " \
         "You have until v22.06 to fix your code. " \
         "Use the Messaging API instead of using SofaOStream and sout/serr/sendl."))
 #else // _MSC_VER
-#define SOFA_OVERRIDE_ATTRIBUTE_DEPRECATED__SOFAOSTREAM() \
+#define SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM__OVERRIDE() \
         SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
 #endif // _MSC_VER
 #else // SOFA_BUILD_SOFA_CORE
-#define SOFA_OVERRIDE_ATTRIBUTE_DEPRECATED__SOFAOSTREAM() // dont do anything if we are building Sofa.Core
+#define SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM__OVERRIDE() // dont do anything if we are building Sofa.Core
 #endif // SOFA_BUILD_SOFA_CORE
         
 namespace sofa
@@ -73,7 +73,7 @@ protected:
 
 public:
 
-    SOFA_OVERRIDE_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM__OVERRIDE()
     friend inline
     std::ostream &operator << (std::ostream& out, const SofaEndl<Container> & s)
     {
@@ -88,7 +88,7 @@ public:
     {
     }
 
-    SOFA_OVERRIDE_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM__OVERRIDE()
     void setParent(Container* p)
     {
         parent = p;
@@ -109,21 +109,21 @@ public:
 
     bool operator==(const std::ostream& os) { return &os == &m_ostream; }
     
-    SOFA_OVERRIDE_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM__OVERRIDE()
     friend inline SofaOStream& operator<<( SofaOStream& out, const logging::FileInfo::SPtr& fi )
     {
         out.m_fileInfo = fi;
         return out;
     }
 
-    SOFA_OVERRIDE_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM__OVERRIDE()
     friend inline SofaOStream& operator<<( SofaOStream& out, const logging::Message::Type& mt )
     {
         out.m_messageType = mt;
         return out;
     }
 
-    SOFA_OVERRIDE_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM__OVERRIDE()
     friend inline SofaOStream& operator<<( SofaOStream& out, const logging::Message::Class& mc )
     {
         out.m_messageClass = mc;
@@ -131,7 +131,7 @@ public:
     }
 
     template<class T>
-    SOFA_OVERRIDE_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM__OVERRIDE()
     friend inline std::ostringstream& operator<<( SofaOStream& out, const T& t )
     {
         out.m_ostream << t;
@@ -139,32 +139,32 @@ public:
     }
 
     // a few useful functions on ostringstream, for a complete API, convert this in a ostringstream
-    SOFA_OVERRIDE_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM__OVERRIDE()
     std::string str() const { return m_ostream.str(); }
 
-    SOFA_OVERRIDE_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM__OVERRIDE()
     void str(const std::string& s) { m_ostream.str(s); }
 
-    SOFA_OVERRIDE_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM__OVERRIDE()
     std::streamsize precision() const { return m_ostream.precision(); }
 
-    SOFA_OVERRIDE_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM__OVERRIDE()
     std::streamsize precision( std::streamsize p ) { return m_ostream.precision(p); }
 
-    SOFA_OVERRIDE_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM__OVERRIDE()
     std::ostringstream& ostringstream() const { return m_ostream; }
 
-    SOFA_OVERRIDE_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM__OVERRIDE()
     const logging::FileInfo::SPtr& fileInfo() const { return m_fileInfo; }
 
-    SOFA_OVERRIDE_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM__OVERRIDE()
     const logging::Message::Type& messageType() const { return m_messageType; }
 
-    SOFA_OVERRIDE_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM__OVERRIDE()
     const logging::Message::Class& messageClass() const { return m_messageClass; }
 
     /// clearing the SofaOStream (set empty string, empty FileInfo, default Message type)
-    SOFA_OVERRIDE_ATTRIBUTE_DEPRECATED__SOFAOSTREAM()
+    SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM__OVERRIDE()
     void clear()
     {
         str("");
