@@ -208,8 +208,9 @@ template<class T>
 void copyKToEigenFormat(CompressedRowSparseMatrix< T >* K, Eigen::SparseMatrix<double,Eigen::ColMajor>& Keig)
 {
     std::vector< Eigen::Triplet<double> > tripletList;
-    tripletList.reserve(K->colsValue.size());
+    tripletList.reserve(K->colsValue.size() + K->btemp.size());
 
+    // Creates the list of triplets from the compressed part of the matrix
     int row;
     for (unsigned int it_rows_k=0; it_rows_k < K->rowIndex.size() ; it_rows_k ++)
     {
@@ -222,6 +223,13 @@ void copyKToEigenFormat(CompressedRowSparseMatrix< T >* K, Eigen::SparseMatrix<d
             tripletList.push_back(Eigen::Triplet<double>(row,col,k));
         }
     }
+
+    // Creates the list of triplets from the triplets that are not yet compressed
+    for (const auto& indexedBloc : K->btemp)
+    {
+        tripletList.emplace_back(indexedBloc.l, indexedBloc.c, indexedBloc.value);
+    }
+
     Keig.setFromTriplets(tripletList.begin(), tripletList.end());
 }
 template<class InputFormat>
@@ -371,12 +379,6 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
         msg_error(this) << "matrix of the force-field system not found";
         return;
     }
-
-    ///////////////////////     COMPRESS K       ///////////////////////////////////
-    sofa::helper::AdvancedTimer::stepBegin("compressStiffnessMatrix" );
-    K->compress();
-    sofa::helper::AdvancedTimer::stepEnd("compressStiffnessMatrix" );
-
 
     //------------------------------------------------------------------------------
 
