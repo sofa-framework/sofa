@@ -132,7 +132,6 @@ inline Real areaProduct(const type::Vec<1,Real>& , const type::Vec<1,Real>&  );
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_CPP)
 extern template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec3Types>;
 extern template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec2Types>;
-extern template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec1Types>;
 
 #endif
 

@@ -411,11 +411,6 @@ inline Real areaProduct(const type::Vec<1,Real>& , const type::Vec<1,Real>&  );
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_CPP)
 extern template class SOFA_SOFABASETOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Vec3Types>;
 extern template class SOFA_SOFABASETOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Vec2Types>;
-extern template class SOFA_SOFABASETOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Vec1Types>;
-//extern template class SOFA_SOFABASETOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Rigid3Types>;
-//extern template class SOFA_SOFABASETOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Rigid2Types>;
-
-
 #endif
 
 } //namespace sofa::component::topology
