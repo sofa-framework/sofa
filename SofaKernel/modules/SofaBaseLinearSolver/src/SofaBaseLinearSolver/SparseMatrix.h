@@ -158,6 +158,7 @@ public:
         data[i][j] = (Real)v;
     }
 
+    using defaulttype::BaseMatrix::add;
     void add(Index i, Index j, double v) override
     {
         if(SPARSEMATRIX_VERBOSE){

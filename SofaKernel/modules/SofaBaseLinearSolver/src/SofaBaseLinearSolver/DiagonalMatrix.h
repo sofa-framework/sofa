@@ -102,6 +102,7 @@ public:
         if (i==j) data[i] = (Real)v;
     }
 
+    using defaulttype::BaseMatrix::add;
     void add(Index i, Index j, double v) override
     {
         if (i==j) data[i] += (Real)v;
@@ -159,7 +160,6 @@ public:
         data[i] = (Real)v;
     }
 
-    using BaseMatrix::add;
     void add(Index i, double v)
     {
         data[i] += (Real)v;
@@ -428,6 +428,7 @@ public:
             setB(i, b);
     }
 
+    using defaulttype::BaseMatrix::add;
     void add(Index i, Index j, double v) override
     {
         Index bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
