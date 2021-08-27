@@ -950,7 +950,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const t
     tri2[0] = p3; tri2[1] = p4; tri2[2] = p1;
 
 
-    //Test if one vertex is inside the triangle fromed by the the 3 others
+    //Test if one vertex is inside the triangle formed by the 3 others
     Coord CommonEdge[2], oppositeVertices[2];
 
     oppositeVertices[0] = p1; sofa::type::Vec<3,double> A; A = p1;

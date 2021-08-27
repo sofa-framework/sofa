@@ -14,6 +14,8 @@ set(HEADER_FILES
     ${SRC_ROOT}/ConstraintParams.h
     ${SRC_ROOT}/DataEngine.h
     ${SRC_ROOT}/DataTracker.h
+    ${SRC_ROOT}/DataTrackerCallback.h
+    ${SRC_ROOT}/DataTrackerFunctor.h
     ${SRC_ROOT}/ExecParams.h
     ${SRC_ROOT}/Mapping.h
     ${SRC_ROOT}/Mapping.inl
@@ -138,7 +140,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/topology/BaseTopologyObject.h
     ${SRC_ROOT}/topology/TopologicalMapping.h
     ${SRC_ROOT}/topology/TopologyChange.h
-	${SRC_ROOT}/topology/TopologyHandler.h
+    ${SRC_ROOT}/topology/TopologyHandler.h
     ${SRC_ROOT}/visual/DisplayFlags.h
     ${SRC_ROOT}/visual/Shader.h
     ${SRC_ROOT}/visual/VisualLoop.h
@@ -159,6 +161,8 @@ set(SOURCE_FILES
     ${SRC_ROOT}/ConstraintParams.cpp
     ${SRC_ROOT}/DataEngine.cpp
     ${SRC_ROOT}/DataTracker.cpp
+    ${SRC_ROOT}/DataTrackerCallback.cpp
+    ${SRC_ROOT}/DataTrackerFunctor.cpp
     ${SRC_ROOT}/ExecParams.cpp
     ${SRC_ROOT}/Mapping.cpp
     ${SRC_ROOT}/MechanicalParams.cpp

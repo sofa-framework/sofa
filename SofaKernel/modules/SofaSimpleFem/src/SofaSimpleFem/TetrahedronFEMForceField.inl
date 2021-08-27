@@ -1977,7 +1977,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
     }
     else
     {
-        int i,j,n1, n2, row, column, ROW, COLUMN , IT;
+        int IT;
         StiffnessMatrix JKJt,tmp;
 
         Index noeud1, noeud2;

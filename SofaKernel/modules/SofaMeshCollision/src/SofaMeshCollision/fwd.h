@@ -26,8 +26,6 @@
 namespace sofa::component::collision
 {
 
-class TriangleLocalMinDistanceFilter;
-
 template<class DataTypes>
 class TriangleCollisionModel;
 
@@ -37,5 +35,4 @@ class TTriangle;
 template<class DataTypes>
 class PointCollisionModel;
 
-class LocalMinDistanceFilter;
 }

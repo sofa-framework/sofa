@@ -36,6 +36,7 @@
 
 #include <sofa/core/objectmodel/ComponentState.h>
 #include <sofa/core/DataTracker.h>
+#include <sofa/core/DataTrackerCallback.h>
 
 // forward declaration of castable classes
 // @author Matthieu Nesme, 2015

@@ -33,8 +33,6 @@ namespace sofa::component::collision
 template<class DataTypes>
 class LineCollisionModel;
 
-class LineLocalMinDistanceFilter;
-
 template<class DataTypes>
 class PointCollisionModel;
 
@@ -138,13 +136,9 @@ public:
 
     Deriv velocity(Index index)const;
 
-    LineLocalMinDistanceFilter *getFilter() const;
-
     virtual Index getElemEdgeIndex(Index index) const { return index; }
     
     int getLineFlags(Index i);
-
-    void setFilter(LineLocalMinDistanceFilter * /*lmdFilter*/);
 
     Data<bool> bothSide; ///< to activate collision on both-side of the both side of the line model (when surface normals are defined on these lines)
 
@@ -179,8 +173,6 @@ protected:
     Topology* topology;
     PointCollisionModel<sofa::defaulttype::Vec3Types>* mpoints;
     int meshRevision;
-    LineLocalMinDistanceFilter *m_lmdFilter;
-
 };
 
 template<class DataTypes>

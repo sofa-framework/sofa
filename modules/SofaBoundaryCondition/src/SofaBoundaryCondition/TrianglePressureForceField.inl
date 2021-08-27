@@ -46,7 +46,7 @@ template <class DataTypes>  TrianglePressureForceField<DataTypes>::TrianglePress
         , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
         , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
         , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw triangles which have a given pressure"))
-		, p_useConstantForce(initData(&p_useConstantForce, (bool)true, "useConstantForce", "applied force is computed as the the pressure vector times the area at rest"))
+		, p_useConstantForce(initData(&p_useConstantForce, (bool)true, "useConstantForce", "applied force is computed as the pressure vector times the area at rest"))
         , l_topology(initLink("topology", "link to the topology container"))
         , trianglePressureMap(initData(&trianglePressureMap, "trianglePressureMap", "map between edge indices and their pressure"))
         , m_topology(nullptr)

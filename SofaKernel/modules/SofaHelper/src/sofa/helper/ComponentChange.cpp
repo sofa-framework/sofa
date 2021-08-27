@@ -35,6 +35,7 @@ std::map<std::string, Deprecated> deprecatedComponents = {
     {"RayTraceDetection", Deprecated("v21.06", "v21.12")},
     {"BruteForceDetection", Deprecated("v21.06", "v21.12")},
     {"DirectSAP", Deprecated("v21.06", "v21.12")},
+    {"PointConstraint", Deprecated("v21.12", "v22.06")},
 };
 
 std::map<std::string, ComponentChange> uncreatableComponents = {
@@ -390,7 +391,6 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "GenericConstraintSolver", Pluginized("v20.12", "SofaConstraint") },
     { "LCPConstraintSolver", Pluginized("v20.12", "SofaConstraint") },
     { "LinearSolverConstraintCorrection", Pluginized("v20.12", "SofaConstraint") },
-    { "LMDNewProximityIntersection", Pluginized("v20.12", "SofaConstraint") },
     { "LocalMinDistance", Pluginized("v20.12", "SofaConstraint") },
     { "MappingGeometricStiffnessForceField", Pluginized("v20.12", "SofaConstraint") },
     { "PrecomputedConstraintCorrection", Pluginized("v20.12", "SofaConstraint") },
@@ -454,11 +454,8 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "PenalityContactForceField", Pluginized("v20.12", "SofaObjectInteraction") },
 
     // SofaMeshCollision was pluginized in #1602
-    { "LineLocalMinDistanceFilter", Pluginized("v20.12", "SofaMeshCollision") },
     { "LineCollisionModel", Pluginized("v20.12", "SofaMeshCollision") },
-    { "PointLocalMinDistanceFilter", Pluginized("v20.12", "SofaMeshCollision") },
     { "PointCollisionModel", Pluginized("v20.12", "SofaMeshCollision") },
-    { "TriangleLocalMinDistanceFilter", Pluginized("v20.12", "SofaMeshCollision") },
     { "TriangleCollisionModel", Pluginized("v20.12", "SofaMeshCollision") },
 
     // SofaEngine was pluginized in #1603
@@ -546,7 +543,14 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     //{ "SubsetMapping", Pluginized("v20.12", "SofaBaseMechanics") },
     //{ "UniformMass", Pluginized("v20.12", "SofaBaseMechanics") },
 
+    /***********************/
+    // REMOVED SINCE v21.12
 
+    { "LMDNewProximityIntersection", Removed("v21.12", "v21.12") },
+    { "LocalMinDistanceFilter", Removed("v21.12", "v21.12") },
+    { "LineLocalMinDistanceFilter", Removed("v21.12", "v21.12") },
+    { "PointLocalMinDistanceFilter", Removed("v21.12", "v21.12") },
+    { "TriangleLocalMinDistanceFilter", Removed("v21.12", "v21.12") },
 
     /***********************/
     // REMOVED SINCE v21.06

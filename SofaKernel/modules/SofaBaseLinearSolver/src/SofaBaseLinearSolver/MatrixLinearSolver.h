@@ -27,9 +27,13 @@
 #include <SofaBaseLinearSolver/fwd.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
 #include <SofaBaseLinearSolver/FullVector.h>
 
+#ifdef SOFA_SUPPORT_CRS_MATRIX
+#include <SofaBaseLinearSolver/CRSMultiMatrixAccessor.h>
+#else
+#include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
+#endif
 namespace sofa::component::linearsolver
 {
 

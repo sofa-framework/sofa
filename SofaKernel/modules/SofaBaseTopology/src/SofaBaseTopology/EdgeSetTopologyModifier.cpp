@@ -329,7 +329,7 @@ void EdgeSetTopologyModifier::renumberPointsProcess( const sofa::type::vector<Po
         helper::WriteAccessor< Data< sofa::type::vector<Edge> > > m_edge = m_container->d_edge;
         if(m_container->hasEdgesAroundVertex())
         {
-            // copy of the the edge vertex shell array
+            // copy of the edge vertex shell array
             sofa::type::vector< sofa::type::vector< EdgeID > > edgesAroundVertex_cp = m_container->getEdgesAroundVertexArray();
 
             for (size_t i=0; i<index.size(); ++i)

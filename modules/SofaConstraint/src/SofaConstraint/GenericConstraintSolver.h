@@ -28,8 +28,7 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/helper/map.h>
 
-#include <sofa/simulation/TaskScheduler.h>
-#include <sofa/simulation/InitTasks.h>
+#include <sofa/simulation/CpuTask.h>
 
 namespace sofa::component::constraintset
 {

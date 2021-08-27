@@ -22,16 +22,15 @@
 #pragma once
 
 #include <SofaMiscFem/config.h>
-
-
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/Mat.h>
 #include <SofaBaseTopology/TopologyData.h>
 
+#ifdef PLOT_CURVE
 #include <map>
-#include <sofa/helper/map.h>
+#endif
 
 namespace sofa::helper
 {
@@ -152,27 +151,6 @@ public:
         Real differenceToCriteria;
     };
 
-    /// Class to store FEM information on each edge, for topology modification handling
-    class EdgeInformation
-    {
-    public:
-        EdgeInformation()
-            :fracturable(false) {}
-
-        bool fracturable;
-
-        /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeInformation& /*ei*/ )
-        {
-            return os;
-        }
-
-        /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, EdgeInformation& /*ei*/ )
-        {
-            return in;
-        }
-    };
 
     /// Class to store FEM information on each vertex, for topology modification handling
     class VertexInformation
@@ -202,7 +180,6 @@ public:
     /// Topology Data
     topology::TriangleData<sofa::type::vector<TriangleInformation> > triangleInfo;
     topology::PointData<sofa::type::vector<VertexInformation> > vertexInfo; ///< Internal point data
-    topology::EdgeData<sofa::type::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
 
     void createTriangleInformation(Index triangleIndex, TriangleInformation&,
         const core::topology::BaseMeshTopology::Triangle& t,
@@ -220,10 +197,7 @@ public:
     void setYoung(Real val);
     void setYoungArray(const type::vector<Real>& values);
 
-    Real getDamping() { return f_damping.getValue(); }
-    void setDamping(Real val);
     int  getMethod() { return method; }
-    
     void setMethod(int val);
     void setMethod(const std::string& methodName);
 
@@ -251,7 +225,7 @@ protected :
     void computeStrainDisplacement(StrainDisplacement &J, Index elementIndex, Coord a, Coord b, Coord c );
     void computeStiffness(StrainDisplacement &J, Stiffness &K, MaterialStiffness &D);
     void computeStrain(type::Vec<3,Real> &strain, const StrainDisplacement &J, const Displacement &D);
-    void computeStress(type::Vec<3,Real> &stress, MaterialStiffness &K, type::Vec<3,Real> &strain);
+    void computeStress(type::Vec<3,Real> &stress, const MaterialStiffness &K, const type::Vec<3,Real> &strain);
     void computeForce(Displacement &F, Index elementIndex, const VecCoord &p);
     void computePrincipalStrain(Index elementIndex, type::Vec<3,Real> &strain);
     void computePrincipalStress(Index elementIndex, type::Vec<3,Real> &stress);
@@ -264,19 +238,15 @@ protected :
     ////////////// small displacements method
     void initSmall(int i, Index&a, Index&b, Index&c);
     void accumulateForceSmall( VecCoord& f, const VecCoord & p, Index elementIndex);
-    void accumulateDampingSmall( VecCoord& f, Index elementIndex );
     void applyStiffnessSmall( VecCoord& f, Real h, const VecCoord& x, const SReal &kFactor );
 
     ////////////// large displacements method
     void initLarge(int i, Index&a, Index&b, Index&c);
     void computeRotationLarge( Transformation &r, const VecCoord &p, const Index &a, const Index &b, const Index &c);
     void accumulateForceLarge( VecCoord& f, const VecCoord & p, Index elementIndex);
-    void accumulateDampingLarge( VecCoord& f, Index elementIndex );
     void applyStiffnessLarge( VecCoord& f, Real h, const VecCoord& x, const SReal &kFactor );
 
-
     bool updateMatrix;
-    int lastFracturedEdgeIndex;
 
 public:
 
@@ -285,7 +255,6 @@ public:
     Data<std::string> f_method; ///< large: large displacements, small: small displacements
     Data<type::vector<Real> > f_poisson; ///< Poisson ratio in Hooke's law (vector)
     Data<type::vector<Real> > f_young; ///< Young modulus in Hooke's law (vector)
-    Data<Real> f_damping; ///< Ratio damping/stiffness
 
     /// Initial strain parameters (if FEM is initialised with predefine values)
     Data< sofa::type::vector<type::fixed_array<Coord,3> > > m_rotatedInitialElements;

@@ -27,7 +27,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Node.h>
-#include <SofaMeshCollision/PointLocalMinDistanceFilter.h>
 #include <SofaBaseCollision/CubeModel.h>
 
 namespace sofa::component::collision
@@ -38,7 +37,6 @@ PointCollisionModel<DataTypes>::PointCollisionModel()
     : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the point model (when surface normals are defined on these points)") )
     , mstate(nullptr)
     , computeNormals( initData(&computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
-    , m_lmdFilter( nullptr )
     , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
     , l_topology(initLink("topology", "link to the topology container"))
 {
@@ -67,12 +65,6 @@ void PointCollisionModel<DataTypes>::init()
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopologyLink());
-    }
-
-    simulation::Node* node = dynamic_cast< simulation::Node* >(this->getContext());
-    if (node != 0)
-    {
-        m_lmdFilter = node->getNodeObject< PointLocalMinDistanceFilter >();
     }
 
     const int npoints = mstate->getSize();
@@ -148,11 +140,6 @@ void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
             cubeModel->setParentOf(i, pt - type::Vector3(distance,distance,distance), pt + type::Vector3(distance,distance,distance));
         }
         cubeModel->computeBoundingTree(maxDepth);
-    }
-
-    if (m_lmdFilter != 0)
-    {
-        m_lmdFilter->invalidate();
     }
 }
 
@@ -301,76 +288,6 @@ void PointCollisionModel<DataTypes>::updateNormals()
             normals[i].clear();
     }
 }
-
-template<class DataTypes>
-bool TPoint<DataTypes>::testLMD(const type::Vector3 &PQ, double &coneFactor, double &coneExtension)
-{
-
-    type::Vector3 pt = p();
-
-    sofa::core::topology::BaseMeshTopology* mesh = this->model->l_topology.get();
-    const typename DataTypes::VecCoord& x = (*this->model->mstate->read(sofa::core::ConstVecCoordId::position())->getValue());
-
-    const auto& trianglesAroundVertex = mesh->getTrianglesAroundVertex(this->index);
-    const auto& edgesAroundVertex = mesh->getEdgesAroundVertex(this->index);
-
-    type::Vector3 nMean;
-
-    for (Index i=0; i<trianglesAroundVertex.size(); i++)
-    {
-        Index t = trianglesAroundVertex[i];
-        const auto& ptr = mesh->getTriangle(t);
-        type::Vector3 nCur = (x[ptr[1]]-x[ptr[0]]).cross(x[ptr[2]]-x[ptr[0]]);
-        nCur.normalize();
-        nMean += nCur;
-    }
-
-    if (trianglesAroundVertex.size()==0)
-    {
-        for (Index i=0; i<edgesAroundVertex.size(); i++)
-        {
-            Index e = edgesAroundVertex[i];
-            const auto& ped = mesh->getEdge(e);
-            type::Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
-            l.normalize();
-            nMean += l;
-        }
-    }
-
-    if (nMean.norm()> 0.0000000001)
-        nMean.normalize();
-
-
-    for (Index i=0; i<edgesAroundVertex.size(); i++)
-    {
-        Index e = edgesAroundVertex[i];
-        const auto& ped = mesh->getEdge(e);
-        type::Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
-        l.normalize();
-        double computedAngleCone = dot(nMean , l) * coneFactor;
-        if (computedAngleCone<0)
-            computedAngleCone=0.0;
-        computedAngleCone+=coneExtension;
-        if (dot(l , PQ) < -computedAngleCone*PQ.norm())
-            return false;
-    }
-    return true;
-
-
-}
-
-template<class DataTypes>
-PointLocalMinDistanceFilter *PointCollisionModel<DataTypes>::getFilter() const
-{
-    return m_lmdFilter;
-}
-
-template<class DataTypes>
-void PointCollisionModel<DataTypes>::setFilter(PointLocalMinDistanceFilter *lmdFilter)
-{
-    m_lmdFilter = lmdFilter;
-}
-
 
 template<class DataTypes>
 void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
