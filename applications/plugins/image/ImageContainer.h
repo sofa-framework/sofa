@@ -614,7 +614,7 @@ protected:
         if(nextDotPosition == std::string::npos)
         {
             msg_error() << filenameError << currentFname << msgendl
-                           filenameDescription;
+                        << filenameDescription;
             return "";
         }
 
