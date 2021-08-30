@@ -255,7 +255,7 @@ void OglVolumetricModel::computeMeshFromTopology()
     // update m_positions
     if (m_topology->hasPos())
     {
-        msg_info() << "OglVolumetricModel: copying " << m_topology->getNbPoints() << "points from topology.";
+        msg_info() << "Copying " << m_topology->getNbPoints() << "points from topology.";
         helper::WriteAccessor<  Data<type::vector<Coord> > > position = m_positions;
         position.resize(m_topology->getNbPoints());
         for (unsigned int i = 0; i<position.size(); i++) 
@@ -269,7 +269,7 @@ void OglVolumetricModel::computeMeshFromTopology()
         
     if (BaseMechanicalState* mstate = dynamic_cast< BaseMechanicalState* >(m_topology->getContext()->getMechanicalState()))
     {
-        msg_info() << "OglVolumetricModel: copying " << mstate->getSize() << " points from mechanical state.";
+        msg_info() << "Copying " << mstate->getSize() << " points from mechanical state.";
         helper::WriteAccessor< Data<type::vector<Coord> > > position = m_positions;
         position.resize(mstate->getSize());
         for (unsigned int i = 0; i<position.size(); i++)
@@ -286,7 +286,7 @@ void OglVolumetricModel::computeMeshFromTopology()
 
     // update Tetrahedrons
     const SeqTetrahedra& inputTetrahedra = m_topology->getTetrahedra();
-    msg_info() << "OglVolumetricModel: copying " << inputTetrahedra.size() << " tetrahedra from topology.";
+    msg_info() << "Copying " << inputTetrahedra.size() << " tetrahedra from topology.";
     helper::WriteAccessor< Data< type::vector<Tetrahedron> > > tetrahedra = d_tetrahedra;
     tetrahedra.clear();
     tetrahedra.resize(inputTetrahedra.size());
@@ -296,7 +296,7 @@ void OglVolumetricModel::computeMeshFromTopology()
         
     // update Hexahedrons
     const SeqHexahedra& inputHexahedra = m_topology->getHexahedra();
-    msg_info() << "OglVolumetricModel: copying " << inputHexahedra.size() << " hexahedra from topology.";
+    msg_info() << "Copying " << inputHexahedra.size() << " hexahedra from topology.";
     helper::WriteAccessor< Data< type::vector<Hexahedron> > > hexahedra = d_hexahedra;
     hexahedra.clear();
     hexahedra.resize(inputHexahedra.size());

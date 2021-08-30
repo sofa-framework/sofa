@@ -78,12 +78,12 @@ struct ImageExporterSpecialization<defaulttype::Image<T>>
     {
         typedef typename ImageExporterT::Real Real;
 
-        if (!exporter.m_filename.isSet()) { msg_error(&exporter) << "ImageExporter: file not set"<<exporter.name; return false; }
+        if (!exporter.m_filename.isSet()) { msg_error(&exporter) << "File not set"<<exporter.name; return false; }
         std::string fname(exporter.m_filename.getFullPath());
 
         typename ImageExporterT::raImage rimage(exporter.image);
         typename ImageExporterT::raTransform rtransform(exporter.transform);
-        if (rimage->isEmpty()) { msg_error(&exporter) << "ImageExporter: no image "<<exporter.name; return false; }
+        if (rimage->isEmpty()) { msg_error(&exporter) << "No image "<<exporter.name; return false; }
 
         if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
            || fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)

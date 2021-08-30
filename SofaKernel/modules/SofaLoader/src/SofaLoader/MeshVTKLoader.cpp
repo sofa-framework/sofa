@@ -39,7 +39,7 @@ using sofa::component::loader::BaseVTKReader ;
 //XML VTK Loader
 #define checkError(A) if (!A) { return false; }
 #define checkErrorPtr(A) if (!A) { return nullptr; }
-#define checkErrorMsg(A, B) if (!A) { msg_error("MeshVTKLoader") << B << "\n" ; return false; }
+#define checkErrorMsg(A, B) if (!A) { msg_error() << B << "\n" ; return false; }
 
 namespace sofa::component::loader
 {
@@ -471,7 +471,7 @@ bool MeshVTKLoader::setInputsMesh()
                 break;
                 // more types are defined in vtkCellType.h in libvtk
             default:
-                msg_error() << "ERROR: unsupported cell type " << t;
+                msg_error() << "Unsupported cell type " << t;
             }
 
             if (!offsets)
@@ -573,7 +573,7 @@ bool LegacyVTKReader::readFile(const char* filename)
     std::getline(inVTKFile, line);
     if (string(line, 0, 23) != "# vtk DataFile Version ")
     {
-        msg_error() << "Error: Unrecognized header in file '" << filename << "'." ;
+        msg_error() << "Unrecognized header in file '" << filename << "'." ;
         return false;
     }
     string version(line, 23);
@@ -596,7 +596,7 @@ bool LegacyVTKReader::readFile(const char* filename)
     }
     else
     {
-        msg_error() << "Error: Unrecognized format in file '" << filename << "'." ;
+        msg_error() << "Unrecognized format in file '" << filename << "'." ;
         return false;
     }
 
@@ -615,7 +615,7 @@ bool LegacyVTKReader::readFile(const char* filename)
     if (line != "DATASET POLYDATA" && line != "DATASET UNSTRUCTURED_GRID"
             && line != "DATASET POLYDATA\r" && line != "DATASET UNSTRUCTURED_GRID\r" )
     {
-        msg_error() << "Error: Unsupported data type in file '" << filename << "'.";
+        msg_error() << "Unsupported data type in file '" << filename << "'.";
         return false;
     }
 
@@ -1030,7 +1030,7 @@ bool XMLVTKReader::readFile(const char* filename)
         checkErrorMsg(false, "Dataset format not implemented");
         break;
     }
-    checkErrorMsg(stateLoading, "Error while parsing XML");
+    checkErrorMsg(stateLoading, "Unable to parse XML");
 
     return true;
 }
