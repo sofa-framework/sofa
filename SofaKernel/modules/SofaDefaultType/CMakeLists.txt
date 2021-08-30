@@ -5,8 +5,6 @@ set(SRC_ROOT "src/sofa/defaulttype")
 
 set(HEADER_FILES
     ${SRC_ROOT}/AbstractTypeInfo.h
-    ${SRC_ROOT}/BaseMatrix.h
-    ${SRC_ROOT}/BaseVector.h
     ${SRC_ROOT}/DataTypeInfo.h
     ${SRC_ROOT}/MapMapSparseMatrix.h
     ${SRC_ROOT}/MapMapSparseMatrixEigenUtils.h
@@ -57,8 +55,6 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     ${SRC_ROOT}/AbstractTypeInfo.cpp
-    ${SRC_ROOT}/BaseMatrix.cpp
-    ${SRC_ROOT}/BaseVector.cpp
     ${SRC_ROOT}/MatrixExporter.cpp
     ${SRC_ROOT}/SolidTypes.cpp
     ${SRC_ROOT}/TemplatesAliases.cpp
