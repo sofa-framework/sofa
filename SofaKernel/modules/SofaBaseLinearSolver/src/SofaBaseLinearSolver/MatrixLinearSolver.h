@@ -80,7 +80,7 @@ public:
     typedef defaulttype::BaseMatrix ResMatrixType;
 
     MatrixLinearSolver();
-    ~MatrixLinearSolver() override ;
+    ~MatrixLinearSolver() override {}
 
     /// Reset the current linear system.
     void resetSystem() override;

@@ -27,6 +27,7 @@
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/DiagonalMatrix.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
 #include <iostream>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/objectmodel/BaseContext.h>

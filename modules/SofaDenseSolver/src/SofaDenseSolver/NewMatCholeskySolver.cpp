@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+
 #include <SofaGeneralLinearSolver/CholeskySolver.inl>
 #include <SofaDenseSolver/NewMatMatrix.h>
 

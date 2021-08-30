@@ -22,6 +22,7 @@
 #pragma once
 #include <SofaGeneralLinearSolver/CholeskySolver.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>

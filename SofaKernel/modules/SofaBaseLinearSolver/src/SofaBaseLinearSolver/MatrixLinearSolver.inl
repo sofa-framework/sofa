@@ -183,9 +183,6 @@ MatrixLinearSolver<Matrix,Vector>::MatrixLinearSolver()
 }
 
 template<class Matrix, class Vector>
-MatrixLinearSolver<Matrix,Vector>::~MatrixLinearSolver() = default;
-
-template<class Matrix, class Vector>
 std::string MatrixLinearSolver<Matrix, Vector>::GetCustomTemplateName()
 {
     return ThreadManager::Name() + Matrix::Name();

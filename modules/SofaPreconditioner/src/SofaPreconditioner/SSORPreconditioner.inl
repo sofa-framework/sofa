@@ -25,6 +25,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <iostream>
 #include <sofa/core/objectmodel/BaseContext.h>

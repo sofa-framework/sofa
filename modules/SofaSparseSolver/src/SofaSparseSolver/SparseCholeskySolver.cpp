@@ -21,6 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_CPP
 #include <SofaSparseSolver/SparseCholeskySolver.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 

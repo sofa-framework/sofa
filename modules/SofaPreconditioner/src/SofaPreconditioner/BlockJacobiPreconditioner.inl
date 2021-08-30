@@ -25,6 +25,7 @@
 #include <SofaPreconditioner/BlockJacobiPreconditioner.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>

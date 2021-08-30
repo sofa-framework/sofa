@@ -23,6 +23,7 @@
 
 #include <SofaGeneralLinearSolver/CholeskySolver.inl>
 #include <SofaBaseLinearSolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/FullVector.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::linearsolver
