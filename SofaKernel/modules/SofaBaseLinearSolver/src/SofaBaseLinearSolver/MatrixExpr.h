@@ -27,9 +27,6 @@
 namespace sofa::component::linearsolver
 {
 
-//#define SPARSEMATRIX_CHECK
-//#define SPARSEMATRIX_VERBOSE
-
 template<class M1, class M2>
 class MatrixProduct;
 
