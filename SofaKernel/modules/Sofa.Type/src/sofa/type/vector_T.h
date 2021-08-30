@@ -73,10 +73,6 @@ public:
     /// Constructor
     vector(Size n, const T& value): std::vector<T,Alloc>(n,value) {}
     /// Constructor
-    vector(int n, const T& value): std::vector<T,Alloc>(n,value) {}
-    /// Constructor
-    vector(long n, const T& value): std::vector<T,Alloc>(n,value) {}
-    /// Constructor
     explicit vector(Size n): std::vector<T,Alloc>(n) {}
     /// Constructor
     vector(const std::vector<T, Alloc>& x): std::vector<T,Alloc>(x) {}

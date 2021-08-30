@@ -31,7 +31,7 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <SofaBaseLinearSolver/DiagonalMatrix.h>
-#include <sofa/core/behavior/RotationMatrix.h>
+#include <SofaBaseLinearSolver/RotationMatrix.h>
 
 #ifdef SOFA_SUPPORT_CRS_MATRIX
 #include <SofaBaseLinearSolver/CRSMultiMatrixAccessor.h>

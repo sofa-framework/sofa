@@ -55,9 +55,7 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     , m_topology(nullptr)
     , method(LARGE)
     , f_method(initData(&f_method,std::string("large"),"method","large: large displacements, small: small displacements"))
-    //, f_poisson(initData(&f_poisson,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
-    //, f_young(initData(&f_young,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
-    , f_poisson(initData(&f_poisson,type::vector<Real>(1,static_cast<Real>(0.45)),"poissonRatio","Poisson ratio in Hooke's law (vector)"))
+    , f_poisson(initData(&f_poisson,type::vector<Real>(1,static_cast<Real>(0.3)),"poissonRatio","Poisson ratio in Hooke's law (vector)"))
     , f_young(initData(&f_young,type::vector<Real>(1,static_cast<Real>(1000.0)),"youngModulus","Young modulus in Hooke's law (vector)"))
     , f_damping(initData(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
     , m_rotatedInitialElements(initData(&m_rotatedInitialElements,"rotatedInitialElements","Flag activating rendering of stress directions within each triangle"))
@@ -288,6 +286,19 @@ void TriangularFEMForceField<DataTypes>::reinit()
     edgeInfo.endEdit();
     triangleInfo.endEdit();
 
+
+    // checking inputs using setter
+    setMethod(f_method.getValue());
+    if (f_poisson.getValue().size() == 1) // array option is not checked
+        setPoisson(f_poisson.getValue()[0]);
+    else
+        setPoissonArray(f_poisson.getValue());
+
+    if (f_young.getValue().size() == 1)
+        setYoung(f_young.getValue()[0]);
+    else
+        setYoungArray(f_young.getValue());
+
 #ifdef PLOT_CURVE
     std::map<std::string, sofa::type::vector<double> > &stress = *(f_graphStress.beginEdit());
     stress.clear();
@@ -347,6 +358,117 @@ SReal TriangularFEMForceField<DataTypes>::getPotentialEnergy(const core::Mechani
     msg_error() << "TriangularFEMForceField::getPotentialEnergy-not-implemented !!!";
     return 0;
 }
+
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::setPoisson(Real val)
+{
+    if (val < 0)
+    {
+        msg_warning() << "Input Poisson Coefficient is not possible: " << val << ", setting default value: 0.3";
+        type::vector<Real> newP(1, 0.3);
+        f_poisson.setValue(newP);
+    }
+    else
+    {
+        type::vector<Real> newP(1, val);
+        f_poisson.setValue(newP);
+    }
+}
+
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::setPoissonArray(const type::vector<Real>& values)
+{
+    int nbrTri = triangleInfo.getValue().size();
+    if (values.size() != nbrTri)
+    {
+        msg_warning() << "Input Poisson Coefficient array size is not possible: " << values.size() << ", compare to number of triangles: " << nbrTri << ". Values will not be set.";
+        return;
+    }
+    
+    sofa::helper::WriteAccessor< core::objectmodel::Data< type::vector<Real> > > _poisson = f_poisson;
+    for (auto id = 0; id < values.size(); ++id)
+    {
+        Real val = values[id];
+        if (val < 0)
+        {
+            msg_warning() << "Input Poisson Coefficient at position: " << id << " is not possible: " << val << ", setting default value: 0.3";
+            val = 1000;
+        }
+        _poisson[id] = val;
+    }
+}
+
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::setYoung(Real val)
+{
+    if (val < 0)
+    {
+        msg_warning() << "Input Young Modulus is not possible: " << val << ", setting default value: 1000";
+        type::vector<Real> newY(1, 1000);
+        f_young.setValue(newY);
+    }
+    else
+    {
+        type::vector<Real> newY(1, val);
+        f_young.setValue(newY);
+    }
+}
+
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::setYoungArray(const type::vector<Real>& values)
+{
+    int nbrTri = triangleInfo.getValue().size();
+    if (values.size() != nbrTri)
+    {
+        msg_warning() << "Input Young Modulus array size is not possible: " << values.size() << ", compare to number of triangles: " << nbrTri << ". Values will not be set.";
+        return;
+    }
+
+    sofa::helper::WriteAccessor< core::objectmodel::Data< type::vector<Real> > > _young = f_young;
+    for (auto id = 0; id<values.size(); ++id)
+    {
+        Real val = values[id];
+        if (val < 0)
+        {
+            msg_warning() << "Input Young Modulus at position: " << id << " is not possible: " << val << ", setting default value: 1000";
+            val = 1000;
+        }
+        _young[id] = val;
+    }
+}
+
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::setDamping(Real val) 
+{ 
+    f_damping.setValue(val); 
+}
+
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::setMethod(int val) 
+{ 
+    if (val != 0 && val != 1)
+    {
+        msg_warning() << "Input Method is not possible: " << val << ", should be 0 (Large) or 1 (Small). Setting default value: Large";
+        method = LARGE;
+    }
+    else
+        method = val;
+}
+
+template <class DataTypes>
+void TriangularFEMForceField<DataTypes>::setMethod(const std::string& methodName)
+{
+    if (methodName == "small")
+        method = SMALL;
+    else if (methodName == "large")
+        method = LARGE;
+    else
+    {
+        msg_warning() << "Input Method is not possible: " << methodName << ", should be 0 (Large) or 1 (Small). Setting default value: Large";
+        method = LARGE;
+    }
+}
+
 
 // --------------------------------------------------------------------------------------
 // --- Get the rotation of node
@@ -459,19 +581,6 @@ void TriangularFEMForceField<DataTypes>::getRotations()
     }
     triangleInfo.endEdit();
     vertexInfo.endEdit();
-}
-
-
-template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::setMethod(const std::string& methodName)
-{
-    if (methodName == "small")
-        this->setMethod(SMALL);
-    else
-    {
-        msg_warning_when(methodName != "large") << "unknown method: large method will be used. Remark: Available method are \"small\", \"large\" "<<sendl;
-        this->setMethod(LARGE);
-    }
 }
 
 

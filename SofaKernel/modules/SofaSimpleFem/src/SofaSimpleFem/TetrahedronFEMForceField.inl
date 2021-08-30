@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <sofa/core/behavior/RotationMatrix.h>
+#include <SofaBaseLinearSolver/RotationMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/GridTopology.h>
 #include <sofa/helper/decompose.h>
@@ -1977,7 +1977,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
     }
     else
     {
-        int i,j,n1, n2, row, column, ROW, COLUMN , IT;
+        int IT;
         StiffnessMatrix JKJt,tmp;
 
         Index noeud1, noeud2;

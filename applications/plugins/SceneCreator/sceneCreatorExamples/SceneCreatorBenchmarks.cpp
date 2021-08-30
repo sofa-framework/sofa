@@ -34,7 +34,7 @@
 
 #include <SofaBase/initSofaBase.h>
 
-#include <boost/program_options.hpp>
+#include <cxxopts.hpp>
 
 
 void fallingCubeExample(sofa::simulation::Node::SPtr root)
@@ -110,23 +110,27 @@ int main(int argc, char** argv)
     unsigned int idExample = 0;
     auto* argParser = new sofa::gui::ArgumentParser(argc, argv);
     argParser->addArgument(
-        boost::program_options::value<bool>(&showHelp)
-        ->default_value(false)
-        ->implicit_value(true),
-        "help,h",
+        cxxopts::value<bool>(showHelp)
+        ->default_value("false")
+        ->implicit_value("true"),
+        "h,help",
         "Display this help message"
     );
     argParser->addArgument(
-        boost::program_options::value<unsigned int>(&idExample)
-        ->default_value(0)
-        ->notifier([](unsigned int value) {
-            if (value > 9) {
+        cxxopts::value<unsigned int>(idExample)
+        ->default_value("0"),
+        "example,e",
+        "Example Number to enter from (0 - 9)",
+        [](const sofa::gui::ArgumentParser* parser, const std::string& strVal)
+        {
+            unsigned int value = 0;
+            parser->getValueFromKey("example", value);
+            if (value > 9)
+            {
                 std::cerr << "Example Number to enter from (0 - 9), current value: " << value << std::endl;
                 exit( EXIT_FAILURE );
             }
-        }),
-        "example,e",
-        "Example Number to enter from (0 - 9)"
+        }
     );
 
     argParser->parse();
