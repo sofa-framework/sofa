@@ -51,7 +51,7 @@ ParticleSource<DataTypes>::ParticleSource()
     , m_pointHandler(nullptr)
 {
     this->f_listening.setValue(true);
-    d_center.beginEdit()->push_back(Coord()); d_center.endEdit();    
+    d_center.beginEdit()->push_back(Coord()); d_center.endEdit();
 }
 
 
@@ -84,12 +84,12 @@ void ParticleSource<DataTypes>::init()
     if (_topology != nullptr)
     {
         m_pointHandler = new PSPointHandler(this, &m_lastparticles);
-       // m_lastparticles.createTopologyHandler(_topology, m_pointHandler);
+        // m_lastparticles.createTopologyHandler(_topology, m_pointHandler);
     }
 
-    msg_info() << "ParticleSource: center = " << d_center.getValue();
-    msg_info() << " radius = " << d_radius.getValue() << " m_numberParticles = " << m_numberParticles;
-    msg_info() << " start = " << d_start.getValue() << " stop = " << d_stop.getValue() << " delay = " << d_delay.getValue();
+    msg_info() << " center = " << d_center.getValue() << msgendl
+               << " radius = " << d_radius.getValue() << " m_numberParticles = " << m_numberParticles << msgendl
+               << " start = " << d_start.getValue() << " stop = " << d_stop.getValue() << " delay = " << d_delay.getValue();
 }
 
 
@@ -128,7 +128,7 @@ void ParticleSource<DataTypes>::projectResponse(const sofa::core::MechanicalPara
     for (unsigned int s = 0; s<_lastparticles.size(); s++)
     {
         dx[_lastparticles[s]] = Deriv();
-    }    
+    }
     dxData.endEdit();
 }
 
@@ -208,14 +208,14 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
         i0 = 0;
         sofa::component::topology::PointSetTopologyContainer* pointCon;
         this->getContext()->get(pointCon);
-        if (pointCon != nullptr) 
+        if (pointCon != nullptr)
         {
             // TODO: epernod.... why why why.... still a diff between meca->getSize and topo->GetNbrPoints...
             pointCon->setNbPoints(1);
         }
     }
 
-    size_t nbParticlesToCreate = (int)((time - m_lastTime) / d_delay.getValue());    
+    size_t nbParticlesToCreate = (int)((time - m_lastTime) / d_delay.getValue());
     if (nbParticlesToCreate > 0)
     {
         msg_info() << "ParticleSource: animate begin time= " << time << " | size: " << i0;
@@ -255,7 +255,7 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
 
                 for (unsigned int c = 0; c < p.size(); c++)
                     p[c] += d_radius.getValue()[c] * rrand();
-               
+
                 m_lastpos.push_back(p);
                 _lastparticles.push_back((Index)(i0 + newX.size()));
                 newX.push_back(p + v0 * (time - m_lastTime)); // account for particle initial motion
@@ -284,7 +284,7 @@ void ParticleSource<DataTypes>::animateBegin(double /*dt*/, double time)
             else
             {
                 n -= this->mstate->getSize();
-            }            
+            }
             pointMod->addPoints(n);
         }
         else
@@ -326,7 +326,7 @@ void ParticleSource<DataTypes>::draw(const core::visual::VisualParams* vparams)
         return;
 
     double time = this->getContext()->getTime();
-    if (time < d_start.getValue() || time > d_stop.getValue()) 
+    if (time < d_start.getValue() || time > d_stop.getValue())
         return;
 
     Deriv dpos = d_velocity.getValue()*(time - m_lastTime);

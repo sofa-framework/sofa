@@ -275,7 +275,7 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
                 if (!grid2->inBBox( p2 /*, margin*/ )) continue;
                 if (!grid2->inGrid( p2 ))
                 {
-                    msg_error(intersection) << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e2.getCollisionModel()->getName();
+                    msg_error(intersection) << "Margin less than "<<margin<<" in DistanceGrid "<<e2.getCollisionModel()->getName();
                     continue;
                 }
 
@@ -519,7 +519,7 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
                 if (!grid1->inBBox( p1 /*, margin*/ )) continue;
                 if (!grid1->inGrid( p1 ))
                 {
-                    msg_error(intersection) << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e1.getCollisionModel()->getName();
+                    msg_error(intersection) << "Mmargin less than "<<margin<<" in DistanceGrid "<<e1.getCollisionModel()->getName();
                     continue;
                 }
 
@@ -583,7 +583,7 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
         if (!grid1->inBBox( p1, margin )) return 0;
         if (!grid1->inGrid( p1 ))
         {
-            msg_error(intersection) << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e1.getCollisionModel()->getName();
+            msg_error(intersection) << "Margin less than "<<margin<<" in DistanceGrid "<<e1.getCollisionModel()->getName();
             return 0;
         }
     }
@@ -645,7 +645,7 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
         {
             if (!grid1->inGrid( p1 ))
             {
-                msg_error(intersection) << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e1.getCollisionModel()->getName();
+                msg_error(intersection) << "Margin less than "<<margin<<" in DistanceGrid "<<e1.getCollisionModel()->getName();
             }
             else
             {
@@ -690,7 +690,7 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
         {
             if (!grid1->inGrid( p1 ))
             {
-                msg_error(intersection) << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e1.getCollisionModel()->getName();
+                msg_error(intersection) << "Margin less than "<<margin<<" in DistanceGrid "<<e1.getCollisionModel()->getName();
             }
             else
             {
@@ -754,7 +754,7 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
         {
             if (!grid1->inGrid( p1 ))
             {
-                msg_error(intersection) << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e1.getCollisionModel()->getName();
+                msg_error(intersection) << "Margin less than "<<margin<<" in DistanceGrid "<<e1.getCollisionModel()->getName();
             }
             else
             {

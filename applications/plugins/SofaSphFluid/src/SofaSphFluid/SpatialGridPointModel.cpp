@@ -51,7 +51,7 @@ void SpatialGridPointModel::init()
 
     if (grid==NULL)
     {
-        msg_error() <<"SpatialGridPointModel requires a Vec3 SpatialGridContainer";
+        msg_error() <<"Requires a Vec3 SpatialGridContainer";
         return;
     }
 }
@@ -163,7 +163,7 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
     }
     if (!sorted)
     {
-        msg_error() << "ERROR(SpatialGridPointModel): points are not sorted in spatial grid.";
+        msg_error() << "Points are not sorted in spatial grid.";
     }
     //sout << sendl;
     cubeModel->resize(cells.size());

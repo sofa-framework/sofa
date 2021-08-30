@@ -602,8 +602,8 @@ protected:
 
         if(lastUnderscorePosition == std::string::npos)
         {
-            msg_error() << filenameError << currentFname;
-            msg_error() << filenameDescription;
+            msg_error() << filenameError << currentFname << msgendl
+                        << filenameDescription;
             return "";
         }
 
@@ -613,8 +613,8 @@ protected:
 
         if(nextDotPosition == std::string::npos)
         {
-            msg_error() << filenameError << currentFname;
-            msg_error() << filenameDescription;
+            msg_error() << filenameError << currentFname << msgendl
+                           filenameDescription;
             return "";
         }
 

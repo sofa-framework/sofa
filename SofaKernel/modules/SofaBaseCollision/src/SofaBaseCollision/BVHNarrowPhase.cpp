@@ -151,7 +151,7 @@ void BVHNarrowPhase::processExternalCell(const TestPair &externalCell,
 
         if (coarseIntersector == nullptr)
         {
-            msg_error() << "Error finding coarseIntersector " << intersectionMethod->getName() << " for "<<cm1->getClassName()<<" - "<<cm2->getClassName();
+            msg_error() << "Unable to find coarseIntersector " << intersectionMethod->getName() << " for "<<cm1->getClassName()<<" - "<<cm2->getClassName();
         }
 
         if (swapModels)

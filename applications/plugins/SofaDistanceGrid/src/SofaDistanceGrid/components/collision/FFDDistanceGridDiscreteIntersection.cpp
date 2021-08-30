@@ -108,7 +108,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                 if (!grid2->inBBox( p2, margin )) continue;
                 if (!grid2->inGrid( p2 ))
                 {
-                    msg_error(intersection) << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e2.getCollisionModel()->getName();
+                    msg_error(intersection) << "Margin less than "<<margin<<" in DistanceGrid "<<e2.getCollisionModel()->getName();
                     continue;
                 }
 

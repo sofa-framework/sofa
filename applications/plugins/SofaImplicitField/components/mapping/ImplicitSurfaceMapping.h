@@ -174,7 +174,7 @@ protected:
         }
         else
         {
-            msg_error() << "ERROR: Invalid face "<<p1<<" "<<p2<<" "<<p3;
+            msg_error() << "Invalid face "<<p1<<" "<<p2<<" "<<p3;
             return -1;
         }
     }

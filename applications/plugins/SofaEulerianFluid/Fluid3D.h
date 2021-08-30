@@ -134,8 +134,8 @@ protected:
     {
         int nbp = points.size();
         if ((unsigned)p1<(unsigned)nbp &&
-            (unsigned)p2<(unsigned)nbp &&
-            (unsigned)p3<(unsigned)nbp)
+                (unsigned)p2<(unsigned)nbp &&
+                (unsigned)p3<(unsigned)nbp)
         {
             int f = facets.size();
             facets.resize(f+1);
@@ -146,7 +146,7 @@ protected:
         }
         else
         {
-           msg_error() << "ERROR: Invalid face "<<p1<<" "<<p2<<" "<<p3;
+            msg_error() << "Invalid face indices: "<<p1<<" "<<p2<<" "<<p3;
             return -1;
         }
     }
