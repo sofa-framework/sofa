@@ -19,24 +19,53 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_CPP
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.inl>
+#include <sofa/defaulttype/MatrixExporter.h>
+#include <sofa/defaulttype/BaseMatrix.h>
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/ObjectFactory.h>
+#include <fstream>
 
-namespace sofa::component::topology
+namespace sofa::defaulttype
 {
-using namespace sofa::defaulttype;
-int QuadSetGeometryAlgorithmsClass = core::RegisterObject("Quad set geometry algorithms")
-        .add< QuadSetGeometryAlgorithms<Vec3Types> >(true) // default template
-        .add< QuadSetGeometryAlgorithms<Vec2Types> >()
 
-        ;
+bool writeMatrixTxt(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix)
+{
+    if (matrix)
+    {
+        std::ofstream file(filename);
+        file << *matrix;
+        file.close();
 
-template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<Vec3Types>;
-template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<Vec2Types>;
+        return true;
+    }
+    return false;
+}
 
+bool writeMatrixCsv(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix)
+{
+    if (matrix)
+    {
+        std::ofstream file(filename);
 
-} //namespace sofa::component::topology
+        const auto nx = matrix->colSize();
+        const auto ny = matrix->rowSize();
+
+        if (nx > 0)
+        {
+            for (sofa::SignedIndex y = 0; y<ny; ++y)
+            {
+                for (sofa::SignedIndex x = 0; x < nx - 1; ++x)
+                {
+                    file << matrix->element(y, x) << ",";
+                }
+                file << matrix->element(y, nx - 1) << "\n";
+            }
+        }
+
+        file.close();
+
+        return true;
+    }
+    return false;
+}
+
+}

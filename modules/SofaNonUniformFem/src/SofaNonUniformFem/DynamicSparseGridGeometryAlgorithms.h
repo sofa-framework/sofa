@@ -77,8 +77,6 @@ int SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridGeometryAlgorithms<defaulttype::
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDGEOMETRYALGORITHMS_CPP)
 extern template class SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec3Types>;
 extern template class SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec2Types>;
-extern template class SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec1Types>;
-
 #endif
 
 } // namespace sofa::component::topology
