@@ -23,8 +23,6 @@
 
 #include <SofaMiscFem/config.h>
 
-
-
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/Vec.h>
@@ -200,6 +198,7 @@ protected :
     type::Mat<3, 3, Real> InvalidTransform;
     type::fixed_array <Coord, 3> InvalidCoords;
     StrainDisplacement InvalidStrainDisplacement;
+    /// Pointer to the utils class which store methods common to TriangleFEMForceField
 };
 
 

@@ -29,8 +29,6 @@ list(APPEND HEADER_FILES
     ${SOFACONSTRAINT_SRC}/GenericConstraintCorrection.h
     ${SOFACONSTRAINT_SRC}/GenericConstraintSolver.h
     ${SOFACONSTRAINT_SRC}/LCPConstraintSolver.h
-    ${SOFACONSTRAINT_SRC}/LMDNewProximityIntersection.h
-    ${SOFACONSTRAINT_SRC}/LMDNewProximityIntersection.inl
     ${SOFACONSTRAINT_SRC}/LinearSolverConstraintCorrection.h
     ${SOFACONSTRAINT_SRC}/LinearSolverConstraintCorrection.inl
     ${SOFACONSTRAINT_SRC}/LocalMinDistance.h
@@ -64,7 +62,6 @@ list(APPEND SOURCE_FILES
     ${SOFACONSTRAINT_SRC}/GenericConstraintCorrection.cpp
     ${SOFACONSTRAINT_SRC}/GenericConstraintSolver.cpp
     ${SOFACONSTRAINT_SRC}/LCPConstraintSolver.cpp
-    ${SOFACONSTRAINT_SRC}/LMDNewProximityIntersection.cpp
     ${SOFACONSTRAINT_SRC}/LinearSolverConstraintCorrection.cpp
     ${SOFACONSTRAINT_SRC}/LocalMinDistance.cpp
     ${SOFACONSTRAINT_SRC}/MappingGeometricStiffnessForceField.cpp

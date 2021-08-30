@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFAHELPER_FACTORY_CPP
 #include <sofa/helper/Factory.inl>
 #include <typeinfo>
 #ifdef __GNUC__
@@ -26,14 +27,11 @@
 #endif
 #include <cstdlib>
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
 
 /// Decode the type's name to a more readable form if possible
-std::string SOFA_HELPER_API gettypename(const std::type_info& t)
+SOFA_HELPER_API std::string gettypename(const std::type_info& t)
 {
     std::string name;
 #ifdef __GNUC__
@@ -82,27 +80,20 @@ std::string SOFA_HELPER_API gettypename(const std::type_info& t)
     return name;
 }
 
-static std::string& getFactoryLog()
+SOFA_HELPER_API std::string& getFactoryLog()
 {
     static std::string s;
     return s;
 }
 
-/// Log classes registered in the factory
-void SOFA_HELPER_API logFactoryRegister(std::string baseclass, std::string classname, std::string key, bool multi)
-{
-    getFactoryLog() += baseclass + (multi?" template class ":" class ")
-            + classname + " registered as " + key + "\n";
-}
-
 /// Print factory log
-void SOFA_HELPER_API printFactoryLog(std::ostream& out)
+SOFA_HELPER_API void printFactoryLog(std::ostream& out)
 {
     out << getFactoryLog();
 }
 
+//explicit instantiation for std::string
+template SOFA_HELPER_API void logFactoryRegister<std::string>(const std::string& baseclass, const std::string& classname, std::string key, bool multi);
 
-} // namespace helper
-
-} // namespace sofa
+} // namespace sofa::helper
 

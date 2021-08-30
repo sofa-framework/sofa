@@ -19,16 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BaseProjectiveConstraintSet.h"
+#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 bool BaseProjectiveConstraintSet::insertInNode( objectmodel::BaseNode* node )
@@ -45,10 +39,4 @@ bool BaseProjectiveConstraintSet::removeInNode( objectmodel::BaseNode* node )
     return true;
 }
 
-
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
+} // namespace sofa::core::behavior

@@ -151,12 +151,12 @@ public:
 
     /// Activate this class of viewer.
     /// This method is called before the viewer is actually created
-    /// and can be used to register classes associated with in the the ObjectFactory.
+    /// and can be used to register classes associated with in the ObjectFactory.
     static int EnableViewer();
 
     /// Disable this class of viewer.
     /// This method is called after the viewer is destroyed
-    /// and can be used to unregister classes associated with in the the ObjectFactory.
+    /// and can be used to unregister classes associated with in the ObjectFactory.
     static int DisableViewer();
 
 #if defined(QT_VERSION) && QT_VERSION >= 0x050400

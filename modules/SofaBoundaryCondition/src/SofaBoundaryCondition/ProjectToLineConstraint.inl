@@ -229,15 +229,15 @@ void ProjectToLineConstraint<DataTypes>::projectPosition(const core::MechanicalP
 
 // Matrix Integration interface
 template <class DataTypes>
-void ProjectToLineConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix * /*mat*/, unsigned int /*offset*/)
+void ProjectToLineConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
     msg_error() << "applyConstraint is not implemented ";
 }
 
 template <class DataTypes>
-void ProjectToLineConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector * /*vect*/, unsigned int /*offset*/)
+void ProjectToLineConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, defaulttype::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
-    msg_error() << "ProjectToLineConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is not implemented ";
+    msg_error() << "ProjectToLineConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) is not implemented ";
 }
 
 

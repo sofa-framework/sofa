@@ -68,6 +68,7 @@ public:
 
     Data<double> f_ks; ///< uniform stiffness for the all springs
     Data<double> f_kd; ///< uniform damping for the all springs
+    Data<bool> d_showSprings; ///< Option to enable/disable the spring display when showForceField is on. True by default
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<TriangularBendingSprings<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

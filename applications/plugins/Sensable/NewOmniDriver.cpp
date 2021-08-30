@@ -34,9 +34,6 @@
 #include <sofa/core/objectmodel/MouseEvent.h>
 
 #include <sofa/helper/system/thread/CTime.h>
-#ifdef SOFA_HAVE_BOOST
-#include <boost/thread.hpp>
-#endif
 
 #include <thread>
 #include <chrono>
@@ -888,11 +885,7 @@ void NewOmniDriver::onAnimateBeginEvent()
 		doUpdate.inc(); // set to 1
 		while(doUpdate)
 		{
-#ifdef SOFA_HAVE_BOOST
-			boost::thread::yield();
-#else
-                        std::this_thread::sleep_for(std::chrono::milliseconds(0));
-#endif
+			std::this_thread::yield();
 		}
 	}
     if (data.deviceData.ready)

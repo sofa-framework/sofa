@@ -23,11 +23,9 @@
 #include <SofaMeshCollision/TriangleModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaMeshCollision/PointModel.h>
-#include <SofaMeshCollision/TriangleLocalMinDistanceFilter.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/simulation/Node.h>
-#include <SofaBaseTopology/RegularGridTopology.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <vector>
@@ -46,7 +44,6 @@ TriangleCollisionModel<DataTypes>::TriangleCollisionModel()
     , m_needsUpdate(true)
     , m_topologyRevision(-1)
     , m_pointModels(nullptr)
-    , m_lmdFilter(nullptr)
 {
     m_triangles = &m_internalTriangles;
     enum_type = TRIANGLE_TYPE;
@@ -96,12 +93,6 @@ void TriangleCollisionModel<DataTypes>::init()
     {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
-    }
-
-    simulation::Node* node = dynamic_cast< simulation::Node* >(this->getContext());
-    if (node != 0)
-    {
-        m_lmdFilter = node->getNodeObject< TriangleLocalMinDistanceFilter >();
     }
 
     // check if topology is using triangles and quads at the same time.
@@ -282,12 +273,6 @@ void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
         }
         cubeModel->computeBoundingTree(maxDepth);
     }
-
-
-    if (m_lmdFilter != 0)
-    {
-        m_lmdFilter->invalidate();
-    }
 }
 
 template<class DataTypes>
@@ -350,19 +335,6 @@ void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt,
         }
         cubeModel->computeBoundingTree(maxDepth);
     }
-}
-
-template<class DataTypes>
-TriangleLocalMinDistanceFilter *TriangleCollisionModel<DataTypes>::getFilter() const
-{
-    return m_lmdFilter;
-}
-
-
-template<class DataTypes>
-void TriangleCollisionModel<DataTypes>::setFilter(TriangleLocalMinDistanceFilter *lmdFilter)
-{
-    m_lmdFilter = lmdFilter;
 }
 
 template<class DataTypes>

@@ -749,6 +749,16 @@ public:
         traits::v(*wbloc(i,j,true), bi, bj) += (Real)v;
     }
 
+    void add(Index row, Index col, const type::Mat3x3d & _M) override
+    {
+        BaseMatrix::add(row, col, _M);
+    }
+
+    void add(Index row, Index col, const type::Mat3x3f & _M) override
+    {
+        BaseMatrix::add(row, col, _M);
+    }
+
     void clear(Index i, Index j) override
     {
         dmsg_info_when(EMIT_EXTRA_MESSAGE)

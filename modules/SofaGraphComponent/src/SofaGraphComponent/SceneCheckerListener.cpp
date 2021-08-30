@@ -23,21 +23,19 @@
 
 #include <sofa/simulation/Node.h>
 #include <SofaGraphComponent/SceneCheckMissingRequiredPlugin.h>
-using sofa::simulation::scenechecking::SceneCheckMissingRequiredPlugin;
 #include <SofaGraphComponent/SceneCheckDuplicatedName.h>
-using sofa::simulation::scenechecking::SceneCheckDuplicatedName;
 #include <SofaGraphComponent/SceneCheckUsingAlias.h>
-using sofa::simulation::scenechecking::SceneCheckUsingAlias;
+#include <SofaGraphComponent/SceneCheckDeprecatedComponents.h>
 
 namespace sofa::simulation::_scenechecking_
 {
-
 
 SceneCheckerListener::SceneCheckerListener()
 {
     m_sceneChecker.addCheck(SceneCheckDuplicatedName::newSPtr());
     m_sceneChecker.addCheck(SceneCheckMissingRequiredPlugin::newSPtr());
     m_sceneChecker.addCheck(SceneCheckUsingAlias::newSPtr());
+    m_sceneChecker.addCheck(SceneCheckDeprecatedComponents::newSPtr());
 }
 
 SceneCheckerListener* SceneCheckerListener::getInstance()

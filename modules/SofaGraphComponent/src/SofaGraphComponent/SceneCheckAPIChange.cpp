@@ -30,10 +30,6 @@ using sofa::core::objectmodel::Base;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
 
-#include <sofa/helper/ComponentChange.h>
-using sofa::helper::lifecycle::ComponentChange;
-using sofa::helper::lifecycle::deprecatedComponents;
-
 #include "APIVersion.h"
 using sofa::component::APIVersion;
 
@@ -94,12 +90,6 @@ void SceneCheckAPIChange::doCheckOn(Node* node)
     {
         Base* o = object.get();
 
-        if( deprecatedComponents.find( o->getClassName() ) != deprecatedComponents.end() )
-        {
-            msg_deprecated(o) << this->getName() << ": "
-                              << deprecatedComponents.at(o->getClassName()).getMessage();
-        }
-
         if(m_selectedApiLevel != m_currentApiLevel && m_changesets.find(m_selectedApiLevel) != m_changesets.end())
         {
             for(auto& hook : m_changesets[m_selectedApiLevel])
@@ -109,7 +99,6 @@ void SceneCheckAPIChange::doCheckOn(Node* node)
         }
     }
 }
-
 
 void SceneCheckAPIChange::installDefaultChangeSets()
 {

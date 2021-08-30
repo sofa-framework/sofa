@@ -85,7 +85,7 @@ helper::Creator<BaseElement::NodeFactory, NodeElement> NodeNodeClass("Node");
 
 const char* NodeElement::getClass() const
 {
-    return NodeNodeClass.c_str();
+    return NodeNodeClass.getKey().c_str();
 }
 
 } // namespace sofa::simulation::xml

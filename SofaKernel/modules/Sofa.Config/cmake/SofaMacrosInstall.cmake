@@ -765,39 +765,59 @@ function(sofa_install_libraries)
         list(APPEND lib_paths "${sofa_install_libraries_LIBRARIES}")
     endif()
 
-    foreach(target ${targets})
-        string(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_UPPER)
-        get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE_UPPER})
-        get_target_property(is_framework ${target} FRAMEWORK)
-        if(APPLE AND is_framework)
-            get_filename_component(target_location ${target_location} DIRECTORY) # parent dir
-            install(DIRECTORY ${target_location} DESTINATION "lib" COMPONENT applications)
-        else()
-            list(APPEND lib_paths "${target_location}")
-        endif()
-    endforeach()
-
-    if(lib_paths)
-        PARSE_LIBRARY_LIST(${lib_paths}
-            FOUND   parseOk
-            DEBUG   LIBRARIES_DEBUG
-            OPT     LIBRARIES_RELEASE
-            GENERAL LIBRARIES_GENERAL)
-
-        if(parseOk AND NOT CMAKE_CONFIGURATION_TYPES) # Single-config generator
-            string(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_UPPER)
-            if(CMAKE_BUILD_TYPE_UPPER STREQUAL "DEBUG")
-                set(lib_paths ${LIBRARIES_DEBUG})
-            else()
-                set(lib_paths ${LIBRARIES_RELEASE})
-            endif()
-        endif()
-    else()
-        message(WARNING "sofa_install_libraries: no lib found with ${ARGV}")
+    set(runtime_output_dir ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+    if(NOT runtime_output_dir)
+        set(runtime_output_dir ${CMAKE_BINARY_DIR}) # fallback
+    endif()
+    if(NOT EXISTS runtime_output_dir)
+        # make sure runtime_output_dir exists before calling configure_file COPYONLY
+        # otherwise it will not be treated as a directory
+        file(MAKE_DIRECTORY "${runtime_output_dir}/")
     endif()
 
-    foreach(lib_path ${lib_paths})
-        if(EXISTS ${lib_path})
+    if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
+        set(BUILD_TYPES ${CMAKE_CONFIGURATION_TYPES})
+    else() # Single-config generator (nmake)
+        set(BUILD_TYPES ${CMAKE_BUILD_TYPE})
+    endif()
+
+    foreach(BUILD_TYPE ${BUILD_TYPES})
+        string(TOUPPER "${BUILD_TYPE}" BUILD_TYPE_UPPER)
+
+        foreach(target ${targets})
+            get_target_property(target_location ${target} LOCATION_${BUILD_TYPE_UPPER})
+            get_target_property(is_framework ${target} FRAMEWORK)
+            if(APPLE AND is_framework)
+                get_filename_component(target_location ${target_location} DIRECTORY) # parent dir
+                install(DIRECTORY ${target_location} DESTINATION "lib" COMPONENT applications)
+            else()
+                list(APPEND lib_paths "${target_location}")
+            endif()
+        endforeach()
+
+        if(lib_paths)
+            parse_library_list(${lib_paths}
+                FOUND   parseOk
+                DEBUG   LIBRARIES_DEBUG
+                OPT     LIBRARIES_RELEASE
+                GENERAL LIBRARIES_GENERAL
+                )
+            if(parseOk)
+                if(BUILD_TYPE_UPPER STREQUAL "DEBUG")
+                    set(lib_paths ${LIBRARIES_DEBUG})
+                else()
+                    set(lib_paths ${LIBRARIES_RELEASE})
+                endif()
+            endif()
+        else()
+            message(WARNING "sofa_install_libraries: no lib found with ${ARGV}")
+        endif()
+
+        foreach(lib_path ${lib_paths})
+            if(NOT EXISTS ${lib_path})
+                continue()
+            endif()
+
             get_filename_component(LIBREAL ${lib_path} REALPATH)
             get_filename_component(LIBREAL_NAME ${LIBREAL} NAME_WE)
             get_filename_component(LIBREAL_PATH ${LIBREAL} PATH)
@@ -821,18 +841,29 @@ function(sofa_install_libraries)
                 "${LIBREAL_PATH}/${LIBREAL_NAME}.*${CMAKE_STATIC_LIBRARY_SUFFIX}*"
                 )
 
+            # Install the libs
             if(WIN32)
                 install(FILES ${SHARED_LIBS} DESTINATION "bin" COMPONENT applications)
             else()
                 install(FILES ${SHARED_LIBS} DESTINATION "lib" COMPONENT applications)
             endif()
             install(FILES ${STATIC_LIBS} DESTINATION "lib" COMPONENT libraries)
-        endif()
-    endforeach()
 
-    if(WIN32 AND NOT no_copy)
-        sofa_copy_libraries(PATHS ${lib_paths})
-    endif()
+            # Copy the libs (Windows only)
+            if(WIN32 AND NOT no_copy)
+                foreach(SHARED_LIB ${SHARED_LIBS})
+                    if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (Visual Studio)
+                        if(NOT EXISTS "${runtime_output_dir}/${BUILD_TYPE}")
+                            file(MAKE_DIRECTORY "${runtime_output_dir}/${BUILD_TYPE}/")
+                        endif()
+                        configure_file(${SHARED_LIB} "${runtime_output_dir}/${BUILD_TYPE}/" COPYONLY)
+                    else()                        # Single-config generator (nmake, ninja)
+                        configure_file(${SHARED_LIB} "${runtime_output_dir}/" COPYONLY)
+                    endif()
+                endforeach()
+            endif()
+        endforeach()
+    endforeach()
 endfunction()
 
 
@@ -846,22 +877,25 @@ function(sofa_copy_libraries)
         list(APPEND lib_paths "${sofa_copy_libraries_LIBRARIES}")
     endif()
 
-    foreach(target ${targets})
-        if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
-            foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
-                string(TOUPPER "${CONFIG}" CONFIG_UPPER)
-                get_target_property(target_location ${target} LOCATION_${CONFIG_UPPER})
-                list(APPEND lib_paths "${target_location}")
-            endforeach()
-        else() # Single-config generator (nmake)
-            string(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_UPPER)
-            get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE_UPPER})
-            list(APPEND lib_paths "${target_location}")
-        endif()
-    endforeach()
+    if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
+        set(BUILD_TYPES ${CMAKE_CONFIGURATION_TYPES})
+    else() # Single-config generator (nmake)
+        set(BUILD_TYPES ${CMAKE_BUILD_TYPE})
+    endif()
 
-    foreach(lib_path ${lib_paths})
-        if(EXISTS ${lib_path})
+    foreach(BUILD_TYPE ${BUILD_TYPES})
+        string(TOUPPER "${BUILD_TYPE}" BUILD_TYPE_UPPER)
+
+        foreach(target ${targets})
+            get_target_property(target_location ${target} LOCATION_${BUILD_TYPE_UPPER})
+            list(APPEND lib_paths "${target_location}")
+        endforeach()
+
+        foreach(lib_path ${lib_paths})
+            if(NOT EXISTS ${lib_path})
+                continue()
+            endif()
+
             get_filename_component(LIB_NAME ${lib_path} NAME_WE)
             get_filename_component(LIB_PATH ${lib_path} PATH)
 
@@ -881,19 +915,20 @@ function(sofa_copy_libraries)
             endif()
 
             foreach(SHARED_LIB ${SHARED_LIBS})
-                if(EXISTS ${SHARED_LIB})
-                    if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (Visual Studio)
-                        foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
-                            file(MAKE_DIRECTORY "${runtime_output_dir}/${CONFIG}/")
-                            configure_file(${SHARED_LIB} "${runtime_output_dir}/${CONFIG}/" COPYONLY)
-                        endforeach()
-                    else()                        # Single-config generator (nmake, ninja)
-                        configure_file(${SHARED_LIB} "${runtime_output_dir}/" COPYONLY)
+                if(NOT EXISTS ${SHARED_LIB})
+                    continue()
+                endif()
+                if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (Visual Studio)
+                    if(NOT EXISTS "${runtime_output_dir}/${BUILD_TYPE}")
+                        file(MAKE_DIRECTORY "${runtime_output_dir}/${BUILD_TYPE}/")
                     endif()
+                    configure_file(${SHARED_LIB} "${runtime_output_dir}/${BUILD_TYPE}/" COPYONLY)
+                else()                        # Single-config generator (nmake, ninja)
+                    configure_file(${SHARED_LIB} "${runtime_output_dir}/" COPYONLY)
                 endif()
             endforeach()
-        endif()
-    endforeach()
+        endforeach() # foreach(lib_path ${lib_paths})
+    endforeach() # foreach(BUILD_TYPE ${BUILD_TYPES})
 endfunction()
 
 

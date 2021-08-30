@@ -55,7 +55,7 @@ helper::Creator<sofa::simulation::xml::BaseElement::NodeFactory, DAGNodeMultiMap
 
 const char* DAGNodeMultiMappingElement::getClass() const
 {
-    return DAGNodeMultiMappingClass.c_str();
+    return DAGNodeMultiMappingClass.getKey().c_str();
 }
 
 
