@@ -75,17 +75,17 @@ TEST_F(VecId_test, checkGetName)
     testGetName<TVecId<V_COORD, V_WRITE>>(0,"null(V_COORD)");
     testGetName<TVecId<V_DERIV, V_WRITE>>(0,"null(V_DERIV)");
     testGetName<TVecId<V_MATDERIV, V_WRITE>>(0,"null(V_MATDERIV)");
-    testGetName<TVecId<V_ALL, V_WRITE>>(0,"null(V_ALL)");
+    testGetName<TVecId<V_ALL, V_WRITE>>(0,"null(V_ALL->V_ALL)");
 
     testGetName<TVecId<V_COORD, V_WRITE>>(2,"restPosition(V_COORD)");
     testGetName<TVecId<V_DERIV, V_WRITE>>(2,"resetVelocity(V_DERIV)");
     testGetName<TVecId<V_MATDERIV, V_WRITE>>(2,"nonHolonomic(V_MATDERIV)");
-    testGetName<TVecId<V_ALL, V_WRITE>>(2,"2(V_ALL)");
+    testGetName<TVecId<V_ALL, V_WRITE>>(2,"2(V_ALL->V_ALL)");
 
     testGetNameVecAll<TVecId<V_ALL, V_WRITE>, TVecId<V_COORD, V_WRITE>>(2,"restPosition(V_ALL->V_COORD)");
     testGetNameVecAll<TVecId<V_ALL, V_WRITE>, TVecId<V_DERIV, V_WRITE>>(2,"resetVelocity(V_ALL->V_DERIV)");
     testGetNameVecAll<TVecId<V_ALL, V_WRITE>, TVecId<V_MATDERIV, V_WRITE>>(2,"nonHolonomic(V_ALL->V_MATDERIV)");
-    testGetNameVecAll<TVecId<V_ALL, V_WRITE>, TVecId<V_ALL, V_WRITE>>(2,"2(V_ALL)");
+    testGetNameVecAll<TVecId<V_ALL, V_WRITE>, TVecId<V_ALL, V_WRITE>>(2,"2(V_ALL->V_ALL)");
 }
 
 template<class T>
@@ -131,30 +131,30 @@ TEST_F(VecId_test, checkNullBehavior)
 }
 
 template<class DestType, class SrcType>
-void testAvailability()
+void testConversionAvailability()
 {
     SrcType idSrc{SrcType::null()};
     DestType idDst{idSrc};
     ASSERT_EQ(idSrc, idDst);
 }
 
-TEST_F(VecId_test, checkAvailability)
+TEST_F(VecId_test, checkConversionAvailability)
 {
-    testAvailability<TVecId<V_COORD, V_WRITE>, TVecId<V_COORD, V_WRITE>>();
-    testAvailability<TVecId<V_COORD, V_READ>, TVecId<V_COORD, V_READ>>();
-    testAvailability<TVecId<V_DERIV, V_WRITE>, TVecId<V_DERIV, V_WRITE>>();
-    testAvailability<TVecId<V_DERIV, V_READ>, TVecId<V_DERIV, V_READ>>();
-    testAvailability<TVecId<V_MATDERIV, V_WRITE>, TVecId<V_MATDERIV, V_WRITE>>();
-    testAvailability<TVecId<V_MATDERIV, V_READ>, TVecId<V_MATDERIV, V_READ>>();
-    testAvailability<TVecId<V_ALL, V_WRITE>, TVecId<V_ALL, V_WRITE>>();
-    testAvailability<TVecId<V_ALL, V_READ>, TVecId<V_ALL, V_READ>>();
+    testConversionAvailability<TVecId<V_COORD, V_WRITE>, TVecId<V_COORD, V_WRITE>>();
+    testConversionAvailability<TVecId<V_COORD, V_READ>, TVecId<V_COORD, V_READ>>();
+    testConversionAvailability<TVecId<V_DERIV, V_WRITE>, TVecId<V_DERIV, V_WRITE>>();
+    testConversionAvailability<TVecId<V_DERIV, V_READ>, TVecId<V_DERIV, V_READ>>();
+    testConversionAvailability<TVecId<V_MATDERIV, V_WRITE>, TVecId<V_MATDERIV, V_WRITE>>();
+    testConversionAvailability<TVecId<V_MATDERIV, V_READ>, TVecId<V_MATDERIV, V_READ>>();
+    testConversionAvailability<TVecId<V_ALL, V_WRITE>, TVecId<V_ALL, V_WRITE>>();
+    testConversionAvailability<TVecId<V_ALL, V_READ>, TVecId<V_ALL, V_READ>>();
 
-    testAvailability<TVecId<V_ALL, V_READ>, TVecId<V_DERIV, V_READ>>();
-    testAvailability<TVecId<V_ALL, V_READ>, TVecId<V_COORD, V_READ>>();
-    testAvailability<TVecId<V_ALL, V_READ>, TVecId<V_MATDERIV, V_READ>>();
-    testAvailability<TVecId<V_ALL, V_WRITE>, TVecId<V_DERIV, V_WRITE>>();
-    testAvailability<TVecId<V_ALL, V_WRITE>, TVecId<V_COORD, V_WRITE>>();
-    testAvailability<TVecId<V_ALL, V_WRITE>, TVecId<V_MATDERIV, V_WRITE>>();
+    testConversionAvailability<TVecId<V_ALL, V_READ>, TVecId<V_DERIV, V_READ>>();
+    testConversionAvailability<TVecId<V_ALL, V_READ>, TVecId<V_COORD, V_READ>>();
+    testConversionAvailability<TVecId<V_ALL, V_READ>, TVecId<V_MATDERIV, V_READ>>();
+    testConversionAvailability<TVecId<V_ALL, V_WRITE>, TVecId<V_DERIV, V_WRITE>>();
+    testConversionAvailability<TVecId<V_ALL, V_WRITE>, TVecId<V_COORD, V_WRITE>>();
+    testConversionAvailability<TVecId<V_ALL, V_WRITE>, TVecId<V_MATDERIV, V_WRITE>>();
 }
 
 template<class SrcType, class DstType>
@@ -202,16 +202,29 @@ TEST_F(VecId_test, checkConversionTFromV_ALL)
 template<class SrcType, class DstType>
 void testCopyThroughVall(unsigned int i, sofa::core::VecType outType, bool valid)
 {
+    // Test to validate that copy construction using a in-between VecId<V_ALL> is working
+    // as it should.
+
+    // Creates a VecId with SrcType,
     SrcType idSrc{i};
+
+    // Creates a VecId with V_ALL from the previously create type.
     TVecId<V_ALL, SrcType::Access> inBetween {idSrc};
 
+    // Try to copy the content of the inBetween into the destination VecId.
     DstType idDst;
     if(valid)
+    {
         idDst = inBetween;
+        ASSERT_EQ(idDst.getType(), outType);
+        ASSERT_EQ(idDst.getIndex(), i);
+    }
     else
+    {
         ASSERT_THROW(idDst = inBetween, std::invalid_argument);
-    ASSERT_EQ(idDst.getType(), outType);
-    ASSERT_EQ(idDst.getIndex(), i);
+        ASSERT_EQ(idDst.getType(), DstType::Type);
+        ASSERT_EQ(idDst.getIndex(), 0);
+    }
 }
 
 TEST_F(VecId_test, checkValidCopyFromV_ALL)

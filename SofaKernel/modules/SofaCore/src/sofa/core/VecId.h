@@ -19,18 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_VECID_H
-#define SOFA_CORE_VECID_H
+#pragma once
 
 #include <sofa/config.h>
 #include <string>
 #include <sstream>
 #include <cassert>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 /// Types of vectors that can be stored in State
@@ -224,10 +220,7 @@ public:
     static std::string getName(const MyVecId& v)
     {
         std::ostringstream out;
-        if(v.getType() == V_ALL)
-            out << getIndexName(v) << "(" << toString(V_ALL) << ")";
-        else
-            out << getIndexName(v) << "(" << toString(V_ALL) << "->" << toString(v.getType()) << ")";
+        out << getIndexName(v) << "(" << toString(V_ALL) << "->" << toString(v.getType()) << ")";
         return out.str();
     }
 };
@@ -246,6 +239,18 @@ public:
 
     VecType type;
     unsigned int index;
+
+    bool operator==(const BaseVecId& v) const
+    {
+        return type == v.type && index == v.index;
+    }
+
+    bool operator!=(const BaseVecId& v) const
+    {
+        return type != v.type || index != v.index;
+    }
+
+    bool isNull() const { return index == 0; }
 
 protected:
     BaseVecId(VecType t, unsigned int i) : type(t), index(i) {}
@@ -270,7 +275,7 @@ public:
     TVecId(unsigned int i) : BaseVecId(vtype, i) { }
 
     /// Copy constructor
-    TVecId(const TVecId<vtype, vaccess> & v) : BaseVecId(vtype, v.getIndex()) {}
+    TVecId(const TVecId & v) : BaseVecId(vtype, v.getIndex()) {}
 
     /// Copy from another VecId, possibly with another type of access, with the
     /// constraint that the access must be compatible (i.e. cannot create
@@ -287,48 +292,39 @@ public:
         static_assert(vaccess2 >= vaccess, "Copy from a read-only vector id into a read/write vector id is forbidden.");
     }
 
-    // Copy assignment
-
-    TVecId<vtype, vaccess> & operator=(const TVecId<vtype, vaccess>& other) {
-        this->index = other.index;
-        this->type = other.type;
-        return *this;
-    }
-
-    template<VecAccess vaccess2>
-    TVecId<vtype, vaccess> & operator=(const TVecId<vtype, vaccess2>& other) {
-        static_assert(vaccess2 >= vaccess, "Copy from a read-only vector id into a read/write vector id is forbidden.");
-        this->index = other.index;
-        this->type = other.type;
-        return *this;
-    }
-
-    template<VecAccess vaccess2>
-    TVecId<vtype, vaccess> & operator=(const TVecId<V_ALL, vaccess2>& other) {
-        static_assert(vaccess2 >= vaccess, "Copy from a read-only vector id into a read/write vector id is forbidden.");
-#ifndef NDEBUG
-        assert(other.getType() == vtype);
-#endif
-        this->index = other.index;
-        this->type = other.type;
-        return *this;
-    }
-
-
-    template<VecType vtype2, VecAccess vaccess2>
-    bool operator==(const TVecId<vtype2, vaccess2>& v) const
+    /// Copy assignment, this copy always should succeed
+    TVecId& operator=(const TVecId& other)
     {
-        return getType() == v.getType() && getIndex() == v.getIndex();
+        index = other.index;
+        return *this;
     }
 
-    template<VecType vtype2, VecAccess vaccess2>
-    bool operator!=(const TVecId<vtype2, vaccess2>& v) const
-    {
-        return getType() != v.getType() || getIndex() != v.getIndex();
+    /// Copy assignment from a VecId of same VecType but with different access mode.
+    /// This copy should succeed in any case case except in the case of copying from a read-only VecId
+    /// into one which have a read/write access.
+    template<VecAccess vaccess2>
+    TVecId& operator=(const TVecId<vtype, vaccess2>& other) {
+        static_assert(vaccess2 >= vaccess, "Copy from a read-only vector id into a read/write vector id is forbidden.");
+        index = other.index;
+        return *this;
+    }
+
+    /// Copy assignment from a VecId with V_ALL type and with different access mode.
+    /// This copy should fails if:
+    ///   - copying from a read-only VecId into one which have a read/write access (compilation failure).
+    ///   - if the real type of V_ALL is in fact different to the targeted one
+    template<VecAccess vaccess2>
+    TVecId& operator=(const TVecId<V_ALL, vaccess2>& other) {
+        static_assert(vaccess2 >= vaccess, "Copy from a read-only vector id into a read/write vector id is forbidden.");
+
+        if(other.getType() != Type)
+            throw std::invalid_argument("Cannot copy from a V_ALL to a VecId that is not a V_ALL");
+
+        index = other.index;
+        return *this;
     }
 
     static TVecId null() { return TVecId(0);}
-    bool isNull() const { return this->index == 0; }
 
     std::string getName() const
     {
@@ -363,28 +359,14 @@ public:
 
     // Copy assignment
     template<VecType vtype2, VecAccess vaccess2>
-    TVecId<V_ALL, vaccess> & operator=(const TVecId<vtype2, vaccess2>& other) {
+    TVecId& operator=(const TVecId<vtype2, vaccess2>& other) {
         static_assert(vaccess2 >= vaccess, "Copy from a read-only vector id into a read/write vector id is forbidden.");
-        this->index = other.index;
-        this->type = other.type;
+        index = other.index;
+        type = other.type;
         return *this;
     }
 
-
-    template<VecType vtype2, VecAccess vaccess2>
-    bool operator==(const TVecId<vtype2, vaccess2>& v) const
-    {
-        return getType() == v.getType() && getIndex() == v.getIndex();
-    }
-
-    template<VecType vtype2, VecAccess vaccess2>
-    bool operator!=(const TVecId<vtype2, vaccess2>& v) const
-    {
-        return getType() != v.getType() || getIndex() != v.getIndex();
-    }
-
     static TVecId null() { return TVecId(0);}
-    bool isNull() const { return this->index == 0; }
 
     std::string getName() const
     {
@@ -415,8 +397,4 @@ typedef TVecId<V_MATDERIV, V_WRITE>     MatrixDerivId;
 
 static_assert(sizeof(VecId) == sizeof(VecCoordId), "");
 
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core
