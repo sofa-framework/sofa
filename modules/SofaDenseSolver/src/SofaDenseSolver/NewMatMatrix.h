@@ -54,7 +54,7 @@ public:
     void resize(Index nbRow, Index nbCol) override
     {
 #ifdef NEWMAT_VERBOSE
-        std::cout << /* this->Name()  <<  */": resize("<<nbRow<<","<<nbCol<<")"<<std::endl;
+        msg_info() << /* this->Name()  <<  */": resize("<<nbRow<<","<<nbCol<<")";
 #endif
         M::ReSize(nbRow, nbCol);
         (*this) = 0.0;
@@ -85,7 +85,7 @@ public:
     void set(Index i, Index j, double v) override
     {
 #ifdef NEWMAT_VERBOSE
-        std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
+        msg_info() << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v;
 #endif
 #ifdef NEWMAT_CHECK
         if (i >= rowSize() || j >= colSize())
@@ -100,7 +100,7 @@ public:
     void add(Index i, Index j, double v) override
     {
 #ifdef NEWMAT_VERBOSE
-        std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
+        msg_info() << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v;
 #endif
 #ifdef NEWMAT_CHECK
         if (i >= rowSize() || j >= colSize())
@@ -115,7 +115,7 @@ public:
     void clear(Index i, Index j) override
     {
 #ifdef NEWMAT_VERBOSE
-        std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0"<<std::endl;
+        msg_info() << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0";
 #endif
 #ifdef NEWMAT_CHECK
         if (i >= rowSize() || j >= colSize())
@@ -130,7 +130,7 @@ public:
     void clearRow(Index i) override
     {
 #ifdef NEWMAT_VERBOSE
-        std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0"<<std::endl;
+        msg_info() << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0";
 #endif
 #ifdef NEWMAT_CHECK
         if (i >= rowSize())
@@ -145,7 +145,7 @@ public:
     void clearCol(Index j) override
     {
 #ifdef NEWMAT_VERBOSE
-        std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): col("<<j<<") = 0"<<std::endl;
+        msg_info() << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): col("<<j<<") = 0";
 #endif
 #ifdef NEWMAT_CHECK
         if (j >= colSize())
@@ -160,7 +160,7 @@ public:
     void clearRowCol(Index i) override
     {
 #ifdef NEWMAT_VERBOSE
-        std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0 and col("<<i<<") = 0"<<std::endl;
+        msg_info() << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0 and col("<<i<<") = 0";
 #endif
 #ifdef NEWMAT_CHECK
         if (i >= rowSize() || i >= colSize())
@@ -210,11 +210,11 @@ public:
     void solve(NewMatVector *rv, NewMatVector *ov)
     {
 #ifdef NEWMAT_VERBOSE
-        std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): solve("<<*ov<<") = "<<std::endl;
+        msg_info() << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): solve("<<*ov<<") = ";
 #endif
         *rv = this->i() * *ov;
 #ifdef NEWMAT_VERBOSE
-        std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): solve("<<*ov<<") = "<<*rv<<std::endl;
+        msg_info() << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): solve("<<*ov<<") = "<<*rv;
 #endif
     }
 
@@ -235,11 +235,11 @@ public:
     void solve(NewMatVector *rv, NewMatVector *ov, LUSolver* solver)
     {
 #ifdef NEWMAT_VERBOSE
-        std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): solve("<<*ov<<") = "<<std::endl;
+        msg_info() << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): solve("<<*ov<<") = ";
 #endif
         *rv = solver->i() * *ov;
 #ifdef NEWMAT_VERBOSE
-        std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): solve("<<*ov<<") = "<<*rv<<std::endl;
+        msg_info() << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): solve("<<*ov<<") = "<<*rv;
 #endif
     }
 
@@ -316,7 +316,7 @@ template<>
 inline void TNewMatMatrix<NEWMAT::SymmetricMatrix>::set(Index i, Index j, double v)
 {
 #ifdef NEWMAT_VERBOSE
-    std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
+    msg_info() << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v;
 #endif
 #ifdef NEWMAT_CHECK
     if (i >= rowSize() || j >= colSize())
@@ -333,7 +333,7 @@ template<>
 inline void TNewMatMatrix<NEWMAT::SymmetricMatrix>::add(Index i, Index j, double v)
 {
 #ifdef NEWMAT_VERBOSE
-    std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
+    msg_info() << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v;
 #endif
 #ifdef NEWMAT_CHECK
     if (i >= rowSize() || j >= colSize())
@@ -367,7 +367,7 @@ template<>
 inline void TNewMatMatrix<NEWMAT::BandMatrix>::set(Index i, Index j, double v)
 {
 #ifdef NEWMAT_VERBOSE
-    std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
+    msg_info() << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v;
 #endif
 #ifdef NEWMAT_CHECK
     if (i >= rowSize() || j >= colSize())
@@ -386,7 +386,7 @@ template<>
 inline void TNewMatMatrix<NEWMAT::BandMatrix>::add(Index i, Index j, double v)
 {
 #ifdef NEWMAT_VERBOSE
-    std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
+    msg_info() << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v;
 #endif
 #ifdef NEWMAT_CHECK
     if (i >= rowSize() || j >= colSize())
@@ -421,7 +421,7 @@ template<>
 inline void TNewMatMatrix<NEWMAT::SymmetricBandMatrix>::set(Index i, Index j, double v)
 {
 #ifdef NEWMAT_VERBOSE
-    std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
+    msg_info() << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v;
 #endif
 #ifdef NEWMAT_CHECK
     if (i >= rowSize() || j >= colSize())
@@ -443,7 +443,7 @@ template<>
 inline void TNewMatMatrix<NEWMAT::SymmetricBandMatrix>::add(Index i, Index j, double v)
 {
 #ifdef NEWMAT_VERBOSE
-    std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
+    msg_info() << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v;
 #endif
 #ifdef NEWMAT_CHECK
     if (i >= rowSize() || j >= colSize())
@@ -462,5 +462,3 @@ inline void TNewMatMatrix<NEWMAT::SymmetricBandMatrix>::add(Index i, Index j, do
 }
 
 } // namespace sofa::component::linearsolver
-
-
