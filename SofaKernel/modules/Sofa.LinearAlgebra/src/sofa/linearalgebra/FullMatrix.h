@@ -20,17 +20,17 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseLinearSolver/config.h>
+#include <sofa/linearalgebra/config.h>
 
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <SofaBaseLinearSolver/FullVector.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
+#include <sofa/linearalgebra/FullVector.h>
 
 namespace sofa::component::linearsolver
 {
 
 /// Simple full matrix container
 template<typename T>
-class SOFA_SOFABASELINEARSOLVER_API FullMatrix : public defaulttype::BaseMatrix
+class SOFA_LINEARALGEBRA_API FullMatrix : public defaulttype::BaseMatrix
 {
 public:
     typedef T Real;
@@ -134,7 +134,7 @@ public:
 
 /// Simple full matrix container, with an additionnal pointer per line, to be able do get a T** pointer and use [i][j] directly
 template<typename T>
-class SOFA_SOFABASELINEARSOLVER_API LPtrFullMatrix : public FullMatrix<T>
+class SOFA_LINEARALGEBRA_API LPtrFullMatrix : public FullMatrix<T>
 {
 public:
     typedef typename FullMatrix<T>::Index Index;
@@ -153,22 +153,22 @@ public:
 template<> const char* FullMatrix<double>::Name();
 template<> const char* FullMatrix<float>::Name();
 
-SOFA_SOFABASELINEARSOLVER_API std::ostream& operator << (std::ostream& out, const FullMatrix<double>& v );
-SOFA_SOFABASELINEARSOLVER_API std::ostream& operator << (std::ostream& out, const FullMatrix<float>& v );
-SOFA_SOFABASELINEARSOLVER_API std::ostream& operator << (std::ostream& out, const FullMatrix<bool>& v );
+SOFA_LINEARALGEBRA_API std::ostream& operator << (std::ostream& out, const FullMatrix<double>& v );
+SOFA_LINEARALGEBRA_API std::ostream& operator << (std::ostream& out, const FullMatrix<float>& v );
+SOFA_LINEARALGEBRA_API std::ostream& operator << (std::ostream& out, const FullMatrix<bool>& v );
 
-SOFA_SOFABASELINEARSOLVER_API std::ostream& operator << (std::ostream& out, const LPtrFullMatrix<double>& v );
-SOFA_SOFABASELINEARSOLVER_API std::ostream& operator << (std::ostream& out, const LPtrFullMatrix<float>& v );
-SOFA_SOFABASELINEARSOLVER_API std::ostream& operator << (std::ostream& out, const LPtrFullMatrix<bool>& v );
+SOFA_LINEARALGEBRA_API std::ostream& operator << (std::ostream& out, const LPtrFullMatrix<double>& v );
+SOFA_LINEARALGEBRA_API std::ostream& operator << (std::ostream& out, const LPtrFullMatrix<float>& v );
+SOFA_LINEARALGEBRA_API std::ostream& operator << (std::ostream& out, const LPtrFullMatrix<bool>& v );
 
 #if !defined(SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION)
-extern template class SOFA_SOFABASELINEARSOLVER_API FullMatrix<double>;
-extern template class SOFA_SOFABASELINEARSOLVER_API FullMatrix<float>;
-extern template class SOFA_SOFABASELINEARSOLVER_API FullMatrix<bool>;
+extern template class SOFA_LINEARALGEBRA_API FullMatrix<double>;
+extern template class SOFA_LINEARALGEBRA_API FullMatrix<float>;
+extern template class SOFA_LINEARALGEBRA_API FullMatrix<bool>;
 
-extern template class SOFA_SOFABASELINEARSOLVER_API LPtrFullMatrix<double>;
-extern template class SOFA_SOFABASELINEARSOLVER_API LPtrFullMatrix<float>;
-extern template class SOFA_SOFABASELINEARSOLVER_API LPtrFullMatrix<bool>;
+extern template class SOFA_LINEARALGEBRA_API LPtrFullMatrix<double>;
+extern template class SOFA_LINEARALGEBRA_API LPtrFullMatrix<float>;
+extern template class SOFA_LINEARALGEBRA_API LPtrFullMatrix<bool>;
 #endif /// SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION
 
 } // namespace sofa::component::linearsolver

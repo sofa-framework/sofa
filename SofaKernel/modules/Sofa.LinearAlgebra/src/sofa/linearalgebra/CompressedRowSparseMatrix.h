@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseLinearSolver/config.h>
+#include <sofa/linearalgebra/config.h>
 
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <SofaBaseLinearSolver/MatrixExpr.h>
-#include <SofaBaseLinearSolver/matrix_bloc_traits.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
+#include <sofa/linearalgebra/MatrixExpr.h>
+#include <sofa/linearalgebra/matrix_bloc_traits.h>
+#include <sofa/linearalgebra/FullMatrix.h>
 #include <sofa/type/vector.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>

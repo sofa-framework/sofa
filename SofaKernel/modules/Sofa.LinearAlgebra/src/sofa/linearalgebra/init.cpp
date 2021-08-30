@@ -19,44 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "init.h"
+#include <sofa/linearalgebra/init.h>
 
-#include <sofa/defaulttype/init.h>
+#include <sofa/type/init.h>
 #include <sofa/helper/init.h>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::linearalgebra
 {
 
 static bool s_initialized = false;
 static bool s_cleanedUp = false;
 
-SOFA_CORE_API void init()
+SOFA_LINEARALGEBRA_API void init()
 {
     if (!s_initialized)
     {
-        sofa::defaulttype::init();
+        sofa::helper::init();
         s_initialized = true;
     }
 }
 
-SOFA_CORE_API bool isInitialized()
+SOFA_LINEARALGEBRA_API bool isInitialized()
 {
     return s_initialized;
 }
 
-SOFA_CORE_API void cleanup()
+SOFA_LINEARALGEBRA_API void cleanup()
 {
     if (!s_cleanedUp)
     {
-        sofa::defaulttype::cleanup();
+        sofa::helper::cleanup();
         s_cleanedUp = true;
     }
 }
 
-SOFA_CORE_API bool isCleanedUp()
+SOFA_LINEARALGEBRA_API bool isCleanedUp()
 {
     return s_cleanedUp;
 }
@@ -67,11 +64,9 @@ static const struct CleanupCheck
     CleanupCheck() {}
     ~CleanupCheck()
     {
-        if (core::isInitialized() && !core::isCleanedUp())
-            helper::printLibraryNotCleanedUpWarning("SofaCore", "sofa::core::cleanup()");
+        if (linearalgebra::isInitialized() && !linearalgebra::isCleanedUp())
+            helper::printLibraryNotCleanedUpWarning("Sofa.LinearAlgebra", "sofa::linearalgebra::cleanup()");
     }
 } check;
 
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::linearalgebra

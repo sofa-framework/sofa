@@ -20,8 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseLinearSolver/config.h>
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/linearalgebra/config.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/type/vector.h>
 
 namespace sofa::component::linearsolver
@@ -29,7 +29,7 @@ namespace sofa::component::linearsolver
 
 /// Direct linear solver based on Sparse LDL^T factorization, implemented with the CSPARSE library
 template<class TReal>
-class SOFA_SOFABASELINEARSOLVER_API RotationMatrix : public defaulttype::BaseMatrix
+class SOFA_LINEARALGEBRA_API RotationMatrix : public defaulttype::BaseMatrix
 {
 public:
     typedef TReal Real;

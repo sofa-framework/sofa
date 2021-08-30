@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseLinearSolver/FullVector.h>
+#include <sofa/linearalgebra/FullVector.h>
 #include <sofa/type/vector.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/Factory.h>

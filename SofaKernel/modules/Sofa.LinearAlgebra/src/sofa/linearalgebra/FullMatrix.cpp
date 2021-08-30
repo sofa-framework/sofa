@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION
-#include <SofaBaseLinearSolver/FullMatrix.inl>
+#include <sofa/linearalgebra/FullMatrix.inl>
 
 namespace sofa::component::linearsolver
 {

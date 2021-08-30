@@ -19,34 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_INIT_H
-#define SOFA_CORE_INIT_H
+#pragma once
 
-#include <sofa/core/config.h>
+#include <sofa/linearalgebra/config.h>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::linearalgebra
 {
 
 /// @brief Initialize the SofaCore library, as well as its dependencies:
 /// SofaDefaultType, SofaHelper.
-SOFA_CORE_API void init();
+SOFA_LINEARALGEBRA_API void init();
 
 /// @brief Return true if and only if the SofaCore library has been initialized.
-SOFA_CORE_API bool isInitialized();
+SOFA_LINEARALGEBRA_API bool isInitialized();
 
 /// @brief Clean up the resources used by the SofaCore library, as well as its
 /// dependencies: SofaDefaultType, SofaHelper.
-SOFA_CORE_API void cleanup();
+SOFA_LINEARALGEBRA_API void cleanup();
 
 /// @brief Return true if and only if the SofaCore library has been cleaned
 /// up.
-SOFA_CORE_API bool isCleanedUp();
+SOFA_LINEARALGEBRA_API bool isCleanedUp();
 
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::linearalgebra

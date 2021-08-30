@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION
-#include <SofaBaseLinearSolver/FullVector.inl>
+#include <sofa/linearalgebra/FullVector.inl>
 #include <sofa/helper/rmath.h>
 
 namespace sofa::component::linearsolver
@@ -56,8 +56,8 @@ std::ostream& operator <<(std::ostream& out, const FullVector<float>& v){ return
 std::ostream& operator <<(std::ostream& out, const FullVector<double>& v){ return readFromStream(out, v); }
 std::ostream& operator <<(std::ostream& out, const FullVector<bool>& v){ return readFromStream(out, v); }
 
-template class SOFA_SOFABASELINEARSOLVER_API FullVector<float>;
-template class SOFA_SOFABASELINEARSOLVER_API FullVector<double>;
-template class SOFA_SOFABASELINEARSOLVER_API FullVector<bool>;
+template class SOFA_LINEARALGEBRA_API FullVector<float>;
+template class SOFA_LINEARALGEBRA_API FullVector<double>;
+template class SOFA_LINEARALGEBRA_API FullVector<bool>;
 
 } /// namespace sofa::component::linearsolver

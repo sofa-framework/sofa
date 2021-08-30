@@ -22,8 +22,10 @@
 #ifndef SOFA_DEFAULTTYPE_BASEMATRIX_H
 #define SOFA_DEFAULTTYPE_BASEMATRIX_H
 
-#include <sofa/defaulttype/config.h>
-#include <sofa/defaulttype/fwd.h>
+#include <sofa/linearalgebra/config.h>
+
+#include <sofa/linearalgebra/BaseVector.h>
+#include <sofa/type/Mat.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <utility> // for std::pair
 #include <iosfwd>
@@ -39,7 +41,7 @@ namespace defaulttype
 ///
 /// Note that accessing values using this class is rather slow and should only be used in codes where the
 /// provided genericity is necessary.
-class SOFA_DEFAULTTYPE_API BaseMatrix
+class SOFA_LINEARALGEBRA_API BaseMatrix
 {
 public:
     typedef sofa::SignedIndex Index;
@@ -1180,16 +1182,16 @@ public:
     /// @}
 
     /// Declare that the operator << is friend so they can use private data.
-    friend SOFA_DEFAULTTYPE_API std::ostream& operator<<(std::ostream& out, const  sofa::defaulttype::BaseMatrix& m );
+    friend SOFA_LINEARALGEBRA_API std::ostream& operator<<(std::ostream& out, const  sofa::defaulttype::BaseMatrix& m );
     /// Declare that the operator >> is friend so they can use private data.
-    friend SOFA_DEFAULTTYPE_API std::istream& operator>>( std::istream& in, sofa::defaulttype::BaseMatrix& m );
+    friend SOFA_LINEARALGEBRA_API std::istream& operator>>( std::istream& in, sofa::defaulttype::BaseMatrix& m );
 };
 
 /// Declare that the operator >> exists but is defined in a BaseMatrix.cpp
-SOFA_DEFAULTTYPE_API std::ostream& operator<<(std::ostream& out, const  sofa::defaulttype::BaseMatrix& m );
+SOFA_LINEARALGEBRA_API std::ostream& operator<<(std::ostream& out, const  sofa::defaulttype::BaseMatrix& m );
 
 /// Declare that the operator >> exists but is defined in a BaseMatrix.cpp
-SOFA_DEFAULTTYPE_API std::istream& operator>>( std::istream& in, sofa::defaulttype::BaseMatrix& m );
+SOFA_LINEARALGEBRA_API std::istream& operator>>( std::istream& in, sofa::defaulttype::BaseMatrix& m );
 
 } // nampespace defaulttype
 

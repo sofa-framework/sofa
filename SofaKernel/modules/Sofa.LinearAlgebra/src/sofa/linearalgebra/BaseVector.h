@@ -22,7 +22,7 @@
 #ifndef SOFA_DEFAULTTYPE_BASEVECTOR_H
 #define SOFA_DEFAULTTYPE_BASEVECTOR_H
 
-#include <sofa/defaulttype/config.h>
+#include <sofa/linearalgebra/config.h>
 #include <iosfwd>
 
 namespace sofa
@@ -35,7 +35,7 @@ namespace defaulttype
 ///
 /// Note that accessing values using this class is rather slow and should only be used in codes where the
 /// provided genericity is necessary.
-class SOFA_DEFAULTTYPE_API BaseVector
+class SOFA_LINEARALGEBRA_API BaseVector
 {
 public:
     typedef sofa::SignedIndex Index;
@@ -167,11 +167,11 @@ public:
     /// Reset the value of element i to 0
     virtual void clear(Index i) { set(i,0.0); }
 
-    friend SOFA_DEFAULTTYPE_API std::ostream& operator << (std::ostream& out, const BaseVector& v );
+    friend SOFA_LINEARALGEBRA_API std::ostream& operator << (std::ostream& out, const BaseVector& v );
 };
 
 /// Declare that the operator >> exists but is defined in a BaseMatrix.cpp
-SOFA_DEFAULTTYPE_API std::ostream& operator<<(std::ostream& out, const  BaseVector& v );
+SOFA_LINEARALGEBRA_API std::ostream& operator<<(std::ostream& out, const  BaseVector& v );
 
 } // nampespace defaulttype
 

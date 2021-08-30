@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_SOFABASELINEARSOLVER_ROTATIONMATRIX_DEFINITION 1
-#include <SofaBaseLinearSolver/RotationMatrix.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
-#include <sofa/defaulttype/BaseVector.h>
+#include <sofa/linearalgebra/RotationMatrix.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
+#include <sofa/linearalgebra/BaseVector.h>
 
 namespace sofa::component::linearsolver
 {
