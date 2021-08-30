@@ -10,6 +10,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/DataTypeInfo.h
     ${SRC_ROOT}/MapMapSparseMatrix.h
     ${SRC_ROOT}/MapMapSparseMatrixEigenUtils.h
+    ${SRC_ROOT}/MatrixExporter.h
     ${SRC_ROOT}/RigidTypes.h
     ${SRC_ROOT}/RigidVec6Types.h
     ${SRC_ROOT}/SolidTypes.h
@@ -58,6 +59,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/AbstractTypeInfo.cpp
     ${SRC_ROOT}/BaseMatrix.cpp
     ${SRC_ROOT}/BaseVector.cpp
+    ${SRC_ROOT}/MatrixExporter.cpp
     ${SRC_ROOT}/SolidTypes.cpp
     ${SRC_ROOT}/TemplatesAliases.cpp
     ${SRC_ROOT}/TypeInfoID.cpp
