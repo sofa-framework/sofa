@@ -19,6 +19,7 @@ set(HEADER_FILES
     ${SOFABASELINEARSOLVER_SRC}/FullMatrix.inl
     ${SOFABASELINEARSOLVER_SRC}/FullVector.h
     ${SOFABASELINEARSOLVER_SRC}/FullVector.inl
+    ${SOFABASELINEARSOLVER_SRC}/GlobalSystemMatrixExporter.h
     ${SOFABASELINEARSOLVER_SRC}/GraphScatteredTypes.h
     ${SOFABASELINEARSOLVER_SRC}/MatrixExpr.h
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver.h
@@ -37,6 +38,7 @@ set(SOURCE_FILES
     ${SOFABASELINEARSOLVER_SRC}/DefaultMultiMatrixAccessor.cpp
     ${SOFABASELINEARSOLVER_SRC}/FullMatrix.cpp
     ${SOFABASELINEARSOLVER_SRC}/FullVector.cpp
+    ${SOFABASELINEARSOLVER_SRC}/GlobalSystemMatrixExporter.cpp
     ${SOFABASELINEARSOLVER_SRC}/GraphScatteredTypes.cpp
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver.cpp
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver[GraphScatteredMatrix].cpp
