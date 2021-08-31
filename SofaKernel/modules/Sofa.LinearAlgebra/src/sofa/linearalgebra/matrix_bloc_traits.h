@@ -66,7 +66,7 @@ public:
     }
 };
 
-// by default, supposing T is a defaulttype::Mat (useful for type derivated from defaulttype::Mat)
+// by default, supposing T is a type::Mat (useful for type derivated from type::Mat)
 template<class T, typename IndexType>
 class matrix_bloc_traits
 {
@@ -117,7 +117,24 @@ public:
     static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
 
     static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return matrix_bloc_traits<Real, IndexType>::getElementType(); }
-    //static const char* Name();
+    static const char* Name()
+    {
+        std::ostringstream o;
+        o << "Mat" << L << "x" << C;
+        if constexpr (std::is_same<float, real>::value)
+        {
+            o << "f";
+        }
+        if constexpr (std::is_same<double, real>::value)
+        {
+            o << "d";
+        }
+        if constexpr (std::is_same<int, real>::value)
+        {
+            o << "i";
+        }
+        return o.str().c_str();
+    }
 };
 
 //template<> inline const char* matrix_bloc_traits<type::Mat<1,1,float >, sofa::SignedIndex >::Name() { return "1f"; }

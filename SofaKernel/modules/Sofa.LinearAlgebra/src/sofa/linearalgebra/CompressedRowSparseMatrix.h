@@ -28,7 +28,6 @@
 #include <sofa/linearalgebra/FullMatrix.h>
 #include <sofa/type/vector.h>
 #include <sofa/helper/rmath.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>
 
 namespace sofa::linearalgebra
 {
@@ -1715,7 +1714,7 @@ public:
 
     static const char* Name()
     {
-        static std::string name = std::string("CompressedRowSparseMatrix") + sofa::defaulttype::DataTypeInfo<Bloc>::name() ;
+        static std::string name = std::string("CompressedRowSparseMatrix") + matrix_bloc_traits<Bloc, Index>::Name() ;
         return name.c_str();
     }
 

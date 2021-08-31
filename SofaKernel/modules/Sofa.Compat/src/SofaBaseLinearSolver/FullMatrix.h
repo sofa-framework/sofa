@@ -25,10 +25,16 @@
 
 SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/FullMatrix.h")
 
+// lots of files including FullMatrix expect implicitly they got FullVector too
+#include <SofaBaseLinearSolver/FullVector.h>
+
 namespace sofa::component::linearsolver
 {
 
     template<typename T>
     using FullMatrix = sofa::linearalgebra::FullMatrix<T>;
+
+    template<typename T>
+    using LPtrFullMatrix = sofa::linearalgebra::LPtrFullMatrix<T>;
 
 } // namespace sofa::component::linearsolver

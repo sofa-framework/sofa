@@ -31,9 +31,6 @@ namespace sofa::component::linearsolver
     using bloc_index_func = sofa::linearalgebra::bloc_index_func<TN, T>;
 
     template<class T, typename IndexType>
-    using matrix_bloc_traits = matrix_bloc_traits<T, IndexType>;
-
-    template <Size L, Size C, class real, typename IndexType>
-    using matrix_bloc_traits = matrix_bloc_traits< type::Mat<L, C, real>, IndexType>;
+    using matrix_bloc_traits = sofa::linearalgebra::matrix_bloc_traits<T, IndexType>;
 
 } // namespace sofa::component::linearsolver
