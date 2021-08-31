@@ -23,8 +23,8 @@
 
 #include <sofa/config.h>
 
-#define NEWMAT_CHECK false
-#define NEWMAT_VERBOSE false
+#define NEWMATMATRIX_CHECK false
+#define NEWMATMATRIX_VERBOSE false
 
 #define SOFADENSESOLVER_VERSION @PROJECT_VERSION@
 
