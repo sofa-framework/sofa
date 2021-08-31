@@ -28,7 +28,7 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/Quat.h>
 #include <sofa/helper/StateMask.h>
-#include <sofa/defaulttype/fwd.h> /// For BaseMatrix
+#include <sofa/linearalgebra/fwd.h> /// For BaseMatrix
 
 namespace sofa
 {

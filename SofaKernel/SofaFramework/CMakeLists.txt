@@ -10,8 +10,8 @@ set(SOFAFRAMEWORK_MODULES
     Sofa.Topology
     Sofa.Geometry 
     Sofa.Helper
-    Sofa.DefaultType
     Sofa.LinearAlgebra
+    Sofa.DefaultType
     Sofa.Core
     Sofa.SimulationCore
     )
@@ -22,8 +22,8 @@ set(SOFAFRAMEWORK_LEGACYMODULES
     Sofa.Topology 
     Sofa.Geometry 
     SofaHelper 
-    SofaDefaultType
     Sofa.LinearAlgebra
+    SofaDefaultType
     SofaCore 
     SofaSimulationCore
 )
