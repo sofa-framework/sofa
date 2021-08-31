@@ -32,8 +32,8 @@
 namespace sofa::helper
 {
 
-template<class TKey>
-void logFactoryRegister(const std::string& baseclass, const std::string& classname, TKey key, bool multi)
+template <typename TKey, class TObject, typename TArgument, typename TPtr>
+void Factory<TKey, TObject, TArgument, TPtr>::logFactoryRegister(const std::string& baseclass, const std::string& classname, TKey key, bool multi)
 {
     std::stringstream ss;
     ss << key;

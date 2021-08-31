@@ -92,8 +92,5 @@ SOFA_HELPER_API void printFactoryLog(std::ostream& out)
     out << getFactoryLog();
 }
 
-//explicit instantiation for std::string
-template SOFA_HELPER_API void logFactoryRegister<std::string>(const std::string& baseclass, const std::string& classname, std::string key, bool multi);
-
 } // namespace sofa::helper
 

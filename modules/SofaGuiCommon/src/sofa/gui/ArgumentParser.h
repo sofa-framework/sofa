@@ -109,11 +109,11 @@ public:
                 ret = true;
             }
         }
-        catch (const std::bad_cast& e1) // could not cast the value to T
+        catch (const std::bad_cast& /*e1*/) // could not cast the value to T
         {
             ret = false;
         }
-        catch (const cxxopts::OptionParseException& e2) // option is not present, etc
+        catch (const cxxopts::OptionParseException& /*e2*/) // option is not present, etc
         {
             ret = false;
         }
