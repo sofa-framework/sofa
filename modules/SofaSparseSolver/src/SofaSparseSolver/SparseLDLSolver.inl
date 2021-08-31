@@ -31,7 +31,7 @@
 #include <cmath>
 #include <sofa/helper/system/thread/CTime.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.inl>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <fstream>
 #include <iomanip>      // std::setprecision
 #include <string>

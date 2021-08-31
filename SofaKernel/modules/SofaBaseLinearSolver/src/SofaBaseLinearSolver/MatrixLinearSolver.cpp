@@ -23,7 +23,7 @@
 #include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.inl>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
 namespace sofa::component::linearsolver
 {

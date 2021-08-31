@@ -42,6 +42,7 @@ using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorPeqBaseVectorVis
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/DiagonalMatrix.h>
 #include <SofaBaseLinearSolver/RotationMatrix.h>
+#include <SofaBaseLinearSolver/FullMatrix.inl>
 
 #ifdef SOFA_SUPPORT_CRS_MATRIX
 #include <SofaBaseLinearSolver/CRSMultiMatrixAccessor.h>

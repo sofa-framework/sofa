@@ -21,9 +21,11 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/config.h>
 
 #define SOFADENSESOLVER_VERSION @PROJECT_VERSION@
+#define NEWMAT_CHECK false
+#define NEWMAT_VERBOSE false
 
 #ifdef SOFA_BUILD_SOFADENSESOLVER
 #  define SOFA_TARGET @PROJECT_NAME@

@@ -28,9 +28,6 @@
 
 #include <map>
 
-#define SPARSEMATRIX_CHECK false
-#define SPARSEMATRIX_VERBOSE false
-
 //////////////////// FORWARD DEFINITION ////////////////////////////////////////////////////////////
 namespace sofa::component::linearsolver 
 {
@@ -104,9 +101,10 @@ public:
 
     void resize(Index nbRow, Index nbCol) override
     {
-        if(SPARSEMATRIX_VERBOSE){
+        if (SPARSEMATRIX_VERBOSE)
+        {
             if (nbRow != rowSize() || nbCol != colSize())
-                msg_info() << ": resize("<<nbRow<<","<<nbCol<<")" ;
+                msg_info() << ": resize(" << nbRow << "," << nbCol << ")" ;
         }
         data.clear();
         nRow = nbRow;
@@ -125,10 +123,11 @@ public:
 
     SReal element(Index i, Index j) const override
     {
-        if(SPARSEMATRIX_CHECK){
+        if (SPARSEMATRIX_CHECK)
+        {
             if (i >= rowSize() || j >= colSize())
             {
-                dmsg_error() << "ERROR: invalid read access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")" ;
+                dmsg_error() << "ERROR: invalid read access to element (" << i << "," << j << ") in " << /* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")" ;
                 return 0.0;
             }
         }
@@ -143,15 +142,15 @@ public:
 
     void set(Index i, Index j, double v) override
     {
-
-        if(SPARSEMATRIX_VERBOSE){
-            msg_info() << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = " ;
+        if (SPARSEMATRIX_VERBOSE)
+        {
+            msg_info() << "(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") = " ;
         }
-
-        if(SPARSEMATRIX_CHECK){
+        if (SPARSEMATRIX_CHECK)
+        {
             if (i >= rowSize() || j >= colSize())
             {
-                msg_error() << "Invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")" ;
+                msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")" ;
                 return;
             }
         }
@@ -161,14 +160,15 @@ public:
     using defaulttype::BaseMatrix::add;
     void add(Index i, Index j, double v) override
     {
-        if(SPARSEMATRIX_VERBOSE){
-            msg_info() << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += " << v ;
+        if (SPARSEMATRIX_VERBOSE)
+        {
+            msg_info() << "(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") += " << v ;
         }
-
-        if(SPARSEMATRIX_CHECK){
+        if (SPARSEMATRIX_CHECK)
+        {
             if (i >= rowSize() || j >= colSize())
             {
-                msg_error() << "Invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")" ;
+                msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")" ;
                 return;
             }
         }
@@ -177,14 +177,15 @@ public:
 
     void clear(Index i, Index j) override
     {
-        if(SPARSEMATRIX_VERBOSE){
-            msg_info() << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0" ;
+        if (SPARSEMATRIX_VERBOSE)
+        {
+            msg_info() << "(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") = 0" ;
         }
-
-        if(SPARSEMATRIX_CHECK){
+        if (SPARSEMATRIX_CHECK)
+        {
             if (i >= rowSize() || j >= colSize())
             {
-                msg_error() << "Invalid write access to element ("<<i<<","<<j<<") in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")";
+                msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")";
                 return;
             }
         }
@@ -201,14 +202,15 @@ public:
 
     void clearRow(Index i) override
     {
-        if(SPARSEMATRIX_VERBOSE){
-            msg_info() << "("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0" ;
+        if (SPARSEMATRIX_VERBOSE)
+        {
+            msg_info() << "(" << rowSize() << "," << colSize() << "): row(" << i << ") = 0" ;
         }
-
-        if(SPARSEMATRIX_CHECK){
+        if (SPARSEMATRIX_CHECK)
+        {
             if (i >= rowSize())
             {
-                msg_error() << "Invalid write access to row "<<i<<" in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")" ;
+                msg_error() << "Invalid write access to row " << i << " in " << /* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")" ;
                 return;
             }
         }
@@ -221,14 +223,15 @@ public:
 
     void clearCol(Index j) override
     {
-        if(SPARSEMATRIX_VERBOSE){
-            msg_info() << "("<<rowSize()<<","<<colSize()<<"): col("<<j<<") = 0" ;
+        if (SPARSEMATRIX_VERBOSE)
+        {
+            msg_info() << "(" << rowSize() << "," << colSize() << "): col(" << j << ") = 0" ;
         }
-
-        if(SPARSEMATRIX_CHECK){
+        if (SPARSEMATRIX_CHECK)
+        {
             if (j >= colSize())
             {
-                msg_error() << "Invalid write access to column "<<j<<" in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")" ;
+                msg_error() << "Invalid write access to column " << j << " in " << /* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")" ;
                 return;
             }
         }
@@ -242,14 +245,15 @@ public:
 
     void clearRowCol(Index i) override
     {
-        if(SPARSEMATRIX_VERBOSE){
-            msg_info() << "("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0 and col("<<i<<") = 0" ;
+        if (SPARSEMATRIX_VERBOSE)
+        {
+            msg_info() << "(" << rowSize() << "," << colSize() << "): row(" << i << ") = 0 and col(" << i << ") = 0" ;
         }
-
-        if(SPARSEMATRIX_CHECK){
+        if (SPARSEMATRIX_CHECK)
+        {
             if (i >= rowSize() || i >= colSize())
             {
-                msg_error() << "Invalid write access to row and column "<<i<<" in "<</* this->Name() <<*/" of size ("<<rowSize()<<","<<colSize()<<")";
+                msg_error() << "Invalid write access to row and column " << i << " in " << /* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")";
                 return;
             }
         }

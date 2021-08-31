@@ -25,8 +25,8 @@
 namespace sofa::component::linearsolver
 {
 
-//#define FULLMATRIX_CHECK
-//#define FULLMATRIX_VERBOSE
+#undef FULLMATRIX_CHECK
+#undef FULLMATRIX_VERBOSE
 
 template<class Real>
 FullMatrix<Real>::FullMatrix()
