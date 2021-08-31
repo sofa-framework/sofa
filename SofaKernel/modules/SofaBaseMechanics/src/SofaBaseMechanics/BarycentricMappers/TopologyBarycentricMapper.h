@@ -69,7 +69,6 @@ public:
     virtual void setToTopology( topology::PointSetTopologyContainer* toTopology) {this->m_toTopology = toTopology;}
     const topology::PointSetTopologyContainer *getToTopology() const {return m_toTopology;}
 
-    virtual void updateForceMask(){/*mask is already filled in the mapper's applyJT*/}
     virtual void resize( core::State<Out>* toModel ) = 0;
 
     void processTopologicalChanges(const typename Out::VecCoord& out, const typename In::VecCoord& in, core::topology::Topology* t) {

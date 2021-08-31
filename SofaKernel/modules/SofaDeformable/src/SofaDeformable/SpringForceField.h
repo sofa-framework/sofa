@@ -184,8 +184,6 @@ public:
         springs.endEdit();
     }
 
-    void updateForceMask() override;
-
     void handleTopologyChange(core::topology::Topology *topo) override;
 
     /// initialization to export kinetic, potential energy  and force intensity to gnuplot files format
