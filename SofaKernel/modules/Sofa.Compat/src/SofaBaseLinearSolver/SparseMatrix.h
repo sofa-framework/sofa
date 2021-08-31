@@ -23,7 +23,7 @@
 
 #include <sofa/linearalgebra/SparseMatrix.h>
 
-SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/SparseMatrix.h")
+// SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/SparseMatrix.h")
 
 namespace sofa::component::linearsolver
 {

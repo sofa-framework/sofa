@@ -21,9 +21,9 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/linearalgebra/MatrixExpr.h>
+#include <sofa/linearalgebra/matrix_bloc_traits.h>
 
-SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/MatrixExpr.h")
+// SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/matrix_bloc_traits.h")
 
 namespace sofa::component::linearsolver
 {

@@ -23,4 +23,4 @@
 
 #include <sofa/linearalgebra/FullMatrix.inl>
 
-SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/FullMatrix.inl")
+// SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/FullMatrix.inl")

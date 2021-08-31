@@ -23,7 +23,7 @@
 
 #include <sofa/linearalgebra/FullMatrix.h>
 
-SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/FullMatrix.h")
+// SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/FullMatrix.h")
 
 // lots of files including FullMatrix expect implicitly they got FullVector too
 #include <SofaBaseLinearSolver/FullVector.h>
