@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/linearalgebra/FullMatrix.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
 template<class Real>
@@ -345,4 +345,4 @@ template<>
 const char* FullMatrix<float>::Name() { return "FullMatrixf"; }
 
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra

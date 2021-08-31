@@ -22,7 +22,7 @@
 #define SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION
 #include <sofa/linearalgebra/FullMatrix.inl>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
 #if defined(SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION)
@@ -41,4 +41,4 @@ template class LPtrFullMatrix<float>;
 template class LPtrFullMatrix<bool>;
 #endif /// SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION
 
-} /// namespace sofa::component::linearsolver
+} /// namespace sofa::linearalgebra

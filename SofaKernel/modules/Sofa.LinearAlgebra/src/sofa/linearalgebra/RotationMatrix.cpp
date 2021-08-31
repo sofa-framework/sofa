@@ -24,7 +24,7 @@
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/linearalgebra/BaseVector.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
 template<class Real>
@@ -102,7 +102,7 @@ type::vector<Real>& RotationMatrix<Real>::getVector()
 }
 
 template<class Real>
-void RotationMatrix<Real>::opMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const
+void RotationMatrix<Real>::opMulV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const
 {
     //Solve lv = R * lvR
     std::size_t k = 0;
@@ -118,7 +118,7 @@ void RotationMatrix<Real>::opMulV(defaulttype::BaseVector* result, const default
 }
 
 template<class Real>
-void RotationMatrix<Real>::opMulTV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const
+void RotationMatrix<Real>::opMulTV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const
 {
     std::size_t k = 0;
     sofa::SignedIndex l = 0;
@@ -134,7 +134,7 @@ void RotationMatrix<Real>::opMulTV(defaulttype::BaseVector* result, const defaul
 
 /// multiply the transpose current matrix by m matrix and strore the result in m
 template<class Real>
-void RotationMatrix<Real>::opMulTM(defaulttype::BaseMatrix * bresult,defaulttype::BaseMatrix * bm) const
+void RotationMatrix<Real>::opMulTM(linearalgebra::BaseMatrix * bresult,linearalgebra::BaseMatrix * bm) const
 {
     if (RotationMatrix<Real> * m = dynamic_cast<RotationMatrix<Real> * >(bm))
     {
@@ -200,11 +200,11 @@ void RotationMatrix<Real>::opMulTM(defaulttype::BaseMatrix * bresult,defaulttype
             return;
         }
     }
-    defaulttype::BaseMatrix::opMulTM(bresult,bm);
+    linearalgebra::BaseMatrix::opMulTM(bresult,bm);
 }
 
 template<class Real>
-void RotationMatrix<Real>::rotateMatrix(defaulttype::BaseMatrix * mat,const defaulttype::BaseMatrix * Jmat)
+void RotationMatrix<Real>::rotateMatrix(linearalgebra::BaseMatrix * mat,const linearalgebra::BaseMatrix * Jmat)
 {
     if (mat!=Jmat) {
         mat->clear();
@@ -212,10 +212,10 @@ void RotationMatrix<Real>::rotateMatrix(defaulttype::BaseMatrix * mat,const defa
     }
 
     if (const SparseMatrix<float> * J = dynamic_cast<const SparseMatrix<float> * >(Jmat)) {
-        for (typename sofa::component::linearsolver::SparseMatrix<float>::LineConstIterator jit1 = J->begin(), jend = J->end() ; jit1 != jend; jit1++)
+        for (typename sofa::linearalgebra::SparseMatrix<float>::LineConstIterator jit1 = J->begin(), jend = J->end() ; jit1 != jend; jit1++)
         {
             sofa::SignedIndex l = jit1->first;
-            for (typename sofa::component::linearsolver::SparseMatrix<float>::LElementConstIterator i1 = jit1->second.begin(), jitend = jit1->second.end(); i1 != jitend;)
+            for (typename sofa::linearalgebra::SparseMatrix<float>::LElementConstIterator i1 = jit1->second.begin(), jitend = jit1->second.end(); i1 != jitend;)
             {
                 sofa::SignedIndex c = i1->first;
                 Real v0 = (Real)i1->second; i1++; if (i1==jitend) break;
@@ -227,10 +227,10 @@ void RotationMatrix<Real>::rotateMatrix(defaulttype::BaseMatrix * mat,const defa
             }
         }
     } else if (const SparseMatrix<double> * J = dynamic_cast<const SparseMatrix<double> * >(Jmat)) {
-        for (typename sofa::component::linearsolver::SparseMatrix<double>::LineConstIterator jit1 = J->begin(), jend = J->end() ; jit1 != jend; jit1++)
+        for (typename sofa::linearalgebra::SparseMatrix<double>::LineConstIterator jit1 = J->begin(), jend = J->end() ; jit1 != jend; jit1++)
         {
             sofa::SignedIndex l = jit1->first;
-            for (typename sofa::component::linearsolver::SparseMatrix<double>::LElementConstIterator i1 = jit1->second.begin(), jitend = jit1->second.end(); i1 != jitend;)
+            for (typename sofa::linearalgebra::SparseMatrix<double>::LElementConstIterator i1 = jit1->second.begin(), jitend = jit1->second.end(); i1 != jitend;)
             {
                 sofa::SignedIndex c = i1->first;
                 Real v0 = (Real)i1->second; i1++; if (i1==jitend) break;

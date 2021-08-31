@@ -23,7 +23,7 @@
 #include <sofa/linearalgebra/FullVector.inl>
 #include <sofa/helper/rmath.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
 template<> void FullVector<bool>::set(Index i, SReal v)
@@ -60,4 +60,4 @@ template class SOFA_LINEARALGEBRA_API FullVector<float>;
 template class SOFA_LINEARALGEBRA_API FullVector<double>;
 template class SOFA_LINEARALGEBRA_API FullVector<bool>;
 
-} /// namespace sofa::component::linearsolver
+} /// namespace sofa::linearalgebra

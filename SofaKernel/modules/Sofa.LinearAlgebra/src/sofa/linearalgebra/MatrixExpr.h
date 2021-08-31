@@ -24,7 +24,7 @@
 
 #include <sstream>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
 template<class M1, class M2>
@@ -595,4 +595,4 @@ public:
     }
 };
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra

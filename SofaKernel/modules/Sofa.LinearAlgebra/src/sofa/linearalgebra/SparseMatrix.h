@@ -29,25 +29,25 @@
 #include <map>
 
 //////////////////// FORWARD DEFINITION ////////////////////////////////////////////////////////////
-namespace sofa::component::linearsolver 
+namespace sofa::linearalgebra 
 {
     template<typename T>
     class SparseMatrix ;
 }
 
-MSG_REGISTER_CLASS(sofa::component::linearsolver::SparseMatrix<float>, "SparseMatrix<float>")
-MSG_REGISTER_CLASS(sofa::component::linearsolver::SparseMatrix<double>, "SparseMatrix<double>")
+MSG_REGISTER_CLASS(sofa::linearalgebra::SparseMatrix<float>, "SparseMatrix<float>")
+MSG_REGISTER_CLASS(sofa::linearalgebra::SparseMatrix<double>, "SparseMatrix<double>")
 
 
 ///////////////////////////  DEFINITION ////////////////////////////////////////////////////////////
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
-/** This is basically a map of map of T, wrapped in a defaulttype::BaseMatrix interface.
+/** This is basically a map of map of T, wrapped in a linearalgebra::BaseMatrix interface.
  The const access methods avoid creating the entries when they do not exist.
 */
 template<typename T>
-class SparseMatrix : public defaulttype::BaseMatrix
+class SparseMatrix : public linearalgebra::BaseMatrix
 {
 public:
     typedef T Real;
@@ -249,7 +249,7 @@ public:
     }
 
     template<class Real2>
-    void mul(FullVector<Real2>& res, const defaulttype::BaseVector* v) const
+    void mul(FullVector<Real2>& res, const linearalgebra::BaseVector* v) const
     {
         res.resize(rowSize());
         for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
@@ -262,7 +262,7 @@ public:
     }
 
     template<class Real2>
-    void addMulTranspose(FullVector<Real2>& res, const defaulttype::BaseVector* v) const
+    void addMulTranspose(FullVector<Real2>& res, const linearalgebra::BaseVector* v) const
     {
         res.resize(colSize());
         for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
@@ -274,7 +274,7 @@ public:
     }
 
     template<class Real2>
-    void mul(defaulttype::BaseVector* res, const FullVector<Real2>& v) const
+    void mul(linearalgebra::BaseVector* res, const FullVector<Real2>& v) const
     {
         res->resize(rowSize());
         for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
@@ -287,7 +287,7 @@ public:
     }
 
     template<class Real2>
-    void addMulTranspose(defaulttype::BaseVector* res, const FullVector<Real2>& v) const
+    void addMulTranspose(linearalgebra::BaseVector* res, const FullVector<Real2>& v) const
     {
         res->resize(colSize());
         for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
@@ -298,7 +298,7 @@ public:
         }
     }
 
-    void mul(defaulttype::BaseVector* res, const defaulttype::BaseVector* v) const
+    void mul(linearalgebra::BaseVector* res, const linearalgebra::BaseVector* v) const
     {
         res->resize(rowSize());
         for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
@@ -310,7 +310,7 @@ public:
         }
     }
 
-    void addMulTranspose(defaulttype::BaseVector* res, const defaulttype::BaseVector* v) const
+    void addMulTranspose(linearalgebra::BaseVector* res, const linearalgebra::BaseVector* v) const
     {
         res->resize(colSize());
         for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
@@ -511,4 +511,4 @@ public:
 
 
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra

@@ -25,7 +25,7 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/linearalgebra/BaseVector.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
 #if !defined(SOFA_NO_VECTOR_ACCESS_FAILURE) && !defined(NDEBUG)
@@ -35,11 +35,11 @@ namespace sofa::component::linearsolver
 #endif ///
 
 template<typename T>
-class FullVector : public defaulttype::BaseVector
+class FullVector : public linearalgebra::BaseVector
 {
 public:
     typedef T Real;
-    typedef defaulttype::BaseVector::Index Index;
+    typedef linearalgebra::BaseVector::Index Index;
     typedef T* Iterator;
     typedef const T* ConstIterator;
 
@@ -58,32 +58,32 @@ protected:
 public:
 
     FullVector()
-        : defaulttype::BaseVector()
+        : linearalgebra::BaseVector()
         , data(nullptr), cursize(0), allocsize(0)
     {
     }
 
     FullVector(const FullVector& vect)
-        : defaulttype::BaseVector()
+        : linearalgebra::BaseVector()
         , data(nullptr), cursize(0), allocsize(0)
     {
         (*this) = vect;
     }
 
     explicit FullVector(Index n)
-        : defaulttype::BaseVector()
+        : linearalgebra::BaseVector()
         , data(new T[n]), cursize(n), allocsize(n)
     {
     }
 
     FullVector(T* ptr, Index n)
-        : defaulttype::BaseVector()
+        : linearalgebra::BaseVector()
         , data(ptr), cursize(n), allocsize(-n)
     {
     }
 
     FullVector(T* ptr, Index n, Index nmax)
-        : defaulttype::BaseVector()
+        : linearalgebra::BaseVector()
         , data(ptr), cursize(n), allocsize(-nmax)
     {
     }
@@ -233,4 +233,4 @@ extern template class SOFA_LINEARALGEBRA_API FullVector<bool>;
 #endif
 
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra

@@ -24,12 +24,12 @@
 #include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/type/vector.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
 /// Direct linear solver based on Sparse LDL^T factorization, implemented with the CSPARSE library
 template<class TReal>
-class SOFA_LINEARALGEBRA_API RotationMatrix : public defaulttype::BaseMatrix
+class SOFA_LINEARALGEBRA_API RotationMatrix : public linearalgebra::BaseMatrix
 {
 public:
     typedef TReal Real;
@@ -60,13 +60,13 @@ public:
 
     virtual type::vector<Real> & getVector();
 
-    void opMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const override;
-    void opMulTV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const override;
+    void opMulV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const override;
+    void opMulTV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const override;
 
     /// multiply the transpose current matrix by m matrix and strore the result in m
-    void opMulTM(defaulttype::BaseMatrix * bresult,defaulttype::BaseMatrix * bm) const override;
+    void opMulTM(linearalgebra::BaseMatrix * bresult,linearalgebra::BaseMatrix * bm) const override;
 
-    void rotateMatrix(defaulttype::BaseMatrix * mat,const defaulttype::BaseMatrix * Jmat);
+    void rotateMatrix(linearalgebra::BaseMatrix * mat,const linearalgebra::BaseMatrix * Jmat);
 
     static const char* Name();
 

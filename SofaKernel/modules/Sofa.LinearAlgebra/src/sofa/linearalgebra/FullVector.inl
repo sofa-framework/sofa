@@ -26,7 +26,7 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
 template<typename Real>
@@ -186,4 +186,4 @@ Real FullVector<Real>::dot(const FullVector<Real>& a) const
 }
 
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra

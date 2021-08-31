@@ -27,12 +27,12 @@
 #include <sofa/linearalgebra/matrix_bloc_traits.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
 /// Simple full matrix container
 template<typename T>
-class DiagonalMatrix : public defaulttype::BaseMatrix
+class DiagonalMatrix : public linearalgebra::BaseMatrix
 {
 public:
     typedef T Real;
@@ -322,7 +322,7 @@ public:
 
 /// Simple full matrix container
 template<std::size_t LC, typename T = double>
-class BlockDiagonalMatrix : public defaulttype::BaseMatrix
+class BlockDiagonalMatrix : public linearalgebra::BaseMatrix
 {
 public:
     typedef T Real;
@@ -648,4 +648,4 @@ public:
     }
 };
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra

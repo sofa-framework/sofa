@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
 template <class TMatrix, class TBlocMatrix>
@@ -328,4 +328,4 @@ inline void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMa
 }
 
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra

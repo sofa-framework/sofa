@@ -25,16 +25,16 @@
 #include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/linearalgebra/FullVector.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
 /// Simple full matrix container
 template<typename T>
-class SOFA_LINEARALGEBRA_API FullMatrix : public defaulttype::BaseMatrix
+class SOFA_LINEARALGEBRA_API FullMatrix : public linearalgebra::BaseMatrix
 {
 public:
     typedef T Real;
-    typedef typename defaulttype::BaseMatrix::Index Index;
+    typedef typename linearalgebra::BaseMatrix::Index Index;
     typedef FullVector<Real> Line;
 
     class LineConstIterator
@@ -171,4 +171,4 @@ extern template class SOFA_LINEARALGEBRA_API LPtrFullMatrix<float>;
 extern template class SOFA_LINEARALGEBRA_API LPtrFullMatrix<bool>;
 #endif /// SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra

@@ -19,16 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_BASEVECTOR_H
-#define SOFA_DEFAULTTYPE_BASEVECTOR_H
+#pragma once
 
 #include <sofa/linearalgebra/config.h>
 #include <iosfwd>
 
-namespace sofa
-{
-
-namespace defaulttype
+namespace sofa::linearalgebra
 {
 
 /// Generic vector API, allowing to fill and use a vector independently of the linear algebra library in use.
@@ -173,9 +169,4 @@ public:
 /// Declare that the operator >> exists but is defined in a BaseMatrix.cpp
 SOFA_LINEARALGEBRA_API std::ostream& operator<<(std::ostream& out, const  BaseVector& v );
 
-} // nampespace defaulttype
-
-} // nampespace sofa
-
-
-#endif
+} // namespace sofa::linearalgebra

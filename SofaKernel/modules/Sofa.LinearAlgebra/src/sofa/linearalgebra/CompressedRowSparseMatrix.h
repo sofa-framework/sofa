@@ -30,11 +30,11 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
 template<typename TBloc, typename TVecBloc = type::vector<TBloc>, typename TVecIndex = type::vector<sofa::Index> >
-class CompressedRowSparseMatrix : public defaulttype::BaseMatrix
+class CompressedRowSparseMatrix : public linearalgebra::BaseMatrix
 {
 public:
     typedef CompressedRowSparseMatrix<TBloc,TVecBloc,TVecIndex> Matrix;
@@ -1216,21 +1216,21 @@ protected:
     template<class Vec> static Real vget(const Vec& vec, Index i, Index j, Index k) { return vget( vec, i*j+k ); }
     template<class Vec> static Real vget(const type::vector<Vec>&vec, Index i, Index /*j*/, Index k) { return vec[i][k]; }
 
-                          static Real  vget(const defaulttype::BaseVector& vec, Index i) { return vec.element(i); }
+                          static Real  vget(const linearalgebra::BaseVector& vec, Index i) { return vec.element(i); }
     template<class Real2> static Real2 vget(const FullVector<Real2>& vec, Index i) { return vec[i]; }
 
 
     template<class Vec> static void vset(Vec& vec, Index i, Index j, Index k, Real v) { vset( vec, i*j+k, v ); }
     template<class Vec> static void vset(type::vector<Vec>&vec, Index i, Index /*j*/, Index k, Real v) { vec[i][k] = v; }
 
-                          static void vset(defaulttype::BaseVector& vec, Index i, Real v) { vec.set(i, v); }
+                          static void vset(linearalgebra::BaseVector& vec, Index i, Real v) { vec.set(i, v); }
     template<class Real2> static void vset(FullVector<Real2>& vec, Index i, Real2 v) { vec[i] = v; }
 
 
     template<class Vec> static void vadd(Vec& vec, Index i, Index j, Index k, Real v) { vadd( vec, i*j+k, v ); }
     template<class Vec> static void vadd(type::vector<Vec>&vec, Index i, Index /*j*/, Index k, Real v) { vec[i][k] += v; }
 
-                          static void vadd(defaulttype::BaseVector& vec, Index i, Real v) { vec.add(i, v); }
+                          static void vadd(linearalgebra::BaseVector& vec, Index i, Real v) { vec.add(i, v); }
     template<class Real2> static void vadd(FullVector<Real2>& vec, Index i, Real2 v) { vec[i] += v; }
 
     template<class Vec> static void vresize(Vec& vec, Index /*blockSize*/, Index totalSize) { vec.resize( totalSize ); }
