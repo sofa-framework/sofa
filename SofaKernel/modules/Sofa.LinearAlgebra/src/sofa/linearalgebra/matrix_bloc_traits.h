@@ -117,7 +117,7 @@ public:
     static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
 
     static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return matrix_bloc_traits<Real, IndexType>::getElementType(); }
-    static const char* Name()
+    static const std::string Name()
     {
         std::ostringstream o;
         o << "Mat" << L << "x" << C;
@@ -133,7 +133,8 @@ public:
         {
             o << "i";
         }
-        return o.str().c_str();
+
+        return o.str();
     }
 };
 
@@ -191,7 +192,7 @@ public:
     static void split_row_index(IndexType& index, IndexType& modulo) { bloc_index_func<NL, IndexType>::split(index, modulo); }
     static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
 
-    static const char* Name() { return "f"; }
+    static const std::string Name() { return "f"; }
     static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return sofa::linearalgebra::BaseMatrix::ELEMENT_FLOAT; }
     static IndexType getElementSize() { return sizeof(Real); }
 };
@@ -217,7 +218,7 @@ public:
     static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
 
     static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return sofa::linearalgebra::BaseMatrix::ELEMENT_FLOAT; }
-    static const char* Name() { return "d"; }
+    static const std::string Name() { return "d"; }
 };
 
 template <typename IndexType>
@@ -241,7 +242,7 @@ public:
     static void split_col_index(int& index, int& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
 
     static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return sofa::linearalgebra::BaseMatrix::ELEMENT_INT; }
-    static const char* Name() { return "f"; }
+    static const std::string Name() { return "f"; }
 };
 
 } // namespace sofa::linearalgebra

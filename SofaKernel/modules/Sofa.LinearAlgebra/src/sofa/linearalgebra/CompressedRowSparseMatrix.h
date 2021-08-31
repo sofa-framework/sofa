@@ -1714,7 +1714,7 @@ public:
 
     static const char* Name()
     {
-        static std::string name = std::string("CompressedRowSparseMatrix") + matrix_bloc_traits<Bloc, Index>::Name() ;
+        static std::string name = std::string("CompressedRowSparseMatrix") + traits::Name() ;
         return name.c_str();
     }
 
