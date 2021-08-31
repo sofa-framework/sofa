@@ -246,10 +246,8 @@ void SkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mpa
     sofa::helper::ReadAccessor<Data<type::vector<sofa::type::SVector<InReal> > > > m_weights  ( weight );
     sofa::helper::ReadAccessor<Data<type::vector<sofa::type::SVector<unsigned int> > > > index ( f_index );
     {
-        for( size_t i=0 ; i<this->maskTo->size() ; ++i)
+        for( size_t i=0 ; i<out.size() ; ++i)
         {
-            if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
-
             out[i] = OutDeriv();
 
             if(nbRef.getValue().size() == m_weights.size())
@@ -277,22 +275,15 @@ void SkinningMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams* mp
     sofa::helper::ReadAccessor<Data<type::vector<sofa::type::SVector<InReal> > > > m_weights  ( weight );
     sofa::helper::ReadAccessor<Data<type::vector<sofa::type::SVector<unsigned int> > > > index ( f_index );
 
-    ForceMask& mask = *this->maskFrom;
-
+    for( size_t i=0 ; i<index.size() ; ++i)
     {
-        for( size_t i=0 ; i<this->maskTo->size() ; ++i)
+        if(nbRef.getValue().size() == m_weights.size())
+            nbref = nbRef.getValue()[i];
+
+        for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
         {
-            if( !this->maskTo->getEntry(i) ) continue;
-
-            if(nbRef.getValue().size() == m_weights.size())
-                nbref = nbRef.getValue()[i];
-
-            for ( unsigned int j=0; j<nbref && m_weights[i][j]>0.; j++ )
-            {
-                getLinear(out[index[i][j]])  += in[i] * m_weights[i][j];
-                getAngular(out[index[i][j]]) += cross(f_rotatedPos[i][j], in[i]);
-                mask.insertEntry(index[i][j]);
-            }
+            getLinear(out[index[i][j]])  += in[i] * m_weights[i][j];
+            getAngular(out[index[i][j]]) += cross(f_rotatedPos[i][j], in[i]);
         }
     }
 

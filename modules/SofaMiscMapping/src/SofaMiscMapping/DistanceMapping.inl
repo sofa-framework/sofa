@@ -378,24 +378,6 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->restoreLastState();
 }
 
-
-
-template <class TIn, class TOut>
-void DistanceMapping<TIn, TOut>::updateForceMask()
-{
-    const SeqEdges& links = m_edgeContainer->getEdges();
-
-    for(size_t i=0; i<links.size(); i++ )
-    {
-        if (this->maskTo->getEntry( i ) )
-        {
-            this->maskFrom->insertEntry( links[i][0] );
-            this->maskFrom->insertEntry( links[i][1] );
-        }
-    }
-}
-
-
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
@@ -838,26 +820,5 @@ void DistanceMultiMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
         }
     }
 }
-
-
-template <class TIn, class TOut>
-void DistanceMultiMapping<TIn, TOut>::updateForceMask()
-{
-    const SeqEdges& links = m_edgeContainer->getEdges();
-    const type::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
-
-    for(size_t i=0; i<links.size(); i++ )
-    {
-        if( this->maskTo[0]->getEntry(i) )
-        {
-            const type::Vec2i& pair0 = pairs[ links[i][0] ];
-            const type::Vec2i& pair1 = pairs[ links[i][1] ];
-
-            this->maskFrom[pair0[0]]->insertEntry( pair0[1] );
-            this->maskFrom[pair1[0]]->insertEntry( pair1[1] );
-        }
-    }
-}
-
 
 } // namespace sofa::component::mapping

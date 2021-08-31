@@ -282,22 +282,4 @@ void SquareDistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vp
     vparams->drawTool()->restoreLastState();
 }
 
-
-
-template <class TIn, class TOut>
-void SquareDistanceMapping<TIn, TOut>::updateForceMask()
-{
-    const SeqEdges& links = edgeContainer->getEdges();
-
-    for(size_t i=0; i<links.size(); i++ )
-    {
-        if (this->maskTo->getEntry( i ) )
-        {
-            this->maskFrom->insertEntry( links[i][0] );
-            this->maskFrom->insertEntry( links[i][1] );
-        }
-    }
-}
-
-
 } // namespace sofa::component::mapping

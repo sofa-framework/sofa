@@ -337,13 +337,4 @@ void DistanceFromTargetMapping<TIn, TOut>::draw(const core::visual::VisualParams
 
 }
 
-template <class TIn, class TOut>
-void DistanceFromTargetMapping<TIn, TOut>::updateForceMask()
-{
-    helper::ReadAccessor< Data<type::vector<unsigned> > > indices(f_indices);
-    for( size_t i = 0 ; i<this->maskTo->size() ; ++i )
-        if( this->maskTo->getEntry(i) )
-            this->maskFrom->insertEntry(indices[i]);
-}
-
 } // namespace sofa::component::mapping

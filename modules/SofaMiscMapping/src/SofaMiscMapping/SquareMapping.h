@@ -90,8 +90,6 @@ public:
     void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce ) override;
     const defaulttype::BaseMatrix* getK() override;
 
-    void updateForceMask() override;
-
 protected:
     SquareMapping();
     virtual ~SquareMapping();

@@ -165,19 +165,4 @@ const defaulttype::BaseMatrix* SquareMapping<TIn, TOut>::getK()
     return &K;
 }
 
-
-
-template <class TIn, class TOut>
-void SquareMapping<TIn, TOut>::updateForceMask()
-{
-    for(size_t i=0, iend=this->maskTo->size(); i<iend; ++i )
-    {
-        if (this->maskTo->getEntry( i ) )
-        {
-            this->maskFrom->insertEntry( i );
-        }
-    }
-}
-
-
 } // namespace sofa::component::mapping
