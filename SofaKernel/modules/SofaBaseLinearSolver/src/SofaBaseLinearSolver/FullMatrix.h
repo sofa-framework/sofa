@@ -163,13 +163,13 @@ SOFA_SOFABASELINEARSOLVER_API std::ostream& operator << (std::ostream& out, cons
 SOFA_SOFABASELINEARSOLVER_API std::ostream& operator << (std::ostream& out, const LPtrFullMatrix<bool>& v );
 
 #if !defined(SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION)
-extern template class SOFA_SOFABASELINEARSOLVER_API FullMatrix<double>;
-extern template class SOFA_SOFABASELINEARSOLVER_API FullMatrix<float>;
-extern template class SOFA_SOFABASELINEARSOLVER_API FullMatrix<bool>;
+extern template class  FullMatrix<double>;
+extern template class  FullMatrix<float>;
+extern template class  FullMatrix<bool>;
 
-extern template class SOFA_SOFABASELINEARSOLVER_API LPtrFullMatrix<double>;
-extern template class SOFA_SOFABASELINEARSOLVER_API LPtrFullMatrix<float>;
-extern template class SOFA_SOFABASELINEARSOLVER_API LPtrFullMatrix<bool>;
+extern template class  LPtrFullMatrix<double>;
+extern template class  LPtrFullMatrix<float>;
+extern template class  LPtrFullMatrix<bool>;
 #endif /// SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION
 
 } // namespace sofa::component::linearsolver

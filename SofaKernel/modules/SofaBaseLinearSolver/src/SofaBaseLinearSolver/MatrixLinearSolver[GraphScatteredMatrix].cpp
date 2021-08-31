@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_CPP
+#define SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_GRAPHSCATTERREDMATRIX_CPP
 #include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
 #include <SofaBaseLinearSolver/MatrixLinearSolver[GraphScatteredMatrix].h>
 

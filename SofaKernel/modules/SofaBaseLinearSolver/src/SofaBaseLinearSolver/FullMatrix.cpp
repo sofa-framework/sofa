@@ -34,7 +34,6 @@ const char* FullMatrix<float>::Name() { return "FullMatrixf"; }
 template<>
 const char* FullMatrix<bool>::Name() { return "FullMatrixb"; }
 
-
 #if defined(SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION)
 std::ostream& operator<<(std::ostream& out, const FullMatrix<double>& v ){ return readFromStream(out, v); }
 std::ostream& operator<<(std::ostream& out, const FullMatrix<float>& v ){ return readFromStream(out, v); }

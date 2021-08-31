@@ -35,7 +35,7 @@ namespace sofa::component::linearsolver
 #endif ///
 
 template<typename T>
-class FullVector : public defaulttype::BaseVector
+class SOFA_SOFABASELINEARSOLVER_API FullVector : public defaulttype::BaseVector
 {
 public:
     typedef T Real;
@@ -217,19 +217,19 @@ public:
     static const char* Name() { return "FullVector"; }
 };
 
-template<> SOFA_SOFABASELINEARSOLVER_API void FullVector<bool>::set(Index i, SReal v);
-template<> SOFA_SOFABASELINEARSOLVER_API void FullVector<bool>::add(Index i, SReal v);
-template<> SOFA_SOFABASELINEARSOLVER_API bool FullVector<bool>::dot(const FullVector<Real>& a) const;
-template<> SOFA_SOFABASELINEARSOLVER_API double FullVector<bool>::norm() const;
+template<> void FullVector<bool>::set(Index i, SReal v);
+template<> void FullVector<bool>::add(Index i, SReal v);
+template<> bool FullVector<bool>::dot(const FullVector<Real>& a) const;
+template<> double FullVector<bool>::norm() const;
 
 SOFA_SOFABASELINEARSOLVER_API std::ostream& operator <<(std::ostream& out, const FullVector<float>& v);
 SOFA_SOFABASELINEARSOLVER_API std::ostream& operator <<(std::ostream& out, const FullVector<double>& v);
 SOFA_SOFABASELINEARSOLVER_API std::ostream& operator <<(std::ostream& out, const FullVector<bool>& v);
 
 #if !defined(SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION)
-extern template class SOFA_SOFABASELINEARSOLVER_API FullVector<float>;
-extern template class SOFA_SOFABASELINEARSOLVER_API FullVector<double>;
-extern template class SOFA_SOFABASELINEARSOLVER_API FullVector<bool>;
+extern template class  FullVector<float>;
+extern template class  FullVector<double>;
+extern template class  FullVector<bool>;
 #endif
 
 

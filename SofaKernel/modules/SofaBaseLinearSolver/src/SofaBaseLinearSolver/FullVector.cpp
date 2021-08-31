@@ -56,8 +56,8 @@ std::ostream& operator <<(std::ostream& out, const FullVector<float>& v){ return
 std::ostream& operator <<(std::ostream& out, const FullVector<double>& v){ return readFromStream(out, v); }
 std::ostream& operator <<(std::ostream& out, const FullVector<bool>& v){ return readFromStream(out, v); }
 
-template class SOFA_SOFABASELINEARSOLVER_API FullVector<float>;
-template class SOFA_SOFABASELINEARSOLVER_API FullVector<double>;
-template class SOFA_SOFABASELINEARSOLVER_API FullVector<bool>;
+template class  FullVector<float>;
+template class  FullVector<double>;
+template class  FullVector<bool>;
 
 } /// namespace sofa::component::linearsolver
