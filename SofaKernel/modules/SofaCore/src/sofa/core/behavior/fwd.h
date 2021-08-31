@@ -36,8 +36,5 @@ namespace sofa::core::behavior
     class MultiMatrixAccessor;
 }
 
-namespace sofa::component::linearsolver
-{
-    template<class TReal> class RotationMatrix;
-}
+
 

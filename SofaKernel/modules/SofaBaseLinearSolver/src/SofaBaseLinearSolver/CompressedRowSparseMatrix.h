@@ -24,12 +24,14 @@
 
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
+#include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>
+
+#include <sofa/helper/rmath.h>
+#include <sofa/type/vector.h>
+
 #include <SofaBaseLinearSolver/fwd.h>
 #include <SofaBaseLinearSolver/MatrixExpr.h>
 #include <SofaBaseLinearSolver/matrix_bloc_traits.h>
-#include <sofa/type/vector.h>
-#include <sofa/helper/rmath.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>
 
 namespace sofa::component::linearsolver
 {

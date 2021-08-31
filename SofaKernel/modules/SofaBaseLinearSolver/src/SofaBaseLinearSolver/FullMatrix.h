@@ -152,6 +152,7 @@ public:
 
 template<> const char* FullMatrix<double>::Name();
 template<> const char* FullMatrix<float>::Name();
+template<> const char* FullMatrix<bool>::Name();
 
 SOFA_SOFABASELINEARSOLVER_API std::ostream& operator << (std::ostream& out, const FullMatrix<double>& v );
 SOFA_SOFABASELINEARSOLVER_API std::ostream& operator << (std::ostream& out, const FullMatrix<float>& v );

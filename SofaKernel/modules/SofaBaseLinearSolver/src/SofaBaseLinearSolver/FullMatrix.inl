@@ -367,11 +367,5 @@ void LPtrFullMatrix<Real>::resize(Index nbRow, Index nbCol)
     }
 }
 
-template<>
-const char* FullMatrix<double>::Name() { return "FullMatrix"; }
-
-template<>
-const char* FullMatrix<float>::Name() { return "FullMatrixf"; }
-
 
 } // namespace sofa::component::linearsolver
