@@ -147,7 +147,7 @@ public:
         data[i][j] = (Real)v;
     }
 
-    using defaulttype::BaseMatrix::add;
+    using BaseMatrix::add;
     void add(Index i, Index j, double v) override
     {
         msg_info_when(SPARSEMATRIX_VERBOSE) << "(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") += " << v ;

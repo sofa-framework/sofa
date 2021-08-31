@@ -95,7 +95,7 @@ public:
 
     SReal element(Index i, Index j) const override;
     void set(Index i, Index j, double v) override;
-    using defaulttype::BaseMatrix::add;
+    using BaseMatrix::add;
     void add(Index i, Index j, double v) override;
     void clear(Index i, Index j) override;
 
