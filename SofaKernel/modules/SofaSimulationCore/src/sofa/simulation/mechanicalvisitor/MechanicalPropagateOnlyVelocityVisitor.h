@@ -41,11 +41,9 @@ class SOFA_SIMULATION_CORE_API MechanicalPropagateOnlyVelocityVisitor : public M
 public:
     SReal currentTime;
     sofa::core::MultiVecDerivId v;
-    bool ignoreMask;
 
     MechanicalPropagateOnlyVelocityVisitor(const sofa::core::MechanicalParams* mparams, SReal time=0,
-                                           sofa::core::MultiVecDerivId v = sofa::core::VecId::velocity(),
-                                           bool m=true);
+                                           sofa::core::MultiVecDerivId v = sofa::core::VecId::velocity());
 
     Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
     Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
@@ -74,4 +72,4 @@ public:
 #endif
 };
 
-}
+} // namespace sofa::simulation::mechanicalvisitor

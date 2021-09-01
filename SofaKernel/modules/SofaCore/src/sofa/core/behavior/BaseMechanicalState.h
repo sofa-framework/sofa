@@ -311,16 +311,6 @@ public:
 
     /// @}
 
-    /// @name Mask-based optimized computations (by only updating a subset of the DOFs)
-    /// @{
-
-    typedef helper::StateMask ForceMask; // note this should be space-optimized (a bool = a bit) in the STL
-
-    /// Mask to filter the particles. Used inside MechanicalMappings inside applyJ and applyJT methods.
-    ForceMask forceMask;
-
-    /// @}
-
     /// @name Interface with BaseMatrix / BaseVector
     /// @{
 

@@ -429,21 +429,6 @@ void BaseMechanicalVisitor::addNodeData(simulation::Node* /*node*/, SReal* paren
         *parentData += *nodeData;
 }
 
-void BaseMechanicalVisitor::ForceMaskActivate( const sofa::type::vector<sofa::core::behavior::BaseMechanicalState*>& v )
-{
-    std::for_each( v.begin(), v.end(), [](sofa::core::behavior::BaseMechanicalState* m) {
-        m->forceMask.activate(true);
-    });
-}
-
-void BaseMechanicalVisitor::ForceMaskDeactivate( const sofa::type::vector<sofa::core::behavior::BaseMechanicalState*>& v)
-{
-    std::for_each( v.begin(), v.end(), [](sofa::core::behavior::BaseMechanicalState* m) {
-        m->forceMask.activate(false);
-    });
-}
-
-
 /// Return a class name for this visitor
 /// Only used for debugging / profiling purposes
 const char* BaseMechanicalVisitor::getClassName() const { return "MechanicalVisitor"; }

@@ -34,17 +34,7 @@ Visitor::Result MechanicalPropagateOnlyPositionAndResetForceVisitor::fwdMechanic
 
 Visitor::Result MechanicalPropagateOnlyPositionAndResetForceVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
 {
-    if (!ignoreMask)
-    {
-        ForceMaskActivate(map->getMechFrom() );
-        ForceMaskActivate(map->getMechTo() );
-    }
     map->apply(mparams, x, x);
-    if (!ignoreMask)
-    {
-        ForceMaskDeactivate(map->getMechTo() );
-    }
-
 
     return RESULT_CONTINUE;
 }
@@ -57,7 +47,6 @@ Visitor::Result MechanicalPropagateOnlyPositionAndResetForceVisitor::fwdMappedMe
 
 void MechanicalPropagateOnlyPositionAndResetForceVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
 {
-    mm->forceMask.activate(false);
 }
 
-}
+} // namespace sofa::simulation::mechanicalvisitor
