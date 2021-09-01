@@ -685,13 +685,10 @@ public:
 
     SReal element(Index i, Index j) const override
     {
-        if (COMPRESSEDROWSPARSEMATRIX_CHECK)
+        if ( COMPRESSEDROWSPARSEMATRIX_CHECK && (i >= rowSize() || j >= colSize()) )
         {
-            if (i >= rowSize() || j >= colSize())
-            {
-                msg_error() << "Invalid read access to element (" << i << "," << j << ") in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
-                return 0.0;
-            }
+            msg_error() << "Invalid read access to element (" << i << "," << j << ") in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
+            return 0.0;
         }
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
         ((Matrix*)this)->compress();  /// \warning this violates the const-ness of the method !
@@ -703,13 +700,10 @@ public:
         dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
             << "(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") = " << v;
 
-        if (COMPRESSEDROWSPARSEMATRIX_CHECK)
+        if ( COMPRESSEDROWSPARSEMATRIX_CHECK && (i >= rowSize() || j >= colSize()) )
         {
-            if (i >= rowSize() || j >= colSize())
-            {
-                msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
-                return;
-            }
+            msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
+            return;
         }
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
 
@@ -724,13 +718,10 @@ public:
         dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
             << "(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") += " << v;
 
-        if (COMPRESSEDROWSPARSEMATRIX_CHECK)
+        if ( COMPRESSEDROWSPARSEMATRIX_CHECK && (i >= rowSize() || j >= colSize()) )
         {
-            if (i >= rowSize() || j >= colSize())
-            {
-                msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
-                return;
-            }
+            msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
+            return;
         }
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
 
@@ -755,13 +746,10 @@ public:
         dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
                 << "(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") = 0" ;
 
-        if (COMPRESSEDROWSPARSEMATRIX_CHECK)
+        if ( COMPRESSEDROWSPARSEMATRIX_CHECK && (i >= rowSize() || j >= colSize()) )
         {
-            if (i >= rowSize() || j >= colSize())
-            {
-                msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
-                return;
-            }
+            msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
+            return;
         }
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
         compress();
@@ -775,13 +763,10 @@ public:
         dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
             << "(" << rowSize() << "," << colSize() << "): row(" << i << ") = 0";
 
-        if (COMPRESSEDROWSPARSEMATRIX_CHECK)
+        if ( COMPRESSEDROWSPARSEMATRIX_CHECK && (i >= rowSize()) )
         {
-            if (i >= rowSize())
-            {
-                msg_error() << "Invalid write access to row " << i << " in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
-                return;
-            }
+            msg_error() << "Invalid write access to row " << i << " in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
+            return;
         }
         Index bi=0; split_row_index(i, bi);
         compress();
@@ -803,13 +788,10 @@ public:
         dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
             << "(" << rowSize() << "," << colSize() << "): col(" << j << ") = 0";
 
-        if (COMPRESSEDROWSPARSEMATRIX_CHECK)
+        if ( COMPRESSEDROWSPARSEMATRIX_CHECK && (j >= colSize()) )
         {
-            if (j >= colSize())
-            {
-                msg_error() << "Invalid write access to column " << j << " in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
-                return;
-            }
+            msg_error() << "Invalid write access to column " << j << " in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
+            return;
         }
         Index bj=0; split_col_index(j, bj);
         compress();
@@ -829,13 +811,10 @@ public:
         dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
             << "(" << rowSize() << "," << colSize() << "): row(" << i << ") = 0 and col(" << i << ") = 0";
 
-        if (COMPRESSEDROWSPARSEMATRIX_CHECK)
+        if ( COMPRESSEDROWSPARSEMATRIX_CHECK && (i >= rowSize() || i >= colSize()) )
         {
-            if (i >= rowSize() || i >= colSize())
-            {
-                msg_error() << "Invalid write access to row and column " << i << " in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
-                return;
-            }
+            msg_error() << "Invalid write access to row and column " << i << " in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
+            return;
         }
         if (((Index)NL) != ((Index)NC) || nRow != nCol)
         {

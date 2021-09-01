@@ -101,10 +101,9 @@ public:
 
     void resize(Index nbRow, Index nbCol) override
     {
-        if (SPARSEMATRIX_VERBOSE)
+        if ( SPARSEMATRIX_VERBOSE && (nbRow != rowSize() || nbCol != colSize()) )
         {
-            if (nbRow != rowSize() || nbCol != colSize())
-                msg_info() << ": resize(" << nbRow << "," << nbCol << ")" ;
+            msg_info() << ": resize(" << nbRow << "," << nbCol << ")" ;
         }
         data.clear();
         nRow = nbRow;
@@ -123,13 +122,10 @@ public:
 
     SReal element(Index i, Index j) const override
     {
-        if (SPARSEMATRIX_CHECK)
+        if ( SPARSEMATRIX_CHECK && (i >= rowSize() || j >= colSize()) )
         {
-            if (i >= rowSize() || j >= colSize())
-            {
-                dmsg_error() << "ERROR: invalid read access to element (" << i << "," << j << ") in " << /* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")" ;
-                return 0.0;
-            }
+            dmsg_error() << "ERROR: invalid read access to element (" << i << "," << j << ") in " << /* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")" ;
+            return 0.0;
         }
         LineConstIterator it = data.find(i);
         if (it==data.end())
@@ -142,17 +138,11 @@ public:
 
     void set(Index i, Index j, double v) override
     {
-        if (SPARSEMATRIX_VERBOSE)
+        msg_info_when(SPARSEMATRIX_VERBOSE) << "(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") = " ;
+        if ( SPARSEMATRIX_CHECK && (i >= rowSize() || j >= colSize()) )
         {
-            msg_info() << "(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") = " ;
-        }
-        if (SPARSEMATRIX_CHECK)
-        {
-            if (i >= rowSize() || j >= colSize())
-            {
-                msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")" ;
-                return;
-            }
+            msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")" ;
+            return;
         }
         data[i][j] = (Real)v;
     }
@@ -160,34 +150,22 @@ public:
     using defaulttype::BaseMatrix::add;
     void add(Index i, Index j, double v) override
     {
-        if (SPARSEMATRIX_VERBOSE)
+        msg_info_when(SPARSEMATRIX_VERBOSE) << "(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") += " << v ;
+        if ( SPARSEMATRIX_CHECK && (i >= rowSize() || j >= colSize()) )
         {
-            msg_info() << "(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") += " << v ;
-        }
-        if (SPARSEMATRIX_CHECK)
-        {
-            if (i >= rowSize() || j >= colSize())
-            {
-                msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")" ;
-                return;
-            }
+            msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")" ;
+            return;
         }
         data[i][j] += (Real)v;
     }
 
     void clear(Index i, Index j) override
     {
-        if (SPARSEMATRIX_VERBOSE)
+        msg_info_when(SPARSEMATRIX_VERBOSE) << "(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") = 0" ;
+        if ( SPARSEMATRIX_CHECK && (i >= rowSize() || j >= colSize()) )
         {
-            msg_info() << "(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") = 0" ;
-        }
-        if (SPARSEMATRIX_CHECK)
-        {
-            if (i >= rowSize() || j >= colSize())
-            {
-                msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")";
-                return;
-            }
+            msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")";
+            return;
         }
         LineIterator it = data.find(i);
         if (it==data.end())
@@ -202,17 +180,11 @@ public:
 
     void clearRow(Index i) override
     {
-        if (SPARSEMATRIX_VERBOSE)
+        msg_info_when(SPARSEMATRIX_VERBOSE) << "(" << rowSize() << "," << colSize() << "): row(" << i << ") = 0" ;
+        if ( SPARSEMATRIX_CHECK && (i >= rowSize()) )
         {
-            msg_info() << "(" << rowSize() << "," << colSize() << "): row(" << i << ") = 0" ;
-        }
-        if (SPARSEMATRIX_CHECK)
-        {
-            if (i >= rowSize())
-            {
-                msg_error() << "Invalid write access to row " << i << " in " << /* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")" ;
-                return;
-            }
+            msg_error() << "Invalid write access to row " << i << " in " << /* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")" ;
+            return;
         }
 
         LineIterator it = data.find(i);
@@ -223,17 +195,11 @@ public:
 
     void clearCol(Index j) override
     {
-        if (SPARSEMATRIX_VERBOSE)
+        msg_info_when(SPARSEMATRIX_VERBOSE) << "(" << rowSize() << "," << colSize() << "): col(" << j << ") = 0" ;
+        if ( SPARSEMATRIX_CHECK && (j >= colSize()) )
         {
-            msg_info() << "(" << rowSize() << "," << colSize() << "): col(" << j << ") = 0" ;
-        }
-        if (SPARSEMATRIX_CHECK)
-        {
-            if (j >= colSize())
-            {
-                msg_error() << "Invalid write access to column " << j << " in " << /* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")" ;
-                return;
-            }
+            msg_error() << "Invalid write access to column " << j << " in " << /* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")" ;
+            return;
         }
         for(LineIterator it=data.begin(),itend=data.end(); it!=itend; ++it)
         {
@@ -245,17 +211,11 @@ public:
 
     void clearRowCol(Index i) override
     {
-        if (SPARSEMATRIX_VERBOSE)
+        msg_info_when(SPARSEMATRIX_VERBOSE) << "(" << rowSize() << "," << colSize() << "): row(" << i << ") = 0 and col(" << i << ") = 0" ;
+        if ( SPARSEMATRIX_CHECK && (i >= rowSize() || i >= colSize()) )
         {
-            msg_info() << "(" << rowSize() << "," << colSize() << "): row(" << i << ") = 0 and col(" << i << ") = 0" ;
-        }
-        if (SPARSEMATRIX_CHECK)
-        {
-            if (i >= rowSize() || i >= colSize())
-            {
-                msg_error() << "Invalid write access to row and column " << i << " in " << /* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")";
-                return;
-            }
+            msg_error() << "Invalid write access to row and column " << i << " in " << /* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")";
+            return;
         }
         clearRow(i);
         clearCol(i);
