@@ -201,7 +201,7 @@ public:
         }
         else
         {
-            msg_info_when(SPARSEMATRIX_VERBOSE)
+            msg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
                     << ": resize(" << nbBRow << "*" << NL << "," << nbBCol << "*" << NC << ")" ;
 
             nRow = nbBRow*NL;
@@ -222,10 +222,10 @@ public:
         if (compressed && btemp.empty()) return;
         if (!btemp.empty())
         {
-            dmsg_info_when(SPARSEMATRIX_VERBOSE)
+            dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
                     << "(" << rowSize() << "," << colSize() << "): sort " << btemp.size() << " temp blocs." ;
             std::sort(btemp.begin(),btemp.end());
-            dmsg_info_when(SPARSEMATRIX_VERBOSE)
+            dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
                     << "(" << rowSize() << "," << colSize() << "): blocs sorted." ;
         }
         oldRowIndex.swap(rowIndex);
@@ -251,7 +251,7 @@ public:
         Index outValId = 0;
         while (inRowIndex < EndRow || bRowIndex < EndRow)
         {
-            dmsg_info_when(SPARSEMATRIX_VERBOSE)
+            dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
                     << "(" << rowSize() << "," << colSize() << "): inRowIndex = " << inRowIndex << " , bRowIndex = " << bRowIndex << "" ;
             if (inRowIndex < bRowIndex)
             {
@@ -637,7 +637,7 @@ public:
             if (sortedFind(colsIndex, rowRange, j, colId))
             {
 
-                dmsg_info_when(SPARSEMATRIX_VERBOSE)
+                dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
                         << "(" << rowBSize() << "*" << NL << "," << colBSize() << "*" << NC << "): bloc(" << i << "," << j << ") found at " << colId << " (line " << rowId << ")." ;
 
                 return &colsValue[colId];
@@ -647,7 +647,7 @@ public:
         {
             if (btemp.empty() || btemp.back().l != i || btemp.back().c != j)
             {
-                dmsg_info_when(SPARSEMATRIX_VERBOSE)
+                dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
                         << "(" << rowSize() << "," << colSize() << "): new temp bloc (" << i << "," << j << ")" ;
 
                 btemp.push_back(IndexedBloc(i,j));
@@ -672,7 +672,7 @@ public:
 
     void resize(Index nbRow, Index nbCol) override
     {
-        if (SPARSEMATRIX_VERBOSE)
+        if (COMPRESSEDROWSPARSEMATRIX_VERBOSE)
         {
             if (nbRow != rowSize() || nbCol != colSize())
                 msg_info() << ": resize(" << nbRow << "," << nbCol << ")" ;
@@ -685,13 +685,10 @@ public:
 
     SReal element(Index i, Index j) const override
     {
-        if (SPARSEMATRIX_CHECK)
+        if ( COMPRESSEDROWSPARSEMATRIX_CHECK && (i >= rowSize() || j >= colSize()) )
         {
-            if (i >= rowSize() || j >= colSize())
-            {
-                msg_error() << "Invalid read access to element (" << i << "," << j << ") in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
-                return 0.0;
-            }
+            msg_error() << "Invalid read access to element (" << i << "," << j << ") in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
+            return 0.0;
         }
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
         ((Matrix*)this)->compress();  /// \warning this violates the const-ness of the method !
@@ -700,20 +697,17 @@ public:
 
     void set(Index i, Index j, double v) override
     {
-        dmsg_info_when(SPARSEMATRIX_VERBOSE)
+        dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
             << "(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") = " << v;
 
-        if (SPARSEMATRIX_CHECK)
+        if ( COMPRESSEDROWSPARSEMATRIX_CHECK && (i >= rowSize() || j >= colSize()) )
         {
-            if (i >= rowSize() || j >= colSize())
-            {
-                msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
-                return;
-            }
+            msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
+            return;
         }
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
 
-        dmsg_info_when(SPARSEMATRIX_VERBOSE)
+        dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
             << "(" << rowBSize() << "*" << NL << "," << colBSize() << "*" << NC << "): bloc(" << i << "," << j << ")[" << bi << "," << bj << "] = " << v;
 
         traits::v(*wbloc(i,j,true), bi, bj) = (Real)v;
@@ -721,20 +715,17 @@ public:
 
     void add(Index i, Index j, double v) override
     {
-        dmsg_info_when(SPARSEMATRIX_VERBOSE)
+        dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
             << "(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") += " << v;
 
-        if (SPARSEMATRIX_CHECK)
+        if ( COMPRESSEDROWSPARSEMATRIX_CHECK && (i >= rowSize() || j >= colSize()) )
         {
-            if (i >= rowSize() || j >= colSize())
-            {
-                msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
-                return;
-            }
+            msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
+            return;
         }
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
 
-        dmsg_info_when(SPARSEMATRIX_VERBOSE)
+        dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
             << "(" << rowBSize() << "*" << NL << "," << colBSize() << "*" << NC << "): bloc(" << i << "," << j << ")[" << bi << "," << bj << "] += " << v;
 
         traits::v(*wbloc(i,j,true), bi, bj) += (Real)v;
@@ -752,16 +743,13 @@ public:
 
     void clear(Index i, Index j) override
     {
-        dmsg_info_when(SPARSEMATRIX_VERBOSE)
+        dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
                 << "(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") = 0" ;
 
-        if (SPARSEMATRIX_CHECK)
+        if ( COMPRESSEDROWSPARSEMATRIX_CHECK && (i >= rowSize() || j >= colSize()) )
         {
-            if (i >= rowSize() || j >= colSize())
-            {
-                msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
-                return;
-            }
+            msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
+            return;
         }
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
         compress();
@@ -772,16 +760,13 @@ public:
 
     void clearRow(Index i) override
     {
-        dmsg_info_when(SPARSEMATRIX_VERBOSE)
+        dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
             << "(" << rowSize() << "," << colSize() << "): row(" << i << ") = 0";
 
-        if (SPARSEMATRIX_CHECK)
+        if ( COMPRESSEDROWSPARSEMATRIX_CHECK && (i >= rowSize()) )
         {
-            if (i >= rowSize())
-            {
-                msg_error() << "Invalid write access to row " << i << " in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
-                return;
-            }
+            msg_error() << "Invalid write access to row " << i << " in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
+            return;
         }
         Index bi=0; split_row_index(i, bi);
         compress();
@@ -800,16 +785,13 @@ public:
 
     void clearCol(Index j) override
     {
-        dmsg_info_when(SPARSEMATRIX_VERBOSE)
+        dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
             << "(" << rowSize() << "," << colSize() << "): col(" << j << ") = 0";
 
-        if (SPARSEMATRIX_CHECK)
+        if ( COMPRESSEDROWSPARSEMATRIX_CHECK && (j >= colSize()) )
         {
-            if (j >= colSize())
-            {
-                msg_error() << "Invalid write access to column " << j << " in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
-                return;
-            }
+            msg_error() << "Invalid write access to column " << j << " in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
+            return;
         }
         Index bj=0; split_col_index(j, bj);
         compress();
@@ -826,16 +808,13 @@ public:
 
     void clearRowCol(Index i) override
     {
-        dmsg_info_when(SPARSEMATRIX_VERBOSE)
+        dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
             << "(" << rowSize() << "," << colSize() << "): row(" << i << ") = 0 and col(" << i << ") = 0";
 
-        if (SPARSEMATRIX_CHECK)
+        if ( COMPRESSEDROWSPARSEMATRIX_CHECK && (i >= rowSize() || i >= colSize()) )
         {
-            if (i >= rowSize() || i >= colSize())
-            {
-                msg_error() << "Invalid write access to row and column " << i << " in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
-                return;
-            }
+            msg_error() << "Invalid write access to row and column " << i << " in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
+            return;
         }
         if (((Index)NL) != ((Index)NC) || nRow != nCol)
         {
@@ -1051,7 +1030,7 @@ public:
             Index colId = rowRange.begin() + j * rowRange.size() / nBlocCol;
             if (sortedFind(colsIndex, rowRange, j, colId))
             {
-                dmsg_info_when(SPARSEMATRIX_VERBOSE)
+                dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
                         << "(" << rowBSize() << "*" << NL << "," << colBSize() << "*" << NC << "): bloc(" << i << "," << j << ") found at " << colId << " (line " << rowId << ")." ;
                 return createBlockAccessor(i, j, colId);
             }
@@ -1059,7 +1038,7 @@ public:
         {
             if (btemp.empty() || btemp.back().l != i || btemp.back().c != j)
             {
-                dmsg_info_when(SPARSEMATRIX_VERBOSE) << "(" << rowSize() << "," << colSize() << "): new temp bloc (" << i << "," << j << ")" ;
+                dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE) << "(" << rowSize() << "," << colSize() << "): new temp bloc (" << i << "," << j << ")" ;
                 btemp.push_back(IndexedBloc(i,j));
                 traits::clear(btemp.back().value);
             }
