@@ -100,9 +100,9 @@ public:
 
         sofa::type::Mat<3, 3, Real> mat;
         Real value = (Real)0;
-        for (decltype(mat)::Size i = 0 ; i < decltype(mat)::nbLines; ++i)
+        for (typename decltype(mat)::Size i = 0 ; i < decltype(mat)::nbLines; ++i)
         {
-            for (decltype(mat)::Size j = 0 ; j < decltype(mat)::nbCols; ++j)
+            for (typename decltype(mat)::Size j = 0 ; j < decltype(mat)::nbCols; ++j)
             {
                 mat(i, j) = ++value;
             }
