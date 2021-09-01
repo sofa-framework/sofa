@@ -95,11 +95,11 @@ protected:
     core::topology::BaseMeshTopology::SPtr m_topology;
     sofa::core::topology::TopologyElementType m_topologyType;
 
-    sofa::component::topology::EdgeSetTopologyModifier::SPtr edgeModifier;
-    sofa::component::topology::TriangleSetTopologyModifier::SPtr triangleModifier;
-    sofa::component::topology::QuadSetTopologyModifier::SPtr quadModifier;
-    sofa::component::topology::TetrahedronSetTopologyModifier::SPtr tetraModifier;
-    sofa::component::topology::HexahedronSetTopologyModifier::SPtr hexaModifier;
+    sofa::core::sptr<sofa::component::topology::EdgeSetTopologyModifier> edgeModifier;
+    sofa::core::sptr<sofa::component::topology::TriangleSetTopologyModifier> triangleModifier;
+    sofa::core::sptr<sofa::component::topology::QuadSetTopologyModifier> quadModifier;
+    sofa::core::sptr<sofa::component::topology::TetrahedronSetTopologyModifier> tetraModifier;
+    sofa::core::sptr<sofa::component::topology::HexahedronSetTopologyModifier> hexaModifier;
 
     type::vector<Index> m_indicesToRemove;
 };
