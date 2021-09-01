@@ -30,7 +30,7 @@ void addBloc(TMatrix& self, Index row, Index col, const TBlocMatrix & _M)
 {
     if (row % TBlocMatrix::nbLines == 0 && col % TBlocMatrix::nbCols == 0)
     {
-        if (SPARSEMATRIX_VERBOSE)
+        if (COMPRESSEDROWSPARSEMATRIX_VERBOSE)
         {
             dmsg_info(&self) << "(" << self.rowSize() << "," << self.colSize() << "): element(" << row << "," << col << ") += " << _M;
         }
