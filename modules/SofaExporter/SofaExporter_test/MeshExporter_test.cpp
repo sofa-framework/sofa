@@ -58,7 +58,7 @@ public:
     /// remove the file created...
     std::vector<string> dataPath ;
 
-    void TearDown()
+    void TearDown() override
     {
         for(auto& pathToRemove : dataPath)
         {

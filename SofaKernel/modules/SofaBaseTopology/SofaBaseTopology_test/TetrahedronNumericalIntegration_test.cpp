@@ -63,7 +63,7 @@ struct TetrahedronNumericalIntegration_test : public NumericTest<typename _DataT
     typename sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes>::SPtr geo;
 
     // Create the context for the scene
-    void SetUp()
+    void SetUp() override
     {
         // Init simulation
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
@@ -133,7 +133,7 @@ struct TetrahedronNumericalIntegration_test : public NumericTest<typename _DataT
     }
 
 
-    void TearDown()
+    void TearDown() override
     {
         if (root!=nullptr)
             sofa::simulation::getSimulation()->unload(root);
