@@ -207,6 +207,8 @@ macro(sofa_create_package)
     if(ARG_RELOCATABLE)
         sofa_set_project_install_relocatable(${package_install_dir} ${CMAKE_CURRENT_BINARY_DIR} ${ARG_RELOCATABLE})
     endif()
+
+    sofa_install_git_infos(${ARG_PACKAGE_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
 endmacro()
 
 
@@ -900,40 +902,42 @@ endfunction()
 ## to store which sources have been used for installed binaries
 ## these should be internal files and not delivered, but this is definitively useful
 ## when storing backups / demos across several repositories (e.g. sofa + plugins)
-macro( sofa_install_git_version name sourcedir )
-INSTALL( CODE
-"
-    find_package(Git REQUIRED)
-
-    # the current commit hash should be enough
-    # except if the git history changes...
-    # so adding more stuff to be sure
-
-    # get the current working branch
-    execute_process(
-      COMMAND \${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
-      WORKING_DIRECTORY ${sourcedir}
-      OUTPUT_VARIABLE SOFA_GIT_BRANCH
-      OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-
-    # get the current commit info (hash, author, date, comment)
-    execute_process(
-      COMMAND \${GIT_EXECUTABLE} log --format=medium -n 1
-      WORKING_DIRECTORY ${sourcedir}
-      OUTPUT_VARIABLE SOFA_GIT_INFO
-      OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-
-    string( TOLOWER \"${name}\" name_lower )
-    if( name_lower STREQUAL \"sofa\" )
-        file(WRITE  \"${CMAKE_INSTALL_PREFIX}/git.version\" \"######## ${name} ########\nBranch: \${SOFA_GIT_BRANCH}\n\${SOFA_GIT_INFO}\n############\n\n\" )
-    else()
-        file(APPEND \"${CMAKE_INSTALL_PREFIX}/git.version\" \"######## ${name} ########\nBranch: \${SOFA_GIT_BRANCH}\n\${SOFA_GIT_INFO}\n############\n\n\" )
+function(sofa_install_git_infos name sourcedir)
+    if(NOT EXISTS "${sourcedir}/.git")
+        return()
     endif()
-"
-)
-endmacro()
+    install(CODE "
+        find_package(Git REQUIRED)
+        # get the current working branch
+        execute_process(
+            COMMAND \${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
+            WORKING_DIRECTORY \"${sourcedir}\"
+            OUTPUT_VARIABLE CURRENT_GIT_BRANCH
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+        # get the current commit info (hash, author, date, comment)
+        execute_process(
+            COMMAND \${GIT_EXECUTABLE} log --pretty -n 1
+            WORKING_DIRECTORY \"${sourcedir}\"
+            OUTPUT_VARIABLE CURRENT_GIT_INFO
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+        # write all infos in git-infos.txt
+        file(WRITE \"\${CMAKE_INSTALL_PREFIX}/git-infos.txt\"
+            \"------ Git infos for ${name} ------\"    \\n
+                                                       \\n
+            \"---- Branch ----\"                       \\n
+            \"\${CURRENT_GIT_BRANCH}\"                 \\n
+                                                       \\n
+            \"---- Latest commit ----\"                \\n
+            \"\${CURRENT_GIT_INFO}\"                   \\n
+                                                       \\n
+            \"-----------------------------------\"    \\n
+            )
+        "
+        COMPONENT resources
+        )
+endfunction()
 
 
 
