@@ -34,7 +34,7 @@ namespace sofa::component::linearsolver
 {
 
 template<typename TBloc, typename TVecBloc = type::vector<TBloc>, typename TVecIndex = type::vector<sofa::Index> >
-class CompressedRowSparseMatrix : public defaulttype::BaseMatrix
+class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix : public defaulttype::BaseMatrix
 {
 public:
     typedef CompressedRowSparseMatrix<TBloc,TVecBloc,TVecIndex> Matrix;
