@@ -92,13 +92,4 @@ SReal RepulsiveSpringForceField<DataTypes>::getPotentialEnergy(const sofa::core:
     return 0;
 }
 
-
-
-template <class DataTypes>
-void RepulsiveSpringForceField<DataTypes>::updateMaskForce()
-{
-    // already done in addForceImplementation
-}
-
-
 } //namespace sofa::component::interactionforcefield

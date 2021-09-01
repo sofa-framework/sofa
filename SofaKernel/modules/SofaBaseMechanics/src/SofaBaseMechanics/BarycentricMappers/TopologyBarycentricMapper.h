@@ -39,12 +39,8 @@ public:
                SOFA_TEMPLATE2(BarycentricMapper,In,Out));
 
     typedef typename Inherit1::Real Real;
-    typedef typename core::behavior::BaseMechanicalState::ForceMask ForceMask;
 
     using Index = sofa::Index;
-
-    ForceMask *maskFrom;
-    ForceMask *maskTo;
 
     virtual Index addPointInLine(const Index lineIndex, const SReal* baryCoords);
     virtual Index setPointInLine(const Index pointIndex, const Index lineIndex, const SReal* baryCoords);

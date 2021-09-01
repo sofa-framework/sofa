@@ -248,10 +248,8 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJ( typename Out:
     // TODO: use mapOrient
     //const sofa::type::vector<MappingOrientData >& mapOrient = this->mapOrient.getValue();
 
-    for( size_t i=0 ; i<this->maskTo->size() ; ++i)
+    for( size_t i=0 ; i<map.size() ; ++i)
     {
-        if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
-
         const Real fx = map[i].baryCoords[0];
         const Real fy = map[i].baryCoords[1];
         const Real fz = map[i].baryCoords[2];
@@ -290,12 +288,8 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT( typename In:
     actualPos.clear();
     actualPos.resize(map.size());
 
-    ForceMask& mask = *this->maskFrom;
-
-    for( size_t i=0 ; i<this->maskTo->size() ; ++i)
+    for( size_t i=0 ; i<map.size() ; ++i)
     {
-        if( !this->maskTo->getEntry(i) ) continue;
-
         const defaulttype::Rigid3Types::DPos v = defaulttype::Rigid3Types::getDPos(in[i]);
         const OutReal fx = ( OutReal ) map[i].baryCoords[0];
         const OutReal fy = ( OutReal ) map[i].baryCoords[1];
@@ -312,11 +306,6 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT( typename In:
         //if (torque.norm() > 10e-6) {
         for (unsigned int ti = 0; ti<4; ti++)
             out[tetra[ti]] -= cross(actualTetraPosition[tetra[ti]],torque);
-        //}
-        mask.insertEntry(tetra[0]);
-        mask.insertEntry(tetra[1]);
-        mask.insertEntry(tetra[2]);
-        mask.insertEntry(tetra[3]);
     }
 
 
