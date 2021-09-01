@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/SubsetMapping.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
 namespace sofa::component::mapping
 {

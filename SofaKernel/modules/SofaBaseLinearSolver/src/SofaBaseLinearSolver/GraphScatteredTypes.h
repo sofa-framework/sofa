@@ -67,7 +67,7 @@ public:
     static const char* Name() { return "GraphScattered"; }
 };
 
-class SOFA_SOFABASELINEARSOLVER_API GraphScatteredVector : public sofa::core::behavior::MultiVecDeriv
+class GraphScatteredVector : public sofa::core::behavior::MultiVecDeriv
 {
 public:
     typedef sofa::core::behavior::MultiVecDeriv Inherit;
@@ -115,7 +115,7 @@ public:
 
     friend class GraphScatteredMatrix;
 
-    void operator=(const MultExpr<GraphScatteredMatrix,GraphScatteredVector>& expr);
+    SOFA_SOFABASELINEARSOLVER_API void operator=(const MultExpr<GraphScatteredMatrix,GraphScatteredVector>& expr);
 
 
 

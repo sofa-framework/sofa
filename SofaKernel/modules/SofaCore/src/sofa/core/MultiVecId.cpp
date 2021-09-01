@@ -94,14 +94,14 @@ std::string TMultiVecId<V_ALL, vaccess>::getName() const
     }
 }
 
-template class TMultiVecId<V_COORD, V_READ>;
-template class TMultiVecId<V_COORD, V_WRITE>;
-template class TMultiVecId<V_DERIV, V_READ>;
-template class TMultiVecId<V_DERIV, V_WRITE>;
-template class TMultiVecId<V_MATDERIV, V_READ>;
-template class TMultiVecId<V_MATDERIV, V_WRITE>;
-template class TMultiVecId<V_ALL, V_READ>;
-template class TMultiVecId<V_ALL, V_WRITE>;
+template class SOFA_CORE_API TMultiVecId<V_COORD, V_READ>;
+template class SOFA_CORE_API TMultiVecId<V_COORD, V_WRITE>;
+template class SOFA_CORE_API TMultiVecId<V_DERIV, V_READ>;
+template class SOFA_CORE_API TMultiVecId<V_DERIV, V_WRITE>;
+template class SOFA_CORE_API TMultiVecId<V_MATDERIV, V_READ>;
+template class SOFA_CORE_API TMultiVecId<V_MATDERIV, V_WRITE>;
+template class SOFA_CORE_API TMultiVecId<V_ALL, V_READ>;
+template class SOFA_CORE_API TMultiVecId<V_ALL, V_WRITE>;
 
 } // namespace sofa::core
 
