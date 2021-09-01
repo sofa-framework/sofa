@@ -25,9 +25,6 @@
 namespace sofa::component::linearsolver
 {
 
-//#define FULLMATRIX_CHECK
-//#define FULLMATRIX_VERBOSE
-
 template<class Real>
 FullMatrix<Real>::FullMatrix()
     : data(nullptr), nRow(0), nCol(0), pitch(0), allocsize(0)
@@ -74,10 +71,10 @@ typename FullMatrix<Real>::LineConstIterator FullMatrix<Real>::end()   const { r
 template<class Real>
 void FullMatrix<Real>::resize(Index nbRow, Index nbCol)
 {
-#ifdef FULLMATRIX_VERBOSE
-    if (nbRow != rowSize() || nbCol != colSize())
-        std::cout << /*this->Name() << */": resize("<<nbRow<<","<<nbCol<<")"<<std::endl;
-#endif
+    if ( FULLMATRIX_VERBOSE && (nbRow != rowSize() || nbCol != colSize()) )
+    {
+        msg_info() << /*this->Name() << */": resize(" << nbRow << "," << nbCol << ")";
+    }
     if (nbCol != nCol || nbRow != nRow)
     {
         if (allocsize < 0)
@@ -108,77 +105,59 @@ void FullMatrix<Real>::resize(Index nbRow, Index nbCol)
 template<class Real>
 SReal FullMatrix<Real>::element(Index i, Index j) const
 {
-#ifdef FULLMATRIX_CHECK
-    if (i >= rowSize() || j >= colSize())
+    if ( FULLMATRIX_CHECK &&  (i >= rowSize() || j >= colSize()) )
     {
-        msg_error() << "Invalid read access to element (" << i << "," << j << ") in " <</*this->Name()<<*/" of size (" << rowSize() << "," << colSize() << ")";
+        msg_error() << "Invalid read access to element (" << i << "," << j << ") in " <</*this->Name() << */" of size (" << rowSize() << "," << colSize() << ")";
         return 0.0;
     }
-#endif
     return (SReal)data[i*pitch+j];
 }
 
 template<class Real>
 void FullMatrix<Real>::set(Index i, Index j, double v)
 {
-#ifdef FULLMATRIX_VERBOSE
-    std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
-#endif
-#ifdef FULLMATRIX_CHECK
-    if (i >= rowSize() || j >= colSize())
+    msg_info_when(FULLMATRIX_VERBOSE) << /*this->Name() <<*/ "(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") = " << v;
+    if ( FULLMATRIX_CHECK &&  (i >= rowSize() || j >= colSize()) )
     {
-        msg_error() << "Invalid write access to element (" << i << "," << j << ") in " <</*this->Name()<<*/" of size (" << rowSize() << "," << colSize() << ")";
+        msg_error() << "Invalid write access to element (" << i << "," << j << ") in " <</*this->Name() << */" of size (" << rowSize() << "," << colSize() << ")";
         return;
     }
-#endif
     data[i*pitch+j] = (Real)v;
 }
 
 template<class Real>
 void FullMatrix<Real>::add(Index i, Index j, double v)
 {
-#ifdef FULLMATRIX_VERBOSE
-    std::cout << /*this->Name() << */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
-#endif
-#ifdef FULLMATRIX_CHECK
-    if (i >= rowSize() || j >= colSize())
+    msg_info_when(FULLMATRIX_VERBOSE) << /*this->Name() << */"(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") += " << v;
+    if ( FULLMATRIX_CHECK &&  (i >= rowSize() || j >= colSize()) )
     {
-        msg_error() << "Invalid write access to element (" << i << "," << j << ") in "/*<<this->Name()*/ << " of size (" << rowSize() << "," << colSize() << ")";
+        msg_error() << "Invalid write access to element (" << i << "," << j << ") in "/* << this->Name()*/ << " of size (" << rowSize() << "," << colSize() << ")";
         return;
     }
-#endif
     data[i*pitch+j] += (Real)v;
 }
 
 template<class Real>
 void FullMatrix<Real>::clear(Index i, Index j)
 {
-#ifdef FULLMATRIX_VERBOSE
-    std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0"<<std::endl;
-#endif
-#ifdef FULLMATRIX_CHECK
-    if (i >= rowSize() || j >= colSize())
+    msg_info_when(FULLMATRIX_VERBOSE) << /*this->Name() <<*/ "(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") = 0";
+    if ( FULLMATRIX_CHECK &&  (i >= rowSize() || j >= colSize()) )
     {
-        msg_error() << "Invalid write access to element (" << i << "," << j << ") in " <</*this->Name()<<*/" of size (" << rowSize() << "," << colSize() << ")";
+        msg_error() << "Invalid write access to element (" << i << "," << j << ") in " <</*this->Name() << */" of size (" << rowSize() << "," << colSize() << ")";
         return;
     }
-#endif
     data[i*pitch+j] = (Real)0;
 }
 
 template<class Real>
 void FullMatrix<Real>::clearRow(Index i)
 {
-#ifdef FULLMATRIX_VERBOSE
-    std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0"<<std::endl;
-#endif
-#ifdef FULLMATRIX_CHECK
-    if (i >= rowSize())
+    msg_info_when(FULLMATRIX_VERBOSE) << /*this->Name() <<*/ "(" << rowSize() << "," << colSize() << "): row(" << i << ") = 0";
+    if ( FULLMATRIX_CHECK &&  (i >= rowSize()) )
     {
-        msg_error() << "Invalid write access to row " << i << " in " <</*this->Name()<<*/" of size (" << rowSize() << "," << colSize() << ")";
+        msg_error() << "Invalid write access to row " << i << " in " <</*this->Name() << */" of size (" << rowSize() << "," << colSize() << ")";
         return;
     }
-#endif
     for (Index j=0; j<nCol; ++j)
         data[i*pitch+j] = (Real)0;
 }
@@ -186,16 +165,12 @@ void FullMatrix<Real>::clearRow(Index i)
 template<class Real>
 void FullMatrix<Real>::clearCol(Index j)
 {
-#ifdef FULLMATRIX_VERBOSE
-    std::cout <</* this->Name() << */"("<<rowSize()<<","<<colSize()<<"): col("<<j<<") = 0"<<std::endl;
-#endif
-#ifdef FULLMATRIX_CHECK
-    if (j >= colSize())
+    msg_info_when(FULLMATRIX_VERBOSE) <</* this->Name() << */"(" << rowSize() << "," << colSize() << "): col(" << j << ") = 0";
+    if ( FULLMATRIX_CHECK &&  (j >= colSize()) )
     {
-        msg_error() << "Invalid write access to column " << j << " in " <</*this->Name()<<*/" of size (" << rowSize() << "," << colSize() << ")";
+        msg_error() << "Invalid write access to column " << j << " in " <</*this->Name() << */" of size (" << rowSize() << "," << colSize() << ")";
         return;
     }
-#endif
     for (Index i=0; i<nRow; ++i)
         data[i*pitch+j] = (Real)0;
 }
@@ -203,16 +178,12 @@ void FullMatrix<Real>::clearCol(Index j)
 template<class Real>
 void FullMatrix<Real>::clearRowCol(Index i)
 {
-#ifdef FULLMATRIX_VERBOSE
-    std::cout << /*this->Name() << */"("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0 and col("<<i<<") = 0"<<std::endl;
-#endif
-#ifdef FULLMATRIX_CHECK
-    if (i >= rowSize() || i >= colSize())
+    msg_info_when(FULLMATRIX_VERBOSE) << /*this->Name() << */"(" << rowSize() << "," << colSize() << "): row(" << i << ") = 0 and col(" << i << ") = 0";
+    if ( FULLMATRIX_CHECK &&  (i >= rowSize() || i >= colSize()) )
     {
-        msg_error() << "Invalid write access to row and column " << i << " in " <</*this->Name()<<*/" of size (" << rowSize() << "," << colSize() << ")";
+        msg_error() << "Invalid write access to row and column " << i << " in " <</*this->Name() << */" of size (" << rowSize() << "," << colSize() << ")";
         return;
     }
-#endif
     clearRow(i);
     clearCol(i);
 }
