@@ -106,7 +106,7 @@ void MultiTagAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
         dmsg_info() << "step, end collision" ;
         dmsg_info() << "step, begin integration  for tag: "<< *it ;
         integrate(params, dt);
-        dmsg_info() << "end integration" << sendl;
+        dmsg_info() << "end integration" << msgendl;
 
         this->removeTag (*it);
     }
