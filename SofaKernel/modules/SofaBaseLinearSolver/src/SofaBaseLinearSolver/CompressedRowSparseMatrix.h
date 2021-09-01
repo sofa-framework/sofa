@@ -1839,6 +1839,8 @@ template<> template<> void SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatr
 
 extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<float>;
 extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<double>;
+extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<1,1,float> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<1,1,double> >;
 extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<2,2,float> >;
 extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<2,2,double> >;
 extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<3,3,float> >;
@@ -1849,6 +1851,13 @@ extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<ty
 extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<6,6,double> >;
 extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<8,8,float> >;
 extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<8,8,double> >;
+
+extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<3,6,float> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<3,6,double> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<2,3,float> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<2,3,double> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<7,7,float> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<7,7,double> >;
 
 #endif
 } // namespace sofa::component::linearsolver

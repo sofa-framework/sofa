@@ -227,8 +227,6 @@ typedef TMultiVec<V_COORD> MultiVecCoord;
 typedef TMultiVec<V_DERIV> MultiVecDeriv;
 typedef TMultiVec<V_MATDERIV> MultiVecMatrixDeriv;
 
-
-
 } // namespace behavior
 
 } // namespace core

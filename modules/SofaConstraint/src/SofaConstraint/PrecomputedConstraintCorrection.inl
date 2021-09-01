@@ -30,6 +30,8 @@
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 
 #include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <SofaBaseLinearSolver/GraphScatteredTypes.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 
 #include <sofa/core/behavior/RotationFinder.h>

@@ -23,7 +23,7 @@
 #include <SofaBaseMechanics/config.h>
 
 #include <SofaBaseTopology/TopologySubsetData.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <SofaBaseLinearSolver/fwd.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 #include <sofa/core/Mapping.h>

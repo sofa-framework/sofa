@@ -152,6 +152,8 @@ void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMatrix<ty
 
 template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<float>;
 template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<double>;
+template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<1,1,float> >;
+template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<1,1,double> >;
 template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<2,2,float> >;
 template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<2,2,double> >;
 template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<3,3,float> >;
@@ -162,4 +164,11 @@ template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat
 template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<6,6,double> >;
 template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<8,8,float> >;
 template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<8,8,double> >;
+
+template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<3,6,float> >;
+template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<3,6,double> >;
+template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<2,3,float> >;
+template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<2,3,double> >;
+template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<7,7,float> >;
+template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<7,7,double> >;
 }

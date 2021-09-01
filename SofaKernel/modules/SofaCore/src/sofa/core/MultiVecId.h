@@ -163,7 +163,7 @@ protected:
 };
 
 template <VecType vtype, VecAccess vaccess>
-class SOFA_CORE_API TMultiVecId
+class TMultiVecId
 {
 public:
     typedef TVecId<vtype, vaccess> MyVecId;
@@ -400,7 +400,7 @@ public:
 
 
 template <VecAccess vaccess>
-class SOFA_CORE_API TMultiVecId<V_ALL, vaccess>
+class TMultiVecId<V_ALL, vaccess>
 {
 public:
     typedef TVecId<V_ALL, vaccess> MyVecId;
