@@ -75,7 +75,7 @@ void MeshExporter::doReInit()
 
     if (!m_inputtopology)
     {
-        msg_error() << "Error, no topology." << sendl;
+        msg_error() << "Error, no topology.";
         d_componentState.setValue(ComponentState::Invalid) ;
         return;
     }

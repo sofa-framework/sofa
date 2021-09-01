@@ -121,7 +121,7 @@ public:
         addInput(&d_transform);
         addOutput(&d_imageOut);
 
-        raImage im(this->d_image);    if( ! im->getCImgList().size() ) {serr<<"no input image"<<sendl; return;}
+        raImage im(this->d_image);    if( ! im->getCImgList().size() ) { msg_error() <<"no input image"; return;}
 
         color.setValue(im->getCImg().min());
 

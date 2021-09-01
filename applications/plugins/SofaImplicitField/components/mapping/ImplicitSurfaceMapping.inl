@@ -237,9 +237,8 @@ void ImplicitSurfaceMapping<In,Out>::apply(const core::MechanicalParams * /*mpar
                             (b+edgecube[tri[1]])->p[edgepts[tri[1]]],
                             (b+edgecube[tri[2]])->p[edgepts[tri[2]]], out.size())<0)
                     {
-                        serr << "  mk=0x"<<std::hex<<mk<<std::dec<<" p1="<<tri[0]<<" p2="<<tri[1]<<" p3="<<tri[2]<<sendl;
-                        for (int e=0; e<12; e++) serr << "  e"<<e<<"="<<(b+edgecube[e])->p[edgepts[e]];
-                        serr<<sendl;
+                        msg_error() << "  mk=0x"<<std::hex<<mk<<std::dec<<" p1="<<tri[0]<<" p2="<<tri[1]<<" p3="<<tri[2]<<msgendl;
+                        for (int e=0; e<12; e++) msg_error() << "  e"<<e<<"="<<(b+edgecube[e])->p[edgepts[e]];
                     }
                     tri+=3;
                 }

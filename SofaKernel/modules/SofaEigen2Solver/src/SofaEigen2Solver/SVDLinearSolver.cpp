@@ -79,13 +79,13 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 
     if(verbose)
     {
-        msg_info() << "solve, the singular values are:" << sendl << svd.singularValues()  << msgendl
+        msg_info() << "solve, the singular values are:" << msgendl << svd.singularValues()  << msgendl
                    << "Its left singular vectors are the columns of the thin U matrix: " << msgendl
                    << svd.matrixU() << msgendl
                    << "Its right singular vectors are the columns of the thin V matrix:" msgendl
                    << svd.matrixV() ;
     }else{
-        msg_info() << "solve, the singular values are:" << sendl << svd.singularValues()  << msgendl;
+        msg_info() << "solve, the singular values are:" << msgendl << svd.singularValues()  << msgendl;
     }
 
     /// Solve the equation system and copy the solution to the SOFA vector
