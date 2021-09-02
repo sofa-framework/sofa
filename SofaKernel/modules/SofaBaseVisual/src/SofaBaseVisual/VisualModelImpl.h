@@ -389,6 +389,9 @@ public:
     void handleTopologyChange() override;
 
     void init() override;
+    void initFromTopology();
+    void initPositionFromVertices();
+    void initFromFileMesh();
 
     void initVisual() override;
 
