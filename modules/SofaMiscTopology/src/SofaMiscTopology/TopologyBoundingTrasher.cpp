@@ -19,22 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_COMPONENT_MISC_TOPOLOGYBOUNDINGTRASHER_CPP
+#include <SofaMiscTopology/TopologyBoundingTrasher.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/config.h>
+namespace sofa::component::misc
+{
 
-#define SPARSEMATRIX_CHECK false
-#define SPARSEMATRIX_VERBOSE false
-#define COMPRESSEDROWSPARSEMATRIX_CHECK false
-#define COMPRESSEDROWSPARSEMATRIX_VERBOSE false
-#define FULLMATRIX_CHECK false
-#define FULLMATRIX_VERBOSE false
+using namespace sofa::type;
+using namespace sofa::defaulttype;
 
-#define SOFABASELINEARSOLVER_VERSION @PROJECT_VERSION@
+int TopologyBoundingTrasherClass = core::RegisterObject("A class to remove all elements going outside from the given Bounding Box.")
+        .add< TopologyBoundingTrasher<Vec3Types>  >(true);
 
-#ifdef SOFA_BUILD_SOFABASELINEARSOLVER
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_SOFABASELINEARSOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFABASELINEARSOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+template class SOFA_SOFAMISCTOPOLOGY_API TopologyBoundingTrasher<Vec3Types>;
+
+} // namespace sofa::component::misc

@@ -137,7 +137,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::parse( sofa::core::objectmodel::Ba
     const char* method = arg->getAttribute("method");
     if (method && *method && std::string(method) != std::string("large"))
     {
-        msg_warning() << "Attribute method was specified as \""<<method<<"\" while this version only implements the \"large\" method. Ignoring..." << sendl;
+        msg_warning() << "Attribute method was specified as \""<<method<<"\" while this version only implements the \"large\" method. Ignoring...";
     }
     Inherited::parse(arg);
 }
@@ -591,7 +591,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
         else
         {
             drawPrevMaxStress = maxStress;
-            msg_info() << "max stress = " << maxStress << sendl;
+            msg_info() << "max stress = " << maxStress;
         }
         if (d_showStressMaxValue.isSet())
         {

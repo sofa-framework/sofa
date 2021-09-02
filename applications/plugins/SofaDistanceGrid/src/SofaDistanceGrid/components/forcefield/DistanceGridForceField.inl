@@ -96,7 +96,7 @@ void DistanceGridForceField<DataTypes>::init()
         }
         else
         {
-            serr << "No triangles found in topology" << sendl;
+            msg_error() << "No triangles found in topology";
         }
     }
 
@@ -121,7 +121,7 @@ void DistanceGridForceField<DataTypes>::init()
         }
         else
         {
-            serr << "No tetrahedra found in topology" << sendl;
+            msg_error() << "No tetrahedra found in topology";
         }
     }
 
