@@ -10,7 +10,6 @@ set(HEADER_FILES
     ${SOFABASELINEARSOLVER_SRC}/CGLinearSolver.h
     ${SOFABASELINEARSOLVER_SRC}/CGLinearSolver.inl
     ${SOFABASELINEARSOLVER_SRC}/CompressedRowSparseMatrix.h
-    ${SOFABASELINEARSOLVER_SRC}/CompressedRowSparseMatrix.inl
     ${SOFABASELINEARSOLVER_SRC}/CRSMultiMatrixAccessor.h
     ${SOFABASELINEARSOLVER_SRC}/DefaultMultiMatrixAccessor.h
     ${SOFABASELINEARSOLVER_SRC}/DiagonalMatrix.h
@@ -32,6 +31,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
     ${SOFABASELINEARSOLVER_SRC}/initSofaBaseLinearSolver.cpp
     ${SOFABASELINEARSOLVER_SRC}/CGLinearSolver.cpp
+    ${SOFABASELINEARSOLVER_SRC}/CompressedRowSparseMatrix.cpp
     ${SOFABASELINEARSOLVER_SRC}/CRSMultiMatrixAccessor.cpp
     ${SOFABASELINEARSOLVER_SRC}/DefaultMultiMatrixAccessor.cpp
     ${SOFABASELINEARSOLVER_SRC}/FullMatrix.cpp
