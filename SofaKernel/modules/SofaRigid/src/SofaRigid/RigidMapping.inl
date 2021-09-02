@@ -337,7 +337,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
     helper::WriteAccessor< Data<InVecDeriv> > out = dOut;
     helper::ReadAccessor< Data<VecDeriv> > in = dIn;
 
-    for(sofa::Index i=0 ; i<out.size() ; ++i)
+    for(sofa::Index i=0 ; i<in.size() ; ++i)
     {
         sofa::Index rigidIndex = getRigidIndex(i);
 
