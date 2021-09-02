@@ -205,7 +205,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
             case FASTMARCHING : fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor ); break;
             case DIJKSTRA : dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor); break;
             case PARALLELMARCHING : parallelMarching<Real,T>(dist, voronoi, sampler->transform.getValue().getScale(), pmmIter, pmmTol, biasFactor); break;
-            default : sampler->serr << "Unknown Distance Field Computation Method" << sampler->sendl; break;
+            default : msg_error(sampler) << "Unknown Distance Field Computation Method" ; break;
             };
         }
 
@@ -226,7 +226,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
                 case FASTMARCHING : fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor ); break;
                 case DIJKSTRA : dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor); break;
                 case PARALLELMARCHING : parallelMarching<Real,T>(dist, voronoi, sampler->transform.getValue().getScale(), pmmIter, pmmTol, biasFactor); break;
-                default : sampler->serr << "Unknown Distance Field Computation Method" << sampler->sendl; break;
+                default : msg_error(sampler) << "Unknown Distance Field Computation Method" ; break;
                 };
             }
             else break;
@@ -250,7 +250,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
                 case FASTMARCHING : fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor ); break;
                 case DIJKSTRA : dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor); break;
                 case PARALLELMARCHING : parallelMarching<Real,T>(dist, voronoi, sampler->transform.getValue().getScale(), pmmIter, pmmTol, biasFactor); break;
-                default : sampler->serr << "Unknown Distance Field Computation Method" << sampler->sendl; break;
+                default : msg_error(sampler) << "Unknown Distance Field Computation Method" ; break;
                 };
                 it++; if(it>=lloydIt) converged=true;
             }
@@ -320,7 +320,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
             case FASTMARCHING : fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor ); break;
             case DIJKSTRA : dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor); break;
             case PARALLELMARCHING : parallelMarching<Real,T>(dist, voronoi, sampler->transform.getValue().getScale(), pmmIter, pmmTol, biasFactor); break;
-            default : sampler->serr << "Unknown Distance Field Computation Method" << sampler->sendl; break;
+            default : msg_error(sampler) << "Unknown Distance Field Computation Method" ; break;
             };
         }
 
@@ -350,7 +350,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
                 case FASTMARCHING : fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor ); break;
                 case DIJKSTRA : dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor); break;
                 case PARALLELMARCHING : parallelMarching<Real,T>(dist, voronoi, sampler->transform.getValue().getScale(), pmmIter, pmmTol, biasFactor); break;
-                default : sampler->serr << "Unknown Distance Field Computation Method" << sampler->sendl; break;
+                default : msg_error(sampler) << "Unknown Distance Field Computation Method" ; break;
                 };
             }
 
@@ -372,7 +372,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
                     case FASTMARCHING : fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor ); break;
                     case DIJKSTRA : dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor); break;
                     case PARALLELMARCHING : parallelMarching<Real,T>(dist, voronoi, sampler->transform.getValue().getScale(), pmmIter, pmmTol, biasFactor); break;
-                    default : sampler->serr << "Unknown Distance Field Computation Method" << sampler->sendl; break;
+                    default : msg_error(sampler) << "Unknown Distance Field Computation Method" ; break;
                     };
                     it++; if(it>=lloydIt) converged=true;
                 }

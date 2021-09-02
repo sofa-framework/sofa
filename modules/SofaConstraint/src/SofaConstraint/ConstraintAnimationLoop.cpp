@@ -333,7 +333,7 @@ void ConstraintAnimationLoop::init()
 void ConstraintAnimationLoop::launchCollisionDetection(const core::ExecParams* params)
 {
     dmsg_info_when(EMIT_EXTRA_DEBUG_MESSAGE)
-            <<"computeCollision is called"<<sendl;
+            <<"computeCollision is called";
 
     ////////////////// COLLISION DETECTION///////////////////////////////////////////////////////////////////////////////////////////
     sofa::helper::AdvancedTimer::stepBegin("Collision");

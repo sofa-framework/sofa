@@ -125,7 +125,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
         if (b[0] > 0.001f && b[0] < 0.999f
             && b[1] > 0.001f && b[1] < 0.999f
             && b[2] > 0.001f && b[2] < 0.999f)
-            intersection->serr << "ERROR: FFD-FFD collision failed to converge to undeformed point: p1 = "<<p1<<" b = "<<b<<" c000 = "<<c1.corners[0]<<" c100 = "<<c1.corners[1]<<" c010 = "<<c1.corners[2]<<" c110 = "<<c1.corners[3]<<" c001 = "<<c1.corners[4]<<" c101 = "<<c1.corners[5]<<" c011 = "<<c1.corners[6]<<" c111 = "<<c1.corners[7]<<" pinit = "<<c1.initpos(b)<<" pdeform = "<<c1.deform(b)<<" err = "<<err1<<intersection->sendl;
+            msg_error(intersection) << "FFD-FFD collision failed to converge to undeformed point: p1 = "<<p1<<" b = "<<b<<" c000 = "<<c1.corners[0]<<" c100 = "<<c1.corners[1]<<" c010 = "<<c1.corners[2]<<" c110 = "<<c1.corners[3]<<" c001 = "<<c1.corners[4]<<" c101 = "<<c1.corners[5]<<" c011 = "<<c1.corners[6]<<" c111 = "<<c1.corners[7]<<" pinit = "<<c1.initpos(b)<<" pdeform = "<<c1.deform(b)<<" err = "<<err1;
     }
 
     return 0;

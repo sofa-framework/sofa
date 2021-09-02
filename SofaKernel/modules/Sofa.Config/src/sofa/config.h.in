@@ -315,6 +315,11 @@ class DeprecatedAndRemoved {};
         "v21.06 (PR#1808)", "v21.12", \
         "replace std::cout << myaccessor by std::cout << myaccessor.ref() ")
 
+#define SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v21.12 (PR#2292)", "v22.06", \
+        "Use the Messaging API instead of using SofaOStream and sout/serr/sendl.")
+
 /**********************************************/
 
 #define SOFA_DECL_CLASS(name) // extern "C" { int sofa_concat(class_,name) = 0; }
