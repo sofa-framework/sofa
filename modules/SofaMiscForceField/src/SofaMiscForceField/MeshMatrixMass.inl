@@ -353,20 +353,26 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::ApplyTopologyChange
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::ApplyTopologyChange(const core::topology::TrianglesAdded* topoEvent)
 {
-    const auto &triangleAdded = topoEvent->getIndexArray();
-    const sofa::type::vector<core::topology::BaseMeshTopology::Triangle> &elems = topoEvent->getElementArray();
-    const auto & ancestors = topoEvent->ancestorsList;
-    const sofa::type::vector<sofa::type::vector<double> > & coefs = topoEvent->coefs;
+    if(!this->m->isLumped())
+    {
+        const auto &triangleAdded = topoEvent->getIndexArray();
+        const sofa::type::vector<core::topology::BaseMeshTopology::Triangle> &elems = topoEvent->getElementArray();
+        const auto & ancestors = topoEvent->ancestorsList;
+        const sofa::type::vector<sofa::type::vector<double> > & coefs = topoEvent->coefs;
 
-    applyTriangleCreation(triangleAdded, elems, ancestors, coefs);
+        applyTriangleCreation(triangleAdded, elems, ancestors, coefs);
+    }
 }
 
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::ApplyTopologyChange(const core::topology::TrianglesRemoved* e)
 {
-    const auto &triangleRemoved = e->getArray();
+    if(!this->m->isLumped())
+    {
+        const auto &triangleRemoved = e->getArray();
 
-    applyTriangleDestruction(triangleRemoved);
+        applyTriangleDestruction(triangleRemoved);
+    }
 }
 
 // }
@@ -608,20 +614,26 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::ApplyTopologyChange
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::ApplyTopologyChange(const core::topology::QuadsAdded* topoEvent)
 {
-    const auto &quadAdded = topoEvent->getIndexArray();
-    const sofa::type::vector<core::topology::BaseMeshTopology::Quad> &elems = topoEvent->getElementArray();
-    const auto& ancestors = topoEvent->ancestorsList;
-    const sofa::type::vector<sofa::type::vector<double> > & coefs = topoEvent->coefs;
+    if(!this->m->isLumped())
+    {
+        const auto &quadAdded = topoEvent->getIndexArray();
+        const sofa::type::vector<core::topology::BaseMeshTopology::Quad> &elems = topoEvent->getElementArray();
+        const auto& ancestors = topoEvent->ancestorsList;
+        const sofa::type::vector<sofa::type::vector<double> > & coefs = topoEvent->coefs;
 
-    applyQuadCreation(quadAdded, elems, ancestors, coefs);
+        applyQuadCreation(quadAdded, elems, ancestors, coefs);
+    }
 }
 
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::ApplyTopologyChange(const core::topology::QuadsRemoved* topoEvent)
 {
-    const auto &quadRemoved = topoEvent->getArray();
+    if(!this->m->isLumped())
+    {
+        const auto &quadRemoved = topoEvent->getArray();
 
-    applyQuadDestruction(quadRemoved);
+        applyQuadDestruction(quadRemoved);
+    }
 }
 
 // }
@@ -865,20 +877,26 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::ApplyTopologyChange
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::ApplyTopologyChange(const core::topology::TetrahedraAdded* topoEvent)
 {
-    const auto &tetraAdded = topoEvent->getIndexArray();
-    const sofa::type::vector<core::topology::BaseMeshTopology::Tetrahedron> &elems = topoEvent->getElementArray();
-    const auto& ancestors = topoEvent->ancestorsList;
-    const sofa::type::vector<sofa::type::vector<double> > & coefs = topoEvent->coefs;
+    if(!this->m->isLumped())
+    {
+        const auto &tetraAdded = topoEvent->getIndexArray();
+        const sofa::type::vector<core::topology::BaseMeshTopology::Tetrahedron> &elems = topoEvent->getElementArray();
+        const auto& ancestors = topoEvent->ancestorsList;
+        const sofa::type::vector<sofa::type::vector<double> > & coefs = topoEvent->coefs;
 
-    applyTetrahedronCreation(tetraAdded, elems, ancestors, coefs);
+        applyTetrahedronCreation(tetraAdded, elems, ancestors, coefs);
+    }
 }
 
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::ApplyTopologyChange(const core::topology::TetrahedraRemoved* topoEvent)
 {
-    const auto& tetraRemoved = topoEvent->getArray();
+    if(!this->m->isLumped())
+    {
+        const auto& tetraRemoved = topoEvent->getArray();
 
-    applyTetrahedronDestruction(tetraRemoved);
+        applyTetrahedronDestruction(tetraRemoved);
+    }
 }
 
 // }
@@ -1121,20 +1139,26 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::ApplyTopologyChange
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::ApplyTopologyChange(const core::topology::HexahedraAdded* topoEvent)
 {
-    const auto &hexaAdded = topoEvent->getIndexArray();
-    const sofa::type::vector<core::topology::BaseMeshTopology::Hexahedron> &elems = topoEvent->getElementArray();
-    const auto & ancestors = topoEvent->ancestorsList;
-    const sofa::type::vector<sofa::type::vector<double> > & coefs = topoEvent->coefs;
+    if(!this->m->isLumped())
+    {
+        const auto &hexaAdded = topoEvent->getIndexArray();
+        const sofa::type::vector<core::topology::BaseMeshTopology::Hexahedron> &elems = topoEvent->getElementArray();
+        const auto & ancestors = topoEvent->ancestorsList;
+        const sofa::type::vector<sofa::type::vector<double> > & coefs = topoEvent->coefs;
 
-    applyHexahedronCreation(hexaAdded, elems, ancestors, coefs);
+        applyHexahedronCreation(hexaAdded, elems, ancestors, coefs);
+    }
 }
 
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::ApplyTopologyChange(const core::topology::HexahedraRemoved* topoEvent)
 {
-    const auto &hexaRemoved = topoEvent->getArray();
+    if(!this->m->isLumped())
+    {
+        const auto &hexaRemoved = topoEvent->getArray();
 
-    applyHexahedronDestruction(hexaRemoved);
+        applyHexahedronDestruction(hexaRemoved);
+    }
 }
 
 // }
