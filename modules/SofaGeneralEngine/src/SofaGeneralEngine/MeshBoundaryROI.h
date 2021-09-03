@@ -57,83 +57,20 @@ public:
 
 protected:
 
-    MeshBoundaryROI()    : Inherited()
-      , d_triangles(initData(&d_triangles,"triangles","input triangles"))
-      , d_quads(initData(&d_quads,"quads","input quads"))
-      , d_inputROI(initData(&d_inputROI,"inputROI","optional subset of the input mesh"))
-      , d_indices(initData(&d_indices,"indices","Index lists of the closing vertices"))
-    {
-    }
+    MeshBoundaryROI();
 
     ~MeshBoundaryROI() override {}
 
 public:
-    void init() override
-    {
-        addInput(&d_triangles);
-        addInput(&d_quads);
-        addInput(&d_inputROI);
-        addOutput(&d_indices);
+    void init() override;
 
-        setDirtyValue();
-    }
+    void reinit()    override;
 
-    void reinit()    override { update();  }
-    void doUpdate() override
-    {
-        helper::ReadAccessor<Data< SeqTriangles > > triangles(this->d_triangles);
-        helper::ReadAccessor<Data< SeqQuads > > quads(this->d_quads);
+    void doUpdate() override;
 
-        helper::WriteOnlyAccessor<Data< SetIndex > >  indices(this->d_indices);
-        indices.clear();
+    static void countEdge(std::map<PointPair, unsigned int>& edgeCount,PointPair& edge);
 
-        std::map<PointPair, unsigned int> edgeCount;
-        for(size_t i=0;i<triangles.size();i++)
-            if(inROI(triangles[i][0]) && inROI(triangles[i][1]) && inROI(triangles[i][2]))
-                for(unsigned int j=0;j<3;j++)
-                {
-                    PointPair edge(triangles[i][j],triangles[i][(j==2)?0:j+1]);
-                    this->countEdge(edgeCount,edge);
-                }
-        for(size_t i=0;i<quads.size();i++)
-            if(inROI(quads[i][0]) && inROI(quads[i][1]) && inROI(quads[i][2]) && inROI(quads[i][3]))
-                for(unsigned int j=0;j<4;j++)
-                {
-                    PointPair edge(quads[i][j],quads[i][(j==3)?0:j+1]);
-                    this->countEdge(edgeCount,edge);
-                }
-
-        std::set<PointID> indexset; // enforce uniqueness since SetIndex is not a set..
-        for(std::map<PointPair, unsigned int>::iterator it=edgeCount.begin();it!=edgeCount.end();++it)
-            if(it->second==1)
-            {
-                indexset.insert(it->first.first);
-                indexset.insert(it->first.second);
-            }
-        indices.wref().insert(indices.end(), indexset.begin(), indexset.end());
-    }
-
-    void countEdge(std::map<PointPair, unsigned int>& edgeCount,PointPair& edge) const
-    {
-        if(edge.first>edge.second)
-        {
-            PointID i=edge.first;
-            edge.first=edge.second;
-            edge.second=i;
-        }
-        std::map<PointPair, unsigned int>::iterator it=edgeCount.find(edge);
-        if(it!=edgeCount.end()) it->second++;
-        else  edgeCount[edge]=1;
-    }
-
-    inline bool inROI(const PointID& index) const
-    {
-        const SetIndex& ROI=this->d_inputROI.getValue();
-        if(ROI.size()==0) return true; // ROI empty -> use all points
-        if(std::find(ROI.begin(),ROI.end(),index)==ROI.end()) return false;
-        return true;
-    }
-
+    inline bool inROI(const PointID& index) const;
 };
 
 } //namespace sofa::component::engine
