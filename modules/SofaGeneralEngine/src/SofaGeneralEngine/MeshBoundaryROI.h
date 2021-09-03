@@ -32,6 +32,8 @@ namespace sofa::component::engine
 
 /**
  * This class outputs indices of boundary vertices of a triangle/quad mesh
+ * The boundary is detected using the number elements associated to the edges.
+ * An edge is considered on the boundary if it has a unique associated element.
  * @author benjamin gilles
  */
 class MeshBoundaryROI : public core::DataEngine
@@ -64,12 +66,16 @@ protected:
 public:
     void init() override;
 
-    void reinit()    override;
+    void reinit() override;
 
     void doUpdate() override;
 
-    static void countEdge(std::map<PointPair, unsigned int>& edgeCount,PointPair& edge);
+    /// edge is used as a key to be found in the edgeCount map. If found, its value is incremented. Otherwise,
+    /// the value is set to 1.
+    static void countEdge(std::map<PointPair, unsigned int>& edgeCount, PointPair& edge);
 
+    /// Check if the point with PointID index is part of the indices defined in d_inputROI.
+    /// @return true if d_inputROI is empty or if index is in d_inputROI, false otherwise.
     inline bool inROI(const PointID& index) const;
 };
 

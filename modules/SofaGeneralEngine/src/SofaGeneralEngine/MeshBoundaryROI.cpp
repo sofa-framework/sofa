@@ -54,49 +54,67 @@ void MeshBoundaryROI::reinit()
 
 void MeshBoundaryROI::doUpdate()
 {
-    helper::ReadAccessor<Data< SeqTriangles > > triangles(this->d_triangles);
-    helper::ReadAccessor<Data< SeqQuads > > quads(this->d_quads);
+    const helper::ReadAccessor triangles(this->d_triangles);
+    const helper::ReadAccessor quads(this->d_quads);
 
     helper::WriteOnlyAccessor<Data< SetIndex > >  indices(this->d_indices);
     indices.clear();
 
     std::map<PointPair, unsigned int> edgeCount;
     for(size_t i=0;i<triangles.size();i++)
+    {
         if(inROI(triangles[i][0]) && inROI(triangles[i][1]) && inROI(triangles[i][2]))
+        {
             for(unsigned int j=0;j<3;j++)
             {
                 PointPair edge(triangles[i][j],triangles[i][(j==2)?0:j+1]);
+                // increment the number of elements (triangles) associated to the edge.
                 this->countEdge(edgeCount,edge);
             }
+        }
+    }
+    
     for(size_t i=0;i<quads.size();i++)
+    {
         if(inROI(quads[i][0]) && inROI(quads[i][1]) && inROI(quads[i][2]) && inROI(quads[i][3]))
+        {
             for(unsigned int j=0;j<4;j++)
             {
                 PointPair edge(quads[i][j],quads[i][(j==3)?0:j+1]);
+                // increment the number of elements (quad) associated to the edge.
                 this->countEdge(edgeCount,edge);
             }
+        }
+    }
 
     std::set<PointID> indexset; // enforce uniqueness since SetIndex is not a set..
-    for(std::map<PointPair, unsigned int>::iterator it=edgeCount.begin();it!=edgeCount.end();++it)
+    for(auto it=edgeCount.begin();it!=edgeCount.end();++it)
+    {
+        // consider edge only if it is on the boundary
         if(it->second==1)
         {
             indexset.insert(it->first.first);
             indexset.insert(it->first.second);
         }
+    }
     indices.wref().insert(indices.end(), indexset.begin(), indexset.end());
 }
 
 void MeshBoundaryROI::countEdge(std::map<PointPair, unsigned>& edgeCount, PointPair& edge)
 {
-    if(edge.first>edge.second)
+    if(edge.first > edge.second)
     {
-        PointID i=edge.first;
-        edge.first=edge.second;
-        edge.second=i;
+        std::swap(edge.first, edge.second);
     }
-    std::map<PointPair, unsigned int>::iterator it=edgeCount.find(edge);
-    if(it!=edgeCount.end()) it->second++;
-    else  edgeCount[edge]=1;
+    const auto it = edgeCount.find(edge);
+    if(it != edgeCount.end())
+    {
+        it->second++;
+    }
+    else
+    {
+        edgeCount[edge]=1;
+    }
 }
 
 bool MeshBoundaryROI::inROI(const PointID& index) const
