@@ -26,7 +26,6 @@
 #include <sofa/core/PathResolver.h>
 #include <sofa/core/config.h>
 #include <sofa/core/State.h>
-#include <sofa/helper/StateMask.h>
 
 namespace sofa
 {

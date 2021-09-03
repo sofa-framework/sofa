@@ -24,7 +24,6 @@
 
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/State.h>
-#include <sofa/helper/StateMask.h>
 
 namespace sofa
 {
