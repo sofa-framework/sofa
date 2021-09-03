@@ -33,12 +33,7 @@ namespace sofa::defaulttype
 bool SOFA_DEFAULTTYPE_API writeMatrixTxt(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix);
 bool SOFA_DEFAULTTYPE_API writeMatrixCsv(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix);
 
-inline std::unordered_map<std::string, std::function<bool(const std::string&, sofa::defaulttype::BaseMatrix*)> > matrixExporterMap =
-{
-    {"txt", writeMatrixTxt},
-    {"csv", writeMatrixCsv},
-};
-
-inline sofa::helper::OptionsGroup matrixExporterOptionsGroup(2, "txt", "csv");
+extern SOFA_DEFAULTTYPE_API std::unordered_map<std::string, std::function<bool(const std::string&, sofa::defaulttype::BaseMatrix*)> > matrixExporterMap;
+extern SOFA_DEFAULTTYPE_API sofa::helper::OptionsGroup matrixExporterOptionsGroup;
 
 }
