@@ -356,7 +356,14 @@ RealGUI::RealGUI ( const char* viewername)
       m_viewerMSAANbSampling(1)
 {
     setupUi(this);
-
+    
+    ExpandAllButton->setIcon(QIcon(":/RealGUI/expandAll"));
+    CollapseAllButton->setIcon(QIcon(":/RealGUI/collapseAll"));
+    for (auto* button : {ExpandAllButton, CollapseAllButton})
+    {
+        button->setFixedWidth(button->height());
+    }
+    
     parseOptions();
 
     createPluginManager();
@@ -1891,6 +1898,8 @@ void RealGUI::createSimulationGraph()
     TabGraph->layout()->addWidget(simulationGraph);
 
     connect ( ExportGraphButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( Export() ) );
+    connect ( ExpandAllButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( expandAll() ) );
+    connect ( CollapseAllButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( collapseAll() ) );
     connect(simulationGraph, SIGNAL( RootNodeChanged(sofa::simulation::Node*, const char*) ), this, SLOT ( NewRootNode(sofa::simulation::Node* , const char*) ) );
     connect(simulationGraph, SIGNAL( NodeRemoved() ), this, SLOT( Update() ) );
     connect(simulationGraph, SIGNAL( Lock(bool) ), this, SLOT( LockAnimation(bool) ) );
