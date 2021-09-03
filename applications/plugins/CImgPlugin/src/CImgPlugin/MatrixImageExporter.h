@@ -19,24 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_CPP
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.inl>
+#pragma once
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/ObjectFactory.h>
+#include <CImgPlugin/CImgPlugin.h>
+#include <sofa/defaulttype/fwd.h>
+#include <string>
 
-namespace sofa::component::topology
+namespace sofa::defaulttype
 {
-using namespace sofa::defaulttype;
-int QuadSetGeometryAlgorithmsClass = core::RegisterObject("Quad set geometry algorithms")
-        .add< QuadSetGeometryAlgorithms<Vec3Types> >(true) // default template
-        .add< QuadSetGeometryAlgorithms<Vec2Types> >()
+bool SOFA_CIMGPLUGIN_API writeMatrixImage(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix);
+} //namespace sofa::defaulttype
 
-        ;
-
-template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<Vec3Types>;
-template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<Vec2Types>;
-
-
-} //namespace sofa::component::topology
+namespace sofa::component
+{
+void SOFA_CIMGPLUGIN_API initializeMatrixExporterComponents();
+} //namespace sofa::component

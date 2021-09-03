@@ -22,7 +22,13 @@
 #pragma once
 
 #include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+
+#define SPARSEMATRIX_CHECK false
+#define SPARSEMATRIX_VERBOSE false
+#define COMPRESSEDROWSPARSEMATRIX_CHECK false
+#define COMPRESSEDROWSPARSEMATRIX_VERBOSE false
+#define FULLMATRIX_CHECK false
+#define FULLMATRIX_VERBOSE false
 
 #define SOFABASELINEARSOLVER_VERSION @PROJECT_VERSION@
 

@@ -19,24 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_CPP
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.inl>
+#pragma once
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/fwd.h>
+#include <string>
+#include <unordered_map>
+#include <functional>
+#include <sofa/helper/OptionsGroup.h>
 
-namespace sofa::component::topology
+namespace sofa::defaulttype
 {
-using namespace sofa::defaulttype;
-int QuadSetGeometryAlgorithmsClass = core::RegisterObject("Quad set geometry algorithms")
-        .add< QuadSetGeometryAlgorithms<Vec3Types> >(true) // default template
-        .add< QuadSetGeometryAlgorithms<Vec2Types> >()
 
-        ;
+bool SOFA_DEFAULTTYPE_API writeMatrixTxt(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix);
+bool SOFA_DEFAULTTYPE_API writeMatrixCsv(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix);
 
-template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<Vec3Types>;
-template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<Vec2Types>;
+extern SOFA_DEFAULTTYPE_API std::unordered_map<std::string, std::function<bool(const std::string&, sofa::defaulttype::BaseMatrix*)> > matrixExporterMap;
+extern SOFA_DEFAULTTYPE_API sofa::helper::OptionsGroup matrixExporterOptionsGroup;
 
-
-} //namespace sofa::component::topology
+}

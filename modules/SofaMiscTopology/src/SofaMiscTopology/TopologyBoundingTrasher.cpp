@@ -19,24 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_CPP
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.inl>
-
-#include <sofa/defaulttype/VecTypes.h>
+#define SOFA_COMPONENT_MISC_TOPOLOGYBOUNDINGTRASHER_CPP
+#include <SofaMiscTopology/TopologyBoundingTrasher.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::topology
+namespace sofa::component::misc
 {
+
+using namespace sofa::type;
 using namespace sofa::defaulttype;
-int QuadSetGeometryAlgorithmsClass = core::RegisterObject("Quad set geometry algorithms")
-        .add< QuadSetGeometryAlgorithms<Vec3Types> >(true) // default template
-        .add< QuadSetGeometryAlgorithms<Vec2Types> >()
 
-        ;
+int TopologyBoundingTrasherClass = core::RegisterObject("A class to remove all elements going outside from the given Bounding Box.")
+        .add< TopologyBoundingTrasher<Vec3Types>  >(true);
 
-template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<Vec3Types>;
-template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<Vec2Types>;
+template class SOFA_SOFAMISCTOPOLOGY_API TopologyBoundingTrasher<Vec3Types>;
 
-
-} //namespace sofa::component::topology
+} // namespace sofa::component::misc

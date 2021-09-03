@@ -61,14 +61,48 @@ void SPHFluidForceField<DataTypes>::init()
 {
     this->Inherit::init();
 
-    SPHKernel<SPH_KERNEL_CUBIC,Deriv> Kcubic(4);
-    if (!Kcubic.CheckAll(2, sout.ostringstream(), serr.ostringstream())) serr << sendl;
+    SPHKernel<SPH_KERNEL_CUBIC, Deriv> Kcubic(4);
+    {
+        std::ostringstream ossInfo;
+        std::ostringstream ossError;
+        if (!Kcubic.CheckAll(2, ossInfo, ossError))
+        {
+            msg_info_when(ossInfo.str().empty(), this) << ossInfo.str();
+            msg_error_when(ossError.str().empty(), this) << ossError.str();
+        }
+    }
     SPHKernel<SPH_KERNEL_DEFAULT_DENSITY,Deriv> Kd(4);
-    if (!Kd.CheckAll(2, sout.ostringstream(), serr.ostringstream())) serr << sendl;
+    {
+        std::ostringstream ossInfo;
+        std::ostringstream ossError;
+        if (!Kd.CheckAll(2, ossInfo, ossError))
+        {
+            msg_info_when(ossInfo.str().empty(), this) << ossInfo.str();
+            msg_error_when(ossError.str().empty(), this) << ossError.str();
+        }
+    }
+
     SPHKernel<SPH_KERNEL_DEFAULT_PRESSURE,Deriv> Kp(4);
-    if (!Kp.CheckAll(1, sout.ostringstream(), serr.ostringstream())) serr << sendl;
+    {
+        std::ostringstream ossInfo;
+        std::ostringstream ossError;
+        if (!Kp.CheckAll(1, ossInfo, ossError))
+        {
+            msg_info_when(ossInfo.str().empty(), this) << ossInfo.str();
+            msg_error_when(ossError.str().empty(), this) << ossError.str();
+        }
+    }
+
     SPHKernel<SPH_KERNEL_DEFAULT_VISCOSITY,Deriv> Kv(4);
-    if (!Kv.CheckAll(2, sout.ostringstream(), serr.ostringstream())) serr << sendl;
+    {
+        std::ostringstream ossInfo;
+        std::ostringstream ossError;
+        if (!Kv.CheckAll(2, ossInfo, ossError))
+        {
+            msg_info_when(ossInfo.str().empty(), this) << ossInfo.str();
+            msg_error_when(ossError.str().empty(), this) << ossError.str();
+        }
+    }
 
     this->getContext()->get(m_grid); //new Grid(d_particleRadius.getValue());
     if (m_grid==nullptr)

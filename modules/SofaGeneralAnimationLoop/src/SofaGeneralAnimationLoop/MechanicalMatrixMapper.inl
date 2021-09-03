@@ -70,7 +70,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::init()
 
     if(l_nodeToParse.get() == nullptr)
     {
-        msg_error() << " failed to initialized -> missing/wrong link " << l_nodeToParse.getName() << " : " << l_nodeToParse.getLinkedPath() << sendl;
+        msg_error() << " failed to initialized -> missing/wrong link " << l_nodeToParse.getName() << " : " << l_nodeToParse.getLinkedPath();
         this->d_componentState.setValue(ComponentState::Invalid) ;
         return;
     }
@@ -79,7 +79,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::init()
 
     if (mstate1.get() == nullptr || mstate2.get() == nullptr)
     {
-        msg_error() << " failed to initialized -> missing/wrong link " << mstate1.getName() << " or " << mstate2.getName() << sendl;
+        msg_error() << " failed to initialized -> missing/wrong link " << mstate1.getName() << " or " << mstate2.getName();
         this->d_componentState.setValue(ComponentState::Invalid) ;
         return;
     }

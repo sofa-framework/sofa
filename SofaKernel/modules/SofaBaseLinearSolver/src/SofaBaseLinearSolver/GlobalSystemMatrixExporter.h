@@ -19,24 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_CPP
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.inl>
+#pragma once
+#include <SofaBaseLinearSolver/config.h>
+#include <sofa/simulation/BaseSimulationExporter.h>
+#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/helper/OptionsGroup.h>
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/ObjectFactory.h>
-
-namespace sofa::component::topology
+namespace sofa::component::linearsolver
 {
-using namespace sofa::defaulttype;
-int QuadSetGeometryAlgorithmsClass = core::RegisterObject("Quad set geometry algorithms")
-        .add< QuadSetGeometryAlgorithms<Vec3Types> >(true) // default template
-        .add< QuadSetGeometryAlgorithms<Vec2Types> >()
 
-        ;
+/**
+ * @brief Exports the global system matrix of the current context into a file. The exporter allows to write the file
+ * under several formats.
+ *
+ * The class is designed so more file format can be supported. For example, image export is added in the CImg plugin.
+ */
+class SOFA_SOFABASELINEARSOLVER_API GlobalSystemMatrixExporter : public sofa::simulation::BaseSimulationExporter
+{
+public:
+    SOFA_CLASS(GlobalSystemMatrixExporter, sofa::simulation::BaseSimulationExporter);
 
-template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<Vec3Types>;
-template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<Vec2Types>;
+    bool write() override;
+    void doInit() override;
 
+protected:
+    Data<sofa::helper::OptionsGroup> d_fileFormat;
 
-} //namespace sofa::component::topology
+    GlobalSystemMatrixExporter();
+
+    SingleLink<GlobalSystemMatrixExporter, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_linearSolver;
+};
+}

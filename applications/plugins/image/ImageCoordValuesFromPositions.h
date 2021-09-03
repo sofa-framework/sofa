@@ -81,7 +81,7 @@ struct ImageCoordValuesFromPositionsSpecialization<defaulttype::Image<T>>
 
         if(img.spectrum()!=3)
         {
-            This.serr<<"input image must have 3 channels"<<This.sendl;
+            msg_error(&This) <<"input image must have 3 channels";
             return;
         }
 
