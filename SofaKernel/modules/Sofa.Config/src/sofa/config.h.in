@@ -40,8 +40,6 @@
 #cmakedefine SOFA_WITH_FLOAT
 #cmakedefine SOFA_WITH_DOUBLE
 
-#cmakedefine SOFA_USE_MASK
-
 #cmakedefine SOFA_WITH_DEVTOOLS
 
 #ifdef _MSC_VER
