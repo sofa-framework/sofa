@@ -1270,7 +1270,7 @@ public:
                     "            <HexahedronSetTopologyContainer name='Container' src='@../grid' />                     "
                     "            <HexahedronSetTopologyModifier name='Modifier' />                                      "
                     "            <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                   "
-                    "            <MeshMatrixMass name='m_mass' massDensity='1.0' lumping='true'                         "
+                    "            <MeshMatrixMass name='m_mass' massDensity='1.0' lumping='true'/>                       "
                     "    </Node>                                                                                        "
                     "</Node>                                                                                            ";
         }
@@ -1306,9 +1306,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV);
         EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
-        EXPECT_FLOAT_EQ(eMasses[2], refValueE); // eMasses[1] == 0 because not taken into account from grid to hexahedron Topology
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
+            EXPECT_FLOAT_EQ(eMasses[2], refValueE); // eMasses[1] == 0 because not taken into account from grid to hexahedron Topology
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[2], 0.);
+        }
         
         // -- remove hexahedron id: 0 -- 
         sofa::type::vector<sofa::Index> hexaIds = { 0 };
@@ -1320,10 +1328,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
         EXPECT_FLOAT_EQ(vMasses[1], refValueV);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-        EXPECT_FLOAT_EQ(eMasses[3], refValueE);
-
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[3], 0.);
+        }
 
         // -- remove hexahedron id: 0 --
         modifier->removeHexahedra(hexaIds);
@@ -1334,10 +1349,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
         EXPECT_FLOAT_EQ(vMasses[1], refValueV);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-        EXPECT_FLOAT_EQ(eMasses[3], refValueE);
-        
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[3], 0.);
+        }
         
         // -- remove hexahedron id: 0, 1 --
         hexaIds.push_back(1);
@@ -1349,9 +1371,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV);
         EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[3], refValueE);
-        EXPECT_FLOAT_EQ(eMasses[20], refValueE);
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+            EXPECT_FLOAT_EQ(eMasses[20], refValueE);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[3], 0.);
+            EXPECT_FLOAT_EQ(eMasses[20], 0.);
+        }
 
         // -- remove hexahedron id: 0, 1, 2, 3 --
         hexaIds.push_back(2);
@@ -1434,9 +1464,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV * 5);
         EXPECT_FLOAT_EQ(vMasses[1], refValueV * 3);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE * 3);
-        EXPECT_FLOAT_EQ(eMasses[1], refValueE * 2);
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE * 3);
+            EXPECT_FLOAT_EQ(eMasses[1], refValueE * 2);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[1], 0.);
+        }
 
         // -- remove tetrahedron id: 0 -- 
         sofa::type::vector<sofa::Index> elemIds = { 0 };
@@ -1448,9 +1486,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV * 4); // check update of Mass when removing tetra
         EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
-        EXPECT_FLOAT_EQ(eMasses[1], refValueE);
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
+            EXPECT_FLOAT_EQ(eMasses[1], refValueE);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[1], 0.);
+        }
 
 
         // -- remove tetrahedron id: 0 --
@@ -1462,9 +1508,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV * 3); // check update of Mass when removing tetra
         EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-        EXPECT_FLOAT_EQ(eMasses[1], refValueE);
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOAT_EQ(eMasses[1], refValueE);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[1], 0.);
+        }
 
 
         // -- remove tetrahedron id: 0, 1 --
@@ -1477,9 +1531,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV);
         EXPECT_FLOAT_EQ(vMasses[1], refValueV);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-        EXPECT_FLOAT_EQ(eMasses[1], refValueE);
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOAT_EQ(eMasses[1], refValueE);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[1], 0.);
+        }
 
         // -- remove tetrahedron id: 0, 1 --
         modifier->removeTetrahedra(elemIds);
@@ -1555,9 +1617,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV);
         EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
-        EXPECT_FLOAT_EQ(eMasses[2], refValueE); // eMasses[1] == 0 because not taken into account from grid to quad Topology
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
+            EXPECT_FLOAT_EQ(eMasses[2], refValueE); // eMasses[1] == 0 because not taken into account from grid to quad Topology
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[2], 0.);
+        }
 
         // -- remove quad id: 0 -- 
         sofa::type::vector<sofa::Index> elemIds = { 0 };
@@ -1569,9 +1639,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
         EXPECT_FLOAT_EQ(vMasses[1], refValueV);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-        EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[3], 0.);
+        }
 
         // -- remove quad id: 0 --
         modifier->removeQuads(elemIds, true, true);
@@ -1582,9 +1660,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV);
         EXPECT_FLOAT_EQ(vMasses[1], refValueV);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-        EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[3], 0.);
+        }
 
         // -- remove quad id: 0, 1 --
         elemIds.push_back(1);
@@ -1662,9 +1748,18 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV * 2);
         EXPECT_FLOAT_EQ(vMasses[1], refValueV * 3);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
-        EXPECT_FLOAT_EQ(eMasses[1], refValueE * 2);
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
+            EXPECT_FLOAT_EQ(eMasses[1], refValueE * 2);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[1], 0.);
+        }
+
 
         // -- remove triangle id: 0 -- 
         sofa::type::vector<sofa::Index> elemIds = { 0 };
@@ -1676,9 +1771,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
         EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-        EXPECT_FLOAT_EQ(eMasses[3], refValueE * 2);
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOAT_EQ(eMasses[3], refValueE * 2);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[3], 0.);
+        }
 
         // -- remove triangle id: 0 --
         modifier->removeTriangles(elemIds, true, true);
@@ -1689,9 +1792,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV);
         EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-        EXPECT_FLOAT_EQ(eMasses[3], refValueE * 2);
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOAT_EQ(eMasses[3], refValueE * 2);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[3], 0.);
+        }
 
         // -- remove triangle id: 0, 1 --
         elemIds.push_back(1);
@@ -1703,9 +1814,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV * 2);
         EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-        EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[3], 0.);
+        }
 
         // -- remove triangle id: 0, 1, 2, 3 --
         elemIds.push_back(2);
