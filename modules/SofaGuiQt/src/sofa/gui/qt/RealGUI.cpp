@@ -1899,7 +1899,7 @@ void RealGUI::createSimulationGraph()
 
     connect ( ExportGraphButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( Export() ) );
     connect ( ExpandAllButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( expandAll() ) );
-    connect ( CollapseAllButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( collapseAll() ) );
+    connect ( CollapseAllButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( ExpandRootNodeOnly() ) );
     connect(simulationGraph, SIGNAL( RootNodeChanged(sofa::simulation::Node*, const char*) ), this, SLOT ( NewRootNode(sofa::simulation::Node* , const char*) ) );
     connect(simulationGraph, SIGNAL( NodeRemoved() ), this, SLOT( Update() ) );
     connect(simulationGraph, SIGNAL( Lock(bool) ), this, SLOT( LockAnimation(bool) ) );
