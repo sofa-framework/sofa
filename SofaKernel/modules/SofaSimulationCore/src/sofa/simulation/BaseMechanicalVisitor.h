@@ -26,6 +26,10 @@
 #include <sofa/core/VecId.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#ifdef SOFA_DUMP_VISITOR_INFO
+#include <sofa/core/MultiVecId.h>
+#endif
+
 namespace sofa::simulation
 {
 
