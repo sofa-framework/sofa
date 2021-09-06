@@ -23,6 +23,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
+#include <sofa/core/MultiVecId[V_ALL].h>
 
 namespace sofa::core::behavior
 {

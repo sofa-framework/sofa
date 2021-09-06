@@ -27,7 +27,7 @@
 #include <sofa/simulation/fwd.h>
 #include <sofa/core/fwd.h>
 #include <sofa/core/MultiVecId.h>
-
+#include <sofa/core/MultiVecId[V_ALL].h>
 namespace sofa::component::animationloop
 {
 

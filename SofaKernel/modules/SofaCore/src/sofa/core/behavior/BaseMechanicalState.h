@@ -25,6 +25,7 @@
 #include <sofa/core/fwd.h>
 #include <sofa/core/BaseState.h>
 #include <sofa/core/MultiVecId.h>
+#include <sofa/core/MultiVecId[V_ALL].h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Quat.h>
 #include <sofa/helper/StateMask.h>

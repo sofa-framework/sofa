@@ -21,9 +21,12 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/core/MultiVecId[V_ALL].h>
+
 #include <sofa/simulation/BaseMechanicalVisitor.h>
 namespace sofa::simulation::mechanicalvisitor
 {
+
 
 class SOFA_SIMULATION_CORE_API MechanicalMultiVectorToBaseVectorVisitor : public BaseMechanicalVisitor
 {

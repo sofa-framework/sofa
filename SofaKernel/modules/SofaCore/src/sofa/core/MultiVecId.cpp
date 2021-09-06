@@ -27,7 +27,7 @@ namespace sofa::core
 {
 
 template <VecType vtype, VecAccess vaccess>
-std::string TMultiVecId<vtype,vaccess>::getName() const
+std::string SOFA_CORE_API TMultiVecId<vtype,vaccess>::getName() const
 {
     if (!hasIdMap())
         return defaultId.getName();
@@ -60,48 +60,12 @@ std::string TMultiVecId<vtype,vaccess>::getName() const
     }
 }
 
-template <VecAccess vaccess>
-std::string TMultiVecId<V_ALL, vaccess>::getName() const
-{
-    if (!hasIdMap())
-        return defaultId.getName();
-    else
-    {
-        std::ostringstream out;
-        out << '{';
-        out << defaultId.getName() << "[*";
-        const IdMap& map = getIdMap();
-        MyVecId prev = defaultId;
-        for (IdMap_const_iterator it = map.begin(), itend = map.end(); it != itend; ++it)
-        {
-            if (it->second != prev) // new id
-            {
-                out << "],";
-                if (it->second.getType() == defaultId.getType())
-                    out << it->second.getIndex();
-                else
-                    out << it->second.getName();
-                out << '[';
-                prev = it->second;
-            }
-            else out << ',';
-            if (it->first == nullptr) out << "nullptr";
-            else
-                out << it->first->getName();
-        }
-        out << "]}";
-        return out.str();
-    }
-}
-
-template class TMultiVecId<V_COORD, V_READ>;
-template class TMultiVecId<V_COORD, V_WRITE>;
-template class TMultiVecId<V_DERIV, V_READ>;
-template class TMultiVecId<V_DERIV, V_WRITE>;
-template class TMultiVecId<V_MATDERIV, V_READ>;
-template class TMultiVecId<V_MATDERIV, V_WRITE>;
-template class TMultiVecId<V_ALL, V_READ>;
-template class TMultiVecId<V_ALL, V_WRITE>;
+template class SOFA_CORE_API TMultiVecId<V_COORD, V_READ>;
+template class SOFA_CORE_API TMultiVecId<V_COORD, V_WRITE>;
+template class SOFA_CORE_API TMultiVecId<V_DERIV, V_READ>;
+template class SOFA_CORE_API TMultiVecId<V_DERIV, V_WRITE>;
+template class SOFA_CORE_API TMultiVecId<V_MATDERIV, V_READ>;
+template class SOFA_CORE_API TMultiVecId<V_MATDERIV, V_WRITE>;
 
 } // namespace sofa::core
 

@@ -22,6 +22,7 @@
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest ;
 
+
 #include <sofa/core/MultiVecId.h>
 using sofa::core::TMultiVecId;
 using sofa::core::V_DERIV;
@@ -30,6 +31,8 @@ using sofa::core::V_MATDERIV;
 using sofa::core::V_ALL;
 using sofa::core::V_READ;
 using sofa::core::V_WRITE;
+
+#include <sofa/core/MultiVecId[V_ALL].h>
 
 class MultiVecId_test: public BaseTest{};
 
@@ -99,22 +102,22 @@ TEST_F(MultiVecId_test, checkSetId)
     testSetId<TMultiVecId<V_ALL, V_READ>>();
 }
 
-//template<class T>
-//void testConstructionCopyBehavior()
-//{
-//    T idSrc;
-//    T idDst{idSrc};
-//    ASSERT_EQ(idSrc, idDst);
-//}
+template<class T>
+void testConstructionCopyBehavior()
+{
+    T idSrc;
+    T idDst{idSrc};
+    ASSERT_EQ(idSrc, idDst);
+}
 
-//TEST_F(MultiVecId_test, checkConstructor)
-//{
-//    testConstructionCopyBehavior<TMultiVecId<V_COORD, V_WRITE>>();
-//    testConstructionCopyBehavior<TMultiVecId<V_COORD, V_READ>>();
-//    testConstructionCopyBehavior<TMultiVecId<V_DERIV, V_WRITE>>();
-//    testConstructionCopyBehavior<TMultiVecId<V_DERIV, V_READ>>();
-//    testConstructionCopyBehavior<TMultiVecId<V_MATDERIV, V_WRITE>>();
-//    testConstructionCopyBehavior<TMultiVecId<V_MATDERIV, V_READ>>();
-//    testConstructionCopyBehavior<TMultiVecId<V_ALL, V_WRITE>>();
-//    testConstructionCopyBehavior<TMultiVecId<V_ALL, V_READ>>();
-//}
+TEST_F(MultiVecId_test, checkConstructor)
+{
+    testConstructionCopyBehavior<TMultiVecId<V_COORD, V_WRITE>>();
+    testConstructionCopyBehavior<TMultiVecId<V_COORD, V_READ>>();
+    testConstructionCopyBehavior<TMultiVecId<V_DERIV, V_WRITE>>();
+    testConstructionCopyBehavior<TMultiVecId<V_DERIV, V_READ>>();
+    testConstructionCopyBehavior<TMultiVecId<V_MATDERIV, V_WRITE>>();
+    testConstructionCopyBehavior<TMultiVecId<V_MATDERIV, V_READ>>();
+    testConstructionCopyBehavior<TMultiVecId<V_ALL, V_WRITE>>();
+    testConstructionCopyBehavior<TMultiVecId<V_ALL, V_READ>>();
+}

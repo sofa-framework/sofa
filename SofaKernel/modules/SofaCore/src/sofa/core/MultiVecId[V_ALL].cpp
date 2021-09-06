@@ -19,51 +19,49 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
+#define SOFA_CORE_MULTIVECID_TEMPLATE_DEFINITION
 #include <sofa/core/MultiVecId[V_ALL].h>
-#include <sofa/simulation/BaseMechanicalVisitor.h>
+#include <sofa/core/BaseState.h>
 
-namespace sofa::simulation::mechanicalvisitor
+namespace sofa::core
 {
 
-/** Compute the dot product of two vectors */
-class SOFA_SIMULATION_CORE_API MechanicalVDotVisitor : public BaseMechanicalVisitor
+template <VecAccess vaccess>
+std::string SOFA_CORE_API TMultiVecId<V_ALL, vaccess>::getName() const
 {
-public:
-    sofa::core::ConstMultiVecId a;
-    sofa::core::ConstMultiVecId b;
-    MechanicalVDotVisitor(const sofa::core::ExecParams* params, sofa::core::ConstMultiVecId a, sofa::core::ConstMultiVecId b, SReal* t)
-            : BaseMechanicalVisitor(params) , a(a), b(b) //, total(t)
+    if (!hasIdMap())
+        return defaultId.getName();
+    else
     {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-        rootData = t;
+        std::ostringstream out;
+        out << '{';
+        out << defaultId.getName() << "[*";
+        const IdMap& map = getIdMap();
+        MyVecId prev = defaultId;
+        for (IdMap_const_iterator it = map.begin(), itend = map.end(); it != itend; ++it)
+        {
+            if (it->second != prev) // new id
+            {
+                out << "],";
+                if (it->second.getType() == defaultId.getType())
+                    out << it->second.getIndex();
+                else
+                    out << it->second.getName();
+                out << '[';
+                prev = it->second;
+            }
+            else out << ',';
+            if (it->first == nullptr) out << "nullptr";
+            else
+                out << it->first->getName();
+        }
+        out << "]}";
+        return out.str();
     }
-
-    Result fwdMechanicalState(VisitorContext* ctx,sofa::core::behavior::BaseMechanicalState* mm) override;
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override { return "MechanicalVDotVisitor";}
-    std::string getInfos() const override;
-    /// Specify whether this action can be parallelized.
-    bool isThreadSafe() const override
-    {
-        return true;
-    }
-    bool writeNodeData() const override
-    {
-        return true;
-    }
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-        addReadVector(a);
-        addReadVector(b);
-    }
-#endif
-};
 }
+
+template class SOFA_CORE_API TMultiVecId<V_ALL, V_READ>;
+template class SOFA_CORE_API TMultiVecId<V_ALL, V_WRITE>;
+
+} // namespace sofa::core
+
