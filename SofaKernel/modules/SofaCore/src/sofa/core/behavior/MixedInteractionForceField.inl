@@ -73,7 +73,7 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce(const Mechanic
     if (mstate1 && mstate2)
     {
 
-        addForce( mparams, *fId[mstate1.get()].write()   , *fId[mstate2.get()].write()   ,
+        addForce( mparams, *fId[mstate1.get()].write(), *fId[mstate2.get()].write(),
                  *mparams->readX(mstate1), *mparams->readX(mstate2),
                  *mparams->readV(mstate1), *mparams->readV(mstate2) );
 
