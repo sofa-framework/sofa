@@ -22,7 +22,8 @@
 #pragma once
 
 #include <sofa/simulation/Visitor.h>
-#include <sofa/core/MultiVecId.h>
+#include <sofa/core/MultiVecId[V_COORD].h>
+#include <sofa/core/MultiVecId[V_DERIV].h>
 #include <sofa/simulation/CpuTask.h>
 
 #include <list>

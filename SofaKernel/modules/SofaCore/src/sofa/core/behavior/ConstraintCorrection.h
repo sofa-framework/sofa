@@ -24,8 +24,7 @@
 
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/behavior/MechanicalState.h>
-
-
+#include <sofa/core/MultiVecId[V_MATDERIV].h>
 
 namespace sofa
 {

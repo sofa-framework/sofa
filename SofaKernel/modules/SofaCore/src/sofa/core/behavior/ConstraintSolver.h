@@ -24,6 +24,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/core/MultiVecId[V_ALL].h>
+#include <sofa/core/MultiVecId[V_DERIV].h>
 
 namespace sofa::core::behavior
 {

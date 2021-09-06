@@ -33,11 +33,8 @@
 #ifndef SOFA_SIMULATION_GetAssembledSizeVisitor_H
 #define SOFA_SIMULATION_GetAssembledSizeVisitor_H
 
-
-
 #include <SceneCreator/config.h>
 #include <sofa/simulation/Visitor.h>
-#include <sofa/core/MultiVecId.h>
 #include <sofa/defaulttype/BaseVector.h>
 namespace sofa
 {

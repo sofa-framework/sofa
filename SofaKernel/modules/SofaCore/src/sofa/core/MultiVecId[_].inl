@@ -19,60 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: GetVectorVisitor
-//
-// Description:
-//
-//
-// Author: Francois Faure, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-#ifndef SOFA_SIMULATION_GetVectorVisitor_H
-#define SOFA_SIMULATION_GetVectorVisitor_H
+#include <sofa/core/MultiVecId[_].h>
+#include <sofa/core/BaseState.h>
 
-#include <SceneCreator/config.h>
-#include <sofa/core/MultiVecId[V_ALL].h>
-#include <sofa/simulation/Visitor.h>
-#include <sofa/defaulttype/BaseVector.h>
-#include <Eigen/Dense>
-
-
-namespace sofa
+namespace sofa::core
 {
 
-namespace simulation
+template <VecType vtype, VecAccess vaccess>
+std::string SOFA_CORE_API TMultiVecId<vtype,vaccess>::getName() const
 {
+    if (!hasIdMap())
+        return defaultId.getName();
+    else
+    {
+        std::ostringstream out;
+        out << '{';
+        out << defaultId.getName() << "[*";
+        const IdMap& map = getIdMap();
+        MyVecId prev = defaultId;
+        for (IdMap_const_iterator it = map.begin(), itend = map.end(); it != itend; ++it)
+        {
+            if (it->second != prev) // new id
+            {
+                out << "],";
+                if (it->second.getType() == defaultId.getType())
+                    out << it->second.getIndex();
+                else
+                    out << it->second.getName();
+                out << '[';
+                prev = it->second;
+            }
+            else out << ',';
+            if (it->first == nullptr) out << "nullptr";
+            else
+                out << it->first->getName();
+        }
+        out << "]}";
+        return out.str();
+    }
+}
 
-/** Copy a given MultiVector (generally spread across the MechanicalStates) to a BaseVector
-    Only the independent DOFs are used.
-    Francois Faure, 2013
-*/
-class SOFA_SCENECREATOR_API GetVectorVisitor: public Visitor
-{
-public:
-//    typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1> Vector;
-    typedef defaulttype::BaseVector Vector;
-    GetVectorVisitor( const sofa::core::ExecParams* params, Vector* vec, core::ConstVecId src );
-    ~GetVectorVisitor() override;
+} // namespace sofa::core
 
-    Result processNodeTopDown( simulation::Node*  ) override;
-    const char* getClassName() const override { return "GetVectorVisitor"; }
-
-    /// If true, process the independent nodes only
-    void setIndependentOnly( bool );
-
-protected:
-    Vector* vec;
-    core::ConstVecId src;
-    unsigned offset;
-    bool independentOnly;
-
-};
-
-} // namespace simulation
-} // namespace sofa
-
-#endif

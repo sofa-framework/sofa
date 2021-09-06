@@ -23,6 +23,10 @@
 
 #include <sofa/simulation/BaseMechanicalVisitor.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
+
+#include <sofa/core/MultiVecId[V_COORD].h>
+#include <sofa/core/MultiVecId[V_DERIV].h>
+
 namespace sofa::simulation::mechanicalvisitor
 {
 

@@ -24,7 +24,6 @@
 
 #include <LMConstraint/LMConstraintSolver.h>
 #include <sofa/helper/OptionsGroup.h>
-#include <sofa/core/MultiVecId.h>
 
 namespace sofa::component::constraintset
 {

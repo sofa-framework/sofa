@@ -19,60 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: GetVectorVisitor
-//
-// Description:
-//
-//
-// Author: Francois Faure, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-#ifndef SOFA_SIMULATION_GetVectorVisitor_H
-#define SOFA_SIMULATION_GetVectorVisitor_H
+#pragma once
 
-#include <SceneCreator/config.h>
-#include <sofa/core/MultiVecId[V_ALL].h>
-#include <sofa/simulation/Visitor.h>
-#include <sofa/defaulttype/BaseVector.h>
-#include <Eigen/Dense>
+#include <sofa/core/MultiVecId[_].h>
 
-
-namespace sofa
+namespace sofa::core
 {
+typedef TMultiVecId<V_MATDERIV, V_READ> ConstMultiMatrixDerivId;
+typedef TMultiVecId<V_MATDERIV, V_WRITE>     MultiMatrixDerivId;
 
-namespace simulation
-{
-
-/** Copy a given MultiVector (generally spread across the MechanicalStates) to a BaseVector
-    Only the independent DOFs are used.
-    Francois Faure, 2013
-*/
-class SOFA_SCENECREATOR_API GetVectorVisitor: public Visitor
-{
-public:
-//    typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1> Vector;
-    typedef defaulttype::BaseVector Vector;
-    GetVectorVisitor( const sofa::core::ExecParams* params, Vector* vec, core::ConstVecId src );
-    ~GetVectorVisitor() override;
-
-    Result processNodeTopDown( simulation::Node*  ) override;
-    const char* getClassName() const override { return "GetVectorVisitor"; }
-
-    /// If true, process the independent nodes only
-    void setIndependentOnly( bool );
-
-protected:
-    Vector* vec;
-    core::ConstVecId src;
-    unsigned offset;
-    bool independentOnly;
-
-};
-
-} // namespace simulation
-} // namespace sofa
-
+#if !defined(SOFA_CORE_MULTIVECID_V_MATDERIV_TEMPLATE_DEFINITION)
+extern template class SOFA_CORE_API  TMultiVecId<V_MATDERIV, V_READ>;
+extern template class SOFA_CORE_API  TMultiVecId<V_MATDERIV, V_WRITE>;
 #endif
+} // namespace sofa::core
+

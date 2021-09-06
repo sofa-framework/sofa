@@ -23,8 +23,8 @@
 #define SOFA_CORE_BEHAVIOR_BASECONSTRAINTCORRECTION_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/MultiVecId.h>
-
+#include <sofa/core/MultiVecId[V_DERIV].h>
+#include <sofa/core/MultiVecId[V_COORD].h>
 
 namespace sofa
 {

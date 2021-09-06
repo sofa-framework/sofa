@@ -22,7 +22,6 @@
 #ifndef SOFA_CORE_BEHAVIOR_MULTIVEC_H
 #define SOFA_CORE_BEHAVIOR_MULTIVEC_H
 
-#include <sofa/core/MultiVecId.h>
 #include <sofa/core/behavior/BaseVectorOperations.h>
 namespace sofa
 {

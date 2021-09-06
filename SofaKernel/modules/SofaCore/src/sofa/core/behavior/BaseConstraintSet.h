@@ -26,7 +26,7 @@
 #include <sofa/core/config.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/MultiVecId.h>
+#include <sofa/core/MultiVecId[V_MATDERIV].h>
 namespace sofa
 {
 

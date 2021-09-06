@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/simulation/BaseMechanicalVisitor.h>
+#include <sofa/core/MultiVecId[_].h>
 
 namespace sofa::simulation::mechanicalvisitor
 {

@@ -23,7 +23,6 @@
 #define SOFA_SIMULATION_VelocityThresholdVisitor_H
 
 #include <sofa/simulation/Visitor.h>
-#include <sofa/core/MultiVecId.h>
 #include <sofa/core/MultiVecId[V_ALL].h>
 
 namespace sofa

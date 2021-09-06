@@ -47,7 +47,6 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalGetMatrixDimensionVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalAddMBK_ToMatrixVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalApplyProjectiveConstraint_ToMatrixVisitor.h>
-#include <sofa/core/MultiVecId.h>
 #include <sofa/core/VecId.h>
 
 #include <sofa/core/behavior/LinearSolver.h>

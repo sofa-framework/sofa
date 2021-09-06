@@ -23,7 +23,7 @@
 #include <SofaConstraint/config.h>
 
 #include <sofa/simulation/CollisionAnimationLoop.h>
-#include <sofa/core/MultiVecId.h>
+#include <sofa/core/MultiVecId[V_DERIV].h>
 #include <sofa/core/MultiVecId[V_ALL].h>
 namespace sofa::core::behavior
 {

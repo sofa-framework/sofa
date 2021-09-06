@@ -25,7 +25,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <sofa/core/MultiVecId.h>
+#include <sofa/core/MultiVecId[V_DERIV].h>
 
 namespace sofa
 {

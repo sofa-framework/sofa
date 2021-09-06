@@ -23,7 +23,10 @@
 using sofa::testing::BaseTest ;
 
 
-#include <sofa/core/MultiVecId.h>
+#include <sofa/core/MultiVecId[V_ALL].h>
+#include <sofa/core/MultiVecId[V_COORD].h>
+#include <sofa/core/MultiVecId[V_DERIV].h>
+#include <sofa/core/MultiVecId[V_MATDERIV].h>
 using sofa::core::TMultiVecId;
 using sofa::core::V_DERIV;
 using sofa::core::V_COORD;

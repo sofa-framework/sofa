@@ -34,7 +34,6 @@
 
 #include <sofa/simulation/MechanicalVisitor.h>
 
-#include <sofa/core/MultiVecId.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <Eigen/Sparse>

@@ -22,7 +22,8 @@
 #ifndef SOFA_CORE_BEHAVIOR_BASEVECTOROPERATION_H
 #define SOFA_CORE_BEHAVIOR_BASEVECTOROPERATION_H
 
-
+#include <sofa/core/MultiVecId[V_COORD].h>
+#include <sofa/core/MultiVecId[V_DERIV].h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 

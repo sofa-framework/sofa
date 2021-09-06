@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/MultiVecId.h>
+#include <sofa/core/VecId.h>
 #include <sofa/core/behavior/MechanicalMatrix.h>
 
 namespace sofa::core::behavior

@@ -23,7 +23,8 @@
 #define SOFA_CORE_MECHANICALPARAMS_H
 
 #include <sofa/core/ExecParams.h>
-#include <sofa/core/MultiVecId.h>
+#include <sofa/core/MultiVecId[V_COORD].h>
+#include <sofa/core/MultiVecId[V_DERIV].h>
 #include <sofa/core/StateVecAccessor.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Link.h>

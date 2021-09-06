@@ -28,7 +28,6 @@
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/core/MultiVecId.h>
 #include <sofa/helper/map.h>
 
 #include <SofaEigen2Solver/EigenMatrixManipulator.h>

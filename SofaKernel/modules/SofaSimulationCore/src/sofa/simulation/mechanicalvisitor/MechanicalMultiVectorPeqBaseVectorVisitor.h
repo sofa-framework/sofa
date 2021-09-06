@@ -21,7 +21,9 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/core/MultiVecId[V_DERIV].h>
 #include <sofa/simulation/BaseMechanicalVisitor.h>
+
 namespace sofa::simulation::mechanicalvisitor
 {
 

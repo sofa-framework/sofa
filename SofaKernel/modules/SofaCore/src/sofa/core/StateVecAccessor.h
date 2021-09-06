@@ -23,7 +23,9 @@
 
 #include <sofa/core/fwd.h>
 #include <sofa/core/State.h>
-#include <sofa/core/MultiVecId.h>
+#include <sofa/core/MultiVecId[V_COORD].h>
+#include <sofa/core/MultiVecId[V_DERIV].h>
+#include <sofa/core/MultiVecId[V_MATDERIV].h>
 
 namespace sofa::core
 {

@@ -24,7 +24,6 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/fwd.h>
 #include <sofa/core/VecId.h>
-#include <sofa/core/MultiVecId.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa::simulation
