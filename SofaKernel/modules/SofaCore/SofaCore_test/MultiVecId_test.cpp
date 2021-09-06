@@ -33,9 +33,88 @@ using sofa::core::V_WRITE;
 
 class MultiVecId_test: public BaseTest{};
 
-TEST_F(MultiVecId_test, checkBehavior)
+template<class T>
+void testConstructionBehavior()
 {
-    TMultiVecId<V_DERIV,V_WRITE> id;
-    //ASSERT_EQ(id.getDefaultId(), 0);
+    T id;
+    ASSERT_TRUE(id.isNull()) << "After creation the MultiVecId is null";
+    ASSERT_FALSE(id.hasIdMap()) << "After creation the MultiVecId has no idMap";
+
+    id.assign(T::MyVecId::null());
+    ASSERT_TRUE(id.isNull());
+
+    typename T::MyVecId defaultId {10};
+    id.assign(defaultId);
+    ASSERT_EQ(id.getDefaultId(), defaultId);
+    ASSERT_FALSE(id.isNull()) << "After assign() the MultiVecId is not null has it has a default value";
+    ASSERT_FALSE(id.hasIdMap()) << "After assign()) the MultiVecId has no idMap...because it was reseted";
 }
 
+TEST_F(MultiVecId_test, checkConstructionBehavior)
+{
+    testConstructionBehavior<TMultiVecId<V_COORD, V_WRITE>>();
+    testConstructionBehavior<TMultiVecId<V_COORD, V_READ>>();
+    testConstructionBehavior<TMultiVecId<V_DERIV, V_WRITE>>();
+    testConstructionBehavior<TMultiVecId<V_DERIV, V_READ>>();
+    testConstructionBehavior<TMultiVecId<V_MATDERIV, V_WRITE>>();
+    testConstructionBehavior<TMultiVecId<V_MATDERIV, V_READ>>();
+    testConstructionBehavior<TMultiVecId<V_ALL, V_WRITE>>();
+    testConstructionBehavior<TMultiVecId<V_ALL, V_READ>>();
+}
+
+template<class T>
+void testSetId()
+{
+    T id;
+    typename T::MyVecId defaultId {10};
+    typename T::MyVecId firstId {11};
+    typename T::MyVecId secondId {12};
+    sofa::core::BaseState* state {nullptr};
+
+    // Check that after assignement the default id is now the one we have set;
+    id.assign(defaultId);
+    ASSERT_EQ(id.getDefaultId(), defaultId);
+
+    // Check that after setting a state-id pair the map is fully created;
+    id.setId(state,firstId);
+    ASSERT_FALSE(id.isNull());
+    ASSERT_TRUE(id.hasIdMap());
+    ASSERT_EQ(id.getId(state), firstId);
+
+    id.setId(state,secondId);
+    ASSERT_FALSE(id.isNull());
+    ASSERT_TRUE(id.hasIdMap());
+    ASSERT_EQ(id.getId(state), secondId);
+}
+
+TEST_F(MultiVecId_test, checkSetId)
+{
+    testSetId<TMultiVecId<V_COORD, V_WRITE>>();
+    testSetId<TMultiVecId<V_COORD, V_READ>>();
+    testSetId<TMultiVecId<V_DERIV, V_WRITE>>();
+    testSetId<TMultiVecId<V_DERIV, V_READ>>();
+    testSetId<TMultiVecId<V_MATDERIV, V_WRITE>>();
+    testSetId<TMultiVecId<V_MATDERIV, V_READ>>();
+    testSetId<TMultiVecId<V_ALL, V_WRITE>>();
+    testSetId<TMultiVecId<V_ALL, V_READ>>();
+}
+
+//template<class T>
+//void testConstructionCopyBehavior()
+//{
+//    T idSrc;
+//    T idDst{idSrc};
+//    ASSERT_EQ(idSrc, idDst);
+//}
+
+//TEST_F(MultiVecId_test, checkConstructor)
+//{
+//    testConstructionCopyBehavior<TMultiVecId<V_COORD, V_WRITE>>();
+//    testConstructionCopyBehavior<TMultiVecId<V_COORD, V_READ>>();
+//    testConstructionCopyBehavior<TMultiVecId<V_DERIV, V_WRITE>>();
+//    testConstructionCopyBehavior<TMultiVecId<V_DERIV, V_READ>>();
+//    testConstructionCopyBehavior<TMultiVecId<V_MATDERIV, V_WRITE>>();
+//    testConstructionCopyBehavior<TMultiVecId<V_MATDERIV, V_READ>>();
+//    testConstructionCopyBehavior<TMultiVecId<V_ALL, V_WRITE>>();
+//    testConstructionCopyBehavior<TMultiVecId<V_ALL, V_READ>>();
+//}
