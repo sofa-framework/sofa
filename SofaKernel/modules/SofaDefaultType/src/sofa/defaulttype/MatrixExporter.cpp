@@ -27,6 +27,13 @@
 namespace sofa::defaulttype
 {
 
+std::unordered_map<std::string, std::function<bool(const std::string&, sofa::defaulttype::BaseMatrix*)> > matrixExporterMap
+{
+    {"txt", writeMatrixTxt},
+    {"csv", writeMatrixCsv},
+};
+sofa::helper::OptionsGroup matrixExporterOptionsGroup(2, "txt", "csv");
+    
 bool writeMatrixTxt(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix)
 {
     if (matrix)

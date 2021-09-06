@@ -19,21 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_COMPONENT_MISC_TOPOLOGYBOUNDINGTRASHER_CPP
+#include <SofaMiscTopology/TopologyBoundingTrasher.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/defaulttype/fwd.h>
-#include <string>
-#include <unordered_map>
-#include <functional>
-#include <sofa/helper/OptionsGroup.h>
-
-namespace sofa::defaulttype
+namespace sofa::component::misc
 {
 
-bool SOFA_DEFAULTTYPE_API writeMatrixTxt(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix);
-bool SOFA_DEFAULTTYPE_API writeMatrixCsv(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix);
+using namespace sofa::type;
+using namespace sofa::defaulttype;
 
-extern SOFA_DEFAULTTYPE_API std::unordered_map<std::string, std::function<bool(const std::string&, sofa::defaulttype::BaseMatrix*)> > matrixExporterMap;
-extern SOFA_DEFAULTTYPE_API sofa::helper::OptionsGroup matrixExporterOptionsGroup;
+int TopologyBoundingTrasherClass = core::RegisterObject("A class to remove all elements going outside from the given Bounding Box.")
+        .add< TopologyBoundingTrasher<Vec3Types>  >(true);
 
-}
+template class SOFA_SOFAMISCTOPOLOGY_API TopologyBoundingTrasher<Vec3Types>;
+
+} // namespace sofa::component::misc
