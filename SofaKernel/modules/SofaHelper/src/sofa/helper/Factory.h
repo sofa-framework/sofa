@@ -38,6 +38,10 @@ class NoArgument {} ;
 /// Decode the type's name to a more readable form if possible
 SOFA_HELPER_API std::string gettypename(const std::type_info& t);
 
+/// Log classes registered in the factory
+template<class TKey>
+void logFactoryRegister(const std::string& baseclass, const std::string& classname, TKey key, bool multi);
+
 SOFA_HELPER_API std::string& getFactoryLog();
 
 /// Print factory log
@@ -125,11 +129,6 @@ public:
     typedef typename std::multimap<Key, Creator*>::const_iterator const_iterator;
     const_iterator begin() const { return registry.begin(); }
     const_iterator end() const { return registry.end(); }
-
-private:
-
-    /// Log classes registered in the factory
-    static void logFactoryRegister(const std::string& baseclass, const std::string& classname, TKey key, bool multi);
 };
 
 template <class Factory, class RealObject>
