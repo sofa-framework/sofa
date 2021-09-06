@@ -19,16 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_CPP
+#define SOFABASELINEARSOLVER_MATRIXLINEARSOLVER_SPARSEMATRIX_DEFINITION
 #include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
-
-#include <sofa/core/behavior/LinearSolver.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[SparseMatrix].h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
 
 namespace sofa::component::linearsolver
 {
 
-using sofa::core::behavior::LinearSolver;
-using sofa::core::objectmodel::BaseContext;
+extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< SparseMatrix<double>, FullVector<double>, NoThreadManager >;
+extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< SparseMatrix<float>, FullVector<float>, NoThreadManager >;
 
 } // namespace sofa::component::linearsolver

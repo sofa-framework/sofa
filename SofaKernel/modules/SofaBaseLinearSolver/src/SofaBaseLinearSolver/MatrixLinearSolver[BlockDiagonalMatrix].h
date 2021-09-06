@@ -19,16 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_CPP
-#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
+#pragma once
 
-#include <sofa/core/behavior/LinearSolver.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/simulation/VectorOperations.h>
+#include <sofa/simulation/MechanicalOperations.h>
+
+#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 
 namespace sofa::component::linearsolver
 {
-
-using sofa::core::behavior::LinearSolver;
-using sofa::core::objectmodel::BaseContext;
+//////////////////////////////////////////////////////////////
+/// Instanciation for BlockDiagonalMatrix
+//////////////////////////////////////////////////////////////
+#if !defined(SOFABASELINEARSOLVER_MATRIXLINEARSOLVER_BLOCKDIAGONALMATRIX_DEFINITION)
+extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< BlockDiagonalMatrix<3,double>, FullVector<double>, NoThreadManager>;
+#endif
 
 } // namespace sofa::component::linearsolver
