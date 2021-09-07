@@ -23,6 +23,7 @@
 #include <SofaBaseLinearSolver/CGLinearSolver.inl>
 #include <SofaDenseSolver/NewMatMatrix.h>
 #include <sofa/core/ObjectFactory.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
 
 namespace sofa::component::linearsolver
 {

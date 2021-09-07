@@ -22,8 +22,10 @@
 #pragma once
 #include <SofaBaseLinearSolver/config.h>
 
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver[GraphScatteredMatrix].h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[CompressedRowSparseMatrix].h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[SparseMatrix].h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[FullMatrix].h>
 #include <sofa/helper/map.h>
 
 namespace sofa::component::linearsolver

@@ -66,7 +66,6 @@ public:
     /// @param J the matrix J to use
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
     bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
-
 };
 
 } // namespace sofa::component::linearsolver

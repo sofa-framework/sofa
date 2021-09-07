@@ -66,7 +66,7 @@ template<class Matrix, class Vector, class ThreadManager = NoThreadManager>
 class MatrixLinearSolver;
 
 template<class Matrix, class Vector>
-class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver<Matrix,Vector,NoThreadManager> : public BaseMatrixLinearSolver<Matrix, Vector>
+class MatrixLinearSolver<Matrix,Vector,NoThreadManager> : public BaseMatrixLinearSolver<Matrix, Vector>
 {
 public:
     SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE3(MatrixLinearSolver,Matrix,Vector,NoThreadManager), SOFA_TEMPLATE2(BaseMatrixLinearSolver,Matrix,Vector));
