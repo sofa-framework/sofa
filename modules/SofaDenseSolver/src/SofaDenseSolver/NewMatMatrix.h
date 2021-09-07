@@ -394,5 +394,3 @@ inline void TNewMatMatrix<NEWMAT::SymmetricBandMatrix>::add(Index i, Index j, do
 }
 
 } // namespace sofa::component::linearsolver
-
-

@@ -19,31 +19,46 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION
-#include <SofaBaseLinearSolver/FullMatrix.inl>
+#include <SofaDefaultType.Testing/BaseMatrix_test.h>
 
-namespace sofa::component::linearsolver
+#include <SofaDenseSolver/NewMatMatrix.h>
+
+namespace sofa
 {
 
-template<>
-const char* FullMatrix<double>::Name() { return "FullMatrix"; }
+using traits_9x9float = TestBaseMatrixTraits< sofa::component::linearsolver::NewMatMatrix, 9, 9, float>;
 
-template<>
-const char* FullMatrix<float>::Name() { return "FullMatrixf"; }
+/// Test instantiation for 9x9 matrices and float scalars
+INSTANTIATE_TYPED_TEST_SUITE_P(
+    SofaDenseSolver_test_9x9float,
+    TestBaseMatrix,
+    traits_9x9float
+);
 
-template<>
-const char* FullMatrix<bool>::Name() { return "FullMatrixb"; }
+using traits_9x9double = TestBaseMatrixTraits< sofa::component::linearsolver::NewMatMatrix, 9, 9, double>;
 
-#if defined(SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION)
-std::ostream& operator<<(std::ostream& out, const FullMatrix<double>& v ){ return readFromStream(out, v); }
-std::ostream& operator<<(std::ostream& out, const FullMatrix<float>& v ){ return readFromStream(out, v); }
-template class FullMatrix<double>;
-template class FullMatrix<float>;
+/// Test instantiation for 9x9 matrices and double scalars
+INSTANTIATE_TYPED_TEST_SUITE_P(
+    SofaDenseSolver_test_9x9double,
+    TestBaseMatrix,
+    traits_9x9double
+);
 
-std::ostream& operator<<(std::ostream& out, const LPtrFullMatrix<double>& v ){ return readFromStream(out, v); }
-std::ostream& operator<<(std::ostream& out, const LPtrFullMatrix<float>& v ){ return readFromStream(out, v); }
-template class LPtrFullMatrix<double>;
-template class LPtrFullMatrix<float>;
-#endif /// SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION
+using traits_9x14float = TestBaseMatrixTraits< sofa::component::linearsolver::NewMatMatrix, 9, 14, float>;
 
-} /// namespace sofa::component::linearsolver
+/// Test instantiation for 9x14 matrices and float scalars
+INSTANTIATE_TYPED_TEST_SUITE_P(
+    SofaDenseSolver_test_9x14float,
+    TestBaseMatrix,
+    traits_9x14float
+);
+
+using traits_9x14double = TestBaseMatrixTraits< sofa::component::linearsolver::NewMatMatrix, 9, 14, double>;
+
+/// Test instantiation for 9x14 matrices and double scalars
+INSTANTIATE_TYPED_TEST_SUITE_P(
+    SofaDenseSolver_test_9x14double,
+    TestBaseMatrix,
+    traits_9x14double
+);
+}
