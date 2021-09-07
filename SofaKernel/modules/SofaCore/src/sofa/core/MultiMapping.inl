@@ -122,9 +122,9 @@ type::vector<behavior::BaseMechanicalState*> MultiMapping<In,Out>::getMechTo()
 template <class In, class Out>
 void MultiMapping<In,Out>::init()
 {
-    for (unsigned i = 0; i < this->toModels.size(); ++i)
+    for (auto toModel : this->toModels)
     {
-        if (!this->toModels[i]->toBaseMechanicalState())
+        if (!toModel->toBaseMechanicalState())
         {
             this->setNonMechanical();
         }

@@ -214,9 +214,9 @@ void Multi2Mapping<In1,In2,Out>::computeAccFromMapping(const MechanicalParams* m
 template < class In1, class In2, class Out >
 void Multi2Mapping<In1, In2, Out>::init()
 {
-    for (unsigned i = 0; i < this->toModels.size(); ++i)
+    for (auto toModel : this->toModels)
     {
-        if (!this->toModels[i]->toBaseMechanicalState())
+        if (!toModel->toBaseMechanicalState())
         {
             this->setNonMechanical();
         }
