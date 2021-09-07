@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFABASELINEARSOLVER_MATRIXLINEARSOLVER_BLOCKDIAGONALMATRIX_DEFINITION
-#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[_].inl>
 #include <SofaBaseLinearSolver/MatrixLinearSolver[BlockDiagonalMatrix].h>
 #include <SofaBaseLinearSolver/DiagonalMatrix.h>
 

@@ -24,7 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <SofaGeneralLinearSolver/BTDLinearSolver.inl>
 #include <SofaBaseLinearSolver/FullMatrix.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[_].inl>
 
 namespace sofa::component::linearsolver
 {

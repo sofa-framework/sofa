@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <SofaDenseSolver/initSofaDenseSolver.h>
 
-#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[_].inl>
 #include <SofaDenseSolver/NewMatMatrix.h>
 #include <SofaDenseSolver/NewMatVector.h>
 

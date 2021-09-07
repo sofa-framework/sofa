@@ -23,7 +23,8 @@
 
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
+#include <SofaBaseLinearSolver/FullVector.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[FullMatrix].h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/ObjectFactory.h>
 #include <Eigen/Dense>

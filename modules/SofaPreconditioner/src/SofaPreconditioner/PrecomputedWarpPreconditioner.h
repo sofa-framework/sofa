@@ -25,9 +25,8 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/LinearSolver.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[CompressedRowSparseMatrix].h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <sofa/helper/map.h>
 #include <cmath>

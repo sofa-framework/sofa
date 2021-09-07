@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[_].h>
 
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/simulation/MechanicalOperations.h>
@@ -38,12 +38,8 @@ using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorFromBaseVectorVi
 using sofa::simulation::mechanicalvisitor::MechanicalMultiVectorPeqBaseVectorVisitor;
 
 #include <sofa/core/behavior/MultiVec.h>
-#include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+
 #include <SofaBaseLinearSolver/SparseMatrix.h>
-#include <SofaBaseLinearSolver/DiagonalMatrix.h>
-#include <SofaBaseLinearSolver/RotationMatrix.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
 
 #ifdef SOFA_SUPPORT_CRS_MATRIX
 #include <SofaBaseLinearSolver/CRSMultiMatrixAccessor.h>
@@ -209,9 +205,9 @@ MatrixInvertData * MatrixLinearSolver<Matrix,Vector>::getMatrixInvertData(defaul
 {
     if (invertData==nullptr)
     {
-        invertData = std::unique_ptr<MatrixInvertData>(createInvertData());
+        invertData = createInvertData();
     }
-    return invertData.get();
+    return invertData;
 }
 
 template<class Matrix, class Vector>

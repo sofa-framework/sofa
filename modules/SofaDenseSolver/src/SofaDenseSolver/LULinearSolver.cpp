@@ -22,7 +22,7 @@
 #include <SofaDenseSolver/LULinearSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaDenseSolver/NewMatMatrix.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[_].inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::linearsolver

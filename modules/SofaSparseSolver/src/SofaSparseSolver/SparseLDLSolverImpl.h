@@ -24,8 +24,7 @@
 #include <SofaSparseSolver/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
-
+#include <SofaBaseLinearSolver/MatrixLinearSolver[_].h>
 extern "C" {
 #include <metis.h>
 }

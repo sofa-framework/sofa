@@ -34,7 +34,7 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[_].inl>
 
 #include <iostream>
 #include <cmath>

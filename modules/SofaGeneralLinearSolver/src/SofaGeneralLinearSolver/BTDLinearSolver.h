@@ -23,9 +23,8 @@
 #include <SofaGeneralLinearSolver/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[_].h>
 #include <cmath>
 #include <sofa/type/Mat.h>
 

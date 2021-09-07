@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFABASELINEARSOLVER_MATRIXLINEARSOLVER_ROTATIONMATRIX_DEFINITION
-#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[_].inl>
 #include <SofaBaseLinearSolver/MatrixLinearSolver[RotationMatrix].h>
 #include <SofaBaseLinearSolver/RotationMatrix.h>
 

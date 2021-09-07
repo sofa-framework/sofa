@@ -23,10 +23,11 @@
 #include <SofaGeneralLinearSolver/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[_].h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/FullVector.h>
 #include <sofa/helper/map.h>
 
 #include <cmath>

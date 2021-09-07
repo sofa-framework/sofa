@@ -22,6 +22,8 @@ set(HEADER_FILES
     ${SOFABASELINEARSOLVER_SRC}/GraphScatteredTypes.h
     ${SOFABASELINEARSOLVER_SRC}/MatrixExpr.h
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver.h
+    ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver[_].h
+    ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver[_].inl
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver[BlockDiagonalMatrix].h
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver[CompressedRowSparseMatrix].h
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver[DiagonalMatrix].h
@@ -29,7 +31,6 @@ set(HEADER_FILES
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver[GraphScatteredMatrix].h
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver[RotationMatrix].h
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver[SparseMatrix].h
-    ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver.inl
     ${SOFABASELINEARSOLVER_SRC}/RotationMatrix.h
     ${SOFABASELINEARSOLVER_SRC}/SingleMatrixAccessor.h
     ${SOFABASELINEARSOLVER_SRC}/SparseMatrix.h
@@ -46,7 +47,6 @@ set(SOURCE_FILES
     ${SOFABASELINEARSOLVER_SRC}/FullVector.cpp
     ${SOFABASELINEARSOLVER_SRC}/GlobalSystemMatrixExporter.cpp
     ${SOFABASELINEARSOLVER_SRC}/GraphScatteredTypes.cpp
-    ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver.cpp
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver[BlockDiagonalMatrix].cpp
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver[CompressedRowSparseMatrix].cpp
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver[DiagonalMatrix].cpp

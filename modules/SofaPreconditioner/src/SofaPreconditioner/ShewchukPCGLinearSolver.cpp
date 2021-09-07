@@ -30,7 +30,7 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[_].inl>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>

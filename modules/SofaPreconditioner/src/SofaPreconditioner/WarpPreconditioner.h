@@ -32,7 +32,7 @@
 #include <SofaBaseLinearSolver/RotationMatrix.h>
 #include <sofa/core/behavior/BaseRotationFinder.h>
 #include <SofaBaseLinearSolver/RotationMatrix.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[_].h>
 
 #include <map>
 

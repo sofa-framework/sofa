@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SparseLUSolver_INL
 #define SOFA_COMPONENT_LINEARSOLVER_SparseLUSolver_INL
 
-#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[_].inl>
 #include <SofaSparseSolver/SparseLUSolver.h>
 #include <sofa/helper/system/thread/CTime.h>
 namespace sofa

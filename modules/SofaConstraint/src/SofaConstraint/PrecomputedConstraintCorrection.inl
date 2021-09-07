@@ -31,7 +31,7 @@
 
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/GraphScatteredTypes.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[_].inl>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 
 #include <sofa/core/behavior/RotationFinder.h>

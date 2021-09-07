@@ -23,7 +23,7 @@
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 
-#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[_].inl>
 
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>

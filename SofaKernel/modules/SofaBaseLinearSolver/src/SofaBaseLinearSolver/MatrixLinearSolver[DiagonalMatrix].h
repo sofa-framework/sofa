@@ -24,7 +24,7 @@
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/simulation/MechanicalOperations.h>
 
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[_].h>
 
 namespace sofa::component::linearsolver
 {

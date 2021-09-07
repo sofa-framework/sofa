@@ -24,7 +24,7 @@
 
 #include "PrecomputedLinearSolver.h"
 #include <SofaBaseLinearSolver/FullMatrix.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[_].inl>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
