@@ -29,7 +29,7 @@ namespace sofa::linearalgebra
 
 /// Simple bloc full matrix container (used for InvMatrixType)
 template< std::size_t N, typename T>
-class BlocFullMatrix : public defaulttype::BaseMatrix
+class BlocFullMatrix : public linearalgebra::BaseMatrix
 {
 public:
 
