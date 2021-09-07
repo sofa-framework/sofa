@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_SparseLUSolver_H
 #include <SofaSparseSolver/config.h>
 
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[_].h>
 #include <csparse.h>
 
 namespace sofa::component::linearsolver
