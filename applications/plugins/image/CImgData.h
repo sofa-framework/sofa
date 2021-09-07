@@ -3,19 +3,18 @@
 #include <CImgPlugin/SOFACImg.h>
 
 // datatypes
+#include <sofa/type/fixed_array.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 #include <sofa/type/Quat.h>
 
-// visual dependencies
-#include <SofaBaseVisual/VisualModelImpl.h>
-#include <SofaBaseVisual/VisualStyle.h>
-
 // helpers
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/accessor.h>
-#include <sofa/type/fixed_array.h>
 #include <sofa/helper/rmath.h>
+
+#include <sofa/defaulttype/DataTypeInfo.h>
+#include <SofaBaseVisual/VisualModelImpl.h>
 
 
 namespace sofa
@@ -246,7 +245,7 @@ public:
     // returns a binary image cutting through 3D input meshes, corresponding to a plane indexed by "coord" along "axis" and inside a bounding box
     // positions are in image coordinates
     template<typename Real>
-    cimg_library::CImg<bool> get_slicedModels(const unsigned int coord,const unsigned int axis,const type::Mat<2,3,unsigned int>& ROI,const type::vector<type::Vec<3,Real> >& position, const type::vector< component::visualmodel::VisualModelImpl::VisualTriangle >& triangle, const type::vector< component::visualmodel::VisualModelImpl::VisualQuad >& quad) const
+    cimg_library::CImg<bool> get_slicedModels(const unsigned int coord,const unsigned int axis,const type::Mat<2,3,unsigned int>& ROI,const type::vector<type::Vec<3,Real> >& position, const type::vector< sofa::component::visualmodel::VisualModelImpl::VisualTriangle >& triangles, const type::vector< sofa::component::visualmodel::VisualModelImpl::VisualQuad >& quads) const
     {
         const unsigned int dim[3]= {ROI[1][0]-ROI[0][0]+1,ROI[1][1]-ROI[0][1]+1,ROI[1][2]-ROI[0][2]+1};
         cimg_library::CImg<bool> ret;
@@ -255,7 +254,7 @@ public:
         else ret=cimg_library::CImg<bool>(dim[0],dim[1]);
         ret.fill(false);
 
-        if(triangle.size()==0 && quad.size()==0) //pt visu
+        if(triangles.size()==0 && quads.size()==0) //pt visu
         {
             for (unsigned int i = 0; i < position.size() ; i++)
             {
@@ -277,9 +276,9 @@ public:
             type::Vec<3,int> pt[4];
             bool tru=true;
 
-            for (unsigned int i = 0; i < triangle.size() ; i++)  // box/ triangle intersection -> polygon with a maximum of 5 edges, to draw
+            for (unsigned int i = 0; i < triangles.size() ; i++)  // box/ triangle intersection -> polygon with a maximum of 5 edges, to draw
             {
-                for (unsigned int j = 0; j < 3 ; j++) { v[j] = position[triangle[i][j]]; pt[j]= type::Vec<3,int>((int)helper::round(v[j][0]),(int)helper::round(v[j][1]),(int)helper::round(v[j][2])); }
+                for (unsigned int j = 0; j < 3 ; j++) { v[j] = position[triangles[i][j]]; pt[j]= type::Vec<3,int>((int)helper::round(v[j][0]),(int)helper::round(v[j][1]),(int)helper::round(v[j][2])); }
 
                 type::vector<type::Vec<3,int> > pts;
                 for (unsigned int j = 0; j < 3 ; j++)
@@ -308,9 +307,9 @@ public:
                 }
 
             }
-            for (unsigned int i = 0; i < quad.size() ; i++)
+            for (unsigned int i = 0; i < quads.size() ; i++)
             {
-                for (unsigned int j = 0; j < 4 ; j++) { v[j] = position[quad[i][j]]; pt[j]= type::Vec<3,int>((int)helper::round(v[j][0]),(int)helper::round(v[j][1]),(int)helper::round(v[j][2])); }
+                for (unsigned int j = 0; j < 4 ; j++) { v[j] = position[quads[i][j]]; pt[j]= type::Vec<3,int>((int)helper::round(v[j][0]),(int)helper::round(v[j][1]),(int)helper::round(v[j][2])); }
 
                 type::vector<type::Vec<3,int> > pts;
                 for (unsigned int j = 0; j < 4 ; j++)
