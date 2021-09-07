@@ -25,7 +25,6 @@
 #include <sofa/linearalgebra/FullVector.h>
 #include <sofa/linearalgebra/MatrixExpr.h>
 #include <sofa/linearalgebra/matrix_bloc_traits.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>
 
 namespace sofa::linearalgebra
 {
