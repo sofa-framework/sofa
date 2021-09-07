@@ -24,20 +24,20 @@
 #include <sofa/type/vector.h>
 namespace sofa::component::linearsolver
 {
-template<typename T> class SOFA_SOFABASELINEARSOLVER_API FullMatrix;
-template<typename T> class SOFA_SOFABASELINEARSOLVER_API LPtrFullMatrix;
+template<typename T> class FullMatrix;
+template<typename T> class LPtrFullMatrix;
 
-template<typename T> class SOFA_SOFABASELINEARSOLVER_API SparseMatrix ;
-template<typename T> class SOFA_SOFABASELINEARSOLVER_API DiagonalMatrix;
-template<typename T> class SOFA_SOFABASELINEARSOLVER_API RotationMatrix;
+template<typename T> class SparseMatrix ;
+template<typename T> class DiagonalMatrix;
+template<typename T> class RotationMatrix;
 
 template<std::size_t LC, typename T = double>
-class SOFA_SOFABASELINEARSOLVER_API BlockDiagonalMatrix;
+class BlockDiagonalMatrix;
 
-template<typename T> class SOFA_SOFABASELINEARSOLVER_API FullMatrix;
-template<typename T> class SOFA_SOFABASELINEARSOLVER_API FullVector;
+template<typename T> class FullMatrix;
+template<typename T> class FullVector;
 
 template<typename TBloc, typename TVecBloc = type::vector<TBloc>, typename TVecIndex = type::vector<sofa::Index>>
-class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix;
+class CompressedRowSparseMatrix;
 
 } // namespace sofa::component::linearsolver
