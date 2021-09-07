@@ -217,19 +217,12 @@ public:
     static const char* Name() { return "FullVector"; }
 };
 
-template<> SOFA_LINEARALGEBRA_API void FullVector<bool>::set(Index i, SReal v);
-template<> SOFA_LINEARALGEBRA_API void FullVector<bool>::add(Index i, SReal v);
-template<> SOFA_LINEARALGEBRA_API bool FullVector<bool>::dot(const FullVector<Real>& a) const;
-template<> SOFA_LINEARALGEBRA_API double FullVector<bool>::norm() const;
-
 SOFA_LINEARALGEBRA_API std::ostream& operator <<(std::ostream& out, const FullVector<float>& v);
 SOFA_LINEARALGEBRA_API std::ostream& operator <<(std::ostream& out, const FullVector<double>& v);
-SOFA_LINEARALGEBRA_API std::ostream& operator <<(std::ostream& out, const FullVector<bool>& v);
 
 #if !defined(SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION)
 extern template class SOFA_LINEARALGEBRA_API FullVector<float>;
 extern template class SOFA_LINEARALGEBRA_API FullVector<double>;
-extern template class SOFA_LINEARALGEBRA_API FullVector<bool>;
 #endif
 
 

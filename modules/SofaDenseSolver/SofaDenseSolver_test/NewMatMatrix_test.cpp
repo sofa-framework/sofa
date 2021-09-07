@@ -19,21 +19,46 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <SofaDefaultType.Testing/BaseMatrix_test.h>
 
-#include <sofa/defaulttype/fwd.h>
-#include <string>
-#include <unordered_map>
-#include <functional>
-#include <sofa/helper/OptionsGroup.h>
+#include <SofaDenseSolver/NewMatMatrix.h>
 
-namespace sofa::defaulttype
+namespace sofa
 {
 
-bool SOFA_DEFAULTTYPE_API writeMatrixTxt(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix);
-bool SOFA_DEFAULTTYPE_API writeMatrixCsv(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix);
+using traits_9x9float = TestBaseMatrixTraits< sofa::component::linearsolver::NewMatMatrix, 9, 9, float>;
 
-extern SOFA_DEFAULTTYPE_API std::unordered_map<std::string, std::function<bool(const std::string&, sofa::defaulttype::BaseMatrix*)> > matrixExporterMap;
-extern SOFA_DEFAULTTYPE_API sofa::helper::OptionsGroup matrixExporterOptionsGroup;
+/// Test instantiation for 9x9 matrices and float scalars
+INSTANTIATE_TYPED_TEST_SUITE_P(
+    SofaDenseSolver_test_9x9float,
+    TestBaseMatrix,
+    traits_9x9float
+);
 
+using traits_9x9double = TestBaseMatrixTraits< sofa::component::linearsolver::NewMatMatrix, 9, 9, double>;
+
+/// Test instantiation for 9x9 matrices and double scalars
+INSTANTIATE_TYPED_TEST_SUITE_P(
+    SofaDenseSolver_test_9x9double,
+    TestBaseMatrix,
+    traits_9x9double
+);
+
+using traits_9x14float = TestBaseMatrixTraits< sofa::component::linearsolver::NewMatMatrix, 9, 14, float>;
+
+/// Test instantiation for 9x14 matrices and float scalars
+INSTANTIATE_TYPED_TEST_SUITE_P(
+    SofaDenseSolver_test_9x14float,
+    TestBaseMatrix,
+    traits_9x14float
+);
+
+using traits_9x14double = TestBaseMatrixTraits< sofa::component::linearsolver::NewMatMatrix, 9, 14, double>;
+
+/// Test instantiation for 9x14 matrices and double scalars
+INSTANTIATE_TYPED_TEST_SUITE_P(
+    SofaDenseSolver_test_9x14double,
+    TestBaseMatrix,
+    traits_9x14double
+);
 }
