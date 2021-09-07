@@ -102,7 +102,7 @@ public:
         if (i==j) data[i] = (Real)v;
     }
 
-    using defaulttype::BaseMatrix::add;
+    using BaseMatrix::add;
     void add(Index i, Index j, double v) override
     {
         if (i==j) data[i] += (Real)v;
@@ -428,7 +428,7 @@ public:
             setB(i, b);
     }
 
-    using defaulttype::BaseMatrix::add;
+    using BaseMatrix::add;
     void add(Index i, Index j, double v) override
     {
         Index bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
@@ -544,7 +544,7 @@ public:
 
     static const char* Name()
     {
-        static std::string name = std::string("BlockDiagonalMatrix") + sofa::defaulttype::DataTypeInfo<Bloc>::name();
+        static std::string name = std::string("BlockDiagonalMatrix") + traits::Name();
         return name.c_str();
     }
 

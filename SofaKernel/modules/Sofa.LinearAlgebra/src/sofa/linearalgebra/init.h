@@ -26,18 +26,18 @@
 namespace sofa::linearalgebra
 {
 
-/// @brief Initialize the SofaCore library, as well as its dependencies:
-/// SofaDefaultType, SofaHelper.
+/// @brief Initialize the Sofa.LinearAlgebra library, as well as its dependencies:
+/// Sofa.Type, SofaHelper.
 SOFA_LINEARALGEBRA_API void init();
 
-/// @brief Return true if and only if the SofaCore library has been initialized.
+/// @brief Return true if and only if the Sofa.LinearAlgebra library has been initialized.
 SOFA_LINEARALGEBRA_API bool isInitialized();
 
-/// @brief Clean up the resources used by the SofaCore library, as well as its
-/// dependencies: SofaDefaultType, SofaHelper.
+/// @brief Clean up the resources used by the Sofa.LinearAlgebra library, as well as its
+/// dependencies: Sofa.Type, SofaHelper.
 SOFA_LINEARALGEBRA_API void cleanup();
 
-/// @brief Return true if and only if the SofaCore library has been cleaned
+/// @brief Return true if and only if the Sofa.LinearAlgebra library has been cleaned
 /// up.
 SOFA_LINEARALGEBRA_API bool isCleanedUp();
 
