@@ -198,6 +198,10 @@ public:
     }
 };
 
+#if !defined(SOFAHELPER_FACTORY_CPP)
+extern template SOFA_HELPER_API void logFactoryRegister(const std::string& baseclass, const std::string& classname, std::string key, bool multi);
+#endif
+
 } // namespace sofa::helper
 
 // Creator is often used without namespace qualifiers
