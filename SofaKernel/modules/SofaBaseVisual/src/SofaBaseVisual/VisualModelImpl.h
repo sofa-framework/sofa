@@ -136,9 +136,6 @@ public:
     /// Rendering method.
     virtual void internalDraw(const core::visual::VisualParams* /*vparams*/, bool /*transparent*/) {}
 
-    template<class VecType>
-    void addTopoHandler(topology::PointData<VecType>* data, int algo = 0);
-
 public:
 
     sofa::core::objectmodel::DataFileName fileMesh;
@@ -392,6 +389,9 @@ public:
     void handleTopologyChange() override;
 
     void init() override;
+    void initFromTopology();
+    void initPositionFromVertices();
+    void initFromFileMesh();
 
     void initVisual() override;
 
