@@ -33,6 +33,7 @@
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[CompressedRowSparseMatrix].h>
 #include <sofa/helper/map.h>
 #include <cmath>
 #include <SofaSparseSolver/SparseLDLSolverImpl.h>
