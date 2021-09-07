@@ -24,11 +24,8 @@
 #include <SofaSparseSolver/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver[CompressedRowSparseMatrix].h>
 #include <sofa/helper/map.h>
 #include <cmath>
 #include <csparse.h>
