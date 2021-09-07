@@ -68,7 +68,6 @@ public:
     type::vector<SubMatrix> B;
     typename Matrix::InvMatrixType Minv;  //inverse matrix
 
-
     //////////////////////////// for subpartSolve
     MysparseM H; // force transfer
     MysparseMit H_it;

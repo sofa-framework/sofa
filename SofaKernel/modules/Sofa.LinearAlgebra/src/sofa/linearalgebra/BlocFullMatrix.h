@@ -96,7 +96,6 @@ public:
         Bloc i() const;
     };
     typedef Bloc SubMatrixType;
-    typedef FullMatrix<T> InvMatrixType;
     // return the dimension of submatrices when requesting a given size
     static Index getSubMatrixDim(Index);
 

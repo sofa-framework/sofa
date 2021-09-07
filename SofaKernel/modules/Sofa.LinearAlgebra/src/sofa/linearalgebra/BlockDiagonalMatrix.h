@@ -22,149 +22,246 @@
 #pragma once
 #include <sofa/linearalgebra/config.h>
 
-#include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/linearalgebra/FullVector.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
+#include <sofa/linearalgebra/matrix_bloc_traits.h>
 
 namespace sofa::linearalgebra
 {
 
 /// Simple full matrix container
-template<typename T>
-class SOFA_LINEARALGEBRA_API FullMatrix : public linearalgebra::BaseMatrix
+template<std::size_t LC, typename T = double>
+class BlockDiagonalMatrix : public linearalgebra::BaseMatrix
 {
 public:
     typedef T Real;
-    typedef typename linearalgebra::BaseMatrix::Index Index;
-    typedef FullVector<Real> Line;
+    typedef type::Mat<LC,LC,Real> Bloc;
+    typedef matrix_bloc_traits<Bloc, Index> traits;
 
-    class LineConstIterator
-    {
-    public:
-        Index first;
-        Line second;
-        LineConstIterator(Real* p, Index i, Index size, Index pitch) : first(i), second(p+i*pitch,size,pitch) { }
-        const Line& operator*() const { return second; }
-        const Line* operator->() const { return &second; }
-        void operator++() { ++first; second.setptr(second.ptr() + second.capacity()); }
-        void operator++(int) { ++first; second.setptr(second.ptr() + second.capacity()); }
-        void operator--() { --first; second.setptr(second.ptr() - second.capacity()); }
-        void operator--(int) { --first; second.setptr(second.ptr() - second.capacity()); }
-        bool operator==(const LineConstIterator& i) const { return i.second.ptr() == second.ptr(); }
-        bool operator!=(const LineConstIterator& i) const { return i.second.ptr() != second.ptr(); }
-    };
-    class LineIterator : public LineConstIterator
-    {
-    public:
-        LineIterator(Real* p, Index i, Index size, Index pitch) : LineConstIterator(p,i,size,pitch) {}
-        Line& operator*() { return this->second; }
-        Line* operator->() { return &this->second; }
-    };
-    typedef typename Line::iterator LElementIterator;
-    typedef typename Line::const_iterator LElementConstIterator;
+    enum { BSIZE = LC };
+
+    typedef BlockDiagonalMatrix<LC,T> Expr;
+    typedef BlockDiagonalMatrix<LC,double> matrix_type;
+    enum { category = MATRIX_BAND };
+    enum { operand = 1 };
+
 
 protected:
-    Real* data;
-    Index nRow,nCol;
-    Index pitch;
-    Index allocsize;
+    std::vector< Bloc > data;
+    sofa::Index cSize;
 
 public:
 
-    FullMatrix();
-    FullMatrix(Index nbRow, Index nbCol);
-    FullMatrix(Real* p, Index nbRow, Index nbCol);
-    FullMatrix(Real* p, Index nbRow, Index nbCol, Index pitch);
+    BlockDiagonalMatrix()
+        : cSize(0)
+    {
+    }
 
-    ~FullMatrix() override;
+    ~BlockDiagonalMatrix() override {}
 
-    Real* ptr() { return data; }
-    const Real* ptr() const { return data; }
+    void resize(Index nbRow, Index ) override
+    {
+        cSize = nbRow;
+        data.resize((cSize+LC-1) / LC);
+        //for (Index i=0;i<data.size();i++) data[i].ReSize(LC,LC);
+    }
 
-    LineIterator begin();
-    LineIterator end();
-    LineConstIterator begin() const;
-    LineConstIterator end() const;
+    Index rowSize(void) const override
+    {
+        return cSize;
+    }
 
-    Real* operator[](Index i) { return data+i*pitch; }
-    const Real* operator[](Index i) const { return data+i*pitch; }
+    Index colSize(void) const override
+    {
+        return cSize;
+    }
 
-    void resize(Index nbRow, Index nbCol) override;
+    Index rowBSize(void) const
+    {
+        return data.size();
+    }
 
-    Index rowSize(void) const override { return nRow; }
-    Index colSize(void) const override { return nCol; }
+    Index colBSize(void) const
+    {
+        return data.size();
+    }
 
-    SReal element(Index i, Index j) const override;
-    void set(Index i, Index j, double v) override;
+    const Bloc& bloc(Index i) const
+    {
+        return data[i];
+    }
+
+    const Bloc& bloc(Index i, Index j) const
+    {
+        static Bloc empty;
+        if (i != j)
+            return empty;
+        else
+            return bloc(i);
+    }
+
+    Bloc* wbloc(Index i)
+    {
+        return &(data[i]);
+    }
+
+    Bloc* wbloc(Index i, Index j)
+    {
+        if (i != j)
+            return nullptr;
+        else
+            return wbloc(i);
+    }
+
+    SReal element(Index i, Index j) const override
+    {
+        Index bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
+        if (i != j) return 0;
+        else return traits::v(data[i], bi, bj);
+    }
+
+    void set(Index i, Index j, double v) override
+    {
+        Index bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
+        if (i == j) traits::v(data[i], bi, bj) = (Real)v;
+    }
+
+    void setB(Index i, const Bloc& b)
+    {
+        data[i] = b;
+    }
+
+    void setB(Index i, Index j, const Bloc& b)
+    {
+        if (i == j)
+            setB(i, b);
+    }
+
     using BaseMatrix::add;
-    void add(Index i, Index j, double v) override;
-    void clear(Index i, Index j) override;
+    void add(Index i, Index j, double v) override
+    {
+        Index bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
+        if (i == j) traits::v(data[i], bi, bj) += (Real)v;
+    }
 
-    void clearRow(Index i) override;
-    void clearCol(Index j) override;
-    void clearRowCol(Index i) override;
-    void clear() override;
+    void addB(Index i, const Bloc& b)
+    {
+        data[i] += b;
+    }
 
-    /// matrix-vector product
-    /// @returns this * v
-    FullVector<Real> operator*( const FullVector<Real>& v ) const ;
+    void addB(Index i, Index j, const Bloc& b)
+    {
+        if (i == j)
+            addB(i, b);
+    }
 
-    /// matrix-vector product
-    /// res = this * v
-    void mul( FullVector<Real>& res,const FullVector<Real>& b ) const ;
+    void clear(Index i, Index j) override
+    {
+        Index bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
+        if (i == j) traits::v(data[i], bi, bj) = (Real)0;
+    }
 
-    /// transposed matrix-vector product
-    /// res = this^T * v
-    void mulT( FullVector<Real>& res, const FullVector<Real>& b ) const;
+    void clearRow(Index i) override
+    {
+        Index bi=0; traits::split_row_index(i, bi);
+        for (Index bj=0; bj<Index(LC); ++bj)
+            traits::v(data[i], bi, bj) = (Real)0;
+    }
 
-    /// matrix multiplication
-    /// @returns this * m
-    FullMatrix<Real> operator*( const FullMatrix<Real>& m ) const;
+    void clearCol(Index j) override
+    {
+        Index bj=0; traits::split_col_index(j, bj);
+        for (Index bi=0; bi<Index(LC); ++bi)
+            traits::v(data[j], bi, bj) = (Real)0;
+    }
 
-    /// matrix multiplication
-    /// res = this * m
-    void mul( FullMatrix<Real>& res, const FullMatrix<Real>& m ) const;
+    void clearRowCol(Index i) override
+    {
+        Index bi=0; traits::split_row_index(i, bi);
+        for (Index bj=0; bj<Index(LC); ++bj)
+            traits::v(data[i], bi, bj) = (Real)0;
+        for (Index bj=0; bj<Index(LC); ++bj)
+            traits::v(data[i], bj, bi) = (Real)0;
+    }
 
-    /// transposed matrix multiplication
-    /// res = this^T * m
-    void mulT( FullMatrix<Real>& res, const FullMatrix<Real>& m ) const;
+    void clear() override
+    {
+        for (Index b=0; b<(Index)data.size(); b++)
+            traits::clear(data[b]);
+    }
 
+    void invert()
+    {
+        for (Index b=0; b<(Index)data.size(); b++)
+        {
+            const Bloc m = data[b];
+            traits::invert(data[b], m);
+        }
+    }
 
-    static const char* Name();
+    template<class Real2>
+    void mul(FullVector<Real2>& res, const FullVector<Real2>& v) const
+    {
+        res.resize(cSize);
+        Index nblocs = cSize;
+        Index szlast = 0;
+        traits::split_row_index(nblocs, szlast);
+        for (sofa::Index b=0; b<(sofa::Size) nblocs; b++)
+        {
+            sofa::Index i = b*LC;
+            for (sofa::Index bj=0; bj<Index(LC); bj++)
+            {
+                Real2 r = 0;
+                for (sofa::Index bi=0; bi<Index(LC); bi++)
+                {
+                    r += (Real2)(traits::v(data[b],bi,bj) * v[i+bi]);
+                }
+                res[i+bj] = r;
+            }
+        }
+        if (szlast)
+        {
+            sofa::Size b = nblocs;
+            sofa::Index i = b*LC;
+            for (sofa::Index bj=0; bj<(sofa::Size) szlast; bj++)
+            {
+                Real2 r = 0;
+                for (sofa::Index bi=0; bi<(sofa::Size) szlast; bi++)
+                {
+                    r += (Real2)(traits::v(data[b],bi,bj) * v[i+bi]);
+                }
+                res[i+bj] = r;
+            }
+        }
+    }
+
+    template<class Real2>
+    FullVector<Real2> operator*(const FullVector<Real2>& v) const
+    {
+        FullVector<Real2> res;
+        mul(res, v);
+        return res;
+    }
+
+    friend std::ostream& operator << (std::ostream& out, const BlockDiagonalMatrix<LC>& v )
+    {
+        out << "[";
+        for (Index i=0; i<(Index)v.data.size(); i++) out << " " << v.data[i];
+        out << " ]";
+        return out;
+    }
+
+    static const char* Name()
+    {
+        static std::string name = std::string("BlockDiagonalMatrix") + traits::Name();
+        return name.c_str();
+    }
+
 };
 
-/// Simple full matrix container, with an additionnal pointer per line, to be able do get a T** pointer and use [i][j] directly
-template<typename T>
-class SOFA_LINEARALGEBRA_API LPtrFullMatrix : public FullMatrix<T>
-{
-public:
-    typedef typename FullMatrix<T>::Index Index;
-protected:
-    T** ldata;
-    Index lallocsize;
-public:
-    LPtrFullMatrix();
-
-    ~LPtrFullMatrix() override;
-    void resize(Index nbRow, Index nbCol) override;
-
-    T** lptr() { return ldata; }
-};
-
-template<> const char* FullMatrix<double>::Name();
-template<> const char* FullMatrix<float>::Name();
-
-SOFA_LINEARALGEBRA_API std::ostream& operator << (std::ostream& out, const FullMatrix<double>& v );
-SOFA_LINEARALGEBRA_API std::ostream& operator << (std::ostream& out, const FullMatrix<float>& v );
-
-SOFA_LINEARALGEBRA_API std::ostream& operator << (std::ostream& out, const LPtrFullMatrix<double>& v );
-SOFA_LINEARALGEBRA_API std::ostream& operator << (std::ostream& out, const LPtrFullMatrix<float>& v );
-
-#if !defined(SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION)
-extern template class SOFA_LINEARALGEBRA_API FullMatrix<double>;
-extern template class SOFA_LINEARALGEBRA_API FullMatrix<float>;
-
-extern template class SOFA_LINEARALGEBRA_API LPtrFullMatrix<double>;
-extern template class SOFA_LINEARALGEBRA_API LPtrFullMatrix<float>;
-#endif /// SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION
+typedef BlockDiagonalMatrix<3> BlockDiagonalMatrix3;
+typedef BlockDiagonalMatrix<6> BlockDiagonalMatrix6;
+typedef BlockDiagonalMatrix<9> BlockDiagonalMatrix9;
+typedef BlockDiagonalMatrix<12> BlockDiagonalMatrix12;
 
 } // namespace sofa::linearalgebra
