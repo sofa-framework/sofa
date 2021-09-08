@@ -253,7 +253,7 @@ if(SOFA_BUILD_TUTORIALS)
     add_subdirectory(applications/tutorials)
 endif()
 
-## Tutorials option
+## SOFA scenes
 option(SOFA_BUILD_ADD_SCENES "Add SOFA scenes as a project of the build." OFF)
 if (SOFA_BUILD_ADD_SCENES)
     add_subdirectory(examples)
