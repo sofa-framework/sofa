@@ -47,4 +47,4 @@ ignore "Benchmark/TopologicalChanges/ProjectToPlaneConstraint_RemovingMeshTest.s
 ignore "Benchmark/TopologicalChanges/FixedPlaneConstraint_RemovingMeshTest.scn"
 
 # No need for more than 1 iteration to test an export
-iterations "examples/Components/linearsolver/GlobalSystemMatrixExporter.scn" "1"
+iterations "Components/linearsolver/GlobalSystemMatrixExporter.scn" "1"
