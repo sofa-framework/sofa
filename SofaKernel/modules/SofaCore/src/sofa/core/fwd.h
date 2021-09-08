@@ -127,8 +127,8 @@ SOFA_CORE_API std::istream& operator>> ( std::istream& in, const sofa::core::top
 namespace sofa::component::topology
 {
 class TetrahedronSetTopologyContainer;
-SOFA_CORE_API std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t);
-SOFA_CORE_API std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t);
+std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t);
+std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t);
 }
 
 namespace sofa::core::visual

@@ -55,7 +55,7 @@ struct TopologyChecker_test: public BaseSimulationTest
     Node::SPtr m_topoNode = nullptr;
 
     /// Method use at start to load the scene file    
-    void SetUp()
+    void SetUp() override
     {
         sofa::simpleapi::importPlugin("SofaComponentAll");
         // Load the scene from the xml file
@@ -81,7 +81,7 @@ struct TopologyChecker_test: public BaseSimulationTest
     virtual bool testInvalidContainer() = 0;
 
     /// Unload the scene
-    void TearDown()
+    void TearDown() override
     {
         if (m_instance.root !=nullptr)
             sofa::simulation::getSimulation()->unload(m_instance.root);

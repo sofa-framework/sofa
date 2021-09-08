@@ -98,7 +98,7 @@ public:
     typename MechanicalObject<DataTypes>::SPtr mstate;
     typename MeshMatrixMass<DataTypes, MassType>::SPtr mass;
 
-    virtual void SetUp()
+    void SetUp() override
     {
         sofa::simpleapi::importPlugin("SofaComponentAll");
 
@@ -106,7 +106,7 @@ public:
         root = simulation::getSimulation()->createNewGraph("root");
     }
 
-    void TearDown()
+    void TearDown() override
     {
         if (root!=nullptr)
             simulation::getSimulation()->unload(root);

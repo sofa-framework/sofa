@@ -25,10 +25,10 @@
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <SofaBaseLinearSolver/MatrixExpr.h>
 #include <SofaBaseLinearSolver/matrix_bloc_traits.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
 #include <sofa/type/vector.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>
+#include <SofaBaseLinearSolver/FullVector.h>
 
 namespace sofa::component::linearsolver
 {

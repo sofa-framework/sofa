@@ -445,7 +445,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
         return succeed;
     }
 
-    virtual ~MultiMapping_test()
+    ~MultiMapping_test() override
     {
         if (root!=nullptr)
             sofa::simulation::getSimulation()->unload(root);

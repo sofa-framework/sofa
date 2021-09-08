@@ -203,8 +203,8 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , m_translation     (initData   (&m_translation, Vec3Real(), "translation", "Initial Translation of the object"))
     , m_rotation        (initData   (&m_rotation, Vec3Real(), "rotation", "Initial Rotation of the object"))
     , m_scale           (initData   (&m_scale, Vec3Real(1.0,1.0,1.0), "scale3d", "Initial Scale of the object"))
-    , m_scaleTex        (initData   (&m_scaleTex, TexCoord(1.0,1.0), "scaleTex", "Scale of the texture"))
-    , m_translationTex  (initData   (&m_translationTex, TexCoord(0.0,0.0), "translationTex", "Translation of the texture"))
+    , m_scaleTex        (initData   (&m_scaleTex, TexCoord(1.f,1.f), "scaleTex", "Scale of the texture"))
+    , m_translationTex  (initData   (&m_translationTex, TexCoord(0.f,0.f), "translationTex", "Translation of the texture"))
     , material			(initData	(&material, "material", "Material")) // tex(nullptr)
     , putOnlyTexCoords	(initData	(&putOnlyTexCoords, (bool) false, "putOnlyTexCoords", "Give Texture Coordinates without the texture binding"))
     , srgbTexturing		(initData	(&srgbTexturing, (bool) false, "srgbTexturing", "When sRGB rendering is enabled, is the texture in sRGB colorspace?"))
@@ -672,8 +672,8 @@ void VisualModelImpl::applyUVTransformation()
 {
     applyUVScale(m_scaleTex.getValue()[0], m_scaleTex.getValue()[1]);
     applyUVTranslation(m_translationTex.getValue()[0], m_translationTex.getValue()[1]);
-    m_scaleTex.setValue(TexCoord(1,1));
-    m_translationTex.setValue(TexCoord(0,0));
+    m_scaleTex.setValue(TexCoord(1.f,1.f));
+    m_translationTex.setValue(TexCoord(0.f,0.f));
 }
 
 void VisualModelImpl::applyTranslation(const SReal dx, const SReal dy, const SReal dz)

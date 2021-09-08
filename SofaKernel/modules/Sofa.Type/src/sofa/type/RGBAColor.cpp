@@ -82,7 +82,7 @@ static void extractValidatedHexaString(std::istream& in, std::string& s)
 }
 
 
-RGBAColor::RGBAColor() : fixed_array<float, 4>(1,1,1,1)
+RGBAColor::RGBAColor() : fixed_array<float, 4>(1.f,1.f,1.f,1.f)
 {
 }
 
