@@ -19,31 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_BASEROTATIONFINDER_H
-#define SOFA_CORE_BEHAVIOR_BASEROTATIONFINDER_H
+#pragma once
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/config.h>
 
+#define SPARSEMATRIX_CHECK false
+#define SPARSEMATRIX_VERBOSE false
+#define COMPRESSEDROWSPARSEMATRIX_CHECK false
+#define COMPRESSEDROWSPARSEMATRIX_VERBOSE false
+#define FULLMATRIX_CHECK false
+#define FULLMATRIX_VERBOSE false
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
-{
-
-class BaseRotationFinder : public virtual sofa::core::objectmodel::BaseObject
-{
-public:
-    virtual void getRotations(defaulttype::BaseMatrix * m, int offset = 0) = 0;
-};
-
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif // SOFA_CORE_BEHAVIOR_BASEROTATIONFINDER_H
+#ifdef SOFA_BUILD_SOFA_LINEARALGEBRA
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_LINEARALGEBRA_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_LINEARALGEBRA_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif

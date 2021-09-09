@@ -19,31 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_BASEROTATIONFINDER_H
-#define SOFA_CORE_BEHAVIOR_BASEROTATIONFINDER_H
+#define SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION
+#include <sofa/linearalgebra/FullMatrix.inl>
 
-#include <sofa/core/objectmodel/BaseObject.h>
-
-
-namespace sofa
+namespace sofa::linearalgebra
 {
 
-namespace core
-{
+#if defined(SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION)
+std::ostream& operator<<(std::ostream& out, const FullMatrix<double>& v ){ return readFromStream(out, v); }
+std::ostream& operator<<(std::ostream& out, const FullMatrix<float>& v ){ return readFromStream(out, v); }
+template class FullMatrix<double>;
+template class FullMatrix<float>;
 
-namespace behavior
-{
+std::ostream& operator<<(std::ostream& out, const LPtrFullMatrix<double>& v ){ return readFromStream(out, v); }
+std::ostream& operator<<(std::ostream& out, const LPtrFullMatrix<float>& v ){ return readFromStream(out, v); }
+template class LPtrFullMatrix<double>;
+template class LPtrFullMatrix<float>;
+#endif /// SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION
 
-class BaseRotationFinder : public virtual sofa::core::objectmodel::BaseObject
-{
-public:
-    virtual void getRotations(defaulttype::BaseMatrix * m, int offset = 0) = 0;
-};
-
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif // SOFA_CORE_BEHAVIOR_BASEROTATIONFINDER_H
+} /// namespace sofa::linearalgebra

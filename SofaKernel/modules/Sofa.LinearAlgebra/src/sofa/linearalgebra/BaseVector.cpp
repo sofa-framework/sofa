@@ -19,22 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION
-#include <SofaBaseLinearSolver/FullMatrix.inl>
+#pragma once
 
-namespace sofa::component::linearsolver
+#include <sofa/linearalgebra/BaseVector.h>
+
+namespace sofa::linearalgebra
 {
 
-#if defined(SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION)
-std::ostream& operator<<(std::ostream& out, const FullMatrix<double>& v ){ return readFromStream(out, v); }
-std::ostream& operator<<(std::ostream& out, const FullMatrix<float>& v ){ return readFromStream(out, v); }
-template class FullMatrix<double>;
-template class FullMatrix<float>;
-
-std::ostream& operator<<(std::ostream& out, const LPtrFullMatrix<double>& v ){ return readFromStream(out, v); }
-std::ostream& operator<<(std::ostream& out, const LPtrFullMatrix<float>& v ){ return readFromStream(out, v); }
-template class LPtrFullMatrix<double>;
-template class LPtrFullMatrix<float>;
-#endif /// SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION
-
-} /// namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra

@@ -19,31 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_BASEROTATIONFINDER_H
-#define SOFA_CORE_BEHAVIOR_BASEROTATIONFINDER_H
+#pragma once
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/linearalgebra/config.h>
 
-
-namespace sofa
+namespace sofa::linearalgebra
 {
 
-namespace core
-{
+/// @brief Initialize the Sofa.LinearAlgebra library, as well as its dependencies:
+/// Sofa.Type, SofaHelper.
+SOFA_LINEARALGEBRA_API void init();
 
-namespace behavior
-{
+/// @brief Return true if and only if the Sofa.LinearAlgebra library has been initialized.
+SOFA_LINEARALGEBRA_API bool isInitialized();
 
-class BaseRotationFinder : public virtual sofa::core::objectmodel::BaseObject
-{
-public:
-    virtual void getRotations(defaulttype::BaseMatrix * m, int offset = 0) = 0;
-};
+/// @brief Clean up the resources used by the Sofa.LinearAlgebra library, as well as its
+/// dependencies: Sofa.Type, SofaHelper.
+SOFA_LINEARALGEBRA_API void cleanup();
 
-} // namespace behavior
+/// @brief Return true if and only if the Sofa.LinearAlgebra library has been cleaned
+/// up.
+SOFA_LINEARALGEBRA_API bool isCleanedUp();
 
-} // namespace core
-
-} // namespace sofa
-
-#endif // SOFA_CORE_BEHAVIOR_BASEROTATIONFINDER_H
+} // namespace sofa::linearalgebra

@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseLinearSolver/config.h>
+#include <sofa/linearalgebra/config.h>
 
 #include <sofa/type/Mat.h>
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
 template<Size TN, typename T> class bloc_index_func
@@ -66,7 +66,7 @@ public:
     }
 };
 
-// by default, supposing T is a defaulttype::Mat (useful for type derivated from defaulttype::Mat)
+// by default, supposing T is a type::Mat (useful for type derivated from type::Mat)
 template<class T, typename IndexType>
 class matrix_bloc_traits
 {
@@ -90,7 +90,7 @@ public:
     static void split_row_index(IndexType& index, IndexType& modulo) { bloc_index_func<NL, IndexType>::split(index, modulo); }
     static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
 
-    static sofa::defaulttype::BaseMatrix::ElementType getElementType() { return matrix_bloc_traits<Real, IndexType>::getElementType(); }
+    static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return matrix_bloc_traits<Real, IndexType>::getElementType(); }
 };
 
 template <Size L, Size C, class real, typename IndexType>
@@ -116,8 +116,26 @@ public:
     static void split_row_index(IndexType& index, IndexType& modulo) { bloc_index_func<NL, IndexType>::split(index, modulo); }
     static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
 
-    static sofa::defaulttype::BaseMatrix::ElementType getElementType() { return matrix_bloc_traits<Real, IndexType>::getElementType(); }
-    //static const char* Name();
+    static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return matrix_bloc_traits<Real, IndexType>::getElementType(); }
+    static const std::string Name()
+    {
+        std::ostringstream o;
+        o << "Mat" << L << "x" << C;
+        if constexpr (std::is_same<float, real>::value)
+        {
+            o << "f";
+        }
+        if constexpr (std::is_same<double, real>::value)
+        {
+            o << "d";
+        }
+        if constexpr (std::is_same<int, real>::value)
+        {
+            o << "i";
+        }
+
+        return o.str();
+    }
 };
 
 //template<> inline const char* matrix_bloc_traits<type::Mat<1,1,float >, sofa::SignedIndex >::Name() { return "1f"; }
@@ -174,8 +192,8 @@ public:
     static void split_row_index(IndexType& index, IndexType& modulo) { bloc_index_func<NL, IndexType>::split(index, modulo); }
     static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
 
-    static const char* Name() { return "f"; }
-    static sofa::defaulttype::BaseMatrix::ElementType getElementType() { return sofa::defaulttype::BaseMatrix::ELEMENT_FLOAT; }
+    static const std::string Name() { return "f"; }
+    static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return sofa::linearalgebra::BaseMatrix::ELEMENT_FLOAT; }
     static IndexType getElementSize() { return sizeof(Real); }
 };
 
@@ -199,8 +217,8 @@ public:
     static void split_row_index(IndexType& index, IndexType& modulo) { bloc_index_func<NL, IndexType>::split(index, modulo); }
     static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
 
-    static sofa::defaulttype::BaseMatrix::ElementType getElementType() { return sofa::defaulttype::BaseMatrix::ELEMENT_FLOAT; }
-    static const char* Name() { return "d"; }
+    static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return sofa::linearalgebra::BaseMatrix::ELEMENT_FLOAT; }
+    static const std::string Name() { return "d"; }
 };
 
 template <typename IndexType>
@@ -223,8 +241,8 @@ public:
     static void split_row_index(int& index, int& modulo) { bloc_index_func<NL, IndexType>::split(index, modulo); }
     static void split_col_index(int& index, int& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
 
-    static sofa::defaulttype::BaseMatrix::ElementType getElementType() { return sofa::defaulttype::BaseMatrix::ELEMENT_INT; }
-    static const char* Name() { return "f"; }
+    static sofa::linearalgebra::BaseMatrix::ElementType getElementType() { return sofa::linearalgebra::BaseMatrix::ELEMENT_INT; }
+    static const std::string Name() { return "f"; }
 };
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra

@@ -19,17 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/defaulttype/BaseVector.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
+#include <sofa/linearalgebra/BaseVector.h>
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <climits>
 
-namespace sofa
-{
-
-namespace defaulttype
+namespace sofa::linearalgebra
 {
 
 BaseMatrix::BaseMatrix() {}
@@ -386,7 +383,7 @@ class BaseMatrixLinearOpMulTV : public BaseMatrixLinearOpMV<false, true> {};
 class BaseMatrixLinearOpPMulTV : public BaseMatrixLinearOpMV<true, true> {};
 
 /// Multiply the matrix by vector v and put the result in vector result
-void BaseMatrix::opMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const
+void BaseMatrix::opMulV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const
 {
     BaseMatrixLinearOpMulV::opDynamic(this, *result, *v);
 }
@@ -404,7 +401,7 @@ void BaseMatrix::opMulV(double* result, const double* v) const
 }
 
 /// Multiply the matrix by vector v and add the result in vector result
-void BaseMatrix::opPMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const
+void BaseMatrix::opPMulV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const
 {
     BaseMatrixLinearOpPMulV::opDynamic(this, *result, *v);
 }
@@ -423,7 +420,7 @@ void BaseMatrix::opPMulV(double* result, const double* v) const
 
 
 /// Multiply the transposed matrix by vector v and put the result in vector result
-void BaseMatrix::opMulTV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const
+void BaseMatrix::opMulTV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const
 {
     BaseMatrixLinearOpMulTV::opDynamic(this, *result, *v);
 }
@@ -441,7 +438,7 @@ void BaseMatrix::opMulTV(double* result, const double* v) const
 }
 
 /// Multiply the transposed matrix by vector v and add the result in vector result
-void BaseMatrix::opPMulTV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const
+void BaseMatrix::opPMulTV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const
 {
     BaseMatrixLinearOpPMulTV::opDynamic(this, *result, *v);
 }
@@ -753,19 +750,19 @@ class BaseMatrixLinearOpAddM : public BaseMatrixLinearOpAM< false> {};
 class BaseMatrixLinearOpAddMT : public BaseMatrixLinearOpAM< true> {};
 
 /// Multiply the matrix by vector v and put the result in vector result
-void BaseMatrix::opAddM(defaulttype::BaseMatrix* result,double fact) const
+void BaseMatrix::opAddM(linearalgebra::BaseMatrix* result,double fact) const
 {
     BaseMatrixLinearOpAddM::opDynamic(this, result, fact);
 }
 
 /// Multiply the matrix by vector v and put the result in vector result
-void BaseMatrix::opAddMT(defaulttype::BaseMatrix* result,double fact) const
+void BaseMatrix::opAddMT(linearalgebra::BaseMatrix* result,double fact) const
 {
     BaseMatrixLinearOpAddMT::opDynamic(this, result, fact);
 }
 
 
-std::ostream& operator<<(std::ostream& out, const  sofa::defaulttype::BaseMatrix& m )
+std::ostream& operator<<(std::ostream& out, const  sofa::linearalgebra::BaseMatrix& m )
 {
     Index nx = m.colSize();
     Index ny = m.rowSize();
@@ -783,7 +780,7 @@ std::ostream& operator<<(std::ostream& out, const  sofa::defaulttype::BaseMatrix
     return out;
 }
 
-std::istream& operator>>( std::istream& in, sofa::defaulttype::BaseMatrix& m )
+std::istream& operator>>( std::istream& in, sofa::linearalgebra::BaseMatrix& m )
 {
     // The reading could be way simplier with an other format,
     // but I did not want to change the existing output.
@@ -843,6 +840,4 @@ std::istream& operator>>( std::istream& in, sofa::defaulttype::BaseMatrix& m )
 }
 
 
-} // nampespace defaulttype
-
-} // nampespace sofa
+} // namespace sofa::linearalgebra

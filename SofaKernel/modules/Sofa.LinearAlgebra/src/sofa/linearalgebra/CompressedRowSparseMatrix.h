@@ -20,21 +20,21 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseLinearSolver/config.h>
+#include <sofa/linearalgebra/config.h>
 
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <SofaBaseLinearSolver/MatrixExpr.h>
-#include <SofaBaseLinearSolver/matrix_bloc_traits.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
+#include <sofa/linearalgebra/MatrixExpr.h>
+#include <sofa/linearalgebra/matrix_bloc_traits.h>
+#include <sofa/linearalgebra/FullMatrix.h>
+#include <sofa/linearalgebra/FullVector.h>
 #include <sofa/type/vector.h>
 #include <sofa/helper/rmath.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>
-#include <SofaBaseLinearSolver/FullVector.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
 template<typename TBloc, typename TVecBloc = type::vector<TBloc>, typename TVecIndex = type::vector<sofa::Index> >
-class CompressedRowSparseMatrix : public defaulttype::BaseMatrix
+class CompressedRowSparseMatrix : public linearalgebra::BaseMatrix
 {
 public:
     typedef CompressedRowSparseMatrix<TBloc,TVecBloc,TVecIndex> Matrix;
@@ -1216,21 +1216,21 @@ protected:
     template<class Vec> static Real vget(const Vec& vec, Index i, Index j, Index k) { return vget( vec, i*j+k ); }
     template<class Vec> static Real vget(const type::vector<Vec>&vec, Index i, Index /*j*/, Index k) { return vec[i][k]; }
 
-                          static Real  vget(const defaulttype::BaseVector& vec, Index i) { return vec.element(i); }
+                          static Real  vget(const linearalgebra::BaseVector& vec, Index i) { return vec.element(i); }
     template<class Real2> static Real2 vget(const FullVector<Real2>& vec, Index i) { return vec[i]; }
 
 
     template<class Vec> static void vset(Vec& vec, Index i, Index j, Index k, Real v) { vset( vec, i*j+k, v ); }
     template<class Vec> static void vset(type::vector<Vec>&vec, Index i, Index /*j*/, Index k, Real v) { vec[i][k] = v; }
 
-                          static void vset(defaulttype::BaseVector& vec, Index i, Real v) { vec.set(i, v); }
+                          static void vset(linearalgebra::BaseVector& vec, Index i, Real v) { vec.set(i, v); }
     template<class Real2> static void vset(FullVector<Real2>& vec, Index i, Real2 v) { vec[i] = v; }
 
 
     template<class Vec> static void vadd(Vec& vec, Index i, Index j, Index k, Real v) { vadd( vec, i*j+k, v ); }
     template<class Vec> static void vadd(type::vector<Vec>&vec, Index i, Index /*j*/, Index k, Real v) { vec[i][k] += v; }
 
-                          static void vadd(defaulttype::BaseVector& vec, Index i, Real v) { vec.add(i, v); }
+                          static void vadd(linearalgebra::BaseVector& vec, Index i, Real v) { vec.add(i, v); }
     template<class Real2> static void vadd(FullVector<Real2>& vec, Index i, Real2 v) { vec[i] += v; }
 
     template<class Vec> static void vresize(Vec& vec, Index /*blockSize*/, Index totalSize) { vec.resize( totalSize ); }
@@ -1715,7 +1715,7 @@ public:
 
     static const char* Name()
     {
-        static std::string name = std::string("CompressedRowSparseMatrix") + sofa::defaulttype::DataTypeInfo<Bloc>::name() ;
+        static std::string name = std::string("CompressedRowSparseMatrix") + traits::Name() ;
         return name.c_str();
     }
 
@@ -1806,30 +1806,30 @@ public:
     }
 };
 
-template<> template<> void SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<double>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,double> > >(CompressedRowSparseMatrix<type::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref);
-template<> template<> void SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<double>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,float> > >(CompressedRowSparseMatrix<type::Mat<3,3,float> >& M, filter_fn* filter, const Bloc& ref);
-template<> template<> void SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<float>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,float> > >(CompressedRowSparseMatrix<type::Mat<3,3,float> >& M, filter_fn* filter, const Bloc& ref);
-template<> template<> void SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<float>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,double> > >(CompressedRowSparseMatrix<type::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref);
+template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<double>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,double> > >(CompressedRowSparseMatrix<type::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref);
+template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<double>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,float> > >(CompressedRowSparseMatrix<type::Mat<3,3,float> >& M, filter_fn* filter, const Bloc& ref);
+template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<float>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,float> > >(CompressedRowSparseMatrix<type::Mat<3,3,float> >& M, filter_fn* filter, const Bloc& ref);
+template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<float>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,double> > >(CompressedRowSparseMatrix<type::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref);
 
-template<> void SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<3,3,double> >::add(Index row, Index col, const type::Mat3x3d & _M);
-template<> void SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<3,3,double> >::add(Index row, Index col, const type::Mat3x3f & _M);
-template<> void SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<3,3,float> >::add(Index row, Index col, const type::Mat3x3d & _M);
-template<> void SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<3,3,float> >::add(Index row, Index col, const type::Mat3x3f & _M);
+template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3,3,double> >::add(Index row, Index col, const type::Mat3x3d & _M);
+template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3,3,double> >::add(Index row, Index col, const type::Mat3x3f & _M);
+template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3,3,float> >::add(Index row, Index col, const type::Mat3x3d & _M);
+template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3,3,float> >::add(Index row, Index col, const type::Mat3x3f & _M);
     
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_COMPRESSEDROWSPARSEMATRIX_CPP)
 
-extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<float>;
-extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<double>;
-extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<2,2,float> >;
-extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<2,2,double> >;
-extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<3,3,float> >;
-extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<3,3,double> >;
-extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<4,4,float> >;
-extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<4,4,double> >;
-extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<6,6,float> >;
-extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<6,6,double> >;
-extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<8,8,float> >;
-extern template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<8,8,double> >;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<float>;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<double>;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<2,2,float> >;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<2,2,double> >;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3,3,float> >;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3,3,double> >;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<4,4,float> >;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<4,4,double> >;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<6,6,float> >;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<6,6,double> >;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<8,8,float> >;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<8,8,double> >;
 
 #endif
 } // namespace sofa::component::linearsolver

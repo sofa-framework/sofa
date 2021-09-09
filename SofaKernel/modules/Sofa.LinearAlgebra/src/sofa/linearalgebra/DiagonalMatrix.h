@@ -20,19 +20,18 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseLinearSolver/config.h>
+#include <sofa/linearalgebra/config.h>
 
-#include <SofaBaseLinearSolver/FullVector.h>
-#include <SofaBaseLinearSolver/MatrixExpr.h>
-#include <SofaBaseLinearSolver/matrix_bloc_traits.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>
+#include <sofa/linearalgebra/FullVector.h>
+#include <sofa/linearalgebra/MatrixExpr.h>
+#include <sofa/linearalgebra/matrix_bloc_traits.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
 /// Simple full matrix container
 template<typename T>
-class DiagonalMatrix : public defaulttype::BaseMatrix
+class DiagonalMatrix : public linearalgebra::BaseMatrix
 {
 public:
     typedef T Real;
@@ -102,7 +101,7 @@ public:
         if (i==j) data[i] = (Real)v;
     }
 
-    using defaulttype::BaseMatrix::add;
+    using BaseMatrix::add;
     void add(Index i, Index j, double v) override
     {
         if (i==j) data[i] += (Real)v;
@@ -322,7 +321,7 @@ public:
 
 /// Simple full matrix container
 template<std::size_t LC, typename T = double>
-class BlockDiagonalMatrix : public defaulttype::BaseMatrix
+class BlockDiagonalMatrix : public linearalgebra::BaseMatrix
 {
 public:
     typedef T Real;
@@ -428,7 +427,7 @@ public:
             setB(i, b);
     }
 
-    using defaulttype::BaseMatrix::add;
+    using BaseMatrix::add;
     void add(Index i, Index j, double v) override
     {
         Index bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
@@ -544,7 +543,7 @@ public:
 
     static const char* Name()
     {
-        static std::string name = std::string("BlockDiagonalMatrix") + sofa::defaulttype::DataTypeInfo<Bloc>::name();
+        static std::string name = std::string("BlockDiagonalMatrix") + traits::Name();
         return name.c_str();
     }
 
@@ -648,4 +647,4 @@ public:
     }
 };
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra

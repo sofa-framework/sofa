@@ -25,16 +25,6 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/MultiVecId.h>
 
-
-namespace sofa
-{
-namespace defaulttype
-{
-class BaseMatrix;
-class BaseVector;
-} // namespace defaulttype
-} // namespace sofa
-
 namespace sofa
 {
 

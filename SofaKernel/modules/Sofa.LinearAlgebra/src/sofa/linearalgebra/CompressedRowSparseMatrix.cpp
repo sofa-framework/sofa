@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_LINEARSOLVER_COMPRESSEDROWSPARSEMATRIX_CPP
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
 template <class TMatrix, class TBlocMatrix>
@@ -39,7 +39,7 @@ void addBloc(TMatrix& self, Index row, Index col, const TBlocMatrix & _M)
     }
     else
     {
-        self.defaulttype::BaseMatrix::add(row, col, _M);
+        self.linearalgebra::BaseMatrix::add(row, col, _M);
     }
 }
 
@@ -116,7 +116,7 @@ void filterValuesFromBlocs(TMatrix& self, CompressedRowSparseMatrix<type::Mat<L,
                 }
             }
 
-            if ((defaulttype::BaseMatrix::Index)self.rowBegin.back() == vid)   // row was empty
+            if ((linearalgebra::BaseMatrix::Index)self.rowBegin.back() == vid)   // row was empty
             {
                 self.rowIndex.pop_back();
                 self.rowBegin.pop_back();
@@ -150,16 +150,17 @@ void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMatrix<ty
     filterValuesFromBlocs(*this, M, filter, ref);
 }
 
-template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<float>;
-template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<double>;
-template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<2,2,float> >;
-template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<2,2,double> >;
-template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<3,3,float> >;
-template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<3,3,double> >;
-template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<4,4,float> >;
-template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<4,4,double> >;
-template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<6,6,float> >;
-template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<6,6,double> >;
-template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<8,8,float> >;
-template class SOFA_SOFABASELINEARSOLVER_API CompressedRowSparseMatrix<type::Mat<8,8,double> >;
-}
+template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<float>;
+template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<double>;
+template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<2,2,float> >;
+template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<2,2,double> >;
+template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3,3,float> >;
+template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3,3,double> >;
+template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<4,4,float> >;
+template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<4,4,double> >;
+template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<6,6,float> >;
+template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<6,6,double> >;
+template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<8,8,float> >;
+template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<8,8,double> >;
+
+} // namespace sofa::linearalgebra

@@ -19,17 +19,54 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION
-#include <SofaBaseLinearSolver/FullVector.inl>
-#include <sofa/helper/rmath.h>
+#include <sofa/linearalgebra/init.h>
 
-namespace sofa::component::linearsolver
+#include <sofa/type/init.h>
+#include <sofa/helper/init.h>
+
+namespace sofa::linearalgebra
 {
 
-std::ostream& operator <<(std::ostream& out, const FullVector<float>& v){ return readFromStream(out, v); }
-std::ostream& operator <<(std::ostream& out, const FullVector<double>& v){ return readFromStream(out, v); }
+static bool s_initialized = false;
+static bool s_cleanedUp = false;
 
-template class SOFA_SOFABASELINEARSOLVER_API FullVector<float>;
-template class SOFA_SOFABASELINEARSOLVER_API FullVector<double>;
+SOFA_LINEARALGEBRA_API void init()
+{
+    if (!s_initialized)
+    {
+        sofa::helper::init();
+        s_initialized = true;
+    }
+}
 
-} /// namespace sofa::component::linearsolver
+SOFA_LINEARALGEBRA_API bool isInitialized()
+{
+    return s_initialized;
+}
+
+SOFA_LINEARALGEBRA_API void cleanup()
+{
+    if (!s_cleanedUp)
+    {
+        sofa::helper::cleanup();
+        s_cleanedUp = true;
+    }
+}
+
+SOFA_LINEARALGEBRA_API bool isCleanedUp()
+{
+    return s_cleanedUp;
+}
+
+// Detect missing cleanup() call.
+static const struct CleanupCheck
+{
+    CleanupCheck() {}
+    ~CleanupCheck()
+    {
+        if (linearalgebra::isInitialized() && !linearalgebra::isCleanedUp())
+            helper::printLibraryNotCleanedUpWarning("Sofa.LinearAlgebra", "sofa::linearalgebra::cleanup()");
+    }
+} check;
+
+} // namespace sofa::linearalgebra

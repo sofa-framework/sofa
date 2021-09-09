@@ -19,31 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_BASEROTATIONFINDER_H
-#define SOFA_CORE_BEHAVIOR_BASEROTATIONFINDER_H
+#pragma once
 
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/linearalgebra/matrix_bloc_traits.h>
 
+// SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/matrix_bloc_traits.h")
 
-namespace sofa
+namespace sofa::component::linearsolver
 {
+    template<Size TN, typename T> 
+    using bloc_index_func = sofa::linearalgebra::bloc_index_func<TN, T>;
 
-namespace core
-{
+    template<class T, typename IndexType>
+    using matrix_bloc_traits = sofa::linearalgebra::matrix_bloc_traits<T, IndexType>;
 
-namespace behavior
-{
-
-class BaseRotationFinder : public virtual sofa::core::objectmodel::BaseObject
-{
-public:
-    virtual void getRotations(defaulttype::BaseMatrix * m, int offset = 0) = 0;
-};
-
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif // SOFA_CORE_BEHAVIOR_BASEROTATIONFINDER_H
+} // namespace sofa::component::linearsolver

@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <sofa/linearalgebra/FullMatrix.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
 template<class Real>
@@ -345,4 +345,4 @@ template<>
 const char* FullMatrix<float>::Name() { return "FullMatrixf"; }
 
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra

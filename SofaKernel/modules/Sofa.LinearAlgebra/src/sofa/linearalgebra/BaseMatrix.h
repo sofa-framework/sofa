@@ -19,19 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_BASEMATRIX_H
-#define SOFA_DEFAULTTYPE_BASEMATRIX_H
+#pragma once
 
-#include <sofa/defaulttype/config.h>
-#include <sofa/defaulttype/fwd.h>
+#include <sofa/linearalgebra/config.h>
+
+#include <sofa/linearalgebra/BaseVector.h>
+#include <sofa/type/Mat.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <utility> // for std::pair
 #include <iosfwd>
 
-namespace sofa
-{
-
-namespace defaulttype
+namespace sofa::linearalgebra
 {
 
 
@@ -39,7 +37,7 @@ namespace defaulttype
 ///
 /// Note that accessing values using this class is rather slow and should only be used in codes where the
 /// provided genericity is necessary.
-class SOFA_DEFAULTTYPE_API BaseMatrix
+class SOFA_LINEARALGEBRA_API BaseMatrix
 {
 public:
     typedef sofa::SignedIndex Index;
@@ -1132,7 +1130,7 @@ public:
 public:
 
     /// Multiply the matrix by vector v and put the result in vector result
-    virtual void opMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const;
+    virtual void opMulV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const;
 
     /// Multiply the matrix by float vector v and put the result in vector result
     virtual void opMulV(float* result, const float* v) const;
@@ -1141,7 +1139,7 @@ public:
     virtual void opMulV(double* result, const double* v) const;
 
     /// Multiply the matrix by vector v and add the result in vector result
-    virtual void opPMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const;
+    virtual void opPMulV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const;
 
     /// Multiply the matrix by float vector v and add the result in vector result
     virtual void opPMulV(float* result, const float* v) const;
@@ -1151,7 +1149,7 @@ public:
 
 
     /// Multiply the transposed matrix by vector v and put the result in vector result
-    virtual void opMulTV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const;
+    virtual void opMulTV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const;
 
     /// Multiply the transposed matrix by float vector v and put the result in vector result
     virtual void opMulTV(float* result, const float* v) const;
@@ -1160,7 +1158,7 @@ public:
     virtual void opMulTV(double* result, const double* v) const;
 
     /// Multiply the transposed matrix by vector v and add the result in vector result
-    virtual void opPMulTV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const;
+    virtual void opPMulTV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const;
 
     /// Multiply the transposed matrix by float vector v and add the result in vector result
     virtual void opPMulTV(float* result, const float* v) const;
@@ -1172,32 +1170,28 @@ public:
     virtual void opMulTM(BaseMatrix * result,BaseMatrix * m) const;
 
     /// Subtract the matrix to the m matrix and strore the result in m
-    virtual void opAddM(defaulttype::BaseMatrix* m,double fact) const;
+    virtual void opAddM(linearalgebra::BaseMatrix* m,double fact) const;
 
     /// Subtract the transposed matrix to the m matrix and strore the result in m
-    virtual void opAddMT(defaulttype::BaseMatrix* m,double fact) const;
+    virtual void opAddMT(linearalgebra::BaseMatrix* m,double fact) const;
 
     /// @}
 
     /// Declare that the operator << is friend so they can use private data.
-    friend SOFA_DEFAULTTYPE_API std::ostream& operator<<(std::ostream& out, const  sofa::defaulttype::BaseMatrix& m );
+    friend SOFA_LINEARALGEBRA_API std::ostream& operator<<(std::ostream& out, const  sofa::linearalgebra::BaseMatrix& m );
     /// Declare that the operator >> is friend so they can use private data.
-    friend SOFA_DEFAULTTYPE_API std::istream& operator>>( std::istream& in, sofa::defaulttype::BaseMatrix& m );
+    friend SOFA_LINEARALGEBRA_API std::istream& operator>>( std::istream& in, sofa::linearalgebra::BaseMatrix& m );
 };
 
 /// Declare that the operator >> exists but is defined in a BaseMatrix.cpp
-SOFA_DEFAULTTYPE_API std::ostream& operator<<(std::ostream& out, const  sofa::defaulttype::BaseMatrix& m );
+SOFA_LINEARALGEBRA_API std::ostream& operator<<(std::ostream& out, const  sofa::linearalgebra::BaseMatrix& m );
 
 /// Declare that the operator >> exists but is defined in a BaseMatrix.cpp
-SOFA_DEFAULTTYPE_API std::istream& operator>>( std::istream& in, sofa::defaulttype::BaseMatrix& m );
+SOFA_LINEARALGEBRA_API std::istream& operator>>( std::istream& in, sofa::linearalgebra::BaseMatrix& m );
 
-} // nampespace defaulttype
-
-} // nampespace sofa
+} // namespace sofa::linearalgebra
 
 /// This line register the CompressedRowSparseMatrix to the messaging system
 /// this allow to write msg_info() instead of msg_info("CompressedRowSparseMatrix")
 /// which is nicer
-MSG_REGISTER_CLASS(sofa::defaulttype::BaseMatrix, "BaseMatrix")
-
-#endif
+MSG_REGISTER_CLASS(sofa::linearalgebra::BaseMatrix, "BaseMatrix")
