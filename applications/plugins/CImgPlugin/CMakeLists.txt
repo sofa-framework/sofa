@@ -5,7 +5,6 @@ set(HEADER_FILES
     src/CImgPlugin/ImageCImg.h
     src/CImgPlugin/CImgPlugin.h.in
     src/CImgPlugin/SOFACImg.h
-    src/CImgPlugin/CImgData.h
     src/CImgPlugin/MatrixImageExporter.h
     )
 
@@ -17,8 +16,8 @@ set(SOURCE_FILES
 
 add_subdirectory(extlibs/CImg)
 
-sofa_find_package(SofaFramework REQUIRED)
-sofa_find_package(SofaBaseVisual REQUIRED)
+sofa_find_package(Sofa.Helper REQUIRED)
+sofa_find_package(Sofa.DefaultType REQUIRED)
 sofa_find_package(CImg REQUIRED)
 
 # OS X only: if the user installed its own JPEG/PNG lib (typically with homebrew/port),
@@ -71,7 +70,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${CImg_INCLUDE_DIRS}>")
 target_compile_options(${PROJECT_NAME} PUBLIC ${CIMG_CFLAGS})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaBaseVisual)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.DefaultType)
 target_link_libraries(${PROJECT_NAME} PUBLIC Threads::Threads)
 target_link_libraries(${PROJECT_NAME} PUBLIC ${DEP_TARGETS})
 

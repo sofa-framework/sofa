@@ -248,7 +248,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
 
     if( d_shininess.getValue()>=0 )
     {
-        static const Vec4f specular = Vec4f(.5,.5,.5,1);
+        static const Vec4f specular = Vec4f(.5f,.5f,.5f,1.f);
         glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular.ptr());
         glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, d_shininess.getValue());
     }

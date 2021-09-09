@@ -59,7 +59,7 @@ void CudaPointCollisionModel::init()
 
     if (mstate==NULL)
     {
-        serr << "ERROR: CudaPointCollisionModel requires a CudaVec3f Mechanical Model.\n";
+        msg_error() << "CudaPointCollisionModel requires a CudaVec3f Mechanical Model.\n";
         return;
     }
 

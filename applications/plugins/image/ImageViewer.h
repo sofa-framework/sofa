@@ -141,7 +141,7 @@ public:
     Data <int> scroll; ///< 0 if no scrolling, 1 for up, 2 for down, 3 left, and 4 for right
     Data <bool> display; ///< Boolean to activate/desactivate the display of the image
 
-    typedef component::visualmodel::VisualModelImpl VisuModelType;
+    typedef sofa::component::visualmodel::VisualModelImpl VisuModelType;
 
     ImageViewer() : Inherited()
       , image(initData(&image,ImageTypes(),"image","input image"))

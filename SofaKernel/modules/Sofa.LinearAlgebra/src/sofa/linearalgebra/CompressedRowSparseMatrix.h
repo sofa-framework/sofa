@@ -20,32 +20,21 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseLinearSolver/config.h>
+#include <sofa/linearalgebra/config.h>
 
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <SofaBaseLinearSolver/MatrixExpr.h>
-#include <SofaBaseLinearSolver/matrix_bloc_traits.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
+#include <sofa/linearalgebra/MatrixExpr.h>
+#include <sofa/linearalgebra/matrix_bloc_traits.h>
+#include <sofa/linearalgebra/FullMatrix.h>
+#include <sofa/linearalgebra/FullVector.h>
 #include <sofa/type/vector.h>
 #include <sofa/helper/rmath.h>
-#include <sofa/defaulttype/typeinfo/TypeInfo_Mat.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
-//#define SPARSEMATRIX_CHECK
-//#define SPARSEMATRIX_VERBOSE
-
-/// This pattern is used to force compilation of code fragment that depend on the definition of
-/// the "define". In the following, use if(EMIT_EXTRA_MESSAGE) instead of #ifdef
-#if defined(SPARSEMATRIX_VERBOSE) && (SPARSEMATRIX_VERBOSE == true)
-#define EMIT_EXTRA_MESSAGE true
-#else
-#define EMIT_EXTRA_MESSAGE false
-#endif // defined(SPARSEMATRIX_VERBOSE) && (SPARSEMATRIX_VERBOSE == true)
-
 template<typename TBloc, typename TVecBloc = type::vector<TBloc>, typename TVecIndex = type::vector<sofa::Index> >
-class CompressedRowSparseMatrix : public defaulttype::BaseMatrix
+class CompressedRowSparseMatrix : public linearalgebra::BaseMatrix
 {
 public:
     typedef CompressedRowSparseMatrix<TBloc,TVecBloc,TVecIndex> Matrix;
@@ -212,8 +201,8 @@ public:
         }
         else
         {
-            msg_info_when(EMIT_EXTRA_MESSAGE)
-                    << ": resize("<<nbBRow<<"*"<<NL<<","<<nbBCol<<"*"<<NC<<")" ;
+            msg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
+                    << ": resize(" << nbBRow << "*" << NL << "," << nbBCol << "*" << NC << ")" ;
 
             nRow = nbBRow*NL;
             nCol = nbBCol*NC;
@@ -233,11 +222,11 @@ public:
         if (compressed && btemp.empty()) return;
         if (!btemp.empty())
         {
-            dmsg_info_when(EMIT_EXTRA_MESSAGE)
-                    << "("<<rowSize()<<","<<colSize()<<"): sort "<<btemp.size()<<" temp blocs." ;
+            dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
+                    << "(" << rowSize() << "," << colSize() << "): sort " << btemp.size() << " temp blocs." ;
             std::sort(btemp.begin(),btemp.end());
-            dmsg_info_when(EMIT_EXTRA_MESSAGE)
-                    << "("<<rowSize()<<","<<colSize()<<"): blocs sorted." ;
+            dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
+                    << "(" << rowSize() << "," << colSize() << "): blocs sorted." ;
         }
         oldRowIndex.swap(rowIndex);
         oldRowBegin.swap(rowBegin);
@@ -262,8 +251,8 @@ public:
         Index outValId = 0;
         while (inRowIndex < EndRow || bRowIndex < EndRow)
         {
-            dmsg_info_when(EMIT_EXTRA_MESSAGE)
-                    << "("<<rowSize()<<","<<colSize()<<"): inRowIndex = "<<inRowIndex<<" , bRowIndex = "<<bRowIndex<<"" ;
+            dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
+                    << "(" << rowSize() << "," << colSize() << "): inRowIndex = " << inRowIndex << " , bRowIndex = " << bRowIndex << "" ;
             if (inRowIndex < bRowIndex)
             {
                 // this row contains values only from old*
@@ -504,7 +493,7 @@ public:
     {
         for (Index bi = 0; bi < NL; ++bi)
             for (Index bj = 0; bj < NC; ++bj)
-                if (helper::rabs(traits::v(val, bi, bj)) >= ref) return true;
+                if (helper::rabs(traits::v(val, bi, bj)) >= traits::v(ref, bi, bj)) return true;
         return false;
     }
     static bool upper         (Index   i  , Index   j  , Bloc& val, const Bloc& /*ref*/)
@@ -561,7 +550,7 @@ public:
             for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
             {
                 Index j = M.colsIndex[xj];
-                Bloc b = M.colsValue[xj];
+                Bloc& b = M.colsValue[xj];
                 if ((*filter)(i,j,b,ref))
                 {
                     colsIndex.push_back(j);
@@ -648,8 +637,8 @@ public:
             if (sortedFind(colsIndex, rowRange, j, colId))
             {
 
-                dmsg_info_when(EMIT_EXTRA_MESSAGE)
-                        << "("<<rowBSize()<<"*"<<NL<<","<<colBSize()<<"*"<<NC<<"): bloc("<<i<<","<<j<<") found at "<<colId<<" (line "<<rowId<<")." ;
+                dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
+                        << "(" << rowBSize() << "*" << NL << "," << colBSize() << "*" << NC << "): bloc(" << i << "," << j << ") found at " << colId << " (line " << rowId << ")." ;
 
                 return &colsValue[colId];
             }
@@ -658,8 +647,8 @@ public:
         {
             if (btemp.empty() || btemp.back().l != i || btemp.back().c != j)
             {
-                dmsg_info_when(EMIT_EXTRA_MESSAGE)
-                        << "("<<rowSize()<<","<<colSize()<<"): new temp bloc ("<<i<<","<<j<<")" ;
+                dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
+                        << "(" << rowSize() << "," << colSize() << "): new temp bloc (" << i << "," << j << ")" ;
 
                 btemp.push_back(IndexedBloc(i,j));
                 traits::clear(btemp.back().value);
@@ -683,10 +672,10 @@ public:
 
     void resize(Index nbRow, Index nbCol) override
     {
-        if (EMIT_EXTRA_MESSAGE)
+        if (COMPRESSEDROWSPARSEMATRIX_VERBOSE)
         {
             if (nbRow != rowSize() || nbCol != colSize())
-                msg_info() << ": resize("<<nbRow<<","<<nbCol<<")" ;
+                msg_info() << ": resize(" << nbRow << "," << nbCol << ")" ;
         }
 
         resizeBloc((nbRow + NL-1) / NL, (nbCol + NC-1) / NC);
@@ -696,13 +685,11 @@ public:
 
     SReal element(Index i, Index j) const override
     {
-#ifdef SPARSEMATRIX_CHECK
-        if (i >= rowSize() || j >= colSize())
+        if ( COMPRESSEDROWSPARSEMATRIX_CHECK && (i >= rowSize() || j >= colSize()) )
         {
-            msg_error() << "Invalid read access to element (" << i << "," << j << ") in " <</* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")";
+            msg_error() << "Invalid read access to element (" << i << "," << j << ") in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
             return 0.0;
         }
-#endif
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
         ((Matrix*)this)->compress();  /// \warning this violates the const-ness of the method !
         return (SReal)traits::v(bloc(i, j), bi, bj);
@@ -710,19 +697,17 @@ public:
 
     void set(Index i, Index j, double v) override
     {
-        dmsg_info_when(EMIT_EXTRA_MESSAGE)
+        dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
             << "(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") = " << v;
 
-#ifdef SPARSEMATRIX_CHECK
-        if (i >= rowSize() || j >= colSize())
+        if ( COMPRESSEDROWSPARSEMATRIX_CHECK && (i >= rowSize() || j >= colSize()) )
         {
-            msg_error() << "Invalid write access to element (" << i << "," << j << ") in " <</* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")";
+            msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
             return;
         }
-#endif
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
 
-        dmsg_info_when(EMIT_EXTRA_MESSAGE)
+        dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
             << "(" << rowBSize() << "*" << NL << "," << colBSize() << "*" << NC << "): bloc(" << i << "," << j << ")[" << bi << "," << bj << "] = " << v;
 
         traits::v(*wbloc(i,j,true), bi, bj) = (Real)v;
@@ -730,19 +715,17 @@ public:
 
     void add(Index i, Index j, double v) override
     {
-        dmsg_info_when(EMIT_EXTRA_MESSAGE)
+        dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
             << "(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") += " << v;
 
-#ifdef SPARSEMATRIX_CHECK
-        if (i >= rowSize() || j >= colSize())
+        if ( COMPRESSEDROWSPARSEMATRIX_CHECK && (i >= rowSize() || j >= colSize()) )
         {
-            msg_error() << "Invalid write access to element (" << i << "," << j << ") in " <</* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")";
+            msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
             return;
         }
-#endif
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
 
-        dmsg_info_when(EMIT_EXTRA_MESSAGE)
+        dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
             << "(" << rowBSize() << "*" << NL << "," << colBSize() << "*" << NC << "): bloc(" << i << "," << j << ")[" << bi << "," << bj << "] += " << v;
 
         traits::v(*wbloc(i,j,true), bi, bj) += (Real)v;
@@ -760,16 +743,14 @@ public:
 
     void clear(Index i, Index j) override
     {
-        dmsg_info_when(EMIT_EXTRA_MESSAGE)
-                << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0" ;
+        dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
+                << "(" << rowSize() << "," << colSize() << "): element(" << i << "," << j << ") = 0" ;
 
-#ifdef SPARSEMATRIX_CHECK
-        if (i >= rowSize() || j >= colSize())
+        if ( COMPRESSEDROWSPARSEMATRIX_CHECK && (i >= rowSize() || j >= colSize()) )
         {
-            msg_error() << "Invalid write access to element (" << i << "," << j << ") in " <</* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")";
+            msg_error() << "Invalid write access to element (" << i << "," << j << ") in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
             return;
         }
-#endif
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
         compress();
         Bloc* b = wbloc(i,j,false);
@@ -779,16 +760,14 @@ public:
 
     void clearRow(Index i) override
     {
-        dmsg_info_when(EMIT_EXTRA_MESSAGE)
+        dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
             << "(" << rowSize() << "," << colSize() << "): row(" << i << ") = 0";
 
-#ifdef SPARSEMATRIX_CHECK
-        if (i >= rowSize())
+        if ( COMPRESSEDROWSPARSEMATRIX_CHECK && (i >= rowSize()) )
         {
-            msg_error() << "Invalid write access to row " << i << " in " <</* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")";
+            msg_error() << "Invalid write access to row " << i << " in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
             return;
         }
-#endif
         Index bi=0; split_row_index(i, bi);
         compress();
         Index rowId = i * (Index)rowIndex.size() / nBlocRow;
@@ -806,16 +785,14 @@ public:
 
     void clearCol(Index j) override
     {
-        dmsg_info_when(EMIT_EXTRA_MESSAGE)
+        dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
             << "(" << rowSize() << "," << colSize() << "): col(" << j << ") = 0";
 
-#ifdef SPARSEMATRIX_CHECK
-        if (j >= colSize())
+        if ( COMPRESSEDROWSPARSEMATRIX_CHECK && (j >= colSize()) )
         {
-            msg_error() << "Invalid write access to column " << j << " in " <</* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")";
+            msg_error() << "Invalid write access to column " << j << " in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
             return;
         }
-#endif
         Index bj=0; split_col_index(j, bj);
         compress();
         for (Index i=0; i<nBlocRow; ++i)
@@ -831,16 +808,14 @@ public:
 
     void clearRowCol(Index i) override
     {
-        dmsg_info_when(EMIT_EXTRA_MESSAGE)
+        dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
             << "(" << rowSize() << "," << colSize() << "): row(" << i << ") = 0 and col(" << i << ") = 0";
 
-#ifdef SPARSEMATRIX_CHECK
-        if (i >= rowSize() || i >= colSize())
+        if ( COMPRESSEDROWSPARSEMATRIX_CHECK && (i >= rowSize() || i >= colSize()) )
         {
-            msg_error() << "Invalid write access to row and column " << i << " in " <</* this->Name() <<*/" of size (" << rowSize() << "," << colSize() << ")";
+            msg_error() << "Invalid write access to row and column " << i << " in " << /* this->Name() <<*/ " of size (" << rowSize() << "," << colSize() << ")";
             return;
         }
-#endif
         if (((Index)NL) != ((Index)NC) || nRow != nCol)
         {
             clearRow(i);
@@ -1055,15 +1030,15 @@ public:
             Index colId = rowRange.begin() + j * rowRange.size() / nBlocCol;
             if (sortedFind(colsIndex, rowRange, j, colId))
             {
-                dmsg_info_when(EMIT_EXTRA_MESSAGE)
-                        << "("<<rowBSize()<<"*"<<NL<<","<<colBSize()<<"*"<<NC<<"): bloc("<<i<<","<<j<<") found at "<<colId<<" (line "<<rowId<<")." ;
+                dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
+                        << "(" << rowBSize() << "*" << NL << "," << colBSize() << "*" << NC << "): bloc(" << i << "," << j << ") found at " << colId << " (line " << rowId << ")." ;
                 return createBlockAccessor(i, j, colId);
             }
         }
         {
             if (btemp.empty() || btemp.back().l != i || btemp.back().c != j)
             {
-                dmsg_info_when(EMIT_EXTRA_MESSAGE) << "("<<rowSize()<<","<<colSize()<<"): new temp bloc ("<<i<<","<<j<<")" ;
+                dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE) << "(" << rowSize() << "," << colSize() << "): new temp bloc (" << i << "," << j << ")" ;
                 btemp.push_back(IndexedBloc(i,j));
                 traits::clear(btemp.back().value);
             }
@@ -1241,21 +1216,21 @@ protected:
     template<class Vec> static Real vget(const Vec& vec, Index i, Index j, Index k) { return vget( vec, i*j+k ); }
     template<class Vec> static Real vget(const type::vector<Vec>&vec, Index i, Index /*j*/, Index k) { return vec[i][k]; }
 
-                          static Real  vget(const defaulttype::BaseVector& vec, Index i) { return vec.element(i); }
+                          static Real  vget(const linearalgebra::BaseVector& vec, Index i) { return vec.element(i); }
     template<class Real2> static Real2 vget(const FullVector<Real2>& vec, Index i) { return vec[i]; }
 
 
     template<class Vec> static void vset(Vec& vec, Index i, Index j, Index k, Real v) { vset( vec, i*j+k, v ); }
     template<class Vec> static void vset(type::vector<Vec>&vec, Index i, Index /*j*/, Index k, Real v) { vec[i][k] = v; }
 
-                          static void vset(defaulttype::BaseVector& vec, Index i, Real v) { vec.set(i, v); }
+                          static void vset(linearalgebra::BaseVector& vec, Index i, Real v) { vec.set(i, v); }
     template<class Real2> static void vset(FullVector<Real2>& vec, Index i, Real2 v) { vec[i] = v; }
 
 
     template<class Vec> static void vadd(Vec& vec, Index i, Index j, Index k, Real v) { vadd( vec, i*j+k, v ); }
     template<class Vec> static void vadd(type::vector<Vec>&vec, Index i, Index /*j*/, Index k, Real v) { vec[i][k] += v; }
 
-                          static void vadd(defaulttype::BaseVector& vec, Index i, Real v) { vec.add(i, v); }
+                          static void vadd(linearalgebra::BaseVector& vec, Index i, Real v) { vec.add(i, v); }
     template<class Real2> static void vadd(FullVector<Real2>& vec, Index i, Real2 v) { vec[i] += v; }
 
     template<class Vec> static void vresize(Vec& vec, Index /*blockSize*/, Index totalSize) { vec.resize( totalSize ); }
@@ -1740,7 +1715,7 @@ public:
 
     static const char* Name()
     {
-        static std::string name = std::string("CompressedRowSparseMatrix") + sofa::defaulttype::DataTypeInfo<Bloc>::name() ;
+        static std::string name = std::string("CompressedRowSparseMatrix") + traits::Name() ;
         return name.c_str();
     }
 
@@ -1831,11 +1806,30 @@ public:
     }
 };
 
-#ifdef SPARSEMATRIX_CHECK
-#undef SPARSEMATRIX_CHECK
-#endif
-#ifdef SPARSEMATRIX_VERBOSE
-#undef SPARSEMATRIX_VERBOSE
-#endif
+template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<double>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,double> > >(CompressedRowSparseMatrix<type::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref);
+template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<double>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,float> > >(CompressedRowSparseMatrix<type::Mat<3,3,float> >& M, filter_fn* filter, const Bloc& ref);
+template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<float>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,float> > >(CompressedRowSparseMatrix<type::Mat<3,3,float> >& M, filter_fn* filter, const Bloc& ref);
+template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<float>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,double> > >(CompressedRowSparseMatrix<type::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref);
 
+template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3,3,double> >::add(Index row, Index col, const type::Mat3x3d & _M);
+template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3,3,double> >::add(Index row, Index col, const type::Mat3x3f & _M);
+template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3,3,float> >::add(Index row, Index col, const type::Mat3x3d & _M);
+template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3,3,float> >::add(Index row, Index col, const type::Mat3x3f & _M);
+    
+#if !defined(SOFA_COMPONENT_LINEARSOLVER_COMPRESSEDROWSPARSEMATRIX_CPP)
+
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<float>;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<double>;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<2,2,float> >;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<2,2,double> >;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3,3,float> >;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3,3,double> >;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<4,4,float> >;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<4,4,double> >;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<6,6,float> >;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<6,6,double> >;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<8,8,float> >;
+extern template class SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<8,8,double> >;
+
+#endif
 } // namespace sofa::component::linearsolver

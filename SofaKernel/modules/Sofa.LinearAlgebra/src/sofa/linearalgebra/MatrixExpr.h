@@ -20,15 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseLinearSolver/config.h>
+#include <sofa/linearalgebra/config.h>
 
 #include <sstream>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
-
-//#define SPARSEMATRIX_CHECK
-//#define SPARSEMATRIX_VERBOSE
 
 template<class M1, class M2>
 class MatrixProduct;
@@ -557,8 +554,6 @@ public:
     typedef MatrixInverse<M1> Expr;
     typedef MatrixInvertOp<M1> Op;
     enum { operand = 0 };
-    enum { category = Op::category };
-    typedef typename Op::matrix_type matrix_type;
 
     const M1& m1;
     MatrixInverse(const M1& m1) : m1(m1)
@@ -598,4 +593,4 @@ public:
     }
 };
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra

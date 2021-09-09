@@ -58,7 +58,7 @@ using customns::CustomBaseObjectT;
 class Base_test: public BaseSimulationTest
 {
 public:
-    virtual ~Base_test(){}
+    ~Base_test() override {}
     void testComponentState()
     {
         EXPECT_MSG_NOEMIT(Error, Warning) ;

@@ -38,16 +38,16 @@ class SOFA_SOFABASELINEARSOLVER_API CRSMultiMatrixAccessor : public DefaultMulti
 {
 public:
     CRSMultiMatrixAccessor() : DefaultMultiMatrixAccessor() {}
-    ~CRSMultiMatrixAccessor() {	this->clear();}
+    ~CRSMultiMatrixAccessor() override {	this->clear();}
 
-    virtual void addMechanicalMapping(sofa::core::BaseMapping* mapping);
+    void addMechanicalMapping(sofa::core::BaseMapping* mapping) override;
 
     //Creating the stiffness matrix for pair of Mechanical State when they are not all real state
     static defaulttype::BaseMatrix* createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2);
     static defaulttype::BaseMatrix* createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2, bool doPrintInfo);
 
     //Compute the contribution of all new created matrix to the global system matrix
-    virtual void computeGlobalMatrix();
+    void computeGlobalMatrix() override;
 };
 
 template<int blocRsize, int blocCsize, class elementType>

@@ -124,7 +124,7 @@ struct Multi2Mapping_test : public BaseSimulationTest, NumericTest<typename _Mul
 
     }
 
-    virtual ~Multi2Mapping_test()
+    ~Multi2Mapping_test() override
     {
         if (root!=nullptr)
             sofa::simulation::getSimulation()->unload(root);

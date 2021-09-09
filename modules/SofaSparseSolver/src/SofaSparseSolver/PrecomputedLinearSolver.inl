@@ -22,8 +22,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_PRECOMPUTEDLINEARSOLVER_INL
 #define SOFA_COMPONENT_COLLISION_PRECOMPUTEDLINEARSOLVER_INL
 
-#include "PrecomputedLinearSolver.h"
-#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <SofaSparseSolver/PrecomputedLinearSolver.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>

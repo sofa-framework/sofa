@@ -94,15 +94,15 @@ public:
     /// This assumes the matrix is big enough to contain a 3x3 matrix at the requested position
     /// @param posRow row index at which the 3x3 matrix is added
     /// @param posCol column index at which the 3x3 matrix is added
-    void checkAddBloc(sofa::Index posRow, sofa::Index posCol)
+    void checkAddBloc(sofa::defaulttype::BaseMatrix::Index posRow, sofa::defaulttype::BaseMatrix::Index posCol)
     {
         m_testedMatrix->clear();
 
         sofa::type::Mat<3, 3, Real> mat;
         Real value = (Real)0;
-        for (sofa::Index i = 0 ; i < decltype(mat)::nbLines; ++i)
+        for (typename decltype(mat)::Size i = 0 ; i < decltype(mat)::nbLines; ++i)
         {
-            for (sofa::Index j = 0 ; j < decltype(mat)::nbCols; ++j)
+            for (typename decltype(mat)::Size j = 0 ; j < decltype(mat)::nbCols; ++j)
             {
                 mat(i, j) = ++value;
             }
@@ -111,9 +111,9 @@ public:
         m_testedMatrix->add(posRow, posCol, mat);
         m_testedMatrix->compress();
 
-        for (sofa::Index i = 0; i < m_testedMatrix->rowSize(); ++i)
+        for (sofa::defaulttype::BaseMatrix::Index i = 0; i < m_testedMatrix->rowSize(); ++i)
         {
-            for (sofa::Index j = 0; j < m_testedMatrix->colSize(); ++j)
+            for (sofa::defaulttype::BaseMatrix::Index j = 0; j < m_testedMatrix->colSize(); ++j)
             {
                 if ( i >= posRow && i < posRow + decltype(mat)::nbLines
                   && j >= posCol && j < posCol + decltype(mat)::nbCols)
