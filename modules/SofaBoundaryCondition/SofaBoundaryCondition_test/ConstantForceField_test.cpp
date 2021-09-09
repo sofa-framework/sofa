@@ -70,8 +70,8 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
     typedef MechanicalObject<DataTypes>   TheMechanicalObject;
     using Real = typename TTypeTuple::DataType::Coord::value_type;
 
-    void SetUp() {}
-    void TearDown(){}
+    void SetUp() override {}
+    void TearDown() override {}
 
     void testSimpleBehavior()
     {

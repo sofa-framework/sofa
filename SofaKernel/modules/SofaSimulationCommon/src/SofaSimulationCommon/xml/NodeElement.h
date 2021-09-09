@@ -33,13 +33,13 @@ class SOFA_SOFASIMULATIONCOMMON_API NodeElement : public Element<sofa::core::obj
 public:
     NodeElement(const std::string& name, const std::string& type, BaseElement* parent=nullptr);
 
-    virtual ~NodeElement();
+    ~NodeElement() override;
 
-    virtual bool setParent(BaseElement* newParent);
+    bool setParent(BaseElement* newParent) override;
 
-    virtual bool initNode();
+    bool initNode() override;
 
-    virtual bool init();
+    bool init() override;
 
     virtual const char* getClass() const;
 

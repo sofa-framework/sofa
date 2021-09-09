@@ -98,7 +98,7 @@ public:
     typename MechanicalObject<DataTypes>::SPtr mstate;
     typename MeshMatrixMass<DataTypes, MassType>::SPtr mass;
 
-    virtual void SetUp()
+    void SetUp() override
     {
         sofa::simpleapi::importPlugin("SofaComponentAll");
 
@@ -106,7 +106,7 @@ public:
         root = simulation::getSimulation()->createNewGraph("root");
     }
 
-    void TearDown()
+    void TearDown() override
     {
         if (root!=nullptr)
             simulation::getSimulation()->unload(root);
@@ -1241,21 +1241,39 @@ public:
     }
 
 
-    void checkTopologicalChanges_Hexa()
+    void checkTopologicalChanges_Hexa(bool lumped)
     {
-        static const string scene =
-            "<?xml version='1.0'?>                                                                              "
-            "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-            "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-            "    <Node name='Hexa' >                                                                            "
-            "            <MechanicalObject position = '@../grid.position' />                                    "
-            "            <HexahedronSetTopologyContainer name='Container' src='@../grid' />                     "
-            "            <HexahedronSetTopologyModifier name='Modifier' />                                      "
-            "            <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                   "
-            "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                        "
-            "    </Node>                                                                                        "
-            "</Node>                                                                                            ";
-
+        string scene;
+        if(!lumped)
+        {
+            scene =
+                    "<?xml version='1.0'?>                                                                              "
+                    "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                    "    <Node name='Hexa' >                                                                            "
+                    "            <MechanicalObject position = '@../grid.position' />                                    "
+                    "            <HexahedronSetTopologyContainer name='Container' src='@../grid' />                     "
+                    "            <HexahedronSetTopologyModifier name='Modifier' />                                      "
+                    "            <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                   "
+                    "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                      "
+                    "    </Node>                                                                                        "
+                    "</Node>                                                                                            ";
+        }
+        else
+        {
+            scene =
+                    "<?xml version='1.0'?>                                                                              "
+                    "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                    "    <Node name='Hexa' >                                                                            "
+                    "            <MechanicalObject position = '@../grid.position' />                                    "
+                    "            <HexahedronSetTopologyContainer name='Container' src='@../grid' />                     "
+                    "            <HexahedronSetTopologyModifier name='Modifier' />                                      "
+                    "            <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                   "
+                    "            <MeshMatrixMass name='m_mass' massDensity='1.0' lumping='true'/>                       "
+                    "    </Node>                                                                                        "
+                    "</Node>                                                                                            ";
+        }
         Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
             scene.c_str(),
             sofa::Size(scene.size()));
@@ -1288,9 +1306,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV);
         EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
-        EXPECT_FLOAT_EQ(eMasses[2], refValueE); // eMasses[1] == 0 because not taken into account from grid to hexahedron Topology
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
+            EXPECT_FLOAT_EQ(eMasses[2], refValueE); // eMasses[1] == 0 because not taken into account from grid to hexahedron Topology
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[2], 0.);
+        }
         
         // -- remove hexahedron id: 0 -- 
         sofa::type::vector<sofa::Index> hexaIds = { 0 };
@@ -1302,10 +1328,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
         EXPECT_FLOAT_EQ(vMasses[1], refValueV);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-        EXPECT_FLOAT_EQ(eMasses[3], refValueE);
-
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[3], 0.);
+        }
 
         // -- remove hexahedron id: 0 --
         modifier->removeHexahedra(hexaIds);
@@ -1316,10 +1349,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
         EXPECT_FLOAT_EQ(vMasses[1], refValueV);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-        EXPECT_FLOAT_EQ(eMasses[3], refValueE);
-        
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[3], 0.);
+        }
         
         // -- remove hexahedron id: 0, 1 --
         hexaIds.push_back(1);
@@ -1331,9 +1371,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV);
         EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[3], refValueE);
-        EXPECT_FLOAT_EQ(eMasses[20], refValueE);
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+            EXPECT_FLOAT_EQ(eMasses[20], refValueE);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[3], 0.);
+            EXPECT_FLOAT_EQ(eMasses[20], 0.);
+        }
 
         // -- remove hexahedron id: 0, 1, 2, 3 --
         hexaIds.push_back(2);
@@ -1345,22 +1393,43 @@ public:
     }
 
 
-    void checkTopologicalChanges_Tetra()
+    void checkTopologicalChanges_Tetra(bool lumped)
     {
-        static const string scene =
-            "<?xml version='1.0'?>                                                                              "
-            "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-            "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
-            "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-            "    <Node name='Tetra' >                                                                           "
-            "            <MechanicalObject position='@../grid.position' />                                      "
-            "            <TetrahedronSetTopologyContainer name='Container' />                                   "
-            "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
-            "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
-            "            <Hexa2TetraTopologicalMapping input='@../grid' output='@Container' />                  "
-            "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                        "
-            "    </Node>                                                                                        "
-            "</Node>                                                                                            ";
+        string scene;
+        if(!lumped)
+        {
+             scene =
+                    "<?xml version='1.0'?>                                                                              "
+                    "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                    "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                    "    <Node name='Tetra' >                                                                           "
+                    "            <MechanicalObject position='@../grid.position' />                                      "
+                    "            <TetrahedronSetTopologyContainer name='Container' />                                   "
+                    "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
+                    "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
+                    "            <Hexa2TetraTopologicalMapping input='@../grid' output='@Container' />                  "
+                    "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                      "
+                    "    </Node>                                                                                        "
+                    "</Node>                                                                                            ";
+        }
+        else
+        {
+            scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <RequiredPlugin name='SofaTopologyMapping'/>                                                   "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "            <MechanicalObject position='@../grid.position' />                                      "
+                "            <TetrahedronSetTopologyContainer name='Container' />                                   "
+                "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
+                "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
+                "            <Hexa2TetraTopologicalMapping input='@../grid' output='@Container' />                  "
+                "            <MeshMatrixMass name='m_mass' massDensity='1.0' lumping='true'/>                       "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            ";
+        }
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
             scene.c_str(),
@@ -1395,9 +1464,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV * 5);
         EXPECT_FLOAT_EQ(vMasses[1], refValueV * 3);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE * 3);
-        EXPECT_FLOAT_EQ(eMasses[1], refValueE * 2);
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE * 3);
+            EXPECT_FLOAT_EQ(eMasses[1], refValueE * 2);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[1], 0.);
+        }
 
         // -- remove tetrahedron id: 0 -- 
         sofa::type::vector<sofa::Index> elemIds = { 0 };
@@ -1409,9 +1486,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV * 4); // check update of Mass when removing tetra
         EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
-        EXPECT_FLOAT_EQ(eMasses[1], refValueE);
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
+            EXPECT_FLOAT_EQ(eMasses[1], refValueE);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[1], 0.);
+        }
 
 
         // -- remove tetrahedron id: 0 --
@@ -1423,9 +1508,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV * 3); // check update of Mass when removing tetra
         EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-        EXPECT_FLOAT_EQ(eMasses[1], refValueE);
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOAT_EQ(eMasses[1], refValueE);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[1], 0.);
+        }
 
 
         // -- remove tetrahedron id: 0, 1 --
@@ -1438,9 +1531,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV);
         EXPECT_FLOAT_EQ(vMasses[1], refValueV);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-        EXPECT_FLOAT_EQ(eMasses[1], refValueE);
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOAT_EQ(eMasses[1], refValueE);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[1], 0.);
+        }
 
         // -- remove tetrahedron id: 0, 1 --
         modifier->removeTetrahedra(elemIds);
@@ -1449,20 +1550,39 @@ public:
         EXPECT_NEAR(mass->getTotalMass(), 0, 1e-4);
     }
 
-    void checkTopologicalChanges_Quad()
+    void checkTopologicalChanges_Quad(bool lumped)
     {
-        static const string scene =
-            "<?xml version='1.0'?>                                                                              "
-            "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-            "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-            "    <Node name='Quad' >                                                                            "
-            "            <MechanicalObject position = '@../grid.position' />                                    "
-            "            <QuadSetTopologyContainer name='Container' src='@../grid' />                     "
-            "            <QuadSetTopologyModifier name='Modifier' />                                      "
-            "            <QuadSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                   "
-            "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                        "
-            "    </Node>                                                                                        "
-            "</Node>                                                                                            ";
+        string scene;
+        if(!lumped)
+        {
+            scene =
+                    "<?xml version='1.0'?>                                                                              "
+                    "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                    "    <Node name='Quad' >                                                                            "
+                    "            <MechanicalObject position = '@../grid.position' />                                    "
+                    "            <QuadSetTopologyContainer name='Container' src='@../grid' />                           "
+                    "            <QuadSetTopologyModifier name='Modifier' />                                            "
+                    "            <QuadSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                         "
+                    "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                      "
+                    "    </Node>                                                                                        "
+                    "</Node>                                                                                            ";
+        }
+        else
+        {
+            scene =
+                    "<?xml version='1.0'?>                                                                              "
+                    "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                    "    <Node name='Quad' >                                                                            "
+                    "            <MechanicalObject position = '@../grid.position' />                                    "
+                    "            <QuadSetTopologyContainer name='Container' src='@../grid' />                           "
+                    "            <QuadSetTopologyModifier name='Modifier' />                                            "
+                    "            <QuadSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                         "
+                    "            <MeshMatrixMass name='m_mass' massDensity='1.0' lumping='true'/>                       "
+                    "    </Node>                                                                                        "
+                    "</Node>                                                                                            ";
+        }
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
             scene.c_str(),
@@ -1497,9 +1617,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV);
         EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
-        EXPECT_FLOAT_EQ(eMasses[2], refValueE); // eMasses[1] == 0 because not taken into account from grid to quad Topology
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
+            EXPECT_FLOAT_EQ(eMasses[2], refValueE); // eMasses[1] == 0 because not taken into account from grid to quad Topology
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[2], 0.);
+        }
 
         // -- remove quad id: 0 -- 
         sofa::type::vector<sofa::Index> elemIds = { 0 };
@@ -1511,9 +1639,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
         EXPECT_FLOAT_EQ(vMasses[1], refValueV);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-        EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[3], 0.);
+        }
 
         // -- remove quad id: 0 --
         modifier->removeQuads(elemIds, true, true);
@@ -1524,9 +1660,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV);
         EXPECT_FLOAT_EQ(vMasses[1], refValueV);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-        EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[3], 0.);
+        }
 
         // -- remove quad id: 0, 1 --
         elemIds.push_back(1);
@@ -1537,20 +1681,39 @@ public:
     }
 
 
-    void checkTopologicalChanges_Triangle()
+    void checkTopologicalChanges_Triangle(bool lumped)
     {
-        static const string scene =
-            "<?xml version='1.0'?>                                                                              "
-            "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-            "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-            "    <Node name='Triangle' >                                                                            "
-            "            <MechanicalObject position = '@../grid.position' />                                    "
-            "            <TriangleSetTopologyContainer name='Container' src='@../grid' />                     "
-            "            <TriangleSetTopologyModifier name='Modifier' />                                      "
-            "            <TriangleSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                   "
-            "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                        "
-            "    </Node>                                                                                        "
-            "</Node>                                                                                            ";
+        string scene;
+        if(!lumped)
+        {
+            scene =
+                    "<?xml version='1.0'?>                                                                              "
+                    "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                    "    <Node name='Triangle' >                                                                        "
+                    "            <MechanicalObject position = '@../grid.position' />                                    "
+                    "            <TriangleSetTopologyContainer name='Container' src='@../grid' />                       "
+                    "            <TriangleSetTopologyModifier name='Modifier' />                                        "
+                    "            <TriangleSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                     "
+                    "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                      "
+                    "    </Node>                                                                                        "
+                    "</Node>                                                                                            ";
+        }
+        else
+        {
+            scene =
+                    "<?xml version='1.0'?>                                                                              "
+                    "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <RegularGridTopology name='grid' n='3 3 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                    "    <Node name='Triangle' >                                                                        "
+                    "            <MechanicalObject position = '@../grid.position' />                                    "
+                    "            <TriangleSetTopologyContainer name='Container' src='@../grid' />                       "
+                    "            <TriangleSetTopologyModifier name='Modifier' />                                        "
+                    "            <TriangleSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                     "
+                    "            <MeshMatrixMass name='m_mass' massDensity='1.0' lumping='true'/>                       "
+                    "    </Node>                                                                                        "
+                    "</Node>                                                                                            ";
+        }
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
             scene.c_str(),
@@ -1585,9 +1748,18 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV * 2);
         EXPECT_FLOAT_EQ(vMasses[1], refValueV * 3);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
-        EXPECT_FLOAT_EQ(eMasses[1], refValueE * 2);
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE * 2);
+            EXPECT_FLOAT_EQ(eMasses[1], refValueE * 2);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[1], 0.);
+        }
+
 
         // -- remove triangle id: 0 -- 
         sofa::type::vector<sofa::Index> elemIds = { 0 };
@@ -1599,9 +1771,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV); // check update of Mass when removing tetra
         EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-        EXPECT_FLOAT_EQ(eMasses[3], refValueE * 2);
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOAT_EQ(eMasses[3], refValueE * 2);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[3], 0.);
+        }
 
         // -- remove triangle id: 0 --
         modifier->removeTriangles(elemIds, true, true);
@@ -1612,9 +1792,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV);
         EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-        EXPECT_FLOAT_EQ(eMasses[3], refValueE * 2);
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOAT_EQ(eMasses[3], refValueE * 2);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[3], 0.);
+        }
 
         // -- remove triangle id: 0, 1 --
         elemIds.push_back(1);
@@ -1626,9 +1814,17 @@ public:
         // check vertex mass
         EXPECT_FLOAT_EQ(vMasses[0], refValueV * 2);
         EXPECT_FLOAT_EQ(vMasses[1], refValueV * 2);
-        // check edge mass
-        EXPECT_FLOAT_EQ(eMasses[0], refValueE);
-        EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+        // check edge mass (only if not lumped else eMass is not computed)
+        if(!lumped)
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], refValueE);
+            EXPECT_FLOAT_EQ(eMasses[3], refValueE);
+        }
+        else
+        {
+            EXPECT_FLOAT_EQ(eMasses[0], 0.);
+            EXPECT_FLOAT_EQ(eMasses[3], 0.);
+        }
 
         // -- remove triangle id: 0, 1, 2, 3 --
         elemIds.push_back(2);
@@ -1639,20 +1835,39 @@ public:
         EXPECT_NEAR(mass->getTotalMass(), 0, 1e-4);
     }
 
-    void checkTopologicalChanges_Edge()
+    void checkTopologicalChanges_Edge(bool lumped)
     {
-        static const string scene =
-            "<?xml version='1.0'?>                                                                              "
-            "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-            "    <RegularGridTopology name='grid' n='4 1 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-            "    <Node name='Edge' >                                                                            "
-            "            <MechanicalObject position = '@../grid.position' />                                    "
-            "            <EdgeSetTopologyContainer name='Container' src='@../grid' />                     "
-            "            <EdgeSetTopologyModifier name='Modifier' />                                      "
-            "            <EdgeSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                   "
-            "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                        "
-            "    </Node>                                                                                        "
-            "</Node>                                                                                            ";
+        string scene;
+        if(!lumped)
+        {
+            scene =
+                    "<?xml version='1.0'?>                                                                              "
+                    "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                    "    <RegularGridTopology name='grid' n='4 1 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                    "    <Node name='Edge' >                                                                            "
+                    "            <MechanicalObject position = '@../grid.position' />                                    "
+                    "            <EdgeSetTopologyContainer name='Container' src='@../grid' />                           "
+                    "            <EdgeSetTopologyModifier name='Modifier' />                                            "
+                    "            <EdgeSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                         "
+                    "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                      "
+                    "    </Node>                                                                                        "
+                    "</Node>                                                                                            ";
+        }
+        else
+        {
+            scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <RegularGridTopology name='grid' n='4 1 1' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Edge' >                                                                            "
+                "            <MechanicalObject position = '@../grid.position' />                                    "
+                "            <EdgeSetTopologyContainer name='Container' src='@../grid' />                           "
+                "            <EdgeSetTopologyModifier name='Modifier' />                                            "
+                "            <EdgeSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                         "
+                "            <MeshMatrixMass name='m_mass' massDensity='1.0' lumping='true'/>                       "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            ";
+        }
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory("loadWithNoParam",
             scene.c_str(),
@@ -1747,12 +1962,12 @@ TEST_F(MeshMatrixMass3_test, singleTriangle)
     TriangleSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<TriangleSetGeometryAlgorithms<Vec3Types> >();
 
-    static const MassType volume = 0.5;
+    static const MassType surface = 0.5;
     static const MassType expectedTotalMass = 1.0f;
-    static const MassType density = expectedTotalMass / volume;
+    static const MassType density = expectedTotalMass / surface;
 
-    static const VecMass expectedVMass(3, (MassType)(density * volume * 1 / 6));
-    static const VecMass expectedEMass(3, (MassType)(density * volume * 1 / 12));
+    static const VecMass expectedVMass(3, (MassType)(density * surface * 1 / 6));
+    static const VecMass expectedEMass(3, (MassType)(density * surface * 1 / 12));
 
     runTest(positions, topologyContainer, geometryAlgorithms, expectedTotalMass, density, expectedVMass, expectedEMass);
 }
@@ -1771,11 +1986,11 @@ TEST_F(MeshMatrixMass3_test, singleQuad)
     QuadSetGeometryAlgorithms<Vec3Types>::SPtr geometryAlgorithms
         = New<QuadSetGeometryAlgorithms<Vec3Types> >();
 
-    static const MassType volume = 1.0;
+    static const MassType surface = 1.0;
     static const MassType expectedTotalMass = 1.0f;
-    static const MassType density = expectedTotalMass / volume;
-    static const VecMass expectedVMass(4, (MassType)(density * volume * 1 / 8));
-    static const VecMass expectedEMass(4, (MassType)(density * volume * 1 / 16));
+    static const MassType density = expectedTotalMass / surface;
+    static const VecMass expectedVMass(4, (MassType)(density * surface * 1 / 8));
+    static const VecMass expectedEMass(4, (MassType)(density * surface * 1 / 16));
 
     runTest(positions, topologyContainer, geometryAlgorithms, expectedTotalMass, density, expectedVMass, expectedEMass);
 }
@@ -1969,29 +2184,54 @@ TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndMassDensity_Wro
 }
 
 
-TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Hexa) {
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Hexa_sparse) {
     EXPECT_MSG_NOEMIT(Error);
-    checkTopologicalChanges_Hexa();
+    checkTopologicalChanges_Hexa(false);
 }
 
-TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Tetra) {
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Tetra_sparse) {
     EXPECT_MSG_NOEMIT(Error);
-    checkTopologicalChanges_Tetra();
+    checkTopologicalChanges_Tetra(false);
 }
 
-TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Quad) {
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Quad_sparse) {
     EXPECT_MSG_NOEMIT(Error);
-    checkTopologicalChanges_Quad();
+    checkTopologicalChanges_Quad(false);
 }
 
-TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Triangle) {
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Triangle_sparse) {
     EXPECT_MSG_NOEMIT(Error);
-    checkTopologicalChanges_Triangle();
+    checkTopologicalChanges_Triangle(false);
 }
 
-TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Edge) {
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Edge_sparse) {
     EXPECT_MSG_NOEMIT(Error);
-    checkTopologicalChanges_Edge();
+    checkTopologicalChanges_Edge(false);
+}
+
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Hexa_lumped) {
+    EXPECT_MSG_NOEMIT(Error);
+    checkTopologicalChanges_Hexa(true);
+}
+
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Tetra_lumped) {
+    EXPECT_MSG_NOEMIT(Error);
+    checkTopologicalChanges_Tetra(true);
+}
+
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Quad_lumped) {
+    EXPECT_MSG_NOEMIT(Error);
+    checkTopologicalChanges_Quad(true);
+}
+
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Triangle_lumped) {
+    EXPECT_MSG_NOEMIT(Error);
+    checkTopologicalChanges_Triangle(true);
+}
+
+TEST_F(MeshMatrixMass3_test, checkTopologicalChanges_Edge_lumped) {
+    EXPECT_MSG_NOEMIT(Error);
+    checkTopologicalChanges_Edge(true);
 }
 
 

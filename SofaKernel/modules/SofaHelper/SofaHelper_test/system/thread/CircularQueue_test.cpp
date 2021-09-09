@@ -40,7 +40,7 @@ protected:
         queue.push(2);
         queue.push(3);
     }
-    ~CircularQueue_SingleTest()
+    ~CircularQueue_SingleTest() override
     {
     }
     CircularQueue<int, FixedSize<6>::type, OneThreadPerEnd> queue;
@@ -53,7 +53,7 @@ protected:
         : counter(0)
     {
     }
-    ~CircularQueue_SingleProdSingleConsTest()
+    ~CircularQueue_SingleProdSingleConsTest() override
     {
         waitCompletion();
     }
@@ -104,7 +104,7 @@ protected:
     CircularQueue_ManyProdManyConsTest() : counter(0), emptyFault(0), fullFault(0)
     {
     }
-    ~CircularQueue_ManyProdManyConsTest()
+    ~CircularQueue_ManyProdManyConsTest() override
     {
     }
     void start()

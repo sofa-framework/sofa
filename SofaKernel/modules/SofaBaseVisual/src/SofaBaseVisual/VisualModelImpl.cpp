@@ -203,8 +203,8 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , m_translation     (initData   (&m_translation, Vec3Real(), "translation", "Initial Translation of the object"))
     , m_rotation        (initData   (&m_rotation, Vec3Real(), "rotation", "Initial Rotation of the object"))
     , m_scale           (initData   (&m_scale, Vec3Real(1.0,1.0,1.0), "scale3d", "Initial Scale of the object"))
-    , m_scaleTex        (initData   (&m_scaleTex, TexCoord(1.0,1.0), "scaleTex", "Scale of the texture"))
-    , m_translationTex  (initData   (&m_translationTex, TexCoord(0.0,0.0), "translationTex", "Translation of the texture"))
+    , m_scaleTex        (initData   (&m_scaleTex, TexCoord(1.f,1.f), "scaleTex", "Scale of the texture"))
+    , m_translationTex  (initData   (&m_translationTex, TexCoord(0.f,0.f), "translationTex", "Translation of the texture"))
     , material			(initData	(&material, "material", "Material")) // tex(nullptr)
     , putOnlyTexCoords	(initData	(&putOnlyTexCoords, (bool) false, "putOnlyTexCoords", "Give Texture Coordinates without the texture binding"))
     , srgbTexturing		(initData	(&srgbTexturing, (bool) false, "srgbTexturing", "When sRGB rendering is enabled, is the texture in sRGB colorspace?"))
@@ -672,8 +672,8 @@ void VisualModelImpl::applyUVTransformation()
 {
     applyUVScale(m_scaleTex.getValue()[0], m_scaleTex.getValue()[1]);
     applyUVTranslation(m_translationTex.getValue()[0], m_translationTex.getValue()[1]);
-    m_scaleTex.setValue(TexCoord(1,1));
-    m_translationTex.setValue(TexCoord(0,0));
+    m_scaleTex.setValue(TexCoord(1.f,1.f));
+    m_translationTex.setValue(TexCoord(0.f,0.f));
 }
 
 void VisualModelImpl::applyTranslation(const SReal dx, const SReal dy, const SReal dz)
@@ -797,61 +797,103 @@ void VisualModelImpl::applyUVScale(const Real scaleU, const Real scaleV)
 }
 
 
-template<class VecCoord>
-class VisualModelPointHandler : public sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point,VecCoord >
+void VisualModelImpl::init()
 {
-public:
-    typedef typename VecCoord::value_type Coord;
-    typedef typename Coord::value_type Real;
-    VisualModelPointHandler(VisualModelImpl* obj, sofa::component::topology::PointData<VecCoord>* data, int algo)
-        : sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point, VecCoord >(data), obj(obj), algo(algo) {}
+    VisualModel::init();
 
-    void applyCreateFunction(Index /*pointIndex*/, Coord& dest, const sofa::core::topology::Point &,
-                             const sofa::type::vector< Index > &ancestors,
-                             const sofa::type::vector< double > &coefs)
+    if (fileMesh.isSet()) // check if using internal mesh
     {
-        const VecCoord& x = this->m_topologyData->getValue();
-        if (!ancestors.empty())
+        initFromFileMesh();
+    }
+    else
+    {
+        if (m_vertPosIdx.getValue().size() > 0 && m_vertices2.getValue().empty())
         {
-            if (algo == 1 && ancestors.size() > 1) //fixMergedUVSeams
+            // handle case where vertPosIdx was initialized through a loader
+            initPositionFromVertices();
+        }
+
+        // check if not init by Data
+        if (m_positions.getValue().empty() || (!m_triangles.isSet() && !m_quads.isSet()) )
+        {
+            initFromTopology(); // if not init from Data nor from filemesh, will init from topology
+        }
+
+        // load texture
+        if (texturename.isSet())
+        {
+            std::string textureFilename = texturename.getFullPath();
+            if (sofa::helper::system::DataRepository.findFile(textureFilename))
             {
-                Coord c0 = x[ancestors[0]];
-                dest = c0*coefs[0];
-                for (Index i=1; i<ancestors.size(); ++i)
+                msg_info() << "loading file " << textureFilename;
+                bool textureLoaded = loadTexture(textureFilename);
+                if (!textureLoaded)
                 {
-                    Coord ci = x[ancestors[i]];
-                    for (Index j=0; j<ci.size(); ++j)
-                        ci[j] += helper::rnear(c0[j]-ci[j]);
-                    dest += ci*coefs[i];
+                    msg_error() << "Texture " << textureFilename << " cannot be loaded";
                 }
             }
             else
             {
-                dest = x[ancestors[0]]*coefs[0];
-                for (std::size_t i=1; i<ancestors.size(); ++i)
-                    dest += x[ancestors[i]]*coefs[i];
+                msg_error() << "Texture \"" << textureFilename << "\" not found";
             }
+
+            applyUVTransformation();
         }
-        // BUGFIX: remove link to the Data as it is now specific to this instance
-        this->m_topologyData->setParent(nullptr);
     }
 
-    void applyDestroyFunction(Index, Coord& )
+    if (m_topology == nullptr && (m_positions.getValue().size() == 0))
     {
+        msg_warning() << "Neither an .obj file nor a topology is present for this VisualModel.";
+        useTopology = false;
+        return;
     }
 
-protected:
-    VisualModelImpl* obj;
-    int algo;
-};
+    applyScale(m_scale.getValue()[0], m_scale.getValue()[1], m_scale.getValue()[2]);
+    applyRotation(m_rotation.getValue()[0], m_rotation.getValue()[1], m_rotation.getValue()[2]);
+    applyTranslation(m_translation.getValue()[0], m_translation.getValue()[1], m_translation.getValue()[2]);
 
-template<class VecType>
-void VisualModelImpl::addTopoHandler(topology::PointData<VecType>* data, int algo)
-{
-    data->createTopologyHandler(m_topology, new VisualModelPointHandler<VecType>(this, data, algo));
+    m_translation.setValue(Vec3Real());
+    m_rotation.setValue(Vec3Real());
+    m_scale.setValue(Vec3Real(1,1,1));
+
+    updateVisual();
 }
 
-void VisualModelImpl::init()
+
+void VisualModelImpl::initPositionFromVertices()
+{
+    m_vertices2.setValue(m_positions.getValue());
+    if (m_positions.getParent())
+    {
+        m_positions.delInput(m_positions.getParent()); // remove any link to positions, as we need to recompute it
+    }
+    helper::WriteAccessor<Data<VecCoord>> vIn = m_positions;
+    helper::ReadAccessor<Data<VecCoord>> vOut = m_vertices2;
+    helper::ReadAccessor<Data<type::vector<visual_index_type>>> vertPosIdx = m_vertPosIdx;
+    std::size_t nbVIn = 0;
+    for (std::size_t i = 0; i < vertPosIdx.size(); ++i)
+    {
+        if (vertPosIdx[i] >= nbVIn)
+        {
+            nbVIn = vertPosIdx[i] + 1;
+        }
+    }
+    vIn.resize(nbVIn);
+    for (std::size_t i = 0; i < vertPosIdx.size(); ++i)
+    {
+        vIn[vertPosIdx[i]] = vOut[i];
+    }
+    m_topology = nullptr; // make sure we don't use the topology
+}
+
+
+void VisualModelImpl::initFromFileMesh()
+{
+    load(fileMesh.getFullPath(), "", texturename.getFullPath());
+}
+
+
+void VisualModelImpl::initFromTopology()
 {
     if (l_topology.empty())
     {
@@ -862,67 +904,25 @@ void VisualModelImpl::init()
     m_topology = l_topology.get();
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-    if (m_vertPosIdx.getValue().size() > 0 && m_vertices2.getValue().empty())
-    { // handle case where vertPosIdx was initialized through a loader
-        m_vertices2.setValue(m_positions.getValue());
-        if (m_positions.getParent())
-        {
-            m_positions.delInput(m_positions.getParent()); // remove any link to positions, as we need to recompute it
-        }
-        helper::WriteAccessor<Data<VecCoord>> vIn = m_positions;
-        helper::ReadAccessor<Data<VecCoord>> vOut = m_vertices2;
-        helper::ReadAccessor<Data<type::vector<visual_index_type>>> vertPosIdx = m_vertPosIdx;
-        std::size_t nbVIn = 0;
-        for (std::size_t i = 0; i < vertPosIdx.size(); ++i)
-        {
-            if (vertPosIdx[i] >= nbVIn)
-            {
-                nbVIn = vertPosIdx[i]+1;
-            }
-        }
-        vIn.resize(nbVIn);
-        for (std::size_t i = 0; i < vertPosIdx.size(); ++i)
-        {
-            vIn[vertPosIdx[i]] = vOut[i];
-        }
-        m_topology = nullptr; // make sure we don't use the topology
-    }
+    if (m_topology == nullptr)
+        return;
 
-    load(fileMesh.getFullPath(), "", texturename.getFullPath());
+    msg_info() << "Use topology " << m_topology->getName();
+    useTopology = true;
 
-    if (m_topology == nullptr || (m_positions.getValue().size()!=0 && m_positions.getValue().size() != m_topology->getNbPoints()))
+    // compute mesh from topology
+    computeMesh();
+
+    sofa::core::topology::TopologyModifier* topoMod;
+    m_topology->getContext()->get(topoMod);
+
+    if (topoMod == nullptr)
     {
-        // Fixes bug when neither an .obj file nor a topology is present in the VisualModel Node.
-        // Thus nothing will be displayed.
-        useTopology = false;
+        m_handleDynamicTopology.setValue(false);
     }
-    else
-    {
-        msg_info() << "Use topology " << m_topology->getName();
-        // add the functions to handle topology changes.
-        if (m_handleDynamicTopology.getValue())
-        {
-            //addTopoHandler(&m_positions);
-            //addTopoHandler(&m_restPositions);
-            //addTopoHandler(&m_vnormals);
-            addTopoHandler(&m_vtexcoords,(m_fixMergedUVSeams.getValue()?1:0));
-            //addTopoHandler(&m_vtangents);
-            //addTopoHandler(&m_vbitangents);
-        }
-    }
-
-    applyScale(m_scale.getValue()[0], m_scale.getValue()[1], m_scale.getValue()[2]);
-    applyRotation(m_rotation.getValue()[0], m_rotation.getValue()[1], m_rotation.getValue()[2]);
-    applyTranslation(m_translation.getValue()[0], m_translation.getValue()[1], m_translation.getValue()[2]);
-
-
-    m_translation.setValue(Vec3Real());
-    m_rotation.setValue(Vec3Real());
-    m_scale.setValue(Vec3Real(1,1,1));
-
-    VisualModel::init();
-    updateVisual();
 }
+
+
 
 void VisualModelImpl::computeNormals()
 {
@@ -1266,35 +1266,14 @@ void VisualModelImpl::setColor(std::string color)
 
 void VisualModelImpl::updateVisual()
 {
-    /*
-        static unsigned int last = 0;
-        if (m_vtexcoords.getValue().size() != last)
-        {
-            std::cout << m_vtexcoords.getValue().size() << std::endl;
-            last = m_vtexcoords.getValue().size();
-        }
-    */
-    if (modified && (!getVertices().empty() || useTopology))
+    if (modified && !getVertices().empty())
     {
-        if (useTopology)
+        if (useTopology && (m_topology->getRevision() != lastMeshRev) && !m_handleDynamicTopology.getValue())
         {
-            sofa::helper::ScopedAdvancedTimer timer("VisualModelImpl::updateMesh");
-            /** HD : build also a Ogl description from main Topology. But it needs to be build only once since the topology update
-            is taken care of by the handleTopologyChange() routine */
-
-            sofa::core::topology::TopologyModifier* topoMod;
-            this->getContext()->get(topoMod);
-
-            if (topoMod)
-            {
-                useTopology = false; // dynamic topology
-                computeMesh();
-            }
-            else if (topoMod == nullptr && (m_topology->getRevision() != lastMeshRev))  // static topology
-            {
-                computeMesh();
-            }
+            // Follow change from static topology, this should not be used as the whole mesh is copied
+            computeMesh();
         }
+
         sofa::helper::AdvancedTimer::stepBegin("VisualModelImpl::computePositions");
         computePositions();
         sofa::helper::AdvancedTimer::stepEnd("VisualModelImpl::computePositions");
@@ -2007,8 +1986,5 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
     nindex+=nbn;
     tindex+=nbt;
 }
-
-template class SOFA_SOFABASEVISUAL_API VisualModelPointHandler< VisualModelImpl::VecCoord>;
-template class SOFA_SOFABASEVISUAL_API VisualModelPointHandler< VisualModelImpl::VecTexCoord>;
 
 } // namespace sofa::component::visualmodel

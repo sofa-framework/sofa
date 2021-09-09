@@ -463,7 +463,7 @@ void Quat<Real>::quatToAxis(Vec3 & axis, Real &angle) const
 
     assert(sin_half_theta>=0);
     if (sin_half_theta < std::numeric_limits<Real>::epsilon())
-        axis = Vec3(0.0, 1.0, 0.0);
+        axis = Vec3(Real(0.), Real(1.), Real(0.));
     else
         axis = Vec3(q[0], q[1], q[2])/sin_half_theta;
 }
@@ -498,7 +498,7 @@ auto Quat<Real>::quatToRotationVector() const -> Vec3
     assert(sin_half_theta>=0);
     Vec3 rotVector;
     if (sin_half_theta < std::numeric_limits<Real>::epsilon())
-        rotVector = Vec3(0.0, 0.0, 0.0);
+        rotVector = Vec3(Real(0), Real(0), Real(0));
     else
         rotVector = Vec3(q[0], q[1], q[2])/sin_half_theta*angle;
 
@@ -655,9 +655,9 @@ void Quat<Real>::setFromUnitVectors(const Vec3& vFrom, const Vec3& vTo)
     {
         res_dot = 0;
         if (fabs(vFrom[0]) > fabs(vFrom[2]))
-            v1 = Vec3(-vFrom[1], vFrom[0], 0);
+            v1 = Vec3(-vFrom[1], vFrom[0], Real(0.));
         else
-            v1 = Vec3(0, -vFrom[2], vFrom[1]);
+            v1 = Vec3(Real(0.), -vFrom[2], vFrom[1]);
     }
     else
     {
@@ -763,8 +763,8 @@ auto Quat<Real>::createFromRotationVector(Real a0, Real a1, Real a2 ) -> Quat
         return Quat(0,0,0,1);
 
     Real nor = 1/phi;
-    Real s = sin(phi/2.0);
-    return Quat( a0*s*nor, a1*s*nor,a2*s*nor, cos(phi/2.0) );
+    Real s = sin(phi/Real(2.));
+    return Quat( a0*s*nor, a1*s*nor,a2*s*nor, cos(phi/Real(2.)) );
 }
 
 template<class Real>

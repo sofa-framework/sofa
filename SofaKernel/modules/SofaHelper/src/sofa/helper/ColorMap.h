@@ -96,7 +96,7 @@ public:
     unsigned int getNbColors() { return (unsigned int) entries.size(); }
     Color getColor(unsigned int i) {
         if (i < entries.size()) return entries[i];
-        return Color(0.0, 0.0, 0.0, 0.0);
+        return Color(0.f, 0.f, 0.f, 0.f);
     }
 
     static ColorMap* getDefault();

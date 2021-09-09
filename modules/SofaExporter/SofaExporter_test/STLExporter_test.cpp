@@ -59,13 +59,13 @@ public:
     /// remove the file created...
     std::vector<std::string> dataPath ;
 
-    void SetUp()
+    void SetUp() override
     {
         sofa::component::initSofaBaseUtils(); // needed to instanciate RequiredPlugin
         sofa::simpleapi::importPlugin("SofaOpenglVisual");
     }
 
-    void TearDown()
+    void TearDown() override
     {
         return ;
         for(auto& pathToRemove : dataPath)

@@ -26,6 +26,7 @@
 #include <sofa/linearalgebra/MatrixExpr.h>
 #include <sofa/linearalgebra/matrix_bloc_traits.h>
 #include <sofa/linearalgebra/FullMatrix.h>
+#include <sofa/linearalgebra/FullVector.h>
 #include <sofa/type/vector.h>
 #include <sofa/helper/rmath.h>
 
