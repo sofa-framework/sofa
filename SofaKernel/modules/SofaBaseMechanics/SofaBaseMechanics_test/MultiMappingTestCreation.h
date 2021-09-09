@@ -413,35 +413,6 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
             }
         }
 
-
-        // =================== test updateForceMask
-        // propagate forces coming from all child, each parent receiving a force should be in the mask
-        for(Index i=0; i<Np.size(); i++)
-        {
-            EXPECT_EQ( inDofs[i]->forceMask.size(), inDofs[i]->getSize() );
-            inDofs[i]->forceMask.assign(inDofs[i]->getSize(),false);
-        }
-        EXPECT_EQ( outDofs->forceMask.size(), outDofs->getSize() );
-        outDofs->forceMask.assign(outDofs->getSize(),true);
-        mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position()); // to force mask update at the next applyJ
-        for( unsigned i=0; i<Nc; i++ ) Out::set( fout[i], 1,1,1 ); // every child forces are non-nul
-        for(Index p=0; p<Np.size(); p++) {
-            WriteInVecDeriv fin = inDofs[p]->writeForces();
-            sofa::testing::copyToData( fin, fp2[p] );  // reset parent forces before accumulating child forces
-        }
-        mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
-        for(Index i=0; i<Np.size(); i++)
-        {
-            sofa::testing::copyFromData( fp[i], inDofs[i]->readForces() );
-            for( unsigned j=0; j<Np[i]; j++ ) {
-                if( fp[i][j] != InDeriv() && !inDofs[i]->forceMask.getEntry(j) ){
-                    succeed = false;
-                    ADD_FAILURE() << "updateForceMask did not propagate mask to every influencing parents "<< i << std::endl;
-                    break;
-                }
-            }
-        }
-
         return succeed;
     }
 

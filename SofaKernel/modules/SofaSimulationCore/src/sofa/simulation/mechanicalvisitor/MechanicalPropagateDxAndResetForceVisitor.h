@@ -32,11 +32,10 @@ class SOFA_SIMULATION_CORE_API MechanicalPropagateDxAndResetForceVisitor : publi
 {
 public:
     sofa::core::MultiVecDerivId dx,f;
-    bool ignoreMask;
 
     MechanicalPropagateDxAndResetForceVisitor(const sofa::core::MechanicalParams* mparams,
-                                              sofa::core::MultiVecDerivId dx, sofa::core::MultiVecDerivId f, bool m)
-            : MechanicalVisitor(mparams) , dx(dx), f(f), ignoreMask(m)
+                                              sofa::core::MultiVecDerivId dx, sofa::core::MultiVecDerivId f)
+            : MechanicalVisitor(mparams) , dx(dx), f(f)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -65,4 +64,5 @@ public:
     }
 #endif
 };
-}
+
+} // namespace sofa::simulation::mechanicalvisitor

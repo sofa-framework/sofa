@@ -265,20 +265,8 @@ template<class DataTypes>
     }
   }
 
-
 }
 
-template<class DataTypes>
-void RegistrationContactForceField<DataTypes>::updateForceMask()
-{
-    const type::vector<Contact>& cc = contacts.getValue();
-    for (unsigned int i=0; i<cc.size(); i++)
-    {
-        const Contact& c = cc[i];
-        this->mstate1->forceMask.insertEntry(c.m1);
-        this->mstate2->forceMask.insertEntry(c.m2);
-    }
-}
 
 } // namespace interactionforcefield
 

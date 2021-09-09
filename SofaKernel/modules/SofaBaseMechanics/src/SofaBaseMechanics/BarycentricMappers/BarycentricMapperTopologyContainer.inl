@@ -281,13 +281,12 @@ const defaulttype::BaseMatrix* BarycentricMapperTopologyContainer<In,Out,Mapping
 
     const type::vector<Element>& elements = getElements();
 
-    for( size_t outId=0 ; outId<this->maskTo->size() ; ++outId)
+    const auto& map = d_map.getValue();
+    for( size_t outId=0 ; outId< map.size() ; ++outId)
     {
-        if( !this->maskTo->getEntry(outId) ) continue;
+        const Element& element = elements[map[outId].in_index];
 
-        const Element& element = elements[d_map.getValue()[outId].in_index];
-
-        type::vector<SReal> baryCoef = getBaryCoef(d_map.getValue()[outId].baryCoords);
+        type::vector<SReal> baryCoef = getBaryCoef(map[outId].baryCoords);
         for (unsigned int j=0; j<element.size(); j++)
             this->addMatrixContrib(m_matrixJ, int(outId), element[j], baryCoef[j]);
     }
@@ -303,11 +302,8 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::applyJT
 {
     const type::vector<Element>& elements = getElements();
 
-    ForceMask& mask = *this->maskFrom;
-    for( size_t i=0 ; i<this->maskTo->size() ; ++i)
+    for( size_t i=0 ; i<in.size() ; ++i)
     {
-        if( !this->maskTo->getEntry(i) ) continue;
-
         Index index = d_map.getValue()[i].in_index;
         const Element& element = elements[index];
 
@@ -316,7 +312,6 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::applyJT
         for (unsigned int j=0; j<element.size(); j++)
         {
             out[element[j]] += inPos * baryCoef[j];
-            mask.insertEntry(element[j]);
         }
     }
 }
@@ -328,10 +323,8 @@ void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::applyJ 
 
     const type::vector<Element>& elements = getElements();
 
-    for( size_t i=0 ; i<this->maskTo->size() ; ++i)
+    for( size_t i=0 ; i<out.size() ; ++i)
     {
-        if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
-
         Index index = d_map.getValue()[i].in_index;
         const Element& element = elements[index];
 

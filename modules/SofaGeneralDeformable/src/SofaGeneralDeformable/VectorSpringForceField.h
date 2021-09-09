@@ -87,7 +87,7 @@ protected:
     SReal m_potentialEnergy;
     /// true if the springs are initialized from the topology
     bool useTopology;
-    bool usingMask;
+
     /// indices in case we don't use the topology
     sofa::type::vector<core::topology::BaseMeshTopology::Edge> edgeArray;
 
@@ -193,8 +193,6 @@ public:
     /// forward declaration of the loader class used to read spring information from file
     class Loader;
     friend class Loader;
-
-    void updateForceMask() override;
 
 };
 

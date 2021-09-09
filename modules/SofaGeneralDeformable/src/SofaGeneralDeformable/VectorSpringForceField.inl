@@ -137,7 +137,7 @@ VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _obje
 template <class DataTypes>
 VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _object1, MechanicalState* _object2)
     : Inherit(_object1, _object2)
-    , m_potentialEnergy( 0.0 ), useTopology( false ), usingMask(false)
+    , m_potentialEnergy( 0.0 ), useTopology( false )
     , springArray( initData(&springArray, "springs", "springs data"))
     , m_filename( initData(&m_filename,std::string(""),"filename","File name from which the spring informations are loaded") )
     , m_stiffness( initData(&m_stiffness,1.0,"stiffness","Default edge stiffness used in absence of file information") )
@@ -405,31 +405,5 @@ void VectorSpringForceField<DataTypes>::draw(const core::visual::VisualParams* v
     }
     vparams->drawTool()->drawLines(points, 3, sofa::type::RGBAColor::red());
 }
-
-
-
-template<class DataTypes>
-void VectorSpringForceField<DataTypes>::updateForceMask()
-{
-    if(useTopology)
-    {
-        for (unsigned int i=0; i<m_topology->getNbEdges(); i++)
-        {
-            const core::topology::BaseMeshTopology::Edge &e=m_topology->getEdge(i);
-            this->mstate1->forceMask.insertEntry(e[0]);
-            this->mstate2->forceMask.insertEntry(e[1]);
-        }
-    }
-    else
-    {
-        for (size_t i=0; i<edgeArray.size(); i++)
-        {
-            const core::topology::BaseMeshTopology::Edge &e=edgeArray[i];
-            this->mstate1->forceMask.insertEntry(e[0]);
-            this->mstate2->forceMask.insertEntry(e[1]);
-        }
-    }
-}
-
 
 } // namespace sofa::component::interactionforcefield

@@ -60,7 +60,6 @@ public:
 
     typedef core::topology::BaseMeshTopology BaseMeshTopology;
     typedef TopologyBarycentricMapper<InDataTypes,OutDataTypes> Mapper;
-    typedef typename Inherit1::ForceMask ForceMask;
 
 public:
     Data< bool > d_useRestPosition; ///< Use the rest position of the input and output models to initialize the mapping    
@@ -97,7 +96,6 @@ protected:
                        BaseMeshTopology * from_topology=nullptr );
 
     ~BarycentricMapping() override;
-    void updateForceMask() override;
 
     defaulttype::BaseMatrix *internalMatrix;        ///< internally store a matrix for getJ/Compliant
     type::vector< defaulttype::BaseMatrix* > js;

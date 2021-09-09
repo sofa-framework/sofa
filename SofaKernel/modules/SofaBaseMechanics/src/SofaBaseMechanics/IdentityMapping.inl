@@ -78,12 +78,9 @@ void IdentityMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams
     helper::WriteOnlyAccessor< Data<VecDeriv> > out = dOut;
     helper::ReadAccessor< Data<InVecDeriv> > in = dIn;
 
-    for( size_t i=0 ; i<this->maskTo->size() ; ++i)
+    for( size_t i=0 ; i<out.size() ; ++i)
     {
-        if (!this->maskTo->isActivated() || this->maskTo->getEntry(i))
-        {
-            core::eq(out[i], in[i]);
-        }
+        core::eq(out[i], in[i]);
     }
 }
 
@@ -93,12 +90,9 @@ void IdentityMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparam
     helper::WriteAccessor< Data<InVecDeriv> > out = dOut;
     helper::ReadAccessor< Data<VecDeriv> > in = dIn;
 
-    for( size_t i=0 ; i<this->maskTo->size() ; ++i)
+    for( size_t i=0 ; i<out.size() ; ++i)
     {
-        if (this->maskTo->getEntry(i))
-        {
-            core::peq(out[i], in[i]);
-        }
+        core::peq(out[i], in[i]);
     }
 }
 
@@ -151,15 +145,6 @@ template <class TIn, class TOut>
 const typename IdentityMapping<TIn, TOut>::js_type* IdentityMapping<TIn, TOut>::getJs()
 {
     return &Js;
-}
-
-
-template<class TIn, class TOut>
-void IdentityMapping<TIn, TOut>::updateForceMask()
-{
-    for( size_t i = 0 ; i<this->maskTo->size() ; ++i )
-        if( this->maskTo->getEntry(i) )this->maskFrom->insertEntry( i );
-
 }
 
 } // namespace sofa::component::mapping

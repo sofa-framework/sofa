@@ -40,7 +40,6 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 endif()
 
 setSofaOption(APPLICATION_RUNSOFA ON)
-setSofaOption(SOFA_USE_MASK OFF)
 setSofaOption(SOFA_BUILD_TESTS OFF)
 setSofaOption(SOFA_BUILD_TUTORIALS OFF)
 setSofaOption(SOFA_BUILD_METIS ON)

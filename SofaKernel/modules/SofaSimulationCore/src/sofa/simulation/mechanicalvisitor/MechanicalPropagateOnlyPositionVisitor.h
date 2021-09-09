@@ -40,10 +40,9 @@ class SOFA_SIMULATION_CORE_API MechanicalPropagateOnlyPositionVisitor : public M
 public:
     SReal t;
     sofa::core::MultiVecCoordId x;
-    bool ignoreMask;
 
     MechanicalPropagateOnlyPositionVisitor( const sofa::core::MechanicalParams* mparams, SReal time=0,
-                                            sofa::core::MultiVecCoordId x = sofa::core::VecCoordId::position(), bool m=true);
+                                            sofa::core::MultiVecCoordId x = sofa::core::VecCoordId::position());
 
     Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
     Result fwdMechanicalMapping(simulation::Node* /*node*/, sofa::core::BaseMapping* map) override;
@@ -72,4 +71,5 @@ public:
     }
 #endif
 };
-}
+
+} // namespace sofa::simulation::mechanicalvisitor

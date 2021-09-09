@@ -324,10 +324,8 @@ void RigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/,
     const VecCoord& pts = this->getPoints();
     out.resize(pts.size());
 
-    for(sofa::Index i=0 ; i<this->maskTo->size() ; ++i)
+    for(sofa::Index i=0 ; i<out.size() ; ++i)
     {
-        if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
-
         sofa::Index rigidIndex = getRigidIndex(i);
         out[i] = velocityAtRotatedPoint( in[rigidIndex], rotatedPoints[i] );
     }
@@ -339,18 +337,12 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
     helper::WriteAccessor< Data<InVecDeriv> > out = dOut;
     helper::ReadAccessor< Data<VecDeriv> > in = dIn;
 
-    ForceMask &mask = *this->maskFrom;
-
-    for(sofa::Index i=0 ; i<this->maskTo->size() ; ++i)
+    for(sofa::Index i=0 ; i<in.size() ; ++i)
     {
-        if( !this->maskTo->getEntry(i) ) continue;
-
         sofa::Index rigidIndex = getRigidIndex(i);
 
         getVCenter(out[rigidIndex]) += in[i];
         getVOrientation(out[rigidIndex]) += (typename InDeriv::Rot)cross(rotatedPoints[i], in[i]);
-
-        mask.insertEntry(rigidIndex);
     }
 
 }
@@ -387,10 +379,8 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
             helper::ReadAccessor<Data<InVecDeriv> > parentDisplacements (*mparams->readDx(this->fromModel));
             InReal kfactor = (InReal)mparams->kFactor();
 
-            for(sofa::Index i=0 ; i<this->maskTo->size() ; ++i)
+            for(sofa::Index i=0 ; i< childForces.size() ; ++i)
             {
-                if( !this->maskTo->getEntry(i) ) continue;
-
                 sofa::Index rigidIndex = getRigidIndex(i);
 
                 typename TIn::AngularVector& parentTorque = getVOrientation(parentForces[rigidIndex]);
@@ -516,20 +506,8 @@ const type::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::get
 
 
 
-        for(sofa::Index outIdx=0 ; outIdx<this->maskTo->size() ; ++outIdx)
+        for(sofa::Index outIdx=0 ; outIdx< rotatedPoints.size() ; ++outIdx)
         {
-            if( !this->maskTo->getEntry(outIdx) )
-            {
-                // do not forget to add empty rows (mandatory for Eigen)
-                for(sofa::Index i = 0; i < NOut; ++i)
-                {
-                    unsigned row = outIdx * NOut + i;
-                    J.startVec( row );
-                }
-                continue;
-            }
-
-
             sofa::Index inIdx = getRigidIndex(outIdx);
 
             const Coord& v = rotatedPoints[outIdx];

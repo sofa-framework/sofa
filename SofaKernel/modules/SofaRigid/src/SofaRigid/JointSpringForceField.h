@@ -128,10 +128,6 @@ public:
                                      const DataVecCoord& ) const override { return m_potentialEnergy; }
 
 
-    ////////////////////////// Inherited from BaseMapping /////////////////////////
-    void updateForceMask() override;
-
-
     //////////////////////////   Data fields    //////////////////////////////////
     /// the list of the springs
     sofa::core::objectmodel::DataFileName f_outfilename; ///< output file name

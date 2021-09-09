@@ -55,7 +55,6 @@ public:
     typedef typename Inherit1::MBloc MBloc;
     typedef typename Inherit1::MatrixType MatrixType;
 
-    typedef typename Inherit1::ForceMask ForceMask;
     typedef typename MatrixType::Index MatrixTypeIndex;
     enum { NIn = Inherit1::NIn };
     enum { NOut = Inherit1::NOut };
