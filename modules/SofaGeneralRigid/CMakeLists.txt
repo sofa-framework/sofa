@@ -17,6 +17,8 @@ list(APPEND HEADER_FILES
     ${SOFAGENERALRIGID_SRC}/ArticulatedHierarchyContainer.inl
     ${SOFAGENERALRIGID_SRC}/ArticulatedSystemMapping.h
     ${SOFAGENERALRIGID_SRC}/ArticulatedSystemMapping.inl
+    ${SOFAGENERALRIGID_SRC}/LaparoscopicRigidMapping.h
+    ${SOFAGENERALRIGID_SRC}/LaparoscopicRigidMapping.inl
     ${SOFAGENERALRIGID_SRC}/LineSetSkinningMapping.h
     ${SOFAGENERALRIGID_SRC}/LineSetSkinningMapping.inl
     ${SOFAGENERALRIGID_SRC}/SkinningMapping.h
@@ -30,6 +32,7 @@ list(APPEND HEADER_FILES
 list(APPEND SOURCE_FILES
     ${SOFAGENERALRIGID_SRC}/ArticulatedHierarchyContainer.cpp
     ${SOFAGENERALRIGID_SRC}/ArticulatedSystemMapping.cpp
+    ${SOFAGENERALRIGID_SRC}/LaparoscopicRigidMapping.cpp
     ${SOFAGENERALRIGID_SRC}/LineSetSkinningMapping.cpp
     ${SOFAGENERALRIGID_SRC}/SkinningMapping.cpp
     ${SOFAGENERALRIGID_SRC}/bvh/BVHJoint.cpp
