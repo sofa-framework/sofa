@@ -19,10 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaEigen2Solver/EigenMatrixManipulator.h>
+#include <sofa/linearalgebra/EigenMatrixManipulator.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
 LLineManipulator& LLineManipulator::addCombination(unsigned int idxConstraint, SReal factor)
@@ -69,4 +69,4 @@ void LMatrixManipulator::buildLMatrix(const type::vector<LLineManipulator> &line
 
 type::vector< SparseVectorEigen > LMatrix;
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra

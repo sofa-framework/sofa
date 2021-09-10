@@ -20,11 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaEigen2Solver/EigenVector.h>
-#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/linearalgebra/EigenVector.h>
+#include <sofa/linearalgebra/VecTypes.h>
 
-
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
 template<>
@@ -32,4 +31,4 @@ const char* EigenVector<defaulttype::Vec3Types>::Name() { return "EigenVector3d"
 
 const char* EigenVector<double>::Name() { return "EigenVectord"; }
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra

@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaEigen2Solver/config.h>
+#include <sofa/linearalgebra/config.h>
 
-#include <sofa/defaulttype/BaseVector.h>
+#include <sofa/linearalgebra/BaseVector.h>
 #include <Eigen/Dense>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
 //#define EigenVector_CHECK
@@ -149,4 +149,4 @@ public:
 
 };
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra

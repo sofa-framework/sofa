@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaEigen2Solver/config.h>
+#include <sofa/linearalgebra/config.h>
 
-#include <sofa/defaulttype/BaseVector.h>
+#include <sofa/linearalgebra/BaseVector.h>
 #include <sofa/type/Vec.h>
 #include <Eigen/Dense>
-#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/linearalgebra/VecTypes.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
 //#define EigenVector_CHECK
@@ -36,7 +36,7 @@ namespace sofa::component::linearsolver
 /** Container of a vector of the Eigen library. Not an eigenvector of a matrix.
   */
 template<class InDataTypes>
-class SOFA_SOFAEIGEN2SOLVER_API EigenVector : public defaulttype::BaseVector
+class SOFA_LINEARALGEBRA_API EigenVector : public defaulttype::BaseVector
 {
 
 protected:
@@ -177,7 +177,7 @@ template<> const char* EigenVector<defaulttype::Vec3Types>::Name();
 /** Container of an Eigen vector.
   */
 template<>
-class SOFA_SOFAEIGEN2SOLVER_API EigenVector<double> : public defaulttype::BaseVector
+class SOFA_LINEARALGEBRA_API EigenVector<double> : public defaulttype::BaseVector
 {
 
 protected:
@@ -276,4 +276,4 @@ public:
 };
 
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra

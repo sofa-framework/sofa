@@ -20,10 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaEigen2Solver/config.h>
+#include <sofa/linearalgebra/config.h>
 
-#include <SofaEigen2Solver/EigenBaseSparseMatrix.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/linearalgebra/EigenBaseSparseMatrix.h>
 #include <sofa/type/Mat.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/helper/SortedPermutation.h>
@@ -32,7 +31,7 @@
 #include <Eigen/Sparse>
 #include <sofa/helper/OwnershipSPtr.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 using type::vector;
 
@@ -541,7 +540,7 @@ private:
 
 template<> inline const char* EigenSparseMatrix<defaulttype::Vec3Types, defaulttype::Vec1Types >::Name() { return "EigenSparseMatrix3d1d"; }
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra
 
 namespace sofa
 {

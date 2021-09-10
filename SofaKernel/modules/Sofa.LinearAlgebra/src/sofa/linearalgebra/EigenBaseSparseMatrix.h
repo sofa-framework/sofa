@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaEigen2Solver/config.h>
+#include <sofa/linearalgebra/config.h>
 
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/linearalgebra/DataTypeInfo.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/type/vector.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <Eigen/Sparse>
@@ -33,7 +33,7 @@
 #include "EigenBaseSparseMatrix_MT.h"
 #endif
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
 /** Sparse matrix based on the Eigen library.
@@ -452,7 +452,7 @@ public:
 template<> inline const char* EigenBaseSparseMatrix<double>::Name() { return "EigenBaseSparseMatrixd"; }
 template<> inline const char* EigenBaseSparseMatrix<float>::Name()  { return "EigenBaseSparseMatrixf"; }
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra
 
 
 namespace sofa::defaulttype 
