@@ -60,8 +60,6 @@ public:
     typedef typename OutDataTypes::VecCoord OutVecCoord;
     typedef typename OutDataTypes::VecDeriv OutVecDeriv;
 
-    typedef typename Inherit::ForceMask ForceMask;
-
     enum
     {
         N = OutDataTypes::spatial_dimensions
@@ -88,8 +86,6 @@ protected:
     virtual ~IdentityMapping()
     {
     }
-
-    void updateForceMask() override;
 
 public:
     /// Return true if the destination model has the same topology as the source model.

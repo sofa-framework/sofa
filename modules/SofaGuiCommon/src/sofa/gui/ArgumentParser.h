@@ -111,10 +111,12 @@ public:
         }
         catch (const std::bad_cast& e1) // could not cast the value to T
         {
+            SOFA_UNUSED(e1);
             ret = false;
         }
         catch (const cxxopts::OptionParseException& e2) // option is not present, etc
         {
+            SOFA_UNUSED(e2);
             ret = false;
         }
 

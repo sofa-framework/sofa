@@ -799,12 +799,8 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
     const size_t i2d = m_map2d.size();
     const size_t i3d = m_map3d.size();
 
-    ForceMask& mask = *this->maskFrom;
-
-    for( size_t i=0 ; i<this->maskTo->size() ; ++i)
+    for( size_t i=0 ; i<in.size() ; ++i)
     {
-        if( !this->maskTo->getEntry(i) ) continue;
-
         // 1D elements
         if (i < i1d)
         {
@@ -815,8 +811,6 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
                 const Edge& line = lines[index];
                 out[line[0]] += v * ( 1-fx );
                 out[line[1]] += v * fx;
-                mask.insertEntry(line[0]);
-                mask.insertEntry(line[1]);
             }
         }
         // 2D elements
@@ -834,9 +828,6 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
                 out[triangle[0]] += v * ( 1-fx-fy );
                 out[triangle[1]] += v * fx;
                 out[triangle[2]] += v * fy;
-                mask.insertEntry(triangle[0]);
-                mask.insertEntry(triangle[1]);
-                mask.insertEntry(triangle[2]);
             }
             else
             {
@@ -845,10 +836,6 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
                 out[quad[1]] += v * ( ( fx ) * ( 1-fy ) );
                 out[quad[3]] += v * ( ( 1-fx ) * ( fy ) );
                 out[quad[2]] += v * ( ( fx ) * ( fy ) );
-                mask.insertEntry(quad[0]);
-                mask.insertEntry(quad[1]);
-                mask.insertEntry(quad[2]);
-                mask.insertEntry(quad[3]);
             }
         }
         // 3D elements
@@ -868,10 +855,6 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
                 out[tetra[1]] += v * fx;
                 out[tetra[2]] += v * fy;
                 out[tetra[3]] += v * fz;
-                mask.insertEntry(tetra[0]);
-                mask.insertEntry(tetra[1]);
-                mask.insertEntry(tetra[2]);
-                mask.insertEntry(tetra[3]);
             }
             else
             {
@@ -890,15 +873,6 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
                 out[cube[7]] += v * ( ( 1-fx ) * ( fy ) * ( fz ) );
                 out[cube[6]] += v * ( ( fx ) * ( fy ) * ( fz ) );
 
-
-                mask.insertEntry(cube[0]);
-                mask.insertEntry(cube[1]);
-                mask.insertEntry(cube[2]);
-                mask.insertEntry(cube[3]);
-                mask.insertEntry(cube[4]);
-                mask.insertEntry(cube[5]);
-                mask.insertEntry(cube[6]);
-                mask.insertEntry(cube[7]);
             }
         }
     }
@@ -925,10 +899,8 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
     const size_t idxStart2=sizeMap1d+sizeMap2d;
     const size_t idxStart3=sizeMap1d+sizeMap2d+sizeMap3d;
 
-    for( size_t i=0 ; i<this->maskTo->size() ; ++i)
+    for( size_t i=0 ; i<out.size() ; ++i)
     {
-        if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
-
         // 1D elements
         if (i < idxStart1)
         {

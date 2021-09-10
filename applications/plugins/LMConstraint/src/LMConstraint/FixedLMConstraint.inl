@@ -135,8 +135,6 @@ void FixedLMConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintP
         //Constraint degree of freedom along Z direction
         c->writeLine(cIndex).addCol(index,Z);
         idxZ.push_back(cIndex++);
-
-        this->constrainedObject1->forceMask.insertEntry(index);
     }
 }
 

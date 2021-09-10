@@ -23,8 +23,4 @@
 
 #include <SofaSimpleFem/config.h>
 
-namespace sofa::component::linearsolver
-{
-template<typename TBloc, typename TVecBloc, typename TVecIndex>
-class CompressedRowSparseMatrix;
-}
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>

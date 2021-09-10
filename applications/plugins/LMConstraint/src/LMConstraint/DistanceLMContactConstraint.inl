@@ -149,9 +149,6 @@ void DistanceLMContactConstraint<DataTypes>::buildConstraintMatrix(const core::C
         c2_t2.addCol(idx2,-tgt2);
         scalarConstraintsIndices.push_back(cIndex++);
 
-        this->constrainedObject1->forceMask.insertEntry(idx1);
-        this->constrainedObject2->forceMask.insertEntry(idx2);
-
         edgeToContact[edges[i]] = Contact(normal,tgt1,tgt2);
     }
 

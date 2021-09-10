@@ -5,7 +5,6 @@ set(HEADER_FILES
     src/CImgPlugin/ImageCImg.h
     src/CImgPlugin/CImgPlugin.h.in
     src/CImgPlugin/SOFACImg.h
-    src/CImgPlugin/CImgData.h
     src/CImgPlugin/MatrixImageExporter.h
     )
 

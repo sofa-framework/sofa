@@ -63,7 +63,13 @@ if(MSVC)
     option(SOFA_VECTORIZE "Enable the use of SSE2 instructions by the compiler (Only available for MSVC)." OFF)
 endif()
 ### Mask
-option(SOFA_USE_MASK "Use mask optimization" OFF)
+### Removed since v21.12
+### Warn the user if he set the option by himself
+if(SOFA_USE_MASK)
+    message(WARNING "SOFA_USE_MASK is set ; use of ForceMask has been removed in v21.12. If you are using this feature, your own code will most likely not compile anymore.
+            For more information: https://github.com/sofa-framework/sofa/pull/2316")
+endif()
+
 ### SOFA_DEV_TOOL
 option(SOFA_WITH_DEVTOOLS "Compile with developement extra features." ON)
 ### Threading

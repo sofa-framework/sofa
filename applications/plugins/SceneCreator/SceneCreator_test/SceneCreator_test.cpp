@@ -37,7 +37,7 @@ using sofa::helper::system::PluginManager ;
 class SceneCreator_test : public sofa::Sofa_test<>
 {
 public:
-    void SetUp()
+    void SetUp() override
     {
         importPlugin("SofaOpenglVisual");
         importPlugin("SofaGeneralTopology");

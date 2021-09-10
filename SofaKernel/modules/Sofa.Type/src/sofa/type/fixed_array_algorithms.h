@@ -41,7 +41,7 @@ template<class T, class TT=typename T::value_type, size_t TN=T::static_size>
 T clamp(const T& in, const TT& minValue, const TT& maxValue)
 {
     T result {};
-    for(std::size_t i=0; i < TN; ++i)
+    for(typename T::size_type i=0; i < typename T::size_type(TN); ++i)
     {
         result[i] = stdclamp(in[i], minValue, maxValue);
     }
@@ -53,7 +53,7 @@ template<class T, class TT=typename T::value_type, size_t TN=T::static_size>
 T operator+(const T& l, const T& r)
 {
     T result {};
-    for(std::size_t i=0; i < TN; ++i)
+    for(typename T::size_type i=0; i < typename T::size_type(TN); ++i)
     {
         result[i] = l[i] + r[i];
     }
@@ -65,7 +65,7 @@ template<class T, class TT=typename T::value_type, size_t TN=T::static_size>
 T operator-(const T& l, const T& r)
 {
     T result {};
-    for(std::size_t i=0; i < TN; ++i)
+    for(typename T::size_type i=0; i < typename T::size_type(TN); ++i)
     {
         result[i] = l[i] - r[i];
     }
@@ -77,7 +77,7 @@ template<class T, class TT=typename T::value_type, size_t TN=T::static_size>
 T operator*(const T& r, const typename T::value_type& f)
 {
     T result {};
-    for(std::size_t i=0; i < TN; ++i)
+    for(typename T::size_type i=0; i < typename T::size_type(TN); ++i)
     {
         result[i] = r[i] * f;
     }
@@ -89,7 +89,7 @@ template<class T, class TT=typename T::value_type, size_t TN=T::static_size>
 T operator/(const T& r, const typename T::value_type& f)
 {
     T result {};
-    for(std::size_t i=0; i < TN; ++i)
+    for(typename T::size_type i=0; i < typename T::size_type(TN); ++i)
     {
         result[i] = r[i] / f;
     }

@@ -84,7 +84,6 @@ void PairInteractionConstraint<DataTypes>::buildConstraintMatrix(const Constrain
     if (cParams)
     {
         buildConstraintMatrix(cParams, *cId[mstate1.get()].write(), *cId[mstate2.get()].write(), cIndex, *cParams->readX(mstate1), *cParams->readX(mstate2));
-        updateForceMask();
     }
 }
 
@@ -109,15 +108,6 @@ void PairInteractionConstraint<DataTypes>::storeLambda(const ConstraintParams*, 
 
     j1.multTransposeBaseVector(res1, lambda );
     j2.multTransposeBaseVector(res2, lambda );
-}
-
-template<class DataTypes>
-void PairInteractionConstraint<DataTypes>::updateForceMask()
-{
-    // the default implementation adds every dofs to the mask
-    // this sould be overloaded by each forcefield to only add the implicated dofs subset to the mask
-    mstate1->forceMask.assign( mstate1->getSize(), true );
-    mstate2->forceMask.assign( mstate2->getSize(), true );
 }
 
 } // namespace behavior

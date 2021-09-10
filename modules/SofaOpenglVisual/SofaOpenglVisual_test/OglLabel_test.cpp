@@ -53,7 +53,7 @@ using sofa::type::RGBAColor ;
 class OglLabelTest : public BaseTest
 {
 public:
-    void SetUp()
+    void SetUp() override
     {
         sofa::simulation::setSimulation(new DAGSimulation());
     }

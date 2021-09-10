@@ -142,7 +142,7 @@ void MechanicalOperations::setDf(core::ConstMultiVecDerivId& v)
 void MechanicalOperations::propagateDx(core::MultiVecDerivId dx, bool ignore_flag)
 {
     setDx(dx);
-    executeVisitor( MechanicalPropagateDxVisitor(&mparams, dx, false, ignore_flag) );
+    executeVisitor( MechanicalPropagateDxVisitor(&mparams, dx, ignore_flag) );
 }
 
 /// Propagate the given displacement through all mappings and reset the current force delta
@@ -150,14 +150,14 @@ void MechanicalOperations::propagateDxAndResetDf(core::MultiVecDerivId dx, core:
 {
     setDx(dx);
     setDf(df);
-    executeVisitor( MechanicalPropagateDxAndResetForceVisitor(&mparams, dx, df, false) );
+    executeVisitor( MechanicalPropagateDxAndResetForceVisitor(&mparams, dx, df) );
 }
 
 /// Propagate the given position through all mappings
 void MechanicalOperations::propagateX(core::MultiVecCoordId x)
 {
     setX(x);
-    MechanicalPropagateOnlyPositionVisitor visitor(&mparams, 0.0, x, false); //Don't ignore the masks
+    MechanicalPropagateOnlyPositionVisitor visitor(&mparams, 0.0, x);
     executeVisitor( visitor );
 }
 
@@ -165,7 +165,7 @@ void MechanicalOperations::propagateX(core::MultiVecCoordId x)
 void MechanicalOperations::propagateV(core::MultiVecDerivId v)
 {
     setV(v);
-    MechanicalPropagateOnlyVelocityVisitor visitor(&mparams, 0.0, v, false); //Don't ignore the masks
+    MechanicalPropagateOnlyVelocityVisitor visitor(&mparams, 0.0, v);
     executeVisitor( visitor );
 }
 
@@ -174,7 +174,7 @@ void MechanicalOperations::propagateXAndV(core::MultiVecCoordId x, core::MultiVe
 {
     setX(x);
     setV(v);
-    MechanicalPropagateOnlyPositionAndVelocityVisitor visitor(&mparams, 0.0, x, v, false); //Don't ignore the masks
+    MechanicalPropagateOnlyPositionAndVelocityVisitor visitor(&mparams, 0.0, x, v);
     executeVisitor( visitor );
 }
 
@@ -183,7 +183,7 @@ void MechanicalOperations::propagateXAndResetF(core::MultiVecCoordId x, core::Mu
 {
     setX(x);
     setF(f);
-    MechanicalPropagateOnlyPositionAndResetForceVisitor visitor(&mparams, x, f, false);
+    MechanicalPropagateOnlyPositionAndResetForceVisitor visitor(&mparams, x, f);
     executeVisitor( visitor );
 }
 
@@ -354,7 +354,7 @@ void MechanicalOperations::computeAcc(SReal t, core::MultiVecDerivId a, core::Mu
     setX(x);
     setV(v);
     executeVisitor( MechanicalProjectPositionAndVelocityVisitor(&mparams, t,x,v) );
-    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v, true) );
+    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v) );
     computeForce(f);
 
     accFromF(a,f);
@@ -367,7 +367,7 @@ void MechanicalOperations::computeForce(SReal t, core::MultiVecDerivId f, core::
     setX(x);
     setV(v);
     executeVisitor( MechanicalProjectPositionAndVelocityVisitor(&mparams, t,x,v) );
-    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v,true) );
+    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v) );
     computeForce(f,true,true,neglectingCompliance);
 
     projectResponse(f);
@@ -381,7 +381,7 @@ void MechanicalOperations::computeContactAcc(SReal t, core::MultiVecDerivId a, c
     setX(x);
     setV(v);
     executeVisitor( MechanicalProjectPositionAndVelocityVisitor(&mparams, t,x,v) );
-    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v, true) );
+    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v) );
     computeContactForce(f);
 
     accFromF(a,f);

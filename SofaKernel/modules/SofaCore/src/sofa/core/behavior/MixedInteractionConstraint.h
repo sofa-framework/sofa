@@ -145,16 +145,6 @@ public:
 protected:
     SingleLink<MixedInteractionConstraint<DataTypes1,DataTypes2>, MechanicalState<DataTypes1>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;
     SingleLink<MixedInteractionConstraint<DataTypes1,DataTypes2>, MechanicalState<DataTypes2>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
-    typename MechanicalState<DataTypes1>::ForceMask *mask1;
-    typename MechanicalState<DataTypes2>::ForceMask *mask2;
-
-
-    /// Useful when the Constraint is applied only on a subset of dofs.
-    /// It is automatically called by buildConstraintMatrix
-    ///
-    /// That way, we can optimize the time spent to transfer quantities through the mechanical mappings.
-    /// Every Dofs are inserted by default. The Constraint using only a subset of dofs should only insert these dofs in the mask.
-    void updateForceMask() override;
 };
 
 #if  !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_CPP)

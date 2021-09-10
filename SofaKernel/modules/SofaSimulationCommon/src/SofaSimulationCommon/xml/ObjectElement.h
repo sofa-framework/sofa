@@ -31,11 +31,11 @@ class SOFA_SOFASIMULATIONCOMMON_API ObjectElement : public Element<sofa::core::o
 public:
     ObjectElement(const std::string& name, const std::string& type, BaseElement* parent=nullptr);
 
-    virtual ~ObjectElement();
+    ~ObjectElement() override;
 
-    virtual bool initNode();
+    bool initNode() override;
 
-    virtual bool init();
+    bool init() override;
 
     virtual const char* getClass() const;
 };

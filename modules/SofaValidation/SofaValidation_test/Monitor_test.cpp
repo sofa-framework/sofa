@@ -162,7 +162,7 @@ struct Monitor_test : public BaseSimulationTest
         std::remove(std::string(monitor->d_fileName.getFullPath() + "_f.txt").c_str());
         std::remove(std::string(monitor->d_fileName.getFullPath() + "_v.txt").c_str());
     }
-    void SetUp()
+    void SetUp() override
     {
         sofa::component::initSofaBase();
         sofa::component::initSofaImplicitOdeSolver();
@@ -200,7 +200,7 @@ struct Monitor_test : public BaseSimulationTest
         EXPECT_FALSE(mo == 0);
     }
 
-    void TearDown()
+    void TearDown() override
     {
     }
 };

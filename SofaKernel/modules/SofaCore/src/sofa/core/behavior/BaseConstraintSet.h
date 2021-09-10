@@ -94,13 +94,6 @@ public:
         dmsg_error() << "getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v, const unsigned int cIndex) is not implemented while it should";
     }
 
-    /// Useful when the Constraint is applied only on a subset of dofs.
-    /// It is automatically called by buildConstraintMatrix
-    ///
-    /// That way, we can optimize the time spent to transfer quantities through the mechanical mappings.
-    /// Every Dofs are inserted by default. The Constraint using only a subset of dofs should only insert these dofs in the mask.
-    virtual void updateForceMask() = 0;
-
 protected:
 
     Data< int > group; ///< ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle.

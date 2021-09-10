@@ -108,7 +108,6 @@ void DOFBlockerLMConstraint<DataTypes>::buildConstraintMatrix(const core::Constr
             c->writeLine(cIndex).addCol(index,axis[i]);
             idxEquations[numParticle].push_back(cIndex++);
         }
-        this->constrainedObject1->forceMask.insertEntry(index);
     }
 
 

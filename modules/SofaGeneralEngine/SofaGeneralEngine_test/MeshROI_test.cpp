@@ -62,7 +62,7 @@ struct MeshROI_test : public BaseSimulationTest,
     Node::SPtr m_root;
     ThisClass* m_thisObject;
 
-    void SetUp()
+    void SetUp() override
     {
         sofa::component::initSofaBase();
 
@@ -88,7 +88,7 @@ struct MeshROI_test : public BaseSimulationTest,
         ASSERT_NE(m_thisObject, nullptr) ;
     }
 
-    void TearDown()
+    void TearDown() override
     {
         simulation::getSimulation()->unload(m_root) ;
     }

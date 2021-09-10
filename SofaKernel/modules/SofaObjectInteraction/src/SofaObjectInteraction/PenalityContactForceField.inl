@@ -251,19 +251,4 @@ void PenalityContactForceField<DataTypes>::grabPoint(
 
 }
 
-template<class DataTypes>
-void PenalityContactForceField<DataTypes>::updateForceMask()
-{
-    const type::vector<Contact>& cc = contacts.getValue();
-    for (sofa::Index i=0; i<cc.size(); i++)
-    {
-        const Contact& c = cc[i];
-        if (c.pen > 0)
-        {
-            this->mstate1->forceMask.insertEntry(c.m1);
-            this->mstate2->forceMask.insertEntry(c.m2);
-        }
-    }
-}
-
 } // namespace sofa::component::interactionforcefield

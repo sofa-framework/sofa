@@ -2102,7 +2102,7 @@ const type::vector< typename TetrahedronFEMForceField<DataTypes>::Mat33 >& Tetra
 
     m_rotations.resize(nbDOFs);
 
-    for (auto i = 0; i < nbDOFs; ++i)
+    for (sofa::Size i = 0; i < nbDOFs; ++i)
     {
         getRotation(m_rotations[i], i);
     }

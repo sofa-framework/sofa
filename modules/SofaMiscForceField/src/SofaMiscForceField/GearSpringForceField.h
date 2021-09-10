@@ -295,8 +295,6 @@ public:
     /// bool to allow the display of the extra torsion
     Data<Real> showFactorSize;
 
-    void updateForceMask() override;
-
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_GEARSPRINGFORCEFIELD_CPP)

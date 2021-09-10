@@ -58,8 +58,6 @@ protected:
     {
     }
 
-    virtual void updateMaskForce();
-
 public:
     void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 ) override;
 
