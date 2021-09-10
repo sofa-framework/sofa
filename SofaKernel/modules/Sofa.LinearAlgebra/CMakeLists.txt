@@ -23,7 +23,6 @@ set(HEADER_FILES
     ${SOFALINEARALGEBRASRC_ROOT}/EigenMatrixManipulator.h
     ${SOFALINEARALGEBRASRC_ROOT}/EigenSparseMatrix.h
     ${SOFALINEARALGEBRASRC_ROOT}/EigenVector.h
-    ${SOFALINEARALGEBRASRC_ROOT}/EigenVectorWrapper.h
 
 )
 

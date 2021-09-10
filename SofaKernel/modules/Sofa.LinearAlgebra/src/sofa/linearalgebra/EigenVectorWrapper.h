@@ -20,133 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/linearalgebra/config.h>
 
-#include <sofa/linearalgebra/BaseVector.h>
-#include <Eigen/Dense>
+#include <sofa/linearalgebra/EigenVector.h>
 
-namespace sofa::linearalgebra
+SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/EigenVector.h")
+
+namespace sofa::component::linearsolver
 {
 
-//#define EigenVector_CHECK
-//#define EigenVector_VERBOSE
+    template<typename T>
+    using EigenVectorWrapper = sofa::linearalgebra::EigenVector<T>;
 
-
-/** Wrapper of an Eigen vector to provide it with a defaulttype::BaseVector interface.
-  */
-template<class Real>
-class EigenVectorWrapper : public defaulttype::BaseVector
-{
-
-public:
-    typedef Eigen::Matrix<Real,Eigen::Dynamic,1>  VectorEigen;
-    typedef typename VectorEigen::Index  IndexEigen;
-protected:
-    VectorEigen& eigenVector;    ///< the data
-
-
-public:
-
-    VectorEigen& getVectorEigen() { return eigenVector; }
-    const VectorEigen& getVectorEigen() const { return eigenVector; }
-
-
-
-    EigenVectorWrapper( VectorEigen& ve ): eigenVector(ve) {}
-
-    Index size() const { return eigenVector.size(); }
-
-    /// Resize the matrix without preserving the data (the matrix is set to zero)
-    void resize(Index nbRow)
-    {
-        eigenVector.resize((IndexEigen)nbRow);
-    }
-
-
-
-    SReal element(Index i) const
-    {
-#ifdef EigenVector_CHECK
-        if (i >= rowSize() || j >= colSize())
-        {
-            msg_error("EigenVectorWrapper") << "Invalid read access to element ("<<i<<","<<j<<") in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")" ;
-            return 0.0;
-        }
-#endif
-        return eigenVector.coeff((IndexEigen)i);
-    }
-
-    void set(Index i, double v)
-    {
-#ifdef EigenVector_VERBOSE
-        std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
-#endif
-#ifdef EigenVector_CHECK
-        if (i >= rowSize() || j >= colSize())
-        {
-            msg_error("EigenVectorWrapper") << "Invalid write access to element ("<<i<<","<<j<<") in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")" ;
-            return;
-        }
-#endif
-        eigenVector.coeffRef((IndexEigen)i) = (Real)v;
-    }
-
-
-
-
-
-    void add(Index i, double v)
-    {
-#ifdef EigenVector_VERBOSE
-        std::cout << /*this->Name() << */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
-#endif
-#ifdef EigenVector_CHECK
-        if (i >= rowSize() || j >= colSize())
-        {
-            msg_error("EigenVectorWrapper") << "Invalid write access to element ("<<i<<","<<j<<") in "/*<<this->Name()*/<<" of size ("<<rowSize()<<","<<colSize()<<")" ;
-            return;
-        }
-#endif
-        eigenVector.coeffRef((IndexEigen)i) += (Real)v;
-    }
-
-    void clear(Index i)
-    {
-#ifdef EigenVector_VERBOSE
-        msg_error("EigenVectorWrapper") << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0" ;
-#endif
-#ifdef EigenVector_CHECK
-        if (i >= rowSize() || j >= colSize())
-        {
-            msg_error("EigenVectorWrapper") << "Invalid write access to element ("<<i<<","<<j<<") in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")" ;
-            return;
-        }
-#endif
-        eigenVector.coeffRef((IndexEigen)i) = (Real)0;
-    }
-
-
-    /// Set all values to 0, by resizing to the same size. @todo check that it really resets.
-    void clear()
-    {
-        resize(0);
-        resize(size());
-    }
-
-
-    friend std::ostream& operator << (std::ostream& out, const EigenVectorWrapper<Real>& v )
-    {
-        IndexEigen ny = v.size();
-        for (IndexEigen y=0; y<ny; ++y)
-        {
-            out << " " << v.element(y);
-        }
-        return out;
-    }
-
-    static const char* Name();
-
-
-};
-
-} // namespace sofa::linearalgebra
+} // namespace sofa::component::linearsolver

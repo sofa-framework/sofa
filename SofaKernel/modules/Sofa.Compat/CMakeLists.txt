@@ -71,6 +71,8 @@ set(HEADER_FILES
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/FullVector.h
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/MatrixExpr.h
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/SparseMatrix.h
+    ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/EigenVectorWrapper.h
+    
 )
 
 set(SOURCE_FILES
