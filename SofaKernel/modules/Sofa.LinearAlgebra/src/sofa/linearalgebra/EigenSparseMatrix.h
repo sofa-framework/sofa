@@ -468,20 +468,16 @@ public:
         std::ostringstream o;
         o << "EigenMatrix";
 
-        if constexpr (std::is_scalar<real>::value)
+        if constexpr (std::is_scalar<Real>::value)
         {
-            if constexpr (std::is_same<float, real>::value)
+            if constexpr (std::is_same<float, Real>::value)
             {
                 o << "f";
             }
-            if constexpr (std::is_same<double, real>::value)
+            if constexpr (std::is_same<double, Real>::value)
             {
                 o << "d";
             }
-        }
-        else
-        {
-            o << InDataTypes::Name();
         }
 
         return o.str();
@@ -525,7 +521,7 @@ namespace sofa
         assert( m );
 
         {
-        typedef component::linearsolver::EigenBaseSparseMatrix<SReal> matrixr;
+        typedef linearalgebra::EigenBaseSparseMatrix<SReal> matrixr;
         const matrixr* smr = dynamic_cast<const matrixr*> (m);
         // no need to create temporary data, so the SPtr does not take this ownership
         if ( smr ) return helper::OwnershipSPtr<mat>(&smr->compressedMatrix, false);
@@ -534,14 +530,14 @@ namespace sofa
         msg_warning("EigenSparseMatrix")<<"convertSPtr: slow matrix conversion (scalar type conversion)";
 
         {
-        typedef component::linearsolver::EigenBaseSparseMatrix<double> matrixd;
+        typedef linearalgebra::EigenBaseSparseMatrix<double> matrixd;
         const matrixd* smd = dynamic_cast<const matrixd*> (m);
         // the cast is creating a temporary matrix, the SPtr takes its ownership, so its deletion will be transparent
         if ( smd ) return helper::OwnershipSPtr<mat>( new mat(smd->compressedMatrix.cast<SReal>()), true );
         }
 
         {
-        typedef component::linearsolver::EigenBaseSparseMatrix<float> matrixf;
+        typedef linearalgebra::EigenBaseSparseMatrix<float> matrixf;
         const matrixf* smf = dynamic_cast<const matrixf*>(m);
         // the cast is creating a temporary matrix, the SPtr takes its ownership, so its deletion will be transparent
         if( smf ) return helper::OwnershipSPtr<mat>( new mat(smf->compressedMatrix.cast<SReal>()), true );

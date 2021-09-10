@@ -25,6 +25,6 @@
 namespace sofa::linearalgebra
 {
 
-const std::string EigenVector<double>::Name() { return "EigenVectord"; }
+template <> const std::string EigenVector<double>::Name() { return "EigenVectord"; }
 
 } // namespace sofa::linearalgebra

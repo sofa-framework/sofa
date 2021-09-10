@@ -164,20 +164,16 @@ public:
         std::ostringstream o;
         o << "EigenVector";
 
-        if constexpr (std::is_scalar<real>::value)
+        if constexpr (std::is_scalar<TReal>::value)
         {
-            if constexpr (std::is_same<float, real>::value)
+            if constexpr (std::is_same<float, TReal>::value)
             {
                 o << "f";
             }
-            if constexpr (std::is_same<double, real>::value)
+            if constexpr (std::is_same<double, TReal>::value)
             {
                 o << "d";
             }
-        }
-        else
-        {
-            o << InDataTypes::Name();
         }
 
         return o.str();

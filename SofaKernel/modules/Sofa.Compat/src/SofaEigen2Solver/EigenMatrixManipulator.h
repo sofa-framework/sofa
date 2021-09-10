@@ -24,9 +24,15 @@
 #include <sofa/linearalgebra/EigenMatrixManipulator.h>
 
 SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/EigenMatrixManipulator.h")
+#include <SofaEigen2Solver/EigenBaseSparseMatrix.h>
 
 namespace sofa::component::linearsolver
 {
+
+    typedef Eigen::SparseMatrix<SReal>    SparseMatrixEigen;
+    typedef Eigen::SparseVector<SReal>    SparseVectorEigen;
+    typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1>       VectorEigen;
+
     using LLineManipulator = sofa::linearalgebra::LLineManipulator;
     using LMatrixManipulator = sofa::linearalgebra::LMatrixManipulator;
 
