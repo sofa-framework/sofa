@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/linearalgebra/EigenMatrixManipulator.h>
-#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::linearalgebra
 {

@@ -511,7 +511,29 @@ public:
         addMultTranspose_impl(res, dat, fact);
     }
 
-    static const char* Name();
+    static const std::string Name()
+    {
+        std::ostringstream o;
+        o << "EigenMatrix";
+
+        if constexpr (std::is_scalar<real>::value)
+        {
+            if constexpr (std::is_same<float, real>::value)
+            {
+                o << "f";
+            }
+            if constexpr (std::is_same<double, real>::value)
+            {
+                o << "d";
+            }
+        }
+        else
+        {
+            o << InDataTypes::Name();
+        }
+
+        return o.str();
+    }
 
 private:
     //@{
@@ -532,13 +554,7 @@ private:
 		typedef typename value_type::value_type scalar_type;
 		return  (v.size() - 1) * sizeof(value_type) == (&v[v.size() - 1][0] - &v[0][0]) * sizeof(scalar_type); 
 	}
-	
-	
-
-
 };
-
-template<> inline const char* EigenSparseMatrix<defaulttype::Vec3Types, defaulttype::Vec1Types >::Name() { return "EigenSparseMatrix3d1d"; }
 
 } // namespace sofa::linearalgebra
 
@@ -553,7 +569,7 @@ namespace sofa
     /// @TODO move this somewhere else?
     /// @author Matthieu Nesme
     template<class mat>
-    helper::OwnershipSPtr<mat> convertSPtr( const defaulttype::BaseMatrix* m) {
+    helper::OwnershipSPtr<mat> convertSPtr( const linearalgebra::BaseMatrix* m) {
         assert( m );
 
         {
@@ -596,14 +612,3 @@ namespace sofa
         return helper::OwnershipSPtr<mat>(res, true);
     }
 } // namespace sofa
-
-namespace sofa::defaulttype
-{
-
-template<class TIn, class TOut>
-struct DataTypeInfo< component::linearsolver::EigenSparseMatrix<TIn, TOut> > 
-    : DataTypeInfo< typename component::linearsolver::EigenSparseMatrix<TIn, TOut>::Inherit > {
-    
-};
-
-} // namespace sofa::defaulttype

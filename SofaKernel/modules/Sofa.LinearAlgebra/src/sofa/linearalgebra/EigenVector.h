@@ -25,22 +25,21 @@
 #include <sofa/linearalgebra/BaseVector.h>
 #include <sofa/type/Vec.h>
 #include <Eigen/Dense>
-#include <sofa/linearalgebra/VecTypes.h>
 
 namespace sofa::linearalgebra
 {
 
-//#define EigenVector_CHECK
+//#define EIGEN_CHECK
 
 
 /** Container of a vector of the Eigen library. Not an eigenvector of a matrix.
   */
-template<class InDataTypes>
-class SOFA_LINEARALGEBRA_API EigenVector : public defaulttype::BaseVector
+template<class TReal, std::size_t TBlockSize = 1>
+class SOFA_LINEARALGEBRA_API EigenVector : public linearalgebra::BaseVector
 {
 
 protected:
-    typedef typename InDataTypes::Real Real;
+    typedef TReal Real;
 public:
     typedef Eigen::Matrix<Real,Eigen::Dynamic,1>  VectorEigen;
     typedef typename VectorEigen::Index  IndexEigen;
@@ -49,14 +48,11 @@ protected:
 
 
 public:
-    typedef typename InDataTypes::VecDeriv InVecDeriv;
-    enum { Nin=InDataTypes::deriv_total_size };
+    enum { Nin= TBlockSize };
     typedef type::Vec<Nin,Real> Block;
 
     VectorEigen& getVectorEigen() { return eigenVector; }
     const VectorEigen& getVectorEigen() const { return eigenVector; }
-
-
 
     EigenVector(Index nbRow=0)
     {
@@ -82,7 +78,7 @@ public:
 
     SReal element(Index i) const override
     {
-#ifdef EigenVector_CHECK
+#if EIGEN_CHECK
         if (i >= rowSize() || j >= colSize())
         {
             msg_error("EigenVector") << "Invalid read access to element (" << i << "," << j << ") in " <</*this->Name()<<*/" of size (" << rowSize() << "," << colSize() << ")";
@@ -94,7 +90,7 @@ public:
 
     void set(Index i, double v) override
     {
-#ifdef EigenVector_CHECK
+#if EIGEN_CHECK
         if (i >= rowSize() || j >= colSize())
         {
             msg_error("EigenVector") << "Invalid write access to element (" << i << "," << j << ") in " <</*this->Name()<<*/" of size (" << rowSize() << "," << colSize() << ")";
@@ -106,7 +102,7 @@ public:
 
     void setBlock(Index i, const Block& v)
     {
-#ifdef EigenVector_CHECK
+#if EIGEN_CHECK
         if (i >= rowSize()/Nout || j >= colSize()/Nin )
         {
             msg_error("EigenVector") << "Invalid write access to element (" << i << "," << j << ") in " <</*this->Name()<<*/" of size (" << rowSize() / Nout << "," << colSize() / Nin << ")";
@@ -122,7 +118,7 @@ public:
 
     void add(Index i, double v) override
     {
-#ifdef EigenVector_CHECK
+#if EIGEN_CHECK
         if (i >= rowSize() || j >= colSize())
         {
             msg_error("EigenVector") << "Invalid write access to element (" << i << "," << j << ") in "/*<<this->Name()*/ << " of size (" << rowSize() << "," << colSize() << ")";
@@ -134,7 +130,7 @@ public:
 
     void clear(Index i) override
     {
-#ifdef EigenVector_CHECK
+#if EIGEN_CHECK
         if (i >= rowSize() || j >= colSize())
         {
             msg_error("EigenVector") << "Invalid write access to element (" << i << "," << j << ") in " <</*this->Name()<<*/" of size (" << rowSize() << "," << colSize() << ")";
@@ -153,7 +149,7 @@ public:
     }
 
 
-    friend std::ostream& operator << (std::ostream& out, const EigenVector<InDataTypes>& v )
+    friend std::ostream& operator << (std::ostream& out, const EigenVector<TReal, TBlockSize>& v )
     {
         IndexEigen ny = v.size();
         for (IndexEigen y=0; y<ny; ++y)
@@ -163,117 +159,31 @@ public:
         return out;
     }
 
-    static const char* Name();
+    static const std::string Name()
+    {
+        std::ostringstream o;
+        o << "EigenVector";
+
+        if constexpr (std::is_scalar<real>::value)
+        {
+            if constexpr (std::is_same<float, real>::value)
+            {
+                o << "f";
+            }
+            if constexpr (std::is_same<double, real>::value)
+            {
+                o << "d";
+            }
+        }
+        else
+        {
+            o << InDataTypes::Name();
+        }
+
+        return o.str();
+    }
 
 
 };
-
-template<> const char* EigenVector<defaulttype::Vec3Types>::Name();
-
-
-
-
-
-/** Container of an Eigen vector.
-  */
-template<>
-class SOFA_LINEARALGEBRA_API EigenVector<double> : public defaulttype::BaseVector
-{
-
-protected:
-    typedef double Real;
-
-public:
-    typedef Eigen::Matrix<Real,Eigen::Dynamic,1>  VectorEigen;
-
-protected:
-    VectorEigen eigenVector;    ///< the data
-
-
-public:
-
-    VectorEigen& getVectorEigen() { return eigenVector; }
-    const VectorEigen& getVectorEigen() const { return eigenVector; }
-
-
-    Index size() const override { return Index(eigenVector.size()); }
-
-    EigenVector(Index nbRow=0)
-    {
-        resize(nbRow);
-    }
-
-    /// Resize the matrix without preserving the data
-    void resize(Index nbRow) override
-    {
-        eigenVector.resize(nbRow);
-    }
-
-
-
-    SReal element(Index i) const override
-    {
-#ifdef EigenVector_CHECK
-        if (i >= rowSize() || j >= colSize())
-        {
-            msg_error("EigenVector") << "Invalid read access to element (" << i << "," << j << ") in " <</*this->Name()<<*/" of size (" << rowSize() << "," << colSize() << ")";
-            return 0.0;
-        }
-#endif
-        return eigenVector.coeff(i);
-    }
-
-    void set(Index i, double v) override
-    {
-#ifdef EigenVector_CHECK
-        if (i >= rowSize() || j >= colSize())
-        {
-            msg_error("EigenVector") << "Invalid write access to element (" << i << "," << j << ") in " <</*this->Name()<<*/" of size (" << rowSize() << "," << colSize() << ")";
-            return;
-        }
-#endif
-        eigenVector.coeffRef(i) = (Real)v;
-    }
-
-
-
-
-
-    void add(Index i, double v) override
-    {
-#ifdef EigenVector_CHECK
-        if (i >= rowSize() || j >= colSize())
-        {
-            msg_error("EigenVector") << "Invalid write access to element (" << i << "," << j << ") in "/*<<this->Name()*/ << " of size (" << rowSize() << "," << colSize() << ")";
-            return;
-        }
-#endif
-        eigenVector.coeffRef(i) += (Real)v;
-    }
-
-    void clear(Index i) override
-    {
-#ifdef EigenVector_CHECK
-        if (i >= rowSize() || j >= colSize())
-        {
-            msg_error("EigenVector") << "Invalid write access to element (" << i << "," << j << ") in " <</*this->Name()<<*/" of size (" << rowSize() << "," << colSize() << ")";
-            return;
-        }
-#endif
-        eigenVector.coeffRef(i) = (Real)0;
-    }
-
-
-    /// Set all values to 0
-    void clear() override
-    {
-        eigenVector.setZero();
-    }
-
-    static const char* Name();
-
-
-};
-
 
 } // namespace sofa::linearalgebra

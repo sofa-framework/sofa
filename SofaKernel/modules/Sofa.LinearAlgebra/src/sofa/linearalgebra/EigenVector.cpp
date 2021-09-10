@@ -21,14 +21,10 @@
 ******************************************************************************/
 
 #include <sofa/linearalgebra/EigenVector.h>
-#include <sofa/linearalgebra/VecTypes.h>
 
 namespace sofa::linearalgebra
 {
 
-template<>
-const char* EigenVector<defaulttype::Vec3Types>::Name() { return "EigenVector3d"; }
-
-const char* EigenVector<double>::Name() { return "EigenVectord"; }
+const std::string EigenVector<double>::Name() { return "EigenVectord"; }
 
 } // namespace sofa::linearalgebra

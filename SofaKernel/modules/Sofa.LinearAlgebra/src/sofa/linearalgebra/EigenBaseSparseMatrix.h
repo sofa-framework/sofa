@@ -22,15 +22,12 @@
 #pragma once
 #include <sofa/linearalgebra/config.h>
 
-#include <sofa/core/objectmodel/Data.h>
-#include <sofa/linearalgebra/DataTypeInfo.h>
 #include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/type/vector.h>
-#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <Eigen/Sparse>
 
-#if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
-#include "EigenBaseSparseMatrix_MT.h"
+#if (SOFA_LINEARALGEBRA_HAVE_OPENMP == 1)
+#include <sofa/linearalgebra/EigenBaseSparseMatrix_MT.h>
 #endif
 
 namespace sofa::linearalgebra
@@ -57,7 +54,7 @@ Rows, columns, or the full matrix can be set to zero using the clear* methods.
 
   */
 template<class TReal>
-class EigenBaseSparseMatrix : public defaulttype::BaseMatrix
+class EigenBaseSparseMatrix : public linearalgebra::BaseMatrix
 {
     void set(Index i, Index j, double v) override
     {
@@ -349,47 +346,47 @@ public:
     }
 
 
-    /// View this matrix as a MultiMatrix
-    class MatrixAccessor: public core::behavior::MultiMatrixAccessor
-    {
-    public:
+    ///// View this matrix as a MultiMatrix
+    //class MatrixAccessor: public core::behavior::MultiMatrixAccessor
+    //{
+    //public:
 
-        MatrixAccessor( ThisMatrix* m=0 ) {setMatrix(m); }
-        ~MatrixAccessor() override {}
+    //    MatrixAccessor( ThisMatrix* m=0 ) {setMatrix(m); }
+    //    ~MatrixAccessor() override {}
 
-        void setMatrix( ThisMatrix* m )
-        {
-            m->compress();
-            matrix = m;
-            matRef.matrix = m;
-        }
-        ThisMatrix* getMatrix() { return matrix; }
-        const ThisMatrix* getMatrix() const { return matrix; }
-
-
-        Index getGlobalDimension() const override { return matrix->rowSize(); }
-        int getGlobalOffset(const core::behavior::BaseMechanicalState*) const override { return 0; }
-        MatrixRef getMatrix(const core::behavior::BaseMechanicalState*) const override
-        {
-            return matRef;
-        }
+    //    void setMatrix( ThisMatrix* m )
+    //    {
+    //        m->compress();
+    //        matrix = m;
+    //        matRef.matrix = m;
+    //    }
+    //    ThisMatrix* getMatrix() { return matrix; }
+    //    const ThisMatrix* getMatrix() const { return matrix; }
 
 
-        InteractionMatrixRef getMatrix(const core::behavior::BaseMechanicalState* /*mstate1*/, const core::behavior::BaseMechanicalState* /*mstate2*/) const override
-        {
-            assert(false);
-            InteractionMatrixRef ref;
-            return ref;
-        }
+    //    Index getGlobalDimension() const override { return matrix->rowSize(); }
+    //    int getGlobalOffset(const core::behavior::BaseMechanicalState*) const override { return 0; }
+    //    MatrixRef getMatrix(const core::behavior::BaseMechanicalState*) const override
+    //    {
+    //        return matRef;
+    //    }
 
-    protected:
-        ThisMatrix* matrix;   ///< The single matrix
-        MatrixRef matRef; ///< The accessor to the single matrix
 
-    };
+    //    InteractionMatrixRef getMatrix(const core::behavior::BaseMechanicalState* /*mstate1*/, const core::behavior::BaseMechanicalState* /*mstate2*/) const override
+    //    {
+    //        assert(false);
+    //        InteractionMatrixRef ref;
+    //        return ref;
+    //    }
 
-    /// Get a view of this matrix as a MultiMatrix
-    MatrixAccessor getAccessor() { return MatrixAccessor(this); }
+    //protected:
+    //    ThisMatrix* matrix;   ///< The single matrix
+    //    MatrixRef matRef; ///< The accessor to the single matrix
+
+    //};
+
+    ///// Get a view of this matrix as a MultiMatrix
+    //MatrixAccessor getAccessor() { return MatrixAccessor(this); }
 
 
     /// add this EigenBaseSparseMatrix to a BaseMatrix at the offset and multiplied by factor
@@ -453,29 +450,3 @@ template<> inline const char* EigenBaseSparseMatrix<double>::Name() { return "Ei
 template<> inline const char* EigenBaseSparseMatrix<float>::Name()  { return "EigenBaseSparseMatrixf"; }
 
 } // namespace sofa::linearalgebra
-
-
-namespace sofa::defaulttype 
-{
-
-template<class Real>
-struct DataTypeInfo< component::linearsolver::EigenBaseSparseMatrix<Real> > 
-    : DefaultDataTypeInfo<component::linearsolver::EigenBaseSparseMatrix<Real> > {
-
-    using typename DataTypeInfo::DefaultDataTypeInfo::DataType;
-
-    static const char* name() {
-        return DataType::Name();
-    }
-    
-    static const void* getValuePtr(const DataType& type) {
-        return &type.compressedMatrix;
-    }
-
-    static void* getValuePtr(DataType& type) {
-        return &type.compressedMatrix;
-    }
-    
-};
-
-} // namespace sofa::defaulttype
