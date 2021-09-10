@@ -25,11 +25,63 @@
 
 SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/EigenSparseMatrix.h")
 #include <SofaEigen2Solver/EigenBaseSparseMatrix.h>
+#include <sofa/core/objectmodel/Data.h>
 
 namespace sofa::component::linearsolver
 {
 
     template<class InDataTypes, class OutDataTypes>
-    using EigenSparseMatrix = sofa::linearalgebra::EigenSparseMatrix<InDataTypes, OutDataTypes>;
+    struct EigenSparseMatrix : public sofa::linearalgebra::EigenSparseMatrix<InDataTypes, OutDataTypes>
+    {
+        using sofa::linearalgebra::EigenSparseMatrix<InDataTypes, OutDataTypes>::mult;
+        /// compute result = A * data
+        void mult(Data<OutVecDeriv>& _result, const Data<InVecDeriv>& _data) const 
+        {
+            helper::WriteOnlyAccessor<Data<OutVecDeriv> > result(_result);
+            helper::ReadAccessor<Data<InVecDeriv> > data(_data);
+
+            mult_impl(result, data);
+        }
+
+        using sofa::linearalgebra::EigenSparseMatrix<InDataTypes, OutDataTypes>::addMult;
+        /// compute result += A * data
+        void addMult(Data<OutVecDeriv>& result, const Data<InVecDeriv>& data) const 
+        {
+            helper::WriteAccessor<Data<OutVecDeriv> > res(result);
+            helper::ReadAccessor<Data<InVecDeriv> > dat(data);
+
+            addMult_impl(res, dat, 1.0);
+        }
+
+        /// compute result += A * data * fact
+        void addMult(Data<OutVecDeriv>& result, const Data<InVecDeriv>& data, const OutReal fact) const 
+        {
+            helper::WriteAccessor<Data<OutVecDeriv> > res(result);
+            helper::ReadAccessor<Data<InVecDeriv> > dat(data);
+
+            addMult_impl(res, dat, fact);
+        }
+
+        using sofa::linearalgebra::EigenSparseMatrix<InDataTypes, OutDataTypes>::addMultTranspose;
+        /// compute result += A^T * data * fact
+        void addMultTranspose(Data<InVecDeriv>& result, const Data<OutVecDeriv>& data, const OutReal fact) const 
+        {
+            helper::WriteAccessor<Data<InVecDeriv> > res(result);
+            helper::ReadAccessor<Data<OutVecDeriv> > dat(data);
+
+            addMultTranspose_impl(res, dat, fact);
+        }
+
+        /// compute result += A^T * data
+        void addMultTranspose(Data<InVecDeriv>& result, const Data<OutVecDeriv>& data) const 
+        {
+            helper::WriteAccessor<Data<InVecDeriv> > res(result);
+            helper::ReadAccessor<Data<OutVecDeriv> > dat(data);
+
+            addMultTranspose_impl(res, dat, 1.0);
+        }
+
+    };
+
 
 } // namespace sofa::component::linearsolver
