@@ -22,7 +22,8 @@
 #include <SofaEigen2Solver/SVDLinearSolver.h>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <sofa/linearalgebra/FullMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/ObjectFactory.h>
 #include <Eigen/Dense>
@@ -57,22 +58,25 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     const bool verbose  = f_verbose.getValue();
 
     /// Convert the matrix and the right-hand vector to Eigen objects
+    sofa::helper::AdvancedTimer::stepBegin("convertToEigen");
     Eigen::MatrixXd m(M.rowSize(),M.colSize());
     Eigen::VectorXd rhs(M.rowSize());
     for(unsigned i=0; i<(unsigned)M.rowSize(); i++ )
     {
         for( unsigned j=0; j<(unsigned)M.colSize(); j++ )
-            m(i,j) = M[i][j];
+            m(i,j) = M.element(i, j);
         rhs(i) = b[i];
     }
+    sofa::helper::AdvancedTimer::stepEnd("convertToEigen");
 
     msg_info_when(verbose) << "solve, Here is the matrix m:  "
                            << m ;
 
     /// Compute the SVD decomposition and the condition number
+    sofa::helper::AdvancedTimer::stepBegin("SVDDecomposition");
     Eigen::JacobiSVD<Eigen::MatrixXd> svd(m, Eigen::ComputeThinU | Eigen::ComputeThinV);
     f_conditionNumber.setValue( (Real)(svd.singularValues()(0) / svd.singularValues()(M.rowSize()-1)) );
-
+    sofa::helper::AdvancedTimer::stepEnd("SVDDecomposition");
 
 
     if(verbose)
@@ -91,6 +95,7 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 //    for(unsigned i=0; i<M.rowSize(); i++ ){
 //        x[i] = solution(i);
 //    }
+    sofa::helper::AdvancedTimer::stepBegin("solveFromSVD");
     Eigen::VectorXd Ut_b = svd.matrixU().transpose() *  rhs;
     Eigen::VectorXd S_Ut_b(M.colSize());
     for( unsigned i=0; i<(unsigned)M.colSize(); i++ )   /// product with the diagonal matrix, using the threshold for near-null values
@@ -105,6 +110,7 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     {
         x[i] = (Real) solution(i);
     }
+    sofa::helper::AdvancedTimer::stepEnd("solveFromSVD");
 
     sofa::helper::AdvancedTimer::stepEnd("Solve-SVD");
 
@@ -114,9 +120,11 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 }
 
 
-int SVDLinearSolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
+int SVDLinearSolverClass = core::RegisterObject("Linear system solver using a SVD decomposition of a dense matrix")
         .add< SVDLinearSolver< FullMatrix<double>, FullVector<double> > >()
         .add< SVDLinearSolver< FullMatrix<float>, FullVector<float> > >()
+        .add< SVDLinearSolver< CompressedRowSparseMatrix<double>, FullVector<double> > >()
+        .add< SVDLinearSolver< CompressedRowSparseMatrix<type::Mat<3,3,double>>, FullVector<double> > >()
         .addAlias("SVDLinear")
         .addAlias("SVD")
         ;
