@@ -21,14 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/linearalgebra/EigenVector.h>
+#include <sofa/linearalgebra/EigenBaseSparseMatrix_MT.h>
 
-SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/EigenVector.h")
-
-namespace sofa::component::linearsolver
-{
-
-    template<typename T>
-    using EigenVectorWrapper = sofa::linearalgebra::EigenVector<T>;
-
-} // namespace sofa::component::linearsolver
+SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/EigenBaseSparseMatrix_MT.h")

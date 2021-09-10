@@ -21,14 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/linearalgebra/EigenVector.h>
+#include <sofa/linearalgebra/EigenMatrixManipulator.h>
 
-SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/EigenVector.h")
+SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/EigenMatrixManipulator.h")
 
 namespace sofa::component::linearsolver
 {
-
-    template<typename T>
-    using EigenVectorWrapper = sofa::linearalgebra::EigenVector<T>;
+    using LLineManipulator = sofa::linearalgebra::LLineManipulator;
+    using LMatrixManipulator = sofa::linearalgebra::LMatrixManipulator;
 
 } // namespace sofa::component::linearsolver
