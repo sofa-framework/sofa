@@ -516,20 +516,20 @@ TEST(QuaterTest, QuaterdCreateQuaterFromFrame)
     EXPECT_NEAR(0.707106781186548, quat[3], errorThreshold);
 }
 
-//TEST(QuaterTest, QuaterdCreateFromRotationVector)
-//{
-//    //axang2quat([1 2 5 pi / 12])
-//    sofa::type::Vec3d axis(1, 2, 5);
-//    double phi = 0.261799387799149; //15deg
-//
-//    Quat<double> quat = Quat<double>::createFromRotationVector(axis * phi);
-//
-//    EXPECT_NEAR(0.023830713274726, quat[0], errorThreshold);
-//    EXPECT_NEAR(0.047661426549452, quat[1], errorThreshold);
-//    EXPECT_NEAR(0.119153566373629, quat[2], errorThreshold);
-//    EXPECT_NEAR(0.991444861373810, quat[3], errorThreshold);
-//}
-//////////////////////////////////////////
+TEST(QuaterTest, QuaterdCreateFromRotationVector)
+{
+    //axang2quat([1 2 5 pi / 12])
+    constexpr double phi = 0.261799387799149; //15deg
+    const sofa::type::Vec3d axis = sofa::type::Vec3d(1, 2, 5).normalized() * phi;
+
+    const auto quat = Quat<double>::createFromRotationVector(axis);
+
+    EXPECT_NEAR(0.023830713274726, quat[0], errorThreshold);
+    EXPECT_NEAR(0.047661426549452, quat[1], errorThreshold);
+    EXPECT_NEAR(0.119153566373629, quat[2], errorThreshold);
+    EXPECT_NEAR(0.991444861373810, quat[3], errorThreshold);
+}
+
 TEST(QuaterTest, QuaterdCreateQuaterFromEuler)
 {
     //90deg X, 30deg Y and 60deg Z
@@ -540,22 +540,7 @@ TEST(QuaterTest, QuaterdCreateQuaterFromEuler)
     EXPECT_NEAR(0.500000000000000, quat[1], errorThreshold);
     EXPECT_NEAR(0.183012701892219, quat[2], errorThreshold);
     EXPECT_NEAR(0.683012701892219, quat[3], errorThreshold);
-
 }
-/////////////////////////////////
-//TEST(QuaterTest, QuaterdCreateFromRotationVectorT)
-//{
-//    //axang2quat([1 2 5 pi / 12])
-//    sofa::type::Vec3d axis(1, 2, 5);
-//    double phi = 0.261799387799149; //15deg
-//
-//    Quat<double> quat = Quat<double>::createFromRotationVector(axis * phi);
-//
-//    EXPECT_NEAR(0.023830713274726, quat[0], errorThreshold);
-//    EXPECT_NEAR(0.047661426549452, quat[1], errorThreshold);
-//    EXPECT_NEAR(0.119153566373629, quat[2], errorThreshold);
-//    EXPECT_NEAR(0.991444861373810, quat[3], errorThreshold);
-//}
 
 TEST(QuaterTest, QuaterdQuatDiff)
 {

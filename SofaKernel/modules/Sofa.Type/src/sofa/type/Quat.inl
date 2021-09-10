@@ -837,7 +837,7 @@ template<class Real>
 auto Quat<Real>::createFromRotationVector(const Vec3& a) -> Quat
 {
     Real phi = Real(sqrt(a*a));
-    if( phi >= 1.0e-5 )
+    if( phi <= 1.0e-5 )
         return Quat(0,0,0,1);
 
     Real nor = 1/phi;
