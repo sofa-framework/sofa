@@ -39,12 +39,8 @@ public:
                SOFA_TEMPLATE2(BarycentricMapper,In,Out));
 
     typedef typename Inherit1::Real Real;
-    typedef typename core::behavior::BaseMechanicalState::ForceMask ForceMask;
 
     using Index = sofa::Index;
-
-    ForceMask *maskFrom;
-    ForceMask *maskTo;
 
     virtual Index addPointInLine(const Index lineIndex, const SReal* baryCoords);
     virtual Index setPointInLine(const Index pointIndex, const Index lineIndex, const SReal* baryCoords);
@@ -69,7 +65,6 @@ public:
     virtual void setToTopology( topology::PointSetTopologyContainer* toTopology) {this->m_toTopology = toTopology;}
     const topology::PointSetTopologyContainer *getToTopology() const {return m_toTopology;}
 
-    virtual void updateForceMask(){/*mask is already filled in the mapper's applyJT*/}
     virtual void resize( core::State<Out>* toModel ) = 0;
 
     void processTopologicalChanges(const typename Out::VecCoord& out, const typename In::VecCoord& in, core::topology::Topology* t) {

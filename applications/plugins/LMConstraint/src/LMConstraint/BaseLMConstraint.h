@@ -216,13 +216,6 @@ public:
     /// get Mechanical State 2 where the constraint will b*e solved
     virtual BaseMechanicalState* getSimulatedMechModel2()const =0;
 
-    /// Useful when the Constraint is applied only on a subset of dofs.
-    /// It is automatically called by ???
-    ///
-    /// That way, we can optimize the time spent to transfer quantities through the mechanical mappings.
-    /// Every Dofs are inserted by default. The Constraint using only a subset of dofs should only insert these dofs in the mask.
-    void updateForceMask() override = 0;
-
     /// Methods to know if we have to propagate the state we want to constrain before computing the correction
     /// If the correction is computed with the simulatedDOF, there is no need, and we can reach a good speed-up
     virtual bool isCorrectionComputedWithSimulatedDOF(ConstraintParams::ConstOrder) const {return false;}

@@ -170,13 +170,6 @@ protected:
     SingleLink<PairInteractionConstraint<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;
     SingleLink<PairInteractionConstraint<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
 
-    /// Useful when the Constraint is applied only on a subset of dofs.
-    /// It is automatically called by buildConstraintMatrix
-    ///
-    /// That way, we can optimize the time spent to transfer quantities through the mechanical mappings.
-    /// Every Dofs are inserted by default. The Constraint using only a subset of dofs should only insert these dofs in the mask.
-    void updateForceMask() override;
-
     void storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& res1, Data<VecDeriv>& res2, const Data<MatrixDeriv>& j1, const Data<MatrixDeriv>& j2,
                                const sofa::defaulttype::BaseVector* lambda);
 };

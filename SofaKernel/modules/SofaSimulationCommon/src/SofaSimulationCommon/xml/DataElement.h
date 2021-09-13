@@ -31,9 +31,9 @@ class SOFA_SOFASIMULATIONCOMMON_API DataElement : public Element<core::objectmod
 public:
     DataElement(const std::string& name, const std::string& type, BaseElement* parent=nullptr);
 
-    virtual ~DataElement();
+    ~DataElement() override;
 
-    virtual bool initNode();
+    bool initNode() override;
 
     virtual const char* getClass() const;
 };

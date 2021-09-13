@@ -115,7 +115,6 @@ protected:
     {
     }
 
-    void updateForceMask() override { fromModel->forceMask.assign(fromModel->getSize(),true); }
 };
 
 } // namespace sofa::component::mapping

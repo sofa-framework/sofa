@@ -62,8 +62,6 @@ public:
         : Inherit(fromTopology, toTopology)
         , maxNOut(0), topology(fromTopology)
     {}
-    void setMaskFrom(helper::StateMask *) {}
-    void setMaskTo  (helper::StateMask *) {}
 
     void clear(std::size_t reserve=0);
 
@@ -123,8 +121,6 @@ public:
         : Inherit(fromTopology, toTopology)
         , topology(fromTopology), bHexa(true), bTrans(true)
     {}
-    void setMaskFrom(helper::StateMask *) {}
-    void setMaskTo  (helper::StateMask *) {}
 
     void clear(std::size_t reserve=0);
 
@@ -198,8 +194,6 @@ public:
         if (topology==NULL || topology->getNbHexahedra()==0) maxNIn = 4;
         else maxNIn = 8;
     }
-    void setMaskFrom(helper::StateMask *) {}
-    void setMaskTo  (helper::StateMask *) {}
 
     void clear(std::size_t reserve=0);
 

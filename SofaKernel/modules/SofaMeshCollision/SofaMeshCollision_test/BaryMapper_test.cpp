@@ -82,34 +82,12 @@ MeshTopology* BaryMapperTest::initMesh(NodePtr &father){
     return father->getTreeObject<MeshTopology>();
 }
 
-//sofa::BaryMapperTest::triPts[0] = Vector3(-1,-1,0);
-//triPts[0];// = Vector3(-1,-1,0);
-
-
-
-//sofa::defaulttype::Rigid3Types zz;
-//BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology,
-//        component::topology::PointSetTopologyContainer* toTopology,
-//        helper::ParticleMask *_maskFrom,
-//        helper::ParticleMask *_maskTo)
-//    : TopologyBarycentricMapper<In,Out>(fromTopology, toTopology),
-//      maskFrom(_maskFrom), maskTo(_maskTo),
-//      matrixJ(nullptr), updateJ(true)
-//{
-//}
-
 bool BaryMapperTest::test_inside(SReal alpha,SReal beta){
     initTriPts();
     sofa::simulation::Node::SPtr father = New<sofa::simulation::graph::DAGNode>();
     MeshTopology * topo = initMesh(father);
     //makeTri()
-    component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo,(component::topology::PointSetTopologyContainer*)0x0/*model->getMeshTopology(), (topology::PointSetTopologyContainer*)nullptr, &model->getMechanicalState()->forceMask, &mstate->forceMask*/);
-
-    helper::StateMask maskFrom, maskTo;
-    maskFrom.assign( triPts.size(), true );
-
-    mapper->maskFrom = &maskFrom;
-    mapper->maskTo = &maskTo;
+    component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo,(component::topology::PointSetTopologyContainer*)0x0);
 
     Vector3 the_point = ((SReal)(1.0) - alpha - beta) * triPts[0] + alpha * triPts[1] + beta * triPts[2];
     Vector3 the_point_trans = the_point + (SReal)(10.0) * norm;
@@ -128,13 +106,7 @@ bool BaryMapperTest::test_outside(int index){
     sofa::simulation::Node::SPtr father = New<sofa::simulation::graph::DAGNode>();
     MeshTopology * topo = initMesh(father);
     //makeTri()
-    component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo,(component::topology::PointSetTopologyContainer*)0x0/*model->getMeshTopology(), (topology::PointSetTopologyContainer*)nullptr, &model->getMechanicalState()->forceMask, &mstate->forceMask*/);
-
-    helper::StateMask maskFrom, maskTo;
-    maskFrom.assign( triPts.size(), true );
-
-    mapper->maskFrom = &maskFrom;
-    mapper->maskTo = &maskTo;
+    component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo,(component::topology::PointSetTopologyContainer*)0x0);
 
     Vector3 the_point = (SReal)(2.0) * triPts[index] + (SReal)(10.0) * norm;
 

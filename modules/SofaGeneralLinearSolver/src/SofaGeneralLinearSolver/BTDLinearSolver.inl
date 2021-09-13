@@ -20,7 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "BTDLinearSolver.h"
+#include <SofaGeneralLinearSolver/BTDLinearSolver.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
 
 
 namespace sofa::component::linearsolver

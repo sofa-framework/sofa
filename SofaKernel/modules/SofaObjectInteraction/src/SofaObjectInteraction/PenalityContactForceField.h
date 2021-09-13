@@ -122,7 +122,6 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    void updateForceMask() override;
 };
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_CPP)

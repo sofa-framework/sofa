@@ -131,8 +131,6 @@ public:
                     type::vector< unsigned int > &index_point) ;
 
     void draw(const core::visual::VisualParams* vparams) override;
-
-    void updateForceMask() override;
 };
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_REGISTRATIONCONTACTFORCEFIELD_CPP)

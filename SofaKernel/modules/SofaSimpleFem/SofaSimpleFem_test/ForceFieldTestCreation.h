@@ -294,17 +294,6 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
         if( this->vectorMaxDiff(Kdx,df)> errorMax*this->epsilon() )
             ADD_FAILURE()<<"Kdx differs from change of force"<< std::endl << "Failed seed number = " << this->seed << std::endl;
 
-
-        // =================== test updateForceMask
-        // ensure that each dof receiving a force is in the mask
-        for( unsigned i=0; i<xdof.size(); i++ ) {
-            if( newF[i] != Deriv() && !dof->forceMask.getEntry(i) ){
-                ADD_FAILURE() << "updateForceMask did not set mask to every dof influenced by the ForceField" << std::endl;
-                break;
-            }
-        }
-
-
     }
 
 

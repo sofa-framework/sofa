@@ -122,13 +122,13 @@ type::vector<behavior::BaseMechanicalState*> MultiMapping<In,Out>::getMechTo()
 template <class In, class Out>
 void MultiMapping<In,Out>::init()
 {
-    maskFrom.resize( this->fromModels.size() );
-    for( unsigned i=0 ; i<this->fromModels.size() ; ++i )
-        if( core::behavior::BaseMechanicalState* stateFrom = this->fromModels[i]->toBaseMechanicalState() ) maskFrom[i] = &stateFrom->forceMask;
-    maskTo.resize( this->toModels.size() );
-    for( unsigned i=0 ; i<this->toModels.size() ; ++i )
-        if( core::behavior::BaseMechanicalState* stateTo = this->toModels[i]->toBaseMechanicalState() ) maskTo[i] = &stateTo->forceMask;
-        else this->setNonMechanical();
+    for (auto toModel : this->toModels)
+    {
+        if (!toModel->toBaseMechanicalState())
+        {
+            this->setNonMechanical();
+        }
+    }
 
     apply(mechanicalparams::defaultInstance() , VecCoordId::position(), ConstVecCoordId::position());
     applyJ(mechanicalparams::defaultInstance() , VecDerivId::velocity(), ConstVecDerivId::velocity());
@@ -144,10 +144,6 @@ void MultiMapping<In,Out>::apply(const MechanicalParams* mparams, MultiVecCoordI
     type::vector<const InDataVecCoord*> vecInPos;
     getConstVecInCoord(inPos, vecInPos);
     this->apply(mparams, vecOutPos, vecInPos);
-
-#ifdef SOFA_USE_MASK
-    this->m_forceMaskNewStep = true;
-#endif
 }// MultiMapping::apply
 
 template <class In, class Out>
@@ -169,27 +165,11 @@ void MultiMapping<In,Out>::applyJT(const MechanicalParams* mparams, MultiVecDeri
     getConstVecOutDeriv(outForce, vecInForce);
 
     this->applyJT(mparams, vecOutForce, vecInForce);
-
-#ifdef SOFA_USE_MASK
-    if( this->m_forceMaskNewStep )
-    {
-        this->m_forceMaskNewStep = false;
-        updateForceMask();
-    }
-#endif
 }// MultiMapping::applyJT
 
 template <class In, class Out>
 void MultiMapping<In,Out>::disable()
 {
-}
-
-template < class In, class Out >
-void MultiMapping<In,Out>::updateForceMask()
-{
-    type::vector<behavior::BaseMechanicalState*> fromModels = getMechFrom();
-    for (size_t i=0 ; i<fromModels.size() ; i++)
-        fromModels[i]->forceMask.assign(fromModels[i]->getSize(),true);
 }
 
 } // namespace core

@@ -316,9 +316,14 @@ std::string FileSystem::convertSlashesToBackSlashes(const std::string& path)
 }
 
 bool FileSystem::removeAll(const std::string& path){
-    try{
-        boost::filesystem::remove_all(path) ;
-    }catch(boost::filesystem::filesystem_error const & e){ return false ; }
+    try
+    {
+        boost::filesystem::remove_all(path);
+    }
+    catch(boost::filesystem::filesystem_error const & /*e*/)
+    {
+        return false ;
+    }
     return true ;
 }
 

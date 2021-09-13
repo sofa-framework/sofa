@@ -28,6 +28,7 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/type/Vec.h>
+#include <sofa/core/DataEngine.h>
 
 #define INTERPOLATION_NEAREST 0
 #define INTERPOLATION_LINEAR 1

@@ -74,9 +74,6 @@ public:
 
     virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
 
-    void updateForceMask() override;
-
-
 protected :
 
     IdentityMultiMapping();

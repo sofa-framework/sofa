@@ -23,6 +23,7 @@
 
 #include <sofa/defaulttype/config.h>
 #include <sofa/type/fwd.h>
+#include <sofa/linearalgebra/fwd.h>
 
 namespace sofa::defaulttype
 {
@@ -77,7 +78,9 @@ typedef StdVectorTypes<sofa::type::Vec2f,sofa::type::Vec2f,float> Vec2fTypes;
 typedef StdVectorTypes<sofa::type::Vec1f,sofa::type::Vec1f,float> Vec1fTypes;
 typedef StdVectorTypes<sofa::type::Vec6f,sofa::type::Vec6f,float> Vec6fTypes;
 
-class BaseMatrix;
-class BaseVector;
+
+using BaseMatrix = sofa::linearalgebra::BaseMatrix;
+using BaseVector = sofa::linearalgebra::BaseVector;
 
 }
+

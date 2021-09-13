@@ -573,17 +573,4 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
     vparams->drawTool()->restoreLastState();
 }
 
-template<class DataTypes>
-void ConstantForceField<DataTypes>::updateForceMask()
-{
-    const VecIndex& indices = d_indices.getValue();
-
-    for (size_t i=0; i<indices.size(); i++)
-    {
-        this->mstate->forceMask.insertEntry(i);
-    }
-}
-
 } // namespace sofa::component::forcefield
-
-

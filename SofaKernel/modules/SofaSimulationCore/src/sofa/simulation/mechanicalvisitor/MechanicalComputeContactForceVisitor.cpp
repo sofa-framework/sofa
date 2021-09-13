@@ -41,9 +41,7 @@ Visitor::Result MechanicalComputeContactForceVisitor::fwdMappedMechanicalState(s
 
 void MechanicalComputeContactForceVisitor::bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
 {
-    ForceMaskActivate(map->getMechFrom() );
-    ForceMaskActivate(map->getMechTo() );
     map->applyJT(mparams, res, res);
-    ForceMaskDeactivate(map->getMechTo() );
 }
-}
+
+} // namespace sofa::simulation::mechanicalvisitor

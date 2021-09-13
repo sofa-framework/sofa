@@ -24,7 +24,6 @@
 
 #include "PrecomputedWarpPreconditioner.h"
 //#include <SofaDenseSolver/NewMatMatrix.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <iostream>
 #include <sofa/helper/system/thread/CTime.h>

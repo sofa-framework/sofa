@@ -155,7 +155,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
                                                     ).execute( node );
         MechanicalPropagateOnlyPositionAndVelocityVisitor(&m_mparams, nextTime,
                                                           VecCoordId::position(),
-                                                          VecDerivId::velocity(), true).execute( node );
+                                                          VecDerivId::velocity()).execute( node );
 
         MechanicalEndIntegrationVisitor endVisitor(this->params, dt);
         node->execute(&endVisitor);

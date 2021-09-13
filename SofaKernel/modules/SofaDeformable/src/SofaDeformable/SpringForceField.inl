@@ -369,21 +369,6 @@ void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology 
     }
 }
 
-
-template <class DataTypes>
-void SpringForceField<DataTypes>::updateForceMask()
-{
-    const type::vector<Spring>& springs= this->springs.getValue();
-
-    for(sofa::Index i=0, iend = sofa::Size(springs.size()) ; i<iend ; ++i )
-    {
-        const Spring& s = springs[i];
-        this->mstate1->forceMask.insertEntry(s.m1);
-        this->mstate2->forceMask.insertEntry(s.m2);
-    }
-}
-
-
 template<class DataTypes>
 void SpringForceField<DataTypes>::initGnuplot(const std::string path)
 {

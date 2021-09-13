@@ -50,7 +50,7 @@ struct MergePoints_test : public BaseSimulationTest,
     Simulation* m_simu;
     typename ThisClass::SPtr m_thisObject;
 
-    void SetUp()
+    void SetUp() override
     {
         setSimulation(m_simu = new DAGSimulation());
         m_thisObject = New<ThisClass >();

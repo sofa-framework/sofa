@@ -58,8 +58,7 @@ void ForceField<DataTypes>::addForce(const MechanicalParams* mparams, MultiVecDe
 {
     if (mparams)
     {
-            addForce(mparams, *fId[mstate.get()].write() , *mparams->readX(mstate), *mparams->readV(mstate));
-            updateForceMask();
+        addForce(mparams, *fId[mstate.get()].write() , *mparams->readX(mstate), *mparams->readV(mstate));
     }
 }
 
@@ -143,15 +142,6 @@ void ForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/
 {
 
 }
-
-template<class DataTypes>
-void ForceField<DataTypes>::updateForceMask()
-{
-    // the default implementation adds every dofs to the mask
-    // this sould be overloaded by each forcefield to only add the implicated dofs subset to the mask
-    mstate->forceMask.assign( mstate->getSize(), true );
-}
-
 
 } // namespace sofa::core::behavior
 
