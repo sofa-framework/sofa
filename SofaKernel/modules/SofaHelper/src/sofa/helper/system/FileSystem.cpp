@@ -23,7 +23,7 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/Utils.h>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include <fstream>
 #include <iostream>
@@ -318,9 +318,9 @@ std::string FileSystem::convertSlashesToBackSlashes(const std::string& path)
 bool FileSystem::removeAll(const std::string& path){
     try
     {
-        boost::filesystem::remove_all(path);
+        std::filesystem::remove_all(path);
     }
-    catch(boost::filesystem::filesystem_error const & /*e*/)
+    catch(std::filesystem::filesystem_error const & /*e*/)
     {
         return false ;
     }
