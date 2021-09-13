@@ -39,7 +39,7 @@ int ImageSamplerClass = core::RegisterObject("Samples an object represented by a
         .add<ImageSampler<ImageB> >(true)
         .add<ImageSampler<ImageUC> >()
         .add<ImageSampler<ImageD> >()
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 .add<ImageSampler<ImageC> >()
 .add<ImageSampler<ImageI> >()
 .add<ImageSampler<ImageUI> >()
@@ -54,7 +54,7 @@ int ImageSamplerClass = core::RegisterObject("Samples an object represented by a
 template class SOFA_IMAGE_API ImageSampler<ImageB>;
 template class SOFA_IMAGE_API ImageSampler<ImageUC>;
 template class SOFA_IMAGE_API ImageSampler<ImageD>;
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_API ImageSampler<ImageC>;
 template class SOFA_IMAGE_API ImageSampler<ImageI>;
 template class SOFA_IMAGE_API ImageSampler<ImageUI>;

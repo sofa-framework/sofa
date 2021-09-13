@@ -39,7 +39,7 @@ using namespace defaulttype;
 
 template class SOFA_IMAGE_GUI_API TDataWidget<ImageUC>;
 template class SOFA_IMAGE_GUI_API TDataWidget<ImageD>;
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_GUI_API TDataWidget<ImageC>;
 template class SOFA_IMAGE_GUI_API TDataWidget<ImageI>;
 template class SOFA_IMAGE_GUI_API TDataWidget<ImageUI>;
@@ -53,7 +53,7 @@ template class SOFA_IMAGE_GUI_API TDataWidget<ImageB>;
 
 template class SOFA_IMAGE_GUI_API TDataWidget<ImagePlane<unsigned char> >;
 template class SOFA_IMAGE_GUI_API TDataWidget<ImagePlane<double> >;
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_GUI_API TDataWidget<ImagePlane<char> >;
 template class SOFA_IMAGE_GUI_API TDataWidget<ImagePlane<int> >;
 template class SOFA_IMAGE_GUI_API TDataWidget<ImagePlane<unsigned int> >;
@@ -67,7 +67,7 @@ template class SOFA_IMAGE_GUI_API TDataWidget<ImagePlane<bool> >;
 
 helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<unsigned char> > >	DWClass_imagepUC("imageplane",true);
 helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<double> > >		DWClass_imagepD("imageplane",true);
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<char> > >		DWClass_imagepC("imageplane",true);
 helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<int> > >		DWClass_imagepI("imageplane",true);
 helper::Creator<DataWidgetFactory, ImagePlaneDataWidget< ImagePlane<unsigned int> > >	DWClass_imagepUI("imageplane",true);

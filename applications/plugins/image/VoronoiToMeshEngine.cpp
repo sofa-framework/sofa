@@ -38,7 +38,7 @@ using namespace defaulttype;
 int VoronoiToMeshEngineClass = core::RegisterObject("Generate flat faces between adjacent regions of an image")
         .add<VoronoiToMeshEngine<ImageUI> >(true)
         .add<VoronoiToMeshEngine<ImageUC> >()
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
         .add<VoronoiToMeshEngine<ImageUS> >()
         .add<VoronoiToMeshEngine<ImageUL> >()
 #endif
@@ -46,7 +46,7 @@ int VoronoiToMeshEngineClass = core::RegisterObject("Generate flat faces between
 
 template class SOFA_IMAGE_API VoronoiToMeshEngine<ImageUI>;
 template class SOFA_IMAGE_API VoronoiToMeshEngine<ImageUC>;
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_API VoronoiToMeshEngine<ImageUS>;
 template class SOFA_IMAGE_API VoronoiToMeshEngine<ImageUL>;
 #endif

@@ -37,7 +37,7 @@ using namespace sofa::defaulttype;
 int ImageViewerClass = core::RegisterObject ( "Image viewer" )
         .add<ImageViewer<ImageUC> >(true)
         .add<ImageViewer<ImageD> >()
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
         .add<ImageViewer<ImageC> >()
         .add<ImageViewer<ImageI> >()
         .add<ImageViewer<ImageUI> >()
@@ -52,7 +52,7 @@ int ImageViewerClass = core::RegisterObject ( "Image viewer" )
 
 template class SOFA_IMAGE_API ImageViewer<ImageUC>;
 template class SOFA_IMAGE_API ImageViewer<ImageD>;
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_API ImageViewer<ImageC>;
 template class SOFA_IMAGE_API ImageViewer<ImageI>;
 template class SOFA_IMAGE_API ImageViewer<ImageUI>;

@@ -18,7 +18,7 @@ namespace engine
 int DistanceZoneImageToolBox_Class = core::RegisterObject("DistanceZoneImageToolBox")
         .add<DistanceZoneImageToolBox<ImageUC> >()
         .add<DistanceZoneImageToolBox<ImageD> >(true)
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
         .add<DistanceZoneImageToolBox<ImageC> >()
         .add<DistanceZoneImageToolBox<ImageI> >()
         .add<DistanceZoneImageToolBox<ImageUI> >()
@@ -40,7 +40,7 @@ template class SOFA_IMAGE_GUI_API DistanceZoneImageToolBox<ImageD>;
 
 
 
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_GUI_API DistanceZoneImageToolBox<ImageC>;
 template class SOFA_IMAGE_GUI_API DistanceZoneImageToolBox<ImageI>;
 template class SOFA_IMAGE_GUI_API DistanceZoneImageToolBox<ImageUI>;
