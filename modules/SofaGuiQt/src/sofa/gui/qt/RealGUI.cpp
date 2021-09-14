@@ -833,7 +833,6 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
 
 void RealGUI::fileOpenUnBoxed( std::string filename, bool temporaryFile, bool reload )
 {
-    std::cout << "COUCOUCOCUOCUOCU" << std::endl;
     std::vector<std::string> expandedNodes;
 
     if(reload)
