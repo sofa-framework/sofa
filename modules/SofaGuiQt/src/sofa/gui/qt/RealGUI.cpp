@@ -87,6 +87,8 @@ using sofa::simulation::SceneLoaderFactory;
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/ExportGnuplotVisitor.h>
 
+#include <sofa/helper/BackTrace.h>
+
 #include <QHBoxLayout>
 #include <QApplication>
 #include <QTimer>
@@ -105,7 +107,7 @@ using sofa::simulation::SceneLoaderFactory;
 #include <QDesktopServices>
 
 #if (QT_VERSION < QT_VERSION_CHECK(5, 11, 0))
-    #include <QDesktopWidget>
+#include <QDesktopWidget>
 #endif
 
 #   ifdef SOFA_GUI_INTERACTION
@@ -136,6 +138,8 @@ using sofa::helper::system::FileMonitor;
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
+#include <sofa/helper/SofaSimulationException.h>
+
 #if(SOFAGUIQT_HAVE_QT5_WEBENGINE)
 #include "panels/QDocBrowser.h"
 using sofa::gui::qt::DocBrowser;
@@ -157,6 +161,11 @@ using sofa::core::objectmodel::BaseObject;
 using namespace sofa::helper::system::thread;
 using namespace sofa::simulation;
 using namespace sofa::core::visual;
+
+RealGUI* gui = nullptr;
+QApplication* application = nullptr;
+
+const char* progname="";
 
 /// Custom QApplication class handling FileOpen events for MacOS
 class QSOFAApplication : public QApplication
@@ -181,6 +190,30 @@ public:
 #endif
 
 protected:
+    bool notify(QObject* receiver, QEvent* event) override
+    {
+        // If we are not in debugging mode the best we can do with an exception is to halt the simulation
+        // and report as much as error information as possible.
+        if(gui && gui->isInInteractiveMode())
+        {
+            bool done = true;
+            try {
+                done = QApplication::notify(receiver, event);
+            } catch (const sofa::helper::SofaSimulationException& e)
+            {
+                gui->playpauseGUI(false);
+            }catch (const std::exception& e)
+            {
+                gui->playpauseGUI(false);
+                msg_error("RealGUI") << "Simulation is stopped by an exception"
+                                     << e.what()
+                                     << msgendl ;
+            }
+            return done;
+        }
+        return QApplication::notify(receiver, event);
+    }
+
     bool event(QEvent *event) override
     {
         switch (event->type())
@@ -196,13 +229,6 @@ protected:
         }
     }
 };
-
-RealGUI* gui = nullptr;
-QApplication* application = nullptr;
-
-const char* progname="";
-
-
 
 class RealGUIFileListener : public sofa::helper::system::FileEventListener
 {
@@ -299,12 +325,12 @@ RealGUI::RealGUI ( const char* viewername)
       interactionButton( nullptr ),
       #endif
 
-#ifndef SOFA_GUI_QT_NO_RECORDER
+      #ifndef SOFA_GUI_QT_NO_RECORDER
       recorder(nullptr),
-#else
+      #else
       fpsLabel(nullptr),
       timeLabel(nullptr),
-#endif
+      #endif
 
       #ifdef SOFA_GUI_INTERACTION
       m_interactionActived(false),
@@ -321,12 +347,12 @@ RealGUI::RealGUI ( const char* viewername)
       #endif
 
       m_sofaMouseManager(nullptr),
-#if SOFAGUIQT_HAVE_QT5_CHARTS
+      #if SOFAGUIQT_HAVE_QT5_CHARTS
       m_windowTimerProfiler(nullptr),
-#endif
-#if SOFAGUIQT_HAVE_NODEEDITOR
+      #endif
+      #if SOFAGUIQT_HAVE_NODEEDITOR
       m_sofaWindowDataGraph(nullptr),
-#endif
+      #endif
       simulationGraph(nullptr),
       mCreateViewersOpt(true),
       mIsEmbeddedViewer(true),
@@ -348,9 +374,9 @@ RealGUI::RealGUI ( const char* viewername)
       recentlyOpenedFilesManager(sofa::gui::BaseGUI::getConfigDirectoryPath() + "/runSofa.ini"),
       saveReloadFile(false),
       displayFlag(nullptr),
-#if(SOFAGUIQT_HAVE_QT5_WEBENGINE)
+      #if(SOFAGUIQT_HAVE_QT5_WEBENGINE)
       m_docbrowser(nullptr),
-#endif
+      #endif
       animationState(false),
       frameCounter(0),
       m_viewerMSAANbSampling(1)
@@ -782,6 +808,32 @@ sofa::simulation::Node* RealGUI::currentSimulation()
 
 void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
 {
+    if(NDEBUG)
+    {
+        bool done = true;
+        try {
+            fileOpenUnBoxed(filename, temporaryFile, reload );
+        } catch (const sofa::helper::SofaSimulationException& e)
+        {
+            gui->playpauseGUI(false);
+        }catch (const std::exception& e)
+        {
+            gui->playpauseGUI(false);
+            msg_error("RealGUI") << "Simulation is stopped by an exception"
+                             << e.what()
+                             << msgendl ;
+        }
+    }
+    else
+    {
+        fileOpenUnBoxed(filename, temporaryFile, reload );
+    }
+
+}
+
+void RealGUI::fileOpenUnBoxed( std::string filename, bool temporaryFile, bool reload )
+{
+    std::cout << "COUCOUCOCUOCUOCU" << std::endl;
     std::vector<std::string> expandedNodes;
 
     if(reload)
@@ -1230,7 +1282,7 @@ void RealGUI::showWindowDataGraph()
     {
         createSofaWindowDataGraph();
     }
-    m_sofaWindowDataGraph->show(); 
+    m_sofaWindowDataGraph->show();
 
 #endif
 }
@@ -2098,30 +2150,34 @@ void RealGUI::fileRecentlyOpened(QAction *action)
 
 void RealGUI::playpauseGUI ( bool startSimulation )
 {
-    startButton->setChecked ( startSimulation );
+    sofa::helper::executeWithException("RealGUI",
+                                       isInInteractiveMode(),
+                                       [startSimulation, this](){
+        startButton->setChecked ( startSimulation );
 
-    /// If there is no root node we do nothing.
-    Node* root = currentSimulation();
-    if (root==nullptr)
-        return;
+        /// If there is no root node we do nothing.
+        Node* root = currentSimulation();
+        if (root==nullptr)
+            return;
 
-    /// Set the animation 'on' in the getContext()
-    currentSimulation()->getContext()->setAnimate ( startSimulation );
+        /// Set the animation 'on' in the getContext()
+        currentSimulation()->getContext()->setAnimate ( startSimulation );
 
-    if(startSimulation)
-    {
-        SimulationStopEvent startEvt;
-        root->propagateEvent(core::execparams::defaultInstance(), &startEvt);
-        m_clockBeforeLastStep = 0;
-        frameCounter=0;
-        timerStep->start(0);
-        return;
-    }
+        if(startSimulation)
+        {
+            SimulationStopEvent startEvt;
+            root->propagateEvent(core::execparams::defaultInstance(), &startEvt);
+            m_clockBeforeLastStep = 0;
+            frameCounter=0;
+            timerStep->start(0);
+            return;
+        }
 
-    SimulationStartEvent stopEvt;
-    root->propagateEvent(core::execparams::defaultInstance(), &stopEvt);
+        SimulationStartEvent stopEvt;
+        root->propagateEvent(core::execparams::defaultInstance(), &stopEvt);
 
-    timerStep->stop();
+        timerStep->stop();
+    });
     return;
 }
 
