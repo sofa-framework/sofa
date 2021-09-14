@@ -32,6 +32,7 @@
 #endif
 
 #include <filesystem>
+#include <iterator>
 
 #include <cstring>
 #include <cstdlib>

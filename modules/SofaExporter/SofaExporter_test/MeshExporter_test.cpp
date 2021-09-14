@@ -47,9 +47,9 @@ using sofa::helper::system::FileSystem ;
 
 using ::testing::Types;
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 namespace {
-std::string tempdir = boost::filesystem::temp_directory_path().string() ;
+std::string tempdir = std::filesystem::temp_directory_path().string() ;
 
 class MeshExporter_test : public BaseTest,
                           public ::testing::WithParamInterface<vector<string>>
