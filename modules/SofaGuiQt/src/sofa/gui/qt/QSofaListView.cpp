@@ -641,6 +641,11 @@ void QSofaListView::UpdateOpenedDialogs()
     }
 }
 
+void QSofaListView::ExpandRootNodeOnly()
+{
+    this->expandToDepth(0);
+}
+
 void QSofaListView::HideDatas()
 {
     if( object_.type == typeObject )
