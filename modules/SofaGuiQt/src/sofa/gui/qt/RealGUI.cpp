@@ -806,32 +806,7 @@ sofa::simulation::Node* RealGUI::currentSimulation()
 //------------------------------------
 
 
-void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
-{
-    if(NDEBUG)
-    {
-        bool done = true;
-        try {
-            fileOpenUnBoxed(filename, temporaryFile, reload );
-        } catch (const sofa::helper::SofaSimulationException& e)
-        {
-            gui->playpauseGUI(false);
-        }catch (const std::exception& e)
-        {
-            gui->playpauseGUI(false);
-            msg_error("RealGUI") << "Simulation is stopped by an exception"
-                             << e.what()
-                             << msgendl ;
-        }
-    }
-    else
-    {
-        fileOpenUnBoxed(filename, temporaryFile, reload );
-    }
-
-}
-
-void RealGUI::fileOpenUnBoxed( std::string filename, bool temporaryFile, bool reload )
+void RealGUI::fileOpen( std::string filename, bool temporaryFile, bool reload )
 {
     std::vector<std::string> expandedNodes;
 
