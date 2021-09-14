@@ -49,6 +49,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/decompose.h
     ${SRC_ROOT}/decompose.inl
     ${SRC_ROOT}/deque.h
+    ${SRC_ROOT}/SofaSimulationException.h
     ${SRC_ROOT}/hash.h
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/integer_id.h
