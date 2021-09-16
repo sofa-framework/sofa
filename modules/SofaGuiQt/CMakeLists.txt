@@ -120,9 +120,6 @@ if(SOFA_DUMP_VISITOR_INFO)
     sofa_find_package(TinyXML REQUIRED BOTH_SCOPES)
 endif()
 
-set(SOFAGUIQT_HAVE_QT5 ${Qt5Core_FOUND})
-set(SOFAGUIQT_HAVE_QT6 ${Qt6Core_FOUND})
-
 set(SRC_ROOT src/sofa/gui/qt)
 
 set(MOC_HEADER_FILES
