@@ -92,6 +92,7 @@ struct TestSparseMatrices : public NumericTest<typename T::Real>
     typedef sofa::component::linearsolver::SparseMatrix<Real> MapMatrix;
 
     // Blockwise Compressed Sparse Row format
+    typedef sofa::component::linearsolver::CompressedRowSparseMatrix<Real> CRSMatrixScalar;
     typedef sofa::type::Mat<BROWS,BCOLS,Real> BlockMN;
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<BlockMN> CRSMatrixMN;
     typedef sofa::type::Mat<BCOLS,BROWS,Real> BlockNM;
@@ -121,11 +122,15 @@ struct TestSparseMatrices : public NumericTest<typename T::Real>
 
     // The matrices used in the tests
     CRSMatrixMN crs1,crs2;
+    CRSMatrixScalar crsScalar;
     FullMatrix fullMat;
     MapMatrix mapMat;
     EigenBlockSparseMatrix eiBlock1,eiBlock2,eiBlock3;
     EigenBaseSparseMatrix eiBase;
     // matrices for multiplication test
+    CRSMatrixScalar crsScalarMultiplier;
+    CRSMatrixScalar crsScalarMultiplication;
+    CRSMatrixScalar crsScalarTransposeMultiplication;
     CRSMatrixNM crsMultiplier;
     CRSMatrixMM crsMultiplication;
     CRSMatrixNN crsTransposeMultiplication;
@@ -192,6 +197,7 @@ struct TestSparseMatrices : public NumericTest<typename T::Real>
         generateRandomMat( mat, true );
         copyFromMat( crs1, mat );
         copyFromMat( crs2, mat );
+        copyFromMat(crsScalar, mat);
         copyFromMat( fullMat, mat );
         copyFromMat( mapMat, mat );
         copyFromMat( eiBlock1, mat );
@@ -222,6 +228,7 @@ struct TestSparseMatrices : public NumericTest<typename T::Real>
         // matrix multiplication
 
         generateRandomMat( matMultiplier, true );
+        copyFromMat(crsScalarMultiplier, matMultiplier);
         copyFromMat( crsMultiplier, matMultiplier );
         copyFromMat( fullMultiplier, matMultiplier );
         copyFromMat( eiBaseMultiplier, matMultiplier );
@@ -229,12 +236,14 @@ struct TestSparseMatrices : public NumericTest<typename T::Real>
 
 
         matMultiplication = mat * matMultiplier;
+        crsScalar.mul(crsScalarMultiplication, crsScalarMultiplier);
         crs1.mul( crsMultiplication, crsMultiplier );
         fullMat.mul( fullMultiplication, fullMultiplier );
         eiBase.mul_MT( eiBaseMultiplication, eiBaseMultiplier ); // sparse x sparse
         eiBase.mul_MT( eiDenseMultiplication, eiDenseMultiplier ); // sparse x dense
 
         matTransposeMultiplication = mat.multTranspose( mat );
+        crsScalar.mulTranspose(crsScalarTransposeMultiplication, crsScalar);
         crs1.mulTranspose( crsTransposeMultiplication, crs1 );
         fullMat.mulT( fullTransposeMultiplication, fullMat );
 
@@ -420,7 +429,8 @@ using TestSparseMatricesImplementations = ::testing::Types<
     TestSparseMatricesTraits<SReal, 4, 8, 4, 2>,
     TestSparseMatricesTraits<SReal, 4, 8, 1, 8>,
     TestSparseMatricesTraits<SReal, 4, 8, 2, 8>,
-    TestSparseMatricesTraits<SReal, 4, 8, 2, 3>
+    TestSparseMatricesTraits<SReal, 4, 8, 2, 3>,
+    TestSparseMatricesTraits<SReal, 24, 24, 3, 3>
 >;
 
 TYPED_TEST_SUITE(TestSparseMatrices, TestSparseMatricesImplementations);
@@ -428,7 +438,8 @@ TYPED_TEST_SUITE(TestSparseMatrices, TestSparseMatricesImplementations);
 // ==============================
 // Set/get value tests
 TYPED_TEST(TestSparseMatrices, set_fullMat ) { ASSERT_TRUE( this->matrixMaxDiff(this->mat,this->fullMat) < 100*this->epsilon() ); }
-TYPED_TEST(TestSparseMatrices, set_crs1 ) { ASSERT_TRUE( this->matrixMaxDiff(this->fullMat,this->crs1 ) < 100*this->epsilon() ); }
+TYPED_TEST(TestSparseMatrices, set_crs_scalar ) { ASSERT_TRUE( this->matrixMaxDiff(this->fullMat,this->crsScalar ) < 100*this->epsilon() ); }
+TYPED_TEST(TestSparseMatrices, set_crs1 ) { ASSERT_TRUE( this->matrixMaxDiff(this->fullMat,this->crs1) < 100*this->epsilon() ); }
 TYPED_TEST(TestSparseMatrices, set_crs2 ) { ASSERT_TRUE( this->matrixMaxDiff(this->fullMat,this->crs2) < 100*this->epsilon() ); }
 TYPED_TEST(TestSparseMatrices, set_mapMat ) { ASSERT_TRUE( this->matrixMaxDiff(this->fullMat,this->mapMat) < 100*this->epsilon() ); }
 TYPED_TEST(TestSparseMatrices, set_eiBlock1 ) { ASSERT_TRUE( this->matrixMaxDiff(this->fullMat,this->eiBlock1) < 100*this->epsilon() ); }
@@ -477,10 +488,12 @@ TYPED_TEST(TestSparseMatrices, crs1_vector_product )
 // ==============================
 // Matrix product tests
 TYPED_TEST(TestSparseMatrices, full_matrix_product ) { ASSERT_TRUE( this->matrixMaxDiff(this->matMultiplication,this->fullMultiplication) < 100*this->epsilon() );  }
+TYPED_TEST(TestSparseMatrices, crs_scalar_matrix_product ) { ASSERT_TRUE( this->matrixMaxDiff(this->fullMultiplication,this->crsScalarMultiplication) < 100*this->epsilon() ); }
 TYPED_TEST(TestSparseMatrices, crs_matrix_product ) { ASSERT_TRUE( this->matrixMaxDiff(this->fullMultiplication,this->crsMultiplication) < 100*this->epsilon() ); }
 TYPED_TEST(TestSparseMatrices, EigenBase_matrix_product ) { ASSERT_TRUE( this->matrixMaxDiff(this->fullMultiplication,this->eiBaseMultiplication) < 100*this->epsilon() ); }
 //TYPED_TEST(TestSparseMatrices, EigenSparseDense_matrix_product ) { ASSERT_TRUE( EigenDenseMatrix(this->eiBaseMultiplication.compressedMatrix) == this->eiDenseMultiplication ); }
 TYPED_TEST(TestSparseMatrices, full_matrix_transposeproduct ) { ASSERT_TRUE( this->matrixMaxDiff(this->matTransposeMultiplication,this->fullTransposeMultiplication) < 100*this->epsilon() ); }
+TYPED_TEST(TestSparseMatrices, crs_scalar_matrix_transposeproduct ) { ASSERT_TRUE( this->matrixMaxDiff(this->fullTransposeMultiplication,this->crsScalarTransposeMultiplication) < 100*this->epsilon() ); }
 TYPED_TEST(TestSparseMatrices, crs_matrix_transposeproduct ) { ASSERT_TRUE( this->matrixMaxDiff(this->fullTransposeMultiplication,this->crsTransposeMultiplication) < 100*this->epsilon() ); }
 
 // Matrix addition
