@@ -1400,9 +1400,9 @@ public:
     template<typename RB, typename RVB, typename RVI, typename MB, typename MVB, typename MVI >
     void mul( CompressedRowSparseMatrix<RB,RVB,RVI>& res, const CompressedRowSparseMatrix<MB,MVB,MVI>& m ) const
     {
-        assert( Bloc::nbCols == MB::nbLines );
-        assert( RB::nbLines == Bloc::nbLines );
-        assert( MB::nbCols == RB::nbCols );
+        static_assert( NC == CompressedRowSparseMatrix<MB,MVB,MVI>::NL );
+        static_assert( CompressedRowSparseMatrix<RB,RVB,RVI>::NL == NL );
+        static_assert( CompressedRowSparseMatrix<MB,MVB,MVI>::NC == CompressedRowSparseMatrix<RB,RVB,RVI>::NC );
 
         assert( colSize() == m.rowSize() );
 
@@ -1462,9 +1462,9 @@ public:
     template<typename RB, typename RVB, typename RVI, typename MB, typename MVB, typename MVI >
     void mulTranspose( CompressedRowSparseMatrix<RB,RVB,RVI>& res, const CompressedRowSparseMatrix<MB,MVB,MVI>& m ) const
     {
-        assert( Bloc::nbLines == MB::nbLines );
-        assert( RB::nbLines == Bloc::nbCols );
-        assert( MB::nbCols == RB::nbCols );
+        static_assert( NL == CompressedRowSparseMatrix<MB,MVB,MVI>::NL );
+        static_assert( CompressedRowSparseMatrix<RB,RVB,RVI>::NL == NC );
+        static_assert( CompressedRowSparseMatrix<MB,MVB,MVI>::NC == CompressedRowSparseMatrix<RB,RVB,RVI>::NC );
 
         assert( rowSize() == m.rowSize() );
 
