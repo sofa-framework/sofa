@@ -19,17 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_PROPAGATEEVENTACTION_H
-#define SOFA_SIMULATION_PROPAGATEEVENTACTION_H
+#pragma once
 
+#include <unordered_set>
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/objectmodel/Event.h>
 
-
-namespace sofa
-{
-
-namespace simulation
+namespace sofa::simulation
 {
 
 /**
@@ -51,12 +47,12 @@ public:
     const char* getClassName() const override { return "PropagateEventVisitor"; }
     virtual std::string getInfos() const override { return std::string(m_event->getClassName());  }
 protected:
-    sofa::core::objectmodel::Event* m_event;
+    sofa::core::objectmodel::Event* m_event { nullptr };
+
+    /// List of BaseObject already processed by this visitor
+    /// This is to avoid processing an object multiple times in case an object appear twice in the graph
+    std::unordered_set<core::objectmodel::BaseObject*> processedObjects;
 };
 
 
-}
-
-}
-
-#endif
+} //namespace sofa::simulation

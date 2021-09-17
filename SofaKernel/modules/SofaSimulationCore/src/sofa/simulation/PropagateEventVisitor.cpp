@@ -22,40 +22,48 @@
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa
+namespace sofa::simulation
 {
-
-namespace simulation
-{
-
 
 PropagateEventVisitor::PropagateEventVisitor(const core::ExecParams* params, sofa::core::objectmodel::Event* e)
     : sofa::simulation::Visitor(params)
     , m_event(e)
 {}
 
-
 PropagateEventVisitor::~PropagateEventVisitor()
 {}
 
 Visitor::Result PropagateEventVisitor::processNodeTopDown(simulation::Node* node)
 {
-    for_each(this, node, node->object, &PropagateEventVisitor::processObject);
+    // make a copy of the objects list so that the list in the Node can be modified by this event (e.g. by adding
+    // or removing an object)
+    const auto objects = node->object;
+
+    for_each(this, node, objects, &PropagateEventVisitor::processObject);
 
     if( m_event->isHandled() )
         return Visitor::RESULT_PRUNE;
-    else
-        return Visitor::RESULT_CONTINUE;
+
+    return Visitor::RESULT_CONTINUE;
 }
 
-void PropagateEventVisitor::processObject(simulation::Node*, core::objectmodel::BaseObject* obj)
+void PropagateEventVisitor::processObject(simulation::Node* node, core::objectmodel::BaseObject* obj)
 {
-    if( obj->f_listening.getValue()==true )
-        obj->handleEvent( m_event );
+    if (processedObjects.insert(obj).second)
+    {
+        const auto children = obj->getSlaves();
+        for (auto child : children)
+        {
+            if (child)
+            {
+                processObject(node, child.get());
+            }
+        }
+        if( obj->f_listening.getValue() == true)
+            obj->handleEvent( m_event );
+    }
 }
 
-
-}
 
 }
 
