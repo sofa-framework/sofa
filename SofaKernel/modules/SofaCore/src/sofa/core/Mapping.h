@@ -24,7 +24,6 @@
 
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/State.h>
-#include <sofa/helper/StateMask.h>
 
 namespace sofa
 {
@@ -279,20 +278,6 @@ public:
         sofa::helper::replaceAll(name, "Mapping", "Map");
         return name;
     }
-
-
-protected:
-
-    typedef sofa::helper::StateMask ForceMask;
-    /// keep an eye on the dof masks (if the dofs are Mechanical)
-    ForceMask *maskFrom, *maskTo;
-
-    /// Useful when the mapping is applied only on a subset of parent dofs.
-    /// It is automatically called by applyJT.
-    ///
-    /// That way, we can optimize Jacobian sparsity.
-    /// Every Dofs are inserted by default. The mappings using only a subset of dofs should only insert these dofs in the mask.
-    void updateForceMask() override;
 
 };
 

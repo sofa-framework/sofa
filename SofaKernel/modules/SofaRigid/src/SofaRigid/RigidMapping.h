@@ -82,7 +82,6 @@ public:
     typedef type::Vec<N, Real> Vector;
     typedef type::Mat<NOut, NIn, Real> MBloc;
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
-    typedef typename Inherit::ForceMask ForceMask;
 
     Data<VecCoord> points;    ///< mapped points in local coordinates
     VecCoord rotatedPoints;   ///< vectors from frame origin to mapped points, projected to world coordinates

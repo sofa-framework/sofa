@@ -21,7 +21,10 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/config.h>
+
+#define NEWMATMATRIX_CHECK false
+#define NEWMATMATRIX_VERBOSE false
 
 #define SOFADENSESOLVER_VERSION @PROJECT_VERSION@
 

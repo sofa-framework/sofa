@@ -587,7 +587,7 @@ void OglShaderElement::init()
 
     if (shaders.empty())
     {
-        msg_error() << this->getTypeName() <<" \"" << this->getName() << "\": no relevant shader found. please check tags validity"<< sendl;
+        msg_error() << this->getTypeName() <<" \"" << this->getName() << "\": no relevant shader found. please check tags validity";
         return;
     }
 }

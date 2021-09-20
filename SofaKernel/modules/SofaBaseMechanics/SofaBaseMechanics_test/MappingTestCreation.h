@@ -65,7 +65,7 @@ namespace sofa::mapping_test {
   and a failure is issued if the error is greater than errorMax*epsilon,
   where epsilon=std::numeric_limits<Real>::epsilon() is 1.19209e-07 for float and 2.22045e-16 for double.
 
-  @author François Faure @date 2013
+  @author FranÃ§ois Faure @date 2013
   */
 
 template< class _Mapping>
@@ -230,7 +230,6 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         sofa::testing::copyToData(xin,parentInit); // xin = parentInit
 
         outDofs->resize(childInit.size());
-        outDofs->forceMask.assign(outDofs->getSize(),true); // child mask must be filled-up
         WriteOutVecCoord xout = outDofs->writePositions();
         sofa::testing::copyToData(xout,childInit);
 
@@ -446,26 +445,6 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
             }
         }
 
-
-        // =================== test updateForceMask
-        // propagate forces coming from all child, each parent receiving a force should be in the mask
-        EXPECT_EQ( inDofs->forceMask.size(), inDofs->getSize() );
-        EXPECT_EQ( outDofs->forceMask.size(), outDofs->getSize() );
-        inDofs->forceMask.assign(inDofs->getSize(),false);
-        outDofs->forceMask.assign(outDofs->getSize(),true);
-        mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position()); // to force mask update at the next applyJ
-        sofa::testing::copyToData( fin, fp2 );  // reset parent forces before accumulating child forces
-        for( unsigned i=0; i<Nc; i++ ) Out::set( fout[i], 1,1,1 ); // every child forces are non-nul
-        mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
-        sofa::testing::copyFromData( fp, inDofs->readForces() );
-        for( unsigned i=0; i<Np; i++ ) {
-            if( fp[i] != InDeriv() && !inDofs->forceMask.getEntry(i) ){
-                succeed = false;
-                ADD_FAILURE() << "updateForceMask did not propagate mask to every influencing parents" << std::endl;
-                break;
-            }
-        }
-
         if(!succeed)
         { ADD_FAILURE() << "Failed Seed number = " << this->seed << std::endl;}
         return succeed;
@@ -490,7 +469,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         return runTest( parent, childInit, parent, expectedChild );
     }
 
-    virtual ~Mapping_test()
+    ~Mapping_test() override
     {
         if (root!=nullptr)
             sofa::simulation::getSimulation()->unload(root);

@@ -67,7 +67,7 @@ struct SkeletalMotionConstraint_test : public BaseSimulationTest, NumericTest<ty
     typename MechanicalObject::SPtr dofs;
 
     /// Create the context for the tests.
-    void SetUp()
+    void SetUp() override
     {
 //        if( sofa::simulation::getSimulation()==nullptr )
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
@@ -168,7 +168,7 @@ struct SkeletalMotionConstraint_test : public BaseSimulationTest, NumericTest<ty
         return succeed;
     }
 
-    void TearDown()
+    void TearDown() override
     {
         if (root!=nullptr)
             sofa::simulation::getSimulation()->unload(root);

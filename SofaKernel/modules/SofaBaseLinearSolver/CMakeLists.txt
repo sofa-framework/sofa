@@ -9,23 +9,13 @@ set(HEADER_FILES
     ${SOFABASELINEARSOLVER_SRC}/BlocMatrixWriter.h
     ${SOFABASELINEARSOLVER_SRC}/CGLinearSolver.h
     ${SOFABASELINEARSOLVER_SRC}/CGLinearSolver.inl
-    ${SOFABASELINEARSOLVER_SRC}/CompressedRowSparseMatrix.h
-    ${SOFABASELINEARSOLVER_SRC}/CompressedRowSparseMatrix.inl
     ${SOFABASELINEARSOLVER_SRC}/CRSMultiMatrixAccessor.h
     ${SOFABASELINEARSOLVER_SRC}/DefaultMultiMatrixAccessor.h
-    ${SOFABASELINEARSOLVER_SRC}/DiagonalMatrix.h
-    ${SOFABASELINEARSOLVER_SRC}/FullMatrix.h
-    ${SOFABASELINEARSOLVER_SRC}/FullMatrix.inl
-    ${SOFABASELINEARSOLVER_SRC}/FullVector.h
-    ${SOFABASELINEARSOLVER_SRC}/FullVector.inl
+    ${SOFABASELINEARSOLVER_SRC}/GlobalSystemMatrixExporter.h
     ${SOFABASELINEARSOLVER_SRC}/GraphScatteredTypes.h
-    ${SOFABASELINEARSOLVER_SRC}/MatrixExpr.h
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver.h
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver.inl
-    ${SOFABASELINEARSOLVER_SRC}/RotationMatrix.h
     ${SOFABASELINEARSOLVER_SRC}/SingleMatrixAccessor.h
-    ${SOFABASELINEARSOLVER_SRC}/SparseMatrix.h
-    ${SOFABASELINEARSOLVER_SRC}/matrix_bloc_traits.h
 )
 
 set(SOURCE_FILES
@@ -33,12 +23,10 @@ set(SOURCE_FILES
     ${SOFABASELINEARSOLVER_SRC}/CGLinearSolver.cpp
     ${SOFABASELINEARSOLVER_SRC}/CRSMultiMatrixAccessor.cpp
     ${SOFABASELINEARSOLVER_SRC}/DefaultMultiMatrixAccessor.cpp
-    ${SOFABASELINEARSOLVER_SRC}/FullMatrix.cpp
-    ${SOFABASELINEARSOLVER_SRC}/FullVector.cpp
+    ${SOFABASELINEARSOLVER_SRC}/GlobalSystemMatrixExporter.cpp
     ${SOFABASELINEARSOLVER_SRC}/GraphScatteredTypes.cpp
     ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver.cpp
     ${SOFABASELINEARSOLVER_SRC}/SingleMatrixAccessor.cpp
-    ${SOFABASELINEARSOLVER_SRC}/RotationMatrix.cpp
 )
 
 sofa_find_package(SofaFramework REQUIRED) # SofaSimulationCore

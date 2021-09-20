@@ -20,11 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_CPP
-#include "TriangleFEMForceField.inl"
 
+#include <SofaMiscFem/TriangleFEMForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
-
 
 namespace sofa::component::forcefield
 {
@@ -32,7 +31,7 @@ namespace sofa::component::forcefield
 using namespace sofa::defaulttype;
 
 // Register in the Factory
-int TriangleFEMForceFieldClass = core::RegisterObject("Triangular finite elements")
+int TriangleFEMForceFieldClass = core::RegisterObject("Triangular finite elements for static topology")
         .add< TriangleFEMForceField<Vec3Types> >()
 
         ;

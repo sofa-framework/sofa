@@ -693,7 +693,6 @@ void MechanicalObject<DataTypes>::resize(const Size size)
                 vectorsDeriv[i]->endEdit();
             }
         }
-        this->forceMask.resize(size);
     }
     else // clear
     {
@@ -715,7 +714,6 @@ void MechanicalObject<DataTypes>::resize(const Size size)
                 vectorsDeriv[i]->endEdit();
             }
         }
-        this->forceMask.clear();
     }
 }
 
@@ -1423,13 +1421,11 @@ void MechanicalObject<DataTypes>::writeState(std::ostream& out)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::beginIntegration(SReal /*dt*/)
 {
-    this->forceMask.activate(false);
 }
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::endIntegration(const core::ExecParams* /*params*/ , SReal /*dt*/    )
 {
-    this->forceMask.assign( this->getSize(), false );
     {
         this->externalForces.beginEdit()->clear();
         this->externalForces.endEdit();
@@ -1453,7 +1449,6 @@ void MechanicalObject<DataTypes>::accumulateForce(const core::ExecParams* params
                 if( extForces_rA[i] != Deriv() )
                 {
                     f_wA[i] += extForces_rA[i];
-                    this->forceMask.insertEntry(i); // if an external force is applied on the dofs, it must be added to the mask
                 }
             }
         }
@@ -2520,7 +2515,6 @@ void MechanicalObject<DataTypes>::resetForce(const core::ExecParams* params, cor
     {
         helper::WriteOnlyAccessor< Data<VecDeriv> > f( *this->write(fid) );
         for (unsigned i = 0; i < f.size(); ++i)
-            //          if( this->forceMask.getEntry(i) ) // safe getter or not?
             f[i] = Deriv();
     }
 }

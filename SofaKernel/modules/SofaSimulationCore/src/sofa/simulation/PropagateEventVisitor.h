@@ -33,7 +33,7 @@ namespace simulation
 {
 
 /**
-Visitor used to propagate an event in the the data structure.
+Visitor used to propagate an event in the data structure.
 Propagation is done top-down until the event is handled.
 
 	@author The SOFA team </www.sofa-framework.org>

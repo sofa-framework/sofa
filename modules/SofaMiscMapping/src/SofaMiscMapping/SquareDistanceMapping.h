@@ -112,8 +112,6 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    void updateForceMask() override;
-
 protected:
     SquareDistanceMapping();
     virtual ~SquareDistanceMapping();

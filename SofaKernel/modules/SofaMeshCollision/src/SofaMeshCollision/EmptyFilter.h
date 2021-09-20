@@ -20,42 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMeshCollision/config.h>
-#include <sofa/type/Vec.h>
 
-namespace sofa::component::collision
-{
+#include <sofa/config.h>
 
-
-/**
- * @brief
- */
-class EmptyFilter
-{
-public:
-    /**
-     * @brief Point Collision Primitive validation method.
-     */
-    bool validPoint(const Index /*pointIndex*/, const type::Vector3 &/*PQ*/)
-    {
-        return true;
-    }
-
-    /**
-     * @brief Line Collision Primitive validation method.
-     */
-    bool validLine(const Index /*lineIndex*/, const type::Vector3 &/*PQ*/)
-    {
-        return true;
-    }
-
-    /**
-     * @brief Triangle Collision Primitive validation method.
-     */
-    bool validTriangle(const Index /*triangleIndex*/, const type::Vector3 &/*PQ*/)
-    {
-        return true;
-    }
-};
-
-} // namespace sofa::component::collision
+SOFA_DISABLED_HEADER_NOT_REPLACED("v21.12 (PR#2272)", "v21.12")

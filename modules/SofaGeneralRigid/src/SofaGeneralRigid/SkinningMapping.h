@@ -73,8 +73,6 @@ public:
     typedef sofa::type::Mat<OutDeriv::total_size,InDeriv::total_size,Real>     MatBlock;
     typedef sofa::component::linearsolver::EigenSparseMatrix<In, Out> SparseJMatrixEigen;
 
-    typedef typename Inherit::ForceMask ForceMask;
-
 protected:
     Data<OutVecCoord> f_initPos;  ///< initial child coordinates in the world reference frame
 

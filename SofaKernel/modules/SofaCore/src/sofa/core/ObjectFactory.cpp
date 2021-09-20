@@ -277,19 +277,31 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             for (const auto& cr : entry->creatorMap)
                 templateList.push_back(cr.first);
         std::stringstream ss;
+        bool isUserTemplateNameInTemplateList = false;
         for(unsigned int i = 0; i < templateList.size(); ++i)
         {
             ss << templateList[i];
+            isUserTemplateNameInTemplateList |= (templateList[i] == usertemplatename || templateList[i] == userresolved);
             if (i != templateList.size() - 1)
                 ss << ", ";
         }
-        const std::string w = "Template '" + usertemplatename + "' cannot be found in the list of available templates ["
-                              + ss.str() + "].\n\t"
-                              + "Falling back to default template '" + object->getTemplateName() + "'.";
-        msg_warning(object.get()) << w;
+        if (isUserTemplateNameInTemplateList)
+        {
+            msg_warning(object.get()) << "Requested template '" << usertemplatename << "' "
+                                      << "is not compatible with the current context. "
+                                      << "Falling back to the first compatible template: '"
+                                      << object->getTemplateName() << "'.";
+        }
+        else
+        {
+            msg_warning(object.get()) << "Requested template '" << usertemplatename << "' "
+                                      << "cannot be found in the list of available templates [" << ss.str() << "]. "
+                                      << "Falling back to default template: '"
+                                      << object->getTemplateName() << "'.";
+        }
     }
     else if (creators.size() > 1)
-    {	// There was multiple possibilities, we used the first one (not necessarily the default, as it can be incompatible)
+    {	// There were multiple possibilities, we used the first one (not necessarily the default, as it can be incompatible)
         std::string w = "Template '" + templatename + std::string("' incorrect, used ") + object->getTemplateName() + std::string(" in the list:");
         for(unsigned int i = 0; i < creators.size(); ++i)
             w += std::string("\n\t* ") + creators[i].first;

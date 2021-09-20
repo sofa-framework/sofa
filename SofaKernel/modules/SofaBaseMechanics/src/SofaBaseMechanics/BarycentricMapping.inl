@@ -242,10 +242,9 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ()
     d_mapper = sofa::core::objectmodel::New<MeshMapper>(input_topology_container, output_topology_container);
 
 end:
-    if (d_mapper) {
+    if (d_mapper) 
+    {
         this->addSlave(d_mapper.get());
-        d_mapper->maskFrom = this->maskFrom;
-        d_mapper->maskTo = this->maskTo;
     }
 }
 
@@ -502,13 +501,6 @@ const type::vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::ge
     js.resize( 1 );
     js[0] = internalMatrix;
     return &js;
-}
-
-template <class TIn, class TOut>
-void BarycentricMapping<TIn, TOut>::updateForceMask()
-{
-    if( d_mapper )
-        d_mapper->updateForceMask();
 }
 
 } // namespace sofa::component::mapping

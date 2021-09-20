@@ -98,7 +98,7 @@ void CudaTetrahedronTLEDForceField::reinit()
 
     if (topology==NULL)
     {
-        serr << "ERROR(CudaTetrahedronTLEDForceField): no topology found." << sendl;
+        msg_error() << "no topology found.";
         return;
     }
     VecElement inputElems = topology->getTetrahedra();
@@ -108,7 +108,7 @@ void CudaTetrahedronTLEDForceField::reinit()
     {
         if (topology->getNbHexahedra() == 0)
         {
-            serr << "ERROR(CudaTetrahedronTLEDForceField): this forcefield requires a tetrahedral or hexahedral topology." << sendl;
+            msg_error() << "this forcefield requires a tetrahedral or hexahedral topology.";
             return;
         }
         int nbcubes = topology->getNbHexahedra();
@@ -353,7 +353,7 @@ void CudaTetrahedronTLEDForceField::reinit()
     // Computes Lame coefficients
     updateLameCoefficients();
 
-    sout << "CudaTetrahedronTLEDForceField::reinit() DONE." << sendl;
+    msg_info() << "reinit() DONE.";
 }
 
 // --------------------------------------------------------------------------------------

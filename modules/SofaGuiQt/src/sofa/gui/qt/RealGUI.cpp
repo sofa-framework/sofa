@@ -1800,16 +1800,14 @@ void RealGUI::initViewer(BaseViewer* _viewer)
 
 void RealGUI::parseOptions()
 {
-    if (mArgumentParser) {
-        boost::program_options::variables_map vm = mArgumentParser->getVariableMap();
-        if(vm.find("interactive") != vm.end())
-            m_enableInteraction = vm["interactive"].as<bool>();
-        if(vm.find("msaa") != vm.end())
-            m_viewerMSAANbSampling = vm["msaa"].as<unsigned int>();
 
-        if(m_enableInteraction)
+    if (mArgumentParser) {
+        mArgumentParser->getValueFromKey("interactive", m_enableInteraction);
+        mArgumentParser->getValueFromKey("msaa", m_viewerMSAANbSampling);
+
+        if (m_enableInteraction)
             msg_warning("runSofa") << "you activated the interactive mode. This is currently an experimental feature "
-                                      "that may change or be removed in the future. ";
+            "that may change or be removed in the future. ";
     }
 }
 

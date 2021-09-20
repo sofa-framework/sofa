@@ -102,7 +102,8 @@ class MyFileListener : public FileEventListener
 public:
     vector<string> m_files ;
 
-    virtual void fileHasChanged(const std::string& filename){
+    void fileHasChanged(const std::string& filename) override
+    {
         m_files.push_back(filename) ;
     }
 };

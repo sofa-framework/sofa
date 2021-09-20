@@ -48,17 +48,13 @@ void MechanicalComputeDfVisitor::bwdMechanicalMapping(simulation::Node* /*node*/
 {
     if (accumulate)
     {
-        ForceMaskActivate(map->getMechFrom() );
-        ForceMaskActivate(map->getMechTo() );
         map->applyJT(mparams, res, res);  // apply material stiffness: variation of force below the mapping
         if( mparams->kFactor() ) map->applyDJT(mparams, res, res); // apply geometric stiffness: variation due to a change of mapping, with a constant force below the mapping
-        ForceMaskDeactivate( map->getMechTo() );
     }
 }
 
 void MechanicalComputeDfVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
 {
-    mm->forceMask.activate(false);
 }
 
 std::string MechanicalComputeDfVisitor::getInfos() const
@@ -69,4 +65,4 @@ std::string MechanicalComputeDfVisitor::getInfos() const
     return name;
 }
 
-}
+} // namespace sofa::simulation::mechanicalvisitor

@@ -24,7 +24,6 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <SofaMeshCollision/PointModel.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaMeshCollision/LineLocalMinDistanceFilter.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/simulation/Node.h>
@@ -41,7 +40,7 @@ LineCollisionModel<DataTypes>::LineCollisionModel()
     : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the line model (when surface normals are defined on these lines)") )
     , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , mstate(nullptr), topology(nullptr), meshRevision(-1), m_lmdFilter(nullptr)
+    , mstate(nullptr), topology(nullptr), meshRevision(-1)
 {
     enum_type = LINE_TYPE;
 }
@@ -65,12 +64,6 @@ void LineCollisionModel<DataTypes>::init()
     {
         msg_error() << "LineModel requires a Vec3 Mechanical Model";
         return;
-    }
-
-    simulation::Node* node = dynamic_cast< simulation::Node* >(this->getContext());
-    if (node != 0)
-    {
-        m_lmdFilter = node->getNodeObject< LineLocalMinDistanceFilter >();
     }
 
     if (l_topology.empty())
@@ -497,11 +490,6 @@ void LineCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
         }
         cubeModel->computeBoundingTree(maxDepth);
     }
-
-    if (m_lmdFilter != 0)
-    {
-        m_lmdFilter->invalidate();
-    }
 }
 
 template<class DataTypes>
@@ -568,18 +556,6 @@ int LineCollisionModel<DataTypes>::getLineFlags(Index i)
         }
     }
     return f;
-}
-
-template<class DataTypes>
-LineLocalMinDistanceFilter *LineCollisionModel<DataTypes>::getFilter() const
-{
-    return m_lmdFilter;
-}
-
-template<class DataTypes>
-void LineCollisionModel<DataTypes>::setFilter(LineLocalMinDistanceFilter *lmdFilter)
-{
-    m_lmdFilter = lmdFilter;
 }
 
 template<class DataTypes>

@@ -43,8 +43,9 @@ Visitor::Result MechanicalComputeForceVisitor::fwdMappedMechanicalState(simulati
 
 Visitor::Result MechanicalComputeForceVisitor::fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
 {
-    if( !neglectingCompliance || !ff->isCompliance.getValue() ) ff->addForce(this->mparams, res);
-    else ff->updateForceMask(); // compliances must update the force mask too
+    if( !neglectingCompliance || !ff->isCompliance.getValue() ) 
+        ff->addForce(this->mparams, res);
+
     return RESULT_CONTINUE;
 }
 
@@ -52,19 +53,13 @@ void MechanicalComputeForceVisitor::bwdMechanicalMapping(simulation::Node* /*nod
 {
     if (accumulate)
     {
-        ForceMaskActivate(map->getMechFrom() );
-        ForceMaskActivate(map->getMechTo() );
-
         map->applyJT(mparams, res, res);
-
-        ForceMaskDeactivate( map->getMechTo() );
     }
 }
 
 
 void MechanicalComputeForceVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
 {
-    mm->forceMask.activate(false);
 }
 
 std::string MechanicalComputeForceVisitor::getInfos() const

@@ -28,6 +28,7 @@
 #include <sofa/type/RGBAColor.h>
 #include <iostream>
 #include <sofa/type/vector_algorithm.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 
 namespace sofa::component::projectiveconstraintset
@@ -351,32 +352,43 @@ void LinearMovementConstraint<DataTypes>::projectMatrix( sofa::defaulttype::Base
 
 // Matrix Integration interface
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
+void LinearMovementConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    const unsigned int N = Deriv::size();
-    const SetIndexArray & indices = m_indices.getValue();
-
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    SOFA_UNUSED(mparams);
+    core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get());
+    if(r)
     {
-        // Reset Fixed Row and Col
-        for (unsigned int c=0; c<N; ++c)
-            mat->clearRowCol(offset + N * (*it) + c);
-        // Set Fixed Vertex
-        for (unsigned int c=0; c<N; ++c)
-            mat->set(offset + N * (*it) + c, offset + N * (*it) + c, 1.0);
+        const unsigned int N = Deriv::size();
+        const SetIndexArray & indices = m_indices.getValue();
+
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            // Reset Fixed Row and Col
+            for (unsigned int c=0; c<N; ++c)
+                r.matrix->clearRowCol(r.offset + N * (*it) + c);
+            // Set Fixed Vertex
+            for (unsigned int c=0; c<N; ++c)
+                r.matrix->set(r.offset + N * (*it) + c, r.offset + N * (*it) + c, 1.0);
+        }
     }
 }
 
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset)
+void LinearMovementConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    const unsigned int N = Deriv::size();
-
-    const SetIndexArray & indices = m_indices.getValue();
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    SOFA_UNUSED(mparams);
+    int o = matrix->getGlobalOffset(this->mstate.get());
+    if (o >= 0)
     {
-        for (unsigned int c=0; c<N; ++c)
-            vect->clear(offset + N * (*it) + c);
+        unsigned int offset = (unsigned int)o;
+        const unsigned int N = Deriv::size();
+
+        const SetIndexArray & indices = m_indices.getValue();
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            for (unsigned int c=0; c<N; ++c)
+                vector->clear(offset + N * (*it) + c);
+        }
     }
 }
 

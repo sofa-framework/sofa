@@ -25,7 +25,6 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
 #include <cmath>
 #include <sofa/type/Mat.h>
 
@@ -101,7 +100,6 @@ public:
         Bloc i() const;
     };
     typedef Bloc SubMatrixType;
-    typedef FullMatrix<T> InvMatrixType;
     // return the dimension of submatrices when requesting a given size
     static Index getSubMatrixDim(Index);
 

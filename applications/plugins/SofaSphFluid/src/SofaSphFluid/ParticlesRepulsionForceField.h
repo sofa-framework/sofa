@@ -96,7 +96,7 @@ public:
 
     SReal getPotentialEnergy(const sofa::core::MechanicalParams* /*mparams*/, const DataVecCoord& /* x */) const override
     {
-        serr << "getPotentialEnergy not implemented" << sendl;
+        msg_error() << "getPotentialEnergy not implemented";
 
         return 0.0;
     }

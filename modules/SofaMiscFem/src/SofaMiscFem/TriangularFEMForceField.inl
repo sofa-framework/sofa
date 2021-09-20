@@ -19,10 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #pragma once
 
-#include "TriangularFEMForceField.h"
+#include <SofaMiscFem/TriangularFEMForceField.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/ColorMap.h>
@@ -30,13 +29,8 @@
 
 #include <SofaBaseTopology/TopologyData.inl>
 
-#include <sofa/helper/system/thread/debug.h>
 #include <newmat/newmat.h>
 #include <newmat/newmatap.h>
-#include <fstream> // for reading the file
-#include <iostream> //for debugging
-#include <vector>
-#include <algorithm>
 #include <limits>
 
 namespace sofa::component::forcefield
@@ -51,13 +45,11 @@ template <class DataTypes>
 TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     : triangleInfo(initData(&triangleInfo, "triangleInfo", "Internal triangle data"))
     , vertexInfo(initData(&vertexInfo, "vertexInfo", "Internal point data"))
-    , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
     , m_topology(nullptr)
     , method(LARGE)
     , f_method(initData(&f_method,std::string("large"),"method","large: large displacements, small: small displacements"))
     , f_poisson(initData(&f_poisson,type::vector<Real>(1,static_cast<Real>(0.3)),"poissonRatio","Poisson ratio in Hooke's law (vector)"))
     , f_young(initData(&f_young,type::vector<Real>(1,static_cast<Real>(1000.0)),"youngModulus","Young modulus in Hooke's law (vector)"))
-    , f_damping(initData(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
     , m_rotatedInitialElements(initData(&m_rotatedInitialElements,"rotatedInitialElements","Flag activating rendering of stress directions within each triangle"))
     , m_initialTransformation(initData(&m_initialTransformation,"initialTransformation","Flag activating rendering of stress directions within each triangle"))
     , hosfordExponant(initData(&hosfordExponant, (Real)1.0, "hosfordExponant","Exponant in the Hosford yield criteria"))
@@ -68,7 +60,7 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     , f_computePrincipalStress(initData(&f_computePrincipalStress,false,"computePrincipalStress","Compute principal stress for each triangle"))
     , l_topology(initLink("topology", "link to the topology container"))
     #ifdef PLOT_CURVE
-    , elementID( initData(&elementID, (Real)0, "id","element id to follow for fracture criteria") )
+    , elementID( initData(&elementID, (Real)0, "id","element id to follow in the graphs") )
     , f_graphStress( initData(&f_graphStress,"graphMaxStress","Graph of max stress corresponding to the element id") )
     , f_graphCriteria( initData(&f_graphCriteria,"graphCriteria","Graph of the fracture criteria corresponding to the element id") )
     , f_graphOrientation( initData(&f_graphOrientation,"graphOrientation","Graph of the orientation of the principal stress direction corresponding to the element id"))
@@ -139,7 +131,6 @@ void TriangularFEMForceField<DataTypes>::init()
 
     // Create specific Engine for TriangleData
     triangleInfo.createTopologyHandler(m_topology);
-    edgeInfo.createTopologyHandler(m_topology);
     vertexInfo.createTopologyHandler(m_topology);
 
     triangleInfo.setCreationCallback([this](Index triangleIndex, TriangleInformation& triInfo,
@@ -155,8 +146,6 @@ void TriangularFEMForceField<DataTypes>::init()
         method = SMALL;
     else if (f_method.getValue() == "large")
         method = LARGE;
-
-      lastFracturedEdgeIndex = -1;
 
     reinit();
 }
@@ -196,7 +185,7 @@ void TriangularFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Inde
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Index&c)
 {
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
+    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
 
     msg_error_when((unsigned int)i >= triangleInf.size())
             << "Try to access an element which indices bigger than the size of the vector: i=" << i << " and size=" << triangleInf.size() ;
@@ -261,19 +250,13 @@ void TriangularFEMForceField<DataTypes>::reinit()
     else if (f_method.getValue() == "large")
         method = LARGE;
 
-    type::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
-
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
+    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
 
     /// prepare to store info in the triangle array
     triangleInf.resize(m_topology->getNbTriangles());
 
-    /// prepare to store info in the edge array
-    edgeInf.resize(m_topology->getNbEdges());
-
-
     unsigned int nbPoints = m_topology->getNbPoints();
-    type::vector<VertexInformation>& vi = *(vertexInfo.beginEdit());
+    type::vector<VertexInformation>& vi = *(vertexInfo.beginWriteOnly());
     vi.resize(nbPoints);
     vertexInfo.endEdit();
 
@@ -283,7 +266,6 @@ void TriangularFEMForceField<DataTypes>::reinit()
         createTriangleInformation(i, triangleInf[i],  m_topology->getTriangle(i),  (const sofa::type::vector< Index > )0, (const sofa::type::vector< double >)0);
     }
 
-    edgeInfo.endEdit();
     triangleInfo.endEdit();
 
 
@@ -438,12 +420,6 @@ void TriangularFEMForceField<DataTypes>::setYoungArray(const type::vector<Real>&
 }
 
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::setDamping(Real val) 
-{ 
-    f_damping.setValue(val); 
-}
-
-template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::setMethod(int val) 
 { 
     if (val != 0 && val != 1)
@@ -541,9 +517,9 @@ void TriangularFEMForceField<DataTypes>::getRotations()
         r01=tinfo->initialTransformation;
         r21=tinfo->rotation*r01;
 
-        for(int j=0; j<3; j++)
+        const Triangle& tri = m_topology->getTriangle(i);
+        for(auto idx : tri)
         {
-            int idx=m_topology->getTriangle(i)[j];
             VertexInformation *vinfo= &vertexInf[idx];
             vinfo->rotation+=r21;
         }
@@ -671,23 +647,22 @@ void TriangularFEMForceField<DataTypes>::computeRotationLarge( Transformation &r
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computeDisplacementSmall(Displacement &D, Index elementIndex, const VecCoord &p)
 {
-    Index a = m_topology->getTriangle(elementIndex)[0];
-    Index b = m_topology->getTriangle(elementIndex)[1];
-    Index c = m_topology->getTriangle(elementIndex)[2];
+    const Triangle& tri = m_topology->getTriangle(elementIndex);
+    Index a = tri[0];
+    Index b = tri[1];
+    Index c = tri[2];
 
     //Coord deforme_a = Coord(0,0,0);
     Coord deforme_b = p[b]-p[a];
     Coord deforme_c = p[c]-p[a];
 
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
-
+    const type::vector<TriangleInformation>& triangleInf = triangleInfo.getValue();
     D[0] = 0;
     D[1] = 0;
     D[2] = triangleInf[elementIndex].rotatedInitialElements[1][0] - deforme_b[0];
     D[3] = triangleInf[elementIndex].rotatedInitialElements[1][1] - deforme_b[1];
     D[4] = triangleInf[elementIndex].rotatedInitialElements[2][0] - deforme_c[0];
     D[5] = triangleInf[elementIndex].rotatedInitialElements[2][1] - deforme_c[1];
-    triangleInfo.endEdit();
 }
 
 // -------------------------------------------------------------------------------------------------------------
@@ -697,15 +672,16 @@ void TriangularFEMForceField<DataTypes>::computeDisplacementSmall(Displacement &
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computeDisplacementLarge(Displacement &D, Index elementIndex, const Transformation &R_0_2, const VecCoord &p)
 {
-    Index a = m_topology->getTriangle(elementIndex)[0];
-    Index b = m_topology->getTriangle(elementIndex)[1];
-    Index c = m_topology->getTriangle(elementIndex)[2];
+    const Triangle& tri = m_topology->getTriangle(elementIndex);
+    Index a = tri[0];
+    Index b = tri[1];
+    Index c = tri[2];
 
     // positions of the deformed and displaced triangle in its frame
     Coord deforme_b = R_0_2 * (p[b]-p[a]);
     Coord deforme_c = R_0_2 * (p[c]-p[a]);
 
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
+    const type::vector<TriangleInformation>& triangleInf = triangleInfo.getValue();
 
     // displacements
     D[0] = 0;
@@ -721,8 +697,6 @@ void TriangularFEMForceField<DataTypes>::computeDisplacementLarge(Displacement &
                    << "computeDisplacementLarge :: deforme_c = " <<  deforme_c << msgendl
                    << "computeDisplacementLarge :: R_0_2 = " <<  R_0_2 << msgendl;
     }
-
-    triangleInfo.endEdit();
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -732,7 +706,7 @@ template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computeStrainDisplacement(StrainDisplacement &J, Index elementIndex, Coord a, Coord b, Coord c )
 {
     Real determinant;
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
+    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
 
     if (method == SMALL)
     {
@@ -846,7 +820,7 @@ void TriangularFEMForceField<DataTypes>::computeStrain(type::Vec<3,Real> &strain
 // --- Stress = K * Strain = KJtD = KBd
 // --------------------------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3,Real> &stress, MaterialStiffness &K, type::Vec<3,Real> &strain)
+void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3,Real> &stress, const MaterialStiffness &K, const type::Vec<3,Real> &strain)
 {
     if (_anisotropicMaterial || method == SMALL)
     {
@@ -887,7 +861,7 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementInd
     Coord v((Real)V(1,1), (Real)V(2,1), 0.0);
     v.normalize();
 
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
+    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
 
     triangleInf[elementIndex].maxStrain = (Real)D(1,1);
 
@@ -1023,11 +997,12 @@ void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index ele
     type::Vec<3,Real> stress;
     Transformation R_0_2, R_2_0;
 
-    Index a = m_topology->getTriangle(elementIndex)[0];
-    Index b = m_topology->getTriangle(elementIndex)[1];
-    Index c = m_topology->getTriangle(elementIndex)[2];
+    const Triangle& tri = m_topology->getTriangle(elementIndex);
+    Index a = tri[0];
+    Index b = tri[1];
+    Index c = tri[2];
 
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
+    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
 
     if (method == SMALL)
     {
@@ -1100,9 +1075,10 @@ void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3,Real> &stress
     type::Vec<3,Real> strain;
     Transformation R_0_2, R_2_0;
     const VecCoord& p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    Index a = m_topology->getTriangle(elementIndex)[0];
-    Index b = m_topology->getTriangle(elementIndex)[1];
-    Index c = m_topology->getTriangle(elementIndex)[2];
+    const Triangle& tri = m_topology->getTriangle(elementIndex);
+    Index a = tri[0];
+    Index b = tri[1];
+    Index c = tri[2];
 
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
 
@@ -1173,9 +1149,10 @@ void TriangularFEMForceField<DataTypes>::computeStressAlongDirection(Real &stres
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computeStressAcrossDirection(Real &stress_across_dir, Index elementIndex, const Coord &dir, const type::Vec<3,Real> &stress)
 {
-    Index a = m_topology->getTriangle(elementIndex)[0];
-    Index b = m_topology->getTriangle(elementIndex)[1];
-    Index c = m_topology->getTriangle(elementIndex)[2];
+    const Triangle& tri = m_topology->getTriangle(elementIndex);
+    Index a = tri[0];
+    Index b = tri[1];
+    Index c = tri[2];
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Coord n = cross(x[b]-x[a],x[c]-x[a]);
     Coord dir_t = cross(dir,n);
@@ -1185,9 +1162,10 @@ void TriangularFEMForceField<DataTypes>::computeStressAcrossDirection(Real &stre
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computeStressAcrossDirection(Real &stress_across_dir, Index elementIndex, const Coord &dir)
 {
-    Index a = m_topology->getTriangle(elementIndex)[0];
-    Index b = m_topology->getTriangle(elementIndex)[1];
-    Index c = m_topology->getTriangle(elementIndex)[2];
+    const Triangle& tri = m_topology->getTriangle(elementIndex);
+    Index a = tri[0];
+    Index b = tri[1];
+    Index c = tri[2];
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Coord n = cross(x[b]-x[a],x[c]-x[a]);
     Coord dir_t = cross(dir,n);
@@ -1221,9 +1199,10 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h
 
     for(unsigned int i=0; i<nbTriangles; i++)
     {
-        Index a = m_topology->getTriangle(i)[0];
-        Index b = m_topology->getTriangle(i)[1];
-        Index c = m_topology->getTriangle(i)[2];
+        const Triangle& tri = m_topology->getTriangle(i);
+        Index a = tri[0];
+        Index b = tri[1];
+        Index c = tri[2];
 
         D[0] = x[a][0];
         D[1] = x[a][1];
@@ -1269,33 +1248,27 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h
     Coord x_2;
     unsigned int nbTriangles = m_topology->getNbTriangles();
 
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
+    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
 
     for(unsigned int i=0; i<nbTriangles; i++)
     {
-        Index a = m_topology->getTriangle(i)[0];
-        Index b = m_topology->getTriangle(i)[1];
-        Index c = m_topology->getTriangle(i)[2];
+        const Element& tri = m_topology->getTriangle(i);
+        Index a = tri[0];
+        Index b = tri[1];
+        Index c = tri[2];
 
         Transformation R_0_2;
         R_0_2.transpose(triangleInf[i].rotation);
 
-        VecCoord disp;
-        disp.resize(3);
-
         x_2 = R_0_2 * x[a];
-        disp[0] = x_2;
-
         D[0] = x_2[0];
         D[1] = x_2[1];
 
         x_2 = R_0_2 * x[b];
-        disp[1] = x_2;
         D[2] = x_2[0];
         D[3] = x_2[1];
 
         x_2 = R_0_2 * x[c];
-        disp[2] = x_2;
         D[4] = x_2[0];
         D[5] = x_2[1];
 
@@ -1324,16 +1297,6 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h
 }
 
 
-
-// --------------------------------------------------------------------------------------
-// --- Accumulate functions
-// --------------------------------------------------------------------------------------
-template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::accumulateDampingSmall(VecCoord&, Index )
-{
-
-}
-
 // --------------------------------------------------------------------------------------
 // ---
 // --------------------------------------------------------------------------------------
@@ -1342,9 +1305,10 @@ void TriangularFEMForceField<DataTypes>::accumulateForceSmall( VecCoord &f, cons
 {
     Displacement F;
 
-    Index a = m_topology->getTriangle(elementIndex)[0];
-    Index b = m_topology->getTriangle(elementIndex)[1];
-    Index c = m_topology->getTriangle(elementIndex)[2];
+    const Element& tri = m_topology->getTriangle(elementIndex);
+    Index a = tri[0];
+    Index b = tri[1];
+    Index c = tri[2];
 
     // compute force on element
     computeForce(F, elementIndex, p);
@@ -1362,34 +1326,22 @@ template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const VecCoord &p, Index elementIndex )
 {
     Displacement F;
-
-    Index a = m_topology->getTriangle(elementIndex)[0];
-    Index b = m_topology->getTriangle(elementIndex)[1];
-    Index c = m_topology->getTriangle(elementIndex)[2];
+    const Triangle& tri = m_topology->getTriangle(elementIndex);
+    Index a = tri[0];
+    Index b = tri[1];
+    Index c = tri[2];
 
     // compute force on element (in the co-rotational space)
     computeForce( F, elementIndex, p);
 
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
-
+    const type::vector<TriangleInformation>& triangleInf = triangleInfo.getValue();
+    const Transformation& rot = triangleInf[elementIndex].rotation;
     // transform force back into global ref. frame
-    f[a] += triangleInf[elementIndex].rotation * Coord(F[0], F[1], 0);
-    f[b] += triangleInf[elementIndex].rotation * Coord(F[2], F[3], 0);
-    f[c] += triangleInf[elementIndex].rotation * Coord(F[4], F[5], 0);
-
-    triangleInfo.endEdit();
-}
-
-// --------------------------------------------------------------------------------------
-// ---
-// --------------------------------------------------------------------------------------
-template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::accumulateDampingLarge(VecCoord &, Index )
-{
+    f[a] += rot * Coord(F[0], F[1], 0);
+    f[b] += rot * Coord(F[2], F[3], 0);
+    f[c] += rot * Coord(F[4], F[5], 0);
 
 }
-
-
 
 
 // --------------------------------------------------------------------------------------
@@ -1405,40 +1357,18 @@ void TriangularFEMForceField<DataTypes>::addForce(const core::MechanicalParams* 
 
     f1.resize(x1.size());
 
-    if(f_damping.getValue() != 0)
+    if (method == SMALL)
     {
-        if(method == SMALL)
+        for (int i = 0; i < nbTriangles; i += 1)
         {
-            for( int i=0; i<nbTriangles; i+=3 )
-            {
-                accumulateForceSmall( f1, x1, i/3 );
-                accumulateDampingSmall( f1, i/3 );
-            }
-        }
-        else
-        {
-            for ( int i=0; i<nbTriangles; i+=3 )
-            {
-                accumulateForceLarge( f1, x1, i/3);
-                accumulateDampingLarge( f1, i/3 );
-            }
+            accumulateForceSmall(f1, x1, i);
         }
     }
     else
     {
-        if (method==SMALL)
+        for (int i = 0; i < nbTriangles; i += 1)
         {
-            for(int i=0; i<nbTriangles; i+=1)
-            {
-                accumulateForceSmall( f1, x1, i );
-            }
-        }
-        else
-        {
-            for ( int i=0; i<nbTriangles; i+=1)
-            {
-                accumulateForceLarge( f1, x1, i);
-            }
+            accumulateForceLarge(f1, x1, i);
         }
     }
     f.endEdit();
@@ -1508,7 +1438,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         std::vector<sofa::type::Vector3> vertices;
         for(Size i=0; i< nbTriangles; ++i)
         {
-            Triangle tri = m_topology->getTriangle(i);
+            const Triangle& tri = m_topology->getTriangle(i);
             Index a = tri[0];
             Index b = tri[1];
             Index c = tri[2];
@@ -1523,8 +1453,8 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     if (showStressValue.getValue())
     {
         type::vector<VertexInformation>& vertexInf = *(vertexInfo.beginEdit());
-        double minStress = numeric_limits<double>::max();
-        double maxStress = 0.0;
+        Real minStress = std::numeric_limits<Real>::max();
+        Real maxStress = 0.0;
         for ( unsigned int i = 0 ; i < vertexInf.size() ; i++)
         {
             const core::topology::BaseMeshTopology::TrianglesAroundVertex& triangles = m_topology->getTrianglesAroundVertex(i);
@@ -1554,9 +1484,10 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         helper::ColorMap::evaluator<double> evalColor = p_drawColorMap->getEvaluator(minStress, maxStress);
         for(Size i=0; i<nbTriangles; ++i)
         {
-            Index a = m_topology->getTriangle(i)[0];
-            Index b = m_topology->getTriangle(i)[1];
-            Index c = m_topology->getTriangle(i)[2];
+            const Triangle& tri = m_topology->getTriangle(i);
+            Index a = tri[0];
+            Index b = tri[1];
+            Index c = tri[2];
 
             colorVector.push_back(evalColor(vertexInf[a].stress));
             vertices.push_back(sofa::type::Vector3(x[a]));
@@ -1577,8 +1508,8 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         std::vector<sofa::type::Vector3> vertices;
         sofa::type::RGBAColor color;
 
-        Real maxDifference = numeric_limits<Real>::min();
-        Real minDifference = numeric_limits<Real>::max();
+        Real maxDifference = std::numeric_limits<Real>::min();
+        Real minDifference = std::numeric_limits<Real>::max();
         for (Size i = 0 ; i < nbTriangles ; i++)
         {
             if (triangleInf[i].differenceToCriteria > 0)
@@ -1596,10 +1527,10 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
             if (triangleInf[i].differenceToCriteria > 0)
             {
                 color = sofa::type::RGBAColor( float(0.4 + 0.4 * (triangleInf[i].differenceToCriteria - minDifference ) /  (maxDifference - minDifference)) , 0.0f , 0.0f, 0.5f);
-
-                Index a = m_topology->getTriangle(i)[0];
-                Index b = m_topology->getTriangle(i)[1];
-                Index c = m_topology->getTriangle(i)[2];
+                const Triangle& tri = m_topology->getTriangle(i);
+                Index a = tri[0];
+                Index b = tri[1];
+                Index c = tri[2];
 
                 colorVector.push_back(color);
                 vertices.push_back(sofa::type::Vector3(x[a]));

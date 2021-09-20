@@ -110,8 +110,6 @@ public:
     const VecIndex& getIndices() const { return m_indices; }
     const VecIndex& getExtIndices() const { return (useRestMState ? m_ext_indices : m_indices); }
 
-    void updateForceMask() override;
-
 protected :
 
     void recomputeIndices();

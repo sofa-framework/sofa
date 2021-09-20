@@ -36,11 +36,10 @@ class SOFA_SIMULATION_CORE_API MechanicalPropagateDxVisitor : public MechanicalV
 public:
     sofa::core::MultiVecDerivId dx;
 
-    bool ignoreMask;
     bool ignoreFlag;
     MechanicalPropagateDxVisitor( const sofa::core::MechanicalParams* mparams,
-                                  sofa::core::MultiVecDerivId dx, bool m, bool f = false )
-            : MechanicalVisitor(mparams) , dx(dx), ignoreMask(m), ignoreFlag(f)
+                                  sofa::core::MultiVecDerivId dx, bool f = false )
+            : MechanicalVisitor(mparams) , dx(dx), ignoreFlag(f)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -69,4 +68,5 @@ public:
     }
 #endif
 };
-}
+
+} // namespace sofa::simulation::mechanicalvisitor

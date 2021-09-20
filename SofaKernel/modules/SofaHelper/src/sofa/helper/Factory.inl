@@ -29,11 +29,17 @@
 #include <sofa/type/vector.h>
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
+namespace sofa::helper
 {
 
-namespace helper
+template<class TKey>
+void logFactoryRegister(const std::string& baseclass, const std::string& classname, TKey key, bool multi)
 {
+    std::stringstream ss;
+    ss << key;
+    getFactoryLog() += baseclass + (multi?" template class ":" class ")
+        + classname + " registered as " + ss.str() + "\n";
+}
 
 
 template <typename TKey, class TObject, typename TArgument, typename TPtr>
@@ -158,8 +164,6 @@ bool Factory<TKey, TObject, TArgument, TPtr>::resetEntry( Key existingKey)
 }
 
 
-} // namespace helper
-
-} // namespace sofa
+} // namespace sofa::helper
 
 #endif

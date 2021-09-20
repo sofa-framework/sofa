@@ -37,7 +37,10 @@
 #include "VectorVis.h"
 
 //(imports + Image data structure + others) are in here
-#include <CImgPlugin/CImgData.h>
+#include <image/CImgData.h>
+
+#include <SofaBaseVisual/VisualModelImpl.h>
+#include <SofaBaseVisual/VisualStyle.h>
 
 namespace sofa
 {

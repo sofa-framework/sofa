@@ -471,19 +471,13 @@ void PersistentContactBarycentricMapping<TIn, TOut>::createPersistentMapperFromT
     BaseMechanicalState *dofFrom = static_cast< simulation::Node* >(this->fromModel->getContext())->mechanicalState;
     BaseMechanicalState *dofTo = static_cast< simulation::Node* >(this->toModel->getContext())->mechanicalState;
 
-    helper::ParticleMask *maskFrom = &dofFrom->forceMask;
-    helper::ParticleMask *maskTo = NULL;
-
-    if (dofTo)
-        maskTo = &dofTo->forceMask;
-
     if (fromTopoCont != NULL)
     {
         topology::TetrahedronSetTopologyContainer* t1 = dynamic_cast< topology::TetrahedronSetTopologyContainer* >(fromTopoCont);
         if (t1 != NULL)
         {
             typedef PersistentContactBarycentricMapperTetrahedronSetTopology<InDataTypes, OutDataTypes> TetrahedronSetMapper;
-            m_persistentMapper = sofa::core::objectmodel::New< TetrahedronSetMapper >(t1, toTopoCont, maskFrom, maskTo);
+            m_persistentMapper = sofa::core::objectmodel::New< TetrahedronSetMapper >(t1, toTopoCont);
         }
     }
     else
@@ -494,7 +488,7 @@ void PersistentContactBarycentricMapping<TIn, TOut>::createPersistentMapperFromT
         if (sgt != NULL && sgt->isVolume())
         {
             typedef PersistentContactBarycentricMapperSparseGridTopology< InDataTypes, OutDataTypes > SparseGridMapper;
-            m_persistentMapper = sofa::core::objectmodel::New< SparseGridMapper >(sgt, toTopoCont, maskFrom, maskTo);
+            m_persistentMapper = sofa::core::objectmodel::New< SparseGridMapper >(sgt, toTopoCont);
         }
         else
         {
@@ -502,7 +496,7 @@ void PersistentContactBarycentricMapping<TIn, TOut>::createPersistentMapperFromT
 
             typedef PersistentContactBarycentricMapperMeshTopology< InDataTypes, OutDataTypes > MeshMapper;
             BaseMeshTopology* bmt = dynamic_cast< BaseMeshTopology* >(topology);
-            m_persistentMapper = sofa::core::objectmodel::New< MeshMapper >(bmt, toTopoCont, maskFrom, maskTo);
+            m_persistentMapper = sofa::core::objectmodel::New< MeshMapper >(bmt, toTopoCont);
         }
     }
 

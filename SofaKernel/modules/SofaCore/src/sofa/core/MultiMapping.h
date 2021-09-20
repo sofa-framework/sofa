@@ -283,17 +283,6 @@ protected:
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels.get(i)].write()); }
     void getConstMatOutDeriv(const ConstMultiMatrixDerivId id, type::vector<const OutDataMatrixDeriv* > &v) const
     {   for (unsigned int i=0; i<toModels.size(); ++i)  v.push_back(id[toModels.get(i)].read());  }
-
-    /// Useful when the mapping is applied only on a subset of parent dofs.
-    /// It is automatically called by applyJT.
-    ///
-    /// That way, we can optimize Jacobian sparsity.
-    /// Every Dofs are inserted by default. The mappings using only a subset of dofs should only insert these dofs in the mask.
-    void updateForceMask() override;
-
-    /// keep pointers on the masks
-    type::vector<helper::StateMask*> maskFrom, maskTo;
-
 };
 
 

@@ -38,7 +38,7 @@ PairBoxROI<DataTypes>::PairBoxROI()
     , f_indices( initData(&f_indices,"indices","Indices of the points contained in the ROI") )
     , f_pointsInROI( initData(&f_pointsInROI,"pointsInROI","Points contained in the ROI") )
     , p_drawInclusiveBox( initData(&p_drawInclusiveBox,false,"drawInclusiveBox","Draw Inclusive Box") )
-    , p_drawIncludedBox( initData(&p_drawIncludedBox,false,"drawInclusdedBx","Draw Included Box") )
+    , p_drawIncludedBox( initData(&p_drawIncludedBox,false,"drawIncludedBox","Draw Included Box") )
     , p_drawPoints( initData(&p_drawPoints,false,"drawPoints","Draw Points") )
     , _drawSize( initData(&_drawSize,"drawSize","Draw Size") )
 {

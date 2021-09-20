@@ -164,20 +164,6 @@ public:
 protected:
     bool testMechanicalState(BaseState* state);
 
-#ifdef SOFA_USE_MASK
-    /// must be set to true each time Apply is called
-    /// and to false each time updateForceMask() is called
-    /// in order to call updateForceMask() only once per step
-    bool m_forceMaskNewStep;
-#endif
-
-    /// Useful when the mapping is applied only on a subset of parent dofs.
-    /// It is automatically called by applyJT.
-    ///
-    /// That way, we can optimize Jacobian sparsity.
-    /// Every Dofs are inserted by default. The mappings using only a subset of dofs should only insert these dofs in the mask.
-    virtual void updateForceMask() = 0;
-
 public:
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;

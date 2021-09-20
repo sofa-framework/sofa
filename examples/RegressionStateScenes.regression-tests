@@ -32,6 +32,10 @@ Components/solver/EulerImplicitSolver.scn 3000 1e-4 0 1
 Components/topology/Mesh2PointTopologicalMapping.scn 100 1e-4 0 1
 Components/topology/SparseGridTopology.scn 100 1e-4 0 1
 Components/topology/SparseGridRamificationTopology.scn 100 1e-4 0 1
+Components/mass/UniformMass.scn 100 1e-4 0 1
+Components/mass/DiagonalMass.scn 100 1e-4 0 1
+Components/mass/MeshMatrixMass.scn 100 1e-4 0 1
+
 
 ### Benchmark scenes ###
 Benchmark/Performance/MatrixAssembly/MatrixAssembly_assembledCG.scn 300 1e-4 0 1

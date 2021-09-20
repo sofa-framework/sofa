@@ -23,15 +23,9 @@
 
 #include <SofaMiscFem/config.h>
 
-#include "TriangleFEMForceField.h"
+#include <SofaMiscFem/TriangleFEMForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <fstream> // for reading the file
-#include <iostream> //for debugging
-#include <vector>
-#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa::component::forcefield
 {
@@ -613,13 +607,6 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const V
     }
 
 }
-
-
-//template <class DataTypes>
-//void TriangleFEMForceField<DataTypes>::accumulateDampingLarge(VecCoord &, Index )
-//{
-
-//}
 
 
 template <class DataTypes>

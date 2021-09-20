@@ -164,12 +164,8 @@ void Frame::writeOpenGlMatrix( double *m ) const
 Frame Frame::inversed() const
 {
     Mat33 inv;
-#ifdef NDEBUG
-    inv.invert( basis_ );
-#else
-    bool invertible = inv.invert( basis_ );
+    const bool invertible = inv.invert( basis_ );
     assert( invertible );
-#endif
     return Frame( -(inv*origin_) , inv );
 }
 

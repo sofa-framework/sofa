@@ -61,7 +61,7 @@ public:
     Data<Real> dmin; ///< coordinates min of the plane for the vertex selection
     Data<Real> dmax;///< coordinates max of the plane for the vertex selection
     Data<bool> p_showForces; ///< draw triangles which have a given pressure
-    Data<bool> p_useConstantForce; ///< applied force is computed as the the pressure vector times the area at rest
+    Data<bool> p_useConstantForce; ///< applied force is computed as the pressure vector times the area at rest
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<TrianglePressureForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

@@ -31,7 +31,7 @@
 #include <math.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.inl>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>

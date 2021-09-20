@@ -225,7 +225,7 @@ void TransformPosition<DataTypes>::getTransfoFromTfm()
     }
     else
     {
-        msg_error() << "Could not open file " << fname << sendl << "Matrix set to identity";
+        msg_error() << "Could not open file " << fname << msgendl << "Matrix set to identity";
     }
 }
 
@@ -303,7 +303,7 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
     }
     else
     {
-        msg_error() << "Could not open file " << fname << sendl << "Matrix set to identity";
+        msg_error() << "Could not open file " << fname << msgendl << "Matrix set to identity";
     }
 
 }
@@ -366,7 +366,7 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
     }
     else
     {
-        msg_error() << "Could not open file " << fname << sendl << "Matrix set to identity";
+        msg_error() << "Could not open file " << fname << msgendl << "Matrix set to identity";
     }
 }
 

@@ -66,8 +66,6 @@ public:
     typedef typename Inherit::MatrixType MatrixType;
     typedef typename MatrixType::Index MatrixTypeIndex;
 
-    typedef typename Inherit::ForceMask ForceMask;
-
     using Index = sofa::Index;
 
 protected:
