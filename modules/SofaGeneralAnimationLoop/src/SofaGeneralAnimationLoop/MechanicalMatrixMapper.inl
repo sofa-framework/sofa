@@ -214,10 +214,10 @@ void copyKToEigenFormat(CompressedRowSparseMatrix< T >* K, Eigen::SparseMatrix<d
     /// Structure complying with the expected interface of SparseMatrix::setFromTriplets
     struct IndexedBlocProxy
     {
-        IndexedBlocProxy(const typename CompressedRowSparseMatrix<T>::VecIndexedBloc::const_iterator& it) : m_iterator(it) {}
+        explicit IndexedBlocProxy(const typename CompressedRowSparseMatrix<T>::VecIndexedBloc::const_iterator& it) : m_iterator(it) {}
         T value() const { return m_iterator->value; }
-        T row() const { return m_iterator->l; }
-        T col() const { return m_iterator->c; }
+        typename CompressedRowSparseMatrix< T >::Index row() const { return m_iterator->l; }
+        typename CompressedRowSparseMatrix< T >::Index col() const { return m_iterator->c; }
 
         typename CompressedRowSparseMatrix<T>::VecIndexedBloc::const_iterator m_iterator;
     };
@@ -233,11 +233,10 @@ void copyKToEigenFormat(CompressedRowSparseMatrix< T >* K, Eigen::SparseMatrix<d
         IndexedBlocProxy m_proxy;
     };
 
-    sofa::helper::AdvancedTimer::stepBegin("KfromTriplets" );
+    sofa::helper::ScopedAdvancedTimer timer("KfromTriplets" );
     IndexedBlocIterator begin(K->btemp.begin());
     IndexedBlocIterator end(K->btemp.end());
     Keig.setFromTriplets(begin, end);
-    sofa::helper::AdvancedTimer::stepEnd("KfromTriplets" );
 }
 template<class InputFormat>
 static void copyMappingJacobianToEigenFormat(const typename InputFormat::MatrixDeriv& J, Eigen::SparseMatrix<double>& Jeig)
