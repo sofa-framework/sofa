@@ -74,7 +74,7 @@ public:
 
 
 class PathResolverToBaseObject : public PathResolver_simutest{};
-TEST_P(PathResolverToBaseObject, DISABLED_CheckPathToBaseObject)
+TEST_P(PathResolverToBaseObject, CheckPathToBaseObject)
 {
     ASSERT_NE(node,nullptr);
     auto& t = GetParam();
@@ -92,7 +92,6 @@ TEST_P(PathResolverToBaseObject, DISABLED_CheckPathToBaseObject)
 
 std::vector<std::vector<std::string>> checkPathForBaseObjectValues=
 {
-    {"@/child1", "The linked address is pointing to a node while trying to load it in an object. Using two different types should return", "false"},
     {"@/obj", "The linked type is an InfoComponent type while the link should point to a  object. CheckPath should return", "true"},
 };
 
@@ -100,6 +99,23 @@ INSTANTIATE_TEST_SUITE_P(CheckPathToBaseObject,
                         PathResolverToBaseObject,
                         ::testing::ValuesIn(checkPathForBaseObjectValues));
 
+// introduced in https://github.com/sofa-framework/sofa/pull/1717
+TEST_F(PathResolverToBaseObject, DISABLED_CheckPathToBaseObject_tofix)
+{
+    std::vector<std::string> t = { "@/child1", "The linked address is pointing to a node while trying to load it in an object. Using two different types should return", "false" };
+    ASSERT_NE(node, nullptr);
+
+    if (t[2] == "true")
+    {
+        ASSERT_TRUE(PathResolver::CheckPath(node, BaseObject::GetClass(), t[0])) << t[1] << " " << t[2];
+        ASSERT_TRUE(PathResolver::CheckPaths(node, BaseObject::GetClass(), t[0])) << t[1] << " " << t[2];
+    }
+    else
+    {
+        ASSERT_FALSE(PathResolver::CheckPath(node, BaseObject::GetClass(), t[0])) << t[1] << " " << t[2];
+        ASSERT_FALSE(PathResolver::CheckPaths(node, BaseObject::GetClass(), t[0])) << t[1] << " " << t[2];
+    }
+}
 
 class PathResolverToNode : public PathResolver_simutest{};
 TEST_P(PathResolverToNode, CheckPathToNode)

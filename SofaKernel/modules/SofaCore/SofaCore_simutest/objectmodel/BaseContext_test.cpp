@@ -91,7 +91,7 @@ public:
     }
 };
 
-TEST_F(BaseContext_test , DISABLED_testGetObjects )
+TEST_F(BaseContext_test , testGetObjects )
 {
     this->testGetObjects();
 }
