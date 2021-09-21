@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <SofaGeneralMeshCollision/DirectSAPNarrowPhase.h>
 #include <sofa/core/collision/Intersection.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <unordered_map>

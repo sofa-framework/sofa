@@ -24,6 +24,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/simulation/TaskScheduler.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 namespace sofa::simulation
 {
