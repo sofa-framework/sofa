@@ -273,6 +273,18 @@ Plugin* PluginManager::getPlugin(const std::string& plugin, const std::string& /
     }
     else
     {
+        // check if a plugin with a same name but a different path is loaded
+        // problematic case per se but at least we can warn the user
+        const auto& pluginName = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(pluginPath.c_str());
+        for (auto& k : m_pluginMap)
+        {
+            if (pluginName == k.second.getModuleName())
+            {
+                msg_warning("PluginManager") << "Plugin " << pluginName << " is already loaded from a different path, check you configuration.";
+                return &k.second;
+            }
+        }
+
         msg_info("PluginManager") << "Plugin not found in loaded plugins: " << plugin;
         return nullptr;
     }
@@ -417,11 +429,26 @@ bool PluginManager::pluginIsLoaded(const std::string& plugin)
         if (!FileSystem::isFile(plugin))
         {
             // path is invalid
-            msg_error("PluginManager") << "File not found: " << plugin;
+            msg_error("PluginManager") << "Could not check if the plugin is loaded as the path is invalid: " << plugin;
             return false;
         }
 
         pluginPath = plugin;
+
+        // argument is a path but we need to check if it was not already loaded with a different path
+        const auto& pluginName = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(pluginPath.c_str());
+        for (const auto& k : m_pluginMap)
+        {
+            if (pluginName == k.second.getModuleName() && pluginPath != k.first)
+            {
+                // we did find a plugin with the same, but it does not have the same path...
+                msg_warning("PluginManager") << "This plugin " << pluginName << " has been loaded from a different path, it will certainly lead to bugs or crashes... " << msgendl
+                                             << "You tried to load: " << pluginPath << msgendl
+                                             << "Already loaded: " << k.first;
+                return true;
+            }
+        }
+
     }
     else
     {
