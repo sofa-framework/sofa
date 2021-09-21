@@ -39,7 +39,13 @@ struct FileRepository_test: public ::testing::Test
     }
 };
 
-
+TEST_F(FileRepository_test, relativeTo )
+{
+    ASSERT_EQ( fileRepository.relativeToPath("/test/file/sofa/scene.xml", "/test/file/"), "sofa/scene.xml" );
+    ASSERT_EQ( fileRepository.relativeToPath("/test/file/sofa/scene.xml", "/test/file"), "/sofa/scene.xml" );
+    ASSERT_EQ( fileRepository.relativeToPath("/test/file/sofa/", "/test/file/sofa"), "/" );
+    ASSERT_EQ( fileRepository.relativeToPath("/test/file/sofa", "/test/file/sofa"), "" );
+}
 
 TEST_F(FileRepository_test, findFile )
 {

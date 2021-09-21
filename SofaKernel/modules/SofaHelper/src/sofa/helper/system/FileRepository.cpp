@@ -337,7 +337,7 @@ std::string FileRepository::relativeToPath(std::string path, std::string refPath
         /// Case sensitive OS.
         std::string::size_type loc = path.find( refPath, 0 );
         if (loc==0)
-            path = path.substr(refPath.size()+1);
+            path = path.substr(refPath.size());
 
         return path;
     }
@@ -355,7 +355,7 @@ std::string FileRepository::relativeToPath(std::string path, std::string refPath
 
     std::string::size_type loc = tmppath.find( refPath, 0 );
     if (loc==0)
-        path = path.substr(refPath.size()+1);
+        path = path.substr(refPath.size());
 
     return path;
 }
