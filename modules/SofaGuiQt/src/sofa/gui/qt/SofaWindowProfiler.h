@@ -185,7 +185,7 @@ protected:
     void addTreeItem(AnimationSubStepData* subStep, QTreeWidgetItem* parent);
 
 public slots:
-    void closeEvent( QCloseEvent* )
+    void closeEvent( QCloseEvent* ) override
     {
         emit(closeWindow(false));
     }
@@ -199,6 +199,8 @@ public slots:
     void updateTree(int step);
     /// Method called when a QTreeWidgetItem is selected in the Tree view.
     void onStepSelected(QTreeWidgetItem *item, int column);
+
+    void expandRootNodeOnly() const;
 
 signals:
     void closeWindow(bool);
