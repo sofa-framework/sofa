@@ -30,5 +30,5 @@ namespace sofa::topology
 {
     using Edge = sofa::topology::Element<sofa::geometry::Edge>;
 
-    constexpr static Edge InvalidEdge;
+    static constexpr Edge InvalidEdge;
 }

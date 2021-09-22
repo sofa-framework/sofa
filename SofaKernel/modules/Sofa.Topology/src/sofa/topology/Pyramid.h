@@ -30,5 +30,5 @@ namespace sofa::topology
 {
     using Pyramid = sofa::topology::Element<sofa::geometry::Pyramid>;
 
-    inline static constexpr Pyramid InvalidPyramid;
+    static constexpr Pyramid InvalidPyramid;
 }

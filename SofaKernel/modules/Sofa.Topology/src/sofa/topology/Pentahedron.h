@@ -30,5 +30,5 @@ namespace sofa::topology
 {
     using Pentahedron = sofa::topology::Element<sofa::geometry::Pentahedron>;
 
-    inline static constexpr Pentahedron InvalidPentahedron;
+    constexpr static Pentahedron InvalidPentahedron;
 }
