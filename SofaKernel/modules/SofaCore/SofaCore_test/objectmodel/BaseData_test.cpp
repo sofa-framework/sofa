@@ -32,22 +32,21 @@ class MyData : public BaseData
 {
 public:
     MyData() : BaseData(BaseInitData()) {}
-    virtual bool read(const std::string&)override {return true;}
-    virtual void printValue(std::ostream&) const override {return;}
-    virtual std::string getValueString() const override  {return "";}
-    virtual std::string getValueTypeString() const override {return "";}
-    virtual const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override {return nullptr;}
-    virtual const void* getValueVoidPtr() const {return nullptr;}
-    virtual void* beginEditVoidPtr(){return nullptr;}
-    virtual void* beginWriteOnlyVoidPtr(){return nullptr;}
-    virtual void endEditVoidPtr(){}
+    bool read(const std::string&)override {return true;}
+    void printValue(std::ostream&) const override {return;}
+    std::string getValueString() const override  {return "";}
+    std::string getValueTypeString() const override {return "";}
+    const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override {return nullptr;}
+    const void* getValueVoidPtr() const {return nullptr;}
+    void* beginEditVoidPtr(){return nullptr;}
+    void* beginWriteOnlyVoidPtr(){return nullptr;}
+    void endEditVoidPtr(){}
     bool doIsExactSameDataType(const BaseData* ) override{ return false; }
     bool doCopyValueFrom(const BaseData* ) override{ return false; }
     bool doSetValueFromLink(const BaseData* ) override{ return false; }
-    virtual const void* doGetValueVoidPtr() const override { return nullptr; }
-    virtual void* doBeginEditVoidPtr() override { return nullptr; }
-    virtual void doEndEditVoidPtr() override { }
-
+    const void* doGetValueVoidPtr() const override { return nullptr; }
+    void* doBeginEditVoidPtr() override { return nullptr; }
+    void doEndEditVoidPtr() override { }
 };
 
 class MyObject : public BaseObject
