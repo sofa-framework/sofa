@@ -23,6 +23,7 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/ConstraintParams.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 namespace sofa::core::behavior
 {

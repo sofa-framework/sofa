@@ -36,6 +36,7 @@ set(README_FILES CGALPlugin.txt)
 # Dependencies
 find_package(SofaFramework REQUIRED)
 find_package(SofaSimulationCommon REQUIRED)
+find_package(image REQUIRED)
 find_package(CGAL REQUIRED)
 message(STATUS "CGAL VERSION = ${CGAL_VERSION}")
 

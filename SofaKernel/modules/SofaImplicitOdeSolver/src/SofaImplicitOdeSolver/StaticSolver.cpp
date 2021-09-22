@@ -22,7 +22,7 @@
 #include <SofaImplicitOdeSolver/StaticSolver.h>
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/behavior/MultiMatrix.h>

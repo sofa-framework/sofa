@@ -25,6 +25,7 @@
 #include <gtest/gtest.h>
 
 #include <sofa/helper/system/FileSystem.h>
+#include <sofa/helper/system/Locale.h>
 
 using sofa::helper::Utils;
 using sofa::helper::system::FileSystem;
@@ -35,6 +36,16 @@ TEST(UtilsTest, string_to_widestring_to_string)
     for (char c = 32 ; c <= 126 ; c++)
         ascii_chars.push_back(c);
     EXPECT_EQ(ascii_chars, Utils::narrowString(Utils::widenString(ascii_chars)));
+
+    // This test will pass if the executable has been executed with a unicode-compliant locale
+    // Windows and MacOS are unicode by default
+    // But it seems some linux distrib are not (?)
+#ifdef __linux
+    if(std::locale("").name().find("UTF-8") == std::string::npos)
+    {
+        return;
+    }
+#endif
 
     const std::string s("chaîne de test avec des caractères accentués");
     EXPECT_EQ(s, Utils::narrowString(Utils::widenString(s)));
