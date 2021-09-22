@@ -22,8 +22,10 @@
 #include <SofaEigen2Solver/SVDLinearSolver.h>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <sofa/linearalgebra/FullMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/core/ObjectFactory.h>
 #include <Eigen/Dense>
 #include <Eigen/Core>
@@ -52,28 +54,34 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     simulation::Visitor::printComment("SVD");
 #endif
 
-    sofa::helper::AdvancedTimer::stepBegin("Solve-SVD");
+    sofa::helper::ScopedAdvancedTimer svdSolveTimer("Solve-SVD");
 
     const bool verbose  = f_verbose.getValue();
 
     /// Convert the matrix and the right-hand vector to Eigen objects
+
     Eigen::MatrixXd m(M.rowSize(),M.colSize());
     Eigen::VectorXd rhs(M.rowSize());
-    for(unsigned i=0; i<(unsigned)M.rowSize(); i++ )
     {
-        for( unsigned j=0; j<(unsigned)M.colSize(); j++ )
-            m(i,j) = M[i][j];
-        rhs(i) = b[i];
+        sofa::helper::ScopedAdvancedTimer convertTimer("convertToEigen");
+        for(unsigned i=0; i<(unsigned)M.rowSize(); i++ )
+        {
+            for( unsigned j=0; j<(unsigned)M.colSize(); j++ )
+                m(i,j) = M.element(i, j);
+            rhs(i) = b[i];
+        }
     }
 
     msg_info_when(verbose) << "solve, Here is the matrix m:  "
                            << m ;
 
     /// Compute the SVD decomposition and the condition number
-    Eigen::JacobiSVD<Eigen::MatrixXd> svd(m, Eigen::ComputeThinU | Eigen::ComputeThinV);
-    f_conditionNumber.setValue( (Real)(svd.singularValues()(0) / svd.singularValues()(M.rowSize()-1)) );
-
-
+    Eigen::JacobiSVD<Eigen::MatrixXd> svd;
+    {
+        sofa::helper::ScopedAdvancedTimer svdDecompositionTimer("SVDDecomposition");
+        svd.compute(m, Eigen::ComputeThinU | Eigen::ComputeThinV);
+        f_conditionNumber.setValue( (Real)(svd.singularValues()(0) / svd.singularValues()(M.rowSize()-1)) );
+    }
 
     if(verbose)
     {
@@ -82,7 +90,9 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
                    << svd.matrixU() << msgendl
                    << "Its right singular vectors are the columns of the thin V matrix:" msgendl
                    << svd.matrixV() ;
-    }else{
+    }
+    else
+    {
         msg_info() << "solve, the singular values are:" << msgendl << svd.singularValues()  << msgendl;
     }
 
@@ -91,32 +101,36 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 //    for(unsigned i=0; i<M.rowSize(); i++ ){
 //        x[i] = solution(i);
 //    }
-    Eigen::VectorXd Ut_b = svd.matrixU().transpose() *  rhs;
-    Eigen::VectorXd S_Ut_b(M.colSize());
-    for( unsigned i=0; i<(unsigned)M.colSize(); i++ )   /// product with the diagonal matrix, using the threshold for near-null values
     {
-        if( svd.singularValues()[i] > f_minSingularValue.getValue() )
-            S_Ut_b[i] = Ut_b[i]/svd.singularValues()[i];
-        else
-            S_Ut_b[i] = (Real)0.0 ;
-    }
-    Eigen::VectorXd solution = svd.matrixV() * S_Ut_b;
-    for(unsigned i=0; i<(unsigned)M.rowSize(); i++ )
-    {
-        x[i] = (Real) solution(i);
-    }
+        sofa::helper::ScopedAdvancedTimer solveSvdTimer("solveFromSVD");
+        Eigen::VectorXd Ut_b = svd.matrixU().transpose() *  rhs;
+        Eigen::VectorXd S_Ut_b(M.colSize());
+        for( unsigned i=0; i<(unsigned)M.colSize(); i++ )   /// product with the diagonal matrix, using the threshold for near-null values
+        {
+            if( svd.singularValues()[i] > f_minSingularValue.getValue() )
+                S_Ut_b[i] = Ut_b[i]/svd.singularValues()[i];
+            else
+                S_Ut_b[i] = (Real)0.0 ;
+        }
+        Eigen::VectorXd solution = svd.matrixV() * S_Ut_b;
+        for(unsigned i=0; i<(unsigned)M.rowSize(); i++ )
+        {
+            x[i] = (Real) solution(i);
+        }
 
-    sofa::helper::AdvancedTimer::stepEnd("Solve-SVD");
-
-    dmsg_info() << "solve, rhs vector = " << msgendl << rhs.transpose() << msgendl
+        dmsg_info() << "solve, rhs vector = " << msgendl << rhs.transpose() << msgendl
                 << " solution =   \n" << msgendl << x << msgendl
                 << " verification, mx - b = " << msgendl << (m * solution - rhs ).transpose() << msgendl;
+    }
+
 }
 
 
-int SVDLinearSolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
+int SVDLinearSolverClass = core::RegisterObject("Linear system solver using a SVD decomposition of a dense matrix")
         .add< SVDLinearSolver< FullMatrix<double>, FullVector<double> > >()
         .add< SVDLinearSolver< FullMatrix<float>, FullVector<float> > >()
+        .add< SVDLinearSolver< CompressedRowSparseMatrix<double>, FullVector<double> > >()
+        .add< SVDLinearSolver< CompressedRowSparseMatrix<type::Mat<3,3,double>>, FullVector<double> > >()
         .addAlias("SVDLinear")
         .addAlias("SVD")
         ;
