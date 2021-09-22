@@ -30,5 +30,5 @@ namespace sofa::topology
 {
     using Tetrahedron = sofa::topology::Element<sofa::geometry::Tetrahedron>;
 
-    inline static const Tetrahedron InvalidTetrahedron;
+    inline static constexpr Tetrahedron InvalidTetrahedron;
 }

@@ -30,5 +30,5 @@ namespace sofa::topology
 {
     using Hexahedron = sofa::topology::Element<sofa::geometry::Hexahedron>;
 
-    inline static const Hexahedron InvalidHexahedron;
+    inline static constexpr Hexahedron InvalidHexahedron;
 }

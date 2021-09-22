@@ -30,5 +30,5 @@ namespace sofa::topology
 {
     using Quad = sofa::topology::Element<sofa::geometry::Quad>;
 
-    inline static const Quad InvalidQuad;
+    inline static constexpr Quad InvalidQuad;
 }
