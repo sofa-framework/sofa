@@ -106,12 +106,12 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
         Eigen::VectorXd Ut_b = svd.matrixU().transpose() *  rhs;
         Eigen::VectorXd S_Ut_b(M.colSize());
         for( unsigned i=0; i<(unsigned)M.colSize(); i++ )   /// product with the diagonal matrix, using the threshold for near-null values
-            {
+        {
             if( svd.singularValues()[i] > f_minSingularValue.getValue() )
                 S_Ut_b[i] = Ut_b[i]/svd.singularValues()[i];
             else
                 S_Ut_b[i] = (Real)0.0 ;
-            }
+        }
         Eigen::VectorXd solution = svd.matrixV() * S_Ut_b;
         for(unsigned i=0; i<(unsigned)M.rowSize(); i++ )
         {
