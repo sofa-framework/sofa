@@ -91,20 +91,7 @@ protected:
             return const_map_type(data, k * size);
         }
 
-
     };
-
-    //template<class DataVecDeriv>
-    //static typename map_traits<DataVecDeriv>::const_map_type map(const helper::ReadAccessor< DataVecDeriv>& data, std::size_t size)
-    //{
-    //    return map_traits<typename DataVecDeriv::container_type >::const_map(&data[0][0], data.size(), size);
-    //}
-
-    //template<class DataVecDeriv>
-    //static typename map_traits<DataVecDeriv>::map_type map(helper::WriteAccessor< DataVecDeriv >& data, std::size_t size)
-    //{
-    //    return map_traits<typename DataVecDeriv::container_type >::map(&data[0][0], data.size(), size);
-    //}
 
     template<class VecDeriv>
     static typename map_traits<VecDeriv>::const_map_type map(const VecDeriv& data)

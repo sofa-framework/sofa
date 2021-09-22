@@ -345,50 +345,6 @@ public:
         cholesky.solveInPlace(x);
     }
 
-
-    ///// View this matrix as a MultiMatrix
-    //class MatrixAccessor: public core::behavior::MultiMatrixAccessor
-    //{
-    //public:
-
-    //    MatrixAccessor( ThisMatrix* m=0 ) {setMatrix(m); }
-    //    ~MatrixAccessor() override {}
-
-    //    void setMatrix( ThisMatrix* m )
-    //    {
-    //        m->compress();
-    //        matrix = m;
-    //        matRef.matrix = m;
-    //    }
-    //    ThisMatrix* getMatrix() { return matrix; }
-    //    const ThisMatrix* getMatrix() const { return matrix; }
-
-
-    //    Index getGlobalDimension() const override { return matrix->rowSize(); }
-    //    int getGlobalOffset(const core::behavior::BaseMechanicalState*) const override { return 0; }
-    //    MatrixRef getMatrix(const core::behavior::BaseMechanicalState*) const override
-    //    {
-    //        return matRef;
-    //    }
-
-
-    //    InteractionMatrixRef getMatrix(const core::behavior::BaseMechanicalState* /*mstate1*/, const core::behavior::BaseMechanicalState* /*mstate2*/) const override
-    //    {
-    //        assert(false);
-    //        InteractionMatrixRef ref;
-    //        return ref;
-    //    }
-
-    //protected:
-    //    ThisMatrix* matrix;   ///< The single matrix
-    //    MatrixRef matRef; ///< The accessor to the single matrix
-
-    //};
-
-    ///// Get a view of this matrix as a MultiMatrix
-    //MatrixAccessor getAccessor() { return MatrixAccessor(this); }
-
-
     /// add this EigenBaseSparseMatrix to a BaseMatrix at the offset and multiplied by factor
     void addToBaseMatrix( BaseMatrix *matrix, SReal factor, Index offset ) const
     {
