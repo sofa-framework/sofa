@@ -38,6 +38,7 @@
 #include <iostream>
 #include <algorithm>
 #include <sstream>
+#include <filesystem>
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/system/FileSystem.h>
@@ -169,6 +170,14 @@ void FileRepository::addFirstPath(const std::string& p)
 {
     // replacing every occurences of "//" by "/"
     std::string path = FileSystem::cleanPath(p);
+
+    if(path.back() != '/')
+        path.push_back('/');
+
+    if(!std::filesystem::exists(path))
+    {
+        msg_error("FileRepository") << "Not a path";
+    }
 
     std::vector<std::string> entries;
     size_t p0 = 0;
