@@ -437,9 +437,9 @@ bool PluginManager::pluginIsLoaded(const std::string& plugin)
 
         // argument is a path but we need to check if it was not already loaded with a different path
         const auto& pluginName = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(pluginPath.c_str());
-        for (const auto& k : m_pluginMap)
+        for (const auto& [loadedPath, loadedPlugin] : m_pluginMap)
         {
-            if (pluginName == k.second.getModuleName() && pluginPath != k.first)
+            if (pluginName == loadedPlugin.getModuleName() && pluginPath != loadedPath)
             {
                 // we did find a plugin with the same, but it does not have the same path...
                 msg_warning("PluginManager") << "This plugin " << pluginName << " has been loaded from a different path, it will certainly lead to bugs or crashes... " << msgendl
