@@ -444,7 +444,7 @@ bool PluginManager::pluginIsLoaded(const std::string& plugin)
                 // we did find a plugin with the same, but it does not have the same path...
                 msg_warning("PluginManager") << "This plugin " << pluginName << " has been loaded from a different path, it will certainly lead to bugs or crashes... " << msgendl
                                              << "You tried to load: " << pluginPath << msgendl
-                                             << "Already loaded: " << k.first;
+                                             << "Already loaded: " << loadedPath;
                 return true;
             }
         }
