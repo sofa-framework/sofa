@@ -19,22 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_LINEARSOLVER_BTDLINEARSOLVER_CPP
+#pragma once
+#include <sofa/linearalgebra/FullMatrix.h>
 
-#include <SofaGeneralLinearSolver/BTDLinearSolver.inl>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/linearalgebra/BTDMatrix.inl>
-#include <sofa/linearalgebra/BlocFullMatrix.inl>
-#include <sofa/linearalgebra/BlockVector.inl>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
-
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
-int BTDLinearSolverClass = core::RegisterObject("Linear system solver using Thomas Algorithm for Block Tridiagonal matrices")
-    .add< BTDLinearSolver<linearalgebra::BTDMatrix<6,double>, linearalgebra::BlockVector<6,double> > >(true)
-;
 
-template class SOFA_SOFAGENERALLINEARSOLVER_API BTDLinearSolver< linearalgebra::BTDMatrix<6, double>, linearalgebra::BlockVector<6, double> >;
 
-} //namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra

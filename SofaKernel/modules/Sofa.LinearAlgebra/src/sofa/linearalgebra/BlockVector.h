@@ -19,22 +19,70 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_LINEARSOLVER_BTDLINEARSOLVER_CPP
+#pragma once
+#include <sofa/linearalgebra/config.h>
 
-#include <SofaGeneralLinearSolver/BTDLinearSolver.inl>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/linearalgebra/BTDMatrix.inl>
-#include <sofa/linearalgebra/BlocFullMatrix.inl>
-#include <sofa/linearalgebra/BlockVector.inl>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
+#include <sofa/linearalgebra/FullVector.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
-int BTDLinearSolverClass = core::RegisterObject("Linear system solver using Thomas Algorithm for Block Tridiagonal matrices")
-    .add< BTDLinearSolver<linearalgebra::BTDMatrix<6,double>, linearalgebra::BlockVector<6,double> > >(true)
-;
+template< std::size_t N, typename T>
+class BlockVector : public FullVector<T>
+{
+public:
+    typedef FullVector<T> Inherit;
+    typedef T Real;
+    typedef typename Inherit::Index Index;
 
-template class SOFA_SOFAGENERALLINEARSOLVER_API BTDLinearSolver< linearalgebra::BTDMatrix<6, double>, linearalgebra::BlockVector<6, double> >;
+    typedef typename Inherit::value_type value_type;
+    typedef typename Inherit::Size Size;
+    typedef typename Inherit::iterator iterator;
+    typedef typename Inherit::const_iterator const_iterator;
 
-} //namespace sofa::component::linearsolver
+    class Bloc : public type::Vec<N,T>
+    {
+    public:
+        Index Nrows() const { return N; }
+        void resize(Index) { this->clear(); }
+        void operator=(const type::Vec<N,T>& v)
+        {
+            type::Vec<N,T>::operator=(v);
+        }
+        void operator=(int v)
+        {
+            type::Vec<N,T>::fill((float)v);
+        }
+        void operator=(float v)
+        {
+            type::Vec<N,T>::fill(v);
+        }
+        void operator=(double v)
+        {
+            type::Vec<N,T>::fill(v);
+        }
+    };
+
+    typedef Bloc SubVectorType;
+
+public:
+
+    BlockVector();
+
+    explicit BlockVector(Index n);
+
+    virtual ~BlockVector();
+
+    const Bloc& sub(Index i, Index) const
+    {
+        return (const Bloc&)*(this->ptr()+i);
+    }
+
+    Bloc& sub(Index i, Index);
+
+    const Bloc& asub(Index bi, Index) const;
+
+    Bloc& asub(Index bi, Index);
+};
+
+} // namespace sofa::linearalgebra
