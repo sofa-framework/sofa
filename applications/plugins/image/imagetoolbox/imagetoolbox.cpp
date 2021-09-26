@@ -22,7 +22,7 @@ using namespace sofa::defaulttype;
 int ImageToolBoxClass = core::RegisterObject ( "ImageToolBox" )
         .add<ImageToolBox<ImageUC> >(true)
         .add<ImageToolBox<ImageD> >()
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
         .add<ImageToolBox<ImageC> >()
         .add<ImageToolBox<ImageI> >()
         .add<ImageToolBox<ImageUI> >()
@@ -37,7 +37,7 @@ int ImageToolBoxClass = core::RegisterObject ( "ImageToolBox" )
 
 template class SOFA_IMAGE_GUI_API ImageToolBox<ImageUC>;
 template class SOFA_IMAGE_GUI_API ImageToolBox<ImageD>;
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_GUI_API ImageToolBox<ImageC>;
 template class SOFA_IMAGE_GUI_API ImageToolBox<ImageI>;
 template class SOFA_IMAGE_GUI_API ImageToolBox<ImageUI>;
