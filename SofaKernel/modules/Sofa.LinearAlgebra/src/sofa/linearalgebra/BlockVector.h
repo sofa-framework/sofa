@@ -19,16 +19,70 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+#include <sofa/linearalgebra/config.h>
 
-MassSpringLoader has been deprecated and replaced with XspLoader.
-You shouldn't include this file anymore.
+#include <sofa/linearalgebra/FullVector.h>
 
-It is easy to update your code with the XspLoader.
+namespace sofa::linearalgebra
+{
 
-First replace:
-#include <sofa/helper/io/MassSpringLoader.h>
-with
-#include <sofa/helper/io/XspLoader.h>
+template< std::size_t N, typename T>
+class BlockVector : public FullVector<T>
+{
+public:
+    typedef FullVector<T> Inherit;
+    typedef T Real;
+    typedef typename Inherit::Index Index;
 
-Then following the new API of XspLoader.
-There is example of uses in the unittest file named: XspLoader_test.cpp
+    typedef typename Inherit::value_type value_type;
+    typedef typename Inherit::Size Size;
+    typedef typename Inherit::iterator iterator;
+    typedef typename Inherit::const_iterator const_iterator;
+
+    class Bloc : public type::Vec<N,T>
+    {
+    public:
+        Index Nrows() const { return N; }
+        void resize(Index) { this->clear(); }
+        void operator=(const type::Vec<N,T>& v)
+        {
+            type::Vec<N,T>::operator=(v);
+        }
+        void operator=(int v)
+        {
+            type::Vec<N,T>::fill((float)v);
+        }
+        void operator=(float v)
+        {
+            type::Vec<N,T>::fill(v);
+        }
+        void operator=(double v)
+        {
+            type::Vec<N,T>::fill(v);
+        }
+    };
+
+    typedef Bloc SubVectorType;
+
+public:
+
+    BlockVector();
+
+    explicit BlockVector(Index n);
+
+    virtual ~BlockVector();
+
+    const Bloc& sub(Index i, Index) const
+    {
+        return (const Bloc&)*(this->ptr()+i);
+    }
+
+    Bloc& sub(Index i, Index);
+
+    const Bloc& asub(Index bi, Index) const;
+
+    Bloc& asub(Index bi, Index);
+};
+
+} // namespace sofa::linearalgebra

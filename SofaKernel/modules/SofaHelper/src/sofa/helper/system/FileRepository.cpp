@@ -31,7 +31,8 @@
 #include <unistd.h>
 #endif
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
+#include <iterator>
 
 #include <cstring>
 #include <cstdlib>
@@ -243,18 +244,9 @@ bool FileRepository::findFileIn(std::string& filename, const std::string& path)
 {
     if (filename.empty()) return false; // no filename
     std::string newfname = SetDirectory::GetRelativeFromDir(filename.c_str(), path.c_str());
-    std::locale locale;
-    try
-    {
-        locale = std::locale("en_US.UTF-8");
-    }
-    catch (const std::exception & /*e*/)
-    {
-        locale = std::locale("");
-    }
-    boost::filesystem::path::imbue(locale);
-    boost::filesystem::path p(newfname);
-    if (boost::filesystem::exists(p))
+
+    std::filesystem::path p = std::filesystem::u8path(newfname);
+    if (std::filesystem::exists(p))
     {
         // File found
         filename = newfname;
@@ -362,8 +354,7 @@ std::string FileRepository::relativeToPath(std::string path, std::string refPath
 
 const std::string FileRepository::getTempPath() const
 {
-    // TODO: replace std::filesystem when all compilers support it. (and not std::experimental::filesystem)
-    return boost::filesystem::temp_directory_path().string();
+    return std::filesystem::temp_directory_path().string();
 }
 
 } // namespace system

@@ -38,7 +38,7 @@ using namespace defaulttype;
 int ImageOperationClass = core::RegisterObject("This class computes an image as an operation between two images")
         .add<ImageOperation<ImageUC> >(true)
         .add<ImageOperation<ImageD> >()
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
         .add<ImageOperation<ImageC> >()
         .add<ImageOperation<ImageI> >()
         .add<ImageOperation<ImageUI> >()
@@ -53,7 +53,7 @@ int ImageOperationClass = core::RegisterObject("This class computes an image as 
 
 template class SOFA_IMAGE_API ImageOperation<ImageUC>;
 template class SOFA_IMAGE_API ImageOperation<ImageD>;
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_API ImageOperation<ImageC>;
 template class SOFA_IMAGE_API ImageOperation<ImageI>;
 template class SOFA_IMAGE_API ImageOperation<ImageUI>;

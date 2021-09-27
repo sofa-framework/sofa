@@ -1400,9 +1400,9 @@ public:
     template<typename RB, typename RVB, typename RVI, typename MB, typename MVB, typename MVI >
     void mul( CompressedRowSparseMatrix<RB,RVB,RVI>& res, const CompressedRowSparseMatrix<MB,MVB,MVI>& m ) const
     {
-        assert( Bloc::nbCols == MB::nbLines );
-        assert( RB::nbLines == Bloc::nbLines );
-        assert( MB::nbCols == RB::nbCols );
+        static_assert( NC == CompressedRowSparseMatrix<MB,MVB,MVI>::NL );
+        static_assert( CompressedRowSparseMatrix<RB,RVB,RVI>::NL == NL );
+        static_assert( CompressedRowSparseMatrix<MB,MVB,MVI>::NC == CompressedRowSparseMatrix<RB,RVB,RVI>::NC );
 
         assert( colSize() == m.rowSize() );
 
@@ -1442,6 +1442,17 @@ public:
         res.compress();
     }
 
+    static auto blocMultTranspose(const TBloc& blockA, const TBloc& blockB)
+    {
+        if constexpr (std::is_scalar_v<TBloc>)
+        {
+            return blockA * blockB;
+        }
+        else
+        {
+            return blockA.multTranspose(blockB);
+        }
+    }
 
     /** Compute res = this.transpose * m
       @warning The block sizes must be compatible, i.e. this::NR==m::NR and res::NR==this::NC and res::NC==m::NC
@@ -1451,9 +1462,9 @@ public:
     template<typename RB, typename RVB, typename RVI, typename MB, typename MVB, typename MVI >
     void mulTranspose( CompressedRowSparseMatrix<RB,RVB,RVI>& res, const CompressedRowSparseMatrix<MB,MVB,MVI>& m ) const
     {
-        assert( Bloc::nbLines == MB::nbLines );
-        assert( RB::nbLines == Bloc::nbCols );
-        assert( MB::nbCols == RB::nbCols );
+        static_assert( NL == CompressedRowSparseMatrix<MB,MVB,MVI>::NL );
+        static_assert( CompressedRowSparseMatrix<RB,RVB,RVI>::NL == NC );
+        static_assert( CompressedRowSparseMatrix<MB,MVB,MVI>::NC == CompressedRowSparseMatrix<RB,RVB,RVI>::NC );
 
         assert( rowSize() == m.rowSize() );
 
@@ -1487,7 +1498,7 @@ public:
                 for( Index mj = mrowRange.begin() ; mj< mrowRange.end() ; ++mj ) // for each non-null block in  m[col]
                 {
                     Index mcol = m.colsIndex[mj];     // column index of the non-null block
-                    *res.wbloc(row,mcol,true) += b.multTranspose( m.colsValue[mj] );  // find the matching bloc in res, and accumulate the block product
+                    *res.wbloc(row,mcol,true) += blocMultTranspose(b, m.colsValue[mj]);  // find the matching bloc in res, and accumulate the block product
                 }
             }
         }

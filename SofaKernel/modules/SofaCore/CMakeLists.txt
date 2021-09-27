@@ -163,6 +163,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/DataTracker.cpp
     ${SRC_ROOT}/DataTrackerCallback.cpp
     ${SRC_ROOT}/DataTrackerFunctor.cpp
+    ${SRC_ROOT}/DevBaseMonitor.h
     ${SRC_ROOT}/ExecParams.cpp
     ${SRC_ROOT}/Mapping.cpp
     ${SRC_ROOT}/MechanicalParams.cpp

@@ -38,6 +38,7 @@
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/LCPcalc.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 
 #include <sofa/core/ObjectFactory.h>

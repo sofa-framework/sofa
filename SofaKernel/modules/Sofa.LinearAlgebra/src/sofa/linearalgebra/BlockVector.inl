@@ -19,5 +19,44 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+#include <sofa/linearalgebra/BlockVector.h>
 
-#error The BVH IO features have been moved to SofaGeneralRigid. Refer to PR1644 for more information.
+namespace sofa::linearalgebra
+{
+
+template<std::size_t N, typename T>
+BlockVector<N, T>::BlockVector()
+{
+}
+
+template<std::size_t N, typename T>
+BlockVector<N, T>::BlockVector(Index n)
+    : Inherit(n)
+{
+}
+
+template<std::size_t N, typename T>
+BlockVector<N, T>::~BlockVector()
+{
+}
+
+template<std::size_t N, typename T>
+typename BlockVector<N, T>::Bloc& BlockVector<N, T>::sub(Index i, Index)
+{
+    return (Bloc&)*(this->ptr()+i);
+}
+
+template<std::size_t N, typename T>
+const typename BlockVector<N, T>::Bloc& BlockVector<N, T>::asub(Index bi, Index) const
+{
+    return (const Bloc&)*(this->ptr()+bi*N);
+}
+
+template<std::size_t N, typename T>
+typename BlockVector<N, T>::Bloc& BlockVector<N, T>::asub(Index bi, Index)
+{
+    return (Bloc&)*(this->ptr()+bi*N);
+}
+
+} // namespace sofa::linearalgebra

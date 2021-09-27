@@ -19,7 +19,7 @@ namespace engine
 int ContourImageToolBox_Class = core::RegisterObject("ContourImageToolBox")
         .add<ContourImageToolBox<ImageUC> >()
         .add<ContourImageToolBox<ImageD> >(true)
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
         .add<ContourImageToolBox<ImageC> >()
         .add<ContourImageToolBox<ImageI> >()
         .add<ContourImageToolBox<ImageUI> >()
@@ -35,7 +35,7 @@ int ContourImageToolBox_Class = core::RegisterObject("ContourImageToolBox")
 
 template class SOFA_IMAGE_GUI_API ContourImageToolBox<ImageUC>;
 template class SOFA_IMAGE_GUI_API ContourImageToolBox<ImageD>;
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_GUI_API ContourImageToolBox<ImageC>;
 template class SOFA_IMAGE_GUI_API ContourImageToolBox<ImageI>;
 template class SOFA_IMAGE_GUI_API ContourImageToolBox<ImageUI>;

@@ -49,9 +49,9 @@ using sofa::helper::system::FileSystem ;
 
 #include <SofaBaseUtils/initSofaBaseUtils.h>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 namespace {
-std::string tempdir = boost::filesystem::temp_directory_path().string() ;
+std::string tempdir = std::filesystem::temp_directory_path().string() ;
 
 
 class STLExporter_test : public BaseTest {

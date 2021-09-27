@@ -19,5 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+#include <sofa/linearalgebra/FullMatrix.h>
 
-#error The BVH IO features have been moved to SofaGeneralRigid. Refer to PR1644 for more information.
+namespace sofa::linearalgebra
+{
+
+
+
+} // namespace sofa::linearalgebra

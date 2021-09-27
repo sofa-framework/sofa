@@ -27,7 +27,7 @@ using sofa::helper::system::FileSystem;
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/logging/Messaging.h>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <fstream>
 #include <array>
 
@@ -369,16 +369,16 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
         {
             const std::string& dir = *i;
 
-            boost::filesystem::recursive_directory_iterator iter(dir);
-            boost::filesystem::recursive_directory_iterator end;
+            std::filesystem::recursive_directory_iterator iter(dir);
+            std::filesystem::recursive_directory_iterator end;
 
             while (iter != end)
             {
-                if ( iter.level() > maxRecursiveDepth )
+                if ( iter.depth() > maxRecursiveDepth )
                 {
-                    iter.no_push(); // skip
+                    iter.disable_recursion_pending(); // skip
                 }
-                else if ( !boost::filesystem::is_directory(iter->path()) )
+                else if ( !std::filesystem::is_directory(iter->path()) )
                 {
                     const std::string path = iter->path().string();
                     const std::string filename = iter->path().filename().string();
@@ -390,7 +390,7 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
                     }
                 }
 
-                boost::system::error_code ec;
+                std::error_code ec;
                 iter.increment(ec);
                 if (ec)
                 {
