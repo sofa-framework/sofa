@@ -54,7 +54,6 @@ void executeWithException(const std::string& src, bool withException, std::funct
 {
     if(!withException)
         return cb();
-
     try
     {
         cb();
@@ -71,14 +70,6 @@ void executeWithException(const std::string& src, bool withException, std::funct
                           << "  " << e.what()
                           << msgendl << msgendl
                           << tmp.str();
-    } catch(std::exception& e)
-    {
-        msg_error(src)    << "Exception received." << msgendl
-                          << "c++ exception:" << msgendl
-                          << "  " << e.what()
-                          << msgendl
-                          << "To access stackstrace you need to run sofa without the -i option";
     }
 }
-
 }
