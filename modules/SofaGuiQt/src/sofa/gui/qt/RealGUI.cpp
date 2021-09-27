@@ -202,7 +202,7 @@ protected:
             } catch (const sofa::helper::SofaSimulationException& e)
             {
                 gui->playpauseGUI(false);
-            }catch (const std::exception& e)
+            } catch (const std::exception& e)
             {
                 gui->playpauseGUI(false);
                 msg_error("RealGUI") << "Simulation is stopped by an exception"
