@@ -167,7 +167,7 @@ private:
 public:
     //TODO: make a protected data with an accessor
     QSofaListView* simulationGraph;
-    bool isInInteractiveMode(){ return m_enableInteraction; }
+    bool isInInteractiveMode() const { return m_enableInteraction; }
 
 protected:
     /// create a viewer by default, otherwise you have to manage your own viewer
