@@ -22,14 +22,9 @@
 #pragma once
 
 #include <SofaGeneralDeformable/config.h>
-
-#include <map>
-
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/Vec.h>
-#include <sofa/type/Mat.h>
-
 #include <sofa/type/Mat.h>
 #include <SofaBaseTopology/TopologyData.h>
 
@@ -40,7 +35,6 @@ namespace sofa::component::forcefield
 Bending springs added between vertices of triangles sharing a common edge.
 The springs connect the vertices not belonging to the common edge. It compresses when the surface bends along the common edge.
 
-
 	@author The SOFA team </www.sofa-framework.org>
 */
 template<class DataTypes>
@@ -50,20 +44,17 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(TriangularBendingSprings, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
     typedef core::behavior::ForceField<DataTypes> Inherited;
-    //typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    //typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
 
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
     enum { N=DataTypes::spatial_dimensions };
     typedef type::Mat<N,N,Real> Mat;
-
     using Index = sofa::Index;
 
     Data<double> f_ks; ///< uniform stiffness for the all springs
@@ -72,11 +63,6 @@ public:
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<TriangularBendingSprings<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-
-protected:
-
-    //Data<double> ks;
-    //Data<double> kd;
 
     class EdgeInformation
     {
@@ -94,8 +80,8 @@ protected:
 
         bool is_initialized;
 
-        EdgeInformation(int m1=0, int m2=0, /* double ks=getKs(), double kd=getKd(), */ double restlength=0.0, bool is_activated=false, bool is_initialized=false)
-            : m1(m1), m2(m2), /* ks(ks), kd(kd), */ restlength(restlength), is_activated(is_activated), is_initialized(is_initialized)
+        EdgeInformation(int m1=0, int m2=0, double restlength=0.0, bool is_activated=false, bool is_initialized=false)
+            : m1(m1), m2(m2), restlength(restlength), is_activated(is_activated), is_initialized(is_initialized)
         {
         }
         /// Output stream
@@ -114,9 +100,8 @@ protected:
     sofa::component::topology::EdgeData<type::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
     typedef typename topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::type::vector<EdgeInformation> > TriangularBSEdgeHandler;
 
-    bool updateMatrix;
-    TriangularBendingSprings(/*double _ks, double _kd*/);
-    //TriangularBendingSprings(); //MechanicalState<DataTypes> *mm1 = nullptr, MechanicalState<DataTypes> *mm2 = nullptr);
+protected:
+    TriangularBendingSprings();
 
     virtual ~TriangularBendingSprings();
 
@@ -168,11 +153,6 @@ protected:
     SReal m_potentialEnergy;
 
     sofa::core::topology::BaseMeshTopology* m_topology;
-
-    //public:
-    //Data<double> ks;
-    //Data<double> kd;
-
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_CPP)

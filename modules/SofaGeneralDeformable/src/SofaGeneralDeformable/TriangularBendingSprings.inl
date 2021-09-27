@@ -23,7 +23,6 @@
 
 #include <SofaGeneralDeformable/TriangularBendingSprings.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/type/RGBAColor.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
@@ -387,13 +386,11 @@ TriangularBendingSprings<DataTypes>::TriangularBendingSprings(/*double _ks, doub
     , d_showSprings(initData(&d_showSprings, true, "showSprings", "option to draw springs"))
     , l_topology(initLink("topology", "link to the topology container"))
     , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
-    , updateMatrix(true)
     , edgeHandler(nullptr)
     , m_topology(nullptr)
 {
     // Create specific handler for EdgeData
     edgeHandler = new TriangularBSEdgeHandler(&edgeInfo);
-    //msg_error()<<"TriangularBendingSprings<DataTypes>::TriangularBendingSprings";
 }
 
 template<class DataTypes>
@@ -406,7 +403,6 @@ TriangularBendingSprings<DataTypes>::~TriangularBendingSprings()
 template<class DataTypes>
 void TriangularBendingSprings<DataTypes>::init()
 {
-    //msg_error() << "initializing TriangularBendingSprings" ;
     this->Inherited::init();
 
     if (l_topology.empty())
@@ -485,6 +481,7 @@ void TriangularBendingSprings<DataTypes>::reinit()
             (const sofa::type::vector< double >)0);
     }
 
+
     // create edge tensor by calling the triangle creation function
     sofa::type::vector<Index> triangleAdded;
     for (i=0; i<m_topology->getNbTriangles(); ++i)
@@ -513,120 +510,62 @@ void TriangularBendingSprings<DataTypes>::addForce(const core::MechanicalParams*
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    size_t nbEdges=m_topology->getNbEdges();
-    EdgeInformation *einfo;
-    type::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
+    size_t nbEdges = m_topology->getNbEdges();
+    sofa::helper::WriteOnlyAccessor< core::objectmodel::Data< type::vector<EdgeInformation> > > edgeInf = edgeInfo;
 
-    //const type::vector<Spring>& m_springs= this->springs.getValue();
-    //this->dfdx.resize(nbEdges); //m_springs.size()
     f.resize(x.size());
     m_potentialEnergy = 0;
-    /*        msg_error()<<"TriangularBendingSprings<DataTypes>::addForce()";*/
 
-#if 0
-    const VecCoord& x_rest = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-#endif
-
-    for(unsigned int i=0; i<nbEdges; i++ )
+    for(sofa::Index i=0; i<nbEdges; i++ )
     {
-        einfo=&edgeInf[i];
+        EdgeInformation& einfo = edgeInf[i];
 
-        // safety check
-#if 0
+        if (!einfo.is_activated) // edge not in middle of 2 triangles
+            continue;
+
+        int a = einfo.m1;
+        int b = einfo.m2;
+        Coord u = x[b]-x[a];
+        Real d = u.norm();
+        if( d>1.0e-4 )
         {
-            EdgeInformation e2;
-            const sofa::type::vector< unsigned int > shell = m_topology->getTrianglesAroundEdge(i);
-            if (shell.size() != 2)
-                e2.is_activated = false;
-            else
-            {
-                e2.is_activated = true;
-                e2.m1 = -1;
-                e2.m2 = -1;
-                for (int j=0; j<3; j++)
-                    if (m_topology->getTriangle(shell[0]][j] != getEdge(i)[0] && m_topology->getTriangle(shell[0])[j] != getEdge(i)[1])
-                        e2.m1 = m_topology->getTriangle(shell[0])[j];
-                for (int j=0; j<3; j++)
-                    if (m_topology->getTriangle(shell[1])[j] != getEdge(i)[0] && m_topology->getTriangle(shell[1])[j] != getEdge(i)[1])
-                        e2.m2 = m_topology->getTriangle(shell[1])[j];
-                if (e2.m1 >= 0 && e2.m2 >= 0)
-                {
-                    e2.restlength = (x_rest[e2.m2]-x_rest[e2.m1]).norm();
-                }
-            }
+            Real inverseLength = 1.0f/d;
+            u *= inverseLength;
+            Real elongation = (Real)(d - einfo.restlength);
+            m_potentialEnergy += elongation * elongation * einfo.ks / 2;
 
-            if (e2.is_activated != einfo->is_activated) msg_error() << " EdgeInfo["<<i<<"].is_activated = "<<einfo->is_activated<<" while it should be "<<e2.is_activated<<"";
-            else if (e2.is_activated)
+            Deriv relativeVelocity = v[b]-v[a];
+            Real elongationVelocity = dot(u,relativeVelocity);
+            Real forceIntensity = (Real)(einfo.ks*elongation+einfo.kd*elongationVelocity);
+            Deriv force = u*forceIntensity;
+            f[a]+=force;
+            f[b]-=force;
+
+            Mat& m = einfo.DfDx;
+            Real tgt = forceIntensity * inverseLength;
+            for( int j=0; j<N; ++j )
             {
-                if (!((e2.m1 == einfo->m1 && e2.m2 == einfo->m2) || (e2.m1 == einfo->m2 && e2.m2 == einfo->m1)))
-                    msg_;() << "EdgeInfo["<<i<<"] points = "<<einfo->m1<<"-"<<einfo->m2<<" while it should be "<<e2.m1<<"-"<<e2.m2<<"";
-                if (e2.restlength != einfo->restlength)
-                    msg_error() << " EdgeInfo["<<i<<"] length = "<<einfo->restlength<<" while it should be "<<e2.restlength<<"";
+                for( int k=0; k<N; ++k )
+                {
+                    m[j][k] = ((Real)einfo.ks-tgt) * u[j] * u[k];
+                }
+                m[j][j] += tgt;
             }
         }
-
-#endif
-
-        /*            msg_error()<<"TriangularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2;*/
-
-        if(einfo->is_activated)
+        else // null length, no force and no stiffness
         {
-            //this->addSpringForce(m_potentialEnergy,f,x,v, i, einfo->spring);
-
-            int a = einfo->m1;
-            int b = einfo->m2;
-            Coord u = x[b]-x[a];
-            Real d = u.norm();
-            if( d>1.0e-4 )
+            Mat& m = einfo.DfDx;
+            for( int j=0; j<N; ++j )
             {
-                Real inverseLength = 1.0f/d;
-                u *= inverseLength;
-                Real elongation = (Real)(d - einfo->restlength);
-                m_potentialEnergy += elongation * elongation * einfo->ks / 2;
-                /*      msg_error()<<"TriangularBendingSprings<DataTypes>::addSpringForce, p = "<<p;
-
-                        msg_error()<<"TriangularBendingSprings<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy;*/
-                Deriv relativeVelocity = v[b]-v[a];
-                Real elongationVelocity = dot(u,relativeVelocity);
-                Real forceIntensity = (Real)(einfo->ks*elongation+einfo->kd*elongationVelocity);
-                Deriv force = u*forceIntensity;
-                f[a]+=force;
-                f[b]-=force;
-
-                updateMatrix=true;
-
-                Mat& m = einfo->DfDx; //Mat& m = this->dfdx[i];
-                Real tgt = forceIntensity * inverseLength;
-                for( int j=0; j<N; ++j )
+                for( int k=0; k<N; ++k )
                 {
-                    for( int k=0; k<N; ++k )
-                    {
-                        m[j][k] = ((Real)einfo->ks-tgt) * u[j] * u[k];
-                    }
-                    m[j][j] += tgt;
-                }
-            }
-            else // null length, no force and no stiffness
-            {
-                Mat& m = einfo->DfDx; //Mat& m = this->dfdx[i];
-                for( int j=0; j<N; ++j )
-                {
-                    for( int k=0; k<N; ++k )
-                    {
-                        m[j][k] = 0;
-                    }
+                    m[j][k] = 0;
                 }
             }
         }
     }
 
-    edgeInfo.endEdit();
     d_f.endEdit();
-    //for (unsigned int i=0; i<springs.size(); i++)
-    //{
-    /*            msg_error()<<"TriangularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2;*/
-    //    this->addSpringForce(m_potentialEnergy,f,x,v, i, springs[i]);
-    //}
 }
 
 template<class DataTypes>
@@ -636,37 +575,24 @@ void TriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams
     const VecDeriv& dx = d_dx.getValue();
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
+
     size_t nbEdges=m_topology->getNbEdges();
-    const EdgeInformation *einfo;
     const type::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
-
     df.resize(dx.size());
-    //msg_error()<<"TriangularBendingSprings<DataTypes>::addDForce, dx1 = "<<dx1;
-    //msg_error()<<"TriangularBendingSprings<DataTypes>::addDForce, df1 before = "<<f1;
-    //const type::vector<Spring>& springs = this->springs.getValue();
 
-    for(unsigned int i=0; i<nbEdges; i++ )
+    for(sofa::Index i=0; i<nbEdges; i++ )
     {
-        einfo=&edgeInf[i];
+        const EdgeInformation& einfo = edgeInf[i];
 
-        /*            msg_error()<<"TriangularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2;*/
+        if (!einfo.is_activated) // edge not in middle of 2 triangles
+            continue;
 
-        if(einfo->is_activated)
-        {
-            //this->addSpringDForce(df,dx, i, einfo->spring);
-
-            const int a = einfo->m1;
-            const int b = einfo->m2;
-            const Coord d = dx[b]-dx[a];
-            const Deriv dforce = einfo->DfDx*d; //this->dfdx[i]*d;
-            df[a]+= dforce * kFactor;
-            df[b]-= dforce * kFactor;
-            //msg_error()<<"TriangularBendingSprings<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", dforce ="<<dforce;
-
-            //if(updateMatrix){
-            //}
-            updateMatrix=false;
-        }
+        const int a = einfo.m1;
+        const int b = einfo.m2;
+        const Coord d = dx[b]-dx[a];
+        const Deriv dforce = einfo.DfDx*d;
+        df[a]+= dforce * kFactor;
+        df[b]-= dforce * kFactor;
     }
     d_df.endEdit();
 }
