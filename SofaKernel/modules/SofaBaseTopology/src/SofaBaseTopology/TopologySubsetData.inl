@@ -83,7 +83,7 @@ void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
     const sofa::type::vector<sofa::type::vector<double> >& coefs)
 {
     if (!this->getSparseDataStatus()) {
-        this->lastElementIndex += nbElements;
+        this->m_lastElementIndex += nbElements;
         return;
     }
 
@@ -180,12 +180,12 @@ void TopologySubsetData <TopologyElementType, VecT>::remove(const sofa::type::ve
         }
 
         // need to check if lastIndex in the map        
-        idElem = this->indexOfElement(this->lastElementIndex);
+        idElem = this->indexOfElement(this->m_lastElementIndex);
         if (idElem != sofa::InvalidID)
         {
             updateLastIndex(idElem, idRemove);
         }
-        this->lastElementIndex--;
+        this->m_lastElementIndex--;
     }
 
     if (cptDone != 0)
@@ -243,8 +243,8 @@ void TopologySubsetData <TopologyElementType, VecT>::addPostProcess(sofa::Size n
 {
     for (unsigned int i = 0; i < nbElements; ++i)
     {
-        this->lastElementIndex++;
-        m_map2Elements.push_back(this->lastElementIndex);
+        this->m_lastElementIndex++;
+        m_map2Elements.push_back(this->m_lastElementIndex);
     }
 }
 
