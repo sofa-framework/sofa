@@ -29,14 +29,14 @@ def createScene(rootNode):
         rootNode.addObject('VisualStyle', displayFlags='showCollisionModels hideMappings showForceFields')
 
         meshDivision = rootNode.addChild('meshDivision')
-        meshDivision.addObject('RegularGridTopology', name='topology', n=[4, 4, 8] , min=[-1, -1, -2], max=[1, 1, 2])
+        meshDivision.addObject('RegularGridTopology', name='topology', n=[8, 8, 16] , min=[-1, -1, -2], max=[1, 1, 2])
         meshOfStructure = meshDivision.addObject('MeshTopology',name='beamMesh', src="@topology")
         meshDivision.addObject('MechanicalObject', template='Vec3d')
         boxDeformable= meshDivision.addObject('BoxROI',template="Vec3d", name='box_roi_deformable', box=[-1, -1, -2.05, 1, 1, 1.5], position="@beamMesh.position" )
         boxRigid= meshDivision.addObject('BoxROI',template="Vec3d", name='box_roi_rigid', box=[-1, -1, 1.500001, 1, 1, 2.05], position="@beamMesh.position")
 
         SolverNode= rootNode.addChild('SolverNode')
-        SolverNode.addObject('EulerImplicitSolver')
+        SolverNode.addObject('EulerImplicitSolver', rayleighStiffness=0.1, rayleighMass=0.1)
         SolverNode.addObject('SparseLDLSolver', name="ldlsolveur")
         SolverNode.addObject('MechanicalMatrixMapper', template='Vec3d,Rigid3d',
                              object1='@./deformablePartNode/beamPart1Mech',
