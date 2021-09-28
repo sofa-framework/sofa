@@ -151,6 +151,9 @@ public:
     virtual Real getKd() const { return f_kd.getValue();}
     void setKd(const Real kd) { f_kd.setValue(kd); }
 
+    /// Getter to global potential energy accumulated
+    SReal getAccumulatedPotentialEnergy() const {return m_potentialEnergy;}
+
     /// Getter on the potential energy.
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& d_x) const override;
 

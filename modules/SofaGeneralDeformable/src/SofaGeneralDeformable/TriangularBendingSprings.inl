@@ -290,6 +290,7 @@ TriangularBendingSprings<DataTypes>::TriangularBendingSprings()
     , l_topology(initLink("topology", "link to the topology container"))
     , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
     , edgeHandler(nullptr)
+    , m_potentialEnergy(0.0)
     , m_topology(nullptr)
 {
     // Create specific handler for EdgeData
