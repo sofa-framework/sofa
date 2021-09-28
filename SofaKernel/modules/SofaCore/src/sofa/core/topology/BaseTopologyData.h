@@ -123,14 +123,14 @@ public:
     void setDataSetArraySize(const Index s) { m_lastElementIndex = s - 1; }
 
     /// Return the last element index of the topolgy buffer this Data is linked to. @sa m_lastElementIndex
-    Index getLastElementIndex() { return m_lastElementIndex; }
+    Index getLastElementIndex() const { return m_lastElementIndex; }
 
 protected:
     /// Pointer to the Topology this TopologyData is depending on
     sofa::core::topology::BaseMeshTopology* m_topology = nullptr;
 
     /** to handle properly the removal of items, the container must keep the last element index and update it during operations (add/remove).
-    * Note that this index is mandatory and can't be retrieve directly form the topology in the case when several topology events are queued.
+    * Note that this index is mandatory and can't be retrieved directly from the topology in the case when several topology events are queued.
     * i.e: If 2 removalElements events are queued, the second event still point to a topology not yet updated by the first event. 
     */
     Index m_lastElementIndex = 0;
