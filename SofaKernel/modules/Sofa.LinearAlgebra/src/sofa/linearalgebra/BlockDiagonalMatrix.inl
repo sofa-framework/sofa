@@ -19,57 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_IMAGE_IMAGECONTAINER_CPP
+#pragma once
+#include <sofa/linearalgebra/FullMatrix.h>
 
-#include "ImageContainer.h"
-#include <sofa/core/ObjectFactory.h>
-
-namespace sofa
+namespace sofa::linearalgebra
 {
 
-namespace component
-{
-
-namespace container
-{
-
-using namespace defaulttype;
 
 
-// Register in the Factory
-
-int ImageContainerClass = core::RegisterObject ( "Image Container" )
-        .add<ImageContainer<ImageUC> >(true)
-        .add<ImageContainer<ImageD> >()
-#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
-        .add<ImageContainer<ImageC> >()
-        .add<ImageContainer<ImageI> >()
-        .add<ImageContainer<ImageUI> >()
-        .add<ImageContainer<ImageS> >()
-        .add<ImageContainer<ImageUS> >()
-        .add<ImageContainer<ImageL> >()
-        .add<ImageContainer<ImageUL> >()
-        .add<ImageContainer<ImageF> >()
-        .add<ImageContainer<ImageB> >()
-#endif
-        ;
-
-template class SOFA_IMAGE_API ImageContainer<ImageUC>;
-template class SOFA_IMAGE_API ImageContainer<ImageD>;
-#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
-template class SOFA_IMAGE_API ImageContainer<ImageC>;
-template class SOFA_IMAGE_API ImageContainer<ImageI>;
-template class SOFA_IMAGE_API ImageContainer<ImageUI>;
-template class SOFA_IMAGE_API ImageContainer<ImageS>;
-template class SOFA_IMAGE_API ImageContainer<ImageUS>;
-template class SOFA_IMAGE_API ImageContainer<ImageL>;
-template class SOFA_IMAGE_API ImageContainer<ImageUL>;
-template class SOFA_IMAGE_API ImageContainer<ImageF>;
-template class SOFA_IMAGE_API ImageContainer<ImageB>;
-#endif
-
-} // namespace container
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::linearalgebra

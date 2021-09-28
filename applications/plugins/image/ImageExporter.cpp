@@ -40,7 +40,7 @@ using namespace defaulttype;
 int ImageExporterClass = core::RegisterObject("Save an image")
         .add<ImageExporter<ImageUC> >(true)
         .add<ImageExporter<ImageD> >()
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
         .add<ImageExporter<ImageC> >()
         .add<ImageExporter<ImageI> >()
         .add<ImageExporter<ImageUI> >()
@@ -55,7 +55,7 @@ int ImageExporterClass = core::RegisterObject("Save an image")
 
 template class SOFA_IMAGE_API ImageExporter<ImageUC>;
 template class SOFA_IMAGE_API ImageExporter<ImageD>;
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_API ImageExporter<ImageC>;
 template class SOFA_IMAGE_API ImageExporter<ImageI>;
 template class SOFA_IMAGE_API ImageExporter<ImageUI>;

@@ -19,57 +19,70 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_IMAGE_IMAGECONTAINER_CPP
+#pragma once
+#include <sofa/linearalgebra/config.h>
 
-#include "ImageContainer.h"
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/linearalgebra/FullVector.h>
 
-namespace sofa
+namespace sofa::linearalgebra
 {
 
-namespace component
+template< std::size_t N, typename T>
+class BlockVector : public FullVector<T>
 {
+public:
+    typedef FullVector<T> Inherit;
+    typedef T Real;
+    typedef typename Inherit::Index Index;
 
-namespace container
-{
+    typedef typename Inherit::value_type value_type;
+    typedef typename Inherit::Size Size;
+    typedef typename Inherit::iterator iterator;
+    typedef typename Inherit::const_iterator const_iterator;
 
-using namespace defaulttype;
+    class Bloc : public type::Vec<N,T>
+    {
+    public:
+        Index Nrows() const { return N; }
+        void resize(Index) { this->clear(); }
+        void operator=(const type::Vec<N,T>& v)
+        {
+            type::Vec<N,T>::operator=(v);
+        }
+        void operator=(int v)
+        {
+            type::Vec<N,T>::fill((float)v);
+        }
+        void operator=(float v)
+        {
+            type::Vec<N,T>::fill(v);
+        }
+        void operator=(double v)
+        {
+            type::Vec<N,T>::fill(v);
+        }
+    };
 
+    typedef Bloc SubVectorType;
 
-// Register in the Factory
+public:
 
-int ImageContainerClass = core::RegisterObject ( "Image Container" )
-        .add<ImageContainer<ImageUC> >(true)
-        .add<ImageContainer<ImageD> >()
-#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
-        .add<ImageContainer<ImageC> >()
-        .add<ImageContainer<ImageI> >()
-        .add<ImageContainer<ImageUI> >()
-        .add<ImageContainer<ImageS> >()
-        .add<ImageContainer<ImageUS> >()
-        .add<ImageContainer<ImageL> >()
-        .add<ImageContainer<ImageUL> >()
-        .add<ImageContainer<ImageF> >()
-        .add<ImageContainer<ImageB> >()
-#endif
-        ;
+    BlockVector();
 
-template class SOFA_IMAGE_API ImageContainer<ImageUC>;
-template class SOFA_IMAGE_API ImageContainer<ImageD>;
-#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
-template class SOFA_IMAGE_API ImageContainer<ImageC>;
-template class SOFA_IMAGE_API ImageContainer<ImageI>;
-template class SOFA_IMAGE_API ImageContainer<ImageUI>;
-template class SOFA_IMAGE_API ImageContainer<ImageS>;
-template class SOFA_IMAGE_API ImageContainer<ImageUS>;
-template class SOFA_IMAGE_API ImageContainer<ImageL>;
-template class SOFA_IMAGE_API ImageContainer<ImageUL>;
-template class SOFA_IMAGE_API ImageContainer<ImageF>;
-template class SOFA_IMAGE_API ImageContainer<ImageB>;
-#endif
+    explicit BlockVector(Index n);
 
-} // namespace container
+    virtual ~BlockVector();
 
-} // namespace component
+    const Bloc& sub(Index i, Index) const
+    {
+        return (const Bloc&)*(this->ptr()+i);
+    }
 
-} // namespace sofa
+    Bloc& sub(Index i, Index);
+
+    const Bloc& asub(Index bi, Index) const;
+
+    Bloc& asub(Index bi, Index);
+};
+
+} // namespace sofa::linearalgebra

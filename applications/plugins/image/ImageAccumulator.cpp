@@ -38,7 +38,7 @@ using namespace defaulttype;
 int ImageAccumulatorClass = core::RegisterObject ( "Wraps images from a video stream into a single image" )
         .add<ImageAccumulator<ImageUC> >(true)
         .add<ImageAccumulator<ImageD> >()
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
         .add<ImageAccumulator<ImageC> >()
         .add<ImageAccumulator<ImageI> >()
         .add<ImageAccumulator<ImageUI> >()
@@ -53,7 +53,7 @@ int ImageAccumulatorClass = core::RegisterObject ( "Wraps images from a video st
 
 template class SOFA_IMAGE_API ImageAccumulator<ImageUC>;
 template class SOFA_IMAGE_API ImageAccumulator<ImageD>;
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_API ImageAccumulator<ImageC>;
 template class SOFA_IMAGE_API ImageAccumulator<ImageI>;
 template class SOFA_IMAGE_API ImageAccumulator<ImageUI>;

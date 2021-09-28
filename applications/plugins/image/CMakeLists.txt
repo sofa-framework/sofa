@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.12)
 project(image VERSION 0.1)
 
+set(PLUGIN_IMAGE_COMPILE_SET "standard" CACHE STRING "Set of image type to compile. Values are: none, standard (default), full.")
+set_property(CACHE PLUGIN_IMAGE_COMPILE_SET PROPERTY STRINGS none standard full)
+
 find_package(SofaBase REQUIRED)
 find_package(SofaGeneralVisual REQUIRED)
 
@@ -15,31 +18,6 @@ sofa_find_package(Freenect QUIET)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
-set(SOURCE_FILES
-    CollisionToCarvingEngine.cpp
-    ImageAccumulator.cpp
-    ImageContainer.cpp
-    GenerateImage.cpp
-    ImageDataDisplay.cpp
-    ImageExporter.cpp
-    ImageFilter.cpp
-    ImageOperation.cpp
-    ImageSampler.cpp
-    ImageToRigidMassEngine.cpp
-    ImageTransform.cpp
-    ImageTransformEngine.cpp
-    ImageTypes.cpp
-    ImageValuesFromPositions.cpp
-    ImageCoordValuesFromPositions.cpp
-    MarchingCubesEngine.cpp
-    MergeImages.cpp
-    MeshToImageEngine.cpp
-    TransferFunction.cpp
-    VoronoiToMeshEngine.cpp
-    DepthMapToMeshEngine.cpp
-    ImageViewer.cpp
-    initImage.cpp
-    )
 set(HEADER_FILES
     config.h.in
     CImgData.h
@@ -68,7 +46,39 @@ set(HEADER_FILES
     VoronoiToMeshEngine.h
     DepthMapToMeshEngine.h
     ImageViewer.h
+)
+
+set(SOURCE_FILES
+    initImage.cpp
+)
+
+if(NOT PLUGIN_IMAGE_COMPILE_SET STREQUAL "none")
+    list(APPEND SOURCE_FILES
+        CollisionToCarvingEngine.cpp
+        ImageAccumulator.cpp
+        ImageContainer.cpp
+        GenerateImage.cpp
+        ImageDataDisplay.cpp
+        ImageExporter.cpp
+        ImageFilter.cpp
+        ImageOperation.cpp
+        ImageSampler.cpp
+        ImageToRigidMassEngine.cpp
+        ImageTransform.cpp
+        ImageTransformEngine.cpp
+        ImageTypes.cpp
+        ImageValuesFromPositions.cpp
+        ImageCoordValuesFromPositions.cpp
+        MarchingCubesEngine.cpp
+        MergeImages.cpp
+        MeshToImageEngine.cpp
+        TransferFunction.cpp
+        VoronoiToMeshEngine.cpp
+        DepthMapToMeshEngine.cpp
+        ImageViewer.cpp
     )
+endif()
+
 set(README_FILES
     image.txt
     )
@@ -95,20 +105,18 @@ if(Sofa.GL_FOUND)
     endif()
 endif()
 
-# todo?
-# if(SOFA-EXTERNAL_OPENCV)
-# AddLinkerDependencies("ml")
-# AddLinkerDependencies("cvaux")
-# AddLinkerDependencies("highgui")
-# AddLinkerDependencies("cv")
-# AddLinkerDependencies("cxcore")
-# endif()
-
 # OpenMP is bugged in image, forcing it to be single threaded for now
 if(SOFA_OPENMP)
     message( WARNING "image: deactivating OpenMP" )
     string(REPLACE "${OpenMP_CXX_FLAGS}" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
     string(REPLACE "${OpenMP_CXX_FLAGS}" "" CMAKE_CXX_LINK_FLAGS ${CMAKE_CXX_LINK_FLAGS})
+endif()
+
+set(PLUGIN_IMAGE_COMPILE_SET_VALUE 0) # none
+if(PLUGIN_IMAGE_COMPILE_SET STREQUAL  "standard")
+    set(PLUGIN_IMAGE_COMPILE_SET_VALUE 1)
+elseif(PLUGIN_IMAGE_COMPILE_SET STREQUAL "full")
+    set(PLUGIN_IMAGE_COMPILE_SET_VALUE 2)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
@@ -158,4 +166,4 @@ sofa_create_package_with_targets(
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     PACKAGE_VERSION ${PROJECT_VERSION}
     RELOCATABLE "plugins"
-    )
+)
