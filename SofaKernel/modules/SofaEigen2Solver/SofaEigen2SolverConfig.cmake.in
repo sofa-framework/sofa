@@ -3,7 +3,7 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(Sofa.Config QUIET REQUIRED)
+find_package(Sofa.Helper QUIET REQUIRED)
 
 message(WARNING "SofaEigen2Solver has been removed, the package still exists for compatibility but is empty\n.
     Eigen classes have moved to Sofa.LinearAlgebra and SVDLinearSolver to SofaDenseSolver.")

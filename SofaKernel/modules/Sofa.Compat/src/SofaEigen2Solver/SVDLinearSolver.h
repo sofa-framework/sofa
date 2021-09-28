@@ -19,63 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaEigen2Solver/initSofaEigen2Solver.h>
+#pragma once
 
-#include <sofa/helper/logging/Messaging.h>
+#include <SofaDenseSolver/SVDLinearSolver.h>
 
-namespace sofa::component
-{
-
-void initSofaEigen2Solver()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    msg_warning("SofaEigen2Solver") << "SofaEigen2Solver is deprecated; Eigen classes are now located in Sofa.LinearAlgebra and SVDLinearSolver in SofaDenseSolver."
-        << "You can remove SofaEigen2Solver from your scene, and if using SVDLinearSolver, please load SofaDenseSolver instead.";
-}
-
-extern "C" {
-    SOFA_SOFAEIGEN2SOLVER_API void initExternalModule();
-    SOFA_SOFAEIGEN2SOLVER_API const char* getModuleName();
-    SOFA_SOFAEIGEN2SOLVER_API const char* getModuleVersion();
-    SOFA_SOFAEIGEN2SOLVER_API const char* getModuleLicense();
-    SOFA_SOFAEIGEN2SOLVER_API const char* getModuleDescription();
-    SOFA_SOFAEIGEN2SOLVER_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{
-    initSofaEigen2Solver();
-}
-
-const char* getModuleName()
-{
-    return sofa_tostring(SOFA_TARGET);
-}
-
-const char* getModuleVersion()
-{
-    return sofa_tostring(SOFAEIGEN2SOLVER_VERSION);
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This plugin contains contains features about Eigen2 Solver.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    return "";
-}
-
-} // namespace sofa::component
+SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "SofaDenseSolver/SVDLinearSolver.h")
