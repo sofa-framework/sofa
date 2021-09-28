@@ -48,13 +48,21 @@ void ConstraintCorrection< DataTypes >::cleanup()
 template <class DataTypes>
 void ConstraintCorrection<DataTypes>::addConstraintSolver(core::behavior::ConstraintSolver *s)
 {
-    l_constraintsolvers.add(s);
+    if (!l_constraintsolvers.add(s))
+    {
+        dmsg_error_when(!s) << "Trying to add an invalid constraint solver";
+        dmsg_error() << "Cannot add the requested constraint solver";
+    }
 }
 
 template <class DataTypes>
 void ConstraintCorrection<DataTypes>::removeConstraintSolver(core::behavior::ConstraintSolver *s)
 {
-    l_constraintsolvers.remove(s);
+    if (!l_constraintsolvers.remove(s))
+    {
+        dmsg_error_when(!s) << "Trying to remove an invalid constraint solver";
+        dmsg_error() << "Cannot remove the requested constraint solver";
+    }
 }
 
 template< class DataTypes >
