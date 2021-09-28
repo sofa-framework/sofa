@@ -178,6 +178,51 @@ void TopologyData <TopologyElementType, VecT>::linkToHexahedronDataArray()
 }
 
 
+/////////////////////// Protected functions on TopologyData init ///////////////////////////////
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Point*) 
+{ 
+    setDataSetArraySize(m_topology->getNbPoints());
+    linkToPointDataArray(); 
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Edge*) 
+{ 
+    setDataSetArraySize(m_topology->getNbEdges());
+    linkToEdgeDataArray(); 
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Triangle*) 
+{ 
+    setDataSetArraySize(m_topology->getNbTriangles());
+    linkToTriangleDataArray(); 
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Quad*) 
+{ 
+    setDataSetArraySize(m_topology->getNbQuads());
+    linkToQuadDataArray(); 
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Tetrahedron*) 
+{ 
+    setDataSetArraySize(m_topology->getNbTetrahedra());
+    linkToTetrahedronDataArray(); 
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Hexahedron*) 
+{ 
+    setDataSetArraySize(m_topology->getNbHexahedra());
+    linkToHexahedronDataArray(); 
+}
+
+
 ///////////////////// Protected functions on TopologyData changes /////////////////////////////
 
 template <typename TopologyElementType, typename VecT>

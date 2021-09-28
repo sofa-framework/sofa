@@ -147,12 +147,12 @@ protected:
 
     bool m_isTopologyDynamic;
 
-    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Point*      ) { linkToPointDataArray();       }
-    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Edge*       ) { linkToEdgeDataArray();        }
-    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Triangle*   ) { linkToTriangleDataArray();    }
-    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Quad*       ) { linkToQuadDataArray();        }
-    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Tetrahedron*) { linkToTetrahedronDataArray(); }
-    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Hexahedron* ) { linkToHexahedronDataArray();  }
+    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Point*);
+    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Edge*);
+    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Triangle*);
+    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Quad*);
+    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Tetrahedron*);
+    void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Hexahedron*);
 };
 
 
