@@ -284,8 +284,8 @@ void TriangularBendingSprings<DataTypes>::applyPointRenumbering(const sofa::type
 
 template<class DataTypes>
 TriangularBendingSprings<DataTypes>::TriangularBendingSprings()
-    : f_ks(initData(&f_ks, Real(100000.0),"stiffness","uniform stiffness for the all springs"))
-    , f_kd(initData(&f_kd, Real(1.0),"damping","uniform damping for the all springs"))
+    : d_ks(initData(&d_ks, Real(100000.0),"stiffness","uniform stiffness for the all springs"))
+    , d_kd(initData(&d_kd, Real(1.0),"damping","uniform damping for the all springs"))
     , d_showSprings(initData(&d_showSprings, true, "showSprings", "option to draw springs"))
     , l_topology(initLink("topology", "link to the topology container"))
     , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
@@ -308,6 +308,10 @@ template<class DataTypes>
 void TriangularBendingSprings<DataTypes>::init()
 {
     this->Inherited::init();
+
+    // checking inputs using setter
+    setKs(d_ks.getValue());
+    setKd(d_kd.getValue());
 
     if (l_topology.empty())
     {
@@ -401,6 +405,34 @@ SReal TriangularBendingSprings<DataTypes>::getPotentialEnergy(const core::Mechan
 {
     msg_error()<<"TriangularBendingSprings::getPotentialEnergy-not-implemented !!!";
     return 0;
+}
+
+
+template<class DataTypes>
+void TriangularBendingSprings<DataTypes>::setKs(const Real ks)
+{ 
+    if (ks < 0)
+    {
+        msg_warning() << "Input Bending Stiffness is not possible: " << ks << ", setting default value: 100000.0";
+    }
+    else if (ks != d_ks.getValue())
+    {
+        d_ks.setValue(ks);
+    }
+}
+
+
+template<class DataTypes>
+void TriangularBendingSprings<DataTypes>::setKd(const Real kd) 
+{ 
+    if (kd < 0)
+    {
+        msg_warning() << "Input Bending damping is not possible: " << kd << ", setting default value: 1.0";
+    }
+    else if (kd != d_kd.getValue())
+    {
+        d_kd.setValue(kd);
+    }
 }
 
 

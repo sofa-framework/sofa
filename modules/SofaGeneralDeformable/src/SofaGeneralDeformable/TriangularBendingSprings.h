@@ -60,8 +60,8 @@ public:
     typedef type::Mat<N,N,Real> Mat;
     using Index = sofa::Index;
 
-    Data<Real> f_ks; ///< uniform stiffness for the all springs
-    Data<Real> f_kd; ///< uniform damping for the all springs
+    Data<Real> d_ks; ///< uniform stiffness for the all springs
+    Data<Real> d_kd; ///< uniform damping for the all springs
     Data<bool> d_showSprings; ///< Option to enable/disable the spring display when showForceField is on. True by default
 
     /// Link to be set to the topology container in the component graph.
@@ -144,12 +144,12 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 
     /// Getter/setter on the mesh spring stiffness
-    virtual Real getKs() const { return f_ks.getValue();}
-    void setKs(const Real ks) { f_ks.setValue(ks); }
+    virtual Real getKs() const { return d_ks.getValue();}
+    void setKs(const Real ks);
 
     /// Getter/setter on the mesh spring damping
-    virtual Real getKd() const { return f_kd.getValue();}
-    void setKd(const Real kd) { f_kd.setValue(kd); }
+    virtual Real getKd() const { return d_kd.getValue();}
+    void setKd(const Real kd);
 
     /// Getter to global potential energy accumulated
     SReal getAccumulatedPotentialEnergy() const {return m_potentialEnergy;}
