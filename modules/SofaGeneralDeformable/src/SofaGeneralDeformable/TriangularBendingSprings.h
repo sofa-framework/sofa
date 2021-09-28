@@ -57,8 +57,8 @@ public:
     typedef type::Mat<N,N,Real> Mat;
     using Index = sofa::Index;
 
-    Data<double> f_ks; ///< uniform stiffness for the all springs
-    Data<double> f_kd; ///< uniform damping for the all springs
+    Data<Real> f_ks; ///< uniform stiffness for the all springs
+    Data<Real> f_kd; ///< uniform damping for the all springs
     Data<bool> d_showSprings; ///< Option to enable/disable the spring display when showForceField is on. True by default
 
     /// Link to be set to the topology container in the component graph.
@@ -68,20 +68,16 @@ public:
     {
     public:
         Mat DfDx; /// the edge stiffness matrix
-
-        int     m1, m2;  /// the two extremities of the spring: masses m1 and m2
-
-        double  ks;      /// spring stiffness (initialized to the default value)
-        double  kd;      /// damping factor (initialized to the default value)
-
-        double  restlength; /// rest length of the spring
+        int   m1, m2;  /// the two extremities of the spring: masses m1 and m2
+        Real  ks;      /// spring stiffness (initialized to the default value)
+        Real  kd;      /// damping factor (initialized to the default value)
+        Real  restlength; /// rest length of the spring
 
         bool is_activated;
-
         bool is_initialized;
 
         EdgeInformation(int m1=0, int m2=0, double restlength=0.0, bool is_activated=false, bool is_initialized=false)
-            : m1(m1), m2(m2), restlength(restlength), is_activated(is_activated), is_initialized(is_initialized)
+            : m1(m1), m2(m2), ks(Real(100000.0)), kd(Real(1.0)), restlength(restlength), is_activated(is_activated), is_initialized(is_initialized)
         {
         }
         /// Output stream
@@ -120,6 +116,7 @@ protected:
     void applyPointDestruction(const type::vector<Index>& pointIndices);
 
     void applyPointRenumbering(const type::vector<Index>& pointToRenumber);
+
 public:
     /// Searches triangle topology and creates the bending springs
     void init() override;
@@ -130,16 +127,16 @@ public:
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& d_x) const override;
 
-    virtual double getKs() const { return f_ks.getValue();}
-    virtual double getKd() const { return f_kd.getValue();}
+    virtual Real getKs() const { return f_ks.getValue();}
+    virtual Real getKd() const { return f_kd.getValue();}
 
     void setKs(const double ks)
     {
-        f_ks.setValue((double)ks);
+        f_ks.setValue(Real(ks));
     }
     void setKd(const double kd)
     {
-        f_kd.setValue((double)kd);
+        f_kd.setValue(Real(kd));
     }
 
     void draw(const core::visual::VisualParams* vparams) override;
@@ -157,7 +154,6 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_CPP)
 extern template class SOFA_SOFAGENERALDEFORMABLE_API TriangularBendingSprings<defaulttype::Vec3Types>;
-
 #endif // !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_CPP)
 
 
