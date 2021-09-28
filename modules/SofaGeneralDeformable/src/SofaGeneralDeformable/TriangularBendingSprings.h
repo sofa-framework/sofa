@@ -35,7 +35,10 @@ namespace sofa::component::forcefield
 Bending springs added between vertices of triangles sharing a common edge.
 The springs connect the vertices not belonging to the common edge. It compresses when the surface bends along the common edge.
 
-	@author The SOFA team </www.sofa-framework.org>
+Note: This TriangularBendingSprings only support manifold triangulation. I.e an edge can only by adjacent to maximum 2 triangles.
+If more than 2 triangles are connected to an edge, only one spring will be created (the first 2 triangles encountered during initialisation phase)
+
+@author The SOFA team </www.sofa-framework.org>
 */
 template<class DataTypes>
 class TriangularBendingSprings : public core::behavior::ForceField<DataTypes>
@@ -93,7 +96,7 @@ public:
         }
     };
 
-    sofa::component::topology::EdgeData<type::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
+    sofa::component::topology::EdgeData<type::vector<EdgeInformation> > edgeInfo; ///< Internal Edge data storing @sa EdgeInformation per edge
     typedef typename topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::type::vector<EdgeInformation> > TriangularBSEdgeHandler;
 
 protected:
@@ -101,54 +104,66 @@ protected:
 
     virtual ~TriangularBendingSprings();
 
+    /** Method to initialize @sa edgeInfo when a new edge is created. (by default everything is set to 0)
+    * Will be used as callback by the TriangularBSEdgeHandler @sa edgeHandler
+    */
     void applyEdgeCreation(Index edgeIndex,
         EdgeInformation& ei,
         const core::topology::BaseMeshTopology::Edge&, const sofa::type::vector< Index >&,
         const sofa::type::vector< double >&);
 
+    /** Method to update @sa edgeInfo when a new triangle is created.
+    * Will be used as callback by the TriangularBSEdgeHandler @sa edgeHandler
+    * to create a new spring between new created triangles.
+    */
     void applyTriangleCreation(const type::vector<Index>& triangleAdded,
         const type::vector<core::topology::BaseMeshTopology::Triangle>&,
         const type::vector<type::vector<Index> >&,
         const type::vector<type::vector<double> >&);
 
+    /** Method to update @sa edgeInfo when a triangle is removed.
+    * Will be used as callback by the TriangularBSEdgeHandler @sa edgeHandler
+    * to remove spring if needed or update pair of triangles.
+    */
     void applyTriangleDestruction(const type::vector<Index>& triangleRemoved);
 
+    /// Method to update @sa edgeInfo when a point is removed. Will be used as callback by the TriangularBSEdgeHandler @sa edgeHandler
     void applyPointDestruction(const type::vector<Index>& pointIndices);
 
+    /// Method to update @sa edgeInfo when points are renumbered. Will be used as callback by the TriangularBSEdgeHandler @sa edgeHandler
     void applyPointRenumbering(const type::vector<Index>& pointToRenumber);
 
 public:
-    /// Searches triangle topology and creates the bending springs
+    // ForceField api
     void init() override;
-
     void reinit() override;
 
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
-    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& d_x) const override;
-
-    virtual Real getKs() const { return f_ks.getValue();}
-    virtual Real getKd() const { return f_kd.getValue();}
-
-    void setKs(const double ks)
-    {
-        f_ks.setValue(Real(ks));
-    }
-    void setKd(const double kd)
-    {
-        f_kd.setValue(Real(kd));
-    }
 
     void draw(const core::visual::VisualParams* vparams) override;
 
+    /// Getter/setter on the mesh spring stiffness
+    virtual Real getKs() const { return f_ks.getValue();}
+    void setKs(const Real ks) { f_ks.setValue(ks); }
+
+    /// Getter/setter on the mesh spring damping
+    virtual Real getKd() const { return f_kd.getValue();}
+    void setKd(const Real kd) { f_kd.setValue(kd); }
+
+    /// Getter on the potential energy.
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& d_x) const override;
+
+    sofa::component::topology::EdgeData<type::vector<EdgeInformation> >& getEdgeInfo() { return edgeInfo; }
+
 protected:
-
-    sofa::component::topology::EdgeData<type::vector<EdgeInformation> > &getEdgeInfo() {return edgeInfo;}
-
+    /// Topology EdgeData handler to manage topological changes on the Topology Data @sa edgeInfo
     TriangularBSEdgeHandler* edgeHandler;
-
+    
+    /// poential energy accumulate in method @sa addForce
     SReal m_potentialEnergy;
 
+    /// Pointer to the linked topology used to create this spring forcefield
     sofa::core::topology::BaseMeshTopology* m_topology;
 };
 
