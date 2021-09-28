@@ -9,7 +9,6 @@ set(SOFACOMPONENTALL_MODULES
     SofaBaseTopology
     SofaBaseUtils
     SofaBaseVisual
-    SofaEigen2Solver
 
     # SofaSimulation
     SofaSimulationCommon

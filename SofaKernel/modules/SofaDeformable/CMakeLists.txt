@@ -33,10 +33,10 @@ set(SOURCE_FILES
     ${SOFADEFORMABLE_SRC}/PolynomialSpringsForceField.cpp
 )
 
-sofa_find_package(SofaBase REQUIRED) # SofaBaseTopology SofaEigen2Solver
+sofa_find_package(SofaBaseTopology REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaEigen2Solver)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
 
 if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Silence attribute warnings (for example, ignored already defined external template)
