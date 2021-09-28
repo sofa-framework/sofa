@@ -70,11 +70,11 @@ public:
     class EdgeInformation
     {
     public:
-        Mat DfDx; /// the edge stiffness matrix
-        int   m1, m2;  /// the two extremities of the spring: masses m1 and m2
-        Real  ks;      /// spring stiffness (initialized to the default value)
-        Real  kd;      /// damping factor (initialized to the default value)
-        Real  restlength; /// rest length of the spring
+        Mat DfDx; ///< the edge stiffness matrix
+        int   m1, m2;  ///< the two extremities of the spring: masses m1 and m2
+        Real  ks;      ///< spring stiffness (initialized to the default value)
+        Real  kd;      ///< damping factor (initialized to the default value)
+        Real  restlength; ///< rest length of the spring
 
         bool is_activated;
         bool is_initialized;
