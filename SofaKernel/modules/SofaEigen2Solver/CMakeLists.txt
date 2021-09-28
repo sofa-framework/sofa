@@ -6,12 +6,10 @@ set(SOFAEIGEN2SOLVER_SRC "src/${PROJECT_NAME}")
 set(HEADER_FILES
     ${SOFAEIGEN2SOLVER_SRC}/config.h.in
     ${SOFAEIGEN2SOLVER_SRC}/initSofaEigen2Solver.h
-    ${SOFAEIGEN2SOLVER_SRC}/SVDLinearSolver.h
 )
 
 set(SOURCE_FILES
     ${SOFAEIGEN2SOLVER_SRC}/initSofaEigen2Solver.cpp
-    ${SOFAEIGEN2SOLVER_SRC}/SVDLinearSolver.cpp
 )
 
 sofa_find_package(SofaBaseLinearSolver REQUIRED)
