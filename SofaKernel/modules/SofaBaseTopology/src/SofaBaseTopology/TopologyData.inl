@@ -286,7 +286,7 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::type::vector<Inde
         i0 = index[0];
     }
     data.resize(i0 + nbElements);
-    this->m_lastElementIndex += nbElements;
+    this->m_lastElementIndex += sofa::Index(nbElements);
 
     const sofa::type::vector< Index > empty_vecint;
     const sofa::type::vector< double > empty_vecdouble;
@@ -368,7 +368,7 @@ void TopologyData <TopologyElementType, VecT>::addOnMovedPosition(const sofa::ty
             this->m_topologyHandler->applyCreateFunction(indexList[i], data[indexList[i]], elems[i], ancestors, coefs);
         }
     }
-    this->m_lastElementIndex += indexList.size();
+    this->m_lastElementIndex += sofa::Index(indexList.size());
     this->endEdit();
 }
 
@@ -385,7 +385,7 @@ void TopologyData <TopologyElementType, VecT>::removeOnMovedPosition(const sofa:
         }
     }
 
-    this->m_lastElementIndex -= indices.size();
+    this->m_lastElementIndex -= sofa::Index(indices.size());
     this->endEdit();
 
     // TODO check why this call.
