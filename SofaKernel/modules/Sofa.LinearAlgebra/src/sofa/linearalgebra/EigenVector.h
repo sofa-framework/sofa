@@ -29,7 +29,6 @@
 namespace sofa::linearalgebra
 {
 
-//#define EIGEN_CHECK
 
 
 /** Container of a vector of the Eigen library. Not an eigenvector of a matrix.
