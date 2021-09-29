@@ -43,7 +43,7 @@ namespace sofa::component::linearsolver
     template<class M1>
     using MatrixNegative = sofa::linearalgebra::MatrixNegative<M1>;
 
-    template<class M1, class R2>
+    template<class M1, class M2>
     using MatrixScale = sofa::linearalgebra::MatrixScale<M1, M2>;
 
     template<class T>
