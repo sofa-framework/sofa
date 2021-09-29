@@ -36,7 +36,6 @@ TopologyData <TopologyElementType, VecT>::TopologyData(const typename sofa::core
     , m_topologyHandler(nullptr)
     , m_isTopologyDynamic(false)
 {
-    this->m_lastElementIndex = 0;
 }
 
 
