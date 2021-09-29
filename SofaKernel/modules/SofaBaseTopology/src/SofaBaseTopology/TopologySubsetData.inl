@@ -105,9 +105,20 @@ void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
                 const sofa::type::vector< double > empty_vecdouble;
 
                 this->m_topologyHandler->applyCreateFunction(Index(size + i), t, empty_vecint, empty_vecdouble);
+
+                if (p_onCreationCallback)
+                {
+                    p_onCreationCallback(Index(size + i), t, TopologyElementType(), empty_vecint, empty_vecdouble);
+                }
+
             }
             else {
                 this->m_topologyHandler->applyCreateFunction(Index(size + i), t, ancestors[i], coefs[i]);
+                
+                if (p_onCreationCallback)
+                {
+                    p_onCreationCallback(Index(size + i), t, TopologyElementType(), ancestors[i], coefs[i]);
+                }
             }
         }
     }
@@ -169,6 +180,11 @@ void TopologySubsetData <TopologyElementType, VecT>::remove(const sofa::type::ve
             if (this->m_topologyHandler)
             {
                 this->m_topologyHandler->applyDestroyFunction(idElem, data[idElem]);
+            }
+
+            if (p_onDestructionCallback)
+            {
+                p_onDestructionCallback(idElem, data[idElem]);
             }
 
             this->swap(idElem, last);
