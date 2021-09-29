@@ -13,11 +13,7 @@ assignees: ''
 < DESCRIBE YOUR PROBLEM HERE >
 
 **Steps to reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+< LIST THE STEPS TO REPRODUCE YOUR PROBLEM HERE >
 
 **Expected behavior**
 < DESCRIBE WHAT YOU THINK SHOULD HAVE HAPPEN INSTEAD >
@@ -71,11 +67,7 @@ bash -c '
 
 **Content of build_dir/CMakeCache.txt**
 
-```txt
-
-< COPY-PASTE YOUR CMAKECACHE.TXT HERE >
-
-```
+< DRAG AND DROP YOUR CMAKECACHE.TXT HERE >
 
 ---------------------------------------------
 
