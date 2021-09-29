@@ -29,6 +29,7 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
+#include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/MechanicalParams.h>
 
@@ -133,8 +134,8 @@ void UniformMass<DataTypes, MassType>::initDefaultImpl()
 
     Mass<DataTypes>::init();
 
-    WriteAccessor<Data<vector<int> > > indices = d_indices;
-
+    WriteAccessor<Data<SetIndexArray > > indices = d_indices;
+    
     if(mstate==nullptr)
     {
         msg_warning(this) << "Missing mechanical state. \n"
@@ -167,6 +168,38 @@ void UniformMass<DataTypes, MassType>::initDefaultImpl()
             indices.push_back(i);
     }
 
+    if (d_handleTopologicalChanges.getValue())
+    {
+        if (l_topology.empty())
+        {
+            msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+            l_topology.set(this->getContext()->getMeshTopologyLink());
+        }
+
+        BaseMeshTopology* meshTopology = l_topology.get();
+        if (meshTopology != nullptr)
+        {
+            msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+            d_indices.createTopologyHandler(meshTopology);
+            nbrIndices = indices.size();
+
+            // Add creation callback, called when PointAdded event is fired.
+            d_indices.setCreationCallback([this](Index pointIndex, int value, const core::topology::BaseMeshTopology::Point& p, const sofa::type::vector< Index >& ancestors,
+                const sofa::type::vector< double >& coefs) 
+            {
+                nbrIndices++;
+                updateMassOnResize(nbrIndices);
+            });
+
+            d_indices.setDestructionCallback([this](Index pointIndex, int value)
+            {
+                nbrIndices--;
+                updateMassOnResize(nbrIndices);
+            });
+        }
+        else
+            msg_warning() << "handleTopologicalChanges has been set to true but not valid topology has been found at:'" << l_topology.getLinkedPath() << "'";
+    }
 
     //If user defines the vertexMass, use this as the mass
     if (d_vertexMass.isSet())
@@ -338,107 +371,18 @@ void UniformMass<DataTypes, MassType>::initFromTotalMass()
 
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::handleTopologyChange()
+void UniformMass<DataTypes, MassType>::updateMassOnResize(sofa::Size newSize)
 {
-    if (l_topology.empty())
+    if (d_preserveTotalMass.getValue())
     {
-        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-        l_topology.set(this->getContext()->getMeshTopologyLink());
+        Real newVertexMass = d_totalMass.getValue() / Real(newSize);
+        d_vertexMass.setValue(static_cast<MassType>(newVertexMass));
     }
-
-    BaseMeshTopology *meshTopology = l_topology.get();
-    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
-
-    if ( meshTopology != nullptr && mstate->getSize()>0 )
+    else
     {
-        list< const TopologyChange * >::const_iterator it = meshTopology->beginChange();
-        list< const TopologyChange * >::const_iterator itEnd = meshTopology->endChange();
-
-        while ( it != itEnd )
-        {
-            switch ( ( *it )->getChangeType() )
-            {
-            // POINTS ADDED -----------------
-            case core::topology::POINTSADDED:
-                if ( d_handleTopologicalChanges.getValue())
-                {
-                    WriteAccessor<Data<vector<int> > > indices = d_indices;
-                    size_t sizeIndices = indices.size();
-                    const auto& pointsAdded = ( static_cast< const sofa::core::topology::PointsAdded * >( *it ) )->getIndexArray();
-                    size_t nbPointsAdded = pointsAdded.size();
-
-                    for(size_t i=0; i<nbPointsAdded; i++)
-                    {
-                        indices.push_back(int(pointsAdded[i]));
-                    }
-
-                    size_t newNbPoints = sizeIndices+nbPointsAdded;
-
-                    if (d_preserveTotalMass.getValue())
-                    {
-                        Real newVertexMass = d_totalMass.getValue() / Real(newNbPoints);
-                        d_vertexMass.setValue( static_cast< MassType >( newVertexMass ) );
-                    }
-                    else
-                    {
-                        d_totalMass.setValue (Real(newNbPoints) * Real(d_vertexMass.getValue()) );
-                    }
-                    this->cleanTracker();
-                }
-                break;
-
-            // POINTS REMOVED -----------------
-            case core::topology::POINTSREMOVED:
-                if ( d_handleTopologicalChanges.getValue())
-                {
-                    WriteAccessor<Data<vector<int> > > indices = d_indices;
-                    size_t sizeIndices = indices.size();
-                    const auto& pointsRemoved = ( static_cast< const sofa::core::topology::PointsRemoved * >( *it ) )->getArray();
-                    size_t nbPointsRemoved = pointsRemoved.size();
-
-                    size_t count=0;
-                    for(size_t i=0; i<nbPointsRemoved; i++)
-                    {
-                        for(size_t j=0; j<sizeIndices; j++)
-                        {
-                            if(indices[j] == int(pointsRemoved[i]))
-                            {
-                                count++;
-                            }
-                            else
-                                indices[i] = indices[i+count];
-                        }
-                    }
-
-                    size_t newNbPoints = sizeIndices-nbPointsRemoved;
-                    indices.resize(newNbPoints);
-
-                    if(newNbPoints<=0)
-                    {
-                        msg_warning() << "All points removed";
-                        return;
-                    }
-
-                    if (d_preserveTotalMass.getValue())
-                    {
-                        Real newVertexMass = d_totalMass.getValue() / Real(newNbPoints);
-                        d_vertexMass.setValue( static_cast< MassType >( newVertexMass ) );
-                    }
-                    else
-                    {
-                        d_totalMass.setValue (Real(newNbPoints) * Real(d_vertexMass.getValue()) );
-                    }
-                    this->cleanTracker();
-                }
-                break;
-
-            default:
-                break;
-            }
-
-            ++it;
-        }
+        d_totalMass.setValue(Real(newSize) * Real(d_vertexMass.getValue()));
     }
+    this->cleanTracker();
 }
 
 
@@ -452,7 +396,7 @@ void UniformMass<DataTypes, MassType>::addMDx ( const core::MechanicalParams*,
     helper::WriteAccessor<DataVecDeriv> res = vres;
     helper::ReadAccessor<DataVecDeriv> dx = vdx;
 
-    WriteAccessor<Data<vector<int> > > indices = d_indices;
+    WriteAccessor<Data<SetIndexArray > > indices = d_indices;
 
     MassType m = d_vertexMass.getValue();
     if ( factor != 1.0 )
@@ -471,7 +415,7 @@ void UniformMass<DataTypes, MassType>::accFromF ( const core::MechanicalParams*,
     WriteOnlyAccessor<DataVecDeriv> a = va;
     ReadAccessor<DataVecDeriv> f = vf;
 
-    ReadAccessor<Data<vector<int> > > indices = d_indices;
+    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     MassType m = d_vertexMass.getValue();
     for ( unsigned int i=0; i<indices.size(); i++ )
@@ -537,7 +481,7 @@ void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams*,
 
 
 
-    ReadAccessor<Data<vector<int> > > indices = d_indices;
+    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     // add weight and inertia force
     if (this->m_separateGravity.getValue()) for ( unsigned int i=0; i<indices.size(); i++ )
@@ -556,7 +500,7 @@ SReal UniformMass<DataTypes, MassType>::getKineticEnergy ( const MechanicalParam
     SOFA_UNUSED(params);
 
     ReadAccessor<DataVecDeriv> v = d_v;
-    ReadAccessor<Data<vector<int> > > indices = d_indices;
+    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     SReal e = 0;
     const MassType& m = d_vertexMass.getValue();
@@ -573,7 +517,7 @@ SReal UniformMass<DataTypes, MassType>::getPotentialEnergy ( const MechanicalPar
 {
     SOFA_UNUSED(params);
     ReadAccessor<DataVecCoord> x = d_x;
-    ReadAccessor<Data<vector<int> > > indices = d_indices;
+    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     SReal e = 0;
     const MassType& m = d_vertexMass.getValue();
@@ -623,7 +567,7 @@ void UniformMass<DataTypes, MassType>::addMToMatrix (const MechanicalParams *mpa
 
     Real mFactor = Real(sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue()));
 
-    ReadAccessor<Data<vector<int> > > indices = d_indices;
+    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
     for ( unsigned int i=0; i<indices.size(); i++ )
         calc ( r.matrix, m, int(r.offset + N*indices[i]), mFactor);
 }
@@ -660,8 +604,11 @@ void UniformMass<DataTypes, MassType>::draw(const VisualParams* vparams)
     if (!mstate.get())
         return;
 
+    if (!d_showCenterOfGravity.getValue())
+        return;
+
     ReadAccessor<VecCoord> x = mstate->read(ConstVecCoordId::position())->getValue();
-    ReadAccessor<Data<vector<int> > > indices = d_indices;
+    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     Coord gravityCenter;
     std::vector<  sofa::type::Vector3 > points;
@@ -670,12 +617,10 @@ void UniformMass<DataTypes, MassType>::draw(const VisualParams* vparams)
         sofa::type::Vector3 p;
         p = DataTypes::getCPos(x[indices[i]]);
 
-        points.push_back ( p );
+        points.push_back ( p );        
         gravityCenter += x[indices[i]];
     }
-
-
-    if ( d_showCenterOfGravity.getValue() )
+    
     {
         gravityCenter /= x.size();
         const sofa::type::RGBAColor color = sofa::type::RGBAColor::yellow();
