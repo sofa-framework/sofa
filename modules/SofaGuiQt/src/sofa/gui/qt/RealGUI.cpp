@@ -1013,6 +1013,7 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
         simulationGraph->Clear(root.get());
         simulationGraph->collapseAll();
         simulationGraph->expandToDepth(0);
+        simulationGraph->resizeColumnToContents(0);
         statWidget->CreateStats(root.get());
 
 #ifndef SOFA_GUI_QT_NO_RECORDER
