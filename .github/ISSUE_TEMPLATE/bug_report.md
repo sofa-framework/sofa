@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Create a report to help us improve SOFA
 title: ''
 labels: 'issue: bug (minor)'
 assignees: ''
@@ -22,7 +22,7 @@ assignees: ''
 
 ### Environment
 
-**Context (please complete these information)**
+**Context**
 
 - System: < NAME AND VERSION - e.g: "Windows 10", "Ubuntu 20.04", ... >
 - Version of SOFA: < INFOS ABOUT THE BRANCH OR BINARIES - e.g: "master branch at commit 70bb123", "v21.06.00 binaries", ... >
