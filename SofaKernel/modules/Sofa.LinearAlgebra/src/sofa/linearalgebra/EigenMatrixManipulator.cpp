@@ -19,24 +19,53 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/linearalgebra/EigenMatrixManipulator.h>
 
-#include <sofa/config.h>
+namespace sofa::linearalgebra
+{
 
-#cmakedefine01 SOFA_LINEARALGEBRA_HAVE_OPENMP
+LLineManipulator& LLineManipulator::addCombination(unsigned int idxConstraint, SReal factor)
+{
+    _data.push_back(std::make_pair(idxConstraint, factor));
+    return *this;
+}
 
-#define SPARSEMATRIX_CHECK false
-#define SPARSEMATRIX_VERBOSE false
-#define COMPRESSEDROWSPARSEMATRIX_CHECK false
-#define COMPRESSEDROWSPARSEMATRIX_VERBOSE false
-#define FULLMATRIX_CHECK false
-#define FULLMATRIX_VERBOSE false
-#define EIGEN_CHECK false
+void LMatrixManipulator::init(const SparseMatrixEigen& L)
+{
+    const auto numConstraint = L.rows();
+    const auto numDofs = L.cols();
+    LMatrix.resize(numConstraint,SparseVectorEigen(numDofs));
+    for (unsigned int i=0; i<LMatrix.size(); ++i) LMatrix[i].reserve(numDofs*3/10);
+    for (int k=0; k<L.outerSize(); ++k)
+    {
+        for (SparseMatrixEigen::InnerIterator it(L,k); it; ++it)
+        {
+            const auto row=it.row();
+            const auto col=it.col();
+            const SReal value=it.value();
+            LMatrix[row].insert(col)=value;
+        }
+    }
+    for (unsigned int i=0; i<LMatrix.size(); ++i) LMatrix[i].finalize();
+}
 
 
-#ifdef SOFA_BUILD_SOFA_LINEARALGEBRA
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_LINEARALGEBRA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_LINEARALGEBRA_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+
+void LMatrixManipulator::buildLMatrix(const type::vector<LLineManipulator> &lines, SparseMatrixEigen& matrix) const
+{
+    for (unsigned int l=0; l<lines.size(); ++l)
+    {
+        const LLineManipulator& lManip=lines[l];
+        SparseVectorEigen vector;
+        lManip.buildCombination(LMatrix,vector);
+        matrix.startVec(l);
+        for (SparseVectorEigen::InnerIterator it(vector); it; ++it)
+        {
+            matrix.insertBack(l,it.index())=it.value();
+        }
+    }
+}
+
+type::vector< SparseVectorEigen > LMatrix;
+
+} // namespace sofa::linearalgebra

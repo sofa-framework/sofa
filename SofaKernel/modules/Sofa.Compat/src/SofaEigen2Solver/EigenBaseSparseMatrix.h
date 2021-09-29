@@ -21,22 +21,15 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
+#include <sofa/linearalgebra/EigenBaseSparseMatrix.h>
 
-#cmakedefine01 SOFA_LINEARALGEBRA_HAVE_OPENMP
+SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/EigenBaseSparseMatrix.h")
+#include <sofa/core/behavior/MultiMatrixAccessor.h> // some code was using implicitely MultiMatrixAccessor
 
-#define SPARSEMATRIX_CHECK false
-#define SPARSEMATRIX_VERBOSE false
-#define COMPRESSEDROWSPARSEMATRIX_CHECK false
-#define COMPRESSEDROWSPARSEMATRIX_VERBOSE false
-#define FULLMATRIX_CHECK false
-#define FULLMATRIX_VERBOSE false
-#define EIGEN_CHECK false
+namespace sofa::component::linearsolver
+{
 
+    template<class T>
+    using EigenBaseSparseMatrix = sofa::linearalgebra::EigenBaseSparseMatrix<T>;
 
-#ifdef SOFA_BUILD_SOFA_LINEARALGEBRA
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_LINEARALGEBRA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_LINEARALGEBRA_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+} // namespace sofa::component::linearsolver

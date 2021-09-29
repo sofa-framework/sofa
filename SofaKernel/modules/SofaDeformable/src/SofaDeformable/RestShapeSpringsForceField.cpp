@@ -25,6 +25,7 @@
 
 #include <sofa/helper/visual/DrawTool.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 namespace sofa::component::forcefield
 {
