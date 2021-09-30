@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaDefaultType.Testing LANGUAGES CXX)
+project(Sofa.LinearAlgebra.Testing LANGUAGES CXX)
 
 set(HEADER_FILES
+    src/Sofa.LinearAlgebra.Testing/BaseMatrix_test.h
 )
 
 add_library(${PROJECT_NAME} INTERFACE)
