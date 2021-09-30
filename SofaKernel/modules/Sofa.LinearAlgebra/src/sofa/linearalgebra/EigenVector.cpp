@@ -19,34 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
 
-#include <sofa/linearalgebra/MatrixExpr.h>
+#include <sofa/linearalgebra/EigenVector.h>
 
-SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/MatrixExpr.h")
-
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
-    template<class M1, class M2>
-    using MatrixProduct = sofa::linearalgebra::MatrixProduct<M1, M2>;
+template <> const std::string EigenVector<double>::Name() { return "EigenVectord"; }
 
-    template<class M1, class M2>
-    using MatrixAddition = sofa::linearalgebra::MatrixAddition<M1, M2>;
-
-    template<class M1, class M2>
-    using MatrixSubstraction = sofa::linearalgebra::MatrixSubstraction<M1, M2>;
-
-    template<class M1>
-    using MatrixTranspose = sofa::linearalgebra::MatrixTranspose<M1>;
-
-    template<class M1>
-    using MatrixNegative = sofa::linearalgebra::MatrixNegative<M1>;
-
-    template<class M1, class M2>
-    using MatrixScale = sofa::linearalgebra::MatrixScale<M1, M2>;
-
-    template<class T>
-    using MatrixExpr = sofa::linearalgebra::MatrixExpr<T>;
-
-} // namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra

@@ -20,10 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaEigen2Solver/config.h>
+#include <sofa/linearalgebra/config.h>
 
-#include <SofaEigen2Solver/EigenBaseSparseMatrix.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/linearalgebra/EigenBaseSparseMatrix.h>
 #include <sofa/type/Mat.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/helper/SortedPermutation.h>
@@ -32,7 +31,7 @@
 #include <Eigen/Sparse>
 #include <sofa/helper/OwnershipSPtr.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 using type::vector;
 
@@ -66,62 +65,45 @@ public:
     enum { Nin=InDataTypes::deriv_total_size, Nout=OutDataTypes::deriv_total_size };
     typedef type::Mat<Nout,Nin, OutReal> Block;  ///< block relating an OutDeriv to an InDeriv. This is used for input only, not for internal storage.
 
-    using Index = defaulttype::BaseMatrix::Index;
+    using Index = linearalgebra::BaseMatrix::Index;
 protected:
     typedef std::map<Index,Block> BlockRowMap;        ///< Map which represents one block-view row of the matrix. The index represents the block-view column index of an entry.
     typedef std::map<Index,BlockRowMap> BlockMatMap;  ///< Map which represents a block-view matrix. The index represents the block-view index of a block-view row.
     BlockMatMap incomingBlocks;                     ///< To store block-view data before it is compressed in optimized format.
     typedef Eigen::Matrix<InReal,Eigen::Dynamic,1>  VectorEigenIn;
+    
+    // some helpers to ease mapping from/to eigen types, lvalue and rvalue
+    template<typename VecType>
+    struct map_traits {
+        typedef typename VecType::value_type value_type;
+        static const unsigned size = value_type::total_size;
+        typedef typename value_type::value_type real_type;
+        typedef Eigen::Matrix< real_type, Eigen::Dynamic, 1 > matrix_type;
 
+        typedef Eigen::Map< matrix_type > map_type;
+        typedef Eigen::Map< const matrix_type > const_map_type;
 
-  	// some helpers to ease mapping from/to eigen types, lvalue and rvalue
-	  template<class VecDeriv>
-	  struct map_traits {
-		  typedef typename VecDeriv::value_type value_type;
-		  typedef typename defaulttype::DataTypeInfo<value_type>::ValueType real_type;
-		  
-		  static const unsigned size = defaulttype::DataTypeInfo<value_type>::Size;
-		  
-		  typedef Eigen::Matrix< real_type, Eigen::Dynamic, 1 > matrix_type;
+        static map_type map(real_type* data, unsigned k) {
+            return map_type(data, k * size);
+        }
 
-		  typedef Eigen::Map< matrix_type > map_type;
-		  typedef Eigen::Map< const matrix_type > const_map_type;
-		  
-          static map_type map(real_type* data, unsigned k) {
-              return map_type( data, k * size );
-		  }
-		  
-		  static const_map_type const_map(const real_type* data, unsigned k) {
-			  return const_map_type( data, k * size );
-		  }
-		  
+        static const_map_type const_map(const real_type* data, unsigned k) {
+            return const_map_type(data, k * size);
+        }
 
-	  };
-	  
-      template<class VecDeriv>
-      static typename map_traits<VecDeriv>::const_map_type
-      map(const helper::ReadAccessor< Data<VecDeriv> >& data) {
-          return map_traits<VecDeriv>::const_map(&data[0][0], data.size());
-      }
-	
-      template<class VecDeriv>
-      static typename map_traits<VecDeriv>::map_type
-      map(helper::WriteAccessor< Data<VecDeriv> >& data) {
-          return map_traits<VecDeriv>::map(&data[0][0], data.size());
-      }
+    };
 
-	  template<class VecDeriv>
-	  static typename map_traits<VecDeriv>::const_map_type
-	  map(const VecDeriv& data) {
-		  return map_traits<VecDeriv>::const_map(&data[0][0], data.size());
-	  }
+    template<class VecDeriv>
+    static typename map_traits<VecDeriv>::const_map_type map(const VecDeriv& data)
+    {
+        return map_traits<VecDeriv>::const_map(&data[0][0], data.size());
+    }
 
-	  template<class VecDeriv>
-	  static typename map_traits<VecDeriv>::map_type
-	  map( VecDeriv& data) {
-		   return map_traits<VecDeriv>::map(&data[0][0], data.size());
-	  }
-	
+    template<class VecDeriv>
+    static typename map_traits<VecDeriv>::map_type map(VecDeriv& data)
+    {
+        return map_traits<VecDeriv>::map(&data[0][0], data.size());
+    }
 
 	template<class LHS, class RHS>
 	static bool alias(const LHS& lhs, const RHS& rhs) {
@@ -295,7 +277,7 @@ protected:
 		// use optimized product if possible
         if(canCast(data)) {
 
-#if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
+#if (SOFA_LINEARALGEBRA_HAVE_OPENMP == 1)
             if( alias(result, data) )
                 map(result) = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, map(data).template cast<Real>() );
             else
@@ -321,7 +303,7 @@ protected:
 		}
 		
         // compute the product
-#if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
+#if (SOFA_LINEARALGEBRA_HAVE_OPENMP == 1)
         aux2.noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, aux1 );
 #else
         aux2.noalias() = this->compressedMatrix * aux1;
@@ -344,7 +326,7 @@ protected:
 		// use optimized product if possible
 		if( canCast(data) ) {
 
-#if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
+#if (SOFA_LINEARALGEBRA_HAVE_OPENMP == 1)
             if( alias(result, data) )
                 map(result) += linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, this->map(data).template cast<Real>() * fact ).template cast<OutReal>();
             else
@@ -357,7 +339,7 @@ protected:
             if( alias(result, data) ) {
                 map(result) += (this->compressedMatrix * (map(data).template cast<Real>() * fact)).template cast<OutReal>();
             } else {
-                typename map_traits<OutType>::map_type r = map(result);
+                auto r = map(result);
                 r.noalias() += (this->compressedMatrix * (map(data).template cast<Real>() * fact)).template cast<OutReal>();
             }
 #endif
@@ -374,7 +356,7 @@ protected:
 		}
         
         // compute the product
-#if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
+#if (SOFA_LINEARALGEBRA_HAVE_OPENMP == 1)
         aux2.noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, aux1 );
 #else
         aux2.noalias() = this->compressedMatrix * aux1;
@@ -396,7 +378,7 @@ protected:
 		// use optimized product if possible
 		if(canCast(result)) {
 
-#if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
+#if (SOFA_LINEARALGEBRA_HAVE_OPENMP == 1)
             if( alias(result, data) )
                 map(result) += linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix.transpose(), this->map(data).template cast<Real>() * fact ).template cast<InReal>();
             else {
@@ -426,7 +408,7 @@ protected:
 		}
 		
 		// compute the product
-#if (SOFAEIGEN2SOLVER_HAVE_OPENMP == 1)
+#if (SOFA_LINEARALGEBRA_HAVE_OPENMP == 1)
         aux2.noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix.transpose(), aux1 );
 #else
         aux2.noalias() = this->compressedMatrix.transpose() * aux1;
@@ -448,15 +430,6 @@ public:
 	    mult_impl(result, data);
     }
 
-
-    /// compute result = A * data
-    void mult( Data<OutVecDeriv>& _result, const Data<InVecDeriv>& _data ) const {
-        helper::WriteOnlyAccessor<Data<OutVecDeriv> > result (_result);
-        helper::ReadAccessor<Data<InVecDeriv> > data (_data);
-
-        mult_impl(result, data);
-    }
-
     /// compute result += A * data
     void addMult( OutVecDeriv& result, const InVecDeriv& data ) const {
 	    addMult_impl(result, data, 1.0);
@@ -466,25 +439,6 @@ public:
     void addMult( OutVecDeriv& result, const InVecDeriv& data, const OutReal fact ) const {
         addMult_impl(result, data, fact);
     }
-
-    /// compute result += A * data
-    void addMult( Data<OutVecDeriv>& result, const Data<InVecDeriv>& data) const {
-        helper::WriteAccessor<Data<OutVecDeriv> > res (result);
-        helper::ReadAccessor<Data<InVecDeriv> > dat (data);
-
-        addMult_impl(res, dat, 1.0);
-    }
-	
-   
-    /// compute result += A * data * fact
-    void addMult( Data<OutVecDeriv>& result, const Data<InVecDeriv>& data, const OutReal fact) const {
-        helper::WriteAccessor<Data<OutVecDeriv> > res (result);
-        helper::ReadAccessor<Data<InVecDeriv> > dat (data);
-
-        addMult_impl(res, dat, fact);
-    }
-    
-	
 
     /// compute result += A^T * data
     void addMultTranspose( InVecDeriv& result, const OutVecDeriv& data ) const {
@@ -496,23 +450,25 @@ public:
         addMultTranspose_impl(result, data, fact);
     }
 
-    /// compute result += A^T * data
-    void addMultTranspose( Data<InVecDeriv>& result, const Data<OutVecDeriv>& data ) const {
-        helper::WriteAccessor<Data<InVecDeriv> > res (result);
-        helper::ReadAccessor<Data<OutVecDeriv> > dat (data);
+    static const std::string Name()
+    {
+        std::ostringstream o;
+        o << "EigenMatrix";
 
-        addMultTranspose_impl(res, dat, 1.0);
+        if constexpr (std::is_scalar<Real>::value)
+        {
+            if constexpr (std::is_same<float, Real>::value)
+            {
+                o << "f";
+            }
+            if constexpr (std::is_same<double, Real>::value)
+            {
+                o << "d";
+            }
+        }
+
+        return o.str();
     }
-
-    /// compute result += A^T * data * fact
-    void addMultTranspose( Data<InVecDeriv>& result, const Data<OutVecDeriv>& data, const OutReal fact ) const {
-        helper::WriteAccessor<Data<InVecDeriv> > res (result);
-        helper::ReadAccessor<Data<OutVecDeriv> > dat (data);
-
-        addMultTranspose_impl(res, dat, fact);
-    }
-
-    static const char* Name();
 
 private:
     //@{
@@ -533,15 +489,9 @@ private:
 		typedef typename value_type::value_type scalar_type;
 		return  (v.size() - 1) * sizeof(value_type) == (&v[v.size() - 1][0] - &v[0][0]) * sizeof(scalar_type); 
 	}
-	
-	
-
-
 };
 
-template<> inline const char* EigenSparseMatrix<defaulttype::Vec3Types, defaulttype::Vec1Types >::Name() { return "EigenSparseMatrix3d1d"; }
-
-} // namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra
 
 namespace sofa
 {
@@ -554,11 +504,11 @@ namespace sofa
     /// @TODO move this somewhere else?
     /// @author Matthieu Nesme
     template<class mat>
-    helper::OwnershipSPtr<mat> convertSPtr( const defaulttype::BaseMatrix* m) {
+    helper::OwnershipSPtr<mat> convertSPtr( const linearalgebra::BaseMatrix* m) {
         assert( m );
 
         {
-        typedef component::linearsolver::EigenBaseSparseMatrix<SReal> matrixr;
+        typedef linearalgebra::EigenBaseSparseMatrix<SReal> matrixr;
         const matrixr* smr = dynamic_cast<const matrixr*> (m);
         // no need to create temporary data, so the SPtr does not take this ownership
         if ( smr ) return helper::OwnershipSPtr<mat>(&smr->compressedMatrix, false);
@@ -567,14 +517,14 @@ namespace sofa
         msg_warning("EigenSparseMatrix")<<"convertSPtr: slow matrix conversion (scalar type conversion)";
 
         {
-        typedef component::linearsolver::EigenBaseSparseMatrix<double> matrixd;
+        typedef linearalgebra::EigenBaseSparseMatrix<double> matrixd;
         const matrixd* smd = dynamic_cast<const matrixd*> (m);
         // the cast is creating a temporary matrix, the SPtr takes its ownership, so its deletion will be transparent
         if ( smd ) return helper::OwnershipSPtr<mat>( new mat(smd->compressedMatrix.cast<SReal>()), true );
         }
 
         {
-        typedef component::linearsolver::EigenBaseSparseMatrix<float> matrixf;
+        typedef linearalgebra::EigenBaseSparseMatrix<float> matrixf;
         const matrixf* smf = dynamic_cast<const matrixf*>(m);
         // the cast is creating a temporary matrix, the SPtr takes its ownership, so its deletion will be transparent
         if( smf ) return helper::OwnershipSPtr<mat>( new mat(smf->compressedMatrix.cast<SReal>()), true );
@@ -597,14 +547,3 @@ namespace sofa
         return helper::OwnershipSPtr<mat>(res, true);
     }
 } // namespace sofa
-
-namespace sofa::defaulttype
-{
-
-template<class TIn, class TOut>
-struct DataTypeInfo< component::linearsolver::EigenSparseMatrix<TIn, TOut> > 
-    : DataTypeInfo< typename component::linearsolver::EigenSparseMatrix<TIn, TOut>::Inherit > {
-    
-};
-
-} // namespace sofa::defaulttype

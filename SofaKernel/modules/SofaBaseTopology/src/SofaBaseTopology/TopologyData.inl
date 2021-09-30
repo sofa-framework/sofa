@@ -36,7 +36,6 @@ TopologyData <TopologyElementType, VecT>::TopologyData(const typename sofa::core
     , m_topologyHandler(nullptr)
     , m_isTopologyDynamic(false)
 {
-    this->lastElementIndex = 0;
 }
 
 
@@ -178,6 +177,51 @@ void TopologyData <TopologyElementType, VecT>::linkToHexahedronDataArray()
 }
 
 
+/////////////////////// Protected functions on TopologyData init ///////////////////////////////
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Point*) 
+{ 
+    this->setDataSetArraySize(this->m_topology->getNbPoints());
+    linkToPointDataArray(); 
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Edge*) 
+{ 
+    this->setDataSetArraySize(this->m_topology->getNbEdges());
+    linkToEdgeDataArray(); 
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Triangle*) 
+{ 
+    this->setDataSetArraySize(this->m_topology->getNbTriangles());
+    linkToTriangleDataArray(); 
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Quad*) 
+{ 
+    this->setDataSetArraySize(this->m_topology->getNbQuads());
+    linkToQuadDataArray(); 
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Tetrahedron*) 
+{ 
+    this->setDataSetArraySize(this->m_topology->getNbTetrahedra());
+    linkToTetrahedronDataArray(); 
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Hexahedron*) 
+{ 
+    this->setDataSetArraySize(this->m_topology->getNbHexahedra());
+    linkToHexahedronDataArray(); 
+}
+
+
 ///////////////////// Protected functions on TopologyData changes /////////////////////////////
 
 template <typename TopologyElementType, typename VecT>
@@ -198,8 +242,6 @@ void TopologyData <TopologyElementType, VecT>::remove(const sofa::type::vector<I
     container_type& data = *(this->beginEdit());
     if (data.size() > 0)
     {
-        Index last = Index(data.size() - 1);
-
         for (std::size_t i = 0; i < index.size(); ++i)
         {
             if (this->m_topologyHandler) {
@@ -211,8 +253,8 @@ void TopologyData <TopologyElementType, VecT>::remove(const sofa::type::vector<I
                 p_onDestructionCallback(index[i], data[index[i]]);
             }
 
-            this->swap(index[i], last);
-            --last;
+            this->swap(index[i], this->m_lastElementIndex);
+            --this->m_lastElementIndex;
         }
 
         data.resize(data.size() - index.size());
@@ -243,6 +285,7 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::type::vector<Inde
         i0 = index[0];
     }
     data.resize(i0 + nbElements);
+    this->m_lastElementIndex += sofa::Index(nbElements);
 
     const sofa::type::vector< Index > empty_vecint;
     const sofa::type::vector< double > empty_vecdouble;
@@ -324,6 +367,7 @@ void TopologyData <TopologyElementType, VecT>::addOnMovedPosition(const sofa::ty
             this->m_topologyHandler->applyCreateFunction(indexList[i], data[indexList[i]], elems[i], ancestors, coefs);
         }
     }
+    this->m_lastElementIndex += sofa::Index(indexList.size());
     this->endEdit();
 }
 
@@ -340,6 +384,7 @@ void TopologyData <TopologyElementType, VecT>::removeOnMovedPosition(const sofa:
         }
     }
 
+    this->m_lastElementIndex -= sofa::Index(indices.size());
     this->endEdit();
 
     // TODO check why this call.

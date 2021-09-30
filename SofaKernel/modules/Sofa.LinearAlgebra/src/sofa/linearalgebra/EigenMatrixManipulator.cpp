@@ -19,34 +19,53 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/linearalgebra/EigenMatrixManipulator.h>
 
-#include <sofa/linearalgebra/MatrixExpr.h>
-
-SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/MatrixExpr.h")
-
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
-    template<class M1, class M2>
-    using MatrixProduct = sofa::linearalgebra::MatrixProduct<M1, M2>;
+LLineManipulator& LLineManipulator::addCombination(unsigned int idxConstraint, SReal factor)
+{
+    _data.push_back(std::make_pair(idxConstraint, factor));
+    return *this;
+}
 
-    template<class M1, class M2>
-    using MatrixAddition = sofa::linearalgebra::MatrixAddition<M1, M2>;
+void LMatrixManipulator::init(const SparseMatrixEigen& L)
+{
+    const auto numConstraint = L.rows();
+    const auto numDofs = L.cols();
+    LMatrix.resize(numConstraint,SparseVectorEigen(numDofs));
+    for (unsigned int i=0; i<LMatrix.size(); ++i) LMatrix[i].reserve(numDofs*3/10);
+    for (int k=0; k<L.outerSize(); ++k)
+    {
+        for (SparseMatrixEigen::InnerIterator it(L,k); it; ++it)
+        {
+            const auto row=it.row();
+            const auto col=it.col();
+            const SReal value=it.value();
+            LMatrix[row].insert(col)=value;
+        }
+    }
+    for (unsigned int i=0; i<LMatrix.size(); ++i) LMatrix[i].finalize();
+}
 
-    template<class M1, class M2>
-    using MatrixSubstraction = sofa::linearalgebra::MatrixSubstraction<M1, M2>;
 
-    template<class M1>
-    using MatrixTranspose = sofa::linearalgebra::MatrixTranspose<M1>;
 
-    template<class M1>
-    using MatrixNegative = sofa::linearalgebra::MatrixNegative<M1>;
+void LMatrixManipulator::buildLMatrix(const type::vector<LLineManipulator> &lines, SparseMatrixEigen& matrix) const
+{
+    for (unsigned int l=0; l<lines.size(); ++l)
+    {
+        const LLineManipulator& lManip=lines[l];
+        SparseVectorEigen vector;
+        lManip.buildCombination(LMatrix,vector);
+        matrix.startVec(l);
+        for (SparseVectorEigen::InnerIterator it(vector); it; ++it)
+        {
+            matrix.insertBack(l,it.index())=it.value();
+        }
+    }
+}
 
-    template<class M1, class M2>
-    using MatrixScale = sofa::linearalgebra::MatrixScale<M1, M2>;
+type::vector< SparseVectorEigen > LMatrix;
 
-    template<class T>
-    using MatrixExpr = sofa::linearalgebra::MatrixExpr<T>;
-
-} // namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra

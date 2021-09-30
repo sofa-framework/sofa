@@ -21,32 +21,15 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/linearalgebra/MatrixExpr.h>
+#include <sofa/linearalgebra/EigenBaseSparseMatrix.h>
 
-SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/MatrixExpr.h")
+SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/EigenBaseSparseMatrix.h")
+#include <sofa/core/behavior/MultiMatrixAccessor.h> // some code was using implicitely MultiMatrixAccessor
 
 namespace sofa::component::linearsolver
 {
 
-    template<class M1, class M2>
-    using MatrixProduct = sofa::linearalgebra::MatrixProduct<M1, M2>;
-
-    template<class M1, class M2>
-    using MatrixAddition = sofa::linearalgebra::MatrixAddition<M1, M2>;
-
-    template<class M1, class M2>
-    using MatrixSubstraction = sofa::linearalgebra::MatrixSubstraction<M1, M2>;
-
-    template<class M1>
-    using MatrixTranspose = sofa::linearalgebra::MatrixTranspose<M1>;
-
-    template<class M1>
-    using MatrixNegative = sofa::linearalgebra::MatrixNegative<M1>;
-
-    template<class M1, class M2>
-    using MatrixScale = sofa::linearalgebra::MatrixScale<M1, M2>;
-
     template<class T>
-    using MatrixExpr = sofa::linearalgebra::MatrixExpr<T>;
+    using EigenBaseSparseMatrix = sofa::linearalgebra::EigenBaseSparseMatrix<T>;
 
 } // namespace sofa::component::linearsolver
