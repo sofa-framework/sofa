@@ -34,7 +34,7 @@
 #include <SofaBaseLinearSolver/DiagonalMatrix.h>
 #include <SofaBaseLinearSolver/RotationMatrix.h>
 
-#ifdef SOFA_SUPPORT_CRS_MATRIX
+#if SOFABASELINEARSOLVER_USE_CRSMULTIMATRIXACCESSOR
 #include <SofaBaseLinearSolver/CRSMultiMatrixAccessor.h>
 #else
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
@@ -327,7 +327,7 @@ protected:
         Vector* systemLHVector;
         core::MultiVecDerivId solutionVecId;
 
-#ifdef SOFA_SUPPORT_CRS_MATRIX
+#if SOFABASELINEARSOLVER_USE_CRSMULTIMATRIXACCESSOR
         CRSMultiMatrixAccessor matrixAccessor;
 #else
         DefaultMultiMatrixAccessor matrixAccessor;
