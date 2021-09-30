@@ -923,7 +923,21 @@ void VisualModelImpl::initFromTopology()
     // add the functions to handle topology changes.
     if (m_handleDynamicTopology.getValue())
     {
-        if (!m_triangles.getValue().empty())
+        if (m_topology->getTopologyType() == sofa::core::topology::TopologyElementType::QUAD || m_topology->getTopologyType() == sofa::core::topology::TopologyElementType::HEXAHEDRON)
+        {
+            m_quads.createTopologyHandler(m_topology);
+            m_quads.setCreationCallback([this](Index elemID, VisualQuad& visuQuad,
+                const core::topology::BaseMeshTopology::Quad& topoQuad,
+                const sofa::type::vector< Index >& ancestors,
+                const sofa::type::vector< double >& coefs)
+            {
+                SOFA_UNUSED(elemID);
+                visuQuad = topoQuad; // simple copy from topology Data
+            });
+        }
+
+
+        if (m_topology->getTopologyType() == sofa::core::topology::TopologyElementType::TRIANGLE || m_topology->getTopologyType() == sofa::core::topology::TopologyElementType::TETRAHEDRON)
         {
             m_triangles.createTopologyHandler(m_topology);
             m_triangles.setCreationCallback([this](Index elemID, VisualTriangle& visuTri,
@@ -935,8 +949,8 @@ void VisualModelImpl::initFromTopology()
                 visuTri = topoTri; // simple copy from topology Data
             });
         }
-
-        if (!m_edges.getValue().empty())
+            
+        if (m_topology->getTopologyType() == sofa::core::topology::TopologyElementType::EDGE)
         {
             m_edges.createTopologyHandler(m_topology);
             m_edges.setCreationCallback([this](Index elemID, VisualEdge& visuEdge,
@@ -949,39 +963,18 @@ void VisualModelImpl::initFromTopology()
             });
         }
 
-        if (!m_quads.getValue().empty())
-        {
-            m_quads.createTopologyHandler(m_topology);
-            m_quads.setCreationCallback([this](Index elemID, VisualQuad& visuQuad,
-                const core::topology::BaseMeshTopology::Quad& topoQuad,
-                const sofa::type::vector< Index >& ancestors,
-                const sofa::type::vector< double >& coefs)
-            {
-                SOFA_UNUSED(elemID);
-                visuQuad = topoQuad; // simple copy from topology Data
-            });
-        }
         m_positions.createTopologyHandler(m_topology);
         m_positions.setDestructionCallback([this](Index pointIndex, Coord& coord)
         {
             auto last = m_positions.getLastElementIndex();
+
             if (m_topology->getNbTriangles() > 0)
             {
-                VecVisualTriangle& triangles = *(m_triangles.beginEdit());
-
                 const auto& shell = m_topology->getTrianglesAroundVertex(last);
                 for (Index j = 0; j < shell.size(); ++j)
                 {
-                    auto ind_j = shell[j];
-                    VisualTriangle& tri = triangles[ind_j];
-                    if (tri[0] == last)
-                        tri[0] = visual_index_type(pointIndex);
-                    else if (tri[1] == last)
-                        tri[1] = visual_index_type(pointIndex);
-                    else if (tri[2] == last)
-                        tri[2] = visual_index_type(pointIndex);
+                    m_dirtyTriangles.insert(shell[j]);
                 }
-                m_triangles.endEdit();
             }
             else if (m_topology->getNbQuads() > 0)
             {
@@ -990,19 +983,11 @@ void VisualModelImpl::initFromTopology()
                 const auto& shell = m_topology->getQuadsAroundVertex(last);
                 for (Index j = 0; j < shell.size(); ++j)
                 {
-                    Index ind_j = shell[j];
-                    VisualQuad& quad = quads[ind_j];
-                    if (quad[0] == last)
-                        quad[0] = visual_index_type(pointIndex);
-                    else if (quad[1] == last)
-                        quad[1] = visual_index_type(pointIndex);
-                    else if (quad[2] == last)
-                        quad[2] = visual_index_type(pointIndex);
-                    else if (quad[3] == last)
-                        quad[3] = visual_index_type(pointIndex);
+                    m_dirtyQuads.insert(shell[j]);
                 }
             }
         });
+
         if (m_vtexcoords.isSet()) // Data set from loader as not part of the topology
         {
             m_vtexcoords.updateIfDirty();
@@ -1376,10 +1361,37 @@ void VisualModelImpl::updateVisual()
 {
     if (modified && !getVertices().empty())
     {
-        if (useTopology && (m_topology->getRevision() != lastMeshRev) && !m_handleDynamicTopology.getValue())
+        if (useTopology)
         {
-            // Follow change from static topology, this should not be used as the whole mesh is copied
-            computeMesh();
+            if ((m_topology->getRevision() != lastMeshRev) && !m_handleDynamicTopology.getValue())
+            {
+                // Follow change from static topology, this should not be used as the whole mesh is copied
+                computeMesh();
+            }
+            
+            if (!m_dirtyTriangles.empty())
+            {
+                helper::WriteOnlyAccessor< Data<VecVisualTriangle > > triangles = m_triangles;
+                const vector< Triangle >& inputTriangles = m_topology->getTriangles();
+
+                for (auto idTri : m_dirtyTriangles)
+                {
+                    triangles[idTri] = inputTriangles[idTri];
+                }
+                m_dirtyTriangles.clear();
+            }
+
+            if (!m_dirtyQuads.empty())
+            {
+                helper::WriteOnlyAccessor< Data<VecVisualQuad > > quads = m_quads;
+                const vector< Quad >& inputQuads = m_topology->getQuads();
+
+                for (auto idQuad : m_dirtyQuads)
+                {
+                    quads[idQuad] = inputQuads[idQuad];
+                }
+                m_dirtyQuads.clear();
+            }
         }
 
         sofa::helper::AdvancedTimer::stepBegin("VisualModelImpl::computePositions");
