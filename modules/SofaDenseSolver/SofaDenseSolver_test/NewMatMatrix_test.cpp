@@ -19,12 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaDefaultType.Testing/BaseMatrix_test.h>
+#include <Sofa.LinearAlgebra.Testing/BaseMatrix_test.h>
 
 #include <SofaDenseSolver/NewMatMatrix.h>
 
 namespace sofa
 {
+
+using namespace sofa::linearalgebra::testing;
 
 using traits_9x9float = TestBaseMatrixTraits< sofa::component::linearsolver::NewMatMatrix, 9, 9, float>;
 
