@@ -207,7 +207,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::accumulateJacobians(const M
 template<class T>
 void copyKToEigenFormat(CompressedRowSparseMatrix< T >* K, Eigen::SparseMatrix<double,Eigen::ColMajor>& Keig)
 {
-    // It is assumed that K is not compressed. All the data is containted in the temporary container K->btemp
+    // It is assumed that K is not compressed. All the data is contained in the temporary container K->btemp
     // This data is provided to Eigen to build a compressed sparse matrix in Eigen format.
     // The strategy would be different if K was compressed. However, compression is avoided as it is very expensive.
 
