@@ -26,11 +26,11 @@
  * (float/Real) and BlockMN size in CompressedRowSparse.
 */
 
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
-#include <SofaBaseLinearSolver/FullVector.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/FullMatrix.h>
+#include <sofa/linearalgebra/FullVector.h>
 
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
@@ -85,28 +85,28 @@ struct TestSparseMatrices : public NumericTest<typename T::Real>
 
 
     // Dense implementation
-    typedef sofa::component::linearsolver::FullMatrix<Real> FullMatrix;
-    typedef sofa::component::linearsolver::FullVector<Real> FullVector;
+    typedef sofa::linearalgebra::FullMatrix<Real> FullMatrix;
+    typedef sofa::linearalgebra::FullVector<Real> FullVector;
 
     // Simple sparse matrix implemented using map< map< > >
-    typedef sofa::component::linearsolver::SparseMatrix<Real> MapMatrix;
+    typedef sofa::linearalgebra::SparseMatrix<Real> MapMatrix;
 
     // Blockwise Compressed Sparse Row format
-    typedef sofa::component::linearsolver::CompressedRowSparseMatrix<Real> CRSMatrixScalar;
+    typedef sofa::linearalgebra::CompressedRowSparseMatrix<Real> CRSMatrixScalar;
     typedef sofa::type::Mat<BROWS,BCOLS,Real> BlockMN;
-    typedef sofa::component::linearsolver::CompressedRowSparseMatrix<BlockMN> CRSMatrixMN;
+    typedef sofa::linearalgebra::CompressedRowSparseMatrix<BlockMN> CRSMatrixMN;
     typedef sofa::type::Mat<BCOLS,BROWS,Real> BlockNM;
-    typedef sofa::component::linearsolver::CompressedRowSparseMatrix<BlockNM> CRSMatrixNM;
+    typedef sofa::linearalgebra::CompressedRowSparseMatrix<BlockNM> CRSMatrixNM;
     typedef sofa::type::Mat<BROWS,BROWS,Real> BlockMM;
-    typedef sofa::component::linearsolver::CompressedRowSparseMatrix<BlockMM> CRSMatrixMM;
+    typedef sofa::linearalgebra::CompressedRowSparseMatrix<BlockMM> CRSMatrixMM;
     typedef sofa::type::Mat<BCOLS,BCOLS,Real> BlockNN;
-    typedef sofa::component::linearsolver::CompressedRowSparseMatrix<BlockNN> CRSMatrixNN;
+    typedef sofa::linearalgebra::CompressedRowSparseMatrix<BlockNN> CRSMatrixNN;
 
     // Implementation based on Eigen
     typedef sofa::defaulttype::StdVectorTypes< sofa::type::Vec<BCOLS,Real>, sofa::type::Vec<BCOLS,Real> > InTypes;
     typedef sofa::defaulttype::StdVectorTypes< sofa::type::Vec<BROWS,Real>, sofa::type::Vec<BROWS,Real> > OutTypes;
-    typedef sofa::component::linearsolver::EigenSparseMatrix<InTypes,OutTypes> EigenBlockSparseMatrix;
-    typedef sofa::component::linearsolver::EigenBaseSparseMatrix<Real> EigenBaseSparseMatrix;
+    typedef sofa::linearalgebra::EigenSparseMatrix<InTypes,OutTypes> EigenBlockSparseMatrix;
+    typedef sofa::linearalgebra::EigenBaseSparseMatrix<Real> EigenBaseSparseMatrix;
     typedef Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic> EigenDenseMatrix;
     typedef Eigen::Matrix<Real,Eigen::Dynamic,1> EigenDenseVec;
 
