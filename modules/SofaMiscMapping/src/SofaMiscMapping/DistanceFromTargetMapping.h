@@ -24,7 +24,7 @@
 #include <SofaMiscMapping/config.h>
 
 #include <sofa/core/Mapping.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
@@ -82,8 +82,8 @@ public:
     typedef typename In::Coord InCoord;
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
-    typedef linearsolver::EigenSparseMatrix<TIn,TOut>    SparseMatrixEigen;
-    typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
+    typedef linearalgebra::EigenSparseMatrix<TIn,TOut>    SparseMatrixEigen;
+    typedef linearalgebra::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
     typedef type::Vec<In::spatial_dimensions> Direction;
 
