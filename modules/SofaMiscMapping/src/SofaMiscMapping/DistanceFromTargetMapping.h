@@ -85,7 +85,7 @@ public:
     typedef linearsolver::EigenSparseMatrix<TIn,TOut>    SparseMatrixEigen;
     typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
-    typedef type::Vec<In::spatial_dimensions> Direction;
+    typedef type::Vec<In::deriv_total_size> Direction;
 
     Data< type::vector<unsigned> > f_indices;         ///< indices of the parent points
     Data< InVecCoord >       f_targetPositions; ///< positions the distances are measured from
