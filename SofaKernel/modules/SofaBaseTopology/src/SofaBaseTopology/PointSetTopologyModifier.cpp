@@ -434,6 +434,8 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
 
+    sofa::core::topology::EndingEvent* e = new sofa::core::topology::EndingEvent();
+    m_container->addTopologyChange(e);
     this->propagateTopologicalEngineChanges();
     
     sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
