@@ -943,31 +943,53 @@ function(sofa_install_git_infos name sourcedir)
     endif()
     install(CODE "
         find_package(Git REQUIRED)
-        # get the current working branch
+        # get the current commit sha
         execute_process(
-            COMMAND \${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
+            COMMAND \${GIT_EXECUTABLE} rev-parse HEAD
+            WORKING_DIRECTORY \"${sourcedir}\"
+            OUTPUT_VARIABLE CURRENT_GIT_COMMIT
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+        # get the branches containing current commit
+        execute_process(
+            COMMAND \${GIT_EXECUTABLE} branch -a --contains \"\${CURRENT_GIT_COMMIT}\"
             WORKING_DIRECTORY \"${sourcedir}\"
             OUTPUT_VARIABLE CURRENT_GIT_BRANCH
             OUTPUT_STRIP_TRAILING_WHITESPACE
         )
-        # get the current commit info (hash, author, date, comment)
+        # get the current remotes
+        execute_process(
+            COMMAND \${GIT_EXECUTABLE} remote -vv
+            WORKING_DIRECTORY \"${sourcedir}\"
+            OUTPUT_VARIABLE CURRENT_GIT_REMOTE
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+        # get more info (hash, author, date, comment)
         execute_process(
             COMMAND \${GIT_EXECUTABLE} log --pretty -n 1
             WORKING_DIRECTORY \"${sourcedir}\"
             OUTPUT_VARIABLE CURRENT_GIT_INFO
             OUTPUT_STRIP_TRAILING_WHITESPACE
         )
-        # write all infos in git-infos.txt
-        file(WRITE \"\${CMAKE_INSTALL_PREFIX}/git-infos.txt\"
-            \"------ Git infos for ${name} ------\"    \\n
-                                                       \\n
-            \"---- Branch ----\"                       \\n
-            \"\${CURRENT_GIT_BRANCH}\"                 \\n
-                                                       \\n
-            \"---- Latest commit ----\"                \\n
-            \"\${CURRENT_GIT_INFO}\"                   \\n
-                                                       \\n
-            \"-----------------------------------\"    \\n
+        # write all info in git-info.txt
+        file(WRITE \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/git-info.txt\"
+            \"# Git info for ${name}\"                              \\n
+                                                                    \\n
+            \"## Current commit\"                                   \\n
+            \"## git rev-parse --abbrev-ref HEAD\"                  \\n
+            \"\${CURRENT_GIT_COMMIT}\"                              \\n
+                                                                    \\n
+            \"## Branches containing current commit\"               \\n
+            \"## git branch -a --contains \${CURRENT_GIT_COMMIT} \" \\n
+            \"\${CURRENT_GIT_BRANCH}\"                              \\n
+                                                                    \\n
+            \"## Remotes\"                                          \\n
+            \"## git remote -vv \"                                  \\n
+            \"\${CURRENT_GIT_REMOTE}\"                              \\n
+                                                                    \\n
+            \"## More info\"                                        \\n
+            \"## git log --pretty -n 1\"                            \\n
+            \"\${CURRENT_GIT_INFO}\"                                \\n
             )
         "
         COMPONENT resources
