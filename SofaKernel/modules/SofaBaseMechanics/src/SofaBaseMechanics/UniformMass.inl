@@ -620,9 +620,10 @@ void UniformMass<DataTypes, MassType>::draw(const VisualParams* vparams)
         points.push_back ( p );        
         gravityCenter += x[indices[i]];
     }
+    vparams->drawTool()->drawSpheres(points, 0.01, sofa::type::RGBAColor::yellow());
     
     {
-        gravityCenter /= x.size();
+        gravityCenter /= indices.size();
         const sofa::type::RGBAColor color = sofa::type::RGBAColor::yellow();
 
         Real axisSize = d_showAxisSize.getValue();
