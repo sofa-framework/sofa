@@ -70,7 +70,6 @@ public:
     /// using mesh partitionning)
     Data< type::Vec<2,int> > d_localRange;
     SetIndex     d_indices; ///< optional local DOF indices. Any computation involving only indices outside of this list are discarded
-    int nbrIndices;
     Data<bool> d_handleTopologicalChanges; ///< The mass and totalMass are recomputed on particles add/remove.
     Data<bool> d_preserveTotalMass; ///< Prevent totalMass from decreasing when removing particles.
 
