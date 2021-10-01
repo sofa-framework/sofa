@@ -565,7 +565,9 @@ sofa::type::Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedro
     m[1] = p3-origin;
     m[2] = p4-origin;
     mt.transpose(m);
-    base.invert(mt);
+    const bool canInvert = base.invert(mt);
+    assert(canInvert);
+    SOFA_UNUSED(canInvert);
 
     return base * (pnt - origin);
 }
@@ -598,7 +600,9 @@ sofa::type::Vector3 HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedro
     m[1] = p3-origin;
     m[2] = p4-origin;
     mt.transpose(m);
-    base.invert(mt);
+    const bool canInvert = base.invert(mt);
+    assert(canInvert);
+    SOFA_UNUSED(canInvert);
 
     return base * (pnt - origin);
 }

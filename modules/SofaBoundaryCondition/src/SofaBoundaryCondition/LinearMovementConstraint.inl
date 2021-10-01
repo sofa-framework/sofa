@@ -408,8 +408,6 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
 
         std::vector<sofa::type::Vector3> vertices;
 
-        const SetIndexArray & indices = m_indices.getValue();
-        const VecDeriv& keyMovements = m_keyMovements.getValue();
         if (d_relativeMovements.getValue()) 
         {
             for (unsigned int i = 0; i < m_keyMovements.getValue().size() - 1; i++)

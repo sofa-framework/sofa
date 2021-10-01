@@ -353,7 +353,9 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
             J[c][2] = lz[c]/2;
         }
         detJ = type::determinant(J);
-        J_1.invert(J);
+        const bool canInvert = J_1.invert(J);
+        assert(canInvert);
+        SOFA_UNUSED(canInvert);
         J_1t.transpose(J_1);
 
         dmsg_info_when(verbose) << "J = " << J << msgendl
@@ -387,7 +389,9 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
                         J[c][2] =(Real)( (nodes[4][c]-nodes[0][c])*(1-x1)*(1-x2)/8+(nodes[5][c]-nodes[1][c])*(1+x1)*(1-x2)/8+(nodes[6][c]-nodes[2][c])*(1+x1)*(1+x2)/8+(nodes[7][c]-nodes[3][c])*(1-x1)*(1+x2)/8);
                     }
                     detJ = type::determinant(J);
-                    J_1.invert(J);
+                    const bool canInvert = J_1.invert(J);
+                    assert(canInvert);
+                    SOFA_UNUSED(canInvert);
                     J_1t.transpose(J_1);
 
                     dmsg_info_when(verbose) << "J = " << J << msgendl

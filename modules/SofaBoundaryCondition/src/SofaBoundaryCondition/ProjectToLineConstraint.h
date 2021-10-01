@@ -32,7 +32,7 @@
 #include <sofa/type/vector.h>
 #include <sofa/type/Mat.h>
 #include <SofaBaseTopology/TopologySubsetIndices.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <set>
 
 namespace sofa::component::projectiveconstraintset
@@ -70,8 +70,8 @@ public:
     typedef sofa::type::Vector3 Vector3;
     typedef type::vector<Index> Indices;
     typedef sofa::component::topology::TopologySubsetIndices IndexSubsetData;
-    typedef linearsolver::EigenBaseSparseMatrix<SReal> BaseSparseMatrix;
-    typedef linearsolver::EigenSparseMatrix<DataTypes,DataTypes> SparseMatrix;
+    typedef linearalgebra::EigenBaseSparseMatrix<SReal> BaseSparseMatrix;
+    typedef linearalgebra::EigenSparseMatrix<DataTypes,DataTypes> SparseMatrix;
     typedef typename SparseMatrix::Block Block;                                       ///< projection matrix of a particle displacement to the plane
     enum {bsize=SparseMatrix::Nin};                                                   ///< size of a block
 

@@ -133,7 +133,7 @@ protected:
     SOFA_ATTRIBUTE_DISABLED( \
         "v21.06 (PR#2165)", "v21.06",\
         "Optimization based on the diagonal property of the mass matrix is now detected automatically.")
-    DeprecatedAndRemoved d_optimizedForDiagonalMatrix;
+    DeprecatedAndRemoved d_optimizedForDiagonalMatrix{};
 };
 
 } // namespace sofa::component::odesolver
