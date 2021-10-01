@@ -392,4 +392,20 @@ void TopologyData <TopologyElementType, VecT>::removeOnMovedPosition(const sofa:
 }
 
 
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::addTopologyEventCallBack(core::topology::TopologyChangeType type, TopologyChangeCallback callback)
+{
+    if (m_topologyHandler != nullptr)
+    {
+        m_topologyHandler->addCallBack(type, callback);
+    }
+    else
+    {
+        msg_warning(this->getOwner()) << "No TopologyHandler has been creating to manage this TopologyData: " << this->getName() 
+            << ". Callback for event: '" << parseTopologyChangeTypeToString(type) << "' won't be registered.";
+    }
+
+}
+
+
 } //namespace sofa::component::topology
