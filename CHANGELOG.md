@@ -2,9 +2,41 @@
 
 
 
-## [v21.06.00](https://github.com/sofa-framework/sofa/tree/v21.06)
+## [v21.06.01](https://github.com/sofa-framework/sofa/tree/v21.06.01)
 
-[Full log](https://github.com/sofa-framework/sofa/compare/v20.12...v21.06)
+[Full log](https://github.com/sofa-framework/sofa/compare/v21.06.00...v21.06.01)
+
+### Improvements
+**Architecture**
+- [CMake] CLEAN and reenable old macro for git infos [#2309](https://github.com/sofa-framework/sofa/pull/2309)
+- [SofaMacros] Improve sofa_install_git_infos [#2373](https://github.com/sofa-framework/sofa/pull/2373)
+
+### Bug Fixes
+**Architecture**
+- [CMake] Fix return values of Qt5/Qt6 find_packages [#2346](https://github.com/sofa-framework/sofa/pull/2346)
+
+**Modules**
+- [Sofa.Type] FIX createFromRotationVEctor, the inequality was wrong [#2332](https://github.com/sofa-framework/sofa/pull/2332)
+- [SofaBoundaryCondition] Fix ProjectToLineConstraint_RemovingMeshTest.scn [#2241](https://github.com/sofa-framework/sofa/pull/2241)
+- [SofaConstraint] fix segfault in GenericConstraintSolver [#2265](https://github.com/sofa-framework/sofa/pull/2265)
+- [SofaGeneralEngine] Fix a typo in the PairBoxRoi.inl [#2324](https://github.com/sofa-framework/sofa/pull/2324)
+
+**Plugins / Projects**
+- [Geomagic] Fix compilation of code with openHaptics due to sofa::type namespace missing. [#2229](https://github.com/sofa-framework/sofa/pull/2229)
+- [SofaGuiGlut] FIX compilation for v21.06 [#2274](https://github.com/sofa-framework/sofa/pull/2274)
+
+### Cleanings
+**Modules**
+- [All] Minor code cleaning [#2225](https://github.com/sofa-framework/sofa/pull/2225)
+
+
+____________________________________________________________
+
+
+
+## [v21.06.00](https://github.com/sofa-framework/sofa/tree/v21.06.00)
+
+[Full log](https://github.com/sofa-framework/sofa/compare/v20.12.03...v21.06.00)
 
 ### SOFA-NG
 **Architecture**
