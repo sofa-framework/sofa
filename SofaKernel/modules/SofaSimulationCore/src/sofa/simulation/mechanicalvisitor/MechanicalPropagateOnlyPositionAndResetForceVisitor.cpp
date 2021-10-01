@@ -47,6 +47,7 @@ Visitor::Result MechanicalPropagateOnlyPositionAndResetForceVisitor::fwdMappedMe
 
 void MechanicalPropagateOnlyPositionAndResetForceVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
 {
+    SOFA_UNUSED(mm);
 }
 
 } // namespace sofa::simulation::mechanicalvisitor

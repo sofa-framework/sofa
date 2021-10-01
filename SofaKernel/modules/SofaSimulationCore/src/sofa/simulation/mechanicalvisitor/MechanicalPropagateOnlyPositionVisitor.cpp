@@ -47,6 +47,7 @@ Visitor::Result MechanicalPropagateOnlyPositionVisitor::fwdMechanicalMapping(sim
 
 void MechanicalPropagateOnlyPositionVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
 {
+    SOFA_UNUSED(mm);
 }
 
 std::string MechanicalPropagateOnlyPositionVisitor::getInfos() const

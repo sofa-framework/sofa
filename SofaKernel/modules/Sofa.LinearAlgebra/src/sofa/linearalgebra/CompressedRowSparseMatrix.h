@@ -376,7 +376,7 @@ public:
     void fullRows()
     {
         compress();
-        if (rowIndex.size() >= nRow) return;
+        if ((decltype(nRow))rowIndex.size() >= nRow) return;
         oldRowIndex.swap(rowIndex);
         oldRowBegin.swap(rowBegin);
         rowIndex.resize(nRow);
@@ -384,10 +384,10 @@ public:
         for (Index i=0; i<nRow; ++i) rowIndex[i] = i;
         Index j = 0;
         Index b = 0;
-        for (Index i=0; i<oldRowIndex.size(); ++i)
+        for (Index i=0; i<(decltype(i))oldRowIndex.size(); ++i)
         {
             b = oldRowBegin[i];
-            for (; j<=oldRowIndex[i]; ++j)
+            for (; j<=(decltype(j))oldRowIndex[i]; ++j)
                 rowBegin[j] = b;
         }
         b = oldRowBegin[oldRowBegin.size()-1];
@@ -400,15 +400,15 @@ public:
     {
         compress();
         Index ndiag = 0;
-        for (Index r=0; r<rowIndex.size(); ++r)
+        for (Index r=0; r<(decltype(r))rowIndex.size(); ++r)
         {
             Index i = rowIndex[r];
             Index b = rowBegin[r];
             Index e = rowBegin[r+1];
             Index t = b;
-            while (b < e && colsIndex[t] != i)
+            while (b < e && (decltype(i))colsIndex[t] != i)
             {
-                if (colsIndex[t] < i)
+                if ((decltype(i))colsIndex[t] < i)
                     b = t+1;
                 else
                     e = t;
@@ -429,9 +429,9 @@ public:
         Index nv = 0;
         for (Index i=0; i<nRow; ++i) rowIndex[i] = i;
         Index j = 0;
-        for (Index i=0; i<oldRowIndex.size(); ++i)
+        for (Index i=0; i<(decltype(i))oldRowIndex.size(); ++i)
         {
-            for (; j<oldRowIndex[i]; ++j)
+            for (; j<(decltype(j))oldRowIndex[i]; ++j)
             {
                 rowBegin[j] = nv;
                 colsIndex[nv] = j;
@@ -441,13 +441,13 @@ public:
             rowBegin[j] = nv;
             Index b = oldRowBegin[i];
             Index e = oldRowBegin[i+1];
-            for (; b<e && oldColsIndex[b] < j; ++b)
+            for (; b<e && (decltype(j))oldColsIndex[b] < j; ++b)
             {
                 colsIndex[nv] = oldColsIndex[b];
                 colsValue[nv] = oldColsValue[b];
                 ++nv;
             }
-            if (b>=e || oldColsIndex[b] > j)
+            if (b>=e || (decltype(j))oldColsIndex[b] > j)
             {
                 colsIndex[nv] = j;
                 traits::clear(colsValue[nv]);
@@ -478,11 +478,11 @@ public:
     /// to call again with -1 as base to undo it.
     void shiftIndices(Index base)
     {
-        for (Index i=0; i<rowIndex.size(); ++i)
+        for (Index i=0; i<(decltype(i))rowIndex.size(); ++i)
             rowIndex[i] += base;
-        for (Index i=0; i<rowBegin.size(); ++i)
+        for (Index i=0; i<(decltype(i))rowBegin.size(); ++i)
             rowBegin[i] += base;
-        for (Index i=0; i<colsIndex.size(); ++i)
+        for (Index i=0; i<(decltype(i))colsIndex.size(); ++i)
             colsIndex[i] += base;
     }
 
@@ -558,7 +558,7 @@ public:
                     ++vid;
                 }
             }
-            if (rowBegin.back() == vid) // row was empty
+            if ((decltype(vid))rowBegin.back() == vid) // row was empty
             {
                 rowIndex.pop_back();
                 rowBegin.pop_back();
