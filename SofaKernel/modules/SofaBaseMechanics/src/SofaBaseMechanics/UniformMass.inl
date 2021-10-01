@@ -180,21 +180,10 @@ void UniformMass<DataTypes, MassType>::initDefaultImpl()
         if (meshTopology != nullptr)
         {
             msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
             d_indices.createTopologyHandler(meshTopology);
-            nbrIndices = indices.size();
-
-            // Add creation callback, called when PointAdded event is fired.
-            d_indices.setCreationCallback([this](Index pointIndex, int value, const core::topology::BaseMeshTopology::Point& p, const sofa::type::vector< Index >& ancestors,
-                const sofa::type::vector< double >& coefs) 
-            {
-                nbrIndices++;
-                updateMassOnResize(nbrIndices);
-            });
-
-            d_indices.setDestructionCallback([this](Index pointIndex, int value)
-            {
-                nbrIndices--;
-                updateMassOnResize(nbrIndices);
+            d_indices.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::ENDING_EVENT, [this](const core::topology::TopologyChange* eventTopo) {
+                updateMassOnResize(d_indices.getValue().size());
             });
         }
         else
