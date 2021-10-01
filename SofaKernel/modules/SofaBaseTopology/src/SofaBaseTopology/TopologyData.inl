@@ -49,26 +49,23 @@ void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core:
     }
     this->m_topology = _topology;
 
-    // Create Topology engine
+    // Create TopologyHandler
     this->m_topologyHandler = new TopologyDataHandler< TopologyElementType, VecT>(this, _topology);
-    this->m_topologyHandler->setNamePrefix(std::string(sofa::core::topology::TopologyElementInfo<TopologyElementType>::name()) + std::string("Engine_"));
+    this->m_topologyHandler->setNamePrefix("TopologyDataHandler( " + this->getOwner()->getName() + " )");
     this->m_topologyHandler->init();
 
-    // Register the engine
+    // Register the TopologyHandler
     m_isTopologyDynamic = this->m_topologyHandler->registerTopology(_topology);
     if (m_isTopologyDynamic)
     {
         this->linkToElementDataArray((TopologyElementType*)nullptr);
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " initialized with dynamic " << _topology->getClassName() << "Topology.";
     }
-
-    //if (this->getOwner() && dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner()))
-    //    dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())->addSlave(this->m_topologyHandler);
 }
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* topoEngine)
+void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* topoHandler)
 {
     if (_topology == nullptr)
     {
@@ -78,12 +75,12 @@ void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core:
 
     this->m_topology = _topology;
 
-    // Set Topology engine
-    this->m_topologyHandler = topoEngine;
-    this->m_topologyHandler->setNamePrefix(std::string(sofa::core::topology::TopologyElementInfo<TopologyElementType>::name()) + std::string("Engine_"));
+    // Set Topology TopologyHandler
+    this->m_topologyHandler = topoHandler;
+    this->m_topologyHandler->setNamePrefix("TopologyDataHandler( " + this->getOwner()->getName() + " )");
     this->m_topologyHandler->init();
 
-    // Register the engine
+    // Register the TopologyHandler
     m_isTopologyDynamic = this->m_topologyHandler->registerTopology(_topology);
     if (m_isTopologyDynamic)
     {
@@ -91,14 +88,12 @@ void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core:
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " initialized with dynamic " << this->m_topology->getClassName() << "Topology.";
     }
     else
-        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " has no engine. Topological changes will be disabled. Use createTopologicalEngine method before registerTopologicalData to allow topological changes.";
-    
-    //if (this->getOwner() && dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())) 
-    //    dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())->addSlave(this->m_topologyHandler);   
+        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " has no TopologyHandler. Topological changes will be disabled. Use createTopologyHandler method before registerTopologicalData to allow topological changes.";
+   
 }
 
 
-/// Method used to link Data to point Data array, using the engine's method
+/// Method used to link Data to point Data array, using the TopologyHandler's method
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::linkToPointDataArray()
 {
@@ -111,7 +106,7 @@ void TopologyData <TopologyElementType, VecT>::linkToPointDataArray()
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " won't be linkToPointDataArray as toplogy is not dynamic";
 }
 
-/// Method used to link Data to edge Data array, using the engine's method
+/// Method used to link Data to edge Data array, using the TopologyHandler's method
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::linkToEdgeDataArray()
 {
@@ -124,7 +119,7 @@ void TopologyData <TopologyElementType, VecT>::linkToEdgeDataArray()
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " won't be linkToEdgeDataArray as toplogy is not dynamic";
 }
 
-/// Method used to link Data to triangle Data array, using the engine's method
+/// Method used to link Data to triangle Data array, using the TopologyHandler's method
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::linkToTriangleDataArray()
 {
@@ -137,7 +132,7 @@ void TopologyData <TopologyElementType, VecT>::linkToTriangleDataArray()
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " won't be linkToTriangleDataArray as toplogy is not dynamic";
 }
 
-/// Method used to link Data to quad Data array, using the engine's method
+/// Method used to link Data to quad Data array, using the TopologyHandler's method
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::linkToQuadDataArray()
 {
@@ -150,7 +145,7 @@ void TopologyData <TopologyElementType, VecT>::linkToQuadDataArray()
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " won't be linkToQuadDataArray as toplogy is not dynamic";
 }
 
-/// Method used to link Data to tetrahedron Data array, using the engine's method
+/// Method used to link Data to tetrahedron Data array, using the TopologyHandler's method
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::linkToTetrahedronDataArray()
 {
@@ -163,7 +158,7 @@ void TopologyData <TopologyElementType, VecT>::linkToTetrahedronDataArray()
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " won't be linkToTetrahedronDataArray as toplogy is not dynamic";
 }
 
-/// Method used to link Data to hexahedron Data array, using the engine's method
+/// Method used to link Data to hexahedron Data array, using the TopologyHandler's method
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::linkToHexahedronDataArray()
 {

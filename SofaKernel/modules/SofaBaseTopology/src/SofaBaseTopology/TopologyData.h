@@ -66,13 +66,12 @@ public:
     TopologyData(const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data);
 
 
-    /** Public functions to handle topological engine creation */
-    /// To create topological engine link to this Data. Pointer to current topology is needed.
+    /// Function to create topology handler to manage this Data. @param Pointer to dynamic topology is needed.
     virtual void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology);
-
-    /** Public functions to handle topological engine creation */
-    /// To create topological engine link to this Data. Pointer to current topology is needed.
-    virtual void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* topoEngine);
+    
+    /// Function to register an existing topology handler to manage this Data. @param Pointer to dynamic topology is needed.
+    /// @param Pointer to dynamic topology is needed.
+    virtual void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* topoHandler);
 
     /// Link Data to topology arrays
     void linkToPointDataArray();
