@@ -38,7 +38,6 @@ public:
 
     virtual ~BVHMotion()
     {
-        delete[] &frames;
     };
 
     void init(double _fTime, unsigned int _fCount, unsigned int _fSize);
