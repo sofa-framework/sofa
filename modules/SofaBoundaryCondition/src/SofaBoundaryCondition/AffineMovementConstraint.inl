@@ -277,7 +277,6 @@ void AffineMovementConstraint<DataTypes>::transform(const SetIndexArray & indice
 template <class DataTypes>
 void AffineMovementConstraint<DataTypes>::initializeFinalPositions (const SetIndexArray & indices, DataVecCoord& xData, VecCoord& x0, VecCoord& xf)
 {
-    Deriv displacement;
     helper::WriteAccessor<DataVecCoord> x = xData;
 
     xf.resize(x.size());

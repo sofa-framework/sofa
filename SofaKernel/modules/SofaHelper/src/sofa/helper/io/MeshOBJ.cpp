@@ -63,8 +63,7 @@ void MeshOBJ::readOBJ (std::istream &stream, const std::string &filename)
     vector<PointID>vIndices, nIndices, tIndices;
     int vtn[3];
     Vec3d result;
-    Vec3d texCoord;
-    Vec3d normal;
+
     int nbf = (int)facets.size();
 
     std::string line;

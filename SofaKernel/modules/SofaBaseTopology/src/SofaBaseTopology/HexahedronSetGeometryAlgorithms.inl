@@ -347,8 +347,7 @@ void HexahedronSetGeometryAlgorithms< DataTypes >::computePositionDerivative(con
 
 	 Coord pos[8];
 	 for (i=0;i<8;++i) 
-		 pos[i]=p[h[i]];
-	 Coord res;
+         pos[i]=p[h[i]];
 
 	 for (i=0;i<3;++i) {
 		 Coord pos0,pos1;

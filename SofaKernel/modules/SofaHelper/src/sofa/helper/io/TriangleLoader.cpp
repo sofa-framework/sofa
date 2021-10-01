@@ -79,7 +79,6 @@ void TriangleLoader::loadTriangles(FILE *file)
     char buf[128];
 
     std::vector<Vector3> normals;
-    Vector3 n;
     float x, y, z;
 
     /* make a default group */
