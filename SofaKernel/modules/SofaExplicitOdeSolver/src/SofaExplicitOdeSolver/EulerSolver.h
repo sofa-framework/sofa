@@ -130,9 +130,7 @@ protected:
     static void solveSystem(core::behavior::MultiMatrix<simulation::common::MechanicalOperations>* matrix,
                             core::MultiVecDerivId solution, core::MultiVecDerivId rhs);
 
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v21.06 (PR#2165)", "v21.06",\
-        "Optimization based on the diagonal property of the mass matrix is now detected automatically.")
+    SOFA_ATTRIBUTE_DISABLED__EULERSOLVER_OPTIM_DIAGONALMATRIX()
     DeprecatedAndRemoved d_optimizedForDiagonalMatrix{};
 };
 
