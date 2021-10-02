@@ -4487,8 +4487,8 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
 
                     Edge theEdgeFirst = m_container->getEdge(theEdge);
                     sofa::type::Vec<3, double> pos1 = computeBaryEdgePoint(theEdgeFirst, new_coord[1]);
-                    for (unsigned int j = 0; j < 3; j++)
-                        a[j] = (float)pos1[j];
+                    for (unsigned int j = 0; j < std::min(3u, a.size()); j++)
+                        a[j] = (decltype (a[j]))pos1[j];
 
                     break;
                 }
@@ -4589,8 +4589,8 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
 
                     Edge theEdgeLast = m_container->getEdge(theEdge);
                     sofa::type::Vec<3, double> pos1 = computeBaryEdgePoint(theEdgeLast, new_coord[1]);
-                    for (unsigned int j = 0; j < 3; j++)
-                        a[j] = (float)pos1[j];
+                    for (unsigned int j = 0; j < std::min(3u, a.size()); j++)
+                        a[j] = (decltype (a[j]))pos1[j];
 
                     break;
                 }
