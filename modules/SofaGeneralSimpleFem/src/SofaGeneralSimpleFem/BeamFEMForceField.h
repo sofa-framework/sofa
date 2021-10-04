@@ -30,8 +30,6 @@ namespace  sofa::component::forcefield
 
 namespace _beamfemforcefield_
 {
-
-using topology::TopologyDataHandler;
 using core::MechanicalParams;
 using core::behavior::MultiMatrixAccessor;
 using core::behavior::ForceField;
@@ -65,8 +63,6 @@ public:
     typedef BaseMeshTopology::Edge Element;
     typedef type::vector<BaseMeshTopology::Edge> VecElement;
     typedef Vec<3, Real> Vec3;
-
-protected:
 
     typedef Vec<12, Real> Displacement;     ///< the displacement vector
     typedef Mat<3, 3, Real> Transformation; ///< matrix for rigid transformations like rotations
@@ -134,26 +130,13 @@ protected:
         }
     };
 
-    class BeamFFEdgeHandler : public TopologyDataHandler<BaseMeshTopology::Edge, type::vector<BeamInfo> >
-    {
-    public:
-        typedef typename BeamFEMForceField<DataTypes>::BeamInfo BeamInfo;
-        BeamFFEdgeHandler(BeamFEMForceField<DataTypes>* ff, EdgeData<type::vector<BeamInfo> >* data)
-            :TopologyDataHandler<BaseMeshTopology::Edge, type::vector<BeamInfo> >(data),ff(ff) {}
-
-        void applyCreateFunction(Index edgeIndex, BeamInfo&,
-                                 const BaseMeshTopology::Edge& e,
-                                 const type::vector<Index> &,
-                                 const type::vector< double > &);
-
-    protected:
-        BeamFEMForceField<DataTypes>* ff;
-
-    };
-
-    //just for draw forces
-    VecDeriv m_forces;
     EdgeData<type::vector<BeamInfo> > m_beamsData; ///< Internal element data
+
+protected:
+    void createBeamInfo(Index edgeIndex, BeamInfo&,
+        const BaseMeshTopology::Edge& e,
+        const type::vector<Index> &,
+        const type::vector< double > &);
 
     const VecElement *m_indexedElements;
 
@@ -169,6 +152,9 @@ public:
     SingleLink<BeamFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
  protected:
+    //just for draw forces
+    VecDeriv m_forces;
+
     bool m_partialListSegment;
     bool m_updateStiffnessMatrix;
     bool m_assembling;
@@ -177,7 +163,6 @@ public:
     Quat<SReal>& beamQuat(int i);
 
     BaseMeshTopology* m_topology;
-    BeamFFEdgeHandler* m_edgeHandler;
 
     BeamFEMForceField();
     BeamFEMForceField(Real poissonRatio, Real youngModulus, Real radius, Real radiusInner);
