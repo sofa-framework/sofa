@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <stack>
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/NameDecoder.h>
 #include <cctype>
 
