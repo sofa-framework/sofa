@@ -103,7 +103,7 @@ std::string NameDecoder::decodeTypeName(const std::type_info& t)
         {
             start = i+1;
         }
-        else if (c == ' ' && (i >= 1 && !std::isalnum(realname[i-1])  || i < len - 1 && !std::isalnum(realname[i+1]) ) )
+        else if (c == ' ' && ((i >= 1 && !std::isalnum(realname[i-1]))  || (i < len - 1 && !std::isalnum(realname[i+1])) ) )
         {
             //skip space if character before or after is not alphanumeric
             start = i+1;
@@ -177,7 +177,7 @@ std::string NameDecoder::decodeClassName(const std::type_info& t)
         {
             start = i+1;
         }
-        else if (c == ' ' && (i >= 1 && !std::isalnum(realname[i-1])  || i < len - 1 && !std::isalnum(realname[i+1]) ) )
+        else if (c == ' ' && ((i >= 1 && !std::isalnum(realname[i-1]))  || (i < len - 1 && !std::isalnum(realname[i+1])) ) )
         {
             //skip space if character before or after is not alphanumeric
             start = i+1;
@@ -216,7 +216,7 @@ std::string NameDecoder::decodeNamespaceName(const std::type_info& t)
         {
             start = i+1;
         }
-        else if (c == ' ' && (i >= 1 && !std::isalnum(realname[i-1])  || i < len - 1 && !std::isalnum(realname[i+1]) ) )
+        else if (c == ' ' && ((i >= 1 && !std::isalnum(realname[i-1]))  || (i < len - 1 && !std::isalnum(realname[i+1])) ) )
         {
             //skip space if character before or after is not alphanumeric
             start = i+1;
@@ -285,7 +285,7 @@ std::string NameDecoder::decodeTemplateName(const std::type_info& t)
         {
             start = i+1;
         }
-        else if (c == ' ' && (i >= 1 && !std::isalnum(realname[i-1]) || i < len - 1 && !std::isalnum(realname[i+1]) ) )
+        else if (c == ' ' && ((i >= 1 && !std::isalnum(realname[i-1])) || (i < len - 1 && !std::isalnum(realname[i+1])) ) )
         {
             //skip space if character before or after is not alphanumeric
             start = i+1;
