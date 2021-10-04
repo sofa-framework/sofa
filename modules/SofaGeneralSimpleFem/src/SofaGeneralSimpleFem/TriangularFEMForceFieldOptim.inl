@@ -36,29 +36,6 @@ namespace sofa::component::forcefield
 {
 
 // --------------------------------------------------------------------------------------
-// ---  Topology Creation/Destruction functions
-// --------------------------------------------------------------------------------------
-
-template< class DataTypes>
-void TriangularFEMForceFieldOptim<DataTypes>::TFEMFFOTriangleInfoHandler::applyCreateFunction(Index triangleIndex, TriangleInfo &ti, const Triangle &t, const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
-{
-    if (ff)
-    {
-        ff->initTriangleInfo(triangleIndex,ti,t, ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue());
-    }
-}
-
-template< class DataTypes>
-void TriangularFEMForceFieldOptim<DataTypes>::TFEMFFOTriangleStateHandler::applyCreateFunction(Index triangleIndex, TriangleState &ti, const Triangle &t, const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
-{
-    if (ff)
-    {
-        ff->initTriangleState(triangleIndex,ti,t, ff->mstate->read(core::ConstVecCoordId::position())->getValue());
-    }
-}
-
-
-// --------------------------------------------------------------------------------------
 // --- constructor
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
@@ -77,9 +54,6 @@ TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
     , drawPrevMaxStress((Real)-1.0)
     , m_topology(nullptr)
 {
-    triangleInfoHandler = new TFEMFFOTriangleInfoHandler(this, &d_triangleInfo);
-    triangleStateHandler = new TFEMFFOTriangleStateHandler(this, &d_triangleState);
-
     d_poisson.setRequired(true);
     d_young.setRequired(true);
 }
@@ -88,8 +62,7 @@ TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
 template <class DataTypes>
 TriangularFEMForceFieldOptim<DataTypes>::~TriangularFEMForceFieldOptim()
 {
-    delete triangleInfoHandler;
-    delete triangleStateHandler;
+
 }
 
 
@@ -118,8 +91,24 @@ void TriangularFEMForceFieldOptim<DataTypes>::init()
     }
 
     // Create specific handler for TriangleData
-    d_triangleInfo.createTopologyHandler(m_topology, triangleInfoHandler);
-    d_triangleState.createTopologyHandler(m_topology, triangleStateHandler);
+    d_triangleInfo.createTopologyHandler(m_topology);
+    d_triangleInfo.setCreationCallback([this](Index triangleIndex, TriangleInfo& ti,
+        const core::topology::BaseMeshTopology::Triangle& t,
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs)
+    {
+        createTriangleInfo(triangleIndex, ti, t, ancestors, coefs);
+    });
+
+    d_triangleState.createTopologyHandler(m_topology);
+    d_triangleState.setCreationCallback([this](Index triangleIndex, TriangleState& ti,
+        const core::topology::BaseMeshTopology::Triangle& t,
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs)
+    {
+        createTriangleState(triangleIndex, ti, t, ancestors, coefs);
+    });
+
     d_edgeInfo.createTopologyHandler(m_topology);
     d_vertexInfo.createTopologyHandler(m_topology);
 
@@ -197,6 +186,23 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleState(Index i, Triangl
     Coord ac = x[t[2]]-a;
     computeTriangleRotation(ti.frame, ab, ac);
     ti.stress.clear();
+}
+
+
+// --------------------------------------------------------------------------------------
+// ---  Topology Creation/Destruction functions
+// --------------------------------------------------------------------------------------
+
+template< class DataTypes>
+void TriangularFEMForceFieldOptim<DataTypes>::createTriangleInfo(Index triangleIndex, TriangleInfo& ti, const Triangle& t, const sofa::type::vector<Index>&, const sofa::type::vector<double>&)
+{
+    initTriangleInfo(triangleIndex, ti, t, mstate->read(core::ConstVecCoordId::restPosition())->getValue());
+}
+
+template< class DataTypes>
+void TriangularFEMForceFieldOptim<DataTypes>::createTriangleState(Index triangleIndex, TriangleState& ti, const Triangle& t, const sofa::type::vector<Index>&, const sofa::type::vector<double>&)
+{
+    initTriangleState(triangleIndex, ti, t, mstate->read(core::ConstVecCoordId::position())->getValue());
 }
 
 // --------------------------------------------------------------------------------------

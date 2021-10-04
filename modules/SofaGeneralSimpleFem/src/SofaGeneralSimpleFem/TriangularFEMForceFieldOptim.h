@@ -229,20 +229,16 @@ public:
     topology::PointData<VecVertexInfo> d_vertexInfo; ///< Internal point data
     topology::EdgeData<VecEdgeInfo> d_edgeInfo; ///< Internal edge data
 
+    void createTriangleInfo(Index triangleIndex, TriangleInfo&, 
+        const Triangle& t,
+        const sofa::type::vector< Index >&,
+        const sofa::type::vector< double >&);
 
-    class TFEMFFOTriangleInfoHandler : public topology::TopologyDataHandler<Triangle,VecTriangleInfo >
-    {
-    public:
-        TFEMFFOTriangleInfoHandler(TriangularFEMForceFieldOptim<DataTypes>* _ff, topology::TriangleData<VecTriangleInfo >* _data) : topology::TopologyDataHandler<Triangle, VecTriangleInfo >(_data), ff(_ff) {}
+    void createTriangleState(Index triangleIndex, TriangleState&, 
+        const Triangle& t,
+        const sofa::type::vector< Index > &,
+        const sofa::type::vector< double > &);
 
-        void applyCreateFunction(Index triangleIndex, TriangleInfo& ,
-                const Triangle & t,
-                const sofa::type::vector< Index > &,
-                const sofa::type::vector< double > &);
-
-    protected:
-        TriangularFEMForceFieldOptim<DataTypes>* ff;
-    };
     void initTriangleInfo(Index triangleIndex, TriangleInfo& ti, const Triangle t, const VecCoord& x0);
     void initTriangleState(Index triangleIndex, TriangleState& ti, const Triangle t, const VecCoord& x);
 
@@ -255,20 +251,6 @@ public:
     {
         computeTriangleRotation(result,x0[t[0]], x0[t[1]], x0[t[2]]);
     }
-
-    class TFEMFFOTriangleStateHandler : public topology::TopologyDataHandler<Triangle,VecTriangleState >
-    {
-    public:
-        TFEMFFOTriangleStateHandler(TriangularFEMForceFieldOptim<DataTypes>* _ff, topology::TriangleData<VecTriangleState >* _data) : topology::TopologyDataHandler<Triangle, VecTriangleState >(_data), ff(_ff) {}
-
-        void applyCreateFunction(Index triangleIndex, TriangleState& ,
-                const Triangle & t,
-                const sofa::type::vector< Index > &,
-                const sofa::type::vector< double > &);
-
-    protected:
-        TriangularFEMForceFieldOptim<DataTypes>* ff;
-    };
 
     template<class MatrixWriter>
     void addKToMatrixT(const core::MechanicalParams* mparams, MatrixWriter m);
@@ -288,10 +270,6 @@ public:
     Data<bool> d_showStressValue;
     Data<bool> d_showStressVector; ///< Flag activating rendering of stress directions within each triangle
     Data<Real> d_showStressMaxValue; ///< Max value for rendering of stress values
-
-
-    TFEMFFOTriangleInfoHandler* triangleInfoHandler;
-    TFEMFFOTriangleStateHandler* triangleStateHandler;
 
     /// Link to be set to the topology container in the component graph. 
     SingleLink<TriangularFEMForceFieldOptim<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
