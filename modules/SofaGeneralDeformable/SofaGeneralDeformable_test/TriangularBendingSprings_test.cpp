@@ -22,6 +22,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
+#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
 #include <SofaGeneralDeformable/TriangularBendingSprings.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
@@ -53,6 +54,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef MechanicalObject<DataTypes> MState;
     using TriangleBS = sofa::component::forcefield::TriangularBendingSprings<DataTypes>;
+    using TriangleModifier = sofa::component::topology::TriangleSetTopologyModifier;
     typedef typename TriangleBS::EdgeInformation EdgeInfo;
     typedef typename type::vector<EdgeInfo> VecEdgeInfo;
     using Vec3 = type::Vec<3, Real>;
@@ -108,7 +110,7 @@ public:
         
         Node::SPtr FNode = sofa::simpleapi::createChild(m_root, "SpringNode");
         createObject(FNode, "EulerImplicitSolver");
-        createObject(FNode, "CGLinearSolver", { { "iterations", "20" }, { "threshold", "1e-6" } });
+        createObject(FNode, "CGLinearSolver", { { "iterations", "20" }, { "threshold", "1e-8" } });
         createObject(FNode, "MechanicalObject", {
             {"name","dof"}, {"template","Vec3d"}, {"position", "@../grid.position"} });
         createObject(FNode, "TriangleSetTopologyContainer", {
@@ -264,14 +266,50 @@ public:
             m_simulation->animate(m_root.get(), 0.01);
         }
 
-        EXPECT_NEAR(positions[nbrGrid][0], -0.00031, 1e-4);
-        EXPECT_NEAR(positions[nbrGrid][1], 0.5216297, 1e-4);
+        EXPECT_NEAR(positions[nbrGrid][0], -0.000132, 1e-4);
+        EXPECT_NEAR(positions[nbrGrid][1], 0.520924, 1e-4);
         EXPECT_NEAR(positions[nbrGrid][2], 0, 1e-4);
 
-        ASSERT_FLOAT_EQ(triBS->getAccumulatedPotentialEnergy(), 6.5779859e-05);
+        ASSERT_FLOAT_EQ(triBS->getAccumulatedPotentialEnergy(), 7.7932855e-06);
         ASSERT_FLOAT_EQ(EdgeInfos[0].restlength, 1.1768779);
     }
 
+
+    void checkTopologyChanges()
+    {
+        // load Triangular FEM
+        int nbrGrid = 5;
+        createGridScene(nbrGrid, 300, 0.5); // create a grid of 4x4x2=32 triangles
+
+        if (m_root.get() == nullptr)
+            return;
+
+        typename TriangleBS::SPtr triBS = m_root->getTreeObject<TriangleBS>();        
+        typename TriangleModifier::SPtr triModif = m_root->getTreeObject<TriangleModifier>();
+
+        ASSERT_TRUE(triBS.get() != nullptr);
+        ASSERT_TRUE(triModif.get() != nullptr);
+
+        const VecEdgeInfo& EdgeInfos = triBS->edgeInfo.getValue();
+        ASSERT_EQ(EdgeInfos.size(), 56);
+        
+        sofa::topology::SetIndex triIndices = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }; 
+        triModif->removeTriangles(triIndices, true, true); // remove 10 first triangles
+
+        m_simulation->animate(m_root.get(), 0.01);
+        ASSERT_EQ(EdgeInfos.size(), 40);
+
+        triModif->removeTriangles(triIndices, true, true); // remove 10 more triangles
+        triModif->removeTriangles(triIndices, true, true); // remove 10 more triangles
+        m_simulation->animate(m_root.get(), 0.01);
+        
+        ASSERT_EQ(EdgeInfos.size(), 5); // only one pair of triangle reminding == 1 edge in middle == 1 bending spring
+        ASSERT_EQ(EdgeInfos[0].is_activated, false);
+        ASSERT_EQ(EdgeInfos[1].is_activated, true);
+        ASSERT_EQ(EdgeInfos[2].is_activated, false);
+        ASSERT_EQ(EdgeInfos[3].is_activated, false);
+        ASSERT_EQ(EdgeInfos[4].is_activated, false);
+    }
 };
 
 
@@ -297,7 +335,7 @@ TEST_F(TriangularBendingSprings3_test, checkForceField_defaultAttributes)
     this->checkDefaultAttributes();
 }
 
-TEST_F(TriangularBendingSprings3_test, checkFEMForceField_wrongAttributess)
+TEST_F(TriangularBendingSprings3_test, checkForceField_wrongAttributess)
 {
     this->checkWrongAttributes();
 }
@@ -310,6 +348,11 @@ TEST_F(TriangularBendingSprings3_test, checkForceField_init)
 TEST_F(TriangularBendingSprings3_test, checkForceField_values)
 {
     this->checkFEMValues();
+}
+
+TEST_F(TriangularBendingSprings3_test, checkForceField_TopologyChanges)
+{
+    this->checkTopologyChanges();
 }
 
 } // namespace sofa
