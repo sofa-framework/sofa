@@ -4,12 +4,12 @@
     <RequiredPlugin name='SofaMiscFem'/>
     <RequiredPlugin name='SofaGeneralDeformable'/>
     <RequiredPlugin name='SofaImplicitOdeSolver'/>
-	<RequiredPlugin name='SofaBoundaryCondition'/>
-	<RequiredPlugin name='SofaMeshCollision'/>
-	<RequiredPlugin name='SofaLoader'/>
-	
+    <RequiredPlugin name='SofaBoundaryCondition'/>
+    <RequiredPlugin name='SofaMeshCollision'/>
+    <RequiredPlugin name='SofaLoader'/>
+    
 
-	<VisualStyle displayFlags="showVisual showBehaviorModels" />
+    <VisualStyle displayFlags="showVisual showBehaviorModels" />
     <DefaultPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
@@ -20,8 +20,8 @@
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshObjLoader name="meshLoader" filename="mesh/square_2594_triangles.obj" scale="10" createSubelements="true" />
         <TriangleSetTopologyContainer  name="Container" src="@meshLoader"/>
-		<TriangleSetTopologyModifier   name="Modifier" />
-		<TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+        <TriangleSetTopologyModifier   name="Modifier" />
+        <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
         <MechanicalObject name="Mo"/>
         <DiagonalMass massDensity="0.08" />
         <FixedConstraint indices="617 618 57 1301 1302 49" />
