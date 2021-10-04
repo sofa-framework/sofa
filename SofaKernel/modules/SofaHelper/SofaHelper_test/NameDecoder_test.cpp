@@ -1,0 +1,239 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#include <unordered_set>
+#include <sofa/helper/NameDecoder.h>
+#include <sofa/testing/BaseTest.h>
+#include <sofa/type/fixed_array.h>
+
+#include "sofa/type/Mat.h"
+
+class SimpleClass {};
+class _UnderscoreClass {};
+
+template<class T>
+class TemplateClass {};
+
+class OuterSimpleClass
+{
+public:
+    class InnerSimpleClass {};
+    class InnerSimpleStruct {};
+};
+
+namespace sofa::__sofa__
+{
+    class SimpleClass {};
+
+    class OuterSimpleClass
+    {
+    public:
+        class InnerSimpleClass {};
+        class InnerSimpleStruct {};
+    };
+
+    template<class T>
+    class OuterTemplateClass
+    {
+    public:
+        template<class U>
+        class Inner_Template_Class {};
+    };
+}
+
+namespace
+{
+    class AnonymousSimpleClass {};
+
+    class AnonymousOuterSimpleClass
+    {
+    public:
+        class AnonymousInnerSimpleClass {};
+        class AnonymousInnerSimpleStruct {};
+    };
+}
+
+template<class T> std::string getDecodeFullName()
+{
+    return sofa::helper::NameDecoder::decodeFullName(typeid(T));
+}
+template<class T> std::string getDecodeTypeName()
+{
+    return sofa::helper::NameDecoder::decodeTypeName(typeid(T));
+}
+template<class T> std::string getDecodeClassName()
+{
+    return sofa::helper::NameDecoder::decodeClassName(typeid(T));
+}
+template<class T> std::string getDecodeNamespaceName()
+{
+    return sofa::helper::NameDecoder::decodeNamespaceName(typeid(T));
+}
+template<class T> std::string getDecodeTemplateName()
+{
+    return sofa::helper::NameDecoder::decodeTemplateName(typeid(T));
+}
+
+TEST(NameDecoder_test, simpleClass)
+{
+    EXPECT_EQ(getDecodeFullName<SimpleClass>(), "class SimpleClass");
+    EXPECT_EQ(getDecodeTypeName<SimpleClass>(), "SimpleClass");
+    EXPECT_EQ(getDecodeClassName<SimpleClass>(), "SimpleClass");
+    EXPECT_EQ(getDecodeNamespaceName<SimpleClass>(), "");
+    EXPECT_EQ(getDecodeTemplateName<SimpleClass>(), "");
+}
+
+TEST(NameDecoder_test, namespaceSimpleClass)
+{
+    EXPECT_EQ(getDecodeFullName<sofa::__sofa__::SimpleClass>(), "class sofa::__sofa__::SimpleClass");
+    EXPECT_EQ(getDecodeTypeName<sofa::__sofa__::SimpleClass>(), "SimpleClass");
+    EXPECT_EQ(getDecodeClassName<sofa::__sofa__::SimpleClass>(), "SimpleClass");
+    EXPECT_EQ(getDecodeNamespaceName<sofa::__sofa__::SimpleClass>(), "sofa::__sofa__");
+    EXPECT_EQ(getDecodeTemplateName<sofa::__sofa__::SimpleClass>(), "");
+}
+
+TEST(NameDecoder_test, templateClass)
+{
+    //template type composed of two words: 'unsigned' and 'int'
+    EXPECT_EQ(getDecodeFullName<TemplateClass<unsigned int> >(), "class TemplateClass<unsigned int>");
+    EXPECT_EQ(getDecodeTypeName<TemplateClass<unsigned int> >(), "TemplateClass<unsigned int>");
+    EXPECT_EQ(getDecodeClassName<TemplateClass<unsigned int> >(), "TemplateClass");
+    EXPECT_EQ(getDecodeNamespaceName<TemplateClass<unsigned int> >(), "");
+    EXPECT_EQ(getDecodeTemplateName<TemplateClass<unsigned int> >(), "unsigned int");
+
+    //template is an alias
+    using B = double;
+    EXPECT_EQ(getDecodeFullName<TemplateClass<B> >(), "class TemplateClass<double>");
+    EXPECT_EQ(getDecodeTypeName<TemplateClass<B> >(), "TemplateClass<double>");
+    EXPECT_EQ(getDecodeClassName<TemplateClass<B> >(), "TemplateClass");
+    EXPECT_EQ(getDecodeNamespaceName<TemplateClass<B> >(), "");
+    EXPECT_EQ(getDecodeTemplateName<TemplateClass<B> >(), "double");
+
+    //template type itself templated, including a default parameter
+    EXPECT_EQ(getDecodeFullName<TemplateClass<sofa::type::vector<int> > >(), "class TemplateClass<class sofa::type::vector<int,class sofa::type::CPUMemoryManager<int> > >");
+    EXPECT_EQ(getDecodeTypeName<TemplateClass<sofa::type::vector<int> > >(), "TemplateClass<vector<int,CPUMemoryManager<int>>>");
+    EXPECT_EQ(getDecodeClassName<TemplateClass<sofa::type::vector<int> > >(), "TemplateClass");
+    EXPECT_EQ(getDecodeNamespaceName<TemplateClass<sofa::type::vector<int> > >(), "");
+    EXPECT_EQ(getDecodeTemplateName<TemplateClass<sofa::type::vector<int> > >(), "vector<int,CPUMemoryManager<int>>");
+
+    //template type itself templated with 2 template parameters, including one composed of two words. Template parameter is an alias
+    using D = sofa::type::fixed_array<long long, 4>;
+    EXPECT_EQ(getDecodeFullName<TemplateClass<D> >(), "class TemplateClass<class sofa::type::fixed_array<__int64,4> >");
+    EXPECT_EQ(getDecodeTypeName<TemplateClass<D> >(), "TemplateClass<fixed_array<__int64,4>>");
+    EXPECT_EQ(getDecodeClassName<TemplateClass<D> >(), "TemplateClass");
+    EXPECT_EQ(getDecodeNamespaceName<TemplateClass<D> >(), "");
+    EXPECT_EQ(getDecodeTemplateName<TemplateClass<D> >(), "fixed_array<__int64,4>");
+
+    using E = _UnderscoreClass;
+    EXPECT_EQ(getDecodeFullName<TemplateClass<E> >(), "class TemplateClass<class _UnderscoreClass>");
+    EXPECT_EQ(getDecodeTypeName<TemplateClass<E> >(), "TemplateClass<_UnderscoreClass>");
+    EXPECT_EQ(getDecodeClassName<TemplateClass<E> >(), "TemplateClass");
+    EXPECT_EQ(getDecodeNamespaceName<TemplateClass<E> >(), "");
+    EXPECT_EQ(getDecodeTemplateName<TemplateClass<E> >(), "_UnderscoreClass");
+}
+
+TEST(NameDecoder_test, nestedSimpleClass)
+{
+    EXPECT_EQ(getDecodeFullName<OuterSimpleClass>(), "class OuterSimpleClass");
+    EXPECT_EQ(getDecodeTypeName<OuterSimpleClass>(), "OuterSimpleClass");
+    EXPECT_EQ(getDecodeClassName<OuterSimpleClass>(), "OuterSimpleClass");
+    EXPECT_EQ(getDecodeNamespaceName<OuterSimpleClass>(), "");
+    EXPECT_EQ(getDecodeTemplateName<OuterSimpleClass>(), "");
+
+    EXPECT_EQ(getDecodeFullName<OuterSimpleClass::InnerSimpleClass>(), "class OuterSimpleClass::InnerSimpleClass");
+    EXPECT_EQ(getDecodeTypeName<OuterSimpleClass::InnerSimpleClass>(), "InnerSimpleClass");
+    EXPECT_EQ(getDecodeClassName<OuterSimpleClass::InnerSimpleClass>(), "InnerSimpleClass");
+    EXPECT_EQ(getDecodeNamespaceName<OuterSimpleClass::InnerSimpleClass>(), "OuterSimpleClass");
+    EXPECT_EQ(getDecodeTemplateName<OuterSimpleClass::InnerSimpleClass>(), "");
+
+    EXPECT_EQ(getDecodeFullName<OuterSimpleClass::InnerSimpleStruct>(), "class OuterSimpleClass::InnerSimpleStruct");
+    EXPECT_EQ(getDecodeTypeName<OuterSimpleClass::InnerSimpleStruct>(), "InnerSimpleStruct");
+    EXPECT_EQ(getDecodeClassName<OuterSimpleClass::InnerSimpleStruct>(), "InnerSimpleStruct");
+    EXPECT_EQ(getDecodeNamespaceName<OuterSimpleClass::InnerSimpleStruct>(), "OuterSimpleClass");
+    EXPECT_EQ(getDecodeTemplateName<OuterSimpleClass::InnerSimpleStruct>(), "");
+}
+
+TEST(NameDecoder_test, namespaceNestedSimpleClass)
+{
+    EXPECT_EQ(getDecodeFullName<sofa::__sofa__::OuterSimpleClass>(), "class sofa::__sofa__::OuterSimpleClass");
+    EXPECT_EQ(getDecodeTypeName<sofa::__sofa__::OuterSimpleClass>(), "OuterSimpleClass");
+    EXPECT_EQ(getDecodeClassName<sofa::__sofa__::OuterSimpleClass>(), "OuterSimpleClass");
+    EXPECT_EQ(getDecodeNamespaceName<sofa::__sofa__::OuterSimpleClass>(), "sofa::__sofa__");
+    EXPECT_EQ(getDecodeTemplateName<sofa::__sofa__::OuterSimpleClass>(), "");
+
+    EXPECT_EQ(getDecodeFullName<sofa::__sofa__::OuterSimpleClass::InnerSimpleClass>(), "class sofa::__sofa__::OuterSimpleClass::InnerSimpleClass");
+    EXPECT_EQ(getDecodeTypeName<sofa::__sofa__::OuterSimpleClass::InnerSimpleClass>(), "InnerSimpleClass");
+    EXPECT_EQ(getDecodeClassName<sofa::__sofa__::OuterSimpleClass::InnerSimpleClass>(), "InnerSimpleClass");
+    EXPECT_EQ(getDecodeNamespaceName<sofa::__sofa__::OuterSimpleClass::InnerSimpleClass>(), "sofa::__sofa__::OuterSimpleClass");
+    EXPECT_EQ(getDecodeTemplateName<sofa::__sofa__::OuterSimpleClass::InnerSimpleClass>(), "");
+
+    EXPECT_EQ(getDecodeFullName<sofa::__sofa__::OuterSimpleClass::InnerSimpleStruct>(), "class sofa::__sofa__::OuterSimpleClass::InnerSimpleStruct");
+    EXPECT_EQ(getDecodeTypeName<sofa::__sofa__::OuterSimpleClass::InnerSimpleStruct>(), "InnerSimpleStruct");
+    EXPECT_EQ(getDecodeClassName<sofa::__sofa__::OuterSimpleClass::InnerSimpleStruct>(), "InnerSimpleStruct");
+    EXPECT_EQ(getDecodeNamespaceName<sofa::__sofa__::OuterSimpleClass::InnerSimpleStruct>(), "sofa::__sofa__::OuterSimpleClass");
+    EXPECT_EQ(getDecodeTemplateName<sofa::__sofa__::OuterSimpleClass::InnerSimpleStruct>(), "");
+}
+
+TEST(NameDecoder_test, namespaceNestedTemplateClass)
+{
+    using A = sofa::__sofa__::OuterTemplateClass<unsigned int>;
+    EXPECT_EQ(getDecodeFullName<A>(), "class sofa::__sofa__::OuterTemplateClass<unsigned int>");
+    EXPECT_EQ(getDecodeTypeName<A>(), "OuterTemplateClass<unsigned int>");
+    EXPECT_EQ(getDecodeClassName<A>(), "OuterTemplateClass");
+    EXPECT_EQ(getDecodeNamespaceName<A>(), "sofa::__sofa__");
+    EXPECT_EQ(getDecodeTemplateName<A>(), "unsigned int");
+
+    using B = sofa::__sofa__::OuterTemplateClass<sofa::type::fixed_array<long long, 2> >::Inner_Template_Class<unsigned int>;
+    EXPECT_EQ(getDecodeFullName<B>(), "class sofa::__sofa__::OuterTemplateClass<class sofa::type::fixed_array<__int64,2> >::Inner_Template_Class<unsigned int>");
+    EXPECT_EQ(getDecodeTypeName<B>(), "Inner_Template_Class<unsigned int>");
+    EXPECT_EQ(getDecodeClassName<B>(), "Inner_Template_Class");
+    EXPECT_EQ(getDecodeNamespaceName<B>(), "sofa::__sofa__");
+    EXPECT_EQ(getDecodeTemplateName<B>(), "unsigned int");
+
+    using C = sofa::__sofa__::OuterTemplateClass<sofa::type::fixed_array<_UnderscoreClass, 2> >::Inner_Template_Class<sofa::type::Mat<3, 3, double> >;
+    EXPECT_EQ(getDecodeFullName<C>(), "class sofa::__sofa__::OuterTemplateClass<class sofa::type::fixed_array<class _UnderscoreClass,2> >::Inner_Template_Class<class sofa::type::Mat<3,3,double> >");
+    EXPECT_EQ(getDecodeTypeName<C>(), "Inner_Template_Class<Mat<3,3,double>>");
+    EXPECT_EQ(getDecodeClassName<C>(), "Inner_Template_Class");
+    EXPECT_EQ(getDecodeNamespaceName<C>(), "sofa::__sofa__");
+    EXPECT_EQ(getDecodeTemplateName<C>(), "Mat<3,3,double>");
+}
+
+//Anonymous namespace are not supported
+// TEST(NameDecoder_test, anonymousNamespaceNestedSimpleClass)
+// {
+//     EXPECT_EQ(getDecodeFullName<AnonymousOuterSimpleClass>(), "class sofa::OuterSimpleClass");
+//     EXPECT_EQ(getDecodeTypeName<AnonymousOuterSimpleClass>(), "OuterSimpleClass");
+//     EXPECT_EQ(getDecodeClassName<AnonymousOuterSimpleClass>(), "OuterSimpleClass");
+//     EXPECT_EQ(getDecodeNamespaceName<AnonymousOuterSimpleClass>(), "sofa");
+//     EXPECT_EQ(getDecodeTemplateName<AnonymousOuterSimpleClass>(), "");
+//
+//     EXPECT_EQ(getDecodeFullName<AnonymousOuterSimpleClass::AnonymousInnerSimpleClass>(), "class AnonymousOuterSimpleClass::AnonymousInnerSimpleClass");
+//     EXPECT_EQ(getDecodeTypeName<AnonymousOuterSimpleClass::AnonymousInnerSimpleClass>(), "AnonymousInnerSimpleClass");
+//     EXPECT_EQ(getDecodeClassName<AnonymousOuterSimpleClass::AnonymousInnerSimpleClass>(), "AnonymousInnerSimpleClass");
+//     EXPECT_EQ(getDecodeNamespaceName<AnonymousOuterSimpleClass::AnonymousInnerSimpleClass>(), "AnonymousOuterSimpleClass");
+//     EXPECT_EQ(getDecodeTemplateName<AnonymousOuterSimpleClass::AnonymousInnerSimpleClass>(), "");
+//
+//     EXPECT_EQ(getDecodeFullName<AnonymousOuterSimpleClass::AnonymousInnerSimpleStruct>(), "class AnonymousOuterSimpleClass::AnonymousInnerSimpleStruct");
+//     EXPECT_EQ(getDecodeTypeName<AnonymousOuterSimpleClass::AnonymousInnerSimpleStruct>(), "AnonymousInnerSimpleStruct");
+//     EXPECT_EQ(getDecodeClassName<AnonymousOuterSimpleClass::AnonymousInnerSimpleStruct>(), "AnonymousInnerSimpleStruct");
+//     EXPECT_EQ(getDecodeNamespaceName<AnonymousOuterSimpleClass::AnonymousInnerSimpleStruct>(), "AnonymousOuterSimpleClass");
+//     EXPECT_EQ(getDecodeTemplateName<AnonymousOuterSimpleClass::AnonymousInnerSimpleStruct>(), "");
+// }
