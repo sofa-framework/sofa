@@ -5,6 +5,7 @@ project(SofaBaseLinearSolver_test)
 set(SOURCE_FILES
     Matrix_test.cpp
     BaseMatrix_test.cpp
+    SparseMatrixProduct_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

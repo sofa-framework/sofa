@@ -27,11 +27,14 @@ set(HEADER_FILES
     ${SOFALINEARALGEBRASRC_ROOT}/MatrixExpr.h
     ${SOFALINEARALGEBRASRC_ROOT}/RotationMatrix.h
     ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrix.h
+    ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixProduct.h
     ${SOFALINEARALGEBRASRC_ROOT}/EigenBaseSparseMatrix.h
     ${SOFALINEARALGEBRASRC_ROOT}/EigenBaseSparseMatrix_MT.h
     ${SOFALINEARALGEBRASRC_ROOT}/EigenMatrixManipulator.h
     ${SOFALINEARALGEBRASRC_ROOT}/EigenSparseMatrix.h
     ${SOFALINEARALGEBRASRC_ROOT}/EigenVector.h
+    ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixProduct[CompressedRowSparseMatrix].h
+    ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixProduct[EigenSparseMatrix].h
 
 )
 
@@ -45,6 +48,8 @@ set(SOURCE_FILES
     ${SOFALINEARALGEBRASRC_ROOT}/RotationMatrix.cpp
     ${SOFALINEARALGEBRASRC_ROOT}/EigenMatrixManipulator.cpp
     ${SOFALINEARALGEBRASRC_ROOT}/EigenVector.cpp
+    ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixProduct[CompressedRowSparseMatrix].cpp
+    ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixProduct[EigenSparseMatrix].cpp
 )
 
 if (SOFA_OPENMP AND "${EIGEN3_VERSION}" VERSION_LESS 3.2.9)
