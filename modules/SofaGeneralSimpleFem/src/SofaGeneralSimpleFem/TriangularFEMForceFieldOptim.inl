@@ -196,13 +196,13 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleState(Index i, Triangl
 template< class DataTypes>
 void TriangularFEMForceFieldOptim<DataTypes>::createTriangleInfo(Index triangleIndex, TriangleInfo& ti, const Triangle& t, const sofa::type::vector<Index>&, const sofa::type::vector<double>&)
 {
-    initTriangleInfo(triangleIndex, ti, t, mstate->read(core::ConstVecCoordId::restPosition())->getValue());
+    initTriangleInfo(triangleIndex, ti, t, this->mstate->read(core::ConstVecCoordId::restPosition())->getValue());
 }
 
 template< class DataTypes>
 void TriangularFEMForceFieldOptim<DataTypes>::createTriangleState(Index triangleIndex, TriangleState& ti, const Triangle& t, const sofa::type::vector<Index>&, const sofa::type::vector<double>&)
 {
-    initTriangleState(triangleIndex, ti, t, mstate->read(core::ConstVecCoordId::position())->getValue());
+    initTriangleState(triangleIndex, ti, t, this->mstate->read(core::ConstVecCoordId::position())->getValue());
 }
 
 // --------------------------------------------------------------------------------------
