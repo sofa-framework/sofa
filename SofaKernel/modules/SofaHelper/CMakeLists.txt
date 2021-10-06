@@ -38,6 +38,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/RandomGenerator.h
     ${SRC_ROOT}/SimpleTimer.h
     ${SRC_ROOT}/ScopedAdvancedTimer.h
+    ${SRC_ROOT}/SofaException.h
     ${SRC_ROOT}/SortedPermutation.h
     ${SRC_ROOT}/StringUtils.h
     ${SRC_ROOT}/TagFactory.h
@@ -46,7 +47,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/decompose.h
     ${SRC_ROOT}/decompose.inl
     ${SRC_ROOT}/deque.h
-    ${SRC_ROOT}/SofaSimulationException.h
     ${SRC_ROOT}/hash.h
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/integer_id.h
@@ -127,6 +127,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/ScopedAdvancedTimer.cpp
     ${SRC_ROOT}/Polynomial_LD.cpp
     ${SRC_ROOT}/RandomGenerator.cpp
+    ${SRC_ROOT}/SofaException.cpp
     ${SRC_ROOT}/StringUtils.cpp
     ${SRC_ROOT}/TagFactory.cpp
     ${SRC_ROOT}/Utils.cpp

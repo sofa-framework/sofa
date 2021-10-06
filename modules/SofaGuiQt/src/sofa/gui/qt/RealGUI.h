@@ -167,7 +167,6 @@ private:
 public:
     //TODO: make a protected data with an accessor
     QSofaListView* simulationGraph;
-    bool isInInteractiveMode() const { return m_enableInteraction; }
 
 protected:
     /// create a viewer by default, otherwise you have to manage your own viewer
@@ -320,9 +319,6 @@ protected:
 
     sofa::helper::system::FileEventListener* m_filelistener {nullptr};
 private:
-    /// Open a file without catching the exception.
-    void fileOpenUnBoxed(std::string filename, bool temporaryFile, bool reload);
-
     void addViewer();//? where is the implementation ?
 
     /// Parse options from the RealGUI constructor

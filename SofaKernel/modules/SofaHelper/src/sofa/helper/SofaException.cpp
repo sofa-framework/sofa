@@ -25,30 +25,24 @@
 #include <string>
 #include <functional>
 #include <sstream>
+#include <sofa/helper/SofaException.h>
 #include <sofa/helper/logging/Messaging.h>
-
 #include <sofa/helper/BackTrace.h>
 namespace sofa::helper
 {
 
-class SofaSimulationException : public std::exception
+SofaException::SofaException(std::exception e)
 {
-    std::vector<std::string> stacktrace;
-    std::exception nested_exception;
-public:
-    SofaSimulationException(std::exception e)
-    {
-        stacktrace = sofa::helper::BackTrace::getTrace();
-        nested_exception = e;
-    }
+    stacktrace = sofa::helper::BackTrace::getTrace();
+    nested_exception = e;
+}
 
-    const std::vector<std::string>& getTrace() const { return stacktrace; }
+const std::vector<std::string>& SofaException::getTrace() const { return stacktrace; }
 
-    const char* what() const noexcept override
-    {
-        return nested_exception.what();
-    }
-};
+const char* SofaException::what() const noexcept
+{
+    return nested_exception.what();
+}
 
 void executeWithException(const std::string& src, bool withException, std::function<void()> cb)
 {
@@ -57,7 +51,7 @@ void executeWithException(const std::string& src, bool withException, std::funct
     try
     {
         cb();
-    } catch (const sofa::helper::SofaSimulationException& e)
+    } catch (const sofa::helper::SofaException& e)
     {
         std::stringstream tmp;
         tmp << "At:" << msgendl;

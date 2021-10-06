@@ -100,8 +100,7 @@ using sofa::helper::logging::ExceptionMessageHandler;
 
 #include <sofa/gui/ArgumentParser.h>
 
-#include <functional>
-#include <sofa/helper/SofaSimulationException.h>
+
 
 void addGUIParameters(sofa::gui::ArgumentParser* argumentParser)
 {
@@ -190,123 +189,123 @@ int main(int argc, char** argv)
     sofa::gui::ArgumentParser* argParser = new sofa::gui::ArgumentParser(argc, argv);
 
     argParser->addArgument(
-                cxxopts::value<bool>(showHelp)
-                ->default_value("false")
-                ->implicit_value("true"),
-                "h,help",
-                "Display this help message"
+        cxxopts::value<bool>(showHelp)
+        ->default_value("false")
+        ->implicit_value("true"),
+        "h,help",
+        "Display this help message"
     );
 
     argParser->addArgument(
-                cxxopts::value<bool>(startAnim)
-                ->default_value("false")
-                ->implicit_value("true"),
-                "a,start",
-                "start the animation loop"
+        cxxopts::value<bool>(startAnim)
+        ->default_value("false")
+        ->implicit_value("true"),
+        "a,start",
+        "start the animation loop"
     );
     argParser->addArgument(
-                cxxopts::value<bool>(computationTimeAtBegin)
-                ->default_value("false")
-                ->implicit_value("true"),
-                "b,computationTimeAtBegin",
-                "Output computation time statistics of the init (at the begin of the simulation)"
+        cxxopts::value<bool>(computationTimeAtBegin)
+        ->default_value("false")
+        ->implicit_value("true"),
+        "b,computationTimeAtBegin",
+        "Output computation time statistics of the init (at the begin of the simulation)"
     );
     argParser->addArgument(
-                cxxopts::value<unsigned int>(computationTimeSampling)
-                ->default_value("0"),
-                "computationTimeSampling",
-                "Frequency of display of the computation time statistics, in number of animation steps. 0 means never."
+        cxxopts::value<unsigned int>(computationTimeSampling)
+        ->default_value("0"),
+        "computationTimeSampling",
+        "Frequency of display of the computation time statistics, in number of animation steps. 0 means never."
     );
     argParser->addArgument(
-                cxxopts::value<std::string>(computationTimeOutputType)
-                ->default_value("stdout"),
-                "o,computationTimeOutputType",
-                "Output type for the computation time statistics: either stdout, json or ljson"
+        cxxopts::value<std::string>(computationTimeOutputType)
+        ->default_value("stdout"),
+        "o,computationTimeOutputType",
+        "Output type for the computation time statistics: either stdout, json or ljson"
     );
     argParser->addArgument(
-                cxxopts::value<std::string>(gui)->default_value(""),
-                "g,gui",
-                gui_help.c_str()
-                );
-    argParser->addArgument(
-                cxxopts::value<std::vector<std::string>>(plugins),
-                "l,load",
-                "load given plugins"
+        cxxopts::value<std::string>(gui)->default_value(""),
+        "g,gui",
+        gui_help.c_str()
     );
     argParser->addArgument(
-                cxxopts::value<bool>(noAutoloadPlugins)
-                ->default_value("false")
-                ->implicit_value("true"),
-                "noautoload",
-                "disable plugins autoloading"
+        cxxopts::value<std::vector<std::string>>(plugins),
+        "l,load",
+        "load given plugins"
     );
     argParser->addArgument(
-                cxxopts::value<bool>(noSceneCheck)
-                ->default_value("false")
-                ->implicit_value("true"),
-                "noscenecheck",
-                "disable scene checking for each scene loading"
+        cxxopts::value<bool>(noAutoloadPlugins)
+        ->default_value("false")
+        ->implicit_value("true"),
+        "noautoload",
+        "disable plugins autoloading"
     );
     argParser->addArgument(
-                cxxopts::value<bool>(printFactory)
-                ->default_value("false")
-                ->implicit_value("true"),
-                "p,factory",
-                "print factory logs"
+        cxxopts::value<bool>(noSceneCheck)
+        ->default_value("false")
+        ->implicit_value("true"),
+        "noscenecheck",
+        "disable scene checking for each scene loading"
     );
     argParser->addArgument(
-                cxxopts::value<bool>(loadRecent)
-                ->default_value("false")->implicit_value("true"),
-                "r,recent",
-                "load most recently opened file"
+        cxxopts::value<bool>(printFactory)
+        ->default_value("false")
+        ->implicit_value("true"),
+        "p,factory",
+        "print factory logs"
     );
     argParser->addArgument(
-                cxxopts::value<std::string>(simulationType),
-                "s,simu",
-                "select the type of simulation (bgl, dag, tree)"
+        cxxopts::value<bool>(loadRecent)
+        ->default_value("false")->implicit_value("true"),
+        "r,recent",
+        "load most recently opened file"
     );
     argParser->addArgument(
-                cxxopts::value<bool>(temporaryFile)
-                ->default_value("false")->implicit_value("true"),
-                "tmp",
-                "the loaded scene won't appear in history of opened files"
+        cxxopts::value<std::string>(simulationType),
+        "s,simu", 
+        "select the type of simulation (bgl, dag, tree)"
     );
     argParser->addArgument(
-                cxxopts::value<bool>(testMode)
-                ->default_value("false")->implicit_value("true"),
-                "test",
-                "select test mode with xml output after N iteration"
+        cxxopts::value<bool>(temporaryFile)
+        ->default_value("false")->implicit_value("true"),
+        "tmp",
+        "the loaded scene won't appear in history of opened files"
     );
     argParser->addArgument(
-                cxxopts::value<std::string>(verif)
-                ->default_value(""),
-                "v,verification",
-                "load verification data for the scene"
+        cxxopts::value<bool>(testMode)
+        ->default_value("false")->implicit_value("true"),
+        "test",
+        "select test mode with xml output after N iteration"
     );
     argParser->addArgument(
-                cxxopts::value<std::string>(colorsStatus)
-                ->default_value("auto")
-                ->implicit_value("yes"),
-                "c,colors",
-                "use colors on stdout and stderr (yes, no, auto)"
+        cxxopts::value<std::string>(verif)
+        ->default_value(""),
+        "v,verification",
+        "load verification data for the scene"
     );
     argParser->addArgument(
-                cxxopts::value<std::string>(messageHandler)
-                ->default_value("auto"),
-                "f,formatting",
-                "select the message formatting to use (auto, clang, sofa, rich, test)"
+        cxxopts::value<std::string>(colorsStatus)
+        ->default_value("auto")
+        ->implicit_value("yes"),
+        "c,colors",
+        "use colors on stdout and stderr (yes, no, auto)"
     );
     argParser->addArgument(
-                cxxopts::value<bool>(enableInteraction)
-                ->default_value("false")
-                ->implicit_value("true"),
-                "i,interactive",
-                "enable interactive mode for the GUI which includes idle and mouse events (EXPERIMENTAL)"
+        cxxopts::value<std::string>(messageHandler)
+        ->default_value("auto"),
+        "f,formatting",
+        "select the message formatting to use (auto, clang, sofa, rich, test)"
     );
     argParser->addArgument(
-                cxxopts::value<std::vector<std::string> >(),
-                "argv",
-                "forward extra args to the python interpreter"
+        cxxopts::value<bool>(enableInteraction)
+        ->default_value("false")
+        ->implicit_value("true"),
+        "i,interactive",
+        "enable interactive mode for the GUI which includes idle and mouse events (EXPERIMENTAL)"
+    );
+    argParser->addArgument(
+        cxxopts::value<std::vector<std::string> >(),
+        "argv",
+        "forward extra args to the python interpreter"
     );
 
     addGUIParameters(argParser);
@@ -463,10 +462,7 @@ int main(int argc, char** argv)
         sofa::helper::AdvancedTimer::begin("Init");
     }
 
-    sofa::helper::executeWithException(
-                         "Main::init()",
-                         enableInteraction,
-                         [groot](){sofa::simulation::getSimulation()->init(groot.get());});
+    sofa::simulation::getSimulation()->init(groot.get());
     if( computationTimeAtBegin )
     {
         msg_info("") << sofa::helper::AdvancedTimer::end("Init", groot->getTime(), groot->getDt());
