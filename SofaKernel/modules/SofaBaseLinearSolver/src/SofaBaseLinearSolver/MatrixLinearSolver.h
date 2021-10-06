@@ -34,11 +34,11 @@
 #include <SofaBaseLinearSolver/DiagonalMatrix.h>
 #include <SofaBaseLinearSolver/RotationMatrix.h>
 
-#if SOFABASELINEARSOLVER_USE_CRSMULTIMATRIXACCESSOR
+#if SOFABASELINEARSOLVER_ENABLE_CRSMULTIMATRIXACCESSOR
 #include <SofaBaseLinearSolver/CRSMultiMatrixAccessor.h>
 #else
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
-#endif
+#endif // SOFABASELINEARSOLVER_ENABLE_CRSMULTIMATRIXACCESSOR
 
 namespace sofa::component::linearsolver
 {
@@ -327,11 +327,11 @@ protected:
         Vector* systemLHVector;
         core::MultiVecDerivId solutionVecId;
 
-#if SOFABASELINEARSOLVER_USE_CRSMULTIMATRIXACCESSOR
+#if SOFABASELINEARSOLVER_ENABLE_CRSMULTIMATRIXACCESSOR
         CRSMultiMatrixAccessor matrixAccessor;
 #else
         DefaultMultiMatrixAccessor matrixAccessor;
-#endif
+#endif // SOFABASELINEARSOLVER_ENABLE_CRSMULTIMATRIXACCESSOR
 
         LinearSystemData()
                 : needInvert(true), systemMatrix(nullptr), systemRHVector(nullptr), systemLHVector(nullptr),
