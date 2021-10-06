@@ -103,7 +103,6 @@ message(STATUS "SofaMiscModule: build all maintained sofa components.")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaGeneralMeshCollision SofaGeneralDeformable SofaConstraint SofaExplicitOdeSolver SofaGeneralExplicitOdeSolver SofaImplicitOdeSolver SofaBaseCollision)
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaEigen2Solver)
 if(SofaSphFluid_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaSphFluid)
 endif()

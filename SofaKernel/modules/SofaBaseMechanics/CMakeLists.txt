@@ -67,12 +67,11 @@ set(SOURCE_FILES
     ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperHexahedronSetTopology.cpp
 )
 
-sofa_find_package(SofaEigen2Solver REQUIRED)
 sofa_find_package(SofaBaseTopology REQUIRED)
 sofa_find_package(SofaBaseLinearSolver REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaEigen2Solver SofaBaseLinearSolver)
+target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaBaseLinearSolver)
 
 if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Silence attribute warnings (for example, ignored already defined external template)
