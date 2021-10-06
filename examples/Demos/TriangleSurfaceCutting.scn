@@ -7,6 +7,7 @@
     <RequiredPlugin name='SofaBoundaryCondition'/>
     <RequiredPlugin name='SofaMeshCollision'/>
     <RequiredPlugin name='SofaLoader'/>
+	<RequiredPlugin name='CImgPlugin'/>
     
 
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
@@ -29,7 +30,7 @@
         <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" />
         <TriangleCollisionModel />
         <Node >
-            <OglModel name="Visual" texcoords="@../meshLoader.texcoords" />
+		    <OglModel name="Visual" texcoords="@../meshLoader.texcoords" texturename="textures/colorMap.png" />
             <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>
