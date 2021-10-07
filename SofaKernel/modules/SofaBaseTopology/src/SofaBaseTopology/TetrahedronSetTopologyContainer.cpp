@@ -1174,10 +1174,9 @@ void TetrahedronSetTopologyContainer::setTetrahedronTopologyToDirty()
     m_tetrahedronTopologyDirty = true;
 
     // set all engines link to this container to dirty
-    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-    for (it = m_topologyHandlerList.begin(); it!=m_topologyHandlerList.end(); ++it)
+    auto& tetraTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::TETRAHEDRON);
+    for (auto topoEngine : tetraTopologyHandlerList)
     {
-        sofa::core::topology::TopologyHandler* topoEngine = (*it);
         topoEngine->setDirtyValue();
         msg_info() << "Tetrahedron Topology Set dirty engine: " << topoEngine->getName();
     }
@@ -1188,21 +1187,21 @@ void TetrahedronSetTopologyContainer::cleanTetrahedronTopologyFromDirty()
     m_tetrahedronTopologyDirty = false;
 
     // security, clean all engines to avoid loops
-    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-    for ( it = m_topologyHandlerList.begin(); it!=m_topologyHandlerList.end(); ++it)
+    auto& tetraTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::TETRAHEDRON);
+    for (auto topoEngine : tetraTopologyHandlerList)
     {
-        if ((*it)->isDirty())
+        if (topoEngine->isDirty())
         {
-            msg_warning() << "Tetrahedron Topology update did not clean engine: " << (*it)->getName();
-            (*it)->cleanDirty();
+            msg_warning() << "Tetrahedron Topology update did not clean engine: " << topoEngine->getName();
+            topoEngine->cleanDirty();
         }
     }
 }
 
 void TetrahedronSetTopologyContainer::updateTopologyHandlerGraph()
 {
-    // calling real update Data graph function implemented once in TopolyContainer
-    this->updateDataEngineGraph(this->d_tetrahedron);
+    // calling real update Data graph function implemented once in TopologyContainer
+    this->updateDataEngineGraph(this->d_tetrahedron, sofa::geometry::ElementType::TETRAHEDRON);
 
     // will concatenate with edges one:
     TriangleSetTopologyContainer::updateTopologyHandlerGraph();

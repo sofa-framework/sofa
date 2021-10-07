@@ -1193,10 +1193,9 @@ void HexahedronSetTopologyContainer::setHexahedronTopologyToDirty()
     m_hexahedronTopologyDirty = true;
 
     // set all engines link to this container to dirty
-    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-    for (it = m_topologyHandlerList.begin(); it!=m_topologyHandlerList.end(); ++it)
+    auto& hexaTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::HEXAHEDRON);
+    for (auto topoEngine : hexaTopologyHandlerList)
     {
-        sofa::core::topology::TopologyHandler* topoEngine = (*it);
         topoEngine->setDirtyValue();
         msg_info() << "Hexahedron Topology Set dirty engine: " << topoEngine->getName();
     }
@@ -1207,21 +1206,21 @@ void HexahedronSetTopologyContainer::cleanHexahedronTopologyFromDirty()
     m_hexahedronTopologyDirty = false;
 
     // security, clean all engines to avoid loops
-    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-    for ( it = m_topologyHandlerList.begin(); it!=m_topologyHandlerList.end(); ++it)
+    auto& hexaTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::HEXAHEDRON);
+    for (auto topoEngine : hexaTopologyHandlerList)
     {
-        if ((*it)->isDirty())
+        if (topoEngine->isDirty())
         {
-            msg_warning() << "Hexahedron Topology update did not clean engine: " << (*it)->getName();
-            (*it)->cleanDirty();
+            msg_warning() << "Hexahedron Topology update did not clean engine: " << topoEngine->getName();
+            topoEngine->cleanDirty();
         }
     }
 }
 
 void HexahedronSetTopologyContainer::updateTopologyHandlerGraph()
 {
-    // calling real update Data graph function implemented once in PointSetTopologyModifier
-    this->updateDataEngineGraph(this->d_hexahedron);
+    // calling real update Data graph function implemented once in TopologyContainer
+    this->updateDataEngineGraph(this->d_hexahedron, sofa::geometry::ElementType::HEXAHEDRON);
 
     // will concatenate with edges one:
     QuadSetTopologyContainer::updateTopologyHandlerGraph();

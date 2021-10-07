@@ -966,11 +966,10 @@ void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
         return PointSetTopologyModifier::propagateTopologicalEngineChanges();
 
     sofa::helper::AdvancedTimer::stepBegin("EdgeSetTopologyModifier::propagateTopologicalEngineChanges");
-    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-    for ( it = m_container->m_topologyHandlerList.begin(); it!=m_container->m_topologyHandlerList.end(); ++it)
+
+    auto& edgeTopologyHandlerList = m_container->getTopologyHandlerList(sofa::geometry::ElementType::EDGE);
+    for (auto topoEngine : edgeTopologyHandlerList)
     {
-        // no need to dynamic cast this time? TO BE CHECKED!
-        sofa::core::topology::TopologyHandler* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
             topoEngine->update();

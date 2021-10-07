@@ -743,13 +743,13 @@ void QuadSetTopologyContainer::setQuadTopologyToDirty()
     m_quadTopologyDirty = true;
 
     // set all engines link to this container to dirty
-    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-    for (it = m_topologyHandlerList.begin(); it!=m_topologyHandlerList.end(); ++it)
+    auto& quadTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::QUAD);
+    for (auto topoEngine : quadTopologyHandlerList)
     {
-        sofa::core::topology::TopologyHandler* topoEngine = (*it);
         topoEngine->setDirtyValue();
         msg_info() << "Quad Topology Set dirty engine: " << topoEngine->getName();
     }
+
 }
 
 void QuadSetTopologyContainer::cleanQuadTopologyFromDirty()
@@ -757,21 +757,21 @@ void QuadSetTopologyContainer::cleanQuadTopologyFromDirty()
     m_quadTopologyDirty = false;
 
     // security, clean all engines to avoid loops
-    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-    for ( it = m_topologyHandlerList.begin(); it!=m_topologyHandlerList.end(); ++it)
+    auto& quadTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::QUAD);
+    for (auto topoEngine : quadTopologyHandlerList)
     {
-        if ((*it)->isDirty())
+        if (topoEngine->isDirty())
         {
-            msg_warning() << "Quad Topology update did not clean engine: " << (*it)->getName();
-            (*it)->cleanDirty();
+            msg_warning() << "Quad Topology update did not clean engine: " << topoEngine->getName();
+            topoEngine->cleanDirty();
         }
     }
 }
 
 void QuadSetTopologyContainer::updateTopologyHandlerGraph()
 {
-    // calling real update Data graph function implemented once in TopolyContainer
-    this->updateDataEngineGraph(this->d_quad);
+    // calling real update Data graph function implemented once in TopologyContainer
+    this->updateDataEngineGraph(this->d_quad, sofa::geometry::ElementType::QUAD);
 
     // will concatenate with edges one:
     EdgeSetTopologyContainer::updateTopologyHandlerGraph();

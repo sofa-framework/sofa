@@ -934,13 +934,12 @@ void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
         return EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
 
     sofa::helper::AdvancedTimer::stepBegin("TriangleSetTopologyModifier::propagateTopologicalEngineChanges");
-    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
 
-    for ( it = m_container->m_topologyHandlerList.begin(); it!=m_container->m_topologyHandlerList.end(); ++it)
+    auto& triangleTopologyHandlerList = m_container->getTopologyHandlerList(sofa::geometry::ElementType::TRIANGLE);
+    for (auto topoEngine : triangleTopologyHandlerList)
     {
-        sofa::core::topology::TopologyHandler* topoEngine = (*it);
         if (topoEngine->isDirty())
-        {            
+        {
             topoEngine->update();
         }
     }

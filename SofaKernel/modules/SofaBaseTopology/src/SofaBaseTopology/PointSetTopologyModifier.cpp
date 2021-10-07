@@ -458,12 +458,11 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
 
     sofa::helper::AdvancedTimer::stepBegin("PointSetTopologyModifier::propagateTopologicalEngineChanges");
     // get directly the list of engines created at init: case of removing.... for the moment
-    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
 
-    for ( it = m_container->m_topologyHandlerList.begin(); it!=m_container->m_topologyHandlerList.end(); ++it)
+    auto& pointTopologyHandlerList = m_container->getTopologyHandlerList(sofa::geometry::ElementType::POINT);
+    for (auto topoEngine : pointTopologyHandlerList)
     {
         // no need to dynamic cast this time? TO BE CHECKED!
-        sofa::core::topology::TopologyHandler* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
             topoEngine->update();

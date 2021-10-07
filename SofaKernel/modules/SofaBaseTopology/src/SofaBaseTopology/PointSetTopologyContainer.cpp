@@ -212,7 +212,6 @@ void PointSetTopologyContainer::cleanPointTopologyFromDirty()
 
     // security, clean all engines to avoid loops
     auto& pointTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::POINT);
-    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
     for (auto topoEngine : pointTopologyHandlerList)
     {
         if (topoEngine->isDirty())

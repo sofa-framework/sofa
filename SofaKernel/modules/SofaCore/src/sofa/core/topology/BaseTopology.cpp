@@ -111,7 +111,7 @@ const std::list<TopologyHandler*>& TopologyContainer::getTopologyHandlerList(sof
 void TopologyContainer::linkTopologyHandlerToData(TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
 {
     // default implementation dont do anything
-    // as it does not have any data itself
+    // as it does not hold any data itself
     SOFA_UNUSED(topologyHandler);
     SOFA_UNUSED(elementType);
 }
@@ -269,25 +269,25 @@ void TopologyContainer::updateDataEngineGraph(const sofa::core::objectmodel::Bas
     // Reorder engine graph by inverting order and avoiding duplicate engines
     std::list<sofa::core::topology::TopologyHandler*>::reverse_iterator it_engines_rev;
 
-    for(auto& topologyHandlerList : m_topologyHandlerListPerElement)
+    auto& topologyHandlerList = m_topologyHandlerListPerElement[getElementTypeIndex(elementType)];
+
+    for (it_engines_rev = _engines.rbegin(); it_engines_rev != _engines.rend(); ++it_engines_rev)
     {
-        for (it_engines_rev = _engines.rbegin(); it_engines_rev != _engines.rend(); ++it_engines_rev)
+        bool find = false;
+
+        for (it_engines = topologyHandlerList.begin(); it_engines != topologyHandlerList.end(); ++it_engines)
         {
-            bool find = false;
-
-            for (it_engines = topologyHandlerList.begin(); it_engines != topologyHandlerList.end(); ++it_engines)
+            if ((*it_engines_rev) == (*it_engines))
             {
-                if ((*it_engines_rev) == (*it_engines))
-                {
-                    find = true;
-                    break;
-                }
+                find = true;
+                break;
             }
-
-            if (!find)
-                topologyHandlerList.push_back((*it_engines_rev));
         }
+
+        if (!find)
+            topologyHandlerList.push_back((*it_engines_rev));
     }
+    
 
     return;
 }

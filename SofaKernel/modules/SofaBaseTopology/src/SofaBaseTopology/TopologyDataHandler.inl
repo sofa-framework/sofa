@@ -98,7 +98,7 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToPointDataArray()
     //m_topology->linkToDataArray(sofa::core::topology::TopologyElementType::POINT, this)
     
     _container->d_initPoints.addOutput(this);
-    _container->addTopologyHandler(this);
+    _container->addTopologyHandler(this, sofa::core::topology::TopologyElementType::POINT);
     m_pointsLinked = true;
 }
 
@@ -123,7 +123,7 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToEdgeDataArray()
     }
 
     _container->d_edge.addOutput(this);
-    _container->addTopologyHandler(this);
+    _container->addTopologyHandler(this, sofa::core::topology::TopologyElementType::EDGE);
     m_edgesLinked = true;
 }
 
@@ -148,7 +148,7 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToTriangleDataArray()
     }
 
     _container->d_triangle.addOutput(this);
-    _container->addTopologyHandler(this);
+    _container->addTopologyHandler(this, sofa::core::topology::TopologyElementType::TRIANGLE);
     m_trianglesLinked = true;
 }
 
@@ -173,7 +173,7 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToQuadDataArray()
     }
 
     _container->d_quad.addOutput(this);
-    _container->addTopologyHandler(this);
+    _container->addTopologyHandler(this, sofa::core::topology::TopologyElementType::QUAD);
     m_quadsLinked = true;
 }
 
@@ -198,7 +198,7 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToTetrahedronDataArray
     }
 
     _container->d_tetrahedron.addOutput(this);
-    _container->addTopologyHandler(this);
+    _container->addTopologyHandler(this, sofa::core::topology::TopologyElementType::TETRAHEDRON);
     m_tetrahedraLinked = true;
 }
 
@@ -223,7 +223,7 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToHexahedronDataArray(
     }
 
     _container->d_hexahedron.addOutput(this);
-    _container->addTopologyHandler(this);
+    _container->addTopologyHandler(this, sofa::core::topology::TopologyElementType::HEXAHEDRON);
     m_hexahedraLinked = true;
 }
 

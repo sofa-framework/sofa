@@ -499,11 +499,9 @@ void QuadSetTopologyModifier::propagateTopologicalEngineChanges()
     if (!m_container->isQuadTopologyDirty()) // quad Data has not been touched
         return EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
 
-    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-
-    for ( it = m_container->m_topologyHandlerList.begin(); it!=m_container->m_topologyHandlerList.end(); ++it)
+    auto& quadTopologyHandlerList = m_container->getTopologyHandlerList(sofa::geometry::ElementType::QUAD);
+    for (auto topoEngine : quadTopologyHandlerList)
     {
-        sofa::core::topology::TopologyHandler* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
             topoEngine->update();

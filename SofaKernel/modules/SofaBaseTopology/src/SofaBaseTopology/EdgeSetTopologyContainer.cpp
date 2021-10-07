@@ -544,13 +544,13 @@ void EdgeSetTopologyContainer::setEdgeTopologyToDirty()
     // set this container to dirty
     m_edgeTopologyDirty = true;
 
-    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-    for (it = m_topologyHandlerList.begin(); it!=m_topologyHandlerList.end(); ++it)
+    auto& edgeTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::EDGE);
+    for (auto topoEngine : edgeTopologyHandlerList)
     {
-        sofa::core::topology::TopologyHandler* topoEngine = (*it);
         topoEngine->setDirtyValue();
         msg_info() << "Edge Topology Set dirty engine: " << topoEngine->getName();
     }
+
 }
 
 void EdgeSetTopologyContainer::cleanEdgeTopologyFromDirty()
@@ -558,20 +558,20 @@ void EdgeSetTopologyContainer::cleanEdgeTopologyFromDirty()
     m_edgeTopologyDirty = false;
 
     // security, clean all engines to avoid loops
-    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-    for ( it = m_topologyHandlerList.begin(); it!=m_topologyHandlerList.end(); ++it)
+    auto& edgeTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::EDGE);
+    for (auto topoEngine : edgeTopologyHandlerList)
     {
-        if ((*it)->isDirty())
+        if (topoEngine->isDirty())
         {
-            msg_warning() << "Edge Topology update did not clean engine: " << (*it)->getName();
-            (*it)->cleanDirty();
+            msg_warning() << "Edge Topology update did not clean engine: " << topoEngine->getName();
+            topoEngine->cleanDirty();
         }
     }
 }
 
 void EdgeSetTopologyContainer::updateTopologyHandlerGraph()
 {
-    this->updateDataEngineGraph(this->d_edge);
+    this->updateDataEngineGraph(this->d_edge, sofa::geometry::ElementType::EDGE);
 
     // will concatenate with points one:
     PointSetTopologyContainer::updateTopologyHandlerGraph();
