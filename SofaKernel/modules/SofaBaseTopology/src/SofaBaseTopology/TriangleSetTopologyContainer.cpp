@@ -1047,5 +1047,18 @@ void TriangleSetTopologyContainer::updateTopologyHandlerGraph()
     EdgeSetTopologyContainer::updateTopologyHandlerGraph();
 }
 
+bool TriangleSetTopologyContainer::linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
+{
+    if (elementType == sofa::geometry::ElementType::TRIANGLE)
+    {
+        d_triangle.addOutput(topologyHandler);
+        return true;
+    }
+    else
+    {
+        return EdgeSetTopologyContainer::linkTopologyHandlerToData(topologyHandler, elementType);
+    }
+}
+
 
 } //namespace sofa::component::topology

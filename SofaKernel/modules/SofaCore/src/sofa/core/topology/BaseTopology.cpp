@@ -108,12 +108,14 @@ const std::list<TopologyHandler*>& TopologyContainer::getTopologyHandlerList(sof
     return m_topologyHandlerListPerElement[getElementTypeIndex(elementType)];
 }
 
-void TopologyContainer::linkTopologyHandlerToData(TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
+bool TopologyContainer::linkTopologyHandlerToData(TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
 {
     // default implementation dont do anything
     // as it does not hold any data itself
     SOFA_UNUSED(topologyHandler);
     SOFA_UNUSED(elementType);
+
+    return true;
 }
 
 std::list<const TopologyChange *>::const_iterator TopologyContainer::endChange() const

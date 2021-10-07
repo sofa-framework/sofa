@@ -777,4 +777,17 @@ void QuadSetTopologyContainer::updateTopologyHandlerGraph()
     EdgeSetTopologyContainer::updateTopologyHandlerGraph();
 }
 
+bool QuadSetTopologyContainer::linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
+{
+    if (elementType == sofa::geometry::ElementType::QUAD)
+    {
+        d_edge.addOutput(topologyHandler);
+        return true;
+    }
+    else
+    {
+        return EdgeSetTopologyContainer::linkTopologyHandlerToData(topologyHandler, elementType);
+    }
+}
+
 } //namespace sofa::component::topology

@@ -312,6 +312,8 @@ public:
     /** \brief Returns the type of the topology */
 	sofa::core::topology::TopologyElementType getTopologyType() const override {return core::topology::TopologyElementType::HEXAHEDRON;}
 
+    bool linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType);
+
 protected:
 
     /** \brief Creates the EdgeSet array.

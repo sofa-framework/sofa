@@ -265,13 +265,18 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
     msg_info() << tmpmsg.str() ;
 }
 
-//void PointSetTopologyContainer::linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
-//{
-//    if (elementType == sofa::geometry::ElementType::POINT)
-//    {
-//
-//    }
-//}
+bool PointSetTopologyContainer::linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
+{
+    if (elementType == sofa::geometry::ElementType::POINT)
+    {
+        d_initPoints.addOutput(topologyHandler);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 
 } //namespace sofa::component::topology

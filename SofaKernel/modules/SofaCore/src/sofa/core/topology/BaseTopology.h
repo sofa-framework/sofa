@@ -264,7 +264,7 @@ public:
     /** \ brief Generic function to link potential data (related to a type of element) with a topologyHandler
     *
     */
-    virtual void linkTopologyHandlerToData(TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType);
+    virtual bool linkTopologyHandlerToData(TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType);
 
 public:
     virtual void updateTopologyHandlerGraph() {}

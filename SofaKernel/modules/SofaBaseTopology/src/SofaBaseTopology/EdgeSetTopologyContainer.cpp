@@ -578,4 +578,17 @@ void EdgeSetTopologyContainer::updateTopologyHandlerGraph()
 
 }
 
+bool EdgeSetTopologyContainer::linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
+{
+    if (elementType == sofa::geometry::ElementType::EDGE)
+    {
+        d_edge.addOutput(topologyHandler);
+        return true;
+    }
+    else
+    {
+        return PointSetTopologyContainer::linkTopologyHandlerToData(topologyHandler, elementType);
+    }
+}
+
 } //namespace sofa::component::topology

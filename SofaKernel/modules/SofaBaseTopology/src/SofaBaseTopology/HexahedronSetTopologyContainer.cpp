@@ -1226,4 +1226,17 @@ void HexahedronSetTopologyContainer::updateTopologyHandlerGraph()
     QuadSetTopologyContainer::updateTopologyHandlerGraph();
 }
 
+bool HexahedronSetTopologyContainer::linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
+{
+    if (elementType == sofa::geometry::ElementType::HEXAHEDRON)
+    {
+        d_hexahedron.addOutput(topologyHandler);
+        return true;
+    }
+    else
+    {
+        return QuadSetTopologyContainer::linkTopologyHandlerToData(topologyHandler, elementType);
+    }
+}
+
 } //namespace sofa::component::topology

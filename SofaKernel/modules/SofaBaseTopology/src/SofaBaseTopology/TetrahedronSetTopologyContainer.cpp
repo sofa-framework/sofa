@@ -1207,6 +1207,19 @@ void TetrahedronSetTopologyContainer::updateTopologyHandlerGraph()
     TriangleSetTopologyContainer::updateTopologyHandlerGraph();
 }
 
+bool TetrahedronSetTopologyContainer::linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
+{
+    if (elementType == sofa::geometry::ElementType::TETRAHEDRON)
+    {
+        d_tetrahedron.addOutput(topologyHandler);
+        return true;
+    }
+    else
+    {
+        return TriangleSetTopologyContainer::linkTopologyHandlerToData(topologyHandler, elementType);
+    }
+}
+
 std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t)
 {
     helper::ReadAccessor< Data< sofa::type::vector<TetrahedronSetTopologyContainer::Tetrahedron> > > m_tetrahedron = t.d_tetrahedron;
