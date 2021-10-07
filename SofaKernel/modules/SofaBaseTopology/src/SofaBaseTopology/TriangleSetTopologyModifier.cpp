@@ -936,7 +936,7 @@ void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
     sofa::helper::AdvancedTimer::stepBegin("TriangleSetTopologyModifier::propagateTopologicalEngineChanges");
     std::list<sofa::core::topology::TopologyHandler *>::iterator it;
 
-    for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
+    for ( it = m_container->m_topologyHandlerList.begin(); it!=m_container->m_topologyHandlerList.end(); ++it)
     {
         sofa::core::topology::TopologyHandler* topoEngine = (*it);
         if (topoEngine->isDirty())

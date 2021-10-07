@@ -246,7 +246,7 @@ public:
 
     /// TopologyHandler interactions
     ///@{
-    const std::list<TopologyHandler *> &getTopologyHandlerList() const { return m_TopologyHandlerList; }
+    const std::list<TopologyHandler *> &getTopologyHandlerList() const { return m_topologyHandlerList; }
 
     /** \brief Adds a TopologyHandler to the list.
     */
@@ -259,6 +259,8 @@ public:
     void resetTopologyHandlerList();
 
     ///@}
+    void updateDataEngineGraph(const sofa::core::objectmodel::BaseData& my_Data);
+
 
 
 public:
@@ -271,7 +273,11 @@ public:
     Data <std::list<const TopologyChange *> >m_stateChangeList;
 
     /// List of topology engines which will interact on all topological Data.
-    std::list<TopologyHandler *> m_TopologyHandlerList;
+    std::list<TopologyHandler *> m_topologyHandlerList;
+
+    /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
+    sofa::type::vector< sofa::type::vector<std::string> > m_dataGraph;
+    sofa::type::vector< sofa::type::vector<std::string> > m_enginesGraph;
 
 public:
 

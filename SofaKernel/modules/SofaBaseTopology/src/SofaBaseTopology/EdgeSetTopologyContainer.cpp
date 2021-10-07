@@ -545,7 +545,7 @@ void EdgeSetTopologyContainer::setEdgeTopologyToDirty()
     m_edgeTopologyDirty = true;
 
     std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-    for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    for (it = m_topologyHandlerList.begin(); it!=m_topologyHandlerList.end(); ++it)
     {
         sofa::core::topology::TopologyHandler* topoEngine = (*it);
         topoEngine->setDirtyValue();
@@ -559,7 +559,7 @@ void EdgeSetTopologyContainer::cleanEdgeTopologyFromDirty()
 
     // security, clean all engines to avoid loops
     std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-    for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    for ( it = m_topologyHandlerList.begin(); it!=m_topologyHandlerList.end(); ++it)
     {
         if ((*it)->isDirty())
         {
@@ -571,17 +571,11 @@ void EdgeSetTopologyContainer::cleanEdgeTopologyFromDirty()
 
 void EdgeSetTopologyContainer::updateTopologyHandlerGraph()
 {
-    this->updateDataEngineGraph(this->d_edge, this->m_enginesList);
+    this->updateDataEngineGraph(this->d_edge);
 
     // will concatenate with points one:
     PointSetTopologyContainer::updateTopologyHandlerGraph();
 
 }
-
-void EdgeSetTopologyContainer::addTopologyHandler(sofa::core::topology::TopologyHandler* _TopologyHandler)
-{
-    this->m_enginesList.push_back(_TopologyHandler);
-}
-
 
 } //namespace sofa::component::topology

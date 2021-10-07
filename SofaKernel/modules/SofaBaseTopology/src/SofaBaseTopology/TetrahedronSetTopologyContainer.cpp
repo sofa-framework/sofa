@@ -1175,7 +1175,7 @@ void TetrahedronSetTopologyContainer::setTetrahedronTopologyToDirty()
 
     // set all engines link to this container to dirty
     std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-    for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    for (it = m_topologyHandlerList.begin(); it!=m_topologyHandlerList.end(); ++it)
     {
         sofa::core::topology::TopologyHandler* topoEngine = (*it);
         topoEngine->setDirtyValue();
@@ -1189,7 +1189,7 @@ void TetrahedronSetTopologyContainer::cleanTetrahedronTopologyFromDirty()
 
     // security, clean all engines to avoid loops
     std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-    for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    for ( it = m_topologyHandlerList.begin(); it!=m_topologyHandlerList.end(); ++it)
     {
         if ((*it)->isDirty())
         {
@@ -1201,16 +1201,11 @@ void TetrahedronSetTopologyContainer::cleanTetrahedronTopologyFromDirty()
 
 void TetrahedronSetTopologyContainer::updateTopologyHandlerGraph()
 {
-    // calling real update Data graph function implemented once in PointSetTopologyModifier
-    this->updateDataEngineGraph(this->d_tetrahedron, this->m_enginesList);
+    // calling real update Data graph function implemented once in TopolyContainer
+    this->updateDataEngineGraph(this->d_tetrahedron);
 
     // will concatenate with edges one:
     TriangleSetTopologyContainer::updateTopologyHandlerGraph();
-}
-
-void TetrahedronSetTopologyContainer::addTopologyHandler(sofa::core::topology::TopologyHandler* _TopologyHandler)
-{
-    this->m_enginesList.push_back(_TopologyHandler);
 }
 
 std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t)

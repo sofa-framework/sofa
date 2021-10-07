@@ -58,7 +58,6 @@ int PointSetTopologyContainerClass = core::RegisterObject("Point set topology co
 PointSetTopologyContainer::PointSetTopologyContainer(Size npoints)
     : d_initPoints (initData(&d_initPoints, "position", "Initial position of points",true,true))
     , d_checkTopology (initData(&d_checkTopology, false, "checkTopology", "Parameter to activate internal topology checks (might slow down the simulation)"))
-    , m_pointTopologyDirty(false)
     , nbPoints (initData(&nbPoints, npoints, "nbPoints", "Number of points"))
     , points(initData(&points, "points","List of point indices"))
 {
@@ -183,16 +182,9 @@ void PointSetTopologyContainer::removePoint()
     setNbPoints( nbPoints.getValue() - 1 );
 }
 
-
 void PointSetTopologyContainer::updateTopologyHandlerGraph()
 {
-    this->updateDataEngineGraph(this->d_initPoints, this->m_enginesList);
-}
-
-
-void PointSetTopologyContainer::addTopologyHandler(sofa::core::topology::TopologyHandler * _TopologyHandler)
-{
-    this->m_enginesList.push_back(_TopologyHandler);
+    this->updateDataEngineGraph(this->d_initPoints);
 }
 
 const sofa::type::vector< PointSetTopologyContainer::PointID >& PointSetTopologyContainer::getPoints() const
@@ -207,7 +199,7 @@ void PointSetTopologyContainer::setPointTopologyToDirty()
 
     // set all engines link to this container to dirty
     std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-    for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    for (it = m_topologyHandlerList.begin(); it!= m_topologyHandlerList.end(); ++it)
     {
         sofa::core::topology::TopologyHandler* topoEngine = (*it);
         topoEngine->setDirtyValue();
@@ -221,7 +213,7 @@ void PointSetTopologyContainer::cleanPointTopologyFromDirty()
 
     // security, clean all engines to avoid loops
     std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-    for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    for ( it = m_topologyHandlerList.begin(); it!= m_topologyHandlerList.end(); ++it)
     {
         if ((*it)->isDirty())
         {
@@ -229,118 +221,6 @@ void PointSetTopologyContainer::cleanPointTopologyFromDirty()
             (*it)->cleanDirty();
         }
     }
-}
-
-
-void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::BaseData &my_Data, std::list<sofa::core::topology::TopologyHandler *> &my_enginesList)
-{
-    // clear data stored by previous call of this function
-    my_enginesList.clear();
-    this->m_enginesGraph.clear();
-    this->m_dataGraph.clear();
-
-
-    sofa::core::objectmodel::DDGNode::DDGLinkContainer _outs = my_Data.getOutputs();
-    sofa::core::objectmodel::DDGNode::DDGLinkIterator it;
-
-    bool allDone = false;
-
-    unsigned int cpt_security = 0;
-    std::list<sofa::core::topology::TopologyHandler *> _engines;
-    std::list<sofa::core::topology::TopologyHandler *>::iterator it_engines;
-
-    while (!allDone && cpt_security < 1000)
-    {
-        std::list<sofa::core::objectmodel::DDGNode* > next_GraphLevel;
-        std::list<sofa::core::topology::TopologyHandler *> next_enginesLevel;
-
-        // for drawing graph
-        sofa::type::vector<std::string> enginesNames;
-        sofa::type::vector<std::string> dataNames;
-
-        // doing one level of data outputs, looking for engines
-        for ( it = _outs.begin(); it!=_outs.end(); ++it)
-        {
-            sofa::core::topology::TopologyHandler* topoEngine = dynamic_cast <sofa::core::topology::TopologyHandler*> ( (*it));
-
-            if (topoEngine)
-            {
-                next_enginesLevel.push_back(topoEngine);
-                enginesNames.push_back(topoEngine->getName());
-            }
-        }
-
-        _outs.clear();
-
-        // looking for data linked to engines
-        for ( it_engines = next_enginesLevel.begin(); it_engines!=next_enginesLevel.end(); ++it_engines)
-        {
-            // for each output engine, looking for data outputs
-
-            // There is a conflict with Base::getOutputs()
-            sofa::core::objectmodel::DDGNode* my_topoEngine = (*it_engines);
-            const sofa::core::objectmodel::DDGNode::DDGLinkContainer& _outsTmp = my_topoEngine->getOutputs();
-            sofa::core::objectmodel::DDGNode::DDGLinkIterator itTmp;
-
-            for ( itTmp = _outsTmp.begin(); itTmp!=_outsTmp.end(); ++itTmp)
-            {
-                sofa::core::objectmodel::BaseData* data = dynamic_cast<sofa::core::objectmodel::BaseData*>( (*itTmp) );
-                if (data)
-                {
-                    next_GraphLevel.push_back((*itTmp));
-                    dataNames.push_back(data->getName());
-
-                    const sofa::core::objectmodel::DDGNode::DDGLinkContainer& _outsTmp2 = data->getOutputs();
-                    _outs.insert(_outs.end(), _outsTmp2.begin(), _outsTmp2.end());
-                }
-            }
-
-            this->m_dataGraph.push_back(dataNames);
-            dataNames.clear();
-        }
-
-
-        // Iterate:
-        _engines.insert(_engines.end(), next_enginesLevel.begin(), next_enginesLevel.end());
-        this->m_enginesGraph.push_back(enginesNames);
-
-        if (next_GraphLevel.empty()) // end
-            allDone = true;
-
-        next_GraphLevel.clear();
-        next_enginesLevel.clear();
-        enginesNames.clear();
-
-        cpt_security++;
-    }
-
-
-    // check good loop escape
-    if (cpt_security >= 1000)
-        msg_error() << "PointSetTopologyContainer::updateTopologyHandlerGraph reach end loop security.";
-
-
-    // Reorder engine graph by inverting order and avoiding duplicate engines
-    std::list<sofa::core::topology::TopologyHandler *>::reverse_iterator it_engines_rev;
-
-    for ( it_engines_rev = _engines.rbegin(); it_engines_rev != _engines.rend(); ++it_engines_rev)
-    {
-        bool find = false;
-
-        for ( it_engines = my_enginesList.begin(); it_engines!=my_enginesList.end(); ++it_engines)
-        {
-            if ((*it_engines_rev) == (*it_engines))
-            {
-                find = true;
-                break;
-            }
-        }
-
-        if (!find)
-            my_enginesList.push_back((*it_engines_rev));
-    }
-
-    return;
 }
 
 

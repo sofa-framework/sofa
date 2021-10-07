@@ -1194,7 +1194,7 @@ void HexahedronSetTopologyContainer::setHexahedronTopologyToDirty()
 
     // set all engines link to this container to dirty
     std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-    for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    for (it = m_topologyHandlerList.begin(); it!=m_topologyHandlerList.end(); ++it)
     {
         sofa::core::topology::TopologyHandler* topoEngine = (*it);
         topoEngine->setDirtyValue();
@@ -1208,7 +1208,7 @@ void HexahedronSetTopologyContainer::cleanHexahedronTopologyFromDirty()
 
     // security, clean all engines to avoid loops
     std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-    for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    for ( it = m_topologyHandlerList.begin(); it!=m_topologyHandlerList.end(); ++it)
     {
         if ((*it)->isDirty())
         {
@@ -1221,15 +1221,10 @@ void HexahedronSetTopologyContainer::cleanHexahedronTopologyFromDirty()
 void HexahedronSetTopologyContainer::updateTopologyHandlerGraph()
 {
     // calling real update Data graph function implemented once in PointSetTopologyModifier
-    this->updateDataEngineGraph(this->d_hexahedron, this->m_enginesList);
+    this->updateDataEngineGraph(this->d_hexahedron);
 
     // will concatenate with edges one:
     QuadSetTopologyContainer::updateTopologyHandlerGraph();
-}
-
-void HexahedronSetTopologyContainer::addTopologyHandler(sofa::core::topology::TopologyHandler* _TopologyHandler)
-{
-    this->m_enginesList.push_back(_TopologyHandler);
 }
 
 } //namespace sofa::component::topology
