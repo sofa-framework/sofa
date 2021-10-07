@@ -24,12 +24,7 @@
 #include <SofaGeneralDeformable/VectorSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/io/XspLoader.h>
-#include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <SofaBaseTopology/TopologyData.inl>
-#include <sofa/simulation/Simulation.h>
-#include <cassert>
-#include <iostream>
-
 
 
 namespace sofa::component::interactionforcefield
@@ -111,7 +106,7 @@ void VectorSpringForceField<DataTypes>::addSpring(int m1, int m2, SReal ks, SRea
 
     if (useTopology && m_topology)
     {
-        topology::EdgeSetTopologyContainer::EdgeID e = m_topology->getEdgeIndex(unsigned(m1),unsigned(m2));
+        sofa::core::topology::BaseMeshTopology::EdgeID e = m_topology->getEdgeIndex(unsigned(m1),unsigned(m2));
         if (e != sofa::InvalidID)
             springArrayData[e]=Spring(Real(ks),Real(kd),restVector);
     }
