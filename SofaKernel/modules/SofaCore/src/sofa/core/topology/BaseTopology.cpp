@@ -115,7 +115,7 @@ bool TopologyContainer::linkTopologyHandlerToData(TopologyHandler* topologyHandl
     SOFA_UNUSED(topologyHandler);
     SOFA_UNUSED(elementType);
 
-    return true;
+    return false;
 }
 
 std::list<const TopologyChange *>::const_iterator TopologyContainer::endChange() const
