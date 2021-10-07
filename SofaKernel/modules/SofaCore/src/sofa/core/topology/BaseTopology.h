@@ -246,11 +246,11 @@ public:
 
     /// TopologyHandler interactions
     ///@{
-    const std::list<TopologyHandler *> &getTopologyHandlerList() const { return m_topologyHandlerList; }
+    const std::list<TopologyHandler*>& getTopologyHandlerList(sofa::geometry::ElementType elementType) const;
 
-    /** \brief Adds a TopologyHandler to the list.
+    /** \brief Adds a TopologyHandler, linked to a certain type of Element.
     */
-    void addTopologyHandler(TopologyHandler* _TopologyHandler);
+    void addTopologyHandler(TopologyHandler* _TopologyHandler, sofa::geometry::ElementType elementType);
 
 
     /** \brief Free each Topology changes in the list and remove them from the list
@@ -259,9 +259,12 @@ public:
     void resetTopologyHandlerList();
 
     ///@}
-    void updateDataEngineGraph(const sofa::core::objectmodel::BaseData& my_Data);
+    void updateDataEngineGraph(const sofa::core::objectmodel::BaseData& my_Data, sofa::geometry::ElementType elementType);
 
-
+    /** \ brief Generic function to link potential data (related to a type of element) with a topologyHandler
+    *
+    */
+    virtual void linkTopologyHandlerToData(TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType);
 
 public:
     virtual void updateTopologyHandlerGraph() {}
@@ -273,7 +276,7 @@ public:
     Data <std::list<const TopologyChange *> >m_stateChangeList;
 
     /// List of topology engines which will interact on all topological Data.
-    std::list<TopologyHandler *> m_topologyHandlerList;
+    std::vector< std::list<TopologyHandler*> > m_topologyHandlerListPerElement {sofa::geometry::NumberOfElementType};
 
     /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
     sofa::type::vector< sofa::type::vector<std::string> > m_dataGraph;

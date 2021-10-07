@@ -22,14 +22,18 @@
 #include <sofa/core/topology/BaseTopology.h>
 #include <sofa/core/topology/TopologyHandler.h>
 
-namespace sofa
+namespace sofa::core::topology
 {
 
-namespace core
+namespace
 {
+    constexpr sofa::Size getElementTypeIndex(sofa::geometry::ElementType elementType)
+    {
+        return static_cast<std::underlying_type_t<sofa::geometry::ElementType>>(elementType);
+    }
+}
 
-namespace topology
-{
+
 // GeometryAlgorithms implementation
 
 void GeometryAlgorithms::init()
@@ -94,11 +98,23 @@ void TopologyContainer::addStateChange(const TopologyChange *topologyChange)
     m_stateChangeList.endEdit();
 }
 
-void TopologyContainer::addTopologyHandler(TopologyHandler *_TopologyHandler)
+void TopologyContainer::addTopologyHandler(TopologyHandler *_TopologyHandler, sofa::geometry::ElementType elementType)
 {
-    m_topologyHandlerList.push_back(_TopologyHandler);
+    m_topologyHandlerListPerElement[getElementTypeIndex(elementType)].push_back(_TopologyHandler);
 }
 
+const std::list<TopologyHandler*>& TopologyContainer::getTopologyHandlerList(sofa::geometry::ElementType elementType) const
+{
+    return m_topologyHandlerListPerElement[getElementTypeIndex(elementType)];
+}
+
+void TopologyContainer::linkTopologyHandlerToData(TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
+{
+    // default implementation dont do anything
+    // as it does not have any data itself
+    SOFA_UNUSED(topologyHandler);
+    SOFA_UNUSED(elementType);
+}
 
 std::list<const TopologyChange *>::const_iterator TopologyContainer::endChange() const
 {
@@ -148,20 +164,24 @@ void TopologyContainer::resetStateChangeList()
 
 void TopologyContainer::resetTopologyHandlerList()
 {
-    for (std::list<TopologyHandler *>::iterator it=m_topologyHandlerList.begin();
-            it!=m_topologyHandlerList.end(); ++it)
+    for (auto& topologyHandlerList : m_topologyHandlerListPerElement)
     {
-        *it = nullptr;
+        for (auto it = topologyHandlerList.begin();
+            it != topologyHandlerList.end(); ++it)
+        {
+            *it = nullptr;
+        }
+        topologyHandlerList.clear();
     }
-
-    m_topologyHandlerList.clear();
+    m_topologyHandlerListPerElement.clear();
+    m_topologyHandlerListPerElement.resize(sofa::geometry::NumberOfElementType);
 }
 
 
-void TopologyContainer::updateDataEngineGraph(const sofa::core::objectmodel::BaseData& my_Data)
+void TopologyContainer::updateDataEngineGraph(const sofa::core::objectmodel::BaseData& my_Data, sofa::geometry::ElementType elementType)
 {
     // clear data stored by previous call of this function
-    m_topologyHandlerList.clear();
+    m_topologyHandlerListPerElement[getElementTypeIndex(elementType)].clear();
     this->m_enginesGraph.clear();
     this->m_dataGraph.clear();
 
@@ -249,30 +269,27 @@ void TopologyContainer::updateDataEngineGraph(const sofa::core::objectmodel::Bas
     // Reorder engine graph by inverting order and avoiding duplicate engines
     std::list<sofa::core::topology::TopologyHandler*>::reverse_iterator it_engines_rev;
 
-    for (it_engines_rev = _engines.rbegin(); it_engines_rev != _engines.rend(); ++it_engines_rev)
+    for(auto& topologyHandlerList : m_topologyHandlerListPerElement)
     {
-        bool find = false;
-
-        for (it_engines = m_topologyHandlerList.begin(); it_engines != m_topologyHandlerList.end(); ++it_engines)
+        for (it_engines_rev = _engines.rbegin(); it_engines_rev != _engines.rend(); ++it_engines_rev)
         {
-            if ((*it_engines_rev) == (*it_engines))
-            {
-                find = true;
-                break;
-            }
-        }
+            bool find = false;
 
-        if (!find)
-            m_topologyHandlerList.push_back((*it_engines_rev));
+            for (it_engines = topologyHandlerList.begin(); it_engines != topologyHandlerList.end(); ++it_engines)
+            {
+                if ((*it_engines_rev) == (*it_engines))
+                {
+                    find = true;
+                    break;
+                }
+            }
+
+            if (!find)
+                topologyHandlerList.push_back((*it_engines_rev));
+        }
     }
 
     return;
 }
 
-
-} // namespace topology
-
-} // namespace core
-
-} // namespace sofa
-
+} // namespace sofa::core::topology

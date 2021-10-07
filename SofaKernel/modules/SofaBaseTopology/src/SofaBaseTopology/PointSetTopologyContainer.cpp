@@ -184,7 +184,7 @@ void PointSetTopologyContainer::removePoint()
 
 void PointSetTopologyContainer::updateTopologyHandlerGraph()
 {
-    this->updateDataEngineGraph(this->d_initPoints);
+    this->updateDataEngineGraph(this->d_initPoints, sofa::geometry::ElementType::POINT);
 }
 
 const sofa::type::vector< PointSetTopologyContainer::PointID >& PointSetTopologyContainer::getPoints() const
@@ -198,10 +198,9 @@ void PointSetTopologyContainer::setPointTopologyToDirty()
     m_pointTopologyDirty = true;
 
     // set all engines link to this container to dirty
-    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-    for (it = m_topologyHandlerList.begin(); it!= m_topologyHandlerList.end(); ++it)
+    auto& pointTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::POINT);
+    for (auto topoEngine : pointTopologyHandlerList)
     {
-        sofa::core::topology::TopologyHandler* topoEngine = (*it);
         topoEngine->setDirtyValue();
         msg_info() << "Point Topology Set dirty engine: " << topoEngine->getName();
     }
@@ -212,13 +211,14 @@ void PointSetTopologyContainer::cleanPointTopologyFromDirty()
     m_pointTopologyDirty = false;
 
     // security, clean all engines to avoid loops
+    auto& pointTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::POINT);
     std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-    for ( it = m_topologyHandlerList.begin(); it!= m_topologyHandlerList.end(); ++it)
+    for (auto topoEngine : pointTopologyHandlerList)
     {
-        if ((*it)->isDirty())
+        if (topoEngine->isDirty())
         {
-            msg_warning() << "Point Topology update did not clean engine: " << (*it)->getName();
-            (*it)->cleanDirty();
+            msg_warning() << "Point Topology update did not clean engine: " << topoEngine->getName();
+            topoEngine->cleanDirty();
         }
     }
 }
@@ -265,6 +265,14 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
     }
     msg_info() << tmpmsg.str() ;
 }
+
+//void PointSetTopologyContainer::linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
+//{
+//    if (elementType == sofa::geometry::ElementType::POINT)
+//    {
+//
+//    }
+//}
 
 
 } //namespace sofa::component::topology

@@ -95,6 +95,8 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToPointDataArray()
         return;
     }
 
+    //m_topology->linkToDataArray(sofa::core::topology::TopologyElementType::POINT, this)
+    
     _container->d_initPoints.addOutput(this);
     _container->addTopologyHandler(this);
     m_pointsLinked = true;

@@ -138,6 +138,9 @@ public:
 
     const sofa::type::vector<PointID>& getPoints() const;
 
+
+    void linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType) override;
+
 protected:
     /// \brief Function creating the data graph linked to d_point
     void updateTopologyHandlerGraph() override;
