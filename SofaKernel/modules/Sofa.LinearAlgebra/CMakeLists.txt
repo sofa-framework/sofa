@@ -34,8 +34,8 @@ set(HEADER_FILES
     ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixProduct.h
     ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixProduct[CompressedRowSparseMatrix].h
     ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixProduct[EigenSparseMatrix].h
-    ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixTranspose.h
-    ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixTranspose[EigenSparseMatrix].h
+    ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixStorageOrder.h
+    ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixStorageOrder[EigenSparseMatrix].h
     ${SOFALINEARALGEBRASRC_ROOT}/matrix_bloc_traits.h
 )
 
@@ -50,7 +50,7 @@ set(SOURCE_FILES
     ${SOFALINEARALGEBRASRC_ROOT}/RotationMatrix.cpp
     ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixProduct[CompressedRowSparseMatrix].cpp
     ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixProduct[EigenSparseMatrix].cpp
-    ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixTranspose[EigenSparseMatrix].cpp
+    ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixStorageOrder[EigenSparseMatrix].cpp
     ${SOFALINEARALGEBRASRC_ROOT}/init.cpp
 )
 

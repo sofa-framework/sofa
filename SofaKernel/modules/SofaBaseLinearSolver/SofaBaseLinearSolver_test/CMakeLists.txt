@@ -8,7 +8,7 @@ set(SOURCE_FILES
     SparseMatrixProduct_test.cpp
     SparseMatrixTest.h
     SparseMatrixTest.cpp
-    SparseMatrixTranspose_test.cpp
+    SparseMatrixStorageOrder_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

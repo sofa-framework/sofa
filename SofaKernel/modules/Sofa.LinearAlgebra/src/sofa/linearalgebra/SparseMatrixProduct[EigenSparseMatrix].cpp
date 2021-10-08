@@ -22,7 +22,7 @@
 #define SOFA_LINEARAGEBRA_SPARSEMATRIXPRODUCT_EIGENSPARSEMATRIX_CPP
 #include <iostream>
 #include <sofa/linearalgebra/SparseMatrixProduct[EigenSparseMatrix].h>
-#include <sofa/linearalgebra/SparseMatrixTranspose[EigenSparseMatrix].h>
+#include <sofa/linearalgebra/SparseMatrixStorageOrder[EigenSparseMatrix].h>
 
 #include <sofa/helper/logging/Messaging.h>
 
@@ -60,7 +60,7 @@ void __computeIntersectionColumnMajor(TMatrix* A, TMatrix* B, TMatrix* C, typena
 
     *C = (*A) * (*B);
 
-    const SparseMatrixTranspose<TMatrix> transpose(A);
+    const SparseMatrixStorageOrder<TMatrix> transpose(A);
 
     const auto& outerStarts = transpose.getOuterStarts();
     const auto& innerIndices = transpose.getInnerIndices();
@@ -116,7 +116,7 @@ void __computeIntersectionRowMajor(TMatrix* A, TMatrix* B, TMatrix* C, typename 
 
     *C = (*A) * (*B);
 
-    const SparseMatrixTranspose<TMatrix> transpose(B);
+    const SparseMatrixStorageOrder<TMatrix> transpose(B);
 
     const auto& outerStarts = transpose.getOuterStarts();
     const auto& innerIndices = transpose.getInnerIndices();

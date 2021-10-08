@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/linearalgebra/SparseMatrixTranspose[EigenSparseMatrix].h>
+#include <sofa/linearalgebra/SparseMatrixStorageOrder[EigenSparseMatrix].h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include "SparseMatrixTest.h"
 
@@ -48,7 +48,7 @@ struct TestSparseMatrixTranspose : public sofa::testing::SparseMatrixTest<typena
         Matrix matrix;
         generateRandomSparseMatrix(matrix, nbRows, nbCols, sparsity);
 
-        using Transpose = sofa::linearalgebra::SparseMatrixTranspose<Matrix>;
+        using Transpose = sofa::linearalgebra::SparseMatrixStorageOrder<Matrix>;
         const Transpose transposeMatrix(&matrix);
 
         const auto& outerStarts  = transposeMatrix.getOuterStarts();

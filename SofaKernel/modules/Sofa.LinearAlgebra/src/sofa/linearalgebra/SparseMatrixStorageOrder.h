@@ -26,20 +26,34 @@
 namespace sofa::linearalgebra
 {
 
+/**
+ * Compute the opposite representation of a sparse matrix.
+ * If the input matrix is column-major (resp. row-major), the output matrix is row-major (resp. column-major).
+ *
+ * The output is not really a matrix per se, but a data structure representing the opposite representation.
+ * It also provides a permutation array, that allows to retrieve the initial value of a matrix entry in the input matrix.
+ *
+ * As mentionned, the output is not a matrix, but a dedicated iterator allows to loop over non-zero entries, in a similar
+ * fashion than in Eigen.
+ *
+ * If only values of the input matrix change, but not its pattern, the output matrix will not change. And the iterator
+ * provides the values of the input matrix. It means this data structure can be computed only once as long as the
+ * matrix pattern does not change.
+ */
 template<class TMatrix>
-class SparseMatrixTranspose
+class SparseMatrixStorageOrder
 {
 public:
 
     using Index = typename TMatrix::Index;
 
-    explicit SparseMatrixTranspose(TMatrix* m)
+    explicit SparseMatrixStorageOrder(TMatrix* m)
         : matrix(m)
     {
-        buildTranspose();
+        buildOppositeOrder();
     }
 
-    void buildTranspose();
+    void buildOppositeOrder();
 
     const type::vector<Index>& getOuterStarts() const { return outerStarts; }
     const type::vector<Index>& getInnerIndices() const { return innerIndices; }
@@ -57,11 +71,11 @@ private:
 };
 
 template<class TMatrix>
-class SparseMatrixTranspose<TMatrix>::InnerIterator
+class SparseMatrixStorageOrder<TMatrix>::InnerIterator
 {
 public:
     InnerIterator() = delete;
-    InnerIterator(const SparseMatrixTranspose<TMatrix>& mat, sofa::Index outer)
+    InnerIterator(const SparseMatrixStorageOrder<TMatrix>& mat, sofa::Index outer)
         : m_transpose(mat)
         , m_outer(outer)
     {
@@ -99,7 +113,7 @@ public:
 
 private:
 
-    const SparseMatrixTranspose<TMatrix>& m_transpose;
+    const SparseMatrixStorageOrder<TMatrix>& m_transpose;
     sofa::Index m_id;
     sofa::Index m_end;
     sofa::Index m_outer;

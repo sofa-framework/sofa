@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_LINEARAGEBRA_SPARSEMATRIXTRANSPOSE_EIGENSPARSEMATRIX_CPP
 #include <iostream>
-#include <sofa/linearalgebra/SparseMatrixTranspose[EigenSparseMatrix].h>
+#include <sofa/linearalgebra/SparseMatrixStorageOrder[EigenSparseMatrix].h>
 
 namespace sofa::linearalgebra
 {
@@ -73,108 +73,108 @@ void transpose(const TMatrix& self, type::vector<typename TMatrix::Index>& outer
 }
 
 template<>
-void SparseMatrixTranspose<Eigen::SparseMatrix<float> >::buildTranspose()
+void SparseMatrixStorageOrder<Eigen::SparseMatrix<float> >::buildOppositeOrder()
 {
     transpose(*matrix, outerStarts, innerIndices, perm);
 }
 
 template<>
-SReal SparseMatrixTranspose<Eigen::SparseMatrix<float> >::InnerIterator::value() const
+SReal SparseMatrixStorageOrder<Eigen::SparseMatrix<float> >::InnerIterator::value() const
 {
     return m_transpose.matrix->valuePtr()[m_transpose.perm[m_id]];
 }
 
 template<>
-Eigen::SparseMatrix<float>::Index SparseMatrixTranspose<Eigen::SparseMatrix<float> >::InnerIterator::row() const
+Eigen::SparseMatrix<float>::Index SparseMatrixStorageOrder<Eigen::SparseMatrix<float> >::InnerIterator::row() const
 {
     return m_outer;
 }
 
 template<>
-Eigen::SparseMatrix<float>::Index SparseMatrixTranspose<Eigen::SparseMatrix<float> >::InnerIterator::col() const
+Eigen::SparseMatrix<float>::Index SparseMatrixStorageOrder<Eigen::SparseMatrix<float> >::InnerIterator::col() const
 {
     return m_transpose.innerIndices[m_id];
 }
 
 template<>
-void SparseMatrixTranspose<Eigen::SparseMatrix<double> >::buildTranspose()
+void SparseMatrixStorageOrder<Eigen::SparseMatrix<double> >::buildOppositeOrder()
 {
     transpose(*matrix, outerStarts, innerIndices, perm);
 }
 
 template<>
-SReal SparseMatrixTranspose<Eigen::SparseMatrix<double> >::InnerIterator::value() const
+SReal SparseMatrixStorageOrder<Eigen::SparseMatrix<double> >::InnerIterator::value() const
 {
     return m_transpose.matrix->valuePtr()[m_transpose.perm[m_id]];
 }
 
 template<>
-Eigen::SparseMatrix<float>::Index SparseMatrixTranspose<Eigen::SparseMatrix<double> >::InnerIterator::row() const
+Eigen::SparseMatrix<float>::Index SparseMatrixStorageOrder<Eigen::SparseMatrix<double> >::InnerIterator::row() const
 {
     return m_outer;
 }
 
 template<>
-Eigen::SparseMatrix<float>::Index SparseMatrixTranspose<Eigen::SparseMatrix<double> >::InnerIterator::col() const
+Eigen::SparseMatrix<float>::Index SparseMatrixStorageOrder<Eigen::SparseMatrix<double> >::InnerIterator::col() const
 {
     return m_transpose.innerIndices[m_id];
 }
 
 
 template<>
-void SparseMatrixTranspose<Eigen::SparseMatrix<float, Eigen::RowMajor> >::buildTranspose()
+void SparseMatrixStorageOrder<Eigen::SparseMatrix<float, Eigen::RowMajor> >::buildOppositeOrder()
 {
     transpose(*matrix, outerStarts, innerIndices, perm);
 }
 
 template<>
-SReal SparseMatrixTranspose<Eigen::SparseMatrix<float, Eigen::RowMajor> >::InnerIterator::value() const
+SReal SparseMatrixStorageOrder<Eigen::SparseMatrix<float, Eigen::RowMajor> >::InnerIterator::value() const
 {
     return m_transpose.matrix->valuePtr()[m_transpose.perm[m_id]];
 }
 
 template<>
-Eigen::SparseMatrix<float, Eigen::RowMajor>::Index SparseMatrixTranspose<Eigen::SparseMatrix<float, Eigen::RowMajor> >::InnerIterator::row() const
+Eigen::SparseMatrix<float, Eigen::RowMajor>::Index SparseMatrixStorageOrder<Eigen::SparseMatrix<float, Eigen::RowMajor> >::InnerIterator::row() const
 {
     return m_transpose.innerIndices[m_id];
 }
 
 template<>
-Eigen::SparseMatrix<float, Eigen::RowMajor>::Index SparseMatrixTranspose<Eigen::SparseMatrix<float, Eigen::RowMajor> >::InnerIterator::col() const
+Eigen::SparseMatrix<float, Eigen::RowMajor>::Index SparseMatrixStorageOrder<Eigen::SparseMatrix<float, Eigen::RowMajor> >::InnerIterator::col() const
 {
     return m_outer;
 }
 
 template<>
-void SparseMatrixTranspose<Eigen::SparseMatrix<double, Eigen::RowMajor> >::buildTranspose()
+void SparseMatrixStorageOrder<Eigen::SparseMatrix<double, Eigen::RowMajor> >::buildOppositeOrder()
 {
     transpose(*matrix, outerStarts, innerIndices, perm);
 }
 
 template<>
-SReal SparseMatrixTranspose<Eigen::SparseMatrix<double, Eigen::RowMajor> >::InnerIterator::value() const
+SReal SparseMatrixStorageOrder<Eigen::SparseMatrix<double, Eigen::RowMajor> >::InnerIterator::value() const
 {
     return m_transpose.matrix->valuePtr()[m_transpose.perm[m_id]];
 }
 
 template<>
-Eigen::SparseMatrix<double, Eigen::RowMajor>::Index SparseMatrixTranspose<Eigen::SparseMatrix<double, Eigen::RowMajor> >::InnerIterator::row() const
+Eigen::SparseMatrix<double, Eigen::RowMajor>::Index SparseMatrixStorageOrder<Eigen::SparseMatrix<double, Eigen::RowMajor> >::InnerIterator::row() const
 {
     return m_transpose.innerIndices[m_id];
 }
 
 template<>
-Eigen::SparseMatrix<double, Eigen::RowMajor>::Index SparseMatrixTranspose<Eigen::SparseMatrix<double, Eigen::RowMajor> >::InnerIterator::col() const
+Eigen::SparseMatrix<double, Eigen::RowMajor>::Index SparseMatrixStorageOrder<Eigen::SparseMatrix<double, Eigen::RowMajor> >::InnerIterator::col() const
 {
 
     return m_outer;
 }
 
 
-template class SOFA_LINEARALGEBRA_API SparseMatrixTranspose<Eigen::SparseMatrix<float> >;
-template class SOFA_LINEARALGEBRA_API SparseMatrixTranspose<Eigen::SparseMatrix<double> >;
+template class SOFA_LINEARALGEBRA_API SparseMatrixStorageOrder<Eigen::SparseMatrix<float> >;
+template class SOFA_LINEARALGEBRA_API SparseMatrixStorageOrder<Eigen::SparseMatrix<double> >;
 
-template class SOFA_LINEARALGEBRA_API SparseMatrixTranspose<Eigen::SparseMatrix<float, Eigen::RowMajor> >;
-template class SOFA_LINEARALGEBRA_API SparseMatrixTranspose<Eigen::SparseMatrix<double, Eigen::RowMajor> >;
+template class SOFA_LINEARALGEBRA_API SparseMatrixStorageOrder<Eigen::SparseMatrix<float, Eigen::RowMajor> >;
+template class SOFA_LINEARALGEBRA_API SparseMatrixStorageOrder<Eigen::SparseMatrix<double, Eigen::RowMajor> >;
 
 } //namespace sofa::linearalgebra

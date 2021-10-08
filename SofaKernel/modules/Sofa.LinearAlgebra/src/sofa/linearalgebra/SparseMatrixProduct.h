@@ -30,17 +30,27 @@ namespace sofa::linearalgebra
 {
 
 /**
- * Given two matrices, compute the product of both matrices
+ * Given two matrices, compute the product of both matrices.
+ * The first time the algorithm runs, it computes the "intersection" between both matrices. This intersection can be
+ * reused to compute the product. If, later, both input matrices changed their values, but not their sparsity pattern,
+ * the "intersection" remains valid. The same intersection can be used to compute the product as long as the sparsity
+ * pattern does not change. This strategy is faster than calling the regular matrix product algorithm (but not if the
+ * size of the intersection is huge).
  *
  * To compute the product, the method computeProduct must be called.
  *
- * The computation of the product is accelerated when the profile of both input matrices did not change.
+ * Based on:
+ * Saupin, G., Duriez, C. and Grisoni, L., 2007, November. Embedded multigrid approach for real-time volumetric deformation. In International Symposium on Visual Computing (pp. 149-159). Springer, Berlin, Heidelberg.
+ * and
+ * Saupin, G., 2008. Vers la simulation interactive réaliste de corps déformables virtuels (Doctoral dissertation, Lille 1).
  */
 template<class TMatrix>
 class SparseMatrixProduct
 {
 public:
+    /// Left side of the product A*B
     TMatrix* matrixA { nullptr };
+    /// Right side of the product A*B
     TMatrix* matrixB { nullptr };
 
     void computeProduct(bool forceComputeIntersection = false);
@@ -94,6 +104,7 @@ void SparseMatrixProduct<TMatrix>::computeProduct(bool forceComputeIntersection)
 template <class TMatrix>
 void SparseMatrixProduct<TMatrix>::computeIntersection()
 {
+
 }
 
 template <class TMatrix>
