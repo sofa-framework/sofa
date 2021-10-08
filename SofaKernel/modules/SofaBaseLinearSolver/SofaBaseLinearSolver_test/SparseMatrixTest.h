@@ -74,6 +74,11 @@ struct SparseMatrixTest : public virtual NumericTest<TReal>
         dst = src;
     }
 
+    static void copyFromEigen(Eigen::SparseMatrix<TReal, Eigen::RowMajor>& dst, const Eigen::SparseMatrix<TReal, Eigen::RowMajor>& src)
+    {
+        dst = src;
+    }
+
     static void copyFromEigen(linearalgebra::BaseMatrix& dst, const Eigen::SparseMatrix<TReal>& src)
     {
         dst.clear();

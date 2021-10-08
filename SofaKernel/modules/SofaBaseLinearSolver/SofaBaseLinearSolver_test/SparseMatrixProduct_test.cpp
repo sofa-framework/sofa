@@ -100,7 +100,9 @@ using CRSMatrixScalar = sofa::linearalgebra::CompressedRowSparseMatrix<SReal>;
 
 using TestSparseMatrixProductImplementations = ::testing::Types<
     TestSparseMatrixProductTraits<Eigen::SparseMatrix<float>, float>,
-    TestSparseMatrixProductTraits<Eigen::SparseMatrix<double>, double>
+    TestSparseMatrixProductTraits<Eigen::SparseMatrix<double>, double>,
+    TestSparseMatrixProductTraits<Eigen::SparseMatrix<float, Eigen::RowMajor>, float>,
+    TestSparseMatrixProductTraits<Eigen::SparseMatrix<double, Eigen::RowMajor>, double>
     // TestSparseMatrixProductTraits<CRSMatrixScalar, SReal, 1000, std::ratio<1, 1000> >
 >;
 TYPED_TEST_SUITE(TestSparseMatrixProduct, TestSparseMatrixProductImplementations);
@@ -120,6 +122,9 @@ TYPED_TEST(TestSparseMatrixProduct, rectangularMatrix )
 {
     ASSERT_TRUE( this->checkMatrix( 5, 10, 7, 1. / 5. ) );
     ASSERT_TRUE( this->checkMatrix( 5, 10, 7, 3. / 5. ) );
+
+    ASSERT_TRUE( this->checkMatrix( 10, 5, 7, 1. / 5. ) );
+    ASSERT_TRUE( this->checkMatrix( 10, 5, 7, 3. / 5. ) );
 
     ASSERT_TRUE( this->checkMatrix( 1000, 3000, 2000, 1. / 1000. ) );
     ASSERT_TRUE( this->checkMatrix( 1000, 3000, 2000, 20. / 1000. ) );

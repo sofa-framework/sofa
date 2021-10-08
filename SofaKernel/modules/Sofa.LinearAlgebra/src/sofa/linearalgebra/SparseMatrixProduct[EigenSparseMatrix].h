@@ -29,10 +29,15 @@ namespace sofa::linearalgebra
 
 template<> void SOFA_LINEARALGEBRA_API SparseMatrixProduct<Eigen::SparseMatrix<float> >::computeRegularProduct();
 template<> void SOFA_LINEARALGEBRA_API SparseMatrixProduct<Eigen::SparseMatrix<double> >::computeRegularProduct();
+template<> void SOFA_LINEARALGEBRA_API SparseMatrixProduct<Eigen::SparseMatrix<float, Eigen::RowMajor> >::computeRegularProduct();
+template<> void SOFA_LINEARALGEBRA_API SparseMatrixProduct<Eigen::SparseMatrix<double, Eigen::RowMajor> >::computeRegularProduct();
 
 #if !defined(SOFA_LINEARAGEBRA_SPARSEMATRIXPRODUCT_EIGENSPARSEMATRIX_CPP)
     extern template class SOFA_LINEARALGEBRA_API SparseMatrixProduct<Eigen::SparseMatrix<float> >;
     extern template class SOFA_LINEARALGEBRA_API SparseMatrixProduct<Eigen::SparseMatrix<double> >;
+
+    extern template class SOFA_LINEARALGEBRA_API SparseMatrixProduct<Eigen::SparseMatrix<float, Eigen::RowMajor> >;
+    extern template class SOFA_LINEARALGEBRA_API SparseMatrixProduct<Eigen::SparseMatrix<double, Eigen::RowMajor> >;
 #endif
 
 } //namespace sofa::linearalgebra
