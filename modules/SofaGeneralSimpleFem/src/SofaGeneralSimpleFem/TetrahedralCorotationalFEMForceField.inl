@@ -35,40 +35,33 @@ namespace sofa::component::forcefield
 {
 
 template< class DataTypes>
-void TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronHandler::applyCreateFunction(Index tetrahedronIndex,
-        TetrahedronInformation &,
-        const core::topology::BaseMeshTopology::Tetrahedron &,
-        const sofa::type::vector<Index> &,
-        const sofa::type::vector<double> &)
+void TetrahedralCorotationalFEMForceField<DataTypes>::createTetrahedronInformation(Index tetrahedronIndex, TetrahedronInformation& tInfo,
+        const core::topology::BaseMeshTopology::Tetrahedron& tetra,
+        const sofa::type::vector<Index>& ancestors,
+        const sofa::type::vector<double>& coefs)
 {
+    const core::topology::BaseMeshTopology::Tetrahedron t=this->m_topology->getTetrahedron(tetrahedronIndex);
+    Index a = t[0];
+    Index b = t[1];
+    Index c = t[2];
+    Index d = t[3];
 
-    if (ff)
+    switch(method)
     {
+    case SMALL :
+        computeMaterialStiffness(tetrahedronIndex,a,b,c,d);
+        initSmall(tetrahedronIndex,a,b,c,d);
+        break;
+    case LARGE :
+        computeMaterialStiffness(tetrahedronIndex,a,b,c,d);
+        initLarge(tetrahedronIndex,a,b,c,d);
 
-        const core::topology::BaseMeshTopology::Tetrahedron t=ff->m_topology->getTetrahedron(tetrahedronIndex);
-        Index a = t[0];
-        Index b = t[1];
-        Index c = t[2];
-        Index d = t[3];
-
-        switch(ff->method)
-        {
-        case SMALL :
-            ff->computeMaterialStiffness(tetrahedronIndex,a,b,c,d);
-            ff->initSmall(tetrahedronIndex,a,b,c,d);
-            break;
-        case LARGE :
-            ff->computeMaterialStiffness(tetrahedronIndex,a,b,c,d);
-            ff->initLarge(tetrahedronIndex,a,b,c,d);
-
-            break;
-        case POLAR :
-            ff->computeMaterialStiffness(tetrahedronIndex,a,b,c,d);
-            ff->initPolar(tetrahedronIndex,a,b,c,d);
-            break;
-        }
+        break;
+    case POLAR :
+        computeMaterialStiffness(tetrahedronIndex,a,b,c,d);
+        initPolar(tetrahedronIndex,a,b,c,d);
+        break;
     }
-
 }
 
 template< class DataTypes>
@@ -86,11 +79,9 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
     , drawColor3(initData(&drawColor3,sofa::type::RGBAColor(0.0f,1.0f,1.0f,1.0f),"drawColor3"," draw color for faces 3"))
     , drawColor4(initData(&drawColor4,sofa::type::RGBAColor(0.5f,1.0f,1.0f,1.0f),"drawColor4"," draw color for faces 4"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , tetrahedronHandler(nullptr)
 {
     this->addAlias(&_assembling, "assembling");
     _poissonRatio.setWidget("poissonRatio");
-    tetrahedronHandler = new TetrahedronHandler(this,&tetrahedronInfo);
 
     _poissonRatio.setRequired(true);
     _youngModulus.setRequired(true);
@@ -143,12 +134,20 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::reinit()
 
     for (std::size_t i=0; i<m_topology->getNbTetrahedra(); ++i)
     {
-        tetrahedronHandler->applyCreateFunction(i, tetrahedronInf[i],
+        createTetrahedronInformation(i, tetrahedronInf[i],
                 m_topology->getTetrahedron(i),  (const std::vector< Index > )0,
                 (const std::vector< double >)0);
     }
 
-    tetrahedronInfo.createTopologyHandler(m_topology,tetrahedronHandler);
+    tetrahedronInfo.createTopologyHandler(m_topology);
+    tetrahedronInfo.setCreationCallback([this](Index tetrahedronIndex, TetrahedronInformation& tInfo,
+        const core::topology::BaseMeshTopology::Tetrahedron& tetra,
+        const sofa::type::vector<Index>& ancestors,
+        const sofa::type::vector<double>& coefs)
+    {
+        createTetrahedronInformation(tetrahedronIndex, tInfo, tetra, ancestors, coefs);
+    });
+
     tetrahedronInfo.endEdit();
 }
 

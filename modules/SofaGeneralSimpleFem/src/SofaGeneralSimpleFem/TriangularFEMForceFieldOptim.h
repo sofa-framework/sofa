@@ -229,11 +229,17 @@ public:
     topology::PointData<VecVertexInfo> d_vertexInfo; ///< Internal point data
     topology::EdgeData<VecEdgeInfo> d_edgeInfo; ///< Internal edge data
 
+    /** Method to create @sa TriangleInfo when a new triangle is created.
+    * Will be set as creation callback in the TriangleData @sa d_triangleInfo
+    */
     void createTriangleInfo(Index triangleIndex, TriangleInfo&, 
         const Triangle& t,
         const sofa::type::vector< Index >&,
         const sofa::type::vector< double >&);
 
+    /** Method to create @sa TriangleState when a new triangle is created.
+    * Will be set as creation callback in the TriangleData @sa d_triangleState
+    */
     void createTriangleState(Index triangleIndex, TriangleState&, 
         const Triangle& t,
         const sofa::type::vector< Index > &,

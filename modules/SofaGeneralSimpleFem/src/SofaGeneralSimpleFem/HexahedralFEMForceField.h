@@ -189,6 +189,9 @@ public:
     /// container that stotes all requires information for each hexahedron
     topology::HexahedronData<sofa::type::vector<HexahedronInformation> > hexahedronInfo;
 
+    /** Method to create @sa HexahedronInformation when a new hexahedron is created.
+    * Will be set as creation callback in the HexahedronData @sa hexahedronInfo
+    */
     void createHexahedronInformation(Index, HexahedronInformation& t, const core::topology::BaseMeshTopology::Hexahedron&,
         const sofa::type::vector<Index>&, const sofa::type::vector<double>&);
 
