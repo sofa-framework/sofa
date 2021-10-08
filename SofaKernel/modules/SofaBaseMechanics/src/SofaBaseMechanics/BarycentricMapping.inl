@@ -189,35 +189,35 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ()
     }
 
     // Hexahedron Topology
-    if (input_topology_container->getNbHexahedra() > 0) {
+    if (is_a<sofa::core::topology::TopologyContainer>(input_topology_container) && input_topology_container->getNbHexahedra() > 0) {
         msg_info() << "Creating HexahedronSetMapper";
         d_mapper = sofa::core::objectmodel::New<HexahedronSetMapper>(input_topology_container, output_topology_container);
         goto end;
     }
 
     // Tetrahedron Topology
-    if (input_topology_container->getNbTetrahedra() > 0) {
+    if (is_a<sofa::core::topology::TopologyContainer>(input_topology_container) && input_topology_container->getNbTetrahedra() > 0) {
         msg_info() << "Creating TetrahedronSetMapper";
         d_mapper = sofa::core::objectmodel::New<TetrahedronSetMapper >(input_topology_container, output_topology_container);
         goto end;
     }
 
     // Quad Topology
-    if (input_topology_container->getNbQuads() > 0) {
+    if (is_a<sofa::core::topology::TopologyContainer>(input_topology_container) && input_topology_container->getNbQuads() > 0) {
         msg_info() << "Creating QuadSetMapper";
         d_mapper = sofa::core::objectmodel::New<QuadSetMapper >(input_topology_container, output_topology_container);
         goto end;
     }
 
     // Triangle Topology
-    if (input_topology_container->getNbTriangles() > 0) {
+    if (is_a<sofa::core::topology::TopologyContainer>(input_topology_container) && input_topology_container->getNbTriangles() > 0) {
         msg_info() << "Creating TriangleSetMapper";
         d_mapper = sofa::core::objectmodel::New<TriangleSetMapper >(input_topology_container, output_topology_container);
         goto end;
     }
 
     // Edge Topology
-    if (input_topology_container->getNbEdges() > 0) {
+    if (is_a<sofa::core::topology::TopologyContainer>(input_topology_container) && input_topology_container->getNbEdges() > 0) {
         msg_info() << "Creating EdgeSetMapper";
         d_mapper = sofa::core::objectmodel::New<EdgeSetMapper >(input_topology_container, output_topology_container);
         goto end;
