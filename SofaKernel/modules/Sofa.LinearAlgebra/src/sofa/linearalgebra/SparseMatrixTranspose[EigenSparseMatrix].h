@@ -22,17 +22,23 @@
 #pragma once
 
 #include <Eigen/Sparse>
-#include <sofa/linearalgebra/SparseMatrixProduct.h>
+#include <sofa/linearalgebra/SparseMatrixTranspose.h>
+#include <sofa/linearalgebra/config.h>
 
 namespace sofa::linearalgebra
 {
 
-template<> void SOFA_LINEARALGEBRA_API SparseMatrixProduct<Eigen::SparseMatrix<float> >::computeRegularProduct();
-template<> void SOFA_LINEARALGEBRA_API SparseMatrixProduct<Eigen::SparseMatrix<double> >::computeRegularProduct();
+template<> SReal SOFA_LINEARALGEBRA_API SparseMatrixTranspose<Eigen::SparseMatrix<float> >::InnerIterator::value() const;
+template<> Eigen::SparseMatrix<float>::Index SOFA_LINEARALGEBRA_API SparseMatrixTranspose<Eigen::SparseMatrix<float> >::InnerIterator::row() const;
+template<> Eigen::SparseMatrix<float>::Index SOFA_LINEARALGEBRA_API SparseMatrixTranspose<Eigen::SparseMatrix<float> >::InnerIterator::col() const;
 
-#if !defined(SOFA_LINEARAGEBRA_SPARSEMATRIXPRODUCT_EIGENSPARSEMATRIX_CPP)
-    extern template class SOFA_LINEARALGEBRA_API SparseMatrixProduct<Eigen::SparseMatrix<float> >;
-    extern template class SOFA_LINEARALGEBRA_API SparseMatrixProduct<Eigen::SparseMatrix<double> >;
+template<> SReal SOFA_LINEARALGEBRA_API SparseMatrixTranspose<Eigen::SparseMatrix<double> >::InnerIterator::value() const;
+template<> Eigen::SparseMatrix<double>::Index SOFA_LINEARALGEBRA_API SparseMatrixTranspose<Eigen::SparseMatrix<double> >::InnerIterator::row() const;
+template<> Eigen::SparseMatrix<double>::Index SOFA_LINEARALGEBRA_API SparseMatrixTranspose<Eigen::SparseMatrix<double> >::InnerIterator::col() const;
+
+#if !defined(SOFA_LINEARAGEBRA_SPARSEMATRIXTRANSPOSE_EIGENSPARSEMATRIX_CPP)
+    extern template class SOFA_LINEARALGEBRA_API SparseMatrixTranspose<Eigen::SparseMatrix<float> >;
+    extern template class SOFA_LINEARALGEBRA_API SparseMatrixTranspose<Eigen::SparseMatrix<double> >;
 #endif
 
 } //namespace sofa::linearalgebra

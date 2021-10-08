@@ -22,6 +22,9 @@
 #pragma once
 
 #include <sofa/linearalgebra/config.h>
+#include <utility>
+
+#include <sofa/type/vector_T.h>
 
 namespace sofa::linearalgebra
 {
@@ -40,12 +43,26 @@ public:
     TMatrix* matrixA { nullptr };
     TMatrix* matrixB { nullptr };
 
-    void computeProduct(bool forceComputeIntersection = true);
+    void computeProduct(bool forceComputeIntersection = false);
+    void computeRegularProduct();
 
     const TMatrix& getProductResult() const { return matrixC; }
 
     SparseMatrixProduct(TMatrix* a, TMatrix* b) : matrixA(a), matrixB(b) {}
     SparseMatrixProduct() = default;
+
+    struct Intersection
+    {
+        // Two indices: the first for the values vector of the matrix A, the second for the values vector of the matrix B
+        using PairIndex = std::pair<typename TMatrix::Index, typename TMatrix::Index>;
+        // A list of pairs of indices
+        using ListPairIndex = type::vector<PairIndex>;
+        /// Each element of this vector gives the list of values from matrix A and B to multiply together and accumulate
+        /// them into the matrix C at the same location in the values vector
+        using ValuesIntersection = type::vector<ListPairIndex>;
+
+        ValuesIntersection intersection;
+    };
 
 protected:
     TMatrix matrixC; /// Result of A*B
@@ -53,6 +70,9 @@ protected:
     bool m_hasComputedIntersection { false };
     void computeIntersection();
     void computeProductFromIntersection();
+
+    Intersection m_intersectionAB;
+
 };
 
 template <class TMatrix>
