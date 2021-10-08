@@ -144,30 +144,33 @@ public:
     /// compute lambda and mu based on the Young modulus and Poisson ratio
     void updateLameCoefficients();
 
-    typedef typename topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, edgeRestInfoVector > TetrahedralTMEdgeHandler;
-
+    /** Method to initialize @sa EdgeRestInformation when a new edge is created.
+    * Will be set as creation callback in the EdgeData @sa edgeInfo
+    */
     void createEdgeRestInformation(Index edgeIndex, EdgeRestInformation& ei,
         const core::topology::BaseMeshTopology::Edge&,
         const sofa::type::vector< Index >&,
         const sofa::type::vector< double >&);
 
+    /** Method to update @sa edgeInfo when a new Tetrahedron is created.
+    * Will be set as callback in the EdgeData @sa edgeInfo when TETRAHEDRAADDED event is fired
+    * to create a new spring in created Tetrahedron.
+    */
     void applyTetrahedronCreation(const sofa::type::vector<Index>& tetrahedronAdded,
         const sofa::type::vector<core::topology::BaseMeshTopology::Tetrahedron>&,
         const sofa::type::vector<sofa::type::vector<Index> >&,
         const sofa::type::vector<sofa::type::vector<double> >&);
 
+    /** Method to update @sa d_edgeSprings when a triangle is removed.
+    * Will be set as callback in the EdgeData @sa edgeInfo when TETRAHEDRAREMOVED event is fired
+    * to remove spring if needed or update adjacent Tetrahedron.
+    */
     void applyTetrahedronDestruction(const sofa::type::vector<Index>& tetrahedronRemoved);
 
+    topology::EdgeData < edgeRestInfoVector >& getEdgeInfo() { return edgeInfo; }
+
 protected:
-
-//    EdgeData < typename VecType < EdgeRestInformation > > edgeInfo; ///< Internal edge data
     topology::EdgeData < edgeRestInfoVector > edgeInfo; ///< Internal edge data
-
-//    EdgeData < typename VecType < EdgeRestInformation > > &getEdgeInfo() {return edgeInfo;}
-    topology::EdgeData < edgeRestInfoVector > &getEdgeInfo() {return edgeInfo;}
-
-
-    TetrahedralTMEdgeHandler* m_edgeHandler;
 
     sofa::core::topology::BaseMeshTopology* m_topology;
 

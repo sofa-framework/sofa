@@ -87,6 +87,9 @@ public:
     /// Link to be set to the topology container in the component graph.
     using Inherit1::l_topology;
 
+    /** Method to initialize @sa TriangleFiberDirection when a new Triangle is created.
+    * Will be set as creation callback in the TriangleData @sa localFiberDirection
+    */
     void createTriangleInfo(Index triangleIndex,
         TriangleFiberDirection&,
         const core::topology::BaseMeshTopology::Triangle& t,

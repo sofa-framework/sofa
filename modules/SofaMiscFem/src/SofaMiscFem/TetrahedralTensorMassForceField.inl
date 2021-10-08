@@ -235,13 +235,13 @@ TetrahedralTensorMassForceField<DataTypes>::TetrahedralTensorMassForceField()
     , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
     , m_topology(nullptr)
 {
-    m_edgeHandler = new TetrahedralTMEdgeHandler(&edgeInfo);
+
 }
 
 template <class DataTypes> 
 TetrahedralTensorMassForceField<DataTypes>::~TetrahedralTensorMassForceField()
 {
-    if(m_edgeHandler) delete m_edgeHandler;
+
 }
 
 template <class DataTypes> void 
@@ -265,7 +265,7 @@ TetrahedralTensorMassForceField<DataTypes>::init()
         return;
     }
 
-    edgeInfo.createTopologyHandler(m_topology, m_edgeHandler);
+    edgeInfo.createTopologyHandler(m_topology);
     edgeInfo.linkToTetrahedronDataArray();
 
     if (m_topology->getNbTetrahedra()==0)
@@ -309,13 +309,13 @@ TetrahedralTensorMassForceField<DataTypes>::init()
         createEdgeRestInformation(edgeIndex, ei, edge, ancestors, coefs);
     });
 
-    m_edgeHandler->addCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAADDED, [this](const core::topology::TopologyChange* eventTopo) 
+    edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAADDED, [this](const core::topology::TopologyChange* eventTopo)
     {
         const core::topology::TetrahedraAdded* tAdd = static_cast<const core::topology::TetrahedraAdded*>(eventTopo);
         applyTetrahedronCreation(tAdd->getIndexArray(), tAdd->getElementArray(), tAdd->ancestorsList, tAdd->coefs);
     });
 
-    m_edgeHandler->addCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAREMOVED, [this](const core::topology::TopologyChange* eventTopo) 
+    edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAREMOVED, [this](const core::topology::TopologyChange* eventTopo)
     {
         const core::topology::TetrahedraRemoved* tRemove = static_cast<const core::topology::TetrahedraRemoved*>(eventTopo);
         applyTetrahedronDestruction(tRemove->getArray());

@@ -170,6 +170,9 @@ public:
     topology::PointData<sofa::type::vector<VertexInformation> > vertexInfo; ///< Internal point data
     topology::EdgeData<sofa::type::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
 
+    /** Method to initialize @sa QuadInformation when a new Quad is created.
+    * Will be set as creation callback in the QuadData @sa quadInfo
+    */
     void createQuadInformation(unsigned int quadIndex, QuadInformation&,
         const core::topology::BaseMeshTopology::Quad& t,
         const sofa::type::vector< unsigned int >&,

@@ -169,6 +169,9 @@ public:
         d_anisotropySet.setValue(direction);
     }
 
+    /** Method to initialize @sa TetrahedronRestInformation when a new Tetrahedron is created.
+    * Will be set as creation callback in the TetrahedronData @sa m_tetrahedronInfo
+    */
     void createTetrahedronRestInformation(Index, TetrahedronRestInformation& t, const Tetrahedron&,
         const sofa::type::vector<Index>&, const sofa::type::vector<double>&);
 

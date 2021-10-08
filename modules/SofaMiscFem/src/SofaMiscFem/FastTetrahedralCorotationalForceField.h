@@ -109,6 +109,9 @@ protected:
     topology::EdgeData<sofa::type::vector<Mat3x3> > edgeInfo; ///< Internal edge data
     topology::TetrahedronData<sofa::type::vector<TetrahedronRestInformation> > tetrahedronInfo; ///< Internal tetrahedron data
 
+    /** Method to initialize @sa TetrahedronRestInformation when a new Tetrahedron is created.
+    * Will be set as creation callback in the TetrahedronData @sa tetrahedronInfo
+    */
     void createTetrahedronRestInformation(Index, TetrahedronRestInformation& t,
         const core::topology::BaseMeshTopology::Tetrahedron&,
         const sofa::type::vector<Index>&,
