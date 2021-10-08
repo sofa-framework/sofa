@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_LINEARAGEBRA_SPARSEMATRIXTRANSPOSE_EIGENSPARSEMATRIX_CPP
+#include <iostream>
 #include <sofa/linearalgebra/SparseMatrixTranspose[EigenSparseMatrix].h>
 
 namespace sofa::linearalgebra
@@ -28,25 +29,25 @@ namespace sofa::linearalgebra
 template<class TMatrix>
 void transpose(const TMatrix& self, type::vector<typename TMatrix::Index>& outer, type::vector<typename TMatrix::Index>& inner, type::vector<typename TMatrix::Index>& perm)
 {
-    const auto aCols = self.cols();
+    const auto aOuterSize = self.innerSize();
     const auto nbNonZero = self.nonZeros();
 
     outer.clear();
     inner.clear();
 
     //will be shifted twice
-    outer.resize(aCols + 2, 0);
-    
+    outer.resize(aOuterSize + 2, 0);
+
     for(Eigen::Index i = 0; i < nbNonZero; ++i)
     {
-        const auto rowId = self.innerIndexPtr()[i];
+        const auto innerId = self.innerIndexPtr()[i];
         //count how many non-zero values are in the row rowId
-        ++outer[rowId+2];
+        ++outer[innerId+2];
     }
-    
+
     //build outer: for each row the index of the first non-zero
     //It's the first shift
-    for(Eigen::Index i = 2; i < aCols + 1; ++i)
+    for(Eigen::Index i = 2; i < outer.size(); ++i)
     {
         const auto nbNonzeroInRow = outer[i];
         const auto previousRowId = outer[i-1];
@@ -55,22 +56,20 @@ void transpose(const TMatrix& self, type::vector<typename TMatrix::Index>& outer
 
     inner.resize(nbNonZero);
     perm.resize(nbNonZero);
-    
-    for (Eigen::Index i = 0; i < aCols; ++i)
+
+    for (Eigen::Index selfOuterId = 0; selfOuterId < self.outerSize(); ++selfOuterId)
     {
-        const auto colA = i;
-        for (auto aId = self.outerIndexPtr()[i]; aId < self.outerIndexPtr()[i+1]; ++aId)
+        for (auto aId = self.outerIndexPtr()[selfOuterId]; aId < self.outerIndexPtr()[selfOuterId + 1]; ++aId)
         {
-            //aId is the index of the first non-zero value in the column i of matrix A
             const auto rowA = self.innerIndexPtr()[aId];
 
             const auto newIndex = outer[rowA + 1]++; //second shift
             perm[newIndex] = aId;
-            inner[newIndex] = colA;
+            inner[newIndex] = selfOuterId;
         }
     }
 
-    outer.resize(aCols + 1);
+    outer.resize(aOuterSize + 1);
 }
 
 template<>
@@ -88,13 +87,13 @@ SReal SparseMatrixTranspose<Eigen::SparseMatrix<float> >::InnerIterator::value()
 template<>
 Eigen::SparseMatrix<float>::Index SparseMatrixTranspose<Eigen::SparseMatrix<float> >::InnerIterator::row() const
 {
-    return m_transpose.innerIndices[m_id];
+    return m_outer;
 }
 
 template<>
 Eigen::SparseMatrix<float>::Index SparseMatrixTranspose<Eigen::SparseMatrix<float> >::InnerIterator::col() const
 {
-    return m_outer;
+    return m_transpose.innerIndices[m_id];
 }
 
 template<>
@@ -112,16 +111,70 @@ SReal SparseMatrixTranspose<Eigen::SparseMatrix<double> >::InnerIterator::value(
 template<>
 Eigen::SparseMatrix<float>::Index SparseMatrixTranspose<Eigen::SparseMatrix<double> >::InnerIterator::row() const
 {
-    return m_transpose.innerIndices[m_id];
+    return m_outer;
 }
 
 template<>
 Eigen::SparseMatrix<float>::Index SparseMatrixTranspose<Eigen::SparseMatrix<double> >::InnerIterator::col() const
 {
+    return m_transpose.innerIndices[m_id];
+}
+
+
+template<>
+void SparseMatrixTranspose<Eigen::SparseMatrix<float, Eigen::RowMajor> >::buildTranspose()
+{
+    transpose(*matrix, outerStarts, innerIndices, perm);
+}
+
+template<>
+SReal SparseMatrixTranspose<Eigen::SparseMatrix<float, Eigen::RowMajor> >::InnerIterator::value() const
+{
+    return m_transpose.matrix->valuePtr()[m_transpose.perm[m_id]];
+}
+
+template<>
+Eigen::SparseMatrix<float, Eigen::RowMajor>::Index SparseMatrixTranspose<Eigen::SparseMatrix<float, Eigen::RowMajor> >::InnerIterator::row() const
+{
+    return m_transpose.innerIndices[m_id];
+}
+
+template<>
+Eigen::SparseMatrix<float, Eigen::RowMajor>::Index SparseMatrixTranspose<Eigen::SparseMatrix<float, Eigen::RowMajor> >::InnerIterator::col() const
+{
     return m_outer;
 }
 
+template<>
+void SparseMatrixTranspose<Eigen::SparseMatrix<double, Eigen::RowMajor> >::buildTranspose()
+{
+    transpose(*matrix, outerStarts, innerIndices, perm);
+}
+
+template<>
+SReal SparseMatrixTranspose<Eigen::SparseMatrix<double, Eigen::RowMajor> >::InnerIterator::value() const
+{
+    return m_transpose.matrix->valuePtr()[m_transpose.perm[m_id]];
+}
+
+template<>
+Eigen::SparseMatrix<double, Eigen::RowMajor>::Index SparseMatrixTranspose<Eigen::SparseMatrix<double, Eigen::RowMajor> >::InnerIterator::row() const
+{
+    return m_transpose.innerIndices[m_id];
+}
+
+template<>
+Eigen::SparseMatrix<double, Eigen::RowMajor>::Index SparseMatrixTranspose<Eigen::SparseMatrix<double, Eigen::RowMajor> >::InnerIterator::col() const
+{
+
+    return m_outer;
+}
+
+
 template class SOFA_LINEARALGEBRA_API SparseMatrixTranspose<Eigen::SparseMatrix<float> >;
 template class SOFA_LINEARALGEBRA_API SparseMatrixTranspose<Eigen::SparseMatrix<double> >;
+
+template class SOFA_LINEARALGEBRA_API SparseMatrixTranspose<Eigen::SparseMatrix<float, Eigen::RowMajor> >;
+template class SOFA_LINEARALGEBRA_API SparseMatrixTranspose<Eigen::SparseMatrix<double, Eigen::RowMajor> >;
 
 } //namespace sofa::linearalgebra

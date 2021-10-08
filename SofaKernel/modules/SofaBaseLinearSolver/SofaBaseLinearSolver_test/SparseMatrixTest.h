@@ -37,7 +37,8 @@ struct SparseMatrixTest : public virtual NumericTest<TReal>
      * Generate a sparse matrix of size nbRows x nbCols. The sparsity is the ratio of non-zero values compared to the
      * total size of the matrix (= nbRows x nbCols).
      */
-    static void generateRandomSparseMatrix(Eigen::SparseMatrix<TReal>& eigenMatrix, Eigen::Index nbRows, Eigen::Index nbCols, TReal sparsity)
+    template<int EigenSparseMatrixOptions>
+    static void generateRandomSparseMatrix(Eigen::SparseMatrix<TReal, EigenSparseMatrixOptions>& eigenMatrix, Eigen::Index nbRows, Eigen::Index nbCols, TReal sparsity)
     {
         if (sparsity < 0 || sparsity > 1)
         {

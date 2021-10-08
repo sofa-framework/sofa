@@ -43,7 +43,7 @@ struct TestSparseMatrixTranspose : public sofa::testing::SparseMatrixTest<typena
         Real value;
     };
 
-    bool checkMatrix(typename Matrix::Index nbRows, typename Matrix::Index nbCols, Real sparsity)
+    void checkMatrix(typename Matrix::Index nbRows, typename Matrix::Index nbCols, Real sparsity)
     {
         Matrix matrix;
         generateRandomSparseMatrix(matrix, nbRows, nbCols, sparsity);
@@ -54,11 +54,16 @@ struct TestSparseMatrixTranspose : public sofa::testing::SparseMatrixTest<typena
         const auto& outerStarts  = transposeMatrix.getOuterStarts();
         sofa::type::vector< std::pair< Triplet, Real> > issues;
 
+        sofa::type::vector<Eigen::Triplet<Real> > triplets;
         for (std::size_t i = 0; i < outerStarts.size() - 1; ++i)
         {
             for(typename Transpose::InnerIterator it(transposeMatrix, i); it; ++it )
             {
-                const Real initialValue = matrix.coeff(it.col(), it.row()); //invert row and col to get the transposed element
+                ASSERT_TRUE(it.row() < nbRows) << it.row() << " " << nbRows;
+                ASSERT_TRUE(it.col() < nbCols) << it.col() << " " << nbCols;
+                const Real initialValue = matrix.coeff(it.row(), it.col());
+
+                triplets.emplace_back(it.row(), it.col(), it.value());
 
                 if (!this->isSmall(initialValue - it.value()))
                 {
@@ -72,14 +77,13 @@ struct TestSparseMatrixTranspose : public sofa::testing::SparseMatrixTest<typena
         if (!issues.empty())
         {
             std::stringstream ss;
-            for (const auto& i : issues)
-            {
-                ss << i.first.row << " " << i.first.col << " " << i.first.value << " != " << i.second << "\n";
-            }
+            // for (const auto& i : issues)
+            // {
+            //     ss << i.first.row << " " << i.first.col << " " << i.first.value << " != " << i.second << "\n";
+            // }
             ADD_FAILURE() << "Found " << issues.size() << " differences in the transposed matrix compared to the initial matrix\n" << ss.str();
         }
 
-        return true;
     }
 };
 
@@ -87,29 +91,34 @@ using CRSMatrixScalar = sofa::linearalgebra::CompressedRowSparseMatrix<SReal>;
 
 using TestSparseMatrixTransposeImplementations = ::testing::Types<
     TestSparseMatrixTransposeTraits<Eigen::SparseMatrix<float>, float>,
-    TestSparseMatrixTransposeTraits<Eigen::SparseMatrix<double>, double>
+    TestSparseMatrixTransposeTraits<Eigen::SparseMatrix<double>, double>,
+    TestSparseMatrixTransposeTraits<Eigen::SparseMatrix<float, Eigen::RowMajor>, float>,
+    TestSparseMatrixTransposeTraits<Eigen::SparseMatrix<double, Eigen::RowMajor>, double>
     // TestSparseMatrixTransposeTraits<CRSMatrixScalar, SReal, 1000, std::ratio<1, 1000> >
 >;
 TYPED_TEST_SUITE(TestSparseMatrixTranspose, TestSparseMatrixTransposeImplementations);
 
 TYPED_TEST(TestSparseMatrixTranspose, squareMatrix )
 {
-    ASSERT_TRUE( this->checkMatrix( 5, 5, 1. / 5. ) );
-    ASSERT_TRUE( this->checkMatrix( 5, 5, 3. / 5. ) );
+    this->checkMatrix( 5, 5, 1. / 5. );
+    this->checkMatrix( 5, 5, 3. / 5. );
 
-    ASSERT_TRUE( this->checkMatrix( 1000, 1000, 1. / 1000. ) );
-    ASSERT_TRUE( this->checkMatrix( 1000, 1000, 20. / 1000. ) );
+    this->checkMatrix( 1000, 1000, 1. / 1000. );
+    this->checkMatrix( 1000, 1000, 20. / 1000. );
 
-    ASSERT_TRUE( this->checkMatrix( 100, 100, 1. ) );
+    this->checkMatrix( 100, 100, 1. );
 }
 
 TYPED_TEST(TestSparseMatrixTranspose, rectangularMatrix )
 {
-    ASSERT_TRUE( this->checkMatrix( 5, 10, 1. / 5. ) );
-    ASSERT_TRUE( this->checkMatrix( 5, 10, 3. / 5. ) );
+    this->checkMatrix( 5, 10, 1. / 5. );
+    this->checkMatrix( 5, 10, 3. / 5. );
 
-    ASSERT_TRUE( this->checkMatrix( 1000, 3000, 1. / 1000. ) );
-    ASSERT_TRUE( this->checkMatrix( 1000, 3000, 20. / 1000. ) );
+    this->checkMatrix( 10, 5, 1. / 5. );
+    this->checkMatrix( 10, 5, 3. / 5. );
 
-    ASSERT_TRUE( this->checkMatrix( 100, 300, 1. ) );
+    this->checkMatrix( 1000, 3000, 1. / 1000. );
+    this->checkMatrix( 1000, 3000, 20. / 1000. );
+
+    this->checkMatrix( 100, 300, 1. );
 }
