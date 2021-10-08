@@ -30,5 +30,38 @@ namespace sofa::topology
 {
     using Hexahedron = sofa::topology::Element<sofa::geometry::Hexahedron>;
 
+    template<typename Coordinates>
+    static constexpr sofa::Index getClosest(const sofa::type::vector<Coordinates>& positions, const sofa::type::vector<Hexahedron>& hexahedra,
+        const Coordinates& pos, Coordinates& baryC, SReal& distance)
+    {
+        sofa::Index index = sofa::InvalidID;
+        distance = std::numeric_limits<SReal>::max();
+
+        for (sofa::Index c = 0; c < hexahedra.size(); ++c)
+        {
+            const auto& h = hexahedra[c];
+            const auto d = sofa::geometry::Hexahedron::distanceTo(positions[h[0]], positions[h[1]], positions[h[2]], positions[h[3]],
+                positions[h[4]], positions[h[5]], positions[h[6]], positions[h[7]],
+                pos);
+
+            if (d < distance)
+            {
+                distance = d;
+                index = c;
+            }
+        }
+
+        if (index != sofa::InvalidID)
+        {
+            const auto& h = hexahedra[index];
+            baryC = sofa::geometry::Hexahedron::barycentricCoefficients(positions[h[0]], positions[h[1]], positions[h[2]], positions[h[3]],
+                positions[h[4]], positions[h[5]], positions[h[6]], positions[h[7]], pos);
+        }
+
+        return index;
+    }
+
     static constexpr Hexahedron InvalidHexahedron;
+
+   
 }
