@@ -175,8 +175,7 @@ void TopologyContainer::resetTopologyHandlerList()
         }
         topologyHandlerList.clear();
     }
-    m_topologyHandlerListPerElement.clear();
-    m_topologyHandlerListPerElement.resize(sofa::geometry::NumberOfElementType);
+
 }
 
 
@@ -184,19 +183,20 @@ void TopologyContainer::updateDataEngineGraph(const sofa::core::objectmodel::Bas
 {
     // clear data stored by previous call of this function
     m_topologyHandlerListPerElement[getElementTypeIndex(elementType)].clear();
-    this->m_enginesGraph.clear();
-    this->m_dataGraph.clear();
-
 
     sofa::core::objectmodel::DDGNode::DDGLinkContainer _outs = my_Data.getOutputs();
     sofa::core::objectmodel::DDGNode::DDGLinkIterator it;
 
     bool allDone = false;
 
+    this->m_enginesGraph[getElementTypeIndex(elementType)].clear();
+    this->m_dataGraph[getElementTypeIndex(elementType)].clear();
     unsigned int cpt_security = 0;
     std::list<sofa::core::topology::TopologyHandler*> _engines;
     std::list<sofa::core::topology::TopologyHandler*>::iterator it_engines;
 
+    auto& enginesGraph = this->m_enginesGraph[getElementTypeIndex(elementType)];
+    auto& dataGraph = this->m_dataGraph[getElementTypeIndex(elementType)];
     while (!allDone && cpt_security < 1000)
     {
         std::list<sofa::core::objectmodel::DDGNode* > next_GraphLevel;
@@ -243,14 +243,14 @@ void TopologyContainer::updateDataEngineGraph(const sofa::core::objectmodel::Bas
                 }
             }
 
-            this->m_dataGraph.push_back(dataNames);
+            dataGraph.push_back(dataNames);
             dataNames.clear();
         }
 
 
         // Iterate:
         _engines.insert(_engines.end(), next_enginesLevel.begin(), next_enginesLevel.end());
-        this->m_enginesGraph.push_back(enginesNames);
+        enginesGraph.push_back(enginesNames);
 
         if (next_GraphLevel.empty()) // end
             allDone = true;
@@ -292,6 +292,49 @@ void TopologyContainer::updateDataEngineGraph(const sofa::core::objectmodel::Bas
     
 
     return;
+}
+
+void TopologyContainer::displayDataGraph(const sofa::core::objectmodel::BaseData& my_Data, sofa::geometry::ElementType elementType) const
+{
+    auto& enginesGraph = this->m_enginesGraph[getElementTypeIndex(elementType)];
+    auto& dataGraph = this->m_dataGraph[getElementTypeIndex(elementType)];
+
+    // A cout very lite version
+    std::string name;
+    std::stringstream tmpmsg;
+    name = my_Data.getName();
+    tmpmsg << msgendl << "Data Name: " << name << msgendl;
+
+    unsigned int cpt_engine = 0;
+
+    for (const auto& enginesNames : enginesGraph) // per engine level
+    {
+        unsigned int cpt_engine_tmp = cpt_engine;
+        for (unsigned int j = 0; j < enginesNames.size(); ++j) // per engine on the same level
+        {
+            tmpmsg << enginesNames[j];
+
+            for (unsigned int k = 0; k < enginesGraph[cpt_engine].size(); ++k) // create espace between engines name
+                tmpmsg << "     ";
+
+            cpt_engine++;
+        }
+        tmpmsg << msgendl;
+        cpt_engine = cpt_engine_tmp;
+
+        for (const auto& engineName : enginesNames) // per engine level
+        {
+            SOFA_UNUSED(engineName);
+            sofa::type::vector<std::string> dataNames = dataGraph[cpt_engine];
+            for (unsigned int k = 0; k < dataNames.size(); ++k)
+                tmpmsg << dataNames[k] << "     ";
+            tmpmsg << "            ";
+
+            cpt_engine++;
+        }
+        tmpmsg << msgendl;
+    }
+    msg_info() << tmpmsg.str();
 }
 
 } // namespace sofa::core::topology

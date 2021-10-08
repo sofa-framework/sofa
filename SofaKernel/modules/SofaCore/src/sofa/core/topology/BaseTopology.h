@@ -26,7 +26,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/BaseTopologyObject.h>
 #include <sofa/core/VecId.h>
-
+#include <array>
 
 namespace sofa
 {
@@ -266,6 +266,11 @@ public:
     */
     virtual bool linkTopologyHandlerToData(TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType);
 
+    /** \ brief functions to display the graph of Data/DataEngines linked to the different Data array, using member variable.
+    *
+    */
+    void displayDataGraph(const sofa::core::objectmodel::BaseData& my_Data, sofa::geometry::ElementType elementType) const;
+
 public:
     virtual void updateTopologyHandlerGraph() {}
 
@@ -276,11 +281,11 @@ public:
     Data <std::list<const TopologyChange *> >m_stateChangeList;
 
     /// List of topology engines which will interact on all topological Data.
-    std::vector< std::list<TopologyHandler*> > m_topologyHandlerListPerElement {sofa::geometry::NumberOfElementType};
+    std::array< std::list<TopologyHandler*>, sofa::geometry::NumberOfElementType> m_topologyHandlerListPerElement{};
 
-    /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
-    sofa::type::vector< sofa::type::vector<std::string> > m_dataGraph;
-    sofa::type::vector< sofa::type::vector<std::string> > m_enginesGraph;
+    /// \brief variables used to display the graph of Data/DataEngines.
+    std::array < sofa::type::vector< sofa::type::vector<std::string> >, sofa::geometry::NumberOfElementType > m_dataGraph;
+    std::array < sofa::type::vector< sofa::type::vector<std::string> >, sofa::geometry::NumberOfElementType > m_enginesGraph;
 
 public:
 

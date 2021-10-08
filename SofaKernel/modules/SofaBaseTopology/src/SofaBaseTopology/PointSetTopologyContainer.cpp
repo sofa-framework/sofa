@@ -160,19 +160,16 @@ void PointSetTopologyContainer::init()
 
 void PointSetTopologyContainer::addPoints(const Size nPoints)
 {
-    //nbPoints.setValue( nbPoints.getValue() + nPoints);
     setNbPoints( nbPoints.getValue() + nPoints );
 }
 
 void PointSetTopologyContainer::removePoints(const Size nPoints)
 {
-    //nbPoints.setValue(nbPoints.getValue() - nPoints);
     setNbPoints( nbPoints.getValue() - nPoints );
 }
 
 void PointSetTopologyContainer::addPoint()
 {
-    //nbPoints.setValue(nbPoints.getValue()+1);
     setNbPoints( nbPoints.getValue() + 1 );
 }
 
@@ -220,49 +217,6 @@ void PointSetTopologyContainer::cleanPointTopologyFromDirty()
             topoEngine->cleanDirty();
         }
     }
-}
-
-
-void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseData& my_Data)
-{
-    // A cout very lite version
-    std::string name;
-    std::stringstream tmpmsg;
-    name = my_Data.getName();
-    tmpmsg << msgendl << "Data Name: " << name << msgendl;
-
-    unsigned int cpt_engine = 0;
-
-    for (unsigned int i=0; i<this->m_enginesGraph.size(); ++i ) // per engine level
-    {
-        sofa::type::vector<std::string> enginesNames = this->m_enginesGraph[i];
-
-        unsigned int cpt_engine_tmp = cpt_engine;
-        for (unsigned int j=0; j<enginesNames.size(); ++j) // per engine on the same level
-        {
-            tmpmsg << enginesNames[j];
-
-            for (unsigned int k=0; k<this->m_enginesGraph[cpt_engine].size(); ++k) // create espace between engines name
-                tmpmsg << "     ";
-
-            cpt_engine++;
-        }
-        tmpmsg << msgendl;
-        cpt_engine = cpt_engine_tmp;
-
-
-        for (unsigned int j=0; j<enginesNames.size(); ++j) // per engine on the same level
-        {
-            sofa::type::vector<std::string> dataNames = this->m_dataGraph[cpt_engine];
-            for (unsigned int k=0; k<dataNames.size(); ++k)
-                tmpmsg << dataNames[k] << "     " ;
-            tmpmsg << "            ";
-
-            cpt_engine++;
-        }
-        tmpmsg << msgendl ;
-    }
-    msg_info() << tmpmsg.str() ;
 }
 
 bool PointSetTopologyContainer::linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)

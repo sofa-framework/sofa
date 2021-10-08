@@ -150,9 +150,6 @@ protected:
     void cleanPointTopologyFromDirty();
     const bool& isPointTopologyDirty() const {return m_pointTopologyDirty;}
 
-    /// \brief functions to display the graph of Data/DataEngines linked to the different Data array, using member variable.
-    virtual void displayDataGraph(sofa::core::objectmodel::BaseData& my_Data);
-
 public:
     Data<InitTypes::VecCoord> d_initPoints; ///< Initial position of points    
 
