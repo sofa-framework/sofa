@@ -71,37 +71,11 @@ void DiagonalMass<DataTypes,MassType>::applyPointCreation(PointID, MassType &m, 
 
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::applyPointDestruction(const sofa::type::vector<PointID> & pointsRemoved)
+void DiagonalMass<DataTypes,MassType>::applyPointDestruction(Index id, MassType& VertexMass)
 {
-    if (!d_computeMassOnRest.getValue())
-        msg_warning("DiagonalMassPointEngine") << "ApplyTopologyChange: option computeMassOnRest should be true to have consistent topological change";
-
-    helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
+    SOFA_UNUSED(id);
     helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
-
-    Index last = masses.size() - 1;
-    for (std::size_t i = 0; i < pointsRemoved.size(); ++i)
-    {
-        Index id = pointsRemoved[i];
-
-        if (id >= masses.size())
-        {
-            msg_error("DMassPointEngine") << "Point to remove is out of bounds from mass vector: " << id << " out of size: " << masses.size();
-            continue;
-        }
-        
-        // Remove the mass of the removed points from totalMass
-        totalMass -= masses[id];
-
-        // swap value before resize
-        masses[id] = masses[last];
-        --last;
-    }
-
-    masses.resize(last + 1);
-
-    cleanTracker();
-    printMass();
+    totalMass -= VertexMass;
 }
 
 
@@ -618,6 +592,18 @@ void DiagonalMass<DataTypes, MassType>::initTopologyHandlers()
 {
     // add the functions to handle topology changes.
     d_vertexMass.createTopologyHandler(m_topology);
+    d_vertexMass.setCreationCallback([this](Index pointIndex, MassType& m,
+        const core::topology::BaseMeshTopology::Point& point,
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs)
+    {
+        applyPointCreation(pointIndex, m, point, ancestors, coefs);
+    });
+    d_vertexMass.setDestructionCallback([this](Index pointIndex, MassType& m)
+    {
+        applyPointDestruction(pointIndex, m);
+    });
+
     if (edgeGeo) 
     {
         d_vertexMass.linkToEdgeDataArray();

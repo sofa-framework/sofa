@@ -179,7 +179,7 @@ protected:
     /** Method to update @sa d_vertexMass when a Point is removed.
     * Will be set as destruction callback in the PointData @sa d_vertexMass
     */
-    void applyPointDestruction(const sofa::type::vector<PointID>& /*indices*/);
+    void applyPointDestruction(Index id, MassType& VertexMass);
 
 
     /** Method to update @sa d_vertexMass when a new Edge is created.
@@ -190,7 +190,7 @@ protected:
         const sofa::type::vector< sofa::type::vector< EdgeID > >& /*ancestors*/,
         const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/);
 
-    /** Method to update @sa d_vertexMass when a new Edge is removed.
+    /** Method to update @sa d_vertexMass when a Edge is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when EDGESREMOVED event is fired.
     */
     void applyEdgeDestruction(const sofa::type::vector<EdgeID>& /*indices*/);
@@ -204,7 +204,7 @@ protected:
         const sofa::type::vector< sofa::type::vector< TriangleID > >& /*ancestors*/,
         const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/);
 
-    /** Method to update @sa d_vertexMass when a new Triangle is removed.
+    /** Method to update @sa d_vertexMass when a Triangle is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when TRIANGLESREMOVED event is fired.
     */
     void applyTriangleDestruction(const sofa::type::vector<TriangleID>& /*indices*/);
@@ -218,7 +218,7 @@ protected:
         const sofa::type::vector< sofa::type::vector< QuadID > >& /*ancestors*/,
         const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/);
 
-    /** Method to update @sa d_vertexMass when a new Quad is removed.
+    /** Method to update @sa d_vertexMass when a Quad is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when QUADSREMOVED event is fired.
     */
     void applyQuadDestruction(const sofa::type::vector<QuadID>& /*indices*/);
@@ -232,7 +232,7 @@ protected:
         const sofa::type::vector< sofa::type::vector< TetrahedronID > >& /*ancestors*/,
         const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/);
 
-    /** Method to update @sa d_vertexMass when a new Tetrahedron is removed.
+    /** Method to update @sa d_vertexMass when a Tetrahedron is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when TETRAHEDRAREMOVED event is fired.
     */
     void applyTetrahedronDestruction(const sofa::type::vector<TetrahedronID>& /*indices*/);
@@ -246,7 +246,7 @@ protected:
         const sofa::type::vector< sofa::type::vector< HexahedronID > >& /*ancestors*/,
         const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/);
     
-    /** Method to update @sa d_vertexMass when a new Edge is removed.
+    /** Method to update @sa d_vertexMass when a Hexahedron is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when HEXAHEDRAREMOVED event is fired.
     */
     void applyHexahedronDestruction(const sofa::type::vector<HexahedronID>& /*indices*/);
