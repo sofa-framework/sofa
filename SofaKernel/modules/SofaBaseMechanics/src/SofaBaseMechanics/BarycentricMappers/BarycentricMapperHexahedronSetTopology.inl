@@ -30,15 +30,13 @@ namespace sofa::component::mapping
 
 template <class In, class Out>
 BarycentricMapperHexahedronSetTopology<In,Out>::BarycentricMapperHexahedronSetTopology()
-    : Inherit1(nullptr, nullptr),
-      m_fromContainer(nullptr)
+    : Inherit1(nullptr, nullptr)
 {}
 
 template <class In, class Out>
-BarycentricMapperHexahedronSetTopology<In,Out>::BarycentricMapperHexahedronSetTopology(topology::HexahedronSetTopologyContainer* fromTopology,
-                                                                                       topology::PointSetTopologyContainer* toTopology)
-    : Inherit1(fromTopology, toTopology),
-      m_fromContainer(fromTopology)
+BarycentricMapperHexahedronSetTopology<In,Out>::BarycentricMapperHexahedronSetTopology(core::topology::BaseMeshTopology* fromTopology,
+    core::topology::BaseMeshTopology* toTopology)
+    : Inherit1(fromTopology, toTopology)
 {}
 
 template <class In, class Out>
@@ -46,10 +44,9 @@ BarycentricMapperHexahedronSetTopology<In,Out>::~BarycentricMapperHexahedronSetT
 {}
 
 template <class In, class Out>
-void BarycentricMapperHexahedronSetTopology<In,Out>::setTopology(topology::HexahedronSetTopologyContainer* topology)
+void BarycentricMapperHexahedronSetTopology<In,Out>::setTopology(core::topology::BaseMeshTopology* topology)
 {
     m_fromTopology  = topology;
-    m_fromContainer = topology;
 }
 
 

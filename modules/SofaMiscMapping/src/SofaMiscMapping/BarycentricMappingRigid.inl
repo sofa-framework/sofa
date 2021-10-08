@@ -30,12 +30,10 @@ namespace sofa::component::mapping
 {
 
 template <class In, class Out>
-BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::BarycentricMapperTetrahedronSetTopologyRigid(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology)
+BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::BarycentricMapperTetrahedronSetTopologyRigid(core::topology::BaseMeshTopology* fromTopology, core::topology::BaseMeshTopology* _toTopology)
     : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
       map(initData(&map,"map", "mapper data")),
       mapOrient(initData(&mapOrient,"mapOrient", "mapper data for mapped frames")),
-      _fromContainer(fromTopology),
-      _fromGeomAlgo(nullptr),
       matrixJ(nullptr),
       updateJ(true)
 {
@@ -105,10 +103,8 @@ template<class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::init(const typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
 
-    _fromContainer->getContext()->get ( _fromGeomAlgo );
-
     int outside = 0;
-    const sofa::type::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->m_fromTopology->getTetrahedra();
+    const auto& tetrahedra = this->m_fromTopology->getTetrahedra();
 
     sofa::type::vector<sofa::type::Matrix3> bases;
     sofa::type::vector<sofa::type::Vector3> centers;

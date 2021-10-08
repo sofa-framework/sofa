@@ -50,7 +50,7 @@ typedef typename sofa::core::topology::BaseMeshTopology::SeqHexahedra SeqHexahed
 
 template <class In, class Out>
 BarycentricMapperMeshTopology<In,Out>::BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology,
-        topology::PointSetTopologyContainer* toTopology)
+    core::topology::BaseMeshTopology* toTopology)
     : TopologyBarycentricMapper<In,Out>(fromTopology, toTopology),
       m_matrixJ(nullptr), m_updateJ(true)
 {

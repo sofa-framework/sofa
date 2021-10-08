@@ -78,7 +78,7 @@ public:
 
 protected:
     BarycentricMapperRegularGridTopology(RegularGridTopology* fromTopology,
-                                         PointSetTopologyContainer* toTopology);
+        core::topology::BaseMeshTopology* toTopology);
 
     type::vector<CubeData> m_map;
     RegularGridTopology* m_fromTopology   {nullptr};

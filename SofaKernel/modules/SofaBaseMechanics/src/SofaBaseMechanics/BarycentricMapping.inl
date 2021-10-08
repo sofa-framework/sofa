@@ -24,11 +24,6 @@
 
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseTopology/SparseGridTopology.h>
-#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
-#include <SofaBaseTopology/QuadSetTopologyContainer.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 
 #include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.h>
 #include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperRegularGridTopology.h>
@@ -194,42 +189,37 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ()
     }
 
     // Hexahedron Topology
-    if (is_a<HexahedronSetTopologyContainer>(input_topology_container)) {
+    if (input_topology_container->getNbHexahedra() > 0) {
         msg_info() << "Creating HexahedronSetMapper";
-        d_mapper = sofa::core::objectmodel::New<HexahedronSetMapper>(
-            dynamic_cast<HexahedronSetTopologyContainer*>(input_topology_container), output_topology_container);
+        d_mapper = sofa::core::objectmodel::New<HexahedronSetMapper>(input_topology_container, output_topology_container);
         goto end;
     }
 
     // Tetrahedron Topology
-    if (is_a<TetrahedronSetTopologyContainer>(input_topology_container)) {
+    if (input_topology_container->getNbTetrahedra() > 0) {
         msg_info() << "Creating TetrahedronSetMapper";
-        d_mapper = sofa::core::objectmodel::New<TetrahedronSetMapper >(
-            dynamic_cast<TetrahedronSetTopologyContainer*>(input_topology_container), output_topology_container);
+        d_mapper = sofa::core::objectmodel::New<TetrahedronSetMapper >(input_topology_container, output_topology_container);
         goto end;
     }
 
     // Quad Topology
-    if (is_a<QuadSetTopologyContainer>(input_topology_container)) {
+    if (input_topology_container->getNbQuads() > 0) {
         msg_info() << "Creating QuadSetMapper";
-        d_mapper = sofa::core::objectmodel::New<QuadSetMapper >(
-            dynamic_cast<QuadSetTopologyContainer*>(input_topology_container), output_topology_container);
+        d_mapper = sofa::core::objectmodel::New<QuadSetMapper >(input_topology_container, output_topology_container);
         goto end;
     }
 
     // Triangle Topology
-    if (is_a<TriangleSetTopologyContainer>(input_topology_container)) {
+    if (input_topology_container->getNbTriangles() > 0) {
         msg_info() << "Creating TriangleSetMapper";
-        d_mapper = sofa::core::objectmodel::New<TriangleSetMapper >(
-            dynamic_cast<TriangleSetTopologyContainer*>(input_topology_container), output_topology_container);
+        d_mapper = sofa::core::objectmodel::New<TriangleSetMapper >(input_topology_container, output_topology_container);
         goto end;
     }
 
     // Edge Topology
-    if (is_a<EdgeSetTopologyContainer>(input_topology_container)) {
+    if (input_topology_container->getNbEdges() > 0) {
         msg_info() << "Creating EdgeSetMapper";
-        d_mapper = sofa::core::objectmodel::New<EdgeSetMapper >(
-            dynamic_cast<EdgeSetTopologyContainer*>(input_topology_container), output_topology_container);
+        d_mapper = sofa::core::objectmodel::New<EdgeSetMapper >(input_topology_container, output_topology_container);
         goto end;
     }
 

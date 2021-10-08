@@ -144,7 +144,7 @@ protected:
     std::size_t m_hashTableSize;
 
 
-    BarycentricMapperTopologyContainer(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology);
+    BarycentricMapperTopologyContainer(core::topology::BaseMeshTopology* fromTopology, core::topology::BaseMeshTopology* toTopology);
 
     ~BarycentricMapperTopologyContainer() override {}
 

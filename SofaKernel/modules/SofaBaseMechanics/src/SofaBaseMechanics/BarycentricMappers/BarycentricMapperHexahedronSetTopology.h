@@ -64,12 +64,11 @@ public:
 
 protected:
     BarycentricMapperHexahedronSetTopology();
-    BarycentricMapperHexahedronSetTopology(topology::HexahedronSetTopologyContainer* fromTopology,
-                                           topology::PointSetTopologyContainer* toTopology);
+    BarycentricMapperHexahedronSetTopology(core::topology::BaseMeshTopology* fromTopology,
+        core::topology::BaseMeshTopology* toTopology);
 
-    void setTopology(topology::HexahedronSetTopologyContainer* topology);
+    void setTopology(core::topology::BaseMeshTopology* topology);
 
-    topology::HexahedronSetTopologyContainer*		m_fromContainer {nullptr};
     std::set<Index> m_invalidIndex;
 
     using Inherit1::d_map;

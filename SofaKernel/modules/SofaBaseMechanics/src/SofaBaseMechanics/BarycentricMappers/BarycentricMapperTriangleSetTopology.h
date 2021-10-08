@@ -22,8 +22,6 @@
 #pragma once
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTopologyContainer.h>
 
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
-
 namespace sofa::component::mapping
 {
 
@@ -53,10 +51,8 @@ public:
 
 protected:
     BarycentricMapperTriangleSetTopology();
-    BarycentricMapperTriangleSetTopology(topology::TriangleSetTopologyContainer* fromTopology,
-                                         topology::PointSetTopologyContainer* toTopology);
-
-    topology::TriangleSetTopologyContainer*			m_fromContainer;
+    BarycentricMapperTriangleSetTopology(core::topology::BaseMeshTopology* fromTopology,
+        core::topology::BaseMeshTopology* toTopology);
 
     virtual type::vector<Triangle> getElements() override;
     virtual type::vector<SReal> getBaryCoef(const Real* f) override;

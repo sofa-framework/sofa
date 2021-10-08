@@ -33,7 +33,7 @@ typedef typename core::topology::BaseMeshTopology::SeqEdges SeqEdges;
 
 template <class In, class Out, class MappingDataType, class Element>
 BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::BarycentricMapperTopologyContainer(core::topology::BaseMeshTopology* fromTopology,
-                                                                                                       topology::PointSetTopologyContainer* toTopology)
+    core::topology::BaseMeshTopology* toTopology)
      : Inherit1(fromTopology, toTopology),
        d_map(initData(&d_map,"map", "mapper data")),
        m_matrixJ(nullptr),

@@ -21,7 +21,6 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTopologyContainer.h>
-#include <SofaBaseTopology/QuadSetTopologyContainer.h>
 
 namespace sofa::component::mapping
 {
@@ -50,8 +49,8 @@ public:
 
     virtual ~BarycentricMapperQuadSetTopology();
 protected:
-    BarycentricMapperQuadSetTopology(topology::QuadSetTopologyContainer* fromTopology,
-                                     topology::PointSetTopologyContainer* toTopology);
+    BarycentricMapperQuadSetTopology(core::topology::BaseMeshTopology* fromTopology,
+        core::topology::BaseMeshTopology* toTopology);
 
     virtual type::vector<Quad> getElements() override;
     virtual type::vector<SReal> getBaryCoef(const Real* f) override;
@@ -60,8 +59,6 @@ protected:
     void computeCenter(Vector3& center, const typename In::VecCoord& in, const Quad& element) override;
     void computeDistance(double& d, const Vector3& v) override;
     void addPointInElement(const Index elementIndex, const SReal* baryCoords) override;
-
-    topology::QuadSetTopologyContainer*			m_fromContainer;
 
     using Inherit1::d_map;
     using Inherit1::m_fromTopology;
