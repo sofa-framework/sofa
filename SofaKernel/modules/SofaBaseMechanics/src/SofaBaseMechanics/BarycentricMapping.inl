@@ -29,11 +29,6 @@
 #include <SofaBaseTopology/QuadSetTopologyContainer.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 
 #include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.h>
 #include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperRegularGridTopology.h>

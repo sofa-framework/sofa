@@ -22,7 +22,6 @@
 #pragma once
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTopologyContainer.h>
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 
 namespace sofa::component::mapping
 {
@@ -71,7 +70,6 @@ protected:
     void setTopology(topology::HexahedronSetTopologyContainer* topology);
 
     topology::HexahedronSetTopologyContainer*		m_fromContainer {nullptr};
-    topology::HexahedronSetGeometryAlgorithms<In>*	m_fromGeomAlgo  {nullptr};
     std::set<Index> m_invalidIndex;
 
     using Inherit1::d_map;

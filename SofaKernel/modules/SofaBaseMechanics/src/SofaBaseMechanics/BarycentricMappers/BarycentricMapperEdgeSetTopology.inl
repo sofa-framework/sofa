@@ -29,8 +29,7 @@ template <class In, class Out>
 BarycentricMapperEdgeSetTopology<In,Out>::BarycentricMapperEdgeSetTopology(topology::EdgeSetTopologyContainer* fromTopology,
                                                                    topology::PointSetTopologyContainer* toTopology)
     : Inherit1(fromTopology, toTopology),
-      m_fromContainer(fromTopology),
-      m_fromGeomAlgo(nullptr)
+      m_fromContainer(fromTopology)
 {}
 
 template <class In, class Out>

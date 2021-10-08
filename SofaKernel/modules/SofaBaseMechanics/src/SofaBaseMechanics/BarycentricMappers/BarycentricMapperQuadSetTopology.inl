@@ -29,8 +29,7 @@ template <class In, class Out>
 BarycentricMapperQuadSetTopology<In,Out>::BarycentricMapperQuadSetTopology(topology::QuadSetTopologyContainer* fromTopology,
                                                                            topology::PointSetTopologyContainer* toTopology)
     : Inherit1(fromTopology, toTopology),
-      m_fromContainer(fromTopology),
-      m_fromGeomAlgo(nullptr)
+      m_fromContainer(fromTopology)
 {}
 
 template <class In, class Out>

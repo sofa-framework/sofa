@@ -21,7 +21,6 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTopologyContainer.h>
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/QuadSetTopologyContainer.h>
 
 namespace sofa::component::mapping
@@ -63,7 +62,6 @@ protected:
     void addPointInElement(const Index elementIndex, const SReal* baryCoords) override;
 
     topology::QuadSetTopologyContainer*			m_fromContainer;
-    topology::QuadSetGeometryAlgorithms<In>*	m_fromGeomAlgo;
 
     using Inherit1::d_map;
     using Inherit1::m_fromTopology;

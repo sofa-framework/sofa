@@ -21,7 +21,6 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTopologyContainer.h>
-#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 
 
@@ -71,7 +70,6 @@ protected:
     void addPointInElement(const Index elementIndex, const SReal* baryCoords) override;
 
     topology::EdgeSetTopologyContainer*	m_fromContainer;
-    topology::EdgeSetGeometryAlgorithms<In>* m_fromGeomAlgo;
 
     using Inherit1::d_map;
     using Inherit1::m_fromTopology;

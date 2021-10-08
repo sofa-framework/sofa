@@ -23,7 +23,6 @@
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTopologyContainer.h>
 
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 
 namespace sofa::component::mapping
 {
@@ -68,7 +67,6 @@ protected:
     void processAddPoint(const sofa::type::Vec3d & pos, const typename In::VecCoord& in, MappingData & vectorData);
 
     topology::TetrahedronSetTopologyContainer*      m_fromContainer {nullptr};
-    topology::TetrahedronSetGeometryAlgorithms<In>*	m_fromGeomAlgo  {nullptr};
 
     using Inherit1::d_map;
     using Inherit1::m_fromTopology;

@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h>
+#include <sofa/core/behavior/MechanicalState.h>
 
 #include <array>
 
@@ -30,16 +31,14 @@ namespace sofa::component::mapping
 template <class In, class Out>
 BarycentricMapperHexahedronSetTopology<In,Out>::BarycentricMapperHexahedronSetTopology()
     : Inherit1(nullptr, nullptr),
-      m_fromContainer(nullptr),
-      m_fromGeomAlgo(nullptr)
+      m_fromContainer(nullptr)
 {}
 
 template <class In, class Out>
 BarycentricMapperHexahedronSetTopology<In,Out>::BarycentricMapperHexahedronSetTopology(topology::HexahedronSetTopologyContainer* fromTopology,
                                                                                        topology::PointSetTopologyContainer* toTopology)
     : Inherit1(fromTopology, toTopology),
-      m_fromContainer(fromTopology),
-      m_fromGeomAlgo(nullptr)
+      m_fromContainer(fromTopology)
 {}
 
 template <class In, class Out>

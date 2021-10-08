@@ -23,7 +23,6 @@
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTopologyContainer.h>
 
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 
 namespace sofa::component::mapping
 {
@@ -58,7 +57,6 @@ protected:
                                          topology::PointSetTopologyContainer* toTopology);
 
     topology::TriangleSetTopologyContainer*			m_fromContainer;
-    topology::TriangleSetGeometryAlgorithms<In>*	m_fromGeomAlgo;
 
     virtual type::vector<Triangle> getElements() override;
     virtual type::vector<SReal> getBaryCoef(const Real* f) override;
