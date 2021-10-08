@@ -169,43 +169,34 @@ protected:
     /// The list of edge springs, one for each edge between two triangles
     sofa::component::topology::EdgeData<type::vector<EdgeSpring> > d_edgeSprings;
 
-    class TriangularBSEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, type::vector<EdgeSpring> >
-    {
-    public:
-        typedef typename FastTriangularBendingSprings<DataTypes>::EdgeSpring EdgeSpring;
-        TriangularBSEdgeHandler(FastTriangularBendingSprings<DataTypes>* _ff, sofa::component::topology::EdgeData<sofa::type::vector<EdgeSpring> >* _data)
-            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::type::vector<EdgeSpring> >(_data), ff(_ff) {}
+    /** Method to initialize @sa EdgeSpring when a new edge is created.
+    * Will be set as creation callback in the EdgeData @sa d_edgeSprings
+    */
+    void applyEdgeCreation(Index edgeIndex,
+        EdgeSpring& ei,
+        const core::topology::BaseMeshTopology::Edge&, const sofa::type::vector< Index >&,
+        const sofa::type::vector< double >&);
 
-        void applyCreateFunction(Index edgeIndex,
-                EdgeSpring &ei,
-                const core::topology::BaseMeshTopology::Edge& ,  const sofa::type::vector< Index > &,
-                const sofa::type::vector< double >&);
+    /** Method to update @sa d_edgeSprings when a new triangle is created.
+    * Will be set as callback in the EdgeData @sa d_edgeSprings when TRIANGLESADDED event is fired
+    * to create a new spring between new created triangles.
+    */
+    void applyTriangleCreation(const sofa::type::vector<Index>& triangleAdded,
+        const sofa::type::vector<core::topology::BaseMeshTopology::Triangle>&,
+        const sofa::type::vector<sofa::type::vector<Index> >&,
+        const sofa::type::vector<sofa::type::vector<double> >&);
 
-        void applyTriangleCreation(const sofa::type::vector<Index> &triangleAdded,
-                const sofa::type::vector<core::topology::BaseMeshTopology::Triangle> & ,
-                const sofa::type::vector<sofa::type::vector<Index> > & ,
-                const sofa::type::vector<sofa::type::vector<double> > &);
+    /** Method to update @sa d_edgeSprings when a triangle is removed.
+    * Will be set as callback in the EdgeData @sa d_edgeSprings when TRIANGLESREMOVED event is fired
+    * to remove spring if needed or update pair of triangles.
+    */
+    void applyTriangleDestruction(const sofa::type::vector<Index>& triangleRemoved);
 
-        void applyTriangleDestruction(const sofa::type::vector<Index> &triangleRemoved);
+    /// Method to update @sa d_edgeSprings when a point is removed. Will be set as callback when POINTSREMOVED event is fired
+    void applyPointDestruction(const sofa::type::vector<Index>& pointIndices);
 
-        void applyPointDestruction(const sofa::type::vector<Index> &pointIndices);
-
-        void applyPointRenumbering(const sofa::type::vector<Index> &pointToRenumber);
-
-        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, type::vector<EdgeSpring> >::ApplyTopologyChange;
-        /// Callback to add triangles elements.
-        void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/);
-        /// Callback to remove triangles elements.
-        void ApplyTopologyChange(const core::topology::TrianglesRemoved* /*event*/);
-
-        /// Callback to remove points elements.
-        void ApplyTopologyChange(const core::topology::PointsRemoved* /*event*/);
-        /// Callback to renumbering on points elements.
-        void ApplyTopologyChange(const core::topology::PointsRenumbering* /*event*/);
-
-    protected:
-        FastTriangularBendingSprings<DataTypes>* ff;
-    };
+    /// Method to update @sa d_edgeSprings when points are renumbered. Will be set as callback when POINTSRENUMBERING event is fired
+    void applyPointRenumbering(const sofa::type::vector<Index>& pointToRenumber);
 
     sofa::core::topology::BaseMeshTopology* m_topology;
 
@@ -215,8 +206,6 @@ protected:
     virtual ~FastTriangularBendingSprings();
 
     sofa::component::topology::EdgeData<type::vector<EdgeSpring> > &getEdgeInfo() {return d_edgeSprings;}
-
-    TriangularBSEdgeHandler* d_edgeHandler;
 
     SReal m_potentialEnergy;
 };
