@@ -22,8 +22,6 @@
 #pragma once
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTopologyContainer.h>
 
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-
 namespace sofa::component::mapping
 {
 
