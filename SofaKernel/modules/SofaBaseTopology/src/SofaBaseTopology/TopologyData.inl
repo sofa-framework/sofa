@@ -396,7 +396,7 @@ void TopologyData <TopologyElementType, VecT>::addTopologyEventCallBack(core::to
     }
     else
     {
-        msg_warning(this->getOwner()) << "No TopologyHandler has been creating to manage this TopologyData: " << this->getName() 
+        msg_warning(this->getOwner()) << "No TopologyHandler has been created to manage this TopologyData: " << this->getName() 
             << ". Callback for event: '" << parseTopologyChangeTypeToString(type) << "' won't be registered.";
     }
 

@@ -21,14 +21,15 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/topology/Point.h>
-#include <sofa/topology/Element.h>
+#include <sofa/linearalgebra/EigenBaseSparseMatrix.h>
 
-#include <sofa/geometry/Triangle.h>
+SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/EigenBaseSparseMatrix.h")
+#include <sofa/core/behavior/MultiMatrixAccessor.h> // some code was using implicitely MultiMatrixAccessor
 
-namespace sofa::topology
+namespace sofa::component::linearsolver
 {
-    using Triangle = sofa::topology::Element<sofa::geometry::Triangle>;
 
-    static constexpr Triangle InvalidTriangle;
-}
+    template<class T>
+    using EigenBaseSparseMatrix = sofa::linearalgebra::EigenBaseSparseMatrix<T>;
+
+} // namespace sofa::component::linearsolver

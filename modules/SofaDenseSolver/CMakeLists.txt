@@ -20,11 +20,13 @@ list(APPEND HEADER_FILES
     ${SOFADENSESOLVER_SRC}/LULinearSolver.h
     ${SOFADENSESOLVER_SRC}/NewMatMatrix.h
     ${SOFADENSESOLVER_SRC}/NewMatVector.h
+    ${SOFADENSESOLVER_SRC}/SVDLinearSolver.h
     )
 list(APPEND SOURCE_FILES
     ${SOFADENSESOLVER_SRC}/LULinearSolver.cpp
     ${SOFADENSESOLVER_SRC}/NewMatCGLinearSolver.cpp
     ${SOFADENSESOLVER_SRC}/NewMatCholeskySolver.cpp
+    ${SOFADENSESOLVER_SRC}/SVDLinearSolver.cpp
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

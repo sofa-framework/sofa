@@ -27,6 +27,11 @@ set(HEADER_FILES
     ${SOFALINEARALGEBRASRC_ROOT}/MatrixExpr.h
     ${SOFALINEARALGEBRASRC_ROOT}/RotationMatrix.h
     ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrix.h
+    ${SOFALINEARALGEBRASRC_ROOT}/EigenBaseSparseMatrix.h
+    ${SOFALINEARALGEBRASRC_ROOT}/EigenBaseSparseMatrix_MT.h
+    ${SOFALINEARALGEBRASRC_ROOT}/EigenMatrixManipulator.h
+    ${SOFALINEARALGEBRASRC_ROOT}/EigenSparseMatrix.h
+    ${SOFALINEARALGEBRASRC_ROOT}/EigenVector.h
 
 )
 
@@ -34,19 +39,37 @@ set(SOURCE_FILES
     ${SOFALINEARALGEBRASRC_ROOT}/init.cpp
     ${SOFALINEARALGEBRASRC_ROOT}/BaseMatrix.cpp
     ${SOFALINEARALGEBRASRC_ROOT}/CompressedRowSparseMatrix.cpp
+    ${SOFALINEARALGEBRASRC_ROOT}/FullMatrix.cpp
     ${SOFALINEARALGEBRASRC_ROOT}/FullVector.cpp
     ${SOFALINEARALGEBRASRC_ROOT}/BaseVector.cpp
     ${SOFALINEARALGEBRASRC_ROOT}/RotationMatrix.cpp
-    ${SOFALINEARALGEBRASRC_ROOT}/FullMatrix.cpp
-
+    ${SOFALINEARALGEBRASRC_ROOT}/EigenMatrixManipulator.cpp
+    ${SOFALINEARALGEBRASRC_ROOT}/EigenVector.cpp
 )
+
+if (SOFA_OPENMP AND "${EIGEN3_VERSION}" VERSION_LESS 3.2.9)
+    sofa_find_package(OpenMP BOTH_SCOPES) # will set/update SOFA_LINEARALGEBRA_HAVE_OPENMP
+endif()
+
+if (SOFA_LINEARALGEBRA_HAVE_OPENMP)
+    list(APPEND HEADER_FILES ${SOFALINEARALGEBRASRC_ROOT}/EigenBaseSparseMatrix_MT.h)
+endif()
+
+if (SOFA_LINEARALGEBRA_HAVE_OPENMP)
+    target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_CXX)
+endif()
 
 sofa_find_package(Sofa.Type REQUIRED)
 sofa_find_package(Sofa.Helper REQUIRED)
+sofa_find_package(Eigen3 REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Type Sofa.Helper)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Type Sofa.Helper Eigen3::Eigen)
+
+if (SOFA_LINEARALGEBRA_HAVE_OPENMP)
+    target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_CXX)
+endif()
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
