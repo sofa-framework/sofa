@@ -47,7 +47,7 @@ void transpose(const TMatrix& self, type::vector<typename TMatrix::Index>& outer
 
     //build outer: for each row the index of the first non-zero
     //It's the first shift
-    for(Eigen::Index i = 2; i < outer.size(); ++i)
+    for(std::size_t i = 2; i < outer.size(); ++i)
     {
         const auto nbNonzeroInRow = outer[i];
         const auto previousRowId = outer[i-1];

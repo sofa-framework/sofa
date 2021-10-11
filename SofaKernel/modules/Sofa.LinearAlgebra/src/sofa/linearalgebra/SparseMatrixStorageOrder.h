@@ -89,13 +89,13 @@ public:
         return *this;
     }
 
-    InnerIterator& operator+=(const sofa::Index i)
+    InnerIterator& operator+=(const typename TMatrix::Index i)
     {
         m_id += i ;
         return *this;
     }
 
-    InnerIterator operator+(Index i)
+    InnerIterator operator+(const typename TMatrix::Index i)
     {
         InnerIterator result = *this;
         result += i;
@@ -114,9 +114,9 @@ public:
 private:
 
     const SparseMatrixStorageOrder<TMatrix>& m_transpose;
-    sofa::Index m_id;
-    sofa::Index m_end;
-    sofa::Index m_outer;
+    typename TMatrix::Index m_id;
+    typename TMatrix::Index m_end;
+    typename TMatrix::Index m_outer;
 };
 
 

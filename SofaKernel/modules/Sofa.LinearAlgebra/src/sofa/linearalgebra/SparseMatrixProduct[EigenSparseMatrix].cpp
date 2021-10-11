@@ -128,12 +128,12 @@ void __computeIntersectionRowMajor(const TMatrix* A, const TMatrix* B, TMatrix* 
     intersection.intersection.clear();
     intersection.intersection.reserve(C->nonZeros());
 
-    for (std::size_t r = 0; r < A->outerSize(); ++r)
+    for (Eigen::Index r = 0; r < A->outerSize(); ++r)
     {
         const auto beginA = A->outerIndexPtr()[r];
         const auto endA = A->outerIndexPtr()[r + 1];
 
-        for (Eigen::Index c = 0; c < outerStarts.size() - 1; ++c)
+        for (std::size_t c = 0; c < outerStarts.size() - 1; ++c)
         {
             const auto beginB = outerStarts[c];
             const auto endB = outerStarts[c + 1];

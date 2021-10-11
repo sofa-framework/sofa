@@ -45,6 +45,10 @@ struct TestSparseMatrixProduct : public sofa::testing::SparseMatrixTest<typename
 {
     using Matrix = typename T::Matrix;
     using Real = typename T::Real;
+    using Base = sofa::testing::SparseMatrixTest<typename T::Real>;
+    using Base::generateRandomSparseMatrix;
+    using Base::copyFromEigen;
+    using Base::compareSparseMatrix;
 
     bool checkMatrix(typename Matrix::Index nbRowsA, typename Matrix::Index nbColsA, typename Matrix::Index nbColsB, Real sparsity)
     {
