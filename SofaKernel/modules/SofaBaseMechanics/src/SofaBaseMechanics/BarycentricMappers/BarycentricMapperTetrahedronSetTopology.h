@@ -47,9 +47,9 @@ public:
     Index addPointInTetra(const Index index, const SReal* baryCoords) override ;
 
 protected:
-    BarycentricMapperTetrahedronSetTopology(core::topology::BaseMeshTopology* fromTopology,
+    BarycentricMapperTetrahedronSetTopology(sofa::core::topology::TopologyContainer* fromTopology,
         core::topology::BaseMeshTopology* toTopology);
-    ~BarycentricMapperTetrahedronSetTopology() override {}
+    ~BarycentricMapperTetrahedronSetTopology() override = default;
 
     virtual type::vector<Tetrahedron> getElements() override;
     virtual type::vector<SReal> getBaryCoef(const Real* f) override;

@@ -54,10 +54,10 @@ public:
 
 
 protected:
-    BarycentricMapperEdgeSetTopology(sofa::core::topology::BaseMeshTopology* fromTopology,
+    BarycentricMapperEdgeSetTopology(sofa::core::topology::TopologyContainer* fromTopology,
         sofa::core::topology::BaseMeshTopology* toTopology);
 
-    ~BarycentricMapperEdgeSetTopology() override {}
+    ~BarycentricMapperEdgeSetTopology() override = default;
 
     virtual type::vector<Edge> getElements() override;
     virtual type::vector<SReal> getBaryCoef(const Real* f) override;

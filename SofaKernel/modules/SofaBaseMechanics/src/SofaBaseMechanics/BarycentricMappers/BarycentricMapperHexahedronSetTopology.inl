@@ -34,17 +34,13 @@ BarycentricMapperHexahedronSetTopology<In,Out>::BarycentricMapperHexahedronSetTo
 {}
 
 template <class In, class Out>
-BarycentricMapperHexahedronSetTopology<In,Out>::BarycentricMapperHexahedronSetTopology(core::topology::BaseMeshTopology* fromTopology,
+BarycentricMapperHexahedronSetTopology<In,Out>::BarycentricMapperHexahedronSetTopology(sofa::core::topology::TopologyContainer* fromTopology,
     core::topology::BaseMeshTopology* toTopology)
     : Inherit1(fromTopology, toTopology)
 {}
 
 template <class In, class Out>
-BarycentricMapperHexahedronSetTopology<In,Out>::~BarycentricMapperHexahedronSetTopology()
-{}
-
-template <class In, class Out>
-void BarycentricMapperHexahedronSetTopology<In,Out>::setTopology(core::topology::BaseMeshTopology* topology)
+void BarycentricMapperHexahedronSetTopology<In,Out>::setTopology(sofa::core::topology::TopologyContainer* topology)
 {
     m_fromTopology  = topology;
 }

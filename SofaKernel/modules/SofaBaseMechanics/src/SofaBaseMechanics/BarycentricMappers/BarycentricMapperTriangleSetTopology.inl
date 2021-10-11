@@ -31,7 +31,7 @@ BarycentricMapperTriangleSetTopology<In,Out>::BarycentricMapperTriangleSetTopolo
 {}
 
 template <class In, class Out>
-BarycentricMapperTriangleSetTopology<In,Out>::BarycentricMapperTriangleSetTopology(core::topology::BaseMeshTopology* fromTopology,
+BarycentricMapperTriangleSetTopology<In,Out>::BarycentricMapperTriangleSetTopology(sofa::core::topology::TopologyContainer* fromTopology,
     core::topology::BaseMeshTopology* toTopology)
     : Inherit1(fromTopology, toTopology)
 {}

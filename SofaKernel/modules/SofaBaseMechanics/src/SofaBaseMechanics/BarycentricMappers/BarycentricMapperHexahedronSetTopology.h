@@ -47,7 +47,7 @@ public:
 
     typedef typename Inherit1::Real Real;
 
-    ~BarycentricMapperHexahedronSetTopology() override ;
+    ~BarycentricMapperHexahedronSetTopology() override = default;
     virtual type::vector<Hexahedron> getElements() override;
     virtual type::vector<SReal> getBaryCoef(const Real* f) override;
     type::vector<SReal> getBaryCoef(const Real fx, const Real fy, const Real fz);
@@ -63,10 +63,10 @@ public:
 
 protected:
     BarycentricMapperHexahedronSetTopology();
-    BarycentricMapperHexahedronSetTopology(core::topology::BaseMeshTopology* fromTopology,
+    BarycentricMapperHexahedronSetTopology(sofa::core::topology::TopologyContainer* fromTopology,
         core::topology::BaseMeshTopology* toTopology);
 
-    void setTopology(core::topology::BaseMeshTopology* topology);
+    void setTopology(sofa::core::topology::TopologyContainer* topology);
 
     std::set<Index> m_invalidIndex;
 

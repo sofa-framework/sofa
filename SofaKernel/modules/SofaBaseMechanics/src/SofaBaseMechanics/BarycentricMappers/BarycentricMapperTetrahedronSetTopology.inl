@@ -26,7 +26,7 @@ namespace sofa::component::mapping
 {
 
 template <class In, class Out>
-BarycentricMapperTetrahedronSetTopology<In,Out>::BarycentricMapperTetrahedronSetTopology(core::topology::BaseMeshTopology* fromTopology, core::topology::BaseMeshTopology* toTopology)
+BarycentricMapperTetrahedronSetTopology<In,Out>::BarycentricMapperTetrahedronSetTopology(sofa::core::topology::TopologyContainer* fromTopology, core::topology::BaseMeshTopology* toTopology)
     : Inherit1(fromTopology, toTopology)
 {}
 

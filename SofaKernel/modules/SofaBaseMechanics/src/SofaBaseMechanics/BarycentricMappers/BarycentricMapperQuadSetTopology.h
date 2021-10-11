@@ -47,9 +47,9 @@ public:
     Index addPointInQuad(const Index index, const SReal* baryCoords) override;
     Index createPointInQuad(const typename Out::Coord& p, Index index, const typename In::VecCoord* points) override;
 
-    virtual ~BarycentricMapperQuadSetTopology();
+    ~BarycentricMapperQuadSetTopology() override = default;
 protected:
-    BarycentricMapperQuadSetTopology(core::topology::BaseMeshTopology* fromTopology,
+    BarycentricMapperQuadSetTopology(sofa::core::topology::TopologyContainer* fromTopology,
         core::topology::BaseMeshTopology* toTopology);
 
     virtual type::vector<Quad> getElements() override;
