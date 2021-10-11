@@ -117,7 +117,6 @@ const std::string getClass(core::objectmodel::Base* obj){
 }
 
 
-
 QPixmap* getPixmap(core::objectmodel::Base* obj, bool haveInfo, bool haveWarning, bool haveErrors)
 {
     static QPixmap pixInfo(reinterpret_cast<const char**>(iconinfo_xpm));
@@ -233,10 +232,10 @@ QPixmap* getPixmap(core::objectmodel::Base* obj, bool haveInfo, bool haveWarning
         flags |= 1 << (ALLCOLORS+1) ;
 
     if(haveWarning)
-        flags |= 1 << (ALLCOLORS+1) ;
+        flags |= 1 << (ALLCOLORS+2) ;
 
     if(haveErrors)
-        flags |= 1 << (ALLCOLORS+1) ;
+        flags |= 1 << (ALLCOLORS+3) ;
 
     static std::map<unsigned int, QPixmap*> pixmaps;
     if (!pixmaps.count(flags))
@@ -322,6 +321,38 @@ void setMessageIconFrom(QTreeWidgetItem* item, Base* object)
         item->setIcon(0, QIcon(*pix));
 }
 
+/// A listener to connect changes on the component state with its graphical view.
+/// The listener is added to the ComponentState of an object to track changes to
+/// and update the icon/treewidgetitem when this happens.
+class ObjectStateListener : public DDGNode
+{
+public:
+    QTreeWidgetItem* item;
+
+    // Use a SPtr here because otherwise sofa may decide to remove the base without notifying the ObjectStateListener
+    // is going to a segfault the right way.
+    sofa::core::objectmodel::Base::SPtr object;
+
+    ObjectStateListener(
+            QTreeWidgetItem* item_,
+            sofa::core::objectmodel::Base* object_) : item(item_), object(object_)
+    {
+        object->d_componentState.addOutput(this);
+    }
+
+    ~ObjectStateListener() override
+    {
+        object->d_componentState.delOutput(this);
+    }
+
+    void update() override {}
+    void notifyEndEdit() override
+    {
+        setMessageIconFrom(item, object.get());
+    }
+};
+
+
 /*****************************************************************************************************************/
 QTreeWidgetItem* GraphListenerQListView::createItem(QTreeWidgetItem* parent)
 {
@@ -336,7 +367,19 @@ QTreeWidgetItem* GraphListenerQListView::createItem(QTreeWidgetItem* parent)
     return new QTreeWidgetItem(parent, parent->child(parent->childCount()-1));
 }
 
-
+GraphListenerQListView::~GraphListenerQListView()
+{
+    for(auto item : items)
+    {
+        delete items[item.first];
+    }
+    items.clear();
+    for(auto item : listeners)
+    {
+        delete listeners[item.first];
+    }
+    listeners.clear();
+}
 
 /*****************************************************************************************************************/
 void GraphListenerQListView::onBeginAddChild(Node* parent, Node* child)
@@ -419,6 +462,9 @@ void GraphListenerQListView::onBeginAddChild(Node* parent, Node* child)
 
         item->setExpanded(true);
         items[child] = item;
+
+        // Add a listener to connect changes on the component state with its graphical view.
+        listeners[child] = new ObjectStateListener(item, child);
     }
     for (BaseObject::SPtr obj : child->object)
         onBeginAddObject(child, obj.get());
@@ -440,6 +486,8 @@ void GraphListenerQListView::onBeginRemoveChild(Node* parent, Node* child)
     {
         delete items[child];
         items.erase(child);
+        delete listeners[child];
+        listeners.erase(child);
     }
 }
 
@@ -491,10 +539,10 @@ void GraphListenerQListView::onBeginAddObject(Node* parent, core::objectmodel::B
         }
 
         item->setText(0, name.c_str());
-
         setMessageIconFrom(item, object);
 
         items[object] = item;
+        listeners[object] = new ObjectStateListener(item, object);
     }
     for (BaseObject::SPtr slave : object->getSlaves())
         onBeginAddSlave(object, slave.get());
@@ -513,6 +561,8 @@ void GraphListenerQListView::onBeginRemoveObject(Node* parent, core::objectmodel
     {
         delete items[object];
         items.erase(object);
+        delete listeners[object];
+        listeners.erase(object);
     }
 }
 

@@ -39,12 +39,15 @@ using sofa::simulation::MutationListener;
 
 QPixmap* getPixmap(core::objectmodel::Base* obj, bool, bool,bool);
 
+class ObjectStateListener;
+
 class SOFA_SOFAGUIQT_API GraphListenerQListView : public MutationListener
 {
 public:
     //Q3ListView* widget;
     QTreeWidget* widget;
     bool frozen;
+    std::map<core::objectmodel::Base*, ObjectStateListener* > listeners;
     std::map<core::objectmodel::Base*, QTreeWidgetItem* > items;
     std::map<core::objectmodel::BaseData*, QTreeWidgetItem* > datas;
     std::multimap<QTreeWidgetItem *, QTreeWidgetItem*> nodeWithMultipleParents;
@@ -54,6 +57,7 @@ public:
     {
     }
 
+    ~GraphListenerQListView() override;
 
     /*****************************************************************************************************************/
     QTreeWidgetItem* createItem(QTreeWidgetItem* parent);
@@ -69,9 +73,9 @@ public:
     virtual void removeDatas(core::objectmodel::BaseObject* parent);
     virtual void freeze(Node* groot);
     virtual void unfreeze(Node* groot);
+
     core::objectmodel::Base* findObject(const QTreeWidgetItem* item);
     core::objectmodel::BaseData* findData(const QTreeWidgetItem* item);
-
 
     inline static QColor nameColor { 120, 120, 120};
 
