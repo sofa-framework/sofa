@@ -24,6 +24,8 @@
 #include <sofa/geometry/config.h>
 #include <cmath>
 #include <numeric>
+#include <iterator>
+#include <algorithm>
 
 namespace sofa::geometry
 {
