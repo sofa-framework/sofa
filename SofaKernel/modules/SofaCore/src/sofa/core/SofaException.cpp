@@ -20,9 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sstream>
-#include <sofa/helper/SofaException.h>
+#include <sofa/core/SofaException.h>
+#include <sofa/core/objectmodel/Base.h>
+using sofa::core::objectmodel::Base;
+using sofa::core::objectmodel::ComponentState;
+
 #include <sofa/helper/BackTrace.h>
-namespace sofa::helper
+
+namespace sofa::core
 {
 
 SofaException::SofaException(sofa::core::objectmodel::Base* emitter_, std::exception e)
@@ -30,7 +35,7 @@ SofaException::SofaException(sofa::core::objectmodel::Base* emitter_, std::excep
     emitter = emitter_;
     stacktrace = sofa::helper::BackTrace::getTrace();
     nested_exception = e;
-    //emitter->d_componentState.setValue(ComponentState::Invalid) ;
+    emitter->d_componentState.setValue(ComponentState::Invalid) ;
 }
 
 const std::vector<std::string>& SofaException::getTrace() const

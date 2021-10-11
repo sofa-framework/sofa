@@ -25,14 +25,11 @@
 #include <functional>
 #include <string>
 #include <vector>
+#include <sofa/core/fwd.h>
 
-namespace sofa::core::objectmodel
+namespace sofa::core
 {
-    class Base;
-}
 
-namespace sofa::helper
-{
 
 ///
 /// \brief Exception to use when a sofa component encounter an error that need to stop the simulation loop (if any).
@@ -40,10 +37,10 @@ namespace sofa::helper
 /// A SofaException wraps around an existing std::exception and attach the stacktrace at the throwing point.
 class SofaException : public std::exception
 {
-    sofa::core::objectmodel::Base* emitter;
+    sofa::core::objectmodel::Base* emitter; /// Holds a pointer to the object that emitted the exception.
 
-    std::vector<std::string> stacktrace;  /// Hold the stacktrace
-    std::exception nested_exception;      /// The underlying exception
+    std::vector<std::string> stacktrace;  /// Hold the stacktrace so we can print it to the users.
+    std::exception nested_exception;      /// The underlying exception.
 public:
     SofaException(sofa::core::objectmodel::Base*, std::exception e);
 
@@ -54,4 +51,4 @@ public:
 
 std::ostream& operator<<(std::ostream& o, const SofaException& e);
 
-}
+} /// namespace sofa::core
