@@ -53,6 +53,8 @@ protected:
     virtual ~DAGNode() override;
 
 public:
+    static const std::string GetCustomClassName(){ return "Node"; }
+
     /// Pure Virtual method from Node
     virtual Node::SPtr createChild(const std::string& nodeName) override;
 
