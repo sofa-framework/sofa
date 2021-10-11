@@ -42,14 +42,14 @@ void FastTetrahedralCorotationalForceField<DataTypes>::createTetrahedronRestInfo
         const sofa::type::vector<Index> &,
         const sofa::type::vector<double> &)
 {
-    const std::vector< Tetrahedron > &tetrahedronArray=m_topology->getTetrahedra() ;
+    const std::vector< Tetrahedron > &tetrahedronArray=this->m_topology->getTetrahedra() ;
     //		const std::vector< Edge> &edgeArray=m_topology->getEdges() ;
     unsigned int j,k,l,m,n;
     typename DataTypes::Real lambda=getLambda();
     typename DataTypes::Real mu=getMu();
     typename DataTypes::Real volume,val;
     typename DataTypes::Coord point[4]; //shapeVector[4];
-    const typename DataTypes::VecCoord restPosition=mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const typename DataTypes::VecCoord restPosition=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     ///describe the indices of the 4 tetrahedron vertices
     const Tetrahedron &t= tetrahedronArray[tetrahedronIndex];
@@ -99,7 +99,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::createTetrahedronRestInfo
     /// compute the edge stiffness of the linear elastic material
     for(j=0; j<6; ++j)
     {
-        core::topology::BaseMeshTopology::Edge e=m_topology->getLocalEdgesInTetrahedron(j);
+        core::topology::BaseMeshTopology::Edge e=this->m_topology->getLocalEdgesInTetrahedron(j);
         k=e[0];
         l=e[1];
 

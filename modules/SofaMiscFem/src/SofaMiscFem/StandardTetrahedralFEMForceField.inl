@@ -209,7 +209,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::createTetrahedronRestInformati
     /*int l*/;
     typename DataTypes::Real volume;
     typename DataTypes::Coord point[4];
-    const typename DataTypes::VecCoord restPosition = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const typename DataTypes::VecCoord restPosition = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     ///describe the indices of the 4 tetrahedron vertices
     const core::topology::BaseMeshTopology::Tetrahedron& t = tetrahedronArray[tetrahedronIndex];

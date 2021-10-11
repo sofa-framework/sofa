@@ -70,7 +70,7 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronCreation(const 
     typename DataTypes::Real lambdastar, mustar;
     typename DataTypes::Coord point[4],shapeVector[4];
 
-    const typename DataTypes::VecCoord restPosition=mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const typename DataTypes::VecCoord restPosition=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     edgeRestInfoVector& edgeData = *(edgeInfo.beginEdit());
 
@@ -152,7 +152,7 @@ void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronDestruction(con
     typename DataTypes::Real lambdastar, mustar;
     typename DataTypes::Coord point[4],shapeVector[4];
 
-    const typename DataTypes::VecCoord restPosition=mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const typename DataTypes::VecCoord restPosition=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     edgeRestInfoVector& edgeData = *(edgeInfo.beginEdit());
 
