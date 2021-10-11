@@ -35,6 +35,8 @@ struct TestSparseMatrixTranspose : public sofa::testing::SparseMatrixTest<typena
 {
     using Matrix = typename T::Matrix;
     using Real = typename T::Real;
+    using Base = sofa::testing::SparseMatrixTest<typename T::Real>;
+    using Base::generateRandomSparseMatrix;
 
     struct Triplet
     {
