@@ -186,14 +186,14 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
                     const auto j = *iter;
                     if ( mapData[j].in_index == sofa::InvalidID ) // compute new mapping
                     {
-                        Vector3 coefs;
+                        sofa::type::fixed_array<SReal, 3> coefs;
                         typename In::Coord pos;
                         pos[0] = mapData[j].baryCoords[0];
                         pos[1] = mapData[j].baryCoords[1];
                         pos[2] = mapData[j].baryCoords[2];
 
                         // find nearest cell and barycentric coords
-                        Real distance = 1e10;
+                        SReal distance = 1e10;
 
                         Index index = sofa::InvalidID;
                         // When smoothing a mesh, the element has to be found using the rest position of the point. Then, its position is set using this element.
@@ -213,7 +213,8 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
                             else
                             {
                                 const typename MechanicalStateT::VecCoord& outXto0 = (mState->read(core::ConstVecCoordId::restPosition())->getValue());
-                                index = sofa::topology::getClosestHexahedronIndex(inRestPos, m_fromTopology->getHexahedra(), Out::getCPos(outXto0[j]), coefs, distance);
+                                const decltype(inRestPos[0])& outRestPos = Out::getCPos(outXto0[j]); //decltype stuff is to force the same type of coordinates between in and out
+                                index = sofa::topology::getClosestHexahedronIndex(inRestPos, m_fromTopology->getHexahedra(), outRestPos, coefs, distance);
                             }
                         }
                         else

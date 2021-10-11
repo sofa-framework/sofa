@@ -95,7 +95,7 @@ struct Hexahedron
         }
         else
         {
-            Node returnResult{};
+            sofa::type::fixed_array<T, 3> returnResult{};
             std::copy_n(tmpResult.begin(), max_spatial_dimensions, returnResult.begin());
             return returnResult;
         }
