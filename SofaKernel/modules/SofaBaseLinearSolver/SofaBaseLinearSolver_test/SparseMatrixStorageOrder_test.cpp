@@ -69,7 +69,7 @@ struct TestSparseMatrixTranspose : public sofa::testing::SparseMatrixTest<typena
 
                 if (!this->isSmall(initialValue - it.value()))
                 {
-                    const Triplet t{it.row(), it.col(), it.value()};
+                    const Triplet t{it.row(), it.col(), static_cast<Real>(it.value())};
                     std::pair<Triplet, Real> p(t, initialValue);
                     issues.push_back(p);
                 }
