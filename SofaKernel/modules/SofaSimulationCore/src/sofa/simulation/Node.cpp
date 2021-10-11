@@ -222,10 +222,10 @@ void Node::moveChild(BaseNode::SPtr node, BaseNode::SPtr prev_parent)
     doMoveChild(node, prev_parent);
 }
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
-bool Node::addObject(BaseObject::SPtr obj)
+bool Node::addObject(BaseObject::SPtr obj, bool atEnd)
 {
     notifyBeginAddObject(this, obj);
-    bool ret = doAddObject(obj);
+    bool ret = doAddObject(obj, atEnd);
     notifyEndAddObject(this, obj);
     return ret;
 }
@@ -586,10 +586,14 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
 }
 
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
-bool Node::doAddObject(BaseObject::SPtr sobj)
+bool Node::doAddObject(BaseObject::SPtr sobj, bool atEnd)
 {
     this->setObjectContext(sobj);
-    object.add(sobj);
+    if(atEnd)
+        object.add(sobj);
+    else
+        object.addFront(sobj);
+
     BaseObject* obj = sobj.get();
 
     if( !obj->insertInNode( this ) )

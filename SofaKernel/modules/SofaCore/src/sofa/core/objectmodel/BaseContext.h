@@ -369,7 +369,7 @@ public:
     /// @{
 
     /// Add an object, or return false if not supported
-    virtual bool addObject( sptr<BaseObject> /*obj*/ )
+    virtual bool addObject( sptr<BaseObject> /*obj*/, bool /*atEnd*/=true)
     {
         return false;
     }
