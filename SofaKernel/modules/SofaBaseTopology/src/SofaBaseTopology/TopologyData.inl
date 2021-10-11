@@ -50,7 +50,7 @@ void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core:
     this->m_topology = _topology;
 
     // Create TopologyHandler
-    this->m_topologyHandler = new TopologyDataHandler< TopologyElementType, VecT>(this, _topology);
+    this->m_topologyHandler = std::make_unique<TopologyDataHandler< TopologyElementType, VecT> >(this, _topology);
     this->m_topologyHandler->setNamePrefix("TopologyDataHandler( " + this->getOwner()->getName() + " )");
     this->m_topologyHandler->init();
 
@@ -61,35 +61,6 @@ void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core:
         this->linkToElementDataArray((TopologyElementType*)nullptr);
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " initialized with dynamic " << _topology->getClassName() << "Topology.";
     }
-}
-
-
-template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* topoHandler)
-{
-    if (_topology == nullptr)
-    {
-        msg_error(this->getOwner()) << "Topology used to register this TopologyData: " << this->getName() << " is invalid. TopologyData won't be registered.";
-        return;
-    }
-
-    this->m_topology = _topology;
-
-    // Set Topology TopologyHandler
-    this->m_topologyHandler = topoHandler;
-    this->m_topologyHandler->setNamePrefix("TopologyDataHandler( " + this->getOwner()->getName() + " )");
-    this->m_topologyHandler->init();
-
-    // Register the TopologyHandler
-    m_isTopologyDynamic = this->m_topologyHandler->registerTopology(_topology);
-    if (m_isTopologyDynamic)
-    {
-        this->linkToElementDataArray((TopologyElementType*)nullptr);
-        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " initialized with dynamic " << this->m_topology->getClassName() << "Topology.";
-    }
-    else
-        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " has no TopologyHandler. Topological changes will be disabled. Use createTopologyHandler method before registerTopologicalData to allow topological changes.";
-   
 }
 
 
