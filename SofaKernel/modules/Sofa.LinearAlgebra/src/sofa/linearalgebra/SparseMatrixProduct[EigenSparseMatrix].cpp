@@ -54,7 +54,7 @@ void SparseMatrixProduct<Eigen::SparseMatrix<double, Eigen::RowMajor> >::compute
 }
 
 template <class TMatrix>
-void __computeIntersectionColumnMajor(TMatrix* A, TMatrix* B, TMatrix* C, typename SparseMatrixProduct<TMatrix>::Intersection& intersection)
+void __computeIntersectionColumnMajor(const TMatrix* A, const TMatrix* B, TMatrix* C, typename SparseMatrixProduct<TMatrix>::Intersection& intersection)
 {
     C->resize(A->rows(), B->cols());
 
@@ -110,7 +110,7 @@ void __computeIntersectionColumnMajor(TMatrix* A, TMatrix* B, TMatrix* C, typena
 }
 
 template <class TMatrix>
-void __computeIntersectionRowMajor(TMatrix* A, TMatrix* B, TMatrix* C, typename SparseMatrixProduct<TMatrix>::Intersection& intersection)
+void __computeIntersectionRowMajor(const TMatrix* A, const TMatrix* B, TMatrix* C, typename SparseMatrixProduct<TMatrix>::Intersection& intersection)
 {
     C->resize(A->rows(), B->cols());
 
@@ -190,7 +190,7 @@ void SparseMatrixProduct<Eigen::SparseMatrix<float, Eigen::RowMajor> >::computeI
 }
 
 template<class TMatrix>
-void __computeProductFromIntersection(TMatrix* A, TMatrix* B, TMatrix* C, const typename SparseMatrixProduct<TMatrix>::Intersection& intersection)
+void __computeProductFromIntersection(const TMatrix* A, const TMatrix* B, TMatrix* C, const typename SparseMatrixProduct<TMatrix>::Intersection& intersection)
 {
     assert(intersection.intersection.size() == C->nonZeros());
 

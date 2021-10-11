@@ -47,7 +47,7 @@ public:
 
     using Index = typename TMatrix::Index;
 
-    explicit SparseMatrixStorageOrder(TMatrix* m)
+    explicit SparseMatrixStorageOrder(const TMatrix* m)
         : matrix(m)
     {
         buildOppositeOrder();
@@ -63,7 +63,7 @@ public:
 
 private:
     /// The matrix to transpose
-    TMatrix* matrix { nullptr };
+    const TMatrix* matrix { nullptr };
 
     type::vector<Index> outerStarts;
     type::vector<Index> innerIndices;

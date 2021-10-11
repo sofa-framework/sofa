@@ -49,14 +49,16 @@ class SparseMatrixProduct
 {
 public:
     /// Left side of the product A*B
-    TMatrix* matrixA { nullptr };
+    const TMatrix* matrixA { nullptr };
     /// Right side of the product A*B
-    TMatrix* matrixB { nullptr };
+    const TMatrix* matrixB { nullptr };
 
     void computeProduct(bool forceComputeIntersection = false);
     void computeRegularProduct();
 
     const TMatrix& getProductResult() const { return matrixC; }
+
+    void invalidateIntersection();
 
     SparseMatrixProduct(TMatrix* a, TMatrix* b) : matrixA(a), matrixB(b) {}
     SparseMatrixProduct() = default;
@@ -111,6 +113,12 @@ template <class TMatrix>
 void SparseMatrixProduct<TMatrix>::computeProductFromIntersection()
 {
     matrixC = (*matrixA) * (*matrixB);
+}
+
+template <class TMatrix>
+void SparseMatrixProduct<TMatrix>::invalidateIntersection()
+{
+    m_hasComputedIntersection = false;
 }
 
 }// sofa::linearalgebra
