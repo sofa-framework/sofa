@@ -65,7 +65,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::createTriangleInfo(Index tri
     Index b = t[1];
     Index c = t[2];
 
-    switch(method)
+    switch(this->method)
     {
     case TriangularFEMForceField<DataTypes>::SMALL :
         initSmall(triangleIndex,a,b,c);
