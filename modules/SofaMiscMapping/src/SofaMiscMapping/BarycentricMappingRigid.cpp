@@ -95,7 +95,7 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
                         // find nearest cell and barycentric coords
                         Real distance = 1e10;
 
-                        Index index = sofa::topology::getClosest(inRestPos, m_fromTopology->getHexahedra(), pos, coefs, distance);
+                        Index index = sofa::topology::getClosestHexahedronIndex(inRestPos, m_fromTopology->getHexahedra(), pos, coefs, distance);
 
                         if ( index != sofa::InvalidID )
                         {

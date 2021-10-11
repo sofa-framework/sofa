@@ -213,13 +213,13 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
                             else
                             {
                                 const typename MechanicalStateT::VecCoord& outXto0 = (mState->read(core::ConstVecCoordId::restPosition())->getValue());
-                                index = sofa::topology::getClosest(inRestPos, m_fromTopology->getHexahedra(), Out::getCPos(outXto0[j]), coefs, distance);
+                                index = sofa::topology::getClosestHexahedronIndex(inRestPos, m_fromTopology->getHexahedra(), Out::getCPos(outXto0[j]), coefs, distance);
                             }
                         }
                         else
                         {
 
-                            index = sofa::topology::getClosest(inRestPos, m_fromTopology->getHexahedra(), pos, coefs, distance);
+                            index = sofa::topology::getClosestHexahedronIndex(inRestPos, m_fromTopology->getHexahedra(), pos, coefs, distance);
                         }
 
                         if ( index != sofa::InvalidID )

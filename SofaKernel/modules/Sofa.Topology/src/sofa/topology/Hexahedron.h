@@ -31,8 +31,8 @@ namespace sofa::topology
     using Hexahedron = sofa::topology::Element<sofa::geometry::Hexahedron>;
 
     template<typename Coordinates>
-    static constexpr sofa::Index getClosest(const sofa::type::vector<Coordinates>& positions, const sofa::type::vector<Hexahedron>& hexahedra,
-        const Coordinates& pos, Coordinates& baryC, SReal& distance)
+    static constexpr sofa::Index getClosestHexahedronIndex(const sofa::type::vector<Coordinates>& hexahedronPositions, const sofa::type::vector<Hexahedron>& hexahedra,
+        const Coordinates& pos, Coordinates& barycentricCoefficients, SReal& distance)
     {
         sofa::Index index = sofa::InvalidID;
         distance = std::numeric_limits<SReal>::max();
@@ -40,8 +40,8 @@ namespace sofa::topology
         for (sofa::Index c = 0; c < hexahedra.size(); ++c)
         {
             const auto& h = hexahedra[c];
-            const auto d = sofa::geometry::Hexahedron::distanceTo(positions[h[0]], positions[h[1]], positions[h[2]], positions[h[3]],
-                positions[h[4]], positions[h[5]], positions[h[6]], positions[h[7]],
+            const auto d = sofa::geometry::Hexahedron::distanceTo(hexahedronPositions[h[0]], hexahedronPositions[h[1]], hexahedronPositions[h[2]], hexahedronPositions[h[3]],
+                hexahedronPositions[h[4]], hexahedronPositions[h[5]], hexahedronPositions[h[6]], hexahedronPositions[h[7]],
                 pos);
 
             if (d < distance)
@@ -54,8 +54,8 @@ namespace sofa::topology
         if (index != sofa::InvalidID)
         {
             const auto& h = hexahedra[index];
-            baryC = sofa::geometry::Hexahedron::barycentricCoefficients(positions[h[0]], positions[h[1]], positions[h[2]], positions[h[3]],
-                positions[h[4]], positions[h[5]], positions[h[6]], positions[h[7]], pos);
+            barycentricCoefficients = sofa::geometry::Hexahedron::barycentricCoefficients(hexahedronPositions[h[0]], hexahedronPositions[h[1]], hexahedronPositions[h[2]], hexahedronPositions[h[3]],
+                hexahedronPositions[h[4]], hexahedronPositions[h[5]], hexahedronPositions[h[6]], hexahedronPositions[h[7]], pos);
         }
 
         return index;
