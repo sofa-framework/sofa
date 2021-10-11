@@ -71,6 +71,14 @@ set(HEADER_FILES
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/FullVector.h
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/MatrixExpr.h
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/SparseMatrix.h
+    ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/EigenBaseSparseMatrix.h
+    ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/EigenBaseSparseMatrix_MT.h
+    ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/EigenMatrixManipulator.h
+    ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/EigenSparseMatrix.h
+    ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/EigenVector.h
+    ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/EigenVectorWrapper.h
+    ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/SVDLinearSolver.h
+    
 )
 
 set(SOURCE_FILES
@@ -104,4 +112,5 @@ sofa_create_package_with_targets(
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    OPTIMIZE_BUILD_DIR 0
 )

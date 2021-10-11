@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaEigen2Solver/SVDLinearSolver.h>
+#include <SofaDenseSolver/SVDLinearSolver.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/linearalgebra/FullMatrix.h>
@@ -97,10 +97,6 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     }
 
     /// Solve the equation system and copy the solution to the SOFA vector
-//    Eigen::VectorXd solution = svd.solve(rhs);
-//    for(unsigned i=0; i<M.rowSize(); i++ ){
-//        x[i] = solution(i);
-//    }
     {
         sofa::helper::ScopedAdvancedTimer solveSvdTimer("solveFromSVD");
         Eigen::VectorXd Ut_b = svd.matrixU().transpose() *  rhs;

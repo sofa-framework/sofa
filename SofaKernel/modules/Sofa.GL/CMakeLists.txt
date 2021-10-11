@@ -4,7 +4,7 @@ project(Sofa.GL LANGUAGES CXX)
 set(SOFAGLSRC_ROOT "src/sofa/gl")
 
 sofa_find_package(OpenGL REQUIRED BOTH_SCOPES)
-sofa_find_package(GLEW BOTH_SCOPES)
+sofa_find_package(GLEW BOTH_SCOPES REQUIRED)
 
 set(HEADER_FILES
     ${SOFAGLSRC_ROOT}/config.h.in
@@ -71,13 +71,9 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux AND SOFA_BUILD_RELEASE_PACKAGE AND OPENGL_GL
     sofa_install_libraries(PATHS ${OPENGL_glu_LIBRARY})
 endif()
 
-if(GLEW_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC GLEW::GLEW)
-    if (SOFA_BUILD_RELEASE_PACKAGE OR CMAKE_SYSTEM_NAME STREQUAL Windows)
-        sofa_install_libraries(TARGETS GLEW::GLEW)
-    endif()
-else()
-    message("OpenGL advanced functions (e.g shaders, FBO) are disabled.")
+target_link_libraries(${PROJECT_NAME} PUBLIC GLEW::GLEW)
+if (SOFA_BUILD_RELEASE_PACKAGE OR CMAKE_SYSTEM_NAME STREQUAL Windows)
+    sofa_install_libraries(TARGETS GLEW::GLEW)
 endif()
 
 sofa_create_package_with_targets(

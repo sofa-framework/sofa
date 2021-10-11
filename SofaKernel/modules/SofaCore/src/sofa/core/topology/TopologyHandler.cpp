@@ -56,8 +56,9 @@ void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology:
     for (changeIt = _changeList.begin(); changeIt != _changeList.end(); ++changeIt)
     {
         core::topology::TopologyChangeType changeType = (*changeIt)->getChangeType();
-        std::string topoChangeType = "DefaultTopologyHandler: " + parseTopologyChangeTypeToString(changeType);
+        std::string topoChangeType = m_prefix + ": " + m_data_name + " - " + parseTopologyChangeTypeToString(changeType);
         sofa::helper::AdvancedTimer::stepBegin(topoChangeType);
+        dmsg_info("TopologyHandler") << topoChangeType;
 
 
         // New version using map of callback

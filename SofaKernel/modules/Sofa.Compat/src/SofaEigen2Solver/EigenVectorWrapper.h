@@ -21,14 +21,14 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/topology/Point.h>
-#include <sofa/topology/Element.h>
+#include <sofa/linearalgebra/EigenVector.h>
 
-#include <sofa/geometry/Triangle.h>
+SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/EigenVector.h")
 
-namespace sofa::topology
+namespace sofa::component::linearsolver
 {
-    using Triangle = sofa::topology::Element<sofa::geometry::Triangle>;
 
-    static constexpr Triangle InvalidTriangle;
-}
+    template<typename T>
+    using EigenVectorWrapper = sofa::linearalgebra::EigenVector<T>;
+
+} // namespace sofa::component::linearsolver

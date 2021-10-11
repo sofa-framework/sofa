@@ -28,6 +28,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <iostream>
 #include <sofa/type/vector_algorithm.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 
 namespace sofa::component::projectiveconstraintset

@@ -58,18 +58,10 @@ TopologyDataHandler< TopologyElementType, VecT>::TopologyDataHandler(t_topologic
 template <typename TopologyElementType, typename VecT>
 void TopologyDataHandler<TopologyElementType,  VecT>::init()
 {
-    // A pointData is by default child of positionSet Data
-    //this->linkToPointDataArray();  // already done while creating engine
-
     // Name creation
-    if (m_prefix.empty()) m_prefix = "TopologyHandler_";
+    if (m_prefix.empty()) m_prefix = "TopologyDataHandler( " + this->m_topologyData->getOwner()->getName() + " )";
     m_data_name = this->m_topologyData->getName();
     this->addOutput(this->m_topologyData);
-
-    // Register Engine in containter list
-    //if (m_topology)
-    //   m_topology->addTopologyHandler(this);
-    //this->registerTopology(m_topology);
 }
 
 
@@ -105,7 +97,6 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToPointDataArray()
 
     _container->d_initPoints.addOutput(this);
     _container->addTopologyHandler(this);
-    m_topologyData->setDataSetArraySize(_container->getNbPoints());
     m_pointsLinked = true;
 }
 
@@ -131,7 +122,6 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToEdgeDataArray()
 
     _container->d_edge.addOutput(this);
     _container->addTopologyHandler(this);
-    m_topologyData->setDataSetArraySize(_container->d_edge.getValue().size());
     m_edgesLinked = true;
 }
 
@@ -157,7 +147,6 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToTriangleDataArray()
 
     _container->d_triangle.addOutput(this);
     _container->addTopologyHandler(this);
-    m_topologyData->setDataSetArraySize(_container->d_triangle.getValue().size());
     m_trianglesLinked = true;
 }
 
@@ -183,7 +172,6 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToQuadDataArray()
 
     _container->d_quad.addOutput(this);
     _container->addTopologyHandler(this);
-    m_topologyData->setDataSetArraySize(_container->d_quad.getValue().size());
     m_quadsLinked = true;
 }
 
@@ -209,7 +197,6 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToTetrahedronDataArray
 
     _container->d_tetrahedron.addOutput(this);
     _container->addTopologyHandler(this);
-    m_topologyData->setDataSetArraySize(_container->d_tetrahedron.getValue().size());
     m_tetrahedraLinked = true;
 }
 
@@ -235,7 +222,6 @@ void TopologyDataHandler<TopologyElementType,  VecT>::linkToHexahedronDataArray(
 
     _container->d_hexahedron.addOutput(this);
     _container->addTopologyHandler(this);
-    m_topologyData->setDataSetArraySize(_container->d_hexahedron.getValue().size());
     m_hexahedraLinked = true;
 }
 
