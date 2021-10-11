@@ -19,32 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <exception>
-#include <string>
-#include <functional>
-
+#include <sstream>
+#include <sofa/helper/SofaException.h>
+#include <sofa/helper/BackTrace.h>
 namespace sofa::helper
 {
 
-///
-/// \brief Exception to use when a sofa component encounter an error that need to stop the simulation loop (if any).
-///
-/// A SofaException wraps around an existing std::exception and attach the stacktrace at the throwing point.
-class SofaException : public std::exception
+SofaException::SofaException(sofa::core::objectmodel::Base* emitter_, std::exception e)
 {
-    std::vector<std::string> stacktrace;  /// Hold the stacktrace
-    std::exception nested_exception;      /// The underlying exception
+    emitter = emitter_;
+    stacktrace = sofa::helper::BackTrace::getTrace();
+    nested_exception = e;
+    //emitter->d_componentState.setValue(ComponentState::Invalid) ;
+}
 
-public:
-    SofaException(std::exception e);
+const std::vector<std::string>& SofaException::getTrace() const
+{
+    return stacktrace;
+}
 
-    const std::vector<std::string>& getTrace() const;
-    const char* what() const noexcept override;
-};
+sofa::core::objectmodel::Base* SofaException::getEmitter() const
+{
+    return emitter;
+}
 
-/// Execute a lambda function within a try/catch block.
-void executeWithException(const std::string& src, bool withException, std::function<void()> cb);
+const char* SofaException::what() const noexcept
+{
+    return nested_exception.what();
+}
+
+std::ostream& operator<<(std::ostream& out, const SofaException& e)
+{
+    out    << "c++ exception:" << std::endl
+           << "  " << e.what()
+           << std::endl << std::endl;
+    for(auto& name : e.getTrace())
+    {
+        out << "  " << name << std::endl;
+    }
+    return out;
+}
 
 }

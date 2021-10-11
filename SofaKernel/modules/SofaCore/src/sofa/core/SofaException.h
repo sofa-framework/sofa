@@ -22,48 +22,36 @@
 #pragma once
 
 #include <exception>
-#include <string>
 #include <functional>
-#include <sstream>
-#include <sofa/helper/SofaException.h>
-#include <sofa/helper/logging/Messaging.h>
-#include <sofa/helper/BackTrace.h>
+#include <string>
+#include <vector>
+
+namespace sofa::core::objectmodel
+{
+    class Base;
+}
+
 namespace sofa::helper
 {
 
-SofaException::SofaException(std::exception e)
+///
+/// \brief Exception to use when a sofa component encounter an error that need to stop the simulation loop (if any).
+///
+/// A SofaException wraps around an existing std::exception and attach the stacktrace at the throwing point.
+class SofaException : public std::exception
 {
-    stacktrace = sofa::helper::BackTrace::getTrace();
-    nested_exception = e;
-}
+    sofa::core::objectmodel::Base* emitter;
 
-const std::vector<std::string>& SofaException::getTrace() const { return stacktrace; }
+    std::vector<std::string> stacktrace;  /// Hold the stacktrace
+    std::exception nested_exception;      /// The underlying exception
+public:
+    SofaException(sofa::core::objectmodel::Base*, std::exception e);
 
-const char* SofaException::what() const noexcept
-{
-    return nested_exception.what();
-}
+    sofa::core::objectmodel::Base* getEmitter() const;
+    const std::vector<std::string>& getTrace() const;
+    const char* what() const noexcept override;
+};
 
-void executeWithException(const std::string& src, bool withException, std::function<void()> cb)
-{
-    if(!withException)
-        return cb();
-    try
-    {
-        cb();
-    } catch (const sofa::helper::SofaException& e)
-    {
-        std::stringstream tmp;
-        tmp << "At:" << msgendl;
-        for(auto& name : e.getTrace())
-        {
-            tmp << "  " << name << msgendl;
-        }
-        msg_error(src)    << "Exception received." << msgendl
-                          << "c++ exception:" << msgendl
-                          << "  " << e.what()
-                          << msgendl << msgendl
-                          << tmp.str();
-    }
-}
+std::ostream& operator<<(std::ostream& o, const SofaException& e);
+
 }

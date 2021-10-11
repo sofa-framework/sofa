@@ -30,6 +30,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/PathResolver.h
     ${SRC_ROOT}/SofaLibrary.h
     ${SRC_ROOT}/sptr.h
+    ${SRC_ROOT}/SofaException.h
     ${SRC_ROOT}/State.h
     ${SRC_ROOT}/State.inl
     ${SRC_ROOT}/VecId.h
@@ -171,6 +172,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/MultiMapping.cpp
     ${SRC_ROOT}/ObjectFactory.cpp
     ${SRC_ROOT}/PathResolver.cpp
+    ${SRC_ROOT}/SofaException.cpp
     ${SRC_ROOT}/SofaLibrary.cpp
     ${SRC_ROOT}/State.cpp
     ${SRC_ROOT}/behavior/BaseAnimationLoop.cpp
