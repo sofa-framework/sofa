@@ -26,6 +26,7 @@
 #include <sofa/type/Mat.h>
 #include <cmath>
 #include <numeric>
+#include <iterator>
 
 namespace sofa::geometry
 {
