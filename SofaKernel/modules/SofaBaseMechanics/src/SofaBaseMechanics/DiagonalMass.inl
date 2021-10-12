@@ -110,7 +110,7 @@ void DiagonalMass<DataTypes,MassType>::applyEdgeCreation(const sofa::type::vecto
             totalMass += 2.0*mass;
         }
 
-        cleanTracker();
+        this->cleanTracker();
         printMass();
     }
 }
@@ -143,7 +143,7 @@ void DiagonalMass<DataTypes,MassType>::applyEdgeDestruction(const sofa::type::ve
             totalMass -= 2.0*mass;
         }
 
-        cleanTracker();
+        this->cleanTracker();
         printMass();
     }
 }
@@ -181,7 +181,7 @@ void DiagonalMass<DataTypes,MassType>::applyTriangleCreation(const sofa::type::v
             totalMass+= 3.0*mass;
         }
 
-        cleanTracker();
+        this->cleanTracker();
         printMass();
     }
 }
@@ -217,7 +217,7 @@ void DiagonalMass<DataTypes,MassType>::applyTriangleDestruction(const sofa::type
             totalMass -= 3.0 * mass;
         }
 
-        cleanTracker();
+        this->cleanTracker();
         printMass();
     }
 }
@@ -256,7 +256,7 @@ void DiagonalMass<DataTypes, MassType>::applyQuadCreation(const sofa::type::vect
             totalMass += 4.0 * mass;
         }
 
-        cleanTracker();
+        this->cleanTracker();
         printMass();
     }
 }
@@ -293,7 +293,7 @@ void DiagonalMass<DataTypes, MassType>::applyQuadDestruction(const sofa::type::v
             totalMass -= 4.0 * mass;
         }
 
-        cleanTracker();
+        this->cleanTracker();
         printMass();
     }
 }
@@ -334,7 +334,7 @@ void DiagonalMass<DataTypes,MassType>::applyTetrahedronCreation(const sofa::type
             totalMass += 4.0*mass;
         }
 
-        cleanTracker();
+        this->cleanTracker();
         printMass();
     }
 }
@@ -369,7 +369,7 @@ void DiagonalMass<DataTypes,MassType>::applyTetrahedronDestruction(const sofa::t
             totalMass -= 4.0*mass;
         }
 
-        cleanTracker();
+        this->cleanTracker();
         printMass();
     }
 }
@@ -406,7 +406,7 @@ void DiagonalMass<DataTypes,MassType>::applyHexahedronCreation(const sofa::type:
             totalMass += 8.0*mass;
         }
 
-        cleanTracker();
+        this->cleanTracker();
         printMass();
     }
 }
@@ -439,7 +439,7 @@ void DiagonalMass<DataTypes,MassType>::applyHexahedronDestruction(const sofa::ty
             totalMass -= 8.0*mass;
         }
 
-        cleanTracker();
+        this->cleanTracker();
         printMass();
     }
 }
