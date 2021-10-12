@@ -1,4 +1,10 @@
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using namespace sofa::testing;
+
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/VecTypes.h>
+using sofa::defaulttype::Vec3Types;
+
 #include <SceneCreator/SceneCreator.h>
 
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
@@ -21,26 +27,16 @@ using sofa::component::topology::CylinderGridTopology;
 using sofa::component::topology::SphereGridTopology;
 
 using sofa::core::objectmodel::BaseContext;
-using sofa::defaulttype::Vec3Types;
-
 
 #include <sofa/simulation/Simulation.h>
 using sofa::simulation::Node;
 
-typedef MechanicalObject<sofa::defaulttype::Vec3Types>      MechanicalObject3;
-typedef TetrahedronFEMForceField<Vec3Types>                 TetrahedronFEMForceField3;
-typedef TriangularFEMForceField<Vec3Types>                  TriangularFEMForceField3;
-
-#include <sofa/helper/system/PluginManager.h>
-using sofa::helper::system::PluginManager ;
-
-class SceneCreator_test : public sofa::Sofa_test<>
+class SceneCreator_test : public BaseSimulationTest
 {
 public:
     void SetUp() override
     {
-        importPlugin("SofaOpenglVisual");
-        importPlugin("SofaGeneralTopology");
+        importPlugin("SofaComponentAll");
     }
 
     bool createCubeFailed();
