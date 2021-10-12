@@ -71,21 +71,21 @@ template<class T, typename IndexType>
 class matrix_bloc_traits
 {
 public:
-    typedef T Bloc;
+    typedef T Block;
     typedef typename T::Real Real;
     enum { NL = T::nbLines };
     enum { NC = T::nbCols };
-    static Real& v(Bloc& b, IndexType row, IndexType col) { return b[row][col]; }
-    static const Real& v(const Bloc& b, IndexType row, IndexType col) { return b[row][col]; }
-    static void clear(Bloc& b) { b.clear(); }
-    static bool empty(const Bloc& b)
+    static Real& v(Block& b, IndexType row, IndexType col) { return b[row][col]; }
+    static const Real& v(const Block& b, IndexType row, IndexType col) { return b[row][col]; }
+    static void clear(Block& b) { b.clear(); }
+    static bool empty(const Block& b)
     {
         for (IndexType i=0; i<NL; ++i)
             for (IndexType j=0; j<NC; ++j)
                 if (b[i][j] != 0) return false;
         return true;
     }
-    static void invert(Bloc& result, const Bloc& b) { result.invert(b); }
+    static void invert(Block& result, const Block& b) { result.invert(b); }
 
     static void split_row_index(IndexType& index, IndexType& modulo) { bloc_index_func<NL, IndexType>::split(index, modulo); }
     static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
@@ -97,21 +97,21 @@ template <Size L, Size C, class real, typename IndexType>
 class matrix_bloc_traits < type::Mat<L,C,real>, IndexType>
 {
 public:
-    typedef type::Mat<L,C,real> Bloc;
+    typedef type::Mat<L,C,real> Block;
     typedef real Real;
     enum { NL = L };
     enum { NC = C };
-    static Real& v(Bloc& b, Index row, Index col) { return b[row][col]; }
-    static const Real& v(const Bloc& b, Index row, Index col) { return b[row][col]; }
-    static void clear(Bloc& b) { b.clear(); }
-    static bool empty(const Bloc& b)
+    static Real& v(Block& b, Index row, Index col) { return b[row][col]; }
+    static const Real& v(const Block& b, Index row, Index col) { return b[row][col]; }
+    static void clear(Block& b) { b.clear(); }
+    static bool empty(const Block& b)
     {
         for (Index i=0; i<NL; ++i)
             for (Index j=0; j<NC; ++j)
                 if (b[i][j] != 0) return false;
         return true;
     }
-    static void invert(Bloc& result, const Bloc& b) { result.invert(b); }
+    static void invert(Block& result, const Block& b) { result.invert(b); }
 
     static void split_row_index(IndexType& index, IndexType& modulo) { bloc_index_func<NL, IndexType>::split(index, modulo); }
     static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
@@ -176,18 +176,18 @@ template <typename IndexType>
 class matrix_bloc_traits < float, IndexType >
 {
 public:
-    typedef float Bloc;
+    typedef float Block;
     typedef float Real;
     enum { NL = 1 };
     enum { NC = 1 };
-    static Real& v(Bloc& b, IndexType, IndexType) { return b; }
-    static const Real& v(const Bloc& b, IndexType, IndexType) { return b; }
-    static void clear(Bloc& b) { b = 0; }
-    static bool empty(const Bloc& b)
+    static Real& v(Block& b, IndexType, IndexType) { return b; }
+    static const Real& v(const Block& b, IndexType, IndexType) { return b; }
+    static void clear(Block& b) { b = 0; }
+    static bool empty(const Block& b)
     {
         return b == 0;
     }
-    static void invert(Bloc& result, const Bloc& b) { result = 1.0f/b; }
+    static void invert(Block& result, const Block& b) { result = 1.0f/b; }
 
     static void split_row_index(IndexType& index, IndexType& modulo) { bloc_index_func<NL, IndexType>::split(index, modulo); }
     static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
@@ -201,18 +201,18 @@ template <typename IndexType>
 class matrix_bloc_traits < double, IndexType >
 {
 public:
-    typedef double Bloc;
+    typedef double Block;
     typedef double Real;
     enum { NL = 1 };
     enum { NC = 1 };
-    static Real& v(Bloc& b, IndexType, IndexType) { return b; }
-    static const Real& v(const Bloc& b, IndexType, IndexType) { return b; }
-    static void clear(Bloc& b) { b = 0; }
-    static bool empty(const Bloc& b)
+    static Real& v(Block& b, IndexType, IndexType) { return b; }
+    static const Real& v(const Block& b, IndexType, IndexType) { return b; }
+    static void clear(Block& b) { b = 0; }
+    static bool empty(const Block& b)
     {
         return b == 0;
     }
-    static void invert(Bloc& result, const Bloc& b) { result = 1.0/b; }
+    static void invert(Block& result, const Block& b) { result = 1.0/b; }
 
     static void split_row_index(IndexType& index, IndexType& modulo) { bloc_index_func<NL, IndexType>::split(index, modulo); }
     static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }
@@ -225,18 +225,18 @@ template <typename IndexType>
 class matrix_bloc_traits < int, IndexType >
 {
 public:
-    typedef float Bloc;
+    typedef float Block;
     typedef float Real;
     enum { NL = 1 };
     enum { NC = 1 };
-    static Real& v(Bloc& b, int, int) { return b; }
-    static const Real& v(const Bloc& b, int, int) { return b; }
-    static void clear(Bloc& b) { b = 0; }
-    static bool empty(const Bloc& b)
+    static Real& v(Block& b, int, int) { return b; }
+    static const Real& v(const Block& b, int, int) { return b; }
+    static void clear(Block& b) { b = 0; }
+    static bool empty(const Block& b)
     {
         return b == 0;
     }
-    static void invert(Bloc& result, const Bloc& b) { result = 1.0f/b; }
+    static void invert(Block& result, const Block& b) { result = 1.0f/b; }
 
     static void split_row_index(int& index, int& modulo) { bloc_index_func<NL, IndexType>::split(index, modulo); }
     static void split_col_index(int& index, int& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }

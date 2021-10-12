@@ -38,11 +38,11 @@ public:
     typedef T Real;
     typedef typename linearalgebra::BaseMatrix::Index Index;
 
-    class TransposedBloc
+    class TransposedBlock
     {
     public:
         const type::Mat<BSIZE,BSIZE,Real>& m;
-        TransposedBloc(const type::Mat<BSIZE,BSIZE,Real>& m) : m(m) {}
+        TransposedBlock(const type::Mat<BSIZE,BSIZE,Real>& m) : m(m) {}
         type::Vec<BSIZE,Real> operator*(const type::Vec<BSIZE,Real>& v)
         {
             return m.multTranspose(v);
@@ -57,7 +57,7 @@ public:
         }
     };
 
-    class Bloc : public type::Mat<BSIZE,BSIZE,Real>
+    class Block : public type::Mat<BSIZE,BSIZE,Real>
     {
     public:
         Index Nrows() const { return BSIZE; }
@@ -93,34 +93,34 @@ public:
         {
             return type::Mat<BSIZE,BSIZE,Real>::operator*(m);
         }
-        type::Mat<BSIZE,BSIZE,Real> operator*(const Bloc& m)
+        type::Mat<BSIZE,BSIZE,Real> operator*(const Block& m)
         {
             return type::Mat<BSIZE,BSIZE,Real>::operator*(m);
         }
-        type::Mat<BSIZE,BSIZE,Real> operator*(const TransposedBloc& mt)
+        type::Mat<BSIZE,BSIZE,Real> operator*(const TransposedBlock& mt)
         {
             return type::Mat<BSIZE,BSIZE,Real>::operator*(mt.m.transposed());
         }
-        TransposedBloc t() const
+        TransposedBlock t() const
         {
-            return TransposedBloc(*this);
+            return TransposedBlock(*this);
         }
-        Bloc i() const
+        Block i() const
         {
-            Bloc r;
+            Block r;
             r.invert(*this);
             return r;
         }
     };
 
-    typedef Bloc SubMatrixType;
-    typedef sofa::type::Mat<N,N,Real> BlocType;
+    typedef Block SubMatrixType;
+    typedef sofa::type::Mat<N,N,Real> BlockType;
     typedef BlocFullMatrix<N, T> InvMatrixType;
     // return the dimension of submatrices when requesting a given size
     static Index getSubMatrixDim(Index) { return BSIZE; }
 
 protected:
-    Bloc* data;
+    Block* data;
     Index nTRow,nTCol;
     Index nBRow,nBCol;
     Index allocsize;
@@ -133,16 +133,16 @@ public:
 
     ~BTDMatrix() override;
 
-    Bloc* ptr() { return data; }
-    const Bloc* ptr() const { return data; }
+    Block* ptr() { return data; }
+    const Block* ptr() const { return data; }
 
     //Real* operator[](Index i)
     //{
     //    return data+i*pitch;
     //}
-    const Bloc& bloc(Index bi, Index bj) const;
+    const Block& bloc(Index bi, Index bj) const;
 
-    Bloc& bloc(Index bi, Index bj);
+    Block& bloc(Index bi, Index bj);
 
     void resize(Index nbRow, Index nbCol) override;
 
@@ -152,13 +152,13 @@ public:
 
     SReal element(Index i, Index j) const override;
 
-    const Bloc& asub(Index bi, Index bj, Index, Index) const;
+    const Block& asub(Index bi, Index bj, Index, Index) const;
 
-    const Bloc& sub(Index i, Index j, Index, Index) const;
+    const Block& sub(Index i, Index j, Index, Index) const;
 
-    Bloc& asub(Index bi, Index bj, Index, Index);
+    Block& asub(Index bi, Index bj, Index, Index);
 
-    Bloc& sub(Index i, Index j, Index, Index);
+    Block& sub(Index i, Index j, Index, Index);
 
     template<class B>
     void getSubMatrix(Index i, Index j, Index nrow, Index ncol, B& m);

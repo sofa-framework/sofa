@@ -40,7 +40,7 @@ public:
     typedef typename Inherit::iterator iterator;
     typedef typename Inherit::const_iterator const_iterator;
 
-    class Bloc : public type::Vec<N,T>
+    class Block : public type::Vec<N,T>
     {
     public:
         Index Nrows() const { return N; }
@@ -63,7 +63,7 @@ public:
         }
     };
 
-    typedef Bloc SubVectorType;
+    typedef Block SubVectorType;
 
 public:
 
@@ -73,16 +73,16 @@ public:
 
     virtual ~BlockVector();
 
-    const Bloc& sub(Index i, Index) const
+    const Block& sub(Index i, Index) const
     {
-        return (const Bloc&)*(this->ptr()+i);
+        return (const Block&)*(this->ptr()+i);
     }
 
-    Bloc& sub(Index i, Index);
+    Block& sub(Index i, Index);
 
-    const Bloc& asub(Index bi, Index) const;
+    const Block& asub(Index bi, Index) const;
 
-    Bloc& asub(Index bi, Index);
+    Block& asub(Index bi, Index);
 };
 
 } // namespace sofa::linearalgebra
