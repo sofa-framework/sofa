@@ -27,6 +27,7 @@
 #include <cmath>
 #include <numeric>
 #include <iterator>
+#include <array>
 
 namespace sofa::geometry
 {
