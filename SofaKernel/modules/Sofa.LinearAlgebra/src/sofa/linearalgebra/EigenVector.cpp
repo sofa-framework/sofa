@@ -19,16 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
 
-#include <sofa/topology/Point.h>
-#include <sofa/topology/Element.h>
+#include <sofa/linearalgebra/EigenVector.h>
 
-#include <sofa/geometry/Triangle.h>
-
-namespace sofa::topology
+namespace sofa::linearalgebra
 {
-    using Triangle = sofa::topology::Element<sofa::geometry::Triangle>;
 
-    static constexpr Triangle InvalidTriangle;
-}
+template <> const std::string EigenVector<double>::Name() { return "EigenVectord"; }
+
+} // namespace sofa::linearalgebra

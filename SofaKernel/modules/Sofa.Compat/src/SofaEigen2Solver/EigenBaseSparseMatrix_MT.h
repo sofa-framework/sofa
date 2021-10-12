@@ -21,14 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/topology/Point.h>
-#include <sofa/topology/Element.h>
+#include <sofa/linearalgebra/EigenBaseSparseMatrix_MT.h>
 
-#include <sofa/geometry/Triangle.h>
-
-namespace sofa::topology
-{
-    using Triangle = sofa::topology::Element<sofa::geometry::Triangle>;
-
-    static constexpr Triangle InvalidTriangle;
-}
+SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/linearalgebra/EigenBaseSparseMatrix_MT.h")

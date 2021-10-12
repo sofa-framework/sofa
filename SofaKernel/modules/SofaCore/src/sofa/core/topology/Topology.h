@@ -82,14 +82,14 @@ public:
     SOFA_CORE_TOPOLOGY_ATTRIBUTE_DEPRECATED__ALIASES_INDEX()
     typedef sofa::Index HexaID;
 
-    inline static auto InvalidSet = sofa::topology::InvalidSet;
-    inline static auto InvalidEdge = sofa::topology::InvalidEdge;
-    inline static auto InvalidTriangle = sofa::topology::InvalidTriangle;
-    inline static auto InvalidQuad = sofa::topology::InvalidQuad;
-    inline static auto InvalidTetrahedron = sofa::topology::InvalidTetrahedron;
-    inline static auto InvalidPentahedron = sofa::topology::InvalidPentahedron;
-    inline static auto InvalidHexahedron = sofa::topology::InvalidHexahedron;
-    inline static auto InvalidPyramid = sofa::topology::InvalidPyramid;
+    inline static const auto InvalidSet = sofa::topology::InvalidSet;
+    static constexpr auto InvalidEdge = sofa::topology::InvalidEdge;
+    static constexpr auto InvalidTriangle = sofa::topology::InvalidTriangle;
+    static constexpr auto InvalidQuad = sofa::topology::InvalidQuad;
+    static constexpr auto InvalidTetrahedron = sofa::topology::InvalidTetrahedron;
+    static constexpr auto InvalidPentahedron = sofa::topology::InvalidPentahedron;
+    static constexpr auto InvalidHexahedron = sofa::topology::InvalidHexahedron;
+    static constexpr auto InvalidPyramid = sofa::topology::InvalidPyramid;
 
     using SetIndex = sofa::topology::SetIndex;
     using SetIndices = sofa::topology::SetIndices;

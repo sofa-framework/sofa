@@ -214,7 +214,3 @@ namespace linearsolver
 }
 }
 }
-
-
-
-#endif // EIGENBASESPARSEMATRIX_MT_H

@@ -20,105 +20,119 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaEigen2Solver/config.h>
+#include <sofa/linearalgebra/config.h>
 
-#include <sofa/defaulttype/BaseVector.h>
+#include <sofa/linearalgebra/BaseVector.h>
+#include <sofa/type/Vec.h>
 #include <Eigen/Dense>
 
-namespace sofa::component::linearsolver
+namespace sofa::linearalgebra
 {
 
-//#define EigenVector_CHECK
-//#define EigenVector_VERBOSE
 
 
-/** Wrapper of an Eigen vector to provide it with a defaulttype::BaseVector interface.
+/** Container of a vector of the Eigen library. Not an eigenvector of a matrix.
   */
-template<class Real>
-class EigenVectorWrapper : public defaulttype::BaseVector
+template<class TReal, std::size_t TBlockSize = 1>
+class SOFA_LINEARALGEBRA_API EigenVector : public linearalgebra::BaseVector
 {
 
+protected:
+    typedef TReal Real;
 public:
     typedef Eigen::Matrix<Real,Eigen::Dynamic,1>  VectorEigen;
     typedef typename VectorEigen::Index  IndexEigen;
 protected:
-    VectorEigen& eigenVector;    ///< the data
+    VectorEigen eigenVector;    ///< the data
 
 
 public:
+    enum { Nin= TBlockSize };
+    typedef type::Vec<Nin,Real> Block;
 
     VectorEigen& getVectorEigen() { return eigenVector; }
     const VectorEigen& getVectorEigen() const { return eigenVector; }
 
+    EigenVector(Index nbRow=0)
+    {
+        resize(nbRow);
+    }
 
-
-    EigenVectorWrapper( VectorEigen& ve ): eigenVector(ve) {}
-
-    Index size() const { return eigenVector.size(); }
+    Index size() const override { return Index(eigenVector.size()); }
 
     /// Resize the matrix without preserving the data (the matrix is set to zero)
-    void resize(Index nbRow)
+    void resize(Index nbRow) override
     {
         eigenVector.resize((IndexEigen)nbRow);
     }
 
-
-
-    SReal element(Index i) const
+    /// Resize the matrix without preserving the data (the matrix is set to zero), with the size given in number of blocks
+    void resizeBlocks(Index nbBlocks)
     {
-#ifdef EigenVector_CHECK
+        eigenVector.resize((IndexEigen)nbBlocks * Nin);
+    }
+
+
+
+
+    SReal element(Index i) const override
+    {
+#if EIGEN_CHECK
         if (i >= rowSize() || j >= colSize())
         {
-            msg_error("EigenVectorWrapper") << "Invalid read access to element ("<<i<<","<<j<<") in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")" ;
+            msg_error("EigenVector") << "Invalid read access to element (" << i << "," << j << ") in " <</*this->Name()<<*/" of size (" << rowSize() << "," << colSize() << ")";
             return 0.0;
         }
 #endif
         return eigenVector.coeff((IndexEigen)i);
     }
 
-    void set(Index i, double v)
+    void set(Index i, double v) override
     {
-#ifdef EigenVector_VERBOSE
-        std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
-#endif
-#ifdef EigenVector_CHECK
+#if EIGEN_CHECK
         if (i >= rowSize() || j >= colSize())
         {
-            msg_error("EigenVectorWrapper") << "Invalid write access to element ("<<i<<","<<j<<") in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")" ;
+            msg_error("EigenVector") << "Invalid write access to element (" << i << "," << j << ") in " <</*this->Name()<<*/" of size (" << rowSize() << "," << colSize() << ")";
             return;
         }
 #endif
         eigenVector.coeffRef((IndexEigen)i) = (Real)v;
     }
 
-
-
-
-
-    void add(Index i, double v)
+    void setBlock(Index i, const Block& v)
     {
-#ifdef EigenVector_VERBOSE
-        std::cout << /*this->Name() << */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
+#if EIGEN_CHECK
+        if (i >= rowSize()/Nout || j >= colSize()/Nin )
+        {
+            msg_error("EigenVector") << "Invalid write access to element (" << i << "," << j << ") in " <</*this->Name()<<*/" of size (" << rowSize() / Nout << "," << colSize() / Nin << ")";
+            return;
+        }
 #endif
-#ifdef EigenVector_CHECK
+        for(Index l=0; l<Nin; l++)
+            eigenVector.coeffRef((IndexEigen)Nin*i+l) = (Real) v[l];
+    }
+
+
+
+
+    void add(Index i, double v) override
+    {
+#if EIGEN_CHECK
         if (i >= rowSize() || j >= colSize())
         {
-            msg_error("EigenVectorWrapper") << "Invalid write access to element ("<<i<<","<<j<<") in "/*<<this->Name()*/<<" of size ("<<rowSize()<<","<<colSize()<<")" ;
+            msg_error("EigenVector") << "Invalid write access to element (" << i << "," << j << ") in "/*<<this->Name()*/ << " of size (" << rowSize() << "," << colSize() << ")";
             return;
         }
 #endif
         eigenVector.coeffRef((IndexEigen)i) += (Real)v;
     }
 
-    void clear(Index i)
+    void clear(Index i) override
     {
-#ifdef EigenVector_VERBOSE
-        msg_error("EigenVectorWrapper") << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0" ;
-#endif
-#ifdef EigenVector_CHECK
+#if EIGEN_CHECK
         if (i >= rowSize() || j >= colSize())
         {
-            msg_error("EigenVectorWrapper") << "Invalid write access to element ("<<i<<","<<j<<") in "<</*this->Name()<<*/" of size ("<<rowSize()<<","<<colSize()<<")" ;
+            msg_error("EigenVector") << "Invalid write access to element (" << i << "," << j << ") in " <</*this->Name()<<*/" of size (" << rowSize() << "," << colSize() << ")";
             return;
         }
 #endif
@@ -127,14 +141,14 @@ public:
 
 
     /// Set all values to 0, by resizing to the same size. @todo check that it really resets.
-    void clear()
+    void clear() override
     {
         resize(0);
         resize(size());
     }
 
 
-    friend std::ostream& operator << (std::ostream& out, const EigenVectorWrapper<Real>& v )
+    friend std::ostream& operator << (std::ostream& out, const EigenVector<TReal, TBlockSize>& v )
     {
         IndexEigen ny = v.size();
         for (IndexEigen y=0; y<ny; ++y)
@@ -144,9 +158,27 @@ public:
         return out;
     }
 
-    static const char* Name();
+    static const std::string Name()
+    {
+        std::ostringstream o;
+        o << "EigenVector";
+
+        if constexpr (std::is_scalar<TReal>::value)
+        {
+            if constexpr (std::is_same<float, TReal>::value)
+            {
+                o << "f";
+            }
+            if constexpr (std::is_same<double, TReal>::value)
+            {
+                o << "d";
+            }
+        }
+
+        return o.str();
+    }
 
 
 };
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::linearalgebra
