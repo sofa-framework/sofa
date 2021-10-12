@@ -75,6 +75,32 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
     this->addAlias(&_assembling, "assembling");
     minYoung = 0.0;
     maxYoung = 0.0;
+
+    this->addUpdateCallback("updateComputeVonMisesStress", {&_computeVonMisesStress}, [this](const core::DataTracker& )
+    {
+        if(_computeVonMisesStress.getValue() == 0 || _computeVonMisesStress.getValue() == 1 || _computeVonMisesStress.getValue() == 2)
+        {
+            if (_computeVonMisesStress.getValue() == 1 && method == SMALL)
+            {
+                msg_warning() << "VonMisesStress can only be computed with full Green strain when the method is SMALL.";
+                _computeVonMisesStress.setValue(2);
+            }
+            else
+            {
+                msg_info() << "Correct update of " << _computeVonMisesStress.getName();
+            }
+        }
+        else
+        {
+            msg_warning() << "Value of " << _computeVonMisesStress.getName() << " is invalid (must be 0, 1 or 2). "
+                          << "Set "<<_computeVonMisesStress.getName()<<" to 0, disabling " << _showVonMisesStressPerNode.getName() << " and " << _showVonMisesStressPerElement.getName() << ".";
+            _computeVonMisesStress.setValue(0);
+            _showVonMisesStressPerNode.setValue(false);
+            _showVonMisesStressPerElement.setValue(false);
+        }
+
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {});
 }
 
 
@@ -1759,22 +1785,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
         needUpdateTopology = false;
     }
 
-    bool drawVonMisesStress = false;
-    if ( _showVonMisesStressPerNode.getValue() || _showVonMisesStressPerElement.getValue() )
-    {
-        if ( isComputeVonMisesStressMethodSet() )
-        {
-            drawVonMisesStress = true;
-        }
-        else
-        {
-            msg_warning() << "Cannot draw von Mises Stress. "
-                          << "Value of " << _computeVonMisesStress.getName() << " is invalid. "
-                          << "Disabling " << _showVonMisesStressPerNode.getName() << " and " << _showVonMisesStressPerElement.getName() << ".";
-            _showVonMisesStressPerNode.setValue(false);
-            _showVonMisesStressPerElement.setValue(false);
-        }
-    }
+    bool drawVonMisesStress = (_showVonMisesStressPerNode.getValue() || _showVonMisesStressPerElement.getValue()) && isComputeVonMisesStressMethodSet();
 
     vparams->drawTool()->saveLastState();
 
@@ -1789,7 +1800,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     const VecReal& youngModulus = _youngModulus.getValue();
 
     bool heterogeneous = false;
-    if (drawVonMisesStress && drawHeterogeneousTetra.getValue())
+    if (drawHeterogeneousTetra.getValue())
     {
         minYoung=youngModulus[0];
         maxYoung=youngModulus[0];
