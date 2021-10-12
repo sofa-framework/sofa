@@ -183,8 +183,8 @@ void SparseMatrixProduct<Eigen::SparseMatrix<float, Eigen::RowMajor> >::computeI
     __computeIntersectionRowMajor(matrixA, matrixB, &matrixC, m_intersectionAB);
 }
 
-    template <>
-    void SparseMatrixProduct<Eigen::SparseMatrix<double, Eigen::RowMajor> >::computeIntersection()
+template <>
+void SparseMatrixProduct<Eigen::SparseMatrix<double, Eigen::RowMajor> >::computeIntersection()
 {
     __computeIntersectionRowMajor(matrixA, matrixB, &matrixC, m_intersectionAB);
 }
@@ -194,18 +194,18 @@ void __computeProductFromIntersection(const TMatrix* A, const TMatrix* B, TMatri
 {
     assert(intersection.intersection.size() == C->nonZeros());
 
-    unsigned int i = 0;
+    auto* a_ptr = A->valuePtr();
+    auto* b_ptr = B->valuePtr();
+    auto* c_ptr = C->valuePtr();
+
     for (const auto& pairs : intersection.intersection)
     {
-        if (C->nonZeros() <= i)
-            break;
-        auto& value = C->valuePtr()[i];
+        auto& value = *c_ptr++;
         value = 0;
         for (const auto& p : pairs)
         {
-            value += A->valuePtr()[p.first] * B->valuePtr()[p.second];
+            value += a_ptr[p.first] * b_ptr[p.second];
         }
-        ++i;
     }
 }
 
