@@ -187,7 +187,9 @@ void UniformMass<DataTypes, MassType>::initDefaultImpl()
             });
         }
         else
+        {
             msg_warning() << "handleTopologicalChanges has been set to true but not valid topology has been found at:'" << l_topology.getLinkedPath() << "'";
+        }
     }
 
     //If user defines the vertexMass, use this as the mass
