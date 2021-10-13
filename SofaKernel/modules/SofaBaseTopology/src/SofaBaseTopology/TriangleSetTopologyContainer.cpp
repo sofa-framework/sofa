@@ -1037,16 +1037,6 @@ void TriangleSetTopologyContainer::cleanTriangleTopologyFromDirty()
     }
 }
 
-
-void TriangleSetTopologyContainer::updateTopologyHandlerGraph()
-{
-    // calling real update Data graph function implemented once in TopologyContainer
-    this->updateDataEngineGraph(this->d_triangle, sofa::geometry::ElementType::TRIANGLE);
-
-    // will concatenate with edges one:
-    EdgeSetTopologyContainer::updateTopologyHandlerGraph();
-}
-
 bool TriangleSetTopologyContainer::linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
 {
     if (elementType == sofa::geometry::ElementType::TRIANGLE)

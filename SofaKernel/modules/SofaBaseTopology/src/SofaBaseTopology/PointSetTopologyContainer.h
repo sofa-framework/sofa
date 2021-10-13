@@ -141,9 +141,6 @@ public:
     bool linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType) override;
 
 protected:
-    /// \brief Function creating the data graph linked to d_point
-    void updateTopologyHandlerGraph() override;
-
     /// Use a specific boolean @see m_pointTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean
     void setPointTopologyToDirty();

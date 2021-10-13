@@ -179,11 +179,6 @@ void PointSetTopologyContainer::removePoint()
     setNbPoints( nbPoints.getValue() - 1 );
 }
 
-void PointSetTopologyContainer::updateTopologyHandlerGraph()
-{
-    this->updateDataEngineGraph(this->d_initPoints, sofa::geometry::ElementType::POINT);
-}
-
 const sofa::type::vector< PointSetTopologyContainer::PointID >& PointSetTopologyContainer::getPoints() const
 {
     return points.getValue();

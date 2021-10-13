@@ -1217,15 +1217,6 @@ void HexahedronSetTopologyContainer::cleanHexahedronTopologyFromDirty()
     }
 }
 
-void HexahedronSetTopologyContainer::updateTopologyHandlerGraph()
-{
-    // calling real update Data graph function implemented once in TopologyContainer
-    this->updateDataEngineGraph(this->d_hexahedron, sofa::geometry::ElementType::HEXAHEDRON);
-
-    // will concatenate with edges one:
-    QuadSetTopologyContainer::updateTopologyHandlerGraph();
-}
-
 bool HexahedronSetTopologyContainer::linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
 {
     if (elementType == sofa::geometry::ElementType::HEXAHEDRON)

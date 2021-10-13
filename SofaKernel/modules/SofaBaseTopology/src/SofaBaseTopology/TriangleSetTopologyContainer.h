@@ -327,11 +327,6 @@ protected:
      */
     virtual TrianglesAroundEdge& getTrianglesAroundEdgeForModification(const EdgeID edgeIndex);
 
-
-    /// \brief Function creating the data graph linked to d_triangle
-    void updateTopologyHandlerGraph() override;
-
-
     /// Use a specific boolean @see m_triangleTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean
     void setTriangleTopologyToDirty();

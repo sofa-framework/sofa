@@ -288,10 +288,6 @@ protected:
      */
     virtual QuadsAroundEdge& getQuadsAroundEdgeForModification(const EdgeID edgeIndex);
 
-    /// \brief Function creating the data graph linked to d_quad
-    void updateTopologyHandlerGraph() override;
-
-
     /// Use a specific boolean @see m_quadTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean
     void setQuadTopologyToDirty();

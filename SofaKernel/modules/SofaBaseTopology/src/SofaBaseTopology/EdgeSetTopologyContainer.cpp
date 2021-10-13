@@ -569,15 +569,6 @@ void EdgeSetTopologyContainer::cleanEdgeTopologyFromDirty()
     }
 }
 
-void EdgeSetTopologyContainer::updateTopologyHandlerGraph()
-{
-    this->updateDataEngineGraph(this->d_edge, sofa::geometry::ElementType::EDGE);
-
-    // will concatenate with points one:
-    PointSetTopologyContainer::updateTopologyHandlerGraph();
-
-}
-
 bool EdgeSetTopologyContainer::linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
 {
     if (elementType == sofa::geometry::ElementType::EDGE)

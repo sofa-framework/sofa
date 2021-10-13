@@ -768,15 +768,6 @@ void QuadSetTopologyContainer::cleanQuadTopologyFromDirty()
     }
 }
 
-void QuadSetTopologyContainer::updateTopologyHandlerGraph()
-{
-    // calling real update Data graph function implemented once in TopologyContainer
-    this->updateDataEngineGraph(this->d_quad, sofa::geometry::ElementType::QUAD);
-
-    // will concatenate with edges one:
-    EdgeSetTopologyContainer::updateTopologyHandlerGraph();
-}
-
 bool QuadSetTopologyContainer::linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
 {
     if (elementType == sofa::geometry::ElementType::QUAD)

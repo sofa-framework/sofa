@@ -1198,15 +1198,6 @@ void TetrahedronSetTopologyContainer::cleanTetrahedronTopologyFromDirty()
     }
 }
 
-void TetrahedronSetTopologyContainer::updateTopologyHandlerGraph()
-{
-    // calling real update Data graph function implemented once in TopologyContainer
-    this->updateDataEngineGraph(this->d_tetrahedron, sofa::geometry::ElementType::TETRAHEDRON);
-
-    // will concatenate with edges one:
-    TriangleSetTopologyContainer::updateTopologyHandlerGraph();
-}
-
 bool TetrahedronSetTopologyContainer::linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
 {
     if (elementType == sofa::geometry::ElementType::TETRAHEDRON)

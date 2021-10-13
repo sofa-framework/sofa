@@ -415,11 +415,6 @@ protected:
      */
     virtual HexahedraAroundQuad& getHexahedraAroundQuadForModification(const QuadID quadIndex);
 
-
-    /// \brief Function creating the data graph linked to d_hexahedron
-    void updateTopologyHandlerGraph() override;
-
-
     /// Use a specific boolean @see m_hexahedronTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean
     void setHexahedronTopologyToDirty();
