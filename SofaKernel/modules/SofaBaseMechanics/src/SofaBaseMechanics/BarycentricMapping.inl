@@ -35,16 +35,16 @@
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.h>
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperRegularGridTopology.h>
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperSparseGridTopology.h>
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperEdgeSetTopology.h>
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperTriangleSetTopology.h>
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperQuadSetTopology.h>
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperRegularGridTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperSparseGridTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperEdgeSetTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTriangleSetTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperQuadSetTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h>
 
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -60,7 +60,7 @@ using sofa::type::Matrix3;
 using sofa::type::Mat3x3d;
 using sofa::type::Vec3d;
 using sofa::core::objectmodel::ComponentState;
-using sofa::component::linearsolver::EigenSparseMatrix;
+using sofa::linearalgebra::EigenSparseMatrix;
 
 // 10/18 E.Coevoet: what's the difference between edge/line, tetra/tetrahedron, hexa/hexahedron?
 typedef typename sofa::core::topology::BaseMeshTopology::Line Edge;

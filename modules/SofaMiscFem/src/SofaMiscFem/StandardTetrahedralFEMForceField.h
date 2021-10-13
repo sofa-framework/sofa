@@ -108,9 +108,9 @@ public :
 	  Real strainEnergy;
 
       //Tetrahedron Points Indicies for CUDA
-      float tetraIndices[4];
+      float tetraIndices[4]{};
       //Tetrahedron Edges for CUDA
-      float tetraEdges[6];
+      float tetraEdges[6]{};
 
       /// Output stream
       inline friend std::ostream& operator<< ( std::ostream& os, const TetrahedronRestInformation& /*eri*/ ) {  return os;  }

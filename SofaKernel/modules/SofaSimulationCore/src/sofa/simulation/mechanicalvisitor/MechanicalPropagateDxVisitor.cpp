@@ -42,6 +42,7 @@ Visitor::Result MechanicalPropagateDxVisitor::fwdMechanicalMapping(simulation::N
 
 void MechanicalPropagateDxVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
 {
+    SOFA_UNUSED(mm);
 }
 
 bool MechanicalPropagateDxVisitor::stopAtMechanicalMapping(simulation::Node *, sofa::core::BaseMapping *map)

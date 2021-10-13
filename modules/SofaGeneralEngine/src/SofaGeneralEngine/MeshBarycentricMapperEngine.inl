@@ -183,7 +183,9 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
                 m[1] = (in)[triangles[t][2]]-(in)[triangles[t][0]];
                 m[2] = cross ( m[0],m[1] );
                 mt.transpose ( m );
-                bases[t].invert ( mt );
+                const bool canInvert = bases[t].invert ( mt );
+                assert(canInvert);
+                SOFA_UNUSED(canInvert);
                 centers[t] = ( (in)[triangles[t][0]]+(in)[triangles[t][1]]+(in)[triangles[t][2]] ) /3;
             }
             for ( unsigned int c = 0; c < quads.size(); c++ )
@@ -193,7 +195,9 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
                 m[1] = (in)[quads[c][3]]-(in)[quads[c][0]];
                 m[2] = cross ( m[0],m[1] );
                 mt.transpose ( m );
-                bases[c0+c].invert ( mt );
+                const bool canInvert = bases[c0+c].invert ( mt );
+                assert(canInvert);
+                SOFA_UNUSED(canInvert);
                 centers[c0+c] = ( (in)[quads[c][0]]+(in)[quads[c][1]]+(in)[quads[c][2]]+(in)[quads[c][3]] ) *0.25;
             }
             for ( unsigned int i=0; i<(out).size(); i++ )
@@ -243,7 +247,9 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
             m[1] = (in)[tetrahedra[t][2]]-(in)[tetrahedra[t][0]];
             m[2] = (in)[tetrahedra[t][3]]-(in)[tetrahedra[t][0]];
             mt.transpose ( m );
-            bases[t].invert ( mt );
+            const bool canInvert = bases[t].invert ( mt );
+            assert(canInvert);
+            SOFA_UNUSED(canInvert);
             centers[t] = ( (in)[tetrahedra[t][0]]+(in)[tetrahedra[t][1]]+(in)[tetrahedra[t][2]]+(in)[tetrahedra[t][3]] ) *0.25;
         }
         for ( unsigned int c = 0; c < cubes.size(); c++ )
@@ -253,7 +259,9 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
             m[1] = (in)[cubes[c][3]]-(in)[cubes[c][0]];
             m[2] = (in)[cubes[c][4]]-(in)[cubes[c][0]];
             mt.transpose ( m );
-            bases[c0+c].invert ( mt );
+            const bool canInvert = bases[c0+c].invert ( mt );
+            assert(canInvert);
+            SOFA_UNUSED(canInvert);
             centers[c0+c] = ( (in)[cubes[c][0]]+(in)[cubes[c][1]]+(in)[cubes[c][2]]+(in)[cubes[c][3]]+(in)[cubes[c][4]]+(in)[cubes[c][5]]+(in)[cubes[c][6]]+(in)[cubes[c][7]] ) *0.125;
         }
         for ( unsigned int i=0; i<(out).size(); i++ )

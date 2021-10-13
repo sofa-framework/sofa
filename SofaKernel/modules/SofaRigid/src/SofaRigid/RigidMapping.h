@@ -25,8 +25,8 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -151,11 +151,11 @@ protected:
     std::unique_ptr<MatrixType> matrixJ;
     bool updateJ;
 
-    typedef linearsolver::EigenSparseMatrix<In,Out> SparseMatrixEigen;
+    typedef linearalgebra::EigenSparseMatrix<In,Out> SparseMatrixEigen;
     SparseMatrixEigen eigenJacobian;                      ///< Jacobian of the mapping used by getJs
     type::vector<sofa::defaulttype::BaseMatrix*> eigenJacobians; /// used by getJs
 
-    typedef linearsolver::EigenSparseMatrix<In,In> StiffnessSparseMatrixEigen;
+    typedef linearalgebra::EigenSparseMatrix<In,In> StiffnessSparseMatrixEigen;
     StiffnessSparseMatrixEigen geometricStiffnessMatrix;
 };
 

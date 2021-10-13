@@ -32,7 +32,7 @@ namespace sofa::component::constraintset
 class LMCONSTRAINT_API LMConstraintDirectSolver : public LMConstraintSolver
 {
     typedef Eigen::SparseMatrix<SReal,Eigen::ColMajor>    SparseColMajorMatrixEigen;
-    typedef type::vector<linearsolver::LLineManipulator> JacobianRows;
+    typedef type::vector<linearalgebra::LLineManipulator> JacobianRows;
     using MultiVecId = sofa::core::MultiVecId;
 
 public:

@@ -1135,7 +1135,6 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForcePolar( Vect
     A[2] = p[t[3]]-p[t[0]];
 
     Transformation R_0_2;
-    type::MatNoInit<3,3,Real> S;
     helper::Decompose<Real>::polarDecomposition(A, R_0_2);
 
     type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
@@ -1320,14 +1319,10 @@ template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
 {
     // Build Matrix Block for this ForceField
-    unsigned int i,j,n1, n2, row, column, ROW, COLUMN;
-
     Transformation Rot;
     StiffnessMatrix JKJt,tmp;
 
     const type::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
-
-    Index noeud1, noeud2;
 
     Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
     Rot[0][1]=Rot[0][2]=0;

@@ -228,7 +228,9 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     {
         Deriv& fiberDirLocal = lfd[i]; // orientation of the fiber in the local frame of the element (orthonormal frame)
         T.transpose();
-        Tinv.invert(T);
+        const bool canInvert = Tinv.invert(T);
+        assert(canInvert);
+        SOFA_UNUSED(canInvert);
         fiberDirLocal = Tinv * fiberDirGlobal;
         fiberDirLocal[2] = 0;
         fiberDirLocal.normalize();
@@ -242,7 +244,9 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     T[1].normalize();
     T[2].normalize();
     T.transpose();
-    Tinv.invert(T);
+    const bool canInvert = Tinv.invert(T);
+    assert(canInvert);
+    SOFA_UNUSED(canInvert);
     fiberDirLocalOrtho = Tinv * fiberDirGlobal;
     fiberDirLocalOrtho[2] = 0;
     fiberDirLocalOrtho.normalize();

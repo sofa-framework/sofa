@@ -263,10 +263,7 @@ void VectorSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /
     const VecCoord& x2 =  data_x2.getValue();
     const VecDeriv& v2 =  data_v2.getValue();
 
-    //assert(this->mstate);
     m_potentialEnergy = 0;
-
-    Coord u;
 
     f1.resize(x1.size());
     f2.resize(x2.size());
