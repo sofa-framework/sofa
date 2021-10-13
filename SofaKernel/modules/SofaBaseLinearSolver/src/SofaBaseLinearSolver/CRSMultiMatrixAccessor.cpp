@@ -210,7 +210,6 @@ void CRSMultiMatrixAccessor::computeGlobalMatrix()
             {
                 interactionList.push_back(it->first);
             }
-            ++it;
         }
 
 
