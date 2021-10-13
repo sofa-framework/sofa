@@ -62,13 +62,12 @@ void MechanicalMatrixMapper<TDataTypes1, TDataTypes2>::computeMatrixProduct(
     const Eigen::SparseMatrix<double>* K,
     Eigen::SparseMatrix<double>*& output)
 {
-    const Eigen::SparseMatrix<double> Jt = J1->transpose();
-
     if (fastProduct)
     {
         // product_1 is involved in multiple products. It can be reused if already computed
         if (!product_1.isComputed)
         {
+            const Eigen::SparseMatrix<double> Jt = J1->transpose();
             product_1.product.matrixA = &Jt;
             product_1.product.matrixB = K;
             product_1.product.computeProduct();
@@ -85,10 +84,11 @@ void MechanicalMatrixMapper<TDataTypes1, TDataTypes2>::computeMatrixProduct(
     {
         if (!product_1.isComputed)
         {
+            const Eigen::SparseMatrix<double> Jt = J1->transpose();
             product_1.matrix.resize(Jt.rows(), K->cols());
             product_1.matrix = Jt * (*K);
         }
-        output->resize(Jt.rows(), J2->cols());
+        output->resize(J1->cols(), J2->cols());
         *output = product_1.matrix * (*J2);
     }
 }
