@@ -87,7 +87,6 @@ void GlText::update ( const double& scale )
 
 void GlText::draw()
 {
-    Mat<4,4, GLfloat> modelviewM;
     glDisable ( GL_LIGHTING );
 
     const char* s = text.c_str();

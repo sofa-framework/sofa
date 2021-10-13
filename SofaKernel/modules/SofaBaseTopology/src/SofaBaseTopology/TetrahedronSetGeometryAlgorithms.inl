@@ -619,6 +619,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID
 
     const typename DataTypes::Coord& ca=(vect_c[ta[0]]+vect_c[ta[1]]+vect_c[ta[2]]+vect_c[ta[3]])*0.25;
     const typename DataTypes::Coord& cb=(vect_c[tb[0]]+vect_c[tb[1]]+vect_c[tb[2]]+vect_c[tb[3]])*0.25;
+
     sofa::type::Vec<3,Real> pa, pb;
 
     constexpr auto minDimensions = std::min<sofa::Size>(DataTypes::spatial_dimensions, 3u);

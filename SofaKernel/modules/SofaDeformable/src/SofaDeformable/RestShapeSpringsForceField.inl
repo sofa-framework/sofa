@@ -22,6 +22,7 @@
 #pragma once
 #include <SofaDeformable/RestShapeSpringsForceField.h>
 
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>

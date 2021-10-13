@@ -4336,7 +4336,6 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
         }
 
         points2Snap[cpt].push_back((*it).first); // points2Snap[X][0] => id point to snap
-        sofa::type::Vec<3, double> newCoords;
 
         // Step 3/3: Compute mean value of all incision point position.
         for (unsigned int j = 0; j < 3; j++)

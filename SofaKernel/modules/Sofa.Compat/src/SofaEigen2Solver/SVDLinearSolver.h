@@ -20,29 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaSimulationCommon/xml/Element.h>
-#include <sofa/core/objectmodel/BaseObject.h>
 
-namespace sofa::simulation::xml
-{
+#include <SofaDenseSolver/SVDLinearSolver.h>
 
-class SOFA_SOFASIMULATIONCOMMON_API AttributeElement : public Element<core::objectmodel::BaseObject>
-{
-public:
-    AttributeElement(const std::string& name, const std::string& type, BaseElement* parent=nullptr);
-
-    ~AttributeElement() override;
-
-    bool init() override;
-
-    bool initNode() override;
-
-    virtual const char* getClass() const override;
-
-    void setValue(const std::string _value) {value=_value;}
-    const std::string& getValue() const {return value;}
-private:
-    std::string value;
-};
-
-} // namespace sofa::simulation::xml
+SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "SofaDenseSolver/SVDLinearSolver.h")

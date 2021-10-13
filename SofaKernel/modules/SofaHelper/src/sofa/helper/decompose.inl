@@ -725,41 +725,6 @@ Real Decompose<Real>::polarDecomposition( const type::Mat<3,3,Real>& M, type::Ma
   return det;
 }
 
-
-
-
-//template<class Real>
-//Real Decompose<Real>::polarDecomposition( const type::Mat<3,3,Real>& M, type::Mat<3,3,Real>& Q )
-//{
-//    type::Mat<3,3,Real> Mk, MadjTk, Ek;
-//    Real det, M_one, M_inf, MadjT_one, MadjT_inf, E_one, gamma, g1, g2;
-//    Mk.transpose(M);
-//    M_one = norm_one(Mk);  M_inf = norm_inf(Mk);
-//    do
-//    {
-//        adjoint_transpose(Mk, MadjTk);
-//        det = dot(Mk[0], MadjTk[0]);
-//        if (det==0.0)
-//        {
-//            do_rank2(Mk, MadjTk, Mk);
-//            break;
-//        }
-//        MadjT_one = norm_one(MadjTk); MadjT_inf = norm_inf(MadjTk);
-//        gamma = (Real)sqrt(sqrt((MadjT_one*MadjT_inf)/(M_one*M_inf))/fabs(det));
-//        g1 = gamma*((Real)0.5);
-//        g2 = ((Real)0.5)/(gamma*det);
-//        Ek = Mk;
-//        Mk = Mk*g1 + MadjTk*g2;
-//        Ek -= Mk;
-//        E_one = norm_one(Ek);
-//        M_one = norm_one(Mk);  M_inf = norm_inf(Mk);
-//    }
-//    while (E_one>(M_one*zeroTolerance()));
-//    Q.transpose(Mk);
-//    return (det);
-//}
-
-
 template<class Real>
 void Decompose<Real>::polarDecomposition( const type::Mat<2,2,Real>& M, type::Mat<2,2,Real>& Q )
 {
@@ -785,7 +750,6 @@ bool Decompose<Real>::polarDecomposition_stable( const type::Mat<3,3,Real> &M, t
 {
     bool degenerated = polarDecomposition_stable( M, Q );
     S = Q.multTranspose( M ); // S = Qt * M
-    //S = V.multDiagonal( Sdiag ).multTransposed( V ); // S = V * Sdiag * Vt
 
     return degenerated;
 }
@@ -872,7 +836,9 @@ void Decompose<Real>::polarDecompositionGradient_G( const type::Mat<3,3,Real>& Q
 
     G = G.multTransposed( Q );
 
-    invG.invert( G );
+    const bool canInvert = invG.invert( G );
+    assert(canInvert);
+    SOFA_UNUSED(canInvert);
 }
 
 
@@ -961,7 +927,10 @@ void Decompose<Real>::polarDecompositionGradient_dSOverdM(const type::Mat<3,3,Re
     J2(3,1)=2*S(1,0); J2(3,3)=2*S(1,1); J2(3,4)=2*S(2,1);
     J2(4,1)=S(2,0); J2(4,2)=S(1,0); J2(4,3)=S(2,1); J2(4,4)=S(2,2)+S(1,1); J2(4,5)=S(2,1);
     J2(5,2)=2*S(2,0); J2(5,4)=2*S(2,1); J2(5,5)=2*S(2,2);
-    type::Mat<6,6,Real> J2inv; J2inv.invert(J2);
+    type::Mat<6,6,Real> J2inv;
+    const bool canInvert = J2inv.invert(J2);
+    assert(canInvert);
+    SOFA_UNUSED(canInvert);
 
     type::Mat<6,9,Real> J69 = J2inv*J1;
 
@@ -2122,7 +2091,9 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const type::Mat<3,3,Real> &U, cons
 
                 if( helper::rabs( S[k]-S[l] ) > zeroTolerance() )
                 {
-                    invA.invert( A );
+                    const bool canInvert = invA.invert( A );
+                    assert(canInvert);
+                    SOFA_UNUSED(canInvert);
                     w = invA * v;
                 }
                 else
@@ -2134,7 +2105,9 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const type::Mat<3,3,Real> &U, cons
                     type::Mat<2,2,Real> AtA = A.multTranspose( A );
                     AtA[0][0] += (Real)1;
                     AtA[1][1] += (Real)1;
-                    invA.invert( AtA );
+                    const bool canInvert = invA.invert( AtA );
+                    assert(canInvert);
+                    SOFA_UNUSED(canInvert);
                     w = invA.multTransposed( A ) * v;
 #endif
                 }
@@ -2206,7 +2179,9 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const type::Mat<3,2,Real> &U, cons
 
             if( helper::rabs( S[0]-S[1] ) > zeroTolerance() )
             {
-                invA.invert( A );
+                const bool canInvert = invA.invert( A );
+                assert(canInvert);
+                SOFA_UNUSED(canInvert);
                 w = invA * v;
             }
             else
@@ -2218,7 +2193,9 @@ bool Decompose<Real>::SVDGradient_dUdVOverdM( const type::Mat<3,2,Real> &U, cons
                 type::Mat<2,2,Real> AtA = A.multTranspose( A );
                 AtA[0][0] += (Real)1;
                 AtA[1][1] += (Real)1;
-                invA.invert( AtA );
+                const bool canInvert = invA.invert( AtA );
+                assert(canInvert);
+                SOFA_UNUSED(canInvert);
                 w = invA.multTransposed( A ) * v;
 #endif
             }
@@ -2262,7 +2239,9 @@ bool Decompose<Real>::SVDGradient_dUdV( const type::Mat<3,3,Real> &U, const type
 
         if( helper::rabs( S[i]-S[j] ) > zeroTolerance() )
         {
-            invA.invert( A );
+            const bool canInvert = invA.invert( A );
+            assert(canInvert);
+            SOFA_UNUSED(canInvert);
             w = invA * v;
         }
         else
@@ -2274,7 +2253,9 @@ bool Decompose<Real>::SVDGradient_dUdV( const type::Mat<3,3,Real> &U, const type
             type::Mat<2,2,Real> AtA = A.multTranspose( A );
             AtA[0][0] += (Real)1;
             AtA[1][1] += (Real)1;
-            invA.invert( AtA );
+            const bool canInvert = invA.invert( AtA );
+            assert(canInvert);
+            SOFA_UNUSED(canInvert);
             w = invA.multTransposed( A ) * v;
 #endif
         }
@@ -2304,7 +2285,9 @@ bool Decompose<Real>::SVDGradient_dUdV( const type::Mat<3,2,Real> &U, const type
 
     if( helper::rabs( S[0]-S[1] ) > zeroTolerance() )
     {
-        invA.invert( A );
+        const bool canInvert = invA.invert( A );
+        assert(canInvert);
+        SOFA_UNUSED(canInvert);
         w = invA * v;
     }
     else
@@ -2316,7 +2299,9 @@ bool Decompose<Real>::SVDGradient_dUdV( const type::Mat<3,2,Real> &U, const type
         type::Mat<2,2,Real> AtA = A.multTranspose( A );
         AtA[0][0] += (Real)1;
         AtA[1][1] += (Real)1;
-        invA.invert( AtA );
+        const bool canInvert = invA.invert( AtA );
+        assert(canInvert);
+        SOFA_UNUSED(canInvert);
         w = invA.multTransposed( A ) * v;
 #endif
     }

@@ -21,9 +21,7 @@
 ******************************************************************************/
 #include <SofaEigen2Solver/initSofaEigen2Solver.h>
 
-
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa::component
 {
@@ -35,6 +33,9 @@ void initSofaEigen2Solver()
     {
         first = false;
     }
+
+    msg_warning("SofaEigen2Solver") << "SofaEigen2Solver is deprecated; Eigen classes are now located in Sofa.LinearAlgebra and SVDLinearSolver in SofaDenseSolver."
+        << "You can remove SofaEigen2Solver from your scene, and if using SVDLinearSolver, please load SofaDenseSolver instead.";
 }
 
 extern "C" {
@@ -74,8 +75,7 @@ const char* getModuleDescription()
 const char* getModuleComponentList()
 {
     /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
+    return "";
 }
 
 } // namespace sofa::component
