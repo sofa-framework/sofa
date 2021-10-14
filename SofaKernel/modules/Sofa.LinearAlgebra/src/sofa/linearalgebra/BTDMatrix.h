@@ -108,7 +108,9 @@ public:
         Bloc i() const
         {
             Bloc r;
-            r.invert(*this);
+            const bool canInvert = r.invert(*this);
+            assert(canInvert);
+            SOFA_UNUSED(canInvert);
             return r;
         }
     };

@@ -65,7 +65,7 @@ LMConstraintSolver::LMConstraintSolver()
     : constraintAcc( initData( &constraintAcc, false, "constraintAcc", "Constraint the acceleration"))
     , constraintVel( initData( &constraintVel, true, "constraintVel", "Constraint the velocity"))
     , constraintPos( initData( &constraintPos, true, "constraintPos", "Constraint the position"))
-    , numIterations( initData( &numIterations, (unsigned int)25, "numIterations", "Number of iterations for Gauss-Seidel when solving the Constraints"))
+    , numIterations( initData( &numIterations, 25u, "numIterations", "Number of iterations for Gauss-Seidel when solving the Constraints"))
     , maxError( initData( &maxError, 0.0000001, "maxError", "threshold for the residue of the Gauss-Seidel algorithm"))
     , graphGSError( initData(&graphGSError,"graphGSError","Graph of residuals at each iteration") )
     , traceKineticEnergy( initData( &traceKineticEnergy, false, "traceKineticEnergy", "Trace the evolution of the Kinetic Energy throughout the solution of the system"))
@@ -90,16 +90,15 @@ void LMConstraintSolver::init()
     sofa::core::behavior::ConstraintSolver::init();
 
     type::vector< core::behavior::BaseConstraintCorrection* > listConstraintCorrection;
-    ((simulation::Node*) getContext())->get<core::behavior::BaseConstraintCorrection>(&listConstraintCorrection, core::objectmodel::BaseContext::SearchDown);
-    for (unsigned int i=0; i<listConstraintCorrection.size(); ++i)
+    getContext()->get<core::behavior::BaseConstraintCorrection>(&listConstraintCorrection, core::objectmodel::BaseContext::SearchDown);
+    for (auto* constraintCorrection : listConstraintCorrection)
     {
         core::behavior::BaseMechanicalState* constrainedDof;
-        listConstraintCorrection[i]->getContext()->get(constrainedDof);
+        constraintCorrection->getContext()->get(constrainedDof);
         if (constrainedDof)
         {
-            constraintCorrections.insert(std::make_pair(constrainedDof, listConstraintCorrection[i]));
-            listConstraintCorrection[i]->removeConstraintSolver(this);
-            listConstraintCorrection[i]->addConstraintSolver(this);
+            constraintCorrections.insert(std::make_pair(constrainedDof, constraintCorrection));
+            constraintCorrection->addConstraintSolver(this);
         }
     }
 

@@ -23,7 +23,7 @@
 #include <sofa/testing/NumericTest.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 
-namespace sofa
+namespace sofa::linearalgebra::testing
 {
 
 template<class TMatrix, sofa::Index TNbRows, sofa::Index TNbCols, class TReal >
@@ -94,7 +94,7 @@ public:
     /// This assumes the matrix is big enough to contain a 3x3 matrix at the requested position
     /// @param posRow row index at which the 3x3 matrix is added
     /// @param posCol column index at which the 3x3 matrix is added
-    void checkAddBloc(sofa::defaulttype::BaseMatrix::Index posRow, sofa::defaulttype::BaseMatrix::Index posCol)
+    void checkAddBloc(sofa::linearalgebra::BaseMatrix::Index posRow, sofa::linearalgebra::BaseMatrix::Index posCol)
     {
         m_testedMatrix->clear();
 
@@ -111,9 +111,9 @@ public:
         m_testedMatrix->add(posRow, posCol, mat);
         m_testedMatrix->compress();
 
-        for (sofa::defaulttype::BaseMatrix::Index i = 0; i < m_testedMatrix->rowSize(); ++i)
+        for (sofa::linearalgebra::BaseMatrix::Index i = 0; i < m_testedMatrix->rowSize(); ++i)
         {
-            for (sofa::defaulttype::BaseMatrix::Index j = 0; j < m_testedMatrix->colSize(); ++j)
+            for (sofa::linearalgebra::BaseMatrix::Index j = 0; j < m_testedMatrix->colSize(); ++j)
             {
                 if ( i >= posRow && i < posRow + decltype(mat)::nbLines
                   && j >= posCol && j < posCol + decltype(mat)::nbCols)
@@ -137,7 +137,7 @@ public:
 protected:
 
     sofa::type::Mat<NbRows, NbCols, Real> m_modelMatrix;
-    std::unique_ptr<sofa::defaulttype::BaseMatrix> m_testedMatrix {nullptr};
+    std::unique_ptr<sofa::linearalgebra::BaseMatrix> m_testedMatrix {nullptr};
 };
 
 TYPED_TEST_SUITE_P(TestBaseMatrix);
@@ -164,4 +164,4 @@ REGISTER_TYPED_TEST_SUITE_P(TestBaseMatrix,
                             resize, addScalar, addBloc
 );
 
-} //namespace sofa
+} //namespace sofa::linearalgebra::testing

@@ -4,7 +4,6 @@
 @PACKAGE_INIT@
 
 find_package(SofaBaseLinearSolver QUIET REQUIRED)
-find_package(SofaEigen2Solver QUIET REQUIRED)
 find_package(SofaBaseTopology QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)

@@ -207,22 +207,36 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::accumulateJacobians(const M
 template<class T>
 void copyKToEigenFormat(CompressedRowSparseMatrix< T >* K, Eigen::SparseMatrix<double,Eigen::ColMajor>& Keig)
 {
-    std::vector< Eigen::Triplet<double> > tripletList;
-    tripletList.reserve(K->colsValue.size());
+    // It is assumed that K is not compressed. All the data is contained in the temporary container K->btemp
+    // This data is provided to Eigen to build a compressed sparse matrix in Eigen format.
+    // The strategy would be different if K was compressed. However, compression is avoided as it is very expensive.
 
-    int row;
-    for (unsigned int it_rows_k=0; it_rows_k < K->rowIndex.size() ; it_rows_k ++)
+    /// Structure complying with the expected interface of SparseMatrix::setFromTriplets
+    struct IndexedBlocProxy
     {
-        row = K->rowIndex[it_rows_k] ;
-        typename CompressedRowSparseMatrix<T>::Range rowRange( K->rowBegin[it_rows_k], K->rowBegin[it_rows_k+1] );
-        for(sofa::defaulttype::BaseVector::Index xj = rowRange.begin() ; xj < rowRange.end() ; xj++ )  // for each non-null block
-        {
-            int col = K->colsIndex[xj];     // block column
-            const T& k = K->colsValue[xj]; // non-null element of the matrix
-            tripletList.push_back(Eigen::Triplet<double>(row,col,k));
-        }
-    }
-    Keig.setFromTriplets(tripletList.begin(), tripletList.end());
+        explicit IndexedBlocProxy(const typename CompressedRowSparseMatrix<T>::VecIndexedBloc::const_iterator& it) : m_iterator(it) {}
+        T value() const { return m_iterator->value; }
+        typename CompressedRowSparseMatrix< T >::Index row() const { return m_iterator->l; }
+        typename CompressedRowSparseMatrix< T >::Index col() const { return m_iterator->c; }
+
+        typename CompressedRowSparseMatrix<T>::VecIndexedBloc::const_iterator m_iterator;
+    };
+    /// Iterator provided to SparseMatrix::setFromTriplets giving access to an interface similar to Eigen::Triplet
+    struct IndexedBlocIterator
+    {
+        explicit IndexedBlocIterator(const typename CompressedRowSparseMatrix<T>::VecIndexedBloc::const_iterator& it)
+            : m_proxy(it) {}
+        bool operator!=(const IndexedBlocIterator& rhs) const { return m_proxy.m_iterator != rhs.m_proxy.m_iterator; }
+        IndexedBlocIterator& operator++() { ++m_proxy.m_iterator; return *this; }
+        IndexedBlocProxy* operator->() { return &m_proxy; }
+    private:
+        IndexedBlocProxy m_proxy;
+    };
+
+    sofa::helper::ScopedAdvancedTimer timer("KfromTriplets" );
+    IndexedBlocIterator begin(K->btemp.begin());
+    IndexedBlocIterator end(K->btemp.end());
+    Keig.setFromTriplets(begin, end);
 }
 template<class InputFormat>
 static void copyMappingJacobianToEigenFormat(const typename InputFormat::MatrixDeriv& J, Eigen::SparseMatrix<double>& Jeig)
@@ -371,12 +385,6 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
         msg_error(this) << "matrix of the force-field system not found";
         return;
     }
-
-    ///////////////////////     COMPRESS K       ///////////////////////////////////
-    sofa::helper::AdvancedTimer::stepBegin("compressStiffnessMatrix" );
-    K->compress();
-    sofa::helper::AdvancedTimer::stepEnd("compressStiffnessMatrix" );
-
 
     //------------------------------------------------------------------------------
 

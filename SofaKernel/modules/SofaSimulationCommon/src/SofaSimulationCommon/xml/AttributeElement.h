@@ -37,7 +37,7 @@ public:
 
     bool initNode() override;
 
-    virtual const char* getClass() const;
+    virtual const char* getClass() const override;
 
     void setValue(const std::string _value) {value=_value;}
     const std::string& getValue() const {return value;}

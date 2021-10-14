@@ -30,5 +30,5 @@ namespace sofa::topology
 {
     using Triangle = sofa::topology::Element<sofa::geometry::Triangle>;
 
-    inline static const Triangle InvalidTriangle;
+    static constexpr Triangle InvalidTriangle;
 }

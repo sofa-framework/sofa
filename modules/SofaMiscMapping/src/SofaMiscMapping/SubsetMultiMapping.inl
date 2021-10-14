@@ -23,7 +23,7 @@
 
 #include <SofaMiscMapping/SubsetMultiMapping.h>
 
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/core/MappingHelper.h>
 
 namespace sofa::component::mapping
@@ -45,12 +45,12 @@ void SubsetMultiMapping<TIn, TOut>::init()
     for( unsigned i=0; i<baseMatrices.size(); i++ )
         delete baseMatrices[i];
 
-    typedef linearsolver::EigenSparseMatrix<TIn,TOut> Jacobian;
+    typedef linearalgebra::EigenSparseMatrix<TIn,TOut> Jacobian;
     baseMatrices.resize( this->getFrom().size() );
     type::vector<Jacobian*> jacobians( this->getFrom().size() );
     for(unsigned i=0; i<baseMatrices.size(); i++ )
     {
-        baseMatrices[i] = jacobians[i] = new linearsolver::EigenSparseMatrix<TIn,TOut>;
+        baseMatrices[i] = jacobians[i] = new linearalgebra::EigenSparseMatrix<TIn,TOut>;
         jacobians[i]->resize(Nout*indexPairSize,Nin*this->fromModels[i]->getSize() ); // each jacobian has the same number of rows
     }
 

@@ -61,9 +61,13 @@ void FrameSpringForceField<DataTypes>::addSpringForce ( SReal& /*potentialEnergy
 
     Mat Mr01, Mr10, Mr02, Mr20;
     p1[a].writeRotationMatrix ( Mr01 );
-    type::invertMatrix ( Mr10, Mr01 );
+    const bool canInvert1 = type::invertMatrix ( Mr10, Mr01 );
+    assert(canInvert1);
+    SOFA_UNUSED(canInvert1);
     p2[b].writeRotationMatrix ( Mr02 );
-    type::invertMatrix ( Mr20, Mr02 );
+    const bool canInvert2 = type::invertMatrix ( Mr20, Mr02 );
+    assert(canInvert2);
+    SOFA_UNUSED(canInvert2);
 
     Deriv Vp1p2 = v2[b] - v1[a];
 
@@ -98,7 +102,9 @@ void FrameSpringForceField<DataTypes>::addSpringDForce ( VecDeriv& f1, const Vec
 
     Mat Mr01, Mr10;
     springRef[a].writeRotationMatrix ( Mr01 );
-    type::invertMatrix ( Mr10, Mr01 );
+    const bool canInvert = type::invertMatrix ( Mr10, Mr01 );
+    assert(canInvert);
+    SOFA_UNUSED(canInvert);
 
     VecN kst ( spring.stiffnessTrans, spring.stiffnessTrans, spring.stiffnessTrans );
     VecN ksr ( spring.stiffnessRot, spring.stiffnessRot, spring.stiffnessRot );

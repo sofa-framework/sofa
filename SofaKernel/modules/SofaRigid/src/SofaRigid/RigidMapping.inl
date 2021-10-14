@@ -354,9 +354,9 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
 
     if( geometricStiffnessMatrix.compressedMatrix.nonZeros() ) // assembled version
     {
-            const Data<InVecDeriv>& inDx = *mparams->readDx(this->fromModel);
-                  Data<InVecDeriv>& InF  = *parentForceChangeId[this->fromModel.get()].write();
-                  geometricStiffnessMatrix.addMult( InF, inDx, (InReal)mparams->kFactor() );
+        auto InF = sofa::helper::getWriteOnlyAccessor(*parentForceChangeId[this->fromModel.get()].write());
+        auto inDx = sofa::helper::getReadAccessor(*mparams->readDx(this->fromModel));
+        geometricStiffnessMatrix.addMult( InF.wref(), inDx.ref(), (InReal)mparams->kFactor() );
     }
     else
     {
@@ -364,9 +364,10 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
         if( geometricStiffness.getValue() == 2 )
         {
             updateK( mparams, childForceId );
-            const Data<InVecDeriv>& inDx = *mparams->readDx(this->fromModel);
-                  Data<InVecDeriv>& InF  = *parentForceChangeId[this->fromModel.get()].write();
-            geometricStiffnessMatrix.addMult( InF, inDx, (InReal)mparams->kFactor() );
+            auto InF = sofa::helper::getWriteOnlyAccessor(*parentForceChangeId[this->fromModel.get()].write());
+            auto inDx = sofa::helper::getReadAccessor(*mparams->readDx(this->fromModel));
+
+            geometricStiffnessMatrix.addMult( InF.wref(), inDx.ref(), (InReal)mparams->kFactor() );
             geometricStiffnessMatrix.resize(0,0); // forgot about this matrix
         }
         else

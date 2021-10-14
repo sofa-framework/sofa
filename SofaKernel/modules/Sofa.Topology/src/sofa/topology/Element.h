@@ -36,7 +36,12 @@ struct Element : public sofa::type::fixed_array<sofa::Index, GeometryElement::Nu
 {
     constexpr Element() noexcept
     {
-        std::fill(this->begin(), this->end(), sofa::InvalidID);
+        for (auto it = this->begin() ; it != this->end() ; it++)
+        {
+            *it = sofa::InvalidID;
+        }
+        // constexpr std::fill only in c++20
+        // std::fill(this->begin(), this->end(), sofa::InvalidID);
     }
 
     template< typename... ArgsT

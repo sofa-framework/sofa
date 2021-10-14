@@ -166,6 +166,7 @@ Frame Frame::inversed() const
     Mat33 inv;
     const bool invertible = inv.invert( basis_ );
     assert( invertible );
+    SOFA_UNUSED(invertible);
     return Frame( -(inv*origin_) , inv );
 }
 

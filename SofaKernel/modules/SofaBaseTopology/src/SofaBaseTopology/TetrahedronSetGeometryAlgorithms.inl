@@ -419,9 +419,13 @@ typename DataTypes::Coord TetrahedronSetGeometryAlgorithms<DataTypes>::computeTe
     Coord t1 = p[t[1]] - p[t[0]];
     Coord t2 = p[t[2]] - p[t[0]];
     Coord t3 = p[t[3]] - p[t[0]];
-    sofa::type::Vec<3,Real> a(t1[0], t1[1], t1[2]);
-    sofa::type::Vec<3,Real> b(t2[0], t2[1], t2[2]);
-    sofa::type::Vec<3,Real> c(t3[0], t3[1], t3[2]);
+    sofa::type::Vec<3, Real> a, b, c;
+
+    constexpr auto minDimensions = std::min<sofa::Size>(DataTypes::spatial_dimensions, 3u);
+    std::copy_n(t1.begin(), minDimensions, a.begin());
+    std::copy_n(t2.begin(), minDimensions, b.begin());
+    std::copy_n(t3.begin(), minDimensions, c.begin());
+
     sofa::type::Vec<3,Real> d = (cross(b, c) * a.norm2() + cross(c, a) * b.norm2() + cross(a, b) * c.norm2()) / (12* computeTetrahedronVolume(i));
 
     center[0] += d[0];
@@ -615,14 +619,12 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID
 
     const typename DataTypes::Coord& ca=(vect_c[ta[0]]+vect_c[ta[1]]+vect_c[ta[2]]+vect_c[ta[3]])*0.25;
     const typename DataTypes::Coord& cb=(vect_c[tb[0]]+vect_c[tb[1]]+vect_c[tb[2]]+vect_c[tb[3]])*0.25;
-    sofa::type::Vec<3,Real> pa;
-    sofa::type::Vec<3,Real> pb;
-    pa[0] = (Real) (ca[0]);
-    pa[1] = (Real) (ca[1]);
-    pa[2] = (Real) (ca[2]);
-    pb[0] = (Real) (cb[0]);
-    pb[1] = (Real) (cb[1]);
-    pb[2] = (Real) (cb[2]);
+
+    sofa::type::Vec<3,Real> pa, pb;
+
+    constexpr auto minDimensions = std::min<sofa::Size>(DataTypes::spatial_dimensions, 3u);
+    std::copy_n(ca.begin(), minDimensions, pa.begin());
+    std::copy_n(cb.begin(), minDimensions, pb.begin());
 
     Real d = (pa-pb)*(pa-pb);
 
@@ -640,9 +642,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID
     const typename DataTypes::Coord& ca=(vect_c[ta[0]]+vect_c[ta[1]]+vect_c[ta[2]]+vect_c[ta[3]])*0.25;
 
     sofa::type::Vec<3,Real> pa;
-    pa[0] = (Real) (ca[0]);
-    pa[1] = (Real) (ca[1]);
-    pa[2] = (Real) (ca[2]);
+    std::copy_n(ca.begin(), std::min<sofa::Size>(DataTypes::spatial_dimensions, 3u), pa.begin());
 
     TetrahedronID t_test=ind_ta;
     indices.push_back(t_test);
@@ -690,9 +690,8 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID
                                 + vect_c[tc[2]]
                                 + vect_c[tc[3]]) * 0.25;
                         sofa::type::Vec<3,Real> pc;
-                        pc[0] = (Real) (cc[0]);
-                        pc[1] = (Real) (cc[1]);
-                        pc[2] = (Real) (cc[2]);
+
+                        std::copy_n(cc.begin(), std::min<sofa::Size>(DataTypes::spatial_dimensions, 3u), pc.begin());
 
                         Real d_test = (pa-pc)*(pa-pc);
 
@@ -786,9 +785,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
                                 + vect_c[tc[2]]
                                 + vect_c[tc[3]]) * 0.25;
                         sofa::type::Vec<3,Real> pc;
-                        pc[0] = (Real) (cc[0]);
-                        pc[1] = (Real) (cc[1]);
-                        pc[2] = (Real) (cc[2]);
+                        std::copy_n(cc.begin(), std::min<sofa::Size>(DataTypes::spatial_dimensions, 3u), pc.begin());
 
                         Real d_test = (pa-pc)*(pa-pc);
 

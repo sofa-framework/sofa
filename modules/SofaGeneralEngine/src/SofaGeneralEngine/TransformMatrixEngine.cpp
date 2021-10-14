@@ -75,8 +75,11 @@ void InvertTransformMatrixEngine::doUpdate()
     helper::ReadAccessor< Data<Matrix4> > inT = d_inT;
     helper::WriteAccessor< Data<Matrix4> > outT = d_outT;
 
-    /*bool ok = */type::transformInvertMatrix((*outT), (*inT));
-    // TODO print warning if not ok
+    const bool canInvert = type::transformInvertMatrix((*outT), (*inT));
+    if(!canInvert)
+    {
+        msg_warning() << "Could not invert matrix";
+    }
 }
 
 /*

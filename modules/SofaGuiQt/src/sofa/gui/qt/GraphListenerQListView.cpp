@@ -546,19 +546,20 @@ void GraphListenerQListView::onBeginAddSlave(core::objectmodel::BaseObject* mast
             dmsg_error("GraphListenerQListView") << "Unknown master node '"<<master->getName()<<"'";
             return;
         }
-        std::string name = sofa::helper::gettypename(typeid(*slave));
-        std::string::size_type pos = name.find('<');
-        if (pos != std::string::npos)
-            name.erase(pos);
+        std::string className = sofa::helper::gettypename(typeid(*slave));
+        if (const std::string::size_type pos = className.find('<'); pos != std::string::npos)
+            className.erase(pos);
         if (!slave->toConfigurationSetting())
         {
-            item->setText(1, slave->getName().c_str());
+            const auto& name = slave->getName();
+            item->setText(0, name.c_str());
             item->setForeground(1, nameColor);
-            const QString tooltip( ("Name: " + name + "\nClass Name: " + slave->getClassName()).c_str());
+
+            const QString tooltip( ("Name: " + name + "\nClass Name: " + className).c_str());
             item->setToolTip(0, tooltip);
             item->setToolTip(1, tooltip);
         }
-        item->setText(0, name.c_str());
+        item->setText(1, className.c_str());
 
         setMessageIconFrom(item, slave);
 

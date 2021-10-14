@@ -102,7 +102,9 @@ void BarycentricMapperTriangleSetTopology<In,Out>::computeBase(Mat3x3d& base, co
     base[1] = in[element[2]]-in[element[0]];
     base[2] = cross(base[0],base[1]);
     mt.transpose(base);
-    base.invert(mt);
+    const bool canInvert = base.invert(mt);
+    assert(canInvert);
+    SOFA_UNUSED(canInvert);
 }
 
 template <class In, class Out>

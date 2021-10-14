@@ -111,7 +111,12 @@ public:
                 if (b[i][j] != 0) return false;
         return true;
     }
-    static void invert(Bloc& result, const Bloc& b) { result.invert(b); }
+    static void invert(Bloc& result, const Bloc& b)
+    {
+        const bool canInvert = result.invert(b);
+        assert(canInvert);
+        SOFA_UNUSED(canInvert);
+    }
 
     static void split_row_index(IndexType& index, IndexType& modulo) { bloc_index_func<NL, IndexType>::split(index, modulo); }
     static void split_col_index(IndexType& index, IndexType& modulo) { bloc_index_func<NC, IndexType>::split(index, modulo); }

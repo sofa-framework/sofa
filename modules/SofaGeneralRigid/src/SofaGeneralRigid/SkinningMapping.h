@@ -29,7 +29,7 @@
 #include <sofa/type/SVector.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/Mat.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 
 namespace sofa::component::mapping
 {
@@ -71,7 +71,7 @@ public:
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
 
     typedef sofa::type::Mat<OutDeriv::total_size,InDeriv::total_size,Real>     MatBlock;
-    typedef sofa::component::linearsolver::EigenSparseMatrix<In, Out> SparseJMatrixEigen;
+    typedef linearalgebra::EigenSparseMatrix<In, Out> SparseJMatrixEigen;
 
 protected:
     Data<OutVecCoord> f_initPos;  ///< initial child coordinates in the world reference frame

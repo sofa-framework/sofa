@@ -22,13 +22,7 @@
 #define SOFA_CORE_BEHAVIOR_CONSTRAINTCORRECTION_CPP
 #include <sofa/core/behavior/ConstraintCorrection.inl>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 using namespace sofa::defaulttype;
@@ -38,8 +32,4 @@ template class SOFA_CORE_API ConstraintCorrection< Vec2Types >;
 template class SOFA_CORE_API ConstraintCorrection< Rigid3Types >;
 
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::behavior

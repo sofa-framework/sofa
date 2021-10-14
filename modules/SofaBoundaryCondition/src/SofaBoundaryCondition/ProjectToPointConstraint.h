@@ -31,7 +31,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/vector.h>
 #include <SofaBaseTopology/TopologySubsetIndices.h>
-#include <SofaEigen2Solver/EigenBaseSparseMatrix.h>
 #include <set>
 
 namespace sofa::component::projectiveconstraintset
@@ -116,9 +115,6 @@ public:
     bool fixAllDOFs() const { return f_fixAll.getValue(); }
 
 protected :
-
-    /// Matrix used in getJ
-//    linearsolver::EigenBaseSparseMatrix<SReal> jacobian;
 
 };
 
