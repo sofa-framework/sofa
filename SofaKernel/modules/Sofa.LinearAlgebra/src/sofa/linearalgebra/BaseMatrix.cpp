@@ -63,8 +63,7 @@ struct BaseMatrixLinearOpMV_BlockDiagonal
         const Index rowSize = mat->rowSize();
         const Index colSize = mat->colSize();
         BlockData buffer;
-        type::Vec<NC,Real> vtmpj;
-        type::Vec<NL,Real> vtmpi;
+
         if (!add)
             opVresize(result, (transpose ? colSize : rowSize));
         for (std::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = mat->bRowsRange();

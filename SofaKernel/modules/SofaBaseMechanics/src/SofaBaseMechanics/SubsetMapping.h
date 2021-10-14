@@ -24,7 +24,7 @@
 
 #include <SofaBaseTopology/TopologySubsetData.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -121,7 +121,7 @@ public:
     const js_type* getJs() override;
 
 protected:
-    typedef linearsolver::EigenSparseMatrix<In, Out> eigen_type;
+    typedef linearalgebra::EigenSparseMatrix<In, Out> eigen_type;
     eigen_type eigen;
     js_type js;
 public:

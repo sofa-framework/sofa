@@ -41,8 +41,7 @@ namespace sofa::component::projectiveconstraintset
 /** Attach given particles to their initial positions. This is a temporary class, somehow redundant with FixedConstraint, simplified to avoid the memory leak issue. @todo Remove one of the two classes
 */
 template <class DataTypes>
-class SOFA_ATTRIBUTE_DEPRECATED("v21.12", "v22.06", "As an alternative, use FixedConstraint.")
-PointConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
+class SOFA_ATTRIBUTE_DEPRECATED__POINTCONSTRAINT() PointConstraint : public core::behavior::ProjectiveConstraintSet<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(PointConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, DataTypes));

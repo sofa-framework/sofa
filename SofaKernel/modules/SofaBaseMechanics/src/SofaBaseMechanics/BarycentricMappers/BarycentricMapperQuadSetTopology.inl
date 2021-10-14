@@ -67,7 +67,9 @@ BarycentricMapperQuadSetTopology<In,Out>::createPointInQuad ( const typename Out
     m[1] = pB;
     m[2] = cross ( pA, pB );
     mt.transpose ( m );
-    base.invert ( mt );
+    const bool canInvert = base.invert ( mt );
+    assert(canInvert);
+    SOFA_UNUSED(canInvert);
     const typename In::Coord base0 = base[0];
     const typename In::Coord base1 = base[1];
     baryCoords[0] = base0 * pos;
@@ -105,7 +107,9 @@ void BarycentricMapperQuadSetTopology<In,Out>::computeBase(Mat3x3d& base, const 
     base[1] = in[element[3]]-in[element[0]];
     base[2] = cross(base[0],base[1]);
     matrixTranspose.transpose(base);
-    base.invert(matrixTranspose);
+    const bool canInvert = base.invert(matrixTranspose);
+    assert(canInvert);
+    SOFA_UNUSED(canInvert);
 }
 
 template <class In, class Out>

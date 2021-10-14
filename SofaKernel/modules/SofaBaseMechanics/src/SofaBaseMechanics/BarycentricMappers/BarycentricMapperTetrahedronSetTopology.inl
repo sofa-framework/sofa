@@ -75,7 +75,9 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::computeBase(Mat3x3d& base,
     base[1] = in[element[2]]-in[element[0]];
     base[2] = in[element[3]]-in[element[0]];
     matrixTranspose.transpose(base);
-    base.invert(matrixTranspose);
+    const bool canInvert = base.invert(matrixTranspose);
+    assert(canInvert);
+    SOFA_UNUSED(canInvert);
 }
 
 template <class In, class Out>

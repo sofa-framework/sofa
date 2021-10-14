@@ -53,6 +53,8 @@ protected:
     virtual ~DAGNode() override;
 
 public:
+    static const std::string GetCustomClassName(){ return "Node"; }
+
     /// Pure Virtual method from Node
     virtual Node::SPtr createChild(const std::string& nodeName) override;
 
@@ -107,7 +109,7 @@ public:
     sofa::core::topology::BaseMeshTopology* getMeshTopologyLink(SearchDirection dir = SearchUp) const override;
 
 
-    /// Called during initialization to corectly propagate the visual context to the children
+    /// Called during initialization to correctly propagate the visual context to the children
     void initVisualContext() override;
 
     /// Update the whole context values, based on parent and local ContextObjects
@@ -118,7 +120,7 @@ public:
 
     static DAGNode::SPtr create(DAGNode*, sofa::core::objectmodel::BaseObjectDescription* arg)
     {
-        DAGNode::SPtr obj = DAGNode::SPtr();
+        DAGNode::SPtr obj = DAGNode::SPtr(new DAGNode());
         obj->parse(arg);
         return obj;
     }

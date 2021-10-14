@@ -24,7 +24,7 @@
 #include <SofaMiscMapping/config.h>
 
 #include <sofa/core/Mapping.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 
 
 namespace sofa::component::mapping
@@ -57,8 +57,8 @@ public:
     typedef typename In::Coord InCoord;
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
-    typedef linearsolver::EigenSparseMatrix<TIn,TOut>   SparseMatrixEigen;
-    typedef linearsolver::EigenSparseMatrix<TIn,TIn>    SparseKMatrixEigen;
+    typedef linearalgebra::EigenSparseMatrix<TIn,TOut>   SparseMatrixEigen;
+    typedef linearalgebra::EigenSparseMatrix<TIn,TIn>    SparseKMatrixEigen;
     typedef Data<InVecCoord> InDataVecCoord;
     typedef Data<InVecDeriv> InDataVecDeriv;
     typedef Data<InMatrixDeriv> InDataMatrixDeriv;

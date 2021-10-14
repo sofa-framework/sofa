@@ -98,7 +98,7 @@ void filterValuesFromBlocs(TMatrix& self, CompressedRowSparseMatrix<type::Mat<L,
             self.rowIndex.push_back(i+lb);
             self.rowBegin.push_back(vid);
 
-            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+            for (Index xj = rowRange.begin(); xj < (decltype(xj))rowRange.end(); ++xj)
             {
                 Index j = M.colsIndex[xj] * C;
                 const type::Mat<L,C,real>& b = M.colsValue[xj];
@@ -116,7 +116,7 @@ void filterValuesFromBlocs(TMatrix& self, CompressedRowSparseMatrix<type::Mat<L,
                 }
             }
 
-            if ((linearalgebra::BaseMatrix::Index)self.rowBegin.back() == vid)   // row was empty
+            if ((decltype(vid))self.rowBegin.back() == vid)   // row was empty
             {
                 self.rowIndex.pop_back();
                 self.rowBegin.pop_back();

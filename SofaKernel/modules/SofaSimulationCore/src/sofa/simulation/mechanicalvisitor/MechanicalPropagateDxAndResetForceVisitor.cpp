@@ -42,6 +42,7 @@ Visitor::Result MechanicalPropagateDxAndResetForceVisitor::fwdMechanicalMapping(
 
 void MechanicalPropagateDxAndResetForceVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
 {
+    SOFA_UNUSED(mm);
 }
 
 

@@ -25,7 +25,7 @@
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/MultiMapping.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
@@ -70,8 +70,8 @@ public:
     typedef typename In::Coord InCoord;
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
-    typedef linearsolver::EigenSparseMatrix<TIn,TOut>   SparseMatrixEigen;
-    typedef linearsolver::EigenSparseMatrix<TIn,TIn>    SparseKMatrixEigen;
+    typedef linearalgebra::EigenSparseMatrix<TIn,TOut>   SparseMatrixEigen;
+    typedef linearalgebra::EigenSparseMatrix<TIn,TIn>    SparseKMatrixEigen;
     typedef Data<InVecCoord> InDataVecCoord;
     typedef Data<InVecDeriv> InDataVecDeriv;
     typedef Data<InMatrixDeriv> InDataMatrixDeriv;
@@ -172,8 +172,8 @@ public:
     typedef Data<OutVecCoord> OutDataVecCoord;
     typedef Data<OutVecDeriv> OutDataVecDeriv;
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
-    typedef linearsolver::EigenSparseMatrix<TIn,TOut>   SparseMatrixEigen;
-    typedef linearsolver::EigenSparseMatrix<TIn,TIn>    SparseKMatrixEigen;
+    typedef linearalgebra::EigenSparseMatrix<TIn,TOut>   SparseMatrixEigen;
+    typedef linearalgebra::EigenSparseMatrix<TIn,TIn>    SparseKMatrixEigen;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
     typedef topology::EdgeSetTopologyContainer::SeqEdges SeqEdges;
     typedef typename type::vector<const InVecCoord*> vecConstInVecCoord;

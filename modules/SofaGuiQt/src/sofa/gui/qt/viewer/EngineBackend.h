@@ -31,7 +31,8 @@ namespace sofa::gui::qt::viewer
 class EngineBackend
 {
 public:
-    EngineBackend() {}
+    EngineBackend() = default;
+    virtual ~EngineBackend() = default;
 
     virtual void setPickingMethod(sofa::gui::PickHandler* pick, sofa::component::configurationsetting::ViewerSetting* viewerConf) =0;
     virtual void setPrefix(const std::string& prefix) =0;

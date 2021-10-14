@@ -394,7 +394,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(const core::Me
         int u,v;
         Real val1,val2,vali,valj,valk,JJ,dpij,h,lengthSquare[3],totalLength;
         Coord dpj,dpk,dpi,dp;
-        Mat3 m1,m2;
+        Mat3 m1;
 
         updateMatrix=false;
         for(int l=0; l<nbTriangles; l++ )
