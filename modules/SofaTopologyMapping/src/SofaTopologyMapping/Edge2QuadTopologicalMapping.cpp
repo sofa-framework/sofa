@@ -234,17 +234,17 @@ void Edge2QuadTopologicalMapping::init()
             {
                 for (const auto i : d_edgeList.getValue())
                 {
-                    const unsigned int p0 = edgeArray[i][0];
-                    const unsigned int p1 = edgeArray[i][1];
+                    const Index p0 = edgeArray[i][0];
+                    const Index p1 = edgeArray[i][1];
 
                     sofa::type::vector<Index> out_info;
 
                     for(unsigned int j=0; j<N; ++j)
                     {
-                        const unsigned int q0 = p0*N+j;
-                        const unsigned int q1 = p1*N+j;
-                        const unsigned int q2 = p1*N+((j+1)%N);
-                        const unsigned int q3 = p0*N+((j+1)%N);
+                        const Index q0 = p0*N+j;
+                        const Index q1 = p1*N+j;
+                        const Index q2 = p1*N+((j+1)%N);
+                        const Index q3 = p0*N+((j+1)%N);
 
                         if(d_flipNormals.getValue())
                             to_tstm->addQuadProcess(Quad(q0, q3, q2, q1));
