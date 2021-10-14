@@ -3,10 +3,6 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaBaseLinearSolver_test)
 
 set(SOURCE_FILES
-    SparseMatrixProduct_test.cpp
-    SparseMatrixTest.h
-    SparseMatrixTest.cpp
-    SparseMatrixStorageOrder_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
