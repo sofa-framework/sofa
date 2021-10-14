@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/config.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
-#include <SofaBaseTopology/TopologyDataHandler.h>
+#include <sofa/core/config.h>
+#include <sofa/core/topology/TopologySubsetData.h>
+#include <sofa/core/topology/TopologyDataHandler.h>
 
 namespace sofa::component::topology
 {
@@ -34,14 +34,12 @@ namespace sofa::component::topology
 * For example a TopologySubsetIndices of size N can be used in a FixConstraint to store the N fixed points. If the points are removed 
 * this subset will follow the changes and remove the constraints.
 */
-class SOFA_SOFABASETOPOLOGY_API TopologySubsetIndices : public sofa::component::topology::TopologySubsetData<core::topology::BaseMeshTopology::Point, type::vector<Index> >
+class SOFA_CORE_API TopologySubsetIndices : public sofa::component::topology::TopologySubsetData<core::topology::BaseMeshTopology::Point, type::vector<Index> >
 {
 public:
     typedef type::vector<Index> container_type;
     typedef Index value_type;
     typedef sofa::component::topology::TopologySubsetData < core::topology::BaseMeshTopology::Point, container_type> Inherit;
-
-    //TopologySubsetIndices();
 
     /// Default Constructor to init Data
     explicit TopologySubsetIndices(const typename sofa::core::topology::BaseTopologyData< type::vector<Index> >::InitData& data);
@@ -63,8 +61,8 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_TOPOLOGY_SUBSETINDICES_CPP)
-extern template class SOFA_SOFABASETOPOLOGY_API sofa::component::topology::TopologyDataHandler < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
-extern template class SOFA_SOFABASETOPOLOGY_API sofa::component::topology::TopologyData < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
+extern template class SOFA_CORE_API sofa::component::topology::TopologyDataHandler < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
+extern template class SOFA_CORE_API sofa::component::topology::TopologyData < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
 #endif
 
 } //namespace sofa::component::topology

@@ -21,11 +21,11 @@
 ******************************************************************************/
 #define DEFINITION_TOPOLOGYSUBSETDATA
 
-#include <SofaBaseTopology/TopologySubsetData.inl>
+#include <sofa/core/topology/TopologySubsetData.inl>
 
 namespace sofa::component::topology
 {
 
-template class SOFA_SOFABASETOPOLOGY_API TopologySubsetData<Index, sofa::type::vector<Index>>;
+template class SOFA_CORE_API TopologySubsetData<Index, sofa::type::vector<Index>>;
 
 } // namespace sofa::component::topology

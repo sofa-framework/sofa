@@ -21,9 +21,9 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_SUBSETINDICES_CPP
 
-#include <SofaBaseTopology/TopologySubsetIndices.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
-#include <SofaBaseTopology/TopologyDataHandler.inl>
+#include <sofa/core/topology/TopologySubsetIndices.h>
+#include <sofa/core/topology/TopologySubsetData.inl>
+#include <sofa/core/topology/TopologyDataHandler.inl>
 
 namespace sofa::component::topology
 {
@@ -84,8 +84,8 @@ void TopologySubsetIndices::updateLastIndex(Index posLastIndex, Index newGlobalI
     this->endEdit();
 }
 
-template class SOFA_SOFABASETOPOLOGY_API sofa::component::topology::TopologyDataHandler < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
-template class SOFA_SOFABASETOPOLOGY_API sofa::component::topology::TopologyData < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
-//template class SOFA_SOFABASETOPOLOGY_API sofa::core::topology::BaseTopologyData < type::vector<Index> >;
+template class SOFA_CORE_API sofa::component::topology::TopologyDataHandler < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
+template class SOFA_CORE_API sofa::component::topology::TopologyData < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
+//template class SOFA_CORE_API sofa::core::topology::BaseTopologyData < type::vector<Index> >;
 
 } //namespace sofa::component::topology

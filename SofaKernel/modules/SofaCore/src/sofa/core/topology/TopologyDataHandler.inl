@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/TopologyDataHandler.h>
+#include <sofa/core/topology/TopologyDataHandler.h>
 
 namespace sofa::component::topology
 {

@@ -21,8 +21,8 @@
 ******************************************************************************/
 #pragma once
 // TODO: Backward compability header, to be removed for v21.12
-#include <SofaBaseTopology/config.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <sofa/core/config.h>
+#include <sofa/core/topology/TopologySubsetData.h>
 
 namespace sofa::component::topology
 {

@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/TopologySubsetData.h>
-#include <SofaBaseTopology/TopologyData.inl>
-#include <SofaBaseTopology/TopologyDataHandler.inl>
+#include <sofa/core/topology/TopologySubsetData.h>
+#include <sofa/core/topology/TopologyData.inl>
+#include <sofa/core/topology/TopologyDataHandler.inl>
 
 namespace sofa::component::topology
 {
