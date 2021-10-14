@@ -81,7 +81,7 @@ void TriangleFEMForceField<DataTypes>::init()
         return;
     }
 
-    if (m_topology->getTriangles().empty() && m_topology->getNbQuads() <= 0)
+    if (m_topology->getTriangles().empty() && m_topology->getQuads().empty())
     {
         msg_warning() << "No triangles found in linked Topology.";
         _indexedElements = &(m_topology->getTriangles());
