@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1280</width>
+    <height>900</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,7 +20,7 @@
   <property name="minimumSize">
    <size>
     <width>210</width>
-    <height>481</height>
+    <height>700</height>
    </size>
   </property>
   <property name="acceptDrops">
@@ -71,8 +71,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
-     <height>20</height>
+     <width>1280</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -130,8 +130,8 @@
    </property>
    <property name="minimumSize">
     <size>
-     <width>200</width>
-     <height>551</height>
+     <width>400</width>
+     <height>600</height>
     </size>
    </property>
    <attribute name="dockWidgetArea">
@@ -146,7 +146,7 @@
     </property>
     <property name="minimumSize">
      <size>
-      <width>200</width>
+      <width>400</width>
       <height>0</height>
      </size>
     </property>
@@ -338,7 +338,7 @@
           </property>
           <property name="minimumSize">
            <size>
-            <width>200</width>
+            <width>400</width>
             <height>0</height>
            </size>
           </property>
