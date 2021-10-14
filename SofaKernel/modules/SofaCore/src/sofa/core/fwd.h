@@ -123,14 +123,6 @@ SOFA_CORE_API std::istream& operator>> ( std::istream& in, sofa::core::topology:
 SOFA_CORE_API std::istream& operator>> ( std::istream& in, const sofa::core::topology::TopologyChange*& );
 }
 
-
-namespace sofa::component::topology
-{
-class TetrahedronSetTopologyContainer;
-std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t);
-std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t);
-}
-
 namespace sofa::core::visual
 {
 class VisualLoop;

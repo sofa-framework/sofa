@@ -25,6 +25,9 @@
 
 // SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/core/topology/TopologySubsetIndices.h")
 
+#include <SofaBaseTopology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologyDataHandler.h>
+
 namespace sofa::component::topology
 {
     using TopologySubsetIndices = sofa::core::topology::TopologySubsetIndices;
