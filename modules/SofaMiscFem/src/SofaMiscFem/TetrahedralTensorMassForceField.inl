@@ -401,7 +401,6 @@ void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::Mechanical
 
     edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
 
-    Deriv force;
     Coord dp0,dp1,dp;
 
     for(int i=0; i<nbEdges; i++ )
@@ -440,7 +439,6 @@ void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::Mechanica
 
     edgeRestInfoVector& edgeInf = *(edgeInfo.beginEdit());
 
-    Deriv force;
     Coord dp0,dp1,dp;
 
     for(int i=0; i<nbEdges; i++ )

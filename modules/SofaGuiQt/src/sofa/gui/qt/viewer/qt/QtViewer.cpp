@@ -1541,7 +1541,7 @@ void QtViewer::moveRayPickInteractor(int eventX, int eventY)
 // -------------------------------------------------------------------
 void QtViewer::resetView()
 {
-    Vec3d position;
+
     Quat<SReal> orientation;
     bool fileRead = false;
 

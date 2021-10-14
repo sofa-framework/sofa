@@ -187,7 +187,7 @@ void ProjectToLineConstraint<DataTypes>::projectResponse(const core::MechanicalP
     SOFA_UNUSED(mparams);
     
     helper::WriteAccessor<DataVecDeriv> res(resData);
-    if( (jacobian.colSize() / DataTypes::deriv_total_size) != res.size())
+    if( (jacobian.colSize() / DataTypes::deriv_total_size) != (decltype(jacobian.colSize()))res.size())
     {
         updateJacobian();
     }

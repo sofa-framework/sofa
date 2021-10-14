@@ -32,7 +32,6 @@
 
 #include <sofa/type/Mat.h>
 #include <SofaBaseTopology/TopologyData.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 #define LOCAL_OPTIM
 

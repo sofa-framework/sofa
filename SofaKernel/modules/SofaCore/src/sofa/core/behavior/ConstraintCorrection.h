@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_CONSTRAINTCORRECTION_H
-#define SOFA_CORE_BEHAVIOR_CONSTRAINTCORRECTION_H
+#pragma once
 
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/objectmodel/Link.h>
 
 
-
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /**
@@ -59,15 +52,15 @@ public:
 
 protected:
     /// Default Constructor
-    ConstraintCorrection(MechanicalState< DataTypes > *ms = nullptr)
-        : mstate(ms)
-    {
-    };
+    explicit ConstraintCorrection(MechanicalState< DataTypes > *ms = nullptr)
+        : Inherit1()
+        , l_constraintsolvers(initLink("constraintSolvers", "Constraint solvers using this constraint correction"))
+        , mstate(ms)
+    {}
 
     /// Default Destructor
-    ~ConstraintCorrection() override
-    {
-    };
+    ~ConstraintCorrection() override = default;
+
 public:
     void init() override;
 
@@ -75,9 +68,9 @@ public:
 
     void addConstraintSolver(core::behavior::ConstraintSolver *s) override;
     void removeConstraintSolver(core::behavior::ConstraintSolver *s) override;
-private:
-    std::list<core::behavior::ConstraintSolver*> constraintsolvers;
 
+private:
+    MultiLink< ConstraintCorrection<TDataTypes>, core::behavior::ConstraintSolver, BaseLink::FLAG_NONE > l_constraintsolvers;
 
 public:
  
@@ -189,10 +182,4 @@ extern template class SOFA_CORE_API ConstraintCorrection< sofa::defaulttype::Rig
 
 #endif
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif // SOFA_CORE_BEHAVIOR_CONSTRAINTCORRECTION_H
+} // namespace sofa::core::behavior

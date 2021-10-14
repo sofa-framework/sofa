@@ -24,7 +24,7 @@
 
 #include <SceneCreator/config.h>
 #include <Eigen/Core>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <Eigen/SparseCore>
 #include <sofa/core/VecId.h>
 namespace sofa
 {
