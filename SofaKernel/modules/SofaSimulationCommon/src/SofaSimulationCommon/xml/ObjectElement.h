@@ -37,7 +37,7 @@ public:
 
     bool init() override;
 
-    virtual const char* getClass() const;
+    virtual const char* getClass() const override;
 };
 
 } // namespace sofa::simulation::xml

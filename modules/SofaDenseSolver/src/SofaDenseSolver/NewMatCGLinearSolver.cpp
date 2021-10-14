@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #include <SofaBaseLinearSolver/CGLinearSolver.inl>
 #include <SofaDenseSolver/NewMatMatrix.h>
 #include <sofa/core/ObjectFactory.h>
@@ -35,4 +34,3 @@ int NewMatCGLinearSolverClass = core::RegisterObject("NewMat linear system solve
         ;
 
 } // namespace sofa::component::linearsolver
-

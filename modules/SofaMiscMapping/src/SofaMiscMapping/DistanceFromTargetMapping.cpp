@@ -41,6 +41,4 @@ template class SOFA_SOFAMISCMAPPING_API DistanceFromTargetMapping< Vec3Types, Ve
 template class SOFA_SOFAMISCMAPPING_API DistanceFromTargetMapping< Vec1Types, Vec1Types >;
 template class SOFA_SOFAMISCMAPPING_API DistanceFromTargetMapping< Rigid3Types, Vec1Types >;
 
-
 } // namespace sofa::component::mapping
-

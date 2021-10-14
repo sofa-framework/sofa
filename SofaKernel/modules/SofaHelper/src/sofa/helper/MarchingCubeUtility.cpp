@@ -582,7 +582,7 @@ void MarchingCubeUtility::propagateFrom ( const sofa::type::vector<Vec3i>& coord
 
     Vec3i dataGridStep ( dataResolution[0]/gridSize[0],dataResolution[1]/gridSize[1],dataResolution[2]/gridSize[2] );
 
-    Vec3i cubeCoord, nextCube;
+    Vec3i cubeCoord;
     stack<Vec3i> cubesToGenerate; // Stack of cubes to generate.
     for( sofa::type::vector<Vec3i>::const_iterator it = coord.begin(); it != coord.end(); ++it)
     {

@@ -50,35 +50,12 @@
 namespace sofa::component::forcefield
 {
 
-template< class DataTypes>
-void HexahedralFEMForceField<DataTypes>::HFFHexahedronHandler::applyCreateFunction(Index hexahedronIndex,
-        HexahedronInformation &,
-        const core::topology::BaseMeshTopology::Hexahedron &,
-        const sofa::type::vector<Index> &,
-        const sofa::type::vector<double> &)
-{
-    if (ff)
-    {
-        switch(ff->method)
-        {
-        case LARGE :
-            ff->initLarge(hexahedronIndex);
-
-            break;
-        case POLAR :
-            ff->initPolar(hexahedronIndex);
-            break;
-        }
-    }
-}
-
 template <class DataTypes>
 HexahedralFEMForceField<DataTypes>::HexahedralFEMForceField()
     : f_method(initData(&f_method,std::string("large"),"method","\"large\" or \"polar\" displacements"))
     , f_poissonRatio(initData(&f_poissonRatio,(Real)0.45f,"poissonRatio",""))
     , f_youngModulus(initData(&f_youngModulus,(Real)5000,"youngModulus",""))
     , hexahedronInfo(initData(&hexahedronInfo, "hexahedronInfo", "Internal hexahedron data"))
-    , hexahedronHandler(nullptr)
 {
 
     _coef[0][0]= -1;		_coef[0][1]= -1;		_coef[0][2]= -1;
@@ -90,8 +67,6 @@ HexahedralFEMForceField<DataTypes>::HexahedralFEMForceField()
     _coef[6][0]=  1;		_coef[6][1]=  1;		_coef[6][2]=  1;
     _coef[7][0]= -1;		_coef[7][1]=  1;		_coef[7][2]=  1;
 
-    hexahedronHandler = new HFFHexahedronHandler(this,&hexahedronInfo);
-
     f_poissonRatio.setRequired(true);
     f_youngModulus.setRequired(true);
 }
@@ -99,7 +74,7 @@ HexahedralFEMForceField<DataTypes>::HexahedralFEMForceField()
 template <class DataTypes>
 HexahedralFEMForceField<DataTypes>::~HexahedralFEMForceField()
 {
-    if(hexahedronHandler) delete hexahedronHandler;
+
 }
 
 
@@ -137,14 +112,38 @@ void HexahedralFEMForceField<DataTypes>::reinit()
 
     for (size_t i=0; i<_topology->getNbHexahedra(); ++i)
     {
-        hexahedronHandler->applyCreateFunction(i,hexahedronInf[i],
-                _topology->getHexahedron(i),  (const std::vector< Index > )0,
-                (const std::vector< double >)0);
+        createHexahedronInformation(i,hexahedronInf[i],
+            _topology->getHexahedron(i),  (const std::vector< Index > )0,
+            (const std::vector< double >)0);
     }
-    hexahedronInfo.createTopologyHandler(_topology,hexahedronHandler);
+    hexahedronInfo.createTopologyHandler(_topology);
+    hexahedronInfo.setCreationCallback([this](Index hexahedronIndex, HexahedronInformation& hexaInfo,
+        const core::topology::BaseMeshTopology::Hexahedron& hexa,
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs)
+    {
+        createHexahedronInformation(hexahedronIndex, hexaInfo, hexa, ancestors, coefs);
+    });
     hexahedronInfo.endEdit();
 }
 
+template< class DataTypes>
+void HexahedralFEMForceField<DataTypes>::createHexahedronInformation(Index hexahedronIndex, HexahedronInformation&,
+    const core::topology::BaseMeshTopology::Hexahedron&,
+    const sofa::type::vector<Index>&,
+    const sofa::type::vector<double>&)
+{
+    switch (method)
+    {
+    case LARGE:
+        initLarge(hexahedronIndex);
+
+        break;
+    case POLAR:
+        initPolar(hexahedronIndex);
+        break;
+    }
+}
 
 template<class DataTypes>
 void HexahedralFEMForceField<DataTypes>::addForce (const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& p, const DataVecDeriv& /*v*/)

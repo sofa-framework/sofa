@@ -67,7 +67,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
             }
 
             size_t pointIndex = pointMappedFromPoint.size();
-            Vector3 pA, pB, p;
+            Vector3 p;
 
             for (std::size_t i=0; i<fromModel->getNbHexahedra(); ++i)
             {

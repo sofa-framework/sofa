@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaBaseMechanics/config.h>
 
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/core/Mapping.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -111,7 +111,7 @@ public:
 
 protected:
 
-    typedef linearsolver::EigenSparseMatrix<TIn, TOut> eigen_type;
+    typedef linearalgebra::EigenSparseMatrix<TIn, TOut> eigen_type;
     eigen_type J;
 
     typedef type::vector< defaulttype::BaseMatrix* > js_type;

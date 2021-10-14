@@ -59,19 +59,19 @@ public:
     typedef core::topology::TopologyElementInfo<TopologyElementType> ElementInfo;
     typedef core::topology::TopologyChangeElementInfo<TopologyElementType> ChangeElementInfo;
     typedef typename ChangeElementInfo::AncestorElem    AncestorElem;
-
+    typedef typename sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>  TopologyDataElementHandler;
+    typedef typename TopologyDataElementHandler::TopologyChangeCallback TopologyChangeCallback;
 
     /// Constructor
     TopologyData(const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data);
 
 
-    /** Public functions to handle topological engine creation */
-    /// To create topological engine link to this Data. Pointer to current topology is needed.
+    /// Function to create topology handler to manage this Data. @param Pointer to dynamic topology is needed.
     virtual void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology);
-
-    /** Public functions to handle topological engine creation */
-    /// To create topological engine link to this Data. Pointer to current topology is needed.
-    virtual void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* topoEngine);
+    
+    /// Function to register an existing topology handler to manage this Data. @param Pointer to dynamic topology is needed.
+    /// @param Pointer to dynamic topology is needed.
+    virtual void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* topoHandler);
 
     /// Link Data to topology arrays
     void linkToPointDataArray();
@@ -126,6 +126,9 @@ public:
     */
     void setCreationCallback(std::function<void(Index, value_type&, const TopologyElementType&, const sofa::type::vector< Index >&, const sofa::type::vector< double >&)> func) { p_onCreationCallback = func; }
 
+    /// Method to add a Callback method to be registered in the TopologyHandler. This callback will be used when TopologyChangeType @sa type is fired.
+    void addTopologyEventCallBack(core::topology::TopologyChangeType type, TopologyChangeCallback callback);
+
     std::function<void(Index, value_type&)> p_onDestructionCallback;
     std::function<void(Index, value_type&, const TopologyElementType&, const sofa::type::vector< Index >&, const sofa::type::vector< double >&)> p_onCreationCallback;
 
@@ -143,7 +146,7 @@ public:
     void registerTopologicalData() = delete;
     
 protected:
-    sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* m_topologyHandler;
+    TopologyDataElementHandler* m_topologyHandler;
 
     bool m_isTopologyDynamic;
 

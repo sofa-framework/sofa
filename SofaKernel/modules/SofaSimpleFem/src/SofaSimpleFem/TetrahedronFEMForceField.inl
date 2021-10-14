@@ -1157,7 +1157,9 @@ void TetrahedronFEMForceField<DataTypes>::initSVD(Index i, Index& a, Index&b, In
     A[0] = initialPoints[b]-initialPoints[a];
     A[1] = initialPoints[c]-initialPoints[a];
     A[2] = initialPoints[d]-initialPoints[a];
-    _initialTransformation[i].invert( A );
+    const bool canInvert = _initialTransformation[i].invert( A );
+    assert(canInvert);
+    SOFA_UNUSED(canInvert);
 
     Transformation R_0_1;
     helper::Decompose<Real>::polarDecomposition( A, R_0_1 );
@@ -1612,7 +1614,9 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
                     matVert[k][l] = X0[ix][l-1];
             }
 
-            type::invertMatrix(elemShapeFun[i], matVert);
+            const bool canInvert = type::invertMatrix(elemShapeFun[i], matVert);
+            assert(canInvert);
+            SOFA_UNUSED(canInvert);
         }
         computeVonMisesStress();
     }
@@ -1971,7 +1975,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
     Transformation Rot;
     Rot.identity(); //set the transformation to identity
 
-    constexpr unsigned S = DataTypes::deriv_total_size; // size of node blocks
+    constexpr auto S = DataTypes::deriv_total_size; // size of node blocks
     constexpr auto N = Element::size();
 
     for(auto it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it,++IT)
@@ -1982,13 +1986,13 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
             computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],rotations[IT]);
 
         type::Mat<S, S, double> tmpBlock[4][4];
-        for (int n1=0; n1 < N; n1++)
+        for (sofa::Index n1=0; n1 < N; n1++)
         {
-            for(int i=0; i < S; i++)
+            for(sofa::Index i=0; i < S; i++)
             {
-                for (int n2=0; n2 < N; n2++)
+                for (sofa::Index n2=0; n2 < N; n2++)
                 {
-                    for (int j=0; j < S; j++)
+                    for (sofa::Index j=0; j < S; j++)
                     {
                         tmpBlock[n1][n2][i][j] = - tmp[n1*S+i][n2*S+j]*k;
                     }
@@ -1996,9 +2000,9 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
             }
         }
 
-        for (int n1=0; n1 < N; n1++)
+        for (sofa::Index n1=0; n1 < N; n1++)
         {
-            for (int n2=0; n2 < N; n2++)
+            for (sofa::Index n2=0; n2 < N; n2++)
             {
                 mat->add(offset + (*it)[n1] * S, offset + (*it)[n2] * S, tmpBlock[n1][n2]);
             }

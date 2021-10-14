@@ -32,7 +32,7 @@ using sofa::testing::NumericTest;
 #include <SceneCreator/SceneCreator.h>
 
 #include <SofaBaseLinearSolver/FullVector.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
@@ -103,7 +103,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
     typedef Data<OutVecDeriv> OutDataVecDeriv;
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
 
-    typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
+    typedef linearalgebra::EigenSparseMatrix<In,Out> EigenSparseMatrix;
 
     core::Mapping<In,Out>* mapping; ///< the mapping to be tested
     typename InDOFs::SPtr  inDofs;  ///< mapping input
@@ -221,7 +221,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
 
         const Real errorThreshold = this->epsilon()*errorMax;
 
-        typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
+        typedef linearalgebra::EigenSparseMatrix<In,Out> EigenSparseMatrix;
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
         mparams.setSymmetricMatrix(false);
@@ -425,7 +425,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
 
             if( bk != nullptr ){
 
-                typedef component::linearsolver::EigenSparseMatrix<In,In> EigenSparseKMatrix;
+                typedef linearalgebra::EigenSparseMatrix<In,In> EigenSparseKMatrix;
                 const EigenSparseKMatrix* K = dynamic_cast<const EigenSparseKMatrix*>(bk);
                 if( K == nullptr ){
                     succeed = false;

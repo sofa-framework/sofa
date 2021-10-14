@@ -115,7 +115,7 @@ bool LMConstraintDirectSolver::solveSystem(const core::ConstraintParams* cParams
         //------------------------------------------------------------------
         const SparseMatrixEigen& matrix= it->second;
         //Init the manipulator with the full matrix
-        linearsolver::LMatrixManipulator manip;
+        linearalgebra::LMatrixManipulator manip;
         manip.init(matrix);
 
 
@@ -230,9 +230,9 @@ void LMConstraintDirectSolver::analyseConstraints(const type::vector< sofa::core
                 case STICKING:
                 {
                     const unsigned int i=rowsL.size();
-                    rowsL.push_back(linearsolver::LLineManipulator().addCombination(idxEquation  ));
-                    rowsL.push_back(linearsolver::LLineManipulator().addCombination(idxEquation+1));
-                    rowsL.push_back(linearsolver::LLineManipulator().addCombination(idxEquation+2));
+                    rowsL.push_back(linearalgebra::LLineManipulator().addCombination(idxEquation  ));
+                    rowsL.push_back(linearalgebra::LLineManipulator().addCombination(idxEquation+1));
+                    rowsL.push_back(linearalgebra::LLineManipulator().addCombination(idxEquation+2));
 
                     //3 equations
                     rowsLT.push_back(rowsL[i  ]);
@@ -246,13 +246,13 @@ void LMConstraintDirectSolver::analyseConstraints(const type::vector< sofa::core
                 }
                 case SLIDING:
                 {
-                    rowsL.push_back(linearsolver::LLineManipulator().addCombination(idxEquation  ));
-                    rowsL.push_back(linearsolver::LLineManipulator().addCombination(idxEquation+1));
-                    rowsL.push_back(linearsolver::LLineManipulator().addCombination(idxEquation+2));
+                    rowsL.push_back(linearalgebra::LLineManipulator().addCombination(idxEquation  ));
+                    rowsL.push_back(linearalgebra::LLineManipulator().addCombination(idxEquation+1));
+                    rowsL.push_back(linearalgebra::LLineManipulator().addCombination(idxEquation+2));
 
 
                     //1 equation with the response force along the Coulomb friction cone
-                    rowsLT.push_back(linearsolver::LLineManipulator()
+                    rowsLT.push_back(linearalgebra::LLineManipulator()
                             .addCombination(idxEquation  ,contact.coeff[0])
                             .addCombination(idxEquation+1,contact.coeff[1])
                             .addCombination(idxEquation+2,contact.coeff[2]));
@@ -275,7 +275,7 @@ void LMConstraintDirectSolver::analyseConstraints(const type::vector< sofa::core
                 std::pair< sofa::core::behavior::ConstraintGroup::EquationConstIterator,sofa::core::behavior::ConstraintGroup::EquationConstIterator> range=group->data();
                 for ( sofa::core::behavior::ConstraintGroup::EquationConstIterator it=range.first; it!=range.second; ++it)
                 {
-                    rowsL.push_back(linearsolver::LLineManipulator().addCombination(it->idx));
+                    rowsL.push_back(linearalgebra::LLineManipulator().addCombination(it->idx));
                     rowsLT.push_back(rowsL.back());
                     rightHandElements.push_back(it->idx);
                 }

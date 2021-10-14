@@ -448,7 +448,7 @@ void GenerateSphere<DataTypes>::doUpdate()
 		std::map<Edge,size_t>::iterator item;
 		SeqTriangles::iterator itt;
 		Real phi,ctheta;
-		Coord posTmp,posTmp2,normal;
+        Coord posTmp,normal;
 		edgeArray.clear();
 
 		for (itt=trians.begin();itt!=trians.end();++itt) {
@@ -586,7 +586,7 @@ void GenerateSphere<DataTypes>::doUpdate()
 		std::map<Edge,size_t>::iterator item;
 		SeqTetrahedra::iterator itt;
 		Real phi,ctheta;
-		Coord posTmp,posTmp2,normal;
+        Coord posTmp,normal;
 		edgeArray.clear();
 		for (itt=tetras.begin();itt!=tetras.end();++itt) {
 		}

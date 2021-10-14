@@ -27,7 +27,7 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/type/vector.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 
 
 namespace sofa::core::behavior
@@ -75,7 +75,7 @@ public:
     Data< sofa::type::RGBAColor > d_springColor; ///< spring color. (default=[0.0,1.0,0.0,1.0])
 
     SingleLink<RestShapeSpringsForceField<DataTypes>, sofa::core::behavior::MechanicalState< DataTypes >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_restMState;
-    linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
+    linearalgebra::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
 
 protected:
     RestShapeSpringsForceField();

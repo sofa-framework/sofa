@@ -19,19 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaDefaultType.Testing/BaseMatrix_test.h>
+#include <Sofa.LinearAlgebra.Testing/BaseMatrix_test.h>
 
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/FullMatrix.h>
 
 namespace sofa
 {
+using namespace sofa::linearalgebra::testing;
 
 /// definition of a EigenSparseMatrix type used in tests
 template<sofa::Index TNbRows, sofa::Index TNbCols, class TReal >
-using TestEigenMatrix = component::linearsolver::EigenSparseMatrix<
+using TestEigenMatrix = linearalgebra::EigenSparseMatrix<
     defaulttype::StdVectorTypes< sofa::type::Vec<TNbCols, TReal>, sofa::type::Vec<TNbCols, TReal> >,
     defaulttype::StdVectorTypes< sofa::type::Vec<TNbRows, TReal>, sofa::type::Vec<TNbRows, TReal> >
 >;
@@ -39,10 +40,10 @@ using TestEigenMatrix = component::linearsolver::EigenSparseMatrix<
 /// list of types tested in TestBaseMatrix
 template<sofa::Index TNbRows, sofa::Index TNbCols, class TReal >
 using TestBaseMatrixTypes = ::testing::Types<
-    TestBaseMatrixTraits< component::linearsolver::FullMatrix<TReal>, TNbRows, TNbCols, TReal>,
-    TestBaseMatrixTraits< component::linearsolver::CompressedRowSparseMatrix<TReal>, TNbRows, TNbCols, TReal >,
-    TestBaseMatrixTraits< component::linearsolver::CompressedRowSparseMatrix<type::Mat<3, 3, TReal> >, TNbRows, TNbCols, TReal >,
-    TestBaseMatrixTraits< component::linearsolver::SparseMatrix<TReal>, TNbRows, TNbCols, TReal >,
+    TestBaseMatrixTraits< linearalgebra::FullMatrix<TReal>, TNbRows, TNbCols, TReal>,
+    TestBaseMatrixTraits< linearalgebra::CompressedRowSparseMatrix<TReal>, TNbRows, TNbCols, TReal >,
+    TestBaseMatrixTraits< linearalgebra::CompressedRowSparseMatrix<type::Mat<3, 3, TReal> >, TNbRows, TNbCols, TReal >,
+    TestBaseMatrixTraits< linearalgebra::SparseMatrix<TReal>, TNbRows, TNbCols, TReal >,
     TestBaseMatrixTraits< TestEigenMatrix<TNbRows, TNbCols, TReal>, TNbRows, TNbCols, TReal >
 >;
 

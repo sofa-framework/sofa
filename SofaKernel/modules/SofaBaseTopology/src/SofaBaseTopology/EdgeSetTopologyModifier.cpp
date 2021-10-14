@@ -798,7 +798,9 @@ void EdgeSetTopologyModifier::resortCuthillMckee(sofa::type::vector<int>& invers
     }
 
     for (Size c=0; c!=inv_perm.size(); ++c)
+    {
         perm[index_map[inv_perm[c]]] = c;
+    }
 
 	msg_info() << "  bandwidth: " << bandwidth(G, make_iterator_property_map(&perm[0], index_map, perm[0]));
 }
