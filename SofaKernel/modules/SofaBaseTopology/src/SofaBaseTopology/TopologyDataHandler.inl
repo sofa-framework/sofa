@@ -58,18 +58,10 @@ TopologyDataHandler< TopologyElementType, VecT>::TopologyDataHandler(t_topologic
 template <typename TopologyElementType, typename VecT>
 void TopologyDataHandler<TopologyElementType,  VecT>::init()
 {
-    // A pointData is by default child of positionSet Data
-    //this->linkToPointDataArray();  // already done while creating engine
-
     // Name creation
-    if (m_prefix.empty()) m_prefix = "TopologyHandler_";
+    if (m_prefix.empty()) m_prefix = "TopologyDataHandler( " + this->m_topologyData->getOwner()->getName() + " )";
     m_data_name = this->m_topologyData->getName();
     this->addOutput(this->m_topologyData);
-
-    // Register Engine in containter list
-    //if (m_topology)
-    //   m_topology->addTopologyHandler(this);
-    //this->registerTopology(m_topology);
 }
 
 

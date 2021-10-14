@@ -34,7 +34,7 @@ using sofa::testing::NumericTest;
 
 #include <sofa/simulation/VectorOperations.h>
 #include <SofaBaseLinearSolver/FullVector.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
@@ -79,7 +79,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
     typedef Data<OutVecCoord> OutDataVecCoord;
     typedef Data<OutVecDeriv> OutDataVecDeriv;
 
-    typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
+    typedef linearalgebra::EigenSparseMatrix<In,Out> EigenSparseMatrix;
 
 
     core::MultiMapping<In,Out>* mapping; ///< the mapping to be tested
@@ -154,7 +154,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
         if( deltaRange.second / errorMax <= sofa::testing::g_minDeltaErrorRatio )
             ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
 
-        typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
+        typedef linearalgebra::EigenSparseMatrix<In,Out> EigenSparseMatrix;
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
         mparams.setSymmetricMatrix(false);
@@ -388,7 +388,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
         // still performing the test with a null Kv vector to check if the mapping is really linear
         if( bk != nullptr ){
 
-            typedef component::linearsolver::EigenSparseMatrix<In,In> EigenSparseKMatrix;
+            typedef linearalgebra::EigenSparseMatrix<In,In> EigenSparseKMatrix;
             const EigenSparseKMatrix* K = dynamic_cast<const EigenSparseKMatrix*>(bk);
             if( K == nullptr ){
                 succeed = false;

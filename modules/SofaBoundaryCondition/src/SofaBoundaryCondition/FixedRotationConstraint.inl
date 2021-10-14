@@ -99,7 +99,7 @@ void FixedRotationConstraint<DataTypes>::projectPosition(const core::MechanicalP
             Vec3 projected = project(vec3_part, twistAxis);
             sofa::type::Quat<SReal> twist(projected[0], projected[1], projected[2], q[3]);
             // Singularity : A perpendicular angle would give you quaternion (0, 0, 0, 0)
-            if(std::none_of(twist.ptr(), twist.ptr() + 4 * sizeof(double), [](double x) {return x != 0. ;})) {
+            if (std::none_of(twist.ptr(), twist.ptr() + 4, [](SReal x) {return x != 0.; })) {
                 twist = sofa::type::Quat<SReal>::identity();
             }
             twist.normalize();

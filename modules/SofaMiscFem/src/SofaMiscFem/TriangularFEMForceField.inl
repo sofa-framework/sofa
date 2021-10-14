@@ -360,7 +360,7 @@ void TriangularFEMForceField<DataTypes>::setPoisson(Real val)
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::setPoissonArray(const type::vector<Real>& values)
 {
-    int nbrTri = triangleInfo.getValue().size();
+    auto nbrTri = triangleInfo.getValue().size();
     if (values.size() != nbrTri)
     {
         msg_warning() << "Input Poisson Coefficient array size is not possible: " << values.size() << ", compare to number of triangles: " << nbrTri << ". Values will not be set.";
@@ -368,7 +368,7 @@ void TriangularFEMForceField<DataTypes>::setPoissonArray(const type::vector<Real
     }
     
     sofa::helper::WriteAccessor< core::objectmodel::Data< type::vector<Real> > > _poisson = f_poisson;
-    for (auto id = 0; id < values.size(); ++id)
+    for (auto id = 0u; id < values.size(); ++id)
     {
         Real val = values[id];
         if (val < 0)
@@ -399,7 +399,7 @@ void TriangularFEMForceField<DataTypes>::setYoung(Real val)
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::setYoungArray(const type::vector<Real>& values)
 {
-    int nbrTri = triangleInfo.getValue().size();
+    auto nbrTri = triangleInfo.getValue().size();
     if (values.size() != nbrTri)
     {
         msg_warning() << "Input Young Modulus array size is not possible: " << values.size() << ", compare to number of triangles: " << nbrTri << ". Values will not be set.";
@@ -407,7 +407,7 @@ void TriangularFEMForceField<DataTypes>::setYoungArray(const type::vector<Real>&
     }
 
     sofa::helper::WriteAccessor< core::objectmodel::Data< type::vector<Real> > > _young = f_young;
-    for (auto id = 0; id<values.size(); ++id)
+    for (auto id = 0u; id<values.size(); ++id)
     {
         Real val = values[id];
         if (val < 0)

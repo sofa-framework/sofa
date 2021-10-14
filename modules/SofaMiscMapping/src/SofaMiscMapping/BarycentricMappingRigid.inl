@@ -123,7 +123,9 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::init(const typename O
         m[1] = in[tetrahedra[t][2]]-in[tetrahedra[t][0]];
         m[2] = in[tetrahedra[t][3]]-in[tetrahedra[t][0]];
         mt.transpose ( m );
-        bases[t].invert ( mt );
+        const bool canInvert = bases[t].invert ( mt );
+        assert(canInvert);
+        SOFA_UNUSED(canInvert);
         centers[t] = ( in[tetrahedra[t][0]]+in[tetrahedra[t][1]]+in[tetrahedra[t][2]]+in[tetrahedra[t][3]] ) *0.25;
     }
 

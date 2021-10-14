@@ -85,7 +85,7 @@ Vec4f QRGBAColorPicker::getColor() const
 void QRGBAColorPicker::updateRGBAColor()
 {
     typedef unsigned char uchar;
-    Vec4f color;
+
     const uchar r = _r->text().toInt();
     const uchar g = _g->text().toInt();
     const uchar b = _b->text().toInt();

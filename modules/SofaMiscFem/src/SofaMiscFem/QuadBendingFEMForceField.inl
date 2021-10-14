@@ -164,7 +164,7 @@ void QuadBendingFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Ind
   QuadInformation *qinfo = &quadInf[i];
   Coord IntlengthElement;
   Coord IntheightElement;
-  Coord Intcentroid;
+
   const  VecCoord& initialPoints = (this->mstate->read(core::ConstVecCoordId::restPosition())->getValue());
   qinfo->IntlengthElement = (initialPoints)[b] - (initialPoints)[a];
   qinfo->IntheightElement = (initialPoints)[d] - (initialPoints)[a];
@@ -377,7 +377,6 @@ void QuadBendingFEMForceField<DataTypes>::computeBendingMaterialStiffness(int i,
   Real y = ((int)youngArray.size() > i ) ? youngArray[i] : youngArray[0] ;
   Real p = ((int)poissonArray.size() > i ) ? poissonArray[i] : poissonArray[0];
   Real  thickness = f_thickness.getValue();
-  MaterialStiffness BendingmaterialMatrix;
   
   // Membrance material stiffness Cm
   qinfo->BendingmaterialMatrix[0][0] = y*thickness/(1.0f-p*p);
@@ -406,7 +405,7 @@ void QuadBendingFEMForceField<DataTypes>::computeShearMaterialStiffness(int i, I
   Real p = ((int)poissonArray.size() > i ) ? poissonArray[i] : poissonArray[0];
   Real thickness = f_thickness.getValue();
   const float k = 5.0f/6.0f;
-  MaterialStiffness ShearmaterialMatrix;
+
   // Bending material stiffness Cb
   qinfo->ShearmaterialMatrix[3][3] = y*thickness*thickness*thickness/(12.0f-12.0f*p*p);
   qinfo->ShearmaterialMatrix[3][4] = p*y*thickness*thickness*thickness/(12.0f-12.0f*p*p);

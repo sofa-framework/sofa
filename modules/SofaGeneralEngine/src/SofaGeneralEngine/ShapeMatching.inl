@@ -143,7 +143,11 @@ void ShapeMatching<DataTypes>::doUpdate()
             }
             Xcm0[i] /= W[i];
             Qxinv[i] -= type::dyad(Xcm0[i],Xcm0[i])*W[i]; // sum wi.(X0-Xcm0)(X0-Xcm0)^T = sum wi.X0.X0^T - W.sum(X0).Xcm0^T
-            Mat3x3 inv; inv.invert(Qxinv[i]);  Qxinv[i]=inv;
+            Mat3x3 inv;
+            const bool canInvert = inv.invert(Qxinv[i]);
+            assert(canInvert);
+            SOFA_UNUSED(canInvert);
+            Qxinv[i]=inv;
         }
         oldRestPositionSize = nbp+nbf;
         oldfixedweight = this->fixedweight.getValue();

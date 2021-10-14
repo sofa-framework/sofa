@@ -26,7 +26,7 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/type/vector.h>
 #include <sofa/type/RGBAColor.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 
 
 namespace sofa::core::behavior
@@ -70,7 +70,7 @@ public:
     Data< bool > drawSpring; ///< draw Spring
     Data< type::RGBAColor > springColor; ///< spring color
 
-    linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
+    linearalgebra::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
 
 protected:
     AngularSpringForceField();

@@ -123,6 +123,7 @@ int main(int argc, char** argv)
         "Example Number to enter from (0 - 9)",
         [](const sofa::gui::ArgumentParser* parser, const std::string& strVal)
         {
+            SOFA_UNUSED(strVal);
             unsigned int value = 0;
             parser->getValueFromKey("example", value);
             if (value > 9)

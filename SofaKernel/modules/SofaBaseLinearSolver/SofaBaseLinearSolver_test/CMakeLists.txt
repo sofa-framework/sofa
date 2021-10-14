@@ -3,8 +3,6 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaBaseLinearSolver_test)
 
 set(SOURCE_FILES
-    BaseMatrix_test.cpp
-    Matrix_test.cpp
     SparseMatrixProduct_test.cpp
     SparseMatrixTest.h
     SparseMatrixTest.cpp
