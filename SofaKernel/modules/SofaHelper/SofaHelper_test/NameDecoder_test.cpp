@@ -24,7 +24,7 @@
 #include <sofa/testing/BaseTest.h>
 #include <sofa/type/fixed_array.h>
 
-#include "sofa/type/Mat.h"
+#include <sofa/type/Mat.h>
 
 class SimpleClass {};
 class _UnderscoreClass {};
@@ -56,18 +56,6 @@ namespace sofa::__sofa__
     public:
         template<class U>
         class Inner_Template_Class {};
-    };
-}
-
-namespace
-{
-    class AnonymousSimpleClass {};
-
-    class AnonymousOuterSimpleClass
-    {
-    public:
-        class AnonymousInnerSimpleClass {};
-        class AnonymousInnerSimpleStruct {};
     };
 }
 
@@ -215,25 +203,3 @@ TEST(NameDecoder_test, namespaceNestedTemplateClass)
     EXPECT_EQ(getDecodeNamespaceName<C>(), "sofa::__sofa__");
     EXPECT_EQ(getDecodeTemplateName<C>(), "Mat<3,3,double>");
 }
-
-//Anonymous namespace are not supported
-// TEST(NameDecoder_test, anonymousNamespaceNestedSimpleClass)
-// {
-//     EXPECT_EQ(getDecodeFullName<AnonymousOuterSimpleClass>(), "class sofa::OuterSimpleClass");
-//     EXPECT_EQ(getDecodeTypeName<AnonymousOuterSimpleClass>(), "OuterSimpleClass");
-//     EXPECT_EQ(getDecodeClassName<AnonymousOuterSimpleClass>(), "OuterSimpleClass");
-//     EXPECT_EQ(getDecodeNamespaceName<AnonymousOuterSimpleClass>(), "sofa");
-//     EXPECT_EQ(getDecodeTemplateName<AnonymousOuterSimpleClass>(), "");
-//
-//     EXPECT_EQ(getDecodeFullName<AnonymousOuterSimpleClass::AnonymousInnerSimpleClass>(), "class AnonymousOuterSimpleClass::AnonymousInnerSimpleClass");
-//     EXPECT_EQ(getDecodeTypeName<AnonymousOuterSimpleClass::AnonymousInnerSimpleClass>(), "AnonymousInnerSimpleClass");
-//     EXPECT_EQ(getDecodeClassName<AnonymousOuterSimpleClass::AnonymousInnerSimpleClass>(), "AnonymousInnerSimpleClass");
-//     EXPECT_EQ(getDecodeNamespaceName<AnonymousOuterSimpleClass::AnonymousInnerSimpleClass>(), "AnonymousOuterSimpleClass");
-//     EXPECT_EQ(getDecodeTemplateName<AnonymousOuterSimpleClass::AnonymousInnerSimpleClass>(), "");
-//
-//     EXPECT_EQ(getDecodeFullName<AnonymousOuterSimpleClass::AnonymousInnerSimpleStruct>(), "class AnonymousOuterSimpleClass::AnonymousInnerSimpleStruct");
-//     EXPECT_EQ(getDecodeTypeName<AnonymousOuterSimpleClass::AnonymousInnerSimpleStruct>(), "AnonymousInnerSimpleStruct");
-//     EXPECT_EQ(getDecodeClassName<AnonymousOuterSimpleClass::AnonymousInnerSimpleStruct>(), "AnonymousInnerSimpleStruct");
-//     EXPECT_EQ(getDecodeNamespaceName<AnonymousOuterSimpleClass::AnonymousInnerSimpleStruct>(), "AnonymousOuterSimpleClass");
-//     EXPECT_EQ(getDecodeTemplateName<AnonymousOuterSimpleClass::AnonymousInnerSimpleStruct>(), "");
-// }
