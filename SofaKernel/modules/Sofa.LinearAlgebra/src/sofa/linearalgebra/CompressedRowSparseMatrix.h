@@ -85,8 +85,9 @@ public:
             return (l != b.l) || (c != b.c);
         }
     };
-    using Bloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = Block;
+    using IndexedBloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = IndexedBlock;
     typedef type::vector<IndexedBlock> VecIndexedBlock;
+    using VecIndexedBloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = VecIndexedBlock;
 
     static void split_row_index(Index& index, Index& modulo) { bloc_index_func<NL, Index>::split(index, modulo); }
     static void split_col_index(Index& index, Index& modulo) { bloc_index_func<NC, Index>::split(index, modulo); }
