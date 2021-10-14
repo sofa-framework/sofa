@@ -24,7 +24,7 @@
 #include <sofa/core/topology/TopologySubsetData.h>
 #include <sofa/core/topology/TopologyDataHandler.h>
 
-namespace sofa::component::topology
+namespace sofa::core::topology
 {
 
 /** \brief A class for storing point indices. Automatically manages topological changes on Point
@@ -34,12 +34,12 @@ namespace sofa::component::topology
 * For example a TopologySubsetIndices of size N can be used in a FixConstraint to store the N fixed points. If the points are removed 
 * this subset will follow the changes and remove the constraints.
 */
-class SOFA_CORE_API TopologySubsetIndices : public sofa::component::topology::TopologySubsetData<core::topology::BaseMeshTopology::Point, type::vector<Index> >
+class SOFA_CORE_API TopologySubsetIndices : public sofa::core::topology::TopologySubsetData<core::topology::BaseMeshTopology::Point, type::vector<Index> >
 {
 public:
     typedef type::vector<Index> container_type;
     typedef Index value_type;
-    typedef sofa::component::topology::TopologySubsetData < core::topology::BaseMeshTopology::Point, container_type> Inherit;
+    typedef sofa::core::topology::TopologySubsetData < core::topology::BaseMeshTopology::Point, container_type> Inherit;
 
     /// Default Constructor to init Data
     explicit TopologySubsetIndices(const typename sofa::core::topology::BaseTopologyData< type::vector<Index> >::InitData& data);
@@ -48,7 +48,7 @@ public:
 
     void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology) override;
 
-    void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler < core::topology::BaseMeshTopology::Point, type::vector<Index> >* topoHandler) override;
+    void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyDataHandler < core::topology::BaseMeshTopology::Point, type::vector<Index> >* topoHandler) override;
 
 protected:
     void swapPostProcess(Index i1, Index i2) override;
@@ -61,8 +61,8 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_TOPOLOGY_SUBSETINDICES_CPP)
-extern template class SOFA_CORE_API sofa::component::topology::TopologyDataHandler < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
-extern template class SOFA_CORE_API sofa::component::topology::TopologyData < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
+extern template class SOFA_CORE_API sofa::core::topology::TopologyDataHandler < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
+extern template class SOFA_CORE_API sofa::core::topology::TopologyData < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
 #endif
 
-} //namespace sofa::component::topology
+} //namespace sofa::core::topology

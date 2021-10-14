@@ -24,7 +24,7 @@
 
 #include <sofa/core/topology/TopologyData.h>
 
-namespace sofa::component::topology
+namespace sofa::core::topology
 {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,7 +37,7 @@ namespace sofa::component::topology
 * happen (non exhaustive list: elements added, removed, fused, renumbered).
 */
 template< class TopologyElementType, class VecT>
-class TopologySubsetData : public sofa::component::topology::TopologyData<TopologyElementType, VecT>
+class TopologySubsetData : public sofa::core::topology::TopologyData<TopologyElementType, VecT>
 {
 public:
     typedef VecT container_type;
@@ -161,4 +161,4 @@ template< class VecT > using HexahedronSubsetData = TopologySubsetData<core::top
 extern template class SOFA_CORE_API TopologySubsetData<Index, sofa::type::vector<Index>>;
 #endif // DEFINITION_TOPOLOGYSUBSETDATA
 
-} //namespace sofa::component::topology
+} //namespace sofa::core::topology

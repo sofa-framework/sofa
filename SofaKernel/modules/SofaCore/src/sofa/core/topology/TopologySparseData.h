@@ -24,7 +24,7 @@
 #include <sofa/core/config.h>
 #include <sofa/core/topology/TopologySubsetData.h>
 
-namespace sofa::component::topology
+namespace sofa::core::topology
 {
 
 //SOFA_ATTRIBUTE_DISABLED("v21.06", "PR#2114", "This class has been removed. TopologySubsetData should be used instead.")
@@ -46,4 +46,4 @@ template< class VecT > using TetrahedronSparseData SOFA_ATTRIBUTE_DEPRECATED("v2
 template< class VecT > using HexahedronSparseData SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2114)", "v22.06",
     "This class has been removed. TopologySubsetData should be used instead.") = TopologySubsetData<core::topology::BaseMeshTopology::Hexahedron, VecT>;
 
-} //namespace sofa::component::topology
+} //namespace sofa::core::topology

@@ -23,9 +23,9 @@
 
 #include <sofa/core/topology/TopologySubsetData.inl>
 
-namespace sofa::component::topology
+namespace sofa::core::topology
 {
 
 template class SOFA_CORE_API TopologySubsetData<Index, sofa::type::vector<Index>>;
 
-} // namespace sofa::component::topology
+} // namespace sofa::core::topology

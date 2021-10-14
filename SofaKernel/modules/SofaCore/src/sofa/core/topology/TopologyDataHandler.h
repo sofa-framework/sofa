@@ -28,7 +28,7 @@
 #include <sofa/core/topology/BaseTopology.h>
 
 
-namespace sofa::component::topology
+namespace sofa::core::topology
 {
 
 
@@ -166,4 +166,4 @@ public:
 };
 
 
-} //namespace sofa::component::topology
+} //namespace sofa::core::topology
