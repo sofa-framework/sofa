@@ -1014,10 +1014,10 @@ void TriangleSetTopologyContainer::setTriangleTopologyToDirty()
 
     // set all engines link to this container to dirty
     auto& triangleTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::TRIANGLE);
-    for (auto topoEngine : triangleTopologyHandlerList)
+    for (auto topoHandler : triangleTopologyHandlerList)
     {
-        topoEngine->setDirtyValue();
-        msg_info() << "Triangle Topology Set dirty engine: " << topoEngine->getName();
+        topoHandler->setDirtyValue();
+        msg_info() << "Triangle Topology Set dirty engine: " << topoHandler->getName();
     }
 }
 
@@ -1027,12 +1027,12 @@ void TriangleSetTopologyContainer::cleanTriangleTopologyFromDirty()
 
     // security, clean all engines to avoid loops
     auto& triangleTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::TRIANGLE);
-    for (auto topoEngine : triangleTopologyHandlerList)
+    for (auto topoHandler : triangleTopologyHandlerList)
     {
-        if (topoEngine->isDirty())
+        if (topoHandler->isDirty())
         {
-            msg_warning() << "Triangle Topology update did not clean engine: " << topoEngine->getName();
-            topoEngine->cleanDirty();
+            msg_warning() << "Triangle Topology update did not clean engine: " << topoHandler->getName();
+            topoHandler->cleanDirty();
         }
     }
 }

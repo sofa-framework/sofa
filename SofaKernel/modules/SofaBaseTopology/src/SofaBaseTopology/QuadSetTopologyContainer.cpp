@@ -744,10 +744,10 @@ void QuadSetTopologyContainer::setQuadTopologyToDirty()
 
     // set all engines link to this container to dirty
     auto& quadTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::QUAD);
-    for (auto topoEngine : quadTopologyHandlerList)
+    for (auto topoHandler : quadTopologyHandlerList)
     {
-        topoEngine->setDirtyValue();
-        msg_info() << "Quad Topology Set dirty engine: " << topoEngine->getName();
+        topoHandler->setDirtyValue();
+        msg_info() << "Quad Topology Set dirty engine: " << topoHandler->getName();
     }
 
 }
@@ -758,12 +758,12 @@ void QuadSetTopologyContainer::cleanQuadTopologyFromDirty()
 
     // security, clean all engines to avoid loops
     auto& quadTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::QUAD);
-    for (auto topoEngine : quadTopologyHandlerList)
+    for (auto topoHandler : quadTopologyHandlerList)
     {
-        if (topoEngine->isDirty())
+        if (topoHandler->isDirty())
         {
-            msg_warning() << "Quad Topology update did not clean engine: " << topoEngine->getName();
-            topoEngine->cleanDirty();
+            msg_warning() << "Quad Topology update did not clean engine: " << topoHandler->getName();
+            topoHandler->cleanDirty();
         }
     }
 }

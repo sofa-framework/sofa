@@ -51,9 +51,9 @@ void TopologySubsetIndices::createTopologyHandler(sofa::core::topology::BaseMesh
     this->Inherit::createTopologyHandler(_topology);
 }
 
-void TopologySubsetIndices::createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler < core::topology::BaseMeshTopology::Point, type::vector<Index> >* topoEngine)
+void TopologySubsetIndices::createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler < core::topology::BaseMeshTopology::Point, type::vector<Index> >* topoHandler)
 {
-    this->Inherit::createTopologyHandler(_topology, topoEngine);
+    this->Inherit::createTopologyHandler(_topology, topoHandler);
 }
 
 

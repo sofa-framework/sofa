@@ -639,11 +639,11 @@ void TetrahedronSetTopologyModifier::propagateTopologicalEngineChanges()
         return TriangleSetTopologyModifier::propagateTopologicalEngineChanges();
 
     auto& tetraTopologyHandlerList = m_container->getTopologyHandlerList(sofa::geometry::ElementType::TETRAHEDRON);
-    for (auto topoEngine : tetraTopologyHandlerList)
+    for (auto topoHandler : tetraTopologyHandlerList)
     {
-        if (topoEngine->isDirty())
+        if (topoHandler->isDirty())
         {
-            topoEngine->update();
+            topoHandler->update();
         }
     }
 

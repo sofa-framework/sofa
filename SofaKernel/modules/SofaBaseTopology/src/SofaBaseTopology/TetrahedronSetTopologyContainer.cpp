@@ -1175,10 +1175,10 @@ void TetrahedronSetTopologyContainer::setTetrahedronTopologyToDirty()
 
     // set all engines link to this container to dirty
     auto& tetraTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::TETRAHEDRON);
-    for (auto topoEngine : tetraTopologyHandlerList)
+    for (auto topoHandler : tetraTopologyHandlerList)
     {
-        topoEngine->setDirtyValue();
-        msg_info() << "Tetrahedron Topology Set dirty engine: " << topoEngine->getName();
+        topoHandler->setDirtyValue();
+        msg_info() << "Tetrahedron Topology Set dirty engine: " << topoHandler->getName();
     }
 }
 
@@ -1188,12 +1188,12 @@ void TetrahedronSetTopologyContainer::cleanTetrahedronTopologyFromDirty()
 
     // security, clean all engines to avoid loops
     auto& tetraTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::TETRAHEDRON);
-    for (auto topoEngine : tetraTopologyHandlerList)
+    for (auto topoHandler : tetraTopologyHandlerList)
     {
-        if (topoEngine->isDirty())
+        if (topoHandler->isDirty())
         {
-            msg_warning() << "Tetrahedron Topology update did not clean engine: " << topoEngine->getName();
-            topoEngine->cleanDirty();
+            msg_warning() << "Tetrahedron Topology update did not clean engine: " << topoHandler->getName();
+            topoHandler->cleanDirty();
         }
     }
 }

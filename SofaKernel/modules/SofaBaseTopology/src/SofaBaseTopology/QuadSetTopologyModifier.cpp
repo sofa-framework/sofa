@@ -500,11 +500,11 @@ void QuadSetTopologyModifier::propagateTopologicalEngineChanges()
         return EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
 
     auto& quadTopologyHandlerList = m_container->getTopologyHandlerList(sofa::geometry::ElementType::QUAD);
-    for (auto topoEngine : quadTopologyHandlerList)
+    for (auto topoHandler : quadTopologyHandlerList)
     {
-        if (topoEngine->isDirty())
+        if (topoHandler->isDirty())
         {
-            topoEngine->update();
+            topoHandler->update();
         }
     }
 

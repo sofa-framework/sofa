@@ -1194,10 +1194,10 @@ void HexahedronSetTopologyContainer::setHexahedronTopologyToDirty()
 
     // set all engines link to this container to dirty
     auto& hexaTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::HEXAHEDRON);
-    for (auto topoEngine : hexaTopologyHandlerList)
+    for (auto topoHandler : hexaTopologyHandlerList)
     {
-        topoEngine->setDirtyValue();
-        msg_info() << "Hexahedron Topology Set dirty engine: " << topoEngine->getName();
+        topoHandler->setDirtyValue();
+        msg_info() << "Hexahedron Topology Set dirty engine: " << topoHandler->getName();
     }
 }
 
@@ -1207,12 +1207,12 @@ void HexahedronSetTopologyContainer::cleanHexahedronTopologyFromDirty()
 
     // security, clean all engines to avoid loops
     auto& hexaTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::HEXAHEDRON);
-    for (auto topoEngine : hexaTopologyHandlerList)
+    for (auto topoHandler : hexaTopologyHandlerList)
     {
-        if (topoEngine->isDirty())
+        if (topoHandler->isDirty())
         {
-            msg_warning() << "Hexahedron Topology update did not clean engine: " << topoEngine->getName();
-            topoEngine->cleanDirty();
+            msg_warning() << "Hexahedron Topology update did not clean engine: " << topoHandler->getName();
+            topoHandler->cleanDirty();
         }
     }
 }

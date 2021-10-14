@@ -614,11 +614,11 @@ void HexahedronSetTopologyModifier::propagateTopologicalEngineChanges()
         return QuadSetTopologyModifier::propagateTopologicalEngineChanges();
 
     auto& hexaTopologyHandlerList = m_container->getTopologyHandlerList(sofa::geometry::ElementType::HEXAHEDRON);
-    for (auto topoEngine : hexaTopologyHandlerList)
+    for (auto topoHandler : hexaTopologyHandlerList)
     {
-        if (topoEngine->isDirty())
+        if (topoHandler->isDirty())
         {
-            topoEngine->update();
+            topoHandler->update();
         }
     }
 

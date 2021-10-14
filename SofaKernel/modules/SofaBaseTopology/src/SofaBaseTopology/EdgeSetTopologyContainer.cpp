@@ -545,10 +545,10 @@ void EdgeSetTopologyContainer::setEdgeTopologyToDirty()
     m_edgeTopologyDirty = true;
 
     auto& edgeTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::EDGE);
-    for (auto topoEngine : edgeTopologyHandlerList)
+    for (auto topoHandler : edgeTopologyHandlerList)
     {
-        topoEngine->setDirtyValue();
-        msg_info() << "Edge Topology Set dirty engine: " << topoEngine->getName();
+        topoHandler->setDirtyValue();
+        msg_info() << "Edge Topology Set dirty engine: " << topoHandler->getName();
     }
 
 }
@@ -559,12 +559,12 @@ void EdgeSetTopologyContainer::cleanEdgeTopologyFromDirty()
 
     // security, clean all engines to avoid loops
     auto& edgeTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::EDGE);
-    for (auto topoEngine : edgeTopologyHandlerList)
+    for (auto topoHandler : edgeTopologyHandlerList)
     {
-        if (topoEngine->isDirty())
+        if (topoHandler->isDirty())
         {
-            msg_warning() << "Edge Topology update did not clean engine: " << topoEngine->getName();
-            topoEngine->cleanDirty();
+            msg_warning() << "Edge Topology update did not clean engine: " << topoHandler->getName();
+            topoHandler->cleanDirty();
         }
     }
 }

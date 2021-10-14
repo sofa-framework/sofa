@@ -191,10 +191,10 @@ void PointSetTopologyContainer::setPointTopologyToDirty()
 
     // set all engines link to this container to dirty
     auto& pointTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::POINT);
-    for (auto topoEngine : pointTopologyHandlerList)
+    for (auto topoHandler : pointTopologyHandlerList)
     {
-        topoEngine->setDirtyValue();
-        msg_info() << "Point Topology Set dirty engine: " << topoEngine->getName();
+        topoHandler->setDirtyValue();
+        msg_info() << "Point Topology Set dirty engine: " << topoHandler->getName();
     }
 }
 
@@ -204,12 +204,12 @@ void PointSetTopologyContainer::cleanPointTopologyFromDirty()
 
     // security, clean all engines to avoid loops
     auto& pointTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::POINT);
-    for (auto topoEngine : pointTopologyHandlerList)
+    for (auto topoHandler : pointTopologyHandlerList)
     {
-        if (topoEngine->isDirty())
+        if (topoHandler->isDirty())
         {
-            msg_warning() << "Point Topology update did not clean engine: " << topoEngine->getName();
-            topoEngine->cleanDirty();
+            msg_warning() << "Point Topology update did not clean engine: " << topoHandler->getName();
+            topoHandler->cleanDirty();
         }
     }
 }

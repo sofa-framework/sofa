@@ -460,12 +460,12 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
     // get directly the list of engines created at init: case of removing.... for the moment
 
     auto& pointTopologyHandlerList = m_container->getTopologyHandlerList(sofa::geometry::ElementType::POINT);
-    for (auto topoEngine : pointTopologyHandlerList)
+    for (auto topoHandler : pointTopologyHandlerList)
     {
         // no need to dynamic cast this time? TO BE CHECKED!
-        if (topoEngine->isDirty())
+        if (topoHandler->isDirty())
         {
-            topoEngine->update();
+            topoHandler->update();
         }
     }
 

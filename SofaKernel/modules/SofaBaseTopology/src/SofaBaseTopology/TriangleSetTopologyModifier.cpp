@@ -936,11 +936,11 @@ void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
     sofa::helper::AdvancedTimer::stepBegin("TriangleSetTopologyModifier::propagateTopologicalEngineChanges");
 
     auto& triangleTopologyHandlerList = m_container->getTopologyHandlerList(sofa::geometry::ElementType::TRIANGLE);
-    for (auto topoEngine : triangleTopologyHandlerList)
+    for (auto topoHandler : triangleTopologyHandlerList)
     {
-        if (topoEngine->isDirty())
+        if (topoHandler->isDirty())
         {
-            topoEngine->update();
+            topoHandler->update();
         }
     }
 

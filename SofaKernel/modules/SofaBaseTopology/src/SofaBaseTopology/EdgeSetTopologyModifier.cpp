@@ -968,11 +968,11 @@ void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
     sofa::helper::AdvancedTimer::stepBegin("EdgeSetTopologyModifier::propagateTopologicalEngineChanges");
 
     auto& edgeTopologyHandlerList = m_container->getTopologyHandlerList(sofa::geometry::ElementType::EDGE);
-    for (auto topoEngine : edgeTopologyHandlerList)
+    for (auto topoHandler : edgeTopologyHandlerList)
     {
-        if (topoEngine->isDirty())
+        if (topoHandler->isDirty())
         {
-            topoEngine->update();
+            topoHandler->update();
         }
     }
 
