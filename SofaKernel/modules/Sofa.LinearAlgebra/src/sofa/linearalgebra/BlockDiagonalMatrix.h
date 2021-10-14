@@ -36,6 +36,7 @@ class BlockDiagonalMatrix : public linearalgebra::BaseMatrix
 public:
     typedef T Real;
     typedef type::Mat<LC,LC,Real> Block;
+    using Bloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = Block;
     typedef matrix_bloc_traits<Block, Index> traits;
 
     enum { BSIZE = LC };

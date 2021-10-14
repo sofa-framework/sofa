@@ -72,6 +72,7 @@ class matrix_bloc_traits
 {
 public:
     typedef T Block;
+    using Bloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = Block;
     typedef typename T::Real Real;
     enum { NL = T::nbLines };
     enum { NC = T::nbCols };
@@ -98,6 +99,7 @@ class matrix_bloc_traits < type::Mat<L,C,real>, IndexType>
 {
 public:
     typedef type::Mat<L,C,real> Block;
+    using Bloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = Block;
     typedef real Real;
     enum { NL = L };
     enum { NC = C };
@@ -177,6 +179,7 @@ class matrix_bloc_traits < float, IndexType >
 {
 public:
     typedef float Block;
+    using Bloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = Block;
     typedef float Real;
     enum { NL = 1 };
     enum { NC = 1 };
@@ -202,6 +205,7 @@ class matrix_bloc_traits < double, IndexType >
 {
 public:
     typedef double Block;
+    using Bloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = Block;
     typedef double Real;
     enum { NL = 1 };
     enum { NC = 1 };
@@ -226,6 +230,7 @@ class matrix_bloc_traits < int, IndexType >
 {
 public:
     typedef float Block;
+    using Bloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = Block;
     typedef float Real;
     enum { NL = 1 };
     enum { NC = 1 };
