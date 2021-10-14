@@ -122,11 +122,11 @@ TEST(NameDecoder_test, templateClass)
     EXPECT_EQ(getDecodeTemplateName<TemplateClass<sofa::type::vector<int> > >(), "vector<int,CPUMemoryManager<int>>");
 
     //template type itself templated with 2 template parameters, including one composed of two words. Template parameter is an alias
-    using D = sofa::type::fixed_array<long long, 4>;
-    EXPECT_EQ(getDecodeTypeName<TemplateClass<D> >(), "TemplateClass<fixed_array<__int64,4>>");
+    using D = sofa::type::fixed_array<unsigned int, 4>;
+    EXPECT_EQ(getDecodeTypeName<TemplateClass<D> >(), "TemplateClass<fixed_array<unsigned int,4>>");
     EXPECT_EQ(getDecodeClassName<TemplateClass<D> >(), "TemplateClass");
     EXPECT_EQ(getDecodeNamespaceName<TemplateClass<D> >(), "");
-    EXPECT_EQ(getDecodeTemplateName<TemplateClass<D> >(), "fixed_array<__int64,4>");
+    EXPECT_EQ(getDecodeTemplateName<TemplateClass<D> >(), "fixed_array<unsigned int,4>");
 
     using E = _UnderscoreClass;
     EXPECT_EQ(getDecodeTypeName<TemplateClass<E> >(), "TemplateClass<_UnderscoreClass>");
@@ -193,7 +193,6 @@ TEST(NameDecoder_test, namespaceNestedTemplateClass)
     EXPECT_EQ(getDecodeTemplateName<B>(), "unsigned int");
 
     using C = sofa::__sofa__::OuterTemplateClass<sofa::type::fixed_array<_UnderscoreClass, 2> >::Inner_Template_Class<sofa::type::Mat<3, 3, double> >;
-    EXPECT_EQ(getDecodeTypeName<C>(), "Inner_Template_Class<Mat<3,3,double>>");
     EXPECT_EQ(getDecodeClassName<C>(), "Inner_Template_Class");
     EXPECT_EQ(getDecodeNamespaceName<C>(), "sofa::__sofa__");
     EXPECT_EQ(getDecodeTemplateName<C>(), "Mat<3,3,double>");
