@@ -202,14 +202,22 @@ template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
     if( jacobian.rowSize() )
-        jacobian.mult(dOut,dIn);
+    {
+        auto dOutWa = sofa::helper::getWriteOnlyAccessor(dOut);
+        auto dInRa = sofa::helper::getReadAccessor(dIn);
+        jacobian.mult(dOutWa.wref(),dInRa.ref());
+    }
 }
 
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
 {
     if( jacobian.rowSize() )
-        jacobian.addMultTranspose(dIn,dOut);
+    {
+        auto dOutRa = sofa::helper::getReadAccessor(dOut);
+        auto dInWa = sofa::helper::getWriteOnlyAccessor(dIn);
+        jacobian.addMultTranspose(dInWa.wref(),dOutRa.ref());
+    }
 }
 
 template <class TIn, class TOut>

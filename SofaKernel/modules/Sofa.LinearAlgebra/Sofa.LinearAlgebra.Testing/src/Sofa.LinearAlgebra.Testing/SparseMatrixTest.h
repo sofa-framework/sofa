@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseLinearSolver/config.h>
 #include <sofa/testing/NumericTest.h>
 #include <Eigen/Sparse>
 

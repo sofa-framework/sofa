@@ -22,7 +22,7 @@
 #include <sofa/linearalgebra/SparseMatrixProduct[CompressedRowSparseMatrix].h>
 #include <sofa/linearalgebra/SparseMatrixProduct[EigenSparseMatrix].h>
 #include <sofa/testing/NumericTest.h>
-#include "SparseMatrixTest.h"
+#include <Sofa.LinearAlgebra.Testing/SparseMatrixTest.h>
 
 #include <sofa/linearalgebra/BaseMatrix.h>
 #include <Eigen/Sparse>

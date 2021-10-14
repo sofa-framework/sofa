@@ -144,7 +144,7 @@ void BlenderExporter<T>::handleEvent(sofa::core::objectmodel::Event* event)
                 ReadVecCoord posData = mmodel->readPositions();
 
 
-                for(int i=size-1; i>=0; i--)
+                for(int i= (int)size-1; i>=0; i--)
                 {
                     //create an additional point for root tangent
                     if((simulationType.getValue() == Hair && (i%nbPtsByHair.getValue()==0)))
@@ -174,7 +174,7 @@ void BlenderExporter<T>::handleEvent(sofa::core::objectmodel::Event* event)
                     pos[2] = (float)x[2];
 
                     Deriv v;
-                    if((mmodel->read(core::ConstVecDerivId::velocity())) && ( mmodel->readVelocities().size()>i))
+                    if((mmodel->read(core::ConstVecDerivId::velocity())) && ((int) mmodel->readVelocities().size()>i))
                     {
                         v =mmodel->readVelocities()[i];
                         vel[0] = (float)v[0];
@@ -183,7 +183,7 @@ void BlenderExporter<T>::handleEvent(sofa::core::objectmodel::Event* event)
                     }
 
                     Coord x0;
-                    if((mmodel->read(core::ConstVecCoordId::restPosition())) && ( mmodel->readRestPositions().size()>i))
+                    if((mmodel->read(core::ConstVecCoordId::restPosition())) && ( (int)mmodel->readRestPositions().size()>i))
                     {
                         x0 =mmodel->readRestPositions()[i];
                         rest[0] = (float)x0[0];

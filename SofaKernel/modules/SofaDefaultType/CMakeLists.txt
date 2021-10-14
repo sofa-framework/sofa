@@ -101,7 +101,6 @@ sofa_create_package_with_targets(
 )
 
 if(SOFA_BUILD_TESTS)
-    add_subdirectory(SofaDefaultType.Testing)
     add_subdirectory(SofaDefaultType_test)
     add_subdirectory(SofaDefaultType_simutest)
 endif()

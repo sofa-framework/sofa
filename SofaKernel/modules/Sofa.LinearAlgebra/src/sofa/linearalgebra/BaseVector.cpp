@@ -19,8 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
 #include <sofa/linearalgebra/BaseVector.h>
 
 namespace sofa::linearalgebra

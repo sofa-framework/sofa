@@ -89,7 +89,7 @@ void Edge2QuadTopologicalMapping::init()
     double rho = d_radius.getValue();
 
     bool ellipse = false;
-    double rhoFocal;
+    double rhoFocal{};
     if (d_radiusFocal.isSet() && d_radiusFocal.getValue() >= std::numeric_limits<double>::min())
     {
         ellipse = true;

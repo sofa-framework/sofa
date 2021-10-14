@@ -183,7 +183,9 @@ void LightManager::makeShadowMatrix(unsigned int i)
     glMultMatrixf(lmv);
     Mat<4,4,float> model2;
     glGetFloatv(GL_MODELVIEW_MATRIX,model2.ptr());
-    model2.invert(model2);
+    const bool canInvert = model2.invert(model2);
+    assert(canInvert);
+    SOFA_UNUSED(canInvert);
 
     glMultMatrixf(model2.ptr());
     if (m_lightModelViewMatrix.size() > 0)

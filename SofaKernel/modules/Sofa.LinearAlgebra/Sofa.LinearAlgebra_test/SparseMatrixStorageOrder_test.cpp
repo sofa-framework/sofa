@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/linearalgebra/SparseMatrixStorageOrder[EigenSparseMatrix].h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
-#include "SparseMatrixTest.h"
+#include <Sofa.LinearAlgebra.Testing/SparseMatrixTest.h>
 
 template <class TMatrix, class TReal>
 struct TestSparseMatrixTransposeTraits
