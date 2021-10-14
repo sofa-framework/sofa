@@ -61,10 +61,10 @@ public:
     void delOutput(DDGNode* n);
 
     /// Get the list of inputs for this DDGNode
-    const DDGLinkContainer& getInputs() const;
+    const DDGLinkContainer& getInputs();
 
     /// Get the list of outputs for this DDGNode
-    const DDGLinkContainer& getOutputs() const;
+    const DDGLinkContainer& getOutputs();
 
     /// Update this value
     virtual void update() = 0;

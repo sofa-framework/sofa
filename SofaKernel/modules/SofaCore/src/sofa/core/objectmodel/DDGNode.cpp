@@ -132,12 +132,12 @@ void DDGNode::delOutput(DDGNode* n)
     n->doDelInput(this);
 }
 
-const DDGNode::DDGLinkContainer& DDGNode::getInputs() const
+const DDGNode::DDGLinkContainer& DDGNode::getInputs()
 {
     return inputs;
 }
 
-const DDGNode::DDGLinkContainer& DDGNode::getOutputs() const
+const DDGNode::DDGLinkContainer& DDGNode::getOutputs()
 {
     return outputs;
 }
