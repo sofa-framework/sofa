@@ -289,18 +289,16 @@ TriangularBendingSprings<DataTypes>::TriangularBendingSprings()
     , d_showSprings(initData(&d_showSprings, true, "showSprings", "option to draw springs"))
     , l_topology(initLink("topology", "link to the topology container"))
     , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
-    , edgeHandler(nullptr)
     , m_potentialEnergy(0.0)
     , m_topology(nullptr)
 {
-    // Create specific handler for EdgeData
-    edgeHandler = new TriangularBSEdgeHandler(&edgeInfo);
+
 }
 
 template<class DataTypes>
 TriangularBendingSprings<DataTypes>::~TriangularBendingSprings()
 {
-    if(edgeHandler) delete edgeHandler;
+
 }
 
 
@@ -335,7 +333,7 @@ void TriangularBendingSprings<DataTypes>::init()
         sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
-    edgeInfo.createTopologyHandler(m_topology,edgeHandler);
+    edgeInfo.createTopologyHandler(m_topology);
     edgeInfo.linkToPointDataArray();
     edgeInfo.linkToTriangleDataArray();
 
@@ -347,23 +345,22 @@ void TriangularBendingSprings<DataTypes>::init()
         applyEdgeCreation(edgeIndex, ei, edge, ancestors, coefs);
     });
 
-
-    edgeHandler->addCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESADDED, [this](const core::topology::TopologyChange* eventTopo) {
+    edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESADDED, [this](const core::topology::TopologyChange* eventTopo) {
         const core::topology::TrianglesAdded* triAdd = static_cast<const core::topology::TrianglesAdded*>(eventTopo);
         applyTriangleCreation(triAdd->getIndexArray(), triAdd->getElementArray(), triAdd->ancestorsList, triAdd->coefs);
     });
 
-    edgeHandler->addCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
+    edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
         const core::topology::TrianglesRemoved* triRemove = static_cast<const core::topology::TrianglesRemoved*>(eventTopo);
         applyTriangleDestruction(triRemove->getArray());
     });
 
-    edgeHandler->addCallBack(sofa::core::topology::TopologyChangeType::POINTSREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
+    edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::POINTSREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
         const core::topology::PointsRemoved* pRemove = static_cast<const core::topology::PointsRemoved*>(eventTopo);
         applyPointDestruction(pRemove->getArray());
     });
 
-    edgeHandler->addCallBack(sofa::core::topology::TopologyChangeType::POINTSRENUMBERING, [this](const core::topology::TopologyChange* eventTopo) {
+    edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::POINTSRENUMBERING, [this](const core::topology::TopologyChange* eventTopo) {
         const core::topology::PointsRenumbering* pRenum = static_cast<const core::topology::PointsRenumbering*>(eventTopo);
         applyPointRenumbering(pRenum->getIndexArray());
     });

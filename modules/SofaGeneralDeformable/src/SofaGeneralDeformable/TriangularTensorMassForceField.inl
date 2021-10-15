@@ -34,225 +34,193 @@ namespace sofa::component::forcefield
 typedef core::topology::BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 template< class DataTypes >
-void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyCreateFunction(Index /*edgeIndex*/,
+void TriangularTensorMassForceField<DataTypes>::applyEdgeCreation(Index /*edgeIndex*/,
         EdgeRestInformation & ei,
         const core::topology::Edge &/*e*/,
         const sofa::type::vector<Index> &,
         const sofa::type::vector<double> &)
 {
-    if(ff)
+    unsigned int u,v;
+    /// set to zero the stiffness matrix
+    for (u=0; u<3; ++u)
     {
-        unsigned int u,v;
-        /// set to zero the stiffness matrix
-        for (u=0; u<3; ++u)
+        for (v=0; v<3; ++v)
         {
-            for (v=0; v<3; ++v)
-            {
-                ei.DfDx[u][v]=0;
-            }
+            ei.DfDx[u][v]=0;
         }
     }
 }
 
 template< class DataTypes >
-void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTriangleCreation(const sofa::type::vector<Index> &triangleAdded,
+void TriangularTensorMassForceField<DataTypes>::applyTriangleCreation(const sofa::type::vector<Index> &triangleAdded,
         const sofa::type::vector<core::topology::Triangle> &,
         const sofa::type::vector<sofa::type::vector<Index> > &,
         const sofa::type::vector<sofa::type::vector<double> > &)
 {
     using namespace core::topology;
-    if(ff)
+    unsigned int i,j,k,l,u,v;
+
+    typename DataTypes::Real val1,area,restSquareLength[3],cotangent[3];
+    typename DataTypes::Real lambda=getLambda();
+    typename DataTypes::Real mu=getMu();
+    typename DataTypes::Real lambdastar, mustar;
+    typename DataTypes::Coord point[3],dpk,dpl;
+    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeData = edgeInfo;
+
+    const typename DataTypes::VecCoord& restPosition= this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+
+    for (i=0; i<triangleAdded.size(); ++i)
     {
 
-        unsigned int i,j,k,l,u,v;
-
-        typename DataTypes::Real val1,area,restSquareLength[3],cotangent[3];
-        typename DataTypes::Real lambda=ff->getLambda();
-        typename DataTypes::Real mu=ff->getMu();
-        typename DataTypes::Real lambdastar, mustar;
-        typename DataTypes::Coord point[3],dpk,dpl;
-        type::vector<EdgeRestInformation> &edgeData = *ff->edgeInfo.beginEdit();
-
-        const typename DataTypes::VecCoord& restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-
-        for (i=0; i<triangleAdded.size(); ++i)
+        /// describe the jth edge index of triangle no i
+        const EdgesInTriangle &te= this->m_topology->getEdgesInTriangle(triangleAdded[i]);
+        /// describe the jth vertex index of triangle no i
+        const Triangle &t= this->m_topology->getTriangle(triangleAdded[i]);
+        // store points
+        for(j=0; j<3; ++j)
+            point[j]=(restPosition)[t[j]];
+        // store square rest length
+        for(j=0; j<3; ++j)
         {
+            restSquareLength[j]= (point[(j+1)%3] -point[(j+2)%3]).norm2();
+        }
+        // compute rest area based on Heron's formula
+        area=0;
+        for(j=0; j<3; ++j)
+        {
+            area+=restSquareLength[j]*(restSquareLength[(j+1)%3] +restSquareLength[(j+2)%3]-restSquareLength[j]);
+        }
+        area=sqrt(area)/4;
+        lambdastar=lambda/(4*area);
+        mustar=mu/(8*area);
 
-            /// describe the jth edge index of triangle no i
-            const EdgesInTriangle &te= ff->m_topology->getEdgesInTriangle(triangleAdded[i]);
-            /// describe the jth vertex index of triangle no i
-            const Triangle &t= ff->m_topology->getTriangle(triangleAdded[i]);
-            // store points
-            for(j=0; j<3; ++j)
-                point[j]=(restPosition)[t[j]];
-            // store square rest length
-            for(j=0; j<3; ++j)
+        for(j=0; j<3; ++j)
+        {
+            cotangent[j]=(restSquareLength[(j+1)%3] +restSquareLength[(j+2)%3]-restSquareLength[j])/(4*area);
+
+            msg_info_when(cotangent[j]<0, this) <<"negative cotangent["
+                                                <<triangleAdded[i]<<"]["
+                                                <<j<<"]" ;
+
+        }
+        for(j=0; j<3; ++j)
+        {
+            k=(j+1)%3;
+            l=(j+2)%3;
+            Mat3 &m=edgeData[te[j]].DfDx;
+            dpl= point[j]-point[k];
+            dpk= point[j]-point[l];
+            val1= -cotangent[j]*(lambda+mu)/2;
+
+            if (this->m_topology->getEdge(te[j])[0]==t[l])
             {
-                restSquareLength[j]= (point[(j+1)%3] -point[(j+2)%3]).norm2();
-            }
-            // compute rest area based on Heron's formula
-            area=0;
-            for(j=0; j<3; ++j)
-            {
-                area+=restSquareLength[j]*(restSquareLength[(j+1)%3] +restSquareLength[(j+2)%3]-restSquareLength[j]);
-            }
-            area=sqrt(area)/4;
-            lambdastar=lambda/(4*area);
-            mustar=mu/(8*area);
-
-            for(j=0; j<3; ++j)
-            {
-                cotangent[j]=(restSquareLength[(j+1)%3] +restSquareLength[(j+2)%3]-restSquareLength[j])/(4*area);
-
-                msg_info_when(cotangent[j]<0, ff) <<"negative cotangent["
-                                                  <<triangleAdded[i]<<"]["
-                                                  <<j<<"]" ;
-
-            }
-            for(j=0; j<3; ++j)
-            {
-                k=(j+1)%3;
-                l=(j+2)%3;
-                Mat3 &m=edgeData[te[j]].DfDx;
-                dpl= point[j]-point[k];
-                dpk= point[j]-point[l];
-                val1= -cotangent[j]*(lambda+mu)/2;
-
-                if (ff->m_topology->getEdge(te[j])[0]==t[l])
+                for (u=0; u<3; ++u)
                 {
-                    for (u=0; u<3; ++u)
+                    for (v=0; v<3; ++v)
                     {
-                        for (v=0; v<3; ++v)
-                        {
-                            m[u][v]+= lambdastar*dpl[u]*dpk[v]+mustar*dpk[u]*dpl[v];
-                        }
-                        m[u][u]+=val1;
+                        m[u][v]+= lambdastar*dpl[u]*dpk[v]+mustar*dpk[u]*dpl[v];
                     }
+                    m[u][u]+=val1;
                 }
-                else
+            }
+            else
+            {
+                for (u=0; u<3; ++u)
                 {
-                    for (u=0; u<3; ++u)
+                    for (v=0; v<3; ++v)
                     {
-                        for (v=0; v<3; ++v)
-                        {
-                            m[v][u]+= lambdastar*dpl[u]*dpk[v]+mustar*dpk[u]*dpl[v];
-                        }
-                        m[u][u]+=val1;
+                        m[v][u]+= lambdastar*dpl[u]*dpk[v]+mustar*dpk[u]*dpl[v];
                     }
+                    m[u][u]+=val1;
                 }
             }
         }
-        ff->edgeInfo.endEdit();
     }
 }
 
 template< class DataTypes>
-void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTriangleDestruction(const sofa::type::vector<Index> &triangleRemoved)
+void TriangularTensorMassForceField<DataTypes>::applyTriangleDestruction(const sofa::type::vector<Index> &triangleRemoved)
 {
     using namespace core::topology;
-    if (ff)
+    unsigned int i,j,k,l,u,v;
+
+    typename DataTypes::Real val1,area,restSquareLength[3],cotangent[3];
+    typename DataTypes::Real lambda=getLambda();
+    typename DataTypes::Real mu=getMu();
+    typename DataTypes::Real lambdastar, mustar;
+    typename DataTypes::Coord point[3],dpk,dpl;
+
+    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeData = edgeInfo;
+    const typename DataTypes::VecCoord& restPosition= this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+
+    for (i=0; i<triangleRemoved.size(); ++i)
     {
 
-        unsigned int i,j,k,l,u,v;
-
-        typename DataTypes::Real val1,area,restSquareLength[3],cotangent[3];
-        typename DataTypes::Real lambda=ff->getLambda();
-        typename DataTypes::Real mu=ff->getMu();
-        typename DataTypes::Real lambdastar, mustar;
-        typename DataTypes::Coord point[3],dpk,dpl;
-
-        type::vector<EdgeRestInformation> &edgeData = *ff->edgeInfo.beginEdit();
-        const typename DataTypes::VecCoord& restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-
-        for (i=0; i<triangleRemoved.size(); ++i)
+        /// describe the jth edge index of triangle no i
+        const EdgesInTriangle &te= this->m_topology->getEdgesInTriangle(triangleRemoved[i]);
+        /// describe the jth vertex index of triangle no i
+        const Triangle &t= this->m_topology->getTriangle(triangleRemoved[i]);
+        // store points
+        for(j=0; j<3; ++j)
+            point[j]=(restPosition)[t[j]];
+        // store square rest length
+        for(j=0; j<3; ++j)
         {
+            restSquareLength[j]= (point[(j+1)%3] -point[(j+2)%3]).norm2();
+        }
+        // compute rest area based on Heron's formula
+        area=0;
+        for(j=0; j<3; ++j)
+        {
+            area+=restSquareLength[j]*(restSquareLength[(j+1)%3] +restSquareLength[(j+2)%3]-restSquareLength[j]);
+        }
+        area=sqrt(area)/4;
+        lambdastar=lambda/(4*area);
+        mustar=mu/(8*area);
 
-            /// describe the jth edge index of triangle no i
-            const EdgesInTriangle &te= ff->m_topology->getEdgesInTriangle(triangleRemoved[i]);
-            /// describe the jth vertex index of triangle no i
-            const Triangle &t= ff->m_topology->getTriangle(triangleRemoved[i]);
-            // store points
-            for(j=0; j<3; ++j)
-                point[j]=(restPosition)[t[j]];
-            // store square rest length
-            for(j=0; j<3; ++j)
-            {
-                restSquareLength[j]= (point[(j+1)%3] -point[(j+2)%3]).norm2();
-            }
-            // compute rest area based on Heron's formula
-            area=0;
-            for(j=0; j<3; ++j)
-            {
-                area+=restSquareLength[j]*(restSquareLength[(j+1)%3] +restSquareLength[(j+2)%3]-restSquareLength[j]);
-            }
-            area=sqrt(area)/4;
-            lambdastar=lambda/(4*area);
-            mustar=mu/(8*area);
+        for(j=0; j<3; ++j)
+        {
+            cotangent[j]=(restSquareLength[(j+1)%3] +restSquareLength[(j+2)%3]-restSquareLength[j])/(4*area);
 
-            for(j=0; j<3; ++j)
-            {
-                cotangent[j]=(restSquareLength[(j+1)%3] +restSquareLength[(j+2)%3]-restSquareLength[j])/(4*area);
-
-                msg_info_when(cotangent[j]<0, ff) << "negative cotangent["
-                                                  << triangleRemoved[i]<<"]["
-                                                  << j<<"]"<< msgendl;
-
-            }
-            for(j=0; j<3; ++j)
-            {
-                k=(j+1)%3;
-                l=(j+2)%3;
-                Mat3 &m=edgeData[te[j]].DfDx;
-                dpl= point[j]-point[k];
-                dpk= point[j]-point[l];
-                val1= -cotangent[j]*(lambda+mu)/2;
-
-                if (ff->m_topology->getEdge(te[j])[0]==t[l])
-                {
-                    for (u=0; u<3; ++u)
-                    {
-                        for (v=0; v<3; ++v)
-                        {
-                            m[u][v]-= lambdastar*dpl[u]*dpk[v]+mustar*dpk[u]*dpl[v];
-                        }
-                        m[u][u]-=val1;
-                    }
-                }
-                else
-                {
-                    for (u=0; u<3; ++u)
-                    {
-                        for (v=0; v<3; ++v)
-                        {
-                            m[v][u]-= lambdastar*dpl[u]*dpk[v]+mustar*dpk[u]*dpl[v];
-                        }
-                        m[u][u]-=val1;
-                    }
-                }
-            }
+            msg_info_when(cotangent[j]<0, this) << "negative cotangent["
+                                                << triangleRemoved[i]<<"]["
+                                                << j<<"]"<< msgendl;
 
         }
-        ff->edgeInfo.endEdit();
+        for(j=0; j<3; ++j)
+        {
+            k=(j+1)%3;
+            l=(j+2)%3;
+            Mat3 &m=edgeData[te[j]].DfDx;
+            dpl= point[j]-point[k];
+            dpk= point[j]-point[l];
+            val1= -cotangent[j]*(lambda+mu)/2;
+
+            if (this->m_topology->getEdge(te[j])[0]==t[l])
+            {
+                for (u=0; u<3; ++u)
+                {
+                    for (v=0; v<3; ++v)
+                    {
+                        m[u][v]-= lambdastar*dpl[u]*dpk[v]+mustar*dpk[u]*dpl[v];
+                    }
+                    m[u][u]-=val1;
+                }
+            }
+            else
+            {
+                for (u=0; u<3; ++u)
+                {
+                    for (v=0; v<3; ++v)
+                    {
+                        m[v][u]-= lambdastar*dpl[u]*dpk[v]+mustar*dpk[u]*dpl[v];
+                    }
+                    m[u][u]-=val1;
+                }
+            }
+        }
+
     }
-}
-
-template<class DataTypes>
-void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::ApplyTopologyChange(const core::topology::TrianglesAdded* e)
-{
-    const auto &triangleAdded = e->getIndexArray();
-    const sofa::type::vector<core::topology::Triangle> &elems = e->getElementArray();
-    const auto & ancestors = e->ancestorsList;
-    const sofa::type::vector<sofa::type::vector<double> > & coefs = e->coefs;
-
-    applyTriangleCreation(triangleAdded, elems, ancestors, coefs);
-}
-
-template<class DataTypes>
-void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::ApplyTopologyChange(const core::topology::TrianglesRemoved* e)
-{
-    const auto &triangleRemoved = e->getArray();
-
-    applyTriangleDestruction(triangleRemoved);
 }
 
 template <class DataTypes> TriangularTensorMassForceField<DataTypes>::TriangularTensorMassForceField()
@@ -264,15 +232,14 @@ template <class DataTypes> TriangularTensorMassForceField<DataTypes>::Triangular
     , l_topology(initLink("topology", "link to the topology container"))
     , lambda(0)
     , mu(0)
-    , edgeHandler(nullptr)    
     , m_topology(nullptr)
 {
-    edgeHandler = new TriangularTMEdgeHandler(this,&edgeInfo);
+
 }
 
 template <class DataTypes> TriangularTensorMassForceField<DataTypes>::~TriangularTensorMassForceField()
 {
-    if(edgeHandler) delete edgeHandler;
+
 }
 
 template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init()
@@ -303,8 +270,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
     updateLameCoefficients();
 
 
-
-    type::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeInf = edgeInfo;
 
     /// prepare to store info in the edge array
     edgeInf.resize(m_topology->getNbEdges());
@@ -320,25 +286,41 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
     // set edge tensor to 0
     for (i=0; i<m_topology->getNbEdges(); ++i)
     {
-        edgeHandler->applyCreateFunction(i,edgeInf[i],m_topology->getEdge(i),
-                (const sofa::type::vector<Index>)0,
-                (const sofa::type::vector<double>)0
-                                        );
+        applyEdgeCreation(i,edgeInf[i],m_topology->getEdge(i),
+            (const sofa::type::vector<Index>)0,
+            (const sofa::type::vector<double>)0);
     }
     // create edge tensor by calling the triangle creation function
     sofa::type::vector<Index> triangleAdded;
     for (i=0; i<m_topology->getNbTriangles(); ++i)
         triangleAdded.push_back(i);
 
-    edgeHandler->applyTriangleCreation(triangleAdded,
-            (const sofa::type::vector<core::topology::Triangle>)0,
-            (const sofa::type::vector<sofa::type::vector<Index> >)0,
-            (const sofa::type::vector<sofa::type::vector<double> >)0
+    applyTriangleCreation(triangleAdded,
+        (const sofa::type::vector<core::topology::Triangle>)0,
+        (const sofa::type::vector<sofa::type::vector<Index> >)0,
+        (const sofa::type::vector<sofa::type::vector<double> >)0
                                       );
 
-    edgeInfo.createTopologyHandler(m_topology,edgeHandler);
+    edgeInfo.createTopologyHandler(m_topology);
     edgeInfo.linkToTriangleDataArray();
-    edgeInfo.endEdit();
+
+    edgeInfo.setCreationCallback([this](Index edgeIndex, EdgeRestInformation& ei,
+        const core::topology::BaseMeshTopology::Edge& edge,
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs)
+    {
+        applyEdgeCreation(edgeIndex, ei, edge, ancestors, coefs);
+    });
+
+    edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESADDED, [this](const core::topology::TopologyChange* eventTopo) {
+        const core::topology::TrianglesAdded* triAdd = static_cast<const core::topology::TrianglesAdded*>(eventTopo);
+        applyTriangleCreation(triAdd->getIndexArray(), triAdd->getElementArray(), triAdd->ancestorsList, triAdd->coefs);
+    });
+
+    edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
+        const core::topology::TrianglesRemoved* triRemove = static_cast<const core::topology::TrianglesRemoved*>(eventTopo);
+        applyTriangleDestruction(triRemove->getArray());
+    });
 }
 
 template <class DataTypes>

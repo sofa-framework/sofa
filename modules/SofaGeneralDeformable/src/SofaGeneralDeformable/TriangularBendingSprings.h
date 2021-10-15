@@ -97,7 +97,6 @@ public:
     };
 
     sofa::component::topology::EdgeData<type::vector<EdgeInformation> > edgeInfo; ///< Internal Edge data storing @sa EdgeInformation per edge
-    typedef typename topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::type::vector<EdgeInformation> > TriangularBSEdgeHandler;
 
 protected:
     TriangularBendingSprings();
@@ -105,7 +104,7 @@ protected:
     virtual ~TriangularBendingSprings();
 
     /** Method to initialize @sa edgeInfo when a new edge is created. (by default everything is set to 0)
-    * Will be used as callback by the TriangularBSEdgeHandler @sa edgeHandler
+    * Will be set as creation callback in the EdgeData @sa edgeInfo
     */
     void applyEdgeCreation(Index edgeIndex,
         EdgeInformation& ei,
@@ -113,7 +112,7 @@ protected:
         const sofa::type::vector< double >&);
 
     /** Method to update @sa edgeInfo when a new triangle is created.
-    * Will be used as callback by the TriangularBSEdgeHandler @sa edgeHandler
+    * Will be set as callback in the EdgeData @sa edgeInfo when TRIANGLESADDED event is fired
     * to create a new spring between new created triangles.
     */
     void applyTriangleCreation(const type::vector<Index>& triangleAdded,
@@ -122,15 +121,15 @@ protected:
         const type::vector<type::vector<double> >&);
 
     /** Method to update @sa edgeInfo when a triangle is removed.
-    * Will be used as callback by the TriangularBSEdgeHandler @sa edgeHandler
+    * Will be set as callback in the EdgeData @sa edgeInfo when TRIANGLESREMOVED event is fired
     * to remove spring if needed or update pair of triangles.
     */
     void applyTriangleDestruction(const type::vector<Index>& triangleRemoved);
 
-    /// Method to update @sa edgeInfo when a point is removed. Will be used as callback by the TriangularBSEdgeHandler @sa edgeHandler
+    /// Method to update @sa edgeInfo when a point is removed. Will be set as callback when POINTSREMOVED event is fired
     void applyPointDestruction(const type::vector<Index>& pointIndices);
 
-    /// Method to update @sa edgeInfo when points are renumbered. Will be used as callback by the TriangularBSEdgeHandler @sa edgeHandler
+    /// Method to update @sa edgeInfo when points are renumbered. Will be set as callback when POINTSRENUMBERING event is fired
     void applyPointRenumbering(const type::vector<Index>& pointToRenumber);
 
 public:
@@ -160,9 +159,6 @@ public:
     sofa::component::topology::EdgeData<type::vector<EdgeInformation> >& getEdgeInfo() { return edgeInfo; }
 
 protected:
-    /// Topology EdgeData handler to manage topological changes on the Topology Data @sa edgeInfo
-    TriangularBSEdgeHandler* edgeHandler;
-    
     /// poential energy accumulate in method @sa addForce
     SReal m_potentialEnergy;
 
