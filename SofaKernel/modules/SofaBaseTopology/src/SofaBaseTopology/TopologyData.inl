@@ -372,8 +372,6 @@ void TopologyData <TopologyElementType, VecT>::removeOnMovedPosition(const sofa:
 
     this->m_lastElementIndex -= sofa::Index(indices.size());
     
-    // TODO check why this call.
-    //this->remove( indices );
 }
 
 
