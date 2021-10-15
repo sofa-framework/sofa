@@ -19,35 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_INL
+#pragma once
 
 #include <SofaMiscFem/BoyceAndArruda.h>
 #include <SofaMiscFem/NeoHookean.h>
 #include <SofaMiscFem/MooneyRivlin.h>
 #include <SofaMiscFem/VerondaWestman.h>
 #include <SofaMiscFem/STVenantKirchhoff.h>
-#include <SofaMiscFem/HyperelasticMaterial.h>
 #include <SofaMiscFem/Costa.h>
 #include <SofaMiscFem/Ogden.h>
-#include "TetrahedronHyperelasticityFEMForceField.h"
+#include <SofaMiscFem/TetrahedronHyperelasticityFEMForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
-#include <fstream> // for reading the file
-#include <iostream> //for debugging
 #include <sofa/core/behavior/ForceField.inl>
 #include <SofaBaseTopology/TopologyData.inl>
-#include <algorithm>
-#include <iterator>
-namespace sofa
+
+namespace sofa::component::forcefield
 {
-namespace component
-{
-namespace forcefield
-{
+
 using namespace sofa::defaulttype;
 using namespace	sofa::component::topology;
 using namespace core::topology;
@@ -57,7 +47,6 @@ template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::T
     : m_topology(nullptr)
     , m_initialPoints(0)
     , m_updateMatrix(true)
-    , m_meshSaved( false)
     , d_stiffnessMatrixRegularizationWeight(initData(&d_stiffnessMatrixRegularizationWeight, (bool)false,"matrixRegularization","Regularization of the Stiffness Matrix (between true or false)"))
     , d_materialName(initData(&d_materialName,std::string("ArrudaBoyce"),"materialName","the name of the material to be used"))
     , d_parameterSet(initData(&d_parameterSet,"ParameterSet","The global parameters specifying the material"))
@@ -261,14 +250,6 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addForce(const core::Me
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
 
-
-    const bool printLog = this->f_printLog.getValue();
-    if (printLog && !m_meshSaved)
-    {
-        saveMesh( "D:/Steph/sofa-result.stl" );
-        printf( "Mesh saved.\n" );
-        m_meshSaved = true;
-    }
     unsigned int i=0,j=0,k=0,l=0;
     unsigned int nbTetrahedra=m_topology->getNbTetrahedra();
 
@@ -675,54 +656,6 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::testDerivatives()
     d_deltaForceCalculated.endEdit();
 }
 
-
-template<class DataTypes>
-void TetrahedronHyperelasticityFEMForceField<DataTypes>::saveMesh( const char *filename )
-{
-    VecCoord pos( this->mstate->read(core::ConstVecCoordId::position())->getValue());
-    core::topology::BaseMeshTopology::SeqTriangles triangles = m_topology->getTriangles();
-    FILE *file = fopen( filename, "wb" );
-
-    if (!file) return;
-
-    // write header
-    char header[81];
-
-    size_t errResult;
-    errResult = fwrite( (void*)&(header[0]),1, 80, file );
-    unsigned int numTriangles = triangles.size();
-    errResult = fwrite( &numTriangles, 4, 1, file );
-    // write poly data
-    float vertex[3][3];
-    float normal[3] = { 1,0,0 };
-    short stlSeperator = 0;
-
-    for (unsigned int triangleId=0; triangleId<triangles.size(); triangleId++)
-    {
-        if (m_topology->getTetrahedraAroundTriangle( triangleId ).size()==1)
-        {
-            // surface triangle, save it
-            unsigned int p0 = m_topology->getTriangle( triangleId )[0];
-            unsigned int p1 = m_topology->getTriangle( triangleId )[1];
-            unsigned int p2 = m_topology->getTriangle( triangleId )[2];
-            for (int d=0; d<3; d++)
-            {
-                    vertex[0][d] = (float)pos[p0][d];
-                    vertex[1][d] = (float)pos[p1][d];
-                    vertex[2][d] = (float)pos[p2][d];
-            }
-            errResult = fwrite( (void*)&(normal[0]), sizeof(float), 3, file );
-            errResult = fwrite( (void*)&(vertex[0][0]), sizeof(float), 9, file );
-            errResult = fwrite( (void*)&(stlSeperator), 2, 1, file );
-        }
-    }
-    errResult -= errResult; // ugly trick to avoid warnings
-
-	fclose( file );
-}
-
-
-
 template<class DataTypes>
 void TetrahedronHyperelasticityFEMForceField<DataTypes>::computeBBox(const core::ExecParams*, bool onlyVisible)
 {
@@ -864,10 +797,4 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::draw(const core::visual
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_INL
+} // namespace sofa::component::forcefield
