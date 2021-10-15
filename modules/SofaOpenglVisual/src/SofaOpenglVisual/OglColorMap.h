@@ -63,6 +63,7 @@ public:
     Data<bool> f_showLegend; ///< Activate rendering of color scale legend on the side
     Data<type::Vec2f> f_legendOffset; ///< Draw the legend on screen with an x,y offset
     Data<std::string> f_legendTitle; ///< Add a title to the legend
+    Data<unsigned int> f_legendSize; ///< Fond size of the legend if any
     Data<float> d_min; ///< min value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the min
     Data<float> d_max; ///< max value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the max
     Data<float> d_legendRangeScale; ///< to convert unit

@@ -50,6 +50,7 @@ OglColorMap::OglColorMap()
 , f_showLegend(initData(&f_showLegend, false, "showLegend", "Activate rendering of color scale legend on the side"))
 , f_legendOffset(initData(&f_legendOffset, type::Vec2f(10.0f,5.0f),"legendOffset", "Draw the legend on screen with an x,y offset"))
 , f_legendTitle(initData(&f_legendTitle,"legendTitle", "Add a title to the legend"))
+, f_legendSize(initData(&f_legendSize, 11u, "legendSize", "Add a title to the legend"))
 , d_min(initData(&d_min,0.0f,"min","min value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the min"))
 , d_max(initData(&d_max,0.0f,"max","max value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the max"))
 , d_legendRangeScale(initData(&d_legendRangeScale,1.f,"legendRangeScale","to change the unit of the min/max value of the legend"))
@@ -159,7 +160,7 @@ void OglColorMap::drawVisual(const core::visual::VisualParams* vparams)
 
 
     const std::string& legendTitle = f_legendTitle.getValue();
-    int yoffset = legendTitle.empty() ? 0 : 25;
+    int yoffset = legendTitle.empty() ? 0 : (int)(2*f_legendSize.getValue());
 
 
     GLint viewport[4];
@@ -243,7 +244,7 @@ void OglColorMap::drawVisual(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->writeOverlayText((int)f_legendOffset.getValue().x(), // x
                                               (int)f_legendOffset.getValue().y(), // y
-                                              11u, // size
+                                              f_legendSize.getValue(),
                                               textcolor,
                                               legendTitle.c_str());
     }
