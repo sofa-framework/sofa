@@ -100,24 +100,6 @@ public:
     /// where the springs information are stored
     sofa::component::topology::EdgeData<sofa::type::vector<Spring> > springArray;
 
-    class EdgeDataHandler : public sofa::component::topology::TopologyDataHandler< core::topology::BaseMeshTopology::Edge, sofa::type::vector<Spring> >
-    {
-    public:
-        typedef typename VectorSpringForceField<DataTypes>::Spring Spring;
-        EdgeDataHandler(VectorSpringForceField<DataTypes>* ff, topology::EdgeData<sofa::type::vector<Spring> >* data)
-            :topology::TopologyDataHandler< core::topology::BaseMeshTopology::Edge,sofa::type::vector<Spring> >(data)
-            ,ff(ff)
-        {
-
-        }
-
-        void applyCreateFunction(Index, Spring &t,
-                const core::topology::BaseMeshTopology::Edge &,
-                const sofa::type::vector<Index> &, const sofa::type::vector<double> &);
-    protected:
-        VectorSpringForceField<DataTypes>* ff;
-
-    };
     /// the filename where to load the spring information
     sofa::core::objectmodel::DataFileName m_filename;
     /// By default, assume that all edges have the same stiffness
@@ -143,7 +125,13 @@ protected:
     VectorSpringForceField(MechanicalState* _object1, MechanicalState* _object2);
     virtual ~VectorSpringForceField() override;
 
-    EdgeDataHandler* edgeHandler;
+    /** Method to initialize @sa Spring when a new edge is created.
+    * Will be set as creation callback in the EdgeData @sa springArray
+    */
+    void createEdgeInformation(Index, Spring& t,
+        const core::topology::BaseMeshTopology::Edge& e,
+        const sofa::type::vector<Index>& ancestors,
+        const sofa::type::vector<double>& coefs);
 
 public:
     bool load(const char *filename);

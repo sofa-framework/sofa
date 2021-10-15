@@ -177,59 +177,36 @@ public:
     /// compute lambda and mu based on the Young modulus and Poisson ratio
     void updateLameCoefficients();
 
-    class TRBSEdgeHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::type::vector<EdgeRestInformation> >
-    {
-    public:
-        typedef typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
+    /** Method to initialize @sa EdgeRestInformation when a new edge is created.
+    * Will be set as creation callback in the EdgeData @sa edgeInfo
+    */
+    void applyEdgeCreation(Index edgeIndex,
+        EdgeRestInformation& ei,
+        const core::topology::BaseMeshTopology::Edge& edge, 
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs);
 
-        TRBSEdgeHandler(TriangularBiquadraticSpringsForceField<DataTypes>* ff,
-                sofa::component::topology::EdgeData<sofa::type::vector<EdgeRestInformation> >* data)
-            :sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::type::vector<EdgeRestInformation> >(data)
-            ,ff(ff)
-        {
-        }
-        void applyCreateFunction(Index, EdgeRestInformation &t, const core::topology::BaseMeshTopology::Edge &,
-                const sofa::type::vector<Index> &, const sofa::type::vector<double> &);
+    /** Method to initialize @sa TriangleRestInformation when a new triangle is created.
+    * Will be set as creation callback in the TriangleData @sa triangleInfo
+    */
+    void applyTriangleCreation(Index triangleIndex, TriangleRestInformation& tinfo,
+        const core::topology::BaseMeshTopology::Triangle& triangle,
+        const sofa::type::vector<Index>& ancestors,
+        const sofa::type::vector<double>& coefs);
 
-    protected:
-        TriangularBiquadraticSpringsForceField<DataTypes>* ff;
-    };
-
-    class TRBSTriangleHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,sofa::type::vector<TriangleRestInformation> >
-    {
-    public:
-        typedef typename TriangularBiquadraticSpringsForceField<DataTypes>::TriangleRestInformation TriangleRestInformation;
-
-        TRBSTriangleHandler(TriangularBiquadraticSpringsForceField<DataTypes>* ff,
-                sofa::component::topology::TriangleData<sofa::type::vector<TriangleRestInformation> >* data)
-            :sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,sofa::type::vector<TriangleRestInformation> >(data)
-            ,ff(ff)
-        {
-        }
-
-        void applyCreateFunction(Index, TriangleRestInformation &t,
-                const core::topology::BaseMeshTopology::Triangle &,
-                const sofa::type::vector<Index> &,
-                const sofa::type::vector<double> &);
-        void applyDestroyFunction(Index, TriangleRestInformation &);
-
-
-    protected:
-        TriangularBiquadraticSpringsForceField<DataTypes>* ff;
-    };
+    /** Method to update @sa triangleInfo when a triangle is removed.
+    * Will be set as destruction callback in the TriangleData @sa triangleInfo
+    */
+    void applyTriangleDestruction(Index triangleIndex, TriangleRestInformation& tinfo);
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<TriangularBiquadraticSpringsForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected :
-    TRBSEdgeHandler* edgeHandler;
-    TRBSTriangleHandler* triangleHandler;
-
     /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* m_topology;
 
     sofa::component::topology::EdgeData<type::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
-
 };
 
 
