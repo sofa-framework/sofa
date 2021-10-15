@@ -217,7 +217,6 @@ public:
     TetrahedronHandler* m_tetrahedronHandler;
 
     void testDerivatives();
-    void saveMesh( const char *filename );
 
     void updateTangentMatrix();
 };

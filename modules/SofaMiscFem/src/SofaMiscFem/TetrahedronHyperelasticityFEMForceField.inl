@@ -656,54 +656,6 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::testDerivatives()
     d_deltaForceCalculated.endEdit();
 }
 
-
-template<class DataTypes>
-void TetrahedronHyperelasticityFEMForceField<DataTypes>::saveMesh( const char *filename )
-{
-    VecCoord pos( this->mstate->read(core::ConstVecCoordId::position())->getValue());
-    core::topology::BaseMeshTopology::SeqTriangles triangles = m_topology->getTriangles();
-    FILE *file = fopen( filename, "wb" );
-
-    if (!file) return;
-
-    // write header
-    char header[81];
-
-    size_t errResult;
-    errResult = fwrite( (void*)&(header[0]),1, 80, file );
-    unsigned int numTriangles = triangles.size();
-    errResult = fwrite( &numTriangles, 4, 1, file );
-    // write poly data
-    float vertex[3][3];
-    float normal[3] = { 1,0,0 };
-    short stlSeperator = 0;
-
-    for (unsigned int triangleId=0; triangleId<triangles.size(); triangleId++)
-    {
-        if (m_topology->getTetrahedraAroundTriangle( triangleId ).size()==1)
-        {
-            // surface triangle, save it
-            unsigned int p0 = m_topology->getTriangle( triangleId )[0];
-            unsigned int p1 = m_topology->getTriangle( triangleId )[1];
-            unsigned int p2 = m_topology->getTriangle( triangleId )[2];
-            for (int d=0; d<3; d++)
-            {
-                    vertex[0][d] = (float)pos[p0][d];
-                    vertex[1][d] = (float)pos[p1][d];
-                    vertex[2][d] = (float)pos[p2][d];
-            }
-            errResult = fwrite( (void*)&(normal[0]), sizeof(float), 3, file );
-            errResult = fwrite( (void*)&(vertex[0][0]), sizeof(float), 9, file );
-            errResult = fwrite( (void*)&(stlSeperator), 2, 1, file );
-        }
-    }
-    errResult -= errResult; // ugly trick to avoid warnings
-
-	fclose( file );
-}
-
-
-
 template<class DataTypes>
 void TetrahedronHyperelasticityFEMForceField<DataTypes>::computeBBox(const core::ExecParams*, bool onlyVisible)
 {
