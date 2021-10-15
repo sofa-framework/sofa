@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+
 #include <sofa/core/config.h>
 #include <sofa/core/topology/TopologySubsetData.h>
 #include <sofa/core/topology/TopologyDataHandler.h>
@@ -60,7 +61,7 @@ protected:
     void updateLastIndex(Index posLastIndex, Index newGlobalId) override;
 };
 
-#if !defined(SOFA_COMPONENT_TOPOLOGY_SUBSETINDICES_CPP)
+#if !defined(SOFA_CORE_TOPOLOGY_SUBSETINDICES_CPP)
 extern template class SOFA_CORE_API sofa::core::topology::TopologyDataHandler < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
 extern template class SOFA_CORE_API sofa::core::topology::TopologyData < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
 #endif

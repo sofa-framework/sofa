@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_TOPOLOGY_SUBSETINDICES_CPP
+#define SOFA_CORE_TOPOLOGY_SUBSETINDICES_CPP
 
 #include <sofa/core/topology/TopologySubsetIndices.h>
 #include <sofa/core/topology/TopologySubsetData.inl>
