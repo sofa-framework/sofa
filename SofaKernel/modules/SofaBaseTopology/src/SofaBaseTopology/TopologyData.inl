@@ -222,19 +222,17 @@ void TopologyData <TopologyElementType, VecT>::linkToElementDataArray(sofa::core
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::swap(Index i1, Index i2)
 {
-    container_type& data = *(this->beginEdit());
+    helper::WriteOnlyAccessor<Data< container_type > > data = this;
     value_type tmp = data[i1];
     data[i1] = data[i2];
     data[i2] = tmp;
-    this->endEdit();
 }
 
 
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::remove(const sofa::type::vector<Index>& index)
 {
-
-    container_type& data = *(this->beginEdit());
+    helper::WriteOnlyAccessor<Data< container_type > > data = this;
     if (data.size() > 0)
     {
         for (std::size_t i = 0; i < index.size(); ++i)
@@ -254,7 +252,6 @@ void TopologyData <TopologyElementType, VecT>::remove(const sofa::type::vector<I
 
         data.resize(data.size() - index.size());
     }
-    this->endEdit();
 }
 
 
@@ -268,7 +265,7 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::type::vector<Inde
     std::size_t nbElements = index.size();
     if (nbElements == 0) return;
     // Using default values
-    container_type& data = *(this->beginEdit());
+    helper::WriteOnlyAccessor<Data< container_type > > data = this;
     std::size_t i0 = data.size();
     if (i0 != index[0])
     {
@@ -313,7 +310,7 @@ void TopologyData <TopologyElementType, VecT>::move(const sofa::type::vector<Ind
     const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
     const sofa::type::vector< sofa::type::vector< double > >& coefs)
 {
-    container_type& data = *(this->beginEdit());
+    helper::WriteOnlyAccessor<Data< container_type > > data = this;
 
     if (this->m_topologyHandler)
     {
@@ -323,8 +320,6 @@ void TopologyData <TopologyElementType, VecT>::move(const sofa::type::vector<Ind
             this->m_topologyHandler->applyCreateFunction(indexList[i], data[indexList[i]], ancestors[i], coefs[i]);
         }
     }
-
-    this->endEdit();
 }
 
 
@@ -332,13 +327,10 @@ void TopologyData <TopologyElementType, VecT>::move(const sofa::type::vector<Ind
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::renumber(const sofa::type::vector<Index>& index)
 {
-    container_type& data = *(this->beginEdit());
-
+    helper::WriteOnlyAccessor<Data< container_type > > data = this;
     container_type copy = this->getValue(); // not very efficient memory-wise, but I can see no better solution...
     for (std::size_t i = 0; i < index.size(); ++i)
         data[i] = copy[index[i]];
-
-    this->endEdit();
 }
 
 
@@ -346,7 +338,7 @@ template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::addOnMovedPosition(const sofa::type::vector<Index>& indexList,
     const sofa::type::vector<TopologyElementType>& elems)
 {
-    container_type& data = *(this->beginEdit());
+    helper::WriteOnlyAccessor<Data< container_type > > data = this;
 
     // Recompute data
     sofa::type::vector< Index > ancestors;
@@ -363,14 +355,13 @@ void TopologyData <TopologyElementType, VecT>::addOnMovedPosition(const sofa::ty
         }
     }
     this->m_lastElementIndex += sofa::Index(indexList.size());
-    this->endEdit();
 }
 
 
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::type::vector<Index>& indices)
 {
-    container_type& data = *(this->beginEdit());
+    helper::WriteOnlyAccessor<Data< container_type > > data = this;
 
     if (this->m_topologyHandler)
     {
@@ -380,10 +371,7 @@ void TopologyData <TopologyElementType, VecT>::removeOnMovedPosition(const sofa:
     }
 
     this->m_lastElementIndex -= sofa::Index(indices.size());
-    this->endEdit();
-
-    // TODO check why this call.
-    //this->remove( indices );
+    
 }
 
 
