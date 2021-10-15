@@ -18,7 +18,7 @@
 
   <VisualStyle displayFlags="showVisual showCollisionModels hideBehaviorModels showForceFields hideInteractionForceFields hideWireframe" />
 
-  <FreeMotionAnimationLoop name="animationLoop" solveVelocityConstraintFirst="true" />
+  <FreeMotionAnimationLoop name="animationLoop" solveVelocityConstraintFirst="true" parallelCollisionDetectionAndFreeMotion="false" parallelODESolving="false"/>
   <GenericConstraintSolver name="constraintSolver" maxIterations="100" tolerance="1.0e-9" multithreading="0"/>
   <DefaultPipeline name="Pipeline" />
   <BruteForceBroadPhase name="BroadPhase" />
