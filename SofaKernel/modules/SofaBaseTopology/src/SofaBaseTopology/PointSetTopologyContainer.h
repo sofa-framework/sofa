@@ -41,9 +41,9 @@ public:
     typedef defaulttype::Vec3Types InitTypes;
 
 protected:
-    PointSetTopologyContainer(Size nPoints = 0);
+    explicit PointSetTopologyContainer(Size nPoints = 0);
 
-    ~PointSetTopologyContainer() override {}
+    ~PointSetTopologyContainer() override = default;
 public:
 
     void init() override;
@@ -138,25 +138,14 @@ public:
 
     const sofa::type::vector<PointID>& getPoints() const;
 
-    /// \brief function to add a TopologyHandler to the current list of engines.
-    void addTopologyHandler(sofa::core::topology::TopologyHandler* _TopologyHandler);
+    bool linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType) override;
 
 protected:
-    /// \brief Function creating the data graph linked to d_point
-    void updateTopologyHandlerGraph() override;
-
-    /// \brief functions to really update the graph of Data/DataEngines linked to the different Data array, using member variable.
-    virtual void updateDataEngineGraph(sofa::core::objectmodel::BaseData& my_Data, std::list<sofa::core::topology::TopologyHandler *>& my_enginesList);
-
-
     /// Use a specific boolean @see m_pointTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean
     void setPointTopologyToDirty();
     void cleanPointTopologyFromDirty();
-    const bool& isPointTopologyDirty() {return m_pointTopologyDirty;}
-
-    /// \brief functions to display the graph of Data/DataEngines linked to the different Data array, using member variable.
-    virtual void displayDataGraph(sofa::core::objectmodel::BaseData& my_Data);
+    const bool& isPointTopologyDirty() const {return m_pointTopologyDirty;}
 
 public:
     Data<InitTypes::VecCoord> d_initPoints; ///< Initial position of points    
@@ -164,17 +153,8 @@ public:
     Data<bool> d_checkTopology; ///< Bool parameter to activate internal topology checks in several methods 
 
 protected:
-
-
     /// Boolean used to know if the topology Data of this container is dirty
-    bool m_pointTopologyDirty;
-
-    /// List of engines related to this specific container
-    std::list<sofa::core::topology::TopologyHandler *> m_enginesList;
-
-    /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
-    sofa::type::vector< sofa::type::vector<std::string> > m_dataGraph;
-    sofa::type::vector< sofa::type::vector<std::string> > m_enginesGraph;
+    bool m_pointTopologyDirty = false;
 
 private:
     

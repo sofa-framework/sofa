@@ -27,9 +27,6 @@
 namespace sofa::component::collision
 {
 
-using sofa::helper::system::thread::CTime;
-using sofa::helper::system::thread::ctime_t;
-
 TriangleOctree::~TriangleOctree()
 {
     for(int i=0; i<8; i++)
