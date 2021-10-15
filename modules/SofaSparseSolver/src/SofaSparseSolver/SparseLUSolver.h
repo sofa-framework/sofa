@@ -29,7 +29,7 @@
 namespace sofa::component::linearsolver
 {
 
-//defaut structure for a LDL factorization
+//defaut structure for a LU factorization
 template<class Real>
 class SparseLUInvertData : public MatrixInvertData {
 public :
@@ -80,6 +80,10 @@ protected :
     }
 
 };
+
+#if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSELUSOLVER_CPP)
+    extern template class SOFA_SOFASPARSESOLVER_API SparseLUSolver< CompressedRowSparseMatrix< double>,FullVector<double> >;
+#endif
 
 } // namespace sofa::component::linearsolver
 

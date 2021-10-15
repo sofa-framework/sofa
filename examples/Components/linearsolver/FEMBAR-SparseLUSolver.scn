@@ -14,7 +14,7 @@
     <DefaultCollisionGroupManager name="Group" />
     <Node name="M1">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
-        <SparseLUSolver printLog="1" verbose="0"/>
+        <SparseLUSolver/>
         <MechanicalObject />
         <UniformMass vertexMass="1" />
         <RegularGridTopology nx="4" ny="4" nz="20" xmin="-9" xmax="-6" ymin="0" ymax="3" zmin="0" zmax="19" />
