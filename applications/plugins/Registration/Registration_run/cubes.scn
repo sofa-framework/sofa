@@ -9,7 +9,7 @@
     <!-- Using a rigid cube using collision triangles, lines and points  -->
     <Node name="Cube1">
         <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver name="CG Solver" />
+        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5" name="CG Solver"/>
         <MechanicalObject name="Cube1 RigidDOF" template="Rigid3d" dy="0" />
         <UniformMass name="UniformMass1" totalMass="10.0" />
         <UncoupledConstraintCorrection />
@@ -28,7 +28,7 @@
     </Node>
     <Node name="Cube2">
         <EulerImplicitSolver name="EulerImplicit" />
-        <CGLinearSolver name="CG Solver" />
+        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5" name="CG Solver"/>
         <MechanicalObject name="Cube2 RigidDOF" template="Rigid3d" dy="0" dx="0" />
         <UniformMass name="UniformMass2" totalMass="10.0" />
         <UncoupledConstraintCorrection />
