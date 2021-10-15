@@ -206,7 +206,6 @@ void StandardTetrahedralFEMForceField<DataTypes>::createTetrahedronRestInformati
     const type::vector< core::topology::BaseMeshTopology::Tetrahedron >& tetrahedronArray = m_topology->getTetrahedra();
     const std::vector< core::topology::BaseMeshTopology::Edge>& edgeArray = m_topology->getEdges();
     unsigned int j;
-    /*int l*/;
     typename DataTypes::Real volume;
     typename DataTypes::Coord point[4];
     const typename DataTypes::VecCoord restPosition = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();

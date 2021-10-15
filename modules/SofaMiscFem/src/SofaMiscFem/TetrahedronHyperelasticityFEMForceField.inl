@@ -251,7 +251,6 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::createTetrahedronRestIn
         //int l=e[1];
         if (edgeArray[te[j]][0] != t[k]) {
             k = e[1];
-            //l=e[0];
         }
     }
 }

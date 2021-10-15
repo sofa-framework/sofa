@@ -205,7 +205,6 @@ public:
 	fem::HyperelasticMaterial<DataTypes> *myMaterial;
 
     topology::TetrahedronData<tetrahedronRestInfoVector> tetrahedronInfo; ///< Internal tetrahedron data
-    //EdgeData<sofa::type::vector< EdgeInformation> > edgeInfo; ///< Internal edge data
     topology::EdgeData<edgeInformationVector> edgeInfo; ///< Internal edge data
 
 
