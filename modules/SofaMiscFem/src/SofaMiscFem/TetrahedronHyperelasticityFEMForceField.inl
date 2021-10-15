@@ -19,35 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_INL
+#pragma once
 
 #include <SofaMiscFem/BoyceAndArruda.h>
 #include <SofaMiscFem/NeoHookean.h>
 #include <SofaMiscFem/MooneyRivlin.h>
 #include <SofaMiscFem/VerondaWestman.h>
 #include <SofaMiscFem/STVenantKirchhoff.h>
-#include <SofaMiscFem/HyperelasticMaterial.h>
 #include <SofaMiscFem/Costa.h>
 #include <SofaMiscFem/Ogden.h>
-#include "TetrahedronHyperelasticityFEMForceField.h"
+#include <SofaMiscFem/TetrahedronHyperelasticityFEMForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
-#include <fstream> // for reading the file
-#include <iostream> //for debugging
 #include <sofa/core/behavior/ForceField.inl>
 #include <SofaBaseTopology/TopologyData.inl>
-#include <algorithm>
-#include <iterator>
-namespace sofa
+
+namespace sofa::component::forcefield
 {
-namespace component
-{
-namespace forcefield
-{
+
 using namespace sofa::defaulttype;
 using namespace	sofa::component::topology;
 using namespace core::topology;
@@ -111,7 +101,6 @@ template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::T
     : m_topology(nullptr)
     , m_initialPoints(0)
     , m_updateMatrix(true)
-    , m_meshSaved( false)
     , d_stiffnessMatrixRegularizationWeight(initData(&d_stiffnessMatrixRegularizationWeight, (bool)false,"matrixRegularization","Regularization of the Stiffness Matrix (between true or false)"))
     , d_materialName(initData(&d_materialName,std::string("ArrudaBoyce"),"materialName","the name of the material to be used"))
     , d_parameterSet(initData(&d_parameterSet,"ParameterSet","The global parameters specifying the material"))
@@ -261,14 +250,6 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addForce(const core::Me
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
 
-
-    const bool printLog = this->f_printLog.getValue();
-    if (printLog && !m_meshSaved)
-    {
-        saveMesh( "D:/Steph/sofa-result.stl" );
-        printf( "Mesh saved.\n" );
-        m_meshSaved = true;
-    }
     unsigned int i=0,j=0,k=0,l=0;
     unsigned int nbTetrahedra=m_topology->getNbTetrahedra();
 
@@ -864,10 +845,4 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::draw(const core::visual
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_INL
+} // namespace sofa::component::forcefield

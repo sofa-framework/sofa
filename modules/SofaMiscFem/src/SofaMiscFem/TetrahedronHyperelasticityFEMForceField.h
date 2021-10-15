@@ -144,7 +144,6 @@ public :
     core::topology::BaseMeshTopology* m_topology;
     VecCoord  m_initialPoints;	/// the intial positions of the points
     bool m_updateMatrix;
-    bool  m_meshSaved ;
 
     Data<bool> d_stiffnessMatrixRegularizationWeight; ///< Regularization of the Stiffness Matrix (between true or false)
     Data<std::string> d_materialName; ///< the name of the material
