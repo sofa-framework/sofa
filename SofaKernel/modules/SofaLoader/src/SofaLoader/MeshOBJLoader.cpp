@@ -35,8 +35,9 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 using sofa::helper::getWriteOnlyAccessor;
 
-int MeshOBJLoaderClass = core::RegisterObject("Specific mesh loader for Obj file format.")
-        .add< MeshOBJLoader >();
+int MeshOBJLoaderClass = core::RegisterObject("Specific mesh loader for OBJ file format.")
+.add< MeshOBJLoader >()
+.addAlias("MeshObjLoader");
 
 MeshOBJLoader::MeshOBJLoader()
     : MeshLoader()
