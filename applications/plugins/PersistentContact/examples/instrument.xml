@@ -19,7 +19,7 @@
 				<MechanicalObject name="GrasperDOFs" template="Rigid3d" position="0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1"/>
 				
 				<Node name="First Grasper Line CM">
-					<MeshObjLoader name="ml" filename="Mors1_CM_line.obj" />
+					<MeshOBJLoader name="ml" filename="Mors1_CM_line.obj" />
 					<MeshTopology src="@ml"/>
 					<MechanicalObject src="@ml" name="CM" rx="180"/>
 					<LineCollisionModel name="FGL Line" proximity="1.5" group="11"/>   
@@ -33,7 +33,7 @@
 				</Node>
 				
 				<Node name="Second Grasper Line CM">
-					<MeshObjLoader name="ml" filename="Mors2_CM_line.obj" />
+					<MeshOBJLoader name="ml" filename="Mors2_CM_line.obj" />
 					<MeshTopology src="@ml"/>
 					<MechanicalObject src="@ml" name="CM" rx="180"/>
 					<LineCollisionModel name="SGL Line" proximity="1.5" group="11"/>
