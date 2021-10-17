@@ -6,12 +6,12 @@
 	<VisualStyle displayFlags="showWireframe showVisual" />
 
 	<Node name="Mesh1">
-		<MeshObjLoader name="loader" filename="mesh/cube.obj" translation="50 50 50" scale="50"/>
+		<MeshOBJLoader name="loader" filename="mesh/cube.obj" translation="50 50 50" scale="50"/>
 		<OglModel src="@loader" color="1 0 0"/>
 	</Node>
 
 	<Node name="Mesh2">
-		<MeshObjLoader name="loader" filename="mesh/sphere_05.obj"/>
+		<MeshOBJLoader name="loader" filename="mesh/sphere_05.obj"/>
 		<OglModel src="@loader" color="0 1 0"/>
 	</Node>
 

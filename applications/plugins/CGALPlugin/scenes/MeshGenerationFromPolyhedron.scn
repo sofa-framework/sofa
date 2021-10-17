@@ -3,7 +3,7 @@
     <VisualStyle displayFlags="showVisual" />
     <RequiredPlugin pluginName="CGALPlugin"/>
 
-    <MeshObjLoader name="loader" filename="mesh/torus.obj" />	
+    <MeshOBJLoader name="loader" filename="mesh/torus.obj" />	
 
     <Node name="visu_surface">
         <MechanicalObject name="dofs" position="@../loader.position"/>

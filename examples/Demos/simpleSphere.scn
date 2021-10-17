@@ -7,7 +7,7 @@
     <DefaultContactManager name="collision response" response="default" />
     <DiscreteIntersection/>
 
-    <MeshObjLoader name="Sphere" filename="mesh/sphere_01.obj" />
+    <MeshOBJLoader name="Sphere" filename="mesh/sphere_01.obj" />
 
     <Node name="Liver" gravity="0 -9.81 0">
         <EulerImplicitSolver name="cg_odesolver"   rayleighStiffness="0.1" rayleighMass="0.1" />

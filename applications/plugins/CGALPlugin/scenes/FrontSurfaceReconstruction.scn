@@ -6,7 +6,7 @@
 	<VisualStyle displayFlags="showVisual" />
 
 	<Node name="PointCloud">
-		<MeshObjLoader name="loader" filename="mesh/liver2.obj"/>
+		<MeshOBJLoader name="loader" filename="mesh/liver2.obj"/>
 		<MeshTopology src="@loader"/>
 		<MechanicalObject showObject="1" showObjectScale="5"/>
 	</Node>

@@ -62,7 +62,7 @@ response. The scene should work with or without the group manager.
     the contact response will be controlled by the group manager.
     -->
     <Node name="Floor">
-        <MeshObjLoader name="loader" filename="mesh/floor2b.obj"/>
+        <MeshOBJLoader name="loader" filename="mesh/floor2b.obj"/>
         <MeshTopology src="@loader"/>
         <MechanicalObject src="@loader" dy="-10" scale="0.5"/>
         <TriangleCollisionModel/>

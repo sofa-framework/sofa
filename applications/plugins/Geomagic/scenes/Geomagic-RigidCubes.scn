@@ -18,7 +18,7 @@
     drawDevice="1" drawDeviceFrame="1" forceFeedBack="@Instrument/LCPFF1"/>	
 	
 	<Node name="CubeStatic1">
-		<MeshObjLoader name="loaderC" filename="mesh/cube.obj" scale3d="4 6 1" translation="-2 -2 -8" />
+		<MeshOBJLoader name="loaderC" filename="mesh/cube.obj" scale3d="4 6 1" translation="-2 -2 -8" />
         <MechanicalObject name="Cube"  position="@loaderC.position" />     
 		<MeshTopology name="grid" src="@loaderC" />
 		<TriangleCollisionModel simulated="0" moving="0" bothSide="false" group="1"/>
@@ -31,7 +31,7 @@
     </Node>
     
     <Node name="CubeStatic2">
-		<MeshObjLoader name="loaderC2" filename="mesh/cube.obj" scale3d="4 6 1" translation="-2 -2 8" />
+		<MeshOBJLoader name="loaderC2" filename="mesh/cube.obj" scale3d="4 6 1" translation="-2 -2 8" />
         <MechanicalObject position="@loaderC2.position"/>
         <MeshTopology name="grid" src="@loaderC2" />
 		
@@ -45,7 +45,7 @@
     </Node>
 	
 	<Node name="Floor">
-        <MeshObjLoader name="loaderF" filename="mesh/cube.obj" scale3d="20 0.5 20" translation="0 -10 0"/>
+        <MeshOBJLoader name="loaderF" filename="mesh/cube.obj" scale3d="20 0.5 20" translation="0 -10 0"/>
         <MeshTopology src="@loaderF" />
         <MechanicalObject src="@loaderF" />
         <TriangleCollisionModel simulated="0" moving="0" bothSide="false" group="1"/>
@@ -76,13 +76,13 @@
         <LinearSolverConstraintCorrection />
 		
 		<Node name="VisuTool" >
-            <MeshObjLoader name="meshLoader_1" filename="Demos/Dentistry/data/mesh/dental_instrument.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_1" filename="Demos/Dentistry/data/mesh/dental_instrument.obj" handleSeams="1" />
             <OglModel name="InstrumentVisualModel" src="@meshLoader_1" color="1.0 0.2 0.2 1.0" ry="-180" rz="-90" dz="3.5" dx="-0.3"/>
             <RigidMapping name="MM->VM mapping" input="@instrumentState" output="@InstrumentVisualModel" />
         </Node>
 		
         <Node name="CollisionModel" >
-            <MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+            <MeshOBJLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
             <MeshTopology src="@loader" name="InstrumentCollisionModel" />
             <MechanicalObject src="@loader" name="instrumentCollisionState"  ry="-180" rz="-90" dz="3.5" dx="-0.3" />
             <LineCollisionModel contactStiffness="100"/>			
