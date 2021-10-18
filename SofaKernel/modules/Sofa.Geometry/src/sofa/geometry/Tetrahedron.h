@@ -55,7 +55,7 @@ struct Tetrahedron
         else
         {
             //does not make sense to compute volume other than 3D
-            //but some code effectively call 2d volumes(??)
+            //but some code effectively wants 2d volumes(??)
             return static_cast<T>(0);
         }
     }

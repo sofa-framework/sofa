@@ -29,6 +29,8 @@
 #include <iterator>
 #include <array>
 
+#include <sofa/geometry/Tetrahedron.h>
+
 namespace sofa::geometry
 {
 
@@ -143,8 +145,32 @@ struct Hexahedron
         return pos;
     }
 
-    
+    //non optimized version: just return the sum of the 6 inner-tetrahedra
+    template<typename Node,
+        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+        typename = std::enable_if_t<std::is_scalar_v<T>>>
+        static constexpr auto volume(const Node& n0, const Node& n1, const Node& n2, const Node& n3,
+            const Node& n4, const Node& n5, const Node& n6, const Node& n7)
+    {
+        constexpr Node n{};
+        //static_assert(std::distance(std::begin(n), std::end(n)) == 3, "volume can only be computed in 3 dimensions.");
 
+        if constexpr (std::distance(std::begin(n), std::end(n)) == 3)
+        {
+            return sofa::geometry::Tetrahedron::volume(n0, n5, n1, n6)
+                 + sofa::geometry::Tetrahedron::volume(n0, n1, n3, n6)
+                 + sofa::geometry::Tetrahedron::volume(n1, n3, n6, n2)
+                 + sofa::geometry::Tetrahedron::volume(n6, n3, n0, n7)
+                 + sofa::geometry::Tetrahedron::volume(n6, n7, n0, n5)
+                 + sofa::geometry::Tetrahedron::volume(n7, n5, n4, n0);
+        }
+        else
+        {
+            //does not make sense to compute volume other than 3D
+            //but some code effectively wants 2d volumes(??)
+            return static_cast<T>(0);
+        }
+    }
 };
 
 } // namespace sofa::geometry
