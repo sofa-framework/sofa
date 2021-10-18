@@ -88,6 +88,10 @@ public:
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2) override;
     using Inherit::addKToMatrix;
     void addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+
+protected:
+
+    static void addToMatrix(linearalgebra::BaseMatrix* globalMatrix, const unsigned int offsetRow, const unsigned int offsetCol, const Mat& localMatrix);
 };
 
 #if !defined(SOFA_COMPONENT_FORCEFIELD_STIFFSPRINGFORCEFIELD_CPP)
