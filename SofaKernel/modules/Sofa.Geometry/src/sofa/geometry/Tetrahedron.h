@@ -23,6 +23,9 @@
 
 #include <sofa/geometry/config.h>
 
+#include <sofa/type/fixed_array_algorithms.h>
+#include <iterator>
+
 namespace sofa::geometry
 {
 
@@ -31,6 +34,31 @@ struct Tetrahedron
     static const sofa::Size NumberOfNodes = 4;
 
     Tetrahedron() = default;
+
+    //needs cross
+    template<typename Node,
+        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+        typename = std::enable_if_t<std::is_scalar_v<T>>>
+        static constexpr auto volume(const Node& n0, const Node& n1, const Node& n2, const Node& n3)
+    {
+        constexpr Node n{};
+        //static_assert(std::distance(std::begin(n), std::end(n)) == 3, "volume can only be computed in 3 dimensions.");
+
+        if constexpr (std::distance(std::begin(n), std::end(n)) == 3)
+        {
+            const auto a = n1 - n0;
+            const auto b = n2 - n0;
+            const auto c = n3 - n0;
+
+            return sofa::type::dot(a, b.cross(c)) / static_cast<T>(6);
+        }
+        else
+        {
+            //does not make sense to compute volume other than 3D
+            //but some code effectively call 2d volumes(??)
+            return static_cast<T>(0);
+        }
+    }
 };
 
 } // namespace sofa::geometry
