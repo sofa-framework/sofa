@@ -133,7 +133,7 @@ public:
     bool m_bManageEdgeChange{false};
     bool m_bManageTriangleChange{ false };
     bool m_bManageQuadChange{ false };
-    sofa::component::topology::TetrahedronSetGeometryAlgorithms<GeometricalTypes>* tetraGeo;
+    bool m_bManageTetraChange{ false };
     sofa::component::topology::HexahedronSetGeometryAlgorithms<GeometricalTypes>* hexaGeo;
 protected:
     DiagonalMass();
