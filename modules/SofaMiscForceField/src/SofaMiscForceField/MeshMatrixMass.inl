@@ -26,7 +26,6 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <SofaBaseTopology/TopologyData.inl>
-#include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/vector.h>
