@@ -130,11 +130,11 @@ protected:
     sofa::core::topology::BaseMeshTopology* m_topology;
 
 public:
-    bool m_bManageEdgeChange{false};
+    bool m_bManageEdgeChange{ false };
     bool m_bManageTriangleChange{ false };
     bool m_bManageQuadChange{ false };
     bool m_bManageTetraChange{ false };
-    sofa::component::topology::HexahedronSetGeometryAlgorithms<GeometricalTypes>* hexaGeo;
+    bool m_bManageHexaChange{ false };
 protected:
     DiagonalMass();
 
