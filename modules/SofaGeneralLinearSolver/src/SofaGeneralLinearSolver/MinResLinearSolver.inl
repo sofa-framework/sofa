@@ -44,10 +44,14 @@ MinResLinearSolver<TMatrix,TVector>::MinResLinearSolver()
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
 {
     f_graph.setWidget("graph");
-//    f_graph.setReadOnly(true);
-
 	f_maxIter.setRequired(true);
 	f_tolerance.setRequired(true);
+}
+
+template<class TMatrix, class TVector>
+void MinResLinearSolver<TMatrix,TVector>::init()
+{
+    Inherit::init();
 }
 
 template<class TMatrix, class TVector>

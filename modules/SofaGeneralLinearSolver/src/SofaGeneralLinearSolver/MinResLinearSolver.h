@@ -52,6 +52,7 @@ protected:
     MinResLinearSolver();
 
 public:
+    void init() override;
     void resetSystem() override;
     void setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams) override;
 
