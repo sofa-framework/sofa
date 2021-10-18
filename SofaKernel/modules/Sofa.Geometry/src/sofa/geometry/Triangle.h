@@ -23,6 +23,8 @@
 
 #include <sofa/geometry/config.h>
 
+#include <sofa/geometry/Edge.h>
+
 namespace sofa::geometry
 {
 
@@ -31,6 +33,21 @@ struct Triangle
     static const sofa::Size NumberOfNodes = 3;
 
     Triangle() = default;
+
+
+    template<typename Node,
+        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+        typename = std::enable_if_t<std::is_scalar_v<T>>>
+        static constexpr auto area(const Node& n0, const Node& n1, const Node& n2)
+    {
+        const auto a = sofa::geometry::Edge::squaredLength(n0, n1);
+        const auto b = sofa::geometry::Edge::squaredLength(n0, n2);
+        const auto c = sofa::geometry::Edge::squaredLength(n1, n2);
+
+        const auto squaredArea = (2 * a * b + 2 * b * c + 2 * c * a - (a * a) - (b * b) - (c * c)) / 16;
+
+        return std::sqrt(squaredArea);
+    }
 };
 
 } // namespace sofa::geometry
