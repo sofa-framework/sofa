@@ -31,12 +31,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/Vec.h>
 
-#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
-
 #include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa::component::mass
