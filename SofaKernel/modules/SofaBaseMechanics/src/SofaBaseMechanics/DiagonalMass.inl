@@ -1012,7 +1012,8 @@ void DiagonalMass<DataTypes, MassType>::computeMass()
             }
             d_totalMass.setValue(total_mass);
         }
-        else if (m_topology->getNbQuads()>0 && m_manageElementTypeChange == sofa::geometry::ElementType::QUAD) {
+        else if (m_topology->getNbQuads()>0 && m_manageElementTypeChange == sofa::geometry::ElementType::QUAD)
+        {
             helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
             m_massTopologyType = sofa::geometry::ElementType::QUAD;
 
