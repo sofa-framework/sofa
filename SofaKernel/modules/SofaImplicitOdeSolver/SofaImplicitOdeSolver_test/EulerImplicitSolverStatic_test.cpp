@@ -19,7 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
+
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest;
+
 #include <SceneCreator/SceneCreator.h>
 #include <SceneCreator/SceneUtils.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
@@ -31,12 +36,12 @@
 
 #include <sofa/simulation/Simulation.h>
 
-#include <SofaTest/TestMessageHandler.h>
-
 
 namespace sofa {
 
 using namespace modeling;
+using namespace type;
+using namespace testing;
 using namespace defaulttype;
 using core::objectmodel::New;
 
@@ -52,7 +57,7 @@ typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphSc
  * Mass-spring string composed of two particles in gravity, one is fixed.
  * Francois Faure, 2013.
  */
-struct EulerImplicit_test_2_particles_to_equilibrium : public Sofa_test<>
+struct EulerImplicit_test_2_particles_to_equilibrium : public BaseSimulationTest, NumericTest<SReal>
 {
     EulerImplicit_test_2_particles_to_equilibrium()
     {
@@ -64,9 +69,9 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Sofa_test<>
 
         EulerImplicitSolver::SPtr eulerSolver = addNew<EulerImplicitSolver>(root);
         CGLinearSolver::SPtr linearSolver = addNew<CGLinearSolver>(root);
-        linearSolver->f_maxIter.setValue(25);
-        linearSolver->f_tolerance.setValue(1e-5);
-        linearSolver->f_smallDenominatorThreshold.setValue(1e-5);
+        linearSolver->d_maxIter.setValue(25);
+        linearSolver->d_tolerance.setValue(1e-5);
+        linearSolver->d_smallDenominatorThreshold.setValue(1e-5);
 
         simulation::Node::SPtr string = massSpringString(
                     root, // attached to root node
@@ -92,7 +97,7 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Sofa_test<>
         x0 = getVector( core::VecId::position() ); //cerr<<"EulerImplicit_test, initial positions : " << x0.transpose() << endl;
         v0 = getVector( core::VecId::velocity() );
 
-        Real dx, dv;
+        Vector::RealScalar dx, dv;
         unsigned n=0;
         const unsigned nMax=100;
         const double  precision = 1.e-4;
@@ -134,7 +139,7 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Sofa_test<>
 /**
  * @brief The EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium class is used to test if the solver works well for two particles in different nodes.
  */
-struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : public Sofa_test<>
+struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : public BaseSimulationTest, NumericTest<SReal>
 {
 
     EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium()
@@ -147,9 +152,9 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
 
         EulerImplicitSolver::SPtr eulerSolver = addNew<EulerImplicitSolver> (root );
         CGLinearSolver::SPtr linearSolver = addNew<CGLinearSolver> (root );
-        linearSolver->f_maxIter.setValue(25);
-        linearSolver->f_tolerance.setValue(1e-5);
-        linearSolver->f_smallDenominatorThreshold.setValue(1e-5);
+        linearSolver->d_maxIter.setValue(25);
+        linearSolver->d_tolerance.setValue(1e-5);
+        linearSolver->d_smallDenominatorThreshold.setValue(1e-5);
 
 
         MechanicalObject<Vec3Types>::SPtr DOF = addNew<MechanicalObject<Vec3Types> >(root,"DOF");

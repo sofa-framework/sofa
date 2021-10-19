@@ -49,24 +49,6 @@ public:
     void redraw() override;
     int closeGUI() override;
 
-    static void setNumIterations(const std::string& nbIterInp) 
-    {
-        size_t inpLen= nbIterInp.length();
-       
-        if (nbIterInp == "infinite")
-        {
-            nbIter = -1;
-        }
-        else if (inpLen)
-        {
-            nbIter = std::stoi(nbIterInp);
-        }
-        else
-        {
-            nbIter = DEFAULT_NUMBER_OF_ITERATIONS;
-        }
-        
-    }
     sofa::simulation::Node* currentSimulation() override;
 
     /// @}
@@ -76,6 +58,7 @@ public:
 
     static BaseGUI* CreateGUI(const char* name, sofa::simulation::NodeSPtr groot = nullptr, const char* filename = nullptr);
     static int RegisterGUIParameters(ArgumentParser* argumentParser);
+    static void OnNbIterChange(const ArgumentParser*, const std::string& strValue);
 
 
     static const signed int DEFAULT_NUMBER_OF_ITERATIONS;

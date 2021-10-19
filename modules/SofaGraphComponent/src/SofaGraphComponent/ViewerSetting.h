@@ -24,7 +24,7 @@
 #include <SofaGraphComponent/config.h>
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/helper/OptionsGroup.h>
 
 namespace sofa::component::configurationsetting
@@ -49,7 +49,7 @@ protected:
     ViewerSetting();
 public:
 
-    Data<sofa::defaulttype::Vec<2,int> > resolution;                           ///< Screen resolution (width, height).
+    Data<sofa::type::Vec<2,int> > resolution;                           ///< Screen resolution (width, height).
     Data<bool> fullscreen;                                  ///< True if viewer should be fullscreen.
     Data<sofa::helper::OptionsGroup> cameraMode;                          ///< Camera mode.
                                                             /**<    \arg Perspective.

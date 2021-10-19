@@ -25,8 +25,8 @@
 namespace sofa::simulation::mechanicalvisitor
 {
 
-MechanicalPropagateOnlyPositionVisitor::MechanicalPropagateOnlyPositionVisitor(const sofa::core::MechanicalParams* mparams, SReal t, core::MultiVecCoordId x, bool m )
-        : MechanicalVisitor(mparams) , t(t), x(x), ignoreMask(m)
+MechanicalPropagateOnlyPositionVisitor::MechanicalPropagateOnlyPositionVisitor(const sofa::core::MechanicalParams* mparams, SReal t, core::MultiVecCoordId x)
+        : MechanicalVisitor(mparams) , t(t), x(x)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     setReadWriteVectors();
@@ -40,31 +40,20 @@ Visitor::Result MechanicalPropagateOnlyPositionVisitor::fwdMechanicalState(simul
 
 Visitor::Result MechanicalPropagateOnlyPositionVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
 {
-    if (!ignoreMask)
-    {
-        ForceMaskActivate(map->getMechFrom() );
-        ForceMaskActivate(map->getMechTo() );
-    }
     map->apply(mparams, x, x);
-
-    if (!ignoreMask)
-    {
-        ForceMaskDeactivate( map->getMechTo() );
-    }
 
     return RESULT_CONTINUE;
 }
 
 void MechanicalPropagateOnlyPositionVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
 {
-    mm->forceMask.activate(false);
+    SOFA_UNUSED(mm);
 }
 
 std::string MechanicalPropagateOnlyPositionVisitor::getInfos() const
 {
     std::string name="x["+x.getName()+"]";
-    if (ignoreMask) name += " Mask DISABLED";
-    else            name += " Mask ENABLED";
     return name;
 }
-}
+
+} // namespace sofa::simulation::mechanicalvisitor

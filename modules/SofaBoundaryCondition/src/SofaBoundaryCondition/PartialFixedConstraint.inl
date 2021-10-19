@@ -26,8 +26,6 @@
 #include <SofaBoundaryCondition/PartialFixedConstraint.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
-#include <SofaBaseTopology/TopologySubsetData.inl>
-
 #include <sofa/core/visual/VisualParams.h>
 
 
@@ -177,82 +175,42 @@ void PartialFixedConstraint<DataTypes>::projectJacobianMatrix(const core::Mechan
     }
 }
 
-// Matrix Integration interface
 template <class DataTypes>
-void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
+void PartialFixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-
-    const unsigned int N = Deriv::size();
-    const VecBool& blockedDirection = d_fixedDirections.getValue();
-
-    if( this->d_fixAll.getValue() )
+    SOFA_UNUSED(mparams);
+    int o = matrix->getGlobalOffset(this->mstate.get());
+    if (o >= 0)
     {
-        unsigned size = this->mstate->getSize();
-        for(unsigned int i=0; i<size; i++)
+        unsigned int offset = (unsigned int)o;
+        const unsigned int N = Deriv::size();
+
+        const VecBool& blockedDirection = d_fixedDirections.getValue();
+
+        if( this->d_fixAll.getValue() )
         {
-            // Reset Fixed Row and Col
-            for (unsigned int c=0; c<N; ++c)
+            for(sofa::Index i=0; i<(sofa::Size) vector->size(); i++ )
             {
-                if( blockedDirection[c] ) mat->clearRowCol(offset + N * i + c);
-            }
-            // Set Fixed Vertex
-            for (unsigned int c=0; c<N; ++c)
-            {
-                if( blockedDirection[c] ) mat->set(offset + N * i + c, offset + N * i + c, 1.0);
-            }
-        }
-    }
-    else
-    {
-        const SetIndexArray & indices = this->d_indices.getValue();
-        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
-        {
-            // Reset Fixed Row and Col
-            for (unsigned int c=0; c<N; ++c)
-            {
-                if( blockedDirection[c] ) mat->clearRowCol(offset + N * (*it) + c);
-            }
-            // Set Fixed Vertex
-            for (unsigned int c=0; c<N; ++c)
-            {
-                if( blockedDirection[c] ) mat->set(offset + N * (*it) + c, offset + N * (*it) + c, 1.0);
-            }
-        }
-    }
-}
-
-template <class DataTypes>
-void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset)
-{
-
-
-    const unsigned int N = Deriv::size();
-
-    const VecBool& blockedDirection = d_fixedDirections.getValue();
-
-    if( this->d_fixAll.getValue() )
-    {
-        for(sofa::Index i=0; i<(sofa::Size) vect->size(); i++ )
-        {
-            for (unsigned int c = 0; c < N; ++c)
-            {
-                if (blockedDirection[c])
+                for (unsigned int c = 0; c < N; ++c)
                 {
-                    vect->clear(offset + N * i + c);
+                    if (blockedDirection[c])
+                    {
+                        vector->clear(offset + N * i + c);
+                    }
                 }
             }
         }
-    }
-    else
-    {
-        const SetIndexArray & indices = this->d_indices.getValue();
-        for (unsigned int index : indices)
+        else
         {
-            for (unsigned int c = 0; c < N; ++c)
+            const SetIndexArray & indices = this->d_indices.getValue();
+            for (unsigned int index : indices)
             {
-                if (blockedDirection[c])
+                for (unsigned int c = 0; c < N; ++c)
                 {
-                    vect->clear(offset + N * index + c);
+                    if (blockedDirection[c])
+                    {
+                        vector->clear(offset + N * index + c);
+                    }
                 }
             }
         }

@@ -28,8 +28,8 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
-#include <sofa/helper/vector.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <sofa/type/vector.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <type_traits>
@@ -66,8 +66,8 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-    typedef helper::vector<Index> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef type::vector<Index> SetIndexArray;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
 
 protected:
     PartialLinearMovementConstraintInternalData<DataTypes> *data;
@@ -77,7 +77,7 @@ public :
     /// indices of the DOFs the constraint is applied to
     SetIndex m_indices;
     /// the key frames when the motion is defined by the user
-    core::objectmodel::Data<helper::vector<Real> > m_keyTimes;
+    core::objectmodel::Data<type::vector<Real> > m_keyTimes;
     /// the motions corresponding to the key frames
     core::objectmodel::Data<VecDeriv > m_keyMovements;
 
@@ -97,14 +97,14 @@ public :
     core::objectmodel::Data<unsigned> mainIndice; ///< The main indice node in the list of constrained nodes, it defines how to apply the linear movement between this constrained nodes 
     core::objectmodel::Data<unsigned> minDepIndice; ///< The indice node in the list of constrained nodes, which is imposed the minimum displacment 
     core::objectmodel::Data<unsigned> maxDepIndice; ///< The indice node in the list of constrained nodes, which is imposed the maximum displacment 
-    core::objectmodel::Data<helper::vector<Real> > m_imposedDisplacmentOnMacroNodes; ///< imposed displacement at  u1 u2 u3 u4 for 2d case
+    core::objectmodel::Data<type::vector<Real> > m_imposedDisplacmentOnMacroNodes; ///< imposed displacement at  u1 u2 u3 u4 for 2d case
     ///< and u1 u2 u3 u4 u5 u6 u7 u8 for 3d case
     Data<Real> X0; ///< Size of specimen in X-direction
     Data<Real> Y0; ///< Size of specimen in Y-direction
     Data<Real> Z0; ///< Size of specimen in Z-direction
 
     enum { NumDimensions = Deriv::total_size };
-    typedef sofa::helper::fixed_array<bool,NumDimensions> VecBool;
+    typedef sofa::type::fixed_array<bool,NumDimensions> VecBool;
     core::objectmodel::Data<VecBool> movedDirections;  ///< Defines the directions in which the particles are moved: true (or 1) for fixed, false (or 0) for free.
 
     /// Link to be set to the topology container in the component graph.
@@ -142,22 +142,6 @@ public:
 
     void draw(const core::visual::VisualParams*) override;
 
-    class FCPointHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
-    {
-    public:
-        typedef typename PartialLinearMovementConstraint<DataTypes>::SetIndexArray SetIndexArray;
-
-        FCPointHandler(PartialLinearMovementConstraint<DataTypes>* _lc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
-            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), lc(_lc) {}
-
-        void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
-        bool applyTestCreateFunction(Index /*index*/,
-                const sofa::helper::vector< Index > & /*ancestors*/,
-                const sofa::helper::vector< double > & /*coefs*/);
-    protected:
-        PartialLinearMovementConstraint<DataTypes> *lc;
-    };
-
 protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
@@ -177,9 +161,6 @@ private:
 
     /// find previous and next time keys
     void findKeyTimes();
-
-    /// Handler for subset Data
-    FCPointHandler* m_pointHandler;
 };
 
 

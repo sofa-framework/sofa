@@ -25,9 +25,9 @@
 
 
 #include <sofa/core/DataEngine.h>
-#include <sofa/helper/vector.h>
-#include <sofa/helper/vectorData.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/type/vector.h>
+#include <sofa/core/objectmodel/vectorData.h>
+#include <sofa/type/SVector.h>
 
 
 namespace sofa::component::engine
@@ -47,10 +47,10 @@ public:
 
     //Input
     Data<unsigned int> d_nbROIs; ///< size of indices/value vector
-    helper::vectorData<helper::vector<Index> > f_indices;
+    core::objectmodel::vectorData<type::vector<Index> > f_indices;
 
     //Output
-    Data<helper::vector<helper::SVector<Index> > > d_outputIndices; ///< Vector of ROIs
+    Data<type::vector<type::SVector<Index> > > d_outputIndices; ///< Vector of ROIs
 
     void init() override;
     void reinit() override;
@@ -65,7 +65,7 @@ protected:
 
     MergeROIs(): Inherited()
         , d_nbROIs ( initData ( &d_nbROIs,(unsigned int)0,"nbROIs","size of indices/value vector" ) )
-        , f_indices(this, "indices", "ROIs", helper::DataEngineInput)
+        , f_indices(this, "indices", "ROIs", sofa::core::objectmodel::DataEngineDataType::DataEngineInput)
         , d_outputIndices(initData(&d_outputIndices, "roiIndices", "Vector of ROIs"))
     {
     }

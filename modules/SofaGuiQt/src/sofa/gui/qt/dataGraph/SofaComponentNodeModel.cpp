@@ -96,7 +96,7 @@ void SofaComponentNodeModel::parseSofaObjectData()
     }
 
     // parse all Data
-    sofa::helper::vector<sofa::core::objectmodel::BaseData*> allData = m_SofaObject->getDataFields();
+    sofa::type::vector<sofa::core::objectmodel::BaseData*> allData = m_SofaObject->getDataFields();
     for (auto data : allData)
     {
         QString name = QString::fromStdString(data->getName());

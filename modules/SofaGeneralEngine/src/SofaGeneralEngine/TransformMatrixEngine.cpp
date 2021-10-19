@@ -25,11 +25,12 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/accessor.h>
 
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Quat.h>
 
 namespace sofa::component::engine
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 int TranslateTransformMatrixEngineClass = core::RegisterObject("Compose the input transform (if any) with the given translation")
@@ -74,8 +75,11 @@ void InvertTransformMatrixEngine::doUpdate()
     helper::ReadAccessor< Data<Matrix4> > inT = d_inT;
     helper::WriteAccessor< Data<Matrix4> > outT = d_outT;
 
-    /*bool ok = */defaulttype::transformInvertMatrix((*outT), (*inT));
-    // TODO print warning if not ok
+    const bool canInvert = type::transformInvertMatrix((*outT), (*inT));
+    if(!canInvert)
+    {
+        msg_warning() << "Could not invert matrix";
+    }
 }
 
 /*
@@ -132,7 +136,7 @@ void RotateTransformMatrixEngine::doUpdate()
     Matrix4 myT;
     myT.identity();
     Matrix3 R;
-    Quaternion q = Quaternion::createQuaterFromEuler((*rotation) * M_PI / 180.0);
+    auto q = Quat<SReal>::createQuaterFromEuler((*rotation) * M_PI / 180.0);
     q.toMatrix(R);
     myT.setsub(0,0,R);
 

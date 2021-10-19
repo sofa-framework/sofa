@@ -152,32 +152,32 @@ private:
     /*!
     	Compute the perpendicular distance from a vertice to a line
     */
-    defaulttype::Vec<3,double> projectToSegment(const defaulttype::Vec<3,Real>& first, const defaulttype::Vec<3,Real>& last, const OutCoord& vertice);
+    type::Vec<3,double> projectToSegment(const type::Vec<3,Real>& first, const type::Vec<3,Real>& last, const OutCoord& vertice);
 
     /*!
     	Compute the weight betwewen a vertice and a line
     */
-    double convolutionSegment(const defaulttype::Vec<3,Real>& first, const defaulttype::Vec<3,Real>& last, const OutCoord& vertice);
+    double convolutionSegment(const type::Vec<3,Real>& first, const type::Vec<3,Real>& last, const OutCoord& vertice);
 
     /*!
     	Stores the lines influenced by each vertice
     */
-    helper::vector<helper::vector<influencedLineType> > linesInfluencedByVertice;
+    type::vector<type::vector<influencedLineType> > linesInfluencedByVertice;
 
     /*!
     	Stores the vertices influenced by each line
     */
-    helper::vector<helper::vector<influencedVerticeType> > verticesInfluencedByLine;
+    type::vector<type::vector<influencedVerticeType> > verticesInfluencedByLine;
 
     /*!
     	Stores the first level line neighborhood
     */
-    helper::vector<std::set<int> > neighborhoodLinesSet;
+    type::vector<std::set<int> > neighborhoodLinesSet;
 
     /*!
     	Stores the n level line neighborhood
     */
-    helper::vector<std::set<int> > neighborhood;
+    type::vector<std::set<int> > neighborhood;
 };
 
 #if  !defined(SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_CPP)

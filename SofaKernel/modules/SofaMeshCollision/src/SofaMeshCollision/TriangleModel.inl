@@ -23,11 +23,9 @@
 #include <SofaMeshCollision/TriangleModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaMeshCollision/PointModel.h>
-#include <SofaMeshCollision/TriangleLocalMinDistanceFilter.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/simulation/Node.h>
-#include <SofaBaseTopology/RegularGridTopology.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <vector>
@@ -46,7 +44,6 @@ TriangleCollisionModel<DataTypes>::TriangleCollisionModel()
     , m_needsUpdate(true)
     , m_topologyRevision(-1)
     , m_pointModels(nullptr)
-    , m_lmdFilter(nullptr)
 {
     m_triangles = &m_internalTriangles;
     enum_type = TRIANGLE_TYPE;
@@ -98,12 +95,6 @@ void TriangleCollisionModel<DataTypes>::init()
         return;
     }
 
-    simulation::Node* node = dynamic_cast< simulation::Node* >(this->getContext());
-    if (node != 0)
-    {
-        m_lmdFilter = node->getNodeObject< TriangleLocalMinDistanceFilter >();
-    }
-
     // check if topology is using triangles and quads at the same time.
     if (m_topology->getNbQuads() != 0)
     {
@@ -125,9 +116,9 @@ void TriangleCollisionModel<DataTypes>::updateNormals()
     for (Size i=0; i<size; i++)
     {
         Element t(this,i);
-        const defaulttype::Vector3& pt1 = t.p1();
-        const defaulttype::Vector3& pt2 = t.p2();
-        const defaulttype::Vector3& pt3 = t.p3();
+        const type::Vector3& pt1 = t.p1();
+        const type::Vector3& pt2 = t.p2();
+        const type::Vector3& pt3 = t.p3();
 
         t.n() = cross(pt2-pt1,pt3-pt1);
         t.n().normalize();
@@ -240,7 +231,7 @@ void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
     // set to false to avoid excesive loop
     m_needsUpdate=false;
 
-    defaulttype::Vector3 minElem, maxElem;
+    type::Vector3 minElem, maxElem;
     const VecCoord& x = this->m_mstate->read(core::ConstVecCoordId::position())->getValue();
 
     const bool calcNormals = d_computeNormals.getValue();
@@ -253,9 +244,9 @@ void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
         {
             Element t(this,i);
 
-            const defaulttype::Vector3& pt1 = x[t.p1Index()];
-            const defaulttype::Vector3& pt2 = x[t.p2Index()];
-            const defaulttype::Vector3& pt3 = x[t.p3Index()];
+            const type::Vector3& pt1 = x[t.p1Index()];
+            const type::Vector3& pt2 = x[t.p2Index()];
+            const type::Vector3& pt3 = x[t.p3Index()];
 
             for (int c = 0; c < 3; c++)
             {
@@ -282,12 +273,6 @@ void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
         }
         cubeModel->computeBoundingTree(maxDepth);
     }
-
-
-    if (m_lmdFilter != 0)
-    {
-        m_lmdFilter->invalidate();
-    }
 }
 
 template<class DataTypes>
@@ -303,7 +288,7 @@ void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt,
     if (!isMoving() && !cubeModel->empty() && !m_needsUpdate) return; // No need to recompute BBox if immobile nor if mesh didn't change.
 
     m_needsUpdate=false;
-    defaulttype::Vector3 minElem, maxElem;
+    type::Vector3 minElem, maxElem;
 
     cubeModel->resize(size);
     if (!empty())
@@ -312,12 +297,12 @@ void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt,
         for (Size i=0; i<size; i++)
         {
             Element t(this,i);
-            const defaulttype::Vector3& pt1 = t.p1();
-            const defaulttype::Vector3& pt2 = t.p2();
-            const defaulttype::Vector3& pt3 = t.p3();
-            const defaulttype::Vector3 pt1v = pt1 + t.v1()*dt;
-            const defaulttype::Vector3 pt2v = pt2 + t.v2()*dt;
-            const defaulttype::Vector3 pt3v = pt3 + t.v3()*dt;
+            const type::Vector3& pt1 = t.p1();
+            const type::Vector3& pt2 = t.p2();
+            const type::Vector3& pt3 = t.p3();
+            const type::Vector3 pt1v = pt1 + t.v1()*dt;
+            const type::Vector3 pt2v = pt2 + t.v2()*dt;
+            const type::Vector3 pt3v = pt3 + t.v3()*dt;
 
             for (int c = 0; c < 3; c++)
             {
@@ -350,19 +335,6 @@ void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt,
         }
         cubeModel->computeBoundingTree(maxDepth);
     }
-}
-
-template<class DataTypes>
-TriangleLocalMinDistanceFilter *TriangleCollisionModel<DataTypes>::getFilter() const
-{
-    return m_lmdFilter;
-}
-
-
-template<class DataTypes>
-void TriangleCollisionModel<DataTypes>::setFilter(TriangleLocalMinDistanceFilter *lmdFilter)
-{
-    m_lmdFilter = lmdFilter;
 }
 
 template<class DataTypes>
@@ -419,9 +391,9 @@ void TriangleCollisionModel<DataTypes>::computeBBox(const core::ExecParams* para
     for (Size i=0; i<size; i++)
     {
         Element t(this,i);
-        const defaulttype::Vector3& pt1 = t.p1();
-        const defaulttype::Vector3& pt2 = t.p2();
-        const defaulttype::Vector3& pt3 = t.p3();
+        const type::Vector3& pt1 = t.p1();
+        const type::Vector3& pt2 = t.p2();
+        const type::Vector3& pt3 = t.p3();
 
         for (int c=0; c<3; c++)
         {
@@ -436,7 +408,7 @@ void TriangleCollisionModel<DataTypes>::computeBBox(const core::ExecParams* para
         }
     }
 
-    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 
@@ -469,9 +441,9 @@ void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
             vparams->drawTool()->setPolygonMode(1,false);
         }
 
-        std::vector< defaulttype::Vector3 > points;
-        std::vector< defaulttype::Vec<3,int> > indices;
-        std::vector< defaulttype::Vector3 > normals;
+        std::vector< type::Vector3 > points;
+        std::vector< type::Vec<3,int> > indices;
+        std::vector< type::Vector3 > normals;
         int index=0;
         for (Size i=0; i<size; i++)
         {
@@ -480,20 +452,20 @@ void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
             points.push_back(t.p1());
             points.push_back(t.p2());
             points.push_back(t.p3());
-            indices.push_back(defaulttype::Vec<3,int>(index,index+1,index+2));
+            indices.push_back(type::Vec<3,int>(index,index+1,index+2));
             index+=3;
         }
 
         vparams->drawTool()->setLightingEnabled(true);
         auto c = getColor4f();
-        vparams->drawTool()->drawTriangles(points, indices, normals, sofa::helper::types::RGBAColor(c[0], c[1], c[2], c[3]));
+        vparams->drawTool()->drawTriangles(points, indices, normals, sofa::type::RGBAColor(c[0], c[1], c[2], c[3]));
         vparams->drawTool()->setLightingEnabled(false);
         vparams->drawTool()->setPolygonMode(0,false);
 
 
         if (vparams->displayFlags().getShowNormals())
         {
-            std::vector< defaulttype::Vector3 > points;
+            std::vector< type::Vector3 > points;
             for (Size i=0; i<size; i++)
             {
                 Element t(this,i);
@@ -501,7 +473,7 @@ void TriangleCollisionModel<DataTypes>::draw(const core::visual::VisualParams* v
                 points.push_back(points.back()+t.n());
             }
 
-            vparams->drawTool()->drawLines(points, 1, sofa::helper::types::RGBAColor::white());
+            vparams->drawTool()->drawLines(points, 1, sofa::type::RGBAColor::white());
 
         }
     }

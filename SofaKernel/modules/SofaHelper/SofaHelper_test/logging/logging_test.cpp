@@ -384,7 +384,7 @@ TEST(LoggingTest, checkBaseObjectMsgAPI)
     for(auto& message : c.getLoggedMessages()){
         s << message << std::endl ;
     }
-    s << "=====================================" << std::endl ; ;
+    s << "=====================================" << std::endl ;
     EXPECT_EQ(c.getLoggedMessages().size(), 3u) << s.str();
 
     msg_info(&c) << "A fourth message ";
@@ -418,7 +418,7 @@ TEST(LoggingTest, checkBaseObjectMsgAPInoPrintLog)
     for(auto& message : c.getLoggedMessages()){
         s << message << std::endl ;
     }
-    s << "=====================================" << std::endl ; ;
+    s << "=====================================" << std::endl ;
     EXPECT_EQ(c.getLoggedMessages().size(), 2u) << s.str();
 
     msg_info(&c) << "A fourth message ";

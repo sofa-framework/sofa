@@ -22,7 +22,6 @@
 #pragma once
 #include <SofaBaseTopology/config.h>
 
-#include <SofaBaseTopology/TopologyDataHandler.h>
 #include <SofaBaseTopology/TopologyData.h>
 
 namespace sofa::component::topology
@@ -34,72 +33,116 @@ namespace sofa::component::topology
 
 /** \brief A class for storing element related data. Automatically manages topology changes.
 *
-* This class is a wrapper of class helper::vector that is made to take care transparently of all topology changes that might
+* This class is a wrapper of class type::vector that is made to take care transparently of all topology changes that might
 * happen (non exhaustive list: elements added, removed, fused, renumbered).
 */
 template< class TopologyElementType, class VecT>
 class TopologySubsetData : public sofa::component::topology::TopologyData<TopologyElementType, VecT>
 {
-
 public:
     typedef VecT container_type;
     typedef typename container_type::value_type value_type;
 
-    /// Size
-    typedef typename container_type::Size Size;
-    /// reference to a value (read-write)
-    typedef typename container_type::reference reference;
-    /// const reference to a value (read only)
-    typedef typename container_type::const_reference const_reference;
-    /// const iterator
-    typedef typename container_type::const_iterator const_iterator;
-    /// iterator
-    typedef typename container_type::iterator iterator;
     typedef core::topology::TopologyElementInfo<TopologyElementType> ElementInfo;
     typedef core::topology::TopologyChangeElementInfo<TopologyElementType> ChangeElementInfo;
     typedef typename ChangeElementInfo::AncestorElem    AncestorElem;
 
-
-    /// Constructor
+    /// Default Constructor to init Data
     TopologySubsetData(const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data);
 
-    /// Swaps values at indices i1 and i2.
+    /// Method to set a vector map to rull this subsetData. Will set @sa m_usingMap to true Otherwise will use the Data as the map
+    void setMap2Elements(const sofa::type::vector<Index> _map2Elements);
+
+    /// Getter of the vector map indices
+    sofa::type::vector<Index>& getMap2Elements() { return m_map2Elements; }
+
+    bool getSparseDataStatus() { return m_isConcerned; }
+
+    void activateSparseData() { m_isConcerned = true; }
+    void desactivateSparseData() { m_isConcerned = false; }
+
+    /** Method to return the index position of an element inside the vector map @sa m_map2Elements
+    * @param {Index} element index of the full Data vector to find in the vector map
+    * @return {Index} position of the element in the vector map. return sofa::InvalidID if not found.
+    */
+    virtual Index indexOfElement(Index index);
+
+    /// Swaps values of this subsetmap at indices i1 and i2. (only if i1 and i2 < subset size())
     void swap(Index i1, Index i2) override;
 
-    /// Add some values. Values are added at the end of the vector.
+    /** Add some values from the Main Data to this subsetData. Values are added at the end of the vector.
+    * @param {sofa::Size} nbElements, number of new element to add
+    * @param ancestors vector of element ancestor ids per element to add
+    * @param coefficient vector of element ancestor ids per element to add
+    */
     virtual void add(sofa::Size nbElements,
-        const sofa::helper::vector< TopologyElementType >&,
-        const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+        const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
+        const sofa::type::vector< sofa::type::vector< double > >& coefs);
 
     virtual void add(sofa::Size nbElements,
-        const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& coefs);
+        const sofa::type::vector< TopologyElementType >& elems,
+        const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
+        const sofa::type::vector< sofa::type::vector< double > >& coefs);
 
-    void add(const sofa::helper::vector<Index>& index,
-        const sofa::helper::vector< TopologyElementType >& elems,
-        const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
-        const sofa::helper::vector< AncestorElem >& ancestorElems) override;
+    void add(const sofa::type::vector<Index>& index,
+        const sofa::type::vector< TopologyElementType >& elems,
+        const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
+        const sofa::type::vector< sofa::type::vector< double > >& coefs,
+        const sofa::type::vector< AncestorElem >& ancestorElems) override;
 
-    /// Remove the values corresponding to the Edges removed.
-    void remove(const sofa::helper::vector<Index>& index) override;
+    /// Remove the data using a set of indices. Will remove only the data contains by this subset.
+    void remove(const sofa::type::vector<Index>& index) override;
 
-    /// Reorder the values.
-    void renumber(const sofa::helper::vector<Index>& index) override;
+    /// Reorder the values. TODO epernod 2021-05-24: check if needed and implement it if needed.
+    void renumber(const sofa::type::vector<Index>& index) override;
 
-    /// Move a list of points
-    void move(const sofa::helper::vector<Index>& indexList,
-        const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< double > >& coefs) override;
+    /// Move a list of points. TODO epernod 2021-05-24: check if needed and implement it if needed.
+    void move(const sofa::type::vector<Index>& indexList,
+        const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
+        const sofa::type::vector< sofa::type::vector< double > >& coefs) override;
 
     /// Add Element after a displacement of vertices, ie. add element based on previous position topology revision.
-    void addOnMovedPosition(const sofa::helper::vector<Index>& indexList,
-        const sofa::helper::vector< TopologyElementType >& elems) override;
+    /// TODO epernod 2021-05-24: check if needed and implement it if needed.
+    void addOnMovedPosition(const sofa::type::vector<Index>& indexList,
+        const sofa::type::vector< TopologyElementType >& elems) override;
 
     /// Remove Element after a displacement of vertices, ie. add element based on previous position topology revision.
-    void removeOnMovedPosition(const sofa::helper::vector<Index>& indices) override;
+    /// TODO epernod 2021-05-24: check if needed and implement it if needed.
+    void removeOnMovedPosition(const sofa::type::vector<Index>& indices) override;
 
+protected:
+    /**
+    * Internal method called at the end of @sa swap method to apply internal mechanism, such as map swap.
+    * @param i1 First element index to be swaped.
+    * @param i2 Second element index to be swaped with first one.
+    */
+    virtual void swapPostProcess(Index i1, Index i2);
+
+    /**
+    * Internal method called at the end of @sa remove method to apply internal mechanism, such as updating the map size
+    * @param nbElements Number of element removed.
+    */
+    virtual void removePostProcess(sofa::Size nbElements);
+
+    /**
+    * Internal method called at the end of @sa add method to apply internal mechanism, such as updating the map size.
+    * @param nbElements Number of element added
+    */
+    virtual void addPostProcess(sofa::Size nbElements);
+
+    /**
+    * Internal method to update the last element of this Data and/or map when the topology buffer is reduced.
+    * @param posLastIndex Index position of the last topology element in this subset.
+    * @param newGlobalId Global topology element index to be set at Data[posLastIndex].
+    */
+    virtual void updateLastIndex(Index posLastIndex, Index newGlobalId);
+
+protected:
+    /// same size as this SubsetData but contains id of element link to each data[]
+    sofa::type::vector<Index> m_map2Elements;
+
+    /// boolen to set subdata as concerne, will allow to add element
+    bool m_isConcerned;
 };
 
 
@@ -113,5 +156,9 @@ template< class VecT > using TriangleSubsetData = TopologySubsetData<core::topol
 template< class VecT > using QuadSubsetData = TopologySubsetData<core::topology::BaseMeshTopology::Quad, VecT>;
 template< class VecT > using TetrahedronSubsetData = TopologySubsetData<core::topology::BaseMeshTopology::Tetrahedron, VecT>;
 template< class VecT > using HexahedronSubsetData = TopologySubsetData<core::topology::BaseMeshTopology::Hexahedron, VecT>;
+
+#if !defined(DEFINITION_TOPOLOGYSUBSETDATA)
+extern template class SOFA_SOFABASETOPOLOGY_API TopologySubsetData<Index, sofa::type::vector<Index>>;
+#endif // DEFINITION_TOPOLOGYSUBSETDATA
 
 } //namespace sofa::component::topology

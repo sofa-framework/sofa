@@ -46,6 +46,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 #include <SofaBaseVisual/VisualStyle.h>
 #include <SofaGeneralDeformable/RegularGridSpringForceField.h>
@@ -79,9 +80,9 @@ Elasticity_test<DataTypes>::createRegularGridScene(
         int numX,
         int numY,
         int numZ,
-        sofa::defaulttype::Vec<6,SReal> entireBoxRoi,
-        sofa::defaulttype::Vec<6,SReal> inclusiveBox,
-        sofa::defaulttype::Vec<6,SReal> includedBox)
+        sofa::type::Vec<6,SReal> entireBoxRoi,
+        sofa::type::Vec<6,SReal> inclusiveBox,
+        sofa::type::Vec<6,SReal> includedBox)
 {
     // Definitions
     PatchTestStruct<DataTypes> patchStruct;
@@ -107,9 +108,9 @@ Elasticity_test<DataTypes>::createRegularGridScene(
     solver->f_rayleighStiffness.setValue(0.5);
     solver->f_rayleighMass.setValue(0.5);
     CGLinearSolver::SPtr cgLinearSolver = modeling::addNew< CGLinearSolver >(SquareNode,"linearSolver");
-    cgLinearSolver->f_maxIter.setValue(25);
-    cgLinearSolver->f_tolerance.setValue(1e-5);
-    cgLinearSolver->f_smallDenominatorThreshold.setValue(1e-5);
+    cgLinearSolver->d_maxIter.setValue(25);
+    cgLinearSolver->d_tolerance.setValue(1e-5);
+    cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-5);
 
     // Mass
     typename UniformMass::SPtr mass = modeling::addNew<UniformMass>(SquareNode,"mass");
@@ -125,7 +126,7 @@ Elasticity_test<DataTypes>::createRegularGridScene(
     patchStruct.dofs->setSrc("@"+gridMesh->getName(), gridMesh.get());
 
     //BoxRoi to find all mesh points
-    helper::vector < defaulttype::Vec<6,Real> > vecBox;
+    type::vector< type::Vec<6,Real> > vecBox;
     vecBox.push_back(entireBoxRoi);
     typename BoxRoi::SPtr boxRoi = modeling::addNew<BoxRoi>(SquareNode,"boxRoi");
     boxRoi->d_alignedBoxes.setValue(vecBox);
@@ -187,9 +188,9 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
 
     // CGLinearSolver
     typename CGLinearSolver::SPtr cgLinearSolver = modeling::addNew< CGLinearSolver >(root,"linearSolver");
-    cgLinearSolver->f_maxIter=maxIter;
-    cgLinearSolver->f_tolerance =1e-9;
-    cgLinearSolver->f_smallDenominatorThreshold=1e-9;
+    cgLinearSolver->d_maxIter.setValue(maxIter);
+    cgLinearSolver->d_tolerance.setValue(1e-9);
+    cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-9);
     // StaticSolver
     typename component::odesolver::StaticSolver::SPtr solver = modeling::addNew<component::odesolver::StaticSolver>(root,"StaticSolver");
     // mechanicalObject object
@@ -198,15 +199,15 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     tractionStruct.dofs=meca1;
     // MeshMatrixMass
     typename sofa::component::mass::MeshMatrixMass<DataTypes,Real>::SPtr mass= sofa::modeling::addNew<sofa::component::mass::MeshMatrixMass<DataTypes,Real> >(root,"BezierMass");
-    sofa::helper::vector< Real > massDensity;
+    sofa::type::vector< Real > massDensity;
     massDensity.clear();
     massDensity.resize(1);
     massDensity[0] = 1.0;
     mass->d_massDensity.setValue(massDensity);
     mass->d_lumping=false;
     /// box fixed
-    helper::vector < defaulttype::Vec<6,Real> > vecBox;
-    defaulttype::Vec<6,Real> box;
+    type::vector< type::Vec<6,Real> > vecBox;
+    type::Vec<6,Real> box;
     box[0]= -0.01;box[1]= -0.01;box[2]= -0.01;box[3]= 0.01;box[4]= 0.01;box[5]= 0.01;
     vecBox.push_back(box);
     typename BoxRoi::SPtr boxRoi1 = modeling::addNew<BoxRoi>(root,"boxRoiFix");
@@ -239,7 +240,7 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
             modeling::addNew<typename component::projectiveconstraintset::ProjectToLineConstraint<DataTypes> >(root);
     ptlc->f_direction=Coord(1,0,0);
     ptlc->f_origin=Coord(0,0,0);
-    sofa::helper::vector<sofa::Index> vArray;
+    sofa::type::vector<sofa::Index> vArray;
     vArray.push_back(resolutionCircumferential*(resolutionRadial-1)+1);
     ptlc->f_indices.setValue(vArray);
 
@@ -259,7 +260,7 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
         SReal stiffnessValue,
         SReal dampingRatio )
 {
-    using helper::vector;
+    using type::vector;
     using core::objectmodel::New;
 
     // The graph root node
@@ -328,17 +329,17 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
 
     // create the rigid frames and their bounding boxes
     size_t numRigid = 2;
-    vector<sofa::defaulttype::BoundingBox> boxes(numRigid);
+    vector<sofa::type::BoundingBox> boxes(numRigid);
     vector< vector<size_t> > indices(numRigid); // indices of the particles in each box
     double eps = (endPoint[0]-startPoint[0])/(numX*2);
 
     // first box, x=xmin
-    boxes[0] = sofa::defaulttype::BoundingBox(sofa::defaulttype::Vec3d(startPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
-            sofa::defaulttype::Vec3d(startPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
+    boxes[0] = sofa::type::BoundingBox(sofa::type::Vec3d(startPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
+            sofa::type::Vec3d(startPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
 
     // second box, x=xmax
-    boxes[1] = sofa::defaulttype::BoundingBox(sofa::defaulttype::Vec3d(endPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
-            sofa::defaulttype::Vec3d(endPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
+    boxes[1] = sofa::type::BoundingBox(sofa::type::Vec3d(endPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
+            sofa::type::Vec3d(endPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
     rigid_dof->resize(numRigid);
     MechanicalObjectRigid3::WriteVecCoord xrigid = rigid_dof->writePositions();
     xrigid[0].getCenter()=Coord(startPoint[0], 0.5*(startPoint[1]+endPoint[1]), 0.5*(startPoint[2]+endPoint[2]));

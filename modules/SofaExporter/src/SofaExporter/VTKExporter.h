@@ -31,13 +31,9 @@
 
 #include <fstream>
 
-namespace sofa
+namespace sofa::component
 {
-
-namespace component
-{
-
-namespace misc
+namespace _vtkexporter_
 {
 
 class SOFA_SOFAEXPORTER_API VTKExporter : public core::objectmodel::BaseObject
@@ -52,12 +48,12 @@ protected:
 
     std::ofstream* outfile;
 
-    void fetchDataFields(const helper::vector<std::string>& strData, helper::vector<std::string>& objects, helper::vector<std::string>& fields, helper::vector<std::string>& names);
+    void fetchDataFields(const type::vector<std::string>& strData, type::vector<std::string>& objects, type::vector<std::string>& fields, type::vector<std::string>& names);
     void writeVTKSimple();
     void writeVTKXML();
     void writeParallelFile();
-    void writeData(const helper::vector<std::string>& objects, const helper::vector<std::string>& fields, const helper::vector<std::string>& names);
-    void writeDataArray(const helper::vector<std::string>& objects, const helper::vector<std::string>& fields, const helper::vector<std::string>& names);
+    void writeData(const type::vector<std::string>& objects, const type::vector<std::string>& fields, const type::vector<std::string>& names);
+    void writeDataArray(const type::vector<std::string>& objects, const type::vector<std::string>& fields, const type::vector<std::string>& names);
     std::string segmentString(std::string str, unsigned int n);
 
 public:
@@ -69,8 +65,8 @@ public:
     Data<bool> writeQuads; ///< write quad topology
     Data<bool> writeTetras; ///< write tetra topology
     Data<bool> writeHexas; ///< write hexa topology
-    Data<helper::vector<std::string> > dPointsDataFields; ///< Data to visualize (on points)
-    Data<helper::vector<std::string> > dCellsDataFields; ///< Data to visualize (on cells)
+    Data<type::vector<std::string> > dPointsDataFields; ///< Data to visualize (on points)
+    Data<type::vector<std::string> > dCellsDataFields; ///< Data to visualize (on cells)
     Data<unsigned int> exportEveryNbSteps; ///< export file only at specified number of steps (0=disable)
     Data<bool> exportAtBegin; ///< export file at the initialization
     Data<bool> exportAtEnd; ///< export file when the simulation is finished
@@ -78,13 +74,13 @@ public:
 
     int nbFiles;
 
-    helper::vector<std::string> pointsDataObject;
-    helper::vector<std::string> pointsDataField;
-    helper::vector<std::string> pointsDataName;
+    type::vector<std::string> pointsDataObject;
+    type::vector<std::string> pointsDataField;
+    type::vector<std::string> pointsDataName;
 
-    helper::vector<std::string> cellsDataObject;
-    helper::vector<std::string> cellsDataField;
-    helper::vector<std::string> cellsDataName;
+    type::vector<std::string> cellsDataObject;
+    type::vector<std::string> cellsDataField;
+    type::vector<std::string> cellsDataName;
 protected:
     VTKExporter();
     ~VTKExporter() override;
@@ -96,10 +92,19 @@ public:
     void handleEvent(sofa::core::objectmodel::Event *) override;
 };
 
-}
+} // namespace _vtkexporter_
 
-}
+namespace exporter {
+    using VTKExporter = _vtkexporter_::VTKExporter;
+} // namespace exporter
 
-}
+// Import the object in the "old" namespace to allow smooth update of code base.
+namespace misc {
+    using VTKExporter
+        SOFA_ATTRIBUTE_DEPRECATED__SOFAEXPORTER_NAMESPACE_2106()
+        = _vtkexporter_::VTKExporter;
+} // namespace misc
+
+} // namespace sofa::component
 
 #endif /* VTKEXPORTER_H_ */

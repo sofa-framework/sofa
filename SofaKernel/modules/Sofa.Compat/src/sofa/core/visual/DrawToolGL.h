@@ -21,26 +21,6 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/config.h>
 
-#if __has_include(<sofa/gl/DrawToolGL.h>)
-#include <sofa/gl/DrawToolGL.h>
-#define GL_DRAWTOOLGL_ENABLE_WRAPPER
-
-SOFA_DEPRECATED_HEADER(v21.06, "sofa/gl/DrawToolGL.h")
-
-#else
-#error "OpenGL headers have been moved to Sofa.GL. Therefore you will need to link against Sofa.GL if you need OpenGL (PR1649), and include <sofa/gl/DrawToolGL.h> instead of this one."
-#endif
-
-#ifdef GL_DRAWTOOLGL_ENABLE_WRAPPER
-
-namespace sofa::core::visual
-{
-    using DrawToolGL = sofa::gl::DrawToolGL;
-
-} // namespace sofa::core::visual
-
-#endif // GL_DRAWTOOLGL_ENABLE_WRAPPER
-
-#undef GL_DRAWTOOLGL_ENABLE_WRAPPER
-
+SOFA_DISABLED_HEADER("v20.12 (PR#1649)", "v21.06", "sofa/gl/DrawToolGL.h")

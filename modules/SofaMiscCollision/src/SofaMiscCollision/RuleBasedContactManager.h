@@ -110,7 +110,7 @@ public:
     };
 
     Data< std::string > d_variables; ///< Define a list of variables to be used inside the rules
-    Data< helper::vector<Rule> > rules;
+    Data< type::vector<Rule> > rules;
 
     virtual std::string getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2) override;
 

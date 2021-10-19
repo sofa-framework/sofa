@@ -27,8 +27,6 @@ list(APPEND HEADER_FILES
     ${SOFANONUNIFORMFEM_SRC}/NonUniformHexahedralFEMForceFieldAndMass.inl
     ${SOFANONUNIFORMFEM_SRC}/NonUniformHexahedronFEMForceFieldAndMass.h
     ${SOFANONUNIFORMFEM_SRC}/NonUniformHexahedronFEMForceFieldAndMass.inl
-    # ${SOFANONUNIFORMFEM_SRC}/NonUniformHexahedronFEMForceFieldDensity.h
-    # ${SOFANONUNIFORMFEM_SRC}/NonUniformHexahedronFEMForceFieldDensity.inl
     ${SOFANONUNIFORMFEM_SRC}/SparseGridMultipleTopology.h
     ${SOFANONUNIFORMFEM_SRC}/SparseGridRamificationTopology.h
     )
@@ -39,7 +37,6 @@ list(APPEND SOURCE_FILES
     ${SOFANONUNIFORMFEM_SRC}/MultilevelHexahedronSetTopologyContainer.cpp
     ${SOFANONUNIFORMFEM_SRC}/NonUniformHexahedralFEMForceFieldAndMass.cpp
     ${SOFANONUNIFORMFEM_SRC}/NonUniformHexahedronFEMForceFieldAndMass.cpp
-    # ${SOFANONUNIFORMFEM_SRC}/NonUniformHexahedronFEMForceFieldDensity.cpp
     ${SOFANONUNIFORMFEM_SRC}/SparseGridMultipleTopology.cpp
     ${SOFANONUNIFORMFEM_SRC}/SparseGridRamificationTopology.cpp
     )

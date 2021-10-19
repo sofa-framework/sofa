@@ -64,7 +64,7 @@ Creator<BaseElement::NodeFactory, AttributeElement> AttributeNodeClass("Attribut
 
 const char* AttributeElement::getClass() const
 {
-    return AttributeNodeClass.c_str();
+    return AttributeNodeClass.getKey().c_str();
 }
 
 } // namespace sofa::simulation::xml

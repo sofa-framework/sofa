@@ -24,9 +24,9 @@
 #include <sofa/core/collision/IntersectorFactory.h>
 #include <sofa/core/collision/Intersection.inl>
 
-#include <SofaBaseCollision/CapsuleModel.h>
-#include <SofaBaseCollision/RigidCapsuleModel.h>
-#include <SofaBaseCollision/OBBModel.h>
+#include <SofaMiscCollision/CapsuleModel.h>
+#include <SofaMiscCollision/RigidCapsuleModel.h>
+#include <SofaMiscCollision/OBBModel.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaUserInteraction/RayModel.h>
 #include <SofaUserInteraction/FixParticlePerformer.h>
@@ -72,7 +72,7 @@ using FixParticlePerformer3d = sofa::component::collision::FixParticlePerformer<
 
 int capsuleFixParticle = FixParticlePerformer3d::RegisterSupportedModel<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>>(
     []
-(sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, helper::vector<Index>& points, FixParticlePerformer3d::Coord& fixPoint)
+(sofa::core::sptr<sofa::core::CollisionModel> model, const Index idx, type::vector<Index>& points, FixParticlePerformer3d::Coord& fixPoint)
     {
         auto* caps = dynamic_cast<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>*>(model.get());
 

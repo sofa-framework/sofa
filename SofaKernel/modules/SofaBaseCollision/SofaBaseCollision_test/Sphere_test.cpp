@@ -47,8 +47,11 @@ using sofa::component::collision::Sphere;
 using sofa::component::collision::SphereCollisionModel ;
 using sofa::component::collision::RigidSphere;
 
+#include <SofaMiscCollision/BaseIntTool.h>
+using sofa::component::collision::BaseIntTool;
+
 using sofa::core::collision::DetectionOutput;
-using sofa::defaulttype::Vec3d;
+using sofa::type::Vec3d;
 
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::MessageDispatcher ;
@@ -65,7 +68,6 @@ using sofa::testing::BaseSimulationTest;
 
 namespace sofa {
 
-
 struct TestSphere : public BaseSimulationTest
 {
     void SetUp() override
@@ -73,7 +75,6 @@ struct TestSphere : public BaseSimulationTest
         m_proxIntersection = sofa::core::objectmodel::New<MinProximityIntersection>();
         m_proxIntersection->setAlarmDistance(1.0);
         m_proxIntersection->setContactDistance(1.0);
-
     }
     void TearDown() override
     {
@@ -116,7 +117,7 @@ bool TestSphere::rigidRigid1(){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<DetectionOutput> detectionOUTPUT;
 
     //looking for an intersection (with proximities)
     if(!m_proxIntersection->computeIntersection(sph1,sph2,&detectionOUTPUT))
@@ -172,7 +173,7 @@ bool TestSphere::rigidRigid2(){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
     if(!m_proxIntersection->computeIntersection(sph1,sph2,&detectionOUTPUT))
@@ -219,7 +220,7 @@ bool TestSphere::rigidSoft2(){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
     if(!m_proxIntersection->computeIntersection(sph1,sph2,&detectionOUTPUT))
@@ -266,7 +267,7 @@ bool TestSphere::rigidSoft1(){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
     if(!m_proxIntersection->computeIntersection(sph1,sph2,&detectionOUTPUT))
@@ -314,7 +315,7 @@ bool TestSphere::rigidSoft3(){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
     if(!m_proxIntersection->computeIntersection(sph2,sph1,&detectionOUTPUT))
@@ -361,7 +362,7 @@ bool TestSphere::rigidSoft4(){
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
 
-    sofa::helper::vector<DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
     if(!m_proxIntersection->computeIntersection(sph2,sph1,&detectionOUTPUT))
@@ -397,7 +398,7 @@ bool TestSphere::softSoft1(){
     Sphere sph2(sphmodel2.get(),0);
 
 
-    sofa::helper::vector<DetectionOutput> detectionOUTPUT;
+    sofa::type::vector<DetectionOutput> detectionOUTPUT;
 
     //loooking for an intersection
     if(!m_proxIntersection->computeIntersection(sph1,sph2,&detectionOUTPUT))

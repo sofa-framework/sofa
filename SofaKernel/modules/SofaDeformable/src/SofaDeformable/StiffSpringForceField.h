@@ -23,9 +23,8 @@
 #include <SofaDeformable/config.h>
 
 #include <SofaDeformable/SpringForceField.h>
-#include <sofa/defaulttype/Mat.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
-#include <SofaBaseTopology/TopologySubsetData.inl> 
+#include <sofa/type/Mat.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 
 namespace sofa::component::interactionforcefield
 {
@@ -51,22 +50,22 @@ public:
 
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
-    typedef helper::vector<sofa::Index> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef type::vector<sofa::Index> SetIndexArray;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
 
 
     typedef typename Inherit::Spring Spring;
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
     enum { N=DataTypes::spatial_dimensions };
-    typedef defaulttype::Mat<N,N,Real> Mat;
+    typedef type::Mat<N,N,Real> Mat;
 
     SetIndex d_indices1; ///< Indices of the source points on the first model
     SetIndex d_indices2; ///< Indices of the fixed points on the second model
 
     core::objectmodel::Data<SReal> d_length;
 protected:
-    sofa::helper::vector<Mat>  dfdx;
+    sofa::type::vector<Mat>  dfdx;
 
     /// Accumulate the spring force and compute and store its stiffness
     void addSpringForce(Real& potentialEnergy, VecDeriv& f1,const  VecCoord& p1,const VecDeriv& v1, VecDeriv& f2,const  VecCoord& p2,const  VecDeriv& v2, sofa::Index i, const Spring& spring) override;

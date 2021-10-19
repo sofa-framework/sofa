@@ -47,7 +47,6 @@ public:
     typedef typename Inherit1::MBloc MBloc;
     typedef typename Inherit1::MatrixType MatrixType;
     typedef typename MatrixType::Index MatrixTypeIndex;
-    typedef typename Inherit1::ForceMask ForceMask;
     enum { NIn = Inherit1::NIn };
     enum { NOut = Inherit1::NOut };
 
@@ -79,9 +78,7 @@ protected:
     BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology,
                                         topology::PointSetTopologyContainer* _toTopology);
 
-    void addMatrixContrib(MatrixType* m, int row, int col, Real value);
-
-    sofa::helper::vector<CubeData> m_map;
+    sofa::type::vector<CubeData> m_map;
     topology::SparseGridTopology* m_fromTopology {nullptr};
     MatrixType* m_matrixJ {nullptr};
     bool m_updateJ {false};

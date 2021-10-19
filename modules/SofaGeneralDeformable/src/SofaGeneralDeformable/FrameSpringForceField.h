@@ -25,9 +25,9 @@
 
 #include <sofa/core/behavior/PairInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <vector>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 
 namespace sofa::component::interactionforcefield
 {
@@ -60,8 +60,8 @@ public:
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
     enum { N=DataTypes::spatial_dimensions };
-    typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef defaulttype::Vec<N,Real> VecN;
+    typedef type::Mat<N,N,Real> Mat;
+    typedef type::Vec<N,Real> VecN;
 
 
     class Spring
@@ -156,7 +156,7 @@ protected:
 
     SReal m_potentialEnergy;
     /// the list of the springs
-    Data<sofa::helper::vector<Spring> > springs;
+    Data<sofa::type::vector<Spring> > springs;
     /// the list of the local referentials of the springs
     VecCoord springRef;
     /// bool to allow the display of the 2 parts of springs torsions
@@ -189,7 +189,7 @@ public:
 
     SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const override { return m_potentialEnergy; }
 
-    sofa::helper::vector<Spring> * getSprings() { return springs.beginEdit(); }
+    sofa::type::vector<Spring> * getSprings() { return springs.beginEdit(); }
 
     void draw(const core::visual::VisualParams* vparams) override;
 

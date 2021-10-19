@@ -94,9 +94,9 @@ public:
     //Apply
     void apply( OutVecCoord& out, const InVecCoord& in, const InRootVecCoord* inroot  );
     void apply(
-        const core::MechanicalParams* /* mparams */, const helper::vector<OutDataVecCoord*>& dataVecOutPos,
-        const helper::vector<const InDataVecCoord*>& dataVecInPos ,
-        const helper::vector<const InRootDataVecCoord*>& dataVecInRootPos) override
+        const core::MechanicalParams* /* mparams */, const type::vector<OutDataVecCoord*>& dataVecOutPos,
+        const type::vector<const InDataVecCoord*>& dataVecInPos ,
+        const type::vector<const InRootDataVecCoord*>& dataVecInRootPos) override
     {
         if(dataVecOutPos.empty() || dataVecInPos.empty())
             return;
@@ -118,9 +118,9 @@ public:
     //ApplyJ
     void applyJ( OutVecDeriv& out, const InVecDeriv& in, const InRootVecDeriv* inroot );
     void applyJ(
-        const core::MechanicalParams* /* mparams */, const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
-        const helper::vector<const InDataVecDeriv*>& dataVecInVel,
-        const helper::vector<const InRootDataVecDeriv*>& dataVecInRootVel) override
+        const core::MechanicalParams* /* mparams */, const type::vector< OutDataVecDeriv*>& dataVecOutVel,
+        const type::vector<const InDataVecDeriv*>& dataVecInVel,
+        const type::vector<const InRootDataVecDeriv*>& dataVecInRootVel) override
     {
         if(dataVecOutVel.empty() || dataVecInVel.empty())
             return;
@@ -142,9 +142,9 @@ public:
     //ApplyJT Force
     void applyJT( InVecDeriv& out, const OutVecDeriv& in, InRootVecDeriv* outroot );
     void applyJT(
-        const core::MechanicalParams* /* mparams */, const helper::vector< InDataVecDeriv*>& dataVecOutForce,
-        const helper::vector< InRootDataVecDeriv*>& dataVecOutRootForce,
-        const helper::vector<const OutDataVecDeriv*>& dataVecInForce) override
+        const core::MechanicalParams* /* mparams */, const type::vector< InDataVecDeriv*>& dataVecOutForce,
+        const type::vector< InRootDataVecDeriv*>& dataVecOutRootForce,
+        const type::vector<const OutDataVecDeriv*>& dataVecInForce) override
     {
         if(dataVecOutForce.empty() || dataVecInForce.empty())
             return;
@@ -175,9 +175,9 @@ public:
     //ApplyJT Constraint
     void applyJT( InMatrixDeriv& out, const OutMatrixDeriv& in, InRootMatrixDeriv* outroot );
     void applyJT(
-        const core::ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv*>& dataMatOutConst ,
-        const helper::vector< InRootDataMatrixDeriv*>&  dataMatOutRootConst ,
-        const helper::vector<const OutDataMatrixDeriv*>& dataMatInConst) override
+        const core::ConstraintParams* /* cparams */, const type::vector< InDataMatrixDeriv*>& dataMatOutConst ,
+        const type::vector< InRootDataMatrixDeriv*>&  dataMatOutRootConst ,
+        const type::vector<const OutDataMatrixDeriv*>& dataMatInConst) override
     {
         if(dataMatOutConst.empty() || dataMatInConst.empty())
             return;
@@ -213,9 +213,9 @@ private:
     core::State<Out>* m_toModel;
     core::State<InRoot>* m_fromRootModel;
 
-    sofa::defaulttype::Vec<1,sofa::defaulttype::Quat> Buf_Rotation;
-    std::vector< sofa::defaulttype::Vec<3,OutReal> > ArticulationAxis;
-    std::vector< sofa::defaulttype::Vec<3,OutReal> > ArticulationPos;
+    sofa::type::Vec<1,sofa::type::Quat<SReal>> Buf_Rotation;
+    std::vector< sofa::type::Vec<3,OutReal> > ArticulationAxis;
+    std::vector< sofa::type::Vec<3,OutReal> > ArticulationPos;
     InVecCoord CoordinateBuf;
     InVecDeriv dxVec1Buf;
     OutVecDeriv dxRigidBuf;

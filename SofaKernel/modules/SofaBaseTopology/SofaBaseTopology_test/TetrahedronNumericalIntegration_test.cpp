@@ -36,6 +36,7 @@ using sofa::testing::NumericTest;
 namespace sofa {
 
 using namespace component;
+using namespace type;
 using namespace defaulttype;
 /**  Patch test in 2D and 3D.
 A movement is applied to the borders of a mesh. The points within should have a bilinear movement relative to the border movements.*/
@@ -62,7 +63,7 @@ struct TetrahedronNumericalIntegration_test : public NumericTest<typename _DataT
     typename sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes>::SPtr geo;
 
     // Create the context for the scene
-    void SetUp()
+    void SetUp() override
     {
         // Init simulation
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
@@ -132,7 +133,7 @@ struct TetrahedronNumericalIntegration_test : public NumericTest<typename _DataT
     }
 
 
-    void TearDown()
+    void TearDown() override
     {
         if (root!=nullptr)
             sofa::simulation::getSimulation()->unload(root);

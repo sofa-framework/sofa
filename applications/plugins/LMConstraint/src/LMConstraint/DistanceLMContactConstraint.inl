@@ -28,7 +28,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/accessor.h>
 #include <iostream>
 
@@ -148,9 +148,6 @@ void DistanceLMContactConstraint<DataTypes>::buildConstraintMatrix(const core::C
         MatrixDerivRowIterator c2_t2 = c2->writeLine(cIndex);
         c2_t2.addCol(idx2,-tgt2);
         scalarConstraintsIndices.push_back(cIndex++);
-
-        this->constrainedObject1->forceMask.insertEntry(idx1);
-        this->constrainedObject2->forceMask.insertEntry(idx2);
 
         edgeToContact[edges[i]] = Contact(normal,tgt1,tgt2);
     }
@@ -339,12 +336,12 @@ void DistanceLMContactConstraint<DataTypes>::draw(const core::visual::VisualPara
         const VecCoord &x2= this->constrainedObject2->read(core::ConstVecCoordId::position())->getValue();
 
 
-        sofa::helper::vector< sofa::helper::vector< sofa::defaulttype::Vector3 > > points;
+        sofa::type::vector< sofa::type::vector< sofa::type::Vector3 > > points;
         points.resize(3);
         //Sliding: show direction of the new constraint
-        sofa::helper::vector< sofa::defaulttype::Vector3 > slidingConstraints;
+        sofa::type::vector< sofa::type::Vector3 > slidingConstraints;
 
-        const sofa::helper::vector< ConstraintGroup* > &groups = this->getConstraintsOrder(core::ConstraintParams::VEL);
+        const sofa::type::vector< ConstraintGroup* > &groups = this->getConstraintsOrder(core::ConstraintParams::VEL);
 
         const SeqEdges &edges =  pointPairs.getValue();
         for (unsigned int i=0; i<groups.size(); ++i)
@@ -357,7 +354,7 @@ void DistanceLMContactConstraint<DataTypes>::draw(const core::visual::VisualPara
 
             if (contactDescription.state == SLIDING)
             {
-                sofa::defaulttype::Vector3 direction=contactDirection.n *contactDescription.coeff[0] +
+                sofa::type::Vector3 direction=contactDirection.n *contactDescription.coeff[0] +
                         contactDirection.t1*contactDescription.coeff[1]+
                         contactDirection.t2*contactDescription.coeff[2];
 

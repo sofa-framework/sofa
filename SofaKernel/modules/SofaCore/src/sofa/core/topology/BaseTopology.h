@@ -19,22 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_TOPOLOGY_BASETOPOLOGY_H
-#define SOFA_CORE_TOPOLOGY_BASETOPOLOGY_H
+#pragma once
 
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/BaseTopologyObject.h>
 #include <sofa/core/VecId.h>
+#include <array>
 
-
-namespace sofa
-{
-
-namespace core
-{
-
-namespace topology
+namespace sofa::core::topology
 {
 using core::topology::BaseMeshTopology;
 
@@ -81,8 +74,8 @@ public:
     *
     * \param ancestorElems are the ancestors topology info used in the points modifications
     */
-    virtual void initPointsAdded(const helper::vector< sofa::Index > &indices, const helper::vector< PointAncestorElem > &ancestorElems
-        , const helper::vector< core::VecCoordId >& coordVecs, const helper::vector< core::VecDerivId >& derivVecs );
+    virtual void initPointsAdded(const type::vector< sofa::Index > &indices, const type::vector< PointAncestorElem > &ancestorElems
+        , const type::vector< core::VecCoordId >& coordVecs, const type::vector< core::VecDerivId >& derivVecs );
 };
 
 /** A class that contains a set of low-level methods that perform topological changes */
@@ -136,7 +129,7 @@ public:
 
     /** \brief Generic method to remove a list of items.
     */
-    virtual void removeItems(const sofa::helper::vector<Index> & /*items*/);
+    virtual void removeItems(const sofa::type::vector<Index> & /*items*/);
 
 protected:
     /** \brief Adds a TopologyChange object to the list of the topology this object describes.
@@ -246,33 +239,25 @@ public:
 
     /// TopologyHandler interactions
     ///@{
-    const std::list<TopologyHandler *> &getTopologyHandlerList() const { return m_TopologyHandlerList; }
+    const std::list<TopologyHandler*>& getTopologyHandlerList(sofa::geometry::ElementType elementType) const;
 
-    /** \brief Adds a TopologyHandler to the list.
+    /** \brief Adds a TopologyHandler, linked to a certain type of Element.
     */
-    void addTopologyHandler(TopologyHandler* _TopologyHandler) override;
+    void addTopologyHandler(TopologyHandler* _TopologyHandler, sofa::geometry::ElementType elementType);
 
-
-    /** \brief Provides an iterator on the first element in the list of TopologyHandler objects.
-     */
-    std::list<TopologyHandler *>::const_iterator beginTopologyHandler() const override;
-
-    /** \brief Provides an iterator on the last element in the list of TopologyHandler objects.
-     */
-    std::list<TopologyHandler *>::const_iterator endTopologyHandler() const override;
 
     /** \brief Free each Topology changes in the list and remove them from the list
     *
     */
     void resetTopologyHandlerList();
 
-    ///@}
 
+    /** \ brief Generic function to link potential data (related to a type of element) with a topologyHandler
+    *
+    */
+    virtual bool linkTopologyHandlerToData(TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType);
 
-protected:
-
-    virtual void updateTopologyHandlerGraph() {}
-
+public:
     /// Array of topology modifications that have already occured (addition) or will occur next (deletion).
     Data <std::list<const TopologyChange *> >m_changeList;
 
@@ -280,23 +265,10 @@ protected:
     Data <std::list<const TopologyChange *> >m_stateChangeList;
 
     /// List of topology engines which will interact on all topological Data.
-    std::list<TopologyHandler *> m_TopologyHandlerList;
-
-public:
-
+    std::array< std::list<TopologyHandler*>, sofa::geometry::NumberOfElementType> m_topologyHandlerListPerElement{};
 
     bool insertInNode( objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
     bool removeInNode( objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
-
 };
 
-
-
-
-} // namespace topology
-
-} // namespace core
-
-} // namespace sofa
-
-#endif // SOFA_CORE_BASICTOPOLOGY_H
+} // namespace sofa::core::topology

@@ -36,7 +36,7 @@ using namespace defaulttype;
 int ImageTransformClass = core::RegisterObject("Read data from ImageContainer")
         .add<ImageTransform<ImageUC> >(true)
         .add<ImageTransform<ImageD> >()
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
         .add<ImageTransform<ImageC> >()
         .add<ImageTransform<ImageI> >()
         .add<ImageTransform<ImageUI> >()
@@ -51,7 +51,7 @@ int ImageTransformClass = core::RegisterObject("Read data from ImageContainer")
 
 template class SOFA_IMAGE_API ImageTransform<ImageUC>;
 template class SOFA_IMAGE_API ImageTransform<ImageD>;
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_API ImageTransform<ImageC>;
 template class SOFA_IMAGE_API ImageTransform<ImageI>;
 template class SOFA_IMAGE_API ImageTransform<ImageUI>;

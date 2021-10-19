@@ -48,13 +48,13 @@ protected:
 public:
 
     void init() override;
-    void addCollisionPairs(const sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >& v) override;
+    void addCollisionPairs(const sofa::type::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >& v) override;
 
 private:
 
     /// Unlike the sequential algorithm which creates the output on the fly, the parallel implementation
     /// requires to create the outputs before the computation, in order to avoid iterators invalidation
-    void createOutput(const helper::vector <std::pair<core::CollisionModel *, core::CollisionModel *>> &v);
+    void createOutput(const type::vector<std::pair<core::CollisionModel *, core::CollisionModel *>> &v);
 
     /// This function makes sure some topology arrays are initialized. They cannot be initialized concurrently
     void initializeTopology(sofa::core::topology::BaseMeshTopology*);

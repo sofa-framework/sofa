@@ -36,104 +36,101 @@ namespace sofa::component::forcefield
 using sofa::core::topology::edgesInTetrahedronArray;
 
 template< class DataTypes>
-void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::applyCreateFunction(Index tetrahedronIndex,
+void FastTetrahedralCorotationalForceField<DataTypes>::createTetrahedronRestInformation(Index tetrahedronIndex,
         TetrahedronRestInformation &my_tinfo,
         const core::topology::BaseMeshTopology::Tetrahedron &,
-        const sofa::helper::vector<Index> &,
-        const sofa::helper::vector<double> &)
+        const sofa::type::vector<Index> &,
+        const sofa::type::vector<double> &)
 {
-    if (ff)
+    const std::vector< Tetrahedron > &tetrahedronArray=this->m_topology->getTetrahedra() ;
+    //		const std::vector< Edge> &edgeArray=m_topology->getEdges() ;
+    unsigned int j,k,l,m,n;
+    typename DataTypes::Real lambda=getLambda();
+    typename DataTypes::Real mu=getMu();
+    typename DataTypes::Real volume,val;
+    typename DataTypes::Coord point[4]; //shapeVector[4];
+    const typename DataTypes::VecCoord restPosition=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+
+    ///describe the indices of the 4 tetrahedron vertices
+    const Tetrahedron &t= tetrahedronArray[tetrahedronIndex];
+//    BaseMeshTopology::EdgesInTetrahedron te=m_topology->getEdgesInTetrahedron(tetrahedronIndex);
+
+
+    // store the point position
+    for(j=0; j<4; ++j)
+        point[j]=(restPosition)[t[j]];
+    /// compute 6 times the rest volume
+    volume=dot(cross(point[1]-point[0],point[2]-point[0]),point[0]-point[3]);
+    /// store the rest volume
+    my_tinfo.restVolume=volume/6;
+    mu*=fabs(volume)/6;
+    lambda*=fabs(volume)/6;
+
+    // store shape vectors at the rest configuration
+    for(j=0; j<4; ++j)
     {
-        const std::vector< Tetrahedron > &tetrahedronArray=ff->m_topology->getTetrahedra() ;
-        //		const std::vector< Edge> &edgeArray=ff->m_topology->getEdges() ;
-        unsigned int j,k,l,m,n;
-        typename DataTypes::Real lambda=ff->getLambda();
-        typename DataTypes::Real mu=ff->getMu();
-        typename DataTypes::Real volume,val;
-        typename DataTypes::Coord point[4]; //shapeVector[4];
-        const typename DataTypes::VecCoord restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+        if ((j%2)==0)
+            my_tinfo.shapeVector[j]=cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/volume;
+        else
+            my_tinfo.shapeVector[j]= -cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/volume;
+    }
 
-        ///describe the indices of the 4 tetrahedron vertices
-        const Tetrahedron &t= tetrahedronArray[tetrahedronIndex];
-//    BaseMeshTopology::EdgesInTetrahedron te=ff->m_topology->getEdgesInTetrahedron(tetrahedronIndex);
-
-
-        // store the point position
-        for(j=0; j<4; ++j)
-            point[j]=(restPosition)[t[j]];
-        /// compute 6 times the rest volume
-        volume=dot(cross(point[1]-point[0],point[2]-point[0]),point[0]-point[3]);
-        /// store the rest volume
-        my_tinfo.restVolume=volume/6;
-        mu*=fabs(volume)/6;
-        lambda*=fabs(volume)/6;
-
-        // store shape vectors at the rest configuration
-        for(j=0; j<4; ++j)
+    /// compute the vertex stiffness of the linear elastic material, needed for addKToMatrix
+    for(j=0; j<4; ++j)
+    {
+        // the linear stiffness matrix using shape vectors and Lame coefficients
+        val=mu*dot(my_tinfo.shapeVector[j],my_tinfo.shapeVector[j]);
+        for(m=0; m<3; ++m)
         {
-            if ((j%2)==0)
-                my_tinfo.shapeVector[j]=cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/volume;
-            else
-                my_tinfo.shapeVector[j]= -cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/volume;
-        }
-
-        /// compute the vertex stiffness of the linear elastic material, needed for addKToMatrix
-        for(j=0; j<4; ++j)
-        {
-            // the linear stiffness matrix using shape vectors and Lame coefficients
-            val=mu*dot(my_tinfo.shapeVector[j],my_tinfo.shapeVector[j]);
-            for(m=0; m<3; ++m)
+            for(n=m; n<3; ++n)
             {
-                for(n=m; n<3; ++n)
-                {
-                    my_tinfo.linearDfDxDiag[j][m][n]=lambda*my_tinfo.shapeVector[j][n]*my_tinfo.shapeVector[j][m]+
-                            mu*my_tinfo.shapeVector[j][n]*my_tinfo.shapeVector[j][m];
+                my_tinfo.linearDfDxDiag[j][m][n]=lambda*my_tinfo.shapeVector[j][n]*my_tinfo.shapeVector[j][m]+
+                        mu*my_tinfo.shapeVector[j][n]*my_tinfo.shapeVector[j][m];
 
-                    if (m==n)
-                    {
-                        my_tinfo.linearDfDxDiag[j][m][m]+=Real(val);
-                    } else
-                        my_tinfo.linearDfDxDiag[j][n][m]=my_tinfo.linearDfDxDiag[j][m][n];
+                if (m==n)
+                {
+                    my_tinfo.linearDfDxDiag[j][m][m]+=Real(val);
+                } else
+                    my_tinfo.linearDfDxDiag[j][n][m]=my_tinfo.linearDfDxDiag[j][m][n];
+            }
+        }
+    }
+
+    /// compute the edge stiffness of the linear elastic material
+    for(j=0; j<6; ++j)
+    {
+        core::topology::BaseMeshTopology::Edge e=this->m_topology->getLocalEdgesInTetrahedron(j);
+        k=e[0];
+        l=e[1];
+
+        // store the rest edge vector
+        my_tinfo.restEdgeVector[j]=point[l]-point[k];
+
+        // the linear stiffness matrix using shape vectors and Lame coefficients
+        val=mu*dot(my_tinfo.shapeVector[l],my_tinfo.shapeVector[k]);
+        for(m=0; m<3; ++m)
+        {
+            for(n=0; n<3; ++n)
+            {
+                my_tinfo.linearDfDx[j][m][n]=lambda*my_tinfo.shapeVector[k][n]*my_tinfo.shapeVector[l][m]+
+                        mu*my_tinfo.shapeVector[l][n]*my_tinfo.shapeVector[k][m];
+
+                if (m==n)
+                {
+                    my_tinfo.linearDfDx[j][m][m]+=Real(val);
                 }
             }
         }
-
-        /// compute the edge stiffness of the linear elastic material
-        for(j=0; j<6; ++j)
-        {
-            core::topology::BaseMeshTopology::Edge e=ff->m_topology->getLocalEdgesInTetrahedron(j);
-            k=e[0];
-            l=e[1];
-
-            // store the rest edge vector
-            my_tinfo.restEdgeVector[j]=point[l]-point[k];
-
-            // the linear stiffness matrix using shape vectors and Lame coefficients
-            val=mu*dot(my_tinfo.shapeVector[l],my_tinfo.shapeVector[k]);
-            for(m=0; m<3; ++m)
-            {
-                for(n=0; n<3; ++n)
-                {
-                    my_tinfo.linearDfDx[j][m][n]=lambda*my_tinfo.shapeVector[k][n]*my_tinfo.shapeVector[l][m]+
-                            mu*my_tinfo.shapeVector[l][n]*my_tinfo.shapeVector[k][m];
-
-                    if (m==n)
-                    {
-                        my_tinfo.linearDfDx[j][m][m]+=Real(val);
-                    }
-                }
-            }
-        }
-        if (ff->decompositionMethod==QR_DECOMPOSITION) {
-            // compute the rotation matrix of the initial tetrahedron for the QR decomposition
-            computeQRRotation(my_tinfo.restRotation,my_tinfo.restEdgeVector);
-        } else 	if (ff->decompositionMethod==POLAR_DECOMPOSITION_MODIFIED) {
-            Mat3x3 Transformation;
-            Transformation[0]=point[1]-point[0];
-            Transformation[1]=point[2]-point[0];
-            Transformation[2]=point[3]-point[0];
-            helper::Decompose<Real>::polarDecomposition( Transformation, my_tinfo.restRotation );
-        }
+    }
+    if (decompositionMethod==QR_DECOMPOSITION) {
+        // compute the rotation matrix of the initial tetrahedron for the QR decomposition
+        computeQRRotation(my_tinfo.restRotation,my_tinfo.restEdgeVector);
+    } else 	if (decompositionMethod==POLAR_DECOMPOSITION_MODIFIED) {
+        Mat3x3 Transformation;
+        Transformation[0]=point[1]-point[0];
+        Transformation[1]=point[2]-point[0];
+        Transformation[2]=point[3]-point[0];
+        helper::Decompose<Real>::polarDecomposition( Transformation, my_tinfo.restRotation );
     }
 }
 
@@ -150,19 +147,18 @@ template <class DataTypes> FastTetrahedralCorotationalForceField<DataTypes>::Fas
     , lambda(0)
     , mu(0)
     , f_drawing(initData(&f_drawing, true, "drawing", " draw the forcefield if true"))
-    , drawColor1(initData(&drawColor1, sofa::helper::types::RGBAColor(0.0f, 0.0f, 1.0f, 1.0f), "drawColor1", " draw color for faces 1"))
-    , drawColor2(initData(&drawColor2, sofa::helper::types::RGBAColor(0.0f, 0.5f, 1.0f, 1.0f), "drawColor2", " draw color for faces 2"))
-    , drawColor3(initData(&drawColor3, sofa::helper::types::RGBAColor(0.0f, 1.0f, 1.0f, 1.0f), "drawColor3", " draw color for faces 3"))
-    , drawColor4(initData(&drawColor4, sofa::helper::types::RGBAColor(0.5f, 1.0f, 1.0f, 1.0f), "drawColor4", " draw color for faces 4"))
+    , drawColor1(initData(&drawColor1, sofa::type::RGBAColor(0.0f, 0.0f, 1.0f, 1.0f), "drawColor1", " draw color for faces 1"))
+    , drawColor2(initData(&drawColor2, sofa::type::RGBAColor(0.0f, 0.5f, 1.0f, 1.0f), "drawColor2", " draw color for faces 2"))
+    , drawColor3(initData(&drawColor3, sofa::type::RGBAColor(0.0f, 1.0f, 1.0f, 1.0f), "drawColor3", " draw color for faces 3"))
+    , drawColor4(initData(&drawColor4, sofa::type::RGBAColor(0.5f, 1.0f, 1.0f, 1.0f), "drawColor4", " draw color for faces 4"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , tetrahedronHandler(nullptr)        
 {
-    tetrahedronHandler = new FTCFTetrahedronHandler(this,&tetrahedronInfo);
+
 }
 
 template <class DataTypes> FastTetrahedralCorotationalForceField<DataTypes>::~FastTetrahedralCorotationalForceField()
 {
-    if (tetrahedronHandler) delete tetrahedronHandler;
+
 }
 
 template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>::init()
@@ -207,22 +203,20 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
     }
 
 
-    helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    type::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
     tetrahedronInf.resize(m_topology->getNbTetrahedra());
 
 
-    helper::vector<Mat3x3>& edgeInf = *(edgeInfo.beginEdit());
+    type::vector<Mat3x3>& edgeInf = *(edgeInfo.beginEdit());
     /// prepare to store info in the edge array
     edgeInf.resize(m_topology->getNbEdges());
     edgeInfo.createTopologyHandler(m_topology);
-    edgeInfo.registerTopologicalData();
     edgeInfo.endEdit();
 
-    helper::vector<Mat3x3>& pointInf = *(pointInfo.beginEdit());
+    type::vector<Mat3x3>& pointInf = *(pointInfo.beginEdit());
     /// prepare to store info in the point array
     pointInf.resize(m_topology->getNbPoints());
     pointInfo.createTopologyHandler(m_topology);
-    pointInfo.registerTopologicalData();
     pointInfo.endEdit();
 
     if (_initialPoints.size() == 0)
@@ -236,13 +230,19 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
     /// initialize the data structure associated with each tetrahedron
     for (Index i=0; i<m_topology->getNbTetrahedra(); ++i)
     {
-        tetrahedronHandler->applyCreateFunction(i,tetrahedronInf[i],m_topology->getTetrahedron(i),
-                (const helper::vector< Index > )0,
-                (const helper::vector< double >)0);
+        createTetrahedronRestInformation(i,tetrahedronInf[i],m_topology->getTetrahedron(i),
+                (const type::vector< Index > )0,
+                (const type::vector< double >)0);
     }
     /// set the call back function upon creation of a tetrahedron
-    tetrahedronInfo.createTopologyHandler(m_topology,tetrahedronHandler);
-    tetrahedronInfo.registerTopologicalData();
+    tetrahedronInfo.createTopologyHandler(m_topology);
+    tetrahedronInfo.setCreationCallback([this](Index tetrahedronIndex, TetrahedronRestInformation& tetraInfo,
+        const core::topology::BaseMeshTopology::Tetrahedron& tetra,
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs)
+    {
+        createTetrahedronRestInformation(tetrahedronIndex, tetraInfo, tetra, ancestors, coefs);
+    });
     tetrahedronInfo.endEdit();
 
     updateTopologyInfo=true;
@@ -259,7 +259,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::updateTopologyInformation
 
     TetrahedronRestInformation *tetinfo;
 
-    helper::vector<typename FastTetrahedralCorotationalForceField<DataTypes>::TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    type::vector<typename FastTetrahedralCorotationalForceField<DataTypes>::TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
     for(i=0; i<nbTetrahedra; i++ )
     {
@@ -329,7 +329,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
     {
         updateTopologyInformation();
     }
-    helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    type::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
     TetrahedronRestInformation *tetinfo;
 
     Coord dp[6],sv;
@@ -435,8 +435,8 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
     if (updateMatrix==true)
     {
         // the matrix must be stored in edges
-        helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
-        helper::vector<Mat3x3>& edgeDfDx = *(edgeInfo.beginEdit());
+        type::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+        type::vector<Mat3x3>& edgeDfDx = *(edgeInfo.beginEdit());
 
         TetrahedronRestInformation *tetinfo;
         int nbTetrahedra=m_topology->getNbTetrahedra();
@@ -478,7 +478,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
         edgeInfo.endEdit();
     }
 
-    const helper::vector<Mat3x3> &edgeDfDx = edgeInfo.getValue();
+    const type::vector<Mat3x3> &edgeDfDx = edgeInfo.getValue();
     Coord deltax;
 
     // use the already stored matrix
@@ -516,9 +516,9 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::defaul
     int nbPoints=m_topology->getNbPoints();
     int nbTetrahedra=m_topology->getNbTetrahedra();
 
-    helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
-    helper::vector<Mat3x3>& edgeDfDx = *(edgeInfo.beginEdit());
-    helper::vector<Mat3x3>& pointDfDx = *(pointInfo.beginEdit());
+    type::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    type::vector<Mat3x3>& edgeDfDx = *(edgeInfo.beginEdit());
+    type::vector<Mat3x3>& pointDfDx = *(pointInfo.beginEdit());
 
     TetrahedronRestInformation *tetinfo;
     Mat3x3 tmp;
@@ -632,7 +632,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::draw(const core::visual::
         vparams->drawTool()->setPolygonMode(0, true);
 
 
-    std::vector< defaulttype::Vector3 > points[4];
+    std::vector< type::Vector3 > points[4];
     for (size_t i = 0; i<m_topology->getNbTetrahedra(); ++i)
     {
         const core::topology::BaseMeshTopology::Tetrahedron t = m_topology->getTetrahedron(i);

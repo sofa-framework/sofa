@@ -25,7 +25,6 @@
 
 namespace sofa::helper
 {
-class StateMask;
 
 namespace advancedtimer
 {

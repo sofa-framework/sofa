@@ -100,11 +100,11 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundVertexArray 
 void ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundEdgeArray ()
 {
     // Get edge array
-    sofa::helper::vector<Edge> edges = getEdgeArray();
+    sofa::type::vector<Edge> edges = getEdgeArray();
 
     // Creating Tetrahedrons edges shell unordered
     TetrahedronSetTopologyContainer::createTetrahedraAroundEdgeArray();
-    helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
+    helper::ReadAccessor< Data< sofa::type::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
     //	for (unsigned int i = 0; i < m_tetrahedraAroundEdge.size(); i++)
     //  msg_info() << i << " => " << m_tetrahedraAroundEdge[i];
 
@@ -113,8 +113,8 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundEdgeArray ()
     {
 
         auto &shell = getTetrahedraAroundEdgeForModification (edgeIndex);
-        sofa::helper::vector < sofa::helper::vector <Index> > vertexTofind;
-        sofa::helper::vector <Index> goodShell;
+        sofa::type::vector < sofa::type::vector <Index> > vertexTofind;
+        sofa::type::vector <Index> goodShell;
         unsigned int firstVertex =0;
         unsigned int secondVertex =0;
         unsigned int cpt = 0;
@@ -244,8 +244,8 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArra
     // at most 2 tetrahedrons adjacent to one triangle.
 
     TetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArray();
-    helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
-    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
+    helper::ReadAccessor< Data< sofa::type::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
+    helper::ReadAccessor< Data< sofa::type::vector<Triangle> > > m_triangle = d_triangle;
     //	for (unsigned int i = 0; i <m_tetrahedraAroundTriangle.size();i++)
     // msg_info() << i << " old => " << m_tetrahedraAroundTriangle[i];
 
@@ -369,7 +369,7 @@ int ManifoldTetrahedronSetTopologyContainer::getTriangleTetrahedronOrientation (
     std::map <unsigned int, unsigned int> mapPosition;
     std::map<unsigned int, unsigned int>::iterator it;
     unsigned int positionsChange[3];
-    sofa::helper::vector <Triangle> positifs;
+    sofa::type::vector <Triangle> positifs;
 
 
 

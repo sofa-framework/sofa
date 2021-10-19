@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <fstream>
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 
 namespace sofa
 {
@@ -37,8 +37,6 @@ namespace cuda
 
 int CudaPointCollisionModelClass = core::RegisterObject("GPU-based point collision model using CUDA")
         .add< CudaPointCollisionModel >()
-        .addAlias("CudaPoint")
-        .addAlias("CudaPointModel")
         ;
 
 using namespace defaulttype;
@@ -61,7 +59,7 @@ void CudaPointCollisionModel::init()
 
     if (mstate==NULL)
     {
-        serr << "ERROR: CudaPointCollisionModel requires a CudaVec3f Mechanical Model.\n";
+        msg_error() << "CudaPointCollisionModel requires a CudaVec3f Mechanical Model.\n";
         return;
     }
 
@@ -79,8 +77,8 @@ void CudaPointCollisionModel::draw(const core::visual::VisualParams* , Index ind
     glBegin(GL_POINTS);
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
     auto i0 = index*gsize;
-    auto n = (index==size-1) ? x.size()-i0 : gsize;
-    for (auto p=0; p<n; p++)
+    Size n = (index==size-1) ? x.size()-i0 : Size(gsize);
+    for (Size p=0; p<n; p++)
     {
         glVertex3fv(x[i0+p].ptr());
     }
@@ -100,7 +98,7 @@ void CudaPointCollisionModel::draw(const core::visual::VisualParams* vparams)
         glPointSize(3);
         glColor4fv(getColor4f());
 
-        for (int i=0; i<size; i++)
+        for (Size i=0; i<size; i++)
         {
             draw(vparams,i);
         }
@@ -123,7 +121,7 @@ void CudaPointCollisionModel::computeBoundingTree(int maxDepth)
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     const int npoints = mstate->getSize();
     const int gsize = groupSize.getValue();
-    const int nelems = (npoints + gsize-1)/gsize;
+    const Size nelems = (npoints + gsize-1)/gsize;
     bool updated = false;
     if (nelems != size)
     {
@@ -137,7 +135,7 @@ void CudaPointCollisionModel::computeBoundingTree(int maxDepth)
     if (!empty())
     {
         const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
-        for (int i=0; i<size; i++)
+        for (Size i=0; i<size; i++)
         {
             int i0 = i*gsize;
             int n = (i==size-1) ? npoints-i0 : gsize;

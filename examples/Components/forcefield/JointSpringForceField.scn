@@ -5,7 +5,8 @@
     <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
     <RequiredPlugin pluginName='SofaRigid'/>
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showCollisionModels showMechanicalMappings" />
-    <BruteForceDetection name="default40" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager name="default41" response="default" />
     <DefaultPipeline name="default42" />
     <MinProximityIntersection name="default43" alarmDistance="1" contactDistance="0.5"/>

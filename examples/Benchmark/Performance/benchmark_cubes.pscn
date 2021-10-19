@@ -15,18 +15,16 @@
     <OglSceneFrame/>
 
     <!-- Basic Components to perform the collision detection -->
-    <FreeMotionAnimationLoop name="FreeMotionAnimationLoop" parallel="true" />
+    <FreeMotionAnimationLoop name="FreeMotionAnimationLoop" parallel="false" solveODEConcurrently="false"/>
     <DefaultPipeline name="CollisionPipeline" />
-    <BruteForceDetection name="BruteForceDetection" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
     <DefaultContactManager name="Response" response="FrictionContact" />
     <LCPConstraintSolver maxIt="1000" tolerance="0.001"  build_lcp="false"/>
     <!-- Using a rigid cube using collision triangles, lines and points  -->
 
     <Node name="grid0">
-
-        <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
 
         <?php
         $dim_x = 3;
@@ -48,6 +46,9 @@
         ?>
 
 <?php echo '        <Node name="Cube'.$i.'">';?>
+
+            <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
+            <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
 
 <?php echo '            <MechanicalObject name="Cube_RigidDOF" template="Rigid3d" translation="'.$tx.' '.$ty.' '.$tz.'" />';?>
 

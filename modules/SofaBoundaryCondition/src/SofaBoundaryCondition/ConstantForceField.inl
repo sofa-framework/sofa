@@ -23,7 +23,6 @@
 
 #include <SofaBoundaryCondition/ConstantForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/core/MechanicalParams.h>
 
 #include <math.h>
@@ -45,36 +44,11 @@ ConstantForceField<DataTypes>::ConstantForceField()
     , d_force(initData(&d_force, "force", "applied force to all points if forces attribute is not specified"))
     , d_totalForce(initData(&d_totalForce, "totalForce", "total force for all points, will be distributed uniformly over points"))
     , d_showArrowSize(initData(&d_showArrowSize,SReal(0.0), "showArrowSize", "Size of the drawn arrows (0->no arrows, sign->direction of drawing. (default=0)"))
-    , d_color(initData(&d_color, sofa::helper::types::RGBAColor(0.2f,0.9f,0.3f,1.0f), "showColor", "Color for object display (default: [0.2,0.9,0.3,1.0])"))
+    , d_color(initData(&d_color, sofa::type::RGBAColor(0.2f,0.9f,0.3f,1.0f), "showColor", "Color for object display (default: [0.2,0.9,0.3,1.0])"))
     , l_topology(initLink("topology", "link to the topology container"))
 {
     d_showArrowSize.setGroup("Visualization");
     d_color.setGroup("Visualization");
-}
-
-
-template<class DataTypes>
-void ConstantForceField<DataTypes>::parse(BaseObjectDescription* arg)
-{
-    /// Now warning the user when using old API
-    /// TODO: remove for 20.06
-    const char* val1=arg->getAttribute("points",nullptr) ;
-    if(val1)
-    {
-        msg_error() << "The attribute 'points' is no longer valid. "
-                    << "It has been converted into 'indices' since Sofa 17.06 '" ;
-
-    }
-    /// Now warning the user when using old API
-    /// TODO: remove for 20.06
-    const char* val2=arg->getAttribute("arrowSizeCoef",nullptr) ;
-    if(val2)
-    {
-        msg_error() << "The attribute 'arrowSizeCoef' is no longer valid. "
-                    << "It has been converted into 'showArrowSize' since Sofa 19.12 '" ;
-
-    }
-    Inherit::parse(arg) ;
 }
 
 
@@ -98,7 +72,6 @@ void ConstantForceField<DataTypes>::init()
         
         // Initialize functions and parameters for topology data and handler
         d_indices.createTopologyHandler(_topology);
-        d_indices.registerTopologicalData();
 
         m_systemSize = _topology->getNbPoints();
     }
@@ -514,7 +487,7 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
 
     if( fabs(aSC)<1.0e-10 )
     {
-        std::vector<defaulttype::Vector3> points;
+        std::vector<type::Vector3> points;
         for (unsigned int i=0; i<indices.size(); i++)
         {
             Real xx = 0.0, xy = 0.0, xz = 0.0, fx = 0.0, fy = 0.0, fz = 0.0;
@@ -543,10 +516,10 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
             }
 
             DataTypes::get(fx,fy,fz, f[i] );
-            points.push_back(defaulttype::Vector3(xx, xy, xz ));
-            points.push_back(defaulttype::Vector3(xx+fx, xy+fy, xz+fz ));
+            points.push_back(type::Vector3(xx, xy, xz ));
+            points.push_back(type::Vector3(xx+fx, xy+fy, xz+fz ));
         }
-        vparams->drawTool()->drawLines(points, 2, sofa::helper::types::RGBAColor::green());
+        vparams->drawTool()->drawLines(points, 2, sofa::type::RGBAColor::green());
     }
     else
     {
@@ -581,8 +554,8 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
 
             DataTypes::get(fx,fy,fz, f[i] );
 
-            defaulttype::Vector3 p1( xx, xy, xz);
-            defaulttype::Vector3 p2( aSC*fx+xx, aSC*fy+xy, aSC*fz+xz );
+            type::Vector3 p1( xx, xy, xz);
+            type::Vector3 p2( aSC*fx+xx, aSC*fy+xy, aSC*fz+xz );
 
             float norm = static_cast<float>((p2-p1).norm());
 
@@ -600,17 +573,4 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
     vparams->drawTool()->restoreLastState();
 }
 
-template<class DataTypes>
-void ConstantForceField<DataTypes>::updateForceMask()
-{
-    const VecIndex& indices = d_indices.getValue();
-
-    for (size_t i=0; i<indices.size(); i++)
-    {
-        this->mstate->forceMask.insertEntry(i);
-    }
-}
-
 } // namespace sofa::component::forcefield
-
-

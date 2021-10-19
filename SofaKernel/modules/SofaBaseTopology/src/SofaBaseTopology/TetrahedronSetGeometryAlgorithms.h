@@ -71,7 +71,7 @@ protected:
         , d_showTetrahedraIndices (initData(&d_showTetrahedraIndices, (bool) false, "showTetrahedraIndices", "Debug : view Tetrahedrons indices"))
         , d_drawTetrahedra(initData(&d_drawTetrahedra, false, "drawTetrahedra","if true, draw the tetrahedra in the topology"))
         , d_drawScaleTetrahedra(initData(&d_drawScaleTetrahedra, (float) 1.0, "drawScaleTetrahedra", "Scale of the terahedra (between 0 and 1; if <1.0, it produces gaps between the tetrahedra)"))
-        , d_drawColorTetrahedra(initData(&d_drawColorTetrahedra, sofa::helper::types::RGBAColor(1.0f,1.0f,0.0f,1.0f), "drawColorTetrahedra", "RGBA code color used to draw tetrahedra."))
+        , d_drawColorTetrahedra(initData(&d_drawColorTetrahedra, sofa::type::RGBAColor(1.0f,1.0f,0.0f,1.0f), "drawColorTetrahedra", "RGBA code color used to draw tetrahedra."))
     {
         core::objectmodel::Base::addAlias(&d_showTetrahedraIndices, "showTetrasIndices");
         core::objectmodel::Base::addAlias(&d_drawTetrahedra, "drawTetra");
@@ -90,10 +90,10 @@ public:
 
     Coord computeTetrahedronCircumcenter(const TetraID i) const;
 
-    bool isPointInTetrahedron(const TetraID i, const sofa::defaulttype::Vec<3,Real>& p) const;
+    bool isPointInTetrahedron(const TetraID i, const sofa::type::Vec<3,Real>& p) const;
 
     /// return (if the point is in the tetrahedron) the barycentric coordinates of the point in the tetrahedron
-    bool isPointInTetrahedron(const TetraID ind_t, const sofa::defaulttype::Vec<3,Real>& pTest, sofa::defaulttype::Vec<4,Real>& barycentricCoordinates) const;
+    bool isPointInTetrahedron(const TetraID ind_t, const sofa::type::Vec<3,Real>& pTest, sofa::type::Vec<4,Real>& barycentricCoordinates) const;
 
     void getTetrahedronVertexCoordinates(const TetraID i, Coord[4]) const;
 
@@ -114,26 +114,26 @@ public:
 
     /// finds the indices of all tetrahedra in the ball of center ind_ta and of radius dist(ind_ta, ind_tb)
     void getTetraInBall(const TetraID ind_ta, const TetraID ind_tb,
-            sofa::helper::vector<TetrahedronID> &indices) const;
+            sofa::type::vector<TetrahedronID> &indices) const;
 
     /// finds the indices of all tetrahedra in the ball of center ind_ta and of radius dist(ind_ta, ind_tb)
     void getTetraInBall(const TetraID ind_ta, Real r,
-            sofa::helper::vector<TetrahedronID> &indices) const;
+            sofa::type::vector<TetrahedronID> &indices) const;
     void getTetraInBall(const Coord& c, Real r,
-            sofa::helper::vector<TetrahedronID> &indices) const;
+            sofa::type::vector<TetrahedronID> &indices) const;
     /** \brief Write the current mesh into a msh file
     */
     void writeMSHfile(const char *filename) const;
 
     /// finds the intersection point with plane which is defined by c and normal
-    void getIntersectionPointWithPlane(const TetraID ind_ta, const sofa::defaulttype::Vec<3,Real>& planP0, const sofa::defaulttype::Vec<3,Real>& normal, sofa::helper::vector< sofa::defaulttype::Vec<3,Real> >& intersectedPoint, SeqEdges& intersectedEdge);
+    void getIntersectionPointWithPlane(const TetraID ind_ta, const sofa::type::Vec<3,Real>& planP0, const sofa::type::Vec<3,Real>& normal, sofa::type::vector< sofa::type::Vec<3,Real> >& intersectedPoint, SeqEdges& intersectedEdge);
 
     /// finds the intersection point between edge and plane
-    bool computeIntersectionEdgeWithPlane(const sofa::defaulttype::Vec<3,Real>& edgeP1,
-                                          const sofa::defaulttype::Vec<3,Real>& edgeP2,
-                                          const sofa::defaulttype::Vec<3,Real>& planP0,
-                                          const sofa::defaulttype::Vec<3,Real>& normal,
-                                          sofa::defaulttype::Vec<3,Real>& intersection);
+    bool computeIntersectionEdgeWithPlane(const sofa::type::Vec<3,Real>& edgeP1,
+                                          const sofa::type::Vec<3,Real>& edgeP2,
+                                          const sofa::type::Vec<3,Real>& planP0,
+                                          const sofa::type::Vec<3,Real>& normal,
+                                          sofa::type::Vec<3,Real>& intersection);
     
     /// Method to check if points stored inside the Tetrahedron, given by the tetrahedron id, are in the right order (by checking the cross products between edges).
     bool checkNodeSequence(const TetraID tetraId) const;
@@ -151,32 +151,32 @@ public:
     bool checkTetrahedronValidity(const TetraID tetraId, SReal minAngle = 20, SReal maxAnglemaxAngle = 160, SReal factorLength = 10) const;
 
     /// Will call @sa checkTetrahedronValidity for each Tetrahedron of the mesh and store the bad tetrahedron ID in @sa m_badTetraIds
-    const sofa::helper::vector <TetraID>& computeBadTetrahedron(SReal minAngle = 20, SReal maxAngle = 160, SReal factorLength = 10);
+    const sofa::type::vector<TetraID>& computeBadTetrahedron(SReal minAngle = 20, SReal maxAngle = 160, SReal factorLength = 10);
 
     /// Return bad tetrahedron ID: @sa m_badTetraIds
-    const sofa::helper::vector <TetraID>& getBadTetrahedronIds();
+    const sofa::type::vector<TetraID>& getBadTetrahedronIds();
     
     /// return a pointer to the container of cubature points
     NumericalIntegrationDescriptor<Real,4> &getTetrahedronNumericalIntegrationDescriptor();
 
-    void subDivideTetrahedronsWithPlane(sofa::helper::vector< sofa::helper::vector<double> >& coefs, sofa::helper::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal);
-    void subDivideTetrahedronsWithPlane(sofa::helper::vector<Coord>& intersectedPoints, sofa::helper::vector<EdgeID>& intersectedEdgeID, Coord planePos, Coord planeNormal);
-    int subDivideTetrahedronWithPlane(TetraID tetraIdx, sofa::helper::vector<EdgeID>& intersectedEdgeID, sofa::helper::vector<PointID>& intersectedPointID, Coord planeNormal, sofa::helper::vector<Tetra>& toBeAddedTetra);
+    void subDivideTetrahedronsWithPlane(sofa::type::vector< sofa::type::vector<double> >& coefs, sofa::type::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal);
+    void subDivideTetrahedronsWithPlane(sofa::type::vector<Coord>& intersectedPoints, sofa::type::vector<EdgeID>& intersectedEdgeID, Coord planePos, Coord planeNormal);
+    int subDivideTetrahedronWithPlane(TetraID tetraIdx, sofa::type::vector<EdgeID>& intersectedEdgeID, sofa::type::vector<PointID>& intersectedPointID, Coord planeNormal, sofa::type::vector<Tetra>& toBeAddedTetra);
 
-    void subDivideRestTetrahedronsWithPlane(sofa::helper::vector< sofa::helper::vector<double> >& coefs, sofa::helper::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal);
-    void subDivideRestTetrahedronsWithPlane(sofa::helper::vector<Coord>& intersectedPoints, sofa::helper::vector<EdgeID>& intersectedEdgeID, Coord planePos, Coord planeNormal);
-    int subDivideRestTetrahedronWithPlane(TetraID tetraIdx, sofa::helper::vector<EdgeID>& intersectedEdgeID, sofa::helper::vector<PointID>& intersectedPointID, Coord planeNormal, sofa::helper::vector<Tetra>& toBeAddedTetra);
+    void subDivideRestTetrahedronsWithPlane(sofa::type::vector< sofa::type::vector<double> >& coefs, sofa::type::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal);
+    void subDivideRestTetrahedronsWithPlane(sofa::type::vector<Coord>& intersectedPoints, sofa::type::vector<EdgeID>& intersectedEdgeID, Coord planePos, Coord planeNormal);
+    int subDivideRestTetrahedronWithPlane(TetraID tetraIdx, sofa::type::vector<EdgeID>& intersectedEdgeID, sofa::type::vector<PointID>& intersectedPointID, Coord planeNormal, sofa::type::vector<Tetra>& toBeAddedTetra);
 
 protected:
     Data<bool> d_showTetrahedraIndices; ///< Debug : view Tetrahedrons indices
     Data<bool> d_drawTetrahedra; ///< if true, draw the tetrahedra in the topology
     Data<float> d_drawScaleTetrahedra; ///< Scale of the terahedra (between 0 and 1; if <1.0, it produces gaps between the tetrahedra)
-    Data<sofa::helper::types::RGBAColor> d_drawColorTetrahedra; ///< RGBA code color used to draw tetrahedra.
+    Data<sofa::type::RGBAColor> d_drawColorTetrahedra; ///< RGBA code color used to draw tetrahedra.
     /// include cubature points
     NumericalIntegrationDescriptor<Real,4> tetrahedronNumericalIntegration;
 
     /// vector of Tetrahedron ID which do not respect @sa checkTetrahedronValidity . buffer updated only by method @sa computeBadTetrahedron
-    sofa::helper::vector <TetraID> m_badTetraIds;
+    sofa::type::vector<TetraID> m_badTetraIds;
 
     TetrahedronSetTopologyContainer*					m_container;
     TetrahedronSetTopologyModifier*						m_modifier;
@@ -186,7 +186,6 @@ protected:
 #if !defined(SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETGEOMETRYALGORITHMS_CPP)
 extern template class SOFA_SOFABASETOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec3Types>;
 extern template class SOFA_SOFABASETOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec2Types>;
-extern template class SOFA_SOFABASETOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec1Types>;
 #endif
 
 } //namespace sofa::component::topology

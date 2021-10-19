@@ -73,10 +73,6 @@ public:
     /// Constructor
     vector(Size n, const T& value): std::vector<T,Alloc>(n,value) {}
     /// Constructor
-    vector(int n, const T& value): std::vector<T,Alloc>(n,value) {}
-    /// Constructor
-    vector(long n, const T& value): std::vector<T,Alloc>(n,value) {}
-    /// Constructor
     explicit vector(Size n): std::vector<T,Alloc>(n) {}
     /// Constructor
     vector(const std::vector<T, Alloc>& x): std::vector<T,Alloc>(x) {}
@@ -166,7 +162,7 @@ public:
     }
 
     /// this function is usefull for vector_device because it resize the vector without device operation (if device is not valid).
-    /// Therefore the function is used in asynchronous code to safly resize a vector which is either cuda of helper::vector
+    /// Therefore the function is used in asynchronous code to safly resize a vector which is either cuda of type::vector
     void fastResize(Size n)
     {
         this->resize(n);

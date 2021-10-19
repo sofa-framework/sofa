@@ -27,12 +27,11 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <SofaBaseTopology/TopologyData.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 #define LOCAL_OPTIM
 
@@ -65,7 +64,7 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
     enum { N=DataTypes::spatial_dimensions };
-    typedef defaulttype::Mat<N,N,Real> Mat;
+    typedef type::Mat<N,N,Real> Mat;
 
     using Index = sofa::Index;
 
@@ -95,8 +94,8 @@ protected:
     {
     public:
         enum {A=0,B,C,D};     ///< vertex names as in Volino's paper
-        sofa::defaulttype::Vec<4,unsigned> vid;  ///< vertex indices, in circular order
-        sofa::defaulttype::Vec<4,Real> alpha;    ///< weight of each vertex in the bending vector
+        sofa::type::Vec<4,unsigned> vid;  ///< vertex indices, in circular order
+        sofa::type::Vec<4,Real> alpha;    ///< weight of each vertex in the bending vector
         //mutable Deriv dpKfact[4];
         Real lambda;          ///< bending stiffness
 
@@ -104,7 +103,7 @@ protected:
 
         bool is_initialized;
 
-        typedef defaulttype::Mat<12,12,Real> StiffnessMatrix;
+        typedef type::Mat<12,12,Real> StiffnessMatrix;
 
         /// Store the vertex indices and perform all the precomputations
         void setEdgeSpring( const VecCoord& p, unsigned iA, unsigned iB, unsigned iC, unsigned iD, Real materialBendingStiffness );
@@ -151,7 +150,7 @@ protected:
         /// replace a vertex index with another one
         void replaceIndex( Index oldIndex, Index newIndex );
         /// replace all the vertex indices with the given ones
-        void replaceIndices( const helper::vector<Index> &newIndices );
+        void replaceIndices( const type::vector<Index> &newIndices );
 
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const EdgeSpring& /*ei*/ )
@@ -167,45 +166,36 @@ protected:
     };
 
     /// The list of edge springs, one for each edge between two triangles
-    sofa::component::topology::EdgeData<helper::vector<EdgeSpring> > d_edgeSprings;
+    sofa::component::topology::EdgeData<type::vector<EdgeSpring> > d_edgeSprings;
 
-    class TriangularBSEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<EdgeSpring> >
-    {
-    public:
-        typedef typename FastTriangularBendingSprings<DataTypes>::EdgeSpring EdgeSpring;
-        TriangularBSEdgeHandler(FastTriangularBendingSprings<DataTypes>* _ff, sofa::component::topology::EdgeData<sofa::helper::vector<EdgeSpring> >* _data)
-            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::helper::vector<EdgeSpring> >(_data), ff(_ff) {}
+    /** Method to initialize @sa EdgeSpring when a new edge is created.
+    * Will be set as creation callback in the EdgeData @sa d_edgeSprings
+    */
+    void applyEdgeCreation(Index edgeIndex,
+        EdgeSpring& ei,
+        const core::topology::BaseMeshTopology::Edge&, const sofa::type::vector< Index >&,
+        const sofa::type::vector< double >&);
 
-        void applyCreateFunction(Index edgeIndex,
-                EdgeSpring &ei,
-                const core::topology::BaseMeshTopology::Edge& ,  const sofa::helper::vector< Index > &,
-                const sofa::helper::vector< double >&);
+    /** Method to update @sa d_edgeSprings when a new triangle is created.
+    * Will be set as callback in the EdgeData @sa d_edgeSprings when TRIANGLESADDED event is fired
+    * to create a new spring between new created triangles.
+    */
+    void applyTriangleCreation(const sofa::type::vector<Index>& triangleAdded,
+        const sofa::type::vector<core::topology::BaseMeshTopology::Triangle>&,
+        const sofa::type::vector<sofa::type::vector<Index> >&,
+        const sofa::type::vector<sofa::type::vector<double> >&);
 
-        void applyTriangleCreation(const sofa::helper::vector<Index> &triangleAdded,
-                const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle> & ,
-                const sofa::helper::vector<sofa::helper::vector<Index> > & ,
-                const sofa::helper::vector<sofa::helper::vector<double> > &);
+    /** Method to update @sa d_edgeSprings when a triangle is removed.
+    * Will be set as callback in the EdgeData @sa d_edgeSprings when TRIANGLESREMOVED event is fired
+    * to remove spring if needed or update pair of triangles.
+    */
+    void applyTriangleDestruction(const sofa::type::vector<Index>& triangleRemoved);
 
-        void applyTriangleDestruction(const sofa::helper::vector<Index> &triangleRemoved);
+    /// Method to update @sa d_edgeSprings when a point is removed. Will be set as callback when POINTSREMOVED event is fired
+    void applyPointDestruction(const sofa::type::vector<Index>& pointIndices);
 
-        void applyPointDestruction(const sofa::helper::vector<Index> &pointIndices);
-
-        void applyPointRenumbering(const sofa::helper::vector<Index> &pointToRenumber);
-
-        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<EdgeSpring> >::ApplyTopologyChange;
-        /// Callback to add triangles elements.
-        void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/);
-        /// Callback to remove triangles elements.
-        void ApplyTopologyChange(const core::topology::TrianglesRemoved* /*event*/);
-
-        /// Callback to remove points elements.
-        void ApplyTopologyChange(const core::topology::PointsRemoved* /*event*/);
-        /// Callback to renumbering on points elements.
-        void ApplyTopologyChange(const core::topology::PointsRenumbering* /*event*/);
-
-    protected:
-        FastTriangularBendingSprings<DataTypes>* ff;
-    };
+    /// Method to update @sa d_edgeSprings when points are renumbered. Will be set as callback when POINTSRENUMBERING event is fired
+    void applyPointRenumbering(const sofa::type::vector<Index>& pointToRenumber);
 
     sofa::core::topology::BaseMeshTopology* m_topology;
 
@@ -214,9 +204,7 @@ protected:
 
     virtual ~FastTriangularBendingSprings();
 
-    sofa::component::topology::EdgeData<helper::vector<EdgeSpring> > &getEdgeInfo() {return d_edgeSprings;}
-
-    TriangularBSEdgeHandler* d_edgeHandler;
+    sofa::component::topology::EdgeData<type::vector<EdgeSpring> > &getEdgeInfo() {return d_edgeSprings;}
 
     SReal m_potentialEnergy;
 };

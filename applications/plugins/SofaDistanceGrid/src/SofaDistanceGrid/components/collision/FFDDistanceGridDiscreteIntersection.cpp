@@ -37,6 +37,7 @@ namespace component
 namespace collision
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
@@ -96,8 +97,8 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
         if (grid2->inBBox( center2, margin + c1.radius ))
         {
             c1.updatePoints();
-            const sofa::helper::vector<DistanceGrid::Coord>& x1 = c1.deformedPoints;
-            const sofa::helper::vector<DistanceGrid::Coord>& n1 = c1.deformedNormals;
+            const sofa::type::vector<DistanceGrid::Coord>& x1 = c1.deformedPoints;
+            const sofa::type::vector<DistanceGrid::Coord>& n1 = c1.deformedNormals;
             bool first = true;
             for (unsigned int i=0; i<x1.size(); i++)
             {
@@ -107,7 +108,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                 if (!grid2->inBBox( p2, margin )) continue;
                 if (!grid2->inGrid( p2 ))
                 {
-                    intersection->serr << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e2.getCollisionModel()->getName()<<intersection->sendl;
+                    msg_error(intersection) << "Margin less than "<<margin<<" in DistanceGrid "<<e2.getCollisionModel()->getName();
                     continue;
                 }
 
@@ -169,7 +170,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                         || b[2] < -berr || b[2] > 1+berr)
                         break; // far from the cube
                     if (iter>3)
-                        intersection->sout << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid1->interp(c1.initpos(b))<<""<<intersection->sendl;
+                        msg_info(intersection) << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid1->interp(c1.initpos(b))<<"";
                     if (err < 0.005f)
                     {
                         // we found the corresponding point, but is is only valid if inside the current cube
@@ -220,7 +221,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                     if (b[0] > 0.001f && b[0] < 0.999f
                         && b[1] > 0.001f && b[1] < 0.999f
                         && b[2] > 0.001f && b[2] < 0.999f)
-                        intersection->serr << "ERROR: FFD-Rigid collision failed to converge to undeformed point: p1 = "<<p1<<" b = "<<b<<" c000 = "<<c1.corners[0]<<" c100 = "<<c1.corners[1]<<" c010 = "<<c1.corners[2]<<" c110 = "<<c1.corners[3]<<" c001 = "<<c1.corners[4]<<" c101 = "<<c1.corners[5]<<" c011 = "<<c1.corners[6]<<" c111 = "<<c1.corners[7]<<" pinit = "<<c1.initpos(b)<<" pdeform = "<<c1.deform(b)<<" err = "<<err1<<intersection->sendl;
+                        msg_error(intersection) << "FFD-Rigid collision failed to converge to undeformed point: p1 = "<<p1<<" b = "<<b<<" c000 = "<<c1.corners[0]<<" c100 = "<<c1.corners[1]<<" c010 = "<<c1.corners[2]<<" c110 = "<<c1.corners[3]<<" c001 = "<<c1.corners[4]<<" c101 = "<<c1.corners[5]<<" c011 = "<<c1.corners[6]<<" c111 = "<<c1.corners[7]<<" pinit = "<<c1.initpos(b)<<" pdeform = "<<c1.deform(b)<<" err = "<<err1;
                 }
             }
         }
@@ -260,8 +261,8 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
         c1.updatePoints();
         c2.updateFaces();
         const SReal cubesize = c2.invDP.norm();
-        const sofa::helper::vector<DistanceGrid::Coord>& x1 = c1.deformedPoints;
-        const sofa::helper::vector<DistanceGrid::Coord>& n1 = c1.deformedNormals;
+        const sofa::type::vector<DistanceGrid::Coord>& x1 = c1.deformedPoints;
+        const sofa::type::vector<DistanceGrid::Coord>& n1 = c1.deformedNormals;
         bool first = true;
         for (unsigned int i=0; i<x1.size(); i++)
         {
@@ -284,7 +285,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                     || b[2] < -berr || b[2] > 1+berr)
                     break; // far from the cube
                 if (iter>3)
-                    intersection->sout << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid2->interp(c2.initpos(b))<<""<<intersection->sendl;
+                    msg_info(intersection) << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid2->interp(c2.initpos(b));
                 if (err < 0.005f)
                 {
                     // we found the corresponding point, but is is only valid if inside the current cube
@@ -335,7 +336,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                 if (b[0] > 0.001f && b[0] < 0.999f
                     && b[1] > 0.001f && b[1] < 0.999f
                     && b[2] > 0.001f && b[2] < 0.999f)
-                    intersection->serr << "ERROR: FFD-FFD collision failed to converge to undeformed point: p2 = "<<p2<<" b = "<<b<<" c000 = "<<c2.corners[0]<<" c100 = "<<c2.corners[1]<<" c010 = "<<c2.corners[2]<<" c110 = "<<c2.corners[3]<<" c001 = "<<c2.corners[4]<<" c101 = "<<c2.corners[5]<<" c011 = "<<c2.corners[6]<<" c111 = "<<c2.corners[7]<<" pinit = "<<c2.initpos(b)<<" pdeform = "<<c2.deform(b)<<" err = "<<err1<<intersection->sendl;
+                    msg_error(intersection) << "FFD-FFD collision failed to converge to undeformed point: p2 = "<<p2<<" b = "<<b<<" c000 = "<<c2.corners[0]<<" c100 = "<<c2.corners[1]<<" c010 = "<<c2.corners[2]<<" c110 = "<<c2.corners[3]<<" c001 = "<<c2.corners[4]<<" c101 = "<<c2.corners[5]<<" c011 = "<<c2.corners[6]<<" c111 = "<<c2.corners[7]<<" pinit = "<<c2.initpos(b)<<" pdeform = "<<c2.deform(b)<<" err = "<<err1;
             }
         }
     }
@@ -344,8 +345,8 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
         c2.updatePoints();
         c1.updateFaces();
         const SReal cubesize = c1.invDP.norm();
-        const sofa::helper::vector<DistanceGrid::Coord>& x2 = c2.deformedPoints;
-        const sofa::helper::vector<DistanceGrid::Coord>& n2 = c2.deformedNormals;
+        const sofa::type::vector<DistanceGrid::Coord>& x2 = c2.deformedPoints;
+        const sofa::type::vector<DistanceGrid::Coord>& n2 = c2.deformedNormals;
         bool first = true;
         for (unsigned int i=0; i<x2.size(); i++)
         {
@@ -363,7 +364,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                 DistanceGrid::Coord diff = p1-pdeform;
                 SReal err = diff.norm();
                 if (iter>3)
-                    intersection->sout << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid1->interp(c1.initpos(b))<<""<<intersection->sendl;
+                    msg_info(intersection) << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid1->interp(c1.initpos(b));
                 SReal berr = err*cubesize; if (berr>0.5f) berr=0.5f;
                 if (b[0] < -berr || b[0] > 1+berr
                     || b[1] < -berr || b[1] > 1+berr
@@ -419,7 +420,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                 if (b[0] > 0.001f && b[0] < 0.999f
                     && b[1] > 0.001f && b[1] < 0.999f
                     && b[2] > 0.001f && b[2] < 0.999f)
-                    intersection->serr << "ERROR: FFD-FFD collision failed to converge to undeformed point: p1 = "<<p1<<" b = "<<b<<" c000 = "<<c1.corners[0]<<" c100 = "<<c1.corners[1]<<" c010 = "<<c1.corners[2]<<" c110 = "<<c1.corners[3]<<" c001 = "<<c1.corners[4]<<" c101 = "<<c1.corners[5]<<" c011 = "<<c1.corners[6]<<" c111 = "<<c1.corners[7]<<" pinit = "<<c1.initpos(b)<<" pdeform = "<<c1.deform(b)<<" err = "<<err1<<intersection->sendl;
+                    msg_error(intersection) << "FFD-FFD collision failed to converge to undeformed point: p1 = "<<p1<<" b = "<<b<<" c000 = "<<c1.corners[0]<<" c100 = "<<c1.corners[1]<<" c010 = "<<c1.corners[2]<<" c110 = "<<c1.corners[3]<<" c001 = "<<c1.corners[4]<<" c101 = "<<c1.corners[5]<<" c011 = "<<c1.corners[6]<<" c111 = "<<c1.corners[7]<<" pinit = "<<c1.initpos(b)<<" pdeform = "<<c1.deform(b)<<" err = "<<err1;
             }
         }
     }
@@ -459,7 +460,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
         DistanceGrid::Coord diff = p1-pdeform;
         SReal err = diff.norm();
         if (iter>3)
-            intersection->sout << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid1->interp(c1.initpos(b))<<""<<intersection->sendl;
+            msg_info(intersection) << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid1->interp(c1.initpos(b));
         SReal berr = err*cubesize; if (berr>0.5f) berr=0.5f;
         if (b[0] < -berr || b[0] > 1+berr
             || b[1] < -berr || b[1] > 1+berr
@@ -509,7 +510,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
         if (b[0] > 0.001f && b[0] < 0.999f
             && b[1] > 0.001f && b[1] < 0.999f
             && b[2] > 0.001f && b[2] < 0.999f)
-            intersection->serr << "ERROR: FFD-FFD collision failed to converge to undeformed point: p1 = "<<p1<<" b = "<<b<<" c000 = "<<c1.corners[0]<<" c100 = "<<c1.corners[1]<<" c010 = "<<c1.corners[2]<<" c110 = "<<c1.corners[3]<<" c001 = "<<c1.corners[4]<<" c101 = "<<c1.corners[5]<<" c011 = "<<c1.corners[6]<<" c111 = "<<c1.corners[7]<<" pinit = "<<c1.initpos(b)<<" pdeform = "<<c1.deform(b)<<" err = "<<err1<<intersection->sendl;
+            msg_error(intersection) << "FFD-FFD collision failed to converge to undeformed point: p1 = "<<p1<<" b = "<<b<<" c000 = "<<c1.corners[0]<<" c100 = "<<c1.corners[1]<<" c010 = "<<c1.corners[2]<<" c110 = "<<c1.corners[3]<<" c001 = "<<c1.corners[4]<<" c101 = "<<c1.corners[5]<<" c011 = "<<c1.corners[6]<<" c111 = "<<c1.corners[7]<<" pinit = "<<c1.initpos(b)<<" pdeform = "<<c1.deform(b)<<" err = "<<err1;
     }
 
     return nc;
@@ -552,7 +553,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
             DistanceGrid::Coord diff = p1-pdeform;
             SReal err = diff.norm();
             if (iter>3)
-                intersection->sout << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid1->interp(c1.initpos(b))<<""<<intersection->sendl;
+                msg_info(intersection) << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid1->interp(c1.initpos(b));
             SReal berr = err*cubesize; if (berr>0.5f) berr=0.5f;
             if (b[0] < -berr || b[0] > 1+berr
                 || b[1] < -berr || b[1] > 1+berr
@@ -603,7 +604,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
             if (b[0] > 0.001f && b[0] < 0.999f
                 && b[1] > 0.001f && b[1] < 0.999f
                 && b[2] > 0.001f && b[2] < 0.999f)
-                intersection->serr << "ERROR: FFD-FFD collision failed to converge to undeformed point: p1 = "<<p1<<" b = "<<b<<" c000 = "<<c1.corners[0]<<" c100 = "<<c1.corners[1]<<" c010 = "<<c1.corners[2]<<" c110 = "<<c1.corners[3]<<" c001 = "<<c1.corners[4]<<" c101 = "<<c1.corners[5]<<" c011 = "<<c1.corners[6]<<" c111 = "<<c1.corners[7]<<" pinit = "<<c1.initpos(b)<<" pdeform = "<<c1.deform(b)<<" err = "<<err1<<intersection->sendl;
+                msg_error(intersection) << "FFD-FFD collision failed to converge to undeformed point: p1 = "<<p1<<" b = "<<b<<" c000 = "<<c1.corners[0]<<" c100 = "<<c1.corners[1]<<" c010 = "<<c1.corners[2]<<" c110 = "<<c1.corners[3]<<" c001 = "<<c1.corners[4]<<" c101 = "<<c1.corners[5]<<" c011 = "<<c1.corners[6]<<" c111 = "<<c1.corners[7]<<" pinit = "<<c1.initpos(b)<<" pdeform = "<<c1.deform(b)<<" err = "<<err1;
         }
     }
     return nc;

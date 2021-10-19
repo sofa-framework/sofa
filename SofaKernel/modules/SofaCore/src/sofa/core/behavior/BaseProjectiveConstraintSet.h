@@ -19,24 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_BASEPROJECTIVECONSTRAINTSET_H
-#define SOFA_CORE_BEHAVIOR_BASEPROJECTIVECONSTRAINTSET_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/MultiVecId.h>
 
-namespace sofa::defaulttype { class BaseMatrix; }
-namespace sofa::core { class MechanicalParams; }
-namespace sofa::core::behavior { class MultiMatrixAccessor; }
+#include <sofa/defaulttype/fwd.h>
+#include <sofa/core/behavior/fwd.h>
+#include <sofa/core/fwd.h>
 
-
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /**
@@ -75,7 +67,7 @@ public:
 
 
     /// Return the lists of models this constraint applies to. 
-    virtual helper::vector< core::BaseState* > getModels() = 0;
+    virtual type::vector< core::BaseState* > getModels() = 0;
 
     /// @name Vector operations
     /// @{
@@ -111,7 +103,7 @@ public:
     /// Project the global Mechanical Vector to constrained space using offset parameter
     virtual void applyConstraint(const MechanicalParams* /*mparams*/, defaulttype::BaseVector* /*vector*/, const behavior::MultiMatrixAccessor* /*matrix*/) {}
 
-    /** Project the the given matrix (Experimental API).
+    /** Project the given matrix (Experimental API).
       Replace M with PMP, where P is the projection matrix corresponding to the projectResponse method. Contrary to applyConstraint(), the diagonal blocks of the result are not reset to the identity.
       Typically, M is the (generalized) mass matrix of the whole system, offset is the starting index of the local state in this global matrix, and P is the identity matrix with a block on the diagonal replaced by the projection matrix.
       If M is the matrix of the local state, then offset should be 0.
@@ -123,7 +115,6 @@ public:
 
     /// @}
 
-
 protected:
     Data<int> group; ///< ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle.
 
@@ -134,10 +125,4 @@ public:
 
 };
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

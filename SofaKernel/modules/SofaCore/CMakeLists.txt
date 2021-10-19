@@ -14,9 +14,12 @@ set(HEADER_FILES
     ${SRC_ROOT}/ConstraintParams.h
     ${SRC_ROOT}/DataEngine.h
     ${SRC_ROOT}/DataTracker.h
+    ${SRC_ROOT}/DataTrackerCallback.h
+    ${SRC_ROOT}/DataTrackerFunctor.h
     ${SRC_ROOT}/ExecParams.h
     ${SRC_ROOT}/Mapping.h
     ${SRC_ROOT}/Mapping.inl
+    ${SRC_ROOT}/MappingHelper.h
     ${SRC_ROOT}/MechanicalParams.h
     ${SRC_ROOT}/Multi2Mapping.h
     ${SRC_ROOT}/Multi2Mapping.inl
@@ -89,14 +92,11 @@ set(HEADER_FILES
     ${SRC_ROOT}/collision/NarrowPhaseDetection.h
     ${SRC_ROOT}/collision/Pipeline.h
     ${SRC_ROOT}/config.h.in
-    ${SRC_ROOT}/core.h
     ${SRC_ROOT}/init.h
     ${SRC_ROOT}/fwd.h
     ${SRC_ROOT}/loader/BaseLoader.h
     ${SRC_ROOT}/loader/ImageLoader.h
-    ${SRC_ROOT}/loader/Material.h
     ${SRC_ROOT}/loader/MeshLoader.h
-    ${SRC_ROOT}/loader/PrimitiveGroup.h
     ${SRC_ROOT}/loader/SceneLoader.h
     ${SRC_ROOT}/loader/VoxelLoader.h
     ${SRC_ROOT}/objectmodel/AbstractDataLink.h
@@ -140,7 +140,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/topology/BaseTopologyObject.h
     ${SRC_ROOT}/topology/TopologicalMapping.h
     ${SRC_ROOT}/topology/TopologyChange.h
-	${SRC_ROOT}/topology/TopologyHandler.h
+    ${SRC_ROOT}/topology/TopologyHandler.h
     ${SRC_ROOT}/visual/DisplayFlags.h
     ${SRC_ROOT}/visual/Shader.h
     ${SRC_ROOT}/visual/VisualLoop.h
@@ -161,6 +161,9 @@ set(SOURCE_FILES
     ${SRC_ROOT}/ConstraintParams.cpp
     ${SRC_ROOT}/DataEngine.cpp
     ${SRC_ROOT}/DataTracker.cpp
+    ${SRC_ROOT}/DataTrackerCallback.cpp
+    ${SRC_ROOT}/DataTrackerFunctor.cpp
+    ${SRC_ROOT}/DevBaseMonitor.h
     ${SRC_ROOT}/ExecParams.cpp
     ${SRC_ROOT}/Mapping.cpp
     ${SRC_ROOT}/MechanicalParams.cpp
@@ -190,7 +193,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/MechanicalState.cpp
     ${SRC_ROOT}/behavior/MixedInteractionConstraint.cpp
     ${SRC_ROOT}/behavior/MixedInteractionForceField.cpp
-    ${SRC_ROOT}/behavior/MultiMatrix.cpp
     ${SRC_ROOT}/behavior/MultiMatrixAccessor.cpp
     ${SRC_ROOT}/behavior/OdeSolver.cpp
     ${SRC_ROOT}/behavior/PairInteractionConstraint.cpp
@@ -263,6 +265,10 @@ sofa_find_package(Sofa.Helper REQUIRED)
 sofa_find_package(Sofa.DefaultType REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+# Create alias to support compatibility, starting from v21.06
+# This alias will be deleted in v21.12
+add_library(SofaCore ALIAS Sofa.Core)
+
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.Topology Sofa.DefaultType)
 
 if(SOFA_BUILD_WITH_PCH_ENABLED)

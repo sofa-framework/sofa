@@ -55,7 +55,7 @@ void FilesRecentlyOpenedManager::setPath(const std::string &path)
     while (std::getline(filesStream, filePath))
         files.push_back(filePath);
     filesStream.close();
-};
+}
 
 void FilesRecentlyOpenedManager::writeFiles() const
 {
@@ -71,12 +71,12 @@ void FilesRecentlyOpenedManager::openFile(const std::string &path)
         return;
 
     // Remove previous occurence of the file, if any
-    helper::vector<std::string>::iterator fileFound = std::find(files.begin(), files.end(), path);
+    type::vector<std::string>::iterator fileFound = std::find(files.begin(), files.end(), path);
     if (fileFound != files.end())
         files.erase(fileFound);
 
     // Add the current file to the list
-    helper::vector<std::string>::iterator front=files.begin();
+    type::vector<std::string>::iterator front=files.begin();
     files.insert(front, path);
 
     // Only keep a given number of files

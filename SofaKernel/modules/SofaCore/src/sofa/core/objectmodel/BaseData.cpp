@@ -143,6 +143,13 @@ bool BaseData::setParent(BaseData* parent, const std::string& path)
     return true;
 }
 
+std::string BaseData::getLinkPath() const
+{
+    if(m_owner)
+        return "@"+m_owner->getPathName()+"."+getName();
+    return "";
+}
+
 bool BaseData::setParent(const std::string& path)
 {
     parentData.setPath(path);

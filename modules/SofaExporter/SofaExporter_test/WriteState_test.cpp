@@ -71,7 +71,7 @@ namespace sofa {
         double final_expected_value=0.0;
 
         /// Create the context for the scene
-        void SetUp()
+        void SetUp() override
         {
             // Init simulation
             sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
@@ -108,7 +108,7 @@ namespace sofa {
             childNode->addObject(mass);
 
             sofa::component::misc::WriteState::SPtr writeState =New<sofa::component::misc::WriteState>();
-            helper::vector<double> time;
+            type::vector<double> time;
             time.resize(1);
             time[0] = 0.0;
             writeState->d_period.setValue(timeStep);
@@ -218,7 +218,7 @@ namespace sofa {
 
 
         /// Unload the scene
-        void TearDown()
+        void TearDown() override
         {
             if (root!=nullptr)
                 sofa::simulation::getSimulation()->unload(root);

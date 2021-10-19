@@ -1,10 +1,11 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaGuiGlut)
 
-find_package(SofaSimulation REQUIRED)
-find_package(GLUT REQUIRED)
-find_package(Boost COMPONENTS thread chrono )
-find_package(Sofa.GL REQUIRED)
+find_package(Sofa.Config REQUIRED)
+sofa_find_package(SofaSimulation REQUIRED)
+sofa_find_package(GLUT REQUIRED)
+sofa_find_package(Sofa.GL REQUIRED)
+sofa_find_package(SofaBase REQUIRED)
 
 set(HEADER_FILES
     SimpleGUI.h)
@@ -33,7 +34,7 @@ set(_defaultConfigPluginFilePath "${CMAKE_BINARY_DIR}/${_pluginLocation}/${_defa
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES}  )
 
-target_link_libraries(${PROJECT_NAME} SofaGuiCommon SofaSimulationGraph ${GLUT_ACTUAL_LIBRARIES} )
+target_link_libraries(${PROJECT_NAME} SofaGuiCommon SofaSimulationGraph SofaBase ${GLUT_ACTUAL_LIBRARIES} )
 if(Boost_FOUND)
     target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 endif()
@@ -41,4 +42,10 @@ if(Sofa.GL_FOUND)
     target_link_libraries(${PROJECT_NAME} Sofa.GL)
 endif()
 
-sofa_install_targets(SofaGui SofaGuiGlut "")
+sofa_add_targets_to_package(
+    PACKAGE_NAME SofaGui
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
+    INCLUDE_INSTALL_DIR "SofaGui/SofaGuiGlut"
+    )
+

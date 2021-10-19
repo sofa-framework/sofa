@@ -10,6 +10,7 @@ set(SOFAFRAMEWORK_MODULES
     Sofa.Topology
     Sofa.Geometry 
     Sofa.Helper
+    Sofa.LinearAlgebra
     Sofa.DefaultType
     Sofa.Core
     Sofa.SimulationCore
@@ -21,7 +22,8 @@ set(SOFAFRAMEWORK_LEGACYMODULES
     Sofa.Topology 
     Sofa.Geometry 
     SofaHelper 
-    SofaDefaultType 
+    Sofa.LinearAlgebra
+    SofaDefaultType
     SofaCore 
     SofaSimulationCore
 )
@@ -47,6 +49,8 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_MODULES})
 
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER SofaFramework)
+
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
     PACKAGE_VERSION ${Sofa_VERSION}
@@ -54,10 +58,3 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
     )
-
-# Create aliases to support compatibility, starting from v21.06
-# These aliases will be deleted in v21.12
-add_library(SofaHelper ALIAS Sofa.Helper)
-add_library(SofaDefaultType ALIAS Sofa.DefaultType)
-add_library(SofaCore ALIAS Sofa.Core)
-add_library(SofaSimulationCore ALIAS Sofa.SimulationCore)

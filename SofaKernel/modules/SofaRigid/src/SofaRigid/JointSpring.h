@@ -22,6 +22,8 @@
 #pragma once
 #include <SofaRigid/config.h>
 
+#include <sofa/helper/logging/Messaging.h>
+
 namespace sofa::component::interactionforcefield
 {
 
@@ -38,8 +40,8 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
 
     enum { N=DataTypes::spatial_dimensions };
-    typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef defaulttype::Vec<N,Real> Vector;
+    typedef type::Mat<N,N,Real> Mat;
+    typedef type::Vec<N,Real> Vector;
 
     /// Constructors
     JointSpring(sofa::Index m1 = 0, sofa::Index m2 = 0,
@@ -54,12 +56,12 @@ public:
     Vector lawfulTorsion;           ///< projected torsion in allowed angles
     Vector KT;                      ///< linear stiffness
     Vector KR;                      ///< angular stiffness
-    defaulttype::Quat ref;          ///< referential of the spring (p1) to use it in addSpringDForce()
+    type::Quat<SReal> ref;          ///< referential of the spring (p1) to use it in addSpringDForce()
 
     Vector  initTrans;              ///< offset length of the spring
-    defaulttype::Quat initRot;      ///< offset orientation of the spring
+    type::Quat<SReal> initRot;      ///< offset orientation of the spring
 
-    sofa::defaulttype::Vec<6,bool> freeMovements;	///< defines the axis where the movements is free. (0,1,2)--> translation axis (3,4,5)-->rotation axis
+    sofa::type::Vec<6,bool> freeMovements;	///< defines the axis where the movements is free. (0,1,2)--> translation axis (3,4,5)-->rotation axis
     Real softStiffnessTrans;                        ///< stiffness to apply on axis where the translations are free (default 0.0)
     Real hardStiffnessTrans;                        ///< stiffness to apply on axis where the translations are forbidden (default 10000.0)
     Real softStiffnessRot;                          ///< stiffness to apply on axis where the rotations are free (default 0.0)
@@ -68,7 +70,7 @@ public:
     bool needToInitializeTrans;
     bool needToInitializeRot;
 
-    sofa::defaulttype::Vec<6,Real> limitAngles; ///< limit angles on rotation axis (default no limit)
+    sofa::type::Vec<6,Real> limitAngles; ///< limit angles on rotation axis (default no limit)
 
 
     /// Accessors
@@ -77,10 +79,10 @@ public:
     Real getHardStiffnessTranslation() {return hardStiffnessTrans;}
     Real getSoftStiffnessTranslation() {return softStiffnessTrans;}
     Real getBlocStiffnessRotation() { return blocStiffnessRot; }
-    sofa::defaulttype::Vec<6,Real> getLimitAngles() { return limitAngles;}
-    sofa::defaulttype::Vec<6,bool> getFreeAxis() { return freeMovements;}
+    sofa::type::Vec<6,Real> getLimitAngles() { return limitAngles;}
+    sofa::type::Vec<6,bool> getFreeAxis() { return freeMovements;}
     Vector getInitLength() { return initTrans; }
-    defaulttype::Quat getInitOrientation() { return initRot; }
+    type::Quat<SReal> getInitOrientation() { return initRot; }
 
     /// Affectors
     void setHardStiffnessRotation(Real ksr) {	  hardStiffnessRot = ksr;  }
@@ -88,7 +90,7 @@ public:
     void setHardStiffnessTranslation(Real kst) { hardStiffnessTrans = kst;  }
     void setSoftStiffnessTranslation(Real kst) { softStiffnessTrans = kst;  }
     void setBlocStiffnessRotation(Real ksb) {	  blocStiffnessRot = ksb;  }
-    void setLimitAngles(const sofa::defaulttype::Vec<6,Real>& lims)
+    void setLimitAngles(const sofa::type::Vec<6,Real>& lims)
     {
         limitAngles = lims;
         if(lims[0]==lims[1]) freeMovements[3]=false;
@@ -97,30 +99,30 @@ public:
     }
     void setLimitAngles(Real minx, Real maxx, Real miny, Real maxy, Real minz, Real maxz)
     {
-        limitAngles = sofa::defaulttype::Vec<6,Real>(minx, maxx, miny, maxy, minz, maxz);
+        limitAngles = sofa::type::Vec<6,Real>(minx, maxx, miny, maxy, minz, maxz);
         if(minx==maxx) freeMovements[3]=false;
         if(miny==maxy) freeMovements[4]=false;
         if(minz==maxz) freeMovements[5]=false;
     }
     void setInitLength( const Vector& l) { initTrans=l; }
-    void setInitOrientation( const defaulttype::Quat& o) { initRot=o; }
-    void setInitOrientation( const Vector& o) { initRot=defaulttype::Quat::createFromRotationVector(o); }
-    void setFreeAxis(const sofa::defaulttype::Vec<6,bool>& axis) { freeMovements = axis; }
+    void setInitOrientation( const type::Quat<SReal>& o) { initRot=o; }
+    void setInitOrientation( const Vector& o) { initRot=type::Quat<SReal>::createFromRotationVector(o); }
+    void setFreeAxis(const sofa::type::Vec<6,bool>& axis) { freeMovements = axis; }
     void setFreeAxis(bool isFreeTx, bool isFreeTy, bool isFreeTz, bool isFreeRx, bool isFreeRy, bool isFreeRz)
     {
-        freeMovements = sofa::defaulttype::Vec<6,bool>(isFreeTx, isFreeTy, isFreeTz, isFreeRx, isFreeRy, isFreeRz);
+        freeMovements = sofa::type::Vec<6,bool>(isFreeTx, isFreeTy, isFreeTz, isFreeRx, isFreeRy, isFreeRz);
     }
     void setDamping(Real _kd) {  kd = _kd;	  }
 
     friend std::istream& operator >> ( std::istream& in, JointSpring<DataTypes>& s )
     {
         //default joint is a free rotation joint --> translation is bloqued, rotation is free
-        s.freeMovements = sofa::defaulttype::Vec<6,bool>(false, false, false, true, true, true);
+        s.freeMovements = sofa::type::Vec<6,bool>(false, false, false, true, true, true);
         s.initTrans = Vector(0,0,0);
-        s.initRot = defaulttype::Quat(0,0,0,1);
+        s.initRot = type::Quat<SReal>(0,0,0,1);
         s.blocStiffnessRot = 0.0;
         //by default no angle limitation is set (bi values for initialisation)
-        s.limitAngles = sofa::defaulttype::Vec<6,Real>(-100000., 100000., -100000., 100000., -100000., 100000.);
+        s.limitAngles = sofa::type::Vec<6,Real>(-100000., 100000., -100000., 100000., -100000., 100000.);
         bool initTransFound=false;
 
         std::string str;

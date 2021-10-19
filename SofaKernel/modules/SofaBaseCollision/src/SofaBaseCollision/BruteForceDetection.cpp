@@ -22,17 +22,24 @@
 #include <SofaBaseCollision/BruteForceDetection.h>
 
 #include <sofa/core/ObjectFactory.h>
+#include <numeric>
 
 namespace sofa::component::collision
 {
 
-int BruteForceDetectionClass = core::RegisterObject("Combination of brute force broad phase and BVH narrow phase collision detection")
-        .add< BruteForceDetection >()
-        ;
+int BruteForceDetectionClass = core::RegisterObject(
+        "Combination of brute force broad phase and BVH narrow phase collision detection")
+        .add<BruteForceDetection>();
 
-BruteForceDetection::BruteForceDetection()
-    : BruteForceBroadPhase()
-    , BVHNarrowPhase()
-{}
+void BruteForceDetection::init()
+{
+    const std::string broadPhaseComponentsString = sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::collision::BroadPhaseDetection>();
+    const std::string narrowPhaseComponentsString = sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::collision::NarrowPhaseDetection>();
+
+    msg_deprecated() << "As a replacement, use a BroadPhase component, such as [" << broadPhaseComponentsString
+                     << "]," << msgendl
+                     << "  AND a NarrowPhase component, such as [" << narrowPhaseComponentsString << "]." << msgendl
+                     << "  " << BruteForceBroadPhase::GetClass()->className << " and " << BVHNarrowPhase::GetClass()->className << " have been automatically added to your scene for backward compatibility.";
+}
 
 } // namespace sofa::component::collision

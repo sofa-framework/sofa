@@ -1,7 +1,7 @@
 #ifndef BULLET_OBB_MODEL
 #define BULLET_OBB_MODEL
 
-#include <SofaBaseCollision/OBBModel.h>
+#include <SofaMiscCollision/OBBModel.h>
 #include "BulletCollisionModel.h"
 #include <sofa/simulation/CollisionBeginEvent.h>
 #include <BulletCollisionDetection/config.h>
@@ -35,7 +35,7 @@ public:
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
     typedef typename DataTypes::Coord::Pos Coord;
-    typedef helper::vector<Coord> VecCoord;
+    typedef type::vector<Coord> VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecReal VecReal;
     typedef typename DataTypes::Quat Quaternion;

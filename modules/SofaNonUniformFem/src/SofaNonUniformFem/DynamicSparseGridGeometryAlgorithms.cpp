@@ -31,25 +31,17 @@ using namespace sofa::defaulttype;
 int DynamicSparseGridGeometryAlgorithmsClass = core::RegisterObject ( "Hexahedron set geometry algorithms" )
         .add< DynamicSparseGridGeometryAlgorithms<Vec3Types> > ( true ) // default template
         .add< DynamicSparseGridGeometryAlgorithms<Vec2Types> >()
-        .add< DynamicSparseGridGeometryAlgorithms<Vec1Types> >()
 
         ;
 
 template <>
-int DynamicSparseGridGeometryAlgorithms<Vec2Types>::findNearestElementInRestPos(const Coord& pos, sofa::defaulttype::Vector3& baryC, Real& distance) const
+int DynamicSparseGridGeometryAlgorithms<Vec2Types>::findNearestElementInRestPos(const Coord& pos, sofa::type::Vector3& baryC, Real& distance) const
 {
     return HexahedronSetGeometryAlgorithms<Vec2Types>::findNearestElementInRestPos(pos, baryC, distance);
 }
 
-template <>
-int DynamicSparseGridGeometryAlgorithms<Vec1Types>::findNearestElementInRestPos(const Coord& pos, sofa::defaulttype::Vector3& baryC, Real& distance) const
-{
-    return HexahedronSetGeometryAlgorithms<Vec1Types>::findNearestElementInRestPos(pos, baryC, distance);
-}
-
 template class SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridGeometryAlgorithms<Vec3Types>;
 template class SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridGeometryAlgorithms<Vec2Types>;
-template class SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridGeometryAlgorithms<Vec1Types>;
 
 
 } // namespace sofa::component::topology

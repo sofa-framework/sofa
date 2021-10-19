@@ -24,9 +24,9 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/helper/vector.h>
-#include <sofa/helper/types/RGBAColor.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/type/vector.h>
+#include <sofa/type/RGBAColor.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 
 
 namespace sofa::core::behavior
@@ -58,19 +58,19 @@ public:
     typedef typename DataTypes::CPos CPos;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef helper::vector< sofa::Index > VecIndex;
-    typedef helper::vector< Real >	 VecReal;
+    typedef type::vector< sofa::Index > VecIndex;
+    typedef type::vector< Real >	 VecReal;
 
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    Data< helper::vector< sofa::Index > > indices; ///< index of nodes controlled by the angular springs
+    Data< type::vector< sofa::Index > > indices; ///< index of nodes controlled by the angular springs
     Data< VecReal > angularStiffness; ///< angular stiffness for the controlled nodes
     Data<VecReal> angularLimit; ///< angular limit (max; min) values where the force applies
     Data< bool > drawSpring; ///< draw Spring
-    Data< helper::types::RGBAColor > springColor; ///< spring color
+    Data< type::RGBAColor > springColor; ///< spring color
 
-    linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
+    linearalgebra::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
 
 protected:
     AngularSpringForceField();

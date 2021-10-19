@@ -28,7 +28,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/core/MultiMapping.h>
 
 #include <Flexible/types/AffineTypes.h>
@@ -41,9 +41,9 @@ namespace sofa {
 namespace {
 using namespace core;
 using namespace component;
-using defaulttype::Vec;
-using defaulttype::Mat;
-using sofa::helper::vector;
+using type::Vec;
+using type::Mat;
+using sofa::type::vector;
 typedef std::size_t Index;
 
 /**  Test suite for Multi2Mapping.
@@ -441,45 +441,6 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
                 ADD_FAILURE() << "applyDJT test (parent 2) failed" << std::endl <<
                                  "dfIn2p["<<p<<"]    = " << dfIn2p[p] << std::endl <<
                                  "fIn2p2["<<p<<"]-fIn2p["<<p<<"] = " << fIn2p12[p] << std::endl;
-            }
-        }
-
-        // =================== test updateForceMask
-        // propagate forces coming from all child, each parent receiving a force should be in the mask
-        for(Index i=0; i<Np1.size(); i++) in1Dofs[i]->forceMask.clear();
-        for(Index i=0; i<Np2.size(); i++) in2Dofs[i]->forceMask.clear();
-        outDofs->forceMask.assign(outDofs->getSize(),true);
-        mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position()); // to force mask update at the next applyJ
-        for( unsigned i=0; i<Nc; i++ ) OutType::set( fout[i], 1,1,1 ); // every child forces are non-nul
-        for(Index p=0; p<Np1.size(); p++) {
-            WriteIn1VecDeriv fin = in1Dofs[p]->writeForces();
-            copyToData( fin, fIn1p2[p] );  // reset parent forces before accumulating child forces
-        }
-        for(Index p=0; p<Np2.size(); p++) {
-            WriteIn2VecDeriv fin = in2Dofs[p]->writeForces();
-            copyToData( fin, fIn2p2[p] );  // reset parent forces before accumulating child forces
-        }
-        mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
-        for(Index i=0; i<Np1.size(); i++)
-        {
-            copyFromData( fIn1p[i], in1Dofs[i]->readForces() );
-            for( unsigned j=0; j<Np1[i]; j++ ) {
-                if( fIn1p[i][j] != In1Deriv() && !in1Dofs[i]->forceMask.getEntry(j) ){
-                    succeed = false;
-                    ADD_FAILURE() << "updateForceMask did not propagate mask to every influencing parents 0-"<< i << std::endl;
-                    break;
-                }
-            }
-        }
-        for(Index i=0; i<Np2.size(); i++)
-        {
-            copyFromData( fIn2p[i], in2Dofs[i]->readForces() );
-            for( unsigned j=0; j<Np2[i]; j++ ) {
-                if( fIn2p[i][j] != In2Deriv() && !in2Dofs[i]->forceMask.getEntry(j) ){
-                    succeed = false;
-                    ADD_FAILURE() << "updateForceMask did not propagate mask to every influencing parents 1-"<< i << std::endl;
-                    break;
-                }
             }
         }
 

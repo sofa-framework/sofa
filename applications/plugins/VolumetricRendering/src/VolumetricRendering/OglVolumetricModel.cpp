@@ -29,7 +29,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/gl/GLSLShader.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
 #include <SofaOpenglVisual/OglAttribute.inl>
 
 namespace sofa::component::visualmodel
@@ -46,7 +46,7 @@ OglVolumetricModel::OglVolumetricModel()
     , d_volumeScale(initData(&d_volumeScale, (float)1.0, "volumeScale", "Scale for each volumetric primitive"))
     , d_depthTest(initData(&d_depthTest, (bool)false, "depthTest", "Set Depth Test"))
     , d_blending(initData(&d_blending, (bool)false, "blending", "Set Blending"))
-    , d_defaultColor(initData(&d_defaultColor, defaulttype::Vec4f(), "defaultColor", "Color for each volume (if the attribute a_vertexColor is not detected)"))
+    , d_defaultColor(initData(&d_defaultColor, type::Vec4f(), "defaultColor", "Color for each volume (if the attribute a_vertexColor is not detected)"))
     , b_modified(false)
     , b_useTopology(false)
     , b_tboCreated(false)
@@ -66,7 +66,7 @@ void OglVolumetricModel::init()
     context->get(m_shader);
     if (!m_shader)
     {
-        serr << "Need an OglShader to work !" << sendl;
+        msg_error() << "Need an OglShader to work !";
         return;
     }
 
@@ -74,8 +74,8 @@ void OglVolumetricModel::init()
 
     //instanciate the mapping tables
     //Useful for the PT algorithm only
-    sofa::helper::vector<sofa::component::visualmodel::OglFloatVector4Variable::SPtr > listVec4Variables;
-    this->getContext()->core::objectmodel::BaseContext::template get<sofa::component::visualmodel::OglFloatVector4Variable, sofa::helper::vector<sofa::component::visualmodel::OglFloatVector4Variable::SPtr> >
+    sofa::type::vector<sofa::component::visualmodel::OglFloatVector4Variable::SPtr > listVec4Variables;
+    this->getContext()->core::objectmodel::BaseContext::template get<sofa::component::visualmodel::OglFloatVector4Variable, sofa::type::vector<sofa::component::visualmodel::OglFloatVector4Variable::SPtr> >
         (&listVec4Variables, core::objectmodel::BaseContext::Local);
     for (unsigned int i = 0; i<listVec4Variables.size(); i++)
     {
@@ -95,7 +95,7 @@ void OglVolumetricModel::init()
 
     if (!m_mappingTableValues)
     {
-        sout << "No MappingTable found, instanciating one" << sendl;
+        msg_info() << "No MappingTable found, instanciating one";
         m_mappingTableValues = sofa::core::objectmodel::New<sofa::component::visualmodel::OglFloatVector4Variable>();
         m_mappingTableValues->setName("MappingTable");
         m_mappingTableValues->setID("MappingTable");
@@ -116,7 +116,7 @@ void OglVolumetricModel::init()
     }
     if (!m_runSelectTableValues)
     {
-        sout << "No RunSelectTable found, instanciating one" << sendl;
+        msg_info() << "No RunSelectTable found, instanciating one";
 
         m_runSelectTableValues = sofa::core::objectmodel::New<sofa::component::visualmodel::OglFloatVector4Variable>();
         m_runSelectTableValues->setName("RunSelectTable");
@@ -141,7 +141,7 @@ void OglVolumetricModel::init()
 
     if (!m_topology)
     {
-        sout << "No BaseMeshTopology found." << sendl;
+        msg_info() << "No BaseMeshTopology found.";
         b_useTopology = false;
         b_modified = false;
     }
@@ -162,7 +162,7 @@ void OglVolumetricModel::init()
 
 void OglVolumetricModel::initVisual()
 {
-    const helper::vector<Coord>& positions = m_positions.getValue();
+    const type::vector<Coord>& positions = m_positions.getValue();
 
     m_mappingTableValues->initVisual();
     m_runSelectTableValues->initVisual();
@@ -185,8 +185,8 @@ void OglVolumetricModel::initVisual()
     glBindBufferARB(GL_ARRAY_BUFFER, 0);
 
     //Check attributes
-    sofa::helper::vector<sofa::component::visualmodel::OglFloat4Attribute::SPtr > listVec4Attributes;
-    this->getContext()->core::objectmodel::BaseContext::template get<sofa::component::visualmodel::OglFloat4Attribute, sofa::helper::vector<sofa::component::visualmodel::OglFloat4Attribute::SPtr> >
+    sofa::type::vector<sofa::component::visualmodel::OglFloat4Attribute::SPtr > listVec4Attributes;
+    this->getContext()->core::objectmodel::BaseContext::template get<sofa::component::visualmodel::OglFloat4Attribute, sofa::type::vector<sofa::component::visualmodel::OglFloat4Attribute::SPtr> >
         (&listVec4Attributes, core::objectmodel::BaseContext::Local);
     for (unsigned int i = 0; i < listVec4Attributes.size(); i++)
     {
@@ -200,17 +200,17 @@ void OglVolumetricModel::initVisual()
     }
     if (!m_vertexColors)
     {
-        serr << "No attributes called a_vertexColor found, instanciating one with a default color" << sendl;
+        msg_error() << "No attributes called a_vertexColor found, instanciating one with a default color";
         m_vertexColors = sofa::core::objectmodel::New<sofa::component::visualmodel::OglFloat4Attribute>();
         m_vertexColors->setName("a_vertexColor");
         m_vertexColors->setID("a_vertexColor");
         m_vertexColors->setIndexShader(0);
     }
-    sofa::helper::vector<defaulttype::Vec4f>& vertexColors = *(m_vertexColors->beginEdit());
+    sofa::type::vector<type::Vec4f>& vertexColors = *(m_vertexColors->beginEdit());
     unsigned int nbPositions = m_positions.getValue().size();
     if ((vertexColors.size() != nbPositions))
     {
-        const defaulttype::Vec4f& defaultColor = d_defaultColor.getValue();
+        const type::Vec4f& defaultColor = d_defaultColor.getValue();
         vertexColors.clear();
         for (unsigned int i = 0; i < nbPositions; i++)
         {
@@ -255,8 +255,8 @@ void OglVolumetricModel::computeMeshFromTopology()
     // update m_positions
     if (m_topology->hasPos())
     {
-        sout << "OglVolumetricModel: copying " << m_topology->getNbPoints() << "points from topology." << sendl;
-        helper::WriteAccessor<  Data<helper::vector<Coord> > > position = m_positions;
+        msg_info() << "Copying " << m_topology->getNbPoints() << "points from topology.";
+        helper::WriteAccessor<  Data<type::vector<Coord> > > position = m_positions;
         position.resize(m_topology->getNbPoints());
         for (unsigned int i = 0; i<position.size(); i++) 
         {
@@ -269,8 +269,8 @@ void OglVolumetricModel::computeMeshFromTopology()
         
     if (BaseMechanicalState* mstate = dynamic_cast< BaseMechanicalState* >(m_topology->getContext()->getMechanicalState()))
     {
-        sout << "OglVolumetricModel: copying " << mstate->getSize() << " points from mechanical state." << sendl;
-        helper::WriteAccessor< Data<helper::vector<Coord> > > position = m_positions;
+        msg_info() << "Copying " << mstate->getSize() << " points from mechanical state.";
+        helper::WriteAccessor< Data<type::vector<Coord> > > position = m_positions;
         position.resize(mstate->getSize());
         for (unsigned int i = 0; i<position.size(); i++)
         {
@@ -281,13 +281,13 @@ void OglVolumetricModel::computeMeshFromTopology()
     }
     else
     {
-        serr << "OglVolumetricModel: can not update positions!" << sendl;
+        msg_error() << "OglVolumetricModel: can not update positions!";
     }
 
     // update Tetrahedrons
     const SeqTetrahedra& inputTetrahedra = m_topology->getTetrahedra();
-    sout << "OglVolumetricModel: copying " << inputTetrahedra.size() << " tetrahedra from topology." << sendl;
-    helper::WriteAccessor< Data< helper::vector<Tetrahedron> > > tetrahedra = d_tetrahedra;
+    msg_info() << "Copying " << inputTetrahedra.size() << " tetrahedra from topology.";
+    helper::WriteAccessor< Data< type::vector<Tetrahedron> > > tetrahedra = d_tetrahedra;
     tetrahedra.clear();
     tetrahedra.resize(inputTetrahedra.size());
     for (unsigned int i = 0; i<inputTetrahedra.size(); i++) {
@@ -296,8 +296,8 @@ void OglVolumetricModel::computeMeshFromTopology()
         
     // update Hexahedrons
     const SeqHexahedra& inputHexahedra = m_topology->getHexahedra();
-    sout << "OglVolumetricModel: copying " << inputHexahedra.size() << " hexahedra from topology." << sendl;
-    helper::WriteAccessor< Data< helper::vector<Hexahedron> > > hexahedra = d_hexahedra;
+    msg_info() << "Copying " << inputHexahedra.size() << " hexahedra from topology.";
+    helper::WriteAccessor< Data< type::vector<Hexahedron> > > hexahedra = d_hexahedra;
     hexahedra.clear();
     hexahedra.resize(inputHexahedra.size());
     for (unsigned int i = 0; i < inputHexahedra.size(); i++) {
@@ -307,8 +307,8 @@ void OglVolumetricModel::computeMeshFromTopology()
 
 void OglVolumetricModel::splitHexahedra()
 {
-    helper::ReadAccessor< Data< helper::vector<Tetrahedron> > > tetrahedra = d_tetrahedra;
-    helper::ReadAccessor< Data< helper::vector<Hexahedron> > > hexahedra = d_hexahedra;
+    helper::ReadAccessor< Data< type::vector<Tetrahedron> > > tetrahedra = d_tetrahedra;
+    helper::ReadAccessor< Data< type::vector<Hexahedron> > > hexahedra = d_hexahedra;
     m_hexaToTetrahedra.clear();
 
     //split hexahedron to 5 tetrahedra
@@ -329,9 +329,9 @@ void OglVolumetricModel::splitHexahedra()
 
 void OglVolumetricModel::computeBarycenters()
 {
-    helper::ReadAccessor< Data< helper::vector<Tetrahedron> > > tetrahedra = d_tetrahedra;
-    helper::ReadAccessor< Data< helper::vector<Hexahedron> > > hexahedra = d_hexahedra;
-    const helper::vector<Coord>& positions = m_positions.getValue();
+    helper::ReadAccessor< Data< type::vector<Tetrahedron> > > tetrahedra = d_tetrahedra;
+    helper::ReadAccessor< Data< type::vector<Hexahedron> > > hexahedra = d_hexahedra;
+    const type::vector<Coord>& positions = m_positions.getValue();
     
     m_tetraBarycenters.clear();
     for (unsigned int i = 0; i < tetrahedra.size(); i++)
@@ -431,8 +431,8 @@ void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vpara
     
     glEnableClientState(GL_VERTEX_ARRAY);
 
-    const helper::vector<Tetrahedron>& tetrahedra = d_tetrahedra.getValue();
-    const helper::vector<Hexahedron>& hexahedra = d_hexahedra.getValue();
+    const type::vector<Tetrahedron>& tetrahedra = d_tetrahedra.getValue();
+    const type::vector<Hexahedron>& hexahedra = d_hexahedra.getValue();
     //glEnable(GL_CLIP_DISTANCE0);
 
     if (tetrahedra.size() > 0)
@@ -452,7 +452,7 @@ void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vpara
     //glDisable(GL_CLIP_DISTANCE0);
 
 #else
-    serr << "Your OpenGL driver does not support GL_LINES_ADJACENCY_EXT" << sendl;
+    msg_error() << "Your OpenGL driver does not support GL_LINES_ADJACENCY_EXT";
 #endif // GL_LINES_ADJACENCY_EXT
 
     if (vparams->displayFlags().getShowWireFrame())
@@ -471,7 +471,7 @@ void OglVolumetricModel::computeBBox(const core::ExecParams * params, bool /* on
     //if (m_topology)
     {
         Coord v;
-        const helper::vector<Coord>& position = m_positions.getValue();
+        const type::vector<Coord>& position = m_positions.getValue();
         const SReal max_real = std::numeric_limits<SReal>::max();
         const SReal min_real = std::numeric_limits<SReal>::min();
 
@@ -489,13 +489,13 @@ void OglVolumetricModel::computeBBox(const core::ExecParams * params, bool /* on
             if (maxBBox[1] < v[1]) maxBBox[1] = v[1];
             if (maxBBox[2] < v[2]) maxBBox[2] = v[2];
         }
-        this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<SReal>(minBBox, maxBBox));
+        this->f_bbox.setValue(sofa::type::TBoundingBox<SReal>(minBBox, maxBBox));
     }
 }
 
 void OglVolumetricModel::updateVertexBuffer()
 {
-    const helper::vector<Coord>& positions = m_positions.getValue();
+    const type::vector<Coord>& positions = m_positions.getValue();
     unsigned positionsBufferSize;
 
     positionsBufferSize = (positions.size()*sizeof(positions[0]));

@@ -19,13 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
 
 #include <SofaSimulationGraph/SimpleApi.h>
 using namespace sofa::simpleapi;
 
 #include <SofaDeformable/RestShapeSpringsForceField.h>
+#include <sofa/simulation/Node.h>
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 using sofa::component::container::MechanicalObject;
@@ -36,14 +37,14 @@ using sofa::helper::ReadAccessor;
 using sofa::Data;
 
 /// Test suite for RestShapeSpringsForceField
-class RestStiffSpringsForceField_test : public Sofa_test<>
+class RestStiffSpringsForceField_test : public BaseTest
 {
 public:
     ~RestStiffSpringsForceField_test() override;
-    sofa::Node::SPtr createScene(const std::string& type);
+    sofa::simulation::Node::SPtr createScene(const std::string& type);
 
     template<class Type>
-    void testDefaultBehavior(sofa::Node::SPtr root);
+    void testDefaultBehavior(sofa::simulation::Node::SPtr root);
 
     template<class Type>
     void checkDifference(MechanicalObject<Type>& mo, bool isFixed);
@@ -53,7 +54,7 @@ RestStiffSpringsForceField_test::~RestStiffSpringsForceField_test()
 {
 }
 
-sofa::Node::SPtr RestStiffSpringsForceField_test::createScene(const std::string& type)
+sofa::simulation::Node::SPtr RestStiffSpringsForceField_test::createScene(const std::string& type)
 {
     importPlugin("SofaComponentAll");
     auto theSimulation = createSimulation();
@@ -94,8 +95,8 @@ void RestStiffSpringsForceField_test::checkDifference(MechanicalObject<Type>& mo
     ReadAccessor< Data<typename Type::VecCoord> > rest_positions = mo.x0;
     for(size_t i=0;i<positions.size();i++)
     {
-        sofa::defaulttype::Vec3 pos = Type::getCPos(positions[i]) ;
-        sofa::defaulttype::Vec3 rpos = Type::getCPos(rest_positions[i]) ;
+        sofa::type::Vec3 pos = Type::getCPos(positions[i]) ;
+        sofa::type::Vec3 rpos = Type::getCPos(rest_positions[i]) ;
 
         if(isFixed)
         {
@@ -113,7 +114,7 @@ void RestStiffSpringsForceField_test::checkDifference(MechanicalObject<Type>& mo
 }
 
 template<class Type>
-void RestStiffSpringsForceField_test::testDefaultBehavior(sofa::Node::SPtr root)
+void RestStiffSpringsForceField_test::testDefaultBehavior(sofa::simulation::Node::SPtr root)
 {
     auto fixedDofs = dynamic_cast<MechanicalObject<Type>*>(root->getChild("fixedObject")->getObject("dofs"));
     ASSERT_TRUE( fixedDofs != nullptr );
@@ -133,5 +134,5 @@ TEST_F(RestStiffSpringsForceField_test, defaultBehaviorVec3)
 
 TEST_F(RestStiffSpringsForceField_test, defaultBehaviorRigid3)
 {
-    this->testDefaultBehavior<Rigid3Types>(this->createScene("Rigid3"));
+    this->testDefaultBehavior<sofa::defaulttype::Rigid3Types>(this->createScene("Rigid3"));
 }

@@ -33,7 +33,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/helper/OptionsGroup.h>
 
 #if IMAGE_HAVE_SOFA_GL == 1
@@ -144,7 +144,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
 
         if(recursive)
         {
-            helper::vector<unsigned int> indices; indices.resize(pos.size()); for(unsigned int i=0; i<pos.size(); i++) indices[i]=i;
+            type::vector<unsigned int> indices; indices.resize(pos.size()); for(unsigned int i=0; i<pos.size(); i++) indices[i]=i;
             sampler->subdivide(indices);
         }
 
@@ -186,11 +186,11 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
         cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg_library::cimg::type<Real>::max();
 
         // list of seed points
-        std::set<std::pair<Real,sofa::defaulttype::Vec<3,int> > > trial;
+        std::set<std::pair<Real,sofa::type::Vec<3,int> > > trial;
 
         // add fixed points
-        helper::vector<unsigned int> fpos_voronoiIndex;
-        helper::vector<Coord> fpos_VoxelIndex;
+        type::vector<unsigned int> fpos_voronoiIndex;
+        type::vector<Coord> fpos_VoxelIndex;
 
         for(unsigned int i=0; i<fpos.size(); i++)
         {
@@ -205,13 +205,13 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
             case FASTMARCHING : fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor ); break;
             case DIJKSTRA : dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor); break;
             case PARALLELMARCHING : parallelMarching<Real,T>(dist, voronoi, sampler->transform.getValue().getScale(), pmmIter, pmmTol, biasFactor); break;
-            default : sampler->serr << "Unknown Distance Field Computation Method" << sampler->sendl; break;
+            default : msg_error(sampler) << "Unknown Distance Field Computation Method" ; break;
             };
         }
 
         // farthest point sampling using geodesic distances
-        helper::vector<unsigned int> pos_voronoiIndex;
-        helper::vector<Coord> pos_VoxelIndex;
+        type::vector<unsigned int> pos_voronoiIndex;
+        type::vector<Coord> pos_VoxelIndex;
         while(pos_VoxelIndex.size()<nb)
         {
             Real dmax=0;  Coord pmax;
@@ -226,7 +226,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
                 case FASTMARCHING : fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor ); break;
                 case DIJKSTRA : dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor); break;
                 case PARALLELMARCHING : parallelMarching<Real,T>(dist, voronoi, sampler->transform.getValue().getScale(), pmmIter, pmmTol, biasFactor); break;
-                default : sampler->serr << "Unknown Distance Field Computation Method" << sampler->sendl; break;
+                default : msg_error(sampler) << "Unknown Distance Field Computation Method" ; break;
                 };
             }
             else break;
@@ -250,7 +250,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
                 case FASTMARCHING : fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor ); break;
                 case DIJKSTRA : dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor); break;
                 case PARALLELMARCHING : parallelMarching<Real,T>(dist, voronoi, sampler->transform.getValue().getScale(), pmmIter, pmmTol, biasFactor); break;
-                default : sampler->serr << "Unknown Distance Field Computation Method" << sampler->sendl; break;
+                default : msg_error(sampler) << "Unknown Distance Field Computation Method" ; break;
                 };
                 it++; if(it>=lloydIt) converged=true;
             }
@@ -258,7 +258,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
         }
 
         // add 3D points
-        std::vector<defaulttype::Vec<3,Real> >& pos = *sampler->position.beginEdit();    pos.clear();
+        std::vector<type::Vec<3,Real> >& pos = *sampler->position.beginEdit();    pos.clear();
         for(unsigned int i=0; i<pos_VoxelIndex.size(); i++) pos.push_back(inT->fromImage(pos_VoxelIndex[i]));
         sampler->position.endEdit();
 
@@ -301,11 +301,11 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
         cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg_library::cimg::type<Real>::max();
 
         // list of seed points
-        std::set<std::pair<Real,sofa::defaulttype::Vec<3,int> > > trial;
+        std::set<std::pair<Real,sofa::type::Vec<3,int> > > trial;
 
         // add fixed points
-        helper::vector<unsigned int> fpos_voronoiIndex;
-        helper::vector<Coord> fpos_VoxelIndex;
+        type::vector<unsigned int> fpos_voronoiIndex;
+        type::vector<Coord> fpos_VoxelIndex;
 
         for(unsigned int i=0; i<fpos.size(); i++)
         {
@@ -320,17 +320,17 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
             case FASTMARCHING : fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor ); break;
             case DIJKSTRA : dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor); break;
             case PARALLELMARCHING : parallelMarching<Real,T>(dist, voronoi, sampler->transform.getValue().getScale(), pmmIter, pmmTol, biasFactor); break;
-            default : sampler->serr << "Unknown Distance Field Computation Method" << sampler->sendl; break;
+            default : msg_error(sampler) << "Unknown Distance Field Computation Method" ; break;
             };
         }
 
         // new points
-        helper::vector<unsigned int> pos_voronoiIndex;
-        helper::vector<Coord> pos_VoxelIndex;
+        type::vector<unsigned int> pos_voronoiIndex;
+        type::vector<Coord> pos_VoxelIndex;
         while(pos_VoxelIndex.size()<nb)
         {
-            helper::vector<unsigned int> newpos_voronoiIndex;
-            helper::vector<Coord> newpos_VoxelIndex;
+            type::vector<unsigned int> newpos_voronoiIndex;
+            type::vector<Coord> newpos_VoxelIndex;
 
             // farthest sampling of N points
             unsigned int currentN = N;
@@ -350,7 +350,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
                 case FASTMARCHING : fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor ); break;
                 case DIJKSTRA : dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor); break;
                 case PARALLELMARCHING : parallelMarching<Real,T>(dist, voronoi, sampler->transform.getValue().getScale(), pmmIter, pmmTol, biasFactor); break;
-                default : sampler->serr << "Unknown Distance Field Computation Method" << sampler->sendl; break;
+                default : msg_error(sampler) << "Unknown Distance Field Computation Method" ; break;
                 };
             }
 
@@ -372,7 +372,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
                     case FASTMARCHING : fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor ); break;
                     case DIJKSTRA : dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor); break;
                     case PARALLELMARCHING : parallelMarching<Real,T>(dist, voronoi, sampler->transform.getValue().getScale(), pmmIter, pmmTol, biasFactor); break;
-                    default : sampler->serr << "Unknown Distance Field Computation Method" << sampler->sendl; break;
+                    default : msg_error(sampler) << "Unknown Distance Field Computation Method" ; break;
                     };
                     it++; if(it>=lloydIt) converged=true;
                 }
@@ -408,7 +408,7 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
         }
 
         // add 3D points
-        std::vector<defaulttype::Vec<3,Real> >& pos = *sampler->position.beginEdit();    pos.clear();
+        std::vector<type::Vec<3,Real> >& pos = *sampler->position.beginEdit();    pos.clear();
         for(unsigned int i=0; i<pos_VoxelIndex.size(); i++) pos.push_back(inT->fromImage(pos_VoxelIndex[i]));
         sampler->position.endEdit();
 
@@ -457,7 +457,7 @@ public:
 
     //@name option data
     /**@{*/
-    typedef helper::vector<double> ParamTypes;
+    typedef type::vector<double> ParamTypes;
     typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
 
     Data<helper::OptionsGroup> method; ///< method (param)
@@ -467,7 +467,7 @@ public:
 
     //@name sample data (points+connectivity)
     /**@{*/
-    typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
+    typedef type::vector<type::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > position; ///< output positions
@@ -648,31 +648,30 @@ protected:
             case 1:
                 glPushAttrib(GL_LIGHTING_BIT);
                 vparams->drawTool()->enableLighting();
-                vparams->drawTool()->drawSpheres(this->position.getValue(),showSamplesScale.getValue(),defaulttype::Vec4f(0.1,0.7,0.1,1));
-                vparams->drawTool()->drawSpheres(this->fixedPosition.getValue(),showSamplesScale.getValue(),defaulttype::Vec4f(0.1,0.7,0.1,1));
+                vparams->drawTool()->drawSpheres(this->position.getValue(),showSamplesScale.getValue(),type::RGBAColor(0.1,0.7,0.1,1));
+                vparams->drawTool()->drawSpheres(this->fixedPosition.getValue(),showSamplesScale.getValue(),type::RGBAColor(0.1,0.7,0.1,1));
                 glPopAttrib();
             default:
-                vparams->drawTool()->drawPoints(this->position.getValue(),showSamplesScale.getValue(),defaulttype::Vec4f(0.2,1,0.2,1));
-                vparams->drawTool()->drawPoints(this->fixedPosition.getValue(),showSamplesScale.getValue(),defaulttype::Vec4f(1,0.2,0.2,1));
+                vparams->drawTool()->drawPoints(this->position.getValue(),showSamplesScale.getValue(),type::RGBAColor(0.2,1,0.2,1));
+                vparams->drawTool()->drawPoints(this->fixedPosition.getValue(),showSamplesScale.getValue(),type::RGBAColor(1,0.2,0.2,1));
             }
         }
 
 
         if (this->showEdges.getValue())
         {
-            std::vector<defaulttype::Vector3> points;
+            std::vector<type::Vector3> points;
             points.resize(2*e.size());
             for (unsigned int i=0; i<e.size(); ++i)
             {
                 points[2*i][0]=pos[e[i][0]][0];            points[2*i][1]=pos[e[i][0]][1];            points[2*i][2]=pos[e[i][0]][2];
                 points[2*i+1][0]=pos[e[i][1]][0];          points[2*i+1][1]=pos[e[i][1]][1];          points[2*i+1][2]=pos[e[i][1]][2];
             }
-            vparams->drawTool()->drawLines(points,2.0,defaulttype::Vec4f(0.7,0,0.7,1));
-            //vparams->drawTool()->drawTriangles(points, defaulttype::Vec4f(0.7,0,0.7,1));
+            vparams->drawTool()->drawLines(points,2.0, type::RGBAColor(0.7,0,0.7,1));
         }
         if (this->showGraph.getValue())
         {
-            std::vector<defaulttype::Vector3> points;
+            std::vector<type::Vector3> points;
             points.resize(2*g.size());
             for (unsigned int i=0; i<g.size(); ++i)
                 for (unsigned int j=0; j<2; ++j)
@@ -681,24 +680,24 @@ protected:
                     else {points[2*i+j][0]=pos[g[i][j]-fpos.size()][0];            points[2*i+j][1]=pos[g[i][j]-fpos.size()][1];            points[2*i+j][2]=pos[g[i][j]-fpos.size()][2];}
 
                 }
-            vparams->drawTool()->drawLines(points,2.0,defaulttype::Vec4f(1,1,0.5,1));
+            vparams->drawTool()->drawLines(points,2.0, type::RGBAColor(1,1,0.5,1));
         }
 
         if(this->showFaces.getValue())
         {
             //Tableau des points du cube
-            std::vector<defaulttype::Vector3> points;
+            std::vector<type::Vector3> points;
             points.resize(36);
 
             //Tableau des normales de ces faces
-            std::vector<defaulttype::Vector3> normales;
+            std::vector<type::Vector3> normales;
 
             //Tableau des couleurs des faces
-            std::vector<defaulttype::Vector4> couleurs;
+            std::vector<type::RGBAColor> couleurs;
 
             int tmp[] = {0,1,2, 0,2,3, 0,1,5, 0,5,4, 1,2,6, 1,6,5, 3,2,6, 3,6,7, 0,3,7, 0,7,4, 7,4,5, 7,5,6};
             int ns1, ns2, ns3;
-            defaulttype::Vector3 s1, s2, s3;
+            type::Vector3 s1, s2, s3;
             for(size_t iH=0;iH<this->hexahedra.getValue().size(); iH++)
             {
                 sofa::core::topology::Topology::Hexahedron currentCube = hexahedra.getValue().at(iH);
@@ -723,20 +722,19 @@ protected:
                     points.push_back(s3);
 
                     //Calcul de la normale de la surface
-                    defaulttype::Vector3 ab = s2 - s1;
-                    defaulttype::Vector3 ac = s3 - s1;
-                    defaulttype::Vector3 normal = ab.cross(ac);
+                    type::Vector3 ab = s2 - s1;
+                    type::Vector3 ac = s3 - s1;
+                    type::Vector3 normal = ab.cross(ac);
                     normal.normalize();
                     normales.push_back(normal);
 
                     //Calcul de la couleur de la face
-                    couleurs.push_back(defaulttype::Vec4f(0.7,0,0.7,1));
-
+                    couleurs.push_back(type::RGBAColor(0.7,0,0.7,1));
 
                 }
 
             }
-            vparams->drawTool()->drawTriangles(points,defaulttype::Vec4f(1,1,1,1));
+            vparams->drawTool()->drawTriangles(points,type::RGBAColor(1,1,1,1));
         }
 
 #endif // IMAGE_HAVE_SOFA_GL == 1
@@ -755,7 +753,7 @@ protected:
 
 
     /// subdivide positions indexed in indices in eight sub-lists, add new points in this->position and run recursively
-    void subdivide(helper::vector<unsigned int> &indices)
+    void subdivide(type::vector<unsigned int> &indices)
     {
         waPositions pos(this->position);
         waEdges g(this->graphEdges);
@@ -815,7 +813,7 @@ protected:
         if(edgs[11]!=corners[3] && edgs[11]!=corners[7]) {addEdge(Edge(corners[3],edgs[11]),g); addEdge(Edge(corners[7],edgs[11]),g);}
 
         // check in which octant lies each point
-        helper::vector<helper::vector<unsigned int> > octant(8); for(unsigned int i=0; i<8; i++)  octant[i].reserve(nb);
+        type::vector<type::vector<unsigned int> > octant(8); for(unsigned int i=0; i<8; i++)  octant[i].reserve(nb);
         for(unsigned int i=0; i<indices.size(); i++)
         {
             unsigned int index=indices[i];
@@ -835,10 +833,10 @@ protected:
     }
 
     // add point p in pos if not already there are return its index
-    unsigned int addPoint(const Coord& p, waPositions& pos, helper::vector<unsigned int> &indices)
+    unsigned int addPoint(const Coord& p, waPositions& pos, type::vector<unsigned int> &indices)
     {
         unsigned int ret ;
-        typename helper::vector<Coord>::iterator it=std::find(pos.begin(),pos.end(),p);
+        typename type::vector<Coord>::iterator it=std::find(pos.begin(),pos.end(),p);
         if(it==pos.end()) {ret=pos.size(); indices.push_back(ret); pos.push_back(p); }
         else ret=it-pos.begin();
         return ret;
@@ -848,7 +846,7 @@ protected:
     void addEdge(const Edge e, waEdges& edg)
     {
         if(e[0]==e[1]) return;
-        typename helper::vector<Edge>::iterator it=edg.begin();
+        typename type::vector<Edge>::iterator it=edg.begin();
         while(it!=edg.end() && ((*it)[0]!=e[0] || (*it)[1]!=e[1])) ++it; // to replace std::find that does not compile here for some reasons..
         if(it==edg.end()) edg.push_back(e);
     }

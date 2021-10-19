@@ -23,10 +23,11 @@
 #define SOFA_GPU_CUDA_CUDACOLLISIONDETECTION_H
 
 #include <sofa/core/collision/DetectionOutput.h>
-#include <SofaBaseCollision/BruteForceDetection.h>
 #include <sofa/gpu/cuda/CudaDistanceGridCollisionModel.h>
 #include <sofa/gpu/cuda/CudaSphereModel.h>
 #include <sofa/gpu/cuda/CudaPointModel.h>
+#include <SofaBaseCollision/BruteForceBroadPhase.h>
+#include <sofa/core/collision/NarrowPhaseDetection.h>
 
 
 namespace sofa
@@ -38,7 +39,8 @@ namespace core
 namespace collision
 {
 
-using defaulttype::Vec3f;
+using type::Vec3f;
+using type::Mat3x3f;
 
 /**
  *  \brief Generic description of a contact point using GPU.
@@ -209,11 +211,12 @@ namespace cuda
 
 
 
-class CudaCollisionDetection : public sofa::component::collision::BruteForceDetection
+class CudaCollisionDetection
+        : public sofa::component::collision::BruteForceBroadPhase
+        , public sofa::core::collision::NarrowPhaseDetection
 {
 public:
-    SOFA_CLASS(CudaCollisionDetection, sofa::component::collision::BruteForceDetection);
-    typedef sofa::component::collision::BruteForceDetection Inherit;
+    SOFA_CLASS2(CudaCollisionDetection, sofa::component::collision::BruteForceBroadPhase, sofa::core::collision::NarrowPhaseDetection);
     struct GPUTest
     {
         void* result;

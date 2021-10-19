@@ -26,7 +26,7 @@
 #include <sofa/simulation/Visitor.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa
 {
@@ -46,9 +46,9 @@ class  SOFA_MISC_COLLISION_API  RayTriangleVisitor : public simulation::Visitor
 
 public:
 
-    typedef defaulttype::Vec<3,SReal> Vec3;
-    defaulttype::Vec3d origin;    ///< Ray starting point
-    defaulttype::Vec3d direction; ///< Ray direction
+    typedef type::Vec<3,SReal> Vec3;
+    type::Vec3d origin;    ///< Ray starting point
+    type::Vec3d direction; ///< Ray direction
 
     /// Return the embedding model. In case of nested hierarchy, return the smallest (deepest). nullptr if no embedding model.
     core::objectmodel::BaseObject* embeddingModel();
@@ -74,7 +74,7 @@ private:
 
     friend struct distanceHitSort;
 
-    helper::vector<Hit> hits;  ///< raw result
+    type::vector<Hit> hits;  ///< raw result
 
 };
 

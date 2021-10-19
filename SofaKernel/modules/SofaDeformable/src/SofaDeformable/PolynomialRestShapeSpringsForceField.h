@@ -26,7 +26,7 @@
 #include <SofaDeformable/config.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/BaseMapping.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa::core::behavior
 {
@@ -57,15 +57,15 @@ public:
     typedef typename DataTypes::CPos CPos;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef helper::vector<sofa::Index> VecIndex;
-    typedef helper::vector<Real> VecReal;
+    typedef type::vector<sofa::Index> VecIndex;
+    typedef type::vector<Real> VecReal;
 
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
 
-    Data< helper::vector<sofa::Index> > d_points;
-    Data< helper::vector<sofa::Index> > d_external_points;
+    Data< type::vector<sofa::Index> > d_points;
+    Data< type::vector<sofa::Index> > d_external_points;
 
     /// polynomial data
     /// Describe set of polynomial coefficients combines in one array.
@@ -74,12 +74,12 @@ public:
     /// For examples the coeffiencts for polynomials with degrees [3, 2, 4] will be put as [ a1, a2, a3, b1, b2, c1, c2, c3, c4]
     Data< VecReal > d_polynomialStiffness;
     /// Describe set of polynomial degrees fro every spring
-    Data< helper::vector<sofa::Size> > d_polynomialDegree;
+    Data< type::vector<sofa::Size> > d_polynomialDegree;
 
 
     Data<bool> d_recomputeIndices;
     Data<bool> d_drawSpring;                      ///< draw Spring
-    Data<sofa::helper::types::RGBAColor> d_springColor;
+    Data<sofa::type::RGBAColor> d_springColor;
     Data<float> d_showIndicesScale;
 
     Data<VecReal> d_zeroLength;       /// Springs initial lengths
@@ -90,7 +90,7 @@ public:
         BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> d_restMState;
 
     // data to compute spring derivatives
-    typedef defaulttype::Vec<Coord::total_size, Real> JacobianVector;
+    typedef type::Vec<Coord::total_size, Real> JacobianVector;
 
 
 protected:
@@ -101,14 +101,14 @@ protected:
     VecIndex m_indices;
     VecIndex m_ext_indices;
 
-    helper::vector<JacobianVector> m_differential;
+    type::vector<JacobianVector> m_differential;
 
     VecReal m_directionSpringLength;
     VecReal m_strainValue;
     VecCoord m_weightedCoordinateDifference;
     VecReal m_coordinateSquaredNorm;
 
-    helper::vector<helper::vector<sofa::Size>> m_polynomialsMap;
+    type::vector<type::vector<sofa::Size>> m_polynomialsMap;
 
     bool m_useRestMState; /// Indicator whether an external MechanicalState is used as rest reference.
 
@@ -128,15 +128,11 @@ public:
     /// Brings ForceField contribution to the global system stiffness matrix.
     virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
 
-    virtual void addSubKToMatrix(const core::MechanicalParams* mparams,
-                                 const sofa::core::behavior::MultiMatrixAccessor* matrix,
-                                 const helper::vector<sofa::Index> & addSubIndex ) override;
-
     virtual void draw(const core::visual::VisualParams* vparams) override;
 
     virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& /* x */) const override
     {
-        serr << "Get potentialEnergy not implemented" << sendl;
+        msg_error() << "Get potentialEnergy not implemented";
         return 0.0;
     }
 

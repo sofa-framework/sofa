@@ -28,7 +28,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <vector>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sstream>
 #include <cstring>
 
@@ -44,7 +44,7 @@ namespace helper
 namespace io
 {
 
-using namespace sofa::defaulttype;
+using namespace sofa::type;
 
 bool TriangleLoader::load(const char *filename)
 {
@@ -79,7 +79,6 @@ void TriangleLoader::loadTriangles(FILE *file)
     char buf[128];
 
     std::vector<Vector3> normals;
-    Vector3 n;
     float x, y, z;
 
     /* make a default group */

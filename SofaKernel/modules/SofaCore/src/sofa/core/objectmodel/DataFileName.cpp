@@ -71,7 +71,10 @@ void DataFileName::updatePath()
         // Update the fullpath.
         std::string fullpath = m_value.getValue();
         if (!fullpath.empty())
-            DataRepository.findFile(fullpath,"",(this->m_owner ? &(this->m_owner->serr.ostringstream()) : &std::cerr));
+        {
+            std::ostringstream tempOss;
+            DataRepository.findFile(fullpath, "", &tempOss);
+        }
 
         if (getPathType() != PathType::BOTH && (fs::FileSystem::exists(fullpath) && ((getPathType() == PathType::DIRECTORY) != fs::FileSystem::isDirectory(fullpath))))
         {
@@ -85,8 +88,7 @@ void DataFileName::updatePath()
             {
                 if( m_fullpath.find(path) == 0 )
                 {
-                    m_relativepath=DataRepository.relativeToPath(m_fullpath, path,
-                                                                 false /*option for backward compatibility*/);
+                    m_relativepath = DataRepository.relativeToPath(m_fullpath, path);
                     break;
                 }
             }
@@ -105,7 +107,7 @@ void DataFileName::updatePath()
 
 void DataFileNameVector::updatePath()
 {
-    DataFileNameVector* parentDataFileNameVector = dynamic_cast<DataFileNameVector*>(parentData.getTarget());;
+    DataFileNameVector* parentDataFileNameVector = dynamic_cast<DataFileNameVector*>(parentData.getTarget());
     if (parentDataFileNameVector)
     {
         if (getPathType() != PathType::BOTH && getPathType() != parentDataFileNameVector->getPathType())
@@ -125,7 +127,8 @@ void DataFileNameVector::updatePath()
             }
             else
             {
-                helper::system::DataRepository.findFile(m_fullpath[i],"",(this->m_owner ? &(this->m_owner->serr.ostringstream()) : &std::cerr));
+                std::ostringstream tempOss;
+                DataRepository.findFile(m_fullpath[i], "", &tempOss);
                 if (getPathType() != PathType::BOTH && (fs::FileSystem::exists(m_fullpath[i]) && ((getPathType() == PathType::DIRECTORY) != fs::FileSystem::isDirectory(m_fullpath[i]))))
                 {
                     msg_error(this->getName()) << "This DataFileName only accepts " << (getPathType() == PathType::DIRECTORY ? "directories" : "files");

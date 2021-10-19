@@ -35,8 +35,8 @@ using sofa::core::topology::BaseMeshTopology;
 using sofa::testing::BaseTest;
 
 
-using sofa::defaulttype::Vector3;
-using sofa::defaulttype::Vec3u;
+using sofa::type::Vector3;
+using sofa::type::Vec3u;
 using sofa::core::objectmodel::New;
 
 #include <SofaSimulationGraph/DAGSimulation.h>

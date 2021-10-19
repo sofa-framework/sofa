@@ -20,7 +20,7 @@ using namespace defaulttype;
 
 template class SOFA_IMAGE_GUI_API TDataWidget<ImageToolBoxData<unsigned char> >;
 template class SOFA_IMAGE_GUI_API TDataWidget<ImageToolBoxData<double> >;
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_GUI_API TDataWidget<ImageToolBoxData<char> >;
 template class SOFA_IMAGE_GUI_API TDataWidget<ImageToolBoxData<int> >;
 template class SOFA_IMAGE_GUI_API TDataWidget<ImageToolBoxData<unsigned int> >;
@@ -34,7 +34,7 @@ template class SOFA_IMAGE_GUI_API TDataWidget<ImageToolBoxData<bool> >;
 
 helper::Creator<DataWidgetFactory, ImageToolBoxWidget< ImageToolBoxData<unsigned char> > >	DWClass_imagetoolboxUC("ImageToolBoxWidget",true);
 helper::Creator<DataWidgetFactory, ImageToolBoxWidget< ImageToolBoxData<double> > >			DWClass_imagetoolboxD("ImageToolBoxWidget",true);
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 helper::Creator<DataWidgetFactory, ImageToolBoxWidget< ImageToolBoxData<char> > >				DWClass_imagetoolboxC("ImageToolBoxWidget",true);
 helper::Creator<DataWidgetFactory, ImageToolBoxWidget< ImageToolBoxData<int> > >				DWClass_imagetoolboxI("ImageToolBoxWidget",true);
 helper::Creator<DataWidgetFactory, ImageToolBoxWidget< ImageToolBoxData<unsigned int> > >		DWClass_imagetoolboxUI("ImageToolBoxWidget",true);

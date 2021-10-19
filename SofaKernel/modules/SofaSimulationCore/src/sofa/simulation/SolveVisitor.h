@@ -19,47 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_SOLVEACTION_H
-#define SOFA_SIMULATION_SOLVEACTION_H
-
-
+#pragma once
 
 #include <sofa/simulation/Visitor.h>
-#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/MultiVecId.h>
+#include <sofa/simulation/CpuTask.h>
 
-namespace sofa
+#include <list>
+
+namespace sofa::simulation
 {
 
-namespace simulation
-{
+class SolveVisitorTask;
 
 /** Used by the animation loop: send the solve signal to the others solvers
-
+This visitor is able to run the solvers sequentially or concurrently.
  */
 class SOFA_SIMULATION_CORE_API SolveVisitor : public Visitor
 {
 public:
-    SolveVisitor(const sofa::core::ExecParams* params, SReal _dt) : Visitor(params), dt(_dt), x(sofa::core::VecCoordId::position()),
-        v(sofa::core::VecDerivId::velocity()) {}
 
-    SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, bool free) : Visitor(params), dt(_dt){
-        if(free)
-        {
-            x = sofa::core::VecCoordId::freePosition();
-            v = sofa::core::VecDerivId::freeVelocity();
-        }
-        else
-        {
-            x = sofa::core::VecCoordId::position();
-            v = sofa::core::VecDerivId::velocity();
-        }
-    }
+    SolveVisitor(const sofa::core::ExecParams* params,
+                 SReal _dt,
+                 sofa::core::MultiVecCoordId X = sofa::core::VecCoordId::position(),
+                 sofa::core::MultiVecDerivId V = sofa::core::VecDerivId::velocity(),
+                 bool _parallelSolve = false);
 
-    SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, sofa::core::MultiVecCoordId X,sofa::core::MultiVecDerivId V) : Visitor(params), dt(_dt),
-        x(X),v(V){}
+    SolveVisitor(const sofa::core::ExecParams* params, SReal _dt, bool free, bool _parallelSolve = false);
 
     virtual void processSolver(simulation::Node* node, sofa::core::behavior::OdeSolver* b);
     Result processNodeTopDown(simulation::Node* node) override;
+    void processNodeBottomUp(simulation::Node* /*node*/) override;
 
     /// Specify whether this action can be parallelized.
     bool isThreadSafe() const override { return true; }
@@ -69,16 +59,61 @@ public:
     const char* getCategoryName() const override { return "behavior update position"; }
     const char* getClassName() const override { return "SolveVisitor"; }
 
-    void setDt(SReal _dt) {dt = _dt;}
-    SReal getDt() {return dt;}
+    void setDt(SReal _dt);
+    SReal getDt() const;
+
 protected:
     SReal dt;
     sofa::core::MultiVecCoordId x;
     sofa::core::MultiVecDerivId v;
+    bool m_parallelSolve {false };
+
+    /// Container for the parallel tasks
+    std::list<SolveVisitorTask> m_tasks;
+
+    /// Status for the parallel tasks
+    sofa::simulation::CpuTask::Status m_status;
+
+    /// Function called if the solvers run sequentially
+    void sequentialSolve(simulation::Node* node);
+
+    /// Function called if the solvers run concurrently
+    /// Solving tasks are added to the list of tasks and start to run.
+    /// However, there is no check that the tasks finished. This is
+    /// done later, once all nodes have been traversed.
+    void parallelSolve(simulation::Node* node);
+
+    /// Initialize the task scheduler if it is not done already
+    void initializeTaskScheduler();
 };
 
-} // namespace simulation
+/// A task to provide to a task scheduler in which a solver solves
+class SolveVisitorTask : public sofa::simulation::CpuTask
+{
+public:
+    SolveVisitorTask(sofa::simulation::CpuTask::Status* status,
+                     sofa::core::behavior::OdeSolver* odeSolver,
+                     const sofa::core::ExecParams* params,
+                     SReal dt,
+                     sofa::core::MultiVecCoordId x,
+                     sofa::core::MultiVecDerivId v)
+    : sofa::simulation::CpuTask(status)
+    , m_solver(odeSolver)
+    , m_execParams(params)
+    , m_dt(dt)
+    , m_x(x)
+    , m_v(v)
+    {}
+
+    ~SolveVisitorTask() override = default;
+    sofa::simulation::Task::MemoryAlloc run() final;
+
+private:
+    sofa::core::behavior::OdeSolver* m_solver {nullptr};
+    const sofa::core::ExecParams* m_execParams {nullptr};
+    SReal m_dt;
+    sofa::core::MultiVecCoordId m_x;
+    sofa::core::MultiVecDerivId m_v;
+};
 
 } // namespace sofa
-
-#endif

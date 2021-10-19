@@ -33,18 +33,18 @@ namespace sofa::component::mapping
 {
 
 template <class TIn, class TOut>
-void CenterOfMassMultiMapping< TIn, TOut >::apply(const core::MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos)
+void CenterOfMassMultiMapping< TIn, TOut >::apply(const core::MechanicalParams* mparams, const type::vector<OutDataVecCoord*>& dataVecOutPos, const type::vector<const InDataVecCoord*>& dataVecInPos)
 {
     SOFA_UNUSED(mparams);
 
     typedef typename InVecCoord::iterator iter_coord;
 
     //Not optimized at all...
-    helper::vector<OutVecCoord*> outPos;
+    type::vector<OutVecCoord*> outPos;
     for(unsigned int i=0; i<dataVecOutPos.size(); i++)
         outPos.push_back(dataVecOutPos[i]->beginEdit());
 
-    helper::vector<const InVecCoord*> inPos;
+    type::vector<const InVecCoord*> inPos;
     for(unsigned int i=0; i<dataVecInPos.size(); i++)
         inPos.push_back(&dataVecInPos[i]->getValue());
 
@@ -68,18 +68,18 @@ void CenterOfMassMultiMapping< TIn, TOut >::apply(const core::MechanicalParams* 
 
 
 template <class TIn, class TOut>
-void CenterOfMassMultiMapping< TIn, TOut >::applyJ(const core::MechanicalParams* mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
+void CenterOfMassMultiMapping< TIn, TOut >::applyJ(const core::MechanicalParams* mparams, const type::vector<OutDataVecDeriv*>& dataVecOutVel, const type::vector<const InDataVecDeriv*>& dataVecInVel)
 {
     SOFA_UNUSED(mparams);
 
     typedef typename InVecDeriv::iterator iter_deriv;
 
     //Not optimized at all...
-    helper::vector<OutVecDeriv*> outDeriv;
+    type::vector<OutVecDeriv*> outDeriv;
     for(unsigned int i=0; i<dataVecOutVel.size(); i++)
         outDeriv.push_back(dataVecOutVel[i]->beginEdit());
 
-    helper::vector<const InVecDeriv*> inDeriv;
+    type::vector<const InVecDeriv*> inDeriv;
     for(unsigned int i=0; i<dataVecInVel.size(); i++)
         inDeriv.push_back(&dataVecInVel[i]->getValue());
 
@@ -104,16 +104,16 @@ void CenterOfMassMultiMapping< TIn, TOut >::applyJ(const core::MechanicalParams*
 
 
 template < class TIn, class TOut >
-void CenterOfMassMultiMapping< TIn, TOut >::applyJT(const core::MechanicalParams* mparams, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
+void CenterOfMassMultiMapping< TIn, TOut >::applyJT(const core::MechanicalParams* mparams, const type::vector<InDataVecDeriv*>& dataVecOutForce, const type::vector<const OutDataVecDeriv*>& dataVecInForce)
 {
     SOFA_UNUSED(mparams);
 
     //Not optimized at all...
-    helper::vector<InVecDeriv*> outDeriv;
+    type::vector<InVecDeriv*> outDeriv;
     for(unsigned int i=0; i<dataVecOutForce.size(); i++)
         outDeriv.push_back(dataVecOutForce[i]->beginEdit());
 
-    helper::vector<const OutVecDeriv*> inDeriv;
+    type::vector<const OutVecDeriv*> inDeriv;
     for(unsigned int i=0; i<dataVecInForce.size(); i++)
         inDeriv.push_back(&dataVecInForce[i]->getValue());
 
@@ -153,7 +153,7 @@ void CenterOfMassMultiMapping< TIn, TOut >::applyJT(const core::MechanicalParams
 template <class TIn, class TOut>
 void CenterOfMassMultiMapping< TIn, TOut>::init()
 {
-    typedef helper::vector<double>::iterator iter_double;
+    typedef type::vector<double>::iterator iter_double;
 
     inputBaseMass.resize ( this->getFromModels().size()  );
     inputTotalMass.resize( this->getFromModels().size()  );
@@ -183,8 +183,8 @@ void CenterOfMassMultiMapping< TIn, TOut >::draw(const core::visual::VisualParam
     assert( this->toModels.size() == 1 );
     const sofa::core::objectmodel::Data< OutVecCoord > *X = this->getToModels()[0]->read(sofa::core::VecCoordId::position());
 
-    std::vector< sofa::defaulttype::Vector3 > points;
-    sofa::defaulttype::Vector3 point1,point2;
+    std::vector< sofa::type::Vector3 > points;
+    sofa::type::Vector3 point1,point2;
 
     for(unsigned int i=0 ; i<OutCoord::spatial_dimensions ; i++)
     {
@@ -196,7 +196,7 @@ void CenterOfMassMultiMapping< TIn, TOut >::draw(const core::visual::VisualParam
         points.push_back(point2);
     }
 
-    vparams->drawTool()->drawLines(points, 1, sofa::helper::types::RGBAColor::yellow());
+    vparams->drawTool()->drawLines(points, 1, sofa::type::RGBAColor::yellow());
 }
 
 } // namespace sofa::component::mapping

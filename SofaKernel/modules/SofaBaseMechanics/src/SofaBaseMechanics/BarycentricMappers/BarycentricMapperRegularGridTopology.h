@@ -48,7 +48,6 @@ public:
     typedef typename Inherit1::MBloc MBloc;
     typedef typename Inherit1::MatrixType MatrixType;
     typedef typename MatrixType::Index MatrixTypeIndex;
-    typedef typename Inherit1::ForceMask ForceMask;
 
     using Index = sofa::Index;
 
@@ -80,9 +79,8 @@ public:
 protected:
     BarycentricMapperRegularGridTopology(RegularGridTopology* fromTopology,
                                          PointSetTopologyContainer* toTopology);
-    void addMatrixContrib(MatrixType* m, int row, int col, Real value);
 
-    helper::vector<CubeData> m_map;
+    type::vector<CubeData> m_map;
     RegularGridTopology* m_fromTopology   {nullptr};
     MatrixType* m_matrixJ                 {nullptr};
     bool m_updateJ                        {false};

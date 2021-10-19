@@ -15,10 +15,13 @@ set(SOURCE_FILES
 list(APPEND HEADER_FILES
 	${SOFAMISCTOPOLOGY_SRC}/TopologicalChangeProcessor.h
 	${SOFAMISCTOPOLOGY_SRC}/TopologyChecker.h
+    ${SOFAMISCTOPOLOGY_SRC}/TopologyBoundingTrasher.h
+    ${SOFAMISCTOPOLOGY_SRC}/TopologyBoundingTrasher.inl
 )
 list(APPEND SOURCE_FILES
 	${SOFAMISCTOPOLOGY_SRC}/TopologicalChangeProcessor.cpp
 	${SOFAMISCTOPOLOGY_SRC}/TopologyChecker.cpp
+    ${SOFAMISCTOPOLOGY_SRC}/TopologyBoundingTrasher.cpp
 )
 
 sofa_find_package(SofaBase REQUIRED) # SofaBaseTopology

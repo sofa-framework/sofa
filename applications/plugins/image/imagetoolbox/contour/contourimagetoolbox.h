@@ -21,9 +21,10 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
-using defaulttype::Vec;
-using defaulttype::Vector3;
+using type::vector;
+using type::Vec;
+using type::Vector3;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 
@@ -33,7 +34,7 @@ public:
     SOFA_CLASS(ContourImageToolBoxNoTemplated,LabelImageToolBox);
 
     typedef Vec<3,unsigned int> pixCoord;
-    typedef sofa::defaulttype::Vec3d Coord;
+    typedef sofa::type::Vec3d Coord;
     typedef vector<Vec3d> VecCoord;
     typedef vector<pixCoord> VecPixCoord;
     
@@ -120,7 +121,7 @@ public:
         addInput(&d_transform);
         addOutput(&d_imageOut);
 
-        raImage im(this->d_image);    if( ! im->getCImgList().size() ) {serr<<"no input image"<<sendl; return;}
+        raImage im(this->d_image);    if( ! im->getCImgList().size() ) { msg_error() <<"no input image"; return;}
 
         color.setValue(im->getCImg().min());
 

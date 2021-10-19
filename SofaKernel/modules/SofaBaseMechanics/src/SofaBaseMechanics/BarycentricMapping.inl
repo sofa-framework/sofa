@@ -35,32 +35,32 @@
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.h>
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperRegularGridTopology.h>
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperSparseGridTopology.h>
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperEdgeSetTopology.h>
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperTriangleSetTopology.h>
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperQuadSetTopology.h>
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperRegularGridTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperSparseGridTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperEdgeSetTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTriangleSetTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperQuadSetTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h>
 
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/simulation/Simulation.h>
 
 namespace sofa::component::mapping
 {
 
 using namespace topology;
-using sofa::defaulttype::Vector3;
-using sofa::defaulttype::Matrix3;
-using sofa::defaulttype::Mat3x3d;
-using sofa::defaulttype::Vec3d;
+using sofa::type::Vector3;
+using sofa::type::Matrix3;
+using sofa::type::Mat3x3d;
+using sofa::type::Vec3d;
 using sofa::core::objectmodel::ComponentState;
-using sofa::component::linearsolver::EigenSparseMatrix;
+using sofa::linearalgebra::EigenSparseMatrix;
 
 // 10/18 E.Coevoet: what's the difference between edge/line, tetra/tetrahedron, hexa/hexahedron?
 typedef typename sofa::core::topology::BaseMeshTopology::Line Edge;
@@ -242,10 +242,9 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ()
     d_mapper = sofa::core::objectmodel::New<MeshMapper>(input_topology_container, output_topology_container);
 
 end:
-    if (d_mapper) {
+    if (d_mapper) 
+    {
         this->addSlave(d_mapper.get());
-        d_mapper->maskFrom = this->maskFrom;
-        d_mapper->maskTo = this->maskTo;
     }
 }
 
@@ -373,7 +372,7 @@ void BarycentricMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpara
     {
         points.push_back ( OutDataTypes::getCPos(out[i]) );
     }
-    vparams->drawTool()->drawPoints ( points, 7, sofa::helper::types::RGBAColor::yellow());
+    vparams->drawTool()->drawPoints ( points, 7, sofa::type::RGBAColor::yellow());
 
     // Draw mapping line between models
     const InVecCoord& in = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
@@ -441,9 +440,9 @@ void BarycentricMapperTriangleSetTopology<In,Out>::handleTopologyChange(core::to
         {
         case core::topology::ENDING_EVENT :
         {
-            const helper::vector< topology::Triangle >& triangles = input_topology->getTriangles();
-            helper::vector< Mat3x3d > bases;
-            helper::vector< Vector3 > centers;
+            const type::vector< topology::Triangle >& triangles = input_topology->getTriangles();
+            type::vector< Mat3x3d > bases;
+            type::vector< Vector3 > centers;
 
             // clear and reserve space for 2D mapping
             this->clear(out.size());
@@ -488,7 +487,7 @@ void BarycentricMapperTriangleSetTopology<In,Out>::handleTopologyChange(core::to
 #endif // BARYCENTRIC_MAPPER_TOPOCHANGE_REINIT
 
 template<class TIn, class TOut>
-const helper::vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::getJs()
+const type::vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::getJs()
 {
     typedef typename Mapper::MatrixType mat_type;
     const sofa::defaulttype::BaseMatrix* matJ = getJ();
@@ -502,13 +501,6 @@ const helper::vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::
     js.resize( 1 );
     js[0] = internalMatrix;
     return &js;
-}
-
-template <class TIn, class TOut>
-void BarycentricMapping<TIn, TOut>::updateForceMask()
-{
-    if( d_mapper )
-        d_mapper->updateForceMask();
 }
 
 } // namespace sofa::component::mapping

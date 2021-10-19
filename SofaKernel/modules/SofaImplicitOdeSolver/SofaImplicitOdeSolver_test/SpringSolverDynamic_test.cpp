@@ -19,11 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
-
-
-
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest;
 
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
@@ -49,7 +46,7 @@ This test compares siumlated mass position to analytic mass position during 2s e
 */
 
 template <typename _DataTypes>
-struct SpringSolverDynamic_test : public Sofa_test<typename _DataTypes::Real>
+struct SpringSolverDynamic_test : public NumericTest<typename _DataTypes::Real>
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
@@ -63,7 +60,7 @@ struct SpringSolverDynamic_test : public Sofa_test<typename _DataTypes::Real>
 
 
     /// Create the context for the scene
-    void SetUp()
+    void SetUp() override
     {
         // Init simulation
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());

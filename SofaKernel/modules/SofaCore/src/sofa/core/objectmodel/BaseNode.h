@@ -60,11 +60,11 @@ public:
     /// @name Scene hierarchy
     /// @{
 
-    typedef sofa::helper::vector< BaseNode* > Children;
+    typedef sofa::type::vector< BaseNode* > Children;
     /// Get a list of child node
     virtual Children getChildren() const = 0;
 
-    typedef sofa::helper::vector< BaseNode* > Parents;
+    typedef sofa::type::vector< BaseNode* > Parents;
     /// Get a list of parent node
     /// @warning a temporary is created, this can be really inefficient
     virtual Parents getParents() const = 0;

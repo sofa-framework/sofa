@@ -23,7 +23,7 @@
 
 #include <sofa/type/Material.h>
 
-// SOFA_DEPRECATED_HEADER(v21.12, "sofa/helper/types/Material.h")
+// SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/helper/types/Material.h")
 
 namespace sofa::helper::types
 {

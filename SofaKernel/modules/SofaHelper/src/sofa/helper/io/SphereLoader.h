@@ -24,7 +24,7 @@
 
 #include <sofa/helper/config.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 namespace sofa
 {

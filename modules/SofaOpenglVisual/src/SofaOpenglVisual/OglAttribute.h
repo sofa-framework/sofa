@@ -59,10 +59,10 @@ public:
     /// if attributes are not static, update the buffer
     void updateVisual() override;
 
-    helper::vector<TDataTypes>* beginEdit();
+    type::vector<TDataTypes>* beginEdit();
     void endEdit();
-    const helper::vector<TDataTypes>& getValue() const;
-    void setValue( const helper::vector<TDataTypes>& value);
+    const type::vector<TDataTypes>& getValue() const;
+    void setValue( const type::vector<TDataTypes>& value);
     void enable();
     void disable();
     void bwdDraw(core::visual::VisualParams* ) override;
@@ -93,7 +93,7 @@ protected:
 
     unsigned int _usage;
 
-    topology::PointData<helper::vector<TDataTypes> > value; ///< internal Data
+    topology::PointData<type::vector<TDataTypes> > value; ///< internal Data
     Data<bool> handleDynamicTopology;
 
     sofa::core::topology::BaseMeshTopology* _topology;
@@ -109,28 +109,28 @@ public:
 
 };
 
-class SOFA_OPENGL_VISUAL_API OglFloat2Attribute : public OglAttribute<2, GL_FLOAT, sofa::defaulttype::Vec<2, float> >
+class SOFA_OPENGL_VISUAL_API OglFloat2Attribute : public OglAttribute<2, GL_FLOAT, sofa::type::Vec<2, float> >
 {
 public:
-    SOFA_CLASS(OglFloat2Attribute, SOFA_TEMPLATE3(OglAttribute, 2, GL_FLOAT, SOFA_TEMPLATE2(sofa::defaulttype::Vec, 2, float)));
+    SOFA_CLASS(OglFloat2Attribute, SOFA_TEMPLATE3(OglAttribute, 2, GL_FLOAT, SOFA_TEMPLATE2(sofa::type::Vec, 2, float)));
     OglFloat2Attribute() {};
     virtual ~OglFloat2Attribute() { };
 
 };
 
-class SOFA_OPENGL_VISUAL_API OglFloat3Attribute : public OglAttribute<3, GL_FLOAT, sofa::defaulttype::Vec<3, float> >
+class SOFA_OPENGL_VISUAL_API OglFloat3Attribute : public OglAttribute<3, GL_FLOAT, sofa::type::Vec<3, float> >
 {
 public:
-    SOFA_CLASS(OglFloat3Attribute, SOFA_TEMPLATE3(OglAttribute, 3, GL_FLOAT, SOFA_TEMPLATE2(sofa::defaulttype::Vec, 3, float)));
+    SOFA_CLASS(OglFloat3Attribute, SOFA_TEMPLATE3(OglAttribute, 3, GL_FLOAT, SOFA_TEMPLATE2(sofa::type::Vec, 3, float)));
     OglFloat3Attribute() {};
     virtual ~OglFloat3Attribute() { };
 
 };
 
-class SOFA_OPENGL_VISUAL_API OglFloat4Attribute : public OglAttribute<4, GL_FLOAT, sofa::defaulttype::Vec<4, float> >
+class SOFA_OPENGL_VISUAL_API OglFloat4Attribute : public OglAttribute<4, GL_FLOAT, sofa::type::Vec<4, float> >
 {
 public:
-    SOFA_CLASS(OglFloat4Attribute, SOFA_TEMPLATE3(OglAttribute, 4, GL_FLOAT, SOFA_TEMPLATE2(sofa::defaulttype::Vec, 4, float)));
+    SOFA_CLASS(OglFloat4Attribute, SOFA_TEMPLATE3(OglAttribute, 4, GL_FLOAT, SOFA_TEMPLATE2(sofa::type::Vec, 4, float)));
     OglFloat4Attribute() {};
     virtual ~OglFloat4Attribute() { };
 
@@ -149,28 +149,28 @@ public:
 
 };
 
-class SOFA_OPENGL_VISUAL_API OglInt2Attribute : public OglAttribute<2, GL_INT, sofa::defaulttype::Vec<2, int> >
+class SOFA_OPENGL_VISUAL_API OglInt2Attribute : public OglAttribute<2, GL_INT, sofa::type::Vec<2, int> >
 {
 public:
-    SOFA_CLASS(OglInt2Attribute, SOFA_TEMPLATE3(OglAttribute, 2, GL_INT, SOFA_TEMPLATE2(sofa::defaulttype::Vec, 2, int)));
+    SOFA_CLASS(OglInt2Attribute, SOFA_TEMPLATE3(OglAttribute, 2, GL_INT, SOFA_TEMPLATE2(sofa::type::Vec, 2, int)));
     OglInt2Attribute() {};
     virtual ~OglInt2Attribute() { };
 
 };
 
-class SOFA_OPENGL_VISUAL_API OglInt3Attribute : public OglAttribute<3, GL_INT, sofa::defaulttype::Vec<3, int> >
+class SOFA_OPENGL_VISUAL_API OglInt3Attribute : public OglAttribute<3, GL_INT, sofa::type::Vec<3, int> >
 {
 public:
-    SOFA_CLASS(OglInt3Attribute, SOFA_TEMPLATE3(OglAttribute, 3, GL_INT, SOFA_TEMPLATE2(sofa::defaulttype::Vec, 3, int)));
+    SOFA_CLASS(OglInt3Attribute, SOFA_TEMPLATE3(OglAttribute, 3, GL_INT, SOFA_TEMPLATE2(sofa::type::Vec, 3, int)));
     OglInt3Attribute() {};
     virtual ~OglInt3Attribute() { };
 
 };
 
-class SOFA_OPENGL_VISUAL_API OglInt4Attribute : public OglAttribute<4, GL_INT, sofa::defaulttype::Vec<4, int> >
+class SOFA_OPENGL_VISUAL_API OglInt4Attribute : public OglAttribute<4, GL_INT, sofa::type::Vec<4, int> >
 {
 public:
-    SOFA_CLASS(OglInt4Attribute, SOFA_TEMPLATE3(OglAttribute, 4, GL_INT, SOFA_TEMPLATE2(sofa::defaulttype::Vec, 4, int)));
+    SOFA_CLASS(OglInt4Attribute, SOFA_TEMPLATE3(OglAttribute, 4, GL_INT, SOFA_TEMPLATE2(sofa::type::Vec, 4, int)));
     OglInt4Attribute() {};
     virtual ~OglInt4Attribute() { };
 
@@ -189,28 +189,28 @@ public:
 
 };
 
-class SOFA_OPENGL_VISUAL_API OglUInt2Attribute : public OglAttribute<2, GL_UNSIGNED_INT, sofa::defaulttype::Vec<2, unsigned int> >
+class SOFA_OPENGL_VISUAL_API OglUInt2Attribute : public OglAttribute<2, GL_UNSIGNED_INT, sofa::type::Vec<2, unsigned int> >
 {
 public:
-    SOFA_CLASS(OglUInt2Attribute, SOFA_TEMPLATE3(OglAttribute, 2, GL_UNSIGNED_INT, SOFA_TEMPLATE2(sofa::defaulttype::Vec, 2, unsigned int)));
+    SOFA_CLASS(OglUInt2Attribute, SOFA_TEMPLATE3(OglAttribute, 2, GL_UNSIGNED_INT, SOFA_TEMPLATE2(sofa::type::Vec, 2, unsigned int)));
     OglUInt2Attribute() {};
     virtual ~OglUInt2Attribute() { };
 
 };
 
-class SOFA_OPENGL_VISUAL_API OglUInt3Attribute : public OglAttribute<3, GL_UNSIGNED_INT, sofa::defaulttype::Vec<3, unsigned int> >
+class SOFA_OPENGL_VISUAL_API OglUInt3Attribute : public OglAttribute<3, GL_UNSIGNED_INT, sofa::type::Vec<3, unsigned int> >
 {
 public:
-    SOFA_CLASS(OglUInt3Attribute, SOFA_TEMPLATE3(OglAttribute, 3, GL_UNSIGNED_INT, SOFA_TEMPLATE2(sofa::defaulttype::Vec, 3, unsigned int)));
+    SOFA_CLASS(OglUInt3Attribute, SOFA_TEMPLATE3(OglAttribute, 3, GL_UNSIGNED_INT, SOFA_TEMPLATE2(sofa::type::Vec, 3, unsigned int)));
     OglUInt3Attribute() {};
     virtual ~OglUInt3Attribute() { };
 
 };
 
-class SOFA_OPENGL_VISUAL_API OglUInt4Attribute : public OglAttribute<4, GL_UNSIGNED_INT, sofa::defaulttype::Vec<4, unsigned int> >
+class SOFA_OPENGL_VISUAL_API OglUInt4Attribute : public OglAttribute<4, GL_UNSIGNED_INT, sofa::type::Vec<4, unsigned int> >
 {
 public:
-    SOFA_CLASS(OglUInt4Attribute, SOFA_TEMPLATE3(OglAttribute, 4, GL_UNSIGNED_INT, SOFA_TEMPLATE2(sofa::defaulttype::Vec, 4, unsigned int)));
+    SOFA_CLASS(OglUInt4Attribute, SOFA_TEMPLATE3(OglAttribute, 4, GL_UNSIGNED_INT, SOFA_TEMPLATE2(sofa::type::Vec, 4, unsigned int)));
     OglUInt4Attribute() {};
     virtual ~OglUInt4Attribute() { };
 

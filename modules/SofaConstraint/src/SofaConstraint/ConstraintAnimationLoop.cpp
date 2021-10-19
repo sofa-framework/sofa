@@ -38,6 +38,7 @@
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/LCPcalc.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 
 #include <sofa/core/ObjectFactory.h>
@@ -151,8 +152,9 @@ bool MechanicalAccumulateConstraint2::stopAtMechanicalMapping(simulation::Node* 
 }
 
 ConstraintProblem::ConstraintProblem(bool printLog)
-    : m_printLog(printLog)
 {
+    SOFA_UNUSED(printLog);
+
     this->_tol = 0.0001;
     this->_dim = 0;
 
@@ -332,7 +334,7 @@ void ConstraintAnimationLoop::init()
 void ConstraintAnimationLoop::launchCollisionDetection(const core::ExecParams* params)
 {
     dmsg_info_when(EMIT_EXTRA_DEBUG_MESSAGE)
-            <<"computeCollision is called"<<sendl;
+            <<"computeCollision is called";
 
     ////////////////// COLLISION DETECTION///////////////////////////////////////////////////////////////////////////////////////////
     sofa::helper::AdvancedTimer::stepBegin("Collision");
@@ -367,9 +369,8 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params, simulat
         sofa::core::ConstraintParams cparams(*params);
         sofa::core::MultiVecDerivId f =  core::VecDerivId::externalForce();
 
-        for (unsigned int i=0; i<constraintCorrections.size(); i++ )
+        for (auto cc : constraintCorrections)
         {
-            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
             cc->applyPredictiveConstraintForce(&cparams, f, getCP()->getF());
         }
     }
@@ -381,7 +382,7 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params, simulat
         sofa::core::MultiVecCoordId xfree = sofa::core::VecCoordId::freePosition();
         mparams.x() = xfree;
         MechanicalProjectPositionVisitor(&mparams, 0, xfree ).execute(context);
-        MechanicalPropagateOnlyPositionVisitor(&mparams, 0, xfree, true ).execute(context);
+        MechanicalPropagateOnlyPositionVisitor(&mparams, 0, xfree ).execute(context);
     }
     sofa::helper::AdvancedTimer::stepEnd  ("Free Motion");
 
@@ -405,9 +406,8 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params, simulat
 
 void ConstraintAnimationLoop::setConstraintEquations(const core::ExecParams* params, simulation::Node *context)
 {
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+    for (auto cc : constraintCorrections)
     {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->resetContactForce();
     }
 
@@ -496,9 +496,8 @@ void ConstraintAnimationLoop::computeComplianceInConstraintSpace()
     dmsg_info_when(EMIT_EXTRA_DEBUG_MESSAGE) << "   4. get Compliance " ;
 
     sofa::helper::AdvancedTimer::stepBegin("Get Compliance");
-    for (unsigned int i=0; i<constraintCorrections.size(); i++ )
+    for (auto cc : constraintCorrections)
     {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->addComplianceInConstraintSpace(core::constraintparams::defaultInstance(), getCP()->getW());
     }
 
@@ -516,18 +515,16 @@ void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params, s
     if(d_schemeCorrection.getValue())
     {
         // IF SCHEME CORRECTIVE=> correct the motion using dF
-        for (unsigned int i=0; i<constraintCorrections.size(); i++)
+        for (auto cc : constraintCorrections)
         {
-            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
             cc->applyContactForce(getCP()->getdF());
         }
     }
     else
     {
         // ELSE => only correct the motion using F
-        for (unsigned int i=0; i<constraintCorrections.size(); i++)
+        for (auto cc : constraintCorrections)
         {
-            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
             cc->applyContactForce(getCP()->getF());
         }
     }
@@ -543,9 +540,8 @@ void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params, s
 
     if(!d_schemeCorrection.getValue())
     {
-        for (unsigned int i=0; i<constraintCorrections.size(); i++)
+        for (auto cc : constraintCorrections)
         {
-            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
             cc->resetContactForce();
         }
     }
@@ -607,7 +603,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
 #if !defined(WIN32)
     if (d_realTimeCompensation.getValue())
     {
-        if (timer == 0)
+        if (timer == nullptr)
         {
             timer = new CTime();
             compTime = iterationTime = (SReal)timer->getTime();
@@ -691,7 +687,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
     //////////////// BEFORE APPLYING CONSTRAINT  : propagate position through mapping
     core::MechanicalParams mparams(*params);
     MechanicalProjectPositionVisitor(&mparams, 0, core::VecCoordId::position()).execute(this->gnode);
-    MechanicalPropagateOnlyPositionVisitor(&mparams, 0, core::VecCoordId::position(), true).execute(this->gnode);
+    MechanicalPropagateOnlyPositionVisitor(&mparams, 0, core::VecCoordId::position()).execute(this->gnode);
 
 
     /// CONSTRAINT SPACE & COMPLIANCE COMPUTATION
@@ -793,7 +789,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
     bool convergence = false;
     double sor = d_sor.getValue();
     bool allVerified = d_allVerified.getValue();
-    sofa::helper::vector<double> tempForces;
+    sofa::type::vector<double> tempForces;
     if(sor != 1.0) tempForces.resize(dim);
 
     if(d_scaleTolerance.getValue() && !allVerified)
@@ -805,7 +801,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
         i += res[i]->getNbLines();
     }
 
-    std::map < std::string, sofa::helper::vector<double> >* graphs = d_graphForces.beginEdit();
+    std::map < std::string, sofa::type::vector<double> >* graphs = d_graphForces.beginEdit();
     graphs->clear();
     d_graphForces.endEdit();
 
@@ -825,10 +821,10 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
             df[j] = -force[j];
     }
 
-    sofa::helper::vector<double>& graph_residuals = (*d_graphErrors.beginEdit())["Error"];
+    sofa::type::vector<double>& graph_residuals = (*d_graphErrors.beginEdit())["Error"];
     graph_residuals.clear();
 
-    sofa::helper::vector<double> tabErrors;
+    sofa::type::vector<double> tabErrors;
     tabErrors.resize(dim);
 
     for(iter=0; iter<numItMax; iter++)
@@ -916,13 +912,13 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
 
 
         /// display a graph with the force of each constraint dimension at each iteration
-        std::map < std::string, sofa::helper::vector<double> >* graphs = d_graphForces.beginEdit();
+        std::map < std::string, sofa::type::vector<double> >* graphs = d_graphForces.beginEdit();
         for(int j=0; j<dim; j++)
         {
             std::ostringstream oss;
             oss << "f" << j;
 
-            sofa::helper::vector<double>& graph_force = (*graphs)[oss.str()];
+            sofa::type::vector<double>& graph_force = (*graphs)[oss.str()];
             graph_force.push_back(force[j]);
         }
         d_graphForces.endEdit();
@@ -984,7 +980,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
     ////////// DISPLAY A GRAPH WITH THE CONVERGENCE PERF ON THE GUI :
     d_graphErrors.endEdit();
 
-    sofa::helper::vector<double>& graph_constraints = (*d_graphConstraints.beginEdit())["Constraints"];
+    sofa::type::vector<double>& graph_constraints = (*d_graphConstraints.beginEdit())["Constraints"];
     graph_constraints.clear();
 
     for(int j=0; j<dim; )

@@ -27,13 +27,13 @@
 namespace sofa::component::mapping
 {
 
-using sofa::defaulttype::Vector3;
+using sofa::type::Vector3;
 using sofa::core::visual::VisualParams;
-using sofa::defaulttype::Vec;
-using sofa::defaulttype::Vector3;
-using sofa::defaulttype::Matrix3;
-using sofa::defaulttype::Mat3x3d;
-using sofa::defaulttype::Vec3d;
+using sofa::type::Vec;
+using sofa::type::Vector3;
+using sofa::type::Matrix3;
+using sofa::type::Mat3x3d;
+using sofa::type::Vec3d;
 typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
 typedef typename sofa::core::topology::BaseMeshTopology::Triangle Triangle;
 typedef typename sofa::core::topology::BaseMeshTopology::Quad Quad;
@@ -64,13 +64,6 @@ BarycentricMapperMeshTopology<In,Out>::~BarycentricMapperMeshTopology()
 }
 
 template <class In, class Out>
-void BarycentricMapperMeshTopology<In,Out>::addMatrixContrib(MatrixType* m,
-                                                             int row, int col, Real value)
-{
-    Inherit1::addMatrixContrib(m, row, col, value);
-}
-
-template <class In, class Out>
 void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     m_updateJ = true;
@@ -80,8 +73,8 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
 
     const SeqTriangles& triangles = this->m_fromTopology->getTriangles();
     const SeqQuads& quads = this->m_fromTopology->getQuads();
-    helper::vector<Matrix3> bases;
-    helper::vector<Vector3> centers;
+    type::vector<Matrix3> bases;
+    type::vector<Vector3> centers;
     if ( tetras.empty() && hexas.empty() )
     {
         if ( triangles.empty() && quads.empty() )
@@ -91,8 +84,8 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
 
             clearMap1dAndReserve ( out.size() );
 
-            helper::vector< SReal >   lengthEdges;
-            helper::vector< Vector3 > unitaryVectors;
+            type::vector< SReal >   lengthEdges;
+            type::vector< Vector3 > unitaryVectors;
 
             Index e;
             for ( e=0; e<edges.size(); e++ )
@@ -131,7 +124,9 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
                 m[1] = in[triangles[t][2]]-in[triangles[t][0]];
                 m[2] = cross ( m[0],m[1] );
                 mt.transpose ( m );
-                bases[t].invert ( mt );
+                const bool canInvert = bases[t].invert ( mt );
+                assert(canInvert);
+                SOFA_UNUSED(canInvert);
                 centers[t] = ( in[triangles[t][0]]+in[triangles[t][1]]+in[triangles[t][2]] ) /3;
             }
             for ( std::size_t q = 0; q < quads.size(); q++ )
@@ -141,7 +136,9 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
                 m[1] = in[quads[q][3]]-in[quads[q][0]];
                 m[2] = cross ( m[0],m[1] );
                 mt.transpose ( m );
-                bases[nbTriangles+q].invert ( mt );
+                const bool canInvert = bases[nbTriangles+q].invert ( mt );
+                assert(canInvert);
+                SOFA_UNUSED(canInvert);
                 centers[nbTriangles+q] = ( in[quads[q][0]]+in[quads[q][1]]+in[quads[q][2]]+in[quads[q][3]] ) *0.25;
             }
             for ( std::size_t i=0; i<out.size(); i++ )
@@ -184,7 +181,9 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
             m[1] = in[tetras[t][2]]-in[tetras[t][0]];
             m[2] = in[tetras[t][3]]-in[tetras[t][0]];
             mt.transpose ( m );
-            bases[t].invert ( mt );
+            const bool canInvert = bases[t].invert ( mt );
+            assert(canInvert);
+            SOFA_UNUSED(canInvert);
             centers[t] = ( in[tetras[t][0]]+in[tetras[t][1]]+in[tetras[t][2]]+in[tetras[t][3]] ) *0.25;
         }
         for ( std::size_t h = 0; h < hexas.size(); h++ )
@@ -194,7 +193,9 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
             m[1] = in[hexas[h][3]]-in[hexas[h][0]];
             m[2] = in[hexas[h][4]]-in[hexas[h][0]];
             mt.transpose ( m );
-            bases[nbTetras+h].invert ( mt );
+            const bool canInvert = bases[nbTetras+h].invert ( mt );
+            assert(canInvert);
+            SOFA_UNUSED(canInvert);
             centers[nbTetras+h] = ( in[hexas[h][0]]+in[hexas[h][1]]+in[hexas[h][2]]+in[hexas[h][3]]+in[hexas[h][4]]+in[hexas[h][5]]+in[hexas[h][6]]+in[hexas[h][7]] ) *0.125;
         }
         for ( std::size_t i=0; i<out.size(); i++ )
@@ -358,14 +359,14 @@ BarycentricMapperMeshTopology<In,Out>::createPointInTriangle ( const typename Ou
     const typename In::Coord AB = p2-p1;
     const typename In::Coord AC = p3-p1;
     const typename In::Coord AQ = to_be_projected -p1;
-    sofa::defaulttype::Mat<2,2,typename In::Real> A;
-    sofa::defaulttype::Vec<2,typename In::Real> b;
+    sofa::type::Mat<2,2,typename In::Real> A;
+    sofa::type::Vec<2,typename In::Real> b;
     A[0][0] = AB*AB;
     A[1][1] = AC*AC;
     A[0][1] = A[1][0] = AB*AC;
     b[0] = AQ*AB;
     b[1] = AQ*AC;
-    const typename In::Real det = sofa::defaulttype::determinant(A);
+    const typename In::Real det = sofa::type::determinant(A);
 
     baryCoords[0] = (b[0]*A[1][1] - b[1]*A[0][1])/det;
     baryCoords[1]  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
@@ -435,12 +436,14 @@ BarycentricMapperMeshTopology<In,Out>::createPointInQuad ( const typename Out::C
     const typename In::Coord pA = ( *points ) [elem[1]] - p0;
     const typename In::Coord pB = ( *points ) [elem[3]] - p0;
     typename In::Coord pos = Out::getCPos(p) - p0;
-    sofa::defaulttype::Mat<3,3,typename In::Real> m,mt,base;
+    sofa::type::Mat<3,3,typename In::Real> m,mt,base;
     m[0] = pA;
     m[1] = pB;
     m[2] = cross ( pA, pB );
     mt.transpose ( m );
-    base.invert ( mt );
+    const bool canInvert = base.invert ( mt );
+    assert(canInvert);
+    SOFA_UNUSED(canInvert);
     const typename In::Coord base0 = base[0];
     const typename In::Coord base1 = base[1];
     baryCoords[0] = base0 * pos;
@@ -601,10 +604,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
             if ( index<c0 )
             {
                 const Triangle& triangle = triangles[index];
-                Real f[3];
-                f[0] = ( 1-fx-fy );
-                f[1] = fx;
-                f[2] = fy;
+                const Real f[3] = {( 1-fx-fy ), fx, fy};
                 for ( int j=0; j<3; j++ )
                 {
                     if ( f[j]<=-0.0001 || f[j]>=0.0001 )
@@ -688,7 +688,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
             }
         }
     }
-    vparams->drawTool()->drawLines ( points, 1, sofa::helper::types::RGBAColor::green());
+    vparams->drawTool()->drawLines ( points, 1, sofa::type::RGBAColor::green());
 }
 
 template <class In, class Out>
@@ -809,12 +809,8 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
     const size_t i2d = m_map2d.size();
     const size_t i3d = m_map3d.size();
 
-    ForceMask& mask = *this->maskFrom;
-
-    for( size_t i=0 ; i<this->maskTo->size() ; ++i)
+    for( size_t i=0 ; i<in.size() ; ++i)
     {
-        if( !this->maskTo->getEntry(i) ) continue;
-
         // 1D elements
         if (i < i1d)
         {
@@ -825,8 +821,6 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
                 const Edge& line = lines[index];
                 out[line[0]] += v * ( 1-fx );
                 out[line[1]] += v * fx;
-                mask.insertEntry(line[0]);
-                mask.insertEntry(line[1]);
             }
         }
         // 2D elements
@@ -844,9 +838,6 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
                 out[triangle[0]] += v * ( 1-fx-fy );
                 out[triangle[1]] += v * fx;
                 out[triangle[2]] += v * fy;
-                mask.insertEntry(triangle[0]);
-                mask.insertEntry(triangle[1]);
-                mask.insertEntry(triangle[2]);
             }
             else
             {
@@ -855,10 +846,6 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
                 out[quad[1]] += v * ( ( fx ) * ( 1-fy ) );
                 out[quad[3]] += v * ( ( 1-fx ) * ( fy ) );
                 out[quad[2]] += v * ( ( fx ) * ( fy ) );
-                mask.insertEntry(quad[0]);
-                mask.insertEntry(quad[1]);
-                mask.insertEntry(quad[2]);
-                mask.insertEntry(quad[3]);
             }
         }
         // 3D elements
@@ -878,10 +865,6 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
                 out[tetra[1]] += v * fx;
                 out[tetra[2]] += v * fy;
                 out[tetra[3]] += v * fz;
-                mask.insertEntry(tetra[0]);
-                mask.insertEntry(tetra[1]);
-                mask.insertEntry(tetra[2]);
-                mask.insertEntry(tetra[3]);
             }
             else
             {
@@ -900,15 +883,6 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
                 out[cube[7]] += v * ( ( 1-fx ) * ( fy ) * ( fz ) );
                 out[cube[6]] += v * ( ( fx ) * ( fy ) * ( fz ) );
 
-
-                mask.insertEntry(cube[0]);
-                mask.insertEntry(cube[1]);
-                mask.insertEntry(cube[2]);
-                mask.insertEntry(cube[3]);
-                mask.insertEntry(cube[4]);
-                mask.insertEntry(cube[5]);
-                mask.insertEntry(cube[6]);
-                mask.insertEntry(cube[7]);
             }
         }
     }
@@ -935,10 +909,8 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
     const size_t idxStart2=sizeMap1d+sizeMap2d;
     const size_t idxStart3=sizeMap1d+sizeMap2d+sizeMap3d;
 
-    for( size_t i=0 ; i<this->maskTo->size() ; ++i)
+    for( size_t i=0 ; i<out.size() ; ++i)
     {
-        if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
-
         // 1D elements
         if (i < idxStart1)
         {

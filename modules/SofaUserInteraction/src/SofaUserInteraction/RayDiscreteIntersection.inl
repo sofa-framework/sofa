@@ -36,14 +36,14 @@ template<class T>
 bool RayDiscreteIntersection::testIntersection(Ray& ray1, TSphere<T>& sph2)
 {
     // Center of the sphere
-    const defaulttype::Vector3 sph2Pos(sph2.center());
+    const type::Vector3 sph2Pos(sph2.center());
     // Radius of the sphere
     const SReal radius1 = sph2.r();
 
-    const defaulttype::Vector3 ray1Origin(ray1.origin());
-    const defaulttype::Vector3 ray1Direction(ray1.direction());
+    const type::Vector3 ray1Origin(ray1.origin());
+    const type::Vector3 ray1Direction(ray1.direction());
     const SReal length2 = ray1.l();
-    const defaulttype::Vector3 tmp = sph2Pos - ray1Origin;
+    const type::Vector3 tmp = sph2Pos - ray1Origin;
     const SReal rayPos = tmp*ray1Direction;
     const SReal rayPosInside = std::max(std::min(rayPos,length2),(SReal)0.0);
     const SReal dist2 = tmp.norm2() - (rayPosInside*rayPosInside);
@@ -54,14 +54,14 @@ template<class T>
 int RayDiscreteIntersection::computeIntersection(Ray& ray1, TSphere<T>& sph2, OutputVector* contacts)
 {
     // Center of the sphere
-    const defaulttype::Vector3 sph2Pos(sph2.center());
+    const type::Vector3 sph2Pos(sph2.center());
     // Radius of the sphere
     const SReal radius1 = sph2.r();
 
-    const defaulttype::Vector3 ray1Origin(ray1.origin());
-    const defaulttype::Vector3 ray1Direction(ray1.direction());
+    const type::Vector3 ray1Origin(ray1.origin());
+    const type::Vector3 ray1Direction(ray1.direction());
     const SReal length2 = ray1.l();
-    const defaulttype::Vector3 tmp = sph2Pos - ray1Origin;
+    const type::Vector3 tmp = sph2Pos - ray1Origin;
     const SReal rayPos = tmp*ray1Direction;
     const SReal rayPosInside = std::max(std::min(rayPos,length2),(SReal)0.0);
     const SReal dist2 = tmp.norm2() - (rayPosInside*rayPosInside);
@@ -76,7 +76,7 @@ int RayDiscreteIntersection::computeIntersection(Ray& ray1, TSphere<T>& sph2, Ou
     detection->point[0] = ray1Origin + ray1Direction*rayPosInside;
     detection->normal = sph2Pos - detection->point[0];
     detection->normal /= dist;
-    detection->point[1] = sph2.getContactPointByNormal( detection->normal );;
+    detection->point[1] = sph2.getContactPointByNormal( detection->normal );
     detection->value = dist - radius1;
     detection->elem.first = ray1;
     detection->elem.second = sph2;

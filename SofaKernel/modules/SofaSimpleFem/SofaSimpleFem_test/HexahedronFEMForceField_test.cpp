@@ -21,7 +21,8 @@
 ******************************************************************************/
 
 #include <SofaSimpleFem/HexahedronFEMForceField.h>
-#include <SofaTest/ForceField_test.h>
+
+#include "ForceFieldTestCreation.h"
 
 namespace sofa {
 
@@ -112,7 +113,7 @@ struct HexahedronFEMForceField_test : public ForceField_test<_HexahedronFEMForce
         // copy the position and velocities to the scene graph
         this->dof->resize(n);
         typename DOF::WriteVecCoord xdof = this->dof->writePositions();
-        copyToData( xdof, x );
+        sofa::testing::copyToData( xdof, x );
         // init scene and compute force
         sofa::simulation::getSimulation()->init(this->node.get());
 

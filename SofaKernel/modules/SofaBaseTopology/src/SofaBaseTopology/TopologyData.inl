@@ -36,7 +36,6 @@ TopologyData <TopologyElementType, VecT>::TopologyData(const typename sofa::core
     , m_topologyHandler(nullptr)
     , m_isTopologyDynamic(false)
 {
-    this->lastElementIndex = 0;
 }
 
 
@@ -50,26 +49,23 @@ void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core:
     }
     this->m_topology = _topology;
 
-    // Create Topology engine
+    // Create TopologyHandler
     this->m_topologyHandler = new TopologyDataHandler< TopologyElementType, VecT>(this, _topology);
-    this->m_topologyHandler->setNamePrefix(std::string(sofa::core::topology::TopologyElementInfo<TopologyElementType>::name()) + std::string("Engine_"));
+    this->m_topologyHandler->setNamePrefix("TopologyDataHandler( " + this->getOwner()->getName() + " )");
     this->m_topologyHandler->init();
 
-    // Register the engine
-    m_isTopologyDynamic = this->m_topologyHandler->registerTopology();
+    // Register the TopologyHandler
+    m_isTopologyDynamic = this->m_topologyHandler->registerTopology(_topology);
     if (m_isTopologyDynamic)
     {
         this->linkToElementDataArray((TopologyElementType*)nullptr);
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " initialized with dynamic " << _topology->getClassName() << "Topology.";
     }
-
-    //if (this->getOwner() && dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner()))
-    //    dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())->addSlave(this->m_topologyHandler);
 }
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* topoEngine)
+void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* topoHandler)
 {
     if (_topology == nullptr)
     {
@@ -79,46 +75,25 @@ void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core:
 
     this->m_topology = _topology;
 
-    // Set Topology engine
-    this->m_topologyHandler = topoEngine;
-    this->m_topologyHandler->setNamePrefix(std::string(sofa::core::topology::TopologyElementInfo<TopologyElementType>::name()) + std::string("Engine_"));
+    // Set Topology TopologyHandler
+    this->m_topologyHandler = topoHandler;
+    this->m_topologyHandler->setNamePrefix("TopologyDataHandler( " + this->getOwner()->getName() + " )");
     this->m_topologyHandler->init();
 
-    // Register the engine
+    // Register the TopologyHandler
     m_isTopologyDynamic = this->m_topologyHandler->registerTopology(_topology);
     if (m_isTopologyDynamic)
     {
         this->linkToElementDataArray((TopologyElementType*)nullptr);
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " initialized with dynamic " << this->m_topology->getClassName() << "Topology.";
     }
-    
-    //if (this->getOwner() && dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())) 
-    //    dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())->addSlave(this->m_topologyHandler);   
+    else
+        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " has no TopologyHandler. Topological changes will be disabled. Use createTopologyHandler method before registerTopologicalData to allow topological changes.";
+   
 }
 
 
-template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::registerTopologicalData()
-{
-    if (this->m_topologyHandler)
-        this->m_topologyHandler->registerTopology(this->m_topology);
-    else if (!this->m_topology)
-        msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " has no engine. Topological changes will be disabled. Use createTopologyHandler method before registerTopologicalData to allow topological changes." ;
-}
-
-template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::addInputData(sofa::core::objectmodel::BaseData *_data)
-{
-    if (this->m_topologyHandler)
-        this->m_topologyHandler->addInput(_data);
-    else if (!this->m_topology)
-        msg_info(this->getOwner()) <<"Warning: TopologyData: " << this->getName() << " has no engine. Use createTopologyHandler function before addInputData." ;
-}
-
-
-
-
-/// Method used to link Data to point Data array, using the engine's method
+/// Method used to link Data to point Data array, using the TopologyHandler's method
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::linkToPointDataArray()
 {
@@ -131,7 +106,7 @@ void TopologyData <TopologyElementType, VecT>::linkToPointDataArray()
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " won't be linkToPointDataArray as toplogy is not dynamic";
 }
 
-/// Method used to link Data to edge Data array, using the engine's method
+/// Method used to link Data to edge Data array, using the TopologyHandler's method
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::linkToEdgeDataArray()
 {
@@ -144,7 +119,7 @@ void TopologyData <TopologyElementType, VecT>::linkToEdgeDataArray()
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " won't be linkToEdgeDataArray as toplogy is not dynamic";
 }
 
-/// Method used to link Data to triangle Data array, using the engine's method
+/// Method used to link Data to triangle Data array, using the TopologyHandler's method
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::linkToTriangleDataArray()
 {
@@ -157,7 +132,7 @@ void TopologyData <TopologyElementType, VecT>::linkToTriangleDataArray()
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " won't be linkToTriangleDataArray as toplogy is not dynamic";
 }
 
-/// Method used to link Data to quad Data array, using the engine's method
+/// Method used to link Data to quad Data array, using the TopologyHandler's method
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::linkToQuadDataArray()
 {
@@ -170,7 +145,7 @@ void TopologyData <TopologyElementType, VecT>::linkToQuadDataArray()
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " won't be linkToQuadDataArray as toplogy is not dynamic";
 }
 
-/// Method used to link Data to tetrahedron Data array, using the engine's method
+/// Method used to link Data to tetrahedron Data array, using the TopologyHandler's method
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::linkToTetrahedronDataArray()
 {
@@ -183,7 +158,7 @@ void TopologyData <TopologyElementType, VecT>::linkToTetrahedronDataArray()
         msg_info(this->getOwner()) << "TopologyData: " << this->getName() << " won't be linkToTetrahedronDataArray as toplogy is not dynamic";
 }
 
-/// Method used to link Data to hexahedron Data array, using the engine's method
+/// Method used to link Data to hexahedron Data array, using the TopologyHandler's method
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::linkToHexahedronDataArray()
 {
@@ -197,54 +172,100 @@ void TopologyData <TopologyElementType, VecT>::linkToHexahedronDataArray()
 }
 
 
+/////////////////////// Protected functions on TopologyData init ///////////////////////////////
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Point*) 
+{ 
+    this->setDataSetArraySize(this->m_topology->getNbPoints());
+    linkToPointDataArray(); 
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Edge*) 
+{ 
+    this->setDataSetArraySize(this->m_topology->getNbEdges());
+    linkToEdgeDataArray(); 
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Triangle*) 
+{ 
+    this->setDataSetArraySize(this->m_topology->getNbTriangles());
+    linkToTriangleDataArray(); 
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Quad*) 
+{ 
+    this->setDataSetArraySize(this->m_topology->getNbQuads());
+    linkToQuadDataArray(); 
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Tetrahedron*) 
+{ 
+    this->setDataSetArraySize(this->m_topology->getNbTetrahedra());
+    linkToTetrahedronDataArray(); 
+}
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Hexahedron*) 
+{ 
+    this->setDataSetArraySize(this->m_topology->getNbHexahedra());
+    linkToHexahedronDataArray(); 
+}
+
+
 ///////////////////// Protected functions on TopologyData changes /////////////////////////////
 
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::swap(Index i1, Index i2)
 {
-    container_type& data = *(this->beginEdit());
+    helper::WriteOnlyAccessor<Data< container_type > > data = this;
     value_type tmp = data[i1];
     data[i1] = data[i2];
     data[i2] = tmp;
-    this->endEdit();
 }
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::remove(const sofa::helper::vector<Index>& index)
+void TopologyData <TopologyElementType, VecT>::remove(const sofa::type::vector<Index>& index)
 {
-
-    container_type& data = *(this->beginEdit());
+    helper::WriteOnlyAccessor<Data< container_type > > data = this;
     if (data.size() > 0)
     {
-        Index last = Index(data.size() - 1);
-
         for (std::size_t i = 0; i < index.size(); ++i)
         {
             if (this->m_topologyHandler) {
                 this->m_topologyHandler->applyDestroyFunction(index[i], data[index[i]]);
             }
-            this->swap(index[i], last);
-            --last;
+
+            if (p_onDestructionCallback)
+            {
+                p_onDestructionCallback(index[i], data[index[i]]);
+            }
+
+            this->swap(index[i], this->m_lastElementIndex);
+            --this->m_lastElementIndex;
         }
 
         data.resize(data.size() - index.size());
     }
-    this->endEdit();
 }
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::add(const sofa::helper::vector<Index>& index,
-    const sofa::helper::vector< TopologyElementType >& elems,
-    const sofa::helper::vector<sofa::helper::vector<Index> >& ancestors,
-    const sofa::helper::vector<sofa::helper::vector<double> >& coefs,
-    const sofa::helper::vector< AncestorElem >& ancestorElems)
+void TopologyData <TopologyElementType, VecT>::add(const sofa::type::vector<Index>& index,
+    const sofa::type::vector< TopologyElementType >& elems,
+    const sofa::type::vector<sofa::type::vector<Index> >& ancestors,
+    const sofa::type::vector<sofa::type::vector<double> >& coefs,
+    const sofa::type::vector< AncestorElem >& ancestorElems)
 {
     std::size_t nbElements = index.size();
     if (nbElements == 0) return;
     // Using default values
-    container_type& data = *(this->beginEdit());
+    helper::WriteOnlyAccessor<Data< container_type > > data = this;
     std::size_t i0 = data.size();
     if (i0 != index[0])
     {
@@ -256,9 +277,10 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::helper::vector<In
         i0 = index[0];
     }
     data.resize(i0 + nbElements);
+    this->m_lastElementIndex += sofa::Index(nbElements);
 
-    const sofa::helper::vector< Index > empty_vecint;
-    const sofa::helper::vector< double > empty_vecdouble;
+    const sofa::type::vector< Index > empty_vecint;
+    const sofa::type::vector< double > empty_vecdouble;
 
     if (this->m_topologyHandler)
     {
@@ -270,7 +292,13 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::helper::vector<In
                     (ancestors.empty() || coefs.empty()) ? empty_vecint : ancestors[i],
                     (ancestors.empty() || coefs.empty()) ? empty_vecdouble : coefs[i],
                     (ancestorElems.empty()) ? nullptr : &ancestorElems[i]);
-        
+            
+            if (p_onCreationCallback)
+            {
+                p_onCreationCallback(Index(i0 + i), t, elems[i],
+                    (ancestors.empty() || coefs.empty()) ? empty_vecint : ancestors[i],
+                    (ancestors.empty() || coefs.empty()) ? empty_vecdouble : coefs[i]);
+            }
         }
     }
     this->endEdit();
@@ -278,11 +306,11 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::helper::vector<In
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::move(const sofa::helper::vector<Index>& indexList,
-    const sofa::helper::vector< sofa::helper::vector< Index > >& ancestors,
-    const sofa::helper::vector< sofa::helper::vector< double > >& coefs)
+void TopologyData <TopologyElementType, VecT>::move(const sofa::type::vector<Index>& indexList,
+    const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
+    const sofa::type::vector< sofa::type::vector< double > >& coefs)
 {
-    container_type& data = *(this->beginEdit());
+    helper::WriteOnlyAccessor<Data< container_type > > data = this;
 
     if (this->m_topologyHandler)
     {
@@ -292,34 +320,29 @@ void TopologyData <TopologyElementType, VecT>::move(const sofa::helper::vector<I
             this->m_topologyHandler->applyCreateFunction(indexList[i], data[indexList[i]], ancestors[i], coefs[i]);
         }
     }
-
-    this->endEdit();
 }
 
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::renumber(const sofa::helper::vector<Index>& index)
+void TopologyData <TopologyElementType, VecT>::renumber(const sofa::type::vector<Index>& index)
 {
-    container_type& data = *(this->beginEdit());
-
+    helper::WriteOnlyAccessor<Data< container_type > > data = this;
     container_type copy = this->getValue(); // not very efficient memory-wise, but I can see no better solution...
     for (std::size_t i = 0; i < index.size(); ++i)
         data[i] = copy[index[i]];
-
-    this->endEdit();
 }
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::addOnMovedPosition(const sofa::helper::vector<Index>& indexList,
-    const sofa::helper::vector<TopologyElementType>& elems)
+void TopologyData <TopologyElementType, VecT>::addOnMovedPosition(const sofa::type::vector<Index>& indexList,
+    const sofa::type::vector<TopologyElementType>& elems)
 {
-    container_type& data = *(this->beginEdit());
+    helper::WriteOnlyAccessor<Data< container_type > > data = this;
 
     // Recompute data
-    sofa::helper::vector< Index > ancestors;
-    sofa::helper::vector< double >  coefs;
+    sofa::type::vector< Index > ancestors;
+    sofa::type::vector< double >  coefs;
     coefs.push_back(1.0);
     ancestors.resize(1);
 
@@ -331,14 +354,14 @@ void TopologyData <TopologyElementType, VecT>::addOnMovedPosition(const sofa::he
             this->m_topologyHandler->applyCreateFunction(indexList[i], data[indexList[i]], elems[i], ancestors, coefs);
         }
     }
-    this->endEdit();
+    this->m_lastElementIndex += sofa::Index(indexList.size());
 }
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::helper::vector<Index>& indices)
+void TopologyData <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::type::vector<Index>& indices)
 {
-    container_type& data = *(this->beginEdit());
+    helper::WriteOnlyAccessor<Data< container_type > > data = this;
 
     if (this->m_topologyHandler)
     {
@@ -347,10 +370,24 @@ void TopologyData <TopologyElementType, VecT>::removeOnMovedPosition(const sofa:
         }
     }
 
-    this->endEdit();
+    this->m_lastElementIndex -= sofa::Index(indices.size());
+    
+}
 
-    // TODO check why this call.
-    //this->remove( indices );
+
+template <typename TopologyElementType, typename VecT>
+void TopologyData <TopologyElementType, VecT>::addTopologyEventCallBack(core::topology::TopologyChangeType type, TopologyChangeCallback callback)
+{
+    if (m_topologyHandler != nullptr)
+    {
+        m_topologyHandler->addCallBack(type, callback);
+    }
+    else
+    {
+        msg_warning(this->getOwner()) << "No TopologyHandler has been created to manage this TopologyData: " << this->getName() 
+            << ". Callback for event: '" << parseTopologyChangeTypeToString(type) << "' won't be registered.";
+    }
+
 }
 
 

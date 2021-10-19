@@ -21,11 +21,25 @@
 ******************************************************************************/
 #include <SofaGeneralMeshCollision/DirectSAP.h>
 #include <sofa/core/ObjectFactory.h>
+#include <numeric>
 
 namespace sofa::component::collision
 {
     int DirectSAPClass = core::RegisterObject("Collision detection using sweep and prune")
         .add< DirectSAP >();
+
+
+void DirectSAP::init()
+{
+    const std::string broadPhaseComponentsString = sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::collision::BroadPhaseDetection>();
+    const std::string narrowPhaseComponentsString = sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::collision::NarrowPhaseDetection>();
+
+    msg_deprecated() << "As a replacement, use a BroadPhase component such as [" << broadPhaseComponentsString << "] " << msgendl
+                     << "  AND a NarrowPhase component such as [" << narrowPhaseComponentsString << "]." << msgendl
+                     << "  " << BruteForceBroadPhase::GetClass()->className << " and " << DirectSAPNarrowPhase::GetClass()->className
+                     << " have been automatically added to your scene for backward compatibility.";
+}
+
 } // namespace sofa::component::collision
 
 

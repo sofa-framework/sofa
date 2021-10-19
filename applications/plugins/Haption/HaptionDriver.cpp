@@ -271,7 +271,7 @@ void HaptionDriver::init()
 
         for(int j=0; j<2; j++)
         {
-            sofa::helper::vector<sofa::defaulttype::Vec<3,float>> &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
+            sofa::type::vector<sofa::type::Vec<3,float>> &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
             for(unsigned int i=0; i<scaleMapping.size(); i++)
                 for(int p=0; p<3; p++)
                     scaleMapping[i].at(p)*=(float)(scale.getValue());
@@ -478,14 +478,14 @@ void HaptionDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
         else if ((kpe->getKey()==21) && (modX || modY || modZ)) //down
         {
             VecCoord& posB =(*posBase.beginEdit());
-            sofa::helper::Quater<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),-M_PI/50);
+            sofa::type::Quat<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),-M_PI/50);
             posB[0].getOrientation()*=quarter_transform;
             posBase.endEdit();
         }
         else if ((kpe->getKey()==19) && (modX || modY || modZ)) //up
         {
             VecCoord& posB =(*posBase.beginEdit());
-            sofa::helper::Quater<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),+M_PI/50);
+            sofa::type::Quat<double> quarter_transform(Vec3d((int)modX,(int)modY,(int)modZ),+M_PI/50);
             posB[0].getOrientation()*=quarter_transform;
             posBase.endEdit();
         }

@@ -106,12 +106,12 @@ public:
     void applyJ(const core::MechanicalParams *mparams, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in) override;
     void applyJT( const sofa::core::MechanicalParams* /*mparams*/, InDataVecDeriv& /*out*/, const OutDataVecDeriv& /*in*/) override
     {
-        serr << "applyJT(dx) is not implemented" << sendl;
+        msg_error() << "applyJT(dx) is not implemented";
     }
 
     void applyJT( const sofa::core::ConstraintParams* /*cparams*/, InDataMatrixDeriv& /*out*/, const OutDataMatrixDeriv& /*in*/) override
     {
-        serr << "applyJT(constraint) is not implemented" << sendl;
+        msg_error() << "applyJT(constraint) is not implemented";
     }
 
 protected:
@@ -143,9 +143,9 @@ protected:
         }
     };
 
-    Data < sofa::helper::vector<CubeData> > planes;
-    typename sofa::helper::vector<CubeData>::iterator P0; /// Pointer to first plane
-    typename sofa::helper::vector<CubeData>::iterator P1; /// Pointer to second plane
+    Data < sofa::type::vector<CubeData> > planes;
+    typename sofa::type::vector<CubeData>::iterator P0; /// Pointer to first plane
+    typename sofa::type::vector<CubeData>::iterator P1; /// Pointer to second plane
 
     void newPlane();
 
@@ -174,7 +174,7 @@ protected:
         }
         else
         {
-            serr << "ERROR: Invalid face "<<p1<<" "<<p2<<" "<<p3<<sendl;
+            msg_error() << "Invalid face "<<p1<<" "<<p2<<" "<<p3;
             return -1;
         }
     }

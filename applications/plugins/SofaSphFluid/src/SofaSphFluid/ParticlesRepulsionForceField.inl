@@ -55,13 +55,7 @@ void ParticlesRepulsionForceField<DataTypes>::init()
     this->Inherit::init();
     this->getContext()->get(grid); //new Grid(distance.getValue());
     if (grid==nullptr)
-        serr<<"SpatialGridContainer not found by ParticlesRepulsionForceField, slow O(n2) method will be used !!!" << sendl;
-    //int n = (this->mstate->read(core::ConstVecCoordId::position())->getValue()).size();
-    //particles.resize(n);
-    //for (int i=0;i<n;i++)
-    //{
-    //	particles[i].neighbors.clear();
-    //}
+        msg_error()<<"SpatialGridContainer not found by ParticlesRepulsionForceField, slow O(n2) method will be used !!!";
 }
 
 template<class DataTypes>
@@ -199,8 +193,8 @@ void ParticlesRepulsionForceField<DataTypes>::draw(const core::visual::VisualPar
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const Real h = distance.getValue();
 
-    std::vector<sofa::helper::types::RGBAColor> colorVector;
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::type::RGBAColor> colorVector;
+    std::vector<sofa::type::Vector3> vertices;
 
     for (unsigned int i=0; i<particles.size(); i++)
     {
@@ -218,8 +212,8 @@ void ParticlesRepulsionForceField<DataTypes>::draw(const core::visual::VisualPar
             {
                 colorVector.push_back({f - 1.0f, 0.0f, 2.0f - f, 1.0f - r_h});
             }
-            vertices.push_back(sofa::defaulttype::Vector3(x[i]));
-            vertices.push_back(sofa::defaulttype::Vector3(x[j]));
+            vertices.push_back(sofa::type::Vector3(x[i]));
+            vertices.push_back(sofa::type::Vector3(x[j]));
         }
     }
     vparams->drawTool()->drawLines(vertices,1,colorVector);

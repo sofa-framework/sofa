@@ -29,7 +29,7 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/gui/ArgumentParser.h>
 
-#include <boost/program_options.hpp>
+#include <cxxopts.hpp>
 
 #include <fstream>
 #include <string>
@@ -180,13 +180,34 @@ BaseGUI* BatchGUI::CreateGUI(const char* name, sofa::simulation::Node::SPtr groo
 int BatchGUI::RegisterGUIParameters(ArgumentParser* argumentParser)
 {
     argumentParser->addArgument(
-                boost::program_options::value<std::string>()
-                ->notifier(setNumIterations),
-                "nbIter,n",
-                "(only batch) Number of iterations of the simulation"
-                );
+        cxxopts::value<std::string>(nbIterInp),
+        "n,nbIter",
+        "(only batch) Number of iterations of the simulation",
+        BatchGUI::OnNbIterChange
+    );
     //Parses the string and passes it to setNumIterations as argument
     return 0;
+}
+
+void BatchGUI::OnNbIterChange(const ArgumentParser* argumentParser, const std::string& strValue)
+{
+    SOFA_UNUSED(argumentParser);
+
+    nbIterInp = strValue;
+    size_t inpLen = nbIterInp.length();
+
+    if (nbIterInp == "infinite")
+    {
+        nbIter = -1;
+    }
+    else if (inpLen)
+    {
+        nbIter = std::stoi(nbIterInp);
+    }
+    else
+    {
+        nbIter = DEFAULT_NUMBER_OF_ITERATIONS;
+    }
 }
 
 bool BatchGUI::canExportJson(const std::string& timerOutputStr, const std::string& timerId)

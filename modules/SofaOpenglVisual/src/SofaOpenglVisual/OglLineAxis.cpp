@@ -23,7 +23,7 @@
 #include "OglLineAxis.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 
 
 namespace sofa

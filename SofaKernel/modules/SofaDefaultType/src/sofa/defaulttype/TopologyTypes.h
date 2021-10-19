@@ -22,22 +22,18 @@
 #ifndef SOFA_DEFAULTTYPE_TOPOLOGYTYPES_H
 #define SOFA_DEFAULTTYPE_TOPOLOGYTYPES_H
 
+#include <sofa/config.h>
 #include <climits>
 
-namespace sofa
-{
-namespace defaulttype
+namespace sofa::defaulttype
 {
 
-using index_type [[deprecated("PR#1515 (2020-10-14) index_type has been moved and renamed. From now on, please sofa::Index instead of sofa::defaulttype::index_type.")]] = sofa::Index;
+SOFA_ATTRIBUTE_DISABLED("v20.12 (PR#1515)", "v21.06", "Use sofa::Index instead of sofa::defaulttype::index_type")
+typedef DeprecatedAndRemoved index_type;
 
-[[deprecated("PR#1515 (2020-10-14) InvalidID has been moved. From now on, please sofa::InvalidID instead of sofa::defaulttype::InvalidID. ")]]
-constexpr sofa::Index InvalidID = sofa::InvalidID;
+SOFA_ATTRIBUTE_DISABLED("v20.12 (PR#1515)", "v21.06", "Use sofa::InvalidID instead of sofa::defaulttype::InvalidID")
+typedef DeprecatedAndRemoved InvalidID;
 
-} // namespace defaulttype
-
-} // namespace sofa
-
+} // namespace sofa::defaulttype
 
 #endif //SOFA_DEFAULTTYPE_TOPOLOGYTYPES_H
-

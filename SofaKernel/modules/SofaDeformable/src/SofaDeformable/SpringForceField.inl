@@ -59,7 +59,7 @@ public:
     Loader(SpringForceField<DataTypes>* dest) : dest(dest) {}
     void addSpring(size_t m1, size_t m2, SReal ks, SReal kd, SReal initpos) override
     {
-        helper::vector<Spring>& springs = *dest->springs.beginEdit();
+        type::vector<Spring>& springs = *dest->springs.beginEdit();
         springs.push_back(Spring(sofa::Index(m1), sofa::Index(m2),ks,kd,initpos));
         dest->springs.endEdit();
     }
@@ -135,7 +135,7 @@ void SpringForceField<DataTypes>::addForce(
     const VecDeriv& v2 = data_v2.getValue();
 
 
-    const helper::vector<Spring>& springs= this->springs.getValue();
+    const type::vector<Spring>& springs= this->springs.getValue();
 
     f1.resize(x1.size());
     f2.resize(x2.size());
@@ -158,7 +158,7 @@ void SpringForceField<DataTypes>::addDForce(const core::MechanicalParams*, DataV
 template<class DataTypes>
 SReal SpringForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& data_x1, const DataVecCoord& data_x2) const
 {
-    const helper::vector<Spring>& springs= this->springs.getValue();
+    const type::vector<Spring>& springs= this->springs.getValue();
     const VecCoord& p1 =  data_x1.getValue();
     const VecCoord& p2 =  data_x2.getValue();
 
@@ -190,7 +190,7 @@ template<class DataTypes>
 void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     using namespace sofa::defaulttype;
-    using namespace sofa::helper::types;
+    using namespace sofa::type;
 
     if (!((this->mstate1 == this->mstate2) ? vparams->displayFlags().getShowForceFields() : vparams->displayFlags().getShowInteractionForceFields())) return;
     const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
@@ -198,7 +198,7 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
 
     std::vector< Vector3 > points[4];
     bool external = (this->mstate1 != this->mstate2);
-    const helper::vector<Spring>& springs = this->springs.getValue();
+    const type::vector<Spring>& springs = this->springs.getValue();
     for (sofa::Index i = 0; i < springs.size(); i++)
     {
         if (!springs[i].enabled) continue;
@@ -303,7 +303,7 @@ void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology 
 
                 default:
                     break;
-                }; // switch( changeType )
+                } // switch( changeType )
 
                 ++itBegin;
             } // while( changeIt != last; )
@@ -330,7 +330,7 @@ void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology 
                     auto nbPoints = _topology->getNbPoints();
                     const auto& tab = (static_cast<const sofa::core::topology::PointsRemoved *>(*changeIt))->getArray();
 
-                    helper::vector<Spring>& springs = *this->springs.beginEdit();
+                    type::vector<Spring>& springs = *this->springs.beginEdit();
                     // springs.push_back(Spring(m1,m2,ks,kd,initpos));
 
                     for(sofa::Index i=0; i<tab.size(); ++i)
@@ -361,28 +361,13 @@ void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology 
 
                 default:
                     break;
-                }; // switch( changeType )
+                } // switch( changeType )
 
                 ++changeIt;
             } // while( changeIt != last; )
         }
     }
 }
-
-
-template <class DataTypes>
-void SpringForceField<DataTypes>::updateForceMask()
-{
-    const helper::vector<Spring>& springs= this->springs.getValue();
-
-    for(sofa::Index i=0, iend = sofa::Size(springs.size()) ; i<iend ; ++i )
-    {
-        const Spring& s = springs[i];
-        this->mstate1->forceMask.insertEntry(s.m1);
-        this->mstate2->forceMask.insertEntry(s.m2);
-    }
-}
-
 
 template<class DataTypes>
 void SpringForceField<DataTypes>::initGnuplot(const std::string path)

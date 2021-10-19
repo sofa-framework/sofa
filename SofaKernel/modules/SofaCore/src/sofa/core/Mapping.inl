@@ -62,25 +62,25 @@ State<Out>* Mapping<In,Out>::getToModel()
 }
 
 template <class In, class Out>
-helper::vector<BaseState*> Mapping<In,Out>::getFrom()
+type::vector<BaseState*> Mapping<In,Out>::getFrom()
 {
-    helper::vector<BaseState*> vec(1,this->fromModel.get());
+    type::vector<BaseState*> vec(1,this->fromModel.get());
     return  vec;
 }
 
 template <class In, class Out>
-helper::vector<BaseState*> Mapping<In,Out>::getTo()
+type::vector<BaseState*> Mapping<In,Out>::getTo()
 {
-    helper::vector<BaseState*> vec(1,this->toModel.get());
+    type::vector<BaseState*> vec(1,this->toModel.get());
     return vec;
 }
 
 ///<TO REMOVE>
 ///Necessary ?
 template <class In, class Out>
-helper::vector<behavior::BaseMechanicalState*> Mapping<In,Out>::getMechFrom()
+type::vector<behavior::BaseMechanicalState*> Mapping<In,Out>::getMechFrom()
 {
-    helper::vector<behavior::BaseMechanicalState*> vec;
+    type::vector<behavior::BaseMechanicalState*> vec;
     behavior::BaseMechanicalState* meshFrom = this->fromModel.get()->toBaseMechanicalState();
     if(meshFrom)
         vec.push_back(meshFrom);
@@ -89,9 +89,9 @@ helper::vector<behavior::BaseMechanicalState*> Mapping<In,Out>::getMechFrom()
 }
 
 template <class In, class Out>
-helper::vector<behavior::BaseMechanicalState*> Mapping<In,Out>::getMechTo()
+type::vector<behavior::BaseMechanicalState*> Mapping<In,Out>::getMechTo()
 {
-    helper::vector<behavior::BaseMechanicalState*> vec;
+    type::vector<behavior::BaseMechanicalState*> vec;
     behavior::BaseMechanicalState* meshTo = this->toModel.get()->toBaseMechanicalState();
     if(meshTo)
         vec.push_back(meshTo);
@@ -105,16 +105,6 @@ void Mapping<In,Out>::init()
     if(toModel && !testMechanicalState(toModel.get()))
     {
         setNonMechanical();
-        maskFrom = nullptr;
-        maskTo = nullptr;
-    }
-    else
-    {
-        core::behavior::BaseMechanicalState *state;
-        if( (state = this->fromModel.get()->toBaseMechanicalState()) )
-            maskFrom = &state->forceMask;
-        if( (state = this->toModel.get()->toBaseMechanicalState()) )
-            maskTo = &state->forceMask;
     }
 
     apply(mechanicalparams::defaultInstance(), VecCoordId::position(), ConstVecCoordId::position());
@@ -155,11 +145,7 @@ void Mapping<In,Out>::apply(const MechanicalParams* mparams, MultiVecCoordId out
         const InDataVecCoord* in = inPos[fromModel].read();
         if(out && in)
         {
-
-                this->apply(mparams, *out, *in);
-#ifdef SOFA_USE_MASK
-            this->m_forceMaskNewStep = true;
-#endif
+            this->apply(mparams, *out, *in);
         }
     }
 }// Mapping::apply
@@ -192,15 +178,6 @@ void Mapping<In,Out>::applyJT(const MechanicalParams *mparams, MultiVecDerivId i
         if(out && in)
         {
             this->applyJT(mparams, *out, *in);
-
-#ifdef SOFA_USE_MASK
-            if( this->m_forceMaskNewStep )
-            {
-                this->m_forceMaskNewStep = false;
-                updateForceMask();
-            }
-#endif /*SOFA_USE_MASK*/
-
         }
     }
 }// Mapping::applyJT
@@ -294,16 +271,6 @@ bool Mapping<In,Out>::setTo(BaseState* to)
 
     return true;
 }
-
-template <class In, class Out>
-void Mapping<In,Out>::updateForceMask()
-{
-    assert( maskFrom /*&& SOFA_CLASS_METHOD*/ );
-    // the default implementation adds every dofs to the parent mask
-    // this sould be overloaded by each mapping to only add the implicated parent dofs to the mask
-    maskFrom->assign( fromModel->getSize(), true );
-}
-
 
 } // namespace core
 

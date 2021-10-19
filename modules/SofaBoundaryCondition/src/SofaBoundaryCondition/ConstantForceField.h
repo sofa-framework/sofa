@@ -24,8 +24,8 @@
 #include <SofaBoundaryCondition/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa::component::forcefield
 {
@@ -43,11 +43,11 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef helper::vector<unsigned int> VecIndex;
+    typedef type::vector<unsigned int> VecIndex;
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    typedef sofa::component::topology::PointSubsetData< VecIndex > SetIndex;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
 
 
     /// indices of the points the force applies to
@@ -69,7 +69,7 @@ public:
     Data< SReal > d_showArrowSize;
 
     /// display color
-    Data< sofa::helper::types::RGBAColor > d_color;
+    Data< sofa::type::RGBAColor > d_color;
 
     /// Concerned DOFs indices are numbered from the end of the MState DOFs vector
     Data< bool > indexFromEnd;
@@ -99,16 +99,11 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    void updateForceMask() override;
-
     /// Update data and internal vectors
     void doUpdateInternal() override;
 
     /// Set a force to a given particle
     void setForce( unsigned i, const Deriv& f );
-
-    /// Parse function (to be removed after v19.12)
-    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
 
     using Inherit::addAlias ;
     using Inherit::addKToMatrix;
@@ -135,16 +130,13 @@ SReal ConstantForceField<defaulttype::Rigid3Types>::getPotentialEnergy(const cor
 template <>
 SReal ConstantForceField<defaulttype::Rigid2Types>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
 
-
-
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_CPP)
 extern template class SOFA_SOFABOUNDARYCONDITION_API ConstantForceField<sofa::defaulttype::Vec3Types>;
 extern template class SOFA_SOFABOUNDARYCONDITION_API ConstantForceField<sofa::defaulttype::Vec2Types>;
 extern template class SOFA_SOFABOUNDARYCONDITION_API ConstantForceField<sofa::defaulttype::Vec1Types>;
 extern template class SOFA_SOFABOUNDARYCONDITION_API ConstantForceField<sofa::defaulttype::Vec6Types>;
 extern template class SOFA_SOFABOUNDARYCONDITION_API ConstantForceField<sofa::defaulttype::Rigid3Types>;
 extern template class SOFA_SOFABOUNDARYCONDITION_API ConstantForceField<sofa::defaulttype::Rigid2Types>;
-
 #endif
 
 } // namespace sofa::component::forcefield

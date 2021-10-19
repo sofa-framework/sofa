@@ -24,8 +24,8 @@
 #include <sofa/testing/config.h>
 
 #include <sofa/testing/BaseTest.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/random.h>
@@ -70,7 +70,7 @@ struct SOFA_TESTING_API NumericTest : public virtual BaseTest
 
     /// return the maximum difference between corresponding entries, or the infinity if the vectors have different sizes
     template< Size N, typename Real, typename Vector2>
-    static Real vectorMaxDiff( const sofa::defaulttype::Vec<N,Real>& m1, const Vector2& m2 )
+    static Real vectorMaxDiff( const sofa::type::Vec<N,Real>& m1, const Vector2& m2 )
     {
         if( N !=m2.size() ) {
             ADD_FAILURE() << "Comparison between vectors of different sizes";
@@ -87,7 +87,7 @@ struct SOFA_TESTING_API NumericTest : public virtual BaseTest
 
     /// return the maximum difference between corresponding entries
     template< Size N, typename Real>
-    static Real vectorMaxDiff( const sofa::defaulttype::Vec<N,Real>& m1, const sofa::defaulttype::Vec<N,Real>& m2 )
+    static Real vectorMaxDiff( const sofa::type::Vec<N,Real>& m1, const sofa::type::Vec<N,Real>& m2 )
     {
         Real result = 0;
         for( unsigned i=0; i<N; i++ ){
@@ -157,7 +157,7 @@ struct SOFA_TESTING_API NumericTest : public virtual BaseTest
 
     /// Return the maximum difference between corresponding entries, or the infinity if the matrices have different sizes
     template<Size M, Size N, typename Real, typename Matrix2>
-    static Real matrixMaxDiff( const sofa::defaulttype::Mat<M,N,Real>& m1, const Matrix2& m2 )
+    static Real matrixMaxDiff( const sofa::type::Mat<M,N,Real>& m1, const Matrix2& m2 )
     {
         Real result = 0;
         if(M!=m2.rowSize() || m2.colSize()!=N){
@@ -247,33 +247,33 @@ struct data_traits
 // Do not use this class directly
 template<class DataTypes, sofa::Size N, bool isVector>
 struct setRotWrapper
-{ static void setRot(typename DataTypes::Coord& coord, const sofa::helper::Quater<SReal>& rot); };
+{ static void setRot(typename DataTypes::Coord& coord, const sofa::type::Quat<SReal>& rot); };
 
 template<class DataTypes, sofa::Size N>
 struct setRotWrapper<DataTypes, N, true>
-{ static void setRot(typename DataTypes::Coord& /*coord*/, const sofa::helper::Quater<SReal>& /*rot*/) {} };
+{ static void setRot(typename DataTypes::Coord& /*coord*/, const sofa::type::Quat<SReal>& /*rot*/) {} };
 
 template<class DataTypes>
 struct setRotWrapper<DataTypes, 2, false>
-{ static void setRot(typename DataTypes::Coord& coord, const sofa::helper::Quater<SReal>& rot)	{ coord.getOrientation() = rot.quatToRotationVector().z(); } };
+{ static void setRot(typename DataTypes::Coord& coord, const sofa::type::Quat<SReal>& rot)	{ coord.getOrientation() = rot.quatToRotationVector().z(); } };
 // Use of quatToRotationVector instead of toEulerVector:
 // this is done to keep the old behavior (before the
 // correction of the toEulerVector  function). If the
 // purpose was to obtain the Eulerian vector and not the
 // rotation vector please use the following line instead
-//{ static void setRot(typename DataTypes::Coord& coord, const sofa::helper::Quater<SReal>& rot)	{ coord.getOrientation() = rot.toEulerVector().z(); } };
+//{ static void setRot(typename DataTypes::Coord& coord, const sofa::type::Quat<SReal>& rot)	{ coord.getOrientation() = rot.toEulerVector().z(); } };
 
 template<class DataTypes, sofa::Size N>
 struct setRotWrapper<DataTypes, N, false>
-{ static void setRot(typename DataTypes::Coord& coord, const sofa::helper::Quater<SReal>& rot) 	{ DataTypes::setCRot(coord, rot); } };
+{ static void setRot(typename DataTypes::Coord& coord, const sofa::type::Quat<SReal>& rot) 	{ DataTypes::setCRot(coord, rot); } };
 
 template<class DataTypes>
-void setRot(typename DataTypes::Coord& coord, const sofa::helper::Quater<SReal>& rot)
+void setRot(typename DataTypes::Coord& coord, const sofa::type::Quat<SReal>& rot)
 { setRotWrapper<DataTypes, DataTypes::Coord::spatial_dimensions, (unsigned)DataTypes::Coord::total_size == (unsigned)DataTypes::Coord::spatial_dimensions>::setRot(coord, rot); }
 
 /// Create a coord of the specified type from a Vector3 and a Quater
 template<class DataTypes>
-typename DataTypes::Coord createCoord(const sofa::defaulttype::Vector3& pos, const sofa::helper::Quater<SReal>& rot)
+typename DataTypes::Coord createCoord(const sofa::type::Vector3& pos, const sofa::type::Quat<SReal>& rot)
 {
     typename DataTypes::Coord temp;
     DataTypes::set(temp, pos[0], pos[1], pos[2]);
@@ -282,20 +282,20 @@ typename DataTypes::Coord createCoord(const sofa::defaulttype::Vector3& pos, con
 }
 
 template <sofa::Size N, class real>
-void EXPECT_VEC_DOUBLE_EQ(sofa::defaulttype::Vec<N, real> const& expected, sofa::defaulttype::Vec<N, real> const& actual) {
+void EXPECT_VEC_DOUBLE_EQ(sofa::type::Vec<N, real> const& expected, sofa::type::Vec<N, real> const& actual) {
     for (sofa::Size i=0; i<expected.total_size; ++i)
         EXPECT_DOUBLE_EQ(expected[i], actual[i]);
 }
 
 template <sofa::Size L, sofa::Size C, class real>
-void EXPECT_MAT_DOUBLE_EQ(sofa::defaulttype::Mat<L,C,real> const& expected, sofa::defaulttype::Mat<L,C,real> const& actual) {
+void EXPECT_MAT_DOUBLE_EQ(sofa::type::Mat<L,C,real> const& expected, sofa::type::Mat<L,C,real> const& actual) {
     for (sofa::Size i=0; i<expected.nbLines; ++i)
         for (sofa::Size j=0; j<expected.nbCols; ++j)
             EXPECT_DOUBLE_EQ(expected(i,j), actual(i,j));
 }
 
 template <sofa::Size L, sofa::Size C, class real>
-void EXPECT_MAT_NEAR(sofa::defaulttype::Mat<L,C,real> const& expected, sofa::defaulttype::Mat<L,C,real> const& actual, real abs_error) {
+void EXPECT_MAT_NEAR(sofa::type::Mat<L,C,real> const& expected, sofa::type::Mat<L,C,real> const& actual, real abs_error) {
     for (sofa::Size i=0; i<expected.nbLines; ++i)
         for (sofa::Size j=0; j<expected.nbCols; ++j)
             EXPECT_NEAR(expected(i,j), actual(i,j), abs_error);
@@ -304,4 +304,5 @@ void EXPECT_MAT_NEAR(sofa::defaulttype::Mat<L,C,real> const& expected, sofa::def
 } // namespace sofa::testing
 
 
+extern template struct SOFA_TESTING_API sofa::testing::NumericTest<float>;
 extern template struct SOFA_TESTING_API sofa::testing::NumericTest<double>;

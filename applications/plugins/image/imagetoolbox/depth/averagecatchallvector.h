@@ -25,7 +25,7 @@
 #include <image/image_gui/config.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include <sofa/helper/OptionsGroup.h>
 
@@ -65,9 +65,9 @@ public:
 
     void reinit() override
     {
-        helper::vector<Type> data;
-        const helper::vector<Type> &data1 = _data1.getValue();
-        const helper::vector<Type> &data2 = _data2.getValue();
+        type::vector<Type> data;
+        const type::vector<Type> &data1 = _data1.getValue();
+        const type::vector<Type> &data2 = _data2.getValue();
 
 
         for(size_t i=0;i<data1.size();i++)
@@ -79,9 +79,9 @@ public:
 
     }
 
-    Data< helper::vector<Type> > _data; ///< data_out
-    Data< helper::vector<Type> > _data1; ///< data_in1
-    Data< helper::vector<Type> > _data2; ///< data_in2
+    Data< type::vector<Type> > _data; ///< data_out
+    Data< type::vector<Type> > _data1; ///< data_in1
+    Data< type::vector<Type> > _data2; ///< data_in2
 
 protected:
 

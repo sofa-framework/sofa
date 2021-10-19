@@ -33,8 +33,8 @@ namespace sofa{
 
     struct MeshNewProximityIntersectionTest : public BaseTest
     {
-        typedef sofa::defaulttype::Vector3 Vec3;
-        typedef sofa::defaulttype::Vector2 Vec2;
+        typedef sofa::type::Vector3 Vec3;
+        typedef sofa::type::Vector2 Vec2;
         typedef sofa::component::collision::MeshNewProximityIntersection ProximityIntersection;
 
         MeshNewProximityIntersectionTest(){
@@ -55,7 +55,7 @@ namespace sofa{
         bool pointTriangle()
         {
             using Real = SReal;
-            sofa::helper::vector<sofa::core::collision::DetectionOutput> outputVector;
+            sofa::type::vector<sofa::core::collision::DetectionOutput> outputVector;
             unsigned nbTest = 100;
             int flag = 0xffff;
 

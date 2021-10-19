@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #include <SofaTest/Elasticity_test.h>
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Quat.h>
 
 
 //Including Simulation
@@ -42,6 +42,7 @@
 namespace sofa {
 
 using namespace component;
+using namespace type;
 using namespace defaulttype;
 using namespace modeling;
 
@@ -62,8 +63,8 @@ struct AffinePatch_sofa_test : public Elasticity_test<_DataTypes>
     typedef container::MechanicalObject<DataTypes> MechanicalObject;
     typedef typename component::interactionforcefield::MeshSpringForceField<DataTypes> MeshSpringForceField;
     typedef typename component::forcefield::TetrahedronFEMForceField<DataTypes> TetraForceField;
-    typedef defaulttype::Quat Quat;
-    typedef defaulttype::Vector3 Vec3;
+    typedef type::Quat<SReal> Quat;
+    typedef type::Vector3 Vec3;
 
     /// Root of the scene graph
     simulation::Node::SPtr root;
@@ -72,7 +73,7 @@ struct AffinePatch_sofa_test : public Elasticity_test<_DataTypes>
     /// Structure which contains current node and pointers to the mechanical object and the affine constraint
     PatchTestStruct<DataTypes> patchStruct;
     /// Tested Rotation: random rotation matrix
-    defaulttype::Mat<3,3,Real> testedRotation;
+    type::Mat<3,3,Real> testedRotation;
     /// Tested Translation: random translation
     Coord testedTranslation;
 
@@ -187,7 +188,7 @@ struct AffinePatch_sofa_test : public Elasticity_test<_DataTypes>
 
     }
 
-    void setRotation(defaulttype::Mat<3,3,Real> rotationMatrix)
+    void setRotation(type::Mat<3,3,Real> rotationMatrix)
     {
         testedRotation = rotationMatrix;
     }

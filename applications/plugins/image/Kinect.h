@@ -24,7 +24,7 @@
 
 #include <image/config.h>
 #include "ImageTypes.h"
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -32,8 +32,8 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Quat.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/OptionsGroup.h>
 
@@ -58,8 +58,8 @@ namespace container
 {
 
 using namespace cimg_library;
-using defaulttype::Vec;
-using defaulttype::Vector3;
+using type::Vec;
+using type::Vector3;
 
 void* globalKinectClassPointer;
 
@@ -106,7 +106,7 @@ public:
     Data<helper::OptionsGroup> depthMode; ///< depth mode
     Data<helper::OptionsGroup> ledMode; ///< led mode
     Data<int> tiltAngle; ///< tilt angle in [-30,30]
-    Data<defaulttype::Vector3> accelerometer; ///< Accelerometer data
+    Data<type::Vector3> accelerometer; ///< Accelerometer data
     Data<bool> drawBB; ///< draw bounding box
     Data<bool> drawGravity; ///< draw acceleration
     Data<float> showArrowSize; ///< size of the axis
@@ -504,7 +504,7 @@ protected:
                 if(bbmin[j]>c[i][j]) bbmin[j]=c[i][j];
                 if(bbmax[j]<c[i][j]) bbmax[j]=c[i][j];
             }
-        this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(bbmin,bbmax));
+        this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(bbmin,bbmax));
     }
 
     void draw(const core::visual::VisualParams* vparams)

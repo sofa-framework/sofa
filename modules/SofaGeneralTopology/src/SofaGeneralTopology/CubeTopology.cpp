@@ -26,6 +26,7 @@
 namespace sofa::component::topology
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 void CubeTopology::parse(core::objectmodel::BaseObjectDescription* arg)

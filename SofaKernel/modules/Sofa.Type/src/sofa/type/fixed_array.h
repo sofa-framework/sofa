@@ -65,7 +65,7 @@ template<class T, sofa::Size N>
 class fixed_array
 {
 public:
-    T elems[N];    // fixed-size array of elements of type T
+    T elems[N]{};    // fixed-size array of elements of type T
 
     typedef T Array[N]; ///< name the array type
 
@@ -79,7 +79,7 @@ public:
     typedef sofa::Size     size_type;
     typedef std::ptrdiff_t difference_type;
 
-    fixed_array() = default;
+    constexpr fixed_array() = default;
 
     /// Specific constructor for 1-element vectors.
     template<size_type NN = N, typename std::enable_if<NN == 1, int>::type = 0>
@@ -164,7 +164,7 @@ public:
     }
 
     // size is constant
-    static size_type size() noexcept
+    static constexpr size_type size() noexcept
     {
         return N;
     }
@@ -172,7 +172,7 @@ public:
     {
         return false;
     }
-    static size_type max_size() noexcept
+    static constexpr size_type max_size() noexcept
     {
         return N;
     }
@@ -282,6 +282,6 @@ extern template class SOFA_TYPE_API fixed_array<double, 6>;
 
 extern template class SOFA_TYPE_API fixed_array<float, 7>;
 extern template class SOFA_TYPE_API fixed_array<double, 7>;
-#endif //
+#endif //FIXED_ARRAY_CPP
 
 } // namespace sofa::type

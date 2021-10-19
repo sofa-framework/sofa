@@ -29,12 +29,11 @@
 namespace sofa::component::collision
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 int CubeCollisionModelClass = core::RegisterObject("Collision model representing a cube")
         .add< CubeCollisionModel >()
-        .addAlias("Cube")
-        .addAlias("CubeModel")
         ;
 
 CubeCollisionModel::CubeCollisionModel()
@@ -178,40 +177,41 @@ void CubeCollisionModel::draw(const core::visual::VisualParams* vparams)
         color *= 0.8f;
     }
 
-    sofa::helper::types::RGBAColor c(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
+    sofa::type::RGBAColor c(getColor4f()[0], getColor4f()[1], getColor4f()[2], getColor4f()[3]);
 
     std::vector< Vector3 > points;
+    points.reserve( size * 8 * 3);
     for (Index i=0; i<size; i++)
     {
         const Vector3& vmin = elems[i].minBBox;
         const Vector3& vmax = elems[i].maxBBox;
 
-        points.push_back(Vector3(vmin[0], vmin[1], vmin[2]));
-        points.push_back(Vector3(vmin[0], vmin[1], vmax[2]));
-        points.push_back(Vector3(vmin[0], vmax[1], vmin[2]));
-        points.push_back(Vector3(vmin[0], vmax[1], vmax[2]));
-        points.push_back(Vector3(vmax[0], vmin[1], vmin[2]));
-        points.push_back(Vector3(vmax[0], vmin[1], vmax[2]));
-        points.push_back(Vector3(vmax[0], vmax[1], vmin[2]));
-        points.push_back(Vector3(vmax[0], vmax[1], vmax[2]));
+        points.emplace_back(vmin[0], vmin[1], vmin[2]);
+        points.emplace_back(vmin[0], vmin[1], vmax[2]);
+        points.emplace_back(vmin[0], vmax[1], vmin[2]);
+        points.emplace_back(vmin[0], vmax[1], vmax[2]);
+        points.emplace_back(vmax[0], vmin[1], vmin[2]);
+        points.emplace_back(vmax[0], vmin[1], vmax[2]);
+        points.emplace_back(vmax[0], vmax[1], vmin[2]);
+        points.emplace_back(vmax[0], vmax[1], vmax[2]);
 
-        points.push_back(Vector3(vmin[0], vmin[1], vmin[2]));
-        points.push_back(Vector3(vmin[0], vmax[1], vmin[2]));
-        points.push_back(Vector3(vmin[0], vmin[1], vmax[2]));
-        points.push_back(Vector3(vmin[0], vmax[1], vmax[2]));
-        points.push_back(Vector3(vmax[0], vmin[1], vmin[2]));
-        points.push_back(Vector3(vmax[0], vmax[1], vmin[2]));
-        points.push_back(Vector3(vmax[0], vmin[1], vmax[2]));
-        points.push_back(Vector3(vmax[0], vmax[1], vmax[2]));
+        points.emplace_back(vmin[0], vmin[1], vmin[2]);
+        points.emplace_back(vmin[0], vmax[1], vmin[2]);
+        points.emplace_back(vmin[0], vmin[1], vmax[2]);
+        points.emplace_back(vmin[0], vmax[1], vmax[2]);
+        points.emplace_back(vmax[0], vmin[1], vmin[2]);
+        points.emplace_back(vmax[0], vmax[1], vmin[2]);
+        points.emplace_back(vmax[0], vmin[1], vmax[2]);
+        points.emplace_back(vmax[0], vmax[1], vmax[2]);
 
-        points.push_back(Vector3(vmin[0], vmin[1], vmin[2]));
-        points.push_back(Vector3(vmax[0], vmin[1], vmin[2]));
-        points.push_back(Vector3(vmin[0], vmax[1], vmin[2]));
-        points.push_back(Vector3(vmax[0], vmax[1], vmin[2]));
-        points.push_back(Vector3(vmin[0], vmin[1], vmax[2]));
-        points.push_back(Vector3(vmax[0], vmin[1], vmax[2]));
-        points.push_back(Vector3(vmin[0], vmax[1], vmax[2]));
-        points.push_back(Vector3(vmax[0], vmax[1], vmax[2]));
+        points.emplace_back(vmin[0], vmin[1], vmin[2]);
+        points.emplace_back(vmax[0], vmin[1], vmin[2]);
+        points.emplace_back(vmin[0], vmax[1], vmin[2]);
+        points.emplace_back(vmax[0], vmax[1], vmin[2]);
+        points.emplace_back(vmin[0], vmin[1], vmax[2]);
+        points.emplace_back(vmax[0], vmin[1], vmax[2]);
+        points.emplace_back(vmin[0], vmax[1], vmax[2]);
+        points.emplace_back(vmax[0], vmax[1], vmax[2]);
     }
 
     vparams->drawTool()->drawLines(points, 1, c);
@@ -262,15 +262,15 @@ void CubeCollisionModel::computeBoundingTree(int maxDepth)
 
         // Then clear all existing levels
         {
-            for (std::list<CubeCollisionModel*>::iterator it = levels.begin(); it != levels.end(); ++it)
-                (*it)->resize(0);
+            for (auto & level : levels)
+                level->resize(0);
         }
 
         // Then build root cell
         dmsg_info() << "CubeCollisionModel: add root cube";
         root->addCube(Cube(this,0),Cube(this,size));
         // Construct tree by splitting cells along their biggest dimension
-        std::list<CubeCollisionModel*>::iterator it = levels.begin();
+        auto it = levels.begin();
         CubeCollisionModel* level = *it;
         ++it;
         int lvl = 0;
@@ -330,7 +330,7 @@ void CubeCollisionModel::computeBoundingTree(int maxDepth)
     {
         // Simply update the existing tree, starting from the bottom
         int lvl = 0;
-        for (std::list<CubeCollisionModel*>::reverse_iterator it = levels.rbegin(); it != levels.rend(); ++it)
+        for (auto it = levels.rbegin(); it != levels.rend(); ++it)
         {
             dmsg_info() << "CubeCollisionModel: update level " << lvl;
             (*it)->updateCubes();

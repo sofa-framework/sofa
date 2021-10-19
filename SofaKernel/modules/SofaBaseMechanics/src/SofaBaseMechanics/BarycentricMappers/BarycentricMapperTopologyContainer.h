@@ -28,9 +28,9 @@
 namespace sofa::component::mapping::_barycentricmappertopologycontainer_
 {
 
-using sofa::defaulttype::Mat3x3d;
-using sofa::defaulttype::Vector3;
-using sofa::defaulttype::Vec3i;
+using sofa::type::Mat3x3d;
+using sofa::type::Vector3;
+using sofa::type::Vec3i;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
@@ -55,7 +55,6 @@ public:
     typedef typename Inherit1::MBloc MBloc;
     typedef typename Inherit1::MatrixType MatrixType;
 
-    typedef typename Inherit1::ForceMask ForceMask;
     typedef typename MatrixType::Index MatrixTypeIndex;
     enum { NIn = Inherit1::NIn };
     enum { NOut = Inherit1::NOut };
@@ -131,17 +130,17 @@ protected:
 
     using Inherit1::m_fromTopology;
 
-    topology::PointData< helper::vector<MappingDataType > > d_map;
+    topology::PointData< type::vector<MappingDataType > > d_map;
     MatrixType* m_matrixJ {nullptr};
     bool m_updateJ {false};
 
-    helper::vector<Mat3x3d> m_bases;
-    helper::vector<Vector3> m_centers;
+    type::vector<Mat3x3d> m_bases;
+    type::vector<Vector3> m_centers;
 
     // Spacial hashing utils
     Real m_gridCellSize;
     Real m_convFactor;
-    std::unordered_map<Key, helper::vector<unsigned int>, HashFunction, HashEqual> m_hashTable;
+    std::unordered_map<Key, type::vector<unsigned int>, HashFunction, HashEqual> m_hashTable;
     std::size_t m_hashTableSize;
 
 
@@ -149,8 +148,8 @@ protected:
 
     ~BarycentricMapperTopologyContainer() override {}
 
-    virtual helper::vector<Element> getElements()=0;
-    virtual helper::vector<SReal> getBaryCoef(const Real* f)=0;
+    virtual type::vector<Element> getElements()=0;
+    virtual type::vector<SReal> getBaryCoef(const Real* f)=0;
     virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Element& element)=0;
     virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Element& element)=0;
     virtual void addPointInElement(const Index elementIndex, const SReal* baryCoords)=0;
@@ -174,7 +173,7 @@ protected:
 
     // Spacial hashing following paper:
     // M.Teschner et al "Optimized Spatial Hashing for Collision Detection of Deformable Objects" (2003)
-    defaulttype::Vec3i getGridIndices(const Vector3& pos);
+    type::Vec3i getGridIndices(const Vector3& pos);
     void initHashing(const typename In::VecCoord& in);
     void computeHashingCellSize(const typename In::VecCoord& in);
     void computeHashTable(const typename In::VecCoord& in);

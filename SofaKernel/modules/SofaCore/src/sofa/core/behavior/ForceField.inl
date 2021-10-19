@@ -27,13 +27,7 @@
 #include <sofa/core/MechanicalParams.h>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 
@@ -45,9 +39,7 @@ ForceField<DataTypes>::ForceField(MechanicalState<DataTypes> *mm)
 }
 
 template<class DataTypes>
-ForceField<DataTypes>::~ForceField()
-{
-}
+ForceField<DataTypes>::~ForceField() = default;
 
 template<class DataTypes>
 void ForceField<DataTypes>::init()
@@ -66,8 +58,7 @@ void ForceField<DataTypes>::addForce(const MechanicalParams* mparams, MultiVecDe
 {
     if (mparams)
     {
-            addForce(mparams, *fId[mstate.get()].write() , *mparams->readX(mstate), *mparams->readV(mstate));
-            updateForceMask();
+        addForce(mparams, *fId[mstate.get()].write() , *mparams->readX(mstate), *mparams->readV(mstate));
     }
 }
 
@@ -129,28 +120,15 @@ template<class DataTypes>
 void ForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*kFact*/, unsigned int &/*offset*/)
 {
     static int i=0;
-    if (i < 10) {
-        msg_error() << "addKToMatrix not implemented.";
+    if (i < 10)
+    {
+        // This function is called for implicit time integration where stiffness matrix assembly is expected
+        msg_warning() << "This force field does not support stiffness matrix assembly. "
+                         "Therefore, the forces are integrated explicitly. "
+                         "To support stiffness matrix assembly, addKToMatrix must be implemented.";
         i++;
     }
 }
-
-template<class DataTypes>
-void ForceField<DataTypes>::addSubKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & subMatrixIndex )
-{
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-    if (r) addSubKToMatrix(r.matrix, subMatrixIndex, sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,rayleighStiffness.getValue()), r.offset);
-    else msg_error()<<"addKToMatrix found no valid matrix accessor.";
-}
-
-template<class DataTypes>
-void ForceField<DataTypes>::addSubKToMatrix(sofa::defaulttype::BaseMatrix * mat, const helper::vector<unsigned> & /*subMatrixIndex*/, SReal kFact, unsigned int & offset)
-{
-    addKToMatrix(mat,kFact,offset);
-}
-
-
-
 
 template<class DataTypes>
 void ForceField<DataTypes>::addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
@@ -165,33 +143,6 @@ void ForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/
 
 }
 
-template<class DataTypes>
-void ForceField<DataTypes>::addSubBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & subMatrixIndex)
-{
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-    if (r) addSubBToMatrix(r.matrix, subMatrixIndex, sofa::core::mechanicalparams::bFactor(mparams) , r.offset);
-}
-
-template<class DataTypes>
-void ForceField<DataTypes>::addSubBToMatrix(sofa::defaulttype::BaseMatrix * mat, const helper::vector<unsigned> & /*subMatrixIndex*/, SReal bFact, unsigned int & offset)
-{
-    addBToMatrix(mat,bFact,offset);
-}
-
-
-template<class DataTypes>
-void ForceField<DataTypes>::updateForceMask()
-{
-    // the default implementation adds every dofs to the mask
-    // this sould be overloaded by each forcefield to only add the implicated dofs subset to the mask
-    mstate->forceMask.assign( mstate->getSize(), true );
-}
-
-
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::behavior
 
 #endif

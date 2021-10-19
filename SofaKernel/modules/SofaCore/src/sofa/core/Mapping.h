@@ -24,7 +24,6 @@
 
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/State.h>
-#include <sofa/helper/StateMask.h>
 
 namespace sofa
 {
@@ -102,9 +101,9 @@ public:
     State< Out >* getToModel();
 
     /// Return the pointer to the input model.
-    helper::vector<BaseState*> getFrom() override;
+    type::vector<BaseState*> getFrom() override;
     /// Return the pointer to the output model.
-    helper::vector<BaseState*> getTo() override;
+    type::vector<BaseState*> getTo() override;
 
     /// Apply ///
     /// Apply the mapping to position vectors.
@@ -174,10 +173,10 @@ public:
     ///<TO REMOVE>  FF:why would we remove this, is there any alternative function ?
     // Useful ?
     /// Get the source (upper) model.
-    virtual helper::vector<behavior::BaseMechanicalState*> getMechFrom() override;
+    virtual type::vector<behavior::BaseMechanicalState*> getMechFrom() override;
 
     /// Get the destination (lower, mapped) model.
-    virtual helper::vector<behavior::BaseMechanicalState*> getMechTo() override;
+    virtual type::vector<behavior::BaseMechanicalState*> getMechTo() override;
 
     //Create a matrix for mapped mechanical objects
     //If the two mechanical objects is identical, create a new stiffness matrix for this mapped objects
@@ -279,20 +278,6 @@ public:
         sofa::helper::replaceAll(name, "Mapping", "Map");
         return name;
     }
-
-
-protected:
-
-    typedef sofa::helper::StateMask ForceMask;
-    /// keep an eye on the dof masks (if the dofs are Mechanical)
-    ForceMask *maskFrom, *maskTo;
-
-    /// Useful when the mapping is applied only on a subset of parent dofs.
-    /// It is automatically called by applyJT.
-    ///
-    /// That way, we can optimize Jacobian sparsity.
-    /// Every Dofs are inserted by default. The mappings using only a subset of dofs should only insert these dofs in the mask.
-    void updateForceMask() override;
 
 };
 

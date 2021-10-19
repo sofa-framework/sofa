@@ -22,9 +22,9 @@
 #pragma once
 #include <sofa/gui/qt/config.h>
 #include <sofa/core/fwd.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/fixed_array.h>
+#include <sofa/type/fixed_array.h>
 #include <sofa/gui/qt/WDoubleLineEdit.h>
 
 #include <QDialog>

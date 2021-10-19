@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaSimpleFem/config.h>
+#include <SofaSimpleFem/fwd.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/core/behavior/BaseRotationFinder.h>
+#include <sofa/type/Mat.h>
+#include <sofa/core/behavior/RotationFinder.h>
 #include <sofa/helper/OptionsGroup.h>
 
 #include <sofa/helper/ColorMap.h>
@@ -43,7 +43,6 @@
 //   keywords     = "animation, physical model, elasticity, finite elements",
 //   url          = "http://www-evasion.imag.fr/Publications/2005/NPF05"
 // }
-
 
 namespace sofa::component::forcefield
 {
@@ -73,10 +72,10 @@ public:
 *   Corotational methods are based on a rotation from world-space to material-space.
 */
 template<class DataTypes>
-class TetrahedronFEMForceField : public core::behavior::ForceField<DataTypes>, public sofa::core::behavior::BaseRotationFinder
+class TetrahedronFEMForceField : public core::behavior::ForceField<DataTypes>, public sofa::core::behavior::RotationFinder<DataTypes>
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE(TetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes), core::behavior::BaseRotationFinder);
+    SOFA_CLASS2(SOFA_TEMPLATE(TetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes), SOFA_TEMPLATE(core::behavior::RotationFinder, DataTypes));
 
     typedef typename core::behavior::ForceField<DataTypes> InheritForceField;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -106,49 +105,48 @@ protected:
     /// @{
 
     /// Displacement vector (deformation of the 4 corners of a tetrahedron
-    typedef defaulttype::VecNoInit<12, Real> Displacement;
+    typedef type::VecNoInit<12, Real> Displacement;
 
     /// Material stiffness matrix of a tetrahedron
-    typedef defaulttype::Mat<6, 6, Real> MaterialStiffness;
+    typedef type::Mat<6, 6, Real> MaterialStiffness;
 
     /// Strain-displacement matrix
-    typedef defaulttype::Mat<12, 6, Real> StrainDisplacement;
+    typedef type::Mat<12, 6, Real> StrainDisplacement;
 
-    defaulttype::MatNoInit<3, 3, Real> R0;
+    type::MatNoInit<3, 3, Real> R0;
 
     /// Rigid transformation (rotation) matrix
-    typedef defaulttype::MatNoInit<3, 3, Real> Transformation;
+    typedef type::MatNoInit<3, 3, Real> Transformation;
 
     /// Stiffness matrix ( = RJKJtRt  with K the Material stiffness matrix, J the strain-displacement matrix, and R the transformation matrix if any )
-    typedef defaulttype::Mat<12, 12, Real> StiffnessMatrix;
+    typedef type::Mat<12, 12, Real> StiffnessMatrix;
 
     /// Symmetrical tensor written as a vector following the Voigt notation
-    typedef defaulttype::VecNoInit<6,Real> VoigtTensor;
+    typedef type::VecNoInit<6,Real> VoigtTensor;
 
     /// @}
 
     /// Vector of material stiffness of each tetrahedron
-    typedef helper::vector<MaterialStiffness> VecMaterialStiffness;
-    typedef helper::vector<StrainDisplacement> VecStrainDisplacement;  ///< a vector of strain-displacement matrices
+    typedef type::vector<MaterialStiffness> VecMaterialStiffness;
+    typedef type::vector<StrainDisplacement> VecStrainDisplacement;  ///< a vector of strain-displacement matrices
 
     /// structures used to compute vonMises stress
-    typedef defaulttype::Mat<4, 4, Real> Mat44;
-    typedef defaulttype::Mat<3, 3, Real> Mat33;
-    typedef defaulttype::Mat<4, 3, Real> Mat43;
+    typedef type::Mat<4, 4, Real> Mat44;
+    typedef type::Mat<3, 3, Real> Mat33;
 
     /// Vector of material stiffness matrices of each tetrahedron
     VecMaterialStiffness materialsStiffnesses;
     VecStrainDisplacement strainDisplacements;   ///< the strain-displacement matrices vector
-    helper::vector<Transformation> rotations;
+    type::vector<Transformation> rotations;
 
-    helper::vector<VoigtTensor> _plasticStrains; ///< one plastic strain per element
+    type::vector<VoigtTensor> _plasticStrains; ///< one plastic strain per element
 
     /// @name Full system matrix assembly support
     /// @{
 
     typedef std::pair<Index,Real> Col_Value;
-    typedef helper::vector< Col_Value > CompressedValue;
-    typedef helper::vector< CompressedValue > CompressedMatrix;
+    typedef type::vector< Col_Value > CompressedValue;
+    typedef type::vector< CompressedValue > CompressedMatrix;
 
     CompressedMatrix _stiffnesses;
     /// @}
@@ -170,9 +168,15 @@ public:
     Real getRestVolume() {return m_restVolume;}
 
     //For a faster contact handling with simplified compliance
-    void getRotation(Transformation& R, Index nodeIdx);
+    void getRotation(Mat33& R, Index nodeIdx);
     void getRotations(VecReal& vecR) ;
-    void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0) override ;
+    
+    // BaseRotationFinder API
+    void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0) override;
+    // RotationFinder<T> API
+    type::vector< Mat33 > m_rotations;
+    const type::vector<Mat33>& getRotations() override;
+
     Data< VecCoord > _initialPoints; ///< the initial positions of the points
     int method;
     Data<std::string> f_method; ///< the computation method of the displacements
@@ -201,27 +205,28 @@ public:
     /// to compute vonMises stress for visualization
     /// two options: either using corotational strain (TODO)
     ///              or full Green strain tensor (which must be therefore computed for each element and requires some pre-calculations in reinit)
-    helper::vector<Real> elemLambda;
-    helper::vector<Real> elemMu;
-    helper::vector<Mat44> elemShapeFun;
+    type::vector<Real> elemLambda;
+    type::vector<Real> elemMu;
+    type::vector<Mat44> elemShapeFun;
 
     Real prevMaxStress;
 
     Data<int> _computeVonMisesStress; ///< compute and display von Mises stress: 0: no computations, 1: using corotational strain, 2: using full Green strain
-    Data<helper::vector<Real> > _vonMisesPerElement; ///< von Mises Stress per element
-    Data<helper::vector<Real> > _vonMisesPerNode; ///< von Mises Stress per node
-    Data<helper::vector<defaulttype::Vec4f> > _vonMisesStressColors; ///< Vector of colors describing the VonMises stress
+    Data<type::vector<Real> > _vonMisesPerElement; ///< von Mises Stress per element
+    Data<type::vector<Real> > _vonMisesPerNode; ///< von Mises Stress per node
+    Data<type::vector<type::Vec4f> > _vonMisesStressColors; ///< Vector of colors describing the VonMises stress
     
     Data<std::string> _showStressColorMap; ///< Color map used to show stress values
     Data<float> _showStressAlpha; ///< Alpha for vonMises visualisation
-    Data<bool> _showVonMisesStressPerNode; ///< draw points  showing vonMises stress interpolated in nodes
+    Data<bool> _showVonMisesStressPerNode; ///< draw points showing vonMises stress interpolated in nodes
+    Data<bool> _showVonMisesStressPerElement; ///< draw triangles showing vonMises stress interpolated in elements
 
     Data<bool>  _updateStiffness; ///< udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)
 
     /// Link to be set to the topology container in the component graph. 
     SingleLink<TetrahedronFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_topology;
 
-    helper::vector<defaulttype::Vec<6,Real> > elemDisplacements;
+    type::vector<type::Vec<6,Real> > elemDisplacements;
 
     bool updateVonMisesStress;
 
@@ -258,9 +263,6 @@ public:
     void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset) override;
     void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ) override;
 
-    void addSubKToMatrix(sofa::defaulttype::BaseMatrix *mat, const helper::vector<unsigned> & subMatrixIndex, SReal k, unsigned int &offset) override;
-
-
     void draw(const core::visual::VisualParams* vparams) override;
 
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
@@ -273,7 +275,7 @@ public:
 
 protected:
     void computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c, Coord d );
-    Real peudo_determinant_for_coef ( const defaulttype::Mat<2, 3, Real>&  M );
+    Real peudo_determinant_for_coef ( const type::Mat<2, 3, Real>&  M );
 
     void computeStiffnessMatrix( StiffnessMatrix& S,StiffnessMatrix& SR,const MaterialStiffness &K, const StrainDisplacement &J, const Transformation& Rot );
 
@@ -290,19 +292,19 @@ protected:
     void applyStiffnessSmall( Vector& f, const Vector& x, Index i=0, Index a=0,Index b=1,Index c=2,Index d=3, SReal fact=1.0  );
 
     ////////////// large displacements method
-    helper::vector<helper::fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
-    helper::vector<Transformation> _initialRotations;
+    type::vector<type::fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
+    type::vector<Transformation> _initialRotations;
     void initLarge(Index i, Index&a, Index&b, Index&c, Index&d);
     void computeRotationLarge( Transformation &r, const Vector &p, const Index &a, const Index &b, const Index &c);
     void accumulateForceLarge( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
 
     ////////////// polar decomposition method
-    helper::vector<unsigned int> _rotationIdx;
+    type::vector<unsigned int> _rotationIdx;
     void initPolar(Index i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForcePolar( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
 
     ////////////// svd decomposition method
-    helper::vector<Transformation>  _initialTransformation;
+    type::vector<Transformation>  _initialTransformation;
     void initSVD(Index i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForceSVD( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
 
@@ -311,6 +313,7 @@ protected:
     void handleTopologyChange() override { needUpdateTopology = true; }
 
     void computeVonMisesStress();
+    bool isComputeVonMisesStressMethodSet();
     void handleEvent(core::objectmodel::Event *event) override;
 };
 

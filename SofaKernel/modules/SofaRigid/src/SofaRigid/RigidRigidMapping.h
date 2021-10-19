@@ -26,8 +26,8 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/vector.h>
 
 namespace sofa::component::mapping
 {
@@ -54,9 +54,8 @@ public:
     typedef typename In::MatrixDeriv InMatrixDeriv;
     typedef typename Out::Coord::value_type Real;
     enum { N=OutDataTypes::spatial_dimensions };
-    typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef defaulttype::Vec<N,Real> Vector ;
-    typedef typename Inherit::ForceMask ForceMask;
+    typedef type::Mat<N,N,Real> Mat;
+    typedef type::Vec<N,Real> Vector ;
 
 protected:
     Data < OutVecCoord > points; ///< Initial position of the points
@@ -69,7 +68,7 @@ protected:
     /// given in the "index" attribute. If one value, each parent frame drives
     /// the given number of children frames. Otherwise, the values are the number
     /// of child frames driven by each parent frame.
-    Data< sofa::helper::vector<sofa::Size> >  repartition;
+    Data< sofa::type::vector<sofa::Size> >  repartition;
 
 public:
     Data<sofa::Index> index; ///< input frame index
@@ -108,16 +107,15 @@ public:
 
     void clear();
 
-    sofa::helper::vector<sofa::Size> getRepartition() {return repartition.getValue(); }
+    sofa::type::vector<sofa::Size> getRepartition() {return repartition.getValue(); }
 
     void setRepartition(sofa::Size value);
-    void setRepartition(sofa::helper::vector<sofa::Size> values);
+    void setRepartition(sofa::type::vector<sofa::Size> values);
 
 protected:
 
     bool getShow(const core::objectmodel::BaseObject* /*m*/, const core::visual::VisualParams* vparams) const;
     bool getShow(const core::BaseMapping* /*m*/, const core::visual::VisualParams* vparams) const;
-    void updateForceMask() override { /*already done in applyJT*/ }
 };
 
 #if  !defined(SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_CPP)

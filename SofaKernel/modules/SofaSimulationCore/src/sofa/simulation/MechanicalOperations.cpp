@@ -47,7 +47,6 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalGetMatrixDimensionVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalAddMBK_ToMatrixVisitor.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalApplyProjectiveConstraint_ToMatrixVisitor.h>
-#include <sofa/simulation/mechanicalvisitor/MechanicalAddSubMBK_ToMatrixVisitor.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/VecId.h>
 
@@ -55,17 +54,18 @@
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
 
+#include <sofa/core/ObjectFactory.h>
+
+#include <numeric>
+
 using namespace sofa::core;
-namespace sofa
-{
 
-namespace simulation
-{
-
-namespace common
+namespace sofa::simulation::common
 {
 
 using namespace sofa::simulation::mechanicalvisitor;
+
+std::map<core::objectmodel::BaseContext*, bool> MechanicalOperations::hasShownMissingLinearSolverMap;
 
 MechanicalOperations::MechanicalOperations(const sofa::core::MechanicalParams* mparams, sofa::core::objectmodel::BaseContext* ctx, bool precomputedTraversalOrder)
     :mparams(*mparams),ctx(ctx),executeVisitor(*ctx,precomputedTraversalOrder)
@@ -142,7 +142,7 @@ void MechanicalOperations::setDf(core::ConstMultiVecDerivId& v)
 void MechanicalOperations::propagateDx(core::MultiVecDerivId dx, bool ignore_flag)
 {
     setDx(dx);
-    executeVisitor( MechanicalPropagateDxVisitor(&mparams, dx, false, ignore_flag) );
+    executeVisitor( MechanicalPropagateDxVisitor(&mparams, dx, ignore_flag) );
 }
 
 /// Propagate the given displacement through all mappings and reset the current force delta
@@ -150,14 +150,14 @@ void MechanicalOperations::propagateDxAndResetDf(core::MultiVecDerivId dx, core:
 {
     setDx(dx);
     setDf(df);
-    executeVisitor( MechanicalPropagateDxAndResetForceVisitor(&mparams, dx, df, false) );
+    executeVisitor( MechanicalPropagateDxAndResetForceVisitor(&mparams, dx, df) );
 }
 
 /// Propagate the given position through all mappings
 void MechanicalOperations::propagateX(core::MultiVecCoordId x)
 {
     setX(x);
-    MechanicalPropagateOnlyPositionVisitor visitor(&mparams, 0.0, x, false); //Don't ignore the masks
+    MechanicalPropagateOnlyPositionVisitor visitor(&mparams, 0.0, x);
     executeVisitor( visitor );
 }
 
@@ -165,7 +165,7 @@ void MechanicalOperations::propagateX(core::MultiVecCoordId x)
 void MechanicalOperations::propagateV(core::MultiVecDerivId v)
 {
     setV(v);
-    MechanicalPropagateOnlyVelocityVisitor visitor(&mparams, 0.0, v, false); //Don't ignore the masks
+    MechanicalPropagateOnlyVelocityVisitor visitor(&mparams, 0.0, v);
     executeVisitor( visitor );
 }
 
@@ -174,7 +174,7 @@ void MechanicalOperations::propagateXAndV(core::MultiVecCoordId x, core::MultiVe
 {
     setX(x);
     setV(v);
-    MechanicalPropagateOnlyPositionAndVelocityVisitor visitor(&mparams, 0.0, x, v, false); //Don't ignore the masks
+    MechanicalPropagateOnlyPositionAndVelocityVisitor visitor(&mparams, 0.0, x, v);
     executeVisitor( visitor );
 }
 
@@ -183,7 +183,7 @@ void MechanicalOperations::propagateXAndResetF(core::MultiVecCoordId x, core::Mu
 {
     setX(x);
     setF(f);
-    MechanicalPropagateOnlyPositionAndResetForceVisitor visitor(&mparams, x, f, false);
+    MechanicalPropagateOnlyPositionAndResetForceVisitor visitor(&mparams, x, f);
     executeVisitor( visitor );
 }
 
@@ -354,7 +354,7 @@ void MechanicalOperations::computeAcc(SReal t, core::MultiVecDerivId a, core::Mu
     setX(x);
     setV(v);
     executeVisitor( MechanicalProjectPositionAndVelocityVisitor(&mparams, t,x,v) );
-    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v, true) );
+    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v) );
     computeForce(f);
 
     accFromF(a,f);
@@ -367,7 +367,7 @@ void MechanicalOperations::computeForce(SReal t, core::MultiVecDerivId f, core::
     setX(x);
     setV(v);
     executeVisitor( MechanicalProjectPositionAndVelocityVisitor(&mparams, t,x,v) );
-    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v,true) );
+    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v) );
     computeForce(f,true,true,neglectingCompliance);
 
     projectResponse(f);
@@ -381,7 +381,7 @@ void MechanicalOperations::computeContactAcc(SReal t, core::MultiVecDerivId a, c
     setX(x);
     setV(v);
     executeVisitor( MechanicalProjectPositionAndVelocityVisitor(&mparams, t,x,v) );
-    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v, true) );
+    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v) );
     computeContactForce(f);
 
     accFromF(a,f);
@@ -419,17 +419,13 @@ void MechanicalOperations::solveConstraint(MultiVecId id, core::ConstraintParams
 {
     cparams.setOrder(order);
 
-    helper::vector< core::behavior::ConstraintSolver* > constraintSolverList;
+    type::vector< core::behavior::ConstraintSolver* > constraintSolverList;
 
     ctx->get<core::behavior::ConstraintSolver>(&constraintSolverList, ctx->getTags(), BaseContext::Local);
-    if (constraintSolverList.empty())
-    {
-        return;
-    }
 
-    for (helper::vector< core::behavior::ConstraintSolver* >::iterator it=constraintSolverList.begin(); it!=constraintSolverList.end(); ++it)
+    for (auto* constraintSolver : constraintSolverList)
     {
-        (*it)->solveConstraint(&cparams, id);
+        constraintSolver->solveConstraint(&cparams, id);
     }
 }
 
@@ -438,7 +434,7 @@ void MechanicalOperations::m_resetSystem()
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        msg_error(ctx) << "Requires a LinearSolver.";
+        showMissingLinearSolverError();
         return;
     }
     s->resetSystem();
@@ -449,7 +445,7 @@ void MechanicalOperations::m_setSystemMBKMatrix(SReal mFact, SReal bFact, SReal 
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        msg_error(ctx) << "Requires a LinearSolver.";
+        showMissingLinearSolverError();
         return;
     }
     mparams.setMFactor(mFact);
@@ -463,7 +459,7 @@ void MechanicalOperations::m_setSystemRHVector(core::MultiVecDerivId v)
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        msg_error(ctx) << "Requires a LinearSolver.";
+
         return;
     }
     s->setSystemRHVector(v);
@@ -474,7 +470,7 @@ void MechanicalOperations::m_setSystemLHVector(core::MultiVecDerivId v)
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        msg_error(ctx) << "Requires a LinearSolver.";
+        showMissingLinearSolverError();
         return;
     }
     s->setSystemLHVector(v);
@@ -486,7 +482,7 @@ void MechanicalOperations::m_solveSystem()
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        msg_error(ctx) << "Requires a LinearSolver.";
+        showMissingLinearSolverError();
         return;
     }
     s->solveSystem();
@@ -497,7 +493,7 @@ void MechanicalOperations::m_print( std::ostream& out )
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
     {
-        msg_error(ctx) << "Requires a LinearSolver.";
+        showMissingLinearSolverError();
         return;
     }
     defaulttype::BaseMatrix* m = s->getSystemBaseMatrix();
@@ -531,18 +527,6 @@ void MechanicalOperations::addMBK_ToMatrix(const sofa::core::behavior::MultiMatr
     if (matrix != nullptr)
     {
         executeVisitor( MechanicalAddMBK_ToMatrixVisitor(&mparams, matrix) );
-        executeVisitor( MechanicalApplyProjectiveConstraint_ToMatrixVisitor(&mparams, matrix) );
-    }
-}
-
-void MechanicalOperations::addSubMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix,const helper::vector<unsigned> & subMatrixIndex, SReal mFact, SReal bFact, SReal kFact)
-{
-    mparams.setMFactor(mFact);
-    mparams.setBFactor(bFact);
-    mparams.setKFactor(kFact);
-    if (matrix != nullptr)
-    {
-        executeVisitor( MechanicalAddSubMBK_ToMatrixVisitor(&mparams, matrix, subMatrixIndex) );
         executeVisitor( MechanicalApplyProjectiveConstraint_ToMatrixVisitor(&mparams, matrix) );
     }
 }
@@ -585,8 +569,16 @@ void MechanicalOperations::printWithElapsedTime( core::ConstMultiVecId /*v*/, un
 {
 }
 
-}
-
+void MechanicalOperations::showMissingLinearSolverError() const
+{
+    if (!hasShownMissingLinearSolverMap[ctx])
+    {
+        const auto solvers = sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::behavior::BaseLinearSolver>();
+        msg_error(ctx) << "A linear solver is required, but has not been found. Add a linear solver to your scene to "
+                          "fix this issue. The list of available linear solver components "
+                          "is: [" << solvers << "].";
+        hasShownMissingLinearSolverMap[ctx] = true;
+    }
 }
 
 }

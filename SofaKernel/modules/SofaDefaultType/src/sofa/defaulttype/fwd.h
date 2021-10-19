@@ -23,6 +23,7 @@
 
 #include <sofa/defaulttype/config.h>
 #include <sofa/type/fwd.h>
+#include <sofa/linearalgebra/fwd.h>
 
 namespace sofa::defaulttype
 {
@@ -77,37 +78,9 @@ typedef StdVectorTypes<sofa::type::Vec2f,sofa::type::Vec2f,float> Vec2fTypes;
 typedef StdVectorTypes<sofa::type::Vec1f,sofa::type::Vec1f,float> Vec1fTypes;
 typedef StdVectorTypes<sofa::type::Vec6f,sofa::type::Vec6f,float> Vec6fTypes;
 
-using sofa::type::Mat;
-using sofa::type::MatNoInit;
 
-using sofa::type::Mat1x1f;
-using sofa::type::Mat1x1d;
+using BaseMatrix = sofa::linearalgebra::BaseMatrix;
+using BaseVector = sofa::linearalgebra::BaseVector;
 
-using sofa::type::Mat2x2f;
-using sofa::type::Mat2x2d;
-
-using sofa::type::Mat3x3f;
-using sofa::type::Mat3x3d;
-
-using sofa::type::Mat3x4f;
-using sofa::type::Mat3x4d;
-
-using sofa::type::Mat4x4f;
-using sofa::type::Mat4x4d;
-
-using sofa::type::Mat2x2;
-using sofa::type::Mat3x3;
-using sofa::type::Mat4x4;
-
-using sofa::type::Matrix2;
-using sofa::type::Matrix3;
-using sofa::type::Matrix4;
-
-class BaseMatrix;
-class BaseVector;
-
-typedef sofa::type::Quat<float> Quatf;
-typedef sofa::type::Quat<double> Quatd;
-typedef sofa::type::Quat<SReal> Quat;
-typedef Quat Quaternion;
 }
+

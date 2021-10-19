@@ -19,6 +19,8 @@ set(HEADER_FILES
     ${SOFACOMPATSRC_ROOT}/sofa/helper/Quater.inl
     ${SOFACOMPATSRC_ROOT}/sofa/helper/DualQuat.h
     ${SOFACOMPATSRC_ROOT}/sofa/helper/DualQuat.inl
+    ${SOFACOMPATSRC_ROOT}/sofa/helper/LCPSolver.h
+    ${SOFACOMPATSRC_ROOT}/sofa/helper/StateMask.h
     ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/Trackball.h
     ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/template.h
     ${SOFACOMPATSRC_ROOT}/sofa/helper/gl/Texture.h
@@ -40,6 +42,7 @@ set(HEADER_FILES
     ${SOFACOMPATSRC_ROOT}/sofa/helper/types/PrimitiveGroup.h
     ${SOFACOMPATSRC_ROOT}/sofa/helper/system/gl.h
     ${SOFACOMPATSRC_ROOT}/sofa/helper/system/glu.h
+    ${SOFACOMPATSRC_ROOT}/sofa/helper/system/atomic.h
     ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/Vec.h
     ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/Mat.h
     ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/MatSym.h
@@ -53,8 +56,29 @@ set(HEADER_FILES
     ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/Frame.h
     ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/Ray.h
     ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/RGBAColor.h
+    ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/BaseVector.h
+    ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/BaseMatrix.h
     ${SOFACOMPATSRC_ROOT}/sofa/core/visual/DrawTool.h
     ${SOFACOMPATSRC_ROOT}/sofa/core/visual/DrawToolGL.h
+    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/CompressedRowSparseMatrix.h
+    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/DiagonalMatrix.h
+    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/FullMatrix.inl
+    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/FullVector.inl
+    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/RotationMatrix.h
+    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/matrix_bloc_traits.h
+    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/CompressedRowSparseMatrix.inl
+    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/FullMatrix.h
+    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/FullVector.h
+    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/MatrixExpr.h
+    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/SparseMatrix.h
+    ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/EigenBaseSparseMatrix.h
+    ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/EigenBaseSparseMatrix_MT.h
+    ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/EigenMatrixManipulator.h
+    ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/EigenSparseMatrix.h
+    ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/EigenVector.h
+    ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/EigenVectorWrapper.h
+    ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/SVDLinearSolver.h
+    
 )
 
 set(SOURCE_FILES
@@ -88,4 +112,5 @@ sofa_create_package_with_targets(
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    OPTIMIZE_BUILD_DIR 0
 )

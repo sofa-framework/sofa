@@ -59,9 +59,6 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::init()
     {
         mstate1 = mstate2 = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
     }
-
-    this->mask1 = &mstate1->forceMask;
-    this->mask2 = &mstate2->forceMask;
 }
 
 template<class DataTypes>
@@ -85,10 +82,7 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectResponse(const Me
     if( !isActive() ) return;
     if (mstate1 && mstate2)
     {
-        this->mask1 = &mstate1->forceMask;
-        this->mask2 = &mstate2->forceMask;
-
-            projectResponse(mparams, *dxId[mstate1.get()].write(), *dxId[mstate2.get()].write());
+        projectResponse(mparams, *dxId[mstate1.get()].write(), *dxId[mstate2.get()].write());
     }
 }
 
@@ -98,10 +92,7 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectVelocity(const Me
     if( !isActive() ) return;
     if (mstate1 && mstate2)
     {
-        this->mask1 = &mstate1->forceMask;
-        this->mask2 = &mstate2->forceMask;
-
-            projectVelocity(mparams, *vId[mstate1.get()].write(), *vId[mstate2.get()].write());
+        projectVelocity(mparams, *vId[mstate1.get()].write(), *vId[mstate2.get()].write());
     }
 }
 
@@ -111,9 +102,7 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectPosition(const Me
     if( !isActive() ) return;
     if (mstate1 && mstate2)
     {
-        this->mask1 = &mstate1->forceMask;
-        this->mask2 = &mstate2->forceMask;
-            projectPosition(mparams, *xId[mstate1.get()].write(), *xId[mstate2.get()].write());
+        projectPosition(mparams, *xId[mstate1.get()].write(), *xId[mstate2.get()].write());
     }
 }
 

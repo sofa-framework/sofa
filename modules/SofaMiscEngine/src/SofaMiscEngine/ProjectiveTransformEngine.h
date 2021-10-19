@@ -28,7 +28,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Quat.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
@@ -47,9 +47,9 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
-    typedef sofa::defaulttype::Mat<3,4,Real> ProjMat;
-    typedef sofa::defaulttype::Vec<4,Real> Vec4;
-    typedef sofa::defaulttype::Vec<3,Real> Vec3;
+    typedef sofa::type::Mat<3,4,Real> ProjMat;
+    typedef sofa::type::Vec<4,Real> Vec4;
+    typedef sofa::type::Vec<3,Real> Vec3;
 
 protected:
     ProjectiveTransformEngine();

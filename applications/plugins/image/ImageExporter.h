@@ -36,8 +36,8 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/GUIEvent.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Quat.h>
 #include <sofa/helper/rmath.h>
 
 namespace sofa
@@ -78,12 +78,12 @@ struct ImageExporterSpecialization<defaulttype::Image<T>>
     {
         typedef typename ImageExporterT::Real Real;
 
-        if (!exporter.m_filename.isSet()) { exporter.serr << "ImageExporter: file not set"<<exporter.name<<exporter.sendl; return false; }
+        if (!exporter.m_filename.isSet()) { msg_error(&exporter) << "File not set"<<exporter.name; return false; }
         std::string fname(exporter.m_filename.getFullPath());
 
         typename ImageExporterT::raImage rimage(exporter.image);
         typename ImageExporterT::raTransform rtransform(exporter.transform);
-        if (rimage->isEmpty()) { exporter.serr << "ImageExporter: no image "<<exporter.name<<exporter.sendl; return false; }
+        if (rimage->isEmpty()) { msg_error(&exporter) << "No image "<<exporter.name; return false; }
 
         if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
            || fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)
@@ -92,9 +92,9 @@ struct ImageExporterSpecialization<defaulttype::Image<T>>
 
             double scale[3]; for(unsigned int i=0; i<3; i++) scale[i]=(double)rtransform->getScale()[i];
             double translation[3]; for(unsigned int i=0; i<3; i++) translation[i]=(double)rtransform->getTranslation()[i];
-            defaulttype::Vec<3,Real> rotation = rtransform->getRotation() * (Real)M_PI / (Real)180.0;
-            helper::Quater< Real > q = helper::Quater< Real >::createQuaterFromEuler(rotation);
-            defaulttype::Mat<3,3,Real> R;  q.toMatrix(R);
+            type::Vec<3,Real> rotation = rtransform->getRotation() * (Real)M_PI / (Real)180.0;
+            type::Quat< Real > q = type::Quat< Real >::createQuaterFromEuler(rotation);
+            type::Mat<3,3,Real> R;  q.toMatrix(R);
             double affine[9]; for(unsigned int i=0; i<3; i++) for(unsigned int j=0; j<3; j++) affine[3*i+j]=(double)R[i][j];
             double offsetT=(double)rtransform->getOffsetT();
             double scaleT=(double)rtransform->getScaleT();
@@ -105,7 +105,7 @@ struct ImageExporterSpecialization<defaulttype::Image<T>>
         {
             // nfo files are used for compatibility with gridmaterial of frame and voxelizer plugins
             std::ofstream fileStream (fname.c_str(), std::ofstream::out);
-            if (!fileStream.is_open()) { exporter.serr << "GridMaterial, Can not open " << fname << exporter.sendl; return false; }
+            if (!fileStream.is_open()) { msg_error(&exporter) << "GridMaterial, Can not open " << fname ; return false; }
             fileStream << "voxelType: " << cimg_library::CImg<T>::pixel_type() << std::endl;
             fileStream << "dimensions: " << rimage->getDimensions()[0] << " " << rimage->getDimensions()[1]<< " " << rimage->getDimensions()[2]  << std::endl;
             fileStream << "origin: " << rtransform->getTranslation()[0] << " " << rtransform->getTranslation()[1]<< " " << rtransform->getTranslation()[2]<< std::endl;
@@ -162,8 +162,8 @@ struct ImageExporterSpecialization<defaulttype::Image<T>>
             header.nifti_QForm = 1; //method 2
             header.nifti_SForm = 0;
 
-            defaulttype::Vec<3,Real> rotation = rtransform->getRotation() * (Real)M_PI / (Real)180.0;
-            helper::Quater<Real> q = helper::Quater<Real>::createQuaterFromEuler(rotation);
+            type::Vec<3,Real> rotation = rtransform->getRotation() * (Real)M_PI / (Real)180.0;
+            type::Quat<Real> q = type::Quat<Real>::createQuaterFromEuler(rotation);
 
             for (unsigned int i = 0; i< 3; i++)
             {
@@ -171,7 +171,7 @@ struct ImageExporterSpecialization<defaulttype::Image<T>>
                 header.nifti_quaternion[3+i] = (float)rtransform->getTranslation()[i];
             }
 
-            defaulttype::Matrix3 mat;
+            type::Matrix3 mat;
             q.toMatrix(mat);
 
             header.nifti_affine[0] = (float)(mat(0,0) * voxsize[0]); header.nifti_affine[1] =(float) mat(0,1);              header.nifti_affine[2] = (float)mat(0,2);               header.nifti_affine[3] = (float)rtransform->getTranslation()[0];

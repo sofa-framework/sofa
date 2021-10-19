@@ -29,16 +29,17 @@
 #include <sofa/core/topology/TopologyChange.h>
 
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa::component::topology
 {
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 using namespace sofa::core::topology;
-using sofa::helper::fixed_array;
+using sofa::type::fixed_array;
 
 // Register in the Factory
 int SimpleTesselatedHexaTopologicalMappingClass = core::RegisterObject ( "Special case of mapping where HexahedronSetTopology is converted into a finer HexahedronSetTopology" )
@@ -66,7 +67,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
             }
 
             size_t pointIndex = pointMappedFromPoint.size();
-            Vector3 pA, pB, p;
+            Vector3 p;
 
             for (std::size_t i=0; i<fromModel->getNbHexahedra(); ++i)
             {

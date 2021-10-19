@@ -27,7 +27,7 @@ using sofa::helper::system::FileSystem;
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/logging/Messaging.h>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <fstream>
 #include <array>
 
@@ -273,6 +273,18 @@ Plugin* PluginManager::getPlugin(const std::string& plugin, const std::string& /
     }
     else
     {
+        // check if a plugin with a same name but a different path is loaded
+        // problematic case per se but at least we can warn the user
+        const auto& pluginName = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(pluginPath.c_str());
+        for (auto& k : m_pluginMap)
+        {
+            if (pluginName == k.second.getModuleName())
+            {
+                msg_warning("PluginManager") << "Plugin " << pluginName << " is already loaded from a different path, check you configuration.";
+                return &k.second;
+            }
+        }
+
         msg_info("PluginManager") << "Plugin not found in loaded plugins: " << plugin;
         return nullptr;
     }
@@ -369,16 +381,16 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
         {
             const std::string& dir = *i;
 
-            boost::filesystem::recursive_directory_iterator iter(dir);
-            boost::filesystem::recursive_directory_iterator end;
+            std::filesystem::recursive_directory_iterator iter(dir);
+            std::filesystem::recursive_directory_iterator end;
 
             while (iter != end)
             {
-                if ( iter.level() > maxRecursiveDepth )
+                if ( iter.depth() > maxRecursiveDepth )
                 {
-                    iter.no_push(); // skip
+                    iter.disable_recursion_pending(); // skip
                 }
-                else if ( !boost::filesystem::is_directory(iter->path()) )
+                else if ( !std::filesystem::is_directory(iter->path()) )
                 {
                     const std::string path = iter->path().string();
                     const std::string filename = iter->path().filename().string();
@@ -390,7 +402,7 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
                     }
                 }
 
-                boost::system::error_code ec;
+                std::error_code ec;
                 iter.increment(ec);
                 if (ec)
                 {
@@ -417,11 +429,26 @@ bool PluginManager::pluginIsLoaded(const std::string& plugin)
         if (!FileSystem::isFile(plugin))
         {
             // path is invalid
-            msg_error("PluginManager") << "File not found: " << plugin;
+            msg_error("PluginManager") << "Could not check if the plugin is loaded as the path is invalid: " << plugin;
             return false;
         }
 
         pluginPath = plugin;
+
+        // argument is a path but we need to check if it was not already loaded with a different path
+        const auto& pluginName = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(pluginPath.c_str());
+        for (const auto& [loadedPath, loadedPlugin] : m_pluginMap)
+        {
+            if (pluginName == loadedPlugin.getModuleName() && pluginPath != loadedPath)
+            {
+                // we did find a plugin with the same, but it does not have the same path...
+                msg_warning("PluginManager") << "This plugin " << pluginName << " has been loaded from a different path, it will certainly lead to bugs or crashes... " << msgendl
+                                             << "You tried to load: " << pluginPath << msgendl
+                                             << "Already loaded: " << loadedPath;
+                return true;
+            }
+        }
+
     }
     else
     {

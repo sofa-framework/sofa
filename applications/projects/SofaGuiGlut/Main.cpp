@@ -29,11 +29,11 @@ using std::string;
 #include <vector>
 using std::vector;
 
-#include <boost/program_options.hpp>
+#include <cxxopts.hpp>
 
 #include "SimpleGUI.h"
 
-#include <sofa/helper/ArgumentParser.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <SofaSimulationCommon/config.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/system/PluginManager.h>
@@ -43,12 +43,8 @@ using std::vector;
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Node;
 
-#include <SofaCommon/initSofaCommon.h>
 #include <SofaBase/initSofaBase.h>
-#include <SofaGeneral/initSofaGeneral.h>
 
-#include <SofaGeneralLoader/ReadState.h>
-#include <SofaValidation/CompareState.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/cast.h>
 #include <sofa/helper/BackTrace.h>
@@ -58,19 +54,14 @@ using sofa::simulation::Node;
 #include <sofa/gui/GUIManager.h>
 using sofa::gui::GUIManager;
 
-#include <sofa/gui/Main.h>
 #include <sofa/gui/BaseGUI.h>
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/atomic.h>
+#include <sofa/gl/gl.h>
 
 using sofa::core::ExecParams ;
 
 #include <sofa/helper/system/console.h>
 using sofa::helper::Utils;
 
-using sofa::component::misc::CompareStateCreator;
-using sofa::component::misc::ReadStateActivator;
-using sofa::simulation::tree::TreeSimulation;
 using sofa::simulation::graph::DAGSimulation;
 using sofa::helper::system::SetDirectory;
 using sofa::core::objectmodel::BaseNode ;
@@ -110,8 +101,6 @@ using sofa::helper::logging::ExceptionMessageHandler;
 int main(int argc, char** argv)
 {
     sofa::helper::BackTrace::autodump();
-
-    ExecParams::defaultInstance()->setAspectID(0);
 
 #ifdef WIN32
     {
@@ -155,17 +144,17 @@ int main(int argc, char** argv)
     gui_help += GUIManager::ListSupportedGUI('|');
     gui_help += ")";
 
-    ArgumentParser* argParser = new ArgumentParser(argc, argv);
+    sofa::gui::ArgumentParser* argParser = new sofa::gui::ArgumentParser(argc, argv);
 
-    argParser->addArgument(boost::program_options::value<bool>(&showHelp)->default_value(false)->implicit_value(true), "help,h", "Display this help message");
-    argParser->addArgument(boost::program_options::value<bool>(&startAnim)->default_value(false)->implicit_value(true), "start,a", "start the animation loop");
-    argParser->addArgument(boost::program_options::value<bool>(&printFactory)->default_value(false)->implicit_value(true), "factory,p", "print factory logs");
-    argParser->addArgument(boost::program_options::value<bool>(&loadRecent)->default_value(false)->implicit_value(true), "recent,r", "load most recently opened file");
-    argParser->addArgument(boost::program_options::value<bool>(&temporaryFile)->default_value(false)->implicit_value(true), "tmp", "the loaded scene won't appear in history of opened files");
-    argParser->addArgument(boost::program_options::value<std::string>(&colorsStatus)->default_value("auto")->implicit_value("yes"), "colors,c", "use colors on stdout and stderr (yes, no, auto)");
-    argParser->addArgument(boost::program_options::value<std::string>(&messageHandler)->default_value("auto"), "formatting,f", "select the message formatting to use (auto, clang, sofa, rich, test)");
-    argParser->addArgument(boost::program_options::value<std::string>(&gui)->default_value(""), "gui,g", gui_help.c_str());
-    argParser->addArgument(boost::program_options::value<bool>(&noAutoloadPlugins)->default_value(false)->implicit_value(true), "noautoload", "disable plugins autoloading");
+    argParser->addArgument(cxxopts::value<bool>(showHelp)->default_value("false")->implicit_value("true"), "h,help", "Display this help message");
+    argParser->addArgument(cxxopts::value<bool>(startAnim)->default_value("false")->implicit_value("true"), "a,start", "start the animation loop");
+    argParser->addArgument(cxxopts::value<bool>(printFactory)->default_value("false")->implicit_value("true"), "p,factory", "print factory logs");
+    argParser->addArgument(cxxopts::value<bool>(loadRecent)->default_value("false")->implicit_value("true"), "r,recent", "load most recently opened file");
+    argParser->addArgument(cxxopts::value<bool>(temporaryFile)->default_value("false")->implicit_value("true"), "tmp", "the loaded scene won't appear in history of opened files");
+    argParser->addArgument(cxxopts::value<std::string>(colorsStatus)->default_value("auto")->implicit_value("yes"), "c,colors", "use colors on stdout and stderr (yes, no, auto)");
+    argParser->addArgument(cxxopts::value<std::string>(messageHandler)->default_value("auto"), "f,formatting", "select the message formatting to use (auto, clang, sofa, rich, test)");
+    argParser->addArgument(cxxopts::value<std::string>(gui)->default_value(""), "g,gui", gui_help.c_str());
+    argParser->addArgument(cxxopts::value<bool>(noAutoloadPlugins)->default_value("false")->implicit_value("true"), "noautoload", "disable plugins autoloading");
 
     argParser->parse();
     files = argParser->getInputFileList();
@@ -180,8 +169,6 @@ int main(int argc, char** argv)
     // even if everything is ok e.g. asking for help
     sofa::simulation::graph::init();
     sofa::component::initSofaBase();
-    sofa::component::initSofaCommon();
-    sofa::component::initSofaGeneral();
     
     glutInit(&argc, argv);
 

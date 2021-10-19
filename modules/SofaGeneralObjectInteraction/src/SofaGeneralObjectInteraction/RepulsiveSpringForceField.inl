@@ -39,7 +39,7 @@ void RepulsiveSpringForceField<DataTypes>::addForce(const sofa::core::Mechanical
     const VecCoord& x2 =  data_x2.getValue();
     const VecDeriv& v2 =  data_v2.getValue();
 
-    const helper::vector<Spring>& springs= this->springs.getValue();
+    const type::vector<Spring>& springs= this->springs.getValue();
     this->dfdx.resize(springs.size());
     f1.resize(x1.size());
     f2.resize(x2.size());
@@ -91,14 +91,5 @@ SReal RepulsiveSpringForceField<DataTypes>::getPotentialEnergy(const sofa::core:
     msg_error() << "RepulsiveSpringForceField::getPotentialEnergy-not-implemented !!!";
     return 0;
 }
-
-
-
-template <class DataTypes>
-void RepulsiveSpringForceField<DataTypes>::updateMaskForce()
-{
-    // already done in addForceImplementation
-}
-
 
 } //namespace sofa::component::interactionforcefield

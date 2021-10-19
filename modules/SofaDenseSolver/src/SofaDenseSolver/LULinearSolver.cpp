@@ -22,6 +22,7 @@
 #include <SofaDenseSolver/LULinearSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaDenseSolver/NewMatMatrix.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::linearsolver
@@ -87,7 +88,7 @@ void LULinearSolver<Matrix,Vector>::computeMinv()
         if (solver)
             Minv = solver->i();
         else
-            Minv = this->currentGroup->systemMatrix->i();
+            Minv = this->linearSystem.systemMatrix->i();
         computedMinv = true;
     }
 }
@@ -104,7 +105,7 @@ bool LULinearSolver<Matrix, Vector>::addJMInvJt(RMatrix& result, JMatrix& J, dou
 {
     const unsigned int Jrows = J.rowSize();
     const unsigned int Jcols = J.colSize();
-    if (Jcols != (unsigned int)this->currentGroup->systemMatrix->rowSize())
+    if (Jcols != (unsigned int)this->linearSystem.systemMatrix->rowSize())
     {
         msg_error() << "AddJMInvJt ERROR: incompatible J matrix size.";
         return false;
@@ -181,7 +182,7 @@ bool LULinearSolver<Matrix,Vector>::addJMInvJt(defaulttype::BaseMatrix* result, 
     return false;
 }
 
-int LULinearSolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
+int LULinearSolverClass = core::RegisterObject("Direct linear solver based on LU factorization")
         .add< LULinearSolver<NewMatMatrix,NewMatVector> >(true)
         .add< LULinearSolver<NewMatSymmetricMatrix,NewMatVector> >()
         .add< LULinearSolver<NewMatBandMatrix,NewMatVector> >()
