@@ -26,7 +26,6 @@
 #include <numeric>
 #include <iterator>
 #include <algorithm>
-#include <iostream>
 
 namespace sofa::geometry
 {

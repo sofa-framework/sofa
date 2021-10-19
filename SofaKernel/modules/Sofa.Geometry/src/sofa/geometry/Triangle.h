@@ -43,7 +43,7 @@ struct Triangle
         const auto b = sofa::geometry::Edge::length(n0, n2);
         const auto c = sofa::geometry::Edge::length(n1, n2);
 
-        const auto area = 0.25 * std::sqrt((a + b + c) * (-a + b + c) * (a - b + c) * (a + b - c));
+        const auto area = static_cast<T>(0.25) * std::sqrt((a + b + c) * (-a + b + c) * (a - b + c) * (a + b - c));
         return area;
     }
 };

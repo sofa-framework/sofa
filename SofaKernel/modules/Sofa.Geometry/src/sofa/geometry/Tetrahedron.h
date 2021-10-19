@@ -37,7 +37,7 @@ struct Tetrahedron
 
     Tetrahedron() = default;
 
-    //needs cross
+    //needs dot, cross
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>>
