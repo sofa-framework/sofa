@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_FORCEFIELD_INL
-#define SOFA_CORE_BEHAVIOR_FORCEFIELD_INL
+#pragma once
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
@@ -33,25 +32,12 @@ namespace sofa::core::behavior
 
 template<class DataTypes>
 ForceField<DataTypes>::ForceField(MechanicalState<DataTypes> *mm)
-    : BaseForceField()
-    , mstate(initLink("mstate", "MechanicalState used by this ForceField"), mm)
+    : BaseForceField(), SingleStateAccessor<DataTypes>(mm)
 {
 }
 
 template<class DataTypes>
 ForceField<DataTypes>::~ForceField() = default;
-
-template<class DataTypes>
-void ForceField<DataTypes>::init()
-{
-    BaseForceField::init();
-
-    if (!mstate.get())
-        mstate.set(dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState()));
-}
-
-
-
 
 template<class DataTypes>
 void ForceField<DataTypes>::addForce(const MechanicalParams* mparams, MultiVecDerivId fId )
@@ -144,5 +130,3 @@ void ForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/
 }
 
 } // namespace sofa::core::behavior
-
-#endif

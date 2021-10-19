@@ -19,17 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BaseMass.h"
+#include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 
-namespace sofa
+namespace sofa::core::behavior
 {
 
-namespace core
+BaseMass::BaseMass()
+    : m_separateGravity (initData(&m_separateGravity , false, "separateGravity", "add separately gravity to velocity computation"))
+    , rayleighMass (initData(&rayleighMass , SReal(0), "rayleighMass", "Rayleigh damping - mass matrix coefficient"))
 {
-
-namespace behavior
-{
+}
 
 bool BaseMass::insertInNode( objectmodel::BaseNode* node )
 {
@@ -46,9 +46,5 @@ bool BaseMass::removeInNode( objectmodel::BaseNode* node )
 }
 
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::behavior
 

@@ -19,38 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_INL
-#define SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_INL
+#pragma once
 
-#include "MixedInteractionConstraint.h"
+#include <sofa/core/behavior/MixedInteractionConstraint.h>
 #include <sofa/core/ConstraintParams.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 template<class DataTypes1, class DataTypes2>
 MixedInteractionConstraint<DataTypes1, DataTypes2>::MixedInteractionConstraint(MechanicalState<DataTypes1> *mm1, MechanicalState<DataTypes2> *mm2)
-    : endTime( initData(&endTime,(SReal)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
-    , mstate1(initLink("object1", "First object to constrain"), mm1)
-    , mstate2(initLink("object2", "Second object to constrain"), mm2)
+    : Inherit1(), Inherit2(mm1, mm2)
+    , endTime( initData(&endTime,(SReal)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
 {
 }
 
 template<class DataTypes1, class DataTypes2>
 MixedInteractionConstraint<DataTypes1, DataTypes2>::~MixedInteractionConstraint()
 {
-}
-
-template<class DataTypes1, class DataTypes2>
-void MixedInteractionConstraint<DataTypes1, DataTypes2>::init()
-{
-    BaseInteractionConstraint::init();
 }
 
 template<class DataTypes1, class DataTypes2>
@@ -78,10 +64,4 @@ void MixedInteractionConstraint<DataTypes1, DataTypes2>::buildConstraintMatrix(c
     }
 }
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

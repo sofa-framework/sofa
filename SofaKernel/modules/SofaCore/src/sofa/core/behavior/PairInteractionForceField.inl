@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_PAIRINTERACTIONFORCEFIELD_INL
-#define SOFA_CORE_BEHAVIOR_PAIRINTERACTIONFORCEFIELD_INL
+#pragma once
 
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/PairInteractionForceField.h>
@@ -28,19 +27,12 @@
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 template<class DataTypes>
 PairInteractionForceField<DataTypes>::PairInteractionForceField(MechanicalState<DataTypes> *mm1, MechanicalState<DataTypes> *mm2)
-    : mstate1(initLink("object1", "First object in interaction"), mm1)
-    , mstate2(initLink("object2", "Second object in interaction"), mm2)
+    : Inherit1(), Inherit2(mm1, mm2)
 {
     if (!mm1)
         mstate1.setPath("@./"); // default to state of the current node
@@ -52,22 +44,6 @@ template<class DataTypes>
 PairInteractionForceField<DataTypes>::~PairInteractionForceField()
 {
 }
-
-
-template<class DataTypes>
-void PairInteractionForceField<DataTypes>::init()
-{
-
-    BaseInteractionForceField::init();
-
-    if (mstate1.get() == nullptr || mstate2.get() == nullptr)
-    {
-        msg_error() << "Init of PairInteractionForceField " << getContext()->getName() << " failed!";
-        //getContext()->removeObject(this);
-        return;
-    }
-}
-
 
 template<class DataTypes>
 void PairInteractionForceField<DataTypes>::addForce(const MechanicalParams* mparams, MultiVecDerivId fId )
@@ -103,10 +79,4 @@ SReal PairInteractionForceField<DataTypes>::getPotentialEnergy(const MechanicalP
     else return 0.0;
 }
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

@@ -19,43 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_PAIRINTERACTIONCONSTRAINT_INL
-#define SOFA_CORE_BEHAVIOR_PAIRINTERACTIONCONSTRAINT_INL
+#pragma once
 
 #include <sofa/core/behavior/PairInteractionConstraint.h>
 #include <sofa/core/ConstraintParams.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 template<class DataTypes>
 PairInteractionConstraint<DataTypes>::PairInteractionConstraint(MechanicalState<DataTypes> *mm1, MechanicalState<DataTypes> *mm2)
-    : endTime( initData(&endTime,(SReal)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
-    , mstate1(initLink("object1", "First object to constrain"), mm1)
-    , mstate2(initLink("object2", "Second object to constrain"), mm2)
+    : Inherit1(), Inherit2(mm1, mm2)
+    , endTime( initData(&endTime,(SReal)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
 {
 }
 
 template<class DataTypes>
 PairInteractionConstraint<DataTypes>::~PairInteractionConstraint()
 {
-}
-
-template<class DataTypes>
-void PairInteractionConstraint<DataTypes>::init()
-{
-    BaseInteractionConstraint::init();
-
-    if (mstate1 == nullptr || mstate2 == nullptr)
-    {
-        mstate1 = mstate2 = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
-    }
 }
 
 template<class DataTypes>
@@ -110,10 +91,4 @@ void PairInteractionConstraint<DataTypes>::storeLambda(const ConstraintParams*, 
     j2.multTransposeBaseVector(res2, lambda );
 }
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior
