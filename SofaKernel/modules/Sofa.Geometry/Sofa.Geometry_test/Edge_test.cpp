@@ -50,7 +50,7 @@ TEST(GeometryEdge_test, squaredLength1f)
     EXPECT_FLOAT_EQ(expectedResult, sofa::geometry::Edge::squaredLength(a3, b3));
 }
 
-TEST(GeometryEdge_test, squaredLength2f_stdarray)
+TEST(GeometryEdge_test, squaredLength2f)
 {
     const std::array<float, 2> a1{ 1.f, 1.f };
     const std::array<float, 2> b1{ 10.f, 10.f };
@@ -66,7 +66,7 @@ TEST(GeometryEdge_test, squaredLength2f_stdarray)
     EXPECT_FLOAT_EQ(expectedResult, sofa::geometry::Edge::squaredLength(a3, b3));
 }
 
-TEST(GeometryEdge_test, squaredLength3f_stdarray)
+TEST(GeometryEdge_test, squaredLength3f)
 {
     const std::array<float, 3> a1{ 3.f, 2.f, 7.f };
     const std::array<float, 3> b1{ 8.f, 1.f, 9.f };
@@ -82,7 +82,7 @@ TEST(GeometryEdge_test, squaredLength3f_stdarray)
     EXPECT_FLOAT_EQ(expectedResult, sofa::geometry::Edge::squaredLength(a3, b3));
 }
 
-TEST(GeometryEdge_test, length3f_stdarray)
+TEST(GeometryEdge_test, length3f)
 {
     const std::array<float, 3> a1{ 2.f, 1.f, 1.f };
     const std::array<float, 3> b1{ 5.f, 2.f, -1.f };
@@ -97,6 +97,5 @@ TEST(GeometryEdge_test, length3f_stdarray)
     EXPECT_FLOAT_EQ(expectedResult, sofa::geometry::Edge::length(a2, b2));
     EXPECT_FLOAT_EQ(expectedResult, sofa::geometry::Edge::length(a3, b3));
 }
-
 
 }// namespace sofa

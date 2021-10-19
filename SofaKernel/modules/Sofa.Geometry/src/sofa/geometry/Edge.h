@@ -26,6 +26,7 @@
 #include <numeric>
 #include <iterator>
 #include <algorithm>
+#include <iostream>
 
 namespace sofa::geometry
 {
@@ -43,7 +44,7 @@ struct Edge
     {
         Node v{};
         std::transform(n0.begin(), n0.end(), n1.begin(), v.begin(), std::minus<T>());
-        return std::inner_product(std::begin(v), std::end(v), std::begin(v), 0);
+        return std::inner_product(std::cbegin(v), std::cend(v), std::cbegin(v), static_cast<T>(0));
     }
 
     template<typename Node,
