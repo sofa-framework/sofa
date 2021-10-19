@@ -19,40 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
 
-#include <sofa/geometry/config.h>
-#include <cmath>
-#include <numeric>
-#include <iterator>
-#include <algorithm>
+#include <sofa/geometry/Triangle.h>
 
-namespace sofa::geometry
+#include <sofa/type/fixed_array.h>
+#include <array>
+
+#include <gtest/gtest.h>
+
+namespace sofa
 {
 
-struct Edge
+TEST(GeometryTriangle_test, area2f_stdarray)
 {
-    static constexpr sofa::Size NumberOfNodes = 2;
+    const std::array<float, 2> a{ -2.f, 3.f };
+    const std::array<float, 2> b{ -3.f, -1.f };
+    const std::array<float, 2> c{ 3.f, -2.f };
 
-    Edge() = default;
+    const auto testArea = sofa::geometry::Triangle::area(a, b, c);
+    EXPECT_FLOAT_EQ(testArea, 12.5f);
+}
+TEST(GeometryTriangle_test, area3f_stdarray)
+{
+    const std::array<float, 3> a{ -5.f, 5.f, -5.f };
+    const std::array<float, 3> b{ 1.f, -6.f, 6.f };
+    const std::array<float, 3> c{ 2.f, -3.f, 4.f };
 
-    template<typename Node,
-        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
-        typename = std::enable_if_t<std::is_scalar_v<T>>>
-        static constexpr auto squaredLength(const Node& n0, const Node& n1)
-    {
-        Node v{};
-        std::transform(n0.begin(), n0.end(), n1.begin(), v.begin(), std::minus<T>());
-        return std::inner_product(std::begin(v), std::end(v), std::begin(v), 0);
-    }
+    const auto testArea = sofa::geometry::Triangle::area(a, b, c);
+    EXPECT_FLOAT_EQ(testArea, 19.306734f);
+}
 
-    template<typename Node,
-        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
-        typename = std::enable_if_t<std::is_scalar_v<T>>>
-        static constexpr auto length(const Node& n0, const Node& n1)
-    {
-        return std::sqrt(squaredLength(n0, n1));
-    }
-};
-
-} // namespace sofa::geometry
+}// namespace sofa

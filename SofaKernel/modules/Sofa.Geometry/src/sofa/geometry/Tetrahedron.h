@@ -24,6 +24,8 @@
 #include <sofa/geometry/config.h>
 
 #include <sofa/type/fixed_array_algorithms.h>
+#include <sofa/type/vector_algebra.h>
+#include <sofa/type/Vec.h>
 #include <iterator>
 
 namespace sofa::geometry
@@ -50,7 +52,7 @@ struct Tetrahedron
             const auto b = n2 - n0;
             const auto c = n3 - n0;
 
-            return sofa::type::dot(a, b.cross(c)) / static_cast<T>(6);
+            return std::abs(sofa::type::dot(sofa::type::cross(a, b), c) / static_cast<T>(6));
         }
         else
         {

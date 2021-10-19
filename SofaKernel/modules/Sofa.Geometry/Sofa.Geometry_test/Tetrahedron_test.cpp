@@ -19,40 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
 
-#include <sofa/geometry/config.h>
-#include <cmath>
-#include <numeric>
-#include <iterator>
-#include <algorithm>
+#include <sofa/geometry/Tetrahedron.h>
 
-namespace sofa::geometry
+#include <sofa/type/Vec.h>
+
+#include <gtest/gtest.h>
+
+namespace sofa
 {
 
-struct Edge
+TEST(GeometryTetrahedron_test, volume2_vec3f)
 {
-    static constexpr sofa::Size NumberOfNodes = 2;
+    const sofa::type::Vec3f a{ -1.f, 2.f, 0.f };
+    const sofa::type::Vec3f b{ 2.f, 1.f, -3.f };
+    const sofa::type::Vec3f c{ 1.f, 0.f, 1.f };
+    const sofa::type::Vec3f d{ 3.f, -2.f, 3.f };
 
-    Edge() = default;
+    const auto testVolume = sofa::geometry::Tetrahedron::volume(a, b, c, d);
+    EXPECT_NEAR(testVolume, 2.f/3.f, 1e-5);
+}
 
-    template<typename Node,
-        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
-        typename = std::enable_if_t<std::is_scalar_v<T>>>
-        static constexpr auto squaredLength(const Node& n0, const Node& n1)
-    {
-        Node v{};
-        std::transform(n0.begin(), n0.end(), n1.begin(), v.begin(), std::minus<T>());
-        return std::inner_product(std::begin(v), std::end(v), std::begin(v), 0);
-    }
-
-    template<typename Node,
-        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
-        typename = std::enable_if_t<std::is_scalar_v<T>>>
-        static constexpr auto length(const Node& n0, const Node& n1)
-    {
-        return std::sqrt(squaredLength(n0, n1));
-    }
-};
-
-} // namespace sofa::geometry
+}// namespace sofa

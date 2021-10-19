@@ -39,13 +39,12 @@ struct Triangle
         typename = std::enable_if_t<std::is_scalar_v<T>>>
         static constexpr auto area(const Node& n0, const Node& n1, const Node& n2)
     {
-        const auto a = sofa::geometry::Edge::squaredLength(n0, n1);
-        const auto b = sofa::geometry::Edge::squaredLength(n0, n2);
-        const auto c = sofa::geometry::Edge::squaredLength(n1, n2);
+        const auto a = sofa::geometry::Edge::length(n0, n1);
+        const auto b = sofa::geometry::Edge::length(n0, n2);
+        const auto c = sofa::geometry::Edge::length(n1, n2);
 
-        const auto squaredArea = (2 * a * b + 2 * b * c + 2 * c * a - (a * a) - (b * b) - (c * c)) / 16;
-
-        return std::sqrt(squaredArea);
+        const auto area = 0.25 * std::sqrt((a + b + c) * (-a + b + c) * (a - b + c) * (a + b - c));
+        return area;
     }
 };
 
