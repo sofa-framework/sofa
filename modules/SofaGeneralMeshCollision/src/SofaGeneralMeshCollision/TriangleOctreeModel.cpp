@@ -34,9 +34,6 @@ typedef core::topology::BaseMeshTopology::Triangle	Triangle;
 namespace sofa::component::collision
 {
 
-using sofa::helper::system::thread::CTime;
-using sofa::helper::system::thread::ctime_t;
-
 int TriangleOctreeModelClass =	core::RegisterObject ("collision model using a triangular mesh mapped to an Octree").add <	TriangleOctreeModel > ().addAlias ("TriangleOctree");
 
 TriangleOctreeModel::TriangleOctreeModel ()

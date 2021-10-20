@@ -181,6 +181,9 @@ public:
     topology::TriangleData<sofa::type::vector<TriangleInformation> > triangleInfo;
     topology::PointData<sofa::type::vector<VertexInformation> > vertexInfo; ///< Internal point data
 
+    /** Method to initialize @sa TriangleInformation when a new Triangle is created.
+    * Will be set as creation callback in the TriangleData @sa triangleInfo
+    */
     void createTriangleInformation(Index triangleIndex, TriangleInformation&,
         const core::topology::BaseMeshTopology::Triangle& t,
         const sofa::type::vector< Index >&,

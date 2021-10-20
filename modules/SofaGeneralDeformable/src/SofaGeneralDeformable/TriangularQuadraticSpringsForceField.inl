@@ -33,98 +33,81 @@ namespace sofa::component::forcefield
 {
 
 template< class DataTypes>
-void TriangularQuadraticSpringsForceField<DataTypes>::TRQSEdgeHandler::applyCreateFunction(Index edgeIndex, EdgeRestInformation &ei, const core::topology::Edge &, const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
+void TriangularQuadraticSpringsForceField<DataTypes>::applyEdgeCreation(Index edgeIndex, EdgeRestInformation &ei, const core::topology::Edge &, const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
 {
-    if (ff)
-    {
+    sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* triangleGeo=nullptr;
+    this->getContext()->get(triangleGeo);
 
-        sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* triangleGeo=nullptr;
-        ff->getContext()->get(triangleGeo);
-
-        // store the rest length of the edge created
-        ei.restLength=triangleGeo->computeRestEdgeLength(edgeIndex);
-        ei.stiffness=0;
-    }
+    // store the rest length of the edge created
+    ei.restLength=triangleGeo->computeRestEdgeLength(edgeIndex);
+    ei.stiffness=0;
 }
 
 
 
 template< class DataTypes>
-void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleHandler::applyCreateFunction(Index triangleIndex, TriangleRestInformation &tinfo,
+void TriangularQuadraticSpringsForceField<DataTypes>::applyTriangleCreation(Index triangleIndex, TriangleRestInformation &tinfo,
         const core::topology::Triangle &, const sofa::type::vector<Index> &,
         const sofa::type::vector<double> &)
 {
     using namespace	sofa::component::topology;
+    unsigned int j=0,k=0,l=0;
 
-    if (ff)
+    typename DataTypes::Real area,squareRestLength[3],restLength[3],cotangent[3];
+    typename DataTypes::Real lambda=getLambda();
+    typename DataTypes::Real mu=getMu();
+
+    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeInf = edgeInfo;
+
+    /// describe the jth edge index of triangle no i
+    const core::topology::BaseMeshTopology::EdgesInTriangle &te= this->m_topology->getEdgesInTriangle(triangleIndex);
+    // store square rest length
+    for(j=0; j<3; ++j)
     {
-        unsigned int j=0,k=0,l=0;
+        restLength[j]=edgeInf[te[j]].restLength;
+        squareRestLength[j]= restLength[j]*restLength[j];
+    }
+    // compute rest area based on Heron's formula
+    area=0;
+    for(j=0; j<3; ++j)
+    {
+        area+=squareRestLength[j]*(squareRestLength[(j+1)%3] +squareRestLength[(j+2)%3]-squareRestLength[j]);
+    }
+    area=sqrt(area)/4;
 
-        EdgeData<sofa::type::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation> > &edgeInfo=ff->getEdgeInfo();
-        typename DataTypes::Real area,squareRestLength[3],restLength[3],cotangent[3];
-        typename DataTypes::Real lambda=ff->getLambda();
-        typename DataTypes::Real mu=ff->getMu();
-
-        type::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
-
-        /// describe the jth edge index of triangle no i
-        const core::topology::BaseMeshTopology::EdgesInTriangle &te= ff->m_topology->getEdgesInTriangle(triangleIndex);
-        // store square rest length
-        for(j=0; j<3; ++j)
-        {
-            restLength[j]=edgeInf[te[j]].restLength;
-            squareRestLength[j]= restLength[j]*restLength[j];
-        }
-        // compute rest area based on Heron's formula
-        area=0;
-        for(j=0; j<3; ++j)
-        {
-            area+=squareRestLength[j]*(squareRestLength[(j+1)%3] +squareRestLength[(j+2)%3]-squareRestLength[j]);
-        }
-        area=sqrt(area)/4;
-
-        for(j=0; j<3; ++j)
-        {
-            cotangent[j]=(squareRestLength[(j+1)%3] +squareRestLength[(j+2)%3]-squareRestLength[j])/(4*area);
-        }
-        for(j=0; j<3; ++j)
-        {
-            k=(j+1)%3;
-            l=(j+2)%3;
-            tinfo.gamma[j]=restLength[k]*restLength[l]*(2*cotangent[k]*cotangent[l]*(lambda+mu)-mu)/(8*area);
-            tinfo.stiffness[j]=restLength[j]*restLength[j]*(2*cotangent[j]*cotangent[j]*(lambda+mu)+mu)/(8*area);
-            edgeInf[te[j]].stiffness+=tinfo.stiffness[j];
-        }
-        edgeInfo.endEdit();
+    for(j=0; j<3; ++j)
+    {
+        cotangent[j]=(squareRestLength[(j+1)%3] +squareRestLength[(j+2)%3]-squareRestLength[j])/(4*area);
+    }
+    for(j=0; j<3; ++j)
+    {
+        k=(j+1)%3;
+        l=(j+2)%3;
+        tinfo.gamma[j]=restLength[k]*restLength[l]*(2*cotangent[k]*cotangent[l]*(lambda+mu)-mu)/(8*area);
+        tinfo.stiffness[j]=restLength[j]*restLength[j]*(2*cotangent[j]*cotangent[j]*(lambda+mu)+mu)/(8*area);
+        edgeInf[te[j]].stiffness+=tinfo.stiffness[j];
     }
 
 }
 
 
 template< class DataTypes>
-void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleHandler::applyDestroyFunction(Index triangleIndex, TriangleRestInformation &tinfo)
+void TriangularQuadraticSpringsForceField<DataTypes>::applyTriangleDestruction(Index triangleIndex, TriangleRestInformation &tinfo)
 {
     using namespace	sofa::component::topology;
+    unsigned int j;
 
-    if (ff)
+    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeInf = edgeInfo;
+
+    /// describe the jth edge index of triangle no i
+    const core::topology::BaseMeshTopology::EdgesInTriangle &te= this->m_topology->getEdgesInTriangle(triangleIndex);
+    // store square rest length
+    for(j=0; j<3; ++j)
     {
-        unsigned int j;
-
-        EdgeData<sofa::type::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation> > &edgeInfo=ff->getEdgeInfo();
-
-        type::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
-
-        /// describe the jth edge index of triangle no i
-        const core::topology::BaseMeshTopology::EdgesInTriangle &te= ff->m_topology->getEdgesInTriangle(triangleIndex);
-        // store square rest length
-        for(j=0; j<3; ++j)
-        {
-            edgeInf[te[j]].stiffness -= tinfo.stiffness[j];
-        }
-
-        edgeInfo.endEdit();
+        edgeInf[te[j]].stiffness -= tinfo.stiffness[j];
     }
 }
+
 template <class DataTypes> TriangularQuadraticSpringsForceField<DataTypes>::TriangularQuadraticSpringsForceField()
     : _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
     , updateMatrix(true)
@@ -139,14 +122,12 @@ template <class DataTypes> TriangularQuadraticSpringsForceField<DataTypes>::Tria
     , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
     , m_topology(nullptr)
 {
-    triangleHandler = new TRQSTriangleHandler(this, &triangleInfo);
-    edgeHandler = new TRQSEdgeHandler(this, &edgeInfo);
+
 }
 
 template <class DataTypes> TriangularQuadraticSpringsForceField<DataTypes>::~TriangularQuadraticSpringsForceField()
 {
-    if(triangleHandler) delete triangleHandler;
-    if(edgeHandler) delete edgeHandler;
+
 }
 
 template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>::init()
@@ -170,8 +151,8 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
         return;
     }
 
-    triangleInfo.createTopologyHandler(m_topology,triangleHandler);
-    edgeInfo.createTopologyHandler(m_topology,edgeHandler);
+    triangleInfo.createTopologyHandler(m_topology);
+    edgeInfo.createTopologyHandler(m_topology);
 
     if (m_topology->getNbTriangles()==0)
     {
@@ -180,13 +161,11 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
     }
     updateLameCoefficients();
 
-    type::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::TriangleRestInformation>& triangleInf = *(triangleInfo.beginEdit());
-
     /// prepare to store info in the triangle array
+    helper::WriteOnlyAccessor< Data< type::vector<TriangleRestInformation> > > triangleInf = triangleInfo;
     triangleInf.resize(m_topology->getNbTriangles());
     /// prepare to store info in the edge array
-    type::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
-
+    helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeInf = edgeInfo;
     edgeInf.resize(m_topology->getNbEdges());
 
     if (_initialPoints.getValue().size() == 0)
@@ -198,16 +177,37 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
     unsigned int i;
     for (i=0; i<m_topology->getNbEdges(); ++i)
     {
-        edgeHandler->applyCreateFunction(i, edgeInf[i],
-                m_topology->getEdge(i),  (const sofa::type::vector< Index > )0,
-                (const sofa::type::vector< double >)0);
+        applyEdgeCreation(i, edgeInf[i],
+            m_topology->getEdge(i),  (const sofa::type::vector< Index > )0,
+            (const sofa::type::vector< double >)0);
     }
     for (i=0; i<m_topology->getNbTriangles(); ++i)
     {
-        triangleHandler->applyCreateFunction(i, triangleInf[i],
-                m_topology->getTriangle(i),  (const sofa::type::vector< Index > )0,
-                (const sofa::type::vector< double >)0);
+        applyTriangleCreation(i, triangleInf[i],
+            m_topology->getTriangle(i),  (const sofa::type::vector< Index > )0,
+            (const sofa::type::vector< double >)0);
     }
+
+    edgeInfo.setCreationCallback([this](Index edgeIndex, EdgeRestInformation& ei,
+        const core::topology::BaseMeshTopology::Edge& edge,
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs)
+    {
+        applyEdgeCreation(edgeIndex, ei, edge, ancestors, coefs);
+    });
+
+    triangleInfo.setCreationCallback([this](Index triangleIndex, TriangleRestInformation& tinfo,
+        const core::topology::BaseMeshTopology::Triangle& triangle,
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs)
+    {
+        applyTriangleCreation(triangleIndex, tinfo, triangle, ancestors, coefs);
+    });
+
+    triangleInfo.setDestructionCallback([this](Index triangleIndex, TriangleRestInformation& tinfo)
+    {
+        applyTriangleDestruction(triangleIndex, tinfo);
+    });
 }
 
 template <class DataTypes>

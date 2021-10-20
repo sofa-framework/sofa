@@ -120,6 +120,19 @@ public:
     static const std::string GetCustomTemplateName(){ return "non,oui"; }
 };
 
+template<class TDataType1>
+class OuterClass : public BaseObject
+{
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(OuterClass, TDataType1), BaseObject);
+
+    template<class TDataType2>
+    class InnerClass : public BaseObject
+    {
+    public:
+        SOFA_CLASS(SOFA_TEMPLATE(InnerClass, TDataType2), BaseObject);
+    };
+};
 
 class BaseClass_test: public BaseTest
 {
@@ -133,6 +146,8 @@ public:
     DefaultTemplate1<DataOne> m_ptr7;
     DefaultTemplate2<DataOne, DataTwo> m_ptr8;
     DefaultTemplate3<DataOne, DataTwo, NotAType> m_ptr9;
+    OuterClass<DataOne> m_ptr10;
+    OuterClass<DataOne>::InnerClass<DataTwo> m_ptr11;
 
     sofa::core::objectmodel::Base* m_baseptr1 {&m_ptr1};
     sofa::core::objectmodel::Base* m_baseptr2 {&m_ptr2};
@@ -239,3 +254,11 @@ TEST_F(BaseClass_test, checkStaticGetCustomClassNameOldWay  )
     ASSERT_EQ(sofa::helper::NameDecoder::getClassName<sofa::numbered_namespace_123::CustomNameOldWay>(),"ClassWithACustomNameOldWay") ;
 }
 
+TEST_F(BaseClass_test, checkNestedClass)
+{
+    EXPECT_EQ(m_ptr10.getClassName(),"OuterClass") ;
+    EXPECT_EQ(m_ptr10.getTemplateName(),"One") ;
+
+    EXPECT_EQ(m_ptr11.getClassName(),"InnerClass") ;
+    EXPECT_EQ(m_ptr11.getTemplateName(),"Two") ;
+}

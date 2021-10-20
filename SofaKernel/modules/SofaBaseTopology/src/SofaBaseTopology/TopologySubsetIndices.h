@@ -50,7 +50,7 @@ public:
 
     void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology) override;
 
-    void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler < core::topology::BaseMeshTopology::Point, type::vector<Index> >* topoEngine) override;
+    void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler < core::topology::BaseMeshTopology::Point, type::vector<Index> >* topoHandler) override;
 
 protected:
     void swapPostProcess(Index i1, Index i2) override;

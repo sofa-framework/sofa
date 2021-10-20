@@ -91,39 +91,28 @@ protected:
 
     sofa::component::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > edgeInfo; ///< Internal edge data
 
-    class TriangularTMEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,type::vector<EdgeRestInformation> >
-    {
-    public:
-        typedef typename TriangularTensorMassForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
+    /** Method to initialize @sa EdgeRestInformation when a new edge is created.
+    * Will be set as creation callback in the EdgeData @sa edgeInfo
+    */
+    void applyEdgeCreation(Index edgeIndex, EdgeRestInformation&,
+        const core::topology::BaseMeshTopology::Edge& e,
+        const sofa::type::vector<Index>&,
+        const sofa::type::vector<double>&);
 
-        TriangularTMEdgeHandler(
-            TriangularTensorMassForceField<DataTypes>* ff,
-            sofa::component::topology::EdgeData<sofa::type::vector<EdgeRestInformation> >* data
-        )
-            :sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,sofa::type::vector<EdgeRestInformation> >(data),ff(ff)
-        {
-        }
+    /** Method to update @sa edgeInfo when a new triangle is created.
+    * Will be set as callback in the EdgeData @sa edgeInfo when TRIANGLESADDED event is fired
+    * to create a new spring between new created triangles.
+    */
+    void applyTriangleCreation(const sofa::type::vector<Index>& triangleAdded,
+        const sofa::type::vector<core::topology::BaseMeshTopology::Triangle>&,
+        const sofa::type::vector<sofa::type::vector<Index> >&,
+        const sofa::type::vector<sofa::type::vector<double> >&);
 
-        void applyCreateFunction(Index edgeIndex, EdgeRestInformation&,
-                const core::topology::BaseMeshTopology::Edge& e,
-                const sofa::type::vector<Index> &,
-                const sofa::type::vector<double> &);
-
-        void applyTriangleCreation(const sofa::type::vector<Index> &triangleAdded,
-                const sofa::type::vector<core::topology::BaseMeshTopology::Triangle> & ,
-                const sofa::type::vector<sofa::type::vector<Index> > & ,
-                const sofa::type::vector<sofa::type::vector<double> > &);
-
-        void applyTriangleDestruction(const sofa::type::vector<Index> &triangleRemoved);
-
-        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,type::vector<EdgeRestInformation> >::ApplyTopologyChange;
-        /// Callback to add triangles elements.
-        void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/);
-        /// Callback to remove triangles elements.
-        void ApplyTopologyChange(const core::topology::TrianglesRemoved* /*event*/);
-    protected:
-        TriangularTensorMassForceField<DataTypes>* ff;
-    };
+    /** Method to update @sa edgeInfo when a triangle is removed.
+    * Will be set as callback in the EdgeData @sa edgeInfo when TRIANGLESREMOVED event is fired
+    * to remove spring if needed or update pair of triangles.
+    */
+    void applyTriangleDestruction(const sofa::type::vector<Index>& triangleRemoved);
 
     
     VecCoord  _initialPoints;///< the intial positions of the points
@@ -139,9 +128,6 @@ protected:
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient
-
-    TriangularTMEdgeHandler* edgeHandler;
-
 
     TriangularTensorMassForceField();
 

@@ -27,7 +27,6 @@
 
 #include <sofa/core/topology/BaseTopology.h>
 
-#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa::component::topology
 {

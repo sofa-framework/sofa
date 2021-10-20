@@ -601,7 +601,7 @@ BaseCamera::Vec3 BaseCamera::viewportToWorldPoint(const BaseCamera::Vec3& p)
     getOpenGLModelViewMatrix(glM.ptr());
 
     const bool canInvert1 = invertglP.invert(glP);
-    assert(canInvert);
+    assert(canInvert1);
     SOFA_UNUSED(canInvert1);
     const bool canInvert2 = invertglM.invert(glM);
     assert(canInvert2);

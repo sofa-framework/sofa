@@ -19,22 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_TOPOLOGY_BASETOPOLOGY_H
-#define SOFA_CORE_TOPOLOGY_BASETOPOLOGY_H
+#pragma once
 
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/BaseTopologyObject.h>
 #include <sofa/core/VecId.h>
+#include <array>
 
-
-namespace sofa
-{
-
-namespace core
-{
-
-namespace topology
+namespace sofa::core::topology
 {
 using core::topology::BaseMeshTopology;
 
@@ -246,11 +239,11 @@ public:
 
     /// TopologyHandler interactions
     ///@{
-    const std::list<TopologyHandler *> &getTopologyHandlerList() const { return m_TopologyHandlerList; }
+    const std::list<TopologyHandler*>& getTopologyHandlerList(sofa::geometry::ElementType elementType) const;
 
-    /** \brief Adds a TopologyHandler to the list.
+    /** \brief Adds a TopologyHandler, linked to a certain type of Element.
     */
-    void addTopologyHandler(TopologyHandler* _TopologyHandler);
+    void addTopologyHandler(TopologyHandler* _TopologyHandler, sofa::geometry::ElementType elementType);
 
 
     /** \brief Free each Topology changes in the list and remove them from the list
@@ -258,12 +251,13 @@ public:
     */
     void resetTopologyHandlerList();
 
-    ///@}
 
+    /** \ brief Generic function to link potential data (related to a type of element) with a topologyHandler
+    *
+    */
+    virtual bool linkTopologyHandlerToData(TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType);
 
 public:
-    virtual void updateTopologyHandlerGraph() {}
-
     /// Array of topology modifications that have already occured (addition) or will occur next (deletion).
     Data <std::list<const TopologyChange *> >m_changeList;
 
@@ -271,23 +265,10 @@ public:
     Data <std::list<const TopologyChange *> >m_stateChangeList;
 
     /// List of topology engines which will interact on all topological Data.
-    std::list<TopologyHandler *> m_TopologyHandlerList;
-
-public:
-
+    std::array< std::list<TopologyHandler*>, sofa::geometry::NumberOfElementType> m_topologyHandlerListPerElement{};
 
     bool insertInNode( objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
     bool removeInNode( objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
-
 };
 
-
-
-
-} // namespace topology
-
-} // namespace core
-
-} // namespace sofa
-
-#endif // SOFA_CORE_BASICTOPOLOGY_H
+} // namespace sofa::core::topology
