@@ -54,7 +54,7 @@ void PairInteractionConstraint<DataTypes>::getConstraintViolation(const Constrai
 {
     if (cParams)
     {
-        getConstraintViolation(cParams, v, *cParams->readX(mstate1), *cParams->readX(mstate2), *cParams->readV(mstate1), *cParams->readV(mstate2));
+        getConstraintViolation(cParams, v, *cParams->readX(this->mstate1), *cParams->readX(this->mstate2), *cParams->readV(this->mstate1), *cParams->readV(this->mstate2));
     }
 }
 
@@ -64,7 +64,7 @@ void PairInteractionConstraint<DataTypes>::buildConstraintMatrix(const Constrain
 {
     if (cParams)
     {
-        buildConstraintMatrix(cParams, *cId[mstate1.get()].write(), *cId[mstate2.get()].write(), cIndex, *cParams->readX(mstate1), *cParams->readX(mstate2));
+        buildConstraintMatrix(cParams, *cId[this->mstate1.get()].write(), *cId[this->mstate2.get()].write(), cIndex, *cParams->readX(this->mstate1), *cParams->readX(this->mstate2));
     }
 }
 
@@ -73,7 +73,7 @@ void PairInteractionConstraint<DataTypes>::storeLambda(const ConstraintParams* c
 {
     if (cParams)
     {
-        storeLambda(cParams, *res[mstate1.get()].write(), *res[mstate2.get()].write(), *cParams->readJ(mstate1), *cParams->readJ(mstate2), lambda);
+        storeLambda(cParams, *res[this->mstate1.get()].write(), *res[this->mstate2.get()].write(), *cParams->readJ(this->mstate1), *cParams->readJ(this->mstate2), lambda);
     }
 }
 
