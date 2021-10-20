@@ -373,7 +373,6 @@ void UniformMass<DataTypes, MassType>::updateMassOnResize(sofa::Size newSize)
     {
         d_totalMass.setValue(Real(newSize) * Real(d_vertexMass.getValue()));
     }
-    this->cleanTracker();
 }
 
 
