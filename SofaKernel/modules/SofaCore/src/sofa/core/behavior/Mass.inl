@@ -44,13 +44,6 @@ Mass<DataTypes>::~Mass()
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::init()
-{
-    ForceField<DataTypes>::init();
-}
-
-
-template<class DataTypes>
 void Mass<DataTypes>::addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor)
 {
     if (mparams)

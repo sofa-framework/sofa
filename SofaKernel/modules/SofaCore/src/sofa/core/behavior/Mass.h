@@ -57,7 +57,6 @@ protected:
 
     ~Mass() override;
 public:
-    void init() override;
 
     /// @name Vector operations
     /// @{
