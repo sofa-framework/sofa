@@ -370,7 +370,7 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
                 std::istringstream coordinates(cmd);
                 double x, y, z;
                 coordinates >> x >> y >> z;
-                m_vertices.push_back(sofa::defaulttype::Vector3(x, y, z));
+                m_vertices.push_back(sofa::type::Vector3(x, y, z));
                 nodeCount++;
             }
         }
@@ -454,7 +454,7 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
                 unsigned int elementTag;
                 elementInfo >> elementTag;
 
-                helper::vector<unsigned int> nodes;
+                type::vector<unsigned int> nodes;
                 unsigned int nodeId = 0;
                 nodes.resize(nnodes);
 
