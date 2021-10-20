@@ -38,7 +38,7 @@ def createScene(rootNode):
         SolverNode= rootNode.addChild('SolverNode')
         SolverNode.addObject('EulerImplicitSolver', rayleighStiffness=0.1, rayleighMass=0.1)
         SolverNode.addObject('SparseLDLSolver', name="ldlsolveur")
-        SolverNode.addObject('MechanicalMatrixMapper', template='Vec3d,Rigid3d',
+        SolverNode.addObject('MechanicalMatrixMapper', template='Vec3d,Rigid3d', fastMatrixProduct=True,
                              object1='@./deformablePartNode/beamPart1Mech',
                              object2='@./RigidNode/rigid1',
                              nodeToParse='@./deformablePartNode/FEMNode')

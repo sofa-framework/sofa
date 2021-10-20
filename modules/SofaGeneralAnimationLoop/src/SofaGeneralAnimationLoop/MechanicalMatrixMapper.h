@@ -36,8 +36,7 @@
 
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/BaseMapping.h>
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <Eigen/Sparse>
+#include <sofa/linearalgebra/SparseMatrixProduct[EigenSparseMatrix].h>
 
 namespace sofa::component::interactionforcefield
 {
@@ -149,6 +148,7 @@ protected:
     Data <bool> d_stopAtNodeToParse;
     Data <bool> d_skipJ1tKJ1;
     Data <bool> d_skipJ2tKJ2;
+    Data <bool> d_fastMatrixProduct;
     SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseMechanicalState , BaseLink::FLAG_NONE > l_mechanicalState;
     SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseMass , BaseLink::FLAG_NONE > l_mappedMass;
     MultiLink  < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseForceField, BaseLink::FLAG_NONE > l_forceField;
@@ -157,8 +157,31 @@ protected:
     unsigned int m_nbColsJ1, m_nbColsJ2;
     Eigen::SparseMatrix<double> m_J1eig;
     Eigen::SparseMatrix<double> m_J2eig;
+    linearalgebra::SparseMatrixProduct<Eigen::SparseMatrix<double> > m_product_J1tK;
+    linearalgebra::SparseMatrixProduct<Eigen::SparseMatrix<double> > m_product_J2tK;
+    linearalgebra::SparseMatrixProduct<Eigen::SparseMatrix<double> > m_product_J1tKJ1;
+    linearalgebra::SparseMatrixProduct<Eigen::SparseMatrix<double> > m_product_J2tKJ2;
+    linearalgebra::SparseMatrixProduct<Eigen::SparseMatrix<double> > m_product_J1tKJ2;
+    linearalgebra::SparseMatrixProduct<Eigen::SparseMatrix<double> > m_product_J2tKJ1;
+
+    Eigen::SparseMatrix<double> m_J1tKJ1eigen;
+    Eigen::SparseMatrix<double> m_J2tKJ2eigen;
+    Eigen::SparseMatrix<double> m_J1tKJ2eigen;
+    Eigen::SparseMatrix<double> m_J2tKJ1eigen;
+
+    /// Compute J1^T * K * J2 using the accelerated sparse matrix products
+    static void computeMatrixProduct(
+        bool fastProduct,
+        linearalgebra::SparseMatrixProduct<Eigen::SparseMatrix<double> >& product_1,
+        linearalgebra::SparseMatrixProduct<Eigen::SparseMatrix<double> >& product_2,
+        const Eigen::SparseMatrix<double>* J1, const Eigen::SparseMatrix<double>* J2,
+        const Eigen::SparseMatrix<double>* K,
+        Eigen::SparseMatrix<double>*& output);
+
     unsigned int m_fullMatrixSize;
     size_t m_nbInteractionForceFields;
+
+    int m_topologyRevision { -1 };
 
     MechanicalMatrixMapper() ;
 
