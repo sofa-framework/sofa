@@ -368,61 +368,61 @@ public:
             matrix->bAccessorAdd(&internal, i, j, v);
         }
 
-        /// Read all values from this bloc into given float buffer, or return the pointer to the data if the in-memory format is compatible
+        /// Read all values from this block into given float buffer, or return the pointer to the data if the in-memory format is compatible
         const float* elements(float* dest) const
         {
             return matrix->bAccessorElements(&internal, dest);
         }
 
-        /// Read all values from this bloc into given double buffer, or return the pointer to the data if the in-memory format is compatible
+        /// Read all values from this block into given double buffer, or return the pointer to the data if the in-memory format is compatible
         const double* elements(double* dest) const
         {
             return matrix->bAccessorElements(&internal, dest);
         }
 
-        /// Read all values from this bloc into given int buffer, or return the pointer to the data if the in-memory format is compatible
+        /// Read all values from this block into given int buffer, or return the pointer to the data if the in-memory format is compatible
         const int* elements(int* dest) const
         {
             return matrix->bAccessorElements(&internal, dest);
         }
 
-        /// Set all values of this bloc from the given float buffer
+        /// Set all values of this block from the given float buffer
         void set(const float* src)
         {
             matrix->bAccessorSet(&internal, src);
         }
 
-        /// Set all values of this bloc from the given double buffer
+        /// Set all values of this block from the given double buffer
         void set(const double* src)
         {
             matrix->bAccessorSet(&internal, src);
         }
 
-        /// Set all values of this bloc from the given int buffer
+        /// Set all values of this block from the given int buffer
         void set(const int* src)
         {
             matrix->bAccessorSet(&internal, src);
         }
 
-        /// Add to all values of this bloc from the given float buffer
+        /// Add to all values of this block from the given float buffer
         void add(const float* src)
         {
             matrix->bAccessorAdd(&internal, src);
         }
 
-        /// Add to all values of this bloc from the given double buffer
+        /// Add to all values of this block from the given double buffer
         void add(const double* src)
         {
             matrix->bAccessorAdd(&internal, src);
         }
 
-        /// Add to all values of this bloc from the given int buffer
+        /// Add to all values of this block from the given int buffer
         void add(const int* src)
         {
             matrix->bAccessorAdd(&internal, src);
         }
 
-        /// Prepare the addition of float values to this bloc.
+        /// Prepare the addition of float values to this block.
         /// Return a pointer to a float buffer where values can be added.
         /// If the in-memory format of the matrix is incompatible, the provided buffer can be used,
         /// but the method must clear it before returning.
@@ -431,14 +431,14 @@ public:
             return matrix->bAccessorPrepareAdd(&internal, buffer);
         }
 
-        /// Finalize an addition of float values to this bloc.
+        /// Finalize an addition of float values to this block.
         /// The buffer must be the one returned by calling the prepareAdd method.
         void finishAdd(const float* buffer)
         {
             matrix->bAccessorFinishAdd(&internal, buffer);
         }
 
-        /// Prepare the addition of double values to this bloc.
+        /// Prepare the addition of double values to this block.
         /// Return a pointer to a double buffer where values can be added.
         /// If the in-memory format of the matrix is incompatible, the provided buffer can be used,
         /// but the method must clear it before returning.
@@ -447,14 +447,14 @@ public:
             return matrix->bAccessorPrepareAdd(&internal, buffer);
         }
 
-        /// Finalize an addition of double values to this bloc.
+        /// Finalize an addition of double values to this block.
         /// The buffer must be the one returned by calling the prepareAdd method.
         void finishAdd(const double* buffer)
         {
             matrix->bAccessorFinishAdd(&internal, buffer);
         }
 
-        /// Prepare the addition of int values to this bloc.
+        /// Prepare the addition of int values to this block.
         /// Return a pointer to a int buffer where values can be added.
         /// If the in-memory format of the matrix is incompatible, the provided buffer can be used,
         /// but the method must clear it before returning.
@@ -463,7 +463,7 @@ public:
             return matrix->bAccessorPrepareAdd(&internal, buffer);
         }
 
-        /// Finalize an addition of int values to this bloc.
+        /// Finalize an addition of int values to this block.
         /// The buffer must be the one returned by calling the prepareAdd method.
         void finishAdd(const int* buffer)
         {
@@ -552,19 +552,19 @@ public:
             return matrix->bAccessorElement(&internal, i, j);
         }
 
-        /// Read all values from this bloc into given float buffer, or return the pointer to the buffer data if the in-memory format is compatible
+        /// Read all values from this block into given float buffer, or return the pointer to the buffer data if the in-memory format is compatible
         const float* elements(float* dest) const
         {
             return matrix->bAccessorElements(&internal, dest);
         }
 
-        /// Read all values from this bloc into given double buffer, or return the pointer to the buffer data if the in-memory format is compatible
+        /// Read all values from this block into given double buffer, or return the pointer to the buffer data if the in-memory format is compatible
         const double* elements(double* dest) const
         {
             return matrix->bAccessorElements(&internal, dest);
         }
 
-        /// Read all values from this bloc into given int buffer, or return the pointer to the buffer data if the in-memory format is compatible
+        /// Read all values from this block into given int buffer, or return the pointer to the buffer data if the in-memory format is compatible
         const int* elements(int* dest) const
         {
             return matrix->bAccessorElements(&internal, dest);
@@ -726,19 +726,19 @@ protected:
 public:
 
 
-    /// Get read access to a bloc
+    /// Get read access to a block
     virtual BlockConstAccessor blocGet(Index i, Index j) const
     {
         return createBlockConstAccessor(i, j);
     }
 
-    /// Get write access to a bloc
+    /// Get write access to a block
     virtual BlockAccessor blocGetW(Index i, Index j)
     {
         return createBlockAccessor(i, j);
     }
 
-    /// Get write access to a bloc, possibly creating it
+    /// Get write access to a block, possibly creating it
     virtual BlockAccessor blocCreate(Index i, Index j)
     {
         return createBlockAccessor(i, j);

@@ -55,7 +55,7 @@ public:
     typedef typename Vector::SubVectorType SubVector;
     typedef typename Matrix::SubMatrixType SubMatrix;
     typedef typename Vector::Real Real;
-    typedef typename Matrix::BlocType BlocType;
+    typedef typename Matrix::BlockType BlocType;
     typedef typename sofa::SignedIndex Index;
     typedef std::list<Index> ListIndex;
     typedef std::pair<Index,Index> IndexPair;

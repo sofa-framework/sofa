@@ -27,7 +27,7 @@
 namespace sofa::linearalgebra
 {
 
-/// Simple bloc full matrix container (used for InvMatrixType)
+/// Simple block full matrix container (used for InvMatrixType)
 template< std::size_t N, typename T>
 class BlocFullMatrix : public linearalgebra::BaseMatrix
 {
@@ -36,12 +36,12 @@ public:
     enum { BSIZE = N };
     typedef T Real;
 
-    class TransposedBloc{
+    class TransposedBlock{
 
     public:
         const type::Mat<BSIZE,BSIZE,Real>& m;
 
-        TransposedBloc(const sofa::type::Mat<BSIZE, BSIZE, Real>& m_a) : m(m_a){
+        TransposedBlock(const sofa::type::Mat<BSIZE, BSIZE, Real>& m_a) : m(m_a){
 }
 
         type::Vec<BSIZE,Real> operator*(const type::Vec<BSIZE,Real>& v)
@@ -54,8 +54,9 @@ public:
             return -m.transposed();
         }
     };
+    using TransposedBloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = TransposedBlock;
 
-    class Bloc : public type::Mat<BSIZE,BSIZE,Real>
+    class Block : public type::Mat<BSIZE,BSIZE,Real>
     {
     public:
         Index Nrows() const;
@@ -84,23 +85,24 @@ public:
         {
             return type::Mat<BSIZE,BSIZE,Real>::operator*(m);
         }
-        type::Mat<BSIZE,BSIZE,Real> operator*(const Bloc& m)
+        type::Mat<BSIZE,BSIZE,Real> operator*(const Block& m)
         {
             return type::Mat<BSIZE,BSIZE,Real>::operator*(m);
         }
-        type::Mat<BSIZE,BSIZE,Real> operator*(const TransposedBloc& mt)
+        type::Mat<BSIZE,BSIZE,Real> operator*(const TransposedBlock& mt)
         {
             return type::Mat<BSIZE,BSIZE,Real>::operator*(mt.m.transposed());
         }
-        TransposedBloc t() const;
-        Bloc i() const;
+        TransposedBlock t() const;
+        Block i() const;
     };
-    typedef Bloc SubMatrixType;
+    using Bloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = Block;
+    typedef Block SubMatrixType;
     // return the dimension of submatrices when requesting a given size
     static Index getSubMatrixDim(Index);
 
 protected:
-    Bloc* data;
+    Block* data;
     Index nTRow,nTCol;
     Index nBRow,nBCol;
     Index allocsize;
@@ -113,12 +115,12 @@ public:
 
     ~BlocFullMatrix() override;
 
-    Bloc* ptr() { return data; }
-    const Bloc* ptr() const { return data; }
+    Block* ptr() { return data; }
+    const Block* ptr() const { return data; }
 
-    const Bloc& bloc(Index bi, Index bj) const;
+    const Block& bloc(Index bi, Index bj) const;
 
-    Bloc& bloc(Index bi, Index bj);
+    Block& bloc(Index bi, Index bj);
 
     void resize(Index nbRow, Index nbCol) override;
 
@@ -128,13 +130,13 @@ public:
 
     SReal element(Index i, Index j) const override;
 
-    const Bloc& asub(Index bi, Index bj, Index, Index) const;
+    const Block& asub(Index bi, Index bj, Index, Index) const;
 
-    const Bloc& sub(Index i, Index j, Index, Index) const;
+    const Block& sub(Index i, Index j, Index, Index) const;
 
-    Bloc& asub(Index bi, Index bj, Index, Index);
+    Block& asub(Index bi, Index bj, Index, Index);
 
-    Bloc& sub(Index i, Index j, Index, Index);
+    Block& sub(Index i, Index j, Index, Index);
 
     template<class B>
     void getSubMatrix(Index i, Index j, Index nrow, Index ncol, B& m);
