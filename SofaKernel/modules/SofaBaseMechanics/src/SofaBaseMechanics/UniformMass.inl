@@ -285,7 +285,7 @@ void UniformMass<DataTypes, MassType>::doUpdateInternal()
 template <class DataTypes, class MassType>
 bool UniformMass<DataTypes, MassType>::checkVertexMass()
 {
-    if(d_vertexMass.getValue() <= 0.0 )
+    if(d_vertexMass.getValue() < 0.0 )
     {
         msg_warning(this) << "vertexMass data can not have a negative value. \n"
                              "To remove this warning, you need to set one single, non-zero and positive value to the vertexMass data";
@@ -314,7 +314,7 @@ void UniformMass<DataTypes, MassType>::initFromVertexMass()
 template <class DataTypes, class MassType>
 bool UniformMass<DataTypes, MassType>::checkTotalMass()
 {
-    if(d_totalMass.getValue() <= 0.0)
+    if(d_totalMass.getValue() < 0.0)
     {
         msg_warning(this) << "totalMass data can not have a negative value. \n"
                              "To remove this warning, you need to set a non-zero positive value to the totalMass data";
