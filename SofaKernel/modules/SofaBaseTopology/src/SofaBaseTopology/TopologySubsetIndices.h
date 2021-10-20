@@ -50,7 +50,7 @@ public:
 
     void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology) override;
 
-    SOFA_ATTRIBUTE_DISABLED("v21.12 (PR#2392)", "v21.12 (PR#2392)", "This method has been removed, TopologyHandler is now created internally. Method createTopologyHandler(BaseMeshTopology*) should be used.")
+    SOFA_ATTRIBUTE_DISABLED("v21.12 (PR#2393)", "v21.12 (PR#2393)", "This method has been removed, TopologyHandler is now created internally. Method createTopologyHandler(BaseMeshTopology*) should be used.")
     void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler < core::topology::BaseMeshTopology::Point, type::vector<Index> >* topoEngine) = delete;
 
 protected:
