@@ -85,7 +85,7 @@ bool MeshGmshLoader::doLoad()
             }
         }
     }
-    else if (cmd == "$NOD")
+    else if (cmd == "$NOD" || cmd=="$NOD\r")
     {
         // Legacy MSh format version 1 directly starts with the Nodes section
         // https://gmsh.info/doc/texinfo/gmsh.html#MSH-file-format-version-1-_0028Legacy_0029
