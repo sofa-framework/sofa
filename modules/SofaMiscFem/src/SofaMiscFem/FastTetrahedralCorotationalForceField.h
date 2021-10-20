@@ -83,10 +83,8 @@ protected:
         Mat3x3 linearDfDx[6];  // the off-diagonal 3x3 block matrices that makes the 12x12 linear elastic matrix
         Mat3x3 rotation; // rotation from deformed to rest configuration
         Mat3x3 restRotation; // used for QR decomposition
-        //unsigned int v[4]; // the indices of the 4 vertices
 
         Real edgeOrientation[6];
-
 
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const TetrahedronRestInformation& /*eri*/ )
@@ -98,10 +96,6 @@ protected:
         inline friend std::istream& operator>> ( std::istream& in, TetrahedronRestInformation& /*eri*/ )
         {
             return in;
-        }
-
-        TetrahedronRestInformation()
-        {
         }
     };
 
@@ -121,10 +115,9 @@ protected:
     VecCoord  _initialPoints;///< the intial positions of the points
 
     bool updateMatrix;
-    bool updateTopologyInfo;
 
     Data<std::string> f_method; ///< the computation method of the displacements
-    RotationDecompositionMethod decompositionMethod;
+    RotationDecompositionMethod m_decompositionMethod;
 
     Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
     Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
@@ -176,7 +169,7 @@ public:
     }
     void setRotationDecompositionMethod( const RotationDecompositionMethod m)
     {
-        decompositionMethod=m;
+        m_decompositionMethod = m;
     }
     void draw(const core::visual::VisualParams* vparams) override;
     /// compute lambda and mu based on the Young modulus and Poisson ratio
