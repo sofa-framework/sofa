@@ -33,9 +33,9 @@ PairInteractionProjectiveConstraintSet<DataTypes>::PairInteractionProjectiveCons
     , endTime( initData(&endTime,(SReal)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
 {
     if (!mm1)
-        mstate1.setPath("@./"); // default to state of the current node
+        this->mstate1.setPath("@./"); // default to state of the current node
     if (!mm2)
-        mstate2.setPath("@./"); // default to state of the current node
+        this->mstate2.setPath("@./"); // default to state of the current node
 }
 
 template<class DataTypes>
@@ -62,9 +62,9 @@ template<class DataTypes>
 void PairInteractionProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId)
 {
     if( !isActive() ) return;
-    if (mstate1 && mstate2)
+    if (this->mstate1 && this->mstate2)
     {
-        projectResponse(mparams, *dxId[mstate1.get()].write(), *dxId[mstate2.get()].write());
+        projectResponse(mparams, *dxId[this->mstate1.get()].write(), *dxId[this->mstate2.get()].write());
     }
 }
 
@@ -72,9 +72,9 @@ template<class DataTypes>
 void PairInteractionProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId)
 {
     if( !isActive() ) return;
-    if (mstate1 && mstate2)
+    if (this->mstate1 && this->mstate2)
     {
-        projectVelocity(mparams, *vId[mstate1.get()].write(), *vId[mstate2.get()].write());
+        projectVelocity(mparams, *vId[this->mstate1.get()].write(), *vId[this->mstate2.get()].write());
     }
 }
 
@@ -82,9 +82,9 @@ template<class DataTypes>
 void PairInteractionProjectiveConstraintSet<DataTypes>::projectPosition(const MechanicalParams* mparams, MultiVecCoordId xId)
 {
     if( !isActive() ) return;
-    if (mstate1 && mstate2)
+    if (this->mstate1 && this->mstate2)
     {
-        projectPosition(mparams, *xId[mstate1.get()].write(), *xId[mstate2.get()].write());
+        projectPosition(mparams, *xId[this->mstate1.get()].write(), *xId[this->mstate2.get()].write());
     }
 }
 
