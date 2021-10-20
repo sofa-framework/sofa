@@ -53,9 +53,9 @@ void ProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(const MechanicalP
     if (!isActive())
         return;
 
-    if (mstate)
+    if (this->mstate)
     {
-        projectJacobianMatrix(mparams, *cId[mstate.get()].write());
+        projectJacobianMatrix(mparams, *cId[this->mstate.get()].write());
     }
 }
 
@@ -66,11 +66,11 @@ void ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams*
 {
     if (!isActive())
         return;
-    if (mstate)
+    if (this->mstate)
     {
-            projectResponse(mparams, *dxId[mstate.get()].write());
+            projectResponse(mparams, *dxId[this->mstate.get()].write());
     }
-    msg_error_when(!mstate) << "ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId), no mstate for " << this->getName();
+    msg_error_when(!this->mstate) << "ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId), no this->mstate for " << this->getName();
 }
 
 template<class DataTypes>
@@ -79,12 +79,12 @@ void ProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams*
     if (!isActive())
         return;
 
-    if (mstate)
+    if (this->mstate)
     {
 
-            projectVelocity(mparams, *vId[mstate.get()].write());
+            projectVelocity(mparams, *vId[this->mstate.get()].write());
     }
-    msg_error_when(!mstate) << "ProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams* mparams, MultiVecDerivId dxId), no mstate for " << this->getName();
+    msg_error_when(!this->mstate) << "ProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams* mparams, MultiVecDerivId dxId), no this->mstate for " << this->getName();
 }
 
 template<class DataTypes>
@@ -93,10 +93,10 @@ void ProjectiveConstraintSet<DataTypes>::projectPosition(const MechanicalParams*
     if (!isActive())
         return;
 
-    if (mstate)
+    if (this->mstate)
     {
 
-            projectPosition(mparams, *xId[mstate.get()].write());
+            projectPosition(mparams, *xId[this->mstate.get()].write());
     }
 }
 
