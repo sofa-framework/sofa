@@ -44,7 +44,7 @@ void ForceField<DataTypes>::addForce(const MechanicalParams* mparams, MultiVecDe
 {
     if (mparams)
     {
-        addForce(mparams, *fId[mstate.get()].write() , *mparams->readX(mstate), *mparams->readV(mstate));
+        addForce(mparams, *fId[this->mstate.get()].write() , *mparams->readX(this->mstate), *mparams->readV(this->mstate));
     }
 }
 
@@ -58,7 +58,7 @@ void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecD
             mparams->setKFactorUsed(false);
 #endif
 
-        addDForce(mparams, *dfId[mstate.get()].write(), *mparams->readDx(mstate.get()));
+        addDForce(mparams, *dfId[this->mstate.get()].write(), *mparams->readDx(this->mstate.get()));
 
 #ifndef NDEBUG
         if (!mparams->getKFactorUsed())
@@ -73,7 +73,7 @@ void ForceField<DataTypes>::addClambda(const MechanicalParams* mparams, MultiVec
 {
     if (mparams)
     {
-        addClambda(mparams, *resId[mstate.get()].write(), *lambdaId[mstate.get()].read(), cFactor);
+        addClambda(mparams, *resId[this->mstate.get()].write(), *lambdaId[this->mstate.get()].read(), cFactor);
     }
 }
 
@@ -89,7 +89,7 @@ template<class DataTypes>
 SReal ForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
     if (this->mstate)
-        return getPotentialEnergy(mparams, *mparams->readX(mstate));
+        return getPotentialEnergy(mparams, *mparams->readX(this->mstate));
     return 0;
 }
 
