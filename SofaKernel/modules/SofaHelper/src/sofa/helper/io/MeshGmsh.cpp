@@ -60,15 +60,17 @@ void MeshGmsh::init (std::string filename)
 
     // -- Looking for Gmsh version of this file.
     std::getline(file, cmd); //First line should be the start of the $MeshFormat section
-    if (cmd == "$MeshFormat")
+    if (cmd.length() > 11 && cmd.substr(0, 11) == "$MeshFormat") // Reading gmsh
     {
+        // NB: .msh file header line for version >= 2 can be "$MeshFormat", "$MeshFormat\r", "$MeshFormat \r"
         std::string version;
         std::getline(file, version); // Getting the version line (e.g. 4.1 0 8)
         gmshFormat = std::stoul(version.substr( 0, version.find(" ")) ); // Retrieving the mesh format, keeping only the integer part
         std::getline(file, cmd);
 
-        if (cmd != std::string("$EndMeshFormat")) // it should end with $EndMeshFormat
+        if (cmd.length() < 14 || cmd.substr(0, 14) != std::string("$EndMeshFormat")) // it should end with "$EndMeshFormat" or "$EndMeshFormat\r"
         {
+            msg_error("MeshGmsh") << "No $EndMeshFormat flag found at the end of the file. Closing File";
             file.close();
             return;
         }
@@ -76,7 +78,7 @@ void MeshGmsh::init (std::string filename)
         {
             // Reading the file until the node section is hit. In recent versions of MSH file format,
             // we may encounter various sections between $MeshFormat and $Nodes
-            while (cmd != std::string("$Nodes"))
+            while (cmd.length() < 6 || cmd.substr(0, 6) != std::string("$Nodes")) // can be "$Nodes" or "$Nodes\r"
             {
                 std::getline(file, cmd); // First Command
                 if (file.eof())
@@ -156,18 +158,24 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
         }
 
         file >> cmd;
-        if (cmd != "$ENDNOD" && cmd != "$EndNodes")
+        if (cmd.length() < 7 || cmd.substr(0, 7) != "$ENDNOD") // can be "$ENDNOD" or "$ENDNOD\r"
         {
-            msg_error("MeshGmsh") << "'$ENDNOD' or '$EndNodes' expected, found '" << cmd << "'";
-            return false;
+            if (cmd.length() < 9 || cmd.substr(0, 9) != "$EndNodes") // can be "$EndNodes" or "$EndNodes\r"
+            {
+                msg_error("MeshGmsh") << "'$ENDNOD' or '$EndNodes' expected, found '" << cmd << "'";
+                return false;
+            }
         }
 
         // --- Loading Elements ---
         file >> cmd;
-        if (cmd != "$ELM" && cmd != "$Elements")
+        if (cmd.length() < 4 || cmd.substr(0, 4) != "$ELM") // can be "$ELM" or "$ELM\r"
         {
-            msg_error("MeshGmsh") << "'$ELM' or '$Elements' expected, found '" << cmd << "'";
-            return false;
+            if (cmd.length() < 9 || cmd.substr(0, 9) != "$Elements") // can be "$ELM" or "$ELM\r"
+            {
+                msg_error("MeshGmsh") << "'$ELM' or '$Elements' expected, found '" << cmd << "'";
+                return false;
+            }
         }
 
         int nelems = 0;

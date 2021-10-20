@@ -56,14 +56,15 @@ bool MeshGmshLoader::doLoad()
 
     // -- Looking for Gmsh version of this file.
     std::getline(file, cmd);
-    if (cmd == "$MeshFormat") // Reading gmsh
+    if (cmd.length() > 11 && cmd.substr(0, 11) == "$MeshFormat") // Reading gmsh
     {
+        // NB: .msh file header line for version >= 2 can be "$MeshFormat", "$MeshFormat\r", "$MeshFormat \r"
         string version;
         std::getline(file, version); // Getting the version line (e.g. 4.1 0 8)
         gmshFormat = std::stoul( version.substr( 0, version.find(" ")) ); // Retrieving the mesh format, keeping only the integer part
         std::getline(file, cmd); // $EndMeshFormat
 
-        if (cmd != string("$EndMeshFormat") ) // it should end with $EndMeshFormat
+        if (cmd.length() < 14 || cmd.substr(0, 14) != string("$EndMeshFormat")) // it should end with "$EndMeshFormat" or "$EndMeshFormat\r"
         {
             msg_error() << "No $EndMeshFormat flag found at the end of the file. Closing File";
             file.close();
@@ -73,7 +74,7 @@ bool MeshGmshLoader::doLoad()
         {
             // Reading the file until the node section is hit. In recent versions of MSH file format,
             // we may encounter various sections between $MeshFormat and $Nodes
-            while (cmd != std::string("$Nodes"))
+            while (cmd.length() < 6 || cmd.substr(0, 6) != std::string("$Nodes")) // can be "$Nodes" or "$Nodes\r"
             {
                 std::getline(file, cmd); // First Command
                 if (file.eof())
@@ -85,10 +86,11 @@ bool MeshGmshLoader::doLoad()
             }
         }
     }
-    else if (cmd == "$NOD" || cmd=="$NOD\r")
+    else if (cmd.length() > 4 && cmd.substr(0, 4) == "$NOD")
     {
         // Legacy MSh format version 1 directly starts with the Nodes section
         // https://gmsh.info/doc/texinfo/gmsh.html#MSH-file-format-version-1-_0028Legacy_0029
+        // NB: corresponding line can be "$NOD", "$NOD\r"
         gmshFormat = 1;
     }
     else // If the first line is neither "$MeshFormat" or "$NOD", then the file is not in a registered MSH format
@@ -199,21 +201,27 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
         }
 
         file >> cmd;
-        if (cmd != "$ENDNOD" && cmd != "$EndNodes")
+        if (cmd.length() < 7 || cmd.substr(0, 7) != "$ENDNOD") // can be "$ENDNOD" or "$ENDNOD\r"
         {
-            msg_error() << "'$ENDNOD' or '$EndNodes' expected, found '" << cmd << "'";
-            file.close();
-            return false;
+            if (cmd.length() < 9 || cmd.substr(0, 9) != "$EndNodes") // can be "$EndNodes" or "$EndNodes\r"
+            {
+                msg_error() << "'$ENDNOD' or '$EndNodes' expected, found '" << cmd << "'";
+                file.close();
+                return false;
+            }
         }
 
 
         // --- Loading Elements ---
         file >> cmd;
-        if (cmd != "$ELM" && cmd != "$Elements")
+        if (cmd.length() < 4 || cmd.substr(0, 4) != "$ELM") // can be "$ELM" or "$ELM\r"
         {
-            msg_error() << "'$ELM' or '$Elements' expected, found '" << cmd << "'";
-            file.close();
-            return false;
+            if (cmd.length() < 9 || cmd.substr(0, 4) != "$Elements") // can be "$ELM" or "$ELM\r"
+            {
+                msg_error() << "'$ELM' or '$Elements' expected, found '" << cmd << "'";
+                file.close();
+                return false;
+            }
         }
 
         file >> nelems; //Loading number of Element
