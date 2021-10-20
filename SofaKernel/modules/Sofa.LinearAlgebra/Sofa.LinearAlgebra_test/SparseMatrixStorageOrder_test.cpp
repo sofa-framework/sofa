@@ -79,10 +79,6 @@ struct TestSparseMatrixTranspose : public sofa::testing::SparseMatrixTest<typena
         if (!issues.empty())
         {
             std::stringstream ss;
-            // for (const auto& i : issues)
-            // {
-            //     ss << i.first.row << " " << i.first.col << " " << i.first.value << " != " << i.second << "\n";
-            // }
             ADD_FAILURE() << "Found " << issues.size() << " differences in the transposed matrix compared to the initial matrix\n" << ss.str();
         }
 
