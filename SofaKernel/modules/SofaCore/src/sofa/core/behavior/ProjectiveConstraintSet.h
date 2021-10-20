@@ -69,9 +69,7 @@ public:
 
     virtual type::vector< core::BaseState* > getModels() override
     {
-        type::vector< core::BaseState* > models;
-        models.push_back( getMState() );
-        return models;
+        return { this->getMState() };
     }
 
     /// @name Vector operations
