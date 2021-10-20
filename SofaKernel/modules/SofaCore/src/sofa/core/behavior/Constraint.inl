@@ -52,7 +52,7 @@ void Constraint<DataTypes>::getConstraintViolation(const ConstraintParams* cPara
 {
     if (cParams)
     {
-        getConstraintViolation(cParams, v, *cParams->readX(mstate.get()), *cParams->readV(mstate.get()));
+        getConstraintViolation(cParams, v, *cParams->readX(this->mstate.get()), *cParams->readV(this->mstate.get()));
     }
 }
 
@@ -62,7 +62,7 @@ void Constraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
 {
     if (cParams)
     {
-        buildConstraintMatrix(cParams, *cId[mstate.get()].write(), cIndex, *cParams->readX(mstate.get()));
+        buildConstraintMatrix(cParams, *cId[this->mstate.get()].write(), cIndex, *cParams->readX(this->mstate.get()));
     }
 }
 
@@ -72,7 +72,7 @@ void Constraint<DataTypes>::storeLambda(const ConstraintParams* cParams, MultiVe
 {
     if (cParams)
     {
-        storeLambda(cParams, *res[mstate.get()].write(), *cParams->readJ(mstate.get()), lambda);
+        storeLambda(cParams, *res[this->mstate.get()].write(), *cParams->readJ(this->mstate.get()), lambda);
     }
 }
 
