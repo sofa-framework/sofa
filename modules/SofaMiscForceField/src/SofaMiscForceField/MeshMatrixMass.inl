@@ -1514,7 +1514,7 @@ template <class DataTypes, class MassType>
 bool MeshMatrixMass<DataTypes, MassType>::checkTotalMass()
 {
     //Check for negative or null value, if wrongly set use the default value totalMass = 1.0
-    if(d_totalMass.getValue() <= 0.0)
+    if(d_totalMass.getValue() < 0.0)
     {
         msg_warning(this) << "totalMass data can not have a negative value.\n"
                           << "To remove this warning, you need to set a strictly positive value to the totalMass data";
@@ -1554,7 +1554,7 @@ bool MeshMatrixMass<DataTypes, MassType>::checkVertexMass()
         //Check that the vertexMass vector has only strictly positive values
         for(size_t i=0; i<vertexMass.size(); i++)
         {
-            if(vertexMass[i]<=0)
+            if(vertexMass[i]<0)
             {
                 msg_warning() << "Negative value of vertexMass vector: vertexMass[" << i << "] = " << vertexMass[i];
                 return false;
@@ -1611,7 +1611,7 @@ bool MeshMatrixMass<DataTypes, MassType>::checkEdgeMass()
         //Check that the vertexMass vector has only strictly positive values
         for(size_t i=0; i<edgeMass.size(); i++)
         {
-            if(edgeMass[i]<=0)
+            if(edgeMass[i]<0)
             {
                 msg_warning() << "Negative value of edgeMass vector: edgeMass[" << i << "] = " << edgeMass[i];
                 return false;
@@ -1718,7 +1718,7 @@ bool MeshMatrixMass<DataTypes, MassType>::checkMassDensity()
     if(massDensity.size() == 1)
     {
         //Check that the massDensity is strictly positive
-        if(density <= 0.0)
+        if(density < 0.0)
         {
             msg_warning() << "Negative value of massDensity: massDensity = " << density;
             return false;
@@ -1742,7 +1742,7 @@ bool MeshMatrixMass<DataTypes, MassType>::checkMassDensity()
         //Check that the massDensity has only strictly positive values
         for(size_t i=0; i<massDensity.size(); i++)
         {
-            if(massDensity[i]<=0)
+            if(massDensity[i]<0)
             {
                 msg_warning() << "Negative value of massDensity vector: massDensity[" << i << "] = " << massDensity[i];
                 return false;
