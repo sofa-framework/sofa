@@ -32,9 +32,9 @@ MixedInteractionForceField<DataTypes1, DataTypes2>::MixedInteractionForceField(M
     : Inherit1(), Inherit2(mm1, mm2)
 {
     if (!mm1)
-        mstate1.setPath("@./"); // default to state of the current node
+        this->mstate1.setPath("@./"); // default to state of the current node
     if (!mm2)
-        mstate2.setPath("@./"); // default to state of the current node
+        this->mstate2.setPath("@./"); // default to state of the current node
 }
 
 template<class DataTypes1, class DataTypes2>
@@ -46,12 +46,12 @@ template<class DataTypes1, class DataTypes2>
 void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce(const MechanicalParams* mparams, MultiVecDerivId fId )
 {
 
-    if (mstate1 && mstate2)
+    if (this->mstate1 && this->mstate2)
     {
 
-        addForce( mparams, *fId[mstate1.get()].write(), *fId[mstate2.get()].write(),
-                 *mparams->readX(mstate1), *mparams->readX(mstate2),
-                 *mparams->readV(mstate1), *mparams->readV(mstate2) );
+        addForce( mparams, *fId[this->mstate1.get()].write(), *fId[this->mstate2.get()].write(),
+                 *mparams->readX(this->mstate1), *mparams->readX(this->mstate2),
+                 *mparams->readV(this->mstate1), *mparams->readV(this->mstate2) );
 
     }
 }
@@ -59,10 +59,10 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce(const Mechanic
 template<class DataTypes1, class DataTypes2>
 void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId )
 {
-    if (mstate1 && mstate2)
+    if (this->mstate1 && this->mstate2)
     {
-            addDForce( mparams, *dfId[mstate1.get()].write()    , *dfId[mstate2.get()].write()   ,
-                    *mparams->readDx(mstate1) , *mparams->readDx(mstate2) );
+            addDForce( mparams, *dfId[this->mstate1.get()].write()    , *dfId[this->mstate2.get()].write()   ,
+                    *mparams->readDx(this->mstate1) , *mparams->readDx(this->mstate2) );
     }
 }
 
@@ -71,8 +71,8 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(const Mechani
 template<class DataTypes1, class DataTypes2>
 SReal MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
-    if (mstate1 && mstate2)
-        return getPotentialEnergy(mparams, *mparams->readX(mstate1),*mparams->readX(mstate2));
+    if (this->mstate1 && this->mstate2)
+        return getPotentialEnergy(mparams, *mparams->readX(this->mstate1),*mparams->readX(this->mstate2));
     else return 0;
 }
 
