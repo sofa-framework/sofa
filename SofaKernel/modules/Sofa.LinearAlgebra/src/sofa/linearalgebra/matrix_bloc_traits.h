@@ -113,7 +113,7 @@ public:
                 if (b[i][j] != 0) return false;
         return true;
     }
-    static void invert(Bloc& result, const Bloc& b)
+    static void invert(Block& result, const Block& b)
     {
         const bool canInvert = result.invert(b);
         assert(canInvert);
