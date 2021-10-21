@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/geometry/config.h>
+#include <sofa/type/Vec.h>
 #include <cmath>
 #include <numeric>
 #include <iterator>
