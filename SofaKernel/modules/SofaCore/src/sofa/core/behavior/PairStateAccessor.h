@@ -42,14 +42,26 @@ public:
     /// Retrieve the associated MechanicalState #1
     MechanicalState<DataTypes1>* getMState1() { return mstate1; }
 
+    /// Retrieve the associated MechanicalState #1
+    const MechanicalState<DataTypes1>* getMState1() const { return mstate1; }
+
     /// Retrieve the associated MechanicalState #1 as a BaseMechanicalState
     BaseMechanicalState* getMechModel1() { return mstate1; }
+
+    /// Retrieve the associated MechanicalState #1 as a BaseMechanicalState
+    const BaseMechanicalState* getMechModel1() const { return mstate1; }
 
     /// Retrieve the associated MechanicalState #2
     MechanicalState<DataTypes2>* getMState2() { return mstate2; }
 
+    /// Retrieve the associated MechanicalState #2
+    const MechanicalState<DataTypes2>* getMState2() const { return mstate2; }
+
     /// Retrieve the associated MechanicalState #2 as a BaseMechanicalState
     BaseMechanicalState* getMechModel2() { return mstate2; }
+
+    /// Retrieve the associated MechanicalState #2 as a BaseMechanicalState
+    const BaseMechanicalState* getMechModel2() const { return mstate2; }
 
 protected:
 
