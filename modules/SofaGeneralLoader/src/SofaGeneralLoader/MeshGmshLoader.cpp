@@ -56,7 +56,7 @@ bool MeshGmshLoader::doLoad()
 
     // -- Looking for Gmsh version of this file.
     std::getline(file, cmd);
-    if (cmd.length() > 11 && cmd.substr(0, 11) == "$MeshFormat") // Reading gmsh
+    if (cmd.length() >= 11 && cmd.substr(0, 11) == "$MeshFormat") // Reading gmsh
     {
         // NB: .msh file header line for version >= 2 can be "$MeshFormat", "$MeshFormat\r", "$MeshFormat \r"
         string version;
@@ -86,7 +86,7 @@ bool MeshGmshLoader::doLoad()
             }
         }
     }
-    else if (cmd.length() > 4 && cmd.substr(0, 4) == "$NOD")
+    else if (cmd.length() >= 4 && cmd.substr(0, 4) == "$NOD")
     {
         // Legacy MSh format version 1 directly starts with the Nodes section
         // https://gmsh.info/doc/texinfo/gmsh.html#MSH-file-format-version-1-_0028Legacy_0029

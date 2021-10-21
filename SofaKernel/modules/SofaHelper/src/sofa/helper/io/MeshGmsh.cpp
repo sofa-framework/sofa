@@ -60,7 +60,7 @@ void MeshGmsh::init (std::string filename)
 
     // -- Looking for Gmsh version of this file.
     std::getline(file, cmd); //First line should be the start of the $MeshFormat section
-    if (cmd.length() > 11 && cmd.substr(0, 11) == "$MeshFormat") // Reading gmsh
+    if (cmd.length() >= 11 && cmd.substr(0, 11) == "$MeshFormat") // Reading gmsh
     {
         // NB: .msh file header line for version >= 2 can be "$MeshFormat", "$MeshFormat\r", "$MeshFormat \r"
         std::string version;
