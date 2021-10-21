@@ -27,17 +27,13 @@ namespace sofa::component::mapping
 
 template <class In, class Out>
 BarycentricMapperTriangleSetTopology<In,Out>::BarycentricMapperTriangleSetTopology()
-    : Inherit1(nullptr, nullptr),
-      m_fromContainer(nullptr),
-      m_fromGeomAlgo(nullptr)
+    : Inherit1(nullptr, nullptr)
 {}
 
 template <class In, class Out>
-BarycentricMapperTriangleSetTopology<In,Out>::BarycentricMapperTriangleSetTopology(topology::TriangleSetTopologyContainer* fromTopology,
-                                                                                   topology::PointSetTopologyContainer* toTopology)
-    : Inherit1(fromTopology, toTopology),
-      m_fromContainer(fromTopology),
-      m_fromGeomAlgo(nullptr)
+BarycentricMapperTriangleSetTopology<In,Out>::BarycentricMapperTriangleSetTopology(sofa::core::topology::TopologyContainer* fromTopology,
+    core::topology::BaseMeshTopology* toTopology)
+    : Inherit1(fromTopology, toTopology)
 {}
 
 

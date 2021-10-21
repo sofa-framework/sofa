@@ -22,15 +22,45 @@
 #pragma once
 
 #include <sofa/geometry/config.h>
+#include <cmath>
+#include <numeric>
+#include <iterator>
+#include <algorithm>
 
 namespace sofa::geometry
 {
 
 struct Edge
 {
-    static const sofa::Size NumberOfNodes = 2;
+    static constexpr sofa::Size NumberOfNodes = 2;
 
     Edge() = default;
+
+    template<typename Node,
+        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+        typename = std::enable_if_t<std::is_scalar_v<T>>>
+    static constexpr auto squaredLength(const Node & n0, const Node & n1)
+    {
+        const auto v = n1 - n0;
+        return std::inner_product(std::begin(v), std::end(v), std::begin(v), 0);
+    }
+
+    template<typename Node,
+        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+        typename = std::enable_if_t<std::is_scalar_v<T>>>
+    static constexpr auto length(const Node & n0, const Node & n1)
+    {
+        return std::sqrt(computeSquaredLength(n0, n1));
+    }
+
+    template<typename Node,
+        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+        typename = std::enable_if_t<std::is_scalar_v<T>>>
+    static constexpr auto center(const Node& n0, const Node& n1)
+    {
+        return std::transform(n0.begin(), n0.end(), n1.begin(), n0.begin(),
+            [](T c0, T c1) -> T { return (c0 + c1) / static_cast<T>(NumberOfNodes); });
+    }
 };
 
 } // namespace sofa::geometry

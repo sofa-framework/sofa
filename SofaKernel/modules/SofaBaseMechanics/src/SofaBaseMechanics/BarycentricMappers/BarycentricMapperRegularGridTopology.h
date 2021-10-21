@@ -32,7 +32,6 @@ using sofa::defaulttype::BaseMatrix;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 using topology::RegularGridTopology;
-using topology::PointSetTopologyContainer;
 
 /// Class allowing barycentric mapping computation on a RegularGridTopology
 template<class In, class Out>
@@ -78,7 +77,7 @@ public:
 
 protected:
     BarycentricMapperRegularGridTopology(RegularGridTopology* fromTopology,
-                                         PointSetTopologyContainer* toTopology);
+        core::topology::BaseMeshTopology* toTopology);
 
     type::vector<CubeData> m_map;
     RegularGridTopology* m_fromTopology   {nullptr};
