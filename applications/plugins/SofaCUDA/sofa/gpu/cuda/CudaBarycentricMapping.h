@@ -187,7 +187,7 @@ protected:
     Index getMapIndex(Index outIndex, Index j);
     void calcMapT();
 public:
-    BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology)
+    BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology, core::topology::BaseMeshTopology* toTopology)
         : Inherit(fromTopology, toTopology)
         , maxNIn(0), maxNOut(0), insize(0), size(0), topology(fromTopology)
     {
@@ -249,7 +249,7 @@ public:
     using Index = sofa::Index;
 
 public:
-    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology)
+    BarycentricMapperTetrahedronSetTopology(sofa::core::topology::BaseMeshTopology* fromTopology, sofa::core::topology::BaseMeshTopology* _toTopology)
         : Inherit(fromTopology, _toTopology),
           internalMapper(fromTopology,_toTopology)
     {}

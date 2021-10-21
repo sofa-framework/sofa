@@ -26,11 +26,9 @@ namespace sofa::component::mapping
 {
 
 template <class In, class Out>
-BarycentricMapperEdgeSetTopology<In,Out>::BarycentricMapperEdgeSetTopology(topology::EdgeSetTopologyContainer* fromTopology,
-                                                                   topology::PointSetTopologyContainer* toTopology)
-    : Inherit1(fromTopology, toTopology),
-      m_fromContainer(fromTopology),
-      m_fromGeomAlgo(nullptr)
+BarycentricMapperEdgeSetTopology<In,Out>::BarycentricMapperEdgeSetTopology(sofa::core::topology::TopologyContainer* fromTopology,
+    sofa::core::topology::BaseMeshTopology* toTopology)
+    : Inherit1(fromTopology, toTopology)
 {}
 
 template <class In, class Out>

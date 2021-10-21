@@ -23,7 +23,7 @@
 #include <SofaSimulationGraph/DAGNode.h>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.h>
-
+#include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <SofaBaseTopology/MeshTopology.h>
 
 #include <sofa/testing/BaseTest.h>

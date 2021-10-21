@@ -21,7 +21,6 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapper.h>
-#include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 
 namespace sofa::component::mapping::_topologybarycentricmapper_
@@ -62,8 +61,8 @@ public:
     virtual Index setPointInCube(const Index pointIndex, const Index cubeIndex, const SReal* baryCoords);
     virtual Index createPointInCube(const typename Out::Coord& p, Index cubeIndex, const typename In::VecCoord* points);
 
-    virtual void setToTopology( topology::PointSetTopologyContainer* toTopology) {this->m_toTopology = toTopology;}
-    const topology::PointSetTopologyContainer *getToTopology() const {return m_toTopology;}
+    virtual void setToTopology(core::topology::BaseMeshTopology* toTopology) {this->m_toTopology = toTopology;}
+    const core::topology::BaseMeshTopology*getToTopology() const {return m_toTopology;}
 
     virtual void resize( core::State<Out>* toModel ) = 0;
 
@@ -75,7 +74,7 @@ public:
 
 protected:
     TopologyBarycentricMapper(core::topology::BaseMeshTopology* fromTopology,
-                              topology::PointSetTopologyContainer* toTopology = nullptr)
+        core::topology::BaseMeshTopology* toTopology = nullptr)
         : m_fromTopology(fromTopology)
         , m_toTopology(toTopology)
     {}
@@ -83,7 +82,7 @@ protected:
     ~TopologyBarycentricMapper() override {}
 
     core::topology::BaseMeshTopology*    m_fromTopology;
-    topology::PointSetTopologyContainer* m_toTopology;
+    core::topology::BaseMeshTopology*    m_toTopology;
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_TOPOLOGYBARYCENTRICMAPPER_CPP)
