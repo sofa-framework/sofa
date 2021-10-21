@@ -74,8 +74,6 @@ public:
 
     typedef gpu::cuda::CudaKernelsCudaVisualModel<DataTypes> Kernels;
 
-    TState* state;
-    core::topology::BaseMeshTopology* topology;
     bool needUpdateTopology;
     gpu::cuda::CudaVector<Triangle> triangles;
     gpu::cuda::CudaVector<Quad> quads;
@@ -98,7 +96,7 @@ public:
     Data<bool> computeNormals; ///< true to compute smooth normals
 
     CudaVisualModel()
-        : state(NULL), topology(NULL), needUpdateTopology(true), nbElement(0), nbVertex(0), nbElementPerVertex(0)
+        : needUpdateTopology(true), nbElement(0), nbVertex(0), nbElementPerVertex(0)
         , matAmbient  ( initData( &matAmbient,   type::Vec4f(0.1f,0.1f,0.1f,0.0f), "ambient",   "material ambient color") )
         , matDiffuse  ( initData( &matDiffuse,   type::Vec4f(0.8f,0.8f,0.8f,1.0f), "diffuse",   "material diffuse color and alpha") )
         , matSpecular ( initData( &matSpecular,  type::Vec4f(1.0f,1.0f,1.0f,0.0f), "specular",  "material specular color") )
@@ -106,6 +104,8 @@ public:
         , matShininess( initData( &matShininess, 45.0f,                                   "shininess", "material specular shininess") )
         , useVBO( initData( &useVBO, false, "useVBO", "true to activate Vertex Buffer Object") )
         , computeNormals( initData( &computeNormals, false, "computeNormals", "true to compute smooth normals") )
+        , state(initLink("state", "State used by this component"))
+        , topology(initLink("topology", "Topology used by this component"))
     {}
 
     virtual void init() override;
@@ -155,6 +155,10 @@ protected:
                 + b_x                           // offset to the vertex
               ] = index+1;
     }
+
+
+    SingleLink<CudaVisualModel<DataTypes>, TState, BaseLink::FLAG_STRONGLINK> state;
+    SingleLink<CudaVisualModel<DataTypes>, core::topology::BaseMeshTopology, BaseLink::FLAG_STRONGLINK> topology;
 };
 
 } // namespace visualmodel
