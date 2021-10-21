@@ -31,7 +31,7 @@ namespace sofa::core::behavior
  * and/or write state variables.
  */
 template<class DataTypes>
-class SOFA_CORE_API SingleStateAccessor : public virtual StateAccessor
+class SingleStateAccessor : public virtual StateAccessor
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(SingleStateAccessor, DataTypes), StateAccessor);

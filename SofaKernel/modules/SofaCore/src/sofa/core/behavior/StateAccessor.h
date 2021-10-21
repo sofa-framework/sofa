@@ -37,7 +37,7 @@ namespace sofa::core::behavior
  * Those components store a list of BaseMechanicalState. It does not prevent them to store the same BaseMechanicalState
  * as a derived type.
  */
-class SOFA_CORE_API StateAccessor : public virtual objectmodel::BaseObject
+class StateAccessor : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(StateAccessor, objectmodel::BaseObject);
