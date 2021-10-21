@@ -34,7 +34,6 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
-#include <sofa/linearalgebra/TripletMatrix.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
 
@@ -266,11 +265,39 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::accumulateJacobians(const M
 }
 
 template<class T>
-void copyKToEigenFormat(linearalgebra::TripletMatrix< T >* K, Eigen::SparseMatrix<double,Eigen::ColMajor>& Keig)
+void copyKToEigenFormat(CompressedRowSparseMatrix< T >* K, Eigen::SparseMatrix<double,Eigen::ColMajor>& Keig)
 {
-    Keig.setFromTriplets(K->getTripletList().begin(), K->getTripletList().end());
-}
+    // It is assumed that K is not compressed. All the data is contained in the temporary container K->btemp
+    // This data is provided to Eigen to build a compressed sparse matrix in Eigen format.
+    // The strategy would be different if K was compressed. However, compression is avoided as it is very expensive.
 
+    /// Structure complying with the expected interface of SparseMatrix::setFromTriplets
+    struct IndexedBlocProxy
+    {
+        explicit IndexedBlocProxy(const typename CompressedRowSparseMatrix<T>::VecIndexedBloc::const_iterator& it) : m_iterator(it) {}
+        T value() const { return m_iterator->value; }
+        typename CompressedRowSparseMatrix< T >::Index row() const { return m_iterator->l; }
+        typename CompressedRowSparseMatrix< T >::Index col() const { return m_iterator->c; }
+
+        typename CompressedRowSparseMatrix<T>::VecIndexedBloc::const_iterator m_iterator;
+    };
+    /// Iterator provided to SparseMatrix::setFromTriplets giving access to an interface similar to Eigen::Triplet
+    struct IndexedBlocIterator
+    {
+        explicit IndexedBlocIterator(const typename CompressedRowSparseMatrix<T>::VecIndexedBloc::const_iterator& it)
+            : m_proxy(it) {}
+        bool operator!=(const IndexedBlocIterator& rhs) const { return m_proxy.m_iterator != rhs.m_proxy.m_iterator; }
+        IndexedBlocIterator& operator++() { ++m_proxy.m_iterator; return *this; }
+        IndexedBlocProxy* operator->() { return &m_proxy; }
+    private:
+        IndexedBlocProxy m_proxy;
+    };
+
+    sofa::helper::ScopedAdvancedTimer timer("KfromTriplets" );
+    IndexedBlocIterator begin(K->btemp.begin());
+    IndexedBlocIterator end(K->btemp.end());
+    Keig.setFromTriplets(begin, end);
+}
 template<class InputFormat>
 static void copyMappingJacobianToEigenFormat(const typename InputFormat::MatrixDeriv& J, Eigen::SparseMatrix<double>& Jeig)
 {
@@ -438,11 +465,13 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
     sofa::helper::AdvancedTimer::stepBegin("stiffness" );
 
     ///////////////////////     GET K       ////////////////////////////////////////
-    linearalgebra::TripletMatrix<Real1> K;
-    K.resize( m_fullMatrixSize ,  m_fullMatrixSize );
-    auto KAccessor = new DefaultMultiMatrixAccessor;
+    CompressedRowSparseMatrix< Real1 >* K = new CompressedRowSparseMatrix< Real1 > ( );
+    K->resizeBloc( m_fullMatrixSize ,  m_fullMatrixSize );
+    K->clear();
+    DefaultMultiMatrixAccessor* KAccessor;
+    KAccessor = new DefaultMultiMatrixAccessor;
     KAccessor->addMechanicalState( l_mechanicalState );
-    KAccessor->setGlobalMatrix(&K);
+    KAccessor->setGlobalMatrix(K);
     KAccessor->setupMatrices();
 
     const sofa::simulation::Node *node = l_nodeToParse.get();
@@ -490,12 +519,18 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
 
     sofa::helper::AdvancedTimer::stepEnd("stiffness" );
 
+    if (!K)
+    {
+        msg_error(this) << "matrix of the force-field system not found";
+        return;
+    }
+
     //------------------------------------------------------------------------------
 
     sofa::helper::AdvancedTimer::stepBegin("copyKToEigen" );
     Eigen::SparseMatrix<double,Eigen::ColMajor> Keig;
     Keig.resize(m_fullMatrixSize,m_fullMatrixSize);
-    copyKToEigenFormat(&K,Keig);
+    copyKToEigenFormat(K,Keig);
     sofa::helper::AdvancedTimer::stepEnd("copyKToEigen" );
 
 
@@ -589,6 +624,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
     sofa::helper::AdvancedTimer::stepEnd("copy" );
 
     delete KAccessor;
+    delete K;
 }
 
 // Even though it does nothing, this method has to be implemented
