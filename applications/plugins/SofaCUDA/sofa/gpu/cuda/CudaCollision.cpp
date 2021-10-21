@@ -77,6 +77,12 @@ ContactMapperCreator< ContactMapper<sofa::component::collision::SphereCollisionM
 template<> SOFA_GPU_CUDA_API
 std::unordered_map<std::type_index, typename FixParticlePerformer<CudaVec3fTypes>::GetFixationPointsOnModelFunction >
 FixParticlePerformer<CudaVec3fTypes>::s_mapSupportedModels;
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+std::unordered_map<std::type_index, typename FixParticlePerformer<CudaVec3dTypes>::GetFixationPointsOnModelFunction >
+FixParticlePerformer<CudaVec3dTypes>::s_mapSupportedModels;
+#endif
+
 #endif // WIN32
 
 helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<CudaVec3fTypes> > ComponentMouseInteractionCudaVec3fClass ("MouseSpringCudaVec3f",true);
