@@ -26,6 +26,7 @@
 #include <numeric>
 #include <iterator>
 #include <algorithm>
+#include <type_traits>
 
 namespace sofa::geometry
 {
@@ -41,9 +42,19 @@ struct Edge
         typename = std::enable_if_t<std::is_scalar_v<T>>>
         static constexpr auto squaredLength(const Node& n0, const Node& n1)
     {
-        Node v{};
-        std::transform(n0.begin(), n0.end(), n1.begin(), v.begin(), std::minus<T>());
-        return std::inner_product(std::cbegin(v), std::cend(v), std::cbegin(v), static_cast<T>(0));
+        constexpr Node v{};
+        constexpr auto size = std::distance(std::cbegin(v), std::cend(v));
+        // specialized function is faster than the generic (using STL) one
+        if constexpr (std::is_same_v< Node, sofa::type::Vec<size, T>>)
+        {
+            return (static_cast<sofa::type::Vec<size, T>>(n1) - static_cast<sofa::type::Vec<size, T>>(n0)).norm2();
+        }
+        else
+        {
+            Node diff{};
+            std::transform(n0.cbegin(), n0.cend(), n1.cbegin(), diff.begin(), std::minus<T>());
+            return std::inner_product(std::cbegin(diff), std::cend(diff), std::cbegin(diff), static_cast<T>(0));
+        }
     }
 
     template<typename Node,
