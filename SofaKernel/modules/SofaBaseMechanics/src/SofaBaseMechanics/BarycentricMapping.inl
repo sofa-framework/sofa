@@ -157,7 +157,7 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ()
     using EdgeSetMapper = BarycentricMapperEdgeSetTopology<InDataTypes, OutDataTypes>;
 
     auto input_topology_container = d_input_topology.get();
-    auto output_topology_container = dynamic_cast<PointSetTopologyContainer*> (d_output_topology.get());
+    auto output_topology_container = d_output_topology.get();
 
     if (!input_topology_container)
         return;
