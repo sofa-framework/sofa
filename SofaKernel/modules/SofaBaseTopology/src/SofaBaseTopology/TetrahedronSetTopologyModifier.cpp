@@ -638,14 +638,12 @@ void TetrahedronSetTopologyModifier::propagateTopologicalEngineChanges()
     if (!m_container->isTetrahedronTopologyDirty()) // tetrahedron Data has not been touched
         return TriangleSetTopologyModifier::propagateTopologicalEngineChanges();
 
-    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-
-    for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
+    auto& tetraTopologyHandlerList = m_container->getTopologyHandlerList(sofa::geometry::ElementType::TETRAHEDRON);
+    for (auto topoHandler : tetraTopologyHandlerList)
     {
-        sofa::core::topology::TopologyHandler* topoEngine = (*it);
-        if (topoEngine->isDirty())
+        if (topoHandler->isDirty())
         {
-            topoEngine->update();
+            topoHandler->update();
         }
     }
 

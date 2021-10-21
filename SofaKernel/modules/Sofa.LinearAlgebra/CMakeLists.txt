@@ -36,8 +36,8 @@ set(HEADER_FILES
     ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixProduct[EigenSparseMatrix].h
     ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixStorageOrder.h
     ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixStorageOrder[EigenSparseMatrix].h
-    ${SOFALINEARALGEBRASRC_ROOT}/matrix_bloc_traits.h
     ${SOFALINEARALGEBRASRC_ROOT}/TripletMatrix.h
+    ${SOFALINEARALGEBRASRC_ROOT}/matrix_bloc_traits.h
 )
 
 set(SOURCE_FILES

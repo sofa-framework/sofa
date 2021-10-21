@@ -173,10 +173,8 @@ public:
 
     /** \brief Returns the type of the topology */
     sofa::core::topology::TopologyElementType getTopologyType() const override {return sofa::core::topology::TopologyElementType::EDGE;}
-    
-    /// \brief function to add a TopologyHandler to the current list of engines.
-    void addTopologyHandler(sofa::core::topology::TopologyHandler* _TopologyHandler);
 
+    bool linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType) override;
 protected:
 
     /** \brief Creates the EdgeSet array.
@@ -199,11 +197,6 @@ protected:
 
     void clearEdgesAroundVertex();
 
-
-    /// \brief Function creating the data graph linked to d_triangle
-    void updateTopologyHandlerGraph() override;
-
-
     /// Use a specific boolean @see m_triangleTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean
     void setEdgeTopologyToDirty();
@@ -224,16 +217,8 @@ protected:
     /** the array that stores the set of edge-vertex shells, ie for each vertex gives the set of adjacent edges */
     sofa::type::vector< EdgesAroundVertex > m_edgesAroundVertex;
 
-
     /// Boolean used to know if the topology Data of this container is dirty
-    bool m_edgeTopologyDirty;
-
-    /// List of engines related to this specific container
-    std::list<sofa::core::topology::TopologyHandler *> m_enginesList;
-
-    /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
-    sofa::type::vector< sofa::type::vector<std::string> > m_dataGraph;
-    sofa::type::vector< sofa::type::vector<std::string> > m_enginesGraph;
+    bool m_edgeTopologyDirty = false;
 
 public:
     /** The array that stores the set of edges in the edge set */
