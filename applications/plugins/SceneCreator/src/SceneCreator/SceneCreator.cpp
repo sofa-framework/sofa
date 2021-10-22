@@ -434,8 +434,6 @@ simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string&
     //Node VISUAL
     createVisualNodeVec3(cube, dofFEM, "", "red", Deriv3(), Deriv3(), MT_Identity);
 
-    simpleapi::dumpScene(parent) ;
-
     return cube;
 }
 

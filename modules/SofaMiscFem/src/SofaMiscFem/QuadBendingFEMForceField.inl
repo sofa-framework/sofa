@@ -61,33 +61,6 @@ namespace sofa::component::forcefield
 
 using namespace sofa::core::topology;
 
-// --------------------------------------------------------------------------------------
-// ---  Topology Creation/Destruction functions
-// --------------------------------------------------------------------------------------
-
-template< class DataTypes>
-void QuadBendingFEMForceField<DataTypes>::QuadHandler::applyCreateFunction(unsigned int quadIndex, QuadInformation &, 
-                                                                           const core::topology::BaseMeshTopology::Quad &t, 
-                                                                           const sofa::type::vector<unsigned int> &, 
-                                                                           const sofa::type::vector<double> &)
-{
-    if (ff)
-    {
-        Index idx0 = t[0];
-        Index idx1 = t[1];
-        Index idx2 = t[2];
-        Index idx3 = t[3];
-        switch(ff->method)
-        {
-        case SMALL :
-            ff->initSmall(quadIndex,idx0,idx1,idx2,idx3);
-            ff->computeBendingMaterialStiffness(quadIndex,idx0,idx1,idx2,idx3);
-            ff->computeShearMaterialStiffness(quadIndex,idx0,idx1,idx2,idx3);
-            break;
-
-        }
-    }
-}
 
 // --------------------------------------------------------------------------------------
 // --- constructor
@@ -106,7 +79,7 @@ QuadBendingFEMForceField<DataTypes>::QuadBendingFEMForceField()
   , l_topology(initLink("topology", "link to the topology container"))
 
 {
-    quadHandler = new QuadHandler(this, &quadInfo);
+
 }
                 
 template <class DataTypes>
@@ -114,7 +87,6 @@ QuadBendingFEMForceField<DataTypes>::~QuadBendingFEMForceField()
 {
     f_poisson.setRequired(true);
     f_young.setRequired(true);
-    if(quadHandler) delete quadHandler;
 }
     
 // --------------------------------------------------------------------------------------
@@ -144,7 +116,14 @@ void QuadBendingFEMForceField<DataTypes>::init()
         msg_warning() << "No quads found in linked Topology.";
     }
     // Create specific handler for QuadData
-    quadInfo.createTopologyHandler(m_topology, quadHandler);
+    quadInfo.createTopologyHandler(m_topology);
+    quadInfo.setCreationCallback([this](Index quadIndex, QuadInformation& qInfo,
+        const core::topology::BaseMeshTopology::Quad& q,
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs)
+    {
+        createQuadInformation(quadIndex, qInfo, q, ancestors, coefs);
+    });
 
     edgeInfo.createTopologyHandler(m_topology);
 
@@ -203,14 +182,40 @@ void QuadBendingFEMForceField<DataTypes>::reinit()
   
     for (Topology::QuadID i=0; i<m_topology->getNbQuads(); ++i)
     {
-        quadHandler->applyCreateFunction(i, quadInf[i],  m_topology->getQuad(i),  
-                                         (const sofa::type::vector< unsigned int > )0, 
-                                         (const sofa::type::vector< double >)0);
+        createQuadInformation(i, quadInf[i],  m_topology->getQuad(i),
+            (const sofa::type::vector< unsigned int > )0,
+            (const sofa::type::vector< double >)0);
     }
     edgeInfo.endEdit();
     quadInfo.endEdit();
 }
-                
+
+
+// --------------------------------------------------------------------------------------
+// ---  Topology Creation/Destruction functions
+// --------------------------------------------------------------------------------------
+
+template< class DataTypes>
+void QuadBendingFEMForceField<DataTypes>::createQuadInformation(unsigned int quadIndex, QuadInformation&,
+    const core::topology::BaseMeshTopology::Quad& t,
+    const sofa::type::vector<unsigned int>&,
+    const sofa::type::vector<double>&)
+{
+    Index idx0 = t[0];
+    Index idx1 = t[1];
+    Index idx2 = t[2];
+    Index idx3 = t[3];
+    switch (method)
+    {
+    case SMALL:
+        initSmall(quadIndex, idx0, idx1, idx2, idx3);
+        computeBendingMaterialStiffness(quadIndex, idx0, idx1, idx2, idx3);
+        computeShearMaterialStiffness(quadIndex, idx0, idx1, idx2, idx3);
+        break;
+
+    }
+}
+
 // --------------------------------------------------------------------------------------
 // --- Get/Set methods
 // --------------------------------------------------------------------------------------

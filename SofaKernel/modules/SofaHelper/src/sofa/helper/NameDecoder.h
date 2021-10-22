@@ -254,8 +254,8 @@ private:
         if constexpr (HasGetDefaultTemplateName<T>::value)
                 return T::GetDefaultTemplateName();
 
-        /// Finally if nothing match...assumes there is no templates in this object.
-        return "";
+        /// Finally if nothing matches, decode the template name from the typeid
+        return decodeTemplateName(typeid(T));
     }
 };
 

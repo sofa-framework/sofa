@@ -409,6 +409,11 @@ public:
                 );
     }
 
+    explicit operator sofa::type::Vec<3, Real>()
+    {
+        return { (*this)[0], (*this)[1] , (*this)[2] };
+    }
+
 protected:
     Real dummy;
 };

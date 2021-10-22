@@ -34,7 +34,7 @@ using sofa::type::Vec;
 
 template<class In, class Out>
 BarycentricMapperSparseGridTopology<In, Out>::BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology,
-        topology::PointSetTopologyContainer* _toTopology)
+    core::topology::BaseMeshTopology* _toTopology)
     : TopologyBarycentricMapper<In,Out>(fromTopology, _toTopology),
       m_fromTopology(fromTopology),
       m_matrixJ(nullptr), m_updateJ(true)

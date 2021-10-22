@@ -89,7 +89,7 @@ public:
 
 protected:
     BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology,
-                                  topology::PointSetTopologyContainer* toTopology) ;
+        core::topology::BaseMeshTopology* toTopology) ;
 
     sofa::type::vector< MappingData1D >  m_map1d;
     sofa::type::vector< MappingData2D >  m_map2d;
