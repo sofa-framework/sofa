@@ -5,7 +5,9 @@ project(Sofa.Geometry_test)
 set(SOURCE_FILES
     Edge_test.cpp
     Triangle_test.cpp
+    Quad_test.cpp
     Tetrahedron_test.cpp
+    Hexahedron_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
