@@ -6,9 +6,6 @@ timeout "Components/solver/NewmarkImplicitSolver.scn" "60"
 iterations "Components/forcefield/FastTetrahedronCorotationalForceField_validation.scn" "10"
 timeout "Components/forcefield/FastTetrahedronCorotationalForceField_validation.scn" "90"
 
-timeout "Components/linearsolver/MatrixContributions123.scn" "60"
-
-
 # [Slow] Long compute only a few iterations
 iterations "Components/mapping/BarycentricMapping.scn" "10"
 timeout "Components/mapping/BarycentricMapping.scn" "60"
@@ -16,6 +13,9 @@ timeout "Components/mapping/BarycentricMapping.scn" "60"
 # [Slow] Long compute only a few iterations
 iterations "Components/linearsolver/MatrixContributions123.scn" "10"
 timeout "Components/linearsolver/MatrixContributions123.scn" "60"
+
+# [Slow] Dense solver: takes too long to compute even a single iteration
+ignore "Components/linearsolver/FEMBAR-SVDLinearSolver.scn"
 
 # [Slow] Long compute only a few iterations
 iterations "Components/mapping/SPHFluidSurfaceMapping.scn" "10"
@@ -25,11 +25,11 @@ timeout "Components/mapping/SPHFluidSurfaceMapping.scn" "60"
 iterations "Components/animationloop/FreeMotionAnimationLoop.scn" "10"
 timeout "Components/animationloop/FreeMotionAnimationLoop.scn" "180"
 
-# [Slow] Long 
+# [Slow] Long
 iterations "Components/topology/TopologicalModifiers/RemovingTetra2TriangleProcess_performanceTest.scn" "10"
 timeout "Components/topology/TopologicalModifiers/RemovingTetra2TriangleProcess_performanceTest.scn" "180"
 
-# [Warning] Temporarily ignore this scene, because it produces litterally
+# [Warning] Temporarily ignore this scene, because it produces literally
 # millions of warnings:
 # WARNING[default2(MinProximityIntersection)]: WARNING: null distance between contact detected
 ignore "Tutorials/Mappings/TutorialMappingOctopusArticulated.scn"
