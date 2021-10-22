@@ -14,9 +14,8 @@ timeout "Components/mapping/BarycentricMapping.scn" "60"
 iterations "Components/linearsolver/MatrixContributions123.scn" "10"
 timeout "Components/linearsolver/MatrixContributions123.scn" "60"
 
-# [Slow] Long compute only a few iterations
-iterations "Components/linearsolver/FEMBAR-SVDLinearSolver.scn" "1"
-timeout "Components/linearsolver/FEMBAR-SVDLinearSolver.scn" "60"
+# [Slow] Dense solver: takes too long to compute even a single iteration
+ignore "Components/linearsolver/FEMBAR-SVDLinearSolver.scn"
 
 # [Slow] Long compute only a few iterations
 iterations "Components/mapping/SPHFluidSurfaceMapping.scn" "10"
