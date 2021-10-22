@@ -938,8 +938,6 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassHexahedronDestruction(con
             const core::topology::BaseMeshTopology::EdgesInHexahedron &he = this->m_topology->getEdgesInHexahedron(hexahedronRemoved[i]);
             const core::topology::BaseMeshTopology::Hexahedron& h = this->m_topology->getHexahedron(hexahedronRemoved[i]);
 
-            const core::topology::BaseMeshTopology::Hexahedron& h = this->m_topology->getHexahedron(hexahedronRemoved[i]);
-
             // Compute rest mass of conserne hexahedron = density * hexahedron volume.
             const auto& rpos0 = DataTypes::getCPos(positions[h[0]]);
             const auto& rpos1 = DataTypes::getCPos(positions[h[1]]);
