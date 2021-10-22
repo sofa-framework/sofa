@@ -58,7 +58,7 @@ protected:
     topology::RegularGridTopology* topology;
     void calcMapT();
 public:
-    BarycentricMapperRegularGridTopology(topology::RegularGridTopology* fromTopology, topology::PointSetTopologyContainer* toTopology)
+    BarycentricMapperRegularGridTopology(topology::RegularGridTopology* fromTopology, core::topology::BaseMeshTopology* toTopology)
         : Inherit(fromTopology, toTopology)
         , maxNOut(0), topology(fromTopology)
     {}
@@ -117,7 +117,7 @@ protected:
     void buildTranslate(unsigned outsize);
 
 public:
-    BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology, topology::PointSetTopologyContainer* toTopology)
+    BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology, core::topology::BaseMeshTopology* toTopology)
         : Inherit(fromTopology, toTopology)
         , topology(fromTopology), bHexa(true), bTrans(true)
     {}
