@@ -48,6 +48,10 @@ TEST(GeometryEdge_test, squaredLength1f)
     EXPECT_FLOAT_EQ(expectedResult, sofa::geometry::Edge::squaredLength(a1, b1));
     EXPECT_FLOAT_EQ(expectedResult, sofa::geometry::Edge::squaredLength(a2, b2));
     EXPECT_FLOAT_EQ(expectedResult, sofa::geometry::Edge::squaredLength(a3, b3));
+
+    //special cases
+    EXPECT_FLOAT_EQ(0.f, sofa::geometry::Edge::squaredLength(a1, a1));
+    EXPECT_FLOAT_EQ(expectedResult, sofa::geometry::Edge::squaredLength((a3 * -1.f), (b3 * -1.f)));
 }
 
 TEST(GeometryEdge_test, squaredLength2f)
@@ -64,6 +68,10 @@ TEST(GeometryEdge_test, squaredLength2f)
     EXPECT_FLOAT_EQ(expectedResult, sofa::geometry::Edge::squaredLength(a1, b1));
     EXPECT_FLOAT_EQ(expectedResult, sofa::geometry::Edge::squaredLength(a2, b2));
     EXPECT_FLOAT_EQ(expectedResult, sofa::geometry::Edge::squaredLength(a3, b3));
+
+    //special cases
+    EXPECT_FLOAT_EQ(0.f, sofa::geometry::Edge::squaredLength(a1, a1));
+    EXPECT_FLOAT_EQ(expectedResult, sofa::geometry::Edge::squaredLength((a3 * -1.f), (b3 * -1.f)));
 }
 
 TEST(GeometryEdge_test, squaredLength3f)
@@ -80,6 +88,10 @@ TEST(GeometryEdge_test, squaredLength3f)
     EXPECT_FLOAT_EQ(expectedResult, sofa::geometry::Edge::squaredLength(a1, b1));
     EXPECT_FLOAT_EQ(expectedResult, sofa::geometry::Edge::squaredLength(a2, b2));
     EXPECT_FLOAT_EQ(expectedResult, sofa::geometry::Edge::squaredLength(a3, b3));
+
+    //special cases
+    EXPECT_FLOAT_EQ(0.f, sofa::geometry::Edge::squaredLength(a1, a1));
+    EXPECT_FLOAT_EQ(expectedResult, sofa::geometry::Edge::squaredLength( (a3 * -1.f), (b3 * -1.f)));
 }
 
 TEST(GeometryEdge_test, length3f)
@@ -96,6 +108,10 @@ TEST(GeometryEdge_test, length3f)
     EXPECT_FLOAT_EQ(expectedResult, sofa::geometry::Edge::length(a1, b1));
     EXPECT_FLOAT_EQ(expectedResult, sofa::geometry::Edge::length(a2, b2));
     EXPECT_FLOAT_EQ(expectedResult, sofa::geometry::Edge::length(a3, b3));
+
+    //special cases
+    EXPECT_FLOAT_EQ(0.f, sofa::geometry::Edge::length(a1, a1));
+    EXPECT_FLOAT_EQ(expectedResult, sofa::geometry::Edge::length((a3 * -1.f), (b3 * -1.f)));
 }
 
 }// namespace sofa

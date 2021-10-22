@@ -140,38 +140,49 @@ TEST(GeometryHexahedron_test, getPositionFromBarycentricCoefficients_vec3f)
     EXPECT_TRUE(testPosition[0] == expectedPosition[0] && testPosition[1] == expectedPosition[1] && testPosition[2] == expectedPosition[2]);
 }
 
-TEST(GeometryHexahedron_test, volume_vec3f)
+TEST(GeometryHexahedron_test, cube_volume_vec3f)
 {
-    {
-        const sofa::type::Vec3f a{ 0.f, 0.f, 0.f };
-        const sofa::type::Vec3f b{ 8.f, 0.f, 0.f };
-        const sofa::type::Vec3f c{ 8.f, 8.f, 0.f };
-        const sofa::type::Vec3f d{ 0.f, 8.f, 0.f };
-        const sofa::type::Vec3f e{ 0.f, 0.f, 8.f };
-        const sofa::type::Vec3f f{ 8.f, 0.f, 8.f };
-        const sofa::type::Vec3f g{ 8.f, 8.f, 8.f };
-        const sofa::type::Vec3f h{ 0.f, 8.f, 8.f };
+    
+    const sofa::type::Vec3f a{ 0.f, 0.f, 0.f };
+    const sofa::type::Vec3f b{ 8.f, 0.f, 0.f };
+    const sofa::type::Vec3f c{ 8.f, 8.f, 0.f };
+    const sofa::type::Vec3f d{ 0.f, 8.f, 0.f };
+    const sofa::type::Vec3f e{ 0.f, 0.f, 8.f };
+    const sofa::type::Vec3f f{ 8.f, 0.f, 8.f };
+    const sofa::type::Vec3f g{ 8.f, 8.f, 8.f };
+    const sofa::type::Vec3f h{ 0.f, 8.f, 8.f };
 
-        auto testVolume = sofa::geometry::Hexahedron::volume(a, b, c, d, e, f, g, h);
-        auto expectedVolume = 8.f * 8.f * 8.f;
+    auto testVolume = sofa::geometry::Hexahedron::volume(a, b, c, d, e, f, g, h);
+    auto expectedVolume = 8.f * 8.f * 8.f;
 
-        EXPECT_FLOAT_EQ(testVolume, expectedVolume);
-    }
-    {
-        const sofa::type::Vec3f a{ 0.f, 0.f, 0.f };
-        const sofa::type::Vec3f b{ 7.f, 0.f, 1.f };
-        const sofa::type::Vec3f c{ 8.f, 8.f, 1.f };
-        const sofa::type::Vec3f d{ 0.f, 9.f, 0.f };
-        const sofa::type::Vec3f e{ 0.f, 0.f, 7.f };
-        const sofa::type::Vec3f f{ 8.f, 0.f, 7.f };
-        const sofa::type::Vec3f g{ 9.f, 8.f, 9.f };
-        const sofa::type::Vec3f h{ 0.f, 7.f, 8.f };
+    EXPECT_FLOAT_EQ(testVolume, expectedVolume);
+}
+TEST(GeometryHexahedron_test, rand_volume_vec3f)
+{
+    const sofa::type::Vec3f a{ 0.f, 0.f, 0.f };
+    const sofa::type::Vec3f b{ 7.f, 0.f, 1.f };
+    const sofa::type::Vec3f c{ 8.f, 8.f, 1.f };
+    const sofa::type::Vec3f d{ 0.f, 9.f, 0.f };
+    const sofa::type::Vec3f e{ 0.f, 0.f, 7.f };
+    const sofa::type::Vec3f f{ 8.f, 0.f, 7.f };
+    const sofa::type::Vec3f g{ 9.f, 8.f, 9.f };
+    const sofa::type::Vec3f h{ 0.f, 7.f, 8.f };
 
-        auto testVolume = sofa::geometry::Hexahedron::volume(a, b, c, d, e, f, g, h);
-        auto expectedVolume = 469.16667f;
+    auto testVolume = sofa::geometry::Hexahedron::volume(a, b, c, d, e, f, g, h);
+    auto expectedVolume = 469.16667f;
 
-        EXPECT_FLOAT_EQ(testVolume, expectedVolume);
-    }
+    EXPECT_FLOAT_EQ(testVolume, expectedVolume);
+}
+TEST(GeometryHexahedron_test, null_volume_vec3f)
+{
+    // special case
+    const sofa::type::Vec3f a{ 0.f, 0.f, 0.f };
+
+    auto testVolume = sofa::geometry::Hexahedron::volume(a, a, a, a, a, a, a, a);
+    auto expectedVolume = 0.f;
+
+    EXPECT_FLOAT_EQ(testVolume, expectedVolume);
+    
 }
 
 }// namespace sofa

@@ -48,5 +48,23 @@ TEST(GeometryTriangle_test, area3f_stdarray)
     const auto testArea = sofa::geometry::Triangle::area(a, b, c);
     EXPECT_FLOAT_EQ(testArea, 19.306734f);
 }
+TEST(GeometryTriangle_test, flat_area2f_stdarray)
+{
+    const std::array<float, 2> a{ 0.f, 0.f };
+    const std::array<float, 2> b{ 0.f, 2.f };
+    const std::array<float, 2> c{ 0.f, 1.f };
+
+    const auto testArea = sofa::geometry::Triangle::area(a, b, c);
+    EXPECT_FLOAT_EQ(testArea, 0.f);
+}
+TEST(GeometryTriangle_test, flat_area3f_stdarray)
+{
+    const std::array<float, 3> a{ 0.f, 0.f, 0.f };
+    const std::array<float, 3> b{ 0.f, 2.f, 0.f };
+    const std::array<float, 3> c{ 0.f, 1.f, 0.f };
+
+    const auto testArea = sofa::geometry::Triangle::area(a, b, c);
+    EXPECT_FLOAT_EQ(testArea, 0.f);
+}
 
 }// namespace sofa
