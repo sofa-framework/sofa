@@ -40,6 +40,22 @@ struct Hexahedron
 
     Hexahedron() = default;
 
+    // CONVENTION : indices ordering for the nodes of an hexahedron :
+//
+//     Y  n3---------n2
+//     ^  /          /|
+//     | /          / |
+//     n7---------n6  |
+//     |          |   |
+//     |  n0------|--n1
+//     | /        | /
+//     |/         |/
+//     n4---------n5-->X
+//    /
+//   /
+//  Z
+
+    // nodes order is not necessary
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
@@ -58,6 +74,7 @@ struct Hexahedron
         return centerRes;
     }
 
+    // nodes order is necessary
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
@@ -93,23 +110,15 @@ struct Hexahedron
         SOFA_UNUSED(canInvert);
         const auto tmpResult = base * (pnt - origin);
 
-        if constexpr (std::is_same_v<decltype(tmpResult), Node>)
-        {
-            return tmpResult;
-        }
-        else
-        {
-            sofa::type::fixed_array<T, 3> returnResult{};
-            std::copy_n(tmpResult.begin(), max_spatial_dimensions, returnResult.begin());
-            return returnResult;
-        }
+        return tmpResult;
     }
 
+    // nodes order is necessary
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
-        static constexpr auto distanceTo(const Node& n0, const Node& n1, const Node& n2, const Node& n3,
+        static constexpr auto squaredDistanceTo(const Node& n0, const Node& n1, const Node& n2, const Node& n3,
             const Node& n4, const Node& n5, const Node& n6, const Node& n7, const Node& pos)
     {
         const auto& v = barycentricCoefficients(n0,n1,n2,n3,n4,n5,n6,n7, pos);
@@ -118,6 +127,8 @@ struct Hexahedron
 
         if (d > 0)
             d = (pos - center(n0, n1, n2, n3, n4, n5, n6, n7)).norm2();
+        else
+            d = static_cast<T>(0);
 
         return d;
     }
@@ -127,7 +138,7 @@ struct Hexahedron
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
     static constexpr auto getPositionFromBarycentricCoefficients(const Node& n0, const Node& n1, const Node& n2, const Node& n3,
-            const Node& n4, const Node& n5, const Node& n6, const Node& n7, const std::array<SReal, 3>& baryC)
+            const Node& n4, const Node& n5, const Node& n6, const Node& n7, const sofa::type::fixed_array<SReal, 3>& baryC)
     {
         const auto fx = baryC[0];
         const auto fy = baryC[1];
@@ -168,6 +179,7 @@ struct Hexahedron
         {
             //does not make sense to compute volume other than 3D
             //but some code effectively wants 2d volumes(??)
+            //an exception may be a better solution
             return static_cast<T>(0);
         }
     }
