@@ -30,12 +30,6 @@
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/vector.h>
-#include <SofaBaseTopology/CommonAlgorithms.h>
-#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <numeric>
