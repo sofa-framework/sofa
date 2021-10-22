@@ -30,5 +30,38 @@ namespace sofa::topology
 {
     using Hexahedron = sofa::topology::Element<sofa::geometry::Hexahedron>;
 
+    template<typename Coordinates, typename VectorCoordinates>
+    static constexpr sofa::Index getClosestHexahedronIndex(const VectorCoordinates& hexahedronPositions, const sofa::type::vector<Hexahedron>& hexahedra,
+        const Coordinates& pos, sofa::type::fixed_array<SReal,3>& barycentricCoefficients, SReal& distance)
+    {
+        sofa::Index index = sofa::InvalidID;
+        distance = std::numeric_limits<SReal>::max();
+
+        for (sofa::Index c = 0; c < hexahedra.size(); ++c)
+        {
+            const auto& h = hexahedra[c];
+            const auto d = sofa::geometry::Hexahedron::distanceTo(hexahedronPositions[h[0]], hexahedronPositions[h[1]], hexahedronPositions[h[2]], hexahedronPositions[h[3]],
+                hexahedronPositions[h[4]], hexahedronPositions[h[5]], hexahedronPositions[h[6]], hexahedronPositions[h[7]],
+                pos);
+
+            if (d < distance)
+            {
+                distance = d;
+                index = c;
+            }
+        }
+
+        if (index != sofa::InvalidID)
+        {
+            const auto& h = hexahedra[index];
+            barycentricCoefficients = sofa::geometry::Hexahedron::barycentricCoefficients(hexahedronPositions[h[0]], hexahedronPositions[h[1]], hexahedronPositions[h[2]], hexahedronPositions[h[3]],
+                hexahedronPositions[h[4]], hexahedronPositions[h[5]], hexahedronPositions[h[6]], hexahedronPositions[h[7]], pos);
+        }
+
+        return index;
+    }
+
     static constexpr Hexahedron InvalidHexahedron;
+
+   
 }

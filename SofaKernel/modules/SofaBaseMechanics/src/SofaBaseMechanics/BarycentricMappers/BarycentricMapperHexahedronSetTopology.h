@@ -21,8 +21,6 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTopologyContainer.h>
-#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 
 namespace sofa::component::mapping
 {
@@ -49,7 +47,7 @@ public:
 
     typedef typename Inherit1::Real Real;
 
-    ~BarycentricMapperHexahedronSetTopology() override ;
+    ~BarycentricMapperHexahedronSetTopology() override = default;
     virtual type::vector<Hexahedron> getElements() override;
     virtual type::vector<SReal> getBaryCoef(const Real* f) override;
     type::vector<SReal> getBaryCoef(const Real fx, const Real fy, const Real fz);
@@ -65,13 +63,11 @@ public:
 
 protected:
     BarycentricMapperHexahedronSetTopology();
-    BarycentricMapperHexahedronSetTopology(topology::HexahedronSetTopologyContainer* fromTopology,
-                                           topology::PointSetTopologyContainer* toTopology);
+    BarycentricMapperHexahedronSetTopology(sofa::core::topology::TopologyContainer* fromTopology,
+        core::topology::BaseMeshTopology* toTopology);
 
-    void setTopology(topology::HexahedronSetTopologyContainer* topology);
+    void setTopology(sofa::core::topology::TopologyContainer* topology);
 
-    topology::HexahedronSetTopologyContainer*		m_fromContainer {nullptr};
-    topology::HexahedronSetGeometryAlgorithms<In>*	m_fromGeomAlgo  {nullptr};
     std::set<Index> m_invalidIndex;
 
     using Inherit1::d_map;

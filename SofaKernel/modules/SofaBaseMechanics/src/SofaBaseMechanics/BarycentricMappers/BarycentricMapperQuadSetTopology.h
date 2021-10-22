@@ -21,8 +21,6 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTopologyContainer.h>
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/QuadSetTopologyContainer.h>
 
 namespace sofa::component::mapping
 {
@@ -49,10 +47,10 @@ public:
     Index addPointInQuad(const Index index, const SReal* baryCoords) override;
     Index createPointInQuad(const typename Out::Coord& p, Index index, const typename In::VecCoord* points) override;
 
-    virtual ~BarycentricMapperQuadSetTopology();
+    ~BarycentricMapperQuadSetTopology() override = default;
 protected:
-    BarycentricMapperQuadSetTopology(topology::QuadSetTopologyContainer* fromTopology,
-                                     topology::PointSetTopologyContainer* toTopology);
+    BarycentricMapperQuadSetTopology(sofa::core::topology::TopologyContainer* fromTopology,
+        core::topology::BaseMeshTopology* toTopology);
 
     virtual type::vector<Quad> getElements() override;
     virtual type::vector<SReal> getBaryCoef(const Real* f) override;
@@ -61,9 +59,6 @@ protected:
     void computeCenter(Vector3& center, const typename In::VecCoord& in, const Quad& element) override;
     void computeDistance(double& d, const Vector3& v) override;
     void addPointInElement(const Index elementIndex, const SReal* baryCoords) override;
-
-    topology::QuadSetTopologyContainer*			m_fromContainer;
-    topology::QuadSetGeometryAlgorithms<In>*	m_fromGeomAlgo;
 
     using Inherit1::d_map;
     using Inherit1::m_fromTopology;

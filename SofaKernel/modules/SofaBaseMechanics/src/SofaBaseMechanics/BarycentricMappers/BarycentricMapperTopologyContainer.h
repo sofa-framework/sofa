@@ -144,9 +144,9 @@ protected:
     std::size_t m_hashTableSize;
 
 
-    BarycentricMapperTopologyContainer(core::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology);
+    BarycentricMapperTopologyContainer(sofa::core::topology::TopologyContainer* fromTopology, core::topology::BaseMeshTopology* toTopology);
 
-    ~BarycentricMapperTopologyContainer() override {}
+    ~BarycentricMapperTopologyContainer() override = default;
 
     virtual type::vector<Element> getElements()=0;
     virtual type::vector<SReal> getBaryCoef(const Real* f)=0;
