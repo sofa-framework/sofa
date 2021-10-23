@@ -100,21 +100,22 @@ public:
             if(vip.size()>vp.size())size=vp.size();
         }
 
-        std::ostringstream values;
-
-        values << d_axis.getValue();
-        file << values.str() << "\n";
+        {
+            std::ostringstream values;
+            values << d_axis.getValue();
+            file << values.str() << "\n";
+        }
 
         for(int i=0;i<size;i++)
         {
-            std::ostringstream values2;
+            std::ostringstream values;
 
             sofa::type::Vec3d &ip = vip[i];
             sofa::type::Vec3d &p = vp[i];
 
-            values2 << ip[0] << " "<< ip[1] <<" "<< ip[2] <<" "<< p[0] <<" "<< p[1] <<" "<< p[2];
+            values << ip[0] << " "<< ip[1] <<" "<< ip[2] <<" "<< p[0] <<" "<< p[1] <<" "<< p[2];
 
-            file << values2.str() << "\n";
+            file << values.str() << "\n";
         }
 
         d_ip.endEdit();
