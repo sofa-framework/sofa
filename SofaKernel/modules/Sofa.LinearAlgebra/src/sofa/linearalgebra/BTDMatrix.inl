@@ -47,13 +47,13 @@ BTDMatrix<N, T>::~BTDMatrix()
 }
 
 template<std::size_t N, typename T>
-const typename BTDMatrix<N, T>::Bloc& BTDMatrix<N, T>::bloc(Index bi, Index bj) const
+const typename BTDMatrix<N, T>::Block& BTDMatrix<N, T>::bloc(Index bi, Index bj) const
 {
     return data[3*bi + (bj - bi + 1)];
 }
 
 template<std::size_t N, typename T>
-typename BTDMatrix<N, T>::Bloc& BTDMatrix<N, T>::bloc(Index bi, Index bj)
+typename BTDMatrix<N, T>::Block& BTDMatrix<N, T>::bloc(Index bi, Index bj)
 {
     return data[3*bi + (bj - bi + 1)];
 }
@@ -78,7 +78,7 @@ void BTDMatrix<N, T>::resize(Index nbRow, Index nbCol)
                 if (allocsize > 0)
                     delete[] data;
                 allocsize = (nbRow/BSIZE)*3;
-                data = new Bloc[allocsize];
+                data = new Block[allocsize];
             }
         }
         nTCol = nbCol;
@@ -112,31 +112,31 @@ SReal BTDMatrix<N, T>::element(Index i, Index j) const
 }
 
 template<std::size_t N, typename T>
-const typename BTDMatrix<N, T>::Bloc& BTDMatrix<N, T>::asub(Index bi, Index bj, Index, Index) const
+const typename BTDMatrix<N, T>::Block& BTDMatrix<N, T>::asub(Index bi, Index bj, Index, Index) const
 {
-    static Bloc b;
+    static Block b;
     Index bindex = bj - bi + 1;
     if (bindex >= 3) return b;
     return data[bi*3+bindex];
 }
 
 template<std::size_t N, typename T>
-const typename BTDMatrix<N, T>::Bloc& BTDMatrix<N, T>::sub(Index i, Index j, Index, Index) const
+const typename BTDMatrix<N, T>::Block& BTDMatrix<N, T>::sub(Index i, Index j, Index, Index) const
 {
     return asub(i/BSIZE,j/BSIZE);
 }
 
 template<std::size_t N, typename T>
-typename BTDMatrix<N, T>::Bloc& BTDMatrix<N, T>::asub(Index bi, Index bj, Index, Index)
+typename BTDMatrix<N, T>::Block& BTDMatrix<N, T>::asub(Index bi, Index bj, Index, Index)
 {
-    static Bloc b;
+    static Block b;
     Index bindex = bj - bi + 1;
     if (bindex >= 3) return b;
     return data[bi*3+bindex];
 }
 
 template<std::size_t N, typename T>
-typename BTDMatrix<N, T>::Bloc& BTDMatrix<N, T>::sub(Index i, Index j, Index, Index)
+typename BTDMatrix<N, T>::Block& BTDMatrix<N, T>::sub(Index i, Index j, Index, Index)
 {
     return asub(i/BSIZE,j/BSIZE);
 }

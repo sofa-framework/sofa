@@ -35,8 +35,9 @@ class BlockDiagonalMatrix : public linearalgebra::BaseMatrix
 {
 public:
     typedef T Real;
-    typedef type::Mat<LC,LC,Real> Bloc;
-    typedef matrix_bloc_traits<Bloc, Index> traits;
+    typedef type::Mat<LC,LC,Real> Block;
+    using Bloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = Block;
+    typedef matrix_bloc_traits<Block, Index> traits;
 
     enum { BSIZE = LC };
 
@@ -47,7 +48,7 @@ public:
 
 
 protected:
-    std::vector< Bloc > data;
+    std::vector< Block > data;
     sofa::Index cSize;
 
 public:
@@ -86,26 +87,26 @@ public:
         return data.size();
     }
 
-    const Bloc& bloc(Index i) const
+    const Block& bloc(Index i) const
     {
         return data[i];
     }
 
-    const Bloc& bloc(Index i, Index j) const
+    const Block& bloc(Index i, Index j) const
     {
-        static Bloc empty;
+        static Block empty;
         if (i != j)
             return empty;
         else
             return bloc(i);
     }
 
-    Bloc* wbloc(Index i)
+    Block* wbloc(Index i)
     {
         return &(data[i]);
     }
 
-    Bloc* wbloc(Index i, Index j)
+    Block* wbloc(Index i, Index j)
     {
         if (i != j)
             return nullptr;
@@ -126,12 +127,12 @@ public:
         if (i == j) traits::v(data[i], bi, bj) = (Real)v;
     }
 
-    void setB(Index i, const Bloc& b)
+    void setB(Index i, const Block& b)
     {
         data[i] = b;
     }
 
-    void setB(Index i, Index j, const Bloc& b)
+    void setB(Index i, Index j, const Block& b)
     {
         if (i == j)
             setB(i, b);
@@ -144,12 +145,12 @@ public:
         if (i == j) traits::v(data[i], bi, bj) += (Real)v;
     }
 
-    void addB(Index i, const Bloc& b)
+    void addB(Index i, const Block& b)
     {
         data[i] += b;
     }
 
-    void addB(Index i, Index j, const Bloc& b)
+    void addB(Index i, Index j, const Block& b)
     {
         if (i == j)
             addB(i, b);
@@ -194,7 +195,7 @@ public:
     {
         for (Index b=0; b<(Index)data.size(); b++)
         {
-            const Bloc m = data[b];
+            const Block m = data[b];
             traits::invert(data[b], m);
         }
     }

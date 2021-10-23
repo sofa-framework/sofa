@@ -26,17 +26,10 @@ namespace sofa::component::mapping
 {
 
 template <class In, class Out>
-BarycentricMapperQuadSetTopology<In,Out>::BarycentricMapperQuadSetTopology(topology::QuadSetTopologyContainer* fromTopology,
-                                                                           topology::PointSetTopologyContainer* toTopology)
-    : Inherit1(fromTopology, toTopology),
-      m_fromContainer(fromTopology),
-      m_fromGeomAlgo(nullptr)
+BarycentricMapperQuadSetTopology<In,Out>::BarycentricMapperQuadSetTopology(sofa::core::topology::TopologyContainer* fromTopology,
+    core::topology::BaseMeshTopology* toTopology)
+    : Inherit1(fromTopology, toTopology)
 {}
-
-template <class In, class Out>
-BarycentricMapperQuadSetTopology<In,Out>::~BarycentricMapperQuadSetTopology()
-{}
-
 
 template <class In, class Out>
 typename BarycentricMapperQuadSetTopology<In, Out>::Index  

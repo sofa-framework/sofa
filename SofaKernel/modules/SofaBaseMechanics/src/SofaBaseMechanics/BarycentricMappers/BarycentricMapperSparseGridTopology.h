@@ -76,7 +76,7 @@ public:
 
 protected:
     BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology,
-                                        topology::PointSetTopologyContainer* _toTopology);
+        core::topology::BaseMeshTopology* _toTopology);
 
     sofa::type::vector<CubeData> m_map;
     topology::SparseGridTopology* m_fromTopology {nullptr};

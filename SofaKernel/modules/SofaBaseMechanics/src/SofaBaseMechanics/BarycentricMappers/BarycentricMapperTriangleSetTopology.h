@@ -22,9 +22,6 @@
 #pragma once
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTopologyContainer.h>
 
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-
 namespace sofa::component::mapping
 {
 
@@ -47,18 +44,15 @@ public:
                SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingData,Triangle));
     typedef typename Inherit1::Real Real;
 
-    ~BarycentricMapperTriangleSetTopology() override {}
+    ~BarycentricMapperTriangleSetTopology() override = default;
 
     Index addPointInTriangle(const Index triangleIndex, const SReal* baryCoords) override;
     Index createPointInTriangle(const typename Out::Coord& p, Index triangleIndex, const typename In::VecCoord* points) override;
 
 protected:
     BarycentricMapperTriangleSetTopology();
-    BarycentricMapperTriangleSetTopology(topology::TriangleSetTopologyContainer* fromTopology,
-                                         topology::PointSetTopologyContainer* toTopology);
-
-    topology::TriangleSetTopologyContainer*			m_fromContainer;
-    topology::TriangleSetGeometryAlgorithms<In>*	m_fromGeomAlgo;
+    BarycentricMapperTriangleSetTopology(sofa::core::topology::TopologyContainer* fromTopology,
+        core::topology::BaseMeshTopology* toTopology);
 
     virtual type::vector<Triangle> getElements() override;
     virtual type::vector<SReal> getBaryCoef(const Real* f) override;

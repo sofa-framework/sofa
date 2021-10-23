@@ -42,21 +42,21 @@ BlockVector<N, T>::~BlockVector()
 }
 
 template<std::size_t N, typename T>
-typename BlockVector<N, T>::Bloc& BlockVector<N, T>::sub(Index i, Index)
+typename BlockVector<N, T>::Block& BlockVector<N, T>::sub(Index i, Index)
 {
-    return (Bloc&)*(this->ptr()+i);
+    return (Block&)*(this->ptr()+i);
 }
 
 template<std::size_t N, typename T>
-const typename BlockVector<N, T>::Bloc& BlockVector<N, T>::asub(Index bi, Index) const
+const typename BlockVector<N, T>::Block& BlockVector<N, T>::asub(Index bi, Index) const
 {
-    return (const Bloc&)*(this->ptr()+bi*N);
+    return (const Block&)*(this->ptr()+bi*N);
 }
 
 template<std::size_t N, typename T>
-typename BlockVector<N, T>::Bloc& BlockVector<N, T>::asub(Index bi, Index)
+typename BlockVector<N, T>::Block& BlockVector<N, T>::asub(Index bi, Index)
 {
-    return (Bloc&)*(this->ptr()+bi*N);
+    return (Block&)*(this->ptr()+bi*N);
 }
 
 } // namespace sofa::linearalgebra

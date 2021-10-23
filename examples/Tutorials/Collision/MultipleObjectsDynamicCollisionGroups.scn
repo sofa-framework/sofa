@@ -12,7 +12,7 @@
     <DefaultCollisionGroupManager />
     <Node name="CubeSphere1">
         <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver name="CG Solver" />
+        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5" name="CG Solver"/>
         <MechanicalObject name="Particles" template="Vec3d" position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" translation="-2 1 2" />
         <MeshTopology name="Topology" hexas="0 4 6 2 1 5 7 3" />
         <UniformMass name="Mass" totalMass="1" />
@@ -22,7 +22,7 @@
     </Node>
     <Node name="CubeSphere2">
         <EulerImplicitSolver name="EulerImplicit" />
-        <CGLinearSolver name="CG Solver" />
+        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5" name="CG Solver"/>
         <MechanicalObject name="Particles" template="Vec3d" position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" translation="0 0 6" />
         <MeshTopology name="Topology" hexas="0 4 6 2 1 5 7 3" />
         <UniformMass name="Mass" totalMass="1" />
@@ -32,7 +32,7 @@
     </Node>
     <Node name="CubeGeometry1">
         <EulerImplicitSolver name="EulerImplicit" />
-        <CGLinearSolver name="CG Solver" />
+        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5" name="CG Solver"/>
         <MechanicalObject name="Particles" template="Vec3d" position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" translation="0 1 2" />
         <MeshTopology name="Topology" hexas="0 4 6 2 1 5 7 3" />
         <UniformMass name="Mass" totalMass="1" />
@@ -44,7 +44,7 @@
     </Node>
     <Node name="CubeGeometry2">
         <EulerImplicitSolver name="EulerImplicit" />
-        <CGLinearSolver name="CG Solver" />
+        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5" name="CG Solver"/>
         <MechanicalObject name="Particles" template="Vec3d" position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" translation="2 1 2" />
         <MeshTopology name="Topology" hexas="0 4 6 2 1 5 7 3" />
         <UniformMass name="Mass" totalMass="1" />

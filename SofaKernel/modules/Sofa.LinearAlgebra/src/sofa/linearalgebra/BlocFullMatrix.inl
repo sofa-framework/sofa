@@ -26,51 +26,51 @@ namespace sofa::linearalgebra
 {
 
 template<std::size_t N, typename T>
-typename BlocFullMatrix<N,T>::Index  BlocFullMatrix<N, T>::Bloc::Nrows() const
+typename BlocFullMatrix<N,T>::Index  BlocFullMatrix<N, T>::Block::Nrows() const
 {
     return BSIZE;
 }
 
 template<std::size_t N, typename T>
-typename BlocFullMatrix<N,T>::Index  BlocFullMatrix<N, T>::Bloc::Ncols() const
+typename BlocFullMatrix<N,T>::Index  BlocFullMatrix<N, T>::Block::Ncols() const
 {
     return BSIZE;
 }
 
 template<std::size_t N, typename T>
-void  BlocFullMatrix<N, T>::Bloc::resize(Index, Index)
+void  BlocFullMatrix<N, T>::Block::resize(Index, Index)
 {
     clear();
 }
 
 template<std::size_t N, typename T>
-const T&  BlocFullMatrix<N, T>::Bloc::element(Index i, Index j) const
+const T&  BlocFullMatrix<N, T>::Block::element(Index i, Index j) const
 {
     return (*this)[i][j];
 }
 
 template<std::size_t N, typename T>
-void  BlocFullMatrix<N, T>::Bloc::set(Index i, Index j, const T& v)
+void  BlocFullMatrix<N, T>::Block::set(Index i, Index j, const T& v)
 {
     (*this)[i][j] = v;
 }
 
 template<std::size_t N, typename T>
-void  BlocFullMatrix<N, T>::Bloc::add(Index i, Index j, const T& v)
+void  BlocFullMatrix<N, T>::Block::add(Index i, Index j, const T& v)
 {
     (*this)[i][j] += v;
 }
 
 template<std::size_t N, typename T>
-typename BlocFullMatrix<N,T>::TransposedBloc  BlocFullMatrix<N, T>::Bloc::t() const
+typename BlocFullMatrix<N,T>::TransposedBlock  BlocFullMatrix<N, T>::Block::t() const
 {
-    return TransposedBloc(*this);
+    return TransposedBlock(*this);
 }
 
 template<std::size_t N, typename T>
-typename BlocFullMatrix<N,T>::Bloc  BlocFullMatrix<N, T>::Bloc::i() const
+typename BlocFullMatrix<N,T>::Block  BlocFullMatrix<N, T>::Block::i() const
 {
-    Bloc r;
+    Block r;
     r.invert(*this);
     return r;
 }
@@ -102,13 +102,13 @@ BlocFullMatrix<N, T>::~BlocFullMatrix()
 }
 
 template<std::size_t N, typename T>
-const typename BlocFullMatrix<N, T>::Bloc& BlocFullMatrix<N, T>::bloc(Index bi, Index bj) const
+const typename BlocFullMatrix<N, T>::Block& BlocFullMatrix<N, T>::bloc(Index bi, Index bj) const
 {
     return data[bi*nBCol + bj];
 }
 
 template<std::size_t N, typename T>
-typename BlocFullMatrix<N, T>::Bloc& BlocFullMatrix<N, T>::bloc(Index bi, Index bj)
+typename BlocFullMatrix<N, T>::Block& BlocFullMatrix<N, T>::bloc(Index bi, Index bj)
 {
     return data[bi*nBCol + bj];
 }
@@ -133,7 +133,7 @@ void BlocFullMatrix<N, T>::resize(Index nbRow, Index nbCol)
                 if (allocsize > 0)
                     delete[] data;
                 allocsize = (nbCol/BSIZE)*(nbRow/BSIZE);
-                data = new Bloc[allocsize];
+                data = new Block[allocsize];
             }
         }
         nTCol = nbCol;
@@ -165,25 +165,25 @@ SReal BlocFullMatrix<N, T>::element(Index i, Index j) const
 }
 
 template<std::size_t N, typename T>
-const typename BlocFullMatrix<N, T>::Bloc& BlocFullMatrix<N, T>::asub(Index bi, Index bj, Index, Index) const
+const typename BlocFullMatrix<N, T>::Block& BlocFullMatrix<N, T>::asub(Index bi, Index bj, Index, Index) const
 {
     return bloc(bi,bj);
 }
 
 template<std::size_t N, typename T>
-const typename BlocFullMatrix<N, T>::Bloc& BlocFullMatrix<N, T>::sub(Index i, Index j, Index, Index) const
+const typename BlocFullMatrix<N, T>::Block& BlocFullMatrix<N, T>::sub(Index i, Index j, Index, Index) const
 {
     return asub(i/BSIZE,j/BSIZE);
 }
 
 template<std::size_t N, typename T>
-typename BlocFullMatrix<N, T>::Bloc& BlocFullMatrix<N, T>::asub(Index bi, Index bj, Index, Index)
+typename BlocFullMatrix<N, T>::Block& BlocFullMatrix<N, T>::asub(Index bi, Index bj, Index, Index)
 {
     return bloc(bi,bj);
 }
 
 template<std::size_t N, typename T>
-typename BlocFullMatrix<N, T>::Bloc& BlocFullMatrix<N, T>::sub(Index i, Index j, Index, Index)
+typename BlocFullMatrix<N, T>::Block& BlocFullMatrix<N, T>::sub(Index i, Index j, Index, Index)
 {
     return asub(i/BSIZE,j/BSIZE);
 }

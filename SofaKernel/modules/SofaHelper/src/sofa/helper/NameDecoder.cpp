@@ -19,8 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <stack>
 #include <sofa/helper/logging/Messaging.h>
-#include "NameDecoder.h"
+#include <sofa/helper/NameDecoder.h>
+#include <cctype>
 
 #ifdef __GNUC__
 #include <cxxabi.h>
@@ -70,18 +72,27 @@ std::string NameDecoder::decodeFullName(const std::type_info& t)
 
 std::string NameDecoder::decodeTypeName(const std::type_info& t)
 {
-    std::string name;
-    std::string realname = NameDecoder::decodeFullName(t);
-    size_t len = realname.length();
-    name.resize(len+1);
+    std::string typeName;
+    const std::string realname = NameDecoder::decodeFullName(t);
+    const size_t len = realname.length();
+    typeName.resize(len+1);
     size_t start = 0;
     size_t dest = 0;
-    //char cprev = '\0';
+    size_t chevron {}; //count the number of opening chevrons: indicates the level of nested templates
+
     for (size_t i=0; i<len; i++)
     {
-        char c = realname[i];
-        if (c == ':') // && cprev == ':')
+        const char c = realname[i];
+
+        if (c == '<')
+            ++chevron;
+        else if (c == '>')
+            --chevron;
+
+        if (c == ':')
         {
+            if (chevron == 0)
+                dest = 0; //restart when a semi-column is met outside from a template parameter
             start = i+1;
         }
         else if (c == ' ' && i >= 5 && realname[i-5] == 'c' && realname[i-4] == 'l' && realname[i-3] == 'a' && realname[i-2] == 's' && realname[i-1] == 's')
@@ -92,42 +103,70 @@ std::string NameDecoder::decodeTypeName(const std::type_info& t)
         {
             start = i+1;
         }
-        else if (c != ':' && c != '_' && (c < 'a' || c > 'z') && (c < 'A' || c > 'Z') && (c < '0' || c > '9'))
+        else if (c == ' ' && ((i >= 1 && !std::isalnum(realname[i-1]))  || (i < len - 1 && !std::isalnum(realname[i+1])) ) )
+        {
+            //skip space if character before or after is not alphanumeric
+            start = i+1;
+        }
+        else if (c != '_' && !std::isalnum(c))
         {
             // write result
-            while (start < i)
+            while (start <= i)
             {
-                name[dest++] = realname[start++];
+                typeName[dest++] = realname[start++];
             }
         }
-        //cprev = c;
     }
     while (start < len)
     {
-        name[dest++] = realname[start++];
+        typeName[dest++] = realname[start++];
     }
-    name.resize(dest);
-    name.erase(std::remove(name.begin(), name.end(), ' '), name.end());  
-    return name;
+    typeName.resize(dest);
+    return typeName;
 }
 
 std::string NameDecoder::decodeClassName(const std::type_info& t)
 {
-    std::string name;
-    std::string realname = NameDecoder::decodeFullName(t);
-    size_t len = realname.length();
-    name.resize(len+1);
+    std::string className;
+    const std::string realname = NameDecoder::decodeFullName(t);
+    const size_t len = realname.length();
+    className.resize(len+1);
     size_t start = 0;
     size_t dest = 0;
     size_t i;
-    //char cprev = '\0';
+    size_t chevron {}; //count the number of opening chevrons: indicates the level of nested templates
 
-    for (i=0; i<len; i++)
+    for (i = 0; i < len; ++i)
     {
-        char c = realname[i];
-        if (c == '<') break;
-        if (c == ':') // && cprev == ':')
+        const char c = realname[i];
+
+        if (c == '<')
         {
+            if (++chevron == 1)
+            {
+                //copy string when it's the first opening chevron
+                while (start < i)
+                {
+                    className[dest++] = realname[start++];
+                }
+            }
+        }
+        else if (c == '>')
+        {
+            start = i+1;
+            --chevron;
+        }
+
+        if (chevron > 0)
+        {
+            start = i+1;
+            continue;
+        }
+
+        if (c == ':')
+        {
+            if (chevron == 0)
+                dest = 0; //restart when a semi-column is met outside from a template parameter
             start = i+1;
         }
         else if (c == ' ' && i >= 5 && realname[i-5] == 'c' && realname[i-4] == 'l' && realname[i-3] == 'a' && realname[i-2] == 's' && realname[i-1] == 's')
@@ -138,37 +177,37 @@ std::string NameDecoder::decodeClassName(const std::type_info& t)
         {
             start = i+1;
         }
-        else if (c != ':' && c != '_' && (c < 'a' || c > 'z') && (c < 'A' || c > 'Z') && (c < '0' || c > '9'))
+        else if (c == ' ' && ((i >= 1 && !std::isalnum(realname[i-1]))  || (i < len - 1 && !std::isalnum(realname[i+1])) ) )
         {
-            // write result
+            //skip space if character before or after is not alphanumeric
+            start = i+1;
+        }
+        else if (c != '_' && !std::isalnum(c))
+        {
             while (start < i)
             {
-                name[dest++] = realname[start++];
+                className[dest++] = realname[start++];
             }
         }
-        //cprev = c;
     }
 
     while (start < i)
     {
-        name[dest++] = realname[start++];
+        className[dest++] = realname[start++];
     }
-    name.resize(dest);
-    name.erase(std::remove(name.begin(), name.end(), ' '), name.end());  
-    return name;
+    className.resize(dest);
+    return className;
 }
 
 std::string NameDecoder::decodeNamespaceName(const std::type_info& t)
 {
-    std::string name;
-    std::string realname = NameDecoder::decodeFullName(t);
-    size_t len = realname.length();
+    const std::string realname = NameDecoder::decodeFullName(t);
+    const size_t len = realname.length();
     size_t start = 0;
     size_t last = len-1;
-    size_t i;
-    for (i=0; i<len; i++)
+    for (size_t i = 0; i<len; i++)
     {
-        char c = realname[i];
+        const char c = realname[i];
         if (c == ' ' && i >= 5 && realname[i-5] == 'c' && realname[i-4] == 'l' && realname[i-3] == 'a' && realname[i-2] == 's' && realname[i-1] == 's')
         {
             start = i+1;
@@ -177,39 +216,64 @@ std::string NameDecoder::decodeNamespaceName(const std::type_info& t)
         {
             start = i+1;
         }
+        else if (c == ' ' && ((i >= 1 && !std::isalnum(realname[i-1]))  || (i < len - 1 && !std::isalnum(realname[i+1])) ) )
+        {
+            //skip space if character before or after is not alphanumeric
+            start = i+1;
+        }
         else if (c == ':' && (i<1 || realname[i-1]!=':'))
         {
             last = i-1;
         }
-        else if (c != ':' && c != '_' && (c < 'a' || c > 'z') && (c < 'A' || c > 'Z') && (c < '0' || c > '9'))
+        else if (c != ':' && c != '_' && !std::isalnum(c))
         {
             // write result
             break;
         }
     }
-    name = realname.substr(start, last-start+1);
-    name.erase(std::remove(name.begin(), name.end(), ' '), name.end());  
-    return name;
+    if (last == len-1)
+        return {};
+    std::string namespaceName = realname.substr(start, last - start + 1);
+    return namespaceName;
 }
 
 std::string NameDecoder::decodeTemplateName(const std::type_info& t)
 {
-    std::string name;
-    std::string realname = NameDecoder::decodeFullName(t);
-    size_t len = realname.length();
-    name.resize(len+1);
-    size_t start = 0;
+    const std::string realname = NameDecoder::decodeFullName(t);
+    const size_t len = realname.length();
+
+    size_t i = realname.find_first_of('<');
+
+    if (i == std::string::npos)
+    {
+        return {};
+    }
+
+    std::string templateName;
+    templateName.resize(len - i + 1);
     size_t dest = 0;
-    size_t i = 0;
-    //char cprev = '\0';
-    while (i < len && realname[i]!='<')
-        ++i;
-    start = i+1; ++i;
+
+    size_t start = i + 1;
+    ++i;
+
+    size_t chevron = 1; // count the number of opening chevrons: indicates the level of nested templates
+
     for (; i<len; i++)
     {
-        char c = realname[i];
-        //if (c == '<') break;
-        if (c == ':') // && cprev == ':')
+        const char c = realname[i];
+
+        if (c == '<')
+        {
+            if (++chevron == 1)
+            {
+                dest = 0; // restart when starting a template parameter
+                start = i+1;
+            }
+        }
+        else if (c == '>')
+            --chevron;
+
+        if (c == ':')
         {
             start = i+1;
         }
@@ -221,23 +285,30 @@ std::string NameDecoder::decodeTemplateName(const std::type_info& t)
         {
             start = i+1;
         }
-        else if (c != ':' && c != '_' && (c < 'a' || c > 'z') && (c < 'A' || c > 'Z') && (c < '0' || c > '9'))
+        else if (c == ' ' && ((i >= 1 && !std::isalnum(realname[i-1])) || (i < len - 1 && !std::isalnum(realname[i+1])) ) )
         {
-            // write result
+            //skip space if character before or after is not alphanumeric
+            start = i+1;
+        }
+        else if (c == ',') //template separator
+        {
             while (start <= i)
             {
-                name[dest++] = realname[start++];
+                templateName[dest++] = realname[start++];
             }
         }
-        //cprev = c;
+        else if (c != '_' && !std::isalnum(c))
+        {
+            // write result
+            while (start < i + (chevron > 0))
+            {
+                templateName[dest++] = realname[start++];
+            }
+        }
     }
-    while (start < i)
-    {
-        name[dest++] = realname[start++];
-    }
-    name.resize(dest);
-    name.erase(std::remove(name.begin(), name.end(), ' '), name.end());  
-    return name;
+
+    templateName.resize(dest);
+    return templateName;
 }
 
 

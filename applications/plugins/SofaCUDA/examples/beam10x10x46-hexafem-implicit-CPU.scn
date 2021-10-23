@@ -10,7 +10,7 @@
 	
 	<Node name="M1" processor="0">
 		<EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
-		<CGLinearSolver iterations="10"/>
+		<CGLinearSolver iterations="10" tolerance="1e-5" threshold="1e-5"/>
 		<MechanicalObject template="Vec3"/>
 		<UniformMass totalMass="200" />
 		<RegularGridTopology

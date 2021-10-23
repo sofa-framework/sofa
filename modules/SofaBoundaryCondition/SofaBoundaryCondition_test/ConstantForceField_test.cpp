@@ -81,7 +81,7 @@ struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename
         scene << "<?xml version='1.0'?>"
                  "<Node 	name='Root' gravity='-9.81 0 0' time='0' animate='0' >               \n"
                  "   <DefaultAnimationLoop/>                                                     \n"
-                 "   <CGLinearSolver/>                                                           \n"
+                 "   <CGLinearSolver iterations=\"25\" tolerance=\"1e-5\" threshold=\"1e-5\"/>   \n"
                  "   <EulerImplicitSolver/>                                                      \n"
                  "   <MechanicalObject name='mstate' size='2' template='"<<  DataTypes::Name() << "'/> \n"
                  "   <UniformMass/>                                                                    \n"

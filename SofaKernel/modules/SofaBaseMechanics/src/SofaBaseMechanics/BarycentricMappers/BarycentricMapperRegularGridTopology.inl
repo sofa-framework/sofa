@@ -33,7 +33,7 @@ using sofa::type::Vector3;
 
 template <class In, class Out>
 BarycentricMapperRegularGridTopology<In,Out>::BarycentricMapperRegularGridTopology(RegularGridTopology* fromTopology,
-                                                                                   PointSetTopologyContainer* toTopology)
+    core::topology::BaseMeshTopology* toTopology)
     : Inherit1(fromTopology, toTopology)
     , m_fromTopology(fromTopology)
     , m_matrixJ(nullptr), m_updateJ(true)

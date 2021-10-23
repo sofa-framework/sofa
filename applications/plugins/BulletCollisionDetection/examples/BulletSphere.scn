@@ -7,7 +7,7 @@
 	<DefaultContactManager name="Response"  response="default" />
 	<DefaultCollisionGroupManager name="Group" />
 	<EulerImplicitSolver name="Implicit Euler Solver"  rayleighMass="0"  rayleighStiffness="0.1" />
-	<CGLinearSolver template="GraphScattered" name="Conjugate Gradient" />
+	<CGLinearSolver template="GraphScattered" iterations="25" tolerance="1e-5" threshold="1e-5" name="Conjugate Gradient"/>
 	<BulletIntersection name="1"  contactDistance="0.04" />
 	<Node 	 name="RigMec"  gravity="0 0 0"  >
 		<MechanicalObject template="Vec3d" name="falling_particle"  position="0 0 5 3 3 6 6 7 7"  velocity="0 0 -0.01 0 0 -0.01 0 0 -0.01"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  reserve="0" />
