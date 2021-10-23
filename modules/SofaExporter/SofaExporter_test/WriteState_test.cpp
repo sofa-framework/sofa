@@ -96,6 +96,9 @@ namespace sofa {
                 root->addObject(eulerSolver);
             }
             CGLinearSolver::SPtr cgLinearSolver = New<CGLinearSolver> ();
+            cgLinearSolver->d_maxIter.setValue(25u);
+            cgLinearSolver->d_tolerance.setValue(1e-5);
+            cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-5);
             root->addObject(cgLinearSolver);
 
             simulation::Node::SPtr childNode = root->createChild("Particle");

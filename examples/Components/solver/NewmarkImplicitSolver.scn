@@ -29,7 +29,7 @@
     
     <Node name="CoFEM">
         <NewmarkImplicitSolver  />
-        <CGLinearSolver iterations="100" />
+        <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh"/>
         <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" dx="30" />
@@ -45,7 +45,7 @@
     </Node>
     <Node name="LinearFEM">
         <NewmarkImplicitSolver  />
-        <CGLinearSolver iterations="100" />
+        <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh"/>
         <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" dx="45" />

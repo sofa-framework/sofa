@@ -35,7 +35,7 @@
 	
 	<Node name="Tool1">	
 		<EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
-		<CGLinearSolver />
+		<CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
 		
 		<MechanicalObject name="ms" template="Rigid3d"  position="7.13718 -5.81916 23.8066 0.807871 0.160225 -0.1368 0.550416"/>
 		<UniformMass totalmass="0.1" />
