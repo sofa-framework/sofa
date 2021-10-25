@@ -110,7 +110,7 @@ public:
         
         Node::SPtr FNode = sofa::simpleapi::createChild(m_root, "SpringNode");
         createObject(FNode, "EulerImplicitSolver");
-        createObject(FNode, "CGLinearSolver", { { "iterations", "20" }, { "threshold", "1e-8" } });
+        createObject(FNode, "CGLinearSolver", {{ "iterations", "20" }, { "tolerance", "1e-5" }, {"threshold", "1e-8"}});
         createObject(FNode, "MechanicalObject", {
             {"name","dof"}, {"template","Vec3d"}, {"position", "@../grid.position"} });
         createObject(FNode, "TriangleSetTopologyContainer", {

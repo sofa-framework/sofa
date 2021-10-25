@@ -146,7 +146,7 @@ public:
     {
         Node::SPtr FEMNode = sofa::simpleapi::createChild(m_root, nodeName);
         createObject(FEMNode, "EulerImplicitSolver");
-        createObject(FEMNode, "CGLinearSolver", {{ "iterations", "20" }, { "threshold", "1e-6" }});
+        createObject(FEMNode, "CGLinearSolver", {{ "iterations", "20" }, { "tolerance", "1e-5" }, {"threshold", "1e-6"}});
 
         createObject(FEMNode, "MechanicalObject", {
             {"name","dof"}, {"template","Vec3d"}, {"position", "@../grid.position"} });
