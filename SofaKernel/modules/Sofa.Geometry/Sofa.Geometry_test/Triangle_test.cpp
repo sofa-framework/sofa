@@ -23,48 +23,73 @@
 #include <sofa/geometry/Triangle.h>
 
 #include <sofa/type/fixed_array.h>
+#include <sofa/type/Vec.h>
 #include <array>
 
 #include <gtest/gtest.h>
 
 namespace sofa
 {
-
-TEST(GeometryTriangle_test, area2f_stdarray)
+template <typename VecType>
+class Geometry2DTriangle_test : public ::testing::Test
 {
-    const std::array<float, 2> a{ -2.f, 3.f };
-    const std::array<float, 2> b{ -3.f, -1.f };
-    const std::array<float, 2> c{ 3.f, -2.f };
+};
+template <typename VecType>
+class Geometry3DTriangle_test : public ::testing::Test
+{
+};
+
+using Vec2Types = ::testing::Types <
+    std::array<float, 2>, sofa::type::fixed_array<float, 2>, sofa::type::Vec < 2, float >,
+    std::array<double, 2>, sofa::type::fixed_array<double, 2>, sofa::type::Vec < 2, double >>;
+TYPED_TEST_SUITE(Geometry2DTriangle_test, Vec2Types);
+
+using Vec3Types = ::testing::Types <
+    std::array<float, 3>, sofa::type::fixed_array<float, 3>, sofa::type::Vec < 3, float >,
+    std::array<double, 3>, sofa::type::fixed_array<double, 3>, sofa::type::Vec < 3, double >>;
+TYPED_TEST_SUITE(Geometry3DTriangle_test, Vec3Types);
+
+
+TYPED_TEST(Geometry2DTriangle_test, area)
+{
+    const TypeParam a{ -2.f, 3.f };
+    const TypeParam b{ -3.f, -1.f };
+    const TypeParam c{ 3.f, -2.f };
 
     const auto testArea = sofa::geometry::Triangle::area(a, b, c);
+
     EXPECT_FLOAT_EQ(testArea, 12.5f);
 }
-TEST(GeometryTriangle_test, area3f_stdarray)
+
+TYPED_TEST(Geometry3DTriangle_test, area)
 {
-    const std::array<float, 3> a{ -5.f, 5.f, -5.f };
-    const std::array<float, 3> b{ 1.f, -6.f, 6.f };
-    const std::array<float, 3> c{ 2.f, -3.f, 4.f };
+    const TypeParam a{ -5.f, 5.f, -5.f };
+    const TypeParam b{ 1.f, -6.f, 6.f };
+    const TypeParam c{ 2.f, -3.f, 4.f };
 
     const auto testArea = sofa::geometry::Triangle::area(a, b, c);
     EXPECT_FLOAT_EQ(testArea, 19.306734f);
 }
-TEST(GeometryTriangle_test, flat_area2f_stdarray)
+
+TYPED_TEST(Geometry2DTriangle_test, flat_area)
 {
-    const std::array<float, 2> a{ 0.f, 0.f };
-    const std::array<float, 2> b{ 0.f, 2.f };
-    const std::array<float, 2> c{ 0.f, 1.f };
+    const TypeParam a{ 0.f, 0.f };
+    const TypeParam b{ 0.f, 2.f };
+    const TypeParam c{ 0.f, 1.f };
 
     const auto testArea = sofa::geometry::Triangle::area(a, b, c);
     EXPECT_FLOAT_EQ(testArea, 0.f);
 }
-TEST(GeometryTriangle_test, flat_area3f_stdarray)
+
+TYPED_TEST(Geometry3DTriangle_test, flat_area)
 {
-    const std::array<float, 3> a{ 0.f, 0.f, 0.f };
-    const std::array<float, 3> b{ 0.f, 2.f, 0.f };
-    const std::array<float, 3> c{ 0.f, 1.f, 0.f };
+    const TypeParam a{ 0.f, 0.f, 0.f };
+    const TypeParam b{ 0.f, 2.f, 0.f };
+    const TypeParam c{ 0.f, 1.f, 0.f };
 
     const auto testArea = sofa::geometry::Triangle::area(a, b, c);
     EXPECT_FLOAT_EQ(testArea, 0.f);
 }
+
 
 }// namespace sofa
