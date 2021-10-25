@@ -90,8 +90,8 @@ public:
         typename = std::enable_if_t< (sizeof...(ArgsT) == N && sizeof...(ArgsT) > 1) >
     >
     constexpr Vec(const ArgsT... r) noexcept
+        : sofa::type::fixed_array<ValueType, size_t(N)>(r...)
     {
-        this->set(r...);
     }
 
     /// Specific constructor for 6-elements vectors, taking two 3-elements vectors
