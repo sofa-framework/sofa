@@ -241,7 +241,7 @@ void StiffSpringForceField<DataTypes>::addToMatrix(linearalgebra::BaseMatrix* gl
             {
                 for (sofa::Index j = 0; j < N; ++j)
                 {
-                    globalMatrix->add(offsetRow + i, offsetCol + j, -(Real)localMatrix[i][j]);
+                    globalMatrix->add(offsetRow + i, offsetCol + j, (Real)localMatrix[i][j]);
                 }
             }
         }
@@ -270,8 +270,8 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams
                 {
                     Real k = (Real)(m[i][j]*kFact);
                     mat.matrix->add(p1+i,p1+j, -k);
-                    mat.matrix->add(p1+i,p2+j, k);
-                    mat.matrix->add(p2+i,p1+j, k);//or mat->add(p1+j,p2+i, k);
+                    mat.matrix->add(p1+i,p2+j,  k);
+                    mat.matrix->add(p2+i,p1+j,  k);//or mat->add(p1+j,p2+i, k);
                     mat.matrix->add(p2+i,p2+j, -k);
                 }
             }
@@ -294,10 +294,10 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams
             const unsigned p2 = Deriv::total_size * s.m2;
             const Mat m = this->dfdx[e] * (Real) kFact;
 
-            addToMatrix(mat11.matrix, mat11.offset + p1, mat11.offset + p1, m);
-            addToMatrix(mat12.matrix, mat12.offRow + p1, mat12.offCol + p2, m);
-            addToMatrix(mat21.matrix, mat21.offRow + p2, mat21.offCol + p1, m);
-            addToMatrix(mat22.matrix, mat22.offset + p2, mat22.offset + p2, m);
+            addToMatrix(mat11.matrix, mat11.offset + p1, mat11.offset + p1, -m);
+            addToMatrix(mat12.matrix, mat12.offRow + p1, mat12.offCol + p2,  m);
+            addToMatrix(mat21.matrix, mat21.offRow + p2, mat21.offCol + p1,  m);
+            addToMatrix(mat22.matrix, mat22.offset + p2, mat22.offset + p2, -m);
         }
     }
 
