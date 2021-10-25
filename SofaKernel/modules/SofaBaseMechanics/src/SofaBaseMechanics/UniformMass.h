@@ -28,7 +28,6 @@
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <SofaBaseTopology/TopologyData.h>
 #include <SofaBaseTopology/TopologySubsetIndices.h>
 
 namespace sofa::component::mass
@@ -50,7 +49,7 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef type::vector<Index> SetIndexArray;
-    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
+    typedef sofa::component::topology::TopologySubsetIndices DataSetIndex;
     typedef TMassType MassType;
 
     Data<MassType> d_vertexMass;   ///< single value defining the mass of each particle
@@ -69,8 +68,7 @@ public:
     /// indices outside of this range are discarded (useful for parallelization
     /// using mesh partitionning)
     Data< type::Vec<2,int> > d_localRange;
-    SetIndex     d_indices; ///< optional local DOF indices. Any computation involving only indices outside of this list are discarded
-    Data<bool> d_handleTopologicalChanges; ///< The mass and totalMass are recomputed on particles add/remove.
+    DataSetIndex     d_indices; ///< optional local DOF indices. Any computation involving only indices outside of this list are discarded
     Data<bool> d_preserveTotalMass; ///< Prevent totalMass from decreasing when removing particles.
 
     ////////////////////////// Inherited attributes ////////////////////////////

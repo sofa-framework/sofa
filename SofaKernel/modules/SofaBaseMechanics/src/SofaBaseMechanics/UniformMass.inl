@@ -23,14 +23,13 @@
 #include <SofaBaseMechanics/UniformMass.h>
 #include <sofa/core/fwd.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/topology/Topology.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
+#include <sofa/core/topology/BaseTopology.h>
 #include <SofaBaseTopology/TopologyData.inl>
-#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/MechanicalParams.h>
 
 namespace sofa::component::mass
@@ -73,7 +72,6 @@ UniformMass<DataTypes, MassType>::UniformMass()
                                                                                    "Any computation involving only indices outside of this range \n"
                                                                                    "are discarded (useful for parallelization using mesh partitionning)" ) )
     , d_indices ( initData ( &d_indices, "indices", "optional local DOF indices. Any computation involving only indices outside of this list are discarded" ) )
-    , d_handleTopologicalChanges ( initData ( &d_handleTopologicalChanges, false, "handleTopologicalChanges", "The mass and totalMass are recomputed on particles add/remove." ) )
     , d_preserveTotalMass( initData ( &d_preserveTotalMass, false, "preserveTotalMass", "Prevent totalMass from decreasing when removing particles."))
     , l_topology(initLink("topology", "link to the topology container"))
 {
@@ -168,28 +166,21 @@ void UniformMass<DataTypes, MassType>::initDefaultImpl()
             indices.push_back(i);
     }
 
-    if (d_handleTopologicalChanges.getValue())
+    // check if mass should use topology
+    if (l_topology.empty())
     {
-        if (l_topology.empty())
-        {
-            msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
-            l_topology.set(this->getContext()->getMeshTopologyLink());
-        }
+        l_topology.set(this->getContext()->getMeshTopologyLink());
+    }
 
-        BaseMeshTopology* meshTopology = l_topology.get();
-        if (meshTopology != nullptr)
-        {
-            msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+    BaseMeshTopology* meshTopology = l_topology.get();
+    if (meshTopology != nullptr && dynamic_cast<sofa::core::topology::TopologyContainer*>(meshTopology) != nullptr)
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-            d_indices.createTopologyHandler(meshTopology);
-            d_indices.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::ENDING_EVENT, [this](const core::topology::TopologyChange* eventTopo) {
-                updateMassOnResize(d_indices.getValue().size());
-            });
-        }
-        else
-        {
-            msg_warning() << "handleTopologicalChanges has been set to true but not valid topology has been found at:'" << l_topology.getLinkedPath() << "'";
-        }
+        d_indices.createTopologyHandler(meshTopology);
+        d_indices.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::ENDING_EVENT, [this](const core::topology::TopologyChange* eventTopo) {
+            updateMassOnResize(d_indices.getValue().size());
+        });
     }
 
     //If user defines the vertexMass, use this as the mass
