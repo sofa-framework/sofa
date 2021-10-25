@@ -192,7 +192,7 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
     {
         if (!p.moduleIsInitialized())
         {
-            const std::string msg = pluginPath + " reported an error while trying to initialize. " + "This plugin will not be loaded.";
+            const std::string msg = pluginPath + " reported an error while trying to initialize. This plugin will not be loaded.";
             msg_error("PluginManager") << msg;
             if (errlog) (*errlog) << msg << std::endl;
 
