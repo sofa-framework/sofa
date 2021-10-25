@@ -25,8 +25,6 @@
 
 // SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/core/topology/TopologyDataHandler.h")
 
-#include <SofaBaseTopology/TopologyDataHandler.h> // fix cases of people using TopologyDataHandler without including it explicitely
-
 namespace sofa::component::topology
 {
     template< class TopologyElementType, class VecT>
