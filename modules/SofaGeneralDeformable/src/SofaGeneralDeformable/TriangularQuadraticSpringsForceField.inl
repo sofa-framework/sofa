@@ -39,8 +39,8 @@ void TriangularQuadraticSpringsForceField<DataTypes>::applyEdgeCreation(Index ed
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     const auto& e = this->m_topology->getEdge(edgeIndex);
-    const auto& n0 = DataTypes::CPos(x[e[0]]);
-    const auto& n1 = DataTypes::CPos(x[e[1]]);
+    const auto& n0 = DataTypes::getCPos(x[e[0]]);
+    const auto& n1 = DataTypes::getCPos(x[e[1]]);
 
     ei.restLength = sofa::geometry::Edge::length(n0, n1);
     ei.stiffness=0;
