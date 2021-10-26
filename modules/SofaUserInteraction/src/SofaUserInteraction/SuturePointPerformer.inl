@@ -83,7 +83,7 @@ void SuturePointPerformer<DataTypes>::start()
         }
         else if (!triangleContainer)
         {
-            msg_error(this->interactor) << "Can't find triangleContainer.";
+            msg_error(this->interactor) << "Can't find a topology.";
             return;
         }
         else if (triangleContainer->getTriangles().empty())
