@@ -173,8 +173,6 @@ void VectorSpringForceField<DataTypes>::init()
             createEdgeInformation(edgeIndex, t, e, ancestors, coefs);
         });
     }
-    this->getContext()->get(edgeGeo);
-    this->getContext()->get(edgeMod);
 
     this->Inherit::init();
 }
