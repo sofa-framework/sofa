@@ -20,10 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/TopologyData.h>
-#include <SofaBaseTopology/TopologyDataHandler.inl>
+#include <sofa/core/topology/TopologyData.h>
+#include <sofa/core/topology/TopologyDataHandler.inl>
 
-namespace sofa::component::topology
+namespace sofa::core::topology
 {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,7 +65,7 @@ void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core:
 
 
 template <typename TopologyElementType, typename VecT>
-void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* topoHandler)
+void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyDataHandler< TopologyElementType, VecT>* topoHandler)
 {
     if (_topology == nullptr)
     {
@@ -391,4 +391,4 @@ void TopologyData <TopologyElementType, VecT>::addTopologyEventCallBack(core::to
 }
 
 
-} //namespace sofa::component::topology
+} //namespace sofa::core::topology

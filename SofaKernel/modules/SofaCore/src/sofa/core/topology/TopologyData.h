@@ -20,15 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/config.h>
+#include <sofa/core/config.h>
 
 #include <sofa/type/vector.h>
 
 #include <sofa/core/topology/BaseTopologyData.h>
-#include <SofaBaseTopology/TopologyDataHandler.h>
+#include <sofa/core/topology/TopologyDataHandler.h>
 
 
-namespace sofa::component::topology
+namespace sofa::core::topology
 {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,7 +59,7 @@ public:
     typedef core::topology::TopologyElementInfo<TopologyElementType> ElementInfo;
     typedef core::topology::TopologyChangeElementInfo<TopologyElementType> ChangeElementInfo;
     typedef typename ChangeElementInfo::AncestorElem    AncestorElem;
-    typedef typename sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>  TopologyDataElementHandler;
+    typedef typename sofa::core::topology::TopologyDataHandler< TopologyElementType, VecT>  TopologyDataElementHandler;
     typedef typename TopologyDataElementHandler::TopologyChangeCallback TopologyChangeCallback;
 
     /// Constructor
@@ -71,7 +71,7 @@ public:
     
     /// Function to register an existing topology handler to manage this Data. @param Pointer to dynamic topology is needed.
     /// @param Pointer to dynamic topology is needed.
-    virtual void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* topoHandler);
+    virtual void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyDataHandler< TopologyElementType, VecT>* topoHandler);
 
     /// Link Data to topology arrays
     void linkToPointDataArray();
@@ -171,4 +171,4 @@ template< class VecT > using TetrahedronData = TopologyData<core::topology::Base
 template< class VecT > using HexahedronData  = TopologyData<core::topology::BaseMeshTopology::Hexahedron, VecT>;
 
 
-} //namespace sofa::component::topology
+} //namespace sofa::core::topology

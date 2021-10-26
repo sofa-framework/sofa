@@ -64,8 +64,6 @@ protected:
 
     void processAddPoint(const sofa::type::Vec3d & pos, const typename In::VecCoord& in, MappingData & vectorData);
 
-    topology::TetrahedronSetTopologyContainer*      m_fromContainer {nullptr};
-
     using Inherit1::d_map;
     using Inherit1::m_fromTopology;
     using Inherit1::m_matrixJ;

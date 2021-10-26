@@ -147,6 +147,16 @@ set(HEADER_FILES
     ${SRC_ROOT}/topology/Topology.h
     ${SRC_ROOT}/topology/TopologyChange.h
     ${SRC_ROOT}/topology/TopologyHandler.h
+    ${SRC_ROOT}/topology/TopologyData.h
+    ${SRC_ROOT}/topology/TopologyData.inl
+    ${SRC_ROOT}/topology/TopologyDataHandler.h
+    ${SRC_ROOT}/topology/TopologyDataHandler.inl
+    ${SRC_ROOT}/topology/TopologySparseData.h
+    ${SRC_ROOT}/topology/TopologySparseData.inl
+    ${SRC_ROOT}/topology/TopologySubsetData.h
+    ${SRC_ROOT}/topology/TopologySubsetData.inl
+    ${SRC_ROOT}/topology/TopologySubsetData.cpp
+    ${SRC_ROOT}/topology/TopologySubsetIndices.h
     ${SRC_ROOT}/visual/DisplayFlags.h
     ${SRC_ROOT}/visual/Shader.h
     ${SRC_ROOT}/visual/VisualLoop.h
@@ -255,6 +265,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/topology/Topology.cpp
     ${SRC_ROOT}/topology/TopologyChange.cpp
     ${SRC_ROOT}/topology/TopologyHandler.cpp
+    ${SRC_ROOT}/topology/TopologySubsetIndices.cpp
     ${SRC_ROOT}/visual/DisplayFlags.cpp
     ${SRC_ROOT}/visual/Shader.cpp
     ${SRC_ROOT}/visual/VisualLoop.cpp

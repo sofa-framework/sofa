@@ -19,17 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_TOPOLOGY_SUBSETINDICES_CPP
+#define SOFA_CORE_TOPOLOGY_SUBSETINDICES_CPP
 
-#include <SofaBaseTopology/TopologySubsetIndices.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
-#include <SofaBaseTopology/TopologyDataHandler.inl>
+#include <sofa/core/topology/TopologySubsetIndices.h>
+#include <sofa/core/topology/TopologySubsetData.inl>
+#include <sofa/core/topology/TopologyDataHandler.inl>
 
-namespace sofa::component::topology
+namespace sofa::core::topology
 {
 
 TopologySubsetIndices::TopologySubsetIndices(const typename sofa::core::topology::BaseTopologyData< type::vector<Index> >::InitData& data)
-    : sofa::component::topology::TopologySubsetData< core::topology::BaseMeshTopology::Point, type::vector<Index> >(data)
+    : sofa::core::topology::TopologySubsetData< core::topology::BaseMeshTopology::Point, type::vector<Index> >(data)
 {
 
 }
@@ -51,7 +51,7 @@ void TopologySubsetIndices::createTopologyHandler(sofa::core::topology::BaseMesh
     this->Inherit::createTopologyHandler(_topology);
 }
 
-void TopologySubsetIndices::createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler < core::topology::BaseMeshTopology::Point, type::vector<Index> >* topoHandler)
+void TopologySubsetIndices::createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyDataHandler < core::topology::BaseMeshTopology::Point, type::vector<Index> >* topoHandler)
 {
     this->Inherit::createTopologyHandler(_topology, topoHandler);
 }
@@ -84,8 +84,8 @@ void TopologySubsetIndices::updateLastIndex(Index posLastIndex, Index newGlobalI
     this->endEdit();
 }
 
-template class SOFA_SOFABASETOPOLOGY_API sofa::component::topology::TopologyDataHandler < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
-template class SOFA_SOFABASETOPOLOGY_API sofa::component::topology::TopologyData < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
-//template class SOFA_SOFABASETOPOLOGY_API sofa::core::topology::BaseTopologyData < type::vector<Index> >;
+template class SOFA_CORE_API sofa::core::topology::TopologyDataHandler < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
+template class SOFA_CORE_API sofa::core::topology::TopologyData < core::topology::BaseMeshTopology::Point, type::vector<Index> >;
+//template class SOFA_CORE_API sofa::core::topology::BaseTopologyData < type::vector<Index> >;
 
-} //namespace sofa::component::topology
+} //namespace sofa::core::topology
