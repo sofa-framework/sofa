@@ -2,6 +2,23 @@
 
 
 
+## [v21.06.02](https://github.com/sofa-framework/sofa/tree/v21.06.02)
+
+[Full log](https://github.com/sofa-framework/sofa/compare/v21.06.01...v21.06.02)
+
+### Bug Fixes
+**Architecture**
+-  [CMake] Clean Sofa.Core CMakeLists + Add missing headers [#2444](https://github.com/sofa-framework/sofa/pull/2444)
+-  [SofaMeshCollision] Fix cmake generated config file [#2400](https://github.com/sofa-framework/sofa/pull/2400)
+
+**Modules**
+- [Sofa.Compat] Fix install [#2360](https://github.com/sofa-framework/sofa/pull/2360)
+- [Sofa.Helper] PluginManager: check if a plugin is already loaded with a different path [#2352](https://github.com/sofa-framework/sofa/pull/2352)
+
+____________________________________________________________
+
+
+
 ## [v21.06.01](https://github.com/sofa-framework/sofa/tree/v21.06.01)
 
 [Full log](https://github.com/sofa-framework/sofa/compare/v21.06.00...v21.06.01)
