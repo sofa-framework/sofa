@@ -35,11 +35,14 @@ namespace sofa::component::forcefield
 template< class DataTypes>
 void TriangularQuadraticSpringsForceField<DataTypes>::applyEdgeCreation(Index edgeIndex, EdgeRestInformation &ei, const core::topology::Edge &, const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
 {
-    sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* triangleGeo=nullptr;
-    this->getContext()->get(triangleGeo);
-
     // store the rest length of the edge created
-    ei.restLength=triangleGeo->computeRestEdgeLength(edgeIndex);
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+
+    const auto& e = this->m_topology->getEdge(edgeIndex);
+    const auto& n0 = DataTypes::CPos(x[e[0]]);
+    const auto& n1 = DataTypes::CPos(x[e[1]]);
+
+    ei.restLength = sofa::geometry::Edge::length(n0, n1);
     ei.stiffness=0;
 }
 

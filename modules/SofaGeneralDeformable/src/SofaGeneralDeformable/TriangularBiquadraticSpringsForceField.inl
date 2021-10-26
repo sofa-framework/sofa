@@ -118,15 +118,16 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::applyEdgeCreation(Index 
         const sofa::type::vector<double> &)
 
 {
-    sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* triangleGeo;
-    this->getContext()->get(triangleGeo);
-
     // store the rest length of the edge created
-    ei.restSquareLength=triangleGeo->computeRestSquareEdgeLength(edgeIndex);
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+
+    const auto& e = this->m_topology->getEdge(edgeIndex);
+    const auto& n0 = DataTypes::CPos(x[e[0]]);
+    const auto& n1 = DataTypes::CPos(x[e[1]]);
+
+    ei.restSquareLength = sofa::geometry::Edge::squaredLength(n0, n1);
     ei.stiffness=0;
 }
-
-
 
 template <class DataTypes> TriangularBiquadraticSpringsForceField<DataTypes>::TriangularBiquadraticSpringsForceField()
     : triangleInfo(initData(&triangleInfo, "triangleInfo", "Internal triangle data"))
