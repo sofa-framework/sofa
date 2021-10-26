@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/config.h>
+#include <sofa/core/config.h>
 
 #include <sofa/core/topology/TopologyHandler.h>
 #include <sofa/core/topology/BaseTopologyData.h>
@@ -28,7 +28,7 @@
 #include <sofa/core/topology/BaseTopology.h>
 
 
-namespace sofa::component::topology
+namespace sofa::core::topology
 {
 
 
@@ -166,4 +166,4 @@ public:
 };
 
 
-} //namespace sofa::component::topology
+} //namespace sofa::core::topology

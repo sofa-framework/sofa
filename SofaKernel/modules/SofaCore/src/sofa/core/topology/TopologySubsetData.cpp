@@ -19,7 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-// TODO: Backward compability header, to be removed for v21.12
-#include <SofaBaseTopology/TopologySubsetData.inl>
-#include <SofaBaseTopology/TopologySparseData.h>
+#define DEFINITION_TOPOLOGYSUBSETDATA
+
+#include <sofa/core/topology/TopologySubsetData.inl>
+
+namespace sofa::core::topology
+{
+
+template class SOFA_CORE_API TopologySubsetData<Index, sofa::type::vector<Index>>;
+
+} // namespace sofa::core::topology

@@ -19,13 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define DEFINITION_TOPOLOGYSUBSETDATA
+#pragma once
 
-#include <SofaBaseTopology/TopologySubsetData.inl>
+#include <sofa/core/topology/TopologySubsetData.h>
+
+// SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/core/topology/TopologySubsetData.h")
 
 namespace sofa::component::topology
 {
+    template< class TopologyElementType, class VecT>
+    using TopologySubsetData = sofa::core::topology::TopologySubsetData< TopologyElementType, VecT>;
 
-template class SOFA_SOFABASETOPOLOGY_API TopologySubsetData<Index, sofa::type::vector<Index>>;
+    template< class VecT > using PointSubsetData = sofa::core::topology::PointSubsetData<VecT>;
+    template< class VecT > using EdgeSubsetData = sofa::core::topology::EdgeSubsetData<VecT>;
+    template< class VecT > using TriangleSubsetData = sofa::core::topology::TriangleSubsetData<VecT>;
+    template< class VecT > using QuadSubsetData = sofa::core::topology::QuadSubsetData<VecT>;
+    template< class VecT > using TetrahedronSubsetData = sofa::core::topology::TetrahedronSubsetData<VecT>;
+    template< class VecT > using HexahedronSubsetData = sofa::core::topology::HexahedronSubsetData<VecT>;
 
 } // namespace sofa::component::topology

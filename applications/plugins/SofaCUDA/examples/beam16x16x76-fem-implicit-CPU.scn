@@ -19,9 +19,8 @@
 		</Node>
 	</Node>
 	<Node name="M1">
-		<!--<CGImplicit iterations="10" />-->
 		<EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
-		<CGLinearSolver iterations="10"/>
+		<CGLinearSolver iterations="10" tolerance="1e-5" threshold="1e-5"/>
 		<RegularGridTopology
 			nx="16" ny="16" nz="76"
 			xmin="-1.5" xmax="1.5"

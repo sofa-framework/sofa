@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/config.h>
+#include <sofa/core/config.h>
 
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 
-namespace sofa::component::topology
+namespace sofa::core::topology
 {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,7 +37,7 @@ namespace sofa::component::topology
 * happen (non exhaustive list: elements added, removed, fused, renumbered).
 */
 template< class TopologyElementType, class VecT>
-class TopologySubsetData : public sofa::component::topology::TopologyData<TopologyElementType, VecT>
+class TopologySubsetData : public sofa::core::topology::TopologyData<TopologyElementType, VecT>
 {
 public:
     typedef VecT container_type;
@@ -158,7 +158,7 @@ template< class VecT > using TetrahedronSubsetData = TopologySubsetData<core::to
 template< class VecT > using HexahedronSubsetData = TopologySubsetData<core::topology::BaseMeshTopology::Hexahedron, VecT>;
 
 #if !defined(DEFINITION_TOPOLOGYSUBSETDATA)
-extern template class SOFA_SOFABASETOPOLOGY_API TopologySubsetData<Index, sofa::type::vector<Index>>;
+extern template class SOFA_CORE_API TopologySubsetData<Index, sofa::type::vector<Index>>;
 #endif // DEFINITION_TOPOLOGYSUBSETDATA
 
-} //namespace sofa::component::topology
+} //namespace sofa::core::topology

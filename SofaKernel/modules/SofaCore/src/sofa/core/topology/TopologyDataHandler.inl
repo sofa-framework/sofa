@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/TopologyDataHandler.h>
+#include <sofa/core/topology/TopologyDataHandler.h>
 
-namespace sofa::component::topology
+namespace sofa::core::topology
 {
 
 template <typename TopologyElementType, typename VecT>
@@ -270,4 +270,4 @@ void TopologyDataHandler<TopologyElementType,  VecT>::ApplyTopologyChange(const 
 
 
 
-} //namespace sofa::component::topology
+} //namespace sofa::core::topology

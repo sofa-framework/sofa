@@ -85,7 +85,7 @@ public:
         createObject(m_root, "DefaultVisualManagerLoop");
 
         createObject(m_root, "EulerImplicitSolver");
-        createObject(m_root, "CGLinearSolver", { { "iterations", "20" }, { "threshold", "1e-8" } });
+        createObject(m_root, "CGLinearSolver", { { "iterations", "20" }, { "threshold", "1e-8" }, {"tolerance", "1e-5"} });
         createObject(m_root, "MechanicalObject", {{"template","Rigid3d"}, {"position", "0 0 1 0 0 0 1   1 0 1 0 0 0 1   2 0 1 0 0 0 1   3 0 1 0 0 0 1"} });
         createObject(m_root, "EdgeSetTopologyContainer", { {"edges","0 1  1 2  2 3"} });
         createObject(m_root, "EdgeSetTopologyModifier");
