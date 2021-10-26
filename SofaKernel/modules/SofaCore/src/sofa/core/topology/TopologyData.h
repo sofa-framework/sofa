@@ -142,7 +142,7 @@ public:
     void registerTopologicalData() = delete;
 
     SOFA_ATTRIBUTE_DISABLED("v21.12 (PR#2393)", "v21.12 (PR#2393)", "This method has been removed, TopologyHandler is now created internally. Method createTopologyHandler(BaseMeshTopology*) should be used.")
-    virtual void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::component::topology::TopologyDataHandler< TopologyElementType, VecT>* topoHandler) = delete;
+    virtual void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyDataHandler< TopologyElementType, VecT>* topoHandler) = delete;
     
 protected:
     std::unique_ptr<TopologyDataElementHandler> m_topologyHandler;
