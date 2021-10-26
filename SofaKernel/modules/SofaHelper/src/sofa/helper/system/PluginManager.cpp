@@ -66,6 +66,7 @@ const char* Plugin::GetModuleDescription::symbol      = "getModuleDescription";
 const char* Plugin::GetModuleLicense::symbol          = "getModuleLicense";
 const char* Plugin::GetModuleName::symbol             = "getModuleName";
 const char* Plugin::GetModuleVersion::symbol          = "getModuleVersion";
+const char* Plugin::ModuleIsInitialized::symbol       = "moduleIsInitialized";
 
 std::string PluginManager::s_gui_postfix = "gui";
 
@@ -185,6 +186,20 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
     p.dynamicLibrary = d;
     m_pluginMap[pluginPath] = p;
     p.initExternalModule();
+
+    // check if the plugin is initialized (if it can report this information)
+    if (getPluginEntry(p.moduleIsInitialized, d))
+    {
+        if (!p.moduleIsInitialized())
+        {
+            const std::string msg = pluginPath + " reported an error while trying to initialize. This plugin will not be loaded.";
+            msg_error("PluginManager") << msg;
+            if (errlog) (*errlog) << msg << std::endl;
+
+            unloadPlugin(pluginPath);
+            return false;
+        }
+    }
 
     msg_info("PluginManager") << "Loaded plugin: " << pluginPath;
 
