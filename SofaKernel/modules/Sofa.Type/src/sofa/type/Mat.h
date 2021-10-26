@@ -81,11 +81,9 @@ public:
         typename = std::enable_if_t< (std::is_convertible_v<ArgsT, Line> && ...) >,
         typename = std::enable_if_t< (sizeof...(ArgsT) == L && sizeof...(ArgsT) > 1) >
     >
-    constexpr Mat(const ArgsT... r) noexcept
-    {
-        std::size_t i = 0;
-        ((this->elems[i++] = r), ...);
-    }
+    constexpr Mat(ArgsT&&... r) noexcept
+        : sofa::type::fixed_array<LineNoInit, L>(std::forward<ArgsT>(r)...)
+    {}
 
     /// Constructor from an element
     explicit constexpr Mat(const real& v) noexcept

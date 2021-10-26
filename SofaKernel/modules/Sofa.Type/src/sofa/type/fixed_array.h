@@ -69,7 +69,6 @@ public:
 
     typedef T Array[N]; ///< name the array type
 
-public:
     // type definitions
     typedef T              value_type;
     typedef T*             iterator;
@@ -92,12 +91,9 @@ public:
         typename = std::enable_if_t< (std::is_convertible_v<ArgsT, value_type> && ...) >,
         typename = std::enable_if_t< (sizeof...(ArgsT) == N && sizeof...(ArgsT) > 1) >
     >
-    constexpr fixed_array(const ArgsT... r) noexcept
-    {
-        // elems = { r... }; // doable if elems was assignable
-        std::size_t i = 0;
-        ( (elems[i++] = r), ...);
-    }
+    constexpr fixed_array(ArgsT&&... r) noexcept
+        : elems{static_cast<value_type>(std::forward< ArgsT >(r))...}
+    {}
 
     // iterator support
     constexpr iterator begin() noexcept
