@@ -1,4 +1,4 @@
-#include <sofa/component/odesolver/forward/config.h>
+#include <sofa/component/odesolver/forward/init.h>
 
 namespace sofa::component::odesolver::forward
 {

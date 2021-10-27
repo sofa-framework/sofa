@@ -1,4 +1,4 @@
-#include <sofa/component/odesolver/backward/config.h>
+#include <sofa/component/odesolver/backward/init.h>
 
 namespace sofa::component::odesolver::backward
 {
