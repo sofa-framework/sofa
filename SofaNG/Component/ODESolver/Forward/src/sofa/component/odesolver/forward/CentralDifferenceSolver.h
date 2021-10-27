@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralExplicitOdeSolver/config.h>
+#include <sofa/component/odesolver/forward/config.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
 
@@ -33,7 +33,7 @@ namespace sofa::component::odesolver
  * @see http://en.wikipedia.org/wiki/Leapfrog_method
  *
  */
-class SOFA_SOFAGENERALEXPLICITODESOLVER_API CentralDifferenceSolver : public sofa::core::behavior::OdeSolver
+class SOFACOMPONENTODESOLVERFORWARD_API CentralDifferenceSolver : public sofa::core::behavior::OdeSolver
 {
 public:
     SOFA_CLASS(CentralDifferenceSolver, sofa::core::behavior::OdeSolver);

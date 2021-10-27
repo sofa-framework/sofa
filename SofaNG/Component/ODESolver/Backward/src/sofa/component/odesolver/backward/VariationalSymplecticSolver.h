@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralImplicitOdeSolver/config.h>
+#include <sofa/component/odesolver/backward/config.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
 #include <fstream>
@@ -35,7 +35,7 @@ namespace sofa::component::odesolver
  * several Newton steps to estimate the velocity
  *
 */
-class SOFA_SOFAGENERALIMPLICITODESOLVER_API VariationalSymplecticSolver : public sofa::core::behavior::OdeSolver
+class SOFACOMPONENTODESOLVERBACKWARD_API VariationalSymplecticSolver : public sofa::core::behavior::OdeSolver
 {
 public:
     SOFA_CLASS(VariationalSymplecticSolver, sofa::core::behavior::OdeSolver);

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaImplicitOdeSolver/config.h>
+#include <sofa/component/odesolver/backward/config.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
 
@@ -93,7 +93,7 @@ namespace sofa::component::odesolver
  *   \f$ ( M + h/2 K ) v_{t+h} = f_{ext} \f$
  *
  */
-class SOFA_SOFAIMPLICITODESOLVER_API EulerImplicitSolver : public sofa::core::behavior::OdeSolver
+class SOFACOMPONENTODESOLVERBACKWARD_API EulerImplicitSolver : public sofa::core::behavior::OdeSolver
 {
 public:
     SOFA_CLASS(EulerImplicitSolver, sofa::core::behavior::OdeSolver);

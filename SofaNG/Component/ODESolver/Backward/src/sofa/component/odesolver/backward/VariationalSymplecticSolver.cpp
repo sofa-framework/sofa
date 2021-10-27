@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralImplicitOdeSolver/VariationalSymplecticSolver.h>
+#include <sofa/component/odesolver/backward/VariationalSymplecticSolver.h>
 
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/core/behavior/MultiMatrix.h>

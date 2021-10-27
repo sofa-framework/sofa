@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaImplicitOdeSolver/config.h>
+#include <sofa/component/odesolver/backward/config.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/MultiVec.h>
@@ -56,7 +56,7 @@ using sofa::core::objectmodel::Data;
  *     \vec{x}_{n+1}^{i+1} &= \vec{x}_{n+1}^{i} + \Delta \vec{x}_{n+1}^{i+1}
  * \f}
  */
-class SOFA_SOFAIMPLICITODESOLVER_API StaticSolver : public sofa::core::behavior::OdeSolver
+class SOFACOMPONENTODESOLVERBACKWARD_API StaticSolver : public sofa::core::behavior::OdeSolver
 {
 public:
     SOFA_CLASS(StaticSolver, sofa::core::behavior::OdeSolver);

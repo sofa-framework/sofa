@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaImplicitOdeSolver/StaticSolver.h>
+#include <sofa/component/odesolver/backward/StaticSolver.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
