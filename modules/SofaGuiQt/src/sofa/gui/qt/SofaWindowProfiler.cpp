@@ -328,7 +328,7 @@ SofaWindowProfiler::AnimationStepData::~AnimationStepData()
 ///////////////////////////////////////// SofaWindowProfiler ///////////////////////////////////
 
 SofaWindowProfiler::SofaWindowProfiler(QWidget *parent)
-    : QDialog(parent)
+    : QDialog(parent, Qt::WindowFlags() | Qt::WindowMaximizeButtonHint | Qt::WindowCloseButtonHint)
     , m_step(0)
     , m_bufferSize(100)
     , m_maxFps(0)
