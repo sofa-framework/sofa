@@ -27,17 +27,13 @@ namespace sofa::component::mapping
 
 template <class In, class Out>
 BarycentricMapperTriangleSetTopology<In,Out>::BarycentricMapperTriangleSetTopology()
-    : Inherit1(nullptr, nullptr),
-      m_fromContainer(nullptr),
-      m_fromGeomAlgo(nullptr)
+    : Inherit1(nullptr, nullptr)
 {}
 
 template <class In, class Out>
-BarycentricMapperTriangleSetTopology<In,Out>::BarycentricMapperTriangleSetTopology(topology::TriangleSetTopologyContainer* fromTopology,
-                                                                                   topology::PointSetTopologyContainer* toTopology)
-    : Inherit1(fromTopology, toTopology),
-      m_fromContainer(fromTopology),
-      m_fromGeomAlgo(nullptr)
+BarycentricMapperTriangleSetTopology<In,Out>::BarycentricMapperTriangleSetTopology(sofa::core::topology::TopologyContainer* fromTopology,
+    core::topology::BaseMeshTopology* toTopology)
+    : Inherit1(fromTopology, toTopology)
 {}
 
 
@@ -45,7 +41,7 @@ template <class In, class Out>
 typename BarycentricMapperTriangleSetTopology<In, Out>::Index 
 BarycentricMapperTriangleSetTopology<In,Out>::addPointInTriangle ( const Index triangleIndex, const SReal* baryCoords )
 {
-    helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
+    type::vector<MappingData>& vectorData = *(d_map.beginEdit());
     vectorData.resize ( d_map.getValue().size() +1 );
     MappingData& data = *vectorData.rbegin();
     d_map.endEdit();
@@ -76,21 +72,21 @@ BarycentricMapperTriangleSetTopology<In,Out>::createPointInTriangle ( const type
 
 
 template <class In, class Out>
-helper::vector<Triangle> BarycentricMapperTriangleSetTopology<In,Out>::getElements()
+type::vector<Triangle> BarycentricMapperTriangleSetTopology<In,Out>::getElements()
 {
     return this->m_fromTopology->getTriangles();
 }
 
 template <class In, class Out>
-helper::vector<SReal> BarycentricMapperTriangleSetTopology<In,Out>::getBaryCoef(const Real* f)
+type::vector<SReal> BarycentricMapperTriangleSetTopology<In,Out>::getBaryCoef(const Real* f)
 {
     return getBaryCoef(f[0],f[1]);
 }
 
 template <class In, class Out>
-helper::vector<SReal> BarycentricMapperTriangleSetTopology<In,Out>::getBaryCoef(const Real fx, const Real fy)
+type::vector<SReal> BarycentricMapperTriangleSetTopology<In,Out>::getBaryCoef(const Real fx, const Real fy)
 {
-    helper::vector<SReal> triangleCoef{1-fx-fy, fx, fy};
+    type::vector<SReal> triangleCoef{1-fx-fy, fx, fy};
     return triangleCoef;
 }
 
@@ -102,7 +98,9 @@ void BarycentricMapperTriangleSetTopology<In,Out>::computeBase(Mat3x3d& base, co
     base[1] = in[element[2]]-in[element[0]];
     base[2] = cross(base[0],base[1]);
     mt.transpose(base);
-    base.invert(mt);
+    const bool canInvert = base.invert(mt);
+    assert(canInvert);
+    SOFA_UNUSED(canInvert);
 }
 
 template <class In, class Out>

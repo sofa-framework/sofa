@@ -105,8 +105,8 @@ protected:
         int p[3];
     };
 
-    sofa::helper::vector<Vertex> points;
-    sofa::helper::vector<Face> facets;
+    sofa::type::vector<Vertex> points;
+    sofa::type::vector<Face> facets;
 
     /// For each cube, store the vertex indices on each 3 first edges, and the data value
     struct CubeData
@@ -115,9 +115,9 @@ protected:
     };
 
     // temporary storage for marching cube
-    sofa::helper::vector<CubeData> planes;
-    //typename sofa::helper::vector<CubeData>::iterator P0; /// Pointer to first plane
-    //typename sofa::helper::vector<CubeData>::iterator P1; /// Pointer to second plane
+    sofa::type::vector<CubeData> planes;
+    //typename sofa::type::vector<CubeData>::iterator P0; /// Pointer to first plane
+    //typename sofa::type::vector<CubeData>::iterator P1; /// Pointer to second plane
 
     template<int C>
     int addPoint(int x,int y,int z, real v0, real v1, real iso)
@@ -134,8 +134,8 @@ protected:
     {
         int nbp = points.size();
         if ((unsigned)p1<(unsigned)nbp &&
-            (unsigned)p2<(unsigned)nbp &&
-            (unsigned)p3<(unsigned)nbp)
+                (unsigned)p2<(unsigned)nbp &&
+                (unsigned)p3<(unsigned)nbp)
         {
             int f = facets.size();
             facets.resize(f+1);
@@ -146,7 +146,7 @@ protected:
         }
         else
         {
-            serr << "ERROR: Invalid face "<<p1<<" "<<p2<<" "<<p3<<sendl;
+            msg_error() << "Invalid face indices: "<<p1<<" "<<p2<<" "<<p3;
             return -1;
         }
     }

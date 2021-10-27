@@ -4,12 +4,12 @@
 
 ### Demo scenes ###
 Demos/TriangleSurfaceCutting.scn 100 1e-4 1 1
-Demos/liver.scn 100 1e-4 1 1
-Demos/collisionMultiple.scn 100 1e-4 1 1
-Demos/simpleBoundaryConditions.scn 100 1e-4 1 1
 Demos/chainAll.scn 100 1e-2 1 1
 Demos/chainHybrid.scn 100 1e-2 1 1
 Demos/chainHybridNoGroup.scn 100 1e-2 1 1
+Demos/collisionMultiple.scn 100 1e-4 1 1
+Demos/liver.scn 100 1e-4 1 1
+Demos/simpleBoundaryConditions.scn 100 1e-4 1 1
 
 ### Components scenes ###
 Components/collision/RuleBasedContactManager.scn 100 1e-4 0 1
@@ -18,12 +18,28 @@ Components/constraint/FixedConstraint.scn 100 1e-4 0 1
 Components/constraint/FrictionContact.scn 100 1e-4 0 1
 Components/forcefield/BeamFEMForceField.scn 100 1e-4 0 1
 Components/forcefield/FastTriangularBendingSprings.scn 100 1e-4 0 1
+Components/forcefield/HexahedronFEMForceField.scn 300 1e-4 0 1
+Components/forcefield/MeshSpringForceField.scn 300 1e-4 0 1
 Components/forcefield/QuadBendingFEMForceField.scn 300 1e-4 0 1
+Components/forcefield/TetrahedralCorotationalFEMForceField.scn 300 1e-4 0 1
+Components/forcefield/TetrahedronFEMForceField.scn 300 1e-4 0 1
+Components/forcefield/TetrahedronHyperelasticityFEMForceField.scn 100 1e-4 0 1
 Components/forcefield/TriangularFEMForceFieldOptim.scn 100 1e-4 0 1
 Components/interactionforcefield/InteractionEllipsoidForceField.scn 100 1e-4 0 1
+Components/solver/EulerExplicitSolver/EulerExplicitSolver.scn 3000 1e-4 0 1
+Components/solver/EulerExplicitSolver/EulerExplicitSolver_diagonal.scn 3000 1e-4 0 1
+Components/solver/EulerImplicitSolver.scn 3000 1e-4 0 1
 Components/topology/Mesh2PointTopologicalMapping.scn 100 1e-4 0 1
 Components/topology/SparseGridTopology.scn 100 1e-4 0 1
 Components/topology/SparseGridRamificationTopology.scn 100 1e-4 0 1
-Components/solver/EulerExplicitSolver.scn 3000 1e-4 0 1
-Components/solver/EulerExplicitSolver_diagonal.scn 3000 1e-4 0 1
-Components/solver/EulerImplicitSolver.scn 3000 1e-4 0 1
+Components/mass/UniformMass.scn 100 1e-4 0 1
+Components/mass/DiagonalMass.scn 100 1e-4 0 1
+Components/mass/MeshMatrixMass.scn 100 1e-4 0 1
+
+
+### Benchmark scenes ###
+Benchmark/Performance/MatrixAssembly/MatrixAssembly_assembledCG.scn 300 1e-4 0 1
+Benchmark/Performance/MatrixAssembly/MatrixAssembly_assembledCG_blocs.scn 300 1e-4 0 1
+Benchmark/Performance/MatrixAssembly/MatrixAssembly_direct.scn 300 1e-4 0 1
+Benchmark/Performance/MatrixAssembly/MatrixAssembly_direct_blocs.scn 300 1e-4 0 1
+Benchmark/Performance/MatrixAssembly/MatrixAssembly_matrixfreeCG.scn 300 1e-4 0 1

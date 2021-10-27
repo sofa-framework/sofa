@@ -80,17 +80,17 @@ bool AssimpLoader::doLoad()
     if (!canLoad())
         return false;
 
-    const char* filename = m_filename.getFullPath().c_str();
+    const char* filename = d_filename.getFullPath().c_str();
     
     // Create an instance of the Importer class
     Assimp::Importer importer;
-    bool res = importer.IsExtensionSupported(m_filename.getExtension());
+    bool res = importer.IsExtensionSupported(d_filename.getExtension());
     if (!res)
     {
-        msg_error() << "Extension not handled: " << m_filename.getExtension() << " . Assimp scene not created.";
+        msg_error() << "Extension not handled: " << d_filename.getExtension() << " . Assimp scene not created.";
         return false;
     }
-    std::cout << m_filename.getExtension() << std::endl;
+    std::cout << d_filename.getExtension() << std::endl;
     
     // And have it read the given file with some example postprocessing
     // Usually - if speed is not the most important aspect for you - you'll 
@@ -105,7 +105,7 @@ bool AssimpLoader::doLoad()
     // If the import failed, report it
     if (!m_assimpScene)
     {
-        msg_error() << "Assimp scene from file: '" << m_filename << "' creation failed with error: " << importer.GetErrorString();
+        msg_error() << "Assimp scene from file: '" << d_filename << "' creation failed with error: " << importer.GetErrorString();
         return false;
     }
     // Now we can access the file's contents. 
@@ -123,12 +123,12 @@ bool AssimpLoader::convertAssimpScene()
     msg_info() << "m_assimpScene->mNumMeshes: " << m_assimpScene->mNumMeshes;
     msg_info() << "m_assimpScene->mNumMaterials: " << m_assimpScene->mNumMaterials;
 
-    WriteAccessor<Data<helper::vector<sofa::defaulttype::Vec<3, SReal> > > > waPositions = d_positions;
-    WriteAccessor<Data<helper::vector<sofa::defaulttype::Vec<3, SReal> > > > waNormals = d_normals;
+    WriteAccessor<Data<type::vector<sofa::type::Vec<3, SReal> > > > waPositions = d_positions;
+    WriteAccessor<Data<type::vector<sofa::type::Vec<3, SReal> > > > waNormals = d_normals;
 
-    WriteAccessor<Data<helper::vector< Edge > > > waEdges = d_edges; 
-    WriteAccessor<Data<helper::vector< Quad > > > waQuads = d_quads;
-    WriteAccessor<Data<helper::vector< Triangle > > > waTriangles = d_triangles;
+    WriteAccessor<Data<type::vector< Edge > > > waEdges = d_edges; 
+    WriteAccessor<Data<type::vector< Quad > > > waQuads = d_quads;
+    WriteAccessor<Data<type::vector< Triangle > > > waTriangles = d_triangles;
     
     // Clear potential buffer previous init.
     waPositions.clear();
@@ -158,14 +158,14 @@ bool AssimpLoader::convertAssimpScene()
         for (unsigned int j = 0; j<nbr_pos; ++j)
         {
             // create position array
-            sofa::defaulttype::Vec<3, SReal>& pos = waPositions[j + cpt_pos];
+            sofa::type::Vec<3, SReal>& pos = waPositions[j + cpt_pos];
             const aiVector3D& aiPos = currentMesh->mVertices[j];
             pos[0] = aiPos.x;
             pos[1] = aiPos.y;
             pos[2] = aiPos.z;
 
             // create normal array
-            sofa::defaulttype::Vec<3, SReal>& normal = waNormals[j + cpt_norm];
+            sofa::type::Vec<3, SReal>& normal = waNormals[j + cpt_norm];
             const aiVector3D& aiNorm = currentMesh->mNormals[j];
             normal[0] = aiNorm.x;
             normal[1] = aiNorm.y;

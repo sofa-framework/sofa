@@ -44,7 +44,7 @@ int CudaCollisionDetectionClass = core::RegisterObject("GPU-based collision dete
 
 void CudaCollisionDetection::beginNarrowPhase()
 {
-    Inherit::beginNarrowPhase();
+    Inherit2::beginNarrowPhase();
     for (TestMap::iterator it = tests.begin(), itend = tests.end(); it != itend; ++it)
         if (it->second.index >= 0)
             it->second.index = -1;
@@ -124,7 +124,7 @@ void CudaCollisionDetection::endNarrowPhase()
             {
                 core::CollisionModel *cm1 = it->first.first->getFirst(); //->getNext();
                 core::CollisionModel *cm2 = it->first.second->getFirst(); //->getNext();
-                Inherit::addCollisionPair( std::make_pair(cm1, cm2) );
+                addCollisionPair( std::make_pair(cm1, cm2) );
             }
         }
 
@@ -157,7 +157,7 @@ void CudaCollisionDetection::endNarrowPhase()
             }
     }
 
-    Inherit::endNarrowPhase();
+    Inherit2::endNarrowPhase();
 }
 
 

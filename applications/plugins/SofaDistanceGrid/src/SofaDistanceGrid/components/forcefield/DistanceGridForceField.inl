@@ -96,7 +96,7 @@ void DistanceGridForceField<DataTypes>::init()
         }
         else
         {
-            serr << "No triangles found in topology" << sendl;
+            msg_error() << "No triangles found in topology";
         }
     }
 
@@ -121,7 +121,7 @@ void DistanceGridForceField<DataTypes>::init()
         }
         else
         {
-            serr << "No tetrahedra found in topology" << sendl;
+            msg_error() << "No tetrahedra found in topology";
         }
     }
 
@@ -139,7 +139,7 @@ void DistanceGridForceField<DataTypes>::addForce(const sofa::core::MechanicalPar
     //this->dfdd.resize(p1.size());
     f1.resize(p1.size());
 
-    sofa::helper::vector<Contact>& contacts = *this->contacts.beginEdit();
+    sofa::type::vector<Contact>& contacts = *this->contacts.beginEdit();
     contacts.clear();
 
     unsigned int ibegin = 0;
@@ -195,7 +195,7 @@ void DistanceGridForceField<DataTypes>::addForce(const sofa::core::MechanicalPar
 
     this->contacts.endEdit();
 
-    sofa::helper::vector<TContact>& tcontacts = *this->tcontacts.beginEdit();
+    sofa::type::vector<TContact>& tcontacts = *this->tcontacts.beginEdit();
     tcontacts.clear();
 
     const Real stiffA = stiffnessArea.getValue();
@@ -249,7 +249,7 @@ void DistanceGridForceField<DataTypes>::addForce(const sofa::core::MechanicalPar
     }
     this->tcontacts.endEdit();
 
-    sofa::helper::vector<VContact>& vcontacts = *this->vcontacts.beginEdit();
+    sofa::type::vector<VContact>& vcontacts = *this->vcontacts.beginEdit();
     vcontacts.clear();
 
     const Real stiffV = stiffnessVolume.getValue();
@@ -314,9 +314,9 @@ void DistanceGridForceField<DataTypes>::addDForce(const sofa::core::MechanicalPa
     if (!grid)
         return;
 
-    const sofa::helper::vector<Contact>& contacts = this->contacts.getValue();
-    const sofa::helper::vector<TContact>& tcontacts = this->tcontacts.getValue();
-    const sofa::helper::vector<VContact>& vcontacts = this->vcontacts.getValue();
+    const sofa::type::vector<Contact>& contacts = this->contacts.getValue();
+    const sofa::type::vector<TContact>& tcontacts = this->tcontacts.getValue();
+    const sofa::type::vector<VContact>& vcontacts = this->vcontacts.getValue();
 
     if (contacts.empty() && tcontacts.empty() && vcontacts.empty())
         return;
@@ -338,7 +338,7 @@ void DistanceGridForceField<DataTypes>::addDForce(const sofa::core::MechanicalPa
     for (unsigned int i=0; i<tcontacts.size(); i++)
     {
         const TContact& c = (this->tcontacts.getValue())[i];
-        const helper::fixed_array<unsigned int,3>& t = c.index;
+        const type::fixed_array<unsigned int,3>& t = c.index;
         Coord dB = dx1[t[1]]-dx1[t[0]];
         Coord dC = dx1[t[2]]-dx1[t[0]];
 
@@ -360,7 +360,7 @@ void DistanceGridForceField<DataTypes>::addDForce(const sofa::core::MechanicalPa
     {
         const Real v1_6 = (Real)(1.0/6.0);
         const VContact& c = (this->vcontacts.getValue())[i];
-        const helper::fixed_array<unsigned int,4>& t = c.index;
+        const type::fixed_array<unsigned int,4>& t = c.index;
         Coord dA = dx1[t[1]]-dx1[t[0]];
         Coord dB = dx1[t[2]]-dx1[t[0]];
         Coord dC = dx1[t[3]]-dx1[t[0]];
@@ -395,7 +395,7 @@ void DistanceGridForceField<DataTypes>::addKToMatrix(const sofa::core::Mechanica
     if (r)
     {
         if (!grid) return;
-        const sofa::helper::vector<Contact>& contacts = this->contacts.getValue();
+        const sofa::type::vector<Contact>& contacts = this->contacts.getValue();
         if (contacts.empty()) return;
         for (unsigned int i=0; i<contacts.size(); i++)
         {
@@ -428,8 +428,8 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
 
     const VecCoord& p1 = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    std::vector< defaulttype::Vector3 > pointsLineIn;
-    std::vector< defaulttype::Vector3 > pointsLineOut;
+    std::vector< type::Vector3 > pointsLineIn;
+    std::vector< type::Vector3 > pointsLineOut;
     // lines for points penetrating the distancegrid
 
     unsigned int ibegin = 0;
@@ -445,7 +445,7 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
     const Real stiffOut = stiffnessOut.getValue();
     const Real maxdist = maxDist.getValue();
 
-    defaulttype::Vector3 point1,point2;
+    type::Vector3 point1,point2;
     for (unsigned int i=ibegin; i<iend; i++)
     {
         if (i < pOnBorder.size() && !pOnBorder[i]) continue;
@@ -476,35 +476,35 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
         }
     }
     if (!pointsLineIn.empty())
-        vparams->drawTool()->drawLines(pointsLineIn, 1, defaulttype::Vec<4,float>(1,0,0,1));
+        vparams->drawTool()->drawLines(pointsLineIn, 1, sofa::type::RGBAColor(1.,0.,0.,1.));
     if (!pointsLineOut.empty())
-        vparams->drawTool()->drawLines(pointsLineOut, 1, defaulttype::Vec<4,float>(1,0,1,1));
+        vparams->drawTool()->drawLines(pointsLineOut, 1, sofa::type::RGBAColor(1.,0.,1.,1.));
 
-    const sofa::helper::vector<TContact>& tcontacts = this->tcontacts.getValue();
+    const sofa::type::vector<TContact>& tcontacts = this->tcontacts.getValue();
     if (!tcontacts.empty())
     {
-        std::vector< defaulttype::Vector3 > pointsTri;
+        std::vector< type::Vector3 > pointsTri;
         for (unsigned int i=0; i<tcontacts.size(); i++)
         {
             const TContact& c = (this->tcontacts.getValue())[i];
-            defaulttype::Vector3 p;
+            type::Vector3 p;
             for (int j=0; j<3; ++j)
             {
                 p = DataTypes::getCPos(p1[c.index[j]]);
                 pointsTri.push_back(p);
             }
         }
-        vparams->drawTool()->drawTriangles(pointsTri, sofa::helper::types::RGBAColor{ 1.0f,0.2f,0.2f,0.5f });
+        vparams->drawTool()->drawTriangles(pointsTri, sofa::type::RGBAColor{ 1.0f,0.2f,0.2f,0.5f });
     }
-    const sofa::helper::vector<VContact>& vcontacts = this->vcontacts.getValue();
+    const sofa::type::vector<VContact>& vcontacts = this->vcontacts.getValue();
     if (!vcontacts.empty())
     {
-        std::vector< defaulttype::Vector3 > pointsTet;
+        std::vector< type::Vector3 > pointsTet;
         for (unsigned int i=0; i<vcontacts.size(); i++)
         {
             const VContact& c = (this->vcontacts.getValue())[i];
-            const helper::fixed_array<unsigned int,4>& t = c.index;
-            defaulttype::Vector3 p[4];
+            const type::fixed_array<unsigned int,4>& t = c.index;
+            type::Vector3 p[4];
             Coord pc = (p1[t[0]]+p1[t[1]]+p1[t[2]]+p1[t[3]])*0.25f;
             for (int j=0; j<4; ++j)
             {
@@ -525,13 +525,13 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
             pointsTet.push_back(p[3]);
             pointsTet.push_back(p[2]);
         }
-        vparams->drawTool()->drawTriangles(pointsTet, sofa::helper::types::RGBAColor{ 0.8f,0.8f,0.0f,0.25f });
+        vparams->drawTool()->drawTriangles(pointsTet, sofa::type::RGBAColor{ 0.8f,0.8f,0.0f,0.25f });
     }
 
     if (drawPoints.getValue())
     {
-        std::vector< defaulttype::Vector3 > distancePointsIn;
-        std::vector< defaulttype::Vector3 > distancePointsOut;
+        std::vector< type::Vector3 > distancePointsIn;
+        std::vector< type::Vector3 > distancePointsOut;
 
         for (int i=0; i < grid->getNx(); i++)
             for (int j=0; j < grid->getNy(); j++)
@@ -545,9 +545,9 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
                 }
 
         if (distancePointsIn.size())
-            vparams->drawTool()->drawPoints(distancePointsIn, (float)drawSize.getValue(), sofa::helper::types::RGBAColor{ 0.8f,0.2f,0.2f,1.0f });
+            vparams->drawTool()->drawPoints(distancePointsIn, (float)drawSize.getValue(), sofa::type::RGBAColor{ 0.8f,0.2f,0.2f,1.0f });
         if (distancePointsOut.size())
-            vparams->drawTool()->drawPoints(distancePointsOut, (float)drawSize.getValue() * 1.2f, sofa::helper::types::RGBAColor{ 0.2f,0.8f,0.2f,1.0f });
+            vparams->drawTool()->drawPoints(distancePointsOut, (float)drawSize.getValue() * 1.2f, sofa::type::RGBAColor{ 0.2f,0.8f,0.2f,1.0f });
     }
 
 }

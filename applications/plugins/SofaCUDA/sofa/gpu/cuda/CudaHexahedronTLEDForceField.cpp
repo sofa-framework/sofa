@@ -98,7 +98,7 @@ void CudaHexahedronTLEDForceField::reinit()
     sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
     if (topology==NULL || topology->getNbHexahedra()==0)
     {
-        serr << "ERROR(CudaHexahedronTLEDForceField): no elements found.\n";
+        msg_error() << "no elements found.\n";
         return;
     }
     VecElement inputElems = topology->getHexahedra();
@@ -313,7 +313,7 @@ void CudaHexahedronTLEDForceField::reinit()
     }
 
 
-    sout << "CudaHexahedronTLEDForceField::reinit() DONE." << sendl;
+    msg_info() << "reinit() DONE.";
 }
 
 // --------------------------------------------------------------------------------------

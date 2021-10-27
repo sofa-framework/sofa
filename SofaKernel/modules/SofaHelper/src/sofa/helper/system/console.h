@@ -186,7 +186,7 @@ inline enableStd<T> operator<<(std::ostream &os, const T & value)
     }
 }
 
-}; // namespace console
+} // namespace console
 
 } // namespace helper
 } // namespace sofa

@@ -69,7 +69,7 @@ ctime_t CTime::getRefTicksPerSec()
 
 void CTime::sleep(double a)
 {
-    _sleep((long)(a*1000.0));
+    Sleep((long)(a*1000.0));
 }
 
 #else /* WIN32 */

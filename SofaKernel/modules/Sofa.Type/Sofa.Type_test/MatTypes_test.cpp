@@ -20,15 +20,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <iostream>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/testing/NumericTest.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Quat.h>
+#include <sofa/testing/NumericTest.h>
 #include <sofa/helper/logging/Messaging.h>
 
-using namespace sofa::helper::testing ;
+using namespace sofa::testing ;
 
 
 using namespace sofa;
+using namespace sofa::type;
 using namespace sofa::helper;
 using namespace sofa::defaulttype;
 
@@ -46,7 +47,7 @@ TEST(MatTypesTest, transformInverse)
     test_transformInverse(Matrix4::s_identity);
     test_transformInverse(Matrix4::transformTranslation(Vector3(1.,2.,3.)));
     test_transformInverse(Matrix4::transformScale(Vector3(1.,2.,3.)));
-    test_transformInverse(Matrix4::transformRotation(Quat::fromEuler(M_PI_4,M_PI_2,M_PI/3.)));
+    test_transformInverse(Matrix4::transformRotation(Quat<SReal>::fromEuler(M_PI_4,M_PI_2,M_PI/3.)));
 }
 
 TEST(MatTypesTest, setsub_vec)
@@ -110,21 +111,95 @@ TEST(MatTypesTest, nonSquareTranspose)
     EXPECT_EQ(M, Mtest.transposed());
 }
 
-TEST(MatTypesTest, invert)
+TEST(MatTypesTest, invert22)
 {
     Matrix2 M(Matrix2::Line(4.0, 7.0), Matrix2::Line(2.0, 6.0));
     Matrix2 Minv;
-    Matrix2 Mtest(Matrix2::Line(0.6,-0.7),
-                  Matrix2::Line(-0.2,0.4));
+    const Matrix2 Mtest(Matrix2::Line(0.6,-0.7),
+                        Matrix2::Line(-0.2,0.4));
 
-    defaulttype::invertMatrix(Minv, M);
-    EXPECT_EQ(Minv, Mtest);
+    {
+        const bool success = type::invertMatrix(Minv, M);
+        EXPECT_TRUE(success);
+        EXPECT_EQ(Minv, Mtest);
+    }
 
     EXPECT_EQ(M.inverted(), Mtest);
 
-    Minv.invert(M);
-    EXPECT_EQ(Minv, Mtest);
+    {
+        const bool success = Minv.invert(M);
+        EXPECT_TRUE(success);
+        EXPECT_EQ(Minv, Mtest);
+    }
 
-    M.invert(M);
-    EXPECT_EQ(M, Mtest);
+    {
+        const bool success = M.invert(M);
+        EXPECT_TRUE(success);
+        EXPECT_EQ(M, Mtest);
+    }
+}
+
+TEST(MatTypesTest, invert33)
+{
+    Matrix3 M(Matrix3::Line(3., 0., 2.), Matrix3::Line(2., 0., -2.), Matrix3::Line(0., 1., 1.));
+    Matrix3 Minv;
+    const Matrix3 Mtest(Matrix3::Line(0.2, 0.2, 0.),
+                        Matrix3::Line(-0.2, 0.3, 1.),
+                        Matrix3::Line(0.2, -0.3, 0.));
+
+    {
+        const bool success = type::invertMatrix(Minv, M);
+        EXPECT_TRUE(success);
+        EXPECT_EQ(Minv, Mtest);
+    }
+
+    EXPECT_EQ(M.inverted(), Mtest);
+
+    {
+        const bool success = Minv.invert(M);
+        EXPECT_TRUE(success);
+        EXPECT_EQ(Minv, Mtest);
+    }
+
+    {
+        const bool success = M.invert(M);
+        EXPECT_TRUE(success);
+        EXPECT_EQ(M, Mtest);
+    }
+}
+
+TEST(MatTypesTest, invert55)
+{
+    Mat<5, 5, SReal> M(Mat<5, 5, SReal>::Line(-2.,  7.,  0.,  6., -2.),
+                       Mat<5, 5, SReal>::Line( 1., -1.,  3.,  2.,  2.),
+                       Mat<5, 5, SReal>::Line( 3.,  4.,  0.,  5.,  3.),
+                       Mat<5, 5, SReal>::Line( 2.,  5., -4., -2.,  2.),
+                       Mat<5, 5, SReal>::Line( 0.,  3., -1.,  1., -4.));
+    Mat<5, 5, SReal> Minv;
+
+    const Mat<5, 5, SReal> Mtest(Mat<5, 5, SReal>::Line(-289./1440., 11./90., 13./90., 31./1440., 101./360.),
+                                 Mat<5, 5, SReal>::Line(37./360., 14./45., -8./45., 77./360., 7./90.),
+                                 Mat<5, 5, SReal>::Line(17./288., 11./18., -5./18., 49./288., 11./72.),
+                                 Mat<5, 5, SReal>::Line(1./1440., -29./90.,23./90.,-319./1440.,-29./360.),
+                                 Mat<5, 5, SReal>::Line(1./16., 0., 0., 1./16., -1./4.));
+
+    {
+        const bool success = type::invertMatrix(Minv, M);
+        EXPECT_TRUE(success);
+        EXPECT_EQ(Minv, Mtest);
+    }
+
+    EXPECT_EQ(M.inverted(), Mtest);
+
+    {
+        const bool success = Minv.invert(M);
+        EXPECT_TRUE(success);
+        EXPECT_EQ(Minv, Mtest);
+    }
+
+    {
+        const bool success = M.invert(M);
+        EXPECT_TRUE(success);
+        EXPECT_EQ(M, Mtest);
+    }
 }

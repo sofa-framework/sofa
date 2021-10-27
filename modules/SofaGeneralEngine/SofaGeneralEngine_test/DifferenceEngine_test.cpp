@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 
 #include <sofa/helper/BackTrace.h>
@@ -39,13 +39,13 @@ using sofa::core::visual::VisualParams;
 #include <SofaGeneralEngine/DifferenceEngine.h>
 using sofa::component::engine::DifferenceEngine ;
 
-using sofa::helper::vector;
+using sofa::type::vector;
 
 namespace sofa
 {
 
 template <typename _DataTypes>
-struct DifferenceEngine_test : public Sofa_test<typename _DataTypes::value_type>,
+struct DifferenceEngine_test : public BaseSimulationTest,
         DifferenceEngine<_DataTypes>
 {
     typedef DifferenceEngine<_DataTypes> ThisClass ;
@@ -55,7 +55,7 @@ struct DifferenceEngine_test : public Sofa_test<typename _DataTypes::value_type>
     Node::SPtr m_node;
     typename ThisClass::SPtr m_thisObject;
 
-    void SetUp()
+    void SetUp() override
     {
         setSimulation(m_simu = new DAGSimulation());
         m_node = m_simu->createNewGraph("root");
@@ -104,7 +104,7 @@ struct DifferenceEngine_test : public Sofa_test<typename _DataTypes::value_type>
 };
 
 using ::testing::Types;
-typedef Types<defaulttype::Vector3> DataTypes;
+typedef Types<type::Vector3> DataTypes;
 
 TYPED_TEST_SUITE(DifferenceEngine_test, DataTypes);
 

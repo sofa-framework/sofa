@@ -23,9 +23,7 @@
 #include <SofaRigid/config.h>
 
 #include <sofa/core/objectmodel/DataFileName.h>
-
 #include <sofa/core/behavior/PairInteractionForceField.h>
-#include <SofaRigid/JointSpring.h>
 
 namespace sofa::component::interactionforcefield
 {
@@ -40,8 +38,6 @@ public:
 template<typename DataTypes>
 class JointSpring;
 
-template<typename DataTypes>
-class JointSpring;
 
 /** JointSpringForceField simulates 6D springs between Rigid DOFS
   Use kst vector to specify the directionnal stiffnesses (on each local axe)
@@ -64,8 +60,8 @@ public:
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
     enum { N=DataTypes::spatial_dimensions };
-    typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef defaulttype::Vec<N,Real> Vector;
+    typedef type::Mat<N,N,Real> Mat;
+    typedef type::Vec<N,Real> Vector;
 
     typedef JointSpring<DataTypes> Spring;
 
@@ -132,17 +128,13 @@ public:
                                      const DataVecCoord& ) const override { return m_potentialEnergy; }
 
 
-    ////////////////////////// Inherited from BaseMapping /////////////////////////
-    void updateForceMask() override;
-
-
     //////////////////////////   Data fields    //////////////////////////////////
     /// the list of the springs
     sofa::core::objectmodel::DataFileName f_outfilename; ///< output file name
     sofa::core::objectmodel::DataFileName f_infilename; ///< input file containing constant joint force
     Data <Real > f_period; ///< period between outputs
     Data<bool> f_reinit; ///< flag enabling reinitialization of the output file at each timestep
-    Data<sofa::helper::vector<Spring> > d_springs;
+    Data<sofa::type::vector<Spring> > d_springs;
 
     /// bool to allow the display of the 2 parts of springs torsions
     Data<bool> d_showLawfulTorsion;
@@ -153,7 +145,7 @@ public:
     ///////////////////////////////////////////////////////////////////////////////
     core::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
     core::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
-    sofa::helper::vector<Spring> * getSprings() { return d_springs.beginEdit(); }
+    sofa::type::vector<Spring> * getSprings() { return d_springs.beginEdit(); }
 
     // -- Modifiers
     void clear(sofa::Size reserve=0) ;
@@ -165,9 +157,8 @@ public:
 
 };
 
-#if  !defined(SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_CPP)
-extern template class SOFA_SOFARIGID_API JointSpring<defaulttype::Rigid3Types>;
+#if !defined(SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_CPP)
 extern template class SOFA_SOFARIGID_API JointSpringForceField<defaulttype::Rigid3Types>;
-
 #endif
+
 } // namespace sofa::component::interactionforcefield

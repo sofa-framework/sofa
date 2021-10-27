@@ -23,13 +23,18 @@
 #define SOFA_STANDARDTEST_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD__TEST_CPP
 
 #include <SofaSimulationGraph/DAGSimulation.h>
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaMiscFem/TetrahedronHyperelasticityFEMForceField.h>
 
-#include <sofa/defaulttype/Vec.h>
+#include <SofaBase/initSofaBase.h>
+#include <SofaImplicitOdeSolver/initSofaImplicitOdeSolver.h>
+#include <SofaBoundaryCondition/initSofaBoundaryCondition.h>
+#include <SofaMiscForceField/initSofaMiscForceField.h>
+#include <SofaEngine/initSofaEngine.h>
+#include <sofa/type/Vec.h>
 
 #include <iostream>
 #include <fstream>
@@ -45,7 +50,7 @@ namespace sofa {
  */
 
 template <typename _ForceFieldType>
-struct TetrahedronHyperelasticityFEMForceField_params_test : public Sofa_test<typename _ForceFieldType::DataTypes::Real>
+struct TetrahedronHyperelasticityFEMForceField_params_test : public BaseSimulationTest
 {
     typedef _ForceFieldType ForceField;
     typedef typename ForceField::DataTypes DataTypes;
@@ -77,6 +82,14 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public Sofa_test<ty
     unsigned char flags; ///< testing options. (all by default). To be used with precaution.
     /// }
 
+    void SetUp() override
+    {
+        sofa::component::initSofaBase();
+        sofa::component::initSofaImplicitOdeSolver();
+        sofa::component::initSofaBoundaryCondition();
+        sofa::component::initSofaMiscForceField();
+        sofa::component::initSofaEngine();
+    }
 
     TetrahedronHyperelasticityFEMForceField_params_test()
         : sceneFilename(std::string(SOFAMISCFEM_TEST_SCENES_DIR) + "/" + "TetrahedronHyperelasticityFEMForceField_base.scn")
@@ -109,7 +122,7 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public Sofa_test<ty
 
         // Add a Mooney-Rivlin constitutive law
         typename sofa::component::forcefield::TetrahedronHyperelasticityFEMForceField<DataTypes>::SPtr FF = sofa::core::objectmodel::New< sofa::component::forcefield::TetrahedronHyperelasticityFEMForceField<DataTypes> >();
-        sofa::helper::vector<Real> param_vector;
+        sofa::type::vector<Real> param_vector;
         param_vector.resize(3);
         // Experimental data gave a deflexion of y=-0.11625 with the following parameters (C01 = 151065.460 ; C10 = 101709.668 1e07 ; D0 = 1e07)
         param_vector[0] = 151065.460;   // Monney parameter C01

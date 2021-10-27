@@ -62,7 +62,7 @@ void OglShaderVisualModel::pushTransformMatrix(float* matrix)
 {
     OglModel::pushTransformMatrix(matrix);
 
-    helper::vector<float> tempModelMatrixValue;
+    type::vector<float> tempModelMatrixValue;
 
     for ( unsigned int i = 0; i < 16; i++ )
         tempModelMatrixValue.push_back(matrix[i]);

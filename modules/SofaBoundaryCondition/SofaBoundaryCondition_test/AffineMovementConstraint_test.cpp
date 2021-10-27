@@ -19,24 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest;
 
-#include <SofaTest/Elasticity_test.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaDeformable/MeshSpringForceField.h>
 #include <SofaBoundaryCondition/AffineMovementConstraint.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/RandomGenerator.h>
+#include <SceneCreator/SceneCreator.h>
 
-#include <SofaTest/TestMessageHandler.h>
+#include <SofaBaseTopology_test/RegularGridNodeCreation.h>
 
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 namespace sofa {
 namespace {
 
 template <typename _DataTypes>
-struct AffineMovementConstraint_test : public Elasticity_test<_DataTypes>
+struct AffineMovementConstraint_test : public BaseSimulationTest, NumericTest<typename _DataTypes::Coord::value_type>
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
@@ -55,7 +61,7 @@ struct AffineMovementConstraint_test : public Elasticity_test<_DataTypes>
     /// Structure which contains current node and pointers to the mechanical object and the affine constraint
     PatchTestStruct<DataTypes> patchStruct;
     /// Tested Rotation: random rotation matrix
-    defaulttype::Mat<3,3,Real> testedRotation;
+    type::Mat<3,3,Real> testedRotation;
     /// Tested Translation: random translation
     Coord testedTranslation;
     /// Seed for random value
@@ -64,7 +70,7 @@ struct AffineMovementConstraint_test : public Elasticity_test<_DataTypes>
     sofa::helper::RandomGenerator randomGenerator;
 
      // Create the context for the scene
-     void SetUp()
+     void SetUp() override
      {
         // Init simulation
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
@@ -76,7 +82,7 @@ struct AffineMovementConstraint_test : public Elasticity_test<_DataTypes>
          seed = randomGenerator.random<long>(0,100);
 
          // Create a scene with a regular grid
-         patchStruct = this->createRegularGridScene(
+         patchStruct = sofa::createRegularGridScene<DataTypes>(
                         root,  // attached to the root node
                         Vec<3,SReal>(0,0,0), // Start point of regular grid
                         Vec<3,SReal>(1,1,0), // End point of regular grid

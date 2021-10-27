@@ -84,12 +84,12 @@ protected:
         Real pressure;
         Deriv normal;
         Real curvature;
-        sofa::helper::vector< std::pair<int,Real> > neighbors; ///< indice + r/h
-        sofa::helper::vector< std::pair<int,Real> > neighbors2; ///< indice + r/h
+        sofa::type::vector< std::pair<int,Real> > neighbors; ///< indice + r/h
+        sofa::type::vector< std::pair<int,Real> > neighbors2; ///< indice + r/h
     };
 
     Real m_lastTime;
-    sofa::helper::vector<Particle> m_particles;
+    sofa::type::vector<Particle> m_particles;
 
     typedef sofa::component::container::SpatialGridContainer<DataTypes> Grid;
 
@@ -147,7 +147,7 @@ protected:
         Real df;
     };
 
-    sofa::helper::vector<DForce> dforces;
+    sofa::type::vector<DForce> dforces;
 
 
     SPHFluidForceField();

@@ -23,7 +23,7 @@
 #include <SofaGeneralObjectInteraction/config.h>
 
 #include <sofa/core/behavior/PairInteractionProjectiveConstraintSet.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 
 namespace sofa::component::projectiveconstraintset
 {
@@ -45,8 +45,8 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    typedef helper::vector<unsigned int> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef type::vector<unsigned int> SetIndexArray;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
 
 public:
     SetIndex f_indices1; ///< Indices of the source points on the first model
@@ -55,19 +55,19 @@ public:
     Data<bool> f_freeRotations; ///< true to keep rotations free (only used for Rigid DOFs)
     Data<bool> f_lastFreeRotation; ///< true to keep rotation of the last attached point free (only used for Rigid DOFs)
     Data<bool> f_restRotations; ///< true to use rest rotations local offsets (only used for Rigid DOFs)
-    Data<defaulttype::Vector3> f_lastPos; ///< position at which the attach constraint should become inactive
-    Data<defaulttype::Vector3> f_lastDir; ///< direction from lastPos at which the attach coustraint should become inactive
+    Data<type::Vector3> f_lastPos; ///< position at which the attach constraint should become inactive
+    Data<type::Vector3> f_lastDir; ///< direction from lastPos at which the attach coustraint should become inactive
     Data<bool> f_clamp; ///< true to clamp particles at lastPos instead of freeing them.
     Data<Real> f_minDistance; ///< the constraint become inactive if the distance between the points attached is bigger than minDistance.
     Data< Real > d_positionFactor;      ///< IN: Factor applied to projection of position
     Data< Real > d_velocityFactor;      ///< IN: Factor applied to projection of velocity
     Data< Real > d_responseFactor;      ///< IN: Factor applied to projection of force/acceleration
-    Data< helper::vector<Real> > d_constraintFactor; ///< Constraint factor per pair of points constrained. 0 -> the constraint is released. 1 -> the constraint is fully constrained
+    Data< type::vector<Real> > d_constraintFactor; ///< Constraint factor per pair of points constrained. 0 -> the constraint is released. 1 -> the constraint is fully constrained
 
-    helper::vector<bool> activeFlags;
-    helper::vector<bool> constraintReleased;
-    helper::vector<Real> lastDist;
-    helper::vector<defaulttype::Quat> restRotations;
+    type::vector<bool> activeFlags;
+    type::vector<bool> constraintReleased;
+    type::vector<Real> lastDist;
+    type::vector<type::Quat<SReal>> restRotations;
 
 protected:
     AttachConstraint();

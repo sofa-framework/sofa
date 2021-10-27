@@ -62,9 +62,6 @@ public:
     virtual void setNodeData(simulation::Node* /*node*/, SReal* nodeData, const SReal* parentData);
     virtual void addNodeData(simulation::Node* /*node*/, SReal* parentData, const SReal* nodeData);
 
-    static void ForceMaskActivate( const sofa::type::vector<sofa::core::behavior::BaseMechanicalState*>& v );
-    static void ForceMaskDeactivate( const sofa::type::vector<sofa::core::behavior::BaseMechanicalState*>& v);
-
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     const char* getClassName() const override;
@@ -237,9 +234,13 @@ public:
     void printWriteVectors(core::behavior::BaseMechanicalState* mm);
     void printWriteVectors(simulation::Node* node, sofa::core::objectmodel::BaseObject* obj);
 protected:
-    sofa::helper::vector< sofa::core::ConstMultiVecId > readVector;
-    sofa::helper::vector< sofa::core::MultiVecId > writeVector;
+    sofa::type::vector< sofa::core::ConstMultiVecId > readVector;
+    sofa::type::vector< sofa::core::MultiVecId > writeVector;
 #endif
+
+private:
+    static const std::string fwdVisitorType;
+    static const std::string bwdVisitorType;
 };
 
 } // namespace sofa::simulation

@@ -19,99 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_INL
+#pragma once
 
 #include <SofaMiscFem/BoyceAndArruda.h>
 #include <SofaMiscFem/NeoHookean.h>
 #include <SofaMiscFem/MooneyRivlin.h>
 #include <SofaMiscFem/VerondaWestman.h>
 #include <SofaMiscFem/STVenantKirchhoff.h>
-#include <SofaMiscFem/HyperelasticMaterial.h>
 #include <SofaMiscFem/Costa.h>
 #include <SofaMiscFem/Ogden.h>
-#include "TetrahedronHyperelasticityFEMForceField.h"
+#include <SofaMiscFem/TetrahedronHyperelasticityFEMForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
-#include <fstream> // for reading the file
-#include <iostream> //for debugging
 #include <sofa/core/behavior/ForceField.inl>
 #include <SofaBaseTopology/TopologyData.inl>
-#include <algorithm>
-#include <iterator>
-namespace sofa
+
+namespace sofa::component::forcefield
 {
-namespace component
-{
-namespace forcefield
-{
+
 using namespace sofa::defaulttype;
 using namespace	sofa::component::topology;
 using namespace core::topology;
 
 
-template< class DataTypes >
-void TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronHandler::applyCreateFunction(Index tetrahedronIndex,
-                                                                                              TetrahedronRestInformation &tinfo,
-                                                                                              const Tetrahedron &,
-                                                                                              const sofa::helper::vector<Index> &,
-                                                                                              const sofa::helper::vector<double> &)
-{
-
-  if (ff) {
-      const helper::vector< Tetrahedron > &tetrahedronArray=ff->m_topology->getTetrahedra() ;
-      const std::vector< Edge> &edgeArray=ff->m_topology->getEdges() ;
-      unsigned int j;
-//      int k;
-      typename DataTypes::Real volume;
-      typename DataTypes::Coord point[4];
-      const typename DataTypes::VecCoord restPosition = ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-
-      ///describe the indices of the 4 tetrahedron vertices
-      const Tetrahedron &t= tetrahedronArray[tetrahedronIndex];
-      BaseMeshTopology::EdgesInTetrahedron te=ff->m_topology->getEdgesInTetrahedron(tetrahedronIndex);
-
-      // store the point position
-
-      for(j=0;j<4;++j)
-          point[j]=(restPosition)[t[j]];
-      /// compute 6 times the rest volume
-      volume=dot(cross(point[2]-point[0],point[3]-point[0]),point[1]-point[0]);
-      /// store the rest volume
-      tinfo.m_volScale =(Real)(1.0/volume);
-      tinfo.m_restVolume = fabs(volume/6);
-      // store shape vectors at the rest configuration
-      for(j=0;j<4;++j) {
-          if (!(j%2))
-              tinfo.m_shapeVector[j]=-cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/ volume;
-          else
-              tinfo.m_shapeVector[j]=cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/ volume;;
-      }
-
-
-      for(j=0;j<6;++j) {
-          Edge e=ff->m_topology->getLocalEdgesInTetrahedron(j);
-          int k=e[0];
-          //int l=e[1];
-          if (edgeArray[te[j]][0]!=t[k]) {
-              k=e[1];
-              //l=e[0];
-          }
-      }
-
-
-  }//end if(ff)
-
-}
-
 template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronHyperelasticityFEMForceField() 
     : m_topology(nullptr)
     , m_initialPoints(0)
     , m_updateMatrix(true)
-    , m_meshSaved( false)
     , d_stiffnessMatrixRegularizationWeight(initData(&d_stiffnessMatrixRegularizationWeight, (bool)false,"matrixRegularization","Regularization of the Stiffness Matrix (between true or false)"))
     , d_materialName(initData(&d_materialName,std::string("ArrudaBoyce"),"materialName","the name of the material to be used"))
     , d_parameterSet(initData(&d_parameterSet,"ParameterSet","The global parameters specifying the material"))
@@ -119,14 +54,13 @@ template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::T
     , m_tetrahedronInfo(initData(&m_tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
     , m_edgeInfo(initData(&m_edgeInfo, "edgeInfo", "Internal edge data"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_tetrahedronHandler(nullptr)
 {
-    m_tetrahedronHandler = new TetrahedronHandler(this,&m_tetrahedronInfo);
+
 }
 
 template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::~TetrahedronHyperelasticityFEMForceField()
 {
-    if(m_tetrahedronHandler) delete m_tetrahedronHandler;
+
 }
 
 template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataTypes>::init()
@@ -221,17 +155,15 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
         return;
     }
 
-    helper::vector<typename TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronRestInformation>& tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
+    type::vector<typename TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronRestInformation>& tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
 
     /// prepare to store info in the triangle array
     tetrahedronInf.resize(m_topology->getNbTetrahedra());
 
-    helper::vector<typename TetrahedronHyperelasticityFEMForceField<DataTypes>::EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
+    type::vector<typename TetrahedronHyperelasticityFEMForceField<DataTypes>::EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
 
     edgeInf.resize(m_topology->getNbEdges());
     m_edgeInfo.createTopologyHandler(m_topology);
-
-    m_edgeInfo.registerTopologicalData();
 
     m_edgeInfo.endEdit();
 
@@ -245,18 +177,71 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
     /// initialize the data structure associated with each tetrahedron
     for (Topology::TetrahedronID i=0;i<m_topology->getNbTetrahedra();++i)
     {
-        m_tetrahedronHandler->applyCreateFunction(i, tetrahedronInf[i],
-                                                m_topology->getTetrahedron(i),  (const helper::vector< Index > )0,
-                                                (const helper::vector< double >)0);
+        createTetrahedronRestInformation(i, tetrahedronInf[i],
+            m_topology->getTetrahedron(i),  (const type::vector< Index > )0,
+            (const type::vector< double >)0);
     }
 
     /// set the call back function upon creation of a tetrahedron
-    m_tetrahedronInfo.createTopologyHandler(m_topology,m_tetrahedronHandler);
-    m_tetrahedronInfo.registerTopologicalData();
-
+    m_tetrahedronInfo.createTopologyHandler(m_topology);
+    m_tetrahedronInfo.setCreationCallback([this](Index tetrahedronIndex, TetrahedronRestInformation& tetraInfo,
+        const core::topology::BaseMeshTopology::Tetrahedron& tetra,
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs)
+    {
+        createTetrahedronRestInformation(tetrahedronIndex, tetraInfo, tetra, ancestors, coefs);
+    });
     m_tetrahedronInfo.endEdit();
     //testDerivatives();
+}
 
+
+template< class DataTypes >
+void TetrahedronHyperelasticityFEMForceField<DataTypes>::createTetrahedronRestInformation(Index tetrahedronIndex,
+    TetrahedronRestInformation& tinfo,
+    const Tetrahedron&,
+    const sofa::type::vector<Index>&,
+    const sofa::type::vector<double>&)
+{
+
+    const type::vector< Tetrahedron >& tetrahedronArray = m_topology->getTetrahedra();
+    const std::vector< Edge>& edgeArray = m_topology->getEdges();
+    unsigned int j;
+    //      int k;
+    typename DataTypes::Real volume;
+    typename DataTypes::Coord point[4];
+    const typename DataTypes::VecCoord restPosition = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+
+    ///describe the indices of the 4 tetrahedron vertices
+    const Tetrahedron& t = tetrahedronArray[tetrahedronIndex];
+    BaseMeshTopology::EdgesInTetrahedron te = m_topology->getEdgesInTetrahedron(tetrahedronIndex);
+
+    // store the point position
+
+    for (j = 0; j < 4; ++j)
+        point[j] = (restPosition)[t[j]];
+    /// compute 6 times the rest volume
+    volume = dot(cross(point[2] - point[0], point[3] - point[0]), point[1] - point[0]);
+    /// store the rest volume
+    tinfo.m_volScale = (Real)(1.0 / volume);
+    tinfo.m_restVolume = fabs(volume / 6);
+    // store shape vectors at the rest configuration
+    for (j = 0; j < 4; ++j) {
+        if (!(j % 2))
+            tinfo.m_shapeVector[j] = -cross(point[(j + 2) % 4] - point[(j + 1) % 4], point[(j + 3) % 4] - point[(j + 1) % 4]) / volume;
+        else
+            tinfo.m_shapeVector[j] = cross(point[(j + 2) % 4] - point[(j + 1) % 4], point[(j + 3) % 4] - point[(j + 1) % 4]) / volume;;
+    }
+
+
+    for (j = 0; j < 6; ++j) {
+        Edge e = m_topology->getLocalEdgesInTetrahedron(j);
+        int k = e[0];
+        //int l=e[1];
+        if (edgeArray[te[j]][0] != t[k]) {
+            k = e[1];
+        }
+    }
 }
 
 template <class DataTypes> 
@@ -265,18 +250,10 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addForce(const core::Me
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
 
-
-    const bool printLog = this->f_printLog.getValue();
-    if (printLog && !m_meshSaved)
-    {
-        saveMesh( "D:/Steph/sofa-result.stl" );
-        printf( "Mesh saved.\n" );
-        m_meshSaved = true;
-    }
     unsigned int i=0,j=0,k=0,l=0;
     unsigned int nbTetrahedra=m_topology->getNbTetrahedra();
 
-    helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
+    type::vector<TetrahedronRestInformation>& tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
 
 
     TetrahedronRestInformation *tetInfo;
@@ -354,10 +331,10 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::updateTangentMatrix()
 {
     unsigned int i=0,j=0,k=0,l=0;
     unsigned int nbEdges=m_topology->getNbEdges();
-    const helper::vector< Edge> &edgeArray=m_topology->getEdges() ;
+    const type::vector< Edge> &edgeArray=m_topology->getEdges() ;
 
-    helper::vector<EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
-    helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
+    type::vector<EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
+    type::vector<TetrahedronRestInformation>& tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
 
     EdgeInformation *einfo;
     TetrahedronRestInformation *tetInfo;
@@ -393,7 +370,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::updateTangentMatrix()
             Matrix3  M, N;
             MatrixSym outputTensor;
             N.clear();
-            helper::vector<MatrixSym> inputTensor;
+            type::vector<MatrixSym> inputTensor;
             inputTensor.resize(3);
             //	MatrixSym input1,input2,input3,outputTensor;
             for(int m=0; m<3;m++){
@@ -443,9 +420,9 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addDForce(const core::M
 
     unsigned int l=0;
     unsigned int nbEdges=m_topology->getNbEdges();
-    const helper::vector< Edge> &edgeArray=m_topology->getEdges() ;
+    const type::vector< Edge> &edgeArray=m_topology->getEdges() ;
 
-    helper::vector<EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
+    type::vector<EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
 
     EdgeInformation *einfo;
 
@@ -500,8 +477,8 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addKToMatrix(sofa::defa
     }
 
     unsigned int nbEdges=m_topology->getNbEdges();
-    const helper::vector< Edge> &edgeArray=m_topology->getEdges() ;
-    helper::vector<EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
+    const type::vector< Edge> &edgeArray=m_topology->getEdges() ;
+    type::vector<EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
     EdgeInformation *einfo;
     unsigned int i,j,N0, N1, l;
         Index noeud0, noeud1;
@@ -532,7 +509,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addKToMatrix(sofa::defa
 template<class DataTypes>
 Mat<3,3,double> TetrahedronHyperelasticityFEMForceField<DataTypes>::getPhi(int TetrahedronIndex)
 {
-    helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
+    type::vector<TetrahedronRestInformation>& tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
 	TetrahedronRestInformation *tetInfo;
 	tetInfo=&tetrahedronInf[TetrahedronIndex];
     return tetInfo->m_deformationGradient;
@@ -575,7 +552,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::testDerivatives()
     Real avgError=0.0;
     int count=0;
 
-    helper::vector<TetrahedronRestInformation> &tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
+    type::vector<TetrahedronRestInformation> &tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
 
     for (unsigned int moveIdx=0; moveIdx<pos.size(); moveIdx++)
     {
@@ -679,54 +656,6 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::testDerivatives()
     d_deltaForceCalculated.endEdit();
 }
 
-
-template<class DataTypes>
-void TetrahedronHyperelasticityFEMForceField<DataTypes>::saveMesh( const char *filename )
-{
-    VecCoord pos( this->mstate->read(core::ConstVecCoordId::position())->getValue());
-    core::topology::BaseMeshTopology::SeqTriangles triangles = m_topology->getTriangles();
-    FILE *file = fopen( filename, "wb" );
-
-    if (!file) return;
-
-    // write header
-    char header[81];
-
-    size_t errResult;
-    errResult = fwrite( (void*)&(header[0]),1, 80, file );
-    unsigned int numTriangles = triangles.size();
-    errResult = fwrite( &numTriangles, 4, 1, file );
-    // write poly data
-    float vertex[3][3];
-    float normal[3] = { 1,0,0 };
-    short stlSeperator = 0;
-
-    for (unsigned int triangleId=0; triangleId<triangles.size(); triangleId++)
-    {
-        if (m_topology->getTetrahedraAroundTriangle( triangleId ).size()==1)
-        {
-            // surface triangle, save it
-            unsigned int p0 = m_topology->getTriangle( triangleId )[0];
-            unsigned int p1 = m_topology->getTriangle( triangleId )[1];
-            unsigned int p2 = m_topology->getTriangle( triangleId )[2];
-            for (int d=0; d<3; d++)
-            {
-                    vertex[0][d] = (float)pos[p0][d];
-                    vertex[1][d] = (float)pos[p1][d];
-                    vertex[2][d] = (float)pos[p2][d];
-            }
-            errResult = fwrite( (void*)&(normal[0]), sizeof(float), 3, file );
-            errResult = fwrite( (void*)&(vertex[0][0]), sizeof(float), 9, file );
-            errResult = fwrite( (void*)&(stlSeperator), 2, 1, file );
-        }
-    }
-    errResult -= errResult; // ugly trick to avoid warnings
-
-	fclose( file );
-}
-
-
-
 template<class DataTypes>
 void TetrahedronHyperelasticityFEMForceField<DataTypes>::computeBBox(const core::ExecParams*, bool onlyVisible)
 {
@@ -749,7 +678,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::computeBBox(const core:
         }
     }
 
-    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 
@@ -801,59 +730,59 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::draw(const core::visual
         points[3].push_back(pb);
     }
 
-    sofa::helper::types::RGBAColor color1;
-    sofa::helper::types::RGBAColor color2;
-    sofa::helper::types::RGBAColor color3;
-    sofa::helper::types::RGBAColor color4;
+    sofa::type::RGBAColor color1;
+    sofa::type::RGBAColor color2;
+    sofa::type::RGBAColor color3;
+    sofa::type::RGBAColor color4;
 
     std::string material = d_materialName.getValue();
     if (material=="ArrudaBoyce") {
-        color1 = sofa::helper::types::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::helper::types::RGBAColor(0.5,1.0,0.0,1.0);
-        color3 = sofa::helper::types::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::helper::types::RGBAColor(1.0,1.0,0.5,1.0);
+        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
+        color2 = sofa::type::RGBAColor(0.5,1.0,0.0,1.0);
+        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
+        color4 = sofa::type::RGBAColor(1.0,1.0,0.5,1.0);
     }
     else if (material=="StVenantKirchhoff"){
-        color1 = sofa::helper::types::RGBAColor(1.0,0.0,0.0,1.0);
-        color2 = sofa::helper::types::RGBAColor(1.0,0.0,0.5,1.0);
-        color3 = sofa::helper::types::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::helper::types::RGBAColor(1.0,0.5,1.0,1.0);
+        color1 = sofa::type::RGBAColor(1.0,0.0,0.0,1.0);
+        color2 = sofa::type::RGBAColor(1.0,0.0,0.5,1.0);
+        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
+        color4 = sofa::type::RGBAColor(1.0,0.5,1.0,1.0);
     }
     else if (material=="NeoHookean"){
-        color1 = sofa::helper::types::RGBAColor(0.0,1.0,1.0,1.0);
-        color2 = sofa::helper::types::RGBAColor(0.5,0.0,1.0,1.0);
-        color3 = sofa::helper::types::RGBAColor(1.0,0.0,1.0,1.0);
-        color4 = sofa::helper::types::RGBAColor(1.0,0.5,1.0,1.0);
+        color1 = sofa::type::RGBAColor(0.0,1.0,1.0,1.0);
+        color2 = sofa::type::RGBAColor(0.5,0.0,1.0,1.0);
+        color3 = sofa::type::RGBAColor(1.0,0.0,1.0,1.0);
+        color4 = sofa::type::RGBAColor(1.0,0.5,1.0,1.0);
     }
     else if (material=="MooneyRivlin"){
-        color1 = sofa::helper::types::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::helper::types::RGBAColor(0.0,1.0,0.5,1.0);
-        color3 = sofa::helper::types::RGBAColor(0.0,1.0,1.0,1.0);
-        color4 = sofa::helper::types::RGBAColor(0.5,1.0,1.0,1.0);
+        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
+        color2 = sofa::type::RGBAColor(0.0,1.0,0.5,1.0);
+        color3 = sofa::type::RGBAColor(0.0,1.0,1.0,1.0);
+        color4 = sofa::type::RGBAColor(0.5,1.0,1.0,1.0);
     }
     else if (material=="VerondaWestman"){
-        color1 = sofa::helper::types::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::helper::types::RGBAColor(0.5,1.0,0.0,1.0);
-        color3 = sofa::helper::types::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::helper::types::RGBAColor(1.0,1.0,0.5,1.0);
+        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
+        color2 = sofa::type::RGBAColor(0.5,1.0,0.0,1.0);
+        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
+        color4 = sofa::type::RGBAColor(1.0,1.0,0.5,1.0);
     }
     else if (material=="Costa"){
-        color1 = sofa::helper::types::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::helper::types::RGBAColor(0.5,1.0,0.0,1.0);
-        color3 = sofa::helper::types::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::helper::types::RGBAColor(1.0,1.0,0.5,1.0);
+        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
+        color2 = sofa::type::RGBAColor(0.5,1.0,0.0,1.0);
+        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
+        color4 = sofa::type::RGBAColor(1.0,1.0,0.5,1.0);
     }
     else if (material=="Ogden"){
-        color1 = sofa::helper::types::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::helper::types::RGBAColor(0.5,1.0,0.0,1.0);
-        color3 = sofa::helper::types::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::helper::types::RGBAColor(1.0,1.0,0.5,1.0);
+        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
+        color2 = sofa::type::RGBAColor(0.5,1.0,0.0,1.0);
+        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
+        color4 = sofa::type::RGBAColor(1.0,1.0,0.5,1.0);
     }
     else {
-        color1 = sofa::helper::types::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::helper::types::RGBAColor(0.5,1.0,0.0,1.0);
-        color3 = sofa::helper::types::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::helper::types::RGBAColor(1.0,1.0,0.5,1.0);
+        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
+        color2 = sofa::type::RGBAColor(0.5,1.0,0.0,1.0);
+        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
+        color4 = sofa::type::RGBAColor(1.0,1.0,0.5,1.0);
     }
 
 
@@ -868,10 +797,4 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::draw(const core::visual
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD_INL
+} // namespace sofa::component::forcefield

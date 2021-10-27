@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 
 #include <sofa/helper/BackTrace.h>
@@ -50,7 +50,7 @@ namespace sofa
 {
 
 template <typename _DataTypes>
-struct SphereROI_test : public Sofa_test<typename _DataTypes::Real>,
+struct SphereROI_test : public BaseSimulationTest,
         SphereROI<_DataTypes>
 {
     typedef SphereROI<_DataTypes> ThisClass;
@@ -62,7 +62,7 @@ struct SphereROI_test : public Sofa_test<typename _DataTypes::Real>,
     Node::SPtr m_node;
     typename ThisClass::SPtr m_thisObject;
 
-    void SetUp()
+    void SetUp() override
     {
         setSimulation(m_simu = new DAGSimulation());
         m_thisObject = New<ThisClass >();
@@ -163,7 +163,7 @@ struct SphereROI_test : public Sofa_test<typename _DataTypes::Real>,
 };
 
 using ::testing::Types;
-typedef Types<Vec3Types> DataTypes;
+typedef Types<sofa::defaulttype::Vec3Types> DataTypes;
 
 TYPED_TEST_SUITE(SphereROI_test, DataTypes);
 

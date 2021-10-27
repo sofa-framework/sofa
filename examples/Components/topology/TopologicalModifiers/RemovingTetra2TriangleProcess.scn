@@ -12,14 +12,15 @@
 
     <VisualStyle displayFlags="showBehaviorModels showVisual showWireframe hideForceFields" />
     <DefaultPipeline verbose="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <MeshGmshLoader name="loader" filename="mesh/cube_low_res.msh" />
 
     <Node name="TT">
         <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver iterations="25" name="linear solver" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1e-5" threshold="1e-5"/>
 
         <MechanicalObject src="@../loader" name="Volume" translation="4 0 0"/>
         <TetrahedronSetTopologyContainer name="Tetra_topo" tetrahedra="@../loader.tetrahedra" />
@@ -51,7 +52,7 @@
 
     <Node name="TT_2">
         <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver iterations="25" name="linear solver" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1e-5" threshold="1e-5" />
 
         <MechanicalObject src="@../loader" name="Volume" translation="-4 0 0"/>
         <TetrahedronSetTopologyContainer name="Tetra_topo" tetrahedra="@../loader.tetrahedra" />

@@ -25,10 +25,10 @@
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/helper/vector.h>
-#include <sofa/helper/Quater.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/vector.h>
+#include <sofa/type/Quat.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <type_traits>
@@ -61,16 +61,16 @@ public:
     typedef typename DataTypes::Real Real;
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
-    typedef helper::vector<Index> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
-    typedef defaulttype::Quat Quat;
-    typedef defaulttype::Vector3 Vector3;
+    typedef type::vector<Index> SetIndexArray;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
+    typedef type::Quat<SReal> Quat;
+    typedef type::Vector3 Vector3;
 
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
     typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
 
     static const auto CoordSize = Coord::total_size;
-    typedef defaulttype::Mat<3,3,Real> RotationMatrix;
+    typedef type::Mat<3,3,Real> RotationMatrix;
 
 protected:
     AffineMovementConstraintInternalData<DataTypes> *data;
@@ -140,33 +140,12 @@ public:
     /// Draw the constrained points (= border mesh points)
      void draw(const core::visual::VisualParams* vparams) override;
 
-     class FCPointHandler : public component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
-    {
-    public:
-        typedef typename AffineMovementConstraint<DataTypes>::SetIndexArray SetIndexArray;
-
-        FCPointHandler(AffineMovementConstraint<DataTypes>* _fc, component::topology::PointSubsetData<SetIndexArray>* _data)
-            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
-
-        using component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >::applyDestroyFunction;
-        void applyDestroyFunction(Index /*index*/, core::objectmodel::Data<value_type>& /*T*/);
-
-        bool applyTestCreateFunction(Index /*index*/,
-                const sofa::helper::vector< Index > & /*ancestors*/,
-                const sofa::helper::vector< double > & /*coefs*/);
-    protected:
-        AffineMovementConstraint<DataTypes> *fc;
-    };
-
 protected:
     
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
 
 private:
-
-    /// Handler for subset Data
-    FCPointHandler* m_pointHandler;
 
     /// Initialize initial positions
     void initializeInitialPositions (const SetIndexArray & indices, DataVecCoord& xData, VecCoord& x0);

@@ -23,7 +23,6 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaPreconditioner/ShewchukPCGLinearSolver.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/helper/system/thread/CTime.h>
@@ -140,7 +139,7 @@ void ShewchukPCGLinearSolver<Matrix,Vector>::handleEvent(sofa::core::objectmodel
     /// this event shoul be launch before the addKToMatrix
     if (sofa::simulation::AnimateBeginEvent::checkEventType(event)) {
         newton_iter = 0;
-        std::map < std::string, sofa::helper::vector<double> >& graph = * f_graph.beginEdit();
+        std::map < std::string, sofa::type::vector<double> >& graph = * f_graph.beginEdit();
         graph.clear();
     }
 }
@@ -151,13 +150,13 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
 {
     sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::solve");
 
-    std::map < std::string, sofa::helper::vector<double> >& graph = * f_graph.beginEdit();
-//    sofa::helper::vector<double>& graph_error = graph["Error"];
+    std::map < std::string, sofa::type::vector<double> >& graph = * f_graph.beginEdit();
+//    sofa::type::vector<double>& graph_error = graph["Error"];
 
     newton_iter++;
     char name[256];
     sprintf(name,"Error %d",newton_iter);
-    sofa::helper::vector<double>& graph_error = graph[std::string(name)];
+    sofa::type::vector<double>& graph_error = graph[std::string(name)];
 
     const core::ExecParams* params = core::execparams::defaultInstance();
     typename Inherit::TempVectorContainer vtmp(this, params, M, x, b);

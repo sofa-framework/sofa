@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <cassert>
 #include <iostream>
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
 #include <limits>
 #include <sofa/simulation/Node.h>
 
@@ -37,7 +37,8 @@ namespace sofa::component::forcefield
 {
 
 using sofa::core::objectmodel::ComponentState ;
-using sofa::defaulttype::Vec ;
+using namespace sofa::type; 
+using sofa::type::Vec ;
 
 template<class DataTypes>
 PlaneForceField<DataTypes>::PlaneForceField() :
@@ -47,9 +48,9 @@ PlaneForceField<DataTypes>::PlaneForceField() :
     , d_damping(initData(&d_damping, (Real)5, "damping", "force damping. (default=5)"))
     , d_maxForce(initData(&d_maxForce, (Real)0, "maxForce", "if non-null , the max force that can be applied to the object. (default=0)"))
     , d_bilateral( initData(&d_bilateral, false, "bilateral", "if true the plane force field is applied on both sides. (default=false)"))
-    , d_localRange( initData(&d_localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+    , d_localRange( initData(&d_localRange, type::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
     , d_drawIsEnabled(initData(&d_drawIsEnabled, false, "showPlane", "enable/disable drawing of plane. (default=false)"))
-    , d_drawColor(initData(&d_drawColor, sofa::helper::types::RGBAColor(0.0f,.5f,.2f,1.0f), "planeColor", "plane color. (default=[0.0,0.5,0.2,1.0])"))
+    , d_drawColor(initData(&d_drawColor, sofa::type::RGBAColor(0.0f,.5f,.2f,1.0f), "planeColor", "plane color. (default=[0.0,0.5,0.2,1.0])"))
     , d_drawSize(initData(&d_drawSize, (Real)10.0f, "showPlaneSize", "plane display size if draw is enabled. (default=10)"))
 {
     Deriv n;
@@ -251,9 +252,9 @@ void PlaneForceField<DataTypes>::rotate( Deriv axe, Real angle )
     if(this->d_componentState.getValue() != ComponentState::Valid)
         return ;
 
-    defaulttype::Vec3d axe3d(1,1,1); axe3d = DataTypes::getDPos(axe);
-    defaulttype::Vec3d normal3d; normal3d = d_planeNormal.getValue();
-    defaulttype::Vec3d v = normal3d.cross(axe3d);
+    type::Vec3d axe3d(1,1,1); axe3d = DataTypes::getDPos(axe);
+    type::Vec3d normal3d; normal3d = d_planeNormal.getValue();
+    type::Vec3d v = normal3d.cross(axe3d);
     if (v.norm2() < 1.0e-10) return;
     v.normalize();
     v = normal3d * cos ( angle ) + v * sin ( angle );
@@ -285,28 +286,28 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
 
     helper::ReadAccessor<VecCoord> p1 = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    defaulttype::Vec3d normal; normal = d_planeNormal.getValue();
+    type::Vec3d normal; normal = d_planeNormal.getValue();
 
     // find a first vector inside the plane
-    defaulttype::Vec3d v1;
-    if( 0.0 != normal[0] ) v1 = defaulttype::Vec3d(-normal[1]/normal[0], 1.0, 0.0);
-    else if ( 0.0 != normal[1] ) v1 = defaulttype::Vec3d(1.0, -normal[0]/normal[1],0.0);
-    else if ( 0.0 != normal[2] ) v1 = defaulttype::Vec3d(1.0, 0.0, -normal[0]/normal[2]);
+    type::Vec3d v1;
+    if( 0.0 != normal[0] ) v1 = type::Vec3d(-normal[1]/normal[0], 1.0, 0.0);
+    else if ( 0.0 != normal[1] ) v1 = type::Vec3d(1.0, -normal[0]/normal[1],0.0);
+    else if ( 0.0 != normal[2] ) v1 = type::Vec3d(1.0, 0.0, -normal[0]/normal[2]);
     v1.normalize();
 
     // find a second vector inside the plane and orthogonal to the first
-    defaulttype::Vec3d v2;
+    type::Vec3d v2;
     v2 = v1.cross(normal);
     v2.normalize();
 
-    defaulttype::Vec3d center = normal*d_planeD.getValue();
-    defaulttype::Vec3d corners[4];
+    type::Vec3d center = normal*d_planeD.getValue();
+    type::Vec3d corners[4];
     corners[0] = center-v1*size-v2*size;
     corners[1] = center+v1*size-v2*size;
     corners[2] = center+v1*size+v2*size;
     corners[3] = center-v1*size+v2*size;
 
-    std::vector< defaulttype::Vector3 > points;
+    std::vector< type::Vector3 > points;
 
     points.push_back(corners[0]);
     points.push_back(corners[1]);
@@ -319,10 +320,10 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
 
     vparams->drawTool()->setPolygonMode(2,false); //Cull Front face
 
-    vparams->drawTool()->drawTriangles(points, sofa::helper::types::RGBAColor(d_drawColor.getValue()[0],d_drawColor.getValue()[1],d_drawColor.getValue()[2],0.5));
+    vparams->drawTool()->drawTriangles(points, sofa::type::RGBAColor(d_drawColor.getValue()[0],d_drawColor.getValue()[1],d_drawColor.getValue()[2],0.5));
     vparams->drawTool()->setPolygonMode(0,false); //No Culling
 
-    std::vector< defaulttype::Vector3 > pointsLine;
+    std::vector< type::Vector3 > pointsLine;
 
     // lines for points penetrating the plane
     unsigned int ibegin = 0;
@@ -334,7 +335,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
     if (d_localRange.getValue()[1] >= 0 && (unsigned int)d_localRange.getValue()[1]+1 < iend)
         iend = d_localRange.getValue()[1]+1;
 
-    defaulttype::Vector3 point1,point2;
+    type::Vector3 point1,point2;
     for (unsigned int i=ibegin; i<iend; i++)
     {
         Real d = DataTypes::getCPos(p1[i])*d_planeNormal.getValue()-d_planeD.getValue();
@@ -348,7 +349,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
             pointsLine.push_back(point2);
         }
     }
-    vparams->drawTool()->drawLines(pointsLine, 1, sofa::helper::types::RGBAColor(1,0,0,1));
+    vparams->drawTool()->drawLines(pointsLine, 1, sofa::type::RGBAColor(1,0,0,1));
     vparams->drawTool()->restoreLastState();
 }
 
@@ -365,23 +366,23 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
-    defaulttype::Vec3d normal; normal = d_planeNormal.getValue();
+    type::Vec3d normal; normal = d_planeNormal.getValue();
     SReal size=d_drawSize.getValue();
 
     // find a first vector inside the plane
-    defaulttype::Vec3d v1;
-    if( 0.0 != normal[0] ) v1 = defaulttype::Vec3d(-normal[1]/normal[0], 1.0, 0.0);
-    else if ( 0.0 != normal[1] ) v1 = defaulttype::Vec3d(1.0, -normal[0]/normal[1],0.0);
-    else if ( 0.0 != normal[2] ) v1 = defaulttype::Vec3d(1.0, 0.0, -normal[0]/normal[2]);
+    type::Vec3d v1;
+    if( 0.0 != normal[0] ) v1 = type::Vec3d(-normal[1]/normal[0], 1.0, 0.0);
+    else if ( 0.0 != normal[1] ) v1 = type::Vec3d(1.0, -normal[0]/normal[1],0.0);
+    else if ( 0.0 != normal[2] ) v1 = type::Vec3d(1.0, 0.0, -normal[0]/normal[2]);
     v1.normalize();
 
     // find a second vector inside the plane and orthogonal to the first
-    defaulttype::Vec3d v2;
+    type::Vec3d v2;
     v2 = v1.cross(normal);
     v2.normalize();
 
-    defaulttype::Vec3d center = normal*d_planeD.getValue();
-    defaulttype::Vec3d corners[4];
+    type::Vec3d center = normal*d_planeD.getValue();
+    type::Vec3d corners[4];
     corners[0] = center-v1*size-v2*size;
     corners[1] = center+v1*size-v2*size;
     corners[2] = center+v1*size+v2*size;
@@ -395,7 +396,7 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
             if (corners[i][c] < minBBox[c]) minBBox[c] = (Real)corners[i][c];
         }
     }
-    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 } // namespace sofa::component::forcefield

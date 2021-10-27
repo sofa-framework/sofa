@@ -51,18 +51,14 @@ void MechanicalAddMBKdxVisitor::bwdMechanicalMapping(simulation::Node* /*node*/,
 {
     if (accumulate)
     {
-        ForceMaskActivate(map->getMechFrom() );
-        ForceMaskActivate(map->getMechTo() );
-
         map->applyJT(mparams, res, res);
         if( mparams->kFactor() ) map->applyDJT(mparams, res, res);
-        ForceMaskDeactivate( map->getMechTo() );
     }
 }
 
 void MechanicalAddMBKdxVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
 {
-    mm->forceMask.activate(false);
+    SOFA_UNUSED(mm);
 }
 
-}
+} // namespace sofa::simulation::mechanicalvisitor

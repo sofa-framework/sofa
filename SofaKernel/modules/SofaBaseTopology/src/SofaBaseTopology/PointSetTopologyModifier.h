@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaBaseTopology/config.h>
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/core/topology/BaseTopology.h>
 
 namespace sofa::component::topology
@@ -66,8 +66,8 @@ public:
     * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
     * \see MechanicalObject::renumberValues
     */
-    virtual void renumberPoints(const sofa::helper::vector< PointID >& index,
-        const sofa::helper::vector< PointID >& inv_index,
+    virtual void renumberPoints(const sofa::type::vector< PointID >& index,
+        const sofa::type::vector< PointID >& inv_index,
         const bool renumberDOF = true);
 
     
@@ -82,8 +82,8 @@ public:
     * \sa addPoints
     */
     virtual void addPoints(const sofa::Size nPoints,
-                           const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
-                           const sofa::helper::vector< sofa::helper::vector< SReal > >& coefs,
+                           const sofa::type::vector< sofa::type::vector< PointID > >& ancestors,
+                           const sofa::type::vector< sofa::type::vector< SReal > >& coefs,
                            const bool addDOF = true);
 
     /** \brief Add a set of points according to their ancestors topology elements
@@ -91,7 +91,7 @@ public:
      * \sa addPoints
      */
     virtual void addPoints( const sofa::Size nPoints,
-                    const sofa::helper::vector< core::topology::PointAncestorElem >& ancestorElems,
+                    const sofa::type::vector< core::topology::PointAncestorElem >& ancestorElems,
                     const bool addDOF = true);
 
 
@@ -99,10 +99,10 @@ public:
     * @param indices: the indices of the point to remove fromt his topology
     * @param removeDOF: Notify if the DOF from the mechanical container need to be updated as well.
     */
-    virtual void removePoints(sofa::helper::vector< PointID >& indices, const bool removeDOF = true);
+    virtual void removePoints(sofa::type::vector< PointID >& indices, const bool removeDOF = true);
 
 
-    /// This Method has been removed in PR #1860 as it was never used nor supported
+    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1860)", "v21.06 (PR#1860)", "This method was never used nor supported.")
     void propagateTopologicalChangesWithoutReset() = delete;
 
 
@@ -124,7 +124,7 @@ public:
 
     /** \brief Generic method to remove a list of items.
     */
-    void removeItems(const sofa::helper::vector<  PointID  >& /*items*/) override
+    void removeItems(const sofa::type::vector<  PointID  >& /*items*/) override
     { }
 
 protected:
@@ -139,8 +139,8 @@ protected:
     * \sa addPointsProcess
     */
     void addPointsWarning(const sofa::Size nPoints,
-        const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< SReal > >& coefs,
+        const sofa::type::vector< sofa::type::vector< PointID > >& ancestors,
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs,
         const bool addDOF = true);
 
     /** \brief Sends a message to warn that some points were added in this topology.
@@ -148,7 +148,7 @@ protected:
     * \sa addPointsProcess
     */
     void addPointsWarning(const sofa::Size nPoints,
-        const sofa::helper::vector< core::topology::PointAncestorElem >& ancestorElems,
+        const sofa::type::vector< core::topology::PointAncestorElem >& ancestorElems,
         const bool addDOF = true);
 
 
@@ -164,7 +164,7 @@ protected:
     * \sa removePointsProcess
     */
     // side effect: indices are sorted first
-    void removePointsWarning(/*const*/ sofa::helper::vector< PointID >& indices,
+    void removePointsWarning(/*const*/ sofa::type::vector< PointID >& indices,
         const bool removeDOF = true);
 
     /** \brief Remove a subset of points
@@ -177,7 +177,7 @@ protected:
     * @param indices is not const because it is actually sorted from the highest index to the lowest one.
     * @param removeDOF if true the points are actually deleted from the mechanical object's state vectors
     */
-    virtual void removePointsProcess(const sofa::helper::vector< PointID >& indices,
+    virtual void removePointsProcess(const sofa::type::vector< PointID >& indices,
         const bool removeDOF = true);
 
 
@@ -188,9 +188,9 @@ protected:
      * @param coefs : barycoef to locate new coord relatively to ancestors.
      * @moveDOF bool allowing the move (default true)
      */
-    virtual void movePointsProcess(const sofa::helper::vector < PointID >& id,
-        const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
-        const sofa::helper::vector< sofa::helper::vector< SReal > >& coefs,
+    virtual void movePointsProcess(const sofa::type::vector< PointID >& id,
+        const sofa::type::vector< sofa::type::vector< PointID > >& ancestors,
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs,
         const bool moveDOF = true);
 
 
@@ -198,8 +198,8 @@ protected:
     *
     * \sa renumberPointsProcess
     */
-    void renumberPointsWarning(const sofa::helper::vector< PointID >& index,
-        const sofa::helper::vector< PointID >& inv_index,
+    void renumberPointsWarning(const sofa::type::vector< PointID >& index,
+        const sofa::type::vector< PointID >& inv_index,
         const bool renumberDOF = true);
 
     /** \brief Reorder this topology.
@@ -207,8 +207,8 @@ protected:
     * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
     * \see MechanicalObject::renumberValues
     */
-    virtual void renumberPointsProcess(const sofa::helper::vector< PointID >& index,
-        const sofa::helper::vector< PointID >&/*inv_index*/,
+    virtual void renumberPointsProcess(const sofa::type::vector< PointID >& index,
+        const sofa::type::vector< PointID >&/*inv_index*/,
         const bool renumberDOF = true);
 
 

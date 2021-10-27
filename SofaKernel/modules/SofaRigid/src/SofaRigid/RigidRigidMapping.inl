@@ -177,16 +177,16 @@ void RigidRigidMapping<TIn, TOut>::clear()
 template <class TIn, class TOut>
 void RigidRigidMapping<TIn, TOut>::setRepartition(sofa::Size value)
 {
-    helper::vector<sofa::Size>& rep = *this->repartition.beginEdit();
+    type::vector<sofa::Size>& rep = *this->repartition.beginEdit();
     rep.clear();
     rep.push_back(value);
     this->repartition.endEdit();
 }
 
 template <class TIn, class TOut>
-void RigidRigidMapping<TIn, TOut>::setRepartition(sofa::helper::vector<sofa::Size> values)
+void RigidRigidMapping<TIn, TOut>::setRepartition(sofa::type::vector<sofa::Size> values)
 {
-    helper::vector<sofa::Size>& rep = *this->repartition.beginEdit();
+    type::vector<sofa::Size>& rep = *this->repartition.beginEdit();
     rep.clear();
     rep.reserve(values.size());
     auto it = values.begin();
@@ -290,10 +290,8 @@ void RigidRigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mpara
             v = getVCenter(parentVelocities[index.getValue()]);
             omega = getVOrientation(parentVelocities[index.getValue()]);
 
-            for( size_t i=0 ; i<this->maskTo->size() ; ++i)
+            for( size_t i=0 ; i< childVelocities.size() ; ++i)
             {
-                if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
-
                 getVCenter(childVelocities[i]) =  v + cross(omega,pointsR0[i].getCenter());
                 getVOrientation(childVelocities[i]) = omega;
             }
@@ -303,10 +301,8 @@ void RigidRigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mpara
             v = getVCenter(parentVelocities[parentVelocities.size() - 1 - index.getValue()]);
             omega = getVOrientation(parentVelocities[parentVelocities.size() - 1 - index.getValue()]);
 
-            for( size_t i=0 ; i<this->maskTo->size() ; ++i)
+            for( size_t i=0 ; i< childVelocities.size() ; ++i)
             {
-                if( !this->maskTo->getEntry(i) ) continue;
-
                 getVCenter(childVelocities[i]) =  v + cross(omega,pointsR0[i].getCenter());
                 getVOrientation(childVelocities[i]) = omega;
             }
@@ -323,8 +319,6 @@ void RigidRigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mpara
 
             for(sofa::Index ito=0; ito<val; ito++,cptchildVelocities++)
             {
-                if( this->maskTo->isActivated() && !this->maskTo->getEntry(cptchildVelocities) ) continue;
-
                 getVCenter(childVelocities[cptchildVelocities]) =  v + cross(omega,(pointsR0[cptchildVelocities]).getCenter());
                 getVOrientation(childVelocities[cptchildVelocities]) = omega;
             }
@@ -345,8 +339,6 @@ void RigidRigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mpara
 
             for(sofa::Index ito=0; ito<repartition.getValue()[ifrom]; ito++,cptchildVelocities++)
             {
-                if( this->maskTo->isActivated() && !this->maskTo->getEntry(cptchildVelocities) ) continue;
-
                 getVCenter(childVelocities[cptchildVelocities]) =  v + cross(omega,(pointsR0[cptchildVelocities]).getCenter());
                 getVOrientation(childVelocities[cptchildVelocities]) = omega;
             }
@@ -368,16 +360,11 @@ void RigidRigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mpar
     sofa::Index childIndex = 0;
     sofa::Index parentIndex;
 
-    ForceMask& mask = *this->maskFrom;
-
-
     switch(repartition.getValue().size())
     {
     case 0 :
-        for( ; childIndex<this->maskTo->size() ; ++childIndex)
+        for( ; childIndex< childForces.size() ; ++childIndex)
         {
-            if( !this->maskTo->getEntry(childIndex) ) continue;
-
             // out = Jt in
             // Jt = [ I     ]
             //      [ -OM^t ]
@@ -391,7 +378,6 @@ void RigidRigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mpar
         parentIndex = indexFromEnd.getValue() ? sofa::Index(parentForces.size()-1-index.getValue()) : index.getValue();
         getVCenter(parentForces[parentIndex]) += v;
         getVOrientation(parentForces[parentIndex]) += omega;
-        mask.insertEntry(parentIndex);
         break;
     case 1 :
         childrenPerParent = repartition.getValue()[0];
@@ -401,15 +387,12 @@ void RigidRigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mpar
             omega=Vector();
             for(sofa::Index i=0; i<childrenPerParent; i++, childIndex++)
             {
-                if( !this->maskTo->getEntry(childIndex) ) continue;
-
                 Vector f = getVCenter(childForces[childIndex]);
                 v += f;
                 omega += getVOrientation(childForces[childIndex]) + cross(f,-pointsR0[childIndex].getCenter());
             }
             getVCenter(parentForces[parentIndex]) += v;
             getVOrientation(parentForces[parentIndex]) += omega;
-            mask.insertEntry(parentIndex);
         }
         break;
     default :
@@ -424,15 +407,12 @@ void RigidRigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mpar
             omega=Vector();
             for(sofa::Index i=0; i<repartition.getValue()[parentIndex]; i++, childIndex++)
             {
-                if( !this->maskTo->getEntry(childIndex) ) continue;
-
                 Vector f = getVCenter(childForces[childIndex]);
                 v += f;
                 omega += getVOrientation(childForces[childIndex]) + cross(f,-pointsR0[childIndex].getCenter());
             }
             getVCenter(parentForces[parentIndex]) += v;
             getVOrientation(parentForces[parentIndex]) += omega;
-            mask.insertEntry(parentIndex);
         }
         break;
     }
@@ -457,10 +437,8 @@ void RigidRigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparam
     {
     case 0 :
         parentIndex = indexFromEnd.getValue() ? sofa::Index(parentForces.size()-1-index.getValue()) : index.getValue();
-        for( ; childIndex<this->maskTo->size() ; ++childIndex)
+        for( ; childIndex< childForces.size() ; ++childIndex)
         {
-            if( !this->maskTo->getEntry(childIndex) ) continue;
-
             typename TIn::AngularVector& parentTorque = getVOrientation(parentForces[parentIndex]);
             const typename TIn::AngularVector& parentRotation = getVOrientation(parentDisplacements[parentIndex]);
             parentTorque -=  TIn::crosscross( getLinear(childForces[childIndex]), parentRotation, pointsR0[childIndex].getCenter()) * kfactor;
@@ -473,8 +451,6 @@ void RigidRigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparam
         {            
             for( size_t i=0 ; i<childrenPerParent ; ++i, ++childIndex)
             {
-                if( !this->maskTo->getEntry(childIndex) ) continue;
-
                 typename TIn::AngularVector& parentTorque = getVOrientation(parentForces[parentIndex]);
                 const typename TIn::AngularVector& parentRotation = getVOrientation(parentDisplacements[parentIndex]);
                 parentTorque -=  TIn::crosscross( getLinear(childForces[childIndex]), parentRotation, pointsR0[childIndex].getCenter()) * kfactor;
@@ -491,8 +467,6 @@ void RigidRigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparam
         {
             for( size_t i=0 ; i<repartition.getValue()[parentIndex] ; i++, childIndex++)
             {
-                if( !this->maskTo->getEntry(childIndex) ) continue;
-
                 typename TIn::AngularVector& parentTorque = getVOrientation(parentForces[parentIndex]);
                 const typename TIn::AngularVector& parentRotation = getVOrientation(parentDisplacements[parentIndex]);
                 parentTorque -=  TIn::crosscross( getLinear(childForces[childIndex]), parentRotation, pointsR0[childIndex].getCenter()) * kfactor;
@@ -742,7 +716,7 @@ void RigidRigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparam
 	if (!getShow(this,vparams)) return;
 
     const typename Out::VecCoord& x =this->toModel->read(core::ConstVecCoordId::position())->getValue();
-    const defaulttype::Vector3& sizes = defaulttype::Vector3(axisLength.getValue(), axisLength.getValue(), axisLength.getValue());
+    const type::Vector3& sizes = type::Vector3(axisLength.getValue(), axisLength.getValue(), axisLength.getValue());
     for (sofa::Index i=0; i<x.size(); i++)
     {
         vparams->drawTool()->drawFrame(x[i].getCenter(), x[i].getOrientation(), sizes);

@@ -87,32 +87,32 @@ const typename Multi2Mapping<In1,In2,Out>::VecToModels& Multi2Mapping<In1,In2,Ou
 }
 
 template< class In1, class In2, class Out >
-helper::vector<BaseState*> Multi2Mapping<In1,In2,Out>::getFrom()
+type::vector<BaseState*> Multi2Mapping<In1,In2,Out>::getFrom()
 {
     const VecFromModels1& models1 = getFromModels1();
     const VecFromModels2& models2 = getFromModels2();
     size_t size1 = models1.size();
     size_t size2 = models2.size();
-    helper::vector<BaseState*> baseModels(size1+size2);
+    type::vector<BaseState*> baseModels(size1+size2);
     for (size_t i=0; i<size1; ++i) baseModels[      i] = models1[i].ptr.get();
     for (size_t i=0; i<size2; ++i) baseModels[size1+i] = models2[i].ptr.get();
     return baseModels;
 }
 
 template< class In1, class In2, class Out >
-helper::vector<BaseState* > Multi2Mapping<In1,In2,Out>::getTo()
+type::vector<BaseState* > Multi2Mapping<In1,In2,Out>::getTo()
 {
     const VecToModels& models = getToModels();
     size_t size = models.size();
-    helper::vector<BaseState*> baseModels(size);
+    type::vector<BaseState*> baseModels(size);
     for (size_t i=0; i<size; ++i) baseModels[i] = models[i].ptr.get();
     return baseModels;
 }
 
 template < class In1, class In2,class Out>
-helper::vector<behavior::BaseMechanicalState*> Multi2Mapping<In1,In2,Out>::getMechFrom()
+type::vector<behavior::BaseMechanicalState*> Multi2Mapping<In1,In2,Out>::getMechFrom()
 {
-    helper::vector<behavior::BaseMechanicalState*> mechFromVec;
+    type::vector<behavior::BaseMechanicalState*> mechFromVec;
     for (size_t i=0 ; i<this->fromModels1.size() ; i++)
     {
         behavior::BaseMechanicalState* meshFrom = this->fromModels1.get((unsigned)i)->toBaseMechanicalState();
@@ -129,9 +129,9 @@ helper::vector<behavior::BaseMechanicalState*> Multi2Mapping<In1,In2,Out>::getMe
 }
 
 template < class In1, class In2,class Out>
-helper::vector<behavior::BaseMechanicalState*> Multi2Mapping<In1,In2,Out>::getMechTo()
+type::vector<behavior::BaseMechanicalState*> Multi2Mapping<In1,In2,Out>::getMechTo()
 {
-    helper::vector<behavior::BaseMechanicalState*> mechToVec;
+    type::vector<behavior::BaseMechanicalState*> mechToVec;
     for (size_t i=0 ; i<this->toModels.size() ; i++)
     {
         behavior::BaseMechanicalState* meshTo = this->toModels.get((unsigned)i)->toBaseMechanicalState();
@@ -144,28 +144,24 @@ helper::vector<behavior::BaseMechanicalState*> Multi2Mapping<In1,In2,Out>::getMe
 template < class In1, class In2,class Out>
 void Multi2Mapping<In1,In2,Out>::apply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos )
 {
-    helper::vector<OutDataVecCoord*> vecOutPos;
+    type::vector<OutDataVecCoord*> vecOutPos;
     getVecOutCoord(outPos, vecOutPos);
-    helper::vector<const In1DataVecCoord*> vecIn1Pos;
+    type::vector<const In1DataVecCoord*> vecIn1Pos;
     getConstVecIn1Coord(inPos, vecIn1Pos);
-    helper::vector<const In2DataVecCoord*> vecIn2Pos;
+    type::vector<const In2DataVecCoord*> vecIn2Pos;
     getConstVecIn2Coord(inPos, vecIn2Pos);
 
     this->apply(mparams, vecOutPos, vecIn1Pos, vecIn2Pos);
-
-#ifdef SOFA_USE_MASK
-    this->m_forceMaskNewStep = true;
-#endif
 }
 
 template < class In1, class In2,class Out>
 void Multi2Mapping<In1,In2,Out>::applyJ (const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel )
 {
-    helper::vector<OutDataVecDeriv*> vecOutVel;
+    type::vector<OutDataVecDeriv*> vecOutVel;
     getVecOutDeriv(outVel, vecOutVel);
-    helper::vector<const In1DataVecDeriv*> vecIn1Vel;
+    type::vector<const In1DataVecDeriv*> vecIn1Vel;
     getConstVecIn1Deriv(inVel, vecIn1Vel);
-    helper::vector<const In2DataVecDeriv*> vecIn2Vel;
+    type::vector<const In2DataVecDeriv*> vecIn2Vel;
     getConstVecIn2Deriv(inVel, vecIn2Vel);
     this->applyJ(mparams, vecOutVel, vecIn1Vel, vecIn2Vel);
 }
@@ -173,33 +169,25 @@ void Multi2Mapping<In1,In2,Out>::applyJ (const MechanicalParams* mparams, MultiV
 template < class In1, class In2,class Out>
 void Multi2Mapping<In1,In2,Out>::applyJT (const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce )
 {
-    helper::vector<In1DataVecDeriv*> vecOut1Force;
+    type::vector<In1DataVecDeriv*> vecOut1Force;
     getVecIn1Deriv(inForce, vecOut1Force);
-    helper::vector<In2DataVecDeriv*> vecOut2Force;
+    type::vector<In2DataVecDeriv*> vecOut2Force;
     getVecIn2Deriv(inForce, vecOut2Force);
 
-    helper::vector<const OutDataVecDeriv*> vecInForce;
+    type::vector<const OutDataVecDeriv*> vecInForce;
     getConstVecOutDeriv(outForce, vecInForce);
     this->applyJT(mparams, vecOut1Force, vecOut2Force, vecInForce);
-
-#ifdef SOFA_USE_MASK
-    if( this->m_forceMaskNewStep )
-    {
-        this->m_forceMaskNewStep = false;
-        updateForceMask();
-    }
-#endif
 }
 
 template < class In1, class In2,class Out>
 void Multi2Mapping<In1,In2,Out>::applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst )
 {
-    helper::vector<In1DataMatrixDeriv*> matOut1Const;
+    type::vector<In1DataMatrixDeriv*> matOut1Const;
     getMatIn1Deriv(inConst, matOut1Const);
-    helper::vector<In2DataMatrixDeriv*> matOut2Const;
+    type::vector<In2DataMatrixDeriv*> matOut2Const;
     getMatIn2Deriv(inConst, matOut2Const);
 
-    helper::vector<const OutDataMatrixDeriv*> matInConst;
+    type::vector<const OutDataMatrixDeriv*> matInConst;
     getConstMatOutDeriv(outConst, matInConst);
     this->applyJT(cparams, matOut1Const, matOut2Const, matInConst);
 }
@@ -207,35 +195,32 @@ void Multi2Mapping<In1,In2,Out>::applyJT(const ConstraintParams* cparams, MultiM
 template < class In1, class In2,class Out>
 void Multi2Mapping<In1,In2,Out>::computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc )
 {
-    helper::vector<OutDataVecDeriv*> vecOutAcc;
+    type::vector<OutDataVecDeriv*> vecOutAcc;
     getVecOutDeriv(outAcc, vecOutAcc);
 
-    helper::vector<const In1DataVecDeriv*> vecIn1Vel;
+    type::vector<const In1DataVecDeriv*> vecIn1Vel;
     getConstVecIn1Deriv(inVel, vecIn1Vel);
-    helper::vector<const In1DataVecDeriv*> vecIn1Acc;
+    type::vector<const In1DataVecDeriv*> vecIn1Acc;
     getConstVecIn1Deriv(inAcc, vecIn1Acc);
 
-    helper::vector<const In2DataVecDeriv*> vecIn2Vel;
+    type::vector<const In2DataVecDeriv*> vecIn2Vel;
     getConstVecIn2Deriv(inVel, vecIn2Vel);
-    helper::vector<const In2DataVecDeriv*> vecIn2Acc;
+    type::vector<const In2DataVecDeriv*> vecIn2Acc;
     getConstVecIn2Deriv(inAcc, vecIn2Acc);
 
     this->computeAccFromMapping(mparams, vecOutAcc, vecIn1Vel, vecIn2Vel,vecIn1Acc, vecIn2Acc);
 }
 
 template < class In1, class In2, class Out >
-void Multi2Mapping<In1,In2,Out>::init()
+void Multi2Mapping<In1, In2, Out>::init()
 {
-    maskFrom1.resize( this->fromModels1.size() );
-    for( unsigned i=0 ; i<this->fromModels1.size() ; ++i )
-        if( core::behavior::BaseMechanicalState* stateFrom = this->fromModels1[i]->toBaseMechanicalState() ) maskFrom1[i] = &stateFrom->forceMask;
-    maskFrom2.resize( this->fromModels2.size() );
-    for( unsigned i=0 ; i<this->fromModels2.size() ; ++i )
-        if( core::behavior::BaseMechanicalState* stateFrom = this->fromModels2[i]->toBaseMechanicalState() ) maskFrom2[i] = &stateFrom->forceMask;
-    maskTo.resize( this->toModels.size() );
-    for( unsigned i=0 ; i<this->toModels.size() ; ++i )
-        if (core::behavior::BaseMechanicalState* stateTo = this->toModels[i]->toBaseMechanicalState()) maskTo[i] = &stateTo->forceMask;
-        else this->setNonMechanical();
+    for (auto toModel : this->toModels)
+    {
+        if (!toModel->toBaseMechanicalState())
+        {
+            this->setNonMechanical();
+        }
+    }
 
     apply(mechanicalparams::defaultInstance() , VecCoordId::position(), ConstVecCoordId::position());
     applyJ(mechanicalparams::defaultInstance() , VecDerivId::velocity(), ConstVecDerivId::velocity());
@@ -246,15 +231,6 @@ void Multi2Mapping<In1,In2,Out>::init()
 template < class In1, class In2, class Out >
 void Multi2Mapping<In1,In2,Out>::disable()
 {
-}
-
-
-template < class In1, class In2, class Out >
-void Multi2Mapping<In1,In2,Out>::updateForceMask()
-{
-    helper::vector<behavior::BaseMechanicalState*> fromModels = getMechFrom();
-    for (size_t i=0 ; i<fromModels.size() ; i++)
-        fromModels[i]->forceMask.assign(fromModels[i]->getSize(),true);
 }
 
 } // namespace core

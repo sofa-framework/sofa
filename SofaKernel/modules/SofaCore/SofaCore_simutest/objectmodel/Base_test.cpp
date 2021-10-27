@@ -24,7 +24,7 @@ using sofa::core::objectmodel::Base ;
 using sofa::core::objectmodel::ComponentState;
 
 #include <SofaSimulationGraph/testing/BaseSimulationTest.h>
-using sofa::helper::testing::BaseSimulationTest ;
+using sofa::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -58,22 +58,25 @@ using customns::CustomBaseObjectT;
 class Base_test: public BaseSimulationTest
 {
 public:
-    virtual ~Base_test(){}
+    ~Base_test() override {}
     void testComponentState()
     {
         EXPECT_MSG_NOEMIT(Error, Warning) ;
         importPlugin("SofaComponentAll") ;
-        std::stringstream scene ;
-        scene << "<?xml version='1.0'?>"
-                 "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-                 "   <Node name='child1'>                                                    \n"
-                 "      <MechanicalObject />                                                 \n"
-                 "      <Node name='child2'>                                                 \n"
-                 "      </Node>                                                              \n"
-                 "   </Node>                                                                 \n"
-                 "</Node>                                                                    \n" ;
+        const std::string scene = R"(
+            <?xml version='1.0'?>
+            <Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >
+               <DefaultAnimationLoop />
+               <DefaultVisualManagerLoop />
+               <Node name='child1'>
+                  <MechanicalObject />
+                  <Node name='child2'>
+                  </Node>
+               </Node>
+            </Node>
+        )";
 
-        SceneInstance c("xml", scene.str()) ;
+        SceneInstance c("xml", scene) ;
         c.initScene() ;
 
         Node* root = c.root.get() ;

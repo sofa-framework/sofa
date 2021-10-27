@@ -25,8 +25,8 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Quat.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -52,8 +52,8 @@ public:
     void reinit() override;
 
 protected:
-    Data<defaulttype::Matrix4> d_inT; ///< input transformation
-    Data<defaulttype::Matrix4> d_outT; ///< input transformation
+    Data<type::Matrix4> d_inT; ///< input transformation
+    Data<type::Matrix4> d_outT; ///< input transformation
 };
 
 /**
@@ -90,7 +90,7 @@ public:
 
 protected:
     /// translation
-    Data<defaulttype::Vector3> d_translation;
+    Data<type::Vector3> d_translation;
 
 };
 
@@ -113,7 +113,7 @@ public:
 
 protected:
     /// rotation
-    Data<defaulttype::Vector3> d_rotation;
+    Data<type::Vector3> d_rotation;
 
 };
 
@@ -135,7 +135,7 @@ public:
     void init() override;
 
 protected:
-    Data<defaulttype::Vector3> d_scale; ///< scale
+    Data<type::Vector3> d_scale; ///< scale
 };
 
 } //namespace sofa::component::engine

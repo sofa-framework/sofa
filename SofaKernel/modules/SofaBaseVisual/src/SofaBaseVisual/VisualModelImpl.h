@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
@@ -76,20 +76,20 @@ class SOFA_SOFABASEVISUAL_API VisualModelImpl : public core::visual::VisualModel
 public:
     SOFA_CLASS2(VisualModelImpl, core::visual::VisualModel, Vec3State);
 
-    typedef sofa::defaulttype::Vec<2, float> TexCoord;
-    typedef helper::vector<TexCoord> VecTexCoord;
+    typedef sofa::type::Vec<2, float> TexCoord;
+    typedef type::vector<TexCoord> VecTexCoord;
 
     using Index = sofa::Index;
     
     //Indices must be unsigned int for drawing
     using visual_index_type = unsigned int;
 
-    typedef helper::fixed_array<visual_index_type, 2> VisualEdge;
-    typedef helper::fixed_array<visual_index_type, 3> VisualTriangle;
-    typedef helper::fixed_array<visual_index_type, 4> VisualQuad;
-    typedef helper::vector<VisualEdge> VecVisualEdge;
-    typedef helper::vector<VisualTriangle> VecVisualTriangle;
-    typedef helper::vector<VisualQuad> VecVisualQuad;
+    typedef type::fixed_array<visual_index_type, 2> VisualEdge;
+    typedef type::fixed_array<visual_index_type, 3> VisualTriangle;
+    typedef type::fixed_array<visual_index_type, 4> VisualQuad;
+    typedef type::vector<VisualEdge> VecVisualEdge;
+    typedef type::vector<VisualTriangle> VecVisualTriangle;
+    typedef type::vector<VisualQuad> VecVisualQuad;
 
     typedef Vec3State::DataTypes DataTypes;
     typedef DataTypes::Real Real;
@@ -118,24 +118,23 @@ public:
     topology::PointData< VecTexCoord > m_vtexcoords; ///< coordinates of the texture
     topology::PointData< VecCoord > m_vtangents; ///< tangents for normal mapping
     topology::PointData< VecCoord > m_vbitangents; ///< tangents for normal mapping
-    Data< VecVisualEdge > m_edges; ///< edges of the model
-    Data< VecVisualTriangle > m_triangles; ///< triangles of the model
-    Data< VecVisualQuad > m_quads; ///< quads of the model
-  
+    topology::EdgeData< VecVisualEdge > m_edges; ///< edges of the model
+    topology::TriangleData< VecVisualTriangle > m_triangles; ///< triangles of the model
+    topology::QuadData< VecVisualQuad > m_quads; ///< quads of the model
+
+    bool m_textureChanged {false};
+
     /// If vertices have multiple normals/texcoords, then we need to separate them
     /// This vector store which input position is used for each vertex
     /// If it is empty then each vertex correspond to one position
-    Data< helper::vector<visual_index_type> > m_vertPosIdx;
+    Data< type::vector<visual_index_type> > m_vertPosIdx;
 
     /// Similarly this vector store which input normal is used for each vertex
     /// If it is empty then each vertex correspond to one normal
-    Data< helper::vector<visual_index_type> > m_vertNormIdx;
+    Data< type::vector<visual_index_type> > m_vertNormIdx;
 
     /// Rendering method.
     virtual void internalDraw(const core::visual::VisualParams* /*vparams*/, bool /*transparent*/) {}
-
-    template<class VecType>
-    void addTopoHandler(topology::PointData<VecType>* data, int algo = 0);
 
 public:
 
@@ -144,7 +143,7 @@ public:
 
     /// @name Initial transformation attributes
     /// @{
-    typedef sofa::defaulttype::Vec<3,Real> Vec3Real;
+    typedef sofa::type::Vec<3,Real> Vec3Real;
     Data< Vec3Real > m_translation; ///< Initial Translation of the object
     Data< Vec3Real > m_rotation; ///< Initial Rotation of the object
     Data< Vec3Real > m_scale; ///< Initial Scale of the object
@@ -157,7 +156,7 @@ public:
     /// Apply Rotation from Euler angles (in degree!)
     void applyRotation (const SReal rx, const SReal ry, const SReal rz) override;
 
-    void applyRotation(const sofa::defaulttype::Quat q) override;
+    void applyRotation(const sofa::type::Quat<SReal> q) override;
 
     void applyScale(const SReal sx, const SReal sy, const SReal sz) override;
 
@@ -183,8 +182,8 @@ public:
     }
     /// @}
 
-    sofa::defaulttype::Vec3f bbox[2];
-    Data< sofa::helper::types::Material > material;
+    sofa::type::Vec3f bbox[2];
+    Data< sofa::type::Material > material;
     Data< bool > putOnlyTexCoords;
     Data< bool > srgbTexturing;
 
@@ -220,8 +219,8 @@ public:
         }
     };
 
-    Data< helper::vector<sofa::helper::types::Material> > materials;
-    Data< helper::vector<FaceGroup> > groups;
+    Data< type::vector<sofa::type::Material> > materials;
+    Data< type::vector<FaceGroup> > groups;
 
     /// Link to be set to the topology container in the component graph.
     SingleLink <VisualModelImpl, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -381,13 +380,15 @@ public:
     virtual void computeUVSphereProjection();
 
     virtual void updateBuffers() {}
+    virtual void deleteBuffers() {}
+    virtual void deleteTextures() {}
 
     void updateVisual() override;
 
-    /// Handle topological changes
-    void handleTopologyChange() override;
-
     void init() override;
+    void initFromTopology();
+    void initPositionFromVertices();
+    void initFromFileMesh();
 
     void initVisual() override;
 
@@ -418,6 +419,14 @@ public:
 
     bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
     bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
+
+protected:
+    /// Internal buffer to be filled by topology Data @sa m_triangles callback when points are removed. Those dirty triangles will be updated at next updateVisual 
+    /// This avoid to update the whole mesh.
+    std::set< sofa::core::topology::BaseMeshTopology::TriangleID> m_dirtyTriangles;
+
+    /// Internal buffer similar to @sa m_dirtyTriangles but to be used by topolgy Data @sa m_quads callback when points are removed.
+    std::set< sofa::core::topology::BaseMeshTopology::QuadID> m_dirtyQuads;
 };
 
 

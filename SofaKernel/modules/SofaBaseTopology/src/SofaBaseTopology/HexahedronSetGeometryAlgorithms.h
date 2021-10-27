@@ -52,7 +52,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-	typedef typename  defaulttype::Vector3 LocalCoord;
+	typedef typename  type::Vector3 LocalCoord;
 	typedef typename  HexahedronSetTopologyContainer::HexahedronBinaryIndex HexahedronBinaryIndex;
 protected:
 	bool initializedHexahedronCubatureTables;
@@ -62,7 +62,7 @@ protected:
         , d_showHexaIndices(initData(&d_showHexaIndices, (bool)false, "showHexaIndices", "Debug : view Hexa indices"))
         , d_drawHexahedra(initData(&d_drawHexahedra, false, "drawHexahedra", "if true, draw the Hexahedron in the topology"))
         , d_drawScaleHexahedra(initData(&d_drawScaleHexahedra, float(1.0), "drawScaleHexahedra", "Scale of the hexahedra (between 0 and 1; if <1.0, it produces gaps between the hexahedra)"))
-        , d_drawColorHexahedra(initData(&d_drawColorHexahedra, sofa::helper::types::RGBAColor(1.0f,0.5f,0.0f, 1.0f), "drawColorHexahedra", "RGB code color used to draw hexahedra."))
+        , d_drawColorHexahedra(initData(&d_drawColorHexahedra, sofa::type::RGBAColor(1.0f,0.5f,0.0f, 1.0f), "drawColorHexahedra", "RGB code color used to draw hexahedra."))
     {
         core::objectmodel::Base::addAlias(&d_drawHexahedra, "drawHexa");
         core::objectmodel::Base::addAlias(&d_drawHexahedra, "drawHexahedron");
@@ -128,13 +128,13 @@ public:
     virtual int findNearestElement(const Coord& pos, LocalCoord& baryC, Real& distance) const;
 
     /// given a vector of points, find the nearest hexa for each point. Computes barycentric coordinates and a distance measure.
-    virtual void findNearestElements(const VecCoord& pos, helper::vector<int>& elem, helper::vector<LocalCoord>& baryC, helper::vector<Real>& dist) const;
+    virtual void findNearestElements(const VecCoord& pos, type::vector<int>& elem, type::vector<LocalCoord>& baryC, type::vector<Real>& dist) const;
 
     /// finds a hexahedron, in its rest position, which is nearest to a given point. Computes barycentric coordinates and a distance measure.
     virtual int findNearestElementInRestPos(const Coord& pos, LocalCoord& baryC, Real& distance) const;
 
     /// given a vector of points, find the nearest hexa, in its rest position, for each point. Computes barycentric coordinates and a distance measure.
-    virtual void findNearestElementsInRestPos(const VecCoord& pos, helper::vector<int>& elem, helper::vector<LocalCoord>& baryC, helper::vector<Real>& dist) const;
+    virtual void findNearestElementsInRestPos(const VecCoord& pos, type::vector<int>& elem, type::vector<LocalCoord>& baryC, type::vector<Real>& dist) const;
 
     /// If the point is inside the element, the distance measure is < 0. If the point is outside the element, the distance measure is a squared distance to the element center.
     virtual Real computeElementDistanceMeasure(const HexaID h, const Coord p) const;
@@ -155,7 +155,7 @@ protected:
     Data<bool> d_showHexaIndices; ///< Debug : view Hexa indices
     Data<bool> d_drawHexahedra; ///< if true, draw the Hexahedron in the topology
     Data<float> d_drawScaleHexahedra; ///< Scale of the hexahedra (between 0 and 1; if <1.0, it produces gaps between the hexahedra)
-    Data<sofa::helper::types::RGBAColor> d_drawColorHexahedra; ///< RGB code color used to draw hexahedra.
+    Data<sofa::type::RGBAColor> d_drawColorHexahedra; ///< RGB code color used to draw hexahedra.
 	/// include cubature points
 	NumericalIntegrationDescriptor<Real,3> hexahedronNumericalIntegration;
 };
@@ -163,11 +163,6 @@ protected:
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETGEOMETRYALGORITHMS_CPP)
 extern template class SOFA_SOFABASETOPOLOGY_API HexahedronSetGeometryAlgorithms<defaulttype::Vec3Types>;
 extern template class SOFA_SOFABASETOPOLOGY_API HexahedronSetGeometryAlgorithms<defaulttype::Vec2Types>;
-extern template class SOFA_SOFABASETOPOLOGY_API HexahedronSetGeometryAlgorithms<defaulttype::Vec1Types>;
-//extern template class SOFA_SOFABASETOPOLOGY_API HexahedronSetGeometryAlgorithms<defaulttype::Rigid3Types>;
-//extern template class SOFA_SOFABASETOPOLOGY_API HexahedronSetGeometryAlgorithms<defaulttype::Rigid2Types>;
-
-
 #endif
 
 } //namespace sofa::component::topology

@@ -64,10 +64,8 @@ typename BarycentricContactMapper<TCollisionModel,DataTypes>::MMechanicalState* 
     mstate->setName(GenerateStringID::generate().c_str());
     child->addObject(mstate);
     //mapper = mapping->getMapper();
-    mapper = sofa::core::objectmodel::New<mapping::BarycentricMapperMeshTopology<InDataTypes, typename BarycentricContactMapper::DataTypes> >(model->getCollisionTopology(), (topology::PointSetTopologyContainer*)nullptr);
+    mapper = sofa::core::objectmodel::New<mapping::BarycentricMapperMeshTopology<InDataTypes, typename BarycentricContactMapper::DataTypes> >(model->getCollisionTopology(), nullptr);
     mapper->setName(GenerateStringID::generate().c_str());
-    mapper->maskFrom = &model->getMechanicalState()->forceMask;
-    mapper->maskTo = &mstate->forceMask;
     mapping =  sofa::core::objectmodel::New<MMapping>(model->getMechanicalState(), mstate.get(), mapper);
     mapping->setName(GenerateStringID::generate().c_str());
     child->addObject(mapping);

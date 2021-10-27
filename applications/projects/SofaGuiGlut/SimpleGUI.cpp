@@ -26,6 +26,7 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <cmath>
 #include <iostream>
@@ -39,7 +40,7 @@
 #include <thread>
 
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/type/BoundingBox.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/gui/OperationFactory.h>
@@ -900,7 +901,7 @@ void SimpleGUI::calcProjection()
             yFactor = 1.0;
         }
     }
-    vparams->viewport() = sofa::helper::make_array(0,0,width,height);
+    vparams->viewport() = sofa::type::make_array(0,0,width,height);
 
     glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
@@ -1121,7 +1122,6 @@ void SimpleGUI::keyPressEvent ( int k )
         case 'q': //GLUT_KEY_Escape:
         {
             exit(0);
-            break;
         }
 
         case GLUT_KEY_F5:
@@ -1131,7 +1131,7 @@ void SimpleGUI::keyPressEvent ( int k )
                 std::cout << "Reloading "<<sceneFileName<<std::endl;
                 std::string filename = sceneFileName;
                 Vec3d pos;
-                Quat  ori;
+                Quatd  ori;
                 getView(pos, ori);
 
                 simulation::Node::SPtr newroot = getSimulation()->load(filename.c_str());
@@ -1210,7 +1210,7 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
         transform[1][3] = p0[1];
         transform[2][3] = p0[2];
         Mat3x3d mat; mat = transform;
-        Quat q; q.fromMatrix(mat);
+        Quatd q; q.fromMatrix(mat);
 
         Vec3d position, direction;
         position  = transform*Vec4d(0,0,0,1);
@@ -1511,13 +1511,13 @@ void SimpleGUI::setCameraMode(core::visual::VisualParams::CameraType mode)
     currentCamera->setCameraType(mode);
 }
 
-void SimpleGUI::getView(Vec3d& pos, Quat& ori) const
+void SimpleGUI::getView(Vec3d& pos, Quatd& ori) const
 {
     if (!currentCamera)
         return;
 
     const Vec3d& camPosition = currentCamera->getPosition();
-    const Quat& camOrientation = currentCamera->getOrientation();
+    const Quatd& camOrientation = currentCamera->getOrientation();
 
     pos[0] = camPosition[0];
     pos[1] = camPosition[1];
@@ -1529,10 +1529,10 @@ void SimpleGUI::getView(Vec3d& pos, Quat& ori) const
     ori[3] = camOrientation[3];
 }
 
-void SimpleGUI::setView(const Vec3d& pos, const Quat &ori)
+void SimpleGUI::setView(const Vec3d& pos, const Quatd &ori)
 {
     Vec3d position;
-    Quat orientation;
+    Quatd orientation;
     for (unsigned int i=0 ; i<3 ; i++)
     {
         position[i] = pos[i];
@@ -1546,7 +1546,7 @@ void SimpleGUI::setView(const Vec3d& pos, const Quat &ori)
     redraw();
 }
 
-void SimpleGUI::moveView(const Vec3d& pos, const Quat &ori)
+void SimpleGUI::moveView(const Vec3d& pos, const Quatd &ori)
 {
     if (!currentCamera)
         return;

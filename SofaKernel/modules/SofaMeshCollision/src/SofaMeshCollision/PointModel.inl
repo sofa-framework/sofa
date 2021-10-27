@@ -22,12 +22,11 @@
 #pragma once
 #include <SofaMeshCollision/PointModel.h>
 
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Node.h>
-#include <SofaMeshCollision/PointLocalMinDistanceFilter.h>
 #include <SofaBaseCollision/CubeModel.h>
 
 namespace sofa::component::collision
@@ -38,7 +37,6 @@ PointCollisionModel<DataTypes>::PointCollisionModel()
     : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the point model (when surface normals are defined on these points)") )
     , mstate(nullptr)
     , computeNormals( initData(&computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
-    , m_lmdFilter( nullptr )
     , m_displayFreePosition(initData(&m_displayFreePosition, false, "displayFreePosition", "Display Collision Model Points free position(in green)") )
     , l_topology(initLink("topology", "link to the topology container"))
 {
@@ -67,12 +65,6 @@ void PointCollisionModel<DataTypes>::init()
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopologyLink());
-    }
-
-    simulation::Node* node = dynamic_cast< simulation::Node* >(this->getContext());
-    if (node != 0)
-    {
-        m_lmdFilter = node->getNodeObject< PointLocalMinDistanceFilter >();
     }
 
     const int npoints = mstate->getSize();
@@ -144,15 +136,10 @@ void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
         for (Size i=0; i<size; i++)
         {
             TPoint<DataTypes> p(this,i);
-            const defaulttype::Vector3& pt = p.p();
-            cubeModel->setParentOf(i, pt - defaulttype::Vector3(distance,distance,distance), pt + defaulttype::Vector3(distance,distance,distance));
+            const type::Vector3& pt = p.p();
+            cubeModel->setParentOf(i, pt - type::Vector3(distance,distance,distance), pt + type::Vector3(distance,distance,distance));
         }
         cubeModel->computeBoundingTree(maxDepth);
-    }
-
-    if (m_lmdFilter != 0)
-    {
-        m_lmdFilter->invalidate();
     }
 }
 
@@ -171,7 +158,7 @@ void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt, in
 
     if (computeNormals.getValue()) updateNormals();
 
-    defaulttype::Vector3 minElem, maxElem;
+    type::Vector3 minElem, maxElem;
 
     cubeModel->resize(size);
     if (!empty())
@@ -182,8 +169,8 @@ void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt, in
         for (Size i=0; i<size; i++)
         {
             TPoint<DataTypes> p(this,i);
-            const defaulttype::Vector3& pt = p.p();
-            const defaulttype::Vector3 ptv = pt + p.v()*dt;
+            const type::Vector3& pt = p.p();
+            const type::Vector3 ptv = pt + p.v()*dt;
 
             for (int c = 0; c < 3; c++)
             {
@@ -303,76 +290,6 @@ void PointCollisionModel<DataTypes>::updateNormals()
 }
 
 template<class DataTypes>
-bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFactor, double &coneExtension)
-{
-
-    defaulttype::Vector3 pt = p();
-
-    sofa::core::topology::BaseMeshTopology* mesh = this->model->l_topology.get();
-    const typename DataTypes::VecCoord& x = (*this->model->mstate->read(sofa::core::ConstVecCoordId::position())->getValue());
-
-    const auto& trianglesAroundVertex = mesh->getTrianglesAroundVertex(this->index);
-    const auto& edgesAroundVertex = mesh->getEdgesAroundVertex(this->index);
-
-    defaulttype::Vector3 nMean;
-
-    for (Index i=0; i<trianglesAroundVertex.size(); i++)
-    {
-        Index t = trianglesAroundVertex[i];
-        const auto& ptr = mesh->getTriangle(t);
-        defaulttype::Vector3 nCur = (x[ptr[1]]-x[ptr[0]]).cross(x[ptr[2]]-x[ptr[0]]);
-        nCur.normalize();
-        nMean += nCur;
-    }
-
-    if (trianglesAroundVertex.size()==0)
-    {
-        for (Index i=0; i<edgesAroundVertex.size(); i++)
-        {
-            Index e = edgesAroundVertex[i];
-            const auto& ped = mesh->getEdge(e);
-            defaulttype::Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
-            l.normalize();
-            nMean += l;
-        }
-    }
-
-    if (nMean.norm()> 0.0000000001)
-        nMean.normalize();
-
-
-    for (Index i=0; i<edgesAroundVertex.size(); i++)
-    {
-        Index e = edgesAroundVertex[i];
-        const auto& ped = mesh->getEdge(e);
-        defaulttype::Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
-        l.normalize();
-        double computedAngleCone = dot(nMean , l) * coneFactor;
-        if (computedAngleCone<0)
-            computedAngleCone=0.0;
-        computedAngleCone+=coneExtension;
-        if (dot(l , PQ) < -computedAngleCone*PQ.norm())
-            return false;
-    }
-    return true;
-
-
-}
-
-template<class DataTypes>
-PointLocalMinDistanceFilter *PointCollisionModel<DataTypes>::getFilter() const
-{
-    return m_lmdFilter;
-}
-
-template<class DataTypes>
-void PointCollisionModel<DataTypes>::setFilter(PointLocalMinDistanceFilter *lmdFilter)
-{
-    m_lmdFilter = lmdFilter;
-}
-
-
-template<class DataTypes>
 void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
     SOFA_UNUSED(params);
@@ -391,7 +308,7 @@ void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params,
     for (Size i=0; i<size; i++)
     {
         Element e(this,i);
-        const defaulttype::Vector3& p = e.p();
+        const type::Vector3& p = e.p();
 
         for (int c=0; c<3; c++)
         {
@@ -400,7 +317,7 @@ void PointCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params,
         }
     }
 
-    this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 
@@ -426,8 +343,8 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
         if (npoints != size)
             return;
 
-        std::vector< defaulttype::Vector3 > pointsP;
-        std::vector< defaulttype::Vector3 > pointsL;
+        std::vector< type::Vector3 > pointsP;
+        std::vector< type::Vector3 > pointsL;
         for (Size i = 0; i < size; i++)
         {
             TPoint<DataTypes> p(this, i);
@@ -443,12 +360,12 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
         }
 
         auto c = getColor4f();
-        vparams->drawTool()->drawPoints(pointsP, 3, sofa::helper::types::RGBAColor(c[0], c[1], c[2], c[3]));
-        vparams->drawTool()->drawLines(pointsL, 1, sofa::helper::types::RGBAColor(c[0], c[1], c[2], c[3]));
+        vparams->drawTool()->drawPoints(pointsP, 3, sofa::type::RGBAColor(c[0], c[1], c[2], c[3]));
+        vparams->drawTool()->drawLines(pointsL, 1, sofa::type::RGBAColor(c[0], c[1], c[2], c[3]));
 
         if (m_displayFreePosition.getValue())
         {
-            std::vector< defaulttype::Vector3 > pointsPFree;
+            std::vector< type::Vector3 > pointsPFree;
 
             for (Size i = 0; i < size; i++)
             {
@@ -459,7 +376,7 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
                 }
             }
 
-            vparams->drawTool()->drawPoints(pointsPFree, 3, sofa::helper::types::RGBAColor(0.0f, 1.0f, 0.2f, 1.0f));
+            vparams->drawTool()->drawPoints(pointsPFree, 3, sofa::type::RGBAColor(0.0f, 1.0f, 0.2f, 1.0f));
         }
 
         if (vparams->displayFlags().getShowWireFrame())

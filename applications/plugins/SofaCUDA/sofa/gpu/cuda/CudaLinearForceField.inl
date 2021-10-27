@@ -106,7 +106,7 @@ void LinearForceFieldInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addForc
 
         bool finished = false;
 
-        typename helper::vector< Real >::const_iterator it_t = m->d_keyTimes.getValue().begin();
+        typename type::vector< Real >::const_iterator it_t = m->d_keyTimes.getValue().begin();
         typename VecDeriv::const_iterator it_f = m->d_keyForces.getValue().begin();
 
         // WARNING : we consider that the key-events are in chronological order
@@ -162,7 +162,7 @@ void LinearForceField<sofa::gpu::cuda::CudaRigid3fTypes>::addForce(const core::M
 template<>
 SReal LinearForceField<sofa::gpu::cuda::CudaRigid3fTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&) const
 {
-    this->serr<<"["<<this->getName()<<"] getPotentialEnergy not implemented !"<<this->sendl;
+    msg_error() <<"GetPotentialEnergy not implemented !";
     return 0;
 }
 

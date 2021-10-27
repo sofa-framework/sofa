@@ -21,8 +21,8 @@
 ******************************************************************************/
 #include <sofa/testing/config.h>
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest ;
 
 #include <sofa/helper/system/FileRepository.h>
 
@@ -30,8 +30,8 @@ using sofa::helper::testing::BaseTest ;
 using sofa::helper::io::XspLoader;
 using sofa::helper::io::XspLoaderDataHook;
 
-#include <sofa/defaulttype/Vec.h>
-using sofa::defaulttype::Vec3;
+#include <sofa/type/Vec.h>
+using sofa::type::Vec3;
 
 namespace
 {

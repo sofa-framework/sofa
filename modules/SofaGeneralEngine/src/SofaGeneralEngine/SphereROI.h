@@ -24,7 +24,7 @@
 
 
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -46,11 +46,11 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
-    typedef defaulttype::Vec<3,Real> Vec3;
-    typedef defaulttype::Vec<6,Real> Vec6;
-    typedef helper::vector<sofa::core::topology::BaseMeshTopology::EdgeID> SetEdge;
-    typedef helper::vector<sofa::core::topology::BaseMeshTopology::TriangleID> SetTriangle;
-    typedef helper::vector<sofa::core::topology::BaseMeshTopology::QuadID> SetQuad;
+    typedef type::Vec<3,Real> Vec3;
+    typedef type::Vec<6,Real> Vec6;
+    typedef type::vector<sofa::core::topology::BaseMeshTopology::EdgeID> SetEdge;
+    typedef type::vector<sofa::core::topology::BaseMeshTopology::TriangleID> SetTriangle;
+    typedef type::vector<sofa::core::topology::BaseMeshTopology::QuadID> SetQuad;
     typedef sofa::core::topology::BaseMeshTopology::SetIndex SetIndex;
 
     typedef typename DataTypes::CPos CPos;
@@ -104,8 +104,8 @@ protected:
 
 public:
     //Input
-    Data< helper::vector<Vec3> > centers; ///< Center(s) of the sphere(s)
-    Data< helper::vector<Real> > radii; ///< Radius(i) of the sphere(s)
+    Data< type::vector<Vec3> > centers; ///< Center(s) of the sphere(s)
+    Data< type::vector<Real> > radii; ///< Radius(i) of the sphere(s)
 
     Data< Vec3 > direction; ///< Edge direction(if edgeAngle > 0)
     Data< Vec3 > normal; ///< Normal direction of the triangles (if triAngle > 0)
@@ -113,10 +113,10 @@ public:
     Data< Real > triAngle; ///< Max angle between the normal of the selected triangle and the specified normal direction
 
     Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
-    Data<helper::vector<Edge> > f_edges; ///< Edge Topology
-    Data<helper::vector<Triangle> > f_triangles; ///< Triangle Topology
-    Data<helper::vector<Quad> > f_quads; ///< Quads Topology
-    Data<helper::vector<Tetra> > f_tetrahedra; ///< Tetrahedron Topology
+    Data<type::vector<Edge> > f_edges; ///< Edge Topology
+    Data<type::vector<Triangle> > f_triangles; ///< Triangle Topology
+    Data<type::vector<Quad> > f_quads; ///< Quads Topology
+    Data<type::vector<Tetra> > f_tetrahedra; ///< Tetrahedron Topology
     Data<bool> f_computeEdges; ///< If true, will compute edge list and index list inside the ROI.
     Data<bool> f_computeTriangles; ///< If true, will compute triangle list and index list inside the ROI.
     Data<bool> f_computeQuads; ///< If true, will compute quad list and index list inside the ROI.
@@ -131,10 +131,10 @@ public:
 
 
     Data<VecCoord > f_pointsInROI; ///< Points contained in the ROI
-    Data<helper::vector<Edge> > f_edgesInROI; ///< Edges contained in the ROI
-    Data<helper::vector<Triangle> > f_trianglesInROI; ///< Triangles contained in the ROI
-    Data<helper::vector<Quad> > f_quadsInROI; ///< Quads contained in the ROI
-    Data<helper::vector<Tetra> > f_tetrahedraInROI; ///< Tetrahedra contained in the ROI
+    Data<type::vector<Edge> > f_edgesInROI; ///< Edges contained in the ROI
+    Data<type::vector<Triangle> > f_trianglesInROI; ///< Triangles contained in the ROI
+    Data<type::vector<Quad> > f_quadsInROI; ///< Quads contained in the ROI
+    Data<type::vector<Tetra> > f_tetrahedraInROI; ///< Tetrahedra contained in the ROI
     Data<SetIndex> f_indicesOut; ///< Indices of the points not contained in the ROI
 
     //Parameter

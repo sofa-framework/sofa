@@ -30,16 +30,14 @@ namespace  sofa::component::forcefield
 
 namespace _beamfemforcefield_
 {
-
-using topology::TopologyDataHandler;
 using core::MechanicalParams;
 using core::behavior::MultiMatrixAccessor;
 using core::behavior::ForceField;
 using core::topology::BaseMeshTopology;
-using defaulttype::Vec;
-using defaulttype::Mat;
-using defaulttype::Vector3;
-using defaulttype::Quat;
+using type::Vec;
+using type::Mat;
+using type::Vector3;
+using type::Quat;
 using topology::EdgeData;
 
 /** Compute Finite Element forces based on 6D beam elements.
@@ -63,10 +61,8 @@ public:
     using Index = sofa::Index;
 
     typedef BaseMeshTopology::Edge Element;
-    typedef helper::vector<BaseMeshTopology::Edge> VecElement;
+    typedef type::vector<BaseMeshTopology::Edge> VecElement;
     typedef Vec<3, Real> Vec3;
-
-protected:
 
     typedef Vec<12, Real> Displacement;     ///< the displacement vector
     typedef Mat<3, 3, Real> Transformation; ///< matrix for rigid transformations like rotations
@@ -89,7 +85,7 @@ protected:
         double _Asz; //_Asz is the z-direction effective shear area;
         StiffnessMatrix _k_loc;
 
-        defaulttype::Quat quat;
+        type::Quat<SReal> quat;
 
         void init(double E, double L, double nu, double r, double rInner);
 
@@ -134,26 +130,13 @@ protected:
         }
     };
 
-    class BeamFFEdgeHandler : public TopologyDataHandler<BaseMeshTopology::Edge, helper::vector<BeamInfo> >
-    {
-    public:
-        typedef typename BeamFEMForceField<DataTypes>::BeamInfo BeamInfo;
-        BeamFFEdgeHandler(BeamFEMForceField<DataTypes>* ff, EdgeData<helper::vector<BeamInfo> >* data)
-            :TopologyDataHandler<BaseMeshTopology::Edge, helper::vector<BeamInfo> >(data),ff(ff) {}
+    EdgeData<type::vector<BeamInfo> > m_beamsData; ///< Internal element data
 
-        void applyCreateFunction(Index edgeIndex, BeamInfo&,
-                                 const BaseMeshTopology::Edge& e,
-                                 const helper::vector<Index> &,
-                                 const helper::vector< double > &);
-
-    protected:
-        BeamFEMForceField<DataTypes>* ff;
-
-    };
-
-    //just for draw forces
-    VecDeriv m_forces;
-    EdgeData<helper::vector<BeamInfo> > m_beamsData; ///< Internal element data
+protected:
+    void createBeamInfo(Index edgeIndex, BeamInfo&,
+        const BaseMeshTopology::Edge& e,
+        const type::vector<Index> &,
+        const type::vector< double > &);
 
     const VecElement *m_indexedElements;
 
@@ -169,15 +152,17 @@ public:
     SingleLink<BeamFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
  protected:
+    //just for draw forces
+    VecDeriv m_forces;
+
     bool m_partialListSegment;
     bool m_updateStiffnessMatrix;
     bool m_assembling;
     double m_lastUpdatedStep;
 
-    Quat& beamQuat(int i);
+    Quat<SReal>& beamQuat(int i);
 
     BaseMeshTopology* m_topology;
-    BeamFFEdgeHandler* m_edgeHandler;
 
     BeamFEMForceField();
     BeamFEMForceField(Real poissonRatio, Real youngModulus, Real radius, Real radiusInner);
@@ -208,7 +193,7 @@ protected:
     void computeStiffness(int i, Index a, Index b);
 
     /// Large displacements method
-    helper::vector<Transformation> _nodeRotations;
+    type::vector<Transformation> _nodeRotations;
     void initLarge(int i, Index a, Index b);
     void accumulateForceLarge( VecDeriv& f, const VecCoord& x, int i, Index a, Index b);
     void applyStiffnessLarge( VecDeriv& f, const VecDeriv& x, int i, Index a, Index b, double fact=1.0);

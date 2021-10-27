@@ -22,22 +22,26 @@
 #include <sofa/core/topology/BaseTopology.h>
 #include <sofa/core/topology/TopologyHandler.h>
 
-namespace sofa
+namespace sofa::core::topology
 {
 
-namespace core
+namespace
 {
+    constexpr sofa::Size getElementTypeIndex(sofa::geometry::ElementType elementType)
+    {
+        return static_cast<std::underlying_type_t<sofa::geometry::ElementType>>(elementType);
+    }
+}
 
-namespace topology
-{
+
 // GeometryAlgorithms implementation
 
 void GeometryAlgorithms::init()
 {
 }
 
-void GeometryAlgorithms::initPointsAdded(const helper::vector< sofa::Index >& /*indices*/, const helper::vector< PointAncestorElem >& /*ancestorElems*/
-    , const helper::vector< core::VecCoordId >& /*coordVecs*/, const helper::vector< core::VecDerivId >& /*derivVecs */)
+void GeometryAlgorithms::initPointsAdded(const type::vector< sofa::Index >& /*indices*/, const type::vector< PointAncestorElem >& /*ancestorElems*/
+    , const type::vector< core::VecCoordId >& /*coordVecs*/, const type::vector< core::VecDerivId >& /*derivVecs */)
 {
 }
 
@@ -61,7 +65,7 @@ void TopologyModifier::addStateChange(const TopologyChange *topologyChange)
 void TopologyModifier::propagateStateChanges() {}
 void TopologyModifier::propagateTopologicalChanges() {}
 void TopologyModifier::notifyEndingEvent() {}
-void TopologyModifier::removeItems(const sofa::helper::vector< Index >& /*items*/) {}
+void TopologyModifier::removeItems(const sofa::type::vector< Index >& /*items*/) {}
 
 // TopologyContainer implementation
 
@@ -94,13 +98,25 @@ void TopologyContainer::addStateChange(const TopologyChange *topologyChange)
     m_stateChangeList.endEdit();
 }
 
-void TopologyContainer::addTopologyHandler(TopologyHandler *_TopologyHandler)
+void TopologyContainer::addTopologyHandler(TopologyHandler *_TopologyHandler, sofa::geometry::ElementType elementType)
 {
-    m_TopologyHandlerList.push_back(_TopologyHandler);
-    m_TopologyHandlerList.back()->m_changeList.setParent(&this->m_changeList);
-    this->updateTopologyHandlerGraph();
+    m_topologyHandlerListPerElement[getElementTypeIndex(elementType)].push_back(_TopologyHandler);
 }
 
+const std::list<TopologyHandler*>& TopologyContainer::getTopologyHandlerList(sofa::geometry::ElementType elementType) const
+{
+    return m_topologyHandlerListPerElement[getElementTypeIndex(elementType)];
+}
+
+bool TopologyContainer::linkTopologyHandlerToData(TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
+{
+    // default implementation dont do anything
+    // as it does not hold any data itself
+    SOFA_UNUSED(topologyHandler);
+    SOFA_UNUSED(elementType);
+
+    return false;
+}
 
 std::list<const TopologyChange *>::const_iterator TopologyContainer::endChange() const
 {
@@ -120,16 +136,6 @@ std::list<const TopologyChange *>::const_iterator TopologyContainer::endStateCha
 std::list<const TopologyChange *>::const_iterator TopologyContainer::beginStateChange() const
 {
     return (m_stateChangeList.getValue()).begin();
-}
-
-std::list<TopologyHandler *>::const_iterator TopologyContainer::endTopologyHandler() const
-{
-    return m_TopologyHandlerList.end();
-}
-
-std::list<TopologyHandler *>::const_iterator TopologyContainer::beginTopologyHandler() const
-{
-    return m_TopologyHandlerList.begin();
 }
 
 void TopologyContainer::resetTopologyChangeList()
@@ -160,20 +166,16 @@ void TopologyContainer::resetStateChangeList()
 
 void TopologyContainer::resetTopologyHandlerList()
 {
-    for (std::list<TopologyHandler *>::iterator it=m_TopologyHandlerList.begin();
-            it!=m_TopologyHandlerList.end(); ++it)
+    for (auto& topologyHandlerList : m_topologyHandlerListPerElement)
     {
-        //delete (*it);
-        *it = nullptr;
+        for (auto it = topologyHandlerList.begin();
+            it != topologyHandlerList.end(); ++it)
+        {
+            *it = nullptr;
+        }
+        topologyHandlerList.clear();
     }
 
-    m_TopologyHandlerList.clear();
 }
 
-
-} // namespace topology
-
-} // namespace core
-
-} // namespace sofa
-
+} // namespace sofa::core::topology

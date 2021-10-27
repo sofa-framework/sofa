@@ -19,23 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_BASEFORCEFIELD_H
-#define SOFA_CORE_BEHAVIOR_BASEFORCEFIELD_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/MultiVecId.h>
 
-namespace sofa::defaulttype { class BaseMatrix; }
 namespace sofa::core::behavior { class MultiMatrixAccessor; }
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /**
@@ -60,7 +52,7 @@ public:
     SOFA_BASE_CAST_IMPLEMENTATION(BaseForceField)
 protected:
     BaseForceField();
-    ~BaseForceField() override {}
+    ~BaseForceField() override = default;
 	
 private:
 	BaseForceField(const BaseForceField& n) ;
@@ -76,9 +68,9 @@ public:
     /// ForceField.
     ///
     /// If the ForceField can be represented as a matrix, this method computes
-    ///
-    ///                          $ f += B v + K x $
-    ///
+    /// \f[
+    ///                          f += B v + K x
+    /// \f]
     /// where K is the stiffness matrix (associated with forces which derive from a potential),
     /// and B is the damping matrix (associated with viscous forces).
     /// Very often, at least one of these matrices is null.
@@ -102,9 +94,9 @@ public:
     /// explicitly (i.e. using its value at the beginning of the timestep).
     ///
     /// If the ForceField can be represented as a matrix, this method computes
-    /// 
-    ///                    $ df += kFactor K dx + bFactor B dx $
-    ///
+    /// \f[
+    ///                    df += kFactor K dx + bFactor B dx
+    /// \f]
     /// where K is the stiffness matrix (associated with forces which derive from a potential),
     /// and B is the damping matrix (associated with viscous forces).
     ///
@@ -119,8 +111,9 @@ public:
     /// by the dx vector with the given coefficients.
     ///
     /// This method computes
-    ///
-    ///            $ df += mFactor M dx + bFactor B dx + kFactor K dx $
+    /// \f[
+    ///            df += mFactor M dx + bFactor B dx + kFactor K dx
+    /// \f]
     ///
     /// where M is the mass matrix (associated with inertial forces),
     /// K is the stiffness matrix (associated with forces which derive from a potential),
@@ -150,25 +143,20 @@ public:
     /// @name Matrix operations
     /// @{
 
-    /// \brief Compute the system matrix corresponding to k K
+    /// \brief Compute the system matrix corresponding to \f$ k K \f$
     ///
     /// \param mparams \a mparams->kFactor() is the coefficient for stiffness contributions (i.e. DOFs term in the ODE)
     /// \param matrix the matrix to add the result to
     virtual void addKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) = 0;
-    //virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset);
 
-    virtual void addSubKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & subMatrixIndex);
-
-    /// \brief Compute the system matrix corresponding to b B
+    /// \brief Compute the system matrix corresponding to \f$ b B \f$
     ///
     /// \param mparams \a sofa::core::mechanicalparams::bFactor(mparams) is the coefficient for damping contributions (i.e. first derivatives term in the ODE)
     /// \param matrix the matrix to add the result to
     virtual void addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
     //virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal bFact, unsigned int &offset);
 
-    virtual void addSubBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & vecIds);
-
-    /// \brief Compute the system matrix corresponding to m M + b B + k K
+    /// \brief Compute the system matrix corresponding to \f$ m M + b B + k K \f$
     ///
     /// \param mparams
     /// - \a mparams->mFactor() is the coefficient for mass contributions (i.e. second-order derivatives term in the ODE)
@@ -178,16 +166,13 @@ public:
     virtual void addMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
     ////virtual void addMBKToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal mFact, SReal bFact, SReal kFact, unsigned int &offset);
 
-    /// \brief addMBKToMatrix only on the subMatrixIndex
-    virtual void addSubMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> subMatrixIndex);
-
     /// @}
 
 
 
     /** @name API to consider the ForceField as a constraint as in the "Compliant formulation"
-     * see [M Tournier, M Nesme, B Gilles, F Faure, Stable Constrained Dynamics, Siggraph 2015] for more details
-     * Each ForceField may be processed either as a traditional force function, or a as a compliance (provided that its stiffness matrix is invertible).
+     * See [M Tournier, M Nesme, B Gilles, F Faure, Stable Constrained Dynamics, Siggraph 2015] for more details.
+     * Each ForceField may be processed either as a traditional force function, or as a compliance (provided that its stiffness matrix is invertible).
      * If isCompliance==false then the ForceField is handled as a traditional force function.
      * In this case, the stiffness matrix is used to set up the implicit equation matrix, while addForce is used to set up the right-hand term as usual.
      * If isCompliance==true, the ForceField is handled as a compliance and getComplianceMatrix must return a non-null pointer for assembled solver and/or
@@ -199,18 +184,18 @@ public:
     Data< bool > isCompliance;
 
     /// Return a pointer to the compliance matrix C
-    /// $ C = K^{-1} $
+    /// \f$ C = K^{-1} \f$
     virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const MechanicalParams*) { return nullptr; }
 
     /// \brief Accumulate the contribution of the C compliant matrix multiplied
     /// by the given Lagrange multipliers lambda vector with the given cFactor coefficient.
     ///
     /// This method computes
-    ///
-    ///            $ res += cFactor C lambda $
-    ///
-    /// where C is the Compliant matrix (inverse of the Stiffness matrix K
-    /// $ C = K^{-1} $
+    /// \f[
+    ///            res += cFactor C \lambda
+    /// \f]
+    /// where C is the Compliant matrix (inverse of the Stiffness matrix \f$ K \f$:
+    /// \f$ C = K^{-1} \f$)
     ///
     virtual void addClambda(const MechanicalParams* /*mparams*/, MultiVecDerivId /*resId*/, MultiVecDerivId /*lambdaId*/, SReal /*cFactor*/ ){}
 
@@ -227,24 +212,8 @@ public:
 
     /// @}
 
-
-    /// Useful when the forcefield is applied only on a subset of dofs.
-    /// It is automatically called by addForce.
-    ///
-    /// That way, we can optimize the time spent to transfer quantities through the mechanical mappings.
-    /// Every Dofs are inserted by default. The forcefields using only a subset of dofs should only insert these dofs in the mask.
-    virtual void updateForceMask() = 0;
-
-
-
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;
 };
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif  /* SOFA_CORE_BEHAVIOR_BASEFORCEFIELD_H */
+} // namespace sofa::core::behavior

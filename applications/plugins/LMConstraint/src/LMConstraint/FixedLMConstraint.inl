@@ -22,39 +22,11 @@
 #pragma once
 #include <LMConstraint/FixedLMConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
-#include <sofa/helper/vector_algorithm.h>
+#include <sofa/type/vector_algorithm.h>
 
 
 namespace sofa::component::constraintset
 {
-
-
-
-// Define TestNewPointFunction
-template< class DataTypes>
-bool FixedLMConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(Index /*nbPoints*/, const sofa::helper::vector< Index > &, const sofa::helper::vector< double >& )
-{
-    if (fc)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-// Define RemovalFunction
-template< class DataTypes>
-void FixedLMConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(Index pointIndex, value_type &)
-{
-    if (fc)
-    {
-        fc->removeConstraint((Index) pointIndex);
-    }
-    return;
-}
 
 template <class DataTypes>
 FixedLMConstraint<DataTypes>::FixedLMConstraint(MechanicalState *dof)
@@ -62,7 +34,6 @@ FixedLMConstraint<DataTypes>::FixedLMConstraint(MechanicalState *dof)
     , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
     , _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_pointHandler(nullptr)
 {
     
 }
@@ -84,7 +55,7 @@ void FixedLMConstraint<DataTypes>::addConstraint(Index index)
 template <class DataTypes>
 void FixedLMConstraint<DataTypes>::removeConstraint(Index index)
 {
-    sofa::helper::removeValue(*f_indices.beginEdit(),index);
+    sofa::type::removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();
 }
 
@@ -119,10 +90,8 @@ void FixedLMConstraint<DataTypes>::init()
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-        // Initialize functions and parameters
-        m_pointHandler = new FCPointHandler(this, &f_indices);
-        f_indices.createTopologyHandler(_topology, m_pointHandler);
-        f_indices.registerTopologicalData();
+        // Initialize topological change handling
+        f_indices.createTopologyHandler(_topology);
     }
     else
     {
@@ -166,8 +135,6 @@ void FixedLMConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintP
         //Constraint degree of freedom along Z direction
         c->writeLine(cIndex).addCol(index,Z);
         idxZ.push_back(cIndex++);
-
-        this->constrainedObject1->forceMask.insertEntry(index);
     }
 }
 
@@ -232,8 +199,8 @@ void FixedLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
     const VecCoord& x =this->constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
     const SetIndexArray & indices = f_indices.getValue();
 
-    std::vector< defaulttype::Vector3 > points;
-    defaulttype::Vector3 point;
+    std::vector< type::Vector3 > points;
+    type::Vector3 point;
     for (unsigned int index : indices)
     {
         point = DataTypes::getCPos(x[index]);
@@ -241,11 +208,11 @@ void FixedLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
     }
     if( _drawSize.getValue() == 0) // old classical drawing by points
     {
-        vparams->drawTool()->drawPoints(points, 10, sofa::helper::types::RGBAColor(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, sofa::type::RGBAColor(1,0.5,0.5,1));
     }
     else
     {
-        vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), sofa::helper::types::RGBAColor(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), sofa::type::RGBAColor(1.0f,0.35f,0.35f,1.0f));
     }
 }
 

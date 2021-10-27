@@ -92,8 +92,8 @@ public:
     Data <bool> p_drawRotation; ///< If true, will draw the rotation path
     Data <bool> p_drawTranslation; ///< If true, will draw the translation path
 
-    Data <sofa::helper::vector<Vec3> > m_translationPositions; ///< Intermediate camera's positions
-    Data <sofa::helper::vector<Quat> > m_translationOrientations; ///< Intermediate camera's orientations
+    Data <sofa::type::vector<Vec3> > m_translationPositions; ///< Intermediate camera's positions
+    Data <sofa::type::vector<Quat> > m_translationOrientations; ///< Intermediate camera's orientations
 
 protected:
     double m_nextStep;
@@ -102,7 +102,7 @@ protected:
     bool firstIterationforTranslation;
     bool firstIterationforNavigation;
   
-    sofa::helper::vector <Vec3> m_rotationPoints;
+    sofa::type::vector<Vec3> m_rotationPoints;
 };
 
 } // namespace sofa::component::visualmodel

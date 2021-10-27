@@ -22,12 +22,12 @@
 #pragma once
 #include <SofaDeformable/config.h>
 
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/helper/vector.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/type/vector.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 
 
 namespace sofa::core::behavior
@@ -59,23 +59,23 @@ public:
     typedef typename DataTypes::CPos CPos;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef helper::vector< sofa::Index > VecIndex;
-    typedef helper::vector< Real >	 VecReal;
+    typedef type::vector< sofa::Index > VecIndex;
+    typedef type::vector< Real >	 VecReal;
 
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    Data< helper::vector< sofa::Index > > d_points; ///< points controlled by the rest shape springs
+    Data< type::vector< sofa::Index > > d_points; ///< points controlled by the rest shape springs
     Data< VecReal > d_stiffness; ///< stiffness values between the actual position and the rest shape position
     Data< VecReal > d_angularStiffness; ///< angularStiffness assigned when controlling the rotation of the points
-    Data< helper::vector< CPos > > d_pivotPoints; ///< global pivot points used when translations instead of the rigid mass centers
-    Data< helper::vector< sofa::Index > > d_external_points; ///< points from the external Mechancial State that define the rest shape springs
+    Data< type::vector< CPos > > d_pivotPoints; ///< global pivot points used when translations instead of the rigid mass centers
+    Data< type::vector< sofa::Index > > d_external_points; ///< points from the external Mechancial State that define the rest shape springs
     Data< bool > d_recompute_indices; ///< Recompute indices (should be false for BBOX)
     Data< bool > d_drawSpring; ///< draw Spring
-    Data< sofa::helper::types::RGBAColor > d_springColor; ///< spring color. (default=[0.0,1.0,0.0,1.0])
+    Data< sofa::type::RGBAColor > d_springColor; ///< spring color. (default=[0.0,1.0,0.0,1.0])
 
     SingleLink<RestShapeSpringsForceField<DataTypes>, sofa::core::behavior::MechanicalState< DataTypes >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_restMState;
-    linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
+    linearalgebra::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
 
 protected:
     RestShapeSpringsForceField();
@@ -103,16 +103,12 @@ public:
     /// Brings ForceField contribution to the global system stiffness matrix.
     void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
 
-    void addSubKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<sofa::Index> & addSubIndex ) override;
-
     void draw(const core::visual::VisualParams* vparams) override;
 
 
     const DataVecCoord* getExtPosition() const;
     const VecIndex& getIndices() const { return m_indices; }
     const VecIndex& getExtIndices() const { return (useRestMState ? m_ext_indices : m_indices); }
-
-    void updateForceMask() override;
 
 protected :
 
@@ -122,7 +118,7 @@ protected :
 
     VecIndex m_indices;
     VecIndex m_ext_indices;
-    helper::vector<CPos> m_pivots;
+    type::vector<CPos> m_pivots;
 
     SReal lastUpdatedStep;
 

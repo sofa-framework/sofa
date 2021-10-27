@@ -26,16 +26,10 @@
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <csparse.h>
 
-namespace sofa
+namespace sofa::component::linearsolver
 {
 
-namespace component
-{
-
-namespace linearsolver
-{
-
-//defaut structure for a LDL factorization
+//defaut structure for a LU factorization
 template<class Real>
 class SparseLUInvertData : public MatrixInvertData {
 public :
@@ -43,8 +37,8 @@ public :
     css *S;
     csn *N;
     cs A;
-    helper::vector<sofa::Index> A_i, A_p;
-    helper::vector<Real> A_x;
+    type::vector<sofa::Index> A_i, A_p;
+    type::vector<Real> A_x;
     Real * tmp;
     SparseLUInvertData()
     {
@@ -87,10 +81,10 @@ protected :
 
 };
 
-} // namespace linearsolver
+#if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSELUSOLVER_CPP)
+    extern template class SOFA_SOFASPARSESOLVER_API SparseLUSolver< CompressedRowSparseMatrix< double>,FullVector<double> >;
+#endif
 
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::linearsolver
 
 #endif

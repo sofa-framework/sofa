@@ -23,11 +23,9 @@
 #include <sofa/helper/config.h>
 #include <sofa/helper/system/thread/thread_specific_ptr.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/helper/vector.h>
-#include <sofa/helper/ScopedAdvancedTimer.h>
+#include <sofa/type/vector.h>
 
 #include <ostream>
-#include <istream>
 #include <string>
 #include <map>
 
@@ -167,10 +165,12 @@ public:
 
             /// the list of the id names. the Ids are the indices in the vector
             std::vector<std::string> idsList;
+            std::map<std::string, unsigned int> idsMap;
 
             IdFactory()
             {
-                idsList.push_back(std::string("0")); // ID 0 == "0" or empty string
+                idsMap.insert({"0", 0});
+                idsList.push_back("0");
             }
             
         public:
@@ -184,22 +184,17 @@ public:
                 if (name.empty())
                     return 0;
                 IdFactory& idfac = getInstance();
-                std::vector<std::string>::iterator it = idfac.idsList.begin();
-                unsigned int i = 0;
 
-                while (it != idfac.idsList.end() && (*it) != name)
+                const auto it = idfac.idsMap.find(name);
+                if (it == idfac.idsMap.end())
                 {
-                    ++it;
-                    i++;
-                }
-
-                if (it!=idfac.idsList.end())
-                    return i;
-                else
-                {
+                    const auto idsMapSize = idfac.idsMap.size();
+                    idfac.idsMap.insert({name, idsMapSize});
                     idfac.idsList.push_back(name);
-                    return i;
+                    return idsMapSize;
                 }
+
+                return it->second;
             }
 
             static std::size_t getLastID()
@@ -342,7 +337,7 @@ public:
      * @param processData bool, if true, will force timer data to be processed
      * @return The timer steps iterator inside a vector
      */
-    static helper::vector<AdvancedTimer::IdStep> getSteps(IdTimer id, bool processData = false);
+    static type::vector<AdvancedTimer::IdStep> getSteps(IdTimer id, bool processData = false);
 
     /**
      * @brief getStepData Return the map of StepData of the AdvancedTimer given execution
@@ -357,7 +352,7 @@ public:
      * @param id IdTimer, id of the timer
      * @return The timer full records inside a vector of Record
      */
-    static helper::vector<Record> getRecords(IdTimer id);
+    static type::vector<Record> getRecords(IdTimer id);
 
     /**
      * @brief clearDatato clear a specific Timer Data
@@ -386,8 +381,7 @@ public:
      * @param node simulation::Node* 
      * @return std::string, the output if JSON format is set
      */
-    [[deprecated("This function has been deleted in #PR 1770 because of simulation::Node dependency." \
-        "Use end(id, node->getTime(), node->getDt()) instead.")]]
+    SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1770)", "v21.12", "Use end(id, node->getTime(), node->getDt()) instead.")
     static std::string end(IdTimer id, simulation::Node* node) = delete;
 
     static bool isActive();

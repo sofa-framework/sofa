@@ -25,7 +25,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/simulation/Node.h>
 
 namespace sofa::component::projectiveconstraintset
@@ -57,9 +56,9 @@ inline void AttachConstraint<defaulttype::Rigid3Types>::doProjectPosition(Coord&
             {
                 // gradually set the velocity along the direction axis
                 Real fact = -lastDist[index] / (lastDist[index+1]-lastDist[index]);
-                sofa::defaulttype::Vector3 axis(restRotations[index][0], restRotations[index][1], restRotations[index][2]);
+                sofa::type::Vector3 axis(restRotations[index][0], restRotations[index][1], restRotations[index][2]);
                 Real angle = acos(restRotations[index][3])*2;
-                x2.getOrientation() = x1.getOrientation()*sofa::defaulttype::Quat(axis,angle*fact);
+                x2.getOrientation() = x1.getOrientation()*sofa::type::Quat<SReal>(axis,angle*fact);
             }
         }
         else
@@ -240,7 +239,7 @@ void AttachConstraint<DataTypes>::reinit()
     // Set to the correct length if dynamic, else check coherency.
     if(d_constraintFactor.getValue().size())
     {
-        helper::ReadAccessor<Data<helper::vector<Real>>> constraintFactor = d_constraintFactor;
+        helper::ReadAccessor<Data<type::vector<Real>>> constraintFactor = d_constraintFactor;
         if(constraintFactor.size() != f_indices2.getValue().size())
         {
             msg_warning() << "Size of vector constraintFactor, do not fit number of indices attached (" << constraintFactor.size() << " != " << f_indices2.getValue().size() << ").";
@@ -315,7 +314,7 @@ void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams *
         if (last)
         {
             Coord p = res1[indices1[i]];
-            sofa::defaulttype::Vec<3,Real> p3d;
+            sofa::type::Vec<3,Real> p3d;
             DataTypes::get(p3d[0],p3d[1],p3d[2],p);
             lastDist[i] = (Real)( (p3d-f_lastPos.getValue())*f_lastDir.getValue());
             if (lastDist[i] > 0.0)
@@ -617,25 +616,25 @@ void AttachConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams
     const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& x2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
-    sofa::helper::types::RGBAColor color(1,0.5,0.5,1);
-    std::vector<sofa::defaulttype::Vector3> vertices;
+    sofa::type::RGBAColor color(1,0.5,0.5,1);
+    std::vector<sofa::type::Vector3> vertices;
 
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
         if (activeFlags.size() > i && !activeFlags[i])
             continue;
-        vertices.push_back(sofa::defaulttype::Vector3(x2[indices2[i]][0],x2[indices2[i]][1],x2[indices2[i]][2]));
+        vertices.push_back(sofa::type::Vector3(x2[indices2[i]][0],x2[indices2[i]][1],x2[indices2[i]][2]));
     }
     vparams->drawTool()->drawPoints(vertices,10,color);
     vertices.clear();
 
-    color = sofa::helper::types::RGBAColor(1,0.5,0.5,1);
+    color = sofa::type::RGBAColor(1,0.5,0.5,1);
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
         if (activeFlags.size() > i && !activeFlags[i])
             continue;
-        vertices.push_back(sofa::defaulttype::Vector3(x1[indices1[i]][0],x1[indices1[i]][1],x1[indices1[i]][2]));
-        vertices.push_back(sofa::defaulttype::Vector3(x2[indices2[i]][0],x2[indices2[i]][1],x2[indices2[i]][2]));
+        vertices.push_back(sofa::type::Vector3(x1[indices1[i]][0],x1[indices1[i]][1],x1[indices1[i]][2]));
+        vertices.push_back(sofa::type::Vector3(x2[indices2[i]][0],x2[indices2[i]][1],x2[indices2[i]][2]));
     }
     vparams->drawTool()->drawLines(vertices,1,color);
     vparams->drawTool()->restoreLastState();

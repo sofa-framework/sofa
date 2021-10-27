@@ -28,6 +28,7 @@ list(APPEND HEADER_FILES
     ${SOFAGRAPHCOMPONENT_SRC}/StatsSetting.h
     ${SOFAGRAPHCOMPONENT_SRC}/ViewerSetting.h
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheck.h
+    ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckDeprecatedComponents.h
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckDuplicatedName.h
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckMissingRequiredPlugin.h
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckAPIChange.h
@@ -48,6 +49,7 @@ list(APPEND SOURCE_FILES
     ${SOFAGRAPHCOMPONENT_SRC}/SofaDefaultPathSetting.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/StatsSetting.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/ViewerSetting.cpp
+    ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckDeprecatedComponents.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckDuplicatedName.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckMissingRequiredPlugin.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckAPIChange.cpp

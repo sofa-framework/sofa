@@ -85,7 +85,7 @@ public:
     void setPickingMethod(PickingMethod method) { pickingMethod = method; }
     bool useSelectionBufferMethod() const { return (pickingMethod == SELECTION_BUFFER); }
 
-    void updateRay(const sofa::defaulttype::Vector3 &position, const sofa::defaulttype::Vector3 &orientation);
+    void updateRay(const sofa::type::Vector3 &position, const sofa::type::Vector3 &orientation);
 
     void handleMouseEvent( MOUSE_STATUS status, MOUSE_BUTTON button);
 
@@ -107,11 +107,11 @@ public:
     Operation *changeOperation(MOUSE_BUTTON button, const std::string &op);
 
     void addCallBack(CallBackPicker *c) {callbacks.push_back(c);}
-    helper::vector< CallBackPicker* > getCallBackPicker() {return callbacks;}
+    type::vector< CallBackPicker* > getCallBackPicker() {return callbacks;}
     void clearCallBacks() {for (unsigned int i=0; i<callbacks.size(); ++i) callbacks.clear();}
 
-    static BodyPicked findCollisionUsingBruteForce(const defaulttype::Vector3& origin, const defaulttype::Vector3& direction, double maxLength, core::objectmodel::BaseNode* root);
-    virtual BodyPicked findCollisionUsingColourCoding(const defaulttype::Vector3& origin, const defaulttype::Vector3& direction);
+    static BodyPicked findCollisionUsingBruteForce(const type::Vector3& origin, const type::Vector3& direction, double maxLength, core::objectmodel::BaseNode* root);
+    virtual BodyPicked findCollisionUsingColourCoding(const type::Vector3& origin, const type::Vector3& direction);
 
     ComponentMouseInteraction           *getInteraction();
     BodyPicked                          *getLastPicked() {return &lastPicked;}
@@ -139,9 +139,9 @@ protected:
 
 
     //NONE is the number of Operations in use.
-    helper::fixed_array< Operation*,NONE > operations;
+    type::fixed_array< Operation*,NONE > operations;
 
-    helper::vector< CallBackPicker* > callbacks;
+    type::vector< CallBackPicker* > callbacks;
 
     CallBackRender* renderCallback;
 

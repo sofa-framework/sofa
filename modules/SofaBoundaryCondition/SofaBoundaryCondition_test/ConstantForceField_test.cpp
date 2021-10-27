@@ -29,8 +29,10 @@ using std::vector ;
 using std::map ;
 using std::pair ;
 
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test;
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest;
 
 #include <SceneCreator/SceneCreator.h>
 
@@ -60,15 +62,16 @@ struct TypeTuple
 } ;
 
 template <typename TTypeTuple>
-struct ConstantForceField_test : public Sofa_test<>
+struct ConstantForceField_test : public BaseSimulationTest, NumericTest<typename TTypeTuple::DataType::Coord::value_type>
 {
     typedef typename TTypeTuple::DataType DataTypes ;
     typedef typename TTypeTuple::MassType MassType ;
     typedef ConstantForceField<DataTypes> TheConstantForceField ;
     typedef MechanicalObject<DataTypes>   TheMechanicalObject;
+    using Real = typename TTypeTuple::DataType::Coord::value_type;
 
-    void SetUp() {}
-    void TearDown(){}
+    void SetUp() override {}
+    void TearDown() override {}
 
     void testSimpleBehavior()
     {
@@ -78,7 +81,7 @@ struct ConstantForceField_test : public Sofa_test<>
         scene << "<?xml version='1.0'?>"
                  "<Node 	name='Root' gravity='-9.81 0 0' time='0' animate='0' >               \n"
                  "   <DefaultAnimationLoop/>                                                     \n"
-                 "   <CGLinearSolver/>                                                           \n"
+                 "   <CGLinearSolver iterations=\"25\" tolerance=\"1e-5\" threshold=\"1e-5\"/>   \n"
                  "   <EulerImplicitSolver/>                                                      \n"
                  "   <MechanicalObject name='mstate' size='2' template='"<<  DataTypes::Name() << "'/> \n"
                  "   <UniformMass/>                                                                    \n"

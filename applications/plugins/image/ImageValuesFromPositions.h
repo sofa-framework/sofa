@@ -27,7 +27,8 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/helper/OptionsGroup.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
+#include <sofa/core/DataEngine.h>
 
 #define INTERPOLATION_NEAREST 0
 #define INTERPOLATION_LINEAR 1
@@ -141,13 +142,13 @@ public:
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
     Data< TransformType > transform;
 
-    typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
+    typedef type::vector<type::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     Data< SeqPositions > position; ///< input positions
 
     Data< helper::OptionsGroup > Interpolation;  ///< nearest, linear, cubic
 
-    typedef helper::vector<Real> valuesType;
+    typedef type::vector<Real> valuesType;
     typedef helper::WriteOnlyAccessor<Data< valuesType > > waValues;
     Data< valuesType > values;  ///< output interpolated values
     Data< Real > outValue; ///< default value outside image

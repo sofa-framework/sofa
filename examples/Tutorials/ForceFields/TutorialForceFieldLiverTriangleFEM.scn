@@ -4,7 +4,8 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showForceFields" />
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager name="collision response" response="default" />
     <Node name="LiverTriangles" gravity="0 -9.81 0" depend="topo dofs">
         <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
@@ -12,7 +13,7 @@
         <MeshObjLoader name="meshLoader0" filename="mesh/liver-smooth.obj" />
         <MeshTopology name="mesh" src="@meshLoader0" />
         <MechanicalObject template="Vec3d" name="dofs" />
-        <TriangleFEMForceField template="Vec3d" />
+        <TriangleFEMForceField template="Vec3d" youngModulus="1000" poissonRatio="0.3"/>
         <UniformMass template="Vec3d" name="mass" totalMass="0.5" />
         <FixedConstraint template="Vec3d" name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu" gravity="0 -9.81 0">

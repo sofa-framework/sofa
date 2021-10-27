@@ -72,6 +72,9 @@ public:
     core::objectmodel::Base* findObject(const QTreeWidgetItem* item);
     core::objectmodel::BaseData* findData(const QTreeWidgetItem* item);
 
+
+    inline static QColor nameColor { 120, 120, 120};
+
 };
 
 } // namespace sofa::gui::qt

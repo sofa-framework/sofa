@@ -23,7 +23,7 @@
 #define SOFA_DEFAULTTYPE_MAPMAPSPARSEMATRIX_H
 
 #include <map>
-#include "BaseVector.h"
+#include <sofa/linearalgebra/BaseVector.h>
 
 namespace sofa
 {
@@ -114,7 +114,7 @@ public:
     }
 
     template< class VecDeriv>
-    void multTransposeBaseVector(VecDeriv& res, const sofa::defaulttype::BaseVector* lambda ) const
+    void multTransposeBaseVector(VecDeriv& res, const sofa::linearalgebra::BaseVector* lambda ) const
     {
         typedef typename VecDeriv::value_type Deriv;
 

@@ -89,14 +89,14 @@ protected:
 
     };
 
-    sofa::helper::vector<bool> pOnBorder;
-    Data<sofa::helper::vector<Contact> > contacts;
+    sofa::type::vector<bool> pOnBorder;
+    Data<sofa::type::vector<Contact> > contacts;
 
 
     class TContact
     {
     public:
-        helper::fixed_array<unsigned int,3> index;
+        type::fixed_array<unsigned int,3> index;
         Coord normal,B,C;
         Real fact;
 
@@ -114,12 +114,12 @@ protected:
 
     };
 
-    Data<sofa::helper::vector<TContact> > tcontacts;
+    Data<sofa::type::vector<TContact> > tcontacts;
 
     class VContact
     {
     public:
-        helper::fixed_array<unsigned int,4> index;
+        type::fixed_array<unsigned int,4> index;
         Coord A,B,C;
         Real fact;
 
@@ -137,7 +137,7 @@ protected:
 
     };
 
-    Data<sofa::helper::vector<VContact> > vcontacts;
+    Data<sofa::type::vector<VContact> > vcontacts;
 
     DistanceGridForceFieldInternalData<DataTypes> data;
 
@@ -146,7 +146,7 @@ public:
     // Input data parameters
     sofa::core::objectmodel::DataFileName fileDistanceGrid; ///< load distance grid from specified file
     Data< double > scale; ///< scaling factor for input file
-    Data< helper::fixed_array<DistanceGrid::Coord,2> > box; ///< Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax
+    Data< type::fixed_array<DistanceGrid::Coord,2> > box; ///< Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax
     Data< int > nx; ///< number of values on X axis
     Data< int > ny; ///< number of values on Y axis
     Data< int > nz; ///< number of values on Z axis
@@ -161,13 +161,13 @@ public:
     Data<Real> stiffnessVolume; ///< force stiffness if a tetrahedron have an volume less than minVolume
     bool flipNormals;
 
-    Data<sofa::helper::types::RGBAColor> color; ///< display color.(default=[0.0,0.5,0.2,1.0])
+    Data<sofa::type::RGBAColor> color; ///< display color.(default=[0.0,0.5,0.2,1.0])
     Data<bool> bDraw; ///< enable/disable drawing of distancegrid
     Data<bool> drawPoints; ///< enable/disable drawing of distancegrid
     Data<Real> drawSize; ///< display size if draw is enabled
 
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
-    Data< defaulttype::Vec<2,int> > localRange;
+    Data< type::Vec<2,int> > localRange;
 protected:
     DistanceGridForceField()
         : grid(NULL)
@@ -185,11 +185,11 @@ protected:
         , stiffnessArea(initData(&stiffnessArea, (Real)100, "stiffnessArea", "force stiffness if a triangle have an area less than minArea"))
         , minVolume(initData(&minVolume, (Real)0, "minVolume", "minimal volume for each tetrahedron (a flipped triangle will have a negative volume)"))
         , stiffnessVolume(initData(&stiffnessVolume, (Real)0, "stiffnessVolume", "force stiffness if a tetrahedron have an volume less than minVolume"))
-        , color(initData(&color, sofa::helper::types::RGBAColor(0.0f,0.5f,0.2f,1.0f), "color", "display color.(default=[0.0,0.5,0.2,1.0])"))
+        , color(initData(&color, sofa::type::RGBAColor(0.0f,0.5f,0.2f,1.0f), "color", "display color.(default=[0.0,0.5,0.2,1.0])"))
         , bDraw(initData(&bDraw, false, "draw", "enable/disable drawing of distancegrid"))
         , drawPoints(initData(&drawPoints, false, "drawPoints", "enable/disable drawing of distancegrid"))
         , drawSize(initData(&drawSize, (Real)10.0f, "drawSize", "display size if draw is enabled"))
-        , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+        , localRange( initData(&localRange, type::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
     {
         this->addAlias(&stiffnessIn,"stiffness");
         this->addAlias(&stiffnessOut,"stiffness");
@@ -216,7 +216,7 @@ public:
     void addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
-        msg_warning() << "Get potentialEnergy not implemented" << sendl;
+        msg_warning() << "Get potentialEnergy not implemented";
         return 0.0;
     }
     void draw(const core::visual::VisualParams* vparams) override;

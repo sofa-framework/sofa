@@ -24,7 +24,7 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <LMConstraint/LMConstraint.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 #include <sofa/simulation/Node.h>
 
 
@@ -59,8 +59,8 @@ public:
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
 
-    typedef sofa::component::topology::PointSubsetData< helper::vector<Index> > SetIndex;
-    typedef helper::vector<Index> SetIndexArray;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
+    typedef type::vector<Index> SetIndexArray;
 
     typedef core::ConstraintParams::ConstOrder ConstOrder;
 
@@ -77,15 +77,13 @@ protected:
         , f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed"))
         , showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis, 1.0f, "showSizeAxis", "size of the vector used to display the constrained axis"))
         , l_topology(initLink("topology", "link to the topology container"))
-        , m_pointHandler(nullptr)
     {
         
     }
 
     ~DOFBlockerLMConstraint()
     {
-        if (m_pointHandler)
-            delete m_pointHandler;
+
     }
 
 public:
@@ -109,36 +107,16 @@ public:
         else return false;
     }
 
-    Data<helper::vector<Deriv> > BlockedAxis; ///< List of rotation axis to constrain
-    Data<helper::vector<SReal> > factorAxis; ///< Factor to apply in order to block only a certain amount of rotation along the axis
+    Data<type::vector<Deriv> > BlockedAxis; ///< List of rotation axis to constrain
+    Data<type::vector<SReal> > factorAxis; ///< Factor to apply in order to block only a certain amount of rotation along the axis
     SetIndex f_indices; ///< List of the index of particles to be fixed
     Data<float> showSizeAxis; ///< size of the vector used to display the constrained axis
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<DOFBlockerLMConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
-    class FCTPointHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<Index> >
-    {
-    public:
-        FCTPointHandler(DOFBlockerLMConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<helper::vector<Index> >* _data)
-            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, sofa::helper::vector<Index> >(_data), fc(_fc) {}
-
-
-
-        void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
-
-
-        bool applyTestCreateFunction(Index /*index*/,
-                const sofa::helper::vector< Index > & /*ancestors*/,
-                const sofa::helper::vector< double > & /*coefs*/);
-    protected:
-        DOFBlockerLMConstraint<DataTypes> *fc;
-    };
-
 protected :
-    sofa::helper::vector<SetIndexArray> idxEquations;
-    
-    FCTPointHandler* m_pointHandler;
+    sofa::type::vector<SetIndexArray> idxEquations;
 };
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_DOFBLOCKERLMCONSTRAINT_CPP)

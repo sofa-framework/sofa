@@ -71,6 +71,11 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3Types, defaulttype::Rigid3Ty
     std::list<const core::topology::TopologyChange *>::const_iterator itBegin = this->m_fromTopology->beginChange();
     std::list<const core::topology::TopologyChange *>::const_iterator itEnd = this->m_fromTopology->endChange();
 
+    typedef sofa::core::behavior::MechanicalState<defaulttype::Vec3Types> InMechanicalStateT;
+    InMechanicalStateT* inState;
+    this->m_fromTopology->getContext()->get(inState);
+    const auto& inRestPos = (inState->read(core::ConstVecCoordId::restPosition())->getValue());
+
     for ( std::list<const core::topology::TopologyChange *>::const_iterator changeIt = itBegin;
             changeIt != itEnd; ++changeIt )
     {
@@ -81,7 +86,7 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3Types, defaulttype::Rigid3Ty
         {
             if(!m_invalidIndex.empty())
             {
-                helper::vector<MappingData>& mapData = *(d_map.beginEdit());
+                type::vector<MappingData>& mapData = *(d_map.beginEdit());
 
                 for ( auto iter = m_invalidIndex.cbegin();
                         iter != m_invalidIndex.cend(); ++iter )
@@ -96,9 +101,9 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3Types, defaulttype::Rigid3Ty
                         pos[2] = mapData[j].baryCoords[2];
 
                         // find nearest cell and barycentric coords
-                        Real distance = 1e10;
+                        SReal distance = 1e10;
 
-                        int index = m_fromGeomAlgo->findNearestElementInRestPos ( pos, coefs, distance );
+                        Index index = sofa::topology::getClosestHexahedronIndex(inRestPos, m_fromTopology->getHexahedra(), pos, coefs, distance);
 
                         if ( index != -1 )
                         {
@@ -145,14 +150,16 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3Types, defaulttype::Rigid3Ty
                 {
                     if ( d_map.getValue()[j].in_index == cubeId ) // invalidate mapping
                     {
-                        Vector3 coefs;
+                        std::array<SReal, 3> coefs;
                         coefs[0] = d_map.getValue()[j].baryCoords[0];
                         coefs[1] = d_map.getValue()[j].baryCoords[1];
                         coefs[2] = d_map.getValue()[j].baryCoords[2];
 
-                        defaulttype::Vec3Types::Coord restPos = m_fromGeomAlgo->getRestPointPositionInHexahedron ( cubeId, coefs );
+                        const auto& h = this->m_fromTopology->getHexahedron(cubeId);
+                        const auto restPos = sofa::geometry::Hexahedron::getPositionFromBarycentricCoefficients(inRestPos[h[0]], inRestPos[h[1]], inRestPos[h[2]], inRestPos[h[3]],
+                            inRestPos[h[4]], inRestPos[h[5]], inRestPos[h[6]], inRestPos[h[7]], coefs);
 
-                        helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
+                        type::vector<MappingData>& vectorData = *(d_map.beginEdit());
                         vectorData[j].in_index = sofa::InvalidID;
                         vectorData[j].baryCoords[0] = restPos[0];
                         vectorData[j].baryCoords[1] = restPos[1];
@@ -173,7 +180,7 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3Types, defaulttype::Rigid3Ty
                 {
                     if ( d_map.getValue()[j].in_index == lastCubeId )
                     {
-                        helper::vector<MappingData>& vectorData = *(d_map.beginEdit());
+                        type::vector<MappingData>& vectorData = *(d_map.beginEdit());
                         vectorData[j].in_index = cubeId;
                         d_map.endEdit();
                     }

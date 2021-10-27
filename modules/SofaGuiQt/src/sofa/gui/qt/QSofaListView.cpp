@@ -80,14 +80,21 @@ QSofaListView::QSofaListView(const SofaListViewAttribute& attribute,
     AddObjectDialog_ = new AddObject ( &list_object, this );
     AddObjectDialog_->hide();
 
+    this->setColumnCount(2);
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    header()->setResizeMode(header()->count() - 1, QHeaderView::Fixed);
+    header()->setResizeMode(0, QHeaderView::Interactive);
+    header()->setResizeMode(1, QHeaderView::Stretch);
 #else
-    header()->setSectionResizeMode(header()->count() - 1, QHeaderView::Fixed);
+    header()->setSectionResizeMode(0, QHeaderView::Interactive);
+    header()->setSectionResizeMode(1, QHeaderView::Stretch);
 #endif // SOFA_QT5
+    QStringList headerLabels;
+    headerLabels << "Name" << "Class";
+    this->setHeaderLabels(headerLabels);
 
     setRootIsDecorated(true);
-    setIndentation(15);
+    setIndentation(8);
+
     graphListener_ = new GraphListenerQListView(this);
 
     this->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -99,7 +106,6 @@ QSofaListView::QSofaListView(const SofaListViewAttribute& attribute,
 
 QSofaListView::~QSofaListView()
 {
-
     delete graphListener_;
 }
 
@@ -116,7 +122,6 @@ void QSofaListView::Clear(Node* rootNode)
 
     this->setSortingEnabled(false);
 
-    header()->hide();
     rootNode->addListener(graphListener_);
     graphListener_->onBeginAddChild ( nullptr, rootNode );
     graphListener_->freeze ( rootNode );
@@ -152,7 +157,7 @@ void QSofaListView::modifyUnlock(void* Id)
 }
 
 /// Traverse the item tree and retrive the item that are expanded. The path of the node
-/// that are expanded are stored in the the pathes std::vector::std::string>.
+/// that are expanded are stored in the pathes std::vector::std::string>.
 void QSofaListView::getExpandedNodes(QTreeWidgetItem* item, std::vector<std::string>& pathes)
 {
     if(!item)
@@ -639,6 +644,11 @@ void QSofaListView::UpdateOpenedDialogs()
         ModifyObject* modify = reinterpret_cast<ModifyObject*>(iter->second);
         modify->updateTables();
     }
+}
+
+void QSofaListView::ExpandRootNodeOnly()
+{
+    this->expandToDepth(0);
 }
 
 void QSofaListView::HideDatas()

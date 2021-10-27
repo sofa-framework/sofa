@@ -79,7 +79,7 @@ TEST(NarrowPhaseDetection_test, DetectionOutputMap)
     auto narrowPhaseDetection = New<sofa::core::collision::DummyNarrowPhaseDetection>();
 
     //Generate a collection of dummy collision models
-    sofa::helper::vector<core::DummyCollisionModel::SPtr> collisionModels;
+    sofa::type::vector<core::DummyCollisionModel::SPtr> collisionModels;
     for (unsigned int i = 0; i < 10; ++i)
     {
         collisionModels.push_back(New<core::DummyCollisionModel>());

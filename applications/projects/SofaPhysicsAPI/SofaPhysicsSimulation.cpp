@@ -22,8 +22,8 @@
 #include "SofaPhysicsAPI.h"
 #include "SofaPhysicsSimulation.h"
 
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glu.h>
+#include <sofa/gl/gl.h>
+#include <sofa/gl/glu.h>
 #include <sofa/helper/io/Image.h>
 #include <sofa/gl/RAII.h>
 
@@ -42,6 +42,8 @@
 
 #include <sofa/gui/BaseGUI.h>
 #include "fakegui.h"
+
+#include <sofa/type/Vec.h>
 
 #include <cmath>
 #include <iostream>
@@ -358,7 +360,7 @@ void SofaPhysicsSimulation::createScene()
     m_RootNode = sofa::modeling::createRootWithCollisionPipeline();
     if (m_RootNode.get())
     {
-        m_RootNode->setGravity( Vec3d(0,-9.8,0) );
+        m_RootNode->setGravity({ 0,-9.8,0 });
         this->createScene_impl();
 
         m_Simulation->init(m_RootNode.get());
@@ -437,7 +439,7 @@ double *SofaPhysicsSimulation::getGravity() const
 
     if (getScene())
     {
-        const Vec3d& g = getScene()->getContext()->getGravity();
+        const auto& g = getScene()->getContext()->getGravity();
         gravityVec[0] = g.x();
         gravityVec[1] = g.y();
         gravityVec[2] = g.z();
@@ -448,7 +450,7 @@ double *SofaPhysicsSimulation::getGravity() const
 
 void SofaPhysicsSimulation::setGravity(double* gravity)
 {
-    Vec3d g = Vec3d(gravity[0], gravity[1], gravity[2]);
+    const auto& g = sofa::type::Vec3d(gravity[0], gravity[1], gravity[2]);
     getScene()->getContext()->setGravity(g);
 }
 
@@ -825,7 +827,7 @@ void SofaPhysicsSimulation::drawGL()
 
         vparams->sceneBBox() = groot->f_bbox.getValue();
 
-        vparams->viewport() = sofa::helper::make_array(viewport[0], viewport[1], viewport[2], viewport[3]);
+        vparams->viewport() = sofa::type::make_array(viewport[0], viewport[1], viewport[2], viewport[3]);
 
         if (vWidth != lastW || vHeight != lastH)
         {
@@ -875,7 +877,7 @@ void SofaPhysicsSimulation::calcProjection()
     double offset;
     double xForeground, yForeground, zForeground, xBackground, yBackground,
            zBackground;
-    Vector3 center;
+    sofa::type::Vector3 center;
 
     /// Camera part
     if (!currentCamera)
@@ -913,7 +915,7 @@ void SofaPhysicsSimulation::calcProjection()
             yFactor = 1.0;
         }
     }
-    vparams->viewport() = sofa::helper::make_array(0,0,width,height);
+    vparams->viewport() = sofa::type::make_array(0,0,width,height);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -931,7 +933,7 @@ void SofaPhysicsSimulation::calcProjection()
     else
     {
         double ratio = vparams->zFar() / (vparams->zNear() * 20);
-        Vector3 tcenter = vparams->sceneTransform() * center;
+        auto tcenter = vparams->sceneTransform() * center;
         if (tcenter[2] < 0.0)
         {
             ratio = -300 * (tcenter.norm2()) / tcenter[2];

@@ -24,8 +24,8 @@
 #include <iterator>
 #include <algorithm>
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 
@@ -71,7 +71,7 @@ namespace sofa {
         double final_expected_value=0.0;
 
         /// Create the context for the scene
-        void SetUp()
+        void SetUp() override
         {
             // Init simulation
             sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
@@ -96,6 +96,9 @@ namespace sofa {
                 root->addObject(eulerSolver);
             }
             CGLinearSolver::SPtr cgLinearSolver = New<CGLinearSolver> ();
+            cgLinearSolver->d_maxIter.setValue(25u);
+            cgLinearSolver->d_tolerance.setValue(1e-5);
+            cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-5);
             root->addObject(cgLinearSolver);
 
             simulation::Node::SPtr childNode = root->createChild("Particle");
@@ -108,7 +111,7 @@ namespace sofa {
             childNode->addObject(mass);
 
             sofa::component::misc::WriteState::SPtr writeState =New<sofa::component::misc::WriteState>();
-            helper::vector<double> time;
+            type::vector<double> time;
             time.resize(1);
             time[0] = 0.0;
             writeState->d_period.setValue(timeStep);
@@ -218,7 +221,7 @@ namespace sofa {
 
 
         /// Unload the scene
-        void TearDown()
+        void TearDown() override
         {
             if (root!=nullptr)
                 sofa::simulation::getSimulation()->unload(root);

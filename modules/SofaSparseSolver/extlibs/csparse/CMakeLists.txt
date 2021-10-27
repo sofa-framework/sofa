@@ -19,6 +19,11 @@ add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<INSTALL_INTERFACE:include/extlibs/CSparse>")
 
+if(WIN32)
+    # remove warnings about deprecation (CRT,etc)
+    target_compile_options(${PROJECT_NAME} PRIVATE "/wd4996")
+endif()
+
 sofa_create_package_with_targets(
     PACKAGE_NAME CSparse
     PACKAGE_VERSION ${PROJECT_VERSION}

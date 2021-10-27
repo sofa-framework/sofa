@@ -31,11 +31,12 @@ using sofa::component::topology::TriangleSetTopologyContainer;
 using sofa::component::topology::TetrahedronSetTopologyContainer;
 using sofa::core::topology::BaseMeshTopology;
 
-#include <gtest/gtest.h>
-using testing::Test;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
 
-using sofa::defaulttype::Vector3;
-using sofa::defaulttype::Vec3u;
+
+using sofa::type::Vector3;
+using sofa::type::Vec3u;
 using sofa::core::objectmodel::New;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -54,7 +55,7 @@ using sofa::component::container::MechanicalObject ;
 using sofa::defaulttype::Vec3dTypes;
 
 template <class In, class Out>
-struct BarycentricMapperTriangleSetTopologyTest :  public Test, public BarycentricMapperTriangleSetTopology<In,Out>
+struct BarycentricMapperTriangleSetTopologyTest :  public BaseTest, public BarycentricMapperTriangleSetTopology<In,Out>
 {
     typedef BarycentricMapperTriangleSetTopology<In,Out> Inherit;
     typedef typename In::Real Real;

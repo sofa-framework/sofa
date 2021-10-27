@@ -24,7 +24,7 @@
 #include <SofaMiscMapping/config.h>
 
 #include <sofa/core/Mapping.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 
 
 namespace sofa::component::mapping
@@ -57,15 +57,15 @@ public:
     typedef typename In::Coord InCoord;
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
-    typedef linearsolver::EigenSparseMatrix<TIn,TOut>   SparseMatrixEigen;
-    typedef linearsolver::EigenSparseMatrix<TIn,TIn>    SparseKMatrixEigen;
+    typedef linearalgebra::EigenSparseMatrix<TIn,TOut>   SparseMatrixEigen;
+    typedef linearalgebra::EigenSparseMatrix<TIn,TIn>    SparseKMatrixEigen;
     typedef Data<InVecCoord> InDataVecCoord;
     typedef Data<InVecDeriv> InDataVecDeriv;
     typedef Data<InMatrixDeriv> InDataMatrixDeriv;
     typedef Data<OutVecCoord> OutDataVecCoord;
     typedef Data<OutVecDeriv> OutDataVecDeriv;
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
-    typedef defaulttype::Vec<In::spatial_dimensions,Real> Direction;
+    typedef type::Vec<In::spatial_dimensions,Real> Direction;
 
 
     Data< unsigned > d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS)
@@ -85,19 +85,17 @@ public:
     void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce ) override;
 
     const sofa::defaulttype::BaseMatrix* getJ() override;
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
 
     void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce ) override;
     const defaulttype::BaseMatrix* getK() override;
-
-    void updateForceMask() override;
 
 protected:
     SquareMapping();
     virtual ~SquareMapping();
 
     SparseMatrixEigen jacobian;                             ///< Jacobian of the mapping
-    helper::vector<defaulttype::BaseMatrix*> baseMatrices;  ///< Jacobian of the mapping, in a vector
+    type::vector<defaulttype::BaseMatrix*> baseMatrices;  ///< Jacobian of the mapping, in a vector
     SparseKMatrixEigen K;                                   ///< Assembled geometric stiffness matrix
 
 };

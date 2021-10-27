@@ -28,11 +28,9 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <SofaConstraint/ConstraintStoreLambdaVisitor.h>
-#include <algorithm>
 #include <sofa/core/behavior/MultiVec.h>
 #include <sofa/simulation/DefaultTaskScheduler.h>
 
-#include <thread>
 #include <functional>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
@@ -137,15 +135,15 @@ void GenericConstraintSolver::init()
     // Prevents ConstraintCorrection accumulation due to multiple AnimationLoop initialization on dynamic components Add/Remove operations.
     if (!constraintCorrections.empty())
     {
-        for (unsigned int i = 0; i < constraintCorrections.size(); i++)
-            constraintCorrections[i]->removeConstraintSolver(this);
+        for (auto* constraintCorrection : constraintCorrections)
+            constraintCorrection->removeConstraintSolver(this);
         constraintCorrections.clear();
     }
 
     getContext()->get<core::behavior::BaseConstraintCorrection>(&constraintCorrections, core::objectmodel::BaseContext::SearchDown);
     constraintCorrectionIsActive.resize(constraintCorrections.size());
-    for (unsigned int i = 0; i < constraintCorrections.size(); i++)
-        constraintCorrections[i]->addConstraintSolver(this);
+    for (auto* constraintCorrection : constraintCorrections)
+        constraintCorrection->addConstraintSolver(this);
     context = getContext();
     simulation::common::VectorOperations vop(sofa::core::execparams::defaultInstance(), this->getContext());
     {
@@ -165,12 +163,10 @@ void GenericConstraintSolver::init()
 
 void GenericConstraintSolver::cleanup()
 {
-    if (!constraintCorrections.empty())
-    {
-        for (unsigned int i = 0; i < constraintCorrections.size(); i++)
-            constraintCorrections[i]->removeConstraintSolver(this);
-        constraintCorrections.clear();
-    }
+    for (auto* constraintCorrection : constraintCorrections)
+        constraintCorrection->removeConstraintSolver(this);
+    constraintCorrections.clear();
+
     simulation::common::VectorOperations vop(sofa::core::execparams::defaultInstance(), this->getContext());
     vop.v_free(m_lambdaId, false, true);
     vop.v_free(m_dxId, false, true);
@@ -260,9 +256,8 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 
     if (unbuilt.getValue())
     {
-        for (unsigned int i=0;i<constraintCorrections.size();i++)
+        for (auto* cc : constraintCorrections)
         {
-            core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
             if (!cc->isActive()) continue;
             cc->resetForUnbuiltResolution(current_cp->getF(), current_cp->constraints_sequence);
         }
@@ -321,7 +316,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
             simulation::TaskScheduler* taskScheduler = simulation::TaskScheduler::getInstance();
             simulation::CpuTask::Status status;
 
-            helper::vector<GenericConstraintSolver::ComputeComplianceTask> tasks;
+            type::vector<GenericConstraintSolver::ComputeComplianceTask> tasks;
             sofa::Index nbTasks = constraintCorrections.size();
             tasks.resize(nbTasks, GenericConstraintSolver::ComputeComplianceTask(&status));
             sofa::Index dim = current_cp->W.rowSize();
@@ -354,9 +349,8 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
             }
 
         } else {
-            for (unsigned int i=0; i<constraintCorrections.size(); i++)
+            for (auto* cc : constraintCorrections)
             {
-                core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
                 if (!cc->isActive())
                     continue;
 
@@ -381,9 +375,8 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 
 void GenericConstraintSolver::rebuildSystem(double massFactor, double forceFactor)
 {
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+    for (auto* cc : constraintCorrections)
     {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         if (!cc->isActive()) continue;
         cc->rebuildSystem(massFactor, forceFactor);
     }
@@ -471,7 +464,7 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
 
     if(d_computeConstraintForces.getValue())
     {
-        WriteOnlyAccessor<Data<helper::vector<double>>> constraints = d_constraintForces;
+        WriteOnlyAccessor<Data<type::vector<double>>> constraints = d_constraintForces;
         constraints.resize(current_cp->getDimension());
         for(int i=0; i<current_cp->getDimension(); i++)
         {
@@ -484,9 +477,8 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
 
 void GenericConstraintSolver::computeResidual(const core::ExecParams* eparam)
 {
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+    for (auto* cc : constraintCorrections)
     {
-        core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->computeResidual(eparam,&current_cp->f);
     }
 }
@@ -628,15 +620,13 @@ void GenericConstraintProblem::clear(int nbC)
 
 void GenericConstraintProblem::freeConstraintResolutions()
 {
-    for(unsigned int i=0; i<constraintsResolutions.size(); i++)
+    for(auto*& constraintsResolution : constraintsResolutions)
     {
-        if (constraintsResolutions[i] != nullptr)
-        {
-            delete constraintsResolutions[i];
-            constraintsResolutions[i] = nullptr;
-        }
+        delete constraintsResolution;
+        constraintsResolution = nullptr;
     }
 }
+
 int GenericConstraintProblem::getNumConstraints()
 {
     return dimension;
@@ -696,7 +686,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
     double error=0.0;
 
     bool convergence = false;
-    sofa::helper::vector<double> tempForces;
+    sofa::type::vector<double> tempForces;
     if(sor != 1.0) tempForces.resize(dimension);
 
     if(scaleTolerance && !allVerified)
@@ -719,9 +709,9 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
     }
 
     bool showGraphs = false;
-    sofa::helper::vector<double>* graph_residuals = nullptr;
-    std::map < std::string, sofa::helper::vector<double> > *graph_forces = nullptr, *graph_violations = nullptr;
-    sofa::helper::vector<double> tabErrors;
+    sofa::type::vector<double>* graph_residuals = nullptr;
+    std::map < std::string, sofa::type::vector<double> > *graph_forces = nullptr, *graph_violations = nullptr;
+    sofa::type::vector<double> tabErrors;
 
     if(solver)
     {
@@ -817,10 +807,10 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
                 std::ostringstream oss;
                 oss << "f" << j;
 
-                sofa::helper::vector<double>& graph_force = (*graph_forces)[oss.str()];
+                sofa::type::vector<double>& graph_force = (*graph_forces)[oss.str()];
                 graph_force.push_back(force[j]);
 
-                sofa::helper::vector<double>& graph_violation = (*graph_violations)[oss.str()];
+                sofa::type::vector<double>& graph_violation = (*graph_violations)[oss.str()];
                 graph_violation.push_back(d[j]);
             }
 
@@ -881,7 +871,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
     {
         solver->graphErrors.endEdit();
 
-        sofa::helper::vector<double>& graph_constraints = (*solver->graphConstraints.beginEdit())["Constraints"];
+        sofa::type::vector<double>& graph_constraints = (*solver->graphConstraints.beginEdit())["Constraints"];
         graph_constraints.clear();
 
         for(j=0; j<dimension; )
@@ -928,7 +918,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
     double error=0.0;
 
     bool convergence = false;
-    sofa::helper::vector<double> tempForces;
+    sofa::type::vector<double> tempForces;
     if(sor != 1.0) tempForces.resize(dimension);
 
     if(scaleTolerance && !allVerified)
@@ -951,9 +941,9 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
     }
 
     bool showGraphs = false;
-    sofa::helper::vector<double>* graph_residuals = nullptr;
-    std::map < std::string, sofa::helper::vector<double> > *graph_forces = nullptr, *graph_violations = nullptr;
-    sofa::helper::vector<double> tabErrors;
+    sofa::type::vector<double>* graph_residuals = nullptr;
+    std::map < std::string, sofa::type::vector<double> > *graph_forces = nullptr, *graph_violations = nullptr;
+    sofa::type::vector<double> tabErrors;
 
     if(solver)
     {
@@ -1071,10 +1061,10 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
                 std::ostringstream oss;
                 oss << "f" << j;
 
-                sofa::helper::vector<double>& graph_force = (*graph_forces)[oss.str()];
+                sofa::type::vector<double>& graph_force = (*graph_forces)[oss.str()];
                 graph_force.push_back(force[j]);
 
-                sofa::helper::vector<double>& graph_violation = (*graph_violations)[oss.str()];
+                sofa::type::vector<double>& graph_violation = (*graph_violations)[oss.str()];
                 graph_violation.push_back(d[j]);
             }
 
@@ -1134,7 +1124,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
     {
         solver->graphErrors.endEdit();
 
-        sofa::helper::vector<double>& graph_constraints = (*solver->graphConstraints.beginEdit())["Constraints"];
+        sofa::type::vector<double>& graph_constraints = (*solver->graphConstraints.beginEdit())["Constraints"];
         graph_constraints.clear();
 
         for(int j=0; j<dimension; )

@@ -29,8 +29,8 @@
 using sofa::core::execparams::defaultInstance; 
 
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/testing/NumericTest.h>
-using sofa::helper::testing::NumericTest;
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest;
 #include <sofa/simulation/Node.h>
 #include <SofaSimulationGraph/SimpleApi.h>
 #include <SofaSimulationCommon/SceneLoaderXML.h>
@@ -67,7 +67,7 @@ struct BilateralInteractionConstraint_test : public NumericTest<>
     simulation::Simulation* simulation {nullptr}; ///< created by the constructor an re-used in the tests
 
     /// Create the context for the tests.
-    void SetUp()
+    void SetUp() override
     {
         sofa::simpleapi::importPlugin("SofaComponentAll");
         sofa::simpleapi::importPlugin("SofaMiscCollision");
@@ -76,7 +76,8 @@ struct BilateralInteractionConstraint_test : public NumericTest<>
             sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
     }
 
-    void TearDown(){
+    void TearDown() override
+    {
         if(root)
             simulation->unload(root);
     }

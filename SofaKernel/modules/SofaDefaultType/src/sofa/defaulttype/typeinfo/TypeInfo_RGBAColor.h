@@ -23,13 +23,13 @@
 
 #include <sofa/defaulttype/typeinfo/models/FixedArrayTypeInfo.h>
 #include <sofa/defaulttype/typeinfo/TypeInfo_Scalar.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 
 namespace sofa::defaulttype
 {
 
 template<>
-class DataTypeInfo< sofa::helper::types::RGBAColor > : public FixedArrayTypeInfo<sofa::helper::fixed_array<float,4>>
+class DataTypeInfo< sofa::type::RGBAColor > : public FixedArrayTypeInfo<sofa::type::fixed_array<float,4>>
 {
     public:
         static std::string name() { return "RGBAColor"; }

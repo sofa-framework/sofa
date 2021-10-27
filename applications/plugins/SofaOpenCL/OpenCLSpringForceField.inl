@@ -164,7 +164,7 @@ void SpringForceFieldInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,
     DEBUG_TEXT("SpringForceFieldInternalData::init");
     Data& data = m->data;
     m->Inherit::init();
-    const sofa::helper::vector<Spring>& springs = m->springs.getValue();
+    const sofa::type::vector<Spring>& springs = m->springs.getValue();
     if (!springs.empty())
     {
         bool external = (m->mstate1!=m->mstate2);

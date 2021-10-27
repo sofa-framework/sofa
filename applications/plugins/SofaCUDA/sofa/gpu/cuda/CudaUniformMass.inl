@@ -105,7 +105,7 @@ void UniformMass<CudaVec3fTypes, float>::addForce(const core::MechanicalParams* 
     //const VecDeriv& v = d_v.getValue();
 
     // weight
-    defaulttype::Vec3d g ( this->getContext()->getGravity() );
+    type::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set( theGravity, g[0], g[1], g[2]);
     Deriv mg = theGravity * d_vertexMass.getValue();
@@ -144,7 +144,7 @@ void UniformMass<CudaVec3f1Types, float>::addForce(const core::MechanicalParams*
     //const VecDeriv& v = d_v.getValue();
 
     // weight
-    defaulttype::Vec3d g ( this->getContext()->getGravity() );
+    type::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set( theGravity, g[0], g[1], g[2]);
     Deriv mg = theGravity * d_vertexMass.getValue();
@@ -184,7 +184,7 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::RigidMass<3,flo
 {
 
         VecDeriv& _f = *f.beginEdit();
-        defaulttype::Vec3d g(this->getContext()->getGravity());
+        type::Vec3d g(this->getContext()->getGravity());
 
         float m = d_vertexMass.getValue().mass;
         const float mg[] = { (float)(m*g(0)), (float)(m*g(1)), (float)(m*g(2)) };
@@ -202,7 +202,7 @@ SReal UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::RigidMass<3,flo
 
     SReal e = 0;
     // gravity
-    defaulttype::Vec3d g ( this->getContext()->getGravity() );
+    type::Vec3d g ( this->getContext()->getGravity() );
     for (unsigned int i=0; i<x.size(); i++)
     {
         e += g*d_vertexMass.getValue().mass*x[i].getCenter();
@@ -223,7 +223,7 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes, defaulttype::RigidMass<3,float> >:
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
-    defaulttype::Vec3d len;
+    type::Vec3d len;
 
     // The moment of inertia of a box is:
     //   m->_I(0,0) = M/REAL(12.0) * (ly*ly + lz*lz);
@@ -391,7 +391,7 @@ void UniformMass<gpu::cuda::CudaRigid3dTypes, sofa::defaulttype::RigidMass<3,dou
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
-    defaulttype::Vec3d len;
+    type::Vec3d len;
 
     // The moment of inertia of a box is:
     //   m->_I(0,0) = M/REAL(12.0) * (ly*ly + lz*lz);

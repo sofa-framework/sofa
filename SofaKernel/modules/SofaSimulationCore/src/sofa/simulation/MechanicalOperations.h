@@ -131,7 +131,6 @@ public:
     }
 
     void addMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, SReal mFact, SReal bFact, SReal kFact);
-    void addSubMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & subMatrixIndex, SReal mFact, SReal bFact, SReal kFact);
 
     void multiVector2BaseVector(core::ConstMultiVecId src, defaulttype::BaseVector *dest, const sofa::core::behavior::MultiMatrixAccessor* matrix);
     void baseVector2MultiVector(const defaulttype::BaseVector *src, core::MultiVecId dest, const sofa::core::behavior::MultiMatrixAccessor* matrix);
@@ -161,6 +160,12 @@ protected:
     void setDx(core::ConstMultiVecDerivId& v);
     void setDf(core::MultiVecDerivId& v);
     void setDf(core::ConstMultiVecDerivId& v);
+
+    /// Warn the user that a linear solver is required but has not been found
+    void showMissingLinearSolverError() const;
+
+    /// Store if the "missing linear solver" error message has already been shown for a given context
+    static std::map<core::objectmodel::BaseContext*, bool> hasShownMissingLinearSolverMap;
 
 };
 

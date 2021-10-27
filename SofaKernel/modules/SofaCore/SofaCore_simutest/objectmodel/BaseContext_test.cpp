@@ -23,7 +23,7 @@
 using sofa::core::objectmodel::BaseContext ;
 
 #include <SofaSimulationGraph/testing/BaseSimulationTest.h>
-using sofa::helper::testing::BaseSimulationTest ;
+using sofa::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
 #include <SofaBaseUtils/InfoComponent.h>
@@ -36,22 +36,25 @@ public:
     {
         EXPECT_MSG_NOEMIT(Error, Warning) ;
         importPlugin("SofaComponentAll") ;
-        std::stringstream scene ;
-        scene << "<?xml version='1.0'?>"
-                 "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-                 "   <InfoComponent/>                                                             \n"
-                 "   <Node name='child1'>                                                    \n"
-                 "      <InfoComponent/>                                                          \n"
-                 "      <InfoComponent/>                                                          \n"
-                 "      <MechanicalObject />                                                 \n"
-                 "      <Node name='child2'>                                                 \n"
-                 "          <InfoComponent/>                                                      \n"
-                 "          <InfoComponent/>                                                      \n"
-                 "      </Node>                                                              \n"
-                 "   </Node>                                                                 \n"
-                 "</Node>                                                                    \n" ;
+        const std::string scene = R"(
+            <?xml version='1.0'?>
+            <Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >
+               <DefaultAnimationLoop />
+               <DefaultVisualManagerLoop />
+               <InfoComponent/>
+               <Node name='child1'>
+                  <InfoComponent/>
+                  <InfoComponent/>
+                  <MechanicalObject />
+                  <Node name='child2'>
+                      <InfoComponent/>
+                      <InfoComponent/>
+                  </Node>
+               </Node>
+            </Node>
+        )";
 
-        SceneInstance c("xml", scene.str()) ;
+        SceneInstance c("xml", scene) ;
         c.initScene() ;
 
         Node* root = c.root.get() ;
@@ -68,9 +71,12 @@ public:
         ASSERT_EQ( context->getObjects(results2).size(), 3 ) ;
 
         /// Query a specific model with a compact syntax, this returns std::vector<BaseObject*>
-        /// So there is 4 base object in the scene.
+        /// getObjects()'s default search direction is SearchUp
+        /// so it will get the current objects in the context + the ones upper
+        /// (here 3 in child1 + 3 in root itself)
+        /// So it will find 6 base objects in the scene.
         for(auto& m : context->getObjects() ) { SOFA_UNUSED(m); }
-        ASSERT_EQ( context->getObjects().size(), 4 ) ;
+        ASSERT_EQ( context->getObjects().size(), 6 ) ;
 
         /// Query a specific model with a compact syntax, this returns std::vector<BaseObject*>
         for(auto& m : context->getObjects(BaseContext::SearchDirection::SearchDown) ) { SOFA_UNUSED(m); }

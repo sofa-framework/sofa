@@ -27,9 +27,10 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/helper/OptionsGroup.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/decompose.h>
+#include <sofa/core/DataEngine.h>
 
 namespace sofa
 {
@@ -148,7 +149,7 @@ protected:
             rigidMass->mass+=m;
             Coord p = inT->fromImage(Coord(x,y,z));
             pos->getCenter()+=p*m;
-            C+=defaulttype::dyad(p,p)*m; // covariance matrix
+            C+=type::dyad(p,p)*m; // covariance matrix
         }
 
         if(rigidMass->mass)
@@ -156,8 +157,8 @@ protected:
             d_mass.setValue(rigidMass->mass);
 
             pos->getCenter()/=rigidMass->mass;
-            C-=defaulttype::dyad(pos->getCenter(),pos->getCenter())*rigidMass->mass; // recenter covariance matrix around mean
-            rigidMass->inertiaMatrix = Mat3x3::s_identity* defaulttype::trace(C) - C;   // covariance matrix to inertia matrix
+            C-=type::dyad(pos->getCenter(),pos->getCenter())*rigidMass->mass; // recenter covariance matrix around mean
+            rigidMass->inertiaMatrix = Mat3x3::s_identity* type::trace(C) - C;   // covariance matrix to inertia matrix
 
             typename RigidMass::Mat3x3 R;
             helper::Decompose<Real>::eigenDecomposition(rigidMass->inertiaMatrix, R, inertia.wref());

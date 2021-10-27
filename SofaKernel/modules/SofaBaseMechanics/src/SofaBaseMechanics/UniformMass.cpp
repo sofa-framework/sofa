@@ -34,6 +34,7 @@ using std::string ;
 using std::ostringstream ;
 using sofa::component::mass::Vec3d ;
 using sofa::helper::system::DataRepository ;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 namespace sofa::component::mass
@@ -209,14 +210,14 @@ void UniformMass<RigidTypes, MassType>::drawRigid2DImpl(const VisualParams* vpar
 
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     ReadAccessor<Data<vector<int> > > indices = d_indices;
-    defaulttype::Vec3d len;
+    type::Vec3d len;
 
     len[0] = len[1] = sqrt(d_vertexMass.getValue().inertiaMatrix);
     len[2] = 0;
 
     for (unsigned int i=0; i<indices.size(); i++)
     {
-        Quat orient(Vec3d(0,0,1), x[indices[i]].getOrientation());
+        Quatd orient(Vec3d(0,0,1), x[indices[i]].getOrientation());
         Vec3d center; center = x[indices[i]].getCenter();
 
         vparams->drawTool()->drawFrame(center, orient, len*d_showAxisSize.getValue() );
@@ -233,7 +234,7 @@ void UniformMass<RigidTypes, MassType>::drawRigid3DImpl(const VisualParams* vpar
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     ReadAccessor<Data<vector<int> > > indices = d_indices;
     typename RigidTypes::Vec3 gravityCenter;
-    defaulttype::Vec3d len;
+    type::Vec3d len;
 
     // The moment of inertia of a box is:
     //   m->_I(0,0) = M/REAL(12.0) * (ly*ly + lz*lz);
@@ -252,7 +253,7 @@ void UniformMass<RigidTypes, MassType>::drawRigid3DImpl(const VisualParams* vpar
     for (unsigned int i=0; i<indices.size(); i++)
     {
         if (getContext()->isSleeping())
-            vparams->drawTool()->drawFrame(x[indices[i]].getCenter(), x[indices[i]].getOrientation(), len*d_showAxisSize.getValue(), sofa::helper::types::RGBAColor::gray());
+            vparams->drawTool()->drawFrame(x[indices[i]].getCenter(), x[indices[i]].getOrientation(), len*d_showAxisSize.getValue(), sofa::type::RGBAColor::gray());
         else
             vparams->drawTool()->drawFrame(x[indices[i]].getCenter(), x[indices[i]].getOrientation(), len*d_showAxisSize.getValue() );
         gravityCenter += (x[indices[i]].getCenter());
@@ -270,7 +271,7 @@ void UniformMass<RigidTypes, MassType>::drawRigid3DImpl(const VisualParams* vpar
     {
         gravityCenter /= x.size();
 
-        vparams->drawTool()->drawCross(gravityCenter, d_showAxisSize.getValue(), sofa::helper::types::RGBAColor::yellow());
+        vparams->drawTool()->drawCross(gravityCenter, d_showAxisSize.getValue(), sofa::type::RGBAColor::yellow());
     }
 }
 
@@ -287,20 +288,20 @@ void UniformMass<Vec6Types, MassType>::drawVec6Impl(const core::visual::VisualPa
     Mat3x3d R; R.identity();
 
     std::vector<Vector3> vertices;
-    std::vector<sofa::helper::types::RGBAColor> colors;
+    std::vector<sofa::type::RGBAColor> colors;
 
-    sofa::helper::types::RGBAColor colorSet[3];
-    colorSet[0] = sofa::helper::types::RGBAColor::red();
-    colorSet[1] = sofa::helper::types::RGBAColor::green();
-    colorSet[2] = sofa::helper::types::RGBAColor::blue();
+    sofa::type::RGBAColor colorSet[3];
+    colorSet[0] = sofa::type::RGBAColor::red();
+    colorSet[1] = sofa::type::RGBAColor::green();
+    colorSet[2] = sofa::type::RGBAColor::blue();
 
     for (unsigned int i=0; i<indices.size(); i++)
     {
-        defaulttype::Vec3d len(1,1,1);
+        type::Vec3d len(1,1,1);
         int a = (i<indices.size()-1)?i : i-1;
         int b = a+1;
-        defaulttype::Vec3d dp; dp = x0[b]-x0[a];
-        defaulttype::Vec3d p; p = x[indices[i]];
+        type::Vec3d dp; dp = x0[b]-x0[a];
+        type::Vec3d p; p = x[indices[i]];
         len[0] = dp.norm();
         len[1] = len[0];
         len[2] = len[0];
@@ -331,7 +332,7 @@ Vector6 UniformMass<RigidTypes,MassType>::getMomentumRigid3DImpl( const Mechanic
     Real m = d_vertexMass.getValue().mass;
     const typename MassType::Mat3x3& I = d_vertexMass.getValue().inertiaMassMatrix;
 
-    defaulttype::Vec6d momentum;
+    type::Vec6d momentum;
 
     for ( unsigned int i=0 ; i<indices.size() ; i++ )
     {
@@ -356,7 +357,7 @@ Vector6 UniformMass<Vec3Types, MassType>::getMomentumVec3DImpl ( const Mechanica
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
     const MassType& m = d_vertexMass.getValue();
-    defaulttype::Vec6d momentum;
+    type::Vec6d momentum;
 
     for ( unsigned int i=0 ; i<indices.size() ; i++ )
     {

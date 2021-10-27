@@ -194,7 +194,7 @@ SofaWindowProfiler::AnimationStepData::AnimationStepData(int step, const std::st
 
 bool SofaWindowProfiler::AnimationStepData::processData(const std::string& idString)
 {
-    helper::vector<Record> _records = sofa::helper::AdvancedTimer::getRecords(idString);
+    type::vector<Record> _records = sofa::helper::AdvancedTimer::getRecords(idString);
 
     //AnimationSubStepData* currentSubStep = nullptr;
     std::stack<AnimationSubStepData*> processStack;
@@ -358,6 +358,16 @@ SofaWindowProfiler::SofaWindowProfiler(QWidget *parent)
 
     connect(step_scroller, SIGNAL(valueChanged(int)), m_chartView, SLOT(updateSelection(int)));
     connect(m_chartView, SIGNAL(pointSelected(int)), this, SLOT(updateFromSelectedStep(int)));
+
+    ExpandAllButton->setIcon(QIcon(":/RealGUI/expandAll"));
+    CollapseAllButton->setIcon(QIcon(":/RealGUI/collapseAll"));
+    for (auto* button : {ExpandAllButton, CollapseAllButton})
+    {
+        button->setFixedWidth(button->height());
+    }
+
+    connect ( ExpandAllButton, SIGNAL ( clicked() ), tree_steps, SLOT ( expandAll() ) );
+    connect ( CollapseAllButton, SIGNAL ( clicked() ), this, SLOT ( expandRootNodeOnly() ) );
 }
 
 
@@ -435,6 +445,21 @@ void SofaWindowProfiler::createTreeView()
         tree_steps->headerItem()->setToolTip(i, columnsLabels[i].second);
     }
     tree_steps->setHeaderLabels(columnNames);
+
+    tree_steps->headerItem()->setToolTip(1, QString("Percentage of duration of this step compared to the duration of the root step"));
+    tree_steps->headerItem()->setToolTip(2,
+                                         QString("- If the step has child steps: percentage of the duration "
+                                                 "of this step minus the sum of durations of its children, compared to "
+                                                 "the duration of the root step.\n"
+                                                 "- If the step has no child step: percentage of the average duration "
+                                                 "of this step in case of multiple calls of this step during this time step, "
+                                                 "compared to the duration of the root step."));
+    tree_steps->headerItem()->setToolTip(3, QString("Duration in milliseconds of this step"));
+    tree_steps->headerItem()->setToolTip(4,
+                                         QString("- If the step has child steps: duration in milliseconds of "
+                                                 "this step minus the sum of durations of its children.\n"
+                                                 "- If the step has no child step: average duration in milliseconds of "
+                                                 "this step in case of multiple calls of this step during this time step."));
 
     // set column properties
     tree_steps->header()->setStretchLastSection(false);
@@ -686,5 +711,8 @@ void SofaWindowProfiler::onStepSelected(QTreeWidgetItem *item, int /*column*/)
     }
 }
 
-
+void SofaWindowProfiler::expandRootNodeOnly() const
+{
+    tree_steps->expandToDepth(0);
+}
 } //namespace sofa::gui::qt

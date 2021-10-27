@@ -198,7 +198,7 @@ void BasicShapesGL_Sphere<VertexType>::draw(const VertexType& center, const floa
 }
 
 template<class VertexType>
-void BasicShapesGL_Sphere<VertexType>::draw(const helper::vector<VertexType>& centers, const float& radius, const unsigned int rings, const unsigned int sectors)
+void BasicShapesGL_Sphere<VertexType>::draw(const type::vector<VertexType>& centers, const float& radius, const unsigned int rings, const unsigned int sectors)
 {
     SphereDescription desc(rings, sectors);
     checkBuffers(desc);
@@ -214,7 +214,7 @@ void BasicShapesGL_Sphere<VertexType>::draw(const helper::vector<VertexType>& ce
 }
 
 template<class VertexType>
-void BasicShapesGL_Sphere<VertexType>::draw(const helper::vector<VertexType>& centers, const std::vector<float>& radius, const unsigned int rings, const unsigned int sectors)
+void BasicShapesGL_Sphere<VertexType>::draw(const type::vector<VertexType>& centers, const std::vector<float>& radius, const unsigned int rings, const unsigned int sectors)
 {
     SphereDescription desc(rings, sectors);
     checkBuffers(desc);
@@ -444,7 +444,7 @@ void BasicShapesGL_FakeSphere<VertexType>::draw(const VertexType& center, const 
 }
 
 template<class VertexType>
-void BasicShapesGL_FakeSphere<VertexType>::draw(const helper::vector<VertexType>& centers, const float& radius)
+void BasicShapesGL_FakeSphere<VertexType>::draw(const type::vector<VertexType>& centers, const float& radius)
 {
     init();
     std::vector<float> radii;
@@ -457,7 +457,7 @@ void BasicShapesGL_FakeSphere<VertexType>::draw(const helper::vector<VertexType>
 }
 
 template<class VertexType>
-void BasicShapesGL_FakeSphere<VertexType>::draw(const helper::vector<VertexType>& centers, const std::vector<float>& radii)
+void BasicShapesGL_FakeSphere<VertexType>::draw(const type::vector<VertexType>& centers, const std::vector<float>& radii)
 {
     init();
 

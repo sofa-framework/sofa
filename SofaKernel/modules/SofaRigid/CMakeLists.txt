@@ -24,11 +24,11 @@ set(SOURCE_FILES
     ${SOFARIGID_SRC}/RigidRigidMapping.cpp
 )
 
-sofa_find_package(SofaBase REQUIRED) # SofaBaseMechanics SofaEigen2Solver
+sofa_find_package(SofaBaseMechanics REQUIRED)
 sofa_find_package(Eigen3 REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseMechanics SofaEigen2Solver)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseMechanics)
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")

@@ -24,7 +24,7 @@
 
 /** Helpers to apply Eigen matrix methods to the Mat sofa type */
 
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Mat.h>
 #include <Eigen/Dense>
 #include <iostream>
 
@@ -36,7 +36,7 @@ namespace helper
 {
 
 template <Size NumRows, Size NumCols, class Real>
-Eigen::Matrix<Real, NumRows, NumCols> eigenMat( const defaulttype::Mat< NumRows, NumCols, Real>& mat )
+Eigen::Matrix<Real, NumRows, NumCols> eigenMat( const type::Mat< NumRows, NumCols, Real>& mat )
 {
     Eigen::Matrix<Real, NumRows, NumCols> emat;
     for(Size i=0; i<NumRows; i++)
@@ -46,9 +46,9 @@ Eigen::Matrix<Real, NumRows, NumCols> eigenMat( const defaulttype::Mat< NumRows,
 }
 
 template <Size NumRows, Size NumCols, class Real>
-defaulttype::Mat<NumRows, NumCols, Real>  sofaMat( const Eigen::Matrix<Real, NumRows, NumCols>& emat )
+type::Mat<NumRows, NumCols, Real>  sofaMat( const Eigen::Matrix<Real, NumRows, NumCols>& emat )
 {
-    defaulttype::Mat<NumRows, NumCols, Real> mat;
+    type::Mat<NumRows, NumCols, Real> mat;
     for(Size i=0; i<NumRows; i++)
         for(Size j=0; j<NumCols; j++)
             mat[i][j] = emat(i,j);
@@ -56,16 +56,16 @@ defaulttype::Mat<NumRows, NumCols, Real>  sofaMat( const Eigen::Matrix<Real, Num
 }
 
 template <Size NumRows, class Real>
-defaulttype::Vec<NumRows, Real>  sofaVec( const Eigen::Matrix<Real, NumRows, 1>& evec )
+type::Vec<NumRows, Real>  sofaVec( const Eigen::Matrix<Real, NumRows, 1>& evec )
 {
-    defaulttype::Vec<NumRows, Real> vec;
+    type::Vec<NumRows, Real> vec;
     for(Size i=0; i<NumRows; i++)
         vec[i] = evec(i);
     return vec;
 }
 
 template <Size NumRows, class Real>
-Eigen::Matrix<Real, NumRows, 1>  eigenVec( const defaulttype::Vec<NumRows, Real>& vec )
+Eigen::Matrix<Real, NumRows, 1>  eigenVec( const type::Vec<NumRows, Real>& vec )
 {
     Eigen::Matrix<Real, NumRows, 1> evec;
     for(Size i=0; i<NumRows; i++)

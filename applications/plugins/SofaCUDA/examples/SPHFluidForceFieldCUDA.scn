@@ -5,7 +5,7 @@
 		<RungeKutta4Solver/>
 		<!--<CentralDifferenceSolver/>-->
         <!--<EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver/>-->
+        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>-->
 		<MechanicalObject name="MModel" template="CudaVec3f" />
 		<!-- A topology is used here just to set initial particles positions. It is a bad idea because this object has no real topology, but it works... -->
 		<RegularGridTopology

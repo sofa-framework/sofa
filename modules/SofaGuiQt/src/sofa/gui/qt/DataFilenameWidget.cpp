@@ -91,7 +91,7 @@ void DataFileNameWidget::raiseDialog()
 
     if (s.isNull() ) return;
     fileName=std::string (s.toStdString());
-    fileName = sofa::helper::system::FileRepository::relativeToPath(fileName,SofaPath,false);
+    fileName = sofa::helper::system::FileRepository::relativeToPath(fileName,SofaPath);
 
     openFilePath->setText( QString( fileName.c_str() ) );
 }

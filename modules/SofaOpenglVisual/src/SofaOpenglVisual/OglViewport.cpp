@@ -26,8 +26,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/visual/Transformation.h>
 #include <sofa/gl/template.h>
-#include <sofa/helper/fixed_array.h>
-#include <sofa/helper/system/glu.h>
+#include <sofa/type/fixed_array.h>
+#include <sofa/gl/glu.h>
 #include <SofaBaseVisual/VisualStyle.h>
 
 namespace sofa
@@ -39,6 +39,7 @@ namespace component
 namespace visualmodel
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 //Register OglViewport in the Object Factory
@@ -51,7 +52,7 @@ OglViewport::OglViewport()
     :p_screenPosition(initData(&p_screenPosition, "screenPosition", "Viewport position"))
     ,p_screenSize(initData(&p_screenSize, "screenSize", "Viewport size"))
     ,p_cameraPosition(initData(&p_cameraPosition, Vec3f(0.0,0.0,0.0), "cameraPosition", "Camera's position in eye's space"))
-    ,p_cameraOrientation(initData(&p_cameraOrientation,Quat(), "cameraOrientation", "Camera's orientation"))
+    ,p_cameraOrientation(initData(&p_cameraOrientation,Quat<SReal>(), "cameraOrientation", "Camera's orientation"))
     ,p_cameraRigid(initData(&p_cameraRigid, "cameraRigid", "Camera's rigid coord"))
     ,p_zNear(initData(&p_zNear, "zNear", "Camera's ZNear"))
     ,p_zFar(initData(&p_zFar, "zFar", "Camera's ZFar"))
@@ -112,9 +113,9 @@ void OglViewport::preDrawScene(core::visual::VisualParams* vp)
 
     if (p_swapMainView.getValue())
     {
-        const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
+        const sofa::type::BoundingBox& sceneBBox = vp->sceneBBox();
         Vec3f cameraPosition;
-        Quat cameraOrientation;
+        Quat<SReal> cameraOrientation;
 
         //Take the rigid if it is connected to something
         if (p_cameraRigid.isDisplayed())
@@ -220,7 +221,7 @@ void OglViewport::postDrawScene(core::visual::VisualParams* vp)
 
 void OglViewport::renderToViewport(core::visual::VisualParams* vp)
 {
-    const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
+    const sofa::type::BoundingBox& sceneBBox = vp->sceneBBox();
 
     const Viewport viewport = vp->viewport();
     //Launch FBO process
@@ -269,7 +270,7 @@ void OglViewport::renderToViewport(core::visual::VisualParams* vp)
 //        double fovy = 0;
 
         Vec3f cameraPosition;
-        Quat cameraOrientation;
+        Quat<SReal> cameraOrientation;
 
         //Take the rigid if it is connected to something
         if (p_cameraRigid.isDisplayed())

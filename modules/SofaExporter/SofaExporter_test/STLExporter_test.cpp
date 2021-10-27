@@ -25,8 +25,8 @@ using std::vector;
 #include <string>
 using std::string;
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
 
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
@@ -49,9 +49,9 @@ using sofa::helper::system::FileSystem ;
 
 #include <SofaBaseUtils/initSofaBaseUtils.h>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 namespace {
-std::string tempdir = boost::filesystem::temp_directory_path().string() ;
+std::string tempdir = std::filesystem::temp_directory_path().string() ;
 
 
 class STLExporter_test : public BaseTest {
@@ -59,13 +59,13 @@ public:
     /// remove the file created...
     std::vector<std::string> dataPath ;
 
-    void SetUp()
+    void SetUp() override
     {
         sofa::component::initSofaBaseUtils(); // needed to instanciate RequiredPlugin
         sofa::simpleapi::importPlugin("SofaOpenglVisual");
     }
 
-    void TearDown()
+    void TearDown() override
     {
         return ;
         for(auto& pathToRemove : dataPath)

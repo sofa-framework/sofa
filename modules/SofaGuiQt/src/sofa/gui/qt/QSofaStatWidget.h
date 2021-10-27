@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/gui/qt/config.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 #include <QLabel>
 #include <QWidget>
@@ -58,7 +58,7 @@ protected:
     QLabel* statsLabel;
     QTreeWidget* statsCounter;
     void addSummary();
-    void addCollisionModelsStat(const sofa::helper::vector< sofa::core::CollisionModel* >& v);
+    void addCollisionModelsStat(const sofa::type::vector< sofa::core::CollisionModel* >& v);
     std::vector<std::pair<core::objectmodel::Base*, QTreeWidgetItem*> > items_stats;
 
 };

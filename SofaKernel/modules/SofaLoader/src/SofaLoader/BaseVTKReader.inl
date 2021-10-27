@@ -29,7 +29,7 @@ namespace sofa::component::loader::basevtkreader
 {
 
 using std::istringstream ;
-using sofa::defaulttype::Vec ;
+using sofa::type::Vec ;
 
 template<class T>
 const void* BaseVTKReader::VTKDataIO<T>::getData()
@@ -185,9 +185,9 @@ bool BaseVTKReader::VTKDataIO<T>::write(ofstream& out, int n, int groups, int bi
 template<class T>
 BaseData* BaseVTKReader::VTKDataIO<T>::createSofaData()
 {
-    Data<helper::vector<T> >* sdata = new Data<helper::vector<T> >(name.c_str(), true, false);
+    Data<type::vector<T> >* sdata = new Data<type::vector<T> >(name.c_str(), true, false);
     sdata->setName(name);
-    helper::vector<T>& sofaData = *sdata->beginEdit();
+    type::vector<T>& sofaData = *sdata->beginEdit();
 
     for (int i=0 ; i<dataSize ; i++)
         sofaData.push_back(data[i]);

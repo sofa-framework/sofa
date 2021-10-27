@@ -35,7 +35,6 @@ namespace gpu
 namespace cuda
 {
 
-using CudaSphereModel [[deprecated("The CudaSphereModel is now deprecated, please use sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types> instead. Compatibility stops at v20.06")]] = sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>;
 using CudaSphere = sofa::component::collision::TSphere<gpu::cuda::CudaVec3Types>;
 
 

@@ -28,7 +28,7 @@ namespace sofa::core::topology
 
 size_t TopologyHandler::getNumberOfTopologicalChanges()
 {
-    return (m_changeList.getValue()).size();
+    return (m_topology->m_changeList.getValue()).size();
 }
 
 
@@ -36,8 +36,17 @@ size_t TopologyHandler::getNumberOfTopologicalChanges()
 //////////////////////////////   Generic Handling of Topology Event    /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+TopologyHandler::TopologyHandler()
+    : m_topology(nullptr)
+{
+    
+}
+
+
 void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology::TopologyChange*>& _topologyChangeEvents, const Size _dataSize)
 {
+    SOFA_UNUSED(_dataSize);
+
     if (!this->isTopologyDataRegistered())
         return;
 
@@ -47,9 +56,20 @@ void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology:
     for (changeIt = _changeList.begin(); changeIt != _changeList.end(); ++changeIt)
     {
         core::topology::TopologyChangeType changeType = (*changeIt)->getChangeType();
-        std::string topoChangeType = "DefaultTopologyHandler: " + parseTopologyChangeTypeToString(changeType);
+        std::string topoChangeType = m_prefix + ": " + m_data_name + " - " + parseTopologyChangeTypeToString(changeType);
         sofa::helper::AdvancedTimer::stepBegin(topoChangeType);
 
+        // New version using map of callback
+        std::map < core::topology::TopologyChangeType, TopologyChangeCallback>::iterator itM;
+        itM = m_callbackMap.find(changeType);
+
+        if (itM != m_callbackMap.end())
+        {
+            (*itM).second(*changeIt);
+        }
+
+
+        // old version to be removed.
         switch (changeType)
         {
 #define SOFA_CASE_EVENT(name,type) \
@@ -109,28 +129,35 @@ void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology:
     }
 }
 
-
 void TopologyHandler::update()
 {
     DDGNode::cleanDirty();
     if (!this->isTopologyDataRegistered())
         return;
 
-    std::string msg = this->getName() + " - doUpdate: Nbr changes: " + std::to_string(m_changeList.getValue().size());
+    std::string msg = this->getName() + " - doUpdate: Nbr changes: " + std::to_string(m_topology->m_changeList.getValue().size());
     sofa::helper::AdvancedTimer::stepBegin(msg.c_str());
     this->handleTopologyChange();
     sofa::helper::AdvancedTimer::stepEnd(msg.c_str());
 }
 
-bool TopologyHandler::registerTopology()
+void TopologyHandler::addCallBack(core::topology::TopologyChangeType type, TopologyChangeCallback callback)
 {
-    return false;
+    // need to warn duplicate callback
+    m_callbackMap[type] = callback;
 }
 
 bool TopologyHandler::registerTopology(sofa::core::topology::BaseMeshTopology* _topology)
 {
-    SOFA_UNUSED(_topology);
-    return false;
+    m_topology = dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology);
+
+    if (m_topology == nullptr)
+    {
+        msg_info("TopologyHandler") << "Topology: " << _topology->getName() << " is not dynamic, topology engine on Data '" << m_data_name << "' won't be registered.";
+        return false;
+    }
+
+    return true;
 }
 
 } // namespace sofa

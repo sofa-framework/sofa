@@ -24,50 +24,36 @@
 #include <SofaGeneralDeformable/VectorSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/io/XspLoader.h>
-#include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <SofaBaseTopology/TopologyData.inl>
-#include <sofa/simulation/Simulation.h>
-#include <cassert>
-#include <iostream>
-
 
 
 namespace sofa::component::interactionforcefield
 {
 
 template<class DataTypes>
-void VectorSpringForceField<DataTypes>::EdgeDataHandler::applyCreateFunction(Index, Spring &t,
+void VectorSpringForceField<DataTypes>::createEdgeInformation(Index, Spring &t,
         const core::topology::BaseMeshTopology::Edge & e,
-        const sofa::helper::vector<Index> & ancestors,
-        const sofa::helper::vector<double> & coefs)
+        const sofa::type::vector<Index> & ancestors,
+        const sofa::type::vector<double> & coefs)
 {
-    if (ff)
+    const typename DataTypes::VecCoord& x0 = this->getObject1()->read(core::ConstVecCoordId::restPosition())->getValue();
+    t.restVector = x0[e[1]] - x0[e[0]];
+    if (ancestors.size()>0)
     {
-
-        //EdgeSetGeometryAlgorithms<DataTypes> *ga=topology->getEdgeSetGeometryAlgorithms();
-        //t.restLength=ga->computeRestEdgeLength(index);
-        const typename DataTypes::VecCoord& x0 = ff->getObject1()->read(core::ConstVecCoordId::restPosition())->getValue();
-        t.restVector = x0[e[1]] - x0[e[0]];
-        if (ancestors.size()>0)
+        t.kd=t.ks=0;
+        const type::vector<Spring> &sa=getSpringArray().getValue();
+        unsigned int i;
+        for (i=0; i<ancestors.size(); ++i)
         {
-            t.kd=t.ks=0;
-            //            const topology::EdgeData<Spring> &sa=ff->getSpringArray();
-            const helper::vector<Spring> &sa=ff->getSpringArray().getValue();
-            unsigned int i;
-            for (i=0; i<ancestors.size(); ++i)
-            {
-                t.kd+=typename DataTypes::Real(sa[i].kd*coefs[i]);
-                t.ks+=typename DataTypes::Real(sa[i].ks*coefs[i]);
-            }
+            t.kd+=typename DataTypes::Real(sa[i].kd*coefs[i]);
+            t.ks+=typename DataTypes::Real(sa[i].ks*coefs[i]);
         }
-        else
-        {
-            t.kd=ff->getStiffness();
-            t.ks=ff->getViscosity();
-        }
-
     }
-
+    else
+    {
+        t.kd=getStiffness();
+        t.ks=getViscosity();
+    }
 }
 
 template <class DataTypes>
@@ -99,7 +85,7 @@ bool VectorSpringForceField<DataTypes>::load(const char *filename)
 template <class DataTypes>
 void VectorSpringForceField<DataTypes>::resizeArray(std::size_t n)
 {
-    helper::vector<Spring>& springArrayData = *(springArray.beginEdit());
+    type::vector<Spring>& springArrayData = *(springArray.beginEdit());
     springArrayData.resize(n);
     springArray.endEdit();
 }
@@ -107,11 +93,11 @@ void VectorSpringForceField<DataTypes>::resizeArray(std::size_t n)
 template <class DataTypes>
 void VectorSpringForceField<DataTypes>::addSpring(int m1, int m2, SReal ks, SReal kd, Coord restVector)
 {
-    helper::vector<Spring>& springArrayData = *(springArray.beginEdit());
+    type::vector<Spring>& springArrayData = *(springArray.beginEdit());
 
     if (useTopology && m_topology)
     {
-        topology::EdgeSetTopologyContainer::EdgeID e = m_topology->getEdgeIndex(unsigned(m1),unsigned(m2));
+        sofa::core::topology::BaseMeshTopology::EdgeID e = m_topology->getEdgeIndex(unsigned(m1),unsigned(m2));
         if (e != sofa::InvalidID)
             springArrayData[e]=Spring(Real(ks),Real(kd),restVector);
     }
@@ -137,7 +123,7 @@ VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _obje
 template <class DataTypes>
 VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _object1, MechanicalState* _object2)
     : Inherit(_object1, _object2)
-    , m_potentialEnergy( 0.0 ), useTopology( false ), usingMask(false)
+    , m_potentialEnergy( 0.0 ), useTopology( false )
     , springArray( initData(&springArray, "springs", "springs data"))
     , m_filename( initData(&m_filename,std::string(""),"filename","File name from which the spring informations are loaded") )
     , m_stiffness( initData(&m_stiffness,1.0,"stiffness","Default edge stiffness used in absence of file information") )
@@ -145,14 +131,13 @@ VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _obje
     , m_useTopology( initData(&m_useTopology, false, "useTopology", "Activate/Desactivate topology mode of the component (springs on each edge)"))
     , l_topology(initLink("topology", "link to the topology container"))    
     , m_topology(nullptr)
-    , edgeHandler(nullptr)
 {
 }
 
 template<class DataTypes>
 VectorSpringForceField<DataTypes>::~VectorSpringForceField()
 {
-    if(edgeHandler) delete edgeHandler;
+
 }
 
 template <class DataTypes>
@@ -177,14 +162,16 @@ void VectorSpringForceField<DataTypes>::init()
         }
     }
 
-    if(!edgeHandler)
+    if(m_topology)
     {
-        if(m_topology)
+        springArray.createTopologyHandler(m_topology);
+        springArray.setCreationCallback([this](Index edgeIndex, Spring& t,
+            const core::topology::BaseMeshTopology::Edge& e,
+            const sofa::type::vector<Index>& ancestors,
+            const sofa::type::vector<double>& coefs)
         {
-            edgeHandler = new EdgeDataHandler(this,&springArray);
-            springArray.createTopologyHandler(m_topology,edgeHandler);
-            springArray.registerTopologicalData();
-        }
+            createEdgeInformation(edgeIndex, t, e, ancestors, coefs);
+        });
     }
     this->getContext()->get(edgeGeo);
     this->getContext()->get(edgeMod);
@@ -196,7 +183,7 @@ template <class DataTypes>
 void VectorSpringForceField<DataTypes>::bwdInit()
 {
     this->Inherit::bwdInit();
-    helper::vector<Spring>& springArrayData = *(springArray.beginEdit());
+    type::vector<Spring>& springArrayData = *(springArray.beginEdit());
 
     if (springArrayData.empty())
     {
@@ -238,7 +225,7 @@ void VectorSpringForceField<DataTypes>::createDefaultSprings()
 {
     msg_info() << "Creating "<< m_topology->getNbEdges() <<" Vector Springs from EdgeSetTopology";
 
-    helper::vector<Spring>& springArrayData = *(springArray.beginEdit());
+    type::vector<Spring>& springArrayData = *(springArray.beginEdit());
 
     springArrayData.resize(m_topology->getNbEdges());
     const VecCoord& x0 = this->mstate1->read(core::ConstVecCoordId::restPosition())->getValue();
@@ -264,15 +251,12 @@ void VectorSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /
     const VecCoord& x2 =  data_x2.getValue();
     const VecDeriv& v2 =  data_v2.getValue();
 
-    //assert(this->mstate);
     m_potentialEnergy = 0;
-
-    Coord u;
 
     f1.resize(x1.size());
     f2.resize(x2.size());
 
-    helper::vector<Spring>& springArrayData = *(springArray.beginEdit());
+    type::vector<Spring>& springArrayData = *(springArray.beginEdit());
 
     if(useTopology)
     {
@@ -331,7 +315,7 @@ void VectorSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* 
     df1.resize(dx1.size());
     df2.resize(dx2.size());
 
-    const helper::vector<Spring>& springArrayData = springArray.getValue();
+    const type::vector<Spring>& springArrayData = springArray.getValue();
 
     if(useTopology)
     {
@@ -369,6 +353,7 @@ void VectorSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* 
 template<class DataTypes>
 void VectorSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    using namespace sofa::type;
     using namespace sofa::defaulttype;
 
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields()))
@@ -403,33 +388,7 @@ void VectorSpringForceField<DataTypes>::draw(const core::visual::VisualParams* v
             points.push_back(Vector3(x2[e[1]]));
         }
     }
-    vparams->drawTool()->drawLines(points, 3, sofa::helper::types::RGBAColor::red());
+    vparams->drawTool()->drawLines(points, 3, sofa::type::RGBAColor::red());
 }
-
-
-
-template<class DataTypes>
-void VectorSpringForceField<DataTypes>::updateForceMask()
-{
-    if(useTopology)
-    {
-        for (unsigned int i=0; i<m_topology->getNbEdges(); i++)
-        {
-            const core::topology::BaseMeshTopology::Edge &e=m_topology->getEdge(i);
-            this->mstate1->forceMask.insertEntry(e[0]);
-            this->mstate2->forceMask.insertEntry(e[1]);
-        }
-    }
-    else
-    {
-        for (size_t i=0; i<edgeArray.size(); i++)
-        {
-            const core::topology::BaseMeshTopology::Edge &e=edgeArray[i];
-            this->mstate1->forceMask.insertEntry(e[0]);
-            this->mstate2->forceMask.insertEntry(e[1]);
-        }
-    }
-}
-
 
 } // namespace sofa::component::interactionforcefield

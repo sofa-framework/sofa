@@ -2,14 +2,15 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
 	<VisualStyle displayFlags="showBehaviorModels" />
 	<DefaultPipeline depth="6" verbose="0" draw="0"/>
-	<BruteForceDetection name="N2" />
+	<BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
 	<MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
 	<DefaultContactManager name="Response" response="default" />
 	<DefaultCollisionGroupManager name="Group" />
 	
 	<Node name="M1" processor="0">
 		<EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
-		<CGLinearSolver iterations="10"/>
+		<CGLinearSolver iterations="10" tolerance="1e-5" threshold="1e-5"/>
 		<MechanicalObject template="Vec3"/>
 		<UniformMass totalMass="200" />
 		<RegularGridTopology

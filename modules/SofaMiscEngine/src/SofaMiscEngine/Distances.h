@@ -27,7 +27,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <SofaNonUniformFem/DynamicSparseGridTopologyContainer.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/helper/SVector.h>
+#include <sofa/type/SVector.h>
 #include <sofa/helper/set.h>
 #include <sofa/helper/map.h>
 #include <sofa/helper/OptionsGroup.h>
@@ -74,8 +74,8 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename sofa::helper::vector< VecCoord > VecVecCoord;
-    typedef helper::SVector<helper::SVector<double> > VVD;
+    typedef typename sofa::type::vector< VecCoord > VecVecCoord;
+    typedef type::SVector<type::SVector<double> > VVD;
 
 protected:
     DistancesInternalData<DataTypes> data;
@@ -200,18 +200,18 @@ private:
     /*************************/
     inline void computeGeodesicalDistance ( const unsigned int& mapIndex, const VecCoord& beginElts, const bool& diffuseAccordingToStiffness, const double& distMax = 0 );
     // Store harmonic coords in the distanceMap structure of the class depending on the fixed values 'hfrom'
-    inline void computeHarmonicCoords ( const unsigned int& mapIndex, const helper::vector<core::topology::BaseMeshTopology::HexaID>& hfrom, const bool& useStiffnessMap );
+    inline void computeHarmonicCoords ( const unsigned int& mapIndex, const type::vector<core::topology::BaseMeshTopology::HexaID>& hfrom, const bool& useStiffnessMap );
     inline void computeVoronoiDistances( const unsigned int& mapIndex, const VecCoord& beginElts, const double& distMax = 0 );
 
 
     /*************************/
     /*         Utils         */
     /*************************/
-    inline void findCorrespondingHexas ( helper::vector<core::topology::BaseMeshTopology::HexaID>& hexas, const VecCoord& pointSet ); // Find indices from coord.
+    inline void findCorrespondingHexas ( type::vector<core::topology::BaseMeshTopology::HexaID>& hexas, const VecCoord& pointSet ); // Find indices from coord.
     inline void find1DCoord ( unsigned int& hexaID, const Coord& point );
     void getNeighbors ( const core::topology::BaseMeshTopology::HexaID& hexaID, std::set<core::topology::BaseMeshTopology::HexaID>& neighbors ) const;
-    void computeGradients ( const unsigned int mapIndex, helper::vector<double>& distances, VecCoord& gradients, const helper::vector<core::topology::BaseMeshTopology::HexaID>& hexaGoal, const VecCoord& goals );
-    inline void addContribution ( double& valueWrite, int& nbTest, const helper::vector<double>& valueRead, const unsigned int& gridID, const int coeff );
+    void computeGradients ( const unsigned int mapIndex, type::vector<double>& distances, VecCoord& gradients, const type::vector<core::topology::BaseMeshTopology::HexaID>& hexaGoal, const VecCoord& goals );
+    inline void addContribution ( double& valueWrite, int& nbTest, const type::vector<double>& valueRead, const unsigned int& gridID, const int coeff );
     inline void addContribution ( double& valueWrite, int& nbTest, double*** valueRead, const int& x, const int& y, const int& z, const int coeff, const bool& useStiffnessMap );
 };
 

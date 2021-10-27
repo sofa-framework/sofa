@@ -31,13 +31,13 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/helper/SVector.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/type/SVector.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
+#include <sofa/type/Quat.h>
 #include <newmat/newmat.h>
 #include <newmat/newmatap.h>
-#include <sofa/helper/vectorData.h>
+#include <sofa/core/objectmodel/vectorData.h>
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -67,9 +67,9 @@ public:
 
     typedef SReal Real;
 
-    Data< helper::vector<Real> > voxelSize; ///< should be a Vec<3,Real>, but it is easier to be backward-compatible that way
-    typedef helper::WriteOnlyAccessor<Data< helper::vector<Real> > > waVecReal;
-    Data< defaulttype::Vec<3,unsigned> > nbVoxels; ///< number of voxel (redondant with and priority over voxelSize)
+    Data< type::vector<Real> > voxelSize; ///< should be a Vec<3,Real>, but it is easier to be backward-compatible that way
+    typedef helper::WriteOnlyAccessor<Data< type::vector<Real> > > waVecReal;
+    Data< type::Vec<3,unsigned> > nbVoxels; ///< number of voxel (redondant with and priority over voxelSize)
     Data< bool > rotateImage; ///< orient the image bounding box according to the mesh (OBB)
     Data< unsigned int > padSize; ///< size of border in number of voxels
     Data< unsigned int > subdiv; ///< number of subdivisions for face rasterization (if needed, increase to avoid holes)
@@ -87,35 +87,35 @@ public:
     typedef helper::WriteOnlyAccessor<Data< TransformType > > waTransform;
     Data< TransformType > transform;
 
-    typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
+    typedef type::vector<type::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
-    helper::vectorData< SeqPositions > vf_positions;
+    core::objectmodel::vectorData< SeqPositions > vf_positions;
 
     typedef typename core::topology::BaseMeshTopology::Edge Edge;
     typedef typename core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef helper::ReadAccessor<Data< SeqEdges > > raEdges;
     typedef helper::WriteOnlyAccessor<Data< SeqEdges > > waEdges;
-    helper::vectorData< SeqEdges > vf_edges;
+    core::objectmodel::vectorData< SeqEdges > vf_edges;
 
     typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
     typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     typedef helper::ReadAccessor<Data< SeqTriangles > > raTriangles;
     typedef helper::WriteOnlyAccessor<Data< SeqTriangles > > waTriangles;
-    helper::vectorData< SeqTriangles > vf_triangles;
+    core::objectmodel::vectorData< SeqTriangles > vf_triangles;
 
     typedef double ValueType;
-    typedef helper::vector<ValueType> SeqValues;
+    typedef type::vector<ValueType> SeqValues;
     typedef helper::ReadAccessor<Data< SeqValues > > raValues;
-    helper::vectorData< SeqValues > vf_values;
+    core::objectmodel::vectorData< SeqValues > vf_values;
 
-    helper::vectorData< bool > vf_FillInside;
-    helper::vectorData< ValueType > vf_InsideValues;
+    core::objectmodel::vectorData< bool > vf_FillInside;
+    core::objectmodel::vectorData< ValueType > vf_InsideValues;
 
-    typedef helper::SVector<typename core::topology::BaseMeshTopology::PointID> SeqIndex; ///< one roi defined as an index list
-    typedef helper::vector<SeqIndex> VecSeqIndex;  ///< vector of rois
-    helper::vectorData<VecSeqIndex> vf_roiIndices;  ///< vector of rois for each mesh
-    helper::vectorData<SeqValues> vf_roiValue;   ///< values for each roi
+    typedef type::SVector<typename core::topology::BaseMeshTopology::PointID> SeqIndex; ///< one roi defined as an index list
+    typedef type::vector<SeqIndex> VecSeqIndex;  ///< vector of rois
+    core::objectmodel::vectorData<VecSeqIndex> vf_roiIndices;  ///< vector of rois for each mesh
+    core::objectmodel::vectorData<SeqValues> vf_roiValue;   ///< values for each roi
     typedef helper::ReadAccessor<Data< VecSeqIndex > > raIndex;
 
     Data< ValueType > backgroundValue; ///< pixel value at background
@@ -127,21 +127,21 @@ public:
     Data<bool> worldGridAligned; ///< perform rasterization on a world aligned grid using nbVoxels and voxelSize
 
     MeshToImageEngine()    :   Inherited()
-      , voxelSize(initData(&voxelSize,helper::vector<Real>(3,(Real)1.0),"voxelSize","voxel Size (redondant with and not priority over nbVoxels)"))
-      , nbVoxels(initData(&nbVoxels,defaulttype::Vec<3,unsigned>(0,0,0),"nbVoxels","number of voxel (redondant with and priority over voxelSize)"))
+      , voxelSize(initData(&voxelSize,type::vector<Real>(3,(Real)1.0),"voxelSize","voxel Size (redondant with and not priority over nbVoxels)"))
+      , nbVoxels(initData(&nbVoxels,type::Vec<3,unsigned>(0,0,0),"nbVoxels","number of voxel (redondant with and priority over voxelSize)"))
       , rotateImage(initData(&rotateImage,false,"rotateImage","orient the image bounding box according to the mesh (OBB)"))
       , padSize(initData(&padSize,(unsigned int)(0),"padSize","size of border in number of voxels"))
       , subdiv(initData(&subdiv,(unsigned int)(4),"subdiv","number of subdivisions for face rasterization (if needed, increase to avoid holes)"))
       , image(initData(&image,ImageTypes(),"image",""))
       , transform(initData(&transform,TransformType(),"transform",""))
-      , vf_positions(this, "position", "input positions for mesh ", helper::DataEngineInput)
-      , vf_edges(this,"edges", "input edges for mesh ", helper::DataEngineInput)
-      , vf_triangles(this,"triangles", "input triangles for mesh ", helper::DataEngineInput)
-      , vf_values(this,"value", "pixel value on mesh surface ", helper::DataEngineInput, SeqValues((size_t)1,(ValueType)1.0))
-      , vf_FillInside(this,"fillInside", "fill the mesh using insideValue?", helper::DataEngineInput, true)
-      , vf_InsideValues(this,"insideValue", "pixel value inside the mesh", helper::DataEngineInput, (ValueType)1.0)
-      , vf_roiIndices(this,"roiIndices", "List of Regions Of Interest, vertex indices", helper::DataEngineInput)
-      , vf_roiValue(this,"roiValue", "pixel value for ROIs, list of values", helper::DataEngineInput)
+      , vf_positions(this, "position", "input positions for mesh ", core::objectmodel::DataEngineDataType::DataEngineInput)
+      , vf_edges(this,"edges", "input edges for mesh ", core::objectmodel::DataEngineDataType::DataEngineInput)
+      , vf_triangles(this,"triangles", "input triangles for mesh ", core::objectmodel::DataEngineDataType::DataEngineInput)
+      , vf_values(this,"value", "pixel value on mesh surface ", core::objectmodel::DataEngineDataType::DataEngineInput, SeqValues((size_t)1,(ValueType)1.0))
+      , vf_FillInside(this,"fillInside", "fill the mesh using insideValue?", core::objectmodel::DataEngineDataType::DataEngineInput, true)
+      , vf_InsideValues(this,"insideValue", "pixel value inside the mesh", core::objectmodel::DataEngineDataType::DataEngineInput, (ValueType)1.0)
+      , vf_roiIndices(this,"roiIndices", "List of Regions Of Interest, vertex indices", core::objectmodel::DataEngineDataType::DataEngineInput)
+      , vf_roiValue(this,"roiValue", "pixel value for ROIs, list of values", core::objectmodel::DataEngineDataType::DataEngineInput)
       , backgroundValue(initData(&backgroundValue,0.,"backgroundValue","pixel value at background"))
       , f_nbMeshes( initData (&f_nbMeshes, (unsigned)1, "nbMeshes", "number of meshes to voxelize (Note that the last one write on the previous ones)") )
       , gridSnap(initData(&gridSnap,true,"gridSnap","align voxel centers on voxelSize multiples for perfect image merging (nbVoxels and rotateImage should be off)"))
@@ -178,7 +178,7 @@ public:
                 if(meshId>=this->vf_FillInside.size() || this->vf_FillInside[meshId]->getValue())
                 {
                     this->vf_InsideValues[meshId]->setValue(this->vf_values[meshId]->getValue()[0]);
-                    serr<<"InsideValue["<<meshId<<"] is not set -> used Value["<<meshId<<"]="<<this->vf_values[meshId]->getValue()[0]<<" instead"<<sendl;
+                    msg_warning()<<"InsideValue["<<meshId<<"] is not set -> used Value["<<meshId<<"]="<<this->vf_values[meshId]->getValue()[0]<<" instead";
                 }
 
 
@@ -314,7 +314,7 @@ protected:
             }
             mean/=(Real)nbpTotal;
 
-            defaulttype::Mat<3,3,Real> M; M.fill(0);
+            type::Mat<3,3,Real> M; M.fill(0);
             for( unsigned meshId=0; meshId<f_nbMeshes.getValue() ; ++meshId )
             {
                 raPositions pos(*this->vf_positions[meshId]);       unsigned int nbp = pos.size();
@@ -329,11 +329,11 @@ protected:
             NEWMAT::Matrix V(3,3); V = 0.0;
             NEWMAT::Jacobi(e, D, V);
             for(size_t j=0; j<3; j++) for(size_t k=0; k<3; k++) M[j][k]=V(j+1,k+1);
-            if(defaulttype::determinant(M)<0) M*=(Real)-1.0;
-            defaulttype::Mat<3,3,Real> MT=M.transposed();
+            if(type::determinant(M)<0) M*=(Real)-1.0;
+            type::Mat<3,3,Real> MT=M.transposed();
 
             // get orientation from eigen vectors
-            helper::Quater< Real > q; q.fromMatrix(M);
+            type::Quat< Real > q; q.fromMatrix(M);
             tr->getRotation()=q.toEulerVector()* (Real)180.0 / (Real)M_PI;
 
             // get bb

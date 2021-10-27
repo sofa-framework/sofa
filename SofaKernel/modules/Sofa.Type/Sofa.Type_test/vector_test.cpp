@@ -19,15 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/testing/NumericTest.h>
-using sofa::helper::testing::NumericTest ;
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest ;
 
 using ::testing::Types;
 
-#include <sofa/helper/vector.h>
-using sofa::helper::vector ;
+#include <sofa/type/vector.h>
+using sofa::type::vector ;
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 
 #include <sofa/core/objectmodel/Data.h>
 using sofa::core::objectmodel::Data ;
@@ -44,7 +44,6 @@ class vector_test : public NumericTest<>,
 {
 public:
     void checkVector(const std::vector<std::string>& params) ;
-    void benchmark(const std::vector<std::string>& params) ;
 };
 
 template<class T>
@@ -209,7 +208,7 @@ void vector_benchmark<T>::benchmark(const std::vector<std::string>& params)
     if(loop2==0)
         return ;
 
-    sofa::helper::vector<T> v;
+    sofa::type::vector<T> v;
     for(int i=0;i<loop2;i++){
         std::stringstream ntmp;
         ntmp << tmp.str() ;

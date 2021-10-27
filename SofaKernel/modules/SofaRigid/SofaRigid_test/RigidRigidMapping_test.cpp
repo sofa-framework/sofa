@@ -19,31 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Mapping_test.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
+
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest;
+
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <SofaRigid/RigidRigidMapping.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
+#include <SofaBaseMechanics_test/MappingTestCreation.h>
+#include <SofaComponentAll/initSofaComponentAll.h>
 
 namespace sofa {
 namespace {
 using namespace core;
 using namespace component;
-using defaulttype::Vec;
-using defaulttype::Mat;
+using type::Vec;
+using type::Mat;
 
 
 /**  Test suite for RigidRigidMapping.
 The test cases are defined in the #Test_Cases member group.
   */
 template <typename _RigidRigidMapping>
-struct RigidRigidMappingTest : public Mapping_test<_RigidRigidMapping>
+struct RigidRigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidRigidMapping>
 {
 
     typedef _RigidRigidMapping RigidRigidMapping;
-    typedef Mapping_test<RigidRigidMapping> Inherit;
+    typedef sofa::mapping_test::Mapping_test<RigidRigidMapping> Inherit;
 
     typedef typename RigidRigidMapping::In In;
     typedef typename In::VecCoord InVecCoord;
@@ -74,6 +81,11 @@ struct RigidRigidMappingTest : public Mapping_test<_RigidRigidMapping>
     typedef typename OutMechanicalObject::ReadVecDeriv ReadOutVecDeriv;
 
     RigidRigidMapping* rigidRigidMapping;
+
+    void SetUp() override
+    {
+        sofa::component::initSofaComponentAll(); 
+    }
 
     RigidRigidMappingTest()
     {
@@ -150,7 +162,7 @@ struct RigidRigidMappingTest : public Mapping_test<_RigidRigidMapping>
         // Expected child coords
         OutVecCoord expectedChildCoords(1);
         //Center
-        defaulttype::Vector3 translationVector (tx,ty,tz);
+        type::Vector3 translationVector (tx,ty,tz);
         expectedChildCoords[0].getCenter() = rot3.rotate(xout[0].getCenter()) + translationVector;
         // Orientation
         expectedChildCoords[0].getOrientation() = xin[0].getOrientation();

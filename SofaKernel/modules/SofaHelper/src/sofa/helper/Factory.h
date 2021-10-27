@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_FACTORY_H
-#define SOFA_HELPER_FACTORY_H
+#pragma once
 
 #include <map>
 #include <iostream>
@@ -30,23 +29,23 @@
 #include <sofa/helper/config.h>
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa
-{
-
-namespace helper
+namespace sofa::helper
 {
 
 /// Allow us to use BaseCreator and Factory without using any Arguments
 class NoArgument {} ;
 
 /// Decode the type's name to a more readable form if possible
-std::string SOFA_HELPER_API gettypename(const std::type_info& t);
+SOFA_HELPER_API std::string gettypename(const std::type_info& t);
 
 /// Log classes registered in the factory
-void SOFA_HELPER_API logFactoryRegister(std::string baseclass, std::string classname, std::string key, bool multi);
+template<class TKey>
+void logFactoryRegister(const std::string& baseclass, const std::string& classname, TKey key, bool multi);
+
+SOFA_HELPER_API std::string& getFactoryLog();
 
 /// Print factory log
-void SOFA_HELPER_API printFactoryLog(std::ostream& out = std::cout);
+SOFA_HELPER_API void printFactoryLog(std::ostream& out = std::cout);
 
 template <class Object, class Argument = NoArgument, class ObjectPtr = Object*>
 class BaseCreator
@@ -66,7 +65,6 @@ public:
     typedef TPtr      ObjectPtr;
     typedef TArgument Argument;
     typedef BaseCreator<Object, Argument, ObjectPtr> Creator;
-    typedef std::multimap<Key, Creator> Registry;
 
 protected:
     std::multimap<Key, Creator*> registry;
@@ -134,7 +132,7 @@ public:
 };
 
 template <class Factory, class RealObject>
-class Creator : public Factory::Creator, public Factory::Key
+class Creator : public Factory::Creator
 {
 public:
     typedef typename Factory::Object    Object;
@@ -142,7 +140,7 @@ public:
     typedef typename Factory::Argument  Argument;
     typedef typename Factory::Key       Key;
     explicit Creator(Key key, bool multi=false)
-        : Key(key)
+        : m_key(key)
     {
         Factory::getInstance()->registerCreator(key, this, multi);
     }
@@ -162,6 +160,14 @@ public:
         msg_info("Creator") << "[SOFA]Registration of class : " << type().name();
     }
 
+    const Key& getKey() const
+    {
+        return m_key;
+    }
+
+private:
+
+    Key m_key;
 };
 
 template <class Factory, class RealObject>
@@ -192,12 +198,11 @@ public:
     }
 };
 
+#if !defined(SOFAHELPER_FACTORY_CPP)
+extern template SOFA_HELPER_API void logFactoryRegister(const std::string& baseclass, const std::string& classname, std::string key, bool multi);
+#endif
 
-} // namespace helper
-
-} // namespace sofa
+} // namespace sofa::helper
 
 // Creator is often used without namespace qualifiers
 using sofa::helper::Creator;
-
-#endif

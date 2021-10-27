@@ -112,7 +112,7 @@ void DefaultPipeline::doCollisionReset()
     // clear all contacts
     if (contactManager != nullptr)
     {
-        const helper::vector<Contact::SPtr>& contacts = contactManager->getContacts();
+        const type::vector<Contact::SPtr>& contacts = contactManager->getContacts();
         for (const auto& contact : contacts)
         {
             if (contact != nullptr)
@@ -130,7 +130,7 @@ void DefaultPipeline::doCollisionReset()
     }
 }
 
-void DefaultPipeline::doCollisionDetection(const helper::vector<core::CollisionModel*>& collisionModels)
+void DefaultPipeline::doCollisionDetection(const type::vector<core::CollisionModel*>& collisionModels)
 {
     ScopedAdvancedTimer docollisiontimer("doCollisionDetection");
 
@@ -140,7 +140,7 @@ void DefaultPipeline::doCollisionDetection(const helper::vector<core::CollisionM
     // First, we compute a bounding volume for the collision model (for example bounding sphere)
     // or we have loaded a collision model that knows its other model
 
-    helper::vector<CollisionModel*> vectBoundingVolume;
+    type::vector<CollisionModel*> vectBoundingVolume;
     {
         ScopedAdvancedTimer bboxtimer("ComputeBoundingTree");
 
@@ -150,9 +150,14 @@ void DefaultPipeline::doCollisionDetection(const helper::vector<core::CollisionM
         const bool continuous = intersectionMethod->useContinuous();
         const SReal dt       = getContext()->getDt();
 
-        helper::vector<CollisionModel*>::const_iterator it;
-        const helper::vector<CollisionModel*>::const_iterator itEnd = collisionModels.end();
+        type::vector<CollisionModel*>::const_iterator it;
+        const type::vector<CollisionModel*>::const_iterator itEnd = collisionModels.end();
         int nActive = 0;
+
+        const int used_depth = (
+                    (broadPhaseDetection && broadPhaseDetection->needsDeepBoundingTree()) ||
+                    (narrowPhaseDetection && narrowPhaseDetection->needsDeepBoundingTree())
+            ) ? d_depth.getValue() : 0;
 
         for (it = collisionModels.begin(); it != itEnd; ++it)
         {
@@ -161,14 +166,14 @@ void DefaultPipeline::doCollisionDetection(const helper::vector<core::CollisionM
 
             if (!(*it)->isActive()) continue;
 
-            int used_depth = broadPhaseDetection->needsDeepBoundingTree() ? d_depth.getValue() : 0;
-
-            if (continuous){
-                std::string msg = "Compute Continuous BoundingTree: " + (*it)->getName();
+            if (continuous)
+            {
+                const std::string msg = "Compute Continuous BoundingTree: " + (*it)->getName();
                 ScopedAdvancedTimer bboxtimer(msg.c_str());
                 (*it)->computeContinuousBoundingTree(dt, used_depth);
             }
-            else {
+            else
+            {
                 std::string msg = "Compute BoundingTree: " + (*it)->getName();
                 ScopedAdvancedTimer bboxtimer(msg.c_str());
                 (*it)->computeBoundingTree(used_depth);
@@ -225,7 +230,7 @@ void DefaultPipeline::doCollisionDetection(const helper::vector<core::CollisionM
         ScopedAdvancedTimer narrowphase("NarrowPhase");
         intersectionMethod->beginNarrowPhase();
         narrowPhaseDetection->beginNarrowPhase();
-        helper::vector<std::pair<CollisionModel*, CollisionModel*> >& vectCMPair = broadPhaseDetection->getCollisionModelPairs();
+        type::vector<std::pair<CollisionModel*, CollisionModel*> >& vectCMPair = broadPhaseDetection->getCollisionModelPairs();
 
         msg_info_when(d_doPrintInfoMessage.getValue())
                 << "doCollisionDetection, "<< vectCMPair.size()<<" colliding model pairs" ;
@@ -258,10 +263,10 @@ void DefaultPipeline::doCollisionResponse()
 
     // finally we start the creation of collisionGroup
 
-    const helper::vector<Contact::SPtr>& contacts = contactManager->getContacts();
+    const type::vector<Contact::SPtr>& contacts = contactManager->getContacts();
 
     // First we remove all contacts with non-simulated objects and directly add them
-    helper::vector<Contact::SPtr> notStaticContacts;
+    type::vector<Contact::SPtr> notStaticContacts;
 
     sofa::helper::AdvancedTimer::stepBegin("CreateStaticObjectsResponse");
     for (const auto& contact : contacts)

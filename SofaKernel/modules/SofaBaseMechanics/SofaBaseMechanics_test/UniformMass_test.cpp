@@ -24,14 +24,9 @@
 #include <string>
 using std::string ;
 
-#include <gtest/gtest.h>
-using testing::Types;
-
-#include <sofa/helper/BackTrace.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 using namespace sofa::defaulttype ;
 
-#include <SofaBaseMechanics/UniformMass.h>
 using sofa::component::mass::UniformMass ;
 
 #include <SofaSimulationGraph/SimpleApi.h>
@@ -39,7 +34,10 @@ using sofa::component::mass::UniformMass ;
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
-using sofa::simulation::Node ;
+
+#include <sofa/simulation/Node.h>
+using sofa::simulation::Node;
+
 using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
@@ -49,8 +47,9 @@ using sofa::component::container::MechanicalObject ;
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
-#include <SofaTest/Sofa_test.h>
-using BaseTest = sofa::Sofa_test<SReal>;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
+using testing::Types;
 
 #include <sofa/core/ExecParams.h>
 
@@ -80,7 +79,7 @@ struct UniformMassTest :  public BaseTest
     typename MechanicalObject<DataTypes>::SPtr m_mecaobject;
     bool todo  {true} ;
 
-    virtual void SetUp()
+    void SetUp() override
     {
         sofa::simpleapi::importPlugin("SofaComponentAll") ;
 
@@ -89,7 +88,7 @@ struct UniformMassTest :  public BaseTest
         m_root = m_simu->createNewGraph("root");
     }
 
-    void TearDown()
+    void TearDown() override
     {
         if (m_root != nullptr){
             m_simu->unload(m_root);

@@ -131,7 +131,6 @@ ColorMap* ColorMap::getDefault()
     if (defaultColorMap == nullptr) {
         defaultColorMap = new ColorMap();
         std::string tmp("");
-        //defaultOglColorMap->initOld(tmp); // TODO: replace initOld() with init()
         defaultColorMap->init();
     }
     return defaultColorMap;
@@ -316,7 +315,7 @@ void ColorMap::reinit()
         float step = 1.0f/(nColors-1);
         for (unsigned int i=0; i<nColors; i++)
         {
-            entries.push_back(Color(hsv2rgb(Color3(i*step,1,1)), 1.0f));
+            entries.emplace_back(hsv2rgb(Color3(i*step,1.f,1.f)), 1.0f);
         }
     }
 }

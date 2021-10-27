@@ -10,7 +10,8 @@
     <GenericConstraintSolver />
 
     <DefaultPipeline depth="8" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="0.6" contactDistance="0.3" />
     <RuleBasedContactManager name="Response" response="FrictionContact"
                              rules="1 * FrictionContact?mu=0.01
@@ -31,7 +32,7 @@
 
     <Node name="Tool">
         <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver />
+        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
 
         <MechanicalObject name="ms" template="Rigid3d"/>
         <UniformMass totalMass="0.1" />

@@ -9,7 +9,6 @@ set(SOFACOMPONENTALL_MODULES
     SofaBaseTopology
     SofaBaseUtils
     SofaBaseVisual
-    SofaEigen2Solver
 
     # SofaSimulation
     SofaSimulationCommon
@@ -50,6 +49,7 @@ set(SOFACOMPONENTALL_MODULES
     SofaNonUniformFem
 
     # SofaMisc
+    SofaMiscCollision
     SofaMiscEngine
     SofaMiscExtra
     SofaMiscFem

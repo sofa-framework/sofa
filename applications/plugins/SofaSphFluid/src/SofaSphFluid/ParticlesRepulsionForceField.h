@@ -69,10 +69,10 @@ protected:
 
     struct Particle
     {
-        sofa::helper::vector< int > neighbors; ///< indice + r/h
+        sofa::type::vector< int > neighbors; ///< indice + r/h
     };
 
-    sofa::helper::vector<Particle> particles;
+    sofa::type::vector<Particle> particles;
 
 public:
     /// this method is called by the SpatialGrid when w connection between two particles is detected
@@ -96,7 +96,7 @@ public:
 
     SReal getPotentialEnergy(const sofa::core::MechanicalParams* /*mparams*/, const DataVecCoord& /* x */) const override
     {
-        serr << "getPotentialEnergy not implemented" << sendl;
+        msg_error() << "getPotentialEnergy not implemented";
 
         return 0.0;
     }

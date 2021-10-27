@@ -5,7 +5,7 @@
 
 	<VisualStyle displayFlags="showBehavior showVisual" />
 	<EulerImplicitSolver rayleighStiffness="0.5"  rayleighMass="0.5" vdamping="0.01"/>
-	<CGLinearSolver template="GraphScattered" iterations="15"  threshold="1e-008" />
+	<CGLinearSolver template="GraphScattered" iterations="15"  threshold="1e-008" tolerance="1e-5"/>
 
 	<Node name="target">
 			<MeshObjLoader name="meshLoader_0" filename="data/femur_f.obj" handleSeams="1" />

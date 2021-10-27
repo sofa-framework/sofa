@@ -4,6 +4,7 @@ project(Sofa.Core)
 set(SRC_ROOT "src/sofa/core")
 
 set(HEADER_FILES
+    ${SRC_ROOT}/config.h.in
     ${SRC_ROOT}/BaseMapping.h
     ${SRC_ROOT}/BaseState.h
     ${SRC_ROOT}/BehaviorModel.h
@@ -14,9 +15,15 @@ set(HEADER_FILES
     ${SRC_ROOT}/ConstraintParams.h
     ${SRC_ROOT}/DataEngine.h
     ${SRC_ROOT}/DataTracker.h
+    ${SRC_ROOT}/DataTrackerCallback.h
+    ${SRC_ROOT}/DataTrackerFunctor.h
+    ${SRC_ROOT}/DevBaseMonitor.h
     ${SRC_ROOT}/ExecParams.h
+    ${SRC_ROOT}/fwd.h
+    ${SRC_ROOT}/init.h
     ${SRC_ROOT}/Mapping.h
     ${SRC_ROOT}/Mapping.inl
+    ${SRC_ROOT}/MappingHelper.h
     ${SRC_ROOT}/MechanicalParams.h
     ${SRC_ROOT}/Multi2Mapping.h
     ${SRC_ROOT}/Multi2Mapping.inl
@@ -55,9 +62,9 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/LinearSolver.h
     ${SRC_ROOT}/behavior/Mass.h
     ${SRC_ROOT}/behavior/Mass.inl
+    ${SRC_ROOT}/behavior/MechanicalMatrix.h
     ${SRC_ROOT}/behavior/MechanicalState.h
     ${SRC_ROOT}/behavior/MechanicalState.inl
-    ${SRC_ROOT}/behavior/MechanicalMatrix.h
     ${SRC_ROOT}/behavior/MixedInteractionConstraint.h
     ${SRC_ROOT}/behavior/MixedInteractionConstraint.inl
     ${SRC_ROOT}/behavior/MixedInteractionForceField.h
@@ -74,6 +81,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/PairInteractionProjectiveConstraintSet.inl
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.inl
+    ${SRC_ROOT}/behavior/RotationFinder.h
     ${SRC_ROOT}/behavior/RotationMatrix.h
     ${SRC_ROOT}/behavior/fwd.h
     ${SRC_ROOT}/collision/BroadPhaseDetection.h
@@ -88,17 +96,13 @@ set(HEADER_FILES
     ${SRC_ROOT}/collision/IntersectorFactory.h
     ${SRC_ROOT}/collision/NarrowPhaseDetection.h
     ${SRC_ROOT}/collision/Pipeline.h
-    ${SRC_ROOT}/config.h.in
-    ${SRC_ROOT}/core.h
-    ${SRC_ROOT}/init.h
-    ${SRC_ROOT}/fwd.h
     ${SRC_ROOT}/loader/BaseLoader.h
     ${SRC_ROOT}/loader/ImageLoader.h
-    ${SRC_ROOT}/loader/Material.h
     ${SRC_ROOT}/loader/MeshLoader.h
-    ${SRC_ROOT}/loader/PrimitiveGroup.h
     ${SRC_ROOT}/loader/SceneLoader.h
     ${SRC_ROOT}/loader/VoxelLoader.h
+    ${SRC_ROOT}/logging/PerComponentLoggingMessageHandler.h
+    ${SRC_ROOT}/logging/RichConsoleStyleMessageFormatter.h
     ${SRC_ROOT}/objectmodel/AbstractDataLink.h
     ${SRC_ROOT}/objectmodel/AspectPool.h
     ${SRC_ROOT}/objectmodel/Base.h
@@ -116,6 +120,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/ContextObject.h
     ${SRC_ROOT}/objectmodel/DDGNode.h
     ${SRC_ROOT}/objectmodel/Data.h
+    ${SRC_ROOT}/objectmodel/DataCallback.h
     ${SRC_ROOT}/objectmodel/DataContentValue.h
     ${SRC_ROOT}/objectmodel/DataFileName.h
     ${SRC_ROOT}/objectmodel/DataLink.h
@@ -123,32 +128,41 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/Event.h
     ${SRC_ROOT}/objectmodel/GUIEvent.h
     ${SRC_ROOT}/objectmodel/HapticDeviceEvent.h
+    ${SRC_ROOT}/objectmodel/IdleEvent.h
     ${SRC_ROOT}/objectmodel/JoystickEvent.h
     ${SRC_ROOT}/objectmodel/KeypressedEvent.h
     ${SRC_ROOT}/objectmodel/KeyreleasedEvent.h
-    ${SRC_ROOT}/objectmodel/IdleEvent.h
     ${SRC_ROOT}/objectmodel/Link.h
     ${SRC_ROOT}/objectmodel/MouseEvent.h
-    ${SRC_ROOT}/objectmodel/ScriptEvent.h
     ${SRC_ROOT}/objectmodel/SPtr.h
+    ${SRC_ROOT}/objectmodel/ScriptEvent.h
     ${SRC_ROOT}/objectmodel/Tag.h
-    ${SRC_ROOT}/objectmodel/DataCallback.h
-    ${SRC_ROOT}/topology/Topology.h
+    ${SRC_ROOT}/objectmodel/vectorData.h
+    ${SRC_ROOT}/objectmodel/vectorLinks.h
     ${SRC_ROOT}/topology/BaseMeshTopology.h
     ${SRC_ROOT}/topology/BaseTopology.h
     ${SRC_ROOT}/topology/BaseTopologyData.h
     ${SRC_ROOT}/topology/BaseTopologyObject.h
     ${SRC_ROOT}/topology/TopologicalMapping.h
+    ${SRC_ROOT}/topology/Topology.h
     ${SRC_ROOT}/topology/TopologyChange.h
-	${SRC_ROOT}/topology/TopologyHandler.h
+    ${SRC_ROOT}/topology/TopologyHandler.h
+    ${SRC_ROOT}/topology/TopologyData.h
+    ${SRC_ROOT}/topology/TopologyData.inl
+    ${SRC_ROOT}/topology/TopologyDataHandler.h
+    ${SRC_ROOT}/topology/TopologyDataHandler.inl
+    ${SRC_ROOT}/topology/TopologySparseData.h
+    ${SRC_ROOT}/topology/TopologySparseData.inl
+    ${SRC_ROOT}/topology/TopologySubsetData.h
+    ${SRC_ROOT}/topology/TopologySubsetData.inl
+    ${SRC_ROOT}/topology/TopologySubsetData.cpp
+    ${SRC_ROOT}/topology/TopologySubsetIndices.h
     ${SRC_ROOT}/visual/DisplayFlags.h
     ${SRC_ROOT}/visual/Shader.h
     ${SRC_ROOT}/visual/VisualLoop.h
     ${SRC_ROOT}/visual/VisualManager.h
     ${SRC_ROOT}/visual/VisualModel.h
     ${SRC_ROOT}/visual/VisualParams.h
-    ${SRC_ROOT}/logging/RichConsoleStyleMessageFormatter.h
-    ${SRC_ROOT}/logging/PerComponentLoggingMessageHandler.h
 )
 
 set(SOURCE_FILES
@@ -161,7 +175,11 @@ set(SOURCE_FILES
     ${SRC_ROOT}/ConstraintParams.cpp
     ${SRC_ROOT}/DataEngine.cpp
     ${SRC_ROOT}/DataTracker.cpp
+    ${SRC_ROOT}/DataTrackerCallback.cpp
+    ${SRC_ROOT}/DataTrackerFunctor.cpp
     ${SRC_ROOT}/ExecParams.cpp
+    ${SRC_ROOT}/fwd.cpp
+    ${SRC_ROOT}/init.cpp
     ${SRC_ROOT}/Mapping.cpp
     ${SRC_ROOT}/MechanicalParams.cpp
     ${SRC_ROOT}/Multi2Mapping.cpp
@@ -190,7 +208,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/MechanicalState.cpp
     ${SRC_ROOT}/behavior/MixedInteractionConstraint.cpp
     ${SRC_ROOT}/behavior/MixedInteractionForceField.cpp
-    ${SRC_ROOT}/behavior/MultiMatrix.cpp
     ${SRC_ROOT}/behavior/MultiMatrixAccessor.cpp
     ${SRC_ROOT}/behavior/OdeSolver.cpp
     ${SRC_ROOT}/behavior/PairInteractionConstraint.cpp
@@ -203,12 +220,12 @@ set(SOURCE_FILES
     ${SRC_ROOT}/collision/Intersection.cpp
     ${SRC_ROOT}/collision/NarrowPhaseDetection.cpp
     ${SRC_ROOT}/collision/Pipeline.cpp
-    ${SRC_ROOT}/init.cpp    
-    ${SRC_ROOT}/fwd.cpp
     ${SRC_ROOT}/loader/BaseLoader.cpp
     ${SRC_ROOT}/loader/MeshLoader.cpp
     ${SRC_ROOT}/loader/SceneLoader.cpp
     ${SRC_ROOT}/loader/VoxelLoader.cpp
+    ${SRC_ROOT}/logging/PerComponentLoggingMessageHandler.cpp
+    ${SRC_ROOT}/logging/RichConsoleStyleMessageFormatter.cpp
     ${SRC_ROOT}/objectmodel/AbstractDataLink.cpp
     ${SRC_ROOT}/objectmodel/AspectPool.cpp
     ${SRC_ROOT}/objectmodel/Base.cpp
@@ -222,40 +239,39 @@ set(SOURCE_FILES
     ${SRC_ROOT}/objectmodel/ClassInfo.cpp
     ${SRC_ROOT}/objectmodel/ComponentState.cpp
     ${SRC_ROOT}/objectmodel/ConfigurationSetting.cpp
-    ${SRC_ROOT}/objectmodel/ContextObject.cpp
     ${SRC_ROOT}/objectmodel/Context.cpp
+    ${SRC_ROOT}/objectmodel/ContextObject.cpp
     ${SRC_ROOT}/objectmodel/DDGNode.cpp
     ${SRC_ROOT}/objectmodel/Data.cpp
-    ${SRC_ROOT}/objectmodel/DataContentValue.cpp
     ${SRC_ROOT}/objectmodel/DataCallback.cpp
+    ${SRC_ROOT}/objectmodel/DataContentValue.cpp
     ${SRC_ROOT}/objectmodel/DataFileName.cpp
     ${SRC_ROOT}/objectmodel/DataLink.cpp
     ${SRC_ROOT}/objectmodel/DetachNodeEvent.cpp
     ${SRC_ROOT}/objectmodel/Event.cpp
     ${SRC_ROOT}/objectmodel/GUIEvent.cpp
     ${SRC_ROOT}/objectmodel/HapticDeviceEvent.cpp
+    ${SRC_ROOT}/objectmodel/IdleEvent.cpp
     ${SRC_ROOT}/objectmodel/JoystickEvent.cpp
     ${SRC_ROOT}/objectmodel/KeypressedEvent.cpp
     ${SRC_ROOT}/objectmodel/KeyreleasedEvent.cpp
     ${SRC_ROOT}/objectmodel/MouseEvent.cpp
     ${SRC_ROOT}/objectmodel/ScriptEvent.cpp
-    ${SRC_ROOT}/objectmodel/IdleEvent.cpp
     ${SRC_ROOT}/objectmodel/Tag.cpp
-    ${SRC_ROOT}/topology/Topology.cpp
     ${SRC_ROOT}/topology/BaseMeshTopology.cpp
     ${SRC_ROOT}/topology/BaseTopology.cpp
     ${SRC_ROOT}/topology/BaseTopologyObject.cpp
     ${SRC_ROOT}/topology/TopologicalMapping.cpp
+    ${SRC_ROOT}/topology/Topology.cpp
     ${SRC_ROOT}/topology/TopologyChange.cpp
-	${SRC_ROOT}/topology/TopologyHandler.cpp
-    ${SRC_ROOT}/visual/Shader.cpp
+    ${SRC_ROOT}/topology/TopologyHandler.cpp
+    ${SRC_ROOT}/topology/TopologySubsetIndices.cpp
     ${SRC_ROOT}/visual/DisplayFlags.cpp
+    ${SRC_ROOT}/visual/Shader.cpp
     ${SRC_ROOT}/visual/VisualLoop.cpp
     ${SRC_ROOT}/visual/VisualManager.cpp
     ${SRC_ROOT}/visual/VisualModel.cpp
     ${SRC_ROOT}/visual/VisualParams.cpp
-    ${SRC_ROOT}/logging/RichConsoleStyleMessageFormatter.cpp
-    ${SRC_ROOT}/logging/PerComponentLoggingMessageHandler.cpp
 )
 
 sofa_find_package(Sofa.Topology REQUIRED)
@@ -263,6 +279,10 @@ sofa_find_package(Sofa.Helper REQUIRED)
 sofa_find_package(Sofa.DefaultType REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+# Create alias to support compatibility, starting from v21.06
+# This alias will be deleted in v21.12
+add_library(SofaCore ALIAS Sofa.Core)
+
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.Topology Sofa.DefaultType)
 
 if(SOFA_BUILD_WITH_PCH_ENABLED)
@@ -282,9 +302,6 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
-
-# Create alias
-add_library(SofaCore ALIAS ${PROJECT_NAME})
 
 if(SOFA_BUILD_TESTS)
     add_subdirectory(SofaCore_test)

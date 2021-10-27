@@ -24,7 +24,7 @@
 #include <sofa/gui/config.h>
 
 #include <sofa/type/RGBAColor.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/simulation/fwd.h>
 
 namespace sofa::component::configurationsetting

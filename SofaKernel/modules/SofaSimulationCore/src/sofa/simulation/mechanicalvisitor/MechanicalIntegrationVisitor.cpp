@@ -55,7 +55,7 @@ Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(simulation::Node* nod
     MechanicalProjectPositionAndVelocityVisitor(&mparams, nextTime,core::VecCoordId::position(),core::VecDerivId::velocity()
     ).execute( node );
 
-    MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, nextTime,core::VecCoordId::position(),core::VecDerivId::velocity(), true).execute( node );
+    MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, nextTime,core::VecCoordId::position(),core::VecDerivId::velocity()).execute( node );
 
     MechanicalEndIntegrationVisitor endVisitor( this->params, dt );
     node->execute(&endVisitor);

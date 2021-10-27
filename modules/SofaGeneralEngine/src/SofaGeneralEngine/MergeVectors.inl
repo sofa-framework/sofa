@@ -28,7 +28,7 @@ namespace sofa::component::engine
 template <class VecT>
 MergeVectors<VecT>::MergeVectors()
     : f_nbInputs( initData(&f_nbInputs, (unsigned)2, "nbInputs", "Number of input vectors") )
-    , vf_inputs( this, "input", "Input vector", helper::DataEngineInput )
+    , vf_inputs( this, "input", "Input vector", sofa::core::objectmodel::DataEngineDataType::DataEngineInput)
     , f_output( initData(&f_output , "output", "Output vector") )
 {
 }
@@ -76,7 +76,7 @@ void MergeVectors<VecT>::doUpdate()
 {
     unsigned int nb = f_nbInputs.getValue();
     SOFA_UNUSED(nb);
-    helper::vectorData<VecValue>::merge( f_output, vf_inputs );
+    core::objectmodel::vectorData<VecValue>::merge( f_output, vf_inputs );
 }
 
 } //namespace sofa::component::engine

@@ -24,7 +24,7 @@
 
 
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -44,11 +44,11 @@ public:
     typedef typename DataTypes::Coord         Coord;
     typedef typename DataTypes::VecCoord      VecCoord;
     typedef typename DataTypes::Real          Real;
-    typedef sofa::defaulttype::Vec<1,Real>                       Coord1D;
-    typedef sofa::defaulttype::Vec<2,Real>                       Coord2D;
-    typedef sofa::defaulttype::Vec<3,Real>                       Coord3D;
-    typedef helper::vector <Coord2D>          VecCoord2D;
-    typedef sofa::helper::vector <Coord3D>    VecCoord3D;
+    typedef sofa::type::Vec<1,Real>                       Coord1D;
+    typedef sofa::type::Vec<2,Real>                       Coord2D;
+    typedef sofa::type::Vec<3,Real>                       Coord3D;
+    typedef type::vector<Coord2D>          VecCoord2D;
+    typedef sofa::type::vector<Coord3D>    VecCoord3D;
 
 
 protected:
@@ -89,7 +89,7 @@ protected:
     Data <float> showIndicesScale; ///< Debug : scale of state values displayed.
 
     Data <unsigned int> _vertexPloted; ///< Vertex index of values display in graph for each iteration.
-    Data <std::map < std::string, sofa::helper::vector<Real> > > f_graph; ///< Vertex state value per iteration
+    Data <std::map < std::string, sofa::type::vector<Real> > > f_graph; ///< Vertex state value per iteration
 
     void updateGraph();
     void resetGraph();

@@ -143,7 +143,7 @@ public:
         // Method to get a given step duration (ms) given its name and parent name
         SReal getStepMs(const std::string& stepName, const std::string& parentName);
 
-        sofa::helper::vector<AnimationSubStepData*> m_children;
+        sofa::type::vector<AnimationSubStepData*> m_children;
     };
 
     /**
@@ -169,7 +169,7 @@ public:
         int m_stepIteration;
         SReal m_totalMs;
 
-        sofa::helper::vector<AnimationSubStepData*> m_subSteps;
+        sofa::type::vector<AnimationSubStepData*> m_subSteps;
     protected:
         bool processData(const std::string& idString);
     };
@@ -186,7 +186,7 @@ protected:
     QTreeWidgetItem* addTreeItem(AnimationSubStepData* subStep);
 
 public slots:
-    void closeEvent( QCloseEvent* )
+    void closeEvent( QCloseEvent* ) override
     {
         emit(closeWindow(false));
     }
@@ -200,6 +200,8 @@ public slots:
     void updateTree(int step);
     /// Method called when a QTreeWidgetItem is selected in the Tree view.
     void onStepSelected(QTreeWidgetItem *item, int column);
+
+    void expandRootNodeOnly() const;
 
 signals:
     void closeWindow(bool);

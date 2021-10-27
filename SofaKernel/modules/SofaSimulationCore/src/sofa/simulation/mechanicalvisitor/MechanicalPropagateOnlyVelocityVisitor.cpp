@@ -27,10 +27,8 @@ namespace sofa::simulation::mechanicalvisitor
 
 MechanicalPropagateOnlyVelocityVisitor::MechanicalPropagateOnlyVelocityVisitor(
         const sofa::core::MechanicalParams* mparams,
-        SReal time, core::MultiVecDerivId v
-        , bool m)
+        SReal time, core::MultiVecDerivId v)
         : MechanicalVisitor(mparams), currentTime(time), v(v)
-        , ignoreMask(m)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     setReadWriteVectors();
@@ -44,25 +42,20 @@ Visitor::Result MechanicalPropagateOnlyVelocityVisitor::fwdMechanicalState(simul
 
 Visitor::Result MechanicalPropagateOnlyVelocityVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
 {
-    if (!ignoreMask)
-    {
-        ForceMaskActivate(map->getMechFrom() );
-        ForceMaskActivate(map->getMechTo() );
-    }
     map->applyJ(mparams, v, v);
-    if (!ignoreMask)
-    {
-        ForceMaskDeactivate( map->getMechTo() );
-    }
+
     return RESULT_CONTINUE;
 }
 
 void MechanicalPropagateOnlyVelocityVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
 {
-    mm->forceMask.activate(false);
+    SOFA_UNUSED(mm);
 }
 
 std::string MechanicalPropagateOnlyVelocityVisitor::getInfos() const
-{ std::string name="v["+v.getName()+"]"; return name; }
-
+{ 
+    std::string name="v["+v.getName()+"]"; 
+    return name; 
 }
+
+} // namespace sofa::simulation::mechanicalvisitor

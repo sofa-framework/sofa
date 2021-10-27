@@ -27,8 +27,8 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/vector.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/vector.h>
+#include <sofa/type/RGBAColor.h>
 #include <iostream>
 
 
@@ -153,9 +153,6 @@ void DistanceLMConstraint<DataTypes>::buildConstraintMatrix(const core::Constrai
 
         registeredConstraints.push_back(cIndex);
         cIndex++;
-
-        this->constrainedObject1->forceMask.insertEntry(idx1);
-        this->constrainedObject2->forceMask.insertEntry(idx2);
     }
 }
 
@@ -213,14 +210,14 @@ void DistanceLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vpa
         const VecCoord &x1= this->constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
         const VecCoord &x2= this->constrainedObject2->read(core::ConstVecCoordId::position())->getValue();
 
-        std::vector< sofa::defaulttype::Vector3 > points;
+        std::vector< sofa::type::Vector3 > points;
         const SeqEdges &edges =  vecConstraint.getValue();
         for (unsigned int i=0; i<edges.size(); ++i)
         {
             points.push_back(x1[edges[i][0]]);
             points.push_back(x2[edges[i][1]]);
         }
-        vparams->drawTool()->drawLines(points, 1, sofa::helper::types::RGBAColor::green());
+        vparams->drawTool()->drawLines(points, 1, sofa::type::RGBAColor::green());
     }
     vparams->drawTool()->restoreLastState();
 }

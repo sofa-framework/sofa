@@ -18,7 +18,7 @@ namespace engine
 int ZoneGeneratorImageToolBox_Class = core::RegisterObject("ZoneGeneratorImageToolBox")
         .add<ZoneGeneratorImageToolBox<ImageUC> >()
         .add<ZoneGeneratorImageToolBox<ImageD> >(true)
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
         .add<ZoneGeneratorImageToolBox<ImageC> >()
         .add<ZoneGeneratorImageToolBox<ImageI> >()
         .add<ZoneGeneratorImageToolBox<ImageUI> >()
@@ -44,7 +44,7 @@ template class SOFA_IMAGE_GUI_API ZoneGeneratorImageToolBox<ImageD>;
 
 
 
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_GUI_API ZoneGeneratorImageToolBox<ImageC>;
 template class SOFA_IMAGE_GUI_API ZoneGeneratorImageToolBox<ImageI>;
 template class SOFA_IMAGE_GUI_API ZoneGeneratorImageToolBox<ImageUI>;

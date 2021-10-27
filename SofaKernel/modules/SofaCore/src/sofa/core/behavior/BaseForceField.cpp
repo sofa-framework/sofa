@@ -22,13 +22,7 @@
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 BaseForceField::BaseForceField()
@@ -56,23 +50,6 @@ void BaseForceField::addMBKToMatrix(const MechanicalParams* mparams, const sofa:
         addBToMatrix(mparams, matrix);
 }
 
-void BaseForceField::addSubMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> subMatrixIndex)
-{
-    if (sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,rayleighStiffness.getValue()) != 0.0 )
-        addSubKToMatrix(mparams, matrix,subMatrixIndex);
-    if (sofa::core::mechanicalparams::bFactor(mparams) != 0.0)
-        addSubBToMatrix(mparams, matrix,subMatrixIndex);
-}
-
-void BaseForceField::addSubKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & /*subMatrixIndex*/) {
-    addKToMatrix(mparams,matrix);
-}
-
-void BaseForceField::addSubBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & /*subMatrixIndex*/) {
-    addBToMatrix(mparams,matrix);
-}
-
-
 bool BaseForceField::insertInNode( objectmodel::BaseNode* node )
 {
     node->addForceField(this);
@@ -87,8 +64,4 @@ bool BaseForceField::removeInNode( objectmodel::BaseNode* node )
     return true;
 }
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::behavior

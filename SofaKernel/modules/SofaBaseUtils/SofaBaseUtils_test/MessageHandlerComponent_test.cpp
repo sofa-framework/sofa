@@ -24,6 +24,11 @@
 #include <string>
 using std::string ;
 
+#include <sofa/testing/BaseTest.h>
+#include <sofa/testing/TestMessageHandler.h>
+
+#include <SofaBase/initSofaBase.h>
+
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
 
@@ -39,15 +44,15 @@ using sofa::simulation::SceneLoaderXML ;
 #include <SofaBaseUtils/messageHandlerComponent.h>
 using sofa::component::logging::MessageHandlerComponent ;
 
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::MainGtestMessageHandler ;
 using sofa::helper::logging::MessageDispatcher ;
 
 bool perTestInit()
 {
+    sofa::component::initSofaBase();
+
     /// THE TESTS HERE ARE NOT INHERITING FROM SOFA TEST SO WE NEED TO MANUALLY INSTALL THE HANDLER
     /// DO NO REMOVE
-    MessageDispatcher::addHandler( MainGtestMessageHandler::getInstance() );
+    MessageDispatcher::addHandler( sofa::testing::MainGtestMessageHandler::getInstance() );
     return true;
 }
 bool inited = perTestInit() ;

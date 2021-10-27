@@ -54,7 +54,7 @@ protected:
     virtual ~DynamicSparseGridGeometryAlgorithms() {}
 public:
     /// finds a hexahedron, in its rest position, which is nearest to a given point. Computes barycentric coordinates and a distance measure.
-    int findNearestElementInRestPos(const Coord& pos, defaulttype::Vector3& baryC, Real& distance) const override;
+    int findNearestElementInRestPos(const Coord& pos, type::Vector3& baryC, Real& distance) const override;
 
     void init() override;
 
@@ -68,17 +68,15 @@ protected:
 
 
 template <>
-int SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec2Types>::findNearestElementInRestPos(const Coord& pos, sofa::defaulttype::Vector3& baryC, Real& distance) const;
+int SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec2Types>::findNearestElementInRestPos(const Coord& pos, sofa::type::Vector3& baryC, Real& distance) const;
 
 template <>
-int SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec1Types>::findNearestElementInRestPos(const Coord& pos, sofa::defaulttype::Vector3& baryC, Real& distance) const;
+int SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec1Types>::findNearestElementInRestPos(const Coord& pos, sofa::type::Vector3& baryC, Real& distance) const;
 
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDGEOMETRYALGORITHMS_CPP)
 extern template class SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec3Types>;
 extern template class SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec2Types>;
-extern template class SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec1Types>;
-
 #endif
 
 } // namespace sofa::component::topology

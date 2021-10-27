@@ -1,3 +1,4 @@
+<?xml version="1.0" ?>
 <Node name="root" dt="0.005">
     <RequiredPlugin pluginName="SofaOpenglVisual"/>
     <RequiredPlugin pluginName='SofaMiscCollision'/>
@@ -9,31 +10,29 @@
     <RequiredPlugin pluginName='SofaMiscForceField'/> 
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
-    <DefaultPipeline verbose="0" />
-    <BruteForceDetection name="N2" />
-    <DefaultContactManager name="Response" response="default" />
-    <DefaultCollisionGroupManager name="Group" />
+
+    <DefaultPipeline verbose="0" name="CollisionPipeline" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <DefaultContactManager response="default" name="collision response" />
     <DiscreteIntersection />
 
     <MeshGmshLoader name="MeshLoader" filename="mesh/liver.msh" />
     <MeshObjLoader name="LiverSurface" filename="mesh/liver-smooth.obj" />
 
     <Node name="Liver">
-        <EulerImplicitSolver />
-        <CGLinearSolver iterations="1000" tolerance="1e-5" threshold="1e-5"/>
+        <EulerImplicitSolver name="integration scheme" />
+        <CGLinearSolver name="linear solver" iterations="1000" tolerance="1e-9" threshold="1e-9"/>
         <MechanicalObject name="dofs" src="@../MeshLoader"/>
-
+        <!-- Container for the tetrahedra-->
         <TetrahedronSetTopologyContainer name="TetraTopo" src="@../MeshLoader"/>
-        <TetrahedronSetGeometryAlgorithms />
-
-        <MeshMatrixMass massDensity="1.5" topology="@TetraTopo" />
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
+        <MeshMatrixMass totalMass="60" name="SparseMass" topology="@TetraTopo" />
         <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.45" youngModulus="5000" />
-        
-        <FixedConstraint  name="FixedConstraint" indices="3" />
-        <PartialFixedConstraint  name="PartialFixedConstraint" indices="39 64" fixedDirections="1 1 0" />
+        <FixedConstraint name="FixedConstraint" indices="3 39 64" />
 
         <Node name="Visu" >
-            <OglModel  name="VisualModel" src="@../../LiverSurface" color="0 1 1"/>
+            <OglModel  name="VisualModel" src="@../../LiverSurface" color="cyan"/>
             <BarycentricMapping name="VisualMapping" input="@../dofs" output="@VisualModel" />
         </Node>
         <Node name="Surf" >

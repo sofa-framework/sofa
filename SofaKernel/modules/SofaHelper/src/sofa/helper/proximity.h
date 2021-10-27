@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_PROXIMITY_H
 #define SOFA_COMPONENT_COLLISION_PROXIMITY_H
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/helper/config.h>
 
 namespace sofa
@@ -44,8 +44,8 @@ public:
 
     // init the solver with the new coordinates of the triangle & the segment
     // solve the lcp
-    //void NewComputation(Triangle *triP, Triangle *triQ, sofa::defaulttype::Vector3 &Presult, sofa::defaulttype::Vector3 &Qresult);
-    void NewComputation(const sofa::defaulttype::Vector3& P1, const sofa::defaulttype::Vector3& P2, const sofa::defaulttype::Vector3& P3, const sofa::defaulttype::Vector3& Q1, const sofa::defaulttype::Vector3& Q2, const sofa::defaulttype::Vector3& Q3, sofa::defaulttype::Vector3 &Presult, sofa::defaulttype::Vector3 &Qresult);
+    //void NewComputation(Triangle *triP, Triangle *triQ, sofa::type::Vector3 &Presult, sofa::type::Vector3 &Qresult);
+    void NewComputation(const sofa::type::Vector3& P1, const sofa::type::Vector3& P2, const sofa::type::Vector3& P3, const sofa::type::Vector3& Q1, const sofa::type::Vector3& Q2, const sofa::type::Vector3& Q3, sofa::type::Vector3 &Presult, sofa::type::Vector3 &Qresult);
     //double getAlphaP(){return _result[6];}
     //double getBetaP(){return _result[7];}
     //double getAlphaQ(){return _result[8];}
@@ -71,13 +71,13 @@ public:
 
     // init the solver with the new coordinates of the triangle & the segment
     // solve the lcp
-    //void NewComputation(Triangle *tri, const sofa::defaulttype::Vector3 &Q1, const sofa::defaulttype::Vector3 &Q2, sofa::defaulttype::Vector3 &Presult, sofa::defaulttype::Vector3 &Qresult);
-    void NewComputation(const sofa::defaulttype::Vector3 &P1, const sofa::defaulttype::Vector3 &P2, const sofa::defaulttype::Vector3 &P3, const sofa::defaulttype::Vector3 &Q1, const sofa::defaulttype::Vector3 &Q2, sofa::defaulttype::Vector3 &Presult, sofa::defaulttype::Vector3 &Qresult);
+    //void NewComputation(Triangle *tri, const sofa::type::Vector3 &Q1, const sofa::type::Vector3 &Q2, sofa::type::Vector3 &Presult, sofa::type::Vector3 &Qresult);
+    void NewComputation(const sofa::type::Vector3 &P1, const sofa::type::Vector3 &P2, const sofa::type::Vector3 &P3, const sofa::type::Vector3 &Q1, const sofa::type::Vector3 &Q2, sofa::type::Vector3 &Presult, sofa::type::Vector3 &Qresult);
 
     // we should add the same procedure using with AAB
-    //double distanceBSphere(Triangle &tri, sofa::defaulttype::Vector3 &Q1, sofa::defaulttype::Vector3&Q2);
+    //double distanceBSphere(Triangle &tri, sofa::type::Vector3 &Q1, sofa::type::Vector3&Q2);
 
-    //double distanceBBox(Triangle &tri, sofa::defaulttype::Vector3 &Q1, sofa::defaulttype::Vector3&Q2);
+    //double distanceBBox(Triangle &tri, sofa::type::Vector3 &Q1, sofa::type::Vector3&Q2);
 
     //double getAlpha(){return _result[5];}
     //double getBeta(){return _result[6];}
@@ -102,11 +102,11 @@ public:
 
     // init the solver with the new coordinates of the triangle & the segment
     // solve the lcp
-    //void NewComputation(Triangle *tri, const sofa::defaulttype::Vector3 &Q, sofa::defaulttype::Vector3 &Presult);
-    void NewComputation(const sofa::defaulttype::Vector3 &P1, const sofa::defaulttype::Vector3 &P2, const sofa::defaulttype::Vector3 &P3, const sofa::defaulttype::Vector3 &Q, sofa::defaulttype::Vector3 &Presult);
+    //void NewComputation(Triangle *tri, const sofa::type::Vector3 &Q, sofa::type::Vector3 &Presult);
+    void NewComputation(const sofa::type::Vector3 &P1, const sofa::type::Vector3 &P2, const sofa::type::Vector3 &P3, const sofa::type::Vector3 &Q, sofa::type::Vector3 &Presult);
 
     // distance using bbox precomputed on the triangle
-    //double distanceBBox(Triangle &tri, const sofa::defaulttype::Vector3 &Q);
+    //double distanceBBox(Triangle &tri, const sofa::type::Vector3 &Q);
 
     //double getAlpha(){return _result[4];}
     //double getBeta(){return _result[5];}

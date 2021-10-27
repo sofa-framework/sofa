@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_DEFAULTTYPE_VEC_CPP
+#define SOFA_TYPE_VEC_CPP
 
 #include <sofa/type/Vec.h>
 

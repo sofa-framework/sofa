@@ -24,7 +24,7 @@
 
 #include <string>
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Link.h>
@@ -40,11 +40,11 @@ namespace sofa::core::objectmodel
  * @author Matthieu Nesme @date 2015
  */
 template<class LinkType, class OwnerType>
-class VectorLinks : public helper::vector< LinkType* > {
+class VectorLinks : public type::vector< LinkType* > {
 
 public:
 
-    typedef helper::vector< LinkType* > Inherit;
+    typedef type::vector< LinkType* > Inherit;
 
     /// 'dataEngineInOut' is only valid if 'component' is a DataEngine
     VectorLinks(OwnerType* component, std::string const& name, std::string const& help)

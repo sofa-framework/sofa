@@ -24,7 +24,7 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <LMConstraint/LMConstraint.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 #include <sofa/simulation/Node.h>
 
 
@@ -57,8 +57,8 @@ public:
     typedef typename core::behavior::MechanicalState<DataTypes> MechanicalState;
 
 
-    typedef helper::vector<Index> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef type::vector<Index> SetIndexArray;
+    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
 
     typedef core::ConstraintParams::ConstOrder ConstOrder;
 
@@ -70,8 +70,7 @@ protected:
 
     ~FixedLMConstraint()
     {
-        if (m_pointHandler)
-            delete m_pointHandler;
+
     }
 
 public:
@@ -101,34 +100,11 @@ public:
     /// Link to be set to the topology container in the component graph.
     SingleLink<FixedLMConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
-    class FCPointHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
-    {
-    public:
-        typedef typename FixedLMConstraint<DataTypes>::SetIndexArray SetIndexArray;
-        FCPointHandler(FixedLMConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<SetIndexArray >* _data)
-            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
-
-
-
-        void applyDestroyFunction(Index /*index*/, value_type& /*T*/);
-
-
-        bool applyTestCreateFunction(Index /*index*/,
-                const sofa::helper::vector< Index > & /*ancestors*/,
-                const sofa::helper::vector< double > & /*coefs*/);
-    protected:
-        FixedLMConstraint<DataTypes> *fc;
-    };
-
 protected :
 
     Deriv X,Y,Z;
     SetIndexArray idxX, idxY, idxZ;
     std::map< Index, Coord> restPosition;
-
-
-    FCPointHandler* m_pointHandler;
-
 };
 
 

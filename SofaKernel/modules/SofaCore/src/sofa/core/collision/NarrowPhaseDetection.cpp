@@ -35,9 +35,9 @@ void NarrowPhaseDetection::beginNarrowPhase()
     }
 }
 
-void NarrowPhaseDetection::addCollisionPairs(const sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >& v)
+void NarrowPhaseDetection::addCollisionPairs(const sofa::type::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >& v)
 {
-    for (sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >::const_iterator it = v.begin(); it!=v.end(); it++)
+    for (sofa::type::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >::const_iterator it = v.begin(); it!=v.end(); it++)
         addCollisionPair(*it);
 
     // m_outputsMap should just be filled in addCollisionPair function
@@ -46,25 +46,23 @@ void NarrowPhaseDetection::addCollisionPairs(const sofa::helper::vector< std::pa
 
 void NarrowPhaseDetection::endNarrowPhase()
 {
-    DetectionOutputMap::iterator it = m_outputsMap.begin();
-
-    while (it != m_outputsMap.end())
+    for (auto it = m_outputsMap.begin(); it != m_outputsMap.end();)
     {
         DetectionOutputVector *do_vec = (it->second);
-
         if (!do_vec || do_vec->empty())
         {
-            /// @todo Optimization
-            DetectionOutputMap::iterator iterase = it;
-            ++it;
-            m_outputsMap.erase(iterase);
-            if (do_vec) do_vec->release();
+            if (do_vec)
+            {
+                do_vec->release();
+            }
+            m_outputsMap.erase(it++);
         }
         else
         {
             ++it;
         }
     }
+
 }
 
 size_t NarrowPhaseDetection::getPrimitiveTestCount() const
@@ -79,20 +77,9 @@ auto NarrowPhaseDetection::getDetectionOutputs() const -> const DetectionOutputM
 
 DetectionOutputVector*& NarrowPhaseDetection::getDetectionOutputs(CollisionModel *cm1, CollisionModel *cm2)
 {
-    msg_error_when(cm1 == nullptr) << "Requested a collision detection result with nullptr first collision model";
-    msg_error_when(cm2 == nullptr) << "Requested a collision detection result with nullptr second collision model";
-
     std::pair< CollisionModel*, CollisionModel* > cm_pair = std::make_pair(cm1, cm2);
-
-    DetectionOutputMap::iterator it = m_outputsMap.find(cm_pair);
-
-    if (it == m_outputsMap.end())
-    {
-        // new contact
-        it = m_outputsMap.insert( std::make_pair(cm_pair, nullptr) ).first;
-    }
-
-    return it->second;
+    const auto res = m_outputsMap.insert(m_outputsMap.end(), {cm_pair, nullptr});
+    return res->second;
 }
 
 void NarrowPhaseDetection::changeInstanceNP(Instance inst)

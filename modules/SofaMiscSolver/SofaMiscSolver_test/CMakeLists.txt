@@ -8,6 +8,11 @@ set(SOURCE_FILES
     NewmarkImplicitSolverDynamic_test.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaTest SofaMiscSolver)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaMiscSolver  SofaBoundaryCondition SofaDeformable SceneCreator)
+
+get_target_property(SOFAEXPLICITODESOLVERTEST_INCLUDES SofaExplicitOdeSolver_test INCLUDE_DIRECTORIES)
+
+# to use MassSpringSystemCreation
+target_include_directories(${PROJECT_NAME} PUBLIC ${SOFAEXPLICITODESOLVERTEST_INCLUDES})
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

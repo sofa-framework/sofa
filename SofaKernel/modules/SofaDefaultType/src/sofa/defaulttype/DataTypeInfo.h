@@ -22,10 +22,10 @@
 #pragma once
 
 #include <vector>
-#include <sofa/helper/fixed_array.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/fixed_array.h>
+#include <sofa/type/vector.h>
 #include <sofa/helper/set.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/type/RGBAColor.h>
 #include <typeinfo>
 #include "AbstractTypeInfo.h"
 #include "typeinfo/DataTypeInfoDynamicWrapper.h"

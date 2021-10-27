@@ -21,15 +21,13 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTopologyContainer.h>
-#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 
 namespace sofa::component::mapping
 {
 
 
-using sofa::defaulttype::Mat3x3d;
-using sofa::defaulttype::Vector3;
+using sofa::type::Mat3x3d;
+using sofa::type::Vector3;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 
@@ -49,10 +47,10 @@ public:
 
     typedef typename Inherit1::Real Real;
 
-    ~BarycentricMapperHexahedronSetTopology() override ;
-    virtual helper::vector<Hexahedron> getElements() override;
-    virtual helper::vector<SReal> getBaryCoef(const Real* f) override;
-    helper::vector<SReal> getBaryCoef(const Real fx, const Real fy, const Real fz);
+    ~BarycentricMapperHexahedronSetTopology() override = default;
+    virtual type::vector<Hexahedron> getElements() override;
+    virtual type::vector<SReal> getBaryCoef(const Real* f) override;
+    type::vector<SReal> getBaryCoef(const Real fx, const Real fy, const Real fz);
     void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Hexahedron& element) override;
     void computeCenter(Vector3& center, const typename In::VecCoord& in, const Hexahedron& element) override;
     void computeDistance(double& d, const Vector3& v) override;
@@ -65,13 +63,11 @@ public:
 
 protected:
     BarycentricMapperHexahedronSetTopology();
-    BarycentricMapperHexahedronSetTopology(topology::HexahedronSetTopologyContainer* fromTopology,
-                                           topology::PointSetTopologyContainer* toTopology);
+    BarycentricMapperHexahedronSetTopology(sofa::core::topology::TopologyContainer* fromTopology,
+        core::topology::BaseMeshTopology* toTopology);
 
-    void setTopology(topology::HexahedronSetTopologyContainer* topology);
+    void setTopology(sofa::core::topology::TopologyContainer* topology);
 
-    topology::HexahedronSetTopologyContainer*		m_fromContainer {nullptr};
-    topology::HexahedronSetGeometryAlgorithms<In>*	m_fromGeomAlgo  {nullptr};
     std::set<Index> m_invalidIndex;
 
     using Inherit1::d_map;

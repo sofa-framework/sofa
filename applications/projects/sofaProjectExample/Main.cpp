@@ -36,7 +36,8 @@
 
 // collision pipeline
 #include <SofaBaseCollision/DefaultPipeline.h>
-#include <SofaBaseCollision/BruteForceDetection.h>
+#include <SofaBaseCollision/BruteForceBroadPhase.h>
+#include <SofaBaseCollision/BVHNarrowPhase.h>
 #include <SofaBaseCollision/NewProximityIntersection.h>
 #include <SofaBaseCollision/DefaultContactManager.h>
 #include <SofaMeshCollision/TriangleModel.h>
@@ -51,7 +52,7 @@
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 
-#include <sofa/helper/ArgumentParser.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/glut.h>
 
@@ -71,7 +72,8 @@ using sofa::helper::system::DataRepository;
 
 // collision pipeline
 using sofa::component::collision::DefaultPipeline;
-using sofa::component::collision::BruteForceDetection;
+using sofa::component::collision::BruteForceBroadPhase;
+using sofa::component::collision::BVHNarrowPhase;
 using sofa::component::collision::NewProximityIntersection;
 using sofa::component::collision::DefaultContactManager;
 using sofa::component::collision::DefaultCollisionGroupManager;
@@ -131,9 +133,13 @@ int main(int argc, char** argv)
     groot->addObject(collisionPipeline);
 
     // collision detection system
-    BruteForceDetection::SPtr collisionDetection = New<BruteForceDetection>();
-    collisionDetection->setName("Collision Detection");
-    groot->addObject(collisionDetection);
+    BruteForceBroadPhase::SPtr broadPhaseDetection = New<BruteForceBroadPhase>();
+    broadPhaseDetection->setName("Broad Phase Collision Detection");
+    groot->addObject(broadPhaseDetection);
+
+    BVHNarrowPhase::SPtr narrowPhaseDetection = New<BVHNarrowPhase>();
+    narrowPhaseDetection->setName("Narrow Phase Collision Detection");
+    groot->addObject(narrowPhaseDetection);
 
     // component to detection intersection
     NewProximityIntersection::SPtr detectionProximity = New<NewProximityIntersection>();
@@ -176,9 +182,9 @@ int main(int argc, char** argv)
     //implicitSolver->f_rayleighMass.setValue(0.1);
     implicitSolver->f_printLog = false;
     cgLinearSolver->setName("cgLinearSolver");
-    cgLinearSolver->f_maxIter.setValue(25);
-    cgLinearSolver->f_tolerance.setValue(1.0e-9);
-    cgLinearSolver->f_smallDenominatorThreshold.setValue(1.0e-9);
+    cgLinearSolver->d_maxIter.setValue(25);
+    cgLinearSolver->d_tolerance.setValue(1.0e-9);
+    cgLinearSolver->d_smallDenominatorThreshold.setValue(1.0e-9);
 
 
 

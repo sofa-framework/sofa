@@ -22,8 +22,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_PRECOMPUTEDLINEARSOLVER_INL
 #define SOFA_COMPONENT_COLLISION_PRECOMPUTEDLINEARSOLVER_INL
 
-#include "PrecomputedLinearSolver.h"
-#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <SofaSparseSolver/PrecomputedLinearSolver.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
@@ -73,7 +72,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
     {
         first = false;
         Inherit::setSystemMBKMatrix(mparams);
-        loadMatrix(*this->currentGroup->systemMatrix);
+        loadMatrix(*this->linearSystem.systemMatrix);
     }
 }
 
@@ -87,7 +86,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::solve (TMatrix& , TVector& z, TVe
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
 {
-    systemSize = this->currentGroup->systemMatrix->rowSize();
+    systemSize = this->linearSystem.systemMatrix->rowSize();
     internalData.Minv.resize(systemSize,systemSize);
     dt = this->getContext()->getDt();
 
@@ -122,7 +121,7 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
 {
-    msg_info("PrecomputedLinearSolver") << "Compute the initial invert matrix with CS_PARSE" ;
+    msg_info() << "Compute the initial invert matrix with CS_PARSE" ;
 
     CompressedRowSparseMatrix<double> matSolv;
     FullVector<double> r;
@@ -144,7 +143,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
         b.set(j,0.0);
     }
 
-    msg_info("PrecomputedLinearSolver") << "Precomputing constraint correction LU decomposition " ;
+    msg_info() << "Precomputing constraint correction LU decomposition " ;
     solver.invert(matSolv);
 
     for (unsigned int j=0; j<systemSize; j++)
@@ -152,7 +151,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
         std::stringstream tmp;
         tmp.precision(2);
         tmp << "Precomputing constraint correction : " << std::fixed << (float)j/(float)systemSize*100.0f << " %   " << '\xd';
-        msg_info("PrecomputedLinearSolver") << tmp.str() ;
+        msg_info() << tmp.str() ;
 
         if (j>0) b.set(j-1,0.0);
         b.set(j,1.0);
@@ -163,7 +162,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
             internalData.Minv.set(j,i,r.element(i) * factInt);
         }
     }
-    msg_info("PrecomputedLinearSolver") << "Precomputing constraint correction : " << std::fixed << 100.0f << " %   " << '\xd';
+    msg_info() << "Precomputing constraint correction : " << std::fixed << 100.0f << " %   " << '\xd';
 
 }
 #endif

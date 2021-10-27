@@ -60,7 +60,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
 
     c1.updateFaces();
     const SReal cubesize = c1.invDP.norm();
-    defaulttype::Vector3 p2 = e2.center();
+    type::Vector3 p2 = e2.center();
     DistanceGrid::Coord p1 = p2;
 
     // estimate the barycentric coordinates
@@ -100,12 +100,12 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
 
                     contacts->resize(contacts->size()+1);
                     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-                    detection->normal = defaulttype::Vector3(grad); // normal in global space from p1's surface
+                    detection->normal = type::Vector3(grad); // normal in global space from p1's surface
                     detection->value = d - d0;
                     detection->elem.first = e1;
                     detection->elem.second = e2;
                     detection->id = e2.getIndex();
-                    detection->point[0] = defaulttype::Vector3(pinit);
+                    detection->point[0] = type::Vector3(pinit);
                     detection->point[1] = e2.getContactPointWithSurfacePoint( pinit );
                     return 1;
                 }
@@ -125,7 +125,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
         if (b[0] > 0.001f && b[0] < 0.999f
             && b[1] > 0.001f && b[1] < 0.999f
             && b[2] > 0.001f && b[2] < 0.999f)
-            intersection->serr << "ERROR: FFD-FFD collision failed to converge to undeformed point: p1 = "<<p1<<" b = "<<b<<" c000 = "<<c1.corners[0]<<" c100 = "<<c1.corners[1]<<" c010 = "<<c1.corners[2]<<" c110 = "<<c1.corners[3]<<" c001 = "<<c1.corners[4]<<" c101 = "<<c1.corners[5]<<" c011 = "<<c1.corners[6]<<" c111 = "<<c1.corners[7]<<" pinit = "<<c1.initpos(b)<<" pdeform = "<<c1.deform(b)<<" err = "<<err1<<intersection->sendl;
+            msg_error(intersection) << "FFD-FFD collision failed to converge to undeformed point: p1 = "<<p1<<" b = "<<b<<" c000 = "<<c1.corners[0]<<" c100 = "<<c1.corners[1]<<" c010 = "<<c1.corners[2]<<" c110 = "<<c1.corners[3]<<" c001 = "<<c1.corners[4]<<" c101 = "<<c1.corners[5]<<" c011 = "<<c1.corners[6]<<" c111 = "<<c1.corners[7]<<" pinit = "<<c1.initpos(b)<<" pdeform = "<<c1.deform(b)<<" err = "<<err1;
     }
 
     return 0;

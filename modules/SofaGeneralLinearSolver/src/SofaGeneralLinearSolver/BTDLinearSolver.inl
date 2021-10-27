@@ -20,507 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "BTDLinearSolver.h"
-
+#include <SofaGeneralLinearSolver/BTDLinearSolver.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
 
 namespace sofa::component::linearsolver
 {
-
-
-template<std::size_t N, typename T>
-typename BlocFullMatrix<N,T>::Index  BlocFullMatrix<N, T>::Bloc::Nrows() const
-{
-    return BSIZE;
-}
-
-template<std::size_t N, typename T>
-typename BlocFullMatrix<N,T>::Index  BlocFullMatrix<N, T>::Bloc::Ncols() const
-{
-    return BSIZE;
-}
-
-template<std::size_t N, typename T>
-void  BlocFullMatrix<N, T>::Bloc::resize(Index, Index)
-{
-    clear();
-}
-
-template<std::size_t N, typename T>
-const T&  BlocFullMatrix<N, T>::Bloc::element(Index i, Index j) const
-{
-    return (*this)[i][j];
-}
-
-template<std::size_t N, typename T>
-void  BlocFullMatrix<N, T>::Bloc::set(Index i, Index j, const T& v)
-{
-    (*this)[i][j] = v;
-}
-
-template<std::size_t N, typename T>
-void  BlocFullMatrix<N, T>::Bloc::add(Index i, Index j, const T& v)
-{
-    (*this)[i][j] += v;
-}
-
-template<std::size_t N, typename T>
-typename BlocFullMatrix<N,T>::TransposedBloc  BlocFullMatrix<N, T>::Bloc::t() const
-{
-    return TransposedBloc(*this);
-}
-
-template<std::size_t N, typename T>
-typename BlocFullMatrix<N,T>::Bloc  BlocFullMatrix<N, T>::Bloc::i() const
-{
-    Bloc r;
-    r.invert(*this);
-    return r;
-}
-
-template<std::size_t N, typename T>
-typename BlocFullMatrix<N,T>::Index  BlocFullMatrix<N, T>::getSubMatrixDim(Index)
-{
-    return BSIZE;
-}
-
-
-template<std::size_t N, typename T>
-BlocFullMatrix<N, T>::BlocFullMatrix()
-    : data(nullptr), nTRow(0), nTCol(0), nBRow(0), nBCol(0), allocsize(0)
-{
-}
-
-template<std::size_t N, typename T>
-BlocFullMatrix<N, T>::BlocFullMatrix(Index nbRow, Index nbCol)
-    : data(new T[nbRow*nbCol]), nTRow(nbRow), nTCol(nbCol), nBRow(nbRow/BSIZE), nBCol(nbCol/BSIZE), allocsize((nbCol/BSIZE)*(nbRow/BSIZE))
-{
-}
-
-template<std::size_t N, typename T>
-BlocFullMatrix<N, T>::~BlocFullMatrix()
-{
-    if (allocsize>0)
-        delete[] data;
-}
-
-template<std::size_t N, typename T>
-const typename BlocFullMatrix<N, T>::Bloc& BlocFullMatrix<N, T>::bloc(Index bi, Index bj) const
-{
-    return data[bi*nBCol + bj];
-}
-
-template<std::size_t N, typename T>
-typename BlocFullMatrix<N, T>::Bloc& BlocFullMatrix<N, T>::bloc(Index bi, Index bj)
-{
-    return data[bi*nBCol + bj];
-}
-
-template<std::size_t N, typename T>
-void BlocFullMatrix<N, T>::resize(Index nbRow, Index nbCol)
-{
-    if (nbCol != nTCol || nbRow != nTRow)
-    {
-        if (allocsize < 0)
-        {
-            if ((nbCol/BSIZE)*(nbRow/BSIZE) > -allocsize)
-            {
-                msg_error("BTDLinearSolver") << "Cannot resize preallocated matrix to size ("<<nbRow<<","<<nbCol<<")." ;
-                return;
-            }
-        }
-        else
-        {
-            if ((nbCol/BSIZE)*(nbRow/BSIZE) > allocsize)
-            {
-                if (allocsize > 0)
-                    delete[] data;
-                allocsize = (nbCol/BSIZE)*(nbRow/BSIZE);
-                data = new Bloc[allocsize];
-            }
-        }
-        nTCol = nbCol;
-        nTRow = nbRow;
-        nBCol = nbCol/BSIZE;
-        nBRow = nbRow/BSIZE;
-    }
-    clear();
-}
-
-template<std::size_t N, typename T>
-typename BlocFullMatrix<N,T>::Index BlocFullMatrix<N, T>::rowSize(void) const
-{
-    return nTRow;
-}
-
-template<std::size_t N, typename T>
-typename BlocFullMatrix<N,T>::Index BlocFullMatrix<N, T>::colSize(void) const
-{
-    return nTCol;
-}
-
-template<std::size_t N, typename T>
-SReal BlocFullMatrix<N, T>::element(Index i, Index j) const
-{
-    Index bi = i / BSIZE; i = i % BSIZE;
-    Index bj = j / BSIZE; j = j % BSIZE;
-    return bloc(bi,bj)[i][j];
-}
-
-template<std::size_t N, typename T>
-const typename BlocFullMatrix<N, T>::Bloc& BlocFullMatrix<N, T>::asub(Index bi, Index bj, Index, Index) const
-{
-    return bloc(bi,bj);
-}
-
-template<std::size_t N, typename T>
-const typename BlocFullMatrix<N, T>::Bloc& BlocFullMatrix<N, T>::sub(Index i, Index j, Index, Index) const
-{
-    return asub(i/BSIZE,j/BSIZE);
-}
-
-template<std::size_t N, typename T>
-typename BlocFullMatrix<N, T>::Bloc& BlocFullMatrix<N, T>::asub(Index bi, Index bj, Index, Index)
-{
-    return bloc(bi,bj);
-}
-
-template<std::size_t N, typename T>
-typename BlocFullMatrix<N, T>::Bloc& BlocFullMatrix<N, T>::sub(Index i, Index j, Index, Index)
-{
-    return asub(i/BSIZE,j/BSIZE);
-}
-
-template<std::size_t N, typename T>
-template<class B>
-void BlocFullMatrix<N, T>::getSubMatrix(Index i, Index j, Index nrow, Index ncol, B& m)
-{
-    m = sub(i,j, nrow, ncol);
-}
-
-template<std::size_t N, typename T>
-template<class B>
-void BlocFullMatrix<N, T>::getAlignedSubMatrix(Index bi, Index bj, Index nrow, Index ncol, B& m)
-{
-    m = asub(bi, bj, nrow, ncol);
-}
-
-template<std::size_t N, typename T>
-template<class B>
-void BlocFullMatrix<N, T>::setSubMatrix(Index i, Index j, Index nrow, Index ncol, const B& m)
-{
-    sub(i,j, nrow, ncol) = m;
-}
-
-template<std::size_t N, typename T>
-template<class B>
-void BlocFullMatrix<N, T>::setAlignedSubMatrix(Index bi, Index bj, Index nrow, Index ncol, const B& m)
-{
-    asub(bi, bj, nrow, ncol) = m;
-}
-
-template<std::size_t N, typename T>
-void BlocFullMatrix<N, T>::set(Index i, Index j, double v)
-{
-    Index bi = i / BSIZE; i = i % BSIZE;
-    Index bj = j / BSIZE; j = j % BSIZE;
-    bloc(bi,bj)[i][j] = (Real)v;
-}
-
-template<std::size_t N, typename T>
-void BlocFullMatrix<N, T>::add(Index i, Index j, double v)
-{
-    Index bi = i / BSIZE; i = i % BSIZE;
-    Index bj = j / BSIZE; j = j % BSIZE;
-    bloc(bi,bj)[i][j] += (Real)v;
-}
-
-template<std::size_t N, typename T>
-void BlocFullMatrix<N, T>::clear(Index i, Index j)
-{
-    Index bi = i / BSIZE; i = i % BSIZE;
-    Index bj = j / BSIZE; j = j % BSIZE;
-    bloc(bi,bj)[i][j] = (Real)0;
-}
-
-template<std::size_t N, typename T>
-void BlocFullMatrix<N, T>::clearRow(Index i)
-{
-    Index bi = i / BSIZE; i = i % BSIZE;
-    for (Index bj = 0; bj < nBCol; ++bj)
-        for (Index j=0; j<BSIZE; ++j)
-            bloc(bi,bj)[i][j] = (Real)0;
-}
-
-template<std::size_t N, typename T>
-void BlocFullMatrix<N, T>::clearCol(Index j)
-{
-    Index bj = j / BSIZE; j = j % BSIZE;
-    for (Index bi = 0; bi < nBRow; ++bi)
-        for (Index i=0; i<BSIZE; ++i)
-            bloc(bi,bj)[i][j] = (Real)0;
-}
-
-template<std::size_t N, typename T>
-void BlocFullMatrix<N, T>::clearRowCol(Index i)
-{
-    clearRow(i);
-    clearCol(i);
-}
-
-template<std::size_t N, typename T>
-void BlocFullMatrix<N, T>::clear()
-{
-    for (Index i=0; i<3*nBRow; ++i)
-        data[i].clear();
-}
-
-
-template<std::size_t N, typename T>
-BlockVector<N, T>::BlockVector()
-{
-}
-
-template<std::size_t N, typename T>
-BlockVector<N, T>::BlockVector(Index n)
-    : Inherit(n)
-{
-}
-
-template<std::size_t N, typename T>
-BlockVector<N, T>::~BlockVector()
-{
-}
-
-template<std::size_t N, typename T>
-typename BlockVector<N, T>::Bloc& BlockVector<N, T>::sub(Index i, Index)
-{
-    return (Bloc&)*(this->ptr()+i);
-}
-
-template<std::size_t N, typename T>
-const typename BlockVector<N, T>::Bloc& BlockVector<N, T>::asub(Index bi, Index) const
-{
-    return (const Bloc&)*(this->ptr()+bi*N);
-}
-
-template<std::size_t N, typename T>
-typename BlockVector<N, T>::Bloc& BlockVector<N, T>::asub(Index bi, Index)
-{
-    return (Bloc&)*(this->ptr()+bi*N);
-}
-
-template<std::size_t N, typename T>
-BTDMatrix<N, T>::BTDMatrix()
-    : data(nullptr), nTRow(0), nTCol(0), nBRow(0), nBCol(0), allocsize(0)
-{
-}
-
-template<std::size_t N, typename T>
-BTDMatrix<N, T>::BTDMatrix(Index nbRow, Index nbCol)
-    : data(new T[3*(nbRow/BSIZE)]), nTRow(nbRow), nTCol(nbCol), nBRow(nbRow/BSIZE), nBCol(nbCol/BSIZE), allocsize(3*(nbRow/BSIZE))
-{
-}
-
-template<std::size_t N, typename T>
-BTDMatrix<N, T>::~BTDMatrix()
-{
-    if (allocsize>0)
-        delete[] data;
-}
-
-template<std::size_t N, typename T>
-const typename BTDMatrix<N, T>::Bloc& BTDMatrix<N, T>::bloc(Index bi, Index bj) const
-{
-    return data[3*bi + (bj - bi + 1)];
-}
-
-template<std::size_t N, typename T>
-typename BTDMatrix<N, T>::Bloc& BTDMatrix<N, T>::bloc(Index bi, Index bj)
-{
-    return data[3*bi + (bj - bi + 1)];
-}
-
-template<std::size_t N, typename T>
-void BTDMatrix<N, T>::resize(Index nbRow, Index nbCol)
-{
-    if (nbCol != nTCol || nbRow != nTRow)
-    {
-        if (allocsize < 0)
-        {
-            if ((nbRow/BSIZE)*3 > -allocsize)
-            {
-                msg_error("BTDLinearSolver") << "Cannot resize preallocated matrix to size ("<<nbRow<<","<<nbCol<<")" ;
-                return;
-            }
-        }
-        else
-        {
-            if ((nbRow/BSIZE)*3 > allocsize)
-            {
-                if (allocsize > 0)
-                    delete[] data;
-                allocsize = (nbRow/BSIZE)*3;
-                data = new Bloc[allocsize];
-            }
-        }
-        nTCol = nbCol;
-        nTRow = nbRow;
-        nBCol = nbCol/BSIZE;
-        nBRow = nbRow/BSIZE;
-    }
-    clear();
-}
-
-template<std::size_t N, typename T>
-typename BTDMatrix<N,T>::Index BTDMatrix<N, T>::rowSize(void) const
-{
-    return nTRow;
-}
-
-template<std::size_t N, typename T>
-typename BTDMatrix<N,T>::Index BTDMatrix<N, T>::colSize(void) const
-{
-    return nTCol;
-}
-
-template<std::size_t N, typename T>
-SReal BTDMatrix<N, T>::element(Index i, Index j) const
-{
-    Index bi = i / BSIZE; i = i % BSIZE;
-    Index bj = j / BSIZE; j = j % BSIZE;
-    Index bindex = bj - bi + 1;
-    if (bindex >= 3) return (SReal)0;
-    return data[bi*3+bindex][i][j];
-}
-
-template<std::size_t N, typename T>
-const typename BTDMatrix<N, T>::Bloc& BTDMatrix<N, T>::asub(Index bi, Index bj, Index, Index) const
-{
-    static Bloc b;
-    Index bindex = bj - bi + 1;
-    if (bindex >= 3) return b;
-    return data[bi*3+bindex];
-}
-
-template<std::size_t N, typename T>
-const typename BTDMatrix<N, T>::Bloc& BTDMatrix<N, T>::sub(Index i, Index j, Index, Index) const
-{
-    return asub(i/BSIZE,j/BSIZE);
-}
-
-template<std::size_t N, typename T>
-typename BTDMatrix<N, T>::Bloc& BTDMatrix<N, T>::asub(Index bi, Index bj, Index, Index)
-{
-    static Bloc b;
-    Index bindex = bj - bi + 1;
-    if (bindex >= 3) return b;
-    return data[bi*3+bindex];
-}
-
-template<std::size_t N, typename T>
-typename BTDMatrix<N, T>::Bloc& BTDMatrix<N, T>::sub(Index i, Index j, Index, Index)
-{
-    return asub(i/BSIZE,j/BSIZE);
-}
-
-template<std::size_t N, typename T>
-template<class B>
-void BTDMatrix<N, T>::getSubMatrix(Index i, Index j, Index nrow, Index ncol, B& m)
-{
-    m = sub(i,j, nrow, ncol);
-}
-
-template<std::size_t N, typename T>
-template<class B>
-void BTDMatrix<N, T>::getAlignedSubMatrix(Index bi, Index bj, Index nrow, Index ncol, B& m)
-{
-    m = asub(bi, bj, nrow, ncol);
-}
-
-template<std::size_t N, typename T>
-template<class B>
-void BTDMatrix<N, T>::setSubMatrix(Index i, Index j, Index nrow, Index ncol, const B& m)
-{
-    sub(i,j, nrow, ncol) = m;
-}
-
-template<std::size_t N, typename T>
-template<class B>
-void BTDMatrix<N, T>::setAlignedSubMatrix(Index bi, Index bj, Index nrow, Index ncol, const B& m)
-{
-    asub(bi, bj, nrow, ncol) = m;
-}
-
-template<std::size_t N, typename T>
-void BTDMatrix<N, T>:: set(Index i, Index j, double v)
-{
-    Index bi = i / BSIZE; i = i % BSIZE;
-    Index bj = j / BSIZE; j = j % BSIZE;
-    Index bindex = bj - bi + 1;
-    if (bindex >= 3) return;
-    data[bi*3+bindex][i][j] = (Real)v;
-}
-
-template<std::size_t N, typename T>
-void BTDMatrix<N, T>::add(Index i, Index j, double v)
-{
-    Index bi = i / BSIZE; i = i % BSIZE;
-    Index bj = j / BSIZE; j = j % BSIZE;
-    Index bindex = bj - bi + 1;
-    if (bindex >= 3) return;
-    data[bi*3+bindex][i][j] += (Real)v;
-}
-
-template<std::size_t N, typename T>
-void BTDMatrix<N, T>::clear(Index i, Index j)
-{
-    Index bi = i / BSIZE; i = i % BSIZE;
-    Index bj = j / BSIZE; j = j % BSIZE;
-    Index bindex = bj - bi + 1;
-    if (bindex >= 3) return;
-    data[bi*3+bindex][i][j] = (Real)0;
-}
-
-template<std::size_t N, typename T>
-void BTDMatrix<N, T>::clearRow(Index i)
-{
-    Index bi = i / BSIZE; i = i % BSIZE;
-    for (Index bj = 0; bj < 3; ++bj)
-        for (Index j=0; j<BSIZE; ++j)
-            data[bi*3+bj][i][j] = (Real)0;
-}
-
-template<std::size_t N, typename T>
-void BTDMatrix<N, T>::clearCol(Index j)
-{
-    Index bj = j / BSIZE; j = j % BSIZE;
-    if (bj > 0)
-        for (Index i=0; i<BSIZE; ++i)
-            data[(bj-1)*3+2][i][j] = (Real)0;
-    for (Index i=0; i<BSIZE; ++i)
-        data[bj*3+1][i][j] = (Real)0;
-    if (bj < nBRow-1)
-        for (Index i=0; i<BSIZE; ++i)
-            data[(bj+1)*3+0][i][j] = (Real)0;
-}
-
-template<std::size_t N, typename T>
-void BTDMatrix<N, T>::clearRowCol(Index i)
-{
-    clearRow(i);
-    clearCol(i);
-}
-
-template<std::size_t N, typename T>
-void BTDMatrix<N, T>::clear()
-{
-    for (Index i=0; i<3*nBRow; ++i)
-        data[i].clear();
-}
-
-
-
-
 
 /// Factorize M
 ///
@@ -706,7 +210,7 @@ void BTDLinearSolver<Matrix,Vector>::computeMinvBlock(Index i, Index j)
     // we need to compute all the Minv[i0][i0] (with i0>=i) till i0=i
     while (i0 > i)
     {
-        if (nBlockComputedMinv[i0] == 1) // only the bloc on the diagonal is computed : need of the the bloc [i0][i0-1]
+        if (nBlockComputedMinv[i0] == 1) // only the bloc on the diagonal is computed : need of the bloc [i0][i0-1]
         {
             // compute bloc (i0,i0-1)
             //Minv[i0][i0-1] = Minv[i0][i0]*-L[i0-1].t()
@@ -885,7 +389,7 @@ void BTDLinearSolver<Matrix,Vector>::init_partial_solve()
 {
 
     const Index bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
-    const Index nb = this->currentGroup->systemRHVector->size() / bsize;
+    const Index nb = this->linearSystem.systemRHVector->size() / bsize;
 
     //TODO => optimisation ??
     bwdContributionOnLH.clear();
@@ -910,7 +414,7 @@ void BTDLinearSolver<Matrix,Vector>::init_partial_solve()
     {
         Vec_dRH[i]=0;
         Vec_dRH[i].resize(bsize);
-        _rh_buf.asub(i,bsize) = this->currentGroup->systemRHVector->asub(i,bsize) ;
+        _rh_buf.asub(i,bsize) = this->linearSystem.systemRHVector->asub(i,bsize) ;
 
     }
 
@@ -946,7 +450,7 @@ void BTDLinearSolver<Matrix,Vector>::bwdAccumulateRHinBloc(Index indMaxBloc)
     {
 
         // evaluate the Right Hand Term for the bloc b
-        RHbloc = this->currentGroup->systemRHVector->asub(b,bsize) ;
+        RHbloc = this->linearSystem.systemRHVector->asub(b,bsize) ;
 
         // compute the contribution on LH created by RH
         _acc_lh_bloc  += Minv.asub(b,b,bsize,bsize) * RHbloc;
@@ -967,7 +471,7 @@ void BTDLinearSolver<Matrix,Vector>::bwdAccumulateRHinBloc(Index indMaxBloc)
 
     b = current_bloc;
     // compute the bloc which indice is current_bloc
-    this->currentGroup->systemLHVector->asub(b,bsize) = Minv.asub( b, b ,bsize,bsize) * ( fwdContributionOnRH.asub(b, bsize) + this->currentGroup->systemRHVector->asub(b,bsize) ) +
+    this->linearSystem.systemLHVector->asub(b,bsize) = Minv.asub( b, b ,bsize,bsize) * ( fwdContributionOnRH.asub(b, bsize) + this->linearSystem.systemRHVector->asub(b,bsize) ) +
             bwdContributionOnLH.asub(b, bsize);
 
     if (problem.getValue())
@@ -994,7 +498,7 @@ void BTDLinearSolver<Matrix,Vector>::bwdAccumulateLHGlobal( )
             std::cout<<"bwdLH["<<current_bloc-1<<"] = H["<<current_bloc-1<<"]["<<current_bloc<<"] *( bwdLH["<<current_bloc<<"] + Minv["<<current_bloc<<"]["<<current_bloc<<"] * RH["<<current_bloc<< "])"<<std::endl;
 
         // BwdLH += Minv*RH
-        _acc_lh_bloc +=  Minv.asub(current_bloc,current_bloc,bsize,bsize) * this->currentGroup->systemRHVector->asub(current_bloc,bsize) ;
+        _acc_lh_bloc +=  Minv.asub(current_bloc,current_bloc,bsize,bsize) * this->linearSystem.systemRHVector->asub(current_bloc,bsize) ;
 
         current_bloc--;
         // BwdLH(n-1) = H(n-1)(n)*BwdLH(n)
@@ -1032,7 +536,7 @@ void BTDLinearSolver<Matrix,Vector>::fwdAccumulateRHGlobal(Index indMinBloc)
     {
 
         // fwdRH(n) += RH(n)
-        _acc_rh_bloc += this->currentGroup->systemRHVector->asub(current_bloc,bsize);
+        _acc_rh_bloc += this->linearSystem.systemRHVector->asub(current_bloc,bsize);
 
         // fwdRH(n+1) = H(n+1)(n) * fwdRH(n)
         _acc_rh_bloc = -(lambda[current_bloc].t() * _acc_rh_bloc);
@@ -1050,7 +554,7 @@ void BTDLinearSolver<Matrix,Vector>::fwdAccumulateRHGlobal(Index indMinBloc)
 
     Index b = current_bloc;
     // compute the bloc which indice is _indMaxFwdLHComputed
-    this->currentGroup->systemLHVector->asub(b,bsize) = Minv.asub( b, b ,bsize,bsize) * ( fwdContributionOnRH.asub(b, bsize) + this->currentGroup->systemRHVector->asub(b,bsize) ) +
+    this->linearSystem.systemLHVector->asub(b,bsize) = Minv.asub( b, b ,bsize,bsize) * ( fwdContributionOnRH.asub(b, bsize) + this->linearSystem.systemRHVector->asub(b,bsize) ) +
             bwdContributionOnLH.asub(b, bsize);
 
     if (problem.getValue())
@@ -1080,13 +584,13 @@ void BTDLinearSolver<Matrix,Vector>::fwdComputeLHinBloc(Index indMaxBloc)
             if (problem.getValue())
                 std::cout<<" fwdRH["<<b+1<<"] = H["<<b+1<<"]["<<b<<"] * (fwdRH("<<b<< ") + RH("<<b<<"))"<<std::endl;
             // fwdRH(n+1) = H(n+1)(n) * (fwdRH(n) + RH(n))
-            fwdContributionOnRH.asub(b+1, bsize) = (-lambda[b].t())* ( fwdContributionOnRH.asub(b, bsize) + this->currentGroup->systemRHVector->asub(b,bsize) ) ;
+            fwdContributionOnRH.asub(b+1, bsize) = (-lambda[b].t())* ( fwdContributionOnRH.asub(b, bsize) + this->linearSystem.systemRHVector->asub(b,bsize) ) ;
         }
 
         _indMaxFwdLHComputed++; b++;
 
         // compute the bloc which indice is _indMaxFwdLHComputed
-        this->currentGroup->systemLHVector->asub(b,bsize) = Minv.asub( b, b ,bsize,bsize) * ( fwdContributionOnRH.asub(b, bsize) + this->currentGroup->systemRHVector->asub(b,bsize) ) +
+        this->linearSystem.systemLHVector->asub(b,bsize) = Minv.asub( b, b ,bsize,bsize) * ( fwdContributionOnRH.asub(b, bsize) + this->linearSystem.systemRHVector->asub(b,bsize) ) +
                 bwdContributionOnLH.asub(b, bsize);
         if (problem.getValue())
             std::cout<<"LH["<<b<<"] = Minv["<<b<<"]["<<b<<"] * (fwdRH("<<b<< ") + RH("<<b<<")) + bwdLH("<<b<<")"<<std::endl;
@@ -1168,12 +672,12 @@ void BTDLinearSolver<Matrix,Vector>::partial_solve(ListIndex&  Iout, ListIndex& 
     {
         const Index bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
         Vector *Result_partial_Solve = new Vector();
-        (*Result_partial_Solve) = (*this->currentGroup->systemLHVector);
+        (*Result_partial_Solve) = (*this->linearSystem.systemLHVector);
 
-        solve(*this->currentGroup->systemMatrix,*this->currentGroup->systemLHVector, *this->currentGroup->systemRHVector);
+        solve(*this->linearSystem.systemMatrix,*this->linearSystem.systemLHVector, *this->linearSystem.systemRHVector);
 
         Vector *Result = new Vector();
-        (*Result) = (*this->currentGroup->systemLHVector);
+        (*Result) = (*this->linearSystem.systemLHVector);
 
         Vector *DR = new Vector();
         (*DR) = (*Result);
@@ -1284,13 +788,5 @@ bool BTDLinearSolver<Matrix,Vector>::addJMInvJt(RMatrix& result, JMatrix& J, dou
 
     return true;
 }
-
-template<> const char* BTDMatrix<1,double>::Name() { return "BTDMatrix1d"; }
-template<> const char* BTDMatrix<2,double>::Name() { return "BTDMatrix2d"; }
-template<> const char* BTDMatrix<3,double>::Name() { return "BTDMatrix3d"; }
-template<> const char* BTDMatrix<4,double>::Name() { return "BTDMatrix4d"; }
-template<> const char* BTDMatrix<5,double>::Name() { return "BTDMatrix5d"; }
-template<> const char* BTDMatrix<6,double>::Name() { return "BTDMatrix6d"; }
-
 
 } //namespace sofa::component::linearsolver

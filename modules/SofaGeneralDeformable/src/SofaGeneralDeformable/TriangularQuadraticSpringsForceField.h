@@ -25,8 +25,8 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/Mat.h>
 #include <SofaBaseTopology/TopologyData.h>
 
 
@@ -51,7 +51,7 @@ public:
 
     using Index = sofa::Index;
 
-    class Mat3 : public sofa::helper::fixed_array<Deriv,3>
+    class Mat3 : public sofa::type::fixed_array<Deriv,3>
     {
     public:
         Deriv operator*(const Deriv& v)
@@ -168,48 +168,33 @@ public:
     /// compute lambda and mu based on the Young modulus and Poisson ratio
     void updateLameCoefficients();
 
+    /** Method to initialize @sa EdgeRestInformation when a new edge is created.
+    * Will be set as creation callback in the EdgeData @sa edgeInfo
+    */
+    void applyEdgeCreation(Index edgeIndex,
+        EdgeRestInformation& ei,
+        const core::topology::BaseMeshTopology::Edge& edge,
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs);
 
-    class TRQSTriangleHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,helper::vector<TriangleRestInformation> >
-    {
-    public:
-        typedef typename TriangularQuadraticSpringsForceField<DataTypes>::TriangleRestInformation TriangleRestInformation;
-        TRQSTriangleHandler(TriangularQuadraticSpringsForceField<DataTypes>* _ff, sofa::component::topology::TriangleData<sofa::helper::vector<TriangleRestInformation> >* _data) : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle, sofa::helper::vector<TriangleRestInformation> >(_data), ff(_ff) {}
+    /** Method to initialize @sa TriangleRestInformation when a new triangle is created.
+    * Will be set as creation callback in the TriangleData @sa triangleInfo
+    */
+    void applyTriangleCreation(Index triangleIndex, TriangleRestInformation& tinfo,
+        const core::topology::BaseMeshTopology::Triangle& triangle,
+        const sofa::type::vector<Index>& ancestors,
+        const sofa::type::vector<double>& coefs);
 
-        void applyCreateFunction(Index triangleIndex, TriangleRestInformation& ,
-                const core::topology::BaseMeshTopology::Triangle & t,
-                const sofa::helper::vector< Index > &,
-                const sofa::helper::vector< double > &);
-
-        void applyDestroyFunction(Index, TriangleRestInformation &);
-
-    protected:
-        TriangularQuadraticSpringsForceField<DataTypes>* ff;
-    };
-
-    class TRQSEdgeHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,helper::vector<EdgeRestInformation> >
-    {
-    public:
-        typedef typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
-        TRQSEdgeHandler(TriangularQuadraticSpringsForceField<DataTypes>* _ff, sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> >* _data) : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::helper::vector<EdgeRestInformation> >(_data), ff(_ff) {}
-
-        void applyCreateFunction(Index edgeIndex, EdgeRestInformation& ,
-                const core::topology::BaseMeshTopology::Edge & t,
-                const sofa::helper::vector< Index > &,
-                const sofa::helper::vector< double > &);
-
-    protected:
-        TriangularQuadraticSpringsForceField<DataTypes>* ff;
-    };
-
+    /** Method to update @sa triangleInfo when a triangle is removed.
+    * Will be set as destruction callback in the TriangleData @sa triangleInfo
+    */
+    void applyTriangleDestruction(Index triangleIndex, TriangleRestInformation& tinfo);
 
 protected :
-    sofa::component::topology::TriangleData<sofa::helper::vector<TriangleRestInformation> > triangleInfo; ///< Internal triangle data
-    sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo; ///< Internal edge data
+    sofa::component::topology::TriangleData<sofa::type::vector<TriangleRestInformation> > triangleInfo; ///< Internal triangle data
+    sofa::component::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > edgeInfo; ///< Internal edge data
 
-    sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
-
-    TRQSTriangleHandler* triangleHandler;
-    TRQSEdgeHandler* edgeHandler;
+    sofa::component::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 
     /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* m_topology;

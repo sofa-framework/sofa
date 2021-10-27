@@ -31,8 +31,8 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/helper/ArgumentParser.h>
+#include <sofa/type/Mat.h>
+#include <sofa/gui/ArgumentParser.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -47,7 +47,6 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaMeshCollision/PointModel.h>
 #include <SofaBaseCollision/MinProximityIntersection.h>
-#include <SofaBaseCollision/BruteForceDetection.h>
 #include <SofaMain/init.h>
 
 #include <SofaBaseVisual/VisualModelImpl.h>
@@ -58,7 +57,7 @@
 #endif
 
 #include <sofa/gui/config.h>
-#include <sofa/helper/system/gl.h>
+#include <sofa/gl/gl.h>
 #include <sofa/helper/system/glut.h>
 
 using sofa::helper::system::thread::CTime;
@@ -79,13 +78,13 @@ namespace Type
 {
 
 template<int N, typename real>
-Type get(const sofa::defaulttype::Vec<N,real>&)
+Type get(const sofa::type::Vec<N,real>&)
 {
     return (Type)vector(get(real()),N);
 }
 
 template<int L, int C, typename real>
-Type get(const sofa::defaulttype::Mat<L,C,real>&)
+Type get(const sofa::type::Mat<L,C,real>&)
 {
     return (Type)matrix(get(real()),L,C);
 }
@@ -392,8 +391,8 @@ public:
     sofa::component::container::MechanicalObject<Vec3Types> * newPoints;
     sofa::component::collision::PointModel * newPointsCM;
     sofa::component::collision::MinProximityIntersection * intersection;
-    sofa::component::collision::BruteForceDetection * detection;
-    sofa::helper::vector<double> newPointsDist;
+    sofa::component::collision::BVHNarrowPhase * narrowPhase;
+    sofa::type::vector<double> newPointsDist;
 
     Mat4x4f matrix;
     int facetsLastIt;
@@ -405,7 +404,10 @@ public:
         : pInFacets(createInputPort("facets")), pInPoints(createInputPort("points")), pInMatrix(createInputPort("matrix"))
         , computeV( initData(&computeV, false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
         , maxVDist( initData(&maxVDist,   1.0, "maxVDist", "maximum distance to use for velocity estimation") )
-        , newPointsNode(NULL), newPointsCM(NULL), intersection(NULL), detection(NULL)
+        , newPointsNode(nullptr)
+        , newPointsCM(nullptr)
+        , intersection(nullptr)
+        , narrowPhase(nullptr)
         , facetsLastIt(-20), pointsLastIt(-20), matrixLastIt(-20), motionLastTime(-1000)
     {
         matrix.identity();
@@ -441,8 +443,8 @@ public:
             intersection->setAlarmDistance(maxVDist.getValue());
             intersection->setContactDistance(0); //maxVDist.getValue());
 
-            newPointsNode->addObject ( detection = new sofa::component::collision::BruteForceDetection );
-            detection->setIntersectionMethod(intersection);
+            newPointsNode->addObject ( narrowPhase = new sofa::component::collision::BVHNarrowPhase );
+            narrowPhase->setIntersectionMethod(intersection);
 
             newPointsNode->execute<sofa::simulation::InitVisitor>();
         }
@@ -538,16 +540,16 @@ public:
                     intersection->setContactDistance(0);
                     newPointsCM->computeBoundingTree( 6 ); // compute a bbox tree of depth 6
                     //std::cout << "computeV: "<<newPointsCM->end().getIndex()<<" points"<<std::endl;
-                    detection->beginNarrowPhase();
+                    narrowPhase->beginNarrowPhase();
                     for (CMIterator it = node->collisionModel.begin(), itend = node->collisionModel.end(); it != itend ; ++it)
                     {
                         sofa::core::CollisionModel* cm2 = *it;
                         std::cout << "computeV: narrow phase detection with "<<cm2->getClassName()<<std::endl;
-                        detection->addCollisionPair(std::make_pair(newPointsCM->getFirst(), cm2->getFirst()));
-                        //detection->addCollisionPair(std::make_pair(cm2, newPointsCM));
+                        narrowPhase->addCollisionPair(std::make_pair(newPointsCM->getFirst(), cm2->getFirst()));
+                        //narrowPhase->addCollisionPair(std::make_pair(cm2, newPointsCM));
                     }
                     {
-                        sofa::core::collision::NarrowPhaseDetection::DetectionOutputMap& contactMap = detection->getDetectionOutputs();
+                        const auto& contactMap = narrowPhase->getDetectionOutputs();
                         int ncollisions = 0;
                         for (sofa::core::collision::NarrowPhaseDetection::DetectionOutputMap::iterator it1 = contactMap.begin(); it1 != contactMap.end(); ++it1)
                         {
@@ -1487,7 +1489,7 @@ public:
                 memcpy(vb->data(), &(n[0]), vb->dataSize());
             }
 
-            const sofa::helper::vector<TexCoord>& t = vtexcoords;
+            const sofa::type::vector<TexCoord>& t = vtexcoords;
             if (!t.empty() && !idVBT) // only send texcoords once
             {
                 *scratch = false;
@@ -1510,9 +1512,9 @@ public:
                     scene->addParam(idP, flowvr::render::ChunkPrimParam::VBUFFER_NUMDATA, "tangent", 0);
                 }
 
-                sofa::helper::vector<Vec4f> tangent; tangent.resize(t.size());
-                sofa::helper::vector<Coord> tangent1; tangent1.resize(t.size());
-                sofa::helper::vector<Coord> tangent2; tangent2.resize(t.size());
+                sofa::type::vector<Vec4f> tangent; tangent.resize(t.size());
+                sofa::type::vector<Coord> tangent1; tangent1.resize(t.size());
+                sofa::type::vector<Coord> tangent2; tangent2.resize(t.size());
 
                 // see http://www.terathon.com/code/tangent.php
                 for (unsigned int i=0; i<triangles.size(); i++)

@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 
 #include <sofa/helper/BackTrace.h>
@@ -36,14 +36,14 @@ using sofa::simulation::graph::DAGSimulation;
 #include <SofaGeneralEngine/ExtrudeEdgesAndGenerateQuads.h>
 using sofa::component::engine::ExtrudeEdgesAndGenerateQuads ;
 
-using sofa::helper::vector;
+using sofa::type::vector;
 
 
 namespace sofa
 {
 
 template <typename _DataTypes>
-struct ExtrudeEdgesAndGenerateQuads_test : public Sofa_test<typename _DataTypes::Real>,
+struct ExtrudeEdgesAndGenerateQuads_test : public BaseSimulationTest,
         ExtrudeEdgesAndGenerateQuads<_DataTypes>
 {
     typedef ExtrudeEdgesAndGenerateQuads<_DataTypes> ThisClass;
@@ -56,7 +56,7 @@ struct ExtrudeEdgesAndGenerateQuads_test : public Sofa_test<typename _DataTypes:
     Node::SPtr m_node;
     typename ThisClass::SPtr m_thisObject;
 
-    void SetUp()
+    void SetUp() override
     {
         setSimulation(m_simu = new DAGSimulation());
         m_node = m_simu->createNewGraph("root");
@@ -172,7 +172,7 @@ struct ExtrudeEdgesAndGenerateQuads_test : public Sofa_test<typename _DataTypes:
 };
 
 using ::testing::Types;
-typedef Types<Vec3Types> DataTypes;
+typedef Types<sofa::defaulttype::Vec3Types> DataTypes;
 
 TYPED_TEST_SUITE(ExtrudeEdgesAndGenerateQuads_test, DataTypes);
 

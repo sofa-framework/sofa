@@ -37,9 +37,9 @@
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/type/Vec.h>
 #include <sofa/core/CollisionModel.h>
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 #if IMAGE_HAVE_SOFA_GL == 1
 #include <sofa/gl/Texture.h>
@@ -126,9 +126,9 @@ public:
 
     // @name Vector of 3D points for navigation
     /**@{*/
-    typedef helper::ReadAccessor <core::objectmodel::Data<helper::vector<Coord> > >raPoints;
-    typedef helper::WriteOnlyAccessor<core::objectmodel::Data<helper::vector<Coord> > >waPoints;
-    Data< helper::vector<Coord> > points;
+    typedef helper::ReadAccessor <core::objectmodel::Data<type::vector<Coord> > >raPoints;
+    typedef helper::WriteOnlyAccessor<core::objectmodel::Data<type::vector<Coord> > >waPoints;
+    Data< type::vector<Coord> > points;
     /**@}*/
     
     // @name Vector visualization
@@ -141,7 +141,7 @@ public:
     Data <int> scroll; ///< 0 if no scrolling, 1 for up, 2 for down, 3 left, and 4 for right
     Data <bool> display; ///< Boolean to activate/desactivate the display of the image
 
-    typedef component::visualmodel::VisualModelImpl VisuModelType;
+    typedef sofa::component::visualmodel::VisualModelImpl VisuModelType;
 
     ImageViewer() : Inherited()
       , image(initData(&image,ImageTypes(),"image","input image"))
@@ -149,7 +149,7 @@ public:
       , histo(initData(&histo, HistogramType(256,256,false),"histo",""))
       , transform(initData(&transform, TransformType(), "transform" , ""))
       , plane ( initData ( &plane, ImagePlaneType(), "plane" , "" ) )
-      , points ( initData ( &points, helper::vector<Coord> (), "points" , "" ) )
+      , points ( initData ( &points, type::vector<Coord> (), "points" , "" ) )
       , vectorVisualization ( initData (&vectorVisualization, defaulttype::VectorVis(), "vectorvis", ""))
       , scroll( initData (&scroll, int(0), "scrollDirection", "0 if no scrolling, 1 for up, 2 for down, 3 left, and 4 for right"))
       , display( initData(&display, true, "display", "true if image is displayed, false otherwise"))
@@ -404,20 +404,20 @@ public:
     }
 
 
-    void getCorners(defaulttype::Vec<8,defaulttype::Vector3> &c) // get image corners
+    void getCorners(type::Vec<8,type::Vector3> &c) // get image corners
     {
         raImage rimage(this->image);
         const imCoord dim= rimage->getDimensions();
 
-        defaulttype::Vec<8,defaulttype::Vector3> p;
-        p[0]=defaulttype::Vector3(-0.5,-0.5,-0.5);
-        p[1]=defaulttype::Vector3(dim[0]-0.5,-0.5,-0.5);
-        p[2]=defaulttype::Vector3(-0.5,dim[1]-0.5,-0.5);
-        p[3]=defaulttype::Vector3(dim[0]-0.5,dim[1]-0.5,-0.5);
-        p[4]=defaulttype::Vector3(-0.5,-0.5,dim[2]-0.5);
-        p[5]=defaulttype::Vector3(dim[0]-0.5,-0.5,dim[2]-0.5);
-        p[6]=defaulttype::Vector3(-0.5,dim[1]-0.5,dim[2]-0.5);
-        p[7]=defaulttype::Vector3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
+        type::Vec<8,type::Vector3> p;
+        p[0]=type::Vector3(-0.5,-0.5,-0.5);
+        p[1]=type::Vector3(dim[0]-0.5,-0.5,-0.5);
+        p[2]=type::Vector3(-0.5,dim[1]-0.5,-0.5);
+        p[3]=type::Vector3(dim[0]-0.5,dim[1]-0.5,-0.5);
+        p[4]=type::Vector3(-0.5,-0.5,dim[2]-0.5);
+        p[5]=type::Vector3(dim[0]-0.5,-0.5,dim[2]-0.5);
+        p[6]=type::Vector3(-0.5,dim[1]-0.5,dim[2]-0.5);
+        p[7]=type::Vector3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
 
         raTransform rtransform(this->transform);
         for(unsigned int i=0;i<p.size();i++) c[i]=rtransform->fromImage(p[i]);
@@ -429,7 +429,7 @@ public:
         SOFA_UNUSED(onlyVisible);
         //if( onlyVisible) return;
 
-        defaulttype::Vec<8,defaulttype::Vector3> c;
+        type::Vec<8,type::Vector3> c;
         getCorners(c);
 
         Real bbmin[3]  = {c[0][0],c[0][1],c[0][2]} , bbmax[3]  = {c[0][0],c[0][1],c[0][2]};
@@ -439,7 +439,7 @@ public:
                 if(bbmin[j]>c[i][j]) bbmin[j]=c[i][j];
                 if(bbmax[j]<c[i][j]) bbmax[j]=c[i][j];
             }
-        this->f_bbox.setValue(sofa::defaulttype::TBoundingBox<Real>(bbmin,bbmax));
+        this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(bbmin,bbmax));
     }
     
     
@@ -461,8 +461,9 @@ protected:
 
         double size = rVis->getShapeScale();
         imCoord dims=rplane->getDimensions();
-        defaulttype::Vec<3,int> sampling(rVis->getSubsampleXY(),rVis->getSubsampleXY(),rVis->getSubsampleZ());
-        defaulttype::Vec4f colour(1.0,0.5,0.5,1.0);
+
+        type::Vec<3,int> sampling(rVis->getSubsampleXY(),rVis->getSubsampleXY(),rVis->getSubsampleZ());
+        type::RGBAColor colour(1.0,0.5,0.5,1.0);
 
         unsigned int x,y,z;
         for (z=0;z<3;z++)
@@ -494,7 +495,7 @@ protected:
 
         double size = rVis->getShapeScale();
         imCoord dims=rplane->getDimensions();
-        defaulttype::Vec<3,int> sampling(rVis->getSubsampleXY(),rVis->getSubsampleXY(),rVis->getSubsampleZ());
+        type::Vec<3,int> sampling(rVis->getSubsampleXY(),rVis->getSubsampleXY(),rVis->getSubsampleZ());
 
         int counter=0;
 
@@ -650,8 +651,8 @@ protected:
                     if(i==1 || rplane->getDimensions()[1]>1)
                         if(i==2 || rplane->getDimensions()[2]>1)
                         {
-                            defaulttype::Vec<4,defaulttype::Vector3> pts = rplane->get_sliceCoord(rplane->getPlane()[i],i);
-                            defaulttype::Vector3 n=cross(pts[1]-pts[0],pts[2]-pts[0]); n.normalize();
+                            type::Vec<4,type::Vector3> pts = rplane->get_sliceCoord(rplane->getPlane()[i],i);
+                            type::Vector3 n=cross(pts[1]-pts[0],pts[2]-pts[0]); n.normalize();
 
                             glEnable( GL_TEXTURE_2D );
                             glDisable( GL_LIGHTING);

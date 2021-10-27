@@ -24,7 +24,6 @@
 
 #include "PrecomputedWarpPreconditioner.h"
 //#include <SofaDenseSolver/NewMatMatrix.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <iostream>
 #include <sofa/helper/system/thread/CTime.h>
@@ -33,14 +32,13 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <cmath>
 #include <sofa/helper/system/thread/CTime.h>
-#include <SofaSimpleFem/TetrahedronFEMForceField.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/behavior/RotationFinder.h>
 #include <sofa/core/behavior/LinearSolver.h>
 
-#include <sofa/helper/Quater.h>
+#include <sofa/type/Quat.h>
 
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
@@ -90,10 +88,10 @@ void PrecomputedWarpPreconditioner<TDataTypes>::setSystemMBKMatrix(const core::M
         init_bFact = sofa::core::mechanicalparams::bFactor(mparams);
         init_kFact = mparams->kFactor();
         Inherit::setSystemMBKMatrix(mparams);
-        loadMatrix(*this->currentGroup->systemMatrix);
+        loadMatrix(*this->linearSystem.systemMatrix);
     }
 
-    this->currentGroup->needInvert = usePrecond;
+    this->linearSystem.needInvert = usePrecond;
 }
 
 //Solve x = R * M^-1 * R^t * b
@@ -238,7 +236,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M
         {
             tmpStr.precision(2);
             tmpStr << "Precomputing constraint correction : " << std::fixed << (float)(j*dof_on_node+d)*100.0f/(float)(nb_dofs*dof_on_node) << " %   " << '\xd'
-                   << sendl;
+                   << "\n";
 
             b.set(pid_j*dof_on_node+d,1.0);
             solver.solve(M,r,b);
@@ -293,8 +291,8 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     this->getContext()->get(EulerSolver);
 
     // for the initial computation, the gravity has to be put at 0
-    const sofa::defaulttype::Vec3d gravity = this->getContext()->getGravity();
-    const sofa::defaulttype::Vec3d gravity_zero(0.0,0.0,0.0);
+    const sofa::type::Vec3d gravity = this->getContext()->getGravity();
+    const sofa::type::Vec3d gravity_zero(0.0,0.0,0.0);
     this->getContext()->setGravity(gravity_zero);
 
     CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* CGlinearSolver;
@@ -353,12 +351,12 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     int buf_maxIter=0;
     if(CGlinearSolver)
     {
-        buf_tolerance = (double) CGlinearSolver->f_tolerance.getValue();
-        buf_maxIter   = (int) CGlinearSolver->f_maxIter.getValue();
-        buf_threshold = (double) CGlinearSolver->f_smallDenominatorThreshold.getValue();
-        CGlinearSolver->f_tolerance.setValue(1e-35);
-        CGlinearSolver->f_maxIter.setValue(5000);
-        CGlinearSolver->f_smallDenominatorThreshold.setValue(1e-25);
+        buf_tolerance = (double) CGlinearSolver->d_tolerance.getValue();
+        buf_maxIter   = (int) CGlinearSolver->d_maxIter.getValue();
+        buf_threshold = (double) CGlinearSolver->d_smallDenominatorThreshold.getValue();
+        CGlinearSolver->d_tolerance.setValue(1e-35);
+        CGlinearSolver->d_maxIter.setValue(5000);
+        CGlinearSolver->d_smallDenominatorThreshold.setValue(1e-25);
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -439,9 +437,9 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
 
     if(CGlinearSolver)
     {
-        CGlinearSolver->f_tolerance.setValue(buf_tolerance);
-        CGlinearSolver->f_maxIter.setValue(buf_maxIter);
-        CGlinearSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
+        CGlinearSolver->d_tolerance.setValue(buf_tolerance);
+        CGlinearSolver->d_maxIter.setValue(buf_maxIter);
+        CGlinearSolver->d_smallDenominatorThreshold.setValue(buf_threshold);
     }
 
     //Reset the velocity
@@ -473,41 +471,18 @@ void PrecomputedWarpPreconditioner<TDataTypes>::rotateConstraints()
     if (! use_rotations.getValue()) return;
 
     simulation::Node *node = dynamic_cast<simulation::Node *>(this->getContext());
-    sofa::component::forcefield::TetrahedronFEMForceField<TDataTypes>* forceField = nullptr;
     sofa::core::behavior::RotationFinder<TDataTypes>* rotationFinder = nullptr;
 
     if (node != nullptr)
     {
-        forceField = node->get<component::forcefield::TetrahedronFEMForceField<TDataTypes> > ();
-        if (forceField == nullptr)
-        {
-            rotationFinder = node->get< sofa::core::behavior::RotationFinder<TDataTypes> > ();
-
-            msg_info_when(rotationFinder == nullptr) << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
-        }
+        rotationFinder = node->get< sofa::core::behavior::RotationFinder<TDataTypes> > ();
+        msg_info_when(rotationFinder == nullptr) << "No rotation defined : only applicable for components implementing RotationFinder!";
     }
 
     Transformation Rotation;
-    if (forceField != nullptr)
+    if (rotationFinder != nullptr)
     {
-        for(unsigned int k = 0; k < nb_dofs; k++)
-        {
-            int pid;
-            pid = k;
-
-            forceField->getRotation(Rotation, pid);
-            for (int j=0; j<3; j++)
-            {
-                for (int i=0; i<3; i++)
-                {
-                    R[k*9+j*3+i] = (Real)Rotation[j][i];
-                }
-            }
-        }
-    }
-    else if (rotationFinder != nullptr)
-    {
-        const helper::vector<defaulttype::Mat<3,3,Real> > & rotations = rotationFinder->getRotations();
+        const type::vector<type::Mat<3,3,Real> > & rotations = rotationFinder->getRotations();
         for(unsigned int k = 0; k < nb_dofs; k++)
         {
             int pid;
@@ -691,7 +666,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualP
 
     for (unsigned int i=0; i< nb_dofs; i++)
     {
-        sofa::defaulttype::Matrix3 RotMat;
+        sofa::type::Matrix3 RotMat;
 
         for (int a=0; a<3; a++)
         {
@@ -703,9 +678,9 @@ void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualP
 
         int pid = i;
 
-        sofa::defaulttype::Quat q;
+        sofa::type::Quat<SReal> q;
         q.fromMatrix(RotMat);
-        vparams->drawTool()->drawFrame(DataTypes::getCPos(x[pid]), q, sofa::defaulttype::Vector3(scale,scale,scale));
+        vparams->drawTool()->drawFrame(DataTypes::getCPos(x[pid]), q, sofa::type::Vector3(scale,scale,scale));
     }
     vparams->drawTool()->restoreLastState();
 }

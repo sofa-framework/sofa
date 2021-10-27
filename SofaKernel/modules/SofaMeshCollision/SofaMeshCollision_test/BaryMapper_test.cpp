@@ -19,15 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/PrimitiveCreation.h>
+
 #include <SofaSimulationGraph/DAGNode.h>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.h>
+#include <SofaBaseTopology/PointSetTopologyContainer.h>
+#include <SofaBaseTopology/MeshTopology.h>
+
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
+
+#include "MeshPrimitiveCreator.h"
 
 namespace sofa {
 
-using defaulttype::Vector3;
+using type::Vector3;
 using core::objectmodel::New;
 
 typedef sofa::component::topology::MeshTopology MeshTopology;
@@ -67,41 +73,21 @@ static bool equal(const Vector3 & v0,const Vector3 & v1){
 }
 
 MeshTopology* BaryMapperTest::initMesh(NodePtr &father){
-    PrimitiveCreationTest::makeTri(triPts[0],triPts[1],triPts[2],Vector3(0,0,0),father);
+
+    sofa::collision_test::makeTri(triPts[0],triPts[1],triPts[2],Vector3(0,0,0),father);
+
     norm = cross(-triPts[0] + triPts[1],triPts[2] - triPts[0]);
     norm.normalize();
 
     return father->getTreeObject<MeshTopology>();
 }
 
-//sofa::BaryMapperTest::triPts[0] = Vector3(-1,-1,0);
-//triPts[0];// = Vector3(-1,-1,0);
-
-
-
-//sofa::defaulttype::Rigid3Types zz;
-//BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology,
-//        component::topology::PointSetTopologyContainer* toTopology,
-//        helper::ParticleMask *_maskFrom,
-//        helper::ParticleMask *_maskTo)
-//    : TopologyBarycentricMapper<In,Out>(fromTopology, toTopology),
-//      maskFrom(_maskFrom), maskTo(_maskTo),
-//      matrixJ(nullptr), updateJ(true)
-//{
-//}
-
 bool BaryMapperTest::test_inside(SReal alpha,SReal beta){
     initTriPts();
     sofa::simulation::Node::SPtr father = New<sofa::simulation::graph::DAGNode>();
     MeshTopology * topo = initMesh(father);
     //makeTri()
-    component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo,(component::topology::PointSetTopologyContainer*)0x0/*model->getMeshTopology(), (topology::PointSetTopologyContainer*)nullptr, &model->getMechanicalState()->forceMask, &mstate->forceMask*/);
-
-    helper::StateMask maskFrom, maskTo;
-    maskFrom.assign( triPts.size(), true );
-
-    mapper->maskFrom = &maskFrom;
-    mapper->maskTo = &maskTo;
+    component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo,(component::topology::PointSetTopologyContainer*)0x0);
 
     Vector3 the_point = ((SReal)(1.0) - alpha - beta) * triPts[0] + alpha * triPts[1] + beta * triPts[2];
     Vector3 the_point_trans = the_point + (SReal)(10.0) * norm;
@@ -120,13 +106,7 @@ bool BaryMapperTest::test_outside(int index){
     sofa::simulation::Node::SPtr father = New<sofa::simulation::graph::DAGNode>();
     MeshTopology * topo = initMesh(father);
     //makeTri()
-    component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo,(component::topology::PointSetTopologyContainer*)0x0/*model->getMeshTopology(), (topology::PointSetTopologyContainer*)nullptr, &model->getMechanicalState()->forceMask, &mstate->forceMask*/);
-
-    helper::StateMask maskFrom, maskTo;
-    maskFrom.assign( triPts.size(), true );
-
-    mapper->maskFrom = &maskFrom;
-    mapper->maskTo = &maskTo;
+    component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo,(component::topology::PointSetTopologyContainer*)0x0);
 
     Vector3 the_point = (SReal)(2.0) * triPts[index] + (SReal)(10.0) * norm;
 

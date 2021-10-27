@@ -39,14 +39,6 @@ set(HEADER_FILES
     ${SOFABASETOPOLOGY_SRC}/TetrahedronSetTopologyAlgorithms.h
     ${SOFABASETOPOLOGY_SRC}/TetrahedronSetTopologyContainer.h
     ${SOFABASETOPOLOGY_SRC}/TetrahedronSetTopologyModifier.h
-    ${SOFABASETOPOLOGY_SRC}/TopologyData.h
-    ${SOFABASETOPOLOGY_SRC}/TopologyData.inl
-    ${SOFABASETOPOLOGY_SRC}/TopologyDataHandler.h
-    ${SOFABASETOPOLOGY_SRC}/TopologyDataHandler.inl
-    ${SOFABASETOPOLOGY_SRC}/TopologySparseData.h
-    ${SOFABASETOPOLOGY_SRC}/TopologySparseData.inl
-    ${SOFABASETOPOLOGY_SRC}/TopologySubsetData.h
-    ${SOFABASETOPOLOGY_SRC}/TopologySubsetData.inl
     ${SOFABASETOPOLOGY_SRC}/TriangleSetGeometryAlgorithms.h
     ${SOFABASETOPOLOGY_SRC}/TriangleSetGeometryAlgorithms.inl
     ${SOFABASETOPOLOGY_SRC}/TriangleSetTopologyAlgorithms.h

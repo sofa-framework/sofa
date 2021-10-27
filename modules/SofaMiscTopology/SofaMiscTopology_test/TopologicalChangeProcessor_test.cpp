@@ -26,7 +26,7 @@
 #include <SofaSimulationGraph/SimpleApi.h>
 #include <sofa/simulation/Node.h>
 
-using sofa::helper::testing::BaseSimulationTest;
+using sofa::testing::BaseSimulationTest;
 
 namespace 
 {
@@ -46,7 +46,7 @@ struct TopologicalChangeProcessor_test: public BaseSimulationTest
     std::string m_fileName = "";
 
     /// Method use at start to load the scene file    
-    void SetUp()
+    void SetUp() override
     {
         sofa::simpleapi::importPlugin("SofaComponentAll");
         // Load the scene from the xml file
@@ -69,7 +69,7 @@ struct TopologicalChangeProcessor_test: public BaseSimulationTest
     virtual bool testTopologyChanges() = 0;
 
     /// Unload the scene
-    void TearDown()
+    void TearDown() override
     {
         if (m_instance.root !=nullptr)
             sofa::simulation::getSimulation()->unload(m_instance.root);

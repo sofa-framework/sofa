@@ -30,19 +30,20 @@ namespace sofa::gui::qt
 {
 
 using sofa::helper::Creator;
-using sofa::helper::fixed_array;
+using sofa::type::fixed_array;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
-Creator<DataWidgetFactory, GraphDataWidget< std::map< std::string, sofa::helper::vector<float> > > > DWClass_mapvectorf("graph",true);
-Creator<DataWidgetFactory, GraphDataWidget< std::map< std::string, sofa::helper::vector<double> > > > DWClass_mapvectord("graph",true);
-Creator<DataWidgetFactory, GraphDataWidget< std::map< std::string, sofa::helper::vector<Vec2d> > > > DWClass_mapvector2d("graph",true);
+Creator<DataWidgetFactory, GraphDataWidget< std::map< std::string, sofa::type::vector<float> > > > DWClass_mapvectorf("graph",true);
+Creator<DataWidgetFactory, GraphDataWidget< std::map< std::string, sofa::type::vector<double> > > > DWClass_mapvectord("graph",true);
+Creator<DataWidgetFactory, GraphDataWidget< std::map< std::string, sofa::type::vector<Vec2d> > > > DWClass_mapvector2d("graph",true);
 Creator<DataWidgetFactory, GraphDataWidget< std::map< std::string, std::deque<float> > > > DWClass_mapdequef("graph",true);
 Creator<DataWidgetFactory, GraphDataWidget< std::map< std::string, std::deque<double> > > > DWClass_mapdequed("graph",true);
 Creator<DataWidgetFactory, GraphDataWidget< std::map< std::string, std::deque<Vec2d> > > > DWClass_mapdeque2d("graph",true);
 
-Creator<DataWidgetFactory, GraphDataWidget_Linear< std::map< std::string, sofa::helper::vector<float> > > > DWLClass_mapvectorf("graph_linear",true);
-Creator<DataWidgetFactory, GraphDataWidget_Linear< std::map< std::string, sofa::helper::vector<double> > > > DWLClass_mapvectord("graph_linear",true);
-Creator<DataWidgetFactory, GraphDataWidget_Linear< std::map< std::string, sofa::helper::vector<Vec2d> > > > DWLClass_mapvector2d("graph_linear",true);
+Creator<DataWidgetFactory, GraphDataWidget_Linear< std::map< std::string, sofa::type::vector<float> > > > DWLClass_mapvectorf("graph_linear",true);
+Creator<DataWidgetFactory, GraphDataWidget_Linear< std::map< std::string, sofa::type::vector<double> > > > DWLClass_mapvectord("graph_linear",true);
+Creator<DataWidgetFactory, GraphDataWidget_Linear< std::map< std::string, sofa::type::vector<Vec2d> > > > DWLClass_mapvector2d("graph_linear",true);
 Creator<DataWidgetFactory, GraphDataWidget_Linear< std::map< std::string, std::deque<float> > > > DWLClass_mapdequef("graph_linear",true);
 Creator<DataWidgetFactory, GraphDataWidget_Linear< std::map< std::string, std::deque<double> > > > DWLClass_mapdequed("graph_linear",true);
 Creator<DataWidgetFactory, GraphDataWidget_Linear< std::map< std::string, std::deque<Vec2d> > > > DWLClass_mapdeque2d("graph_linear",true);

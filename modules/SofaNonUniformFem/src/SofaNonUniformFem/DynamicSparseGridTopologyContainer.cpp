@@ -31,6 +31,7 @@ namespace sofa::component::topology
 {
 
 using namespace std;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 int DynamicSparseGridTopologyContainerClass = core::RegisterObject ( "Hexahedron set topology container" )
@@ -40,11 +41,11 @@ int DynamicSparseGridTopologyContainerClass = core::RegisterObject ( "Hexahedron
 DynamicSparseGridTopologyContainer::DynamicSparseGridTopologyContainer()
     : HexahedronSetTopologyContainer()
     , resolution ( initData ( &resolution, Vec3i ( 0, 0, 0 ), "resolution", "voxel grid resolution" ) )
-    , valuesIndexedInRegularGrid( initData ( &valuesIndexedInRegularGrid, sofa::helper::vector<unsigned char>(), "valuesIndexedInRegularGrid", "values indexed in the Regular Grid" ) )
+    , valuesIndexedInRegularGrid( initData ( &valuesIndexedInRegularGrid, sofa::type::vector<unsigned char>(), "valuesIndexedInRegularGrid", "values indexed in the Regular Grid" ) )
     , valuesIndexedInTopology( initData(&valuesIndexedInTopology, "valuesIndexedInTopology", "values indexed in the topology"))
-    , idxInRegularGrid( initData ( &idxInRegularGrid, sofa::helper::vector<BaseMeshTopology::HexaID>(), "idxInRegularGrid", "indices in the Regular Grid" ) )
+    , idxInRegularGrid( initData ( &idxInRegularGrid, sofa::type::vector<BaseMeshTopology::HexaID>(), "idxInRegularGrid", "indices in the Regular Grid" ) )
     , idInRegularGrid2IndexInTopo( initData ( &idInRegularGrid2IndexInTopo, std::map< unsigned int, BaseMeshTopology::HexaID> (), "idInRegularGrid2IndexInTopo", "map between id in the Regular Grid and index in the topology" ) )
-    , voxelSize( initData(&voxelSize, defaulttype::Vector3(1,1,1), "voxelSize", "Size of the Voxels"))
+    , voxelSize( initData(&voxelSize, type::Vector3(1,1,1), "voxelSize", "Size of the Voxels"))
 {
     valuesIndexedInRegularGrid.setDisplayed( false);
     valuesIndexedInTopology.setDisplayed( false);
@@ -63,10 +64,10 @@ void DynamicSparseGridTopologyContainer::init()
         exit(EXIT_FAILURE);
     }
 
-    const helper::vector<BaseMeshTopology::HexaID>& iirg = idxInRegularGrid.getValue();
+    const type::vector<BaseMeshTopology::HexaID>& iirg = idxInRegularGrid.getValue();
     std::map< unsigned int, BaseMeshTopology::HexaID> &idrg2tpo = *idInRegularGrid2IndexInTopo.beginEdit();
-    helper::vector<unsigned char>& viirg = *(valuesIndexedInRegularGrid.beginEdit());
-    helper::vector<unsigned char>& viit = *(valuesIndexedInTopology.beginEdit());
+    type::vector<unsigned char>& viirg = *(valuesIndexedInRegularGrid.beginEdit());
+    type::vector<unsigned char>& viit = *(valuesIndexedInTopology.beginEdit());
 
     for( unsigned int i = 0; i < iirg.size(); i++)
     {

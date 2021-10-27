@@ -33,8 +33,8 @@ namespace topology
 {
 
 using namespace sofa::defaulttype;
-using helper::vector;
-using helper::fixed_array;
+using type::vector;
+using type::fixed_array;
 
 
 BaseMeshTopology::EdgesInTriangle BaseMeshTopology::InvalidEdgesInTriangles;
@@ -46,12 +46,12 @@ BaseMeshTopology::EdgesInHexahedron BaseMeshTopology::InvalidEdgesInHexahedron;
 
 int initStaticStructures()
 {
-    BaseMeshTopology::InvalidEdgesInTriangles.assign(Topology::InvalidID);
-    BaseMeshTopology::InvalidEdgesInQuad.assign(Topology::InvalidID);
-    BaseMeshTopology::InvalidTrianglesInTetrahedron.assign(Topology::InvalidID);
-    BaseMeshTopology::InvalidEdgesInTetrahedron.assign(Topology::InvalidID);
-    BaseMeshTopology::InvalidQuadsInHexahedron.assign(Topology::InvalidID);
-    BaseMeshTopology::InvalidEdgesInHexahedron.assign(Topology::InvalidID);
+    BaseMeshTopology::InvalidEdgesInTriangles.assign(sofa::InvalidID);
+    BaseMeshTopology::InvalidEdgesInQuad.assign(sofa::InvalidID);
+    BaseMeshTopology::InvalidTrianglesInTetrahedron.assign(sofa::InvalidID);
+    BaseMeshTopology::InvalidEdgesInTetrahedron.assign(sofa::InvalidID);
+    BaseMeshTopology::InvalidQuadsInHexahedron.assign(sofa::InvalidID);
+    BaseMeshTopology::InvalidEdgesInHexahedron.assign(sofa::InvalidID);
     return 0;
 }
 
@@ -223,21 +223,21 @@ const vector<BaseMeshTopology::Index> BaseMeshTopology::getConnectedElement(Inde
 
 
 /// Returns the set of triangles on the border of the triangulation
-const sofa::helper::vector <BaseMeshTopology::TriangleID>& BaseMeshTopology::getTrianglesOnBorder()
+const sofa::type::vector<BaseMeshTopology::TriangleID>& BaseMeshTopology::getTrianglesOnBorder()
 {
     msg_error() << "getTrianglesOnBorder unsupported.";
     return InvalidSet;
 }
 
 /// Returns the set of edges on the border of the triangulation
-const sofa::helper::vector <BaseMeshTopology::EdgeID>& BaseMeshTopology::getEdgesOnBorder()
+const sofa::type::vector<BaseMeshTopology::EdgeID>& BaseMeshTopology::getEdgesOnBorder()
 {
     msg_error() << "getEdgesOnBorder unsupported.";
     return InvalidSet;
 }
 
 /// Returns the set of points on the border of the triangulation
-const sofa::helper::vector <BaseMeshTopology::PointID>& BaseMeshTopology::getPointsOnBorder()
+const sofa::type::vector<BaseMeshTopology::PointID>& BaseMeshTopology::getPointsOnBorder()
 {
     msg_error() << "getPointsOnBorder unsupported.";
     return InvalidSet;
@@ -371,27 +371,6 @@ std::list<const TopologyChange *>::const_iterator BaseMeshTopology::endStateChan
     return l;
 }
 
-
-std::list<TopologyHandler *>::const_iterator BaseMeshTopology::beginTopologyHandler() const
-{
-    msg_error() << "beginTopologyHandler() not supported.";
-    std::list<TopologyHandler *>::const_iterator l;
-    return l;
-}
-
-
-std::list<TopologyHandler *>::const_iterator BaseMeshTopology::endTopologyHandler() const
-{
-    msg_error() << "endTopologyHandler() not supported.";
-    std::list<TopologyHandler *>::const_iterator l;
-    return l;
-}
-
-void BaseMeshTopology::addTopologyHandler(TopologyHandler* _TopologyHandler)
-{
-    msg_error() << "addTopologyHandler() not supported.";
-    (void)_TopologyHandler;
-}
 
 Topology::EdgeID BaseMeshTopology::getEdgeIndex(PointID, PointID)
 {

@@ -26,7 +26,7 @@
 
 #include <sofa/simulation/fwd.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/visual/DrawToolGL.h>
+#include <sofa/gl/DrawToolGL.h>
 #include <SofaBaseVisual/InteractiveCamera.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -60,7 +60,7 @@ class HeadlessRecorder : public sofa::gui::BaseGUI
 
 public:
     typedef sofa::core::visual::VisualParams VisualParams;
-    typedef sofa::core::visual::DrawToolGL   DrawToolGL;
+    typedef sofa::gl::DrawToolGL   DrawToolGL;
 
     HeadlessRecorder();
     ~HeadlessRecorder() override;
@@ -79,7 +79,7 @@ public:
     virtual sofa::simulation::Node* currentSimulation() override;
     virtual int closeGUI() override;
     virtual void setViewerResolution(int width, int height) override;
-    virtual void setBackgroundColor(const sofa::helper::types::RGBAColor& color) override;
+    virtual void setBackgroundColor(const sofa::type::RGBAColor& color) override;
 
     // Needed for the registration
     static BaseGUI* CreateGUI(const char* name, sofa::simulation::NodeSPtr groot = nullptr, const char* filename = nullptr);
@@ -116,7 +116,7 @@ private:
     bool initTexturesDone;
     bool requestVideoRecorderInit;
     sofa::gl::Capture m_screencapture;
-    helper::types::RGBAColor m_backgroundColor;
+    type::RGBAColor m_backgroundColor;
 
 
     static GLsizei s_height;

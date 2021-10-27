@@ -32,7 +32,6 @@ using sofa::defaulttype::BaseMatrix;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 using topology::RegularGridTopology;
-using topology::PointSetTopologyContainer;
 
 /// Class allowing barycentric mapping computation on a RegularGridTopology
 template<class In, class Out>
@@ -48,7 +47,6 @@ public:
     typedef typename Inherit1::MBloc MBloc;
     typedef typename Inherit1::MatrixType MatrixType;
     typedef typename MatrixType::Index MatrixTypeIndex;
-    typedef typename Inherit1::ForceMask ForceMask;
 
     using Index = sofa::Index;
 
@@ -61,7 +59,7 @@ public:
     void resize( core::State<Out>* toModel ) override;
     virtual bool isEmpty() {return this->m_map.size() == 0;}
     virtual void setTopology(topology::RegularGridTopology* _topology) {this->m_fromTopology = _topology;}
-    RegularGridTopology *getTopology() {return dynamic_cast<topology::RegularGridTopology *>(this->m_fromTopology);}
+    RegularGridTopology *getTopology() {return this->m_fromTopology;}
     Index addPointInCube(const Index cubeIndex, const SReal* baryCoords) override;
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
@@ -79,10 +77,9 @@ public:
 
 protected:
     BarycentricMapperRegularGridTopology(RegularGridTopology* fromTopology,
-                                         PointSetTopologyContainer* toTopology);
-    void addMatrixContrib(MatrixType* m, int row, int col, Real value);
+        core::topology::BaseMeshTopology* toTopology);
 
-    helper::vector<CubeData> m_map;
+    type::vector<CubeData> m_map;
     RegularGridTopology* m_fromTopology   {nullptr};
     MatrixType* m_matrixJ                 {nullptr};
     bool m_updateJ                        {false};

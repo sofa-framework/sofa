@@ -3,7 +3,9 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaHelper_test)
 
 set(SOURCE_FILES
+    Factory_test.cpp
     KdTree_test.cpp
+    NameDecoder_test.cpp
     Utils_test.cpp
     io/MeshOBJ_test.cpp
     io/XspLoader_test.cpp
@@ -11,8 +13,7 @@ set(SOURCE_FILES
     system/FileRepository_test.cpp
     system/FileSystem_test.cpp
     system/PluginManager_test.cpp
-    system/atomic_test.cpp
-    #system/thread/CircularQueue_test.cpp
+    system/thread/CircularQueue_test.cpp
     logging/logging_test.cpp
 )
 

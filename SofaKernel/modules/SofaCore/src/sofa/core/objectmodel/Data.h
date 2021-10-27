@@ -253,10 +253,10 @@ public:
     bool copyValueFrom(const BaseData* data){ return doCopyValueFrom(data); }
     bool copyValueFrom(const Data<T>* data);
 
-    bool isCopyOnWrite(){ return sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite; }
+    static constexpr bool isCopyOnWrite(){ return !std::is_scalar_v<T>; }
 
 protected:
-    typedef DataContentValue<T, sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite> ValueType;
+    typedef DataContentValue<T,  !std::is_scalar_v<T>> ValueType;
 
     /// Value
     ValueType m_value;
@@ -378,7 +378,8 @@ bool Data<T>::doIsExactSameDataType(const BaseData* parent)
 
 #if  !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
 extern template class SOFA_CORE_API Data< std::string >;
-extern template class SOFA_CORE_API Data< sofa::helper::vector<std::string> >;
+extern template class SOFA_CORE_API Data< sofa::type::vector<std::string> >;
+extern template class SOFA_CORE_API Data< sofa::type::vector<Index> >;
 extern template class SOFA_CORE_API Data< bool >;
 #endif
 
@@ -479,7 +480,10 @@ public:
     WriteOnlyAccessor(const core::ExecParams*, data_container_type* d) : Inherit( d->beginWriteOnly(), *d ) {}
 };
 
-/// Easy syntax for getting read/write access to a Data using operator ->. Example: write(someFlagData)->setFlagValue(true);
+
+/// Returns a write only accessor from the provided Data<>
+/// Example of use:
+///   auto points = getWriteOnlyAccessor(d_points)
 template<class T>
 WriteAccessor<core::objectmodel::Data<T> > getWriteAccessor(core::objectmodel::Data<T>& data)
 { 
@@ -487,16 +491,21 @@ WriteAccessor<core::objectmodel::Data<T> > getWriteAccessor(core::objectmodel::D
 }
 
 template<class T>
-[[deprecated("2021-02-01: this function has been replaced with getWriteAccessor in PR #1807. You can probably update your code by removing aspect related calls. To update your code, use the new function.")]]
+SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1807)", "v21.12", "You can probably update your code by removing aspect related calls. To update your code, use the new function.")
 WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data)
 {
     return getWriteAccessor(data);
 }
 
 template<class T>
-[[deprecated("2021-02-01: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+SOFA_ATTRIBUTE_DISABLED__ASPECT("You can probably update your code by removing aspect related calls.")
 WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data, const core::ExecParams*) = delete;
 
+
+
+/// Returns a read accessor from the provided Data<>
+/// Example of use:
+///   auto points = getReadAccessor(d_points)
 template<class T>
 ReadAccessor<core::objectmodel::Data<T> > getReadAccessor(const core::objectmodel::Data<T>& data)
 {
@@ -504,23 +513,27 @@ ReadAccessor<core::objectmodel::Data<T> > getReadAccessor(const core::objectmode
 }
 
 template<class T>
-[[deprecated("2021-02-01: Aspect have been deprecated for complete removal in PR #1807. You can probably update your code by removing aspect related calls. To update your code, use the new function.")]]
+SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1807)", "v21.12", "You can probably update your code by removing aspect related calls. To update your code, use the new function.")
 ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data)
 {
     return getReadAccessor(data);
 }
 
 template<class T>
-[[deprecated("2021-02-01: Aspect have been deprecated for complete removal in PR #1269. You can probably update your code by removing aspect related calls. If the feature was important to you contact sofa-dev. ")]]
+SOFA_ATTRIBUTE_DISABLED__ASPECT("You can probably update your code by removing aspect related calls.")
 ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data, const core::ExecParams*) = delete;
 
-/// Easy syntax for getting write only access to a Data using operator ->. Example: writeOnly(someFlagData)->setFlagValue(true);
+/// Returns a write only accessor from the provided Data<>
+/// WriteOnly accessors are faster than WriteAccessor because
+/// as the data is only read this means there is no need to pull
+/// the data from the parents
+/// Example of use:
+///   auto points = getWriteOnlyAccessor(d_points)
 template<class T>
 WriteOnlyAccessor<core::objectmodel::Data<T> > getWriteOnlyAccessor(core::objectmodel::Data<T>& data)
 {
     return WriteOnlyAccessor<core::objectmodel::Data<T> >(data);
 }
-
 
 } // namespace helper
 

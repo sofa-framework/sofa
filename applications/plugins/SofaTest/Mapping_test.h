@@ -233,7 +233,6 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         copyToData(xin,parentInit); // xin = parentInit
 
         outDofs->resize(childInit.size());
-        outDofs->forceMask.assign(outDofs->getSize(),true); // child mask must be filled-up
         WriteOutVecCoord xout = outDofs->writePositions();
         copyToData(xout,childInit);
 
@@ -459,26 +458,6 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
             }
         }
 
-
-        // =================== test updateForceMask
-        // propagate forces coming from all child, each parent receiving a force should be in the mask
-        EXPECT_EQ( inDofs->forceMask.size(), inDofs->getSize() );
-        EXPECT_EQ( outDofs->forceMask.size(), outDofs->getSize() );
-        inDofs->forceMask.assign(inDofs->getSize(),false);
-        outDofs->forceMask.assign(outDofs->getSize(),true);
-        mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position()); // to force mask update at the next applyJ
-        copyToData( fin, fp2 );  // reset parent forces before accumulating child forces
-        for( unsigned i=0; i<Nc; i++ ) Out::set( fout[i], 1,1,1 ); // every child forces are non-nul
-        mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
-        copyFromData( fp, inDofs->readForces() );
-        for( unsigned i=0; i<Np; i++ ) {
-            if( fp[i] != InDeriv() && !inDofs->forceMask.getEntry(i) ){
-                succeed = false;
-                ADD_FAILURE() << "updateForceMask did not propagate mask to every influencing parents" << std::endl;
-                break;
-            }
-        }
-
         if(!succeed)
         { ADD_FAILURE() << "Failed Seed number = " << BaseSofa_test::seed << std::endl;}
         return succeed;
@@ -513,7 +492,7 @@ protected:
 
     /// Get one EigenSparseMatrix out of a list. Error if not one single matrix in the list.
     template<class EigenSparseMatrixType>
-    static EigenSparseMatrixType* getMatrix(const helper::vector<sofa::defaulttype::BaseMatrix*>* matrices)
+    static EigenSparseMatrixType* getMatrix(const type::vector<sofa::defaulttype::BaseMatrix*>* matrices)
     {
         if( !matrices ){
             ADD_FAILURE()<< "Matrix list is nullptr (API for assembly is not implemented)";

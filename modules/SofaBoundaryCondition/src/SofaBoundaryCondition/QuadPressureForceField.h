@@ -23,7 +23,7 @@
 #include <SofaBoundaryCondition/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
-#include <SofaBaseTopology/TopologySparseData.h>
+#include <SofaBaseTopology/TopologySubsetData.h>
 
 namespace sofa::component::forcefield
 {
@@ -54,7 +54,7 @@ public:
 
     Data<Deriv> pressure; ///< Pressure force per unit area
 
-    Data<sofa::helper::vector<Index> > quadList; ///< Indices of quads separated with commas where a pressure is applied
+    Data<sofa::type::vector<Index> > quadList; ///< Indices of quads separated with commas where a pressure is applied
 
     /// the normal used to define the edge subjected to the pressure force.
     Data<Deriv> normal;
@@ -98,7 +98,7 @@ protected:
         }
     };
 
-    sofa::component::topology::QuadSparseData<sofa::helper::vector<QuadPressureInformation> > quadPressureMap; ///< map between edge indices and their pressure
+    sofa::component::topology::QuadSubsetData<sofa::type::vector<QuadPressureInformation> > quadPressureMap; ///< map between quad indices and their pressure
 
     /// Pointer to the current topology                                                                        /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* m_topology;

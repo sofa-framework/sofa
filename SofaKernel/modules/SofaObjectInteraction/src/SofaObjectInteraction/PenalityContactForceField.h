@@ -85,10 +85,10 @@ protected:
         }
     };
 
-    Data<sofa::helper::vector<Contact> > contacts; ///< Contacts
+    Data<sofa::type::vector<Contact> > contacts; ///< Contacts
 
     // contacts from previous frame
-    sofa::helper::vector<Contact> prevContacts;
+    sofa::type::vector<Contact> prevContacts;
 
 
     PenalityContactForceField(MechanicalState* object1, MechanicalState* object2)
@@ -111,18 +111,17 @@ public:
 
     SReal getPotentialEnergy(const sofa::core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const override;
 
-    const helper::vector< Contact >& getContact() const { return contacts.getValue();}
+    const type::vector< Contact >& getContact() const { return contacts.getValue();}
 
     // -- tool grabing utility
     void grabPoint( const core::behavior::MechanicalState<defaulttype::Vec3Types> *tool,
-            const helper::vector< sofa::Index > &index,
-            helper::vector< std::pair< core::objectmodel::BaseObject*, defaulttype::Vec3f> > &result,
-            helper::vector< sofa::Index > &triangle,
-            helper::vector< sofa::Index > &index_point) ;
+            const type::vector< sofa::Index > &index,
+            type::vector< std::pair< core::objectmodel::BaseObject*, type::Vec3f> > &result,
+            type::vector< sofa::Index > &triangle,
+            type::vector< sofa::Index > &index_point) ;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    void updateForceMask() override;
 };
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_CPP)

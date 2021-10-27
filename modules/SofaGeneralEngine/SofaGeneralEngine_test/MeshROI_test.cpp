@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 
 #include <sofa/helper/BackTrace.h>
@@ -42,6 +42,8 @@ using sofa::core::visual::VisualParams;
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
+#include <SofaBase/initSofaBase.h>
+
 using std::vector;
 using std::string;
 
@@ -50,7 +52,7 @@ namespace sofa
 {
 
 template <typename _DataTypes>
-struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
+struct MeshROI_test : public BaseSimulationTest,
         MeshROI<_DataTypes>
 {
     typedef MeshROI<_DataTypes> ThisClass;
@@ -60,8 +62,10 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
     Node::SPtr m_root;
     ThisClass* m_thisObject;
 
-    void SetUp()
+    void SetUp() override
     {
+        sofa::component::initSofaBase();
+
         // SetUp3
         string scene2 =
         "<?xml version='1.0'?>"
@@ -84,7 +88,7 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
         ASSERT_NE(m_thisObject, nullptr) ;
     }
 
-    void TearDown()
+    void TearDown() override
     {
         simulation::getSimulation()->unload(m_root) ;
     }
@@ -214,7 +218,7 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
 };
 
 using ::testing::Types;
-typedef Types<Vec3Types> DataTypes;
+typedef Types<sofa::defaulttype::Vec3Types> DataTypes;
 
 TYPED_TEST_SUITE(MeshROI_test, DataTypes);
 

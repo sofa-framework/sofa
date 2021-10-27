@@ -39,23 +39,24 @@ using sofa::component::loader::BaseVTKReader ;
 //XML VTK Loader
 #define checkError(A) if (!A) { return false; }
 #define checkErrorPtr(A) if (!A) { return nullptr; }
-#define checkErrorMsg(A, B) if (!A) { msg_error("MeshVTKLoader") << B << "\n" ; return false; }
+#define checkErrorMsg(A, B) if (!A) { msg_error() << B << "\n" ; return false; }
 
 namespace sofa::component::loader
 {
 
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using sofa::core::objectmodel::ComponentState;
 using sofa::core::objectmodel::BaseData ;
 using sofa::core::objectmodel::BaseObject ;
-using sofa::defaulttype::Vector3 ;
-using sofa::defaulttype::Vec ;
+using sofa::type::Vector3 ;
+using sofa::type::Vec ;
 using std::istringstream;
 using std::istream;
 using std::ofstream;
 using std::string;
-using helper::vector;
+using type::vector;
 
 class LegacyVTKReader : public BaseVTKReader
 {
@@ -127,12 +128,12 @@ MeshVTKLoader::VTKFileType MeshVTKLoader::detectFileType(const char* filename)
 
 bool MeshVTKLoader::doLoad()
 {
-    msg_info() << "Loading VTK file: " << m_filename ;
+    msg_info() << "Loading VTK file: " << d_filename ;
 
     bool fileRead = false;
 
     // -- Loading file
-    const char* filename = m_filename.getFullPath().c_str();
+    const char* filename = d_filename.getFullPath().c_str();
 
     // Detect file type (legacy or vtk)
     MeshVTKLoader::VTKFileType type = detectFileType(filename);
@@ -327,7 +328,7 @@ bool MeshVTKLoader::setInputsMesh()
 
         const int* dataT = (int*)(reader->inputCellTypes->getData());
 
-        helper::vector<int> numSubPolyLines;
+        type::vector<int> numSubPolyLines;
 
         const unsigned int edgesInQuadraticTriangle[3][2] = {{0, 1}, {1, 2}, {2, 0}};
         const unsigned int edgesInQuadraticTetrahedron[6][2] = {{0, 1}, {1, 2}, {0, 2}, {0, 3}, {1, 3}, {2, 3}};
@@ -470,7 +471,7 @@ bool MeshVTKLoader::setInputsMesh()
                 break;
                 // more types are defined in vtkCellType.h in libvtk
             default:
-                msg_error() << "ERROR: unsupported cell type " << t << sendl;
+                msg_error() << "Unsupported cell type " << t;
             }
 
             if (!offsets)
@@ -572,7 +573,7 @@ bool LegacyVTKReader::readFile(const char* filename)
     std::getline(inVTKFile, line);
     if (string(line, 0, 23) != "# vtk DataFile Version ")
     {
-        msg_error() << "Error: Unrecognized header in file '" << filename << "'." ;
+        msg_error() << "Unrecognized header in file '" << filename << "'." ;
         return false;
     }
     string version(line, 23);
@@ -595,7 +596,7 @@ bool LegacyVTKReader::readFile(const char* filename)
     }
     else
     {
-        msg_error() << "Error: Unrecognized format in file '" << filename << "'." ;
+        msg_error() << "Unrecognized format in file '" << filename << "'." ;
         return false;
     }
 
@@ -614,7 +615,7 @@ bool LegacyVTKReader::readFile(const char* filename)
     if (line != "DATASET POLYDATA" && line != "DATASET UNSTRUCTURED_GRID"
             && line != "DATASET POLYDATA\r" && line != "DATASET UNSTRUCTURED_GRID\r" )
     {
-        msg_error() << "Error: Unsupported data type in file '" << filename << "'." << sendl;
+        msg_error() << "Unsupported data type in file '" << filename << "'.";
         return false;
     }
 
@@ -640,7 +641,7 @@ bool LegacyVTKReader::readFile(const char* filename)
             int n;
             string typestr;
             ln >> n >> typestr;
-            msg_info() << "Found " << n << " " << typestr << " points" << sendl;
+            msg_info() << "Found " << n << " " << typestr << " points";
             inputPoints = newVTKDataIO(typestr);
             if (inputPoints == nullptr)
             {
@@ -712,7 +713,7 @@ bool LegacyVTKReader::readFile(const char* filename)
         else if (kw == "CELL_DATA" || kw == "POINT_DATA")
         {
             const bool cellData = (kw == "CELL_DATA");
-            helper::vector<BaseVTKDataIO*>& inputDataVector = cellData ? inputCellDataVector : inputPointDataVector;
+            type::vector<BaseVTKDataIO*>& inputDataVector = cellData ? inputCellDataVector : inputPointDataVector;
             int nb_ele;
             ln >> nb_ele;
             while (!inVTKFile.eof())
@@ -1029,7 +1030,7 @@ bool XMLVTKReader::readFile(const char* filename)
         checkErrorMsg(false, "Dataset format not implemented");
         break;
     }
-    checkErrorMsg(stateLoading, "Error while parsing XML");
+    checkErrorMsg(stateLoading, "Unable to parse XML");
 
     return true;
 }

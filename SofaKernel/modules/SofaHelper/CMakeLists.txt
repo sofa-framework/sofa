@@ -4,18 +4,6 @@ project(Sofa.Helper)
 # DEPENDENCIES
 # sofa_find_package(Sofa.Type REQUIRED)
 
-# Boost
-sofa_find_package(Boost REQUIRED
-    COMPONENTS filesystem
-    OPTIONAL_COMPONENTS thread
-    BOTH_SCOPES)
-if(SOFA_HELPER_HAVE_BOOST_FILESYSTEM
-   AND SOFA_HELPER_HAVE_BOOST_THREAD)
-    sofa_set_01(SOFA_HELPER_HAVE_BOOST VALUE TRUE BOTH_SCOPES)
-else()
-    sofa_set_01(SOFA_HELPER_HAVE_BOOST VALUE FALSE BOTH_SCOPES)
-endif()
-
 # Eigen (header only)
 sofa_find_package(Eigen3 REQUIRED)
 # Json (header only) needed by AdvancedTimer
@@ -26,7 +14,6 @@ set(SRC_ROOT "src/sofa/helper")
 # HEADERS + SOURCES
 set(HEADER_FILES
     ${SRC_ROOT}/config.h.in
-    ${SRC_ROOT}/helper.h
     ${SRC_ROOT}/AdvancedTimer.h
     ${SRC_ROOT}/BackTrace.h
     ${SRC_ROOT}/cast.h
@@ -39,8 +26,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/FnDispatcher.inl
     ${SRC_ROOT}/GenerateRigid.h
     ${SRC_ROOT}/IndexOpenMP.h
-    ${SRC_ROOT}/LCPSolver.h
-    ${SRC_ROOT}/LCPSolver.inl
     ${SRC_ROOT}/LCPcalc.h
     ${SRC_ROOT}/MarchingCubeUtility.h
     ${SRC_ROOT}/MatEigen.h
@@ -48,7 +33,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/NameDecoder.h
     ${SRC_ROOT}/OptionsGroup.h
     ${SRC_ROOT}/OwnershipSPtr.h
-    ${SRC_ROOT}/StateMask.h
     ${SRC_ROOT}/Polynomial_LD.h
     ${SRC_ROOT}/Polynomial_LD.inl
     ${SRC_ROOT}/RandomGenerator.h
@@ -96,8 +80,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/system/PluginManager.h
     ${SRC_ROOT}/system/SetDirectory.h
     ${SRC_ROOT}/system/SofaOStream.h
-    ${SRC_ROOT}/system/atomic.h
-    ${SRC_ROOT}/system/config.h
     ${SRC_ROOT}/system/console.h
     ${SRC_ROOT}/system/console_internal.h
     ${SRC_ROOT}/system/thread/CTime.h
@@ -142,7 +124,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/NameDecoder.cpp
     ${SRC_ROOT}/OptionsGroup.cpp
     ${SRC_ROOT}/ScopedAdvancedTimer.cpp
-    ${SRC_ROOT}/StateMask.cpp
     ${SRC_ROOT}/Polynomial_LD.cpp
     ${SRC_ROOT}/RandomGenerator.cpp
     ${SRC_ROOT}/StringUtils.cpp
@@ -204,14 +185,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
 elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
     list(APPEND SOURCE_FILES  ${SRC_ROOT}/system/FileMonitor_windows.cpp)
 endif()
-if(Boost_THREAD_FOUND)
-    list(APPEND HEADER_FILES ${SRC_ROOT}/system/thread/TimeoutWatchdog.h)
-    list(APPEND SOURCE_FILES ${SRC_ROOT}/system/thread/TimeoutWatchdog.cpp)
-endif()
-if(Boost_FILESYSTEM_FOUND)
-    list(APPEND HEADER_FILES ${SRC_ROOT}/system/FileRepository.h)
-    list(APPEND SOURCE_FILES ${SRC_ROOT}/system/FileRepository.cpp)
-endif()
 
 sofa_find_package(Sofa.Config REQUIRED)
 sofa_find_package(Sofa.Type REQUIRED)
@@ -219,6 +192,9 @@ sofa_find_package(Sofa.Topology REQUIRED)
 
 # LIBRARY
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+# Create alias to support compatibility, starting from v21.06
+# This alias will be deleted in v21.12
+add_library(SofaHelper ALIAS Sofa.Helper)
 
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
     target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<INSTALL_INTERFACE:include/extlibs/WinDepPack>")
@@ -245,22 +221,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
 elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
     # Windows library, used in system::FileSystem
     target_link_libraries(${PROJECT_NAME} PRIVATE Shlwapi)
-endif()
-
-# Boost
-if(Boost_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost Boost::filesystem)
-    if(Boost_THREAD_FOUND)
-        target_link_libraries(${PROJECT_NAME} PUBLIC Boost::thread)
-    endif()
-    if (SOFA_BUILD_RELEASE_PACKAGE OR CMAKE_SYSTEM_NAME STREQUAL Windows)
-        sofa_install_libraries(PATHS ${Boost_LIBRARIES}) # Boost_LIBRARIES covers Boost internal dependencies
-    endif()
-
-    if(MSVC)
-        #define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
-        target_compile_definitions(${PROJECT_NAME} PUBLIC BOOST_ALL_DYN_LINK)
-    endif()
 endif()
 
 # Eigen (header only)

@@ -62,7 +62,7 @@ public:
                   "and will be removed in SOFA " << untilVersion << ". "
                   "Please consider updating your scene as using "
                   "deprecated component may result in poor performance and undefined behavior. "
-                  "If this component is crucial to you please report that to sofa-dev@ so we can  "
+                  "If this component is crucial to you please report that to sofa-dev@ so we can "
                   "reconsider this component for future re-integration.";
         m_message = output.str();
         m_changeVersion = untilVersion;
@@ -94,6 +94,20 @@ public:
                   "reconsider this component for future re-integration.";
         m_message = output.str();
         m_changeVersion = atVersion;
+    }
+};
+
+class SOFA_HELPER_API Moved : public ComponentChange
+{
+public:
+    Moved(std::string sinceVersion, std::string fromPlugin, std::string toPlugin)
+    {
+        std::stringstream output;
+        output << "This component has been MOVED from " << fromPlugin << " to " << toPlugin << " since SOFA " << sinceVersion << ". "
+               <<  "To continue using this component you may need to update your scene "
+               <<  "by adding <RequiredPlugin name='" << toPlugin << "'/>";
+        m_message = output.str();
+        m_changeVersion = sinceVersion;
     }
 };
 

@@ -48,7 +48,7 @@ public:
     typedef core::topology::BaseMeshTopology::EdgesInTriangle              EdgesInTriangle;
     typedef core::topology::BaseMeshTopology::TrianglesAroundVertex        TrianglesAroundVertex;
     typedef core::topology::BaseMeshTopology::TrianglesAroundEdge          TrianglesAroundEdge;
-    typedef sofa::helper::vector<TriangleID>                               VecTriangleID;
+    typedef sofa::type::vector<TriangleID>                               VecTriangleID;
 
 
 protected:
@@ -176,37 +176,37 @@ public:
     Size getNumberOfElements() const override;
 
     /** \brief Returns the Triangle array. */
-    const sofa::helper::vector<Triangle> &getTriangleArray();
+    const sofa::type::vector<Triangle> &getTriangleArray();
 
 
     /** \brief Returns the EdgesInTriangle array (i.e. provide the 3 edge indices for each triangle). */
-    const sofa::helper::vector< EdgesInTriangle > &getEdgesInTriangleArray() ;
+    const sofa::type::vector< EdgesInTriangle > &getEdgesInTriangleArray() ;
 
 
     /** \brief Returns the TrianglesAroundVertex array (i.e. provide the triangles indices adjacent to each vertex). */
-    const sofa::helper::vector< TrianglesAroundVertex > &getTrianglesAroundVertexArray();
+    const sofa::type::vector< TrianglesAroundVertex > &getTrianglesAroundVertexArray();
 
 
     /** \brief Returns the TrianglesAroundEdge array (i.e. provide the triangles indices adjacent to each edge). */
-    const sofa::helper::vector< TrianglesAroundEdge > &getTrianglesAroundEdgeArray() ;
+    const sofa::type::vector< TrianglesAroundEdge > &getTrianglesAroundEdgeArray() ;
 
 
     /** \brief: Return a list of TriangleID which are on a border.
      * @see createElementsOnBorder()
      */
-    const sofa::helper::vector <TriangleID>& getTrianglesOnBorder() override;
+    const sofa::type::vector<TriangleID>& getTrianglesOnBorder() override;
 
 
     /** \brief: Return a list of EdgeID which are on a border.
      * @see createElementsOnBorder()
      */
-    const sofa::helper::vector <EdgeID>& getEdgesOnBorder() override;
+    const sofa::type::vector<EdgeID>& getEdgesOnBorder() override;
 
 
     /** \brief: Return a vector of PointID which are on a border.
      * @see createElementsOnBorder()
      */
-    const sofa::helper::vector <PointID>& getPointsOnBorder() override;
+    const sofa::type::vector<PointID>& getPointsOnBorder() override;
 
 
     /// Get information about connexity of the mesh
@@ -256,6 +256,8 @@ public:
 
     /** \brief Returns the type of the topology */
     sofa::core::topology::TopologyElementType getTopologyType() const override { return sofa::core::topology::TopologyElementType::TRIANGLE; }
+    
+    bool linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType) override;
 
 protected:
 
@@ -325,11 +327,6 @@ protected:
      */
     virtual TrianglesAroundEdge& getTrianglesAroundEdgeForModification(const EdgeID edgeIndex);
 
-
-    /// \brief Function creating the data graph linked to d_triangle
-    void updateTopologyHandlerGraph() override;
-
-
     /// Use a specific boolean @see m_triangleTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean
     void setTriangleTopologyToDirty();
@@ -338,36 +335,29 @@ protected:
 
 public:
     /// provides the set of triangles.
-    Data< sofa::helper::vector<Triangle> > d_triangle;
+    Data< sofa::type::vector<Triangle> > d_triangle;
 
 protected:
     /// provides the 3 edges in each triangle.
-    sofa::helper::vector<EdgesInTriangle> m_edgesInTriangle;
+    sofa::type::vector<EdgesInTriangle> m_edgesInTriangle;
 
     /// for each vertex provides the set of triangles adjacent to that vertex.
-    sofa::helper::vector< TrianglesAroundVertex > m_trianglesAroundVertex;
+    sofa::type::vector< TrianglesAroundVertex > m_trianglesAroundVertex;
 
     /// for each edge provides the set of triangles adjacent to that edge.
-    sofa::helper::vector< TrianglesAroundEdge > m_trianglesAroundEdge;
+    sofa::type::vector< TrianglesAroundEdge > m_trianglesAroundEdge;
 
     /// Set of triangle indices on topology border.
-    sofa::helper::vector <TriangleID> m_trianglesOnBorder;
+    sofa::type::vector<TriangleID> m_trianglesOnBorder;
 
     /// Set of edge indices on topology border.
-    sofa::helper::vector <EdgeID> m_edgesOnBorder;
+    sofa::type::vector<EdgeID> m_edgesOnBorder;
 
     /// Set of point indices on topology border.
-    sofa::helper::vector <PointID> m_pointsOnBorder;
+    sofa::type::vector<PointID> m_pointsOnBorder;
 
     /// Boolean used to know if the topology Data of this container is dirty
-    bool m_triangleTopologyDirty;
-
-    /// List of engines related to this specific container
-    std::list<sofa::core::topology::TopologyHandler *> m_enginesList;
-
-    /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
-    sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;
-    sofa::helper::vector < sofa::helper::vector <std::string> > m_enginesGraph;
+    bool m_triangleTopologyDirty = false;
 
 };
 

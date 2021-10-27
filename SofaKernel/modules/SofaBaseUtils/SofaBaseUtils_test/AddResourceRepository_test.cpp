@@ -19,14 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest;
+
 #include <sofa/helper/BackTrace.h>
 
+#include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 
 #include <SofaBaseUtils/AddResourceRepository.h>
+#include <SofaBase/initSofaBase.h>
 
 namespace sofa
 {
@@ -34,13 +38,15 @@ namespace sofa
 const std::string& START_STR("<Node name=\"root\"  >");
 const std::string& END_STR("</Node>");
 
-struct AddResourceRepository_test : public Sofa_test<>
+struct AddResourceRepository_test : public BaseTest
 {
     sofa::simulation::Node::SPtr m_root;
     std::string m_testRepoDir;
 
-    void SetUp()
+    void SetUp() override
     {
+        sofa::component::initSofaBase();
+
         m_testRepoDir = std::string(SOFABASEUTILS_TEST_RESOURCES_DIR) + std::string("/repo");
     }
 

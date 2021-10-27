@@ -63,7 +63,13 @@ if(MSVC)
     option(SOFA_VECTORIZE "Enable the use of SSE2 instructions by the compiler (Only available for MSVC)." OFF)
 endif()
 ### Mask
-option(SOFA_USE_MASK "Use mask optimization" OFF)
+### Removed since v21.12
+### Warn the user if he set the option by himself
+if(SOFA_USE_MASK)
+    message(WARNING "SOFA_USE_MASK is set ; use of ForceMask has been removed in v21.12. If you are using this feature, your own code will most likely not compile anymore.
+            For more information: https://github.com/sofa-framework/sofa/pull/2316")
+endif()
+
 ### SOFA_DEV_TOOL
 option(SOFA_WITH_DEVTOOLS "Compile with developement extra features." ON)
 ### Threading
@@ -169,7 +175,10 @@ endif()
 ## Windows-specific
 if(WIN32)    
     list(APPEND SOFACONFIG_COMPILE_OPTIONS "-D_USE_MATH_DEFINES")
-    list(APPEND SOFACONFIG_COMPILE_OPTIONS "/MP;/wd4250;/wd4251;/wd4275;/wd4675;/wd4996;/wd4661")
+    list(APPEND SOFACONFIG_COMPILE_OPTIONS "-D_CRT_SECURE_NO_WARNINGS")
+    list(APPEND SOFACONFIG_COMPILE_OPTIONS "-D_CRT_NONSTDC_NO_DEPRECATE")
+
+    list(APPEND SOFACONFIG_COMPILE_OPTIONS "/MP;/wd4250;/wd4251;/wd4275;/wd4675;/wd4661")
     # 4661: no suitable definition provided for explicit template instantiation request
     # it happens because we put explicit instantiation in a separate translation unit
     # it is by design, so this warning is irrelevant in our project

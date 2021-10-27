@@ -23,7 +23,7 @@
 
 #include <sofa/testing/TestMessageHandler.h>
 
-//SOFA_DEPRECATED_HEADER(v21.12, "sofa/testing/TestMessageHandler.h")
+//SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/testing/TestMessageHandler.h")
 
 namespace sofa::helper::logging
 {

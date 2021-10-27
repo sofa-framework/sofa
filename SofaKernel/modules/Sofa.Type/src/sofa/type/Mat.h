@@ -68,44 +68,27 @@ public:
     static const Size nbLines = L;
     static const Size nbCols  = C;
 
-    Mat()
+    constexpr Mat() noexcept
     {
         clear();
     }
 
-    explicit Mat(NoInit)
+    explicit constexpr Mat(NoInit) noexcept
     {
     }
 
-    /// Specific constructor with 2 lines.
-    Mat(Line r1, Line r2)
+    template<typename... ArgsT,
+        typename = std::enable_if_t< (std::is_convertible_v<ArgsT, Line> && ...) >,
+        typename = std::enable_if_t< (sizeof...(ArgsT) == L && sizeof...(ArgsT) > 1) >
+    >
+    constexpr Mat(const ArgsT... r) noexcept
     {
-        static_assert(L == 2, "");
-        this->elems[0]=r1;
-        this->elems[1]=r2;
-    }
-
-    /// Specific constructor with 3 lines.
-    Mat(Line r1, Line r2, Line r3)
-    {
-        static_assert(L == 3, "");
-        this->elems[0]=r1;
-        this->elems[1]=r2;
-        this->elems[2]=r3;
-    }
-
-    /// Specific constructor with 4 lines.
-    Mat(Line r1, Line r2, Line r3, Line r4)
-    {
-        static_assert(L == 4, "");
-        this->elems[0]=r1;
-        this->elems[1]=r2;
-        this->elems[2]=r3;
-        this->elems[3]=r4;
+        std::size_t i = 0;
+        ((this->elems[i++] = r), ...);
     }
 
     /// Constructor from an element
-    explicit Mat(const real& v)
+    explicit constexpr Mat(const real& v) noexcept
     {
         for( Size i=0; i<L; i++ )
             for( Size j=0; j<C; j++ )
@@ -114,84 +97,89 @@ public:
 
     /// Constructor from another matrix
     template<typename real2>
-    Mat(const Mat<L,C,real2>& m)
+    constexpr Mat(const Mat<L,C,real2>& m) noexcept
     {
         std::copy(m.begin(), m.begin()+L, this->begin());
     }
 
     /// Constructor from another matrix with different size (with null default entries and ignoring outside entries)
     template<Size L2, Size C2, typename real2>
-    explicit Mat(const Mat<L2,C2,real2>& m)
+    explicit constexpr Mat(const Mat<L2,C2,real2>& m) noexcept
     {
-        Size maxL = std::min( L, L2 );
-        Size maxC = std::min( C, C2 );
+        constexpr Size minL = std::min( L, L2 );
+        constexpr Size minC = std::min( C, C2 );
 
-        for( Size l=0 ; l<maxL ; ++l )
+        for( Size l=0 ; l<minL ; ++l )
         {
-            for( Size c=0 ; c<maxC ; ++c )
-                this->elems[l][c] = (real)m[l][c];
-            for( Size c=maxC ; c<C ; ++c )
+            for( Size c=0 ; c< minC; ++c )
+                this->elems[l][c] = static_cast<real>(m[l][c]);
+            for( Size c= minC; c<C ; ++c )
                 this->elems[l][c] = 0;
         }
 
-        for( Size l=maxL ; l<L ; ++l )
+        for( Size l= minL; l<L ; ++l )
             for( Size c=0 ; c<C ; ++c )
                 this->elems[l][c] = 0;
     }
 
     /// Constructor from an array of elements (stored per line).
     template<typename real2>
-    explicit Mat(const real2* p)
+    explicit constexpr Mat(const real2* p) noexcept
     {
         std::copy(p, p+N, this->begin()->begin());
     }
 
     /// number of lines
-    Size getNbLines() const
+    constexpr Size getNbLines() const
     {
         return L;
     }
 
     /// number of colums
-    Size getNbCols() const
+    constexpr Size getNbCols() const
     {
         return C;
     }
 
 
     /// Assignment from an array of elements (stored per line).
-    void operator=(const real* p)
+    constexpr void operator=(const real* p) noexcept
     {
         std::copy(p, p+N, this->begin()->begin());
     }
 
     /// Assignment from another matrix
-    template<typename real2> void operator=(const Mat<L,C,real2>& m)
+    template<typename real2> 
+    constexpr void operator=(const Mat<L,C,real2>& m) noexcept
     {
         std::copy(m.begin(), m.begin()+L, this->begin());
     }
 
     /// Assignment from a matrix of different size.
-    template<Size L2, Size C2> void operator=(const Mat<L2,C2,real>& m)
+    template<Size L2, Size C2> 
+    constexpr void operator=(const Mat<L2,C2,real>& m) noexcept
     {
         std::copy(m.begin(), m.begin()+(L>L2?L2:L), this->begin());
     }
 
-    template<Size L2, Size C2> void getsub(Size L0, Size C0, Mat<L2,C2,real>& m) const
+    template<Size L2, Size C2> 
+    constexpr void getsub(Size L0, Size C0, Mat<L2,C2,real>& m) const noexcept
     {
         for (Size i=0; i<L2; i++)
             for (Size j=0; j<C2; j++)
                 m[i][j] = this->elems[i+L0][j+C0];
     }
 
-    template<Size L2, Size C2> void setsub(Size L0, Size C0, const Mat<L2,C2,real>& m)
+    template<Size L2, Size C2> 
+    constexpr void setsub(Size L0, Size C0, const Mat<L2,C2,real>& m) noexcept
     {
         for (Size i=0; i<L2; i++)
             for (Size j=0; j<C2; j++)
                 this->elems[i+L0][j+C0] = m[i][j];
     }
 
-    template<Size L2> void setsub(Size L0, Size C0, const Vec<L2,real>& v)
+    template<Size L2> 
+    constexpr void setsub(Size L0, Size C0, const Vec<L2,real>& v) noexcept
     {
         assert( C0<C );
         assert( L0+L2-1<L );
@@ -201,27 +189,27 @@ public:
 
 
     /// Sets each element to 0.
-    void clear()
+    constexpr void clear() noexcept
     {
         for (Size i=0; i<L; i++)
             this->elems[i].clear();
     }
 
     /// Sets each element to r.
-    void fill(real r)
+    constexpr void fill(real r) noexcept
     {
         for (Size i=0; i<L; i++)
             this->elems[i].fill(r);
     }
 
     /// Read-only access to line i.
-    const Line& line(Size i) const
+    constexpr const Line& line(Size i) const noexcept
     {
         return this->elems[i];
     }
 
     /// Copy of column j.
-    Col col(Size j) const
+    constexpr Col col(Size j) const noexcept
     {
         Col c;
         for (Size i=0; i<L; i++)
@@ -230,85 +218,85 @@ public:
     }
 
     /// Write acess to line i.
-    LineNoInit& operator[](Size i)
+    constexpr LineNoInit& operator[](Size i) noexcept
     {
         return this->elems[i];
     }
 
     /// Read-only access to line i.
-    const LineNoInit& operator[](Size i) const
+    constexpr const LineNoInit& operator[](Size i) const noexcept
     {
         return this->elems[i];
     }
 
     /// Write acess to line i.
-    LineNoInit& operator()(Size i)
+    constexpr LineNoInit& operator()(Size i) noexcept
     {
         return this->elems[i];
     }
 
     /// Read-only access to line i.
-    const LineNoInit& operator()(Size i) const
+    constexpr const LineNoInit& operator()(Size i) const noexcept
     {
         return this->elems[i];
     }
 
     /// Write access to element (i,j).
-    real& operator()(Size i, Size j)
+    constexpr real& operator()(Size i, Size j) noexcept
     {
         return this->elems[i][j];
     }
 
     /// Read-only access to element (i,j).
-    const real& operator()(Size i, Size j) const
+    constexpr const real& operator()(Size i, Size j) const noexcept
     {
         return this->elems[i][j];
     }
 
     /// Cast into a standard C array of lines (read-only).
-    const Line* lptr() const
+    constexpr const Line* lptr() const noexcept
     {
         return this->elems;
     }
 
     /// Cast into a standard C array of lines.
-    Line* lptr()
+    constexpr Line* lptr() noexcept
     {
         return this->elems;
     }
 
     /// Cast into a standard C array of elements (stored per line) (read-only).
-    const real* ptr() const
+    constexpr const real* ptr() const noexcept
     {
-        return this->elems[0].ptr();;
+        return this->elems[0].ptr();
     }
 
     /// Cast into a standard C array of elements (stored per line).
-    real* ptr()
+    constexpr real* ptr() noexcept
     {
         return this->elems[0].ptr();
     }
 
     /// Special access to first line.
-    Line& x() { static_assert(L >= 1, ""); return this->elems[0]; }
+    constexpr Line& x()  noexcept { static_assert(L >= 1, ""); return this->elems[0]; }
     /// Special access to second line.
-    Line& y() { static_assert(L >= 2, ""); return this->elems[1]; }
+    constexpr Line& y()  noexcept { static_assert(L >= 2, ""); return this->elems[1]; }
     /// Special access to third line.
-    Line& z() { static_assert(L >= 3, ""); return this->elems[2]; }
+    constexpr Line& z()  noexcept { static_assert(L >= 3, ""); return this->elems[2]; }
     /// Special access to fourth line.
-    Line& w() { static_assert(L >= 4, ""); return this->elems[3]; }
+    constexpr Line& w()  noexcept { static_assert(L >= 4, ""); return this->elems[3]; }
 
     /// Special access to first line (read-only).
-    const Line& x() const { static_assert(L >= 1, ""); return this->elems[0]; }
+    constexpr const Line& x() const noexcept { static_assert(L >= 1, ""); return this->elems[0]; }
     /// Special access to second line (read-only).
-    const Line& y() const { static_assert(L >= 2, ""); return this->elems[1]; }
+    constexpr const Line& y() const noexcept { static_assert(L >= 2, ""); return this->elems[1]; }
     /// Special access to thrid line (read-only).
-    const Line& z() const { static_assert(L >= 3, ""); return this->elems[2]; }
+    constexpr const Line& z() const noexcept { static_assert(L >= 3, ""); return this->elems[2]; }
     /// Special access to fourth line (read-only).
-    const Line& w() const { static_assert(L >= 4, ""); return this->elems[3]; }
+    constexpr const Line& w() const noexcept { static_assert(L >= 4, ""); return this->elems[3]; }
 
     /// Set matrix to identity.
-    void identity()
+    constexpr void identity() noexcept
     {
         static_assert(L == C, "");
         clear();
@@ -316,11 +304,8 @@ public:
             this->elems[i][i]=1;
     }
 
-    /// precomputed identity matrix of size (L,L)
-    static Mat<L,L,real> s_identity;
-
     /// Returns the identity matrix
-    static Mat<L,L,real> Identity()
+    static Mat<L,L,real> Identity() noexcept
     {
         static_assert(L == C, "");
         Mat<L,L,real> id;
@@ -329,21 +314,23 @@ public:
         return id;
     }
 
+    /// precomputed identity matrix of size (L,L)
+    static Mat<L, L, real> s_identity;
 
     template<Size S>
-    static bool canSelfTranspose(const Mat<S, S, real>& lhs, const Mat<S, S, real>& rhs)
+    static bool canSelfTranspose(const Mat<S, S, real>& lhs, const Mat<S, S, real>& rhs) noexcept
     {
         return &lhs == &rhs;
     }
 
     template<Size I, Size J>
-    static bool canSelfTranspose(const Mat<I, J, real>& /*lhs*/, const Mat<J, I, real>& /*rhs*/)
+    static bool canSelfTranspose(const Mat<I, J, real>& /*lhs*/, const Mat<J, I, real>& /*rhs*/) noexcept
     {
         return false;
     }
 
     /// Set matrix as the transpose of m.
-    void transpose(const Mat<C,L,real> &m)
+    constexpr void transpose(const Mat<C,L,real> &m) noexcept
     {
         if (canSelfTranspose(*this, m))
         {
@@ -364,7 +351,7 @@ public:
     }
 
     /// Return the transpose of m.
-    Mat<C,L,real> transposed() const
+    constexpr Mat<C,L,real> transposed() const noexcept
     {
         Mat<C,L,real> m(NOINIT);
         for (Size i=0; i<L; i++)
@@ -374,7 +361,7 @@ public:
     }
 
     /// Transpose the square matrix.
-    void transpose()
+    constexpr void transpose() noexcept
     {
         static_assert(L == C, "Cannot self-transpose a non-square matrix. Use transposed() instead");
         for (Size i=0; i<L; i++)
@@ -389,14 +376,14 @@ public:
     /// @name Tests operators
     /// @{
 
-    bool operator==(const Mat<L,C,real>& b) const
+    constexpr bool operator==(const Mat<L,C,real>& b) const noexcept
     {
         for (Size i=0; i<L; i++)
-            if (!(this->elems[i]==b[i])) return false;
+            if (this->elems[i] != b[i]) return false;
         return true;
     }
 
-    bool operator!=(const Mat<L,C,real>& b) const
+    constexpr bool operator!=(const Mat<L,C,real>& b) const noexcept
     {
         for (Size i=0; i<L; i++)
             if (this->elems[i]!=b[i]) return true;
@@ -404,15 +391,15 @@ public:
     }
 
 
-    bool isSymmetric() const
+    constexpr bool isSymmetric() const
     {
         for (Size i=0; i<L; i++)
             for (Size j=i+1; j<C; j++)
-                if( fabs( this->elems[i][j] - this->elems[j][i] ) > EQUALITY_THRESHOLD ) return false;
+                if( rabs( this->elems[i][j] - this->elems[j][i] ) > EQUALITY_THRESHOLD ) return false;
         return true;
     }
 
-    bool isDiagonal() const
+    constexpr bool isDiagonal() const noexcept
     {
         for (Size i=0; i<L; i++)
         {
@@ -431,7 +418,7 @@ public:
 
     /// Matrix multiplication operator.
     template <Size P>
-    Mat<L,P,real> operator*(const Mat<C,P,real>& m) const
+    constexpr Mat<L,P,real> operator*(const Mat<C,P,real>& m) const noexcept
     {
         Mat<L,P,real> r(NOINIT);
         for(Size i=0; i<L; i++)
@@ -445,7 +432,7 @@ public:
     }
 
     /// Matrix addition operator.
-    Mat<L,C,real> operator+(const Mat<L,C,real>& m) const
+    constexpr Mat<L,C,real> operator+(const Mat<L,C,real>& m) const noexcept
     {
         Mat<L,C,real> r(NOINIT);
         for(Size i = 0; i < L; i++)
@@ -454,7 +441,7 @@ public:
     }
 
     /// Matrix subtraction operator.
-    Mat<L,C,real> operator-(const Mat<L,C,real>& m) const
+    constexpr Mat<L,C,real> operator-(const Mat<L,C,real>& m) const noexcept
     {
         Mat<L,C,real> r(NOINIT);
         for(Size i = 0; i < L; i++)
@@ -463,7 +450,7 @@ public:
     }
 
     /// Matrix negation operator.
-    Mat<L,C,real> operator-() const
+    constexpr Mat<L,C,real> operator-() const noexcept
     {
         Mat<L,C,real> r(NOINIT);
         for(Size i = 0; i < L; i++)
@@ -472,7 +459,7 @@ public:
     }
 
     /// Multiplication operator Matrix * Line.
-    Col operator*(const Line& v) const
+    constexpr Col operator*(const Line& v) const noexcept
     {
         Col r(NOINIT);
         for(Size i=0; i<L; i++)
@@ -486,7 +473,7 @@ public:
 
 
     /// Multiplication with a diagonal Matrix CxC represented as a vector of size C
-    Mat<L,C,real> multDiagonal(const Line& d) const
+    constexpr Mat<L,C,real> multDiagonal(const Line& d) const noexcept
     {
         Mat<L,C,real> r(NOINIT);
         for(Size i=0; i<L; i++)
@@ -496,7 +483,7 @@ public:
     }
 
     /// Multiplication of the transposed Matrix * Column
-    Line multTranspose(const Col& v) const
+    constexpr Line multTranspose(const Col& v) const noexcept
     {
         Line r(NOINIT);
         for(Size i=0; i<C; i++)
@@ -511,7 +498,7 @@ public:
 
     /// Transposed Matrix multiplication operator.
     template <Size P>
-    Mat<C,P,real> multTranspose(const Mat<L,P,real>& m) const
+    constexpr Mat<C,P,real> multTranspose(const Mat<L,P,real>& m) const noexcept
     {
         Mat<C,P,real> r(NOINIT);
         for(Size i=0; i<C; i++)
@@ -526,7 +513,7 @@ public:
 
     /// Multiplication with the transposed of the given matrix operator \returns this * mt
     template <Size P>
-    Mat<L,P,real> multTransposed(const Mat<P,C,real>& m) const
+    constexpr Mat<L,P,real> multTransposed(const Mat<P,C,real>& m) const noexcept
     {
         Mat<L,P,real> r(NOINIT);
         for(Size i=0; i<L; i++)
@@ -540,7 +527,7 @@ public:
     }
 
     /// Addition with the transposed of the given matrix operator \returns this + mt
-    Mat<L,C,real> plusTransposed(const Mat<C,L,real>& m) const
+    constexpr Mat<L,C,real> plusTransposed(const Mat<C,L,real>& m) const noexcept
     {
         Mat<L,C,real> r(NOINIT);
         for(Size i=0; i<L; i++)
@@ -550,7 +537,7 @@ public:
     }
 
     /// Substraction with the transposed of the given matrix operator \returns this - mt
-    Mat<L,C,real>minusTransposed(const Mat<C,L,real>& m) const
+    constexpr Mat<L,C,real>minusTransposed(const Mat<C,L,real>& m) const noexcept
     {
         Mat<L,C,real> r(NOINIT);
         for(Size i=0; i<L; i++)
@@ -561,7 +548,7 @@ public:
 
 
     /// Scalar multiplication operator.
-    Mat<L,C,real> operator*(real f) const
+    constexpr Mat<L,C,real> operator*(real f) const noexcept
     {
         Mat<L,C,real> r(NOINIT);
         for(Size i=0; i<L; i++)
@@ -571,13 +558,13 @@ public:
     }
 
     /// Scalar matrix multiplication operator.
-    friend Mat<L,C,real> operator*(real r, const Mat<L,C,real>& m)
+    friend constexpr Mat<L,C,real> operator*(real r, const Mat<L,C,real>& m) noexcept
     {
         return m*r;
     }
 
     /// Scalar division operator.
-    Mat<L,C,real> operator/(real f) const
+    constexpr Mat<L,C,real> operator/(real f) const
     {
         Mat<L,C,real> r(NOINIT);
         for(Size i=0; i<L; i++)
@@ -587,28 +574,28 @@ public:
     }
 
     /// Scalar multiplication assignment operator.
-    void operator *=(real r)
+    constexpr void operator *=(real r) noexcept
     {
         for(Size i=0; i<L; i++)
             this->elems[i]*=r;
     }
 
     /// Scalar division assignment operator.
-    void operator /=(real r)
+    constexpr void operator /=(real r)
     {
         for(Size i=0; i<L; i++)
             this->elems[i]/=r;
     }
 
     /// Addition assignment operator.
-    void operator +=(const Mat<L,C,real>& m)
+    constexpr void operator +=(const Mat<L,C,real>& m) noexcept
     {
         for(Size i=0; i<L; i++)
             this->elems[i]+=m[i];
     }
 
     /// Addition of the transposed of m
-    void addTransposed(const Mat<C,L,real>& m)
+    constexpr void addTransposed(const Mat<C,L,real>& m) noexcept
     {
         for(Size i=0; i<L; i++)
             for(Size j=0; j<C; j++)
@@ -616,7 +603,7 @@ public:
     }
 
     /// Substraction of the transposed of m
-    void subTransposed(const Mat<C,L,real>& m)
+    constexpr void subTransposed(const Mat<C,L,real>& m) noexcept
     {
         for(Size i=0; i<L; i++)
             for(Size j=0; j<C; j++)
@@ -624,7 +611,7 @@ public:
     }
 
     /// Substraction assignment operator.
-    void operator -=(const Mat<L,C,real>& m)
+    constexpr void operator -=(const Mat<L,C,real>& m) noexcept
     {
         for(Size i=0; i<L; i++)
             this->elems[i]-=m[i];
@@ -632,7 +619,7 @@ public:
 
 
     /// invert this
-    Mat<L,C,real> inverted() const
+    constexpr Mat<L,C,real> inverted() const
     {
         static_assert(L == C, "Cannot invert a non-square matrix");
         Mat<L,C,real> m = *this;
@@ -641,7 +628,7 @@ public:
     }
 
     /// Invert square matrix m
-    bool invert(const Mat<L,C,real>& m)
+    [[nodiscard]] constexpr bool invert(const Mat<L,C,real>& m)
     {
         static_assert(L == C, "Cannot invert a non-square matrix");
         if (&m == this)
@@ -653,7 +640,7 @@ public:
         return invertMatrix(*this, m);
     }
 
-    static Mat<L,C,real> transformTranslation(const Vec<C-1,real>& t)
+    static Mat<L,C,real> transformTranslation(const Vec<C-1,real>& t) noexcept
     {
         Mat<L,C,real> m;
         m.identity();
@@ -662,7 +649,7 @@ public:
         return m;
     }
 
-    static Mat<L,C,real> transformScale(real s)
+    static Mat<L,C,real> transformScale(real s) noexcept
     {
         Mat<L,C,real> m;
         m.identity();
@@ -671,7 +658,7 @@ public:
         return m;
     }
 
-    static Mat<L,C,real> transformScale(const Vec<C-1,real>& s)
+    static Mat<L,C,real> transformScale(const Vec<C-1,real>& s) noexcept
     {
         Mat<L,C,real> m;
         m.identity();
@@ -681,16 +668,27 @@ public:
     }
 
     template<class Quat>
-    static Mat<L,C,real> transformRotation(const Quat& q)
+    static Mat<L,C,real> transformRotation(const Quat& q) noexcept
     {
+        static_assert(L == C && (L ==4 || L == 3), "transformRotation can only be called with 3x3 or 4x4 matrices.");
+
         Mat<L,C,real> m;
         m.identity();
-        q.toMatrix(m);
-        return m;
+
+        if constexpr(L == 4 && C == 4)
+        {
+            q.toHomogeneousMatrix(m);
+            return m;
+        }
+        else // if constexpr(L == 3 && C == 3)
+        {
+            q.toMatrix(m);
+            return m;
+        }
     }
 
     /// @return True if and only if the Matrix is a transformation matrix
-    bool isTransform() const
+    constexpr bool isTransform() const
     {
         for (Size j=0;j<C-1;++j)
             if (fabs((*this)(L-1,j)) > EQUALITY_THRESHOLD)
@@ -701,7 +699,7 @@ public:
     }
 
     /// Multiplication operator Matrix * Vector considering the matrix as a transformation.
-    Vec<C-1,real> transform(const Vec<C-1,real>& v) const
+    constexpr Vec<C-1,real> transform(const Vec<C-1,real>& v) const noexcept
     {
         Vec<C-1,real> r(NOINIT);
         for(Size i=0; i<C-1; i++)
@@ -715,7 +713,7 @@ public:
     }
 
     /// Invert transformation matrix m
-    bool transformInvert(const Mat<L,C,real>& m)
+    constexpr bool transformInvert(const Mat<L,C,real>& m)
     {
         return transformInvertMatrix(*this, m);
     }
@@ -723,7 +721,7 @@ public:
     /// for square matrices
     /// @warning in-place simple symmetrization
     /// this = ( this + this.transposed() ) / 2.0
-    void symmetrize()
+    constexpr void symmetrize() noexcept
     {
         static_assert( C == L, "" );
         for(Size l=0; l<L; l++)
@@ -734,28 +732,28 @@ public:
 };
 
 
-
-template <sofa::Size L, sofa::Size C, typename real> Mat<L,L,real> Mat<L,C,real>::s_identity = Mat<L,L,real>::Identity();
-
+template <sofa::Size L, sofa::Size C, typename real> 
+Mat<L, L, real> Mat<L, C, real>::s_identity = Mat<L, L, real>::Identity();
 
 /// Same as Mat except the values are not initialized by default
 template <sofa::Size L, sofa::Size C, typename real>
 class MatNoInit : public Mat<L,C,real>
 {
 public:
-    MatNoInit()
-        : Mat<L,C,real>(NOINIT)
+    constexpr MatNoInit() noexcept
+        : Mat<L,C,real>(NOINIT) 
     {
     }
 
     /// Assignment from an array of elements (stored per line).
-    void operator=(const real* p)
+    constexpr void operator=(const real* p) noexcept
     {
         this->Mat<L,C,real>::operator=(p);
     }
 
     /// Assignment from another matrix
-    template<sofa::Size L2, sofa::Size C2, typename real2> void operator=(const Mat<L2,C2,real2>& m)
+    template<sofa::Size L2, sofa::Size C2, typename real2> 
+    constexpr void operator=(const Mat<L2,C2,real2>& m) noexcept
     {
         this->Mat<L,C,real>::operator=(m);
     }
@@ -763,7 +761,7 @@ public:
 
 /// Determinant of a 3x3 matrix.
 template<class real>
-inline real determinant(const Mat<3,3,real>& m)
+constexpr real determinant(const Mat<3,3,real>& m) noexcept
 {
     return m(0,0)*m(1,1)*m(2,2)
             + m(1,0)*m(2,1)*m(0,2)
@@ -775,7 +773,7 @@ inline real determinant(const Mat<3,3,real>& m)
 
 /// Determinant of a 2x2 matrix.
 template<class real>
-inline real determinant(const Mat<2,2,real>& m)
+constexpr real determinant(const Mat<2,2,real>& m) noexcept
 {
     return m(0,0)*m(1,1)
             - m(1,0)*m(0,1);
@@ -784,7 +782,7 @@ inline real determinant(const Mat<2,2,real>& m)
 /// Generalized-determinant of a 2x3 matrix.
 /// Mirko Radi, "About a Determinant of Rectangular 2×n Matrix and its Geometric Interpretation"
 template<class real>
-inline real determinant(const Mat<2,3,real>& m)
+constexpr real determinant(const Mat<2,3,real>& m) noexcept
 {
     return m(0,0)*m(1,1) - m(0,1)*m(1,0) - ( m(0,0)*m(1,2) - m(0,2)*m(1,0) ) + m(0,1)*m(1,2) - m(0,2)*m(1,1);
 }
@@ -792,14 +790,14 @@ inline real determinant(const Mat<2,3,real>& m)
 /// Generalized-determinant of a 3x2 matrix.
 /// Mirko Radi, "About a Determinant of Rectangular 2×n Matrix and its Geometric Interpretation"
 template<class real>
-inline real determinant(const Mat<3,2,real>& m)
+constexpr real determinant(const Mat<3,2,real>& m) noexcept
 {
     return m(0,0)*m(1,1) - m(1,0)*m(0,1) - ( m(0,0)*m(2,1) - m(2,0)*m(0,1) ) + m(1,0)*m(2,1) - m(2,0)*m(1,1);
 }
 
 // one-norm of a 3 x 3 matrix
 template<class real>
-inline real oneNorm(const Mat<3,3,real>& A)
+constexpr real oneNorm(const Mat<3,3,real>& A)
 {
     real norm = 0.0;
     for (sofa::Size i=0; i<3; i++)
@@ -813,7 +811,7 @@ inline real oneNorm(const Mat<3,3,real>& A)
 
 // inf-norm of a 3 x 3 matrix
 template<class real>
-inline real infNorm(const Mat<3,3,real>& A)
+constexpr real infNorm(const Mat<3,3,real>& A)
 {
     real norm = 0.0;
     for (sofa::Size i=0; i<3; i++)
@@ -827,27 +825,29 @@ inline real infNorm(const Mat<3,3,real>& A)
 
 /// trace of a square matrix
 template<sofa::Size N, class real>
-inline real trace(const Mat<N,N,real>& m)
+constexpr real trace(const Mat<N,N,real>& m) noexcept
 {
     real t = m[0][0];
-    for(sofa::Size i=1 ; i<N ; ++i ) t += m[i][i];
+    for(sofa::Size i=1 ; i<N ; ++i ) 
+        t += m[i][i];
     return t;
 }
 
 /// diagonal of a square matrix
 template<sofa::Size N, class real>
-inline Vec<N,real> diagonal(const Mat<N,N,real>& m)
+constexpr Vec<N,real> diagonal(const Mat<N,N,real>& m)
 {
-    Vec<N,real> v;
-    for(sofa::Size i=0 ; i<N ; ++i ) v[i] = m[i][i];
+    Vec<N,real> v(NOINIT);
+    for(sofa::Size i=0 ; i<N ; ++i ) 
+        v[i] = m[i][i];
     return v;
 }
 
 /// Matrix inversion (general case).
 template<sofa::Size S, class real>
-[[nodiscard]] bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
+[[nodiscard]] constexpr bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
 {
-    sofa::Size i, j, k;
+    sofa::Size i{0}, j{0}, k{0};
     Vec<S, sofa::Size> r, c, row, col;
 
     Mat<S,S,real> m1 = from;
@@ -913,9 +913,9 @@ template<sofa::Size S, class real>
 
 /// Matrix inversion (special case 3x3).
 template<class real>
-[[nodiscard]] bool invertMatrix(Mat<3,3,real>& dest, const Mat<3,3,real>& from)
+[[nodiscard]] constexpr bool invertMatrix(Mat<3,3,real>& dest, const Mat<3,3,real>& from)
 {
-    real det=determinant(from);
+    const real det=determinant(from);
 
     if (equalsZero(det))
     {
@@ -937,9 +937,9 @@ template<class real>
 
 /// Matrix inversion (special case 2x2).
 template<class real>
-bool invertMatrix(Mat<2,2,real>& dest, const Mat<2,2,real>& from)
+[[nodiscard]] constexpr bool invertMatrix(Mat<2,2,real>& dest, const Mat<2,2,real>& from)
 {
-    real det=determinant(from);
+    const real det=determinant(from);
 
     if (equalsZero(det))
     {
@@ -956,7 +956,7 @@ bool invertMatrix(Mat<2,2,real>& dest, const Mat<2,2,real>& from)
 
 /// Inverse Matrix considering the matrix as a transformation.
 template<sofa::Size S, class real>
-bool transformInvertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
+[[nodiscard]] constexpr bool transformInvertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
 {
     Mat<S-1,S-1,real> R, R_inv;
     from.getsub(0,0,R);
@@ -1019,9 +1019,6 @@ std::istream& operator>>(std::istream& in, Mat<L,C,real>& m)
     return in;
 }
 
-
-
-
 /// printing in other software formats
 
 template <sofa::Size L, sofa::Size C, typename real>
@@ -1061,7 +1058,7 @@ void printMaple(std::ostream& o, const Mat<L,C,real>& m)
 
 /// Create a matrix as \f$ u v^T \f$
 template <sofa::Size L, sofa::Size C, typename T>
-inline Mat<L,C,T> dyad( const Vec<L,T>& u, const Vec<C,T>& v )
+constexpr Mat<L,C,T> dyad( const Vec<L,T>& u, const Vec<C,T>& v ) noexcept
 {
     Mat<L,C,T> res(NOINIT);
     for(sofa::Size i=0; i<L; i++ )
@@ -1072,7 +1069,7 @@ inline Mat<L,C,T> dyad( const Vec<L,T>& u, const Vec<C,T>& v )
 
 /// Compute the scalar product of two matrix (sum of product of all terms)
 template <sofa::Size L, sofa::Size C, typename real>
-inline real scalarProduct(const Mat<L,C,real>& left,const Mat<L,C,real>& right)
+constexpr real scalarProduct(const Mat<L,C,real>& left,const Mat<L,C,real>& right) noexcept
 {
     real product(0.);
     for(sofa::Size i=0; i<L; i++)
@@ -1085,9 +1082,9 @@ inline real scalarProduct(const Mat<L,C,real>& left,const Mat<L,C,real>& right)
 /// skew-symmetric mapping
 /// crossProductMatrix(v) * x = v.cross(x)
 template<class Real>
-inline Mat<3, 3, Real> crossProductMatrix(const Vec<3, Real>& v)
+constexpr Mat<3, 3, Real> crossProductMatrix(const Vec<3, Real>& v) noexcept
 {
-    type::Mat<3, 3, Real> res;
+    type::Mat<3, 3, Real> res(NOINIT);
     res[0][0]=0;
     res[0][1]=-v[2];
     res[0][2]=v[1];
@@ -1103,7 +1100,7 @@ inline Mat<3, 3, Real> crossProductMatrix(const Vec<3, Real>& v)
 
 /// return a * b^T
 template<sofa::Size L,class Real>
-static Mat<L,L,Real> tensorProduct(const Vec<L,Real> a, const Vec<L,Real> b )
+constexpr Mat<L,L,Real> tensorProduct(const Vec<L,Real> a, const Vec<L,Real> b ) noexcept
 {
     typedef Mat<L,L,Real> Mat;
     Mat m;

@@ -37,12 +37,10 @@ using namespace sofa::defaulttype;
 int ManifoldTriangleSetGeometryAlgorithmsClass = core::RegisterObject("ManifoldTriangle set topology algorithms")
         .add< ManifoldTriangleSetGeometryAlgorithms<Vec3Types> >(true) // default template
         .add< ManifoldTriangleSetGeometryAlgorithms<Vec2Types> >()
-        .add< ManifoldTriangleSetGeometryAlgorithms<Vec1Types> >()
         ;
 
 template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetGeometryAlgorithms<Vec3Types>;
 template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetGeometryAlgorithms<Vec2Types>;
-template class SOFA_MANIFOLD_TOPOLOGIES_API ManifoldTriangleSetGeometryAlgorithms<Vec1Types>;
 
 } // namespace topology
 

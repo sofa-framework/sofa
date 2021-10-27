@@ -4,7 +4,8 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <VisualStyle displayFlags="showForceFields" />
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
     <DefaultContactManager name="collision response" response="default" />
     <DiscreteIntersection />
     <Node name="LiverFEM" gravity="0 -9.81 0">

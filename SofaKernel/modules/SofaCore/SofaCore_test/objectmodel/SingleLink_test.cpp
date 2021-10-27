@@ -28,8 +28,8 @@ using sofa::core::objectmodel::BaseNode ;
 using sofa::core::objectmodel::SingleLink ;
 using sofa::core::objectmodel::BaseLink ;
 
-#include <sofa/helper/testing/BaseTest.h>
-using sofa::helper::testing::BaseTest ;
+#include <sofa/testing/BaseTest.h>
+using sofa::testing::BaseTest ;
 
 #include "BaseLink_test.h"
 
@@ -123,7 +123,7 @@ TEST_F(SingleLink_test, checkClearSetValue  )
     ASSERT_EQ( m_link.size(), 0 ) << "The size of a link container should be zero after clear().";
     m_link.set(nullptr);
     ASSERT_EQ( m_link.size(), 1 ) << "The size of a link container should be one after set(nullptr).";
-    ASSERT_EQ( m_link.getLinkedPath(), "" ) << "The path should be empty because of the the previously used set(nullptr).";
+    ASSERT_EQ( m_link.getLinkedPath(), "" ) << "The path should be empty because of the previously used set(nullptr).";
 }
 
 TEST_F(SingleLink_test, checkClearSetPath  )

@@ -32,7 +32,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/Base.h>
 
-#include <sofa/helper/vector.h>
+#include <sofa/type/vector.h>
 
 
 #include <sofa/helper/system/SetDirectory.h>
@@ -145,7 +145,7 @@ struct validTemplate : public rule
 };
 
 template< typename Rule >
-bool applyRule( sofa::helper::vector<std::string>& templateList)
+bool applyRule( sofa::type::vector<std::string>& templateList)
 {
     Rule r;
     r = std::for_each( templateList.begin(), templateList.end(), r );
@@ -170,7 +170,7 @@ bool belongToBannedComponents(const std::string& category, const std::string& co
     return false;
 }
 
-void pushToList( const std::string& templateCombination, const char separator, sofa::helper::vector< std::string>& templateList )
+void pushToList( const std::string& templateCombination, const char separator, sofa::type::vector< std::string>& templateList )
 {
     size_t curPos = 0;
     size_t oldPos = 0;
@@ -185,8 +185,8 @@ void pushToList( const std::string& templateCombination, const char separator, s
 
 
 void parseTemplateCombination(const std::string& templateCombination,
-        sofa::helper::vector<std::string>& inputTemplateList,
-        sofa::helper::vector<std::string>& outputTemplateList )
+        sofa::type::vector<std::string>& inputTemplateList,
+        sofa::type::vector<std::string>& outputTemplateList )
 {
     size_t o_bracketPos = 0;
     size_t c_bracketPos = 0;
@@ -244,7 +244,7 @@ void parseTemplateCombination(const std::string& templateCombination,
     }
 }
 
-std::string cat(sofa::helper::vector<std::string>& first, sofa::helper::vector<std::string>& second, std::string& separator)
+std::string cat(sofa::type::vector<std::string>& first, sofa::type::vector<std::string>& second, std::string& separator)
 {
     std::ostringstream oss;
     assert ( first.size() != 0 && second.size() != 0 );
@@ -289,7 +289,7 @@ void printIncludes( const CategoryLibrary &category)
 
         const std::type_info& defaultTypeInfo=component.getEntry()->creatorMap.begin()->second->type();
 
-        std::string namespaceComponent = sofa::core::objectmodel::BaseClass::decodeNamespaceName(component.getEntry()->creatorMap.begin()->second->type());
+        std::string namespaceComponent = sofa::helper::NameDecoder::decodeNamespaceName(component.getEntry()->creatorMap.begin()->second->type());
 
         std::size_t positionDoublePoints = namespaceComponent.find("::");
         while (positionDoublePoints != std::string::npos)
@@ -298,13 +298,13 @@ void printIncludes( const CategoryLibrary &category)
             positionDoublePoints =  namespaceComponent.find("::");
         }
 
-        std::string filename = namespaceComponent+"/"+sofa::core::objectmodel::BaseClass::decodeClassName(defaultTypeInfo)+".h";
+        std::string filename = namespaceComponent+"/"+sofa::helper::NameDecoder::decodeClassName(defaultTypeInfo)+".h";
 
         std::string f(pathIncludeFiles+filename);
         if (sofa::helper::system::DataRepository.findFile( f ) )
         {
             output << "#include <" << namespaceComponent  << "/"
-                    << sofa::core::objectmodel::BaseClass::decodeClassName(defaultTypeInfo) << ".h>\n";
+                    << sofa::helper::NameDecoder::decodeClassName(defaultTypeInfo) << ".h>\n";
             includeComponents.insert(std::make_pair(component.getName(),output.str()));
         }
 
@@ -316,7 +316,7 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
 {
 
     //   output << "\n\n//Declaration of the typedefs \n";
-    sofa::helper::vector< std::pair< std::string, std::string > > typedefWritten;
+    sofa::type::vector< std::pair< std::string, std::string > > typedefWritten;
     const CategoryLibrary::VecComponent &components = category.getComponents();
     for (CategoryLibrary::VecComponentIterator itComp=components.begin(); itComp != components.end(); ++itComp)
     {
@@ -342,7 +342,7 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
                     const std::string finalName = component.getName() +  templateExtension[templateName];
 
                     simplificationTypedefComponents.insert(std::make_pair(component.getName(),finalName + " " + finalName.substr(0,finalName.size()-1)));
-                    typedefComponents.insert(std::make_pair(component.getName(), sofa::core::objectmodel::BaseClass::decodeFullName(typeInfo) + " " + finalName));
+                    typedefComponents.insert(std::make_pair(component.getName(), sofa::helper::NameDecoder::decodeFullName(typeInfo) + " " + finalName));
                 }
             }
             else
@@ -372,8 +372,8 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
                     isMapping=true;
                 }
 
-                sofa::helper::vector<std::string> inputTemplateList;
-                sofa::helper::vector<std::string> outputTemplateList;
+                sofa::type::vector<std::string> inputTemplateList;
+                sofa::type::vector<std::string> outputTemplateList;
                 if ( templateCombination.find(',' ) != std::string::npos )
                 {
                     parseTemplateCombination(templateCombination,inputTemplateList,outputTemplateList);
@@ -402,9 +402,9 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
                     if (isMapping) separatorCombination="_to_";
                     else           separatorCombination="_";
 
-                    sofa::helper::vector<std::string> inputTemplateExtensions;
+                    sofa::type::vector<std::string> inputTemplateExtensions;
                     inputTemplateExtensions.resize(inputTemplateList.size() );
-                    sofa::helper::vector<std::string> outputTemplateExtensions;
+                    sofa::type::vector<std::string> outputTemplateExtensions;
                     outputTemplateExtensions.resize(outputTemplateList.size() );
                     applyTemplateExtension applyTemplateExtensionFn;
                     std::transform(inputTemplateList.begin(), inputTemplateList.end(), inputTemplateExtensions.begin(), applyTemplateExtensionFn );
@@ -425,7 +425,7 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
                         smartFinalName = componentName + cat(inputTemplateExtensions,outputTemplateExtensions,separatorCombination);;
                     }
                     simplificationTypedefComponents.insert(std::make_pair(component.getName(),finalName + " " + smartFinalName));
-                    typedefComponents.insert(std::make_pair(component.getName(), sofa::core::objectmodel::BaseClass::decodeFullName(typeInfo) + " " + finalName));
+                    typedefComponents.insert(std::make_pair(component.getName(), sofa::helper::NameDecoder::decodeFullName(typeInfo) + " " + finalName));
                 }
             }
         }
@@ -457,7 +457,7 @@ void writeFile(const CategoryLibrary &category,  TYPES t, std::ostream &generalO
 //Default files containing the declaration of the vector type\n\
 #include <sofa/defaulttype/VecTypes.h>\n\
 #include <sofa/defaulttype/RigidTypes.h>\n\
-#include <sofa/defaulttype/Mat.h>\n\n\
+#include <sofa/type/Mat.h>\n\n\
 \n\
 #ifdef SOFA_GPU_CUDA\n\
 #include <sofa/gpu/cuda/CudaTypes.h>\n\
