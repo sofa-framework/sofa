@@ -488,6 +488,7 @@ void SofaWindowProfiler::createChart()
     }
 
     m_chart = new QChart();
+    m_chart->legend()->setShowToolTips(true);
     m_chart->addSeries(m_series);
     m_chart->addSeries(m_selectionSeries);
     m_axisY = new QValueAxis();
