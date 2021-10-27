@@ -33,6 +33,7 @@ macro(sofang_check_dependencies)
 	endforeach()
 endmacro()
 
+add_subdirectory(Compat)
 # sofang_add_component_subdirectory(Utils)
 sofang_add_component_subdirectory(ODESolver)
 # sofang_add_component_subdirectory(LinearSolver)
