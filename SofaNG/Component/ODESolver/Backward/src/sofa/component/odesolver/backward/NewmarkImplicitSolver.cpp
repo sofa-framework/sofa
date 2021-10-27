@@ -33,7 +33,7 @@
 
 
 
-namespace sofa::component::odesolver
+namespace sofa::component::odesolver::backward
 {
 
 using core::VecId;
@@ -179,4 +179,4 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
 int NewmarkImplicitSolverClass = core::RegisterObject("Implicit time integratorusing Newmark scheme")
         .add< NewmarkImplicitSolver >();
 
-} // namespace sofa::component::odesolver
+} // namespace sofa::component::odesolver::backward

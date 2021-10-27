@@ -24,7 +24,7 @@
 
 #include <sofa/core/behavior/OdeSolver.h>
 
-namespace sofa::component::odesolver
+namespace sofa::component::odesolver::forward
 {
 
 /** A popular time integration method, much more precise than the EulerSolver */
@@ -68,4 +68,4 @@ public:
 
 };
 
-} //namespace sofa::component::odesolver
+} //namespace sofa::component::odesolver::forward

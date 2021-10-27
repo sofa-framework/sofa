@@ -25,7 +25,7 @@
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/MultiVec.h>
 
-namespace sofa::component::odesolver
+namespace sofa::component::odesolver::backward
 {
 
 using sofa::core::objectmodel::Data;
@@ -166,4 +166,4 @@ private:
     std::vector<SReal> p_squared_increment_norms;
 };
 
-} // namespace sofa::component::odesolver
+} // namespace sofa::component::odesolver::backward

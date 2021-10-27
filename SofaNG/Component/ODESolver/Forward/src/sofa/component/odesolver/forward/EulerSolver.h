@@ -37,7 +37,7 @@ template<class T>
 class MultiMatrix;
 }
 
-namespace sofa::component::odesolver
+namespace sofa::component::odesolver::forward
 {
 
 /**
@@ -134,4 +134,4 @@ protected:
     DeprecatedAndRemoved d_optimizedForDiagonalMatrix{};
 };
 
-} // namespace sofa::component::odesolver
+} // namespace sofa::component::odesolver::forward

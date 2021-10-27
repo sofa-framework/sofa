@@ -25,7 +25,7 @@
 
 #include <sofa/core/behavior/OdeSolver.h>
 
-namespace sofa::component::odesolver
+namespace sofa::component::odesolver::forward
 {
 
 /** Velocity damping and thresholding.
@@ -69,4 +69,4 @@ protected:
     DampVelocitySolver();
 };
 
-} // namespace sofa::component::odesolver
+} // namespace sofa::component::odesolver::forward

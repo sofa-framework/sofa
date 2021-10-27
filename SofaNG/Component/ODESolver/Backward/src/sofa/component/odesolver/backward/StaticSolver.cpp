@@ -35,7 +35,7 @@
 
 using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor;
 
-namespace sofa::component::odesolver
+namespace sofa::component::odesolver::backward
 {
 
 using sofa::core::VecId;
@@ -465,4 +465,4 @@ int StaticSolverClass = sofa::core::RegisterObject("Static ODE Solver")
     .add< StaticSolver >()
 ;
 
-} // namespace sofa::component::odesolver
+} // namespace sofa::component::odesolver::backward

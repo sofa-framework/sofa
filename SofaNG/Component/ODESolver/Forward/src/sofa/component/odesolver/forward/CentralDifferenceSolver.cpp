@@ -25,7 +25,7 @@
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::odesolver
+namespace sofa::component::odesolver::forward
 {
 
 using core::VecId;
@@ -160,4 +160,4 @@ int CentralDifferenceSolverClass = core::RegisterObject("Explicit time integrato
         .add< CentralDifferenceSolver >()
         .addAlias("CentralDifference");
 
-} //namespace sofa::component::odesolver
+} //namespace sofa::component::odesolver::forward

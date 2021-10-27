@@ -24,7 +24,7 @@
 
 #include <sofa/core/behavior/OdeSolver.h>
 
-namespace sofa::component::odesolver
+namespace sofa::component::odesolver::forward
 {
 
 /** Explicit time integrator using central difference (also known as Verlet of Leap-frop).
@@ -76,4 +76,4 @@ public:
     }
 };
 
-} //namespace sofa::component::odesolver
+} //namespace sofa::component::odesolver::forward

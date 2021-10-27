@@ -29,7 +29,7 @@
 #include <sofa/core/behavior/MultiMatrix.h>
 
 
-namespace sofa::component::odesolver
+namespace sofa::component::odesolver::backward
 {
 using core::VecId;
 using namespace sofa::defaulttype;
@@ -336,4 +336,4 @@ int EulerImplicitSolverClass = core::RegisterObject("Time integrator using impli
         .addAlias("ImplicitEuler")
         ;
 
-} // namespace sofa::component::odesolver
+} // namespace sofa::component::odesolver::backward

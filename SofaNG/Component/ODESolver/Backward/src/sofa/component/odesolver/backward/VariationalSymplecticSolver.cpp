@@ -28,7 +28,7 @@
 #include <sofa/helper/AdvancedTimer.h>
 
 
-namespace sofa::component::odesolver
+namespace sofa::component::odesolver::backward
 {
 
 using core::VecId;
@@ -340,4 +340,4 @@ int VariationalSymplecticSolverClass = core::RegisterObject("Implicit time integ
         .addAlias("VariationalSolver")
         ;
 
-} // namespace sofa::component::odesolver
+} // namespace sofa::component::odesolver::backward

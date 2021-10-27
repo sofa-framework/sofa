@@ -25,7 +25,7 @@
 
 #include <sofa/core/behavior/OdeSolver.h>
 
-namespace sofa::component::odesolver
+namespace sofa::component::odesolver::backward
 {
 
 /** Implicit time integrator using Newmark scheme.
@@ -123,4 +123,4 @@ public:
 
 };
 
-} // namespace sofa::component::odesolver
+} // namespace sofa::component::odesolver::backward

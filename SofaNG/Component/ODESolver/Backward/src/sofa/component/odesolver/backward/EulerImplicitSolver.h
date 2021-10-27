@@ -24,7 +24,7 @@
 
 #include <sofa/core/behavior/OdeSolver.h>
 
-namespace sofa::component::odesolver
+namespace sofa::component::odesolver::backward
 {
 
 /** Semi-implicit time integrator using backward Euler scheme for first and second degree ODEs. (default: second)
@@ -161,4 +161,4 @@ protected:
 
 };
 
-} // namespace sofa::component::odesolver
+} // namespace sofa::component::odesolver::backward

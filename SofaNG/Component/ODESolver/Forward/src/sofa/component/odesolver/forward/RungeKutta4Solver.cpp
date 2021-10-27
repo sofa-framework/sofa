@@ -28,7 +28,7 @@
 #include <cmath>
 
 
-namespace sofa::component::odesolver
+namespace sofa::component::odesolver::forward
 {
 
 using core::VecId;
@@ -189,4 +189,4 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
 }
 
 
-} //namespace sofa::component::odesolver
+} //namespace sofa::component::odesolver::forward

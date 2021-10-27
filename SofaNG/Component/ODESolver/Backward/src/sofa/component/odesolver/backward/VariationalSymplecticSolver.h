@@ -25,7 +25,7 @@
 #include <sofa/core/behavior/OdeSolver.h>
 #include <fstream>
 
-namespace sofa::component::odesolver
+namespace sofa::component::odesolver::backward
 {
 
 /** Implicit and Explicit time integrator using the Variational Symplectic Integrator as defined in :
@@ -96,4 +96,4 @@ protected:
     double m_incrementalPotentialEnergy;
 };
 
-} // namespace sofa::component::odesolver
+} // namespace sofa::component::odesolver::backward
