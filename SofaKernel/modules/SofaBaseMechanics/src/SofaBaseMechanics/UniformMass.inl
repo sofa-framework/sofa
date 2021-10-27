@@ -355,6 +355,13 @@ void UniformMass<DataTypes, MassType>::initFromTotalMass()
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::updateMassOnResize(sofa::Size newSize)
 {
+    if (newSize == 0)
+    {
+        d_vertexMass.setValue(static_cast<MassType>(0.0));
+        d_totalMass.setValue(Real(0));
+        return;
+    }
+
     if (d_preserveTotalMass.getValue())
     {
         Real newVertexMass = d_totalMass.getValue() / Real(newSize);
