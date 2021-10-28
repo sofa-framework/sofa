@@ -33,7 +33,12 @@ macro(sofang_check_dependencies)
 	endforeach()
 endmacro()
 
-add_subdirectory(Compat)
+# just enable Compat if already not activated
+# (if using the cmakelists .in SofaNG/.)
+if(NOT TARGET Sofa.Component.Compat)
+	add_subdirectory(Compat)
+endif()
+
 # sofang_add_component_subdirectory(Utils)
 sofang_add_component_subdirectory(ODESolver)
 # sofang_add_component_subdirectory(LinearSolver)

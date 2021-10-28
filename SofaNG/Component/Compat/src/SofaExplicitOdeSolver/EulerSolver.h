@@ -26,6 +26,6 @@
 namespace sofa::component::odesolver
 {
 
-using EulerImplicitSolver = sofa::component::odesolver::forward::EulerSolver;
+using EulerExplicitSolver = sofa::component::odesolver::forward::EulerExplicitSolver;
 
 } // namespace sofa::component::odesolver

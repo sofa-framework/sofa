@@ -73,6 +73,12 @@ if(Sofa.Compat_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Compat)
 endif()
 
+# SOFA-NG temp: make everybody be able to use Sofa.Component.Compat
+# maybe somewhere would be better (as SofaFramework does not really need Component.Compat...)
+if(TARGET Sofa.Component.Compat)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Compat)
+endif()
+
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
     PACKAGE_VERSION ${Sofa_VERSION}

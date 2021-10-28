@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaExplicitOdeSolver LANGUAGES CXX)
 
+
 set(SOFAEXPLICITEODESOLVER_SRC "src/${PROJECT_NAME}")
 
 sofa_find_package(SofaFramework REQUIRED)
@@ -8,18 +9,20 @@ sofa_find_package(SofaFramework REQUIRED)
 set(HEADER_FILES
     ${SOFAEXPLICITEODESOLVER_SRC}/config.h.in
     ${SOFAEXPLICITEODESOLVER_SRC}/initSofaExplicitOdeSolver.h
-    ${SOFAEXPLICITEODESOLVER_SRC}/EulerSolver.h
 )
 
 set(SOURCE_FILES
     ${SOFAEXPLICITEODESOLVER_SRC}/initSofaExplicitOdeSolver.cpp
-    ${SOFAEXPLICITEODESOLVER_SRC}/EulerSolver.cpp
 )
 
 sofa_find_package(SofaFramework REQUIRED) # SofaCore SofaSimulationCore
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore)
+
+message(WARNING "${PROJECT_NAME} module is deprecated, its modules is in Sofa.Component.ODESolver.Forward.")
+# forward to the new sofang module
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.ODESolver.Forward)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
+#include <sofa/component/odesolver/backward/NewmarkImplicitSolver.h>
 
 namespace sofa::component::odesolver
 {

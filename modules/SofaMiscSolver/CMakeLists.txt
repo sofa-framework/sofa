@@ -8,18 +8,19 @@ set(SOFAMISCSOLVER_SRC "src/${PROJECT_NAME}")
 set(HEADER_FILES
     ${SOFAMISCSOLVER_SRC}/config.h.in
     ${SOFAMISCSOLVER_SRC}/initSofaMiscSolver.h
-    ${SOFAMISCSOLVER_SRC}/DampVelocitySolver.h
-    ${SOFAMISCSOLVER_SRC}/NewmarkImplicitSolver.h
 )
 
 set(SOURCE_FILES
     ${SOFAMISCSOLVER_SRC}/initSofaMiscSolver.cpp
-    ${SOFAMISCSOLVER_SRC}/DampVelocitySolver.cpp
-    ${SOFAMISCSOLVER_SRC}/NewmarkImplicitSolver.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore)
+
+message(WARNING "${PROJECT_NAME} module is deprecated, its modules is in Sofa.Component.ODESolver.Backward and Sofa.Component.ODESolver.Backward.")
+# forward to the new sofang module
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.ODESolver.Backward)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.ODESolver.Forward)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

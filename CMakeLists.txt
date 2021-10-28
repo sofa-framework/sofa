@@ -189,6 +189,7 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
     message("Headers from v20.12 are usable, but it is advised to change your code to use the new headers introduced in v21.06.")
 
     add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Compat)
+    add_subdirectory(SofaNG/Component/Compat)
 endif()
 
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
@@ -197,6 +198,9 @@ add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
 if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Testing)
 endif()
+
+# SOFA-NG Components
+add_subdirectory(SofaNG/Component)
 
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
 

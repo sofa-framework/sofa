@@ -21,11 +21,11 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/odesolver/forward/EulerImplicitSolver.h>
+#include <sofa/component/odesolver/forward/RungeKutta4Solver.h>
 
 namespace sofa::component::odesolver
 {
 
-using RungerKutta4Solver = sofa::component::odesolver::forward::RungerKutta4Solver;
+using RungeKutta4Solver = sofa::component::odesolver::forward::RungeKutta4Solver;
 
 } // namespace sofa::component::odesolver
