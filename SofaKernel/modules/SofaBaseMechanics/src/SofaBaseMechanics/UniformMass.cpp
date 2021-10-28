@@ -209,7 +209,7 @@ void UniformMass<RigidTypes, MassType>::drawRigid2DImpl(const VisualParams* vpar
         return;
 
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-    ReadAccessor<Data<vector<int> > > indices = d_indices;
+    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
     type::Vec3d len;
 
     len[0] = len[1] = sqrt(d_vertexMass.getValue().inertiaMatrix);
@@ -232,7 +232,7 @@ void UniformMass<RigidTypes, MassType>::drawRigid3DImpl(const VisualParams* vpar
         return;
 
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-    ReadAccessor<Data<vector<int> > > indices = d_indices;
+    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
     typename RigidTypes::Vec3 gravityCenter;
     type::Vec3d len;
 
@@ -283,7 +283,7 @@ void UniformMass<Vec6Types, MassType>::drawVec6Impl(const core::visual::VisualPa
         return;
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& x0 = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    ReadAccessor<Data<vector<int> > > indices = d_indices;
+    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     Mat3x3d R; R.identity();
 
@@ -327,7 +327,7 @@ Vector6 UniformMass<RigidTypes,MassType>::getMomentumRigid3DImpl( const Mechanic
 {
     ReadAccessor<DataVecDeriv> v = d_v;
     ReadAccessor<DataVecCoord> x = d_x;
-    ReadAccessor<Data<vector<int> > > indices = d_indices;
+    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     Real m = d_vertexMass.getValue().mass;
     const typename MassType::Mat3x3& I = d_vertexMass.getValue().inertiaMassMatrix;
@@ -354,7 +354,7 @@ Vector6 UniformMass<Vec3Types, MassType>::getMomentumVec3DImpl ( const Mechanica
 {
     ReadAccessor<DataVecDeriv> v = d_v;
     ReadAccessor<DataVecCoord> x = d_x;
-    ReadAccessor<Data<vector<int> > > indices = d_indices;
+    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     const MassType& m = d_vertexMass.getValue();
     type::Vec6d momentum;
@@ -379,7 +379,7 @@ SReal UniformMass<VecTypes, MassType>::getPotentialEnergyRigidImpl(const core::M
     SOFA_UNUSED(mparams) ;
     SReal e = 0;
     ReadAccessor< DataVecCoord > x = p_x;
-    ReadAccessor<Data<vector<int> > > indices = d_indices;
+    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     typename Coord::Pos g ( getContext()->getGravity() );
     for (unsigned int i=0; i<indices.size(); i++)
@@ -398,7 +398,7 @@ void UniformMass<VecTypes, MassType>::addMDxToVectorVecImpl(defaulttype::BaseVec
     unsigned int derivDim = (unsigned)Deriv::size();
     double m = d_vertexMass.getValue();
 
-    ReadAccessor<Data<vector<int> > > indices = d_indices;
+    ReadAccessor<Data<SetIndexArray > > indices = d_indices;
 
     const SReal* g = getContext()->getGravity().ptr();
 
