@@ -18,15 +18,21 @@ set(SOURCE_FILES
     ${SOFACOMPONENTODESOLVER_SOURCE_DIR}/init.cpp
 )
 
-set(TARGET_NAME ${PROJECT_NAME})
+# configure_file(${SOFACOMPONENTODESOLVER_SOURCE_DIR}/config.h.in 
+#     ${CMAKE_BINARY_DIR}/include/sofa/component/odesolver/config.h)
 
-configure_file(${SOFACOMPONENTODESOLVER_SOURCE_DIR}/config.h.in 
-    ${CMAKE_BINARY_DIR}/include/sofa/component/odesolver/config.h)
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+# set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFACOMPONENTODESOLVER_TARGETS})
 
-add_library(${TARGET_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-set_target_properties(${TARGET_NAME} PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(${TARGET_NAME} PUBLIC ${SOFACOMPONENTODESOLVER_TARGETS})
-
-target_compile_definitions(${TARGET_NAME} PRIVATE BUILD_SOFACOMPONENTODESOLVER)
-target_include_directories(${TARGET_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
-target_include_directories(${TARGET_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/")
+# target_compile_definitions(${PROJECT_NAME} PRIVATE BUILD_SOFACOMPONENTODESOLVER)
+# target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
+# target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/")
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    RELOCATABLE "plugins"
+)

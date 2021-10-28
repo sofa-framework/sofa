@@ -3,26 +3,27 @@ project(Sofa.Component.Compat LANGUAGES CXX)
 
 set(SOFACOMPONENTCOMPATSRC_ROOT "src")
 
-set(HEADER_FILES
-    # ${SOFACOMPONENTCOMPATSRC_ROOT}/config.h.in 
-
-)
+include(Sofa.Component.ODESolver.Backward.cmake)
+include(Sofa.Component.ODESolver.Forward.cmake)
 
 set(SOURCE_FILES
     ${SOFACOMPONENTCOMPATSRC_ROOT}/init.cpp
 )
 
-include(Sofa.Component.ODESolver.Backward.cmake)
-include(Sofa.Component.ODESolver.Forward.cmake)
-
 sofa_find_package(Sofa.Config REQUIRED)
 
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Config)
+set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 
-set(TARGET_NAME ${PROJECT_NAME})
+# target_include_directories(${PROJECT_NAME} INTERFACE "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
+# target_include_directories(${PROJECT_NAME} INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/src/")
 
-add_library(${TARGET_NAME} INTERFACE ${HEADER_FILES})
-target_link_libraries(${PROJECT_NAME} INTERFACE Sofa.Config)
-set_target_properties(${TARGET_NAME} PROPERTIES LINKER_LANGUAGE CXX)
-
-target_include_directories(${TARGET_NAME} INTERFACE "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
-target_include_directories(${TARGET_NAME} INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/src/")
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+    RELOCATABLE "plugins"
+)
