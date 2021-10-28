@@ -47,5 +47,20 @@ Creator<sofa::core::collision::Contact::Factory, FrictionContact<LineCollisionMo
 Creator<sofa::core::collision::Contact::Factory, FrictionContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel> > TriangleRigidSphereFrictionContactClass("FrictionContact",true);
 Creator<sofa::core::collision::Contact::Factory, FrictionContact<RigidSphereModel, PointCollisionModel<sofa::defaulttype::Vec3Types>> > RigidSpherePointFrictionContactClass("FrictionContact",true);
 
+template class SOFA_SOFACONSTRAINT_API FrictionContact<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_SOFACONSTRAINT_API FrictionContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_SOFACONSTRAINT_API FrictionContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_SOFACONSTRAINT_API FrictionContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_SOFACONSTRAINT_API FrictionContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_SOFACONSTRAINT_API FrictionContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_SOFACONSTRAINT_API FrictionContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_SOFACONSTRAINT_API FrictionContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_SOFACONSTRAINT_API FrictionContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_SOFACONSTRAINT_API FrictionContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_SOFACONSTRAINT_API FrictionContact<RigidSphereModel, RigidSphereModel>;
+template class SOFA_SOFACONSTRAINT_API FrictionContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel>;
+template class SOFA_SOFACONSTRAINT_API FrictionContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel>;
+template class SOFA_SOFACONSTRAINT_API FrictionContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel>;
+template class SOFA_SOFACONSTRAINT_API FrictionContact<RigidSphereModel, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
 
 } //namespace sofa::component::collision
