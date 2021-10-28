@@ -32,8 +32,10 @@ void initSofaMiscSolver()
     static bool first = true;
     if (first)
     {
+        msg_warning("SofaMiscSolver") << "SofaMiscSolver is deprecated; please load Sofa.Component.ODESolver.Forward and/or Sofa.Component.ODESolver.Backward instead.";
         first = false;
     }
+
 }
 
 extern "C" {

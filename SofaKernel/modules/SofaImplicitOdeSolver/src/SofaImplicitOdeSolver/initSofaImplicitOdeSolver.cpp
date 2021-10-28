@@ -33,6 +33,7 @@ void initSofaImplicitOdeSolver()
     static bool first = true;
     if (first)
     {
+        msg_warning("SofaImplicitOdeSolver") << "SofaImplicitOdeSolver is deprecated; please load Sofa.Component.ODESolver.Backward instead.";
         first = false;
     }
 }
