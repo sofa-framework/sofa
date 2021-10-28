@@ -25,6 +25,7 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/ComponentChange.h>
 #include <sofa/helper/StringUtils.h>
+#include <sofa/helper/system/PluginManager.h>
 
 namespace sofa::core
 {
@@ -344,6 +345,33 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         }
         object->parse(&newdesc);
     }
+
+    // Object could be created but check if its official "location" has been loaded
+    // (case happens if a deprecated module acts like a wrapper to an other module)
+    using sofa::helper::lifecycle::movedComponents;
+    // effectively check if it is in the list of moved component
+    if (const auto movedComponent = movedComponents.find(classname) ; movedComponent != movedComponents.cend())
+    {
+        bool found = false;
+        const auto& targetPluginName = movedComponent->second.toPlugin;
+        // and if its correspondent location has been used
+        found = sofa::helper::system::PluginManager::getInstance().pluginIsLoaded(targetPluginName);
+        if(!found)
+        {
+            //could be also the loaded module is a meta-one, so we should not warm the use in this case as well
+            for (const auto& [pluginPath, plugin] : sofa::helper::system::PluginManager::getInstance().getPluginMap())
+            {
+                if (targetPluginName.find(plugin.getModuleName()) != std::string::npos)
+                {
+                    found = true;
+                    continue;
+                }
+            }
+        }
+        
+        msg_warning_when(!found, object.get()) << movedComponent->second.getMessage();
+    }
+
 
     /// We managed to create an object but there is error message in the log. Thus we emit them
     /// as warning to this object.

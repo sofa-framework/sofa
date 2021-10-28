@@ -29,7 +29,7 @@ namespace helper
 namespace lifecycle
 {
 
-std::map<std::string, Deprecated> deprecatedComponents = {
+const std::map<std::string, Deprecated> deprecatedComponents = {
     // SofaMiscForceField
     {"MatrixMass", Deprecated("v19.06", "v19.12")},
     {"RayTraceDetection", Deprecated("v21.06", "v21.12")},
@@ -38,7 +38,7 @@ std::map<std::string, Deprecated> deprecatedComponents = {
     {"PointConstraint", Deprecated("v21.12", "v22.06")},
 };
 
-std::map<std::string, ComponentChange> uncreatableComponents = {
+const std::map<std::string, ComponentChange> uncreatableComponents = {
     // SofaDistanceGrid was pluginized in #389
     {"BarycentricPenalityContact", Pluginized("v17.12", "SofaMeshCollision")},
     {"DistanceGridCollisionModel", Pluginized("v17.12", "SofaDistanceGrid")},
@@ -178,10 +178,6 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "TubularMapping", Pluginized("v20.12", "SofaMiscMapping") },
     { "VoidMapping", Pluginized("v20.12", "SofaMiscMapping") },
 
-    // SofaMiscSolver was pluginized in #1520
-    { "DampVelocitySolver", Pluginized("v20.12", "SofaMiscSolver") },
-    { "NewmarkImplicitSolver", Pluginized("v20.12", "SofaMiscSolver") },
-
     // SofaMiscTopology was pluginized in #1520
     { "TopologicalChangeProcessor", Pluginized("v20.12", "SofaMiscTopology") },
 
@@ -320,14 +316,6 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "ValuesFromPositions", Pluginized("v20.12", "SofaGeneralEngine") },
     { "Vertex2Frame", Pluginized("v20.12", "SofaGeneralEngine") },
 
-    // SofaGeneralExplicitOdeSolver was pluginized in #1566
-    { "CentralDifferenceSolver", Pluginized("v20.12", "SofaGeneralExplicitOdeSolver") },
-    { "RungeKutta2Solver", Pluginized("v20.12", "SofaGeneralExplicitOdeSolver") },
-    { "RungeKutta4Solver", Pluginized("v20.12", "SofaGeneralExplicitOdeSolver") },
-
-    // SofaGeneralImplicitOdeSolver was pluginized in #1572
-    { "VariationalSymplecticSolver", Pluginized("v20.12", "SofaGeneralImplicitOdeSolver") },
-
     // SofaGeneralLinearSolver was pluginized in #1575
     { "BTDLinearSolver", Pluginized("v20.12", "SofaGeneralLinearSolver") },
     { "CholeskySolver", Pluginized("v20.12", "SofaGeneralLinearSolver") },
@@ -460,13 +448,6 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
 
     // SofaEngine was pluginized in #1603
     { "BoxROI", Pluginized("v20.12", "SofaEngine") },
-
-    // SofaExplicitOdeSolver was pluginized in #1606
-    { "EulerExplicitSolver", Pluginized("v20.12", "SofaExplicitOdeSolver") },
-
-    // SofaImplicitOdeSolver was pluginized in #1607
-    { "EulerImplicitSolver", Pluginized("v20.12", "SofaImplicitOdeSolver") },
-    { "StaticSolver", Pluginized("v20.12", "SofaImplicitOdeSolver") },
 
     // SofaLoader was pluginized in #1608
     { "MeshObjLoader", Pluginized("v20.12", "SofaLoader") },
@@ -666,13 +647,37 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"InterpolationController", Removed("v17.12", "v18.12")},
     {"MechanicalStateControllerOmni", Removed("v17.12", "v18.12")},
     {"NodeToggleController", Removed("v17.12", "v18.12")},
-
+        
     /***********************/
     // MOVED SINCE v21.06
     { "OBBCollisionModel", Moved("v21.06", "SofaBaseCollision", "SofaMiscCollision") },
     { "RigidCapsuleCollisionModel", Moved("v21.06", "SofaBaseCollision", "SofaMiscCollision") },
     { "CapsuleModel", Moved("v21.06", "SofaBaseCollision", "SofaMiscCollision") },
     { "SpatialGridPointModel", Moved("v21.06", "SofaMiscCollision", "SofaSphFluid") },
+};
+
+
+const std::map<std::string, CreatableMoved> movedComponents = {
+    /***********************/
+    // MOVED SINCE v22.06
+    // SofaMiscSolver was deprecated in #XXXX
+    { "DampVelocitySolver", CreatableMoved("v22.06", "SofaMiscSolver", "Sofa.Component.ODESolver.Forward") },
+    { "NewmarkImplicitSolver", CreatableMoved("v22.06", "SofaMiscSolver", "Sofa.Component.ODESolver.Forward") },
+
+    // SofaExplicitOdeSolver was deprecated in #XXXX
+    { "EulerExplicitSolver", CreatableMoved("v22.06", "SofaExplicitOdeSolver", "Sofa.Component.ODESolver.Forward") },
+
+    // SofaImplicitOdeSolver was deprecated in #XXXX
+    { "EulerImplicitSolver", CreatableMoved("v22.06", "SofaImplicitOdeSolver", "Sofa.Component.ODESolver.Backward") },
+    { "StaticSolver", CreatableMoved("v22.06", "SofaImplicitOdeSolver", "Sofa.Component.ODESolver.Backward") },
+
+    // SofaGeneralExplicitOdeSolver was deprecated in #XXXX
+    { "CentralDifferenceSolver", CreatableMoved("v22.06", "SofaGeneralExplicitOdeSolver", "Sofa.Component.ODESolver.Forward") },
+    { "RungeKutta2Solver", CreatableMoved("v22.06", "SofaGeneralExplicitOdeSolver", "Sofa.Component.ODESolver.Forward") },
+    { "RungeKutta4Solver", CreatableMoved("v22.06", "SofaGeneralExplicitOdeSolver", "Sofa.Component.ODESolver.Forward") },
+
+    // SofaGeneralImplicitOdeSolver was deprecated in #XXXX
+    { "VariationalSymplecticSolver", CreatableMoved("v22.06", "SofaGeneralImplicitOdeSolver", "Sofa.Component.ODESolver.Backward") },
 
 };
 
