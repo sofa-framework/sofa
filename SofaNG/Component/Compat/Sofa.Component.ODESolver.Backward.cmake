@@ -1,5 +1,5 @@
-set(SOFAIMPLICITODESOLVER_SRC src/SofaImplicitSolver)
-set(SOFAGENERALIMPLICITODESOLVER_SRC src/SofaGeneralImplicitSolver)
+set(SOFAIMPLICITODESOLVER_SRC src/SofaImplicitOdeSolver)
+set(SOFAGENERALIMPLICITODESOLVER_SRC src/SofaGeneralImplicitOdeSolver)
 set(SOFAMISCSOLVER_SRC src/SofaMiscSolver)
 
 list(APPEND HEADER_FILES
