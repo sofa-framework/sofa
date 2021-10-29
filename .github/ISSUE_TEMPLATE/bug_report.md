@@ -39,12 +39,7 @@ assignees: ''
 **Env vars**
 
 ```bash
-bash -c '
-  echo "SOFA_ROOT = $SOFA_ROOT"
-  echo "PYTHONPATH = $PYTHONPATH"
-  echo "python -V = $(python -V 2>&1)"
-  echo "python3 -V = $(python3 -V 2>&1)"
-  '
+python -c "exec( \"import os, sys\nprint('#################')\nprint('--- sys.version ---')\nprint(sys.version)\nprint('--- PATH ---')\ntry:\n  print(os.environ['PATH'])\nexcept Exception:\n  pass\nprint('--- SOFA_ROOT ---')\ntry:\n  print(os.environ['SOFA_ROOT'])\nexcept Exception:\n  pass\nprint('--- PYTHONPATH ---')\ntry:\n  print(os.environ['PYTHONPATH'])\nexcept Exception:\n  pass\nprint('--- sys.path ---')\ntry:\n   print(str(sys.path))\nexcept Exception:\n   pass\nprint('#################')\" )"
 ```
 
 ```txt
