@@ -47,4 +47,17 @@ Creator<Contact::Factory, FrictionContact<RigidSphereModel, OBBCollisionModel<so
 
 Creator<Contact::Factory, RayContact<OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > RayRigidBoxContactClass("ray", true); //cast not wroking
 
+template class SOFA_MISC_COLLISION_API BarycentricPenalityContact<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
+template class SOFA_MISC_COLLISION_API BarycentricPenalityContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
+template class SOFA_MISC_COLLISION_API BarycentricPenalityContact<RigidSphereModel, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
+template class SOFA_MISC_COLLISION_API BarycentricPenalityContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
+template class SOFA_MISC_COLLISION_API BarycentricPenalityContact<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
+
+template class SOFA_MISC_COLLISION_API FrictionContact<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
+template class SOFA_MISC_COLLISION_API FrictionContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
+template class SOFA_MISC_COLLISION_API FrictionContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
+template class SOFA_MISC_COLLISION_API FrictionContact<RigidSphereModel, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
+
+template class SOFA_MISC_COLLISION_API RayContact<OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
+
 } // namespace sofa::component::collision
