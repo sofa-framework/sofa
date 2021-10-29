@@ -52,12 +52,6 @@ template class SOFA_MISC_COLLISION_API FrictionContact<TetrahedronCollisionModel
 template class SOFA_MISC_COLLISION_API FrictionContact<TetrahedronCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>>;
 template class SOFA_MISC_COLLISION_API FrictionContact<TetrahedronCollisionModel, TetrahedronCollisionModel>;
 
-template class SOFA_MISC_COLLISION_API FrictionContact<TetrahedronCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_MISC_COLLISION_API FrictionContact<TetrahedronCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_MISC_COLLISION_API FrictionContact<TetrahedronCollisionModel, LineCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_MISC_COLLISION_API FrictionContact<TetrahedronCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_MISC_COLLISION_API FrictionContact<TetrahedronCollisionModel, TetrahedronCollisionModel>;
-
 } // namespace collision
 
 } // namespace component
