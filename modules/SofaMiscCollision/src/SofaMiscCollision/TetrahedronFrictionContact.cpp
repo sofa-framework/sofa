@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <SofaMiscCollision/config.h>
 #include <SofaConstraint/FrictionContact.inl>
 #include <SofaMiscCollision/TetrahedronModel.h>
 
@@ -44,6 +45,12 @@ Creator<Contact::Factory, FrictionContact<TetrahedronCollisionModel, PointCollis
 Creator<Contact::Factory, FrictionContact<TetrahedronCollisionModel, LineCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronLinePenalityFrictionContactClass("FrictionContact",true);
 Creator<Contact::Factory, FrictionContact<TetrahedronCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronTrianglePenalityFrictionContactClass("FrictionContact",true);
 Creator<Contact::Factory, FrictionContact<TetrahedronCollisionModel, TetrahedronCollisionModel> > TetrahedronTetrahedronPenalityFrictionContactClass("FrictionContact",true);
+
+template class SOFA_MISC_COLLISION_API FrictionContact<TetrahedronCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_MISC_COLLISION_API FrictionContact<TetrahedronCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_MISC_COLLISION_API FrictionContact<TetrahedronCollisionModel, LineCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_MISC_COLLISION_API FrictionContact<TetrahedronCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_MISC_COLLISION_API FrictionContact<TetrahedronCollisionModel, TetrahedronCollisionModel>;
 
 } // namespace collision
 
