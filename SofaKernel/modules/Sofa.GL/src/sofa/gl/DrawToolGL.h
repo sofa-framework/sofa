@@ -136,6 +136,7 @@ public:
 
 
     void drawTetrahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3, const RGBAColor &color) override;
+    void drawScaledTetrahedron(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, const RGBAColor& color, const float scale) override;
     virtual void drawTetrahedra(const std::vector<Vector3> &points, const RGBAColor& color) override;
     virtual void drawScaledTetrahedra(const std::vector<Vector3> &points, const RGBAColor& color, const float scale) override;
 
