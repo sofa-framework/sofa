@@ -37,7 +37,7 @@ struct Quad
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>>
-        static constexpr auto area(const Node& n0, const Node& n1, const Node& n2, const Node& n3)
+    static constexpr auto area(const Node& n0, const Node& n1, const Node& n2, const Node& n3)
     {
 
         return Triangle::area(n0, n1, n2) + Triangle::area(n0, n2, n3);

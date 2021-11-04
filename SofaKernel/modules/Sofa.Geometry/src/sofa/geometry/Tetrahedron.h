@@ -41,7 +41,7 @@ struct Tetrahedron
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>>
-        static constexpr auto volume(const Node& n0, const Node& n1, const Node& n2, const Node& n3)
+    static constexpr auto volume(const Node& n0, const Node& n1, const Node& n2, const Node& n3)
     {
         constexpr Node n{};
         //static_assert(std::distance(std::begin(n), std::end(n)) == 3, "volume can only be computed in 3 dimensions.");

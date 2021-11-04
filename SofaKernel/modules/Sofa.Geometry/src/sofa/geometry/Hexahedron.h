@@ -118,8 +118,8 @@ struct Hexahedron
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
-        static constexpr auto squaredDistanceTo(const Node& n0, const Node& n1, const Node& n2, const Node& n3,
-            const Node& n4, const Node& n5, const Node& n6, const Node& n7, const Node& pos)
+    static constexpr auto squaredDistanceTo(const Node& n0, const Node& n1, const Node& n2, const Node& n3,
+        const Node& n4, const Node& n5, const Node& n6, const Node& n7, const Node& pos)
     {
         const auto& v = barycentricCoefficients(n0,n1,n2,n3,n4,n5,n6,n7, pos);
 
@@ -160,8 +160,8 @@ struct Hexahedron
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>>
-        static constexpr auto volume(const Node& n0, const Node& n1, const Node& n2, const Node& n3,
-            const Node& n4, const Node& n5, const Node& n6, const Node& n7)
+    static constexpr auto volume(const Node& n0, const Node& n1, const Node& n2, const Node& n3,
+        const Node& n4, const Node& n5, const Node& n6, const Node& n7)
     {
         constexpr Node n{};
         //static_assert(std::distance(std::begin(n), std::end(n)) == 3, "volume can only be computed in 3 dimensions.");
