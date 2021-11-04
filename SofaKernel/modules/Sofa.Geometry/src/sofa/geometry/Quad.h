@@ -32,7 +32,7 @@ struct Quad
 {
     static const sofa::Size NumberOfNodes = 4;
 
-    Quad() = default;
+    Quad() = delete;
 
     /**
     * @brief	Compute the area of a quadrilateral

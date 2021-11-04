@@ -38,7 +38,7 @@ struct Hexahedron
 {
     static constexpr sofa::Size NumberOfNodes = 8;
 
-    Hexahedron() = default;
+    Hexahedron() = delete;
 
     // CONVENTION : indices ordering for the nodes of an hexahedron :
     //

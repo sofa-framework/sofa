@@ -30,7 +30,7 @@ struct Point
 {
     static const sofa::Size NumberOfNodes = 1;
 
-    Point() = default;
+    Point() = delete;
 };
 
 } // namespace sofa::geometry

@@ -36,7 +36,7 @@ struct Edge
 {
     static constexpr sofa::Size NumberOfNodes = 2;
 
-    Edge() = default;
+    Edge() = delete;
 
     /**
     * @brief	Compute the squared length (or norm) of an edge

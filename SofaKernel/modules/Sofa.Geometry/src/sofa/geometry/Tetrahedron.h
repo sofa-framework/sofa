@@ -35,7 +35,7 @@ struct Tetrahedron
 {
     static const sofa::Size NumberOfNodes = 4;
 
-    Tetrahedron() = default;
+    Tetrahedron() = delete;
 
     /**
     * @brief	Compute the volume of a tetrahedron

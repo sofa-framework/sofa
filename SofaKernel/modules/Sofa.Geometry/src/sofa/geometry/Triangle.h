@@ -32,7 +32,7 @@ struct Triangle
 {
     static const sofa::Size NumberOfNodes = 3;
 
-    Triangle() = default;
+    Triangle() = delete;
 
     /**
     * @brief	Compute the area of a triangle
