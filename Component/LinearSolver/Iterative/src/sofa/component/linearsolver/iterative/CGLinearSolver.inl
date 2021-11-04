@@ -150,6 +150,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
     {
         for( nb_iter = 1; nb_iter <= d_maxIter.getValue(); nb_iter++ )
         {
+            sofa::helper::AdvancedTimer::stepBegin("CG-Step_" + std::to_string(nb_iter));
 #ifdef SOFA_DUMP_VISITOR_INFO
             std::ostringstream comment;
             if (simulation::Visitor::isPrintActivated())
@@ -277,6 +278,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
                 cgstep_alpha(params, x,r,p,q,alpha);
 
                 msg_info() << "den = " << den << ", alpha = " << alpha << ", x = " << x << ", r = " << r;
+                sofa::helper::AdvancedTimer::stepEnd("CG-Step_" + std::to_string(nb_iter));
             }
             else
             {

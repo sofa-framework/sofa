@@ -40,7 +40,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/type/vector.h>
 #include <sofa/simulation/Simulation.h>
-
+#include <sofa/helper/ScopedAdvancedTimer.h>
 namespace sofa::component::mapping::linear
 {
 
@@ -296,6 +296,7 @@ template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::apply(const core::MechanicalParams * mparams, Data< typename Out::VecCoord >& out, const Data< typename In::VecCoord >& in)
 {
     SOFA_UNUSED(mparams);
+    sofa::helper::ScopedAdvancedTimer timer("BarycentricMapping::apply");
 
     if (d_mapper != nullptr)
     {
@@ -309,6 +310,7 @@ template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::applyJ (const core::MechanicalParams * mparams, Data< typename Out::VecDeriv >& _out, const Data< typename In::VecDeriv >& in)
 {
     SOFA_UNUSED(mparams);
+    sofa::helper::ScopedAdvancedTimer timer("BarycentricMapping::applyJ");
 
     typename Out::VecDeriv* out = _out.beginEdit();
     if (d_mapper != nullptr)
@@ -323,6 +325,7 @@ template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::applyJT (const core::MechanicalParams * mparams, Data< typename In::VecDeriv >& out, const Data< typename Out::VecDeriv >& in)
 {
     SOFA_UNUSED(mparams);
+    sofa::helper::ScopedAdvancedTimer timer("BarycentricMapping::applyJT");
 
     if (d_mapper != nullptr)
     {
@@ -376,6 +379,7 @@ template <class TIn, class TOut>
 void BarycentricMapping<TIn, TOut>::applyJT(const core::ConstraintParams * cparams, Data< typename In::MatrixDeriv >& out, const Data< typename Out::MatrixDeriv >& in)
 {
     SOFA_UNUSED(cparams);
+    sofa::helper::ScopedAdvancedTimer timer("BarycentricMapping::applyJT2");
 
     if (d_mapper!=nullptr )
     {

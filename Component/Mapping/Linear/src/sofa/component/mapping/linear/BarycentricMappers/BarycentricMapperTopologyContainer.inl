@@ -23,6 +23,7 @@
 #include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperTopologyContainer.h>
 #include <sofa/core/State.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 namespace sofa::component::mapping::linear::_barycentricmappertopologycontainer_
 {
@@ -300,15 +301,18 @@ const linearalgebra::BaseMatrix* BarycentricMapperTopologyContainer<In,Out,Mappi
 template <class In, class Out, class MappingDataType, class Element>
 void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
+    sofa::helper::ScopedAdvancedTimer timer("BarycentricMapperTopologyContainer::applyJ");
     const type::vector<Element>& elements = getElements();
 
+    const type::vector<MappingDataType >& map = d_map.getValue();
     for( size_t i=0 ; i<in.size() ; ++i)
     {
-        Index index = d_map.getValue()[i].in_index;
+        const MappingDataType& mT = map[i];
+        Index index = mT.in_index;
         const Element& element = elements[index];
 
         const typename Out::DPos inPos = Out::getDPos(in[i]);
-        type::vector<SReal> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
+        type::vector<SReal> baryCoef = getBaryCoef(mT.baryCoords);
         for (unsigned int j=0; j<element.size(); j++)
         {
             out[element[j]] += inPos * baryCoef[j];
@@ -320,18 +324,23 @@ template <class In, class Out, class MappingDataType, class Element>
 void BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
     out.resize( d_map.getValue().size() );
-
+    sofa::helper::ScopedAdvancedTimer timer("BarycentricMapperTopologyContainer::applyJ");
     const type::vector<Element>& elements = getElements();
+    const type::vector<MappingDataType >& map = d_map.getValue();
+
 
     for( size_t i=0 ; i<out.size() ; ++i)
     {
-        Index index = d_map.getValue()[i].in_index;
+        const MappingDataType& mT = map[i];
+        Index index = mT.in_index;
         const Element& element = elements[index];
 
-        type::vector<SReal> baryCoef = getBaryCoef(d_map.getValue()[i].baryCoords);
+        type::vector<SReal> baryCoef = getBaryCoef(mT.baryCoords);
         InDeriv inPos{0.,0.,0.};
-        for (unsigned int j=0; j<element.size(); j++)
+        for (unsigned int j = 0; j < element.size(); j++)
+        {
             inPos += in[element[j]] * baryCoef[j];
+        }
 
         Out::setDPos(out[i] , inPos);
     }
