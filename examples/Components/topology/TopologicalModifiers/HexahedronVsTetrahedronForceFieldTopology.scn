@@ -1,0 +1,70 @@
+<?xml version="1.0" ?>
+<!-- Automatic Triangle removing with Triangle2Edge mapping example: Element removed are define in: ./RemovingTrianglesProcess.txt -->
+<Node name="root" gravity="0 1 -9" dt="0.01">
+    <RequiredPlugin pluginName='SofaEngine'/>
+    <RequiredPlugin pluginName='SofaGeneralSimpleFem'/>
+    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+    <RequiredPlugin pluginName='SofaMiscTopology'/> 
+    <RequiredPlugin name="SofaEngine"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="SofaTopologyMapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping] -->
+
+    <VisualStyle displayFlags="showBehavior showVisual" />
+    <DefaultPipeline name="default0" verbose="0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <DefaultContactManager name="default1" response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <DefaultCollisionGroupManager name="default2" />
+    
+    <RegularGridTopology name="grid" n="8 32 8" min="0 0 20" max="10 40 30" />
+    <Node name="Beam_generator">
+        <MechanicalObject src="@../grid" name="Volume" />
+        <TetrahedronSetTopologyContainer name="Container" />
+        <TetrahedronSetTopologyModifier name="Modifier" />
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+        <Hexa2TetraTopologicalMapping name="default28" input="@../grid" output="@Container" />
+    </Node>
+
+    <Node name="HexahedronFEMForceField">
+        <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
+        
+        <MechanicalObject template="Vec3d" name="Volume" src="@../grid" translation="15 0 0"/>
+        <HexahedronSetTopologyContainer name="Hexa_con" src="@../grid"/>
+        <HexahedronSetTopologyModifier name="Modifier" />
+        <HexahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+        
+        <DiagonalMass massDensity="1.0" />
+        <BoxROI name="ROI1" box="14 -1 0 26 1 50" drawBoxes="0" />
+        <FixedConstraint indices="@ROI1.indices" />
+        
+        <HexahedronFEMForceField name="Hexahedron" youngModulus="4000" poissonRatio="0.3" method="large" />
+        
+        <TopologyBoundingTrasher box="-20 -5 0 80 50 60" topology="@Hexa_con" drawBox="1" position="@Volume.position"/>
+    </Node>
+   
+   
+   <Node name="FastTetrahedralCorotational">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        
+        <!--<MechanicalObject src="@../grid" name="Volume" translation="15 0 0"/>-->
+        <MechanicalObject src="@../grid" name="Volume" translation="0 0 0"/>
+
+        <TetrahedronSetTopologyContainer name="Tetra_con" src="@../Beam_generator/Container"/>
+        <TetrahedronSetTopologyModifier name="Modifier" />
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+
+        <DiagonalMass massDensity="1.0" />
+        <!--<BoxROI name="ROI1" box="14 -1 0 26 1 50" drawBoxes="0" />-->
+        <BoxROI name="ROI1" box="-1 -1 0 11 1 50" drawBoxes="0" />
+        
+        <FixedConstraint indices="@ROI1.indices" />
+        <FastTetrahedralCorotationalForceField name="FastTetrahedral" youngModulus="4000" poissonRatio="0.3" method="large" />
+        
+        <TopologyBoundingTrasher box="-20 -5 0 80 50 60" topology="@Tetra_con" drawBox="1" position="@Volume.position"/>
+    </Node>
+    
+
+   
+</Node>

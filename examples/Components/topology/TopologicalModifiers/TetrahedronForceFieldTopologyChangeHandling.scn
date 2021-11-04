@@ -1,5 +1,6 @@
+<?xml version="1.0"?>
 <!-- Automatic Triangle removing with Triangle2Edge mapping example: Element removed are define in: ./RemovingTrianglesProcess.txt -->
-<Node name="root" gravity="0 -9 1" dt="0.01">
+<Node name="root" gravity="0 1 -9" dt="0.01">
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
@@ -15,7 +16,101 @@
     <DefaultContactManager name="default1" response="PenalityContactForceField" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <DefaultCollisionGroupManager name="default2" />
+    
+    <RegularGridTopology name="grid" n="8 32 8" min="0 0 20" max="10 40 30" />
+    <Node name="Beam_generator">
+        <MechanicalObject src="@../grid" name="Volume" />
+        <TetrahedronSetTopologyContainer name="Container" />
+        <TetrahedronSetTopologyModifier name="Modifier" />
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+        <Hexa2TetraTopologicalMapping name="default28" input="@../grid" output="@Container" />
+    </Node>
 
+
+    <Node name="TetrahedralCorotational">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        
+        <MechanicalObject src="@../grid" name="Volume" translation="0 0 0"/>
+
+        <TetrahedronSetTopologyContainer name="Tetra_con" src="@../Beam_generator/Container"/>
+        <TetrahedronSetTopologyModifier name="Modifier" />
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+
+        <DiagonalMass massDensity="1.0" />
+        <BoxROI name="ROI1" box="-1 -1 0 11 1 50" drawBoxes="0" />
+        
+        <FixedConstraint indices="@ROI1.indices" />
+        <TetrahedralCorotationalFEMForceField name="Corotational" youngModulus="4000" poissonRatio="0.3" method="large" />
+        
+        <TopologyBoundingTrasher box="-20 -5 0 80 50 60" topology="@Tetra_con" drawBox="1" position="@Volume.position"/>
+    </Node>
+    
+    <Node name="FastTetrahedralCorotational">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        
+        <!--<MechanicalObject src="@../grid" name="Volume" translation="15 0 0"/>-->
+        <MechanicalObject src="@../grid" name="Volume" translation="0 0 0"/>
+
+        <TetrahedronSetTopologyContainer name="Tetra_con" src="@../Beam_generator/Container"/>
+        <TetrahedronSetTopologyModifier name="Modifier" />
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+
+        <DiagonalMass massDensity="1.0" />
+        <!--<BoxROI name="ROI1" box="14 -1 0 26 1 50" drawBoxes="0" />-->
+        <BoxROI name="ROI1" box="-1 -1 0 11 1 50" drawBoxes="0" />
+        
+        <FixedConstraint indices="@ROI1.indices" />
+        <FastTetrahedralCorotationalForceField name="FastTetrahedral" youngModulus="4000" poissonRatio="0.3" method="large" />
+        
+        <TopologyBoundingTrasher box="-20 -5 0 80 50 60" topology="@Tetra_con" drawBox="1" position="@Volume.position"/>
+    </Node>
+
+<!--    
+    <Node name="TetrahedralTensorMass">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        
+        <MechanicalObject src="@../grid" name="Volume" translation="30 0 0"/>
+
+        <TetrahedronSetTopologyContainer name="Tetra_con" src="@../Beam_generator/Container"/>
+        <TetrahedronSetTopologyModifier name="Modifier" />
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+
+        <DiagonalMass massDensity="1.0" />
+        <BoxROI name="ROI1" box="29 -1 0 41 1 50" drawBoxes="0" />
+        
+        <FixedConstraint indices="@ROI1.indices" />
+        <TetrahedralTensorMassForceField name="TetrahedralTensorMass" youngModulus="4000" poissonRatio="0.3" />
+        
+        <TopologyBoundingTrasher box="-20 -5 0 80 50 60" topology="@Tetra_con" drawBox="1" position="@Volume.position"/>
+    </Node>
+-->
+    <Node name="TetrahedronFEMForceField">
+        <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        
+        <!--<MechanicalObject src="@../grid" name="Volume" translation="45 0 0"/>-->
+        <MechanicalObject src="@../grid" name="Volume" translation="0 0 0"/>
+
+        <TetrahedronSetTopologyContainer name="Tetra_con" src="@../Beam_generator/Container"/>
+        <TetrahedronSetTopologyModifier name="Modifier" />
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+
+        <DiagonalMass massDensity="1.0" />
+        <!--<BoxROI name="ROI1" box="44 -1 0 56 1 50" drawBoxes="0" />-->
+        <BoxROI name="ROI1" box="-1 -1 0 11 1 50" drawBoxes="0" />        
+        
+        <FixedConstraint indices="@ROI1.indices" />
+        <TetrahedronFEMForceField name="TetrahedronFEM" youngModulus="4000" poissonRatio="0.3" method="large" />
+        
+        <TopologyBoundingTrasher box="-20 -5 0 80 50 60" topology="@Tetra_con" drawBox="1" position="@Volume.position"/>
+    </Node>    
+    
+    
+<!--
+< name="CFEM" youngModulus="2000" poissonRatio="0.3" method="large" />       
     <Node name="TetrahedralCorotationalFEMForceField1">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -49,6 +144,6 @@
 
 	<TopologicalChangeProcessor listening="1" filename="RemovingTetra2TriangleProcess.txt" />
     </Node>
-
+-->
 
 </Node>
