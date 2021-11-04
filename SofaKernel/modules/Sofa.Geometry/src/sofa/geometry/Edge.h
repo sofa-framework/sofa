@@ -41,7 +41,7 @@ struct Edge
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>>
-        static constexpr auto squaredLength(const Node& n0, const Node& n1)
+    static constexpr auto squaredLength(const Node& n0, const Node& n1)
     {
         constexpr Node v{};
         constexpr auto size = std::distance(std::cbegin(v), std::cend(v));
