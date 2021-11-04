@@ -27,6 +27,7 @@
 #include <sofa/type/vector_algebra.h>
 #include <sofa/type/Vec.h>
 #include <iterator>
+#include <boost/serialization/static_warning.hpp>
 
 namespace sofa::geometry
 {
@@ -49,6 +50,7 @@ struct Tetrahedron
              typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
              typename = std::enable_if_t<std::is_scalar_v<T>>
     >
+    [[nodiscard]]
     static constexpr auto volume(const Node& n0, const Node& n1, const Node& n2, const Node& n3)
     {
         constexpr Node n{};
@@ -64,6 +66,7 @@ struct Tetrahedron
         }
         else
         {
+            BOOST_STATIC_WARNING("Tetrahedron::volume() is called with a non-3D context. This function will return 0.")
             //does not make sense to compute volume other than 3D
             //but some code effectively wants 2d volumes(??)
             return static_cast<T>(0);

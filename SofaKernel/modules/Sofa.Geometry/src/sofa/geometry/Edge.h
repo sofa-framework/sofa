@@ -51,6 +51,7 @@ struct Edge
              typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
              typename = std::enable_if_t<std::is_scalar_v<T>>
     >
+    [[nodiscard]]
     static constexpr auto squaredLength(const Node& n0, const Node& n1)
     {
         constexpr Node v{};

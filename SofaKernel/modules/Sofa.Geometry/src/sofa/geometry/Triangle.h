@@ -47,6 +47,7 @@ struct Triangle
              typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
              typename = std::enable_if_t<std::is_scalar_v<T>>
     >
+    [[nodiscard]]
     static constexpr auto area(const Node& n0, const Node& n1, const Node& n2)
     {
         if constexpr (std::is_same_v < Node, sofa::type::Vec<3, T> >)

@@ -67,6 +67,7 @@ struct Hexahedron
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
+    [[nodiscard]]
     static constexpr auto center(const Node& n0, const Node& n1, const Node& n2, const Node& n3, 
                                  const Node& n4, const Node& n5, const Node& n6, const Node& n7)
     {
@@ -94,6 +95,7 @@ struct Hexahedron
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
+    [[nodiscard]]
     static constexpr auto barycentricCoefficients(const Node& n0, const Node& n1, const Node& n2, const Node& n3,
                                                   const Node& n4, const Node& n5, const Node& n6, const Node& n7, 
                                                   const Node& pos)
@@ -142,6 +144,7 @@ struct Hexahedron
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
+    [[nodiscard]]
     static constexpr auto squaredDistanceTo(const Node& n0, const Node& n1, const Node& n2, const Node& n3,
                                             const Node& n4, const Node& n5, const Node& n6, const Node& n7, 
                                             const Node& pos)
@@ -171,6 +174,7 @@ struct Hexahedron
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
+    [[nodiscard]]
     static constexpr auto getPositionFromBarycentricCoefficients(const Node& n0, const Node& n1, const Node& n2, const Node& n3,
             const Node& n4, const Node& n5, const Node& n6, const Node& n7, const sofa::type::fixed_array<SReal, 3>& baryC)
     {
@@ -200,7 +204,9 @@ struct Hexahedron
     */
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
-        typename = std::enable_if_t<std::is_scalar_v<T>>>
+        typename = std::enable_if_t<std::is_scalar_v<T>>
+    >
+    [[nodiscard]]
     static constexpr auto volume(const Node& n0, const Node& n1, const Node& n2, const Node& n3,
                                  const Node& n4, const Node& n5, const Node& n6, const Node& n7)
     {
@@ -218,6 +224,7 @@ struct Hexahedron
         }
         else
         {
+            BOOST_STATIC_WARNING("Hexahedron::volume() is called with a non-3D context. This function will return 0.")
             //does not make sense to compute volume other than 3D
             //but some code effectively wants 2d volumes(??)
             //an exception may be a better solution
