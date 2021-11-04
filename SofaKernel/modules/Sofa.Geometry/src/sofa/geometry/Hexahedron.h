@@ -224,7 +224,7 @@ struct Hexahedron
         }
         else
         {
-            BOOST_STATIC_WARNING("Hexahedron::volume() is called with a non-3D context. This function will return 0.")
+            BOOST_STATIC_WARNING(true)
             //does not make sense to compute volume other than 3D
             //but some code effectively wants 2d volumes(??)
             //an exception may be a better solution

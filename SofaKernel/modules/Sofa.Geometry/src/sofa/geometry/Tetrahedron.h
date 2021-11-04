@@ -66,7 +66,7 @@ struct Tetrahedron
         }
         else
         {
-            BOOST_STATIC_WARNING("Tetrahedron::volume() is called with a non-3D context. This function will return 0.")
+            BOOST_STATIC_WARNING(true)
             //does not make sense to compute volume other than 3D
             //but some code effectively wants 2d volumes(??)
             return static_cast<T>(0);
