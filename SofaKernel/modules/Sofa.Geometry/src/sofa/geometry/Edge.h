@@ -38,13 +38,24 @@ struct Edge
 
     Edge() = default;
 
+    /**
+    * @brief	Compute the squared length (or norm) of an edge
+    * @remark   Depending of the type of Node, it will either use a optimized version or a generic one
+    * @remark   Optimizations are enabled for sofa::type::Vec
+    * @tparam   Node iterable container (or sofa::type::Vec for operator- and norm2())
+    * @tparam   T scalar
+    * @param	n0,n1 nodes of the edge
+    * @return	Squared length of the edge (a T scalar)
+    */
     template<typename Node,
-        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
-        typename = std::enable_if_t<std::is_scalar_v<T>>>
+             typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+             typename = std::enable_if_t<std::is_scalar_v<T>>
+    >
     static constexpr auto squaredLength(const Node& n0, const Node& n1)
     {
         constexpr Node v{};
         constexpr auto size = std::distance(std::cbegin(v), std::cend(v));
+
         // specialized function is faster than the generic (using STL) one
         if constexpr (std::is_same_v< Node, sofa::type::Vec<size, T>>)
         {
@@ -58,9 +69,19 @@ struct Edge
         }
     }
 
+    /**
+    * @brief	Compute the length (or norm) of an edge
+    * @remark   Depending of the type of Node, it will either use a optimized version or a generic one
+    * @remark   Optimizations are enabled for sofa::type::Vec
+    * @tparam   Node iterable container (or sofa::type::Vec for squaredLength())
+    * @tparam   T scalar
+    * @param	n0,n1 nodes of the edge
+    * @return	Length of the edge (a T scalar)
+    */
     template<typename Node,
-        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
-        typename = std::enable_if_t<std::is_scalar_v<T>>>
+             typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+             typename = std::enable_if_t<std::is_scalar_v<T>>
+    >
     static constexpr auto length(const Node& n0, const Node& n1)
     {
         return std::sqrt(squaredLength(n0, n1));

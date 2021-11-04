@@ -34,9 +34,18 @@ struct Quad
 
     Quad() = default;
 
+    /**
+    * @brief	Compute the area of a quadrilateral
+    * @remark	The order of nodes needs to be consecutive
+    * @tparam   Node iterable container
+    * @tparam   T scalar
+    * @param	n0,n1,n2,n3 nodes of the quadrilateral
+    * @return	Area of the quadrilateral (a T scalar)
+    */
     template<typename Node,
-        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
-        typename = std::enable_if_t<std::is_scalar_v<T>>>
+             typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+             typename = std::enable_if_t<std::is_scalar_v<T>>
+    >
     static constexpr auto area(const Node& n0, const Node& n1, const Node& n2, const Node& n3)
     {
 

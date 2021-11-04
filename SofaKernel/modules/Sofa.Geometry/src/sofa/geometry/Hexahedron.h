@@ -41,27 +41,34 @@ struct Hexahedron
     Hexahedron() = default;
 
     // CONVENTION : indices ordering for the nodes of an hexahedron :
-//
-//     Y  n3---------n2
-//     ^  /          /|
-//     | /          / |
-//     n7---------n6  |
-//     |          |   |
-//     |  n0------|--n1
-//     | /        | /
-//     |/         |/
-//     n4---------n5-->X
-//    /
-//   /
-//  Z
+    //
+    //     Y  n3---------n2
+    //     ^  /          /|
+    //     | /          / |
+    //     n7---------n6  |
+    //     |          |   |
+    //     |  n0------|--n1
+    //     | /        | /
+    //     |/         |/
+    //     n4---------n5-->X
+    //    /
+    //   /
+    //  Z
 
-    // nodes order is not necessary
+    /**
+    * @brief	Compute the center of a hexahedron
+    * @remark	The order of nodes given as parameter is not necessary.
+    * @tparam   Node iterable container, with operator[]
+    * @tparam   T scalar
+    * @param	n0,n1,n2,n3,n4,n5,n6,n7 nodes of the hexahedron
+    * @return	Center of the hexahedron (same type as the given nodes)
+    */
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
-        static constexpr auto center(const Node& n0, const Node& n1, const Node& n2, const Node& n3, 
-                                     const Node& n4, const Node& n5, const Node& n6, const Node& n7)
+    static constexpr auto center(const Node& n0, const Node& n1, const Node& n2, const Node& n3, 
+                                 const Node& n4, const Node& n5, const Node& n6, const Node& n7)
     {
         constexpr auto dimensions = sizeof(Node) / sizeof(T);
         auto centerRes = n0;
@@ -74,13 +81,22 @@ struct Hexahedron
         return centerRes;
     }
 
-    // nodes order is necessary
+    /**
+    * @brief	Compute the barycentric coefficients of a node in a hexahedron
+    * @remark	Due to some optimizations, the order of nodes given as parameter is necessary.
+    * @tparam   Node iterable container, with operator[]
+    * @tparam   T scalar
+    * @param	n0,n1,n2,n3,n4,n5,n6,n7 nodes of the hexahedron
+    * @param    pos position of the node from which the coefficients will be computed 
+    * @return	A Vec3 container with the barycentric coefficients of the given node
+    */
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
-        static constexpr auto barycentricCoefficients(const Node& n0, const Node& n1, const Node& n2, const Node& n3,
-            const Node& n4, const Node& n5, const Node& n6, const Node& n7, const Node& pos)
+    static constexpr auto barycentricCoefficients(const Node& n0, const Node& n1, const Node& n2, const Node& n3,
+                                                  const Node& n4, const Node& n5, const Node& n6, const Node& n7, 
+                                                  const Node& pos)
     {
         SOFA_UNUSED(n2);
         SOFA_UNUSED(n5);
@@ -113,13 +129,22 @@ struct Hexahedron
         return tmpResult;
     }
 
-    // nodes order is necessary
+    /**
+    * @brief	Compute the squared distance between a node and the center of a hexahedron
+    * @remark	Due to some optimizations, the order of nodes given as parameter is necessary.
+    * @tparam   Node iterable container, with operator[]
+    * @tparam   T scalar
+    * @param	n0,n1,n2,n3,n4,n5,n6,n7 nodes of the hexahedron
+    * @param    pos position of the node from which the distance will be computed
+    * @return	Distance from the node and the center of the hexahedron, as a T scalar
+    */
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
     static constexpr auto squaredDistanceTo(const Node& n0, const Node& n1, const Node& n2, const Node& n3,
-        const Node& n4, const Node& n5, const Node& n6, const Node& n7, const Node& pos)
+                                            const Node& n4, const Node& n5, const Node& n6, const Node& n7, 
+                                            const Node& pos)
     {
         const auto& v = barycentricCoefficients(n0,n1,n2,n3,n4,n5,n6,n7, pos);
 
@@ -133,6 +158,15 @@ struct Hexahedron
         return d;
     }
 
+    /**
+    * @brief	Compute a position from a given set of barycentric coefficients and the associated hexahedron
+    * @remark	The order of nodes given as parameter is necessary.
+    * @tparam   Node iterable container, with operator* applicable with a scalar
+    * @tparam   T scalar
+    * @param	n0,n1,n2,n3,n4,n5,n6,n7 nodes of the hexahedron
+    * @param    baryC barycentric coefficients
+    * @return	Position computed from the coefficients, as a Node type
+    */
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
@@ -156,12 +190,19 @@ struct Hexahedron
         return pos;
     }
 
-    //non optimized version: just return the sum of the 6 inner-tetrahedra
+    /**
+    * @brief	Compute the volume of a hexahedron
+    * @remark	non optimized version: just return the sum of the 6 inner-tetrahedra
+    * @tparam   Node iterable container
+    * @tparam   T scalar
+    * @param	n0,n1,n2,n3,n4,n5,n6,n7 nodes of the hexahedron
+    * @return	Volume of the hexahedron, as a T scalar
+    */
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>>
     static constexpr auto volume(const Node& n0, const Node& n1, const Node& n2, const Node& n3,
-        const Node& n4, const Node& n5, const Node& n6, const Node& n7)
+                                 const Node& n4, const Node& n5, const Node& n6, const Node& n7)
     {
         constexpr Node n{};
         //static_assert(std::distance(std::begin(n), std::end(n)) == 3, "volume can only be computed in 3 dimensions.");

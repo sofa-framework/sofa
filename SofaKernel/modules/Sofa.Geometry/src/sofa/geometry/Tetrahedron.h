@@ -37,10 +37,18 @@ struct Tetrahedron
 
     Tetrahedron() = default;
 
-    //needs dot, cross
+    /**
+    * @brief	Compute the volume of a tetrahedron
+    * @remark	This function is not generic
+    * @tparam   Node a container of the type sofa::type::Vec3 (needed for cross(), dot(), operator-)
+    * @tparam   T scalar
+    * @param	n0,n1,n2,n3,n4 nodes of the tetrahedron
+    * @return	Volume of the hexahedron (a T scalar)
+    */
     template<typename Node,
-        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
-        typename = std::enable_if_t<std::is_scalar_v<T>>>
+             typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+             typename = std::enable_if_t<std::is_scalar_v<T>>
+    >
     static constexpr auto volume(const Node& n0, const Node& n1, const Node& n2, const Node& n3)
     {
         constexpr Node n{};
