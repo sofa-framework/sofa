@@ -746,31 +746,31 @@ bool DiagonalMass<DataTypes, MassType>::checkTopology()
         if (m_topology->getNbHexahedra() > 0)
         {
             msg_info() << "Hexahedral topology found.";
-            m_manageElementTypeChange == sofa::geometry::ElementType::HEXAHEDRON;
+            m_manageElementTypeChange = sofa::geometry::ElementType::HEXAHEDRON;
             return true;
         }
         else if (m_topology->getNbTetrahedra() > 0)
         {
             msg_info() << "Tetrahedral topology found.";
-            m_manageElementTypeChange == sofa::geometry::ElementType::TETRAHEDRON;
+            m_manageElementTypeChange = sofa::geometry::ElementType::TETRAHEDRON;
             return true;
         }
         else if (m_topology->getNbQuads() > 0)
         {
             msg_info() << "Quad topology found.";
-            m_manageElementTypeChange == sofa::geometry::ElementType::QUAD;
+            m_manageElementTypeChange = sofa::geometry::ElementType::QUAD;
             return true;
         }
         else if (m_topology->getNbTriangles() > 0)
         {
             msg_info() << "Triangular topology found."; 
-            m_manageElementTypeChange == sofa::geometry::ElementType::TRIANGLE;
+            m_manageElementTypeChange = sofa::geometry::ElementType::TRIANGLE;
             return true;
         }
         else if (m_topology->getNbEdges() > 0)
         {
             msg_info() << "Edge topology found.";
-            m_manageElementTypeChange == sofa::geometry::ElementType::EDGE;
+            m_manageElementTypeChange = sofa::geometry::ElementType::EDGE;
             return true;
         }
         else
