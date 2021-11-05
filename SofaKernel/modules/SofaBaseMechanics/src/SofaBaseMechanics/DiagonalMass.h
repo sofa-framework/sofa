@@ -118,21 +118,17 @@ protected:
 
     class Loader;
     /// The type of topology to build the mass from the topology
-    sofa::core::topology::TopologyElementType m_massTopologyType;
+    sofa::geometry::ElementType m_massTopologyType;
 
     /// Pointer to the topology container. Will be set by link @sa l_topology
     sofa::core::topology::BaseMeshTopology* m_topology;
+private:
+    sofa::geometry::ElementType m_manageElementTypeChange{ sofa::geometry::ElementType::POINT };
 
-public:
-    bool m_bManageEdgeChange{ false };
-    bool m_bManageTriangleChange{ false };
-    bool m_bManageQuadChange{ false };
-    bool m_bManageTetraChange{ false };
-    bool m_bManageHexaChange{ false };
 protected:
     DiagonalMass();
 
-    ~DiagonalMass() override;
+    ~DiagonalMass() override = default;
 public:
 
     bool load(const char *filename);
@@ -145,7 +141,7 @@ public:
 
     void doUpdateInternal() override;
 
-    sofa::core::topology::TopologyElementType getMassTopologyType() const
+    sofa::geometry::ElementType getMassTopologyType() const
     {
         return m_massTopologyType;
     }
