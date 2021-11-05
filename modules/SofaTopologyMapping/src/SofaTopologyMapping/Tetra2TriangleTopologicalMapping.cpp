@@ -435,15 +435,15 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::EDGESADDED:
         {
-            const auto * edgeAdded=static_cast< const EdgesAdded * >( *itBegin );
-            m_outTopoModifier->addEdges(edgeAdded->edgeArray);
+            const auto* edgeAdded = static_cast<const sofa::component::topology::EdgesAdded*>(*itBegin);
+            m_outTopoModifier->addEdges(edgeAdded->edgeArray, edgeAdded->ancestorsList, edgeAdded->coefs);
             break;
         }
 
         case core::topology::POINTSADDED:
         {
-            const auto nbAddedPoints = ( static_cast< const sofa::component::topology::PointsAdded * >( *itBegin ) )->getNbAddedVertices();
-            m_outTopoModifier->addPoints(nbAddedPoints, true);
+            const auto* pointAdded = static_cast<const sofa::component::topology::PointsAdded*>(*itBegin);
+            m_outTopoModifier->addPoints(sofa::Size(pointAdded->getNbAddedVertices()), pointAdded->ancestorsList, pointAdded->coefs, true);
             break;
         }
 
