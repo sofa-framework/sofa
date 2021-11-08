@@ -25,7 +25,7 @@
         </Node>
         <Node name="visu" gravity="0 0 0">
             <TextureInterpolation template="Vec1d" name="EngineInterpolation" input_states="@../ElecNode/ElecObj.position" input_coordinates="@../mecaObj.position" min_value="0.0" max_value="10.0" manual_scale="1" drawPotentiels="1" />
-            <OglModel template="Vec3d" name="oglPotentiel" texcoords="@EngineInterpolation.output_coordinates" texturename="textures/heatColor.bmp" />
+            <OglModel template="Vec3d" name="oglPotentiel" texcoords="@EngineInterpolation.output_coordinates" texturename="textures/heatColor.bmp" handleDynamicTopology="0" />
         </Node>
     </Node>
 </Node>

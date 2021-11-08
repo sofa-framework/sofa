@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/TopologySubsetData.h>
-#include <SofaBaseTopology/TopologyData.inl>
-#include <SofaBaseTopology/TopologyDataHandler.inl>
+#include <sofa/core/topology/TopologySubsetData.h>
+#include <sofa/core/topology/TopologyData.inl>
+#include <sofa/core/topology/TopologyDataHandler.inl>
 
-namespace sofa::component::topology
+namespace sofa::core::topology
 {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -33,7 +33,7 @@ namespace sofa::component::topology
 
 template <typename TopologyElementType, typename VecT>
 TopologySubsetData <TopologyElementType, VecT>::TopologySubsetData(const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-    : sofa::component::topology::TopologyData< TopologyElementType, VecT >(data)
+    : sofa::core::topology::TopologyData< TopologyElementType, VecT >(data)
     , m_isConcerned(false)
 {
 
@@ -287,4 +287,4 @@ void TopologySubsetData <TopologyElementType, VecT>::removeOnMovedPosition(const
 }
 
 
-} //namespace sofa::component::topology
+} //namespace sofa::core::topology

@@ -7,7 +7,7 @@
     <VisualStyle displayFlags="showForceFields showVisual" />
 
     <EulerImplicitSolver rayleighStiffness="0.2"  rayleighMass="0.2" />
-    <CGLinearSolver template="GraphScattered" iterations="25"  threshold="1e-008" />
+    <CGLinearSolver template="GraphScattered" iterations="25"  threshold="1e-008" tolerance="1e-5"/>
 
     <Node name="target">
         <ImageContainer  name="image" filename="data/thigh.raw"/>

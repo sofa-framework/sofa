@@ -59,33 +59,44 @@ void MeshGmsh::init (std::string filename)
     std::string cmd;
 
     // -- Looking for Gmsh version of this file.
-    std::getline(file, cmd); //Version
-    std::istringstream versionReader(cmd);
-    std::string version;
-    versionReader >> version;
-    if (version == "$MeshFormat") // Reading gmsh 2.0 file
+    std::getline(file, cmd); //First line should be the start of the $MeshFormat section
+    if (cmd.length() >= 11 && cmd.substr(0, 11) == "$MeshFormat") // Reading gmsh
     {
-        gmshFormat = 2;
-        std::string line;
-        std::getline(file, line); // we don't nedd this line
+        // NB: .msh file header line for version >= 2 can be "$MeshFormat", "$MeshFormat\r", "$MeshFormat \r"
+        std::string version;
+        std::getline(file, version); // Getting the version line (e.g. 4.1 0 8)
+        gmshFormat = std::stoul(version.substr( 0, version.find(" ")) ); // Retrieving the mesh format, keeping only the integer part
         std::getline(file, cmd);
-        std::istringstream endMeshReader(cmd);
-        std::string endMesh;
-        endMeshReader >> endMesh;
 
-        if (endMesh != std::string("$EndMeshFormat")) // it should end with $EndMeshFormat
+        if (cmd.length() < 14 || cmd.substr(0, 14) != std::string("$EndMeshFormat")) // it should end with "$EndMeshFormat" or "$EndMeshFormat\r"
         {
+            msg_error("MeshGmsh") << "No $EndMeshFormat flag found at the end of the file. Closing File";
             file.close();
             return;
         }
         else
         {
-            std::getline(file, cmd); // First Command
+            // Reading the file until the node section is hit. In recent versions of MSH file format,
+            // we may encounter various sections between $MeshFormat and $Nodes
+            while (cmd.length() < 6 || cmd.substr(0, 6) != std::string("$Nodes")) // can be "$Nodes" or "$Nodes\r"
+            {
+                std::getline(file, cmd); // First Command
+                if (file.eof())
+                {
+                    msg_error("MeshGmsh") << "End of file reached without finding the $Nodes section expected in MSH file format. Closing file.";
+                    file.close();
+                    return;
+                }
+            }
         }
     }
     else
     {
+        // Legacy MSh format version 1 directly starts with the Nodes section
+        // https://gmsh.info/doc/texinfo/gmsh.html#MSH-file-format-version-1-_0028Legacy_0029
         gmshFormat = 1;
+        // The next line is already the first line of the $Nodes section. The file can be passed
+        // to readGmdh in its current state
     }
 
     readGmsh(file, gmshFormat);
@@ -130,207 +141,439 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
 
     std::string cmd;
 
-    // --- Loading Vertices ---
-    file >> npoints; //nb points
-
-    std::vector<int> pmap; // map for reordering vertices possibly not well sorted
-    for (int i = 0; i<npoints; ++i)
+    if (gmshFormat <= 2)
     {
-        int index = i;
-        double x, y, z;
-        file >> index >> x >> y >> z;
-        m_vertices.push_back(sofa::type::Vector3(x, y, z));
-        if ((int)pmap.size() <= index) pmap.resize(index + 1);
-        pmap[index] = i; // In case of hole or swit
-    }
-    
-    file >> cmd;
-    if (cmd != "$ENDNOD" && cmd != "$EndNodes")
-    {
-        msg_error("MeshGmsh") << "'$ENDNOD' or '$EndNodes' expected, found '" << cmd << "'";
-        return false;
-    }
+        // --- Loading Vertices ---
+        file >> npoints; //nb points
 
-    // --- Loading Elements ---
-    file >> cmd;
-    if (cmd != "$ELM" && cmd != "$Elements")
-    {
-        msg_error("MeshGmsh") << "'$ELM' or '$Elements' expected, found '" << cmd << "'";
-        return false;
-    }
-
-    int nelems = 0;
-    file >> nelems;
-
-    for (int i = 0; i<nelems; ++i) // for each elem
-    {
-        int index = -1, etype = -1, nnodes = -1, ntags = -1, tag = -1;
-        if (gmshFormat == 1)
+        std::vector<int> pmap; // map for reordering vertices possibly not well sorted
+        for (int i = 0; i < npoints; ++i)
         {
-            // version 1.0 format is
-            // elm-number elm-type reg-phys reg-elem number-of-nodes <node-number-list ...>
-            int rphys = -1, relem = -1;
-            file >> index >> etype >> rphys >> relem >> nnodes;
+            int index = i;
+            double x, y, z;
+            file >> index >> x >> y >> z;
+            m_vertices.push_back(sofa::type::Vector3(x, y, z));
+            if ((int)pmap.size() <= index) pmap.resize(index + 1);
+            pmap[index] = i; // In case of hole or swit
         }
-        else /*if (gmshFormat == 2)*/
-        {
-            // version 2.0 format is
-            // elm-number elm-type number-of-tags < tag > ... node-number-list
-            file >> index >> etype >> ntags;
 
-            for (int t = 0; t<ntags; t++)
+        file >> cmd;
+        if (cmd.length() < 7 || cmd.substr(0, 7) != "$ENDNOD") // can be "$ENDNOD" or "$ENDNOD\r"
+        {
+            if (cmd.length() < 9 || cmd.substr(0, 9) != "$EndNodes") // can be "$EndNodes" or "$EndNodes\r"
             {
-                file >> tag;
-                // read the tag but don't use it
+                msg_error("MeshGmsh") << "'$ENDNOD' or '$EndNodes' expected, found '" << cmd << "'";
+                return false;
+            }
+        }
+
+        // --- Loading Elements ---
+        file >> cmd;
+        if (cmd.length() < 4 || cmd.substr(0, 4) != "$ELM") // can be "$ELM" or "$ELM\r"
+        {
+            if (cmd.length() < 9 || cmd.substr(0, 9) != "$Elements") // can be "$ELM" or "$ELM\r"
+            {
+                msg_error("MeshGmsh") << "'$ELM' or '$Elements' expected, found '" << cmd << "'";
+                return false;
+            }
+        }
+
+        int nelems = 0;
+        file >> nelems;
+
+        for (int i = 0; i < nelems; ++i) // for each elem
+        {
+            int index = -1, etype = -1, nnodes = -1, ntags = -1, tag = -1;
+            if (gmshFormat == 1)
+            {
+                // version 1.0 format is
+                // elm-number elm-type reg-phys reg-elem number-of-nodes <node-number-list ...>
+                int rphys = -1, relem = -1;
+                file >> index >> etype >> rphys >> relem >> nnodes;
+            }
+            else /*if (gmshFormat == 2)*/
+            {
+                // version 2.0 format is
+                // elm-number elm-type number-of-tags < tag > ... node-number-list
+                file >> index >> etype >> ntags;
+
+                for (int t = 0; t < ntags; t++)
+                {
+                    file >> tag;
+                    // read the tag but don't use it
+                }
+
+                switch (etype)
+                {
+                case 15: //point
+                    nnodes = 1;
+                    break;
+                case 1: // Line
+                    nnodes = 2;
+                    break;
+                case 2: // Triangle
+                    nnodes = 3;
+                    break;
+                case 3: // Quad
+                    nnodes = 4;
+                    break;
+                case 4: // Tetra
+                    nnodes = 4;
+                    break;
+                case 5: // Hexa
+                    nnodes = 8;
+                    break;
+                case 8: // Quadratic edge
+                    nnodes = 3;
+                    break;
+                case 9: // Quadratic Triangle
+                    nnodes = 6;
+                    break;
+                case 11: // Quadratic Tetrahedron
+                    nnodes = 10;
+                    break;
+                default:
+                    msg_error("MeshGmsh") << "Elements of type 1, 2, 3, 4, 5, or 6 expected. Element of type " << etype << " found.";
+                    nnodes = 0;
+                }
+            }
+
+            type::vector<unsigned int> nodes;
+            nodes.resize(nnodes);
+            const unsigned int edgesInQuadraticTriangle[3][2] = { { 0,1 },{ 1,2 },{ 2,0 } };
+            const unsigned int edgesInQuadraticTetrahedron[6][2] = { { 0,1 },{ 1,2 },{ 0,2 },{ 0,3 },{ 2,3 },{ 1,3 } };
+            std::set<Edge> edgeSet;
+            size_t j;
+            for (int n = 0; n < nnodes; ++n)
+            {
+                int t = 0;
+                file >> t;
+                nodes[n] = (((unsigned int)t) < pmap.size()) ? pmap[t] : 0;
             }
 
             switch (etype)
             {
-            case 15: //point
-                nnodes = 1;
+            case 1: // Line
+                addInGroup(m_edgesGroups, tag, m_edges.size());
+                m_edges.push_back(Edge(nodes[0], nodes[1]));
+                ++nlines;
                 break;
+            case 2: // Triangle
+                addInGroup(m_trianglesGroups, tag, m_triangles.size());
+                m_triangles.push_back(Triangle(nodes[0], nodes[1], nodes[2]));
+                ++ntris;
+                break;
+            case 3: // Quad
+                addInGroup(m_quadsGroups, tag, m_quads.size());
+                m_quads.push_back(Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
+                ++nquads;
+                break;
+            case 4: // Tetra
+                addInGroup(m_tetrahedraGroups, tag, m_tetrahedra.size());
+                m_tetrahedra.push_back(Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
+                ++ntetrahedra;
+                break;
+            case 5: // Hexa
+                addInGroup(m_hexahedraGroups, tag, m_hexahedra.size());
+                m_hexahedra.push_back(Hexahedron(nodes[0], nodes[1], nodes[2], nodes[3], nodes[4], nodes[5], nodes[6], nodes[7]));
+                ++ncubes;
+                break;
+            case 8: // quadratic edge
+                addInGroup(m_edgesGroups, tag, m_edges.size());
+                m_edges.push_back(Edge(nodes[0], nodes[1]));
+                {
+                    HighOrderEdgePosition hoep;
+                    hoep[0] = nodes[2];
+                    hoep[1] = m_edges.size() - 1;
+                    hoep[2] = 1;
+                    hoep[3] = 1;
+                    m_highOrderEdgePositions.push_back(hoep);
+                }
+                ++nlines;
+                break;
+            case 9: // quadratic triangle
+                addInGroup(m_trianglesGroups, tag, m_triangles.size());
+                m_triangles.push_back(Triangle(nodes[0], nodes[1], nodes[2]));
+                {
+                    HighOrderEdgePosition hoep;
+                    for (j = 0; j < 3; ++j) {
+                        auto v0 = std::min(nodes[edgesInQuadraticTriangle[j][0]],
+                            nodes[edgesInQuadraticTriangle[j][1]]);
+                        auto v1 = std::max(nodes[edgesInQuadraticTriangle[j][0]],
+                            nodes[edgesInQuadraticTriangle[j][1]]);
+                        Edge e(v0, v1);
+                        if (edgeSet.find(e) == edgeSet.end()) {
+                            edgeSet.insert(e);
+                            m_edges.push_back(Edge(v0, v1));
+                            hoep[0] = nodes[j + 3];
+                            hoep[1] = m_edges.size() - 1;
+                            hoep[2] = 1;
+                            hoep[3] = 1;
+                            m_highOrderEdgePositions.push_back(hoep);
+                        }
+                    }
+                }
+                ++ntris;
+                break;
+            case 11: // quadratic tetrahedron
+                addInGroup(m_tetrahedraGroups, tag, m_tetrahedra.size());
+                m_tetrahedra.push_back(Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
+                {
+                    HighOrderEdgePosition hoep;
+                    for (j = 0; j < 6; ++j) {
+                        auto v0 = std::min(nodes[edgesInQuadraticTetrahedron[j][0]],
+                            nodes[edgesInQuadraticTetrahedron[j][1]]);
+                        auto v1 = std::max(nodes[edgesInQuadraticTetrahedron[j][0]],
+                            nodes[edgesInQuadraticTetrahedron[j][1]]);
+                        Edge e(v0, v1);
+                        if (edgeSet.find(e) == edgeSet.end()) {
+                            edgeSet.insert(e);
+                            m_edges.push_back(Edge(v0, v1));
+                            hoep[0] = nodes[j + 4];
+                            hoep[1] = m_edges.size() - 1;
+                            hoep[2] = 1;
+                            hoep[3] = 1;
+                            m_highOrderEdgePositions.push_back(hoep);
+                        }
+                    }
+                }
+                ++ntetrahedra;
+                break;
+            default:
+                //if the type is not handled, skip rest of the line
+                std::string tmp;
+                std::getline(file, tmp);
+            }
+        }
+
+        normalizeGroup(m_edgesGroups);
+        normalizeGroup(m_trianglesGroups);
+        normalizeGroup(m_tetrahedraGroups);
+        normalizeGroup(m_hexahedraGroups);
+    }
+
+    else // gmshFormat >= 4
+    {
+        // --- Parsing the $Nodes section --- //
+
+        std::getline(file, cmd); // Getting first line of $Nodes
+        std::istringstream nodesHeader(cmd);
+        unsigned int nbEntityBlocks, nbNodes, minNodeTag, maxNodeTag;
+        nodesHeader >> nbEntityBlocks >> nbNodes >> minNodeTag >> maxNodeTag;
+
+        unsigned int nodeCount = 0;
+
+        for (unsigned int entityIndex = 0; entityIndex < nbEntityBlocks; entityIndex++) // looping over the entity blocks
+        {
+            std::getline(file, cmd); // Reading the entity line
+            std::istringstream entitySummary(cmd);
+            unsigned int entityDim, entityTag, parametric, nbNodesInBlock;
+            entitySummary >> entityDim >> entityTag >> parametric >> nbNodesInBlock;
+
+            for (unsigned int nodeIndex = 0; nodeIndex < nbNodesInBlock; nodeIndex++)
+                std::getline(file, cmd); // Reading the node indices lines
+            for (unsigned int nodeIndex = 0; nodeIndex < nbNodesInBlock; nodeIndex++)
+            {
+                std::getline(file, cmd); // Reading the node coordinates
+                std::istringstream coordinates(cmd);
+                double x, y, z;
+                coordinates >> x >> y >> z;
+                m_vertices.push_back(sofa::type::Vector3(x, y, z));
+                nodeCount++;
+            }
+        }
+
+        std::getline(file, cmd);
+        if (cmd != "$EndNodes")
+        {
+            msg_error("MeshGmsh") << "'$EndNodes' expected, found '" << cmd << "'";
+            return false;
+        }
+
+
+        // --- Parsing the $Elements section --- //
+
+        std::getline(file, cmd);
+        if (cmd != "$Elements")
+        {
+            msg_error("MeshGmsh") << "'$Elements' expected, found '" << cmd << "'";
+            return false;
+        }
+
+        std::getline(file, cmd); // Getting first line of $Elements
+        std::istringstream elementsHeader(cmd);
+        unsigned int nbElements, minElementTag, maxElementTag;
+        elementsHeader >> nbEntityBlocks >> nbElements >> minElementTag >> maxElementTag;
+
+        // Common information to add second order triangles (elementType = 9) and tetrahedra (elementType = 11)
+        const unsigned int edgesInQuadraticTriangle[3][2] = { { 0,1 },{ 1,2 },{ 2,0 } };
+        const unsigned int edgesInQuadraticTetrahedron[6][2] = { { 0,1 },{ 1,2 },{ 0,2 },{ 0,3 },{ 2,3 },{ 1,3 } };
+        std::set<Edge> edgeSet;
+
+        for (unsigned int entityIndex = 0; entityIndex < nbEntityBlocks; entityIndex++) // looping over the entity blocks
+        {
+            std::getline(file, cmd); // Reading the entity line
+            std::istringstream entitySummary(cmd);
+            unsigned int entityDim, entityTag, nbElementsInBlock, elementType;
+            entitySummary >> entityDim >> entityTag >> elementType >> nbElementsInBlock;
+
+            unsigned int nnodes = 0;
+            switch (elementType)
+            {
             case 1: // Line
                 nnodes = 2;
                 break;
             case 2: // Triangle
                 nnodes = 3;
                 break;
-            case 3: // Quad
+            case 3: // Quadrangle
                 nnodes = 4;
                 break;
-            case 4: // Tetra
+            case 4: // Tetrahedron
                 nnodes = 4;
                 break;
-            case 5: // Hexa
+            case 5: // Hexahedron
                 nnodes = 8;
                 break;
-            case 8: // Quadratic edge
-                nnodes = 3;
-                break;
-            case 9: // Quadratic Triangle
+            case 6: // Prism
                 nnodes = 6;
                 break;
-            case 11: // Quadratic Tetrahedron
+            case 8: // Second order line
+                nnodes = 3;
+                break;
+            case 9: // Second order triangle
+                nnodes = 6;
+                break;
+            case 11: // Second order tetrahedron
                 nnodes = 10;
                 break;
+            case 15: // Point
+                nnodes = 1;
+                break;
             default:
-                msg_error("MeshGmsh") << "Elements of type 1, 2, 3, 4, 5, or 6 expected. Element of type " << etype << " found.";
-                nnodes = 0;
+                msg_error("MeshGmsh") << "Elements of type 1, 2, 3, 4, 5, 8, 9, 11 or 15 expected. Element of type " << elementType << " found.";
+                // nnodes = 0;
             }
-        }
 
-        type::vector<unsigned int> nodes;
-        nodes.resize(nnodes);
-        const unsigned int edgesInQuadraticTriangle[3][2] = { { 0,1 },{ 1,2 },{ 2,0 } };
-        const unsigned int edgesInQuadraticTetrahedron[6][2] = { { 0,1 },{ 1,2 },{ 0,2 },{ 0,3 },{ 2,3 },{ 1,3 } };
-        std::set<Edge> edgeSet;
-        size_t j;
-        for (int n = 0; n<nnodes; ++n)
-        {
-            int t = 0;
-            file >> t;
-            nodes[n] = (((unsigned int)t)<pmap.size()) ? pmap[t] : 0;
-        }
+            for (unsigned int elemIndex = 0; elemIndex < nbElementsInBlock; elemIndex++)
+            {
+                std::getline(file, cmd); // Reading the element info
+                std::istringstream elementInfo(cmd);
+                unsigned int elementTag;
+                elementInfo >> elementTag;
 
-        switch (etype)
-        {
-        case 1: // Line
-            addInGroup(m_edgesGroups, tag, m_edges.size());
-            m_edges.push_back(Edge(nodes[0], nodes[1]));
-            ++nlines;
-            break;
-        case 2: // Triangle
-            addInGroup(m_trianglesGroups, tag, m_triangles.size());
-            m_triangles.push_back(Triangle(nodes[0], nodes[1], nodes[2]));
-            ++ntris;
-            break;
-        case 3: // Quad
-            addInGroup(m_quadsGroups, tag, m_quads.size());
-            m_quads.push_back(Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
-            ++nquads;
-            break;
-        case 4: // Tetra
-            addInGroup(m_tetrahedraGroups, tag, m_tetrahedra.size());
-            m_tetrahedra.push_back(Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
-            ++ntetrahedra;
-            break;
-        case 5: // Hexa
-            addInGroup(m_hexahedraGroups, tag, m_hexahedra.size());
-            m_hexahedra.push_back(Hexahedron(nodes[0], nodes[1], nodes[2], nodes[3], nodes[4], nodes[5], nodes[6], nodes[7]));
-            ++ncubes;
-            break;
-        case 8: // quadratic edge
-            addInGroup(m_edgesGroups, tag, m_edges.size());
-            m_edges.push_back(Edge(nodes[0], nodes[1]));
-            {
-                HighOrderEdgePosition hoep;
-                hoep[0] = nodes[2];
-                hoep[1] = m_edges.size() - 1;
-                hoep[2] = 1;
-                hoep[3] = 1;
-                m_highOrderEdgePositions.push_back(hoep);
-            }
-            ++nlines;
-            break;
-        case 9: // quadratic triangle
-            addInGroup(m_trianglesGroups, tag, m_triangles.size());
-            m_triangles.push_back(Triangle(nodes[0], nodes[1], nodes[2]));
-            {
-                HighOrderEdgePosition hoep;
-                for (j = 0; j<3; ++j) {
-                    auto v0 = std::min(nodes[edgesInQuadraticTriangle[j][0]],
-                        nodes[edgesInQuadraticTriangle[j][1]]);
-                    auto v1 = std::max(nodes[edgesInQuadraticTriangle[j][0]],
-                        nodes[edgesInQuadraticTriangle[j][1]]);
-                    Edge e(v0, v1);
-                    if (edgeSet.find(e) == edgeSet.end()) {
-                        edgeSet.insert(e);
-                        m_edges.push_back(Edge(v0, v1));
-                        hoep[0] = nodes[j + 3];
+                type::vector<unsigned int> nodes;
+                unsigned int nodeId = 0;
+                nodes.resize(nnodes);
+
+                for (unsigned int i = 0; i < nnodes; i++)
+                {
+                    elementInfo >> nodeId;
+                    nodes[i] = nodeId-1; //To account for the fact that node indices in the MSH file format start with 1 instead of 0
+                }
+
+                switch (elementType)
+                {
+                case 1: // Line
+                    addInGroup(m_edgesGroups, elementTag, m_edges.size());
+                    m_edges.push_back(Edge(nodes[0], nodes[1]));
+                    ++nlines;
+                    break;
+                case 2: // Triangle
+                    addInGroup(m_trianglesGroups, elementTag, m_triangles.size());
+                    m_triangles.push_back(Triangle(nodes[0], nodes[1], nodes[2]));
+                    ++ntris;
+                    break;
+                case 3: // Quadrangle
+                    addInGroup(m_quadsGroups, elementTag, m_quads.size());
+                    m_quads.push_back(Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
+                    ++nquads;
+                    break;
+                case 4: // Tetrahedron
+                    addInGroup(m_tetrahedraGroups, elementTag, m_tetrahedra.size());
+                    m_tetrahedra.push_back(Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
+                    ++ntetrahedra;
+                    break;
+                case 5: // Hexahedron
+                    addInGroup(m_hexahedraGroups, elementTag, m_hexahedra.size());
+                    m_hexahedra.push_back(Hexahedron(nodes[0], nodes[1], nodes[2], nodes[3], nodes[4], nodes[5], nodes[6], nodes[7]));
+                    ++ncubes;
+                    break;
+                case 8: // Second order line
+                    addInGroup(m_edgesGroups, elementTag, m_edges.size());
+                    m_edges.push_back(Edge(nodes[0], nodes[1]));
+                    {
+                        HighOrderEdgePosition hoep;
+                        hoep[0] = nodes[2];
                         hoep[1] = m_edges.size() - 1;
                         hoep[2] = 1;
                         hoep[3] = 1;
                         m_highOrderEdgePositions.push_back(hoep);
                     }
-                }
-            }
-            ++ntris;
-            break;
-        case 11: // quadratic tetrahedron
-            addInGroup(m_tetrahedraGroups, tag, m_tetrahedra.size());
-            m_tetrahedra.push_back(Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
-            {
-                HighOrderEdgePosition hoep;
-                for (j = 0; j<6; ++j) {
-                    auto v0 = std::min(nodes[edgesInQuadraticTetrahedron[j][0]],
-                        nodes[edgesInQuadraticTetrahedron[j][1]]);
-                    auto v1 = std::max(nodes[edgesInQuadraticTetrahedron[j][0]],
-                        nodes[edgesInQuadraticTetrahedron[j][1]]);
-                    Edge e(v0, v1);
-                    if (edgeSet.find(e) == edgeSet.end()) {
-                        edgeSet.insert(e);
-                        m_edges.push_back(Edge(v0, v1));
-                        hoep[0] = nodes[j + 4];
-                        hoep[1] = m_edges.size() - 1;
-                        hoep[2] = 1;
-                        hoep[3] = 1;
-                        m_highOrderEdgePositions.push_back(hoep);
+                    ++nlines;
+                    break;
+                case 9: // Second order triangle
+                    addInGroup(m_trianglesGroups, elementTag, m_triangles.size());
+                    m_triangles.push_back(Triangle(nodes[0], nodes[1], nodes[2]));
+                    {
+                        HighOrderEdgePosition hoep;
+                        for (size_t j = 0; j < 3; ++j)
+                        {
+                            auto v0 = std::min(nodes[edgesInQuadraticTriangle[j][0]],
+                                nodes[edgesInQuadraticTriangle[j][1]]);
+                            auto v1 = std::max(nodes[edgesInQuadraticTriangle[j][0]],
+                                nodes[edgesInQuadraticTriangle[j][1]]);
+                            Edge e(v0, v1);
+                            if (edgeSet.find(e) == edgeSet.end())
+                            {
+                                edgeSet.insert(e);
+                                m_edges.push_back(Edge(v0, v1));
+                                hoep[0] = nodes[j + 3];
+                                hoep[1] = m_edges.size() - 1;
+                                hoep[2] = 1;
+                                hoep[3] = 1;
+                                m_highOrderEdgePositions.push_back(hoep);
+                            }
+                        }
                     }
+                    ++ntris;
+                    break;
+                case 11: // Second order tetrahedron
+                    addInGroup(m_tetrahedraGroups, elementTag, m_tetrahedra.size());
+                    m_tetrahedra.push_back(Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
+                    {
+                        HighOrderEdgePosition hoep;
+                        for (size_t j = 0; j < 6; ++j)
+                        {
+                            auto v0 = std::min(nodes[edgesInQuadraticTetrahedron[j][0]],
+                                nodes[edgesInQuadraticTetrahedron[j][1]]);
+                            auto v1 = std::max(nodes[edgesInQuadraticTetrahedron[j][0]],
+                                nodes[edgesInQuadraticTetrahedron[j][1]]);
+                            Edge e(v0, v1);
+                            if (edgeSet.find(e) == edgeSet.end())
+                            {
+                                edgeSet.insert(e);
+                                m_edges.push_back(Edge(v0, v1));
+                                hoep[0] = nodes[j + 4];
+                                hoep[1] = m_edges.size() - 1;
+                                hoep[2] = 1;
+                                hoep[3] = 1;
+                                m_highOrderEdgePositions.push_back(hoep);
+                            }
+                        }
+                    }
+                    ++ntetrahedra;
+                    break;
+                // default: if the type is not handled, nothing to be done
                 }
-            }
-            ++ntetrahedra;
-            break;
-        default:
-            //if the type is not handled, skip rest of the line
-            std::string tmp;
-            std::getline(file, tmp);
-        }
+            } // end of loop over the elements in one entity block
+        } //end of loop over the entity blocks
+
+        normalizeGroup(m_edgesGroups);
+        normalizeGroup(m_trianglesGroups);
+        normalizeGroup(m_tetrahedraGroups);
+        normalizeGroup(m_hexahedraGroups);
     }
-
-    normalizeGroup(m_edgesGroups);
-    normalizeGroup(m_trianglesGroups);
-    normalizeGroup(m_tetrahedraGroups);
-    normalizeGroup(m_hexahedraGroups);
 
     file >> cmd;
     if (cmd != "$ENDELM" && cmd != "$EndElements")
@@ -347,4 +590,3 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
 } // namespace helper
 
 } // namespace sofa
-

@@ -26,13 +26,7 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/fwd.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace topology
+namespace sofa::core::topology
 {
 
 /** A class that will interact on a topological Data */
@@ -185,8 +179,4 @@ protected:
     std::map < core::topology::TopologyChangeType, TopologyChangeCallback> m_callbackMap;
 };
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::core::topology

@@ -18,7 +18,7 @@
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <Node name="SquareGravity">
         <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver iterations="25" name="linear solver" />
+        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5" name="linear solver"/>
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true" />
         <MechanicalObject name="dofs" src="@loader" template="Vec3d" />
         <TriangleSetTopologyContainer name="Triangle_topo" src="@loader"/>

@@ -38,6 +38,8 @@ using namespace sofa::defaulttype;
 
 Creator<core::collision::Contact::Factory, RayContact<TetrahedronCollisionModel> > RayTetrahedronContactClass("ray",true);
 
+template class SOFA_MISC_COLLISION_API RayContact<TetrahedronCollisionModel>;
+
 } // namespace collision
 
 } // namespace component

@@ -20,7 +20,7 @@
 
     <Node name="M2">
         <EulerImplicitSolver name="odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver printLog="false" template="GraphScattered"/>
+        <CGLinearSolver template="GraphScattered" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <!-- The following exporter will warn that the matrix cannot be exported because the matrix is not assembled -->
         <GlobalSystemMatrixExporter exportEveryNumberOfSteps="1" filename="global_matrix_cg" printLog="true"/>
         <MechanicalObject />

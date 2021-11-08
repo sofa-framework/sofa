@@ -126,8 +126,18 @@ using namespace gpu::cuda;
 template<class TDataTypes>
 void CudaVisualModel< TDataTypes >::init()
 {
-    this->getContext()->get(state);
-    topology = this->getContext()->getMeshTopology();
+    Inherit1::init();
+
+    if (!state)
+    {
+        TState* getState;
+        this->getContext()->get(getState);
+        state.set(getState);
+    }
+    if (!topology)
+    {
+        topology = this->getContext()->getMeshTopology();
+    }
     updateVisual();
 }
 
