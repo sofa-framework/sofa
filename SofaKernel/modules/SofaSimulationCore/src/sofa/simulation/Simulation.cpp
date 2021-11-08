@@ -25,7 +25,6 @@
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/AnimateVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/CollisionVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/ResetVisitor.h>
@@ -34,11 +33,7 @@
 #include <sofa/simulation/WriteStateVisitor.h>
 #include <sofa/simulation/XMLPrintVisitor.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
-#include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
-#include <sofa/simulation/UpdateInternalDataVisitor.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
-#include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/CleanupVisitor.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
