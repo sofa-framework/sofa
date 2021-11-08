@@ -34,7 +34,7 @@ template<class DataTypes>
 class SingleStateAccessor : public virtual StateAccessor
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(SingleStateAccessor, DataTypes), StateAccessor);
+    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(SingleStateAccessor, DataTypes), StateAccessor);
 
     void init() override
     {

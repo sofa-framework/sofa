@@ -35,7 +35,7 @@ template<class DataTypes1, class DataTypes2 = DataTypes1>
 class PairStateAccessor : public virtual StateAccessor
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(PairStateAccessor, DataTypes1, DataTypes2), StateAccessor);
+    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(PairStateAccessor, DataTypes1, DataTypes2), StateAccessor);
 
     void init() override;
 

@@ -40,7 +40,7 @@ namespace sofa::core::behavior
 class StateAccessor : public virtual objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(StateAccessor, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(StateAccessor, objectmodel::BaseObject);
 
     /// Return a list of mechanical states to which this component is associated
     virtual const MultiLink<StateAccessor, BaseMechanicalState, BaseLink::FLAG_DUPLICATE>::Container& getMechanicalStates() const
