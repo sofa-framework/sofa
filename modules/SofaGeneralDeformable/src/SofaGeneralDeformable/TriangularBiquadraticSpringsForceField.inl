@@ -23,11 +23,8 @@
 
 #include <SofaGeneralDeformable/TriangularBiquadraticSpringsForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <fstream> // for reading the file
-#include <iostream> //for debugging
 #include <sofa/type/RGBAColor.h>
 #include <SofaBaseTopology/TopologyData.inl>
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 
 namespace sofa::component::forcefield
 {
