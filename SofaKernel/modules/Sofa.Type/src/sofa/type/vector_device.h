@@ -347,7 +347,7 @@ public:
 
     void invalidateHost()
     {
-        hostIsValid = 0;
+        hostIsValid = false;
         deviceIsValid = ALL_DEVICE_VALID;
     }
 
