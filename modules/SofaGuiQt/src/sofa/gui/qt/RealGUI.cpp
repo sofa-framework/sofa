@@ -2147,6 +2147,7 @@ void RealGUI::interactionGUI ( bool )
 //called at each step of the rendering
 void RealGUI::step()
 {
+    simulationGraph->Unfreeze();
     sofa::helper::AdvancedTimer::begin("Animate");
 
     Node* root = currentSimulation();
@@ -2211,6 +2212,8 @@ void RealGUI::step()
 #endif
 
     sofa::helper::AdvancedTimer::end("Animate");
+    
+    simulationGraph->Freeze();
 }
 
 //------------------------------------
