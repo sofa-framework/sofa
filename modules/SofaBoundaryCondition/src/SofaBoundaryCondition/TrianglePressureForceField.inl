@@ -144,7 +144,7 @@ void TrianglePressureForceField<DataTypes>::initTriangleInformation()
     const sofa::type::vector<Index>& my_map = trianglePressureMap.getMap2Elements();
     auto my_subset = sofa::helper::getWriteOnlyAccessor(trianglePressureMap);
 
-    const VecCoord x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     for (unsigned int i=0; i<my_map.size(); ++i)
     {

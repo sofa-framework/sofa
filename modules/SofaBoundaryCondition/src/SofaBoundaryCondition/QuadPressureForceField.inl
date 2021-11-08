@@ -126,7 +126,7 @@ void QuadPressureForceField<DataTypes>::initQuadInformation()
     const sofa::type::vector<Index>& my_map = quadPressureMap.getMap2Elements();
     auto my_subset = sofa::helper::getWriteOnlyAccessor(quadPressureMap);
 
-    const VecCoord x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     for (unsigned int i=0; i<my_map.size(); ++i)
     {

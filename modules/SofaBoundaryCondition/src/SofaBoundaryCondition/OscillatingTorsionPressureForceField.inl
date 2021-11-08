@@ -190,7 +190,7 @@ SReal OscillatingTorsionPressureForceField<DataTypes>::getPotentialEnergy(const 
 template<class DataTypes>
 void OscillatingTorsionPressureForceField<DataTypes>::initTriangleInformation()
 {
-    const VecCoord x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     int idx[3];
     Real d[10];
 
