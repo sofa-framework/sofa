@@ -89,8 +89,6 @@ private:
 
     bool isFinished();
 
-private:
-
     enum
     {
         Max_TasksPerThread = 256

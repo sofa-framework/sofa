@@ -42,7 +42,6 @@ namespace helper
 
 class SOFA_HELPER_API LCP
 {
-private:
     int maxConst;
     double* dfree;
     double** W;
@@ -136,7 +135,6 @@ public:
     void setPreviousForce(double &fn, double &ft, double &fs) {f_1[0]=fn; f_1[1]=ft; f_1[2]=fs;}
 
     bool computed;
-public:
 
     double w[6];
     double wInv[6];

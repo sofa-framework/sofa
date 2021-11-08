@@ -48,7 +48,6 @@ public:
     ColorMap(unsigned int paletteSize = 256, const std::string& colorScheme = "HSV");
     virtual ~ColorMap();
 
-public:
     template<class Real>
     class evaluator
     {
@@ -87,13 +86,13 @@ public:
     void init();
     void reinit();
     
-    unsigned int getPaletteSize() { return m_paletteSize;  }
+    unsigned int getPaletteSize() const { return m_paletteSize;  }
     void setPaletteSize(unsigned int paletteSize) { m_paletteSize = paletteSize; }
 
-    const std::string& getColorScheme() { return m_colorScheme;  }
+    const std::string& getColorScheme() const { return m_colorScheme;  }
     void setColorScheme(const std::string& colorScheme) { m_colorScheme = colorScheme; }
 
-    unsigned int getNbColors() { return (unsigned int) entries.size(); }
+    unsigned int getNbColors() const { return (unsigned int) entries.size(); }
     Color getColor(unsigned int i) {
         if (i < entries.size()) return entries[i];
         return Color(0.f, 0.f, 0.f, 0.f);

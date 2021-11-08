@@ -128,15 +128,15 @@ public:
     {
         std::ostringstream o;
         o << "Mat" << L << "x" << C;
-        if constexpr (std::is_same<float, real>::value)
+        if constexpr (std::is_same_v<float, real>)
         {
             o << "f";
         }
-        if constexpr (std::is_same<double, real>::value)
+        if constexpr (std::is_same_v<double, real>)
         {
             o << "d";
         }
-        if constexpr (std::is_same<int, real>::value)
+        if constexpr (std::is_same_v<int, real>)
         {
             o << "i";
         }

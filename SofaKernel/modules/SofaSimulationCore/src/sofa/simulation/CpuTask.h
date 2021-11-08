@@ -53,8 +53,6 @@ namespace sofa::simulation
         CpuTask::Status* getStatus(void) const override final;
 
 
-    public:
-
         CpuTask(CpuTask::Status* status, int scheduledThread = -1);
 
         virtual ~CpuTask();

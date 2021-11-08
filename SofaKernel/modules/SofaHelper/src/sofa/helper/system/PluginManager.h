@@ -215,7 +215,7 @@ private:
     PluginManager(const PluginManager& );
     std::ostream& writeToStream( std::ostream& ) const;
     std::istream& readFromStream( std::istream& );
-private:
+
     PluginMap m_pluginMap;
     std::map<std::string, std::function<void(const std::string&, const Plugin&)>> m_onPluginLoadedCallbacks;
 };
