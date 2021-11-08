@@ -253,18 +253,18 @@ void ExportDotVisitor::processObject(Node* /*node*/, core::objectmodel::BaseObje
     const char* color=nullptr;
     if (display(obj,&color))
     {
-        std::string name = getName(obj);
+        const std::string name = getName(obj);
         *out << name << " [shape=box,";
         if (color!=nullptr)
             *out << "style=\"filled\",fillcolor=\"" << color << "\",";
         *out << "label=\"";
         if (labelObjectClass)
         {
-            std::string name = helper::gettypename(typeid(*obj));
-            std::string::size_type pos = name.find('<');
+            std::string objTypename = helper::gettypename(typeid(*obj));
+            const std::string::size_type pos = objTypename.find('<');
             if (pos != std::string::npos)
-                name.erase(pos);
-            *out << name;
+                objTypename.erase(pos);
+            *out << objTypename;
             if (labelObjectName)
                 *out << "\\n";
         }
@@ -274,7 +274,7 @@ void ExportDotVisitor::processObject(Node* /*node*/, core::objectmodel::BaseObje
                 *out << obj->getName();
         }
         *out << "\"];" << std::endl;
-        std::string pname = getParentName(obj);
+        const std::string pname = getParentName(obj);
         if (!pname.empty())
         {
             *out << pname << " -> " << name;
