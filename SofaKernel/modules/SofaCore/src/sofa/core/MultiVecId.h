@@ -202,9 +202,7 @@ public:
         return *idMap_ptr;
     }
 
-    TMultiVecId()
-    {
-    }
+    TMultiVecId() = default;
 
     /// Copy from another VecId, possibly with another type of access, with the
     /// constraint that the access must be compatible (i.e. cannot create
@@ -468,9 +466,7 @@ public:
         return *idMap_ptr;
     }
 
-    TMultiVecId()
-    {
-    }
+    TMultiVecId() = default;
 
     /// Copy from another VecId, possibly with another type of access, with the
     /// constraint that the access must be compatible (i.e. cannot create
