@@ -43,7 +43,7 @@ namespace sofa
 namespace helper
 {
 
-const unsigned long RandomGenerator::RANDOM_BASE_MAX = 4294967295U;
+constexpr unsigned long RandomGenerator::RANDOM_BASE_MAX = 4294967295U;
 
 RandomGenerator::RandomGenerator()
 {
