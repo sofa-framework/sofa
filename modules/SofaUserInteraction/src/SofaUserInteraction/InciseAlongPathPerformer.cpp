@@ -168,7 +168,7 @@ void InciseAlongPathPerformer::PerformCompleteIncision()
     sofa::type::Vector3 dir = startBody.point - the_point;
     // - looking for triangle in this direction
     const auto& shell = startBody.body->getCollisionTopology()->getTrianglesAroundVertex(initialNbPoints);
-    auto triangleIDInShell = sofa::topology::getTriangleIDInDirection<SReal>(positions, startBody.body->getCollisionTopology()->getTriangles(), shell, initialNbPoints, dir);
+    auto triangleIDInShell = sofa::topology::getTriangleIDInDirection(positions, startBody.body->getCollisionTopology()->getTriangles(), shell, initialNbPoints, dir);
 
     if (triangleIDInShell == sofa::InvalidID)
     {
