@@ -19,18 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
 
-#include <sofa/geometry/config.h>
+#include <sofa/geometry/Quad.h>
 
-namespace sofa::geometry
+#include <sofa/type/fixed_array.h>
+#include <array>
+
+#include <gtest/gtest.h>
+
+namespace sofa
 {
 
-struct Pentahedron
+TEST(GeometryQuad_test, square_area3f_stdarray)
 {
-    static const sofa::Size NumberOfNodes = 6;
+    const std::array<float, 3> a{ -2.f, -2.f, 1.f };
+    const std::array<float, 3> b{ 6.f, -2.f, 1.f };
+    const std::array<float, 3> c{ 6.f, 6.f, 1.f };
+    const std::array<float, 3> d{ -2.f, 6.f, 1.f };
 
-    Pentahedron() = delete;
-};
+    const auto testArea = sofa::geometry::Quad::area(a, b, c, d);
+    const auto expectedArea = 8.f * 8.f;
+    EXPECT_FLOAT_EQ(testArea, expectedArea);
+}
 
-} // namespace sofa::geometry
+TEST(GeometryQuad_test, quad_area3f_stdarray)
+{
+    const std::array<float, 3> a{ 5.f, 0.f, 0.f };
+    const std::array<float, 3> b{ 0.f, 0.f, 2.f };
+    const std::array<float, 3> c{ 0.f, 4.f, 0.f };
+    const std::array<float, 3> d{ 5.f, 6.f, -3.f };
+
+    const auto testArea = sofa::geometry::Quad::area(a, b, c, d);
+    const auto expectedArea = 29.685856f;
+    EXPECT_FLOAT_EQ(testArea, expectedArea);
+}
+
+}// namespace sofa

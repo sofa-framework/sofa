@@ -104,6 +104,11 @@ public:
     {
         return elems;
     }
+    constexpr const_iterator cbegin() const noexcept
+    {
+        return elems;
+    }
+
     constexpr iterator end() noexcept
     {
         return elems+N;
@@ -111,6 +116,10 @@ public:
     constexpr const_iterator end() const noexcept
     {
         return elems+N;
+    }
+    constexpr const_iterator cend() const noexcept
+    {
+        return elems + N;
     }
 
     // operator[]

@@ -19,18 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
 
-#include <sofa/geometry/config.h>
+#include <sofa/geometry/Tetrahedron.h>
 
-namespace sofa::geometry
+#include <sofa/type/Vec.h>
+
+#include <gtest/gtest.h>
+
+namespace sofa
 {
 
-struct Pentahedron
+TEST(GeometryTetrahedron_test, volume2_vec3f)
 {
-    static const sofa::Size NumberOfNodes = 6;
+    const sofa::type::Vec3f a{ -1.f, 2.f, 0.f };
+    const sofa::type::Vec3f b{ 2.f, 1.f, -3.f };
+    const sofa::type::Vec3f c{ 1.f, 0.f, 1.f };
+    const sofa::type::Vec3f d{ 3.f, -2.f, 3.f };
 
-    Pentahedron() = delete;
-};
+    const auto testVolume = sofa::geometry::Tetrahedron::volume(a, b, c, d);
+    EXPECT_NEAR(testVolume, 2.f/3.f, 1e-5);
+}
 
-} // namespace sofa::geometry
+}// namespace sofa
