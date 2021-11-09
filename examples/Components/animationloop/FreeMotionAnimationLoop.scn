@@ -1,4 +1,10 @@
 <?xml version="1.0" ?>
+<!--
+WARNING: this scene uses a PrecomputedConstraintCorrection which has a heavy initialization step. It may take some time
+to load the scene. To cache the result, set the recompute Data of PrecomputedConstraintCorrection to false.
+To speed up the collision detection, replace BVHNarrowPhase by ParallelBVHNarrowPhase located in the MultiThreading plugin.
+-->
+
 <Node name="root" dt="0.01" gravity="0 981 0">
     <RequiredPlugin pluginName="SofaOpenglVisual"/>
     <RequiredPlugin pluginName='SofaConstraint'/> 
@@ -9,7 +15,7 @@
     <RequiredPlugin pluginName='SofaSimpleFem'/> 
 
     <VisualStyle displayFlags="showBehaviorModels"/>
-    <FreeMotionAnimationLoop/>
+    <FreeMotionAnimationLoop parallelCollisionDetectionAndFreeMotion="true"/>
     <LCPConstraintSolver tolerance="1e-3" maxIt="1000"/>
     <DefaultPipeline depth="6" verbose="0" draw="0"/>
     <BruteForceBroadPhase/>
@@ -36,7 +42,7 @@
         <UniformMass totalMass="0.2"/>
         <TetrahedronFEMForceField name="FEM" youngModulus="60000" poissonRatio="0.48" computeGlobalMatrix="false" method="polar"/>
         <!--<LinearSolverConstraintCorrection />-->
-        <PrecomputedConstraintCorrection rotations="true" recompute="1"/>
+        <PrecomputedConstraintCorrection rotations="true" recompute="true"/>
         <Node name="Visu">
             <MeshObjLoader name="meshLoader_2" filename="mesh/torus.obj" scale="5.0" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_2" color="red" dx="-12" dy="0" dz="0" rx="0" ry="0" rz="0"/>
