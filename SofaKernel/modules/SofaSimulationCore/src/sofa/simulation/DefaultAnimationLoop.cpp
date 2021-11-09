@@ -126,8 +126,8 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
 
     {
         AnimateEndEvent ev ( dt );
-        PropagateEventVisitor act ( params, &ev );
-        gnode->execute ( act );
+        PropagateEventVisitor propagateEventVisitor ( params, &ev );
+        gnode->execute ( propagateEventVisitor );
     }
 
     sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
@@ -135,8 +135,8 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
     gnode->execute< UpdateMappingVisitor >(params);
     {
         UpdateMappingEndEvent ev ( dt );
-        PropagateEventVisitor act ( params , &ev );
-        gnode->execute ( act );
+        PropagateEventVisitor propagateEventVisitor ( params , &ev );
+        gnode->execute ( propagateEventVisitor );
     }
     sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
 
