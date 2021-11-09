@@ -26,12 +26,11 @@
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
 
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
-
-#include "sofa/helper/ScopedAdvancedTimer.h"
 using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
