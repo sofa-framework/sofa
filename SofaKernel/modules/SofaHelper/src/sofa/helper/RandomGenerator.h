@@ -92,7 +92,7 @@ public:
     }
 
 private:
-	static const unsigned long RANDOM_BASE_MAX;
+	static constexpr unsigned long RANDOM_BASE_MAX = 4294967295U;
 
 };
 
