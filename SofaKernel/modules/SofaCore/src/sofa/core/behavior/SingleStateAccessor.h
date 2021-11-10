@@ -38,6 +38,8 @@ public:
 
     void init() override
     {
+        Inherit1::init();
+
         if (!mstate.get())
         {
             mstate.set(dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState()));

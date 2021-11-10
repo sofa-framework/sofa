@@ -76,6 +76,8 @@ protected:
 template <class DataTypes1, class DataTypes2>
 void PairStateAccessor<DataTypes1, DataTypes2>::init()
 {
+    Inherit1::init();
+
     if (!mstate1.get())
     {
         mstate1.set(dynamic_cast< MechanicalState<DataTypes1>* >(getContext()->getMechanicalState()));
