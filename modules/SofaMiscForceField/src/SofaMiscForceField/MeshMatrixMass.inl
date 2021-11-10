@@ -2274,7 +2274,7 @@ void MeshMatrixMass<DataTypes, MassType, GeometricalTypes>::draw(const core::vis
     const MassVector &vertexMass= d_vertexMass.getValue();
 
     const auto& x = m_geometryState->read(core::ConstVecCoordId::position())->getValue();
-    Vector3 gravityCenter;
+    type::Vector3 gravityCenter;
     Real totalMass=0.0;
 
     std::vector<  type::Vector3 > points;
@@ -2307,7 +2307,7 @@ void MeshMatrixMass<DataTypes, MassType, GeometricalTypes>::draw(const core::vis
         gravityCenter /= totalMass;
         for(unsigned int i=0 ; i<3 ; i++)
         {
-            Vector3 v, diff;
+            type::Vector3 v{};
             v[i] = d_showAxisSize.getValue();
             vertices.push_back(gravityCenter - v);
             vertices.push_back(gravityCenter + v);

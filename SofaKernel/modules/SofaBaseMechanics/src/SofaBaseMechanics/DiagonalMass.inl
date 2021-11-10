@@ -593,7 +593,7 @@ SReal DiagonalMass<DataTypes, MassType, GeometricalTypes>::getPotentialEnergy( c
     DataTypes::set ( theGravity, g[0], g[1], g[2]);
     for (unsigned int i=0; i<masses.size(); i++)
     {
-        e -= dot(theGravity, _x[i]) * masses[i];
+        e -= type::dot(theGravity, _x[i]) * masses[i];
     }
     return e;
 }
@@ -1595,7 +1595,7 @@ void DiagonalMass<DataTypes, MassType, GeometricalTypes>::draw(const core::visua
         return;
 
     const auto& x = m_geometryState->read(core::ConstVecCoordId::position())->getValue();
-    Vector3 gravityCenter;
+    type::Vector3 gravityCenter;
     Real totalMass=0.0;
 
     std::vector<  type::Vector3 > points;
