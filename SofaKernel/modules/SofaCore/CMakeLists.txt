@@ -79,10 +79,13 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/PairInteractionForceField.inl
     ${SRC_ROOT}/behavior/PairInteractionProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/PairInteractionProjectiveConstraintSet.inl
+    ${SRC_ROOT}/behavior/PairStateAccessor.h
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.inl
     ${SRC_ROOT}/behavior/RotationFinder.h
     ${SRC_ROOT}/behavior/RotationMatrix.h
+    ${SRC_ROOT}/behavior/StateAccessor.h
+    ${SRC_ROOT}/behavior/SingleStateAccessor.h
     ${SRC_ROOT}/behavior/fwd.h
     ${SRC_ROOT}/collision/BroadPhaseDetection.h
     ${SRC_ROOT}/collision/CollisionAlgorithm.h

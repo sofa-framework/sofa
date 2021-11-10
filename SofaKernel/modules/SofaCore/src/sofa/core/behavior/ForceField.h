@@ -25,6 +25,7 @@
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 
 namespace sofa::core::behavior
 {
@@ -41,10 +42,10 @@ namespace sofa::core::behavior
  *  ( df, given a displacement dx ).
  */
 template<class TDataTypes>
-class ForceField : public BaseForceField
+class ForceField : public BaseForceField, public SingleStateAccessor<TDataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(ForceField, TDataTypes), BaseForceField);
+    SOFA_CLASS2(SOFA_TEMPLATE(ForceField, TDataTypes), BaseForceField, SOFA_TEMPLATE(SingleStateAccessor, TDataTypes));
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Real             Real;
@@ -59,12 +60,6 @@ protected:
 
     ~ForceField() override;
 public:
-    void init() override;
-
-    /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes>* getMState() { return mstate.get(); }
-    const MechanicalState<DataTypes>* getMState() const { return mstate.get(); }
-
 
     /// @name Vector operations
     /// @{
@@ -208,9 +203,6 @@ public:
         sofa::helper::replaceAll(name, "ForceField", "FF");
         return name;
     }
-
-protected:
-    SingleLink<ForceField<DataTypes>,MechanicalState<DataTypes>,BaseLink::FLAG_STRONGLINK> mstate;
 
 };
 

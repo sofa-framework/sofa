@@ -47,10 +47,10 @@ Visitor::Result MechanicalVFreeVisitor<vtype>::fwdInteractionForceField(simulati
 {
     if( interactionForceField )
     {
-        core::behavior::BaseMechanicalState* mm = ff->getMechModel1();
-        mm->vFree( this->params, v.getId(mm) );
-        mm = ff->getMechModel2();
-        mm->vFree( this->params, v.getId(mm) );
+        for (auto* mm : ff->getMechanicalStates())
+        {
+            mm->vFree( this->params, v.getId(mm) );
+        }
     }
     return RESULT_CONTINUE;
 }

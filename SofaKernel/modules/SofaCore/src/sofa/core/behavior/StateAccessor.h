@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,18 +19,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_CORE_BEHAVIOR_PAIRINTERACTIONPROJECTIVECONSTRAINTSET_CPP
-#include <sofa/core/behavior/PairInteractionProjectiveConstraintSet.inl>
+#pragma once
+
+#include <sofa/core/config.h>
+
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
+
 
 namespace sofa::core::behavior
 {
 
-using namespace sofa::defaulttype;
-template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<Vec3Types>;
-template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<Vec2Types>;
-template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<Vec1Types>;
-template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<Rigid3Types>;
-template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<Rigid2Types>;
+/**
+ * Base class for components having access to one or more mechanical states, in order to read and/or write state variables.
+ * Example: force field, mass, constraints etc
+ *
+ * Those components store a list of BaseMechanicalState. It does not prevent them to store the same BaseMechanicalState
+ * as a derived type.
+ */
+class StateAccessor : public virtual objectmodel::BaseObject
+{
+public:
+    SOFA_ABSTRACT_CLASS(StateAccessor, objectmodel::BaseObject);
 
+    /// Return a list of mechanical states to which this component is associated
+    virtual const MultiLink<StateAccessor, BaseMechanicalState, BaseLink::FLAG_DUPLICATE>::Container& getMechanicalStates() const
+    {
+        return l_mechanicalStates.getValue();
+    }
+
+protected:
+
+    StateAccessor()
+        : Inherit1()
+        , l_mechanicalStates(initLink("mechanicalStates", "List of mechanical states to which this component is associated"))
+    {}
+
+    ~StateAccessor() override = default;
+
+    /// List of mechanical states to which this component is associated
+    /// The list can contain more than one mechanical states. In an interaction force field, for example.
+    MultiLink < StateAccessor, BaseMechanicalState, BaseLink::FLAG_DUPLICATE > l_mechanicalStates;
+
+};
 
 } // namespace sofa::core::behavior

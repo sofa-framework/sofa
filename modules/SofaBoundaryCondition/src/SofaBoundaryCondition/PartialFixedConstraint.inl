@@ -61,14 +61,6 @@ PartialFixedConstraint<DataTypes>::~PartialFixedConstraint()
     //Parent class FixedConstraint already destruct : pointHandler and data
 }
 
-
-template <class DataTypes>
-void PartialFixedConstraint<DataTypes>::init()
-{
-    this->Inherited::init();
-}
-
-
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::reinit()
 {

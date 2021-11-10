@@ -19,17 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BaseInteractionForceField.h"
+#include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 
-namespace sofa
+namespace sofa::core::behavior
 {
 
-namespace core
+BaseMechanicalState* BaseInteractionForceField::getMechModel1()
 {
+    return l_mechanicalStates[0];
+}
 
-namespace behavior
+BaseMechanicalState* BaseInteractionForceField::getMechModel2()
 {
+    return l_mechanicalStates[1];
+}
 
 bool BaseInteractionForceField::insertInNode( objectmodel::BaseNode* node )
 {
@@ -43,10 +47,5 @@ bool BaseInteractionForceField::removeInNode( objectmodel::BaseNode* node )
     return true;
 }
 
-
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::behavior
 

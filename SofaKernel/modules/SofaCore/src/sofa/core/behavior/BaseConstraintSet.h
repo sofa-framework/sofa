@@ -19,21 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_BASECONSTRAINTSET_H
-#define SOFA_CORE_BEHAVIOR_BASECONSTRAINTSET_H
+#pragma once
 
 
 #include <sofa/core/config.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/MultiVecId.h>
-namespace sofa
-{
 
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 class SOFA_CORE_API BaseConstraintSet : public virtual objectmodel::BaseObject
@@ -106,10 +100,4 @@ public:
 
 };
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

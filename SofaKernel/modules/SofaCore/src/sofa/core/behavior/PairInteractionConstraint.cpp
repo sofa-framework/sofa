@@ -20,15 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_CORE_BEHAVIOR_PAIRINTERACTIONCONSTRAINT_CPP
-#include "PairInteractionConstraint.inl"
+#include <sofa/core/behavior/PairInteractionConstraint.inl>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 using namespace sofa::defaulttype;
@@ -40,8 +34,4 @@ template class SOFA_CORE_API PairInteractionConstraint<Rigid3Types>;
 template class SOFA_CORE_API PairInteractionConstraint<Rigid2Types>;
 
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::behavior

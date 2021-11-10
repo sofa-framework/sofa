@@ -19,21 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_PAIRINTERACTIONCONSTRAINT_H
-#define SOFA_CORE_BEHAVIOR_PAIRINTERACTIONCONSTRAINT_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <sofa/core/behavior/BaseInteractionConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/PairStateAccessor.h>
 
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /**
@@ -43,10 +37,10 @@ namespace behavior
  *  between a pair of bodies using a given type of DOFs.
  */
 template<class TDataTypes>
-class PairInteractionConstraint : public BaseInteractionConstraint
+class PairInteractionConstraint : public BaseInteractionConstraint, public PairStateAccessor<TDataTypes>
 {
 public:
-    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(PairInteractionConstraint,TDataTypes), BaseInteractionConstraint);
+    SOFA_ABSTRACT_CLASS2(SOFA_TEMPLATE(PairInteractionConstraint,TDataTypes), BaseInteractionConstraint, SOFA_TEMPLATE2(PairStateAccessor,TDataTypes,TDataTypes));
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -60,22 +54,12 @@ public:
     typedef core::objectmodel::Data<VecDeriv>		DataVecDeriv;
     typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
 protected:
-    PairInteractionConstraint(MechanicalState<DataTypes> *mm1 = nullptr, MechanicalState<DataTypes> *mm2 = nullptr);
+    explicit PairInteractionConstraint(MechanicalState<DataTypes> *mm1 = nullptr, MechanicalState<DataTypes> *mm2 = nullptr);
 
     ~PairInteractionConstraint() override;
 public:
     Data<SReal> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
     virtual bool isActive() const; ///< if false, the constraint does nothing
-
-    void init() override;
-
-    /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes>* getMState1() { return mstate1; }
-    BaseMechanicalState* getMechModel1() override { return mstate1; }
-    /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes>* getMState2() { return mstate2; }
-    BaseMechanicalState* getMechModel2() override { return mstate2; }
-
 
     using BaseConstraintSet::getConstraintViolation;
     /// Construct the Constraint violations vector of each constraint
@@ -166,10 +150,10 @@ public:
         return obj;
     }
 
-protected:
-    SingleLink<PairInteractionConstraint<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;
-    SingleLink<PairInteractionConstraint<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
+    using Inherit2::getMechModel1;
+    using Inherit2::getMechModel2;
 
+protected:
     void storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& res1, Data<VecDeriv>& res2, const Data<MatrixDeriv>& j1, const Data<MatrixDeriv>& j2,
                                const sofa::defaulttype::BaseVector* lambda);
 };
@@ -184,10 +168,4 @@ extern template class SOFA_CORE_API PairInteractionConstraint<defaulttype::Rigid
 
 #endif
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

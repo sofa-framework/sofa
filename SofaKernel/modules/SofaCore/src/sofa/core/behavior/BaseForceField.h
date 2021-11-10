@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/core/config.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/behavior/StateAccessor.h>
 #include <sofa/core/MultiVecId.h>
 
 namespace sofa::core::behavior { class MultiMatrixAccessor; }
@@ -45,18 +45,18 @@ namespace sofa::core::behavior
  *  ( df, given a displacement dx ).
  *
  */
-class SOFA_CORE_API BaseForceField : public virtual objectmodel::BaseObject
+class SOFA_CORE_API BaseForceField : public virtual StateAccessor
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseForceField, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseForceField, StateAccessor);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseForceField)
 protected:
     BaseForceField();
     ~BaseForceField() override = default;
 	
 private:
-	BaseForceField(const BaseForceField& n) ;
-	BaseForceField& operator=(const BaseForceField& n) ;	
+	BaseForceField(const BaseForceField& n) = delete;
+	BaseForceField& operator=(const BaseForceField& n) = delete;
 
 	
 public:

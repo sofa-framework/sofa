@@ -19,18 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_BASEANIMATIONLOOP_H
-#define SOFA_CORE_BEHAVIOR_BASEANIMATIONLOOP_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /**
@@ -44,7 +37,6 @@ namespace behavior
  *  certainly change soon.
  *
  */
-
 class SOFA_CORE_API BaseAnimationLoop : public virtual objectmodel::BaseObject
 {
 
@@ -65,8 +57,8 @@ protected:
 	
 	
 private:
-	BaseAnimationLoop(const BaseAnimationLoop& n) ;
-	BaseAnimationLoop& operator=(const BaseAnimationLoop& n) ;
+	BaseAnimationLoop(const BaseAnimationLoop& n) = delete ;
+	BaseAnimationLoop& operator=(const BaseAnimationLoop& n) = delete ;
 
 public:
     /// Main computation method.
@@ -83,10 +75,4 @@ public:
 
 };
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif /* SOFA_CORE_BEHAVIOR_BASEANIMATIONLOOP_H */
+} // namespace sofa::core::behavior

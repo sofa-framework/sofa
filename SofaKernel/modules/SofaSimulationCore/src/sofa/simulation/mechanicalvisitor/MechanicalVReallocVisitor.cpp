@@ -52,10 +52,10 @@ Visitor::Result MechanicalVReallocVisitor<vtype>::fwdInteractionForceField(simul
 {
     if (m_interactionForceField)
     {
-        core::behavior::BaseMechanicalState* mm = ff->getMechModel1();
-        mm->vRealloc( this->params, this->getId(mm) );
-        mm = ff->getMechModel2();
-        mm->vRealloc( this->params, this->getId(mm) );
+        for (auto* mm : ff->getMechanicalStates())
+        {
+            mm->vRealloc( this->params, this->getId(mm) );
+        }
     }
 
     return RESULT_CONTINUE;
