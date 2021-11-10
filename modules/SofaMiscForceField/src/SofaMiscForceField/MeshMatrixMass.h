@@ -37,7 +37,7 @@
 namespace sofa::component::mass
 {
 
-template<class DataTypes, class TMassType>
+template<class DataTypes, class TMassType, class GeometricalTypes>
 class MeshMatrixMassInternalData
 {
 public:
@@ -45,16 +45,14 @@ public:
 
     /// In case of non 3D template
     typedef type::Vec<3,Real> Vec3;
-    /// assumes the geometry object type is 3D
-    typedef defaulttype::StdVectorTypes< Vec3, Vec3, Real > GeometricalTypes;
 };
 
 
-template <class DataTypes, class TMassType>
+template <class DataTypes, class TMassType, class GeometricalTypes = DataTypes>
 class MeshMatrixMass : public core::behavior::Mass<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(MeshMatrixMass,DataTypes,TMassType), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE3(MeshMatrixMass,DataTypes,TMassType,GeometricalTypes), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
 
     typedef core::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord                    VecCoord;
@@ -69,8 +67,6 @@ public:
     typedef type::vector<MassVector>                      MassVectorVector;
 
     using Index = sofa::Index;
-
-    typedef typename MeshMatrixMassInternalData<DataTypes,TMassType>::GeometricalTypes GeometricalTypes;
 
     /// @name Data of mass information
     /// @{
@@ -99,8 +95,8 @@ public:
     Data< std::map < std::string, sofa::type::vector<double> > > f_graph; ///< Graph of the controlled potential
 
     /// Link to be set to the topology container in the component graph.
-    SingleLink<MeshMatrixMass<DataTypes, TMassType>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-
+    SingleLink<MeshMatrixMass<DataTypes, TMassType, GeometricalTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    
 protected:
 
     /// The type of topology to build the mass from the topology
@@ -115,8 +111,8 @@ protected:
     void massInitialization();
 
     /// Internal data required for Cuda computation (copy of vertex mass for deviceRead)
-    MeshMatrixMassInternalData<DataTypes, MassType> data;
-    friend class MeshMatrixMassInternalData<DataTypes, MassType>;
+    MeshMatrixMassInternalData<DataTypes, MassType, GeometricalTypes> data;
+    friend class MeshMatrixMassInternalData<DataTypes, MassType, GeometricalTypes>;
 
 
 public:
@@ -359,14 +355,19 @@ protected:
     void applyEdgeMassHexahedronDestruction(const sofa::type::vector<Index>& /*indices*/);
 
 
+    /// Pointer to the topology container. Will be set by link @sa l_topology
     sofa::core::topology::BaseMeshTopology* m_topology;
+    /// Pointer to the state owning geometrical positions, associated with the topology
+    typename sofa::core::behavior::MechanicalState<GeometricalTypes>::SPtr m_geometryState;
 };
 
 #if  !defined(SOFA_COMPONENT_MASS_MESHMATRIXMASS_CPP)
-extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec3Types,defaulttype::Vec3Types::Real>;
-extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec2Types,defaulttype::Vec2Types::Real>;
-extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec1Types,defaulttype::Vec1Types::Real>;
-
+extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec3Types, defaulttype::Vec3Types::Real>;
+extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec2Types, defaulttype::Vec2Types::Real>;
+extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec2Types, defaulttype::Vec2Types::Real, defaulttype::Vec3Types>;
+extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec1Types, defaulttype::Vec1Types::Real>;
+extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec1Types, defaulttype::Vec1Types::Real, defaulttype::Vec3Types>;
+extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec1Types, defaulttype::Vec1Types::Real, defaulttype::Vec2Types>;
 #endif
 
 } // namespace sofa::component::mass

@@ -73,15 +73,20 @@ Vector6 MeshMatrixMass<Vec3Types, double>::getMomentum ( const core::MechanicalP
 
 // Register in the Factory
 int MeshMatrixMassClass = core::RegisterObject("Define a specific mass for each particle")
-        .add< MeshMatrixMass<Vec3Types,Vec3Types::Real> >()
-        .add< MeshMatrixMass<Vec2Types,Vec2Types::Real> >()
-        .add< MeshMatrixMass<Vec1Types,Vec1Types::Real> >()
-
+        .add< MeshMatrixMass<Vec3Types, Vec3Types::Real> >()
+        .add< MeshMatrixMass<Vec2Types, Vec2Types::Real> >()
+        .add< MeshMatrixMass<Vec2Types, Vec2Types::Real, Vec3Types> >()
+        .add< MeshMatrixMass<Vec1Types, Vec1Types::Real> >()
+        .add< MeshMatrixMass<Vec1Types, Vec1Types::Real, Vec3Types> >()
+        .add< MeshMatrixMass<Vec1Types, Vec1Types::Real, Vec2Types> >()
         ;
 
-template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<Vec3Types,Vec3Types::Real>;
-template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<Vec2Types,Vec2Types::Real>;
-template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<Vec1Types,Vec1Types::Real>;
+template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<Vec3Types, Vec3Types::Real>;
+template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<Vec2Types, Vec2Types::Real>;
+template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<Vec2Types, Vec2Types::Real, Vec3Types>;
+template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<Vec1Types, Vec1Types::Real>;
+template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<Vec1Types, Vec1Types::Real, Vec3Types>;
+template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<Vec1Types, Vec1Types::Real, Vec2Types>;
 
 
 
