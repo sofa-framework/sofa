@@ -180,7 +180,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::init()
     }
 
     /// Initialize all the diffusion coefficients (for tetras) to the value given by the user.
-    sofa::type::vector<Real>& tetraDiff = *(d_tetraDiffusionCoefficient.beginEdit());
+    auto tetraDiff = sofa::helper::getWriteOnlyAccessor(d_tetraDiffusionCoefficient);
     loadedDiffusivity = false;
 
     /// case no potential vector input
@@ -202,7 +202,6 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::init()
 
         msg_info() << "diffusion coefficient is loaded per tetra";
     }
-    d_tetraDiffusionCoefficient.endEdit();
 
     /// Get the mechanical object containing the mesh position in 3D
     Tag mechanicalTag(d_tagMeshMechanics.getValue());
