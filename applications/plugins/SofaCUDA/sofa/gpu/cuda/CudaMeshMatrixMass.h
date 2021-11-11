@@ -35,15 +35,12 @@ namespace mass
 using namespace sofa::gpu::cuda;
 using namespace sofa::component::mass;
 
-template<>
-class MeshMatrixMassInternalData<CudaVec3fTypes,float>
+template<class GeometricalTypes>
+class MeshMatrixMassInternalData<CudaVec3fTypes,float, GeometricalTypes>
 {
 public:
     /// Cuda vector copying the vertex mass (enabling deviceRead)
     CudaVector<float> vMass;
-
-    /// assumes the geometry object type is 3D
-    typedef CudaVec3fTypes GeometricalTypes ;
 };
 
 template<>
@@ -61,15 +58,12 @@ void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes, float>::accFromF(const core
 
 
 
-template<>
-class MeshMatrixMassInternalData<CudaVec2fTypes,float>
+template<class GeometricalTypes>
+class MeshMatrixMassInternalData<CudaVec2fTypes,float, GeometricalTypes>
 {
 public:
     /// Cuda vector copying the vertex mass (enabling deviceRead)
     CudaVector<float> vMass;
-
-    /// assumes the geometry object type is 3D
-    typedef CudaVec3fTypes GeometricalTypes ;
 };
 
 template<>
@@ -87,15 +81,13 @@ void MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>::accFromF(const core
 
 
 
-template<>
-class MeshMatrixMassInternalData<CudaVec1fTypes,float>
+template<class GeometricalTypes>
+class MeshMatrixMassInternalData<CudaVec1fTypes,float, GeometricalTypes>
 {
 public:
     /// Cuda vector copying the vertex mass (enabling deviceRead)
     CudaVector<float> vMass;
 
-    /// assumes the geometry object type is 3D
-    typedef CudaVec3fTypes GeometricalTypes ;
 };
 
 template<>
@@ -112,14 +104,20 @@ void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>::accFromF(const core
 
 
 #ifndef SOFA_GPU_CUDA_CUDAMESHMATRIXMASS_CPP
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes, float>;
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>;
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>;
+extern template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes, float>;
+extern template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>;
+extern template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float, sofa::gpu::cuda::CudaVec3fTypes>;
+extern template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>;
+extern template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float sofa::gpu::cuda::CudaVec3fTypes>;
+extern template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float sofa::gpu::cuda::CudaVec2fTypes>;
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec3dTypes, double>;
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec2dTypes, double>;
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1dTypes, double>;
+extern template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec3dTypes, double>;
+extern template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec2dTypes, double>;
+extern template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec2dTypes, double, sofa::gpu::cuda::CudaVec3dTypes>;
+extern template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1dTypes, double>;
+extern template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1dTypes, double, sofa::gpu::cuda::CudaVec3dTypes>;
+extern template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1dTypes, double, sofa::gpu::cuda::CudaVec2dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 #endif //SOFA_GPU_CUDA_CUDAMESHMATRIXMASS_CPP

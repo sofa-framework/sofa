@@ -35,24 +35,20 @@ namespace mass
 using namespace sofa::gpu::cuda;
 
 template<>
-class DiagonalMassInternalData<CudaVec3Types,float>
+class DiagonalMassInternalData<CudaVec3Types,float, CudaVec3Types>
 {
 public :
     typedef sofa::component::topology::PointData<CudaVector<float> > VecMass;
     typedef CudaVector<float> MassVector;
-
-    typedef CudaVec3fTypes GeometricalTypes ; /// assumes the geometry object type is 3D
 };
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 template<>
-class DiagonalMassInternalData<CudaVec3dTypes,double>
+class DiagonalMassInternalData<CudaVec3dTypes,double, CudaVec3dTypes>
 {
 public :
     typedef sofa::component::topology::PointData<CudaVector<double> > VecMass;
     typedef CudaVector<double> MassVector;
-
-    typedef CudaVec3dTypes GeometricalTypes ; /// assumes the geometry object type is 3D
 };
 #endif
 

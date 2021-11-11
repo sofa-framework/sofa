@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDAMESHMATRIXMASS_CPP
 #define SOFA_GPU_CUDA_CUDAMESHMATRIXMASS_CPP
 
 #include <sofa/gpu/cuda/CudaMeshMatrixMass.inl>
@@ -48,12 +47,18 @@ namespace mass
 
 template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes, float>;
 template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>;
+template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float, sofa::gpu::cuda::CudaVec3fTypes>;
 template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>;
+template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float, sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float, sofa::gpu::cuda::CudaVec2fTypes>;
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec3dTypes, double>;
 template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec2dTypes, double>;
+template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec2dTypes, double, sofa::gpu::cuda::CudaVec3dTypes>;
 template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1dTypes, double>;
+template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1dTypes, double, sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1dTypes, double, sofa::gpu::cuda::CudaVec2dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 
@@ -70,11 +75,17 @@ namespace cuda
 int MeshMatrixMassClassCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::mass::MeshMatrixMass<CudaVec3fTypes, float > >(true)
         .add< component::mass::MeshMatrixMass<CudaVec2fTypes, float > >()
+        .add< component::mass::MeshMatrixMass<CudaVec2fTypes, float, CudaVec3fTypes > >()
         .add< component::mass::MeshMatrixMass<CudaVec1fTypes, float > >()
+        .add< component::mass::MeshMatrixMass<CudaVec1fTypes, float, CudaVec3fTypes > >()
+        .add< component::mass::MeshMatrixMass<CudaVec1fTypes, float, CudaVec2fTypes > >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< component::mass::MeshMatrixMass<CudaVec3dTypes, double > >()
         .add< component::mass::MeshMatrixMass<CudaVec2dTypes, double > >()
+        .add< component::mass::MeshMatrixMass<CudaVec2dTypes, double, CudaVec3dTypes > >()
         .add< component::mass::MeshMatrixMass<CudaVec1dTypes, double > >()
+        .add< component::mass::MeshMatrixMass<CudaVec1dTypes, double, CudaVec3dTypes > >()
+        .add< component::mass::MeshMatrixMass<CudaVec1dTypes, double, CudaVec2dTypes > >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
@@ -83,6 +94,3 @@ int MeshMatrixMassClassCudaClass = core::RegisterObject("Supports GPU-side compu
 } // namespace gpu
 
 } // namespace sofa
-
-#endif //SOFA_GPU_CUDA_CUDAMESHMATRIXMASS_CPP
-
