@@ -966,6 +966,8 @@ using sofa::core::topology::TopologyElementType;
 template <class DataTypes, class MassType, class GeometricalTypes>
 void MeshMatrixMass<DataTypes, MassType, GeometricalTypes>::init()
 {
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+
     m_massLumpingCoeff = 0.0;
 
     Inherited::init();
@@ -973,7 +975,6 @@ void MeshMatrixMass<DataTypes, MassType, GeometricalTypes>::init()
     TopologyElementType topoType = checkTopology();
     if(topoType == TopologyElementType::POINT)
     {
-        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
     initTopologyHandlers(topoType);
@@ -992,6 +993,9 @@ void MeshMatrixMass<DataTypes, MassType, GeometricalTypes>::init()
 
     //Function for GPU-CUDA version only
     this->copyVertexMass();
+
+    //everything has been initialized so mark the component in a valid state
+    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
 
 
