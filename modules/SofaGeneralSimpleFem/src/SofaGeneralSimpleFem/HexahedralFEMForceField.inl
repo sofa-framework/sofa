@@ -92,7 +92,7 @@ void HexahedralFEMForceField<DataTypes>::init()
         return;
     }
 
-    if (_topology->getTopologyType() != sofa::core::topology::TopologyElementType::TETRAHEDRON)
+    if (_topology->getHexahedra().empty())
     {
         msg_error() << "Object must have a Topology with hexahedra.";
         sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);

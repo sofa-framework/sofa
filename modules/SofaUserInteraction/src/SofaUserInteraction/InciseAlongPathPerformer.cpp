@@ -223,7 +223,7 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
     sofa::core::topology::BaseMeshTopology* topoCon;
     firstBody.body->getContext()->get(topoCon);
 
-    if (!topoCon || topoCon->getTopologyType() != sofa::core::topology::TopologyElementType::TRIANGLE)
+    if (!topoCon || topoCon->getTriangles().empty())
         return;
 
     // Output declarations
