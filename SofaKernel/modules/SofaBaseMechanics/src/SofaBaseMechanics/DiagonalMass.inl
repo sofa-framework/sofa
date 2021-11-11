@@ -812,12 +812,11 @@ bool DiagonalMass<DataTypes, MassType, GeometricalTypes>::checkTopology()
 template <class DataTypes, class MassType, class GeometricalTypes>
 void DiagonalMass<DataTypes, MassType, GeometricalTypes>::init()
 {
-    this->d_componentState.setValue(ComponentState::Valid);
+    this->d_componentState.setValue(ComponentState::Invalid);
 
     if (!d_fileMass.getValue().empty())
     {
         if(!load(d_fileMass.getFullPath().c_str())){
-            this->d_componentState.setValue(ComponentState::Invalid);
             return;
         }
         msg_warning() << "File given as input for DiagonalMass, in this a case:" << msgendl
@@ -827,12 +826,12 @@ void DiagonalMass<DataTypes, MassType, GeometricalTypes>::init()
     }
     else
     {
+        Inherited::init();
+
         if(!checkTopology())
         {
-            this->d_componentState.setValue(ComponentState::Invalid);
             return;
         }
-        Inherited::init();
         initTopologyHandlers();
 
         // TODO(dmarchal 2018-11-10): this code is duplicated with the one in RigidImpl we should factor it (remove in 1 year if not done or update the dates)
@@ -852,6 +851,7 @@ void DiagonalMass<DataTypes, MassType, GeometricalTypes>::init()
         this->trackInternalData(d_massDensity);
         this->trackInternalData(d_totalMass);
     }
+
     this->d_componentState.setValue(ComponentState::Valid);
 }
 
