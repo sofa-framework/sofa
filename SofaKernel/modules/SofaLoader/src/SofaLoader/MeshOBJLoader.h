@@ -79,4 +79,5 @@ public:
     virtual std::string type() { return "The format of this mesh is OBJ."; }
 };
 
+
 } // namespace sofa::component::loader

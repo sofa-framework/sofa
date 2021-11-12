@@ -87,7 +87,6 @@ set(HEADER_FILES
     ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologySubsetData.h
     ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologySubsetData.inl
     ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologySubsetIndices.h
-    ${SOFACOMPATSRC_ROOT}/SofaLoader/MeshObjLoader.h
 
 )
 
