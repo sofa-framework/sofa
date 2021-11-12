@@ -1191,6 +1191,7 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
     if (!f_drawing.getValue()) return;
+    if (!m_topology) return;
 
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
