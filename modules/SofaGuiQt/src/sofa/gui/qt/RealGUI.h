@@ -247,6 +247,7 @@ public:
     void setViewerResolution(int w, int h) override;
     void setFullScreen() override { setFullScreen(true); }
     virtual void setFullScreen(bool enable);
+    void centerWindow() override;
     void setBackgroundColor(const sofa::type::RGBAColor& c) override;
     virtual void setBackgroundImage(const std::string& i) override;
     void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* viewerConf) override;
