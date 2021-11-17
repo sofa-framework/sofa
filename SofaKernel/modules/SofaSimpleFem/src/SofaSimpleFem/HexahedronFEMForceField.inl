@@ -127,7 +127,7 @@ void HexahedronFEMForceField<DataTypes>::init()
     }
 
 
-    if ( m_topology->getTopologyType() != sofa::core::topology::TopologyElementType::HEXAHEDRON )
+    if ( m_topology->getNbHexahedra() <= 0 )
     {
         msg_error() << "Object must have a hexahedric MeshTopology." << msgendl
                     << " name: " << m_topology->getName() << msgendl
