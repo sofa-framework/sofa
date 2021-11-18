@@ -10,9 +10,13 @@
 
     <RequiredPlugin name='BeamPlastic'/>
 
+    <DefaultAnimationLoop />
+
     <VisualStyle displayFlags="showBehaviorModels showForceFields" /> <!-- showCollisionModels -->
+    <DefaultVisualManagerLoop />
     <DefaultPipeline depth="6" verbose="0" draw="0" />
-    <BruteForceDetection name="N2" />
+    <BruteForceBroadPhase />
+    <BVHNarrowPhase />
     <MinProximityIntersection name="Proximity" alarmDistance="5e-5" contactDistance="2.5e-5" />
     <DefaultContactManager name="Response" response="default" />
 
@@ -22,8 +26,8 @@
         <MechanicalObject template="Rigid3d" name="DOFs" position="0 0 0 0 0 0 1  5e-4 0 0 0 0 0 1  1e-3 0 0 0 0 0 1" />
         <MeshTopology name="lines" lines="0 1 1 2" />
         <FixedConstraint name="FixedConstraint" indices="0" />
-        <UniformMass totalMass="3e-6" printLog="false" showAxisSizeFactor="5e-5" />
-        <BeamPlasticFEMForceField name="FEM" poissonRatio="0.3" youngModulus="2.03e11" yieldStress="4.80e8"
+        <UniformMass totalMass="1e-3" printLog="false" showAxisSizeFactor="5e-5" />
+        <BeamPlasticFEMForceField name="FEM" poissonRatio="0.3" youngModulus="2.03e11" initialYieldStress="4.80e8"
                                   zSection="5e-5" ySection="5e-5"
                                   usePrecomputedStiffness="false"
                                   useConsistentTangentOperator="false"
@@ -42,5 +46,5 @@
         </Node>
     </Node>
 
-    
+
 </Node>
