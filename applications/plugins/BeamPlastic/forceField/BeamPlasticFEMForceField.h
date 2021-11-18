@@ -44,10 +44,11 @@ using sofa::component::topology::TopologyDataHandler;
 using core::topology::BaseMeshTopology;
 using sofa::component::topology::EdgeData;
 using sofa::plugin::beamplastic::component::constitutivelaw::PlasticConstitutiveLaw;
-using sofa::defaulttype::Vec;
-using sofa::defaulttype::Mat;
-using sofa::helper::vector;
-using sofa::helper::fixed_array;
+using type::Vec;
+using type::Mat;
+using type::Vector3;
+using type::Quat;
+
 
 /** \class BeamPlasticFEMForceField
  *  \brief Compute Finite Element forces based on 6D plastic beam elements.
@@ -80,9 +81,8 @@ public:
 
     typedef unsigned int Index;
     typedef core::topology::BaseMeshTopology::Edge Element;
-    typedef sofa::helper::vector<core::topology::BaseMeshTopology::Edge> VecElement;
-    typedef helper::vector<unsigned int> VecIndex;
-    typedef sofa::helper::types::RGBAColor RGBAColor;
+    typedef type::vector<core::topology::BaseMeshTopology::Edge> VecElement;
+    typedef sofa::type::RGBAColor RGBAColor;
 
     typedef Vec<3, Real> Vec3;
     typedef Vec<9, Real> Vec9;
@@ -230,14 +230,14 @@ protected:
         ozp::quadrature::detail::Interval<3> _integrationInterval;
 
         /// Shape function matrices, evaluated in each Gauss point used in reduced integration.
-        fixed_array<EigenMat3x12, 27> _N;
+        Vec<27, EigenMat3x12> _N;
         // TO DO : define the "27" constant properly ! static const ? ifdef global definition ?
 
         /// Derivatives of the shape function matrices in _N, also evaluated in each Gauss point
-        fixed_array<EigenMat6x12, 27> _BeMatrices;
+        Vec<27, EigenMat6x12> _BeMatrices;
 
         /// Mechanical states (elastic, plastic, or postplastic) of all gauss points in the beam element.
-        fixed_array<MechanicalState, 27> _pointMechanicalState;
+        Vec<27, MechanicalState> _pointMechanicalState;
         /**
          * Indicates which type of mechanical computation should be used.
          * The meaning of the three cases is the following :
@@ -250,18 +250,18 @@ protected:
         //---------- Plastic variables ----------//
 
         /// History of plastic strain, one tensor for each Gauss point in the element.
-        fixed_array<Eigen::Matrix<double, 6, 1>, 27> _plasticStrainHistory;
+        Vec<27, Eigen::Matrix<double, 6, 1>> _plasticStrainHistory;
         /**
          * Effective plastic strain, for each Gauss point in the element.
          * The effective plastic strain is only used to compute the tangent
          * modulus if it is not constant.
          */
-        fixed_array<Real, 27> _effectivePlasticStrains;
+        Vec<27, Real> _effectivePlasticStrains;
 
         /// Tensor representing the yield surface centre, one for each Gauss point in the element.
-        fixed_array<Eigen::Matrix<double, 6, 1>, 27> _backStresses;
+        Vec<27, Eigen::Matrix<double, 6, 1>> _backStresses;
         /// Yield threshold, one for each Gauss point in the element.
-        fixed_array<Real, 27> _localYieldStresses;
+        Vec<27, Real> _localYieldStresses;
 
         //---------- Visualisation ----------//
 
@@ -269,9 +269,9 @@ protected:
         int _nbCentrelineSeg = 10;
 
         /// Precomputation of the shape functions matrices for each centreline point coordinates.
-        fixed_array<EigenMat3x12, 9> _drawN; //TO DO: allow parameterisation of the number of segments
-                                                      //       which discretise the centreline (here : 10)
-                                                      // NB: we use 9 shape functions because extremity points are known
+        Vec<9, EigenMat3x12> _drawN; //TO DO: allow parameterisation of the number of segments
+                                     //       which discretise the centreline (here : 10)
+                                     // NB: we use 9 shape functions because extremity points are known
 
         /*********************************************************************/
 
@@ -287,7 +287,7 @@ protected:
         double _A; ///< Cross-sectional area
         Matrix12x12 _k_loc; ///< Precomputed stiffness matrix, used only for elastic deformation if d_usePrecomputedStiffness = true
 
-        defaulttype::Quat quat; // TO DO : supress ? Apparently it is not used effectively in the computation, only updated
+        type::Quat<SReal> quat;
 
         /// Initialisation of BeamInfo members from constructor parameters
         void init(double E, double yS, double L, double nu, double zSection, double ySection, bool isTimoshenko);
@@ -331,24 +331,7 @@ protected:
         }
     };
 
-    EdgeData< sofa::helper::vector<BeamInfo> > m_beamsData;
-
-    class BeamFFEdgeHandler : public TopologyDataHandler<BaseMeshTopology::Edge, helper::vector<BeamInfo> >
-    {
-    public:
-        typedef typename BeamPlasticFEMForceField<DataTypes>::BeamInfo BeamInfo;
-        BeamFFEdgeHandler(BeamPlasticFEMForceField<DataTypes>* ff, EdgeData<sofa::helper::vector<BeamInfo> >* data)
-            :TopologyDataHandler<core::topology::BaseMeshTopology::Edge,sofa::helper::vector<BeamInfo> >(data),ff(ff) {}
-
-        void applyCreateFunction(unsigned int edgeIndex, BeamInfo&,
-                                 const core::topology::BaseMeshTopology::Edge& e,
-                                 const sofa::helper::vector<unsigned int> &,
-                                 const sofa::helper::vector< double > &);
-
-    protected:
-        BeamPlasticFEMForceField<DataTypes>* ff;
-
-    };
+    EdgeData<  type::vector<BeamInfo> > m_beamsData;
 
     virtual void reset() override;
 
@@ -402,13 +385,13 @@ protected:
     void computeMaterialBehaviour(int i, Index a, Index b);
 
      /// Used to store stress tensor information (in Voigt notation) for each of the 27 points of integration.
-    typedef fixed_array<VoigtTensor2, 27> gaussPointStresses;
+    typedef Vec<27, VoigtTensor2> gaussPointStresses;
     /// Stress tensors fo each Gauss point in every beam element, computed at the previous time step.
     /// These stresses are required for the iterative radial return algorithm if plasticity is detected.
-    helper::vector<gaussPointStresses> m_prevStresses;
+    type::vector<gaussPointStresses> m_prevStresses;
     /// Stress tensors corresponding to the elastic prediction step of the radial return algorithm.
     /// These are stored for the update of the tangent stiffness matrix
-    helper::vector<gaussPointStresses> m_elasticPredictors;
+    type::vector<gaussPointStresses> m_elasticPredictors;
 
     /// Position at the last time step, to handle increments for the plasticity resolution
     VecCoord m_lastPos;
@@ -444,7 +427,7 @@ protected:
 
     /// Tests if the stress tensor of a material point in an elastic state
     /// actually corresponds to plastic deformation.
-    bool goToPlastic(const VoigtTensor2 &stressTensor, const double yieldStress, const bool verbose=FALSE);
+    bool goToPlastic(const VoigtTensor2 &stressTensor, const double yieldStress, const bool verbose=false);
 
     /// Computes local displacement of a beam element using the corotational model
     void computeLocalDisplacement(const VecCoord& x, Vec12 &localDisp, int i, Index a, Index b);
@@ -480,19 +463,19 @@ protected:
      * for the plasticity computation (shape function matrix, yield stress,
      * back stress, mechanical state, ...)
      */
-    vector<beamGaussPoints> m_gaussPoints;
+    type::vector<beamGaussPoints> m_gaussPoints;
     /**
      * Vector containing a set of 3 intervals (Interval3) for each beam element,
      * corresponding to the 3D integration intervals used in the Gaussian
      * quadrature method.
      */
-    vector<Interval3> m_integrationIntervals;
+    type::vector<Interval3> m_integrationIntervals;
 
     /// Initialises the integration intervals of a beam element, for the Gaussian quadrature method.
-    void initialiseInterval(int beam, vector<Interval3>& integrationIntervals);
+    void initialiseInterval(int beam, type::vector<Interval3>& integrationIntervals);
 
     /// Initialises the Gauss points of a beam element, based on its geometrical info.
-    void initialiseGaussPoints(int beam, vector<beamGaussPoints>& gaussPoints, const Interval3& integrationInterval);
+    void initialiseGaussPoints(int beam, type::vector<beamGaussPoints>& gaussPoints, const Interval3& integrationInterval);
 
     /**
      * Computes the matrix form of the beam shape functions, used to interpolate
@@ -629,15 +612,14 @@ protected:
     // at the computation of the threshold in the init() method.
     Real m_stressComparisonThreshold;
 
-    defaulttype::Quat& beamQuat(int i);
+    Quat<SReal>& beamQuat(int i);
 
     BaseMeshTopology* m_topology;
-    BeamFFEdgeHandler* m_edgeHandler;
 
     BeamPlasticFEMForceField();
     BeamPlasticFEMForceField(Real poissonRatio, Real youngModulus, Real yieldStress, Real zSection, Real ySection, bool useVD,
                         bool isPlasticMuller, bool isTimoshenko, bool isPlasticKrabbenhoft, bool isPerfectlyPlastic,
-                        helper::vector<defaulttype::Quat> localOrientations);
+                        type::vector<Quat<SReal>> localOrientations);
     virtual ~BeamPlasticFEMForceField();
 
 public:
@@ -666,8 +648,8 @@ public:
 
 protected:
 
-    void drawElement(int i, std::vector< defaulttype::Vector3 > &gaussPoints,
-                     std::vector< defaulttype::Vector3 > &centrelinePoints,
+    void drawElement(int i, std::vector<Vector3> &gaussPoints,
+                     std::vector<Vector3> &centrelinePoints,
                      std::vector<RGBAColor> &colours, const VecCoord& x);
 
     void computeStiffness(int i, Index a, Index b);
