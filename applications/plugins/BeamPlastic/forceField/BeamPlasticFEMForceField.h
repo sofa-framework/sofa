@@ -26,10 +26,8 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
-#include <Eigen/Core>
-#include <Eigen/Sparse>
 #include <Eigen/Geometry>
 #include <string>
 
@@ -86,21 +84,22 @@ public:
 
     typedef Vec<3, Real> Vec3;
     typedef Vec<9, Real> Vec9;
-
-    /// Stiffness matrix associated to a beam element.
-    typedef Mat<12, 12, Real> Matrix12x12;
-        /// Matrix form of the beam element shape functions
-    typedef Eigen::Matrix<double, 3, 12> EigenMat3x12;
-    /// Homogeneous type to a 4th order tensor, in Voigt notation.
-    typedef Eigen::Matrix<double, 6, 6> EigenMat6x6;
-    /// Vector representing the displacement of a beam element.
     typedef Vec<12, Real> Vec12;
-    /// Matrix for rigid transformations like rotations.
-    typedef Mat<3, 3, Real> Transformation;
-    /// Homogeneous to the derivative of the shape function matrix
-    typedef Eigen::Matrix<double, 6, 12> EigenMat6x12;
-    typedef Eigen::Matrix<double, 9, 12> EigenMat9x12;
 
+    typedef Mat<3, 12, Real> Matrix3x12; // Matrix form of the beam element shape functions
+    typedef Mat<6, 6, Real> Matrix6x6; ///< Fourth-order order tensor, in Voigt notation.
+    typedef Mat<6, 12, Real> Matrix6x12; // Homogeneous to the derivative of the shape function matrix, in Voigt notation
+    typedef Mat<9, 9, Real> Matrix9x9;  ///< Fourth-order tensor in vector notation
+    typedef Mat<9, 12, Real> Matrix9x12; // Homogeneous to the derivative of the shape function matrix, in vector notation
+    typedef Mat<12, 1, Real> Matrix12x1; ///< Nodal displacement, forces
+    typedef Mat<12, 3, Real> Matrix12x3;
+    typedef Mat<12, 6, Real> Matrix12x6;
+    typedef Mat<12, 12, Real> Matrix12x12; ///< Tangent stiffness matrix
+
+    typedef Mat<6, 1, Real> VoigtTensor2; ///< Symmetrical tensor of order 2, written with Voigt notation
+    typedef Mat<9, 1, Real> VectTensor2; ///< Symmetrical tensor of order 2, written with vector notation
+    typedef Mat<6, 6, Real> VoigtTensor4; ///< Symmetrical tensor of order 4, written with Voigt notation
+    typedef Mat<9, 9, Real> VectTensor4; ///< Symmetrical tensor of order 4, written with vector notation
 
     /** \enum class MechanicalState
      *  \brief Types of mechanical state associated with the (Gauss) integration
@@ -122,11 +121,11 @@ public:
         GaussPoint3(Real x, Real y, Real z, Real w1, Real w2, Real w3);
         ~GaussPoint3() {}
 
-        auto getNx() const -> const EigenMat3x12&;
-        void setNx(EigenMat3x12 Nx);
+        auto getNx() const -> const Matrix3x12&;
+        void setNx(Matrix3x12 Nx);
 
-        auto getGradN() const -> const EigenMat9x12&;
-        void setGradN(EigenMat9x12 gradN);
+        auto getGradN() const -> const Matrix9x12&;
+        void setGradN(Matrix9x12 gradN);
 
         auto getMechanicalState() const -> const MechanicalState;
         void setMechanicalState(MechanicalState newState);
@@ -156,9 +155,9 @@ public:
         Vec3 m_coordinates;
         Vec3 m_weights;
 
-        EigenMat3x12 m_Nx; /// Shape functions value for the Gauss point (matrix form)
-        EigenMat9x12 m_gradN; /// Small strain hypothesis deformation gradient, applied to the beam shape functions (matrix form)
-        EigenMat6x12 m_gradNVoigt; /// Same in Voigt notation
+        Matrix3x12 m_Nx; /// Shape functions value for the Gauss point (matrix form)
+        Matrix9x12 m_gradN; /// Small strain hypothesis deformation gradient, applied to the beam shape functions (matrix form)
+        Matrix6x12 m_gradNVoigt; /// Same in Voigt notation
         MechanicalState m_mechanicalState; /// State of the Gauss point deformation (elastic, plastic, or postplastic)
         Vec9 m_prevStress; /// Value of the stress tensor at previous time step
         Vec9 m_backStress; /// Centre of the yield surface, in stress space
@@ -217,7 +216,7 @@ protected:
          * Generalised Hooke's law (4th order tensor connecting strain and stress,
          * expressed in Voigt notation)
          */
-        EigenMat6x6 _materialBehaviour;
+        Matrix6x6 _materialBehaviour;
 
         /**
          * \brief Integration ranges for Gaussian reduced integration.
@@ -230,11 +229,11 @@ protected:
         ozp::quadrature::detail::Interval<3> _integrationInterval;
 
         /// Shape function matrices, evaluated in each Gauss point used in reduced integration.
-        Vec<27, EigenMat3x12> _N;
+        Vec<27, Matrix3x12> _N;
         // TO DO : define the "27" constant properly ! static const ? ifdef global definition ?
 
         /// Derivatives of the shape function matrices in _N, also evaluated in each Gauss point
-        Vec<27, EigenMat6x12> _BeMatrices;
+        Vec<27, Matrix6x12> _BeMatrices;
 
         /// Mechanical states (elastic, plastic, or postplastic) of all gauss points in the beam element.
         Vec<27, MechanicalState> _pointMechanicalState;
@@ -250,7 +249,7 @@ protected:
         //---------- Plastic variables ----------//
 
         /// History of plastic strain, one tensor for each Gauss point in the element.
-        Vec<27, Eigen::Matrix<double, 6, 1>> _plasticStrainHistory;
+        Vec<27, VoigtTensor2> _plasticStrainHistory;
         /**
          * Effective plastic strain, for each Gauss point in the element.
          * The effective plastic strain is only used to compute the tangent
@@ -259,7 +258,7 @@ protected:
         Vec<27, Real> _effectivePlasticStrains;
 
         /// Tensor representing the yield surface centre, one for each Gauss point in the element.
-        Vec<27, Eigen::Matrix<double, 6, 1>> _backStresses;
+        Vec<27, VoigtTensor2> _backStresses;
         /// Yield threshold, one for each Gauss point in the element.
         Vec<27, Real> _localYieldStresses;
 
@@ -269,7 +268,7 @@ protected:
         int _nbCentrelineSeg = 10;
 
         /// Precomputation of the shape functions matrices for each centreline point coordinates.
-        Vec<9, EigenMat3x12> _drawN; //TO DO: allow parameterisation of the number of segments
+        Vec<9, Matrix3x12> _drawN; //TO DO: allow parameterisation of the number of segments
                                      //       which discretise the centreline (here : 10)
                                      // NB: we use 9 shape functions because extremity points are known
 
@@ -340,12 +339,6 @@ protected:
     /**************************************************************************/
 
 public:
-
-    typedef Eigen::Matrix<double, 6, 1> VoigtTensor2; ///< Symmetrical tensor of order 2, written with Voigt notation
-    typedef Eigen::Matrix<double, 9, 1> VectTensor2; ///< Symmetrical tensor of order 2, written with vector notation
-    typedef Eigen::Matrix<double, 6, 6> VoigtTensor4; ///< Symmetrical tensor of order 4, written with Voigt notation
-    typedef Eigen::Matrix<double, 9, 9> VectTensor4; ///< Symmetrical tensor of order 4, written with vector notation
-    typedef Eigen::Matrix<double, 12, 1> EigenDisplacement; ///< Nodal displacement
 
     typedef Vec<27, GaussPoint3> beamGaussPoints;
 
@@ -420,7 +413,7 @@ protected:
     std::unique_ptr<PlasticConstitutiveLaw<DataTypes>> m_ConstitutiveLaw;
     Data<std::string> d_modelName; ///< name of the model, for specialisation
 
-    double computePlasticModulusFromStress(const Eigen::Matrix<double, 6, 1>& stressState);
+    double computePlasticModulusFromStress(const VoigtTensor2& stressState);
     double computePlasticModulusFromStrain(int index, int gaussPointId);
     double computeConstPlasticModulus();
     //-------------------------------------//
@@ -438,14 +431,14 @@ protected:
     //---------- Force computation ----------//
 
     /// Force computation and tangent stiffness matrix update for perfect plasticity
-    void computeForceWithPerfectPlasticity(Eigen::Matrix<double, 12, 1>& internalForces, const VecCoord& x, int index, Index a, Index b);
+    void computeForceWithPerfectPlasticity(Matrix12x1& internalForces, const VecCoord& x, int index, Index a, Index b);
 
     /// Stress increment computation for perfect plasticity, based on the radial return algorithm
     void computePerfectPlasticStressIncrement(int index, int gaussPointIt, const VoigtTensor2& lastStress, VoigtTensor2& newStressPoint,
                                               const VoigtTensor2& strainIncrement, MechanicalState& pointMechanicalState);
 
     /// Force computation and tangent stiffness matrix update for linear mixed (isotropic and kinematic) hardening
-    void computeForceWithHardening(Eigen::Matrix<double, 12, 1>& internalForces, const VecCoord& x, int index, Index a, Index b);
+    void computeForceWithHardening(Matrix12x1& internalForces, const VecCoord& x, int index, Index a, Index b);
 
     /// Stress increment computation for linear mixed (isotropic and kinematic) hardening, based on the radial return algorithm
     void computeHardeningStressIncrement(int index, int gaussPointIt, const VoigtTensor2 &lastStress, VoigtTensor2 &newStressPoint,
@@ -483,7 +476,7 @@ protected:
      * displacement. A timoshenko beam model is used.
      */
     auto computeNx(Real x, Real y, Real z, Real L, Real A, Real Iy, Real Iz,
-                   Real E, Real nu, Real kappaY = 1.0, Real kappaZ = 1.0)->EigenMat3x12;
+                   Real E, Real nu, Real kappaY = 1.0, Real kappaZ = 1.0)->Matrix3x12;
 
     /**
      * Computes the derivative of the matrix form of the beam shape functions.
@@ -491,7 +484,7 @@ protected:
      * model is used.
      */
     auto computeGradN(Real x, Real y, Real z, Real L, Real A, Real Iy, Real Iz,
-                      Real E, Real nu, Real kappaY = 1.0, Real kappaZ = 1.0)->EigenMat9x12;
+                      Real E, Real nu, Real kappaY = 1.0, Real kappaZ = 1.0)->Matrix9x12;
 
     /**
      * Auxiliary method to change the integration interval for Gaussian quadrature,
@@ -537,32 +530,32 @@ protected:
      */
 
     /// Converts the 6D Voigt representation of a 2nd-order tensor to a 9D vector representation
-    VectTensor2 voigtToVect2(const VoigtTensor2 &voigtTensor);
+    auto voigtToVect2(const VoigtTensor2 &voigtTensor) -> VectTensor2;
     /// Converts the 6x6 Voigt representation of a 4th-order tensor to a 9x9 matrix representation
-    VectTensor4 voigtToVect4(const VoigtTensor4 &voigtTensor);
+    auto voigtToVect4(const VoigtTensor4 &voigtTensor) -> VectTensor4;
     /// Converts the 9D vector representation of a 2nd-order tensor to a 6D Voigt representation
-    VoigtTensor2 vectToVoigt2(const VectTensor2 &vectTensor);
+    auto vectToVoigt2(const VectTensor2 &vectTensor) -> VoigtTensor2;
     /// Converts the 9x9 matrix representation of a 4th-order tensor to a 6x6 Voigt representation
-    VoigtTensor4 vectToVoigt4(const VectTensor4 &vectTensor);
+    auto vectToVoigt4(const VectTensor4 &vectTensor) -> VoigtTensor4;
 
     // Special implementation for second-order tensor operations, with the Voigt notation.
     double voigtDotProduct(const VoigtTensor2& t1, const VoigtTensor2& t2);
     double voigtTensorNorm(const VoigtTensor2& t);
-    Eigen::Matrix<double, 12, 1> beTTensor2Mult(const Eigen::Matrix<double, 12, 6>& BeT, const VoigtTensor2& T);
-    Eigen::Matrix<double, 12, 12> beTCBeMult(const Eigen::Matrix<double, 12, 6>& BeT, const VoigtTensor4& C,
-                                             const double nu, const double E);
+    auto beTTensor2Mult(const Matrix12x6& BeT, const VoigtTensor2& T) -> Matrix12x1;
+    auto beTCBeMult(const Matrix12x6& BeT, const VoigtTensor4& C,
+                    const double nu, const double E) -> Matrix12x12;
     //-------------------------------------------------------------------------------//
 
     /// Computes the deviatoric stress from a tensor in Voigt notation
-    VoigtTensor2 deviatoricStress(const VoigtTensor2 &stressTensor);
+    auto deviatoricStress(const VoigtTensor2 &stressTensor) -> VoigtTensor2;
     /// Computes the equivalent stress from a tensor in Voigt notation
     double equivalentStress(const VoigtTensor2 &stressTensor);
     /// Evaluates the Von Mises yield function for given stress tensor (in Voigt notation) and yield stress
     double vonMisesYield(const VoigtTensor2 &stressTensor, const double yieldStress);
     /// Computes the Von Mises yield function gradient (in Voigt notation) at a given stress tensor (in Voigt notation)
-    VoigtTensor2 vonMisesGradient(const VoigtTensor2 &stressTensor);
+    auto vonMisesGradient(const VoigtTensor2 &stressTensor) -> VoigtTensor2;
     /// Computes the Von Mises yield function hessian (in matrix notation) at a given stress tensor (in Voigt notation)
-    VectTensor4 vonMisesHessian(const VoigtTensor2 &stressTensor, const double yieldStress);
+    auto vonMisesHessian(const VoigtTensor2 &stressTensor, const double yieldStress) -> VectTensor4;
 
     //----- Alternative expressions of the above functions with vector notations -----//
     /// Computes the equivalent stress from a tensor in vector notation
@@ -580,7 +573,7 @@ protected:
     double devVonMisesYield(const VoigtTensor2& stressTensor, const double yieldStress);
     /// Computes the Von Mises yield function gradient (in Voigt notation) at a given stress tensor (in Voigt notation),
     ///  using the deviatoric stress
-    VoigtTensor2 devVonMisesGradient(const VoigtTensor2& stressTensor);
+    auto devVonMisesGradient(const VoigtTensor2& stressTensor) -> VoigtTensor2;
 
     //Methods called by addForce, addDForce and addKToMatrix when deforming plasticly
     void accumulateNonLinearForce(VecDeriv& f, const VecCoord& x, int i, Index a, Index b);

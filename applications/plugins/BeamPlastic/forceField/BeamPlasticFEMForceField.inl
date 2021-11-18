@@ -186,7 +186,7 @@ void BeamPlasticFEMForceField<DataTypes>::reinit()
     m_prevStresses.resize(n);
     for (int i = 0; i < n; i++)
         for (int j = 0; j < 27; j++)
-            m_prevStresses[i][j] = VoigtTensor2::Zero();
+            m_prevStresses[i][j] = VoigtTensor2();
 
     if (d_useConsistentTangentOperator.getValue())
     {
@@ -195,7 +195,7 @@ void BeamPlasticFEMForceField<DataTypes>::reinit()
         m_elasticPredictors.resize(n);
         for (int i = 0; i < n; i++)
             for (int j = 0; j < 27; j++)
-                m_elasticPredictors[i][j] = VoigtTensor2::Zero();
+                m_elasticPredictors[i][j] = VoigtTensor2();
     }
 
     initBeams( n );
@@ -334,11 +334,19 @@ void BeamPlasticFEMForceField<DataTypes>::BeamInfo::init(double E, double yS, do
         _BeMatrices[i](0, 5) = eta * (4 - 6 * xi);
         _BeMatrices[i](1, 5) = _BeMatrices[i](2, 5) = _BeMatrices[i](3, 5) = _BeMatrices[i](4, 5) = _BeMatrices[i](5, 5) = 0.0;
 
-        _BeMatrices[i].block<6, 1>(0, 6) = -_BeMatrices[i].block<6, 1>(0, 0);
+//        _BeMatrices[i].block<6, 1>(0, 6) = -_BeMatrices[i].block<6, 1>(0, 0);
 
-        _BeMatrices[i].block<6, 1>(0, 7) = -_BeMatrices[i].block<6, 1>(0, 1);
+//        _BeMatrices[i].block<6, 1>(0, 7) = -_BeMatrices[i].block<6, 1>(0, 1);
 
-        _BeMatrices[i].block<6, 1>(0, 8) = -_BeMatrices[i].block<6, 1>(0, 2);
+//        _BeMatrices[i].block<6, 1>(0, 8) = -_BeMatrices[i].block<6, 1>(0, 2);
+
+        Mat<6, 1, Real> subMat;
+        _BeMatrices[i].getsub(0, 0, subMat);
+        _BeMatrices[i].setsub(0, 6, -subMat);
+        _BeMatrices[i].getsub(0, 1, subMat);
+        _BeMatrices[i].setsub(0, 7, -subMat);
+        _BeMatrices[i].getsub(0, 2, subMat);
+        _BeMatrices[i].setsub(0, 8, -subMat);
 
         _BeMatrices[i](0, 9) = _BeMatrices[i](1, 9) = _BeMatrices[i](2, 9) = 0.0;
         _BeMatrices[i](3, 9) = 0;
@@ -643,7 +651,7 @@ void BeamPlasticFEMForceField<DataTypes>::BeamInfo::init(double E, double yS, do
     _beamMechanicalState = MechanicalState::ELASTIC;
     
     _localYieldStresses.assign(yS);
-    _backStresses.assign(VoigtTensor2::Zero()); // TO DO: check if zero is correct
+    _backStresses.assign(VoigtTensor2()); // TO DO: check if zero is correct
     _effectivePlasticStrains.assign(0.0);
 
 
@@ -655,13 +663,13 @@ void BeamPlasticFEMForceField<DataTypes>::reset()
 {
     for (unsigned i = 0; i < m_prevStresses.size(); ++i)
         for (unsigned j = 0; j < 27; ++j)
-            m_prevStresses[i][j] = VoigtTensor2::Zero();
+            m_prevStresses[i][j] = VoigtTensor2();
 
     if (d_useConsistentTangentOperator.getValue())
     {
         for (unsigned i = 0; i < m_elasticPredictors.size(); ++i)
             for (unsigned j = 0; j < 27; ++j)
-                m_elasticPredictors[i][j] = VoigtTensor2::Zero();
+                m_elasticPredictors[i][j] = VoigtTensor2();
 
     }
 
@@ -825,7 +833,7 @@ void BeamPlasticFEMForceField<DataTypes>::addKToMatrix(const sofa::core::Mechani
 
             Quat<SReal>& q = beamQuat(i); //x[a].getOrientation();
             q.normalize();
-            Transformation R,Rt;
+            Mat<3, 3, Real> R,Rt;
             q.toMatrix(R);
             Rt.transpose(R);
             Matrix12x12 K;
@@ -943,7 +951,7 @@ void BeamPlasticFEMForceField<DataTypes>::drawElement(int i, std::vector< defaul
 
     defaulttype::Vec<3, Real> u, P1P2, P1P2_0;
     // local displacement
-    Eigen::Matrix<double, 12, 1> disp;
+    Matrix12x1 disp;
 
     // translations //
     P1P2_0 = x0[b].getCenter() - x0[a].getCenter();
@@ -976,7 +984,7 @@ void BeamPlasticFEMForceField<DataTypes>::drawElement(int i, std::vector< defaul
     typedef std::function<void(double, double, double, double, double, double)> LambdaType;
     typedef ozp::quadrature::Gaussian<3> GaussianQuadratureType;
 
-    Eigen::Matrix<double, 3, 12> N;
+    Matrix3x12 N;
     const Vec<27, MechanicalState>& pointMechanicalState = m_beamsData.getValue()[i]._pointMechanicalState;
     int gaussPointIt = 0; //incremented in the lambda function to iterate over Gauss points
 
@@ -984,10 +992,10 @@ void BeamPlasticFEMForceField<DataTypes>::drawElement(int i, std::vector< defaul
     {
         //Shape function
         N = m_beamsData.getValue()[i]._N[gaussPointIt];
-        Eigen::Matrix<double, 3, 1> u = N*disp;
+        Mat<3, 1, Real> u = N*disp;
 
-        defaulttype::Vec3d beamVec = {u[0]+u1, u[1]+u2, u[2]+u3};
-        defaulttype::Vec3d gp = pa + q.rotate(beamVec);
+        type::Vec3d beamVec = {u[0][0]+u1, u[1][0]+u2, u[2][0]+u3};
+        type::Vec3d gp = pa + q.rotate(beamVec);
         gaussPoints.push_back(gp);
 
         if (pointMechanicalState[gaussPointIt] == MechanicalState::ELASTIC)
@@ -1008,16 +1016,16 @@ void BeamPlasticFEMForceField<DataTypes>::drawElement(int i, std::vector< defaul
 
     centrelinePoints.push_back(pa);
 
-    Eigen::Matrix<double, 3, 12> drawN;
+    Matrix3x12 drawN;
     const double L = m_beamsData.getValue()[i]._L;
     for (int drawPointIt = 0; drawPointIt < nbSeg - 1; drawPointIt++)
     {
         //Shape function of the centreline point
         drawN = m_beamsData.getValue()[i]._drawN[drawPointIt];
-        Eigen::Matrix<double, 3, 1> u = drawN*disp;
+        Mat<3, 1, Real> u = drawN*disp;
 
-        defaulttype::Vec3d beamVec = {u[0] + (drawPointIt +1)*(L/nbSeg), u[1], u[2]};
-        defaulttype::Vec3d clp = pa + q.rotate(beamVec);
+        type::Vec3d beamVec = {u[0][0] + (drawPointIt +1)*(L/nbSeg), u[1][0], u[2][0]};
+        type::Vec3d clp = pa + q.rotate(beamVec);
         centrelinePoints.push_back(clp); //First time as the end of the former segment
         centrelinePoints.push_back(clp); //Second time as the beginning of the next segment
     }
@@ -1073,7 +1081,7 @@ void BeamPlasticFEMForceField<DataTypes>::computeVDStiffness(int i, Index, Index
     const double E = m_beamsData.getValue()[i]._E;
     const double nu = m_beamsData.getValue()[i]._nu;
 
-    const Eigen::Matrix<double, 6, 6>& C = m_beamsData.getValue()[i]._materialBehaviour;
+    const Matrix6x6& C = m_beamsData.getValue()[i]._materialBehaviour;
     type::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
     Matrix12x12& Ke_loc = bd[i]._Ke_loc;
     Ke_loc.clear();
@@ -1084,9 +1092,9 @@ void BeamPlasticFEMForceField<DataTypes>::computeVDStiffness(int i, Index, Index
 
     // Setting variables for the reduced intergation process defined in quadrature.h
 
-    Eigen::Matrix<double, 6, 12> Be;
+    Matrix6x12 Be;
     // Stress matrix, to be integrated
-    Eigen::Matrix<double, 12, 12> stiffness = Eigen::Matrix<double, 12, 12>::Zero();
+    Matrix12x12 stiffness = Matrix12x12();
 
     int gaussPointIterator = 0; //incremented in the lambda function to iterate over Gauss points
 
@@ -1094,7 +1102,7 @@ void BeamPlasticFEMForceField<DataTypes>::computeVDStiffness(int i, Index, Index
     {
         Be = m_beamsData.getValue()[i]._BeMatrices[gaussPointIterator];
 
-        stiffness += (w1*w2*w3)*beTCBeMult(Be.transpose(), C, nu, E);
+        stiffness += (w1*w2*w3)*beTCBeMult(Be.transposed(), C, nu, E);
 
         gaussPointIterator++; //next Gauss Point
     };
@@ -1120,7 +1128,7 @@ void BeamPlasticFEMForceField<DataTypes>::computeMaterialBehaviour(int i, Index 
 
     type::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
 
-    Eigen::Matrix<double, 6, 6>& C = bd[i]._materialBehaviour;
+    Matrix6x6& C = bd[i]._materialBehaviour;
     // Material behaviour matrix, here: Hooke's law
     //TO DO: handle incompressible materials (with nu = 0.5)
     C(0, 0) = C(1, 1) = C(2, 2) = 1 - nu;
@@ -1152,14 +1160,14 @@ bool BeamPlasticFEMForceField<DataTypes>::goToPlastic(const VoigtTensor2 &stress
 }
 
 template< class DataTypes>
-Eigen::Matrix<double, 6, 1> BeamPlasticFEMForceField<DataTypes>::deviatoricStress(const VoigtTensor2 &stressTensor)
+auto BeamPlasticFEMForceField<DataTypes>::deviatoricStress(const VoigtTensor2 &stressTensor) -> VoigtTensor2
 {
     // Returns the deviatoric stress from a given stress tensor in Voigt notation
 
     VoigtTensor2 deviatoricStress = stressTensor;
-    double mean = (stressTensor[0] + stressTensor[1] + stressTensor[2]) / 3.0;
+    double mean = (stressTensor[0][0] + stressTensor[1][0] + stressTensor[2][0]) / 3.0;
     for (int i = 0; i < 3; i++)
-        deviatoricStress[i] -= mean;
+        deviatoricStress[i][0] -= mean;
 
     return deviatoricStress;
 }
@@ -1168,12 +1176,12 @@ template< class DataTypes>
 double BeamPlasticFEMForceField<DataTypes>::equivalentStress(const VoigtTensor2 &stressTensor)
 {
     double res = 0.0;
-    double sigmaX = stressTensor[0];
-    double sigmaY = stressTensor[1];
-    double sigmaZ = stressTensor[2];
-    double sigmaYZ = stressTensor[3];
-    double sigmaZX = stressTensor[4];
-    double sigmaXY = stressTensor[5];
+    double sigmaX = stressTensor[0][0];
+    double sigmaY = stressTensor[1][0];
+    double sigmaZ = stressTensor[2][0];
+    double sigmaYZ = stressTensor[3][0];
+    double sigmaZX = stressTensor[4][0];
+    double sigmaXY = stressTensor[5][0];
 
     double aux1 = 0.5*((sigmaX - sigmaY)*(sigmaX - sigmaY) + (sigmaY - sigmaZ)*(sigmaY - sigmaZ) + (sigmaZ - sigmaX)*(sigmaZ - sigmaX));
     double aux2 = 3.0*(sigmaYZ*sigmaYZ + sigmaZX*sigmaZX + sigmaXY*sigmaXY);
@@ -1184,31 +1192,31 @@ double BeamPlasticFEMForceField<DataTypes>::equivalentStress(const VoigtTensor2 
 
 template< class DataTypes>
 double BeamPlasticFEMForceField<DataTypes>::vonMisesYield(const VoigtTensor2 &stressTensor,
-                                                     const double yieldStress)
+                                                          const double yieldStress)
 {
     double eqStress = equivalentStress(stressTensor);
     return eqStress - yieldStress;
 }
 
 template< class DataTypes>
-Eigen::Matrix<double, 6, 1> BeamPlasticFEMForceField<DataTypes>::vonMisesGradient(const VoigtTensor2 &stressTensor)
+auto BeamPlasticFEMForceField<DataTypes>::vonMisesGradient(const VoigtTensor2 &stressTensor) -> VoigtTensor2
 {
     // NB: this gradient represent the normal to the yield surface
     // in case the Von Mises yield criterion is used.
     // /!\ the Norm of the gradient is sqrt(3/2): it has to be multiplied
     // by sqrt(2/3) to give the unit normal to the yield surface
 
-    VoigtTensor2 gradient = VoigtTensor2::Zero();
+    VoigtTensor2 gradient = VoigtTensor2();
 
-    if (stressTensor.isZero())
+    if (equalsZero(scalarProduct(stressTensor, stressTensor)))
         return gradient; //TO DO: is that correct ?
 
-    double sigmaX = stressTensor[0];
-    double sigmaY = stressTensor[1];
-    double sigmaZ = stressTensor[2];
-    double sigmaYZ = stressTensor[3];
-    double sigmaZX = stressTensor[4];
-    double sigmaXY = stressTensor[5];
+    double sigmaX = stressTensor[0][0];
+    double sigmaY = stressTensor[1][0];
+    double sigmaZ = stressTensor[2][0];
+    double sigmaYZ = stressTensor[3][0];
+    double sigmaZX = stressTensor[4][0];
+    double sigmaXY = stressTensor[5][0];
 
     gradient[0] = 2 * sigmaX - sigmaY - sigmaZ;
     gradient[1] = 2 * sigmaY - sigmaZ - sigmaX;
@@ -1224,21 +1232,21 @@ Eigen::Matrix<double, 6, 1> BeamPlasticFEMForceField<DataTypes>::vonMisesGradien
 }
 
 template< class DataTypes>
-Eigen::Matrix<double, 9, 9> BeamPlasticFEMForceField<DataTypes>::vonMisesHessian(const VoigtTensor2 &stressTensor,
-                                                                            const double yieldStress)
+auto BeamPlasticFEMForceField<DataTypes>::vonMisesHessian(const VoigtTensor2 &stressTensor,
+                                                          const double yieldStress) -> VectTensor4
 {
-    VectTensor4 hessian = VectTensor4::Zero();
+    VectTensor4 hessian = VectTensor4();
 
-    if (stressTensor.isZero())
+    if (equalsZero(scalarProduct(stressTensor, stressTensor)))
         return hessian; //TO DO: is that correct ?
 
     //Order 1 terms
-    double sigmaXX = stressTensor[0];
-    double sigmaYY = stressTensor[1];
-    double sigmaZZ = stressTensor[2];
-    double sigmaYZ = stressTensor[3];
-    double sigmaZX = stressTensor[4];
-    double sigmaXY = stressTensor[5];
+    double sigmaXX = stressTensor[0][0];
+    double sigmaYY = stressTensor[1][0];
+    double sigmaZZ = stressTensor[2][0];
+    double sigmaYZ = stressTensor[3][0];
+    double sigmaZX = stressTensor[4][0];
+    double sigmaXY = stressTensor[5][0];
 
     double auxX = 2 * sigmaXX - sigmaYY - sigmaZZ;
     double auxY = 2 * sigmaYY - sigmaZZ - sigmaXX;
@@ -1373,15 +1381,15 @@ double BeamPlasticFEMForceField<DataTypes>::vectEquivalentStress(const VectTenso
     // Compute the equivalent stress using a vector notation
 
     double eqStress = 0.0;
-    double sigmaXX = stressTensor[0];
-    double sigmaXY = stressTensor[1];
-    double sigmaXZ = stressTensor[2];
-    double sigmaYX = stressTensor[3];
-    double sigmaYY = stressTensor[4];
-    double sigmaYZ = stressTensor[5];
-    double sigmaZX = stressTensor[6];
-    double sigmaZY = stressTensor[7];
-    double sigmaZZ = stressTensor[8];
+    double sigmaXX = stressTensor[0][0];
+    double sigmaXY = stressTensor[1][0];
+    double sigmaXZ = stressTensor[2][0];
+    double sigmaYX = stressTensor[3][0];
+    double sigmaYY = stressTensor[4][0];
+    double sigmaYZ = stressTensor[5][0];
+    double sigmaZX = stressTensor[6][0];
+    double sigmaZY = stressTensor[7][0];
+    double sigmaZZ = stressTensor[8][0];
 
     double aux1 = 0.5*((sigmaXX - sigmaYY)*(sigmaXX - sigmaYY) + (sigmaYY - sigmaZZ)*(sigmaYY - sigmaZZ) + (sigmaZZ - sigmaXX)*(sigmaZZ - sigmaXX));
     double aux2 = (3.0 / 2.0)*(sigmaXY*sigmaXY + sigmaYX*sigmaYX + sigmaXZ*sigmaXZ + sigmaZX*sigmaZX + sigmaYZ*sigmaYZ + sigmaZY*sigmaZY);
@@ -1399,7 +1407,8 @@ double BeamPlasticFEMForceField<DataTypes>::devEquivalentStress(const VoigtTenso
     VoigtTensor2 devStress = deviatoricStress(stressTensor);
     VectTensor2 vectDevStress = voigtToVect2(devStress);
 
-    return helper::rsqrt(3.0 / 2.0)*vectDevStress.norm();
+    Mat<1, 1, Real> squaredNormMat = vectDevStress.transposed()*vectDevStress;
+    return helper::rsqrt(3.0 * squaredNormMat[0][0] / 2.0);
 }
 
 template< class DataTypes>
@@ -1421,35 +1430,35 @@ double BeamPlasticFEMForceField<DataTypes>::vectVonMisesYield(const VectTensor2 
 
 
 template< class DataTypes>
-Eigen::Matrix<double, 9, 1> BeamPlasticFEMForceField<DataTypes>::vectVonMisesGradient(const VectTensor2 &stressTensor)
+auto BeamPlasticFEMForceField<DataTypes>::vectVonMisesGradient(const VectTensor2 &stressTensor) -> VectTensor2
 {
     // Computation of Von Mises yield function gradient,
     // in vector notation
 
-    VectTensor2 gradient = VectTensor2::Zero();
+    VectTensor2 gradient = VectTensor2();
 
-    if (stressTensor.isZero())
+    if (equalsZero(scalarProduct(stressTensor, stressTensor)))
         return gradient; //TO DO: is that correct ?
 
-    double sigmaXX = stressTensor[0];
-    double sigmaXY = stressTensor[1];
-    double sigmaXZ = stressTensor[2];
-    double sigmaYX = stressTensor[3];
-    double sigmaYY = stressTensor[4];
-    double sigmaYZ = stressTensor[5];
-    double sigmaZX = stressTensor[6];
-    double sigmaZY = stressTensor[7];
-    double sigmaZZ = stressTensor[8];
+    double sigmaXX = stressTensor[0][0];
+    double sigmaXY = stressTensor[1][0];
+    double sigmaXZ = stressTensor[2][0];
+    double sigmaYX = stressTensor[3][0];
+    double sigmaYY = stressTensor[4][0];
+    double sigmaYZ = stressTensor[5][0];
+    double sigmaZX = stressTensor[6][0];
+    double sigmaZY = stressTensor[7][0];
+    double sigmaZZ = stressTensor[8][0];
 
-    gradient[0] = 2 * sigmaXX - sigmaYY - sigmaZZ;
-    gradient[1] = 3 * sigmaXY;
-    gradient[2] = 3 * sigmaXZ;
-    gradient[3] = 3 * sigmaYX;
-    gradient[4] = 2 * sigmaYY - sigmaZZ - sigmaXX;
-    gradient[5] = 3 * sigmaYZ;
-    gradient[6] = 3 * sigmaZX;
-    gradient[7] = 3 * sigmaZY;
-    gradient[8] = 2 * sigmaZZ - sigmaXX - sigmaYY;
+    gradient[0][0] = 2 * sigmaXX - sigmaYY - sigmaZZ;
+    gradient[1][0] = 3 * sigmaXY;
+    gradient[2][0] = 3 * sigmaXZ;
+    gradient[3][0] = 3 * sigmaYX;
+    gradient[4][0] = 2 * sigmaYY - sigmaZZ - sigmaXX;
+    gradient[5][0] = 3 * sigmaYZ;
+    gradient[6][0] = 3 * sigmaZX;
+    gradient[7][0] = 3 * sigmaZY;
+    gradient[8][0] = 2 * sigmaZZ - sigmaXX - sigmaYY;
 
     double sigmaEq = vectEquivalentStress(stressTensor);
     gradient *= 1 / (2 * sigmaEq);
@@ -1459,14 +1468,14 @@ Eigen::Matrix<double, 9, 1> BeamPlasticFEMForceField<DataTypes>::vectVonMisesGra
 
 
 template< class DataTypes>
-Eigen::Matrix<double, 6, 1> BeamPlasticFEMForceField<DataTypes>::devVonMisesGradient(const VoigtTensor2 &stressTensor)
+auto BeamPlasticFEMForceField<DataTypes>::devVonMisesGradient(const VoigtTensor2 &stressTensor) -> VoigtTensor2
 {
     // Computation of the gradient of the Von Mises function, at stressTensor,
     // using the expression of the deviatoric stress tensor
 
-    VoigtTensor2 gradient = VoigtTensor2::Zero();
+    VoigtTensor2 gradient = VoigtTensor2();
 
-    if (stressTensor.isZero())
+    if (equalsZero(scalarProduct(stressTensor, stressTensor)))
         return gradient; //TO DO: is that correct ?
 
     VoigtTensor2 devStress = deviatoricStress(stressTensor);
@@ -1505,27 +1514,35 @@ double BeamPlasticFEMForceField<DataTypes>::voigtTensorNorm(const VoigtTensor2 &
 }
 
 template< class DataTypes>
-Eigen::Matrix<double, 12, 1> BeamPlasticFEMForceField<DataTypes>::beTTensor2Mult(const Eigen::Matrix<double, 12, 6> &BeT,
-    const VoigtTensor2 &T)
+auto BeamPlasticFEMForceField<DataTypes>::beTTensor2Mult(const Matrix12x6 &BeT,
+                                                         const VoigtTensor2 &T) -> Matrix12x1
 {
     // In Voigt notation, 3 rows in Be (i.e. 3 columns in Be^T) are missing.
     // These rows correspond to the 3 symmetrical non-diagonal elements of the
     // tensors, which are not expressed in Voigt notation.
     // We have to add the contribution of these rows in the computation BeT*Tensor.
 
-    Eigen::Matrix<double, 12, 1> res = Eigen::Matrix<double, 12, 1>::Zero();
+    Matrix12x1 res = Matrix12x1();
 
     res += BeT*T; // contribution of the 6 first columns
-
                   // We compute the contribution of the 3 missing columns.
                   // This can be achieved with block computation.
 
-    Eigen::Matrix<double, 12, 3> additionalColumns = Eigen::Matrix<double, 12, 3>::Zero();
-    additionalColumns.block<12, 1>(0, 0) = BeT.block<12, 1>(0, 3); // T_yz
-    additionalColumns.block<12, 1>(0, 1) = BeT.block<12, 1>(0, 4); // T_zx
-    additionalColumns.block<12, 1>(0, 2) = BeT.block<12, 1>(0, 5); // T_xy
+    Matrix12x3 additionalColumns = Matrix12x3();
+//    additionalColumns.block<12, 1>(0, 0) = BeT.block<12, 1>(0, 3); // T_yz
+//    additionalColumns.block<12, 1>(0, 1) = BeT.block<12, 1>(0, 4); // T_zx
+//    additionalColumns.block<12, 1>(0, 2) = BeT.block<12, 1>(0, 5); // T_xy
+    Matrix12x1 subMat;
+    BeT.getsub(0, 3, subMat);
+    additionalColumns.setsub(0, 0, subMat); // T_yz
+    BeT.getsub(0, 4, subMat);
+    additionalColumns.setsub(0, 1, subMat); // T_zx
+    BeT.getsub(0, 5, subMat);
+    additionalColumns.setsub(0, 2, subMat); // T_xy
 
-    Eigen::Matrix<double, 3, 1> additionalTensorElements = Eigen::Matrix<double, 3, 1>::Zero();
+
+
+    Mat<3, 1, Real> additionalTensorElements = Mat<3, 1, Real>();
     additionalTensorElements[0] = T[3]; // T_yz
     additionalTensorElements[1] = T[4]; // T_zx
     additionalTensorElements[2] = T[5]; // T_xy
@@ -1535,9 +1552,9 @@ Eigen::Matrix<double, 12, 1> BeamPlasticFEMForceField<DataTypes>::beTTensor2Mult
 }
 
 template< class DataTypes>
-Eigen::Matrix<double, 12, 12> BeamPlasticFEMForceField<DataTypes>::beTCBeMult(const Eigen::Matrix<double, 12, 6> &BeT,
-    const VoigtTensor4 &C,
-    const double nu, const double E)
+auto BeamPlasticFEMForceField<DataTypes>::beTCBeMult(const Matrix12x6 &BeT,
+                                                     const VoigtTensor4 &C,
+                                                     const double nu, const double E) -> Matrix12x12
 {
     // In Voigt notation, 3 rows in Be (i.e. 3 columns in Be^T) are missing.
     // These rows correspond to the 3 symmetrical non-diagonal elements of the
@@ -1545,16 +1562,22 @@ Eigen::Matrix<double, 12, 12> BeamPlasticFEMForceField<DataTypes>::beTCBeMult(co
     // We have to add the contribution of these rows in the computation BeT*C*Be.
 
     // First part of the computation in Voigt Notation
-    Eigen::Matrix<double, 12, 12> res = Eigen::Matrix<double, 12, 12>::Zero();
-    res += BeT*C*(BeT.transpose()); // contribution of the 6 first columns
+    Matrix12x12 res = Matrix12x12();
+    res += BeT*C*(BeT.transposed()); // contribution of the 6 first columns
+                                     // Second part : contribution of the missing rows in Be
+    Matrix12x3 leftTerm = Matrix12x3();
+//    leftTerm.block<12, 1>(0, 0) = BeT.block<12, 1>(0, 3); // S_3N^T
+//    leftTerm.block<12, 1>(0, 1) = BeT.block<12, 1>(0, 4); // S_4N^T
+//    leftTerm.block<12, 1>(0, 2) = BeT.block<12, 1>(0, 5); // S_5N^T
+    Matrix12x1 subMat;
+    BeT.getsub(0, 3, subMat);
+    leftTerm.setsub(0, 0, subMat); // S_3N^T
+    BeT.getsub(0, 4, subMat);
+    leftTerm.setsub(0, 1, subMat); // S_4N^T
+    BeT.getsub(0, 5, subMat);
+    leftTerm.setsub(0, 2, subMat); // S_5N^T
 
-                                    // Second part : contribution of the missing rows in Be
-    Eigen::Matrix<double, 12, 3> leftTerm = Eigen::Matrix<double, 12, 3>::Zero();
-    leftTerm.block<12, 1>(0, 0) = BeT.block<12, 1>(0, 3); // S_3N^T
-    leftTerm.block<12, 1>(0, 1) = BeT.block<12, 1>(0, 4); // S_4N^T
-    leftTerm.block<12, 1>(0, 2) = BeT.block<12, 1>(0, 5); // S_5N^T
-
-    Eigen::Matrix<double, 3, 12> rightTerm = leftTerm.transpose();
+    Matrix3x12 rightTerm = leftTerm.transposed();
     rightTerm *= E / (1 + nu);
 
     res += leftTerm*rightTerm;
@@ -1576,7 +1599,7 @@ void BeamPlasticFEMForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
     //Computes f += Kx, assuming that this component is linear
     //All non-linearity has to be handled here (including plasticity)
 
-    Eigen::Matrix<double, 12, 1> fint = Eigen::VectorXd::Zero(12);
+    Matrix12x1 fint = Matrix12x1();
 
     if (d_isPerfectlyPlastic.getValue())
         computeForceWithPerfectPlasticity(fint, x, i, a, b);
@@ -1588,7 +1611,7 @@ void BeamPlasticFEMForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
     Vec12 force;
 
     for (int i = 0; i < 12; i++)
-        force[i] = fint(i);
+        force[i] = fint[i][0];
 
     Vec3 fa1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[0], force[1], force[2]));
     Vec3 fa2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[3], force[4], force[5]));
@@ -1670,7 +1693,7 @@ void BeamPlasticFEMForceField<DataTypes>::updateTangentStiffness(int i,
 {
     type::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
     Matrix12x12& Kt_loc = bd[i]._Kt_loc;
-    const Eigen::Matrix<double, 6, 6>& C = bd[i]._materialBehaviour;
+    const Matrix6x6& C = bd[i]._materialBehaviour;
     const double E = bd[i]._E;
     const double nu = bd[i]._nu;
     Vec<27, MechanicalState>& pointMechanicalState = bd[i]._pointMechanicalState;
@@ -1680,16 +1703,16 @@ void BeamPlasticFEMForceField<DataTypes>::updateTangentStiffness(int i,
     typedef ozp::quadrature::Gaussian<3> GaussianQuadratureType;
 
     // Setting variables for the reduced intergation process defined in quadrature.h
-    Eigen::Matrix<double, 6, 12> Be;
-    VoigtTensor4 Cep = VoigtTensor4::Zero(); //plastic behaviour tensor
+    Matrix6x12 Be;
+    VoigtTensor4 Cep = VoigtTensor4(); //plastic behaviour tensor
     VoigtTensor2 gradient;
 
     //Auxiliary matrices
     VoigtTensor2 Cgrad;
-    Eigen::Matrix<double, 1, 6> gradTC;
+    Mat<1, 6, Real> gradTC;
 
     //Result matrix
-    Eigen::Matrix<double, 12, 12> tangentStiffness = Eigen::Matrix<double, 12, 12>::Zero();
+    Matrix12x12 tangentStiffness = Matrix12x12();
 
     VoigtTensor2 currentStressPoint;
     int gaussPointIt = 0;
@@ -1710,7 +1733,7 @@ void BeamPlasticFEMForceField<DataTypes>::updateTangentStiffness(int i,
 
         if (!d_useConsistentTangentOperator.getValue())
         {
-            if (gradient.isZero() || pointMechanicalState[gaussPointIt] != MechanicalState::PLASTIC)
+            if (equalsZero(scalarProduct(gradient, gradient)) || pointMechanicalState[gaussPointIt] != MechanicalState::PLASTIC)
                 Cep = C; //TO DO: is that correct ?
             else
             {
@@ -1719,11 +1742,12 @@ void BeamPlasticFEMForceField<DataTypes>::updateTangentStiffness(int i,
                     VoigtTensor2 normal = helper::rsqrt(2.0 / 3.0)*gradient;
                     VectTensor2 vectNormal = voigtToVect2(normal);
                     VectTensor4 vectC = voigtToVect4(C);
-                    VectTensor4 vectCep = VectTensor4::Zero();
+                    VectTensor4 vectCep = VectTensor4();
 
                     VectTensor2 CN = vectC*vectNormal;
                     // NtC = (NC)t because of C symmetry
-                    vectCep = vectC - (CN*CN.transpose()) / (vectNormal.transpose()*CN + (2.0 / 3.0)*plasticModulus);
+                    Mat<1, 1, Real> scalarMatrix = vectNormal.transposed()*CN;
+                    vectCep = vectC - ( CN*CN.transposed() ) / (scalarMatrix[0][0] + (2.0 / 3.0)*plasticModulus);
 
                     Cep = vectToVoigt4(vectCep);
                 }
@@ -1732,10 +1756,11 @@ void BeamPlasticFEMForceField<DataTypes>::updateTangentStiffness(int i,
                     VoigtTensor2 normal = helper::rsqrt(2.0 / 3.0)*gradient;
                     VectTensor2 vectNormal = voigtToVect2(normal);
                     VectTensor4 vectC = voigtToVect4(C);
-                    VectTensor4 vectCep = VectTensor4::Zero();
+                    VectTensor4 vectCep = VectTensor4();
 
                     VectTensor2 CN = vectC*vectNormal;
-                    vectCep = vectC - (CN*CN.transpose()) / (vectNormal.transpose()*CN);
+                    Mat<1, 1, Real> scalarMatrix = vectNormal.transposed()*CN;
+                    vectCep = vectC - ( CN*CN.transposed() ) / scalarMatrix[0][0];
 
                     Cep = vectToVoigt4(vectCep);
                 }
@@ -1750,36 +1775,50 @@ void BeamPlasticFEMForceField<DataTypes>::updateTangentStiffness(int i,
                 if (!d_isPerfectlyPlastic.getValue())
                 {
                     //Computation of matrix H as in Studies in anisotropic plasticity with reference to the Hill criterion, De Borst and Feenstra, 1990
-                    VectTensor4 H = VectTensor4::Zero();
+                    VectTensor4 H = VectTensor4();
                     VectTensor4 I = VectTensor4::Identity();
                     VoigtTensor2 elasticPredictor = m_elasticPredictors[i][gaussPointIt];
 
                     VectTensor2 vectGradient = voigtToVect2(gradient);
                     VectTensor4 vectC = voigtToVect4(C);
                     double yieldStress = m_beamsData.getValue()[i]._localYieldStresses[gaussPointIt];
-                    double DeltaLambda = vonMisesYield(elasticPredictor, yieldStress) / (vectGradient.transpose()*vectC*vectGradient);
+                    Mat<1, 1, Real> scalarMatrix = vectGradient.transposed()*vectC*vectGradient;
+                    double DeltaLambda = vonMisesYield(elasticPredictor, yieldStress) / scalarMatrix[0][0];
                     VectTensor4 vectHessian = vonMisesHessian(elasticPredictor, yieldStress);
 
                     VectTensor4 M = (I + DeltaLambda*vectC*vectHessian);
                     // M is symmetric positive definite, we perform Cholesky decomposition to invert it
-                    VectTensor4 invertedM = M.llt().solve(I);
+                    // M is symmetric positive definite, we perform Cholesky decomposition to invert it
+                    // For this, we convert the matrix using Eigen
+                    // TO DO: is there a more efficient way?
+                    Eigen::Matrix<double, 9, 9> eigenM = Eigen::Matrix<double, 9, 9>::Zero();
+                    for (int i=0; i < 9; i++)
+                        for (int j=0; j < 9; j++)
+                            eigenM(i, j) = M[i][j];
+                    Eigen::Matrix<double, 9, 9> eigenI = Eigen::Matrix<double, 9, 9>::Identity();
+                    Eigen::Matrix<double, 9, 9> invertedEigenM = eigenM.llt().solve(eigenI);
+                    VectTensor4 invertedM = VectTensor4();
+                    for (int i=0; i < 9; i++)
+                        for (int j=0; j < 9; j++)
+                            invertedM[i][j] = invertedEigenM(i, j);
                     H = invertedM*vectC;
 
                     //Computation of Cep
-                    if (gradient.isZero())
+                    if (equalsZero(scalarProduct(gradient, gradient)))
                         Cep = vectToVoigt4(H);
                     else
                     {
-                        VectTensor4 consistentCep = VectTensor4::Zero();
-                        Eigen::Matrix<double, 1, 9> gradTH = vectGradient.transpose()*H;
-                        consistentCep = H - (H*vectGradient*gradTH) / ((gradTH*vectGradient) + plasticModulus);
+                        VectTensor4 consistentCep = VectTensor4();
+                        Mat<1, 9, Real> gradTH = vectGradient.transposed()*H;
+                        Mat<1, 1, Real> scalarMatrix = gradTH*vectGradient;
+                        consistentCep = H - (H*vectGradient*gradTH) / (scalarMatrix[0][0] + plasticModulus);
                         Cep = vectToVoigt4(consistentCep);
                     }
                 }
                 else
                 {
                     //Computation of matrix H as in Studies in anisotropic plasticity with reference to the Hill criterion, De Borst and Feenstra, 1990
-                    VectTensor4 H = VectTensor4::Zero();
+                    VectTensor4 H = VectTensor4();
                     VectTensor4 I = VectTensor4::Identity();
                     VoigtTensor2 elasticPredictor = m_elasticPredictors[i][gaussPointIt];
 
@@ -1787,29 +1826,42 @@ void BeamPlasticFEMForceField<DataTypes>::updateTangentStiffness(int i,
                     VectTensor4 vectC = voigtToVect4(C);
                     double yieldStress = m_beamsData.getValue()[i]._localYieldStresses[gaussPointIt];
                     // NB: the gradient is the same between the elastic predictor and the new stress
-                    double DeltaLambda = vonMisesYield(elasticPredictor, yieldStress) / (vectGradient.transpose()*vectC*vectGradient);
+                    Mat<1, 1, Real> scalarMatrix = vectGradient.transposed()*vectC*vectGradient;
+                    double DeltaLambda = vonMisesYield(elasticPredictor, yieldStress) / scalarMatrix[0][0];
                     VectTensor4 vectHessian = vonMisesHessian(elasticPredictor, yieldStress);
 
                     VectTensor4 M = (I + DeltaLambda*vectC*vectHessian);
                     // M is symmetric positive definite, we perform Cholesky decomposition to invert it
-                    VectTensor4 invertedM = M.llt().solve(I);
+                    // For this, we convert the matrix using Eigen
+                    // TO DO: is there a more efficient way?
+                    Eigen::Matrix<double, 9, 9> eigenM = Eigen::Matrix<double, 9, 9>::Zero();
+                    for (int i=0; i < 9; i++)
+                        for (int j=0; j < 9; j++)
+                            eigenM(i, j) = M[i][j];
+                    Eigen::Matrix<double, 9, 9> eigenI = Eigen::Matrix<double, 9, 9>::Identity();
+                    Eigen::Matrix<double, 9, 9> invertedEigenM = eigenM.llt().solve(eigenI);
+                    VectTensor4 invertedM = VectTensor4();
+                    for (int i=0; i < 9; i++)
+                        for (int j=0; j < 9; j++)
+                            invertedM[i][j] = invertedEigenM(i, j);
                     H = invertedM*vectC;
 
                     //Computation of Cep
-                    if (gradient.isZero())
+                    if (equalsZero(scalarProduct(gradient, gradient)))
                         Cep = vectToVoigt4(H);
                     else
                     {
-                        VectTensor4 consistentCep = VectTensor4::Zero();
-                        Eigen::Matrix<double, 1, 9> gradTH = vectGradient.transpose()*H;
-                        consistentCep = H - (H*vectGradient*gradTH) / (gradTH*vectGradient);
+                        VectTensor4 consistentCep = VectTensor4();
+                        Mat<1, 9, Real> gradTH = vectGradient.transposed()*H;
+                        Mat<1, 1, Real> scalarMatrix = gradTH*vectGradient;
+                        consistentCep = H - (H*vectGradient*gradTH) / scalarMatrix[0][0];
                         Cep = vectToVoigt4(consistentCep);
                     }
                 } // end if d_isPerfectlyPlastic = true
             } // end if pointMechanicalState[gaussPointIt] == MechanicalState::PLASTIC
         } // end if d_useConsistentTangentOperator = true
 
-        tangentStiffness += (w1*w2*w3)*beTCBeMult(Be.transpose(), Cep, nu, E);
+        tangentStiffness += (w1*w2*w3)*beTCBeMult(Be.transposed(), Cep, nu, E);
 
         gaussPointIt++; //Next Gauss Point
     };
@@ -1896,7 +1948,7 @@ void BeamPlasticFEMForceField<DataTypes>::computeDisplacementIncrement(const Vec
 
 
 template< class DataTypes>
-double BeamPlasticFEMForceField<DataTypes>::computePlasticModulusFromStress(const Eigen::Matrix<double, 6, 1> &stressState)
+double BeamPlasticFEMForceField<DataTypes>::computePlasticModulusFromStress(const VoigtTensor2 &stressState)
 {
     const double eqStress = equivalentStress(stressState);
     double plasticModulus = m_ConstitutiveLaw->getTangentModulusFromStress(eqStress); //TO DO: check for definition of H' in Hugues 1984
@@ -1918,7 +1970,7 @@ double BeamPlasticFEMForceField<DataTypes>::computeConstPlasticModulus()
 }
 
 template<class DataTypes>
-Eigen::Matrix<double, 9, 1> BeamPlasticFEMForceField<DataTypes>::voigtToVect2(const VoigtTensor2 &voigtTensor)
+auto BeamPlasticFEMForceField<DataTypes>::voigtToVect2(const VoigtTensor2 &voigtTensor) -> VectTensor2
 {
     // This function aims at vectorising a second-order tensor taking into account
     // all 9 elements of the tensor. The result is thus a 9x1 vector (contrarily
@@ -1929,7 +1981,7 @@ Eigen::Matrix<double, 9, 1> BeamPlasticFEMForceField<DataTypes>::voigtToVect2(co
     // res[6] = T_13, res[7] = T_23, res[8] = T_33
     // where T is the second-order (9 element) tensor in matrix form.
 
-    VectTensor2 res = VectTensor2::Zero();
+    VectTensor2 res = VectTensor2();
 
     res[0] = voigtTensor[0];
     res[4] = voigtTensor[1];
@@ -1943,7 +1995,7 @@ Eigen::Matrix<double, 9, 1> BeamPlasticFEMForceField<DataTypes>::voigtToVect2(co
 
 
 template<class DataTypes>
-Eigen::Matrix<double, 9, 9> BeamPlasticFEMForceField<DataTypes>::voigtToVect4(const VoigtTensor4 &voigtTensor)
+auto BeamPlasticFEMForceField<DataTypes>::voigtToVect4(const VoigtTensor4 &voigtTensor) -> VectTensor4
 {
     // This function aims at vectorising a fourth-order tensor taking into account
     // all 81 elements of the tensor. The result is thus a 9x9 matrix (contrarily
@@ -1955,7 +2007,7 @@ Eigen::Matrix<double, 9, 9> BeamPlasticFEMForceField<DataTypes>::voigtToVect4(co
     // etc.
     // where T is the fourth-order (81 element) tensor in matrix form.
 
-    VectTensor4 res = VectTensor4::Zero();
+    VectTensor4 res = VectTensor4();
 
     // Row 0
     res(0, 0) = voigtTensor(0, 0);
@@ -2010,7 +2062,7 @@ Eigen::Matrix<double, 9, 9> BeamPlasticFEMForceField<DataTypes>::voigtToVect4(co
 
 
 template<class DataTypes>
-Eigen::Matrix<double, 6, 1> BeamPlasticFEMForceField<DataTypes>::vectToVoigt2(const VectTensor2 &vectTensor)
+auto BeamPlasticFEMForceField<DataTypes>::vectToVoigt2(const VectTensor2 &vectTensor) -> VoigtTensor2
 {
     // This function aims at reducing the expression of a second-order tensor
     // using Voigt notation. The tensor is initially expressed in vector form
@@ -2020,7 +2072,7 @@ Eigen::Matrix<double, 6, 1> BeamPlasticFEMForceField<DataTypes>::vectToVoigt2(co
     // res[6] = T_13, res[7] = T_23, res[8] = T_33
     // where T is the second-order (9 element) tensor in matrix form.
 
-    VoigtTensor2 res = VoigtTensor2::Zero();
+    VoigtTensor2 res = VoigtTensor2();
 
     res[0] = vectTensor[0];
     res[1] = vectTensor[4];
@@ -2034,7 +2086,7 @@ Eigen::Matrix<double, 6, 1> BeamPlasticFEMForceField<DataTypes>::vectToVoigt2(co
 
 
 template<class DataTypes>
-Eigen::Matrix<double, 6, 6> BeamPlasticFEMForceField<DataTypes>::vectToVoigt4(const VectTensor4 &vectTensor)
+auto BeamPlasticFEMForceField<DataTypes>::vectToVoigt4(const VectTensor4 &vectTensor) -> Matrix6x6
 {
     // This function aims at reducing the expression of a fourth-order tensor
     // using Voigt notation. The tensor is initially expressed in vector form
@@ -2044,7 +2096,7 @@ Eigen::Matrix<double, 6, 6> BeamPlasticFEMForceField<DataTypes>::vectToVoigt4(co
     // etc.
     // where T is the fourth-order (81 element) tensor in matrix form.
 
-    VoigtTensor4 res = VoigtTensor4::Zero();
+    VoigtTensor4 res = VoigtTensor4();
 
     // 1st row
     res(0, 0) = vectTensor(0, 0);
@@ -2100,7 +2152,7 @@ Eigen::Matrix<double, 6, 6> BeamPlasticFEMForceField<DataTypes>::vectToVoigt4(co
 //---------- Incremental force computation for perfect plasticity ----------//
 
 template< class DataTypes>
-void BeamPlasticFEMForceField<DataTypes>::computeForceWithPerfectPlasticity(Eigen::Matrix<double, 12, 1>& internalForces,
+void BeamPlasticFEMForceField<DataTypes>::computeForceWithPerfectPlasticity(Matrix12x1& internalForces,
                                                                             const VecCoord& x, int index, Index a, Index b)
 {
     // Computes displacement increment, from last system solution
@@ -2109,8 +2161,8 @@ void BeamPlasticFEMForceField<DataTypes>::computeForceWithPerfectPlasticity(Eige
     Vec12 dispIncrement;
     computeDisplacementIncrement(x, m_lastPos, currentDisp, lastDisp, dispIncrement, index, a, b);
 
-    // Converts to Eigen data structure
-    EigenDisplacement displacementIncrement;
+    // Converts to Matrix data structure
+    Matrix12x1 displacementIncrement;
     for (int k = 0; k < 12; k++)
         displacementIncrement(k) = dispIncrement[k];
 
@@ -2120,12 +2172,12 @@ void BeamPlasticFEMForceField<DataTypes>::computeForceWithPerfectPlasticity(Eige
     typedef ozp::quadrature::Gaussian<3> GaussianQuadratureType;
     typedef std::function<void(double, double, double, double, double, double)> LambdaType;
 
-    const Eigen::Matrix<double, 6, 6>& C = m_beamsData.getValue()[index]._materialBehaviour;
-    Eigen::Matrix<double, 6, 12> Be;
+    const Matrix6x6& C = m_beamsData.getValue()[index]._materialBehaviour;
+    Matrix6x12 Be;
 
-    VoigtTensor2 initialStressPoint = VoigtTensor2::Zero();
-    VoigtTensor2 strainIncrement = VoigtTensor2::Zero();
-    VoigtTensor2 newStressPoint = VoigtTensor2::Zero();
+    VoigtTensor2 initialStressPoint = VoigtTensor2();
+    VoigtTensor2 strainIncrement = VoigtTensor2();
+    VoigtTensor2 newStressPoint = VoigtTensor2();
 
     type::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
     Vec<27, MechanicalState>& pointMechanicalState = bd[index]._pointMechanicalState;
@@ -2152,7 +2204,7 @@ void BeamPlasticFEMForceField<DataTypes>::computeForceWithPerfectPlasticity(Eige
 
         m_prevStresses[index][gaussPointIt] = newStressPoint;
 
-        internalForces += (w1*w2*w3)*beTTensor2Mult(Be.transpose(), newStressPoint);
+        internalForces += (w1*w2*w3)*beTTensor2Mult(Be.transposed(), newStressPoint);
 
         gaussPointIt++; //Next Gauss Point
     };
@@ -2186,7 +2238,7 @@ void BeamPlasticFEMForceField<DataTypes>::computePerfectPlasticStressIncrement(i
     //NB: we consider that the yield function and the plastic flow are equal (f=g)
     //    This corresponds to an associative flow rule (for plasticity)
 
-    const Eigen::Matrix<double, 6, 6>& C = m_beamsData.getValue()[index]._materialBehaviour; //Matrix D in Krabbenhoft's
+    const Matrix6x6& C = m_beamsData.getValue()[index]._materialBehaviour; //Matrix D in Krabbenhoft's
 
     /***************************************************/
     /*  Radial return in perfect plasticity - Hugues   */
@@ -2234,10 +2286,10 @@ void BeamPlasticFEMForceField<DataTypes>::computePerfectPlasticStressIncrement(i
             // Ref: Theoretical foundation for large scale computations for nonlinear
             // material behaviour, Hugues (et al) 1984
 
-            double meanStress = (1.0 / 3) * (trialStress[0] + trialStress[1] + trialStress[2]);
+            double meanStress = (1.0 / 3) * (trialStress[0][0] + trialStress[1][0] + trialStress[2][0]);
 
             // Computing the new stress
-            VoigtTensor2 voigtIdentityTensor = VoigtTensor2::Zero();
+            VoigtTensor2 voigtIdentityTensor = VoigtTensor2();
             voigtIdentityTensor[0] = 1;
             voigtIdentityTensor[1] = 1;
             voigtIdentityTensor[2] = 1;
@@ -2251,7 +2303,7 @@ void BeamPlasticFEMForceField<DataTypes>::computePerfectPlasticStressIncrement(i
 
             VoigtTensor2 plasticStrainIncrement = lambda * yieldNormal;
             type::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
-            Vec<27, Eigen::Matrix<double, 6, 1>>& plasticStrainHistory = bd[index]._plasticStrainHistory;
+            Vec<27, VoigtTensor2>& plasticStrainHistory = bd[index]._plasticStrainHistory;
             plasticStrainHistory[gaussPointIt] += plasticStrainIncrement;
             m_beamsData.endEdit();
         }
@@ -2264,7 +2316,7 @@ void BeamPlasticFEMForceField<DataTypes>::computePerfectPlasticStressIncrement(i
 
 
 template< class DataTypes>
-void BeamPlasticFEMForceField<DataTypes>::computeForceWithHardening(Eigen::Matrix<double, 12, 1> &internalForces,
+void BeamPlasticFEMForceField<DataTypes>::computeForceWithHardening(Matrix12x1 &internalForces,
                                                                     const VecCoord& x, int index, Index a, Index b)
 {
     // Computes displacement increment, from last system solution
@@ -2273,8 +2325,8 @@ void BeamPlasticFEMForceField<DataTypes>::computeForceWithHardening(Eigen::Matri
     Vec12 dispIncrement;
     computeDisplacementIncrement(x, m_lastPos, currentDisp, lastDisp, dispIncrement, index, a, b);
 
-    // Converts to Eigen data structure
-    EigenDisplacement displacementIncrement;
+    // Converts to Matrix data structure
+    Matrix12x1 displacementIncrement;
     for (int k = 0; k < 12; k++)
         displacementIncrement(k) = dispIncrement[k];
 
@@ -2284,12 +2336,12 @@ void BeamPlasticFEMForceField<DataTypes>::computeForceWithHardening(Eigen::Matri
     typedef ozp::quadrature::Gaussian<3> GaussianQuadratureType;
     typedef std::function<void(double, double, double, double, double, double)> LambdaType;
 
-    const Eigen::Matrix<double, 6, 6>& C = m_beamsData.getValue()[index]._materialBehaviour;
-    Eigen::Matrix<double, 6, 12> Be;
+    const Matrix6x6& C = m_beamsData.getValue()[index]._materialBehaviour;
+    Matrix6x12 Be;
 
-    VoigtTensor2 initialStressPoint = VoigtTensor2::Zero();
-    VoigtTensor2 strainIncrement = VoigtTensor2::Zero();
-    VoigtTensor2 newStressPoint = VoigtTensor2::Zero();
+    VoigtTensor2 initialStressPoint = VoigtTensor2();
+    VoigtTensor2 strainIncrement = VoigtTensor2();
+    VoigtTensor2 newStressPoint = VoigtTensor2();
 
     type::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
     Vec<27, MechanicalState>& pointMechanicalState = bd[index]._pointMechanicalState;
@@ -2316,7 +2368,7 @@ void BeamPlasticFEMForceField<DataTypes>::computeForceWithHardening(Eigen::Matri
 
         m_prevStresses[index][gaussPointIt] = newStressPoint;
 
-        internalForces += (w1*w2*w3)*beTTensor2Mult(Be.transpose(), newStressPoint);
+        internalForces += (w1*w2*w3)*beTTensor2Mult(Be.transposed(), newStressPoint);
 
         gaussPointIt++; //Next Gauss Point
     };
@@ -2351,7 +2403,7 @@ void BeamPlasticFEMForceField<DataTypes>::computeHardeningStressIncrement(int in
     //NB: we consider that the yield function and the plastic flow are equal (f=g)
     //    This corresponds to an associative flow rule (for plasticity)
 
-    const Eigen::Matrix<double, 6, 6>& C = m_beamsData.getValue()[index]._materialBehaviour; //Matrix D in Krabbenhoft's
+    const Matrix6x6& C = m_beamsData.getValue()[index]._materialBehaviour; //Matrix D in Krabbenhoft's
 
     /***************************************************/
     /*      Radial return with hardening - Hugues      */
@@ -2368,8 +2420,8 @@ void BeamPlasticFEMForceField<DataTypes>::computeHardeningStressIncrement(int in
 
     type::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
 
-    Vec<27, Eigen::Matrix<double, 6, 1>> &backStresses = bd[index]._backStresses;
-    Eigen::Matrix<double, 6, 1> &backStress = backStresses[gaussPointIt];
+    Vec<27, VoigtTensor2> &backStresses = bd[index]._backStresses;
+    VoigtTensor2 &backStress = backStresses[gaussPointIt];
 
     Vec<27, Real> &localYieldStresses = bd[index]._localYieldStresses;
     Real &yieldStress = localYieldStresses[gaussPointIt];
@@ -2416,7 +2468,7 @@ void BeamPlasticFEMForceField<DataTypes>::computeHardeningStressIncrement(int in
         backStress += helper::rsqrt(2.0 / 3.0)*(1 - beta)*H*plasticMultiplier*finalN;
 
         //type::vector<BeamInfo>& bd = *(m_beamsData.beginEdit()); //Done in the beginning to modify the yield and back stresses
-        Vec<27, Eigen::Matrix<double, 6, 1>> &plasticStrainHistory = bd[index]._plasticStrainHistory;
+        Vec<27, VoigtTensor2> &plasticStrainHistory = bd[index]._plasticStrainHistory;
         VoigtTensor2 plasticStrainIncrement = helper::rsqrt(3.0/2.0)*plasticMultiplier*finalN;
         plasticStrainHistory[gaussPointIt] += plasticStrainIncrement;
         //m_beamsData.endEdit();
@@ -2518,9 +2570,9 @@ void BeamPlasticFEMForceField<DataTypes>::initialiseGaussPoints(int beam, type::
 
 template< class DataTypes>
 auto BeamPlasticFEMForceField<DataTypes>::computeNx(Real x, Real y, Real z, Real L, Real A, Real Iy, Real Iz,
-                                                    Real E, Real nu, Real kappaY, Real kappaZ)->EigenMat3x12
+                                                    Real E, Real nu, Real kappaY, Real kappaZ)->Matrix3x12
 {
-    EigenMat3x12 Nx = EigenMat3x12::Zero(); // Sets each element to 0
+    Matrix3x12 Nx = Matrix3x12(); // Sets each element to 0
     Real xi = x / L;
     Real eta = y / L;
     Real zeta = z / L;
@@ -2589,9 +2641,9 @@ auto BeamPlasticFEMForceField<DataTypes>::computeNx(Real x, Real y, Real z, Real
 
 template< class DataTypes>
 auto BeamPlasticFEMForceField<DataTypes>::computeGradN(Real x, Real y, Real z, Real L, Real A, Real Iy, Real Iz,
-                                                       Real E, Real nu, Real kappaY, Real kappaZ)->EigenMat9x12
+                                                       Real E, Real nu, Real kappaY, Real kappaZ)->Matrix9x12
 {
-    EigenMat9x12 gradN = EigenMat9x12::Zero(); // Sets each element to 0
+    Matrix9x12 gradN = Matrix9x12(); // Sets each element to 0
     Real xi = x / L;
     Real eta = y / L;
     Real zeta = z / L;
@@ -2690,25 +2742,25 @@ BeamPlasticFEMForceField<DataTypes>::GaussPoint3::GaussPoint3(Real x, Real y, Re
 }
 
 template <class DataTypes>
-auto BeamPlasticFEMForceField<DataTypes>::GaussPoint3::getNx() const -> const EigenMat3x12&
+auto BeamPlasticFEMForceField<DataTypes>::GaussPoint3::getNx() const -> const Matrix3x12&
 {
     return m_Nx;
 }
 
 template <class DataTypes>
-void BeamPlasticFEMForceField<DataTypes>::GaussPoint3::setNx(EigenMat3x12 Nx)
+void BeamPlasticFEMForceField<DataTypes>::GaussPoint3::setNx(Matrix3x12 Nx)
 {
     m_Nx = Nx;
 }
 
 template <class DataTypes>
-auto BeamPlasticFEMForceField<DataTypes>::GaussPoint3::getGradN() const -> const EigenMat9x12&
+auto BeamPlasticFEMForceField<DataTypes>::GaussPoint3::getGradN() const -> const Matrix9x12&
 {
     return m_gradN;
 }
 
 template <class DataTypes>
-void BeamPlasticFEMForceField<DataTypes>::GaussPoint3::setGradN(EigenMat9x12 gradN)
+void BeamPlasticFEMForceField<DataTypes>::GaussPoint3::setGradN(Matrix9x12 gradN)
 {
     m_gradN = gradN;
 }
