@@ -65,11 +65,10 @@ template<class T, sofa::Size N>
 class fixed_array
 {
 public:
-    T elems[N];    // fixed-size array of elements of type T
+    T elems[N]{};    // fixed-size array of elements of type T
 
     typedef T Array[N]; ///< name the array type
 
-public:
     // type definitions
     typedef T              value_type;
     typedef T*             iterator;
@@ -79,7 +78,7 @@ public:
     typedef sofa::Size     size_type;
     typedef std::ptrdiff_t difference_type;
 
-    fixed_array() = default;
+    constexpr fixed_array() = default;
 
     /// Specific constructor for 1-element vectors.
     template<size_type NN = N, typename std::enable_if<NN == 1, int>::type = 0>
@@ -92,12 +91,9 @@ public:
         typename = std::enable_if_t< (std::is_convertible_v<ArgsT, value_type> && ...) >,
         typename = std::enable_if_t< (sizeof...(ArgsT) == N && sizeof...(ArgsT) > 1) >
     >
-    constexpr fixed_array(const ArgsT... r) noexcept
-    {
-        // elems = { r... }; // doable if elems was assignable
-        std::size_t i = 0;
-        ( (elems[i++] = r), ...);
-    }
+    constexpr fixed_array(ArgsT&&... r) noexcept
+        : elems{static_cast<value_type>(std::forward< ArgsT >(r))...}
+    {}
 
     // iterator support
     constexpr iterator begin() noexcept
@@ -164,7 +160,7 @@ public:
     }
 
     // size is constant
-    static size_type size() noexcept
+    static constexpr size_type size() noexcept
     {
         return N;
     }
@@ -172,7 +168,7 @@ public:
     {
         return false;
     }
-    static size_type max_size() noexcept
+    static constexpr size_type max_size() noexcept
     {
         return N;
     }

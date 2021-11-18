@@ -207,6 +207,8 @@ macro(sofa_create_package)
     if(ARG_RELOCATABLE)
         sofa_set_project_install_relocatable(${package_install_dir} ${CMAKE_CURRENT_BINARY_DIR} ${ARG_RELOCATABLE})
     endif()
+
+    sofa_install_git_infos(${ARG_PACKAGE_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
 endmacro()
 
 
@@ -935,40 +937,64 @@ endfunction()
 ## to store which sources have been used for installed binaries
 ## these should be internal files and not delivered, but this is definitively useful
 ## when storing backups / demos across several repositories (e.g. sofa + plugins)
-macro( sofa_install_git_version name sourcedir )
-INSTALL( CODE
-"
-    find_package(Git REQUIRED)
-
-    # the current commit hash should be enough
-    # except if the git history changes...
-    # so adding more stuff to be sure
-
-    # get the current working branch
-    execute_process(
-      COMMAND \${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
-      WORKING_DIRECTORY ${sourcedir}
-      OUTPUT_VARIABLE SOFA_GIT_BRANCH
-      OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-
-    # get the current commit info (hash, author, date, comment)
-    execute_process(
-      COMMAND \${GIT_EXECUTABLE} log --format=medium -n 1
-      WORKING_DIRECTORY ${sourcedir}
-      OUTPUT_VARIABLE SOFA_GIT_INFO
-      OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-
-    string( TOLOWER \"${name}\" name_lower )
-    if( name_lower STREQUAL \"sofa\" )
-        file(WRITE  \"${CMAKE_INSTALL_PREFIX}/git.version\" \"######## ${name} ########\nBranch: \${SOFA_GIT_BRANCH}\n\${SOFA_GIT_INFO}\n############\n\n\" )
-    else()
-        file(APPEND \"${CMAKE_INSTALL_PREFIX}/git.version\" \"######## ${name} ########\nBranch: \${SOFA_GIT_BRANCH}\n\${SOFA_GIT_INFO}\n############\n\n\" )
+function(sofa_install_git_infos name sourcedir)
+    if(NOT EXISTS "${sourcedir}/.git")
+        return()
     endif()
-"
-)
-endmacro()
+    install(CODE "
+        find_package(Git REQUIRED)
+        # get the current commit sha
+        execute_process(
+            COMMAND \${GIT_EXECUTABLE} rev-parse HEAD
+            WORKING_DIRECTORY \"${sourcedir}\"
+            OUTPUT_VARIABLE CURRENT_GIT_COMMIT
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+        # get the branches containing current commit
+        execute_process(
+            COMMAND \${GIT_EXECUTABLE} branch -a --contains \"\${CURRENT_GIT_COMMIT}\"
+            WORKING_DIRECTORY \"${sourcedir}\"
+            OUTPUT_VARIABLE CURRENT_GIT_BRANCH
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+        # get the current remotes
+        execute_process(
+            COMMAND \${GIT_EXECUTABLE} remote -vv
+            WORKING_DIRECTORY \"${sourcedir}\"
+            OUTPUT_VARIABLE CURRENT_GIT_REMOTE
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+        # get more info (hash, author, date, comment)
+        execute_process(
+            COMMAND \${GIT_EXECUTABLE} log --pretty -n 1
+            WORKING_DIRECTORY \"${sourcedir}\"
+            OUTPUT_VARIABLE CURRENT_GIT_INFO
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+        # write all info in git-info.txt
+        file(WRITE \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/git-info.txt\"
+            \"# Git info for ${name}\"                              \\n
+                                                                    \\n
+            \"## Current commit\"                                   \\n
+            \"## git rev-parse --abbrev-ref HEAD\"                  \\n
+            \"\${CURRENT_GIT_COMMIT}\"                              \\n
+                                                                    \\n
+            \"## Branches containing current commit\"               \\n
+            \"## git branch -a --contains \${CURRENT_GIT_COMMIT} \" \\n
+            \"\${CURRENT_GIT_BRANCH}\"                              \\n
+                                                                    \\n
+            \"## Remotes\"                                          \\n
+            \"## git remote -vv \"                                  \\n
+            \"\${CURRENT_GIT_REMOTE}\"                              \\n
+                                                                    \\n
+            \"## More info\"                                        \\n
+            \"## git log --pretty -n 1\"                            \\n
+            \"\${CURRENT_GIT_INFO}\"                                \\n
+            )
+        "
+        COMPONENT resources
+        )
+endfunction()
 
 
 

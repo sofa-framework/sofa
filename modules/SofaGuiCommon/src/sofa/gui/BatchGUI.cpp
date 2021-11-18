@@ -191,6 +191,8 @@ int BatchGUI::RegisterGUIParameters(ArgumentParser* argumentParser)
 
 void BatchGUI::OnNbIterChange(const ArgumentParser* argumentParser, const std::string& strValue)
 {
+    SOFA_UNUSED(argumentParser);
+
     nbIterInp = strValue;
     size_t inpLen = nbIterInp.length();
 

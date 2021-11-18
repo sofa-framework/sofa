@@ -353,7 +353,9 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
             J[c][2] = lz[c]/2;
         }
         detJ = type::determinant(J);
-        J_1.invert(J);
+        const bool canInvert = J_1.invert(J);
+        assert(canInvert);
+        SOFA_UNUSED(canInvert);
         J_1t.transpose(J_1);
 
         dmsg_info_when(verbose) << "J = " << J << msgendl
@@ -387,7 +389,9 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
                         J[c][2] =(Real)( (nodes[4][c]-nodes[0][c])*(1-x1)*(1-x2)/8+(nodes[5][c]-nodes[1][c])*(1+x1)*(1-x2)/8+(nodes[6][c]-nodes[2][c])*(1+x1)*(1+x2)/8+(nodes[7][c]-nodes[3][c])*(1-x1)*(1+x2)/8);
                     }
                     detJ = type::determinant(J);
-                    J_1.invert(J);
+                    const bool canInvert = J_1.invert(J);
+                    assert(canInvert);
+                    SOFA_UNUSED(canInvert);
                     J_1t.transpose(J_1);
 
                     dmsg_info_when(verbose) << "J = " << J << msgendl
@@ -535,7 +539,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
                 }
                 tmp<<" |  "<<std::endl;
             }
-            tmp<<"  "<<sendl;
+            tmp<<"  "<< std::endl;
         }
         tmp<<"===============================================================" << msgendl;
         msg_info() << tmp.str() ;
@@ -1124,80 +1128,32 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
-    if (auto* crsmat_d = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,double> > * >(r.matrix))
+    sofa::Index e { 0 }; //index of the element in the topology
+
+    const auto& stiffnesses = _elementStiffnesses.getValue();
+    const auto* indexedElements = this->getIndexedElements();
+
+    for (const auto& element : *indexedElements)
     {
-        addKToBlocMatrix<double>(crsmat_d, kFactor, r.offset);
-    }
-    else if (auto* crsmat_f = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,float> > * >(r.matrix))
-    {
-        addKToBlocMatrix<float>(crsmat_f, kFactor, r.offset);
-    }
-    else
-    {
-        int e; //index of the element in the topology
-
-        typename VecElement::const_iterator it;
-        typename Element::size_type n1, n2;
-
-        Index node1, node2;
-
-        for(it = this->getIndexedElements()->begin(), e=0 ; it != this->getIndexedElements()->end() ; ++it,++e)
-        {
-            const ElementStiffness &Ke = _elementStiffnesses.getValue()[e];
-            const Transformation Rot = getElementRotation(e);
-
-            // find index of node 1
-            for (n1 = 0; n1 < Element::size(); n1++)
-            {
-                node1 = (*it)[n1];
-                // find index of node 2
-                for (n2 = 0; n2 < Element::size(); n2++)
-                {
-                    node2 = (*it)[n2];
-
-                    const Mat33 tmp = Rot.multTranspose( Mat33(
-                            Coord(Ke[3*n1+0][3*n2+0],Ke[3*n1+0][3*n2+1],Ke[3*n1+0][3*n2+2]),
-                            Coord(Ke[3*n1+1][3*n2+0],Ke[3*n1+1][3*n2+1],Ke[3*n1+1][3*n2+2]),
-                            Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * Rot;
-                    r.matrix->add(r.offset + 3 * node1, r.offset + 3 * node2, tmp * (-kFactor));
-                }
-            }
-        }
-    }
-}
-
-template<class DataTypes>
-template<class BlocReal>
-void HexahedronFEMForceField<DataTypes>::addKToBlocMatrix(
-        sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3, 3, BlocReal>, type::vector<type::Mat<3, 3, BlocReal> >, type::vector<sofa::Index> >* crsmat,
-        SReal k, unsigned int& offset)
-{
-    int e; //index of the element in the topology
-
-    typename VecElement::const_iterator it;
-    typename Element::size_type n1, n2;
-
-    Index node1, node2;
-
-    for(it = this->getIndexedElements()->begin(), e=0 ; it != this->getIndexedElements()->end() ; ++it,++e)
-    {
-        const ElementStiffness &Ke = _elementStiffnesses.getValue()[e];
+        const ElementStiffness &Ke = stiffnesses[e];
         const Transformation Rot = getElementRotation(e);
+        e++;
 
         // find index of node 1
-        for (n1 = 0; n1 < Element::size(); n1++)
+        for (Element::size_type n1 = 0; n1 < Element::size(); n1++)
         {
-            node1 = (*it)[n1];
+            const auto node1 = element[n1];
             // find index of node 2
-            for (n2 = 0; n2 < Element::size(); n2++)
+            for (Element::size_type n2 = 0; n2 < Element::size(); n2++)
             {
-                node2 = (*it)[n2];
+                const auto node2 = element[n2];
 
                 const Mat33 tmp = Rot.multTranspose( Mat33(
                         Coord(Ke[3*n1+0][3*n2+0],Ke[3*n1+0][3*n2+1],Ke[3*n1+0][3*n2+2]),
                         Coord(Ke[3*n1+1][3*n2+0],Ke[3*n1+1][3*n2+1],Ke[3*n1+1][3*n2+2]),
                         Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * Rot;
-                *crsmat->wbloc(offset / 3 + node1, offset / 3 + node2, true) += tmp * (-k);
+
+                r.matrix->add( r.offset + 3 * node1, r.offset + 3 * node2, tmp * (-kFactor));
             }
         }
     }

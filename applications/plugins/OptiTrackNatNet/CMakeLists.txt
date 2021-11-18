@@ -21,6 +21,12 @@ sofa_find_package(Boost QUIET COMPONENTS system regex date_time REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_OPTITRACKNATNET")
+
+if(MSVC)
+    #define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
+    target_compile_definitions(${PROJECT_NAME} PUBLIC BOOST_ALL_DYN_LINK)
+endif()
+
 target_link_libraries(${PROJECT_NAME} SofaCore SofaSimulationCommon SofaUserInteraction Sofa.GL)
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")

@@ -20,7 +20,7 @@
 
     <Node name="TT">
         <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver iterations="25" name="linear solver" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1e-5" threshold="1e-5"/>
 
         <MechanicalObject src="@../loader" name="Volume" translation="4 0 0"/>
         <TetrahedronSetTopologyContainer name="TetraCon" tetrahedra="@../loader.tetrahedra" />

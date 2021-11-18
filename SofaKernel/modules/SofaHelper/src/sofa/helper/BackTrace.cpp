@@ -47,10 +47,10 @@ namespace sofa
 namespace helper
 {
 
-/// Dump current backtrace to stderr.
-/// Currently only works on Linux. NOOP on other architectures.
-void BackTrace::dump()
+BackTrace::StackTrace BackTrace::getTrace(size_t maxEntries)
 {
+    BackTrace::StackTrace result;
+
 #if defined(__GNUC__) && !defined(__APPLE__) && !defined(WIN32)
     void *array[128];
     int size = backtrace(array, sizeof(array) / sizeof(array[0]));
@@ -59,23 +59,22 @@ void BackTrace::dump()
         char** symbols = backtrace_symbols(array, size);
         if (symbols != nullptr)
         {
-            for (int i = 0; i < size; ++i)
+            for (size_t i = 1; i < std::min(size_t(size), maxEntries); ++i)
             {
                 char* symbol = symbols[i];
-
                 // Decode the method's name to a more readable form if possible
                 char *beginmangled = strrchr(symbol,'(');
                 if (beginmangled != nullptr)
                 {
-                    ++beginmangled;
+                    beginmangled++;
                     char *endmangled = strrchr(beginmangled ,')');
                     if (endmangled != nullptr)
                     {
                         // remove +0x[0-9a-fA-f]* suffix
                         char* savedend = endmangled;
                         while((endmangled[-1]>='0' && endmangled[-1]<='9') ||
-                                (endmangled[-1]>='a' && endmangled[-1]<='f') ||
-                                (endmangled[-1]>='A' && endmangled[-1]<='F'))
+                              (endmangled[-1]>='a' && endmangled[-1]<='f') ||
+                              (endmangled[-1]>='A' && endmangled[-1]<='F'))
                             --endmangled;
                         if (endmangled[-1]=='x' && endmangled[-2]=='0' && endmangled[-3]=='+')
                             endmangled -= 3;
@@ -91,14 +90,11 @@ void BackTrace::dump()
                             free(name);
                             name = realname;
                         }
-                        fprintf(stderr,"-> %.*s%s%s\n",(int)(beginmangled-symbol),symbol,name,endmangled);
+                        if(strlen(name) != 0)
+                            result.push_back(std::string(name));
                         free(name);
                     }
-                    else
-                        fprintf(stderr,"-> %s\n",symbol);
                 }
-                else
-                    fprintf(stderr,"-> %s\n",symbol);
             }
             free(symbols);
         }
@@ -107,6 +103,7 @@ void BackTrace::dump()
             backtrace_symbols_fd(array, size, STDERR_FILENO);
         }
     }
+
 #elif !defined(__GNUC__) && !defined(__APPLE__) && defined(WIN32)
     unsigned int   i;
     void         * stack[100];
@@ -126,11 +123,28 @@ void BackTrace::dump()
     for (i = 0; i < frames; i++)
     {
         SymFromAddr(process, (DWORD64)(stack[i]), 0, symbol);
-        std::cerr << (frames - i - 1) << ": " << symbol->Name << " - 0x" << std::hex << symbol->Address << std::dec ;
+        result.push_back(symbol->Name);
     }
 
     free(symbol);
 #endif
+
+    return result;
+}
+
+/// Dump current backtrace to stderr.
+/// Currently only works on Linux. NOOP on other architectures.
+void BackTrace::dump()
+{
+    auto stacktrace = getTrace();
+    if(stacktrace.empty())
+        return;
+
+    // iterates over all the traces skipping the first...which is containing the call to "dump()"
+    for(auto it = stacktrace.begin()+1; it != stacktrace.end(); ++it)
+    {
+        std::cerr << "  " << *it << std::endl;
+    }
 }
 
 /// Enable dump of backtrace when a signal is received.

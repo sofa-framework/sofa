@@ -34,17 +34,7 @@ Visitor::Result MechanicalPropagateDxAndResetForceVisitor::fwdMechanicalState(si
 
 Visitor::Result MechanicalPropagateDxAndResetForceVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
 {
-    if (!ignoreMask)
-    {
-        ForceMaskActivate(map->getMechFrom() );
-        ForceMaskActivate(map->getMechTo() );
-    }
     map->applyJ(mparams, dx, dx);
-
-    if (!ignoreMask)
-    {
-        ForceMaskDeactivate(map->getMechTo() );
-    }
 
     return RESULT_CONTINUE;
 }
@@ -52,7 +42,7 @@ Visitor::Result MechanicalPropagateDxAndResetForceVisitor::fwdMechanicalMapping(
 
 void MechanicalPropagateDxAndResetForceVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
 {
-    mm->forceMask.activate(false);
+    SOFA_UNUSED(mm);
 }
 
 
@@ -67,4 +57,4 @@ std::string MechanicalPropagateDxAndResetForceVisitor::getInfos() const
     return "dx["+dx.getName()+"] f["+f.getName()+"]";
 }
 
-}
+} // namespace sofa::simulation::mechanicalvisitor

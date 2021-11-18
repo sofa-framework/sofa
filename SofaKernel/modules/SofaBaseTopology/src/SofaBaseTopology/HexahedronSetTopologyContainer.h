@@ -312,8 +312,7 @@ public:
     /** \brief Returns the type of the topology */
 	sofa::core::topology::TopologyElementType getTopologyType() const override {return core::topology::TopologyElementType::HEXAHEDRON;}
 
-    /// \brief function to add a TopologyHandler to the current list of engines.
-    void addTopologyHandler(sofa::core::topology::TopologyHandler* _TopologyHandler);
+    bool linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType);
 
 protected:
 
@@ -416,11 +415,6 @@ protected:
      */
     virtual HexahedraAroundQuad& getHexahedraAroundQuadForModification(const QuadID quadIndex);
 
-
-    /// \brief Function creating the data graph linked to d_hexahedron
-    void updateTopologyHandlerGraph() override;
-
-
     /// Use a specific boolean @see m_hexahedronTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean
     void setHexahedronTopologyToDirty();
@@ -452,14 +446,8 @@ protected:
 
 
     /// Boolean used to know if the topology Data of this container is dirty
-    bool m_hexahedronTopologyDirty;
+    bool m_hexahedronTopologyDirty = false;
 
-    /// List of engines related to this specific container
-    std::list<sofa::core::topology::TopologyHandler *> m_enginesList;
-
-    /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
-    sofa::type::vector< sofa::type::vector<std::string> > m_dataGraph;
-    sofa::type::vector< sofa::type::vector<std::string> > m_enginesGraph;
 };
 
 } //namespace sofa::component::topology

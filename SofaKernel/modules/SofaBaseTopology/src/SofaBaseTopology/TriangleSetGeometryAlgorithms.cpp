@@ -32,7 +32,6 @@ using namespace sofa::defaulttype;
 int TriangleSetGeometryAlgorithmsClass = core::RegisterObject("Triangle set geometry algorithms")
         .add< TriangleSetGeometryAlgorithms<Vec3dTypes> >(true) // default template
         .add< TriangleSetGeometryAlgorithms<Vec2Types> >()
-        .add< TriangleSetGeometryAlgorithms<Vec1Types> >()
         ;
 
 
@@ -55,8 +54,6 @@ int TriangleSetGeometryAlgorithms<defaulttype::Vec1Types>::SplitAlongPath(PointI
 
 template class SOFA_SOFABASETOPOLOGY_API TriangleSetGeometryAlgorithms<Vec3Types>;
 template class SOFA_SOFABASETOPOLOGY_API TriangleSetGeometryAlgorithms<Vec2Types>;
-template class SOFA_SOFABASETOPOLOGY_API TriangleSetGeometryAlgorithms<Vec1Types>;
-
 
 
 template<>

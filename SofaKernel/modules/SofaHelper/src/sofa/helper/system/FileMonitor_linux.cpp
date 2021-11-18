@@ -38,16 +38,15 @@
 #include <vector>
 #include <string>
 #include <map>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-using namespace boost::filesystem;
+
 
 #include "FileSystem.h"
 using sofa::helper::system::FileSystem ;
 
 #include "FileMonitor.h"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
+using namespace std::filesystem;
 
 using namespace std ;
 

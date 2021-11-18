@@ -31,7 +31,7 @@
 #include <sofa/core/MultiVecId.h>
 #include <sofa/helper/map.h>
 
-#include <SofaEigen2Solver/EigenMatrixManipulator.h>
+#include <sofa/linearalgebra/EigenMatrixManipulator.h>
 
 
 namespace sofa::component::constraintset
@@ -45,10 +45,10 @@ protected:
     typedef sofa::core::ConstraintParams::ConstOrder ConstOrder;
 
     typedef Eigen::Matrix<SReal, Eigen::Dynamic, Eigen::Dynamic> MatrixEigen;
-    typedef linearsolver::VectorEigen          VectorEigen;
+    typedef linearalgebra::VectorEigen          VectorEigen;
     typedef defaulttype::BaseVector::Index     Index;
-    typedef linearsolver::SparseMatrixEigen    SparseMatrixEigen;
-    typedef linearsolver::SparseVectorEigen    SparseVectorEigen;
+    typedef linearalgebra::SparseMatrixEigen    SparseMatrixEigen;
+    typedef linearalgebra::SparseVectorEigen    SparseVectorEigen;
 
     typedef std::set< sofa::core::behavior::BaseMechanicalState* > SetDof;
     typedef std::map< const sofa::core::behavior::BaseMechanicalState *, SparseMatrixEigen > DofToMatrix;

@@ -152,10 +152,6 @@ void Multi2Mapping<In1,In2,Out>::apply (const MechanicalParams* mparams, MultiVe
     getConstVecIn2Coord(inPos, vecIn2Pos);
 
     this->apply(mparams, vecOutPos, vecIn1Pos, vecIn2Pos);
-
-#ifdef SOFA_USE_MASK
-    this->m_forceMaskNewStep = true;
-#endif
 }
 
 template < class In1, class In2,class Out>
@@ -181,14 +177,6 @@ void Multi2Mapping<In1,In2,Out>::applyJT (const MechanicalParams* mparams, Multi
     type::vector<const OutDataVecDeriv*> vecInForce;
     getConstVecOutDeriv(outForce, vecInForce);
     this->applyJT(mparams, vecOut1Force, vecOut2Force, vecInForce);
-
-#ifdef SOFA_USE_MASK
-    if( this->m_forceMaskNewStep )
-    {
-        this->m_forceMaskNewStep = false;
-        updateForceMask();
-    }
-#endif
 }
 
 template < class In1, class In2,class Out>
@@ -224,18 +212,15 @@ void Multi2Mapping<In1,In2,Out>::computeAccFromMapping(const MechanicalParams* m
 }
 
 template < class In1, class In2, class Out >
-void Multi2Mapping<In1,In2,Out>::init()
+void Multi2Mapping<In1, In2, Out>::init()
 {
-    maskFrom1.resize( this->fromModels1.size() );
-    for( unsigned i=0 ; i<this->fromModels1.size() ; ++i )
-        if( core::behavior::BaseMechanicalState* stateFrom = this->fromModels1[i]->toBaseMechanicalState() ) maskFrom1[i] = &stateFrom->forceMask;
-    maskFrom2.resize( this->fromModels2.size() );
-    for( unsigned i=0 ; i<this->fromModels2.size() ; ++i )
-        if( core::behavior::BaseMechanicalState* stateFrom = this->fromModels2[i]->toBaseMechanicalState() ) maskFrom2[i] = &stateFrom->forceMask;
-    maskTo.resize( this->toModels.size() );
-    for( unsigned i=0 ; i<this->toModels.size() ; ++i )
-        if (core::behavior::BaseMechanicalState* stateTo = this->toModels[i]->toBaseMechanicalState()) maskTo[i] = &stateTo->forceMask;
-        else this->setNonMechanical();
+    for (auto toModel : this->toModels)
+    {
+        if (!toModel->toBaseMechanicalState())
+        {
+            this->setNonMechanical();
+        }
+    }
 
     apply(mechanicalparams::defaultInstance() , VecCoordId::position(), ConstVecCoordId::position());
     applyJ(mechanicalparams::defaultInstance() , VecDerivId::velocity(), ConstVecDerivId::velocity());
@@ -246,15 +231,6 @@ void Multi2Mapping<In1,In2,Out>::init()
 template < class In1, class In2, class Out >
 void Multi2Mapping<In1,In2,Out>::disable()
 {
-}
-
-
-template < class In1, class In2, class Out >
-void Multi2Mapping<In1,In2,Out>::updateForceMask()
-{
-    type::vector<behavior::BaseMechanicalState*> fromModels = getMechFrom();
-    for (size_t i=0 ; i<fromModels.size() ; i++)
-        fromModels[i]->forceMask.assign(fromModels[i]->getSize(),true);
 }
 
 } // namespace core

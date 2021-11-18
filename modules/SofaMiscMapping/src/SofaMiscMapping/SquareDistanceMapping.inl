@@ -139,14 +139,22 @@ template <class TIn, class TOut>
 void SquareDistanceMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
     if( jacobian.rowSize() )
-        jacobian.mult(dOut,dIn);
+    {
+        auto dOutWa = sofa::helper::getWriteOnlyAccessor(dOut);
+        auto dInRa = sofa::helper::getReadAccessor(dIn);
+        jacobian.mult(dOutWa.wref(),dInRa.ref());
+    }
 }
 
 template <class TIn, class TOut>
 void SquareDistanceMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
 {
     if( jacobian.rowSize() )
-        jacobian.addMultTranspose(dIn,dOut);
+    {
+        auto dOutRa = sofa::helper::getReadAccessor(dOut);
+        auto dInWa = sofa::helper::getWriteOnlyAccessor(dIn);
+        jacobian.addMultTranspose(dInWa.wref(),dOutRa.ref());
+    }
 }
 
 template <class TIn, class TOut>
@@ -281,23 +289,5 @@ void SquareDistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vp
 
     vparams->drawTool()->restoreLastState();
 }
-
-
-
-template <class TIn, class TOut>
-void SquareDistanceMapping<TIn, TOut>::updateForceMask()
-{
-    const SeqEdges& links = edgeContainer->getEdges();
-
-    for(size_t i=0; i<links.size(); i++ )
-    {
-        if (this->maskTo->getEntry( i ) )
-        {
-            this->maskFrom->insertEntry( links[i][0] );
-            this->maskFrom->insertEntry( links[i][1] );
-        }
-    }
-}
-
 
 } // namespace sofa::component::mapping

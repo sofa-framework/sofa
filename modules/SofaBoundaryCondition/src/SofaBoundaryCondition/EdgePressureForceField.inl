@@ -223,7 +223,6 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
                 n2 = Vec3d(0,0,1);
                 tang = x[e[1]] - x[e[0]]; tang.normalize();
 
-                Vec3d sum;
                 bool found = false;
                 size_t k = 0;
                 while ((!found) && (k < _completeTopology->getNbEdges()))

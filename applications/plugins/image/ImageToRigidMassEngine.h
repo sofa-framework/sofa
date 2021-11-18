@@ -30,6 +30,7 @@
 #include <sofa/type/Vec.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/decompose.h>
+#include <sofa/core/DataEngine.h>
 
 namespace sofa
 {

@@ -105,16 +105,6 @@ void Mapping<In,Out>::init()
     if(toModel && !testMechanicalState(toModel.get()))
     {
         setNonMechanical();
-        maskFrom = nullptr;
-        maskTo = nullptr;
-    }
-    else
-    {
-        core::behavior::BaseMechanicalState *state;
-        if( (state = this->fromModel.get()->toBaseMechanicalState()) )
-            maskFrom = &state->forceMask;
-        if( (state = this->toModel.get()->toBaseMechanicalState()) )
-            maskTo = &state->forceMask;
     }
 
     apply(mechanicalparams::defaultInstance(), VecCoordId::position(), ConstVecCoordId::position());
@@ -155,11 +145,7 @@ void Mapping<In,Out>::apply(const MechanicalParams* mparams, MultiVecCoordId out
         const InDataVecCoord* in = inPos[fromModel].read();
         if(out && in)
         {
-
-                this->apply(mparams, *out, *in);
-#ifdef SOFA_USE_MASK
-            this->m_forceMaskNewStep = true;
-#endif
+            this->apply(mparams, *out, *in);
         }
     }
 }// Mapping::apply
@@ -192,15 +178,6 @@ void Mapping<In,Out>::applyJT(const MechanicalParams *mparams, MultiVecDerivId i
         if(out && in)
         {
             this->applyJT(mparams, *out, *in);
-
-#ifdef SOFA_USE_MASK
-            if( this->m_forceMaskNewStep )
-            {
-                this->m_forceMaskNewStep = false;
-                updateForceMask();
-            }
-#endif /*SOFA_USE_MASK*/
-
         }
     }
 }// Mapping::applyJT
@@ -294,16 +271,6 @@ bool Mapping<In,Out>::setTo(BaseState* to)
 
     return true;
 }
-
-template <class In, class Out>
-void Mapping<In,Out>::updateForceMask()
-{
-    assert( maskFrom /*&& SOFA_CLASS_METHOD*/ );
-    // the default implementation adds every dofs to the parent mask
-    // this sould be overloaded by each mapping to only add the implicated parent dofs to the mask
-    maskFrom->assign( fromModel->getSize(), true );
-}
-
 
 } // namespace core
 

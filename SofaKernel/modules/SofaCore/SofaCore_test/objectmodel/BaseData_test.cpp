@@ -32,15 +32,21 @@ class MyData : public BaseData
 {
 public:
     MyData() : BaseData(BaseInitData()) {}
-    virtual bool read(const std::string&){return true;}
-    virtual void printValue(std::ostream&) const {return;}
-    virtual std::string getValueString() const {return "";}
-    virtual std::string getValueTypeString() const {return "";}
-    virtual const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const {return nullptr;}
-    virtual const void* getValueVoidPtr() const {return nullptr;}
-    virtual void* beginEditVoidPtr(){return nullptr;}
-    virtual void* beginWriteOnlyVoidPtr(){return nullptr;}
-    virtual void endEditVoidPtr(){}
+    bool read(const std::string&)override {return true;}
+    void printValue(std::ostream&) const override {return;}
+    std::string getValueString() const override  {return "";}
+    std::string getValueTypeString() const override {return "";}
+    const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const override {return nullptr;}
+    const void* getValueVoidPtr() const {return nullptr;}
+    void* beginEditVoidPtr(){return nullptr;}
+    void* beginWriteOnlyVoidPtr(){return nullptr;}
+    void endEditVoidPtr(){}
+    bool doIsExactSameDataType(const BaseData* ) override{ return false; }
+    bool doCopyValueFrom(const BaseData* ) override{ return false; }
+    bool doSetValueFromLink(const BaseData* ) override{ return false; }
+    const void* doGetValueVoidPtr() const override { return nullptr; }
+    void* doBeginEditVoidPtr() override { return nullptr; }
+    void doEndEditVoidPtr() override { }
 };
 
 class MyObject : public BaseObject
@@ -49,7 +55,12 @@ public:
     SOFA_CLASS(MyObject, BaseObject);
     MyData myData;
     MyObject() :
-        myData() {}
+        myData()
+    {
+        myData.setName("myData");
+        setName("node1");
+        myData.setOwner(this);
+    }
 };
 
 class BaseData_test: public BaseTest
@@ -62,4 +73,9 @@ TEST_F(BaseData_test, setGetName)
 {
     m_object.myData.setName("data1");
     ASSERT_EQ(m_object.myData.getName(), "data1");
+}
+
+TEST_F(BaseData_test, getLinkName)
+{
+    ASSERT_EQ(m_object.myData.getLinkPath(), "@node1.myData");
 }

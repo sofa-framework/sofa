@@ -228,7 +228,9 @@ void TetrahedronCollisionModel::computeBoundingTree(int maxDepth)
         m[1] = pt3-pt1;
         m[2] = pt4-pt1;
         m.transpose();
-        minv.invert(m);
+        const bool canInvert = minv.invert(m);
+        assert(canInvert);
+        SOFA_UNUSED(canInvert);
         elems[i].coord0 = pt1;
         elems[i].bary2coord = m;
         elems[i].coord2bary = minv;

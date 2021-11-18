@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="128"
+   height="128"
+   viewBox="0 0 33.866666 33.866668"
+   version="1.1"
+   id="svg1461"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   sodipodi:docname="collapseAll.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1463"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     units="px"
+     inkscape:zoom="2.9647587"
+     inkscape:cx="-33.223614"
+     inkscape:cy="73.024493"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1458" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g1653"
+       transform="matrix(0.91497157,0,0,0.90688763,0.5958579,2.5272259)"
+       style="fill:#666666">
+      <rect
+         style="fill:#666666;fill-rule:evenodd;stroke-width:1.84991"
+         id="rect43-8-4"
+         width="32.108261"
+         height="5.3769908"
+         x="1.8015887"
+         y="13.269403" />
+      <path
+         style="fill:#666666;stroke:none;stroke-width:2.67209px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="M 7.1811288,-0.16096355 H 28.530311 L 17.489587,7.8942934 Z"
+         id="path198-14" />
+      <path
+         style="fill:#666666;stroke:none;stroke-width:2.67209px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="M 7.1811288,31.931399 H 28.530311 L 17.489587,23.876143 Z"
+         id="path198-14-0" />
+    </g>
+  </g>
+</svg>

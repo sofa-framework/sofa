@@ -15,7 +15,7 @@
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <Node name="TT">
         <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver iterations="25" name="linear solver" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/cube_low_res.msh" />
         <MechanicalObject src="@loader" name="Volume" />
         <TetrahedronSetTopologyContainer name="Tetra_topo" src="@loader" />

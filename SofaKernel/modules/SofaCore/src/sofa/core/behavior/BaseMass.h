@@ -27,7 +27,6 @@
 #include <sofa/defaulttype/TopologyTypes.h>
 #include <sofa/core/MultiVecId.h>
 
-namespace sofa::defaulttype { class BaseMatrix; }
 namespace sofa::core::behavior { class MultiMatrixAccessor; }
 
 namespace sofa

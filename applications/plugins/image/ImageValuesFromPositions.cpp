@@ -38,7 +38,7 @@ using namespace defaulttype;
 int ImageValuesFromPositionsClass = core::RegisterObject("Get image intensities at sample locations")
         .add<ImageValuesFromPositions<ImageD> >(true)
         .add<ImageValuesFromPositions<ImageUC> >()
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
         .add<ImageValuesFromPositions<ImageC> >()
         .add<ImageValuesFromPositions<ImageI> >()
         .add<ImageValuesFromPositions<ImageUI> >()
@@ -53,7 +53,7 @@ int ImageValuesFromPositionsClass = core::RegisterObject("Get image intensities 
 
 template class SOFA_IMAGE_API ImageValuesFromPositions<ImageD>;
 template class SOFA_IMAGE_API ImageValuesFromPositions<ImageUC>;
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_API ImageValuesFromPositions<ImageC>;
 template class SOFA_IMAGE_API ImageValuesFromPositions<ImageI>;
 template class SOFA_IMAGE_API ImageValuesFromPositions<ImageUI>;

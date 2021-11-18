@@ -32,13 +32,11 @@ using namespace sofa::defaulttype;
 int QuadSetGeometryAlgorithmsClass = core::RegisterObject("Quad set geometry algorithms")
         .add< QuadSetGeometryAlgorithms<Vec3Types> >(true) // default template
         .add< QuadSetGeometryAlgorithms<Vec2Types> >()
-        .add< QuadSetGeometryAlgorithms<Vec1Types> >()
 
         ;
 
 template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<Vec3Types>;
 template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<Vec2Types>;
-template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<Vec1Types>;
 
 
 } //namespace sofa::component::topology

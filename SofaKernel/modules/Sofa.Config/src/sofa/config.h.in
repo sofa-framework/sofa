@@ -40,8 +40,6 @@
 #cmakedefine SOFA_WITH_FLOAT
 #cmakedefine SOFA_WITH_DOUBLE
 
-#cmakedefine SOFA_USE_MASK
-
 #cmakedefine SOFA_WITH_DEVTOOLS
 
 #ifdef _MSC_VER
@@ -209,19 +207,6 @@ class DeprecatedAndRemoved {};
         "v20.06 (PR#1283)", "v21.06", \
         "Information on how to update your code is provided in the PR description. ")
 
-
-#define SOFA_ATTRIBUTE_DISABLED__COMPONENTSTATE(msg) \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v20.12 (PR#1358)", "v20.12", msg)
-
-#define SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME(msg) \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v21.06 (PR#2098)", "v21.12", msg)
-
-#define SOFA_ATTRIBUTE_DISABLED__LOADER_FILENAME(msg) \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v21.06 (PR#2095)", "v21.06 (PR#2095)", msg)
-
 #define SOFA_ATTRIBUTE_DISABLED__DATALINK() \
     SOFA_ATTRIBUTE_DISABLED( \
         "v20.12 (PR#1503)", "v21.06 (PR#1793)", \
@@ -314,6 +299,11 @@ class DeprecatedAndRemoved {};
     SOFA_ATTRIBUTE_DISABLED( \
         "v21.06 (PR#1808)", "v21.12", \
         "replace std::cout << myaccessor by std::cout << myaccessor.ref() ")
+
+#define SOFA_ATTRIBUTE_DEPRECATED__SOFAOSTREAM() \
+    SOFA_ATTRIBUTE_DEPRECATED( \
+        "v21.12 (PR#2292)", "v22.06", \
+        "Use the Messaging API instead of using SofaOStream and sout/serr/sendl.")
 
 /**********************************************/
 

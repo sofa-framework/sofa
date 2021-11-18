@@ -21,6 +21,8 @@
 ******************************************************************************/
 
 #include "GraphListenerQListView.h"
+
+#include <QApplication>
 #include <sofa/simulation/Colors.h>
 #include <sofa/core/collision/CollisionGroupManager.h>
 #include <sofa/core/collision/ContactManager.h>
@@ -408,6 +410,11 @@ void GraphListenerQListView::onBeginAddChild(Node* parent, Node* child)
         }
 
         item->setText(0, child->getName().c_str());
+        item->setText(1, child->getClassName().c_str());
+        item->setForeground(1, nameColor);
+        QFont font = QApplication::font();
+        font.setBold(true);
+        item->setFont(0, font);
         setMessageIconFrom(item, child);
 
         item->setExpanded(true);
@@ -475,7 +482,12 @@ void GraphListenerQListView::onBeginAddObject(Node* parent, core::objectmodel::B
             name = object->getClassName() ;
         }else
         {
-            name = object->getClassName() + " " + object->getName() ;
+            name = object->getName() ;
+            item->setText(1, object->getClassName().c_str());
+            item->setForeground(1, nameColor);
+            const QString tooltip( ("Name: " + name + "\nClass Name: " + object->getClassName()).c_str());
+            item->setToolTip(0, tooltip);
+            item->setToolTip(1, tooltip);
         }
 
         item->setText(0, name.c_str());
@@ -534,16 +546,20 @@ void GraphListenerQListView::onBeginAddSlave(core::objectmodel::BaseObject* mast
             dmsg_error("GraphListenerQListView") << "Unknown master node '"<<master->getName()<<"'";
             return;
         }
-        std::string name = sofa::helper::gettypename(typeid(*slave));
-        std::string::size_type pos = name.find('<');
-        if (pos != std::string::npos)
-            name.erase(pos);
+        std::string className = sofa::helper::gettypename(typeid(*slave));
+        if (const std::string::size_type pos = className.find('<'); pos != std::string::npos)
+            className.erase(pos);
         if (!slave->toConfigurationSetting())
         {
-            name += "  ";
-            name += slave->getName();
+            const auto& name = slave->getName();
+            item->setText(0, name.c_str());
+            item->setForeground(1, nameColor);
+
+            const QString tooltip( ("Name: " + name + "\nClass Name: " + className).c_str());
+            item->setToolTip(0, tooltip);
+            item->setToolTip(1, tooltip);
         }
-        item->setText(0, name.c_str());
+        item->setText(1, className.c_str());
 
         setMessageIconFrom(item, slave);
 

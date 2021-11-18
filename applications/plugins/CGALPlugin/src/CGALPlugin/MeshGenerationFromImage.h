@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <CImgPlugin/CImgData.h>
+#include <image/CImgData.h>
 
 #include <CGAL/version.h>
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>

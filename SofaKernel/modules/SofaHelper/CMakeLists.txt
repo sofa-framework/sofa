@@ -4,9 +4,6 @@ project(Sofa.Helper)
 # DEPENDENCIES
 # sofa_find_package(Sofa.Type REQUIRED)
 
-# Boost
-sofa_find_package(Boost REQUIRED COMPONENTS filesystem BOTH_SCOPES)
-
 # Eigen (header only)
 sofa_find_package(Eigen3 REQUIRED)
 # Json (header only) needed by AdvancedTimer
@@ -36,7 +33,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/NameDecoder.h
     ${SRC_ROOT}/OptionsGroup.h
     ${SRC_ROOT}/OwnershipSPtr.h
-    ${SRC_ROOT}/StateMask.h
     ${SRC_ROOT}/Polynomial_LD.h
     ${SRC_ROOT}/Polynomial_LD.inl
     ${SRC_ROOT}/RandomGenerator.h
@@ -128,7 +124,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/NameDecoder.cpp
     ${SRC_ROOT}/OptionsGroup.cpp
     ${SRC_ROOT}/ScopedAdvancedTimer.cpp
-    ${SRC_ROOT}/StateMask.cpp
     ${SRC_ROOT}/Polynomial_LD.cpp
     ${SRC_ROOT}/RandomGenerator.cpp
     ${SRC_ROOT}/StringUtils.cpp
@@ -190,10 +185,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
 elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
     list(APPEND SOURCE_FILES  ${SRC_ROOT}/system/FileMonitor_windows.cpp)
 endif()
-if(Boost_FILESYSTEM_FOUND)
-    list(APPEND HEADER_FILES ${SRC_ROOT}/system/FileRepository.h)
-    list(APPEND SOURCE_FILES ${SRC_ROOT}/system/FileRepository.cpp)
-endif()
 
 sofa_find_package(Sofa.Config REQUIRED)
 sofa_find_package(Sofa.Type REQUIRED)
@@ -230,20 +221,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
 elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
     # Windows library, used in system::FileSystem
     target_link_libraries(${PROJECT_NAME} PRIVATE Shlwapi)
-endif()
-
-# Boost
-if(Boost_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost Boost::filesystem)
-
-    if (SOFA_BUILD_RELEASE_PACKAGE OR CMAKE_SYSTEM_NAME STREQUAL Windows)
-        sofa_install_libraries(PATHS ${Boost_LIBRARIES}) # Boost_LIBRARIES covers Boost internal dependencies
-    endif()
-
-    if(MSVC)
-        #define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
-        target_compile_definitions(${PROJECT_NAME} PUBLIC BOOST_ALL_DYN_LINK)
-    endif()
 endif()
 
 # Eigen (header only)

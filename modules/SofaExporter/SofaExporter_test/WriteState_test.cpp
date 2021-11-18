@@ -71,7 +71,7 @@ namespace sofa {
         double final_expected_value=0.0;
 
         /// Create the context for the scene
-        void SetUp()
+        void SetUp() override
         {
             // Init simulation
             sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
@@ -96,6 +96,9 @@ namespace sofa {
                 root->addObject(eulerSolver);
             }
             CGLinearSolver::SPtr cgLinearSolver = New<CGLinearSolver> ();
+            cgLinearSolver->d_maxIter.setValue(25u);
+            cgLinearSolver->d_tolerance.setValue(1e-5);
+            cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-5);
             root->addObject(cgLinearSolver);
 
             simulation::Node::SPtr childNode = root->createChild("Particle");
@@ -218,7 +221,7 @@ namespace sofa {
 
 
         /// Unload the scene
-        void TearDown()
+        void TearDown() override
         {
             if (root!=nullptr)
                 sofa::simulation::getSimulation()->unload(root);

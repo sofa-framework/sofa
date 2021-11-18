@@ -544,13 +544,13 @@ void EdgeSetTopologyContainer::setEdgeTopologyToDirty()
     // set this container to dirty
     m_edgeTopologyDirty = true;
 
-    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-    for (it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    auto& edgeTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::EDGE);
+    for (auto topoHandler : edgeTopologyHandlerList)
     {
-        sofa::core::topology::TopologyHandler* topoEngine = (*it);
-        topoEngine->setDirtyValue();
-        msg_info() << "Edge Topology Set dirty engine: " << topoEngine->getName();
+        topoHandler->setDirtyValue();
+        msg_info() << "Edge Topology Set dirty engine: " << topoHandler->getName();
     }
+
 }
 
 void EdgeSetTopologyContainer::cleanEdgeTopologyFromDirty()
@@ -558,30 +558,28 @@ void EdgeSetTopologyContainer::cleanEdgeTopologyFromDirty()
     m_edgeTopologyDirty = false;
 
     // security, clean all engines to avoid loops
-    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-    for ( it = m_enginesList.begin(); it!=m_enginesList.end(); ++it)
+    auto& edgeTopologyHandlerList = getTopologyHandlerList(sofa::geometry::ElementType::EDGE);
+    for (auto topoHandler : edgeTopologyHandlerList)
     {
-        if ((*it)->isDirty())
+        if (topoHandler->isDirty())
         {
-            msg_warning() << "Edge Topology update did not clean engine: " << (*it)->getName();
-            (*it)->cleanDirty();
+            msg_warning() << "Edge Topology update did not clean engine: " << topoHandler->getName();
+            topoHandler->cleanDirty();
         }
     }
 }
 
-void EdgeSetTopologyContainer::updateTopologyHandlerGraph()
+bool EdgeSetTopologyContainer::linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType)
 {
-    this->updateDataEngineGraph(this->d_edge, this->m_enginesList);
-
-    // will concatenate with points one:
-    PointSetTopologyContainer::updateTopologyHandlerGraph();
-
+    if (elementType == sofa::geometry::ElementType::EDGE)
+    {
+        d_edge.addOutput(topologyHandler);
+        return true;
+    }
+    else
+    {
+        return PointSetTopologyContainer::linkTopologyHandlerToData(topologyHandler, elementType);
+    }
 }
-
-void EdgeSetTopologyContainer::addTopologyHandler(sofa::core::topology::TopologyHandler* _TopologyHandler)
-{
-    this->m_enginesList.push_back(_TopologyHandler);
-}
-
 
 } //namespace sofa::component::topology

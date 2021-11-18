@@ -28,6 +28,7 @@
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <SofaBaseTopology/TopologySubsetIndices.h>
 
 namespace sofa::component::mass
 {
@@ -47,6 +48,8 @@ public:
     typedef typename Coord::value_type Real;
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
+    typedef type::vector<Index> SetIndexArray;
+    typedef sofa::component::topology::TopologySubsetIndices DataSetIndex;
     typedef TMassType MassType;
 
     Data<MassType> d_vertexMass;   ///< single value defining the mass of each particle
@@ -65,9 +68,7 @@ public:
     /// indices outside of this range are discarded (useful for parallelization
     /// using mesh partitionning)
     Data< type::Vec<2,int> > d_localRange;
-    Data< type::vector<int> >     d_indices; ///< optional local DOF indices. Any computation involving only indices outside of this list are discarded
-
-    Data<bool> d_handleTopologicalChanges; ///< The mass and totalMass are recomputed on particles add/remove.
+    DataSetIndex     d_indices; ///< optional local DOF indices. Any computation involving only indices outside of this list are discarded
     Data<bool> d_preserveTotalMass; ///< Prevent totalMass from decreasing when removing particles.
 
     ////////////////////////// Inherited attributes ////////////////////////////
@@ -123,8 +124,6 @@ public:
     virtual void initFromTotalMass();
     /// @}
 
-    void handleTopologyChange() override;
-
     void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
     void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f) override;
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
@@ -148,6 +147,7 @@ public:
 
 
 private:
+    void updateMassOnResize(sofa::Size newSize);
 
     template<class T>
     void drawRigid3DImpl(const core::visual::VisualParams* vparams) ;

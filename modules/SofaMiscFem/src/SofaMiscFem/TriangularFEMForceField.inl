@@ -19,10 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #pragma once
 
-#include "TriangularFEMForceField.h"
+#include <SofaMiscFem/TriangularFEMForceField.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/ColorMap.h>
@@ -30,13 +29,8 @@
 
 #include <SofaBaseTopology/TopologyData.inl>
 
-#include <sofa/helper/system/thread/debug.h>
 #include <newmat/newmat.h>
 #include <newmat/newmatap.h>
-#include <fstream> // for reading the file
-#include <iostream> //for debugging
-#include <vector>
-#include <algorithm>
 #include <limits>
 
 namespace sofa::component::forcefield
@@ -51,13 +45,11 @@ template <class DataTypes>
 TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     : triangleInfo(initData(&triangleInfo, "triangleInfo", "Internal triangle data"))
     , vertexInfo(initData(&vertexInfo, "vertexInfo", "Internal point data"))
-    , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
     , m_topology(nullptr)
     , method(LARGE)
     , f_method(initData(&f_method,std::string("large"),"method","large: large displacements, small: small displacements"))
     , f_poisson(initData(&f_poisson,type::vector<Real>(1,static_cast<Real>(0.3)),"poissonRatio","Poisson ratio in Hooke's law (vector)"))
     , f_young(initData(&f_young,type::vector<Real>(1,static_cast<Real>(1000.0)),"youngModulus","Young modulus in Hooke's law (vector)"))
-    , f_damping(initData(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
     , m_rotatedInitialElements(initData(&m_rotatedInitialElements,"rotatedInitialElements","Flag activating rendering of stress directions within each triangle"))
     , m_initialTransformation(initData(&m_initialTransformation,"initialTransformation","Flag activating rendering of stress directions within each triangle"))
     , hosfordExponant(initData(&hosfordExponant, (Real)1.0, "hosfordExponant","Exponant in the Hosford yield criteria"))
@@ -68,7 +60,7 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     , f_computePrincipalStress(initData(&f_computePrincipalStress,false,"computePrincipalStress","Compute principal stress for each triangle"))
     , l_topology(initLink("topology", "link to the topology container"))
     #ifdef PLOT_CURVE
-    , elementID( initData(&elementID, (Real)0, "id","element id to follow for fracture criteria") )
+    , elementID( initData(&elementID, (Real)0, "id","element id to follow in the graphs") )
     , f_graphStress( initData(&f_graphStress,"graphMaxStress","Graph of max stress corresponding to the element id") )
     , f_graphCriteria( initData(&f_graphCriteria,"graphCriteria","Graph of the fracture criteria corresponding to the element id") )
     , f_graphOrientation( initData(&f_graphOrientation,"graphOrientation","Graph of the orientation of the principal stress direction corresponding to the element id"))
@@ -139,7 +131,6 @@ void TriangularFEMForceField<DataTypes>::init()
 
     // Create specific Engine for TriangleData
     triangleInfo.createTopologyHandler(m_topology);
-    edgeInfo.createTopologyHandler(m_topology);
     vertexInfo.createTopologyHandler(m_topology);
 
     triangleInfo.setCreationCallback([this](Index triangleIndex, TriangleInformation& triInfo,
@@ -155,8 +146,6 @@ void TriangularFEMForceField<DataTypes>::init()
         method = SMALL;
     else if (f_method.getValue() == "large")
         method = LARGE;
-
-      lastFracturedEdgeIndex = -1;
 
     reinit();
 }
@@ -261,16 +250,10 @@ void TriangularFEMForceField<DataTypes>::reinit()
     else if (f_method.getValue() == "large")
         method = LARGE;
 
-    type::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginWriteOnly());
-
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
 
     /// prepare to store info in the triangle array
     triangleInf.resize(m_topology->getNbTriangles());
-
-    /// prepare to store info in the edge array
-    edgeInf.resize(m_topology->getNbEdges());
-
 
     unsigned int nbPoints = m_topology->getNbPoints();
     type::vector<VertexInformation>& vi = *(vertexInfo.beginWriteOnly());
@@ -283,7 +266,6 @@ void TriangularFEMForceField<DataTypes>::reinit()
         createTriangleInformation(i, triangleInf[i],  m_topology->getTriangle(i),  (const sofa::type::vector< Index > )0, (const sofa::type::vector< double >)0);
     }
 
-    edgeInfo.endEdit();
     triangleInfo.endEdit();
 
 
@@ -378,7 +360,7 @@ void TriangularFEMForceField<DataTypes>::setPoisson(Real val)
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::setPoissonArray(const type::vector<Real>& values)
 {
-    int nbrTri = triangleInfo.getValue().size();
+    auto nbrTri = triangleInfo.getValue().size();
     if (values.size() != nbrTri)
     {
         msg_warning() << "Input Poisson Coefficient array size is not possible: " << values.size() << ", compare to number of triangles: " << nbrTri << ". Values will not be set.";
@@ -386,7 +368,7 @@ void TriangularFEMForceField<DataTypes>::setPoissonArray(const type::vector<Real
     }
     
     sofa::helper::WriteAccessor< core::objectmodel::Data< type::vector<Real> > > _poisson = f_poisson;
-    for (auto id = 0; id < values.size(); ++id)
+    for (auto id = 0u; id < values.size(); ++id)
     {
         Real val = values[id];
         if (val < 0)
@@ -417,7 +399,7 @@ void TriangularFEMForceField<DataTypes>::setYoung(Real val)
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::setYoungArray(const type::vector<Real>& values)
 {
-    int nbrTri = triangleInfo.getValue().size();
+    auto nbrTri = triangleInfo.getValue().size();
     if (values.size() != nbrTri)
     {
         msg_warning() << "Input Young Modulus array size is not possible: " << values.size() << ", compare to number of triangles: " << nbrTri << ". Values will not be set.";
@@ -425,7 +407,7 @@ void TriangularFEMForceField<DataTypes>::setYoungArray(const type::vector<Real>&
     }
 
     sofa::helper::WriteAccessor< core::objectmodel::Data< type::vector<Real> > > _young = f_young;
-    for (auto id = 0; id<values.size(); ++id)
+    for (auto id = 0u; id<values.size(); ++id)
     {
         Real val = values[id];
         if (val < 0)
@@ -435,12 +417,6 @@ void TriangularFEMForceField<DataTypes>::setYoungArray(const type::vector<Real>&
         }
         _young[id] = val;
     }
-}
-
-template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::setDamping(Real val) 
-{ 
-    f_damping.setValue(val); 
 }
 
 template <class DataTypes>
@@ -1321,16 +1297,6 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h
 }
 
 
-
-// --------------------------------------------------------------------------------------
-// --- Accumulate functions
-// --------------------------------------------------------------------------------------
-template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::accumulateDampingSmall(VecCoord&, Index )
-{
-
-}
-
 // --------------------------------------------------------------------------------------
 // ---
 // --------------------------------------------------------------------------------------
@@ -1377,17 +1343,6 @@ void TriangularFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const
 
 }
 
-// --------------------------------------------------------------------------------------
-// ---
-// --------------------------------------------------------------------------------------
-template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::accumulateDampingLarge(VecCoord &, Index )
-{
-
-}
-
-
-
 
 // --------------------------------------------------------------------------------------
 // --- AddForce and AddDForce methods
@@ -1402,40 +1357,18 @@ void TriangularFEMForceField<DataTypes>::addForce(const core::MechanicalParams* 
 
     f1.resize(x1.size());
 
-    if(f_damping.getValue() != 0)
+    if (method == SMALL)
     {
-        if(method == SMALL)
+        for (int i = 0; i < nbTriangles; i += 1)
         {
-            for( int i=0; i<nbTriangles; i+=3 )
-            {
-                accumulateForceSmall( f1, x1, i/3 );
-                accumulateDampingSmall( f1, i/3 );
-            }
-        }
-        else
-        {
-            for ( int i=0; i<nbTriangles; i+=3 )
-            {
-                accumulateForceLarge( f1, x1, i/3);
-                accumulateDampingLarge( f1, i/3 );
-            }
+            accumulateForceSmall(f1, x1, i);
         }
     }
     else
     {
-        if (method==SMALL)
+        for (int i = 0; i < nbTriangles; i += 1)
         {
-            for(int i=0; i<nbTriangles; i+=1)
-            {
-                accumulateForceSmall( f1, x1, i );
-            }
-        }
-        else
-        {
-            for ( int i=0; i<nbTriangles; i+=1)
-            {
-                accumulateForceLarge( f1, x1, i);
-            }
+            accumulateForceLarge(f1, x1, i);
         }
     }
     f.endEdit();
@@ -1520,8 +1453,8 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     if (showStressValue.getValue())
     {
         type::vector<VertexInformation>& vertexInf = *(vertexInfo.beginEdit());
-        double minStress = numeric_limits<double>::max();
-        double maxStress = 0.0;
+        Real minStress = std::numeric_limits<Real>::max();
+        Real maxStress = 0.0;
         for ( unsigned int i = 0 ; i < vertexInf.size() ; i++)
         {
             const core::topology::BaseMeshTopology::TrianglesAroundVertex& triangles = m_topology->getTrianglesAroundVertex(i);
@@ -1575,8 +1508,8 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         std::vector<sofa::type::Vector3> vertices;
         sofa::type::RGBAColor color;
 
-        Real maxDifference = numeric_limits<Real>::min();
-        Real minDifference = numeric_limits<Real>::max();
+        Real maxDifference = std::numeric_limits<Real>::min();
+        Real minDifference = std::numeric_limits<Real>::max();
         for (Size i = 0 ; i < nbTriangles ; i++)
         {
             if (triangleInf[i].differenceToCriteria > 0)

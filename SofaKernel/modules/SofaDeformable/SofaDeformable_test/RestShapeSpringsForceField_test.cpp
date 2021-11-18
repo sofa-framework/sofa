@@ -62,7 +62,7 @@ sofa::simulation::Node::SPtr RestStiffSpringsForceField_test::createScene(const 
 
     createObject(theRoot, "DefaultAnimationLoop");
     createObject(theRoot, "EulerImplicitSolver");
-    createObject(theRoot, "CGLinearSolver");
+    createObject(theRoot, "CGLinearSolver", {{ "iterations", "25" }, { "tolerance", "1e-5" }, {"threshold", "1e-5"}});
 
     /// Create an object with a mass and use a rest shape spring ff so it stay
     /// at the initial position

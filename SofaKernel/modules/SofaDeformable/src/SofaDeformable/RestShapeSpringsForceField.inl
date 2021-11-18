@@ -22,6 +22,7 @@
 #pragma once
 #include <SofaDeformable/RestShapeSpringsForceField.h>
 
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -430,13 +431,5 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
         }
     }
 }
-
-template<class DataTypes>
-void RestShapeSpringsForceField<DataTypes>::updateForceMask()
-{
-    for (sofa::Index i=0; i<m_indices.size(); i++)
-        this->mstate->forceMask.insertEntry(m_indices[i]);
-}
-
 
 } // namespace sofa::component::forcefield

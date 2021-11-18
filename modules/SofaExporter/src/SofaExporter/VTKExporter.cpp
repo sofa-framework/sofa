@@ -855,7 +855,7 @@ void VTKExporter::writeParallelFile()
                 if (!obj)
                     msg_error() << "VTKExporter : error while fetching data field '"
                          << cellsDataField[i] << "' of object '" << cellsDataObject[i]
-                            << "', check object name" << sendl;
+                            << "', check object name" << msgendl;
                 else if (!field)
                     msg_error() << "VTKExporter : error while fetching data field '" << msgendl
                                 << cellsDataField[i] << "' of object '" << cellsDataObject[i] << msgendl

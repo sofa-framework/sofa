@@ -483,19 +483,6 @@ void JointSpringForceField<DataTypes>::computeBBox(const core::ExecParams*  para
 }
 
 template <class DataTypes>
-void JointSpringForceField<DataTypes>::updateForceMask()
-{
-    const type::vector<Spring>& springs= d_springs.getValue();
-
-    for(sofa::Index i=0, iend= sofa::Size(springs.size()) ; i<iend ; ++i )
-    {
-        const Spring& s = springs[i];
-        this->mstate1->forceMask.insertEntry(s.m1);
-        this->mstate2->forceMask.insertEntry(s.m2);
-    }
-}
-
-template <class DataTypes>
 void JointSpringForceField<DataTypes>::clear(sofa::Size reserve)
 {
     type::vector<Spring>& springs = *d_springs.beginEdit();

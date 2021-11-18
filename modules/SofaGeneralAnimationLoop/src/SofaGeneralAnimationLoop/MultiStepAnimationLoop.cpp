@@ -32,6 +32,7 @@
 #include <sofa/simulation/UpdateInternalDataVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 #include <cmath>
 #include <iostream>
 

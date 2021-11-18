@@ -79,7 +79,7 @@ struct UniformMassTest :  public BaseTest
     typename MechanicalObject<DataTypes>::SPtr m_mecaobject;
     bool todo  {true} ;
 
-    virtual void SetUp()
+    void SetUp() override
     {
         sofa::simpleapi::importPlugin("SofaComponentAll") ;
 
@@ -88,7 +88,7 @@ struct UniformMassTest :  public BaseTest
         m_root = m_simu->createNewGraph("root");
     }
 
-    void TearDown()
+    void TearDown() override
     {
         if (m_root != nullptr){
             m_simu->unload(m_root);
@@ -113,7 +113,6 @@ struct UniformMassTest :  public BaseTest
         EXPECT_TRUE( m_mass->findData("showInitialCenterOfGravity") != nullptr ) ;
 
         EXPECT_TRUE( m_mass->findData("indices") != nullptr ) ;
-        EXPECT_TRUE( m_mass->findData("handleTopologicalChanges") != nullptr ) ;
         EXPECT_TRUE( m_mass->findData("preserveTotalMass") != nullptr ) ;
 
         EXPECT_TRUE( m_mass->findData("compute_mapping_inertia") != nullptr ) ;

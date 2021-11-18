@@ -32,6 +32,7 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 #include <cmath>
 #include <iostream>
 
@@ -106,7 +107,7 @@ void MultiTagAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
         dmsg_info() << "step, end collision" ;
         dmsg_info() << "step, begin integration  for tag: "<< *it ;
         integrate(params, dt);
-        dmsg_info() << "end integration" << sendl;
+        dmsg_info() << "end integration" << msgendl;
 
         this->removeTag (*it);
     }

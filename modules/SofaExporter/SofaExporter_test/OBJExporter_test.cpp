@@ -45,9 +45,9 @@ using sofa::core::execparams::defaultInstance;
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem ;
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 namespace{
-std::string tempdir = boost::filesystem::temp_directory_path().string() ;
+std::string tempdir = std::filesystem::temp_directory_path().string() ;
 
 
 class OBJExporter_test : public BaseTest {

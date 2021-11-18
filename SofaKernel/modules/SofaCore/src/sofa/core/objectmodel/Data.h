@@ -253,10 +253,10 @@ public:
     bool copyValueFrom(const BaseData* data){ return doCopyValueFrom(data); }
     bool copyValueFrom(const Data<T>* data);
 
-    bool isCopyOnWrite(){ return sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite; }
+    static constexpr bool isCopyOnWrite(){ return !std::is_scalar_v<T>; }
 
 protected:
-    typedef DataContentValue<T, sofa::defaulttype::DataTypeInfo<T>::CopyOnWrite> ValueType;
+    typedef DataContentValue<T,  !std::is_scalar_v<T>> ValueType;
 
     /// Value
     ValueType m_value;

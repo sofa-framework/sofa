@@ -253,6 +253,12 @@ if(SOFA_BUILD_TUTORIALS)
     add_subdirectory(applications/tutorials)
 endif()
 
+## SOFA scenes
+option(SOFA_BUILD_ADD_SCENES "Add SOFA scenes as a project of the build." OFF)
+if (SOFA_BUILD_ADD_SCENES)
+    add_subdirectory(examples)
+endif()
+
 ## Build external projects at the same time
 set(SOFA_EXTERNAL_DIRECTORIES "" CACHE STRING "list of paths separated by ';'")
 if(NOT "${SOFA_EXTERNAL_DIRECTORIES}" STREQUAL "")
@@ -295,6 +301,8 @@ endif()
 
 file(WRITE "${CMAKE_BINARY_DIR}/plugins/README.txt" "This folder will be automatically scanned by the Plugin Manager.")
 install(DIRECTORY ${CMAKE_BINARY_DIR}/plugins/ DESTINATION plugins COMPONENT resources)
+
+sofa_install_git_infos(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Post-install scripts (must be the last add_subdirectory)
 add_subdirectory(tools/postinstall-fixup)

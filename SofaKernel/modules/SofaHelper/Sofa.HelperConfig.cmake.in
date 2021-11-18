@@ -7,11 +7,6 @@ find_package(Sofa.Config QUIET REQUIRED)
 find_package(Sofa.Type QUIET REQUIRED)
 find_package(Sofa.Topology QUIET REQUIRED)
 
-set(SOFA_HELPER_HAVE_BOOST "@SOFA_HELPER_HAVE_BOOST@")
-set(SOFA_HELPER_HAVE_BOOST_FILESYSTEM "@SOFA_HELPER_HAVE_BOOST_FILESYSTEM@")
-
-find_package(Boost QUIET REQUIRED filesystem)
-
 find_package(Eigen3 QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)

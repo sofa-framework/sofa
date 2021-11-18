@@ -34,7 +34,7 @@
 
         <Node name="Visu">
             <TextureInterpolation template="Vec1d" name="EngineInterpolation"  input_states="@../gridTemperature.position"  input_coordinates="@../../raptorDOFs.position"  min_value="0.0"  max_value="1.0"  manual_scale="1"  drawPotentiels="0"  showIndicesScale="5e-05" />
-            <OglModel template="Vec3d" name="oglPotentiel"  texcoords="@EngineInterpolation.output_coordinates" texturename="textures/heatColor.bmp" scale3d="1000 1000 1000"  material="Default Diffuse 1 1 1 1 0.5 Ambient 1 1 1 1 0.3 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material "/>
+            <OglModel template="Vec3d" name="oglPotentiel" texcoords="@EngineInterpolation.output_coordinates" handleDynamicTopology="0" texturename="textures/heatColor.bmp" scale3d="1 1 1"  material="Default Diffuse 1 1 1 1 0.5 Ambient 1 1 1 1 0.3 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material "/>
             <IdentityMapping input="@../../raptorDOFs" output="@oglPotentiel" />
         </Node>
     </Node>

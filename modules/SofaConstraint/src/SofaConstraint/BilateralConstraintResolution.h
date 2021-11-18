@@ -86,7 +86,10 @@ public:
         temp[2][1] = w[line+2][line+1];
         temp[2][2] = w[line+2][line+2];
 
-        sofa::type::invertMatrix(invW, temp);
+        const bool canInvert = sofa::type::invertMatrix(invW, temp);
+        assert(canInvert);
+        SOFA_UNUSED(canInvert);
+
         // invW is unsused in this scope, remove the warning:
         SOFA_UNUSED(invW);
 

@@ -356,7 +356,14 @@ RealGUI::RealGUI ( const char* viewername)
       m_viewerMSAANbSampling(1)
 {
     setupUi(this);
-
+    
+    ExpandAllButton->setIcon(QIcon(":/RealGUI/expandAll"));
+    CollapseAllButton->setIcon(QIcon(":/RealGUI/collapseAll"));
+    for (auto* button : {ExpandAllButton, CollapseAllButton})
+    {
+        button->setFixedWidth(button->height());
+    }
+    
     parseOptions();
 
     createPluginManager();
@@ -1006,6 +1013,7 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
         simulationGraph->Clear(root.get());
         simulationGraph->collapseAll();
         simulationGraph->expandToDepth(0);
+        simulationGraph->resizeColumnToContents(0);
         statWidget->CreateStats(root.get());
 
 #ifndef SOFA_GUI_QT_NO_RECORDER
@@ -1891,6 +1899,8 @@ void RealGUI::createSimulationGraph()
     TabGraph->layout()->addWidget(simulationGraph);
 
     connect ( ExportGraphButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( Export() ) );
+    connect ( ExpandAllButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( expandAll() ) );
+    connect ( CollapseAllButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( ExpandRootNodeOnly() ) );
     connect(simulationGraph, SIGNAL( RootNodeChanged(sofa::simulation::Node*, const char*) ), this, SLOT ( NewRootNode(sofa::simulation::Node* , const char*) ) );
     connect(simulationGraph, SIGNAL( NodeRemoved() ), this, SLOT( Update() ) );
     connect(simulationGraph, SIGNAL( Lock(bool) ), this, SLOT( LockAnimation(bool) ) );

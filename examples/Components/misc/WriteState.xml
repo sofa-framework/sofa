@@ -3,7 +3,7 @@
     <VisualStyle displayFlags="showForceFields showBehaviorModels showVisual showInteractionForceFields" />
     <DefaultAnimationLoop/>
     <EulerImplicitSolver />
-    <CGLinearSolver />
+    <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
 
     <Node name="Particle" bbox="-1 -1 -1 1 1 1" >
         <!-- Particle falling under gravity -->

@@ -99,8 +99,6 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    void updateForceMask() override;
-
     /// Update data and internal vectors
     void doUpdateInternal() override;
 

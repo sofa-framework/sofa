@@ -28,11 +28,6 @@
 namespace sofa
 {
 
-namespace defaulttype
-{
-class BaseMatrix;
-} // namespace defaulttype
-
 namespace core
 {
 

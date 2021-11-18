@@ -613,14 +613,12 @@ void HexahedronSetTopologyModifier::propagateTopologicalEngineChanges()
     if (!m_container->isHexahedronTopologyDirty()) // hexahedron Data has not been touched
         return QuadSetTopologyModifier::propagateTopologicalEngineChanges();
 
-    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-
-    for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
+    auto& hexaTopologyHandlerList = m_container->getTopologyHandlerList(sofa::geometry::ElementType::HEXAHEDRON);
+    for (auto topoHandler : hexaTopologyHandlerList)
     {
-        sofa::core::topology::TopologyHandler* topoEngine = (*it);
-        if (topoEngine->isDirty())
+        if (topoHandler->isDirty())
         {
-            topoEngine->update();
+            topoHandler->update();
         }
     }
 

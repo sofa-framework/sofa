@@ -156,9 +156,17 @@ void GearSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*/
 
     // add force
     const Deriv force1(fT1, fR1 );
-    f1[spring.m1] += force1; this->mstate1->forceMask.insertEntry(spring.m1);	if(spring.m1!=spring.p1) {	f1[spring.p1] -= force1; this->mstate1->forceMask.insertEntry(spring.p1); }
+    f1[spring.m1] += force1; 
+    if(spring.m1!=spring.p1) 
+    {	
+        f1[spring.p1] -= force1; 
+    }
     const Deriv force2(fT2, fR2 );
-    f2[spring.m2] += force2; this->mstate2->forceMask.insertEntry(spring.m2);	if(spring.m2!=spring.p2) { 	f2[spring.p2] -= force2; this->mstate2->forceMask.insertEntry(spring.p2); }
+    f2[spring.m2] += force2; 
+    if(spring.m2!=spring.p2) 
+    { 	
+        f2[spring.p2] -= force2; 
+    }
 
     // gear
     // get gear rotation axis in global coord
@@ -382,21 +390,6 @@ void GearSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
     }
 
     vparams->drawTool()->restoreLastState();
-}
-
-
-template<class DataTypes>
-void GearSpringForceField<DataTypes>::updateForceMask()
-{
-    const type::vector<Spring>& springs = this->springs.getValue();
-    for (unsigned int i=0; i<springs.size(); i++)
-    {
-        const Spring& spring = springs[i];
-        this->mstate1->forceMask.insertEntry(spring.m1);
-        if( spring.m1!=spring.p1 ) this->mstate1->forceMask.insertEntry(spring.p1);
-        this->mstate2->forceMask.insertEntry(spring.m2);
-        if( spring.m2!=spring.p2 ) this->mstate2->forceMask.insertEntry(spring.p2);
-    }
 }
 
 } // namespace sofa::component::interactionforcefield

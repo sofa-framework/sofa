@@ -47,7 +47,9 @@ set(SOURCE_FILES
     ${SOFAMESHCOLLISION_SRC}/TriangleModel.cpp
 )
 
-sofa_find_package(SofaBase REQUIRED) # SofaBaseMechanics SofaBaseCollision SofaBaseTopology
+sofa_find_package(SofaBaseMechanics REQUIRED)
+sofa_find_package(SofaBaseCollision REQUIRED)
+sofa_find_package(SofaBaseTopology REQUIRED)
 sofa_find_package(SofaObjectInteraction REQUIRED)
 sofa_find_package(SofaRigid REQUIRED)
 

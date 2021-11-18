@@ -31,13 +31,11 @@ using namespace sofa::defaulttype;
 int HexahedronSetGeometryAlgorithmsClass = core::RegisterObject("Hexahedron set geometry algorithms")
         .add< HexahedronSetGeometryAlgorithms<Vec3Types> >(true) // default template
         .add< HexahedronSetGeometryAlgorithms<Vec2Types> >()
-        .add< HexahedronSetGeometryAlgorithms<Vec1Types> >()
 
         ;
 
 template class SOFA_SOFABASETOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec3Types>;
 template class SOFA_SOFABASETOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec2Types>;
-template class SOFA_SOFABASETOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec1Types>;
 
 
 } //namespace sofa::component::topology

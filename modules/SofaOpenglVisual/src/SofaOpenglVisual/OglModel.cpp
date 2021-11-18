@@ -993,7 +993,7 @@ void OglModel::updateBuffers()
 
             //Indices
             //Edges
-            if(useEdges)
+            if(useEdges && !edges.empty())
                 if(oldEdgesSize != edges.size())
                     initEdgesIndicesBuffer();
                 else
@@ -1002,7 +1002,7 @@ void OglModel::updateBuffers()
                 createEdgesIndicesBuffer();
 
             //Triangles
-            if(useTriangles)
+            if(useTriangles && !triangles.empty())
                 if(oldTrianglesSize != triangles.size())
                     initTrianglesIndicesBuffer();
                 else
@@ -1011,7 +1011,7 @@ void OglModel::updateBuffers()
                 createTrianglesIndicesBuffer();
 
             //Quads
-            if (useQuads)
+            if (useQuads && !quads.empty())
                 if(oldQuadsSize != quads.size())
                     initQuadsIndicesBuffer();
                 else

@@ -357,6 +357,16 @@ SofaWindowProfiler::SofaWindowProfiler(QWidget *parent)
 
     connect(step_scroller, SIGNAL(valueChanged(int)), m_chartView, SLOT(updateSelection(int)));
     connect(m_chartView, SIGNAL(pointSelected(int)), this, SLOT(updateFromSelectedStep(int)));
+
+    ExpandAllButton->setIcon(QIcon(":/RealGUI/expandAll"));
+    CollapseAllButton->setIcon(QIcon(":/RealGUI/collapseAll"));
+    for (auto* button : {ExpandAllButton, CollapseAllButton})
+    {
+        button->setFixedWidth(button->height());
+    }
+
+    connect ( ExpandAllButton, SIGNAL ( clicked() ), tree_steps, SLOT ( expandAll() ) );
+    connect ( CollapseAllButton, SIGNAL ( clicked() ), this, SLOT ( expandRootNodeOnly() ) );
 }
 
 
@@ -596,5 +606,8 @@ void SofaWindowProfiler::onStepSelected(QTreeWidgetItem *item, int /*column*/)
     }
 }
 
-
+void SofaWindowProfiler::expandRootNodeOnly() const
+{
+    tree_steps->expandToDepth(0);
+}
 } //namespace sofa::gui::qt
