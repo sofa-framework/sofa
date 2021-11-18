@@ -2,7 +2,6 @@
     <RequiredPlugin name="SofaBoundaryCondition"/>
     <RequiredPlugin name="SofaImplicitOdeSolver"/>
     <RequiredPlugin name="SofaSimpleFem"/>
-    <RequiredPlugin name="SofaSparseSolver"/>
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
 
@@ -11,7 +10,7 @@
 
     <Node name="M1">
         <EulerImplicitSolver name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver iterations="1000" threshold="1e-5" tolerance="1e-5"/>
+        <CGLinearSolver template="CompressedRowSparseMatrixMat3x3d" iterations="1000" threshold="1e-9" tolerance="1e-9"/>
         <MechanicalObject />
         <UniformMass vertexMass="1" />
         <RegularGridTopology nx="4" ny="4" nz="20" xmin="-9" xmax="-6" ymin="0" ymax="3" zmin="0" zmax="19" />
