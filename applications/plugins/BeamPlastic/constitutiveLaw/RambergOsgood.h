@@ -60,14 +60,14 @@ public:
         _altK = (m1 - 1) / pow(eps1,_N - 1);
     }
 
-    virtual Real getTangentModulusFromStress(const double effStress)
+    Real getTangentModulusFromStress(const double effStress) override
     {
         double En1 = pow(_E, _n - 1);
         Real tangentModulus = (_E*En1) / ( En1 + _K*_n*pow(effStress,_n-1) );
         return tangentModulus;
     }
 
-    virtual Real getTangentModulusFromStrain(const double effPlasticStrain)
+    Real getTangentModulusFromStrain(const double effPlasticStrain) override
     {
         Real tangentModulus = _E*(1 + _altK*_N*pow(effPlasticStrain,_N-1));
         return tangentModulus;
