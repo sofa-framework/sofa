@@ -22,7 +22,6 @@
 #include <SofaUserInteraction/InciseAlongPathPerformer.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 
 #include <sofa/helper/Factory.inl>
 
@@ -221,10 +220,10 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
     if (!topoGeo)
         return;
 
-    sofa::component::topology::TriangleSetTopologyContainer* topoCon;
+    sofa::core::topology::BaseMeshTopology* topoCon;
     firstBody.body->getContext()->get(topoCon);
 
-    if (!topoCon)
+    if (!topoCon || topoCon->getTriangles().empty())
         return;
 
     // Output declarations
