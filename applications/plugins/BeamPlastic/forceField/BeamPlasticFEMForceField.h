@@ -415,7 +415,7 @@ protected:
 
     double computePlasticModulusFromStress(const VoigtTensor2& stressState);
     double computePlasticModulusFromStrain(int index, int gaussPointId);
-    double computeConstPlasticModulus();
+    static double computeConstPlasticModulus();
     //-------------------------------------//
 
     /// Tests if the stress tensor of a material point in an elastic state
@@ -490,7 +490,7 @@ protected:
      * Auxiliary method to change the integration interval for Gaussian quadrature,
      * if it differs from [-1, 1].
      */
-    inline double changeCoordinate(double x, double a, double b)
+    static double changeCoordinate(double x, double a, double b)
     {
         return 0.5 * ((b - a) * x + a + b);
     }
@@ -498,7 +498,7 @@ protected:
      * Auxiliary method to change the integration weights for Gaussian quadrature,
      * if the integration interval is not [-1, 1].
      */
-    inline double changeWeight(double w, double a, double b)
+    static double changeWeight(double w, double a, double b)
     {
         return 0.5 * (b - a) * w;
     }
@@ -510,7 +510,7 @@ protected:
      * function.
      */
     template <typename LambdaType>
-    void integrateBeam(beamGaussPoints& gaussPoints, LambdaType integrationFun);
+    static void integrateBeam(beamGaussPoints& gaussPoints, LambdaType integrationFun);
 
     //------------------------------------------//
 
@@ -539,7 +539,7 @@ protected:
     auto vectToVoigt4(const VectTensor4 &vectTensor) -> VoigtTensor4;
 
     // Special implementation for second-order tensor operations, with the Voigt notation.
-    double voigtDotProduct(const VoigtTensor2& t1, const VoigtTensor2& t2);
+    static double voigtDotProduct(const VoigtTensor2& t1, const VoigtTensor2& t2);
     double voigtTensorNorm(const VoigtTensor2& t);
     auto beTTensor2Mult(const Matrix12x6& BeT, const VoigtTensor2& T) -> Matrix12x1;
     auto beTCBeMult(const Matrix12x6& BeT, const VoigtTensor4& C,
