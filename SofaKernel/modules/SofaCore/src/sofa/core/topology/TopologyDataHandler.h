@@ -73,8 +73,6 @@ public:
     TopologyDataHandler(t_topologicalData* _topologicalData,
         value_type defaultValue = value_type());
 
-public:
-
     void init();
 
     void handleTopologyChange() override;

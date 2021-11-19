@@ -54,8 +54,8 @@ public:
     ~Simulation() override;
 	
 private:
-	Simulation(const Simulation& n) ;
-	Simulation& operator=(const Simulation& n) ;
+	Simulation(const Simulation& n) = delete;
+	Simulation& operator=(const Simulation& n) = delete;
 	
 public:
     /// Print all object in the graph

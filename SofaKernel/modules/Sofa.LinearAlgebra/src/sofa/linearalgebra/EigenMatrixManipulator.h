@@ -43,7 +43,7 @@ struct SOFA_LINEARALGEBRA_API LLineManipulator
 {
     typedef std::pair<unsigned int, SReal> LineCombination;
     typedef type::vector< LineCombination > InternalData;
-public:
+
     LLineManipulator& addCombination(unsigned int idxConstraint, SReal factor=1.0);
 
     inline friend std::ostream& operator << ( std::ostream& out, const LLineManipulator& s )
