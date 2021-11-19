@@ -1196,7 +1196,7 @@ auto BeamPlasticFEMForceField<DataTypes>::vonMisesGradient(const VoigtTensor2 &s
 
     VoigtTensor2 gradient = VoigtTensor2();
 
-    if (equalsZero(scalarProduct(stressTensor, stressTensor)))
+    if (equalsZero(sofa::type::scalarProduct(stressTensor, stressTensor)))
         return gradient; //TO DO: is that correct ?
 
     double sigmaX = stressTensor[0][0];
@@ -1225,7 +1225,7 @@ auto BeamPlasticFEMForceField<DataTypes>::vonMisesHessian(const VoigtTensor2 &st
 {
     VectTensor4 hessian = VectTensor4();
 
-    if (equalsZero(scalarProduct(stressTensor, stressTensor)))
+    if (equalsZero(sofa::type::scalarProduct(stressTensor, stressTensor)))
         return hessian; //TO DO: is that correct ?
 
     //Order 1 terms
@@ -1425,7 +1425,7 @@ auto BeamPlasticFEMForceField<DataTypes>::vectVonMisesGradient(const VectTensor2
 
     VectTensor2 gradient = VectTensor2();
 
-    if (equalsZero(scalarProduct(stressTensor, stressTensor)))
+    if (equalsZero(sofa::type::scalarProduct(stressTensor, stressTensor)))
         return gradient; //TO DO: is that correct ?
 
     double sigmaXX = stressTensor[0][0];
@@ -1463,7 +1463,7 @@ auto BeamPlasticFEMForceField<DataTypes>::devVonMisesGradient(const VoigtTensor2
 
     VoigtTensor2 gradient = VoigtTensor2();
 
-    if (equalsZero(scalarProduct(stressTensor, stressTensor)))
+    if (equalsZero(sofa::type::scalarProduct(stressTensor, stressTensor)))
         return gradient; //TO DO: is that correct ?
 
     VoigtTensor2 devStress = deviatoricStress(stressTensor);
@@ -1721,7 +1721,7 @@ void BeamPlasticFEMForceField<DataTypes>::updateTangentStiffness(int i,
 
         if (!d_useConsistentTangentOperator.getValue())
         {
-            if (equalsZero(scalarProduct(gradient, gradient)) || pointMechanicalState[gaussPointIt] != MechanicalState::PLASTIC)
+            if (equalsZero(sofa::type::scalarProduct(gradient, gradient)) || pointMechanicalState[gaussPointIt] != MechanicalState::PLASTIC)
                 Cep = C; //TO DO: is that correct ?
             else
             {
@@ -1792,7 +1792,7 @@ void BeamPlasticFEMForceField<DataTypes>::updateTangentStiffness(int i,
                     H = invertedM*vectC;
 
                     //Computation of Cep
-                    if (equalsZero(scalarProduct(gradient, gradient)))
+                    if (equalsZero(sofa::type::scalarProduct(gradient, gradient)))
                         Cep = vectToVoigt4(H);
                     else
                     {
@@ -1835,7 +1835,7 @@ void BeamPlasticFEMForceField<DataTypes>::updateTangentStiffness(int i,
                     H = invertedM*vectC;
 
                     //Computation of Cep
-                    if (equalsZero(scalarProduct(gradient, gradient)))
+                    if (equalsZero(sofa::type::scalarProduct(gradient, gradient)))
                         Cep = vectToVoigt4(H);
                     else
                     {
