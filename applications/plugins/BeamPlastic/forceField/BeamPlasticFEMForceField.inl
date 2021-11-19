@@ -1128,7 +1128,7 @@ void BeamPlasticFEMForceField<DataTypes>::computeMaterialBehaviour(int i, Index 
     C *= E / ( (1 + nu) * (1 - 2*nu) );
 
     m_beamsData.endEdit();
-};
+}
 
 template< class DataTypes>
 bool BeamPlasticFEMForceField<DataTypes>::goToPlastic(const VoigtTensor2 &stressTensor,
