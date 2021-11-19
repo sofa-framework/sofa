@@ -121,8 +121,6 @@ void BeamPlasticFEMForceField<DataTypes>::init()
         return;
     }
 
-    BaseContext* context = this->getContext();
-
     if (m_topology->getNbEdges() == 0)
     {
         msg_error() << "Topology is empty.";
@@ -923,7 +921,6 @@ void BeamPlasticFEMForceField<DataTypes>::drawElement(int i, std::vector< defaul
     pa = x[a].getCenter();
     pb = x[b].getCenter();
 
-    defaulttype::Vec3d beamVec;
     const Quat<SReal>& q = beamQuat(i);
 
     //***** Gauss points *****//
