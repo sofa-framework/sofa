@@ -70,7 +70,7 @@ endif()
 
 find_package(Sofa.GL QUIET)
 if(Sofa.GL_FOUND)
-    sofa_add_plugin(SofaCUDA SofaCUDA)           # SofaCUDA plugin can't work without OPENGL
+    sofa_add_plugin_external(SofaCUDA SofaCUDA)           # SofaCUDA plugin can't work without OPENGL
     sofa_add_plugin(SofaSimpleGUI SofaSimpleGUI) # SofaSimpleGUI plugin can't work without OPENGL
     sofa_add_plugin(VolumetricRendering VolumetricRendering) # VolumetricRendering plugin can't work without OPENGL
 else()
