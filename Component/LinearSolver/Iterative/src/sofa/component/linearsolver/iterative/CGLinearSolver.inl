@@ -150,7 +150,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
     {
         for( nb_iter = 1; nb_iter <= d_maxIter.getValue(); nb_iter++ )
         {
-            sofa::helper::AdvancedTimer::stepBegin("CG-Step_" + std::to_string(nb_iter));
+            sofa::helper::AdvancedTimer::stepBegin("CG-Step_" + std::to_string(nb_iter) + "_error");
 #ifdef SOFA_DUMP_VISITOR_INFO
             std::ostringstream comment;
             if (simulation::Visitor::isPrintActivated())
@@ -170,7 +170,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
 
             graph_error.push_back(err);
 
-
+            sofa::helper::AdvancedTimer::stepEnd("CG-Step_" + std::to_string(nb_iter) + "_error");
             /// Break condition = TOLERANCE criterion regarding the error err=|r|²/|b|² is reached
             if (err <= d_tolerance.getValue())
             {
@@ -203,7 +203,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
                 }
             }
 
-
+            sofa::helper::AdvancedTimer::stepBegin("CG-Step_" + std::to_string(nb_iter) + "_valueP");
             /// Compute the value of p, conjugate with x
             if( nb_iter==1 )    // FIRST step:      p = r
             {
@@ -219,13 +219,14 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
             }
 
             msg_info() << "p : " << p;
-
+            sofa::helper::AdvancedTimer::stepEnd("CG-Step_" + std::to_string(nb_iter) + "_valueP");
             /// Compute the matrix-vector product A p to compute the denominator
             /// This matrix-vector product depends on the type of matrix:
             /// 1) The matrix is assembled (e.g. CompressedRowSparseMatrix): traditional matrix-vector product
             /// 2) The matrix is not assembled (e.g. GraphScattered): visitors run and call addMBKdx on force
             /// fields (usually force fields implement addDForce). This method performs the matrix-vector product and
             /// store it in another vector without building explicitly the matrix. Projective constraints are also applied.
+            sofa::helper::AdvancedTimer::stepBegin("CG-Step_" + std::to_string(nb_iter) + "_valueQ");
             q = A*p;
             msg_info() << "q = A p : " << q;
 
@@ -233,7 +234,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
             const auto den = p.dot(q);
 
             graph_den.push_back(den);
-
+            sofa::helper::AdvancedTimer::stepEnd("CG-Step_" + std::to_string(nb_iter) + "_valueQ");
             if(den != 0.0) // as a denominator, we need to check if not zero else division will return the infinite value
             {
                 /// Break condition = THRESHOLD criterion regarding the denominator pT A p is reached (but do at least one iteration)
@@ -278,7 +279,6 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
                 cgstep_alpha(params, x,r,p,q,alpha);
 
                 msg_info() << "den = " << den << ", alpha = " << alpha << ", x = " << x << ", r = " << r;
-                sofa::helper::AdvancedTimer::stepEnd("CG-Step_" + std::to_string(nb_iter));
             }
             else
             {
