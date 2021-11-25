@@ -36,6 +36,19 @@
 namespace sofa::component::mass
 {
 
+template<class DataTypes, class TMassType, class Element>
+struct DiagonalMassTopologyWorker
+{
+    void applyCreation(const sofa::type::vector< sofa::Index >& indices,
+        const sofa::type::vector< Element >& elems,
+        const sofa::type::vector< sofa::type::vector< sofa::Index > >& ancestors,
+        const sofa::type::vector< sofa::type::vector< double > >& coefs);
+
+    void applyDestruction(const sofa::type::vector< sofa::Index >& indices);
+
+    typename DataTypes::Real computeMassInformation(); //surface,volume...
+};
+
 template<class DataTypes, class TMassType>
 class DiagonalMassInternalData
 {

@@ -23,6 +23,7 @@
 
 #include <SofaBaseMechanics/DiagonalMass.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/topology/Edge.h>
 
 using sofa::core::visual::VisualParams ;
 using sofa::core::MechanicalParams ;
@@ -35,6 +36,27 @@ using sofa::core::objectmodel::ComponentState ;
 
 using namespace sofa::type;
 using namespace sofa::defaulttype;
+
+template<class DataTypes, class TMassType>
+void DiagonalMassTopologyWorker<DataTypes, TMassType, sofa::topology::Edge >::applyCreation(const sofa::type::vector< sofa::Index >& indices,
+    const sofa::type::vector< sofa::topology::Edge >& elems,
+    const sofa::type::vector< sofa::type::vector< sofa::Index > >& ancestors,
+    const sofa::type::vector< sofa::type::vector< double > >& coefs)
+{
+
+}
+
+template<class DataTypes, class TMassType, class GeometryElement>
+void DiagonalMassTopologyWorker<DataTypes, TMassType, GeometryElement>::applyDestruction(const sofa::type::vector< sofa::Index >& indices)
+{
+
+}
+
+template<class DataTypes, class TMassType, class GeometryElement>
+typename DataTypes::Real DiagonalMassTopologyWorker<DataTypes, TMassType, GeometryElement>::computeMassInformation()
+{
+
+}
 
 template <class RigidTypes, class RigidMass>
 template <class T>

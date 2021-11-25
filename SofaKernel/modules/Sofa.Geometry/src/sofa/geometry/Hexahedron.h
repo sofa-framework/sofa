@@ -211,7 +211,7 @@ struct Hexahedron
                                  const Node& n4, const Node& n5, const Node& n6, const Node& n7)
     {
         constexpr Node n{};
-        //static_assert(std::distance(std::begin(n), std::end(n)) == 3, "volume can only be computed in 3 dimensions.");
+        // static_assert(std::distance(std::begin(n), std::end(n)) == 3, "volume can only be computed in 3 dimensions.");
 
         if constexpr (std::distance(std::begin(n), std::end(n)) == 3)
         {
