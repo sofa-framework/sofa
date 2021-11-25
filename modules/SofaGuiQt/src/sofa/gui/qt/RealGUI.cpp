@@ -387,6 +387,13 @@ RealGUI::RealGUI ( const char* viewername)
     connect ( exportGnuplotFilesCheckbox, SIGNAL ( toggled ( bool ) ), this, SLOT ( setExportGnuplot ( bool ) ) );
     connect ( tabs, SIGNAL ( currentChanged ( int ) ), this, SLOT ( currentTabChanged ( int ) ) );
 
+    connect ( ResetViewButton, SIGNAL ( clicked() ), this, SLOT ( resetView() ) );
+    connect ( SaveViewButton, SIGNAL ( clicked() ), this, SLOT ( saveView() ) );
+    connect ( screenshotButton, SIGNAL ( clicked() ), this, SLOT ( screenshot() ) );
+    connect ( screenshotButton, SIGNAL ( clicked() ), this, SLOT ( test() ) );
+    connect ( sizeW, SIGNAL ( valueChanged ( int ) ), this, SLOT ( setSizeW ( int ) ) );
+    connect ( sizeH, SIGNAL ( valueChanged ( int ) ), this, SLOT ( setSizeH ( int ) ) );
+
     /// We activate this timer only if the interactive mode is enabled (ie livecoding+mouse mouve event).
     if(m_enableInteraction){
         timerIdle = new QTimer(this);
@@ -500,7 +507,6 @@ RealGUI::RealGUI ( const char* viewername)
 
     // Trigger QDialog for "About" section
     connect(helpAboutAction, SIGNAL(triggered()), this, SLOT(showAbout()));
-
 
     m_filelistener = new RealGUIFileListener(this);
 }
@@ -1805,14 +1811,6 @@ void RealGUI::initViewer(BaseViewer* _viewer)
     }
 
     m_sofaMouseManager->setPickHandler(_viewer->getPickHandler());
-
-    connect ( ResetViewButton, SIGNAL ( clicked() ), this, SLOT ( resetView() ) );
-    connect ( SaveViewButton, SIGNAL ( clicked() ), this, SLOT ( saveView() ) );
-    connect ( screenshotButton, SIGNAL ( clicked() ), this, SLOT ( screenshot() ) );
-    connect ( screenshotButton, SIGNAL ( clicked() ), this, SLOT ( test() ) );
-    connect ( sizeW, SIGNAL ( valueChanged ( int ) ), this, SLOT ( setSizeW ( int ) ) );
-    connect ( sizeH, SIGNAL ( valueChanged ( int ) ), this, SLOT ( setSizeH ( int ) ) );
-
 }
 
 //------------------------------------
