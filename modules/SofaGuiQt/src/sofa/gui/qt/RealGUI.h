@@ -273,7 +273,7 @@ public:
 
     /// A way to know if our viewer is embedded or not... (see initViewer)
     /// TODO: Find a better way to do this
-    sofa::gui::qt::viewer::SofaViewer* getQtViewer();
+    sofa::gui::qt::viewer::SofaViewer* getSofaViewer();
 
     /// Our viewer is a QObject SofaViewer
     bool isEmbeddedViewer();
@@ -354,6 +354,7 @@ public slots:
     virtual void updateDtEditState();
     virtual void resetScene();
     virtual void screenshot();
+    virtual void test() { std::cout << "test" << std::endl;}
     virtual void showhideElements();
     virtual void Update();
     virtual void updateBackgroundColour();
