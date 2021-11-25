@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "OBJExporter.h"
+#include "VisualModelOBJExporter.h"
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -35,27 +35,28 @@ namespace sofa
 namespace component
 {
 
-namespace _objexporter_
+namespace _visualmodelobjexporter_
 {
 
-int OBJExporterClass = core::RegisterObject("Export the scene under the Wavefront OBJ format."
+int VisualModelOBJExporterClass = core::RegisterObject("Export the scene under the Wavefront OBJ format."
                                             "When several frames are exported the file name have the following pattern: outfile000.obj outfile001.obj.")
-        .add< OBJExporter >()
-        .addAlias("ObjExporter");
+        .add< VisualModelOBJExporter >()
+        .addAlias("ObjExporter")
+        .addAlias("OBJExporter");
 
 
-OBJExporter::~OBJExporter()
+VisualModelOBJExporter::~VisualModelOBJExporter()
 {
 }
 
 
-bool OBJExporter::write()
+bool VisualModelOBJExporter::write()
 {
     return writeOBJ() ;
 }
 
 
-bool OBJExporter::writeOBJ()
+bool VisualModelOBJExporter::writeOBJ()
 {
     std::string basename = getOrCreateTargetPath(d_filename.getValue(),
                                                  d_exportEveryNbSteps.getValue()) ;
@@ -95,7 +96,7 @@ bool OBJExporter::writeOBJ()
 }
 
 
-void OBJExporter::handleEvent(Event *event)
+void VisualModelOBJExporter::handleEvent(Event *event)
 {
     BaseSimulationExporter::handleEvent(event) ;
 }

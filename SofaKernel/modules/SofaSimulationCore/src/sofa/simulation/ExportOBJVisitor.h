@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_EXPORTOBJACTION_H
-#define SOFA_SIMULATION_TREE_EXPORTOBJACTION_H
-
+#pragma once
 
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/visual/VisualModel.h>
@@ -36,21 +34,21 @@ namespace sofa
 namespace simulation
 {
 
-class SOFA_SIMULATION_CORE_API ExportOBJVisitor : public Visitor
+class SOFA_SIMULATION_CORE_API ExportVisualModelOBJVisitor : public Visitor
 {
 public:
     std::ostream* out;
     std::ostream* mtl;
 
-    ExportOBJVisitor(const core::ExecParams* params, std::ostream* out);
-    ExportOBJVisitor(const core::ExecParams* params, std::ostream* out, std::ostream* mtl);
-    ~ExportOBJVisitor() override;
+    ExportVisualModelOBJVisitor(const core::ExecParams* params, std::ostream* out);
+    ExportVisualModelOBJVisitor(const core::ExecParams* params, std::ostream* out, std::ostream* mtl);
+    ~ExportVisualModelOBJVisitor() override;
 
     virtual void processVisualModel(Node* node, core::visual::VisualModel* vm);
 
     Result processNodeTopDown(Node* node) override;
     void processNodeBottomUp(Node* node) override;
-    const char* getClassName() const override { return "ExportOBJVisitor"; }
+    const char* getClassName() const override { return "ExportVisualModelOBJVisitor"; }
 
 protected:
     int ID;
@@ -64,4 +62,4 @@ protected:
 
 } // namespace sofa
 
-#endif // SOFA_SIMULATION_TREE_EXPORTOBJACTION_H
+#endif // SOFA_SIMULATION_EXPORTVISUALMODELOBJVISITOR_H
