@@ -30,7 +30,7 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/ResetVisitor.h>
 #include <sofa/simulation/VisualVisitor.h>
-#include <sofa/simulation/ExportOBJVisitor.h>
+#include <sofa/simulation/ExportVisualModelOBJVisitor.h>
 #include <sofa/simulation/WriteStateVisitor.h>
 #include <sofa/simulation/XMLPrintVisitor.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
@@ -405,7 +405,7 @@ void Simulation::exportOBJ ( Node* root, const char* filename, bool exportMTL )
 
     if ( !exportMTL )
     {
-        ExportOBJVisitor act ( params, &fout );
+        ExportVisualModelOBJVisitor act ( params, &fout );
         root->execute ( &act );
     }
     else
@@ -425,7 +425,7 @@ void Simulation::exportOBJ ( Node* root, const char* filename, bool exportMTL )
         mtl << "# Generated from SOFA Simulation" << std::endl;
         fout << "mtllib "<<mtlfilename<<'\n';
 
-        ExportOBJVisitor act ( params, &fout,&mtl );
+        ExportVisualModelOBJVisitor act ( params, &fout,&mtl );
         root->execute ( &act );
     }
 }
