@@ -354,7 +354,6 @@ public slots:
     virtual void updateDtEditState();
     virtual void resetScene();
     virtual void screenshot();
-    virtual void test() { std::cout << "test" << std::endl;}
     virtual void showhideElements();
     virtual void Update();
     virtual void updateBackgroundColour();

@@ -390,7 +390,6 @@ RealGUI::RealGUI ( const char* viewername)
     connect ( ResetViewButton, SIGNAL ( clicked() ), this, SLOT ( resetView() ) );
     connect ( SaveViewButton, SIGNAL ( clicked() ), this, SLOT ( saveView() ) );
     connect ( screenshotButton, SIGNAL ( clicked() ), this, SLOT ( screenshot() ) );
-    connect ( screenshotButton, SIGNAL ( clicked() ), this, SLOT ( test() ) );
     connect ( sizeW, SIGNAL ( valueChanged ( int ) ), this, SLOT ( setSizeW ( int ) ) );
     connect ( sizeH, SIGNAL ( valueChanged ( int ) ), this, SLOT ( setSizeH ( int ) ) );
 
