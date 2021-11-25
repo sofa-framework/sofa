@@ -58,6 +58,8 @@ protected:
     int count;
 };
 
+using ExportOBJVisitor [[deprecated("The ExportOBJVisitor is now deprecated, please use ExportVisualModelOBJVisitor instead. Compatibility stops at v22.06")]] = ExportVisualModelOBJVisitor;
+
 } // namespace simulation
 
 } // namespace sofa
