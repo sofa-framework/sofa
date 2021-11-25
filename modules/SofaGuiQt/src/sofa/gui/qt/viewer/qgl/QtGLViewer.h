@@ -99,9 +99,9 @@ public:
                 ;
     }
 
-    static const char* viewerName()  { return "QGLViewer"; }
+    static const char* viewerName()  { return "QGLViewer (QtGLViewer)"; }
 
-    static const char* acceleratedName()  { return "&QGLViewer"; }
+    static const char* acceleratedName()  { return "&QGLViewer (QtGLViewer)"; }
 
     virtual void drawColourPicking (ColourPickingVisitor::ColourCode code) override;
 
@@ -140,6 +140,8 @@ public:
     void moveRayPickInteractor(int eventX, int eventY) override;
 
     void setCameraMode(core::visual::VisualParams::CameraType mode) override;
+
+    void screenshot(const std::string& filename, int compression_level = -1) override;
 
     QString helpString() const override;
 

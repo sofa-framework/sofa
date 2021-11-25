@@ -1703,6 +1703,11 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
         emit(quit());
         break;
     }
+    case Qt::Key_S:
+    {
+        screenshot();
+        break;
+    }
     default:
     {
         if (qtViewer)
