@@ -121,49 +121,52 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassTriangleCreation(const 
         const sofa::type::vector< sofa::type::vector< double > >& coefs)
 {
     SOFA_UNUSED(elems);
-    if (this->getMassTopologyType() == TopologyElementType::TRIANGLE)
+    if constexpr (DataTypes::spatial_dimensions >= 2)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
-        const auto& positions = this->getMState()->read(posid)->getValue();
-
-        helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses (d_vertexMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);        
-
-        // update mass density vector
-        sofa::Size nbMass = getMassDensity().size();
-        sofa::Size nbTri = this->m_topology->getNbTriangles();
-        if (nbMass < nbTri)
-            addMassDensity(triangleAdded, ancestors, coefs);
-
-        // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
-        typename DataTypes::Real mass = typename DataTypes::Real(0);
-
-        for (unsigned int i = 0; i<triangleAdded.size(); ++i)
+        if (this->getMassTopologyType() == TopologyElementType::TRIANGLE)
         {
-            // Get the triangle to be added
-            const core::topology::BaseMeshTopology::Triangle &t = this->m_topology->getTriangle(triangleAdded[i]);
+            core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+            const auto& positions = this->getMState()->read(posid)->getValue();
 
-            // Compute rest mass of conserne triangle = density * triangle surface.
-            const auto& pos0 = DataTypes::getCPos(positions[t[0]]);
-            const auto& pos1 = DataTypes::getCPos(positions[t[1]]);
-            const auto& pos2 = DataTypes::getCPos(positions[t[2]]);
+            helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses(d_vertexMass);
+            helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
 
-            const auto triangleArea = sofa::geometry::Triangle::area(pos0, pos1, pos2);
-            mass = (densityM[triangleAdded[i]] * triangleArea) / (typename DataTypes::Real(6.0));
+            // update mass density vector
+            sofa::Size nbMass = getMassDensity().size();
+            sofa::Size nbTri = this->m_topology->getNbTriangles();
+            if (nbMass < nbTri)
+                addMassDensity(triangleAdded, ancestors, coefs);
 
-            // Adding mass
-            for (unsigned int j=0; j<3; ++j)
-                VertexMasses[ t[j] ] += mass;
+            // Initialisation
+            const type::vector<Real> densityM = getMassDensity();
+            typename DataTypes::Real mass = typename DataTypes::Real(0);
 
-            // update total mass: 
-            if(!this->isLumped())
+            for (unsigned int i = 0; i < triangleAdded.size(); ++i)
             {
-                totalMass += 3.0 * mass;
-            }
-            else
-            {
-                totalMass += 3.0 * mass * m_massLumpingCoeff;
+                // Get the triangle to be added
+                const core::topology::BaseMeshTopology::Triangle& t = this->m_topology->getTriangle(triangleAdded[i]);
+
+                // Compute rest mass of conserne triangle = density * triangle surface.
+                const auto& pos0 = DataTypes::getCPos(positions[t[0]]);
+                const auto& pos1 = DataTypes::getCPos(positions[t[1]]);
+                const auto& pos2 = DataTypes::getCPos(positions[t[2]]);
+
+                const auto triangleArea = sofa::geometry::Triangle::area(pos0, pos1, pos2);
+                mass = (densityM[triangleAdded[i]] * triangleArea) / (typename DataTypes::Real(6.0));
+
+                // Adding mass
+                for (unsigned int j = 0; j < 3; ++j)
+                    VertexMasses[t[j]] += mass;
+
+                // update total mass: 
+                if (!this->isLumped())
+                {
+                    totalMass += 3.0 * mass;
+                }
+                else
+                {
+                    totalMass += 3.0 * mass * m_massLumpingCoeff;
+                }
             }
         }
     }
@@ -176,47 +179,50 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassTriangleCreation(const so
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
         const sofa::type::vector< sofa::type::vector< double > >& coefs)
 {
-    SOFA_UNUSED(elems);
-    if (this->getMassTopologyType() == TopologyElementType::TRIANGLE)
+    SOFA_UNUSED(elems);    
+    if constexpr (DataTypes::spatial_dimensions >= 2)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
-        const auto& positions = this->getMState()->read(posid)->getValue();
-
-        helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses ( d_edgeMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
-
-        // update mass density vector
-        sofa::Size nbMass = getMassDensity().size();
-        sofa::Size nbTri = this->m_topology->getNbTriangles();
-        if (nbMass < nbTri)
-            addMassDensity(triangleAdded, ancestors, coefs);
-
-        // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
-        typename DataTypes::Real mass = typename DataTypes::Real(0);
-
-        for (unsigned int i = 0; i<triangleAdded.size(); ++i)
+        if (this->getMassTopologyType() == TopologyElementType::TRIANGLE)
         {
-            // Get the edgesInTriangle to be added
-            const core::topology::BaseMeshTopology::EdgesInTriangle &te = this->m_topology->getEdgesInTriangle(triangleAdded[i]);
-            const core::topology::BaseMeshTopology::Triangle& t = this->m_topology->getTriangle(triangleAdded[i]);
+            core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+            const auto& positions = this->getMState()->read(posid)->getValue();
 
-            // Compute rest mass of conserne triangle = density * triangle surface.
-            const auto& pos0 = DataTypes::getCPos(positions[t[0]]);
-            const auto& pos1 = DataTypes::getCPos(positions[t[1]]);
-            const auto& pos2 = DataTypes::getCPos(positions[t[2]]);
+            helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses(d_edgeMass);
+            helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
 
-            const auto triangleArea = sofa::geometry::Triangle::area(pos0, pos1, pos2);
-            mass = (densityM[triangleAdded[i]] * triangleArea) / (typename DataTypes::Real(12.0));
+            // update mass density vector
+            sofa::Size nbMass = getMassDensity().size();
+            sofa::Size nbTri = this->m_topology->getNbTriangles();
+            if (nbMass < nbTri)
+                addMassDensity(triangleAdded, ancestors, coefs);
 
-            // Adding mass edges of concerne triangle
-            for (unsigned int j=0; j<3; ++j)
-                EdgeMasses[ te[j] ] += mass;
+            // Initialisation
+            const type::vector<Real> densityM = getMassDensity();
+            typename DataTypes::Real mass = typename DataTypes::Real(0);
 
-            // update total mass
-            if(!this->isLumped())
+            for (unsigned int i = 0; i < triangleAdded.size(); ++i)
             {
-                totalMass += 3.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+                // Get the edgesInTriangle to be added
+                const core::topology::BaseMeshTopology::EdgesInTriangle& te = this->m_topology->getEdgesInTriangle(triangleAdded[i]);
+                const core::topology::BaseMeshTopology::Triangle& t = this->m_topology->getTriangle(triangleAdded[i]);
+
+                // Compute rest mass of conserne triangle = density * triangle surface.
+                const auto& pos0 = DataTypes::getCPos(positions[t[0]]);
+                const auto& pos1 = DataTypes::getCPos(positions[t[1]]);
+                const auto& pos2 = DataTypes::getCPos(positions[t[2]]);
+
+                const auto triangleArea = sofa::geometry::Triangle::area(pos0, pos1, pos2);
+                mass = (densityM[triangleAdded[i]] * triangleArea) / (typename DataTypes::Real(12.0));
+
+                // Adding mass edges of concerne triangle
+                for (unsigned int j = 0; j < 3; ++j)
+                    EdgeMasses[te[j]] += mass;
+
+                // update total mass
+                if (!this->isLumped())
+                {
+                    totalMass += 3.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+                }
             }
         }
     }
@@ -226,43 +232,46 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassTriangleCreation(const so
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::applyVertexMassTriangleDestruction(const sofa::type::vector< Index >& triangleRemoved)
 {
-    if (this->getMassTopologyType() == TopologyElementType::TRIANGLE)
+    if constexpr (DataTypes::spatial_dimensions >= 2)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
-        const auto& positions = this->getMState()->read(posid)->getValue();
-
-        helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses (d_vertexMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
-
-        // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
-        typename DataTypes::Real mass = typename DataTypes::Real(0);
-
-        for (unsigned int i = 0; i<triangleRemoved.size(); ++i)
+        if (this->getMassTopologyType() == TopologyElementType::TRIANGLE)
         {
-            // Get the triangle to be removed
-            const core::topology::BaseMeshTopology::Triangle &t = this->m_topology->getTriangle(triangleRemoved[i]);
+            core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+            const auto& positions = this->getMState()->read(posid)->getValue();
 
-            // Compute rest mass of conserne triangle = density * triangle surface.
-            const auto& pos0 = DataTypes::getCPos(positions[t[0]]);
-            const auto& pos1 = DataTypes::getCPos(positions[t[1]]);
-            const auto& pos2 = DataTypes::getCPos(positions[t[2]]);
+            helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses(d_vertexMass);
+            helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
 
-            const auto triangleArea = sofa::geometry::Triangle::area(pos0, pos1, pos2);
-            mass = (densityM[triangleRemoved[i]] * triangleArea) / (typename DataTypes::Real(6.0));
+            // Initialisation
+            const type::vector<Real> densityM = getMassDensity();
+            typename DataTypes::Real mass = typename DataTypes::Real(0);
 
-            // Removing mass
-            for (unsigned int j=0; j<3; ++j)
-                VertexMasses[ t[j] ] -= mass;
-
-            // update total mass
-            if(!this->isLumped())
+            for (unsigned int i = 0; i < triangleRemoved.size(); ++i)
             {
-                totalMass -= 3.0 * mass;
-            }
-            else
-            {
-                totalMass -= 3.0 * mass * m_massLumpingCoeff;
+                // Get the triangle to be removed
+                const core::topology::BaseMeshTopology::Triangle& t = this->m_topology->getTriangle(triangleRemoved[i]);
+
+                // Compute rest mass of conserne triangle = density * triangle surface.
+                const auto& pos0 = DataTypes::getCPos(positions[t[0]]);
+                const auto& pos1 = DataTypes::getCPos(positions[t[1]]);
+                const auto& pos2 = DataTypes::getCPos(positions[t[2]]);
+
+                const auto triangleArea = sofa::geometry::Triangle::area(pos0, pos1, pos2);
+                mass = (densityM[triangleRemoved[i]] * triangleArea) / (typename DataTypes::Real(6.0));
+
+                // Removing mass
+                for (unsigned int j = 0; j < 3; ++j)
+                    VertexMasses[t[j]] -= mass;
+
+                // update total mass
+                if (!this->isLumped())
+                {
+                    totalMass -= 3.0 * mass;
+                }
+                else
+                {
+                    totalMass -= 3.0 * mass * m_massLumpingCoeff;
+                }
             }
         }
     }
@@ -272,40 +281,43 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassTriangleDestruction(con
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassTriangleDestruction(const sofa::type::vector< Index >& triangleRemoved)
 {
-    if (this->getMassTopologyType() == TopologyElementType::TRIANGLE)
+    if constexpr (DataTypes::spatial_dimensions >= 2)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
-        const auto& positions = this->getMState()->read(posid)->getValue();
-
-        helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses (d_edgeMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
-
-        // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
-        typename DataTypes::Real mass = typename DataTypes::Real(0);
-
-        for (unsigned int i = 0; i<triangleRemoved.size(); ++i)
+        if (this->getMassTopologyType() == TopologyElementType::TRIANGLE)
         {
-            // Get the triangle to be removed
-            const core::topology::BaseMeshTopology::EdgesInTriangle &te = this->m_topology->getEdgesInTriangle(triangleRemoved[i]);
-            const core::topology::BaseMeshTopology::Triangle& t = this->m_topology->getTriangle(triangleRemoved[i]);
+            core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+            const auto& positions = this->getMState()->read(posid)->getValue();
 
-            // Compute rest mass of conserne triangle = density * triangle surface.
-            const auto& pos0 = DataTypes::getCPos(positions[t[0]]);
-            const auto& pos1 = DataTypes::getCPos(positions[t[1]]);
-            const auto& pos2 = DataTypes::getCPos(positions[t[2]]);
+            helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses(d_edgeMass);
+            helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
 
-            const auto triangleArea = sofa::geometry::Triangle::area(pos0, pos1, pos2);
-            mass = (densityM[triangleRemoved[i]] * triangleArea) / (typename DataTypes::Real(12.0));
+            // Initialisation
+            const type::vector<Real> densityM = getMassDensity();
+            typename DataTypes::Real mass = typename DataTypes::Real(0);
 
-            // Removing mass edges of concerne triangle
-            for (unsigned int j=0; j<3; ++j)
-                EdgeMasses[ te[j] ] -= mass;
-
-            // update total mass
-            if(!this->isLumped())
+            for (unsigned int i = 0; i < triangleRemoved.size(); ++i)
             {
-                totalMass -= 3.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+                // Get the triangle to be removed
+                const core::topology::BaseMeshTopology::EdgesInTriangle& te = this->m_topology->getEdgesInTriangle(triangleRemoved[i]);
+                const core::topology::BaseMeshTopology::Triangle& t = this->m_topology->getTriangle(triangleRemoved[i]);
+
+                // Compute rest mass of conserne triangle = density * triangle surface.
+                const auto& pos0 = DataTypes::getCPos(positions[t[0]]);
+                const auto& pos1 = DataTypes::getCPos(positions[t[1]]);
+                const auto& pos2 = DataTypes::getCPos(positions[t[2]]);
+
+                const auto triangleArea = sofa::geometry::Triangle::area(pos0, pos1, pos2);
+                mass = (densityM[triangleRemoved[i]] * triangleArea) / (typename DataTypes::Real(12.0));
+
+                // Removing mass edges of concerne triangle
+                for (unsigned int j = 0; j < 3; ++j)
+                    EdgeMasses[te[j]] -= mass;
+
+                // update total mass
+                if (!this->isLumped())
+                {
+                    totalMass -= 3.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+                }
             }
         }
     }
@@ -325,51 +337,54 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassQuadCreation(const sofa
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
         const sofa::type::vector< sofa::type::vector< double > >& coefs)
 {
-    SOFA_UNUSED(elems);
-    if (this->getMassTopologyType() == TopologyElementType::QUAD)
+    SOFA_UNUSED(elems);    
+    if constexpr (DataTypes::spatial_dimensions >= 2)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
-        const auto& positions = this->getMState()->read(posid)->getValue();
-
-        helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses ( d_vertexMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
-
-        // update mass density vector
-        sofa::Size nbMass = getMassDensity().size();
-        sofa::Size nbQ = this->m_topology->getNbQuads();
-        if (nbMass < nbQ)
-            addMassDensity(quadAdded, ancestors, coefs);
-
-        // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
-        typename DataTypes::Real mass = typename DataTypes::Real(0);
-
-        for (unsigned int i = 0; i<quadAdded.size(); ++i)
+        if (this->getMassTopologyType() == TopologyElementType::QUAD)
         {
-            // Get the quad to be added
-            const core::topology::BaseMeshTopology::Quad &q = this->m_topology->getQuad(quadAdded[i]);
+            core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+            const auto& positions = this->getMState()->read(posid)->getValue();
 
-            // Compute rest mass of conserne quad = density * quad surface.
-            const auto& pos0 = DataTypes::getCPos(positions[q[0]]);
-            const auto& pos1 = DataTypes::getCPos(positions[q[1]]);
-            const auto& pos2 = DataTypes::getCPos(positions[q[2]]);
-            const auto& pos3 = DataTypes::getCPos(positions[q[3]]);
+            helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses(d_vertexMass);
+            helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
 
-            const auto quadArea = sofa::geometry::Quad::area(pos0, pos1, pos2, pos3);
-            mass = (densityM[quadAdded[i]] * quadArea) / (typename DataTypes::Real(8.0));
+            // update mass density vector
+            sofa::Size nbMass = getMassDensity().size();
+            sofa::Size nbQ = this->m_topology->getNbQuads();
+            if (nbMass < nbQ)
+                addMassDensity(quadAdded, ancestors, coefs);
 
-            // Adding mass
-            for (unsigned int j=0; j<4; ++j)
-                VertexMasses[ q[j] ] += mass;
+            // Initialisation
+            const type::vector<Real> densityM = getMassDensity();
+            typename DataTypes::Real mass = typename DataTypes::Real(0);
 
-            // update total mass
-            if(!this->isLumped())
+            for (unsigned int i = 0; i < quadAdded.size(); ++i)
             {
-                totalMass += 4.0 * mass;
-            }
-            else
-            {
-                totalMass += 4.0 * mass * m_massLumpingCoeff;
+                // Get the quad to be added
+                const core::topology::BaseMeshTopology::Quad& q = this->m_topology->getQuad(quadAdded[i]);
+
+                // Compute rest mass of conserne quad = density * quad surface.
+                const auto& pos0 = DataTypes::getCPos(positions[q[0]]);
+                const auto& pos1 = DataTypes::getCPos(positions[q[1]]);
+                const auto& pos2 = DataTypes::getCPos(positions[q[2]]);
+                const auto& pos3 = DataTypes::getCPos(positions[q[3]]);
+
+                const auto quadArea = sofa::geometry::Quad::area(pos0, pos1, pos2, pos3);
+                mass = (densityM[quadAdded[i]] * quadArea) / (typename DataTypes::Real(8.0));
+
+                // Adding mass
+                for (unsigned int j = 0; j < 4; ++j)
+                    VertexMasses[q[j]] += mass;
+
+                // update total mass
+                if (!this->isLumped())
+                {
+                    totalMass += 4.0 * mass;
+                }
+                else
+                {
+                    totalMass += 4.0 * mass * m_massLumpingCoeff;
+                }
             }
         }
     }
@@ -383,48 +398,50 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassQuadCreation(const sofa::
         const sofa::type::vector< sofa::type::vector< double > >& coefs)
 {
     SOFA_UNUSED(elems);
-
-    if (this->getMassTopologyType() == TopologyElementType::QUAD)
+    if constexpr (DataTypes::spatial_dimensions >= 2)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
-        const auto& positions = this->getMState()->read(posid)->getValue();
-
-        helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses ( d_edgeMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
-        
-        // update mass density vector
-        sofa::Size nbMass = getMassDensity().size();
-        sofa::Size nbQ = this->m_topology->getNbQuads();
-        if (nbMass < nbQ)
-            addMassDensity(quadAdded, ancestors, coefs);
-
-        // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
-        typename DataTypes::Real mass = typename DataTypes::Real(0);
-
-        for (unsigned int i = 0; i<quadAdded.size(); ++i)
+        if (this->getMassTopologyType() == TopologyElementType::QUAD)
         {
-            // Get the EdgesInQuad to be added
-            const core::topology::BaseMeshTopology::EdgesInQuad &qe = this->m_topology->getEdgesInQuad(quadAdded[i]);
-            const core::topology::BaseMeshTopology::Quad& q = this->m_topology->getQuad(quadAdded[i]);
+            core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+            const auto& positions = this->getMState()->read(posid)->getValue();
 
-            // Compute rest mass of conserne quad = density * quad surface.
-            const auto& pos0 = DataTypes::getCPos(positions[q[0]]);
-            const auto& pos1 = DataTypes::getCPos(positions[q[1]]);
-            const auto& pos2 = DataTypes::getCPos(positions[q[2]]);
-            const auto& pos3 = DataTypes::getCPos(positions[q[3]]);
+            helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses(d_edgeMass);
+            helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
 
-            const auto quadArea = sofa::geometry::Quad::area(pos0, pos1, pos2, pos3);
-            mass = (densityM[quadAdded[i]] * quadArea) / (typename DataTypes::Real(16.0));
+            // update mass density vector
+            sofa::Size nbMass = getMassDensity().size();
+            sofa::Size nbQ = this->m_topology->getNbQuads();
+            if (nbMass < nbQ)
+                addMassDensity(quadAdded, ancestors, coefs);
 
-            // Adding mass edges of concerne quad
-            for (unsigned int j=0; j<4; ++j)
-                EdgeMasses[ qe[j] ] += mass;
+            // Initialisation
+            const type::vector<Real> densityM = getMassDensity();
+            typename DataTypes::Real mass = typename DataTypes::Real(0);
 
-            // update total mass
-            if(!this->isLumped())
+            for (unsigned int i = 0; i < quadAdded.size(); ++i)
             {
-                totalMass += 4.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+                // Get the EdgesInQuad to be added
+                const core::topology::BaseMeshTopology::EdgesInQuad& qe = this->m_topology->getEdgesInQuad(quadAdded[i]);
+                const core::topology::BaseMeshTopology::Quad& q = this->m_topology->getQuad(quadAdded[i]);
+
+                // Compute rest mass of conserne quad = density * quad surface.
+                const auto& pos0 = DataTypes::getCPos(positions[q[0]]);
+                const auto& pos1 = DataTypes::getCPos(positions[q[1]]);
+                const auto& pos2 = DataTypes::getCPos(positions[q[2]]);
+                const auto& pos3 = DataTypes::getCPos(positions[q[3]]);
+
+                const auto quadArea = sofa::geometry::Quad::area(pos0, pos1, pos2, pos3);
+                mass = (densityM[quadAdded[i]] * quadArea) / (typename DataTypes::Real(16.0));
+
+                // Adding mass edges of concerne quad
+                for (unsigned int j = 0; j < 4; ++j)
+                    EdgeMasses[qe[j]] += mass;
+
+                // update total mass
+                if (!this->isLumped())
+                {
+                    totalMass += 4.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+                }
             }
         }
     }
@@ -434,44 +451,47 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassQuadCreation(const sofa::
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::applyVertexMassQuadDestruction(const sofa::type::vector< Index >& quadRemoved)
 {
-    if (this->getMassTopologyType() == TopologyElementType::QUAD)
+    if constexpr (DataTypes::spatial_dimensions >= 2)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
-        const auto& positions = this->getMState()->read(posid)->getValue();
-
-        helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses ( d_vertexMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
-
-        // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
-        typename DataTypes::Real mass = typename DataTypes::Real(0);
-
-        for (unsigned int i = 0; i<quadRemoved.size(); ++i)
+        if (this->getMassTopologyType() == TopologyElementType::QUAD)
         {
-            // Get the quad to be removed
-            const core::topology::BaseMeshTopology::Quad &q = this->m_topology->getQuad(quadRemoved[i]);
+            core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+            const auto& positions = this->getMState()->read(posid)->getValue();
 
-            // Compute rest mass of conserne quad = density * quad surface.
-            const auto& pos0 = DataTypes::getCPos(positions[q[0]]);
-            const auto& pos1 = DataTypes::getCPos(positions[q[1]]);
-            const auto& pos2 = DataTypes::getCPos(positions[q[2]]);
-            const auto& pos3 = DataTypes::getCPos(positions[q[3]]);
+            helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses(d_vertexMass);
+            helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
 
-            const auto quadArea = sofa::geometry::Quad::area(pos0, pos1, pos2, pos3);
-            mass = (densityM[quadRemoved[i]] * quadArea) / (typename DataTypes::Real(8.0));
+            // Initialisation
+            const type::vector<Real> densityM = getMassDensity();
+            typename DataTypes::Real mass = typename DataTypes::Real(0);
 
-            // Removing mass
-            for (unsigned int j=0; j<4; ++j)
-                VertexMasses[ q[j] ] -= mass;
-
-            // update total mass
-            if(!this->isLumped())
+            for (unsigned int i = 0; i < quadRemoved.size(); ++i)
             {
-                totalMass -= 4.0 * mass;
-            }
-            else
-            {
-                totalMass -= 4.0 * mass * m_massLumpingCoeff;
+                // Get the quad to be removed
+                const core::topology::BaseMeshTopology::Quad& q = this->m_topology->getQuad(quadRemoved[i]);
+
+                // Compute rest mass of conserne quad = density * quad surface.
+                const auto& pos0 = DataTypes::getCPos(positions[q[0]]);
+                const auto& pos1 = DataTypes::getCPos(positions[q[1]]);
+                const auto& pos2 = DataTypes::getCPos(positions[q[2]]);
+                const auto& pos3 = DataTypes::getCPos(positions[q[3]]);
+
+                const auto quadArea = sofa::geometry::Quad::area(pos0, pos1, pos2, pos3);
+                mass = (densityM[quadRemoved[i]] * quadArea) / (typename DataTypes::Real(8.0));
+
+                // Removing mass
+                for (unsigned int j = 0; j < 4; ++j)
+                    VertexMasses[q[j]] -= mass;
+
+                // update total mass
+                if (!this->isLumped())
+                {
+                    totalMass -= 4.0 * mass;
+                }
+                else
+                {
+                    totalMass -= 4.0 * mass * m_massLumpingCoeff;
+                }
             }
         }
     }
@@ -481,41 +501,44 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassQuadDestruction(const s
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassQuadDestruction(const sofa::type::vector< Index >& quadRemoved)
 {
-    if (this->getMassTopologyType() == TopologyElementType::QUAD)
+    if constexpr (DataTypes::spatial_dimensions >= 2)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
-        const auto& positions = this->getMState()->read(posid)->getValue();
-
-        helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses ( d_edgeMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
-
-        // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
-        typename DataTypes::Real mass = typename DataTypes::Real(0);
-
-        for (unsigned int i = 0; i<quadRemoved.size(); ++i)
+        if (this->getMassTopologyType() == TopologyElementType::QUAD)
         {
-            // Get the EdgesInQuad to be removed
-            const core::topology::BaseMeshTopology::EdgesInQuad &qe = this->m_topology->getEdgesInQuad(quadRemoved[i]);
-            const core::topology::BaseMeshTopology::Quad& q = this->m_topology->getQuad(quadRemoved[i]);
+            core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+            const auto& positions = this->getMState()->read(posid)->getValue();
 
-            // Compute rest mass of conserne quad = density * quad surface.
-            const auto& pos0 = DataTypes::getCPos(positions[q[0]]);
-            const auto& pos1 = DataTypes::getCPos(positions[q[1]]);
-            const auto& pos2 = DataTypes::getCPos(positions[q[2]]);
-            const auto& pos3 = DataTypes::getCPos(positions[q[3]]);
+            helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses(d_edgeMass);
+            helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
 
-            const auto quadArea = sofa::geometry::Quad::area(pos0, pos1, pos2, pos3);
-            mass = (densityM[quadRemoved[i]] * quadArea) / (typename DataTypes::Real(16.0));
+            // Initialisation
+            const type::vector<Real> densityM = getMassDensity();
+            typename DataTypes::Real mass = typename DataTypes::Real(0);
 
-            // Removing mass edges of concerne quad
-            for (unsigned int j=0; j<4; ++j)
-                EdgeMasses[ qe[j] ] -= mass;
-
-            // update total mass
-            if(!this->isLumped())
+            for (unsigned int i = 0; i < quadRemoved.size(); ++i)
             {
-                totalMass -= 4.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+                // Get the EdgesInQuad to be removed
+                const core::topology::BaseMeshTopology::EdgesInQuad& qe = this->m_topology->getEdgesInQuad(quadRemoved[i]);
+                const core::topology::BaseMeshTopology::Quad& q = this->m_topology->getQuad(quadRemoved[i]);
+
+                // Compute rest mass of conserne quad = density * quad surface.
+                const auto& pos0 = DataTypes::getCPos(positions[q[0]]);
+                const auto& pos1 = DataTypes::getCPos(positions[q[1]]);
+                const auto& pos2 = DataTypes::getCPos(positions[q[2]]);
+                const auto& pos3 = DataTypes::getCPos(positions[q[3]]);
+
+                const auto quadArea = sofa::geometry::Quad::area(pos0, pos1, pos2, pos3);
+                mass = (densityM[quadRemoved[i]] * quadArea) / (typename DataTypes::Real(16.0));
+
+                // Removing mass edges of concerne quad
+                for (unsigned int j = 0; j < 4; ++j)
+                    EdgeMasses[qe[j]] -= mass;
+
+                // update total mass
+                if (!this->isLumped())
+                {
+                    totalMass -= 4.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+                }
             }
         }
     }
@@ -538,50 +561,53 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassTetrahedronCreation(con
         const sofa::type::vector< sofa::type::vector< double > >& coefs)
 {
     SOFA_UNUSED(elems);
-    if (this->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
+    if constexpr (DataTypes::spatial_dimensions >= 3)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
-        const auto& positions = this->getMState()->read(posid)->getValue();
-
-        helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses ( d_vertexMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
-
-        // update mass density vector
-        sofa::Size nbMass = getMassDensity().size();
-        sofa::Size nbT = this->m_topology->getNbTetrahedra();
-        if (nbMass < nbT)
-            addMassDensity(tetrahedronAdded, ancestors, coefs);
-
-        // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
-        typename DataTypes::Real mass = typename DataTypes::Real(0);
-
-        for (unsigned int i = 0; i<tetrahedronAdded.size(); ++i)
+        if (this->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
         {
-            // Get the tetrahedron to be added
-            const core::topology::BaseMeshTopology::Tetrahedron &t = this->m_topology->getTetrahedron(tetrahedronAdded[i]);
+            core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+            const auto& positions = this->getMState()->read(posid)->getValue();
 
-            // Compute rest mass of conserne tetrahedron = density * tetrahedron volume.
-            const auto& rpos0 = DataTypes::getCPos(positions[t[0]]);
-            const auto& rpos1 = DataTypes::getCPos(positions[t[1]]);
-            const auto& rpos2 = DataTypes::getCPos(positions[t[2]]);
-            const auto& rpos3 = DataTypes::getCPos(positions[t[3]]);
+            helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses ( d_vertexMass );
+            helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
 
-            const auto tetraVolume = sofa::geometry::Tetrahedron::volume(rpos0, rpos1, rpos2, rpos3);
-            mass = (densityM[tetrahedronAdded[i]] * tetraVolume) / (typename DataTypes::Real(10.0));
+            // update mass density vector
+            sofa::Size nbMass = getMassDensity().size();
+            sofa::Size nbT = this->m_topology->getNbTetrahedra();
+            if (nbMass < nbT)
+                addMassDensity(tetrahedronAdded, ancestors, coefs);
 
-            // Adding mass
-            for (unsigned int j=0; j<4; ++j)
-                VertexMasses[ t[j] ] += mass;
+            // Initialisation
+            const type::vector<Real> densityM = getMassDensity();
+            typename DataTypes::Real mass = typename DataTypes::Real(0);
 
-            // update total mass
-            if(!this->isLumped())
+            for (unsigned int i = 0; i<tetrahedronAdded.size(); ++i)
             {
-                totalMass += 4.0 * mass;
-            }
-            else
-            {
-                totalMass += 4.0 * mass * m_massLumpingCoeff;
+                // Get the tetrahedron to be added
+                const core::topology::BaseMeshTopology::Tetrahedron &t = this->m_topology->getTetrahedron(tetrahedronAdded[i]);
+
+                // Compute rest mass of conserne tetrahedron = density * tetrahedron volume.
+                const auto& rpos0 = DataTypes::getCPos(positions[t[0]]);
+                const auto& rpos1 = DataTypes::getCPos(positions[t[1]]);
+                const auto& rpos2 = DataTypes::getCPos(positions[t[2]]);
+                const auto& rpos3 = DataTypes::getCPos(positions[t[3]]);
+
+                const auto tetraVolume = sofa::geometry::Tetrahedron::volume(rpos0, rpos1, rpos2, rpos3);
+                mass = (densityM[tetrahedronAdded[i]] * tetraVolume) / (typename DataTypes::Real(10.0));
+
+                // Adding mass
+                for (unsigned int j=0; j<4; ++j)
+                    VertexMasses[ t[j] ] += mass;
+
+                // update total mass
+                if(!this->isLumped())
+                {
+                    totalMass += 4.0 * mass;
+                }
+                else
+                {
+                    totalMass += 4.0 * mass * m_massLumpingCoeff;
+                }
             }
         }
     }
@@ -594,48 +620,52 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassTetrahedronCreation(const
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
         const sofa::type::vector< sofa::type::vector< double > >& coefs)
 {
-    SOFA_UNUSED(elems);
-    if (this->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
+    SOFA_UNUSED(elems);    
+    
+    if constexpr (DataTypes::spatial_dimensions >= 3)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
-        const auto& positions = this->getMState()->read(posid)->getValue();
-
-        helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses ( d_edgeMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
-        
-        // update mass density vector
-        sofa::Size nbMass = getMassDensity().size();
-        sofa::Size nbT = this->m_topology->getNbTetrahedra();
-        if (nbMass < nbT)
-            addMassDensity(tetrahedronAdded, ancestors, coefs);
-
-        // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
-        typename DataTypes::Real mass = typename DataTypes::Real(0);
-
-        for (unsigned int i = 0; i<tetrahedronAdded.size(); ++i)
+        if (this->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
         {
-            // Get the edgesInTetrahedron to be added
-            const core::topology::BaseMeshTopology::EdgesInTetrahedron &te = this->m_topology->getEdgesInTetrahedron(tetrahedronAdded[i]);
-            const core::topology::BaseMeshTopology::Tetrahedron& t = this->m_topology->getTetrahedron(tetrahedronAdded[i]);
+            core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+            const auto& positions = this->getMState()->read(posid)->getValue();
 
-            // Compute rest mass of conserne tetrahedron = density * tetrahedron volume.
-            const auto& rpos0 = DataTypes::getCPos(positions[t[0]]);
-            const auto& rpos1 = DataTypes::getCPos(positions[t[1]]);
-            const auto& rpos2 = DataTypes::getCPos(positions[t[2]]);
-            const auto& rpos3 = DataTypes::getCPos(positions[t[3]]);
+            helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses(d_edgeMass);
+            helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
 
-            const auto tetraVolume = sofa::geometry::Tetrahedron::volume(rpos0, rpos1, rpos2, rpos3);
-            mass = (densityM[tetrahedronAdded[i]] * tetraVolume) / (typename DataTypes::Real(20.0));
+            // update mass density vector
+            sofa::Size nbMass = getMassDensity().size();
+            sofa::Size nbT = this->m_topology->getNbTetrahedra();
+            if (nbMass < nbT)
+                addMassDensity(tetrahedronAdded, ancestors, coefs);
 
-            // Adding mass edges of concerne triangle
-            for (unsigned int j=0; j<6; ++j)
-                EdgeMasses[ te[j] ] += mass;
+            // Initialisation
+            const type::vector<Real> densityM = getMassDensity();
+            typename DataTypes::Real mass = typename DataTypes::Real(0);
 
-            // update total mass
-            if(!this->isLumped())
+            for (unsigned int i = 0; i < tetrahedronAdded.size(); ++i)
             {
-                totalMass += 6.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+                // Get the edgesInTetrahedron to be added
+                const core::topology::BaseMeshTopology::EdgesInTetrahedron& te = this->m_topology->getEdgesInTetrahedron(tetrahedronAdded[i]);
+                const core::topology::BaseMeshTopology::Tetrahedron& t = this->m_topology->getTetrahedron(tetrahedronAdded[i]);
+
+                // Compute rest mass of conserne tetrahedron = density * tetrahedron volume.
+                const auto& rpos0 = DataTypes::getCPos(positions[t[0]]);
+                const auto& rpos1 = DataTypes::getCPos(positions[t[1]]);
+                const auto& rpos2 = DataTypes::getCPos(positions[t[2]]);
+                const auto& rpos3 = DataTypes::getCPos(positions[t[3]]);
+
+                const auto tetraVolume = sofa::geometry::Tetrahedron::volume(rpos0, rpos1, rpos2, rpos3);
+                mass = (densityM[tetrahedronAdded[i]] * tetraVolume) / (typename DataTypes::Real(20.0));
+
+                // Adding mass edges of concerne triangle
+                for (unsigned int j = 0; j < 6; ++j)
+                    EdgeMasses[te[j]] += mass;
+
+                // update total mass
+                if (!this->isLumped())
+                {
+                    totalMass += 6.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+                }
             }
         }
     }
@@ -645,44 +675,47 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassTetrahedronCreation(const
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::applyVertexMassTetrahedronDestruction(const sofa::type::vector< Index >& tetrahedronRemoved)
 {
-    if (this->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
+    if constexpr (DataTypes::spatial_dimensions >= 3)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
-        const auto& positions = this->getMState()->read(posid)->getValue();
-
-        helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses ( d_vertexMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
-
-        // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
-        typename DataTypes::Real mass = typename DataTypes::Real(0);
-
-        for (unsigned int i = 0; i<tetrahedronRemoved.size(); ++i)
+        if (this->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
         {
-            // Get the tetrahedron to be removed
-            const core::topology::BaseMeshTopology::Tetrahedron &t = this->m_topology->getTetrahedron(tetrahedronRemoved[i]);
+            core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+            const auto& positions = this->getMState()->read(posid)->getValue();
 
-            // Compute rest mass of conserne tetrahedron = density * tetrahedron volume.
-            const auto& rpos0 = DataTypes::getCPos(positions[t[0]]);
-            const auto& rpos1 = DataTypes::getCPos(positions[t[1]]);
-            const auto& rpos2 = DataTypes::getCPos(positions[t[2]]);
-            const auto& rpos3 = DataTypes::getCPos(positions[t[3]]);
+            helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses(d_vertexMass);
+            helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
 
-            const auto tetraVolume = sofa::geometry::Tetrahedron::volume(rpos0, rpos1, rpos2, rpos3);
-            mass = (densityM[tetrahedronRemoved[i]] * tetraVolume) / (typename DataTypes::Real(10.0));
+            // Initialisation
+            const type::vector<Real> densityM = getMassDensity();
+            typename DataTypes::Real mass = typename DataTypes::Real(0);
 
-            // Removing mass
-            for (unsigned int j=0; j<4; ++j)
-                VertexMasses[ t[j] ] -= mass;
-
-            // update total mass
-            if(!this->isLumped())
+            for (unsigned int i = 0; i < tetrahedronRemoved.size(); ++i)
             {
-                totalMass -= 4.0 * mass;
-            }
-            else
-            {
-                totalMass -= 4.0 * mass * m_massLumpingCoeff;
+                // Get the tetrahedron to be removed
+                const core::topology::BaseMeshTopology::Tetrahedron& t = this->m_topology->getTetrahedron(tetrahedronRemoved[i]);
+
+                // Compute rest mass of conserne tetrahedron = density * tetrahedron volume.
+                const auto& rpos0 = DataTypes::getCPos(positions[t[0]]);
+                const auto& rpos1 = DataTypes::getCPos(positions[t[1]]);
+                const auto& rpos2 = DataTypes::getCPos(positions[t[2]]);
+                const auto& rpos3 = DataTypes::getCPos(positions[t[3]]);
+
+                const auto tetraVolume = sofa::geometry::Tetrahedron::volume(rpos0, rpos1, rpos2, rpos3);
+                mass = (densityM[tetrahedronRemoved[i]] * tetraVolume) / (typename DataTypes::Real(10.0));
+
+                // Removing mass
+                for (unsigned int j = 0; j < 4; ++j)
+                    VertexMasses[t[j]] -= mass;
+
+                // update total mass
+                if (!this->isLumped())
+                {
+                    totalMass -= 4.0 * mass;
+                }
+                else
+                {
+                    totalMass -= 4.0 * mass * m_massLumpingCoeff;
+                }
             }
         }
     }
@@ -692,41 +725,44 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassTetrahedronDestruction(
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassTetrahedronDestruction(const sofa::type::vector< Index >& tetrahedronRemoved)
 {
-    if (this->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
+    if constexpr (DataTypes::spatial_dimensions >= 3)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
-        const auto& positions = this->getMState()->read(posid)->getValue();
-
-        helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses ( d_edgeMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
-
-        // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
-        typename DataTypes::Real mass = typename DataTypes::Real(0);
-
-        for (unsigned int i = 0; i<tetrahedronRemoved.size(); ++i)
+        if (this->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
         {
-            // Get the edgesInTetrahedron to be removed
-            const core::topology::BaseMeshTopology::EdgesInTetrahedron &te = this->m_topology->getEdgesInTetrahedron(tetrahedronRemoved[i]);
-            const core::topology::BaseMeshTopology::Tetrahedron& t = this->m_topology->getTetrahedron(tetrahedronRemoved[i]);
+            core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+            const auto& positions = this->getMState()->read(posid)->getValue();
 
-            // Compute rest mass of conserne tetrahedron = density * tetrahedron volume.
-            const auto& rpos0 = DataTypes::getCPos(positions[t[0]]);
-            const auto& rpos1 = DataTypes::getCPos(positions[t[1]]);
-            const auto& rpos2 = DataTypes::getCPos(positions[t[2]]);
-            const auto& rpos3 = DataTypes::getCPos(positions[t[3]]);
+            helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses(d_edgeMass);
+            helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
 
-            const auto tetraVolume = sofa::geometry::Tetrahedron::volume(rpos0, rpos1, rpos2, rpos3);
-            mass = (densityM[tetrahedronRemoved[i]] * tetraVolume) / (typename DataTypes::Real(20.0));
+            // Initialisation
+            const type::vector<Real> densityM = getMassDensity();
+            typename DataTypes::Real mass = typename DataTypes::Real(0);
 
-            // Removing mass edges of concerne triangle
-            for (unsigned int j=0; j<6; ++j)
-                EdgeMasses[ te[j] ] -= mass;
-
-            // update total mass
-            if(!this->isLumped())
+            for (unsigned int i = 0; i < tetrahedronRemoved.size(); ++i)
             {
-                totalMass -= 6.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+                // Get the edgesInTetrahedron to be removed
+                const core::topology::BaseMeshTopology::EdgesInTetrahedron& te = this->m_topology->getEdgesInTetrahedron(tetrahedronRemoved[i]);
+                const core::topology::BaseMeshTopology::Tetrahedron& t = this->m_topology->getTetrahedron(tetrahedronRemoved[i]);
+
+                // Compute rest mass of conserne tetrahedron = density * tetrahedron volume.
+                const auto& rpos0 = DataTypes::getCPos(positions[t[0]]);
+                const auto& rpos1 = DataTypes::getCPos(positions[t[1]]);
+                const auto& rpos2 = DataTypes::getCPos(positions[t[2]]);
+                const auto& rpos3 = DataTypes::getCPos(positions[t[3]]);
+
+                const auto tetraVolume = sofa::geometry::Tetrahedron::volume(rpos0, rpos1, rpos2, rpos3);
+                mass = (densityM[tetrahedronRemoved[i]] * tetraVolume) / (typename DataTypes::Real(20.0));
+
+                // Removing mass edges of concerne triangle
+                for (unsigned int j = 0; j < 6; ++j)
+                    EdgeMasses[te[j]] -= mass;
+
+                // update total mass
+                if (!this->isLumped())
+                {
+                    totalMass -= 6.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+                }
             }
         }
     }
@@ -748,54 +784,57 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassHexahedronCreation(cons
         const sofa::type::vector< sofa::type::vector< double > >& coefs)
 {
     SOFA_UNUSED(elems);
-    if (this->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
+    if constexpr (DataTypes::spatial_dimensions >= 3)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
-        const auto& positions = this->getMState()->read(posid)->getValue();
-
-        helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses ( d_vertexMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
-        
-        // update mass density vector
-        sofa::Size nbMass = getMassDensity().size();
-        sofa::Size nbT = this->m_topology->getNbHexahedra();
-        if (nbMass < nbT)
-            addMassDensity(hexahedronAdded, ancestors, coefs);
-
-        // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
-        typename DataTypes::Real mass = typename DataTypes::Real(0);
-
-        for (unsigned int i = 0; i<hexahedronAdded.size(); ++i)
+        if (this->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
         {
-            // Get the hexahedron to be added
-            const core::topology::BaseMeshTopology::Hexahedron &h = this->m_topology->getHexahedron(hexahedronAdded[i]);
+            core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+            const auto& positions = this->getMState()->read(posid)->getValue();
 
-            /// compute its mass based on the mass density and the hexahedron volume
-            const auto& rpos0 = DataTypes::getCPos(positions[h[0]]);
-            const auto& rpos1 = DataTypes::getCPos(positions[h[1]]);
-            const auto& rpos2 = DataTypes::getCPos(positions[h[2]]);
-            const auto& rpos3 = DataTypes::getCPos(positions[h[3]]);
-            const auto& rpos4 = DataTypes::getCPos(positions[h[4]]);
-            const auto& rpos5 = DataTypes::getCPos(positions[h[5]]);
-            const auto& rpos6 = DataTypes::getCPos(positions[h[6]]);
-            const auto& rpos7 = DataTypes::getCPos(positions[h[7]]);
+            helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses(d_vertexMass);
+            helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
 
-            const auto hexaVolume = sofa::geometry::Hexahedron::volume(rpos0, rpos1, rpos2, rpos3, rpos4, rpos5, rpos6, rpos7);
-            mass = (densityM[hexahedronAdded[i]] * hexaVolume) / (typename DataTypes::Real(20.0));
+            // update mass density vector
+            sofa::Size nbMass = getMassDensity().size();
+            sofa::Size nbT = this->m_topology->getNbHexahedra();
+            if (nbMass < nbT)
+                addMassDensity(hexahedronAdded, ancestors, coefs);
 
-            // Adding mass
-            for (unsigned int j=0; j<8; ++j)
-                VertexMasses[ h[j] ] += mass;
+            // Initialisation
+            const type::vector<Real> densityM = getMassDensity();
+            typename DataTypes::Real mass = typename DataTypes::Real(0);
 
-            // update total mass
-            if(!this->isLumped())
+            for (unsigned int i = 0; i < hexahedronAdded.size(); ++i)
             {
-                totalMass += 8.0 * mass;
-            }
-            else
-            {
-                totalMass += 8.0 * mass * m_massLumpingCoeff;
+                // Get the hexahedron to be added
+                const core::topology::BaseMeshTopology::Hexahedron& h = this->m_topology->getHexahedron(hexahedronAdded[i]);
+
+                /// compute its mass based on the mass density and the hexahedron volume
+                const auto& rpos0 = DataTypes::getCPos(positions[h[0]]);
+                const auto& rpos1 = DataTypes::getCPos(positions[h[1]]);
+                const auto& rpos2 = DataTypes::getCPos(positions[h[2]]);
+                const auto& rpos3 = DataTypes::getCPos(positions[h[3]]);
+                const auto& rpos4 = DataTypes::getCPos(positions[h[4]]);
+                const auto& rpos5 = DataTypes::getCPos(positions[h[5]]);
+                const auto& rpos6 = DataTypes::getCPos(positions[h[6]]);
+                const auto& rpos7 = DataTypes::getCPos(positions[h[7]]);
+
+                const auto hexaVolume = sofa::geometry::Hexahedron::volume(rpos0, rpos1, rpos2, rpos3, rpos4, rpos5, rpos6, rpos7);
+                mass = (densityM[hexahedronAdded[i]] * hexaVolume) / (typename DataTypes::Real(20.0));
+
+                // Adding mass
+                for (unsigned int j = 0; j < 8; ++j)
+                    VertexMasses[h[j]] += mass;
+
+                // update total mass
+                if (!this->isLumped())
+                {
+                    totalMass += 8.0 * mass;
+                }
+                else
+                {
+                    totalMass += 8.0 * mass * m_massLumpingCoeff;
+                }
             }
         }
     }
@@ -809,51 +848,54 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassHexahedronCreation(const 
         const sofa::type::vector< sofa::type::vector< double > >& coefs)
 {
     SOFA_UNUSED(elems);
-    if (this->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
+    if constexpr (DataTypes::spatial_dimensions >= 3)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
-        const auto& positions = this->getMState()->read(posid)->getValue();
-
-        helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses ( d_edgeMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
-
-        // update mass density vector
-        sofa::Size nbMass = getMassDensity().size();
-        sofa::Size nbT = this->m_topology->getNbHexahedra();
-        if (nbMass < nbT)
-            addMassDensity(hexahedronAdded, ancestors, coefs);
-
-        // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
-        typename DataTypes::Real mass = typename DataTypes::Real(0);
-
-        for (unsigned int i = 0; i<hexahedronAdded.size(); ++i)
+        if (this->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
         {
-            // Get the EdgesInHexahedron to be added
-            const core::topology::BaseMeshTopology::EdgesInHexahedron &he = this->m_topology->getEdgesInHexahedron(hexahedronAdded[i]);
-            const core::topology::BaseMeshTopology::Hexahedron& h = this->m_topology->getHexahedron(hexahedronAdded[i]);
+            core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+            const auto& positions = this->getMState()->read(posid)->getValue();
 
-            /// compute its mass based on the mass density and the hexahedron volume
-            const auto& rpos0 = DataTypes::getCPos(positions[h[0]]);
-            const auto& rpos1 = DataTypes::getCPos(positions[h[1]]);
-            const auto& rpos2 = DataTypes::getCPos(positions[h[2]]);
-            const auto& rpos3 = DataTypes::getCPos(positions[h[3]]);
-            const auto& rpos4 = DataTypes::getCPos(positions[h[4]]);
-            const auto& rpos5 = DataTypes::getCPos(positions[h[5]]);
-            const auto& rpos6 = DataTypes::getCPos(positions[h[6]]);
-            const auto& rpos7 = DataTypes::getCPos(positions[h[7]]);
+            helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses(d_edgeMass);
+            helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
 
-            const auto hexaVolume = sofa::geometry::Hexahedron::volume(rpos0, rpos1, rpos2, rpos3, rpos4, rpos5, rpos6, rpos7);
-            mass = (densityM[hexahedronAdded[i]] * hexaVolume) / (typename DataTypes::Real(40.0));
+            // update mass density vector
+            sofa::Size nbMass = getMassDensity().size();
+            sofa::Size nbT = this->m_topology->getNbHexahedra();
+            if (nbMass < nbT)
+                addMassDensity(hexahedronAdded, ancestors, coefs);
 
-            // Adding mass edges of concerne triangle
-            for (unsigned int j=0; j<12; ++j)
-                EdgeMasses[ he[j] ] += mass;
+            // Initialisation
+            const type::vector<Real> densityM = getMassDensity();
+            typename DataTypes::Real mass = typename DataTypes::Real(0);
 
-            // update total mass
-            if(!this->isLumped())
+            for (unsigned int i = 0; i < hexahedronAdded.size(); ++i)
             {
-                totalMass += 12.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+                // Get the EdgesInHexahedron to be added
+                const core::topology::BaseMeshTopology::EdgesInHexahedron& he = this->m_topology->getEdgesInHexahedron(hexahedronAdded[i]);
+                const core::topology::BaseMeshTopology::Hexahedron& h = this->m_topology->getHexahedron(hexahedronAdded[i]);
+
+                /// compute its mass based on the mass density and the hexahedron volume
+                const auto& rpos0 = DataTypes::getCPos(positions[h[0]]);
+                const auto& rpos1 = DataTypes::getCPos(positions[h[1]]);
+                const auto& rpos2 = DataTypes::getCPos(positions[h[2]]);
+                const auto& rpos3 = DataTypes::getCPos(positions[h[3]]);
+                const auto& rpos4 = DataTypes::getCPos(positions[h[4]]);
+                const auto& rpos5 = DataTypes::getCPos(positions[h[5]]);
+                const auto& rpos6 = DataTypes::getCPos(positions[h[6]]);
+                const auto& rpos7 = DataTypes::getCPos(positions[h[7]]);
+
+                const auto hexaVolume = sofa::geometry::Hexahedron::volume(rpos0, rpos1, rpos2, rpos3, rpos4, rpos5, rpos6, rpos7);
+                mass = (densityM[hexahedronAdded[i]] * hexaVolume) / (typename DataTypes::Real(40.0));
+
+                // Adding mass edges of concerne triangle
+                for (unsigned int j = 0; j < 12; ++j)
+                    EdgeMasses[he[j]] += mass;
+
+                // update total mass
+                if (!this->isLumped())
+                {
+                    totalMass += 12.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+                }
             }
         }
     }
@@ -863,48 +905,51 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassHexahedronCreation(const 
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::applyVertexMassHexahedronDestruction(const sofa::type::vector< Index >& hexahedronRemoved)
 {
-    if (this->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
+    if constexpr (DataTypes::spatial_dimensions >= 3)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
-        const auto& positions = this->getMState()->read(posid)->getValue();
-
-        helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses ( d_vertexMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
-
-        // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
-        typename DataTypes::Real mass = typename DataTypes::Real(0);
-
-        for (unsigned int i = 0; i<hexahedronRemoved.size(); ++i)
+        if (this->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
         {
-            // Get the hexahedron to be removed
-            const core::topology::BaseMeshTopology::Hexahedron &h = this->m_topology->getHexahedron(hexahedronRemoved[i]);
+            core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+            const auto& positions = this->getMState()->read(posid)->getValue();
 
-            // Compute rest mass of conserne hexahedron = density * hexahedron volume.
-            const auto& rpos0 = DataTypes::getCPos(positions[h[0]]);
-            const auto& rpos1 = DataTypes::getCPos(positions[h[1]]);
-            const auto& rpos2 = DataTypes::getCPos(positions[h[2]]);
-            const auto& rpos3 = DataTypes::getCPos(positions[h[3]]);
-            const auto& rpos4 = DataTypes::getCPos(positions[h[4]]);
-            const auto& rpos5 = DataTypes::getCPos(positions[h[5]]);
-            const auto& rpos6 = DataTypes::getCPos(positions[h[6]]);
-            const auto& rpos7 = DataTypes::getCPos(positions[h[7]]);
+            helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses(d_vertexMass);
+            helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
 
-            const auto hexaVolume = sofa::geometry::Hexahedron::volume(rpos0, rpos1, rpos2, rpos3, rpos4, rpos5, rpos6, rpos7);
-            mass = (densityM[hexahedronRemoved[i]] * hexaVolume) / (typename DataTypes::Real(20.0));
+            // Initialisation
+            const type::vector<Real> densityM = getMassDensity();
+            typename DataTypes::Real mass = typename DataTypes::Real(0);
 
-            // Removing mass
-            for (unsigned int j=0; j<8; ++j)
-                VertexMasses[ h[j] ] -= mass;
-
-            // update total mass
-            if(!this->isLumped())
+            for (unsigned int i = 0; i < hexahedronRemoved.size(); ++i)
             {
-                totalMass -= 8.0 * mass;
-            }
-            else
-            {
-                totalMass -= 8.0 * mass * m_massLumpingCoeff;
+                // Get the hexahedron to be removed
+                const core::topology::BaseMeshTopology::Hexahedron& h = this->m_topology->getHexahedron(hexahedronRemoved[i]);
+
+                // Compute rest mass of conserne hexahedron = density * hexahedron volume.
+                const auto& rpos0 = DataTypes::getCPos(positions[h[0]]);
+                const auto& rpos1 = DataTypes::getCPos(positions[h[1]]);
+                const auto& rpos2 = DataTypes::getCPos(positions[h[2]]);
+                const auto& rpos3 = DataTypes::getCPos(positions[h[3]]);
+                const auto& rpos4 = DataTypes::getCPos(positions[h[4]]);
+                const auto& rpos5 = DataTypes::getCPos(positions[h[5]]);
+                const auto& rpos6 = DataTypes::getCPos(positions[h[6]]);
+                const auto& rpos7 = DataTypes::getCPos(positions[h[7]]);
+
+                const auto hexaVolume = sofa::geometry::Hexahedron::volume(rpos0, rpos1, rpos2, rpos3, rpos4, rpos5, rpos6, rpos7);
+                mass = (densityM[hexahedronRemoved[i]] * hexaVolume) / (typename DataTypes::Real(20.0));
+
+                // Removing mass
+                for (unsigned int j = 0; j < 8; ++j)
+                    VertexMasses[h[j]] -= mass;
+
+                // update total mass
+                if (!this->isLumped())
+                {
+                    totalMass -= 8.0 * mass;
+                }
+                else
+                {
+                    totalMass -= 8.0 * mass * m_massLumpingCoeff;
+                }
             }
         }
     }
@@ -914,45 +959,48 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassHexahedronDestruction(c
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassHexahedronDestruction(const sofa::type::vector< Index >& hexahedronRemoved)
 {
-    if (this->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
+    if constexpr (DataTypes::spatial_dimensions >= 3)
     {
-        core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
-        const auto& positions = this->getMState()->read(posid)->getValue();
-
-        helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses ( d_edgeMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
-
-        // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
-        typename DataTypes::Real mass = typename DataTypes::Real(0);
-
-        for (unsigned int i = 0; i<hexahedronRemoved.size(); ++i)
+        if (this->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
         {
-            // Get the EdgesInHexahedron to be removed
-            const core::topology::BaseMeshTopology::EdgesInHexahedron &he = this->m_topology->getEdgesInHexahedron(hexahedronRemoved[i]);
-            const core::topology::BaseMeshTopology::Hexahedron& h = this->m_topology->getHexahedron(hexahedronRemoved[i]);
+            core::ConstVecCoordId posid = this->d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
+            const auto& positions = this->getMState()->read(posid)->getValue();
 
-            // Compute rest mass of conserne hexahedron = density * hexahedron volume.
-            const auto& rpos0 = DataTypes::getCPos(positions[h[0]]);
-            const auto& rpos1 = DataTypes::getCPos(positions[h[1]]);
-            const auto& rpos2 = DataTypes::getCPos(positions[h[2]]);
-            const auto& rpos3 = DataTypes::getCPos(positions[h[3]]);
-            const auto& rpos4 = DataTypes::getCPos(positions[h[4]]);
-            const auto& rpos5 = DataTypes::getCPos(positions[h[5]]);
-            const auto& rpos6 = DataTypes::getCPos(positions[h[6]]);
-            const auto& rpos7 = DataTypes::getCPos(positions[h[7]]);
+            helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses(d_edgeMass);
+            helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
 
-            const auto hexaVolume = sofa::geometry::Hexahedron::volume(rpos0, rpos1, rpos2, rpos3, rpos4, rpos5, rpos6, rpos7);
-            mass = (densityM[hexahedronRemoved[i]] * hexaVolume) / (typename DataTypes::Real(40.0));
+            // Initialisation
+            const type::vector<Real> densityM = getMassDensity();
+            typename DataTypes::Real mass = typename DataTypes::Real(0);
 
-            // Removing mass edges of concerne triangle
-            for (unsigned int j=0; j<12; ++j)
-                EdgeMasses[ he[j] ] -= mass;
-
-            // update total mass
-            if(!this->isLumped())
+            for (unsigned int i = 0; i < hexahedronRemoved.size(); ++i)
             {
-                totalMass -= 12.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+                // Get the EdgesInHexahedron to be removed
+                const core::topology::BaseMeshTopology::EdgesInHexahedron& he = this->m_topology->getEdgesInHexahedron(hexahedronRemoved[i]);
+                const core::topology::BaseMeshTopology::Hexahedron& h = this->m_topology->getHexahedron(hexahedronRemoved[i]);
+
+                // Compute rest mass of conserne hexahedron = density * hexahedron volume.
+                const auto& rpos0 = DataTypes::getCPos(positions[h[0]]);
+                const auto& rpos1 = DataTypes::getCPos(positions[h[1]]);
+                const auto& rpos2 = DataTypes::getCPos(positions[h[2]]);
+                const auto& rpos3 = DataTypes::getCPos(positions[h[3]]);
+                const auto& rpos4 = DataTypes::getCPos(positions[h[4]]);
+                const auto& rpos5 = DataTypes::getCPos(positions[h[5]]);
+                const auto& rpos6 = DataTypes::getCPos(positions[h[6]]);
+                const auto& rpos7 = DataTypes::getCPos(positions[h[7]]);
+
+                const auto hexaVolume = sofa::geometry::Hexahedron::volume(rpos0, rpos1, rpos2, rpos3, rpos4, rpos5, rpos6, rpos7);
+                mass = (densityM[hexahedronRemoved[i]] * hexaVolume) / (typename DataTypes::Real(40.0));
+
+                // Removing mass edges of concerne triangle
+                for (unsigned int j = 0; j < 12; ++j)
+                    EdgeMasses[he[j]] -= mass;
+
+                // update total mass
+                if (!this->isLumped())
+                {
+                    totalMass -= 12.0 * mass * 2.0; // x 2 because mass is actually splitted over half-edges
+                }
             }
         }
     }
@@ -974,6 +1022,7 @@ void MeshMatrixMass<DataTypes, MassType>::init()
         sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
+    setMassTopologyType(topoType);
     Inherited::init();
     initTopologyHandlers(topoType);
 
@@ -1080,114 +1129,121 @@ void MeshMatrixMass<DataTypes, MassType>::initTopologyHandlers(sofa::core::topol
     // register engines to the corresponding toplogy containers depending on current topology type
     bool hasTriangles = false;
     bool hasQuads = false;
-    if (topologyType == TopologyElementType::HEXAHEDRON)
-    {
-        d_vertexMass.linkToHexahedronDataArray();
-        d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::HEXAHEDRAADDED, [this](const core::topology::TopologyChange* eventTopo) {
-            const core::topology::HexahedraAdded* hAdd = static_cast<const core::topology::HexahedraAdded*>(eventTopo);
-            applyVertexMassHexahedronCreation(hAdd->getIndexArray(), hAdd->getElementArray(), hAdd->ancestorsList, hAdd->coefs);
-        });
-        d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::HEXAHEDRAREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
-            const core::topology::HexahedraRemoved* hRemove = static_cast<const core::topology::HexahedraRemoved*>(eventTopo);
-            applyVertexMassHexahedronDestruction(hRemove->getArray());
-        });
 
-        if (!this->isLumped())
+
+    if constexpr (DataTypes::spatial_dimensions >= 3)
+    {
+        if (topologyType == TopologyElementType::HEXAHEDRON)
         {
-            d_edgeMass.linkToHexahedronDataArray();
-            d_edgeMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::HEXAHEDRAADDED, [this](const core::topology::TopologyChange* eventTopo) {
+            d_vertexMass.linkToHexahedronDataArray();
+            d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::HEXAHEDRAADDED, [this](const core::topology::TopologyChange* eventTopo) {
                 const core::topology::HexahedraAdded* hAdd = static_cast<const core::topology::HexahedraAdded*>(eventTopo);
-                applyEdgeMassHexahedronCreation(hAdd->getIndexArray(), hAdd->getElementArray(), hAdd->ancestorsList, hAdd->coefs);
-            });
-            d_edgeMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::HEXAHEDRAREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
+                applyVertexMassHexahedronCreation(hAdd->getIndexArray(), hAdd->getElementArray(), hAdd->ancestorsList, hAdd->coefs);
+                });
+            d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::HEXAHEDRAREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
                 const core::topology::HexahedraRemoved* hRemove = static_cast<const core::topology::HexahedraRemoved*>(eventTopo);
-                applyEdgeMassHexahedronDestruction(hRemove->getArray());
-            });
+                applyVertexMassHexahedronDestruction(hRemove->getArray());
+                });
+
+            if (!this->isLumped())
+            {
+                d_edgeMass.linkToHexahedronDataArray();
+                d_edgeMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::HEXAHEDRAADDED, [this](const core::topology::TopologyChange* eventTopo) {
+                    const core::topology::HexahedraAdded* hAdd = static_cast<const core::topology::HexahedraAdded*>(eventTopo);
+                    applyEdgeMassHexahedronCreation(hAdd->getIndexArray(), hAdd->getElementArray(), hAdd->ancestorsList, hAdd->coefs);
+                    });
+                d_edgeMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::HEXAHEDRAREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
+                    const core::topology::HexahedraRemoved* hRemove = static_cast<const core::topology::HexahedraRemoved*>(eventTopo);
+                    applyEdgeMassHexahedronDestruction(hRemove->getArray());
+                    });
+            }
+
+            hasQuads = true; // hexahedron imply quads
         }
-
-        hasQuads = true; // hexahedron imply quads
-    }
-    else if (topologyType == TopologyElementType::TETRAHEDRON)
-    {
-        d_vertexMass.linkToTetrahedronDataArray();
-        d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAADDED, [this](const core::topology::TopologyChange* eventTopo) {
-            const core::topology::TetrahedraAdded* tAdd = static_cast<const core::topology::TetrahedraAdded*>(eventTopo);
-            applyVertexMassTetrahedronCreation(tAdd->getIndexArray(), tAdd->getElementArray(), tAdd->ancestorsList, tAdd->coefs);
-        });
-        d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
-            const core::topology::TetrahedraRemoved* tRemove = static_cast<const core::topology::TetrahedraRemoved*>(eventTopo);
-            applyVertexMassTetrahedronDestruction(tRemove->getArray());
-        });
-
-        if (!this->isLumped())
+        else if (topologyType == TopologyElementType::TETRAHEDRON)
         {
-            d_edgeMass.linkToTetrahedronDataArray();
-            d_edgeMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAADDED, [this](const core::topology::TopologyChange* eventTopo) {
+            d_vertexMass.linkToTetrahedronDataArray();
+            d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAADDED, [this](const core::topology::TopologyChange* eventTopo) {
                 const core::topology::TetrahedraAdded* tAdd = static_cast<const core::topology::TetrahedraAdded*>(eventTopo);
-                applyEdgeMassTetrahedronCreation(tAdd->getIndexArray(), tAdd->getElementArray(), tAdd->ancestorsList, tAdd->coefs);
-            });
-            d_edgeMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
+                applyVertexMassTetrahedronCreation(tAdd->getIndexArray(), tAdd->getElementArray(), tAdd->ancestorsList, tAdd->coefs);
+                });
+            d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
                 const core::topology::TetrahedraRemoved* tRemove = static_cast<const core::topology::TetrahedraRemoved*>(eventTopo);
-                applyEdgeMassTetrahedronDestruction(tRemove->getArray());
-            });
-        }
+                applyVertexMassTetrahedronDestruction(tRemove->getArray());
+                });
 
-        hasTriangles = true; // Tetrahedron imply triangles
+            if (!this->isLumped())
+            {
+                d_edgeMass.linkToTetrahedronDataArray();
+                d_edgeMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAADDED, [this](const core::topology::TopologyChange* eventTopo) {
+                    const core::topology::TetrahedraAdded* tAdd = static_cast<const core::topology::TetrahedraAdded*>(eventTopo);
+                    applyEdgeMassTetrahedronCreation(tAdd->getIndexArray(), tAdd->getElementArray(), tAdd->ancestorsList, tAdd->coefs);
+                    });
+                d_edgeMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
+                    const core::topology::TetrahedraRemoved* tRemove = static_cast<const core::topology::TetrahedraRemoved*>(eventTopo);
+                    applyEdgeMassTetrahedronDestruction(tRemove->getArray());
+                    });
+            }
+
+            hasTriangles = true; // Tetrahedron imply triangles
+        }
     }
 
-    if (topologyType == TopologyElementType::QUAD || hasQuads)
+    if constexpr (DataTypes::spatial_dimensions >= 2)
     {
-        d_vertexMass.linkToQuadDataArray();
-        d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::QUADSADDED, [this](const core::topology::TopologyChange* eventTopo) {
-            const core::topology::QuadsAdded* qAdd = static_cast<const core::topology::QuadsAdded*>(eventTopo);
-            applyVertexMassQuadCreation(qAdd->getIndexArray(), qAdd->getElementArray(), qAdd->ancestorsList, qAdd->coefs);
-        });
-        d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::QUADSREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
-            const core::topology::QuadsRemoved* qRemove = static_cast<const core::topology::QuadsRemoved*>(eventTopo);
-            applyVertexMassQuadDestruction(qRemove->getArray());
-        });
-
-        if (!this->isLumped())
+        if (topologyType == TopologyElementType::QUAD || hasQuads)
         {
-            d_edgeMass.linkToQuadDataArray();
-            d_edgeMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::QUADSADDED, [this](const core::topology::TopologyChange* eventTopo) {
+            d_vertexMass.linkToQuadDataArray();
+            d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::QUADSADDED, [this](const core::topology::TopologyChange* eventTopo) {
                 const core::topology::QuadsAdded* qAdd = static_cast<const core::topology::QuadsAdded*>(eventTopo);
-                applyEdgeMassQuadCreation(qAdd->getIndexArray(), qAdd->getElementArray(), qAdd->ancestorsList, qAdd->coefs);
-            });
-            d_edgeMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::QUADSREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
+                applyVertexMassQuadCreation(qAdd->getIndexArray(), qAdd->getElementArray(), qAdd->ancestorsList, qAdd->coefs);
+                });
+            d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::QUADSREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
                 const core::topology::QuadsRemoved* qRemove = static_cast<const core::topology::QuadsRemoved*>(eventTopo);
-                applyEdgeMassQuadDestruction(qRemove->getArray());
-            });
+                applyVertexMassQuadDestruction(qRemove->getArray());
+                });
+
+            if (!this->isLumped())
+            {
+                d_edgeMass.linkToQuadDataArray();
+                d_edgeMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::QUADSADDED, [this](const core::topology::TopologyChange* eventTopo) {
+                    const core::topology::QuadsAdded* qAdd = static_cast<const core::topology::QuadsAdded*>(eventTopo);
+                    applyEdgeMassQuadCreation(qAdd->getIndexArray(), qAdd->getElementArray(), qAdd->ancestorsList, qAdd->coefs);
+                    });
+                d_edgeMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::QUADSREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
+                    const core::topology::QuadsRemoved* qRemove = static_cast<const core::topology::QuadsRemoved*>(eventTopo);
+                    applyEdgeMassQuadDestruction(qRemove->getArray());
+                    });
+            }
         }
-    }
 
-    if (topologyType == TopologyElementType::TRIANGLE || hasTriangles)
-    {
-        d_vertexMass.linkToTriangleDataArray();
-        d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESADDED, [this](const core::topology::TopologyChange* eventTopo) {
-            const core::topology::TrianglesAdded* tAdd = static_cast<const core::topology::TrianglesAdded*>(eventTopo);
-            applyVertexMassTriangleCreation(tAdd->getIndexArray(), tAdd->getElementArray(), tAdd->ancestorsList, tAdd->coefs);
-        });
-        d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
-            const core::topology::TrianglesRemoved* tRemove = static_cast<const core::topology::TrianglesRemoved*>(eventTopo);
-            applyVertexMassTriangleDestruction(tRemove->getArray());
-        });
-
-        if (!this->isLumped())
+        if (topologyType == TopologyElementType::TRIANGLE || hasTriangles)
         {
-            d_edgeMass.linkToTriangleDataArray();
-            d_edgeMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESADDED, [this](const core::topology::TopologyChange* eventTopo) {
+            d_vertexMass.linkToTriangleDataArray();
+            d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESADDED, [this](const core::topology::TopologyChange* eventTopo) {
                 const core::topology::TrianglesAdded* tAdd = static_cast<const core::topology::TrianglesAdded*>(eventTopo);
-                applyEdgeMassTriangleCreation(tAdd->getIndexArray(), tAdd->getElementArray(), tAdd->ancestorsList, tAdd->coefs);
-            });
-            d_edgeMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
+                applyVertexMassTriangleCreation(tAdd->getIndexArray(), tAdd->getElementArray(), tAdd->ancestorsList, tAdd->coefs);
+                });
+            d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
                 const core::topology::TrianglesRemoved* tRemove = static_cast<const core::topology::TrianglesRemoved*>(eventTopo);
-                applyEdgeMassTriangleDestruction(tRemove->getArray());
-            });
+                applyVertexMassTriangleDestruction(tRemove->getArray());
+                });
+
+            if (!this->isLumped())
+            {
+                d_edgeMass.linkToTriangleDataArray();
+                d_edgeMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESADDED, [this](const core::topology::TopologyChange* eventTopo) {
+                    const core::topology::TrianglesAdded* tAdd = static_cast<const core::topology::TrianglesAdded*>(eventTopo);
+                    applyEdgeMassTriangleCreation(tAdd->getIndexArray(), tAdd->getElementArray(), tAdd->ancestorsList, tAdd->coefs);
+                    });
+                d_edgeMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
+                    const core::topology::TrianglesRemoved* tRemove = static_cast<const core::topology::TrianglesRemoved*>(eventTopo);
+                    applyEdgeMassTriangleDestruction(tRemove->getArray());
+                    });
+            }
         }
     }
 }
-
 
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::massInitialization()
@@ -1354,79 +1410,82 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
     for (Index i = 0; i<nbEdges; ++i)
         applyEdgeMassCreation(i, my_edgeMassInfo[i], edges[i], emptyAncestor, emptyCoefficient);
 
-    // Create mass matrix depending on current Topology:
-    if (m_topology->getNbHexahedra()>0)  // Hexahedron topology
+    if constexpr (DataTypes::spatial_dimensions >= 2)
     {
-        // create vector tensor by calling the hexahedron creation function on the entire mesh
-        sofa::type::vector<Index> hexahedraAdded;
-        setMassTopologyType(TopologyElementType::HEXAHEDRON);
-        size_t n = m_topology->getNbHexahedra();
-        for (Index i = 0; i<n; ++i)
-            hexahedraAdded.push_back(i);
-
-        m_massLumpingCoeff = 2.5;
-        if (!isLumped())
+        if (getMassTopologyType() == TopologyElementType::QUAD)
         {
-            applyEdgeMassHexahedronCreation(hexahedraAdded, m_topology->getHexahedra(), emptyAncestors, emptyCoefficients);
-        }
-        
-        applyVertexMassHexahedronCreation(hexahedraAdded, m_topology->getHexahedra(), emptyAncestors, emptyCoefficients);
-    }
-    else if (m_topology->getNbTetrahedra()>0)  // Tetrahedron topology
-    {
-        // create vector tensor by calling the tetrahedron creation function on the entire mesh
-        sofa::type::vector<Index> tetrahedraAdded;
-        setMassTopologyType(TopologyElementType::TETRAHEDRON);
+            // create vector tensor by calling the quad creation function on the entire mesh
+            sofa::type::vector<Index> quadsAdded;
 
-        size_t n = m_topology->getNbTetrahedra();
-        for (Index i = 0; i<n; ++i)
-            tetrahedraAdded.push_back(i);
+            size_t n = m_topology->getNbQuads();
+            for (Index i = 0; i < n; ++i)
+                quadsAdded.push_back(i);
 
-        m_massLumpingCoeff = 2.5;
-        if (!isLumped())
-        {
-            applyEdgeMassTetrahedronCreation(tetrahedraAdded, m_topology->getTetrahedra(), emptyAncestors, emptyCoefficients);
+            m_massLumpingCoeff = 2.0;
+            if (!isLumped())
+            {
+                applyEdgeMassQuadCreation(quadsAdded, m_topology->getQuads(), emptyAncestors, emptyCoefficients);
+            }
+
+            applyVertexMassQuadCreation(quadsAdded, m_topology->getQuads(), emptyAncestors, emptyCoefficients);
         }
 
-        applyVertexMassTetrahedronCreation(tetrahedraAdded, m_topology->getTetrahedra(), emptyAncestors, emptyCoefficients);
-    }
-    else if (m_topology->getNbQuads()>0)  // Quad topology
-    {
-        // create vector tensor by calling the quad creation function on the entire mesh
-        sofa::type::vector<Index> quadsAdded;
-        setMassTopologyType(TopologyElementType::QUAD);
-
-        size_t n = m_topology->getNbQuads();
-        for (Index i = 0; i<n; ++i)
-            quadsAdded.push_back(i);
-
-        m_massLumpingCoeff = 2.0;
-        if (!isLumped())
+        if (getMassTopologyType() == TopologyElementType::TRIANGLE)
         {
-            applyEdgeMassQuadCreation(quadsAdded, m_topology->getQuads(), emptyAncestors, emptyCoefficients);
+            // create vector tensor by calling the triangle creation function on the entire mesh
+            sofa::type::vector<Index> trianglesAdded;
+
+            size_t n = m_topology->getNbTriangles();
+            for (Index i = 0; i < n; ++i)
+                trianglesAdded.push_back(i);
+
+            m_massLumpingCoeff = 2.0;
+            if (!isLumped())
+            {
+                applyEdgeMassTriangleCreation(trianglesAdded, m_topology->getTriangles(), emptyAncestors, emptyCoefficients);
+            }
+
+            applyVertexMassTriangleCreation(trianglesAdded, m_topology->getTriangles(), emptyAncestors, emptyCoefficients);
+        }
+    }
+
+    if constexpr (DataTypes::spatial_dimensions >= 3)
+    {
+        if (getMassTopologyType() == TopologyElementType::HEXAHEDRON)
+        {
+            // create vector tensor by calling the hexahedron creation function on the entire mesh
+            sofa::type::vector<Index> hexahedraAdded;
+            size_t n = m_topology->getNbHexahedra();
+            for (Index i = 0; i < n; ++i)
+                hexahedraAdded.push_back(i);
+
+            m_massLumpingCoeff = 2.5;
+            if (!isLumped())
+            {
+                applyEdgeMassHexahedronCreation(hexahedraAdded, m_topology->getHexahedra(), emptyAncestors, emptyCoefficients);
+            }
+
+            applyVertexMassHexahedronCreation(hexahedraAdded, m_topology->getHexahedra(), emptyAncestors, emptyCoefficients);
         }
 
-        applyVertexMassQuadCreation(quadsAdded, m_topology->getQuads(), emptyAncestors, emptyCoefficients);
-    }
-    else if (m_topology->getNbTriangles()>0) // Triangle topology
-    {
-        // create vector tensor by calling the triangle creation function on the entire mesh
-        sofa::type::vector<Index> trianglesAdded;
-        setMassTopologyType(TopologyElementType::TRIANGLE);
-
-        size_t n = m_topology->getNbTriangles();
-        for (Index i = 0; i<n; ++i)
-            trianglesAdded.push_back(i);
-
-        m_massLumpingCoeff = 2.0;
-        if (!isLumped())
+        if (getMassTopologyType() == TopologyElementType::TETRAHEDRON)
         {
-            applyEdgeMassTriangleCreation(trianglesAdded, m_topology->getTriangles(), emptyAncestors, emptyCoefficients);
+            // create vector tensor by calling the tetrahedron creation function on the entire mesh
+            sofa::type::vector<Index> tetrahedraAdded;
+
+            size_t n = m_topology->getNbTetrahedra();
+            for (Index i = 0; i < n; ++i)
+                tetrahedraAdded.push_back(i);
+
+            m_massLumpingCoeff = 2.5;
+            if (!isLumped())
+            {
+                applyEdgeMassTetrahedronCreation(tetrahedraAdded, m_topology->getTetrahedra(), emptyAncestors, emptyCoefficients);
+            }
+
+            applyVertexMassTetrahedronCreation(tetrahedraAdded, m_topology->getTetrahedra(), emptyAncestors, emptyCoefficients);
         }
-
-        applyVertexMassTriangleCreation(trianglesAdded, m_topology->getTriangles(), emptyAncestors, emptyCoefficients);
     }
-
 }
 
 

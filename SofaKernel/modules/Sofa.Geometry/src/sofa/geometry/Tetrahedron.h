@@ -54,7 +54,7 @@ struct Tetrahedron
     static constexpr auto volume(const Node& n0, const Node& n1, const Node& n2, const Node& n3)
     {
         constexpr Node n{};
-        //static_assert(std::distance(std::begin(n), std::end(n)) == 3, "volume can only be computed in 3 dimensions.");
+        static_assert(std::distance(std::begin(n), std::end(n)) == 3, "volume can only be computed in 3 dimensions.");
 
         if constexpr (std::distance(std::begin(n), std::end(n)) == 3)
         {

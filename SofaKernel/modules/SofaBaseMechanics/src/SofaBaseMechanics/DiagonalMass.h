@@ -36,19 +36,6 @@
 namespace sofa::component::mass
 {
 
-template<class DataTypes, class TMassType, class Element>
-struct DiagonalMassTopologyWorker
-{
-    void applyCreation(const sofa::type::vector< sofa::Index >& indices,
-        const sofa::type::vector< Element >& elems,
-        const sofa::type::vector< sofa::type::vector< sofa::Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs);
-
-    void applyDestruction(const sofa::type::vector< sofa::Index >& indices);
-
-    typename DataTypes::Real computeMassInformation(); //surface,volume...
-};
-
 template<class DataTypes, class TMassType>
 class DiagonalMassInternalData
 {
@@ -135,8 +122,6 @@ protected:
 
     /// Pointer to the topology container. Will be set by link @sa l_topology
     sofa::core::topology::BaseMeshTopology* m_topology;
-private:
-    sofa::geometry::ElementType m_manageElementTypeChange{ sofa::geometry::ElementType::POINT };
 
 protected:
     DiagonalMass();
@@ -261,11 +246,6 @@ public:
 
     /// Print key mass informations (totalMass, vertexMass and massDensity)
     void printMass();
-
-    /// Compute the mass from input values
-    SOFA_ATTRIBUTE_DEPRECATED("v21.06", "v21.12", "ComputeMass should not be called from outside. Changing one of the Data: density, totalMass or vertexMass will recompute the mass.")
-    void computeMass();
-
 
     /// @name Read and write access functions in mass information
     /// @{
