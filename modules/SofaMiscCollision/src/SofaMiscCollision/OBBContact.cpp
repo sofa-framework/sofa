@@ -45,7 +45,7 @@ Creator<Contact::Factory, FrictionContact<SphereCollisionModel<sofa::defaulttype
 Creator<Contact::Factory, FrictionContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > TriangleOBBFrictionContactClass("FrictionContact", true);
 Creator<Contact::Factory, FrictionContact<RigidSphereModel, OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > RigidSphereOBBFrictionContactClass("FrictionContact", true);
 
-Creator<Contact::Factory, RayContact<OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > RayRigidBoxContactClass("ray", true); //cast not wroking
+Creator<Contact::Factory, RayContact<OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > RayRigidBoxContactClass("RayContact", true); //cast not working
 
 template class SOFA_MISC_COLLISION_API BarycentricPenalityContact<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
 template class SOFA_MISC_COLLISION_API BarycentricPenalityContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;

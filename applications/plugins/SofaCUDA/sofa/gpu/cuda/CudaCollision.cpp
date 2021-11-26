@@ -147,7 +147,7 @@ int CudaProximityIntersectionClass = core::RegisterObject("GPGPU Proximity Inter
         .add< CudaProximityIntersection >()
         ;
 
-sofa::helper::Creator<core::collision::Contact::Factory, component::collision::RayContact<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>> > RayCudaSphereContactClass("ray",true);
+sofa::helper::Creator<core::collision::Contact::Factory, component::collision::RayContact<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>> > RayCudaSphereContactClass("RayContact",true);
 
 } // namespace cuda
 
