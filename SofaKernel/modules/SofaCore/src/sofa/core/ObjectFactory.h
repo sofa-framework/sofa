@@ -95,6 +95,7 @@ public:
         std::string authors;
         std::string license;
         std::string defaultTemplate;
+        std::string compilation_target;
         CreatorMap creatorMap;
         std::map<std::string, std::vector<std::string>> m_dataAlias ;
     };
@@ -320,7 +321,7 @@ public:
     /// Add a creator able to instance this class with the given templatename.
     ///
     /// See the add<RealObject>() method for an easy way to add a Creator.
-    RegisterObject& addCreator(std::string classname, std::string templatename,
+    RegisterObject& addCreator(std::string classname, std::string templatename, std::string compilation_target,
                                ObjectFactory::Creator::SPtr creator);
 
     /// Add a template instanciation of this class.
@@ -331,11 +332,15 @@ public:
     {
         std::string classname = sofa::helper::NameDecoder::getClassName<RealObject>();
         std::string templatename = sofa::helper::NameDecoder::getTemplateName<RealObject>();
+        std::string compilation_target="";
+        #ifdef SOFA_TARGET
+            compilation_target = sofa_tostring(SOFA_TARGET);
+        #endif
 
         if (defaultTemplate)
             entry.defaultTemplate = templatename;
 
-        return addCreator(classname, templatename, ObjectFactory::Creator::SPtr(new ObjectCreator<RealObject>));
+        return addCreator(classname, templatename, compilation_target, ObjectFactory::Creator::SPtr(new ObjectCreator<RealObject>));
     }
 
     /// This is the final operation that will actually commit the additions to the ObjectFactory.
