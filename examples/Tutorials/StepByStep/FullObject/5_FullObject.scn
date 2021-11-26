@@ -6,7 +6,7 @@
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
 	<MinProximityIntersection name="Proximity"  alarmDistance="3"  contactDistance="2" />
-	<DefaultContactManager name="Response"  response="default" />
+	<DefaultContactManager name="Response"  response="PenalityContactForceField" />
 	<Node 	 name="Object"  gravity="0 -9.81 0"  >
 		<EulerImplicitSolver name="Implicit Euler Solver"  rayleighStiffness="0.1" rayleighMass="0.1" />
 		<CGLinearSolver template="GraphScattered" name="Conjugate Gradient" iterations="25" tolerance="1e-5" threshold="1e-5"/>

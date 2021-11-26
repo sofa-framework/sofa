@@ -9,7 +9,7 @@
     <DefaultPipeline name="pipeline" depth="6" verbose="0"/>
   <BruteForceBroadPhase/>
   <BVHNarrowPhase/>
-  <DefaultContactManager name="response" response="default" />
+  <DefaultContactManager name="response" response="PenalityContactForceField" />
   <MinProximityIntersection name="proximity" alarmDistance="0.8" contactDistance="0.5" />
 
   <NewOmniDriver name="Omni Driver"  listening="true" tags="Omni" forceScale="0.5" scale="500"  permanent="true" />

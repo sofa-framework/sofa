@@ -12,7 +12,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DiscreteIntersection />
-    <DefaultContactManager response="default" name="collision response" />
+    <DefaultContactManager response="PenalityContactForceField" name="collision response" />
     <!--<DefaultCollisionGroupManager />-->
     <Node name="Liver">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />

@@ -14,7 +14,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <DiscreteIntersection/>
-    <DefaultContactManager response="default" name="collision response"/>
+    <DefaultContactManager response="PenalityContactForceField" name="collision response"/>
 -->
     <VisualStyle displayFlags="showForceFields" />
     <Node name="input">

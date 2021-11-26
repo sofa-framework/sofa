@@ -10,7 +10,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <NewProximityIntersection name="Proximity" alarmDistance="1.0" contactDistance="0.5" />
-    <DefaultContactManager name="Response" response="default" /> 
+    <DefaultContactManager name="Response" response="PenalityContactForceField" /> 
 
     <Node name="Particles">
         <EulerExplicitSolver symplectic="1" />

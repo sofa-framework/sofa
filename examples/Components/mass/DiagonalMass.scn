@@ -10,7 +10,7 @@
     <DefaultPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager response="default" name="collision response" />
+    <DefaultContactManager response="PenalityContactForceField" name="collision response" />
     <DiscreteIntersection />
 
     <MeshGmshLoader name="loader" filename="mesh/liver.msh" />

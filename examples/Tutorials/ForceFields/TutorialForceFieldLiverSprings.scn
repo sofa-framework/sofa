@@ -6,7 +6,7 @@
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager name="collision response" response="default" />
+    <DefaultContactManager name="collision response" response="PenalityContactForceField" />
     <DiscreteIntersection />
     <Node name="Liver" gravity="0 -9.81 0">
         <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />

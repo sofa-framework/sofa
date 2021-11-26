@@ -10,7 +10,7 @@
     <DefaultPipeline/>
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager response="default" />
+    <DefaultContactManager response="PenalityContactForceField" />
     <DiscreteIntersection/>
     
     
