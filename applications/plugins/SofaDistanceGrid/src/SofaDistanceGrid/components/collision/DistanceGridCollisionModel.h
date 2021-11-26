@@ -418,7 +418,8 @@ public:
             // we can use Newton's method using the jacobian of the deformation.
             type::Mat<3,3,double> m = Jdeform(b);
             type::Mat<3,3,double> minv;
-            minv.invert(m);
+            if(!minv.invert(m))
+                msg_error("FFDDistanceGridCollisionModel")<<"Non-invertible matrix in undeformDir";
             return minv*dir;
         }
 

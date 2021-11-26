@@ -180,7 +180,6 @@ void RigidDistanceGridCollisionModel::updateState()
 
     for (Size i=0; i<size; i++)
     {
-        Vector3 emin, emax;
         if (rigid)
         {
             const RigidTypes::Coord& xform = (rigid->read(core::ConstVecCoordId::position())->getValue())[i];
