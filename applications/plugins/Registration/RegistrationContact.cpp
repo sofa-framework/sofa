@@ -44,35 +44,35 @@ namespace collision
 using namespace defaulttype;
 using simulation::Node;
 
-Creator<Contact::Factory, RegistrationContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > SphereSphereRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > SpherePointRegistrationContactClass("registration",true);
-//Creator<Contact::Factory, RegistrationContact<SphereTreeModel, SphereTreeModel> > SphereTreeSphereTreeRegistrationContactClass("registration", true);
-//Creator<Contact::Factory, RegistrationContact<SphereTreeModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > SphereTreeTriangleContactClass("registration", true);
-Creator<Contact::Factory, RegistrationContact<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > PointPointRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > LinePointRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>> > LineLineRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > LineSphereRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleSphereRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > TrianglePointRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleLineRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleTriangleRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<TetrahedronCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronSphereRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<TetrahedronCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronPointRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<TetrahedronCollisionModel, LineCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronLineRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<TetrahedronCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronTriangleRegistrationContactClass("registration",true);
-Creator<Contact::Factory, RegistrationContact<TetrahedronCollisionModel, TetrahedronCollisionModel> > TetrahedronTetrahedronRegistrationContactClass("registration",true);
+Creator<Contact::Factory, RegistrationContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > SphereSphereRegistrationContactClass("RegistrationContactForceField",true);
+Creator<Contact::Factory, RegistrationContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > SpherePointRegistrationContactClass("RegistrationContactForceField",true);
+//Creator<Contact::Factory, RegistrationContact<SphereTreeModel, SphereTreeModel> > SphereTreeSphereTreeRegistrationContactClass("RegistrationContactForceField", true);
+//Creator<Contact::Factory, RegistrationContact<SphereTreeModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > SphereTreeTriangleContactClass("RegistrationContactForceField", true);
+Creator<Contact::Factory, RegistrationContact<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > PointPointRegistrationContactClass("RegistrationContactForceField",true);
+Creator<Contact::Factory, RegistrationContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > LinePointRegistrationContactClass("RegistrationContactForceField",true);
+Creator<Contact::Factory, RegistrationContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>> > LineLineRegistrationContactClass("RegistrationContactForceField",true);
+Creator<Contact::Factory, RegistrationContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > LineSphereRegistrationContactClass("RegistrationContactForceField",true);
+Creator<Contact::Factory, RegistrationContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleSphereRegistrationContactClass("RegistrationContactForceField",true);
+Creator<Contact::Factory, RegistrationContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > TrianglePointRegistrationContactClass("RegistrationContactForceField",true);
+Creator<Contact::Factory, RegistrationContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleLineRegistrationContactClass("RegistrationContactForceField",true);
+Creator<Contact::Factory, RegistrationContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleTriangleRegistrationContactClass("RegistrationContactForceField",true);
+Creator<Contact::Factory, RegistrationContact<TetrahedronCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronSphereRegistrationContactClass("RegistrationContactForceField",true);
+Creator<Contact::Factory, RegistrationContact<TetrahedronCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronPointRegistrationContactClass("RegistrationContactForceField",true);
+Creator<Contact::Factory, RegistrationContact<TetrahedronCollisionModel, LineCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronLineRegistrationContactClass("RegistrationContactForceField",true);
+Creator<Contact::Factory, RegistrationContact<TetrahedronCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronTriangleRegistrationContactClass("RegistrationContactForceField",true);
+Creator<Contact::Factory, RegistrationContact<TetrahedronCollisionModel, TetrahedronCollisionModel> > TetrahedronTetrahedronRegistrationContactClass("RegistrationContactForceField",true);
 
 #if REGISTRATION_HAVE_SOFADISTANCEGRID
-Creator<Contact::Factory, RegistrationContact<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > DistanceGridDistanceGridRegistrationContactClass("registration", true);
-Creator<Contact::Factory, RegistrationContact<RigidDistanceGridCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>> > DistanceGridPointRegistrationContactClass("registration", true);
-Creator<Contact::Factory, RegistrationContact<RigidDistanceGridCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > DistanceGridSphereRegistrationContactClass("registration", true);
-Creator<Contact::Factory, RegistrationContact<RigidDistanceGridCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > DistanceGridTriangleRegistrationContactClass("registration", true);
+Creator<Contact::Factory, RegistrationContact<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > DistanceGridDistanceGridRegistrationContactClass("RegistrationContactForceField", true);
+Creator<Contact::Factory, RegistrationContact<RigidDistanceGridCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>> > DistanceGridPointRegistrationContactClass("RegistrationContactForceField", true);
+Creator<Contact::Factory, RegistrationContact<RigidDistanceGridCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > DistanceGridSphereRegistrationContactClass("RegistrationContactForceField", true);
+Creator<Contact::Factory, RegistrationContact<RigidDistanceGridCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > DistanceGridTriangleRegistrationContactClass("RegistrationContactForceField", true);
 
-Creator<Contact::Factory, RegistrationContact<FFDDistanceGridCollisionModel, FFDDistanceGridCollisionModel> > FFDDistanceGridRegistrationContactClass("registration", true);
-Creator<Contact::Factory, RegistrationContact<FFDDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > FFDDistanceGridRigidDistanceGridRegistrationContactClass("registration", true);
-Creator<Contact::Factory, RegistrationContact<FFDDistanceGridCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>> > FFDDistanceGridPoinRegistrationtContactClass("registration", true);
-Creator<Contact::Factory, RegistrationContact<FFDDistanceGridCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > FFDDistanceGridSphereRegistrationContactClass("registration", true);
-Creator<Contact::Factory, RegistrationContact<FFDDistanceGridCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > FFDDistanceGridTriangleRegistrationContactClass("registration", true);
+Creator<Contact::Factory, RegistrationContact<FFDDistanceGridCollisionModel, FFDDistanceGridCollisionModel> > FFDDistanceGridRegistrationContactClass("RegistrationContactForceField", true);
+Creator<Contact::Factory, RegistrationContact<FFDDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > FFDDistanceGridRigidDistanceGridRegistrationContactClass("RegistrationContactForceField", true);
+Creator<Contact::Factory, RegistrationContact<FFDDistanceGridCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>> > FFDDistanceGridPoinRegistrationtContactClass("RegistrationContactForceField", true);
+Creator<Contact::Factory, RegistrationContact<FFDDistanceGridCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > FFDDistanceGridSphereRegistrationContactClass("RegistrationContactForceField", true);
+Creator<Contact::Factory, RegistrationContact<FFDDistanceGridCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > FFDDistanceGridTriangleRegistrationContactClass("RegistrationContactForceField", true);
 #endif
 
 } // namespace collision
