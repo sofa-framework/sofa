@@ -23,7 +23,7 @@
   <DefaultPipeline name="Pipeline" />
   <BruteForceBroadPhase name="BroadPhase" />
   <BVHNarrowPhase name="NarrowPhase" />
-  <DefaultContactManager name="ContactManager" response="FrictionContact" responseParams="mu=0" />
+  <DefaultContactManager name="ContactManager" response="FrictionContactConstraint" responseParams="mu=0" />
   <NewProximityIntersection name="Intersection" alarmDistance="2.5" contactDistance="0.01" />
 
   <Node name="Mesh">

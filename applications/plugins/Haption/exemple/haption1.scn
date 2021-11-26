@@ -9,7 +9,7 @@
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
 	<LocalMinDistance name="localMinDistance0"  alarmDistance="0.3"  contactDistance="0.15" />
-	<DefaultContactManager name="Response"  response="FrictionContact" />
+	<DefaultContactManager name="Response"  response="FrictionContactConstraint" />
 	<Node 	name="haption" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 		<EulerImplicitSolver name="eulerImplicitSolver1" />
 		<LULinearSolver template="NewMat" name="lULinearSolver0" />

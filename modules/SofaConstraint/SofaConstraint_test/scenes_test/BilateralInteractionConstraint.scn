@@ -7,7 +7,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
-    <CollisionResponse name="Response" response="FrictionContact" />
+    <CollisionResponse name="Response" response="FrictionContactConstraint" />
     <CollisionGroup name="Group" />
     <Node name="CUBE_0">
         <MechanicalObject dy="2.5" />

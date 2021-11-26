@@ -25,7 +25,7 @@ In this scene, collision is detected in parallel.
     <ParallelBruteForceBroadPhase/>
     <ParallelBVHNarrowPhase/>
     <NewProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7"/>
-    <DefaultContactManager name="Response" response="FrictionContact"/>
+    <DefaultContactManager name="Response" response="FrictionContactConstraint"/>
     <LCPConstraintSolver maxIt="1000" tolerance="0.001"  build_lcp="false"/>
     <InteractiveCamera name="cam" position="0 0 -50" lookAt="0 0 0"/>
 
