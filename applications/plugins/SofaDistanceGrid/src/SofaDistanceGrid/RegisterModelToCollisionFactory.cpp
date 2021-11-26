@@ -59,16 +59,16 @@ int registerDistanceGridCollisionModel()
 
 
 ///////////////////////////////// BARYCENTRICSTICK /////////////////////////////////////////////////
-Creator<Contact::Factory, BarycentricStickContact<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > DistanceGridDistanceGridStickContactClass("stick", true);
-Creator<Contact::Factory, BarycentricStickContact<RigidDistanceGridCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>> > DistanceGridPointStickContactClass("stick", true);
-Creator<Contact::Factory, BarycentricStickContact<RigidDistanceGridCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > DistanceGridSphereStickContactClass("stick", true);
-Creator<Contact::Factory, BarycentricStickContact<RigidDistanceGridCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > DistanceGridTriangleStickContactClass("stick", true);
+Creator<Contact::Factory, BarycentricStickContact<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > DistanceGridDistanceGridStickContactClass("StickContactForceField", true);
+Creator<Contact::Factory, BarycentricStickContact<RigidDistanceGridCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>> > DistanceGridPointStickContactClass("StickContactForceField", true);
+Creator<Contact::Factory, BarycentricStickContact<RigidDistanceGridCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > DistanceGridSphereStickContactClass("StickContactForceField", true);
+Creator<Contact::Factory, BarycentricStickContact<RigidDistanceGridCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > DistanceGridTriangleStickContactClass("StickContactForceField", true);
 
-Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, FFDDistanceGridCollisionModel> > FFDDistanceGridStickContactClass("stick", true);
-Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > FFDDistanceGridRigidDistanceGridStickContactClass("stick", true);
-Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>> > FFDDistanceGridPointStickContactClass("stick", true);
-Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > FFDDistanceGridSphereStickContactClass("stick", true);
-Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > FFDDistanceGridTriangleStickContactClass("stick", true);
+Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, FFDDistanceGridCollisionModel> > FFDDistanceGridStickContactClass("StickContactForceField", true);
+Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > FFDDistanceGridRigidDistanceGridStickContactClass("StickContactForceField", true);
+Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>> > FFDDistanceGridPointStickContactClass("StickContactForceField", true);
+Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > FFDDistanceGridSphereStickContactClass("StickContactForceField", true);
+Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > FFDDistanceGridTriangleStickContactClass("StickContactForceField", true);
 
 /////////////////////////////////////// FRICTION ///////////////////////////////////////////////////
 Creator<Contact::Factory, FrictionContact<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > DistanceGridDistanceGridFrictionContactClass("FrictionContact", true);
