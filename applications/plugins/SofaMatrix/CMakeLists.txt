@@ -3,6 +3,7 @@ project(SofaMatrix VERSION 1.0 LANGUAGES CXX)
 
 sofa_find_package(SofaBaseLinearSolver REQUIRED)
 sofa_find_package(CImgPlugin REQUIRED)
+sofa_find_package(image QUIET)
 
 set(SOFAMATRIX_SRC_DIR src/${PROJECT_NAME})
 
@@ -18,11 +19,26 @@ set(README_FILES
     SofaMatrix.md
 )
 
+if (NOT image_FOUND)
+    message("[SofaMatrix] Plugin image not found: some components (GlobalSystemMatrixImage) will not be compiled")
+else()
+    list(APPEND HEADER_FILES
+        ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixImage.h
+    )
+    list(APPEND SOURCE_FILES
+        ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixImage.cpp
+    )
+endif()
+
 # Create the plugin library.
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 # Link the plugin library to its dependency(ies).
 target_link_libraries(${PROJECT_NAME} SofaBaseLinearSolver CImgPlugin)
+
+if (image_FOUND)
+    target_link_libraries(${PROJECT_NAME} image)
+endif()
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

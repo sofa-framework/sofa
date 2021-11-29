@@ -15,7 +15,6 @@ sofa_add_plugin(SofaEulerianFluid SofaEulerianFluid)
 sofa_add_plugin(SofaSphFluid SofaSphFluid)
 sofa_add_plugin(SofaDistanceGrid SofaDistanceGrid) # Depends on SofaMiscCollision
 sofa_add_plugin(SofaImplicitField SofaImplicitField)
-sofa_add_plugin(SofaMatrix SofaMatrix ON)
 sofa_add_plugin(MultiThreading MultiThreading)
 sofa_add_plugin(DiffusionSolver DiffusionSolver) # Depends on CImgPlugin
 
@@ -61,6 +60,7 @@ sofa_add_plugin_external(RigidScale RigidScale)
 sofa_add_plugin(LeapMotion LeapMotion)
 sofa_add_plugin(Geomagic Geomagic)
 sofa_add_plugin(SofaAssimp SofaAssimp) # ColladaSceneLoader Depends on Flexible and image
+sofa_add_plugin(SofaMatrix SofaMatrix ON) # Depends on image, CImgPlugin
 
 
 sofa_add_plugin_experimental(PSL PSL)
