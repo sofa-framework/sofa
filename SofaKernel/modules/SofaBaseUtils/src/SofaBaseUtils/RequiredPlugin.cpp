@@ -35,7 +35,8 @@ namespace sofa::component::misc
 
 int RequiredPluginClass = core::RegisterObject("Load the required plugins")
         .add< RequiredPlugin >()
-        .addAlias("RequiredPlugin")
+        .addTargetName(sofa_tostring(SOFA_TARGET))
+        .addAlias("RequiredPlugin", false)
         ;
 
 RequiredPlugin::RequiredPlugin()
