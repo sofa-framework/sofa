@@ -42,7 +42,7 @@ sofa_add_plugin(PreassembledMass PreassembledMass) # Depends on Flexible and Com
 sofa_add_plugin(ExternalBehaviorModel ExternalBehaviorModel)
 sofa_add_plugin_external(InvertibleFVM InvertibleFVM)
 sofa_add_plugin(MeshSTEPLoader MeshSTEPLoader)
-sofa_add_plugin(PluginExample PluginExample)
+sofa_add_plugin_external(PluginExample PluginExample)
 sofa_add_plugin(ManifoldTopologies ManifoldTopologies)
 sofa_add_plugin(OptiTrackNatNet OptiTrackNatNet)
 sofa_add_plugin(SixenseHydra SixenseHydra)
