@@ -78,3 +78,8 @@ public:
 };
 
 } //namespace sofa::component::collision
+
+namespace sofa::helper
+{
+extern template class SOFA_SOFAUSERINTERACTION_API Factory<std::string, component::collision::InteractionPerformer, component::collision::BaseMouseInteractor*>;
+} //namespace sofa::helper

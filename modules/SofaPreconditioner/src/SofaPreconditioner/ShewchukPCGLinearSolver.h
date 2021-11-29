@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_ShewchukPCGLinearSolver_H
-#define SOFA_COMPONENT_LINEARSOLVER_ShewchukPCGLinearSolver_H
+#pragma once
 #include <SofaPreconditioner/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
@@ -29,15 +28,8 @@
 
 #include <cmath>
 
-namespace sofa
+namespace sofa::component::linearsolver
 {
-
-namespace component
-{
-
-namespace linearsolver
-{
-
 
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
@@ -106,10 +98,4 @@ inline void ShewchukPCGLinearSolver<component::linearsolver::GraphScatteredMatri
 template<>
 inline void ShewchukPCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(Vector& x,Vector& p,double alpha);
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::linearsolver
