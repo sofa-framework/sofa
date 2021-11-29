@@ -29,6 +29,11 @@
 namespace sofa::core
 {
 
+bool ObjectFactory::ClassEntry::isADeprecatedAlias(const std::string& name)
+{
+    return std::find(deprecatedAliases.begin(), deprecatedAliases.end(), name) != deprecatedAliases.end();
+}
+
 ObjectFactory::~ObjectFactory()
 {
 }
@@ -525,8 +530,16 @@ RegisterObject::RegisterObject(const std::string& description)
     }
 }
 
-RegisterObject& RegisterObject::addAlias(std::string val)
+RegisterObject& RegisterObject::addTargetName(std::string val)
 {
+    entry.compilation_target=val;
+    return *this;
+}
+
+RegisterObject& RegisterObject::addAlias(std::string val, bool doWarning)
+{
+    if(doWarning)
+        entry.deprecatedAliases.insert(val);
     entry.aliases.insert(val);
     return *this;
 }
@@ -553,7 +566,6 @@ RegisterObject& RegisterObject::addLicense(std::string val)
 
 RegisterObject& RegisterObject::addCreator(std::string classname,
                                            std::string templatename,
-                                           std::string compilation_target,
                                            ObjectFactory::Creator::SPtr creator)
 {
 
@@ -569,7 +581,6 @@ RegisterObject& RegisterObject::addCreator(std::string classname,
     {
         entry.className = classname;
         entry.creatorMap[templatename] =  creator;
-        entry.compilation_target = compilation_target;
     }
     return *this;
 }
@@ -582,13 +593,18 @@ RegisterObject::operator int()
     }
     else
     {
-        std::string fullname = entry.compilation_target + "." + entry.className;
+        std::string fullname = entry.className;
+        if(!entry.compilation_target.empty())
+            fullname = entry.compilation_target + "." + entry.className;
+
         ObjectFactory::ClassEntry& reg = ObjectFactory::getInstance()->getEntry(fullname);
         reg.className = entry.className;
         reg.compilation_target = entry.compilation_target;
         reg.description += entry.description;
         reg.authors += entry.authors;
         reg.license += entry.license;
+        reg.deprecatedAliases = entry.deprecatedAliases;
+
         if (!entry.defaultTemplate.empty())
         {
             if (!reg.defaultTemplate.empty())
@@ -621,11 +637,6 @@ RegisterObject::operator int()
                 ObjectFactory::getInstance()->addAlias(alias,fullname);
             }
         }
-        /*
-        if (reg.aliases.find(entry.className) == reg.aliases.end())
-        {
-            ObjectFactory::getInstance()->addAlias(entry.className, fullname);
-        }*/
         return 1;
     }
 }
