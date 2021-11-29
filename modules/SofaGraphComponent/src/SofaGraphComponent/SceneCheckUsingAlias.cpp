@@ -39,9 +39,14 @@ SceneCheckUsingAlias::SceneCheckUsingAlias()
     /// Add a callback to be n
     ObjectFactory::getInstance()->setCallback([this](Base* o, BaseObjectDescription *arg) {
         std::string typeNameInScene = arg->getAttribute("type", "");
+
+        // Test if the name used in the scene is not the one of the class. And that case we may emit a warning
         if ( typeNameInScene != o->getClassName() )
         {
-            this->m_componentsCreatedUsingAlias[o->getClassName()].push_back(typeNameInScene);
+            // Warnings are eimtted only for the alias that are flagged as deprecated;
+            auto entry = ObjectFactory::getInstance()->getEntry(o->getClassName());
+            if( entry.isADeprecatedAlias(typeNameInScene) )
+                this->m_componentsCreatedUsingAlias[o->getClassName()].push_back(typeNameInScene);
         }
     });
 }
