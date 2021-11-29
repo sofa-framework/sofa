@@ -15,6 +15,7 @@ sofa_add_plugin(SofaEulerianFluid SofaEulerianFluid)
 sofa_add_plugin(SofaSphFluid SofaSphFluid)
 sofa_add_plugin(SofaDistanceGrid SofaDistanceGrid) # Depends on SofaMiscCollision
 sofa_add_plugin(SofaImplicitField SofaImplicitField)
+sofa_add_plugin(SofaMatrix SofaMatrix ON)
 sofa_add_plugin(MultiThreading MultiThreading)
 sofa_add_plugin(DiffusionSolver DiffusionSolver) # Depends on CImgPlugin
 
