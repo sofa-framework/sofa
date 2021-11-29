@@ -227,7 +227,6 @@ struct SceneChecker_test : public BaseSimulationTest
               << "    <" << componentName << "/>                                  \n"
               << "</Node>                                                         \n";
 
-
         SceneCheckerVisitor checker(sofa::core::execparams::defaultInstance());
         checker.addCheck( SceneCheckUsingAlias::newSPtr() );
 
@@ -247,6 +246,31 @@ struct SceneChecker_test : public BaseSimulationTest
             EXPECT_MSG_NOEMIT(Warning);
             checker.validate(root.get());
         }
+    }
+
+    void checkUsingNonDeprecatedAlias()
+    {
+        std::stringstream scene;
+        scene << "<?xml version='1.0'?>                                           \n"
+              << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >    \n"
+              << "    <RequiredPlugin name='SofaGraphComponent'/>                 \n"
+              << "    <MechanicalObject template='Vec3d' />                       \n"
+              << "    <NonDeprecatedAlias/>                                       \n"
+              << "</Node>                                                         \n";
+
+        ObjectFactory::getInstance()->addAlias("NonDeprecatedAlias", "MeshTopology");
+
+        SceneCheckerVisitor checker(sofa::core::execparams::defaultInstance());
+        checker.addCheck( SceneCheckUsingAlias::newSPtr() );
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+                                                          scene.str().c_str(),
+                                                          scene.str().size());
+        ASSERT_NE(root.get(), nullptr);
+        root->init(sofa::core::execparams::defaultInstance());
+
+        EXPECT_MSG_NOEMIT(Warning);
+        checker.validate(root.get());
     }
 };
 
@@ -288,4 +312,9 @@ TEST_F(SceneChecker_test, checkUsingAlias_withAlias )
 TEST_F(SceneChecker_test, checkUsingAlias_withoutAlias )
 {
     checkUsingAlias(false);
+}
+
+TEST_F(SceneChecker_test, checkUsingAlias_withDeprecatedAlias )
+{
+    checkUsingNonDeprecatedAlias();
 }
