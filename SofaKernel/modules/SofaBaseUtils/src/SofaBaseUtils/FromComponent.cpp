@@ -23,6 +23,8 @@
 using sofa::core::RegisterObject ;
 using sofa::core::ObjectFactory ;
 
+#include <sofa/helper/system/PluginManager.h>
+#include <sofa/helper/system/FileSystem.h>
 using sofa::core::objectmodel::ComponentState ;
 
 #include <SofaBaseUtils/FromComponent.h>
@@ -34,8 +36,8 @@ namespace sofa::component
 
 FromComponent::FromComponent() :
     d_plugin(initData(&d_plugin, "plugin", ""))
-   ,d_import_old_name(initData(&d_import_old_name, "import", ""))
-   ,d_as_new_name(initData(&d_as_new_name, "as", ""))
+  ,d_import_old_name(initData(&d_import_old_name, "import", ""))
+  ,d_as_new_name(initData(&d_as_new_name, "as", ""))
 {
     d_componentState.setValue(ComponentState::Invalid) ;
 }
@@ -50,7 +52,7 @@ void FromComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
 
     if(plugin==nullptr)
     {
-        msg_error() << "The mandatory 'targetcomponent' attribute is missing.  "
+        msg_error() << "The mandatory 'plugin' attribute is missing.  "
                            "The component is disabled.  "
                            "To remove this error message you need to add a targetcomponent attribute pointing to a valid component's ClassName.";
         return ;
@@ -59,15 +61,29 @@ void FromComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
 
     if(object==nullptr)
     {
-        msg_error() << "The mandatory 'object' attribute is missing.  "
+        msg_error() << "The mandatory 'import' attribute is missing.  "
                            "The component is disabled.  "
                            "To remove this error message you need to add an alias attribute with a valid string component's ClassName.";
         return ;
     }
 
+    // First load the plugin if it is not yet done
+    type::vector< std::string > failed;
+    std::ostringstream errmsg;
+    const std::string name = sofa::helper::system::FileSystem::cleanPath( plugin );
+    auto& pluginManager = sofa::helper::system::PluginManager::getInstance();
+    if ( !pluginManager.pluginIsLoaded(name) )
+    {
+        if(!pluginManager.loadPlugin(name, sofa::helper::system::PluginManager::getDefaultSuffix(), true, true, &errmsg))
+        {
+            msg_error() << errmsg.str();
+        }
+    }
+
+
+    // Then import the requested names.
     if(std::string(object)=="*")
     {
-        std::cout << "Loading all !" << std::endl;
         std::vector<sofa::core::ObjectFactory::ClassEntry::SPtr> entries;
         ObjectFactory::getInstance()->getEntriesFromTarget(entries, std::string(plugin));
         for(auto& entry : entries)
@@ -113,7 +129,8 @@ void FromComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
 
 int FromComponentClass = RegisterObject("This object create an alias to a component name to make the scene more readable. ")
         .add< FromComponent >()
-        .addAlias("From")
+        .addTargetName(sofa_tostring(SOFA_TARGET))
+        .addAlias("From", false)
         ;
 
 } // namespace sofa::component
