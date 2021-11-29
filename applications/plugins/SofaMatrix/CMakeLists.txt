@@ -2,14 +2,17 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaMatrix VERSION 1.0 LANGUAGES CXX)
 
 sofa_find_package(SofaBaseLinearSolver REQUIRED)
+sofa_find_package(CImgPlugin REQUIRED)
 
 set(SOFAMATRIX_SRC_DIR src/${PROJECT_NAME})
 
 set(HEADER_FILES
     ${SOFAMATRIX_SRC_DIR}/config.h.in
+    ${SOFAMATRIX_SRC_DIR}/MatrixImageExporter.h
 )
 set(SOURCE_FILES
     ${SOFAMATRIX_SRC_DIR}/initSofaMatrix.cpp
+    ${SOFAMATRIX_SRC_DIR}/MatrixImageExporter.cpp
 )
 set(README_FILES
     SofaMatrix.md
@@ -19,7 +22,7 @@ set(README_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 # Link the plugin library to its dependency(ies).
-target_link_libraries(${PROJECT_NAME} SofaBaseLinearSolver)
+target_link_libraries(${PROJECT_NAME} SofaBaseLinearSolver CImgPlugin)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

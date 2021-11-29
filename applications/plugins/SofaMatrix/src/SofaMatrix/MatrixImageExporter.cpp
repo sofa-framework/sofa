@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <CImgPlugin/MatrixImageExporter.h>
+#include <SofaMatrix/MatrixImageExporter.h>
 #include <sofa/defaulttype/MatrixExporter.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <CImgPlugin/ImageCImg.h>

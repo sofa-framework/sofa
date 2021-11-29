@@ -21,16 +21,16 @@
 ******************************************************************************/
 #pragma once
 
-#include <CImgPlugin/CImgPlugin.h>
+#include <SofaMatrix/config.h>
 #include <sofa/defaulttype/fwd.h>
 #include <string>
 
 namespace sofa::defaulttype
 {
-bool SOFA_CIMGPLUGIN_API writeMatrixImage(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix);
+bool SOFA_SOFAMATRIX_API writeMatrixImage(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix);
 } //namespace sofa::defaulttype
 
 namespace sofa::component
 {
-void SOFA_CIMGPLUGIN_API initializeMatrixExporterComponents();
+void SOFA_SOFAMATRIX_API initializeMatrixExporterComponents();
 } //namespace sofa::component

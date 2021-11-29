@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <SofaMatrix/config.h>
 
+#include <SofaMatrix/MatrixImageExporter.h>
+
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
@@ -39,6 +41,8 @@ void initExternalModule()
     if (first)
     {
         first = false;
+
+        sofa::component::initializeMatrixExporterComponents();
     }
 }
 
