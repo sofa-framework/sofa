@@ -88,7 +88,7 @@ void FromComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
         ObjectFactory::getInstance()->getEntriesFromTarget(entries, std::string(plugin));
         for(auto& entry : entries)
         {
-            string fullname = std::string(plugin)+"."+entry->className;
+            const std::string fullname = std::string(plugin)+"."+entry->className;
             ObjectFactory::getInstance()->addAlias(entry->className, fullname,true);
         }
         if(alias != nullptr)
