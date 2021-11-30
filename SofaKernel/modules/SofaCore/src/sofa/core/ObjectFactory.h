@@ -100,7 +100,7 @@ public:
         CreatorMap creatorMap;
         std::map<std::string, std::vector<std::string>> m_dataAlias ;
 
-        bool SOFA_CORE_API isADeprecatedAlias(const std::string& name);
+        bool SOFA_CORE_API isADeprecatedAlias(const std::string& name) const;
     };
     typedef std::map<std::string, ClassEntry::SPtr> ClassEntryMap;
 
