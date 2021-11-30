@@ -32,13 +32,9 @@
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 
-namespace sofa
-{
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver
 {
 
 using namespace sofa::defaulttype;
@@ -57,7 +53,7 @@ ShewchukPCGLinearSolver<TMatrix,TVector>::ShewchukPCGLinearSolver()
     , f_build_precond( initData(&f_build_precond,true,"build_precond","Build the preconditioners, if false build the preconditioner only at the initial step") )
     , f_preconditioners( initData(&f_preconditioners, "preconditioners", "If not empty: path to the solvers to use as preconditioners") )
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
-    , m_preconditioners(0)
+    , next_refresh_step(0), m_preconditioners(nullptr), newton_iter(0)
 {
     f_graph.setWidget("graph");
 //    f_graph.setReadOnly(true);
@@ -68,14 +64,15 @@ ShewchukPCGLinearSolver<TMatrix,TVector>::ShewchukPCGLinearSolver()
 template<class TMatrix, class TVector>
 void ShewchukPCGLinearSolver<TMatrix,TVector>::init()
 {
-    if (! f_preconditioners.getValue().empty()) {
-        BaseContext * c = this->getContext();
+    Inherit1::init();
 
-        c->get(m_preconditioners, f_preconditioners.getValue());
+    if (! f_preconditioners.getValue().empty())
+    {
+        this->getContext()->get(m_preconditioners, f_preconditioners.getValue());
 
         if(m_preconditioners)
         {
-            msg_info() << "Found " << f_preconditioners.getValue();
+            msg_info() << "Found " << f_preconditioners.getValue() << ": '" << m_preconditioners->getPathName() << "'";
         }
         else
         {
@@ -98,25 +95,29 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const core::Me
 
     if (m_preconditioners==nullptr) return;
 
-    if (first) {  //We initialize all the preconditioners for the first step
+    if (first) //We initialize all the preconditioners for the first step
+    {
         m_preconditioners->setSystemMBKMatrix(mparams);
         first = false;
         next_refresh_step = 1;
-
-    } else if (f_build_precond.getValue()) {
+    }
+    else if (f_build_precond.getValue())
+    {
         sofa::helper::AdvancedTimer::valSet("PCG::PrecondBuildMBK", 1);
-        sofa::helper::AdvancedTimer::stepBegin("PCG::PrecondSetSystemMBKMatrix");
+        helper::ScopedAdvancedTimer mbkTimer("PCG::PrecondSetSystemMBKMatrix");
 
-        if (f_update_step.getValue()>0) {
-            if (next_refresh_step>=f_update_step.getValue()) {
+        if (f_update_step.getValue()>0)
+        {
+            if (next_refresh_step>=f_update_step.getValue())
+            {
                 m_preconditioners->setSystemMBKMatrix(mparams);
                 next_refresh_step=1;
-            } else {
+            }
+            else
+            {
                 next_refresh_step++;
             }
         }
-
-        sofa::helper::AdvancedTimer::stepEnd("PCG::PrecondSetSystemMBKMatrix");
     }
 
     m_preconditioners->updateSystemMatrix();
@@ -137,7 +138,8 @@ inline void ShewchukPCGLinearSolver<component::linearsolver::GraphScatteredMatri
 template<class Matrix, class Vector>
 void ShewchukPCGLinearSolver<Matrix,Vector>::handleEvent(sofa::core::objectmodel::Event* event) {
     /// this event shoul be launch before the addKToMatrix
-    if (sofa::simulation::AnimateBeginEvent::checkEventType(event)) {
+    if (sofa::simulation::AnimateBeginEvent::checkEventType(event))
+    {
         newton_iter = 0;
         std::map < std::string, sofa::type::vector<double> >& graph = * f_graph.beginEdit();
         graph.clear();
@@ -148,7 +150,7 @@ void ShewchukPCGLinearSolver<Matrix,Vector>::handleEvent(sofa::core::objectmodel
 template<class TMatrix, class TVector>
 void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
 {
-    sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::solve");
+    helper::ScopedAdvancedTimer solveTimer("PCGLinearSolver::solve");
 
     std::map < std::string, sofa::type::vector<double> >& graph = * f_graph.beginEdit();
 //    sofa::type::vector<double>& graph_error = graph["Error"];
@@ -172,14 +174,15 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     r = M * x;
     cgstep_beta(r,b,-1);// r = -1 * r + b  =   b - (M * x)
 
-    if (apply_precond) {
-        sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::apply Precond");
+    if (apply_precond)
+    {
+        helper::ScopedAdvancedTimer applyPrecondTimer("PCGLinearSolver::apply Precond");
         m_preconditioners->setSystemLHVector(w);
         m_preconditioners->setSystemRHVector(r);
         m_preconditioners->solveSystem();
-
-        sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::apply Precond");
-    } else {
+    }
+    else
+    {
         w = r;
     }
 
@@ -187,7 +190,8 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     graph_error.push_back(r_norm/b_norm);
 
     unsigned iter=1;
-    while ((iter <= f_maxIter.getValue()) && (r_norm > tol)) {
+    while ((iter <= f_maxIter.getValue()) && (r_norm > tol))
+    {
         s = M * w;
         double dtq = w.dot(s);
         double alpha = r_norm / dtq;
@@ -195,14 +199,15 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
         cgstep_alpha(x,w,alpha);//for(int i=0; i<n; i++) x[i] += alpha * d[i];
         cgstep_alpha(r,s,-alpha);//for (int i=0; i<n; i++) r[i] = r[i] - alpha * q[i];
 
-        if (apply_precond) {
-            sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::apply Precond");
+        if (apply_precond)
+        {
+            helper::ScopedAdvancedTimer applyPrecondTimer("PCGLinearSolver::apply Precond");
             m_preconditioners->setSystemLHVector(s);
             m_preconditioners->setSystemRHVector(r);
             m_preconditioners->solveSystem();
-
-            sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::apply Precond");
-        } else {
+        }
+        else
+        {
             s = r;
         }
 
@@ -224,16 +229,11 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     vtmp.deleteTempVector(&s);
 
     sofa::helper::AdvancedTimer::valSet("PCG iterations", iter);
-    sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::solve");
 }
 
 int ShewchukPCGLinearSolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
 .add< ShewchukPCGLinearSolver<GraphScatteredMatrix,GraphScatteredVector> >(true)
 .addAlias("PCGLinearSolver");
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::linearsolver
 

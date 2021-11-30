@@ -102,8 +102,11 @@ HexahedronFEMForceField<DataTypes>::HexahedronFEMForceField()
 template <class DataTypes>
 void HexahedronFEMForceField<DataTypes>::init()
 {
-    if(_alreadyInit)return;
-    else _alreadyInit=true;
+    if (_alreadyInit)
+    {
+        return;
+    }
+    _alreadyInit=true;
 
     this->core::behavior::ForceField<DataTypes>::init();
 
@@ -124,17 +127,20 @@ void HexahedronFEMForceField<DataTypes>::init()
     }
 
 
-    if( m_topology->getNbHexahedra()<=0 )
+    if ( m_topology->getNbHexahedra() <= 0 )
     {
         msg_error() << "Object must have a hexahedric MeshTopology." << msgendl
                     << " name: " << m_topology->getName() << msgendl
-                    << " typename: " << m_topology->getTypeName()<< msgendl
-                    << " nbPoints:" << m_topology->getNbPoints()<< msgendl;
+                    << " typename: " << m_topology->getTypeName() << msgendl
+                    << " nbPoints:" << m_topology->getNbPoints() << msgendl;
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
+
     _sparseGrid = dynamic_cast<topology::SparseGridTopology*>(m_topology);
     m_potentialEnergy = 0;
 
+    this->d_componentState.setValue(core::objectmodel::ComponentState::Valid);
     reinit();
 }
 
@@ -1189,9 +1195,10 @@ template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowForceFields()) return;
-    if (!this->mstate) return;
     if (!f_drawing.getValue()) return;
-
+    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid) return;
+    if (!this->mstate) return;
+    if (!m_topology) return;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 

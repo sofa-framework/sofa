@@ -302,6 +302,15 @@ void GUIManager::SetFullScreen()
     if (currentGUI) currentGUI->setFullScreen();
     else{ msg_error("GUIManager") <<"no currentGUI" ; }
 }
+
+void GUIManager::CenterWindow()
+{
+    if (currentGUI)
+    {
+        currentGUI->centerWindow();
+    }
+}
+
 void GUIManager::SaveScreenshot(const char* filename)
 {
     if (currentGUI) {

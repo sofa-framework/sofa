@@ -34,7 +34,7 @@ namespace sofa::core::behavior
  *  bodies given their current positions and velocities.
  *
  */
-class SOFA_CORE_API BaseInteractionConstraint : public BaseConstraint, StateAccessor
+class SOFA_CORE_API BaseInteractionConstraint : public BaseConstraint, public virtual StateAccessor
 {
 public:
     SOFA_ABSTRACT_CLASS2(BaseInteractionConstraint, BaseConstraint, StateAccessor);

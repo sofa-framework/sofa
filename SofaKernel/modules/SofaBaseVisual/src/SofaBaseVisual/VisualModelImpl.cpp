@@ -21,13 +21,8 @@
 ******************************************************************************/
 #include <SofaBaseVisual/VisualModelImpl.h>
 
-#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
-#include <SofaBaseTopology/QuadSetTopologyModifier.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
-#include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseTopology/SparseGridTopology.h>
-#include <SofaBaseTopology/CommonAlgorithms.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>

@@ -72,7 +72,7 @@ inline int rnear(double r)
 template<class real>
 inline int rfloor(real r)
 {
-    static const double FLOATTOINTCONST=(1.5*(1LL<<(52-16)));
+    static constexpr double FLOATTOINTCONST=(1.5*(1LL<<(52-16)));
     union
     {
         double d;
@@ -85,7 +85,7 @@ inline int rfloor(real r)
 template<class real>
 inline int rnear(real r)
 {
-    static const double FLOATTOINTCONST_0_5=(1.5*(1LL<<(52-16)))+0.5;
+    static constexpr double FLOATTOINTCONST_0_5=(1.5*(1LL<<(52-16)))+0.5;
     union
     {
         double d;

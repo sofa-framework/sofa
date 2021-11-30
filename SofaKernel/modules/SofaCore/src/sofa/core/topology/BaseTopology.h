@@ -140,7 +140,6 @@ protected:
     */
     void addStateChange(const TopologyChange *topologyChange);
 
-protected:
     /// Contains the actual topology data and give acces to it (nature of these data heavily depends on the kind of topology).
     TopologyContainer *m_topologyContainer;
 };
@@ -257,7 +256,6 @@ public:
     */
     virtual bool linkTopologyHandlerToData(TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType);
 
-public:
     /// Array of topology modifications that have already occured (addition) or will occur next (deletion).
     Data <std::list<const TopologyChange *> >m_changeList;
 

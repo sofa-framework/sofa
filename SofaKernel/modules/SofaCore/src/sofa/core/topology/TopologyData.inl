@@ -26,6 +26,11 @@
 namespace sofa::core::topology
 {
 
+
+/// static variable to be used when not all information are provided during topological event.
+static const sofa::type::vector< Index > s_empty_ancestors;
+static const sofa::type::vector< double > s_empty_coefficients;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////   Generic Topology Data Implementation   /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -250,9 +255,6 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::type::vector<Inde
     data.resize(i0 + nbElements);
     this->m_lastElementIndex += sofa::Index(nbElements);
 
-    const sofa::type::vector< Index > empty_vecint;
-    const sofa::type::vector< double > empty_vecdouble;
-
     if (this->m_topologyHandler)
     {
         for (Index i = 0; i < nbElements; ++i)
@@ -260,19 +262,18 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::type::vector<Inde
             value_type& t = data[i0 + i];
         
             this->m_topologyHandler->applyCreateFunction(Index(i0 + i), t, elems[i],
-                    (ancestors.empty() || coefs.empty()) ? empty_vecint : ancestors[i],
-                    (ancestors.empty() || coefs.empty()) ? empty_vecdouble : coefs[i],
+                    (ancestors.empty() || coefs.empty()) ? s_empty_ancestors : ancestors[i],
+                    (ancestors.empty() || coefs.empty()) ? s_empty_coefficients : coefs[i],
                     (ancestorElems.empty()) ? nullptr : &ancestorElems[i]);
             
             if (p_onCreationCallback)
             {
                 p_onCreationCallback(Index(i0 + i), t, elems[i],
-                    (ancestors.empty() || coefs.empty()) ? empty_vecint : ancestors[i],
-                    (ancestors.empty() || coefs.empty()) ? empty_vecdouble : coefs[i]);
+                    (ancestors.empty() || coefs.empty()) ? s_empty_ancestors : ancestors[i],
+                    (ancestors.empty() || coefs.empty()) ? s_empty_coefficients : coefs[i]);
             }
         }
     }
-    this->endEdit();
 }
 
 
