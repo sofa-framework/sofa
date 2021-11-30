@@ -581,6 +581,9 @@ RegisterObject& RegisterObject::addCreator(std::string classname,
     {
         entry.className = classname;
         entry.creatorMap[templatename] =  creator;
+
+        if(entry.compilationTarget.empty())
+            entry.compilationTarget = creator->getTarget();
     }
     return *this;
 }
@@ -604,6 +607,9 @@ RegisterObject::operator int()
         reg.authors += entry.authors;
         reg.license += entry.license;
         reg.deprecatedAliases = entry.deprecatedAliases;
+
+        if(reg.compilationTarget.empty())
+            msg_warning("ObjectFactory") << "No compilationTarget for object " << entry.className;
 
         if (!entry.defaultTemplate.empty())
         {
@@ -636,6 +642,11 @@ RegisterObject::operator int()
             {
                 ObjectFactory::getInstance()->addAlias(alias,fullname);
             }
+        }
+
+        if (!ObjectFactory::HasCreator(reg.className))
+        {
+            ObjectFactory::getInstance()->addAlias(reg.className,fullname);
         }
         return 1;
     }
