@@ -88,7 +88,7 @@ void FromComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
         ObjectFactory::getInstance()->getEntriesFromTarget(entries, std::string(plugin));
         for(auto& entry : entries)
         {
-            string fullname = std::string(plugin)+"."+entry->className;
+            const std::string fullname = std::string(plugin)+"."+entry->className;
             ObjectFactory::getInstance()->addAlias(entry->className, fullname,true);
         }
         if(alias != nullptr)
@@ -127,7 +127,7 @@ void FromComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
     d_componentState.setValue(ComponentState::Valid) ;
 }
 
-int FromComponentClass = RegisterObject("This object create an alias to a component name to make the scene more readable. ")
+int FromComponentClass = RegisterObject("This object creates an alias to a component name to make the scene more readable. ")
         .add< FromComponent >()
         .addTargetName(sofa_tostring(SOFA_TARGET))
         .addAlias("From", false)

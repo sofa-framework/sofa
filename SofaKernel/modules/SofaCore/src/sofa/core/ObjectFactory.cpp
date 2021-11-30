@@ -29,7 +29,7 @@
 namespace sofa::core
 {
 
-bool ObjectFactory::ClassEntry::isADeprecatedAlias(const std::string& name)
+bool ObjectFactory::ClassEntry::isADeprecatedAlias(const std::string& name) const
 {
     return std::find(deprecatedAliases.begin(), deprecatedAliases.end(), name) != deprecatedAliases.end();
 }
