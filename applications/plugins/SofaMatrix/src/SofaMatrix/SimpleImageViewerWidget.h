@@ -73,7 +73,10 @@ public:
         readFromData(plane);
         const QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         setSizePolicy(sizePolicy);
-
+        QVBoxLayout* vbox = new QVBoxLayout();
+        vbox->addStretch();
+        this->setLayout(vbox);
+        
         m_scene = new SimpleImageViewerGraphScene(&m_image, this);
         this->setScene(m_scene);
         fitInView();
