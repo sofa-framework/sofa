@@ -44,7 +44,7 @@ SceneCheckUsingAlias::SceneCheckUsingAlias()
         if ( typeNameInScene != o->getClassName() )
         {
             // Warnings are eimtted only for the alias that are flagged as deprecated;
-            auto entry = ObjectFactory::getInstance()->getEntry(o->getClassName());
+            const auto& entry = ObjectFactory::getInstance()->getEntry(o->getClassName());
             if( entry.isADeprecatedAlias(typeNameInScene) )
                 this->m_componentsCreatedUsingAlias[o->getClassName()].push_back(typeNameInScene);
         }
