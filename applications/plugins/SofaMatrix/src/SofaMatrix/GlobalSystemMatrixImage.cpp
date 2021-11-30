@@ -32,16 +32,16 @@ int GlobalSystemMatrixImageClass = core::RegisterObject("View the global linear 
 
 GlobalSystemMatrixImage::GlobalSystemMatrixImage()
     : Inherit1()
-    , d_image(initData(&d_image, ImageType(), "image", "Output image"))
-    , d_plane(initData(&d_plane, ImagePlaneType(), "plane", ""))
+    , d_image(initData(&d_image, ImageType(), "image", "The global linear system matrix concerted to an image. This Data is compatible with the component in the plugin 'image'."))
+    , d_bitmap(initData(&d_bitmap, BitmapType(), "bitmap", "Visualization of the produced image."))
     , l_linearSolver(initLink("linearSolver", "Link to the linear solver containing a matrix"))
 {
     d_image.setGroup("Image");
     d_image.setReadOnly(true);
 
-    d_plane.setGroup("Image");
-    d_plane.setWidget("imageplane");
-    d_plane.setReadOnly(true);
+    d_bitmap.setGroup("Image");
+    d_bitmap.setWidget("simplebitmap");
+    d_bitmap.setReadOnly(true);
 
     this->f_listening.setValue(true);
 }
@@ -63,9 +63,8 @@ void GlobalSystemMatrixImage::init()
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
     }
 
-    const std::vector<sofa::component::visualmodel::VisualModelImpl*> visuals;
-    helper::WriteOnlyAccessor<Data< ImagePlaneType > > wplane(d_plane);
-    wplane->setInput(d_image.getValue(), defaulttype::ImageLPTransform<ImagePlaneType::Real>(), visuals);
+    helper::WriteOnlyAccessor<Data< BitmapType > > wplane(d_bitmap);
+    wplane->setInput(d_image.getValue());
 
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 }
@@ -100,6 +99,9 @@ void GlobalSystemMatrixImage::handleEvent(core::objectmodel::Event* event)
                     img(0)(x, y) = !static_cast<bool>(matrix->element(x, y)) * std::numeric_limits<ImageType::T>::max();
                 }
             }
+
+            d_bitmap.update();
+
         }
     }
 }

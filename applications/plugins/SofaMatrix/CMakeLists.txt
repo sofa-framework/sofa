@@ -18,26 +18,51 @@ set(SOURCE_FILES
 set(README_FILES
     SofaMatrix.md
 )
+set(MOC_FILES
+)
+set(MOC_HEADER_FILES
+)
 
 if (NOT image_FOUND)
     message("[SofaMatrix] Plugin image not found: some components (GlobalSystemMatrixImage) will not be compiled")
 else()
     list(APPEND HEADER_FILES
         ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixImage.h
+        ${SOFAMATRIX_SRC_DIR}/SimpleBitmap.h
     )
     list(APPEND SOURCE_FILES
         ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixImage.cpp
+        ${SOFAMATRIX_SRC_DIR}/SimpleImageViewerWidget.cpp
     )
+
+    list(APPEND MOC_HEADER_FILES
+        ${SOFAMATRIX_SRC_DIR}/SimpleImageViewerWidget.h
+    )
+
+    find_package(SofaGuiQt REQUIRED QUIET)
+
+    find_package(Qt5 COMPONENTS Core Gui Widgets QUIET)
+
+    if(Qt5Core_FOUND)
+        qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
+    else()
+        find_package(Qt4 COMPONENTS qtcore)
+        qt4_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
+    endif()
 endif()
 
 # Create the plugin library.
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${MOC_HEADER_FILES} ${MOC_FILES})
 
 # Link the plugin library to its dependency(ies).
 target_link_libraries(${PROJECT_NAME} SofaBaseLinearSolver CImgPlugin)
 
 if (image_FOUND)
     target_link_libraries(${PROJECT_NAME} image)
+
+    if (SofaGuiQt_FOUND)
+        target_link_libraries(${PROJECT_NAME} SofaGuiQt)
+    endif()
 endif()
 
 sofa_create_package_with_targets(

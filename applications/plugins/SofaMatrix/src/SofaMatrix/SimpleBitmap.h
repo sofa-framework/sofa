@@ -21,36 +21,50 @@
 ******************************************************************************/
 #pragma once
 #include <SofaMatrix/config.h>
-
-#include <sofa/core/objectmodel/BaseObject.h>
 #include <image/CImgData.h>
-#include <image/ImageTypes.h>
-#include <SofaMatrix/SimpleBitmap.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::type
 {
 
-/**
- * Component to convert a BaseMatrix from the linear solver into an image. The image can be visualized in the GUI.
- */
-class SOFA_SOFAMATRIX_API GlobalSystemMatrixImage : public core::objectmodel::BaseObject
+/// A simple proxy of an Image, compatible with a Data. It can be visualized with a SimpleImageViewerWidget
+template<typename _T>
+struct SimpleBitmap
 {
-public:
-    SOFA_CLASS(GlobalSystemMatrixImage, core::objectmodel::BaseObject);
-    using ImageType = sofa::defaulttype::ImageUC; // Image are templated on uchar to be compatible with PLUGIN_IMAGE_COMPILE_SET_STANDARD, but a binary image would be enough
-    using BitmapType = type::SimpleBitmap<ImageType::T>;
+    typedef _T T;
+    typedef sofa::defaulttype::Image<T> ImageTypes;
+    typedef SReal Real;
+
+    SimpleBitmap()
+        : m_img(nullptr)
+    {}
+
+    static const char* Name() { return "SimpleBitmap"; }
+
+    void setInput(const ImageTypes& img)
+    {
+        m_img = &img;
+    }
+
+    friend std::istream& operator >> ( std::istream& in, SimpleBitmap& p )
+    {
+        return in;
+    }
+
+    friend std::ostream& operator << ( std::ostream& out, const SimpleBitmap& p )
+    {
+        return out;
+    }
+
+    [[nodiscard]] const ImageTypes* getImage() const
+    {
+        return m_img;
+    }
 
 protected:
 
-    GlobalSystemMatrixImage();
-    ~GlobalSystemMatrixImage() override;
+    /// input image
+    const ImageTypes* m_img { nullptr };
 
-    void init() override;
-    void handleEvent(core::objectmodel::Event *event) override;
-
-    Data< ImageType > d_image; /// Image data structure compatible with the plugin 'image'
-    Data< BitmapType > d_bitmap; /// A proxy to visualize the produced image in the GUI through a DataWidget
-    SingleLink<GlobalSystemMatrixImage, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_linearSolver;
 };
 
-} //namespace sofa::component::linearsolver
+} //namespace sofa::type
