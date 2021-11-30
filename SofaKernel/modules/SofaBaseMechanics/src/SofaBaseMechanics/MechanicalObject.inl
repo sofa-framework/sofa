@@ -2515,7 +2515,7 @@ void MechanicalObject<DataTypes>::resetForce(const core::ExecParams* params, cor
     {
         helper::WriteOnlyAccessor< Data<VecDeriv> > f( *this->write(fid) );
         for (unsigned i = 0; i < f.size(); ++i)
-            f[i] = Deriv();
+            f[i].clear();
     }
 }
 
