@@ -23,13 +23,13 @@ To speed up the collision detection, replace BVHNarrowPhase by ParallelBVHNarrow
     <LocalMinDistance name="Proximity" alarmDistance="2.5" contactDistance="1.0" angleCone="0.0"/>
     <DefaultContactManager name="Response" response="FrictionContact"/>
     <Node name="Torus1">
-        <MeshObjLoader filename="mesh/torus2_for_collision.obj" name="loader"/>
+        <MeshOBJLoader filename="mesh/torus2_for_collision.obj" name="loader"/>
         <MeshTopology src="@loader"/>
         <MechanicalObject src="@loader" scale="5.0"/>
         <TriangleCollisionModel simulated="0" moving="0"/>
         <LineCollisionModel simulated="0" moving="0"/>
         <PointCollisionModel simulated="0" moving="0"/>
-        <MeshObjLoader name="meshLoader_0" filename="mesh/torus2.obj" scale="5.0" handleSeams="1" />
+        <MeshOBJLoader name="meshLoader_0" filename="mesh/torus2.obj" scale="5.0" handleSeams="1" />
         <OglModel name="Visual" src="@meshLoader_0" color="0.5 0.5 0.5 1.0"/>
     </Node>
     <Node name="TorusFEM">
@@ -44,12 +44,12 @@ To speed up the collision detection, replace BVHNarrowPhase by ParallelBVHNarrow
         <!--<LinearSolverConstraintCorrection />-->
         <PrecomputedConstraintCorrection rotations="true" recompute="true"/>
         <Node name="Visu">
-            <MeshObjLoader name="meshLoader_2" filename="mesh/torus.obj" scale="5.0" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_2" filename="mesh/torus.obj" scale="5.0" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_2" color="red" dx="-12" dy="0" dz="0" rx="0" ry="0" rz="0"/>
             <BarycentricMapping input="@.." output="@Visual"/>
         </Node>
         <Node name="Surf2">
-            <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj"/>
+            <MeshOBJLoader name="loader" filename="mesh/torus_for_collision.obj"/>
             <MeshTopology src="@loader"/>
             <MechanicalObject src="@loader" dx="-12" dy="0" dz="0" rx="0" ry="0" rz="0" scale="5.0"/>
             <TriangleCollisionModel contactStiffness="0.1"/>
@@ -65,12 +65,12 @@ To speed up the collision detection, replace BVHNarrowPhase by ParallelBVHNarrow
         <UniformMass filename="BehaviorModels/torus2.rigid" totalMass="0.02"/>
         <UncoupledConstraintCorrection/>
         <Node name="Visu">
-            <MeshObjLoader name="meshLoader_1" filename="mesh/torus2.obj" scale="5.0" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_1" filename="mesh/torus2.obj" scale="5.0" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_1" color="1.0 0.5 0.25 1.0"/>
             <RigidMapping input="@.." output="@Visual"/>
         </Node>
         <Node name="Surf2">
-            <MeshObjLoader filename="mesh/torus2_for_collision.obj" name="loader"/>
+            <MeshOBJLoader filename="mesh/torus2_for_collision.obj" name="loader"/>
             <MeshTopology src="@loader"/>
             <MechanicalObject src="@loader" scale="5.0"/>
             <TriangleCollisionModel/>

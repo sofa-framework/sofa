@@ -50,7 +50,7 @@
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
-            <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />
+            <MeshOBJLoader filename="mesh/smCube125.obj" name="loader" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <RigidMapping />

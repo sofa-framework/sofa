@@ -40,7 +40,7 @@
         </Node>
 -->
         <Node name="VM">
-            <MeshObjLoader name='myLoader' filename='mesh/liver-smooth.obj'/>  
+            <MeshOBJLoader name='myLoader' filename='mesh/liver-smooth.obj'/>  
             <OglModel name="visual" src="@myLoader" />
             <BarycentricMapping output="@visual" />
         </Node>

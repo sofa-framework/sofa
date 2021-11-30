@@ -55,7 +55,7 @@
 		<UncoupledConstraintCorrection compliance="0.001   0.00003 0 0   0.00003 0   0.00003" />
 	</Node>
 
-    <MeshObjLoader name="InputMesh" filename="mesh/sphere_05.obj" scale="0.2" triangulate="1" />
+    <MeshOBJLoader name="InputMesh" filename="mesh/sphere_05.obj" scale="0.2" triangulate="1" />
 
     <Node name="InitTopology">
         <MeshTopology name="surface" src="@../InputMesh" />
