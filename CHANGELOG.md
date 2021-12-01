@@ -2,6 +2,23 @@
 
 
 
+## [v21.06.03](https://github.com/sofa-framework/sofa/tree/v21.06.03)
+
+[Full log](https://github.com/sofa-framework/sofa/compare/v21.06.02...v21.06.03)
+
+### Bug Fixes
+**Architecture**
+-  [CMake][modules] FIX out-of-tree builds [#2453](https://github.com/sofa-framework/sofa/pull/2453)
+-  [All] Update IDE directory for targets [#2239](https://github.com/sofa-framework/sofa/pull/2239)
+
+**Modules**
+- [SofaGeneralLoader] Make GridMeshCreator work again [#2473](https://github.com/sofa-framework/sofa/pull/2473)
+
+
+____________________________________________________________
+
+
+
 ## [v21.06.02](https://github.com/sofa-framework/sofa/tree/v21.06.02)
 
 [Full log](https://github.com/sofa-framework/sofa/compare/v21.06.01...v21.06.02)
@@ -14,6 +31,7 @@
 **Modules**
 - [Sofa.Compat] Fix install [#2360](https://github.com/sofa-framework/sofa/pull/2360)
 - [Sofa.Helper] PluginManager: check if a plugin is already loaded with a different path [#2352](https://github.com/sofa-framework/sofa/pull/2352)
+
 
 ____________________________________________________________
 
