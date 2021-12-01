@@ -86,6 +86,50 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
             for (std::set<int>::const_iterator it = sortedIndices.begin(); it!=sortedIndices.end(); ++it)
                 data.cudaIndices.push_back(*it);
         }
+
+        if (m->l_topology.empty())
+        {
+            msg_info("CudaFixedConstraint") << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+            m->l_topology.set(m->getContext()->getMeshTopologyLink());
+        }
+
+        sofa::core::topology::BaseMeshTopology* _topology = m->l_topology.get();
+        if (_topology)
+        {
+            m->d_indices.createTopologyHandler(_topology);
+            m->d_indices.setDestructionCallback([m](Index idx, unsigned int& val)
+            {
+                Data& data = *m->data;
+                if (data.cudaIndices.empty()) // need to compute indices due to topology changes. 
+                    // TODO This could be optimized at one point if removing first or last one
+                {
+                    const SetIndexArray& indices = m->d_indices.getValue();
+                    // put indices in a set to sort them and remove duplicates
+                    std::set<int> sortedIndices;
+                    for (unsigned int i=0; i< idx; ++i)
+                        sortedIndices.insert(indices[i]);
+
+                    for (unsigned int i = idx+1; i < indices.size(); ++i)
+                        sortedIndices.insert(indices[i]);
+
+                    data.cudaIndices.reserve(sortedIndices.size());
+                    for (std::set<int>::const_iterator it = sortedIndices.begin(); it != sortedIndices.end(); ++it)
+                        data.cudaIndices.push_back(*it);
+
+                    data.minIndex = sofa::InvalidID;
+                    data.maxIndex = sofa::InvalidID;
+                }
+                else
+                {
+                    for (unsigned int i = idx + 1; i < data.cudaIndices.size(); ++i)
+                    {
+                        data.cudaIndices[i - 1] = data.cudaIndices[i];
+                    }
+                    data.cudaIndices.resize(data.cudaIndices.size() - 1);
+                }
+
+            });
+        }
     }
 
     m->d_componentState.setValue(ComponentState::Valid);
@@ -336,12 +380,15 @@ template <>
 void FixedConstraintInternalData<gpu::cuda::CudaVec3fTypes>::projectResponse(Main* m, VecDeriv& dx)
 {    
     Data& data = *m->data;
-    if (m->d_fixAll.getValue())
-        FixedConstraintCuda3f_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));        
-    else if (data.minIndex != sofa::InvalidID)
+    if (m->d_fixAll.getValue()) {
+        FixedConstraintCuda3f_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));
+    }
+    else if (data.minIndex != sofa::InvalidID) {
         FixedConstraintCuda3f_projectResponseContiguous(data.maxIndex - data.minIndex + 1, ((float*)dx.deviceWrite()) + 3 * data.minIndex);
-    else
+    }
+    else {
         FixedConstraintCuda3f_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
+    }
 }
 
 
