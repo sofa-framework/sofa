@@ -1961,7 +1961,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams*, 
             res[e[0]] += dx[e[1]] * tempMass;
             res[e[1]] += dx[e[0]] * tempMass;
 
-            massTotal += 2*edgeMass[j] * Real(factor);
+            massTotal += 2 * tempMass;
         }
     }
 
