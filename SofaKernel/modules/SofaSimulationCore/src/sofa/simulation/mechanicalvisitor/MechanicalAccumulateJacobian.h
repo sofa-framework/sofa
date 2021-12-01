@@ -25,7 +25,9 @@
 
 namespace sofa::simulation::mechanicalvisitor
 {
-
+/**
+* This class define a visitor which will go through the scene graph in reverse order and call the method applyJT of each mechanical mapping (@sa sofa::core::BaseMapping)
+*/
 class SOFA_SIMULATION_CORE_API MechanicalAccumulateJacobian : public simulation::BaseMechanicalVisitor
 {
 public:
