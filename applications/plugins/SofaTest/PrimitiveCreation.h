@@ -4,6 +4,8 @@
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaMiscCollision/MeshIntTool.h>
 
+#include <sofa/simulation/Node.h>
+
 namespace sofa{
 
 namespace PrimitiveCreationTest{
