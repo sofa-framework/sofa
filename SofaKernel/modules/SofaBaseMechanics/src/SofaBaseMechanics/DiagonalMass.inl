@@ -26,7 +26,7 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/helper/io/XspLoader.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <numeric>
@@ -627,9 +627,9 @@ SReal DiagonalMass<DataTypes, MassType>::getElementMass(sofa::Index index) const
 
 //TODO: special case for Rigid Mass
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::getElementMass(sofa::Index index, defaulttype::BaseMatrix *m) const
+void DiagonalMass<DataTypes, MassType>::getElementMass(sofa::Index index, linearalgebra::BaseMatrix *m) const
 {
-    static const defaulttype::BaseMatrix::Index dimension = defaulttype::BaseMatrix::Index(defaulttype::DataTypeInfo<Deriv>::size());
+    static const linearalgebra::BaseMatrix::Index dimension = linearalgebra::BaseMatrix::Index(defaulttype::DataTypeInfo<Deriv>::size());
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
 
     m->clear();

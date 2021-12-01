@@ -24,7 +24,7 @@
 #include <sofa/core/config.h>
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/core/behavior/SingleStateAccessor.h>
 
 namespace sofa::core::behavior
@@ -146,7 +146,7 @@ public:
     /// field must start adding its contribution.
     /// @param kFact stiffness factor that needs to be multiplied to each matrix entry.
     /// @param offset Starting index of the submatrix to fill in the global matrix.
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset);
+    virtual void addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFact, unsigned int &offset);
 
     void addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
@@ -158,7 +158,7 @@ public:
     \param scale weight applied to the matrix, typically ±params->kfactor() for a stiffness matrix
     */
     template<class IndexArray, class ElementMat>
-    void addToMatrix(sofa::defaulttype::BaseMatrix* bm, unsigned offset, const IndexArray& nodeIndex, const ElementMat& em, SReal scale )
+    void addToMatrix(sofa::linearalgebra::BaseMatrix* bm, unsigned offset, const IndexArray& nodeIndex, const ElementMat& em, SReal scale )
     {
         constexpr auto S = DataTypes::deriv_total_size; // size of node blocks
         for (unsigned n1=0; n1<nodeIndex.size(); n1++)
@@ -181,7 +181,7 @@ public:
         }
     }
 
-    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal bFact, unsigned int &offset);
+    virtual void addBToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal bFact, unsigned int &offset);
     /// @}
 
     /// Pre-construction check method called by ObjectFactory.

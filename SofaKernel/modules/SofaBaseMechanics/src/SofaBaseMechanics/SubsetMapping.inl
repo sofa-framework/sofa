@@ -285,7 +285,7 @@ void SubsetMapping<TIn, TOut>::applyJT ( const core::ConstraintParams * /*cparam
 }
 
 template<class TIn, class TOut>
-const sofa::defaulttype::BaseMatrix* SubsetMapping<TIn, TOut>::getJ()
+const sofa::linearalgebra::BaseMatrix* SubsetMapping<TIn, TOut>::getJ()
 {
     if (matrixJ.get() == 0 || updateJ)
     {

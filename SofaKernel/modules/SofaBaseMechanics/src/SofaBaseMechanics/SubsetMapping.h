@@ -22,8 +22,8 @@
 #pragma once
 #include <SofaBaseMechanics/config.h>
 
-#include <SofaBaseTopology/TopologySubsetData.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/core/topology/TopologySubsetData.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 
 #include <sofa/core/Mapping.h>
@@ -77,11 +77,11 @@ public:
     enum { NIn = sofa::defaulttype::DataTypeInfo<InDeriv>::Size };
     enum { NOut = sofa::defaulttype::DataTypeInfo<OutDeriv>::Size };
     typedef type::Mat<NOut, NIn, Real> MBloc;
-    typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
+    typedef sofa::linearalgebra::CompressedRowSparseMatrix<MBloc> MatrixType;
 
     /// Correspondance array
     typedef typename InVecCoord::template rebind<Index>::other IndexArray;
-    typedef sofa::component::topology::PointSubsetData< IndexArray > SetIndex;
+    typedef sofa::core::topology::PointSubsetData< IndexArray > SetIndex;
     SetIndex f_indices;
 
     Data < Index > f_first; ///< first index (use if indices are sequential)
@@ -114,10 +114,10 @@ public:
 
     void applyJT ( const core::ConstraintParams* /*cparams*/, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn) override;
 
-    const sofa::defaulttype::BaseMatrix* getJ() override;
+    const sofa::linearalgebra::BaseMatrix* getJ() override;
 
 public:
-    typedef type::vector< defaulttype::BaseMatrix* > js_type;
+    typedef type::vector< linearalgebra::BaseMatrix* > js_type;
     const js_type* getJs() override;
 
 protected:

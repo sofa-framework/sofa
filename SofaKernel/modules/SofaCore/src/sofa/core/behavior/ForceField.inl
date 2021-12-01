@@ -103,7 +103,7 @@ void ForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const 
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*kFact*/, unsigned int &/*offset*/)
+void ForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix * /*mat*/, SReal /*kFact*/, unsigned int &/*offset*/)
 {
     static int i=0;
     if (i < 10)
@@ -124,7 +124,7 @@ void ForceField<DataTypes>::addBToMatrix(const MechanicalParams* mparams, const 
         addBToMatrix(r.matrix, sofa::core::mechanicalparams::bFactor(mparams) , r.offset);
 }
 template<class DataTypes>
-void ForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*bFact*/, unsigned int &/*offset*/)
+void ForceField<DataTypes>::addBToMatrix(sofa::linearalgebra::BaseMatrix * /*mat*/, SReal /*bFact*/, unsigned int &/*offset*/)
 {
 
 }

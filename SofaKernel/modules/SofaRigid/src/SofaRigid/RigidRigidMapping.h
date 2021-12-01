@@ -98,7 +98,7 @@ public:
 
     void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce ) override;
 
-    const sofa::defaulttype::BaseMatrix* getJ() override
+    const sofa::linearalgebra::BaseMatrix* getJ() override
     {
         return nullptr;
     }

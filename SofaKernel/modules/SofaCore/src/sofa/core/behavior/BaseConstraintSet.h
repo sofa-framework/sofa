@@ -23,7 +23,7 @@
 
 
 #include <sofa/core/config.h>
-#include <sofa/defaulttype/BaseVector.h>
+#include <sofa/linearalgebra/BaseVector.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/MultiVecId.h>
 
@@ -75,7 +75,7 @@ public:
     ///
     /// \param v is the result vector that contains the whole constraints violations
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    virtual void getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v) {
+    virtual void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v) {
         getConstraintViolation(cParams,v,m_cId);
     }
 
@@ -84,8 +84,8 @@ public:
     /// \param v is the result vector that contains the whole constraints violations
     /// \param cIndex is the index of the next constraint equation
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    virtual void getConstraintViolation(const ConstraintParams* /*cParams*/, defaulttype::BaseVector * /*v*/, unsigned int /*cIndex*/) {
-        dmsg_error() << "getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v, const unsigned int cIndex) is not implemented while it should";
+    virtual void getConstraintViolation(const ConstraintParams* /*cParams*/, linearalgebra::BaseVector * /*v*/, unsigned int /*cIndex*/) {
+        dmsg_error() << "getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v, const unsigned int cIndex) is not implemented while it should";
     }
 
 protected:

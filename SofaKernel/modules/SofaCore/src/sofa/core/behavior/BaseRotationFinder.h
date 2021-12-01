@@ -30,7 +30,7 @@ namespace sofa::core::behavior
 class BaseRotationFinder : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
-    virtual void getRotations(defaulttype::BaseMatrix * m, int offset = 0) = 0;
+    virtual void getRotations(linearalgebra::BaseMatrix * m, int offset = 0) = 0;
 };
 
 } // namespace sofa::core::behavior

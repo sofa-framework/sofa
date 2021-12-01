@@ -75,8 +75,8 @@ public:
     void applyJT(const core::MechanicalParams *mparams, Data< typename In::VecDeriv >& out, const Data< typename Out::VecDeriv >& in) override;
     void applyJT(const core::ConstraintParams *cparams, Data< typename In::MatrixDeriv >& out, const Data< typename Out::MatrixDeriv >& in) override;
 
-    const sofa::defaulttype::BaseMatrix* getJ() override;
-    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    const sofa::linearalgebra::BaseMatrix* getJ() override;
+    virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
     void draw(const core::visual::VisualParams* vparams) override;
     void handleTopologyChange(core::topology::Topology* t) override;
 
@@ -97,8 +97,8 @@ protected:
 
     ~BarycentricMapping() override;
 
-    defaulttype::BaseMatrix *internalMatrix;        ///< internally store a matrix for getJ/Compliant
-    type::vector< defaulttype::BaseMatrix* > js;
+    linearalgebra::BaseMatrix *internalMatrix;        ///< internally store a matrix for getJ/Compliant
+    type::vector< linearalgebra::BaseMatrix* > js;
 private:
     void createMapperFromTopology();
     void populateTopologies();

@@ -138,7 +138,7 @@ public:
 
 
     /// Project the global Mechanical Vector to constrained space using offset parameter
-    void applyConstraint(const MechanicalParams* /*mparams*/, defaulttype::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/) override
+    void applyConstraint(const MechanicalParams* /*mparams*/, linearalgebra::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/) override
     {
         msg_error() << "applyConstraint(mparams, vector, matrix) not implemented.";
     }
