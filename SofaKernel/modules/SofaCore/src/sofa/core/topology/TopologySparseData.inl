@@ -21,5 +21,5 @@
 ******************************************************************************/
 #pragma once
 // TODO: Backward compability header, to be removed for v21.12
-#include <sofa/core/topology/TopologySubsetData.inl>
-#include <sofa/core/topology/TopologySparseData.h>
+//#include <sofa/core/topology/TopologySubsetData.inl>
+//#include <sofa/core/topology/TopologySparseData.h>

@@ -21,29 +21,29 @@
 ******************************************************************************/
 #pragma once
 // TODO: Backward compability header, to be removed for v21.12
-#include <sofa/core/config.h>
-#include <sofa/core/topology/TopologySubsetData.h>
-
-namespace sofa::core::topology
-{
-
-//SOFA_ATTRIBUTE_DISABLED("v21.06", "PR#2114", "This class has been removed. TopologySubsetData should be used instead.")
-template< class VecT > using PointSparseData SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2114)", "v22.06", 
-    "This class has been removed. TopologySubsetData should be used instead.") = TopologySubsetData<core::topology::BaseMeshTopology::Point, VecT>;
-
-template< class VecT > using EdgeSparseData SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2114)", "v22.06",
-    "This class has been removed. TopologySubsetData should be used instead.") = TopologySubsetData<core::topology::BaseMeshTopology::Edge, VecT>;
-
-template< class VecT > using TriangleSparseData SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2114)", "v22.06",
-    "This class has been removed. TopologySubsetData should be used instead.") = TopologySubsetData<core::topology::BaseMeshTopology::Triangle, VecT>;
-
-template< class VecT > using QuadSparseData SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2114)", "v22.06",
-    "This class has been removed. TopologySubsetData should be used instead.") = TopologySubsetData<core::topology::BaseMeshTopology::Quad, VecT>;
-
-template< class VecT > using TetrahedronSparseData SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2114)", "v22.06",
-    "This class has been removed. TopologySubsetData should be used instead.") = TopologySubsetData<core::topology::BaseMeshTopology::Tetrahedron, VecT>;
-
-template< class VecT > using HexahedronSparseData SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2114)", "v22.06",
-    "This class has been removed. TopologySubsetData should be used instead.") = TopologySubsetData<core::topology::BaseMeshTopology::Hexahedron, VecT>;
-
-} //namespace sofa::core::topology
+//#include <sofa/core/config.h>
+//#include <sofa/core/topology/TopologySubsetData.h>
+//
+//namespace sofa::core::topology
+//{
+//
+////SOFA_ATTRIBUTE_DISABLED("v21.06", "PR#2114", "This class has been removed. TopologySubsetData should be used instead.")
+//template< class VecT > using PointSparseData SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2114)", "v22.06", 
+//    "This class has been removed. TopologySubsetData should be used instead.") = TopologySubsetData<core::topology::BaseMeshTopology::Point, VecT>;
+//
+//template< class VecT > using EdgeSparseData SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2114)", "v22.06",
+//    "This class has been removed. TopologySubsetData should be used instead.") = TopologySubsetData<core::topology::BaseMeshTopology::Edge, VecT>;
+//
+//template< class VecT > using TriangleSparseData SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2114)", "v22.06",
+//    "This class has been removed. TopologySubsetData should be used instead.") = TopologySubsetData<core::topology::BaseMeshTopology::Triangle, VecT>;
+//
+//template< class VecT > using QuadSparseData SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2114)", "v22.06",
+//    "This class has been removed. TopologySubsetData should be used instead.") = TopologySubsetData<core::topology::BaseMeshTopology::Quad, VecT>;
+//
+//template< class VecT > using TetrahedronSparseData SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2114)", "v22.06",
+//    "This class has been removed. TopologySubsetData should be used instead.") = TopologySubsetData<core::topology::BaseMeshTopology::Tetrahedron, VecT>;
+//
+//template< class VecT > using HexahedronSparseData SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2114)", "v22.06",
+//    "This class has been removed. TopologySubsetData should be used instead.") = TopologySubsetData<core::topology::BaseMeshTopology::Hexahedron, VecT>;
+//
+//} //namespace sofa::core::topology

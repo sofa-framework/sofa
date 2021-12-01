@@ -21,17 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/BoundingBox.h>
+#include <sofa/config.h>
 
-SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/type/BoundingBox.h")
-
-namespace sofa::defaulttype
-{
-    using BoundingBox = sofa::type::BoundingBox;
-    using BoundingBox1D = sofa::type::BoundingBox1D;
-    using BoundingBox2D = sofa::type::BoundingBox2D;
-
-    template <typename TReal>
-    using TBoundingBox = sofa::type::TBoundingBox<TReal>;
-
-} // namespace sofa::defaulttype
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/type/BoundingBox.h")

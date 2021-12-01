@@ -21,18 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/testing/BaseTest.h>
+#include <sofa/config.h>
 
-//SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/testing/BaseTest.h")
-
-namespace sofa::helper
-{
-    namespace testing = sofa::testing;
-}
-
-//{
-//    const SReal g_minDeltaErrorRatio = sofa::testing::g_minDeltaErrorRatio;
-//
-//    using BaseTest = sofa::testing::BaseTest;
-//
-//} // namespace sofa::helper::testing
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/testing/BaseTest.h")

@@ -23,11 +23,10 @@
 
 #include <sofa/core/topology/TopologyDataHandler.h>
 
-// SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/core/topology/TopologyDataHandler.h")
+SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "sofa/core/topology/TopologyDataHandler.h")
 
 namespace sofa::component::topology
 {
-    //SOFA_ATTRIBUTE_DISABLED("v21.06", "PR#2114", "This class has been removed. TopologySubsetData should be used instead.")
     template< class VecT > using PointSparseData SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2114)", "v22.06",
         "This class has been removed. TopologySubsetData should be used instead.") = TopologySubsetData<core::topology::BaseMeshTopology::Point, VecT>;
 

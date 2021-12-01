@@ -20,8 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMeshCollision/config.h>
+#include <sofa/config.h>
 
-#include <SofaMeshCollision/PointModel.h>
-
-SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "SofaMeshCollision/PointModel.h")
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "SofaMeshCollision/PointModel.h")
