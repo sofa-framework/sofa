@@ -1473,8 +1473,7 @@ BaseViewer* RealGUI::getViewer()
 
 sofa::gui::qt::viewer::SofaViewer* RealGUI::getSofaViewer()
 {
-    sofa::gui::qt::viewer::SofaViewer* sofaViewer = dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer);
-    return sofaViewer ? sofaViewer : nullptr;
+    return dynamic_cast<sofa::gui::qt::viewer::SofaViewer*>(mViewer);
 }
 
 //------------------------------------
