@@ -34,10 +34,7 @@
 
 #include <sofa/linearalgebra/SparseMatrixProduct[EigenSparseMatrix].h>
 
-namespace sofa::simulation
-{
-    class Node;
-}
+#include <sofa/simulation/fwd.h>
 
 namespace sofa::component::interactionforcefield
 {
