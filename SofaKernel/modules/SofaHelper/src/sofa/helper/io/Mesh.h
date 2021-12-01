@@ -45,8 +45,7 @@ class SOFA_HELPER_API Mesh
 public:
     
     std::string loaderType;
-    
-public:
+
     typedef sofa::type::Vector3 Vector3;
     typedef sofa::type::PrimitiveGroup PrimitiveGroup;
     typedef sofa::type::Material Material;

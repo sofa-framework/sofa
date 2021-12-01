@@ -15,7 +15,7 @@
     <SpotLight color="1 1 1" position="0 80 50" direction="0 -1 -1" cutoff="30" exponent="1" />
 	
     <Node name="Plan">
-		<MeshObjLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
+		<MeshOBJLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
 		<TransformEngine name="transform" translation="0 -1.5 0" rotation="0 0 10" scale="10 0.2 4" input_position="@loader.position" />
 		<MeshTopology src="@loader" />
 		<MechanicalObject position="@transform.output_position" template="Vec3d" />
@@ -36,12 +36,12 @@
 			<OglShader vertFilename="sleepColorShader.vert" fragFilename="sleepColorShader.frag"/>
 			<ValuesFromIndices name="colorEngine" template="Vec3" in="0 0 1  0.5 0.5 0.5" indices="@Cube1.sleeping" />
 			<OglFloat3Variable id="color" value="@colorEngine.out" />
-            <MeshObjLoader name="meshLoader_0" filename="mesh/cube.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/cube.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_0" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Colli">
-            <MeshObjLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
+            <MeshOBJLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel contactStiffness="10.0" />
@@ -62,12 +62,12 @@
 			<OglShader vertFilename="sleepColorShader.vert" fragFilename="sleepColorShader.frag"/>
 			<ValuesFromIndices name="colorEngine" template="Vec3" in="0 1 0  0.5 0.5 0.5" indices="@Cube2.sleeping" />
 			<OglFloat3Variable id="color" value="@colorEngine.out" />
-            <MeshObjLoader name="meshLoader_1" filename="mesh/cube.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_1" filename="mesh/cube.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_1" />
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Colli">
-            <MeshObjLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
+            <MeshOBJLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel contactStiffness="10.0" />

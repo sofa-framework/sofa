@@ -91,7 +91,7 @@ into a single bigger system.
 
 
     <Node name="Floor">
-        <MeshObjLoader name="loader" filename="mesh/floor2b.obj"/>
+        <MeshOBJLoader name="loader" filename="mesh/floor2b.obj"/>
         <MeshTopology src="@loader"/>
         <MechanicalObject src="@loader" dy="-10" scale="0.5"/>
         <TriangleCollisionModel simulated="false"/>

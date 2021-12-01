@@ -183,10 +183,10 @@ protected:
         StatusStruct() : status(NOT_VISITED) {}
         StatusStruct( const VisitedStatus& s ) : status(s) {}
         inline void operator=( const VisitedStatus& s ) { status=s; }
-        inline bool operator==( const VisitedStatus& s ) { return status==s; }
-        inline bool operator==( const StatusStruct& s ) { return status==s.status; }
-        inline bool operator!=( const VisitedStatus& s ) { return status!=s; }
-        inline bool operator!=( const StatusStruct& s ) { return status!=s.status; }
+        inline bool operator==( const VisitedStatus& s ) const { return status==s; }
+        inline bool operator==( const StatusStruct& s ) const { return status==s.status; }
+        inline bool operator!=( const VisitedStatus& s ) const { return status!=s; }
+        inline bool operator!=( const StatusStruct& s ) const { return status!=s.status; }
         VisitedStatus status;
     };
 

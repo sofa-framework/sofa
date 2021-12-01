@@ -18,11 +18,11 @@
 
     <Node name="Skull" >
         <Node name="VisualModel" >
-            <MeshObjLoader name="meshLoader_0" filename="Demos/Dentistry/data/mesh/skull_and_teeth.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_0" filename="Demos/Dentistry/data/mesh/skull_and_teeth.obj" handleSeams="1" />
             <OglModel name="SkullVisualModel" src="@meshLoader_0" color="white" /> 
         </Node>
         <Node name="CollisionModel" >
-            <MeshObjLoader filename="Demos/Dentistry/data/mesh/skull_and_teeth_coarse.obj"  name="loader"/>
+            <MeshOBJLoader filename="Demos/Dentistry/data/mesh/skull_and_teeth_coarse.obj"  name="loader"/>
             <MeshTopology src="@loader" name="SkullCollisionModel"  />
             <MechanicalObject src="@loader" name="SkullState" />        
             <TriangleCollisionModel contactStiffness="100" simulated="0" moving="0"/>
@@ -49,12 +49,12 @@
         <LinearSolverConstraintCorrection/>
         
 		<Node name="VisualModel" >
-            <MeshObjLoader name="meshLoader_1" filename="Demos/Dentistry/data/mesh/dental_instrument.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_1" filename="Demos/Dentistry/data/mesh/dental_instrument.obj" handleSeams="1" />
             <OglModel name="InstrumentVisualModel" src="@meshLoader_1" color="1.0 0.2 0.2 1.0" ry="-180" rz="-90" dz="3.5" dx="-0.3"/>
             <RigidMapping name="MM->VM mapping" input="@instrumentState" output="@InstrumentVisualModel" />
         </Node>
         <Node name="CollisionModel" >
-            <MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+            <MeshOBJLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
             <MeshTopology src="@loader" name="InstrumentCollisionModel" />
             <MechanicalObject src="@loader" name="instrumentCollisionState"  ry="-180" rz="-90" dz="3.5" dx="-0.3" />
             <LineCollisionModel contactStiffness="10" />

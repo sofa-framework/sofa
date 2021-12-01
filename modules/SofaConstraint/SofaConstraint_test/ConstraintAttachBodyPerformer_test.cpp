@@ -19,21 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define CGALPLUGIN_CYLINDERMESH_CPP
+#include <SofaConstraint/initSofaConstraint.h>
+#include <gtest/gtest.h>
+#include <SofaUserInteraction/InteractionPerformer.h>
 
-#include <CGALPlugin/config.h>
-#include <CGALPlugin/CylinderMesh.inl>
-
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
-
-using namespace sofa::defaulttype;
-namespace cgal
+namespace sofa
 {
-int CylinderMeshClass = sofa::core::RegisterObject("Generate a regular tetrahedron mesh of a cylinder")
-    .add<CylinderMesh<Vec3Types> >()
-;
 
-template class SOFA_CGALPLUGIN_API CylinderMesh<Vec3Types>;
- 
+TEST(ConstraintAttachBodyPerformer, Factory)
+{
+    component::initSofaConstraint();
+    EXPECT_TRUE(component::collision::InteractionPerformer::InteractionPerformerFactory::HasKey("ConstraintAttachBody"));
+}
+
 }

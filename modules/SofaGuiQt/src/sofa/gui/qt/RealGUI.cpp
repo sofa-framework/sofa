@@ -457,13 +457,7 @@ RealGUI::RealGUI ( const char* viewername)
     m_sofaMouseManager->hide();
     SofaVideoRecorderManager::getInstance()->hide();
 
-    //Center the application
-#if (QT_VERSION < QT_VERSION_CHECK(5, 11, 0))
-    const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
-#else
-    const QRect screen = QGuiApplication::primaryScreen()->availableGeometry();
-#endif
-    this->move(  ( screen.width()- this->width()  ) / 2 - 200,  ( screen.height() - this->height()) / 2 - 50  );
+    centerWindow();
 
     tabs->removeTab(tabs->indexOf(TabVisualGraph));
 
@@ -1328,6 +1322,17 @@ void RealGUI::setFullScreen (bool enable)
     {
         getViewer()->setFullScreen(enable);
     }
+}
+
+void RealGUI::centerWindow()
+{
+    //Center the application
+#if (QT_VERSION < QT_VERSION_CHECK(5, 11, 0))
+    const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
+#else
+    const QRect screen = QGuiApplication::primaryScreen()->availableGeometry();
+#endif
+    this->move(  ( screen.width() - this->width()  ) / 2,  ( screen.height() - this->height()) / 2 );
 }
 
 //------------------------------------

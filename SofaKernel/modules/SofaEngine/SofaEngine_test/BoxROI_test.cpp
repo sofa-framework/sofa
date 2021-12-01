@@ -202,7 +202,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
                 "   <Node name='Level 1'>                                      "
                 "       <RequiredPlugin  name='SofaLoader' />                  "
                 "       <TriangleSetTopologyContainer  name='Container' />     "
-                "       <MeshObjLoader filename='mesh/single_triangle.obj'/>                   "
+                "       <MeshOBJLoader filename='mesh/single_triangle.obj'/>                   "
                 "       <BoxROI name='myBoxROI'/>                              "
                 "   </Node>                                                    "
                 "</Node>                                                       ";

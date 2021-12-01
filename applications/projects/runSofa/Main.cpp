@@ -436,6 +436,7 @@ int main(int argc, char** argv)
 
     //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
     GUIManager::SetDimension(width, height);
+    GUIManager::CenterWindow();
 
     // Create and register the SceneCheckerListener before scene loading
     if(!noSceneCheck)

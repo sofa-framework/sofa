@@ -31,9 +31,6 @@
 #include <SofaBaseTopology/TopologyData.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/EdgeSetTopologyModifier.h>
-
 
 namespace sofa::component::interactionforcefield
 {
@@ -112,10 +109,6 @@ public:
     /// Link to be set to the topology container in the component graph.
     SingleLink<VectorSpringForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
     
-    sofa::component::topology::EdgeSetTopologyContainer* edgeCont;
-    sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
-    sofa::component::topology::EdgeSetTopologyModifier* edgeMod;
-
     /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* m_topology;
 

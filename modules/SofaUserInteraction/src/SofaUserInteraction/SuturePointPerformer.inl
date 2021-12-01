@@ -22,7 +22,6 @@
 #include <SofaUserInteraction/SuturePointPerformer.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -69,7 +68,7 @@ void SuturePointPerformer<DataTypes>::start()
 
         CollisionModel->getContext()->get (SpringObject, sofa::core::objectmodel::BaseContext::SearchRoot);
 
-        sofa::component::topology::TriangleSetTopologyContainer* triangleContainer;
+        sofa::core::topology::BaseMeshTopology* triangleContainer;
         CollisionModel->getContext()->get (triangleContainer);
 
         sofa::component::container::MechanicalObject <defaulttype::Vec3Types>* MechanicalObject;
@@ -84,7 +83,12 @@ void SuturePointPerformer<DataTypes>::start()
         }
         else if (!triangleContainer)
         {
-            msg_error(this->interactor) << "Can't find triangleContainer.";
+            msg_error(this->interactor) << "Can't find a topology.";
+            return;
+        }
+        else if (triangleContainer->getTriangles().empty())
+        {
+            msg_error(this->interactor) << "Can't find a topology with triangles.";
             return;
         }
         else if (!MechanicalObject)

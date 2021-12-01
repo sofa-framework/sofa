@@ -45,7 +45,6 @@ struct StateVecAccessor;
 template<class DataTypes>
 struct StateVecAccessor<DataTypes, V_COORD, V_READ>
 {
-public:
     typedef TVecId<V_COORD, V_READ> MyVecId;
     typedef Data<typename DataTypes::VecCoord> MyDataVec;
 
@@ -61,7 +60,6 @@ protected:
 template<class DataTypes>
 struct StateVecAccessor<DataTypes, V_COORD, V_WRITE>
 {
-public:
     typedef TVecId<V_COORD, V_WRITE> MyVecId;
     typedef Data<typename DataTypes::VecCoord> MyDataVec;
 
@@ -78,7 +76,6 @@ protected:
 template<class DataTypes>
 struct StateVecAccessor<DataTypes, V_DERIV, V_READ>
 {
-public:
     typedef TVecId<V_DERIV, V_READ> MyVecId;
     typedef Data<typename DataTypes::VecDeriv> MyDataVec;
 
@@ -94,7 +91,6 @@ protected:
 template<class DataTypes>
 struct StateVecAccessor<DataTypes, V_DERIV, V_WRITE>
 {
-public:
     typedef TVecId<V_DERIV, V_WRITE> MyVecId;
     typedef Data<typename DataTypes::VecDeriv> MyDataVec;
 
@@ -111,7 +107,6 @@ protected:
 template<class DataTypes>
 struct StateVecAccessor<DataTypes, V_MATDERIV, V_READ>
 {
-public:
     typedef TVecId<V_MATDERIV, V_READ> MyVecId;
     typedef Data<typename DataTypes::MatrixDeriv> MyDataVec;
 
@@ -127,7 +122,6 @@ protected:
 template<class DataTypes>
 struct StateVecAccessor<DataTypes, V_MATDERIV, V_WRITE>
 {
-public:
     typedef TVecId<V_MATDERIV, V_WRITE> MyVecId;
     typedef Data<typename DataTypes::MatrixDeriv> MyDataVec;
 
@@ -144,7 +138,6 @@ protected:
 template<class DataTypes>
 struct StateVecAccessor<DataTypes, V_ALL, V_READ>
 {
-public:
     typedef TVecId<V_ALL, V_READ> MyVecId;
     //typedef BaseData MyDataVec;
 
@@ -160,7 +153,6 @@ protected:
 template<class DataTypes>
 struct StateVecAccessor<DataTypes, V_ALL, V_WRITE>
 {
-public:
     typedef TVecId<V_ALL, V_WRITE> MyVecId;
 
     StateVecAccessor(State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
@@ -210,11 +202,7 @@ public:
         return *idMap_ptr;
     }
 
-public:
-
-    TMultiVecId()
-    {
-    }
+    TMultiVecId() = default;
 
     /// Copy from another VecId, possibly with another type of access, with the
     /// constraint that the access must be compatible (i.e. cannot create
@@ -478,11 +466,7 @@ public:
         return *idMap_ptr;
     }
 
-public:
-
-    TMultiVecId()
-    {
-    }
+    TMultiVecId() = default;
 
     /// Copy from another VecId, possibly with another type of access, with the
     /// constraint that the access must be compatible (i.e. cannot create

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaLoader/MeshObjLoader.h>
+#include <SofaLoader/MeshOBJLoader.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -35,12 +35,13 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::loader;
 using sofa::helper::getWriteOnlyAccessor;
 
-int MeshObjLoaderClass = core::RegisterObject("Specific mesh loader for Obj file format.")
-        .add< MeshObjLoader >();
+int MeshOBJLoaderClass = core::RegisterObject("Specific mesh loader for OBJ file format.")
+.add< MeshOBJLoader >()
+.addAlias("MeshObjLoader");
 
-MeshObjLoader::MeshObjLoader()
+MeshOBJLoader::MeshOBJLoader()
     : MeshLoader()
-    , faceType(MeshObjLoader::TRIANGLE)
+    , faceType(MeshOBJLoader::TRIANGLE)
     , d_handleSeams(initData(&d_handleSeams, (bool)false, "handleSeams", "Preserve UV and normal seams information (vertices with multiple UV and/or normals)"))
     , d_loadMaterial(initData(&d_loadMaterial, (bool) true, "loadMaterial", "Load the related MTL file or use a default one?"))
     , d_material(initData(&d_material,"defaultMaterial","Default material") )
@@ -77,12 +78,12 @@ MeshObjLoader::MeshObjLoader()
         &d_texIndexList});
 }
 
-MeshObjLoader::~MeshObjLoader()
+MeshOBJLoader::~MeshOBJLoader()
 {
 
 }
 
-bool MeshObjLoader::doLoad()
+bool MeshOBJLoader::doLoad()
 {
     dmsg_info() << "Loading OBJ file: " << d_filename;
 
@@ -106,10 +107,10 @@ bool MeshObjLoader::doLoad()
 }
 
 ///
-/// \brief MeshObjLoader::clearBuffers
+/// \brief MeshOBJLoader::clearBuffers
 /// Clear all the buffer containing the data loaded from the file.
 ///
-void MeshObjLoader::doClearBuffers()
+void MeshOBJLoader::doClearBuffers()
 {
     getWriteOnlyAccessor(d_texCoordsList).clear();
     getWriteOnlyAccessor(d_normalsList).clear();
@@ -121,7 +122,7 @@ void MeshObjLoader::doClearBuffers()
     getWriteOnlyAccessor(d_texIndexList)->clear();
 }
 
-void MeshObjLoader::addGroup (const PrimitiveGroup& g)
+void MeshOBJLoader::addGroup (const PrimitiveGroup& g)
 {
     /// Get the accessors to the data vectors.
     /// The accessors are using the RAII design pattern to handle automatically
@@ -132,20 +133,20 @@ void MeshObjLoader::addGroup (const PrimitiveGroup& g)
 
     switch (faceType)
     {
-    case MeshObjLoader::EDGE:
+    case MeshOBJLoader::EDGE:
         my_edgesGroups.push_back(g);
         break;
-    case MeshObjLoader::TRIANGLE:
+    case MeshOBJLoader::TRIANGLE:
         my_trianglesGroups.push_back(g);
         break;
-    case MeshObjLoader::QUAD:
+    case MeshOBJLoader::QUAD:
         my_quadsGroups.push_back(g);
         break;
     default: break;
     }
 }
 
-bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
+bool MeshOBJLoader::readOBJ (std::ifstream &file, const char* filename)
 {
     // Make sure that fscanf() uses a dot '.' as the decimal separator.
     sofa::helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
@@ -334,8 +335,8 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                     else
                         addEdge(my_edges.wref(), Edge(nodes[1], nodes[0]));
                 }
-                ++nbFaces[MeshObjLoader::EDGE];
-                faceType = MeshObjLoader::EDGE;
+                ++nbFaces[MeshOBJLoader::EDGE];
+                faceType = MeshOBJLoader::EDGE;
             }
             else if (nodes.size()==4 && !this->d_triangulate.getValue()) // Quad
             {
@@ -343,8 +344,8 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                 {
                     addQuad(my_quads.wref(), Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
                 }
-                ++nbFaces[MeshObjLoader::QUAD];
-                faceType = MeshObjLoader::QUAD;
+                ++nbFaces[MeshOBJLoader::QUAD];
+                faceType = MeshOBJLoader::QUAD;
             }
             else // Triangulate
             {
@@ -353,8 +354,8 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                     for (size_t j=2; j<nodes.size(); j++)
                         addTriangle(my_triangles.wref(), Triangle(nodes[0], nodes[j-1], nodes[j]));
                 }
-                ++nbFaces[MeshObjLoader::TRIANGLE];
-                faceType = MeshObjLoader::TRIANGLE;
+                ++nbFaces[MeshOBJLoader::TRIANGLE];
+                faceType = MeshOBJLoader::TRIANGLE;
             }
 
         }
@@ -579,9 +580,9 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             std::string fname;
             switch (faceType)
             {
-            case MeshObjLoader::EDGE:     fname = "edge"; break;
-            case MeshObjLoader::TRIANGLE: fname = "triangle"; break;
-            case MeshObjLoader::QUAD:     fname = "quad"; break;
+            case MeshOBJLoader::EDGE:     fname = "edge"; break;
+            case MeshOBJLoader::TRIANGLE: fname = "triangle"; break;
+            case MeshOBJLoader::QUAD:     fname = "quad"; break;
             default: break;
             }
             for (std::map< std::string, type::vector<unsigned int> >::const_iterator it = materialFaces[ft].begin(), itend = materialFaces[ft].end(); it != itend; ++it)
@@ -612,7 +613,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 //    model - properly initialized GLMmodel structure
 //    name  - name of the material library
 // -----------------------------------------------------
-bool MeshObjLoader::readMTL(const char* filename, type::vector<Material>& materials)
+bool MeshOBJLoader::readMTL(const char* filename, type::vector<Material>& materials)
 {
     FILE* file;
     char buf[128]; // Note: in the strings below, 127 is sizeof(buf)-1
@@ -638,9 +639,9 @@ bool MeshObjLoader::readMTL(const char* filename, type::vector<Material>& materi
             if ( fgets(buf, sizeof(buf), file) == nullptr)
             {
                 if (feof(file))
-                    msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case #.";
+                    msg_error() << "Error: MeshOBJLoader: fgets function has encounter end of file. case #.";
                 else
-                    msg_error() << "Error: MeshObjLoader: fgets function has encounter an error. case #.";
+                    msg_error() << "Error: MeshOBJLoader: fgets function has encounter an error. case #.";
             }
             break;
         case 'n':

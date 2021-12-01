@@ -23,7 +23,6 @@
 #include <SofaGeneralRigid/SkinningMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/io/Mesh.h>
 #include <limits>

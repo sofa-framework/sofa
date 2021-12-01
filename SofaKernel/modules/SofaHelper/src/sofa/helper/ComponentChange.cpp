@@ -469,7 +469,7 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "StaticSolver", Pluginized("v20.12", "SofaImplicitOdeSolver") },
 
     // SofaLoader was pluginized in #1608
-    { "MeshObjLoader", Pluginized("v20.12", "SofaLoader") },
+    { "MeshOBJLoader", Pluginized("v20.12", "SofaLoader") },
     { "MeshVTKLoader", Pluginized("v20.12", "SofaLoader") },
 
     // SofaEigen2Solver was pluginized in #1635

@@ -23,7 +23,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/testing/BaseTest.h>
 
-#include <SofaLoader/MeshObjLoader.h>
+#include <SofaLoader/MeshOBJLoader.h>
 
 #include <sofa/helper/BackTrace.h>
 using sofa::helper::BackTrace ;
@@ -43,7 +43,7 @@ int initTestEnvironment()
 int s_autodump = initTestEnvironment() ;
 
 
-class MeshObjLoader_test  : public ::testing::Test, public MeshObjLoader
+class MeshOBJLoader_test  : public ::testing::Test, public MeshOBJLoader
 {
 public :
 
@@ -78,10 +78,10 @@ public :
 
 };
 
-/** MeshObjLoader::load()
+/** MeshOBJLoader::load()
  * For a given meshes check that imported data are correct
  */
-TEST_F(MeshObjLoader_test, LoadCall)
+TEST_F(MeshOBJLoader_test, LoadCall)
 {
     //Check loader high level result
     EXPECT_FALSE(this->load());

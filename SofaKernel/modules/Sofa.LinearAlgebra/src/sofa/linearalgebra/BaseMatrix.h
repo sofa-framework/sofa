@@ -287,7 +287,6 @@ public:
     /// @name Virtual iterator classes and methods
     /// @{
 
-public:
     class BlockAccessor;
     class BlockConstAccessor;
     class ColBlockConstIterator;
@@ -1126,8 +1125,6 @@ public:
 
     /// @name basic linear operations
     /// @{
-
-public:
 
     /// Multiply the matrix by vector v and put the result in vector result
     virtual void opMulV(linearalgebra::BaseVector* result, const linearalgebra::BaseVector* v) const;

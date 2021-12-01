@@ -93,9 +93,7 @@ namespace sofa  {
             bool addTask(Task* task) override final;
             void workUntilDone(Task::Status* status) override final;
             Task::Allocator* getTaskAllocator() override final;
-            
-        public:
-            
+
             // factory methods: name, creator function
             static const char* name() { return "_default"; }
             
@@ -121,9 +119,7 @@ namespace sofa  {
             WorkerThread* getCurrentThread();
             
             const WorkerThread* getWorkerThread(const std::thread::id id);
-            
-            
-        private:
+
             
             static const std::string _name;
             
@@ -136,8 +132,6 @@ namespace sofa  {
             std::mutex  m_wakeUpMutex;
             
             std::condition_variable m_wakeUpEvent;
-            
-        private:
             
             DefaultTaskScheduler();
             

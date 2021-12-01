@@ -44,7 +44,6 @@ public:
 /// RAII class to modify the locale temporarily.
 class SOFA_HELPER_API TemporaryLocale
 {
-private:
     int m_category;
     std::string m_oldValue;
 public:

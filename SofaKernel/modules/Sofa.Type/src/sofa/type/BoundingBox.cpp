@@ -30,7 +30,7 @@ namespace sofa::type
 BoundingBox::bbox_t make_neutralBBox()
 {
     typedef sofa::type::Vector3::value_type Real;
-    const Real max_real = std::numeric_limits<Real>::max();
+    constexpr Real max_real = std::numeric_limits<Real>::max();
     sofa::type::Vector3 minBBox(max_real,max_real,max_real);
     sofa::type::Vector3 maxBBox(-max_real,-max_real,-max_real);
     return std::make_pair(minBBox,maxBBox);
@@ -279,7 +279,7 @@ namespace
 BoundingBox2D::bbox_t make_neutralBBox2D()
 {
     typedef sofa::type::Vector2::value_type Real;
-    const Real max_real = std::numeric_limits<Real>::max();
+    constexpr Real max_real = std::numeric_limits<Real>::max();
     sofa::type::Vector2 minBBox(max_real,max_real);
     sofa::type::Vector2 maxBBox(-max_real,-max_real);
     return std::make_pair(minBBox,maxBBox);
@@ -507,7 +507,7 @@ namespace
 {
 BoundingBox1D::bbox_t make_neutralBBox1D()
 {
-    const SReal max_real = std::numeric_limits<SReal>::max();
+    constexpr SReal max_real = std::numeric_limits<SReal>::max();
     return std::make_pair(max_real,-max_real);
 }
 }

@@ -14,7 +14,7 @@
     <DefaultContactManager response="default" name="collision response" />
     <DiscreteIntersection />
     <Node name="FullTopology">
-        <MeshObjLoader name="loader" filename="mesh/sphere_05.obj" />
+        <MeshOBJLoader name="loader" filename="mesh/sphere_05.obj" />
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <TriangleSetTopologyContainer name="Container1" src="@loader" />

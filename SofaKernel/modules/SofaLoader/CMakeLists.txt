@@ -10,7 +10,7 @@ set(HEADER_FILES
     ${SOFALOADER_SRC}/initSofaLoader.h
     ${SOFALOADER_SRC}/BaseVTKReader.h
     ${SOFALOADER_SRC}/BaseVTKReader.inl
-    ${SOFALOADER_SRC}/MeshObjLoader.h
+    ${SOFALOADER_SRC}/MeshOBJLoader.h
     ${SOFALOADER_SRC}/MeshVTKLoader.h
 )
 
@@ -18,7 +18,7 @@ set(SOURCE_FILES
     ${SOFALOADER_SRC}/initSofaLoader.cpp
     ${SOFALOADER_SRC}/BaseVTKReader.cpp
     ${SOFALOADER_SRC}/BaseVTKReader.inl
-    ${SOFALOADER_SRC}/MeshObjLoader.cpp
+    ${SOFALOADER_SRC}/MeshOBJLoader.cpp
     ${SOFALOADER_SRC}/MeshVTKLoader.cpp
 )
 

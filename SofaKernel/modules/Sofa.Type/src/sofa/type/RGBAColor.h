@@ -102,7 +102,6 @@ public:
     friend SOFA_TYPE_API std::ostream& operator<<(std::ostream& i, const RGBAColor& t) ;
     friend SOFA_TYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t) ;
 
-public:
     RGBAColor() ;
     RGBAColor(const fixed_array<float, 4>&) ;
     RGBAColor(const float r, const float g, const float b, const float a) ;
