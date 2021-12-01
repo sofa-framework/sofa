@@ -19,38 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SceneCheckerListener.h"
+#pragma once
 
-#include <sofa/simulation/Node.h>
-#include <SofaGraphComponent/SceneCheckMissingRequiredPlugin.h>
-#include <SofaGraphComponent/SceneCheckDuplicatedName.h>
-#include <SofaGraphComponent/SceneCheckUsingAlias.h>
-#include <SofaGraphComponent/SceneCheckDeprecatedComponents.h>
-#include <SofaGraphComponent/SceneCheckCollisionResponse.h>
+#include <SofaGraphComponent/config.h>
+#include <SofaGraphComponent/SceneCheck.h>
+
+#include <map>
+#include <sstream>
 
 namespace sofa::simulation::_scenechecking_
 {
-
-SceneCheckerListener::SceneCheckerListener()
+    
+class SOFA_SOFAGRAPHCOMPONENT_API SceneCheckCollisionResponse : public SceneCheck
 {
-    m_sceneChecker.addCheck(SceneCheckDuplicatedName::newSPtr());
-    m_sceneChecker.addCheck(SceneCheckMissingRequiredPlugin::newSPtr());
-    m_sceneChecker.addCheck(SceneCheckUsingAlias::newSPtr());
-    m_sceneChecker.addCheck(SceneCheckDeprecatedComponents::newSPtr());
-    m_sceneChecker.addCheck(SceneCheckCollisionResponse::newSPtr());
-}
+public:
+    virtual ~SceneCheckCollisionResponse() {}
+    typedef std::shared_ptr<SceneCheckCollisionResponse> SPtr;
+    static SPtr newSPtr() { return SPtr(new SceneCheckCollisionResponse()); }
+    virtual const std::string getName() override;
+    virtual const std::string getDesc() override;
+    void doInit(Node* node) override;
+    void doCheckOn(Node* node) override;
+    void doPrintSummary() override;
 
-SceneCheckerListener* SceneCheckerListener::getInstance()
+private:
+    bool m_checkDone = false;
+    std::stringstream m_message;
+};
+
+} // namespace sofa::simulation::_scenechecking_
+
+namespace sofa::simulation::scenechecking
 {
-    static SceneCheckerListener sceneLoaderListener;
-    return &sceneLoaderListener;
+    using _scenechecking_::SceneCheckCollisionResponse;
 }
-
-void SceneCheckerListener::rightAfterLoadingScene(sofa::simulation::Node::SPtr node)
-{
-    if(node.get())
-        m_sceneChecker.validate(node.get());
-}
-
-
-} // nnamespace sofa::simulation::_scenechecking_
