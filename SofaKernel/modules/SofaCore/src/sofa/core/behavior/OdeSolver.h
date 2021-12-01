@@ -19,18 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_ODESOLVER_H
-#define SOFA_CORE_BEHAVIOR_ODESOLVER_H
+#pragma once
 
 #include <sofa/core/behavior/MultiVec.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /**
@@ -133,10 +126,4 @@ public:
 
 };
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

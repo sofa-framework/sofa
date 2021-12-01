@@ -24,13 +24,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 using namespace sofa::defaulttype;
@@ -49,8 +43,4 @@ template class SOFA_CORE_API MixedInteractionForceField<Rigid2Types, Vec2Types> 
 
 
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::behavior

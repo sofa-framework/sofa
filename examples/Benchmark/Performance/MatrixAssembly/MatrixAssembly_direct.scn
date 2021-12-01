@@ -40,7 +40,7 @@ The differences are in the way the global system matrix is built and solved:
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.49" method="large" />
 
         <Node>
-            <MeshObjLoader name="meshLoader_0" filename="mesh/truthcylinder1.obj" handleSeams="0" />
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/truthcylinder1.obj" handleSeams="0" />
             <OglModel name="Visual" src="@meshLoader_0" color="red"/>
             <BarycentricMapping input="@../dofs" output="@Visual" />
         </Node>

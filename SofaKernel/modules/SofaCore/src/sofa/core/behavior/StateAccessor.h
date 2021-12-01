@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,65 +19,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <CGALPlugin/config.h>
-#include <CGALPlugin/MeshGenerationFromPolyhedron.h>
+#pragma once
 
-namespace sofa
+#include <sofa/core/config.h>
+
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
+
+
+namespace sofa::core::behavior
 {
 
-namespace component
+/**
+ * Base class for components having access to one or more mechanical states, in order to read and/or write state variables.
+ * Example: force field, mass, constraints etc
+ *
+ * Those components store a list of BaseMechanicalState. It does not prevent them to store the same BaseMechanicalState
+ * as a derived type.
+ */
+class StateAccessor : public virtual objectmodel::BaseObject
 {
+public:
+    SOFA_ABSTRACT_CLASS(StateAccessor, objectmodel::BaseObject);
 
-//Here are just several convenient functions to help users know what the plugin contains 
-
-extern "C" {
-    SOFA_CGALPLUGIN_API void initExternalModule();
-    SOFA_CGALPLUGIN_API const char* getModuleName();
-    SOFA_CGALPLUGIN_API const char* getModuleVersion();
-    SOFA_CGALPLUGIN_API const char* getModuleLicense();
-    SOFA_CGALPLUGIN_API const char* getModuleDescription();
-    SOFA_CGALPLUGIN_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
+    /// Return a list of mechanical states to which this component is associated
+    virtual const MultiLink<StateAccessor, BaseMechanicalState, BaseLink::FLAG_DUPLICATE>::Container& getMechanicalStates() const
     {
-        first = false;
+        return l_mechanicalStates.getValue();
     }
-}
 
-const char* getModuleName()
-{
-    return "CGAL Plugin";
-}
+protected:
 
-const char* getModuleVersion()
-{
-    return "0.2";
-}
+    StateAccessor()
+        : Inherit1()
+        , l_mechanicalStates(initLink("mechanicalStates", "List of mechanical states to which this component is associated"))
+    {}
 
-const char* getModuleLicense()
-{
-    return "GPL";
-}
+    ~StateAccessor() override = default;
 
+    /// List of mechanical states to which this component is associated
+    /// The list can contain more than one mechanical states. In an interaction force field, for example.
+    MultiLink < StateAccessor, BaseMechanicalState, BaseLink::FLAG_DUPLICATE > l_mechanicalStates;
 
-const char* getModuleDescription()
-{
-    return "Use CGAL functionnalities into SOFA";
-}
+};
 
-const char* getModuleComponentList()
-{
-    return "MeshGenerationFromPolyhedron, MeshGenerationFromImage, TriangularConvexHull3D, DecimateMesh, CylinderMesh, Refine2DMesh";
-}
-
-
-
-}
-
-}
-
-
+} // namespace sofa::core::behavior

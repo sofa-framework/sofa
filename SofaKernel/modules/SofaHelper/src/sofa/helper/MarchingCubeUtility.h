@@ -45,7 +45,6 @@ public:
     typedef Vec<3, int> Vec3i;
     typedef Vec<6, int> Vec6i;
 
-public:
     MarchingCubeUtility();
 
     ~MarchingCubeUtility() {};
@@ -215,7 +214,6 @@ private:
             type::vector< type::vector<unsigned int> >* triangleIndexInRegularGrid = nullptr,
             bool propagate = true ) const;
 
-private:
     unsigned int  cubeStep;
     unsigned int  convolutionSize;
     Vec3i     dataResolution;

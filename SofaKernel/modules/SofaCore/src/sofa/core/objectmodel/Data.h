@@ -402,7 +402,6 @@ public:
     typedef core::objectmodel::Data<T> data_container_type;
     typedef T container_type;
 
-public:
     ReadAccessor(const data_container_type& d) : Inherit(d.getValue()) {}
     ReadAccessor(const data_container_type* d) : Inherit(d->getValue()) {}
 

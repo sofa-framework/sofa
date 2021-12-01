@@ -10,7 +10,7 @@
         <TetrahedronSetTopologyModifier name="Modifier" />
         <Hexa2TetraTopologicalMapping name="default28" input="@../GridTopology" output="@Container" />
         <Node name="Liver">
-            <MeshObjLoader name="meshLoader" filename="mesh/liver.obj" />
+            <MeshOBJLoader name="meshLoader" filename="mesh/liver.obj" />
             <MeshTopology src="@meshLoader" name="LiverTopo"  />
             <MeshBarycentricMapperEngine inputPositions="@../../GridTopology.position" mappedPointPositions="@./LiverTopo.position" topology="@../Container"/>
             <OglModel name="Visual" src="@meshLoader" color='1.0 0.0 0.0 1' />

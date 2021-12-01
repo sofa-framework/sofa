@@ -171,10 +171,13 @@ void Base::addData(BaseData* f)
 /// Note that this method should only be called if the field was not initialized with the initData method
 void Base::addData(BaseData* f, const std::string& name)
 {
-    if (name.size() > 0 && (findData(name) || findLink(name)))
+    if (!name.empty())
     {
-        msg_warning() << "Data field name " << name
-                << " already used in this class or in a parent class !";
+        msg_warning_when(findData(name)) << "Data field name '" << name
+            << "' already used as a Data in this class or in a parent class";
+
+        msg_warning_when(findLink(name)) << "Data field name '" << name
+            << "' already used as a Link in this class or in a parent class";
     }
     m_vecData.push_back(f);
     m_aliasData.insert(std::make_pair(name, f));
@@ -192,10 +195,13 @@ void Base::addAlias( BaseData* field, const char* alias)
 void Base::addLink(BaseLink* l)
 {
     const std::string& name = l->getName();
-    if (name.size() > 0 && (findData(name) || findLink(name)))
+    if (!name.empty())
     {
-        msg_warning() << "Link name '" << name
-                << "' already used in this class or in a parent class !";
+        msg_warning_when(findData(name)) << "Link name '" << name
+            << "' already used as a Data in this class or in a parent class";
+
+        msg_warning_when(findLink(name)) << "Link name '" << name
+            << "' already used as a Link in this class or in a parent class";
     }
     m_vecLink.push_back(l);
     m_aliasLink.insert(std::make_pair(name, l));

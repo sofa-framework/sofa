@@ -20,8 +20,8 @@
     <MinProximityIntersection name="Proximity" alarmDistance="1.2" contactDistance="0.1" />
     <DefaultContactManager name="Response" response="FrictionContact" />
 
-    <MeshObjLoader name="loader_1" filename="mesh/n1.obj"/>
-    <MeshObjLoader name="loader_0" filename="mesh/n0.obj"/>
+    <MeshOBJLoader name="loader_1" filename="mesh/n1.obj"/>
+    <MeshOBJLoader name="loader_0" filename="mesh/n0.obj"/>
     <RecordedCamera name="cam" position="0 50 0" rotationLookAt="0 5 0" rotationStartPoint="0 30 80" rotationCenter="0 0 0" listening="true" startTime="20" endTime="100" drawRotation="0" rotationMode="1" />
 
     <Node name="Number1">
@@ -155,7 +155,7 @@
         <GenericConstraintCorrection name="Torus1_ConstraintCorrection" printLog="0" />
         
         <Node name="Blobs">
-             <MeshObjLoader name="loader" filename="mesh/sofa_logo_collision.obj" />
+             <MeshOBJLoader name="loader" filename="mesh/sofa_logo_collision.obj" />
              <MeshTopology src="@loader" />
              <MechanicalObject src="@loader" name="CollisModel" />
              <TriangleCollisionModel  />
@@ -165,7 +165,7 @@
         </Node>
         
         <Node name="VisuTorus" tags="Visual">
-            <MeshObjLoader name="loader" filename="mesh/sofa_logo.obj" handleSeams="1"/>
+            <MeshOBJLoader name="loader" filename="mesh/sofa_logo.obj" handleSeams="1"/>
             <OglModel name="Visual" src="@loader" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>                
@@ -173,7 +173,7 @@
 
 
     <Node name="Floor">
-        <MeshObjLoader name="loader" filename="mesh/floor.obj" handleSeams="1"/>
+        <MeshOBJLoader name="loader" filename="mesh/floor.obj" handleSeams="1"/>
         <MeshTopology src="@loader" />
         <MechanicalObject name="Floor" src="@loader" scale3d="0.5 1 0.5"/>
         <TriangleCollisionModel name="FloorT" simulated="0" moving="0" />

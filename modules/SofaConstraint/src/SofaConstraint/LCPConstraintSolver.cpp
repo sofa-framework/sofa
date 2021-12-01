@@ -26,6 +26,7 @@
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
 
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -313,11 +314,18 @@ void LCPConstraintSolver::build_LCP()
     cparams.setX(core::ConstVecCoordId::freePosition());
     cparams.setV(core::ConstVecDerivId::freeVelocity());
 
-    sofa::helper::AdvancedTimer::stepBegin("Accumulate Constraint");
-    // mechanical action executed from root node to propagate the constraints
-    MechanicalResetConstraintVisitor(&cparams).execute(context);
-    MechanicalAccumulateConstraint(&cparams, cparams.j(), _numConstraints).execute(context);
-    sofa::helper::AdvancedTimer::stepEnd  ("Accumulate Constraint");
+    {
+        helper::ScopedAdvancedTimer resetConstraintsTimer("Reset Constraint");
+        MechanicalResetConstraintVisitor resetCtr(&cparams);
+        resetCtr.execute(context);
+    }
+
+    {
+        helper::ScopedAdvancedTimer accumulateConstraintsTimer("Accumulate Constraint");
+        MechanicalAccumulateConstraint accCtr(&cparams, cparams.j(), _numConstraints );
+        accCtr.execute(context);
+    }
+
     _mu = mu.getValue();
     sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
 
@@ -696,15 +704,18 @@ void LCPConstraintSolver::build_problem_info()
 
     _numConstraints = 0;
 
-    sofa::helper::AdvancedTimer::stepBegin("Accumulate Constraint");
+    {
+        helper::ScopedAdvancedTimer resetConstraintsTimer("Reset Constraint");
+        MechanicalResetConstraintVisitor resetCtr(&cparams);
+        resetCtr.execute(context);
+    }
 
-    // Accumulate Constraints
+    {
+        helper::ScopedAdvancedTimer accumulateConstraintsTimer("Accumulate Constraint");
+        MechanicalAccumulateConstraint accCtr(&cparams, cparams.j(), _numConstraints );
+        accCtr.execute(context);
+    }
 
-    MechanicalResetConstraintVisitor resetCtr(&cparams);
-    resetCtr.execute(context);
-    MechanicalAccumulateConstraint accCtr(&cparams, cparams.j(), _numConstraints );
-    accCtr.execute(context);
-    sofa::helper::AdvancedTimer::stepEnd  ("Accumulate Constraint");
     _mu = mu.getValue();
     sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
 

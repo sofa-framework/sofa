@@ -19,26 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_PROJECTIVECONSTRAINTSET_INL
-#define SOFA_CORE_BEHAVIOR_PROJECTIVECONSTRAINTSET_INL
+#pragma once
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <iostream>
 
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 template<class DataTypes>
 ProjectiveConstraintSet<DataTypes>::ProjectiveConstraintSet(MechanicalState<DataTypes> *mm)
-    : endTime( initData(&endTime,(Real)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
-    , mstate(initLink("mstate", "MechanicalState used by this projective constraint"), mm)
+    : Inherit1(), Inherit2(mm)
+    , endTime( initData(&endTime,(Real)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
 {
 }
 
@@ -55,22 +48,14 @@ bool ProjectiveConstraintSet<DataTypes>::isActive() const
 }
 
 template<class DataTypes>
-void ProjectiveConstraintSet<DataTypes>::init()
-{
-    BaseProjectiveConstraintSet::init();
-    mstate = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
-    msg_error_when(!mstate) << "ProjectiveConstraintSet<DataTypes>::init(), no mstate . This may be because there is no MechanicalState in the local context, or because the type is not compatible.";
-}
-
-template<class DataTypes>
 void ProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId)
 {
     if (!isActive())
         return;
 
-    if (mstate)
+    if (this->mstate)
     {
-        projectJacobianMatrix(mparams, *cId[mstate.get()].write());
+        projectJacobianMatrix(mparams, *cId[this->mstate.get()].write());
     }
 }
 
@@ -81,11 +66,11 @@ void ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams*
 {
     if (!isActive())
         return;
-    if (mstate)
+    if (this->mstate)
     {
-            projectResponse(mparams, *dxId[mstate.get()].write());
+            projectResponse(mparams, *dxId[this->mstate.get()].write());
     }
-    msg_error_when(!mstate) << "ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId), no mstate for " << this->getName();
+    msg_error_when(!this->mstate) << "ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId), no this->mstate for " << this->getName();
 }
 
 template<class DataTypes>
@@ -94,12 +79,12 @@ void ProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams*
     if (!isActive())
         return;
 
-    if (mstate)
+    if (this->mstate)
     {
 
-            projectVelocity(mparams, *vId[mstate.get()].write());
+            projectVelocity(mparams, *vId[this->mstate.get()].write());
     }
-    msg_error_when(!mstate) << "ProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams* mparams, MultiVecDerivId dxId), no mstate for " << this->getName();
+    msg_error_when(!this->mstate) << "ProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams* mparams, MultiVecDerivId dxId), no this->mstate for " << this->getName();
 }
 
 template<class DataTypes>
@@ -108,18 +93,12 @@ void ProjectiveConstraintSet<DataTypes>::projectPosition(const MechanicalParams*
     if (!isActive())
         return;
 
-    if (mstate)
+    if (this->mstate)
     {
 
-            projectPosition(mparams, *xId[mstate.get()].write());
+            projectPosition(mparams, *xId[this->mstate.get()].write());
     }
 }
 
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

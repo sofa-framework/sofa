@@ -20,18 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_CPP
-#include "MixedInteractionConstraint.inl"
+#include <sofa/core/behavior/MixedInteractionConstraint.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ConstraintParams.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 using namespace sofa::defaulttype;
@@ -47,8 +41,4 @@ template class SOFA_CORE_API MixedInteractionConstraint<Rigid3Types, Vec3Types> 
 template class SOFA_CORE_API MixedInteractionConstraint<Rigid2Types, Vec2Types> ;
 
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::behavior

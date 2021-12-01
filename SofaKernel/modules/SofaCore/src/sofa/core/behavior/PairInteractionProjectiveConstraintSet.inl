@@ -19,46 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_PAIRINTERACTIONPROJECTIVECONSTRAINTSET_INL
-#define SOFA_CORE_BEHAVIOR_PAIRINTERACTIONPROJECTIVECONSTRAINTSET_INL
+#pragma once
 
 #include <sofa/core/behavior/PairInteractionProjectiveConstraintSet.h>
 
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 template<class DataTypes>
 PairInteractionProjectiveConstraintSet<DataTypes>::PairInteractionProjectiveConstraintSet(MechanicalState<DataTypes> *mm1, MechanicalState<DataTypes> *mm2)
-    : endTime( initData(&endTime,(SReal)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
-    , mstate1(initLink("object1", "First object to constrain"), mm1)
-    , mstate2(initLink("object2", "Second object to constrain"), mm2)
+    : Inherit1(), Inherit2(mm1, mm2)
+    , endTime( initData(&endTime,(SReal)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
 {
     if (!mm1)
-        mstate1.setPath("@./"); // default to state of the current node
+        this->mstate1.setPath("@./"); // default to state of the current node
     if (!mm2)
-        mstate2.setPath("@./"); // default to state of the current node
+        this->mstate2.setPath("@./"); // default to state of the current node
 }
 
 template<class DataTypes>
 PairInteractionProjectiveConstraintSet<DataTypes>::~PairInteractionProjectiveConstraintSet()
 {
-}
-
-template<class DataTypes>
-void PairInteractionProjectiveConstraintSet<DataTypes>::init()
-{
-    BaseInteractionProjectiveConstraintSet::init();
-    if (mstate1 == nullptr || mstate2 == nullptr)
-    {
-        mstate1 = mstate2 = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
-    }
 }
 
 template<class DataTypes>
@@ -80,9 +62,9 @@ template<class DataTypes>
 void PairInteractionProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId)
 {
     if( !isActive() ) return;
-    if (mstate1 && mstate2)
+    if (this->mstate1 && this->mstate2)
     {
-        projectResponse(mparams, *dxId[mstate1.get()].write(), *dxId[mstate2.get()].write());
+        projectResponse(mparams, *dxId[this->mstate1.get()].write(), *dxId[this->mstate2.get()].write());
     }
 }
 
@@ -90,9 +72,9 @@ template<class DataTypes>
 void PairInteractionProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId)
 {
     if( !isActive() ) return;
-    if (mstate1 && mstate2)
+    if (this->mstate1 && this->mstate2)
     {
-        projectVelocity(mparams, *vId[mstate1.get()].write(), *vId[mstate2.get()].write());
+        projectVelocity(mparams, *vId[this->mstate1.get()].write(), *vId[this->mstate2.get()].write());
     }
 }
 
@@ -100,16 +82,10 @@ template<class DataTypes>
 void PairInteractionProjectiveConstraintSet<DataTypes>::projectPosition(const MechanicalParams* mparams, MultiVecCoordId xId)
 {
     if( !isActive() ) return;
-    if (mstate1 && mstate2)
+    if (this->mstate1 && this->mstate2)
     {
-        projectPosition(mparams, *xId[mstate1.get()].write(), *xId[mstate2.get()].write());
+        projectPosition(mparams, *xId[this->mstate1.get()].write(), *xId[this->mstate2.get()].write());
     }
 }
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

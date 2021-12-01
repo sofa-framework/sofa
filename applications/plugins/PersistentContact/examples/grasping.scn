@@ -35,7 +35,7 @@
 			<ConstantForceField forces="0 0 0"/>
 			
 			<Node name="Surf2"> 
-				<MeshObjLoader name="meshLoader" filename="torus_cm2.obj"/>
+				<MeshOBJLoader name="meshLoader" filename="torus_cm2.obj"/>
 				<MeshTopology src="@meshLoader"/>
 				<MechanicalObject src="@meshLoader" name="MichelleCM" dx="5" dy="7" dz="-5" rx="90" sx="4.0" sy="8.0" sz="5"/>
 				<TriangleCollisionModel color="1 0 0 0.3" contactStiffness="0.1" group="5"/>
@@ -68,7 +68,7 @@
 			<IdentityMapping/>
 			
 			<Node name="Surf2"> 
-				<MeshObjLoader name="meshLoader" filename="torus_cm2.obj"/>
+				<MeshOBJLoader name="meshLoader" filename="torus_cm2.obj"/>
 				<MeshTopology src="@meshLoader"/>
 				<MechanicalObject src="@meshLoader" name="MichelleCM" dx="30" dy="7" dz="-5" rx="90" sx="4.0" sy="8.0" sz="5"/>
 				<TriangleCollisionModel color="0 1 0 0.3" contactStiffness="0.1" group="5"/>

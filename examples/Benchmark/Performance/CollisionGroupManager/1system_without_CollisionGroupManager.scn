@@ -88,7 +88,7 @@ There is no DefaultCollisionGroupManager component in this scene.
 
 
     <Node name="Floor" sleeping="true">
-        <MeshObjLoader name="loader" filename="mesh/floor2b.obj"/>
+        <MeshOBJLoader name="loader" filename="mesh/floor2b.obj"/>
         <MeshTopology src="@loader"/>
         <MechanicalObject src="@loader" dy="-10" scale="0.5"/>
         <TriangleCollisionModel simulated="false"/>

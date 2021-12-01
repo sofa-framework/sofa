@@ -42,6 +42,7 @@
 #include <iostream>
 #include <sofa/helper/AdvancedTimer.h>
 #include <deque>
+#include <unordered_map>
 
 namespace sofa::gui::qt
 {
@@ -182,7 +183,7 @@ protected:
     /// Method called at each iteration to update the chart
     void updateChart();
     /// Method to add new QTreeWidgetItem item inside the QTreeWidget using the data from \sa AnimationSubStepData
-    void addTreeItem(AnimationSubStepData* subStep, QTreeWidgetItem* parent);
+    QTreeWidgetItem* addTreeItem(AnimationSubStepData* subStep);
 
 public slots:
     void closeEvent( QCloseEvent* ) override
@@ -230,6 +231,14 @@ protected:
 
     /// Serie of selection substep duration in ms to be plot on the graph. size = \sa m_bufferSize
     QtCharts::QLineSeries *m_selectionSeries;
+
+    struct CheckedSeries
+    {
+        QtCharts::QLineSeries* lineSeries;
+        std::string checkedParentStep;
+    };
+    std::unordered_map<std::string, CheckedSeries> m_checkedSeries;
+
     /// Name of the substep selected in the Tree
     std::string m_selectedStep;
     /// Name of the parent of the substep selected in the Tree

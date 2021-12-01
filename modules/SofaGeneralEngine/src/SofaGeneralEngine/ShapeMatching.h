@@ -28,9 +28,8 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/VecId.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/SVector.h>
 

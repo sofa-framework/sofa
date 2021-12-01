@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_MULTIMATRIXACCESSOR_H
-#define SOFA_CORE_BEHAVIOR_MULTIMATRIXACCESSOR_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <sofa/core/fwd.h>
 #include <sofa/defaulttype/fwd.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /// Abstract class allowing to find the part of the mechanical matrix
@@ -86,10 +79,4 @@ public:
 
 };
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

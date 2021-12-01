@@ -7,8 +7,8 @@
     
     <Node name="mesh">
         
-		<MeshObjLoader name="mesh1" filename="mesh/raptor_35kp.obj"/>  
-                <MeshObjLoader name="mesh2" filename="mesh/snake_body.obj"/>  
+		<MeshOBJLoader name="mesh1" filename="mesh/raptor_35kp.obj"/>  
+                <MeshOBJLoader name="mesh2" filename="mesh/snake_body.obj"/>  
                 
                 <MergeVectors template="Data<double>" name="mergedPositions"  nbInputs="2" input1="@mesh1.position" input2="@mesh2.position" />
                 <MechanicalObject  template="Vec3d"  position="@mergedPositions.output" showObject="True" />

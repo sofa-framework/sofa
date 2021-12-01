@@ -8,7 +8,7 @@
 		<RigidMapping input="@.." output="@Visual" />
 	</Node>
 	<Node name="CollisionNode">
-      <MeshObjLoader name="loader" filename="file"/>
+      <MeshOBJLoader name="loader" filename="file"/>
       <MeshTopology src="@loader"/>
       <MechanicalObject src="@loader" scale3d="1 1 1"/>
       <TriangleCollisionModel contactStiffness="200"/>

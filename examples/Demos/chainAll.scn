@@ -8,10 +8,10 @@
     <MinProximityIntersection alarmDistance="0.3" contactDistance="0.2" name="Proximity" />
     <DefaultContactManager name="Response" response="default" />
 
-    <MeshObjLoader name="loader_torus" filename="mesh/torus.obj" />
-    <MeshObjLoader name="loader_torus2" filename="mesh/torus2.obj" />
-    <MeshObjLoader name="loader_torus_for_collision" filename="mesh/torus_for_collision.obj" />
-    <MeshObjLoader name="loader_torus2_for_collision" filename="mesh/torus2_for_collision.obj" />
+    <MeshOBJLoader name="loader_torus" filename="mesh/torus.obj" />
+    <MeshOBJLoader name="loader_torus2" filename="mesh/torus2.obj" />
+    <MeshOBJLoader name="loader_torus_for_collision" filename="mesh/torus_for_collision.obj" />
+    <MeshOBJLoader name="loader_torus2_for_collision" filename="mesh/torus2_for_collision.obj" />
     <MeshGmshLoader name="loader_torus_low_res" filename="mesh/torus_low_res.msh" />
     <MeshGmshLoader name="loader_torus2_low_res" filename="mesh/torus2_low_res.msh" />
 

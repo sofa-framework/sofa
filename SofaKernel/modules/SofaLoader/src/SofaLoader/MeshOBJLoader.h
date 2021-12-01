@@ -30,15 +30,15 @@ namespace sofa::component::loader
 
 using sofa::core::objectmodel::BaseData;
 
-class SOFA_SOFALOADER_API MeshObjLoader : public sofa::core::loader::MeshLoader
+class SOFA_SOFALOADER_API MeshOBJLoader : public sofa::core::loader::MeshLoader
 {
 public:
     enum FaceType { EDGE, TRIANGLE, QUAD, NBFACETYPE };
 
-    SOFA_CLASS(MeshObjLoader,sofa::core::loader::MeshLoader);
+    SOFA_CLASS(MeshOBJLoader,sofa::core::loader::MeshLoader);
 protected:
-    MeshObjLoader();
-    ~MeshObjLoader() override;
+    MeshOBJLoader();
+    ~MeshOBJLoader() override;
 
 public:
     bool doLoad() override;
@@ -79,5 +79,10 @@ public:
     virtual std::string type() { return "The format of this mesh is OBJ."; }
 };
 
+// deprecate usage of the lowcase version, but skip the warning when building SofaLoader
+#ifndef SOFA_BUILD_SOFALOADER
+using MeshObjLoader SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2428)", "v22.12", "MeshObjLoader has been renamed to MeshOBJLoader") = MeshOBJLoader;
+#endif // SOFA_BUILD_SOFALOADER
 
 } // namespace sofa::component::loader
+

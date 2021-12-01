@@ -122,7 +122,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::init()
         return;
     }
 
-    sofa::core::behavior::BaseInteractionForceField::init();
+    Inherit1::init();
 
     if (mstate1.get() == nullptr || mstate2.get() == nullptr)
     {
