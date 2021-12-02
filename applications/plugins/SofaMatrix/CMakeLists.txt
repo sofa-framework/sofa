@@ -33,7 +33,7 @@ if (NOT SofaGuiQt_FOUND)
 else()
     list(APPEND HEADER_FILES
         ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixImage.h
-        ${SOFAMATRIX_SRC_DIR}/BaseMatrixProxy.h
+        ${SOFAMATRIX_SRC_DIR}/BaseMatrixImageProxy.h
     )
     list(APPEND SOURCE_FILES
         ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixImage.cpp
