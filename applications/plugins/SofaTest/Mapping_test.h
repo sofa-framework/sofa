@@ -31,7 +31,7 @@
 
 #include <SofaComponentAll/initSofaComponentAll.h>
 
-#include <SofaBaseLinearSolver/FullVector.h>
+#include <sofa/linearalgebra/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -431,7 +431,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         {
             InVecDeriv Kv(Np);
 
-            const defaulttype::BaseMatrix* bk = mapping->getK();
+            const linearalgebra::BaseMatrix* bk = mapping->getK();
 
             // K can be null or empty for linear mappings
             // still performing the test with a null Kv vector to check if the mapping is really linear
@@ -492,7 +492,7 @@ protected:
 
     /// Get one EigenSparseMatrix out of a list. Error if not one single matrix in the list.
     template<class EigenSparseMatrixType>
-    static EigenSparseMatrixType* getMatrix(const type::vector<sofa::defaulttype::BaseMatrix*>* matrices)
+    static EigenSparseMatrixType* getMatrix(const type::vector<sofa::linearalgebra::BaseMatrix*>* matrices)
     {
         if( !matrices ){
             ADD_FAILURE()<< "Matrix list is nullptr (API for assembly is not implemented)";

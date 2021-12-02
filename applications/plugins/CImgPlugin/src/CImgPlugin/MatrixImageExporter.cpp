@@ -21,12 +21,12 @@
 ******************************************************************************/
 #include <CImgPlugin/MatrixImageExporter.h>
 #include <sofa/defaulttype/MatrixExporter.h>
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 #include <CImgPlugin/ImageCImg.h>
 
 namespace sofa::defaulttype
 {
-bool writeMatrixImage(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix)
+bool writeMatrixImage(const std::string& filename, sofa::linearalgebra::BaseMatrix* matrix)
 {
     if (matrix)
     {
@@ -58,7 +58,7 @@ void initializeMatrixExporterComponents()
     static bool first = true;
     if (first)
     {
-        const auto addMatrixExporter = [](const std::string& format, std::function<bool(const std::string&, sofa::defaulttype::BaseMatrix*)> exporter)
+        const auto addMatrixExporter = [](const std::string& format, std::function<bool(const std::string&, sofa::linearalgebra::BaseMatrix*)> exporter)
         {
             //Add an exporter which writes a matrix as an image
             sofa::defaulttype::matrixExporterMap.insert({format, exporter});
