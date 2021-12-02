@@ -27,7 +27,7 @@
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
 #include <vector>
 
@@ -61,7 +61,7 @@ public:
     typedef type::Mat<N, N, Real> Mat;
     typedef type::Vec<N, Real> Vector;
     typedef type::Mat<NOut, NIn, Real> MBloc;
-    typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
+    typedef sofa::linearalgebra::CompressedRowSparseMatrix<MBloc> MatrixType;
 
 protected:
     type::vector<Coord> points;
@@ -102,7 +102,7 @@ public:
 
     void applyJT(const core::ConstraintParams *cparams, Data< typename In::MatrixDeriv >& out, const Data< typename Out::MatrixDeriv >& in) override;
 
-    const sofa::defaulttype::BaseMatrix* getJ() override;
+    const sofa::linearalgebra::BaseMatrix* getJ() override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 };

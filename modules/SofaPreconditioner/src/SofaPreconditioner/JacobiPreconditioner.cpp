@@ -31,6 +31,8 @@ namespace component
 namespace linearsolver
 {
 
+using namespace sofa::linearalgebra;
+
 int JacobiPreconditionerClass = core::RegisterObject("Linear solver based on a diagonal matrix (i.e. Jacobi preconditioner)")
 //.add< JacobiPreconditioner<GraphScatteredMatrix,GraphScatteredVector> >(true)
         .add< JacobiPreconditioner<DiagonalMatrix<double>, FullVector<double> > >(true)

@@ -100,10 +100,10 @@ public:
     }
 
     void projectForceInConstraintSpace(linearalgebra::BaseVector* r,const linearalgebra::BaseVector* f) {
-        for (typename SparseMatrix<Real>::LineConstIterator jit = J_local.begin(), jitend = J_local.end(); jit != jitend; ++jit) {
+        for (typename linearalgebra::SparseMatrix<Real>::LineConstIterator jit = J_local.begin(), jitend = J_local.end(); jit != jitend; ++jit) {
             auto row = jit->first;
             double force = f->element(row);
-            for (typename SparseMatrix<Real>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2) {
+            for (typename linearalgebra::SparseMatrix<Real>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2) {
                 auto col = i2->first;
                 double val = i2->second;
                 r->add(col,val * force);
@@ -121,11 +121,11 @@ public:
         {
             return j;
         }
-        else if (SparseMatrix<double> * j = dynamic_cast<SparseMatrix<double> *>(J))
+        else if (linearalgebra::SparseMatrix<double> * j = dynamic_cast<linearalgebra::SparseMatrix<double> *>(J))
         {
             return copyJmatrix(j);
         }
-        else if (SparseMatrix<float> * j = dynamic_cast<SparseMatrix<float> *>(J))
+        else if (linearalgebra::SparseMatrix<float> * j = dynamic_cast<linearalgebra::SparseMatrix<float> *>(J))
         {
             return copyJmatrix(j);
         }

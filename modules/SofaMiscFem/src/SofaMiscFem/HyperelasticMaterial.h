@@ -25,7 +25,7 @@
 
 
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 #include <sofa/type/MatSym.h>

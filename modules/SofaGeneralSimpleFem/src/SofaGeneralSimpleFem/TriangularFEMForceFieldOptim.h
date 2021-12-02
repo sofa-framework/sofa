@@ -28,7 +28,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/Mat.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 
 #include <map>
 #include <sofa/helper/map.h>
@@ -224,10 +224,10 @@ public:
     typedef typename VecCoord::template rebind<TriangleState>::other VecTriangleState;
     typedef typename VecCoord::template rebind<VertexInfo>::other VecVertexInfo;
     typedef typename VecCoord::template rebind<EdgeInfo>::other VecEdgeInfo;
-    topology::TriangleData<VecTriangleInfo> d_triangleInfo; ///< Internal triangle data (persistent)
-    topology::TriangleData<VecTriangleState> d_triangleState; ///< Internal triangle data (time-dependent)
-    topology::PointData<VecVertexInfo> d_vertexInfo; ///< Internal point data
-    topology::EdgeData<VecEdgeInfo> d_edgeInfo; ///< Internal edge data
+    core::topology::TriangleData<VecTriangleInfo> d_triangleInfo; ///< Internal triangle data (persistent)
+    core::topology::TriangleData<VecTriangleState> d_triangleState; ///< Internal triangle data (time-dependent)
+    core::topology::PointData<VecVertexInfo> d_vertexInfo; ///< Internal point data
+    core::topology::EdgeData<VecEdgeInfo> d_edgeInfo; ///< Internal edge data
 
     /** Method to create @sa TriangleInfo when a new triangle is created.
     * Will be set as creation callback in the TriangleData @sa d_triangleInfo

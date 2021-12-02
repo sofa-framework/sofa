@@ -66,7 +66,7 @@ void StopperConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintP
 }
 
 template<class DataTypes>
-void StopperConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams* /*cParams*/, defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &/*v*/)
+void StopperConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams* /*cParams*/, linearalgebra::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &/*v*/)
 {
     resV->set(cid, x.getValue()[index.getValue()][0]);
 }

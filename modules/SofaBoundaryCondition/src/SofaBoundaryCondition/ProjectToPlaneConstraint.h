@@ -26,12 +26,12 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/defaulttype/BaseVector.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
+#include <sofa/linearalgebra/BaseVector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/vector.h>
 #include <sofa/type/Mat.h>
-#include <SofaBaseTopology/TopologySubsetIndices.h>
+#include <sofa/core/topology/TopologySubsetIndices.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <set>
 
@@ -68,7 +68,7 @@ public:
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef type::vector<Index> Indices;
-    typedef sofa::component::topology::TopologySubsetIndices IndexSubsetData;
+    typedef sofa::core::topology::TopologySubsetIndices IndexSubsetData;
     typedef linearalgebra::EigenBaseSparseMatrix<SReal> BaseSparseMatrix;
     typedef linearalgebra::EigenSparseMatrix<DataTypes,DataTypes> SparseMatrix;
     typedef typename SparseMatrix::Block Block;                                       ///< projection matrix of a particle displacement to the plane
@@ -109,12 +109,12 @@ public:
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
     void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-    void applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     /** Project the given matrix (Experimental API).
       Replace M with PMP, where P is the projection matrix corresponding to the projectResponse method, shifted by the given offset, i.e. P is the identity matrix with a block on the diagonal replaced by the projection matrix.
       */
-    void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
+    void projectMatrix( sofa::linearalgebra::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
 
 
     void draw(const core::visual::VisualParams* vparams) override;

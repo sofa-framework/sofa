@@ -22,7 +22,7 @@
 #pragma once
 
 #include <SofaBoundaryCondition/PointConstraint.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -59,7 +59,7 @@ void PointConstraint<DataTypes>::init()
 
 /// Update and return the jacobian. @todo update it when needed using topological engines instead of recomputing it at each call.
 template <class DataTypes>
-const sofa::defaulttype::BaseMatrix*  PointConstraint<DataTypes>::getJ(const core::MechanicalParams* )
+const sofa::linearalgebra::BaseMatrix*  PointConstraint<DataTypes>::getJ(const core::MechanicalParams* )
 {
     unsigned numBlocks = this->mstate->getSize();
     unsigned blockSize = DataTypes::deriv_total_size;
@@ -151,7 +151,7 @@ void PointConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
 }
 
 template <class DataTypes>
-void PointConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void PointConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
     int o = matrix->getGlobalOffset(this->mstate.get());

@@ -102,7 +102,7 @@ inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,compone
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_CGLINEARSOLVER_CPP)
 extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< GraphScatteredMatrix, GraphScatteredVector >;
 extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< linearalgebra::FullMatrix<double>, linearalgebra::FullVector<double> >;
-extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< SparseMatrix<double>, linearalgebra::FullVector<double> >;
+extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< linearalgebra::SparseMatrix<double>, linearalgebra::FullVector<double> >;
 extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< linearalgebra::CompressedRowSparseMatrix<double>, linearalgebra::FullVector<double> >;
 extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<2,2,double> >, linearalgebra::FullVector<double> >;
 extern template class SOFA_SOFABASELINEARSOLVER_API CGLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,double> >, linearalgebra::FullVector<double> >;

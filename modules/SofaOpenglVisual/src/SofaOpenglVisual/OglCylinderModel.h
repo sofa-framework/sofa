@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/type/RGBAColor.h>
 
@@ -84,7 +84,7 @@ private:
 
 
     float r,g,b,a;
-    // component::topology::PointData<sofa::type::vector<unsigned char> >		pointData;
+    // sofa::core::topology::PointData<sofa::type::vector<unsigned char> >		pointData;
 
     typedef Vec3State::Coord Coord;
     typedef Vec3State::VecCoord VecCoord;

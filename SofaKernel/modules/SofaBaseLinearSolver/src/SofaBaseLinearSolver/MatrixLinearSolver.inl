@@ -249,14 +249,14 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
         solveSystem();
 
         // STEP 3 : project the result using matrix J
-        if (const SparseMatrix<Real> * j = dynamic_cast<const SparseMatrix<Real> * >(J))   // optimization for sparse matrix
+        if (const linearalgebra::SparseMatrix<Real> * j = dynamic_cast<const linearalgebra::SparseMatrix<Real> * >(J))   // optimization for sparse matrix
         {
-            const typename SparseMatrix<Real>::LineConstIterator jitend = j->end();
-            for (typename SparseMatrix<Real>::LineConstIterator jit = j->begin(); jit != jitend; ++jit)
+            const typename linearalgebra::SparseMatrix<Real>::LineConstIterator jitend = j->end();
+            for (typename linearalgebra::SparseMatrix<Real>::LineConstIterator jit = j->begin(); jit != jitend; ++jit)
             {
                 auto row2 = jit->first;
                 double acc = 0.0;
-                for (typename SparseMatrix<Real>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2)
+                for (typename linearalgebra::SparseMatrix<Real>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2)
                 {
                     auto col2 = i2->first;
                     double val2 = i2->second;
@@ -268,7 +268,7 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
         }
         else
         {
-            dmsg_error("MatrixLinearSolver") << "AsyncMatrixLinearSolver::addJMInvJt is only implemented for SparseMatrix<Real>" ;
+            dmsg_error("MatrixLinearSolver") << "AsyncMatrixLinearSolver::addJMInvJt is only implemented for linearalgebra::SparseMatrix<Real>" ;
             return false;
         }
     }

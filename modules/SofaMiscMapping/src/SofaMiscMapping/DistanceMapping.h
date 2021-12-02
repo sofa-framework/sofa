@@ -108,11 +108,11 @@ public:
 
     void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce ) override;
 
-    const sofa::defaulttype::BaseMatrix* getJ() override;
-    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    const sofa::linearalgebra::BaseMatrix* getJ() override;
+    virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
 
     void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce ) override;
-    const defaulttype::BaseMatrix* getK() override;
+    const linearalgebra::BaseMatrix* getK() override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -122,7 +122,7 @@ protected:
 
     topology::EdgeSetTopologyContainer* m_edgeContainer;  ///< where the edges are defined
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
-    type::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    type::vector<linearalgebra::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
     SparseKMatrixEigen K;                               ///< Assembled geometric stiffness matrix
     type::vector<Direction> directions;                         ///< Unit vectors in the directions of the lines
     type::vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
@@ -273,10 +273,10 @@ public:
     void applyJT( const core::ConstraintParams* /* cparams */, const type::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const type::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ ) override {}
     void applyDJT(const core::MechanicalParams*, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce) override;
 
-    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
 
     void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce ) override;
-    const defaulttype::BaseMatrix* getK() override;
+    const linearalgebra::BaseMatrix* getK() override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -285,7 +285,7 @@ protected:
     virtual ~DistanceMultiMapping();
 
     topology::EdgeSetTopologyContainer* m_edgeContainer;  ///< where the edges are defined
-    type::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    type::vector<linearalgebra::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
     type::vector<Direction> directions;                         ///< Unit vectors in the directions of the lines
     type::vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
 

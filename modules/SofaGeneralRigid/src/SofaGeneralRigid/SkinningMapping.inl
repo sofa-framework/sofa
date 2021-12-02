@@ -328,15 +328,15 @@ void SkinningMapping<TIn, TOut>::applyJT ( const sofa::core::ConstraintParams* c
 }
 
 template <class TIn, class TOut>
-const sofa::type::vector<sofa::defaulttype::BaseMatrix*>* SkinningMapping<TIn, TOut>::getJs()
+const sofa::type::vector<sofa::linearalgebra::BaseMatrix*>* SkinningMapping<TIn, TOut>::getJs()
 {
-    return new sofa::type::vector<sofa::defaulttype::BaseMatrix*>(1, (sofa::defaulttype::BaseMatrix*)&_J);
+    return new sofa::type::vector<sofa::linearalgebra::BaseMatrix*>(1, (sofa::linearalgebra::BaseMatrix*)&_J);
 }
 
 template <class TIn, class TOut>
-const  sofa::defaulttype::BaseMatrix* SkinningMapping<TIn, TOut>::getJ()
+const  sofa::linearalgebra::BaseMatrix* SkinningMapping<TIn, TOut>::getJ()
 {
-    return (sofa::defaulttype::BaseMatrix*)&_J;
+    return (sofa::linearalgebra::BaseMatrix*)&_J;
 }
 
 template <class TIn, class TOut>

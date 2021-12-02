@@ -23,8 +23,8 @@
 #define SOFA_COMPONENT_LINEARSOLVER_SSORPRECONDITIONER_INL
 #include <SofaPreconditioner/SSORPreconditioner.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <iostream>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/LinearSolver.h>
@@ -85,7 +85,7 @@ void SSORPreconditioner<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vecto
 }
 
 template<>
-void SSORPreconditioner<SparseMatrix<double>, FullVector<double> >::solve (Matrix& M, Vector& z, Vector& r)
+void SSORPreconditioner<linearalgebra::SparseMatrix<double>, linearalgebra::FullVector<double> >::solve (Matrix& M, Vector& z, Vector& r)
 {
     SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) this->getMatrixInvertData(&M);
 
@@ -125,7 +125,7 @@ void SSORPreconditioner<SparseMatrix<double>, FullVector<double> >::solve (Matri
 }
 
 template<>
-void SSORPreconditioner<CompressedRowSparseMatrix<double>, FullVector<double> >::solve (Matrix& M, Vector& z, Vector& r)
+void SSORPreconditioner<linearalgebra::CompressedRowSparseMatrix<double>, linearalgebra::FullVector<double> >::solve (Matrix& M, Vector& z, Vector& r)
 {
     SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) this->getMatrixInvertData(&M);
 
@@ -177,7 +177,7 @@ void SSORPreconditioner<CompressedRowSparseMatrix<double>, FullVector<double> >:
 #define typename
 //template<int B, class Real>
 template<>
-void SSORPreconditioner< CompressedRowSparseMatrix< type::Mat<B,B,Real> >, FullVector<Real> >::solve(Matrix& M, Vector& z, Vector& r)
+void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<B,B,Real> >, linearalgebra::FullVector<Real> >::solve(Matrix& M, Vector& z, Vector& r)
 {
     SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) this->getMatrixInvertData(&M);
 

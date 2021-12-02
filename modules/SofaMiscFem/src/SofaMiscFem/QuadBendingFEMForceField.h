@@ -31,7 +31,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/Mat.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 
 #include <map>
 #include <sofa/helper/map.h>
@@ -166,9 +166,9 @@ public:
     };
 
 /// Topology Data
-    topology::QuadData<sofa::type::vector<QuadInformation> > quadInfo;
-    topology::PointData<sofa::type::vector<VertexInformation> > vertexInfo; ///< Internal point data
-    topology::EdgeData<sofa::type::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
+    core::topology::QuadData<sofa::type::vector<QuadInformation> > quadInfo;
+    core::topology::PointData<sofa::type::vector<VertexInformation> > vertexInfo; ///< Internal point data
+    core::topology::EdgeData<sofa::type::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
 
     /** Method to initialize @sa QuadInformation when a new Quad is created.
     * Will be set as creation callback in the QuadData @sa quadInfo

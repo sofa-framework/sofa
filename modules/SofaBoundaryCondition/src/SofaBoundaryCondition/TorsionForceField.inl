@@ -22,15 +22,15 @@
 #pragma once
 
 #include <SofaBoundaryCondition/TorsionForceField.h>
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <sofa/core/MechanicalParams.h>
 
 namespace sofa::component::forcefield
 {
 
 using sofa::defaulttype::Rigid3Types;
-using sofa::component::linearsolver::CompressedRowSparseMatrix;
+using sofa::linearalgebra::CompressedRowSparseMatrix;
 
 template<typename DataTypes>
 TorsionForceField<DataTypes>::TorsionForceField() :
@@ -100,7 +100,7 @@ void TorsionForceField<DataTypes>::addDForce(const MechanicalParams* params, Dat
 }
 
 template<typename DataTypes>
-void TorsionForceField<DataTypes>::addKToMatrix(defaulttype::BaseMatrix* matrix, double kFact, unsigned int& offset)
+void TorsionForceField<DataTypes>::addKToMatrix(linearalgebra::BaseMatrix* matrix, double kFact, unsigned int& offset)
 {
 	const VecId& indices = m_indices.getValue();
 	const Real& tau = m_torque.getValue();

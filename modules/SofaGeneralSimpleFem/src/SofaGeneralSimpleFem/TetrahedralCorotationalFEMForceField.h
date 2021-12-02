@@ -23,7 +23,7 @@
 #include <SofaGeneralSimpleFem/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 #include <sofa/type/vector.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
@@ -122,7 +122,7 @@ public:
         }
     };
     /// container that stotes all requires information for each tetrahedron
-    topology::TetrahedronData<sofa::type::vector<TetrahedronInformation> > tetrahedronInfo;
+    core::topology::TetrahedronData<sofa::type::vector<TetrahedronInformation> > tetrahedronInfo;
 
     /// @name Full system matrix assembly support
     /// @{
@@ -184,7 +184,7 @@ public:
         return 0.0;
     }
 
-    void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset) override;
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix *m, SReal kFactor, unsigned int &offset) override;
 
     // Getting the rotation of the vertex by averaing the rotation of neighboring elements
     void getRotation(Transformation& R, Index nodeIdx);

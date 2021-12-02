@@ -28,7 +28,7 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 
 namespace sofa::component::forcefield
 {
@@ -186,7 +186,7 @@ public:
     Data<Real> f_poissonRatio;
     Data<Real> f_youngModulus;
     /// container that stotes all requires information for each hexahedron
-    topology::HexahedronData<sofa::type::vector<HexahedronInformation> > hexahedronInfo;
+    core::topology::HexahedronData<sofa::type::vector<HexahedronInformation> > hexahedronInfo;
 
     /** Method to create @sa HexahedronInformation when a new hexahedron is created.
     * Will be set as creation callback in the HexahedronData @sa hexahedronInfo

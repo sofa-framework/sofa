@@ -23,7 +23,7 @@
 #include <SofaBaseLinearSolver/config.h>
 
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
-#include <SofaBaseLinearSolver/matrix_bloc_traits.h>
+#include <sofa/linearalgebra/matrix_bloc_traits.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 namespace sofa::component::linearsolver
@@ -36,7 +36,7 @@ class BlocMatrixWriter
 {
 public:
     typedef TBloc Bloc;
-    typedef matrix_bloc_traits<Bloc, linearalgebra::BaseMatrix::Index> traits;
+    typedef sofa::linearalgebra::matrix_bloc_traits<Bloc, linearalgebra::BaseMatrix::Index> traits;
     typedef typename traits::Real Real;
     enum { NL = traits::NL };
     enum { NC = traits::NC };

@@ -25,7 +25,7 @@
 #include <sofa/core/behavior/ConstraintCorrection.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <sofa/linearalgebra/FullMatrix.h>
 
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
@@ -73,9 +73,9 @@ protected:
 public:
     void bwdInit() override;
 
-    void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix* W) override;
+    void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::linearalgebra::BaseMatrix* W) override;
 
-    void getComplianceMatrix(defaulttype::BaseMatrix* m) const override;
+    void getComplianceMatrix(linearalgebra::BaseMatrix* m) const override;
 
     void computeMotionCorrection(const core::ConstraintParams*, core::MultiVecDerivId dx, core::MultiVecDerivId f) override;
 
@@ -88,7 +88,7 @@ public:
     /// @name Deprecated API
     /// @{
 
-    void applyContactForce(const defaulttype::BaseVector *f) override;
+    void applyContactForce(const linearalgebra::BaseVector *f) override;
 
     void resetContactForce() override;
 
@@ -111,7 +111,7 @@ public:
 
     void setConstraintDForce(double *df, int begin, int end, bool update) override;
 
-    void getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end) override;
+    void getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end) override;
 
     /// @}
 
@@ -149,7 +149,7 @@ public:
     type::vector<int> id_to_localIndex;	// table that gives the local index of a constraint given its id
     type::vector<unsigned int> localIndex_to_id; //inverse table that gives the id of a constraint given its local index
     std::list<unsigned int> active_local_force; // table of local index of the non-null forces;
-    linearsolver::FullMatrix< Real > localW;
+    linearalgebra::FullMatrix< Real > localW;
     double* constraint_force;
 
     // NEW METHOD FOR UNBUILT

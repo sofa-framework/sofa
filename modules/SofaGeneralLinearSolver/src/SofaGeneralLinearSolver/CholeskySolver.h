@@ -25,8 +25,8 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
+#include <sofa/linearalgebra/FullMatrix.h>
 #include <sofa/helper/map.h>
 
 #include <cmath>
@@ -57,12 +57,12 @@ public:
     void invert(Matrix& M) override;
 
 private :
-    FullMatrix<typename Vector::Real> L;
+    linearalgebra::FullMatrix<typename Vector::Real> L;
 };
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_CHOLESKYSOLVER_CPP)
-extern template class SOFA_SOFAGENERALLINEARSOLVER_API CholeskySolver< SparseMatrix<double>, FullVector<double> >;
-extern template class SOFA_SOFAGENERALLINEARSOLVER_API CholeskySolver< FullMatrix<double>, FullVector<double> >;
+extern template class SOFA_SOFAGENERALLINEARSOLVER_API CholeskySolver< linearalgebra::SparseMatrix<double>, linearalgebra::FullVector<double> >;
+extern template class SOFA_SOFAGENERALLINEARSOLVER_API CholeskySolver< linearalgebra::FullMatrix<double>, linearalgebra::FullVector<double> >;
 
 #endif
 

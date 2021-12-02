@@ -134,13 +134,13 @@ void SquareMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMat
 
 
 template <class TIn, class TOut>
-const sofa::defaulttype::BaseMatrix* SquareMapping<TIn, TOut>::getJ()
+const sofa::linearalgebra::BaseMatrix* SquareMapping<TIn, TOut>::getJ()
 {
     return &jacobian;
 }
 
 template <class TIn, class TOut>
-const type::vector<sofa::defaulttype::BaseMatrix*>* SquareMapping<TIn, TOut>::getJs()
+const type::vector<sofa::linearalgebra::BaseMatrix*>* SquareMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
 }
@@ -168,7 +168,7 @@ void SquareMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, co
 }
 
 template <class TIn, class TOut>
-const defaulttype::BaseMatrix* SquareMapping<TIn, TOut>::getK()
+const linearalgebra::BaseMatrix* SquareMapping<TIn, TOut>::getK()
 {
     return &K;
 }

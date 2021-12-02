@@ -23,7 +23,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaGeneralSimpleFem/BeamFEMForceField.h>
 #include <SofaBaseTopology/EdgeSetTopologyModifier.h>
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 
 #include <SofaSimulationGraph/SimpleApi.h>
 #include <SofaSimulationGraph/DAGSimulation.h>

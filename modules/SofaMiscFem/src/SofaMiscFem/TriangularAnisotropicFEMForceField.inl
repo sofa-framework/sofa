@@ -26,7 +26,7 @@
 #include <sofa/type/RGBAColor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <vector>

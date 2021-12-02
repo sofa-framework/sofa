@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaGeneralLinearSolver/BTDLinearSolver.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <sofa/linearalgebra/FullMatrix.h>
 
 namespace sofa::component::linearsolver
 {
@@ -331,8 +331,10 @@ void BTDLinearSolver<Matrix,Vector>::solve (Matrix& /*M*/, Vector& x, Vector& b)
 }
 
 template<class Matrix, class Vector>
-bool BTDLinearSolver<Matrix,Vector>::addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
+bool BTDLinearSolver<Matrix,Vector>::addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, double fact)
 {
+    using namespace sofa::linearalgebra;
+
     if (FullMatrix<double>* r = dynamic_cast<FullMatrix<double>*>(result))
     {
         if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
@@ -355,7 +357,7 @@ bool BTDLinearSolver<Matrix,Vector>::addJMInvJt(defaulttype::BaseMatrix* result,
             return addJMInvJt(*r,*j,fact);
         }
     }
-    else if (defaulttype::BaseMatrix* r = result)
+    else if (linearalgebra::BaseMatrix* r = result)
     {
         if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
         {

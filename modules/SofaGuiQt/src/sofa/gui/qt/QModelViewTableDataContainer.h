@@ -25,7 +25,7 @@
 #ifdef TODOTOPO
 #include <SofaBaseTopology/PointSubsetData.h>
 #endif
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 
 #include "QMouseWheelAdjustementGuard.h"
 #include "QModelViewTableUpdater.h"
