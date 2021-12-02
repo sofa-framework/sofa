@@ -19,14 +19,54 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_SOFAMATRIX_SIMPLEIMAGEVIEWERWIDGET_CPP
-#include <SofaMatrix/SimpleImageViewerWidget.h>
-#include <SofaMatrix/SimpleBitmap.h>
+#pragma once
+#include <SofaMatrix/config.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 
-namespace sofa::gui::qt
+namespace sofa::type
 {
 
-template class SOFA_SOFAMATRIX_API TDataWidget<type::SimpleBitmap<unsigned char> >;
-helper::Creator<DataWidgetFactory, SimpleImageViewerWidget<type::SimpleBitmap<unsigned char> > > DWClass_simpleimageplaneUC("simplebitmap",true);
+/// A simple proxy of a BaseMatrix, compatible with a Data that can be visualized in the GUI, as a bitmap, with a BaseMatrixImageViewerWidget
+struct BaseMatrixImageProxy
+{
+    typedef SReal Real;
 
-} // namespace sofa::gui::qt
+    BaseMatrixImageProxy()
+    {}
+
+    static const char* Name() { return "SimpleBitmap"; }
+
+    friend std::istream& operator >> ( std::istream& in, BaseMatrixImageProxy& /*p*/ )
+    {
+        return in;
+    }
+
+    friend std::ostream& operator << ( std::ostream& out, const BaseMatrixImageProxy& p )
+    {
+        if (!p.m_matrix)
+        {
+            out << "invalid matrix";
+        }
+        else
+        {
+            out << std::to_string(p.m_matrix->rows()) << "x" << std::to_string(p.m_matrix->cols());
+        }
+        return out;
+    }
+
+    [[nodiscard]] linearalgebra::BaseMatrix* getMatrix() const
+    {
+        return m_matrix;
+    }
+
+    void setMatrix(linearalgebra::BaseMatrix* m_matrix)
+    {
+        this->m_matrix = m_matrix;
+    }
+
+protected:
+
+    linearalgebra::BaseMatrix* m_matrix { nullptr };
+};
+
+} //namespace sofa::type

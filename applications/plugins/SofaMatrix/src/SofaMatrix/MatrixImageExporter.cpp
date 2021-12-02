@@ -58,7 +58,7 @@ void initializeMatrixExporterComponents()
     static bool first = true;
     if (first)
     {
-        const auto addMatrixExporter = [](const std::string& format, std::function<bool(const std::string&, sofa::defaulttype::BaseMatrix*)> exporter)
+        constexpr auto addMatrixExporter = [](const std::string& format, std::function<bool(const std::string&, sofa::defaulttype::BaseMatrix*)> exporter)
         {
             //Add an exporter which writes a matrix as an image
             sofa::defaulttype::matrixExporterMap.insert({format, exporter});

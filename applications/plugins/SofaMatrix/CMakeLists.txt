@@ -3,7 +3,12 @@ project(SofaMatrix VERSION 1.0 LANGUAGES CXX)
 
 sofa_find_package(SofaBaseLinearSolver REQUIRED)
 sofa_find_package(CImgPlugin REQUIRED)
-sofa_find_package(image QUIET)
+sofa_find_package(SofaGuiQt REQUIRED QUIET)
+
+set(SOFA_MODULES
+    SofaBaseLinearSolver
+    CImgPlugin
+)
 
 set(SOFAMATRIX_SRC_DIR src/${PROJECT_NAME})
 
@@ -23,26 +28,25 @@ set(MOC_FILES
 set(MOC_HEADER_FILES
 )
 
-if (NOT image_FOUND)
-    message("[SofaMatrix] Plugin image not found: some components (GlobalSystemMatrixImage) will not be compiled")
+if (NOT SofaGuiQt_FOUND)
+    message(NOTICE "[SofaMatrix] Module SofaGuiQt not found: some components (GlobalSystemMatrixImage) will not be compiled")
 else()
     list(APPEND HEADER_FILES
         ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixImage.h
-        ${SOFAMATRIX_SRC_DIR}/SimpleBitmap.h
+        ${SOFAMATRIX_SRC_DIR}/BaseMatrixProxy.h
     )
     list(APPEND SOURCE_FILES
         ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixImage.cpp
-        ${SOFAMATRIX_SRC_DIR}/SimpleImageViewerWidget.cpp
+        ${SOFAMATRIX_SRC_DIR}/BaseMatrixImageViewerWidget.cpp
     )
-
     list(APPEND MOC_HEADER_FILES
-        ${SOFAMATRIX_SRC_DIR}/SimpleImageViewerWidget.h
+        ${SOFAMATRIX_SRC_DIR}/BaseMatrixImageViewerWidget.h
     )
-
-    find_package(SofaGuiQt REQUIRED QUIET)
+    list(APPEND SOFA_MODULES
+        SofaGuiQt
+    )
 
     find_package(Qt5 COMPONENTS Core Gui Widgets QUIET)
-
     if(Qt5Core_FOUND)
         qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
     else()
@@ -55,15 +59,7 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${MOC_HEADER_FILES} ${MOC_FILES})
 
 # Link the plugin library to its dependency(ies).
-target_link_libraries(${PROJECT_NAME} SofaBaseLinearSolver CImgPlugin)
-
-if (image_FOUND)
-    target_link_libraries(${PROJECT_NAME} image)
-
-    if (SofaGuiQt_FOUND)
-        target_link_libraries(${PROJECT_NAME} SofaGuiQt)
-    endif()
-endif()
+target_link_libraries(${PROJECT_NAME} ${SOFA_MODULES})
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
