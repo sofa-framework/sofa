@@ -136,11 +136,11 @@ void OptiTrackNatNetClient::init()
 
 void OptiTrackNatNetClient::reinit()
 {
-    sout << "Connecting to " << serverName.getValue() << sendl;
+    msg_info() << "Connecting to " << serverName.getValue();
 
     bool connected = connect();
     if (!connected)
-        serr << "Connection failed" << std::endl;
+        msg_error() << "Connection failed";
 
 }
 
@@ -152,49 +152,49 @@ bool OptiTrackNatNetClient::connect()
     boost::system::error_code ec;
 
     {
-        sout << "Resolving " <<  serverName.getValue() << sendl;
+        msg_info() << "Resolving " <<  serverName.getValue();
         udp::resolver::query query(udp::v4(), serverName.getValue(), "0");
         udp::resolver::iterator result = get_resolver().resolve(query, ec);
         if (ec)
         {
-            serr << ec.category().name() << " ERROR while resolving " << serverName.getValue() << " : " << ec.message() << sendl;
+            msg_error() << ec.category().name() << " ERROR while resolving " << serverName.getValue() << " : " << ec.message();
             return false;
         }
 
         server_endpoint = *result;
         server_endpoint.port(PORT_COMMAND);
-        sout << "Resolved " <<  serverName.getValue() << " to " << server_endpoint << sendl;
+        msg_info() << "Resolved " <<  serverName.getValue() << " to " << server_endpoint;
     }
 
     udp::endpoint client_endpoint(udp::v4(), PORT_DATA);
     if (!clientName.getValue().empty())
     {
-        sout << "Resolving " <<  clientName.getValue() << sendl;
+        msg_info() << "Resolving " <<  clientName.getValue();
         udp::resolver::query query(udp::v4(), clientName.getValue(), "0");
         udp::resolver::iterator result = get_resolver().resolve(query, ec);
         if (ec)
         {
-            serr << ec.category().name() << " ERROR while resolving " << clientName.getValue() << " : " << ec.message() << sendl;
+            msg_error() << ec.category().name() << " ERROR while resolving " << clientName.getValue() << " : " << ec.message();
             return false;
         }
 
         client_endpoint = *result;
         client_endpoint.port(PORT_DATA);
-        sout << "Resolved " <<  clientName.getValue() << " to " << client_endpoint << sendl;
+        msg_info() << "Resolved " <<  clientName.getValue() << " to " << client_endpoint;
     }
 
-    sout << "Opening data socket on " <<  client_endpoint << sendl;
+    msg_info() << "Opening data socket on " <<  client_endpoint;
     data_socket = new udp::socket(get_io_service());
     if (data_socket->open(udp::v4(), ec))
     {
-        serr << ec.category().name() << " ERROR while opening data socket : " << ec.message() << sendl;
+        msg_error() << ec.category().name() << " ERROR while opening data socket : " << ec.message();
         return false;
     }
 
     data_socket->set_option(udp::socket::reuse_address(true));
     if (data_socket->bind(client_endpoint, ec))
     {
-        serr << ec.category().name() << " ERROR while binding data socket : " << ec.message() << sendl;
+        msg_error() << ec.category().name() << " ERROR while binding data socket : " << ec.message();
         return false;
     }
 
@@ -204,15 +204,15 @@ bool OptiTrackNatNetClient::connect()
     else
         data_socket->set_option(boost::asio::ip::multicast::join_group(boost::asio::ip::address::from_string(MULTICAST_ADDRESS)));
 
-    sout << "Data socket ready" << sendl;
+    msg_info() << "Data socket ready";
     start_data_receive();
 
-    sout << "Opening command socket" << sendl;
+    msg_info() << "Opening command socket";
 
     command_socket = new udp::socket(get_io_service());
     if (command_socket->open(udp::v4(), ec))
     {
-        serr << ec.category().name() << " ERROR while opening command socket : " << ec.message() << sendl;
+        msg_error() << ec.category().name() << " ERROR while opening command socket : " << ec.message();
         return false;
     }
 
@@ -221,19 +221,19 @@ bool OptiTrackNatNetClient::connect()
         client_endpoint.port(0);
         if (command_socket->bind(client_endpoint, ec))
         {
-            serr << ec.category().name() << " ERROR while binding command socket : " << ec.message() << sendl;
+            msg_error() << ec.category().name() << " ERROR while binding command socket : " << ec.message();
             return false;
         }
     }
 
-    sout << "Command socket ready" << sendl;
+    msg_info() << "Command socket ready";
     start_command_receive();
 
     //boost::shared_pointer<sPacket> helloMsg = new sPacket;
     //helloMsg.iMessage = NAT_PING;
     //helloMsg.nDataBytes = 0;
 
-    sout << "Sending hello message..." << sendl;
+    msg_info() << "Sending hello message...";
 
     boost::array<unsigned short, 2> helloMsg;
     helloMsg[0] = NAT_PING; helloMsg[1] = 0;
@@ -256,17 +256,17 @@ void OptiTrackNatNetClient::handle_command_receive(const boost::system::error_co
 {
     if (ec)
     {
-        serr << ec.category().name() << " ERROR while receiving command from " << recv_command_endpoint << sendl;
+        msg_error() << ec.category().name() << " ERROR while receiving command from " << recv_command_endpoint;
     }
     else
     {
-        sout << "Received " << bytes_transferred << "b command from " << recv_command_endpoint << sendl;
+        msg_info() << "Received " << bytes_transferred << "b command from " << recv_command_endpoint;
         sPacket& PacketIn = *recv_command_packet;
         switch (PacketIn.iMessage)
         {
         case NAT_MODELDEF:
         {
-            sout << "Received MODELDEF" << sendl;
+            msg_info() << "Received MODELDEF";
             if (serverInfoReceived)
             {
                 decodeModelDef(PacketIn);
@@ -275,7 +275,7 @@ void OptiTrackNatNetClient::handle_command_receive(const boost::system::error_co
             {
                 server_endpoint = recv_command_endpoint;
                 server_endpoint.port(PORT_COMMAND);
-                serr << "Requesting server info to " << server_endpoint << sendl;
+                msg_error() << "Requesting server info to " << server_endpoint;
                 boost::array<unsigned short, 2> helloMsg;
                 helloMsg[0] = NAT_PING; helloMsg[1] = 0;
                 command_socket->send_to(boost::asio::buffer(helloMsg), server_endpoint);
@@ -284,7 +284,7 @@ void OptiTrackNatNetClient::handle_command_receive(const boost::system::error_co
         }
         case NAT_FRAMEOFDATA:
         {
-            sout << "Received FRAMEOFDATA" << sendl;
+            msg_info() << "Received FRAMEOFDATA";
             if (serverInfoReceived)
             {
                 decodeFrame(PacketIn);
@@ -293,7 +293,7 @@ void OptiTrackNatNetClient::handle_command_receive(const boost::system::error_co
             {
                 server_endpoint = recv_command_endpoint;
                 server_endpoint.port(PORT_COMMAND);
-                serr << "Requesting server info to " << server_endpoint << sendl;
+                msg_error() << "Requesting server info to " << server_endpoint;
                 boost::array<unsigned short, 2> helloMsg;
                 helloMsg[0] = NAT_PING; helloMsg[1] = 0;
                 command_socket->send_to(boost::asio::buffer(helloMsg), server_endpoint);
@@ -309,21 +309,21 @@ void OptiTrackNatNetClient::handle_command_receive(const boost::system::error_co
                 natNetVersion[i] = PacketIn.Data.Sender.NatNetVersion[i];
                 serverVersion[i] = PacketIn.Data.Sender.Version[i];
             }
-            serr << "Connected to server \"" << serverString << "\" v" << (int)serverVersion[0];
+            msg_error() << "Connected to server \"" << serverString << "\" v" << (int)serverVersion[0];
             if (serverVersion[1] || serverVersion[2] || serverVersion[3])
-                serr << "." << (int)serverVersion[1];
+                msg_error() << "." << (int)serverVersion[1];
             if (serverVersion[2] || serverVersion[3])
-                serr << "." << (int)serverVersion[2];
+                msg_error() << "." << (int)serverVersion[2];
             if (serverVersion[3])
-                serr << "." << (int)serverVersion[3];
-            serr << " protocol v" << (int)natNetVersion[0];
+                msg_error() << "." << (int)serverVersion[3];
+            msg_error() << " protocol v" << (int)natNetVersion[0];
             if (natNetVersion[1] || natNetVersion[2] || natNetVersion[3])
-                serr << "." << (int)natNetVersion[1];
+                msg_error() << "." << (int)natNetVersion[1];
             if (natNetVersion[2] || natNetVersion[3])
-                serr << "." << (int)natNetVersion[2];
+                msg_error() << "." << (int)natNetVersion[2];
             if (natNetVersion[3])
-                serr << "." << (int)natNetVersion[3];
-            serr << sendl;
+                msg_error() << "." << (int)natNetVersion[3];
+            msg_error();
             // request scene info
             boost::array<unsigned short, 2> reqMsg;
             reqMsg[0] = NAT_REQUEST_MODELDEF; reqMsg[1] = 0;
@@ -332,22 +332,22 @@ void OptiTrackNatNetClient::handle_command_receive(const boost::system::error_co
         }
         case NAT_RESPONSE:
         {
-            sout << "Received response : " << PacketIn.Data.szData << sendl;
+            msg_info() << "Received response : " << PacketIn.Data.szData;
             break;
         }
         case NAT_UNRECOGNIZED_REQUEST:
         {
-            serr << "Received 'unrecognized request'" << sendl;
+            msg_error() << "Received 'unrecognized request'";
             break;
         }
         case NAT_MESSAGESTRING:
         {
-            sout << "Received message: " << PacketIn.Data.szData << sendl;
+            msg_info() << "Received message: " << PacketIn.Data.szData;
             break;
         }
         default:
         {
-            serr << "Received unrecognized command packet type: " << PacketIn.iMessage << sendl;
+            msg_error() << "Received unrecognized command packet type: " << PacketIn.iMessage;
             break;
         }
         }
@@ -369,17 +369,17 @@ void OptiTrackNatNetClient::handle_data_receive(const boost::system::error_code&
 {
     if (ec)
     {
-        serr << ec.category().name() << " ERROR while receiving data from " << recv_data_endpoint << sendl;
+        msg_error() << ec.category().name() << " ERROR while receiving data from " << recv_data_endpoint;
     }
     else
     {
-        sout << "Received " << bytes_transferred << "b data from " << recv_data_endpoint << sendl;
+        msg_info() << "Received " << bytes_transferred << "b data from " << recv_data_endpoint;
         sPacket& PacketIn = *recv_data_packet;
         switch (PacketIn.iMessage)
         {
         case NAT_MODELDEF:
         {
-            sout << "Received MODELDEF" << sendl;
+            msg_info() << "Received MODELDEF";
             if (serverInfoReceived)
             {
                 decodeModelDef(PacketIn);
@@ -388,7 +388,7 @@ void OptiTrackNatNetClient::handle_data_receive(const boost::system::error_code&
             {
                 server_endpoint = recv_data_endpoint;
                 server_endpoint.port(PORT_COMMAND);
-                serr << "Requesting server info to " << server_endpoint << sendl;
+                msg_error() << "Requesting server info to " << server_endpoint;
                 boost::array<unsigned short, 2> helloMsg;
                 helloMsg[0] = NAT_PING; helloMsg[1] = 0;
                 command_socket->send_to(boost::asio::buffer(helloMsg), server_endpoint);
@@ -397,7 +397,7 @@ void OptiTrackNatNetClient::handle_data_receive(const boost::system::error_code&
         }
         case NAT_FRAMEOFDATA:
         {
-            sout << "Received FRAMEOFDATA" << sendl;
+            msg_info() << "Received FRAMEOFDATA";
             if (serverInfoReceived)
             {
                 decodeFrame(PacketIn);
@@ -406,7 +406,7 @@ void OptiTrackNatNetClient::handle_data_receive(const boost::system::error_code&
             {
                 server_endpoint = recv_data_endpoint;
                 server_endpoint.port(PORT_COMMAND);
-                serr << "Requesting server info to " << server_endpoint << sendl;
+                msg_error() << "Requesting server info to " << server_endpoint;
                 boost::array<unsigned short, 2> helloMsg;
                 helloMsg[0] = NAT_PING; helloMsg[1] = 0;
                 command_socket->send_to(boost::asio::buffer(helloMsg), server_endpoint);
@@ -415,7 +415,7 @@ void OptiTrackNatNetClient::handle_data_receive(const boost::system::error_code&
         }
         default:
         {
-            serr << "Received unrecognized data packet type: " << PacketIn.iMessage << sendl;
+            msg_error() << "Received unrecognized data packet type: " << PacketIn.iMessage;
             break;
         }
         }
@@ -436,8 +436,8 @@ static void memread(T& dest, const unsigned char*& ptr, const unsigned char*& en
         memset(&dest,0,sizeof(T));
         if (ptr != end)
         {
-            std::cerr << "OptiTrackNatNet decode ERROR: end of message reached";
-            if (fieldName) std::cerr << " while reading " << fieldName << std::endl;
+            msg_error("OptiTrackNatNet") << "OptiTrackNatNet decode ERROR: end of message reached";
+            if (fieldName) msg_error("OptiTrackNatNet") << " while reading " << fieldName;
             ptr = end;
         }
     }
@@ -458,8 +458,8 @@ static void memread(const char*& dest, const unsigned char*& ptr, const unsigned
         dest = "";
         if (ptr != end)
         {
-            std::cerr << "OptiTrackNatNet decode ERROR: end of message reached";
-            if (fieldName) std::cerr << " while reading string " << fieldName << std::endl;
+            msg_error("OptiTrackNatNet") << "decode ERROR: end of message reached";
+            if (fieldName) msg_error("OptiTrackNatNet") << " while reading string " << fieldName;
             ptr = end;
         }
     }
@@ -480,8 +480,8 @@ static void memread(const T*& dest, int n, const unsigned char*& ptr, const unsi
         dest = NULL;
         if (ptr != end)
         {
-            std::cerr << "OptiTrackNatNet decode ERROR: end of message reached";
-            if (fieldName) std::cerr << " while reading " << n << " values for array " << fieldName << std::endl;
+            msg_error("OptiTrackNatNet") << "OptiTrackNatNet decode ERROR: end of message reached";
+            if (fieldName) msg_error("OptiTrackNatNet") << " while reading " << n << " values for array " << fieldName;
             ptr = end;
         }
     }
@@ -594,7 +594,7 @@ void OptiTrackNatNetClient::decodeFrame(const sPacket& data)
     memread(frame.latency, ptr,end,"latency");
     if (ptr != end)
     {
-//        serr << "decodeFrame: extra " << end-ptr << " bytes at end of message" << sendl;
+//        msg_error() << "decodeFrame: extra " << end-ptr << " bytes at end of message";
     }
     // Copy markers to stored Data
     {
@@ -758,7 +758,7 @@ void OptiTrackNatNetClient::decodeModelDef(const sPacket& data)
         }
         default:
         {
-            serr << "decodeModelDef: unknown type " << type << sendl;
+            msg_error() << "decodeModelDef: unknown type " << type;
         }
         }
     }
@@ -806,81 +806,77 @@ void OptiTrackNatNetClient::processFrame(const FrameData* data)
 {
     if (this->f_printLog.getValue())
     {
-#define ENDL sendl
-//#define ENDL "\n"
-        sout << "Frame # : " << data->frameNumber << ENDL;
-        sout << "\tPoint Cloud Count : " << data->nPointClouds << ENDL;
+        msg_info() << "Frame # : " << data->frameNumber << "\n";
+        msg_info() << "\tPoint Cloud Count : " << data->nPointClouds << "\n";
         for (int iP = 0; iP < data->nPointClouds; ++iP)
         {
-            sout << ENDL;
+            msg_info() << "\n";
             if (data->pointClouds[iP].name)
-                sout << "\t\tModel Name : " << data->pointClouds[iP].name << ENDL;
-            sout << "\t\tMarkers (" << data->pointClouds[iP].nMarkers << ") :";
+                msg_info() << "\t\tModel Name : " << data->pointClouds[iP].name << "\n";
+            msg_info() << "\t\tMarkers (" << data->pointClouds[iP].nMarkers << ") :";
             for (int i = 0; i < data->pointClouds[iP].nMarkers; ++i)
-                sout << " [" << data->pointClouds[iP].markersPos[i] << "]";
-            sout << ENDL;
+                msg_info() << " [" << data->pointClouds[iP].markersPos[i] << "]";
+            msg_info() << "\n";
         }
 
-        sout << "\tUnidentified Markers (" << data->nOtherMarkers << ") :";
+        msg_info() << "\tUnidentified Markers (" << data->nOtherMarkers << ") :";
         for (int i = 0; i < data->nOtherMarkers; ++i)
-            sout << " [" << data->otherMarkersPos[i] << "]";
-        sout << ENDL;
+            msg_info() << " [" << data->otherMarkersPos[i] << "]";
+        msg_info() << "\n";
 
-        sout << "\tRigid Body Count : " << data->nRigids << ENDL;
+        msg_info() << "\tRigid Body Count : " << data->nRigids << "\n";
         for (int iR = 0; iR < data->nRigids; ++iR)
         {
-            sout << ENDL;
-            sout << "\t\tID : " << data->rigids[iR].ID << ENDL;
-            sout << "\t\tpos : " << data->rigids[iR].pos << ENDL;
+            msg_info() << "\n";
+            msg_info() << "\t\tID : " << data->rigids[iR].ID << "\n";
+            msg_info() << "\t\tpos : " << data->rigids[iR].pos << "\n";
             if (data->rigids[iR].rot[0] != 0.0f
                 || data->rigids[iR].rot[1] != 0.0f
                 || data->rigids[iR].rot[2] != 0.0f
                 || data->rigids[iR].rot[3] != 0.0f)
-                sout << "\t\trot : " << data->rigids[iR].rot << ENDL;
-            sout << "\t\tMarkers (" << data->rigids[iR].nMarkers << ") :";
+                msg_info() << "\t\trot : " << data->rigids[iR].rot << "\n";
+            msg_info() << "\t\tMarkers (" << data->rigids[iR].nMarkers << ") :";
             for (int i = 0; i < data->rigids[iR].nMarkers; ++i)
             {
-                sout << " [" << data->rigids[iR].markersPos[i] << "]";
+                msg_info() << " [" << data->rigids[iR].markersPos[i] << "]";
                 if (data->rigids[iR].markersID)
-                    sout << ",id=" << data->rigids[iR].markersID[i];
+                    msg_info() << ",id=" << data->rigids[iR].markersID[i];
                 if (data->rigids[iR].markersSize)
-                    sout << ",size=" << data->rigids[iR].markersSize[i];
+                    msg_info() << ",size=" << data->rigids[iR].markersSize[i];
             }
-            sout << ENDL;
+            msg_info() << "\n";
         }
 
-        sout << "\tSkeleton Count : " << data->nSkeletons << ENDL;
+        msg_info() << "\tSkeleton Count : " << data->nSkeletons << "\n";
         for (int iS = 0; iS < data->nSkeletons; ++iS)
         {
-            sout << ENDL;
-            sout << "\t\tID : " << data->skeletons[iS].ID << ENDL;
+            msg_info() << "\n";
+            msg_info() << "\t\tID : " << data->skeletons[iS].ID << "\n";
 
-            sout << "\t\tRigid Body Count : " << data->skeletons[iS].nRigids << ENDL;
+            msg_info() << "\t\tRigid Body Count : " << data->skeletons[iS].nRigids << "\n";
             for (int iR = 0; iR < data->skeletons[iS].nRigids; ++iR)
             {
-                sout << ENDL;
-                sout << "\t\t\tID : " << data->skeletons[iS].rigids[iR].ID << ENDL;
-                sout << "\t\t\tpos : " << data->skeletons[iS].rigids[iR].pos << ENDL;
+                msg_info() << "\n";
+                msg_info() << "\t\t\tID : " << data->skeletons[iS].rigids[iR].ID << "\n";
+                msg_info() << "\t\t\tpos : " << data->skeletons[iS].rigids[iR].pos << "\n";
                 if (data->skeletons[iS].rigids[iR].rot[0] != 0.0f
                     || data->skeletons[iS].rigids[iR].rot[1] != 0.0f
                     || data->skeletons[iS].rigids[iR].rot[2] != 0.0f
                     || data->skeletons[iS].rigids[iR].rot[3] != 0.0f)
-                    sout << "\t\t\trot : " << data->skeletons[iS].rigids[iR].rot << ENDL;
-                sout << "\t\t\tMarkers (" << data->skeletons[iS].rigids[iR].nMarkers << ") :";
+                    msg_info() << "\t\t\trot : " << data->skeletons[iS].rigids[iR].rot << "\n";
+                msg_info() << "\t\t\tMarkers (" << data->skeletons[iS].rigids[iR].nMarkers << ") :";
                 for (int i = 0; i < data->skeletons[iS].rigids[iR].nMarkers; ++i)
                 {
-                    sout << " [" << data->skeletons[iS].rigids[iR].markersPos[i] << "]";
+                    msg_info() << " [" << data->skeletons[iS].rigids[iR].markersPos[i] << "]";
                     if (data->skeletons[iS].rigids[iR].markersID)
-                        sout << ",id=" << data->skeletons[iS].rigids[iR].markersID[i];
+                        msg_info() << ",id=" << data->skeletons[iS].rigids[iR].markersID[i];
                     if (data->skeletons[iS].rigids[iR].markersSize)
-                        sout << ",size=" << data->skeletons[iS].rigids[iR].markersSize[i];
+                        msg_info() << ",size=" << data->skeletons[iS].rigids[iR].markersSize[i];
                 }
-                sout << ENDL;
+                msg_info() << "\n";
             }
         }
-        sout << "latency : " << data->latency << ENDL;
-#undef ENDL
-        sout << sendl;
+        msg_info() << "latency : " << data->latency << "\n";
     }
 
     for (unsigned int i=0,n=natNetReceivers.size(); i<n; ++i)
@@ -891,61 +887,57 @@ void OptiTrackNatNetClient::processModelDef(const ModelDef* data)
 {
     if (this->f_printLog.getValue())
     {
-#define ENDL sendl
-//#define ENDL "\n"
-        sout << "ModelDef : " << ENDL;
-        sout << "\tPoint Cloud Count : " << data->nPointClouds << ENDL;
+        msg_info() << "ModelDef : " << "\n";
+        msg_info() << "\tPoint Cloud Count : " << data->nPointClouds << "\n";
         for (int iP = 0; iP < data->nPointClouds; ++iP)
         {
-            sout << ENDL;
+            msg_info() << "\n";
             if (data->pointClouds[iP].name)
-                sout << "\t\tModel Name : " << data->pointClouds[iP].name << ENDL;
-            sout << "\t\tMarkers (" << data->pointClouds[iP].nMarkers << ") :";
+                msg_info() << "\t\tModel Name : " << data->pointClouds[iP].name << "\n";
+            msg_info() << "\t\tMarkers (" << data->pointClouds[iP].nMarkers << ") :";
             for (int i = 0; i < data->pointClouds[iP].nMarkers; ++i)
-                sout << " " << data->pointClouds[iP].name;
-            sout << ENDL;
+                msg_info() << " " << data->pointClouds[iP].name;
+            msg_info() << "\n";
         }
 
-        sout << "\tRigid Body Count : " << data->nRigids << ENDL;
+        msg_info() << "\tRigid Body Count : " << data->nRigids << "\n";
         for (int iR = 0; iR < data->nRigids; ++iR)
         {
-            sout << ENDL;
+            msg_info() << "\n";
             if (data->rigids[iR].name)
-                sout << "\t\tname : " << data->rigids[iR].name << ENDL;
-            sout << "\t\tID : " << data->rigids[iR].ID << ENDL;
-            sout << "\t\tparentID : " << data->rigids[iR].parentID << ENDL;
+                msg_info() << "\t\tname : " << data->rigids[iR].name << "\n";
+            msg_info() << "\t\tID : " << data->rigids[iR].ID << "\n";
+            msg_info() << "\t\tparentID : " << data->rigids[iR].parentID << "\n";
             if (data->rigids[iR].offset[0] != 0.0f
                 || data->rigids[iR].offset[1] != 0.0f
                 || data->rigids[iR].offset[2] != 0.0f)
-                sout << "\t\toffset : " << data->rigids[iR].offset << ENDL;
-            sout << ENDL;
+                msg_info() << "\t\toffset : " << data->rigids[iR].offset << "\n";
+            msg_info() << "\n";
         }
 
-        sout << "\tSkeleton Count : " << data->nSkeletons << ENDL;
+        msg_info() << "\tSkeleton Count : " << data->nSkeletons << "\n";
         for (int iS = 0; iS < data->nSkeletons; ++iS)
         {
-            sout << ENDL;
+            msg_info() << "\n";
             if (data->skeletons[iS].name)
-                sout << "\t\tname : " << data->skeletons[iS].name << ENDL;
-            sout << "\t\tID : " << data->skeletons[iS].ID << ENDL;
+                msg_info() << "\t\tname : " << data->skeletons[iS].name << "\n";
+            msg_info() << "\t\tID : " << data->skeletons[iS].ID << "\n";
 
-            sout << "\t\tRigid Body Count : " << data->skeletons[iS].nRigids << ENDL;
+            msg_info() << "\t\tRigid Body Count : " << data->skeletons[iS].nRigids << "\n";
             for (int iR = 0; iR < data->skeletons[iS].nRigids; ++iR)
             {
-                sout << ENDL;
+                msg_info() << "\n";
                 if (data->skeletons[iS].rigids[iR].name)
-                    sout << "\t\t\tname : " << data->skeletons[iS].rigids[iR].name << ENDL;
-                sout << "\t\t\tID : " << data->skeletons[iS].rigids[iR].ID << ENDL;
-                sout << "\t\t\tparentID : " << data->skeletons[iS].rigids[iR].parentID << ENDL;
+                    msg_info() << "\t\t\tname : " << data->skeletons[iS].rigids[iR].name << "\n";
+                msg_info() << "\t\t\tID : " << data->skeletons[iS].rigids[iR].ID << "\n";
+                msg_info() << "\t\t\tparentID : " << data->skeletons[iS].rigids[iR].parentID << "\n";
                 if (data->skeletons[iS].rigids[iR].offset[0] != 0.0f
                     || data->skeletons[iS].rigids[iR].offset[1] != 0.0f
                     || data->skeletons[iS].rigids[iR].offset[2] != 0.0f)
-                    sout << "\t\t\toffset : " << data->skeletons[iS].rigids[iR].offset << ENDL;
-                sout << ENDL;
+                    msg_info() << "\t\t\toffset : " << data->skeletons[iS].rigids[iR].offset << "\n";
+                msg_info() << "\n";
             }
         }
-#undef ENDL
-        sout << sendl;
     }
 
     for (unsigned int i=0,n=natNetReceivers.size(); i<n; ++i)
