@@ -89,6 +89,8 @@ void SparseLDLSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M) {
 /// Default implementation of Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
 template<class TMatrix, class TVector, class TThreadManager>
 bool SparseLDLSolver<TMatrix,TVector,TThreadManager>::addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, double fact) {
+    using namespace sofa::linearalgebra;
+
     if (J->rowSize()==0) return true;
 
     Jlocal2global.clear();

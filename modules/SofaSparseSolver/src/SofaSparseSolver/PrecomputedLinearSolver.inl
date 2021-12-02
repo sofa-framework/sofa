@@ -121,6 +121,7 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
 {
+    using namespace sofa::linearalgebra;
     msg_info() << "Compute the initial invert matrix with CS_PARSE" ;
 
     CompressedRowSparseMatrix<double> matSolv;
@@ -202,6 +203,8 @@ void PrecomputedLinearSolver<TMatrix,TVector>::computeActiveDofs(JMatrix& J)
 template<class TMatrix,class TVector>
 bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, double fact)
 {
+    using namespace sofa::linearalgebra;
+
     if (first)
     {
         core::MechanicalParams mparams = *core::mechanicalparams::defaultInstance();

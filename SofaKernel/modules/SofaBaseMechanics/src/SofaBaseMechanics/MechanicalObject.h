@@ -94,7 +94,7 @@ public:
     PointData< VecDeriv > f; ///< force vector of the degrees of freedom
     PointData< VecCoord > x0; ///< rest position coordinates of the degrees of freedom
 
-    class MOPointHandler : public sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point,VecCoord >
+    class MOPointHandler : public sofa::core::topology::TopologyDataHandler<sofa::core::topology::Point,VecCoord >
     {
     public:
         typedef typename MechanicalObject<DataTypes>::VecCoord VecCoord;
