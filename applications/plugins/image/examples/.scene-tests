@@ -11,4 +11,7 @@ ignore "Kinect_capture.scn"
 ignore "Kinect_offline.scn"
 
 # Ignore all python2 scenes
-ignore ".*\.py"
+ignore "imageAPI.py"
+ignore "loadHDR.py"
+ignore "loadHDR.scn"
+ignore "python/.*\.py"
