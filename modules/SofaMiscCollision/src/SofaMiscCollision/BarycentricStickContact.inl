@@ -175,11 +175,10 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
         // Create mapping for second point
         index2 = mapper2.addPointB(o->point[1], index2, r2);
 
-        double distance = d0 + r1 + r2;
-        double stiffness = (elem1.getContactStiffness() + elem2.getContactStiffness());
+        const double stiffness = (elem1.getContactStiffness() + elem2.getContactStiffness());
         ff->m_stiffness.setValue(stiffness);
 
-        double mu_v = (elem1.getContactFriction() + elem2.getContactFriction());
+        const double mu_v = (elem1.getContactFriction() + elem2.getContactFriction());
 
         ff->addSpring(index1, index2, stiffness, mu_v/* *distance */, o->point[1]-o->point[0]);
     }
