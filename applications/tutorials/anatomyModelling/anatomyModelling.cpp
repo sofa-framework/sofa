@@ -50,7 +50,7 @@
 #include <SofaBaseVisual/VisualStyle.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
-#include <SofaLoader/MeshObjLoader.h>
+#include <SofaLoader/MeshOBJLoader.h>
 
 // Include of sofaImage classes
 #ifdef SOFA_HAVE_IMAGE
@@ -393,7 +393,7 @@ simulation::Node::SPtr createScene()
 	Node::SPtr originNode = attachNode->createChild("r_bicep_med_origin");
 
 	//Add mesh obj loader
-	sofa::component::loader::MeshObjLoader::SPtr originLoader = addNew< sofa::component::loader::MeshObjLoader >(originNode,"loader");
+	sofa::component::loader::MeshOBJLoader::SPtr originLoader = addNew< sofa::component::loader::MeshOBJLoader >(originNode,"loader");
 	originLoader->setFilename(sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_scapula.obj"));
 	originLoader->triangulate.setValue(true);
     originLoader->load();
@@ -444,7 +444,7 @@ simulation::Node::SPtr createScene()
 	Node::SPtr insertionNode = attachNode->createChild("r_bicep_med_insertion");
 
 	//Add mesh obj loader
-	sofa::component::loader::MeshObjLoader::SPtr insertionLoader = addNew< sofa::component::loader::MeshObjLoader >(insertionNode,"loader");
+	sofa::component::loader::MeshOBJLoader::SPtr insertionLoader = addNew< sofa::component::loader::MeshOBJLoader >(insertionNode,"loader");
 	insertionLoader->setFilename(sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_scapula.obj"));
 	insertionLoader->triangulate.setValue(true);
     insertionLoader->load();
@@ -513,7 +513,7 @@ simulation::Node::SPtr createScene()
 	Node::SPtr rbicepmedNode = independentParticlesNode->createChild("r_bicep_med");
 
 	// Add mesh obj loader
-	sofa::component::loader::MeshObjLoader::SPtr loader = addNew< sofa::component::loader::MeshObjLoader >(rbicepmedNode,"loader");
+	sofa::component::loader::MeshOBJLoader::SPtr loader = addNew< sofa::component::loader::MeshOBJLoader >(rbicepmedNode,"loader");
 	loader->setFilename(sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/muscles/r_bicep_med.obj"));
 	loader->triangulate.setValue(true);
     loader->load();

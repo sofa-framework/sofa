@@ -8,7 +8,7 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
-#include <SofaLoader/MeshObjLoader.h>
+#include <SofaLoader/MeshOBJLoader.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Quat.h>
 
@@ -57,10 +57,10 @@ void RegistrationExporter::init()
         }
     }
 
-    std::vector<sofa::component::loader::MeshObjLoader*> loaders;
-    this->getContext()->get<sofa::component::loader::MeshObjLoader,std::vector<sofa::component::loader::MeshObjLoader*> >(&loaders);
+    std::vector<sofa::component::loader::MeshOBJLoader*> loaders;
+    this->getContext()->get<sofa::component::loader::MeshOBJLoader,std::vector<sofa::component::loader::MeshOBJLoader*> >(&loaders);
 
-    if (!loaders.size()) 		serr << "Can not find MeshObjLoaders in context" << sendl;
+    if (!loaders.size()) 		serr << "Can not find MeshOBJLoaders in context" << sendl;
     else for(unsigned int l=0;l<loaders.size();l++)
     {
         std::string strIn=loaders[l]->getFilename();

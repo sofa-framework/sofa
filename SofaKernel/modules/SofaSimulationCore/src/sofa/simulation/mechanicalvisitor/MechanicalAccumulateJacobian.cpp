@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,21 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define CGALPLUGIN_CYLINDERMESH_CPP
 
-#include <CGALPlugin/config.h>
-#include <CGALPlugin/CylinderMesh.inl>
+#include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateJacobian.h>
+#include <sofa/core/ConstraintParams.h>
+#include <sofa/core/BaseMapping.h>
 
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
-
-using namespace sofa::defaulttype;
-namespace cgal
+namespace sofa::simulation::mechanicalvisitor
 {
-int CylinderMeshClass = sofa::core::RegisterObject("Generate a regular tetrahedron mesh of a cylinder")
-    .add<CylinderMesh<Vec3Types> >()
-;
 
-template class SOFA_CGALPLUGIN_API CylinderMesh<Vec3Types>;
- 
+MechanicalAccumulateJacobian::MechanicalAccumulateJacobian(const core::ConstraintParams* _cparams,
+                                                           core::MultiMatrixDerivId _res)
+    : simulation::BaseMechanicalVisitor(_cparams)
+    , res(_res)
+    , cparams(_cparams)
+{}
+
+void MechanicalAccumulateJacobian::bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
+{
+    const ctime_t t0 = begin(node, map);
+    map->applyJT(cparams, res, res);
+    end(node, map, t0);
 }
+
+} //namespace sofa::simulation::mechanicalvisitor

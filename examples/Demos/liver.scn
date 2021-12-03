@@ -13,7 +13,7 @@
     <DefaultContactManager name="collision response" response="default" />
     <DiscreteIntersection/>
 
-    <MeshObjLoader name="LiverSurface" filename="mesh/liver-smooth.obj" />
+    <MeshOBJLoader name="LiverSurface" filename="mesh/liver-smooth.obj" />
 
     <Node name="Liver" gravity="0 -9.81 0">
         <EulerImplicitSolver name="cg_odesolver"   rayleighStiffness="0.1" rayleighMass="0.1" />

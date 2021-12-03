@@ -20,12 +20,12 @@
         <RegularGridTopology nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
         <TetrahedronFEMForceField name="FEM" youngModulus="25" poissonRatio="0.3" computeGlobalMatrix="false" updateStiffnessMatrix="false" method="large" />
         <Node name="Visu">
-            <MeshObjLoader name="meshLoader_0" filename="mesh/smCube125.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/smCube125.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_0" color="red" />
             <SubsetMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
-            <MeshObjLoader name="loader" filename="mesh/smCube125.obj" />
+            <MeshOBJLoader name="loader" filename="mesh/smCube125.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel />
@@ -35,13 +35,13 @@
         </Node>
     </Node>
     <Node name="Floor">
-        <MeshObjLoader name="loader" filename="mesh/floor3.obj" />
+        <MeshOBJLoader name="loader" filename="mesh/floor3.obj" />
         <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" dy="-10" scale="1.75" />
         <TriangleCollisionModel name="FloorTriangle" simulated="0" moving="0" />
         <LineCollisionModel name="FloorLine" simulated="0" moving="0" />
         <PointCollisionModel name="FloorPoint" simulated="0" moving="0" />
-        <MeshObjLoader name="meshLoader_1" filename="mesh/floor3.obj" scale="1.75" handleSeams="1" />
+        <MeshOBJLoader name="meshLoader_1" filename="mesh/floor3.obj" scale="1.75" handleSeams="1" />
         <OglModel name="FloorV" src="@meshLoader_1" texturename="textures/brushed_metal.bmp" dy="-10" />
     </Node>
 </Node>

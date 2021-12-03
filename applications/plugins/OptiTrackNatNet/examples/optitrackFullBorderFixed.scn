@@ -58,7 +58,7 @@
       <GraspingManager name="Grasping" active="@../GrabDevice.closed" printLog="1" />
     </Node>
     <Node name="GrabSurfaceL">
-      <MeshObjLoader name="loaderPince" filename="./data/pince_cm_left.obj" triangulate="1" createSubelements="true" />
+      <MeshOBJLoader name="loaderPince" filename="./data/pince_cm_left.obj" triangulate="1" createSubelements="true" />
       <MeshTopology src="@loaderPince" />
       <MechanicalObject name="vertices" src="@loaderPince" />
       <TriangleCollisionModel group="1" simulated="0" moving="1" />
@@ -67,7 +67,7 @@
       <RigidMapping index="1" />
     </Node>
     <Node name="GrabSurfaceR">
-      <MeshObjLoader name="loaderPince" filename="./data/pince_cm_right.obj" triangulate="1" createSubelements="true"/>
+      <MeshOBJLoader name="loaderPince" filename="./data/pince_cm_right.obj" triangulate="1" createSubelements="true"/>
       <MeshTopology src="@loaderPince" />
       <MechanicalObject name="vertices" src="@loaderPince" />
       <TriangleCollisionModel group="1" simulated="0" moving="1" />

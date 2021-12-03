@@ -5,7 +5,7 @@
     <RequiredPlugin pluginName='SofaLoader'/>
         
     <VisualStyle name="visualStyle1"  displayFlags="showBehavior" />
-    <MeshObjLoader name="meshLoader_0" filename="mesh/dragon.obj" handleSeams="1" />
+    <MeshOBJLoader name="meshLoader_0" filename="mesh/dragon.obj" handleSeams="1" />
     <OglModel template="Vec3d" name="Objective" src="@meshLoader_0"  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
     <DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
     <BruteForceBroadPhase/>
