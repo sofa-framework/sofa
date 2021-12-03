@@ -48,7 +48,7 @@ public:
     SOFA_CLASS(Simulation, sofa::core::objectmodel::Base);
 
     SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1730)", "v21.12", "Use sofa::core::visual::DisplayFlags instead.")
-    typedef void DisplayFlags;
+    typedef DeprecatedAndRemoved DisplayFlags;
 
     Simulation();
     ~Simulation() override;

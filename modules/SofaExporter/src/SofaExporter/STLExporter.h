@@ -96,7 +96,7 @@ namespace exporter {
 namespace misc {
     using STLExporter
         SOFA_ATTRIBUTE_DISABLED("v17.12 (PR#372)", "v21.12", "Use sofa::component::STLExporter instead.")
-        = void;
+        = DeprecatedAndRemoved;
 } // namespace misc
 
 } // namespace sofa::component
