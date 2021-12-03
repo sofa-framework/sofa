@@ -55,14 +55,10 @@ void SceneCheckCollisionResponse::doCheckOn(Node* node)
     const sofa::core::objectmodel::BaseContext* root = node->getContext()->getRootContext();
     std::vector<sofa::component::collision::DefaultContactManager*> contactManager;
     root->get<sofa::component::collision::DefaultContactManager>(&contactManager, core::objectmodel::BaseContext::SearchDown);
-    Size nbContactManager = contactManager.size();
-    if( nbContactManager == 0 )
+    m_checkDone=true;
+    const Size nbContactManager = contactManager.size();
+    if( nbContactManager  > 0 )
     {
-        m_checkDone=true;
-    }
-    else
-    {
-        m_checkDone=true;
         if( nbContactManager!= 1 )
         {
             m_message << "Only one DefaultContactManager is needed."<< msgendl;
