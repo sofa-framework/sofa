@@ -1797,7 +1797,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     const VecReal& youngModulus = _youngModulus.getValue();
 
     bool heterogeneous = false;
-    if (drawHeterogeneousTetra.getValue())
+    if (drawHeterogeneousTetra.getValue() && drawVonMisesStress)
     {
         minYoung=youngModulus[0];
         maxYoung=youngModulus[0];
