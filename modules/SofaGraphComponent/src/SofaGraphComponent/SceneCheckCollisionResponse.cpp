@@ -84,7 +84,7 @@ void SceneCheckCollisionResponse::doCheckOn(Node* node)
                 root->get(constraintSolver, sofa::core::objectmodel::BaseContext::SearchRoot);
                 if (!constraintSolver || ( constraintSolver && ( constraintSolver->getClassName() != "GenericConstraintSolver" )) )
                 {
-                        m_message <<"A GenericConstraintSolver must be in the scene to solve StickContactConstraint" << msgendl;
+                    m_message <<"A GenericConstraintSolver must be in the scene to solve StickContactConstraint" << msgendl;
                 }
             }
             /// If StickContactConstraint is chosen, make sure the scene includes a FreeMotionAnimationLoop and a GenericConstraintSolver (specifically)
