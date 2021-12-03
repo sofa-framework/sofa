@@ -38,7 +38,7 @@ const std::string SceneCheckCollisionResponse::getName()
 
 const std::string SceneCheckCollisionResponse::getDesc()
 {
-    return "Check there is not duplicated name in the scenegraph";
+    return "Check that the appropriate components are in the scene to compute the desired collision response";
 }
 
 void SceneCheckCollisionResponse::doInit(Node* node)
