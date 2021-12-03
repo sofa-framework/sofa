@@ -25,7 +25,6 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/type/MatSym.h>
 
 namespace sofa::component::forcefield
@@ -105,8 +104,6 @@ protected:
     component::topology::TriangleSubsetData<sofa::type::vector<TrianglePressureInformation> > trianglePressureMap; ///< map between triangle indices and their pressure
 
     sofa::core::topology::BaseMeshTopology* m_topology;
-	sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* triangleGeo;
-
 
 	TrianglePressureForceField();
 
