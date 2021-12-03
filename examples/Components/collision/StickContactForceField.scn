@@ -27,15 +27,15 @@
         </Node>
         <Node name="Surf">
             <VisualStyle displayFlags="hideCollision" />
-            <SphereLoader filename="mesh/smCube27b.sph" />
-            <MechanicalObject position="@[-1].position" />
-            <SphereCollisionModel listRadius="@[-2].listRadius" contactStiffness="10000"/>
+            <SphereLoader name="SphereLoader-Surf" filename="mesh/smCube27b.sph" />
+            <MechanicalObject position="@SphereLoader-Surf.position" />
+            <SphereCollisionModel listRadius="@SphereLoader.listRadius" contactStiffness="10000"/>
             <BarycentricMapping />
         </Node>
     </Node>
-    <SphereLoader filename="mesh/floor.sph" />
-    <MechanicalObject position="@[-1].position" translation="0 -12.5 0" />
-    <SphereCollisionModel name="Floor" listRadius="@[-2].listRadius" simulated="0" moving="0" contactStiffness="10000" />
+    <SphereLoader name="SphereLoader-root" filename="mesh/floor.sph" />
+    <MechanicalObject position="@SphereLoader-root.position" translation="0 -12.5 0" />
+    <SphereCollisionModel name="Floor" listRadius="@SphereLoader-root.listRadius" simulated="0" moving="0" contactStiffness="10000" />
     <Node>
         <MeshObjLoader name="meshLoader_1" filename="mesh/floor2.obj" translation="0 -12.5 0" handleSeams="1" />
         <OglModel name="FloorV" src="@meshLoader_1" texturename="textures/floor2.bmp" />
