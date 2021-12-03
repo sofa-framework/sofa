@@ -10,5 +10,8 @@ ignore "Kinect_capture.scn"
 # and to have launch kinect_capture.scn
 ignore "Kinect_offline.scn"
 
-# File armadillo.mhd NOT FOUND
+# Ignore all python2 scenes
 ignore "imageAPI.py"
+ignore "loadHDR.py"
+ignore "loadHDR.scn"
+ignore "python/.*"
