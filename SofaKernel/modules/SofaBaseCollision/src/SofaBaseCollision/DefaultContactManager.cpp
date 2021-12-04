@@ -47,7 +47,10 @@ sofa::helper::OptionsGroup DefaultContactManager::initializeResponseOptions(sofa
 
     sofa::simulation::Node* node = sofa::simulation::node::getNodeFrom(context);
     sofa::core::collision::Pipeline* pipeline = node->collisionPipeline;
-    if (pipeline) listResponse=pipeline->getResponseList();
+    if (pipeline)
+    {
+        listResponse=pipeline->getResponseList();
+    }
     else
     {
         core::collision::Contact::Factory::iterator it;
@@ -56,9 +59,11 @@ sofa::helper::OptionsGroup DefaultContactManager::initializeResponseOptions(sofa
             listResponse.insert(it->first);
         }
     }
+
     sofa::helper::OptionsGroup responseOptions(listResponse);
     if (listResponse.find("PenalityContactForceField") != listResponse.end())
         responseOptions.setSelectedItem("PenalityContactForceField");
+
     return responseOptions;
 }
 
@@ -152,16 +157,6 @@ void DefaultContactManager::createNewContacts(const core::collision::ContactMana
             dmsg_error_when(model1 == nullptr || model2 == nullptr) << "Contact found with an invalid collision model";
 
             std::string responseUsed = getContactResponse(model1, model2);
-
-            // To be removed at v22.06
-            std::map<std::string,std::string>::iterator it;
-            for(it=renamingResponseMethod.begin(); it!=renamingResponseMethod.end(); ++it)
-            {
-               if(responseUsed == it->first)
-               {
-                   msg_warning() << "Options for data \"response\" changed since #2522: please use "<< it->second << " instead of " << it->first;
-               }
-            }
 
             // We can create rules in order to not respond to specific collisions
             if (!responseUsed.compare("nullptr"))

@@ -59,6 +59,29 @@ public :
         if (arg)
             obj->parse(arg);
 
+
+        //SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2522)", "v22.06","This attribute was only added to build a compatibility layer on the response name.")
+        {
+            static std::map<std::string,std::string> renamingResponseMethod = {
+                {"ray", "RayContact"},
+                {"default", "PenalityContactForceField"},
+                {"FrictionContact", "FrictionContactConstraint"},
+                {"registration", "RegistrationContactForceField"},
+                {"stick", "StickContactForceField"},
+            };
+
+            std::string responseDesired = arg->getAttribute("response","");
+            const auto it = renamingResponseMethod.find(responseDesired);
+
+            if(it != renamingResponseMethod.end())
+            {
+                msg_warning("DefaultContactManager")<< "Options for data \"response\" changed since #2522: please use "<< it->second << " instead of " << it->first;
+                helper::WriteAccessor< Data<sofa::helper::OptionsGroup>  > responseAccessor = obj->response;
+                responseAccessor->setSelectedItem(it->second);
+            }
+        }
+
+
         return obj;
     }
 
@@ -116,14 +139,5 @@ protected:
 
 };
 
-//SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2522)", "v22.06","This attribute was only added to build a compatibility layer on the response name.")
-static std::map<std::string,std::string> renamingResponseMethod = {
-    {"ray", "RayContact"},
-    {"default", "PenalityContactForceField"},
-    {"FrictionContact", "FrictionContactConstraint"},
-    {"registration", "RegistrationContactForceField"},
-    {"stick", "StickContactForceField"},
-};
-static bool firstStep = true;
 
 } // namespace sofa::component::collision
