@@ -245,6 +245,10 @@ public:
     bool isSet(const core::ExecParams*) const { return isSet(); }
     bool isSet() const { return m_isSet; }
 
+    /// Return whether the Data has a default value or not
+    bool hasDefaultValue() const { return m_hasDefaultValue; }
+    /// @}
+
     /// Reset the isSet flag to false, to indicate that the current value is the default for this %Data.
     SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
     void unset(const core::ExecParams*) { unset(); }
@@ -306,6 +310,8 @@ public:
     Base* m_owner {nullptr};
     /// Data name within the Base component
     std::string m_name;
+    /// True if this %Data has a default value
+    bool m_hasDefaultValue = false;
 
     /// Parent Data
     DataLink<BaseData> parentData;

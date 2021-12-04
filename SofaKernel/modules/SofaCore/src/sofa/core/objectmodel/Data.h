@@ -113,6 +113,7 @@ public:
     explicit Data(const InitData& init) : BaseData(init)
     {
         m_value = ValueType(init.value);
+        m_hasDefaultValue = true;
     }
 
     /** \copydoc BaseData(const char*, bool, bool) */
