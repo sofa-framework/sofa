@@ -19,19 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_BASEINTERACTIONPROJECTIVECONSTRAINTSET_H
-#define SOFA_CORE_BEHAVIOR_BASEINTERACTIONPROJECTIVECONSTRAINTSET_H
+#pragma once
 
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/StateAccessor.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /**
@@ -41,37 +35,26 @@ namespace behavior
  *  bodies given their current positions and velocities.
  *
  */
-class SOFA_CORE_API BaseInteractionProjectiveConstraintSet : public BaseProjectiveConstraintSet
+class SOFA_CORE_API BaseInteractionProjectiveConstraintSet : public BaseProjectiveConstraintSet, public StateAccessor
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseInteractionProjectiveConstraintSet, BaseProjectiveConstraintSet);
+    SOFA_ABSTRACT_CLASS2(BaseInteractionProjectiveConstraintSet, BaseProjectiveConstraintSet, StateAccessor);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseInteractionProjectiveConstraintSet)
 
     /// Get the first MechanicalState
     /// \todo Rename to getMechState1()
-    /// \todo Replace with an accessor to a list of states, as an InteractionConstraint can be applied to more than two.
-    virtual BaseMechanicalState* getMechModel1() = 0;
+    virtual BaseMechanicalState* getMechModel1() { return l_mechanicalStates[0]; }
 
     /// Get the first MechanicalState
     /// \todo Rename to getMechState2()
-    /// \todo Replace with an accessor to a list of states, as an InteractionConstraint can be applied to more than two.
-    virtual BaseMechanicalState* getMechModel2() = 0;
+    virtual BaseMechanicalState* getMechModel2() { return l_mechanicalStates[1]; }
 
 
     virtual type::vector< core::BaseState* > getModels() override
     {
-        type::vector< core::BaseState* > models;
-        models.push_back( getMechModel1() );
-        models.push_back( getMechModel2() );
-        return models;
+        return {getMechModel1(), getMechModel2() };
     }
 
 };
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif // SOFA_CORE_BEHAVIOR_BASEINTERACTIONPROJECTIVECONSTRAINTSET_H
+} // namespace sofa::core::behavior

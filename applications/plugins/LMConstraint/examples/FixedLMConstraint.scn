@@ -13,7 +13,7 @@ The outcome of this scene is a still object. The MechanicalObject is comprised b
 " />
 	<FixedLMConstraint template="Rigid3d"   indices="0" /> 
 	<Node>
-		<MeshObjLoader name="loader"  filename="mesh/cube.obj" />
+		<MeshOBJLoader name="loader"  filename="mesh/cube.obj" />
 		<MeshTopology  src="@loader" />
 		<MechanicalObject  />
     <TriangleCollisionModel />

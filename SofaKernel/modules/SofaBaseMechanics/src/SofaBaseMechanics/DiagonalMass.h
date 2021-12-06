@@ -31,12 +31,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/Vec.h>
 
-#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
-
 #include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa::component::mass
@@ -124,21 +118,17 @@ protected:
 
     class Loader;
     /// The type of topology to build the mass from the topology
-    sofa::core::topology::TopologyElementType m_massTopologyType;
+    sofa::geometry::ElementType m_massTopologyType;
 
     /// Pointer to the topology container. Will be set by link @sa l_topology
     sofa::core::topology::BaseMeshTopology* m_topology;
+private:
+    sofa::geometry::ElementType m_manageElementTypeChange{ sofa::geometry::ElementType::POINT };
 
-public:
-    sofa::component::topology::EdgeSetGeometryAlgorithms<GeometricalTypes>* edgeGeo;
-    sofa::component::topology::TriangleSetGeometryAlgorithms<GeometricalTypes>* triangleGeo;
-    sofa::component::topology::QuadSetGeometryAlgorithms<GeometricalTypes>* quadGeo;
-    sofa::component::topology::TetrahedronSetGeometryAlgorithms<GeometricalTypes>* tetraGeo;
-    sofa::component::topology::HexahedronSetGeometryAlgorithms<GeometricalTypes>* hexaGeo;
 protected:
     DiagonalMass();
 
-    ~DiagonalMass() override;
+    ~DiagonalMass() override = default;
 public:
 
     bool load(const char *filename);
@@ -151,7 +141,7 @@ public:
 
     void doUpdateInternal() override;
 
-    sofa::core::topology::TopologyElementType getMassTopologyType() const
+    sofa::geometry::ElementType getMassTopologyType() const
     {
         return m_massTopologyType;
     }

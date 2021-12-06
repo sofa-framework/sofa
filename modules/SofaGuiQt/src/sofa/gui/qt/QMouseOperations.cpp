@@ -161,8 +161,8 @@ void QFixOperation::configure(PickHandler *picker, sofa::component::configuratio
 
 //*******************************************************************************************
 QInciseOperation::QInciseOperation()
-    : finishIncision(0)
-    , keepPoint(0)
+    : finishIncision(false)
+    , keepPoint(false)
 {
     //Building the GUI for the Injection Operation
     QVBoxLayout *layout=new QVBoxLayout(this);
@@ -364,10 +364,7 @@ int QTopologyOperation::getTopologicalOperation() const
 
 bool QTopologyOperation::getVolumicMesh() const
 {
-    if (meshType2->isChecked())
-        return 1;
-    else
-        return 0;
+    return meshType2->isChecked();
 }
 
 void QTopologyOperation::setEnableBox(int i)

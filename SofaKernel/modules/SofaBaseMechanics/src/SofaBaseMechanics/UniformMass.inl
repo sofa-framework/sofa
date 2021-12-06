@@ -627,13 +627,6 @@ void UniformMass<DataTypes, MassType>::draw(const VisualParams* vparams)
 
 
 template<class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::handleEvent(sofa::core::objectmodel::Event *event)
-{
-    SOFA_UNUSED(event);
-}
-
-
-template<class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::loadRigidMass( const std::string&  filename)
 {
     msg_warning(this) << "The attribute filename is set to ["<< filename << "] while " << msgendl <<

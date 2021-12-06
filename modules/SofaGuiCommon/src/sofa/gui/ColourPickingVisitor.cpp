@@ -43,7 +43,7 @@ using namespace sofa::core::collision;
 
 namespace
 {
-const float threshold = std::numeric_limits<float>::min();
+constexpr float threshold = std::numeric_limits<float>::min();
 }
 
 void decodeCollisionElement(const sofa::type::Vec4f colour,  sofa::component::collision::BodyPicked& body)

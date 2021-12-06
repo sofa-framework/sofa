@@ -40,7 +40,6 @@ public:
 
     void update() override;
 
-public:
     typedef std::function<void(const core::topology::TopologyChange*)> TopologyChangeCallback;
 
     virtual void ApplyTopologyChanges(const std::list< const core::topology::TopologyChange*>& _topologyChangeEvents, const Size _dataSize);

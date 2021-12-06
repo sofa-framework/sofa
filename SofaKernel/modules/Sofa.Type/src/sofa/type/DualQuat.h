@@ -58,7 +58,6 @@ class SOFA_TYPE_API DualQuatCoord3
     enum { total_size = 8 };
     enum { spatial_dimensions = 3 };
 
-private:
     Quat dual;
     Quat orientation;
 

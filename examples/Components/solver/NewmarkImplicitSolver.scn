@@ -7,7 +7,7 @@
     <RequiredPlugin pluginName='SofaMiscSolver'/>
     <RequiredPlugin pluginName='SofaSimpleFem'/>
     <Node name="Reference">
-        <MeshObjLoader name="meshLoader_0" filename="mesh/truthcylinder1-bent.obj" scale="0.95" handleSeams="1" />
+        <MeshOBJLoader name="meshLoader_0" filename="mesh/truthcylinder1-bent.obj" scale="0.95" handleSeams="1" />
         <OglModel src="@meshLoader_0" dx="0" dy="-1" dz="0" color="green" />
     </Node>
     <Node name="Springs">
@@ -21,7 +21,7 @@
         <MeshSpringForceField name="Spring" tetrasStiffness="1870" tetrasDamping="0" />
 
         <Node>
-            <MeshObjLoader name="meshLoader_3" filename="mesh/truthcylinder1.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_3" filename="mesh/truthcylinder1.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_3" color="yellow" dx="15" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
@@ -38,7 +38,7 @@
         <TetrahedronFEMForceField name="FEM" youngModulus="1116" poissonRatio="0.49" method="polar" />
 
         <Node>
-            <MeshObjLoader name="meshLoader_2" filename="mesh/truthcylinder1.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_2" filename="mesh/truthcylinder1.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_2" color="cyan" dx="30" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
@@ -54,7 +54,7 @@
         <TetrahedronFEMForceField name="FEM" youngModulus="1116" poissonRatio="0.49" method="small" />
 
         <Node>
-            <MeshObjLoader name="meshLoader_1" filename="mesh/truthcylinder1.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_1" filename="mesh/truthcylinder1.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_1" color="red" dx="45" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>

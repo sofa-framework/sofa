@@ -137,7 +137,6 @@ public:
         return sortedFind(v, Range(0,(Index)v.size()), val, result);
     }
 
-public :
     // size
     Index nRow,nCol;         ///< Mathematical size of the matrix, in scalars
     Index nBlockRow,nBlockCol; ///< Mathematical size of the matrix, in blocks.
@@ -157,7 +156,7 @@ public :
     VecIndex oldRowBegin;
     VecIndex oldColsIndex;
     VecBlock  oldColsValue;
-public:
+
     CompressedRowSparseMatrix()
         : nRow(0), nCol(0), nBlockRow(0), nBlockCol(0), compressed(true)
     {
@@ -1734,7 +1733,7 @@ public:
         return name.c_str();
     }
 
-    bool check_matrix()
+    bool check_matrix() const
     {
         return check_matrix(
                 this->getColsValue().size(),

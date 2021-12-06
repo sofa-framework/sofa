@@ -4,9 +4,9 @@
   <RequiredPlugin pluginName="image"/>
 
   <VisualStyle displayFlags="showVisual showBehaviorModels" />
-  <MeshObjLoader name="mesh1" filename="mesh/bubille_in1.obj" triangulate="1"/>
-  <MeshObjLoader name="mesh2" filename="mesh/bubille_in2.obj" triangulate="1"/>
-  <MeshObjLoader name="mesh3" filename="mesh/bubille_out.obj" triangulate="1"/>
+  <MeshOBJLoader name="mesh1" filename="mesh/bubille_in1.obj" triangulate="1"/>
+  <MeshOBJLoader name="mesh2" filename="mesh/bubille_in2.obj" triangulate="1"/>
+  <MeshOBJLoader name="mesh3" filename="mesh/bubille_out.obj" triangulate="1"/>
 
 
   <Node name="Voxelizing several meshes in one image (the prefered solution in most cases)" >
@@ -24,11 +24,11 @@
 		       
 
     <Node name="Visu">
-        <MeshObjLoader name="meshLoader_0" filename="mesh/bubille_8x8x16.obj" handleSeams="1" />
+        <MeshOBJLoader name="meshLoader_0" filename="mesh/bubille_8x8x16.obj" handleSeams="1" />
         <OglModel name="Gelatin" src="@meshLoader_0" color="0.1 .8 .3 .05" />
-<MeshObjLoader name="meshLoader_1" filename="mesh/bubille_in1.obj" handleSeams="1" />
+<MeshOBJLoader name="meshLoader_1" filename="mesh/bubille_in1.obj" handleSeams="1" />
 <!--         <OglModel name="Ball1" src="@meshLoader_1" color="1 0 0 .2" /> -->
-<MeshObjLoader name="meshLoader_2" filename="mesh/bubille_in2.obj" handleSeams="1" />
+<MeshOBJLoader name="meshLoader_2" filename="mesh/bubille_in2.obj" handleSeams="1" />
 <!--         <OglModel name="Ball2" src="@meshLoader_2" color="0 0 1 .2" /> -->
     </Node>
    

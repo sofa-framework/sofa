@@ -14,8 +14,8 @@
 		<MechanicalObject template="Rigid3d" name="mObject0"  position="0 0 50 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  reserve="1" />
 		<UniformMass template="Rigid3d" name="uniformMass0" />
 		<Node 	 name="Dragon2"  >
-			<!-- <MeshObjLoader name="loader"  filename="mesh/SimpleThinCube.obj" /> -->
-			<MeshObjLoader name="loader"  filename="mesh/dragon.obj" />
+			<!-- <MeshOBJLoader name="loader"  filename="mesh/SimpleThinCube.obj" /> -->
+			<MeshOBJLoader name="loader"  filename="mesh/dragon.obj" />
 			<MeshTopology name="meshTopology1"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
 			<MechanicalObject template="Vec3d" name="mObject1"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="0 0 0"  rotation="33 0 0" />
 			<TBulletTriangleModel template="Vec3d" name="tBulletTriangleModel2" proximity="0" margin="5"/>

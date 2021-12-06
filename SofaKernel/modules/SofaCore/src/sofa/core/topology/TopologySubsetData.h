@@ -137,7 +137,6 @@ protected:
     */
     virtual void updateLastIndex(Index posLastIndex, Index newGlobalId);
 
-protected:
     /// same size as this SubsetData but contains id of element link to each data[]
     sofa::type::vector<Index> m_map2Elements;
 

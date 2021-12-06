@@ -6,15 +6,15 @@
 	<EulerImplicitSolver name="eulerImplicitSolver1"  rayleighStiffness="0.1"  rayleighMass="0.1" />
 	<CGLinearSolver template="GraphScattered" name="cGLinearSolver1"  iterations="15"  threshold="1e-08" tolerance="1e-5"/>
 	<Node 	 name="target"  >
-                <MeshObjLoader name="meshLoader_0" filename="data/femur_m.obj"  translation="0 0 0"  rotation="0 0 0"  scale3d="1 1 1" handleSeams="1" />
+                <MeshOBJLoader name="meshLoader_0" filename="data/femur_m.obj"  translation="0 0 0"  rotation="0 0 0"  scale3d="1 1 1" handleSeams="1" />
                 <OglModel template="ExtVec3f" name="Femur1" src="@meshLoader_0"  material="Default Diffuse 1 0.333333 0.666667 0 1 Ambient 1 0 0.333333 0 1 Specular 0 0.494118 0.4 1 1 Emissive 0 0.494118 0.4 1 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
-                <MeshObjLoader name="meshLoader"  filename="data/femur_m.obj"  triangulate="1"  translation="0 0 0"  rotation="0 0 0"  scale3d="1 1 1" />
+                <MeshOBJLoader name="meshLoader"  filename="data/femur_m.obj"  triangulate="1"  translation="0 0 0"  rotation="0 0 0"  scale3d="1 1 1" />
 		<GenerateRigidMass template="Rigid3d" name="Rigid"  position="@meshLoader.position"  triangles="@meshLoader.triangles"  quads="@meshLoader.quads"  polygons="@meshLoader.polygons" />
 	</Node>
 	<Node 	 name="source"  >
-                <MeshObjLoader name="meshLoader_1" filename="data/femur_m.obj"  translation="1 0 0"  rotation="0 0 0"  scale3d="1 1 1" handleSeams="1" />
+                <MeshOBJLoader name="meshLoader_1" filename="data/femur_m.obj"  translation="1 0 0"  rotation="0 0 0"  scale3d="1 1 1" handleSeams="1" />
                 <OglModel template="ExtVec3f" name="Femur2" src="@meshLoader_1"  material="Default Diffuse 1 1 0.666667 0 1 Ambient 1 0.666667 0 0 1 Specular 0 1 0.4 0.494118 1 Emissive 0 1 0.4 0.494118 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
-                <MeshObjLoader name="meshLoader"  filename="data/femur_m.obj"  triangulate="1"  translation="1 0 0"  rotation="0 0 0"  scale3d="1 1 1" />
+                <MeshOBJLoader name="meshLoader"  filename="data/femur_m.obj"  triangulate="1"  translation="1 0 0"  rotation="0 0 0"  scale3d="1 1 1" />
 		<GenerateRigidMass template="Rigid3d" name="Rigid"  position="@meshLoader.position"  triangles="@meshLoader.triangles"  quads="@meshLoader.quads"  polygons="@meshLoader.polygons" />
 	</Node>
 	<Node 	 name="InertiaAlign"  >

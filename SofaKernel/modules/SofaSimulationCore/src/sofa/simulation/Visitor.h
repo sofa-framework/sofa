@@ -165,7 +165,6 @@ public:
     /// This version is offered a LocalStorage to store temporary data
     virtual void processNodeBottomUp(simulation::Node* node, LocalStorage*) { processNodeBottomUp(node); }
 
-public:
     typedef sofa::core::objectmodel::Tag Tag;
     typedef sofa::core::objectmodel::TagSet TagSet;
     /// list of the subsets

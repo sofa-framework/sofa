@@ -192,7 +192,7 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
         unsigned long exit = 0;
         for (int i=0; i<2; ++i)
             nfill[i] = 0;
-        for(int i=0;; ++i)
+        while(true)
         {
             GetExitCodeProcess(piProcInfo.hProcess,&exit);      //while the process is running
             if (exit != STILL_ACTIVE)

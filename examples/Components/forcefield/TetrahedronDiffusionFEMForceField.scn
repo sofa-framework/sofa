@@ -11,7 +11,7 @@
     <VisualStyle displayFlags="showBehaviorModels"/>
 
     <MeshVTKLoader name="meshLoader" filename="mesh/raptorTetra_8418.vtu" />
-    <MeshObjLoader name="potentialLoader" filename="mesh/raptorTemperature.obj" />
+    <MeshOBJLoader name="potentialLoader" filename="mesh/raptorTemperature.obj" />
     
     <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" tags="mechanics"/>
     <MechanicalObject template="Vec3d" name="raptorDOFs" src="@meshLoader" tags="mechanics" />

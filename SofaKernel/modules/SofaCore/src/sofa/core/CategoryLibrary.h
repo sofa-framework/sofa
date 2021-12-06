@@ -46,7 +46,6 @@ public:
     typedef std::vector< ComponentLibrary* > VecComponent;
     typedef VecComponent::const_iterator VecComponentIterator;
 
-public:
     CategoryLibrary( const std::string &categoryName);
     virtual ~CategoryLibrary() {}
 

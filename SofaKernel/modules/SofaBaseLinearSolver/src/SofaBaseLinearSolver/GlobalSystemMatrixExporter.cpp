@@ -44,11 +44,14 @@ GlobalSystemMatrixExporter::GlobalSystemMatrixExporter()
 
 void GlobalSystemMatrixExporter::doInit()
 {
-    l_linearSolver.set(this->getContext()->template get<sofa::core::behavior::LinearSolver>());
+    if (!l_linearSolver)
+    {
+        l_linearSolver.set(this->getContext()->template get<sofa::core::behavior::LinearSolver>());
+    }
 
     if (!l_linearSolver)
     {
-        msg_error() << "A linear solver has not been found in the current context, whereas it is required. This component exports the matrix from a linear solver.";
+        msg_error() << "No linear solver found in the current context, whereas it is required. This component exports the matrix from a linear solver.";
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
     }
 }

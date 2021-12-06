@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_BASECONSTRAINTCORRECTION_H
-#define SOFA_CORE_BEHAVIOR_BASECONSTRAINTCORRECTION_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/MultiVecId.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 class ConstraintSolver;
@@ -140,15 +133,9 @@ protected:
     ~BaseConstraintCorrection() override;
 
 private:
-    BaseConstraintCorrection(const BaseConstraintCorrection& n) ;
-    BaseConstraintCorrection& operator=(const BaseConstraintCorrection& n) ;
+    BaseConstraintCorrection(const BaseConstraintCorrection& n) = delete ;
+    BaseConstraintCorrection& operator=(const BaseConstraintCorrection& n) = delete ;
 
 };
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

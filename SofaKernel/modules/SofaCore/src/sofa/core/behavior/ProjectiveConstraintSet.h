@@ -19,20 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_PROJECTIVECONSTRAINTSET_H
-#define SOFA_CORE_BEHAVIOR_PROJECTIVECONSTRAINTSET_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /**
@@ -45,10 +39,10 @@ namespace behavior
  *
  */
 template<class DataTypes>
-class ProjectiveConstraintSet : public BaseProjectiveConstraintSet
+class ProjectiveConstraintSet : public BaseProjectiveConstraintSet, public SingleStateAccessor<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(ProjectiveConstraintSet,DataTypes), BaseProjectiveConstraintSet);
+    SOFA_CLASS2(SOFA_TEMPLATE(ProjectiveConstraintSet,DataTypes), BaseProjectiveConstraintSet, SOFA_TEMPLATE(SingleStateAccessor, DataTypes));
 
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -73,19 +67,10 @@ public:
     Data<Real> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
     virtual bool isActive() const; ///< if false, the constraint does nothing
 
-    void init() override;
-
-    
     virtual type::vector< core::BaseState* > getModels() override
     {
-        type::vector< core::BaseState* > models;
-        models.push_back( getMState() );
-        return models;
+        return { this->getMState() };
     }
-
-
-    /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes>* getMState() { return mstate.get(); }
 
     /// @name Vector operations
     /// @{
@@ -170,9 +155,6 @@ public:
 
         return BaseObject::canCreate(obj, context, arg);
     }
-
-protected:
-    SingleLink<ProjectiveConstraintSet<DataTypes>,MechanicalState<DataTypes>,BaseLink::FLAG_STRONGLINK> mstate;
 };
 
 #if  !defined(SOFA_CORE_BEHAVIOR_PROJECTIVECONSTRAINTSET_CPP)
@@ -185,10 +167,4 @@ extern template class SOFA_CORE_API ProjectiveConstraintSet< defaulttype::Rigid2
 
 
 #endif
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

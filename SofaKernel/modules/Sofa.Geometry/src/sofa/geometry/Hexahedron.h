@@ -29,6 +29,8 @@
 #include <iterator>
 #include <array>
 
+#include <sofa/geometry/Tetrahedron.h>
+
 namespace sofa::geometry
 {
 
@@ -36,14 +38,38 @@ struct Hexahedron
 {
     static constexpr sofa::Size NumberOfNodes = 8;
 
-    Hexahedron() = default;
+    Hexahedron() = delete;
 
+    // CONVENTION : indices ordering for the nodes of an hexahedron :
+    //
+    //     Y  n3---------n2
+    //     ^  /          /|
+    //     | /          / |
+    //     n7---------n6  |
+    //     |          |   |
+    //     |  n0------|--n1
+    //     | /        | /
+    //     |/         |/
+    //     n4---------n5-->X
+    //    /
+    //   /
+    //  Z
+
+    /**
+    * @brief	Compute the center of a hexahedron
+    * @remark	The order of nodes given as parameter is not necessary.
+    * @tparam   Node iterable container, with operator[]
+    * @tparam   T scalar
+    * @param	n0,n1,n2,n3,n4,n5,n6,n7 nodes of the hexahedron
+    * @return	Center of the hexahedron (same type as the given nodes)
+    */
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
-        static constexpr auto center(const Node& n0, const Node& n1, const Node& n2, const Node& n3, 
-                                     const Node& n4, const Node& n5, const Node& n6, const Node& n7)
+    [[nodiscard]]
+    static constexpr auto center(const Node& n0, const Node& n1, const Node& n2, const Node& n3, 
+                                 const Node& n4, const Node& n5, const Node& n6, const Node& n7)
     {
         constexpr auto dimensions = sizeof(Node) / sizeof(T);
         auto centerRes = n0;
@@ -56,12 +82,23 @@ struct Hexahedron
         return centerRes;
     }
 
+    /**
+    * @brief	Compute the barycentric coefficients of a node in a hexahedron
+    * @remark	Due to some optimizations, the order of nodes given as parameter is necessary.
+    * @tparam   Node iterable container, with operator[]
+    * @tparam   T scalar
+    * @param	n0,n1,n2,n3,n4,n5,n6,n7 nodes of the hexahedron
+    * @param    pos position of the node from which the coefficients will be computed 
+    * @return	A Vec3 container with the barycentric coefficients of the given node
+    */
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
-        static constexpr auto barycentricCoefficients(const Node& n0, const Node& n1, const Node& n2, const Node& n3,
-            const Node& n4, const Node& n5, const Node& n6, const Node& n7, const Node& pos)
+    [[nodiscard]]
+    static constexpr auto barycentricCoefficients(const Node& n0, const Node& n1, const Node& n2, const Node& n3,
+                                                  const Node& n4, const Node& n5, const Node& n6, const Node& n7, 
+                                                  const Node& pos)
     {
         SOFA_UNUSED(n2);
         SOFA_UNUSED(n5);
@@ -91,24 +128,26 @@ struct Hexahedron
         SOFA_UNUSED(canInvert);
         const auto tmpResult = base * (pnt - origin);
 
-        if constexpr (std::is_same_v<decltype(tmpResult), Node>)
-        {
-            return tmpResult;
-        }
-        else
-        {
-            sofa::type::fixed_array<T, 3> returnResult{};
-            std::copy_n(tmpResult.begin(), max_spatial_dimensions, returnResult.begin());
-            return returnResult;
-        }
+        return tmpResult;
     }
 
+    /**
+    * @brief	Compute the squared distance between a node and the center of a hexahedron
+    * @remark	Due to some optimizations, the order of nodes given as parameter is necessary.
+    * @tparam   Node iterable container, with operator[]
+    * @tparam   T scalar
+    * @param	n0,n1,n2,n3,n4,n5,n6,n7 nodes of the hexahedron
+    * @param    pos position of the node from which the distance will be computed
+    * @return	Distance from the node and the center of the hexahedron, as a T scalar
+    */
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
-        static constexpr auto distanceTo(const Node& n0, const Node& n1, const Node& n2, const Node& n3,
-            const Node& n4, const Node& n5, const Node& n6, const Node& n7, const Node& pos)
+    [[nodiscard]]
+    static constexpr auto squaredDistanceTo(const Node& n0, const Node& n1, const Node& n2, const Node& n3,
+                                            const Node& n4, const Node& n5, const Node& n6, const Node& n7, 
+                                            const Node& pos)
     {
         const auto& v = barycentricCoefficients(n0,n1,n2,n3,n4,n5,n6,n7, pos);
 
@@ -116,16 +155,28 @@ struct Hexahedron
 
         if (d > 0)
             d = (pos - center(n0, n1, n2, n3, n4, n5, n6, n7)).norm2();
+        else
+            d = static_cast<T>(0);
 
         return d;
     }
 
+    /**
+    * @brief	Compute a position from a given set of barycentric coefficients and the associated hexahedron
+    * @remark	The order of nodes given as parameter is necessary.
+    * @tparam   Node iterable container, with operator* applicable with a scalar
+    * @tparam   T scalar
+    * @param	n0,n1,n2,n3,n4,n5,n6,n7 nodes of the hexahedron
+    * @param    baryC barycentric coefficients
+    * @return	Position computed from the coefficients, as a Node type
+    */
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
+    [[nodiscard]]
     static constexpr auto getPositionFromBarycentricCoefficients(const Node& n0, const Node& n1, const Node& n2, const Node& n3,
-            const Node& n4, const Node& n5, const Node& n6, const Node& n7, const std::array<SReal, 3>& baryC)
+            const Node& n4, const Node& n5, const Node& n6, const Node& n7, const sofa::type::fixed_array<SReal, 3>& baryC)
     {
         const auto fx = baryC[0];
         const auto fy = baryC[1];
@@ -143,8 +194,43 @@ struct Hexahedron
         return pos;
     }
 
-    
+    /**
+    * @brief	Compute the volume of a hexahedron
+    * @remark	non optimized version: just return the sum of the 6 inner-tetrahedra
+    * @tparam   Node iterable container
+    * @tparam   T scalar
+    * @param	n0,n1,n2,n3,n4,n5,n6,n7 nodes of the hexahedron
+    * @return	Volume of the hexahedron, as a T scalar
+    */
+    template<typename Node,
+        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+        typename = std::enable_if_t<std::is_scalar_v<T>>
+    >
+    [[nodiscard]]
+    static constexpr auto volume(const Node& n0, const Node& n1, const Node& n2, const Node& n3,
+                                 const Node& n4, const Node& n5, const Node& n6, const Node& n7)
+    {
+        constexpr Node n{};
+        //static_assert(std::distance(std::begin(n), std::end(n)) == 3, "volume can only be computed in 3 dimensions.");
 
+        if constexpr (std::distance(std::begin(n), std::end(n)) == 3)
+        {
+            return sofa::geometry::Tetrahedron::volume(n0, n5, n1, n6)
+                 + sofa::geometry::Tetrahedron::volume(n0, n1, n3, n6)
+                 + sofa::geometry::Tetrahedron::volume(n1, n3, n6, n2)
+                 + sofa::geometry::Tetrahedron::volume(n6, n3, n0, n7)
+                 + sofa::geometry::Tetrahedron::volume(n6, n7, n0, n5)
+                 + sofa::geometry::Tetrahedron::volume(n7, n5, n4, n0);
+        }
+        else
+        {
+            BOOST_STATIC_WARNING(true)
+            //does not make sense to compute volume other than 3D
+            //but some code effectively wants 2d volumes(??)
+            //an exception may be a better solution
+            return static_cast<T>(0);
+        }
+    }
 };
 
 } // namespace sofa::geometry

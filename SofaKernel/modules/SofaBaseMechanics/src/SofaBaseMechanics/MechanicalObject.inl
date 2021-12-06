@@ -2537,13 +2537,10 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::resetConstraint(const core::ConstraintParams* cParams)
 {
     Data<MatrixDeriv>& c_data = *this->write(cParams->j().getId(this));
-    MatrixDeriv *c = c_data.beginEdit();
-    c->clear();
-    c_data.endEdit();
+    sofa::helper::getWriteOnlyAccessor(c_data)->clear();
+
     Data<MatrixDeriv>& m_data = *this->write(core::MatrixDerivId::mappingJacobian());
-    MatrixDeriv *m = m_data.beginEdit();
-    m->clear();
-    m_data.endEdit();
+    sofa::helper::getWriteOnlyAccessor(m_data)->clear();
 }
 
 template <class DataTypes>

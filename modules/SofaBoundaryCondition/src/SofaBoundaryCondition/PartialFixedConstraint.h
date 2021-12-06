@@ -74,7 +74,6 @@ protected:
 public:
 
     // -- Constraint interface
-    void init() override;
     void reinit() override;
 
     void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
