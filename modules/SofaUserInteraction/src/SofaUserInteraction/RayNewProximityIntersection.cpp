@@ -28,8 +28,6 @@
 #include <sofa/core/collision/IntersectorFactory.h>
 #include <sofa/type/Mat.h>
 
-#include <SofaUserInteraction/RayContact.h>
-
 namespace sofa::component::collision
 {
 
