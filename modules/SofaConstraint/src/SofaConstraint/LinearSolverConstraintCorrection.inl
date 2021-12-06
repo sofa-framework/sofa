@@ -26,6 +26,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/ConstraintParams.h>
 
 #include <sstream>
 #include <list>
