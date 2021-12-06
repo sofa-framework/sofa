@@ -25,7 +25,6 @@
 
 
 #include <sofa/simulation/Visitor.h>
-#include <string>
 
 
 namespace sofa

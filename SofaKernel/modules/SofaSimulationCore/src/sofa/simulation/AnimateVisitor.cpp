@@ -29,6 +29,9 @@
 #include <sofa/simulation/IntegrateBeginEvent.h>
 #include <sofa/simulation/IntegrateEndEvent.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/core/BehaviorModel.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
+#include <sofa/core/collision/Pipeline.h>
 
 #include <sofa/helper/AdvancedTimer.h>
 

@@ -20,11 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/XMLPrintVisitor.h>
-#include <sofa/helper/Factory.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/core/behavior/BaseInteractionForceField.h>
-#include <sofa/core/behavior/BaseInteractionProjectiveConstraintSet.h>
-#include <sofa/core/behavior/BaseInteractionConstraint.h>
 #include <sofa/core/BaseMapping.h>
 
 namespace sofa
