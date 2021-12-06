@@ -73,13 +73,13 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
         for (typename SetIndex::const_iterator it = indices.begin(); it!=indices.end(); ++it)
             sortedIndices.insert(*it);
         // check if the indices are contiguous
-        if (*sortedIndices.begin() + (int)sortedIndices.size()-1 == *sortedIndices.rbegin())
-        {
-            data.minIndex = *sortedIndices.begin();
-            data.maxIndex = *sortedIndices.rbegin();
-            msg_info("CudaFixedConstraint") << "init: " << sortedIndices.size() << " contiguous fixed indices, " << data.minIndex << " - " << data.maxIndex;
-        }
-        else
+        //if (*sortedIndices.begin() + (int)sortedIndices.size()-1 == *sortedIndices.rbegin())
+        //{
+        //    data.minIndex = *sortedIndices.begin();
+        //    data.maxIndex = *sortedIndices.rbegin();
+        //    msg_info("CudaFixedConstraint") << "init: " << sortedIndices.size() << " contiguous fixed indices, " << data.minIndex << " - " << data.maxIndex;
+        //}
+        //else
         {
             msg_info("CudaFixedConstraint") << "init: " << sortedIndices.size() << " non-contiguous fixed indices";
             data.cudaIndices.reserve(sortedIndices.size());
@@ -127,7 +127,12 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
                     }
                     data.cudaIndices.resize(data.cudaIndices.size() - 1);
                 }
-
+            });
+            m->d_indices.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::POINTSREMOVED, [m](const core::topology::TopologyChange* eventTopo) {
+                const core::topology::PointsRemoved* pRemove = static_cast<const core::topology::PointsRemoved*>(eventTopo);
+                std::cout << "pRemove: " << pRemove->getArray() << std::endl;
+                Data& data = *m->data;
+                data.isDirty = true;
             });
         }
     }
@@ -380,6 +385,17 @@ template <>
 void FixedConstraintInternalData<gpu::cuda::CudaVec3fTypes>::projectResponse(Main* m, VecDeriv& dx)
 {    
     Data& data = *m->data;
+    if (data.isDirty)
+    {
+        const SetIndexArray& indices = m->d_indices.getValue();
+        data.cudaIndices.clear();
+        data.cudaIndices.reserve(indices.size());
+        for (auto idx : indices)
+            data.cudaIndices.push_back(idx);
+
+        data.isDirty = false;
+    }
+
     if (m->d_fixAll.getValue()) {
         FixedConstraintCuda3f_projectResponseContiguous(dx.size(), ((float*)dx.deviceWrite()));
     }

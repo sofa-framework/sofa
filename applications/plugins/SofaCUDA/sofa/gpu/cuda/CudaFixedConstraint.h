@@ -23,6 +23,7 @@
 
 #include "CudaTypes.h"
 #include <SofaBoundaryCondition/FixedConstraint.h>
+#include <sofa/core/topology/TopologySubsetData.h>
 
 namespace sofa::component::constraint::projective
 {
@@ -46,7 +47,7 @@ public:
     Index maxIndex;
     // vector of indices for general case
     gpu::cuda::CudaVector<int> cudaIndices;
-
+    bool isDirty = false;
 
     static void init(Main* m);
 
@@ -71,12 +72,12 @@ public:
     typedef typename Main::SetIndex SetIndex;
     typedef typename Main::SetIndexArray SetIndexArray;
 
+
     // min/max fixed indices for contiguous constraints
     Index minIndex;
     Index maxIndex;
     // vector of indices for general case
     gpu::cuda::CudaVector<int> cudaIndices;
-
 
     static void init(Main* m);
 

@@ -159,7 +159,10 @@ void FixedConstraintCuda3f_projectResponseIndexed(unsigned int size, const void*
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    {FixedConstraintCuda3t_projectResponseIndexed_kernel<float><<< grid, threads >>>(size, (const int*)indices, (CudaVec3<float>*)dx); mycudaDebugError("FixedConstraintCuda3t_projectResponseIndexed_kernel<float>");}
+    {
+        FixedConstraintCuda3t_projectResponseIndexed_kernel<float><<< grid, threads >>>(size, (const int*)indices, (CudaVec3<float>*)dx); 
+        mycudaDebugError("FixedConstraintCuda3t_projectResponseIndexed_kernel<float>");
+    }
 }
 
 void FixedConstraintCuda3f1_projectResponseIndexed(unsigned int size, const void* indices, void* dx)
