@@ -81,6 +81,15 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     MultiVecCoord newPos(&vop, xResult );
     MultiVecDeriv newVel(&vop, vResult );
 
+
+    if (f_printLog.getValue())
+    {
+        msg_info() << "EulerImplicitSolver, start x (" << newPos.size() << ") = " << newPos;
+        msg_info() << "EulerImplicitSolver, start v (" << newVel.size() << ") = " << newVel;
+        msg_info() << "EulerImplicitSolver, start f (" << f.size() << ") = " << f;
+    }
+
+
     /// inform the constraint parameters about the position and velocity id
     mop.cparams.setX(xResult);
     mop.cparams.setV(vResult);
@@ -283,10 +292,10 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         mop.projectVelocity(newVel);
         mop.propagateX(newPos);
         mop.propagateV(newVel);
-        msg_info() << "EulerImplicitSolver, final x = " << newPos;
-        msg_info() << "EulerImplicitSolver, final v = " << newVel;
+        msg_info() << "EulerImplicitSolver, final x (" << newPos.size() << ") = " << newPos;
+        msg_info() << "EulerImplicitSolver, final v (" << newVel.size() << ") = " << newVel;
         mop.computeForce(f);
-        msg_info() << "EulerImplicitSolver, final f = " << f;
+        msg_info() << "EulerImplicitSolver, final f (" << f.size() << ") = " << f;
     }
 }
 
