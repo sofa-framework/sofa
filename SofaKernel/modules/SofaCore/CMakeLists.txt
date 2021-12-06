@@ -153,8 +153,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/topology/TopologyData.inl
     ${SRC_ROOT}/topology/TopologyDataHandler.h
     ${SRC_ROOT}/topology/TopologyDataHandler.inl
-    ${SRC_ROOT}/topology/TopologySparseData.h
-    ${SRC_ROOT}/topology/TopologySparseData.inl
     ${SRC_ROOT}/topology/TopologySubsetData.h
     ${SRC_ROOT}/topology/TopologySubsetData.inl
     ${SRC_ROOT}/topology/TopologySubsetData.cpp
