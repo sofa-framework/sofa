@@ -222,10 +222,10 @@ void Node::moveChild(BaseNode::SPtr node, BaseNode::SPtr prev_parent)
     doMoveChild(node, prev_parent);
 }
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
-bool Node::addObject(BaseObject::SPtr obj, bool atEnd)
+bool Node::addObject(BaseObject::SPtr obj, sofa::core::objectmodel::TypeOfInsertion insertionLocation)
 {
     notifyBeginAddObject(this, obj);
-    bool ret = doAddObject(obj, atEnd);
+    bool ret = doAddObject(obj, insertionLocation);
     notifyEndAddObject(this, obj);
     return ret;
 }
@@ -586,10 +586,10 @@ sofa::core::objectmodel::Base* Node::findLinkDestClass(const core::objectmodel::
 }
 
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
-bool Node::doAddObject(BaseObject::SPtr sobj, bool atEnd)
+bool Node::doAddObject(BaseObject::SPtr sobj, sofa::core::objectmodel::TypeOfInsertion insertionLocation)
 {
     this->setObjectContext(sobj);
-    if(atEnd)
+    if(insertionLocation == sofa::core::objectmodel::TypeOfInsertion::AtEnd)
         object.add(sobj);
     else
         object.addFront(sobj);

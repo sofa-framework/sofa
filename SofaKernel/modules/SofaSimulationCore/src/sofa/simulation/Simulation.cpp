@@ -169,7 +169,7 @@ void Simulation::init ( Node* root )
         
         DefaultAnimationLoop::SPtr aloop = sofa::core::objectmodel::New<DefaultAnimationLoop>(root);
         aloop->setName(sofa::helper::NameDecoder::shortName(aloop->getClassName()));
-        root->addObject(aloop,false);
+        root->addObject(aloop,sofa::core::objectmodel::TypeOfInsertion::AtFront);
     }
 
     if(!root->getVisualLoop())
@@ -179,7 +179,7 @@ void Simulation::init ( Node* root )
 
         DefaultVisualManagerLoop::SPtr vloop = sofa::core::objectmodel::New<DefaultVisualManagerLoop>(root);
         vloop->setName(sofa::helper::NameDecoder::shortName(vloop->getClassName()));
-        root->addObject(vloop,false);
+        root->addObject(vloop,sofa::core::objectmodel::TypeOfInsertion::AtFront);
     }
 
     // all the objects have now been created, update the links
