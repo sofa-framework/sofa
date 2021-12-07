@@ -27,7 +27,7 @@
 #include "Sofa_test.h"
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <SofaEigen2Solver/EigenBaseSparseMatrix.h>
+#include <sofa/linearalgebra/EigenBaseSparseMatrix.h>
 #include <SofaBaseLinearSolver/SingleMatrixAccessor.h>
 #include <SceneCreator/SceneCreator.h>
 #include <SceneCreator/SceneUtils.h>
