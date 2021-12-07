@@ -160,9 +160,6 @@ public:
         Transformation frame; // Mat<2,3,Real>
         Deriv stress;
 
-        // StrainDisplacement factors
-        Real beta2, gamma2, gamma3;
-
         TriangleState() { }
 
         /// Output stream

@@ -192,12 +192,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleState(Index i, Triangl
     Coord ab = x[t[1]]-a;
     Coord ac = x[t[2]]-a;
     computeTriangleRotation(ts.frame, ab, ac);
-
-    // StrainDisplacement: 
-    ts.beta2 = ts.frame[1] * ac;// cy
-    ts.gamma2 = -ts.frame[0] * ac;// -cx
-    ts.gamma3 = ts.frame[0] * ab;// bx
-    
+  
     ts.stress.clear();
 }
 
@@ -300,15 +295,11 @@ void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalPar
         Coord ac = x[t[2]] -a;
 
         computeTriangleRotation(ts.frame, ab, ac);
-        // position in local space
-        Real bx = ts.frame[0] * ab;
-        Real cx = ts.frame[0] * ac;
-        Real cy = ts.frame[1] * ac;
 
-        // Displacement in local space (rest pos - current pos)
-        Real dbx = ti.bx - bx;
-        Real dcx = ti.cx - cx;
-        Real dcy = ti.cy - cy;
+        // Displacement in local space (rest pos - current pos), dby == 0
+        Real dbx = ti.bx - ts.frame[0] * ab;
+        Real dcx = ti.cx - ts.frame[0] * ac;
+        Real dcy = ti.cy - ts.frame[1] * ac;
                 
         /// Full StrainDisplacement matrix. 
         // | beta1  0       beta2  0        beta3  0      |
@@ -330,15 +321,15 @@ void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalPar
         // | -cx/(bx*cy)  1/bx     1/cy      0   |
 
         // StrainDisplacement: 
-        Real beta2 = ti.cy;
-        Real gamma2 = -ti.cx;
-        Real gamma3 = ti.bx;
+        // beta2 = ti.cy;
+        // gamma2 = -ti.cx;
+        // gamma3 = ti.bx;
 
         // Strain = StrainDisplacement * Displacement
         type::Vec<3,Real> strain (
-            beta2 * dbx,                     // ( beta2,   0,  0,  0)       * (dbx, dby(0), dcx, dcy)
-            gamma3 * dcy,                    // (  0, gamma2,  0, gamma3)   * (dbx, dby(0), dcx, dcy)
-            gamma2 * dbx + gamma3 * dcx);    // (gamma2, beta2, gamma3,  0) * (dbx, dby(0), dcx, dcy)
+            ti.cy * dbx,                   // ( cy,   0,  0,  0) * (dbx, dby(0), dcx, dcy)
+            ti.bx * dcy,                   // (  0, -cx,  0, bx) * (dbx, dby(0), dcx, dcy)
+            ti.bx * dcx - ti.cx * dbx);    // ( -cx, cy, bx,  0) * (dbx, dby(0), dcx, dcy)
         
         // Stress = K * Strain
         Real gammaXY = gamma * (strain[0] + strain[1]);
@@ -349,10 +340,10 @@ void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalPar
 
         stress *= ti.ss_factor;
         
-        Deriv fb = ts.frame[0] * (beta2 * stress[0] + gamma2 * stress[2])  // (beta2,   0, gamma2) * stress
-                + ts.frame[1] * (gamma2 * stress[1] + beta2 * stress[2]); // ( 0, gamma2,  beta2) * stress
-        Deriv fc = ts.frame[0] * (gamma3 * stress[2])                      // ( 0,   0,  gamma3) * stress
-                + ts.frame[1] * (gamma3 * stress[1]);                     // ( 0,  gamma3,   0) * stress
+        Deriv fb = ts.frame[0] * (ti.cy * stress[0] - ti.cx * stress[2])  // (cy,   0, -cx) * stress
+                + ts.frame[1] * (ti.cy * stress[2] - ti.cx * stress[1]);  // ( 0, -cx,  cy) * stress
+        Deriv fc = ts.frame[0] * (ti.bx * stress[2])                      // ( 0,   0,  bx) * stress
+                + ts.frame[1] * (ti.bx * stress[1]);                      // ( 0,  bx,   0) * stress
         Deriv fa = -fb-fc;
 
         f[t[0]] += fa;
@@ -361,9 +352,6 @@ void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalPar
 
         // store data for re-use
         ts.stress = stress;
-        ts.beta2 = beta2;
-        ts.gamma2 = gamma2;
-        ts.gamma3 = gamma3;
     }
 }
 
@@ -400,15 +388,12 @@ void TriangularFEMForceFieldOptim<DataTypes>::addDForce(const core::MechanicalPa
         Real dcx = ts.frame[0]*dac;
         Real dcy = ts.frame[1]*dac;
         
-        Real beta2 = ts.beta2;
-        Real gamma2 = ts.gamma2;
-        Real gamma3 = ts.gamma3;
-
         // Strain = StrainDisplacement * Displacement
         type::Vec<3, Real> dstrain(
-            beta2 * dbx,                                // ( beta2,   0,  0,  0)       * (dbx, dby, dcx, dcy)
-            gamma2 * dby + gamma3 * dcy,                // (  0, gamma2,  0, gamma3)   * (dbx, dby, dcx, dcy)
-            gamma2 * dbx + beta2 * dby + gamma3 * dcx); // (gamma2, beta2, gamma3,  0) * (dbx, dby, dcx, dcy)
+            ti.cy * dbx,                                // ( cy,   0,  0,  0) * (dbx, dby, dcx, dcy)
+            ti.bx * dcy - ti.cx * dby,                  // (  0, -cx,  0, bx) * (dbx, dby, dcx, dcy)
+            ti.bx * dcx - ti.cx * dbx + ti.cy * dby);   // ( -cx, cy, bx,  0) * (dbx, dby, dcx, dcy)
+
 
         // Stress = K * Strain
         Real gammaXY = gamma*(dstrain[0]+dstrain[1]);
@@ -418,10 +403,10 @@ void TriangularFEMForceFieldOptim<DataTypes>::addDForce(const core::MechanicalPa
             (Real)(0.5)*mu*dstrain[2]);     // (       0,        0, mu/2) * dstrain
         
         dstress *= ti.ss_factor * kFactor;
-        Deriv dfb = ts.frame[0] * (ts.beta2 * dstress[0] + ts.gamma2 * dstress[2])  // (beta2,   0, gamma2) * stress
-            + ts.frame[1] * (ts.gamma2 * dstress[1] + ts.beta2 * dstress[2]);       // ( 0, gamma2,  beta2) * stress
-        Deriv dfc = ts.frame[0] * (ts.gamma3 * dstress[2])                          // ( 0,   0,  gamma3) * stress
-            + ts.frame[1] * (ts.gamma3 * dstress[1]);                               // ( 0,  gamma3,   0) * stress
+        Deriv dfb = ts.frame[0] * (ti.cy * dstress[0] - ti.cx * dstress[2])  // (cy,   0, -cx) * stress
+            + ts.frame[1] * (ti.cy * dstress[2] - ti.cx * dstress[1]);       // ( 0, -cx,  cy) * stress
+        Deriv dfc = ts.frame[0] * (ti.bx * dstress[2])                       // ( 0,   0,  bx) * stress
+            + ts.frame[1] * (ti.bx * dstress[1]);                            // ( 0,  bx,   0) * stress
         Deriv dfa = -dfb - dfc;
 
         df[t[0]] -= dfa;
@@ -648,16 +633,16 @@ typename TriangularFEMForceFieldOptim<DataTypes>::MaterialStiffness TriangularFE
 template<class DataTypes>
 sofa::type::Vec3 TriangularFEMForceFieldOptim<DataTypes>::getStrainDisplacementFactors(Index elemId)
 {
-    sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleState > > triState = d_triangleState;
-    if (elemId < 0 && elemId >= triState.size())
+    sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = d_triangleInfo;
+    if (elemId < 0 && elemId >= triInfo.size())
     {
         msg_warning() << "Method getStrainDisplacementFactors called with element index: "
-            << elemId << " which is out of bounds: [0, " << triState.size() << "]. Returning default empty displacements.";
+            << elemId << " which is out of bounds: [0, " << triInfo.size() << "]. Returning default empty displacements.";
         return type::Vec< 3, Real>();
     }
 
-    const TriangleState& ts = triState[elemId];
-    return type::Vec< 3, Real>(ts.beta2, ts.gamma2, ts.gamma3);
+    const TriangleInfo& ti = triInfo[elemId];
+    return type::Vec< 3, Real>(ti.cy, -ti.cx, ti.bx);
 }
 
 template<class DataTypes>
