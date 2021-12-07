@@ -4,5 +4,5 @@
 
 namespace sofa::component::odesolver::backward
 {
-	constexpr char* MODULE_NAME = "@PROJECT_NAME@";
+    SOFACOMPONENTODESOLVERBACKWARD_API void init();
 } // namespace sofa::component::odesolver::backward

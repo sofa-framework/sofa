@@ -3,5 +3,5 @@
 
 namespace sofa::component::odesolver::forward
 {
-	constexpr char* MODULE_NAME = "@PROJECT_NAME@";
+    SOFACOMPONENTODESOLVERFORWARD_API void init();
 } // namespace sofa::component::odesolver::forward

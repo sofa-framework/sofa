@@ -8,3 +8,8 @@
 #else
 #  define SOFACOMPONENTODESOLVERBACKWARD_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
+
+namespace sofa::component::odesolver::backward
+{
+	constexpr char* MODULE_NAME = "@PROJECT_NAME@";
+} // namespace sofa::component::odesolver::backward

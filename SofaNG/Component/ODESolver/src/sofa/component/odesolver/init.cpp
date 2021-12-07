@@ -1,4 +1,4 @@
-#include <sofa/component/odesolver/config.h>
+#include <sofa/component/odesolver/init.h>
 
 namespace sofa::component::odesolver
 {
@@ -20,6 +20,11 @@ void initExternalModule()
 const char* getModuleName()
 {
 	return MODULE_NAME;
+}
+
+void init()
+{
+	initExternalModule();
 }
 
 } // namespace sofa::component::odesolver
