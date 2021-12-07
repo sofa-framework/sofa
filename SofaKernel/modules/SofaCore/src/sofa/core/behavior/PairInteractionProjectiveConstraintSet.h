@@ -19,20 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_PAIRINTERACTIONPROJECTIVECONSTRAINTSET_H
-#define SOFA_CORE_BEHAVIOR_PAIRINTERACTIONPROJECTIVECONSTRAINTSET_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <sofa/core/behavior/BaseInteractionProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
-namespace sofa
-{
+#include <sofa/core/behavior/PairStateAccessor.h>
 
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /**
@@ -42,10 +37,10 @@ namespace behavior
  *  between a pair of bodies using a given type of DOFs.
  */
 template<class TDataTypes>
-class PairInteractionProjectiveConstraintSet : public BaseInteractionProjectiveConstraintSet
+class PairInteractionProjectiveConstraintSet : public BaseInteractionProjectiveConstraintSet, public PairStateAccessor<TDataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(PairInteractionProjectiveConstraintSet,TDataTypes), BaseInteractionProjectiveConstraintSet);
+    SOFA_CLASS2(SOFA_TEMPLATE(PairInteractionProjectiveConstraintSet, TDataTypes), BaseInteractionProjectiveConstraintSet, SOFA_TEMPLATE2(PairStateAccessor, TDataTypes, TDataTypes));
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -57,21 +52,12 @@ public:
     typedef objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef typename DataTypes::Real Real;
 protected:
-    PairInteractionProjectiveConstraintSet(MechanicalState<DataTypes> *mm1 = nullptr, MechanicalState<DataTypes> *mm2 = nullptr);
+    explicit PairInteractionProjectiveConstraintSet(MechanicalState<DataTypes> *mm1 = nullptr, MechanicalState<DataTypes> *mm2 = nullptr);
 
     ~PairInteractionProjectiveConstraintSet() override;
 public:
     Data<SReal> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
     virtual bool isActive() const; ///< if false, the constraint does nothing
-
-    void init() override;
-
-    /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes>* getMState1() { return mstate1.get(); }
-    BaseMechanicalState* getMechModel1() override { return mstate1.get(); }
-    /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes>* getMState2() { return mstate2.get(); }
-    BaseMechanicalState* getMechModel2() override { return mstate2.get(); }
 
     // to get rid of warnings
     using BaseInteractionProjectiveConstraintSet::projectPosition;
@@ -184,9 +170,8 @@ public:
         return obj;
     }
 
-protected:
-    SingleLink<PairInteractionProjectiveConstraintSet<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;
-    SingleLink<PairInteractionProjectiveConstraintSet<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
+    using Inherit2::getMechModel1;
+    using Inherit2::getMechModel2;
 };
 
 #if  !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONPROJECTIVECONSTRAINTSET_CPP)
@@ -199,10 +184,4 @@ extern template class SOFA_CORE_API PairInteractionProjectiveConstraintSet<defau
 
 #endif
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

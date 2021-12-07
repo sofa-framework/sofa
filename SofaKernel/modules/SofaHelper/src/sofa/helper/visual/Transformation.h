@@ -33,7 +33,6 @@ public:
     SReal			rotation[4][4];
     SReal			objectCenter[3];
 
-public:
     Transformation();
     virtual ~Transformation();
     Transformation(const Transformation & other);

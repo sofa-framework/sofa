@@ -24,27 +24,17 @@
 
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseTopology/SparseGridTopology.h>
-#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
-#include <SofaBaseTopology/QuadSetTopologyContainer.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.h>
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperRegularGridTopology.h>
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperSparseGridTopology.h>
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperEdgeSetTopology.h>
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperTriangleSetTopology.h>
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperQuadSetTopology.h>
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
-#include<SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperRegularGridTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperSparseGridTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperEdgeSetTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTriangleSetTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperQuadSetTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
+#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h>
 
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -60,7 +50,7 @@ using sofa::type::Matrix3;
 using sofa::type::Mat3x3d;
 using sofa::type::Vec3d;
 using sofa::core::objectmodel::ComponentState;
-using sofa::component::linearsolver::EigenSparseMatrix;
+using sofa::linearalgebra::EigenSparseMatrix;
 
 // 10/18 E.Coevoet: what's the difference between edge/line, tetra/tetrahedron, hexa/hexahedron?
 typedef typename sofa::core::topology::BaseMeshTopology::Line Edge;
@@ -167,7 +157,7 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ()
     using EdgeSetMapper = BarycentricMapperEdgeSetTopology<InDataTypes, OutDataTypes>;
 
     auto input_topology_container = d_input_topology.get();
-    auto output_topology_container = dynamic_cast<PointSetTopologyContainer*> (d_output_topology.get());
+    auto output_topology_container = d_output_topology.get();
 
     if (!input_topology_container)
         return;
@@ -198,44 +188,44 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ()
         goto end;
     }
 
-    // Hexahedron Topology
-    if (is_a<HexahedronSetTopologyContainer>(input_topology_container)) {
-        msg_info() << "Creating HexahedronSetMapper";
-        d_mapper = sofa::core::objectmodel::New<HexahedronSetMapper>(
-            dynamic_cast<HexahedronSetTopologyContainer*>(input_topology_container), output_topology_container);
-        goto end;
-    }
+    //TopologyContainer topologies
+    if(is_a<sofa::core::topology::TopologyContainer>(input_topology_container))
+    {
+        auto topoContainer = dynamic_cast<sofa::core::topology::TopologyContainer*>(input_topology_container);
+        // Hexahedron Topology
+        if (input_topology_container->getNbHexahedra() > 0) {
+            msg_info() << "Creating HexahedronSetMapper";
+            d_mapper = sofa::core::objectmodel::New<HexahedronSetMapper>(topoContainer, output_topology_container);
+            goto end;
+        }
 
-    // Tetrahedron Topology
-    if (is_a<TetrahedronSetTopologyContainer>(input_topology_container)) {
-        msg_info() << "Creating TetrahedronSetMapper";
-        d_mapper = sofa::core::objectmodel::New<TetrahedronSetMapper >(
-            dynamic_cast<TetrahedronSetTopologyContainer*>(input_topology_container), output_topology_container);
-        goto end;
-    }
+        // Tetrahedron Topology
+        if (input_topology_container->getNbTetrahedra() > 0) {
+            msg_info() << "Creating TetrahedronSetMapper";
+            d_mapper = sofa::core::objectmodel::New<TetrahedronSetMapper >(topoContainer, output_topology_container);
+            goto end;
+        }
 
-    // Quad Topology
-    if (is_a<QuadSetTopologyContainer>(input_topology_container)) {
-        msg_info() << "Creating QuadSetMapper";
-        d_mapper = sofa::core::objectmodel::New<QuadSetMapper >(
-            dynamic_cast<QuadSetTopologyContainer*>(input_topology_container), output_topology_container);
-        goto end;
-    }
+        // Quad Topology
+        if (input_topology_container->getNbQuads() > 0) {
+            msg_info() << "Creating QuadSetMapper";
+            d_mapper = sofa::core::objectmodel::New<QuadSetMapper >(topoContainer, output_topology_container);
+            goto end;
+        }
 
-    // Triangle Topology
-    if (is_a<TriangleSetTopologyContainer>(input_topology_container)) {
-        msg_info() << "Creating TriangleSetMapper";
-        d_mapper = sofa::core::objectmodel::New<TriangleSetMapper >(
-            dynamic_cast<TriangleSetTopologyContainer*>(input_topology_container), output_topology_container);
-        goto end;
-    }
+        // Triangle Topology
+        if (input_topology_container->getNbTriangles() > 0) {
+            msg_info() << "Creating TriangleSetMapper";
+            d_mapper = sofa::core::objectmodel::New<TriangleSetMapper >(topoContainer, output_topology_container);
+            goto end;
+        }
 
-    // Edge Topology
-    if (is_a<EdgeSetTopologyContainer>(input_topology_container)) {
-        msg_info() << "Creating EdgeSetMapper";
-        d_mapper = sofa::core::objectmodel::New<EdgeSetMapper >(
-            dynamic_cast<EdgeSetTopologyContainer*>(input_topology_container), output_topology_container);
-        goto end;
+        // Edge Topology
+        if (input_topology_container->getNbEdges() > 0) {
+            msg_info() << "Creating EdgeSetMapper";
+            d_mapper = sofa::core::objectmodel::New<EdgeSetMapper >(topoContainer, output_topology_container);
+            goto end;
+        }
     }
 
     // Generic Mesh Topology

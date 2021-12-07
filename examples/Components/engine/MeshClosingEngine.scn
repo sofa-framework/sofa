@@ -5,7 +5,7 @@
     <RequiredPlugin pluginName='SofaLoader'/>
 
     <BackgroundSetting color="1 1 1" />
-    <MeshObjLoader name="mesh" filename="mesh/c_open.obj" triangulate="0"/>
+    <MeshOBJLoader name="mesh" filename="mesh/c_open.obj" triangulate="0"/>
     <MeshClosingEngine name="closer" inputPosition="@mesh.position" inputTriangles="@mesh.triangles" inputQuads="@mesh.quads"/>
 
     <Node name="plain visu of closing area (red)" >

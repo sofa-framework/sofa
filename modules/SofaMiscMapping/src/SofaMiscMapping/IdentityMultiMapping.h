@@ -24,7 +24,7 @@
 #include <SofaMiscMapping/config.h>
 
 #include <sofa/core/MultiMapping.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 
 namespace sofa::component::mapping
 {
@@ -81,8 +81,7 @@ protected :
 
     type::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
-    typedef linearsolver::EigenSparseMatrix<TIn,TOut> EigenMatrix;
-//    size_t previousMaskHash; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence
+    typedef linearalgebra::EigenSparseMatrix<TIn,TOut> EigenMatrix;
 
 
 };

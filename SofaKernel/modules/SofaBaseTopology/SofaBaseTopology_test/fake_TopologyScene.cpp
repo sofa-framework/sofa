@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #include <sofa/helper/system/FileRepository.h>
-#include <SofaLoader/MeshObjLoader.h>
+#include <SofaLoader/MeshOBJLoader.h>
 #include <SofaBase/initSofaBase.h>
 #include <sofa/helper/Utils.h>
 #include "fake_TopologyScene.h"
@@ -49,7 +49,7 @@ bool fake_TopologyScene::loadMeshFile()
     createObject(m_root, "RequiredPlugin", {
         { "name", "SofaLoader" } });
 
-    std::string loaderType = "MeshObjLoader";
+    std::string loaderType = "MeshOBJLoader";
     if (m_topoType == TopologyElementType::TETRAHEDRON || m_topoType == TopologyElementType::HEXAHEDRON)
         loaderType = "MeshGmshLoader";
 

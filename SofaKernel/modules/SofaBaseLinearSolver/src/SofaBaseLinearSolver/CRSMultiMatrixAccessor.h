@@ -146,7 +146,7 @@ inline bool opAddMulJTM_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMat
         MBloc Mblocbuffer;
 
 
-        for (int JBRowIndex = 0; JBRowIndex < Jmatrix->nBlocRow; JBRowIndex++)
+        for (int JBRowIndex = 0; JBRowIndex < Jmatrix->nBlockRow; JBRowIndex++)
         {
             //through X, must take each row  (but test can be added)
             for (JBColConstIterator JBColIter = Jmatrix->bRowBegin(JBRowIndex); JBColIter < Jmatrix->bRowEnd(JBRowIndex); JBColIter++)
@@ -190,7 +190,7 @@ inline bool opAddMulJTM_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMat
         JBloc Jblocbuffer;
         MBloc Mblocbuffer;
 
-        for (int JBRowIndex = 0; JBRowIndex < Jmatrix->nBlocRow; JBRowIndex++)
+        for (int JBRowIndex = 0; JBRowIndex < Jmatrix->nBlockRow; JBRowIndex++)
         {
             //through X, must take each row  (but test can be added)
             for (JBColConstIterator JBColIter = Jmatrix->bRowBegin(JBRowIndex); JBColIter < Jmatrix->bRowEnd(JBRowIndex); JBColIter++)
@@ -349,7 +349,7 @@ inline bool opAddMulMJ_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMatr
         JBloc Jblocbuffer;
         MBloc Mblocbuffer;
 
-        for (int MBRowIndex = 0; MBRowIndex < Mmatrix->nBlocRow; MBRowIndex++)
+        for (int MBRowIndex = 0; MBRowIndex < Mmatrix->nBlockRow; MBRowIndex++)
         {
             //through X, must take each row  (but test can be added)
             for (MBColConstIterator MBColIter = Mmatrix->bRowBegin(MBRowIndex); MBColIter < Mmatrix->bRowEnd(MBRowIndex); MBColIter++)
@@ -393,7 +393,7 @@ inline bool opAddMulMJ_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMatr
         JBloc Jblocbuffer;
         MBloc Mblocbuffer;
 
-        for (int MBRowIndex = 0; MBRowIndex < Mmatrix->nBlocRow; MBRowIndex++)
+        for (int MBRowIndex = 0; MBRowIndex < Mmatrix->nBlockRow; MBRowIndex++)
         {
             //through X, must take each row  (but test can be added)
             for (MBColConstIterator MBColIter = Mmatrix->bRowBegin(MBRowIndex); MBColIter < Mmatrix->bRowEnd(MBRowIndex); MBColIter++)

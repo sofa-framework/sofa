@@ -22,13 +22,7 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 LinearSolver::LinearSolver()
@@ -52,9 +46,5 @@ bool BaseLinearSolver::removeInNode( objectmodel::BaseNode* node )
     return true;
 }
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::behavior
 

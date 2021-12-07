@@ -22,13 +22,7 @@
 #define SOFA_CORE_BEHAVIOR_PAIRINTERACTIONFORCEFIELD_CPP
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 using namespace sofa::defaulttype;
@@ -40,8 +34,4 @@ template class SOFA_CORE_API PairInteractionForceField<Rigid3Types>;
 template class SOFA_CORE_API PairInteractionForceField<Rigid2Types>;
 
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::behavior

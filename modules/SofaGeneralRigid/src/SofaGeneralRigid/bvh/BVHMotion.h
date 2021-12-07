@@ -36,10 +36,7 @@ public:
         frameTime = 0.0;
     };
 
-    virtual ~BVHMotion()
-    {
-        delete[] &frames;
-    };
+    virtual ~BVHMotion() = default;
 
     void init(double _fTime, unsigned int _fCount, unsigned int _fSize);
 

@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_BASEVECTOROPERATION_H
-#define SOFA_CORE_BEHAVIOR_BASEVECTOROPERATION_H
+#pragma once
 
 
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 class BaseVectorOperations
@@ -81,11 +74,5 @@ public:
 
 };
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif //SOFA_CORE_BEHAVIOR_BASEVECTOROPERATION_H
+} // namespace sofa::core::behavior
 

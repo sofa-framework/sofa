@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_LINEARSOLVER_SPARSELUSOLVER_CPP
 #include <sofa/core/ObjectFactory.h>
 #include <SofaSparseSolver/SparseLUSolver.inl>
 
@@ -28,6 +29,8 @@ namespace sofa::component::linearsolver
 int SparseLUSolverClass = core::RegisterObject("Direct linear solver based on Sparse LU factorization, implemented with the CSPARSE library")
         .add< SparseLUSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >()
         ;
+
+template class SOFA_SOFASPARSESOLVER_API SparseLUSolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
 
 } // namespace sofa::component::linearsolver
 

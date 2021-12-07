@@ -33,7 +33,7 @@ namespace sofa::component::linearsolver
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
 CGLinearSolver<TMatrix,TVector>::CGLinearSolver()
-    : d_maxIter( initData(&d_maxIter,(unsigned)25,"iterations","Maximum number of iterations of the Conjugate Gradient solution") )
+    : d_maxIter( initData(&d_maxIter, 25u,"iterations","Maximum number of iterations of the Conjugate Gradient solution") )
     , d_tolerance( initData(&d_tolerance,(SReal)1e-5,"tolerance","Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)") )
     , d_smallDenominatorThreshold( initData(&d_smallDenominatorThreshold,(SReal)1e-5,"threshold","Minimum value of the denominator (pT A p)^ in the conjugate Gradient solution") )
     , d_warmStart( initData(&d_warmStart,false,"warmStart","Use previous solution as initial solution") )
@@ -49,6 +49,8 @@ CGLinearSolver<TMatrix,TVector>::CGLinearSolver()
 template<class TMatrix, class TVector>
 void CGLinearSolver<TMatrix,TVector>::init()
 {
+    Inherit1::init();
+
     if(d_tolerance.getValue() < 0.0)
     {
         msg_warning() << "'tolerance' must be a positive value" << msgendl

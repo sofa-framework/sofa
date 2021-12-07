@@ -26,13 +26,7 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/fwd.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace topology
+namespace sofa::core::topology
 {
 
 /** A class that will interact on a topological Data */
@@ -46,7 +40,6 @@ public:
 
     void update() override;
 
-public:
     typedef std::function<void(const core::topology::TopologyChange*)> TopologyChangeCallback;
 
     virtual void ApplyTopologyChanges(const std::list< const core::topology::TopologyChange*>& _topologyChangeEvents, const Size _dataSize);
@@ -185,8 +178,4 @@ protected:
     std::map < core::topology::TopologyChangeType, TopologyChangeCallback> m_callbackMap;
 };
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::core::topology

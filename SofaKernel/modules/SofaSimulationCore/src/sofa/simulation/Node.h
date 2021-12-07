@@ -577,7 +577,6 @@ public:
     /// a MechanicalMapping is NOT in the Mapping Sequence
     /// a Mass is in the FF Sequence
     /// a MeshTopology is in the topology Sequence
-public:
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::behavior::BaseAnimationLoop, AnimationLoop, animationManager )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::visual::VisualLoop, VisualLoop, visualLoop )
     NODE_DECLARE_SEQUENCE_ACCESSOR( sofa::core::BehaviorModel, BehaviorModel, behaviorModel )

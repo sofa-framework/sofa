@@ -33,13 +33,14 @@
 namespace sofa::linearalgebra
 {
 
-template<typename TBloc, typename TVecBloc = type::vector<TBloc>, typename TVecIndex = type::vector<sofa::Index> >
+template<typename TBlock, typename TVecBlock = type::vector<TBlock>, typename TVecIndex = type::vector<sofa::Index> >
 class CompressedRowSparseMatrix : public linearalgebra::BaseMatrix
 {
 public:
-    typedef CompressedRowSparseMatrix<TBloc,TVecBloc,TVecIndex> Matrix;
-    typedef TBloc Bloc;
-    typedef matrix_bloc_traits<Bloc, Matrix::Index> traits;
+    typedef CompressedRowSparseMatrix<TBlock,TVecBlock,TVecIndex> Matrix;
+    typedef TBlock Block;
+    using Bloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = Block;
+    typedef matrix_bloc_traits<Block, Matrix::Index> traits;
     typedef typename traits::Real Real;
     enum { NL = traits::NL };  ///< Number of rows of a block
     enum { NC = traits::NC };  ///< Number of columns of a block
@@ -49,41 +50,44 @@ public:
     enum { category = MATRIX_SPARSE };
     enum { operand = 1 };
 
-    typedef TVecBloc VecBloc;
+    typedef TVecBlock VecBlock;
+    using VecBloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = VecBlock;
     typedef TVecIndex VecIndex;
-    struct IndexedBloc
+    struct IndexedBlock
     {
         Index l,c;
-        Bloc value;
-        IndexedBloc() {}
-        IndexedBloc(Index i, Index j) : l(i), c(j) {}
-        IndexedBloc(Index i, Index j, const Bloc& v) : l(i), c(j), value(v) {}
-        bool operator < (const IndexedBloc& b) const
+        Block value;
+        IndexedBlock() {}
+        IndexedBlock(Index i, Index j) : l(i), c(j) {}
+        IndexedBlock(Index i, Index j, const Block& v) : l(i), c(j), value(v) {}
+        bool operator < (const IndexedBlock& b) const
         {
             return (l < b.l) || (l == b.l && c < b.c);
         }
-        bool operator <= (const IndexedBloc& b) const
+        bool operator <= (const IndexedBlock& b) const
         {
             return (l < b.l) || (l == b.l && c <= b.c);
         }
-        bool operator > (const IndexedBloc& b) const
+        bool operator > (const IndexedBlock& b) const
         {
             return (l > b.l) || (l == b.l && c > b.c);
         }
-        bool operator >= (const IndexedBloc& b) const
+        bool operator >= (const IndexedBlock& b) const
         {
             return (l > b.l) || (l == b.l && c >= b.c);
         }
-        bool operator == (const IndexedBloc& b) const
+        bool operator == (const IndexedBlock& b) const
         {
             return (l == b.l) && (c == b.c);
         }
-        bool operator != (const IndexedBloc& b) const
+        bool operator != (const IndexedBlock& b) const
         {
             return (l != b.l) || (c != b.c);
         }
     };
-    typedef type::vector<IndexedBloc> VecIndexedBloc;
+    using IndexedBloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = IndexedBlock;
+    typedef type::vector<IndexedBlock> VecIndexedBlock;
+    using VecIndexedBloc SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() = VecIndexedBlock;
 
     static void split_row_index(Index& index, Index& modulo) { bloc_index_func<NL, Index>::split(index, modulo); }
     static void split_col_index(Index& index, Index& modulo) { bloc_index_func<NC, Index>::split(index, modulo); }
@@ -100,10 +104,10 @@ public:
         void setEnd(Index i) { this->second = i; }
         bool empty() const { return begin() == end(); }
         Index size() const { return end()-begin(); }
-        typename VecBloc::iterator begin(VecBloc& b) const { return b.begin() + begin(); }
-        typename VecBloc::iterator end  (VecBloc& b) const { return b.end  () + end  (); }
-        typename VecBloc::const_iterator begin(const VecBloc& b) const { return b.begin() + begin(); }
-        typename VecBloc::const_iterator end  (const VecBloc& b) const { return b.end  () + end  (); }
+        typename VecBlock::iterator begin(VecBlock& b) const { return b.begin() + begin(); }
+        typename VecBlock::iterator end  (VecBlock& b) const { return b.end  () + end  (); }
+        typename VecBlock::const_iterator begin(const VecBlock& b) const { return b.begin() + begin(); }
+        typename VecBlock::const_iterator end  (const VecBlock& b) const { return b.end  () + end  (); }
         typename VecIndex::iterator begin(VecIndex& b) const { return b.begin() + begin(); }
         typename VecIndex::iterator end  (VecIndex& b) const { return b.end  () + end  (); }
         typename VecIndex::const_iterator begin(const VecIndex& b) const { return b.begin() + begin(); }
@@ -133,35 +137,34 @@ public:
         return sortedFind(v, Range(0,(Index)v.size()), val, result);
     }
 
-public :
     // size
     Index nRow,nCol;         ///< Mathematical size of the matrix, in scalars
-    Index nBlocRow,nBlocCol; ///< Mathematical size of the matrix, in blocks.
+    Index nBlockRow,nBlockCol; ///< Mathematical size of the matrix, in blocks.
 
     // compressed sparse data structure
     VecIndex rowIndex;   ///< indices of non-empty block rows
     VecIndex rowBegin;   ///< column indices of non-empty blocks in each row. The column indices of the non-empty block within the i-th non-empty row are all the colsIndex[j],  j  in [rowBegin[i],rowBegin[i+1])
     VecIndex colsIndex;  ///< column indices of all the non-empty blocks, sorted by increasing row index and column index
-    VecBloc  colsValue;  ///< values of the non-empty blocks, in the same order as in colsIndex
+    VecBlock  colsValue;  ///< values of the non-empty blocks, in the same order as in colsIndex
 
     // additional storage to make block insertion more efficient
-    VecIndexedBloc btemp; ///< unsorted blocks and their indices
+    VecIndexedBlock btemp; ///< unsorted blocks and their indices
     bool compressed;      ///< true if the additional storage is empty or has been transfered to the compressed data structure
 
     // Temporary vectors used during compression
     VecIndex oldRowIndex;
     VecIndex oldRowBegin;
     VecIndex oldColsIndex;
-    VecBloc  oldColsValue;
-public:
+    VecBlock  oldColsValue;
+
     CompressedRowSparseMatrix()
-        : nRow(0), nCol(0), nBlocRow(0), nBlocCol(0), compressed(true)
+        : nRow(0), nCol(0), nBlockRow(0), nBlockCol(0), compressed(true)
     {
     }
 
     CompressedRowSparseMatrix(Index nbRow, Index nbCol)
         : nRow(nbRow), nCol(nbCol),
-          nBlocRow((nbRow + NL-1) / NL), nBlocCol((nbCol + NC-1) / NC),
+          nBlockRow((nbRow + NL-1) / NL), nBlockCol((nbCol + NC-1) / NC),
           compressed(true)
     {
     }
@@ -171,27 +174,27 @@ public:
         this->clear();
     }
 
-    /// \returns the number of row blocs
+    /// \returns the number of row blocks
     Index rowBSize() const
     {
-        return nBlocRow;
+        return nBlockRow;
     }
 
-    /// \returns the number of col blocs
+    /// \returns the number of col blocks
     Index colBSize() const
     {
-        return nBlocCol;
+        return nBlockCol;
     }
 
     const VecIndex& getRowIndex() const { return rowIndex; }
     const VecIndex& getRowBegin() const { return rowBegin; }
     Range getRowRange(Index id) const { return Range(rowBegin[id], rowBegin[id+1]); }
     const VecIndex& getColsIndex() const { return colsIndex; }
-    const VecBloc& getColsValue() const { return colsValue; }
+    const VecBlock& getColsValue() const { return colsValue; }
 
     void resizeBloc(Index nbBRow, Index nbBCol)
     {
-        if (nBlocRow == nbBRow && nBlocRow == nbBCol)
+        if (nBlockRow == nbBRow && nBlockRow == nbBCol)
         {
             // just clear the matrix
             for (Index i=0; i < (Index)colsValue.size(); ++i)
@@ -206,8 +209,8 @@ public:
 
             nRow = nbBRow*NL;
             nCol = nbBCol*NC;
-            nBlocRow = nbBRow;
-            nBlocCol = nbBCol;
+            nBlockRow = nbBRow;
+            nBlockCol = nbBCol;
             rowIndex.clear();
             rowBegin.clear();
             colsIndex.clear();
@@ -223,10 +226,10 @@ public:
         if (!btemp.empty())
         {
             dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
-                    << "(" << rowSize() << "," << colSize() << "): sort " << btemp.size() << " temp blocs." ;
+                    << "(" << rowSize() << "," << colSize() << "): sort " << btemp.size() << " temp blocks." ;
             std::sort(btemp.begin(),btemp.end());
             dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
-                    << "(" << rowSize() << "," << colSize() << "): blocs sorted." ;
+                    << "(" << rowSize() << "," << colSize() << "): blocks sorted." ;
         }
         oldRowIndex.swap(rowIndex);
         oldRowBegin.swap(rowBegin);
@@ -236,17 +239,17 @@ public:
         rowBegin.clear();
         colsIndex.clear();
         colsValue.clear();
-        rowIndex.reserve(oldRowIndex.empty() ? nBlocRow : oldRowIndex.size());
-        rowBegin.reserve((oldRowIndex.empty() ? nBlocRow : oldRowIndex.size())+1);
+        rowIndex.reserve(oldRowIndex.empty() ? nBlockRow : oldRowIndex.size());
+        rowBegin.reserve((oldRowIndex.empty() ? nBlockRow : oldRowIndex.size())+1);
         colsIndex.reserve(oldColsIndex.size() + btemp.size());
         colsValue.reserve(oldColsIndex.size() + btemp.size());
         const Index oldNRow = (Index)oldRowIndex.size();
-        const Index EndRow = nBlocRow;
-        const Index EndCol = nBlocCol;
+        const Index EndRow = nBlockRow;
+        const Index EndCol = nBlockCol;
         //const Index EndVal = oldColsIndex.size();
         Index inRowId = 0;
         Index inRowIndex = (inRowId < oldNRow ) ? oldRowIndex[inRowId] : EndRow;
-        typename VecIndexedBloc::const_iterator itbtemp = btemp.begin(), endbtemp = btemp.end();
+        typename VecIndexedBlock::const_iterator itbtemp = btemp.begin(), endbtemp = btemp.end();
         Index bRowIndex = (itbtemp != endbtemp) ? itbtemp->l : EndRow;
         Index outValId = 0;
         while (inRowIndex < EndRow || bRowIndex < EndRow)
@@ -283,7 +286,7 @@ public:
                     colsIndex.push_back(bColIndex);
                     colsValue.push_back(itbtemp->value);
                     ++itbtemp;
-                    Bloc& value = colsValue.back();
+                    Block& value = colsValue.back();
                     while (itbtemp != endbtemp && itbtemp->c == bColIndex && itbtemp->l == bRowIndex)
                     {
                         value += itbtemp->value;
@@ -319,7 +322,7 @@ public:
                         colsIndex.push_back(bColIndex);
                         colsValue.push_back(itbtemp->value);
                         ++itbtemp;
-                        Bloc& value = colsValue.back();
+                        Block& value = colsValue.back();
                         while (itbtemp != endbtemp && itbtemp->c == bColIndex && itbtemp->l == bRowIndex)
                         {
                             value += itbtemp->value;
@@ -334,7 +337,7 @@ public:
                         colsValue.push_back(oldColsValue[inRow.begin()]);
                         ++inRow;
                         inColIndex = (!inRow.empty()) ? oldColsIndex[inRow.begin()] : EndCol;
-                        Bloc& value = colsValue.back();
+                        Block& value = colsValue.back();
                         while (itbtemp != endbtemp && itbtemp->c == bColIndex && itbtemp->l == bRowIndex)
                         {
                             value += itbtemp->value;
@@ -359,8 +362,8 @@ public:
         Index t;
         t = nRow; nRow = m.nRow; m.nRow = t;
         t = nCol; nCol = m.nCol; m.nCol = t;
-        t = nBlocRow; nBlocRow = m.nBlocRow; m.nBlocRow = t;
-        t = nBlocCol; nBlocCol = m.nBlocCol; m.nBlocCol = t;
+        t = nBlockRow; nBlockRow = m.nBlockRow; m.nBlockRow = t;
+        t = nBlockCol; nBlockCol = m.nBlockCol; m.nBlockCol = t;
         bool b;
         b = compressed; compressed = m.compressed; m.compressed = b;
         rowIndex.swap(m.rowIndex);
@@ -376,7 +379,7 @@ public:
     void fullRows()
     {
         compress();
-        if (rowIndex.size() >= nRow) return;
+        if ((decltype(nRow))rowIndex.size() >= nRow) return;
         oldRowIndex.swap(rowIndex);
         oldRowBegin.swap(rowBegin);
         rowIndex.resize(nRow);
@@ -384,10 +387,10 @@ public:
         for (Index i=0; i<nRow; ++i) rowIndex[i] = i;
         Index j = 0;
         Index b = 0;
-        for (Index i=0; i<oldRowIndex.size(); ++i)
+        for (Index i=0; i<(decltype(i))oldRowIndex.size(); ++i)
         {
             b = oldRowBegin[i];
-            for (; j<=oldRowIndex[i]; ++j)
+            for (; j<=(decltype(j))oldRowIndex[i]; ++j)
                 rowBegin[j] = b;
         }
         b = oldRowBegin[oldRowBegin.size()-1];
@@ -400,15 +403,15 @@ public:
     {
         compress();
         Index ndiag = 0;
-        for (Index r=0; r<rowIndex.size(); ++r)
+        for (Index r=0; r<(decltype(r))rowIndex.size(); ++r)
         {
             Index i = rowIndex[r];
             Index b = rowBegin[r];
             Index e = rowBegin[r+1];
             Index t = b;
-            while (b < e && colsIndex[t] != i)
+            while (b < e && (decltype(i))colsIndex[t] != i)
             {
-                if (colsIndex[t] < i)
+                if ((decltype(i))colsIndex[t] < i)
                     b = t+1;
                 else
                     e = t;
@@ -429,9 +432,9 @@ public:
         Index nv = 0;
         for (Index i=0; i<nRow; ++i) rowIndex[i] = i;
         Index j = 0;
-        for (Index i=0; i<oldRowIndex.size(); ++i)
+        for (Index i=0; i<(decltype(i))oldRowIndex.size(); ++i)
         {
-            for (; j<oldRowIndex[i]; ++j)
+            for (; j<(decltype(j))oldRowIndex[i]; ++j)
             {
                 rowBegin[j] = nv;
                 colsIndex[nv] = j;
@@ -441,13 +444,13 @@ public:
             rowBegin[j] = nv;
             Index b = oldRowBegin[i];
             Index e = oldRowBegin[i+1];
-            for (; b<e && oldColsIndex[b] < j; ++b)
+            for (; b<e && (decltype(j))oldColsIndex[b] < j; ++b)
             {
                 colsIndex[nv] = oldColsIndex[b];
                 colsValue[nv] = oldColsValue[b];
                 ++nv;
             }
-            if (b>=e || oldColsIndex[b] > j)
+            if (b>=e || (decltype(j))oldColsIndex[b] > j)
             {
                 colsIndex[nv] = j;
                 traits::clear(colsValue[nv]);
@@ -478,25 +481,25 @@ public:
     /// to call again with -1 as base to undo it.
     void shiftIndices(Index base)
     {
-        for (Index i=0; i<rowIndex.size(); ++i)
+        for (Index i=0; i<(decltype(i))rowIndex.size(); ++i)
             rowIndex[i] += base;
-        for (Index i=0; i<rowBegin.size(); ++i)
+        for (Index i=0; i<(decltype(i))rowBegin.size(); ++i)
             rowBegin[i] += base;
-        for (Index i=0; i<colsIndex.size(); ++i)
+        for (Index i=0; i<(decltype(i))colsIndex.size(); ++i)
             colsIndex[i] += base;
     }
 
     // filtering-out part of a matrix
-    typedef bool filter_fn    (Index   i  , Index   j  , Bloc& val, const Bloc&   ref  );
-    static bool       nonzeros(Index /*i*/, Index /*j*/, Bloc& val, const Bloc& /*ref*/) { return (!traits::empty(val)); }
-    static bool       nonsmall(Index /*i*/, Index /*j*/, Bloc& val, const Bloc&   ref  )
+    typedef bool filter_fn    (Index   i  , Index   j  , Block& val, const Block&   ref  );
+    static bool       nonzeros(Index /*i*/, Index /*j*/, Block& val, const Block& /*ref*/) { return (!traits::empty(val)); }
+    static bool       nonsmall(Index /*i*/, Index /*j*/, Block& val, const Block&   ref  )
     {
         for (Index bi = 0; bi < NL; ++bi)
             for (Index bj = 0; bj < NC; ++bj)
                 if (helper::rabs(traits::v(val, bi, bj)) >= traits::v(ref, bi, bj)) return true;
         return false;
     }
-    static bool upper         (Index   i  , Index   j  , Bloc& val, const Bloc& /*ref*/)
+    static bool upper         (Index   i  , Index   j  , Block& val, const Block& /*ref*/)
     {
         if (NL>1 && i*NL == j*NC)
         {
@@ -506,7 +509,7 @@ public:
         }
         return i*NL <= j*NC;
     }
-    static bool lower         (Index   i  , Index   j  , Bloc& val, const Bloc& /*ref*/)
+    static bool lower         (Index   i  , Index   j  , Block& val, const Block& /*ref*/)
     {
         if (NL>1 && i*NL == j*NC)
         {
@@ -516,19 +519,19 @@ public:
         }
         return i*NL >= j*NC;
     }
-    static bool upper_nonzeros(Index   i  , Index   j  , Bloc& val, const Bloc&   ref  ) { return upper(i,j,val,ref) && nonzeros(i,j,val,ref); }
-    static bool lower_nonzeros(Index   i  , Index   j  , Bloc& val, const Bloc&   ref  ) { return lower(i,j,val,ref) && nonzeros(i,j,val,ref); }
-    static bool upper_nonsmall(Index   i  , Index   j  , Bloc& val, const Bloc&   ref  ) { return upper(i,j,val,ref) && nonsmall(i,j,val,ref); }
-    static bool lower_nonsmall(Index   i  , Index   j  , Bloc& val, const Bloc&   ref  ) { return lower(i,j,val,ref) && nonsmall(i,j,val,ref); }
+    static bool upper_nonzeros(Index   i  , Index   j  , Block& val, const Block&   ref  ) { return upper(i,j,val,ref) && nonzeros(i,j,val,ref); }
+    static bool lower_nonzeros(Index   i  , Index   j  , Block& val, const Block&   ref  ) { return lower(i,j,val,ref) && nonzeros(i,j,val,ref); }
+    static bool upper_nonsmall(Index   i  , Index   j  , Block& val, const Block&   ref  ) { return upper(i,j,val,ref) && nonsmall(i,j,val,ref); }
+    static bool lower_nonsmall(Index   i  , Index   j  , Block& val, const Block&   ref  ) { return lower(i,j,val,ref) && nonsmall(i,j,val,ref); }
 
     template<class TMatrix>
-    void filterValues(TMatrix& M, filter_fn* filter = &nonzeros, const Bloc& ref = Bloc())
+    void filterValues(TMatrix& M, filter_fn* filter = &nonzeros, const Block& ref = Block())
     {
         M.compress();
         nRow = M.rowSize();
         nCol = M.colSize();
-        nBlocRow = M.rowBSize();
-        nBlocCol = M.colBSize();
+        nBlockRow = M.rowBSize();
+        nBlockCol = M.colBSize();
         rowIndex.clear();
         rowBegin.clear();
         colsIndex.clear();
@@ -550,7 +553,7 @@ public:
             for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
             {
                 Index j = M.colsIndex[xj];
-                Bloc& b = M.colsValue[xj];
+                Block& b = M.colsValue[xj];
                 if ((*filter)(i,j,b,ref))
                 {
                     colsIndex.push_back(j);
@@ -558,7 +561,7 @@ public:
                     ++vid;
                 }
             }
-            if (rowBegin.back() == vid) // row was empty
+            if ((decltype(vid))rowBegin.back() == vid) // row was empty
             {
                 rowIndex.pop_back();
                 rowBegin.pop_back();
@@ -570,11 +573,11 @@ public:
     template <class TMatrix>
     void copyNonZeros(TMatrix& M)
     {
-        filterValues(M, nonzeros, Bloc());
+        filterValues(M, nonzeros, Block());
     }
 
     template <class TMatrix>
-    void copyNonSmall(TMatrix& M, const Bloc& ref)
+    void copyNonSmall(TMatrix& M, const Block& ref)
     {
         filterValues(M, nonsmall, ref);
     }
@@ -601,24 +604,24 @@ public:
         filterValues(M, lower_nonzeros);
     }
 
-    void copyUpperNonSmall(Matrix& M, const Bloc& ref)
+    void copyUpperNonSmall(Matrix& M, const Block& ref)
     {
         filterValues(M, upper_nonsmall, ref);
     }
 
-    void copyLowerNonSmall(Matrix& M, const Bloc& ref)
+    void copyLowerNonSmall(Matrix& M, const Block& ref)
     {
         filterValues(M, lower_nonsmall, ref);
     }
 
-    const Bloc& bloc(Index i, Index j) const
+    const Block& bloc(Index i, Index j) const
     {
-        static Bloc empty;
-        Index rowId = i * (Index)rowIndex.size() / nBlocRow;
+        static Block empty;
+        Index rowId = i * (Index)rowIndex.size() / nBlockRow;
         if (sortedFind(rowIndex, i, rowId))
         {
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
-            Index colId = rowRange.begin() + j * rowRange.size() / nBlocCol;
+            Index colId = rowRange.begin() + j * rowRange.size() / nBlockCol;
             if (sortedFind(colsIndex, rowRange, j, colId))
             {
                 return colsValue[colId];
@@ -627,18 +630,18 @@ public:
         return empty;
     }
 
-    Bloc* wbloc(Index i, Index j, bool create = false)
+    Block* wbloc(Index i, Index j, bool create = false)
     {
-        Index rowId = i * (Index)rowIndex.size() / nBlocRow;
+        Index rowId = i * (Index)rowIndex.size() / nBlockRow;
         if (sortedFind(rowIndex, i, rowId))
         {
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
-            Index colId = rowRange.begin() + j * rowRange.size() / nBlocCol;
+            Index colId = rowRange.begin() + j * rowRange.size() / nBlockCol;
             if (sortedFind(colsIndex, rowRange, j, colId))
             {
 
                 dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
-                        << "(" << rowBSize() << "*" << NL << "," << colBSize() << "*" << NC << "): bloc(" << i << "," << j << ") found at " << colId << " (line " << rowId << ")." ;
+                        << "(" << rowBSize() << "*" << NL << "," << colBSize() << "*" << NC << "): block(" << i << "," << j << ") found at " << colId << " (line " << rowId << ")." ;
 
                 return &colsValue[colId];
             }
@@ -648,9 +651,9 @@ public:
             if (btemp.empty() || btemp.back().l != i || btemp.back().c != j)
             {
                 dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
-                        << "(" << rowSize() << "," << colSize() << "): new temp bloc (" << i << "," << j << ")" ;
+                        << "(" << rowSize() << "," << colSize() << "): new temp block (" << i << "," << j << ")" ;
 
-                btemp.push_back(IndexedBloc(i,j));
+                btemp.push_back(IndexedBlock(i,j));
                 traits::clear(btemp.back().value);
             }
             return &btemp.back().value;
@@ -708,7 +711,7 @@ public:
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
 
         dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
-            << "(" << rowBSize() << "*" << NL << "," << colBSize() << "*" << NC << "): bloc(" << i << "," << j << ")[" << bi << "," << bj << "] = " << v;
+            << "(" << rowBSize() << "*" << NL << "," << colBSize() << "*" << NC << "): block(" << i << "," << j << ")[" << bi << "," << bj << "] = " << v;
 
         traits::v(*wbloc(i,j,true), bi, bj) = (Real)v;
     }
@@ -726,7 +729,7 @@ public:
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
 
         dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
-            << "(" << rowBSize() << "*" << NL << "," << colBSize() << "*" << NC << "): bloc(" << i << "," << j << ")[" << bi << "," << bj << "] += " << v;
+            << "(" << rowBSize() << "*" << NL << "," << colBSize() << "*" << NC << "): block(" << i << "," << j << ")[" << bi << "," << bj << "] += " << v;
 
         traits::v(*wbloc(i,j,true), bi, bj) += (Real)v;
     }
@@ -753,7 +756,7 @@ public:
         }
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
         compress();
-        Bloc* b = wbloc(i,j,false);
+        Block* b = wbloc(i,j,false);
         if (b)
             traits::v(*b, bi, bj) = 0;
     }
@@ -770,13 +773,13 @@ public:
         }
         Index bi=0; split_row_index(i, bi);
         compress();
-        Index rowId = i * (Index)rowIndex.size() / nBlocRow;
+        Index rowId = i * (Index)rowIndex.size() / nBlockRow;
         if (sortedFind(rowIndex, i, rowId))
         {
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
             for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
             {
-                Bloc& b = colsValue[xj];
+                Block& b = colsValue[xj];
                 for (Index bj = 0; bj < NC; ++bj)
                     traits::v(b, bi, bj) = 0;
             }
@@ -795,9 +798,9 @@ public:
         }
         Index bj=0; split_col_index(j, bj);
         compress();
-        for (Index i=0; i<nBlocRow; ++i)
+        for (Index i=0; i<nBlockRow; ++i)
         {
-            Bloc* b = wbloc(i,j,false);
+            Block* b = wbloc(i,j,false);
             if (b)
             {
                 for (Index bi = 0; bi < NL; ++bi)
@@ -826,25 +829,25 @@ public:
             // Here we assume the matrix is symmetric
             Index bi=0; split_row_index(i, bi);
             compress();
-            Index rowId = i * (Index)rowIndex.size() / nBlocRow;
+            Index rowId = i * (Index)rowIndex.size() / nBlockRow;
             if (sortedFind(rowIndex, i, rowId))
             {
                 Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
                 for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
                 {
-                    Bloc& b = colsValue[xj];
+                    Block& b = colsValue[xj];
                     for (Index bj = 0; bj < NC; ++bj)
                         traits::v(b, bi, bj) = 0;
                     Index j = colsIndex[xj];
 
-                    //Removed "if (j!=i)" commented as "non-diagonal bloc" optimization that was in fact a bug
+                    //Removed "if (j!=i)" commented as "non-diagonal block" optimization that was in fact a bug
                     //TODO : This whole block of code may then need refactoring
 
-                    Bloc* bloc = wbloc(j,i,false);
-                    if (bloc)
+                    Block* block = wbloc(j,i,false);
+                    if (block)
                     {
                         for (Index bj = 0; bj < NL; ++bj)
-                            traits::v(*bloc, bj, bi) = 0;
+                            traits::v(*block, bj, bi) = 0;
                     }
                 }
             }
@@ -898,20 +901,20 @@ protected:
     {
         //return element(b->row * getBlockRows() + i, b->col * getBlockCols() + j);
         Index index = b->data;
-        const Bloc& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
+        const Block& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
         return (SReal)traits::v(data, i, j);
     }
     void bAccessorSet(InternalBlockAccessor* b, Index i, Index j, double v) override
     {
         //set(b->row * getBlockRows() + i, b->col * getBlockCols() + j, v);
         Index index = b->data;
-        Bloc& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
+        Block& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
         traits::v(data, i, j) = (Real)v;
     }
     void bAccessorAdd(InternalBlockAccessor* b, Index i, Index j, double v) override
     {
         Index index = b->data;
-        Bloc& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
+        Block& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
         traits::v(data, i, j) += (Real)v;
     }
 
@@ -919,7 +922,7 @@ protected:
     const T* bAccessorElementsCSRImpl(const InternalBlockAccessor* b, T* buffer) const
     {
         Index index = b->data;
-        const Bloc& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
+        const Block& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
         for (Index l=0; l<NL; ++l)
             for (Index c=0; c<NC; ++c)
                 buffer[l*NC+c] = (T)traits::v(data, l, c);
@@ -942,7 +945,7 @@ protected:
     void bAccessorSetCSRImpl(InternalBlockAccessor* b, const T* buffer)
     {
         Index index = b->data;
-        Bloc& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
+        Block& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
         for (Index l=0; l<NL; ++l)
             for (Index c=0; c<NC; ++c)
                 traits::v(data, l, c) = (Real)buffer[l*NC+c];
@@ -964,7 +967,7 @@ protected:
     void bAccessorAddCSRImpl(InternalBlockAccessor* b, const T* buffer)
     {
         Index index = b->data;
-        Bloc& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
+        Block& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
         for (Index l=0; l<NL; ++l)
             for (Index c=0; c<NC; ++c)
                 traits::v(data, l, c) += (Real)buffer[l*NC+c];
@@ -984,16 +987,16 @@ protected:
 
 public:
 
-    /// Get read access to a bloc
+    /// Get read access to a block
     BlockConstAccessor blocGet(Index i, Index j) const override
     {
         ((Matrix*)this)->compress();
 
-        Index rowId = i * (Index)rowIndex.size() / nBlocRow;
+        Index rowId = i * (Index)rowIndex.size() / nBlockRow;
         if (sortedFind(rowIndex, i, rowId))
         {
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
-            Index colId = rowRange.begin() + j * rowRange.size() / nBlocCol;
+            Index colId = rowRange.begin() + j * rowRange.size() / nBlockCol;
             if (sortedFind(colsIndex, rowRange, j, colId))
             {
                 return createBlockConstAccessor(i, j, colId);
@@ -1002,16 +1005,16 @@ public:
         return createBlockConstAccessor(-1-i, -1-j, (Index)0);
     }
 
-    /// Get write access to a bloc
+    /// Get write access to a block
     BlockAccessor blocGetW(Index i, Index j) override
     {
         ((Matrix*)this)->compress();
 
-        Index rowId = i * (Index)rowIndex.size() / nBlocRow;
+        Index rowId = i * (Index)rowIndex.size() / nBlockRow;
         if (sortedFind(rowIndex, i, rowId))
         {
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
-            Index colId = rowRange.begin() + j * rowRange.size() / nBlocCol;
+            Index colId = rowRange.begin() + j * rowRange.size() / nBlockCol;
             if (sortedFind(colsIndex, rowRange, j, colId))
             {
                 return createBlockAccessor(i, j, colId);
@@ -1020,26 +1023,26 @@ public:
         return createBlockAccessor(-1-i, -1-j, (Index)0);
     }
 
-    /// Get write access to a bloc, possibly creating it
+    /// Get write access to a block, possibly creating it
     BlockAccessor blocCreate(Index i, Index j) override
     {
-        Index rowId = i * (Index)rowIndex.size() / nBlocRow;
+        Index rowId = i * (Index)rowIndex.size() / nBlockRow;
         if (sortedFind(rowIndex, i, rowId))
         {
             Range rowRange(rowBegin[rowId], rowBegin[rowId+1]);
-            Index colId = rowRange.begin() + j * rowRange.size() / nBlocCol;
+            Index colId = rowRange.begin() + j * rowRange.size() / nBlockCol;
             if (sortedFind(colsIndex, rowRange, j, colId))
             {
                 dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE)
-                        << "(" << rowBSize() << "*" << NL << "," << colBSize() << "*" << NC << "): bloc(" << i << "," << j << ") found at " << colId << " (line " << rowId << ")." ;
+                        << "(" << rowBSize() << "*" << NL << "," << colBSize() << "*" << NC << "): block(" << i << "," << j << ") found at " << colId << " (line " << rowId << ")." ;
                 return createBlockAccessor(i, j, colId);
             }
         }
         {
             if (btemp.empty() || btemp.back().l != i || btemp.back().c != j)
             {
-                dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE) << "(" << rowSize() << "," << colSize() << "): new temp bloc (" << i << "," << j << ")" ;
-                btemp.push_back(IndexedBloc(i,j));
+                dmsg_info_when(COMPRESSEDROWSPARSEMATRIX_VERBOSE) << "(" << rowSize() << "," << colSize() << "): new temp block (" << i << "," << j << ")" ;
+                btemp.push_back(IndexedBlock(i,j));
                 traits::clear(btemp.back().value);
             }
             return createBlockAccessor(i, j, -(Index)btemp.size());
@@ -1087,7 +1090,7 @@ public:
     ColBlockConstIterator bRowBegin(Index ib) const override
     {
         ((Matrix*)this)->compress();
-        Index rowId = ib * (Index)rowIndex.size() / nBlocRow;
+        Index rowId = ib * (Index)rowIndex.size() / nBlockRow;
         Index index = 0;
         if (sortedFind(rowIndex, ib, rowId))
         {
@@ -1100,7 +1103,7 @@ public:
     ColBlockConstIterator bRowEnd(Index ib) const override
     {
         ((Matrix*)this)->compress();
-        Index rowId = ib * (Index)rowIndex.size() / nBlocRow;
+        Index rowId = ib * (Index)rowIndex.size() / nBlockRow;
         Index index2 = 0;
         if (sortedFind(rowIndex, ib, rowId))
         {
@@ -1113,7 +1116,7 @@ public:
     std::pair<ColBlockConstIterator, ColBlockConstIterator> bRowRange(Index ib) const override
     {
         ((Matrix*)this)->compress();
-        Index rowId = ib * (Index)rowIndex.size() / nBlocRow;
+        Index rowId = ib * (Index)rowIndex.size() / nBlockRow;
         Index index = 0, index2 = 0;
         if (sortedFind(rowIndex, ib, rowId))
         {
@@ -1261,7 +1264,7 @@ protected:
                       v[bj] = vget(vec,colsIndex[xj],NC,bj);
 
                   // multiply the block with the local vector
-                  const Bloc& b = colsValue[xj];    // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
+                  const Block& b = colsValue[xj];    // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
                   for (Index bi = 0; bi < NL; ++bi)
                       for (Index bj = 0; bj < NC; ++bj)
                           r[bi] += traits::v(b, bi, bj) * v[bj];
@@ -1298,7 +1301,7 @@ protected:
                       v[bj] = vget(vec,colsIndex[xj],NC,bj);
 
                   // multiply the block with the local vector
-                  const Bloc& b = colsValue[xj];    // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
+                  const Block& b = colsValue[xj];    // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
                   for (Index bi = 0; bi < NL; ++bi)
                       for (Index bj = 0; bj < NC; ++bj)
                           r[bi] += traits::v(b, bi, bj) * v[bj];
@@ -1312,7 +1315,7 @@ protected:
       }
 
 
-      /** Product of the matrix with a templated vector that have the size of the bloc res += this * [vec,...,vec]^T */
+      /** Product of the matrix with a templated vector that have the size of the block res += this * [vec,...,vec]^T */
       template<class Real2, class V1, class V2>
       void taddMul_by_line(V1& res, const V2& vec) const
       {
@@ -1329,7 +1332,7 @@ protected:
               for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
               {
                   // multiply the block with the local vector
-                  const Bloc& b = colsValue[xj];    // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
+                  const Block& b = colsValue[xj];    // non-null block has block-indices (rowIndex[xi],colsIndex[xj]) and value colsValue[xj]
                   for (Index bi = 0; bi < NL; ++bi)
                       for (Index bj = 0; bj < NC; ++bj)
                           r[bi] += traits::v(b, bi, bj) * vec[bj];
@@ -1362,12 +1365,12 @@ protected:
               Range rowRange(rowBegin[xi], rowBegin[xi+1]);
               for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj) // for each non-empty block in the row
               {
-                  const Bloc& b = colsValue[xj]; // non-empty block
+                  const Block& b = colsValue[xj]; // non-empty block
 
                   type::Vec<NC,Real2> r;  // local vector to store the product
                   //Index jN = colsIndex[xj] * NC;
 
-                  // columnwise bloc-vector product
+                  // columnwise block-vector product
                   for (Index bj = 0; bj < NC; ++bj)
                       r[bj] = traits::v(b, 0, bj) * v[0];
                   for (Index bi = 1; bi < NL; ++bi)
@@ -1424,7 +1427,7 @@ public:
             for( Index xj = rowRange.begin() ; xj < rowRange.end() ; ++xj )  // for each non-null block
             {
                 Index col = colsIndex[xj];     // block column
-                const Bloc& b = colsValue[xj]; // block value
+                const Block& b = colsValue[xj]; // block value
 
                 // find the non-null row in m, if any
                 while( mr<m.rowIndex.size() && m.rowIndex[mr]<col ) mr++;
@@ -1435,16 +1438,16 @@ public:
                 for( Index mj = mrowRange.begin() ; mj< mrowRange.end() ; ++mj ) // for each non-null block in  m[col]
                 {
                     Index mcol = m.colsIndex[mj];     // column index of the non-null block
-                    *res.wbloc(row,mcol,true) += b * m.colsValue[mj];  // find the matching bloc in res, and accumulate the block product
+                    *res.wbloc(row,mcol,true) += b * m.colsValue[mj];  // find the matching block in res, and accumulate the block product
                 }
             }
         }
         res.compress();
     }
 
-    static auto blocMultTranspose(const TBloc& blockA, const TBloc& blockB)
+    static auto blocMultTranspose(const TBlock& blockA, const TBlock& blockB)
     {
-        if constexpr (std::is_scalar_v<TBloc>)
+        if constexpr (std::is_scalar_v<TBlock>)
         {
             return blockA * blockB;
         }
@@ -1487,7 +1490,7 @@ public:
             for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)  // for each non-null block
             {
                 Index row = colsIndex[xj];     // block row (transposed row = col)
-                const Bloc& b = colsValue[xj]; // block value
+                const Block& b = colsValue[xj]; // block value
 
                 // find the non-null row in m, if any
                 while( mr<m.rowIndex.size() && m.rowIndex[mr]<col ) mr++;
@@ -1512,9 +1515,9 @@ public:
       @warning The matrices must have the same mathematical size
       @warning matrices this and m must be compressed
       */
-    CompressedRowSparseMatrix<TBloc,TVecBloc,TVecIndex> operator+( const CompressedRowSparseMatrix<TBloc,TVecBloc,TVecIndex>& m ) const
+    CompressedRowSparseMatrix<TBlock,TVecBlock,TVecIndex> operator+( const CompressedRowSparseMatrix<TBlock,TVecBlock,TVecIndex>& m ) const
     {
-        CompressedRowSparseMatrix<TBloc,TVecBloc,TVecIndex> res = *this;
+        CompressedRowSparseMatrix<TBlock,TVecBlock,TVecIndex> res = *this;
         res += m;
         return res;
     }
@@ -1552,7 +1555,7 @@ public:
 
 
     /// result += this * (v,...,v)^T
-    /// v has the size of one bloc
+    /// v has the size of one block
     template< typename V, typename Real2 >
     void addMul_by_line( V& res, const type::Vec<NC,Real2>& v ) const
     {
@@ -1597,8 +1600,8 @@ public:
 
 
     /// dest += this
-    /// different bloc types possible
-    /// @todo how to optimize when same bloc types
+    /// different block types possible
+    /// @todo how to optimize when same block types
     template<class Dest>
     void addTo(Dest* dest) const
     {
@@ -1609,7 +1612,7 @@ public:
             for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
             {
                 Index jN = colsIndex[xj] * NC;
-                const Bloc& b = colsValue[xj];
+                const Block& b = colsValue[xj];
                 for (Index bi = 0; bi < NL; ++bi)
                     for (Index bj = 0; bj < NC; ++bj)
                         dest->add(iN+bi, jN+bj, traits::v(b, bi, bj));
@@ -1617,11 +1620,11 @@ public:
         }
         if (!btemp.empty())
         {
-            for (typename VecIndexedBloc::const_iterator it = btemp.begin(), itend = btemp.end(); it != itend; ++it)
+            for (typename VecIndexedBlock::const_iterator it = btemp.begin(), itend = btemp.end(); it != itend; ++it)
             {
                 Index iN = it->l * NL;
                 Index jN = it->c * NC;
-                const Bloc& b = it->value;
+                const Block& b = it->value;
                 for (Index bi = 0; bi < NL; ++bi)
                     for (Index bj = 0; bj < NC; ++bj)
                         dest->add(iN+bi, jN+bj, traits::v(b, bi, bj));
@@ -1665,24 +1668,24 @@ protected:
 
 public:
 
-    template<class TBloc2, class TVecBloc2, class TVecIndex2>
-    void operator=(const CompressedRowSparseMatrix<TBloc2, TVecBloc2, TVecIndex2>& m)
+    template<class TBlock2, class TVecBlock2, class TVecIndex2>
+    void operator=(const CompressedRowSparseMatrix<TBlock2, TVecBlock2, TVecIndex2>& m)
     {
         if (&m == this) return;
         resize(m.rowSize(), m.colSize());
         m.addTo(this);
     }
 
-    template<class TBloc2, class TVecBloc2, class TVecIndex2>
-    void operator+=(const CompressedRowSparseMatrix<TBloc2, TVecBloc2, TVecIndex2>& m)
+    template<class TBlock2, class TVecBlock2, class TVecIndex2>
+    void operator+=(const CompressedRowSparseMatrix<TBlock2, TVecBlock2, TVecIndex2>& m)
     {
         addEqual(m);
     }
 
-    template<class TBloc2, class TVecBloc2, class TVecIndex2>
-    void operator-=(const CompressedRowSparseMatrix<TBloc2, TVecBloc2, TVecIndex2>& m)
+    template<class TBlock2, class TVecBlock2, class TVecIndex2>
+    void operator-=(const CompressedRowSparseMatrix<TBlock2, TVecBlock2, TVecIndex2>& m)
     {
-        equal(MatrixExpr< MatrixNegative< CompressedRowSparseMatrix<TBloc2, TVecBloc2, TVecIndex2> > >(MatrixNegative< CompressedRowSparseMatrix<TBloc2, TVecBloc2, TVecIndex2> >(m)), true);
+        equal(MatrixExpr< MatrixNegative< CompressedRowSparseMatrix<TBlock2, TVecBlock2, TVecIndex2> > >(MatrixNegative< CompressedRowSparseMatrix<TBlock2, TVecBlock2, TVecIndex2> >(m)), true);
     }
 
     template<class Expr2>
@@ -1730,7 +1733,7 @@ public:
         return name.c_str();
     }
 
-    bool check_matrix()
+    bool check_matrix() const
     {
         return check_matrix(
                 this->getColsValue().size(),
@@ -1817,10 +1820,10 @@ public:
     }
 };
 
-template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<double>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,double> > >(CompressedRowSparseMatrix<type::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref);
-template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<double>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,float> > >(CompressedRowSparseMatrix<type::Mat<3,3,float> >& M, filter_fn* filter, const Bloc& ref);
-template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<float>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,float> > >(CompressedRowSparseMatrix<type::Mat<3,3,float> >& M, filter_fn* filter, const Bloc& ref);
-template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<float>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,double> > >(CompressedRowSparseMatrix<type::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref);
+template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<double>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,double> > >(CompressedRowSparseMatrix<type::Mat<3,3,double> >& M, filter_fn* filter, const Block& ref);
+template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<double>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,float> > >(CompressedRowSparseMatrix<type::Mat<3,3,float> >& M, filter_fn* filter, const Block& ref);
+template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<float>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,float> > >(CompressedRowSparseMatrix<type::Mat<3,3,float> >& M, filter_fn* filter, const Block& ref);
+template<> template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<float>::filterValues<CompressedRowSparseMatrix<type::Mat<3,3,double> > >(CompressedRowSparseMatrix<type::Mat<3,3,double> >& M, filter_fn* filter, const Block& ref);
 
 template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3,3,double> >::add(Index row, Index col, const type::Mat3x3d & _M);
 template<> void SOFA_LINEARALGEBRA_API CompressedRowSparseMatrix<type::Mat<3,3,double> >::add(Index row, Index col, const type::Mat3x3f & _M);

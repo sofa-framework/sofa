@@ -28,6 +28,8 @@
 
 #include <SofaBaseLinearSolver/FullMatrix.h>
 
+#include <sofa/core/ConstraintParams.h>
+
 namespace sofa::component::constraintset
 {
 

@@ -5,9 +5,9 @@
   <RequiredPlugin pluginName="image"/>
 
   <VisualStyle displayFlags="showVisual showBehaviorModels" />
-  <MeshObjLoader name="mesh1" filename="mesh/bubille_in1.obj" triangulate="1"/>
-  <MeshObjLoader name="mesh2" filename="mesh/bubille_in2.obj" triangulate="1"/>
-  <MeshObjLoader name="mesh3" filename="mesh/bubille_out.obj" triangulate="1"/>
+  <MeshOBJLoader name="mesh1" filename="mesh/bubille_in1.obj" triangulate="1"/>
+  <MeshOBJLoader name="mesh2" filename="mesh/bubille_in2.obj" triangulate="1"/>
+  <MeshOBJLoader name="mesh3" filename="mesh/bubille_out.obj" triangulate="1"/>
 
   <Node name="using MergeImages (the most powerful solution)">
     <MeshToImageEngine template="ImageUC" value="1" insideValue="1" name="rasterizer1" src="@../mesh1" voxelSize="0.2" padSize="2" rotateImage="false" printLog="true"/>
@@ -51,24 +51,24 @@
       </Node>
 
       <Node name="Gelatin-Visu">
-        <MeshObjLoader name="meshLoader_1" filename="mesh/bubille_8x8x16.obj" handleSeams="1" />
+        <MeshOBJLoader name="meshLoader_1" filename="mesh/bubille_8x8x16.obj" handleSeams="1" />
         <OglModel name="Gelatin" src="@meshLoader_1" color="0.1 .8 .3 .6" />
         <LinearMapping template="Affine,ExtVec3f"/>
       </Node>
 
       <Node name="Ball1-Visu">
-        <MeshObjLoader name="meshLoader_3" filename="mesh/bubille_in1.obj" handleSeams="1" />
+        <MeshOBJLoader name="meshLoader_3" filename="mesh/bubille_in1.obj" handleSeams="1" />
         <OglModel name="Ball1" src="@meshLoader_3" color="1 0 0 1" />
         <LinearMapping template="Affine,ExtVec3f"/>
       </Node>
 
       <Node name="Ball2-Visu">
-        <MeshObjLoader name="meshLoader_5" filename="mesh/bubille_in2.obj" handleSeams="1" />
+        <MeshOBJLoader name="meshLoader_5" filename="mesh/bubille_in2.obj" handleSeams="1" />
         <OglModel name="Ball2" src="@meshLoader_5" color="0 0 1 1" />
         <LinearMapping template="Affine,ExtVec3f"/>
       </Node>
       <Node name="Collision">
-        <MeshObjLoader name="MeshLoader" filename="mesh/bubille_out.obj"/>
+        <MeshOBJLoader name="MeshLoader" filename="mesh/bubille_out.obj"/>
         <MeshTopology src="@MeshLoader" />
         <MechanicalObject  />
         <LinearMapping template="Affine,Vec3d"/>
@@ -114,24 +114,24 @@
       </Node>
 
       <Node name="Gelatin-Visu">
-        <MeshObjLoader name="meshLoader_0" filename="mesh/bubille_8x8x16.obj" handleSeams="1" />
+        <MeshOBJLoader name="meshLoader_0" filename="mesh/bubille_8x8x16.obj" handleSeams="1" />
         <OglModel name="Gelatin" src="@meshLoader_0" color="0.1 .8 .3 .6" />
         <LinearMapping template="Affine,ExtVec3f"/>
       </Node>
 
       <Node name="Ball1-Visu">
-        <MeshObjLoader name="meshLoader_2" filename="mesh/bubille_in1.obj" handleSeams="1" />
+        <MeshOBJLoader name="meshLoader_2" filename="mesh/bubille_in1.obj" handleSeams="1" />
         <OglModel name="Ball1" src="@meshLoader_2" color="1 0 0 1" />
         <LinearMapping template="Affine,ExtVec3f"/>
       </Node>
 
       <Node name="Ball2-Visu">
-        <MeshObjLoader name="meshLoader_4" filename="mesh/bubille_in2.obj" handleSeams="1" />
+        <MeshOBJLoader name="meshLoader_4" filename="mesh/bubille_in2.obj" handleSeams="1" />
         <OglModel name="Ball2" src="@meshLoader_4" color="0 0 1 1" />
         <LinearMapping template="Affine,ExtVec3f"/>
       </Node>
       <Node name="Collision">
-        <MeshObjLoader name="MeshLoader" filename="mesh/bubille_out.obj"/>
+        <MeshOBJLoader name="MeshLoader" filename="mesh/bubille_out.obj"/>
         <MeshTopology src="@MeshLoader" />
         <MechanicalObject  />
         <LinearMapping template="Affine,Vec3d"/>

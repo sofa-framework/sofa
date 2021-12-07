@@ -119,12 +119,25 @@ public:
         GetModuleVersion():func(nullptr) {}
     } GetModuleVersion;
 
+    struct ModuleIsInitialized
+    {
+        static const char* symbol;
+        typedef bool (*FuncPtr) ();
+        FuncPtr func;
+        bool operator() () const
+        {
+            return (func) ? func() : false;
+        }
+        ModuleIsInitialized() :func(nullptr) {}
+    };
+
     InitExternalModule     initExternalModule;
     GetModuleName          getModuleName;
     GetModuleDescription   getModuleDescription;
     GetModuleLicense       getModuleLicense;
     GetModuleComponentList getModuleComponentList;
     GetModuleVersion       getModuleVersion;
+    ModuleIsInitialized    moduleIsInitialized;
 private:
     DynamicLibrary::Handle dynamicLibrary;
 
@@ -202,7 +215,7 @@ private:
     PluginManager(const PluginManager& );
     std::ostream& writeToStream( std::ostream& ) const;
     std::istream& readFromStream( std::istream& );
-private:
+
     PluginMap m_pluginMap;
     std::map<std::string, std::function<void(const std::string&, const Plugin&)>> m_onPluginLoadedCallbacks;
 };

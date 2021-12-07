@@ -25,13 +25,8 @@
 #include <sofa/simulation/fwd.h>
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/behavior/fwd.h>
-#include <sofa/core/MultiVecId.h>
 
-#include <sofa/core/BehaviorModel.h>
-#include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/core/behavior/BaseAnimationLoop.h>
-#include <sofa/core/collision/Pipeline.h>
 
 namespace sofa::simulation
 {

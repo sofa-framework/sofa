@@ -25,6 +25,7 @@
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/core/behavior/SingleStateAccessor.h>
 
 namespace sofa::core::behavior
 {
@@ -41,10 +42,10 @@ namespace sofa::core::behavior
  *  ( df, given a displacement dx ).
  */
 template<class TDataTypes>
-class ForceField : public BaseForceField
+class ForceField : public BaseForceField, public SingleStateAccessor<TDataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(ForceField, TDataTypes), BaseForceField);
+    SOFA_CLASS2(SOFA_TEMPLATE(ForceField, TDataTypes), BaseForceField, SOFA_TEMPLATE(SingleStateAccessor, TDataTypes));
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Real             Real;
@@ -59,12 +60,6 @@ protected:
 
     ~ForceField() override;
 public:
-    void init() override;
-
-    /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes>* getMState() { return mstate.get(); }
-    const MechanicalState<DataTypes>* getMState() const { return mstate.get(); }
-
 
     /// @name Vector operations
     /// @{
@@ -165,20 +160,20 @@ public:
     template<class IndexArray, class ElementMat>
     void addToMatrix(sofa::defaulttype::BaseMatrix* bm, unsigned offset, const IndexArray& nodeIndex, const ElementMat& em, SReal scale )
     {
-        const unsigned S = DataTypes::deriv_total_size; // size of node blocks
+        constexpr auto S = DataTypes::deriv_total_size; // size of node blocks
         for (unsigned n1=0; n1<nodeIndex.size(); n1++)
         {
             for(unsigned i=0; i<S; i++)
             {
-                unsigned ROW = offset + S*nodeIndex[n1] + i;  // i-th row associated with node n1 in BaseMatrix
-                unsigned row = S*n1+i;                        // i-th row associated with node n1 in the element matrix
+                const unsigned ROW = offset + S*nodeIndex[n1] + i;  // i-th row associated with node n1 in BaseMatrix
+                const unsigned row = S*n1+i;                        // i-th row associated with node n1 in the element matrix
 
                 for (unsigned n2=0; n2<nodeIndex.size(); n2++)
                 {
                     for (unsigned j=0; j<S; j++)
                     {
-                        unsigned COLUMN = offset + S*nodeIndex[n2] +j; // j-th column associated with node n2 in BaseMatrix
-                        unsigned column = S*n2+j;                      // j-th column associated with node n2 in the element matrix
+                        const unsigned COLUMN = offset + S*nodeIndex[n2] +j; // j-th column associated with node n2 in BaseMatrix
+                        const unsigned column = S*n2+j;                      // j-th column associated with node n2 in the element matrix
                         bm->add( ROW,COLUMN, em[row][column]* scale );
                     }
                 }
@@ -208,9 +203,6 @@ public:
         sofa::helper::replaceAll(name, "ForceField", "FF");
         return name;
     }
-
-protected:
-    SingleLink<ForceField<DataTypes>,MechanicalState<DataTypes>,BaseLink::FLAG_STRONGLINK> mstate;
 
 };
 

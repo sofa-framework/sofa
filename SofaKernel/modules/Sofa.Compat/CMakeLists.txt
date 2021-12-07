@@ -78,7 +78,16 @@ set(HEADER_FILES
     ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/EigenVector.h
     ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/EigenVectorWrapper.h
     ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/SVDLinearSolver.h
-    
+    ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologyData.h
+    ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologyData.inl
+    ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologyDataHandler.h
+    ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologyDataHandler.inl
+    ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologySparseData.h
+    ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologySparseData.inl
+    ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologySubsetData.h
+    ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologySubsetData.inl
+    ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologySubsetIndices.h
+
 )
 
 set(SOURCE_FILES

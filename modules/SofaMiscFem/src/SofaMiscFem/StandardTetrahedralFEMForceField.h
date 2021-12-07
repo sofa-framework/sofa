@@ -108,9 +108,9 @@ public :
 	  Real strainEnergy;
 
       //Tetrahedron Points Indicies for CUDA
-      float tetraIndices[4];
+      float tetraIndices[4]{};
       //Tetrahedron Edges for CUDA
-      float tetraEdges[6];
+      float tetraEdges[6]{};
 
       /// Output stream
       inline friend std::ostream& operator<< ( std::ostream& os, const TetrahedronRestInformation& /*eri*/ ) {  return os;  }
@@ -191,45 +191,27 @@ public:
 
   //  type::Mat<3,3,double> getPhi( int );
 
-    class GHTetrahedronHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, tetrahedronRestInfoVector >
-        {
-        public:
-          typedef typename StandardTetrahedralFEMForceField<DataTypes>::TetrahedronRestInformation TetrahedronRestInformation;
-
-          GHTetrahedronHandler(StandardTetrahedralFEMForceField<DataTypes>* ff,
-                               topology::TetrahedronData<tetrahedronRestInfoVector>* data )
-            :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, tetrahedronRestInfoVector >(data)
-            ,ff(ff)
-          {
-          }
-
-          void applyCreateFunction(Index, TetrahedronRestInformation &t,
-                                   const core::topology::BaseMeshTopology::Tetrahedron&,
-                                   const sofa::type::vector<Index> &,
-                                   const sofa::type::vector<double> &);
-
-         protected:
-          StandardTetrahedralFEMForceField<DataTypes>* ff;
-
-        };
+    /** Method to initialize @sa TetrahedronRestInformation when a new Tetrahedron is created.
+    * Will be set as creation callback in the TetrahedronData @sa tetrahedronInfo
+    */
+    void createTetrahedronRestInformation(Index, TetrahedronRestInformation& t,
+        const core::topology::BaseMeshTopology::Tetrahedron&,
+        const sofa::type::vector<Index>&,
+        const sofa::type::vector<double>&);
 	
   protected:
     /// the array that describes the complete material energy and its derivatives
 
 	fem::HyperelasticMaterial<DataTypes> *myMaterial;
 
-        topology::TetrahedronData<tetrahedronRestInfoVector> tetrahedronInfo; ///< Internal tetrahedron data
-        //EdgeData<sofa::type::vector< EdgeInformation> > edgeInfo; ///< Internal edge data
-        topology::EdgeData<edgeInformationVector> edgeInfo; ///< Internal edge data
+    topology::TetrahedronData<tetrahedronRestInfoVector> tetrahedronInfo; ///< Internal tetrahedron data
+    topology::EdgeData<edgeInformationVector> edgeInfo; ///< Internal edge data
 
 
         void testDerivatives();
         void saveMesh( const char *filename );
 	
 	VecCoord myposition;
-
-        GHTetrahedronHandler* tetrahedronHandler;
-    
 };
 
 

@@ -15,7 +15,7 @@
 	<Node 	name="dragon"  >
 		<EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
 		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-		<MeshObjLoader name="loader" filename="mesh/dragon.obj" />
+		<MeshOBJLoader name="loader" filename="mesh/dragon.obj" />
 		<MeshTopology name="topo" src="@loader" />
 		<MechanicalObject name="dofs" src="@loader" scale="1" dz="10" />
 		<UniformMass vertexMass="3" />
@@ -25,12 +25,12 @@
 	 	<PositionBasedDynamicsConstraint template="Vec3d" stiffness = '1' position="@shapeMatching.targetPosition"/>		
 		
         <Node name="Visu">
-            <MeshObjLoader name="meshLoader_1" filename="mesh/dragon.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_1" filename="mesh/dragon.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_1" color="red" dz="10" />
             <IdentityMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
-            <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
+            <MeshOBJLoader name="loader" filename="mesh/dragon.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" dz="10" />
             <TriangleCollisionModel contactStiffness="1000" />
@@ -40,13 +40,13 @@
         </Node>
 	</Node>
     <Node name="Floor">
-        <MeshObjLoader name="loader" filename="mesh/floor3.obj" />
+        <MeshOBJLoader name="loader" filename="mesh/floor3.obj" />
         <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" dy="-10" scale="1.75" />
         <TriangleCollisionModel name="FloorTriangle" simulated="0" moving="0" />
         <LineCollisionModel name="FloorLine" simulated="0" moving="0" />
         <PointCollisionModel name="FloorPoint" simulated="0" moving="0" />
-        <MeshObjLoader name="meshLoader_0" filename="mesh/floor3.obj" scale="1.75" handleSeams="1" />
+        <MeshOBJLoader name="meshLoader_0" filename="mesh/floor3.obj" scale="1.75" handleSeams="1" />
         <OglModel name="FloorV" src="@meshLoader_0" texturename="textures/brushed_metal.bmp" dy="-10" />
     </Node>
 </Node>

@@ -79,6 +79,7 @@ public:
     static void SetScene(sofa::simulation::NodeSPtr groot, const char* filename=nullptr, bool temporaryFile=false);
     static void SetDimension(int  width , int  height );
     static void SetFullScreen();
+    static void CenterWindow();
     static void SaveScreenshot(const char* filename);
 
     /// @}

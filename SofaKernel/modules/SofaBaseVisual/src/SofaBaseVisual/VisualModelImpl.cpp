@@ -21,13 +21,8 @@
 ******************************************************************************/
 #include <SofaBaseVisual/VisualModelImpl.h>
 
-#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
-#include <SofaBaseTopology/QuadSetTopologyModifier.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
-#include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseTopology/SparseGridTopology.h>
-#include <SofaBaseTopology/CommonAlgorithms.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
@@ -215,7 +210,6 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
 {
     m_topology = nullptr;
 
-    //material.setDisplayed(false);
     addAlias(&fileMesh, "fileMesh");
 
     m_vertices2     .setGroup("Vector");
@@ -242,7 +236,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
         SOFA_UNUSED(tracker);
         m_textureChanged = true;
         return sofa::core::objectmodel::ComponentState::Loading;
-    }, { &d_componentState });    
+    }, { &d_componentState });
 }
 
 VisualModelImpl::~VisualModelImpl()
@@ -599,7 +593,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
             if (objLoader.get() == 0)
             {
                 msg_error() << "Mesh creation failed. Loading mesh file directly inside the VisualModel is not maintained anymore. Use a MeshLoader and link the Data to the VisualModel. E.g:" << msgendl
-                    << "<MeshObjLoader name='myLoader' filename='myFilePath.obj'/>" << msgendl
+                    << "<MeshOBJLoader name='myLoader' filename='myFilePath.obj'/>" << msgendl
                     << "<OglModel src='@myLoader'/>";
                 return false;
             }
@@ -609,8 +603,8 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
                 {
                     //Modified: previously, the texture coordinates were not loaded correctly if no texture name was specified.
                     //setMesh(*objLoader,tex);
-                    msg_warning() << "Loading obj mesh file directly inside the VisualModel will be deprecated soon. Use a MeshObjLoader and link the Data to the VisualModel. E.g:" << msgendl
-                        << "<MeshObjLoader name='myLoader' filename='myFilePath.obj'/>" << msgendl
+                    msg_warning() << "Loading obj mesh file directly inside the VisualModel will be deprecated soon. Use a MeshOBJLoader and link the Data to the VisualModel. E.g:" << msgendl
+                        << "<MeshOBJLoader name='myLoader' filename='myFilePath.obj'/>" << msgendl
                         << "<OglModel src='@myLoader'/>";
                     
                     setMesh(*objLoader, true); 
@@ -618,7 +612,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
                 else
                 {
                     msg_error() << "Loading mesh file directly inside the VisualModel is not anymore supported since release 18.06. Use a MeshLoader and link the Data to the VisualModel. E.g:" << msgendl
-                        << "<MeshObjLoader name='myLoader' filename='myFilePath.obj'/>" << msgendl
+                        << "<MeshOBJLoader name='myLoader' filename='myFilePath.obj'/>" << msgendl
                         << "<OglModel src='@myLoader'/>";
                     return false;
                 }
@@ -926,12 +920,14 @@ void VisualModelImpl::initFromTopology()
         if (m_topology->getTopologyType() == sofa::core::topology::TopologyElementType::QUAD || m_topology->getTopologyType() == sofa::core::topology::TopologyElementType::HEXAHEDRON)
         {
             m_quads.createTopologyHandler(m_topology);
-            m_quads.setCreationCallback([this](Index elemID, VisualQuad& visuQuad,
+            m_quads.setCreationCallback([](Index elemID, VisualQuad& visuQuad,
                 const core::topology::BaseMeshTopology::Quad& topoQuad,
                 const sofa::type::vector< Index >& ancestors,
                 const sofa::type::vector< double >& coefs)
             {
                 SOFA_UNUSED(elemID);
+                SOFA_UNUSED(ancestors);
+                SOFA_UNUSED(coefs);
                 visuQuad = topoQuad; // simple copy from topology Data
             });
         }
@@ -940,12 +936,14 @@ void VisualModelImpl::initFromTopology()
         if (m_topology->getTopologyType() == sofa::core::topology::TopologyElementType::TRIANGLE || m_topology->getTopologyType() == sofa::core::topology::TopologyElementType::TETRAHEDRON)
         {
             m_triangles.createTopologyHandler(m_topology);
-            m_triangles.setCreationCallback([this](Index elemID, VisualTriangle& visuTri,
+            m_triangles.setCreationCallback([](Index elemID, VisualTriangle& visuTri,
                 const core::topology::BaseMeshTopology::Triangle& topoTri,
                 const sofa::type::vector< Index >& ancestors,
                 const sofa::type::vector< double >& coefs)
             {
                 SOFA_UNUSED(elemID);
+                SOFA_UNUSED(ancestors);
+                SOFA_UNUSED(coefs);
                 visuTri = topoTri; // simple copy from topology Data
             });
         }
@@ -953,12 +951,14 @@ void VisualModelImpl::initFromTopology()
         if (m_topology->getTopologyType() == sofa::core::topology::TopologyElementType::EDGE)
         {
             m_edges.createTopologyHandler(m_topology);
-            m_edges.setCreationCallback([this](Index elemID, VisualEdge& visuEdge,
+            m_edges.setCreationCallback([](Index elemID, VisualEdge& visuEdge,
                 const core::topology::BaseMeshTopology::Edge& topoEdge,
                 const sofa::type::vector< Index >& ancestors,
                 const sofa::type::vector< double >& coefs)
             {
                 SOFA_UNUSED(elemID);
+                SOFA_UNUSED(ancestors);
+                SOFA_UNUSED(coefs);
                 visuEdge = topoEdge; // simple copy from topology Data
             });
         }
@@ -966,6 +966,9 @@ void VisualModelImpl::initFromTopology()
         m_positions.createTopologyHandler(m_topology);
         m_positions.setDestructionCallback([this](Index pointIndex, Coord& coord)
         {
+            SOFA_UNUSED(pointIndex);
+            SOFA_UNUSED(coord);
+
             auto last = m_positions.getLastElementIndex();
 
             if (m_topology->getNbTriangles() > 0)
@@ -977,9 +980,7 @@ void VisualModelImpl::initFromTopology()
                 }
             }
             else if (m_topology->getNbQuads() > 0)
-            {
-                VecVisualQuad& quads = *(m_quads.beginEdit());
-                
+            {                
                 const auto& shell = m_topology->getQuadsAroundVertex(last);
                 for (Index j = 0; j < shell.size(); ++j)
                 {
@@ -998,6 +999,9 @@ void VisualModelImpl::initFromTopology()
                 const sofa::type::vector< Index >& ancestors,
                 const sofa::type::vector< double >& coefs)
             {
+                SOFA_UNUSED(pointIndex);
+                SOFA_UNUSED(point);
+
                 const VecTexCoord& texcoords = m_vtexcoords.getValue();
                 tCoord = TexCoord(0, 0);
                 for (Index i = 0; i < ancestors.size(); i++)
@@ -1454,8 +1458,6 @@ void VisualModelImpl::computeMesh()
     using sofa::component::topology::SparseGridTopology;
     using sofa::core::behavior::BaseMechanicalState;
 
-//	sofa::type::vector<Coord> bezierControlPointsArray;
-
     if ((m_positions.getValue()).empty() && (m_vertices2.getValue()).empty())
     {
         VecCoord& vertices = *(m_positions.beginEdit());
@@ -1554,9 +1556,9 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
 {
     *out << "g "<<name<<"\n";
 
-    if (mtl != nullptr) // && !material.name.empty())
+    if (mtl != nullptr)
     {
-        std::string name; // = material.name;
+        std::string name;
         if (name.empty())
         {
             std::ostringstream o; o << "mat" << count;

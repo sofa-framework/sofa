@@ -19,19 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_BASECONTROLLER_H
-#define SOFA_CORE_BEHAVIOR_BASECONTROLLER_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
 
-
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /**
@@ -46,9 +38,4 @@ public:
 
 };
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-#endif
+} // namespace sofa::core::behavior

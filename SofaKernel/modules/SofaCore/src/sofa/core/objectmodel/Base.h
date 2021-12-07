@@ -497,10 +497,10 @@ public:
     Data< sofa::core::objectmodel::ComponentState >  d_componentState; ///< the object state
 
     SOFA_ATTRIBUTE_DISABLED__COMPONENTSTATE("To fix your code, use d_componentState")
-    DeprecatedAndRemoved m_componentstate;
+    DeprecatedAndRemoved m_componentstate{};
 
     SOFA_ATTRIBUTE_DISABLED__COMPONENTSTATE("To fix your code, use d_componentState")
-    DeprecatedAndRemoved d_componentstate;
+    DeprecatedAndRemoved d_componentstate{};
 
     std::string m_definitionSourceFileName        {""};
     int         m_definitionSourceFilePos         {-1};

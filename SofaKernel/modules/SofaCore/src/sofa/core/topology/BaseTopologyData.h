@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_BASETOPOLOGYDATA_H
-#define SOFA_COMPONENT_TOPOLOGY_BASETOPOLOGYDATA_H
+#pragma once
 
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/TopologyChange.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace topology
+namespace sofa::core::topology
 {
 
 typedef Topology::Point            Point;
@@ -137,10 +130,4 @@ protected:
 };
 
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_COMPONENT_TOPOLOGY_BASETOPOLOGYDATA_H
+} // namespace sofa::core::topology

@@ -23,6 +23,7 @@
 #include <sofa/core/VecId.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/core/BaseMapping.h>
 
 namespace sofa
 {

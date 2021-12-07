@@ -19,21 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_PAIRINTERACTIONFORCEFIELD_H
-#define SOFA_CORE_BEHAVIOR_PAIRINTERACTIONFORCEFIELD_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/PairStateAccessor.h>
 
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /**
@@ -43,10 +37,10 @@ namespace behavior
  *  between a pair of bodies using a given type of DOFs.
  */
 template<class TDataTypes>
-class PairInteractionForceField : public BaseInteractionForceField
+class PairInteractionForceField : public BaseInteractionForceField, public PairStateAccessor<TDataTypes>
 {
 public:
-    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(PairInteractionForceField,TDataTypes), BaseInteractionForceField);
+    SOFA_ABSTRACT_CLASS2(SOFA_TEMPLATE(PairInteractionForceField, TDataTypes), BaseInteractionForceField, SOFA_TEMPLATE2(PairStateAccessor, TDataTypes, TDataTypes));
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -58,27 +52,19 @@ public:
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
 
 protected:
-    PairInteractionForceField(MechanicalState<DataTypes> *mm1 = nullptr, MechanicalState<DataTypes> *mm2 = nullptr);
+    explicit PairInteractionForceField(MechanicalState<DataTypes> *mm1 = nullptr, MechanicalState<DataTypes> *mm2 = nullptr);
 
     ~PairInteractionForceField() override;
 public:
-    void init() override;
-
-    /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes>* getMState1() { return mstate1.get(); }
-    BaseMechanicalState* getMechModel1() override { return mstate1.get(); }
-    /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes>* getMState2() { return mstate2.get(); }
-    BaseMechanicalState* getMechModel2() override { return mstate2.get(); }
 
     /// Set the Object1 path
-    void setPathObject1(const std::string & path) { mstate1.setPath(path); }
+    void setPathObject1(const std::string & path) { this->mstate1.setPath(path); }
     /// Set the Object2 path
-    void setPathObject2(const std::string & path) { mstate2.setPath(path); }
+    void setPathObject2(const std::string & path) { this->mstate2.setPath(path); }
     /// Retrieve the Object1 path
-    std::string getPathObject1() const { return mstate1.getPath(); }
+    std::string getPathObject1() const { return this->mstate1.getPath(); }
     /// Retrieve the Object2 path
-    std::string getPathObject2() const { return mstate2.getPath(); }
+    std::string getPathObject2() const { return this->mstate2.getPath(); }
 
 
     /// @name Vector operations
@@ -234,10 +220,6 @@ public:
         return name;
     }
 
-protected:
-    SingleLink<PairInteractionForceField<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;
-    SingleLink<PairInteractionForceField<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
-
 };
 
 #if  !defined(SOFA_CORE_BEHAVIOR_PAIRINTERACTIONFORCEFIELD_CPP)
@@ -251,10 +233,4 @@ extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Rigid
 
 #endif
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

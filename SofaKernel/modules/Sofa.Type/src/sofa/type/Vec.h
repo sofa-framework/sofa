@@ -89,10 +89,9 @@ public:
         typename = std::enable_if_t< (std::is_convertible_v<ArgsT, ValueType> && ...) >,
         typename = std::enable_if_t< (sizeof...(ArgsT) == N && sizeof...(ArgsT) > 1) >
     >
-    constexpr Vec(const ArgsT... r) noexcept
-    {
-        this->set(r...);
-    }
+    constexpr Vec(ArgsT&&... r) noexcept
+        : sofa::type::fixed_array<ValueType, size_t(N)>(std::forward<ArgsT>(r)...)
+    {}
 
     /// Specific constructor for 6-elements vectors, taking two 3-elements vectors
     template<typename R, typename T, Size NN = N, typename std::enable_if<NN == 6, int>::type = 0 >
@@ -580,8 +579,8 @@ class VecNoInit : public Vec<N,real>
 public:
     constexpr VecNoInit() noexcept
         : Vec<N,real>(NOINIT)
-    {
-    }
+    {}
+    using Vec<N,real>::Vec;
 
     using Vec<N,real>::operator=; // make every = from Vec available
 

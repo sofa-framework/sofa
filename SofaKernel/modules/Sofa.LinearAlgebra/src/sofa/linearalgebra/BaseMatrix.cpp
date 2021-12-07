@@ -63,8 +63,7 @@ struct BaseMatrixLinearOpMV_BlockDiagonal
         const Index rowSize = mat->rowSize();
         const Index colSize = mat->colSize();
         BlockData buffer;
-        type::Vec<NC,Real> vtmpj;
-        type::Vec<NL,Real> vtmpi;
+
         if (!add)
             opVresize(result, (transpose ? colSize : rowSize));
         for (std::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = mat->bRowsRange();
@@ -72,7 +71,7 @@ struct BaseMatrixLinearOpMV_BlockDiagonal
                 ++rowRange.first)
         {
             std::pair<ColBlockConstIterator,ColBlockConstIterator> colRange = rowRange.first.range();
-            if (colRange.first != colRange.second) // diagonal bloc exists
+            if (colRange.first != colRange.second) // diagonal block exists
             {
                 BlockConstAccessor block = colRange.first.bloc();
                 const BlockData& bdata = *(const BlockData*)block.elements(buffer.ptr());
@@ -136,7 +135,7 @@ void BaseMatrix::add(Index row, Index col, const type::Mat2x2f & _M) {
 }
 
 
-// specialication for 1x1 blocs
+// specialication for 1x1 blocks
 template <class Real, bool add, bool transpose, class M, class V1, class V2>
 struct BaseMatrixLinearOpMV_BlockDiagonal<Real, 1, 1, add, transpose, M, V1, V2>
 {

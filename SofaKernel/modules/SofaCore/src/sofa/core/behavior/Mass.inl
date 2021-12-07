@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_MASS_INL
-#define SOFA_CORE_BEHAVIOR_MASS_INL
+#pragma once
 
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/Mass.h>
@@ -29,13 +28,7 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <fstream>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 template<class DataTypes>
@@ -49,13 +42,6 @@ template<class DataTypes>
 Mass<DataTypes>::~Mass()
 {
 }
-
-template<class DataTypes>
-void Mass<DataTypes>::init()
-{
-    ForceField<DataTypes>::init();
-}
-
 
 template<class DataTypes>
 void Mass<DataTypes>::addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor)
@@ -252,10 +238,4 @@ void Mass<DataTypes>::getElementMass(sofa::Index, defaulttype::BaseMatrix *m) co
     msg_warning() << "Method getElementMass with Matrix not implemented";
 }
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

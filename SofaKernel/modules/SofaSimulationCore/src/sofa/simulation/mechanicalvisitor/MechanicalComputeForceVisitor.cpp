@@ -60,6 +60,7 @@ void MechanicalComputeForceVisitor::bwdMechanicalMapping(simulation::Node* /*nod
 
 void MechanicalComputeForceVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
 {
+    SOFA_UNUSED(mm);
 }
 
 std::string MechanicalComputeForceVisitor::getInfos() const

@@ -22,9 +22,6 @@
 #pragma once
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTopologyContainer.h>
 
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
-
 namespace sofa::component::mapping
 {
 
@@ -50,9 +47,9 @@ public:
     Index addPointInTetra(const Index index, const SReal* baryCoords) override ;
 
 protected:
-    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology,
-                                            topology::PointSetTopologyContainer* toTopology);
-    ~BarycentricMapperTetrahedronSetTopology() override {}
+    BarycentricMapperTetrahedronSetTopology(sofa::core::topology::TopologyContainer* fromTopology,
+        core::topology::BaseMeshTopology* toTopology);
+    ~BarycentricMapperTetrahedronSetTopology() override = default;
 
     virtual type::vector<Tetrahedron> getElements() override;
     virtual type::vector<SReal> getBaryCoef(const Real* f) override;
@@ -66,9 +63,6 @@ protected:
     void processTopologicalChanges(const typename Out::VecCoord& out, const typename In::VecCoord& in, core::topology::Topology* t);
 
     void processAddPoint(const sofa::type::Vec3d & pos, const typename In::VecCoord& in, MappingData & vectorData);
-
-    topology::TetrahedronSetTopologyContainer*      m_fromContainer {nullptr};
-    topology::TetrahedronSetGeometryAlgorithms<In>*	m_fromGeomAlgo  {nullptr};
 
     using Inherit1::d_map;
     using Inherit1::m_fromTopology;

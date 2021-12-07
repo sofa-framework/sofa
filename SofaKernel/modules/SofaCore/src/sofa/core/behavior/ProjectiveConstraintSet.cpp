@@ -24,13 +24,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 using namespace sofa::defaulttype;
@@ -41,8 +35,4 @@ template class SOFA_CORE_API ProjectiveConstraintSet<Vec1Types>;
 template class SOFA_CORE_API ProjectiveConstraintSet<Rigid3Types>;
 template class SOFA_CORE_API ProjectiveConstraintSet<Rigid2Types>;
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::behavior

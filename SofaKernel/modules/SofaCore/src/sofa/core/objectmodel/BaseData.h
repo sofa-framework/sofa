@@ -313,8 +313,6 @@ public:
     /// Helper method to decode the type name to a more readable form if possible
     static std::string decodeTypeName(const std::type_info& t);
 
-public:
-
     /// Helper method to get the type name of type T
     template<class T>
     static std::string typeName(const T* = nullptr)

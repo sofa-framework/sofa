@@ -27,7 +27,7 @@ namespace sofa::geometry
 {
 
 /// The enumeration used to give unique identifiers to Topological objects.
-enum class ElementType
+enum class ElementType : sofa::Size
 {
     UNKNOWN,
     POINT,
@@ -37,7 +37,10 @@ enum class ElementType
     TETRAHEDRON,
     HEXAHEDRON,
     PENTAHEDRON,
-    PYRAMID    
+    PYRAMID,
+    SIZE
 };
+
+constexpr sofa::Size NumberOfElementType = static_cast<sofa::Size>(sofa::geometry::ElementType::SIZE);
 
 } // namespace sofa::geometry

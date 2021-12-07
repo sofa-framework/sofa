@@ -33,7 +33,6 @@ namespace sofa::type
 template<class Real>
 class SOFA_TYPE_API Quat
 {
-private:
     Real _q[4];
 
     typedef type::Vec<3, Real> Vec3;

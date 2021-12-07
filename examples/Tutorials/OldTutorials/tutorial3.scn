@@ -19,7 +19,7 @@
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
-            <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />
+            <MeshOBJLoader filename="mesh/smCube125.obj" name="loader" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader"/>
             <TriangleCollisionModel />
@@ -40,7 +40,7 @@
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
-            <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />
+            <MeshOBJLoader filename="mesh/smCube125.obj" name="loader" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader"/>
             <TriangleCollisionModel />
@@ -63,7 +63,7 @@
             <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
-            <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />
+            <MeshOBJLoader filename="mesh/smCube125.obj" name="loader" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel />
@@ -73,7 +73,7 @@
         </Node>
     </Node>
     <Node name="Floor">
-        <MeshObjLoader filename="mesh/floor2b.obj" name="loader" />
+        <MeshOBJLoader filename="mesh/floor2b.obj" name="loader" />
         <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" dy="-10.25" scale="0.5" />
         <TriangleCollisionModel name="Floor" simulated="0" moving="0" />

@@ -990,7 +990,9 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
             A[ CoarseToFine[i]*3+1 ][ (27-8+i)*3+1 ] = -1.0;
             A[ CoarseToFine[i]*3+2 ][ (27-8+i)*3+2 ] = -1.0;
         }
-        Ainv.invert(A);
+        const bool canInvert = Ainv.invert(A);
+        assert(canInvert);
+        SOFA_UNUSED(canInvert);
         type::Mat<(27-8)*3, 27*3, Real> Ainvf;
         for(int i=0; i<27-8; ++i)
         {

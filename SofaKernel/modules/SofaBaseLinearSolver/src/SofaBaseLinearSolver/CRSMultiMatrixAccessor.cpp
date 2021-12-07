@@ -204,13 +204,12 @@ void CRSMultiMatrixAccessor::computeGlobalMatrix()
         }
 
         std::vector<std::pair<const BaseMechanicalState*, const BaseMechanicalState*> > interactionList;
-        for (std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator it = interactionStiffnessBloc.begin(), itend = interactionStiffnessBloc.end(); it != itend; ++it)
+        for (auto it = interactionStiffnessBloc.begin(), itend = interactionStiffnessBloc.end(); it != itend; ++it)
         {
             if(it->first.first == outstate || it->first.second == outstate )
             {
                 interactionList.push_back(it->first);
             }
-            ++it;
         }
 
 

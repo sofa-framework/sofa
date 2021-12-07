@@ -27,9 +27,6 @@
 namespace sofa::component::collision
 {
 
-using sofa::helper::system::thread::CTime;
-using sofa::helper::system::thread::ctime_t;
-
 TriangleOctree::~TriangleOctree()
 {
     for(int i=0; i<8; i++)
@@ -117,7 +114,6 @@ int TriangleOctree::nearestTriangle (int minIndex,
         const type::Vector3 & direction, traceResult &result)
 {
     static RayTriangleIntersection intersectionSolver;
-    type::Vector3 P;
     const TriangleOctreeRoot::VecCoord& pos = *tm->octreePos;
     //Triangle t1 (tm, minIndex);
     TriangleOctreeRoot::Tri t1 = (*tm->octreeTriangles)[minIndex];
@@ -484,7 +480,6 @@ void TriangleOctree::allTriangles (const type::Vector3 & origin,
         type::vector<traceResult>& results)
 {
     static RayTriangleIntersection intersectionSolver;
-    type::Vector3 P;
     const TriangleOctreeRoot::VecCoord& pos = *tm->octreePos;
     SReal t, u, v;
     for (unsigned int i = 0; i < objects.size (); i++)
@@ -849,7 +844,6 @@ void TriangleOctreeRoot::buildOctree()
 
 int TriangleOctreeRoot::fillOctree (int tId, int /*d*/, type::Vector3 /*v*/)
 {
-    type::Vector3 center;
     type::Vector3 corner (-cubeSize, -cubeSize, -cubeSize);
 
     double bb[6];

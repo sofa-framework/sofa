@@ -32,7 +32,6 @@ namespace sofa::defaulttype
 template<sofa::Size N, typename real>
 struct DataTypeInfo< sofa::defaulttype::StdRigidTypes<N, real> > : public IncompleteTypeInfo<sofa::defaulttype::StdRigidTypes<N, real>>
 {
-public:
     static std::string GetTypeName() { std::ostringstream o; o << "RigidTypes<" << N << "," << DataTypeInfo<real>::GetTypeName() << ">"; return o.str(); }
     static std::string name()
     {

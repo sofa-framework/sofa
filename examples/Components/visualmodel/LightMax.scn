@@ -22,7 +22,7 @@
     <!-- <SpotLight name="light12" color="1 0 0" cutoff="1" exponent="1" drawSource="true" position="4.5 0 10"/> -->
 
 	<Node name="Torus" >
-		<MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" scale="2" rotation="90 0 0" handleSeams="1" />
+		<MeshOBJLoader name="meshLoader_0" filename="mesh/torus.obj" scale="2" rotation="90 0 0" handleSeams="1" />
 		<OglModel name="Visual" src="@meshLoader_0" color="1 1 1"/>
 	</Node>
 </Node>

@@ -102,8 +102,11 @@ HexahedronFEMForceField<DataTypes>::HexahedronFEMForceField()
 template <class DataTypes>
 void HexahedronFEMForceField<DataTypes>::init()
 {
-    if(_alreadyInit)return;
-    else _alreadyInit=true;
+    if (_alreadyInit)
+    {
+        return;
+    }
+    _alreadyInit=true;
 
     this->core::behavior::ForceField<DataTypes>::init();
 
@@ -124,17 +127,20 @@ void HexahedronFEMForceField<DataTypes>::init()
     }
 
 
-    if( m_topology->getNbHexahedra()<=0 )
+    if ( m_topology->getNbHexahedra() <= 0 )
     {
         msg_error() << "Object must have a hexahedric MeshTopology." << msgendl
                     << " name: " << m_topology->getName() << msgendl
-                    << " typename: " << m_topology->getTypeName()<< msgendl
-                    << " nbPoints:" << m_topology->getNbPoints()<< msgendl;
+                    << " typename: " << m_topology->getTypeName() << msgendl
+                    << " nbPoints:" << m_topology->getNbPoints() << msgendl;
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
+
     _sparseGrid = dynamic_cast<topology::SparseGridTopology*>(m_topology);
     m_potentialEnergy = 0;
 
+    this->d_componentState.setValue(core::objectmodel::ComponentState::Valid);
     reinit();
 }
 
@@ -353,7 +359,9 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
             J[c][2] = lz[c]/2;
         }
         detJ = type::determinant(J);
-        J_1.invert(J);
+        const bool canInvert = J_1.invert(J);
+        assert(canInvert);
+        SOFA_UNUSED(canInvert);
         J_1t.transpose(J_1);
 
         dmsg_info_when(verbose) << "J = " << J << msgendl
@@ -387,7 +395,9 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
                         J[c][2] =(Real)( (nodes[4][c]-nodes[0][c])*(1-x1)*(1-x2)/8+(nodes[5][c]-nodes[1][c])*(1+x1)*(1-x2)/8+(nodes[6][c]-nodes[2][c])*(1+x1)*(1+x2)/8+(nodes[7][c]-nodes[3][c])*(1-x1)*(1+x2)/8);
                     }
                     detJ = type::determinant(J);
-                    J_1.invert(J);
+                    const bool canInvert = J_1.invert(J);
+                    assert(canInvert);
+                    SOFA_UNUSED(canInvert);
                     J_1t.transpose(J_1);
 
                     dmsg_info_when(verbose) << "J = " << J << msgendl
@@ -1185,9 +1195,10 @@ template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowForceFields()) return;
-    if (!this->mstate) return;
     if (!f_drawing.getValue()) return;
-
+    if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid) return;
+    if (!this->mstate) return;
+    if (!m_topology) return;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 

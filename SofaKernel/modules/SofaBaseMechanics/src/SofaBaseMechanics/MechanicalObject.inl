@@ -783,7 +783,7 @@ void MechanicalObject<DataTypes>::applyScale(const SReal sx,const SReal sy,const
     const sofa::type::Vec<3,Real> s((Real)sx, (Real)sy, (Real)sz);
     for (unsigned int i=0; i<x_wA.size(); ++i)
     {
-        for (unsigned int j=0; j<std::min(3, (int)DataTypes::Coord::total_size); ++j)
+        for (unsigned int j=0; j< std::min(3u, (unsigned int)DataTypes::Coord::total_size); ++j)
             x_wA[i][j] = x_wA[i][j] * s[j];
     }
 }
@@ -2515,7 +2515,7 @@ void MechanicalObject<DataTypes>::resetForce(const core::ExecParams* params, cor
     {
         helper::WriteOnlyAccessor< Data<VecDeriv> > f( *this->write(fid) );
         for (unsigned i = 0; i < f.size(); ++i)
-            f[i] = Deriv();
+            f[i].clear();
     }
 }
 
@@ -2537,13 +2537,10 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::resetConstraint(const core::ConstraintParams* cParams)
 {
     Data<MatrixDeriv>& c_data = *this->write(cParams->j().getId(this));
-    MatrixDeriv *c = c_data.beginEdit();
-    c->clear();
-    c_data.endEdit();
+    sofa::helper::getWriteOnlyAccessor(c_data)->clear();
+
     Data<MatrixDeriv>& m_data = *this->write(core::MatrixDerivId::mappingJacobian());
-    MatrixDeriv *m = m_data.beginEdit();
-    m->clear();
-    m_data.endEdit();
+    sofa::helper::getWriteOnlyAccessor(m_data)->clear();
 }
 
 template <class DataTypes>

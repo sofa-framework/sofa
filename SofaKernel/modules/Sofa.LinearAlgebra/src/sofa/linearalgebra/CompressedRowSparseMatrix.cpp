@@ -25,17 +25,17 @@
 namespace sofa::linearalgebra
 {
 
-template <class TMatrix, class TBlocMatrix>
-void addBloc(TMatrix& self, Index row, Index col, const TBlocMatrix & _M)
+template <class TMatrix, class TBlockMatrix>
+void addBloc(TMatrix& self, Index row, Index col, const TBlockMatrix & _M)
 {
-    if (row % TBlocMatrix::nbLines == 0 && col % TBlocMatrix::nbCols == 0)
+    if (row % TBlockMatrix::nbLines == 0 && col % TBlockMatrix::nbCols == 0)
     {
         if (COMPRESSEDROWSPARSEMATRIX_VERBOSE)
         {
             dmsg_info(&self) << "(" << self.rowSize() << "," << self.colSize() << "): element(" << row << "," << col << ") += " << _M;
         }
 
-        *self.wbloc(row / TBlocMatrix::nbLines, col / TBlocMatrix::nbCols, true) += _M;
+        *self.wbloc(row / TBlockMatrix::nbLines, col / TBlockMatrix::nbCols, true) += _M;
     }
     else
     {
@@ -68,13 +68,13 @@ void CompressedRowSparseMatrix<type::Mat<3,3,float> >::add(Index row, Index col,
 }
 
 template<class TMatrix, sofa::Size L, sofa::Size C, class real>
-void filterValuesFromBlocs(TMatrix& self, CompressedRowSparseMatrix<type::Mat<L,C,real> >& M, typename TMatrix::filter_fn* filter, const typename TMatrix::Bloc& ref)
+void filterValuesFromBlocs(TMatrix& self, CompressedRowSparseMatrix<type::Mat<L,C,real> >& M, typename TMatrix::filter_fn* filter, const typename TMatrix::Block& ref)
 {
     M.compress();
     self.nRow = M.rowSize();
     self.nCol = M.colSize();
-    self.nBlocRow = 1;
-    self.nBlocCol = 1;
+    self.nBlockRow = 1;
+    self.nBlockCol = 1;
     self.rowIndex.clear();
     self.rowBegin.clear();
     self.colsIndex.clear();
@@ -98,7 +98,7 @@ void filterValuesFromBlocs(TMatrix& self, CompressedRowSparseMatrix<type::Mat<L,
             self.rowIndex.push_back(i+lb);
             self.rowBegin.push_back(vid);
 
-            for (Index xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+            for (Index xj = rowRange.begin(); xj < (decltype(xj))rowRange.end(); ++xj)
             {
                 Index j = M.colsIndex[xj] * C;
                 const type::Mat<L,C,real>& b = M.colsValue[xj];
@@ -106,7 +106,7 @@ void filterValuesFromBlocs(TMatrix& self, CompressedRowSparseMatrix<type::Mat<L,
 
                 for (sofa::Size c = 0; c < C; ++c)
                 {
-                    typename TMatrix::Bloc val = rowB[c];
+                    typename TMatrix::Block val = rowB[c];
                     if ((*filter)(i+lb,j+c,val,ref))
                     {
                         self.colsIndex.push_back(j+c);
@@ -116,7 +116,7 @@ void filterValuesFromBlocs(TMatrix& self, CompressedRowSparseMatrix<type::Mat<L,
                 }
             }
 
-            if ((linearalgebra::BaseMatrix::Index)self.rowBegin.back() == vid)   // row was empty
+            if ((decltype(vid))self.rowBegin.back() == vid)   // row was empty
             {
                 self.rowIndex.pop_back();
                 self.rowBegin.pop_back();
@@ -127,25 +127,25 @@ void filterValuesFromBlocs(TMatrix& self, CompressedRowSparseMatrix<type::Mat<L,
 }
 
 template <> template <>
-void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseMatrix<type::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref)
+void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseMatrix<type::Mat<3,3,double> >& M, filter_fn* filter, const Block& ref)
 {
     filterValuesFromBlocs(*this, M, filter, ref);
 }
 
 template <> template <>
-void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseMatrix<type::Mat<3,3,float> >& M, filter_fn* filter, const Bloc& ref)
+void CompressedRowSparseMatrix<double>::filterValues(CompressedRowSparseMatrix<type::Mat<3,3,float> >& M, filter_fn* filter, const Block& ref)
 {
     filterValuesFromBlocs(*this, M, filter, ref);
 }
 
 template <> template <>
-void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMatrix<type::Mat<3,3,float> >& M, filter_fn* filter, const Bloc& ref)
+void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMatrix<type::Mat<3,3,float> >& M, filter_fn* filter, const Block& ref)
 {
     filterValuesFromBlocs(*this, M, filter, ref);
 }
 
 template <> template <>
-void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMatrix<type::Mat<3,3,double> >& M, filter_fn* filter, const Bloc& ref)
+void CompressedRowSparseMatrix<float>::filterValues(CompressedRowSparseMatrix<type::Mat<3,3,double> >& M, filter_fn* filter, const Block& ref)
 {
     filterValuesFromBlocs(*this, M, filter, ref);
 }
