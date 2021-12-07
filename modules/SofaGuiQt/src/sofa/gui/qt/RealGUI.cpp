@@ -356,7 +356,14 @@ RealGUI::RealGUI ( const char* viewername)
       m_viewerMSAANbSampling(1)
 {
     setupUi(this);
-
+    
+    ExpandAllButton->setIcon(QIcon(":/RealGUI/expandAll"));
+    CollapseAllButton->setIcon(QIcon(":/RealGUI/collapseAll"));
+    for (auto* button : {ExpandAllButton, CollapseAllButton})
+    {
+        button->setFixedWidth(button->height());
+    }
+    
     parseOptions();
 
     createPluginManager();
@@ -450,13 +457,7 @@ RealGUI::RealGUI ( const char* viewername)
     m_sofaMouseManager->hide();
     SofaVideoRecorderManager::getInstance()->hide();
 
-    //Center the application
-#if (QT_VERSION < QT_VERSION_CHECK(5, 11, 0))
-    const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
-#else
-    const QRect screen = QGuiApplication::primaryScreen()->availableGeometry();
-#endif
-    this->move(  ( screen.width()- this->width()  ) / 2 - 200,  ( screen.height() - this->height()) / 2 - 50  );
+    centerWindow();
 
     tabs->removeTab(tabs->indexOf(TabVisualGraph));
 
@@ -1006,6 +1007,7 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
         simulationGraph->Clear(root.get());
         simulationGraph->collapseAll();
         simulationGraph->expandToDepth(0);
+        simulationGraph->resizeColumnToContents(0);
         statWidget->CreateStats(root.get());
 
 #ifndef SOFA_GUI_QT_NO_RECORDER
@@ -1320,6 +1322,17 @@ void RealGUI::setFullScreen (bool enable)
     {
         getViewer()->setFullScreen(enable);
     }
+}
+
+void RealGUI::centerWindow()
+{
+    //Center the application
+#if (QT_VERSION < QT_VERSION_CHECK(5, 11, 0))
+    const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
+#else
+    const QRect screen = QGuiApplication::primaryScreen()->availableGeometry();
+#endif
+    this->move(  ( screen.width() - this->width()  ) / 2,  ( screen.height() - this->height()) / 2 );
 }
 
 //------------------------------------
@@ -1891,6 +1904,8 @@ void RealGUI::createSimulationGraph()
     TabGraph->layout()->addWidget(simulationGraph);
 
     connect ( ExportGraphButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( Export() ) );
+    connect ( ExpandAllButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( expandAll() ) );
+    connect ( CollapseAllButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( ExpandRootNodeOnly() ) );
     connect(simulationGraph, SIGNAL( RootNodeChanged(sofa::simulation::Node*, const char*) ), this, SLOT ( NewRootNode(sofa::simulation::Node* , const char*) ) );
     connect(simulationGraph, SIGNAL( NodeRemoved() ), this, SLOT( Update() ) );
     connect(simulationGraph, SIGNAL( Lock(bool) ), this, SLOT( LockAnimation(bool) ) );

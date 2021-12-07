@@ -25,8 +25,8 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -82,7 +82,6 @@ public:
     typedef type::Vec<N, Real> Vector;
     typedef type::Mat<NOut, NIn, Real> MBloc;
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
-    typedef typename Inherit::ForceMask ForceMask;
 
     Data<VecCoord> points;    ///< mapped points in local coordinates
     VecCoord rotatedPoints;   ///< vectors from frame origin to mapped points, projected to world coordinates
@@ -152,11 +151,11 @@ protected:
     std::unique_ptr<MatrixType> matrixJ;
     bool updateJ;
 
-    typedef linearsolver::EigenSparseMatrix<In,Out> SparseMatrixEigen;
+    typedef linearalgebra::EigenSparseMatrix<In,Out> SparseMatrixEigen;
     SparseMatrixEigen eigenJacobian;                      ///< Jacobian of the mapping used by getJs
     type::vector<sofa::defaulttype::BaseMatrix*> eigenJacobians; /// used by getJs
 
-    typedef linearsolver::EigenSparseMatrix<In,In> StiffnessSparseMatrixEigen;
+    typedef linearalgebra::EigenSparseMatrix<In,In> StiffnessSparseMatrixEigen;
     StiffnessSparseMatrixEigen geometricStiffnessMatrix;
 };
 

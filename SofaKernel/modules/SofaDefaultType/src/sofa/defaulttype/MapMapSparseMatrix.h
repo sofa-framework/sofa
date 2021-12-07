@@ -23,7 +23,7 @@
 #define SOFA_DEFAULTTYPE_MAPMAPSPARSEMATRIX_H
 
 #include <map>
-#include "BaseVector.h"
+#include <sofa/linearalgebra/BaseVector.h>
 
 namespace sofa
 {
@@ -114,11 +114,11 @@ public:
     }
 
     template< class VecDeriv>
-    void multTransposeBaseVector(VecDeriv& res, const sofa::defaulttype::BaseVector* lambda ) const
+    void multTransposeBaseVector(VecDeriv& res, const sofa::linearalgebra::BaseVector* lambda ) const
     {
         typedef typename VecDeriv::value_type Deriv;
 
-        static_assert(std::is_same<Deriv, T>::value, "res must contain same type as MapMapSparseMatrix type");
+        static_assert(std::is_same_v<Deriv, T>, "res must contain same type as MapMapSparseMatrix type");
 
         for (auto rowIt = begin(), rowItEnd = end(); rowIt != rowItEnd; ++rowIt)
         {

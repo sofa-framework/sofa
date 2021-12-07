@@ -20,11 +20,13 @@ list(APPEND HEADER_FILES
     ${SOFADENSESOLVER_SRC}/LULinearSolver.h
     ${SOFADENSESOLVER_SRC}/NewMatMatrix.h
     ${SOFADENSESOLVER_SRC}/NewMatVector.h
+    ${SOFADENSESOLVER_SRC}/SVDLinearSolver.h
     )
 list(APPEND SOURCE_FILES
     ${SOFADENSESOLVER_SRC}/LULinearSolver.cpp
     ${SOFADENSESOLVER_SRC}/NewMatCGLinearSolver.cpp
     ${SOFADENSESOLVER_SRC}/NewMatCholeskySolver.cpp
+    ${SOFADENSESOLVER_SRC}/SVDLinearSolver.cpp
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
@@ -39,3 +41,9 @@ sofa_create_package_with_targets(
     INCLUDE_INSTALL_DIR "SofaDenseSolver"
     RELOCATABLE "plugins"
 )
+
+cmake_dependent_option(SOFADENSESOLVER_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFADENSESOLVER_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(${PROJECT_NAME}_test)
+endif()

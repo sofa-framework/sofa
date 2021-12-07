@@ -98,7 +98,7 @@ list(APPEND HEADER_FILES
     ${SOFAGENERALENGINE_SRC}/RigidToQuatEngine.h
     ${SOFAGENERALENGINE_SRC}/RigidToQuatEngine.inl
     ${SOFAGENERALENGINE_SRC}/SelectLabelROI.h
-    ${SOFAGENERALENGINE_SRC}/SelectConnectedLabelsROI.cpp
+    ${SOFAGENERALENGINE_SRC}/SelectConnectedLabelsROI.h
     ${SOFAGENERALENGINE_SRC}/ShapeMatching.h
     ${SOFAGENERALENGINE_SRC}/ShapeMatching.inl
     ${SOFAGENERALENGINE_SRC}/SmoothMeshEngine.h

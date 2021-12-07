@@ -36,244 +36,218 @@ typedef core::topology::BaseMeshTopology::Quad				Quad;
 typedef core::topology::BaseMeshTopology::EdgesInQuad			EdgesInQuad;
 
 template< class DataTypes>
-void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyCreateFunction(Index /*edgeIndex*/, EdgeInformation &ei, const core::topology::Edge &,
+void QuadularBendingSprings<DataTypes>::applyEdgeCreation(Index /*edgeIndex*/, EdgeInformation &ei, const core::topology::Edge &,
         const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
 {
-    if (ff)
+    unsigned int u,v;
+    /// set to zero the edge stiffness matrix
+    for (u=0; u<N; ++u)
     {
-
-        unsigned int u,v;
-        /// set to zero the edge stiffness matrix
-        for (u=0; u<N; ++u)
+        for (v=0; v<N; ++v)
         {
-            for (v=0; v<N; ++v)
-            {
-                ei.DfDx[u][v]=0;
-            }
+            ei.DfDx[u][v]=0;
         }
-
-        ei.is_activated=false;
-        ei.is_initialized=false;
-
     }
+
+    ei.is_activated=false;
+    ei.is_initialized=false;
 }
 
 
 template< class DataTypes>
-void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadCreation(const sofa::type::vector<Index> &quadAdded,
+void QuadularBendingSprings<DataTypes>::applyQuadCreation(const sofa::type::vector<Index> &quadAdded,
         const sofa::type::vector<Quad> &,
         const sofa::type::vector<sofa::type::vector<Index> > &,
         const sofa::type::vector<sofa::type::vector<double> > &)
 {
+    double m_ks=getKs();
+    double m_kd=getKd();
 
-    if (ff)
+    unsigned int u,v;
+
+    unsigned int nb_activated = 0;
+
+    const typename DataTypes::VecCoord& restPosition=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+
+    helper::WriteOnlyAccessor< Data< type::vector<EdgeInformation> > > edgeData = edgeInfo;
+
+    for (unsigned int i=0; i<quadAdded.size(); ++i)
     {
 
-        double m_ks=ff->getKs();
-        double m_kd=ff->getKd();
+        /// describe the jth edge index of quad no i
+        EdgesInQuad te2 = this->m_topology->getEdgesInQuad(quadAdded[i]);
+        /// describe the jth vertex index of quad no i
+        Quad t2 = this->m_topology->getQuad(quadAdded[i]);
 
-        unsigned int u,v;
-
-        unsigned int nb_activated = 0;
-
-        const typename DataTypes::VecCoord& restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-
-        type::vector<EdgeInformation>& edgeData = *(ff->edgeInfo.beginEdit());
-
-        for (unsigned int i=0; i<quadAdded.size(); ++i)
+        for(unsigned int j=0; j<4; ++j)
         {
 
-            /// describe the jth edge index of quad no i
-            EdgesInQuad te2 = ff->m_topology->getEdgesInQuad(quadAdded[i]);
-            /// describe the jth vertex index of quad no i
-            Quad t2 = ff->m_topology->getQuad(quadAdded[i]);
-
-            for(unsigned int j=0; j<4; ++j)
+            EdgeInformation &ei = edgeData[te2[j]]; // ff->edgeInfo
+            if(!(ei.is_initialized))
             {
 
-                EdgeInformation &ei = edgeData[te2[j]]; // ff->edgeInfo
-                if(!(ei.is_initialized))
+                unsigned int edgeIndex = te2[j];
+                ei.is_activated=true;
+
+                /// set to zero the edge stiffness matrix
+                for (u=0; u<N; ++u)
+                {
+                    for (v=0; v<N; ++v)
+                    {
+                        ei.DfDx[u][v]=0;
+                    }
+                }
+
+                const auto& shell = this->m_topology->getQuadsAroundEdge(edgeIndex);
+                if (shell.size()==2)
                 {
 
-                    unsigned int edgeIndex = te2[j];
+                    nb_activated+=1;
+
+                    EdgesInQuad te1;
+                    Quad t1;
+
+                    if(shell[0] == quadAdded[i])
+                    {
+
+                        te1 = this->m_topology->getEdgesInQuad(shell[1]);
+                        t1 = this->m_topology->getQuad(shell[1]);
+
+                    }
+                    else   // shell[1] == quadAdded[i]
+                    {
+
+                        te1 = this->m_topology->getEdgesInQuad(shell[0]);
+                        t1 = this->m_topology->getQuad(shell[0]);
+                    }
+
+                    int i1 = this->m_topology->getEdgeIndexInQuad(te1, edgeIndex); //edgeIndex //te1[j]
+                    int i2 = this->m_topology->getEdgeIndexInQuad(te2, edgeIndex); // edgeIndex //te2[j]
+
+                    ei.m1 = t1[i1]; // i1
+                    ei.m2 = t2[(i2+3)%4]; // i2
+
+                    ei.m3 = t1[(i1+3)%4]; // (i1+3)%4
+                    ei.m4 = t2[i2]; // (i2+3)%4
+
+                    //QuadularBendingSprings<DataTypes> *fftest= (QuadularBendingSprings<DataTypes> *)param;
+                    ei.ks=m_ks; //(fftest->ks).getValue();
+                    ei.kd=m_kd; //(fftest->kd).getValue();
+
+                    Coord u1 = (restPosition)[ei.m1] - (restPosition)[ei.m2];
+                    Real d1 = u1.norm();
+                    ei.restlength1=(double) d1;
+
+                    Coord u2 = (restPosition)[ei.m3] - (restPosition)[ei.m4];
+                    Real d2 = u2.norm();
+                    ei.restlength2=(double) d2;
+
                     ei.is_activated=true;
 
-                    /// set to zero the edge stiffness matrix
-                    for (u=0; u<N; ++u)
-                    {
-                        for (v=0; v<N; ++v)
-                        {
-                            ei.DfDx[u][v]=0;
-                        }
-                    }
-
-                    const auto& shell = ff->m_topology->getQuadsAroundEdge(edgeIndex);
-                    if (shell.size()==2)
-                    {
-
-                        nb_activated+=1;
-
-                        EdgesInQuad te1;
-                        Quad t1;
-
-                        if(shell[0] == quadAdded[i])
-                        {
-
-                            te1 = ff->m_topology->getEdgesInQuad(shell[1]);
-                            t1 =  ff->m_topology->getQuad(shell[1]);
-
-                        }
-                        else   // shell[1] == quadAdded[i]
-                        {
-
-                            te1 = ff->m_topology->getEdgesInQuad(shell[0]);
-                            t1 =  ff->m_topology->getQuad(shell[0]);
-                        }
-
-                        int i1 = ff->m_topology->getEdgeIndexInQuad(te1, edgeIndex); //edgeIndex //te1[j]
-                        int i2 = ff->m_topology->getEdgeIndexInQuad(te2, edgeIndex); // edgeIndex //te2[j]
-
-                        ei.m1 = t1[i1]; // i1
-                        ei.m2 = t2[(i2+3)%4]; // i2
-
-                        ei.m3 = t1[(i1+3)%4]; // (i1+3)%4
-                        ei.m4 = t2[i2]; // (i2+3)%4
-
-                        //QuadularBendingSprings<DataTypes> *fftest= (QuadularBendingSprings<DataTypes> *)param;
-                        ei.ks=m_ks; //(fftest->ks).getValue();
-                        ei.kd=m_kd; //(fftest->kd).getValue();
-
-                        Coord u1 = (restPosition)[ei.m1] - (restPosition)[ei.m2];
-                        Real d1 = u1.norm();
-                        ei.restlength1=(double) d1;
-
-                        Coord u2 = (restPosition)[ei.m3] - (restPosition)[ei.m4];
-                        Real d2 = u2.norm();
-                        ei.restlength2=(double) d2;
-
-                        ei.is_activated=true;
-
-                    }
-                    else
-                    {
-
-                        ei.is_activated=false;
-
-                    }
-
-                    ei.is_initialized = true;
                 }
+                else
+                {
+
+                    ei.is_activated=false;
+
+                }
+
+                ei.is_initialized = true;
             }
-
         }
-        ff->edgeInfo.endEdit();
-    }
 
+    }
 }
 
 template< class DataTypes>
-void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadDestruction(const sofa::type::vector<Index> &quadRemoved)
+void QuadularBendingSprings<DataTypes>::applyQuadDestruction(const sofa::type::vector<Index> &quadRemoved)
 {
-    if (ff)
+    double m_ks=getKs();
+    double m_kd=getKd();
+
+    const typename DataTypes::VecCoord& restPosition= this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    helper::WriteOnlyAccessor< Data< type::vector<EdgeInformation> > > edgeData = edgeInfo;
+
+    for (unsigned int i=0; i<quadRemoved.size(); ++i)
     {
 
-        double m_ks=ff->getKs(); // typename DataTypes::
-        double m_kd=ff->getKd(); // typename DataTypes::
+        /// describe the jth edge index of quad no i
+        EdgesInQuad te = this->m_topology->getEdgesInQuad(quadRemoved[i]);
+        /// describe the jth vertex index of quad no i
+        //Quad t =  this->m_topology->getQuad(quadRemoved[i]);
 
-        //unsigned int u,v;
 
-        const typename DataTypes::VecCoord& restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-        type::vector<EdgeInformation>& edgeData = *(ff->edgeInfo.beginEdit());
-
-        for (unsigned int i=0; i<quadRemoved.size(); ++i)
+        for(unsigned int j=0; j<4; ++j)
         {
 
-            /// describe the jth edge index of quad no i
-            EdgesInQuad te = ff->m_topology->getEdgesInQuad(quadRemoved[i]);
-            /// describe the jth vertex index of quad no i
-            //Quad t =  ff->m_topology->getQuad(quadRemoved[i]);
-
-
-            for(unsigned int j=0; j<4; ++j)
+            EdgeInformation &ei = edgeData[te[j]]; // ff->edgeInfo
+            if(ei.is_initialized)
             {
 
-                EdgeInformation &ei = edgeData[te[j]]; // ff->edgeInfo
-                if(ei.is_initialized)
+                unsigned int edgeIndex = te[j];
+
+                const auto& shell = this->m_topology->getQuadsAroundEdge(edgeIndex);
+                if (shell.size()==3)
                 {
 
-                    unsigned int edgeIndex = te[j];
+                    EdgesInQuad te1;
+                    Quad t1;
+                    EdgesInQuad te2;
+                    Quad t2;
 
-                    const auto& shell = ff->m_topology->getQuadsAroundEdge(edgeIndex);
-                    if (shell.size()==3)
+                    if(shell[0] == quadRemoved[i])
                     {
-
-                        EdgesInQuad te1;
-                        Quad t1;
-                        EdgesInQuad te2;
-                        Quad t2;
-
-                        if(shell[0] == quadRemoved[i])
-                        {
-                            te1 = ff->m_topology->getEdgesInQuad(shell[1]);
-                            t1 =  ff->m_topology->getQuad(shell[1]);
-                            te2 = ff->m_topology->getEdgesInQuad(shell[2]);
-                            t2 =  ff->m_topology->getQuad(shell[2]);
-
-                        }
-                        else
-                        {
-
-                            if(shell[1] == quadRemoved[i])
-                            {
-
-                                te1 = ff->m_topology->getEdgesInQuad(shell[2]);
-                                t1 =  ff->m_topology->getQuad(shell[2]);
-                                te2 = ff->m_topology->getEdgesInQuad(shell[0]);
-                                t2 =  ff->m_topology->getQuad(shell[0]);
-
-                            }
-                            else   // shell[2] == quadRemoved[i]
-                            {
-
-                                te1 = ff->m_topology->getEdgesInQuad(shell[0]);
-                                t1 =  ff->m_topology->getQuad(shell[0]);
-                                te2 = ff->m_topology->getEdgesInQuad(shell[1]);
-                                t2 =  ff->m_topology->getQuad(shell[1]);
-
-                            }
-                        }
-
-                        int i1 = ff->m_topology->getEdgeIndexInQuad(te1, edgeIndex);
-                        int i2 = ff->m_topology->getEdgeIndexInQuad(te2, edgeIndex);
-
-                        ei.m1 = t1[i1];
-                        ei.m2 = t2[(i2+3)%4];
-
-                        ei.m3 = t1[(i1+3)%4];
-                        ei.m4 = t2[i2];
-
-                        //QuadularBendingSprings<DataTypes> *fftest= (QuadularBendingSprings<DataTypes> *)param;
-                        ei.ks=m_ks; //(fftest->ks).getValue();
-                        ei.kd=m_kd; //(fftest->kd).getValue();
-
-                        Coord u1 = (restPosition)[ei.m1] - (restPosition)[ei.m2];
-                        Real d1 = u1.norm();
-                        ei.restlength1=(double) d1;
-
-                        Coord u2 = (restPosition)[ei.m3] - (restPosition)[ei.m4];
-                        Real d2 = u2.norm();
-                        ei.restlength2=(double) d2;
-
-                        ei.is_activated=true;
+                        te1 = this->m_topology->getEdgesInQuad(shell[1]);
+                        t1 = this->m_topology->getQuad(shell[1]);
+                        te2 = this->m_topology->getEdgesInQuad(shell[2]);
+                        t2 = this->m_topology->getQuad(shell[2]);
 
                     }
                     else
                     {
 
-                        ei.is_activated=false;
-                        ei.is_initialized = false;
+                        if(shell[1] == quadRemoved[i])
+                        {
 
+                            te1 = this->m_topology->getEdgesInQuad(shell[2]);
+                            t1 = this->m_topology->getQuad(shell[2]);
+                            te2 = this->m_topology->getEdgesInQuad(shell[0]);
+                            t2 = this->m_topology->getQuad(shell[0]);
+
+                        }
+                        else   // shell[2] == quadRemoved[i]
+                        {
+
+                            te1 = this->m_topology->getEdgesInQuad(shell[0]);
+                            t1 = this->m_topology->getQuad(shell[0]);
+                            te2 = this->m_topology->getEdgesInQuad(shell[1]);
+                            t2 = this->m_topology->getQuad(shell[1]);
+
+                        }
                     }
+
+                    int i1 = this->m_topology->getEdgeIndexInQuad(te1, edgeIndex);
+                    int i2 = this->m_topology->getEdgeIndexInQuad(te2, edgeIndex);
+
+                    ei.m1 = t1[i1];
+                    ei.m2 = t2[(i2+3)%4];
+
+                    ei.m3 = t1[(i1+3)%4];
+                    ei.m4 = t2[i2];
+
+                    //QuadularBendingSprings<DataTypes> *fftest= (QuadularBendingSprings<DataTypes> *)param;
+                    ei.ks=m_ks; //(fftest->ks).getValue();
+                    ei.kd=m_kd; //(fftest->kd).getValue();
+
+                    Coord u1 = (restPosition)[ei.m1] - (restPosition)[ei.m2];
+                    Real d1 = u1.norm();
+                    ei.restlength1=(double) d1;
+
+                    Coord u2 = (restPosition)[ei.m3] - (restPosition)[ei.m4];
+                    Real d2 = u2.norm();
+                    ei.restlength2=(double) d2;
+
+                    ei.is_activated=true;
 
                 }
                 else
@@ -283,192 +257,156 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyQuadDestruction(cons
                     ei.is_initialized = false;
 
                 }
-            }
 
+            }
+            else
+            {
+
+                ei.is_activated=false;
+                ei.is_initialized = false;
+
+            }
         }
-        ff->edgeInfo.endEdit();
+
     }
 }
 
 template< class DataTypes>
-void QuadularBendingSprings<DataTypes>::EdgeBSHandler::ApplyTopologyChange(const core::topology::QuadsAdded* e)
+void QuadularBendingSprings<DataTypes>::applyPointDestruction(const sofa::type::vector<Index> &tab)
 {
-    const auto &quadAdded = e->getIndexArray();
-    const sofa::type::vector<Quad> &elems = e->getElementArray();
-    const auto & ancestors = e->ancestorsList;
-    const sofa::type::vector<sofa::type::vector<double> > & coefs = e->coefs;
+    bool debug_mode = false;
 
-    applyQuadCreation(quadAdded, elems, ancestors, coefs);
-}
+    unsigned int last = this->m_topology->getNbPoints() -1;
+    unsigned int i,j;
 
-template< class DataTypes>
-void QuadularBendingSprings<DataTypes>::EdgeBSHandler::ApplyTopologyChange(const core::topology::QuadsRemoved* e)
-{
-    const auto &quadRemoved = e->getArray();
+    helper::WriteOnlyAccessor< Data< type::vector<EdgeInformation> > > edgeInf = edgeInfo;
 
-    applyQuadDestruction(quadRemoved);
-}
-
-
-template< class DataTypes>
-void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointDestruction(const sofa::type::vector<Index> &tab)
-{
-    if(ff)
+    sofa::type::vector<Index> lastIndexVec;
+    for(unsigned int i_init = 0; i_init < tab.size(); ++i_init)
     {
-        bool debug_mode = false;
 
-        unsigned int last = ff->m_topology->getNbPoints() -1;
-        unsigned int i,j;
+        lastIndexVec.push_back(last - i_init);
+    }
 
-        type::vector<EdgeInformation>& edgeInf = *(ff->edgeInfo.beginEdit());
-
-        sofa::type::vector<Index> lastIndexVec;
-        for(unsigned int i_init = 0; i_init < tab.size(); ++i_init)
+    for ( i = 0; i < tab.size(); ++i)
+    {
+        unsigned int i_next = i;
+        bool is_reached = false;
+        while( (!is_reached) && (i_next < lastIndexVec.size() - 1))
         {
 
-            lastIndexVec.push_back(last - i_init);
+            i_next += 1 ;
+            is_reached = is_reached || (lastIndexVec[i_next] == tab[i]);
         }
 
-        for ( i = 0; i < tab.size(); ++i)
+        if(is_reached)
         {
-            unsigned int i_next = i;
-            bool is_reached = false;
-            while( (!is_reached) && (i_next < lastIndexVec.size() - 1))
+
+            lastIndexVec[i_next] = lastIndexVec[i];
+
+        }
+
+        const auto &shell= this->m_topology->getQuadsAroundVertex(lastIndexVec[i]);
+        for (j=0; j<shell.size(); ++j)
+        {
+
+            Quad tj = this->m_topology->getQuad(shell[j]);
+
+            unsigned int vertexIndex = this->m_topology->getVertexIndexInQuad(tj, lastIndexVec[i]);
+
+            EdgesInQuad tej = this->m_topology->getEdgesInQuad(shell[j]);
+
+            for (unsigned int j_edge=vertexIndex; j_edge%4 !=(vertexIndex+2)%4; ++j_edge)
             {
 
-                i_next += 1 ;
-                is_reached = is_reached || (lastIndexVec[i_next] == tab[i]);
-            }
+                unsigned int ind_j = tej[j_edge%4];
 
-            if(is_reached)
-            {
-
-                lastIndexVec[i_next] = lastIndexVec[i];
-
-            }
-
-            const auto &shell= ff->m_topology->getQuadsAroundVertex(lastIndexVec[i]);
-            for (j=0; j<shell.size(); ++j)
-            {
-
-                Quad tj = ff->m_topology->getQuad(shell[j]);
-
-                unsigned int vertexIndex = ff->m_topology->getVertexIndexInQuad(tj, lastIndexVec[i]);
-
-                EdgesInQuad tej = ff->m_topology->getEdgesInQuad(shell[j]);
-
-                for (unsigned int j_edge=vertexIndex; j_edge%4 !=(vertexIndex+2)%4; ++j_edge)
+                if (edgeInf[ind_j].m1 == (int) last)
                 {
-
-                    unsigned int ind_j = tej[j_edge%4];
-
-                    if (edgeInf[ind_j].m1 == (int) last)
+                    edgeInf[ind_j].m1=(int) tab[i];
+                }
+                else
+                {
+                    if (edgeInf[ind_j].m2 == (int) last)
                     {
-                        edgeInf[ind_j].m1=(int) tab[i];
+                        edgeInf[ind_j].m2=(int) tab[i];
                     }
-                    else
+                }
+
+                if (edgeInf[ind_j].m3 == (int) last)
+                {
+                    edgeInf[ind_j].m3=(int) tab[i];
+                }
+                else
+                {
+                    if (edgeInf[ind_j].m4 == (int) last)
                     {
-                        if (edgeInf[ind_j].m2 == (int) last)
-                        {
-                            edgeInf[ind_j].m2=(int) tab[i];
-                        }
+                        edgeInf[ind_j].m4=(int) tab[i];
+                    }
+                }
+
+            }
+        }
+
+        if(debug_mode)
+        {
+            for (unsigned int j_loc=0; j_loc<edgeInf.size(); ++j_loc)
+            {
+
+                //bool is_forgotten = false;
+                if (edgeInf[j_loc].m1 == (int) last)
+                {
+                    edgeInf[j_loc].m1 =(int) tab[i];
+                    //is_forgotten=true;
+                }
+                else
+                {
+                    if (edgeInf[j_loc].m2 ==(int) last)
+                    {
+                        edgeInf[j_loc].m2 =(int) tab[i];
+                        //is_forgotten=true;
                     }
 
-                    if (edgeInf[ind_j].m3 == (int) last)
+                }
+
+                if (edgeInf[j_loc].m3 == (int) last)
+                {
+                    edgeInf[j_loc].m3 =(int) tab[i];
+                    //is_forgotten=true;
+                }
+                else
+                {
+                    if (edgeInf[j_loc].m4 ==(int) last)
                     {
-                        edgeInf[ind_j].m3=(int) tab[i];
-                    }
-                    else
-                    {
-                        if (edgeInf[ind_j].m4 == (int) last)
-                        {
-                            edgeInf[ind_j].m4=(int) tab[i];
-                        }
+                        edgeInf[j_loc].m4 =(int) tab[i];
+                        //is_forgotten=true;
                     }
 
                 }
             }
-
-            if(debug_mode)
-            {
-                for (unsigned int j_loc=0; j_loc<edgeInf.size(); ++j_loc)
-                {
-
-                    //bool is_forgotten = false;
-                    if (edgeInf[j_loc].m1 == (int) last)
-                    {
-                        edgeInf[j_loc].m1 =(int) tab[i];
-                        //is_forgotten=true;
-                    }
-                    else
-                    {
-                        if (edgeInf[j_loc].m2 ==(int) last)
-                        {
-                            edgeInf[j_loc].m2 =(int) tab[i];
-                            //is_forgotten=true;
-                        }
-
-                    }
-
-                    if (edgeInf[j_loc].m3 == (int) last)
-                    {
-                        edgeInf[j_loc].m3 =(int) tab[i];
-                        //is_forgotten=true;
-                    }
-                    else
-                    {
-                        if (edgeInf[j_loc].m4 ==(int) last)
-                        {
-                            edgeInf[j_loc].m4 =(int) tab[i];
-                            //is_forgotten=true;
-                        }
-
-                    }
-                }
-            }
-
-            --last;
         }
-        ff->edgeInfo.endEdit();
+
+        --last;
     }
 }
 
 
 
 template< class DataTypes>
-void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointRenumbering(const sofa::type::vector<Index> &tab)
+void QuadularBendingSprings<DataTypes>::applyPointRenumbering(const sofa::type::vector<Index> &tab)
 {
-    if(ff)
+    helper::WriteOnlyAccessor< Data< type::vector<EdgeInformation> > > edgeInf = edgeInfo;
+    for (unsigned  int i = 0; i < this->m_topology->getNbEdges(); ++i)
     {
-        type::vector<EdgeInformation>& edgeInf = *(ff->edgeInfo.beginEdit());
-        for (unsigned  int i = 0; i < ff->m_topology->getNbEdges(); ++i)
+        if(edgeInf[i].is_activated)
         {
-            if(edgeInf[i].is_activated)
-            {
-                edgeInf[i].m1  = tab[edgeInf[i].m1];
-                edgeInf[i].m2  = tab[edgeInf[i].m2];
-                edgeInf[i].m3  = tab[edgeInf[i].m3];
-                edgeInf[i].m4  = tab[edgeInf[i].m4];
-            }
+            edgeInf[i].m1  = tab[edgeInf[i].m1];
+            edgeInf[i].m2  = tab[edgeInf[i].m2];
+            edgeInf[i].m3  = tab[edgeInf[i].m3];
+            edgeInf[i].m4  = tab[edgeInf[i].m4];
         }
-        ff->edgeInfo.endEdit();
     }
 }
-
-template< class DataTypes>
-void QuadularBendingSprings<DataTypes>::EdgeBSHandler::ApplyTopologyChange(const core::topology::PointsRemoved* e)
-{
-    const auto & tab = e->getArray();
-    applyPointDestruction(tab);
-}
-
-template< class DataTypes>
-void QuadularBendingSprings<DataTypes>::EdgeBSHandler::ApplyTopologyChange(const core::topology::PointsRenumbering* e)
-{
-    const auto &newIndices = e->getIndexArray();
-    applyPointRenumbering(newIndices);
-}
-
 
 
 template<class DataTypes>
@@ -480,15 +418,14 @@ QuadularBendingSprings<DataTypes>::QuadularBendingSprings()
     , m_topology(nullptr)
     , updateMatrix(true)
 {
-    edgeHandler = new EdgeBSHandler(this, &edgeInfo);
+
 }
 
 
 template<class DataTypes>
 QuadularBendingSprings<DataTypes>::~QuadularBendingSprings()
 {
-    if(edgeHandler)
-        delete edgeHandler;
+
 }
 
 
@@ -518,20 +455,20 @@ void QuadularBendingSprings<DataTypes>::init()
         msg_warning() << "No Quads found in linked Topology.";
     }
 
-    edgeInfo.createTopologyHandler(m_topology,edgeHandler);
+    edgeInfo.createTopologyHandler(m_topology);
     edgeInfo.linkToPointDataArray();
     edgeInfo.linkToQuadDataArray();
 
     /// prepare to store info in the edge array
-    type::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
+    helper::WriteOnlyAccessor< Data< type::vector<EdgeInformation> > > edgeInf = edgeInfo;
     edgeInf.resize(m_topology->getNbEdges());
 
     // set edge tensor to 0
     for (Index i=0; i<m_topology->getNbEdges(); ++i)
     {
-        edgeHandler->applyCreateFunction(i, edgeInf[i],
-                m_topology->getEdge(i),  (const sofa::type::vector< Index > )0,
-                (const sofa::type::vector< double >)0);
+        applyEdgeCreation(i, edgeInf[i],
+            m_topology->getEdge(i),  (const sofa::type::vector< Index > )0,
+            (const sofa::type::vector< double >)0);
     }
 
     // create edge tensor by calling the quad creation function
@@ -539,13 +476,39 @@ void QuadularBendingSprings<DataTypes>::init()
     for (unsigned int i=0; i<m_topology->getNbQuads(); ++i)
         quadAdded.push_back(i);
 
-    edgeHandler->applyQuadCreation(quadAdded,
-            (const sofa::type::vector<Quad>)0,
-            (const sofa::type::vector<sofa::type::vector<Index> >)0,
-            (const sofa::type::vector<sofa::type::vector<double> >)0);
+    applyQuadCreation(quadAdded,
+        (const sofa::type::vector<Quad>)0,
+        (const sofa::type::vector<sofa::type::vector<Index> >)0,
+        (const sofa::type::vector<sofa::type::vector<double> >)0);
 
+    edgeInfo.setCreationCallback([this](Index edgeIndex, EdgeInformation& ei,
+        const core::topology::BaseMeshTopology::Edge& edge,
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs)
+    {
+        applyEdgeCreation(edgeIndex, ei, edge, ancestors, coefs);
+    });
 
-    edgeInfo.endEdit();
+    edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::QUADSADDED, [this](const core::topology::TopologyChange* eventTopo) {
+        const core::topology::QuadsAdded* quadAdd = static_cast<const core::topology::QuadsAdded*>(eventTopo);
+        applyQuadCreation(quadAdd->getIndexArray(), quadAdd->getElementArray(), quadAdd->ancestorsList, quadAdd->coefs);
+    });
+
+    edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::QUADSREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
+        const core::topology::QuadsRemoved* quadRemove = static_cast<const core::topology::QuadsRemoved*>(eventTopo);
+        applyQuadDestruction(quadRemove->getArray());
+    });
+
+    edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::POINTSREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
+        const core::topology::PointsRemoved* pRemove = static_cast<const core::topology::PointsRemoved*>(eventTopo);
+        applyPointDestruction(pRemove->getArray());
+    });
+
+    edgeInfo.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::POINTSRENUMBERING, [this](const core::topology::TopologyChange* eventTopo) {
+        const core::topology::PointsRenumbering* pRenum = static_cast<const core::topology::PointsRenumbering*>(eventTopo);
+        applyPointRenumbering(pRenum->getIndexArray());
+    });
+
 }
 
 template <class DataTypes>

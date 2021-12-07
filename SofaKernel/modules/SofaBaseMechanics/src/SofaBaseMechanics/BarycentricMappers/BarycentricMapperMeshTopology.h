@@ -55,8 +55,6 @@ public:
     typedef typename Inherit1::MatrixType MatrixType;
     typedef typename MatrixType::Index MatrixTypeIndex;
 
-    typedef typename Inherit1::ForceMask ForceMask;
-
     using Index = sofa::Index;
 
 public:
@@ -91,7 +89,7 @@ public:
 
 protected:
     BarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology,
-                                  topology::PointSetTopologyContainer* toTopology) ;
+        core::topology::BaseMeshTopology* toTopology) ;
 
     sofa::type::vector< MappingData1D >  m_map1d;
     sofa::type::vector< MappingData2D >  m_map2d;

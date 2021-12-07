@@ -78,7 +78,7 @@ class SceneRegisterArticulatedRigid(Compliant.sml.SceneArticulatedRigid):
         (filename, ext) = os.path.splitext(os.path.basename(file))
 
         if ext == ".obj":
-            target_node.createObject('MeshObjLoader', name='loader', filename=file, triangulate='1',
+            target_node.createObject('MeshOBJLoader', name='loader', filename=file, triangulate='1',
                                      translation=translation, rotation=rotation, scale3d=self.param.target.scale)
 
         if ext == ".stl":

@@ -12,19 +12,15 @@ set(HEADER_FILES
     ${SOFAMESHCOLLISION_SRC}/BarycentricPenalityContact.h
     ${SOFAMESHCOLLISION_SRC}/BarycentricPenalityContact.inl
     ${SOFAMESHCOLLISION_SRC}/CollisionPM.h
-    ${SOFAMESHCOLLISION_SRC}/EmptyFilter.h
     ${SOFAMESHCOLLISION_SRC}/EndPoint.h
     ${SOFAMESHCOLLISION_SRC}/IdentityContactMapper.h
     ${SOFAMESHCOLLISION_SRC}/IdentityContactMapper.inl
     ${SOFAMESHCOLLISION_SRC}/Line.h
-    ${SOFAMESHCOLLISION_SRC}/LineLocalMinDistanceFilter.h
     ${SOFAMESHCOLLISION_SRC}/LineModel.h
     ${SOFAMESHCOLLISION_SRC}/LineModel.inl
-    ${SOFAMESHCOLLISION_SRC}/LocalMinDistanceFilter.h
     ${SOFAMESHCOLLISION_SRC}/MeshNewProximityIntersection.h
     ${SOFAMESHCOLLISION_SRC}/MeshNewProximityIntersection.inl
     ${SOFAMESHCOLLISION_SRC}/Point.h
-    ${SOFAMESHCOLLISION_SRC}/PointLocalMinDistanceFilter.h
     ${SOFAMESHCOLLISION_SRC}/PointModel.h
     ${SOFAMESHCOLLISION_SRC}/PointModel.inl
     ${SOFAMESHCOLLISION_SRC}/RayTriangleIntersection.h
@@ -33,7 +29,6 @@ set(HEADER_FILES
     ${SOFAMESHCOLLISION_SRC}/SubsetContactMapper.h
     ${SOFAMESHCOLLISION_SRC}/SubsetContactMapper.inl
     ${SOFAMESHCOLLISION_SRC}/Triangle.h
-    ${SOFAMESHCOLLISION_SRC}/TriangleLocalMinDistanceFilter.h
     ${SOFAMESHCOLLISION_SRC}/TriangleModel.h
     ${SOFAMESHCOLLISION_SRC}/TriangleModel.inl
 )
@@ -43,20 +38,18 @@ set(SOURCE_FILES
     ${SOFAMESHCOLLISION_SRC}/BarycentricContactMapper.cpp
     ${SOFAMESHCOLLISION_SRC}/BarycentricPenalityContact.cpp
     ${SOFAMESHCOLLISION_SRC}/IdentityContactMapper.cpp
-    ${SOFAMESHCOLLISION_SRC}/LineLocalMinDistanceFilter.cpp
     ${SOFAMESHCOLLISION_SRC}/LineModel.cpp
-    ${SOFAMESHCOLLISION_SRC}/LocalMinDistanceFilter.cpp
     ${SOFAMESHCOLLISION_SRC}/MeshNewProximityIntersection.cpp
-    ${SOFAMESHCOLLISION_SRC}/PointLocalMinDistanceFilter.cpp
     ${SOFAMESHCOLLISION_SRC}/PointModel.cpp
     ${SOFAMESHCOLLISION_SRC}/RayTriangleIntersection.cpp
     ${SOFAMESHCOLLISION_SRC}/RigidContactMapper.cpp
     ${SOFAMESHCOLLISION_SRC}/SubsetContactMapper.cpp
-    ${SOFAMESHCOLLISION_SRC}/TriangleLocalMinDistanceFilter.cpp
     ${SOFAMESHCOLLISION_SRC}/TriangleModel.cpp
 )
 
-sofa_find_package(SofaBase REQUIRED) # SofaBaseMechanics SofaBaseCollision SofaBaseTopology
+sofa_find_package(SofaBaseMechanics REQUIRED)
+sofa_find_package(SofaBaseCollision REQUIRED)
+sofa_find_package(SofaBaseTopology REQUIRED)
 sofa_find_package(SofaObjectInteraction REQUIRED)
 sofa_find_package(SofaRigid REQUIRED)
 

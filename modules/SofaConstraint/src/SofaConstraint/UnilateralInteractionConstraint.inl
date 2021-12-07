@@ -146,8 +146,6 @@ void UnilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const cor
 
             c.id = contactId++;
 
-            const Deriv u(1,0,0);
-
             MatrixDerivRowIterator c1_it = c1.writeLine(c.id);
             c1_it.addCol(c.m1, -c.norm);
 

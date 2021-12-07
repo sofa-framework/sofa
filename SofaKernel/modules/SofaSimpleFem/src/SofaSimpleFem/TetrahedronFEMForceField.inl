@@ -1157,7 +1157,9 @@ void TetrahedronFEMForceField<DataTypes>::initSVD(Index i, Index& a, Index&b, In
     A[0] = initialPoints[b]-initialPoints[a];
     A[1] = initialPoints[c]-initialPoints[a];
     A[2] = initialPoints[d]-initialPoints[a];
-    _initialTransformation[i].invert( A );
+    const bool canInvert = _initialTransformation[i].invert( A );
+    assert(canInvert);
+    SOFA_UNUSED(canInvert);
 
     Transformation R_0_1;
     helper::Decompose<Real>::polarDecomposition( A, R_0_1 );
@@ -1612,7 +1614,9 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
                     matVert[k][l] = X0[ix][l-1];
             }
 
-            type::invertMatrix(elemShapeFun[i], matVert);
+            const bool canInvert = type::invertMatrix(elemShapeFun[i], matVert);
+            assert(canInvert);
+            SOFA_UNUSED(canInvert);
         }
         computeVonMisesStress();
     }
@@ -1965,94 +1969,44 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPar
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
 {
-    // Build Matrix Block for this ForceField
-
-    if (auto* crsmat_d = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,double> > * >(mat))
-    {
-        addKToBlocMatrix<double>(crsmat_d, k, offset);
-    }
-    else if (auto* crsmat_f = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,float> > * >(mat))
-    {
-        addKToBlocMatrix<float>(crsmat_f, k, offset);
-    }
-    else
-    {
-        int IT;
-        StiffnessMatrix JKJt,tmp;
-
-        Index noeud1, noeud2;
-
-        Transformation Rot;
-        Rot.identity(); //set the transformation to identity
-
-        typename VecElement::const_iterator it;
-        for(it = _indexedElements->begin(), IT=0 ; it != _indexedElements->end() ; ++it,++IT)
-        {
-            if (method == SMALL)
-                computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],Rot);
-            else
-                computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],rotations[IT]);
-
-            Inherit1::addToMatrix(mat, offset, *it, tmp, -k);
-        }
-
-    }
-}
-
-template<class DataTypes>
-template<class BlocReal>
-void TetrahedronFEMForceField<DataTypes>::addKToBlocMatrix(
-        sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,BlocReal>,  type::vector<type::Mat<3,3,BlocReal> >, type::vector<sofa::Index> > *crsmat,
-        SReal k, unsigned int &offset)
-{
-    int IT;
-    typename VecElement::const_iterator it;
+    int IT = 0;
     StiffnessMatrix JKJt,tmp;
-
-    int offd3 = offset/3;
 
     Transformation Rot;
     Rot.identity(); //set the transformation to identity
 
-    for(it = _indexedElements->begin(), IT=0 ; it != _indexedElements->end() ; ++it,++IT)
-    {
-        if (method == SMALL) computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],Rot);
-        else computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],rotations[IT]);
+    constexpr auto S = DataTypes::deriv_total_size; // size of node blocks
+    constexpr auto N = Element::size();
 
-        type::Mat<3,3,double> tmpBlock[4][4];
-        // find index of node 1
-        for (int n1=0; n1<4; n1++)
+    for(auto it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it,++IT)
+    {
+        if (method == SMALL)
+            computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],Rot);
+        else
+            computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],rotations[IT]);
+
+        type::Mat<S, S, double> tmpBlock[4][4];
+        for (sofa::Index n1=0; n1 < N; n1++)
         {
-            for(int i=0; i<3; i++)
+            for(sofa::Index i=0; i < S; i++)
             {
-                for (int n2=0; n2<4; n2++)
+                for (sofa::Index n2=0; n2 < N; n2++)
                 {
-                    for (int j=0; j<3; j++)
+                    for (sofa::Index j=0; j < S; j++)
                     {
-                        tmpBlock[n1][n2][i][j] = - tmp[n1*3+i][n2*3+j]*k;
+                        tmpBlock[n1][n2][i][j] = - tmp[n1*S+i][n2*S+j]*k;
                     }
                 }
             }
         }
-        *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[0],true) += tmpBlock[0][0];
-        *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[1],true) += tmpBlock[0][1];
-        *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[2],true) += tmpBlock[0][2];
-        *crsmat->wbloc(offd3 + (*it)[0], offd3 + (*it)[3],true) += tmpBlock[0][3];
 
-        *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[0],true) += tmpBlock[1][0];
-        *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[1],true) += tmpBlock[1][1];
-        *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[2],true) += tmpBlock[1][2];
-        *crsmat->wbloc(offd3 + (*it)[1], offd3 + (*it)[3],true) += tmpBlock[1][3];
-
-        *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[0],true) += tmpBlock[2][0];
-        *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[1],true) += tmpBlock[2][1];
-        *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[2],true) += tmpBlock[2][2];
-        *crsmat->wbloc(offd3 + (*it)[2], offd3 + (*it)[3],true) += tmpBlock[2][3];
-
-        *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[0],true) += tmpBlock[3][0];
-        *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[1],true) += tmpBlock[3][1];
-        *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[2],true) += tmpBlock[3][2];
-        *crsmat->wbloc(offd3 + (*it)[3], offd3 + (*it)[3],true) += tmpBlock[3][3];
+        for (sofa::Index n1=0; n1 < N; n1++)
+        {
+            for (sofa::Index n2=0; n2 < N; n2++)
+            {
+                mat->add(offset + (*it)[n1] * S, offset + (*it)[n2] * S, tmpBlock[n1][n2]);
+            }
+        }
     }
 }
 
@@ -2152,7 +2106,7 @@ const type::vector< typename TetrahedronFEMForceField<DataTypes>::Mat33 >& Tetra
 
     m_rotations.resize(nbDOFs);
 
-    for (auto i = 0; i < nbDOFs; ++i)
+    for (sofa::Size i = 0; i < nbDOFs; ++i)
     {
         getRotation(m_rotations[i], i);
     }

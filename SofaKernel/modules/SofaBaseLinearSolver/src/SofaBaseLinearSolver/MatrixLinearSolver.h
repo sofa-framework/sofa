@@ -27,17 +27,18 @@
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/GraphScatteredTypes.h>
+#include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <SofaBaseLinearSolver/DiagonalMatrix.h>
 #include <SofaBaseLinearSolver/RotationMatrix.h>
 
-#ifdef SOFA_SUPPORT_CRS_MATRIX
+#if SOFABASELINEARSOLVER_ENABLE_CRSMULTIMATRIXACCESSOR
 #include <SofaBaseLinearSolver/CRSMultiMatrixAccessor.h>
 #else
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
-#endif
+#endif // SOFABASELINEARSOLVER_ENABLE_CRSMULTIMATRIXACCESSOR
 
 namespace sofa::component::linearsolver
 {
@@ -326,11 +327,11 @@ protected:
         Vector* systemLHVector;
         core::MultiVecDerivId solutionVecId;
 
-#ifdef SOFA_SUPPORT_CRS_MATRIX
+#if SOFABASELINEARSOLVER_ENABLE_CRSMULTIMATRIXACCESSOR
         CRSMultiMatrixAccessor matrixAccessor;
 #else
         DefaultMultiMatrixAccessor matrixAccessor;
-#endif
+#endif // SOFABASELINEARSOLVER_ENABLE_CRSMULTIMATRIXACCESSOR
 
         LinearSystemData()
                 : needInvert(true), systemMatrix(nullptr), systemRHVector(nullptr), systemLHVector(nullptr),

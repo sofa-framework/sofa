@@ -253,7 +253,9 @@ bool glhUnProjectf(Real winx, Real winy, Real winz, Real *modelview, Real *proje
     sofa::type::Vec<4, Real> in, out;
 
     A = matProjection * matModelview ;
-    sofa::type::invertMatrix(m, A);
+    const bool canInvert = sofa::type::invertMatrix(m, A);
+    assert(canInvert);
+    SOFA_UNUSED(canInvert);
 
     //Transformation of normalized coordinates between -1 and 1
     in[0] = (winx - (Real)viewport[0]) / (Real)viewport[2] * 2.0 - 1.0;
@@ -329,7 +331,7 @@ BaseCamera::Vec3 BaseCamera::screenToWorldCoordinates(int x, int y)
     double winX = (double)x;
     double winY = (double)viewport[3] - (double)y;
 
-    double pos[3];
+    double pos[3]{};
     double modelview[16];
     double projection[16];
 
@@ -594,17 +596,24 @@ BaseCamera::Vec3 BaseCamera::viewportToWorldPoint(const BaseCamera::Vec3& p)
 {
     Vec3 nsPosition = Vec3(p.x() * 2.0 - 1.0, (1.0 - p.y()) * 2.0 - 1.0, p.z() * 2.0 - 1.0);
 
-    Mat4 glP, glM;
+    Mat4 glP, glM, invertglP, invertglM;
     getOpenGLProjectionMatrix(glP.ptr());
     getOpenGLModelViewMatrix(glM.ptr());
 
-    Vec4 vsPosition = glP.inverted().transposed() * Vec4(nsPosition, 1.0);
+    const bool canInvert1 = invertglP.invert(glP);
+    assert(canInvert1);
+    SOFA_UNUSED(canInvert1);
+    const bool canInvert2 = invertglM.invert(glM);
+    assert(canInvert2);
+    SOFA_UNUSED(canInvert2);
+
+    Vec4 vsPosition = invertglP.transposed() * Vec4(nsPosition, 1.0);
     if(isEqual(vsPosition.w(), 0.0))
     {
         return Vec3(std::nan(""), std::nan(""), std::nan(""));
     }
     vsPosition /= vsPosition.w();
-    Vec4 v = (glM.inverted().transposed() * vsPosition);
+    Vec4 v = (invertglM.transposed() * vsPosition);
 
     return Vec3(v[0],v[1],v[2]);
 }

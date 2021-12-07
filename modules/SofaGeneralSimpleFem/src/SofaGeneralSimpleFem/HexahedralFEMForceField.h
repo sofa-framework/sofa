@@ -28,7 +28,6 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 
-#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/TopologyData.h>
 
 namespace sofa::component::forcefield
@@ -189,29 +188,14 @@ public:
     /// container that stotes all requires information for each hexahedron
     topology::HexahedronData<sofa::type::vector<HexahedronInformation> > hexahedronInfo;
 
-    class HFFHexahedronHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Hexahedron,sofa::type::vector<HexahedronInformation> >
-    {
-    public:
-        typedef typename HexahedralFEMForceField<DataTypes>::HexahedronInformation HexahedronInformation;
-
-        HFFHexahedronHandler(HexahedralFEMForceField<DataTypes>* ff, topology::HexahedronData<sofa::type::vector<HexahedronInformation> >* data )
-            :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Hexahedron,sofa::type::vector<HexahedronInformation> >(data)
-            ,ff(ff)
-        {
-        }
-
-        void applyCreateFunction(Index, HexahedronInformation &t, const core::topology::BaseMeshTopology::Hexahedron &,
-                const sofa::type::vector<Index> &, const sofa::type::vector<double> &);
-    protected:
-        HexahedralFEMForceField<DataTypes>* ff;
-    };
-
-
+    /** Method to create @sa HexahedronInformation when a new hexahedron is created.
+    * Will be set as creation callback in the HexahedronData @sa hexahedronInfo
+    */
+    void createHexahedronInformation(Index, HexahedronInformation& t, const core::topology::BaseMeshTopology::Hexahedron&,
+        const sofa::type::vector<Index>&, const sofa::type::vector<double>&);
 
 protected:
-    HFFHexahedronHandler* hexahedronHandler;
-
-    topology::HexahedronSetTopologyContainer* _topology;
+    core::topology::BaseMeshTopology* _topology;
 
     type::Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
 };

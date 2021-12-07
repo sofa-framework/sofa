@@ -46,7 +46,6 @@ TriangularAnisotropicFEMForceField<DataTypes>::TriangularAnisotropicFEMForceFiel
     , localFiberDirection(initData(&localFiberDirection,"localFiberDirection", "Computed fibers direction within each triangle"))
 {
     this->_anisotropicMaterial = true;
-    triangleHandler = new TRQSTriangleHandler(this, &localFiberDirection);
 
     f_young2.setRequired(true);
 }
@@ -55,30 +54,27 @@ TriangularAnisotropicFEMForceField<DataTypes>::TriangularAnisotropicFEMForceFiel
 template <class DataTypes>
 TriangularAnisotropicFEMForceField<DataTypes>::~TriangularAnisotropicFEMForceField()
 {
-    if(triangleHandler) delete triangleHandler;
+
 }
 
 template< class DataTypes>
-void TriangularAnisotropicFEMForceField<DataTypes>::TRQSTriangleHandler::applyCreateFunction(unsigned int triangleIndex, type::vector<triangleInfo> &, const core::topology::BaseMeshTopology::Triangle &t, const sofa::type::vector<unsigned int> &, const sofa::type::vector<double> &)
+void TriangularAnisotropicFEMForceField<DataTypes>::createTriangleInfo(Index triangleIndex, TriangleFiberDirection&, const core::topology::BaseMeshTopology::Triangle &t, const sofa::type::vector<unsigned int> &, const sofa::type::vector<double> &)
 {
-    if (ff)
-    {
-        //const Triangle &t = ff->m_topology->getTriangle(triangleIndex);
-        Index a = t[0];
-        Index b = t[1];
-        Index c = t[2];
+    //const Triangle &t = m_topology->getTriangle(triangleIndex);
+    Index a = t[0];
+    Index b = t[1];
+    Index c = t[2];
 
-        switch(ff->method)
-        {
-        case TriangularFEMForceField<DataTypes>::SMALL :
-            ff->initSmall(triangleIndex,a,b,c);
-            ff->computeMaterialStiffness(triangleIndex, a, b, c);
-            break;
-        case TriangularFEMForceField<DataTypes>::LARGE :
-            ff->initLarge(triangleIndex,a,b,c);
-            ff->computeMaterialStiffness(triangleIndex, a, b, c);
-            break;
-        }
+    switch(this->method)
+    {
+    case TriangularFEMForceField<DataTypes>::SMALL :
+        this->initSmall(triangleIndex,a,b,c);
+        computeMaterialStiffness(triangleIndex, a, b, c);
+        break;
+    case TriangularFEMForceField<DataTypes>::LARGE :
+        this->initLarge(triangleIndex,a,b,c);
+        computeMaterialStiffness(triangleIndex, a, b, c);
+        break;
     }
 }
 
@@ -102,7 +98,14 @@ void TriangularAnisotropicFEMForceField<DataTypes>::init()
     }
 
     // Create specific handler for TriangleData
-    localFiberDirection.createTopologyHandler(m_topology, triangleHandler);
+    localFiberDirection.createTopologyHandler(m_topology);
+    localFiberDirection.setCreationCallback([this](Index triangleIndex, TriangleFiberDirection& triInfo,
+        const core::topology::BaseMeshTopology::Triangle& t,
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< double >& coefs)
+    {
+        createTriangleInfo(triangleIndex, triInfo, t, ancestors, coefs);
+    });
 
     Inherited::init();
     reinit();
@@ -228,7 +231,9 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     {
         Deriv& fiberDirLocal = lfd[i]; // orientation of the fiber in the local frame of the element (orthonormal frame)
         T.transpose();
-        Tinv.invert(T);
+        const bool canInvert = Tinv.invert(T);
+        assert(canInvert);
+        SOFA_UNUSED(canInvert);
         fiberDirLocal = Tinv * fiberDirGlobal;
         fiberDirLocal[2] = 0;
         fiberDirLocal.normalize();
@@ -242,7 +247,9 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
     T[1].normalize();
     T[2].normalize();
     T.transpose();
-    Tinv.invert(T);
+    const bool canInvert = Tinv.invert(T);
+    assert(canInvert);
+    SOFA_UNUSED(canInvert);
     fiberDirLocalOrtho = Tinv * fiberDirGlobal;
     fiberDirLocalOrtho[2] = 0;
     fiberDirLocalOrtho.normalize();

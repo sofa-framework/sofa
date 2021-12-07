@@ -37,7 +37,10 @@
 #include "VectorVis.h"
 
 //(imports + Image data structure + others) are in here
-#include <CImgPlugin/CImgData.h>
+#include <image/CImgData.h>
+
+#include <SofaBaseVisual/VisualModelImpl.h>
+#include <SofaBaseVisual/VisualStyle.h>
 
 namespace sofa
 {
@@ -122,9 +125,9 @@ public:
 
     inline friend std::istream& operator >> ( std::istream& in, Histogram& h )
     {
-        type::Vec<2,T> clamp;
-        in>>clamp;
-        h.setClamp(clamp);
+        type::Vec<2,T> myclamp;
+        in>>myclamp;
+        h.setClamp(myclamp);
         return in;
     }
 

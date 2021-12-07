@@ -105,6 +105,7 @@ public Q_SLOTS:
     void Export();
     void CloseAllDialogs();
     void UpdateOpenedDialogs();
+    void ExpandRootNodeOnly();
 
 Q_SIGNALS:
     void Close();

@@ -116,8 +116,8 @@ struct PlaneForceField_test : public BaseSimulationTest
      * by the plane force field.
      * In the special case where : stiffness = 500, damping = 5 and maxForce = 0 (default values)
     */
-    void SetUp() {}
-    void TearDown(){}
+    void SetUp() override {}
+    void TearDown() override {}
 
     void setupDefaultScene()
     {

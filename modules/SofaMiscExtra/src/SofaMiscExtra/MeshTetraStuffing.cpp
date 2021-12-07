@@ -148,8 +148,8 @@ void MeshTetraStuffing::init()
 
     outP.resize(gsize[0]*gsize[1]*gsize[2] + hsize[0]*hsize[1]*hsize[2]);
 
-    msg_info() << "Grid 1 size " << gsize[0] << "x" << gsize[1] << "x" << gsize[2] << ", total " << gsize[0]*gsize[1]*gsize[2];
-    msg_info() << "Grid 2 size " << hsize[0] << "x" << hsize[1] << "x" << hsize[2] << ", total " << hsize[0]*hsize[1]*hsize[2];
+    msg_info() << "Grid 1 size " << gsize[0] << "x" << gsize[1] << "x" << gsize[2] << ", total " << gsize[0]*gsize[1]*gsize[2] << msgendl
+               << "Grid 2 size " << hsize[0] << "x" << hsize[1] << "x" << hsize[2] << ", total " << hsize[0]*hsize[1]*hsize[2];
 
     ph0 = gsize[0]*gsize[1]*gsize[2];
     int p = 0;
@@ -253,13 +253,13 @@ void MeshTetraStuffing::init()
                         {
                             eBDist[p1][e] = results[i].t - d;
                             if (eBDist[p1][e] < 0.00001)
-                                msg_info() << "WARNING: point " << p1 << " is too close to the surface on edge " << e << " : alpha = " << eBDist[p1][e]<<sendl;
+                                msg_info() << "Point " << p1 << " is too close to the surface on edge " << e << " : alpha = " << eBDist[p1][e];
                         }
                         if (i > 0)
                         {
                             eBDist[p1][e+1] = d - results[i-1].t;
                             if (eBDist[p1][e+1] < 0.00001)
-                                msg_info() << "WARNING: point " << p1 << " is too close to the surface on edge " << e+1 << " : alpha = " << eBDist[p1][e+1]<<sendl;
+                                msg_info() << "Point " << p1 << " is too close to the surface on edge " << e+1 << " : alpha = " << eBDist[p1][e+1];
                         }
 
                         p1 = getEdgePoint2(p1,e);
@@ -627,7 +627,7 @@ void MeshTetraStuffing::addTetra(SeqTetrahedra& outT, SeqPoints& outP, int p1, i
         Real vol6 = a*(b.cross(c));
         if (vol6 < 0)
         {
-            msg_info() << "MeshTetraStuffing("<<line<<"): WARNING: grid tetra " << p1 << " " << p2 << " " << p3 << " " << p4 << " is inverted.";
+            msg_info() << "line("<<line<<"): grid tetra " << p1 << " " << p2 << " " << p3 << " " << p4 << " is inverted.";
             int tmp = p3; p3 = p4; p4 = tmp;
         }
     }

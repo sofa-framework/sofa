@@ -43,7 +43,6 @@ namespace sofa::helper::logging
 ///
 struct SOFA_HELPER_API ComponentInfo
 {
-public:
     ComponentInfo() ;
     ComponentInfo(const std::string& name) ;
     virtual ~ComponentInfo() ;

@@ -22,7 +22,7 @@ using namespace sofa::defaulttype;
 int LabelGridImageToolBox_Class = core::RegisterObject("LabelGridImageToolBox")
         .add<LabelGridImageToolBox<ImageUC> >()
         .add<LabelGridImageToolBox<ImageD> >(true)
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
         .add<LabelGridImageToolBox<ImageC> >()
         .add<LabelGridImageToolBox<ImageI> >()
         .add<LabelGridImageToolBox<ImageUI> >()
@@ -38,7 +38,7 @@ int LabelGridImageToolBox_Class = core::RegisterObject("LabelGridImageToolBox")
 
 template class SOFA_IMAGE_GUI_API LabelGridImageToolBox<ImageUC>;
 template class SOFA_IMAGE_GUI_API LabelGridImageToolBox<ImageD>;
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_GUI_API LabelGridImageToolBox<ImageC>;
 template class SOFA_IMAGE_GUI_API LabelGridImageToolBox<ImageI>;
 template class SOFA_IMAGE_GUI_API LabelGridImageToolBox<ImageUI>;

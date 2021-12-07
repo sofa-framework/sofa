@@ -23,15 +23,9 @@
 
 #include <SofaMiscFem/config.h>
 
-#include "TriangleFEMForceField.h"
+#include <SofaMiscFem/TriangleFEMForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <fstream> // for reading the file
-#include <iostream> //for debugging
-#include <vector>
-#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa::component::forcefield
 {
@@ -87,7 +81,7 @@ void TriangleFEMForceField<DataTypes>::init()
         return;
     }
 
-    if (m_topology->getTriangles().empty() && m_topology->getNbQuads() <= 0)
+    if (m_topology->getTriangles().empty() && m_topology->getQuads().empty())
     {
         msg_warning() << "No triangles found in linked Topology.";
         _indexedElements = &(m_topology->getTriangles());
@@ -97,7 +91,7 @@ void TriangleFEMForceField<DataTypes>::init()
         msg_info() << "Init using triangles mesh: " << m_topology->getTriangles().size() << " triangles.";
         _indexedElements = &(m_topology->getTriangles());
     }
-    else if (!m_topology->getNbQuads() != 0)
+    else if (m_topology->getNbQuads() > 0)
     {
         msg_info() << "Init using quads mesh: " << m_topology->getNbQuads() * 2 << " triangles.";
         sofa::core::topology::BaseMeshTopology::SeqTriangles* trias = new sofa::core::topology::BaseMeshTopology::SeqTriangles;
@@ -615,13 +609,6 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const V
 }
 
 
-//template <class DataTypes>
-//void TriangleFEMForceField<DataTypes>::accumulateDampingLarge(VecCoord &, Index )
-//{
-
-//}
-
-
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h, const VecCoord &x, const SReal &kFactor)
 {
@@ -807,7 +794,7 @@ void TriangleFEMForceField<DataTypes>::setMethod(std::string val)
 template<class DataTypes>
 const type::fixed_array <typename TriangleFEMForceField<DataTypes>::Coord, 3>& TriangleFEMForceField<DataTypes>::getRotatedInitialElement(Index elemId)
 {
-    if (elemId >= 0 && elemId < _rotatedInitialElements.size())
+    if (elemId != sofa::InvalidID && elemId < _rotatedInitialElements.size())
         return _rotatedInitialElements[elemId];
 
     msg_warning() << "Method getRotatedInitialElement called with element index: " << elemId 
@@ -818,7 +805,7 @@ const type::fixed_array <typename TriangleFEMForceField<DataTypes>::Coord, 3>& T
 template<class DataTypes>
 const typename TriangleFEMForceField<DataTypes>::Transformation& TriangleFEMForceField<DataTypes>::getRotationMatrix(Index elemId)
 {
-    if (elemId >= 0 && elemId < _rotations.size())
+    if (elemId != sofa::InvalidID && elemId < _rotations.size())
         return _rotations[elemId];
 
     msg_warning() << "Method getRotationMatrix called with element index: " 
@@ -829,7 +816,7 @@ const typename TriangleFEMForceField<DataTypes>::Transformation& TriangleFEMForc
 template<class DataTypes>
 const typename TriangleFEMForceField<DataTypes>::MaterialStiffness& TriangleFEMForceField<DataTypes>::getMaterialStiffness(Index elemId)
 {
-    if (elemId >= 0 && elemId < _materialsStiffnesses.size())
+    if (elemId != sofa::InvalidID && elemId < _materialsStiffnesses.size())
         return _materialsStiffnesses[elemId];
 
     msg_warning() << "Method getMaterialStiffness called with element index: " 
@@ -840,7 +827,7 @@ const typename TriangleFEMForceField<DataTypes>::MaterialStiffness& TriangleFEMF
 template<class DataTypes>
 const typename TriangleFEMForceField<DataTypes>::StrainDisplacement& TriangleFEMForceField<DataTypes>::getStrainDisplacements(Index elemId)
 {
-    if (elemId >= 0 && elemId < _strainDisplacements.size())
+    if (elemId != sofa::InvalidID && elemId < _strainDisplacements.size())
         return _strainDisplacements[elemId];
 
     msg_warning() << "Method getStrainDisplacements called with element index: "

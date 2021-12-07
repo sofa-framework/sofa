@@ -24,7 +24,6 @@
 
 #include "PrecomputedWarpPreconditioner.h"
 //#include <SofaDenseSolver/NewMatMatrix.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <iostream>
 #include <sofa/helper/system/thread/CTime.h>
@@ -237,7 +236,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M
         {
             tmpStr.precision(2);
             tmpStr << "Precomputing constraint correction : " << std::fixed << (float)(j*dof_on_node+d)*100.0f/(float)(nb_dofs*dof_on_node) << " %   " << '\xd'
-                   << sendl;
+                   << "\n";
 
             b.set(pid_j*dof_on_node+d,1.0);
             solver.solve(M,r,b);
@@ -477,7 +476,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::rotateConstraints()
     if (node != nullptr)
     {
         rotationFinder = node->get< sofa::core::behavior::RotationFinder<TDataTypes> > ();
-        msg_info_when(rotationFinder == nullptr) << "No rotation defined : only applicable for components implementing RotationFinder!";
+        msg_warning_when(rotationFinder == nullptr) << "No rotation defined : only applicable for components implementing RotationFinder!";
     }
 
     Transformation Rotation;

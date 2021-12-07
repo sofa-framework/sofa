@@ -38,7 +38,7 @@ using namespace defaulttype;
 int MergeImagesClass = core::RegisterObject("Merge images")
         .add<MergeImages<ImageUC> >(true)
         .add<MergeImages<ImageD> >()
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
         .add<MergeImages<ImageC> >()
         .add<MergeImages<ImageI> >()
         .add<MergeImages<ImageUI> >()
@@ -53,7 +53,7 @@ int MergeImagesClass = core::RegisterObject("Merge images")
 
 template class SOFA_IMAGE_API MergeImages<ImageUC>;
 template class SOFA_IMAGE_API MergeImages<ImageD>;
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_API MergeImages<ImageC>;
 template class SOFA_IMAGE_API MergeImages<ImageI>;
 template class SOFA_IMAGE_API MergeImages<ImageUI>;

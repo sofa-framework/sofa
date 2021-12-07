@@ -212,14 +212,15 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
             helper_button->setToolTip( ("Data from "+ownerClass).c_str());
             //QToolTip::add(helper_button, ("Data from "+ownerClass).c_str());
     }
-    if(modifiable || !data->getLinkPath().empty())
+    if(modifiable || data->getParent())
     {
+        std::string linkvalue = data->getParent()->getLinkPath();
         linkpath_edit = new QLineEdit(this);
         linkpath_edit->setContentsMargins(2, 0, 0, 0);
-        linkpath_edit->setText(QString(data->getLinkPath().c_str()));
+        linkpath_edit->setText(QString(linkvalue.c_str()));
         linkpath_edit->setReadOnly(!modifiable);
         layout->addWidget(linkpath_edit);
-        linkpath_edit->setVisible(!data->getLinkPath().empty());
+        linkpath_edit->setVisible(!linkvalue.empty());
         if(modifyObjectFlags.PROPERTY_WIDGET_FLAG)
             connect(linkpath_edit, SIGNAL( textChanged(const QString&)), this, SIGNAL( WidgetDirty()));
         else

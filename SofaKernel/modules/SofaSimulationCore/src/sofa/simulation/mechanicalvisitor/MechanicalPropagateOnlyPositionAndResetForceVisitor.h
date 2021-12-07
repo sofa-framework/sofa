@@ -39,11 +39,10 @@ class SOFA_SIMULATION_CORE_API MechanicalPropagateOnlyPositionAndResetForceVisit
 public:
     sofa::core::MultiVecCoordId x;
     sofa::core::MultiVecDerivId f;
-    bool ignoreMask;
 
     MechanicalPropagateOnlyPositionAndResetForceVisitor(const sofa::core::MechanicalParams* mparams,
-                                                        sofa::core::MultiVecCoordId x, sofa::core::MultiVecDerivId f, bool m)
-            : MechanicalVisitor(mparams) , x(x), f(f), ignoreMask(m)
+                                                        sofa::core::MultiVecCoordId x, sofa::core::MultiVecDerivId f)
+            : MechanicalVisitor(mparams) , x(x), f(f)
     {
     }
     Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
@@ -69,4 +68,4 @@ public:
 #endif
 };
 
-}
+} // namespace sofa::simulation::mechanicalvisitor

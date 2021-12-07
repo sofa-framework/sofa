@@ -27,13 +27,13 @@
             	<HexahedronFEMForceField name="FEM" youngModulus="1000000" poissonRatio="0.45" method="large" />
 		<FixedConstraint  name="FixedConstraint" indices="0 1 2 18 19 20 59 58 57 96 97 98 135 136 137" />
 		<Node name="VisualModel" >
-			<MeshObjLoader name="meshLoader_2" filename="mesh/raptor_35kp.obj" handleSeams="1" />
+			<MeshOBJLoader name="meshLoader_2" filename="mesh/raptor_35kp.obj" handleSeams="1" />
 			<OglModel name="RaptorVisualModel" src="@meshLoader_2" color="white"/> 
 			<BarycentricMapping name="tongueMapping" input="@../mecaRaptor" output="@RaptorVisualModel" />
 		</Node>
 
 		<Node name="CollisionModel" >
-		 	<MeshObjLoader filename="mesh/raptor_8kp.obj"  name="loader"/>
+		 	<MeshOBJLoader filename="mesh/raptor_8kp.obj"  name="loader"/>
 			<MeshTopology src="@loader" name="raptorVisualModel"  />
 			<MechanicalObject src="@loader" name="raptorState"/>		
 			<TriangleCollisionModel name="raptor" contactStiffness="100"/>
@@ -49,12 +49,12 @@
 		<MechanicalObject template="Rigid3d" name="DOFs" position="0 0 0  0  0  0  1.0"/>
 		<MechanicalStateController template="Rigid3d" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
 		<Node name="VisuAvatar" activated="false" >
-			<MeshObjLoader name="meshLoader_1" filename="mesh/sphere.obj" scale="0.1" handleSeams="1" />
+			<MeshOBJLoader name="meshLoader_1" filename="mesh/sphere.obj" scale="0.1" handleSeams="1" />
 			<OglModel name="Visual" src="@meshLoader_1" color="gray"/>
 			<RigidMapping input="@.." output="@Visual" index="0"/>
 		</Node>
 		<Node name="RefModel">
-			<MeshObjLoader filename="dental_instrument_centerline.obj"  name="loader"/>
+			<MeshOBJLoader filename="dental_instrument_centerline.obj"  name="loader"/>
 			<MeshTopology src="@loader"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" />
 			<RigidMapping />
@@ -69,12 +69,12 @@
 		<LCPForceFeedback activate="true" forceCoef="0.001"/> <!-- ADDED : Compute a force-feedback for the device -->
 		<UncoupledConstraintCorrection/>
 		<Node name="VisualModel" >
-			<MeshObjLoader name="meshLoader_0" filename="dental_instrument.obj" handleSeams="1" />
+			<MeshOBJLoader name="meshLoader_0" filename="dental_instrument.obj" handleSeams="1" />
 			<OglModel name="InstrumentVisualModel" src="@meshLoader_0" color="1.0 0.2 0.2 1.0" ry="-180" rz="-90" dz="3.5" dx="-0.3"/>
 			<RigidMapping name="MM->VM mapping" input="@instrumentState" output="@InstrumentVisualModel" />
 		</Node>
 		<Node name="CollisionModel" >
-			<MeshObjLoader filename="dental_instrument_centerline.obj"  name="loader"/>
+			<MeshOBJLoader filename="dental_instrument_centerline.obj"  name="loader"/>
 			<MeshTopology src="@loader" name="InstrumentCollisionModel" />
 			<MechanicalObject src="@loader" name="instrumentCollisionState"  ry="-180" rz="-90" dz="3.5" dx="-0.3" />
 			<LineCollisionModel name="instrument" contactStiffness="10" />

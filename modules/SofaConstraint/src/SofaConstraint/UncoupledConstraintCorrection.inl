@@ -26,8 +26,8 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/defaulttype/BaseMatrix.h>
-#include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/ConstraintParams.h>
 
 namespace sofa::component::constraintset
 {

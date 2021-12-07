@@ -137,28 +137,7 @@ public:
     SReal m_potentialEnergy;
 
     sofa::core::topology::BaseMeshTopology* _topology;
-public:
-    class SOFA_SOFAGENERALSIMPLEFEM_API TetrahedronHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::type::vector<TetrahedronInformation> >
-    {
-    public :
-        typedef typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation TetrahedronInformation;
-        using Index = sofa::Index;
-        TetrahedronHandler(TetrahedralCorotationalFEMForceField<DataTypes>* ff,
-                           topology::TetrahedronData<sofa::type::vector<TetrahedronInformation> >* data)
-            :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::type::vector<TetrahedronInformation> >(data)
-            ,ff(ff)
-        {
 
-        }
-
-        void applyCreateFunction(Index, TetrahedronInformation &t, const core::topology::BaseMeshTopology::Tetrahedron &,
-                const sofa::type::vector<Index> &,
-                const sofa::type::vector<double> &);
-
-    protected:
-        TetrahedralCorotationalFEMForceField<DataTypes>* ff;
-
-    };
 public:
     int method;
     Data<std::string> f_method; ///< the computation method of the displacements
@@ -179,7 +158,6 @@ public:
     SingleLink<TetrahedralCorotationalFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 protected:
     TetrahedralCorotationalFEMForceField();
-    TetrahedronHandler* tetrahedronHandler;
 
     /// Pointer to the topology container. Will be set by link @sa l_topology
     sofa::core::topology::BaseMeshTopology* m_topology;
@@ -224,6 +202,13 @@ public:
 
 
 protected:
+    /** Method to create @sa TetrahedronInformation when a new tetrahedron is created.
+    * Will be set as creation callback in the TetrahedronData @sa tetrahedronInfo
+    */
+    void createTetrahedronInformation(Index tetrahedronIndex, TetrahedronInformation& tInfo,
+        const core::topology::BaseMeshTopology::Tetrahedron& tetra,
+        const sofa::type::vector<Index>& ancestors,
+        const sofa::type::vector<double>& coefs);
 
     void computeStrainDisplacement( StrainDisplacementTransposed &J, Coord a, Coord b, Coord c, Coord d );
     Real peudo_determinant_for_coef ( const type::Mat<2, 3, Real>&  M );

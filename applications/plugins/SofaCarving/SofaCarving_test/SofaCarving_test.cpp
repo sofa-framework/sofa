@@ -23,11 +23,11 @@
 #include <SofaCarving/CarvingManager.h>
 #include <SofaSimulationGraph/SimpleApi.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+#include <sofa/testing/BaseSimulationTest.h>
 #include <SofaBaseUtils/initSofaBaseUtils.h>
 #include <SofaBaseLinearSolver/initSofaBaseLinearSolver.h>
 
-using namespace sofa::helper::testing;
+using namespace sofa::testing;
 using namespace sofa::component::collision;
 using namespace sofa::simpleapi;
 

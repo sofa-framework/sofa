@@ -798,7 +798,9 @@ void EdgeSetTopologyModifier::resortCuthillMckee(sofa::type::vector<int>& invers
     }
 
     for (Size c=0; c!=inv_perm.size(); ++c)
+    {
         perm[index_map[inv_perm[c]]] = c;
+    }
 
 	msg_info() << "  bandwidth: " << bandwidth(G, make_iterator_property_map(&perm[0], index_map, perm[0]));
 }
@@ -964,14 +966,13 @@ void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
         return PointSetTopologyModifier::propagateTopologicalEngineChanges();
 
     sofa::helper::AdvancedTimer::stepBegin("EdgeSetTopologyModifier::propagateTopologicalEngineChanges");
-    std::list<sofa::core::topology::TopologyHandler *>::iterator it;
-    for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
+
+    auto& edgeTopologyHandlerList = m_container->getTopologyHandlerList(sofa::geometry::ElementType::EDGE);
+    for (auto topoHandler : edgeTopologyHandlerList)
     {
-        // no need to dynamic cast this time? TO BE CHECKED!
-        sofa::core::topology::TopologyHandler* topoEngine = (*it);
-        if (topoEngine->isDirty())
+        if (topoHandler->isDirty())
         {
-            topoEngine->update();
+            topoHandler->update();
         }
     }
 

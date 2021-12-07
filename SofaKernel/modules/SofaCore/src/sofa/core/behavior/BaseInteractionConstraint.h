@@ -19,18 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_BASEINTERACTIONCONSTRAINT_H
-#define SOFA_CORE_BEHAVIOR_BASEINTERACTIONCONSTRAINT_H
+#pragma once
 
 #include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/core/behavior/StateAccessor.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /**
@@ -40,36 +34,28 @@ namespace behavior
  *  bodies given their current positions and velocities.
  *
  */
-class SOFA_CORE_API BaseInteractionConstraint : public BaseConstraint
+class SOFA_CORE_API BaseInteractionConstraint : public BaseConstraint, public virtual StateAccessor
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseInteractionConstraint, BaseConstraint);
+    SOFA_ABSTRACT_CLASS2(BaseInteractionConstraint, BaseConstraint, StateAccessor);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseInteractionConstraint)
 
     /// Get the first MechanicalState
     /// \todo Rename to getMechState1()
-    /// \todo Replace with an accessor to a list of states, as an InteractionConstraint can be applied to more than two.
-    virtual BaseMechanicalState* getMechModel1() = 0;
+    virtual BaseMechanicalState* getMechModel1() { return l_mechanicalStates[0]; }
 
     /// Get the first MechanicalState
     /// \todo Rename to getMechState2()
-    /// \todo Replace with an accessor to a list of states, as an InteractionConstraint can be applied to more than two.
-    virtual BaseMechanicalState* getMechModel2() = 0;
+    virtual BaseMechanicalState* getMechModel2() { return l_mechanicalStates[1]; }
 	
 protected:
     BaseInteractionConstraint() {}
     ~BaseInteractionConstraint()override {}
 	
 private:
-	BaseInteractionConstraint(const BaseInteractionConstraint& n) ;
-	BaseInteractionConstraint& operator=(const BaseInteractionConstraint& n) ;
+	BaseInteractionConstraint(const BaseInteractionConstraint& n) = delete ;
+	BaseInteractionConstraint& operator=(const BaseInteractionConstraint& n) = delete ;
 	
 };
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif // SOFA_CORE_BEHAVIOR_BASEINTERACTIONCONSTRAINT_H
+} // namespace sofa::core::behavior

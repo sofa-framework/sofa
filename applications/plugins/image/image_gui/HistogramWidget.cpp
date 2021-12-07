@@ -39,7 +39,7 @@ using namespace defaulttype;
 
 template class SOFA_IMAGE_GUI_API TDataWidget<Histogram<unsigned char> >;
 template class SOFA_IMAGE_GUI_API TDataWidget<Histogram<double> >;
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_GUI_API TDataWidget<Histogram<char> >;
 template class SOFA_IMAGE_GUI_API TDataWidget<Histogram<int> >;
 template class SOFA_IMAGE_GUI_API TDataWidget<Histogram<unsigned int> >;
@@ -53,7 +53,7 @@ template class SOFA_IMAGE_GUI_API TDataWidget<Histogram<bool> >;
 
 helper::Creator<DataWidgetFactory, HistogramDataWidget< Histogram<unsigned char> > >	DWClass_histoUC("imagehistogram",true);
 helper::Creator<DataWidgetFactory, HistogramDataWidget< Histogram<double> > >			DWClass_histoD("imagehistogram",true);
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 helper::Creator<DataWidgetFactory, HistogramDataWidget< Histogram<char> > >				DWClass_histoC("imagehistogram",true);
 helper::Creator<DataWidgetFactory, HistogramDataWidget< Histogram<int> > >				DWClass_histoI("imagehistogram",true);
 helper::Creator<DataWidgetFactory, HistogramDataWidget< Histogram<unsigned int> > >		DWClass_histoUI("imagehistogram",true);

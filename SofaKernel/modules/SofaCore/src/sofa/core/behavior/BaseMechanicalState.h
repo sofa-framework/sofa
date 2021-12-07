@@ -19,24 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_BASEMECHANICALSTATE_H
-#define SOFA_CORE_BEHAVIOR_BASEMECHANICALSTATE_H
+#pragma once
 
 #include <sofa/core/fwd.h>
 #include <sofa/core/BaseState.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Quat.h>
-#include <sofa/helper/StateMask.h>
-#include <sofa/defaulttype/fwd.h> /// For BaseMatrix
+#include <sofa/linearalgebra/fwd.h> /// For BaseMatrix
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /**
@@ -311,16 +303,6 @@ public:
 
     /// @}
 
-    /// @name Mask-based optimized computations (by only updating a subset of the DOFs)
-    /// @{
-
-    typedef helper::StateMask ForceMask; // note this should be space-optimized (a bool = a bit) in the STL
-
-    /// Mask to filter the particles. Used inside MechanicalMappings inside applyJ and applyJT methods.
-    ForceMask forceMask;
-
-    /// @}
-
     /// @name Interface with BaseMatrix / BaseVector
     /// @{
 
@@ -394,10 +376,4 @@ public:
 
 };
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

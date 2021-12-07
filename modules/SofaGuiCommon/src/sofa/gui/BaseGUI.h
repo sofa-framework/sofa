@@ -77,6 +77,7 @@ public:
     virtual void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* /*viewerConf*/) {}
     virtual void setViewerResolution(int /* width */, int /* height */) {}
     virtual void setFullScreen() {}
+    virtual void centerWindow() {}
     virtual void setBackgroundColor(const sofa::type::RGBAColor& /*color*/) {}
     virtual void setBackgroundImage(const std::string& /*image*/) {}
 

@@ -22,10 +22,7 @@
 #ifndef SOFA_SIMULATION_WRITESTATEACTION_H
 #define SOFA_SIMULATION_WRITESTATEACTION_H
 
-
-
 #include <sofa/simulation/Visitor.h>
-#include <iostream>
 
 namespace sofa
 {

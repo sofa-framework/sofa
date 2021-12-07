@@ -34,15 +34,10 @@
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 
-#include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/core/visual/VisualParams.h>
-
-#include <cstdlib>
-#include <cmath>
-#include <algorithm>
 
 namespace sofa
 {
@@ -126,8 +121,8 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
 
     {
         AnimateEndEvent ev ( dt );
-        PropagateEventVisitor act ( params, &ev );
-        gnode->execute ( act );
+        PropagateEventVisitor propagateEventVisitor ( params, &ev );
+        gnode->execute ( propagateEventVisitor );
     }
 
     sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
@@ -135,8 +130,8 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
     gnode->execute< UpdateMappingVisitor >(params);
     {
         UpdateMappingEndEvent ev ( dt );
-        PropagateEventVisitor act ( params , &ev );
-        gnode->execute ( act );
+        PropagateEventVisitor propagateEventVisitor ( params , &ev );
+        gnode->execute ( propagateEventVisitor );
     }
     sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
 

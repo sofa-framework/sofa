@@ -38,16 +38,16 @@ class SOFA_SOFABASELINEARSOLVER_API CRSMultiMatrixAccessor : public DefaultMulti
 {
 public:
     CRSMultiMatrixAccessor() : DefaultMultiMatrixAccessor() {}
-    ~CRSMultiMatrixAccessor() {	this->clear();}
+    ~CRSMultiMatrixAccessor() override {	this->clear();}
 
-    virtual void addMechanicalMapping(sofa::core::BaseMapping* mapping);
+    void addMechanicalMapping(sofa::core::BaseMapping* mapping) override;
 
     //Creating the stiffness matrix for pair of Mechanical State when they are not all real state
     static defaulttype::BaseMatrix* createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2);
     static defaulttype::BaseMatrix* createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2, bool doPrintInfo);
 
     //Compute the contribution of all new created matrix to the global system matrix
-    virtual void computeGlobalMatrix();
+    void computeGlobalMatrix() override;
 };
 
 template<int blocRsize, int blocCsize, class elementType>
@@ -56,8 +56,7 @@ inline defaulttype::BaseMatrix* createBlocSparseMatrixT(int nbRowBloc, int nbCol
     typedef CompressedRowSparseMatrix< type::Mat<blocRsize, blocCsize, elementType> > BlocMatrix;
     BlocMatrix* m =	new BlocMatrix;
     m->resizeBloc(nbRowBloc,nbColBloc);
-    if(_debug)
-        std::cout<<"				++createBlocSparseMatrix : _"<< nbRowBloc <<"x"<<nbColBloc<<"_ of blocs _["<<blocRsize<<"x"<<blocCsize<<"]"<<std::endl;
+    msg_info_when(_debug, "CRSMultiMatrixAccessor") << "				++createBlocSparseMatrix : _" << nbRowBloc << "x" << nbColBloc << "_ of blocs _[" << blocRsize << "x" << blocCsize << "]";
     return m;
 }
 
@@ -125,20 +124,18 @@ inline bool opAddMulJTM_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMat
     OutMatrix* Outmatrix = dynamic_cast<OutMatrix*>(out);
 
     if (!Jmatrix || !Mmatrix) return false;
-    if(_debug)
-    {
-        std::cout<<"    **opAddMulJTM_TBloc: === "
-                 <<"K1["<< out->rowSize() <<"x"<< out->colSize()<< "]:_"
-                 << out->bRowSize() << "x"<< out->bColSize() <<"_ of blocs _["
-                 << out->getBlockRows() << "x"<< out->getBlockCols() <<"]_"
-                 <<"    +=    Jt["<< J->colSize()<<"x"<< J->rowSize() << "]:_"
-                 << J->bColSize() << "x"<<  J->bRowSize()<<"_ of blocs _["
-                 <<J->getBlockCols() << "x"<< J->getBlockRows()  <<"]_"
-                 <<"*K2["<< stiffMatrix2->rowSize() <<"x"<< stiffMatrix2->colSize()<< "]:_"
-                 << stiffMatrix2->bRowSize() << "x"<< stiffMatrix2->bColSize() <<"_ of blocs _["
-                 << stiffMatrix2->getBlockRows() << "x"<< stiffMatrix2->getBlockCols() <<"]_"
-                 <<"   =============================="<<std::endl<<std::endl;
-    }
+
+    msg_info_when(_debug, "CRSMultiMatrixAccessor") << "    **opAddMulJTM_TBloc: === "
+        << "K1[" << out->rowSize() << "x" << out->colSize() << "]:_"
+        << out->bRowSize() << "x" << out->bColSize() << "_ of blocs _["
+        << out->getBlockRows() << "x" << out->getBlockCols() << "]_"
+        << "    +=    Jt[" << J->colSize() << "x" << J->rowSize() << "]:_"
+        << J->bColSize() << "x" << J->bRowSize() << "_ of blocs _["
+        << J->getBlockCols() << "x" << J->getBlockRows() << "]_"
+        << "*K2[" << stiffMatrix2->rowSize() << "x" << stiffMatrix2->colSize() << "]:_"
+        << stiffMatrix2->bRowSize() << "x" << stiffMatrix2->bColSize() << "_ of blocs _["
+        << stiffMatrix2->getBlockRows() << "x" << stiffMatrix2->getBlockCols() << "]_"
+        << "   ==============================";
 
     // We can compute stiffMatrix 1 += Jt M
     if (!Outmatrix || (offsetRow % JblocCsize != 0) || (offsetCol % MblocCsize != 0))
@@ -149,7 +146,7 @@ inline bool opAddMulJTM_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMat
         MBloc Mblocbuffer;
 
 
-        for (int JBRowIndex = 0; JBRowIndex < Jmatrix->nBlocRow; JBRowIndex++)
+        for (int JBRowIndex = 0; JBRowIndex < Jmatrix->nBlockRow; JBRowIndex++)
         {
             //through X, must take each row  (but test can be added)
             for (JBColConstIterator JBColIter = Jmatrix->bRowBegin(JBRowIndex); JBColIter < Jmatrix->bRowEnd(JBRowIndex); JBColIter++)
@@ -173,13 +170,10 @@ inline bool opAddMulJTM_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMat
                             {
                                 tempBlockData(i,j) += (MelementType)JblocData(k,i) * MblocData(k,j);
                                 out->add(offsetRow + JblocRsize*JBColIndex+i, offsetCol + MblocCsize*MBColIndex+j, tempBlockData(i,j));
-                                if(_debug)
-                                {
-                                    std::cout<<" (i."<<offsetRow + JblocRsize*JBColIndex+i<<","
-                                             <<"j."<<offsetCol + MblocCsize*MBColIndex+j<<")"
-                                             <<"    JBRowIndex:" <<JBRowIndex <<" JBColIndex:" <<JBColIndex
-                                             <<"      i:" <<i <<" j:"<<j <<"  k:" <<k <<std::endl;
-                                }
+                                msg_info_when(_debug, "CRSMultiMatrixAccessor") << " (i." << offsetRow + JblocRsize * JBColIndex + i << ","
+                                    << "j." << offsetCol + MblocCsize * MBColIndex + j << ")"
+                                    << "    JBRowIndex:" << JBRowIndex << " JBColIndex:" << JBColIndex
+                                    << "      i:" << i << " j:" << j << "  k:" << k;
                             }
                         }
                     }
@@ -196,7 +190,7 @@ inline bool opAddMulJTM_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMat
         JBloc Jblocbuffer;
         MBloc Mblocbuffer;
 
-        for (int JBRowIndex = 0; JBRowIndex < Jmatrix->nBlocRow; JBRowIndex++)
+        for (int JBRowIndex = 0; JBRowIndex < Jmatrix->nBlockRow; JBRowIndex++)
         {
             //through X, must take each row  (but test can be added)
             for (JBColConstIterator JBColIter = Jmatrix->bRowBegin(JBRowIndex); JBColIter < Jmatrix->bRowEnd(JBRowIndex); JBColIter++)
@@ -217,13 +211,10 @@ inline bool opAddMulJTM_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMat
                             for (int k = 0; k < JblocRsize; k++)
                             {
                                 tempBlockData(i,j) += (MelementType)JblocData(k,i) * MblocData(k,j);
-                                if(_debug)
-                                {
-                                    std::cout<<" (bI."<<offsetBRow + JBColIndex<<","
-                                             <<"bJ."<<offsetBCol + MBColIndex<<")"
-                                             <<"    JBRowIndex:" <<JBRowIndex <<" JBColIndex:" <<JBColIndex
-                                             <<"      i:" <<i <<" j:"<<j <<"  k:" <<k <<std::endl;
-                                }
+                                msg_info_when(_debug, "CRSMultiMatrixAccessor") << " (bI." << offsetBRow + JBColIndex << ","
+                                    << "bJ." << offsetBCol + MBColIndex << ")"
+                                    << "    JBRowIndex:" << JBRowIndex << " JBColIndex:" << JBColIndex
+                                    << "      i:" << i << " j:" << j << "  k:" << k;
                             }
                     Outmatrix->blocAdd(offsetBRow + JBColIndex,offsetBCol + MBColIndex, tempBlockData.ptr());
                 }
@@ -339,20 +330,17 @@ inline bool opAddMulMJ_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMatr
 
     if (!Jmatrix || !Mmatrix) return false;
 
-    if(_debug)
-    {
-        std::cout<<"    **opAddMulMJ_TBloc: === "
-                 <<"K1["<< out->rowSize() <<"x"<< out->colSize()<< "]:_"
-                 << out->bRowSize() << "x"<< out->bColSize() <<"_ of blocs _["
-                 << out->getBlockRows() << "x"<< out->getBlockCols() <<"]_"
-                 <<"    +=    K2["<< stiffMatrix2->rowSize()       <<"x" << stiffMatrix2->colSize()      <<"]:_"
-                 <<                  stiffMatrix2->bRowSize()     << "x" << stiffMatrix2->bColSize()     <<"_ of blocs _["
-                 <<                  stiffMatrix2->getBlockRows() << "x" << stiffMatrix2->getBlockCols() <<"]_"
-                 <<" * J["<< J->rowSize()     << "x" << J->colSize()      <<"]:_"
-                 <<          J->bRowSize()    << "x" << J->bColSize()     <<"_ of blocs _["
-                 <<          J->getBlockRows()<< "x" << J->getBlockCols() <<"]_"
-                 <<"   =============================="<<std::endl<<std::endl;
-    }
+    msg_info_when(_debug, "CRSMultiMatrixAccessor") << "    **opAddMulMJ_TBloc: === "
+        << "K1[" << out->rowSize() << "x" << out->colSize() << "]:_"
+        << out->bRowSize() << "x" << out->bColSize() << "_ of blocs _["
+        << out->getBlockRows() << "x" << out->getBlockCols() << "]_"
+        << "    +=    K2[" << stiffMatrix2->rowSize() << "x" << stiffMatrix2->colSize() << "]:_"
+        << stiffMatrix2->bRowSize() << "x" << stiffMatrix2->bColSize() << "_ of blocs _["
+        << stiffMatrix2->getBlockRows() << "x" << stiffMatrix2->getBlockCols() << "]_"
+        << " * J[" << J->rowSize() << "x" << J->colSize() << "]:_"
+        << J->bRowSize() << "x" << J->bColSize() << "_ of blocs _["
+        << J->getBlockRows() << "x" << J->getBlockCols() << "]_"
+        << "   ==============================";
 
     // We can compute stiffMatrix 1 += Jt M
     if (!Outmatrix || (offsetRow % MblocRsize != 0) || (offsetCol % JblocCsize != 0))
@@ -361,7 +349,7 @@ inline bool opAddMulMJ_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMatr
         JBloc Jblocbuffer;
         MBloc Mblocbuffer;
 
-        for (int MBRowIndex = 0; MBRowIndex < Mmatrix->nBlocRow; MBRowIndex++)
+        for (int MBRowIndex = 0; MBRowIndex < Mmatrix->nBlockRow; MBRowIndex++)
         {
             //through X, must take each row  (but test can be added)
             for (MBColConstIterator MBColIter = Mmatrix->bRowBegin(MBRowIndex); MBColIter < Mmatrix->bRowEnd(MBRowIndex); MBColIter++)
@@ -384,15 +372,10 @@ inline bool opAddMulMJ_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMatr
                             for (int k = 0; k < MblocCsize; k++)
                             {
                                 tempBlockData(i,j) += MblocData(i,k) * (MelementType)JblocData(k,j);
-                                if(_debug)
-                                {
-                                    std::cout<<" (i."<<offsetRow + MblocRsize*MBRowIndex+i<<","
-                                             <<"j."<<offsetCol + JblocCsize * JBColIndex+j<<")"
-                                             <<"    MBRowIndex:" <<MBRowIndex <<" JBColIndex:" <<JBColIndex
-                                             <<"      i:" <<i <<" j:"<<j <<"  k:" <<k <<std::endl;
-                                }
-
-
+                                msg_info_when(_debug, "CRSMultiMatrixAccessor") << " (i." << offsetRow + MblocRsize * MBRowIndex + i << ","
+                                    << "j." << offsetCol + JblocCsize * JBColIndex + j << ")"
+                                    << "    MBRowIndex:" << MBRowIndex << " JBColIndex:" << JBColIndex
+                                    << "      i:" << i << " j:" << j << "  k:" << k;
                             }
                             out->add(offsetRow + MblocRsize*MBRowIndex+i, offsetCol + JblocCsize*JBColIndex+j, tempBlockData(i,j));
                         }
@@ -410,7 +393,7 @@ inline bool opAddMulMJ_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMatr
         JBloc Jblocbuffer;
         MBloc Mblocbuffer;
 
-        for (int MBRowIndex = 0; MBRowIndex < Mmatrix->nBlocRow; MBRowIndex++)
+        for (int MBRowIndex = 0; MBRowIndex < Mmatrix->nBlockRow; MBRowIndex++)
         {
             //through X, must take each row  (but test can be added)
             for (MBColConstIterator MBColIter = Mmatrix->bRowBegin(MBRowIndex); MBColIter < Mmatrix->bRowEnd(MBRowIndex); MBColIter++)
@@ -430,13 +413,10 @@ inline bool opAddMulMJ_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMatr
                         for (int j = 0; j < JblocCsize; j++)
                             for (int k = 0; k < MblocCsize; k++)
                             {
-                                if(_debug)
-                                {
-                                    std::cout<<" (bI."<<offsetBRow + MBRowIndex<<","
-                                             <<"bJ."<<offsetBCol + JBColIndex<<")"
-                                             <<"    MBRowIndex:" <<MBRowIndex <<" JBColIndex:" <<JBColIndex
-                                             <<"      i:" <<i <<" j:"<<j <<"  k:" <<k <<std::endl;
-                                }
+                                msg_info_when(_debug, "CRSMultiMatrixAccessor") << " (bI." << offsetBRow + MBRowIndex << ","
+                                    << "bJ." << offsetBCol + JBColIndex << ")"
+                                    << "    MBRowIndex:" << MBRowIndex << " JBColIndex:" << JBColIndex
+                                    << "      i:" << i << " j:" << j << "  k:" << k;
 
                                 tempBlockData(i,j) += MblocData(i,k) * (MelementType)JblocData(k,j);
                             }

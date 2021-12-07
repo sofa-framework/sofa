@@ -127,8 +127,7 @@ void IdentityMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mpara
 
         for(unsigned int j=0; j<in.size(); j++)
         {
-            if( !this->maskTo[0]->isActivated() || this->maskTo[0]->getEntry(offset+j) )
-                core::eq( out[offset+j], in[j]);
+            core::eq( out[offset+j], in[j]);
         }
         offset += in.size();
     }
@@ -150,8 +149,7 @@ void IdentityMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mpar
 
         for(unsigned int j=0; j<out.size(); j++)
         {
-            if( this->maskTo[0]->getEntry(offset+j) )
-                core::peq( out[j], in[offset+j]);
+            core::peq( out[j], in[offset+j]);
         }
 
         dataVecOutForce[i]->endEdit();
@@ -172,59 +170,7 @@ void IdentityMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*c
 template <class TIn, class TOut>
 const type::vector<sofa::defaulttype::BaseMatrix*>* IdentityMultiMapping<TIn, TOut>::getJs()
 {
-// it looks like it is more costly to update the Jacobian matrix than using the full, unfiltered matrix in assembly
-//    size_t currentHash = this->maskTo[0]->getHash();
-//    if( previousMaskHash!=currentHash )
-//    {
-//        previousMaskHash = currentHash;
-//        unsigned offset = 0;
-
-//        unsigned Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size;
-//        static const unsigned N = std::min<unsigned>(Nin, Nout);
-
-//        for(unsigned i=0; i<baseMatrices.size(); i++ )
-//        {
-//            typename EigenMatrix::CompressedMatrix& J = static_cast<EigenMatrix*>(baseMatrices[i])->compressedMatrix;
-
-//            J.setZero();
-
-//            size_t n = this->getFrom()[i]->getSize();
-
-//            for( size_t k=0, kend=n ; k<kend ; ++k )
-//            {
-//                if( this->maskTo[0]->getEntry(offset+k) )
-//                {
-//                    for( size_t j=0 ; j<N ; ++j )
-//                    {
-//                        int row = (k+offset)*Nout+j;
-//                        int col = k*Nin+j;
-//                        J.insert( row, col ) = (OutReal)1;
-//                    }
-//                }
-//            }
-
-//            offset += n;
-//        }
-//    }
-
     return &baseMatrices;
 }
-
-
-template <class TIn, class TOut>
-void IdentityMultiMapping<TIn, TOut>::updateForceMask()
-{
-    unsigned offset = 0;
-    for(size_t i=0; i<this->maskFrom.size(); i++ )
-    {
-        helper::StateMask& maskfrom = *this->maskFrom[i];
-
-        for( size_t j = 0 ; j<maskfrom.size() ; ++j, ++offset )
-        {
-            if( this->maskTo[0]->getEntry(offset) ) maskfrom.insertEntry( j );
-        }
-    }
-}
-
 
 } // namespace sofa::component::mapping

@@ -25,8 +25,6 @@
 
 #include <SofaBaseMechanics/BarycentricMapping.h>
 #include <SofaBaseTopology/TopologyData.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h>
@@ -66,8 +64,6 @@ public:
     typedef typename Inherit::MatrixType MatrixType;
     typedef typename MatrixType::Index MatrixTypeIndex;
 
-    typedef typename Inherit::ForceMask ForceMask;
-
     using Index = sofa::Index;
 
 protected:
@@ -75,9 +71,6 @@ protected:
     topology::PointData< sofa::type::vector<MappingOrientData > >  mapOrient; ///< mapper data for mapped frames
 
     VecCoord actualTetraPosition;
-
-    topology::TetrahedronSetTopologyContainer*			_fromContainer;
-    topology::TetrahedronSetGeometryAlgorithms<In>*	_fromGeomAlgo;
 
     MatrixType* matrixJ;
     bool updateJ;
@@ -87,7 +80,7 @@ protected:
     typename Out::VecCoord actualPos;
 
     /// TEMP
-    BarycentricMapperTetrahedronSetTopologyRigid(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology);
+    BarycentricMapperTetrahedronSetTopologyRigid(core::topology::BaseMeshTopology* fromTopology, core::topology::BaseMeshTopology* _toTopology);
     virtual ~BarycentricMapperTetrahedronSetTopologyRigid() {}
 
 public:
@@ -120,7 +113,7 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopology,In,Out),SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopologyRigid,In,Out));
     typedef BarycentricMapperTetrahedronSetTopologyRigid<In,Out> Inherit;
 
-    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology)
+    BarycentricMapperTetrahedronSetTopology(core::topology::BaseMeshTopology* fromTopology, core::topology::BaseMeshTopology* _toTopology)
         : Inherit(fromTopology, _toTopology)
     {}
 

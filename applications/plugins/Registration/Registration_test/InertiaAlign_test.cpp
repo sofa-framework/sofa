@@ -1,8 +1,8 @@
 #include <SofaTest/Sofa_test.h>
 #include <Registration/InertiaAlign.h>
 #include <SceneCreator/SceneCreator.h>
-#include <SofaLoader/MeshObjLoader.h>
-#include <SofaLoader/MeshObjLoader.h>
+#include <SofaLoader/MeshOBJLoader.h>
+#include <SofaLoader/MeshOBJLoader.h>
 #include <SofaEngine/GenerateRigidMass.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -21,7 +21,7 @@ using namespace modeling;
     struct InertiaAlign_test : public Sofa_test<>
     {
         typedef component::InertiaAlign InertiaAlign;
-        typedef component::loader::MeshObjLoader MeshObjLoader;
+        typedef component::loader::MeshOBJLoader MeshOBJLoader;
         typedef component::engine::GenerateRigidMass<defaulttype::Rigid3dTypes,defaulttype::Rigid3Mass> GenerateRigidMass;
 
 
@@ -31,13 +31,13 @@ using namespace modeling;
             SReal epsilon = 0.00001;
             //root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + "InertiaAlign.scn");
             helper::io::Mesh meshSource;
-            MeshObjLoader::SPtr meshLoaderSource = New<MeshObjLoader>();
+            MeshOBJLoader::SPtr meshLoaderSource = New<MeshOBJLoader>();
             meshLoaderSource->m_filename.setValue("/home/pierre/Workspace/boxes.obj");
             //TODO : changer ces chemins et potentiellement le modele
             meshLoaderSource->load();
             meshSource.Create("/home/pierre/Workspace/boxes.obj");
             helper::io::Mesh meshTarget;
-            MeshObjLoader::SPtr meshLoaderTarget = New<MeshObjLoader>();
+            MeshOBJLoader::SPtr meshLoaderTarget = New<MeshOBJLoader>();
             meshLoaderTarget->m_filename.setValue("/home/pierre/Workspace/boxes.obj");
             meshLoaderTarget->load();
             meshTarget.Create("/home/pierre/Workspace/boxes.obj");

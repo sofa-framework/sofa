@@ -118,9 +118,9 @@ public:
     topology::PointData< VecTexCoord > m_vtexcoords; ///< coordinates of the texture
     topology::PointData< VecCoord > m_vtangents; ///< tangents for normal mapping
     topology::PointData< VecCoord > m_vbitangents; ///< tangents for normal mapping
-    Data< VecVisualEdge > m_edges; ///< edges of the model
-    Data< VecVisualTriangle > m_triangles; ///< triangles of the model
-    Data< VecVisualQuad > m_quads; ///< quads of the model
+    topology::EdgeData< VecVisualEdge > m_edges; ///< edges of the model
+    topology::TriangleData< VecVisualTriangle > m_triangles; ///< triangles of the model
+    topology::QuadData< VecVisualQuad > m_quads; ///< quads of the model
 
     bool m_textureChanged {false};
 
@@ -135,9 +135,6 @@ public:
 
     /// Rendering method.
     virtual void internalDraw(const core::visual::VisualParams* /*vparams*/, bool /*transparent*/) {}
-
-    template<class VecType>
-    void addTopoHandler(topology::PointData<VecType>* data, int algo = 0);
 
 public:
 
@@ -388,10 +385,10 @@ public:
 
     void updateVisual() override;
 
-    /// Handle topological changes
-    void handleTopologyChange() override;
-
     void init() override;
+    void initFromTopology();
+    void initPositionFromVertices();
+    void initFromFileMesh();
 
     void initVisual() override;
 
@@ -422,6 +419,14 @@ public:
 
     bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
     bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
+
+protected:
+    /// Internal buffer to be filled by topology Data @sa m_triangles callback when points are removed. Those dirty triangles will be updated at next updateVisual 
+    /// This avoid to update the whole mesh.
+    std::set< sofa::core::topology::BaseMeshTopology::TriangleID> m_dirtyTriangles;
+
+    /// Internal buffer similar to @sa m_dirtyTriangles but to be used by topolgy Data @sa m_quads callback when points are removed.
+    std::set< sofa::core::topology::BaseMeshTopology::QuadID> m_dirtyQuads;
 };
 
 

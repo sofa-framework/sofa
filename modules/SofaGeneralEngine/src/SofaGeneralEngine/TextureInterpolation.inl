@@ -248,7 +248,6 @@ void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* vpa
 
     if (drawPotentiels.getValue())
     {
-        sofa::type::Mat<4,4, GLfloat> modelviewM;
         sofa::type::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
 
         const VecCoord& realPotentiels = _inputField.getValue();

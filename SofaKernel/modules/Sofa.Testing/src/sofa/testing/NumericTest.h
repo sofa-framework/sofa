@@ -141,17 +141,22 @@ struct SOFA_TESTING_API NumericTest : public virtual BaseTest
     template<typename Matrix1, typename Matrix2>
     static Real matrixMaxDiff( const Matrix1& m1, const Matrix2& m2 )
     {
-        Real result = 0;
-        if(m1.rowSize()!=m2.rowSize() || m2.colSize()!=m1.colSize()){
+        if (m1.rows() != m2.rows() || m2.cols() != m1.cols())
+        {
             ADD_FAILURE() << "Comparison between matrices of different sizes";
             return infinity();
         }
-        for(typename Matrix1::Index i=0; i<m1.rowSize(); i++)
-            for(typename Matrix1::Index j=0; j<m1.colSize(); j++){
-                Real diff = (Real)fabs(m1.element(i,j) - m2.element(i,j));
+
+        Real result = 0;
+        for(typename Matrix1::Index i=0; i<m1.rows(); ++i)
+        {
+            for(typename Matrix1::Index j=0; j<m1.cols(); ++j)
+            {
+                const Real diff = std::fabs(m1(i,j) - m2(i,j));
                 if(diff > result)
                     result = diff;
             }
+        }
         return result;
     }
 
@@ -304,4 +309,5 @@ void EXPECT_MAT_NEAR(sofa::type::Mat<L,C,real> const& expected, sofa::type::Mat<
 } // namespace sofa::testing
 
 
+extern template struct SOFA_TESTING_API sofa::testing::NumericTest<float>;
 extern template struct SOFA_TESTING_API sofa::testing::NumericTest<double>;

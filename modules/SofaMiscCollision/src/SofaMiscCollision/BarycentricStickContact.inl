@@ -19,23 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_BARYCENTRICSTICKCONTACT_INL
-#define SOFA_COMPONENT_COLLISION_BARYCENTRICSTICKCONTACT_INL
+#pragma once
 
 #include <SofaMiscCollision/BarycentricStickContact.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa
+namespace sofa::component::collision
 {
-
-namespace component
-{
-
-namespace collision
-{
-
-
-
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::BarycentricStickContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
@@ -80,6 +70,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
         ff = sofa::core::objectmodel::New<ResponseForceField>(mstate1,mstate2);
         ff->setName( getName());
         setInteractionTags(mstate1, mstate2);
+        ff->init();
     }
 
     int insize = outputs.size();
@@ -184,18 +175,17 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
         // Create mapping for second point
         index2 = mapper2.addPointB(o->point[1], index2, r2);
 
-        double distance = d0 + r1 + r2;
-        double stiffness = (elem1.getContactStiffness() * elem2.getContactStiffness())/distance;
+        const double stiffness = (elem1.getContactStiffness() + elem2.getContactStiffness());
+        ff->m_stiffness.setValue(stiffness);
 
-        double mu_v = (elem1.getContactFriction() + elem2.getContactFriction());
-//        ff->addContact(index1, index2, elem1.getIndex(), elem2.getIndex(), o->normal, distance, stiffness, mu_v/* *distance */, mu_v, index);
+        const double mu_v = (elem1.getContactFriction() + elem2.getContactFriction());
+
         ff->addSpring(index1, index2, stiffness, mu_v/* *distance */, o->point[1]-o->point[0]);
     }
     // Update mappings
     mapper1.update();
     mapper2.update();
-    mapper1.updateXfree();
-    mapper2.updateXfree();
+
     msg_info() << size << "BarycentricStickContact springs created";
 }
 
@@ -249,10 +239,4 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
         ff->addTag(*it);
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} //namespace sofa::component::collision

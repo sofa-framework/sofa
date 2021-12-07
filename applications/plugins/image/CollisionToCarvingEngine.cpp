@@ -43,8 +43,7 @@ int CollisionToCarvingEngineClass = core::RegisterObject("Filter an image")
 
         .add<CollisionToCarvingEngine<ImageD,ImageUC    > >()
         .add<CollisionToCarvingEngine<ImageD,ImageB    > >()
-
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
         .add<CollisionToCarvingEngine<ImageC ,ImageC     > >()
         .add<CollisionToCarvingEngine<ImageI ,ImageI     > >()
         .add<CollisionToCarvingEngine<ImageUI,ImageUI    > >()
@@ -69,7 +68,7 @@ int CollisionToCarvingEngineClass = core::RegisterObject("Filter an image")
         .add<CollisionToCarvingEngine<ImageUC,ImageUS    > >()
         .add<CollisionToCarvingEngine<ImageUC,ImageB    > >()
         .add<CollisionToCarvingEngine<ImageUS,ImageB    > >()
-#endif
+#endif // PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
         ;
 
 
@@ -81,7 +80,7 @@ template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUC  ,ImageD    >;
 template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageD  ,ImageUC    >;
 template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageD  ,ImageB    >;
 
-#ifdef BUILD_ALL_IMAGE_TYPES
+#if PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageC   ,ImageC     >;
 template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageI   ,ImageI     >;
 template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUI  ,ImageUI    >;
@@ -106,7 +105,7 @@ template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUS   ,ImageUC     >;
 template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUC   ,ImageUS     >;
 template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUC   ,ImageB     >;
 template class SOFA_IMAGE_API CollisionToCarvingEngine<ImageUS   ,ImageB     >;
-#endif
+#endif // PLUGIN_IMAGE_COMPILE_SET == PLUGIN_IMAGE_COMPILE_SET_FULL
 
 } //
 } // namespace component

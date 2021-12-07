@@ -6,7 +6,7 @@
     <VisualStyle displayFlags="showWireframe" />
 
     <Node name="using Geodesic Distances (red)" >
-        <MeshObjLoader name="meshLoader_1" filename="mesh/dragon.obj" handleSeams="1" />
+        <MeshOBJLoader name="meshLoader_1" filename="mesh/dragon.obj" handleSeams="1" />
         <OglModel name="Visual" src="@meshLoader_1" color="red" dz="0" />
         <MeshTopology name="topo" src="@Visual" />
         <MeshSampler name="sampler1" position="@topo.position" edges="@topo.edges"  number="10" maxIter="100" printLog="1"/>
@@ -14,7 +14,7 @@
     </Node>
 
     <Node name="using Euclidean Distances (blue)" >
-        <MeshObjLoader name="meshLoader_0" filename="mesh/dragon.obj" handleSeams="1" />
+        <MeshOBJLoader name="meshLoader_0" filename="mesh/dragon.obj" handleSeams="1" />
         <OglModel name="Visual" src="@meshLoader_0" color="blue" dy="20" />
 
         <MeshSampler name="sampler2" position="@Visual.position"  number="10" maxIter="100" printLog="1"/>

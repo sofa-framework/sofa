@@ -56,7 +56,7 @@ struct ComplementaryROI_test : public BaseSimulationTest,
     typename ThisClass::SPtr m_thisObject;
 
 
-    void SetUp()
+    void SetUp() override
     {
         setSimulation(m_simu = new DAGSimulation());
         m_node = m_simu->createNewGraph("root");

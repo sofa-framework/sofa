@@ -55,13 +55,7 @@ void ParticlesRepulsionForceField<DataTypes>::init()
     this->Inherit::init();
     this->getContext()->get(grid); //new Grid(distance.getValue());
     if (grid==nullptr)
-        serr<<"SpatialGridContainer not found by ParticlesRepulsionForceField, slow O(n2) method will be used !!!" << sendl;
-    //int n = (this->mstate->read(core::ConstVecCoordId::position())->getValue()).size();
-    //particles.resize(n);
-    //for (int i=0;i<n;i++)
-    //{
-    //	particles[i].neighbors.clear();
-    //}
+        msg_error()<<"SpatialGridContainer not found by ParticlesRepulsionForceField, slow O(n2) method will be used !!!";
 }
 
 template<class DataTypes>

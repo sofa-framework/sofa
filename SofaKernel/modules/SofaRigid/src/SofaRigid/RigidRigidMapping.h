@@ -56,7 +56,6 @@ public:
     enum { N=OutDataTypes::spatial_dimensions };
     typedef type::Mat<N,N,Real> Mat;
     typedef type::Vec<N,Real> Vector ;
-    typedef typename Inherit::ForceMask ForceMask;
 
 protected:
     Data < OutVecCoord > points; ///< Initial position of the points
@@ -117,7 +116,6 @@ protected:
 
     bool getShow(const core::objectmodel::BaseObject* /*m*/, const core::visual::VisualParams* vparams) const;
     bool getShow(const core::BaseMapping* /*m*/, const core::visual::VisualParams* vparams) const;
-    void updateForceMask() override { /*already done in applyJT*/ }
 };
 
 #if  !defined(SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_CPP)

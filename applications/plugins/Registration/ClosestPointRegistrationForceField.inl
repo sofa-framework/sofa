@@ -35,7 +35,7 @@
 #include <omp.h>
 #endif
 
-#include <SofaLoader/MeshObjLoader.h>
+#include <SofaLoader/MeshOBJLoader.h>
 #include <SofaGeneralEngine/NormalsFromPoints.h>
 #include <limits>
 #include <set>
@@ -106,7 +106,7 @@ void ClosestPointRegistrationForceField<DataTypes>::init()
 
     // Get source triangles
     if(!sourceTriangles.getValue().size()) {
-        sofa::component::loader::MeshObjLoader *meshobjLoader;
+        sofa::component::loader::MeshOBJLoader *meshobjLoader;
         this->getContext()->get( meshobjLoader, core::objectmodel::BaseContext::Local);
         if (meshobjLoader)
         {

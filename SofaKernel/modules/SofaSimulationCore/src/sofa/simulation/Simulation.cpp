@@ -25,7 +25,6 @@
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/AnimateVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/CollisionVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/ResetVisitor.h>
@@ -34,11 +33,7 @@
 #include <sofa/simulation/WriteStateVisitor.h>
 #include <sofa/simulation/XMLPrintVisitor.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
-#include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
-#include <sofa/simulation/UpdateInternalDataVisitor.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
-#include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/CleanupVisitor.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
@@ -164,10 +159,9 @@ void Simulation::init ( Node* root )
 
     if (!root->getAnimationLoop())
     {
-        root->getContext()->sout
-                <<"Default Animation Manager Loop will be used. Add DefaultAnimationLoop to the root node of scene file to remove this warning"
-                        <<root->getContext()->sendl;
-
+        msg_warning("Simulation") <<
+            "Default Animation Manager Loop will be used. Add DefaultAnimationLoop to the root node of scene file to remove this warning";
+        
         DefaultAnimationLoop::SPtr aloop = sofa::core::objectmodel::New<DefaultAnimationLoop>(root);
         aloop->setName(sofa::helper::NameDecoder::shortName(aloop->getClassName()));
         root->addObject(aloop);
@@ -175,9 +169,8 @@ void Simulation::init ( Node* root )
 
     if(!root->getVisualLoop())
     {
-        root->getContext()->sout
-                <<"Default Visual Manager Loop will be used. Add DefaultVisualManagerLoop to the root node of scene file to remove this warning"
-                        <<root->getContext()->sendl;
+        msg_warning("Simulation") <<
+            "Default Visual Manager Loop will be used. Add DefaultVisualManagerLoop to the root node of scene file to remove this warning";
 
         DefaultVisualManagerLoop::SPtr vloop = sofa::core::objectmodel::New<DefaultVisualManagerLoop>(root);
         vloop->setName(sofa::helper::NameDecoder::shortName(vloop->getClassName()));

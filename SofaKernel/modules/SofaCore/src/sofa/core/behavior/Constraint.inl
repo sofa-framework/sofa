@@ -19,25 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_CONSTRAINT_INL
-#define SOFA_CORE_BEHAVIOR_CONSTRAINT_INL
+#pragma once
 
 #include <sofa/core/behavior/Constraint.h>
 #include <sofa/core/ConstraintParams.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 template<class DataTypes>
 Constraint<DataTypes>::Constraint(MechanicalState<DataTypes> *mm)
-    : endTime( initData(&endTime,(Real)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
-    , mstate(mm)
+    : Inherit1(), Inherit2(mm)
+    , endTime( initData(&endTime,(Real)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
 {
 }
 
@@ -54,21 +47,12 @@ bool Constraint<DataTypes>::isActive() const
     return endTime.getValue()>getContext()->getTime();
 }
 
-
-template<class DataTypes>
-void Constraint<DataTypes>::init()
-{
-    BaseConstraint::init();
-    mstate = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
-}
-
-
 template<class DataTypes>
 void Constraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v)
 {
     if (cParams)
     {
-        getConstraintViolation(cParams, v, *cParams->readX(mstate), *cParams->readV(mstate));
+        getConstraintViolation(cParams, v, *cParams->readX(this->mstate.get()), *cParams->readV(this->mstate.get()));
     }
 }
 
@@ -78,8 +62,7 @@ void Constraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
 {
     if (cParams)
     {
-        buildConstraintMatrix(cParams, *cId[mstate].write(), cIndex, *cParams->readX(mstate));
-        updateForceMask();
+        buildConstraintMatrix(cParams, *cId[this->mstate.get()].write(), cIndex, *cParams->readX(this->mstate.get()));
     }
 }
 
@@ -89,16 +72,8 @@ void Constraint<DataTypes>::storeLambda(const ConstraintParams* cParams, MultiVe
 {
     if (cParams)
     {
-        storeLambda(cParams, *res[mstate].write(), *cParams->readJ(mstate), lambda);
+        storeLambda(cParams, *res[this->mstate.get()].write(), *cParams->readJ(this->mstate.get()), lambda);
     }
-}
-
-template<class DataTypes>
-void Constraint<DataTypes>::updateForceMask()
-{
-    // the default implementation adds every dofs to the mask
-    // this sould be overloaded by each forcefield to only add the implicated dofs subset to the mask
-    mstate->forceMask.assign( mstate->getSize(), true );
 }
 
 template<class DataTypes>
@@ -110,10 +85,4 @@ void Constraint<DataTypes>::storeLambda(const ConstraintParams*, Data<VecDeriv>&
 }
 
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif // SOFA_CORE_BEHAVIOR_CONSTRAINT_INL
+} // namespace sofa::core::behavior

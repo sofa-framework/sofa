@@ -40,7 +40,7 @@ namespace sofa::gui
 
 using sofa::helper::AdvancedTimer;
 
-const signed int BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS = 1000;
+constexpr signed int BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS = 1000;
 signed int BatchGUI::nbIter = BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
 std::string BatchGUI::nbIterInp="";
 BatchGUI::BatchGUI()
@@ -191,6 +191,8 @@ int BatchGUI::RegisterGUIParameters(ArgumentParser* argumentParser)
 
 void BatchGUI::OnNbIterChange(const ArgumentParser* argumentParser, const std::string& strValue)
 {
+    SOFA_UNUSED(argumentParser);
+
     nbIterInp = strValue;
     size_t inpLen = nbIterInp.length();
 

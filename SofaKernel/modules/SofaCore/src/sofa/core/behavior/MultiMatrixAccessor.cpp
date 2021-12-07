@@ -21,13 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 MultiMatrixAccessor::~MultiMatrixAccessor()
@@ -47,8 +41,4 @@ void MultiMatrixAccessor::addMappedMechanicalState(const BaseMechanicalState* /*
 {
 }
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::behavior

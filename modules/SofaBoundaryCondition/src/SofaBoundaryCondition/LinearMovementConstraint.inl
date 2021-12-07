@@ -26,10 +26,9 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/RGBAColor.h>
-#include <iostream>
 #include <sofa/type/vector_algorithm.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-
+#include <algorithm>
 
 namespace sofa::component::projectiveconstraintset
 {
@@ -408,6 +407,8 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
 
         std::vector<sofa::type::Vector3> vertices;
 
+        constexpr auto minDimensions = std::min<sofa::Size>(DataTypes::spatial_dimensions, 3u);
+
         const SetIndexArray & indices = m_indices.getValue();
         const VecDeriv& keyMovements = m_keyMovements.getValue();
         if (d_relativeMovements.getValue()) 
@@ -416,10 +417,11 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
             {
                 for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
                 {
-                    auto tmp0 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i]);
-                    auto tmp1 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i + 1]);
-                    sofa::type::Vector3 v0(tmp0[0], tmp0[1], tmp0[2]);
-                    sofa::type::Vector3 v1(tmp1[0], tmp1[1], tmp1[2]);
+                    const auto& tmp0 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i]);
+                    const auto& tmp1 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i + 1]);
+                    sofa::type::Vector3 v0, v1;
+                    std::copy_n(tmp0.begin(), minDimensions, v0.begin());
+                    std::copy_n(tmp1.begin(), minDimensions, v1.begin());
                     vertices.push_back(v0);
                     vertices.push_back(v1);
                 }
@@ -431,10 +433,11 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
             {
                 for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
                 {
-                    auto tmp0 = DataTypes::getDPos(keyMovements[i]);
-                    auto tmp1 = DataTypes::getDPos(keyMovements[i + 1]);
-                    sofa::type::Vector3 v0(tmp0[0], tmp0[1], tmp0[2]);
-                    sofa::type::Vector3 v1(tmp1[0], tmp1[1], tmp1[2]);
+                    const auto& tmp0 = DataTypes::getDPos(keyMovements[i]);
+                    const auto& tmp1 = DataTypes::getDPos(keyMovements[i + 1]);
+                    sofa::type::Vector3 v0, v1;
+                    std::copy_n(tmp0.begin(), minDimensions, v0.begin());
+                    std::copy_n(tmp1.begin(), minDimensions, v1.begin());
                     vertices.push_back(v0);
                     vertices.push_back(v1);
                 }

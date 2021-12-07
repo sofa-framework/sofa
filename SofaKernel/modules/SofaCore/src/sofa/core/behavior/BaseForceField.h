@@ -22,10 +22,9 @@
 #pragma once
 
 #include <sofa/core/config.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/behavior/StateAccessor.h>
 #include <sofa/core/MultiVecId.h>
 
-namespace sofa::defaulttype { class BaseMatrix; }
 namespace sofa::core::behavior { class MultiMatrixAccessor; }
 
 namespace sofa::core::behavior
@@ -46,18 +45,18 @@ namespace sofa::core::behavior
  *  ( df, given a displacement dx ).
  *
  */
-class SOFA_CORE_API BaseForceField : public virtual objectmodel::BaseObject
+class SOFA_CORE_API BaseForceField : public virtual StateAccessor
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseForceField, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseForceField, StateAccessor);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseForceField)
 protected:
     BaseForceField();
     ~BaseForceField() override = default;
 	
 private:
-	BaseForceField(const BaseForceField& n) ;
-	BaseForceField& operator=(const BaseForceField& n) ;	
+	BaseForceField(const BaseForceField& n) = delete;
+	BaseForceField& operator=(const BaseForceField& n) = delete;
 
 	
 public:
@@ -212,16 +211,6 @@ public:
     Data< SReal > rayleighStiffness;
 
     /// @}
-
-
-    /// Useful when the forcefield is applied only on a subset of dofs.
-    /// It is automatically called by addForce.
-    ///
-    /// That way, we can optimize the time spent to transfer quantities through the mechanical mappings.
-    /// Every Dofs are inserted by default. The forcefields using only a subset of dofs should only insert these dofs in the mask.
-    virtual void updateForceMask() = 0;
-
-
 
     bool insertInNode( objectmodel::BaseNode* node ) override;
     bool removeInNode( objectmodel::BaseNode* node ) override;

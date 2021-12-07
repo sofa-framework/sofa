@@ -347,7 +347,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
             type::vector<int> nul;
 
             Coord referenceLine = intersections[1].first - intersections[0].first;
-            Coord referenceLine2( referenceLine[1],- referenceLine[0], 0);
+            Coord referenceLine2( referenceLine[1],- referenceLine[0], Real(0));
 
             for(unsigned int i=2; i<intersections.size(); ++i) // les cas 0 et 1 sont traite la mano
             {

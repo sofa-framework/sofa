@@ -38,6 +38,8 @@ using sofa::helper::system::DataRepository ;
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory ;
 
+#include <SofaBaseLinearSolver/FullVector.h>
+
 namespace sofa
 {
 namespace modeling {

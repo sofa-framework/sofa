@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaBaseMechanics/config.h>
 
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/core/Mapping.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -60,8 +60,6 @@ public:
     typedef typename OutDataTypes::VecCoord OutVecCoord;
     typedef typename OutDataTypes::VecDeriv OutVecDeriv;
 
-    typedef typename Inherit::ForceMask ForceMask;
-
     enum
     {
         N = OutDataTypes::spatial_dimensions
@@ -89,8 +87,6 @@ protected:
     {
     }
 
-    void updateForceMask() override;
-
 public:
     /// Return true if the destination model has the same topology as the source model.
     ///
@@ -115,7 +111,7 @@ public:
 
 protected:
 
-    typedef linearsolver::EigenSparseMatrix<TIn, TOut> eigen_type;
+    typedef linearalgebra::EigenSparseMatrix<TIn, TOut> eigen_type;
     eigen_type J;
 
     typedef type::vector< defaulttype::BaseMatrix* > js_type;

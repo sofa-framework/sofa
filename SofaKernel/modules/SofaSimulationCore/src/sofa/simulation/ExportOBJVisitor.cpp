@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/ExportOBJVisitor.h>
-#include <sofa/helper/Factory.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/visual/VisualModel.h>

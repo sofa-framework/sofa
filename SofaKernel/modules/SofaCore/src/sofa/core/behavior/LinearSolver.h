@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_LINEARSOLVER_H
-#define SOFA_CORE_BEHAVIOR_LINEARSOLVER_H
+#pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/MultiVecId.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 
@@ -197,10 +190,4 @@ protected:
     bool frozen;
 };
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

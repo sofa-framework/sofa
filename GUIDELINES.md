@@ -129,6 +129,6 @@ More info about Doxygen here: https://www.stack.nl/~dimitri/doxygen/manual/index
     - `msg_info()` will display the message in the console only if the `printLog` flag is activated.
     - `msg_warning()` will display the message in the console with an warning message.
     - `msg_error()` will display the message in the console with an error message.
-- Use `sofa::helper::vector`  instead of `std::vector`
+- Use `sofa::type::vector`  instead of `std::vector`
 - Only use `sofa::simulation::tree::GNode` when you need to directly use access to the children or the parent of the node. If not, use the more generic `sofa::simulation::Node`
 - When an information, a function or an internal variable from an external component is needed in a component, prefer an explicit Link to connect both components instead of implicitly browsing the graph using `getContext`

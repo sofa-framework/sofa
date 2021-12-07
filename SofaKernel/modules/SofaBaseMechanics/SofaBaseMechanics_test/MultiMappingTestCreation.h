@@ -34,7 +34,7 @@ using sofa::testing::NumericTest;
 
 #include <sofa/simulation/VectorOperations.h>
 #include <SofaBaseLinearSolver/FullVector.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
@@ -79,7 +79,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
     typedef Data<OutVecCoord> OutDataVecCoord;
     typedef Data<OutVecDeriv> OutDataVecDeriv;
 
-    typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
+    typedef linearalgebra::EigenSparseMatrix<In,Out> EigenSparseMatrix;
 
 
     core::MultiMapping<In,Out>* mapping; ///< the mapping to be tested
@@ -154,7 +154,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
         if( deltaRange.second / errorMax <= sofa::testing::g_minDeltaErrorRatio )
             ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
 
-        typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
+        typedef linearalgebra::EigenSparseMatrix<In,Out> EigenSparseMatrix;
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
         mparams.setSymmetricMatrix(false);
@@ -388,7 +388,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
         // still performing the test with a null Kv vector to check if the mapping is really linear
         if( bk != nullptr ){
 
-            typedef component::linearsolver::EigenSparseMatrix<In,In> EigenSparseKMatrix;
+            typedef linearalgebra::EigenSparseMatrix<In,In> EigenSparseKMatrix;
             const EigenSparseKMatrix* K = dynamic_cast<const EigenSparseKMatrix*>(bk);
             if( K == nullptr ){
                 succeed = false;
@@ -413,39 +413,10 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
             }
         }
 
-
-        // =================== test updateForceMask
-        // propagate forces coming from all child, each parent receiving a force should be in the mask
-        for(Index i=0; i<Np.size(); i++)
-        {
-            EXPECT_EQ( inDofs[i]->forceMask.size(), inDofs[i]->getSize() );
-            inDofs[i]->forceMask.assign(inDofs[i]->getSize(),false);
-        }
-        EXPECT_EQ( outDofs->forceMask.size(), outDofs->getSize() );
-        outDofs->forceMask.assign(outDofs->getSize(),true);
-        mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position()); // to force mask update at the next applyJ
-        for( unsigned i=0; i<Nc; i++ ) Out::set( fout[i], 1,1,1 ); // every child forces are non-nul
-        for(Index p=0; p<Np.size(); p++) {
-            WriteInVecDeriv fin = inDofs[p]->writeForces();
-            sofa::testing::copyToData( fin, fp2[p] );  // reset parent forces before accumulating child forces
-        }
-        mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
-        for(Index i=0; i<Np.size(); i++)
-        {
-            sofa::testing::copyFromData( fp[i], inDofs[i]->readForces() );
-            for( unsigned j=0; j<Np[i]; j++ ) {
-                if( fp[i][j] != InDeriv() && !inDofs[i]->forceMask.getEntry(j) ){
-                    succeed = false;
-                    ADD_FAILURE() << "updateForceMask did not propagate mask to every influencing parents "<< i << std::endl;
-                    break;
-                }
-            }
-        }
-
         return succeed;
     }
 
-    virtual ~MultiMapping_test()
+    ~MultiMapping_test() override
     {
         if (root!=nullptr)
             sofa::simulation::getSimulation()->unload(root);

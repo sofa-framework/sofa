@@ -32,7 +32,7 @@ using sofa::testing::NumericTest;
 #include <SceneCreator/SceneCreator.h>
 
 #include <SofaBaseLinearSolver/FullVector.h>
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
@@ -65,7 +65,7 @@ namespace sofa::mapping_test {
   and a failure is issued if the error is greater than errorMax*epsilon,
   where epsilon=std::numeric_limits<Real>::epsilon() is 1.19209e-07 for float and 2.22045e-16 for double.
 
-  @author François Faure @date 2013
+  @author FranÃ§ois Faure @date 2013
   */
 
 template< class _Mapping>
@@ -103,7 +103,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
     typedef Data<OutVecDeriv> OutDataVecDeriv;
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
 
-    typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
+    typedef linearalgebra::EigenSparseMatrix<In,Out> EigenSparseMatrix;
 
     core::Mapping<In,Out>* mapping; ///< the mapping to be tested
     typename InDOFs::SPtr  inDofs;  ///< mapping input
@@ -221,7 +221,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
 
         const Real errorThreshold = this->epsilon()*errorMax;
 
-        typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
+        typedef linearalgebra::EigenSparseMatrix<In,Out> EigenSparseMatrix;
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
         mparams.setSymmetricMatrix(false);
@@ -230,7 +230,6 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         sofa::testing::copyToData(xin,parentInit); // xin = parentInit
 
         outDofs->resize(childInit.size());
-        outDofs->forceMask.assign(outDofs->getSize(),true); // child mask must be filled-up
         WriteOutVecCoord xout = outDofs->writePositions();
         sofa::testing::copyToData(xout,childInit);
 
@@ -426,7 +425,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
 
             if( bk != nullptr ){
 
-                typedef component::linearsolver::EigenSparseMatrix<In,In> EigenSparseKMatrix;
+                typedef linearalgebra::EigenSparseMatrix<In,In> EigenSparseKMatrix;
                 const EigenSparseKMatrix* K = dynamic_cast<const EigenSparseKMatrix*>(bk);
                 if( K == nullptr ){
                     succeed = false;
@@ -443,26 +442,6 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
                 ADD_FAILURE() << "K test failed, difference should be less than " << errorThreshold*errorFactorDJ  << std::endl
                               << "Kv    = " << Kv << std::endl
                               << "dfp = " << fp12 << std::endl;
-            }
-        }
-
-
-        // =================== test updateForceMask
-        // propagate forces coming from all child, each parent receiving a force should be in the mask
-        EXPECT_EQ( inDofs->forceMask.size(), inDofs->getSize() );
-        EXPECT_EQ( outDofs->forceMask.size(), outDofs->getSize() );
-        inDofs->forceMask.assign(inDofs->getSize(),false);
-        outDofs->forceMask.assign(outDofs->getSize(),true);
-        mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position()); // to force mask update at the next applyJ
-        sofa::testing::copyToData( fin, fp2 );  // reset parent forces before accumulating child forces
-        for( unsigned i=0; i<Nc; i++ ) Out::set( fout[i], 1,1,1 ); // every child forces are non-nul
-        mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
-        sofa::testing::copyFromData( fp, inDofs->readForces() );
-        for( unsigned i=0; i<Np; i++ ) {
-            if( fp[i] != InDeriv() && !inDofs->forceMask.getEntry(i) ){
-                succeed = false;
-                ADD_FAILURE() << "updateForceMask did not propagate mask to every influencing parents" << std::endl;
-                break;
             }
         }
 
@@ -490,7 +469,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
         return runTest( parent, childInit, parent, expectedChild );
     }
 
-    virtual ~Mapping_test()
+    ~Mapping_test() override
     {
         if (root!=nullptr)
             sofa::simulation::getSimulation()->unload(root);

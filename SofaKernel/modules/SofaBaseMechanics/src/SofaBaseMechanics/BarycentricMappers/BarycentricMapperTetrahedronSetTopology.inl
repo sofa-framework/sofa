@@ -26,10 +26,8 @@ namespace sofa::component::mapping
 {
 
 template <class In, class Out>
-BarycentricMapperTetrahedronSetTopology<In,Out>::BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* toTopology)
-    : Inherit1(fromTopology, toTopology),
-      m_fromContainer(fromTopology),
-      m_fromGeomAlgo(nullptr)
+BarycentricMapperTetrahedronSetTopology<In,Out>::BarycentricMapperTetrahedronSetTopology(sofa::core::topology::TopologyContainer* fromTopology, core::topology::BaseMeshTopology* toTopology)
+    : Inherit1(fromTopology, toTopology)
 {}
 
 
@@ -75,7 +73,9 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::computeBase(Mat3x3d& base,
     base[1] = in[element[2]]-in[element[0]];
     base[2] = in[element[3]]-in[element[0]];
     matrixTranspose.transpose(base);
-    base.invert(matrixTranspose);
+    const bool canInvert = base.invert(matrixTranspose);
+    assert(canInvert);
+    SOFA_UNUSED(canInvert);
 }
 
 template <class In, class Out>

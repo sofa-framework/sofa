@@ -87,7 +87,6 @@ void GlText::update ( const double& scale )
 
 void GlText::draw()
 {
-    Mat<4,4, GLfloat> modelviewM;
     glDisable ( GL_LIGHTING );
 
     const char* s = text.c_str();
@@ -131,10 +130,10 @@ void GlText::textureDraw_Overlay(const char* text, const double scale)
 
     for (std::size_t j = 0; j < length; j++)
     {
-        Vector3 vertex_up_left = Vector3(j*worldWidth, worldHeight, 0.0);
-        Vector3 vertex_up_right = Vector3(j*worldWidth + worldWidth, worldHeight, 0.0);
-        Vector3 vertex_down_right = Vector3(j*worldWidth + worldWidth, 0.0, 0.0);
-        Vector3 vertex_down_left = Vector3(j*worldWidth, 0.0, 0.0);
+        Vector3 vertex_up_left = Vector3(j*worldWidth, worldHeight, 0.f);
+        Vector3 vertex_up_right = Vector3(j*worldWidth + worldWidth, worldHeight, 0.f);
+        Vector3 vertex_down_right = Vector3(j*worldWidth + worldWidth, 0.f, 0.f);
+        Vector3 vertex_down_left = Vector3(j*worldWidth, 0.f, 0.f);
 
         vertices.push_back(vertex_up_left);
         vertices.push_back(vertex_down_left);

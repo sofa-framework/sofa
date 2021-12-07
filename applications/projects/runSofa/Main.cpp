@@ -159,7 +159,6 @@ int main(int argc, char** argv)
     bool        testMode = false;
     bool        noAutoloadPlugins = false;
     bool        noSceneCheck = false;
-    unsigned int nbMSSASamples = 1;
     bool computationTimeAtBegin = false;
     unsigned int computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
     string    computationTimeOutputType="stdout";
@@ -437,6 +436,7 @@ int main(int argc, char** argv)
 
     //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
     GUIManager::SetDimension(width, height);
+    GUIManager::CenterWindow();
 
     // Create and register the SceneCheckerListener before scene loading
     if(!noSceneCheck)

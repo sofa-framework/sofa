@@ -40,7 +40,7 @@ SOFA_HELPER_API std::string gettypename(const std::type_info& t);
 
 /// Log classes registered in the factory
 template<class TKey>
-SOFA_HELPER_API void logFactoryRegister(const std::string& baseclass, const std::string& classname, TKey key, bool multi);
+void logFactoryRegister(const std::string& baseclass, const std::string& classname, TKey key, bool multi);
 
 SOFA_HELPER_API std::string& getFactoryLog();
 
@@ -79,7 +79,7 @@ public:
         return true;
     }
 
-    template< class U = Argument, typename std::enable_if<std::is_same<U, NoArgument>::value, int>::type = 0>
+    template< class U = Argument, std::enable_if_t<std::is_same_v<U, NoArgument>, int> = 0>
     ObjectPtr createObject(Key key, Argument arg = NoArgument()){
         createObject(key, arg);
     }

@@ -24,8 +24,6 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
-#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 
 namespace sofa::component::forcefield
 {
@@ -80,8 +78,7 @@ protected:
 
     sofa::component::topology::EdgeSubsetData<sofa::type::vector< EdgePressureInformation> > edgePressureMap; ///< map between edge indices and their pressure
 
-    sofa::component::topology::TriangleSetTopologyContainer* _completeTopology;
-    sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
+    sofa::core::topology::BaseMeshTopology* _completeTopology{nullptr};
 
     Data<Deriv> pressure; ///< Pressure force per unit area
     Data<type::vector<Index> > edgeIndices; ///< Indices of edges separated with commas where a pressure is applied

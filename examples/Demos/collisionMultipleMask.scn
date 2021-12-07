@@ -10,13 +10,13 @@
     <DefaultContactManager name="Response" response="default" />
     <DefaultCollisionGroupManager name="Group" />
 
-    <MeshObjLoader name='Loader-torus' filename='mesh/torus2_scale3.obj'/>
-    <MeshObjLoader name='Loader-dragon' filename='mesh/dragon.obj'/>
-    <MeshObjLoader name='Loader-frog_body' filename='mesh/frog_body.obj'/>
-    <MeshObjLoader name='Loader-frog_eyes' filename='mesh/frog_eyes.obj'/>
-    <MeshObjLoader name='Loader-frog_eyebrows' filename='mesh/frog_eyebrows.obj'/>
-    <MeshObjLoader name='Loader-frog_lips' filename='mesh/frog_lips.obj'/>
-    <MeshObjLoader name='Loader-floor' filename='mesh/floor2b.obj'/>
+    <MeshOBJLoader name='Loader-torus' filename='mesh/torus2_scale3.obj'/>
+    <MeshOBJLoader name='Loader-dragon' filename='mesh/dragon.obj'/>
+    <MeshOBJLoader name='Loader-frog_body' filename='mesh/frog_body.obj'/>
+    <MeshOBJLoader name='Loader-frog_eyes' filename='mesh/frog_eyes.obj'/>
+    <MeshOBJLoader name='Loader-frog_eyebrows' filename='mesh/frog_eyebrows.obj'/>
+    <MeshOBJLoader name='Loader-frog_lips' filename='mesh/frog_lips.obj'/>
+    <MeshOBJLoader name='Loader-floor' filename='mesh/floor2b.obj'/>
 
     <Node name="Torus">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
@@ -30,7 +30,7 @@
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
-            <MeshObjLoader name="loader" filename="mesh/torus2_scale3.obj" />
+            <MeshOBJLoader name="loader" filename="mesh/torus2_scale3.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader"/>
             <TriangleCollisionModel />
@@ -52,7 +52,7 @@
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
-            <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
+            <MeshOBJLoader name="loader" filename="mesh/dragon.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader"/>
             <TriangleCollisionModel />
@@ -86,7 +86,7 @@
             <BarycentricMapping input="@.." output="@VisualLips" />
         </Node>
         <Node name="Surf">
-            <MeshObjLoader name="loader" filename="mesh/frog-push25.obj" />
+            <MeshOBJLoader name="loader" filename="mesh/frog-push25.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel />
@@ -97,7 +97,7 @@
     </Node>
 
     <Node name="Floor">
-        <MeshObjLoader name="loader" filename="mesh/floor2b.obj" />
+        <MeshOBJLoader name="loader" filename="mesh/floor2b.obj" />
         <MeshTopology src="@loader" />
         <MechanicalObject src="@loader"  dy="-10.25" scale="0.5" />
         <TriangleCollisionModel name="FloorTriangleModel" simulated="0" moving="0" />

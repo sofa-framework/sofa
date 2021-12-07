@@ -286,11 +286,10 @@ public:
     /** \brief Returns the type of the topology */
     sofa::core::topology::TopologyElementType getTopologyType() const override {return sofa::core::topology::TopologyElementType::TETRAHEDRON;}
 
-    SOFA_SOFABASETOPOLOGY_API friend std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t);
-    SOFA_SOFABASETOPOLOGY_API friend std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t);
+    bool linkTopologyHandlerToData(core::topology::TopologyHandler* topologyHandler, sofa::geometry::ElementType elementType);
 
-    /// \brief function to add a TopologyHandler to the current list of engines.
-    void addTopologyHandler(sofa::core::topology::TopologyHandler* _TopologyHandler);
+    friend std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t);
+    friend std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t);
 
 protected:
     /** \brief Creates the EdgeSet array.
@@ -395,11 +394,6 @@ protected:
      */
     virtual TetrahedraAroundTriangle& getTetrahedraAroundTriangleForModification(const TriangleID triangleIndex);
 
-
-    /// \brief Function creating the data graph linked to d_tetrahedron
-    void updateTopologyHandlerGraph() override;
-
-
     /// Use a specific boolean @see m_tetrahedronTopologyDirty in order to know if topology Data is dirty or not.
     /// Set/Get function access to this boolean
     void setTetrahedronTopologyToDirty();
@@ -433,14 +427,7 @@ protected:
 
 
     /// Boolean used to know if the topology Data of this container is dirty
-    bool m_tetrahedronTopologyDirty;
-
-    /// List of engines related to this specific container
-    std::list<sofa::core::topology::TopologyHandler *> m_enginesList;
-
-    /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
-    sofa::type::vector< sofa::type::vector<std::string> > m_dataGraph;
-    sofa::type::vector< sofa::type::vector<std::string> > m_enginesGraph;
+    bool m_tetrahedronTopologyDirty = false;
 };
 
 } //namespace sofa::component::topology

@@ -29,8 +29,6 @@ list(APPEND HEADER_FILES
     ${SOFACONSTRAINT_SRC}/GenericConstraintCorrection.h
     ${SOFACONSTRAINT_SRC}/GenericConstraintSolver.h
     ${SOFACONSTRAINT_SRC}/LCPConstraintSolver.h
-    ${SOFACONSTRAINT_SRC}/LMDNewProximityIntersection.h
-    ${SOFACONSTRAINT_SRC}/LMDNewProximityIntersection.inl
     ${SOFACONSTRAINT_SRC}/LinearSolverConstraintCorrection.h
     ${SOFACONSTRAINT_SRC}/LinearSolverConstraintCorrection.inl
     ${SOFACONSTRAINT_SRC}/LocalMinDistance.h
@@ -64,7 +62,6 @@ list(APPEND SOURCE_FILES
     ${SOFACONSTRAINT_SRC}/GenericConstraintCorrection.cpp
     ${SOFACONSTRAINT_SRC}/GenericConstraintSolver.cpp
     ${SOFACONSTRAINT_SRC}/LCPConstraintSolver.cpp
-    ${SOFACONSTRAINT_SRC}/LMDNewProximityIntersection.cpp
     ${SOFACONSTRAINT_SRC}/LinearSolverConstraintCorrection.cpp
     ${SOFACONSTRAINT_SRC}/LocalMinDistance.cpp
     ${SOFACONSTRAINT_SRC}/MappingGeometricStiffnessForceField.cpp
@@ -84,7 +81,6 @@ sofa_find_package(SofaUserInteraction REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaImplicitOdeSolver SofaUserInteraction SofaBaseLinearSolver)
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaEigen2Solver)
 
 if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Silence attribute warnings (for example, ignored already defined external template)

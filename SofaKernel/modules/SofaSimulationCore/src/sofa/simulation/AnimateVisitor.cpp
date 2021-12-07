@@ -29,6 +29,9 @@
 #include <sofa/simulation/IntegrateBeginEvent.h>
 #include <sofa/simulation/IntegrateEndEvent.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/core/BehaviorModel.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
+#include <sofa/core/collision/Pipeline.h>
 
 #include <sofa/helper/AdvancedTimer.h>
 
@@ -155,7 +158,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
                                                     ).execute( node );
         MechanicalPropagateOnlyPositionAndVelocityVisitor(&m_mparams, nextTime,
                                                           VecCoordId::position(),
-                                                          VecDerivId::velocity(), true).execute( node );
+                                                          VecDerivId::velocity()).execute( node );
 
         MechanicalEndIntegrationVisitor endVisitor(this->params, dt);
         node->execute(&endVisitor);

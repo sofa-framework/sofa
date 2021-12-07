@@ -89,7 +89,7 @@ void Edge2QuadTopologicalMapping::init()
     double rho = d_radius.getValue();
 
     bool ellipse = false;
-    double rhoFocal;
+    double rhoFocal{};
     if (d_radiusFocal.isSet() && d_radiusFocal.getValue() >= std::numeric_limits<double>::min())
     {
         ellipse = true;
@@ -232,27 +232,24 @@ void Edge2QuadTopologicalMapping::init()
             }
             else
             {
-                for (unsigned int j=0; j<d_edgeList.getValue().size(); ++j)
+                for (const auto i : d_edgeList.getValue())
                 {
-                    unsigned int i=d_edgeList.getValue()[j];
-
-                    unsigned int p0 = edgeArray[i][0];
-                    unsigned int p1 = edgeArray[i][1];
+                    const Index p0 = edgeArray[i][0];
+                    const Index p1 = edgeArray[i][1];
 
                     sofa::type::vector<Index> out_info;
 
                     for(unsigned int j=0; j<N; ++j)
                     {
-
-                        unsigned int q0 = p0*N+j;
-                        unsigned int q1 = p1*N+j;
-                        unsigned int q2 = p1*N+((j+1)%N);
-                        unsigned int q3 = p0*N+((j+1)%N);
+                        const Index q0 = p0*N+j;
+                        const Index q1 = p1*N+j;
+                        const Index q2 = p1*N+((j+1)%N);
+                        const Index q3 = p0*N+((j+1)%N);
 
                         if(d_flipNormals.getValue())
-                            to_tstm->addQuadProcess(Quad((unsigned int) q0, (unsigned int) q3, (unsigned int) q2, (unsigned int) q1));
+                            to_tstm->addQuadProcess(Quad(q0, q3, q2, q1));
                         else
-                            to_tstm->addQuadProcess(Quad((unsigned int) q0, (unsigned int) q1, (unsigned int) q2, (unsigned int) q3));
+                            to_tstm->addQuadProcess(Quad(q0, q1, q2, q3));
                         Loc2GlobVec.push_back(i);
                         out_info.push_back((unsigned int)Loc2GlobVec.size()-1);
                     }

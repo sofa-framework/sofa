@@ -215,7 +215,7 @@ protected:
 class SOFA_SOFAGUICOMMON_API TopologyOperation : public Operation
 {
 public:
-    TopologyOperation():scale (0.0), volumicMesh (0), firstClick(1) {}
+    TopologyOperation():scale (0.0), volumicMesh (false), firstClick(true) {}
 
     ~TopologyOperation() override {}
     void start() override;

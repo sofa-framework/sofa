@@ -35,11 +35,9 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/BaseMapping.h>
-#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/CollisionModel.h>
-#include <iostream>
 
 namespace sofa::simulation
 {
@@ -428,21 +426,6 @@ void BaseMechanicalVisitor::addNodeData(simulation::Node* /*node*/, SReal* paren
     if (parentData)
         *parentData += *nodeData;
 }
-
-void BaseMechanicalVisitor::ForceMaskActivate( const sofa::type::vector<sofa::core::behavior::BaseMechanicalState*>& v )
-{
-    std::for_each( v.begin(), v.end(), [](sofa::core::behavior::BaseMechanicalState* m) {
-        m->forceMask.activate(true);
-    });
-}
-
-void BaseMechanicalVisitor::ForceMaskDeactivate( const sofa::type::vector<sofa::core::behavior::BaseMechanicalState*>& v)
-{
-    std::for_each( v.begin(), v.end(), [](sofa::core::behavior::BaseMechanicalState* m) {
-        m->forceMask.activate(false);
-    });
-}
-
 
 /// Return a class name for this visitor
 /// Only used for debugging / profiling purposes

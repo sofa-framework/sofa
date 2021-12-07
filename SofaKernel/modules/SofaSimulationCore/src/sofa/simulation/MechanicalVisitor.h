@@ -24,14 +24,9 @@
 
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/fwd.h>
-#include <sofa/core/VecId.h>
-#include <sofa/core/MultiVecId.h>
-#include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/simulation/BaseMechanicalVisitor.h>
-#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/BaseMapping.h>
-#include <sofa/core/ConstraintParams.h>
 #include <sofa/core/MechanicalParams.h>
 
 namespace sofa::simulation
@@ -44,8 +39,7 @@ protected:
     const sofa::core::MechanicalParams* mparams;
 
 public:
-
-    MechanicalVisitor(const sofa::core::MechanicalParams* m_mparams);
+    explicit MechanicalVisitor(const sofa::core::MechanicalParams* m_mparams);
 };
 
 }

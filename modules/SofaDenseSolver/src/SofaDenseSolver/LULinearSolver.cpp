@@ -22,6 +22,7 @@
 #include <SofaDenseSolver/LULinearSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaDenseSolver/NewMatMatrix.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::linearsolver
@@ -181,7 +182,7 @@ bool LULinearSolver<Matrix,Vector>::addJMInvJt(defaulttype::BaseMatrix* result, 
     return false;
 }
 
-int LULinearSolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
+int LULinearSolverClass = core::RegisterObject("Direct linear solver based on LU factorization")
         .add< LULinearSolver<NewMatMatrix,NewMatVector> >(true)
         .add< LULinearSolver<NewMatSymmetricMatrix,NewMatVector> >()
         .add< LULinearSolver<NewMatBandMatrix,NewMatVector> >()

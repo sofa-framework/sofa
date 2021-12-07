@@ -80,10 +80,8 @@ public:
     typedef typename InDataTypes::Real Real;
 
     PersistentContactBarycentricMapperMeshTopology(core::topology::BaseMeshTopology* fromTopology,
-            topology::PointSetTopologyContainer* toTopology,
-            helper::ParticleMask *_maskFrom,
-            helper::ParticleMask *_maskTo)
-        : BarycentricMapperMeshTopology<TIn, TOut>(fromTopology, toTopology, _maskFrom, _maskTo)
+            topology::PointSetTopologyContainer* toTopology)
+        : BarycentricMapperMeshTopology<TIn, TOut>(fromTopology, toTopology)
     {
     }
 
@@ -115,10 +113,8 @@ public:
     typedef typename Inherit::CubeData CubeData;
 
     PersistentContactBarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology,
-            topology::PointSetTopologyContainer* toTopology,
-            helper::ParticleMask *_maskFrom,
-            helper::ParticleMask *_maskTo)
-        : BarycentricMapperSparseGridTopology<TIn, TOut>(fromTopology, toTopology, _maskFrom, _maskTo)
+            topology::PointSetTopologyContainer* toTopology)
+        : BarycentricMapperSparseGridTopology<TIn, TOut>(fromTopology, toTopology)
     {
     }
 
@@ -157,10 +153,8 @@ public:
     typedef typename Inherit::MappingData MappingData;
 
     PersistentContactBarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology,
-            topology::PointSetTopologyContainer* toTopology,
-            helper::ParticleMask *_maskFrom,
-            helper::ParticleMask *_maskTo)
-        : BarycentricMapperTetrahedronSetTopology<TIn, TOut>(fromTopology, toTopology, _maskFrom, _maskTo)
+            topology::PointSetTopologyContainer* toTopology)
+        : BarycentricMapperTetrahedronSetTopology<TIn, TOut>(fromTopology, toTopology)
     {
     }
 

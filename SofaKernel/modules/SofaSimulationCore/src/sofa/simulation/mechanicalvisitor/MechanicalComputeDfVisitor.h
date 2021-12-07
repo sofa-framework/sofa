@@ -72,4 +72,4 @@ public:
 #endif
 };
 
-}
+} // namespace sofa::simulation::mechanicalvisitor

@@ -209,7 +209,7 @@ public:
     /// @}
 
     /// If we use the Data as a link and not as value directly
-    virtual std::string getLinkPath() const { return parentData.getPath(); }
+    virtual std::string getLinkPath() const;
 
     /// Return whether this %Data can be used as a linkPath.
     ///
@@ -312,8 +312,6 @@ public:
 
     /// Helper method to decode the type name to a more readable form if possible
     static std::string decodeTypeName(const std::type_info& t);
-
-public:
 
     /// Helper method to get the type name of type T
     template<class T>

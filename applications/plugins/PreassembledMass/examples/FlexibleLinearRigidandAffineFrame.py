@@ -15,7 +15,7 @@ def createScene(root):
     root.createObject('CompliantImplicitSolver')
     root.createObject('MinresSolver')
     
-    root.createObject('MeshObjLoader', name="loader", filename="mesh/torus.obj", triangulate="1")
+    root.createObject('MeshOBJLoader', name="loader", filename="mesh/torus.obj", triangulate="1")
     #root.createObject('OglModel', template="ExtVec3f", name="Visual", fileMesh="mesh/torus.obj", color="1 0.8 0.8 ")
     
     root.createObject('MeshToImageEngine', template="ImageUC", name="rasterizer", position="@loader.position", edges="@loader.edges", triangles="@loader.triangles", voxelSize="0.1", padSize="1", rotateImage="true" )

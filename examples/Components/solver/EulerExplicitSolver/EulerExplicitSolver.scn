@@ -45,7 +45,7 @@ trivially, it requires a linear solver, here SparseLDLSolver.
     </Node>
 
     <Node name="floor-visual">
-        <MeshObjLoader name="meshLoader" filename="mesh/floorFlat.obj" scale3d="0.5 0.5 0.5"/>
+        <MeshOBJLoader name="meshLoader" filename="mesh/floorFlat.obj" scale3d="0.5 0.5 0.5"/>
         <OglModel src="@meshLoader" dy="-8" dz="10"/>
         <OglModel src="@meshLoader" rx="90" dy="2"/>
     </Node>

@@ -62,7 +62,7 @@ struct PlaneROI_test : public BaseSimulationTest,
     Node::SPtr m_node1, m_node2;
     typename ThisClass::SPtr m_thisObject;
 
-    void SetUp()
+    void SetUp() override
     {
         // SetUp1
         setSimulation(m_simu = new DAGSimulation());

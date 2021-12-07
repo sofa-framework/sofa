@@ -182,14 +182,23 @@ template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
     if( jacobian.rowSize() > 0 )
-        jacobian.mult(dOut,dIn);
+    {
+        auto dOutWa = sofa::helper::getWriteOnlyAccessor(dOut);
+        auto dInRa = sofa::helper::getReadAccessor(dIn);
+        jacobian.mult(dOutWa.wref(),dInRa.ref());
+    }
+
 }
 
 template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut)
 {
     if( jacobian.rowSize() > 0 )
-        jacobian.addMultTranspose(dIn,dOut);
+    {
+        auto dOutRa = sofa::helper::getReadAccessor(dOut);
+        auto dInWa = sofa::helper::getWriteOnlyAccessor(dIn);
+        jacobian.addMultTranspose(dInWa.wref(),dOutRa.ref());
+    }
 }
 
 template <class TIn, class TOut>
@@ -335,15 +344,6 @@ void DistanceFromTargetMapping<TIn, TOut>::draw(const core::visual::VisualParams
         for (unsigned int i=0; i<points.size()/2; ++i)
             vparams->drawTool()->drawArrow( points[2*i+1], points[2*i], arrowsize, d_color.getValue() );
 
-}
-
-template <class TIn, class TOut>
-void DistanceFromTargetMapping<TIn, TOut>::updateForceMask()
-{
-    helper::ReadAccessor< Data<type::vector<unsigned> > > indices(f_indices);
-    for( size_t i = 0 ; i<this->maskTo->size() ; ++i )
-        if( this->maskTo->getEntry(i) )
-            this->maskFrom->insertEntry(indices[i]);
 }
 
 } // namespace sofa::component::mapping

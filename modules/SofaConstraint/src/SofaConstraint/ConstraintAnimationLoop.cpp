@@ -38,6 +38,7 @@
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/LCPcalc.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 
 #include <sofa/core/ObjectFactory.h>
@@ -333,7 +334,7 @@ void ConstraintAnimationLoop::init()
 void ConstraintAnimationLoop::launchCollisionDetection(const core::ExecParams* params)
 {
     dmsg_info_when(EMIT_EXTRA_DEBUG_MESSAGE)
-            <<"computeCollision is called"<<sendl;
+            <<"computeCollision is called";
 
     ////////////////// COLLISION DETECTION///////////////////////////////////////////////////////////////////////////////////////////
     sofa::helper::AdvancedTimer::stepBegin("Collision");
@@ -381,7 +382,7 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params, simulat
         sofa::core::MultiVecCoordId xfree = sofa::core::VecCoordId::freePosition();
         mparams.x() = xfree;
         MechanicalProjectPositionVisitor(&mparams, 0, xfree ).execute(context);
-        MechanicalPropagateOnlyPositionVisitor(&mparams, 0, xfree, true ).execute(context);
+        MechanicalPropagateOnlyPositionVisitor(&mparams, 0, xfree ).execute(context);
     }
     sofa::helper::AdvancedTimer::stepEnd  ("Free Motion");
 
@@ -686,7 +687,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
     //////////////// BEFORE APPLYING CONSTRAINT  : propagate position through mapping
     core::MechanicalParams mparams(*params);
     MechanicalProjectPositionVisitor(&mparams, 0, core::VecCoordId::position()).execute(this->gnode);
-    MechanicalPropagateOnlyPositionVisitor(&mparams, 0, core::VecCoordId::position(), true).execute(this->gnode);
+    MechanicalPropagateOnlyPositionVisitor(&mparams, 0, core::VecCoordId::position()).execute(this->gnode);
 
 
     /// CONSTRAINT SPACE & COMPLIANCE COMPUTATION

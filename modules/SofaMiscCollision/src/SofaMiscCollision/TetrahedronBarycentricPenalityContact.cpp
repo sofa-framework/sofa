@@ -44,6 +44,12 @@ Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronCollisionModel, 
 Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronTrianglePenalityContactClass("default",true);
 Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronCollisionModel, TetrahedronCollisionModel> > TetrahedronTetrahedronPenalityContactClass("default",true);
 
+template class SOFA_MISC_COLLISION_API BarycentricPenalityContact<TetrahedronCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_MISC_COLLISION_API BarycentricPenalityContact<TetrahedronCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_MISC_COLLISION_API BarycentricPenalityContact<TetrahedronCollisionModel, LineCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_MISC_COLLISION_API BarycentricPenalityContact<TetrahedronCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_MISC_COLLISION_API BarycentricPenalityContact<TetrahedronCollisionModel, TetrahedronCollisionModel>;
+
 } // namespace collision
 
 } // namespace component
