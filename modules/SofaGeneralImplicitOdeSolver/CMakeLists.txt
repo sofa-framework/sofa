@@ -19,6 +19,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore)
 
 message(WARNING "${PROJECT_NAME} module is deprecated, its modules is in Sofa.Component.ODESolver.Backward.")
 # forward to the new sofang module
+sofa_find_package(Sofa.Component.ODESolver.Backward REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.ODESolver.Backward)
 
 sofa_create_package_with_targets(

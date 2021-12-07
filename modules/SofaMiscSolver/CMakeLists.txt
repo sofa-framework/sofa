@@ -17,8 +17,10 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore)
 
-message(WARNING "${PROJECT_NAME} module is deprecated, its modules is in Sofa.Component.ODESolver.Backward and Sofa.Component.ODESolver.Backward.")
+message(WARNING "${PROJECT_NAME} module is deprecated, its modules is in Sofa.Component.ODESolver.Backward and Sofa.Component.ODESolver.Forward.")
 # forward to the new sofang module
+sofa_find_package(Sofa.Component.ODESolver.Backward REQUIRED)
+sofa_find_package(Sofa.Component.ODESolver.Forward REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.ODESolver.Backward)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.ODESolver.Forward)
 
