@@ -81,15 +81,15 @@ public:
         }
     }
 
-    // SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_maxIter")
+    SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_maxIter")
     DeprecatedAndRemoved f_maxIter;
-    // SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_tolerance")
+    SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_tolerance")
     DeprecatedAndRemoved f_tolerance;
-    // SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_smallDenominatorThreshold")
+    SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_smallDenominatorThreshold")
     DeprecatedAndRemoved f_smallDenominatorThreshold;
-    // SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_warmStart")
+    SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_warmStart")
     DeprecatedAndRemoved f_warmStart;
-    // SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_graph")
+    SOFA_ATTRIBUTE_DISABLED__CGLINEARSOLVER_DATANAME("To fix your code, use d_graph")
     DeprecatedAndRemoved f_graph;
 };
 
