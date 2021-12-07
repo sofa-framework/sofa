@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_MASS_H
-#define SOFA_CORE_BEHAVIOR_MASS_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/ForceField.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /**
@@ -64,7 +57,6 @@ protected:
 
     ~Mass() override;
 public:
-    void init() override;
 
     /// @name Vector operations
     /// @{
@@ -183,10 +175,4 @@ extern template class SOFA_CORE_API Mass<defaulttype::Rigid2Types>;
 
 #endif
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

@@ -18,7 +18,7 @@
     <Node name="source">
         <ImageContainer  name="rimage" filename="data/thigh_m.raw" drawBB="false"/>
 
-        <MeshObjLoader name="meshLoader" filename="data/femur_m.obj"/>
+        <MeshOBJLoader name="meshLoader" filename="data/femur_m.obj"/>
         <MeshTopology src="@meshLoader" />
         <MechanicalObject  name="PointSet"   />
         <UniformMass vertexMass="10"/>
@@ -38,7 +38,7 @@
 <!--        <ImageViewer template="ImageD" name="view_simi"  image="@ipff.similarity" transform="10 0 0 0 0 0 .1 .01 .1 0 1 0"/>-->
 
         <Node name="Visu">
-            <MeshObjLoader name="meshLoader_0" filename="data/femur_m.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_0" filename="data/femur_m.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_0" normals="0"   color="0.8 0.5 0.5 1" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>

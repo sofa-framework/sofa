@@ -33,7 +33,7 @@ endif()
 
 sofa_add_subdirectory_external(SofaPython3 SofaPython3)
 
-sofa_add_plugin(CGALPlugin CGALPlugin) # Depends on image
+sofa_add_plugin_external(CGALPlugin CGALPlugin) # Depends on image
 sofa_add_plugin_external(Flexible Flexible)     # Depends on image, CImgPlugin, SofaHighOrderTopology (soft)
 sofa_add_plugin(Registration Registration) # Depends on image, SofaPython, SofaSimpleGUI and #SOFADISTANCEGRID
 sofa_add_plugin(LMConstraint LMConstraint ON)

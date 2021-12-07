@@ -143,7 +143,7 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3Types, defaulttype:
                 {
                     if ( d_map.getValue()[j].in_index == cubeId ) // invalidate mapping
                     {
-                        std::array<SReal, 3> coefs;
+                        sofa::type::fixed_array<SReal, 3> coefs;
                         coefs[0] = d_map.getValue()[j].baryCoords[0];
                         coefs[1] = d_map.getValue()[j].baryCoords[1];
                         coefs[2] = d_map.getValue()[j].baryCoords[2];

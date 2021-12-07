@@ -66,8 +66,6 @@ public:
 
     typedef Block SubVectorType;
 
-public:
-
     BlockVector();
 
     explicit BlockVector(Index n);

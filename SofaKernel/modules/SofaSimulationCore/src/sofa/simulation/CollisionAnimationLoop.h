@@ -28,7 +28,6 @@
 
 #include <sofa/simulation/config.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/simulation/Visitor.h>
 
 namespace sofa
 {

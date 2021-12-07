@@ -45,7 +45,6 @@ public:
     typedef std::vector< CategoryLibrary* > VecCategory;
     typedef VecCategory::const_iterator VecCategoryIterator;
 
-public:
     virtual ~SofaLibrary() {};
 
     virtual void build(const std::vector< std::string >& examples=std::vector< std::string >());

@@ -19,17 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_BASEINTERACTIONFORCEFIELD_H
-#define SOFA_CORE_BEHAVIOR_BASEINTERACTIONFORCEFIELD_H
+#pragma once
 
 #include <sofa/core/behavior/BaseForceField.h>
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /**
@@ -49,13 +42,11 @@ public:
 
     /// Get the first MechanicalState
     /// \todo Rename to getMechState1()
-    /// \todo Replace with an accessor to a list of states, as an InteractionForceField can be applied to more than two.
-    virtual BaseMechanicalState* getMechModel1() = 0;
+    virtual BaseMechanicalState* getMechModel1();
 
     /// Get the first MechanicalState
     /// \todo Rename to getMechState2()
-    /// \todo Replace with an accessor to a list of states, as an InteractionForceField can be applied to more than two.
-    virtual BaseMechanicalState* getMechModel2() = 0;
+    virtual BaseMechanicalState* getMechModel2();
 
     void addKToMatrix(const MechanicalParams* /* mparams */, const sofa::core::behavior::MultiMatrixAccessor* /* matrix */ ) override
     {
@@ -64,12 +55,14 @@ public:
 
 
     /// initialization to export potential energy to gnuplot files format
-    virtual void initGnuplot(const std::string path){
+    virtual void initGnuplot(const std::string path)
+    {
         msg_warning() << path << msgendl << "initGnuplot not implemented for all interaction force field";
     }
 
     /// export kinetic and potential energy state at "time" to a gnuplot file
-    virtual void exportGnuplot(SReal time){
+    virtual void exportGnuplot(SReal time)
+    {
         msg_warning() << time << msgendl << "exportGnuplot not implemented for all interaction force field";
     }
 
@@ -79,10 +72,4 @@ public:
 
 };
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif // SOFA_CORE_BEHAVIOR_BASEINTERACTIONFORCEFIELD_H
+} // namespace sofa::core::behavior

@@ -19,20 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_CONSTRAINT_H
-#define SOFA_CORE_BEHAVIOR_CONSTRAINT_H
+#pragma once
 
 #include <sofa/core/config.h>
 #include <sofa/core/behavior/BaseConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
-namespace sofa
-{
+#include <sofa/core/behavior/SingleStateAccessor.h>
 
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /**
@@ -45,10 +40,10 @@ namespace behavior
  *
  */
 template<class DataTypes>
-class Constraint : public BaseConstraint
+class Constraint : public BaseConstraint, public SingleStateAccessor<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(Constraint,DataTypes), BaseConstraint);
+    SOFA_CLASS2(SOFA_TEMPLATE(Constraint, DataTypes), BaseConstraint, SOFA_TEMPLATE(SingleStateAccessor, DataTypes));
 
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -67,11 +62,6 @@ protected:
 public:
     Data<Real> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
     virtual bool isActive() const; ///< if false, the constraint does nothing
-
-    void init() override;
-
-    /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes>* getMState() { return mstate; }
 
     using BaseConstraintSet::getConstraintViolation;
 
@@ -125,9 +115,6 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-protected:
-    MechanicalState<DataTypes> *mstate;
-
 private:
     void storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& resId, const Data<MatrixDeriv>& jacobian, const sofa::defaulttype::BaseVector* lambda);
 };
@@ -141,10 +128,4 @@ extern template class SOFA_CORE_API Constraint<defaulttype::Rigid2Types>;
 
 
 #endif
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

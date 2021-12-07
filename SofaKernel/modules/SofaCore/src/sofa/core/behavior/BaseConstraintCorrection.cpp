@@ -21,13 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 BaseConstraintCorrection::BaseConstraintCorrection(){}
@@ -56,9 +50,5 @@ void BaseConstraintCorrection::addConstraintDisplacement(double * /*d*/, int /*b
 void BaseConstraintCorrection::setConstraintDForce(double * /*df*/, int /*begin*/, int /*end*/, bool /*update*/) {}	  // f += df
 
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::behavior
 

@@ -22,10 +22,12 @@
 #pragma once
 
 #include <sofa/geometry/config.h>
+#include <sofa/type/Vec.h>
 #include <cmath>
 #include <numeric>
 #include <iterator>
 #include <algorithm>
+#include <type_traits>
 
 namespace sofa::geometry
 {
@@ -34,32 +36,56 @@ struct Edge
 {
     static constexpr sofa::Size NumberOfNodes = 2;
 
-    Edge() = default;
+    Edge() = delete;
 
+    /**
+    * @brief	Compute the squared length (or norm) of an edge
+    * @remark   Depending of the type of Node, it will either use a optimized version or a generic one
+    * @remark   Optimizations are enabled for sofa::type::Vec
+    * @tparam   Node iterable container (or sofa::type::Vec for operator- and norm2())
+    * @tparam   T scalar
+    * @param	n0,n1 nodes of the edge
+    * @return	Squared length of the edge (a T scalar)
+    */
     template<typename Node,
-        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
-        typename = std::enable_if_t<std::is_scalar_v<T>>>
-    static constexpr auto squaredLength(const Node & n0, const Node & n1)
+             typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+             typename = std::enable_if_t<std::is_scalar_v<T>>
+    >
+    [[nodiscard]]
+    static constexpr auto squaredLength(const Node& n0, const Node& n1)
     {
-        const auto v = n1 - n0;
-        return std::inner_product(std::begin(v), std::end(v), std::begin(v), 0);
+        constexpr Node v{};
+        constexpr auto size = std::distance(std::cbegin(v), std::cend(v));
+
+        // specialized function is faster than the generic (using STL) one
+        if constexpr (std::is_same_v< Node, sofa::type::Vec<size, T>>)
+        {
+            return (static_cast<sofa::type::Vec<size, T>>(n1) - static_cast<sofa::type::Vec<size, T>>(n0)).norm2();
+        }
+        else
+        {
+            Node diff{};
+            std::transform(n0.cbegin(), n0.cend(), n1.cbegin(), diff.begin(), std::minus<T>());
+            return std::inner_product(std::cbegin(diff), std::cend(diff), std::cbegin(diff), static_cast<T>(0));
+        }
     }
 
+    /**
+    * @brief	Compute the length (or norm) of an edge
+    * @remark   Depending of the type of Node, it will either use a optimized version or a generic one
+    * @remark   Optimizations are enabled for sofa::type::Vec
+    * @tparam   Node iterable container (or sofa::type::Vec for squaredLength())
+    * @tparam   T scalar
+    * @param	n0,n1 nodes of the edge
+    * @return	Length of the edge (a T scalar)
+    */
     template<typename Node,
-        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
-        typename = std::enable_if_t<std::is_scalar_v<T>>>
-    static constexpr auto length(const Node & n0, const Node & n1)
+             typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+             typename = std::enable_if_t<std::is_scalar_v<T>>
+    >
+    static constexpr auto length(const Node& n0, const Node& n1)
     {
-        return std::sqrt(computeSquaredLength(n0, n1));
-    }
-
-    template<typename Node,
-        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
-        typename = std::enable_if_t<std::is_scalar_v<T>>>
-    static constexpr auto center(const Node& n0, const Node& n1)
-    {
-        return std::transform(n0.begin(), n0.end(), n1.begin(), n0.begin(),
-            [](T c0, T c1) -> T { return (c0 + c1) / static_cast<T>(NumberOfNodes); });
+        return std::sqrt(squaredLength(n0, n1));
     }
 };
 

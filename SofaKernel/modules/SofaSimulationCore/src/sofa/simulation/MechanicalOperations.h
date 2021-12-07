@@ -27,14 +27,9 @@
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/simulation/VisitorExecuteFunc.h>
+#include <sofa/core/ConstraintParams.h>
 
-namespace sofa
-{
-
-namespace simulation
-{
-
-namespace common
+namespace sofa::simulation::common
 {
 
 class SOFA_SIMULATION_CORE_API MechanicalOperations
@@ -52,7 +47,7 @@ public:
     operator const core::MechanicalParams*() { return &mparams; }
 
     /// @name Mechanical Vector operations
-    /// @{
+/// @{
 
     /// Propagate the given displacement through all mappings
     void propagateDx(core::MultiVecDerivId dx, bool ignore_flag = false);
@@ -77,7 +72,7 @@ public:
     void addMdx(core::MultiVecDerivId res, core::MultiVecDerivId dx, SReal factor = 1.0); ///< res += factor M.dx
     void integrateVelocity(core::MultiVecDerivId res, core::ConstMultiVecCoordId x, core::ConstMultiVecDerivId v, SReal dt); ///< res = x + v.dt
     void accFromF(core::MultiVecDerivId a, core::ConstMultiVecDerivId f); ///< a = M^-1 . f
-	/// Compute Energy 
+    /// Compute Energy
     void computeEnergy(SReal &kineticEnergy, SReal &potentialEnergy);
     /// Compute the current force (given the latest propagated position and velocity)
     void computeForce(core::MultiVecDerivId result, bool clear = true, bool accumulate = true, bool neglectingCompliance=true);
@@ -103,7 +98,7 @@ public:
     /// @}
 
     /// @name Matrix operations using LinearSolver components
-    /// @{
+/// @{
 
     void m_resetSystem();
     void m_setSystemMBKMatrix(SReal mFact, SReal bFact, SReal kFact);
@@ -115,13 +110,13 @@ public:
     /// @}
 
     /** Find all the Constraint present in the scene graph, build the constraint equation system, solve and apply the correction
-    **/
+**/
     void solveConstraint(sofa::core::MultiVecId id, core::ConstraintParams::ConstOrder order);
 
 
 
     /// @name Matrix operations
-    /// @{
+/// @{
 
     // BaseMatrix & BaseVector Computations
     void getMatrixDimension(sofa::Size* const, sofa::Size* const, sofa::core::behavior::MultiMatrixAccessor* matrix = nullptr);
@@ -139,7 +134,7 @@ public:
     /// @}
 
     /// @name Debug operations
-    /// @{
+/// @{
 
     /// Dump the content of the given vector.
     void print( core::ConstMultiVecId v, std::ostream& out );
@@ -168,10 +163,6 @@ protected:
     static std::map<core::objectmodel::BaseContext*, bool> hasShownMissingLinearSolverMap;
 
 };
-
-}
-
-}
 
 }
 

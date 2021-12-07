@@ -169,7 +169,7 @@ public:
     /// Returns a list of object of type passed as a parameter.
     template<class Container>
     Container* getObjects(Container* result, SearchDirection dir = SearchUp){
-        this->get<typename std::remove_pointer<typename Container::value_type>::type, Container>(result, dir);
+        this->get<std::remove_pointer_t<typename Container::value_type>, Container>(result, dir);
         return result ;
     }
 
@@ -179,7 +179,7 @@ public:
     ///       context->getObjects(results) ;
     template<class Container>
     Container& getObjects(Container& result, SearchDirection dir = SearchUp){
-        this->get<typename std::remove_pointer<typename Container::value_type>::type, Container>(&result, dir);
+        this->get<std::remove_pointer_t<typename Container::value_type>, Container>(&result, dir);
         return result ;
     }
 

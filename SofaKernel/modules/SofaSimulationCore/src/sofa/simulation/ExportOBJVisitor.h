@@ -26,8 +26,6 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/simulation/fwd.h>
-#include <string>
-#include <iostream>
 #include <sofa/defaulttype/TopologyTypes.h>
 
 namespace sofa

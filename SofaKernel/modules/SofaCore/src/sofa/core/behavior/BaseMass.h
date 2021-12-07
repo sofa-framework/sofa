@@ -19,23 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_BASEMASS_H
-#define SOFA_CORE_BEHAVIOR_BASEMASS_H
+#pragma once
 
 #include <sofa/core/config.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/behavior/StateAccessor.h>
 #include <sofa/defaulttype/TopologyTypes.h>
 #include <sofa/core/MultiVecId.h>
 
 namespace sofa::core::behavior { class MultiMatrixAccessor; }
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /**
@@ -47,26 +40,23 @@ namespace behavior
  *
  *  It is often also a ForceField, computing gravity-related forces.
  */
-class SOFA_CORE_API BaseMass : public virtual objectmodel::BaseObject
+class SOFA_CORE_API BaseMass : public virtual StateAccessor
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseMass, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(BaseMass, StateAccessor);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseMass)
+
 protected:
-    BaseMass()
-        : m_separateGravity (initData(&m_separateGravity , false, "separateGravity", "add separately gravity to velocity computation"))
-        , rayleighMass (initData(&rayleighMass , SReal(0), "rayleighMass", "Rayleigh damping - mass matrix coefficient"))
-    {
-    }
+    BaseMass();
 
     ~BaseMass() override
     {
     }
-	
+
 private:
-	BaseMass(const BaseMass& n) ;
-	BaseMass& operator=(const BaseMass& n) ;	
-	
+	BaseMass(const BaseMass& n) = delete;
+	BaseMass& operator=(const BaseMass& n) = delete;
+
 public:
     /// @name Vector operations
     /// @{
@@ -139,10 +129,4 @@ public:
 
 };
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

@@ -44,7 +44,7 @@ public:
     bool m_interactionForceField;
 
     /// Default constructor
-    /// \param _vDest output vector
+    /// \param v output vector
     /// \param propagate sets to true propagates vector initialization to mapped mechanical states
     /// \param interactionForceField sets to true also initializes external mechanical states linked by an interaction force field
     MechanicalVReallocVisitor(const sofa::core::ExecParams* params, DestMultiVecId *v, bool interactionForceField=false, bool propagate=false)

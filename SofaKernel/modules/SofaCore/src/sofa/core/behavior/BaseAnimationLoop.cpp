@@ -25,13 +25,7 @@
 #include <cstdlib>
 #include <cmath>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 BaseAnimationLoop::BaseAnimationLoop()
@@ -68,9 +62,5 @@ bool BaseAnimationLoop::removeInNode( objectmodel::BaseNode* node )
     return true;
 }
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::behavior
 

@@ -78,7 +78,7 @@ public:
         std::string name;
         int nbSlice;
 
-        Layer():layer1(-1),layer2(-1),base(-1),typeOffset1(Distance),typeOffset2(Distance),offset1(0),offset2(0){}
+        Layer():layer1(-1),layer2(-1),base(-1),typeOffset1(Distance),typeOffset2(Distance),offset1(0),offset2(0),nbSlice(-1){}
     };
 
     typedef type::vector< Layer > VecLayer;

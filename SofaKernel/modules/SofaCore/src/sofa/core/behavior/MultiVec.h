@@ -19,18 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_MULTIVEC_H
-#define SOFA_CORE_BEHAVIOR_MULTIVEC_H
+#pragma once
 
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/behavior/BaseVectorOperations.h>
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /// Helper class providing a high-level view of underlying state vectors.
@@ -229,11 +222,6 @@ typedef TMultiVec<V_MATDERIV> MultiVecMatrixDeriv;
 
 
 
-} // namespace behavior
+} // namespace sofa::core::behavior
 
-} // namespace core
-
-} // namespace sofa
-
-#endif // SOFA_CORE_BEHAVIOR_MULTIVEC_H
 

@@ -72,7 +72,7 @@ struct MeshROI_test : public BaseSimulationTest,
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       "
         "   <Node name='node'>                                          "
         "       <RequiredPlugin name='SofaLoader' />                       "
-        "       <MeshObjLoader name='loader' filename='mesh/cube.obj'/>    "
+        "       <MeshOBJLoader name='loader' filename='mesh/cube.obj'/>    "
         "       <Mesh name='topology' src='@loader'/>                      "
         "       <MeshROI template='Vec3d' name='MeshROI'/>                 "
         "   </Node>                                                        "
@@ -137,7 +137,7 @@ struct MeshROI_test : public BaseSimulationTest,
         "<?xml version='1.0'?>"
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       "
         "   <Node name='node'>                                          "
-        "       <MeshObjLoader name='loader' filename='mesh/dragon.obj'/>  "
+        "       <MeshOBJLoader name='loader' filename='mesh/dragon.obj'/>  "
         "       <Mesh name='topology' src='@loader'/>                      "
         "       <MeshROI template='Vec3d' name='MeshROI'/>                 "
         "   </Node>                                                        "
@@ -160,7 +160,7 @@ struct MeshROI_test : public BaseSimulationTest,
         <?xml version='1.0'?>
         <Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >
            <Node name='node'>
-               <MeshObjLoader name='loader' filename='mesh/cube.obj'/>
+               <MeshOBJLoader name='loader' filename='mesh/cube.obj'/>
                <Mesh name='topology' src='@loader'/>
                <MeshROI template='Vec3d' name='MeshROI' position='0. 0. 0. 2. 0. 0.' />
            </Node>

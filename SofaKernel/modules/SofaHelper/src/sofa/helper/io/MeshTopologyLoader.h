@@ -71,7 +71,6 @@ private:
     // will take all data from loaded into @see m_mesh and add it to the current topology using methods api.
     bool addMeshtoTopology();
 
-private:
     helper::io::Mesh* m_mesh;
 };
 

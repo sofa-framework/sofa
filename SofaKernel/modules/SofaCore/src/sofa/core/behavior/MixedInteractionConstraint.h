@@ -19,19 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_H
-#define SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_H
+#pragma once
 
 #include <sofa/core/behavior/BaseInteractionConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/PairStateAccessor.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /**
@@ -41,10 +35,10 @@ namespace behavior
  *  between a pair of bodies using a given type of DOFs.
  */
 template<class TDataTypes1, class TDataTypes2>
-class  MixedInteractionConstraint : public BaseInteractionConstraint
+class MixedInteractionConstraint : public BaseInteractionConstraint, public PairStateAccessor<TDataTypes1, TDataTypes2>
 {
 public:
-    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(MixedInteractionConstraint,TDataTypes1,TDataTypes2), BaseInteractionConstraint);
+    SOFA_ABSTRACT_CLASS2(SOFA_TEMPLATE2(MixedInteractionConstraint,TDataTypes1,TDataTypes2), BaseInteractionConstraint, SOFA_TEMPLATE2(PairStateAccessor, TDataTypes1, TDataTypes2));
 
     typedef TDataTypes1 DataTypes1;
     typedef typename DataTypes1::VecCoord VecCoord1;
@@ -73,15 +67,6 @@ protected:
 public:
     Data<SReal> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
     virtual bool isActive() const; ///< if false, the constraint does nothing
-
-    void init() override;
-
-    /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes1>* getMState1() { return mstate1; }
-    BaseMechanicalState* getMechModel1() override { return mstate1; }
-    /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes2>* getMState2() { return mstate2; }
-    BaseMechanicalState* getMechModel2() override { return mstate2; }
 
     using BaseConstraintSet::getConstraintViolation;
     /// Construct the Constraint violations vector of each constraint
@@ -142,9 +127,6 @@ public:
         return DataTypes1::Name();
     }
 
-protected:
-    SingleLink<MixedInteractionConstraint<DataTypes1,DataTypes2>, MechanicalState<DataTypes1>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;
-    SingleLink<MixedInteractionConstraint<DataTypes1,DataTypes2>, MechanicalState<DataTypes2>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
 };
 
 #if  !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_CPP)
@@ -161,10 +143,4 @@ extern template class SOFA_CORE_API MixedInteractionConstraint<defaulttype::Rigi
 
 #endif
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

@@ -22,13 +22,7 @@
 #define SOFA_CORE_BEHAVIOR_MASS_CPP
 #include <sofa/core/behavior/Mass.inl>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 using namespace sofa::defaulttype;
@@ -41,8 +35,4 @@ template class SOFA_CORE_API Mass<Rigid3Types>;
 template class SOFA_CORE_API Mass<Rigid2Types>;
 
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::behavior

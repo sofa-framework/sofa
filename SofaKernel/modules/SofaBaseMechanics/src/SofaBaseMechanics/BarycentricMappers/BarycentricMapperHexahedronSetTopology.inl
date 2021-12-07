@@ -274,7 +274,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
                     if (d_map.getValue()[j].in_index == cubeId) // invalidate mapping
                     {
                         const auto& baryMap = d_map.getValue()[j];
-                        std::array<SReal, 3> coefs;
+                        sofa::type::fixed_array<SReal, 3> coefs;
                         coefs[0] = baryMap.baryCoords[0];
                         coefs[1] = baryMap.baryCoords[1];
                         coefs[2] = baryMap.baryCoords[2];

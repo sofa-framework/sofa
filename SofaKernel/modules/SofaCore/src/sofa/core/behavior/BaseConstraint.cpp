@@ -19,20 +19,43 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BaseConstraint.h"
+#include <sofa/core/behavior/BaseConstraint.h>
 
-namespace sofa
+namespace sofa::core::behavior
 {
-
-namespace core
+int BaseConstraint::getGroup() const
 {
+    return group.getValue();
+}
 
-namespace behavior
+void BaseConstraint::setGroup(int g)
 {
+    group.setValue(g);
+}
 
+void BaseConstraint::getConstraintInfo(const ConstraintParams* cParams, VecConstraintBlockInfo& blocks,
+    VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
+{
+    SOFA_UNUSED(cParams);
+    SOFA_UNUSED(blocks);
+    SOFA_UNUSED(ids);
+    SOFA_UNUSED(positions);
+    SOFA_UNUSED(directions);
+    SOFA_UNUSED(areas);
 
-} // namespace behavior
+}
 
-} // namespace core
+void BaseConstraint::getConstraintResolution(const ConstraintParams* cParams,
+    std::vector<ConstraintResolution*>& resTab, unsigned& offset)
+{
+    getConstraintResolution(resTab, offset);
+    SOFA_UNUSED(cParams);
+}
 
-} // namespace sofa
+void BaseConstraint::getConstraintResolution(std::vector<ConstraintResolution*>& resTab, unsigned& offset)
+{
+    SOFA_UNUSED(resTab);
+    SOFA_UNUSED(offset);
+}
+
+} // namespace sofa::core::behavior

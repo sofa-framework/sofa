@@ -30,7 +30,7 @@ struct Pentahedron
 {
     static const sofa::Size NumberOfNodes = 6;
 
-    Pentahedron() = default;
+    Pentahedron() = delete;
 };
 
 } // namespace sofa::geometry

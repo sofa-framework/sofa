@@ -23,13 +23,7 @@
 #include <sofa/core/objectmodel/BaseNode.h>
 
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 BaseMechanicalState::BaseMechanicalState()
@@ -111,8 +105,4 @@ bool BaseMechanicalState::removeInNode( objectmodel::BaseNode* node )
 }
 
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
+} // namespace sofa::core::behavior

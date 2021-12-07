@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_BASEMECHANICALSTATE_H
-#define SOFA_CORE_BEHAVIOR_BASEMECHANICALSTATE_H
+#pragma once
 
 #include <sofa/core/fwd.h>
 #include <sofa/core/BaseState.h>
@@ -29,13 +28,7 @@
 #include <sofa/type/Quat.h>
 #include <sofa/linearalgebra/fwd.h> /// For BaseMatrix
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace behavior
+namespace sofa::core::behavior
 {
 
 /**
@@ -383,10 +376,4 @@ public:
 
 };
 
-} // namespace behavior
-
-} // namespace core
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::core::behavior

@@ -40,7 +40,7 @@ namespace sofa::topology
         for (sofa::Index c = 0; c < hexahedra.size(); ++c)
         {
             const auto& h = hexahedra[c];
-            const auto d = sofa::geometry::Hexahedron::distanceTo(hexahedronPositions[h[0]], hexahedronPositions[h[1]], hexahedronPositions[h[2]], hexahedronPositions[h[3]],
+            const auto d = sofa::geometry::Hexahedron::squaredDistanceTo(hexahedronPositions[h[0]], hexahedronPositions[h[1]], hexahedronPositions[h[2]], hexahedronPositions[h[3]],
                 hexahedronPositions[h[4]], hexahedronPositions[h[5]], hexahedronPositions[h[6]], hexahedronPositions[h[7]],
                 pos);
 

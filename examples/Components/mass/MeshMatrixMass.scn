@@ -18,7 +18,7 @@
     <DiscreteIntersection />
 
     <MeshGmshLoader name="MeshLoader" filename="mesh/liver.msh" />
-    <MeshObjLoader name="LiverSurface" filename="mesh/liver-smooth.obj" />
+    <MeshOBJLoader name="LiverSurface" filename="mesh/liver-smooth.obj" />
 
     <Node name="Liver">
         <EulerImplicitSolver name="integration scheme" />

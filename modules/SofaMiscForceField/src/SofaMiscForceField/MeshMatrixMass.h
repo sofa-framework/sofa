@@ -34,18 +34,6 @@
 #include <sofa/helper/map.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-
-namespace sofa::component::topology
-{
-	/// forward declaration to avoid adding includes in .h
-	template< class DataTypes> class EdgeSetGeometryAlgorithms;
-	template< class DataTypes> class TriangleSetGeometryAlgorithms;
-	template< class DataTypes> class TetrahedronSetGeometryAlgorithms;
-	template< class DataTypes> class QuadSetGeometryAlgorithms;
-	template< class DataTypes> class HexahedronSetGeometryAlgorithms;
-}
-
-
 namespace sofa::component::mass
 {
 
@@ -132,13 +120,6 @@ protected:
 
 
 public:
-    sofa::component::topology::EdgeSetGeometryAlgorithms<GeometricalTypes>* edgeGeo;
-    sofa::component::topology::TriangleSetGeometryAlgorithms<GeometricalTypes>* triangleGeo;
-    sofa::component::topology::QuadSetGeometryAlgorithms<GeometricalTypes>* quadGeo;
-    sofa::component::topology::TetrahedronSetGeometryAlgorithms<GeometricalTypes>* tetraGeo;
-    sofa::component::topology::HexahedronSetGeometryAlgorithms<GeometricalTypes>* hexaGeo;
-
-
     virtual void clear();
 
     void reinit() override;

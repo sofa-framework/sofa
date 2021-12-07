@@ -28,7 +28,6 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 
-#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/TopologyData.h>
 
 namespace sofa::component::forcefield
@@ -196,7 +195,7 @@ public:
         const sofa::type::vector<Index>&, const sofa::type::vector<double>&);
 
 protected:
-    topology::HexahedronSetTopologyContainer* _topology;
+    core::topology::BaseMeshTopology* _topology;
 
     type::Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
 };
