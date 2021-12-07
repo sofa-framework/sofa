@@ -24,10 +24,8 @@
 #include <SofaBoundaryCondition/QuadPressureForceField.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
 #include <sofa/type/RGBAColor.h>
 #include <vector>
-#include <set>
 
 namespace sofa::component::forcefield
 {
@@ -125,28 +123,23 @@ void QuadPressureForceField<DataTypes>::addDForce(const core::MechanicalParams* 
 template<class DataTypes>
 void QuadPressureForceField<DataTypes>::initQuadInformation()
 {
-    sofa::component::topology::QuadSetGeometryAlgorithms<DataTypes>* quadGeo;
-    this->getContext()->get(quadGeo);
-
-    if (!quadGeo)
-    {
-        msg_error() << "Missing component: Unable to get QuadSetGeometryAlgorithms from the current context.";
-    }
-
-    // FIXME: a dirty way to avoid a crash
-    if(!quadGeo)
-        return;
-
     const sofa::type::vector<Index>& my_map = quadPressureMap.getMap2Elements();
-    sofa::type::vector<QuadPressureInformation>& my_subset = *(quadPressureMap).beginEdit();
+    auto my_subset = sofa::helper::getWriteOnlyAccessor(quadPressureMap);
+
+    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
-        my_subset[i].area=quadGeo->computeRestQuadArea(my_map[i]);
+        const auto& q = this->m_topology->getQuad(my_map[i]);
+
+        const auto& n0 = DataTypes::getCPos(x0[q[0]]);
+        const auto& n1 = DataTypes::getCPos(x0[q[1]]);
+        const auto& n2 = DataTypes::getCPos(x0[q[2]]);
+        const auto& n3 = DataTypes::getCPos(x0[q[3]]);
+
+        my_subset[i].area = sofa::geometry::Quad::area(n0, n1, n2, n3);
         my_subset[i].force=pressure.getValue()*my_subset[i].area;
     }
-
-    quadPressureMap.endEdit();
 }
 
 

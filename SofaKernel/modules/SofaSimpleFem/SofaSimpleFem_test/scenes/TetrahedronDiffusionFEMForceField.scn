@@ -4,7 +4,7 @@
     <RequiredPlugin name='SofaTopologyMapping'/>
     <RequiredPlugin name='SofaLoader'/>
 
-    <MeshObjLoader name="temperatureLoader" filename="beamTemperatures.obj" />
+    <MeshOBJLoader name="temperatureLoader" filename="beamTemperatures.obj" />
     <RegularGridTopology name="grid" n="21 11 11"  p0="0 0 0" min="0 0 0" max="1 0.5 0.5" drawHexahedra="1" tags="geom"/>
     <MechanicalObject template="Vec3d"  name="gridDOFs" tags="geom" />
     <BoxROI name="box-dirac" box="-0.01 -0.01 -0.01 0.01 0.51 0.51" drawBoxes="1" position="@gridDOFs.position"/>

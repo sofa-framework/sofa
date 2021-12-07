@@ -35,11 +35,9 @@
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/BaseMapping.h>
-#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/CollisionModel.h>
-#include <iostream>
 
 namespace sofa::simulation
 {

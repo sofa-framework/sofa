@@ -85,7 +85,7 @@
 
 
     <Node name="Floor">
-        <MeshObjLoader name="loader" filename="mesh/SaladBowl.obj"/>
+        <MeshOBJLoader name="loader" filename="mesh/SaladBowl.obj"/>
         <MeshTopology src="@loader"/>
         <MechanicalObject src="@loader" dy="-20" scale="50" rx="-90"/>
         <TriangleCollisionModel simulated="false" moving="false"/>

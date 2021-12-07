@@ -23,7 +23,6 @@
 #define SOFA_SIMULATION_TREE_STATECHANGEACTION_H
 
 #include <sofa/simulation/Visitor.h>
-#include <sofa/core/topology/Topology.h>
 
 namespace sofa
 {

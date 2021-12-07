@@ -1942,7 +1942,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams*, 
     else
     {
         size_t nbEdges=m_topology->getNbEdges();
-        size_t v0,v1;
+        const auto& edges = m_topology->getEdges();
 
         for (unsigned int i=0; i<dx.size(); i++)
         {
@@ -1954,15 +1954,14 @@ void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams*, 
 
         for (unsigned int j=0; j<nbEdges; ++j)
         {
+            const auto& e = edges[j];
+
             tempMass = edgeMass[j] * Real(factor);
 
-            v0=m_topology->getEdge(j)[0];
-            v1=m_topology->getEdge(j)[1];
+            res[e[0]] += dx[e[1]] * tempMass;
+            res[e[1]] += dx[e[0]] * tempMass;
 
-            res[v0] += dx[v1] * tempMass;
-            res[v1] += dx[v0] * tempMass;
-
-            massTotal += 2*edgeMass[j] * Real(factor);
+            massTotal += 2 * tempMass;
         }
     }
 

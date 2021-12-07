@@ -28,18 +28,19 @@
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/linearalgebra/SparseMatrixProduct[EigenSparseMatrix].h>
 
-// accumulate jacobian
-
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
+#include <sofa/simulation/mechanicalvisitor/MechanicalAccumulateJacobian.h>
+
+#include <sofa/core/MechanicalParams.h>
 
 #include <sofa/simulation/CpuTask.h>
 #include <sofa/simulation/TaskScheduler.h>
-using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
 
 // verify timing
 #include <sofa/helper/system/thread/CTime.h>
@@ -193,7 +194,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::bwdInit()
 }
 
 template<class DataTypes1, class DataTypes2>
-void MechanicalMatrixMapper<DataTypes1, DataTypes2>::parseNode(sofa::simulation::Node *node,std::string massName)
+void MechanicalMatrixMapper<DataTypes1, DataTypes2>::parseNode(sofa::simulation::Node *node, std::string massName)
 {
     bool empty = d_forceFieldList.getValue().empty();
     msg_info() << "parsing node:";
@@ -261,7 +262,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::accumulateJacobians(const M
     MechanicalResetConstraintVisitor(&cparams).execute(context);
     buildIdentityBlocksInJacobian(l_mechanicalState,Id);
 
-    MechanicalAccumulateJacobian(&cparams, core::MatrixDerivId::mappingJacobian()).execute(gnode);
+    sofa::simulation::mechanicalvisitor::MechanicalAccumulateJacobian(&cparams, core::MatrixDerivId::mappingJacobian()).execute(gnode);
 }
 
 template<class T>

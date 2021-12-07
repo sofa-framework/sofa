@@ -8,7 +8,7 @@
     <RequiredPlugin pluginName='SofaLoader'/>
 
     <VisualStyle displayFlags="showInteractionForceFields"/>
-    <MeshObjLoader name="LiverSurface" filename="mesh/liver-smooth.obj" />
+    <MeshOBJLoader name="LiverSurface" filename="mesh/liver-smooth.obj" />
 
     <Node name="Liver" >
         <EulerImplicitSolver name="cg_odesolver"   rayleighStiffness="0.1" rayleighMass="0.1" />

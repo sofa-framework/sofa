@@ -23,7 +23,6 @@
 #define SOFA_SIMULATION_TREE_UPDATEMAPPINGACTION_H
 
 #include <sofa/simulation/Visitor.h>
-#include <sofa/core/BaseMapping.h>
 
 namespace sofa
 {

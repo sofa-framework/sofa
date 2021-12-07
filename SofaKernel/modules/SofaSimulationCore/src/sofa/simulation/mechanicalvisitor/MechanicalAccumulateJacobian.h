@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,21 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define CGALPLUGIN_CUBOIDMESH_CPP
+#pragma once
 
-#include <CGALPlugin/config.h>
-#include "CuboidMesh.inl"
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/simulation/BaseMechanicalVisitor.h>
 
-using namespace sofa::defaulttype;
-using namespace cgal;
+namespace sofa::simulation::mechanicalvisitor
+{
+/**
+* This class define a visitor which will go through the scene graph in reverse order and call the method applyJT of each mechanical mapping (@sa sofa::core::BaseMapping)
+*/
+class SOFA_SIMULATION_CORE_API MechanicalAccumulateJacobian : public simulation::BaseMechanicalVisitor
+{
+public:
+    MechanicalAccumulateJacobian(const core::ConstraintParams* _cparams, core::MultiMatrixDerivId _res);
 
-int CuboidMeshClass = sofa::core::RegisterObject("Generate a regular tetrahedron mesh of a cuboid")
-        .add< CuboidMesh<Vec3Types> >()
- 
-        ;
+    void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
 
-template class SOFA_CGALPLUGIN_API CuboidMesh<Vec3Types>;
- 
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    const char* getClassName() const override { return "MechanicalAccumulateJacobian"; }
+
+    bool isThreadSafe() const override
+    {
+        return false;
+    }
+    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
+    {
+        return false; // !map->isMechanical();
+    }
+
+protected:
+    core::MultiMatrixDerivId res;
+    const sofa::core::ConstraintParams *cparams;
+};
+
+} //namespace sofa::simulation::mechanicalvisitor

@@ -24,9 +24,6 @@
 
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/visual/VisualModel.h>
-#include <iostream>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
 
 namespace sofa

@@ -21,13 +21,13 @@
         <PlaneForceField  name="Plane" normal="0 0 1" d="-10" />
         <HexahedronFEMForceField  name="FEM" youngModulus="200" poissonRatio="0.45"/>
         <Node name="VisualNode" gravity="0 -9.81 0">
-            <MeshObjLoader name="meshLoader_0" filename="mesh/dragon.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/dragon.obj" handleSeams="1" />
             <OglModel name="Objective" src="@meshLoader_0" />
             <BarycentricMapping  name="Visual Mapping" output="@Objective"  />
         </Node>
     </Node>
     <Node name="Floor">
-        <MeshObjLoader name="ObjLoader" filename="mesh/floor.obj" />
+        <MeshOBJLoader name="ObjLoader" filename="mesh/floor.obj" />
         <OglModel name="VisualModel" src="@./ObjLoader" translation="0 0 -9" rotation="90 0 0"/>
     </Node>
 </Node>

@@ -27,7 +27,6 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/type/RGBAColor.h>
 #include <vector>
-#include <set>
 
 namespace sofa::component::forcefield
 {
@@ -48,7 +47,7 @@ EdgePressureForceField<DataTypes>::EdgePressureForceField()
     , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
 {
-    _completeTopology = nullptr;
+
 }
 
 template <class DataTypes> EdgePressureForceField<DataTypes>::~EdgePressureForceField()
@@ -76,23 +75,12 @@ void EdgePressureForceField<DataTypes>::init()
         return;
     }
 
-    this->getContext()->get(edgeGeo);
-    assert(edgeGeo!=0);
-
-    if (edgeGeo==nullptr)
-    {
-        msg_error() << " object must have an EdgeSetTopology.";
-        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-        return;
-    }
-
-
     _completeTopology = nullptr;
     this->getContext()->get(_completeTopology, core::objectmodel::BaseContext::SearchUp);
 
-    if(_completeTopology == nullptr && edgeIndices.getValue().empty() && edges.getValue().empty())
+    if( (_completeTopology == nullptr || _completeTopology->getTriangles().empty()) && edgeIndices.getValue().empty() && edges.getValue().empty())
     {
-        msg_error() << "Either a pressure vector or a TriangleSetTopology is required.";
+        msg_error() << "Either a pressure vector or a topology with triangles is required.";
     }
 
     // init edgesubsetData engine
@@ -182,12 +170,22 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
 
     sofa::type::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
 
+    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    auto getEdgeLength = [x0](const sofa::topology::Edge& e, const VecCoord& pos)
+    {
+        const auto& n0 = DataTypes::getCPos(pos[e[0]]);
+        const auto& n1 = DataTypes::getCPos(pos[e[1]]);
+
+        return sofa::geometry::Edge::length(n0,n1);
+
+    };
+
     if(pressure.getValue().norm() > 0 )
     {
         for (unsigned int i=0; i<my_map.size(); ++i)
         {
-            my_subset[i].length=edgeGeo->computeRestEdgeLength(my_map[i]);
-            my_subset[i].force=pressure.getValue()*my_subset[i].length;
+            my_subset[i].length = getEdgeLength(this->m_topology->getEdge(my_map[i]), x0);
+            my_subset[i].force = pressure.getValue() * my_subset[i].length;
         }
     }
     else if (m_topology && intensities.size() > 0)
@@ -207,7 +205,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
 
                 EdgePressureInformation ei;
                 Real intensity = (intensities.size() > 1 && intensities.size() > (unsigned int) i) ? intensities[i] : intensities[0];
-                ei.length = edgeGeo->computeRestEdgeLength(i);
+                ei.length = getEdgeLength(this->m_topology->getEdge(i), x0);
                 ei.force = normal * intensity * ei.length ;
                 edgePMap[i] = ei;
             }
@@ -268,7 +266,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
 
                     EdgePressureInformation ei;
                     Real intensity = (intensities.size() > 1 && intensities.size() > (unsigned int) i) ? intensities[i] : intensities[0];
-                    ei.length = edgeGeo->computeRestEdgeLength(i);
+                    ei.length = getEdgeLength(this->m_topology->getEdge(i), x0);
                     ei.force = n1 * ei.length * intensity;
                     edgePMap[i] = ei;
                 }

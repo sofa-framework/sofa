@@ -50,7 +50,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -73,7 +73,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -96,7 +96,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -119,7 +119,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -142,7 +142,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -165,7 +165,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -188,7 +188,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -211,7 +211,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -234,7 +234,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -257,7 +257,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -280,7 +280,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -303,7 +303,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -326,7 +326,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -349,7 +349,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -372,7 +372,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -395,7 +395,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -418,7 +418,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -441,7 +441,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -464,7 +464,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -487,7 +487,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -510,7 +510,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -533,7 +533,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -556,7 +556,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -579,7 +579,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -602,7 +602,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -625,7 +625,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -648,7 +648,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -671,7 +671,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -694,7 +694,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -717,7 +717,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -740,7 +740,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -763,7 +763,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -786,7 +786,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -809,7 +809,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -832,7 +832,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -855,7 +855,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -878,7 +878,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -901,7 +901,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -924,7 +924,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -947,7 +947,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -970,7 +970,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -993,7 +993,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1016,7 +1016,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1039,7 +1039,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1062,7 +1062,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1085,7 +1085,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1108,7 +1108,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1131,7 +1131,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1154,7 +1154,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1177,7 +1177,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1200,7 +1200,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1223,7 +1223,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1246,7 +1246,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1269,7 +1269,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1292,7 +1292,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1315,7 +1315,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1338,7 +1338,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1361,7 +1361,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1384,7 +1384,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1407,7 +1407,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1430,7 +1430,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1453,7 +1453,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1476,7 +1476,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1499,7 +1499,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1522,7 +1522,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1545,7 +1545,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1568,7 +1568,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1591,7 +1591,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1614,7 +1614,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1637,7 +1637,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1660,7 +1660,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>
@@ -1683,7 +1683,7 @@ On a CPU with 6 cores, each core tests 3906 pairs of collision models.
             <UniformMass name="UniformMass" totalMass="10.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visual Model">
-                <MeshObjLoader name="myLoader" filename="mesh/cube.obj"/>
+                <MeshOBJLoader name="myLoader" filename="mesh/cube.obj"/>
                 <OglModel name="Visual_Cube" src="@myLoader" color="1 1 0 1.0" />
                 <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube_RigidDOF" output="@Visual_Cube" />
             </Node>

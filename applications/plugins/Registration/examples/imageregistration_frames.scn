@@ -25,7 +25,7 @@
 	<Node name="source">
 	    <ImageContainer  name="rimage" filename="data/thigh_m.raw" drawBB="false"/>
 
-	    <MeshObjLoader name="mesh" filename="data/femur_m.obj" triangulate="1"/>
+	    <MeshOBJLoader name="mesh" filename="data/femur_m.obj" triangulate="1"/>
             <MeshToImageEngine template="ImageUC" name="rasterizer" src="@mesh" voxelSize="0.05" padSize="1" rotateImage="true" insideValue="1"/>
 	    <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
 
@@ -46,7 +46,7 @@
 	    </Node>
 
 		<Node name="ModelInteraction">
-			<MeshObjLoader name="MeshLoader"  filename="data/femur_m.obj" />
+			<MeshOBJLoader name="MeshLoader"  filename="data/femur_m.obj" />
 			<MechanicalObject  name="PointSet"  position="@MeshLoader.position"  />
 			<UniformMass totalMass="20" />
 			<LinearMapping template="Affine,Vec3d" assemble="1" />
@@ -61,7 +61,7 @@
 <!--        <ImageViewer  name="view_prof"  image="@ipff.profiles" transform="1 0 0 0 0 0 .1 .01 .1 0 1 0"/>-->
 <!--        <ImageViewer template="ImageD" name="view_simi"  image="@ipff.similarity" transform="10 0 0 0 0 0 .1 .01 .1 0 1 0"/>-->
 			<Node name="Visu">
-				<MeshObjLoader name="meshLoader_0" filename="data/femur_m.obj" handleSeams="1" />
+				<MeshOBJLoader name="meshLoader_0" filename="data/femur_m.obj" handleSeams="1" />
 				<OglModel src="@meshLoader_0" color="0.8 0.5 0.5 1" />
 				<IdentityMapping />
 			</Node>		

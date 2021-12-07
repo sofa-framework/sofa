@@ -159,21 +159,22 @@ void InciseAlongPathPerformer::PerformCompleteIncision()
     // Get new coordinate of first incision point:
     sofa::component::container::MechanicalObject<defaulttype::Vec3Types>* MechanicalObject=nullptr;
     startBody.body->getContext()->get(MechanicalObject, sofa::core::objectmodel::BaseContext::SearchRoot);
-    const sofa::type::Vector3& the_point = (MechanicalObject->read(core::ConstVecCoordId::position())->getValue())[initialNbPoints];
+    const auto& positions = MechanicalObject->read(core::ConstVecCoordId::position())->getValue();
+    const sofa::type::Vector3& the_point = positions[initialNbPoints];
 
     // Get triangle index that will be incise
     // - Creating direction of incision
     sofa::type::Vector3 dir = startBody.point - the_point;
     // - looking for triangle in this direction
-    sofa::component::topology::TriangleSetGeometryAlgorithms<defaulttype::Vec3Types>* triangleGeometry;
-    startBody.body->getContext()->get(triangleGeometry);
-    int the_triangle = triangleGeometry->getTriangleInDirection(initialNbPoints, dir);
+    const auto& shell = startBody.body->getCollisionTopology()->getTrianglesAroundVertex(initialNbPoints);
+    auto triangleIDInShell = sofa::topology::getTriangleIDInDirection(positions, startBody.body->getCollisionTopology()->getTriangles(), shell, initialNbPoints, dir);
 
-    if (the_triangle == -1)
+    if (triangleIDInShell == sofa::InvalidID)
     {
         msg_error("InciseAlongPathPerformer") << " initial triangle of incision has not been found." ;
         return;
     }
+    auto the_triangle = shell[triangleIDInShell];
 
     sofa::core::topology::TopologyModifier* topologyModifier;
     startBody.body->getContext()->get(topologyModifier);
