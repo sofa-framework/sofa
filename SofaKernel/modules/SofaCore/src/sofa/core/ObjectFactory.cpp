@@ -29,7 +29,7 @@
 namespace sofa::core
 {
 
-bool ObjectFactory::ClassEntry::isADeprecatedAlias(const std::string& name)
+bool ObjectFactory::ClassEntry::isADeprecatedAlias(const std::string& name) const
 {
     return std::find(deprecatedAliases.begin(), deprecatedAliases.end(), name) != deprecatedAliases.end();
 }
@@ -532,7 +532,7 @@ RegisterObject::RegisterObject(const std::string& description)
 
 RegisterObject& RegisterObject::addTargetName(std::string val)
 {
-    entry.compilation_target=val;
+    entry.compilationTarget=val;
     return *this;
 }
 
@@ -581,6 +581,9 @@ RegisterObject& RegisterObject::addCreator(std::string classname,
     {
         entry.className = classname;
         entry.creatorMap[templatename] =  creator;
+
+        if(entry.compilationTarget.empty())
+            entry.compilationTarget = creator->getTarget();
     }
     return *this;
 }
@@ -594,16 +597,19 @@ RegisterObject::operator int()
     else
     {
         std::string fullname = entry.className;
-        if(!entry.compilation_target.empty())
-            fullname = entry.compilation_target + "." + entry.className;
+        if(!entry.compilationTarget.empty())
+            fullname = entry.compilationTarget + "." + entry.className;
 
         ObjectFactory::ClassEntry& reg = ObjectFactory::getInstance()->getEntry(fullname);
         reg.className = entry.className;
-        reg.compilation_target = entry.compilation_target;
+        reg.compilationTarget = entry.compilationTarget;
         reg.description += entry.description;
         reg.authors += entry.authors;
         reg.license += entry.license;
         reg.deprecatedAliases = entry.deprecatedAliases;
+
+        if(reg.compilationTarget.empty())
+            msg_warning("ObjectFactory") << "No compilationTarget for object " << entry.className;
 
         if (!entry.defaultTemplate.empty())
         {
@@ -636,6 +642,11 @@ RegisterObject::operator int()
             {
                 ObjectFactory::getInstance()->addAlias(alias,fullname);
             }
+        }
+
+        if (!ObjectFactory::HasCreator(reg.className))
+        {
+            ObjectFactory::getInstance()->addAlias(reg.className,fullname);
         }
         return 1;
     }

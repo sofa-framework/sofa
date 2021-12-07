@@ -54,32 +54,30 @@ void FromComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
     {
         msg_error() << "The mandatory 'plugin' attribute is missing.  "
                            "The component is disabled.  "
-                           "To remove this error message you need to add a targetcomponent attribute pointing to a valid component's ClassName.";
+                           "To remove this error message you need to add a 'plugin' attribute pointing to a valid component's ClassName.";
         return ;
     }
-    string starget(plugin) ;
 
     if(object==nullptr)
     {
         msg_error() << "The mandatory 'import' attribute is missing.  "
                            "The component is disabled.  "
-                           "To remove this error message you need to add an alias attribute with a valid string component's ClassName.";
+                           "To remove this error message you need to add an 'import' attribute with a valid string component's ClassName.";
         return ;
     }
 
     // First load the plugin if it is not yet done
     type::vector< std::string > failed;
-    std::ostringstream errmsg;
     const std::string name = sofa::helper::system::FileSystem::cleanPath( plugin );
     auto& pluginManager = sofa::helper::system::PluginManager::getInstance();
     if ( !pluginManager.pluginIsLoaded(name) )
     {
+        std::ostringstream errmsg;
         if(!pluginManager.loadPlugin(name, sofa::helper::system::PluginManager::getDefaultSuffix(), true, true, &errmsg))
         {
             msg_error() << errmsg.str();
         }
     }
-
 
     // Then import the requested names.
     if(std::string(object)=="*")
@@ -88,12 +86,12 @@ void FromComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
         ObjectFactory::getInstance()->getEntriesFromTarget(entries, std::string(plugin));
         for(auto& entry : entries)
         {
-            string fullname = std::string(plugin)+"."+entry->className;
+            const std::string fullname = std::string(plugin)+"."+entry->className;
             ObjectFactory::getInstance()->addAlias(entry->className, fullname,true);
         }
         if(alias != nullptr)
         {
-            msg_error() << "using 'as' and '*' at the same time is not supposed to work.";
+            msg_error() << "using 'as' attribute is not supposed to work with while using the import-all operator '*'.";
             return ;
         }
         d_componentState.setValue(ComponentState::Valid);
@@ -110,24 +108,24 @@ void FromComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
     std::string fullname = tmp.str();
     if(!ObjectFactory::getInstance()->hasCreator(fullname))
     {
-        std::stringstream tmp;
+        std::stringstream errorMessage;
         std::vector<sofa::core::ObjectFactory::ClassEntry::SPtr> entries;
         ObjectFactory::getInstance()->getEntriesFromTarget(entries, std::string(plugin));
-        tmp << "The object '"<< object << "' does not correspond to a valid component available in plugin '"<< plugin <<"'." << msgendl;
-        tmp << "Content of " << d_plugin.getValueString() << ":" << msgendl;
+        errorMessage << "The object '"<< object << "' does not correspond to a valid component available in plugin '"<< plugin <<"'." << msgendl;
+        errorMessage << "Content of " << d_plugin.getValueString() << ":" << msgendl;
         for(auto& entry : entries)
         {
-            tmp << " - " << entry->className << msgendl;
+            errorMessage << " - " << entry->className << msgendl;
         }
-        tmp << "To remove this error message you need to fix your scene and provide a valid component ClassName in the 'import' attribute. ";
-        msg_error() << tmp.str();
+        errorMessage << "To remove this error message you need to fix your scene and provide a valid component ClassName in the 'import' attribute. ";
+        msg_error() << errorMessage.str();
         return ;
     }
     ObjectFactory::getInstance()->addAlias(alias, fullname,true);
     d_componentState.setValue(ComponentState::Valid) ;
 }
 
-int FromComponentClass = RegisterObject("This object create an alias to a component name to make the scene more readable. ")
+int FromComponentClass = RegisterObject("This object creates an alias to a component name to make the scene more readable. ")
         .add< FromComponent >()
         .addTargetName(sofa_tostring(SOFA_TARGET))
         .addAlias("From", false)

@@ -5,6 +5,7 @@ project(Sofa.Testing LANGUAGES CXX)
 enable_testing()
 
 # add gtest library
+# set(gtest_disable_pthreads ON CACHE INTERNAL "")
 add_subdirectory(extlibs/gtest)
 # add custom gtest main
 add_subdirectory(SofaGTestMain)
