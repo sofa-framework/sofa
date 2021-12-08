@@ -186,10 +186,8 @@ void ImportComponent::innerInit()
     d_componentState.setValue(ComponentState::Valid);
 }
 
-int ImportComponentClass = RegisterObject("This object creates an alias to a component name to make the scene more readable. ")
+int ImportComponentClass = RegisterObject("Loads a plugin and import its content into the current namespace. ")
         .add< ImportComponent >()
-        .addTargetName(sofa_tostring(SOFA_TARGET))
-        .addAlias("From", false)
-        ;
+        .addTargetName(sofa_tostring(SOFA_TARGET));
 
 } // namespace sofa::component
