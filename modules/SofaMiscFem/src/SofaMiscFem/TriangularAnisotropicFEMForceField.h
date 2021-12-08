@@ -33,7 +33,6 @@
 #include <sofa/core/topology/TopologyData.h>
 
 
-
 namespace sofa::component::forcefield
 {
 
