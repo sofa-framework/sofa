@@ -62,7 +62,7 @@ public :
 
         //SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2522)", "v22.06","This attribute was only added to build a compatibility layer on the response name.")
         {
-            static std::map<std::string,std::string> renamingResponseMethod = {
+            static const std::map<std::string,std::string> renamingResponseMethod = {
                 {"ray", "RayContact"},
                 {"default", "PenalityContactForceField"},
                 {"FrictionContact", "FrictionContactConstraint"},
