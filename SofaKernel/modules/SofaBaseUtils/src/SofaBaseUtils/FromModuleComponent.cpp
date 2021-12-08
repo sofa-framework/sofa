@@ -27,22 +27,22 @@ using sofa::core::ObjectFactory ;
 #include <sofa/helper/system/FileSystem.h>
 using sofa::core::objectmodel::ComponentState ;
 
-#include <SofaBaseUtils/FromComponent.h>
+#include <SofaBaseUtils/FromModuleComponent.h>
 
 using std::string;
 
 namespace sofa::component
 {
 
-FromComponent::FromComponent() :
-    d_plugin(initData(&d_plugin, "plugin", ""))
-  ,d_import_old_name(initData(&d_import_old_name, "import", ""))
-  ,d_as_new_name(initData(&d_as_new_name, "as", ""))
+FromModuleComponent::FromModuleComponent() :
+   d_plugin(initData(&d_plugin, "from", ""))
+  ,d_importOldName(initData(&d_importOldName, "import", ""))
+  ,d_asNewName(initData(&d_asNewName, "as", ""))
 {
     d_componentState.setValue(ComponentState::Invalid) ;
 }
 
-void FromComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
+void FromModuleComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
 {
     BaseObject::parse(arg) ;
 
@@ -125,8 +125,8 @@ void FromComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
     d_componentState.setValue(ComponentState::Valid) ;
 }
 
-int FromComponentClass = RegisterObject("This object creates an alias to a component name to make the scene more readable. ")
-        .add< FromComponent >()
+int FromModuleComponentClass = RegisterObject("This object creates an alias to a component name to make the scene more readable. ")
+        .add< FromModuleComponent >()
         .addTargetName(sofa_tostring(SOFA_TARGET))
         .addAlias("From", false)
         ;
