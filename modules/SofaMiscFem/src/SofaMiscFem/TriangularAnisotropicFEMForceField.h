@@ -31,8 +31,6 @@
 #include <sofa/type/Mat.h>
 #include "TriangularFEMForceField.h"
 #include <sofa/core/topology/TopologyData.h>
-#include <newmat/newmat.h>
-#include <newmat/newmatap.h>
 
 
 

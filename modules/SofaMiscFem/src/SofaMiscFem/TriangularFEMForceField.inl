@@ -886,7 +886,6 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementInd
         biggestIndex = 1;
 
     //get the eigenvectors corresponding to the biggest eigenvalue
-    //note : according to newmat doc => The elements of D are sorted in ascending order, The eigenvectors are returned as the columns of V
     Coord direction((Real)V(0,biggestIndex), (Real)V(1,biggestIndex), 0.0);    
     direction.normalize();
 
