@@ -28,7 +28,7 @@ namespace sofa::core::objectmodel
 enum class TypeOfInsertion
 {
     AtEnd,
-    AtFront
+    AtBegin
 };
 
 };

@@ -80,7 +80,7 @@ TEST(Node_test, addObjectAtFront)
     root->addObject(A);
 
     // adds a second object before the first one.
-    root->addObject(B, sofa::core::objectmodel::TypeOfInsertion::AtFront);
+    root->addObject(B, sofa::core::objectmodel::TypeOfInsertion::AtBegin);
     auto b = dynamic_cast< sofa::core::objectmodel::BaseContext*>(root.get());
     ASSERT_NE(b, nullptr);
     ASSERT_EQ(b->getObjects()[0]->getName(), "B");
