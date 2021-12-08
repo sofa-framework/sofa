@@ -40,6 +40,9 @@ CGLinearSolver<TMatrix,TVector>::CGLinearSolver()
     , d_graph( initData(&d_graph,"graph","Graph of residuals at each iteration") )
 {
     d_graph.setWidget("graph");
+    d_maxIter.setRequired(true);
+    d_tolerance.setRequired(true);
+    d_smallDenominatorThreshold.setRequired(true);
 }
 
 /// Initialization function checking input Data
