@@ -235,6 +235,8 @@ public:
     /// This method should not be called directly, the %Data registration methods in Base should be used instead.
     void setName(const std::string& name) { m_name=name; }
 
+    /// Return whether the Data has a default value or not
+    bool hasDefaultValue() const { return m_hasDefaultValue; }
 
     /// @name Optimized edition and retrieval API (for multi-threading performances)
     /// @{
@@ -244,10 +246,6 @@ public:
     SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
     bool isSet(const core::ExecParams*) const { return isSet(); }
     bool isSet() const { return m_isSet; }
-
-    /// Return whether the Data has a default value or not
-    bool hasDefaultValue() const { return m_hasDefaultValue; }
-    /// @}
 
     /// Reset the isSet flag to false, to indicate that the current value is the default for this %Data.
     SOFA_ATTRIBUTE_DEPRECATED__ASPECT_EXECPARAMS()
