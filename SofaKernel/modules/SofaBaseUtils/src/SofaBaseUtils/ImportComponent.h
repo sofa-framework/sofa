@@ -38,29 +38,31 @@ namespace sofa::component
 /// for ease of use
 /// 
 /// A component to add alias to other components.
-class SOFA_SOFABASEUTILS_API FromModuleComponent : public core::objectmodel::BaseObject
+class SOFA_SOFABASEUTILS_API ImportComponent : public core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(FromModuleComponent, core::objectmodel::BaseObject);
+    SOFA_CLASS(ImportComponent, core::objectmodel::BaseObject);
 
-    FromModuleComponent() ;
-    ~FromModuleComponent() override{}
+    ImportComponent() ;
+    ~ImportComponent() override{}
 
     /// Inherited from BaseObject.
     /// Parse the given description to assign values to this object's fields and
     /// potentially other parameters.
     void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
 
+    void innerInit();
+
     Data<std::string>   d_plugin                ; ///< The component class for which to create an alias.
     Data<std::string>   d_importOldName       ; ///< The object's name to import
     Data<std::string>   d_asNewName           ; ///< The new alias of the component.
 
     /// Returns the sofa class name. By default the name of the c++ class is exposed... but
-    /// Here we want it to be FromModuleComponent so we need to customize it.
+    /// Here we want it to be ImportComponent so we need to customize it.
     /// More details on the name customization infrastructure is in NameDecoder.h
     static std::string GetCustomClassName()
     {
-        return "Module" ;
+        return "Import" ;
     }
 };
 

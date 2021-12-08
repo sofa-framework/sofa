@@ -8,7 +8,7 @@ set(HEADER_FILES
     ${SOFABASEUTILS_SRC}/initSofaBaseUtils.h
     ${SOFABASEUTILS_SRC}/messageHandlerComponent.h
     ${SOFABASEUTILS_SRC}/MakeAliasComponent.h
-    ${SOFABASEUTILS_SRC}/FromModuleComponent.h
+    ${SOFABASEUTILS_SRC}/ImportComponent.h
     ${SOFABASEUTILS_SRC}/MakeDataAliasComponent.h
     ${SOFABASEUTILS_SRC}/InfoComponent.h
     ${SOFABASEUTILS_SRC}/RequiredPlugin.h
@@ -19,7 +19,7 @@ set(SOURCE_FILES
     ${SOFABASEUTILS_SRC}/initSofaBaseUtils.cpp
     ${SOFABASEUTILS_SRC}/messageHandlerComponent.cpp
     ${SOFABASEUTILS_SRC}/MakeAliasComponent.cpp
-    ${SOFABASEUTILS_SRC}/FromModuleComponent.cpp
+    ${SOFABASEUTILS_SRC}/ImportComponent.cpp
     ${SOFABASEUTILS_SRC}/MakeDataAliasComponent.cpp
     ${SOFABASEUTILS_SRC}/InfoComponent.cpp
     ${SOFABASEUTILS_SRC}/RequiredPlugin.cpp

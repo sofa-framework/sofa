@@ -26,13 +26,17 @@
 #include <sofa/helper/system/PluginManager.h>
 
 #include <SofaBaseUtils/RequiredPlugin.h>
+using sofa::component::misc::RequiredPlugin;
+
+#include <SofaBaseUtils/ImportComponent.h>
+using sofa::component::ImportComponent;
+
 #include <sofa/simulation/Node.h>
 
 namespace sofa::simulation::_scenechecking_
 {
 
 using sofa::core::objectmodel::Base;
-using sofa::component::misc::RequiredPlugin;
 using sofa::core::ObjectFactory;
 using sofa::helper::system::PluginManager;
 
@@ -102,12 +106,19 @@ void SceneCheckMissingRequiredPlugin::doPrintSummary()
 
 void SceneCheckMissingRequiredPlugin::doInit(Node* node)
 {
+    // Fill the m_loadedPlugin map that is then used in the other function
+    // there is two source of plugin, one is the component <RequiredPlugin> the other is
+    // <Import>.
+    // For that we first scan the scene graph to search using getTreeObject.
+    // As this is a templated function we need to specify it by the type of
+    // component we are searching for.
+    //
+    // Once this is done we add into the m_loadedPlugins map the loaded plugin's name.
     type::vector< RequiredPlugin* > plugins;
     node->getTreeObjects< RequiredPlugin >(&plugins);
 
     m_requiredPlugins.clear();
     m_loadedPlugins.clear();
-
     for(auto& plugin : plugins)
     {
         for(auto& pluginName : plugin->d_loadedPlugins.getValue())
@@ -115,6 +126,14 @@ void SceneCheckMissingRequiredPlugin::doInit(Node* node)
             m_loadedPlugins[pluginName] = true;
         }
     }
+
+    type::vector< ImportComponent* > imports;
+    node->getTreeObjects< ImportComponent >(&imports);
+    for(auto& plugin : imports)
+    {
+        m_loadedPlugins[plugin->d_plugin.getValue()] = true;
+    }
+
 }
 
 } // namespace sofa::simulation::_scenechecking_
