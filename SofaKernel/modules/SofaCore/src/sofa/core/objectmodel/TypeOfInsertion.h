@@ -24,7 +24,7 @@
 
 namespace sofa::core::objectmodel
 {
-/// Enum proposing two alternative on where to add an object in a node
+/// Enum proposing two alternatives on where to add a new object in a node
 enum class TypeOfInsertion
 {
     AtEnd,
