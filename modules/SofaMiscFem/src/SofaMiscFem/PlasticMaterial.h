@@ -24,8 +24,6 @@
 #include <SofaMiscFem/config.h>
 
 #include <SofaMiscFem/BaseMaterial.h>
-#include <newmat/newmat.h>
-#include <newmat/newmatap.h>
 #include <sofa/type/Vec.h>
 
 namespace sofa::component::fem::material
