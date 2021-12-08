@@ -70,7 +70,7 @@ public :
                 {"stick", "StickContactForceField"},
             };
 
-            std::string responseDesired = arg->getAttribute("response","");
+            const std::string responseDesired = arg->getAttribute("response","");
             const auto it = renamingResponseMethod.find(responseDesired);
 
             if(it != renamingResponseMethod.end())
