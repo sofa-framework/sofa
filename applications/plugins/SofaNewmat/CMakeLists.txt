@@ -4,10 +4,18 @@ project(SofaNewmat LANGUAGES CXX)
 find_package(SofaFramework REQUIRED)
 sofa_find_package(SofaBaseLinearSolver REQUIRED)
 sofa_find_package(SofaGeneralLinearSolver REQUIRED) # for CholeskySolver
-sofa_find_package(Newmat REQUIRED BOTH_SCOPES)
+
+# Newmat
+#sofa_find_package(Newmat QUIET) # useless IMO
+if(NOT Newmat_FOUND)
+    add_subdirectory(extlibs/newmat newmat)
+endif()
+set_target_properties(newmat PROPERTIES DEBUG_POSTFIX "_d")
+set_target_properties(newmat PROPERTIES FOLDER "SofaExtlibs")
+
+
 
 set(SOFANEWMAT_SRC "src/${PROJECT_NAME}")
-
 
 set(HEADER_FILES
     ${SOFANEWMAT_SRC}/config.h.in
