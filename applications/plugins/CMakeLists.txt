@@ -19,6 +19,8 @@ sofa_add_plugin(MultiThreading MultiThreading)
 sofa_add_plugin(DiffusionSolver DiffusionSolver) # Depends on CImgPlugin
 sofa_add_plugin_external(SofaPython SofaPython)
 sofa_add_plugin(image image) # Depends on CImgPlugin, DiffusionSolver, MultiThreading (soft)
+sofa_add_plugin(SofaNewmat SofaNewmat)
+
 sofa_add_plugin_external(Compliant Compliant)
 sofa_add_subdirectory_external(SofaPython3 SofaPython3)
 sofa_add_plugin_external(CGALPlugin CGALPlugin) # Depends on image
@@ -47,7 +49,6 @@ sofa_add_plugin_external(RigidScale RigidScale)
 sofa_add_plugin(LeapMotion LeapMotion)
 sofa_add_plugin(Geomagic Geomagic)
 sofa_add_plugin(SofaAssimp SofaAssimp) # ColladaSceneLoader Depends on Flexible and image
-sofa_add_plugin(SofaNewmat SofaNewmat)
 
 
 sofa_add_plugin_experimental(PSL PSL)
