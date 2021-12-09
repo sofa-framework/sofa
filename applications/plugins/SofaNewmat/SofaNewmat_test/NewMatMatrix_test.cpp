@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <Sofa.LinearAlgebra.Testing/BaseMatrix_test.h>
 
-#include <SofaDenseSolver/NewMatMatrix.h>
+#include <SofaNewmat/NewMatMatrix.h>
 
 namespace sofa
 {
@@ -32,7 +32,7 @@ using traits_9x9float = TestBaseMatrixTraits< sofa::component::linearsolver::New
 
 /// Test instantiation for 9x9 matrices and float scalars
 INSTANTIATE_TYPED_TEST_SUITE_P(
-    SofaDenseSolver_test_9x9float,
+    SofaNewmat_test_9x9float,
     TestBaseMatrix,
     traits_9x9float
 );
@@ -41,7 +41,7 @@ using traits_9x9double = TestBaseMatrixTraits< sofa::component::linearsolver::Ne
 
 /// Test instantiation for 9x9 matrices and double scalars
 INSTANTIATE_TYPED_TEST_SUITE_P(
-    SofaDenseSolver_test_9x9double,
+    SofaNewmat_test_9x9double,
     TestBaseMatrix,
     traits_9x9double
 );
@@ -50,7 +50,7 @@ using traits_9x14float = TestBaseMatrixTraits< sofa::component::linearsolver::Ne
 
 /// Test instantiation for 9x14 matrices and float scalars
 INSTANTIATE_TYPED_TEST_SUITE_P(
-    SofaDenseSolver_test_9x14float,
+    SofaNewmat_test_9x14float,
     TestBaseMatrix,
     traits_9x14float
 );
@@ -59,7 +59,7 @@ using traits_9x14double = TestBaseMatrixTraits< sofa::component::linearsolver::N
 
 /// Test instantiation for 9x14 matrices and double scalars
 INSTANTIATE_TYPED_TEST_SUITE_P(
-    SofaDenseSolver_test_9x14double,
+    SofaNewmat_test_9x14double,
     TestBaseMatrix,
     traits_9x14double
 );
