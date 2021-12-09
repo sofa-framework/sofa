@@ -846,8 +846,8 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementInd
     //compute eigenvalues and eigenvectors
     Eigen::JacobiSVD svd(e, Eigen::ComputeThinU | Eigen::ComputeThinV);
 
-    auto S = svd.singularValues();
-    auto V = svd.matrixV();
+    const auto& S = svd.singularValues();
+    const auto& V = svd.matrixV();
 
     Coord v((Real)V(0, 0), (Real)V(1, 0), 0.0);
     v.normalize();
@@ -876,8 +876,8 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementInd
     //compute eigenvalues and eigenvectors
     Eigen::JacobiSVD svd(e, Eigen::ComputeThinU | Eigen::ComputeThinV);
 
-    auto S = svd.singularValues();
-    auto V = svd.matrixV();
+    const auto& S = svd.singularValues();
+    const auto& V = svd.matrixV();
     //get the index of the biggest eigenvalue in absolute value
     unsigned int biggestIndex = 0;
     if (fabs(S(0)) > fabs(S(1)))
