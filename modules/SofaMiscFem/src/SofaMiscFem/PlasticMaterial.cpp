@@ -94,7 +94,7 @@ SReal PlasticMaterial::computeVonMisesStrain(Vector3 &strain)
 	//compute eigenvalues and eigenvectors
 	Eigen::JacobiSVD svd(e, Eigen::ComputeThinU | Eigen::ComputeThinV);
 
-	auto S = svd.singularValues();
+	const auto& S = svd.singularValues();
 
 	return 1/(1+_poissonRatio.getValue())*sqrt( 0.5*( (S(0)-S(1))*(S(0)-S(1)) + (S(1)-S(2))*(S(1)-S(2)) + (S(2)-S(0))*(S(2)-S(0)) ));
 }
