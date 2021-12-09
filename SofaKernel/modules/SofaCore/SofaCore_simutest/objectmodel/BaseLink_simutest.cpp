@@ -25,7 +25,7 @@ using sofa::core::objectmodel::ComponentState;
 
 #include <sofa/core/behavior/BaseMechanicalState.h>
 
-#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+#include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 

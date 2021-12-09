@@ -22,8 +22,6 @@
 #pragma once
 
 #include <SofaBoundaryCondition/TrianglePressureForceField.h>
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
-#include <SofaBaseTopology/CommonAlgorithms.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
@@ -143,25 +141,22 @@ void TrianglePressureForceField<DataTypes>::addDForce(const core::MechanicalPara
 template<class DataTypes>
 void TrianglePressureForceField<DataTypes>::initTriangleInformation()
 {
-   this->getContext()->get(triangleGeo);
-
-   if (!triangleGeo)
-   {
-       msg_error() << "Missing component: Unable to get TriangleSetGeometryAlgorithms from the current context.";
-       sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-       return;
-   }
-
     const sofa::type::vector<Index>& my_map = trianglePressureMap.getMap2Elements();
-    sofa::type::vector<TrianglePressureInformation>& my_subset = *(trianglePressureMap).beginEdit();
+    auto my_subset = sofa::helper::getWriteOnlyAccessor(trianglePressureMap);
+
+    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
-        my_subset[i].area=triangleGeo->computeRestTriangleArea(my_map[i]);
+        const auto& t = this->m_topology->getTriangle(my_map[i]);
+
+        const auto& n0 = DataTypes::getCPos(x0[t[0]]);
+        const auto& n1 = DataTypes::getCPos(x0[t[1]]);
+        const auto& n2 = DataTypes::getCPos(x0[t[2]]);
+
+        my_subset[i].area = sofa::geometry::Triangle::area(n0, n1, n2);
         my_subset[i].force=pressure.getValue()*my_subset[i].area;
     }
-
-    trianglePressureMap.endEdit();
 }
 
 template<class DataTypes>

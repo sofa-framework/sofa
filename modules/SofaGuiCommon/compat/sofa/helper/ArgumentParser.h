@@ -21,13 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/gui/ArgumentParser.h>
+#include <sofa/config.h>
 
-SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/gui/ArgumentParser.h")
-
-namespace sofa::helper
-{
-    using ArgumentParser = sofa::gui::ArgumentParser;
-
-
-} // namespace sofa::helper
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/gui/ArgumentParser.h")

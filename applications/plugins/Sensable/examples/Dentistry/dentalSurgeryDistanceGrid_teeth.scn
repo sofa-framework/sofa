@@ -17,15 +17,15 @@
 
 	<Node name="Tooth" >
 		<Node name="VisualModel" >
-			<MeshObjLoader name="meshLoader_2" filename="Demos/Dentistry/data/mesh/teeth.obj" handleSeams="1" />
+			<MeshOBJLoader name="meshLoader_2" filename="Demos/Dentistry/data/mesh/teeth.obj" handleSeams="1" />
 			<OglModel name="TeethVisualModel" src="@meshLoader_2" color="white" />
-			<MeshObjLoader name="meshLoader_3" filename="Demos/Dentistry/data/mesh/tooth-closed.obj" handleSeams="1" />
+			<MeshOBJLoader name="meshLoader_3" filename="Demos/Dentistry/data/mesh/tooth-closed.obj" handleSeams="1" />
 			<OglModel name="ToothVisualModel" src="@meshLoader_3" color="red" />
-			<MeshObjLoader name="meshLoader_4" filename="Demos/Dentistry/data/mesh/tooth-closed.obj" handleSeams="1" />
+			<MeshOBJLoader name="meshLoader_4" filename="Demos/Dentistry/data/mesh/tooth-closed.obj" handleSeams="1" />
 			<OglModel name="ToothVisualModel" src="@meshLoader_4" color="red" dy="-0.3" dz="-2"/>
-			<MeshObjLoader name="meshLoader_5" filename="Demos/Dentistry/data/mesh/tooth-closed.obj" handleSeams="1" />
+			<MeshOBJLoader name="meshLoader_5" filename="Demos/Dentistry/data/mesh/tooth-closed.obj" handleSeams="1" />
 			<OglModel name="ToothVisualModel" src="@meshLoader_5" color="red" dy="-8" dz="0.5"/>
-			<MeshObjLoader name="meshLoader_6" filename="Demos/Dentistry/data/mesh/tooth-closed.obj" handleSeams="1" />
+			<MeshOBJLoader name="meshLoader_6" filename="Demos/Dentistry/data/mesh/tooth-closed.obj" handleSeams="1" />
 			<OglModel name="ToothVisualModel" src="@meshLoader_6" color="red" dy="-8" dz="-1.5"/>
 		</Node>
 		<Node name="CollisionModel" >
@@ -53,24 +53,24 @@
 		<MechanicalObject template="Rigid3d" name="DOFs" position="0 -4 0  0 0 0 1"/>
 		<MechanicalStateController template="Rigid3d" listening="true"  mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
 		<Node name="VisuAvatar">
-			<MeshObjLoader name="meshLoader_1" filename="mesh/sphere.obj" scale="0.1" handleSeams="1" />
+			<MeshOBJLoader name="meshLoader_1" filename="mesh/sphere.obj" scale="0.1" handleSeams="1" />
 			<OglModel name="Visual" src="@meshLoader_1" color="gray" />
 			<RigidMapping input="@.." output="@Visual" index="0"/>
 		</Node>
 		<Node name="RefModel">
-			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+			<MeshOBJLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
 			<MeshTopology src="@loader"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" dz="-3.5" dx="0.3" />
 			<RigidMapping />
 		</Node>
 		<Node name="RefModelRight" >
-			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+			<MeshOBJLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
 			<MeshTopology src="@loader" name="InstrumentCollisionModel"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" dz="-3.5" dx="0.3" dy="0.5"/>
 			<RigidMapping />
 		</Node>
 		<Node name="RefModelLeft" >
-			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+			<MeshOBJLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
 			<MeshTopology src="@loader" name="InstrumentCollisionModel"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" dz="-3.5" dx="0.3" dy="-0.5"/>
 			<RigidMapping />
@@ -85,12 +85,12 @@
 		<UniformMass name="mass" totalmass="0.05" />
 		<EnslavementForceFeedback activate="true" stiffness="3.0"/> <!-- ADDED : Compute a force-feedback for the device -->
 		<Node name="VisualModel" >
-			<MeshObjLoader name="meshLoader_0" filename="Demos/Dentistry/data/mesh/dental_instrument.obj" handleSeams="1" />
+			<MeshOBJLoader name="meshLoader_0" filename="Demos/Dentistry/data/mesh/dental_instrument.obj" handleSeams="1" />
 			<OglModel name="InstrumentVisualModel" src="@meshLoader_0" color="1.0 0.2 0.2 1.0" dz="-3.5" dx="0.3" />
 			<RigidMapping name="MM->VM mapping" input="@instrumentState" output="@InstrumentVisualModel" />
 		</Node>
 		<Node name="CollisionModel" >
-			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+			<MeshOBJLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
 			<MeshTopology src="@loader" name="InstrumentCollisionModel"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" dz="-3.5" dx="0.3"/>
 			<LineCollisionModel name="instrument" contactStiffness="10" />
@@ -98,13 +98,13 @@
 			<RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
 		</Node>
 		<Node name="RefModelRight" >
-			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+			<MeshOBJLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
 			<MeshTopology src="@loader" name="InstrumentCollisionModel" />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" dz="-3.5" dx="0.3" dy="0.5"/>
 			<RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
 		</Node>
 		<Node name="RefModelLeft" >
-			<MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+			<MeshOBJLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
 			<MeshTopology src="@loader" name="InstrumentCollisionModel"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" dz="-3.5" dx="0.3" dy="-0.5" />
 			<RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />

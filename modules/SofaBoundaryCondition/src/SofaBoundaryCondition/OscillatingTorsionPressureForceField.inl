@@ -24,7 +24,6 @@
 #include <SofaBoundaryCondition/OscillatingTorsionPressureForceField.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/core/MechanicalParams.h>
 #include <vector>
@@ -191,10 +190,7 @@ SReal OscillatingTorsionPressureForceField<DataTypes>::getPotentialEnergy(const 
 template<class DataTypes>
 void OscillatingTorsionPressureForceField<DataTypes>::initTriangleInformation()
 {
-    sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* triangleGeo;
-    this->getContext()->get(triangleGeo);
-
-    const VecCoord x0 = triangleGeo->getDOF()->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     int idx[3];
     Real d[10];
 
@@ -203,11 +199,17 @@ void OscillatingTorsionPressureForceField<DataTypes>::initTriangleInformation()
 
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
-        my_subset[i].area=triangleGeo->computeRestTriangleArea(my_map[i]);
+        const auto& t = this->m_topology->getTriangle(my_map[i]);
+
+        const auto& n0 = DataTypes::getCPos(x0[t[0]]);
+        const auto& n1 = DataTypes::getCPos(x0[t[1]]);
+        const auto& n2 = DataTypes::getCPos(x0[t[2]]);
+
+        my_subset[i].area = sofa::geometry::Triangle::area(n0, n1, n2);
         // calculate distances for corner and intermediate points
         for (int j=0; j<3; j++)
         {
-            idx[j] = m_topology->getTriangle(my_map[i])[j];
+            idx[j] = t[j];
             pointActive[idx[j]] = true;
             origVecFromCenter[idx[j]] = getVecFromRotAxis( (x0)[idx[j]] );
             origCenter[idx[j]] = (x0)[idx[j]] - origVecFromCenter[idx[j]];

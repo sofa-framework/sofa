@@ -21,19 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/DualQuat.h>
+#include <sofa/config.h>
 
-// The following SOFA_DEPRECATED_HEADER is commented to avoid a massive number of warnings.
-// This flag will be enabled once all the code base in Sofa is ported to Sofa.Type.
-// (PR #1790)
-// SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/type/DualQuat.h")
-
-namespace sofa::helper
-{
-    template <typename real>
-    using DualQuatCoord3 = sofa::type::DualQuatCoord3<real>;
-
-    using DualQuatCoordd = DualQuatCoord3<double>;
-    using DualQuatCoordf = DualQuatCoord3<double>;
-
-} // namespace sofa::helper
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/type/DualQuat.h")

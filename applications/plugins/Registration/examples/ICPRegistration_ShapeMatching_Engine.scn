@@ -9,12 +9,12 @@
 	<CGLinearSolver template="GraphScattered" iterations="25"  threshold="1e-008" tolerance="1e-5"/>
 
 	<Node name="target">
-			<MeshObjLoader name="meshLoader_1" filename="data/femur_f.obj" handleSeams="1" />
+			<MeshOBJLoader name="meshLoader_1" filename="data/femur_f.obj" handleSeams="1" />
 			<OglModel name="Bone" src="@meshLoader_1"  color="0.5 .4 1 1" />
 	</Node>
 			
 	<Node name="source">
-			<MeshObjLoader name="meshLoader" filename="data/femur_m_res.obj"/>
+			<MeshOBJLoader name="meshLoader" filename="data/femur_m_res.obj"/>
 			<MeshTopology src="@meshLoader" />
 			<MechanicalObject  name="PointSet"   />
 			<UniformMass mass="10"/>
@@ -34,7 +34,7 @@
 					cacheSize="4"
 					stiffness="1" damping="0" />
 		<Node name="Visu">
-			<MeshObjLoader name="meshLoader_0" filename="data/femur_m.obj" handleSeams="1" />
+			<MeshOBJLoader name="meshLoader_0" filename="data/femur_m.obj" handleSeams="1" />
 			<OglModel name="Visual" src="@meshLoader_0" normals="0"   color="1 .4 0.5 1" />
 			<BarycentricMapping input="@.." output="@Visual" />
 		</Node>			

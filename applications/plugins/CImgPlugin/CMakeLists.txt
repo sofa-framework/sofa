@@ -24,7 +24,6 @@ sofa_find_package(CImg REQUIRED)
 # it will allow to use those instead of those present in XCode's frameworks
 set(CMAKE_FIND_FRAMEWORK LAST)
 
-sofa_find_package(Threads REQUIRED)
 sofa_find_package(TIFF QUIET)
 sofa_find_package(JPEG QUIET)
 sofa_find_package(PNG QUIET)
@@ -71,7 +70,6 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${CImg_INCLUDE_DIRS}>")
 target_compile_options(${PROJECT_NAME} PUBLIC ${CIMG_CFLAGS})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.DefaultType)
-target_link_libraries(${PROJECT_NAME} PUBLIC Threads::Threads)
 target_link_libraries(${PROJECT_NAME} PUBLIC ${DEP_TARGETS})
 
 if(SOFA_BUILD_RELEASE_PACKAGE OR CMAKE_SYSTEM_NAME STREQUAL Windows)

@@ -24,7 +24,7 @@ class GlobalCollision(Sofa.PythonScriptController):
 		floorNode.createObject('FixedConstraint',template='Rigid')
 		#floorNode.createObject('UniformMass',template='Rigid',totalMass=1)
 		mapped = floorNode.createChild('mapped')
-		mapped.createObject('MeshObjLoader', name='loader', filename='mesh/SaladBowl.obj')
+		mapped.createObject('MeshOBJLoader', name='loader', filename='mesh/SaladBowl.obj')
 		mapped.createObject('Mesh', src='@loader')
 		mec=mapped.createObject('MechanicalObject', src='@loader',name='the_bol')
 		mec.applyScale(50,50,50)

@@ -37,7 +37,7 @@
 #define SOFA_ATTRIBUTE_DEPRECATED__POINTCONSTRAINT()
 #else
 #define SOFA_ATTRIBUTE_DEPRECATED__POINTCONSTRAINT() \
-    SOFA_ATTRIBUTE_DISABLED( \
+    SOFA_ATTRIBUTE_DEPRECATED( \
         "v21.12", "v22.06", \
         "As an alternative, use FixedConstraint.")
 #endif

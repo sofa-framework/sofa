@@ -79,7 +79,7 @@
 
 
     <Node name="Floor">
-        <MeshObjLoader name="loader" filename="mesh/floor3.obj" scale3d="0.5 0.5 0.5"/>
+        <MeshOBJLoader name="loader" filename="mesh/floor3.obj" scale3d="0.5 0.5 0.5"/>
         <MeshTopology src="@loader" />
         <MechanicalObject src="@loader"  dy="-1"/>
         <TriangleCollisionModel name="FloorTriangle" simulated="0" moving="0" contactStiffness="100" />
