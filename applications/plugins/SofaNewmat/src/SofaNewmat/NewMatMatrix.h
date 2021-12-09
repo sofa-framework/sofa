@@ -21,12 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaDenseSolver/config.h>
+#include <SofaNewmat/config.h>
 
 #include <sofa/linearalgebra/BaseMatrix.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
-#include <SofaDenseSolver/NewMatVector.h>
+#include <SofaNewmat/NewMatVector.h>
+
 
 namespace sofa::component::linearsolver
 {

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseLinearSolver/CGLinearSolver.inl>
-#include <SofaDenseSolver/NewMatMatrix.h>
+#include <SofaNewmat/NewMatMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::linearsolver

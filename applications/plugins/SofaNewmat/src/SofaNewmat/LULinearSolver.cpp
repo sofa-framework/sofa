@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaDenseSolver/LULinearSolver.h>
+#include <SofaNewmat/LULinearSolver.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaDenseSolver/NewMatMatrix.h>
+#include <SofaNewmat/NewMatMatrix.h>
 #include <sofa/linearalgebra/FullMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 

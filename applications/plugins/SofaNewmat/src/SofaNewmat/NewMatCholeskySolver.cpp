@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #include <SofaGeneralLinearSolver/CholeskySolver.inl>
-#include <SofaDenseSolver/NewMatMatrix.h>
+#include <SofaNewmat/NewMatMatrix.h>
 
 #include <sofa/core/ObjectFactory.h>
 

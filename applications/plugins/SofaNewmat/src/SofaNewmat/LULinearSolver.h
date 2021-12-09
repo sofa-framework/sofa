@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaDenseSolver/config.h>
+#include <SofaNewmat/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
