@@ -47,6 +47,7 @@ sofa_add_plugin_external(RigidScale RigidScale)
 sofa_add_plugin(LeapMotion LeapMotion)
 sofa_add_plugin(Geomagic Geomagic)
 sofa_add_plugin(SofaAssimp SofaAssimp) # ColladaSceneLoader Depends on Flexible and image
+sofa_add_plugin(SofaNewmat SofaNewmat)
 
 
 sofa_add_plugin_experimental(PSL PSL)
