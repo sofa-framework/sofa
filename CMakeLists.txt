@@ -175,10 +175,6 @@ endif()
 ### Ninja build pools
 option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit the cores used by specific targets" OFF)
 
-# This option is useful to compile SOFA + internal plugins without SofaPython soft dependencies (Compliant, image, ...)
-# it simplifies binaries generation and cohabitation between SofaPython and SofaPython3
-option(SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON "Enable all soft dependencies to SofaPython" ON)
-
 ### Extlibs
 add_subdirectory(extlibs)
 
