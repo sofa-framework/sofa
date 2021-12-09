@@ -552,7 +552,6 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
 template<class T>
 void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirectlyFromTheFinestToCoarse( ElementStiffness &K, ElementMass &M, const Index elementIndice)
 {
-    msg_warning()<<"computeMechanicalMatricesDirectlyFromTheFinestToCoarse"<<msgendl;
     type::vector<Index> finestChildren;
 
     //find them
@@ -569,12 +568,10 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
         sizeass = (sizeass-1)*2+1;
     sizeass = sizeass*sizeass*sizeass;
 
-    EigenMatrix assembledStiffness(sizeass * 3, sizeass * 3);
-    EigenMatrix assembledMass(sizeass * 3, sizeass * 3);
+    EigenMatrix assembledStiffness = EigenMatrix::Zero(sizeass * 3, sizeass * 3);
+    EigenMatrix assembledMass = EigenMatrix::Zero(sizeass * 3, sizeass * 3);
     
     msg_warning()<<assembledStiffness.rows()<<"x"<<assembledStiffness.cols()<<msgendl;
-
-
 
     type::vector<ElementStiffness> finestStiffnesses(finestChildren.size());
     type::vector<ElementMass> finestMasses(finestChildren.size());
@@ -663,11 +660,9 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
 
 
-    EigenMatrix Kg; // stiffness of contrained nodes
-    Kg.resize(sizeass*3,8*3);
-    EigenMatrix  A; // [Kf -G] ==  Kf (stiffness of free nodes) with the constaints
-    A.resize(sizeass*3,sizeass*3);
-    EigenMatrix  Ainv;
+    EigenMatrix Kg = EigenMatrix::Zero(sizeass * 3, 8 * 3); // stiffness of contrained nodes
+    EigenMatrix A = EigenMatrix::Zero(sizeass * 3, sizeass * 3); // [Kf -G] ==  Kf (stiffness of free nodes) with the constaints
+
     for ( std::size_t i=0; i<sizeass; ++i)
     {
         int col = map_idxq_idxcutass[i];
@@ -699,12 +694,12 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
         A(map_idxcoarse_idxfine[i] * 3 + 1, (sizeass - 8 + i) * 3 + 1) +=  -1.0;
         A(map_idxcoarse_idxfine[i] * 3 + 2, (sizeass - 8 + i) * 3 + 2) +=  -1.0;
     }
-    Ainv = A.inverse();
-    EigenMatrix  Ainvf = Ainv.block( 0,0, (sizeass-8)*3,sizeass*3);
-    EigenMatrix  W;
-    W = - Ainvf * Kg;
-    EigenMatrix  WB;
-    WB.resize(sizeass*3,8*3);
+
+    EigenMatrix Ainv = A.inverse();
+    EigenMatrix Ainvf = Ainv.block( 0,0, (sizeass-8)*3,sizeass*3);
+    EigenMatrix W = - Ainvf * Kg;
+    EigenMatrix WB = EigenMatrix::Zero(sizeass * 3, 8 * 3);
+
     for(Size i=0; i<sizeass*3; ++i)
     {
         int idx = i/3;
@@ -719,8 +714,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     }
 
 
-    EigenMatrix  mask;
-    mask.resize(sizeass*3,8*3);
+    EigenMatrix mask = EigenMatrix::Zero(sizeass * 3, 8 * 3);
 
     Coord a = this->_sparseGrid->getPointPos(coarsehexa[0]);
     Coord b = this->_sparseGrid->getPointPos(coarsehexa[6]);
@@ -772,8 +766,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     }
 
     // apply the mask to take only concerned values (an edge stays an edge, a face stays a face, if corner=1 opposite borders=0....)
-    EigenMatrix WBmeca;
-    WBmeca.resize(sizeass*3,8*3);
+    EigenMatrix WBmeca = EigenMatrix::Zero(sizeass * 3, 8 * 3);
     for(Size i=0; i<sizeass*3; ++i)
     {
         for(Size j=0; j<8*3; ++j)
@@ -1206,10 +1199,10 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         }
 
         int sizeass = idxass; // taille de l'assemblage i.e., le nombre de noeuds fins
-        EigenMatrix assembledStiffness,assembledStiffnessStatic,assembledMass;
-        assembledStiffness.resize(sizeass*3,sizeass*3);
-        assembledStiffnessStatic.resize(sizeass*3,sizeass*3);
-        assembledMass.resize(sizeass*3,sizeass*3);
+        EigenMatrix assembledStiffness = EigenMatrix::Zero(sizeass * 3, sizeass * 3);
+        EigenMatrix assembledStiffnessStatic = EigenMatrix::Zero(sizeass * 3, sizeass * 3);
+        EigenMatrix assembledMass = EigenMatrix::Zero(sizeass * 3, sizeass * 3);
+
         for(int i=0 ; i < 8 ; ++i ) // finer places
         {
             for( unsigned c=0; c<finerChildrenRamification[i].size(); ++c)
@@ -1265,8 +1258,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         std::map<Index, Index> map_idxq_coarse; // a fine idx -> sofa::InvalidID->non coarse, x-> idx coarse node
         type::fixed_array<type::vector<Index> ,8> map_idxcoarse_idxfine;
 
-        EigenMatrix  mask;
-        mask.resize(sizeass*3,8*3);
+        EigenMatrix mask = EigenMatrix::Zero(sizeass * 3, 8 * 3);
         for(int i=0; i<27; ++i)
         {
             if( i==0 || i==2||i==6||i==8||i==18||i==20||i==24||i==26)// est un sommet coarse
@@ -1336,11 +1328,9 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
             }
         }
 
-        EigenMatrix Kg; // stiffness of contrained nodes
-        Kg.resize(sizeass*3,idxcutasscoarse*3);
-        EigenMatrix  A; // [Kf -G] ==  Kf (stiffness of free nodes) with the constaints
-        A.resize(sizeass*3,sizeass*3);
-        EigenMatrix  Ainv;
+        EigenMatrix Kg = EigenMatrix::Zero(sizeass * 3, idxcutasscoarse * 3);// stiffness of contrained nodes
+        EigenMatrix A = EigenMatrix::Zero(sizeass * 3, sizeass * 3); // [Kf -G] ==  Kf (stiffness of free nodes) with the constaints
+        
         for( auto it = map_idxq_idxcutass.begin(); it!=map_idxq_idxcutass.end(); ++it)
         {
             int colcut = (*it).second;
@@ -1379,15 +1369,14 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                 ++d;
             }
         }
-        Ainv = A.inverse();
 
-        EigenMatrix  Ainvf = Ainv.block( 0,0, (sizeass-idxcutasscoarse)*3,sizeass*3);
+        EigenMatrix Ainv = A.inverse();
+        EigenMatrix Ainvf = Ainv.block( 0,0, (sizeass-idxcutasscoarse)*3,sizeass*3);
 
 
 
         //// ajouter un H qui lie tous les coins superpos�s ensemble et n'en garder que 8 pour avoir un W 27x8
-        EigenMatrix H;
-        H.resize( idxcutasscoarse*3, 8*3 );
+        EigenMatrix H = EigenMatrix::Zero(idxcutasscoarse * 3, 8 * 3);
         for(int i=0; i<8; ++i)
         {
             for(unsigned j=0; j<map_idxcoarse_idxfine[i].size(); ++j)
@@ -1400,12 +1389,8 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
 
-        EigenMatrix  W;
-        W = - Ainvf * Kg * H;
-
-        EigenMatrix  WB;
-        WB.resize(sizeass*3,8*3);
-
+        EigenMatrix W = - Ainvf * Kg * H;
+        EigenMatrix WB = EigenMatrix::Zero(sizeass * 3, 8 * 3);
 
         for( auto it= map_idxq_coarse.begin(); it!=map_idxq_coarse.end(); ++it)
         {
@@ -1429,9 +1414,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
         // apply the mask to take only concerned values (an edge stays an edge, a face stays a face, if corner=1 opposite borders=0....)
-        EigenMatrix WBmeca;
-        WBmeca.resize(sizeass*3,8*3);
-
+        EigenMatrix WBmeca = EigenMatrix::Zero(sizeass * 3, 8 * 3);
 
         for(int i=0; i<sizeass*3; ++i)
         {
@@ -1460,7 +1443,6 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         EigenMatrix Kc, Mc; // coarse stiffness
         Kc = WBmeca.transpose() * assembledStiffness * WBmeca;
         Mc = WBmeca.transpose() * assembledMass * WBmeca;
-
 
 
 
