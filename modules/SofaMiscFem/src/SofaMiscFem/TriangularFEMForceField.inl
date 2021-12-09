@@ -853,9 +853,6 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementInd
     const auto& S = svd.singularValues();
     const auto& V = svd.matrixV();
 
-    //compute eigenvalues and eigenvectors
-    Eigen::JacobiSVD svd(e, Eigen::ComputeThinU | Eigen::ComputeThinV);
-
     Coord v((Real)V(0, 0), (Real)V(1, 0), 0.0);
     v.normalize();
 
