@@ -37,11 +37,11 @@ public:
     void addConstraintSolver(core::behavior::ConstraintSolver *s) override;
     void removeConstraintSolver(core::behavior::ConstraintSolver *s) override;
 
-    void computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const defaulttype::BaseVector * lambda) override;
+    void computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const linearalgebra::BaseVector * lambda) override;
 
-    void addComplianceInConstraintSpace(const core::ConstraintParams *cparams, defaulttype::BaseMatrix* W) override;
+    void addComplianceInConstraintSpace(const core::ConstraintParams *cparams, linearalgebra::BaseMatrix* W) override;
 
-    void getComplianceMatrix(defaulttype::BaseMatrix* ) const override;
+    void getComplianceMatrix(linearalgebra::BaseMatrix* ) const override;
 
     void applyMotionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
 
@@ -49,15 +49,15 @@ public:
 
     void applyVelocityCorrection(const core::ConstraintParams *cparams, core::MultiVecDerivId v, core::MultiVecDerivId dv, core::ConstMultiVecDerivId correction) override;
 
-    void applyPredictiveConstraintForce(const core::ConstraintParams *cparams, core::MultiVecDerivId f, const defaulttype::BaseVector *lambda) override;
+    void applyPredictiveConstraintForce(const core::ConstraintParams *cparams, core::MultiVecDerivId f, const linearalgebra::BaseVector *lambda) override;
 
     void rebuildSystem(double massFactor, double forceFactor) override;
 
-    void applyContactForce(const defaulttype::BaseVector *f) override;
+    void applyContactForce(const linearalgebra::BaseVector *f) override;
 
     void resetContactForce() override;
 
-    void computeResidual(const core::ExecParams* params, defaulttype::BaseVector *lambda) override;
+    void computeResidual(const core::ExecParams* params, linearalgebra::BaseVector *lambda) override;
 
     Data< type::vector< std::string > >  d_linearSolversName; ///< name of the constraint solver
     Data< std::string >                    d_ODESolverName; ///< name of the ode solver

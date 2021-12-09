@@ -24,7 +24,7 @@
 #include <SofaNonUniformFem/config.h>
 
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/type/Vec.h>
 #include <set>
@@ -188,8 +188,8 @@ private:
 
     std::list<const core::topology::TopologyChange *>	m_changeListFine;
 
-    HexahedronData<sofa::type::vector<Component*> >		_coarseComponents;	///< map between hexahedra and components - coarse
-    HexahedronData<sofa::type::vector<Component*> >		_fineComponents;	///< map between hexahedra and components - fine
+    core::topology::HexahedronData<sofa::type::vector<Component*> >		_coarseComponents;	///< map between hexahedra and components - coarse
+    core::topology::HexahedronData<sofa::type::vector<Component*> >		_fineComponents;	///< map between hexahedra and components - fine
 
     // the fine mesh must be a regular grid - store its parameters here
 

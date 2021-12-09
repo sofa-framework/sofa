@@ -198,7 +198,7 @@ public:
             dataMatOutRootConst[0]->endEdit();
     }
 
-    const sofa::defaulttype::BaseMatrix* getJ() override { return nullptr; }
+    const sofa::linearalgebra::BaseMatrix* getJ() override { return nullptr; }
 
     void draw(const core::visual::VisualParams* vparams) override;
 

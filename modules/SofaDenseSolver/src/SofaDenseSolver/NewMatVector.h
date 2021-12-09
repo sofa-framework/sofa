@@ -26,12 +26,12 @@
 #include <newmat/newmat.h>
 #define WANT_STREAM
 #include <newmat/newmatio.h>
-#include <sofa/defaulttype/BaseVector.h>
+#include <sofa/linearalgebra/BaseVector.h>
 
 namespace sofa::component::linearsolver
 {
 
-class NewMatVector : public NEWMAT::ColumnVector, public defaulttype::BaseVector
+class NewMatVector : public NEWMAT::ColumnVector, public linearalgebra::BaseVector
 {
 public:
 

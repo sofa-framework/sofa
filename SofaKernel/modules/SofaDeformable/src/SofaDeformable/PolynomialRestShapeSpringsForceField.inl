@@ -419,7 +419,7 @@ void PolynomialRestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::M
     sofa::helper::AdvancedTimer::stepBegin("restShapePolynomialSpringAddKToMatrix");
 
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
-    sofa::defaulttype::BaseMatrix* mat = mref.matrix;
+    sofa::linearalgebra::BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
     Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 

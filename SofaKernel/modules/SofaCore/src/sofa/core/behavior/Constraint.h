@@ -69,7 +69,7 @@ public:
     ///
     /// \param v is the result vector that contains the whole constraints violations
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    void getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v) override;
+    void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v) override;
 
     /// Construct the Constraint violations vector of each constraint
     ///
@@ -79,7 +79,7 @@ public:
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
     ///
     /// This is the method that should be implemented by the component
-    virtual void getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v) = 0;
+    virtual void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v) = 0;
 
 
     /// Construct the Jacobian Matrix
@@ -100,7 +100,7 @@ public:
     virtual void buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv & c, unsigned int &cIndex, const DataVecCoord &x) = 0;
 
 
-    void storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::defaulttype::BaseVector* lambda) override;
+    void storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::linearalgebra::BaseVector* lambda) override;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -116,7 +116,7 @@ public:
     }
 
 private:
-    void storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& resId, const Data<MatrixDeriv>& jacobian, const sofa::defaulttype::BaseVector* lambda);
+    void storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& resId, const Data<MatrixDeriv>& jacobian, const sofa::linearalgebra::BaseVector* lambda);
 };
 
 #if  !defined(SOFA_CORE_BEHAVIOR_CONSTRAINT_CPP)

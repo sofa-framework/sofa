@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
 namespace sofa::component::linearsolver
 {
@@ -29,9 +29,9 @@ namespace sofa::component::linearsolver
 
 /* CRSMultiMatrixAccessor do the same thing as DefaultMultiMatrixAccessor but optimal.
  * The different is instead of creating a standard full matrix for mapped and mapping, CRSMultiMatrixAccessor works
- * with CompressedRowSparseMatrix.
+ * with linearalgebra::CompressedRowSparseMatrix.
  *
- * To be able to creat  CompressedRowSparseMatrix, it is needle to know about block format of relied to the
+ * To be able to creat  linearalgebra::CompressedRowSparseMatrix, it is needle to know about block format of relied to the
  * size of DOF of mapped Mechanical state and input-output Mechanical State of the mapping
  * */
 class SOFA_SOFABASELINEARSOLVER_API CRSMultiMatrixAccessor : public DefaultMultiMatrixAccessor
@@ -43,17 +43,17 @@ public:
     void addMechanicalMapping(sofa::core::BaseMapping* mapping) override;
 
     //Creating the stiffness matrix for pair of Mechanical State when they are not all real state
-    static defaulttype::BaseMatrix* createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2);
-    static defaulttype::BaseMatrix* createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2, bool doPrintInfo);
+    static linearalgebra::BaseMatrix* createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2);
+    static linearalgebra::BaseMatrix* createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2, bool doPrintInfo);
 
     //Compute the contribution of all new created matrix to the global system matrix
     void computeGlobalMatrix() override;
 };
 
 template<int blocRsize, int blocCsize, class elementType>
-inline defaulttype::BaseMatrix* createBlocSparseMatrixT(int nbRowBloc, int nbColBloc, bool _debug)
+inline linearalgebra::BaseMatrix* createBlocSparseMatrixT(int nbRowBloc, int nbColBloc, bool _debug)
 {
-    typedef CompressedRowSparseMatrix< type::Mat<blocRsize, blocCsize, elementType> > BlocMatrix;
+    typedef sofa::linearalgebra::CompressedRowSparseMatrix< type::Mat<blocRsize, blocCsize, elementType> > BlocMatrix;
     BlocMatrix* m =	new BlocMatrix;
     m->resizeBloc(nbRowBloc,nbColBloc);
     msg_info_when(_debug, "CRSMultiMatrixAccessor") << "				++createBlocSparseMatrix : _" << nbRowBloc << "x" << nbColBloc << "_ of blocs _[" << blocRsize << "x" << blocCsize << "]";
@@ -61,7 +61,7 @@ inline defaulttype::BaseMatrix* createBlocSparseMatrixT(int nbRowBloc, int nbCol
 }
 
 template<int blocRsize, int blocCsize>
-inline defaulttype::BaseMatrix* createBlocSparseMatrixTReal(int elementSize, int nbRowBloc, int nbColBloc, bool _debug)
+inline linearalgebra::BaseMatrix* createBlocSparseMatrixTReal(int elementSize, int nbRowBloc, int nbColBloc, bool _debug)
 {
     switch(elementSize)
     {
@@ -72,7 +72,7 @@ inline defaulttype::BaseMatrix* createBlocSparseMatrixTReal(int elementSize, int
 }
 
 template<int blocRsize>
-inline defaulttype::BaseMatrix* createBlocSparseMatrixTRow(int blocCsize, int elementSize, int nbRowBloc, int nbColBloc, bool _debug)
+inline linearalgebra::BaseMatrix* createBlocSparseMatrixTRow(int blocCsize, int elementSize, int nbRowBloc, int nbColBloc, bool _debug)
 {
     switch(blocCsize)
     {
@@ -86,7 +86,7 @@ inline defaulttype::BaseMatrix* createBlocSparseMatrixTRow(int blocCsize, int el
     }
 }
 
-inline defaulttype::BaseMatrix* createBlocSparseMatrix(int blocRsize, int blocCsize, int elementSize, int nbRowBloc, int nbColBloc, bool _debug=false)
+inline linearalgebra::BaseMatrix* createBlocSparseMatrix(int blocRsize, int blocCsize, int elementSize, int nbRowBloc, int nbColBloc, bool _debug=false)
 {
     switch(blocRsize)
     {
@@ -102,22 +102,22 @@ inline defaulttype::BaseMatrix* createBlocSparseMatrix(int blocRsize, int blocCs
 
 
 template<int JblocRsize, int JblocCsize, int MblocCsize, class JelementType, class MelementType>
-inline bool opAddMulJTM_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* J, defaulttype::BaseMatrix* stiffMatrix2, int offsetRow, int offsetCol, bool _debug)
+inline bool opAddMulJTM_TBloc(linearalgebra::BaseMatrix* out, linearalgebra::BaseMatrix* J, linearalgebra::BaseMatrix* stiffMatrix2, int offsetRow, int offsetCol, bool _debug)
 {
     // Notice : in case where stiffMatrix2 are self-stiffness matrix,
     // we have JblocRsize = MblocCsize
     typedef type::Mat<JblocRsize, JblocCsize, JelementType> JBloc;
-    typedef CompressedRowSparseMatrix<JBloc>                       JMatrix;
+    typedef linearalgebra::CompressedRowSparseMatrix<JBloc>                       JMatrix;
     typedef typename JMatrix::ColBlockConstIterator                JBColConstIterator;
     typedef typename JMatrix::BlockConstAccessor                   JBlocConstAccessor;
 
     typedef type::Mat<JblocRsize, MblocCsize, MelementType> MBloc;
-    typedef CompressedRowSparseMatrix<MBloc>                       MMatrix;
+    typedef linearalgebra::CompressedRowSparseMatrix<MBloc>                       MMatrix;
     typedef typename MMatrix::ColBlockConstIterator                MBColConstIterator;
     typedef typename MMatrix::BlockConstAccessor                   MBlocConstAccessor;
 
     typedef type::Mat<JblocCsize, MblocCsize, MelementType> OutBloc;
-    typedef CompressedRowSparseMatrix<OutBloc>                     OutMatrix;
+    typedef linearalgebra::CompressedRowSparseMatrix<OutBloc>                     OutMatrix;
 
     JMatrix* Jmatrix = dynamic_cast<JMatrix*>(J);
     MMatrix* Mmatrix = dynamic_cast<MMatrix*>(stiffMatrix2);
@@ -229,7 +229,7 @@ inline bool opAddMulJTM_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMat
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template<int JblocRsize, int JblocCsize, int MblocCsize, class JelementType>
-inline bool opAddMulJTM_T4(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* J, defaulttype::BaseMatrix* stiffMatrix2,
+inline bool opAddMulJTM_T4(linearalgebra::BaseMatrix* out, linearalgebra::BaseMatrix* J, linearalgebra::BaseMatrix* stiffMatrix2,
                            int offsetRow, int offsetCol, int MelementSize, bool _debug)
 {
     switch(MelementSize)
@@ -244,7 +244,7 @@ inline bool opAddMulJTM_T4(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix
 }
 //-------------------------------------------------------------------------------------------------
 template<int JblocRsize, int JblocCsize, int MblocCsize>
-inline bool opAddMulJTM_T3(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* J, defaulttype::BaseMatrix* stiffMatrix2,
+inline bool opAddMulJTM_T3(linearalgebra::BaseMatrix* out, linearalgebra::BaseMatrix* J, linearalgebra::BaseMatrix* stiffMatrix2,
                            int offsetRow, int offsetCol, int JelementSize, int MelementSize, bool _debug)
 {
     switch(JelementSize)
@@ -259,7 +259,7 @@ inline bool opAddMulJTM_T3(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix
 }
 //-------------------------------------------------------------------------------------------------
 template<int JblocRsize, int JblocCsize>
-inline bool opAddMulJTM_T2(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* J, defaulttype::BaseMatrix* stiffMatrix2,
+inline bool opAddMulJTM_T2(linearalgebra::BaseMatrix* out, linearalgebra::BaseMatrix* J, linearalgebra::BaseMatrix* stiffMatrix2,
                            int offsetRow, int offsetCol, int _MblocCsize, int JelementSize, int MelementSize, bool _debug)
 {
     switch(_MblocCsize)
@@ -275,7 +275,7 @@ inline bool opAddMulJTM_T2(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix
 }
 //-------------------------------------------------------------------------------------------------
 template<int JblocRsize>
-inline bool opAddMulJTM_T1(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* J, defaulttype::BaseMatrix* stiffMatrix2,
+inline bool opAddMulJTM_T1(linearalgebra::BaseMatrix* out, linearalgebra::BaseMatrix* J, linearalgebra::BaseMatrix* stiffMatrix2,
                            int offsetRow, int offsetCol, int _JblocCsize, int _MblocCsize, int JelementSize, int MelementSize, bool _debug)
 {
     switch(_JblocCsize)
@@ -290,7 +290,7 @@ inline bool opAddMulJTM_T1(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix
     }
 }
 //-------------------------------------------------------------------------------------------------
-inline bool opAddMulJTM(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* J, defaulttype::BaseMatrix* stiffMatrix2,
+inline bool opAddMulJTM(linearalgebra::BaseMatrix* out, linearalgebra::BaseMatrix* J, linearalgebra::BaseMatrix* stiffMatrix2,
                         int offsetRow, int offsetCol, int _JblocRsize, int _JblocCsize, int _MblocCsize, int JelementSize, int MelementSize, bool _debug=false)
 {
     switch(_JblocRsize)
@@ -309,20 +309,20 @@ inline bool opAddMulJTM(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* J
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template<int MblocRsize, int MblocCsize, int JblocCsize, class JelementType, class MelementType>
-inline bool opAddMulMJ_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* stiffMatrix2,  defaulttype::BaseMatrix* J,int offsetRow, int offsetCol, bool _debug)
+inline bool opAddMulMJ_TBloc(linearalgebra::BaseMatrix* out, linearalgebra::BaseMatrix* stiffMatrix2,  linearalgebra::BaseMatrix* J,int offsetRow, int offsetCol, bool _debug)
 {
     typedef type::Mat<MblocCsize, JblocCsize, JelementType> JBloc;
-    typedef CompressedRowSparseMatrix<JBloc>                       JMatrix;
+    typedef linearalgebra::CompressedRowSparseMatrix<JBloc>                       JMatrix;
     typedef typename JMatrix::ColBlockConstIterator                JBColConstIterator;
     typedef typename JMatrix::BlockConstAccessor                   JBlocConstAccessor;
 
     typedef type::Mat<MblocRsize, MblocCsize, MelementType> MBloc;
-    typedef CompressedRowSparseMatrix<MBloc>                       MMatrix;
+    typedef linearalgebra::CompressedRowSparseMatrix<MBloc>                       MMatrix;
     typedef typename MMatrix::ColBlockConstIterator                MBColConstIterator;
     typedef typename MMatrix::BlockConstAccessor                   MBlocConstAccessor;
 
     typedef type::Mat<MblocRsize, JblocCsize, MelementType> OutBloc;
-    typedef CompressedRowSparseMatrix<OutBloc>                     OutMatrix;
+    typedef linearalgebra::CompressedRowSparseMatrix<OutBloc>                     OutMatrix;
 
     JMatrix* Jmatrix = dynamic_cast<JMatrix*>(J);
     MMatrix* Mmatrix = dynamic_cast<MMatrix*>(stiffMatrix2);
@@ -430,7 +430,7 @@ inline bool opAddMulMJ_TBloc(defaulttype::BaseMatrix* out, defaulttype::BaseMatr
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template<int MblocRsize, int MblocCsize, int JblocCsize, class JelementType>
-inline bool opAddMulMJ_T4(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* stiffMatrix2, defaulttype::BaseMatrix* J,
+inline bool opAddMulMJ_T4(linearalgebra::BaseMatrix* out, linearalgebra::BaseMatrix* stiffMatrix2, linearalgebra::BaseMatrix* J,
                           int offsetRow, int offsetCol, int MelementSize, bool _debug)
 {
     switch(MelementSize)
@@ -445,7 +445,7 @@ inline bool opAddMulMJ_T4(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix*
 }
 //-------------------------------------------------------------------------------------------------
 template<int MblocRsize, int MblocCsize, int JblocCsize>
-inline bool opAddMulMJ_T3(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* stiffMatrix2, defaulttype::BaseMatrix* J,
+inline bool opAddMulMJ_T3(linearalgebra::BaseMatrix* out, linearalgebra::BaseMatrix* stiffMatrix2, linearalgebra::BaseMatrix* J,
                           int offsetRow, int offsetCol, int JelementSize, int MelementSize, bool _debug)
 {
     switch(JelementSize)
@@ -460,7 +460,7 @@ inline bool opAddMulMJ_T3(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix*
 }
 //-------------------------------------------------------------------------------------------------
 template<int MblocRsize, int MblocCsize>
-inline bool opAddMulMJ_T2(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* stiffMatrix2, defaulttype::BaseMatrix* J,
+inline bool opAddMulMJ_T2(linearalgebra::BaseMatrix* out, linearalgebra::BaseMatrix* stiffMatrix2, linearalgebra::BaseMatrix* J,
                           int offsetRow, int offsetCol, int _JblocCsize, int JelementSize, int MelementSize, bool _debug)
 {
     switch(_JblocCsize)
@@ -476,7 +476,7 @@ inline bool opAddMulMJ_T2(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix*
 }
 //-------------------------------------------------------------------------------------------------
 template<int MblocRsize>
-inline bool opAddMulMJ_T1(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* stiffMatrix2, defaulttype::BaseMatrix* J,
+inline bool opAddMulMJ_T1(linearalgebra::BaseMatrix* out, linearalgebra::BaseMatrix* stiffMatrix2, linearalgebra::BaseMatrix* J,
                           int offsetRow, int offsetCol, int _MblocCsize, int _JblocCsize, int JelementSize, int MelementSize, bool _debug)
 {
     switch(_MblocCsize)
@@ -491,7 +491,7 @@ inline bool opAddMulMJ_T1(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix*
     }
 }
 //-------------------------------------------------------------------------------------------------
-inline bool opAddMulMJ(defaulttype::BaseMatrix* out, defaulttype::BaseMatrix* stiffMatrix2, defaulttype::BaseMatrix* J,
+inline bool opAddMulMJ(linearalgebra::BaseMatrix* out, linearalgebra::BaseMatrix* stiffMatrix2, linearalgebra::BaseMatrix* J,
                        int offsetRow, int offsetCol, int _MblocRsize, int _MblocCsize, int _JblocCsize, int JelementSize, int MelementSize, bool _debug=false)
 {
     switch(_MblocRsize)

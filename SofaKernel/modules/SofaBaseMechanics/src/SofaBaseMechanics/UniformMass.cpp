@@ -390,7 +390,7 @@ SReal UniformMass<VecTypes, MassType>::getPotentialEnergyRigidImpl(const core::M
 
 template <class VecTypes, class MassType>
 template <class T>
-void UniformMass<VecTypes, MassType>::addMDxToVectorVecImpl(defaulttype::BaseVector *resVect,
+void UniformMass<VecTypes, MassType>::addMDxToVectorVecImpl(linearalgebra::BaseVector *resVect,
                                                      const VecDeriv* dx,
                                                      SReal mFact,
                                                      unsigned int& offset)
@@ -473,7 +473,7 @@ void UniformMass<Vec6Types, double>::draw(const core::visual::VisualParams* vpar
 }
 
 template <> SOFA_SOFABASEMECHANICS_API
-void UniformMass<Vec3Types, double>::addMDxToVector(defaulttype::BaseVector *resVect,
+void UniformMass<Vec3Types, double>::addMDxToVector(linearalgebra::BaseVector *resVect,
                                                      const VecDeriv* dx,
                                                      SReal mFact,
                                                      unsigned int& offset)

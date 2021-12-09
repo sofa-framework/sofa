@@ -167,7 +167,7 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::addContact(double mu,
 
 
 template<class DataTypes>
-void PersistentUnilateralInteractionConstraint<DataTypes>::getPositionViolation(defaulttype::BaseVector *v)
+void PersistentUnilateralInteractionConstraint<DataTypes>::getPositionViolation(linearalgebra::BaseVector *v)
 {
     const VecCoord &PfreeVec = this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue();
     const VecCoord &QfreeVec = this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue();
@@ -248,7 +248,7 @@ void PersistentUnilateralInteractionConstraint<DataTypes>::getPositionViolation(
 
 
 template<class DataTypes>
-void PersistentUnilateralInteractionConstraint<DataTypes>::getVelocityViolation(defaulttype::BaseVector *v)
+void PersistentUnilateralInteractionConstraint<DataTypes>::getVelocityViolation(linearalgebra::BaseVector *v)
 {
     const VecDeriv &PvfreeVec = this->getMState2()->read(core::ConstVecDerivId::freeVelocity())->getValue();
     const VecDeriv &QvfreeVec = this->getMState1()->read(core::ConstVecDerivId::freeVelocity())->getValue();

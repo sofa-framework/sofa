@@ -23,16 +23,16 @@
 
 #include <SofaDenseSolver/config.h>
 
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
 #include <SofaDenseSolver/NewMatVector.h>
 
 namespace sofa::component::linearsolver
 {
 
 template<class Mat>
-class TNewMatMatrix : public Mat, public defaulttype::BaseMatrix
+class TNewMatMatrix : public Mat, public linearalgebra::BaseMatrix
 {
 public:
     typedef Mat M;
@@ -182,7 +182,7 @@ public:
         msg_info_when(NEWMATMATRIX_VERBOSE) << /* this->Name()  <<  */"(" << rowSize() << "," << colSize() << "): solve(" << *ov << ") = " << *rv;
     }
 
-    virtual void solve(defaulttype::BaseVector *op, defaulttype::BaseVector *res)
+    virtual void solve(linearalgebra::BaseVector *op, linearalgebra::BaseVector *res)
     {
         NewMatVector *rv = dynamic_cast<NewMatVector *>(res);
         NewMatVector *ov = dynamic_cast<NewMatVector *>(op);

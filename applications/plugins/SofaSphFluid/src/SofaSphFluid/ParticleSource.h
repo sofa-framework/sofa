@@ -25,7 +25,7 @@
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <SofaBaseTopology/TopologySubsetIndices.h>
+#include <sofa/core/topology/TopologySubsetIndices.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
@@ -58,7 +58,7 @@ public:
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     //int lastparticle;
     typedef typename VecCoord::template rebind<Index>::other VecIndex;
-    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
+    typedef sofa::core::topology::TopologySubsetIndices SetIndex;
     typedef typename SetIndex::container_type SetIndexArray;
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalModel;
@@ -77,15 +77,15 @@ public:
         return (Real)(rand()*1.0 / RAND_MAX);
     }
 
-    class PSPointHandler : public sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, type::vector<sofa::Index> >
+    class PSPointHandler : public sofa::core::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, type::vector<sofa::Index> >
     {
     public:
         typedef type::vector<sofa::Index> VecIndex;
         typedef sofa::Index value_type;
         
 
-        PSPointHandler(ParticleSource<DataTypes>* _ps, sofa::component::topology::TopologySubsetIndices* _data)
-            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, VecIndex >(_data), ps(_ps) {}
+        PSPointHandler(ParticleSource<DataTypes>* _ps, sofa::core::topology::TopologySubsetIndices* _data)
+            : sofa::core::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Point, VecIndex >(_data), ps(_ps) {}
 
         void applyDestroyFunction(sofa::Index index, value_type& /*T*/)
         {
@@ -187,7 +187,7 @@ protected:
     Real m_lastTime; ///< Last time particle have been computed
     Real m_maxdist;
 
-    sofa::component::topology::TopologySubsetIndices m_lastparticles; ///< lastparticles indices
+    sofa::core::topology::TopologySubsetIndices m_lastparticles; ///< lastparticles indices
     VecCoord m_lastpos;
 
     PSPointHandler* m_pointHandler;

@@ -84,18 +84,18 @@ public:
 
     void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce ) override;
 
-    const sofa::defaulttype::BaseMatrix* getJ() override;
-    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    const sofa::linearalgebra::BaseMatrix* getJ() override;
+    virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
 
     void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce ) override;
-    const defaulttype::BaseMatrix* getK() override;
+    const linearalgebra::BaseMatrix* getK() override;
 
 protected:
     SquareMapping();
     virtual ~SquareMapping();
 
     SparseMatrixEigen jacobian;                             ///< Jacobian of the mapping
-    type::vector<defaulttype::BaseMatrix*> baseMatrices;  ///< Jacobian of the mapping, in a vector
+    type::vector<linearalgebra::BaseMatrix*> baseMatrices;  ///< Jacobian of the mapping, in a vector
     SparseKMatrixEigen K;                                   ///< Assembled geometric stiffness matrix
 
 };

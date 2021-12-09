@@ -482,7 +482,7 @@ void fill_block(Eigen::Matrix<U, 2, 3>& block, const Coord& v) {
 }
 
 template <class TIn, class TOut>
-const type::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::getJs()
+const type::vector<sofa::linearalgebra::BaseMatrix*>* RigidMapping<TIn, TOut>::getJs()
 {
     const VecCoord& out =this->toModel->read(core::ConstVecCoordId::position())->getValue();
     const InVecCoord& in =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
@@ -608,7 +608,7 @@ void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, co
 
 
 template <class TIn, class TOut>
-const sofa::defaulttype::BaseMatrix* RigidMapping<TIn, TOut>::getK()
+const sofa::linearalgebra::BaseMatrix* RigidMapping<TIn, TOut>::getK()
 {
     if( geometricStiffnessMatrix.compressedMatrix.nonZeros() ) return &geometricStiffnessMatrix;
     else return nullptr;
@@ -616,7 +616,7 @@ const sofa::defaulttype::BaseMatrix* RigidMapping<TIn, TOut>::getK()
 
 
 template <class TIn, class TOut>
-const sofa::defaulttype::BaseMatrix* RigidMapping<TIn, TOut>::getJ()
+const sofa::linearalgebra::BaseMatrix* RigidMapping<TIn, TOut>::getJ()
 {
     const VecCoord& out =this->toModel->read(core::ConstVecCoordId::position())->getValue();
     const InVecCoord& in =this->fromModel->read(core::ConstVecCoordId::position())->getValue();

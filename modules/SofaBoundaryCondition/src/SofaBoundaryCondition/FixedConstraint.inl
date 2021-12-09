@@ -160,7 +160,7 @@ void  FixedConstraint<DataTypes>::checkIndices()
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
+void FixedConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
     static const unsigned blockSize = DataTypes::deriv_total_size;
 
@@ -319,7 +319,7 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
     int o = matrix->getGlobalOffset(this->mstate.get());

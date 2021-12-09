@@ -83,7 +83,7 @@ public:
     typedef linearsolver::EigenSparseMatrix<TIn, TOut> eigen_type;
     eigen_type eigen;
 
-    typedef type::vector< defaulttype::BaseMatrix* > js_type;
+    typedef type::vector< linearalgebra::BaseMatrix* > js_type;
     js_type js;
 
 
@@ -111,7 +111,7 @@ public:
 
     void applyJT(const core::ConstraintParams *cparams /* PARAMS FIRST */, Data<InMatrixDeriv>& out, const Data<MatrixDeriv>& in) override;
 
-    const sofa::defaulttype::BaseMatrix* getJ() override;
+    const sofa::linearalgebra::BaseMatrix* getJ() override;
     const js_type* getJs() override;
 
 };

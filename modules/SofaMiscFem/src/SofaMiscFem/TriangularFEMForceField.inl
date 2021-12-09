@@ -27,7 +27,7 @@
 #include <sofa/helper/ColorMap.h>
 #include <sofa/type/RGBAColor.h>
 
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 
 #include <newmat/newmat.h>
 #include <newmat/newmatap.h>

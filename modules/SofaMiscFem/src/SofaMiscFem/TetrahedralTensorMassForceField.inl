@@ -26,7 +26,7 @@
 #include <sofa/type/RGBAColor.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 #include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa::component::forcefield

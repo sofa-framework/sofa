@@ -23,7 +23,7 @@
 #include <SofaGeneralObjectInteraction/config.h>
 
 #include <sofa/core/behavior/PairInteractionProjectiveConstraintSet.h>
-#include <SofaBaseTopology/TopologySubsetIndices.h>
+#include <sofa/core/topology/TopologySubsetIndices.h>
 
 namespace sofa::component::projectiveconstraintset
 {
@@ -46,7 +46,7 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
     typedef type::vector<unsigned int> SetIndexArray;
-    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
+    typedef sofa::core::topology::TopologySubsetIndices SetIndex;
 
 public:
     SetIndex f_indices1; ///< Indices of the source points on the first model
@@ -92,7 +92,7 @@ public:
                          const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     /// Project the global Mechanical Vector to constrained space using offset parameter
-    void applyConstraint(const core::MechanicalParams *mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void applyConstraint(const core::MechanicalParams *mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     virtual void reinitIfChanged();
 

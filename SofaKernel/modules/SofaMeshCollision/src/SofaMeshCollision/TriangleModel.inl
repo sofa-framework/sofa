@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaMeshCollision/PointModel.h>
 #include <SofaBaseCollision/CubeModel.h>
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/topology/TopologyChange.h>

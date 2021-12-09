@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 
 namespace sofa::component::forcefield
 {

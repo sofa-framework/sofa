@@ -27,7 +27,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 
 namespace sofa::component::forcefield
 {
@@ -89,7 +89,7 @@ protected:
         }
     };
 
-    sofa::component::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > edgeInfo; ///< Internal edge data
+    sofa::core::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > edgeInfo; ///< Internal edge data
 
     /** Method to initialize @sa EdgeRestInformation when a new edge is created.
     * Will be set as creation callback in the EdgeData @sa edgeInfo
@@ -163,7 +163,7 @@ public:
 
 protected :
 
-    sofa::component::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
+    sofa::core::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 
     /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* m_topology;

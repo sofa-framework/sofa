@@ -22,11 +22,11 @@
 #pragma once
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <SofaBaseLinearSolver/RotationMatrix.h>
+#include <sofa/linearalgebra/RotationMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/GridTopology.h>
 #include <sofa/helper/decompose.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
@@ -1977,7 +1977,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPar
 
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
+void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix *mat, SReal k, unsigned int &offset)
 {
     int IT = 0;
     StiffnessMatrix JKJt,tmp;
@@ -2057,11 +2057,11 @@ void TetrahedronFEMForceField<DataTypes>::getRotations(VecReal& vecR)
 }
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::getRotations(defaulttype::BaseMatrix * rotations,int offset)
+void TetrahedronFEMForceField<DataTypes>::getRotations(linearalgebra::BaseMatrix * rotations,int offset)
 {
     std::size_t nbdof = this->mstate->getSize();
 
-    if (component::linearsolver::RotationMatrix<float> * diag = dynamic_cast<component::linearsolver::RotationMatrix<float> *>(rotations))
+    if (linearalgebra::RotationMatrix<float> * diag = dynamic_cast<linearalgebra::RotationMatrix<float> *>(rotations))
     {
         Transformation R;
         for (unsigned int e=0; e<nbdof; ++e)
@@ -2077,7 +2077,7 @@ void TetrahedronFEMForceField<DataTypes>::getRotations(defaulttype::BaseMatrix *
             }
         }
     }
-    else if (component::linearsolver::RotationMatrix<double> * diag = dynamic_cast<component::linearsolver::RotationMatrix<double> *>(rotations))
+    else if (linearalgebra::RotationMatrix<double> * diag = dynamic_cast<linearalgebra::RotationMatrix<double> *>(rotations))
     {
         Transformation R;
         for (unsigned int e=0; e<nbdof; ++e)

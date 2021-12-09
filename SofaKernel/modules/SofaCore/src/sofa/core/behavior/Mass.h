@@ -122,11 +122,11 @@ public:
     /// @name Matrix operations
     /// @{
 
-    void addKToMatrix(sofa::defaulttype::BaseMatrix * /*matrix*/, SReal /*kFact*/, unsigned int &/*offset*/) override {}
-    void addBToMatrix(sofa::defaulttype::BaseMatrix * /*matrix*/, SReal /*bFact*/, unsigned int &/*offset*/) override {}
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix * /*matrix*/, SReal /*kFact*/, unsigned int &/*offset*/) override {}
+    void addBToMatrix(sofa::linearalgebra::BaseMatrix * /*matrix*/, SReal /*bFact*/, unsigned int &/*offset*/) override {}
 
     void addMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-    virtual void addMToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal mFact, unsigned int &offset);
+    virtual void addMToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal mFact, unsigned int &offset);
 
     /// Compute the system matrix corresponding to m M + b B + k K
     ///
@@ -151,7 +151,7 @@ public:
 
     /// recover the mass of an element
     SReal getElementMass(sofa::Index) const override;
-    void getElementMass(sofa::Index index, defaulttype::BaseMatrix *m) const override;
+    void getElementMass(sofa::Index index, linearalgebra::BaseMatrix *m) const override;
 
 protected:
     /// stream to export Kinematic, Potential and Mechanical Energy to gnuplot files

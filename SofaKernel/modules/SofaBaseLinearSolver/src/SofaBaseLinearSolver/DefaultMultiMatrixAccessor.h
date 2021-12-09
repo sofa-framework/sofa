@@ -49,7 +49,7 @@ public:
     virtual void clear();
 
     // setting the global matrix for the system. Its size must have the sum of all real Mechanical state
-    virtual void setGlobalMatrix(defaulttype::BaseMatrix* matrix);
+    virtual void setGlobalMatrix(linearalgebra::BaseMatrix* matrix);
 
     // When a real MS is visited by the visitor, it must be registed in a local data here (realStateOffsets)
     // the global size of the system must be ajusted.
@@ -86,15 +86,15 @@ public:
     //Matrix creating is only call when there are mapped state,
     //the stiffness and interaction stiffness of this state couldn't directly described on the principal matrix
     //then it demande to create a new matrix
-    static defaulttype::BaseMatrix* createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2);
-    static defaulttype::BaseMatrix* createMatrixImpl(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2, bool doPrintInfo);
+    static linearalgebra::BaseMatrix* createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2);
+    static linearalgebra::BaseMatrix* createMatrixImpl(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2, bool doPrintInfo);
 
     //Activate/deactive the printing of extra information related to the numerical system that is being solved.
     void setDoPrintInfo(bool value){ m_doPrintInfo = value; }
 
 protected:
     bool m_doPrintInfo {false} ;
-    defaulttype::BaseMatrix* globalMatrix {nullptr} ;
+    linearalgebra::BaseMatrix* globalMatrix {nullptr} ;
     Index globalDim {0} ;
 
     //           case1                                           case2
@@ -118,7 +118,7 @@ protected:
     //map used only for mapped mechanical state
     //a mapped state is added here if and only if its stiffness matrix is guessed by other component (forcefield)
     //by method "getMatrix" in order to fill its matrix
-    mutable std::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix* > mappedMatrices;
+    mutable std::map< const sofa::core::behavior::BaseMechanicalState*, linearalgebra::BaseMatrix* > mappedMatrices;
 
     //The data structure included mapped and on mapped state, the diagonal stiffness bloc and interaction stiffnessbloc
     mutable std::map< const sofa::core::behavior::BaseMechanicalState*, MatrixRef > diagonalStiffnessBloc;//todo remove

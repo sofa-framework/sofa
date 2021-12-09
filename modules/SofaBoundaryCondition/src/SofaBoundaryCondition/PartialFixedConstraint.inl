@@ -168,7 +168,7 @@ void PartialFixedConstraint<DataTypes>::projectJacobianMatrix(const core::Mechan
 }
 
 template <class DataTypes>
-void PartialFixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void PartialFixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
     int o = matrix->getGlobalOffset(this->mstate.get());
@@ -269,7 +269,7 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(const core::MechanicalPa
 }
 
 template <class DataTypes>
-void PartialFixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
+void PartialFixedConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
     static const unsigned blockSize = DataTypes::deriv_total_size;
 

@@ -31,7 +31,7 @@
 #include <math.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -392,6 +392,7 @@ void SparsePARDISOSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& 
     }    
 }
 
+using namespace sofa::linearalgebra;
 
 int SparsePARDISOSolverClass = core::RegisterObject("Direct linear solvers implemented with the PARDISO library")
         .add< SparsePARDISOSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >()

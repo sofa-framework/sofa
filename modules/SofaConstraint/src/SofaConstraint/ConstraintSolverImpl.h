@@ -26,7 +26,7 @@
 
 #include <sofa/simulation/MechanicalVisitor.h>
 
-#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <sofa/linearalgebra/FullMatrix.h>
 
 #include <sofa/core/ConstraintParams.h>
 
@@ -37,8 +37,8 @@ namespace sofa::component::constraintset
 class SOFA_SOFACONSTRAINT_API ConstraintProblem
 {
 public:
-    sofa::component::linearsolver::LPtrFullMatrix<double> W;
-    sofa::component::linearsolver::FullVector<double> dFree, f;
+    sofa::linearalgebra::LPtrFullMatrix<double> W;
+    sofa::linearalgebra::FullVector<double> dFree, f;
 
     ConstraintProblem();
     virtual ~ConstraintProblem();
@@ -81,7 +81,7 @@ class MechanicalGetConstraintViolationVisitor : public simulation::BaseMechanica
 {
 public:
 
-    MechanicalGetConstraintViolationVisitor(const core::ConstraintParams* params, sofa::defaulttype::BaseVector *v)
+    MechanicalGetConstraintViolationVisitor(const core::ConstraintParams* params, sofa::linearalgebra::BaseVector *v)
         : simulation::BaseMechanicalVisitor(params)
         , cparams(params)
         , m_v(v)
@@ -110,7 +110,7 @@ private:
     const sofa::core::ConstraintParams *cparams;
 
     /// Vector for constraint values
-    sofa::defaulttype::BaseVector* m_v;
+    sofa::linearalgebra::BaseVector* m_v;
 };
 
 } //namespace sofa::component::constraintset

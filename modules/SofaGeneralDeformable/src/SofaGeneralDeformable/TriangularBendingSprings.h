@@ -26,7 +26,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 
 namespace sofa::component::forcefield
 {
@@ -96,7 +96,7 @@ public:
         }
     };
 
-    sofa::component::topology::EdgeData<type::vector<EdgeInformation> > edgeInfo; ///< Internal Edge data storing @sa EdgeInformation per edge
+    sofa::core::topology::EdgeData<type::vector<EdgeInformation> > edgeInfo; ///< Internal Edge data storing @sa EdgeInformation per edge
 
 protected:
     TriangularBendingSprings();
@@ -156,7 +156,7 @@ public:
     /// Getter on the potential energy.
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& d_x) const override;
 
-    sofa::component::topology::EdgeData<type::vector<EdgeInformation> >& getEdgeInfo() { return edgeInfo; }
+    sofa::core::topology::EdgeData<type::vector<EdgeInformation> >& getEdgeInfo() { return edgeInfo; }
 
 protected:
     /// poential energy accumulate in method @sa addForce

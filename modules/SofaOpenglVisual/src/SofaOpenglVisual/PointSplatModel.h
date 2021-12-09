@@ -25,7 +25,7 @@
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 #include <sofa/type/RGBAColor.h>
 
 namespace sofa
@@ -74,7 +74,7 @@ private:
     core::behavior::BaseMechanicalState* _mstate;
 
     unsigned char *texture_data;
-    component::topology::PointData<sofa::type::vector<unsigned char> >		pointData; ///< scalar field modulating point colors
+    sofa::core::topology::PointData<sofa::type::vector<unsigned char> >		pointData; ///< scalar field modulating point colors
 
     typedef defaulttype::Vec3fTypes::Coord Coord;
     typedef defaulttype::Vec3fTypes::VecCoord VecCoord;

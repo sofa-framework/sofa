@@ -261,19 +261,19 @@ void DistanceFromTargetMapping<TIn, TOut>::applyDJT(const core::MechanicalParams
 
 
 template <class TIn, class TOut>
-const sofa::defaulttype::BaseMatrix* DistanceFromTargetMapping<TIn, TOut>::getJ()
+const sofa::linearalgebra::BaseMatrix* DistanceFromTargetMapping<TIn, TOut>::getJ()
 {
     return &jacobian;
 }
 
 template <class TIn, class TOut>
-const type::vector<sofa::defaulttype::BaseMatrix*>* DistanceFromTargetMapping<TIn, TOut>::getJs()
+const type::vector<sofa::linearalgebra::BaseMatrix*>* DistanceFromTargetMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
 }
 
 template <class TIn, class TOut>
-const defaulttype::BaseMatrix* DistanceFromTargetMapping<TIn, TOut>::getK()
+const linearalgebra::BaseMatrix* DistanceFromTargetMapping<TIn, TOut>::getK()
 {
     return &K;
 }

@@ -25,8 +25,8 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/TopologyChange.h>
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/linearalgebra/BaseMatrix.h>
+#include <sofa/core/topology/TopologyData.inl>
 #include <sofa/core/ConstraintParams.h>
 
 namespace sofa::component::constraintset
@@ -187,7 +187,7 @@ void UncoupledConstraintCorrection<DataTypes>::reinit()
 }
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(defaulttype::BaseMatrix* Wmerged, std::vector<int> &constraint_merge)
+void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(linearalgebra::BaseMatrix* Wmerged, std::vector<int> &constraint_merge)
 {
     helper::WriteAccessor<Data<MatrixDeriv> > constraintsData = *this->mstate->write(core::MatrixDerivId::constraintJacobian());
     MatrixDeriv& constraints = constraintsData.wref();
@@ -257,7 +257,7 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const sofa::core::ConstraintParams * cparams, sofa::defaulttype::BaseMatrix *W)
+void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const sofa::core::ConstraintParams * cparams, sofa::linearalgebra::BaseMatrix *W)
 {
     const MatrixDeriv& constraints = cparams->readJ(this->mstate)->getValue() ;
     VecReal comp = compliance.getValue();
@@ -373,7 +373,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
 }
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttype::BaseMatrix *m) const
+void UncoupledConstraintCorrection<DataTypes>::getComplianceMatrix(linearalgebra::BaseMatrix *m) const
 {
     const VecReal& comp = compliance.getValue();
     const Real comp0 = defaultCompliance.getValue();
@@ -500,7 +500,7 @@ void UncoupledConstraintCorrection<DataTypes>::applyVelocityCorrection(const cor
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const defaulttype::BaseVector *f)
+void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const linearalgebra::BaseVector *f)
 {
     helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::VecDerivId::externalForce());
     VecDeriv& force = forceData.wref();
@@ -695,7 +695,7 @@ void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(double * df, 
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end)
+void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end)
 {
     const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
     const VecReal& comp = compliance.getValue();

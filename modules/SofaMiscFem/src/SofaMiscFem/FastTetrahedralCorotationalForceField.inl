@@ -25,7 +25,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 #include <sofa/helper/decompose.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/topology/Topology.h>
@@ -506,7 +506,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(const core::
 
 
 template<class DataTypes>
-void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal kFactor, unsigned int &offset)
+void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix *mat, SReal kFactor, unsigned int &offset)
 {
     dmsg_info() << "[" << this->getName() << "]: calling addKToMatrix " ;
 

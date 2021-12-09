@@ -22,7 +22,7 @@
 #include <SofaDenseSolver/LULinearSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaDenseSolver/NewMatMatrix.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <sofa/linearalgebra/FullMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::linearsolver
@@ -31,6 +31,7 @@ namespace sofa::component::linearsolver
 using namespace sofa::defaulttype;
 using namespace sofa::core::behavior;
 using namespace sofa::simulation;
+using namespace sofa::linearalgebra;
 
 template<class Matrix, class Vector>
 LULinearSolver<Matrix,Vector>::LULinearSolver()
@@ -144,7 +145,7 @@ bool LULinearSolver<Matrix, Vector>::addJMInvJt(RMatrix& result, JMatrix& J, dou
 }
 
 template<class Matrix, class Vector>
-bool LULinearSolver<Matrix,Vector>::addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
+bool LULinearSolver<Matrix,Vector>::addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, double fact)
 {
     if (FullMatrix<double>* r = dynamic_cast<FullMatrix<double>*>(result))
     {
@@ -168,7 +169,7 @@ bool LULinearSolver<Matrix,Vector>::addJMInvJt(defaulttype::BaseMatrix* result, 
             return addJMInvJt(*r,*j,fact);
         }
     }
-    else if (defaulttype::BaseMatrix* r = result)
+    else if (linearalgebra::BaseMatrix* r = result)
     {
         if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
         {

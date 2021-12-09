@@ -27,7 +27,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 
 
 namespace sofa::component::forcefield
@@ -191,10 +191,10 @@ public:
     void applyTriangleDestruction(Index triangleIndex, TriangleRestInformation& tinfo);
 
 protected :
-    sofa::component::topology::TriangleData<sofa::type::vector<TriangleRestInformation> > triangleInfo; ///< Internal triangle data
-    sofa::component::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > edgeInfo; ///< Internal edge data
+    sofa::core::topology::TriangleData<sofa::type::vector<TriangleRestInformation> > triangleInfo; ///< Internal triangle data
+    sofa::core::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > edgeInfo; ///< Internal edge data
 
-    sofa::component::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
+    sofa::core::topology::EdgeData<sofa::type::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 
     /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* m_topology;

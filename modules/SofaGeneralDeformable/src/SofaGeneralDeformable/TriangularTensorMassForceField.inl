@@ -26,7 +26,7 @@
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <sofa/type/RGBAColor.h>
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 
 namespace sofa::component::forcefield
 {
