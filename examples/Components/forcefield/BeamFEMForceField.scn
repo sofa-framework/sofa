@@ -9,7 +9,7 @@
     <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
     <RequiredPlugin pluginName='SofaGeneralSimpleFem'/>
     <RequiredPlugin pluginName='SofaBoundaryCondition'/>
-    <RequiredPlugin pluginName='SofaDenseSolver'/>
+    <RequiredPlugin pluginName="SofaNewmat"/>
     <RequiredPlugin pluginName='SofaMeshCollision'/>
     <RequiredPlugin pluginName='SofaRigid'/>
     <RequiredPlugin pluginName='SofaConstraint'/>
