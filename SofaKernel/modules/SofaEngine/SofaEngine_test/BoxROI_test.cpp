@@ -63,7 +63,7 @@ using sofa::simulation::SceneLoaderXML;
 #include <sofa/helper/logging/Message.h>
 using sofa::helper::logging::MessageDispatcher;
 
-#include <sofa/helper/testing/TestMessageHandler.h>
+#include <sofa/testing/TestMessageHandler.h>
 #include <sofa/testing/BaseTest.h>
 
 template <typename TDataType>

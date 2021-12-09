@@ -95,8 +95,8 @@ namespace exporter {
 // Import the object in the "old" namespaces to allow smooth update of code base.
 namespace misc {
     using STLExporter
-        SOFA_ATTRIBUTE_DEPRECATED("v17.12 (PR#372)", "v21.12", "Use sofa::component::STLExporter instead.")
-        = _stlexporter_::STLExporter;
+        SOFA_ATTRIBUTE_DISABLED("v17.12 (PR#372)", "v21.12", "Use sofa::component::STLExporter instead.")
+        = DeprecatedAndRemoved;
 } // namespace misc
 
 } // namespace sofa::component

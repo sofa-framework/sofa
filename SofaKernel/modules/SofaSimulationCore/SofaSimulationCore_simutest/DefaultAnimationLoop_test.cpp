@@ -6,7 +6,7 @@ using sofa::core::ExecParams;
 
 #include <sofa/simulation/Simulation.h>
 
-#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+#include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest ;
 
 namespace sofa

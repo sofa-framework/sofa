@@ -20,14 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/core/config.h>
+#include <sofa/config.h>
 
-#include <sofa/core/objectmodel/vectorLinks.h>
-
-SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/core/objectmodel/vectorLinks.h")
-
-namespace sofa::helper
-{
-    template<class LinkType, class OwnerType>
-    using VectorLinks = sofa::core::objectmodel::VectorLinks<LinkType, OwnerType>;
-}
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/core/objectmodel/vectorLinks.h")

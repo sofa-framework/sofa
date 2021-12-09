@@ -20,6 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-// TODO: Backward compability header, to be removed for v21.12
-#include <sofa/core/topology/TopologySubsetData.inl>
-#include <sofa/core/topology/TopologySparseData.h>
+
+#include <sofa/linearalgebra/RotationMatrix.h>
+
+SOFA_DEPRECATED_HEADER("v21.12 (PR#1995)", "v22.06", "sofa/linearalgebra/RotationMatrix.h")
+
+namespace sofa::core::behavior
+{
+    template<typename TReal>
+    using RotationMatrix = sofa::linearalgebra::RotationMatrix<TReal>;
+}
