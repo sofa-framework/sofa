@@ -1,4 +1,13 @@
+<!--
+This scene introduces the usage of the component FillReducingOrdering.
+See its class description for more details.
 
+The scene compares two simulations in which only the vertices order differs:
+- The Node "NoReorder" simulates the initial mesh (deactivated by default).
+- The Node "Reorder" simulates the reordered mesh.
+
+Switch the 'activated' flag of each Node and compare the performances.
+-->
 <Node name="root" gravity="-1.8 0 100" dt="0.001">
     <RequiredPlugin name="SofaImplicitOdeSolver"/>
     <RequiredPlugin name="SofaMiscForceField"/>
@@ -15,7 +24,7 @@
 
     </Node>
 
-    <Node name="NoReorder">
+    <Node name="NoReorder" activated="false">
         <EulerImplicitSolver name="odeImplicitSolver" />
         <SparseLUSolver/>
 
@@ -31,7 +40,7 @@
 
     </Node>
 
-    <Node name="Reorder">
+    <Node name="Reorder" activated="true">
         <EulerImplicitSolver name="odeImplicitSolver" />
         <SparseLUSolver/>
 
