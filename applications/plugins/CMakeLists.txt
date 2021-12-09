@@ -17,26 +17,13 @@ sofa_add_plugin(SofaDistanceGrid SofaDistanceGrid) # Depends on SofaMiscCollisio
 sofa_add_plugin(SofaImplicitField SofaImplicitField)
 sofa_add_plugin(MultiThreading MultiThreading)
 sofa_add_plugin(DiffusionSolver DiffusionSolver) # Depends on CImgPlugin
-
-if(SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
-    # Add SofaPython BEFORE image and Compliant to enable their soft dependency
-    sofa_add_plugin_external(SofaPython SofaPython)
-endif()
-
-sofa_add_plugin(image image)           # Depends on CImgPlugin, DiffusionSolver, MultiThreading (soft)
+sofa_add_plugin_external(SofaPython SofaPython)
+sofa_add_plugin(image image) # Depends on CImgPlugin, DiffusionSolver, MultiThreading (soft)
 sofa_add_plugin_external(Compliant Compliant)
-
-if(NOT SOFA_ENABLE_SOFT_DEPS_TO_SOFAPYTHON)
-    # Add SofaPython AFTER image and Compliant to disable their soft dependency
-    sofa_add_plugin(SofaPython SofaPython)
-endif()
-
 sofa_add_subdirectory_external(SofaPython3 SofaPython3)
-
-sofa_add_plugin(CGALPlugin CGALPlugin) # Depends on image
+sofa_add_plugin_external(CGALPlugin CGALPlugin) # Depends on image
 sofa_add_plugin_external(Flexible Flexible)     # Depends on image, CImgPlugin, SofaHighOrderTopology (soft)
 sofa_add_plugin(Registration Registration) # Depends on image, SofaPython, SofaSimpleGUI and #SOFADISTANCEGRID
-sofa_add_plugin(LMConstraint LMConstraint ON)
 sofa_add_plugin(BulletCollisionDetection BulletCollisionDetection) # Depends on Compliant and LMConstraint
 sofa_add_plugin(PreassembledMass PreassembledMass) # Depends on Flexible and Compliant
 sofa_add_plugin(ExternalBehaviorModel ExternalBehaviorModel)

@@ -88,7 +88,7 @@ void ManualLinearMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cp
 
 
 template <class TIn, class TOut>
-const sofa::defaulttype::BaseMatrix* ManualLinearMapping<TIn, TOut>::getJ()
+const sofa::linearalgebra::BaseMatrix* ManualLinearMapping<TIn, TOut>::getJ()
 {
     return &_matrixJ;
 }

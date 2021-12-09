@@ -58,6 +58,7 @@ set(HEADER_FILES
     ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/RGBAColor.h
     ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/BaseVector.h
     ${SOFACOMPATSRC_ROOT}/sofa/defaulttype/BaseMatrix.h
+    ${SOFACOMPATSRC_ROOT}/sofa/core/behavior/RotationMatrix.h
     ${SOFACOMPATSRC_ROOT}/sofa/core/visual/DrawTool.h
     ${SOFACOMPATSRC_ROOT}/sofa/core/visual/DrawToolGL.h
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/CompressedRowSparseMatrix.h

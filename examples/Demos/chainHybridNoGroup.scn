@@ -11,8 +11,8 @@
     <DefaultContactManager name="Response" response="default" />
     <Node name="Chain">
         <Node name="Fixed">
-            <MeshObjLoader name="loaderMeca" filename="mesh/torus_for_collision.obj" />
-            <MeshObjLoader name="loaderVisual" filename="mesh/torus.obj" />
+            <MeshOBJLoader name="loaderMeca" filename="mesh/torus_for_collision.obj" />
+            <MeshOBJLoader name="loaderVisual" filename="mesh/torus.obj" />
             <MeshTopology src="@loaderMeca" />
             <MechanicalObject src="@loaderMeca" rx="90" />
             <TriangleCollisionModel simulated="0" moving="0" />

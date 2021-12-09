@@ -23,7 +23,7 @@
 
 #include "Sofa_test.h"
 #include <sofa/simulation/VectorOperations.h>
-#include <SofaBaseLinearSolver/FullVector.h>
+#include <sofa/linearalgebra/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -313,7 +313,7 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
         for( Index p=0; p<Np2.size(); p++ ) copyFromData( dfIn2p[p], in2Dofs[p]->readForces() ); // fp + df due to geometric stiffness
 
         // Jacobian will be obsolete after applying new positions
-        const vector<defaulttype::BaseMatrix*>* J = mapping->getJs();
+        const vector<linearalgebra::BaseMatrix*>* J = mapping->getJs();
         SparseJMatrixEigen1* J1 = dynamic_cast<SparseJMatrixEigen1*>((*J)[0]);
         SparseJMatrixEigen2* J2 = dynamic_cast<SparseJMatrixEigen2*>((*J)[1]);
         OutVecDeriv Jv(Nc);

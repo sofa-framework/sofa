@@ -23,7 +23,7 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBoundaryCondition/ProjectToPointConstraint.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <iostream>
@@ -132,7 +132,7 @@ void  ProjectToPointConstraint<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-void ProjectToPointConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
+void ProjectToPointConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
     unsigned blockSize = DataTypes::deriv_total_size;
 
@@ -261,7 +261,7 @@ void ProjectToPointConstraint<DataTypes>::applyConstraint(const core::Mechanical
 }
 
 template <class DataTypes>
-void ProjectToPointConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void ProjectToPointConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
     int o = matrix->getGlobalOffset(this->mstate.get());

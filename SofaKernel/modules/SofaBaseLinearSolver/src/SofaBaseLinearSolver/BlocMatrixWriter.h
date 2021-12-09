@@ -22,8 +22,8 @@
 #pragma once
 #include <SofaBaseLinearSolver/config.h>
 
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
-#include <SofaBaseLinearSolver/matrix_bloc_traits.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/matrix_bloc_traits.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 namespace sofa::component::linearsolver
@@ -36,7 +36,7 @@ class BlocMatrixWriter
 {
 public:
     typedef TBloc Bloc;
-    typedef matrix_bloc_traits<Bloc, defaulttype::BaseMatrix::Index> traits;
+    typedef sofa::linearalgebra::matrix_bloc_traits<Bloc, linearalgebra::BaseMatrix::Index> traits;
     typedef typename traits::Real Real;
     enum { NL = traits::NL };
     enum { NC = traits::NC };
@@ -45,10 +45,10 @@ public:
 
     class BaseMatrixWriter
     {
-        defaulttype::BaseMatrix* m;
+        linearalgebra::BaseMatrix* m;
         unsigned int offsetL, offsetC;
     public:
-        BaseMatrixWriter(defaulttype::BaseMatrix* m, unsigned int offsetL, unsigned int offsetC) : m(m), offsetL(offsetL), offsetC(offsetC) {}
+        BaseMatrixWriter(linearalgebra::BaseMatrix* m, unsigned int offsetL, unsigned int offsetC) : m(m), offsetL(offsetL), offsetC(offsetC) {}
         void add(unsigned int bi, unsigned int bj, const MatBloc& b)
         {
             unsigned int i0 = offsetL + bi*NL;
@@ -61,10 +61,10 @@ public:
 
     class BlocBaseMatrixWriter
     {
-        defaulttype::BaseMatrix* m;
+        linearalgebra::BaseMatrix* m;
         unsigned int boffsetL, boffsetC;
     public:
-        BlocBaseMatrixWriter(defaulttype::BaseMatrix* m, unsigned int boffsetL, unsigned int boffsetC) : m(m), boffsetL(boffsetL), boffsetC(boffsetC) {}
+        BlocBaseMatrixWriter(linearalgebra::BaseMatrix* m, unsigned int boffsetL, unsigned int boffsetC) : m(m), boffsetL(boffsetL), boffsetC(boffsetC) {}
         void add(unsigned int bi, unsigned int bj, const MatBloc& b)
         {
             unsigned int i0 = boffsetL + bi;
@@ -76,10 +76,10 @@ public:
     template<class MReal>
     class BlocCRSMatrixWriter
     {
-        sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<NL,NC,MReal> >* m;
+        sofa::linearalgebra::CompressedRowSparseMatrix<type::Mat<NL,NC,MReal> >* m;
         unsigned int boffsetL, boffsetC;
     public:
-        BlocCRSMatrixWriter(sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<NL,NC,MReal> >* m, unsigned int boffsetL, unsigned int boffsetC) : m(m), boffsetL(boffsetL), boffsetC(boffsetC) {}
+        BlocCRSMatrixWriter(sofa::linearalgebra::CompressedRowSparseMatrix<type::Mat<NL,NC,MReal> >* m, unsigned int boffsetL, unsigned int boffsetC) : m(m), boffsetL(boffsetL), boffsetC(boffsetC) {}
         void add(unsigned int bi, unsigned int bj, const MatBloc& b)
         {
             unsigned int i0 = boffsetL + bi;
@@ -92,10 +92,10 @@ public:
     template<class MReal>
     class CRSMatrixWriter
     {
-        sofa::component::linearsolver::CompressedRowSparseMatrix<MReal>* m;
+        sofa::linearalgebra::CompressedRowSparseMatrix<MReal>* m;
         unsigned int offsetL, offsetC;
     public:
-        CRSMatrixWriter(sofa::component::linearsolver::CompressedRowSparseMatrix<MReal>* m, unsigned int offsetL, unsigned int offsetC) : m(m), offsetL(offsetL), offsetC(offsetC) {}
+        CRSMatrixWriter(sofa::linearalgebra::CompressedRowSparseMatrix<MReal>* m, unsigned int offsetL, unsigned int offsetC) : m(m), offsetL(offsetL), offsetC(offsetC) {}
         void add(unsigned int bi, unsigned int bj, const MatBloc& b)
         {
             unsigned int i0 = offsetL + bi*NL;
@@ -108,17 +108,17 @@ public:
 
 
     template<class Dispatcher>
-    void apply(Dispatcher& dispatch, sofa::defaulttype::BaseMatrix *m, unsigned int offsetL, unsigned int offsetC)
+    void apply(Dispatcher& dispatch, sofa::linearalgebra::BaseMatrix *m, unsigned int offsetL, unsigned int offsetC)
     {
         if ((offsetL % NL) == 0 && (offsetC % NC) == 0 && m->getBlockRows() == NL && m->getBlockCols() == NC)
         {
             unsigned int boffsetL = offsetL / NL;
             unsigned int boffsetC = offsetC / NC;
-            if (sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<NL,NC,double> > * mat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<NL,NC,double> > * >(m))
+            if (sofa::linearalgebra::CompressedRowSparseMatrix<type::Mat<NL,NC,double> > * mat = dynamic_cast<sofa::linearalgebra::CompressedRowSparseMatrix<type::Mat<NL,NC,double> > * >(m))
             {
                 dispatch(BlocCRSMatrixWriter<double>(mat, boffsetL, boffsetC));
             }
-            else if (sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<NL,NC,float> > * mat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<NL,NC,float> > * >(m))
+            else if (sofa::linearalgebra::CompressedRowSparseMatrix<type::Mat<NL,NC,float> > * mat = dynamic_cast<sofa::linearalgebra::CompressedRowSparseMatrix<type::Mat<NL,NC,float> > * >(m))
             {
                 dispatch(BlocCRSMatrixWriter<float>(mat, boffsetL, boffsetC));
             }
@@ -129,11 +129,11 @@ public:
         }
         else
         {
-            if (sofa::component::linearsolver::CompressedRowSparseMatrix<double> * mat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<double> * >(m))
+            if (sofa::linearalgebra::CompressedRowSparseMatrix<double> * mat = dynamic_cast<sofa::linearalgebra::CompressedRowSparseMatrix<double> * >(m))
             {
                 dispatch(CRSMatrixWriter<double>(mat, offsetL, offsetC));
             }
-            else if (sofa::component::linearsolver::CompressedRowSparseMatrix<float> * mat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<float> * >(m))
+            else if (sofa::linearalgebra::CompressedRowSparseMatrix<float> * mat = dynamic_cast<sofa::linearalgebra::CompressedRowSparseMatrix<float> * >(m))
             {
                 dispatch(CRSMatrixWriter<float>(mat, offsetL, offsetC));
             }

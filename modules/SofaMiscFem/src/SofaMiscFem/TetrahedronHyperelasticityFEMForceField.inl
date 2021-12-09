@@ -33,13 +33,12 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ForceField.inl>
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 
 namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
-using namespace	sofa::component::topology;
 using namespace core::topology;
 
 
@@ -467,7 +466,7 @@ SReal TetrahedronHyperelasticityFEMForceField<DataTypes>::getPotentialEnergy(con
 }
 
 template <class DataTypes>
-void TetrahedronHyperelasticityFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
+void TetrahedronHyperelasticityFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix *mat, SReal k, unsigned int &offset)
 {
 
     /// if the  matrix needs to be updated

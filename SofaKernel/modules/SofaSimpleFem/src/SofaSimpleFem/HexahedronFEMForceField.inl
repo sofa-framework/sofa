@@ -22,11 +22,11 @@
 #pragma once
 #include <SofaSimpleFem/HexahedronFEMForceField.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <SofaBaseLinearSolver/RotationMatrix.h>
+#include <sofa/linearalgebra/RotationMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/helper/decompose.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
 // WARNING: indices ordering is different than in topology node
 //
@@ -140,6 +140,7 @@ void HexahedronFEMForceField<DataTypes>::init()
     _sparseGrid = dynamic_cast<topology::SparseGridTopology*>(m_topology);
     m_potentialEnergy = 0;
 
+    this->d_componentState.setValue(core::objectmodel::ComponentState::Valid);
     reinit();
 }
 
@@ -995,11 +996,11 @@ SReal HexahedronFEMForceField<DataTypes>::getPotentialEnergy(const core::Mechani
 }
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::getRotations(defaulttype::BaseMatrix * rotations,int offset)
+void HexahedronFEMForceField<DataTypes>::getRotations(linearalgebra::BaseMatrix * rotations,int offset)
 {
     auto nbdof = this->mstate->getSize();
 
-    if (component::linearsolver::RotationMatrix<float> * diag = dynamic_cast<component::linearsolver::RotationMatrix<float> *>(rotations))
+    if (linearalgebra::RotationMatrix<float> * diag = dynamic_cast<linearalgebra::RotationMatrix<float> *>(rotations))
     {
         Transformation R;
         for (sofa::Index e=0; e<nbdof; ++e)
@@ -1015,7 +1016,7 @@ void HexahedronFEMForceField<DataTypes>::getRotations(defaulttype::BaseMatrix * 
             }
         }
     }
-    else if (component::linearsolver::RotationMatrix<double> * diag = dynamic_cast<component::linearsolver::RotationMatrix<double> *>(rotations))
+    else if (linearalgebra::RotationMatrix<double> * diag = dynamic_cast<linearalgebra::RotationMatrix<double> *>(rotations))
     {
         Transformation R;
         for (sofa::Index e=0; e<nbdof; ++e)

@@ -118,7 +118,7 @@ SOFA_SOFACONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3T
 
 
 template<>
-SOFA_SOFACONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getComplianceMatrix(defaulttype::BaseMatrix *m) const
+SOFA_SOFACONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getComplianceMatrix(linearalgebra::BaseMatrix *m) const
 {
     const VecReal& comp = compliance.getValue();
     const unsigned int dimension = defaulttype::DataTypeInfo<Deriv>::size();

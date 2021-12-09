@@ -19,7 +19,7 @@
     <MechanicalObject template="Rigid3d" name="instrumentState" tags="Omni"  />
     <UniformMass template="Rigid3d" name="mass"  totalMass="0.05" />
     <Node 	name="VisualModel" >
-      <MeshObjLoader name="meshLoader_1" filename="data/mesh/dental_instrument.obj" scale3d="100 100 100" translation="-21.2256 13.2361 355." rotation="180 0 150" handleSeams="1" />
+      <MeshOBJLoader name="meshLoader_1" filename="data/mesh/dental_instrument.obj" scale3d="100 100 100" translation="-21.2256 13.2361 355." rotation="180 0 150" handleSeams="1" />
       <OglModel template="ExtVec3f" name="InstrumentVisualModel" src="@meshLoader_1" material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
       <RigidMapping template="Rigid,ExtVec3f" name="MM->VM mapping"  input="@instrumentState"  output="@InstrumentVisualModel" />
     </Node>
@@ -35,12 +35,12 @@
   </Node>
   <Node 	name="Plane"  >
     <Node 	name="VisualModel"   >
-      <MeshObjLoader name="meshLoader_0" filename="data/mesh/box_inside.obj" scale3d="10 10 10" handleSeams="1" />
+      <MeshOBJLoader name="meshLoader_0" filename="data/mesh/box_inside.obj" scale3d="10 10 10" handleSeams="1" />
       <OglModel template="ExtVec3f" name="PlaneVisualModel" src="@meshLoader_0" material="Default Diffuse 1 1 1 1 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 1 1 1 1 Shininess 0 45" />
     </Node>
     <Node 	name="CollisionModel" >
       
-      <MeshObjLoader name="loader"  filename="data/mesh/box_inside.obj" />
+      <MeshOBJLoader name="loader"  filename="data/mesh/box_inside.obj" />
       <MeshTopology src="@loader" name="PlaneCollisionModel" />
 
       <MechanicalObject src="@loader" template="Vec3d" tags="box" name="planeState" />

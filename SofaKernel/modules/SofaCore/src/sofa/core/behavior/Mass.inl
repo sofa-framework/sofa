@@ -159,7 +159,7 @@ void Mass<DataTypes>::addMToMatrix(const MechanicalParams* mparams, const sofa::
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addMToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*mFact*/, unsigned int &/*offset*/)
+void Mass<DataTypes>::addMToMatrix(sofa::linearalgebra::BaseMatrix * /*mat*/, SReal /*mFact*/, unsigned int &/*offset*/)
 {
     static int i=0;
     if (i < 10) {
@@ -229,9 +229,9 @@ SReal Mass<DataTypes>::getElementMass(sofa::Index ) const
 }
 
 template <class DataTypes>
-void Mass<DataTypes>::getElementMass(sofa::Index, defaulttype::BaseMatrix *m) const
+void Mass<DataTypes>::getElementMass(sofa::Index, linearalgebra::BaseMatrix *m) const
 {
-    static const defaulttype::BaseMatrix::Index dimension = (defaulttype::BaseMatrix::Index) defaulttype::DataTypeInfo<Coord>::size();
+    static const linearalgebra::BaseMatrix::Index dimension = (linearalgebra::BaseMatrix::Index) defaulttype::DataTypeInfo<Coord>::size();
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
 
     m->clear();

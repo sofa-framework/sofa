@@ -33,7 +33,7 @@
 #include <sofa/helper/ColorMap.h>
 #include <sofa/type/RGBAColor.h>
 
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 
 #include <sofa/helper/system/thread/debug.h>
 #include <newmat/newmat.h>

@@ -89,7 +89,7 @@ SubsetMultiMapping<TIn, TOut>::~SubsetMultiMapping()
 }
 
 template <class TIn, class TOut>
-const type::vector<sofa::defaulttype::BaseMatrix*>* SubsetMultiMapping<TIn, TOut>::getJs()
+const type::vector<sofa::linearalgebra::BaseMatrix*>* SubsetMultiMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
 }

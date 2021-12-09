@@ -29,7 +29,7 @@
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/topology/BaseTopology.h>
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 #include <sofa/core/MechanicalParams.h>
 
 namespace sofa::component::mass
@@ -50,11 +50,11 @@ using core::behavior::MultiMatrixAccessor;
 using core::visual::VisualParams;
 using core::ConstVecCoordId;
 
-using defaulttype::BaseVector;
+using linearalgebra::BaseVector;
 using type::Vec;
 using type::Vec3d;
 using defaulttype::DataTypeInfo;
-using defaulttype::BaseMatrix;
+using linearalgebra::BaseMatrix;
 
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass()
@@ -623,13 +623,6 @@ void UniformMass<DataTypes, MassType>::draw(const VisualParams* vparams)
 
         vparams->drawTool()->drawCross(temp, float(axisSize), color);
     }
-}
-
-
-template<class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::handleEvent(sofa::core::objectmodel::Event *event)
-{
-    SOFA_UNUSED(event);
 }
 
 

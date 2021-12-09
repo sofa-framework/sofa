@@ -79,10 +79,10 @@ public:
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
     using core::behavior::ProjectiveConstraintSet<TDataTypes>::applyConstraint;
-    void applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
     void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
-    void projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset ) override;
+    void projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset ) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 

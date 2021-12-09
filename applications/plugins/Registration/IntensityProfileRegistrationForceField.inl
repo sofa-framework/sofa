@@ -442,7 +442,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::addKToMatrix(
     Real k = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue()) * this->ks.getValue();
     if(!k) return;
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
-    sofa::defaulttype::BaseMatrix *mat = mref.matrix;
+    sofa::linearalgebra::BaseMatrix *mat = mref.matrix;
     const int offset = (int)mref.offset;
     const int N = Coord::total_size;
     const int nb = this->targetPos.size();

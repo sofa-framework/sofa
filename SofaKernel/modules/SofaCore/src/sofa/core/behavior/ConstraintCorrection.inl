@@ -66,7 +66,7 @@ void ConstraintCorrection<DataTypes>::removeConstraintSolver(core::behavior::Con
 }
 
 template< class DataTypes >
-void ConstraintCorrection< DataTypes >::computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const defaulttype::BaseVector * lambda)
+void ConstraintCorrection< DataTypes >::computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const linearalgebra::BaseVector * lambda)
 {
     addConstraintForceInMotionSpace(cparams, cparams->lambda(), cparams->j(), lambda);
 
@@ -126,7 +126,7 @@ void ConstraintCorrection< DataTypes >::applyVelocityCorrection(const core::Cons
 
 
 template< class DataTypes >
-void ConstraintCorrection< DataTypes >::applyPredictiveConstraintForce(const core::ConstraintParams *cparams, core::MultiVecDerivId f, const defaulttype::BaseVector *lambda)
+void ConstraintCorrection< DataTypes >::applyPredictiveConstraintForce(const core::ConstraintParams *cparams, core::MultiVecDerivId f, const linearalgebra::BaseVector *lambda)
 {
     if (mstate)
     {
@@ -135,7 +135,7 @@ void ConstraintCorrection< DataTypes >::applyPredictiveConstraintForce(const cor
 }
 
 template< class DataTypes >
-void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(const core::ConstraintParams* cparams, core::MultiVecDerivId f, core::ConstMultiMatrixDerivId j, const defaulttype::BaseVector * lambda)
+void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(const core::ConstraintParams* cparams, core::MultiVecDerivId f, core::ConstMultiMatrixDerivId j, const linearalgebra::BaseVector * lambda)
 {
     if (mstate)
     {
@@ -150,7 +150,7 @@ void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(const co
 
 
 template< class DataTypes >
-void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(const core::ConstraintParams*, Data< VecDeriv > &f, const Data< MatrixDeriv>& j, const defaulttype::BaseVector *lambda)
+void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(const core::ConstraintParams*, Data< VecDeriv > &f, const Data< MatrixDeriv>& j, const linearalgebra::BaseVector *lambda)
 {
     VecDeriv& force = *f.beginEdit();
 

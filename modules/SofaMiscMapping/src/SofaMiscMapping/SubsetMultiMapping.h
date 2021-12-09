@@ -86,7 +86,7 @@ public:
     void applyJT( const core::ConstraintParams* cparams, const type::vector< InDataMatrixDeriv* >& dataMatOutConst, const type::vector< const OutDataMatrixDeriv* >& dataMatInConst ) override;
 
     /// Experimental API used to handle multimappings in matrix assembly. Returns pointers to matrices associated with parent states, consistently with  getFrom().
-    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
 
 
     Data< type::vector<unsigned> > indexPairs;                     ///< Two indices per child: the parent, and the index within the parent
@@ -96,7 +96,7 @@ protected :
     SubsetMultiMapping();
     virtual ~SubsetMultiMapping();
 
-    type::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    type::vector<linearalgebra::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
 };
 

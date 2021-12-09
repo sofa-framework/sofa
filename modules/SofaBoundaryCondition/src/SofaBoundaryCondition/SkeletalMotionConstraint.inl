@@ -26,7 +26,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 #include <iostream>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 
@@ -324,7 +324,7 @@ void SkeletalMotionConstraint<DataTypes>::applyConstraint(const core::Mechanical
 }
 
 template <class DataTypes>
-void SkeletalMotionConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, defaulttype::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
+void SkeletalMotionConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, linearalgebra::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
     if( !active.getValue() ) return;
 
@@ -339,7 +339,7 @@ void SkeletalMotionConstraint<DataTypes>::applyConstraint(const core::Mechanical
 }
 
 template <class DataTypes>
-void SkeletalMotionConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
+void SkeletalMotionConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
     unsigned blockSize = DataTypes::deriv_total_size;
     unsigned size = this->mstate->getSize();

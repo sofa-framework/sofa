@@ -31,7 +31,7 @@
 #include <sofa/type/Mat.h>
 #include <sofa/type/MatSym.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 #include <string>
 #include <map>
 
@@ -178,7 +178,7 @@ public:
     //Used for CUDA implementation
     void initNeighbourhoodPoints();
     void initNeighbourhoodEdges();
-    void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset) override;
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFact, unsigned int &offset) override;
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
@@ -204,8 +204,8 @@ public:
 
 	fem::HyperelasticMaterial<DataTypes> *myMaterial;
 
-    topology::TetrahedronData<tetrahedronRestInfoVector> tetrahedronInfo; ///< Internal tetrahedron data
-    topology::EdgeData<edgeInformationVector> edgeInfo; ///< Internal edge data
+    core::topology::TetrahedronData<tetrahedronRestInfoVector> tetrahedronInfo; ///< Internal tetrahedron data
+    core::topology::EdgeData<edgeInformationVector> edgeInfo; ///< Internal edge data
 
 
         void testDerivatives();

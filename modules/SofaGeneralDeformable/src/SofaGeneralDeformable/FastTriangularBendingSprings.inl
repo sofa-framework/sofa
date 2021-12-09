@@ -27,7 +27,7 @@
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <sofa/type/RGBAColor.h>
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 
 namespace sofa::component::forcefield
 {
@@ -46,7 +46,6 @@ void FastTriangularBendingSprings<DataTypes>::applyEdgeCreation(Index /*edgeInde
 template< class DataTypes>
 void FastTriangularBendingSprings<DataTypes>::applyTriangleCreation(const sofa::type::vector<Index> &triangleAdded, const sofa::type::vector<core::topology::BaseMeshTopology::Triangle> &, const sofa::type::vector<sofa::type::vector<Index> > &, const sofa::type::vector<sofa::type::vector<double> > &)
 {
-    using namespace sofa::component::topology;
     typename MechanicalState::ReadVecCoord restPosition = this->mstate->readRestPositions();
 
     helper::WriteOnlyAccessor< Data< type::vector<EdgeSpring > > > edgeData = d_edgeSprings;
@@ -116,7 +115,6 @@ void FastTriangularBendingSprings<DataTypes>::applyTriangleCreation(const sofa::
 template< class DataTypes>
 void FastTriangularBendingSprings<DataTypes>::applyTriangleDestruction(const sofa::type::vector<Index> &triangleRemoved)
 {
-    using namespace sofa::component::topology;
     typename MechanicalState::ReadVecCoord restPosition = this->mstate->readRestPositions();
     helper::WriteOnlyAccessor< Data< type::vector<EdgeSpring > > > edgeData = d_edgeSprings;
     for (unsigned int i=0; i<triangleRemoved.size(); ++i)
@@ -362,7 +360,6 @@ void FastTriangularBendingSprings<DataTypes>::init()
 template<class DataTypes>
 void FastTriangularBendingSprings<DataTypes>::reinit()
 {
-    using namespace sofa::component::topology;
     /// prepare to store info in the edge array
     helper::WriteOnlyAccessor< Data< type::vector<EdgeSpring> > > edgeInf = d_edgeSprings;
     edgeInf.resize(m_topology->getNbEdges());
@@ -425,7 +422,7 @@ void FastTriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalPa
 
 
 template<class DataTypes>
-void FastTriangularBendingSprings<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal scale, unsigned int &offset)
+void FastTriangularBendingSprings<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix *mat, SReal scale, unsigned int &offset)
 {
     const type::vector<EdgeSpring>& springs = d_edgeSprings.getValue();
     for(unsigned i=0; i< springs.size() ; i++)
@@ -509,7 +506,7 @@ typename FastTriangularBendingSprings<_DataTypes>::Real  FastTriangularBendingSp
 }
 
 template<class _DataTypes>
-void FastTriangularBendingSprings<_DataTypes>::EdgeSpring::addStiffness( sofa::defaulttype::BaseMatrix *bm, unsigned int offset, SReal scale, core::behavior::ForceField< _DataTypes>* ff ) const
+void FastTriangularBendingSprings<_DataTypes>::EdgeSpring::addStiffness( sofa::linearalgebra::BaseMatrix *bm, unsigned int offset, SReal scale, core::behavior::ForceField< _DataTypes>* ff ) const
 {
     StiffnessMatrix K;
     getStiffness( K );

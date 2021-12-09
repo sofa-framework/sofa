@@ -4,12 +4,12 @@
 	<MechanicalObject template="Rigid3d"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"  />
 	<UniformMass />
 	<Node name="Visu">
-		<MeshObjLoader name="meshVisualLoader" filename="mesh/torus.obj"/>
+		<MeshOBJLoader name="meshVisualLoader" filename="mesh/torus.obj"/>
 		<OglModel name="Visual" src="@meshVisualLoader" color="gray" scale="1.0"/>
 		<RigidMapping input="@.." output="@Visual" />
 	</Node>
 	<Node name="Surf2">
-		<MeshObjLoader name="meshCollisionLoader" filename="mesh/torus_for_collision.obj"/>
+		<MeshOBJLoader name="meshCollisionLoader" filename="mesh/torus_for_collision.obj"/>
 		<MeshTopology src="@meshCollisionLoader" />
 		<MechanicalObject scale="1.0" />
 		<TriangleCollisionModel />

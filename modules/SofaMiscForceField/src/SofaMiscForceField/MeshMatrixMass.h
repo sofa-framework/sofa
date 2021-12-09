@@ -26,7 +26,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 #include <sofa/type/vector.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
@@ -82,9 +82,9 @@ public:
 
 
     /// Values of the particles masses stored on vertices
-    topology::PointData<type::vector<MassType> >  d_vertexMass;
+    core::topology::PointData<type::vector<MassType> >  d_vertexMass;
     /// Values of the particles masses stored on edges
-    topology::EdgeData<type::vector<MassType> >   d_edgeMass;
+    core::topology::EdgeData<type::vector<MassType> >   d_edgeMass;
 
     /// if true, the mass of every element is computed based on the rest position rather than the position
     Data< bool > d_computeMassOnRest;
@@ -209,7 +209,7 @@ public:
     void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     SReal getElementMass(Index index) const override;
-    void getElementMass(Index index, defaulttype::BaseMatrix *m) const override;
+    void getElementMass(Index index, linearalgebra::BaseMatrix *m) const override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 

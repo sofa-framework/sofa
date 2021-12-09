@@ -21,13 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/vector.h>
+#include <sofa/config.h>
 
-SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/type/vector.h")
-
-namespace sofa::helper
-{
-    template <class T, class MemoryManager = sofa::type::CPUMemoryManager<T> >
-    using vector = sofa::type::vector<T, MemoryManager>;
-
-} // namespace sofa::helper
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/type/vector.h")

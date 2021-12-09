@@ -933,7 +933,7 @@ void SofaPhysicsSimulation::calcProjection()
     else
     {
         double ratio = vparams->zFar() / (vparams->zNear() * 20);
-        auto tcenter = vparams->sceneTransform() * center;
+        auto tcenter = center;
         if (tcenter[2] < 0.0)
         {
             ratio = -300 * (tcenter.norm2()) / tcenter[2];

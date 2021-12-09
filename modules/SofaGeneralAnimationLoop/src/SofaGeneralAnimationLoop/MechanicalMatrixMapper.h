@@ -27,64 +27,27 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Link.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-#include <sofa/simulation/MechanicalVisitor.h>
-
-#include <sofa/core/MultiVecId.h>
-#include <sofa/core/BaseMapping.h>
 #include <sofa/linearalgebra/SparseMatrixProduct[EigenSparseMatrix].h>
+
+#include <sofa/simulation/fwd.h>
 
 namespace sofa::component::interactionforcefield
 {
 
-class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalAccumulateJacobian : public simulation::BaseMechanicalVisitor
-{
-public:
-    MechanicalAccumulateJacobian(const core::ConstraintParams* _cparams, core::MultiMatrixDerivId _res)
-        : simulation::BaseMechanicalVisitor(_cparams)
-        , res(_res)
-        , cparams(_cparams)
-    {}
-
-    void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override
-    {
-        ctime_t t0 = begin(node, map);
-        map->applyJT(cparams, res, res);
-        end(node, map, t0);
-    }
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override { return "MechanicalAccumulateJacobian"; }
-
-    bool isThreadSafe() const override
-    {
-        return false;
-    }
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
-    {
-        return false; // !map->isMechanical();
-    }
-
-protected:
-    core::MultiMatrixDerivId res;
-    const sofa::core::ConstraintParams *cparams;
-};
-
 using sofa::core::objectmodel::BaseObject ;
-using sofa::component::linearsolver::CompressedRowSparseMatrix ;
+using sofa::linearalgebra::CompressedRowSparseMatrix ;
 using sofa::core::behavior::MixedInteractionForceField ;
 using sofa::core::behavior::BaseForceField ;
 using sofa::core::behavior::BaseMass ;
 using sofa::core::behavior::BaseMechanicalState ;
 using sofa::core::behavior::MultiMatrixAccessor ;
 using sofa::component::linearsolver::DefaultMultiMatrixAccessor ;
-using sofa::defaulttype::BaseMatrix ;
+using sofa::linearalgebra::BaseMatrix ;
 using sofa::core::MechanicalParams ;
 using sofa::core::objectmodel::ComponentState ;
 

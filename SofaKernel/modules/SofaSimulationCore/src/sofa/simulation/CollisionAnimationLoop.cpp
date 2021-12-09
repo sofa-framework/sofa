@@ -31,18 +31,12 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/IntegrateBeginEvent.h>
 #include <sofa/simulation/IntegrateEndEvent.h>
-#include <sofa/simulation/UpdateMappingEndEvent.h>
-#include <sofa/simulation/UpdateMappingVisitor.h>
-#include <sofa/simulation/UpdateBoundingBoxVisitor.h>
-#include <sofa/simulation/UpdateContextVisitor.h>
-#include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalIntegrationVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalIntegrationVisitor;
 
 #include <cstdlib>
-#include <cmath>
 
 
 

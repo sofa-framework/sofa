@@ -390,7 +390,7 @@ void DistanceGridForceField<DataTypes>::addKToMatrix(const sofa::core::Mechanica
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     unsigned int &offset = r.offset;
-    sofa::defaulttype::BaseMatrix* mat = r.matrix;
+    sofa::linearalgebra::BaseMatrix* mat = r.matrix;
 
     if (r)
     {

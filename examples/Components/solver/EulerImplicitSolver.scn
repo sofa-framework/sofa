@@ -20,7 +20,7 @@
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.49" method="small" />
 
         <Node>
-            <MeshObjLoader name="meshLoader_0" filename="mesh/truthcylinder1.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/truthcylinder1.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_0" color="red" dx="60" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>

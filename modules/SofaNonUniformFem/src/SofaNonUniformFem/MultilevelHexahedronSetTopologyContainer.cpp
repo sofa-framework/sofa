@@ -26,7 +26,7 @@
 
 #include <sofa/core/loader/VoxelLoader.h>
 
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 
 #include <set>
 

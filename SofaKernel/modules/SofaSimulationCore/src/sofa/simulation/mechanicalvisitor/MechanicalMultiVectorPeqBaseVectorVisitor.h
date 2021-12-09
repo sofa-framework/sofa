@@ -28,13 +28,13 @@ namespace sofa::simulation::mechanicalvisitor
 class SOFA_SIMULATION_CORE_API MechanicalMultiVectorPeqBaseVectorVisitor : public BaseMechanicalVisitor
 {
 public:
-    const sofa::defaulttype::BaseVector *src;
+    const sofa::linearalgebra::BaseVector *src;
     sofa::core::MultiVecDerivId dest;
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
     int offset;
 
     MechanicalMultiVectorPeqBaseVectorVisitor(
-        const core::ExecParams* params, sofa::core::MultiVecDerivId _dest, const defaulttype::BaseVector * _src,
+        const core::ExecParams* params, sofa::core::MultiVecDerivId _dest, const linearalgebra::BaseVector * _src,
         const sofa::core::behavior::MultiMatrixAccessor* _matrix = nullptr );
 
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;

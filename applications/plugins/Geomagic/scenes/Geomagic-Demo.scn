@@ -12,7 +12,7 @@
 
     <!-- Example of an instrument controlled with the Geomagic device -->
     <Node name="mapping">
-        <MeshObjLoader name="meshLoader_0" filename="mesh/dental_instrument.obj" handleSeams="1" />
+        <MeshOBJLoader name="meshLoader_0" filename="mesh/dental_instrument.obj" handleSeams="1" />
         <OglModel name="Visual" src="@meshLoader_0" color="red"  />
         <RigidMapping input="@.." output="@Visual" />
     </Node>

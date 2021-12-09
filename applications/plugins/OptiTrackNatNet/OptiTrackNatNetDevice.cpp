@@ -111,7 +111,7 @@ void OptiTrackNatNetDevice::init()
         OptiTrackNatNetClient* p = NULL;
         this->getContext()->get(p);
         if (!p)
-            serr << "OptiTrackNatNetClient is missing, add it in the root of the simulation." << sendl;
+            msg_error() << "OptiTrackNatNetClient is missing, add it in the root of the simulation.";
         else
             natNetClient.set(p);
     }
@@ -153,7 +153,7 @@ void OptiTrackNatNetDevice::processModelDef(const ModelDef* data)
             if (data->rigids[i].name && name == data->rigids[i].name)
             {
                 id = data->rigids[i].ID;
-                serr << "Found trackable " << name << " as ID " << id << sendl;
+                msg_error() << "Found trackable " << name << " as ID " << id;
                 trackableID.setValue(id);
                 break;
             }
@@ -165,13 +165,13 @@ void OptiTrackNatNetDevice::processModelDef(const ModelDef* data)
         {
             if (data->rigids[i].ID == id)
             {
-                sout << "Found trackable ID " << id << sendl;
+                msg_info() << "Found trackable ID " << id;
                 found = true;
                 break;
             }
         }
         if (!found)
-            serr << "Trackable ID " << id << " not found in input data" << sendl;
+            msg_error() << "Trackable ID " << id << " not found in input data";
     }
 }
 
@@ -200,9 +200,9 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
     if (tracked != this->tracked.getValue())
     {
         if (tracked)
-            sout << "Device is now tracked" << sendl;
+            msg_info() << "Device is now tracked";
         else
-            sout << "Device lost" << sendl;
+            msg_info() << "Device lost";
         this->tracked.setValue(tracked);
         if (controlNode.getValue())
         {
@@ -218,7 +218,7 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
     {
 
         Coord frame (pos, rot);
-//        sout << "Tracked frame: " << frame << sendl;
+//        msg_info() << "Tracked frame: " << frame;
         this->trackedFrame.setValue(frame);
 
         sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<sofa::type::vector<CPos> > > markers = this->markers;
@@ -255,11 +255,11 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
             std::ofstream outfile(meshFile.c_str());
             if( !outfile.is_open() )
             {
-                serr << "Error creating file " << meshFile << sendl;
+                msg_error() << "Error creating file " << meshFile;
             }
             else // write markers to mesh file
             {
-                serr << "Creating input markers mesh " << meshFile << sendl;
+                msg_error() << "Creating input markers mesh " << meshFile;
                 Real mSize = drawMarkersSize.getValue();
                 if (mSize <= 0)
                 {
@@ -374,11 +374,11 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
             std::ifstream infile(meshFile.c_str());
             if( !infile.is_open() )
             {
-                serr << "Error reading file " << meshFile << sendl;
+                msg_error() << "Error reading file " << meshFile;
             }
             else // read markers from mesh file
             {
-                serr << "Reading simulation markers mesh " << meshFile << sendl;
+                msg_error() << "Reading simulation markers mesh " << meshFile;
                 sofa::type::vector<CPos> vertices;
                 sofa::type::vector<sofa::type::fixed_array<int,3> > triangles;
                 std::string line, cmd;
@@ -464,15 +464,15 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
                     for (std::vector<int>::const_iterator it = gvec.begin(), itend = gvec.end(); it != itend; ++it)
                         center += vertices[*it];
                     center /= gvec.size();
-                    sout << "simMarker[" << simMarkers.size() << "] = " << center << " ( from " << gvec.size() << " vertices ) " << sendl;
+                    msg_info() << "simMarker[" << simMarkers.size() << "] = " << center << " ( from " << gvec.size() << " vertices ) ";
                     simMarkers.push_back(center);
                 }
                 this->simLocalMarkers.setValue(simMarkers);
-                sout << "Read " << simMarkers.size() << " markers from mesh file" << sendl;
+                msg_info() << "Read " << simMarkers.size() << " markers from mesh file";
                 sofa::type::vector<CPos> inMarkers = this->inLocalMarkers.getValue();
                 if (simMarkers.size() == inMarkers.size())
                 {
-                    sout << "Computing transformation between input markers and positions from mesh file..." << sendl;
+                    msg_info() << "Computing transformation between input markers and positions from mesh file...";
                     // Compute center of mass of both sets of markers
                     CPos inCenter, simCenter;
                     CRot inOrientation, simOrientation;
@@ -483,8 +483,8 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
                     for (unsigned int m=0; m<simMarkers.size(); ++m)
                         simCenter += simMarkers[m];
                     simCenter /= simMarkers.size();
-                    sout << " inCenter = " <<  inCenter << sendl;
-                    sout << "simCenter = " << simCenter << sendl;
+                    msg_info() << " inCenter = " <<  inCenter;
+                    msg_info() << "simCenter = " << simCenter;
                     if (simMarkers.size() > 2) // we need more than 2 markers to evaluate rotation
                     {
                         Real inSumDist = 0, simSumDist = 0;
@@ -493,7 +493,7 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
                         for (unsigned int m=0; m<simMarkers.size(); ++m)
                             simSumDist += (simMarkers[m]-simCenter).norm();
                         Real in2simScale = (inSumDist == 0) ? (Real)1 : simSumDist/inSumDist;
-                        sout << "in2simScale = " << in2simScale << sendl;
+                        msg_info() << "in2simScale = " << in2simScale;
                         // order the markers by the area of the biggest triangle they form with the center and another point
                         std::vector<std::pair<Real,CPos> > sortedMarkers;
                         sortedMarkers.resize(inMarkers.size());
@@ -531,7 +531,7 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
                         for (unsigned int m=0; m<simMarkers.size(); ++m)
                             simMarkers[m] = sortedMarkers[m].second;
                         Real bestSimArea = -sortedMarkers[0].first;
-                        //sout << "sim best frame: dirX = " << (simMarkers[0] - simCenter) << "    area = " << bestSimArea << sendl;
+                        //msg_info() << "sim best frame: dirX = " << (simMarkers[0] - simCenter) << "    area = " << bestSimArea;
 
                         sofa::type::Mat<3,3,Real> inFrame;
                         unsigned int inMX = 0;
@@ -544,7 +544,7 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
                                 inMY = m;
                         }
                         inFrame[1] = inMarkers[inMY] - inCenter;
-                        sout << " in best frame: dirX = " << inFrame[0] << "    dirY = " << inFrame[1] << "    area = " << bestInArea << sendl;
+                        msg_info() << " in best frame: dirX = " << inFrame[0] << "    dirY = " << inFrame[1] << "    area = " << bestInArea;
                         inFrame[2] = cross(inFrame[0],inFrame[1]);
                         inFrame[1] = cross(inFrame[2],inFrame[0]);
                         Real inXDist = inFrame[0].norm() * in2simScale;
@@ -573,7 +573,7 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
                                 simFrame[0] = simMarkers[simMX] - simCenter;
                                 simFrame[1] = simMarkers[simMY] - simCenter;
                                 simFrame[2] = cross(simFrame[0],simFrame[1]);
-                                sout << "Checking sim frame " << simMX << "-" << simMY <<" : dirX = " << simFrame[0] << "    dirY = " << inFrame[1] << "   area = " << area << sendl;
+                                msg_info() << "Checking sim frame " << simMX << "-" << simMY <<" : dirX = " << simFrame[0] << "    dirY = " << inFrame[1] << "   area = " << area;
                                 simFrame[1] = cross(simFrame[2],simFrame[0]);
                                 simFrame[0].normalize();
                                 simFrame[1].normalize();
@@ -594,7 +594,7 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
                                 }
                                 if (bestMatchError < 0 || err < bestMatchError)
                                 {
-                                    sout << "NEW BEST : residual = " << err << sendl;
+                                    msg_info() << "NEW BEST : residual = " << err;
                                     bestMatchError = err;
                                     bestSimFrame = simFrame;
                                 }
@@ -604,8 +604,8 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
                         {
                             inOrientation.fromMatrix(inFrame.transposed());
                             simOrientation.fromMatrix(bestSimFrame.transposed());
-                            sout << " in orientation = " <<  inOrientation << sendl;
-                            sout << "sim orientation = " << simOrientation << sendl;
+                            msg_info() << " in orientation = " <<  inOrientation;
+                            msg_info() << "sim orientation = " << simOrientation;
                             for (unsigned int m=0; m<simMarkers.size(); ++m)
                             {
                                 CPos xform = simOrientation.inverseRotate(simMarkers[m] - simCenter);
@@ -617,7 +617,7 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
                                     if (e < minE) { minE = e; minM2 = m2; }
                                 }
                                 if (minM2 >= 0)
-                                    sout << "  sim/in marker: " << m << " / " << minM2 << "    position = " << simMarkers[m] << " / " << inMarkers[minM2] << "    xform = " << xform << " / " << inMarkersXForm[minM2] << "    dist = " << minE << sendl;
+                                    msg_info() << "  sim/in marker: " << m << " / " << minM2 << "    position = " << simMarkers[m] << " / " << inMarkers[minM2] << "    xform = " << xform << " / " << inMarkersXForm[minM2] << "    dist = " << minE;
                             }
                         }
                     }
@@ -633,14 +633,14 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
             Coord frame2 = this->inLocalFrame.getValue();
             frame.getCenter() = frame.getCenter() + frame.getOrientation().rotate(frame2.getCenter());
             frame.getOrientation() = frame.getOrientation() * frame2.getOrientation();
-            //sout << "   inLocalFrame  " << frame2 << " -> " << frame << sendl;
+            //msg_info() << "   inLocalFrame  " << frame2 << " -> " << frame;
         }
         if (this->simLocalFrame.isSet())
         {
             Coord frame2 = this->simLocalFrame.getValue();
             frame.getOrientation() = frame.getOrientation() * frame2.getOrientation().inverse();
             frame.getCenter() = frame.getCenter() - frame.getOrientation().rotate(frame2.getCenter());
-            //sout << "  simLocalFrame  " << frame2 << " -> " << frame << sendl;
+            //msg_info() << "  simLocalFrame  " << frame2 << " -> " << frame;
         }
         if (this->inGlobalFrame.isSet())
         {
@@ -649,7 +649,7 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
             frame.getOrientation() = frame2.getOrientation().inverse() * frame.getOrientation();
             for (int m=0; m<rigid.nMarkers; ++m)
                 markers[m] = frame2.getOrientation().inverse().rotate(markers[m] - frame2.getCenter());
-            //sout << "   inGlobalFrame " << frame2 << " -> " << frame << sendl;
+            //msg_info() << "   inGlobalFrame " << frame2 << " -> " << frame;
         }
         if (this->simGlobalFrame.isSet())
         {
@@ -658,9 +658,9 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
             frame.getOrientation() = frame2.getOrientation() * frame.getOrientation();
             for (int m=0; m<rigid.nMarkers; ++m)
                 markers[m] = frame2.getOrientation().rotate(markers[m]) + frame2.getCenter();
-            //sout << "  simGlobalFrame " << frame2 << " -> " << frame << sendl;
+            //msg_info() << "  simGlobalFrame " << frame2 << " -> " << frame;
         }
-//        sout << "Output frame: " << frame << sendl;
+//        msg_info() << "Output frame: " << frame;
         this->frame.setValue(frame);
         pos = frame.getCenter();
         rot = frame.getOrientation();
@@ -725,8 +725,8 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
                     bool setClosedDist = !closedDistance.isSet();
                     if (smoothDist > -openDist) { openDist = -smoothDist; setOpenDist = true; }
                     if (smoothDist < -closedDist) { closedDist = -smoothDist; setClosedDist = true; }
-                    if (setOpenDist)  { openDistance.setValue(openDist); sout << "Measured distance <= " << -openDist << sendl; }
-                    if (setClosedDist)  { closedDistance.setValue(closedDist); sout << "Measured distance >= " << -closedDist << sendl; }
+                    if (setOpenDist)  { openDistance.setValue(openDist); msg_info() << "Measured distance <= " << -openDist; }
+                    if (setClosedDist)  { closedDistance.setValue(closedDist); msg_info() << "Measured distance >= " << -closedDist; }
                     // we take the 80% percentile values into consideration
                     Real meanDist = (openDist+closedDist)*(Real)(-0.5);
                     Real varDist = (closedDist-openDist)*(Real)(0.8*0.5);
@@ -741,7 +741,7 @@ void OptiTrackNatNetDevice::processFrame(const FrameData* data)
                     //bool isOpen = (smoothDist >= openDist);
                     //bool isClosed = (smoothDist <= closedDist);
                     if (!open.isSet() || isOpen != open.getValue() || !closed.isSet() || isClosed != closed.getValue())
-                        sout << "Dist " << std::fixed << dist << " smooth " << std::fixed << smoothDist << "  interval " << closedDist << " - " << openDist << (isOpen ? " OPEN" : "") << (isClosed ? " CLOSED" : "") << sendl;
+                        msg_info() << "Dist " << std::fixed << dist << " smooth " << std::fixed << smoothDist << "  interval " << closedDist << " - " << openDist << (isOpen ? " OPEN" : "") << (isClosed ? " CLOSED" : "");
                     if (!open.isSet() || isOpen != open.getValue())
                     {
                         open.setValue(isOpen);

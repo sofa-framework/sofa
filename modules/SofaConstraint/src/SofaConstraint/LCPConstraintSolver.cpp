@@ -257,7 +257,7 @@ LCPConstraintSolver::LCPConstraintSolver()
     constraintGroups.endEdit();
 
     f_graph.setWidget("graph");
-    _Wdiag = new sofa::component::linearsolver::SparseMatrix<double>();
+    _Wdiag = new sofa::linearalgebra::SparseMatrix<double>();
 
     tol.setRequired(true);
     maxIt.setRequired(true);

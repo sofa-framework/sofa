@@ -65,7 +65,7 @@
             <SphereCollisionModel radius="1.0" showImpostors="false" contactStiffness="100" />
         </Node>    
         <Node name="Visual" >   
-            <MeshObjLoader name="loader" filename="mesh/sphere.obj" />         
+            <MeshOBJLoader name="loader" filename="mesh/sphere.obj" />         
             <OglModel src="@loader" />
         </Node>   
     </Node>

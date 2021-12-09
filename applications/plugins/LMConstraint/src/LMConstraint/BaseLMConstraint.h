@@ -154,11 +154,11 @@ public:
 
 
     /// Get Right Hand Term
-    void getConstraintViolation(const sofa::core::ConstraintParams*, defaulttype::BaseVector * /*v*/ ) override;
+    void getConstraintViolation(const sofa::core::ConstraintParams*, linearalgebra::BaseVector * /*v*/ ) override;
 
     using BaseConstraintSet::getConstraintViolation;
     // Override used in LMConstraintSolver::buildSystem method
-    void getConstraintViolation(defaulttype::BaseVector *v, const core::ConstraintParams::ConstOrder );
+    void getConstraintViolation(linearalgebra::BaseVector *v, const core::ConstraintParams::ConstOrder );
 
 
     /// Get the internal structure: return all the constraint stored by their nature in a map

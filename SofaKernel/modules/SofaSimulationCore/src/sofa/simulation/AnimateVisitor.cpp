@@ -29,6 +29,9 @@
 #include <sofa/simulation/IntegrateBeginEvent.h>
 #include <sofa/simulation/IntegrateEndEvent.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/core/BehaviorModel.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
+#include <sofa/core/collision/Pipeline.h>
 
 #include <sofa/helper/AdvancedTimer.h>
 
@@ -172,24 +175,6 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
     // process InteractionForceFields
     for_each(this, node, node->interactionForceField, &AnimateVisitor::fwdInteractionForceField);
     return RESULT_CONTINUE;
-}
-
-void AnimateVisitor::processBehaviorModel(simulation::Node*, core::BehaviorModel* obj)
-{
-    sofa::helper::AdvancedTimer::stepBegin("BehaviorModel",obj);
-
-    obj->updatePosition(getDt());
-    sofa::helper::AdvancedTimer::stepEnd("BehaviorModel",obj);
-}
-
-void AnimateVisitor::processOdeSolver(simulation::Node* node, core::behavior::OdeSolver* solver)
-{
-    sofa::helper::AdvancedTimer::stepBegin("Mechanical",node);
-    /*    MechanicalIntegrationVisitor act(getDt());
-        node->execute(&act);*/
-
-    solver->solve(params, getDt());
-    sofa::helper::AdvancedTimer::stepEnd("Mechanical",node);
 }
 
 } // namespace sofa::simulation

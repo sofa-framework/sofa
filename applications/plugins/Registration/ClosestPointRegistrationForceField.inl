@@ -35,7 +35,7 @@
 #include <omp.h>
 #endif
 
-#include <SofaLoader/MeshObjLoader.h>
+#include <SofaLoader/MeshOBJLoader.h>
 #include <SofaGeneralEngine/NormalsFromPoints.h>
 #include <limits>
 #include <set>
@@ -106,7 +106,7 @@ void ClosestPointRegistrationForceField<DataTypes>::init()
 
     // Get source triangles
     if(!sourceTriangles.getValue().size()) {
-        sofa::component::loader::MeshObjLoader *meshobjLoader;
+        sofa::component::loader::MeshOBJLoader *meshobjLoader;
         this->getContext()->get( meshobjLoader, core::objectmodel::BaseContext::Local);
         if (meshobjLoader)
         {
@@ -367,7 +367,7 @@ void ClosestPointRegistrationForceField<DataTypes>::addKToMatrix(const core::Mec
     Real k = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue()) * this->ks.getValue();
     if(!k) return;
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
-    sofa::defaulttype::BaseMatrix *mat = mref.matrix;
+    sofa::linearalgebra::BaseMatrix *mat = mref.matrix;
     const int offset = (int)mref.offset;
     const int N = Coord::total_size;
     const int nb = this->closestPos.size();

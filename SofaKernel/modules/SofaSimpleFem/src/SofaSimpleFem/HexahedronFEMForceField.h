@@ -149,7 +149,7 @@ public:
     const Transformation& getElementRotation(const sofa::Index elemidx);
 
     void getNodeRotation(Transformation& R, sofa::Index nodeIdx) ;
-    void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0) override ;
+    void getRotations(linearalgebra::BaseMatrix * rotations,int offset = 0) override ;
 
     void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 

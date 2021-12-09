@@ -21,16 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/Quat.h>
+#include <sofa/config.h>
 
-SOFA_DEPRECATED_HEADER("v21.06 (PR #1790)", "v21.12", "sofa/type/Quat.h")
-
-#include <sofa/type/Vec.h>
-#include <sofa/type/Mat.h>
-
-namespace sofa::helper
-{
-    template <typename real>
-    using Quater = sofa::type::Quat<real>;
-
-} // namespace sofa::helper
+SOFA_DISABLED_HEADER("v21.06 (PR #1790)", "v21.12", "sofa/type/Quat.h")
