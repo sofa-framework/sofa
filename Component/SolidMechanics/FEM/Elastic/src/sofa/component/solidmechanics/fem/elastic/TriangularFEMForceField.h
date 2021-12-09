@@ -40,6 +40,19 @@ namespace sofa::helper
 
 namespace sofa::component::solidmechanics::fem::elastic
 {
+    template<class DataTypes>
+    class TriangularFEMForceField;
+
+
+    template<class DataTypes>
+    class TriangularFEMForceFieldInternalData
+    {
+    public:
+        typedef TriangularFEMForceField<DataTypes> Main;
+        void reinit(Main* /*m*/) {}
+    };
+
+
 
 /** corotational triangle from
 * @InProceedings{NPF05,
