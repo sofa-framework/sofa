@@ -87,6 +87,54 @@ struct Edge
     {
         return std::sqrt(squaredLength(n0, n1));
     }
+
+
+
+    template<typename Node,
+        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+        typename = std::enable_if_t<std::is_scalar_v<T>>
+    >
+        static constexpr auto pointBaryCoefs(const sofa::type::Vec<3, T>& point, const Node& n0, const Node& n1)
+    {
+        sofa::type::Vec<2, T> baryCoefs;
+        T dis = (n1 - n0).norm();
+
+        if (dis < 1e-6) // TODO: change this threshold to limit
+        {
+            baryCoefs[0] = 0.5;
+            baryCoefs[1] = 0.5;
+        }
+        else
+        {
+            baryCoefs[0] = (point - n1).norm() / dis;
+            baryCoefs[1] = (point - n0).norm() / dis;
+        }
+
+        return baryCoefs;
+    }
+
+
+    template<typename Node,
+        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+        typename = std::enable_if_t<std::is_scalar_v<T>>
+    >
+        static constexpr bool intersectionWithPlane(const Node& n0, const Node& n1, const sofa::type::Vec<3, T>& planP0, const sofa::type::Vec<3, T>& normal, sofa::type::Vec<3, T>& intersection)
+    {
+        //plane equation
+        sofa::type::Vec<3, T> planNorm = normal.normalized();
+        T d = planNorm * planP0;
+
+        //compute intersection between line and plane equation
+        T t = (d - planNorm * n0) / (planNorm * (n1 - n0));
+
+        if ((t <= 1) && (t >= 0))
+        {
+            intersection = edgeP1 + (edgeP2 - edgeP1) * t;
+            return true;
+        }
+        else
+            return false;
+    }
 };
 
 } // namespace sofa::geometry
