@@ -88,7 +88,9 @@ set(HEADER_FILES
     ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologySubsetData.h
     ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologySubsetData.inl
     ${SOFACOMPATSRC_ROOT}/SofaBaseTopology/TopologySubsetIndices.h
-
+    ${SOFACOMPATSRC_ROOT}/SofaDenseSolver/LULinearSolver.h
+    ${SOFACOMPATSRC_ROOT}/SofaDenseSolver/NewMatMatrix.h
+    ${SOFACOMPATSRC_ROOT}/SofaDenseSolver/NewMatVector.h
 )
 
 set(SOURCE_FILES
