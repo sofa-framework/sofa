@@ -842,10 +842,10 @@ template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementIndex, type::Vec<3, Real>& strain)
 {
     Eigen::Matrix<Real, 2, 2> e;
-    e(0,0) = stress[0];
-    e(0,1) = stress[2];
-    e(1,0) = stress[2];
-    e(1,1) = stress[1];
+    e(0,0) = strain[0];
+    e(0,1) = strain[2];
+    e(1,0) = strain[2];
+    e(1,1) = strain[1];
     
     //compute eigenvalues and eigenvectors
     Eigen::JacobiSVD svd(e, Eigen::ComputeThinU | Eigen::ComputeThinV);
