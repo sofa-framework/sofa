@@ -70,6 +70,26 @@ struct Triangle
             return static_cast<T>(0.25) * std::sqrt((a + b + c) * (-a + b + c) * (a - b + c) * (a + b - c));
         }
     }
+
+
+    template<typename Node,
+        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+        typename = std::enable_if_t<std::is_scalar_v<T>>
+    >
+        [[nodiscard]]
+    static constexpr auto normal(const Node& n0, const Node& n1, const Node& n2)
+    {
+        if constexpr (std::is_same_v < Node, sofa::type::Vec<3, T> >)
+        {
+            sofa::type::Vec<3, T> normal_t = (n1 - n0).cross(n2 - n0);
+            return normal_t;
+        }
+        else /*if constexpr (std::is_same_v< Node, sofa::type::Vec<2, T> >)*/
+        {
+            // shoelace formula
+            return sofa::type::Vec<3, T>();
+        }
+    }
 };
 
 } // namespace sofa::geometry
