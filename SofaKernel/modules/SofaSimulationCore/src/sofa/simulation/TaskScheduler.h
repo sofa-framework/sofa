@@ -25,7 +25,6 @@
 #include <sofa/config.h>
 
 #include <sofa/simulation/Task.h>
-#include <sofa/simulation/Locks.h>
 
 #include <thread>
 #include <mutex>

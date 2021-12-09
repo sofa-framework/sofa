@@ -21,7 +21,6 @@
 ******************************************************************************/
 #define SOFABASELINEARSOLVER_FULLMATRIX_DEFINITION
 #include <sofa/linearalgebra/FullVector.inl>
-#include <sofa/helper/rmath.h>
 
 namespace sofa::linearalgebra
 {

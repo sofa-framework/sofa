@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/behavior/BaseConstraint.h>
 #include <SofaConstraint/ConstraintStoreLambdaVisitor.h>
+#include <sofa/core/ConstraintParams.h>
 
 namespace sofa::simulation
 {

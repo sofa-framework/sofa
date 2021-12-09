@@ -27,6 +27,7 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/core/topology/TopologyData.inl>
+#include <sofa/core/ConstraintParams.h>
 
 namespace sofa::component::constraintset
 {

@@ -522,10 +522,15 @@ void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualP
     std::vector< sofa::type::Vector3 > vertices;
 
     unsigned minp = std::min(m1.getValue().size(),m2.getValue().size());
+    auto positionsM1 = sofa::helper::getReadAccessor(*this->mstate1->read(ConstVecCoordId::position()));
+    auto positionsM2 = sofa::helper::getReadAccessor(*this->mstate2->read(ConstVecCoordId::position()));
+    auto indicesM1 = sofa::helper::getReadAccessor(m1);
+    auto indicesM2 = sofa::helper::getReadAccessor(m2);
+
     for (unsigned i=0; i<minp; i++)
     {
-        vertices.push_back(DataTypes::getCPos(this->mstate1->read(ConstVecCoordId::position())->getValue()[m1.getValue()[i]]));
-        vertices.push_back(DataTypes::getCPos(this->mstate2->read(ConstVecCoordId::position())->getValue()[m1.getValue()[i]]));
+        vertices.push_back(DataTypes::getCPos(positionsM1[indicesM1[i]]));
+        vertices.push_back(DataTypes::getCPos(positionsM2[indicesM2[i]]));
     }
 
     vparams->drawTool()->drawPoints(vertices, 10, (activated) ? colorActive : colorNotActive);
