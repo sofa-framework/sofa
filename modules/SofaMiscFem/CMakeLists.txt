@@ -50,7 +50,7 @@ list(APPEND SOURCE_FILES
     ${SOFAMISCFEM_SRC}/PlasticMaterial.cpp
     ${SOFAMISCFEM_SRC}/TriangularAnisotropicFEMForceField.cpp
     ${SOFAMISCFEM_SRC}/TriangularFEMForceField.cpp
-	${SOFAMISCFEM_SRC}/QuadBendingFEMForceField.cpp
+    ${SOFAMISCFEM_SRC}/QuadBendingFEMForceField.cpp
     )
     
 # Dependencies
