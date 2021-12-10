@@ -312,11 +312,11 @@ const HexahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::Transformation& Hexahe
 }
 
 template<>
-void HexahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::getRotations(defaulttype::BaseMatrix * rotations,int offset)
+void HexahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::getRotations(linearalgebra::BaseMatrix * rotations,int offset)
 {
     auto nbdof = this->mstate->getSize();
 
-    if (component::linearsolver::RotationMatrix<float>* diag = dynamic_cast<component::linearsolver::RotationMatrix<float> *>(rotations))
+    if (auto* diag = dynamic_cast<linearalgebra::RotationMatrix<float> *>(rotations))
     {
         Transformation R;
         for (unsigned int e=0; e<nbdof; ++e)
@@ -331,7 +331,7 @@ void HexahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::getRotations(defaulttyp
             }
         }
     } 
-    else if (component::linearsolver::RotationMatrix<double>* diag = dynamic_cast<component::linearsolver::RotationMatrix<double> *>(rotations))
+    else if (auto* diag = dynamic_cast<linearalgebra::RotationMatrix<double> *>(rotations))
     {
         Transformation R;
         for (unsigned int e=0; e<nbdof; ++e)
