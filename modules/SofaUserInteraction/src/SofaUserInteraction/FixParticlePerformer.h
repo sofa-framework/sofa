@@ -65,11 +65,21 @@ public:
     void draw(const core::visual::VisualParams* vparams);
 
     using GetFixationPointsOnModelFunction = std::function<void(sofa::core::sptr<sofa::core::CollisionModel>, const Index, type::vector<Index>&, Coord&)>;
+    using MapTypeFunction = std::unordered_map<std::type_index, GetFixationPointsOnModelFunction >;
+
+    static MapTypeFunction* getMapInstance()
+    {
+        if (!s_mapSupportedModels)
+        {
+            s_mapSupportedModels = new MapTypeFunction();
+        }
+        return s_mapSupportedModels;
+    }
 
     template<typename TCollisionModel>
     static int RegisterSupportedModel(GetFixationPointsOnModelFunction func)
     {
-        s_mapSupportedModels[std::type_index(typeid(TCollisionModel))] = func;
+        (*getMapInstance())[std::type_index(typeid(TCollisionModel))] = func;
 
         return 1;
     }
@@ -105,8 +115,9 @@ protected:
     // but not on VS2017 and crash the compilation itself using clang5.
     // TODO: once VS2017 and clang5 support is dropped, just uncomment the inline static initialization 
     // and remove the initialization in the inl file (linux/mac) and cpp (windows)
-    //inline static std::unordered_map<std::type_index, GetFixationPointsOnModelFunction > s_mapSupportedModels;
-    static std::unordered_map<std::type_index, GetFixationPointsOnModelFunction > s_mapSupportedModels;
+    inline static MapTypeFunction* s_mapSupportedModels = nullptr;
+    //inline static MapTypeFunction s_mapSupportedModels;
+    //static std::unordered_map<std::type_index, GetFixationPointsOnModelFunction > s_mapSupportedModels;
 
 };
 
