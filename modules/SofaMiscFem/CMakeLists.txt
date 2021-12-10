@@ -37,8 +37,8 @@ list(APPEND HEADER_FILES
     ${SOFAMISCFEM_SRC}/TriangularAnisotropicFEMForceField.inl
     ${SOFAMISCFEM_SRC}/TriangularFEMForceField.h
     ${SOFAMISCFEM_SRC}/TriangularFEMForceField.inl
-	${SOFAMISCFEM_SRC}/QuadBendingFEMForceField.h
-	${SOFAMISCFEM_SRC}/QuadBendingFEMForceField.inl
+    ${SOFAMISCFEM_SRC}/QuadBendingFEMForceField.h
+    ${SOFAMISCFEM_SRC}/QuadBendingFEMForceField.inl
     )
 list(APPEND SOURCE_FILES
     ${SOFAMISCFEM_SRC}/FastTetrahedralCorotationalForceField.cpp
