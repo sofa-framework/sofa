@@ -5,6 +5,9 @@ project(Sofa.Helper)
 sofa_find_package(Eigen3 REQUIRED)
 # Json (header only) needed by AdvancedTimer
 sofa_find_package(Json 3.1.2 REQUIRED BOTH_SCOPES)
+# STB (header only)
+sofa_find_package(STB REQUIRED BOTH_SCOPES)
+
 
 set(SRC_ROOT "src/sofa/helper")
 
@@ -226,9 +229,11 @@ endif()
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
 # Json (header only) needed by AdvancedTimer
-if(JSON_FOUND)
-    target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${JSON_INCLUDE_DIR}>")
-endif()
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${JSON_INCLUDE_DIR}>")
+
+# STB (header only) for Image
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${STB_INCLUDE_DIR}>")
+
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
