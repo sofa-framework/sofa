@@ -22,7 +22,6 @@
 #include <sofa/helper/io/STBImage.h>
 
 #include <sofa/helper/Factory.inl>
-#include <sofa/helper/logging/ComponentInfo.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/system/FileRepository.h>
 
@@ -140,6 +139,7 @@ bool STBImage::save(std::string filename, int compression_level )
         ext = "png";
     }
 
+    stbi_flip_vertically_on_write((int)true);
     if (ext == "png" )
     {
         res = stbi_write_png(filename.c_str(), getWidth(), getHeight(), getChannelCount(), getPixels(), getWidth() * getChannelCount());

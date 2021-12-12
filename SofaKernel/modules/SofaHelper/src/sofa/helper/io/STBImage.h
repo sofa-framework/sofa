@@ -44,7 +44,7 @@ public:
 class SOFA_HELPER_API STBImage : public Image
 {
 public:
-    STBImage() = delete;
+    STBImage() = default;
 
     STBImage(const std::string &filename)
     {
