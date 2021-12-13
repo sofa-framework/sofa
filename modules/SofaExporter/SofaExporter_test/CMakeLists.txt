@@ -11,9 +11,9 @@ sofa_find_package(SofaImplicitOdeSolver REQUIRED)
 sofa_find_package(SofaBaseUtils REQUIRED)
 
 set(SOURCE_FILES
-    OBJExporter_test.cpp
-    STLExporter_test.cpp
     MeshExporter_test.cpp
+    STLExporter_test.cpp
+    VisualModelOBJExporter_test.cpp
     WriteState_test.cpp
     )
 

@@ -19,53 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/ExportOBJVisitor.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/visual/VisualModel.h>
+#pragma once
 
-namespace sofa
+#include <sofa/config.h>
+#include <SofaExporter/config.h>
+#include <SofaExporter/VisualModelOBJExporter.h>
+
+SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "SofaExporter/VisualModelOBJExporter.h")
+
+namespace sofa::component::exporter
 {
 
-namespace simulation
+    using OBJExporter 
+        SOFA_ATTRIBUTE_DEPRECATED("v21.12", "v22.06", "Use VisualModelOBJExporter instead.")
+    = sofa::component::exporter::VisualModelOBJExporter;
+
+} // sofa::component::exporter
+
+namespace sofa::component
 {
+    using OBJExporter
+        SOFA_ATTRIBUTE_DISABLED__SOFAEXPORTER_NAMESPACE_2106()
+        = DeprecatedAndRemoved;
 
+} // sofa::component
 
-ExportOBJVisitor::ExportOBJVisitor(const core::ExecParams* params, std::ostream* out)
-    : Visitor(params) , out(out), mtl(nullptr), ID(0), vindex(0), nindex(0), tindex(0), count(0)
+namespace sofa::component::misc
 {
-}
-
-ExportOBJVisitor::ExportOBJVisitor(const core::ExecParams* params, std::ostream* out,std::ostream* mtl)
-    : Visitor(params) , out(out), mtl(mtl), ID(0), vindex(0), nindex(0), tindex(0), count(0)
-{
-}
-
-ExportOBJVisitor::~ExportOBJVisitor()
-{
-}
-
-void ExportOBJVisitor::processVisualModel(Node* /*node*/, core::visual::VisualModel* vm)
-{
-    std::ostringstream oname;
-    oname << ++ID << "_" << vm->getName();
-
-    vm->exportOBJ(oname.str(),out,mtl,vindex,nindex,tindex, ++count);
-}
-
-simulation::Visitor::Result ExportOBJVisitor::processNodeTopDown(Node* node)
-{
-    //simulation::Node* node = static_cast<simulation::Node*>(n);
-    for_each(this, node, node->visualModel,              &ExportOBJVisitor::processVisualModel);
-    count = 0;
-    return RESULT_CONTINUE;
-}
-
-void ExportOBJVisitor::processNodeBottomUp(Node* /*node*/)
-{
-}
-
-} // namespace simulation
-
-} // namespace sofa
-
+    using OBJExporter
+        SOFA_ATTRIBUTE_DISABLED__SOFAEXPORTER_NAMESPACE_1712()
+        = DeprecatedAndRemoved;
+} // namespace sofa::component::misc

@@ -853,12 +853,12 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementInd
     const auto& S = svd.singularValues();
     const auto& V = svd.matrixV();
 
-    Coord v((Real)V(0, 0), (Real)V(1, 0), 0.0);
+    Coord v(V(0, 0), V(1, 0), 0.0);
     v.normalize();
 
     auto triangleInf = sofa::helper::getWriteOnlyAccessor(triangleInfo);
 
-    triangleInf[elementIndex].maxStrain = (Real)S(0);
+    triangleInf[elementIndex].maxStrain = S(0);
 
     triangleInf[elementIndex].principalStrainDirection = triangleInf[elementIndex].rotation * Coord(v[0], v[1], v[2]);
     triangleInf[elementIndex].principalStrainDirection *= triangleInf[elementIndex].maxStrain/100.0;
@@ -882,7 +882,6 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementInd
 
     const auto& S = svd.singularValues();
     const auto& V = svd.matrixV();
-
     //get the index of the biggest eigenvalue in absolute value
     unsigned int biggestIndex = 0;
     if (fabs(S(0)) > fabs(S(1)))
@@ -891,7 +890,7 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementInd
         biggestIndex = 1;
 
     //get the eigenvectors corresponding to the biggest eigenvalue
-    Coord direction((Real)V(0,biggestIndex), (Real)V(1,biggestIndex), 0.0);    
+    Coord direction(V(0,biggestIndex), V(1,biggestIndex), 0.0);    
     direction.normalize();
 
     auto triangleInf = sofa::helper::getWriteOnlyAccessor(triangleInfo);
@@ -904,7 +903,7 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementInd
             pow(0.5 * (pow((double)fabs(S(0)), n) +  pow((double)fabs(S(1)), n) + pow((double)fabs(S(0) - S(1)),n)), 1.0/ n) - this->criteriaValue.getValue();
 
     //max stress is the highest eigenvalue
-    triangleInf[elementIndex].maxStress = fabs((Real)S(biggestIndex));
+    triangleInf[elementIndex].maxStress = fabs(S(biggestIndex));
 
     //the principal stress direction is the eigenvector corresponding to the highest eigenvalue
     Coord principalStressDir = triangleInf[elementIndex].rotation * direction;//need to rotate to be in global frame instead of local

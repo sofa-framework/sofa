@@ -560,8 +560,8 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
     SparseGridTopology::SPtr finestSparseGrid = this->_sparseGrid->_virtualFinerLevels[ this->_sparseGrid->getNbVirtualFinerLevels()-this->d_nbVirtualFinerLevels.getValue() ];
 
-    msg_warning()<<"finestChildren.size() : "<<finestChildren.size()<<msgendl;
-    msg_warning()<<"finestSparseGrid->getNbHexahedra() : "<<finestSparseGrid->getNbHexahedra()<<msgendl;
+    dmsg_info()<<"finestChildren.size() : "<<finestChildren.size()<<msgendl;
+    dmsg_info()<<"finestSparseGrid->getNbHexahedra() : "<<finestSparseGrid->getNbHexahedra()<<msgendl;
 
     std::size_t sizeass=2;
     for(int i=0; i<this->d_nbVirtualFinerLevels.getValue(); ++i)
@@ -571,7 +571,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     EigenMatrix assembledStiffness = EigenMatrix::Zero(sizeass * 3, sizeass * 3);
     EigenMatrix assembledMass = EigenMatrix::Zero(sizeass * 3, sizeass * 3);
     
-    msg_warning()<<assembledStiffness.rows()<<"x"<<assembledStiffness.cols()<<msgendl;
+    dmsg_info()<<assembledStiffness.rows()<<"x"<<assembledStiffness.cols()<<msgendl;
 
     type::vector<ElementStiffness> finestStiffnesses(finestChildren.size());
     type::vector<ElementMass> finestMasses(finestChildren.size());
@@ -775,7 +775,8 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
                 WBmeca(i,j) = WB(i,j);
         }
     }
-    msg_warning()<<"WBmeca brut : "<<WBmeca<<msgendl;
+
+    dmsg_info()<<"WBmeca brut : "<<WBmeca<<msgendl;
 
     // normalize the coefficient to obtain sum(coefs)==1
     for(Size i=0; i<sizeass*3; ++i)
@@ -790,7 +791,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
             WBmeca(i,j) = WBmeca(i,j) / sum ;
         }
     }
-    msg_warning()<<"WBmeca normalized : "<<WBmeca<<msgendl;
+    dmsg_info()<<"WBmeca normalized : "<<WBmeca<<msgendl;
     EigenMatrix Kc, Mc; // coarse stiffness
     Kc = WBmeca.transpose() * assembledStiffness * WBmeca;
     Mc = WBmeca.transpose() * assembledMass * WBmeca;

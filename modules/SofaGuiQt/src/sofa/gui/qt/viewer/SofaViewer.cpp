@@ -97,11 +97,6 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
         m_bShowAxis = !m_bShowAxis;
         break;
     }
-    case Qt::Key_S:
-    {
-        m_backend->screenshot(m_backend->screenshotName());
-        break;
-    }
     case Qt::Key_V:
         // --- save video
     {

@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,47 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_EXPORTOBJACTION_H
-#define SOFA_SIMULATION_TREE_EXPORTOBJACTION_H
+#define SOFA_COMPONENT_ENGINE_FillReducingOrdering_CPP
+#include <SofaSparseSolver/FillReducingOrdering.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
 
-
-#include <sofa/simulation/Visitor.h>
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/simulation/fwd.h>
-#include <sofa/defaulttype/TopologyTypes.h>
-
-namespace sofa
+namespace sofa::component::engine
 {
 
-namespace simulation
-{
+using namespace sofa::defaulttype;
 
-class SOFA_SIMULATION_CORE_API ExportOBJVisitor : public Visitor
-{
-public:
-    std::ostream* out;
-    std::ostream* mtl;
+int FillReducingOrderingClass = core::RegisterObject("Reorder the degrees of freedom to reduce fill-in")
+    .add< FillReducingOrdering<Vec3Types> >()
+    ;
 
-    ExportOBJVisitor(const core::ExecParams* params, std::ostream* out);
-    ExportOBJVisitor(const core::ExecParams* params, std::ostream* out, std::ostream* mtl);
-    ~ExportOBJVisitor() override;
+template class SOFA_SOFASPARSESOLVER_API FillReducingOrdering<Vec3Types>;
 
-    virtual void processVisualModel(Node* node, core::visual::VisualModel* vm);
-
-    Result processNodeTopDown(Node* node) override;
-    void processNodeBottomUp(Node* node) override;
-    const char* getClassName() const override { return "ExportOBJVisitor"; }
-
-protected:
-    int ID;
-    sofa::Index vindex;
-    sofa::Index nindex;
-    sofa::Index tindex;
-    int count;
-};
-
-} // namespace simulation
-
-} // namespace sofa
-
-#endif // SOFA_SIMULATION_TREE_EXPORTOBJACTION_H
+} //namespace sofa::component::engine
