@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/config.h>
+#include <SofaExporter/config.h>
 #include <SofaExporter/VisualModelOBJExporter.h>
 
 SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "SofaExporter/VisualModelOBJExporter.h")
@@ -29,6 +30,23 @@ SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "SofaExporter/VisualModelOBJExporter.
 namespace sofa::component::exporter
 {
 
-    using OBJExporter = sofa::component::exporter::VisualModelOBJExporter;
+    using OBJExporter 
+        SOFA_ATTRIBUTE_DEPRECATED("v21.12", "v22.06", "Use VisualModelOBJExporter instead.")
+    = sofa::component::exporter::VisualModelOBJExporter;
 
 } // sofa::component::exporter
+
+namespace sofa::component
+{
+    using OBJExporter
+        SOFA_ATTRIBUTE_DISABLED__SOFAEXPORTER_NAMESPACE_2106()
+        = DeprecatedAndRemoved;
+
+} // sofa::component
+
+namespace sofa::component::misc
+{
+    using OBJExporter
+        SOFA_ATTRIBUTE_DISABLED__SOFAEXPORTER_NAMESPACE_1712()
+        = DeprecatedAndRemoved;
+} // namespace sofa::component::misc

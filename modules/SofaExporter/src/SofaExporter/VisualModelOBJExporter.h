@@ -55,21 +55,7 @@ protected:
 // Import the object in the exporter namespace to avoid having all the object straight in component.
 namespace exporter
 {
-    using OBJExporter
-        SOFA_ATTRIBUTE_DEPRECATED("v21.12", "v22.06", "Use VisualModelOBJExporter instead.")
-        = _visualmodelobjexporter_::VisualModelOBJExporter;
-
     using VisualModelOBJExporter = _visualmodelobjexporter_::VisualModelOBJExporter;
 } // namespace exporter
-
-// Import the object in the "old" namespaces to allow smooth update of code base.
-using OBJExporter
-    SOFA_ATTRIBUTE_DISABLED__SOFAEXPORTER_NAMESPACE_2106()
-    = DeprecatedAndRemoved;
-namespace misc {
-    using OBJExporter
-        SOFA_ATTRIBUTE_DISABLED__SOFAEXPORTER_NAMESPACE_1712()
-        = DeprecatedAndRemoved;
-} // namespace misc
 
 } // namespace sofa::component
