@@ -29,8 +29,7 @@
 
 #include <sofa/core/topology/TopologyData.inl>
 
-#include <newmat/newmat.h>
-#include <newmat/newmatap.h>
+#include <Eigen/SVD>
 #include <limits>
 
 namespace sofa::component::forcefield
@@ -840,35 +839,29 @@ void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3,Real> &stress
 // ---	Compute direction of maximum strain (strain = JtD = BD)
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementIndex, type::Vec<3,Real> &strain )
+void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementIndex, type::Vec<3, Real>& strain)
 {
-    NEWMAT::SymmetricMatrix e(2);
-    e = 0.0;
+    Eigen::Matrix<Real, 2, 2> e;
+    e(0,0) = strain[0];
+    e(0,1) = strain[2];
+    e(1,0) = strain[2];
+    e(1,1) = strain[1];
+    
+    //compute eigenvalues and eigenvectors
+    Eigen::JacobiSVD svd(e, Eigen::ComputeThinU | Eigen::ComputeThinV);
 
-    NEWMAT::DiagonalMatrix D(2);
-    D = 0.0;
+    const auto& S = svd.singularValues();
+    const auto& V = svd.matrixV();
 
-    NEWMAT::Matrix V(2,2);
-    V = 0.0;
-
-    e(1,1) = strain[0];
-    e(1,2) = strain[2];
-    e(2,1) = strain[2];
-    e(2,2) = strain[1];
-
-    NEWMAT::Jacobi(e, D, V);
-
-    Coord v((Real)V(1,1), (Real)V(2,1), 0.0);
+    Coord v(V(0, 0), V(1, 0), 0.0);
     v.normalize();
 
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
+    auto triangleInf = sofa::helper::getWriteOnlyAccessor(triangleInfo);
 
-    triangleInf[elementIndex].maxStrain = (Real)D(1,1);
+    triangleInf[elementIndex].maxStrain = S(0);
 
     triangleInf[elementIndex].principalStrainDirection = triangleInf[elementIndex].rotation * Coord(v[0], v[1], v[2]);
     triangleInf[elementIndex].principalStrainDirection *= triangleInf[elementIndex].maxStrain/100.0;
-
-    triangleInfo.endEdit();
 }
 
 // --------------------------------------------------------------------------------------
@@ -877,47 +870,40 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementInd
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementIndex, type::Vec<3,Real> &stress)
 {
-    NEWMAT::SymmetricMatrix e(2);
-    e = 0.0;
-
-    NEWMAT::DiagonalMatrix D(2);
-    D = 0.0;
-
-    NEWMAT::Matrix V(2,2);
-    V = 0.0;
-
+    Eigen::Matrix<Real, 2, 2> e;
     //voigt notation to symmetric matrix
-    e(1,1) = stress[0];
-    e(1,2) = stress[2];
-    e(2,1) = stress[2];
-    e(2,2) = stress[1];
+    e(0,0) = stress[0];
+    e(0,1) = stress[2];
+    e(1,0) = stress[2];
+    e(1,1) = stress[1];
 
     //compute eigenvalues and eigenvectors
-    NEWMAT::Jacobi(e, D, V);
+    Eigen::JacobiSVD svd(e, Eigen::ComputeThinU | Eigen::ComputeThinV);
 
+    const auto& S = svd.singularValues();
+    const auto& V = svd.matrixV();
     //get the index of the biggest eigenvalue in absolute value
     unsigned int biggestIndex = 0;
-    if (fabs(D(1,1)) > fabs(D(2,2)))
-        biggestIndex = 1;
+    if (fabs(S(0)) > fabs(S(1)))
+        biggestIndex = 0;
     else
-        biggestIndex = 2;
+        biggestIndex = 1;
 
     //get the eigenvectors corresponding to the biggest eigenvalue
-    //note : according to newmat doc => The elements of D are sorted in ascending order, The eigenvectors are returned as the columns of V
-    Coord direction((Real)V(1,biggestIndex), (Real)V(2,biggestIndex), 0.0);
+    Coord direction(V(0,biggestIndex), V(1,biggestIndex), 0.0);    
     direction.normalize();
 
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
+    auto triangleInf = sofa::helper::getWriteOnlyAccessor(triangleInfo);
 
     //Hosford yield criterion
     //for plane stress : 1/2 * ( |S_1|^n + |S_2|^n) + 1/2 * |S_1 - S_2|^n = S_y^n
     //with S_i the principal stresses, n is a material-dependent exponent and S_y is the yield stress in uniaxial tension/compression
     double n = this->hosfordExponant.getValue();
     triangleInf[elementIndex].differenceToCriteria = (Real)
-            pow(0.5 * (pow((double)fabs(D(1,1)), n) +  pow((double)fabs(D(2,2)), n) + pow((double)fabs(D(1,1) - D(2,2)),n)), 1.0/ n) - this->criteriaValue.getValue();
+            pow(0.5 * (pow((double)fabs(S(0)), n) +  pow((double)fabs(S(1)), n) + pow((double)fabs(S(0) - S(1)),n)), 1.0/ n) - this->criteriaValue.getValue();
 
     //max stress is the highest eigenvalue
-    triangleInf[elementIndex].maxStress = fabs((Real)D(biggestIndex,biggestIndex));
+    triangleInf[elementIndex].maxStress = fabs(S(biggestIndex));
 
     //the principal stress direction is the eigenvector corresponding to the highest eigenvalue
     Coord principalStressDir = triangleInf[elementIndex].rotation * direction;//need to rotate to be in global frame instead of local
@@ -949,8 +935,6 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementInd
         averageVector2 /=  triangleInf[elementIndex].lastNStressDirection.size();
 
     triangleInf[elementIndex].principalStressDirection = averageVector2;
-
-    triangleInfo.endEdit();
 }
 
 // --------------------------------------------------------------------------------------

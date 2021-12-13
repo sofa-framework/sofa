@@ -23,7 +23,6 @@
 #define SOFA_COMPONENT_LINEARSOLVER_PPRECOMPUTEDWARPPRECONDITIONER_INL
 
 #include "PrecomputedWarpPreconditioner.h"
-//#include <SofaDenseSolver/NewMatMatrix.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <iostream>
 #include <sofa/helper/system/thread/CTime.h>
