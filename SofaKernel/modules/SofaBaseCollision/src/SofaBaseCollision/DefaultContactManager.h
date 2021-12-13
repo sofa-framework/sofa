@@ -75,7 +75,7 @@ public :
 
             if(it != renamingResponseMethod.end())
             {
-                msg_warning()<< "Options for data \"response\" changed since #2522: please use "<< it->second << " instead of " << it->first;
+                msg_warning("DefaultContactManager")<< "Options for data \"response\" changed since #2522: please use "<< it->second << " instead of " << it->first;
                 helper::WriteAccessor< Data<sofa::helper::OptionsGroup>  > responseAccessor = obj->response;
                 responseAccessor->setSelectedItem(it->second);
             }
