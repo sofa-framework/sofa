@@ -19,12 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "OBJExporter.h"
+#include <SofaExporter/VisualModelOBJExporter.h>
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/simulation/ExportOBJVisitor.h>
-using sofa::simulation::ExportOBJVisitor ;
+#include <sofa/simulation/ExportVisualModelOBJVisitor.h>
+using sofa::simulation::ExportVisualModelOBJVisitor ;
 
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 using sofa::core::objectmodel::KeypressedEvent ;
@@ -35,27 +35,28 @@ namespace sofa
 namespace component
 {
 
-namespace _objexporter_
+namespace _visualmodelobjexporter_
 {
 
-int OBJExporterClass = core::RegisterObject("Export the scene under the Wavefront OBJ format."
+int VisualModelOBJExporterClass = core::RegisterObject("Export the scene under the Wavefront OBJ format."
                                             "When several frames are exported the file name have the following pattern: outfile000.obj outfile001.obj.")
-        .add< OBJExporter >()
-        .addAlias("ObjExporter");
+        .add< VisualModelOBJExporter >()
+        .addAlias("ObjExporter")
+        .addAlias("OBJExporter");
 
 
-OBJExporter::~OBJExporter()
+VisualModelOBJExporter::~VisualModelOBJExporter()
 {
 }
 
 
-bool OBJExporter::write()
+bool VisualModelOBJExporter::write()
 {
     return writeOBJ() ;
 }
 
 
-bool OBJExporter::writeOBJ()
+bool VisualModelOBJExporter::writeOBJ()
 {
     std::string basename = getOrCreateTargetPath(d_filename.getValue(),
                                                  d_exportEveryNbSteps.getValue()) ;
@@ -84,7 +85,7 @@ bool OBJExporter::writeOBJ()
         return false ;
     }
 
-    ExportOBJVisitor exportOBJ(core::execparams::defaultInstance(),&outfile, &mtlfile);
+    ExportVisualModelOBJVisitor exportOBJ(core::execparams::defaultInstance(),&outfile, &mtlfile);
     getContext()->executeVisitor(&exportOBJ);
 
     outfile.close();
@@ -95,7 +96,7 @@ bool OBJExporter::writeOBJ()
 }
 
 
-void OBJExporter::handleEvent(Event *event)
+void VisualModelOBJExporter::handleEvent(Event *event)
 {
     BaseSimulationExporter::handleEvent(event) ;
 }

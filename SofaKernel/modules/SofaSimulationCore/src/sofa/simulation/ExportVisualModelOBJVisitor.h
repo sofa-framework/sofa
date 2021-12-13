@@ -19,10 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/ExportOBJVisitor.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/core/objectmodel/BaseContext.h>
+#pragma once
+
+#include <sofa/simulation/Visitor.h>
 #include <sofa/core/visual/VisualModel.h>
+#include <sofa/simulation/fwd.h>
+#include <sofa/defaulttype/TopologyTypes.h>
 
 namespace sofa
 {
@@ -30,40 +32,33 @@ namespace sofa
 namespace simulation
 {
 
-
-ExportOBJVisitor::ExportOBJVisitor(const core::ExecParams* params, std::ostream* out)
-    : Visitor(params) , out(out), mtl(nullptr), ID(0), vindex(0), nindex(0), tindex(0), count(0)
+class SOFA_SIMULATION_CORE_API ExportVisualModelOBJVisitor : public Visitor
 {
-}
+public:
+    std::ostream* out;
+    std::ostream* mtl;
 
-ExportOBJVisitor::ExportOBJVisitor(const core::ExecParams* params, std::ostream* out,std::ostream* mtl)
-    : Visitor(params) , out(out), mtl(mtl), ID(0), vindex(0), nindex(0), tindex(0), count(0)
-{
-}
+    ExportVisualModelOBJVisitor(const core::ExecParams* params, std::ostream* out);
+    ExportVisualModelOBJVisitor(const core::ExecParams* params, std::ostream* out, std::ostream* mtl);
+    ~ExportVisualModelOBJVisitor() override;
 
-ExportOBJVisitor::~ExportOBJVisitor()
-{
-}
+    virtual void processVisualModel(Node* node, core::visual::VisualModel* vm);
 
-void ExportOBJVisitor::processVisualModel(Node* /*node*/, core::visual::VisualModel* vm)
-{
-    std::ostringstream oname;
-    oname << ++ID << "_" << vm->getName();
+    Result processNodeTopDown(Node* node) override;
+    void processNodeBottomUp(Node* node) override;
+    const char* getClassName() const override { return "ExportVisualModelOBJVisitor"; }
 
-    vm->exportOBJ(oname.str(),out,mtl,vindex,nindex,tindex, ++count);
-}
+protected:
+    int ID;
+    sofa::Index vindex;
+    sofa::Index nindex;
+    sofa::Index tindex;
+    int count;
+};
 
-simulation::Visitor::Result ExportOBJVisitor::processNodeTopDown(Node* node)
-{
-    //simulation::Node* node = static_cast<simulation::Node*>(n);
-    for_each(this, node, node->visualModel,              &ExportOBJVisitor::processVisualModel);
-    count = 0;
-    return RESULT_CONTINUE;
-}
-
-void ExportOBJVisitor::processNodeBottomUp(Node* /*node*/)
-{
-}
+using ExportOBJVisitor
+    SOFA_ATTRIBUTE_DEPRECATED("v21.12", "v22.06", "Use ExportVisualModelOBJVisitor instead.")
+    = ExportVisualModelOBJVisitor;
 
 } // namespace simulation
 

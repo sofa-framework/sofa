@@ -19,47 +19,43 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_EXPORTOBJACTION_H
-#define SOFA_SIMULATION_TREE_EXPORTOBJACTION_H
+#pragma once
 
+#include <SofaExporter/config.h>
 
-#include <sofa/simulation/Visitor.h>
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/simulation/fwd.h>
-#include <sofa/defaulttype/TopologyTypes.h>
+#include <sofa/simulation/BaseSimulationExporter.h>
 
-namespace sofa
+#include <fstream>
+
+namespace sofa::component
+{
+namespace _visualmodelobjexporter_
 {
 
-namespace simulation
-{
+using sofa::simulation::BaseSimulationExporter;
+using sofa::core::objectmodel::Event;
+using sofa::core::objectmodel::Base;
 
-class SOFA_SIMULATION_CORE_API ExportOBJVisitor : public Visitor
+class SOFA_SOFAEXPORTER_API VisualModelOBJExporter : public BaseSimulationExporter
 {
 public:
-    std::ostream* out;
-    std::ostream* mtl;
+    SOFA_CLASS(VisualModelOBJExporter, BaseSimulationExporter);
 
-    ExportOBJVisitor(const core::ExecParams* params, std::ostream* out);
-    ExportOBJVisitor(const core::ExecParams* params, std::ostream* out, std::ostream* mtl);
-    ~ExportOBJVisitor() override;
+    bool write() override;
+    bool writeOBJ();
 
-    virtual void processVisualModel(Node* node, core::visual::VisualModel* vm);
-
-    Result processNodeTopDown(Node* node) override;
-    void processNodeBottomUp(Node* node) override;
-    const char* getClassName() const override { return "ExportOBJVisitor"; }
+    void handleEvent(Event *event) override;
 
 protected:
-    int ID;
-    sofa::Index vindex;
-    sofa::Index nindex;
-    sofa::Index tindex;
-    int count;
+    ~VisualModelOBJExporter() override;
 };
 
-} // namespace simulation
+} // namespace _visualmodelobjexporter_
 
-} // namespace sofa
+// Import the object in the exporter namespace to avoid having all the object straight in component.
+namespace exporter
+{
+    using VisualModelOBJExporter = _visualmodelobjexporter_::VisualModelOBJExporter;
+} // namespace exporter
 
-#endif // SOFA_SIMULATION_TREE_EXPORTOBJACTION_H
+} // namespace sofa::component

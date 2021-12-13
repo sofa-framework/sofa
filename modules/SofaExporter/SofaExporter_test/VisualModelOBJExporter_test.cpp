@@ -25,8 +25,8 @@ using std::vector;
 #include <string>
 using std::string;
 
-#include <sofa/testing/BaseTest.h>
-using sofa::testing::BaseTest;
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
@@ -50,7 +50,7 @@ namespace{
 std::string tempdir = std::filesystem::temp_directory_path().string() ;
 
 
-class OBJExporter_test : public BaseTest {
+class VisualModelOBJExporter_test : public BaseSimulationTest {
 public:
     /// remove the file created...
     std::vector<std::string> dataPath ;
@@ -78,7 +78,7 @@ public:
                 "<?xml version='1.0'?> \n"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       \n"
                 "   <DefaultAnimationLoop/>                                        \n"
-                "   <OBJExporter name='exporter1' printLog='true' filename='"<< filename << "' exportAtBegin='true' /> \n"
+                "   <VisualModelOBJExporter name='exporter1' printLog='true' filename='"<< filename << "' exportAtBegin='true' /> \n"
                 "</Node>                                                           \n" ;
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
@@ -106,7 +106,7 @@ public:
                 "<?xml version='1.0'?> \n"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       \n"
                 "   <DefaultAnimationLoop/>                                        \n"
-                "   <OBJExporter name='exporterA' printLog='true' filename='"<< filename << "' exportEveryNumberOfSteps='5' /> \n"
+                "   <VisualModelOBJExporter name='exporterA' printLog='true' filename='"<< filename << "' exportEveryNumberOfSteps='5' /> \n"
                 "</Node>                                                           \n" ;
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
@@ -129,35 +129,35 @@ public:
 };
 
 /// run the tests
-TEST_F( OBJExporter_test, checkBasicBehavior) {
+TEST_F( VisualModelOBJExporter_test, checkBasicBehavior) {
     ASSERT_NO_THROW( this->checkBasicBehavior("outfile", {"outfile.obj","outfile.mtl"}) ) ;
 }
 
-TEST_F( OBJExporter_test, checkBasicBehaviorNoFileName) {
+TEST_F( VisualModelOBJExporter_test, checkBasicBehaviorNoFileName) {
     ASSERT_NO_THROW( this->checkBasicBehavior("", {"exporter1.obj","exporter1.mtl"}) ) ;
 }
 
-TEST_F( OBJExporter_test, checkBasicBehaviorInSubDirName) {
+TEST_F( VisualModelOBJExporter_test, checkBasicBehaviorInSubDirName) {
     ASSERT_NO_THROW( this->checkBasicBehavior(tempdir+"/outfile", {tempdir+"/outfile.obj",tempdir+"/outfile.mtl"}) ) ;
 }
 
-TEST_F( OBJExporter_test, checkBasicBehaviorInInvalidSubDirName) {
+TEST_F( VisualModelOBJExporter_test, checkBasicBehaviorInInvalidSubDirName) {
     ASSERT_NO_THROW( this->checkBasicBehavior(tempdir+"/invalid/outfile", {tempdir+"/invalid"}) ) ;
 }
 
-TEST_F( OBJExporter_test, checkBasicBehaviorInInvalidLongSubDirName) {
+TEST_F( VisualModelOBJExporter_test, checkBasicBehaviorInInvalidLongSubDirName) {
     ASSERT_NO_THROW( this->checkBasicBehavior(tempdir+"/invalid1/invalid2/invalid3/outfile", {tempdir+"/invalid1"})) ;
 }
 
-TEST_F( OBJExporter_test, checkBasicBehaviorInInvalidRelativeDirName) {
+TEST_F( VisualModelOBJExporter_test, checkBasicBehaviorInInvalidRelativeDirName) {
    ASSERT_NO_THROW( this->checkBasicBehavior("./invalidPath/outfile", {"./invalidPath"}) ) ;
 }
 
-TEST_F( OBJExporter_test, checkBasicBehaviorInValidDir) {
+TEST_F( VisualModelOBJExporter_test, checkBasicBehaviorInValidDir) {
    this->checkBasicBehavior(tempdir, {tempdir+"/exporter1.obj", tempdir+"/exporter1.mtl"})  ;
 }
 
-TEST_F( OBJExporter_test, checkSimulationWriteEachNbStep) {
+TEST_F( VisualModelOBJExporter_test, checkSimulationWriteEachNbStep) {
    this->checkSimulationWriteEachNbStep(tempdir, {tempdir+"/exporterA00001.obj", tempdir+"/exporterA00001.mtl",
                                                  tempdir+"/exporterA00002.obj", tempdir+"/exporterA00002.mtl",
                                                  tempdir+"/exporterA00003.obj", tempdir+"/exporterA00003.mtl",

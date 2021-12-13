@@ -24,8 +24,8 @@
 #include <iterator>
 #include <algorithm>
 
-#include <sofa/testing/BaseTest.h>
-using sofa::testing::BaseTest;
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 
@@ -45,7 +45,7 @@ namespace sofa {
 
 
     template <typename _DataTypes>
-    struct WriteState_test : public BaseTest
+    struct WriteState_test : public BaseSimulationTest
     {
         typedef _DataTypes DataTypes;
         typedef typename DataTypes::CPos CPos;

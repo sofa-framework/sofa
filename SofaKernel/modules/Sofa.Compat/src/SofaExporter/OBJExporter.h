@@ -19,54 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef OBJEXPORTER_H_
-#define OBJEXPORTER_H_
+#pragma once
+
+#include <sofa/config.h>
 #include <SofaExporter/config.h>
+#include <SofaExporter/VisualModelOBJExporter.h>
 
-#include <sofa/simulation/BaseSimulationExporter.h>
+SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "SofaExporter/VisualModelOBJExporter.h")
 
-#include <fstream>
+namespace sofa::component::exporter
+{
+
+    using OBJExporter 
+        SOFA_ATTRIBUTE_DEPRECATED("v21.12", "v22.06", "Use VisualModelOBJExporter instead.")
+    = sofa::component::exporter::VisualModelOBJExporter;
+
+} // sofa::component::exporter
 
 namespace sofa::component
 {
-namespace _objexporter_
-{
-
-using sofa::simulation::BaseSimulationExporter;
-using sofa::core::objectmodel::Event;
-using sofa::core::objectmodel::Base;
-
-class SOFA_SOFAEXPORTER_API OBJExporter : public BaseSimulationExporter
-{
-public:
-    SOFA_CLASS(OBJExporter, BaseSimulationExporter);
-
-    bool write() override;
-    bool writeOBJ();
-
-    void handleEvent(Event *event) override;
-
-protected:
-    ~OBJExporter() override;
-};
-
-} // namespace _objexporter_
-
-// Import the object in the exporter namespace to avoid having all the object straight in component.
-namespace exporter {
-    using OBJExporter = _objexporter_::OBJExporter;
-} // namespace exporter
-
-// Import the object in the "old" namespaces to allow smooth update of code base.
-using OBJExporter
-    SOFA_ATTRIBUTE_DEPRECATED__SOFAEXPORTER_NAMESPACE_2106()
-    = _objexporter_::OBJExporter;
-namespace misc {
     using OBJExporter
-        SOFA_ATTRIBUTE_DEPRECATED__SOFAEXPORTER_NAMESPACE_1712()
-        = _objexporter_::OBJExporter;
-} // namespace misc
+        SOFA_ATTRIBUTE_DISABLED__SOFAEXPORTER_NAMESPACE_2106()
+        = DeprecatedAndRemoved;
 
-} // namespace sofa::component
+} // sofa::component
 
-#endif /* OBJEXPORTER_H_ */
+namespace sofa::component::misc
+{
+    using OBJExporter
+        SOFA_ATTRIBUTE_DISABLED__SOFAEXPORTER_NAMESPACE_1712()
+        = DeprecatedAndRemoved;
+} // namespace sofa::component::misc
