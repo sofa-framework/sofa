@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "VisualModelOBJExporter.h"
+#include <SofaExporter/VisualModelOBJExporter.h>
 
 #include <sofa/core/ObjectFactory.h>
 
