@@ -27,7 +27,7 @@ namespace sofa::simulation::mechanicalvisitor
 
 MechanicalMultiVectorFromBaseVectorVisitor::MechanicalMultiVectorFromBaseVectorVisitor(
         const core::ExecParams* params, sofa::core::MultiVecId _dest,
-        const defaulttype::BaseVector * _src,
+        const linearalgebra::BaseVector * _src,
         const sofa::core::behavior::MultiMatrixAccessor* _matrix)
     : BaseMechanicalVisitor(params) , src(_src), dest(_dest), matrix(_matrix), offset(0)
 {

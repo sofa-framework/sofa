@@ -24,7 +24,7 @@
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <SofaBaseTopology/TriangleSetTopologyModifier.h>
 #include <SofaGeneralDeformable/TriangularBendingSprings.h>
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 
 #include <SofaSimulationGraph/SimpleApi.h>
 #include <SofaSimulationGraph/DAGSimulation.h>

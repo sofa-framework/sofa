@@ -82,20 +82,20 @@ public:
     */
     inline friend std::istream& operator >> (std::istream& in, VectorVis& v)
     {
-        int subsampleXY;
-        int subsampleZ;
-        int shapeScale;
-        bool rgb;
-        bool shape;
-        std::string tensorOrder;
-        in >> subsampleXY >> subsampleZ >> shapeScale >> rgb >> shape >> tensorOrder;
+        int mysubsampleXY;
+        int mysubsampleZ;
+        int myshapeScale;
+        bool myrgb;
+        bool myshape;
+        std::string mytensorOrder;
+        in >> mysubsampleXY >> mysubsampleZ >> myshapeScale >> myrgb >> myshape >> mytensorOrder;
 
-        v.setSubsampleXY(subsampleXY);
-        v.setSubsampleZ(subsampleZ);
-        v.setShapeScale(shapeScale);
-        v.setRgb(rgb);
-        v.setShape(shape);
-        v.setTensorOrder(tensorOrder);
+        v.setSubsampleXY(mysubsampleXY);
+        v.setSubsampleZ(mysubsampleZ);
+        v.setShapeScale(myshapeScale);
+        v.setRgb(myrgb);
+        v.setShape(myshape);
+        v.setTensorOrder(mytensorOrder);
 
         return in;
     }

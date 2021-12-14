@@ -21,9 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/DualQuat.inl>
+#include <sofa/config.h>
 
-// The following SOFA_DEPRECATED_HEADER is commented to avoid a massive number of warnings.
-// This flag will be enabled once all the code base in Sofa is ported to Sofa.Type.
-// (PR #1790)
-// SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/type/DualQuat.inl")
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/type/DualQuat.inl")

@@ -63,7 +63,7 @@ using sofa::simulation::SceneLoaderXML;
 #include <sofa/helper/logging/Message.h>
 using sofa::helper::logging::MessageDispatcher;
 
-#include <sofa/helper/testing/TestMessageHandler.h>
+#include <sofa/testing/TestMessageHandler.h>
 #include <sofa/testing/BaseTest.h>
 
 template <typename TDataType>
@@ -202,7 +202,7 @@ struct BoxROITest :  public sofa::testing::BaseTest
                 "   <Node name='Level 1'>                                      "
                 "       <RequiredPlugin  name='SofaLoader' />                  "
                 "       <TriangleSetTopologyContainer  name='Container' />     "
-                "       <MeshObjLoader filename='mesh/single_triangle.obj'/>                   "
+                "       <MeshOBJLoader filename='mesh/single_triangle.obj'/>                   "
                 "       <BoxROI name='myBoxROI'/>                              "
                 "   </Node>                                                    "
                 "</Node>                                                       ";

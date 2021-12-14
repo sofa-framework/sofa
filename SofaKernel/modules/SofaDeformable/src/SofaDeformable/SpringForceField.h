@@ -139,7 +139,7 @@ public:
     SReal getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& data_x1, const DataVecCoord& data_x2) const override;
 
     using Inherit::addKToMatrix;
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*kFact*/, unsigned int &/*offset*/);
+    virtual void addKToMatrix(sofa::linearalgebra::BaseMatrix * /*mat*/, SReal /*kFact*/, unsigned int &/*offset*/);
 
     SReal getStiffness() const { return ks.getValue(); }
     SReal getDamping() const { return kd.getValue(); }

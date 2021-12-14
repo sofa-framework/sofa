@@ -2,9 +2,76 @@
 
 
 
-## [v21.06.00](https://github.com/sofa-framework/sofa/tree/v21.06)
+## [v21.06.03](https://github.com/sofa-framework/sofa/tree/v21.06.03)
 
-[Full log](https://github.com/sofa-framework/sofa/compare/v20.12...v21.06)
+[Full log](https://github.com/sofa-framework/sofa/compare/v21.06.02...v21.06.03)
+
+### Bug Fixes
+**Architecture**
+-  [CMake][modules] FIX out-of-tree builds [#2453](https://github.com/sofa-framework/sofa/pull/2453)
+-  [All] Update IDE directory for targets [#2239](https://github.com/sofa-framework/sofa/pull/2239)
+
+**Modules**
+- [SofaGeneralLoader] Make GridMeshCreator work again [#2473](https://github.com/sofa-framework/sofa/pull/2473)
+
+
+____________________________________________________________
+
+
+
+## [v21.06.02](https://github.com/sofa-framework/sofa/tree/v21.06.02)
+
+[Full log](https://github.com/sofa-framework/sofa/compare/v21.06.01...v21.06.02)
+
+### Bug Fixes
+**Architecture**
+-  [CMake] Clean Sofa.Core CMakeLists + Add missing headers [#2444](https://github.com/sofa-framework/sofa/pull/2444)
+-  [SofaMeshCollision] Fix cmake generated config file [#2400](https://github.com/sofa-framework/sofa/pull/2400)
+
+**Modules**
+- [Sofa.Compat] Fix install [#2360](https://github.com/sofa-framework/sofa/pull/2360)
+- [Sofa.Helper] PluginManager: check if a plugin is already loaded with a different path [#2352](https://github.com/sofa-framework/sofa/pull/2352)
+
+
+____________________________________________________________
+
+
+
+## [v21.06.01](https://github.com/sofa-framework/sofa/tree/v21.06.01)
+
+[Full log](https://github.com/sofa-framework/sofa/compare/v21.06.00...v21.06.01)
+
+### Improvements
+**Architecture**
+- [CMake] CLEAN and reenable old macro for git infos [#2309](https://github.com/sofa-framework/sofa/pull/2309)
+- [SofaMacros] Improve sofa_install_git_infos [#2373](https://github.com/sofa-framework/sofa/pull/2373)
+
+### Bug Fixes
+**Architecture**
+- [CMake] Fix return values of Qt5/Qt6 find_packages [#2346](https://github.com/sofa-framework/sofa/pull/2346)
+
+**Modules**
+- [Sofa.Type] FIX createFromRotationVEctor, the inequality was wrong [#2332](https://github.com/sofa-framework/sofa/pull/2332)
+- [SofaBoundaryCondition] Fix ProjectToLineConstraint_RemovingMeshTest.scn [#2241](https://github.com/sofa-framework/sofa/pull/2241)
+- [SofaConstraint] fix segfault in GenericConstraintSolver [#2265](https://github.com/sofa-framework/sofa/pull/2265)
+- [SofaGeneralEngine] Fix a typo in the PairBoxRoi.inl [#2324](https://github.com/sofa-framework/sofa/pull/2324)
+
+**Plugins / Projects**
+- [Geomagic] Fix compilation of code with openHaptics due to sofa::type namespace missing. [#2229](https://github.com/sofa-framework/sofa/pull/2229)
+- [SofaGuiGlut] FIX compilation for v21.06 [#2274](https://github.com/sofa-framework/sofa/pull/2274)
+
+### Cleanings
+**Modules**
+- [All] Minor code cleaning [#2225](https://github.com/sofa-framework/sofa/pull/2225)
+
+
+____________________________________________________________
+
+
+
+## [v21.06.00](https://github.com/sofa-framework/sofa/tree/v21.06.00)
+
+[Full log](https://github.com/sofa-framework/sofa/compare/v20.12.03...v21.06.00)
 
 ### SOFA-NG
 **Architecture**
@@ -158,6 +225,7 @@
 - [All] Fix compilation warning. [#1699](https://github.com/sofa-framework/sofa/pull/1699)
 - [All] Fix invalid Memory access in MechanicalObject and Compliant_test [#1849](https://github.com/sofa-framework/sofa/pull/1849)
 - [All] Fix debug compilation [#2223](https://github.com/sofa-framework/sofa/pull/2223)
+- [All] Changes needed for v21.06 [#2226](https://github.com/sofa-framework/sofa/pull/2226)
 - **[Sofa.Type]** Add forgotten function declaration, used in Debug [#1937](https://github.com/sofa-framework/sofa/pull/1937)
 - **[Sofa.Type]** Add missing header in fixed_array [#2006](https://github.com/sofa-framework/sofa/pull/2006)
 - **[SofaBaseCollision]** Fix pipeline warning test [#2132](https://github.com/sofa-framework/sofa/pull/2132)

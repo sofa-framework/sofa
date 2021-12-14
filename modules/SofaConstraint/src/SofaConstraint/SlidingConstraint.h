@@ -75,13 +75,13 @@ public:
     void buildConstraintMatrix(const core::ConstraintParams* cParams, DataMatrixDeriv &c1, DataMatrixDeriv &c2, unsigned int &cIndex
             , const DataVecCoord &x1, const DataVecCoord &x2) override;
 
-    void getConstraintViolation(const core::ConstraintParams* cParams, defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
+    void getConstraintViolation(const core::ConstraintParams* cParams, linearalgebra::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
             , const DataVecDeriv &v1, const DataVecDeriv &v2) override;
 
     void getConstraintResolution(const core::ConstraintParams*,
                                          std::vector<core::behavior::ConstraintResolution*>& resTab,
                                          unsigned int& offset) override;
-    void storeLambda(const ConstraintParams* cParams, sofa::core::MultiVecDerivId res, const sofa::defaulttype::BaseVector* lambda) override;
+    void storeLambda(const ConstraintParams* cParams, sofa::core::MultiVecDerivId res, const sofa::linearalgebra::BaseVector* lambda) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 

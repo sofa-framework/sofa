@@ -24,7 +24,7 @@
 
 #include <sofa/linearalgebra/EigenBaseSparseMatrix.h>
 #include <sofa/type/Mat.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <sofa/helper/SortedPermutation.h>
 #include <sofa/type/vector.h>
 #include <Eigen/Core>

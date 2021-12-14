@@ -51,7 +51,7 @@
 #include <sofa/core/VecId.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
 
 #include <sofa/core/ObjectFactory.h>
@@ -496,16 +496,16 @@ void MechanicalOperations::m_print( std::ostream& out )
         showMissingLinearSolverError();
         return;
     }
-    defaulttype::BaseMatrix* m = s->getSystemBaseMatrix();
+    linearalgebra::BaseMatrix* m = s->getSystemBaseMatrix();
     if (!m) return;
     //out << *m;
     auto ny = m->rowSize();
     auto nx = m->colSize();
     out << "[";
-    for (defaulttype::BaseMatrix::Index y=0; y<ny; ++y)
+    for (linearalgebra::BaseMatrix::Index y=0; y<ny; ++y)
     {
         out << "[";
-        for (defaulttype::BaseMatrix::Index x=0; x<nx; x++)
+        for (linearalgebra::BaseMatrix::Index x=0; x<nx; x++)
             out << ' ' << m->element(x,y);
         out << "]";
     }
@@ -531,7 +531,7 @@ void MechanicalOperations::addMBK_ToMatrix(const sofa::core::behavior::MultiMatr
     }
 }
 
-void MechanicalOperations::baseVector2MultiVector(const defaulttype::BaseVector *src, core::MultiVecId dest, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void MechanicalOperations::baseVector2MultiVector(const linearalgebra::BaseVector *src, core::MultiVecId dest, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     if (src != nullptr)
     {
@@ -539,7 +539,7 @@ void MechanicalOperations::baseVector2MultiVector(const defaulttype::BaseVector 
     }
 }
 
-void MechanicalOperations::multiVector2BaseVector(core::ConstMultiVecId src, defaulttype::BaseVector *dest, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void MechanicalOperations::multiVector2BaseVector(core::ConstMultiVecId src, linearalgebra::BaseVector *dest, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     if (dest != nullptr)
     {
@@ -548,7 +548,7 @@ void MechanicalOperations::multiVector2BaseVector(core::ConstMultiVecId src, def
 }
 
 
-void MechanicalOperations::multiVectorPeqBaseVector(core::MultiVecDerivId dest, const defaulttype::BaseVector *src, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void MechanicalOperations::multiVectorPeqBaseVector(core::MultiVecDerivId dest, const linearalgebra::BaseVector *src, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     if (src != nullptr)
     {

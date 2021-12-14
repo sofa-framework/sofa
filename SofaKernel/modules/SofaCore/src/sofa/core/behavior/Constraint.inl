@@ -48,7 +48,7 @@ bool Constraint<DataTypes>::isActive() const
 }
 
 template<class DataTypes>
-void Constraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v)
+void Constraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v)
 {
     if (cParams)
     {
@@ -68,7 +68,7 @@ void Constraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
 
 
 template<class DataTypes>
-void Constraint<DataTypes>::storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::defaulttype::BaseVector* lambda)
+void Constraint<DataTypes>::storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::linearalgebra::BaseVector* lambda)
 {
     if (cParams)
     {
@@ -77,7 +77,7 @@ void Constraint<DataTypes>::storeLambda(const ConstraintParams* cParams, MultiVe
 }
 
 template<class DataTypes>
-void Constraint<DataTypes>::storeLambda(const ConstraintParams*, Data<VecDeriv>& result, const Data<MatrixDeriv>& jacobian, const sofa::defaulttype::BaseVector* lambda)
+void Constraint<DataTypes>::storeLambda(const ConstraintParams*, Data<VecDeriv>& result, const Data<MatrixDeriv>& jacobian, const sofa::linearalgebra::BaseVector* lambda)
 {
     auto res = sofa::helper::getWriteAccessor(result);
     const MatrixDeriv& j = jacobian.getValue();

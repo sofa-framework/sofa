@@ -88,7 +88,7 @@ public:
     /// @param cparams the ConstraintParams relative to the constraint solver
     /// @param dx the VecId where to store the corrective motion
     /// @param lambda is the constraint space force vector
-    void computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const defaulttype::BaseVector * lambda) override;
+    void computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const linearalgebra::BaseVector * lambda) override;
 
 
     /// Compute the corrective motion coming from the motion space force
@@ -135,7 +135,7 @@ public:
     /// @param cparams
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
-    void applyPredictiveConstraintForce(const core::ConstraintParams * cparams, core::MultiVecDerivId f, const defaulttype::BaseVector *lambda) override;
+    void applyPredictiveConstraintForce(const core::ConstraintParams * cparams, core::MultiVecDerivId f, const linearalgebra::BaseVector *lambda) override;
 
  
     /// Pre-construction check method called by ObjectFactory.
@@ -168,9 +168,9 @@ private:
     ///
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
-    void addConstraintForceInMotionSpace(const core::ConstraintParams* cparams, core::MultiVecDerivId f, core::ConstMultiMatrixDerivId j, const defaulttype::BaseVector * lambda);
+    void addConstraintForceInMotionSpace(const core::ConstraintParams* cparams, core::MultiVecDerivId f, core::ConstMultiMatrixDerivId j, const linearalgebra::BaseVector * lambda);
 
-    void addConstraintForceInMotionSpace(const core::ConstraintParams* cparams, Data< VecDeriv > &f, const Data<MatrixDeriv>& j, const defaulttype::BaseVector * lambda);
+    void addConstraintForceInMotionSpace(const core::ConstraintParams* cparams, Data< VecDeriv > &f, const Data<MatrixDeriv>& j, const linearalgebra::BaseVector * lambda);
 };
 
 

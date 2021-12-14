@@ -28,7 +28,7 @@
 #include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
 #include <sofa/core/topology/TopologyChange.h>
 
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 
 
 #include <sofa/type/Vec.h>

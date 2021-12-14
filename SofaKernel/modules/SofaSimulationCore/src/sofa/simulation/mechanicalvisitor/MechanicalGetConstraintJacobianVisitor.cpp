@@ -28,7 +28,7 @@ namespace sofa::simulation::mechanicalvisitor
 {
 
 MechanicalGetConstraintJacobianVisitor::MechanicalGetConstraintJacobianVisitor(
-        const core::ConstraintParams* cparams, defaulttype::BaseMatrix * _J, const sofa::core::behavior::MultiMatrixAccessor* _matrix)
+        const core::ConstraintParams* cparams, linearalgebra::BaseMatrix * _J, const sofa::core::behavior::MultiMatrixAccessor* _matrix)
     : BaseMechanicalVisitor(cparams) , cparams(cparams), J(_J), matrix(_matrix), offset(0)
 {}
 

@@ -177,7 +177,7 @@ void UnilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const cor
 
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::getPositionViolation(defaulttype::BaseVector *v)
+void UnilateralInteractionConstraint<DataTypes>::getPositionViolation(linearalgebra::BaseVector *v)
 {
     const VecCoord &PfreeVec = this->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue();
     const VecCoord &QfreeVec = this->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue();
@@ -257,7 +257,7 @@ void UnilateralInteractionConstraint<DataTypes>::getPositionViolation(defaulttyp
 
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::getVelocityViolation(defaulttype::BaseVector *v)
+void UnilateralInteractionConstraint<DataTypes>::getVelocityViolation(linearalgebra::BaseVector *v)
 {
     auto P = this->getMState2()->readPositions();
     auto Q = this->getMState1()->readPositions();
@@ -290,7 +290,7 @@ void UnilateralInteractionConstraint<DataTypes>::getVelocityViolation(defaulttyp
 
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams *cparams, defaulttype::BaseVector *v, const DataVecCoord &, const DataVecCoord &
+void UnilateralInteractionConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams *cparams, linearalgebra::BaseVector *v, const DataVecCoord &, const DataVecCoord &
         , const DataVecDeriv &, const DataVecDeriv &)
 {
     switch (cparams->constOrder())

@@ -277,7 +277,7 @@ void BeamLinearMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparam
 
 
 template <class TIn, class TOut>
-const sofa::defaulttype::BaseMatrix* BeamLinearMapping<TIn, TOut>::getJ()
+const sofa::linearalgebra::BaseMatrix* BeamLinearMapping<TIn, TOut>::getJ()
 {
 
     const unsigned int  inStateSize = this->fromModel->getSize();

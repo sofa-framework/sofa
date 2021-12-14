@@ -173,7 +173,7 @@ struct TestSparseMatrices : public NumericTest<typename T::Real>
 
     /// filling a BaseMatrix from a given Mat
     template<Size nbrows,Size nbcols>
-    static void copyFromMat( defaulttype::BaseMatrix& baseMat, const type::Mat<nbrows,nbcols,Real>& mat )
+    static void copyFromMat( linearalgebra::BaseMatrix& baseMat, const type::Mat<nbrows,nbcols,Real>& mat )
     {
         baseMat.resize(mat.nbLines,mat.nbCols);
 

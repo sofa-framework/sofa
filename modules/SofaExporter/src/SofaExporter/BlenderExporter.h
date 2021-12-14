@@ -124,8 +124,8 @@ namespace exporter {
 namespace misc {
     template<class T>
     using BlenderExporter
-        SOFA_ATTRIBUTE_DEPRECATED__SOFAEXPORTER_NAMESPACE_2106()
-        = _blenderexporter_::BlenderExporter<T>;
+        SOFA_ATTRIBUTE_DISABLED__SOFAEXPORTER_NAMESPACE_2106()
+        = DeprecatedAndRemoved;
 } // namespace misc
 
 } // namespace sofa::component

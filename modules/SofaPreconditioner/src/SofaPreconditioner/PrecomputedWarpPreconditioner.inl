@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_PPRECOMPUTEDWARPPRECONDITIONER_INL
 
 #include "PrecomputedWarpPreconditioner.h"
-//#include <SofaDenseSolver/NewMatMatrix.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
-#include <iostream>
+#include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/LinearSolver.h>
@@ -45,7 +43,7 @@
 
 #if SOFAPRECONDITIONER_HAVE_SOFASPARSESOLVER
 #include <SofaSparseSolver/SparseCholeskySolver.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #else
 #include <SofaGeneralLinearSolver/CholeskySolver.h>
 #endif
@@ -160,7 +158,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
 
     if (share_matrix.getValue()) internalData.setMinv(internalData.getSharedMatrix(fname));
 
-    if (share_matrix.getValue() && internalData.MinvPtr->rowSize() == (defaulttype::BaseMatrix::Index)systemSize)
+    if (share_matrix.getValue() && internalData.MinvPtr->rowSize() == (linearalgebra::BaseMatrix::Index)systemSize)
     {
         msg_info() << "shared matrix : " << fname << " is already built." ;
     }
@@ -212,6 +210,8 @@ template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M)
 {
     msg_info() << "Compute the initial invert matrix with CS_PARSE" ;
+
+    using namespace sofa::linearalgebra;
 
     FullVector<Real> r;
     FullVector<Real> b;
@@ -541,19 +541,19 @@ void PrecomputedWarpPreconditioner<TDataTypes>::computeActiveDofs(JMatrix& J)
 }
 
 template<class TDataTypes>
-bool PrecomputedWarpPreconditioner<TDataTypes>::addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
+bool PrecomputedWarpPreconditioner<TDataTypes>::addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, double fact)
 {
     if (! _rotate) this->rotateConstraints();  //already rotate with Preconditionner
     _rotate = false;
     if (J->colSize() == 0) return true;
 
-    if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
+    if (linearalgebra::SparseMatrix<double>* j = dynamic_cast<linearalgebra::SparseMatrix<double>*>(J))
     {
         computeActiveDofs(*j);
         ComputeResult(result, *j, (float) fact);
         return true;
     }
-    else if (SparseMatrix<float>* j = dynamic_cast<SparseMatrix<float>*>(J))
+    else if (linearalgebra::SparseMatrix<float>* j = dynamic_cast<linearalgebra::SparseMatrix<float>*>(J))
     {
         computeActiveDofs(*j);
         ComputeResult(result, *j, (float) fact);
@@ -564,7 +564,7 @@ bool PrecomputedWarpPreconditioner<TDataTypes>::addJMInvJt(defaulttype::BaseMatr
 }
 
 template<class TDataTypes> template<class JMatrix>
-void PrecomputedWarpPreconditioner<TDataTypes>::ComputeResult(defaulttype::BaseMatrix * result,JMatrix& J, float fact)
+void PrecomputedWarpPreconditioner<TDataTypes>::ComputeResult(linearalgebra::BaseMatrix * result,JMatrix& J, float fact)
 {
     unsigned nl = 0;
     internalData.JRMinv.clear();
@@ -590,13 +590,13 @@ void PrecomputedWarpPreconditioner<TDataTypes>::ComputeResult(defaulttype::BaseM
         }
 
         nl=0;
-        for (typename SparseMatrix<Real>::LineConstIterator jit1 = internalData.JR.begin(); jit1 != internalData.JR.end(); jit1++)
+        for (typename linearalgebra::SparseMatrix<Real>::LineConstIterator jit1 = internalData.JR.begin(); jit1 != internalData.JR.end(); jit1++)
         {
             for (unsigned c = 0; c<internalData.idActiveDofs.size(); c++)
             {
                 int col = internalData.idActiveDofs[c];
                 Real v = (Real)0.0;
-                for (typename SparseMatrix<Real>::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
+                for (typename linearalgebra::SparseMatrix<Real>::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
                 {
                     v += (Real)(internalData.MinvPtr->element(i1->first,col) * i1->second);
                 }

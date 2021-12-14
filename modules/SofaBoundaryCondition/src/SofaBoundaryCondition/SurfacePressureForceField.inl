@@ -242,7 +242,7 @@ void SurfacePressureForceField<DataTypes>::addKToMatrix(const core::MechanicalPa
 
 
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
-    sofa::defaulttype::BaseMatrix* mat = mref.matrix;
+    sofa::linearalgebra::BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
     Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     return;

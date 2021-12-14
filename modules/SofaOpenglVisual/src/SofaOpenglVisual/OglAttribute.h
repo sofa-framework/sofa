@@ -28,7 +28,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaOpenglVisual/OglShader.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 
 namespace sofa
 {
@@ -93,7 +93,7 @@ protected:
 
     unsigned int _usage;
 
-    topology::PointData<type::vector<TDataTypes> > value; ///< internal Data
+    core::topology::PointData<type::vector<TDataTypes> > value; ///< internal Data
     Data<bool> handleDynamicTopology;
 
     sofa::core::topology::BaseMeshTopology* _topology;

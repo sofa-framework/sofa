@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaPreconditioner/SSORPreconditioner.inl>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 
 
@@ -34,19 +34,14 @@ namespace linearsolver
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::core::behavior;
-using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
+using namespace sofa::linearalgebra;
 
 int SSORPreconditionerClass = core::RegisterObject("Linear system solver / preconditioner based on Symmetric Successive Over-Relaxation (SSOR). If the matrix is decomposed as $A = D + L + L^T$, this solver computes $(1/(2-w))(D/w+L)(D/w)^{-1}(D/w+L)^T x = b, or $(D+L)D^{-1}(D+L)^T x = b$ if $w=1$.")
 //.add< SSORPreconditioner<GraphScatteredMatrix,GraphScatteredVector> >(true)
 // .add< SSORPreconditioner< SparseMatrix<double>, FullVector<double> > >()
         .add< SSORPreconditioner< CompressedRowSparseMatrix<double>, FullVector<double> > >(true)
         .add< SSORPreconditioner< CompressedRowSparseMatrix< type::Mat<3,3,double> >, FullVector<double> > >()
-//.add< SSORPreconditioner<NewMatBandMatrix,NewMatVector> >(true)
-//.add< SSORPreconditioner<NewMatMatrix,NewMatVector> >()
-// .add< SSORPreconditioner<NewMatSymmetricMatrix,NewMatVector> >()
-//.add< SSORPreconditioner<NewMatSymmetricBandMatrix,NewMatVector> >()
 // .add< SSORPreconditioner< FullMatrix<double>, FullVector<double> > >()
         .addAlias("SSORLinearSolver")
         .addAlias("SSORSolver")

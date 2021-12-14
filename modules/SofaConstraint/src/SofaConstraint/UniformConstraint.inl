@@ -78,7 +78,7 @@ void computeViolation(DstV& resV, unsigned int constraintIndex, const
 }
 
 template< class DataTypes >
-void UniformConstraint<DataTypes>::getConstraintViolation(const sofa::core::ConstraintParams* cParams, sofa::defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v)
+void UniformConstraint<DataTypes>::getConstraintViolation(const sofa::core::ConstraintParams* cParams, sofa::linearalgebra::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v)
 {
     auto xfree = sofa::helper::getReadAccessor(x);
     auto vfree = sofa::helper::getReadAccessor(v);

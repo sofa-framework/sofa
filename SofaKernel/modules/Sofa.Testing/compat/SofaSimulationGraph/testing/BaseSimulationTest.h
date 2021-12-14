@@ -21,11 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/testing/BaseSimulationTest.h>
+#include <sofa/config.h>
 
-//SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/testing/BaseSimulationTest.h")
-
-namespace sofa::helper
-{
-    namespace testing = sofa::testing;
-}
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/testing/BaseSimulationTest.h")

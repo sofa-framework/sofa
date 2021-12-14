@@ -24,7 +24,7 @@
 #include <SofaMiscMapping/config.h>
 
 #include <SofaBaseMechanics/BarycentricMapping.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h>
@@ -67,8 +67,8 @@ public:
     using Index = sofa::Index;
 
 protected:
-    topology::PointData< sofa::type::vector<MappingData > >  map; ///< mapper data
-    topology::PointData< sofa::type::vector<MappingOrientData > >  mapOrient; ///< mapper data for mapped frames
+    core::topology::PointData< sofa::type::vector<MappingData > >  map; ///< mapper data
+    core::topology::PointData< sofa::type::vector<MappingOrientData > >  mapOrient; ///< mapper data for mapped frames
 
     VecCoord actualTetraPosition;
 
@@ -96,7 +96,7 @@ public:
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
 
-    const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
+    const sofa::linearalgebra::BaseMatrix* getJ(int outSize, int inSize) override;
 
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
     void resize( core::State<Out>* toModel ) override;

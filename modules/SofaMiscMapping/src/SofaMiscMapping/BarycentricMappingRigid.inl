@@ -316,7 +316,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT( typename In:
 }  //applyJT
 
 template<class In, class Out>
-const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::getJ(int outSize, int inSize)
+const sofa::linearalgebra::BaseMatrix* BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::getJ(int outSize, int inSize)
 {
     if (outSize > 0 && map.getValue().size() == 0)
     {

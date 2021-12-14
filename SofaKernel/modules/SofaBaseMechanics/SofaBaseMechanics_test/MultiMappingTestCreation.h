@@ -33,7 +33,7 @@ using sofa::testing::BaseSimulationTest;
 using sofa::testing::NumericTest;
 
 #include <sofa/simulation/VectorOperations.h>
-#include <SofaBaseLinearSolver/FullVector.h>
+#include <sofa/linearalgebra/FullVector.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -268,7 +268,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
         }
 
         // Jacobian will be obsolete after applying new positions
-        const type::vector<defaulttype::BaseMatrix*>* J = mapping->getJs();
+        const type::vector<linearalgebra::BaseMatrix*>* J = mapping->getJs();
         OutVecDeriv Jv(Nc);
         for( Index p=0; p<Np.size(); p++ ){
             //cout<<"J["<< p <<"] = "<< endl << *(*J)[p] << endl;
@@ -383,7 +383,7 @@ struct MultiMapping_test : public BaseSimulationTest, NumericTest<typename _Mult
         }
         InVecDeriv Kv(totalvp.size());
 
-        const defaulttype::BaseMatrix* bk = mapping->getK();
+        const linearalgebra::BaseMatrix* bk = mapping->getK();
         // K can be null or empty for linear mappings
         // still performing the test with a null Kv vector to check if the mapping is really linear
         if( bk != nullptr ){

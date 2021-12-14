@@ -25,7 +25,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-#include <sofa/defaulttype/BaseVector.h>
+#include <sofa/linearalgebra/BaseVector.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/type/Quat.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -35,7 +35,7 @@
 #include <fstream>
 
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 #endif // SOFA_HAVE_NEW_TOPOLOGYCHANGES
 
 namespace sofa::component::container
@@ -94,12 +94,12 @@ public:
     PointData< VecDeriv > f; ///< force vector of the degrees of freedom
     PointData< VecCoord > x0; ///< rest position coordinates of the degrees of freedom
 
-    class MOPointHandler : public sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point,VecCoord >
+    class MOPointHandler : public sofa::core::topology::TopologyDataHandler<sofa::core::topology::Point,VecCoord >
     {
     public:
         typedef typename MechanicalObject<DataTypes>::VecCoord VecCoord;
         typedef typename MechanicalObject<DataTypes>::Coord Coord;
-        MOPointHandler(MechanicalObject<DataTypes>* _obj, sofa::component::topology::PointData<VecCoord>* _data) : sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point, VecCoord >(_data), obj(_obj) {}
+        MOPointHandler(MechanicalObject<DataTypes>* _obj, sofa::core::topology::PointData<VecCoord>* _data) : sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point, VecCoord >(_data), obj(_obj) {}
 
         void applyCreateFunction(unsigned int /*pointIndex*/, Coord& /*dest*/,
                 const sofa::type::vector< unsigned int > &ancestors,
@@ -245,25 +245,25 @@ public:
 
     /// Copy data to a global BaseVector the state stored in a local vector
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
-    void copyToBaseVector(defaulttype::BaseVector* dest, core::ConstVecId src, unsigned int &offset) override;
+    void copyToBaseVector(linearalgebra::BaseVector* dest, core::ConstVecId src, unsigned int &offset) override;
 
     /// Copy data to a local vector the state stored in a global BaseVector
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
-    void copyFromBaseVector(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset) override;
+    void copyFromBaseVector(core::VecId dest, const linearalgebra::BaseVector* src, unsigned int &offset) override;
 
     /// Add data to a global BaseVector from the state stored in a local vector
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
-    void addToBaseVector(defaulttype::BaseVector* dest, core::ConstVecId src, unsigned int &offset) override;
+    void addToBaseVector(linearalgebra::BaseVector* dest, core::ConstVecId src, unsigned int &offset) override;
 
     /// src and dest must have the same size.
     /// Performs: dest[i][j] += src[offset + i][j] 0<= i < src_entries  0<= j < 3 (for 3D objects) 0 <= j < 2 (for 2D objects)
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
-    void addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset) override;
+    void addFromBaseVectorSameSize(core::VecId dest, const linearalgebra::BaseVector* src, unsigned int &offset) override;
 
     /// src size can be smaller or equal to dest size.
     /// Performs: dest[ offset + i ][j] += src[i][j]  0<= i < src_entries  0<= j < 3 (for 3D objects) 0 <= j < 2 (for 2D objects)
     /// @param offset the offset in the MechanicalObject local vector specified by VecId dest. It will be updated to the first scalar value after the ones used by this operation when this method returns.
-    void addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset ) override;
+    void addFromBaseVectorDifferentSize(core::VecId dest, const linearalgebra::BaseVector* src, unsigned int &offset ) override;
 
 
     /// @}
@@ -350,7 +350,7 @@ public:
 
     void resetConstraint(const core::ConstraintParams* cparams) override;
 
-    void getConstraintJacobian(const core::ConstraintParams* cparams, sofa::defaulttype::BaseMatrix* J,unsigned int & off) override;
+    void getConstraintJacobian(const core::ConstraintParams* cparams, sofa::linearalgebra::BaseMatrix* J,unsigned int & off) override;
 
     void buildIdentityBlocksInJacobian(const sofa::type::vector<unsigned int>& list_n, core::MatrixDerivId &mID) override;
     /// @}
@@ -451,11 +451,11 @@ template<> SOFA_SOFABASEMECHANICS_API
 void MechanicalObject<defaulttype::Rigid3Types>::applyRotation (const type::Quat<SReal> q);
 
 template<> SOFA_SOFABASEMECHANICS_API
-void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
+void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorSameSize(core::VecId dest, const linearalgebra::BaseVector* src, unsigned int &offset );
 
 
 template<> SOFA_SOFABASEMECHANICS_API
-void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
+void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorDifferentSize(core::VecId dest, const linearalgebra::BaseVector* src, unsigned int &offset );
 
 
 template<> SOFA_SOFABASEMECHANICS_API

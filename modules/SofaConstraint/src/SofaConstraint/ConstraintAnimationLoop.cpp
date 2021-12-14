@@ -81,7 +81,7 @@ using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
 namespace sofa::component::animationloop
 {
 
-using namespace sofa::component::linearsolver;
+using namespace sofa::linearalgebra;
 using namespace sofa::defaulttype;
 using namespace helper::system::thread;
 using namespace core::behavior;

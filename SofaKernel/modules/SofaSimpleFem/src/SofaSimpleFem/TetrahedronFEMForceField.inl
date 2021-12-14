@@ -22,11 +22,11 @@
 #pragma once
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <SofaBaseLinearSolver/RotationMatrix.h>
+#include <sofa/linearalgebra/RotationMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/GridTopology.h>
 #include <sofa/helper/decompose.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
@@ -75,6 +75,29 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
     this->addAlias(&_assembling, "assembling");
     minYoung = 0.0;
     maxYoung = 0.0;
+
+    this->addUpdateCallback("updateComputeVonMisesStress", {&_computeVonMisesStress}, [this](const core::DataTracker& )
+    {
+        if(_computeVonMisesStress.getValue() == 0 || _computeVonMisesStress.getValue() == 1 || _computeVonMisesStress.getValue() == 2)
+        {
+            if (_computeVonMisesStress.getValue() == 1 && f_method.getValue() == "small")
+            {
+                msg_warning() << "VonMisesStress can only be computed with full Green strain when the method is SMALL.";
+                return sofa::core::objectmodel::ComponentState::Invalid;
+            }
+            else
+            {
+                msg_info() << "Correct update of " << _computeVonMisesStress.getName();
+            }
+        }
+        else
+        {
+            msg_warning() << "Value of " << _computeVonMisesStress.getName() << " is invalid (must be 0, 1 or 2). ";
+            return sofa::core::objectmodel::ComponentState::Invalid;
+        }
+
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {});
 }
 
 
@@ -1514,8 +1537,8 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
 
         if (_computeVonMisesStress.getValue() == 1 && method == SMALL)
         {
-            msg_warning() << "VonMisesStress can only be computed with full Green strain when the method is SMALL.";
-            _computeVonMisesStress.setValue(2);
+            msg_warning() << "(init) VonMisesStress can only be computed with full Green strain when the method is SMALL.";
+            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         }
     }
 
@@ -1763,22 +1786,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
         needUpdateTopology = false;
     }
 
-    bool drawVonMisesStress = false;
-    if ( _showVonMisesStressPerNode.getValue() || _showVonMisesStressPerElement.getValue() )
-    {
-        if ( isComputeVonMisesStressMethodSet() )
-        {
-            drawVonMisesStress = true;
-        }
-        else
-        {
-            msg_warning() << "Cannot draw von Mises Stress. "
-                          << "Value of " << _computeVonMisesStress.getName() << " is invalid. "
-                          << "Disabling " << _showVonMisesStressPerNode.getName() << " and " << _showVonMisesStressPerElement.getName() << ".";
-            _showVonMisesStressPerNode.setValue(false);
-            _showVonMisesStressPerElement.setValue(false);
-        }
-    }
+    bool drawVonMisesStress = (_showVonMisesStressPerNode.getValue() || _showVonMisesStressPerElement.getValue()) && isComputeVonMisesStressMethodSet();
 
     vparams->drawTool()->saveLastState();
 
@@ -1793,7 +1801,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     const VecReal& youngModulus = _youngModulus.getValue();
 
     bool heterogeneous = false;
-    if (drawVonMisesStress && drawHeterogeneousTetra.getValue())
+    if (drawHeterogeneousTetra.getValue() && drawVonMisesStress)
     {
         minYoung=youngModulus[0];
         maxYoung=youngModulus[0];
@@ -1805,11 +1813,13 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
         heterogeneous = (fabs(minYoung-maxYoung) > 1e-8);
     }
 
-    // vonMises stress
+
     Real minVM = (Real)1e20, maxVM = (Real)-1e20;
     Real minVMN = (Real)1e20, maxVMN = (Real)-1e20;
     helper::ReadAccessor<Data<type::vector<Real> > > vM =  _vonMisesPerElement;
     helper::ReadAccessor<Data<type::vector<Real> > > vMN =  _vonMisesPerNode;
+
+    // vonMises stress
     if (drawVonMisesStress)
     {
         for (size_t i = 0; i < vM.size(); i++)
@@ -1828,96 +1838,96 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
         }
         maxVM *= _showStressAlpha.getValue();
         maxVMN *= _showStressAlpha.getValue();
-    }
 
-    if (drawVonMisesStress && _showVonMisesStressPerNode.getValue())
-    {
-        // Draw nodes (if node option enabled)
-        std::vector<sofa::type::RGBAColor> nodeColors(x.size());
-        std::vector<type::Vector3> pts(x.size());
-        helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVMN, maxVMN);
-        for (size_t nd = 0; nd < x.size(); nd++) {
-            pts[nd] = x[nd];
-            nodeColors[nd] = evalColor(vMN[nd]);
-        }
-        vparams->drawTool()->drawPoints(pts, 10, nodeColors);
-    }
 
-    if (! (drawVonMisesStress && _showVonMisesStressPerNode.getValue() && !_showVonMisesStressPerElement.getValue()) )
-    {
-        // Draw elements (if not "node only")
-        std::vector< type::Vector3 > points;
-        std::vector< sofa::type::RGBAColor > colorVector;
-        typename VecElement::const_iterator it;
-        int i;
-        for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
+        if (_showVonMisesStressPerNode.getValue())
         {
-            Index a = (*it)[0];
-            Index b = (*it)[1];
-            Index c = (*it)[2];
-            Index d = (*it)[3];
-            Coord center = (x[a] + x[b] + x[c] + x[d]) * 0.125;
-
-            Coord pa = x[a];
-            Coord pb = x[b];
-            Coord pc = x[c];
-            Coord pd = x[d];
-
-            if ( ! vparams->displayFlags().getShowWireFrame() )
-            {
-                pa = (pa + center) * Real(0.6667);
-                pb = (pb + center) * Real(0.6667);
-                pc = (pc + center) * Real(0.6667);
-                pd = (pd + center) * Real(0.6667);
+            // Draw nodes (if node option enabled)
+            std::vector<sofa::type::RGBAColor> nodeColors(x.size());
+            std::vector<type::Vector3> pts(x.size());
+            helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVMN, maxVMN);
+            for (size_t nd = 0; nd < x.size(); nd++) {
+                pts[nd] = x[nd];
+                nodeColors[nd] = evalColor(vMN[nd]);
             }
-
-            // create corresponding colors
-            sofa::type::RGBAColor color[4];
-            if (drawVonMisesStress && _showVonMisesStressPerElement.getValue())
-            {
-                if(heterogeneous)
-                {
-                    float col = (float)((youngModulus[i] - minYoung) / (maxYoung - minYoung));
-                    float fac = col * 0.5f;
-                    color[0] = sofa::type::RGBAColor(col       , 0.0f - fac, 1.0f - col, 1.0f);
-                    color[1] = sofa::type::RGBAColor(col       , 0.5f - fac, 1.0f - col, 1.0f);
-                    color[2] = sofa::type::RGBAColor(col       , 1.0f - fac, 1.0f - col, 1.0f);
-                    color[3] = sofa::type::RGBAColor(col + 0.5f, 1.0f - fac, 1.0f - col, 1.0f);
-                }
-                else
-                {
-                    helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVM, maxVM);
-                    auto col = sofa::type::RGBAColor::fromVec4(evalColor(vM[i]));
-                    col[3] = 1.0f;
-                    color[0] = col;
-                    color[1] = col;
-                    color[2] = col;
-                    color[3] = col;
-                }
-            }
-            else if (!drawVonMisesStress)
-            {
-                color[0] = sofa::type::RGBAColor(0.0, 0.0, 1.0, 1.0);
-                color[1] = sofa::type::RGBAColor(0.0, 0.5, 1.0, 1.0);
-                color[2] = sofa::type::RGBAColor(0.0, 1.0, 1.0, 1.0);
-                color[3] = sofa::type::RGBAColor(0.5, 1.0, 1.0, 1.0);
-            }
-
-            // create 4 triangles per tetrahedron with corresponding colors
-            points.insert(points.end(), { pa, pb, pc });
-            colorVector.insert(colorVector.end(), { color[0], color[0], color[0] });
-
-            points.insert(points.end(), { pb, pc, pd });
-            colorVector.insert(colorVector.end(), { color[1], color[1], color[1] });
-
-            points.insert(points.end(), { pc, pd, pa });
-            colorVector.insert(colorVector.end(), { color[2], color[2], color[2] });
-
-            points.insert(points.end(), { pd, pa, pb });
-            colorVector.insert(colorVector.end(), { color[3], color[3], color[3] });
+            vparams->drawTool()->drawPoints(pts, 10, nodeColors);
         }
-        vparams->drawTool()->drawTriangles(points, colorVector);
     }
+
+
+    // Draw elements (if not "node only")
+    std::vector< type::Vector3 > points;
+    std::vector< sofa::type::RGBAColor > colorVector;
+    typename VecElement::const_iterator it;
+    int i;
+    for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
+    {
+        Index a = (*it)[0];
+        Index b = (*it)[1];
+        Index c = (*it)[2];
+        Index d = (*it)[3];
+        Coord center = (x[a] + x[b] + x[c] + x[d]) * 0.125;
+
+        Coord pa = x[a];
+        Coord pb = x[b];
+        Coord pc = x[c];
+        Coord pd = x[d];
+
+        if ( ! vparams->displayFlags().getShowWireFrame() )
+        {
+            pa = (pa + center) * Real(0.6667);
+            pb = (pb + center) * Real(0.6667);
+            pc = (pc + center) * Real(0.6667);
+            pd = (pd + center) * Real(0.6667);
+        }
+
+        // create corresponding colors
+        sofa::type::RGBAColor color[4];
+        if (drawVonMisesStress && _showVonMisesStressPerElement.getValue())
+        {
+            if(heterogeneous)
+            {
+                float col = (float)((youngModulus[i] - minYoung) / (maxYoung - minYoung));
+                float fac = col * 0.5f;
+                color[0] = sofa::type::RGBAColor(col       , 0.0f - fac, 1.0f - col, 1.0f);
+                color[1] = sofa::type::RGBAColor(col       , 0.5f - fac, 1.0f - col, 1.0f);
+                color[2] = sofa::type::RGBAColor(col       , 1.0f - fac, 1.0f - col, 1.0f);
+                color[3] = sofa::type::RGBAColor(col + 0.5f, 1.0f - fac, 1.0f - col, 1.0f);
+            }
+            else
+            {
+                helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap->getEvaluator(minVM, maxVM);
+                auto col = sofa::type::RGBAColor::fromVec4(evalColor(vM[i]));
+                col[3] = 1.0f;
+                color[0] = col;
+                color[1] = col;
+                color[2] = col;
+                color[3] = col;
+            }
+        }
+        else if (!drawVonMisesStress)
+        {
+            color[0] = sofa::type::RGBAColor(0.0, 0.0, 1.0, 1.0);
+            color[1] = sofa::type::RGBAColor(0.0, 0.5, 1.0, 1.0);
+            color[2] = sofa::type::RGBAColor(0.0, 1.0, 1.0, 1.0);
+            color[3] = sofa::type::RGBAColor(0.5, 1.0, 1.0, 1.0);
+        }
+
+        // create 4 triangles per tetrahedron with corresponding colors
+        points.insert(points.end(), { pa, pb, pc });
+        colorVector.insert(colorVector.end(), { color[0], color[0], color[0] });
+
+        points.insert(points.end(), { pb, pc, pd });
+        colorVector.insert(colorVector.end(), { color[1], color[1], color[1] });
+
+        points.insert(points.end(), { pc, pd, pa });
+        colorVector.insert(colorVector.end(), { color[2], color[2], color[2] });
+
+        points.insert(points.end(), { pd, pa, pb });
+        colorVector.insert(colorVector.end(), { color[3], color[3], color[3] });
+    }
+    vparams->drawTool()->drawTriangles(points, colorVector);
+
 
     ////////////// DRAW ROTATIONS //////////////
     if (vparams->displayFlags().getShowNormals())
@@ -1967,7 +1977,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPar
 
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
+void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix *mat, SReal k, unsigned int &offset)
 {
     int IT = 0;
     StiffnessMatrix JKJt,tmp;
@@ -2033,7 +2043,6 @@ void TetrahedronFEMForceField<DataTypes>::handleEvent(core::objectmodel::Event *
             computeVonMisesStress();
         }
     }
-
 }
 
 template<class DataTypes>
@@ -2048,11 +2057,11 @@ void TetrahedronFEMForceField<DataTypes>::getRotations(VecReal& vecR)
 }
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::getRotations(defaulttype::BaseMatrix * rotations,int offset)
+void TetrahedronFEMForceField<DataTypes>::getRotations(linearalgebra::BaseMatrix * rotations,int offset)
 {
     std::size_t nbdof = this->mstate->getSize();
 
-    if (component::linearsolver::RotationMatrix<float> * diag = dynamic_cast<component::linearsolver::RotationMatrix<float> *>(rotations))
+    if (linearalgebra::RotationMatrix<float> * diag = dynamic_cast<linearalgebra::RotationMatrix<float> *>(rotations))
     {
         Transformation R;
         for (unsigned int e=0; e<nbdof; ++e)
@@ -2068,7 +2077,7 @@ void TetrahedronFEMForceField<DataTypes>::getRotations(defaulttype::BaseMatrix *
             }
         }
     }
-    else if (component::linearsolver::RotationMatrix<double> * diag = dynamic_cast<component::linearsolver::RotationMatrix<double> *>(rotations))
+    else if (linearalgebra::RotationMatrix<double> * diag = dynamic_cast<linearalgebra::RotationMatrix<double> *>(rotations))
     {
         Transformation R;
         for (unsigned int e=0; e<nbdof; ++e)
@@ -2170,6 +2179,9 @@ void TetrahedronFEMForceField<DataTypes>::setMethod(int val)
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 {
+    if(this->d_componentState.getValue() == ComponentState::Invalid)
+        return ;
+
     if ( ! isComputeVonMisesStressMethodSet() )
     {
         msg_warning() << "Cannot compute von Mises Stress. "

@@ -24,7 +24,7 @@
 
 #include <sofa/core/behavior/ConstraintCorrection.h>
 #include <sofa/core/behavior/OdeSolver.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 
 namespace sofa::component::constraintset
 {
@@ -62,12 +62,12 @@ public:
 
     void reinit() override;
 
-    void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix *W) override;
+    void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::linearalgebra::BaseMatrix *W) override;
 
-    void getComplianceMatrix(defaulttype::BaseMatrix* ) const override;
+    void getComplianceMatrix(linearalgebra::BaseMatrix* ) const override;
 
     // for multigrid approach => constraints are merged
-    void getComplianceWithConstraintMerge(defaulttype::BaseMatrix* Wmerged, std::vector<int> &constraint_merge) override;
+    void getComplianceWithConstraintMerge(linearalgebra::BaseMatrix* Wmerged, std::vector<int> &constraint_merge) override;
 
 
     /// @name Correction API
@@ -87,7 +87,7 @@ public:
     /// @name Deprecated API
     /// @{
 
-    void applyContactForce(const defaulttype::BaseVector *f) override;
+    void applyContactForce(const linearalgebra::BaseVector *f) override;
 
     void resetContactForce() override;
 
@@ -105,11 +105,11 @@ public:
 
     void setConstraintDForce(double *df, int begin, int end, bool update) override;
 
-    void getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end) override;
+    void getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end) override;
 
     /// @}
 
-    topology::PointData< VecReal > compliance; ///< Rigid compliance value: 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix
+    core::topology::PointData< VecReal > compliance; ///< Rigid compliance value: 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix
 
     Data< Real > defaultCompliance; ///< Default compliance value for new dof or if all should have the same (in which case compliance vector should be empty)
 
@@ -143,7 +143,7 @@ template<>
 void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::init();
 
 template<>
-void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::getComplianceMatrix(sofa::defaulttype::BaseMatrix * /*m*/) const;
+void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::getComplianceMatrix(sofa::linearalgebra::BaseMatrix * /*m*/) const;
 
 
 #if  !defined(SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_CPP)

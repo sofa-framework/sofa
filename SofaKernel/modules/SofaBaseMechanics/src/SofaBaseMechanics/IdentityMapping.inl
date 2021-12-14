@@ -136,7 +136,7 @@ void IdentityMapping<TIn, TOut>::handleTopologyChange()
 }
 
 template <class TIn, class TOut>
-const sofa::defaulttype::BaseMatrix* IdentityMapping<TIn, TOut>::getJ()
+const sofa::linearalgebra::BaseMatrix* IdentityMapping<TIn, TOut>::getJ()
 {
     return &J;
 }

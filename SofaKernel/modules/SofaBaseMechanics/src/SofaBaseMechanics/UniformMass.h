@@ -25,10 +25,10 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/defaulttype/BaseVector.h>
+#include <sofa/linearalgebra/BaseVector.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <SofaBaseTopology/TopologySubsetIndices.h>
+#include <sofa/core/topology/TopologySubsetIndices.h>
 
 namespace sofa::component::mass
 {
@@ -49,7 +49,7 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef type::vector<Index> SetIndexArray;
-    typedef sofa::component::topology::TopologySubsetIndices DataSetIndex;
+    typedef sofa::core::topology::TopologySubsetIndices DataSetIndex;
     typedef TMassType MassType;
 
     Data<MassType> d_vertexMass;   ///< single value defining the mass of each particle
@@ -112,7 +112,6 @@ public:
     void init() override;
     void initDefaultImpl() ;
     void doUpdateInternal() override;
-    void handleEvent(sofa::core::objectmodel::Event *event) override;
 
     /// @name Check and standard initialization functions from mass information
     /// @{
@@ -132,14 +131,14 @@ public:
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;   ///< Mgx potential in a uniform gravity field, null at origin
     type::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)+Iw) override
 
-    void addMDxToVector(defaulttype::BaseVector *resVect, const VecDeriv *dx, SReal mFact, unsigned int& offset);
+    void addMDxToVector(linearalgebra::BaseVector *resVect, const VecDeriv *dx, SReal mFact, unsigned int& offset);
 
     void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
 
     void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override; /// Add Mass contribution to global Matrix assembling
 
     SReal getElementMass(sofa::Index index) const override;
-    void getElementMass(sofa::Index index, defaulttype::BaseMatrix *m) const override;
+    void getElementMass(sofa::Index index, linearalgebra::BaseMatrix *m) const override;
 
     bool isDiagonal() const override {return true;}
 
@@ -177,7 +176,7 @@ private:
     void loadFromFileRigidImpl(const std::string& filename) ;
 
     template <class T>
-    void addMDxToVectorVecImpl(defaulttype::BaseVector *resVect,
+    void addMDxToVectorVecImpl(linearalgebra::BaseVector *resVect,
                                const VecDeriv* dx,
                                SReal mFact,
                                unsigned int& offset);

@@ -29,7 +29,7 @@
 
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 
-#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 
 #include <sofa/core/behavior/RotationFinder.h>
@@ -394,7 +394,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
 
 template< class DataTypes >
-void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix* W)
+void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::linearalgebra::BaseMatrix* W)
 {
     m_activeDofs.clear();
 
@@ -668,7 +668,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyVelocityCorrection(const s
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const defaulttype::BaseVector *f)
+void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const linearalgebra::BaseVector *f)
 {
     helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::VecDerivId::force());
     helper::WriteAccessor<Data<VecDeriv> > dxData    = *this->mstate->write(core::VecDerivId::dx());
@@ -762,7 +762,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttype::BaseMatrix* m) const
+void PrecomputedConstraintCorrection<DataTypes>::getComplianceMatrix(linearalgebra::BaseMatrix* m) const
 {
     m->resize(dimensionAppCompliance,dimensionAppCompliance);
 
@@ -1234,7 +1234,7 @@ void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(double * /*
 }
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end)
+void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end)
 {
 #ifdef NEW_METHOD_UNBUILT
 

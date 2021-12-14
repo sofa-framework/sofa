@@ -17,7 +17,7 @@
         <HexahedronFEMForceField template="Vec3d" name="FEM" youngModulus="4000" poissonRatio="0.3" method="large" />
         <Node name="Visual">
             <OglModel name="visual" />
-            <OBJExporter filename="beam_surface_output" printLog="true" exportAtBegin="true" exportEveryNumberOfSteps="5" />
+            <VisualModelOBJExporter filename="beam_surface_output" printLog="true" exportAtBegin="true" exportEveryNumberOfSteps="5" />
             <IdentityMapping />
         </Node>
     </Node>

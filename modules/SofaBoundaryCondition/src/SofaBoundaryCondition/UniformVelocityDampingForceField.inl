@@ -22,7 +22,7 @@
 #pragma once
 
 #include "UniformVelocityDampingForceField.h"
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/core/MechanicalParams.h>
 
 namespace sofa::component::forcefield
@@ -69,7 +69,7 @@ void UniformVelocityDampingForceField<DataTypes>::addDForce(const core::Mechanic
 }
 
 template<class DataTypes>
-void UniformVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * mat, SReal bFact, unsigned int& offset)
+void UniformVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal bFact, unsigned int& offset)
 {
     if( !d_implicit.getValue() ) return;
 

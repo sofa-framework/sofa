@@ -21,12 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/RGBAColor.h>
+#include <sofa/config.h>
 
-// SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/helper/types/RGBAColor.h")
-
-namespace sofa::helper::types
-{
-    using RGBAColor = sofa::type::RGBAColor;
-
-} // namespace sofa::helper::types
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/type/RGBAColor.h")

@@ -25,7 +25,7 @@
 #include <SofaConstraint/ConstraintSolverImpl.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/behavior/BaseConstraint.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/helper/map.h>
 
 #include <sofa/simulation/CpuTask.h>
@@ -38,7 +38,7 @@ class GenericConstraintSolver;
 class SOFA_SOFACONSTRAINT_API GenericConstraintProblem : public ConstraintProblem
 {
 public:
-    sofa::component::linearsolver::FullVector<double> _d;
+    sofa::linearalgebra::FullVector<double> _d;
     std::vector<core::behavior::ConstraintResolution*> constraintsResolutions;
     bool scaleTolerance, allVerified, unbuilt;
     double sor;
@@ -47,7 +47,7 @@ public:
     int currentIterations;
 
     // For unbuilt version :
-    sofa::component::linearsolver::SparseMatrix<double> Wdiag;
+    sofa::linearalgebra::SparseMatrix<double> Wdiag;
     std::list<unsigned int> constraints_sequence;
     bool change_sequence;
 
@@ -169,7 +169,7 @@ private:
 
     private:
         core::behavior::BaseConstraintCorrection* cc { nullptr };
-        sofa::component::linearsolver::LPtrFullMatrix<double> W;
+        sofa::linearalgebra::LPtrFullMatrix<double> W;
         core::ConstraintParams cparams;
         friend class GenericConstraintSolver;
     };

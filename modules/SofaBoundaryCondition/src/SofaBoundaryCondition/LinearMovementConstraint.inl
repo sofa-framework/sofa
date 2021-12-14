@@ -336,7 +336,7 @@ void LinearMovementConstraint<DataTypes>::findKeyTimes()
 
 
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
+void LinearMovementConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
     static const unsigned blockSize = DataTypes::deriv_total_size;
 
@@ -373,7 +373,7 @@ void LinearMovementConstraint<DataTypes>::applyConstraint(const core::Mechanical
 }
 
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void LinearMovementConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
     int o = matrix->getGlobalOffset(this->mstate.get());

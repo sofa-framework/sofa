@@ -27,10 +27,7 @@ sofa_add_plugin(SofaPreconditioner SofaPreconditioner ON)  # depends on SofaSpar
 sofa_add_plugin(SofaHaptics SofaHaptics ON)
 sofa_add_plugin(SofaValidation SofaValidation ON)
 
-find_package(Newmat QUIET)
-sofa_add_plugin(SofaDenseSolver SofaDenseSolver ON
-    WHEN_TO_SHOW "Newmat_FOUND"
-    VALUE_IF_HIDDEN OFF)
+sofa_add_plugin(SofaDenseSolver SofaDenseSolver ON)
 
 sofa_add_plugin(SofaNonUniformFem SofaNonUniformFem ON)
 

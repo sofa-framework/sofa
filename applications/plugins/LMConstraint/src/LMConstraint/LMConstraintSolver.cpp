@@ -24,8 +24,8 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/BaseMass.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
-#include <SofaBaseLinearSolver/FullVector.h>
+#include <sofa/linearalgebra/FullMatrix.h>
+#include <sofa/linearalgebra/FullVector.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/Node.h>
 
@@ -58,8 +58,8 @@ using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyVelocityVisito
 namespace sofa::component::constraintset
 {
 
-using linearsolver::FullVector;
-using linearsolver::FullMatrix;
+using linearalgebra::FullVector;
+using linearalgebra::FullMatrix;
 
 LMConstraintSolver::LMConstraintSolver()
     : constraintAcc( initData( &constraintAcc, false, "constraintAcc", "Constraint the acceleration"))
@@ -611,7 +611,7 @@ void LMConstraintSolver::buildLMatrix( const sofa::core::behavior::BaseMechanica
         for (std::list< ConstraintBlock >::const_iterator itBlock=blocks.begin(); itBlock!=blocks.end(); ++itBlock)
         {
             const ConstraintBlock &b=(*itBlock);
-            const defaulttype::BaseMatrix &m=b.getMatrix();
+            const linearalgebra::BaseMatrix &m=b.getMatrix();
             const unsigned int column=b.getColumn()*dimensionDofs;
 
             for (Index j=0; j<m.colSize(); ++j)

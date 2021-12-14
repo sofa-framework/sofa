@@ -50,7 +50,7 @@ template<class Matrix, class Vector>
 MatrixLinearSolver<Matrix,Vector>::~MatrixLinearSolver() = default;
 
 template<class Matrix, class Vector>
-MatrixInvertData * MatrixLinearSolver<Matrix,Vector>::getMatrixInvertData(defaulttype::BaseMatrix * /*m*/)
+MatrixInvertData * MatrixLinearSolver<Matrix,Vector>::getMatrixInvertData(linearalgebra::BaseMatrix * /*m*/)
 {
     if (invertData==nullptr)
     {
@@ -249,14 +249,14 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
         solveSystem();
 
         // STEP 3 : project the result using matrix J
-        if (const SparseMatrix<Real> * j = dynamic_cast<const SparseMatrix<Real> * >(J))   // optimization for sparse matrix
+        if (const linearalgebra::SparseMatrix<Real> * j = dynamic_cast<const linearalgebra::SparseMatrix<Real> * >(J))   // optimization for sparse matrix
         {
-            const typename SparseMatrix<Real>::LineConstIterator jitend = j->end();
-            for (typename SparseMatrix<Real>::LineConstIterator jit = j->begin(); jit != jitend; ++jit)
+            const typename linearalgebra::SparseMatrix<Real>::LineConstIterator jitend = j->end();
+            for (typename linearalgebra::SparseMatrix<Real>::LineConstIterator jit = j->begin(); jit != jitend; ++jit)
             {
                 auto row2 = jit->first;
                 double acc = 0.0;
-                for (typename SparseMatrix<Real>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2)
+                for (typename linearalgebra::SparseMatrix<Real>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2)
                 {
                     auto col2 = i2->first;
                     double val2 = i2->second;
@@ -268,7 +268,7 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
         }
         else
         {
-            dmsg_error("MatrixLinearSolver") << "AsyncMatrixLinearSolver::addJMInvJt is only implemented for SparseMatrix<Real>" ;
+            dmsg_error("MatrixLinearSolver") << "AsyncMatrixLinearSolver::addJMInvJt is only implemented for linearalgebra::SparseMatrix<Real>" ;
             return false;
         }
     }
@@ -296,7 +296,7 @@ bool MatrixLinearSolver<Matrix,Vector>::addMInvJtLocal(Matrix * /*M*/,ResMatrixT
 }
 
 template<class Matrix, class Vector>
-bool MatrixLinearSolver<Matrix,Vector>::addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
+bool MatrixLinearSolver<Matrix,Vector>::addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, double fact)
 {
     if (J->rowSize()==0) return true;
 
@@ -308,7 +308,7 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJt(defaulttype::BaseMatrix* resu
 }
 
 template<class Matrix, class Vector>
-bool MatrixLinearSolver<Matrix,Vector>::addMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
+bool MatrixLinearSolver<Matrix,Vector>::addMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, double fact)
 {
     if (J->rowSize()==0) return true;
 
@@ -320,7 +320,7 @@ bool MatrixLinearSolver<Matrix,Vector>::addMInvJt(defaulttype::BaseMatrix* resul
 }
 
 template<class Matrix, class Vector>
-bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(const sofa::core::ConstraintParams* cparams, defaulttype::BaseMatrix* result, double fact)
+bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(const sofa::core::ConstraintParams* cparams, linearalgebra::BaseMatrix* result, double fact)
 {
     JMatrixType * j_local = internalData.getLocalJ();
     j_local->clear();
@@ -337,7 +337,7 @@ bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(const sofa::core::
 }
 
 template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::applyConstraintForce(const sofa::core::ConstraintParams* cparams, sofa::core::MultiVecDerivId dx, const defaulttype::BaseVector* f)
+void MatrixLinearSolver<Matrix,Vector>::applyConstraintForce(const sofa::core::ConstraintParams* cparams, sofa::core::MultiVecDerivId dx, const linearalgebra::BaseVector* f)
 {
     linearSystem.systemRHVector->clear();
     linearSystem.systemRHVector->resize(linearSystem.systemMatrix->colSize());
@@ -351,7 +351,7 @@ void MatrixLinearSolver<Matrix,Vector>::applyConstraintForce(const sofa::core::C
 }
 
 template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::computeResidual(const core::ExecParams* params,defaulttype::BaseVector* f) {
+void MatrixLinearSolver<Matrix,Vector>::computeResidual(const core::ExecParams* params,linearalgebra::BaseVector* f) {
     linearSystem.systemRHVector->clear();
     linearSystem.systemRHVector->resize(linearSystem.systemMatrix->colSize());
 

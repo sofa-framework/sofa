@@ -29,13 +29,13 @@ class SOFA_SIMULATION_CORE_API MechanicalMultiVectorToBaseVectorVisitor : public
 {
 public:
     sofa::core::ConstMultiVecId src;
-    sofa::defaulttype::BaseVector *vect;
+    sofa::linearalgebra::BaseVector *vect;
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
     int offset;
 
     MechanicalMultiVectorToBaseVectorVisitor(
         const core::ExecParams* params,
-        sofa::core::ConstMultiVecId _src, defaulttype::BaseVector * _vect,
+        sofa::core::ConstMultiVecId _src, linearalgebra::BaseVector * _vect,
         const sofa::core::behavior::MultiMatrixAccessor* _matrix = nullptr );
 
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm) override;

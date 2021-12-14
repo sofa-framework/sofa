@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaBaseMechanics/config.h>
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa::component::mass
@@ -31,7 +31,7 @@ template<class Deriv, class MassType>
 class AddMToMatrixFunctor
 {
 public:
-    void operator()(defaulttype::BaseMatrix * mat, const MassType& mass, int pos, double fact)
+    void operator()(linearalgebra::BaseMatrix * mat, const MassType& mass, int pos, double fact)
     {
         const double m = mass*fact;
         for (unsigned int i=0; i<Deriv::size(); ++i)
@@ -39,7 +39,7 @@ public:
     }
 
     ///Method to add non-diagonal terms
-    void operator()(defaulttype::BaseMatrix * mat, const MassType& mass, int posRow, int posColumn, double fact)
+    void operator()(linearalgebra::BaseMatrix * mat, const MassType& mass, int posRow, int posColumn, double fact)
     {
         const double m = mass*fact;
         for (unsigned int i=0; i<Deriv::size(); ++i)
@@ -51,7 +51,7 @@ template<int N, typename Real>
 class AddMToMatrixFunctor< type::Vec<N,Real>, type::Mat<N,N,Real> >
 {
 public:
-    void operator()(defaulttype::BaseMatrix * mat, const type::Mat<N,N,Real>& mass, int pos, double fact)
+    void operator()(linearalgebra::BaseMatrix * mat, const type::Mat<N,N,Real>& mass, int pos, double fact)
     {
         for (int i=0; i<N; ++i)
             for (int j=0; j<N; ++j)
@@ -66,7 +66,7 @@ class AddMToMatrixFunctor< defaulttype::RigidDeriv<3,Real>, defaulttype::RigidMa
 {
 public:
     enum { N=3 };
-    void operator()(defaulttype::BaseMatrix * mat, const defaulttype::RigidMass<N,Real>& mass, int pos, double fact)
+    void operator()(linearalgebra::BaseMatrix * mat, const defaulttype::RigidMass<N,Real>& mass, int pos, double fact)
     {
         const double m = mass.mass*fact;
         for (int i=0; i<N; ++i)
@@ -84,7 +84,7 @@ class AddMToMatrixFunctor< defaulttype::RigidDeriv<2,Real>, defaulttype::RigidMa
 {
 public:
     enum { N=2 };
-    void operator()(defaulttype::BaseMatrix * mat, const defaulttype::RigidMass<N,Real>& mass, int pos, double fact)
+    void operator()(linearalgebra::BaseMatrix * mat, const defaulttype::RigidMass<N,Real>& mass, int pos, double fact)
     {
         const double m = mass.mass*fact;
         for (int i=0; i<N; ++i)

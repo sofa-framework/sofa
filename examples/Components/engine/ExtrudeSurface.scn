@@ -4,7 +4,7 @@
     <RequiredPlugin pluginName='SofaGeneralEngine'/>
     <RequiredPlugin pluginName='SofaLoader'/>
     <Node name="extrude">
-        <MeshObjLoader name="meshLoader" filename="mesh/liver.obj" />
+        <MeshOBJLoader name="meshLoader" filename="mesh/liver.obj" />
         <MechanicalObject src="@meshLoader"/>
         <SphereROI name="surface1" centers="2 4 0" radii="0.88" drawSize="0" isVisible="0" src="@meshLoader" />
         <ExtrudeSurface template="Vec3d" name="extrusion" triangles="@meshLoader.triangles" surfaceVertices="@meshLoader.position" surfaceTriangles="@surface1.triangleIndices" isVisible="0" />
@@ -16,7 +16,7 @@
         <OglModel color="red" />
     </Node>
     <Node>
-        <MeshObjLoader name='myLoader' filename='mesh/liver.obj'/>
+        <MeshOBJLoader name='myLoader' filename='mesh/liver.obj'/>
         <OglModel src='@myLoader'/>
     </Node>
 </Node>

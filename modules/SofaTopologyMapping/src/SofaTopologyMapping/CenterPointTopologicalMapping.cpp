@@ -24,7 +24,6 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include <SofaBaseTopology/PointSetTopologyModifier.h>
-#include <SofaBaseTopology/PointSetGeometryAlgorithms.h>
 
 #include <sofa/type/Vec.h>
 #include <map>
@@ -48,20 +47,25 @@ CenterPointTopologicalMapping::CenterPointTopologicalMapping ()
 
 void CenterPointTopologicalMapping::init()
 {
+    this->d_componentState.setValue(core::objectmodel::ComponentState::Invalid);
     if(fromModel && toModel)
     {
-        toModel->setNbPoints(fromModel->getNbHexahedra());
+        const auto nbHexa = fromModel->getNbHexahedra();
+        toModel->setNbPoints(nbHexa);
 
-        PointSetGeometryAlgorithms<Vec3Types> *geomAlgo = nullptr;
-        toModel->getContext()->get(geomAlgo);
-
-        geomAlgo->getDOF()->resize(fromModel->getNbHexahedra());
+        sofa::core::behavior::BaseMechanicalState::SPtr state{};
+        toModel->getContext()->get(state);
+        if (state)
+        {
+            state->resize(nbHexa);
+            this->d_componentState.setValue(core::objectmodel::ComponentState::Valid);
+        }
     }
 }
 
 void CenterPointTopologicalMapping::updateTopologicalMappingTopDown()
 {
-    if(fromModel && toModel)
+    if(this->d_componentState.getValue() == core::objectmodel::ComponentState::Valid)
     {
         std::list<const TopologyChange *>::const_iterator changeIt = fromModel->beginChange();
         std::list<const TopologyChange *>::const_iterator itEnd = fromModel->endChange();

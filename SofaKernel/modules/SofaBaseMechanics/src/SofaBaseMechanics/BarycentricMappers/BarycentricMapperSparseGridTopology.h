@@ -27,7 +27,7 @@
 namespace sofa::component::mapping
 {
 
-using sofa::defaulttype::BaseMatrix;
+using sofa::linearalgebra::BaseMatrix;
 using core::visual::VisualParams;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;

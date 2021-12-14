@@ -103,7 +103,7 @@ public:
     /// Get the mass relative to the DOF at \a index.
     virtual SReal getElementMass(sofa::Index index) const =0;
     /// Get the matrix relative to the DOF at \a index.
-    virtual void getElementMass(sofa::Index index, defaulttype::BaseMatrix *m) const = 0;
+    virtual void getElementMass(sofa::Index index, linearalgebra::BaseMatrix *m) const = 0;
 
     virtual bool isDiagonal() const = 0;
 

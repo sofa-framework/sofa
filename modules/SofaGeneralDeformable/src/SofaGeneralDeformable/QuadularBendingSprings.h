@@ -27,7 +27,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 
 #include <sofa/type/Mat.h>
 #include <sofa/type/fixed_array.h>
@@ -136,7 +136,7 @@ public:
     void initTextures() { }
     void update() { }
 
-    sofa::component::topology::EdgeData<sofa::type::vector<EdgeInformation> > &getEdgeInfo() {return edgeInfo;}
+    sofa::core::topology::EdgeData<sofa::type::vector<EdgeInformation> > &getEdgeInfo() {return edgeInfo;}
 
     /** Method to initialize @sa EdgeInformation when a new edge is created.
     * Will be set as creation callback in the EdgeData @sa edgeInfo
@@ -175,7 +175,7 @@ public:
     SingleLink<QuadularBendingSprings<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
-    sofa::component::topology::EdgeData<sofa::type::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
+    sofa::core::topology::EdgeData<sofa::type::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
 
     /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* m_topology;
