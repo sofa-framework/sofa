@@ -258,7 +258,7 @@ void BaseObject::init()
         {
             if(data->hasDefaultValue())
             {
-                msg_warning() << "Required data \"" << data->getName() << "\" has not been set. (Current value is " << data->getValueString() << ")" ;
+                msg_warning() << "Required data \"" << data->getName() << "\" has not been set. Falling back to default value: " << data->getValueString();
             }
             else
             {
