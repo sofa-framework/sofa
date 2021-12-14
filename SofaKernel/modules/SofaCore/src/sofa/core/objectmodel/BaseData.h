@@ -235,6 +235,8 @@ public:
     /// This method should not be called directly, the %Data registration methods in Base should be used instead.
     void setName(const std::string& name) { m_name=name; }
 
+    /// Return whether the Data has a default value or not
+    bool hasDefaultValue() const { return m_hasDefaultValue; }
 
     /// @name Optimized edition and retrieval API (for multi-threading performances)
     /// @{
@@ -306,6 +308,8 @@ public:
     Base* m_owner {nullptr};
     /// Data name within the Base component
     std::string m_name;
+    /// True if this %Data has a default value
+    bool m_hasDefaultValue = false;
 
     /// Parent Data
     DataLink<BaseData> parentData;
