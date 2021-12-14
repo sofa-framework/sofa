@@ -267,7 +267,7 @@ public:
             createObject(m_root, "TriangularFEMForceField");
         }
 
-        EXPECT_MSG_EMIT(Error);
+        EXPECT_MSG_EMIT(Warning);
 
         /// Init simulation
         sofa::simulation::getSimulation()->init(m_root.get());
