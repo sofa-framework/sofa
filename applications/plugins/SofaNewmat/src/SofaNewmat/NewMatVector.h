@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaDenseSolver/config.h>
+#include <SofaNewmat/config.h>
 
 #include <newmat/newmat.h>
 #define WANT_STREAM

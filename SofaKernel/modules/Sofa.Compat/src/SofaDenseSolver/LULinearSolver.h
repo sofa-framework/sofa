@@ -23,12 +23,9 @@
 
 #include <sofa/config.h>
 
-#define SOFADENSESOLVER_VERSION @PROJECT_VERSION@
-
-#ifdef SOFA_BUILD_SOFADENSESOLVER
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_SOFADENSESOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#if __has_include(<SofaNewmat/LULinearSolver.h>)
+#include <SofaNewmat/LULinearSolver.h>
+SOFA_DEPRECATED_HEADER("v21.12", "v22.06", "SofaNewmat/LULinearSolver.h")
 #else
-#  define SOFA_SOFADENSESOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+SOFA_PRAGMA_ERROR("LULinearSolver has moved into the SofaNewmat plugin since v21.12. You need to enable SofaNewmat in your configuration.")
 #endif
-

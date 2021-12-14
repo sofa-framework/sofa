@@ -19,53 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <SofaDenseSolver/config.h>
-
-#include <sofa/core/behavior/LinearSolver.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
-#include <sofa/linearalgebra/SparseMatrix.h>
-#include <cmath>
+#include <SofaBaseLinearSolver/CGLinearSolver.inl>
+#include <SofaNewmat/NewMatMatrix.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::linearsolver
 {
 
-/// Linear system solver using the default (LU factorization) algorithm
-template<class Matrix, class Vector>
-class LULinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<Matrix,Vector>
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE2(LULinearSolver,Matrix,Vector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,Matrix,Vector));
-
-    Data<bool> f_verbose; ///< Dump system state at each iteration
-    typename Matrix::LUSolver* solver;
-    typename Matrix::InvMatrixType Minv;
-    bool computedMinv;
-protected:
-    LULinearSolver();
-    ~LULinearSolver();
-
-public:
-    /// Invert M
-    void invert (Matrix& M) override;
-
-    /// Solve Mx=b
-    void solve (Matrix& M, Vector& x, Vector& b) override;
-
-    void computeMinv();
-    double getMinvElement(int i, int j);
-
-    template<class RMatrix, class JMatrix>
-    bool addJMInvJt(RMatrix& result, JMatrix& J, double fact);
-
-    /// Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
-    ///
-    /// @param result the variable where the result will be added
-    /// @param J the matrix J to use
-    /// @return false if the solver does not support this operation, of it the system matrix is not invertible
-    bool addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, double fact) override;
-
-};
+int NewMatCGLinearSolverClass = core::RegisterObject("NewMat linear system solver using the conjugate gradient iterative algorithm")
+        .add< CGLinearSolver< NewMatMatrix, NewMatVector > >()
+        .add< CGLinearSolver< NewMatSymmetricMatrix, NewMatVector > >()
+        .add< CGLinearSolver< NewMatBandMatrix, NewMatVector > >()
+        .add< CGLinearSolver< NewMatSymmetricBandMatrix, NewMatVector > >()
+        ;
 
 } // namespace sofa::component::linearsolver

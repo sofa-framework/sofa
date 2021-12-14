@@ -21,14 +21,51 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
+#include <SofaNewmat/config.h>
 
-#define SOFADENSESOLVER_VERSION @PROJECT_VERSION@
+#include <sofa/core/behavior/LinearSolver.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
+#include <cmath>
 
-#ifdef SOFA_BUILD_SOFADENSESOLVER
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_SOFADENSESOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFADENSESOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace sofa::component::linearsolver
+{
 
+/// Linear system solver using the default (LU factorization) algorithm
+template<class Matrix, class Vector>
+class LULinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<Matrix,Vector>
+{
+public:
+    SOFA_CLASS(SOFA_TEMPLATE2(LULinearSolver,Matrix,Vector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,Matrix,Vector));
+
+    Data<bool> f_verbose; ///< Dump system state at each iteration
+    typename Matrix::LUSolver* solver;
+    typename Matrix::InvMatrixType Minv;
+    bool computedMinv;
+protected:
+    LULinearSolver();
+    ~LULinearSolver();
+
+public:
+    /// Invert M
+    void invert (Matrix& M) override;
+
+    /// Solve Mx=b
+    void solve (Matrix& M, Vector& x, Vector& b) override;
+
+    void computeMinv();
+    double getMinvElement(int i, int j);
+
+    template<class RMatrix, class JMatrix>
+    bool addJMInvJt(RMatrix& result, JMatrix& J, double fact);
+
+    /// Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
+    ///
+    /// @param result the variable where the result will be added
+    /// @param J the matrix J to use
+    /// @return false if the solver does not support this operation, of it the system matrix is not invertible
+    bool addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, double fact) override;
+
+};
+
+} // namespace sofa::component::linearsolver

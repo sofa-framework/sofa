@@ -2,7 +2,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin name='SofaPreconditioner'/>  
     <RequiredPlugin pluginName='SofaBoundaryCondition'/>
-    <RequiredPlugin pluginName='SofaDenseSolver'/>
+    <RequiredPlugin pluginName='SofaNewmat'/>
     <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
     <RequiredPlugin pluginName='SofaLoader'/>
     <RequiredPlugin pluginName='SofaMiscForceField'/>

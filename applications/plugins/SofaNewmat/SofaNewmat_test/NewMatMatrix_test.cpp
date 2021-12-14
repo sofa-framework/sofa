@@ -19,16 +19,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <Sofa.LinearAlgebra.Testing/BaseMatrix_test.h>
 
-#include <sofa/config.h>
+#include <SofaNewmat/NewMatMatrix.h>
 
-#define SOFADENSESOLVER_VERSION @PROJECT_VERSION@
+namespace sofa
+{
 
-#ifdef SOFA_BUILD_SOFADENSESOLVER
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_SOFADENSESOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFADENSESOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+using namespace sofa::linearalgebra::testing;
 
+using traits_9x9float = TestBaseMatrixTraits< sofa::component::linearsolver::NewMatMatrix, 9, 9, float>;
+
+/// Test instantiation for 9x9 matrices and float scalars
+INSTANTIATE_TYPED_TEST_SUITE_P(
+    SofaNewmat_test_9x9float,
+    TestBaseMatrix,
+    traits_9x9float
+);
+
+using traits_9x9double = TestBaseMatrixTraits< sofa::component::linearsolver::NewMatMatrix, 9, 9, double>;
+
+/// Test instantiation for 9x9 matrices and double scalars
+INSTANTIATE_TYPED_TEST_SUITE_P(
+    SofaNewmat_test_9x9double,
+    TestBaseMatrix,
+    traits_9x9double
+);
+
+using traits_9x14float = TestBaseMatrixTraits< sofa::component::linearsolver::NewMatMatrix, 9, 14, float>;
+
+/// Test instantiation for 9x14 matrices and float scalars
+INSTANTIATE_TYPED_TEST_SUITE_P(
+    SofaNewmat_test_9x14float,
+    TestBaseMatrix,
+    traits_9x14float
+);
+
+using traits_9x14double = TestBaseMatrixTraits< sofa::component::linearsolver::NewMatMatrix, 9, 14, double>;
+
+/// Test instantiation for 9x14 matrices and double scalars
+INSTANTIATE_TYPED_TEST_SUITE_P(
+    SofaNewmat_test_9x14double,
+    TestBaseMatrix,
+    traits_9x14double
+);
+}
