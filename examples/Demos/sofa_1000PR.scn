@@ -18,7 +18,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="1.2" contactDistance="0.1" />
-    <DefaultContactManager name="Response" response="FrictionContact" />
+    <DefaultContactManager name="Response" response="FrictionContactConstraint" />
 
     <MeshOBJLoader name="loader_1" filename="mesh/n1.obj"/>
     <MeshOBJLoader name="loader_0" filename="mesh/n0.obj"/>

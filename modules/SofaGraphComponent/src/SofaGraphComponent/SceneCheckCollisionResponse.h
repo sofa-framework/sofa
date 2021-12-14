@@ -19,25 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_RIGIDCONTACTMAPPER_CPP
-#include <SofaMeshCollision/RigidContactMapper.inl>
-#include <sofa/helper/Factory.inl>
+#pragma once
 
-namespace sofa::component::collision
+#include <SofaGraphComponent/config.h>
+#include <SofaGraphComponent/SceneCheck.h>
+
+#include <map>
+#include <sstream>
+
+namespace sofa::simulation::_scenechecking_
 {
+    
+class SOFA_SOFAGRAPHCOMPONENT_API SceneCheckCollisionResponse : public SceneCheck
+{
+public:
+    virtual ~SceneCheckCollisionResponse() {}
+    typedef std::shared_ptr<SceneCheckCollisionResponse> SPtr;
+    static SPtr newSPtr() { return SPtr(new SceneCheckCollisionResponse()); }
+    virtual const std::string getName() override;
+    virtual const std::string getDesc() override;
+    void doInit(Node* node) override;
+    void doCheckOn(Node* node) override;
+    void doPrintSummary() override;
 
-using namespace defaulttype;
+private:
+    bool m_checkDone = false;
+    std::stringstream m_message;
+};
 
-ContactMapperCreator< ContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>,Vec3Types> > CylinderModelContactMapperClass("PenalityContactForceField", true);
-ContactMapperCreator< ContactMapper<RigidSphereModel,Vec3Types> > RigidSphereContactMapperClass("PenalityContactForceField", true);
+} // namespace sofa::simulation::_scenechecking_
 
-
-template class SOFA_SOFAMESHCOLLISION_API ContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>,Vec3Types>;
-template class SOFA_SOFAMESHCOLLISION_API ContactMapper<RigidSphereModel,Vec3Types>;
-
-template SOFA_SOFAMESHCOLLISION_API void RigidContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>::cleanup();
-template SOFA_SOFAMESHCOLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>::createMapping(const char*);
-template SOFA_SOFAMESHCOLLISION_API void RigidContactMapper<RigidSphereModel, defaulttype::Vec3Types>::cleanup();
-template SOFA_SOFAMESHCOLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<RigidSphereModel, defaulttype::Vec3Types>::createMapping(const char*);
-
-} //namespace sofa::component::collision
+namespace sofa::simulation::scenechecking
+{
+    using _scenechecking_::SceneCheckCollisionResponse;
+}

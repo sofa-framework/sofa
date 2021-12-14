@@ -11,7 +11,7 @@
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager name="collision response" response="default" />
+    <DefaultContactManager name="collision response" response="PenalityContactForceField" />
 	  <LCPConstraintSolver tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
     <Node name="liver1" gravity="0 -9.81 0">
       <EulerImplicitSolver name="cg_odesolver"   rayleighStiffness="0.1" rayleighMass="0.1" />
@@ -43,7 +43,7 @@
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager name="collision response" response="default" />
+    <DefaultContactManager name="collision response" response="PenalityContactForceField" />
 	  <LCPConstraintSolver tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
     <Node name="liver2" gravity="0 -9.81 0">
       <EulerImplicitSolver name="cg_odesolver"  />
@@ -75,7 +75,7 @@
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager name="collision response" response="default" />
+    <DefaultContactManager name="collision response" response="PenalityContactForceField" />
 	  <LCPConstraintSolver tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
     <Node name="liver3" gravity="0 -9.81 0">
       <EulerImplicitSolver name="cg_odesolver"  />
@@ -108,7 +108,7 @@
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager name="collision response" response="default" />
+    <DefaultContactManager name="collision response" response="PenalityContactForceField" />
 	  <LCPConstraintSolver tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
     <Node name="liver4" gravity="0 -9.81 0">
       <EulerImplicitSolver name="cg_odesolver"  />

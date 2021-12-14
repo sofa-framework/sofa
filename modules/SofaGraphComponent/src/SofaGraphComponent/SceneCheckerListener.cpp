@@ -26,6 +26,7 @@
 #include <SofaGraphComponent/SceneCheckDuplicatedName.h>
 #include <SofaGraphComponent/SceneCheckUsingAlias.h>
 #include <SofaGraphComponent/SceneCheckDeprecatedComponents.h>
+#include <SofaGraphComponent/SceneCheckCollisionResponse.h>
 
 namespace sofa::simulation::_scenechecking_
 {
@@ -36,6 +37,7 @@ SceneCheckerListener::SceneCheckerListener()
     m_sceneChecker.addCheck(SceneCheckMissingRequiredPlugin::newSPtr());
     m_sceneChecker.addCheck(SceneCheckUsingAlias::newSPtr());
     m_sceneChecker.addCheck(SceneCheckDeprecatedComponents::newSPtr());
+    m_sceneChecker.addCheck(SceneCheckCollisionResponse::newSPtr());
 }
 
 SceneCheckerListener* SceneCheckerListener::getInstance()

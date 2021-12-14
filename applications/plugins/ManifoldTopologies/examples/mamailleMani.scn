@@ -6,7 +6,7 @@
 	<DefaultPipeline verbose="0" />
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-	<DefaultContactManager response="default" />
+	<DefaultContactManager response="PenalityContactForceField" />
 	<MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
 	<DefaultCollisionGroupManager />
 	<Node name="SquareGravity">

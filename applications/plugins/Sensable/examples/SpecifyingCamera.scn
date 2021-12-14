@@ -8,7 +8,7 @@
     <DefaultPipeline name="pipeline" depth="6" verbose="0"/>
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager name="response" response="default" />
+    <DefaultContactManager name="response" response="PenalityContactForceField" />
     <MinProximityIntersection name="proximity" alarmDistance="0.08" contactDistance="0.05" />
     <InteractiveCamera name="camera"  />
 
