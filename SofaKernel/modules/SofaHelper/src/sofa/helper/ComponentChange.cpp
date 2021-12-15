@@ -469,7 +469,7 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "StaticSolver", Pluginized("v20.12", "SofaImplicitOdeSolver") },
 
     // SofaLoader was pluginized in #1608
-    { "MeshObjLoader", Pluginized("v20.12", "SofaLoader") },
+    { "MeshOBJLoader", Pluginized("v20.12", "SofaLoader") },
     { "MeshVTKLoader", Pluginized("v20.12", "SofaLoader") },
 
     // SofaEigen2Solver was pluginized in #1635
@@ -673,6 +673,11 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     { "RigidCapsuleCollisionModel", Moved("v21.06", "SofaBaseCollision", "SofaMiscCollision") },
     { "CapsuleModel", Moved("v21.06", "SofaBaseCollision", "SofaMiscCollision") },
     { "SpatialGridPointModel", Moved("v21.06", "SofaMiscCollision", "SofaSphFluid") },
+
+    // MOVED SINCE v21.12
+    { "LULinearSolver", Moved("v21.12", "SofaDenseSolver", "SofaNewmat") },
+    //{"NewMatCholeskySolver", Moved("v21.12", "SofaDenseSolver", "SofaNewmat") },
+    //{"NewMatCGLinearSolver", Moved("v21.12", "SofaDenseSolver", "SofaNewmat") },
 
 };
 

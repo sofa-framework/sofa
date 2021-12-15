@@ -17,11 +17,11 @@
     <MultiStepAnimationLoop collisionSteps="10" integrationSteps="2" />
     <Node name="ChainRigid">
         <Node name="TorusFixed">
-            <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
+            <MeshOBJLoader name="loader" filename="mesh/torus2_for_collision.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel simulated="0" moving="0" />
-            <MeshObjLoader name="meshLoader_4" filename="mesh/torus2.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_4" filename="mesh/torus2.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_4" color="gray" />
         </Node>
         <Node name="TorusRigid-1">
@@ -30,12 +30,12 @@
             <MechanicalObject template="Rigid3d" dx="2.5" />
             <UniformMass />
             <Node name="Visu">
-                <MeshObjLoader name="meshLoader_3" filename="mesh/torus.obj" handleSeams="1" />
+                <MeshOBJLoader name="meshLoader_3" filename="mesh/torus.obj" handleSeams="1" />
                 <OglModel name="Visual" src="@meshLoader_3" color="gray" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
-                <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
+                <MeshOBJLoader name="loader" filename="mesh/torus_for_collision.obj" />
                 <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" />
                 <TriangleCollisionModel />
@@ -48,12 +48,12 @@
             <MechanicalObject template="Rigid3d" dx="5" />
             <UniformMass />
             <Node name="Visu">
-                <MeshObjLoader name="meshLoader_0" filename="mesh/torus2.obj" handleSeams="1" />
+                <MeshOBJLoader name="meshLoader_0" filename="mesh/torus2.obj" handleSeams="1" />
                 <OglModel name="Visual" src="@meshLoader_0" color="gray" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
-                <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
+                <MeshOBJLoader name="loader" filename="mesh/torus2_for_collision.obj" />
                 <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" />
                 <TriangleCollisionModel />
@@ -66,12 +66,12 @@
             <MechanicalObject template="Rigid3d" dx="7.5" />
             <UniformMass />
             <Node name="Visu">
-                <MeshObjLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />
+                <MeshOBJLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />
                 <OglModel name="Visual" src="@meshLoader_1" color="gray" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
-                <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
+                <MeshOBJLoader name="loader" filename="mesh/torus_for_collision.obj" />
                 <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" />
                 <TriangleCollisionModel />
@@ -84,12 +84,12 @@
             <MechanicalObject template="Rigid3d" dx="10" />
             <UniformMass />
             <Node name="Visu">
-                <MeshObjLoader name="meshLoader_2" filename="mesh/torus2.obj" handleSeams="1" />
+                <MeshOBJLoader name="meshLoader_2" filename="mesh/torus2.obj" handleSeams="1" />
                 <OglModel name="Visual" src="@meshLoader_2" color="gray" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
-                <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
+                <MeshOBJLoader name="loader" filename="mesh/torus2_for_collision.obj" />
                 <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" />
                 <TriangleCollisionModel />

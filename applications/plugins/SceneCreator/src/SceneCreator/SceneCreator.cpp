@@ -134,7 +134,7 @@ Node::SPtr createObstacle(Node::SPtr  parent, const std::string &filenameCollisi
 {
     Node::SPtr nodeFixed = simpleapi::createChild(parent, "Fixed") ;
 
-    simpleapi::createObject(nodeFixed, "MeshObjLoader", {
+    simpleapi::createObject(nodeFixed, "MeshOBJLoader", {
                                 {"name","loader"},
                                 {"filename", DataRepository.getFile(filenameCollision)}
                             });
@@ -194,7 +194,7 @@ Node::SPtr createCollisionNodeVec3(Node::SPtr  parent, BaseObject::SPtr  dof,
 {
     SOFA_UNUSED(dof) ;
     Node::SPtr  node = simpleapi::createChild(parent, "Collision");
-    simpleapi::createObject(node, "MeshObjLoader", {
+    simpleapi::createObject(node, "MeshOBJLoader", {
                                 {"name", "loader"},
                                 {"filename", DataRepository.getFile(filename)}});
 
@@ -273,7 +273,7 @@ Node::SPtr createCollisionNodeRigid(Node::SPtr  parent, BaseObject::SPtr  dofRig
 
     Node::SPtr node=simpleapi::createChild(parent, "Collision");
 
-    simpleapi::createObject(node, "MeshObjLoader", {
+    simpleapi::createObject(node, "MeshOBJLoader", {
                                 {"name","loader"},
                                 {"filename", DataRepository.getFile(filename)}}) ;
 

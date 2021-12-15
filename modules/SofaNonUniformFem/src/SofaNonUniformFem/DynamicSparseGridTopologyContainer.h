@@ -24,7 +24,7 @@
 #include <SofaNonUniformFem/config.h>
 
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 #include <sofa/helper/map.h>
 #include <sofa/type/Vec.h>
 
@@ -46,7 +46,7 @@ public:
     Data<sofa::type::Vec3i> resolution; ///< voxel grid resolution
 
     Data< sofa::type::vector<unsigned char> > valuesIndexedInRegularGrid; ///< values indexed in the Regular Grid
-    HexahedronData< sofa::type::vector<unsigned char> > valuesIndexedInTopology; ///< values indexed in the topology
+    core::topology::HexahedronData< sofa::type::vector<unsigned char> > valuesIndexedInTopology; ///< values indexed in the topology
 
     Data< sofa::type::vector<BaseMeshTopology::HexaID> > idxInRegularGrid; ///< indices in the Regular Grid
     Data< std::map< unsigned int, BaseMeshTopology::HexaID> > idInRegularGrid2IndexInTopo; ///< map between id in the Regular Grid and index in the topology

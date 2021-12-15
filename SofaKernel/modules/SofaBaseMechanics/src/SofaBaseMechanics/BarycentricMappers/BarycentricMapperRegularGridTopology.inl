@@ -173,7 +173,7 @@ void BarycentricMapperRegularGridTopology<In,Out>::applyJT ( typename In::VecDer
 
 
 template <class In, class Out>
-const sofa::defaulttype::BaseMatrix* BarycentricMapperRegularGridTopology<In,Out>::getJ(int outSize, int inSize)
+const sofa::linearalgebra::BaseMatrix* BarycentricMapperRegularGridTopology<In,Out>::getJ(int outSize, int inSize)
 {
 
     if (m_matrixJ && !m_updateJ)

@@ -23,6 +23,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
+#include <sofa/core/collision/Pipeline.h>
 
 namespace sofa
 {

@@ -21,26 +21,11 @@
 ******************************************************************************/
 #include <SofaDenseSolver/initSofaDenseSolver.h>
 
-#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
-#include <SofaDenseSolver/NewMatMatrix.h>
-#include <SofaDenseSolver/NewMatVector.h>
-
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
 namespace sofa::component
 {
-
-namespace linearsolver
-{
-// template specialization on specific matrix types
-
-template class SOFA_SOFADENSESOLVER_API MatrixLinearSolver< NewMatMatrix, NewMatVector >;
-template class SOFA_SOFADENSESOLVER_API MatrixLinearSolver< NewMatSymmetricMatrix, NewMatVector >;
-template class SOFA_SOFADENSESOLVER_API MatrixLinearSolver< NewMatBandMatrix, NewMatVector >;
-template class SOFA_SOFADENSESOLVER_API MatrixLinearSolver< NewMatSymmetricBandMatrix, NewMatVector >;
-} // namespace linearsolver
-
 
 void initSofaDenseSolver()
 {

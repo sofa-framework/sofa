@@ -27,8 +27,8 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/FullMatrix.h>
 #include <sofa/helper/map.h>
 #include <cmath>
 #include <fstream>
@@ -48,17 +48,17 @@ class PrecomputedWarpPreconditionerInternalData
 public :
     typedef typename TDataTypes::Coord Coord;
     typedef typename Coord::value_type Real;
-    typedef FullMatrix<Real> TBaseMatrix;
-    typedef FullVector<Real> TBaseVector;
+    typedef linearalgebra::FullMatrix<Real> TBaseMatrix;
+    typedef linearalgebra::FullVector<Real> TBaseVector;
 
-    SparseMatrix<Real> JR;
-    FullMatrix<Real> JRMinv;
-    FullMatrix<Real>* MinvPtr;
+    linearalgebra::SparseMatrix<Real> JR;
+    linearalgebra::FullMatrix<Real> JRMinv;
+    linearalgebra::FullMatrix<Real>* MinvPtr;
     std::vector<int> idActiveDofs;
     std::vector<int> invActiveDofs;
     bool shared;
     PrecomputedWarpPreconditionerInternalData()
-        : MinvPtr(new FullMatrix<Real>), shared(false)
+        : MinvPtr(new linearalgebra::FullMatrix<Real>), shared(false)
     {
     }
 
@@ -67,16 +67,16 @@ public :
         if (!shared && MinvPtr!=nullptr) delete MinvPtr;
     }
 
-    void setMinv(FullMatrix<Real>* m, bool shared = true)
+    void setMinv(linearalgebra::FullMatrix<Real>* m, bool shared = true)
     {
         if (!this->shared && MinvPtr!=nullptr) delete this->MinvPtr;
         this->MinvPtr = m;
         this->shared = shared;
     }
 
-    static FullMatrix<Real>* getSharedMatrix(const std::string& name)
+    static linearalgebra::FullMatrix<Real>* getSharedMatrix(const std::string& name)
     {
-        static std::map< std::string,FullMatrix<Real> > matrices;
+        static std::map< std::string, linearalgebra::FullMatrix<Real> > matrices;
         return &(matrices[name]);
     }
 
@@ -93,11 +93,11 @@ public :
 
 /// Linear system solver based on a precomputed inverse matrix, wrapped by a per-node rotation matrix
 template<class TDataTypes>
-class PrecomputedWarpPreconditioner : public sofa::component::linearsolver::MatrixLinearSolver<CompressedRowSparseMatrix<typename TDataTypes::Real>,typename PrecomputedWarpPreconditionerInternalData<TDataTypes>::TBaseVector>
+class PrecomputedWarpPreconditioner : public sofa::component::linearsolver::MatrixLinearSolver<linearalgebra::CompressedRowSparseMatrix<typename TDataTypes::Real>,typename PrecomputedWarpPreconditionerInternalData<TDataTypes>::TBaseVector>
 {
 public:
     typedef typename TDataTypes::Real Real;
-    typedef CompressedRowSparseMatrix<Real> TMatrix;
+    typedef linearalgebra::CompressedRowSparseMatrix<Real> TMatrix;
     typedef typename PrecomputedWarpPreconditionerInternalData<TDataTypes>::TBaseVector TVector;
     typedef typename PrecomputedWarpPreconditionerInternalData<TDataTypes>::TBaseMatrix TBaseMatrix;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
@@ -127,7 +127,7 @@ public:
     void solve (TMatrix& M, TVector& x, TVector& b) override;
     void invert(TMatrix& M) override;
     void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
-    bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
+    bool addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, double fact) override;
     void draw(const core::visual::VisualParams* vparams) override;
     void init() override;
     void loadMatrix(TMatrix& M);
@@ -163,7 +163,7 @@ protected :
     void loadMatrixWithSolver();
 
     template<class JMatrix>
-    void ComputeResult(defaulttype::BaseMatrix * result,JMatrix& J, float fact);
+    void ComputeResult(linearalgebra::BaseMatrix * result,JMatrix& J, float fact);
 
 
     template<class JMatrix>

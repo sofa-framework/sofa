@@ -114,11 +114,11 @@ public:
 
     void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce ) override;
 
-    const sofa::defaulttype::BaseMatrix* getJ() override;
-    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    const sofa::linearalgebra::BaseMatrix* getJ() override;
+    virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
 
     void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce ) override;
-    const defaulttype::BaseMatrix* getK() override;
+    const linearalgebra::BaseMatrix* getK() override;
 
     void draw(const core::visual::VisualParams* vparams) override;
     Data<float> d_showObjectScale; ///< Scale for object display
@@ -129,7 +129,7 @@ protected:
     virtual ~DistanceFromTargetMapping();
 
     SparseMatrixEigen jacobian;                      ///< Jacobian of the mapping
-    type::vector<defaulttype::BaseMatrix*> baseMatrices;   ///< Jacobian of the mapping, in a vector
+    type::vector<linearalgebra::BaseMatrix*> baseMatrices;   ///< Jacobian of the mapping, in a vector
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
     type::vector<Direction> directions;                         ///< Unit vectors in the directions of the lines
     type::vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)

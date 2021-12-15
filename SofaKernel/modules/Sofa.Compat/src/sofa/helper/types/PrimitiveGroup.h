@@ -21,12 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/PrimitiveGroup.h>
+#include <sofa/config.h>
 
-// SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/helper/types/PrimitiveGroup.h")
-
-namespace sofa::helper::types
-{
-    using PrimitiveGroup = sofa::type::PrimitiveGroup;
-
-} // namespace sofa::helper::types
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/type/PrimitiveGroup.h")

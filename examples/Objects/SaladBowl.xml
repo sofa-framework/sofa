@@ -1,5 +1,5 @@
 <Node name="Salad Bowl">
-    <MeshObjLoader name="meshLoader" filename="mesh/SaladBowl.obj" handleSeams="1"/>
+    <MeshOBJLoader name="meshLoader" filename="mesh/SaladBowl.obj" handleSeams="1"/>
     <MeshTopology src="@meshLoader" />
     <MechanicalObject scale="1"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0"/>
     <TriangleCollisionModel name="FloorTriangleModel" moving="false" simulated="false" contactStiffness="10"/>

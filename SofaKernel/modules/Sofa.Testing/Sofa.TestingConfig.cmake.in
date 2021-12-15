@@ -3,6 +3,7 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
+find_package(Threads REQUIRED)
 find_package(GTest CONFIG QUIET REQUIRED)
 find_package(SofaGTestMain QUIET REQUIRED)
 find_package(SofaFramework QUIET REQUIRED)

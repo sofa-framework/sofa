@@ -23,7 +23,7 @@
 
     </Node>
     <Node name="GrabSurfaceL">
-      <MeshObjLoader name="loaderPince" filename="./data/pince_cm_left_cut.obj" triangulate="1" />
+      <MeshOBJLoader name="loaderPince" filename="./data/pince_cm_left_cut.obj" triangulate="1" />
       <MeshTopology src="@loaderPince" />
       <MechanicalObject name="vertices" src="@loaderPince" />
       <TriangleCollisionModel group="1" simulated="0" moving="1" />
@@ -32,7 +32,7 @@
       <RigidMapping index="0" />
     </Node>
     <Node name="GrabSurfaceR">
-      <MeshObjLoader name="loaderPince" filename="./data/pince_cm_right_cut.obj" triangulate="1" />
+      <MeshOBJLoader name="loaderPince" filename="./data/pince_cm_right_cut.obj" triangulate="1" />
       <MeshTopology src="@loaderPince" />
       <MechanicalObject name="vertices" src="@loaderPince" />
       <TriangleCollisionModel group="1" simulated="0" moving="1" />

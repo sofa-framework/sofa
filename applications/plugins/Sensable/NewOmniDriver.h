@@ -52,7 +52,7 @@
 #include <cstring>
 
 #include <SofaOpenglVisual/OglModel.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 #include <SofaBaseVisual/InteractiveCamera.h>
 
 #include <math.h>

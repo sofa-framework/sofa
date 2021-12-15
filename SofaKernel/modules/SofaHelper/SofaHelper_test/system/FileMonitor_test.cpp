@@ -25,6 +25,7 @@
 #include <algorithm>
 #include <thread>
 #include <chrono>
+#include <cstdio>
 
 #include <vector>
 using std::vector ;
@@ -133,13 +134,17 @@ TEST(FileMonitor, addFileExist_test)
     MyFileListener listener ;
 
     // create the file
-    createAFilledFile(getPath("existing.txt"), 1) ;
+    const std::string filepath = getPath("existing.txt");
+    createAFilledFile(filepath, 1) ;
     waitABit();
 
     // Add an existing file.It should work.
-    EXPECT_EQ( FileMonitor::addFile(getPath("existing.txt"), &listener), 1 ) ;
+    EXPECT_EQ( FileMonitor::addFile(filepath, &listener), 1 ) ;
 
     FileMonitor::removeListener(&listener) ;
+
+    // remove file
+    std::remove(filepath.c_str());
 }
 
 TEST(FileMonitor, addFileTwice_test)
@@ -147,38 +152,46 @@ TEST(FileMonitor, addFileTwice_test)
     MyFileListener listener ;
 
     // create the file
-    createAFilledFile(getPath("existing.txt"), 1) ;
+    const std::string filepath = getPath("existing.txt");
+    createAFilledFile(filepath, 1) ;
     waitABit();
 
     // Add an existing file.It should work.
-    FileMonitor::addFile(getPath("existing.txt"), &listener);
+    FileMonitor::addFile(filepath, &listener);
 
     // Retry to add an existing file. It should fail.
-    EXPECT_EQ( FileMonitor::addFile(getPath("existing.txt"), &listener), 1 ) ;
+    EXPECT_EQ( FileMonitor::addFile(filepath, &listener), 1 ) ;
 
     // change the file content..
-    createAFilledFile(getPath("existing.txt"), 10) ;
+    createAFilledFile(filepath, 10) ;
     FileMonitor::updates(2) ;
 
     // The listener should be notified 1 times with the same event.
     EXPECT_EQ( listener.m_files.size(), 1u) ;
 
     FileMonitor::removeListener(&listener) ;
+
+    // remove file
+    std::remove(filepath.c_str());
 }
 
 TEST(FileMonitor, noUpdate_test)
 {
     MyFileListener listener ;
+    const std::string filepath = getPath("existing.txt");
 
     // create the file
-    createAFilledFile(getPath("existing.txt"), 1) ;
+    createAFilledFile(filepath, 1) ;
     waitABit();
 
     // Add an existing file.It should work.
-    FileMonitor::addFile(getPath("existing.txt"), &listener) ;
+    FileMonitor::addFile(filepath, &listener) ;
     EXPECT_EQ( listener.m_files.size(), 0u) ;
 
     FileMonitor::removeListener(&listener) ;
+
+    // remove file
+    std::remove(filepath.c_str());
 }
 
 TEST(FileMonitor, updateNoChange_test)
@@ -186,15 +199,19 @@ TEST(FileMonitor, updateNoChange_test)
     MyFileListener listener ;
 
     // create the file
-    createAFilledFile(getPath("existing.txt"), 1) ;
+    const std::string filepath = getPath("existing.txt");
+    createAFilledFile(filepath, 1) ;
     waitABit();
 
-    FileMonitor::addFile(getPath("existing.txt"), &listener) ;
+    FileMonitor::addFile(filepath, &listener) ;
     FileMonitor::updates(1) ;
 
     EXPECT_EQ( listener.m_files.size(), 0u) ;
 
     FileMonitor::removeListener(&listener) ;
+
+    // remove file
+    std::remove(filepath.c_str());
 }
 
 TEST(FileMonitor, fileChange_test)
@@ -202,17 +219,21 @@ TEST(FileMonitor, fileChange_test)
     MyFileListener listener ;
 
     // create the file
-    createAFilledFile(getPath("existing.txt"), 1) ;
+    const std::string filepath = getPath("existing.txt");
+    createAFilledFile(filepath, 1) ;
     waitABit();
 
-    FileMonitor::addFile(getPath("existing.txt"), &listener) ;
+    FileMonitor::addFile(filepath, &listener) ;
 
     // change the file content..
-    createAFilledFile(getPath("existing.txt"), 10,false) ;
+    createAFilledFile(filepath, 10,false) ;
     FileMonitor::updates(2) ;
     EXPECT_EQ( listener.m_files.size(), 1u) ;
 
     FileMonitor::removeListener(&listener) ;
+
+    // remove file
+    std::remove(filepath.c_str());
 }
 
 TEST(FileMonitor, fileChangeTwice_test)
@@ -220,20 +241,24 @@ TEST(FileMonitor, fileChangeTwice_test)
     MyFileListener listener ;
 
     // create the file
-    createAFilledFile(getPath("existing.txt"), 1) ;
+    const std::string filepath = getPath("existing.txt");
+    createAFilledFile(filepath, 1) ;
     waitABit();
 
-    FileMonitor::addFile(getPath("existing.txt"), &listener) ;
+    FileMonitor::addFile(filepath, &listener) ;
 
     // change the file content 2x to test if the events are coalesced.
     listener.m_files.clear() ;
-    createAFilledFile(getPath("existing.txt"), 100,false) ;
-    createAFilledFile(getPath("existing.txt"), 200,false) ;
+    createAFilledFile(filepath, 100,false) ;
+    createAFilledFile(filepath, 200,false) ;
 
     FileMonitor::updates(2) ;
     EXPECT_EQ( listener.m_files.size(), 1u) ;
 
     FileMonitor::removeListener(&listener) ;
+
+    // remove file
+    std::remove(filepath.c_str());
 }
 
 TEST(FileMonitor, fileListenerRemoved_test)
@@ -242,18 +267,19 @@ TEST(FileMonitor, fileListenerRemoved_test)
     MyFileListener listener2 ;
 
     // create the file
-    createAFilledFile(getPath("existing.txt"), 1) ;
+    const std::string filepath = getPath("existing.txt");
+    createAFilledFile(filepath, 1) ;
     waitABit();
 
-    FileMonitor::addFile(getPath("existing.txt"), &listener1) ;
-    FileMonitor::addFile(getPath("existing.txt"), &listener2) ;
+    FileMonitor::addFile(filepath, &listener1) ;
+    FileMonitor::addFile(filepath, &listener2) ;
 
     // change the file content 2x to test if the events are coalesced.
     listener1.m_files.clear() ;
     listener2.m_files.clear() ;
-    createAFilledFile(getPath("existing.txt"), 200, false) ;
+    createAFilledFile(filepath, 200, false) ;
 
-    FileMonitor::removeFileListener(getPath("existing.txt"), &listener1) ;
+    FileMonitor::removeFileListener(filepath, &listener1) ;
 
     FileMonitor::updates(2) ;
     EXPECT_EQ( listener1.m_files.size(), 0u) ;
@@ -261,6 +287,9 @@ TEST(FileMonitor, fileListenerRemoved_test)
 
     FileMonitor::removeListener(&listener1) ;
     FileMonitor::removeListener(&listener2) ;
+
+    // remove file
+    std::remove(filepath.c_str());
 }
 
 TEST(FileMonitor, listenerRemoved_test)
@@ -269,16 +298,17 @@ TEST(FileMonitor, listenerRemoved_test)
     MyFileListener listener2 ;
 
     // create the file
-    createAFilledFile(getPath("existing.txt"), 1) ;
+    const std::string filepath = getPath("existing.txt");
+    createAFilledFile(filepath, 1) ;
     waitABit();
 
-    FileMonitor::addFile(getPath("existing.txt"), &listener1) ;
-    FileMonitor::addFile(getPath("existing.txt"), &listener2) ;
+    FileMonitor::addFile(filepath, &listener1) ;
+    FileMonitor::addFile(filepath, &listener2) ;
 
     // change the file content 2x to test if the events are coalesced.
     listener1.m_files.clear() ;
     listener2.m_files.clear() ;
-    createAFilledFile(getPath("existing.txt"), 200,false) ;
+    createAFilledFile(filepath, 200,false) ;
 
     FileMonitor::removeListener(&listener1) ;
 
@@ -288,6 +318,9 @@ TEST(FileMonitor, listenerRemoved_test)
 
     FileMonitor::removeListener(&listener1) ;
     FileMonitor::removeListener(&listener2) ;
+
+    // remove file
+    std::remove(filepath.c_str());
 }
 
 TEST(FileMonitor, fileChange2_test)
@@ -295,16 +328,20 @@ TEST(FileMonitor, fileChange2_test)
     MyFileListener listener ;
 
     // create the file
-    createAFilledFile(getPath("existing.txt"), 1) ;
+    const std::string filepath = getPath("existing.txt");
+    createAFilledFile(filepath, 1) ;
     waitABit();
 
-    FileMonitor::addFile(getPath(""),"existing.txt", &listener) ;
+    FileMonitor::addFile(getPath(""), "existing.txt", &listener) ;
 
     // change the file content..
-    createAFilledFile(getPath("existing.txt"), 10,false) ;
+    createAFilledFile(filepath, 10,false) ;
 
     FileMonitor::updates(2) ;
     EXPECT_EQ( listener.m_files.size(), 1u) ;
 
     FileMonitor::removeListener(&listener) ;
+
+    // remove file
+    std::remove(filepath.c_str());
 }

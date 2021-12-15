@@ -142,7 +142,7 @@ void SlidingConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintP
 
 
 template<class DataTypes>
-void SlidingConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams *, defaulttype::BaseVector *v, const DataVecCoord &, const DataVecCoord &
+void SlidingConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams *, linearalgebra::BaseVector *v, const DataVecCoord &, const DataVecCoord &
         , const DataVecDeriv &, const DataVecDeriv &)
 {
     v->set(m_cid, m_dist);
@@ -172,7 +172,7 @@ void SlidingConstraint<DataTypes>::getConstraintResolution(const ConstraintParam
 
 
 template<class DataTypes>
-void SlidingConstraint<DataTypes>::storeLambda(const ConstraintParams* /*cParams*/, sofa::core::MultiVecDerivId /*res*/, const sofa::defaulttype::BaseVector* lambda)
+void SlidingConstraint<DataTypes>::storeLambda(const ConstraintParams* /*cParams*/, sofa::core::MultiVecDerivId /*res*/, const sofa::linearalgebra::BaseVector* lambda)
 {
     Real lamb1,lamb2, lamb3;
 

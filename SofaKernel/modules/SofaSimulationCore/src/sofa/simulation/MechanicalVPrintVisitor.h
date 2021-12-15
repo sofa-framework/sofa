@@ -26,7 +26,6 @@
 #include <iostream>
 
 
-#include <sofa/core/VecId.h>
 #include <sofa/core/MultiVecId.h>
 
 

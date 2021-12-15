@@ -25,12 +25,12 @@
             <UniformMass totalMass="40.0" printLog="false" />
             <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0" />
             <Node name="Visu">
-                <MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" scale="1.0" handleSeams="1" />
+                <MeshOBJLoader name="meshLoader_0" filename="mesh/torus.obj" scale="1.0" handleSeams="1" />
                 <OglModel name="Visual" src="@meshLoader_0" color="1.0 0.5 0.25 1.0" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
-                <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" triangulate="true" />
+                <MeshOBJLoader name="loader" filename="mesh/torus_for_collision.obj" triangulate="true" />
                 <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" scale="1.0" />
                 <TriangleCollisionModel />
@@ -45,12 +45,12 @@
             <UniformMass totalMass="100.0" printLog="false" />
             <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0" />
             <Node name="Visu">
-                <MeshObjLoader name="meshLoader_2" filename="mesh/man.obj" scale="10" handleSeams="1" />
+                <MeshOBJLoader name="meshLoader_2" filename="mesh/man.obj" scale="10" handleSeams="1" />
                 <OglModel name="Visual" src="@meshLoader_2" color="0.8 0.8 0.8 1.0" dy="-3.0" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
-                <MeshObjLoader name="loader" filename="mesh/man.obj" triangulate="true" />
+                <MeshOBJLoader name="loader" filename="mesh/man.obj" triangulate="true" />
                 <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" scale="10" dy="-3.0" />
                 <TriangleCollisionModel />
@@ -64,12 +64,12 @@
             <UniformMass totalMass="100.0" printLog="false" />
             <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0" />
             <Node name="Visu">
-                <MeshObjLoader name="meshLoader_4" filename="mesh/smCube27.obj" scale="0.3" handleSeams="1" />
+                <MeshOBJLoader name="meshLoader_4" filename="mesh/smCube27.obj" scale="0.3" handleSeams="1" />
                 <OglModel name="Visual" src="@meshLoader_4" color="0.0 0.5 0.5 1.0" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
-                <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
+                <MeshOBJLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
                 <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" scale="0.3" />
                 <TriangleCollisionModel />
@@ -84,12 +84,12 @@
             <UniformMass totalMass="100.0" printLog="false" />
             <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0" />
             <Node name="Visu">
-                <MeshObjLoader name="meshLoader_1" filename="mesh/dragon_clean.obj" scale="0.25" handleSeams="1" />
+                <MeshOBJLoader name="meshLoader_1" filename="mesh/dragon_clean.obj" scale="0.25" handleSeams="1" />
                 <OglModel name="Visual" src="@meshLoader_1" color="0.2 0.2 0.8 1.0" />
                 <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
-                <MeshObjLoader name="loader" filename="mesh/dragon_clean.obj" triangulate="true" />
+                <MeshOBJLoader name="loader" filename="mesh/dragon_clean.obj" triangulate="true" />
                 <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" scale="0.25" />
                 <TriangleCollisionModel />
@@ -99,13 +99,13 @@
             </Node>
         </Node>
         <Node name="BOX">
-            <MeshObjLoader name="loader" filename="mesh/box_inside.obj" triangulate="true" />
+            <MeshOBJLoader name="loader" filename="mesh/box_inside.obj" triangulate="true" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel simulated="0" moving="0" />
             <LineCollisionModel simulated="0" moving="0" />
             <PointCollisionModel simulated="0" moving="0" />
-            <MeshObjLoader name="meshLoader_3" filename="mesh/box_outside.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_3" filename="mesh/box_outside.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_3" color="1 0 0 0.3" />
         </Node>
     </Node>

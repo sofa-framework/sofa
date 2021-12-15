@@ -26,7 +26,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/Mat.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 
 #ifdef PLOT_CURVE
 #include <map>
@@ -178,8 +178,8 @@ public:
     };
 
     /// Topology Data
-    topology::TriangleData<sofa::type::vector<TriangleInformation> > triangleInfo;
-    topology::PointData<sofa::type::vector<VertexInformation> > vertexInfo; ///< Internal point data
+    core::topology::TriangleData<sofa::type::vector<TriangleInformation> > triangleInfo;
+    core::topology::PointData<sofa::type::vector<VertexInformation> > vertexInfo; ///< Internal point data
 
     /** Method to initialize @sa TriangleInformation when a new Triangle is created.
     * Will be set as creation callback in the TriangleData @sa triangleInfo

@@ -26,7 +26,7 @@
 #include "HexahedralFEMForceField.h"
 #include <sofa/core/behavior/Mass.h>
 
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 
 namespace sofa::component::forcefield
 {
@@ -125,11 +125,11 @@ protected:
     Data<Real> _density; ///< density == volumetric mass in english (kg.m-3)
     Data<bool> _useLumpedMass; ///< Does it use lumped masses?
 
-    topology::HexahedronData<sofa::type::vector<ElementMass> > _elementMasses; ///< mass matrices per element
-    topology::HexahedronData<sofa::type::vector<Real> > _elementTotalMass; ///< total mass per element
+    core::topology::HexahedronData<sofa::type::vector<ElementMass> > _elementMasses; ///< mass matrices per element
+    core::topology::HexahedronData<sofa::type::vector<Real> > _elementTotalMass; ///< total mass per element
 
-    topology::PointData<sofa::type::vector<Real> > _particleMasses; ///< masses per particle in order to compute gravity
-    topology::PointData<sofa::type::vector<Coord> > _lumpedMasses; ///< masses per particle computed by lumping mass matrices
+    core::topology::PointData<sofa::type::vector<Real> > _particleMasses; ///< masses per particle in order to compute gravity
+    core::topology::PointData<sofa::type::vector<Coord> > _lumpedMasses; ///< masses per particle computed by lumping mass matrices
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELDANDMASS_CPP)

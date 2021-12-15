@@ -28,7 +28,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/Mat.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 
@@ -95,7 +95,7 @@ protected:
 public:
 
     /// where the springs information are stored
-    sofa::component::topology::EdgeData<sofa::type::vector<Spring> > springArray;
+    sofa::core::topology::EdgeData<sofa::type::vector<Spring> > springArray;
 
     /// the filename where to load the spring information
     sofa::core::objectmodel::DataFileName m_filename;
@@ -151,7 +151,7 @@ public:
     {
         return Real(m_viscosity.getValue());
     }
-    const topology::EdgeData<sofa::type::vector<Spring> >& getSpringArray() const
+    const core::topology::EdgeData<sofa::type::vector<Spring> >& getSpringArray() const
     {
         return springArray;
     }

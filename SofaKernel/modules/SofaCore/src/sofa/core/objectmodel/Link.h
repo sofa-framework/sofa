@@ -468,11 +468,8 @@ public:
         m_owner->addLink(this);
     }
 
-    SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1717)", "v21.12", "Use PathResolver::CheckPaths(Base*, BaseClass*, string) instead.")
-    static bool CheckPath(const std::string& path, Base* context)
-    {
-        return PathResolver::CheckPath(context, sofa::core::objectmodel::base::GetClass<DestType>(), path);
-    }
+    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1717)", "v21.12", "Use PathResolver::CheckPaths(Base*, BaseClass*, string) instead.")
+    static bool CheckPath(const std::string& path, Base* context) = delete;
 
 protected:
     OwnerType* m_owner {nullptr};
@@ -611,11 +608,8 @@ public:
         return get(index);
     }
 
-    SOFA_ATTRIBUTE_DEPRECATED("v21.06 (PR#1717)", "v21.12", "Use PathResolver::CheckPaths(Base*, BaseClass*, string) instead.")
-    static bool CheckPaths(const std::string& pathes, Base* context)
-    {
-        return PathResolver::CheckPaths(context, DestType::GetClass(), pathes);
-    }
+    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#1717)", "v21.12", "Use PathResolver::CheckPaths(Base*, BaseClass*, string) instead.")
+    static bool CheckPaths(const std::string& pathes, Base* context) = delete;
 
 protected:
     ValidatorFn m_validator;

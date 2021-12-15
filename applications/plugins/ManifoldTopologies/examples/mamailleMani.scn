@@ -11,7 +11,7 @@
 	<DefaultCollisionGroupManager />
 	<Node name="SquareGravity">
 		<CGImplicit iterations="40" tolerance="1e-6" threshold="1e-10"/>
-                <MeshObjLoader name="loader" filename="mesh/square1.obj" />
+                <MeshOBJLoader name="loader" filename="mesh/square1.obj" />
 		<MechanicalObject src="@loader" scale="10" />
 		
 	<ManifoldTriangleSetTopologyContainer src="@loader"  name="Container" fileTopology=""/>

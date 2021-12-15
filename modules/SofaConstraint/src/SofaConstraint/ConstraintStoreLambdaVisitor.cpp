@@ -21,11 +21,12 @@
 ******************************************************************************/
 #include <sofa/core/behavior/BaseConstraint.h>
 #include <SofaConstraint/ConstraintStoreLambdaVisitor.h>
+#include <sofa/core/ConstraintParams.h>
 
 namespace sofa::simulation
 {
 
-ConstraintStoreLambdaVisitor::ConstraintStoreLambdaVisitor(const sofa::core::ConstraintParams* cParams, const sofa::defaulttype::BaseVector* lambda)
+ConstraintStoreLambdaVisitor::ConstraintStoreLambdaVisitor(const sofa::core::ConstraintParams* cParams, const sofa::linearalgebra::BaseVector* lambda)
 :BaseMechanicalVisitor(cParams)
 ,m_cParams(cParams)
 ,m_lambda(lambda)

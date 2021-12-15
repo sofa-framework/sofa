@@ -19,7 +19,7 @@
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
-            <MeshObjLoader filename="mesh/smCube27.obj" name="loader" />
+            <MeshOBJLoader filename="mesh/smCube27.obj" name="loader" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader"/>
             <TriangleCollisionModel />
@@ -40,7 +40,7 @@
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
-            <MeshObjLoader filename="mesh/smCube27.obj" name="loader" />
+            <MeshOBJLoader filename="mesh/smCube27.obj" name="loader" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader"/>
             <TriangleCollisionModel />
@@ -61,7 +61,7 @@
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
-            <MeshObjLoader filename="mesh/smCube27.obj" name="loader" />
+            <MeshOBJLoader filename="mesh/smCube27.obj" name="loader" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader"/>
             <TriangleCollisionModel />
@@ -82,7 +82,7 @@
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
-            <MeshObjLoader filename="mesh/smCube27.obj" name="loader" />
+            <MeshOBJLoader filename="mesh/smCube27.obj" name="loader" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader"/>
             <TriangleCollisionModel />
@@ -109,7 +109,7 @@
 			<BarycentricMapping input="@.." output="@Visual" />
 		</Node>
 		<Node name="Surf">
-			<MeshObjLoader filename="mesh/smCube27.obj"  name="loader"/>
+			<MeshOBJLoader filename="mesh/smCube27.obj"  name="loader"/>
 			<MeshTopology src="@loader" />
 			<MechanicalObject src="@loader" />
 			<TriangleCollisionModel />
@@ -120,7 +120,7 @@
 	</Node>
 	-->
     <Node name="Floor">
-        <MeshObjLoader filename="mesh/floor3.obj" name="loader" />
+        <MeshOBJLoader filename="mesh/floor3.obj" name="loader" />
         <MeshTopology src="@loader" />
         <MechanicalObject src="@loader" dy="-20" />
         <TriangleCollisionModel name="Floor" simulated="0" moving="0" />

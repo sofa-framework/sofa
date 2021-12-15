@@ -21,13 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/SVector.h>
+#include <sofa/config.h>
 
-SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/type/SVector.h")
-
-namespace sofa::helper
-{
-    template< class T >
-    using SVector = sofa::type::SVector<T>;
-
-} // namespace sofa::helper
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/type/SVector.h")

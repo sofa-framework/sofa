@@ -25,8 +25,8 @@ using std::vector;
 #include <string>
 using std::string;
 
-#include <sofa/testing/BaseTest.h>
-using sofa::testing::BaseTest;
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
@@ -51,7 +51,7 @@ using ::testing::Types;
 namespace {
 std::string tempdir = std::filesystem::temp_directory_path().string() ;
 
-class MeshExporter_test : public BaseTest,
+class MeshExporter_test : public BaseSimulationTest,
                           public ::testing::WithParamInterface<vector<string>>
 {
 public:

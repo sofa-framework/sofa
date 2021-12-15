@@ -26,6 +26,8 @@
 namespace sofa::component::linearsolver
 {
 
+using namespace sofa::linearalgebra;
+
 int SparseLUSolverClass = core::RegisterObject("Direct linear solver based on Sparse LU factorization, implemented with the CSPARSE library")
         .add< SparseLUSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >()
         ;

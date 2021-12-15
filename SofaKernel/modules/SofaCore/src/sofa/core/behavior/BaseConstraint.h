@@ -108,7 +108,7 @@ public:
     ///        the constraint jacobian J is stored.
     /// \param res is the state vector Id where to store the result.
     /// \param lambda is the vector of scalar constraint impulses. The direction are stored in the MatrixDerivId stored in the cParams.
-    virtual void storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::defaulttype::BaseVector* lambda) = 0;
+    virtual void storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::linearalgebra::BaseVector* lambda) = 0;
 };
 
 } // namespace sofa::core::behavior

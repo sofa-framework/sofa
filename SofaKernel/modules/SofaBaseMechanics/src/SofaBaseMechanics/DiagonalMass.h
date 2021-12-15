@@ -25,7 +25,7 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/Mass.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 #include <sofa/type/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -42,7 +42,7 @@ class DiagonalMassInternalData
 public :
     typedef typename DataTypes::Real Real;
     typedef type::vector<TMassType> MassVector;
-    typedef sofa::component::topology::PointData<MassVector> VecMass;
+    typedef sofa::core::topology::PointData<MassVector> VecMass;
 
     // In case of non 3D template
     typedef sofa::type::Vec<3,Real> Vec3;
@@ -250,8 +250,8 @@ public:
     void printMass();
 
     /// Compute the mass from input values
-    SOFA_ATTRIBUTE_DEPRECATED("v21.06", "v21.12", "ComputeMass should not be called from outside. Changing one of the Data: density, totalMass or vertexMass will recompute the mass.")
-    void computeMass();
+    SOFA_ATTRIBUTE_DISABLED("v21.06", "v21.12", "ComputeMass should not be called from outside. Changing one of the Data: density, totalMass or vertexMass will recompute the mass.")
+    void computeMass() = delete;
 
 
     /// @name Read and write access functions in mass information
@@ -303,7 +303,7 @@ public:
 
 
     SReal getElementMass(sofa::Index index) const override;
-    void getElementMass(sofa::Index, defaulttype::BaseMatrix *m) const override;
+    void getElementMass(sofa::Index, linearalgebra::BaseMatrix *m) const override;
 
     bool isDiagonal() const override {return true;}
 

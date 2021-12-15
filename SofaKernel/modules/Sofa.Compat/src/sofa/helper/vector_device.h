@@ -21,12 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/vector_device.h>
+#include <sofa/config.h>
 
-SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/type/vector_device.h")
-
-namespace sofa::helper
-{
-    template <class T, class MemoryManager, class DataTypeInfo >
-    using vector_device = sofa::type::vector_device<T, MemoryManager, DataTypeInfo>;
-} // namespace sofa::helper
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/type/vector_device.h")

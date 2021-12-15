@@ -30,7 +30,7 @@
 #include <sofa/type/vector.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 
 
 namespace sofa::component::forcefield
@@ -167,10 +167,10 @@ public:
     */
     void applyTetrahedronDestruction(const sofa::type::vector<Index>& tetrahedronRemoved);
 
-    topology::EdgeData < edgeRestInfoVector >& getEdgeInfo() { return edgeInfo; }
+    core::topology::EdgeData < edgeRestInfoVector >& getEdgeInfo() { return edgeInfo; }
 
 protected:
-    topology::EdgeData < edgeRestInfoVector > edgeInfo; ///< Internal edge data
+    core::topology::EdgeData < edgeRestInfoVector > edgeInfo; ///< Internal edge data
 
     sofa::core::topology::BaseMeshTopology* m_topology;
 

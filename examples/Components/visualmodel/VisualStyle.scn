@@ -21,7 +21,7 @@
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
         <Node name="WireframeVisu" >
             <VisualStyle displayFlags="showVisual showWireframe" />
-            <MeshObjLoader name="meshLoader_1" filename="mesh/liver-smooth.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_1" filename="mesh/liver-smooth.obj" handleSeams="1" />
             <OglModel name="VisualModel" src="@meshLoader_1" />
             <BarycentricMapping name="visual mapping" input="@../dofs" output="@VisualModel" />
         </Node>
@@ -36,7 +36,7 @@
         
         <Node name="TranslatedSurface" gravity="0 -9.81 0">
 <!--             default rendering should be flat rendered and not wireframed -->
-            <MeshObjLoader name="meshLoader_0" filename="mesh/liver.obj" translation="5 0 0" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/liver.obj" translation="5 0 0" handleSeams="1" />
             <OglModel src="@meshLoader_0" />
         </Node>
         

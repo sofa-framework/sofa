@@ -21,13 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/stable_vector.h>
+#include <sofa/config.h>
 
-SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/type/stable_vector.h")
-
-namespace sofa::helper
-{
-    template<class T, class A = std::allocator<T>>
-    using stable_vector = sofa::type::stable_vector<T, A>;
-
-} // namespace sofa::helper
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/type/stable_vector.h")

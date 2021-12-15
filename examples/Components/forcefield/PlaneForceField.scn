@@ -21,12 +21,12 @@
         <RegularGridSpringForceField name="Springs" stiffness="1000" />
         <PlaneForceField normal="0 1 0" d="-10" stiffness="100000" showPlane="1" showPlaneSize="20"/>
         <Node name="Visu">
-            <MeshObjLoader name="meshLoader_0" filename="mesh/smCube125.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/smCube125.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_0" color="blue" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Collis">
-            <MeshObjLoader name="loader" filename="mesh/smCube125.obj" />
+            <MeshOBJLoader name="loader" filename="mesh/smCube125.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel />

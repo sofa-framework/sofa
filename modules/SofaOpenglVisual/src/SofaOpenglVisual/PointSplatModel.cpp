@@ -34,7 +34,7 @@
 #include <SofaOpenglVisual/PointSplatModel.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 
 #include <sofa/type/RGBAColor.h>
 

@@ -27,7 +27,7 @@
 #include <sofa/helper/rmath.h>
 #include <cassert>
 #include <iostream>
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 
 namespace sofa::component::forcefield
 {
@@ -107,7 +107,7 @@ void SphereForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpar
 }
 
 template<class DataTypes>
-void SphereForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * mat, SReal kFactor, unsigned int &offset)
+void SphereForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal kFactor, unsigned int &offset)
 {
     const Real fact = (Real)(-this->stiffness.getValue()*kFactor);
     for (unsigned int i=0; i<this->contacts.getValue().size(); i++)

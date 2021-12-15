@@ -32,7 +32,7 @@ namespace sofa::simulation
 class SOFA_SOFACONSTRAINT_API ConstraintStoreLambdaVisitor : public BaseMechanicalVisitor
 {
 public:
-    ConstraintStoreLambdaVisitor(const sofa::core::ConstraintParams* cParams, const sofa::defaulttype::BaseVector* lambda);
+    ConstraintStoreLambdaVisitor(const sofa::core::ConstraintParams* cParams, const sofa::linearalgebra::BaseVector* lambda);
 
     Visitor::Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override;
 
@@ -42,7 +42,7 @@ public:
 
 private:
     const sofa::core::ConstraintParams* m_cParams;
-    const sofa::defaulttype::BaseVector* m_lambda;
+    const sofa::linearalgebra::BaseVector* m_lambda;
 };
 
 

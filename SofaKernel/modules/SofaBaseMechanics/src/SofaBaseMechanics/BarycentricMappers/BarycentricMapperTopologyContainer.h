@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaBaseMechanics/BarycentricMappers/TopologyBarycentricMapper.h>
 
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 #include <unordered_map>
 
 namespace sofa::component::mapping::_barycentricmappertopologycontainer_
@@ -73,7 +73,7 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
     void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
-    const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
+    const sofa::linearalgebra::BaseMatrix* getJ(int outSize, int inSize) override;
 
     template<class I, class O, class MDType, class E>
     friend std::istream& operator >> ( std::istream& in, BarycentricMapperTopologyContainer<I, O, MDType, E> &b );
@@ -130,7 +130,7 @@ protected:
 
     using Inherit1::m_fromTopology;
 
-    topology::PointData< type::vector<MappingDataType > > d_map;
+    core::topology::PointData< type::vector<MappingDataType > > d_map;
     MatrixType* m_matrixJ {nullptr};
     bool m_updateJ {false};
 

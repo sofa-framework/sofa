@@ -33,11 +33,9 @@
 #include <sofa/helper/ColorMap.h>
 #include <sofa/type/RGBAColor.h>
 
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 
 #include <sofa/helper/system/thread/debug.h>
-#include <newmat/newmat.h>
-#include <newmat/newmatap.h>
 
 #include <fstream> // for reading the file
 #include <iostream> //for debugging

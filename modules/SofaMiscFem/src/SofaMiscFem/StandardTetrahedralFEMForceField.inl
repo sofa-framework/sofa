@@ -38,11 +38,11 @@
 #include <sofa/core/MechanicalParams.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 #include <algorithm>
 #include <iterator>
 #include <sofa/helper/AdvancedTimer.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
 namespace sofa::component::forcefield
 {
@@ -541,7 +541,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 }
 
 template<class DataTypes>
-void  StandardTetrahedralFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * mat, SReal kFact, unsigned int &offset)
+void  StandardTetrahedralFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal kFact, unsigned int &offset)
 {
     unsigned int nbEdges=m_topology->getNbEdges();
     const type::vector< Edge> &edgeArray=m_topology->getEdges() ;
@@ -549,7 +549,7 @@ void  StandardTetrahedralFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttyp
     EdgeInformation *einfo;
     unsigned int i,j,N0, N1, l;
     Index noeud0, noeud1;
-    if (sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,Real> > * crsmat = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<type::Mat<3,3,Real> > * >(mat))
+    if (sofa::linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,Real> > * crsmat = dynamic_cast<sofa::linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,Real> > * >(mat))
     {
         int offd3 = offset/3;
 

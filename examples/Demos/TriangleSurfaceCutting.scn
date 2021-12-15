@@ -18,7 +18,7 @@
     <Node name="SquareGravity">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MeshObjLoader name="meshLoader" filename="mesh/square_2594_triangles.obj" scale="10" createSubelements="true" />
+        <MeshOBJLoader name="meshLoader" filename="mesh/square_2594_triangles.obj" scale="10" createSubelements="true" />
         <TriangleSetTopologyContainer  name="Container" src="@meshLoader"/>
         <TriangleSetTopologyModifier   name="Modifier" />
         <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />

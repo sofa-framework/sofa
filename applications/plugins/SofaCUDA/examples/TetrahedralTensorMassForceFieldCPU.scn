@@ -8,11 +8,11 @@
     <DefaultCollisionGroupManager name="Group" />
     <Node name="ChainFEM">
         <Node name="TorusFixed">
-            <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
+            <MeshOBJLoader name="loader" filename="mesh/torus2_for_collision.obj" />
             <MeshTopology src="@loader" />
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel simulated="0" moving="0" />
-            <MeshObjLoader name="meshLoader_3" filename="mesh/torus2.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_3" filename="mesh/torus2.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_3" color="gray" />
         </Node>
         <Node name="TorusTensorMass">
@@ -24,12 +24,12 @@
             <UniformMass totalMass="5" />
             <TetrahedralTensorMassForceField name="FEM" youngModulus="1000" poissonRatio="0.4" />
             <Node name="Visu">
-                <MeshObjLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
+                <MeshOBJLoader name="meshLoader_0" filename="mesh/torus.obj" handleSeams="1" />
                 <OglModel name="Visual" src="@meshLoader_0" color="red" dx="2.5" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
-                <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
+                <MeshOBJLoader name="loader" filename="mesh/torus_for_collision.obj" />
                 <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" dx="2.5" />
                 <TriangleCollisionModel />
@@ -45,12 +45,12 @@
             <UniformMass totalMass="5" />
             <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="polar" />
             <Node name="Visu">
-                <MeshObjLoader name="meshLoader_2" filename="mesh/torus2.obj" handleSeams="1" />
+                <MeshOBJLoader name="meshLoader_2" filename="mesh/torus2.obj" handleSeams="1" />
                 <OglModel name="Visual" src="@meshLoader_2" color="blue" dx="5" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
-                <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
+                <MeshOBJLoader name="loader" filename="mesh/torus2_for_collision.obj" />
                 <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" dx="5" />
                 <TriangleCollisionModel />
@@ -66,12 +66,12 @@
             <UniformMass totalMass="5" />
             <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="svd" />
             <Node name="Visu">
-                <MeshObjLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />
+                <MeshOBJLoader name="meshLoader_1" filename="mesh/torus.obj" handleSeams="1" />
                 <OglModel name="Visual" src="@meshLoader_1" color="yellow" dx="7.5" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
-                <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
+                <MeshOBJLoader name="loader" filename="mesh/torus_for_collision.obj" />
                 <MeshTopology src="@loader" />
                 <MechanicalObject src="@loader" dx="7.5" />
                 <TriangleCollisionModel />

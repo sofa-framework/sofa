@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/Mat_solve_SVD.h>
+#include <sofa/config.h>
 
-SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/type/Mat_solve_SVD.h")
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/type/Mat_solve_SVD.h")

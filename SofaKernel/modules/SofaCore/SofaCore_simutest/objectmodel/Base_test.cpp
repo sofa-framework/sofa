@@ -23,7 +23,7 @@
 using sofa::core::objectmodel::Base ;
 using sofa::core::objectmodel::ComponentState;
 
-#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+#include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 

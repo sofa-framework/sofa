@@ -23,9 +23,6 @@
 #define SOFA_SIMULATION_UPDATELINKSVISITOR_H
 
 #include <sofa/simulation/Visitor.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <string>
-
 
 namespace sofa
 {

@@ -27,7 +27,7 @@
         <UniformMass totalMass="10.0" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-            <MeshObjLoader name='myLoader1' filename='mesh/cube.obj'/>  
+            <MeshOBJLoader name='myLoader1' filename='mesh/cube.obj'/>  
             <OglModel name="Visual1" src='@myLoader1' color="1 1 0 1.0" />
             <RigidMapping input="@.." output="@Visual1" />
         </Node>
@@ -55,7 +55,7 @@
         <UniformMass totalMass="10.0" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-            <MeshObjLoader name='myLoader2' filename='mesh/cube.obj'/>  
+            <MeshOBJLoader name='myLoader2' filename='mesh/cube.obj'/>  
             <OglModel name="Visual2" src='@myLoader2' color="1 1 0 1.0" />
             <RigidMapping input="@.." output="@Visual2" />
         </Node>

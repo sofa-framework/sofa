@@ -11,7 +11,7 @@
   <RequiredPlugin name="SofaConstraint"/> <!-- Needed to use components [FreeMotionAnimationLoop, GenericConstraintCorrection, GenericConstraintSolver] -->
   <RequiredPlugin name="SofaGeneralEngine"/> <!-- Needed to use components [TransformEngine] -->
   <RequiredPlugin name="SofaImplicitOdeSolver"/> <!-- Needed to use components [EulerImplicitSolver] -->
-  <RequiredPlugin name="SofaLoader"/> <!-- Needed to use components [MeshObjLoader] -->
+  <RequiredPlugin name="SofaLoader"/> <!-- Needed to use components [MeshOBJLoader] -->
   <RequiredPlugin name="SofaMeshCollision"/> <!-- Needed to use components [LineCollisionModel, TriangleCollisionModel] -->
   <RequiredPlugin name="SofaMiscExtra"/> <!-- Needed to use components [MeshTetraStuffing] -->
   <RequiredPlugin name="SofaSimpleFem"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
@@ -27,12 +27,12 @@
   <NewProximityIntersection name="Intersection" alarmDistance="2.5" contactDistance="0.01" />
 
   <Node name="Mesh">
-    <MeshObjLoader name="MeshTorus1V" filename="mesh/torus1.obj" scale3d="10 10 10" triangulate="true"/>
-    <MeshObjLoader name="MeshTorus1C" filename="torus1-16x8.obj" scale3d="10 10 10" triangulate="true"/>
-    <MeshObjLoader name="MeshTorus1D05" filename="mesh/torus1-dilated-05.obj" scale3d="10 10 10" triangulate="true"/>
+    <MeshOBJLoader name="MeshTorus1V" filename="mesh/torus1.obj" scale3d="10 10 10" triangulate="true"/>
+    <MeshOBJLoader name="MeshTorus1C" filename="torus1-16x8.obj" scale3d="10 10 10" triangulate="true"/>
+    <MeshOBJLoader name="MeshTorus1D05" filename="mesh/torus1-dilated-05.obj" scale3d="10 10 10" triangulate="true"/>
     <MeshTetraStuffing name="stuffing" snapPoints="false" splitTetras="false" draw="false" size="13.859131548844" alphaLong="0.4" alphaShort="0.4" inputPoints="@MeshTorus1D05.position" inputTriangles="@MeshTorus1D05.triangles" />
     <TransformEngine name="TorusVVel" input_position="@stuffing.outputPoints" translation="0 -100 0" scale="0 0 0" />
-    <MeshObjLoader name="MeshCylinder" filename="mesh/cylinder.obj" scale3d="6.5 6.5 6.5" triangulate="true"/>
+    <MeshOBJLoader name="MeshCylinder" filename="mesh/cylinder.obj" scale3d="6.5 6.5 6.5" triangulate="true"/>
   </Node>
 
   <Node name="Simulation">

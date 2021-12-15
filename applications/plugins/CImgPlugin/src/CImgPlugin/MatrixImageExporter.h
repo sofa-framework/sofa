@@ -27,7 +27,7 @@
 
 namespace sofa::defaulttype
 {
-bool SOFA_CIMGPLUGIN_API writeMatrixImage(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix);
+bool SOFA_CIMGPLUGIN_API writeMatrixImage(const std::string& filename, sofa::linearalgebra::BaseMatrix* matrix);
 } //namespace sofa::defaulttype
 
 namespace sofa::component

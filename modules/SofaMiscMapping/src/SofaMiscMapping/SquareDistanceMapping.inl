@@ -203,13 +203,13 @@ void SquareDistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Da
 
 
 template <class TIn, class TOut>
-const sofa::defaulttype::BaseMatrix* SquareDistanceMapping<TIn, TOut>::getJ()
+const sofa::linearalgebra::BaseMatrix* SquareDistanceMapping<TIn, TOut>::getJ()
 {
     return &jacobian;
 }
 
 template <class TIn, class TOut>
-const type::vector<sofa::defaulttype::BaseMatrix*>* SquareDistanceMapping<TIn, TOut>::getJs()
+const type::vector<sofa::linearalgebra::BaseMatrix*>* SquareDistanceMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
 }
@@ -250,7 +250,7 @@ void SquareDistanceMapping<TIn, TOut>::updateK(const core::MechanicalParams *mpa
 }
 
 template <class TIn, class TOut>
-const defaulttype::BaseMatrix* SquareDistanceMapping<TIn, TOut>::getK()
+const linearalgebra::BaseMatrix* SquareDistanceMapping<TIn, TOut>::getK()
 {
     return &K;
 }

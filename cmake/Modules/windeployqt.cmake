@@ -23,6 +23,7 @@
 if(NOT EXISTS "${_qmake_executable}")
     if(TARGET Qt5::Core)
         get_target_property(_qmake_executable Qt5::qmake IMPORTED_LOCATION)
+        set(WINDEPLOYQT_ADDITIONAL_ARGS --no-angle )
     elseif(TARGET Qt6::Core)
         get_target_property(_qmake_executable Qt6::qmake IMPORTED_LOCATION)
     endif()
@@ -56,7 +57,7 @@ function(windeployqt target build_dir install_dir)
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_CURRENT_BINARY_DIR}/windeployqt"
         COMMAND set PATH="${_qt_bin_dir}"
-        COMMAND "${WINDEPLOYQT_EXECUTABLE}" --dir "${CMAKE_CURRENT_BINARY_DIR}/windeployqt" --verbose 0 --no-compiler-runtime --no-translations --no-angle --${build_type} --no-opengl-sw "$<TARGET_FILE:${target}>"
+        COMMAND "${WINDEPLOYQT_EXECUTABLE}" --dir "${CMAKE_CURRENT_BINARY_DIR}/windeployqt" --${build_type} --verbose 0 --no-compiler-runtime --no-translations --no-opengl-sw ${WINDEPLOYQT_ADDITIONAL_ARGS} "$<TARGET_FILE:${target}>"
         COMMAND if exist "${build_dir}/$<CONFIG>/" (${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_BINARY_DIR}/windeployqt" "${build_dir}/$<CONFIG>") else (${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_BINARY_DIR}/windeployqt" "${build_dir}")
         )
 

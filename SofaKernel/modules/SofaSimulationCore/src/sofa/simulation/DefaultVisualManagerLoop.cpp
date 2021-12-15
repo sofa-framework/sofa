@@ -25,12 +25,8 @@
 #include <sofa/core/visual/VisualManager.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
-#include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
-#include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/Node.h>
-
-#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
 {

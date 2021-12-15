@@ -27,7 +27,7 @@
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu">
             <!-- Using material contained in liver-smooth.obj -->
-            <MeshObjLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
             <OglModel name="VisualModel" src="@meshLoader_0" />
             <BarycentricMapping input="@.." output="@VisualModel" name="visual mapping" />
         </Node>
@@ -38,8 +38,8 @@
             <BarycentricMapping name="sphere mapping" />
         </Node>
     </Node>
-    <MeshObjLoader name='myLoaderDragon' filename='mesh/dragon.obj'/>  
-    <MeshObjLoader name='myLoaderFloor' filename='mesh/floor.obj'/>  
+    <MeshOBJLoader name='myLoaderDragon' filename='mesh/dragon.obj'/>  
+    <MeshOBJLoader name='myLoaderFloor' filename='mesh/floor.obj'/>  
     <OglModel name="VisualModel" src='@myLoaderDragon' color="green" dz="-25.0" scale="0.3 0.3 0.3"/>
     <OglModel name="FloorV" src='@myLoaderFloor' color="0.5 0.5 0.5" dy="-2.5"/>
     <!--<LightManager listening="true"/>

@@ -16,7 +16,7 @@
     <DefaultContactManager name="Response"/>
     <DiscreteIntersection/>
     
-    <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
+    <MeshOBJLoader name="loader" filename="mesh/dragon.obj" />
     
     <Node name="DragonCoarse">
         <SparseGridTopology n="6 5 4" fileTopology="mesh/dragon.obj" />

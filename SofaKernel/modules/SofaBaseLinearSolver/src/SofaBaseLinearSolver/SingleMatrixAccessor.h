@@ -23,7 +23,7 @@
 #include <SofaBaseLinearSolver/config.h>
 
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 
 namespace sofa::component::linearsolver
 {
@@ -33,7 +33,7 @@ namespace sofa::component::linearsolver
 class SOFA_SOFABASELINEARSOLVER_API SingleMatrixAccessor : public core::behavior::MultiMatrixAccessor
 {
 public:
-    typedef defaulttype::BaseMatrix BaseMatrix;
+    typedef linearalgebra::BaseMatrix BaseMatrix;
 
     SingleMatrixAccessor( BaseMatrix* m=nullptr ) { setMatrix(m); }
     ~SingleMatrixAccessor() override;

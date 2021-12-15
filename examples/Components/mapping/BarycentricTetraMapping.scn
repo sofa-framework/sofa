@@ -37,7 +37,7 @@
         <FixedConstraint  name="FixedConstraint" indices="@box.indices" activate_projectVelocity="1"/>
      
         <Node name="Visu">
-            <MeshObjLoader name="meshLoader_3" filename="mesh/torus.obj" handleSeams="1" translation="0 10 0" scale3d="4 4 4" />
+            <MeshOBJLoader name="meshLoader_3" filename="mesh/torus.obj" handleSeams="1" translation="0 10 0" scale3d="4 4 4" />
             <OglModel name="Visual" src="@meshLoader_3" color="red" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>

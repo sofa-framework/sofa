@@ -5,7 +5,7 @@
     <RequiredPlugin pluginName='SofaLoader'/>
     <Node name="origin" >
         <VisualStyle displayFlags="showWireframe" />
-        <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
+        <MeshOBJLoader name="loader" filename="mesh/dragon.obj" />
         <OglModel name="visual" src="@loader" color="yellow" />
     </Node>
     <Node name="smoothed" >

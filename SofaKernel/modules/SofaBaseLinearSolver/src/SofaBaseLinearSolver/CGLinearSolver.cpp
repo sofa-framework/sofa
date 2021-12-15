@@ -22,9 +22,9 @@
 #define SOFA_COMPONENT_LINEARSOLVER_CGLINEARSOLVER_CPP
 #include <SofaBaseLinearSolver/CGLinearSolver.inl>
 
-#include <SofaBaseLinearSolver/FullMatrix.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/FullMatrix.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVMultiOpVisitor.h>
@@ -62,6 +62,7 @@ inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,compone
     this->executeVisitor(MechanicalVMultiOpVisitor(params, ops));
 #endif
 }
+using namespace sofa::linearalgebra;
 
 int CGLinearSolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
         .add< CGLinearSolver< GraphScatteredMatrix, GraphScatteredVector > >(true)

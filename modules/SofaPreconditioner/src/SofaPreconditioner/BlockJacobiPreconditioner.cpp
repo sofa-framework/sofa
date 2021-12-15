@@ -30,6 +30,8 @@ namespace component
 namespace linearsolver
 {
 
+using namespace sofa::linearalgebra;
+
 int BlockJacobiPreconditionerClass = core::RegisterObject("Linear solver based on a NxN bloc diagonal matrix (i.e. block Jacobi preconditioner)")
         .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<3,double> ,FullVector<double> > >();
 

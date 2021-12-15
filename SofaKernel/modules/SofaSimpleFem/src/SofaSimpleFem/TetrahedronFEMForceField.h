@@ -172,7 +172,7 @@ public:
     void getRotations(VecReal& vecR) ;
     
     // BaseRotationFinder API
-    void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0) override;
+    void getRotations(linearalgebra::BaseMatrix * rotations,int offset = 0) override;
     // RotationFinder<T> API
     type::vector< Mat33 > m_rotations;
     const type::vector<Mat33>& getRotations() override;
@@ -260,7 +260,7 @@ public:
     // getPotentialEnergy is implemented for small method
     SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&   x) const override;
 
-    void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset) override;
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix *m, SReal kFactor, unsigned int &offset) override;
     void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ) override;
 
     void draw(const core::visual::VisualParams* vparams) override;

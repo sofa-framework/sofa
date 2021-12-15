@@ -28,7 +28,7 @@
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu">
             <!-- Using material contained in liver-smooth.obj -->
-            <MeshObjLoader name="ObjLoader" filename="mesh/liver-smooth.obj" />
+            <MeshOBJLoader name="ObjLoader" filename="mesh/liver-smooth.obj" />
             <!--<OglModel name="VisualModel" src="@Obj"/>-->
             <!-- Can not work because fields are already written by the mapping.
                  Attribut src is not allowed to overwrite non empty fields -->

@@ -30,7 +30,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 #include <string>
 
 namespace sofa::component::visualmodel
@@ -41,9 +41,9 @@ using sofa::core::objectmodel::Data ;
 class SOFA_SOFABASEVISUAL_API Vec3State : public core::State< sofa::defaulttype::Vec3Types >
 {
 public:
-    topology::PointData< VecCoord > m_positions; ///< Vertices coordinates
-    topology::PointData< VecCoord > m_restPositions; ///< Vertices rest coordinates
-    topology::PointData< VecDeriv > m_vnormals; ///< Normals of the model
+    core::topology::PointData< VecCoord > m_positions; ///< Vertices coordinates
+    core::topology::PointData< VecCoord > m_restPositions; ///< Vertices rest coordinates
+    core::topology::PointData< VecDeriv > m_vnormals; ///< Normals of the model
     bool modified; ///< True if input vertices modified since last rendering
 
     Vec3State() ;
@@ -115,12 +115,12 @@ public:
     Data<bool> m_keepLines; ///< keep and draw lines (false by default)
 
     Data< VecCoord > m_vertices2; ///< vertices of the model (only if vertices have multiple normals/texcoords, otherwise positions are used)
-    topology::PointData< VecTexCoord > m_vtexcoords; ///< coordinates of the texture
-    topology::PointData< VecCoord > m_vtangents; ///< tangents for normal mapping
-    topology::PointData< VecCoord > m_vbitangents; ///< tangents for normal mapping
-    topology::EdgeData< VecVisualEdge > m_edges; ///< edges of the model
-    topology::TriangleData< VecVisualTriangle > m_triangles; ///< triangles of the model
-    topology::QuadData< VecVisualQuad > m_quads; ///< quads of the model
+    core::topology::PointData< VecTexCoord > m_vtexcoords; ///< coordinates of the texture
+    core::topology::PointData< VecCoord > m_vtangents; ///< tangents for normal mapping
+    core::topology::PointData< VecCoord > m_vbitangents; ///< tangents for normal mapping
+    core::topology::EdgeData< VecVisualEdge > m_edges; ///< edges of the model
+    core::topology::TriangleData< VecVisualTriangle > m_triangles; ///< triangles of the model
+    core::topology::QuadData< VecVisualQuad > m_quads; ///< quads of the model
 
     bool m_textureChanged {false};
 

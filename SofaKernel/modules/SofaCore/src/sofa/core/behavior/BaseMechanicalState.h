@@ -214,7 +214,7 @@ public:
     virtual void resetConstraint(const ConstraintParams* params) = 0;
 
     /// build the jacobian of the constraint in a baseMatrix
-    virtual void getConstraintJacobian(const ConstraintParams* params, sofa::defaulttype::BaseMatrix* J,unsigned int & off) = 0;
+    virtual void getConstraintJacobian(const ConstraintParams* params, sofa::linearalgebra::BaseMatrix* J,unsigned int & off) = 0;
 
     /// fill the jacobian matrix (of the constraints) with identity blocks on the provided list of nodes(dofs)
     virtual void buildIdentityBlocksInJacobian(const sofa::type::vector<unsigned int>& list_n, core::MatrixDerivId &mID) = 0;
@@ -222,14 +222,14 @@ public:
     class ConstraintBlock
     {
     public:
-        ConstraintBlock( unsigned int c, defaulttype::BaseMatrix *m):column(c),matrix(m) {}
+        ConstraintBlock( unsigned int c, linearalgebra::BaseMatrix *m):column(c),matrix(m) {}
 
         unsigned int getColumn() const {return column;}
-        const defaulttype::BaseMatrix &getMatrix() const {return *matrix;}
-        defaulttype::BaseMatrix *getMatrix() {return matrix;}
+        const linearalgebra::BaseMatrix &getMatrix() const {return *matrix;}
+        linearalgebra::BaseMatrix *getMatrix() {return matrix;}
     protected:
         unsigned int column;
-        defaulttype::BaseMatrix *matrix;
+        linearalgebra::BaseMatrix *matrix;
     };
 
     /// Express the matrix L in term of block of matrices, using the indices of the lines in the MatrixDeriv container
@@ -318,11 +318,11 @@ public:
 
     /// \brief Copy data to a global BaseVector from the state stored in a local vector.
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
-    virtual void copyToBaseVector(defaulttype::BaseVector* dest, ConstVecId src, unsigned int &offset) = 0;
+    virtual void copyToBaseVector(linearalgebra::BaseVector* dest, ConstVecId src, unsigned int &offset) = 0;
 
     /// \brief Copy data to a local vector from the state stored in a global BaseVector.
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
-    virtual void copyFromBaseVector(VecId dest, const defaulttype::BaseVector* src, unsigned int &offset) = 0;
+    virtual void copyFromBaseVector(VecId dest, const linearalgebra::BaseVector* src, unsigned int &offset) = 0;
 
     /// \brief Copy data to an external, user-allocated buffer.
     ///
@@ -341,20 +341,20 @@ public:
     
     /// \brief Add data to a global BaseVector from the state stored in a local vector.
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
-    virtual void addToBaseVector(defaulttype::BaseVector* dest, ConstVecId src, unsigned int &offset) = 0;
+    virtual void addToBaseVector(linearalgebra::BaseVector* dest, ConstVecId src, unsigned int &offset) = 0;
 
     /// \brief
     ///
     /// Perform dest[i][j] += src[offset + i][j] 0<= i < src_entries 0<= j < 3 (for 3D objects) 0 <= j < 2 (for 2D objects)
     /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
-    virtual void addFromBaseVectorSameSize(VecId dest, const defaulttype::BaseVector* src, unsigned int &offset) = 0;
+    virtual void addFromBaseVectorSameSize(VecId dest, const linearalgebra::BaseVector* src, unsigned int &offset) = 0;
 
 
     /// \brief
     ///
     /// Perform dest[ offset + i ][j] += src[i][j]  0<= i < src_entries  0<= j < 3 (for 3D objects) 0 <= j < 2 (for 2D objects)
     /// @param offset the offset in the MechanicalObject local vector specified by VecId dest. It will be updated to the first scalar value after the ones used by this operation when this method returns.
-    virtual void addFromBaseVectorDifferentSize(VecId dest, const defaulttype::BaseVector* src, unsigned int &offset ) = 0;
+    virtual void addFromBaseVectorDifferentSize(VecId dest, const linearalgebra::BaseVector* src, unsigned int &offset ) = 0;
     /// @}
 
     /// @name Data output

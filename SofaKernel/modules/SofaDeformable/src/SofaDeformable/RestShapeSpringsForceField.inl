@@ -36,7 +36,7 @@ using helper::ReadAccessor;
 using core::behavior::BaseMechanicalState;
 using core::behavior::MultiMatrixAccessor;
 using core::behavior::ForceField;
-using defaulttype::BaseMatrix;
+using linearalgebra::BaseMatrix;
 using core::VecCoordId;
 using core::MechanicalParams;
 using type::Vector3;
