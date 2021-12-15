@@ -46,7 +46,7 @@ protected:
 
     typedef Eigen::Matrix<SReal, Eigen::Dynamic, Eigen::Dynamic> MatrixEigen;
     typedef linearalgebra::VectorEigen          VectorEigen;
-    typedef defaulttype::BaseVector::Index     Index;
+    typedef linearalgebra::BaseVector::Index     Index;
     typedef linearalgebra::SparseMatrixEigen    SparseMatrixEigen;
     typedef linearalgebra::SparseVectorEigen    SparseVectorEigen;
 

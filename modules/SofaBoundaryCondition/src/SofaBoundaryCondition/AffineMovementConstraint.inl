@@ -23,7 +23,7 @@
 
 #include <sofa/simulation/fwd.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 #include <iostream>
 #include <sofa/helper/cast.h>
 #include <sofa/type/vector_algorithm.h>
@@ -199,7 +199,7 @@ void AffineMovementConstraint<DataTypes>::projectPosition(const core::Mechanical
 }
 
 template <class DataTypes>
-void AffineMovementConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned /*offset*/ )
+void AffineMovementConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned /*offset*/ )
 {
     // clears the rows and columns associated with constrained particles
     unsigned blockSize = DataTypes::deriv_total_size;

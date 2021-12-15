@@ -70,7 +70,6 @@ template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTyp
 void RegistrationContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDetectionOutputs(OutputVector* o)
 {
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
-    const bool printLog = this->f_printLog.getValue();
     if (ff==NULL)
     {
         MechanicalState1* mstate1 = mapper1.createMapping();

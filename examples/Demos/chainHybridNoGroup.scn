@@ -8,11 +8,11 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-    <DefaultContactManager name="Response" response="default" />
+    <DefaultContactManager name="Response" response="PenalityContactForceField" />
     <Node name="Chain">
         <Node name="Fixed">
-            <MeshObjLoader name="loaderMeca" filename="mesh/torus_for_collision.obj" />
-            <MeshObjLoader name="loaderVisual" filename="mesh/torus.obj" />
+            <MeshOBJLoader name="loaderMeca" filename="mesh/torus_for_collision.obj" />
+            <MeshOBJLoader name="loaderVisual" filename="mesh/torus.obj" />
             <MeshTopology src="@loaderMeca" />
             <MechanicalObject src="@loaderMeca" rx="90" />
             <TriangleCollisionModel simulated="0" moving="0" />

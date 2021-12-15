@@ -46,7 +46,7 @@ using sofa::core::objectmodel::Data ;
 using sofa::core::ConstraintParams ;
 using sofa::core::ConstVecCoordId;
 
-using sofa::defaulttype::BaseVector ;
+using sofa::linearalgebra::BaseVector ;
 using sofa::type::Vec3d;
 using sofa::type::Quat ;
 

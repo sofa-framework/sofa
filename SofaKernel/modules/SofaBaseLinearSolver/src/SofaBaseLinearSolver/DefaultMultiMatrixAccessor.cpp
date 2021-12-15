@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/BaseMapping.h>
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
 using sofa::core::behavior::BaseMechanicalState;
 
@@ -54,7 +54,7 @@ void DefaultMultiMatrixAccessor::clear()
     for (auto it = realStateOffsets.begin(), itend = realStateOffsets.end(); it != itend; ++it)
         it->second = -1;
 
-    for (std::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix* >::iterator it = mappedMatrices.begin(), itend = mappedMatrices.end(); it != itend; ++it)
+    for (std::map< const sofa::core::behavior::BaseMechanicalState*, linearalgebra::BaseMatrix* >::iterator it = mappedMatrices.begin(), itend = mappedMatrices.end(); it != itend; ++it)
         if (it->second != nullptr) delete it->second;
     mappedMatrices.clear();
     diagonalStiffnessBloc.clear();
@@ -68,7 +68,7 @@ void DefaultMultiMatrixAccessor::clear()
 }
 
 
-void DefaultMultiMatrixAccessor::setGlobalMatrix(defaulttype::BaseMatrix* matrix)
+void DefaultMultiMatrixAccessor::setGlobalMatrix(linearalgebra::BaseMatrix* matrix)
 {
     this->globalMatrix = matrix;
 }
@@ -90,7 +90,7 @@ void DefaultMultiMatrixAccessor::addMechanicalState(const sofa::core::behavior::
 
 void DefaultMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* mapping)
 {
-    const sofa::defaulttype::BaseMatrix* jmatrix = nullptr;
+    const sofa::linearalgebra::BaseMatrix* jmatrix = nullptr;
     if (mapping->isMechanical() && mapping->areMatricesMapped())
         jmatrix = mapping->getJ();
 
@@ -98,7 +98,7 @@ void DefaultMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* m
     {
 
         const BaseMechanicalState* mappedState  = const_cast<const BaseMechanicalState*>(mapping->getMechTo()[0]);
-        defaulttype::BaseMatrix* mappedstiffness;
+        linearalgebra::BaseMatrix* mappedstiffness;
         mappedstiffness = mapping->createMappedMatrix(mappedState,mappedState,&DefaultMultiMatrixAccessor::createMatrix);
         mappedMatrices[mappedState]=mappedstiffness;
 
@@ -168,7 +168,7 @@ DefaultMultiMatrixAccessor::MatrixRef DefaultMultiMatrixAccessor::getMatrix(cons
     }
     else //case where mechanical state is a mapped state
     {
-        std::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix*>::iterator itmapped = mappedMatrices.find(mstate);
+        std::map< const sofa::core::behavior::BaseMechanicalState*, linearalgebra::BaseMatrix*>::iterator itmapped = mappedMatrices.find(mstate);
         if (itmapped != mappedMatrices.end()) // this mapped state and its matrix has been already added and created
         {
             r.matrix = itmapped->second;
@@ -177,7 +177,7 @@ DefaultMultiMatrixAccessor::MatrixRef DefaultMultiMatrixAccessor::getMatrix(cons
         else // this mapped state and its matrix hasnt been created we creat it and its matrix by "createMatrix"
         {
 
-            defaulttype::BaseMatrix* m = createMatrixImpl(mstate,mstate, m_doPrintInfo);
+            linearalgebra::BaseMatrix* m = createMatrixImpl(mstate,mstate, m_doPrintInfo);
             r.matrix = m;
             r.offset = 0;
             //when creating an matrix, it dont have to be added before
@@ -285,7 +285,7 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
             }
             else //case where at least one ms is a mapped
             {
-                defaulttype::BaseMatrix* m = createMatrixImpl(mstate1,mstate2,m_doPrintInfo);
+                linearalgebra::BaseMatrix* m = createMatrixImpl(mstate1,mstate2,m_doPrintInfo);
                 r2.matrix = m;
                 r2.offRow = 0;
                 r2.offCol = 0;
@@ -333,7 +333,7 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
         const BaseMechanicalState* instate  = const_cast<const BaseMechanicalState*>(m_mapping->getMechFrom()[0]);
         const BaseMechanicalState* outstate  = const_cast<const BaseMechanicalState*>(m_mapping->getMechTo()[0]);
 
-        const defaulttype::BaseMatrix* matrixJ = m_mapping->getJ();
+        const linearalgebra::BaseMatrix* matrixJ = m_mapping->getJ();
         const auto nbR_J = matrixJ->rowSize();
         const auto nbC_J = matrixJ->colSize();
 
@@ -547,14 +547,14 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
     }//end of mapping loop
 }
 
-defaulttype::BaseMatrix* DefaultMultiMatrixAccessor::createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2)
+linearalgebra::BaseMatrix* DefaultMultiMatrixAccessor::createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2)
 {
     return createMatrixImpl(mstate1, mstate2, false) ;
 }
 
-defaulttype::BaseMatrix* DefaultMultiMatrixAccessor::createMatrixImpl(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2, bool doPrintInfo)
+linearalgebra::BaseMatrix* DefaultMultiMatrixAccessor::createMatrixImpl(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2, bool doPrintInfo)
 {
-    component::linearsolver::CompressedRowSparseMatrix<SReal>* m = new component::linearsolver::CompressedRowSparseMatrix<SReal>;
+    linearalgebra::CompressedRowSparseMatrix<SReal>* m = new linearalgebra::CompressedRowSparseMatrix<SReal>;
     if(mstate1 == mstate2)
     {
         m->resize( mstate1->getMatrixSize(),mstate1->getMatrixSize());

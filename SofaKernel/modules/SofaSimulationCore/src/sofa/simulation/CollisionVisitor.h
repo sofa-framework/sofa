@@ -24,7 +24,6 @@
 
 
 #include <sofa/simulation/Visitor.h>
-#include <sofa/core/collision/Pipeline.h>
 
 
 namespace sofa

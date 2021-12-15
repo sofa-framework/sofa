@@ -4,7 +4,7 @@
     <DefaultPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager response="default" />
+    <DefaultContactManager response="PenalityContactForceField" />
     <MinProximityIntersection name="Proximity" alarmDistance="2" contactDistance="1" />
 
   <OptiTrackNatNetClient serverName="169.254.165.78" scale="1000" drawOtherMarkersSize="2" drawTrackedMarkersSize="0" />
@@ -25,7 +25,7 @@
 
     </Node>
     <Node name="GrabSurfaceL">
-      <MeshObjLoader name="loaderPince" filename="./data/pince_cm_left_cut.obj" triangulate="1" createSubelements="true"/>
+      <MeshOBJLoader name="loaderPince" filename="./data/pince_cm_left_cut.obj" triangulate="1" createSubelements="true"/>
       <MeshTopology src="@loaderPince" />
       <MechanicalObject name="vertices" src="@loaderPince" />
       <TriangleCollisionModel group="1" simulated="0" moving="1" />
@@ -34,7 +34,7 @@
       <RigidMapping index="1" />
     </Node>
     <Node name="GrabSurfaceR">
-      <MeshObjLoader name="loaderPince" filename="./data/pince_cm_right_cut.obj" triangulate="1" createSubelements="true"/>
+      <MeshOBJLoader name="loaderPince" filename="./data/pince_cm_right_cut.obj" triangulate="1" createSubelements="true"/>
       <MeshTopology src="@loaderPince" />
       <MechanicalObject name="vertices" src="@loaderPince" />
       <TriangleCollisionModel group="1" simulated="0" moving="1" />

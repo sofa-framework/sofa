@@ -28,7 +28,7 @@ into a single bigger system.
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <NewProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7"/>
-    <DefaultContactManager name="Response" response="default"/>
+    <DefaultContactManager name="Response" response="PenalityContactForceField"/>
     <InteractiveCamera name="cam" position="0 0 -50" lookAt="0 0 0"/>
 
     <Node name="Cube1">
@@ -91,7 +91,7 @@ into a single bigger system.
 
 
     <Node name="Floor">
-        <MeshObjLoader name="loader" filename="mesh/floor2b.obj"/>
+        <MeshOBJLoader name="loader" filename="mesh/floor2b.obj"/>
         <MeshTopology src="@loader"/>
         <MechanicalObject src="@loader" dy="-10" scale="0.5"/>
         <TriangleCollisionModel simulated="false"/>

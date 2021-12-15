@@ -31,7 +31,7 @@ using namespace sofa::core::collision;
 namespace sofa::component::collision
 {
 
-ContactMapperCreator< ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types> > OBBContactMapperClass("default", true);
+ContactMapperCreator< ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types> > OBBContactMapperClass("PenalityContactForceField", true);
 template class  ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types>;
 
 } // namespace sofa::component::collision

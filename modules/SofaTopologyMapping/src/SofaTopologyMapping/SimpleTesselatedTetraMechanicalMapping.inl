@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaTopologyMapping/SimpleTesselatedTetraMechanicalMapping.h>
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 
 namespace sofa::component::mapping
 {

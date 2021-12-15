@@ -22,7 +22,7 @@
     <ParallelBVHNarrowPhase/>
 
     <MinProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7"/>
-    <DefaultContactManager name="Response" response="default"/>
+    <DefaultContactManager name="Response" response="PenalityContactForceField"/>
     <InteractiveCamera name="cam" position="0 0 -50" lookAt="0 0 0"/>
 
     <Node name="Cube1">
@@ -85,7 +85,7 @@
 
 
     <Node name="Floor">
-        <MeshObjLoader name="loader" filename="mesh/SaladBowl.obj"/>
+        <MeshOBJLoader name="loader" filename="mesh/SaladBowl.obj"/>
         <MeshTopology src="@loader"/>
         <MechanicalObject src="@loader" dy="-20" scale="50" rx="-90"/>
         <TriangleCollisionModel simulated="false" moving="false"/>

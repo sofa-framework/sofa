@@ -28,6 +28,7 @@ namespace sofa::component::linearsolver
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::linearalgebra;
 
 int CholeskySolverClass = core::RegisterObject("Direct linear solver based on Cholesky factorization, for dense matrices")
         .add< CholeskySolver< SparseMatrix<double>, FullVector<double> > >(true)

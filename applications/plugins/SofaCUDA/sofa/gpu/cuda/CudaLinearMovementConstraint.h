@@ -63,7 +63,7 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef type::vector<Index> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef sofa::core::topology::PointSubsetData< SetIndexArray > SetIndex;
 
     typedef sofa::core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef sofa::core::objectmodel::Data<MatrixDeriv> DataMatrixDeriv;
@@ -107,7 +107,7 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef type::vector<Index> SetIndexArray;
-    typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
+    typedef sofa::core::topology::PointSubsetData< SetIndexArray > SetIndex;
 
     typedef sofa::core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef sofa::core::objectmodel::Data<MatrixDeriv> DataMatrixDeriv;

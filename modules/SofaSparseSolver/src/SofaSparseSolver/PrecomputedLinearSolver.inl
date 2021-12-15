@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_COLLISION_PRECOMPUTEDLINEARSOLVER_INL
 
 #include <SofaSparseSolver/PrecomputedLinearSolver.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 #include "sofa/helper/system/thread/CTime.h"
@@ -43,7 +43,7 @@
 #include <SofaSparseSolver/SparseCholeskySolver.h>
 #endif
 
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <SofaGeneralLinearSolver/CholeskySolver.h>
 
 namespace sofa
@@ -121,6 +121,7 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
 {
+    using namespace sofa::linearalgebra;
     msg_info() << "Compute the initial invert matrix with CS_PARSE" ;
 
     CompressedRowSparseMatrix<double> matSolv;
@@ -200,8 +201,10 @@ void PrecomputedLinearSolver<TMatrix,TVector>::computeActiveDofs(JMatrix& J)
 }
 
 template<class TMatrix,class TVector>
-bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
+bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, double fact)
 {
+    using namespace sofa::linearalgebra;
+
     if (first)
     {
         core::MechanicalParams mparams = *core::mechanicalparams::defaultInstance();
@@ -227,7 +230,7 @@ bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(defaulttype::BaseMatri
 }
 
 template<class TMatrix,class TVector> template<class JMatrix>
-void PrecomputedLinearSolver<TMatrix,TVector>::ComputeResult(defaulttype::BaseMatrix * result,JMatrix& J, float fact)
+void PrecomputedLinearSolver<TMatrix,TVector>::ComputeResult(linearalgebra::BaseMatrix * result,JMatrix& J, float fact)
 {
     unsigned nl = 0;
     internalData.JMinv.clear();

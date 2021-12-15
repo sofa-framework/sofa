@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/UpdateLinksVisitor.h>
-#include <sofa/helper/Factory.h>
 #include <sofa/simulation/Node.h>
 
 namespace sofa

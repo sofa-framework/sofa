@@ -454,7 +454,7 @@ void ConstantForceField<DataTypes>::addDForce(const core::MechanicalParams* mpar
 
 
 template<class DataTypes>
-void ConstantForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * mat, SReal k, unsigned int & offset)
+void ConstantForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal k, unsigned int & offset)
 {
     // Derivative of a constant force is null, no need to compute addKToMatrix nor addDForce
     SOFA_UNUSED(mat);

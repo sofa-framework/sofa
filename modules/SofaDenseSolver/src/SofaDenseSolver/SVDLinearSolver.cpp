@@ -121,6 +121,7 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 
 }
 
+using namespace sofa::linearalgebra;
 
 int SVDLinearSolverClass = core::RegisterObject("Linear system solver using a SVD decomposition of a dense matrix")
         .add< SVDLinearSolver< FullMatrix<double>, FullVector<double> > >()

@@ -143,7 +143,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::draw  (const VisualParams* vpa
 
 
 template <class In, class Out>
-const sofa::defaulttype::BaseMatrix* BarycentricMapperSparseGridTopology<In,Out>::getJ(int outSize, int inSize)
+const sofa::linearalgebra::BaseMatrix* BarycentricMapperSparseGridTopology<In,Out>::getJ(int outSize, int inSize)
 {
     if (m_matrixJ && !m_updateJ)
         return m_matrixJ;

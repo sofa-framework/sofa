@@ -10,7 +10,7 @@
     <DefaultPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager response="default" name="collision response" />
+    <DefaultContactManager response="PenalityContactForceField" name="collision response" />
     <DiscreteIntersection/>
     <Node name="TorusFEM">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
@@ -23,12 +23,12 @@
         <UniformMass totalMass="5" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large" />
         <Node name="Visu">
-            <MeshObjLoader name="meshLoader_0" filename="mesh/torus2.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/torus2.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_0" color="red" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2">
-            <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
+            <MeshOBJLoader name="loader" filename="mesh/torus2_for_collision.obj" />
             <MeshTopology src="@loader" />
             <!-- or MeshTopology -->
             <MechanicalObject src="@loader" />

@@ -23,7 +23,7 @@
 #include <SofaBoundaryCondition/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <sofa/core/topology/TopologySubsetData.h>
 
 namespace sofa::component::forcefield
 {
@@ -98,7 +98,7 @@ protected:
         }
     };
 
-    sofa::component::topology::QuadSubsetData<sofa::type::vector<QuadPressureInformation> > quadPressureMap; ///< map between quad indices and their pressure
+    sofa::core::topology::QuadSubsetData<sofa::type::vector<QuadPressureInformation> > quadPressureMap; ///< map between quad indices and their pressure
 
     /// Pointer to the current topology                                                                        /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* m_topology;
@@ -113,7 +113,7 @@ public:
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
 
     /// Constant pressure has null variation
-    void addKToMatrix(sofa::defaulttype::BaseMatrix * /*m*/, SReal /*kFactor*/, unsigned int & /*offset*/) override {}
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix * /*m*/, SReal /*kFactor*/, unsigned int & /*offset*/) override {}
 
     /// Constant pressure has null variation
     void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ) override {}

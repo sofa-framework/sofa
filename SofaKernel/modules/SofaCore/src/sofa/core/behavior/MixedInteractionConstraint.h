@@ -73,7 +73,7 @@ public:
     ///
     /// \param v is the result vector that contains the whole constraints violations
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    void getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v) override;
+    void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v) override;
 
     /// Construct the Constraint violations vector of each constraint
     ///
@@ -83,7 +83,7 @@ public:
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
     ///
     /// This is the method that should be implemented by the component
-    virtual void getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v, const DataVecCoord1 &x1, const DataVecCoord2 &x2
+    virtual void getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v, const DataVecCoord1 &x1, const DataVecCoord2 &x2
             , const DataVecDeriv1 &v1, const DataVecDeriv2 &v2) = 0;
 
     /// Construct the Jacobian Matrix

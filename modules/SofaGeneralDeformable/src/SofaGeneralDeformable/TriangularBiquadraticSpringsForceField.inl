@@ -24,7 +24,7 @@
 #include <SofaGeneralDeformable/TriangularBiquadraticSpringsForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 
 namespace sofa::component::forcefield
 {
@@ -40,7 +40,6 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::applyTriangleCreation(In
         const sofa::type::vector<double> &)
 {
     using namespace sofa::defaulttype;
-    using namespace	sofa::component::topology;
 
     unsigned int j,k,l;
 
@@ -93,7 +92,6 @@ template< class DataTypes >
 void TriangularBiquadraticSpringsForceField<DataTypes>::applyTriangleDestruction(Index triangleIndex,
         TriangleRestInformation  &tinfo)
 {
-    using namespace	sofa::component::topology;
     unsigned int j;
 
     helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeInf = edgeInfo;

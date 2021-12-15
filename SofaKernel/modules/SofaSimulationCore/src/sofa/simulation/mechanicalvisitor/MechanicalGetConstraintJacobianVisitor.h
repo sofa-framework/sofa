@@ -31,12 +31,12 @@ class SOFA_SIMULATION_CORE_API MechanicalGetConstraintJacobianVisitor : public B
 {
 public:
     const core::ConstraintParams* cparams;
-    defaulttype::BaseMatrix * J;
+    linearalgebra::BaseMatrix * J;
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
     int offset;
 
     MechanicalGetConstraintJacobianVisitor(
-        const core::ConstraintParams* cparams, defaulttype::BaseMatrix * _J,
+        const core::ConstraintParams* cparams, linearalgebra::BaseMatrix * _J,
         const sofa::core::behavior::MultiMatrixAccessor* _matrix = nullptr);
 
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms) override;

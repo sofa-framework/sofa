@@ -24,7 +24,7 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <LMConstraint/LMConstraint.h>
-#include <SofaBaseTopology/TopologySubsetIndices.h>
+#include <sofa/core/topology/TopologySubsetIndices.h>
 #include <sofa/simulation/Node.h>
 
 
@@ -58,7 +58,7 @@ public:
 
 
     typedef type::vector<Index> SetIndexArray;
-    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
+    typedef sofa::core::topology::TopologySubsetIndices SetIndex;
 
     typedef core::ConstraintParams::ConstOrder ConstOrder;
 

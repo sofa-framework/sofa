@@ -10,11 +10,11 @@
     <DefaultPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager response="default" name="collision response" />
+    <DefaultContactManager response="PenalityContactForceField" name="collision response" />
     <DiscreteIntersection />
 
     <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
-    <MeshObjLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
+    <MeshOBJLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
 
     <Node name="Liver" depend="topo dofs">
         <EulerImplicitSolver name="integration scheme" />

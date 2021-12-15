@@ -22,7 +22,7 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 using sofa::core::objectmodel::BaseContext ;
 
-#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+#include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 

@@ -68,7 +68,7 @@ void MechanicalObject<defaulttype::Rigid3Types>::applyRotation (const type::Quat
 }
 
 template<>
-void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset )
+void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorDifferentSize(core::VecId dest, const linearalgebra::BaseVector* src, unsigned int &offset )
 {
 
     if (dest.type == sofa::core::V_COORD)
@@ -128,7 +128,7 @@ void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorDifferentSize(
 }
 
 template<>
-void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset)
+void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorSameSize(core::VecId dest, const linearalgebra::BaseVector* src, unsigned int &offset)
 {
     if (dest.type == sofa::core::V_COORD)
     {

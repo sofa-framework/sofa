@@ -3,7 +3,7 @@
     <RequiredPlugin name="SofaOpenglVisual"/>
     <RequiredPlugin pluginName='SofaLoader'/>
 
-    <MeshObjLoader name="meshLoader" filename="mesh/snake_body.obj" handleSeams="1"/>
+    <MeshOBJLoader name="meshLoader" filename="mesh/snake_body.obj" handleSeams="1"/>
 
     <OglModel name="visualModel1" src="@meshLoader" useNormals="0" translation="0 0 0" />
     <OglModel name="visualModel2" src="@meshLoader" useNormals="0" translation="10 0 0"/>

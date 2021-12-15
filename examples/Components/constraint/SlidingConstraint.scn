@@ -15,7 +15,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
-    <DefaultContactManager name="Response" response="FrictionContact" />
+    <DefaultContactManager name="Response" response="FrictionContactConstraint" />
     <DefaultCollisionGroupManager name="Group" />
     <Node name="SlidingPoint">
         <MechanicalObject name="points" template="Vec3d" position="1 1.25 -0.2 &#x09;1 1.25 0.2" free_position="1 1.25 -0.2 &#x09;1 1.25 0.2" />
@@ -27,7 +27,7 @@
         <UniformMass totalMass="10.0" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-            <MeshObjLoader name='myLoader1' filename='mesh/cube.obj'/>  
+            <MeshOBJLoader name='myLoader1' filename='mesh/cube.obj'/>  
             <OglModel name="Visual1" src='@myLoader1' color="1 1 0 1.0" />
             <RigidMapping input="@.." output="@Visual1" />
         </Node>
@@ -55,7 +55,7 @@
         <UniformMass totalMass="10.0" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-            <MeshObjLoader name='myLoader2' filename='mesh/cube.obj'/>  
+            <MeshOBJLoader name='myLoader2' filename='mesh/cube.obj'/>  
             <OglModel name="Visual2" src='@myLoader2' color="1 1 0 1.0" />
             <RigidMapping input="@.." output="@Visual2" />
         </Node>

@@ -81,7 +81,7 @@ public:
     typedef type::Mat<N, N, Real> Mat;
     typedef type::Vec<N, Real> Vector;
     typedef type::Mat<NOut, NIn, Real> MBloc;
-    typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
+    typedef sofa::linearalgebra::CompressedRowSparseMatrix<MBloc> MatrixType;
 
     Data<VecCoord> points;    ///< mapped points in local coordinates
     VecCoord rotatedPoints;   ///< vectors from frame origin to mapped points, projected to world coordinates
@@ -121,12 +121,12 @@ public:
 
     void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce ) override;
 
-    const sofa::defaulttype::BaseMatrix* getJ() override;
+    const sofa::linearalgebra::BaseMatrix* getJ() override;
 
-    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
 
     void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId ) override;
-    const defaulttype::BaseMatrix* getK() override;
+    const linearalgebra::BaseMatrix* getK() override;
 
 
     void draw(const core::visual::VisualParams* vparams) override;
@@ -153,7 +153,7 @@ protected:
 
     typedef linearalgebra::EigenSparseMatrix<In,Out> SparseMatrixEigen;
     SparseMatrixEigen eigenJacobian;                      ///< Jacobian of the mapping used by getJs
-    type::vector<sofa::defaulttype::BaseMatrix*> eigenJacobians; /// used by getJs
+    type::vector<sofa::linearalgebra::BaseMatrix*> eigenJacobians; /// used by getJs
 
     typedef linearalgebra::EigenSparseMatrix<In,In> StiffnessSparseMatrixEigen;
     StiffnessSparseMatrixEigen geometricStiffnessMatrix;
@@ -165,7 +165,7 @@ struct RigidMappingMatrixHelper;
 template<>
 void RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
 template<>
-const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::getK();
+const linearalgebra::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::getK();
 
 #if  !defined(SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP)
 extern template class SOFA_SOFARIGID_API RigidMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3Types >;

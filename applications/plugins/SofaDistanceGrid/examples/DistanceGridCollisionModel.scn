@@ -5,11 +5,11 @@
     <DefaultPipeline name="pipeline" depth="6" verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager name="response" response="default" />
+    <DefaultContactManager name="response" response="PenalityContactForceField" />
     <DiscreteIntersection name="proximity" />
     
     <Node name="RigidLiver">
-            <MeshObjLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
             <OglModel name="VisualModel" src="@meshLoader_0" color="white" />
             <DistanceGrid fileRigidDistanceGrid="mesh/liver-smooth.obj" scale="1.0" usePoints="0" proximity="0.1" contactStiffness="5.0" contactFriction="0.0" />
     </Node>

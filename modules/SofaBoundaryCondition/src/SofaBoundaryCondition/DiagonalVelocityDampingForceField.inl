@@ -62,7 +62,7 @@ void DiagonalVelocityDampingForceField<DataTypes>::addDForce(const core::Mechani
 }
 
 template<class DataTypes>
-void DiagonalVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*bFact*/, unsigned int& /*offset*/)
+void DiagonalVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::linearalgebra::BaseMatrix * /*mat*/, SReal /*bFact*/, unsigned int& /*offset*/)
 {
 }
 

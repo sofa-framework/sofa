@@ -27,7 +27,7 @@
 #include <sofa/type/vector.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
 namespace sofa::component::forcefield

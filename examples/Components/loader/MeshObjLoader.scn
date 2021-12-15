@@ -9,11 +9,11 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-    <DefaultContactManager name="Response" response="default" />
+    <DefaultContactManager name="Response" response="PenalityContactForceField" />
     <DefaultCollisionGroupManager name="Group" />
     
     <Node name="obj file">
-        <MeshObjLoader name="ObjLoader" filename="mesh/floor3.obj" />
+        <MeshOBJLoader name="ObjLoader" filename="mesh/floor3.obj" />
         <MechanicalObject name="dofs" src="@ObjLoader" />
         <Node name="triangulation">
             <TriangleSetTopologyContainer name="triangles" src="@../ObjLoader" />

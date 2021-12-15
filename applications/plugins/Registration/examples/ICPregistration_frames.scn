@@ -10,13 +10,13 @@
 	<CGLinearSolver template="GraphScattered" iterations="15"  threshold="1e-008" tolerance="1e-5" />
 
 	<Node name="target">
-			<MeshObjLoader name="meshLoader_0" filename="data/femur_f.obj" handleSeams="1" />
+			<MeshOBJLoader name="meshLoader_0" filename="data/femur_f.obj" handleSeams="1" />
 			<OglModel name="Bone" src="@meshLoader_0"  color="0.5 .4 1 1" />
 	</Node>
 			
 	<Node name="source">
 
-	    <MeshObjLoader name="mesh" filename="data/femur_m.obj" triangulate="1"/>
+	    <MeshOBJLoader name="mesh" filename="data/femur_m.obj" triangulate="1"/>
             <MeshToImageEngine template="ImageUC" name="rasterizer" src="@mesh" voxelSize="0.05" padSize="1" rotateImage="true" />
 	    <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
 
@@ -38,7 +38,7 @@
 	    </Node>
 
 		<Node name="ModelInteraction">
-			<MeshObjLoader name="MeshLoader"  filename="data/femur_m.obj" />
+			<MeshOBJLoader name="MeshLoader"  filename="data/femur_m.obj" />
 			<MechanicalObject  name="PointSet"  position="@MeshLoader.position"  />
 			<UniformMass totalMass="2000" />
 			<LinearMapping template="Affine,Vec3d" />
@@ -53,7 +53,7 @@
 					cacheSize="4"
 					stiffness="0.1" damping="0" />
 			<Node name="Visu">
-				<MeshObjLoader name="meshLoader_1" filename="data/femur_m.obj" handleSeams="1" />
+				<MeshOBJLoader name="meshLoader_1" filename="data/femur_m.obj" handleSeams="1" />
 				<OglModel src="@meshLoader_1" color="1 .4 0.5 1" />
 				<IdentityMapping />
 			</Node>		

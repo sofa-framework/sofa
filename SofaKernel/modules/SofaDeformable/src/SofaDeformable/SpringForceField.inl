@@ -179,7 +179,7 @@ SReal SpringForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPara
 
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *, SReal, unsigned int &)
+void SpringForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix *, SReal, unsigned int &)
 {
     msg_error() << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead.";
 }

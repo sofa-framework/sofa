@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <gtest/gtest.h>
 #include <sofa/testing/NumericTest.h>
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 
 namespace sofa::linearalgebra::testing
 {

@@ -21,12 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/Material.h>
+#include <sofa/config.h>
 
-// SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/helper/types/Material.h")
-
-namespace sofa::helper::types
-{
-    using Material = sofa::type::Material;
-
-} // namespace sofa::helper::types
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/type/Material.h")

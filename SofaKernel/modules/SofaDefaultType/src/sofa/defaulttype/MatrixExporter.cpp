@@ -20,21 +20,21 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/defaulttype/MatrixExporter.h>
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 
 #include <fstream>
 
 namespace sofa::defaulttype
 {
 
-std::unordered_map<std::string, std::function<bool(const std::string&, sofa::defaulttype::BaseMatrix*)> > matrixExporterMap
+std::unordered_map<std::string, std::function<bool(const std::string&, sofa::linearalgebra::BaseMatrix*)> > matrixExporterMap
 {
     {"txt", writeMatrixTxt},
     {"csv", writeMatrixCsv},
 };
 sofa::helper::OptionsGroup matrixExporterOptionsGroup(2, "txt", "csv");
     
-bool writeMatrixTxt(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix)
+bool writeMatrixTxt(const std::string& filename, sofa::linearalgebra::BaseMatrix* matrix)
 {
     if (matrix)
     {
@@ -47,7 +47,7 @@ bool writeMatrixTxt(const std::string& filename, sofa::defaulttype::BaseMatrix* 
     return false;
 }
 
-bool writeMatrixCsv(const std::string& filename, sofa::defaulttype::BaseMatrix* matrix)
+bool writeMatrixCsv(const std::string& filename, sofa::linearalgebra::BaseMatrix* matrix)
 {
     if (matrix)
     {

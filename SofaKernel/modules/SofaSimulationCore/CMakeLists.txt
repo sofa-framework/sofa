@@ -25,7 +25,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/DeleteVisitor.h
     ${SRC_ROOT}/ExportDotVisitor.h
     ${SRC_ROOT}/ExportGnuplotVisitor.h
-    ${SRC_ROOT}/ExportOBJVisitor.h
+    ${SRC_ROOT}/ExportVisualModelOBJVisitor.h
     ${SRC_ROOT}/InitVisitor.h
     ${SRC_ROOT}/IntegrateBeginEvent.h
     ${SRC_ROOT}/IntegrateEndEvent.h
@@ -78,6 +78,7 @@ set(HEADER_FILES
 
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccFromFVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateConstraint.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateJacobian.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAddMBKdxVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAddMBK_ToMatrixVisitor.h
@@ -148,7 +149,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/DeleteVisitor.cpp
     ${SRC_ROOT}/ExportDotVisitor.cpp
     ${SRC_ROOT}/ExportGnuplotVisitor.cpp
-    ${SRC_ROOT}/ExportOBJVisitor.cpp
+    ${SRC_ROOT}/ExportVisualModelOBJVisitor.cpp
     ${SRC_ROOT}/InitVisitor.cpp
     ${SRC_ROOT}/IntegrateBeginEvent.cpp
     ${SRC_ROOT}/IntegrateEndEvent.cpp
@@ -198,6 +199,7 @@ set(SOURCE_FILES
 
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccFromFVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateConstraint.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateJacobian.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAccumulateMatrixDeriv.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAddMBKdxVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalAddMBK_ToMatrixVisitor.cpp

@@ -290,7 +290,7 @@ void PatchTestMovementConstraint<DataTypes>::projectPosition(const core::Mechani
 }
 
 template <class DataTypes>
-void PatchTestMovementConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
+void PatchTestMovementConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
     // clears the rows and columns associated with constrained particles
     unsigned blockSize = DataTypes::deriv_total_size;

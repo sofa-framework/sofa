@@ -23,7 +23,7 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaPreconditioner/ShewchukPCGLinearSolver.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>

@@ -918,7 +918,7 @@ void SimpleGUI::calcProjection()
     else
     {
         float ratio = (float)( vparams->zFar() / (vparams->zNear() * 20) );
-        Vector3 tcenter = vparams->sceneTransform() * center;
+        Vector3 tcenter = center;
         if (tcenter[2] < 0.0)
         {
             ratio = (float)( -300 * (tcenter.norm2()) / tcenter[2] );

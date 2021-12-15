@@ -27,11 +27,10 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/type/Mat.h>
-#include <SofaBaseLinearSolver/FullVector.h>
+#include <sofa/linearalgebra/FullVector.h>
 #include <cmath>
-#include <SofaBaseLinearSolver/RotationMatrix.h>
+#include <sofa/linearalgebra/RotationMatrix.h>
 #include <sofa/core/behavior/BaseRotationFinder.h>
-#include <SofaBaseLinearSolver/RotationMatrix.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 
 #include <map>
@@ -78,13 +77,13 @@ public:
 
     void solve(Matrix& M, Vector& solution, Vector& rh) override;
 
-    bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
+    bool addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, double fact) override;
 
-    bool addMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
+    bool addMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, double fact) override;
 
     Index getSystemDimention(const sofa::core::MechanicalParams* mparams);
 
-    void computeResidual(const core::ExecParams* params, defaulttype::BaseVector* /*f*/) override;
+    void computeResidual(const core::ExecParams* params, linearalgebra::BaseVector* /*f*/) override;
 
     void updateSystemMatrix() override;
 

@@ -68,7 +68,7 @@ def createBox(parent):
     parent.createObject('FixedConstraint', indices='0')
     
     collisionNode = parent.createChild('collision')
-    collisionNode.createObject('MeshObjLoader', name='loader', filename=mesh_path + 'cube.obj')
+    collisionNode.createObject('MeshOBJLoader', name='loader', filename=mesh_path + 'cube.obj')
     collisionNode.createObject('MeshTopology', position='@loader.position', edges='@loader.edges', triangles='@loader.triangles', quads='@loader.quads', tetrahedra='@loader.tetras', hexahedra='@loader.hexas')
     collisionNode.createObject('MechanicalObject', template='Vec3d', name='vertices', position='@loader.position')
     collisionNode.createObject('TriangleCollisionModel', template='Vec3d')
@@ -86,7 +86,7 @@ def createBox(parent):
 
 def createChlothes(parent):
 
-    parent.createObject('MeshObjLoader', name='loader', filename=mesh_path + 'poncho.obj')
+    parent.createObject('MeshOBJLoader', name='loader', filename=mesh_path + 'poncho.obj')
     parent.createObject('MechanicalObject', template='Vec3d', name='dof', position='@loader.position')
     parent.createObject('UniformMass')
     parent.createObject('MeshTopology', name='mesh', position='@loader.position', edges='@loader.edges', triangles='@loader.triangles', quads='@loader.quads', tetrahedra='@loader.tetras', hexahedra='@loader.hexas')

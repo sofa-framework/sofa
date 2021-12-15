@@ -26,7 +26,7 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/helper/io/XspLoader.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <numeric>
@@ -627,9 +627,9 @@ SReal DiagonalMass<DataTypes, MassType>::getElementMass(sofa::Index index) const
 
 //TODO: special case for Rigid Mass
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::getElementMass(sofa::Index index, defaulttype::BaseMatrix *m) const
+void DiagonalMass<DataTypes, MassType>::getElementMass(sofa::Index index, linearalgebra::BaseMatrix *m) const
 {
-    static const defaulttype::BaseMatrix::Index dimension = defaulttype::BaseMatrix::Index(defaulttype::DataTypeInfo<Deriv>::size());
+    static const linearalgebra::BaseMatrix::Index dimension = linearalgebra::BaseMatrix::Index(defaulttype::DataTypeInfo<Deriv>::size());
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
 
     m->clear();
@@ -926,199 +926,6 @@ void DiagonalMass<DataTypes, MassType>::printMass()
                << "massDensity = " << d_massDensity.getValue() << msgendl
                << "mean vertexMass [min,max] = " << average_vertex << " [" << min_vertex << "," <<  max_vertex <<"]";
 }
-
-
-template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::computeMass()
-{
-    if (m_topology && (d_massDensity.getValue() > 0 || d_vertexMass.getValue().size() == 0))
-    {
-        core::ConstVecCoordId posid = d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
-        const auto& positions = this->getMState()->read(posid)->getValue();
-
-        if (m_topology->getNbHexahedra()>0 && m_manageElementTypeChange == sofa::geometry::ElementType::HEXAHEDRON)
-        {
-            helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
-            m_massTopologyType = sofa::geometry::ElementType::HEXAHEDRON;
-
-            masses.resize(this->mstate->getSize());
-            for(unsigned int i=0; i<masses.size(); ++i)
-              masses[i]=Real(0);
-
-            Real md=d_massDensity.getValue();
-            Real mass=Real(0);
-            Real total_mass=Real(0);
-
-            for (Topology::HexahedronID i=0; i<m_topology->getNbHexahedra(); ++i)
-            {
-                const Hexahedron &h=m_topology->getHexahedron(i);
-
-                /// compute its mass based on the mass density and the hexahedron volume
-                const auto& rpos0 = DataTypes::getCPos(positions[h[0]]);
-                const auto& rpos1 = DataTypes::getCPos(positions[h[1]]);
-                const auto& rpos2 = DataTypes::getCPos(positions[h[2]]);
-                const auto& rpos3 = DataTypes::getCPos(positions[h[3]]);
-                const auto& rpos4 = DataTypes::getCPos(positions[h[4]]);
-                const auto& rpos5 = DataTypes::getCPos(positions[h[5]]);
-                const auto& rpos6 = DataTypes::getCPos(positions[h[6]]);
-                const auto& rpos7 = DataTypes::getCPos(positions[h[7]]);
-
-                const auto hexaVolume = sofa::geometry::Hexahedron::volume(rpos0, rpos1, rpos2, rpos3, rpos4, rpos5, rpos6, rpos7);
-                mass = (md * hexaVolume) / (typename DataTypes::Real(8.0));
-
-                for (unsigned int j = 0 ; j < h.size(); j++)
-                {
-                    masses[h[j]] += mass;
-                    total_mass += mass;
-                }
-            }
-
-            d_totalMass.setValue(total_mass);
-        }
-        else if (m_topology->getNbTetrahedra()>0 && m_manageElementTypeChange == sofa::geometry::ElementType::TETRAHEDRON)
-        {
-            helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
-            m_massTopologyType = sofa::geometry::ElementType::TETRAHEDRON;
-
-            // resize array
-            clear();
-            masses.resize(this->mstate->getSize());
-
-            for(unsigned int i=0; i<masses.size(); ++i)
-                masses[i]=Real(0);
-
-            Real md=d_massDensity.getValue();
-            Real mass=Real(0);
-            Real total_mass=Real(0);
-
-            for (Topology::TetrahedronID i=0; i<m_topology->getNbTetrahedra(); ++i)
-            {
-                const Tetrahedron &t=m_topology->getTetrahedron(i);
-
-                /// compute its mass based on the mass density and the tetrahedron volume
-                const auto& rpos0 = DataTypes::getCPos(positions[t[0]]);
-                const auto& rpos1 = DataTypes::getCPos(positions[t[1]]);
-                const auto& rpos2 = DataTypes::getCPos(positions[t[2]]);
-                const auto& rpos3 = DataTypes::getCPos(positions[t[3]]);
-
-                const auto tetraVolume = sofa::geometry::Tetrahedron::volume(rpos0, rpos1, rpos2, rpos3);
-                mass = (md * tetraVolume) / (typename DataTypes::Real(4.0));
-
-                for (unsigned int j = 0 ; j < t.size(); j++)
-                {
-                    masses[t[j]] += mass;
-                    total_mass += mass;
-                }
-            }
-            d_totalMass.setValue(total_mass);
-        }
-        else if (m_topology->getNbQuads()>0 && m_manageElementTypeChange == sofa::geometry::ElementType::QUAD) {
-            helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
-            m_massTopologyType = sofa::geometry::ElementType::QUAD;
-
-            // resize array
-            clear();
-            masses.resize(this->mstate->getSize());
-
-            for(unsigned int i=0; i<masses.size(); ++i)
-                masses[i]=Real(0);
-
-            Real md=d_massDensity.getValue();
-            Real mass=Real(0);
-            Real total_mass=Real(0);
-
-            for (Topology::QuadID i=0; i<m_topology->getNbQuads(); ++i)
-            {
-                const Quad &q=m_topology->getQuad(i);
-
-                const auto& pos0 = DataTypes::getCPos(positions[q[0]]);
-                const auto& pos1 = DataTypes::getCPos(positions[q[1]]);
-                const auto& pos2 = DataTypes::getCPos(positions[q[2]]);
-                const auto& pos3 = DataTypes::getCPos(positions[q[3]]);
-
-                const auto quadArea = sofa::geometry::Quad::area(pos0, pos1, pos2, pos3);
-                mass = (md * quadArea) / (Real(4.0));
-
-                for (unsigned int j = 0 ; j < q.size(); j++)
-                {
-                    masses[q[j]] += mass;
-                    total_mass += mass;
-                }
-            }
-            d_totalMass.setValue(total_mass);
-        }
-        else if (m_topology->getNbTriangles()>0 && m_manageElementTypeChange == sofa::geometry::ElementType::TRIANGLE)
-        {
-            helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
-            m_massTopologyType = sofa::geometry::ElementType::TRIANGLE;
-
-            // resize array
-            clear();
-            masses.resize(this->mstate->getSize());
-
-            for(unsigned int i=0; i<masses.size(); ++i)
-                masses[i]=Real(0);
-
-            Real md=d_massDensity.getValue();
-            Real mass=Real(0);
-            Real total_mass=Real(0);
-
-            for (Topology::TriangleID i=0; i<m_topology->getNbTriangles(); ++i)
-            {
-                const Triangle &t=m_topology->getTriangle(i);
-
-                const auto& pos0 = DataTypes::getCPos(positions[t[0]]);
-                const auto& pos1 = DataTypes::getCPos(positions[t[1]]);
-                const auto& pos2 = DataTypes::getCPos(positions[t[2]]);
-
-                const auto triangleArea = sofa::geometry::Triangle::area(pos0, pos1, pos2);
-                mass = (md * triangleArea) / (Real(3.0));
-
-                for (unsigned int j = 0 ; j < t.size(); j++)
-                {
-                    masses[t[j]] += mass;
-                    total_mass += mass;
-                }
-            }
-            d_totalMass.setValue(total_mass);
-        }
-        else if (m_topology->getNbEdges()>0 && m_manageElementTypeChange == sofa::geometry::ElementType::EDGE)
-        {
-            helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
-            m_massTopologyType = sofa::geometry::ElementType::EDGE;
-
-            // resize array
-            clear();
-            masses.resize(this->mstate->getSize());
-
-            for(unsigned int i=0; i<masses.size(); ++i)
-                masses[i]=Real(0);
-
-            Real md=d_massDensity.getValue();
-            Real mass=Real(0);
-            Real total_mass=Real(0);
-
-            for (Topology::EdgeID i=0; i<m_topology->getNbEdges(); ++i)
-            {
-                const Edge &e=m_topology->getEdge(i);
-
-                const auto& pos0 = DataTypes::getCPos(positions[e[0]]);
-                const auto& pos1 = DataTypes::getCPos(positions[e[1]]);
-
-                const auto edgeLength = sofa::geometry::Edge::length(pos0, pos1);
-                mass = (md * edgeLength) / (Real(2.0));
-
-                for (unsigned int j = 0 ; j < e.size(); j++)
-                {
-                    masses[e[j]] += mass;
-                    total_mass += mass;
-                }
-            }
-            d_totalMass.setValue(total_mass);
-        }
-    }
-}
-
 
 template <class DataTypes, class MassType>
 typename DiagonalMass<DataTypes, MassType>::Real DiagonalMass<DataTypes, MassType>::computeVertexMass(Real density)

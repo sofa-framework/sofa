@@ -15,13 +15,13 @@
         <RestShapeSpringsForceField name="Springs" stiffness="50"/>
 		
         <Node name="Visu">
-            <MeshObjLoader name="meshLoader_2" filename="mesh/dragon.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_2" filename="mesh/dragon.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_2" color="0.5 1.0 0.5 1.0" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
 		
         <Node name="TriangleSurf">
-            <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
+            <MeshOBJLoader name="loader" filename="mesh/dragon.obj" />
             <MeshTopology src="@loader"/>
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel group="1" />
@@ -39,13 +39,13 @@
         <RestShapeSpringsForceField name="Springs" stiffness="50"/>
 		
         <Node name="Visu">
-            <MeshObjLoader name="meshLoader_1" filename="mesh/dragon.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_1" filename="mesh/dragon.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_1" color="1.0 0.5 0.5 1.0" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
 		
         <Node name="TriangleSurf">
-            <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
+            <MeshOBJLoader name="loader" filename="mesh/dragon.obj" />
             <MeshTopology src="@loader"/>
             <MechanicalObject src="@loader" />
             <TriangleCollisionModel group="1" />
@@ -61,12 +61,12 @@
 		<UniformMass totalMass="1.0" />
 		<RestShapeSpringsForceField name="Springs" stiffness="50" angularStiffness="50"/>
 		<Node name="Visu">
-			<MeshObjLoader name="meshLoader_3" filename="mesh/smCube27.obj" handleSeams="1" />
+			<MeshOBJLoader name="meshLoader_3" filename="mesh/smCube27.obj" handleSeams="1" />
 			<OglModel name="Visual" src="@meshLoader_3" color="0.5 1.0 0.5 1.0" />
 			<RigidMapping input="@.." output="@Visual" />
 		</Node>
 		<Node name="Surf2">
-			<MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
+			<MeshOBJLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
 			<MeshTopology src="@loader"/>
 			<MechanicalObject src="@loader"/>
 			<TriangleCollisionModel group="1"/>
@@ -82,12 +82,12 @@
 		<UniformMass totalMass="1.0" />
 		<RestShapeSpringsForceField name="Springs" stiffness="50" angularStiffness="50" />
 		<Node name="Visu">
-			<MeshObjLoader name="meshLoader_0" filename="mesh/smCube27.obj" handleSeams="1" />
+			<MeshOBJLoader name="meshLoader_0" filename="mesh/smCube27.obj" handleSeams="1" />
 			<OglModel name="Visual" src="@meshLoader_0" color="1.0 0.5 0.5 1.0" />
 			<RigidMapping input="@.." output="@Visual" />
 		</Node>
 		<Node name="Surf2">
-			<MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
+			<MeshOBJLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
 			<MeshTopology src="@loader"/>
 			<MechanicalObject src="@loader"/>
 			<TriangleCollisionModel group="1"/>

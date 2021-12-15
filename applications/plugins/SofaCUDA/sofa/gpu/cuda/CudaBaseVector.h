@@ -23,7 +23,7 @@
 #define SOFA_GPU_CUDA_CUDABASEVECTOR_H
 
 #include "CudaTypes.h"
-#include <sofa/defaulttype/BaseVector.h>
+#include <sofa/linearalgebra/BaseVector.h>
 
 namespace sofa
 {
@@ -98,10 +98,10 @@ public:
 using namespace sofa::defaulttype;
 
 template<class T>
-class CudaBaseVectorType : public BaseVector {
+class CudaBaseVectorType : public linearalgebra::BaseVector {
 public :
     typedef T Real;
-    typedef typename BaseVector::Index Index;
+    typedef typename linearalgebra::BaseVector::Index Index;
 
     virtual void resize(Index nbRow) = 0;
     virtual Index size() const = 0;

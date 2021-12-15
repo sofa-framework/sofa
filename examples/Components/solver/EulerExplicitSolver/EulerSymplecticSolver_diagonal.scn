@@ -28,14 +28,14 @@ trivially, it does not require a linear solver.
         <TetrahedronFEMForceField name="FEM" youngModulus="5000" poissonRatio="0.49" method="large" />
 
         <Node name="Visual">
-            <MeshObjLoader name="meshLoader_0" filename="mesh/truthcylinder1.obj" handleSeams="1" />
+            <MeshOBJLoader name="meshLoader_0" filename="mesh/truthcylinder1.obj" handleSeams="1" />
             <OglModel name="Visual" src="@meshLoader_0" color="red"/>
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
     </Node>
 
     <Node name="floor-visual">
-        <MeshObjLoader name="meshLoader" filename="mesh/floorFlat.obj"/>
+        <MeshOBJLoader name="meshLoader" filename="mesh/floorFlat.obj"/>
         <OglModel src="@meshLoader" dy="-18"/>
         <OglModel src="@meshLoader" rx="90" dz="20" dy="2"/>
     </Node>
