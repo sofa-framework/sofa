@@ -53,9 +53,9 @@ public:
 
     void innerInit();
 
-    Data<std::string>   d_plugin                ; ///< The component class for which to create an alias.
-    Data<std::string>   d_importOldName       ; ///< The object's name to import
-    Data<std::string>   d_asNewName           ; ///< The new alias of the component.
+    Data<std::string>   d_fromPlugin       ; ///< The component class for which to create an alias.
+    Data<std::string>   d_components       ; ///< The object's name to import
+    Data<std::string>   d_asNewName        ; ///< The new alias of the component.
 
     /// Returns the sofa class name. By default the name of the c++ class is exposed... but
     /// Here we want it to be ImportComponent so we need to customize it.

@@ -131,7 +131,7 @@ void SceneCheckMissingRequiredPlugin::doInit(Node* node)
     node->getTreeObjects< ImportComponent >(&imports);
     for(auto& plugin : imports)
     {
-        m_loadedPlugins[plugin->d_plugin.getValue()] = true;
+        m_loadedPlugins[plugin->d_fromPlugin.getValue()] = true;
     }
 
 }

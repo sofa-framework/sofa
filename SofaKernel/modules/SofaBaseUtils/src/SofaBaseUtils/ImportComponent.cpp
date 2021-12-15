@@ -37,22 +37,17 @@ namespace sofa::component
 {
 
 ImportComponent::ImportComponent() :
-    d_plugin(initData(&d_plugin, "fromPlugin", ""))
-  ,d_importOldName(initData(&d_importOldName, "component(s)", ""))
+    d_fromPlugin(initData(&d_fromPlugin, "fromPlugin", ""))
+  ,d_components(initData(&d_components, "components", ""))
   ,d_asNewName(initData(&d_asNewName, "as", ""))
 {
     d_componentState.setValue(ComponentState::Invalid) ;
-    addAlias(&d_importOldName, "component");
-    addAlias(&d_importOldName, "components");
 }
 
 void ImportComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
 {
     Inherit1::parse(arg);
-    const char* alias=arg->getAttribute("as");
     const char* plugin=arg->getAttribute("fromPlugin");
-    const char* object=arg->getAttribute("component");
-    const char* objects=arg->getAttribute("components");
 
     // Check that there is a plugin name.
     if(plugin==nullptr)
@@ -63,30 +58,13 @@ void ImportComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
     }
     setName(plugin);
 
-    // Check that there is either multiple object (and no has)
-    if(objects != nullptr)
-    {
-        if(object != nullptr)
-        {
-            msg_error() << "Use of components and component at the same time is not possible.  "
-                           "To remove this error message use only 'components' to load multiple ones and 'component' for single one loading.";
-            return ;
-        }
-        if(alias != nullptr)
-        {
-            msg_error() << "The loading of multiple components is not compatible with name aliasing."
-                           "To remove this error message you need to write either <Import component='MyComponent' as='' or .";
-            return ;
-        }
-    }
-
     innerInit();
 }
 
 void ImportComponent::innerInit()
 {
     d_componentState.setValue(ComponentState::Invalid);
-    const std::string plugin = d_plugin.getValue();
+    const std::string plugin = d_fromPlugin.getValue();
 
     // First load the plugin if it is not yet done
     type::vector< std::string > failed;
@@ -102,7 +80,7 @@ void ImportComponent::innerInit()
     }
 
     std::vector<std::string> componentsAlias;
-    std::string cleanedString=d_importOldName.getValue();
+    std::string cleanedString=d_components.getValue();
     sofa::helper::replaceAll(cleanedString, " ", "");
     std::vector<std::string> componentsName = sofa::helper::split(cleanedString, ',');
     if(componentsName.empty())
@@ -168,10 +146,10 @@ void ImportComponent::innerInit()
             std::vector<sofa::core::ObjectFactory::ClassEntry::SPtr> entries;
             ObjectFactory::getInstance()->getEntriesFromTarget(entries, std::string(plugin));
             errorMessage << "The component '"<< componentOldName << "' does not correspond to a valid one available in the plugin '"<< plugin <<"'." << msgendl;
-            errorMessage << "Content of " << d_plugin.getValueString() << ":" << msgendl;
+            errorMessage << "Content of " << d_fromPlugin.getValueString() << ":" << msgendl;
             for(auto& entry : entries)
             {
-                errorMessage << " - " << entry->className << msgendl;
+                errorMessage << " - " << entry->className <<  msgendl;
             }
             errorMessage << "To remove this error message you need to fix your scene and provide a valid component ClassName in the 'import' attribute. ";
             msg_error() << errorMessage.str();
