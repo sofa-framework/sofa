@@ -376,7 +376,6 @@ void ObjectFactory::getAllEntries(std::vector<ClassEntry::SPtr>& result)
 
 void ObjectFactory::getEntriesFromTarget(std::vector<ClassEntry::SPtr>& result, std::string target)
 {
-    // The map is used to select the aliases only once.
     result.clear();
     for(ClassEntryMap::iterator it = registry.begin(), itEnd = registry.end();
         it != itEnd; ++it)
