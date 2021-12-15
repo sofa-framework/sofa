@@ -31,7 +31,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
-#include <SofaBaseTopology/TopologySubsetIndices.h>
+#include <sofa/core/topology/TopologySubsetIndices.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/type/RGBAColor.h>
@@ -73,7 +73,7 @@ public:
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalModel;    
     typedef type::vector<sofa::Index> SetIndexArray;
-    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
+    typedef sofa::core::topology::TopologySubsetIndices SetIndex;
 
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;

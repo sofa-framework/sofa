@@ -76,7 +76,7 @@ protected:
         }
     };
 
-    sofa::component::topology::EdgeSubsetData<sofa::type::vector< EdgePressureInformation> > edgePressureMap; ///< map between edge indices and their pressure
+    sofa::core::topology::EdgeSubsetData<sofa::type::vector< EdgePressureInformation> > edgePressureMap; ///< map between edge indices and their pressure
 
     sofa::core::topology::BaseMeshTopology* _completeTopology{nullptr};
 

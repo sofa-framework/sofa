@@ -25,7 +25,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -2121,10 +2121,10 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
     const int N = defaulttype::DataTypeInfo<Deriv>::size();
     AddMToMatrixFunctor<Deriv,MassType> calc;
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
-    sofa::defaulttype::BaseMatrix* mat = r.matrix;
+    sofa::linearalgebra::BaseMatrix* mat = r.matrix;
     Real mFactor = Real(sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue()));
 
-    if((mat->colSize()) != (defaulttype::BaseMatrix::Index)(m_topology->getNbPoints()*N) || (mat->rowSize()) != (defaulttype::BaseMatrix::Index)(m_topology->getNbPoints()*N))
+    if((mat->colSize()) != (linearalgebra::BaseMatrix::Index)(m_topology->getNbPoints()*N) || (mat->rowSize()) != (linearalgebra::BaseMatrix::Index)(m_topology->getNbPoints()*N))
     {
         msg_error() <<"Wrong size of the input Matrix: need resize in addMToMatrix function.";
         mat->resize(m_topology->getNbPoints()*N,m_topology->getNbPoints()*N);
@@ -2203,9 +2203,9 @@ SReal MeshMatrixMass<DataTypes, MassType>::getElementMass(Index index) const
 
 //TODO: special case for Rigid Mass
 template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::getElementMass(Index index, defaulttype::BaseMatrix *m) const
+void MeshMatrixMass<DataTypes, MassType>::getElementMass(Index index, linearalgebra::BaseMatrix *m) const
 {
-    static const defaulttype::BaseMatrix::Index dimension = defaulttype::BaseMatrix::Index(defaulttype::DataTypeInfo<Deriv>::size());
+    static const linearalgebra::BaseMatrix::Index dimension = linearalgebra::BaseMatrix::Index(defaulttype::DataTypeInfo<Deriv>::size());
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
 
     m->clear();

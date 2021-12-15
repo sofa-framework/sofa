@@ -141,12 +141,12 @@ public:
 
     static const char* viewerName()
     {
-        return "OpenGL";
+        return "OpenGL (QtViewer)";
     }
 
     static const char* acceleratedName()
     {
-        return "Open&GL";
+        return "Open&GL (QtViewer)";
     }
 
     /// Activate this class of viewer.

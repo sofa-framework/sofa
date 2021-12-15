@@ -11,7 +11,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
-    <DefaultContactManager name="Response" response="default" />
+    <DefaultContactManager name="Response" response="PenalityContactForceField" />
     <DefaultCollisionGroupManager name="Group" />
     <Node name="M1">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />

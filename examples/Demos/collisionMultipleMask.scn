@@ -7,7 +7,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.75" contactDistance="0.5" />
-    <DefaultContactManager name="Response" response="default" />
+    <DefaultContactManager name="Response" response="PenalityContactForceField" />
     <DefaultCollisionGroupManager name="Group" />
 
     <MeshOBJLoader name='Loader-torus' filename='mesh/torus2_scale3.obj'/>

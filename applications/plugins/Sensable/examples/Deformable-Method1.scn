@@ -8,7 +8,7 @@
     <DefaultPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager response="default" />
+    <DefaultContactManager response="PenalityContactForceField" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.08" contactDistance="0.05" useSurfaceNormals="false"/>
     <DefaultCollisionGroupManager />
     <Node name="TT">

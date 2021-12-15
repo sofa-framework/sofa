@@ -29,7 +29,7 @@
 #include <iostream>
 #include <set>
 
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 
 
 

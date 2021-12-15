@@ -43,11 +43,11 @@ public:
     class MatrixRef
     {
     public:
-        defaulttype::BaseMatrix* matrix;
+        linearalgebra::BaseMatrix* matrix;
         unsigned int offset;
         MatrixRef() : matrix(nullptr), offset(0) {}
         constexpr MatrixRef(const MatrixRef & other) = default;
-        defaulttype::BaseMatrix* operator->() const { return matrix; }
+        linearalgebra::BaseMatrix* operator->() const { return matrix; }
         bool operator!() const { return matrix == nullptr; }
         operator bool() const { return matrix != nullptr; }
         void operator =(const MatrixRef& b) {offset = b.offset; matrix = b.matrix;}
@@ -57,11 +57,11 @@ public:
     class InteractionMatrixRef
     {
     public:
-        defaulttype::BaseMatrix* matrix;
+        linearalgebra::BaseMatrix* matrix;
         unsigned int offRow, offCol;
         InteractionMatrixRef() : matrix(nullptr), offRow(0), offCol(0) {}
         constexpr InteractionMatrixRef(const InteractionMatrixRef & other) = default;
-        defaulttype::BaseMatrix* operator->() const { return matrix; }
+        linearalgebra::BaseMatrix* operator->() const { return matrix; }
         bool operator!() const { return matrix == nullptr; }
         operator bool() const { return matrix != nullptr; }
         void operator =(const InteractionMatrixRef& b) {offRow = b.offRow; offCol = b.offCol; matrix = b.matrix;}

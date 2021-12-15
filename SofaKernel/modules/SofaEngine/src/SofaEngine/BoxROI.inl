@@ -132,19 +132,6 @@ BoxROI<DataTypes>::BoxROI()
 template<class DataTypes>
 void BoxROI<DataTypes>::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
 {
-    // TODO: remove for v21.12
-    if (arg->getAttribute("rest_position")!=nullptr)
-    {
-        msg_deprecated() << "The 'rest_position' data field has been deprecated since SOFA v20.06. "
-                            "Use the attribute 'position' instead." << msgendl
-                            "Please contact sofa-dev team in case you need similar.";
-    }
-    if (arg->getAttribute("isVisible")!=nullptr)
-    {
-        msg_deprecated() << "The 'isVisible' data field has been deprecated since SOFA v20.06. "
-                            "Use the attribute 'drawBoxes' instead." << msgendl
-                            "Please contact sofa-dev team in case you need similar.";
-    }
     Inherit1::parse(arg);
 }
 

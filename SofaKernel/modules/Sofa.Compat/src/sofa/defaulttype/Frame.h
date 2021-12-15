@@ -21,12 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/type/Frame.h>
+#include <sofa/config.h>
 
-// SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/type/Frame.h")
-
-namespace sofa::defaulttype
-{
-    using Frame = sofa::type::Frame;
-
-} // namespace sofa::defaulttype
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/type/Frame.h")

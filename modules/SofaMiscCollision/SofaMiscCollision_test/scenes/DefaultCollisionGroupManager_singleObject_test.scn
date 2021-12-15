@@ -24,7 +24,7 @@ response. The scene should work with or without the group manager.
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <NewProximityIntersection name="Proximity" alarmDistance="2" contactDistance="0.7"/>
-    <DefaultContactManager name="Response" response="default"/>
+    <DefaultContactManager name="Response" response="PenalityContactForceField"/>
     <DefaultCollisionGroupManager name="GroupManager"/>
 
     <Node name="Cube1">

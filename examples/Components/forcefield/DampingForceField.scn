@@ -8,7 +8,7 @@
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
 	<MinProximityIntersection name="Proximity"  alarmDistance="0.3"  contactDistance="0.2" />
-	<DefaultContactManager name="Response"  response="default" />
+	<DefaultContactManager name="Response"  response="PenalityContactForceField" />
 	<DefaultCollisionGroupManager name="Group" />
 	<EulerImplicitSolver name="eulerImplicitSolver0"  rayleighStiffness="0"  rayleighMass="0" />
 	<CGLinearSolver template="GraphScattered" name="cGLinearSolver1"  tolerance="1e-015"  threshold="1e-015" iterations="25"/>

@@ -30,10 +30,7 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 #include "TriangularFEMForceField.h"
-#include <SofaBaseTopology/TopologyData.h>
-#include <newmat/newmat.h>
-#include <newmat/newmatap.h>
-
+#include <sofa/core/topology/TopologyData.h>
 
 
 namespace sofa::component::forcefield
@@ -82,7 +79,7 @@ public:
     Data<VecCoord> f_fiberCenter; ///< Concentric fiber center in global reference frame
     Data<bool> showFiber; ///< Flag activating rendering of fiber directions within each triangle
     typedef typename TriangularAnisotropicFEMForceField::Deriv TriangleFiberDirection;
-    topology::TriangleData < sofa::type::vector< TriangleFiberDirection > > localFiberDirection; ///< Computed fibers direction within each triangle
+    core::topology::TriangleData < sofa::type::vector< TriangleFiberDirection > > localFiberDirection; ///< Computed fibers direction within each triangle
 
     /// Link to be set to the topology container in the component graph.
     using Inherit1::l_topology;

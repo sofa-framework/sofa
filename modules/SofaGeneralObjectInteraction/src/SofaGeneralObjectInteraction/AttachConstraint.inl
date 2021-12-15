@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaGeneralObjectInteraction/AttachConstraint.h>
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
@@ -462,7 +462,7 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
     if (!r)
         return;
 
-    sofa::defaulttype::BaseMatrix *mat = r.matrix;
+    sofa::linearalgebra::BaseMatrix *mat = r.matrix;
     unsigned int offset = r.offset;
 
     const SetIndexArray & indices = f_indices2.getValue();
@@ -504,7 +504,7 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
 
 
 template <class DataTypes>
-void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams * mparams, defaulttype::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams * mparams, linearalgebra::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
     if (f_twoWay.getValue())

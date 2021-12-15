@@ -112,6 +112,8 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
     N = cs_chol (&A, S) ;		/* numeric Cholesky factorization */
 }
 
+using namespace sofa::linearalgebra;
+
 int SparseCholeskySolverClass = core::RegisterObject("Direct linear solver based on Sparse Cholesky factorization, implemented with the CSPARSE library")
         .add< SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> > >(true)
         .add< SparseCholeskySolver< CompressedRowSparseMatrix<float>,FullVector<float> > >()

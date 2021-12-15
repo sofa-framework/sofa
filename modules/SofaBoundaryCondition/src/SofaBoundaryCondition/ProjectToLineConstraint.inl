@@ -23,7 +23,7 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBoundaryCondition/ProjectToLineConstraint.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <iostream>
@@ -171,7 +171,7 @@ void  ProjectToLineConstraint<DataTypes>::updateJacobian()
 }
 
 template <class DataTypes>
-void ProjectToLineConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
+void ProjectToLineConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
     J.copy(jacobian, M->colSize(), offset); // projection matrix for an assembled state
     BaseSparseMatrix* E = dynamic_cast<BaseSparseMatrix*>(M);
@@ -235,9 +235,9 @@ void ProjectToLineConstraint<DataTypes>::applyConstraint(const core::MechanicalP
 }
 
 template <class DataTypes>
-void ProjectToLineConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, defaulttype::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
+void ProjectToLineConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* /*mparams*/, linearalgebra::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
 {
-    msg_error() << "ProjectToLineConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) is not implemented ";
+    msg_error() << "ProjectToLineConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) is not implemented ";
 }
 
 

@@ -34,16 +34,16 @@ namespace component
 namespace collision
 {
 
-Creator<Contact::Factory, BarycentricStickContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > SphereSphereStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > SpherePointStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > PointPointStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > LinePointStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>> > LineLineStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > LineSphereStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleSphereStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > TrianglePointStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleLineStickContactClass("stick",true);
-Creator<Contact::Factory, BarycentricStickContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleTriangleStickContactClass("stick",true);
+Creator<Contact::Factory, BarycentricStickContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > SphereSphereStickContactClass("StickContactForceField",true);
+Creator<Contact::Factory, BarycentricStickContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > SpherePointStickContactClass("StickContactForceField",true);
+Creator<Contact::Factory, BarycentricStickContact<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > PointPointStickContactClass("StickContactForceField",true);
+Creator<Contact::Factory, BarycentricStickContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > LinePointStickContactClass("StickContactForceField",true);
+Creator<Contact::Factory, BarycentricStickContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>> > LineLineStickContactClass("StickContactForceField",true);
+Creator<Contact::Factory, BarycentricStickContact<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > LineSphereStickContactClass("StickContactForceField",true);
+Creator<Contact::Factory, BarycentricStickContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleSphereStickContactClass("StickContactForceField",true);
+Creator<Contact::Factory, BarycentricStickContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > TrianglePointStickContactClass("StickContactForceField",true);
+Creator<Contact::Factory, BarycentricStickContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleLineStickContactClass("StickContactForceField",true);
+Creator<Contact::Factory, BarycentricStickContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleTriangleStickContactClass("StickContactForceField",true);
 
 template class SOFA_MISC_COLLISION_API BarycentricStickContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
 template class SOFA_MISC_COLLISION_API BarycentricStickContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;

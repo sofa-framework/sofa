@@ -83,7 +83,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.inl
     ${SRC_ROOT}/behavior/RotationFinder.h
-    ${SRC_ROOT}/behavior/RotationMatrix.h
     ${SRC_ROOT}/behavior/StateAccessor.h
     ${SRC_ROOT}/behavior/SingleStateAccessor.h
     ${SRC_ROOT}/behavior/fwd.h
@@ -154,8 +153,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/topology/TopologyData.inl
     ${SRC_ROOT}/topology/TopologyDataHandler.h
     ${SRC_ROOT}/topology/TopologyDataHandler.inl
-    ${SRC_ROOT}/topology/TopologySparseData.h
-    ${SRC_ROOT}/topology/TopologySparseData.inl
     ${SRC_ROOT}/topology/TopologySubsetData.h
     ${SRC_ROOT}/topology/TopologySubsetData.inl
     ${SRC_ROOT}/topology/TopologySubsetData.cpp

@@ -5,7 +5,7 @@
     <DefaultPipeline name="pipeline" depth="6" verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager name="response" response="default" />
+    <DefaultContactManager name="response" response="PenalityContactForceField" />
     <DiscreteIntersection name="proximity" />
     
     <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />

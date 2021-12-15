@@ -23,7 +23,7 @@
 
 #include <SofaBoundaryCondition/FixedPlaneConstraint.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -142,7 +142,7 @@ void FixedPlaneConstraint<DataTypes>::projectPosition(const MechanicalParams* /*
 }
 
 template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned /*offset*/ )
+void FixedPlaneConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned /*offset*/ )
 {
     /// clears the rows and columns associated with constrained particles
     unsigned blockSize = DataTypes::deriv_total_size;

@@ -30,9 +30,9 @@ namespace sofa::component::collision
 
 using namespace sofa::defaulttype;
 
-Creator<core::collision::Contact::Factory, RayContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>> > RaySphereContactClass("ray",true);
-Creator<core::collision::Contact::Factory, RayContact<RigidSphereModel> > RayRigidSphereContactClass("ray",true);
-Creator<core::collision::Contact::Factory, RayContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > RayTriangleContactClass("ray",true);
+Creator<core::collision::Contact::Factory, RayContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>> > RaySphereContactClass("RayContact",true);
+Creator<core::collision::Contact::Factory, RayContact<RigidSphereModel> > RayRigidSphereContactClass("RayContact",true);
+Creator<core::collision::Contact::Factory, RayContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > RayTriangleContactClass("RayContact",true);
 
 template class SOFA_SOFAUSERINTERACTION_API RayContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
 template class SOFA_SOFAUSERINTERACTION_API RayContact<RigidSphereModel>;

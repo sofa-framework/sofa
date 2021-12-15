@@ -25,7 +25,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/core/loader/VoxelLoader.h>
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 
 namespace sofa::component::topology
 {

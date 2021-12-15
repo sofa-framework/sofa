@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <SofaBaseVisual/VisualModelImpl.h>
 
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 #include <SofaBaseTopology/SparseGridTopology.h>
 
 #include <sofa/core/visual/VisualParams.h>

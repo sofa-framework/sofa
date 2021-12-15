@@ -44,13 +44,13 @@ public:
     /// @name Compliance Matrix API
     /// @{
 
-    virtual void addComplianceInConstraintSpace(const ConstraintParams *, defaulttype::BaseMatrix* W) = 0;
+    virtual void addComplianceInConstraintSpace(const ConstraintParams *, linearalgebra::BaseMatrix* W) = 0;
 
     /// Fill the matrix m with the full Compliance Matrix
-    virtual void getComplianceMatrix(defaulttype::BaseMatrix* m) const = 0;
+    virtual void getComplianceMatrix(linearalgebra::BaseMatrix* m) const = 0;
 
     /// For multigrid approach => constraints are merged
-    virtual void getComplianceWithConstraintMerge(defaulttype::BaseMatrix* /*Wmerged*/, std::vector<int> & /*constraint_merge*/);
+    virtual void getComplianceWithConstraintMerge(linearalgebra::BaseMatrix* /*Wmerged*/, std::vector<int> & /*constraint_merge*/);
 
     /// @}
 
@@ -70,7 +70,7 @@ public:
     /// @param cparams the ConstraintParams relative to the constraint solver
     /// @param dx the VecId where to store the corrective motion
     /// @param lambda is the constraint space force vector
-    virtual void computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const defaulttype::BaseVector * lambda) = 0;
+    virtual void computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const linearalgebra::BaseVector * lambda) = 0;
 
     /// Compute motion correction from the constraint resolution (LCP) calculated force
     ///
@@ -102,7 +102,7 @@ public:
     /// @param cparams
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
-    virtual void applyPredictiveConstraintForce(const ConstraintParams * cparams, MultiVecDerivId f, const defaulttype::BaseVector * lambda) = 0;
+    virtual void applyPredictiveConstraintForce(const ConstraintParams * cparams, MultiVecDerivId f, const linearalgebra::BaseVector * lambda) = 0;
 
     /// Rebuild the system using a mass and force factor
     /// Experimental API used to investigate convergence issues.
@@ -111,11 +111,11 @@ public:
     /// Compute the residual in the newton iterations due to the constraints forces
     /// i.e. compute Vecid::force() += J^t lambda
     /// the result is accumulated in Vecid::force()
-    virtual void computeResidual(const core::ExecParams* /*params*/, defaulttype::BaseVector * /*lambda*/) ;
+    virtual void computeResidual(const core::ExecParams* /*params*/, linearalgebra::BaseVector * /*lambda*/) ;
 
     /// @name Deprecated API
     /// @{
-    virtual void applyContactForce(const defaulttype::BaseVector *f) = 0;
+    virtual void applyContactForce(const linearalgebra::BaseVector *f) = 0;
     virtual void resetContactForce() = 0;
     /// @}
 
@@ -125,7 +125,7 @@ public:
     virtual void resetForUnbuiltResolution(double * /*f*/, std::list<unsigned int>& /*renumbering*/);
     virtual void addConstraintDisplacement(double * /*d*/, int /*begin*/, int /*end*/);
     virtual void setConstraintDForce(double * /*df*/, int /*begin*/, int /*end*/, bool /*update*/);	  // f += df
-    virtual void getBlockDiagonalCompliance(defaulttype::BaseMatrix* /*W*/, int /*begin*/,int /*end*/);
+    virtual void getBlockDiagonalCompliance(linearalgebra::BaseMatrix* /*W*/, int /*begin*/,int /*end*/);
     /// @}
 
 protected:

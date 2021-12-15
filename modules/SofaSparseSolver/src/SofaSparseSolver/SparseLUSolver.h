@@ -82,7 +82,7 @@ protected :
 };
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSELUSOLVER_CPP)
-    extern template class SOFA_SOFASPARSESOLVER_API SparseLUSolver< CompressedRowSparseMatrix< double>,FullVector<double> >;
+    extern template class SOFA_SOFASPARSESOLVER_API SparseLUSolver< sofa::linearalgebra::CompressedRowSparseMatrix< double>, sofa::linearalgebra::FullVector<double> >;
 #endif
 
 } // namespace sofa::component::linearsolver

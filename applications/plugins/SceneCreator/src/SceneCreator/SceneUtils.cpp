@@ -38,7 +38,7 @@ using sofa::helper::system::DataRepository ;
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory ;
 
-#include <SofaBaseLinearSolver/FullVector.h>
+#include <sofa/linearalgebra/FullVector.h>
 
 namespace sofa
 {
@@ -48,7 +48,7 @@ using sofa::defaulttype::Vec3Types;
 
 /////////////////// IMPORTING THE DEPENDENCIES INTO THE NAMESPACE ///////////////////////////
 using namespace sofa::defaulttype ;
-typedef component::linearsolver::FullVector<SReal> FullVector ;
+typedef linearalgebra::FullVector<SReal> FullVector ;
 
 using type::vector;
 

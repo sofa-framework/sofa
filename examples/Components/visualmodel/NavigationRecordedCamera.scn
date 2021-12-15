@@ -11,7 +11,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity"  alarmDistance="3"  contactDistance="2" />
-    <DefaultContactManager name="Response"  response="default" />
+    <DefaultContactManager name="Response"  response="PenalityContactForceField" />
     <RecordedCamera projectionType="0" name="recordedCamera0"  listening="1" navigationMode="1" cameraPositions="-35.5 12.1 37.8
                                                                                             -13.9 9.3 42.1 
                                                                                             4.9 13.1 43.6

@@ -72,14 +72,14 @@ public:
     void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override {}
     void applyJT( const core::ConstraintParams* cparams, const type::vector< InDataMatrixDeriv* >& dataMatOutConst, const type::vector< const OutDataMatrixDeriv* >& dataMatInConst ) override;
 
-    virtual const type::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
 
 protected :
 
     IdentityMultiMapping();
     virtual ~IdentityMultiMapping();
 
-    type::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    type::vector<linearalgebra::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
     typedef linearalgebra::EigenSparseMatrix<TIn,TOut> EigenMatrix;
 

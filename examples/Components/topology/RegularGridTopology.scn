@@ -11,7 +11,7 @@
     <DefaultPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager response="default" />
+    <DefaultContactManager response="PenalityContactForceField" />
     <DiscreteIntersection/>
     <Node name="LiverFFD-lowres">
         <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />

@@ -29,7 +29,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 #include <SofaOpenglVisual/OglVariable.h>
 
 namespace sofa
@@ -62,7 +62,7 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
     core::topology::BaseMeshTopology* m_topology;
 
-    topology::PointData< sofa::type::vector<Coord> > m_positions; ///< Vertices coordinates
+    core::topology::PointData< sofa::type::vector<Coord> > m_positions; ///< Vertices coordinates
     Data< sofa::type::vector<Tetrahedron> > m_tetrahedrons;
     Data<bool> depthTest; ///< Set Depth Test
     Data<bool> blending; ///< Set Blending

@@ -10,7 +10,7 @@
     <NewProximityIntersection alarmDistance="0.5" contactDistance="0.3" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager response="default" />
+    <DefaultContactManager response="PenalityContactForceField" />
     <Node name="Fluid">
         <RungeKutta4Solver />
         <PointSetTopologyContainer />

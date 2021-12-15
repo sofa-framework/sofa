@@ -47,7 +47,10 @@ sofa::helper::OptionsGroup DefaultContactManager::initializeResponseOptions(sofa
 
     sofa::simulation::Node* node = sofa::simulation::node::getNodeFrom(context);
     sofa::core::collision::Pipeline* pipeline = node->collisionPipeline;
-    if (pipeline) listResponse=pipeline->getResponseList();
+    if (pipeline)
+    {
+        listResponse=pipeline->getResponseList();
+    }
     else
     {
         core::collision::Contact::Factory::iterator it;
@@ -56,9 +59,11 @@ sofa::helper::OptionsGroup DefaultContactManager::initializeResponseOptions(sofa
             listResponse.insert(it->first);
         }
     }
+
     sofa::helper::OptionsGroup responseOptions(listResponse);
-    if (listResponse.find("default") != listResponse.end())
-        responseOptions.setSelectedItem("default");
+    if (listResponse.find("PenalityContactForceField") != listResponse.end())
+        responseOptions.setSelectedItem("PenalityContactForceField");
+
     return responseOptions;
 }
 

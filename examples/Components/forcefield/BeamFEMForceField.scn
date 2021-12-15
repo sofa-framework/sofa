@@ -9,7 +9,6 @@
     <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
     <RequiredPlugin pluginName='SofaGeneralSimpleFem'/>
     <RequiredPlugin pluginName='SofaBoundaryCondition'/>
-    <RequiredPlugin pluginName='SofaDenseSolver'/>
     <RequiredPlugin pluginName='SofaMeshCollision'/>
     <RequiredPlugin pluginName='SofaRigid'/>
     <RequiredPlugin pluginName='SofaConstraint'/>
@@ -20,7 +19,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-    <DefaultContactManager name="Response" response="default" />
+    <DefaultContactManager name="Response" response="PenalityContactForceField" />
 
     <Node name="beam-withPointCollision">
         <EulerImplicitSolver rayleighStiffness="0" printLog="false"  rayleighMass="0.1" />
@@ -62,7 +61,7 @@
 
     <Node name="beam-withSphereCollision">
         <EulerImplicitSolver rayleighStiffness="0" printLog="false" rayleighMass="0.1"/>
-        <CGLinearSolver template="NewMat" threshold="0.000000001" tolerance="0.0000000001" iterations="25" printLog="false" />
+        <CGLinearSolver threshold="0.000000001" tolerance="0.0000000001" iterations="25" printLog="false" />
 
         <MechanicalObject template="Rigid3d" name="DOFs" position="0 0 1 0 0 0 1  1 0 1 0 0 0 1  2 0 1 0 0 0 1  3 0 1 0 0 0 1" />
         <MeshTopology name="lines" lines="0 1 1 2 2 3" />
