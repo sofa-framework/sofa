@@ -8,8 +8,6 @@
 #include <iostream>
 #include <vector>
 
-#include <CImgPlugin/MatrixImageExporter.h>
-
 #include "SOFACImg.h"
 
 /// CImg is a header only library. The consequence is that if compiled in multiple libraries
@@ -54,8 +52,6 @@ void initExternalModule()
         first = false;
 
         sofa::helper::io::ImageCImg::setCimgCreators();
-
-        sofa::component::initializeMatrixExporterComponents();
     }
 }
 

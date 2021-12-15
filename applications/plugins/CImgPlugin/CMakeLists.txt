@@ -5,13 +5,11 @@ set(HEADER_FILES
     src/CImgPlugin/ImageCImg.h
     src/CImgPlugin/CImgPlugin.h.in
     src/CImgPlugin/SOFACImg.h
-    src/CImgPlugin/MatrixImageExporter.h
     )
 
 set(SOURCE_FILES
     src/CImgPlugin/ImageCImg.cpp
     src/CImgPlugin/initCImgPlugin.cpp
-    src/CImgPlugin/MatrixImageExporter.cpp
     )
 
 add_subdirectory(extlibs/CImg)

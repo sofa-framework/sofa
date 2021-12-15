@@ -168,7 +168,7 @@ protected:
 * from this class to implement the edition of your data in the GUI.
 **/
 template<class T>
-class SOFA_SOFAGUIQT_API TDataWidget : public DataWidget
+class TDataWidget : public DataWidget
 {
 
 public:
