@@ -8,7 +8,7 @@ set(SOURCE_FILES
         MakeDataAliasComponent_test.cpp
         RequiredPlugin_test.cpp
         AddResourceRepository_test.cpp
-        From_test.cpp
+        Import_test.cpp
 )
 
 # Do not find dependencies explicitely, let CMake decide the appropriate time to do it

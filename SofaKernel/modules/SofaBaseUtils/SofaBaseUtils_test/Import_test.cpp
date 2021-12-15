@@ -20,7 +20,7 @@ struct From_test : public BaseTest
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
                  "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-                 "   <From plugin='SofaBaseUtils' import='RequiredPlugin'/>                      \n"
+                 "   <Import fromPlugin='SofaBaseUtils' components='RequiredPlugin'/>            \n"
                  "</Node>                                                                        \n" ;
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
@@ -38,7 +38,7 @@ struct From_test : public BaseTest
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
                  "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-                 "   <From plugin='SofaBaseUtils' import='RequiredPlugin' as='AliasedName'/>     \n"
+                 "   <Import fromPlugin='SofaBaseUtils' components='RequiredPlugin' as='AliasedName'/> \n"
                  "   <AliasedName name='SofaBaseUtils'/>                                         \n"
                  "</Node>                                                                        \n" ;
 
@@ -57,8 +57,7 @@ struct From_test : public BaseTest
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
                  "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-                 "   <From plugin='NotValidPlugin' import='*'/>                                  \n"
-                 "   <AliasedName name='SofaBaseUtils'/>                                         \n"
+                 "   <Import fromPlugin='NotValidPlugin' components='*'/>                        \n"
                  "</Node>                                                                        \n" ;
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
