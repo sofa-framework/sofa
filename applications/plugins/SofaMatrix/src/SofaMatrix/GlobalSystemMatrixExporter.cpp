@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseLinearSolver/GlobalSystemMatrixExporter.h>
+#include <SofaMatrix/GlobalSystemMatrixExporter.h>
 #include <sofa/core/ObjectFactory.h>
 #include <fstream>
 #include <sofa/defaulttype/MatrixExporter.h>

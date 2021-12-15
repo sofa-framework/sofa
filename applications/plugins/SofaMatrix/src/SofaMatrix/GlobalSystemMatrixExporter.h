@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseLinearSolver/config.h>
+#include <SofaMatrix/config.h>
 #include <sofa/simulation/BaseSimulationExporter.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/helper/OptionsGroup.h>
@@ -32,9 +32,9 @@ namespace sofa::component::linearsolver
  * @brief Exports the global system matrix of the current context into a file. The exporter allows to write the file
  * under several formats.
  *
- * The class is designed so more file format can be supported. For example, image export is added in the CImg plugin.
+ * The class is designed so more file format can be supported.
  */
-class SOFA_SOFABASELINEARSOLVER_API GlobalSystemMatrixExporter : public sofa::simulation::BaseSimulationExporter
+class SOFA_SOFAMATRIX_API GlobalSystemMatrixExporter : public sofa::simulation::BaseSimulationExporter
 {
 public:
     SOFA_CLASS(GlobalSystemMatrixExporter, sofa::simulation::BaseSimulationExporter);
