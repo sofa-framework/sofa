@@ -75,7 +75,7 @@ public :
 
             if(it != renamingResponseMethod.end())
             {
-                msg_warning("DefaultContactManager")<< "Options for data \"response\" changed since #2522: please use "<< it->second << " instead of " << it->first;
+                msg_warning("DefaultContactManager") << "Option \"" << it->first << "\" for data \"response\" has been renamed since v21.12 (PR#2522). You have until v22.06 to fix your scene. Use \"" << it->second << "\" instead.";
                 helper::WriteAccessor< Data<sofa::helper::OptionsGroup>  > responseAccessor = obj->response;
                 responseAccessor->setSelectedItem(it->second);
             }
