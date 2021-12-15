@@ -115,7 +115,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassDestruction(Index id, Mas
 
 /// Creation fonction for mass stored on vertices
 template< class DataTypes, class MassType>
-template <typename>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 2, int > >
 void MeshMatrixMass<DataTypes, MassType>::applyVertexMassTriangleCreation(const sofa::type::vector< Index >& triangleAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Triangle >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
@@ -171,7 +171,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassTriangleCreation(const 
 
 /// Creation fonction for mass stored on edges
 template< class DataTypes, class MassType>
-template <typename>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 2, int > >
 void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassTriangleCreation(const sofa::type::vector< Index >& triangleAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Triangle >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
@@ -224,7 +224,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassTriangleCreation(const so
 
 /// Destruction fonction for mass stored on vertices
 template< class DataTypes, class MassType>
-template <typename>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 2, int > >
 void MeshMatrixMass<DataTypes, MassType>::applyVertexMassTriangleDestruction(const sofa::type::vector< Index >& triangleRemoved)
 {
     if (this->getMassTopologyType() == TopologyElementType::TRIANGLE)
@@ -271,7 +271,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassTriangleDestruction(con
 
 /// Destruction fonction for mass stored on edges
 template< class DataTypes, class MassType>
-template <typename>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 2, int > >
 void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassTriangleDestruction(const sofa::type::vector< Index >& triangleRemoved)
 {
     if (this->getMassTopologyType() == TopologyElementType::TRIANGLE)
@@ -322,7 +322,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassTriangleDestruction(const
 
 /// Creation fonction for mass stored on vertices
 template< class DataTypes, class MassType>
-template <typename>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 2, int > >
 void MeshMatrixMass<DataTypes, MassType>::applyVertexMassQuadCreation(const sofa::type::vector< Index >& quadAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Quad >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
@@ -379,7 +379,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassQuadCreation(const sofa
 
 /// Creation fonction for mass stored on edges
 template< class DataTypes, class MassType>
-template <typename>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 2, int > >
 void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassQuadCreation(const sofa::type::vector< Index >& quadAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Quad >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
@@ -433,7 +433,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassQuadCreation(const sofa::
 
 /// Destruction fonction for mass stored on vertices
 template< class DataTypes, class MassType>
-template <typename>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 2, int > >
 void MeshMatrixMass<DataTypes, MassType>::applyVertexMassQuadDestruction(const sofa::type::vector< Index >& quadRemoved)
 {
     if (this->getMassTopologyType() == TopologyElementType::QUAD)
@@ -481,7 +481,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassQuadDestruction(const s
 
 /// Destruction fonction for mass stored on edges
 template< class DataTypes, class MassType>
-template <typename>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 2, int > >
 void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassQuadDestruction(const sofa::type::vector< Index >& quadRemoved)
 {
     if (this->getMassTopologyType() == TopologyElementType::QUAD)
@@ -535,7 +535,8 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassQuadDestruction(const sof
 
 /// Creation fonction for mass stored on vertices
 template< class DataTypes, class MassType>
-template <typename>
+
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 3, int > >
 void MeshMatrixMass<DataTypes, MassType>::applyVertexMassTetrahedronCreation(const sofa::type::vector< Index >& tetrahedronAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Tetrahedron >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
@@ -592,7 +593,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassTetrahedronCreation(con
 
 /// Creation fonction for mass stored on edges
 template< class DataTypes, class MassType>
-template <typename>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 3, int > >
 void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassTetrahedronCreation(const sofa::type::vector< Index >& tetrahedronAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Tetrahedron >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
@@ -646,7 +647,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassTetrahedronCreation(const
 
 /// Destruction fonction for mass stored on vertices
 template< class DataTypes, class MassType>
-template <typename>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 3, int > >
 void MeshMatrixMass<DataTypes, MassType>::applyVertexMassTetrahedronDestruction(const sofa::type::vector< Index >& tetrahedronRemoved)
 {
     if (this->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
@@ -694,7 +695,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassTetrahedronDestruction(
 
 /// Destruction fonction for mass stored on edges
 template< class DataTypes, class MassType>
-template <typename>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 3, int > >
 void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassTetrahedronDestruction(const sofa::type::vector< Index >& tetrahedronRemoved)
 {
     if (this->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
@@ -747,7 +748,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassTetrahedronDestruction(co
 
 /// Creation fonction for mass stored on vertices
 template< class DataTypes, class MassType>
-template <typename>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 3, int > >
 void MeshMatrixMass<DataTypes, MassType>::applyVertexMassHexahedronCreation(const sofa::type::vector< Index >& hexahedronAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Hexahedron >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
@@ -808,7 +809,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassHexahedronCreation(cons
 
 /// Creation fonction for mass stored on edges
 template< class DataTypes, class MassType>
-template <typename>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 3, int > >
 void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassHexahedronCreation(const sofa::type::vector< Index >& hexahedronAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Hexahedron >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
@@ -866,7 +867,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassHexahedronCreation(const 
 
 /// Destruction fonction for mass stored on vertices
 template< class DataTypes, class MassType>
-template <typename>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 3, int > >
 void MeshMatrixMass<DataTypes, MassType>::applyVertexMassHexahedronDestruction(const sofa::type::vector< Index >& hexahedronRemoved)
 {
     if (this->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
@@ -918,7 +919,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassHexahedronDestruction(c
 
 /// Destruction fonction for mass stored on edges
 template< class DataTypes, class MassType>
-template <typename>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 3, int > >
 void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassHexahedronDestruction(const sofa::type::vector< Index >& hexahedronRemoved)
 {
     if (this->getMassTopologyType() == TopologyElementType::HEXAHEDRON)

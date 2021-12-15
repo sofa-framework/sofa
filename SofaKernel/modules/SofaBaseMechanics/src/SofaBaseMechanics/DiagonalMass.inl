@@ -152,7 +152,7 @@ void DiagonalMass<DataTypes,MassType>::applyEdgeDestruction(const sofa::type::ve
 
 
 template <class DataTypes, class MassType>
-template <typename>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 2, int > >
 void DiagonalMass<DataTypes,MassType>::applyTriangleCreation(const sofa::type::vector< TriangleID >& triangleAdded,
         const sofa::type::vector< Triangle >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< TriangleID > >& /*ancestors*/,
@@ -195,7 +195,7 @@ void DiagonalMass<DataTypes,MassType>::applyTriangleCreation(const sofa::type::v
 }
 
 template <class DataTypes, class MassType>
-template <typename>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 2, int > >
 void DiagonalMass<DataTypes,MassType>::applyTriangleDestruction(const sofa::type::vector<TriangleID > & triangleRemoved)
 {
 
@@ -238,7 +238,7 @@ void DiagonalMass<DataTypes,MassType>::applyTriangleDestruction(const sofa::type
 
 
 template <class DataTypes, class MassType>
-template <typename>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 2, int > >
 void DiagonalMass<DataTypes, MassType>::applyQuadCreation(const sofa::type::vector< QuadID >& quadAdded,
     const sofa::type::vector< Quad >& /*elems*/,
     const sofa::type::vector< sofa::type::vector< QuadID > >& /*ancestors*/,
@@ -284,7 +284,7 @@ void DiagonalMass<DataTypes, MassType>::applyQuadCreation(const sofa::type::vect
 }
 
 template <class DataTypes, class MassType>
-template <typename>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 2, int > >
 void DiagonalMass<DataTypes, MassType>::applyQuadDestruction(const sofa::type::vector<QuadID >& quadRemoved)
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::QUAD)
@@ -328,7 +328,7 @@ void DiagonalMass<DataTypes, MassType>::applyQuadDestruction(const sofa::type::v
 
 
 template <class DataTypes, class MassType>
-template <typename>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 3, int > >
 void DiagonalMass<DataTypes,MassType>::applyTetrahedronCreation(const sofa::type::vector< TetrahedronID >& tetrahedronAdded,
         const sofa::type::vector< Tetrahedron >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< TetrahedronID > >& /*ancestors*/,
@@ -374,7 +374,7 @@ void DiagonalMass<DataTypes,MassType>::applyTetrahedronCreation(const sofa::type
 }
 
 template <class DataTypes, class MassType>
-template <typename>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 3, int > >
 void DiagonalMass<DataTypes,MassType>::applyTetrahedronDestruction(const sofa::type::vector<TetrahedronID> & tetrahedronRemoved)
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::TETRAHEDRON)
@@ -418,7 +418,7 @@ void DiagonalMass<DataTypes,MassType>::applyTetrahedronDestruction(const sofa::t
 
 
 template <class DataTypes, class MassType>
-template <typename>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 3, int > >
 void DiagonalMass<DataTypes,MassType>::applyHexahedronCreation(const sofa::type::vector< HexahedronID >& hexahedronAdded,
         const sofa::type::vector< Hexahedron >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< HexahedronID > >& /*ancestors*/,
@@ -465,7 +465,7 @@ void DiagonalMass<DataTypes,MassType>::applyHexahedronCreation(const sofa::type:
 }
 
 template <class DataTypes, class MassType>
-template <typename>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 3, int > >
 void DiagonalMass<DataTypes,MassType>::applyHexahedronDestruction(const sofa::type::vector<HexahedronID> & hexahedronRemoved)
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::HEXAHEDRON)

@@ -187,7 +187,7 @@ protected:
     /** Method to update @sa d_vertexMass when a new Triangle is created.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when TRIANGLESADDED event is fired.
     */
-    template <typename = typename std::enable_if_t<DataTypes::spatial_dimensions >= 2 > >
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
     void applyTriangleCreation(const sofa::type::vector< TriangleID >& /*indices*/,
         const sofa::type::vector< Triangle >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< TriangleID > >& /*ancestors*/,
@@ -196,14 +196,14 @@ protected:
     /** Method to update @sa d_vertexMass when a Triangle is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when TRIANGLESREMOVED event is fired.
     */
-    template <typename = typename std::enable_if_t<DataTypes::spatial_dimensions >= 2 > >
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
     void applyTriangleDestruction(const sofa::type::vector<TriangleID>& /*indices*/);
 
 
     /** Method to update @sa d_vertexMass when a new Quad is created.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when QUADSADDED event is fired.
     */
-    template <typename = typename std::enable_if_t<DataTypes::spatial_dimensions >= 2 > >
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
     void applyQuadCreation(const sofa::type::vector< QuadID >& /*indices*/,
         const sofa::type::vector< Quad >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< QuadID > >& /*ancestors*/,
@@ -212,14 +212,14 @@ protected:
     /** Method to update @sa d_vertexMass when a Quad is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when QUADSREMOVED event is fired.
     */
-    template <typename = typename std::enable_if_t<DataTypes::spatial_dimensions >= 2 > >
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
     void applyQuadDestruction(const sofa::type::vector<QuadID>& /*indices*/);
     
 
     /** Method to update @sa d_vertexMass when a new Tetrahedron is created.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when TETRAHEDRAADDED event is fired.
     */
-    template <typename = typename std::enable_if_t<DataTypes::spatial_dimensions >= 3 > >
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
     void applyTetrahedronCreation(const sofa::type::vector< TetrahedronID >& /*indices*/,
         const sofa::type::vector< Tetrahedron >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< TetrahedronID > >& /*ancestors*/,
@@ -228,14 +228,14 @@ protected:
     /** Method to update @sa d_vertexMass when a Tetrahedron is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when TETRAHEDRAREMOVED event is fired.
     */
-    template <typename = typename std::enable_if_t<DataTypes::spatial_dimensions >= 3 > >
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
     void applyTetrahedronDestruction(const sofa::type::vector<TetrahedronID>& /*indices*/);
 
 
     /** Method to update @sa d_vertexMass when a new Hexahedron is created.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when HEXAHEDRAADDED event is fired.
     */
-    template <typename = typename std::enable_if_t<DataTypes::spatial_dimensions >= 3 > >
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
     void applyHexahedronCreation(const sofa::type::vector< HexahedronID >& /*indices*/,
         const sofa::type::vector< Hexahedron >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< HexahedronID > >& /*ancestors*/,
@@ -244,7 +244,7 @@ protected:
     /** Method to update @sa d_vertexMass when a Hexahedron is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when HEXAHEDRAREMOVED event is fired.
     */
-    template <typename = typename std::enable_if_t<DataTypes::spatial_dimensions >= 3 > >
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
     void applyHexahedronDestruction(const sofa::type::vector<HexahedronID>& /*indices*/);
 
 public:
