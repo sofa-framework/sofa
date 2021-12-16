@@ -14,10 +14,12 @@ set(SOFAMATRIX_SRC_DIR src/${PROJECT_NAME})
 
 set(HEADER_FILES
     ${SOFAMATRIX_SRC_DIR}/config.h.in
+    ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixExporter.h
     ${SOFAMATRIX_SRC_DIR}/MatrixImageExporter.h
 )
 set(SOURCE_FILES
     ${SOFAMATRIX_SRC_DIR}/initSofaMatrix.cpp
+    ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixExporter.cpp
     ${SOFAMATRIX_SRC_DIR}/MatrixImageExporter.cpp
 )
 set(README_FILES

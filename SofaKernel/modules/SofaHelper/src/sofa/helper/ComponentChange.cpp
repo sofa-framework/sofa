@@ -679,6 +679,9 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     //{"NewMatCholeskySolver", Moved("v21.12", "SofaDenseSolver", "SofaNewmat") },
     //{"NewMatCGLinearSolver", Moved("v21.12", "SofaDenseSolver", "SofaNewmat") },
 
+    // MOVED SINCE v22.06
+    { "GlobalSystemMatrixExporter", Moved("v22.06", "SofaBaseLinearSolver", "SofaMatrix") },
+
 };
 
 } // namespace lifecycle
