@@ -65,6 +65,7 @@ set(HEADER_FILES
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/DiagonalMatrix.h
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/FullMatrix.inl
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/FullVector.inl
+    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/GlobalSystemMatrixExporter.h
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/RotationMatrix.h
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/matrix_bloc_traits.h
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/CompressedRowSparseMatrix.inl
