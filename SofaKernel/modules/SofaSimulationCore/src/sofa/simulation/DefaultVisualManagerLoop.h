@@ -87,9 +87,10 @@ public:
         return obj;
     }
 
+    SingleLink< DefaultVisualManagerLoop, simulation::Node, BaseLink::FLAG_STOREPATH> l_node;
+
 protected:
     static simulation::Node* getNodeFromContext(BaseContext*);
-    simulation::Node* gRoot;
 };
 
 } // namespace simulation
