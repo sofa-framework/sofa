@@ -372,18 +372,11 @@ void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
 {
     sofa::helper::AdvancedTimer::stepBegin("Simulation::draw");
 
-    sofa::core::visual::VisualLoop* vloop = root->getVisualLoop();
-    if(vloop)
+    for(auto& visualLoop : root->getTreeObjects<sofa::core::visual::VisualLoop>())
     {
         if (!vparams) vparams = sofa::core::visual::visualparams::defaultInstance();
         vparams->update();
-
-        vloop->drawStep(vparams);
-    }
-    else
-    {
-        msg_error() <<"Simulation::draw(): VisualLoop expected at the root node";
-        return;
+        visualLoop->drawStep(vparams);
     }
 
     sofa::helper::AdvancedTimer::stepEnd("Simulation::draw");
