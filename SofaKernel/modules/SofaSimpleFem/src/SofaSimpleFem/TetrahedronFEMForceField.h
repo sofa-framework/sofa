@@ -23,6 +23,7 @@
 #include <SofaSimpleFem/fwd.h>
 
 #include <sofa/core/behavior/ForceField.h>
+#include <SofaSimpleFem/TetrahedronFEMForceFieldImpl.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -100,6 +101,9 @@ public:
          };
 
 protected:
+
+    std::unique_ptr<TetrahedronFEMForceFieldImpl<DataTypes> > m_impl { nullptr };
+    void createImplementor();
 
     /// @name Per element (tetrahedron) data
     /// @{
@@ -274,41 +278,12 @@ public:
     virtual void computeMaterialStiffness(MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d);
 
 protected:
-    void computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c, Coord d );
-    Real peudo_determinant_for_coef ( const type::Mat<2, 3, Real>&  M );
+    type::vector<Transformation> _initialRotations;
+    type::vector<unsigned int> _rotationIdx;
 
     void computeStiffnessMatrix( StiffnessMatrix& S,StiffnessMatrix& SR,const MaterialStiffness &K, const StrainDisplacement &J, const Transformation& Rot );
 
-    virtual void computeMaterialStiffness(Index i, Index&a, Index&b, Index&c, Index&d);
-
-
-    void computeForce( Displacement &F, const Displacement &Depl, VoigtTensor &plasticStrain, const MaterialStiffness &K, const StrainDisplacement &J );
-    void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J, SReal fact );
-
-
-    ////////////// small displacements method
-    void initSmall(Index i, Index&a, Index&b, Index&c, Index&d);
-    void accumulateForceSmall( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
-    void applyStiffnessSmall( Vector& f, const Vector& x, Index i=0, Index a=0,Index b=1,Index c=2,Index d=3, SReal fact=1.0  );
-
-    ////////////// large displacements method
-    type::vector<type::fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
-    type::vector<Transformation> _initialRotations;
-    void initLarge(Index i, Index&a, Index&b, Index&c, Index&d);
-    void computeRotationLarge( Transformation &r, const Vector &p, const Index &a, const Index &b, const Index &c);
-    void accumulateForceLarge( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
-
-    ////////////// polar decomposition method
-    type::vector<unsigned int> _rotationIdx;
-    void initPolar(Index i, Index&a, Index&b, Index&c, Index&d);
-    void accumulateForcePolar( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
-
-    ////////////// svd decomposition method
-    type::vector<Transformation>  _initialTransformation;
-    void initSVD(Index i, Index&a, Index&b, Index&c, Index&d);
-    void accumulateForceSVD( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
-
-    void applyStiffnessCorotational( Vector& f, const Vector& x, Index i=0, Index a=0,Index b=1,Index c=2,Index d=3, SReal fact=1.0  );
+    virtual void computeMaterialStiffness(Index i, Index a, Index b, Index c, Index d);
 
     void handleTopologyChange() override { needUpdateTopology = true; }
 

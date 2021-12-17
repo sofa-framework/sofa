@@ -13,6 +13,23 @@ set(HEADER_FILES
     ${SOFASIMPLEFEM_SRC}/TetrahedronFEMForceField.inl
     ${SOFASIMPLEFEM_SRC}/TetrahedronDiffusionFEMForceField.h
     ${SOFASIMPLEFEM_SRC}/TetrahedronDiffusionFEMForceField.inl
+
+    ${SOFASIMPLEFEM_SRC}/TetrahedronFEMForceFieldImpl.h
+
+    ${SOFASIMPLEFEM_SRC}/TetrahedronFEMForceFieldImplSmall.h
+    ${SOFASIMPLEFEM_SRC}/TetrahedronFEMForceFieldImplSmall.inl
+
+    ${SOFASIMPLEFEM_SRC}/TetrahedronFEMForceFieldImplCorotational.h
+    ${SOFASIMPLEFEM_SRC}/TetrahedronFEMForceFieldImplCorotational.inl
+
+    ${SOFASIMPLEFEM_SRC}/TetrahedronFEMForceFieldImplLarge.h
+    ${SOFASIMPLEFEM_SRC}/TetrahedronFEMForceFieldImplLarge.inl
+
+    ${SOFASIMPLEFEM_SRC}/TetrahedronFEMForceFieldImplPolar.h
+    ${SOFASIMPLEFEM_SRC}/TetrahedronFEMForceFieldImplPolar.inl
+
+    ${SOFASIMPLEFEM_SRC}/TetrahedronFEMForceFieldImplSVD.h
+    ${SOFASIMPLEFEM_SRC}/TetrahedronFEMForceFieldImplSVD.inl
 )
 
 set(SOURCE_FILES

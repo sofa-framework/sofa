@@ -29,6 +29,10 @@
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
+#include <SofaSimpleFem/TetrahedronFEMForceFieldImplSmall.h>
+#include <SofaSimpleFem/TetrahedronFEMForceFieldImplLarge.h>
+#include <SofaSimpleFem/TetrahedronFEMForceFieldImplPolar.h>
+#include <SofaSimpleFem/TetrahedronFEMForceFieldImplSVD.h>
 
 namespace sofa::component::forcefield
 {
@@ -98,89 +102,50 @@ TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
 
         return sofa::core::objectmodel::ComponentState::Valid;
     }, {});
+
+    createImplementor();
+    // this->addUpdateCallback("method", {}, [this](const core::DataTracker& tracker)
+    // {
+    //     SOFA_UNUSED(tracker);
+    //     this->createImplementor();
+    //     if (m_impl == nullptr)
+    //         return sofa::core::objectmodel::ComponentState::Invalid;
+    //     return sofa::core::objectmodel::ComponentState::Valid;
+    // }, {});
 }
 
+template <class DataTypes>
+void TetrahedronFEMForceField<DataTypes>::createImplementor()
+{
+    static const std::map< std::string, std::function<TetrahedronFEMForceFieldImpl<DataTypes>*()> > s_creatorMap
+    {
+        {"small", [](){ return new TetrahedronFEMForceFieldImplSmall<DataTypes>();}},
+        {"polar", [](){ return new TetrahedronFEMForceFieldImplPolar<DataTypes>();}},
+        {"large", [](){ return new TetrahedronFEMForceFieldImplLarge<DataTypes>();}},
+        {"svd"  , [](){ return new TetrahedronFEMForceFieldImplSVD<DataTypes>();}}
+    };
+
+    const auto& methodName = f_method.getValue();
+    const auto creatorIt = s_creatorMap.find(methodName);
+    if (creatorIt == s_creatorMap.end())
+    {
+        std::stringstream ss;
+        for (const auto& c : s_creatorMap)
+        {
+            ss << "'" << c.first << "', ";
+        }
+        msg_error() << "Unknown method '" << methodName << "'. Available methods are " << ss.str();
+        m_impl.reset();
+    }
+    else
+    {
+        m_impl = std::unique_ptr<TetrahedronFEMForceFieldImpl<DataTypes> >(creatorIt->second());
+    }
+}
 
 //////////////////////////////////////////////////////////////////////
 ////////////////////  basic computation methods  /////////////////////
 //////////////////////////////////////////////////////////////////////
-
-template<class DataTypes>
-inline void TetrahedronFEMForceField<DataTypes>::computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c, Coord d )
-{
-    // shape functions matrix
-    type::Mat<2, 3, Real> M;
-
-    M[0][0] = b[1];
-    M[0][1] = c[1];
-    M[0][2] = d[1];
-    M[1][0] = b[2];
-    M[1][1] = c[2];
-    M[1][2] = d[2];
-    J[0][0] = J[1][3] = J[2][5]   = - peudo_determinant_for_coef( M );
-    M[0][0] = b[0];
-    M[0][1] = c[0];
-    M[0][2] = d[0];
-    J[0][3] = J[1][1] = J[2][4]   = peudo_determinant_for_coef( M );
-    M[1][0] = b[1];
-    M[1][1] = c[1];
-    M[1][2] = d[1];
-    J[0][5] = J[1][4] = J[2][2]   = - peudo_determinant_for_coef( M );
-
-    M[0][0] = c[1];
-    M[0][1] = d[1];
-    M[0][2] = a[1];
-    M[1][0] = c[2];
-    M[1][1] = d[2];
-    M[1][2] = a[2];
-    J[3][0] = J[4][3] = J[5][5]   = peudo_determinant_for_coef( M );
-    M[0][0] = c[0];
-    M[0][1] = d[0];
-    M[0][2] = a[0];
-    J[3][3] = J[4][1] = J[5][4]   = - peudo_determinant_for_coef( M );
-    M[1][0] = c[1];
-    M[1][1] = d[1];
-    M[1][2] = a[1];
-    J[3][5] = J[4][4] = J[5][2]   = peudo_determinant_for_coef( M );
-
-    M[0][0] = d[1];
-    M[0][1] = a[1];
-    M[0][2] = b[1];
-    M[1][0] = d[2];
-    M[1][1] = a[2];
-    M[1][2] = b[2];
-    J[6][0] = J[7][3] = J[8][5]   = - peudo_determinant_for_coef( M );
-    M[0][0] = d[0];
-    M[0][1] = a[0];
-    M[0][2] = b[0];
-    J[6][3] = J[7][1] = J[8][4]   = peudo_determinant_for_coef( M );
-    M[1][0] = d[1];
-    M[1][1] = a[1];
-    M[1][2] = b[1];
-    J[6][5] = J[7][4] = J[8][2]   = - peudo_determinant_for_coef( M );
-
-    M[0][0] = a[1];
-    M[0][1] = b[1];
-    M[0][2] = c[1];
-    M[1][0] = a[2];
-    M[1][1] = b[2];
-    M[1][2] = c[2];
-    J[9][0] = J[10][3] = J[11][5]   = peudo_determinant_for_coef( M );
-    M[0][0] = a[0];
-    M[0][1] = b[0];
-    M[0][2] = c[0];
-    J[9][3] = J[10][1] = J[11][4]   = - peudo_determinant_for_coef( M );
-    M[1][0] = a[1];
-    M[1][1] = b[1];
-    M[1][2] = c[1];
-    J[9][5] = J[10][4] = J[11][2]   = peudo_determinant_for_coef( M );
-}
-
-template<class DataTypes>
-typename TetrahedronFEMForceField<DataTypes>::Real TetrahedronFEMForceField<DataTypes>::peudo_determinant_for_coef ( const type::Mat<2, 3, Real>&  M )
-{
-    return  M[0][1]*M[1][2] - M[1][1]*M[0][2] -  M[0][0]*M[1][2] + M[1][0]*M[0][2] + M[0][0]*M[1][1] - M[1][0]*M[0][1];
-}
 
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::computeStiffnessMatrix( StiffnessMatrix& S,StiffnessMatrix& SR,const MaterialStiffness &K, const StrainDisplacement &J, const Transformation& Rot )
@@ -230,56 +195,56 @@ inline void TetrahedronFEMForceField<DataTypes>::getElementStiffnessMatrix(Real*
 template <class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::getElementStiffnessMatrix(Real* stiffness, Tetrahedron& te)
 {
-    if (needUpdateTopology)
-    {
-        reinit();
-        needUpdateTopology = false;
-    }
-    const VecCoord X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    Index a = te[0];
-    Index b = te[1];
-    Index c = te[2];
-    Index d = te[3];
-
-    Transformation R_0_1;
-    computeRotationLarge( R_0_1, (X0), a, b, c);
-
-    MaterialStiffness	materialMatrix;
-    StrainDisplacement	strainMatrix;
-    type::fixed_array<Coord,4> rotatedInitialElements;
-
-    rotatedInitialElements[0] = R_0_1*(X0)[a];
-    rotatedInitialElements[1] = R_0_1*(X0)[b];
-    rotatedInitialElements[2] = R_0_1*(X0)[c];
-    rotatedInitialElements[3] = R_0_1*(X0)[d];
-
-    rotatedInitialElements[1] -= rotatedInitialElements[0];
-    rotatedInitialElements[2] -= rotatedInitialElements[0];
-    rotatedInitialElements[3] -= rotatedInitialElements[0];
-    rotatedInitialElements[0] = Coord(0,0,0);
-
-    computeMaterialStiffness(materialMatrix,a,b,c,d);
-    computeStrainDisplacement(strainMatrix, rotatedInitialElements[0], rotatedInitialElements[1], rotatedInitialElements[2], rotatedInitialElements[3]);
-
-    Transformation Rot;
-    StiffnessMatrix JKJt,tmp;
-    Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
-    Rot[0][1]=Rot[0][2]=0;
-    Rot[1][0]=Rot[1][2]=0;
-    Rot[2][0]=Rot[2][1]=0;
-
-    R_0_1.transpose();
-    computeStiffnessMatrix(JKJt, tmp, materialMatrix, strainMatrix, R_0_1);
-    for(int i=0; i<12; i++)
-    {
-        for(int j=0; j<12; j++)
-            stiffness[i*12+j]=tmp(i,j);
-    }
+    // if (needUpdateTopology)
+    // {
+    //     reinit();
+    //     needUpdateTopology = false;
+    // }
+    // const VecCoord X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    // Index a = te[0];
+    // Index b = te[1];
+    // Index c = te[2];
+    // Index d = te[3];
+    //
+    // Transformation R_0_1;
+    // computeRotationLarge( R_0_1, (X0), a, b, c);
+    //
+    // MaterialStiffness	materialMatrix;
+    // StrainDisplacement	strainMatrix;
+    // type::fixed_array<Coord,4> rotatedInitialElements;
+    //
+    // rotatedInitialElements[0] = R_0_1*(X0)[a];
+    // rotatedInitialElements[1] = R_0_1*(X0)[b];
+    // rotatedInitialElements[2] = R_0_1*(X0)[c];
+    // rotatedInitialElements[3] = R_0_1*(X0)[d];
+    //
+    // rotatedInitialElements[1] -= rotatedInitialElements[0];
+    // rotatedInitialElements[2] -= rotatedInitialElements[0];
+    // rotatedInitialElements[3] -= rotatedInitialElements[0];
+    // rotatedInitialElements[0] = Coord(0,0,0);
+    //
+    // computeMaterialStiffness(materialMatrix,a,b,c,d);
+    // computeStrainDisplacement(strainMatrix, rotatedInitialElements[0], rotatedInitialElements[1], rotatedInitialElements[2], rotatedInitialElements[3]);
+    //
+    // Transformation Rot;
+    // StiffnessMatrix JKJt,tmp;
+    // Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
+    // Rot[0][1]=Rot[0][2]=0;
+    // Rot[1][0]=Rot[1][2]=0;
+    // Rot[2][0]=Rot[2][1]=0;
+    //
+    // R_0_1.transpose();
+    // computeStiffnessMatrix(JKJt, tmp, materialMatrix, strainMatrix, R_0_1);
+    // for(int i=0; i<12; i++)
+    // {
+    //     for(int j=0; j<12; j++)
+    //         stiffness[i*12+j]=tmp(i,j);
+    // }
 }
 
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(Index i, Index&a, Index&b, Index&c, Index&d)
+void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(const Index i, const Index a, const Index b, const Index c, const Index d)
 {
     const VecReal& localStiffnessFactor = _localStiffnessFactor.getValue();
     Real youngModulusElement;
@@ -360,344 +325,6 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(MaterialStiff
         msg_error() << "Negative volume for tetra"<<a<<','<<b<<','<<c<<','<<d<<"> = "<<volumes6/6 ;
     }
     materialMatrix  /= (volumes6*6);
-}
-
-
-
-
-template<class DataTypes>
-inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, const Displacement &Depl, VoigtTensor &plasticStrain, const MaterialStiffness &K, const StrainDisplacement &J )
-{
-
-    // Unit of K = unit of youngModulus / unit of volume = Pa / m^3 = kg m^-4 s^-2
-    // Unit of J = m^2
-    // Unit of JKJt =  kg s^-2
-    // Unit of displacement = m
-    // Unit of force = kg m s^-2
-
-#if 0
-    F = J*(K*(J.multTranspose(Depl)));
-#else
-    /* We have these zeros
-                                  K[0][3]   K[0][4]   K[0][5]
-                                  K[1][3]   K[1][4]   K[1][5]
-                                  K[2][3]   K[2][4]   K[2][5]
-    K[3][0]   K[3][1]   K[3][2]             K[3][4]   K[3][5]
-    K[4][0]   K[4][1]   K[4][2]   K[4][3]             K[4][5]
-    K[5][0]   K[5][1]   K[5][2]   K[5][3]   K[5][4]
-
-
-              J[0][1]   J[0][2]             J[0][4]
-    J[1][0]             J[1][2]                       J[1][5]
-    J[2][0]   J[2][1]             J[2][3]
-              J[3][1]   J[3][2]             J[3][4]
-    J[4][0]             J[4][2]                       J[4][5]
-    J[5][0]   J[5][1]             J[5][3]
-              J[6][1]   J[6][2]             J[6][4]
-    J[7][0]             J[7][2]                       J[7][5]
-    J[8][0]   J[8][1]             J[8][3]
-              J[9][1]   J[9][2]             J[9][4]
-    J[10][0]            J[10][2]                      J[10][5]
-    J[11][0]  J[11][1]            J[11][3]
-    */
-
-
-    VoigtTensor JtD;
-    JtD[0] =   J[ 0][0]*Depl[ 0]+/*J[ 1][0]*Depl[ 1]+  J[ 2][0]*Depl[ 2]+*/
-            J[ 3][0]*Depl[ 3]+/*J[ 4][0]*Depl[ 4]+  J[ 5][0]*Depl[ 5]+*/
-            J[ 6][0]*Depl[ 6]+/*J[ 7][0]*Depl[ 7]+  J[ 8][0]*Depl[ 8]+*/
-            J[ 9][0]*Depl[ 9] /*J[10][0]*Depl[10]+  J[11][0]*Depl[11]*/;
-    JtD[1] = /*J[ 0][1]*Depl[ 0]+*/J[ 1][1]*Depl[ 1]+/*J[ 2][1]*Depl[ 2]+*/
-            /*J[ 3][1]*Depl[ 3]+*/J[ 4][1]*Depl[ 4]+/*J[ 5][1]*Depl[ 5]+*/
-            /*J[ 6][1]*Depl[ 6]+*/J[ 7][1]*Depl[ 7]+/*J[ 8][1]*Depl[ 8]+*/
-            /*J[ 9][1]*Depl[ 9]+*/J[10][1]*Depl[10] /*J[11][1]*Depl[11]*/;
-    JtD[2] = /*J[ 0][2]*Depl[ 0]+  J[ 1][2]*Depl[ 1]+*/J[ 2][2]*Depl[ 2]+
-            /*J[ 3][2]*Depl[ 3]+  J[ 4][2]*Depl[ 4]+*/J[ 5][2]*Depl[ 5]+
-            /*J[ 6][2]*Depl[ 6]+  J[ 7][2]*Depl[ 7]+*/J[ 8][2]*Depl[ 8]+
-            /*J[ 9][2]*Depl[ 9]+  J[10][2]*Depl[10]+*/J[11][2]*Depl[11]  ;
-    JtD[3] =   J[ 0][3]*Depl[ 0]+  J[ 1][3]*Depl[ 1]+/*J[ 2][3]*Depl[ 2]+*/
-            J[ 3][3]*Depl[ 3]+  J[ 4][3]*Depl[ 4]+/*J[ 5][3]*Depl[ 5]+*/
-            J[ 6][3]*Depl[ 6]+  J[ 7][3]*Depl[ 7]+/*J[ 8][3]*Depl[ 8]+*/
-            J[ 9][3]*Depl[ 9]+  J[10][3]*Depl[10] /*J[11][3]*Depl[11]*/;
-    JtD[4] = /*J[ 0][4]*Depl[ 0]+*/J[ 1][4]*Depl[ 1]+  J[ 2][4]*Depl[ 2]+
-            /*J[ 3][4]*Depl[ 3]+*/J[ 4][4]*Depl[ 4]+  J[ 5][4]*Depl[ 5]+
-            /*J[ 6][4]*Depl[ 6]+*/J[ 7][4]*Depl[ 7]+  J[ 8][4]*Depl[ 8]+
-            /*J[ 9][4]*Depl[ 9]+*/J[10][4]*Depl[10]+  J[11][4]*Depl[11]  ;
-    JtD[5] =   J[ 0][5]*Depl[ 0]+/*J[ 1][5]*Depl[ 1]*/ J[ 2][5]*Depl[ 2]+
-            J[ 3][5]*Depl[ 3]+/*J[ 4][5]*Depl[ 4]*/ J[ 5][5]*Depl[ 5]+
-            J[ 6][5]*Depl[ 6]+/*J[ 7][5]*Depl[ 7]*/ J[ 8][5]*Depl[ 8]+
-            J[ 9][5]*Depl[ 9]+/*J[10][5]*Depl[10]*/ J[11][5]*Depl[11];
-
-    // eventually remove a part of the strain to simulate plasticity
-    if( _plasticMaxThreshold.getValue() > 0 )
-    {
-        VoigtTensor elasticStrain = JtD; // JtD is the total strain
-        elasticStrain -= plasticStrain; // totalStrain = elasticStrain + plasticStrain
-
-        if( elasticStrain.norm2() > _plasticYieldThreshold.getValue()*_plasticYieldThreshold.getValue() )
-            plasticStrain += _plasticCreep.getValue() * elasticStrain;
-
-        Real plasticStrainNorm2 = plasticStrain.norm2();
-        if( plasticStrainNorm2 > _plasticMaxThreshold.getValue()*_plasticMaxThreshold.getValue() )
-            plasticStrain *= _plasticMaxThreshold.getValue() / helper::rsqrt( plasticStrainNorm2 );
-
-        // remaining elasticStrain = totatStrain - plasticStrain
-        JtD -= plasticStrain;
-    }
-
-
-
-    VoigtTensor KJtD;
-    KJtD[0] =   K[0][0]*JtD[0]+  K[0][1]*JtD[1]+  K[0][2]*JtD[2]
-            /*K[0][3]*JtD[3]+  K[0][4]*JtD[4]+  K[0][5]*JtD[5]*/;
-    KJtD[1] =   K[1][0]*JtD[0]+  K[1][1]*JtD[1]+  K[1][2]*JtD[2]
-            /*K[1][3]*JtD[3]+  K[1][4]*JtD[4]+  K[1][5]*JtD[5]*/;
-    KJtD[2] =   K[2][0]*JtD[0]+  K[2][1]*JtD[1]+  K[2][2]*JtD[2]
-            /*K[2][3]*JtD[3]+  K[2][4]*JtD[4]+  K[2][5]*JtD[5]*/;
-    KJtD[3] = /*K[3][0]*JtD[0]+  K[3][1]*JtD[1]+  K[3][2]*JtD[2]+*/
-            K[3][3]*JtD[3] /*K[3][4]*JtD[4]+  K[3][5]*JtD[5]*/;
-    KJtD[4] = /*K[4][0]*JtD[0]+  K[4][1]*JtD[1]+  K[4][2]*JtD[2]+*/
-            /*K[4][3]*JtD[3]+*/K[4][4]*JtD[4] /*K[4][5]*JtD[5]*/;
-    KJtD[5] = /*K[5][0]*JtD[0]+  K[5][1]*JtD[1]+  K[5][2]*JtD[2]+*/
-            /*K[5][3]*JtD[3]+  K[5][4]*JtD[4]+*/K[5][5]*JtD[5]  ;
-
-    F[ 0] =   J[ 0][0]*KJtD[0]+/*J[ 0][1]*KJtD[1]+  J[ 0][2]*KJtD[2]+*/
-            J[ 0][3]*KJtD[3]+/*J[ 0][4]*KJtD[4]+*/J[ 0][5]*KJtD[5]  ;
-    F[ 1] = /*J[ 1][0]*KJtD[0]+*/J[ 1][1]*KJtD[1]+/*J[ 1][2]*KJtD[2]+*/
-            J[ 1][3]*KJtD[3]+  J[ 1][4]*KJtD[4] /*J[ 1][5]*KJtD[5]*/;
-    F[ 2] = /*J[ 2][0]*KJtD[0]+  J[ 2][1]*KJtD[1]+*/J[ 2][2]*KJtD[2]+
-            /*J[ 2][3]*KJtD[3]+*/J[ 2][4]*KJtD[4]+  J[ 2][5]*KJtD[5]  ;
-    F[ 3] =   J[ 3][0]*KJtD[0]+/*J[ 3][1]*KJtD[1]+  J[ 3][2]*KJtD[2]+*/
-            J[ 3][3]*KJtD[3]+/*J[ 3][4]*KJtD[4]+*/J[ 3][5]*KJtD[5]  ;
-    F[ 4] = /*J[ 4][0]*KJtD[0]+*/J[ 4][1]*KJtD[1]+/*J[ 4][2]*KJtD[2]+*/
-            J[ 4][3]*KJtD[3]+  J[ 4][4]*KJtD[4] /*J[ 4][5]*KJtD[5]*/;
-    F[ 5] = /*J[ 5][0]*KJtD[0]+  J[ 5][1]*KJtD[1]+*/J[ 5][2]*KJtD[2]+
-            /*J[ 5][3]*KJtD[3]+*/J[ 5][4]*KJtD[4]+  J[ 5][5]*KJtD[5]  ;
-    F[ 6] =   J[ 6][0]*KJtD[0]+/*J[ 6][1]*KJtD[1]+  J[ 6][2]*KJtD[2]+*/
-            J[ 6][3]*KJtD[3]+/*J[ 6][4]*KJtD[4]+*/J[ 6][5]*KJtD[5]  ;
-    F[ 7] = /*J[ 7][0]*KJtD[0]+*/J[ 7][1]*KJtD[1]+/*J[ 7][2]*KJtD[2]+*/
-            J[ 7][3]*KJtD[3]+  J[ 7][4]*KJtD[4] /*J[ 7][5]*KJtD[5]*/;
-    F[ 8] = /*J[ 8][0]*KJtD[0]+  J[ 8][1]*KJtD[1]+*/J[ 8][2]*KJtD[2]+
-            /*J[ 8][3]*KJtD[3]+*/J[ 8][4]*KJtD[4]+  J[ 8][5]*KJtD[5]  ;
-    F[ 9] =   J[ 9][0]*KJtD[0]+/*J[ 9][1]*KJtD[1]+  J[ 9][2]*KJtD[2]+*/
-            J[ 9][3]*KJtD[3]+/*J[ 9][4]*KJtD[4]+*/J[ 9][5]*KJtD[5]  ;
-    F[10] = /*J[10][0]*KJtD[0]+*/J[10][1]*KJtD[1]+/*J[10][2]*KJtD[2]+*/
-            J[10][3]*KJtD[3]+  J[10][4]*KJtD[4] /*J[10][5]*KJtD[5]*/;
-    F[11] = /*J[11][0]*KJtD[0]+  J[11][1]*KJtD[1]+*/J[11][2]*KJtD[2]+
-            /*J[11][3]*KJtD[3]+*/J[11][4]*KJtD[4]+  J[11][5]*KJtD[5]  ;
-
-#endif
-}
-
-template<class DataTypes>
-inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J, SReal fact )
-{
-
-    // Unit of K = unit of youngModulus / unit of volume = Pa / m^3 = kg m^-4 s^-2
-    // Unit of J = m^2
-    // Unit of JKJt =  kg s^-2
-    // Unit of displacement = m
-    // Unit of force = kg m s^-2
-
-#if 0
-    F = J*(K*(J.multTranspose(Depl)));
-    F *= fact;
-#else
-    /* We have these zeros
-                                  K[0][3]   K[0][4]   K[0][5]
-                                  K[1][3]   K[1][4]   K[1][5]
-                                  K[2][3]   K[2][4]   K[2][5]
-    K[3][0]   K[3][1]   K[3][2]             K[3][4]   K[3][5]
-    K[4][0]   K[4][1]   K[4][2]   K[4][3]             K[4][5]
-    K[5][0]   K[5][1]   K[5][2]   K[5][3]   K[5][4]
-
-
-              J[0][1]   J[0][2]             J[0][4]
-    J[1][0]             J[1][2]                       J[1][5]
-    J[2][0]   J[2][1]             J[2][3]
-              J[3][1]   J[3][2]             J[3][4]
-    J[4][0]             J[4][2]                       J[4][5]
-    J[5][0]   J[5][1]             J[5][3]
-              J[6][1]   J[6][2]             J[6][4]
-    J[7][0]             J[7][2]                       J[7][5]
-    J[8][0]   J[8][1]             J[8][3]
-              J[9][1]   J[9][2]             J[9][4]
-    J[10][0]            J[10][2]                      J[10][5]
-    J[11][0]  J[11][1]            J[11][3]
-    */
-
-    type::VecNoInit<6,Real> JtD;
-    JtD[0] =   J[ 0][0]*Depl[ 0]+/*J[ 1][0]*Depl[ 1]+  J[ 2][0]*Depl[ 2]+*/
-            J[ 3][0]*Depl[ 3]+/*J[ 4][0]*Depl[ 4]+  J[ 5][0]*Depl[ 5]+*/
-            J[ 6][0]*Depl[ 6]+/*J[ 7][0]*Depl[ 7]+  J[ 8][0]*Depl[ 8]+*/
-            J[ 9][0]*Depl[ 9] /*J[10][0]*Depl[10]+  J[11][0]*Depl[11]*/;
-    JtD[1] = /*J[ 0][1]*Depl[ 0]+*/J[ 1][1]*Depl[ 1]+/*J[ 2][1]*Depl[ 2]+*/
-            /*J[ 3][1]*Depl[ 3]+*/J[ 4][1]*Depl[ 4]+/*J[ 5][1]*Depl[ 5]+*/
-            /*J[ 6][1]*Depl[ 6]+*/J[ 7][1]*Depl[ 7]+/*J[ 8][1]*Depl[ 8]+*/
-            /*J[ 9][1]*Depl[ 9]+*/J[10][1]*Depl[10] /*J[11][1]*Depl[11]*/;
-    JtD[2] = /*J[ 0][2]*Depl[ 0]+  J[ 1][2]*Depl[ 1]+*/J[ 2][2]*Depl[ 2]+
-            /*J[ 3][2]*Depl[ 3]+  J[ 4][2]*Depl[ 4]+*/J[ 5][2]*Depl[ 5]+
-            /*J[ 6][2]*Depl[ 6]+  J[ 7][2]*Depl[ 7]+*/J[ 8][2]*Depl[ 8]+
-            /*J[ 9][2]*Depl[ 9]+  J[10][2]*Depl[10]+*/J[11][2]*Depl[11]  ;
-    JtD[3] =   J[ 0][3]*Depl[ 0]+  J[ 1][3]*Depl[ 1]+/*J[ 2][3]*Depl[ 2]+*/
-            J[ 3][3]*Depl[ 3]+  J[ 4][3]*Depl[ 4]+/*J[ 5][3]*Depl[ 5]+*/
-            J[ 6][3]*Depl[ 6]+  J[ 7][3]*Depl[ 7]+/*J[ 8][3]*Depl[ 8]+*/
-            J[ 9][3]*Depl[ 9]+  J[10][3]*Depl[10] /*J[11][3]*Depl[11]*/;
-    JtD[4] = /*J[ 0][4]*Depl[ 0]+*/J[ 1][4]*Depl[ 1]+  J[ 2][4]*Depl[ 2]+
-            /*J[ 3][4]*Depl[ 3]+*/J[ 4][4]*Depl[ 4]+  J[ 5][4]*Depl[ 5]+
-            /*J[ 6][4]*Depl[ 6]+*/J[ 7][4]*Depl[ 7]+  J[ 8][4]*Depl[ 8]+
-            /*J[ 9][4]*Depl[ 9]+*/J[10][4]*Depl[10]+  J[11][4]*Depl[11]  ;
-    JtD[5] =   J[ 0][5]*Depl[ 0]+/*J[ 1][5]*Depl[ 1]*/ J[ 2][5]*Depl[ 2]+
-            J[ 3][5]*Depl[ 3]+/*J[ 4][5]*Depl[ 4]*/ J[ 5][5]*Depl[ 5]+
-            J[ 6][5]*Depl[ 6]+/*J[ 7][5]*Depl[ 7]*/ J[ 8][5]*Depl[ 8]+
-            J[ 9][5]*Depl[ 9]+/*J[10][5]*Depl[10]*/ J[11][5]*Depl[11];
-
-    type::VecNoInit<6,Real> KJtD;
-    KJtD[0] =   K[0][0]*JtD[0]+  K[0][1]*JtD[1]+  K[0][2]*JtD[2]
-            /*K[0][3]*JtD[3]+  K[0][4]*JtD[4]+  K[0][5]*JtD[5]*/;
-    KJtD[1] =   K[1][0]*JtD[0]+  K[1][1]*JtD[1]+  K[1][2]*JtD[2]
-            /*K[1][3]*JtD[3]+  K[1][4]*JtD[4]+  K[1][5]*JtD[5]*/;
-    KJtD[2] =   K[2][0]*JtD[0]+  K[2][1]*JtD[1]+  K[2][2]*JtD[2]
-            /*K[2][3]*JtD[3]+  K[2][4]*JtD[4]+  K[2][5]*JtD[5]*/;
-    KJtD[3] = /*K[3][0]*JtD[0]+  K[3][1]*JtD[1]+  K[3][2]*JtD[2]+*/
-            K[3][3]*JtD[3] /*K[3][4]*JtD[4]+  K[3][5]*JtD[5]*/;
-    KJtD[4] = /*K[4][0]*JtD[0]+  K[4][1]*JtD[1]+  K[4][2]*JtD[2]+*/
-            /*K[4][3]*JtD[3]+*/K[4][4]*JtD[4] /*K[4][5]*JtD[5]*/;
-    KJtD[5] = /*K[5][0]*JtD[0]+  K[5][1]*JtD[1]+  K[5][2]*JtD[2]+*/
-            /*K[5][3]*JtD[3]+  K[5][4]*JtD[4]+*/K[5][5]*JtD[5]  ;
-
-    KJtD *= fact;
-
-    F[ 0] =   J[ 0][0]*KJtD[0]+/*J[ 0][1]*KJtD[1]+  J[ 0][2]*KJtD[2]+*/
-            J[ 0][3]*KJtD[3]+/*J[ 0][4]*KJtD[4]+*/J[ 0][5]*KJtD[5]  ;
-    F[ 1] = /*J[ 1][0]*KJtD[0]+*/J[ 1][1]*KJtD[1]+/*J[ 1][2]*KJtD[2]+*/
-            J[ 1][3]*KJtD[3]+  J[ 1][4]*KJtD[4] /*J[ 1][5]*KJtD[5]*/;
-    F[ 2] = /*J[ 2][0]*KJtD[0]+  J[ 2][1]*KJtD[1]+*/J[ 2][2]*KJtD[2]+
-            /*J[ 2][3]*KJtD[3]+*/J[ 2][4]*KJtD[4]+  J[ 2][5]*KJtD[5]  ;
-    F[ 3] =   J[ 3][0]*KJtD[0]+/*J[ 3][1]*KJtD[1]+  J[ 3][2]*KJtD[2]+*/
-            J[ 3][3]*KJtD[3]+/*J[ 3][4]*KJtD[4]+*/J[ 3][5]*KJtD[5]  ;
-    F[ 4] = /*J[ 4][0]*KJtD[0]+*/J[ 4][1]*KJtD[1]+/*J[ 4][2]*KJtD[2]+*/
-            J[ 4][3]*KJtD[3]+  J[ 4][4]*KJtD[4] /*J[ 4][5]*KJtD[5]*/;
-    F[ 5] = /*J[ 5][0]*KJtD[0]+  J[ 5][1]*KJtD[1]+*/J[ 5][2]*KJtD[2]+
-            /*J[ 5][3]*KJtD[3]+*/J[ 5][4]*KJtD[4]+  J[ 5][5]*KJtD[5]  ;
-    F[ 6] =   J[ 6][0]*KJtD[0]+/*J[ 6][1]*KJtD[1]+  J[ 6][2]*KJtD[2]+*/
-            J[ 6][3]*KJtD[3]+/*J[ 6][4]*KJtD[4]+*/J[ 6][5]*KJtD[5]  ;
-    F[ 7] = /*J[ 7][0]*KJtD[0]+*/J[ 7][1]*KJtD[1]+/*J[ 7][2]*KJtD[2]+*/
-            J[ 7][3]*KJtD[3]+  J[ 7][4]*KJtD[4] /*J[ 7][5]*KJtD[5]*/;
-    F[ 8] = /*J[ 8][0]*KJtD[0]+  J[ 8][1]*KJtD[1]+*/J[ 8][2]*KJtD[2]+
-            /*J[ 8][3]*KJtD[3]+*/J[ 8][4]*KJtD[4]+  J[ 8][5]*KJtD[5]  ;
-    F[ 9] =   J[ 9][0]*KJtD[0]+/*J[ 9][1]*KJtD[1]+  J[ 9][2]*KJtD[2]+*/
-            J[ 9][3]*KJtD[3]+/*J[ 9][4]*KJtD[4]+*/J[ 9][5]*KJtD[5]  ;
-    F[10] = /*J[10][0]*KJtD[0]+*/J[10][1]*KJtD[1]+/*J[10][2]*KJtD[2]+*/
-            J[10][3]*KJtD[3]+  J[10][4]*KJtD[4] /*J[10][5]*KJtD[5]*/;
-    F[11] = /*J[11][0]*KJtD[0]+  J[11][1]*KJtD[1]+*/J[11][2]*KJtD[2]+
-            /*J[11][3]*KJtD[3]+*/J[11][4]*KJtD[4]+  J[11][5]*KJtD[5]  ;
-#endif
-}
-
-//////////////////////////////////////////////////////////////////////
-////////////////////  small displacements method  ////////////////////
-//////////////////////////////////////////////////////////////////////
-
-template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::initSmall(Index i, Index&a, Index&b, Index&c, Index&d)
-{
-    const VecCoord &initialPoints=_initialPoints.getValue();
-    computeStrainDisplacement( strainDisplacements[i], initialPoints[a], initialPoints[b], initialPoints[c], initialPoints[d] );
-}
-
-template<class DataTypes>
-inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex )
-{
-    const VecCoord &initialPoints=_initialPoints.getValue();
-    Element index = *elementIt;
-    Index a = index[0];
-    Index b = index[1];
-    Index c = index[2];
-    Index d = index[3];
-
-    // displacements
-    Displacement D;
-    D[0] = 0;
-    D[1] = 0;
-    D[2] = 0;
-    D[3] =  initialPoints[b][0] - initialPoints[a][0] - p[b][0]+p[a][0];
-    D[4] =  initialPoints[b][1] - initialPoints[a][1] - p[b][1]+p[a][1];
-    D[5] =  initialPoints[b][2] - initialPoints[a][2] - p[b][2]+p[a][2];
-    D[6] =  initialPoints[c][0] - initialPoints[a][0] - p[c][0]+p[a][0];
-    D[7] =  initialPoints[c][1] - initialPoints[a][1] - p[c][1]+p[a][1];
-    D[8] =  initialPoints[c][2] - initialPoints[a][2] - p[c][2]+p[a][2];
-    D[9] =  initialPoints[d][0] - initialPoints[a][0] - p[d][0]+p[a][0];
-    D[10] = initialPoints[d][1] - initialPoints[a][1] - p[d][1]+p[a][1];
-    D[11] = initialPoints[d][2] - initialPoints[a][2] - p[d][2]+p[a][2];
-
-    // compute force on element
-    Displacement F;
-    if(!_assembling.getValue())
-    {
-        computeForce( F, D, _plasticStrains[elementIndex],
-                      materialsStiffnesses[elementIndex],
-                      strainDisplacements[elementIndex] );
-    }
-    else if( _plasticMaxThreshold.getValue() <= 0 )
-    {
-        Transformation Rot;
-        Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
-        Rot[0][1]=Rot[0][2]=0;
-        Rot[1][0]=Rot[1][2]=0;
-        Rot[2][0]=Rot[2][1]=0;
-
-
-        StiffnessMatrix JKJt,tmp;
-        computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[elementIndex], strainDisplacements[elementIndex],Rot);
-
-        //erase the stiffness matrix at each time step
-        if(elementIndex==0)
-        {
-            for(Size i=0; i<_stiffnesses.size(); ++i)
-            {
-                _stiffnesses[i].resize(0);
-            }
-        }
-
-        for(int i=0; i<12; ++i)
-        {
-            Index row = index[i/3]*3+i%3;
-
-            for(int j=0; j<12; ++j)
-            {
-                if(JKJt[i][j]!=0)
-                {
-                    Index col = index[j/3]*3+j%3;
-                    // search if the vertex is already take into account by another element
-                    typename CompressedValue::iterator result = _stiffnesses[row].end();
-                    for(typename CompressedValue::iterator it=_stiffnesses[row].begin(); it!=_stiffnesses[row].end()&&result==_stiffnesses[row].end(); ++it)
-                    {
-                        if( (*it).first == col )
-                            result = it;
-                    }
-
-                    if( result==_stiffnesses[row].end() )
-                        _stiffnesses[row].push_back( Col_Value(col,JKJt[i][j] )  );
-                    else
-                        (*result).second += JKJt[i][j];
-                }
-            }
-        }
-
-        F = JKJt * D;
-    }
-    else
-    {
-        msg_error() << "Support for assembling system matrix when using plasticity.";
-        return;
-    }
-
-    f[a] += Deriv( F[0], F[1], F[2] );
-    f[b] += Deriv( F[3], F[4], F[5] );
-    f[c] += Deriv( F[6], F[7], F[8] );
-    f[d] += Deriv( F[9], F[10], F[11] );
-
 }
 
 // getPotentialEnergy only for small method and if assembling is false
@@ -799,76 +426,10 @@ inline SReal TetrahedronFEMForceField<DataTypes>::getPotentialEnergy(const core:
     return energyPotential;
 }
 
-template<class DataTypes>
-inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessSmall( Vector& f, const Vector& x, Index i, Index a, Index b, Index c, Index d, SReal fact )
-{
-    Displacement X;
-
-    X[0] = x[a][0];
-    X[1] = x[a][1];
-    X[2] = x[a][2];
-
-    X[3] = x[b][0];
-    X[4] = x[b][1];
-    X[5] = x[b][2];
-
-    X[6] = x[c][0];
-    X[7] = x[c][1];
-    X[8] = x[c][2];
-
-    X[9] = x[d][0];
-    X[10] = x[d][1];
-    X[11] = x[d][2];
-
-    Displacement F;
-    computeForce( F, X, materialsStiffnesses[i], strainDisplacements[i], fact );
-
-    f[a] += Deriv( -F[0], -F[1],  -F[2] );
-    f[b] += Deriv( -F[3], -F[4],  -F[5] );
-    f[c] += Deriv( -F[6], -F[7],  -F[8] );
-    f[d] += Deriv( -F[9], -F[10], -F[11] );
-}
-
-//////////////////////////////////////////////////////////////////////
-////////////////////  large displacements method  ////////////////////
-//////////////////////////////////////////////////////////////////////
-
-template<class DataTypes>
-inline void TetrahedronFEMForceField<DataTypes>::computeRotationLarge( Transformation &r, const Vector &p, const Index &a, const Index &b, const Index &c)
-{
-    // first vector on first edge
-    // second vector in the plane of the two first edges
-    // third vector orthogonal to first and second
-
-    Coord edgex = p[b]-p[a];
-    edgex.normalize();
-
-    Coord edgey = p[c]-p[a];
-    edgey.normalize();
-
-    Coord edgez = cross( edgex, edgey );
-    edgez.normalize();
-
-    edgey = cross( edgez, edgex );
-    edgey.normalize();
-
-    r[0][0] = edgex[0];
-    r[0][1] = edgex[1];
-    r[0][2] = edgex[2];
-    r[1][0] = edgey[0];
-    r[1][1] = edgey[1];
-    r[1][2] = edgey[2];
-    r[2][0] = edgez[0];
-    r[2][1] = edgez[1];
-    r[2][2] = edgez[2];
-
-    // TODO handle degenerated cases like in the SVD method
-}
-
 //HACK get rotation for fast contact handling with simplified compliance
 template<class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::getRotation(Mat33& R, unsigned int nodeIdx)
-{ 
+{
     if(method == SMALL)
     {
         R[0][0] = 1.0 ; R[1][1] = 1.0 ; R[2][2] = 1.0 ;
@@ -919,411 +480,6 @@ inline void TetrahedronFEMForceField<DataTypes>::getRotation(Mat33& R, unsigned 
 
     R = Rmoy;
 }
-
-template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::initLarge(Index i, Index&a, Index&b, Index&c, Index&d)
-{
-    // Rotation matrix (initial Tetrahedre/world)
-    // first vector on first edge
-    // second vector in the plane of the two first edges
-    // third vector orthogonal to first and second
-
-    const VecCoord &initialPoints=_initialPoints.getValue();
-    Transformation R_0_1;
-    computeRotationLarge( R_0_1, initialPoints, a, b, c);
-    _initialRotations[i].transpose(R_0_1);
-    rotations[i] = _initialRotations[i];
-
-    //save the element index as the node index
-    _rotationIdx[a] = i;
-    _rotationIdx[b] = i;
-    _rotationIdx[c] = i;
-    _rotationIdx[d] = i;
-
-    _rotatedInitialElements[i][0] = R_0_1*initialPoints[a];
-    _rotatedInitialElements[i][1] = R_0_1*initialPoints[b];
-    _rotatedInitialElements[i][2] = R_0_1*initialPoints[c];
-    _rotatedInitialElements[i][3] = R_0_1*initialPoints[d];
-
-    _rotatedInitialElements[i][1] -= _rotatedInitialElements[i][0];
-    _rotatedInitialElements[i][2] -= _rotatedInitialElements[i][0];
-    _rotatedInitialElements[i][3] -= _rotatedInitialElements[i][0];
-    _rotatedInitialElements[i][0] = Coord(0,0,0);
-
-    computeStrainDisplacement(strainDisplacements[i],_rotatedInitialElements[i][0],
-            _rotatedInitialElements[i][1],_rotatedInitialElements[i][2],
-            _rotatedInitialElements[i][3] );
-}
-
-template<class DataTypes>
-inline void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const Vector & p,
-                                                                       typename VecElement::const_iterator elementIt, Index elementIndex )
-{
-    Element index = *elementIt;
-
-    // Rotation matrix (deformed and displaced Tetrahedron/world)
-    Transformation R_0_2;
-    computeRotationLarge( R_0_2, p, index[0],index[1],index[2]);
-
-    rotations[elementIndex].transpose(R_0_2);
-
-    // positions of the deformed and displaced Tetrahedron in its frame
-    type::fixed_array<Coord,4> deforme;
-    for(int i=0; i<4; ++i)
-        deforme[i] = R_0_2*p[index[i]];
-
-    deforme[1][0] -= deforme[0][0];
-    deforme[2][0] -= deforme[0][0];
-    deforme[2][1] -= deforme[0][1];
-    deforme[3] -= deforme[0];
-
-    // displacement
-    Displacement D;
-    D[0] = 0;
-    D[1] = 0;
-    D[2] = 0;
-    D[3] = _rotatedInitialElements[elementIndex][1][0] - deforme[1][0];
-    D[4] = 0;
-    D[5] = 0;
-    D[6] = _rotatedInitialElements[elementIndex][2][0] - deforme[2][0];
-    D[7] = _rotatedInitialElements[elementIndex][2][1] - deforme[2][1];
-    D[8] = 0;
-    D[9] = _rotatedInitialElements[elementIndex][3][0] - deforme[3][0];
-    D[10] = _rotatedInitialElements[elementIndex][3][1] - deforme[3][1];
-    D[11] =_rotatedInitialElements[elementIndex][3][2] - deforme[3][2];
-
-    Displacement F;
-    if(_updateStiffnessMatrix.getValue())
-    {
-        strainDisplacements[elementIndex][0][0]   = ( - deforme[2][1]*deforme[3][2] );
-        strainDisplacements[elementIndex][1][1] = ( deforme[2][0]*deforme[3][2] - deforme[1][0]*deforme[3][2] );
-        strainDisplacements[elementIndex][2][2]   = ( deforme[2][1]*deforme[3][0] - deforme[2][0]*deforme[3][1] + deforme[1][0]*deforme[3][1] - deforme[1][0]*deforme[2][1] );
-
-        strainDisplacements[elementIndex][3][0]   = ( deforme[2][1]*deforme[3][2] );
-        strainDisplacements[elementIndex][4][1]  = ( - deforme[2][0]*deforme[3][2] );
-        strainDisplacements[elementIndex][5][2]   = ( - deforme[2][1]*deforme[3][0] + deforme[2][0]*deforme[3][1] );
-
-        strainDisplacements[elementIndex][7][1]  = ( deforme[1][0]*deforme[3][2] );
-        strainDisplacements[elementIndex][8][2]   = ( - deforme[1][0]*deforme[3][1] );
-
-        strainDisplacements[elementIndex][11][2] = ( deforme[1][0]*deforme[2][1] );
-    }
-
-    if(!_assembling.getValue())
-    {
-        // compute force on element
-        computeForce( F, D, _plasticStrains[elementIndex], materialsStiffnesses[elementIndex], strainDisplacements[elementIndex] );
-        for(int i=0; i<12; i+=3)
-            f[index[i/3]] += rotations[elementIndex] * Deriv( F[i], F[i+1],  F[i+2] );
-    }
-    else if( _plasticMaxThreshold.getValue() <= 0 )
-    {
-        strainDisplacements[elementIndex][6][0] = 0;
-        strainDisplacements[elementIndex][9][0] = 0;
-        strainDisplacements[elementIndex][10][1] = 0;
-
-        StiffnessMatrix RJKJt, RJKJtRt;
-        computeStiffnessMatrix(RJKJt,RJKJtRt,materialsStiffnesses[elementIndex], strainDisplacements[elementIndex],rotations[elementIndex]);
-
-        //erase the stiffness matrix at each time step
-        if(elementIndex==0)
-        {
-            for(unsigned int i=0; i<_stiffnesses.size(); ++i)
-            {
-                _stiffnesses[i].resize(0);
-            }
-        }
-
-        for(int i=0; i<12; ++i)
-        {
-            Index row = index[i/3]*3+i%3;
-            for(int j=0; j<12; ++j)
-            {
-                Index col = index[j/3]*3+j%3;
-
-                // search if the vertex is already take into account by another element
-                typename CompressedValue::iterator result = _stiffnesses[row].end();
-                for(typename CompressedValue::iterator it=_stiffnesses[row].begin(); it!=_stiffnesses[row].end()&&result==_stiffnesses[row].end(); ++it)
-                {
-                    if( (*it).first == col )
-                    {
-                        result = it;
-                    }
-                }
-
-                if( result==_stiffnesses[row].end() )
-                {
-                    _stiffnesses[row].push_back( Col_Value(col,RJKJtRt[i][j] )  );
-                }
-                else
-                {
-                    (*result).second += RJKJtRt[i][j];
-                }
-            }
-        }
-
-        F = RJKJt*D;
-
-        for(int i=0; i<12; i+=3)
-            f[index[i/3]] += Deriv( F[i], F[i+1],  F[i+2] );
-    }
-    else
-    {
-        dmsg_error() << "Support for assembling system matrix when using plasticity." ;
-    }
-}
-
-//////////////////////////////////////////////////////////////////////
-////////////////////  polar decomposition method  ////////////////////
-//////////////////////////////////////////////////////////////////////
-
-
-template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::initPolar(Index i, Index& a, Index&b, Index&c, Index&d)
-{
-    const VecCoord &initialPoints=_initialPoints.getValue();
-    Transformation A;
-    A[0] = initialPoints[b]-initialPoints[a];
-    A[1] = initialPoints[c]-initialPoints[a];
-    A[2] = initialPoints[d]-initialPoints[a];
-    //_initialTransformation[i] = A;
-
-    Transformation R_0_1;
-    helper::Decompose<Real>::polarDecomposition( A, R_0_1 );
-
-    _initialRotations[i].transpose( R_0_1 );
-    rotations[i] = _initialRotations[i];
-
-    //save the element index as the node index
-    _rotationIdx[a] = i;
-    _rotationIdx[b] = i;
-    _rotationIdx[c] = i;
-    _rotationIdx[d] = i;
-
-    _rotatedInitialElements[i][0] = R_0_1*initialPoints[a];
-    _rotatedInitialElements[i][1] = R_0_1*initialPoints[b];
-    _rotatedInitialElements[i][2] = R_0_1*initialPoints[c];
-    _rotatedInitialElements[i][3] = R_0_1*initialPoints[d];
-
-    computeStrainDisplacement( strainDisplacements[i],_rotatedInitialElements[i][0],
-                                _rotatedInitialElements[i][1],_rotatedInitialElements[i][2],_rotatedInitialElements[i][3] );
-
-}
-
-template<class DataTypes>
-inline void TetrahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex )
-{
-    Element index = *elementIt;
-
-    Transformation A;
-    A[0] = p[index[1]]-p[index[0]];
-    A[1] = p[index[2]]-p[index[0]];
-    A[2] = p[index[3]]-p[index[0]];
-
-    Transformation R_0_2;
-    helper::Decompose<Real>::polarDecomposition( A, R_0_2 );
-
-    rotations[elementIndex].transpose( R_0_2 );
-
-    // positions of the deformed and displaced Tetrahedre in its frame
-    type::fixed_array<Coord, 4>  deforme;
-    for(int i=0; i<4; ++i)
-        deforme[i] = R_0_2 * p[index[i]];
-
-    // displacement
-    Displacement D;
-    D[0] = _rotatedInitialElements[elementIndex][0][0] - deforme[0][0];
-    D[1] = _rotatedInitialElements[elementIndex][0][1] - deforme[0][1];
-    D[2] = _rotatedInitialElements[elementIndex][0][2] - deforme[0][2];
-    D[3] = _rotatedInitialElements[elementIndex][1][0] - deforme[1][0];
-    D[4] = _rotatedInitialElements[elementIndex][1][1] - deforme[1][1];
-    D[5] = _rotatedInitialElements[elementIndex][1][2] - deforme[1][2];
-    D[6] = _rotatedInitialElements[elementIndex][2][0] - deforme[2][0];
-    D[7] = _rotatedInitialElements[elementIndex][2][1] - deforme[2][1];
-    D[8] = _rotatedInitialElements[elementIndex][2][2] - deforme[2][2];
-    D[9] = _rotatedInitialElements[elementIndex][3][0] - deforme[3][0];
-    D[10] = _rotatedInitialElements[elementIndex][3][1] - deforme[3][1];
-    D[11] = _rotatedInitialElements[elementIndex][3][2] - deforme[3][2];
-
-
-
-    Displacement F;
-    if(_updateStiffnessMatrix.getValue())
-    {
-        // shape functions matrix
-        computeStrainDisplacement( strainDisplacements[elementIndex], deforme[0],deforme[1],deforme[2],deforme[3] );
-    }
-
-    if(!_assembling.getValue())
-    {
-        computeForce( F, D, _plasticStrains[elementIndex], materialsStiffnesses[elementIndex], strainDisplacements[elementIndex] );
-        for(int i=0; i<12; i+=3)
-            f[index[i/3]] += rotations[elementIndex] * Deriv( F[i], F[i+1],  F[i+2] );
-    }
-    else
-    {
-        dmsg_error() << "Support for assembling system matrix when using polar method.";
-    }
-}
-
-
-
-//////////////////////////////////////////////////////////////////////
-////////////////////  svd decomposition method  ////////////////////
-//////////////////////////////////////////////////////////////////////
-
-template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::initSVD(Index i, Index& a, Index&b, Index&c, Index&d )
-{
-    const VecCoord &initialPoints=_initialPoints.getValue();
-    Transformation A;
-    A[0] = initialPoints[b]-initialPoints[a];
-    A[1] = initialPoints[c]-initialPoints[a];
-    A[2] = initialPoints[d]-initialPoints[a];
-    const bool canInvert = _initialTransformation[i].invert( A );
-    assert(canInvert);
-    SOFA_UNUSED(canInvert);
-
-    Transformation R_0_1;
-    helper::Decompose<Real>::polarDecomposition( A, R_0_1 );
-
-    _initialRotations[i].transpose( R_0_1 );
-    rotations[i] = _initialRotations[i];
-
-    //save the element index as the node index
-    _rotationIdx[a] = i;
-    _rotationIdx[b] = i;
-    _rotationIdx[c] = i;
-    _rotationIdx[d] = i;
-
-    _rotatedInitialElements[i][0] = R_0_1*initialPoints[a];
-    _rotatedInitialElements[i][1] = R_0_1*initialPoints[b];
-    _rotatedInitialElements[i][2] = R_0_1*initialPoints[c];
-    _rotatedInitialElements[i][3] = R_0_1*initialPoints[d];
-
-    computeStrainDisplacement( strainDisplacements[i],_rotatedInitialElements[i][0], _rotatedInitialElements[i][1],_rotatedInitialElements[i][2],_rotatedInitialElements[i][3] );
-}
-
-
-
-
-template<class DataTypes>
-inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex )
-{
-    if( _assembling.getValue() )
-    {
-        dmsg_error() << "Support for assembling system matrix when using SVD method.";
-        return;
-    }
-
-    Element index = *elementIt;
-
-    Transformation A;
-    A[0] = p[index[1]]-p[index[0]];
-    A[1] = p[index[2]]-p[index[0]];
-    A[2] = p[index[3]]-p[index[0]];
-
-    type::Mat<3,3,Real> R_0_2;
-
-    type::Mat<3,3,Real> F = A * _initialTransformation[elementIndex];
-
-    if(type::determinant(F) < 1e-6 ) // inverted or too flat element -> SVD decomposition + handle degenerated cases
-    {
-        helper::Decompose<Real>::polarDecomposition_stable( F, R_0_2 );
-        R_0_2 = R_0_2.multTransposed( _initialRotations[elementIndex] );
-    }
-    else // not inverted & not degenerated -> classical polar
-    {
-        helper::Decompose<Real>::polarDecomposition( A, R_0_2 );
-    }
-
-    rotations[elementIndex].transpose( R_0_2 );
-
-    // positions of the deformed and displaced tetrahedron in its frame
-    type::fixed_array<Coord, 4>  deforme;
-    for(int i=0; i<4; ++i)
-        deforme[i] = R_0_2 * p[index[i]];
-
-    // displacement
-    Displacement D;
-    D[0]  = _rotatedInitialElements[elementIndex][0][0] - deforme[0][0];
-    D[1]  = _rotatedInitialElements[elementIndex][0][1] - deforme[0][1];
-    D[2]  = _rotatedInitialElements[elementIndex][0][2] - deforme[0][2];
-    D[3]  = _rotatedInitialElements[elementIndex][1][0] - deforme[1][0];
-    D[4]  = _rotatedInitialElements[elementIndex][1][1] - deforme[1][1];
-    D[5]  = _rotatedInitialElements[elementIndex][1][2] - deforme[1][2];
-    D[6]  = _rotatedInitialElements[elementIndex][2][0] - deforme[2][0];
-    D[7]  = _rotatedInitialElements[elementIndex][2][1] - deforme[2][1];
-    D[8]  = _rotatedInitialElements[elementIndex][2][2] - deforme[2][2];
-    D[9]  = _rotatedInitialElements[elementIndex][3][0] - deforme[3][0];
-    D[10] = _rotatedInitialElements[elementIndex][3][1] - deforme[3][1];
-    D[11] = _rotatedInitialElements[elementIndex][3][2] - deforme[3][2];
-
-    if( _updateStiffnessMatrix.getValue() )
-    {
-        computeStrainDisplacement( strainDisplacements[elementIndex], deforme[0], deforme[1], deforme[2], deforme[3] );
-    }
-
-    Displacement Forces;
-    computeForce( Forces, D, _plasticStrains[elementIndex], materialsStiffnesses[elementIndex], strainDisplacements[elementIndex] );
-    for( int i=0 ; i<12 ; i+=3 )
-    {
-        f[index[i/3]] += rotations[elementIndex] * Deriv( Forces[i], Forces[i+1],  Forces[i+2] );
-    }
-}
-
-
-
-///////////////////////////////////////////////////////////////////////////////////////
-////////////////  specific methods for corotational large, polar, svd  ////////////////
-///////////////////////////////////////////////////////////////////////////////////////
-
-template<class DataTypes>
-inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessCorotational( Vector& f, const Vector& x, Index i, Index a, Index b, Index c, Index d, SReal fact )
-{
-    Displacement X;
-
-    // rotate by rotations[i] transposed
-    X[0]  = rotations[i][0][0] * x[a][0] + rotations[i][1][0] * x[a][1] + rotations[i][2][0] * x[a][2];
-    X[1]  = rotations[i][0][1] * x[a][0] + rotations[i][1][1] * x[a][1] + rotations[i][2][1] * x[a][2];
-    X[2]  = rotations[i][0][2] * x[a][0] + rotations[i][1][2] * x[a][1] + rotations[i][2][2] * x[a][2];
-
-    X[3]  = rotations[i][0][0] * x[b][0] + rotations[i][1][0] * x[b][1] + rotations[i][2][0] * x[b][2];
-    X[4]  = rotations[i][0][1] * x[b][0] + rotations[i][1][1] * x[b][1] + rotations[i][2][1] * x[b][2];
-    X[5]  = rotations[i][0][2] * x[b][0] + rotations[i][1][2] * x[b][1] + rotations[i][2][2] * x[b][2];
-
-    X[6]  = rotations[i][0][0] * x[c][0] + rotations[i][1][0] * x[c][1] + rotations[i][2][0] * x[c][2];
-    X[7]  = rotations[i][0][1] * x[c][0] + rotations[i][1][1] * x[c][1] + rotations[i][2][1] * x[c][2];
-    X[8]  = rotations[i][0][2] * x[c][0] + rotations[i][1][2] * x[c][1] + rotations[i][2][2] * x[c][2];
-
-    X[9]  = rotations[i][0][0] * x[d][0] + rotations[i][1][0] * x[d][1] + rotations[i][2][0] * x[d][2];
-    X[10] = rotations[i][0][1] * x[d][0] + rotations[i][1][1] * x[d][1] + rotations[i][2][1] * x[d][2];
-    X[11] = rotations[i][0][2] * x[d][0] + rotations[i][1][2] * x[d][1] + rotations[i][2][2] * x[d][2];
-
-    Displacement F;
-
-    computeForce( F, X, materialsStiffnesses[i], strainDisplacements[i], fact );
-
-
-    // rotate by rotations[i]
-    f[a][0] -= rotations[i][0][0] *  F[0] +  rotations[i][0][1] * F[1]  + rotations[i][0][2] * F[2];
-    f[a][1] -= rotations[i][1][0] *  F[0] +  rotations[i][1][1] * F[1]  + rotations[i][1][2] * F[2];
-    f[a][2] -= rotations[i][2][0] *  F[0] +  rotations[i][2][1] * F[1]  + rotations[i][2][2] * F[2];
-
-    f[b][0] -= rotations[i][0][0] *  F[3] +  rotations[i][0][1] * F[4]  + rotations[i][0][2] * F[5];
-    f[b][1] -= rotations[i][1][0] *  F[3] +  rotations[i][1][1] * F[4]  + rotations[i][1][2] * F[5];
-    f[b][2] -= rotations[i][2][0] *  F[3] +  rotations[i][2][1] * F[4]  + rotations[i][2][2] * F[5];
-
-    f[c][0] -= rotations[i][0][0] *  F[6] +  rotations[i][0][1] * F[7]  + rotations[i][0][2] * F[8];
-    f[c][1] -= rotations[i][1][0] *  F[6] +  rotations[i][1][1] * F[7]  + rotations[i][1][2] * F[8];
-    f[c][2] -= rotations[i][2][0] *  F[6] +  rotations[i][2][1] * F[7]  + rotations[i][2][2] * F[8];
-
-    f[d][0] -= rotations[i][0][0] *  F[9] +  rotations[i][0][1] * F[10] + rotations[i][0][2] * F[11];
-    f[d][1]	-= rotations[i][1][0] *  F[9] +  rotations[i][1][1] * F[10] + rotations[i][1][2] * F[11];
-    f[d][2]	-= rotations[i][2][0] *  F[9] +  rotations[i][2][1] * F[10] + rotations[i][2][2] * F[11];
-
-}
-
 
 //////////////////////////////////////////////////////////////////////
 ////////////////  generic main computations methods  /////////////////
@@ -1391,7 +547,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
         return;
     }
 
-    
+
     if (m_topology->getNbTetrahedra()<=0 && m_topology->getNbHexahedra()<=0)
     {
         msg_error()     << " object must have a tetrahedric topology. The component is inactivated.  "
@@ -1510,10 +666,6 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
     strainDisplacements.resize( _indexedElements->size() );
     materialsStiffnesses.resize(_indexedElements->size() );
     _plasticStrains.resize(     _indexedElements->size() );
-    if(_assembling.getValue())
-    {
-        _stiffnesses.resize( _initialPoints.getValue().size()*3 );
-    }
 
     // initialization of structures for vonMises stress computations
     if ( isComputeVonMisesStressMethodSet() )
@@ -1537,86 +689,35 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
 
         if (_computeVonMisesStress.getValue() == 1 && method == SMALL)
         {
-            msg_warning() << "(init) VonMisesStress can only be computed with full Green strain when the method is SMALL.";
-            this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            msg_warning() << "VonMisesStress can only be computed with full Green strain when the method is SMALL.";
+            _computeVonMisesStress.setValue(2);
         }
     }
 
     m_restVolume = 0;
 
-    unsigned int i;
-    typename VecElement::const_iterator it;
-    switch(method)
+    unsigned int i {};
+    for (auto& element : *_indexedElements)
     {
-    case SMALL :
-    {
-        for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
-        {
-            Index a = (*it)[0];
-            Index b = (*it)[1];
-            Index c = (*it)[2];
-            Index d = (*it)[3];
-            this->computeMaterialStiffness(i,a,b,c,d);
-            this->initSmall(i,a,b,c,d);
-        }
-        break;
+        this->computeMaterialStiffness(i++, element[0], element[1], element[2], element[3]);
+        // msg_info() << "Material stiffness " << i-1 << ": " <<  materialsStiffnesses[i-1];
     }
-    case LARGE :
+
+    createImplementor();
+    if (m_impl)
     {
-        rotations.resize( _indexedElements->size() );
-        _initialRotations.resize( _indexedElements->size() );
-        _rotationIdx.resize(m_topology->getNbPoints());
-        _rotatedInitialElements.resize(_indexedElements->size());
-        for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
-        {
-            Index a = (*it)[0];
-            Index b = (*it)[1];
-            Index c = (*it)[2];
-            Index d = (*it)[3];
-            computeMaterialStiffness(i,a,b,c,d);
-            initLarge(i,a,b,c,d);
-        }
-        break;
-    }
-    case POLAR :
-    {
-        rotations.resize( _indexedElements->size() );
-        _initialRotations.resize( _indexedElements->size() );
-        _rotationIdx.resize(m_topology->getNbPoints());
-        _rotatedInitialElements.resize(_indexedElements->size());
-        unsigned int i=0;
-        typename VecElement::const_iterator it;
-        for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
-        {
-            Index a = (*it)[0];
-            Index b = (*it)[1];
-            Index c = (*it)[2];
-            Index d = (*it)[3];
-            computeMaterialStiffness(i,a,b,c,d);
-            initPolar(i,a,b,c,d);
-        }
-        break;
-    }
-    case SVD :
-    {
-        rotations.resize( _indexedElements->size() );
-        _initialRotations.resize( _indexedElements->size() );
-        _rotationIdx.resize(m_topology->getNbPoints());
-        _rotatedInitialElements.resize(_indexedElements->size());
-        _initialTransformation.resize(_indexedElements->size());
-        unsigned int i=0;
-        typename VecElement::const_iterator it;
-        for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
-        {
-            Index a = (*it)[0];
-            Index b = (*it)[1];
-            Index c = (*it)[2];
-            Index d = (*it)[3];
-            computeMaterialStiffness(i,a,b,c,d);
-            initSVD(i,a,b,c,d);
-        }
-        break;
-    }
+        typename TetrahedronFEMForceFieldImpl<DataTypes>::FiniteElementArrays fem;
+        fem.elements = _indexedElements;
+        fem.initialPoints = &_initialPoints.getValue();
+        fem.positions = &p;
+        fem.strainDisplacements = &strainDisplacements;
+        fem.plasticStrains = &_plasticStrains;
+        fem.materialsStiffnesses = &materialsStiffnesses;
+        fem.stiffnesses = &_stiffnesses;
+
+        m_impl->m_assemble = _assembling.getValue();
+
+        m_impl->init(fem);
     }
 
     if ( isComputeVonMisesStressMethodSet() )
@@ -1626,7 +727,8 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
         helper::ReadAccessor<Data<VecCoord> > X0 =  _initialPoints;
 
         elemShapeFun.resize(_indexedElements->size());
-        for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
+        i = 0;
+        for(auto it = _indexedElements->begin(); it != _indexedElements->end() ; ++it, ++i)
         {
             Mat44 matVert;
 
@@ -1652,7 +754,6 @@ inline void TetrahedronFEMForceField<DataTypes>::addForce (const core::Mechanica
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& p = d_x.getValue();
 
-
     f.resize(p.size());
 
     if (needUpdateTopology)
@@ -1661,44 +762,22 @@ inline void TetrahedronFEMForceField<DataTypes>::addForce (const core::Mechanica
         needUpdateTopology = false;
     }
 
-    unsigned int i;
-    typename VecElement::const_iterator it;
-    switch(method)
+    if (m_impl)
     {
-    case SMALL :
-    {
-        for(it=_indexedElements->begin(), i = 0 ; it!=_indexedElements->end(); ++it,++i)
-        {
-            accumulateForceSmall( f, p, it, i );
-        }
-        break;
-    }
-    case LARGE :
-    {
-        for(it=_indexedElements->begin(), i = 0 ; it!=_indexedElements->end(); ++it,++i)
-        {
+        typename TetrahedronFEMForceFieldImpl<DataTypes>::FiniteElementArrays fem;
+        fem.elements = _indexedElements;
+        fem.initialPoints = &_initialPoints.getValue();
+        fem.positions = &p;
+        fem.force = &f;
+        fem.strainDisplacements = &strainDisplacements;
+        fem.plasticStrains = &_plasticStrains;
+        fem.materialsStiffnesses = &materialsStiffnesses;
+        fem.stiffnesses = &_stiffnesses;
 
-            accumulateForceLarge( f, p, it, i );
-        }
-        break;
+        m_impl->m_assemble = _assembling.getValue();
+        m_impl->addForce(fem);
     }
-    case POLAR :
-    {
-        for(it=_indexedElements->begin(), i = 0 ; it!=_indexedElements->end(); ++it,++i)
-        {
-            accumulateForcePolar( f, p, it, i );
-        }
-        break;
-    }
-    case SVD :
-    {
-        for(it=_indexedElements->begin(), i = 0 ; it!=_indexedElements->end(); ++it,++i)
-        {
-            accumulateForceSVD( f, p, it, i );
-        }
-        break;
-    }
-    }
+
     d_f.endEdit();
 
     updateVonMisesStress = true;
@@ -1707,40 +786,31 @@ inline void TetrahedronFEMForceField<DataTypes>::addForce (const core::Mechanica
 template<class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
-    VecDeriv& df = *d_df.beginEdit();
-    const VecDeriv& dx = d_dx.getValue();
-    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-
-    df.resize(dx.size());
-    unsigned int i;
-    typename VecElement::const_iterator it;
-
-    if( method == SMALL )
+    if (m_impl)
     {
-        for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
-        {
-            Index a = (*it)[0];
-            Index b = (*it)[1];
-            Index c = (*it)[2];
-            Index d = (*it)[3];
+        VecDeriv& df = *d_df.beginEdit();
+        const VecDeriv& dx = d_dx.getValue();
 
-            applyStiffnessSmall( df,dx, i, a,b,c,d, kFactor );
-        }
-    }
-    else
-    {
-        for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
-        {
-            Index a = (*it)[0];
-            Index b = (*it)[1];
-            Index c = (*it)[2];
-            Index d = (*it)[3];
+        const Real kFactor = static_cast<Real>(sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(
+            mparams, this->rayleighStiffness.getValue()));
 
-            applyStiffnessCorotational( df,dx, i, a,b,c,d, kFactor );
-        }
+        df.resize(dx.size());
+
+        typename TetrahedronFEMForceFieldImpl<DataTypes>::FiniteElementArrays fem;
+        fem.elements = _indexedElements;
+        fem.initialPoints = &_initialPoints.getValue();
+        fem.dx = &dx;
+        fem.dForce = &df;
+        fem.strainDisplacements = &strainDisplacements;
+        fem.plasticStrains = &_plasticStrains;
+        fem.materialsStiffnesses = &materialsStiffnesses;
+        fem.stiffnesses = &_stiffnesses;
+
+        m_impl->addDForce(fem, kFactor);
+
+        d_df.endEdit();
     }
 
-    d_df.endEdit();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -1990,10 +1060,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::Base
 
     for(auto it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it,++IT)
     {
-        if (method == SMALL)
-            computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],Rot);
-        else
-            computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT],rotations[IT]);
+        computeStiffnessMatrix(JKJt,tmp,materialsStiffnesses[IT], strainDisplacements[IT], m_impl->getRotation(IT));
 
         type::Mat<S, S, double> tmpBlock[4][4];
         for (sofa::Index n1=0; n1 < N; n1++)
@@ -2202,6 +1269,8 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
     for (Index i = 0; i < X0.size(); i++)
         U[i] = X[i] - X0[i];
 
+    rotations.resize(_indexedElements->size());
+
     typename VecElement::const_iterator it;
     Index el;
     helper::WriteAccessor<Data<type::vector<Real> > > vME =  _vonMisesPerElement;
@@ -2237,64 +1306,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 
             // Rotation matrix (deformed and displaced Tetrahedron/world)
             Transformation R_0_2;
-            Displacement D;
-            if (method == LARGE) {
-                computeRotationLarge( R_0_2, X, index[0],index[1],index[2]);
-                rotations[elementIndex].transpose(R_0_2);
-
-                // positions of the deformed and displaced Tetrahedron in its frame
-                type::fixed_array<Coord,4> deforme;
-                for(int i=0; i<4; ++i)
-                    deforme[i] = R_0_2*X[index[i]];
-
-                deforme[1][0] -= deforme[0][0];
-                deforme[2][0] -= deforme[0][0];
-                deforme[2][1] -= deforme[0][1];
-                deforme[3] -= deforme[0];
-
-                // displacement
-                D[0] = 0;
-                D[1] = 0;
-                D[2] = 0;
-                D[3] = _rotatedInitialElements[elementIndex][1][0] - deforme[1][0];
-                D[4] = 0;
-                D[5] = 0;
-                D[6] = _rotatedInitialElements[elementIndex][2][0] - deforme[2][0];
-                D[7] = _rotatedInitialElements[elementIndex][2][1] - deforme[2][1];
-                D[8] = 0;
-                D[9] = _rotatedInitialElements[elementIndex][3][0] - deforme[3][0];
-                D[10] = _rotatedInitialElements[elementIndex][3][1] - deforme[3][1];
-                D[11] =_rotatedInitialElements[elementIndex][3][2] - deforme[3][2];
-            }
-            else // POLAR / SVD
-            {
-                Transformation A;
-                A[0] = X[index[1]]-X[index[0]];
-                A[1] = X[index[2]]-X[index[0]];
-                A[2] = X[index[3]]-X[index[0]];
-
-                helper::Decompose<Real>::polarDecomposition( A, R_0_2 );
-
-                rotations[elementIndex].transpose(R_0_2);
-
-                // positions of the deformed and displaced Tetrahedron in its frame
-                type::fixed_array<Coord,4> deforme;
-                for(int i=0; i<4; ++i)
-                    deforme[i] = R_0_2*X[index[i]];
-
-                D[0] = _rotatedInitialElements[elementIndex][0][0] - deforme[0][0];
-                D[1] = _rotatedInitialElements[elementIndex][0][1] - deforme[0][1];
-                D[2] = _rotatedInitialElements[elementIndex][0][2] - deforme[0][2];
-                D[3] = _rotatedInitialElements[elementIndex][1][0] - deforme[1][0];
-                D[4] = _rotatedInitialElements[elementIndex][1][1] - deforme[1][1];
-                D[5] = _rotatedInitialElements[elementIndex][1][2] - deforme[1][2];
-                D[6] = _rotatedInitialElements[elementIndex][2][0] - deforme[2][0];
-                D[7] = _rotatedInitialElements[elementIndex][2][1] - deforme[2][1];
-                D[8] = _rotatedInitialElements[elementIndex][2][2] - deforme[2][2];
-                D[9] = _rotatedInitialElements[elementIndex][3][0] - deforme[3][0];
-                D[10] = _rotatedInitialElements[elementIndex][3][1] - deforme[3][1];
-                D[11] = _rotatedInitialElements[elementIndex][3][2] - deforme[3][2];
-            }
+            const Displacement D = m_impl->getDisplacement(X, index, elementIndex);
 
             Mat44& shf = elemShapeFun[el];
 
