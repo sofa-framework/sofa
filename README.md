@@ -49,7 +49,6 @@ See [Authors.txt](https://github.com/sofa-framework/sofa/blob/master/Authors.txt
 SOFA is LGPL, except:
 - applications/projects (GPL)
 - applications/tutorials (GPL)
-- applications/plugins/OptiTrackNatNet (GPL)
 - applications/plugins/Registration (QPL)
 - sub-directories with a license file specifying a different license
 
