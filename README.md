@@ -50,7 +50,6 @@ SOFA is LGPL, except:
 - applications/projects (GPL)
 - applications/tutorials (GPL)
 - applications/plugins/OptiTrackNatNet (GPL)
-- applications/plugins/Registration (QPL)
 - sub-directories with a license file specifying a different license
 
 LGPL refers to the GNU Lesser General Public License as published by the Free Software
