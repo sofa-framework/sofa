@@ -26,6 +26,7 @@
 #include <sofa/helper/io/Image.h>
 #include <string>
 #include <vector>
+#include <array>
 
 namespace sofa::helper::io
 {
@@ -34,8 +35,26 @@ class SOFA_HELPER_API STBImageCreators
 {
     std::vector<std::shared_ptr<sofa::helper::io::Image::FactoryImage::Creator> > creators;
 public:
-    static const std::vector<std::string> stbSupportedExtensions;
-    static const std::vector<std::string> stbWriteSupportedExtensions;
+    inline static constexpr std::array<const char*, 8> stbSupportedExtensions
+    {
+        "png",
+        "jpg",
+        "jpeg",
+        "bmp",
+        "tga",
+        "gif",
+        "psd",
+        "pnm"
+    };
+
+    inline static constexpr std::array<const char*, 5> stbWriteSupportedExtensions
+    {
+        "png",
+        "jpg",
+        "jpeg",
+        "bmp",
+        "tga"
+    };
 
     STBImageCreators();
 
@@ -46,16 +65,18 @@ class SOFA_HELPER_API STBImage : public Image
 public:
     STBImage() = default;
 
-    STBImage(const std::string &filename)
+    explicit STBImage(const std::string &filename)
     {
-        if(!filename.empty())
+        if (!filename.empty())
+        {
             load(filename);
+        }
     }
 
     static void setSTBCreators();
 
-    bool load(std::string filename);
-    bool save(std::string filename, int compression_level = -1);
+    bool load(std::string filename) override;
+    bool save(std::string filename, int compression_level = -1) override;
 };
 
 } // namespace sofa::helper::io

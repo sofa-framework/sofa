@@ -33,25 +33,6 @@
 namespace sofa::helper::io
 {
 
-const std::vector<std::string> STBImageCreators::stbSupportedExtensions {
-    "png",
-    "jpg",
-    "jpeg",
-    "bmp",
-    "tga",
-    "gif",
-    "psd",
-    "pnm"
-};
-
-const std::vector<std::string> STBImageCreators::stbWriteSupportedExtensions{
-    "png",
-    "jpg",
-    "jpeg",
-    "bmp",
-    "tga"
-};
-
 STBImageCreators::STBImageCreators()
 {
     using ImageFactoryCreator = Creator<helper::io::Image::FactoryImage, STBImage>;
