@@ -32,7 +32,7 @@ namespace sofa::helper::io
 
 class SOFA_HELPER_API STBImageCreators
 {
-    std::vector<sofa::helper::io::Image::FactoryImage::Creator*> creators;
+    std::vector<std::shared_ptr<sofa::helper::io::Image::FactoryImage::Creator> > creators;
 public:
     static const std::vector<std::string> stbSupportedExtensions;
     static const std::vector<std::string> stbWriteSupportedExtensions;

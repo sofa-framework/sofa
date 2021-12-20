@@ -54,11 +54,12 @@ const std::vector<std::string> STBImageCreators::stbWriteSupportedExtensions{
 
 STBImageCreators::STBImageCreators()
 {
+    using ImageFactoryCreator = Creator<helper::io::Image::FactoryImage, STBImage>;
     for(const auto& ext : stbSupportedExtensions)
     {
         if (!sofa::helper::io::Image::FactoryImage::HasKey(ext))
         {
-            creators.push_back(new Creator<helper::io::Image::FactoryImage, STBImage>(ext));
+            creators.push_back(std::make_shared<ImageFactoryCreator>(ext));
         }
     }
 
