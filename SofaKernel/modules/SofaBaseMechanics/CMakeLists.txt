@@ -19,6 +19,8 @@ set(HEADER_FILES
     ${SOFABASEMECHANICS_SRC}/MechanicalObject.inl
     ${SOFABASEMECHANICS_SRC}/SubsetMapping.h
     ${SOFABASEMECHANICS_SRC}/SubsetMapping.inl
+    ${SOFABASEMECHANICS_SRC}/SubsetMultiMapping.h
+    ${SOFABASEMECHANICS_SRC}/SubsetMultiMapping.inl
     ${SOFABASEMECHANICS_SRC}/UniformMass.h
     ${SOFABASEMECHANICS_SRC}/UniformMass.inl
     ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapper.h
@@ -53,6 +55,7 @@ set(SOURCE_FILES
     ${SOFABASEMECHANICS_SRC}/MappedObject.cpp
     ${SOFABASEMECHANICS_SRC}/MechanicalObject.cpp
     ${SOFABASEMECHANICS_SRC}/SubsetMapping.cpp
+    ${SOFABASEMECHANICS_SRC}/SubsetMultiMapping.cpp
     ${SOFABASEMECHANICS_SRC}/UniformMass.cpp
     ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapper.cpp
     ${SOFABASEMECHANICS_SRC}/BarycentricMappers/TopologyBarycentricMapper.cpp

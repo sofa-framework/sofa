@@ -54,7 +54,6 @@ list(APPEND SOURCE_FILES
     ${SOFAMISCMAPPING_SRC}/IdentityMultiMapping.cpp
     ${SOFAMISCMAPPING_SRC}/SquareDistanceMapping.cpp
     ${SOFAMISCMAPPING_SRC}/SquareMapping.cpp
-    ${SOFAMISCMAPPING_SRC}/SubsetMultiMapping.cpp
     ${SOFAMISCMAPPING_SRC}/TubularMapping.cpp
     ${SOFAMISCMAPPING_SRC}/VoidMapping.cpp
     )

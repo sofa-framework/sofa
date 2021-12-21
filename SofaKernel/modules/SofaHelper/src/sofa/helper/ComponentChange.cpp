@@ -681,6 +681,7 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
 
     // MOVED SINCE v22.06
     { "GlobalSystemMatrixExporter", Moved("v22.06", "SofaBaseLinearSolver", "SofaMatrix") },
+    { "SubsetMultiMapping", Moved("v22.06", "SofaMiscMapping", "SofaBaseMechanics") },
 
 };
 

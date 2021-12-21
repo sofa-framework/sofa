@@ -34,9 +34,11 @@ set(SOURCE_FILES
 )
 
 sofa_find_package(SofaBaseTopology REQUIRED)
+sofa_find_package(SofaSimulationGraph REQUIRED)
+sofa_find_package(SofaBaseMechanics REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaSimulationGraph SofaBaseMechanics)
 
 if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Silence attribute warnings (for example, ignored already defined external template)
