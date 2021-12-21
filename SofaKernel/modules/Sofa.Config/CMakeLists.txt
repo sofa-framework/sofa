@@ -198,12 +198,12 @@ if(WIN32)
 
     # Experimental: compilation with MSVC/Clang-cl
     if(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
-        if( ${CMAKE_CXX_COMPILER_FRONTEND_VARIANT} STREQUAL MSVC) #something weird happen if we put the two test in one if ??
+        if( ${CMAKE_CXX_COMPILER_FRONTEND_VARIANT} STREQUAL MSVC) # something weird happens if we put the two test in one if ??
             message(WARNING "Experimental: you are trying to compile with MSVC and the clang-cl toolchain; this is not officially supported.")
-            # remove lots of warnings
-            list(APPEND SOFACONFIG_COMPILE_OPTIONS "-Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-double-promotion -Wno-old-style-cast -Wno-reserved-id-macro -Wno-language-extension-token -Wno-dllexport-explicit-instantiation-decl -Wno-nonportable-system-include-path")
+            # remove lots of warnings (the Wall of "normal" clang seems different of Wall of clang-cl)
+            list(APPEND SOFACONFIG_COMPILE_OPTIONS -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-double-promotion -Wno-old-style-cast -Wno-reserved-id-macro -Wno-language-extension-token -Wno-dllexport-explicit-instantiation-decl -Wno-nonportable-system-include-path -Wno-zero-as-null-pointer-constant -Wno-documentation)
             # optimization flags (not sure if necessary..)
-            list(APPEND SOFACONFIG_COMPILE_OPTIONS_RELEASE "/fp:fast -march=native")
+            list(APPEND SOFACONFIG_COMPILE_OPTIONS_RELEASE /fp:fast -march=native)
         endif()
     endif()
 endif()
