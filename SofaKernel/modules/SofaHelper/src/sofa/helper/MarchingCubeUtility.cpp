@@ -739,7 +739,7 @@ void MarchingCubeUtility::run ( unsigned char *data, const float isolevel,
     using sofa::type::Vector3;
 
     msg_info() << "Creating Mesh using Marching Cubes\n";
-    vector<Vector3> &vertices                 = m.getVertices();
+    auto &vertices                 = m.getVertices();
     auto &facets = m.getFacets();
 
     vector< PointID >       triangles;

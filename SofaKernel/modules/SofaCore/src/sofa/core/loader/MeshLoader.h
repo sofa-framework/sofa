@@ -37,12 +37,13 @@ namespace sofa::core::loader
 {
 
 using sofa::type::PrimitiveGroup;
-using sofa::type::Vec3;
 using topology::Topology;
 
 class SOFA_CORE_API MeshLoader : public BaseLoader
 {
 public:
+    using Vec3 = sofa::type::Vec<3, SReal>;
+
     SOFA_ABSTRACT_CLASS(MeshLoader, BaseLoader);
 
     typedef topology::Topology::Edge Edge;
