@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.01" gravity="0 -9 0">
+    <RequiredPlugin name="SofaImplicitOdeSolver"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="SofaOpenglVisual"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI, FixedConstraint, IdentityMapping, MechanicalObject, MeshSpringForceField, UniformMass] -->
+    <RequiredPlugin name="SofaTopologyMapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping] -->    
+    <RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="SofaDeformable"/> <!-- Needed to use components [MeshSpringForceField] -->
+    <RequiredPlugin name="SofaEngine"/> <!-- Needed to use components [BoxROI] -->
+
+    <VisualStyle displayFlags="showBehaviorModels" />
+    
+    <DefaultAnimationLoop/>
+	<DefaultVisualManagerLoop/>
+	<DefaultPipeline depth="6" verbose="0" draw="0"/>
+	<BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+	<MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.3" />
+	<DefaultContactManager name="Response" response="default" />
+    
+    <Node name="Beam">
+        <RegularGridTopology name="grid"
+			nx="10" ny="10" nz="50"
+			xmin="-1.5" xmax="1.5"
+			ymin="0" ymax="3"
+			zmin="0" zmax="15"
+		/>
+        
+        <TetrahedronSetTopologyContainer name="tetraTopo" />
+		<TetrahedronSetTopologyModifier/>
+		<Hexa2TetraTopologicalMapping input="@grid" output="@tetraTopo" />
+    </Node>
+    
+    <Node name="MeshSpringGPU">
+        <EulerImplicitSolver name="cg_odesolver"  printLog="0" />
+        <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25"  tolerance="1e-08"  threshold="1e-08" />
+                
+        <MeshTopology name="topo" src="@../Beam/tetraTopo" />
+        <MechanicalObject name="dofs" position="@../Beam/grid.position" template="CudaVec3f"/>
+		<UniformMass totalMass="100" />
+        <BoxConstraint box="-1.6 -0.1 -0.1 1.6 3.1 0.1" />
+        
+        <MeshSpringForceField name="Springs" tetrasStiffness="2000" tetrasDamping="0" template="CudaVec3f"/>
+       
+        <Node name="MeshVisu">
+			<OglModel name="Visual" topology="@../topo" position="@../dofs.position" color="green"/>
+			<IdentityMapping input="@../dofs" output="@Visual" />
+		</Node>
+    </Node>    
+</Node>
