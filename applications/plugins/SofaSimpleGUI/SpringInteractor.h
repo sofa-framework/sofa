@@ -25,6 +25,9 @@ class SOFA_SOFASIMPLEGUI_API SpringInteractor: public Interactor
 protected:
     MechanicalObject3::SPtr _interactorDof;
     StiffSpringForceField3::SPtr _spring;
+    simulation::Node::SPtr m_node;
+    sofa::component::container::MechanicalObject<Vec3Types>::SPtr m_mstate;
+    component::mapping::SubsetMultiMapping<Vec3Types, Vec3Types>::SPtr m_subsetMapping;
 public:
     /**
      * @brief SpringInteractor
