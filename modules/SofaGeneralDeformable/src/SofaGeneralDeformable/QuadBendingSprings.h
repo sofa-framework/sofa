@@ -59,9 +59,6 @@ public:
 
     void draw(const core::visual::VisualParams*) override {}
 
-    void setObject1(MechanicalState* object1) {this->mstate1=object1;}
-    void setObject2(MechanicalState* object2) {this->mstate2=object2;}
-
 protected:
     typedef std::pair<unsigned,unsigned> IndexPair;
     void addSpring( unsigned, unsigned, std::set<IndexPair>& );

@@ -34,13 +34,13 @@ namespace sofa::component::interactionforcefield
 
 template<class DataTypes>
 SpringForceField<DataTypes>::SpringForceField(SReal _ks, SReal _kd)
-    : SpringForceField(nullptr, nullptr, _ks, _kd)
+    : SpringForceField(nullptr, _ks, _kd)
 {
 }
 
 template<class DataTypes>
-SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, MechanicalState* mstate2, SReal _ks, SReal _kd)
-    : Inherit(mstate1, mstate2)
+SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate, SReal _ks, SReal _kd)
+    : Inherit(mstate)
     , ks(initData(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
     , kd(initData(&kd,_kd,"damping","uniform damping for the all springs"))
     , showArrowSize(initData(&showArrowSize,0.01f,"showArrowSize","size of the axis"))
@@ -98,6 +98,52 @@ void SpringForceField<DataTypes>::init()
     this->Inherit::init();
 }
 
+template <class DataTypes>
+void SpringForceField<DataTypes>::addForce(const core::MechanicalParams*, DataVecDeriv& f, const DataVecCoord& x,
+    const DataVecDeriv& v)
+{
+    VecDeriv& _f = *sofa::helper::getWriteAccessor(f);
+    auto _x = sofa::helper::getReadAccessor(x);
+    auto _v = sofa::helper::getReadAccessor(v);
+
+    const type::vector<Spring>& springs= this->springs.getValue();
+
+    _f.resize(_x.size());
+    this->m_potentialEnergy = 0;
+    for (unsigned int i=0; i<this->springs.getValue().size(); i++)
+    {
+        this->addSpringForce(this->m_potentialEnergy,_f,_x,_v,_f,_x,_v, i, springs[i]);
+    }
+}
+
+template <class DataTypes>
+void SpringForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df,
+    const DataVecDeriv& dx)
+{
+    msg_error() << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead.";
+}
+
+template <class DataTypes>
+SReal SpringForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& x) const
+{
+    const type::vector<Spring>& springs= this->springs.getValue();
+    auto _x = sofa::helper::getReadAccessor(x);
+
+    SReal ener = 0;
+
+    for (sofa::Index i=0; i<springs.size(); i++)
+    {
+        sofa::Index a = springs[i].m1;
+        sofa::Index b = springs[i].m2;
+        Coord u = _x[b] - _x[a];
+        Real d = u.norm();
+        Real elongation = (Real)(d - springs[i].initpos);
+        ener += elongation * elongation * springs[i].ks /2;
+    }
+
+    return ener;
+}
+
 template<class DataTypes>
 void SpringForceField<DataTypes>::addSpringForce(Real& ener, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, sofa::Index /*i*/, const Spring& spring)
 {
@@ -121,64 +167,6 @@ void SpringForceField<DataTypes>::addSpringForce(Real& ener, VecDeriv& f1, const
 }
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::addForce(
-    const core::MechanicalParams* /* mparams */, DataVecDeriv& data_f1, DataVecDeriv& data_f2,
-    const DataVecCoord& data_x1, const DataVecCoord& data_x2,
-    const DataVecDeriv& data_v1, const DataVecDeriv& data_v2)
-{
-
-    VecDeriv&       f1 = *data_f1.beginEdit();
-    const VecCoord& x1 = data_x1.getValue();
-    const VecDeriv& v1 = data_v1.getValue();
-    VecDeriv&       f2 = *data_f2.beginEdit();
-    const VecCoord& x2 = data_x2.getValue();
-    const VecDeriv& v2 = data_v2.getValue();
-
-
-    const type::vector<Spring>& springs= this->springs.getValue();
-
-    f1.resize(x1.size());
-    f2.resize(x2.size());
-    this->m_potentialEnergy = 0;
-    for (unsigned int i=0; i<this->springs.getValue().size(); i++)
-    {
-        this->addSpringForce(this->m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
-    }
-    data_f1.endEdit();
-    data_f2.endEdit();
-}
-
-template<class DataTypes>
-void SpringForceField<DataTypes>::addDForce(const core::MechanicalParams*, DataVecDeriv&, DataVecDeriv&, const DataVecDeriv&, const DataVecDeriv& )
-{
-    msg_error() << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead.";
-}
-
-
-template<class DataTypes>
-SReal SpringForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& data_x1, const DataVecCoord& data_x2) const
-{
-    const type::vector<Spring>& springs= this->springs.getValue();
-    const VecCoord& p1 =  data_x1.getValue();
-    const VecCoord& p2 =  data_x2.getValue();
-
-    SReal ener = 0;
-
-    for (sofa::Index i=0; i<springs.size(); i++)
-    {
-        sofa::Index a = springs[i].m1;
-        sofa::Index b = springs[i].m2;
-        Coord u = p2[b]-p1[a];
-        Real d = u.norm();
-        Real elongation = (Real)(d - springs[i].initpos);
-        ener += elongation * elongation * springs[i].ks /2;
-    }
-
-    return ener;
-}
-
-
-template<class DataTypes>
 void SpringForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix *, SReal, unsigned int &)
 {
     msg_error() << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead.";
@@ -192,46 +180,33 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
     using namespace sofa::defaulttype;
     using namespace sofa::type;
 
-    if (!((this->mstate1 == this->mstate2) ? vparams->displayFlags().getShowForceFields() : vparams->displayFlags().getShowInteractionForceFields())) return;
-    const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+    if (this->d_componentState.getValue() ==core::objectmodel::ComponentState::Invalid)
+        return ;
+    if (!this->mstate)
+        return;
+    if (!vparams->displayFlags().getShowForceFields())
+        return;
+    const VecCoord& p = this->getMState()->read(core::ConstVecCoordId::position())->getValue();
 
     std::vector< Vector3 > points[4];
-    bool external = (this->mstate1 != this->mstate2);
     const type::vector<Spring>& springs = this->springs.getValue();
     for (sofa::Index i = 0; i < springs.size(); i++)
     {
         if (!springs[i].enabled) continue;
-        Real d = (p2[springs[i].m2] - p1[springs[i].m1]).norm();
+        Real d = (p[springs[i].m2] - p[springs[i].m1]).norm();
         Vector3 point2, point1;
-        point1 = DataTypes::getCPos(p1[springs[i].m1]);
-        point2 = DataTypes::getCPos(p2[springs[i].m2]);
+        point1 = DataTypes::getCPos(p[springs[i].m1]);
+        point2 = DataTypes::getCPos(p[springs[i].m2]);
 
-        if (external)
+        if (d < springs[i].initpos * 0.9999)
         {
-            if (d < springs[i].initpos * 0.9999)
-            {
-                points[0].push_back(point1);
-                points[0].push_back(point2);
-            }
-            else
-            {
-                points[1].push_back(point1);
-                points[1].push_back(point2);
-            }
+            points[2].push_back(point1);
+            points[2].push_back(point2);
         }
         else
         {
-            if (d < springs[i].initpos * 0.9999)
-            {
-                points[2].push_back(point1);
-                points[2].push_back(point2);
-            }
-            else
-            {
-                points[3].push_back(point1);
-                points[3].push_back(point2);
-            }
+            points[3].push_back(point1);
+            points[3].push_back(point2);
         }
     }
     const RGBAColor c0 = RGBAColor::red();
@@ -280,116 +255,7 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
 template<class DataTypes>
 void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology *topo)
 {
-    if(this->mstate1->getContext()->getTopology() == topo)
-    {
-        core::topology::BaseMeshTopology*	_topology = topo->toBaseMeshTopology();
-
-        if(_topology != nullptr)
-        {
-            std::list<const core::topology::TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-            std::list<const core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
-
-            while( itBegin != itEnd )
-            {
-                core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
-
-                switch( changeType )
-                {
-                case core::topology::POINTSREMOVED:
-                {
-
-                    break;
-                }
-
-                default:
-                    break;
-                } // switch( changeType )
-
-                ++itBegin;
-            } // while( changeIt != last; )
-        }
-    }
-
-    if(this->mstate2->getContext()->getTopology() == topo)
-    {
-        core::topology::BaseMeshTopology*	_topology = topo->toBaseMeshTopology();
-
-        if(_topology != nullptr)
-        {
-            std::list<const core::topology::TopologyChange *>::const_iterator changeIt=_topology->beginChange();
-            std::list<const core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
-
-            while( changeIt != itEnd )
-            {
-                core::topology::TopologyChangeType changeType = (*changeIt)->getChangeType();
-
-                switch( changeType )
-                {
-                case core::topology::POINTSREMOVED:
-                {
-                    auto nbPoints = _topology->getNbPoints();
-                    const auto& tab = (static_cast<const sofa::core::topology::PointsRemoved *>(*changeIt))->getArray();
-
-                    type::vector<Spring>& springs = *this->springs.beginEdit();
-                    // springs.push_back(Spring(m1,m2,ks,kd,initpos));
-
-                    for(sofa::Index i=0; i<tab.size(); ++i)
-                    {
-                        sofa::Index pntId = tab[i];
-                        nbPoints -= 1;
-
-                        for(sofa::Index j=0; j<springs.size(); ++j)
-                        {
-                            Spring& spring = springs[j];
-                            if(spring.m2 == pntId)
-                            {
-                                spring = springs[springs.size() - 1];
-                                springs.resize(springs.size() - 1);
-                            }
-
-                            if(spring.m2 == nbPoints)
-                            {
-                                spring.m2 = pntId;
-                            }
-                        }
-                    }
-
-                    this->springs.endEdit();
-
-                    break;
-                }
-
-                default:
-                    break;
-                } // switch( changeType )
-
-                ++changeIt;
-            } // while( changeIt != last; )
-        }
-    }
-}
-
-template<class DataTypes>
-void SpringForceField<DataTypes>::initGnuplot(const std::string path)
-{
-    if (!this->getName().empty())
-    {
-        if (m_gnuplotFileEnergy != nullptr)
-        {
-            m_gnuplotFileEnergy->close();
-            delete m_gnuplotFileEnergy;
-        }
-        m_gnuplotFileEnergy = new std::ofstream( (path+this->getName()+"_PotentialEnergy.txt").c_str() );
-    }
-}
-
-template<class DataTypes>
-void SpringForceField<DataTypes>::exportGnuplot(SReal time)
-{
-    if (m_gnuplotFileEnergy!=nullptr)
-    {
-        (*m_gnuplotFileEnergy) << time <<"\t"<< this->m_potentialEnergy << std::endl;
-    }
+    //TODO
 }
 
 } // namespace sofa::component::interactionforcefield

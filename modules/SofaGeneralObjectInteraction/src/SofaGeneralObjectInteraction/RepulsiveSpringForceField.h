@@ -49,8 +49,8 @@ public:
     enum { N = Inherit::N };
 
 protected:
-    RepulsiveSpringForceField(core::behavior::MechanicalState<DataTypes>* object1, core::behavior::MechanicalState<DataTypes>* object2)
-        : sofa::component::interactionforcefield::StiffSpringForceField<DataTypes>(object1, object2)
+    RepulsiveSpringForceField(core::behavior::MechanicalState<DataTypes>* mstate)
+        : sofa::component::interactionforcefield::StiffSpringForceField<DataTypes>(mstate)
     {
     }
 
@@ -59,9 +59,9 @@ protected:
     }
 
 public:
-    void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 ) override;
+    void addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
-    SReal getPotentialEnergy(const sofa::core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const override;
+    SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const override;
 };
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_CPP)

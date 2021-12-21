@@ -433,26 +433,29 @@ simulation::Node::SPtr Elasticity_test<DataTypes>::createMassSpringSystem(
     fixed->addConstraint(0);      // attach particle
 
 
-// Mass
-simulation::Node::SPtr massNode = root->createChild("MassNode");
-MechanicalObject3::SPtr massDof = modeling::addNew<MechanicalObject3>(massNode,"massNode");
+    // Mass
+    simulation::Node::SPtr massNode = root->createChild("MassNode");
+    MechanicalObject3::SPtr massDof = modeling::addNew<MechanicalObject3>(massNode,"massNode");
 
-// Set position and velocity
-FixedPoint->resize(1);
-MechanicalObject3::WriteVecCoord xMassDof = massDof->writePositions();
-copyToData( xMassDof, xMass );
-MechanicalObject3::WriteVecDeriv vMassDof = massDof->writeVelocities();
-copyToData( vMassDof, vMass );
+    // Set position and velocity
+    FixedPoint->resize(1);
+    MechanicalObject3::WriteVecCoord xMassDof = massDof->writePositions();
+    copyToData( xMassDof, xMass );
+    MechanicalObject3::WriteVecDeriv vMassDof = massDof->writeVelocities();
+    copyToData( vMassDof, vMass );
 
-UniformMass3::SPtr massPtr = modeling::addNew<UniformMass3>(massNode,"mass");
-massPtr->d_totalMass.setValue( mass );
+    UniformMass3::SPtr massPtr = modeling::addNew<UniformMass3>(massNode,"mass");
+    massPtr->d_totalMass.setValue( mass );
 
-// attach a spring
-StiffSpringForceField3::SPtr spring = core::objectmodel::New<StiffSpringForceField3>(FixedPoint.get(), massDof.get());
-root->addObject(spring);
-spring->addSpring(0,0,stiffness ,0, restLength);
+    // attach a spring
+    sofa::component::interactionforcefield::CreateSpringBetweenObjects<StiffSpringForceField3>(
+        root.get(),
+        FixedPoint.get(),
+        massDof.get(),
+        {component::interactionforcefield::LinearSpring<typename DataTypes::Real>{0, 0, stiffness, 0., restLength} }
+    );
 
-return root;
+    return root;
 
 }
 

@@ -146,8 +146,13 @@ struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceFiel
 
         // replace the spring with another one, between the parent and the child
         this->node->removeObject(this->force);
-        typename Spring::SPtr spring = sofa::core::objectmodel::New<Spring>(this->dof.get(), childDof.get());
-        this->node->addObject(spring);
+
+        sofa::component::interactionforcefield::CreateSpringBetweenObjects<Spring>(
+            this->node.get(),
+            this->dof.get(),
+            childDof.get(),
+            {component::interactionforcefield::LinearSpring<Real>{0,0,stiffness,dampingRatio,restLength} }
+        );
 
         // set position and velocity vectors, using DataTypes::set to cope with tests in dimension 2
         VecCoord xp(1),xc(1);
@@ -168,10 +173,6 @@ struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceFiel
         typename DOF::WriteVecDeriv vdof = this->dof->writeVelocities(), vchildDof = childDof->writeVelocities();
         sofa::testing::copyToData( vdof, vp );
         sofa::testing::copyToData( vchildDof, vc );
-
-        // tune the force field
-        spring->addSpring(0,0,stiffness,dampingRatio,restLength);
-
 
         // and run the test
 

@@ -170,9 +170,12 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
         childMass->d_vertexMass.setValue( 1. );
 
         // attach a spring
-        StiffSpringForceField<Vec3Types>::SPtr spring = New<StiffSpringForceField<Vec3Types> >(DOF.get(), childDof.get());
-        root->addObject(spring);
-        spring->addSpring(0,0,  1000. ,0.1, 1.);
+        sofa::component::interactionforcefield::CreateSpringBetweenObjects<StiffSpringForceField<Vec3Types> >(
+            root.get(),
+            DOF.get(),
+            childDof.get(),
+            {component::interactionforcefield::LinearSpring<Vec3Types::Real>{0, 0, 1000, 0.1, 1.} }
+        );
 
         // set position and velocity vectors, using DataTypes::set to cope with tests in dimension 2
         MechanicalObject<Vec3Types>::VecCoord xp(1),xc(1);

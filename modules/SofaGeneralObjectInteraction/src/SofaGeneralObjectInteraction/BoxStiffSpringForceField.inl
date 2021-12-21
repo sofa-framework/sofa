@@ -32,8 +32,8 @@ namespace sofa::component::interactionforcefield
 {
 
 template <class DataTypes>
-BoxStiffSpringForceField<DataTypes>::BoxStiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks, double kd)
-    : StiffSpringForceField<DataTypes>(object1, object2, ks, kd),
+BoxStiffSpringForceField<DataTypes>::BoxStiffSpringForceField(MechanicalState* mstate, double ks, double kd)
+    : StiffSpringForceField<DataTypes>(mstate, ks, kd),
       box_object1( initData( &box_object1, Vec6(0,0,0,1,1,1), "box_object1", "Box for the object1 where springs will be attached") ),
       box_object2( initData( &box_object2, Vec6(0,0,0,1,1,1), "box_object2", "Box for the object2 where springs will be attached") ),
       factorRestLength( sofa::core::objectmodel::Base::initData( &factorRestLength, (SReal)1.0, "factorRestLength", "Factor used to compute the rest length of the springs generated")),
@@ -43,11 +43,7 @@ BoxStiffSpringForceField<DataTypes>::BoxStiffSpringForceField(MechanicalState* o
 
 template <class DataTypes>
 BoxStiffSpringForceField<DataTypes>::BoxStiffSpringForceField(double ks, double kd)
-    : StiffSpringForceField<DataTypes>(ks, kd),
-      box_object1( initData( &box_object1, Vec6(0,0,0,1,1,1), "box_object1", "Box for the object1 where springs will be attached") ),
-      box_object2( initData( &box_object2, Vec6(0,0,0,1,1,1), "box_object2", "Box for the object2 where springs will be attached") ),
-      factorRestLength( sofa::core::objectmodel::Base::initData( &factorRestLength, (SReal)1.0, "factorRestLength", "Factor used to compute the rest length of the springs generated")),
-	  forceOldBehavior(initData(&forceOldBehavior, true, "forceOldBehavior", "Keep using the old behavior"))
+    : BoxStiffSpringForceField<DataTypes>(nullptr, ks, kd)
 {
 }
 
@@ -66,93 +62,93 @@ template <class DataTypes>
 void BoxStiffSpringForceField<DataTypes>::bwdInit()
 {
     Inherit::bwdInit();
-    sofa::type::vector<Index> indices1;
-    Vec6& b1=*(box_object1.beginEdit());
-
-    if (b1[0] > b1[3]) std::swap(b1[0],b1[3]);
-    if (b1[1] > b1[4]) std::swap(b1[1],b1[4]);
-    if (b1[2] > b1[5]) std::swap(b1[2],b1[5]);
-    box_object1.endEdit();
-
-    this->mstate1->getIndicesInSpace( indices1, b1[0],b1[3],b1[1],b1[4],b1[2],b1[5] );
-
-    sofa::type::vector<Index> indices2;
-    Vec6& b2=*(box_object2.beginEdit());
-    if (b2[0] > b2[3]) std::swap(b2[0],b2[3]);
-    if (b2[1] > b2[4]) std::swap(b2[1],b2[4]);
-    if (b2[2] > b2[5]) std::swap(b2[2],b2[5]);
-    box_object2.endEdit();
-
-    this->mstate2->getIndicesInSpace( indices2, b2[0],b2[3],b2[1],b2[4],b2[2],b2[5] );
-
-
-    const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& x2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
-
-    //Attach springs using with priority the shortest distance between points
-    Real min_dist=0;
-    if (indices1.size() < indices2.size())
-    {
-        sofa::type::vector< std::map<Real, Index> > distance_spring(indices1.size());
-        for(unsigned int i = 0; i < indices1.size(); ++i)
-        {
-            for(unsigned int j = 0; j < indices2.size(); ++j)
-            {
-                distance_spring[i][(Real)sqrt((x1[indices1[i]] - x2[indices2[j]]).norm2())] = j;
-            }
-            if (i==0 || min_dist> distance_spring[i].begin()->first) min_dist = distance_spring[i].begin()->first;
-
-        }
-        sofa::type::vector< bool > indice_unused(indices2.size(),true);
-
-        for(unsigned int i = 0; i<indices1.size(); ++i)
-        {
-            auto it = distance_spring[i].begin();
-            for (; it!=distance_spring[i].end(); it++)
-            {
-                if (indice_unused[it->second])
-                {
-                    indice_unused[it->second] = false;
-					if(forceOldBehavior.getValue())
-						this->addSpring(indices1[i], indices2[it->second], this->getStiffness()*it->first/min_dist, this->getDamping(), it->first*factorRestLength.getValue() );
-					else
-						this->addSpring(indices1[i], indices2[it->second], this->getStiffness(), this->getDamping(), it->first*factorRestLength.getValue() );
-                    break;
-                }
-            }
-        }
-    }
-    else
-    {
-        sofa::type::vector< std::map<Real, Index> > distance_spring(indices2.size());
-        for(unsigned int i = 0; i < indices2.size(); ++i)
-        {
-            for(unsigned int j = 0; j < indices1.size(); ++j)
-            {
-                distance_spring[i][(Real)sqrt((x1[indices1[j]] - x2[indices2[i]]).norm2())] = j;
-            }
-
-            if (i==0 || min_dist> distance_spring[i].begin()->first) min_dist = distance_spring[i].begin()->first;
-        }
-        sofa::type::vector< bool > indice_unused(indices1.size(),true);
-
-        for(unsigned int i = 0; i<indices2.size(); ++i)
-        {
-            auto it = distance_spring[i].begin();
-            for (; it!=distance_spring[i].end(); it++)
-            {
-                if (indice_unused[it->second])
-                {
-                    indice_unused[it->second] = false;
-					if(forceOldBehavior.getValue())
-						this->addSpring(indices1[i], indices2[it->second], this->getStiffness()*it->first/min_dist, this->getDamping(), it->first*factorRestLength.getValue() );
-					else
-						this->addSpring( indices1[it->second], indices2[i], this->getStiffness(), this->getDamping(), it->first*factorRestLength.getValue() );
-                    break;
-                }
-            }
-        }
-    }
+    // sofa::type::vector<Index> indices1;
+    // Vec6& b1=*(box_object1.beginEdit());
+    //
+    // if (b1[0] > b1[3]) std::swap(b1[0],b1[3]);
+    // if (b1[1] > b1[4]) std::swap(b1[1],b1[4]);
+    // if (b1[2] > b1[5]) std::swap(b1[2],b1[5]);
+    // box_object1.endEdit();
+    //
+    // this->mstate1->getIndicesInSpace( indices1, b1[0],b1[3],b1[1],b1[4],b1[2],b1[5] );
+    //
+    // sofa::type::vector<Index> indices2;
+    // Vec6& b2=*(box_object2.beginEdit());
+    // if (b2[0] > b2[3]) std::swap(b2[0],b2[3]);
+    // if (b2[1] > b2[4]) std::swap(b2[1],b2[4]);
+    // if (b2[2] > b2[5]) std::swap(b2[2],b2[5]);
+    // box_object2.endEdit();
+    //
+    // this->mstate2->getIndicesInSpace( indices2, b2[0],b2[3],b2[1],b2[4],b2[2],b2[5] );
+    //
+    //
+    // const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
+    // const VecCoord& x2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+    //
+    // //Attach springs using with priority the shortest distance between points
+    // Real min_dist=0;
+    // if (indices1.size() < indices2.size())
+    // {
+    //     sofa::type::vector< std::map<Real, Index> > distance_spring(indices1.size());
+    //     for(unsigned int i = 0; i < indices1.size(); ++i)
+    //     {
+    //         for(unsigned int j = 0; j < indices2.size(); ++j)
+    //         {
+    //             distance_spring[i][(Real)sqrt((x1[indices1[i]] - x2[indices2[j]]).norm2())] = j;
+    //         }
+    //         if (i==0 || min_dist> distance_spring[i].begin()->first) min_dist = distance_spring[i].begin()->first;
+    //
+    //     }
+    //     sofa::type::vector< bool > indice_unused(indices2.size(),true);
+    //
+    //     for(unsigned int i = 0; i<indices1.size(); ++i)
+    //     {
+    //         auto it = distance_spring[i].begin();
+    //         for (; it!=distance_spring[i].end(); it++)
+    //         {
+    //             if (indice_unused[it->second])
+    //             {
+    //                 indice_unused[it->second] = false;
+				// 	if(forceOldBehavior.getValue())
+				// 		this->addSpring(indices1[i], indices2[it->second], this->getStiffness()*it->first/min_dist, this->getDamping(), it->first*factorRestLength.getValue() );
+				// 	else
+				// 		this->addSpring(indices1[i], indices2[it->second], this->getStiffness(), this->getDamping(), it->first*factorRestLength.getValue() );
+    //                 break;
+    //             }
+    //         }
+    //     }
+    // }
+    // else
+    // {
+    //     sofa::type::vector< std::map<Real, Index> > distance_spring(indices2.size());
+    //     for(unsigned int i = 0; i < indices2.size(); ++i)
+    //     {
+    //         for(unsigned int j = 0; j < indices1.size(); ++j)
+    //         {
+    //             distance_spring[i][(Real)sqrt((x1[indices1[j]] - x2[indices2[i]]).norm2())] = j;
+    //         }
+    //
+    //         if (i==0 || min_dist> distance_spring[i].begin()->first) min_dist = distance_spring[i].begin()->first;
+    //     }
+    //     sofa::type::vector< bool > indice_unused(indices1.size(),true);
+    //
+    //     for(unsigned int i = 0; i<indices2.size(); ++i)
+    //     {
+    //         auto it = distance_spring[i].begin();
+    //         for (; it!=distance_spring[i].end(); it++)
+    //         {
+    //             if (indice_unused[it->second])
+    //             {
+    //                 indice_unused[it->second] = false;
+				// 	if(forceOldBehavior.getValue())
+				// 		this->addSpring(indices1[i], indices2[it->second], this->getStiffness()*it->first/min_dist, this->getDamping(), it->first*factorRestLength.getValue() );
+				// 	else
+				// 		this->addSpring( indices1[it->second], indices2[i], this->getStiffness(), this->getDamping(), it->first*factorRestLength.getValue() );
+    //                 break;
+    //             }
+    //         }
+    //     }
+    // }
 }
 
 

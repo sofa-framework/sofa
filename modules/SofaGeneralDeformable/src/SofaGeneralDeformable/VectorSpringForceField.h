@@ -23,7 +23,7 @@
 
 #include <SofaGeneralDeformable/config.h>
 
-#include <SofaDeformable/SpringForceField.h>
+#include <sofa/core/behavior/PairInteractionForceField.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>

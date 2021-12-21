@@ -33,13 +33,13 @@ namespace sofa::component::interactionforcefield
 
 template<class DataTypes>
 StiffSpringForceField<DataTypes>::StiffSpringForceField(double ks, double kd)
-    : StiffSpringForceField<DataTypes>(nullptr, nullptr, ks, kd)
+    : StiffSpringForceField<DataTypes>(nullptr, ks, kd)
 {
 }
 
 template<class DataTypes>
-StiffSpringForceField<DataTypes>::StiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks, double kd)
-    : SpringForceField<DataTypes>(object1, object2, ks, kd)
+StiffSpringForceField<DataTypes>::StiffSpringForceField(MechanicalState* mstate, double ks, double kd)
+    : SpringForceField<DataTypes>(mstate, ks, kd)
     , d_indices1(initData(&d_indices1, "indices1", "Indices of the source points on the first model"))
     , d_indices2(initData(&d_indices2, "indices2", "Indices of the fixed points on the second model"))
     , d_length(initData(&d_length, 0.0, "length", "uniform length of all springs"))
@@ -64,7 +64,38 @@ void StiffSpringForceField<DataTypes>::init()
     }
     this->SpringForceField<DataTypes>::init();
 
-    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+    if (this->getMState())
+    {
+        this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
+    }
+}
+
+template <class DataTypes>
+void StiffSpringForceField<DataTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x,
+    const DataVecDeriv& v)
+{
+    dfdx.resize(this->springs.getValue().size());
+    Inherit1::addForce(mparams, f, x, v);
+}
+
+template <class DataTypes>
+void StiffSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df,
+    const DataVecDeriv& dx)
+{
+    VecDeriv& _df = *sofa::helper::getWriteAccessor(df);
+    const VecDeriv& _dx = *sofa::helper::getReadAccessor(dx);
+
+    const Real kFactor = static_cast<Real>(sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(
+        mparams, this->rayleighStiffness.getValue()));
+    const Real bFactor = static_cast<Real>(sofa::core::mechanicalparams::bFactor(mparams));
+
+    const type::vector<Spring>& springs = this->springs.getValue();
+    _df.resize(_dx.size());
+
+    for (sofa::Index i=0; i<springs.size(); i++)
+    {
+        this->addSpringDForce(_df,_dx,_df,_dx, i, springs[i], kFactor, bFactor);
+    }
 }
 
 
@@ -176,131 +207,35 @@ void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& df1,const  VecD
 }
 
 template<class DataTypes>
-void StiffSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 )
-{
-    VecDeriv&       f1 = *data_f1.beginEdit();
-    const VecCoord& x1 =  data_x1.getValue();
-    const VecDeriv& v1 =  data_v1.getValue();
-    VecDeriv&       f2 = *data_f2.beginEdit();
-    const VecCoord& x2 =  data_x2.getValue();
-    const VecDeriv& v2 =  data_v2.getValue();
-
-    const type::vector<Spring>& springs= this->springs.getValue();
-    this->dfdx.resize(springs.size());
-    f1.resize(x1.size());
-    f2.resize(x2.size());
-    this->m_potentialEnergy = 0;
-    for (sofa::Index i=0; i<springs.size(); i++)
-    {
-        this->addSpringForce(this->m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
-    }
-    data_f1.endEdit();
-    data_f2.endEdit();
-}
-
-template<class DataTypes>
-void StiffSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2)
-{
-    VecDeriv&        df1 = *data_df1.beginEdit();
-    VecDeriv&        df2 = *data_df2.beginEdit();
-    const VecDeriv&  dx1 =  data_dx1.getValue();
-    const VecDeriv&  dx2 =  data_dx2.getValue();
-    Real kFactor       =  (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,this->rayleighStiffness.getValue());
-    Real bFactor       =  (Real)sofa::core::mechanicalparams::bFactor(mparams);
-
-    const type::vector<Spring>& springs = this->springs.getValue();
-    df1.resize(dx1.size());
-    df2.resize(dx2.size());
-
-    for (sofa::Index i=0; i<springs.size(); i++)
-    {
-        this->addSpringDForce(df1,dx1,df2,dx2, i, springs[i], kFactor, bFactor);
-    }
-
-    data_df1.endEdit();
-    data_df2.endEdit();
-}
-
-
-template <class DataTypes>
-void StiffSpringForceField<DataTypes>::addToMatrix(linearalgebra::BaseMatrix* globalMatrix,
-    const unsigned int offsetRow,
-    const unsigned int offsetCol,
-    const Mat& localMatrix)
-{
-    if (globalMatrix)
-    {
-        if constexpr(N == 2 || N == 3 )
-        {
-            // BaseMatrix::add can accept Mat2x2 and Mat3x3 and it's sometimes faster than the 2 loops
-            globalMatrix->add(offsetRow, offsetCol, -localMatrix);
-        }
-        else
-        {
-            for(sofa::Index i = 0; i < N; ++i)
-            {
-                for (sofa::Index j = 0; j < N; ++j)
-                {
-                    globalMatrix->add(offsetRow + i, offsetCol + j, (Real)localMatrix[i][j]);
-                }
-            }
-        }
-    }
-}
-
-template<class DataTypes>
 void StiffSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
+    if (!this->mstate)
+        return;
+
     const Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams,this->rayleighStiffness.getValue());
-    if (this->mstate1 == this->mstate2)
+
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef mat = matrix->getMatrix(this->getMState());
+    if (!mat) return;
+    const sofa::type::vector<Spring >& ss = this->springs.getValue();
+    const sofa::Size n = ss.size() < this->dfdx.size() ? sofa::Size(ss.size()) : sofa::Size(this->dfdx.size());
+    for (sofa::Index e = 0; e < n; ++e)
     {
-        sofa::core::behavior::MultiMatrixAccessor::MatrixRef mat = matrix->getMatrix(this->mstate1);
-        if (!mat) return;
-        const sofa::type::vector<Spring >& ss = this->springs.getValue();
-        const sofa::Size n = ss.size() < this->dfdx.size() ? sofa::Size(ss.size()) : sofa::Size(this->dfdx.size());
-        for (sofa::Index e = 0; e < n; ++e)
+        const Spring& s = ss[e];
+        const sofa::Index p1 = mat.offset + Deriv::total_size * s.m1;
+        const sofa::Index p2 = mat.offset + Deriv::total_size * s.m2;
+        const Mat& m = this->dfdx[e];
+        for(sofa::Index i=0; i<N; i++)
         {
-            const Spring& s = ss[e];
-            const sofa::Index p1 = mat.offset + Deriv::total_size * s.m1;
-            const sofa::Index p2 = mat.offset + Deriv::total_size * s.m2;
-            const Mat& m = this->dfdx[e];
-            for(sofa::Index i=0; i<N; i++)
+            for (sofa::Index j=0; j<N; j++)
             {
-                for (sofa::Index j=0; j<N; j++)
-                {
-                    Real k = (Real)(m[i][j]*kFact);
-                    mat.matrix->add(p1+i,p1+j, -k);
-                    mat.matrix->add(p1+i,p2+j,  k);
-                    mat.matrix->add(p2+i,p1+j,  k);//or mat->add(p1+j,p2+i, k);
-                    mat.matrix->add(p2+i,p2+j, -k);
-                }
+                Real k = (Real)(m[i][j]*kFact);
+                mat.matrix->add(p1+i,p1+j, -k);
+                mat.matrix->add(p1+i,p2+j,  k);
+                mat.matrix->add(p2+i,p1+j,  k);//or mat->add(p1+j,p2+i, k);
+                mat.matrix->add(p2+i,p2+j, -k);
             }
         }
     }
-    else
-    {
-        sofa::core::behavior::MultiMatrixAccessor::MatrixRef mat11 = matrix->getMatrix(this->mstate1);
-        sofa::core::behavior::MultiMatrixAccessor::MatrixRef mat22 = matrix->getMatrix(this->mstate2);
-        sofa::core::behavior::MultiMatrixAccessor::InteractionMatrixRef mat12 = matrix->getMatrix(this->mstate1, this->mstate2);
-        sofa::core::behavior::MultiMatrixAccessor::InteractionMatrixRef mat21 = matrix->getMatrix(this->mstate2, this->mstate1);
-
-        if (!mat11 && !mat22 && !mat12 && !mat21) return;
-        const sofa::type::vector<Spring >& ss = this->springs.getValue();
-        const sofa::Size n = ss.size() < this->dfdx.size() ? sofa::Size(ss.size()) : sofa::Size(this->dfdx.size());
-        for (sofa::Index e = 0; e < n; ++e)
-        {
-            const Spring& s = ss[e];
-            const unsigned p1 = Deriv::total_size * s.m1;
-            const unsigned p2 = Deriv::total_size * s.m2;
-            const Mat m = this->dfdx[e] * (Real) kFact;
-
-            addToMatrix(mat11.matrix, mat11.offset + p1, mat11.offset + p1, -m);
-            addToMatrix(mat12.matrix, mat12.offRow + p1, mat12.offCol + p2,  m);
-            addToMatrix(mat21.matrix, mat21.offRow + p2, mat21.offCol + p1,  m);
-            addToMatrix(mat22.matrix, mat22.offset + p2, mat22.offset + p2, -m);
-        }
-    }
-
 }
 
 } // namespace sofa::component::interactionforcefield

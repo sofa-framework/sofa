@@ -44,7 +44,7 @@ TriangleBendingSprings<DataTypes>::~TriangleBendingSprings()
 template<class DataTypes>
 void TriangleBendingSprings<DataTypes>::addSpring( unsigned a, unsigned b )
 {
-    const VecCoord& x =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x =this->getMState()->read(core::ConstVecCoordId::position())->getValue();
     Real s = (Real)this->ks.getValue();
     Real d = (Real)this->kd.getValue();
     Real l = (x[a]-x[b]).norm();
@@ -104,7 +104,6 @@ void TriangleBendingSprings<DataTypes>::registerTriangle( unsigned a, unsigned b
 template<class DataTypes>
 void TriangleBendingSprings<DataTypes>::init()
 {
-    this->mstate1 = this->mstate2 = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>( this->getContext()->getMechanicalState() );
     StiffSpringForceField<DataTypes>::clear();
 
     // Set the bending springs

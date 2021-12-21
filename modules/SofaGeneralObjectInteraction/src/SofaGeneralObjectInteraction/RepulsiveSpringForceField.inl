@@ -28,38 +28,35 @@ namespace sofa::component::interactionforcefield
 
 
 
-template<class DataTypes>
-void RepulsiveSpringForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 )
+template <class DataTypes>
+void RepulsiveSpringForceField<DataTypes>::addForce(const core::MechanicalParams*, DataVecDeriv& f,
+    const DataVecCoord& x, const DataVecDeriv& v)
 {
-
-    VecDeriv&       f1 = *data_f1.beginEdit();
-    const VecCoord& x1 =  data_x1.getValue();
-    const VecDeriv& v1 =  data_v1.getValue();
-    VecDeriv&       f2 = *data_f2.beginEdit();
-    const VecCoord& x2 =  data_x2.getValue();
-    const VecDeriv& v2 =  data_v2.getValue();
+    VecDeriv& _f = *sofa::helper::getWriteAccessor(f);
+    auto _x = sofa::helper::getReadAccessor(x);
+    auto _v = sofa::helper::getReadAccessor(v);
 
     const type::vector<Spring>& springs= this->springs.getValue();
     this->dfdx.resize(springs.size());
-    f1.resize(x1.size());
-    f2.resize(x2.size());
+
+    _f.resize(_x.size());
     for (unsigned int i=0; i<springs.size(); i++)
     {
         int a = springs[i].m1;
         int b = springs[i].m2;
-        Coord u = x2[b]-x1[a];
+        Coord u = _x[b]-_x[a];
         Real d = u.norm();
         if (d!=0 && d < springs[i].initpos)
         {
             Real inverseLength = 1.0f/d;
             u *= inverseLength;
             Real elongation = (Real)(d - springs[i].initpos);
-            Deriv relativeVelocity = v2[b]-v1[a];
+            Deriv relativeVelocity = _v[b]-_v[a];
             Real elongationVelocity = dot(u,relativeVelocity);
             Real forceIntensity = (Real)(springs[i].ks*elongation+springs[i].kd*elongationVelocity);
             Deriv force = u*forceIntensity;
-            f1[a]+=force;
-            f2[b]-=force;
+            _f[a]+=force;
+            _f[b]-=force;
 
             Mat& m = this->dfdx[i];
             Real tgt = forceIntensity * inverseLength;
@@ -80,13 +77,10 @@ void RepulsiveSpringForceField<DataTypes>::addForce(const sofa::core::Mechanical
                     m[j][k] = 0.0;
         }
     }
-
-    data_f1.endEdit();
-    data_f2.endEdit();
 }
 
 template <class DataTypes>
-SReal RepulsiveSpringForceField<DataTypes>::getPotentialEnergy(const sofa::core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const
+SReal RepulsiveSpringForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
 {
     msg_error() << "RepulsiveSpringForceField::getPotentialEnergy-not-implemented !!!";
     return 0;

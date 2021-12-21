@@ -25,6 +25,7 @@
 #include <SofaUserInteraction/MouseInteractor.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/simulation/Node.h>
+#include <SofaBaseVisual/Camera.h>
 
 namespace sofa::component::collision
 {
@@ -50,7 +51,11 @@ void AttachBodyPerformer<DataTypes>::start()
     this->interactor->getContext()->get(mapping); assert(mapping);
     mapping->apply(core::mechanicalparams::defaultInstance());
     mapping->applyJ(core::mechanicalparams::defaultInstance());
+
+    m_mstate->init();
+    m_subsetMapping->init();
     m_forcefield->init();
+
     this->interactor->setMouseAttached(true);
 }
 
@@ -93,9 +98,16 @@ void AttachBodyPerformer<DataTypes>::clear()
 {
     if (m_forcefield)
     {
-        m_forcefield->cleanup();
-        m_forcefield->getContext()->removeObject(m_forcefield);
+        const auto objects = m_forcefield->getContext()->getObjects(core::objectmodel::BaseContext::SearchDown);
+        for (auto* obj : objects)
+        {
+            obj->cleanup();
+            obj->getContext()->removeObject(obj);
+        }
         m_forcefield.reset();
+        m_mstate.reset();
+        m_subsetMapping.reset();
+        m_node.reset();
     }
 
     if (mapper)
@@ -170,19 +182,27 @@ bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
 
     using sofa::component::interactionforcefield::StiffSpringForceField;
 
-    m_forcefield = sofa::core::objectmodel::New< StiffSpringForceField<DataTypes> >(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision);
-    StiffSpringForceField< DataTypes >* stiffspringforcefield = static_cast< StiffSpringForceField< DataTypes >* >(m_forcefield.get());
+    auto createdComponents =
+        sofa::component::interactionforcefield::CreateSpringBetweenObjects<StiffSpringForceField< DataTypes > >(
+            mstateCollision->getContext(),
+            dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()),
+            mstateCollision,
+            {interactionforcefield::LinearSpring<typename DataTypes::Real>{0, static_cast<sofa::Index>(index), stiffness, 0., picked.dist} }
+        );
+    m_node = std::get<0>(createdComponents);
+    m_mstate = std::get<1>(createdComponents);
+    m_subsetMapping = std::get<2>(createdComponents);
+    auto stiffspringforcefield = std::get<3>(createdComponents);
     stiffspringforcefield->setName("Spring-Mouse-Contact");
-    stiffspringforcefield->setArrowSize((float)this->size);
+    stiffspringforcefield->setArrowSize(static_cast<float>(this->size));
     stiffspringforcefield->setDrawMode(2); //Arrow mode if size > 0
 
+    m_forcefield = stiffspringforcefield;
 
-    stiffspringforcefield->addSpring(0,index, stiffness, 0.0, picked.dist);
     const core::objectmodel::TagSet &tags=mstateCollision->getTags();
     for (core::objectmodel::TagSet::const_iterator it=tags.begin(); it!=tags.end(); ++it)
         stiffspringforcefield->addTag(*it);
 
-    mstateCollision->getContext()->addObject(stiffspringforcefield);
     return true;
 }
 

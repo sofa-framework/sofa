@@ -66,13 +66,20 @@ void FixParticlePerformer<DataTypes>::start()
     fixFixation->d_fixAll.setValue(true);
     nodeFixation->addObject(fixFixation);
 
-    //Add Interaction ForceField
-    typename MouseForceField::SPtr distanceForceField = sofa::core::objectmodel::New< MouseForceField >(mstateFixation.get(), mstateCollision);
-    const double friction=0.0;
-    const double coeffStiffness=1/(double)points.size();
+    const double coeffStiffness = 1./static_cast<double>(points.size());
+    constexpr double friction=0.0;
+    sofa::type::vector<interactionforcefield::LinearSpring<typename DataTypes::Real> > springs;
+    springs.reserve(points.size());
     for (unsigned int i=0; i<points.size(); ++i)
-        distanceForceField->addSpring(0,points[i], stiffness*coeffStiffness, friction, 0);
-    nodeFixation->addObject(distanceForceField);
+        springs.emplace_back(0,points[i], stiffness*coeffStiffness, friction, 0);
+
+    auto createdComponents =
+        sofa::component::interactionforcefield::CreateSpringBetweenObjects<MouseForceField>(
+            nodeFixation.get(),
+            mstateFixation.get(),
+            mstateCollision,
+            springs
+        );
 
     nodeFixation->execute<simulation::InitVisitor>(sofa::core::execparams::defaultInstance());
 }

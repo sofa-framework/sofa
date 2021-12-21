@@ -79,7 +79,16 @@ protected:
     */
 
     MouseContactMapper  *mapper;
+
+    /// The following components are created to create a spring between the two following objects:
+    /// 1- the collision model
+    /// 2- the mouse
+    ///@{
     MouseForceField::SPtr m_forcefield;
+    simulation::Node::SPtr m_node;
+    typename sofa::component::container::MechanicalObject<DataTypes>::SPtr m_mstate;
+    typename mapping::SubsetMultiMapping<DataTypes, DataTypes>::SPtr m_subsetMapping;
+    ///@}
 
     core::visual::DisplayFlags flags;
 };

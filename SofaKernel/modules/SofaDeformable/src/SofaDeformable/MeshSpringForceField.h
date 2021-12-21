@@ -42,8 +42,6 @@ public:
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
-    using Inherit1::mstate1;
-    using Inherit1::mstate2;
     using Inherit1::springs;
 
 protected:

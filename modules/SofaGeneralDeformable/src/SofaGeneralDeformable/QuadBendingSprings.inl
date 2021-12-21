@@ -56,7 +56,7 @@ void QuadBendingSprings<DataTypes>::addSpring( unsigned a, unsigned b, std::set<
     IndexPair ab(a<b?a:b, a<b?b:a);
     if (springSet.find(ab) != springSet.end()) return;
     springSet.insert(ab);
-    const VecCoord& x =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x =this->getMState()->read(core::ConstVecCoordId::position())->getValue();
     Real s = (Real)this->ks.getValue();
     Real d = (Real)this->kd.getValue();
     Real l = (x[a]-x[b]).norm();

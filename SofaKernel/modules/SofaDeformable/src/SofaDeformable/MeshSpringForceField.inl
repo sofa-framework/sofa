@@ -88,7 +88,7 @@ void MeshSpringForceField<DataTypes>::addSpring(std::set<std::pair<sofa::Index, 
         if (sset.count(std::make_pair(m2,m1))>0) return;
         sset.insert(std::make_pair(m2,m1));
     }
-    Real l = ((mstate2->read(core::ConstVecCoordId::restPosition())->getValue())[m2] - (mstate1->read(core::ConstVecCoordId::restPosition())->getValue())[m1]).norm();
+    Real l = ((this->getMState()->read(core::ConstVecCoordId::restPosition())->getValue())[m2] - (this->getMState()->read(core::ConstVecCoordId::restPosition())->getValue())[m1]).norm();
     springs.beginEdit()->push_back(typename SpringForceField<DataTypes>::Spring(m1,m2,stiffness/l, damping/l, l, d_noCompression.getValue()));
     springs.endEdit();
 }
@@ -97,12 +97,9 @@ template<class DataTypes>
 void MeshSpringForceField<DataTypes>::init()
 {
     StiffSpringForceField<DataTypes>::clear();
-    if(!(mstate1) || !(mstate2))
-        mstate2 = mstate1 = dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes> *>(this->getContext()->getMechanicalState());
 
-    if (mstate1==mstate2)
+    if (this->getMState())
     {
-
         if (l_topology.empty())
         {
             msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
@@ -212,20 +209,19 @@ void MeshSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
         typedef typename Inherit1::Spring  Spring;
         const sofa::type::vector<Spring> &ss = springs.getValue();
         
-        const VecCoord& p1 = mstate1->read(core::ConstVecCoordId::position())->getValue();
-        const VecCoord& p2 = mstate2->read(core::ConstVecCoordId::position())->getValue();
-        
+        const VecCoord& p = this->getMState()->read(core::ConstVecCoordId::position())->getValue();
+
         Real minElongation = std::numeric_limits<Real>::max();
         Real maxElongation = 0.;
         for (sofa::Index i=0; i<ss.size(); ++i)
         {
             const Spring& s = ss[i];
-            Deriv v = p1[s.m1] - p2[s.m2];
+            Deriv v = p[s.m1] - p[s.m2];
             Real elongation = (s.initpos - v.norm()) / s.initpos;
             maxElongation = std::max(maxElongation, elongation);
             minElongation = std::min(minElongation, elongation);
         }
-        
+
         const Real minElongationRange = d_drawMinElongationRange.getValue();
         const Real maxElongationRange = d_drawMaxElongationRange.getValue();
         Real range = std::min(std::max(maxElongation, std::abs(minElongation)), maxElongationRange) - minElongationRange;
@@ -235,7 +231,7 @@ void MeshSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
         for (sofa::Index i=0; i<ss.size(); ++i)
         {
             const Spring& s = ss[i];
-            const Coord pa[2] = {p1[s.m1], p2[s.m2]};
+            const Coord pa[2] = {p[s.m1], p[s.m2]};
             const std::vector<sofa::type::Vector3> points(pa, pa+2);
             Deriv v = pa[0] - pa[1];
             Real elongation = (s.initpos - v.norm()) / s.initpos;

@@ -81,9 +81,12 @@ simulation::Node::SPtr createMassSpringSystem(
     massPtr->d_totalMass.setValue(mass);
 
     // attach a spring
-    StiffSpringForceField3::SPtr spring = core::objectmodel::New<StiffSpringForceField3>(FixedPoint.get(), massDof.get());
-    root->addObject(spring);
-    spring->addSpring(0, 0, stiffness, 0, restLength);
+    sofa::component::interactionforcefield::CreateSpringBetweenObjects<StiffSpringForceField3>(
+        root.get(),
+        FixedPoint.get(),
+        massDof.get(),
+        {component::interactionforcefield::LinearSpring<typename DataTypes::Real>{0, 0, stiffness, 0., restLength} }
+    );
 
     return root;
 }

@@ -74,7 +74,7 @@ protected:
     virtual void addSpringDForce(VecDeriv& df1,const  VecDeriv& dx1, VecDeriv& df2,const  VecDeriv& dx2, sofa::Index i, const Spring& spring, double kFactor, double bFactor);
 
     StiffSpringForceField(double ks=100.0, double kd=5.0);
-    StiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks=100.0, double kd=5.0);
+    StiffSpringForceField(MechanicalState* mstate, double ks=100.0, double kd=5.0);
 
     /// Will create the set of springs using \sa d_indices1 and \sa d_indices2 with \sa d_length
     void createSpringsFromInputs();
@@ -82,16 +82,11 @@ protected:
 public:
     void init() override;
 
-    /// Accumulate f corresponding to x,v
-    void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 ) override;
-    /// Accumulate df corresponding to dx
-    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2) override;
+    void addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
+    void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx ) override;
+
     using Inherit::addKToMatrix;
     void addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-
-protected:
-
-    static void addToMatrix(linearalgebra::BaseMatrix* globalMatrix, const unsigned int offsetRow, const unsigned int offsetCol, const Mat& localMatrix);
 };
 
 #if !defined(SOFA_COMPONENT_FORCEFIELD_STIFFSPRINGFORCEFIELD_CPP)
