@@ -67,11 +67,11 @@ public:
     using GetFixationPointsOnModelFunction = std::function<void(sofa::core::sptr<sofa::core::CollisionModel>, const Index, type::vector<Index>&, Coord&)>;
     using MapTypeFunction = std::unordered_map<std::type_index, GetFixationPointsOnModelFunction >;
 
-    static MapTypeFunction* getMapInstance()
+    static std::shared_ptr<MapTypeFunction> getMapInstance()
     {
         if (!s_mapSupportedModels)
         {
-            s_mapSupportedModels = new MapTypeFunction();
+            s_mapSupportedModels = std::make_shared<MapTypeFunction>();
         }
         return s_mapSupportedModels;
     }
@@ -111,14 +111,7 @@ protected:
 
     std::vector< simulation::Node * > fixations;
 
-    // inline initialization of templated static members works on VS2019/gcc/clang (>5?)
-    // but not on VS2017 and crash the compilation itself using clang5.
-    // TODO: once VS2017 and clang5 support is dropped, just uncomment the inline static initialization 
-    // and remove the initialization in the inl file (linux/mac) and cpp (windows)
-    inline static MapTypeFunction* s_mapSupportedModels = nullptr;
-    //inline static MapTypeFunction s_mapSupportedModels;
-    //static std::unordered_map<std::type_index, GetFixationPointsOnModelFunction > s_mapSupportedModels;
-
+    inline static std::shared_ptr<MapTypeFunction> s_mapSupportedModels;
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_FIXPARTICLEPERFORMER_CPP)
