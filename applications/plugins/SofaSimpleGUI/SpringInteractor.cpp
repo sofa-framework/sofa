@@ -1,5 +1,8 @@
 #include <iostream>
 #include "SpringInteractor.h"
+
+#include <boost/multi_index_container.hpp>
+
 #include "PickedPoint.h"
 #include <sofa/core/SofaLibrary.h>
 #include <sofa/simulation/Simulation.h>
@@ -27,11 +30,17 @@ SpringInteractor::SpringInteractor(const PickedPoint &picked, SReal stiffness)
     fixed->init();
 
     // create spring to drag the picked object
-    _spring = sofa::core::objectmodel::New<StiffSpringForceField3>(_interactorDof.get(),pickedDof);
-    _interactionNode->addObject(_spring);
-    _spring->addSpring(0,picked.index,stiffness,0.1,0.);
-
-
+    auto createdComponents =
+    sofa::component::interactionforcefield::CreateSpringBetweenObjects<StiffSpringForceField3 >(
+        _interactionNode.get(),
+        _interactorDof.get(),
+        pickedDof,
+        {component::interactionforcefield::LinearSpring<StiffSpringForceField3::Real>{0, static_cast<sofa::Index>(picked.index), stiffness, 0.1, 0.} }
+    );
+    m_node = std::get<0>(createdComponents);
+    m_mstate = std::get<1>(createdComponents);
+    m_subsetMapping = std::get<2>(createdComponents);
+    _spring = std::get<3>(createdComponents);
 
 //    cout << "SpringInteractor set spring to " << pickedDof->getName() << ", " << picked.index << endl;
 }
@@ -51,17 +60,17 @@ void SpringInteractor::setPoint( const Vec3& p )
 void SpringInteractor::attach(SofaScene *scene)
 {
     Inherited::attach(scene);
-    _interactionNode->removeObject(_spring);
-    Node* targetParent = dynamic_cast<Node*>(_spring->getMState2()->getContext());
-    targetParent->addObject(_spring);
+    _interactionNode->removeChild(m_node);
+    Node* targetParent = dynamic_cast<Node*>(m_subsetMapping->getMechFrom()[1]->getContext());
+    targetParent->addChild(m_node);
 }
 
 void SpringInteractor::detach()
 {
     Inherited::detach();
-    Node* parent = dynamic_cast<Node*>(_spring->getMState2()->getContext());
-    parent->removeObject(_spring);
-    _interactionNode->addObject(_spring);
+    Node* parent = dynamic_cast<Node*>(m_subsetMapping->getMechFrom()[1]->getContext());
+    parent->removeChild(m_node);
+    _interactionNode->addChild(m_node);
 }
 
 }//newgui
