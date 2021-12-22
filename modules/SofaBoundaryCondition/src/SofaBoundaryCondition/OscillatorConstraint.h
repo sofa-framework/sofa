@@ -85,7 +85,7 @@ protected:
 
 
 public:
-    OscillatorConstraint(core::behavior::MechanicalState<TDataTypes>* mstate=nullptr);
+    explicit OscillatorConstraint(core::behavior::MechanicalState<TDataTypes>* mstate=nullptr);
     ~OscillatorConstraint() override ;
 
     OscillatorConstraint<TDataTypes>* addConstraint(unsigned index,
