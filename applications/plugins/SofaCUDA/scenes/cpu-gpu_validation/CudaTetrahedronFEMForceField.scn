@@ -56,7 +56,7 @@
     </Node>
     
    
-    <Node name="TetrahedralCorotational-CPU-red">
+    <Node name="TetrahedronFEMForceField-CPU-red">
         <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="20" name="linear solver" tolerance="1.0e-6" threshold="1.0e-6" />
         
