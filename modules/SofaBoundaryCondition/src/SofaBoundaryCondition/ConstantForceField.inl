@@ -65,9 +65,8 @@ void ConstantForceField<DataTypes>::init()
     }
 
     // temprory pointer to topology
-    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();    
 
-    if (_topology)
+    if (sofa::core::topology::BaseMeshTopology* _topology = l_topology.get())
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
         

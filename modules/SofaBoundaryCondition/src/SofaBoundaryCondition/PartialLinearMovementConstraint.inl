@@ -130,9 +130,7 @@ void PartialLinearMovementConstraint<DataTypes>::init()
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
-    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
-
-    if (_topology)
+    if (sofa::core::topology::BaseMeshTopology* _topology = l_topology.get())
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
@@ -406,9 +404,9 @@ void PartialLinearMovementConstraint<DataTypes>::applyConstraint(const core::Mec
 {
     SOFA_UNUSED(mparams);
     const SetIndexArray & indices = m_indices.getValue();
-    core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get());
 
-    if (r) {
+    if (core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get()))
+    {
         VecBool movedDirection = movedDirections.getValue();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {

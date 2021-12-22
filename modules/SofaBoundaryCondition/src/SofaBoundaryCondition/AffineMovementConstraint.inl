@@ -96,9 +96,7 @@ void AffineMovementConstraint<DataTypes>::init()
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
-    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
-
-    if (_topology)
+    if (sofa::core::topology::BaseMeshTopology* _topology = l_topology.get())
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";        
 
@@ -292,12 +290,12 @@ template <class DataTypes>
 void AffineMovementConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = m_indices.getValue();
-    std::vector< Vector3 > points;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Vector3 point;
 
     if(m_drawConstrainedPoints.getValue())
     {
+        std::vector< Vector3 > points;
         for( auto& index : indices )
         {
             point = DataTypes::getCPos(x[index]);
