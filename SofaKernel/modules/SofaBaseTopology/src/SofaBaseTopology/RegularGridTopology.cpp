@@ -280,9 +280,10 @@ RegularGridTopology::Index RegularGridTopology::findCube(const Vector3& pos, SRe
     SReal y = p*dy*inv_dy2;
     SReal z = p*dz*inv_dz2;
 
-    int ix = int(x+1000000)-1000000; // Do not round toward 0...
-    int iy = int(y+1000000)-1000000;
-    int iz = int(z+1000000)-1000000;
+    int ix = int(std::floor(x));
+    int iy = int(std::floor(y));
+    int iz = int(std::floor(z));
+
     if ((unsigned)ix<=(unsigned)d_n.getValue()[0]-2 && (unsigned)iy<=(unsigned)d_n.getValue()[1]-2 && (unsigned)iz<=(unsigned)d_n.getValue()[2]-2)
     {
         fx = x-ix;
