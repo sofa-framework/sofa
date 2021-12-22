@@ -188,7 +188,7 @@ inline TLine<DataTypes>::TLine(const core::CollisionElementIterator& i)
 }
 
 #if !defined(SOFA_COMPONENT_COLLISION_LINECOLLISIONMODEL_CPP)
-extern template class SOFA_SOFAMESHCOLLISION_API TLine<sofa::defaulttype::Vec3dTypes>;
+extern template class SOFA_SOFAMESHCOLLISION_API TLine<sofa::defaulttype::Vec3Types>;
 extern template class SOFA_SOFAMESHCOLLISION_API LineCollisionModel<sofa::defaulttype::Vec3Types>;
 #endif
 

@@ -148,7 +148,7 @@ void BeamFEMForceField<DataTypes>::init()
     m_beamsData.setCreationCallback([this](Index edgeIndex, BeamInfo& ei,
         const core::topology::BaseMeshTopology::Edge& edge,
         const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< double >& coefs)
+        const sofa::type::vector< SReal >& coefs)
     {
         createBeamInfo(edgeIndex, ei, edge, ancestors, coefs);
     });
@@ -171,7 +171,7 @@ void BeamFEMForceField<DataTypes>::reinit()
 template <class DataTypes>
 void BeamFEMForceField<DataTypes>::reinitBeam(Index i)
 {
-    double stiffness, length, radius, poisson, radiusInner;
+    SReal stiffness, length, radius, poisson, radiusInner;
     Index a = (*m_indexedElements)[i][0];
     Index b = (*m_indexedElements)[i][1];
 
@@ -196,7 +196,7 @@ template< class DataTypes>
 void BeamFEMForceField<DataTypes>::createBeamInfo(Index edgeIndex, BeamInfo &ei,
     const core::topology::BaseMeshTopology::Edge &,
     const sofa::type::vector<Index> &,
-    const sofa::type::vector<double> &)
+    const sofa::type::vector<SReal> &)
 {
     reinitBeam(edgeIndex);
     ei = m_beamsData.getValue()[edgeIndex];
@@ -483,7 +483,7 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
 }
 
 template<class DataTypes>
-void BeamFEMForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const VecDeriv& dx, int i, Index a, Index b, double fact)
+void BeamFEMForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const VecDeriv& dx, int i, Index a, Index b, SReal fact)
 {
     Displacement local_depl;
     type::Vec<3,Real> u;
@@ -606,7 +606,7 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
                             if (x1 == y1)
                                 for (int i=0; i<3; i++)
                                     for (int j=0; j<3; j++)
-                                        K.elems[i+x1][j+y1] *= double(0.5);
+                                        K.elems[i+x1][j+y1] *= SReal(0.5);
 
                         }
                     }
@@ -756,7 +756,7 @@ void BeamFEMForceField<DataTypes>::setComputeGlobalMatrix(bool val)
 }
 
 template<class DataTypes>
-void BeamFEMForceField<DataTypes>::setBeam(Index i, double E, double L, double nu, double r, double rInner)
+void BeamFEMForceField<DataTypes>::setBeam(Index i, SReal E, SReal L, SReal nu, SReal r, SReal rInner)
 {
     type::vector<BeamInfo>& bd = *(m_beamsData.beginEdit());
     bd[i].init(E,L,nu,r,rInner);
@@ -764,7 +764,7 @@ void BeamFEMForceField<DataTypes>::setBeam(Index i, double E, double L, double n
 }
 
 template<class DataTypes>
-void BeamFEMForceField<DataTypes>::BeamInfo::init(double E, double L, double nu, double r, double rInner)
+void BeamFEMForceField<DataTypes>::BeamInfo::init(SReal E, SReal L, SReal nu, SReal r, SReal rInner)
 {
     _E = E;
     _E0 = E;

@@ -36,7 +36,7 @@ class SOFA_SOFAGENERALTOPOLOGY_API CylinderGridTopology : public GridTopology
 {
 public:
     SOFA_CLASS(CylinderGridTopology,GridTopology);
-    typedef sofa::type::Vector3 Vector3;
+    using Vector3 = sofa::type::Vec<3, SReal>;
 protected:
     /// Default constructor
     CylinderGridTopology();

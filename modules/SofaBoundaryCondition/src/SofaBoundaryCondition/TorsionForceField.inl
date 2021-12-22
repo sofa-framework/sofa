@@ -100,7 +100,7 @@ void TorsionForceField<DataTypes>::addDForce(const MechanicalParams* params, Dat
 }
 
 template<typename DataTypes>
-void TorsionForceField<DataTypes>::addKToMatrix(linearalgebra::BaseMatrix* matrix, double kFact, unsigned int& offset)
+void TorsionForceField<DataTypes>::addKToMatrix(linearalgebra::BaseMatrix* matrix, SReal kFact, unsigned int& offset)
 {
 	const VecId& indices = m_indices.getValue();
 	const Real& tau = m_torque.getValue();

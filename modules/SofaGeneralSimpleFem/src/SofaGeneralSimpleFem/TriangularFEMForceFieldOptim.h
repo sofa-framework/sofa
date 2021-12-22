@@ -239,7 +239,7 @@ public:
     void createTriangleInfo(Index triangleIndex, TriangleInfo&, 
         const Triangle& t,
         const sofa::type::vector< Index >&,
-        const sofa::type::vector< double >&);
+        const sofa::type::vector< SReal >&);
 
     /** Method to create @sa TriangleState when a new triangle is created.
     * Will be set as creation callback in the TriangleData @sa d_triangleState
@@ -247,7 +247,7 @@ public:
     void createTriangleState(Index triangleIndex, TriangleState&, 
         const Triangle& t,
         const sofa::type::vector< Index > &,
-        const sofa::type::vector< double > &);
+        const sofa::type::vector< SReal > &);
 
     void initTriangleInfo(Index triangleIndex, TriangleInfo& ti, const Triangle t, const VecCoord& x0);
     void initTriangleState(Index triangleIndex, TriangleState& ti, const Triangle t, const VecCoord& x);

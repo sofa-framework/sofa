@@ -30,11 +30,11 @@ using namespace defaulttype;
 
 // Register in the Factory
 int RigidMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
-        .add< RigidMapping< Rigid3Types, Vec3dTypes > >()
+        .add< RigidMapping< Rigid3Types, Vec3Types > >()
         .add< RigidMapping< Rigid2Types, Vec2Types > >()
         ;
 
-template class SOFA_SOFARIGID_API RigidMapping< Rigid3Types, Vec3dTypes >;
+template class SOFA_SOFARIGID_API RigidMapping< Rigid3Types, Vec3Types >;
 template class SOFA_SOFARIGID_API RigidMapping< Rigid2Types, Vec2Types >;
 
 

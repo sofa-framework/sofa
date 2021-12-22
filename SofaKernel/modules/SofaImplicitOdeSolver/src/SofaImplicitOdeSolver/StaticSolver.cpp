@@ -128,7 +128,7 @@ void StaticSolver::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
     sofa::core::behavior::OdeSolver::parse(arg) ;
 }
 
-void StaticSolver::solve(const sofa::core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void StaticSolver::solve(const sofa::core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     using namespace sofa::helper::logging;
     using namespace std::chrono;
