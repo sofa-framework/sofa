@@ -208,7 +208,7 @@ void RandomPointDistributionInSurface<DataTypes>::doUpdate()
     outPoints->clear();
 
 
-    type::vector<type::Vector3> verticesD;
+    type::vector<type::Vec<3,SReal>> verticesD;
     for (unsigned int i=0 ; i<vertices.size() ; i++)
         verticesD.push_back(vertices[i]);
 

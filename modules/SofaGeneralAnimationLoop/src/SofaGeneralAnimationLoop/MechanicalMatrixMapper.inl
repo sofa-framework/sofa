@@ -667,7 +667,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addDForce(const MechanicalP
 // Even though it does nothing, this method has to be implemented
 // since it's a pure virtual in parent class
 template<class DataTypes1, class DataTypes2>
-double MechanicalMatrixMapper<DataTypes1, DataTypes2>::getPotentialEnergy(const MechanicalParams* mparams,
+SReal MechanicalMatrixMapper<DataTypes1, DataTypes2>::getPotentialEnergy(const MechanicalParams* mparams,
                                                                           const DataVecCoord1& x1,
                                                                           const DataVecCoord2& x2) const
 {
