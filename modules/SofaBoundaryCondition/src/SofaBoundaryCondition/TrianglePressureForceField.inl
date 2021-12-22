@@ -92,7 +92,6 @@ void TrianglePressureForceField<DataTypes>::addForce(const core::MechanicalParam
 {
 
     VecDeriv& f = *d_f.beginEdit();
-    Deriv force;
 
     const sofa::type::vector<Index>& my_map = trianglePressureMap.getMap2Elements();
 
@@ -102,7 +101,7 @@ void TrianglePressureForceField<DataTypes>::addForce(const core::MechanicalParam
 
 		for (unsigned int i=0; i<my_map.size(); ++i)
 		{
-			force=my_subset[i].force/3;
+			const auto force=my_subset[i].force/3;
 			f[m_topology->getTriangle(my_map[i])[0]]+=force;
 			f[m_topology->getTriangle(my_map[i])[1]]+=force;
 			f[m_topology->getTriangle(my_map[i])[2]]+=force;
@@ -113,13 +112,13 @@ void TrianglePressureForceField<DataTypes>::addForce(const core::MechanicalParam
 		const sofa::type::vector<Triangle> &ta = m_topology->getTriangles();
 		const  VecDeriv p = d_x.getValue();
 		MatSym3 cauchy=cauchyStress.getValue();
-		Deriv areaVector,force;
+		Deriv areaVector;
 
 		for (unsigned int i=0; i<my_map.size(); ++i)
 		{
 			const Triangle &t=ta[my_map[i]];
 			areaVector=cross(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]])/6.0f;
-			force=cauchy*areaVector;
+			const auto force=cauchy*areaVector;
 			for (size_t j=0;j<3;++j) {
 				f[t[j]]+=force;
 			}

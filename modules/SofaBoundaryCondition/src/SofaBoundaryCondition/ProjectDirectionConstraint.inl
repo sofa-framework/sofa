@@ -166,9 +166,9 @@ void  ProjectDirectionConstraint<DataTypes>::reinit()
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const Indices &indices = f_indices.getValue();
-    for( Indices::const_iterator it = indices.begin() ; it != indices.end() ; ++it )
+    for (const auto id : indices)
     {
-        m_origin.push_back( DataTypes::getCPos(x[*it]) );
+        m_origin.push_back(DataTypes::getCPos(x[id]));
     }
 
 }
