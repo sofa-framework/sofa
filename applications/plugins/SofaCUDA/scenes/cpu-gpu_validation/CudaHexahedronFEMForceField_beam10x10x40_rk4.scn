@@ -1,9 +1,11 @@
 <?xml version="1.0" ?>
-<Node name="root" gravity="0 -9 0" dt="0.02">
+<Node name="root" gravity="0 -9 0" dt="0.002">
+    <RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [FixedConstraint] -->
     <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI, DiagonalMass, FixedConstraint, HexahedronFEMForceField, IdentityMapping, MechanicalObject] -->
-    <RequiredPlugin name="SofaImplicitOdeSolver"/> <!-- Needed to use components [EulerImplicitSolver] -->
-    <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
+    <RequiredPlugin name="SofaEngine"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="SofaGeneralExplicitOdeSolver"/> <!-- Needed to use components [RungeKutta4Solver] -->
     <RequiredPlugin name="SofaOpenglVisual"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaSimpleFem"/> <!-- Needed to use components [HexahedronFEMForceField] -->
     <RequiredPlugin name="SofaTopologyMapping"/> <!-- Needed to use components [Hexa2QuadTopologicalMapping] -->
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
 	
@@ -16,8 +18,7 @@
     <DiscreteIntersection/>
     
     <Node name="HexahedronFEMForceField-GPU-Green">
-        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver iterations="20" name="linear solver" tolerance="1.0e-6" threshold="1.0e-6" />
+        <RungeKutta4Solver />
         
         <RegularGridTopology name="grid" n="40 10 10" min="0 6 -2" max="16 10 2" />
         <MechanicalObject name="Volume" template="CudaVec3f"/>
@@ -45,8 +46,7 @@
     
 
     <Node name="HexahedronFEMForceField-CPU-red">
-        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver iterations="20" name="linear solver" tolerance="1.0e-6" threshold="1.0e-6" />
+        <RungeKutta4Solver />
         
         <RegularGridTopology name="grid" n="40 10 10" min="0 6 -2" max="16 10 2" />
         <MechanicalObject name="Volume" template="Vec3"/>
