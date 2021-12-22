@@ -115,7 +115,7 @@ protected:
     void createTetrahedronRestInformation(Index, TetrahedronRestInformation& t,
         const core::topology::BaseMeshTopology::Tetrahedron&,
         const sofa::type::vector<Index>&,
-        const sofa::type::vector<double>&);
+        const sofa::type::vector<SReal>&);
 
     sofa::core::topology::BaseMeshTopology* m_topology;
     VecCoord  _initialPoints;///< the intial positions of the points
@@ -166,13 +166,13 @@ public:
     virtual Real getLambda() const { return lambda;}
     virtual Real getMu() const { return mu;}
 
-    void setYoungModulus(const double modulus)
+    void setYoungModulus(const Real modulus)
     {
-        f_youngModulus.setValue((Real)modulus);
+        f_youngModulus.setValue(modulus);
     }
-    void setPoissonRatio(const double ratio)
+    void setPoissonRatio(const Real ratio)
     {
-        f_poissonRatio.setValue((Real)ratio);
+        f_poissonRatio.setValue(ratio);
     }
     void setRotationDecompositionMethod( const RotationDecompositionMethod m)
     {

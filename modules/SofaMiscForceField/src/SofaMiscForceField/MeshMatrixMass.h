@@ -75,9 +75,9 @@ public:
     /// @name Data of mass information
     /// @{
     /// Mass density of the object
-    Data< sofa::type::vector< Real > > d_massDensity;
+    Data< sofa::type::vector< MassType > > d_massDensity;
     /// Total mass of the object
-    Data< Real > d_totalMass;
+    Data< MassType > d_totalMass;
     /// @}
 
 
@@ -150,18 +150,18 @@ public:
 
     /// @name Read and write access functions in mass information
     /// @{
-    virtual const sofa::type::vector< Real > &getVertexMass();
-    virtual const sofa::type::vector< Real > &getMassDensity();
+    virtual const sofa::type::vector< MassType > &getVertexMass();
+    virtual const sofa::type::vector< MassType > &getMassDensity();
     virtual const Real &getTotalMass();
 
-    virtual void setVertexMass(sofa::type::vector< Real > vertexMass);
-    virtual void setMassDensity(sofa::type::vector< Real > massDensity);
-    virtual void setMassDensity(Real massDensityValue);
-    virtual void setTotalMass(Real totalMass);
+    virtual void setVertexMass(sofa::type::vector< MassType > vertexMass);
+    virtual void setMassDensity(sofa::type::vector< MassType > massDensity);
+    virtual void setMassDensity(MassType massDensityValue);
+    virtual void setTotalMass(MassType totalMass);
 
     virtual void addMassDensity(const sofa::type::vector< Index >& indices,        
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs);
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs);
     /// @}
 
 
@@ -224,7 +224,7 @@ protected:
     void applyVertexMassCreation(Index pointIndex, MassType& VertexMass,
         const core::topology::BaseMeshTopology::Point& point,
         const sofa::type::vector< Index >&,
-        const sofa::type::vector< double >&);
+        const sofa::type::vector< SReal >&);
 
     /** Method to update @sa d_vertexMass when a Point is removed.
     * Will be set as destruction callback in the PointData @sa d_vertexMass
@@ -238,7 +238,7 @@ protected:
     void applyVertexMassTriangleCreation(const sofa::type::vector< Index >& triangleAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Triangle >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs);
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs);
 
     /** Method to update @sa d_vertexMass using mass matrix coefficient when a Triangle is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when TRIANGLESREMOVED event is fired.
@@ -252,7 +252,7 @@ protected:
     void applyVertexMassQuadCreation(const sofa::type::vector< Index >& quadAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Quad >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs);
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs);
 
     /** Method to update @sa d_vertexMass using mass matrix coefficient when a Quad is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when QUADSREMOVED event is fired.
@@ -266,7 +266,7 @@ protected:
     void applyVertexMassTetrahedronCreation(const sofa::type::vector< Index >& tetrahedronAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Tetrahedron >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs);
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs);
 
     /** Method to update @sa d_vertexMass using mass matrix coefficient when a Tetrahedron is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when TETRAHEDRAREMOVED event is fired.
@@ -280,7 +280,7 @@ protected:
     void applyVertexMassHexahedronCreation(const sofa::type::vector< Index >& hexahedronAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Hexahedron >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs);
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs);
 
     /** Method to update @sa d_vertexMass using mass matrix coefficient when a Hexahedron is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when HEXAHEDRAREMOVED event is fired.
@@ -295,7 +295,7 @@ protected:
     void applyEdgeMassCreation(Index edgeIndex, MassType& EdgeMass,
         const core::topology::BaseMeshTopology::Edge&,
         const sofa::type::vector< Index >&,
-        const sofa::type::vector< double >&);
+        const sofa::type::vector< SReal >&);
 
     /** Method to update @sa d_edgeMass when a Edge is removed.
     * Will be set as destruction callback in the EdgeData @sa d_edgeMass
@@ -309,7 +309,7 @@ protected:
     void applyEdgeMassTriangleCreation(const sofa::type::vector< Index >& triangleAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Triangle >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs);
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs);
 
     /** Method to update @sa d_edgeMass using mass matrix coefficient when a Triangle is removed.
     * Will be set as callback in the EdgeData @sa d_edgeMass to update the mass vector when TRIANGLESREMOVED event is fired.
@@ -323,7 +323,7 @@ protected:
     void applyEdgeMassQuadCreation(const sofa::type::vector< Index >& quadAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Quad >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs);
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs);
 
     /** Method to update @sa d_edgeMass using mass matrix coefficient when a Quad is removed.
     * Will be set as callback in the EdgeData @sa d_edgeMass to update the mass vector when QUADSREMOVED event is fired.
@@ -337,7 +337,7 @@ protected:
     void applyEdgeMassTetrahedronCreation(const sofa::type::vector< Index >& tetrahedronAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Tetrahedron >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs);
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs);
 
     /** Method to update @sa d_edgeMass using mass matrix coefficient when a Tetrahedron is removed.
     * Will be set as callback in the EdgeData @sa d_edgeMass to update the mass vector when TETRAHEDRAREMOVED event is fired.
@@ -351,7 +351,7 @@ protected:
     void applyEdgeMassHexahedronCreation(const sofa::type::vector< Index >& hexahedronAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Hexahedron >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs);
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs);
 
     /** Method to update @sa d_vertexMass using mass matrix coefficient when a Hexahedron is removed.
     * Will be set as callback in the EdgeData @sa d_edgeMass to update the mass vector when HEXAHEDRAREMOVED event is fired.

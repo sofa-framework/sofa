@@ -128,16 +128,16 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::init(const typename O
     //find the closest tetra for given points of beam
     for ( unsigned int i=0; i<out.size(); i++ )
     {
-        sofa::type::Vector3 pos = out[i].getCenter(); // Rigid3dTypes::GetCPos(out[i]); // pos = defaulttype::Rigid3dType::getCPos(out[i]);
+        const auto pos = out[i].getCenter(); // Rigid3dTypes::GetCPos(out[i]); // pos = defaulttype::Rigid3dType::getCPos(out[i]);
 
         //associate the point with the tetrahedron, point in Barycentric coors wrt. the closest tetra, store to an associated structure
-        sofa::type::Vector3 coefs;
+        sofa::type::Vec<3, SReal> coefs;
         int index = -1;
-        double distance = 1e10;
+        SReal distance = 1e10;
         for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
         {
-            sofa::type::Vec3d v = bases[t] * ( pos - in[tetrahedra[t][0]] );
-            double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( -v[2],v[0]+v[1]+v[2]-1 ) );
+            const auto v = bases[t] * ( pos - in[tetrahedra[t][0]] );
+            SReal d = std::max(std::max(SReal(-v[0]), SReal(-v[1])), std::max(SReal(-v[2]), SReal(v[0] + v[1] + v[2] - 1)));
             if ( d>0 ) d = ( pos-centers[t] ).norm2();
             if ( d<distance )
             {

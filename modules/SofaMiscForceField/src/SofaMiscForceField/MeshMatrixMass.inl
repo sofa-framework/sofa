@@ -71,7 +71,7 @@ template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::applyVertexMassCreation(Index, MassType & VertexMass,
     const core::topology::BaseMeshTopology::Point&,
     const sofa::type::vector< Index > &,
-    const sofa::type::vector< double >&)
+    const sofa::type::vector< SReal >&)
 {
     VertexMass = 0;
 }
@@ -80,7 +80,7 @@ template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassCreation(Index, MassType & EdgeMass,
     const core::topology::BaseMeshTopology::Edge&,
     const sofa::type::vector< Index > &,
-    const sofa::type::vector< double >&)
+    const sofa::type::vector< SReal >&)
 {
     EdgeMass = 0;
 }
@@ -90,7 +90,7 @@ template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::applyVertexMassDestruction(Index id, MassType& VertexMass)
 {
     SOFA_UNUSED(id);
-    helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
+    auto totalMass = sofa::helper::getWriteOnlyAccessor(d_totalMass);
     totalMass -= VertexMass;
 }
 
@@ -101,7 +101,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassDestruction(Index id, Mas
     SOFA_UNUSED(id);
     if(!isLumped())
     {
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
+        auto totalMass = sofa::helper::getWriteOnlyAccessor(d_totalMass);
         totalMass -= EdgeMass;
     }
 }
@@ -118,7 +118,7 @@ template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::applyVertexMassTriangleCreation(const sofa::type::vector< Index >& triangleAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Triangle >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs)
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
     SOFA_UNUSED(elems);
     if (this->getMassTopologyType() == TopologyElementType::TRIANGLE)
@@ -127,7 +127,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassTriangleCreation(const 
         const auto& positions = this->getMState()->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses (d_vertexMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);        
+        auto totalMass = sofa::helper::getWriteOnlyAccessor(d_totalMass);        
 
         // update mass density vector
         sofa::Size nbMass = getMassDensity().size();
@@ -136,7 +136,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassTriangleCreation(const 
             addMassDensity(triangleAdded, ancestors, coefs);
 
         // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
+        const auto& densityM = getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
 
         for (unsigned int i = 0; i<triangleAdded.size(); ++i)
@@ -174,7 +174,7 @@ template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassTriangleCreation(const sofa::type::vector< Index >& triangleAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Triangle >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs)
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
     SOFA_UNUSED(elems);
     if (this->getMassTopologyType() == TopologyElementType::TRIANGLE)
@@ -183,7 +183,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassTriangleCreation(const so
         const auto& positions = this->getMState()->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses ( d_edgeMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
+        auto totalMass = sofa::helper::getWriteOnlyAccessor(d_totalMass);
 
         // update mass density vector
         sofa::Size nbMass = getMassDensity().size();
@@ -192,7 +192,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassTriangleCreation(const so
             addMassDensity(triangleAdded, ancestors, coefs);
 
         // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
+        const auto& densityM = getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
 
         for (unsigned int i = 0; i<triangleAdded.size(); ++i)
@@ -232,10 +232,10 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassTriangleDestruction(con
         const auto& positions = this->getMState()->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses (d_vertexMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
+        auto totalMass = sofa::helper::getWriteOnlyAccessor(d_totalMass);
 
         // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
+        const auto& densityM = getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
 
         for (unsigned int i = 0; i<triangleRemoved.size(); ++i)
@@ -278,10 +278,10 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassTriangleDestruction(const
         const auto& positions = this->getMState()->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses (d_edgeMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
+        auto totalMass = sofa::helper::getWriteOnlyAccessor(d_totalMass);
 
         // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
+        const auto& densityM = getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
 
         for (unsigned int i = 0; i<triangleRemoved.size(); ++i)
@@ -323,7 +323,7 @@ template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::applyVertexMassQuadCreation(const sofa::type::vector< Index >& quadAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Quad >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs)
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
     SOFA_UNUSED(elems);
     if (this->getMassTopologyType() == TopologyElementType::QUAD)
@@ -332,7 +332,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassQuadCreation(const sofa
         const auto& positions = this->getMState()->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses ( d_vertexMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
+        auto totalMass = sofa::helper::getWriteOnlyAccessor(d_totalMass);
 
         // update mass density vector
         sofa::Size nbMass = getMassDensity().size();
@@ -341,7 +341,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassQuadCreation(const sofa
             addMassDensity(quadAdded, ancestors, coefs);
 
         // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
+        const auto& densityM = getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
 
         for (unsigned int i = 0; i<quadAdded.size(); ++i)
@@ -380,7 +380,7 @@ template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassQuadCreation(const sofa::type::vector< Index >& quadAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Quad >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs)
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
     SOFA_UNUSED(elems);
 
@@ -390,7 +390,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassQuadCreation(const sofa::
         const auto& positions = this->getMState()->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses ( d_edgeMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
+        auto totalMass = sofa::helper::getWriteOnlyAccessor(d_totalMass);
         
         // update mass density vector
         sofa::Size nbMass = getMassDensity().size();
@@ -399,7 +399,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassQuadCreation(const sofa::
             addMassDensity(quadAdded, ancestors, coefs);
 
         // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
+        const auto& densityM = getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
 
         for (unsigned int i = 0; i<quadAdded.size(); ++i)
@@ -440,10 +440,10 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassQuadDestruction(const s
         const auto& positions = this->getMState()->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses ( d_vertexMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
+        auto totalMass = sofa::helper::getWriteOnlyAccessor(d_totalMass);
 
         // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
+        const auto& densityM = getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
 
         for (unsigned int i = 0; i<quadRemoved.size(); ++i)
@@ -487,10 +487,10 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassQuadDestruction(const sof
         const auto& positions = this->getMState()->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses ( d_edgeMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
+        auto totalMass = sofa::helper::getWriteOnlyAccessor(d_totalMass);
 
         // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
+        const auto& densityM = getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
 
         for (unsigned int i = 0; i<quadRemoved.size(); ++i)
@@ -535,7 +535,7 @@ template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::applyVertexMassTetrahedronCreation(const sofa::type::vector< Index >& tetrahedronAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Tetrahedron >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs)
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
     SOFA_UNUSED(elems);
     if (this->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
@@ -544,7 +544,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassTetrahedronCreation(con
         const auto& positions = this->getMState()->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses ( d_vertexMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
+        auto totalMass = sofa::helper::getWriteOnlyAccessor(d_totalMass);
 
         // update mass density vector
         sofa::Size nbMass = getMassDensity().size();
@@ -553,7 +553,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassTetrahedronCreation(con
             addMassDensity(tetrahedronAdded, ancestors, coefs);
 
         // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
+        const auto& densityM = getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
 
         for (unsigned int i = 0; i<tetrahedronAdded.size(); ++i)
@@ -592,7 +592,7 @@ template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassTetrahedronCreation(const sofa::type::vector< Index >& tetrahedronAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Tetrahedron >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs)
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
     SOFA_UNUSED(elems);
     if (this->getMassTopologyType() == TopologyElementType::TETRAHEDRON)
@@ -601,7 +601,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassTetrahedronCreation(const
         const auto& positions = this->getMState()->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses ( d_edgeMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
+        auto totalMass = sofa::helper::getWriteOnlyAccessor(d_totalMass);
         
         // update mass density vector
         sofa::Size nbMass = getMassDensity().size();
@@ -610,7 +610,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassTetrahedronCreation(const
             addMassDensity(tetrahedronAdded, ancestors, coefs);
 
         // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
+        const auto& densityM = getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
 
         for (unsigned int i = 0; i<tetrahedronAdded.size(); ++i)
@@ -651,10 +651,10 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassTetrahedronDestruction(
         const auto& positions = this->getMState()->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses ( d_vertexMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
+        auto totalMass = sofa::helper::getWriteOnlyAccessor(d_totalMass);
 
         // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
+        const auto& densityM = getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
 
         for (unsigned int i = 0; i<tetrahedronRemoved.size(); ++i)
@@ -698,10 +698,10 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassTetrahedronDestruction(co
         const auto& positions = this->getMState()->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses ( d_edgeMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
+        auto totalMass = sofa::helper::getWriteOnlyAccessor(d_totalMass);
 
         // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
+        const auto& densityM = getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
 
         for (unsigned int i = 0; i<tetrahedronRemoved.size(); ++i)
@@ -745,7 +745,7 @@ template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::applyVertexMassHexahedronCreation(const sofa::type::vector< Index >& hexahedronAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Hexahedron >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs)
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
     SOFA_UNUSED(elems);
     if (this->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
@@ -754,7 +754,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassHexahedronCreation(cons
         const auto& positions = this->getMState()->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses ( d_vertexMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
+        auto totalMass = sofa::helper::getWriteOnlyAccessor(d_totalMass);
         
         // update mass density vector
         sofa::Size nbMass = getMassDensity().size();
@@ -763,7 +763,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassHexahedronCreation(cons
             addMassDensity(hexahedronAdded, ancestors, coefs);
 
         // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
+        const auto& densityM = getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
 
         for (unsigned int i = 0; i<hexahedronAdded.size(); ++i)
@@ -806,7 +806,7 @@ template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassHexahedronCreation(const sofa::type::vector< Index >& hexahedronAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Hexahedron >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs)
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
     SOFA_UNUSED(elems);
     if (this->getMassTopologyType() == TopologyElementType::HEXAHEDRON)
@@ -815,7 +815,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassHexahedronCreation(const 
         const auto& positions = this->getMState()->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses ( d_edgeMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
+        auto totalMass = sofa::helper::getWriteOnlyAccessor(d_totalMass);
 
         // update mass density vector
         sofa::Size nbMass = getMassDensity().size();
@@ -824,7 +824,7 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassHexahedronCreation(const 
             addMassDensity(hexahedronAdded, ancestors, coefs);
 
         // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
+        const auto& densityM = getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
 
         for (unsigned int i = 0; i<hexahedronAdded.size(); ++i)
@@ -869,10 +869,10 @@ void MeshMatrixMass<DataTypes, MassType>::applyVertexMassHexahedronDestruction(c
         const auto& positions = this->getMState()->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > VertexMasses ( d_vertexMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
+        auto totalMass = sofa::helper::getWriteOnlyAccessor(d_totalMass);
 
         // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
+        const auto& densityM = getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
 
         for (unsigned int i = 0; i<hexahedronRemoved.size(); ++i)
@@ -920,10 +920,10 @@ void MeshMatrixMass<DataTypes, MassType>::applyEdgeMassHexahedronDestruction(con
         const auto& positions = this->getMState()->read(posid)->getValue();
 
         helper::WriteAccessor< Data< type::vector<MassType> > > EdgeMasses ( d_edgeMass );
-        helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
+        auto totalMass = sofa::helper::getWriteOnlyAccessor(d_totalMass);
 
         // Initialisation
-        const type::vector<Real> densityM = getMassDensity();
+        const auto& densityM = getMassDensity();
         typename DataTypes::Real mass = typename DataTypes::Real(0);
 
         for (unsigned int i = 0; i<hexahedronRemoved.size(); ++i)
@@ -1054,7 +1054,7 @@ void MeshMatrixMass<DataTypes, MassType>::initTopologyHandlers(sofa::core::topol
     d_vertexMass.setCreationCallback([this](Index pointIndex, MassType& m,
         const core::topology::BaseMeshTopology::Point& point,
         const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< double >& coefs)
+        const sofa::type::vector< SReal >& coefs)
     {
         applyVertexMassCreation(pointIndex, m, point, ancestors, coefs);
     });
@@ -1068,7 +1068,7 @@ void MeshMatrixMass<DataTypes, MassType>::initTopologyHandlers(sofa::core::topol
     d_edgeMass.setCreationCallback([this](Index edgeIndex, MassType& EdgeMass,
         const core::topology::BaseMeshTopology::Edge& edge,
         const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< double >& coefs)
+        const sofa::type::vector< SReal >& coefs)
     {
         applyEdgeMassCreation(edgeIndex, EdgeMass, edge, ancestors, coefs);
     });
@@ -1281,8 +1281,8 @@ void MeshMatrixMass<DataTypes, MassType>::printMass()
         return;
 
     //Info post-init
-    const MassVector &vertexM = d_vertexMass.getValue();
-    const MassVector &mDensity = d_massDensity.getValue();
+    const auto &vertexM = d_vertexMass.getValue();
+    const auto &mDensity = d_massDensity.getValue();
 
     Real average_vertex = 0.0;
     Real min_vertex = std::numeric_limits<Real>::max();
@@ -1331,8 +1331,9 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
     clear();
 
     // prepare to store info in the vertex array
-    helper::WriteAccessor < Data < MassVector > > my_vertexMassInfo = d_vertexMass;
-    helper::WriteAccessor < Data < MassVector > > my_edgeMassInfo = d_edgeMass;
+
+    auto my_vertexMassInfo = sofa::helper::getWriteOnlyAccessor(d_vertexMass);
+    auto my_edgeMassInfo = sofa::helper::getWriteOnlyAccessor(d_edgeMass);
 
     unsigned int ndof = this->mstate->getSize();
     unsigned int nbEdges=m_topology->getNbEdges();
@@ -1342,9 +1343,9 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
     my_edgeMassInfo.resize(nbEdges);
 
     const type::vector< Index > emptyAncestor;
-    const type::vector< double > emptyCoefficient;
+    const type::vector< SReal > emptyCoefficient;
     const type::vector< type::vector< Index > > emptyAncestors;
-    const type::vector< type::vector< double > > emptyCoefficients;
+    const type::vector< type::vector< SReal > > emptyCoefficients;
 
     // set vertex tensor to 0
     for (Index i = 0; i<ndof; ++i)
@@ -1506,7 +1507,7 @@ void MeshMatrixMass<DataTypes, MassType>::checkTotalMassInit()
 template <class DataTypes, class MassType>
 bool MeshMatrixMass<DataTypes, MassType>::checkVertexMass()
 {
-    const sofa::type::vector<Real> &vertexMass = d_vertexMass.getValue();
+    const auto &vertexMass = d_vertexMass.getValue();
     //Check size of the vector
     if (vertexMass.size() != size_t(m_topology->getNbPoints()))
     {
@@ -1534,7 +1535,7 @@ void MeshMatrixMass<DataTypes, MassType>::initFromVertexMass()
 {
     msg_info() << "vertexMass information is used";
 
-    const sofa::type::vector<MassType> vertexMass = d_vertexMass.getValue();
+    const auto& vertexMass = d_vertexMass.getValue();
     Real totalMassSave = 0.0;
     for(size_t i=0; i<vertexMass.size(); i++)
     {
@@ -1545,7 +1546,7 @@ void MeshMatrixMass<DataTypes, MassType>::initFromVertexMass()
 
     computeMass();
 
-    helper::WriteAccessor<Data<MassVector> > vertexMassInfo = d_vertexMass;
+    auto vertexMassInfo = sofa::helper::getWriteOnlyAccessor(d_vertexMass);
     //Compute mass (which is equal to the volume since massDensity = 1.0)
     Real volume = 0.0;
     for(size_t i=0; i<vertexMassInfo.size(); i++)
@@ -1563,7 +1564,7 @@ void MeshMatrixMass<DataTypes, MassType>::initFromVertexMass()
 template <class DataTypes, class MassType>
 bool MeshMatrixMass<DataTypes, MassType>::checkEdgeMass()
 {
-    const sofa::type::vector<Real> edgeMass = d_edgeMass.getValue();
+    const auto& edgeMass = d_edgeMass.getValue();
     //Check size of the vector
     if (edgeMass.size() != m_topology->getNbEdges())
     {
@@ -1629,8 +1630,8 @@ void MeshMatrixMass<DataTypes, MassType>::initFromVertexAndEdgeMass()
 template <class DataTypes, class MassType>
 bool MeshMatrixMass<DataTypes, MassType>::checkMassDensity()
 {
-    const sofa::type::vector<Real> &massDensity = d_massDensity.getValue();
-    Real density = massDensity[0];
+    const auto &massDensity = d_massDensity.getValue();
+    auto density = massDensity[0];
     size_t sizeElements = 0;
 
     //Check size of the vector
@@ -1689,7 +1690,7 @@ bool MeshMatrixMass<DataTypes, MassType>::checkMassDensity()
         }
         else
         {
-            helper::WriteAccessor<Data<sofa::type::vector< Real > > > massDensityAccess = d_massDensity;
+            auto massDensityAccess = sofa::helper::getWriteOnlyAccessor(d_massDensity);
             massDensityAccess.clear();
             massDensityAccess.resize(sizeElements);
 
@@ -1725,7 +1726,7 @@ void MeshMatrixMass<DataTypes, MassType>::initFromMassDensity()
     // compute vertexMass and edgeMass vector with input density
     computeMass();
 
-    const MassVector &vertexMassInfo = d_vertexMass.getValue();
+    const auto &vertexMassInfo = d_vertexMass.getValue();
     
     // Sum the mass per vertices and apply massLumping coef
     Real sumMass = std::accumulate(vertexMassInfo.begin(), vertexMassInfo.end(), Real(0));
@@ -1733,7 +1734,7 @@ void MeshMatrixMass<DataTypes, MassType>::initFromMassDensity()
     if (!isLumped())
     {
         // Add mass per edges if not lumped, *2 as it is added to both edge vertices
-        helper::WriteAccessor<Data<MassVector> > edgeMass = d_edgeMass;
+        auto edgeMass = sofa::helper::getWriteOnlyAccessor(d_edgeMass);
         sumMass += std::accumulate(edgeMass.begin(), edgeMass.end(), Real(0)) * 2.0;
     }
     else
@@ -1774,14 +1775,14 @@ void MeshMatrixMass<DataTypes, MassType>::initFromTotalMass()
     setTotalMass(totalMassCpy);
 
     // Apply the real density no nead to recompute vertexMass from the geometry as all vertices have the same density in this case
-    helper::WriteAccessor<Data<MassVector> > vertexMass = d_vertexMass;
+    auto vertexMass = sofa::helper::getWriteOnlyAccessor(d_vertexMass);
     for (auto& vm : vertexMass)
     {
         vm *= md;
     }
 
     // Same for edgeMass
-    helper::WriteAccessor<Data<MassVector> > edgeMass = d_edgeMass;
+    auto edgeMass = sofa::helper::getWriteOnlyAccessor(d_edgeMass);
     for (auto& em : edgeMass)
     {
         em *= md;
@@ -1790,9 +1791,9 @@ void MeshMatrixMass<DataTypes, MassType>::initFromTotalMass()
 
 
 template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::setVertexMass(sofa::type::vector< Real > vertexMass)
+void MeshMatrixMass<DataTypes, MassType>::setVertexMass(sofa::type::vector< MassType > vertexMass)
 {
-    const sofa::type::vector< Real > currentVertexMass = d_vertexMass.getValue();
+    const auto& currentVertexMass = d_vertexMass.getValue();
     d_vertexMass.setValue(vertexMass);
 
     if(!checkVertexMass())
@@ -1809,9 +1810,9 @@ void MeshMatrixMass<DataTypes, MassType>::setVertexMass(sofa::type::vector< Real
 
 
 template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::setMassDensity(sofa::type::vector< Real > massDensity)
+void MeshMatrixMass<DataTypes, MassType>::setMassDensity(sofa::type::vector< MassType > massDensity)
 {
-    const sofa::type::vector< Real > currentMassDensity = d_massDensity.getValue();
+    const auto& currentMassDensity = d_massDensity.getValue();
     d_massDensity.setValue(massDensity);
 
     if(!checkMassDensity())
@@ -1824,10 +1825,11 @@ void MeshMatrixMass<DataTypes, MassType>::setMassDensity(sofa::type::vector< Rea
 
 
 template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::setMassDensity(Real massDensityValue)
+void MeshMatrixMass<DataTypes, MassType>::setMassDensity(MassType massDensityValue)
 {
-    const sofa::type::vector< Real > currentMassDensity = d_massDensity.getValue();
-    helper::WriteAccessor<Data<sofa::type::vector< Real > > > massDensity = d_massDensity;
+    const auto currentMassDensity = d_massDensity.getValue();
+    auto massDensity = sofa::helper::getWriteOnlyAccessor(d_massDensity);
+
     massDensity.clear();
     massDensity.resize(1);
     massDensity[0] = massDensityValue;
@@ -1843,9 +1845,10 @@ void MeshMatrixMass<DataTypes, MassType>::setMassDensity(Real massDensityValue)
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::addMassDensity(const sofa::type::vector< Index >& indices, 
     const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-    const sofa::type::vector< sofa::type::vector< double > >& coefs)
+    const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
-    helper::WriteOnlyAccessor<Data<sofa::type::vector< Real > > > massDensity = d_massDensity;
+    auto massDensity = sofa::helper::getWriteOnlyAccessor(d_massDensity);
+
     for (unsigned int id = 0; id < indices.size(); ++id)
     {
         // if no ancestor apply the first density of the vector
@@ -1868,7 +1871,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMassDensity(const sofa::type::vecto
 }
 
 template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::setTotalMass(Real totalMass)
+void MeshMatrixMass<DataTypes, MassType>::setTotalMass(MassType totalMass)
 {
     const Real currentTotalMass = d_totalMass.getValue();
     d_totalMass.setValue(totalMass);
@@ -1882,14 +1885,14 @@ void MeshMatrixMass<DataTypes, MassType>::setTotalMass(Real totalMass)
 
 
 template <class DataTypes, class MassType>
-const sofa::type::vector< typename MeshMatrixMass<DataTypes, MassType>::Real > &  MeshMatrixMass<DataTypes, MassType>::getVertexMass()
+const sofa::type::vector< MassType > &  MeshMatrixMass<DataTypes, MassType>::getVertexMass()
 {
     return d_vertexMass.getValue();
 }
 
 
 template <class DataTypes, class MassType>
-const sofa::type::vector< typename MeshMatrixMass<DataTypes, MassType>::Real > &  MeshMatrixMass<DataTypes, MassType>::getMassDensity()
+const sofa::type::vector< MassType > &  MeshMatrixMass<DataTypes, MassType>::getMassDensity()
 {
     return d_massDensity.getValue();
 }
@@ -1909,8 +1912,9 @@ void MeshMatrixMass<DataTypes, MassType>::copyVertexMass(){}
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::clear()
 {
-    helper::WriteOnlyAccessor < Data < MassVector > > vertexMass = d_vertexMass;
-    helper::WriteOnlyAccessor < Data < MassVector > > edgeMass = d_edgeMass;
+    auto vertexMass = sofa::helper::getWriteOnlyAccessor(d_vertexMass);
+    auto edgeMass = sofa::helper::getWriteOnlyAccessor(d_edgeMass);
+
     vertexMass.clear();
     edgeMass.clear();
 }
@@ -1920,8 +1924,8 @@ void MeshMatrixMass<DataTypes, MassType>::clear()
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams*, DataVecDeriv& vres, const DataVecDeriv& vdx, SReal factor)
 {
-    const MassVector &vertexMass= d_vertexMass.getValue();
-    const MassVector &edgeMass= d_edgeMass.getValue();
+    const auto &vertexMass= d_vertexMass.getValue();
+    const auto &edgeMass= d_edgeMass.getValue();
 
     helper::WriteAccessor< DataVecDeriv > res = vres;
     helper::ReadAccessor< DataVecDeriv > dx = vdx;
@@ -1994,7 +1998,7 @@ void MeshMatrixMass<DataTypes, MassType>::accFromF(const core::MechanicalParams*
 
     helper::WriteAccessor< DataVecDeriv > _a = a;
     const VecDeriv& _f = f.getValue();
-    const MassVector &vertexMass= d_vertexMass.getValue();
+    const auto &vertexMass= d_vertexMass.getValue();
 
     for (unsigned int i=0; i<vertexMass.size(); i++)
     {
@@ -2013,7 +2017,7 @@ void MeshMatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams*
 
     helper::WriteAccessor< DataVecDeriv > f = vf;
 
-    const MassVector &vertexMass= d_vertexMass.getValue();
+    const auto &vertexMass= d_vertexMass.getValue();
 
     // gravity
     type::Vec3d g ( this->getContext()->getGravity() );
@@ -2029,8 +2033,8 @@ void MeshMatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams*
 template <class DataTypes, class MassType>
 SReal MeshMatrixMass<DataTypes, MassType>::getKineticEnergy( const core::MechanicalParams*, const DataVecDeriv& vv ) const
 {
-    const MassVector &vertexMass= d_vertexMass.getValue();
-    const MassVector &edgeMass= d_edgeMass.getValue();
+    const auto &vertexMass= d_vertexMass.getValue();
+    const auto &edgeMass= d_edgeMass.getValue();
 
     helper::ReadAccessor< DataVecDeriv > v = vv;
 
@@ -2060,7 +2064,7 @@ SReal MeshMatrixMass<DataTypes, MassType>::getKineticEnergy( const core::Mechani
 template <class DataTypes, class MassType>
 SReal MeshMatrixMass<DataTypes, MassType>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx) const
 {
-    const MassVector &vertexMass= d_vertexMass.getValue();
+    const auto &vertexMass= d_vertexMass.getValue();
 
     helper::ReadAccessor< DataVecCoord > x = vx;
 
@@ -2112,8 +2116,8 @@ void MeshMatrixMass<DataTypes, MassType>::addGravityToV(const core::MechanicalPa
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    const MassVector &vertexMass= d_vertexMass.getValue();
-    const MassVector &edgeMass= d_edgeMass.getValue();
+    const auto &vertexMass= d_vertexMass.getValue();
+    const auto &edgeMass= d_edgeMass.getValue();
 
     size_t nbEdges=m_topology->getNbEdges();
     sofa::Index v0,v1;
@@ -2194,7 +2198,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
 template <class DataTypes, class MassType>
 SReal MeshMatrixMass<DataTypes, MassType>::getElementMass(Index index) const
 {
-    const MassVector &vertexMass= d_vertexMass.getValue();
+    const auto &vertexMass= d_vertexMass.getValue();
     SReal mass = vertexMass[index] * m_massLumpingCoeff;
 
     return mass;
@@ -2226,7 +2230,7 @@ void MeshMatrixMass<DataTypes, MassType>::draw(const core::visual::VisualParams*
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    const MassVector &vertexMass= d_vertexMass.getValue();
+    const auto &vertexMass= d_vertexMass.getValue();
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Coord gravityCenter;
