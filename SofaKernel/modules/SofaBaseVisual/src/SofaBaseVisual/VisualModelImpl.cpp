@@ -1267,7 +1267,7 @@ void VisualModelImpl::computeUVSphereProjection()
     sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
     this->computeBBox(vparams);
 
-    Vector3 center = (this->f_bbox.getValue().minBBox() + this->f_bbox.getValue().maxBBox())*0.5f;
+    auto center = (this->f_bbox.getValue().minBBox() + this->f_bbox.getValue().maxBBox())*0.5f;
     
     // Map mesh vertices to sphere
     // transform cart to spherical coordinates (r, theta, phi) and sphere to cart back with radius = 1

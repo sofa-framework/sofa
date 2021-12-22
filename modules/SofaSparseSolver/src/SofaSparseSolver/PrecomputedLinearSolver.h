@@ -117,7 +117,7 @@ public:
 
 protected :
     template<class JMatrix>
-    void ComputeResult(linearalgebra::BaseMatrix * result,JMatrix& J, float fact);
+    void ComputeResult(linearalgebra::BaseMatrix * result,JMatrix& J, SReal fact);
 
     PrecomputedLinearSolverInternalData<TMatrix,TVector> internalData;
 
