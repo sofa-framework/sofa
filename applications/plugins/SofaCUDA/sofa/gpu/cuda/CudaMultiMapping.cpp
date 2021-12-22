@@ -19,20 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef OPTITRACKNATNET_CONFIG_H
-#define OPTITRACKNATNET_CONFIG_H
+#include <sofa/core/MultiMapping.inl>
+#include "CudaTypes.h"
 
-#ifdef _WIN32
-#  define WIN32_LEAN_AND_MEAN
-#endif
+namespace sofa::core
+{
+    using namespace sofa::gpu::cuda;
 
-#include <sofa/config.h>
-
-#ifdef SOFA_BUILD_OPTITRACKNATNET
-#  define SOFA_TARGET OptiTrackNatNet
-#  define SOFA_OPTITRACKNATNET_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_OPTITRACKNATNET_API  SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-#endif
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec1Types, CudaVec1Types >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec2Types, CudaVec1Types >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec3Types, CudaVec3Types >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec3Types, CudaVec2Types >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec3Types, CudaVec1Types >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec6Types, CudaVec1Types >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3Types, CudaVec1Types >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3Types, CudaVec3Types >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3Types, CudaVec6Types >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3Types, CudaRigid3Types >;
+}//namespace sofa::component::mapping

@@ -14,8 +14,6 @@ set(HEADER_FILES
     config.h.in
     
     ### Common
-    sofa/gpu/cuda/mycuda.h
-    sofa/gpu/cuda/CudaTypes.h    
     sofa/gpu/cuda/CudaBaseVector.h
     sofa/gpu/cuda/CudaCommon.h
     sofa/gpu/cuda/CudaMath.h
@@ -26,6 +24,8 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaMemoryManager.h
     sofa/gpu/cuda/CudaScan.h
     sofa/gpu/cuda/CudaSort.h
+    sofa/gpu/cuda/CudaTypes.h
+    sofa/gpu/cuda/mycuda.h
 
     ### Mechanical
     sofa/gpu/cuda/CudaMechanicalObject.h
@@ -34,58 +34,58 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaParticleSource.inl
 
     ### Mappings
-    sofa/gpu/cuda/CudaIdentityMapping.h
-    sofa/gpu/cuda/CudaIdentityMapping.inl
     sofa/gpu/cuda/CudaBarycentricMapping.h
     sofa/gpu/cuda/CudaBarycentricMapping.inl
     sofa/gpu/cuda/CudaBarycentricMappingRigid.h
+    sofa/gpu/cuda/CudaIdentityMapping.h
+    sofa/gpu/cuda/CudaIdentityMapping.inl
     sofa/gpu/cuda/CudaRigidMapping.h
     sofa/gpu/cuda/CudaRigidMapping.inl
     sofa/gpu/cuda/CudaSubsetMapping.h
     sofa/gpu/cuda/CudaSubsetMapping.inl
-    
+
 
     ### Mass
-    sofa/gpu/cuda/CudaUniformMass.h
-    sofa/gpu/cuda/CudaUniformMass.inl
     sofa/gpu/cuda/CudaDiagonalMass.h
     sofa/gpu/cuda/CudaDiagonalMass.inl
     sofa/gpu/cuda/CudaMeshMatrixMass.h
     sofa/gpu/cuda/CudaMeshMatrixMass.inl
+    sofa/gpu/cuda/CudaUniformMass.h
+    sofa/gpu/cuda/CudaUniformMass.inl
     
 
     ### FEM
-    sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.h
-    sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.inl
-    sofa/gpu/cuda/CudaTetrahedronFEMForceField.h
-    sofa/gpu/cuda/CudaTetrahedronFEMForceField.inl
-    #sofa/gpu/cuda/CudaTetrahedronTLEDForceField.h
-    #sofa/gpu/cuda/CudaTetrahedronTLEDForceField.inl
+    sofa/gpu/cuda/CudaHexahedronTLEDForceField.h
     sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.h
     sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.inl
     sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.h
     sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.inl
-    sofa/gpu/cuda/CudaHexahedronTLEDForceField.h  
+    sofa/gpu/cuda/CudaTetrahedronFEMForceField.h
+    sofa/gpu/cuda/CudaTetrahedronFEMForceField.inl
+    #sofa/gpu/cuda/CudaTetrahedronTLEDForceField.h
+    #sofa/gpu/cuda/CudaTetrahedronTLEDForceField.inl
+    sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.h
+    sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.inl
 
     ### ForceFields
-    sofa/gpu/cuda/CudaSpringForceField.h
-    sofa/gpu/cuda/CudaSpringForceField.inl
+    sofa/gpu/cuda/CudaEllipsoidForceField.h
+    sofa/gpu/cuda/CudaEllipsoidForceField.inl
     sofa/gpu/cuda/CudaLinearForceField.h
     sofa/gpu/cuda/CudaLinearForceField.inl
     sofa/gpu/cuda/CudaPlaneForceField.h
     sofa/gpu/cuda/CudaPlaneForceField.inl
     sofa/gpu/cuda/CudaSphereForceField.h
     sofa/gpu/cuda/CudaSphereForceField.inl
-    sofa/gpu/cuda/CudaEllipsoidForceField.h
-    sofa/gpu/cuda/CudaEllipsoidForceField.inl
-    
+    sofa/gpu/cuda/CudaSpringForceField.h
+    sofa/gpu/cuda/CudaSpringForceField.inl
+
     
 
     ### Collisions
-    sofa/gpu/cuda/CudaPointModel.h
     sofa/gpu/cuda/CudaLineModel.h
-    sofa/gpu/cuda/CudaTriangleModel.h
+    sofa/gpu/cuda/CudaPointModel.h
     sofa/gpu/cuda/CudaSphereModel.h
+    sofa/gpu/cuda/CudaTriangleModel.h
 
     ### Constraints
     sofa/gpu/cuda/CudaFixedConstraint.h
@@ -109,7 +109,6 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaSetTopology.cpp
 
     ### Mappings
-    sofa/gpu/cuda/CudaIdentityMapping.cpp
     sofa/gpu/cuda/CudaBarycentricMapping-3f.cpp
     sofa/gpu/cuda/CudaBarycentricMapping-3f1-3f.cpp
     sofa/gpu/cuda/CudaBarycentricMapping-3f1-d.cpp
@@ -118,39 +117,42 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaBarycentricMapping-f.cpp
     sofa/gpu/cuda/CudaBarycentricMapping.cpp
     sofa/gpu/cuda/CudaBarycentricMappingRigid.cpp
+    sofa/gpu/cuda/CudaIdentityMapping.cpp
+    sofa/gpu/cuda/CudaMultiMapping.cpp
     sofa/gpu/cuda/CudaRigidMapping.cpp
     sofa/gpu/cuda/CudaSubsetMapping.cpp
+    sofa/gpu/cuda/CudaSubsetMultiMapping.cpp
 
     ### Mass
-    sofa/gpu/cuda/CudaUniformMass.cpp
     sofa/gpu/cuda/CudaDiagonalMass.cpp
     sofa/gpu/cuda/CudaMeshMatrixMass.cpp
+    sofa/gpu/cuda/CudaUniformMass.cpp
 
     ### FEM
-    sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cpp
-    sofa/gpu/cuda/CudaTetrahedronFEMForceField.cpp
-    #sofa/gpu/cuda/CudaTetrahedronTLEDForceField.cpp
+    sofa/gpu/cuda/CudaHexahedronTLEDForceField.cpp
     sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.cpp
     sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.cpp
-    sofa/gpu/cuda/CudaHexahedronTLEDForceField.cpp
+    sofa/gpu/cuda/CudaTetrahedronFEMForceField.cpp
+    #sofa/gpu/cuda/CudaTetrahedronTLEDForceField.cpp
+    sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cpp
 
     ### ForceFields
-    sofa/gpu/cuda/CudaSpringForceField.cpp
-    sofa/gpu/cuda/CudaLinearForceField.cpp
-    sofa/gpu/cuda/CudaPlaneForceField.cpp
-    sofa/gpu/cuda/CudaSphereForceField.cpp
+    sofa/gpu/cuda/CudaConstantForceField.cpp
     sofa/gpu/cuda/CudaEllipsoidForceField.cpp
-    
+    sofa/gpu/cuda/CudaLinearForceField.cpp
     sofa/gpu/cuda/CudaPenalityContactForceField.cpp
+    sofa/gpu/cuda/CudaPlaneForceField.cpp
     sofa/gpu/cuda/CudaRestShapeSpringsForceField.cpp
+    sofa/gpu/cuda/CudaSphereForceField.cpp
+    sofa/gpu/cuda/CudaSpringForceField.cpp
     
 
     ### Collisions
     sofa/gpu/cuda/CudaCollision.cpp
-    sofa/gpu/cuda/CudaPointModel.cpp
     sofa/gpu/cuda/CudaLineModel.cpp
-    sofa/gpu/cuda/CudaTriangleModel.cpp
+    sofa/gpu/cuda/CudaPointModel.cpp
     sofa/gpu/cuda/CudaSphereModel.cpp
+    sofa/gpu/cuda/CudaTriangleModel.cpp
 
     ### Constraints
     sofa/gpu/cuda/CudaFixedConstraint.cpp
@@ -182,26 +184,26 @@ set(CUDA_SOURCES
     sofa/gpu/cuda/CudaSubsetMapping.cu
 
     ### Mass
-    sofa/gpu/cuda/CudaUniformMass.cu
     sofa/gpu/cuda/CudaDiagonalMass.cu
     sofa/gpu/cuda/CudaMeshMatrixMass.cu
+    sofa/gpu/cuda/CudaUniformMass.cu
 
     ### FEM
-    sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cu
+    sofa/gpu/cuda/CudaHexahedronTLEDForceField.cu
+    sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.cu
+    sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.cu
     sofa/gpu/cuda/CudaTetrahedronFEMForceField.cu
     sofa/gpu/cuda/CudaTetrahedronTLEDForceField.cu
-    sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.cu
-    sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.cu
-    sofa/gpu/cuda/CudaHexahedronTLEDForceField.cu
+    sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cu
     
 
     ### ForceFields
-    sofa/gpu/cuda/CudaSpringForceField.cu
+    sofa/gpu/cuda/CudaEllipsoidForceField.cu
     sofa/gpu/cuda/CudaLinearForceField.cu
+    sofa/gpu/cuda/CudaPenalityContactForceField.cu
     sofa/gpu/cuda/CudaPlaneForceField.cu
     sofa/gpu/cuda/CudaSphereForceField.cu
-    sofa/gpu/cuda/CudaEllipsoidForceField.cu
-    sofa/gpu/cuda/CudaPenalityContactForceField.cu
+    sofa/gpu/cuda/CudaSpringForceField.cu
 
     ### Collisions
     
