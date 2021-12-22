@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <SofaBoundaryCondition/ConstantForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-#include "CudaTypes.h"
+#include <sofa/gpu/cuda/CudaTypes.h>
 
 namespace sofa::gpu::cuda
 {

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/MultiMapping.inl>
-#include "CudaTypes.h"
+#include <sofa/gpu/cuda/CudaTypes.h>
 
 namespace sofa::core
 {
