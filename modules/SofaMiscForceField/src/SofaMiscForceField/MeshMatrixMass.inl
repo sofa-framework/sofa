@@ -1535,7 +1535,7 @@ void MeshMatrixMass<DataTypes, MassType>::initFromVertexMass()
 {
     msg_info() << "vertexMass information is used";
 
-    const auto& vertexMass = d_vertexMass.getValue();
+    const auto vertexMass = d_vertexMass.getValue();
     Real totalMassSave = 0.0;
     for(size_t i=0; i<vertexMass.size(); i++)
     {
