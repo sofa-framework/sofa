@@ -329,8 +329,8 @@ void LinearMovementConstraint<DataTypes>::findKeyTimes()
                 nextM = *it_m;
                 finished = true;
             }
-            it_t++;
-            it_m++;
+            ++it_t;
+            ++it_m;
         }
     }
 }
@@ -342,9 +342,9 @@ void LinearMovementConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::Ba
     static const unsigned blockSize = DataTypes::deriv_total_size;
 
     // clears the rows and columns associated with fixed particles
-    for(SetIndexArray::const_iterator it= m_indices.getValue().begin(), iend=m_indices.getValue().end(); it!=iend; it++ )
+    for (const auto id : m_indices.getValue())
     {
-        M->clearRowsCols( offset + (*it) * blockSize, offset + (*it+1) * (blockSize) );
+        M->clearRowsCols( offset + id * blockSize, offset + (id+1) * blockSize );
     }
     
 }

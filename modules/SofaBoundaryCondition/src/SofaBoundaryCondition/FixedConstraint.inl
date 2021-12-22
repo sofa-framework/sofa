@@ -175,9 +175,9 @@ void FixedConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix*
     else
     {
         // clears the rows and columns associated with fixed particles
-        for(SetIndexArray::const_iterator it= d_indices.getValue().begin(), iend=d_indices.getValue().end(); it!=iend; it++ )
+        for (const auto id : d_indices.getValue())
         {
-            M->clearRowsCols( offset + (*it) * blockSize, offset + (*it+1) * (blockSize) );
+            M->clearRowsCols( offset + id * blockSize, offset + (id+1) * blockSize );
         }
     }
 }

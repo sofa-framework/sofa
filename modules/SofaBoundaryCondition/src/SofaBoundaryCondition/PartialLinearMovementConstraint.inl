@@ -394,8 +394,8 @@ void PartialLinearMovementConstraint<DataTypes>::findKeyTimes()
                 nextM = *it_m;
                 finished = true;
             }
-            it_t++;
-            it_m++;
+            ++it_t;
+            ++it_m;
         }
     }
 }

@@ -147,8 +147,8 @@ void LinearForceField<DataTypes>::addForce(const core::MechanicalParams* /*mpara
                     nextF = *it_f;
                     finished = true;
                 }
-                it_t++;
-                it_f++;
+                ++it_t;
+                ++it_f;
             }
             if (finished)
             {

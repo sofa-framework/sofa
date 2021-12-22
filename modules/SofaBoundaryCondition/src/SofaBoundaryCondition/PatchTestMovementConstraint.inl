@@ -295,9 +295,9 @@ void PatchTestMovementConstraint<DataTypes>::projectMatrix( sofa::linearalgebra:
     // clears the rows and columns associated with constrained particles
     const unsigned blockSize = DataTypes::deriv_total_size;
 
-    for(SetIndexArray::const_iterator it= d_indices.getValue().begin(), iend=d_indices.getValue().end(); it!=iend; it++ )
+    for (const auto id : d_indices.getValue())
     {
-        M->clearRowsCols( offset + (*it) * blockSize, offset + (*it+1) * (blockSize) );
+        M->clearRowsCols( offset + id * blockSize, offset + (id+1) * blockSize );
     }
 
 }

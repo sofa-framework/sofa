@@ -204,9 +204,9 @@ void AffineMovementConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::Ba
     // clears the rows and columns associated with constrained particles
     const unsigned blockSize = DataTypes::deriv_total_size;
 
-    for(SetIndexArray::const_iterator it= m_indices.getValue().begin(), iend=m_indices.getValue().end(); it!=iend; it++ )
+    for (const auto id : m_indices.getValue())
     {
-        M->clearRowsCols((*it) * blockSize,(*it+1) * (blockSize) );
+        M->clearRowsCols( id * blockSize, (id+1) * blockSize );
     }
 }
 

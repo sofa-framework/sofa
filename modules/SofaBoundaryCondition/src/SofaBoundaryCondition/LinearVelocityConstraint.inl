@@ -301,8 +301,8 @@ void LinearVelocityConstraint<DataTypes>::findKeyTimes()
                 nextV = *it_v;
                 finished = true;
             }
-            it_t++;
-            it_v++;
+            ++it_t;
+            ++it_v;
         }
     }
 }// LinearVelocityConstraint::findKeyTimes

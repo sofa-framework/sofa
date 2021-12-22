@@ -154,7 +154,7 @@ void  ProjectDirectionConstraint<DataTypes>::reinit()
         if( it != tmp.end() && i==*it )  // constrained particle: set diagonal to projection block, and  the cursor to the next constraint
         {
             jacobian.insertBackBlock(i,i,bProjection);
-            it++;
+            ++it;
         }
         else           // unconstrained particle: set diagonal to identity block
         {
