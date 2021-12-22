@@ -715,7 +715,7 @@ void SparseGridTopology::voxelizeTriangleMesh(helper::io::Mesh* mesh,
         const Vector3& vertex = vertices[i];
         Index index = regularGrid->findHexa(vertex);
 
-        if (index > 0)
+        if (index != InvalidID)
             regularGridTypes[index] = BOUNDARY;
 
         // Case where 'findHexa' did not find the right hexa
