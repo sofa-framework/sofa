@@ -7,14 +7,14 @@
     <RequiredPlugin name="SofaOpenglVisual"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin name="SofaSimpleFem"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
     <RequiredPlugin name="SofaTopologyMapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping, Tetra2TriangleTopologicalMapping] -->
-    <VisualStyle displayFlags="hideBehavior showVisual" />
+    <VisualStyle displayFlags="showBehaviorModels showVisual" />
 	
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
-    <DefaultPipeline name="CollisionPipeline" verbose="0" />
+    <DefaultPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager name="collision response" response="default" />
+    <DefaultContactManager response="default" />
     <DiscreteIntersection/>
     
     <Node name="Beam">
@@ -28,7 +28,7 @@
     
     <Node name="TetrahedronFEMForceField-GPU-Green">
         <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <CGLinearSolver iterations="20" name="linear solver" tolerance="1.0e-6" threshold="1.0e-6" />
         
         <MechanicalObject position="@../Beam/grid.position" name="Volume" template="CudaVec3f"/>
 
@@ -40,7 +40,7 @@
         <BoxROI name="ROI1" box="-0.1 5 -3 0.1 11 3" drawBoxes="1" />
         
         <FixedConstraint indices="@ROI1.indices" />
-        <TetrahedronFEMForceField template="CudaVec3f" name="FEM" computeGlobalMatrix="false" method="large" poissonRatio="0.3" youngModulus="1000" />
+        <TetrahedronFEMForceField template="CudaVec3f" name="FEM" computeGlobalMatrix="false" method="large" poissonRatio="0.3" youngModulus="2000" />
         
         <Node name="surface">
             <TriangleSetTopologyContainer name="Container" />
@@ -58,7 +58,7 @@
    
     <Node name="TetrahedralCorotational-CPU-red">
         <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <CGLinearSolver iterations="20" name="linear solver" tolerance="1.0e-6" threshold="1.0e-6" />
         
         <MechanicalObject position="@../Beam/grid.position" name="Volume" template="Vec3"/>
 
@@ -70,7 +70,7 @@
         <BoxROI name="ROI1" box="-0.1 5 -3 0.1 11 3" drawBoxes="1" />
         
         <FixedConstraint indices="@ROI1.indices" />
-        <TetrahedronFEMForceField template="Vec3" name="FEM" computeGlobalMatrix="false" method="large" poissonRatio="0.3" youngModulus="1000" />
+        <TetrahedronFEMForceField template="Vec3" name="FEM" computeGlobalMatrix="false" method="large" poissonRatio="0.3" youngModulus="2000" />
         
         <Node name="surface">
             <TriangleSetTopologyContainer name="Container" />
