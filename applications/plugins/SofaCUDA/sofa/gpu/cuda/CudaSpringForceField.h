@@ -25,7 +25,6 @@
 #include "CudaTypes.h"
 #include <SofaDeformable/SpringForceField.h>
 #include <SofaDeformable/StiffSpringForceField.h>
-#include <SofaDeformable/MeshSpringForceField.h>
 
 
 namespace sofa

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMiscMapping/SubsetMultiMapping.inl>
+#include <SofaBaseMechanics/SubsetMultiMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 #include "CudaTypes.h"
 
@@ -29,7 +29,10 @@ namespace sofa::gpu::cuda
 
     // Register in the Factory
     int SubsetMultiMappingCudaClass = core::RegisterObject("Compute a subset of the input MechanicalObjects according to a dof index list")
+        .add< SubsetMultiMapping< CudaVec6Types, CudaVec6Types > >()
         .add< SubsetMultiMapping< CudaVec3Types, CudaVec3Types > >()
+        .add< SubsetMultiMapping< CudaVec3f1Types, CudaVec3f1Types > >()
+        .add< SubsetMultiMapping< CudaVec2Types, CudaVec2Types > >()
         .add< SubsetMultiMapping< CudaVec1Types, CudaVec1Types > >()
         .add< SubsetMultiMapping< CudaRigid3Types, CudaRigid3Types > >()
         .add< SubsetMultiMapping< CudaRigid3Types, CudaVec3Types > >()
@@ -40,7 +43,10 @@ namespace sofa::component::mapping
 {
     using namespace sofa::gpu::cuda;
 
+    template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaVec6Types, CudaVec6Types >;
     template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaVec3Types, CudaVec3Types >;
+    template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaVec3f1Types, CudaVec3f1Types >;
+    template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaVec2Types, CudaVec2Types >;
     template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaVec1Types, CudaVec1Types >;
     template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaRigid3Types, CudaRigid3Types >;
     template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaRigid3Types, CudaVec3Types >;

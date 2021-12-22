@@ -23,6 +23,7 @@
 #include "CudaSpringForceField.inl"
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
+#include <SofaDeformable/MeshSpringForceField.inl>
 #include <SofaGeneralObjectInteraction/BoxStiffSpringForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 

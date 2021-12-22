@@ -26,14 +26,18 @@ namespace sofa::core
 {
     using namespace sofa::gpu::cuda;
 
-    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec1Types, CudaVec1Types >;
-    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec2Types, CudaVec1Types >;
-    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec3Types, CudaVec3Types >;
-    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec3Types, CudaVec2Types >;
-    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec3Types, CudaVec1Types >;
-    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec6Types, CudaVec1Types >;
-    template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3Types, CudaVec1Types >;
-    template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3Types, CudaVec3Types >;
-    template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3Types, CudaVec6Types >;
-    template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3Types, CudaRigid3Types >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec1fTypes, CudaVec1fTypes >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec2fTypes, CudaVec1fTypes >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec2fTypes, CudaVec2fTypes >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec3fTypes, CudaVec3fTypes >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec3fTypes, CudaVec2fTypes >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec3fTypes, CudaVec1fTypes >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec6fTypes, CudaVec1fTypes >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec6fTypes, CudaVec6fTypes >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3fTypes, CudaVec1fTypes >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3fTypes, CudaVec3fTypes >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3fTypes, CudaVec6fTypes >;
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3fTypes, CudaRigid3fTypes >;
+
+    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec3f1Types, CudaVec3f1Types >;
 }//namespace sofa::component::mapping
