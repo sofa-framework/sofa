@@ -363,7 +363,7 @@ void EdgePressureForceField<DataTypes>::selectEdgesFromIndices(const type::vecto
 
     sofa::type::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
 
-    unsigned int sizeTest = m_topology->getNbEdges();
+    const unsigned int sizeTest = m_topology->getNbEdges();
 
     for (unsigned int i = 0; i < inputIndices.size(); ++i)
     {
@@ -418,7 +418,7 @@ void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
 
     vparams->drawTool()->saveLastState();
 
-    SReal aSC = arrowSizeCoef.getValue();
+    const SReal aSC = arrowSizeCoef.getValue();
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     vparams->drawTool()->disableLighting();

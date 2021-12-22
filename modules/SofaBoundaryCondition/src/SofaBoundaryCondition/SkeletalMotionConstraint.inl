@@ -343,8 +343,8 @@ void SkeletalMotionConstraint<DataTypes>::applyConstraint(const core::Mechanical
 template <class DataTypes>
 void SkeletalMotionConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
-    unsigned blockSize = DataTypes::deriv_total_size;
-    unsigned size = this->mstate->getSize();
+    const unsigned blockSize = DataTypes::deriv_total_size;
+    const unsigned size = this->mstate->getSize();
     for( unsigned i=0; i<size; i++ )
     {
         M->clearRowsCols( offset + i * blockSize, offset + (i+1) * (blockSize) );

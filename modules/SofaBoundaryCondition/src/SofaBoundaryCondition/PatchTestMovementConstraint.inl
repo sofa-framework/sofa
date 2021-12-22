@@ -112,7 +112,7 @@ void PatchTestMovementConstraint<DataTypes>::init()
 
     const SetIndexArray & indices = d_indices.getValue();
 
-    Index maxIndex=this->mstate->getSize();
+    const Index maxIndex=this->mstate->getSize();
     for (unsigned int i=0; i<indices.size(); ++i)
     {
         const Index index=indices[i];
@@ -246,7 +246,7 @@ void PatchTestMovementConstraint<DataTypes>::projectVelocity(const core::Mechani
 template <class DataTypes>
 void PatchTestMovementConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
 {
-    sofa::simulation::Node::SPtr root = down_cast<sofa::simulation::Node>( this->getContext()->getRootContext() );
+    const sofa::simulation::Node::SPtr root = down_cast<sofa::simulation::Node>( this->getContext()->getRootContext() );
     helper::WriteAccessor<DataVecCoord> x = xData;
     const SetIndexArray & indices = d_indices.getValue();
 
@@ -293,7 +293,7 @@ template <class DataTypes>
 void PatchTestMovementConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
     // clears the rows and columns associated with constrained particles
-    unsigned blockSize = DataTypes::deriv_total_size;
+    const unsigned blockSize = DataTypes::deriv_total_size;
 
     for(SetIndexArray::const_iterator it= d_indices.getValue().begin(), iend=d_indices.getValue().end(); it!=iend; it++ )
     {

@@ -105,7 +105,7 @@ void ProjectDirectionConstraint<DataTypes>::init()
 
     const Indices & indices = f_indices.getValue();
 
-    Index maxIndex=this->mstate->getSize();
+    const Index maxIndex=this->mstate->getSize();
     for (unsigned int i=0; i<indices.size(); ++i)
     {
         const Index index=indices[i];
@@ -143,7 +143,7 @@ void  ProjectDirectionConstraint<DataTypes>::reinit()
 
     // resize the jacobian
     unsigned numBlocks = this->mstate->getSize();
-    unsigned blockSize = DataTypes::deriv_total_size;
+    const unsigned blockSize = DataTypes::deriv_total_size;
     jacobian.resize( numBlocks*blockSize,numBlocks*blockSize );
 
     // fill the jacobian in ascending order

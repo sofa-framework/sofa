@@ -201,7 +201,7 @@ void PlaneForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mpar
     const Real fact = (Real)(-this->d_stiffness.getValue()*sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue()));
     Deriv normal;
     DataTypes::setDPos(normal, d_planeNormal.getValue());
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
+    const sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::linearalgebra::BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
 
@@ -300,7 +300,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
     v2 = v1.cross(normal);
     v2.normalize();
 
-    type::Vec3d center = normal*d_planeD.getValue();
+    const type::Vec3d center = normal*d_planeD.getValue();
     type::Vec3d corners[4];
     corners[0] = center-v1*size-v2*size;
     corners[1] = center+v1*size-v2*size;
@@ -366,8 +366,8 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
-    type::Vec3d normal; normal = d_planeNormal.getValue();
-    SReal size=d_drawSize.getValue();
+    type::Vec3d normal ( d_planeNormal.getValue() );
+    const SReal size = d_drawSize.getValue();
 
     // find a first vector inside the plane
     type::Vec3d v1;
@@ -376,12 +376,10 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
     else if ( 0.0 != normal[2] ) v1 = type::Vec3d(1.0, 0.0, -normal[0]/normal[2]);
     v1.normalize();
 
-    // find a second vector inside the plane and orthogonal to the first
-    type::Vec3d v2;
-    v2 = v1.cross(normal);
+    type::Vec3d v2 = v1.cross(normal);
     v2.normalize();
 
-    type::Vec3d center = normal*d_planeD.getValue();
+    const type::Vec3d center = normal*d_planeD.getValue();
     type::Vec3d corners[4];
     corners[0] = center-v1*size-v2*size;
     corners[1] = center+v1*size-v2*size;

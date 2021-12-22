@@ -235,7 +235,7 @@ void QuadPressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
 
     vparams->drawTool()->disableLighting();
     std::vector<sofa::type::Vector3> vertices;
-    sofa::type::RGBAColor color = sofa::type::RGBAColor::green();
+    const sofa::type::RGBAColor color = sofa::type::RGBAColor::green();
 
     const sofa::type::vector<Index>& my_map = quadPressureMap.getMap2Elements();
 

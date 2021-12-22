@@ -202,7 +202,7 @@ template <class DataTypes>
 void AffineMovementConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned /*offset*/ )
 {
     // clears the rows and columns associated with constrained particles
-    unsigned blockSize = DataTypes::deriv_total_size;
+    const unsigned blockSize = DataTypes::deriv_total_size;
 
     for(SetIndexArray::const_iterator it= m_indices.getValue().begin(), iend=m_indices.getValue().end(); it!=iend; it++ )
     {
@@ -248,9 +248,9 @@ void AffineMovementConstraint<defaulttype::Rigid3Types>::transform(const SetInde
 {
     // Get quaternion and translation values
     RotationMatrix rotationMat(0);
-    Quat quat =  m_quaternion.getValue();
+    const Quat quat =  m_quaternion.getValue();
     quat.toMatrix(rotationMat);
-    Vector3 translation = m_translation.getValue();
+    const Vector3 translation = m_translation.getValue();
 
     // Apply transformation
     for (size_t i=0; i < indices.size() ; ++i)

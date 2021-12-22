@@ -79,13 +79,13 @@ void ConstantForceField<DataTypes>::init()
     else
     {
         msg_info() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
+        const core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
         m_systemSize = state->getSize();
     }
 
 
     const VecIndex & indices = d_indices.getValue();
-    auto indicesSize = indices.size();
+    const auto indicesSize = indices.size();
 
     if (d_indices.isSet() && indicesSize!=0)
     {
@@ -193,7 +193,7 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
         msg_info() << "doUpdateInternal: data indices has changed";
 
         const VecIndex & indices = d_indices.getValue();
-        size_t indicesSize = indices.size();
+        const size_t indicesSize = indices.size();
 
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);
 
@@ -280,7 +280,7 @@ void ConstantForceField<DataTypes>::doUpdateInternal()
 template<class DataTypes>
 bool ConstantForceField<DataTypes>::checkForce(const Deriv& force)
 {
-    size_t size = Deriv::spatial_dimensions;
+    const size_t size = Deriv::spatial_dimensions;
 
     for (size_t i=0; i<size; i++)
     {
@@ -380,7 +380,7 @@ void ConstantForceField<DataTypes>::addForce(const core::MechanicalParams* param
     const VecIndex& indices = d_indices.getValue();
     const VecDeriv& forces = d_forces.getValue();
 
-    size_t indicesSize = indices.size();
+    const size_t indicesSize = indices.size();
     m_systemSize = _f1.size();
 
     if (!d_indexFromEnd.getValue())
@@ -558,7 +558,7 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
             type::Vector3 p1( xx, xy, xz);
             type::Vector3 p2( aSC*fx+xx, aSC*fy+xy, aSC*fz+xz );
 
-            float norm = static_cast<float>((p2-p1).norm());
+            const float norm = static_cast<float>((p2-p1).norm());
 
             if( aSC > 0.0)
             {

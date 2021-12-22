@@ -151,7 +151,7 @@ void  FixedConstraint<DataTypes>::checkIndices()
     if (!invalidIndices.empty())
     {
         std::sort( invalidIndices.begin(), invalidIndices.end(), std::greater<Index>() );
-        int max = invalidIndices.size()-1;
+        const int max = invalidIndices.size()-1;
         for (int i=max; i>= 0; i--)
         {
             removeConstraint(invalidIndices[i]);
@@ -166,7 +166,7 @@ void FixedConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix*
 
     if( d_fixAll.getValue() )
     {
-        unsigned size = this->mstate->getSize();
+        const unsigned size = this->mstate->getSize();
         for( unsigned i=0; i<size; i++ )
         {
             M->clearRowsCols( offset + i * blockSize, offset + (i+1) * (blockSize) );
@@ -290,7 +290,7 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
 
         if( d_fixAll.getValue() )
         {
-            unsigned size = this->mstate->getSize();
+            const unsigned size = this->mstate->getSize();
             for(unsigned int i=0; i<size; i++)
             {
                 // Reset Fixed Row and Col
@@ -322,10 +322,10 @@ template <class DataTypes>
 void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
-    int o = matrix->getGlobalOffset(this->mstate.get());
+    const int o = matrix->getGlobalOffset(this->mstate.get());
     if (o >= 0)
     {
-        unsigned int offset = (unsigned int)o;
+        const unsigned int offset = (unsigned int)o;
         const unsigned int N = Deriv::size();
 
         if( d_fixAll.getValue() )

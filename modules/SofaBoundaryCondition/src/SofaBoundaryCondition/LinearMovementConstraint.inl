@@ -377,10 +377,10 @@ template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
-    int o = matrix->getGlobalOffset(this->mstate.get());
+    const int o = matrix->getGlobalOffset(this->mstate.get());
     if (o >= 0)
     {
-        unsigned int offset = (unsigned int)o;
+        const unsigned int offset = (unsigned int)o;
         const unsigned int N = Deriv::size();
 
         const SetIndexArray & indices = m_indices.getValue();
@@ -400,7 +400,7 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
         return;
 
     vparams->drawTool()->saveLastState();
-    sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
+    const sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
 
     if (showMovement.getValue())
     {
