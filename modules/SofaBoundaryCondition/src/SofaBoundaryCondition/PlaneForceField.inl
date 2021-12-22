@@ -252,8 +252,8 @@ void PlaneForceField<DataTypes>::rotate( Deriv axe, Real angle )
     if(this->d_componentState.getValue() != ComponentState::Valid)
         return ;
 
-    type::Vec3d axe3d(1,1,1); axe3d = DataTypes::getDPos(axe);
-    type::Vec3d normal3d; normal3d = d_planeNormal.getValue();
+    const type::Vec3d axe3d { DataTypes::getDPos(axe) };
+    type::Vec3d normal3d { d_planeNormal.getValue() };
     type::Vec3d v = normal3d.cross(axe3d);
     if (v.norm2() < 1.0e-10) return;
     v.normalize();
@@ -286,7 +286,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
 
     helper::ReadAccessor<VecCoord> p1 = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    type::Vec3d normal; normal = d_planeNormal.getValue();
+    type::Vec3d normal { d_planeNormal.getValue() };
 
     // find a first vector inside the plane
     type::Vec3d v1;

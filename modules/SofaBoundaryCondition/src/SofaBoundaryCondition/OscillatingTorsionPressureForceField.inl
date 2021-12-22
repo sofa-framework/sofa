@@ -244,11 +244,10 @@ void OscillatingTorsionPressureForceField<DataTypes>::selectTrianglesAlongPlane(
 {
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     std::vector<bool> vArray;
-    unsigned int i;
 
     vArray.resize(x.size());
 
-    for( i=0; i<x.size(); ++i)
+    for( unsigned int i=0; i<x.size(); ++i)
     {
         vArray[i]=isPointInPlane(x[i]);
     }

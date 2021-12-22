@@ -461,7 +461,6 @@ void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::Visual
     if (showMovement.getValue())
     {
         vparams->drawTool()->disableLighting();
-        type::Vector3 v0, v1;
 
         const SetIndexArray & indices = m_indices.getValue();
         const VecDeriv& keyMovements = m_keyMovements.getValue();
@@ -469,8 +468,8 @@ void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::Visual
         {
             for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             {
-                v0 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i]);
-                v1 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i + 1]);
+                const type::Vector3 v0 { DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i]) };
+                const type::Vector3 v1 { DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i + 1]) };
 
                 vertices.push_back(v0);
                 vertices.push_back(v1);
