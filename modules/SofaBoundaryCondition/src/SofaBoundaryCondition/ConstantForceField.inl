@@ -46,6 +46,7 @@ ConstantForceField<DataTypes>::ConstantForceField()
     , d_showArrowSize(initData(&d_showArrowSize,SReal(0.0), "showArrowSize", "Size of the drawn arrows (0->no arrows, sign->direction of drawing. (default=0)"))
     , d_color(initData(&d_color, sofa::type::RGBAColor(0.2f,0.9f,0.3f,1.0f), "showColor", "Color for object display (default: [0.2,0.9,0.3,1.0])"))
     , l_topology(initLink("topology", "link to the topology container"))
+    , m_systemSize(0)
 {
     d_showArrowSize.setGroup("Visualization");
     d_color.setGroup("Visualization");

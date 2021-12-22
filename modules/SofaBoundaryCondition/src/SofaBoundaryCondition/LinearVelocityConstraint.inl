@@ -41,6 +41,7 @@ LinearVelocityConstraint<TDataTypes>::LinearVelocityConstraint()
     , d_keyVelocities(  initData(&d_keyVelocities,"velocities","velocities corresponding to the key times") )
     , d_coordinates( initData(&d_coordinates, "coordinates", "coordinates on which to apply velocities") )
     , l_topology(initLink("topology", "link to the topology container"))
+    , finished(false)
 {
     d_indices.beginEdit()->push_back(0);
     d_indices.endEdit();

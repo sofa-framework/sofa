@@ -51,6 +51,7 @@ SurfacePressureForceField<DataTypes>::SurfacePressureForceField():
     m_mainDirection(initData(&m_mainDirection, Deriv(), "mainDirection", "Main direction for pressure application")),
     m_drawForceScale(initData(&m_drawForceScale, (Real)0, "drawForceScale", "DEBUG: scale used to render force vectors"))
     , l_topology(initLink("topology", "link to the topology container"))
+    , state(INCREASE)
     , m_topology(nullptr)
 {
 
@@ -87,7 +88,7 @@ void SurfacePressureForceField<DataTypes>::init()
         return;
     }
 
-    state = ( m_pressure.getValue() > 0 ) ? INCREASE : DECREASE;
+    state = m_pressure.getValue() > 0 ? INCREASE : DECREASE;
 
     if (m_pulseMode.getValue() && (m_pressureSpeed.getValue() == 0.0))
     {

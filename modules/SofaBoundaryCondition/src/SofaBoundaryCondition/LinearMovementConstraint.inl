@@ -43,6 +43,7 @@ LinearMovementConstraint<DataTypes>::LinearMovementConstraint()
     , d_relativeMovements( initData(&d_relativeMovements, bool(true), "relativeMovements", "If true, movements are relative to first position, absolute otherwise") )
     , showMovement( initData(&showMovement, bool(false), "showMovement", "Visualization of the movement to be applied to constrained dofs."))
     , l_topology(initLink("topology", "link to the topology container"))
+    , finished(false)
 {
     // default to indice 0
     m_indices.beginEdit()->push_back(0);

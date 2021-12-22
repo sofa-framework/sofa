@@ -34,11 +34,13 @@ namespace sofa::component::projectiveconstraintset
 {
 
 template <class DataTypes>
-SkeletalMotionConstraint<DataTypes>::SkeletalMotionConstraint() : sofa::core::behavior::ProjectiveConstraintSet<DataTypes>()
+SkeletalMotionConstraint<DataTypes>::SkeletalMotionConstraint() :
+    sofa::core::behavior::ProjectiveConstraintSet<DataTypes>()
     , skeletonJoints(initData(&skeletonJoints, "joints", "skeleton joints"))
     , skeletonBones(initData(&skeletonBones, "bones", "skeleton bones"))
 	, animationSpeed(initData(&animationSpeed, 1.0f, "animationSpeed", "animation speed"))
     , active(initData(&active, true, "active", "is the constraint active?"))
+    , finished(false)
 {
 }
 

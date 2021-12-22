@@ -53,6 +53,7 @@ PartialLinearMovementConstraint<DataTypes>::PartialLinearMovementConstraint()
     , Z0 ( initData ( &Z0, Real(0.0),"Z0","Size of specimen in Z-direction" ) )
     , movedDirections( initData(&movedDirections,"movedDirections","for each direction, 1 if moved, 0 if free") )
     , l_topology(initLink("topology", "link to the topology container"))
+    , finished(false)
 {
     // default to indice 0
     m_indices.beginEdit()->push_back(0);
