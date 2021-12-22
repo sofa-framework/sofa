@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/gui/qt/QGraphStatWidget.h>
+#include <sofa/gui/qt/config.h>
 
 namespace sofa::simulation::mechanicalvisitor
 {
@@ -30,7 +31,7 @@ namespace sofa::simulation::mechanicalvisitor
 namespace sofa::gui::qt
 {
 
-class QEnergyStatWidget : public QGraphStatWidget
+class SOFA_SOFAGUIQT_API QEnergyStatWidget : public QGraphStatWidget
 {
 
     Q_OBJECT

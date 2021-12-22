@@ -36,7 +36,7 @@ class DataWidget;
 class QDisplayDataInfoWidget;
 struct ModifyObjectFlags;
 
-class QDisplayDataWidget : public QGroupBox
+class SOFA_SOFAGUIQT_API QDisplayDataWidget : public QGroupBox
 {
     Q_OBJECT
 public:
@@ -81,7 +81,7 @@ protected:
 
 
 
-class QDataSimpleEdit : public DataWidget
+class SOFA_SOFAGUIQT_API QDataSimpleEdit : public DataWidget
 {
     Q_OBJECT
     typedef enum QEditType { TEXTEDIT, LINEEDIT } QEditType;
@@ -108,7 +108,7 @@ protected:
     QSimpleEdit innerWidget_;
 };
 
-class QPoissonRatioWidget : public TDataWidget<double>
+class SOFA_SOFAGUIQT_API QPoissonRatioWidget : public TDataWidget<double>
 {
     Q_OBJECT
 public :
