@@ -451,7 +451,7 @@ bool SurfacePressureForceField<DataTypes>::isInPressuredBox(const Coord &x) cons
 }
 
 template<class DataTypes>
-const typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceField<DataTypes>::computePulseModePressure()
+typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceField<DataTypes>::computePulseModePressure()
 {
     SReal dt = this->getContext()->getDt();
 
