@@ -19,32 +19,30 @@
 	<DefaultContactManager name="Response" response="default" />
     
     <Node name="Beam">
-        <RegularGridTopology name="grid"
-			nx="10" ny="10" nz="50"
-			xmin="-1.5" xmax="1.5"
-			ymin="0" ymax="3"
-			zmin="0" zmax="15"
-		/>
-        
-        <TetrahedronSetTopologyContainer name="tetraTopo" />
-		<TetrahedronSetTopologyModifier/>
-		<Hexa2TetraTopologicalMapping input="@grid" output="@tetraTopo" />
+        <RegularGridTopology name="grid" n="40 10 10" min="0 6 -2" max="16 10 2" />
+        <TetrahedronSetTopologyContainer name="BeamTopo" />
+        <TetrahedronSetTopologyModifier name="Modifier" />
+
+        <Hexa2TetraTopologicalMapping input="@grid" output="@BeamTopo" />
     </Node>
     
-    <Node name="MeshSpringGPU">
+    <Node name="MeshSpringForceField-GPU-Green">
         <EulerImplicitSolver name="cg_odesolver"  printLog="0" />
-        <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25"  tolerance="1e-08"  threshold="1e-08" />
+        <CGLinearSolver name="linear solver"  iterations="20"  tolerance="1e-06"  threshold="1e-06" />
                 
-        <MeshTopology name="topo" src="@../Beam/tetraTopo" />
-        <MechanicalObject name="dofs" position="@../Beam/grid.position" template="CudaVec3f"/>
-		<UniformMass totalMass="100" />
-        <BoxConstraint box="-1.6 -0.1 -0.1 1.6 3.1 0.1" />
+        <MechanicalObject position="@../Beam/grid.position" name="Volume" template="CudaVec3f"/>
+        <TetrahedronSetTopologyContainer name="Container" src="@../Beam/BeamTopo"/>
+        <TetrahedronSetTopologyModifier name="Modifier" />
+		        
+        <BoxROI name="ROI1" box="-0.1 5 -3 0.1 11 3" drawBoxes="1" />        
+        <FixedConstraint indices="@ROI1.indices" />
         
-        <MeshSpringForceField name="Springs" tetrasStiffness="2000" tetrasDamping="0" template="CudaVec3f"/>
+        <UniformMass totalMass="100" />
+        <MeshSpringForceField name="Springs" tetrasStiffness="1200" tetrasDamping="0" template="CudaVec3f"/>
        
         <Node name="MeshVisu">
-			<OglModel name="Visual" topology="@../topo" position="@../dofs.position" color="green"/>
-			<IdentityMapping input="@../dofs" output="@Visual" />
+			<OglModel name="Visual" topology="@../Container" position="@../Volume.position" color="green"/>
+			<IdentityMapping input="@../Volume" output="@Visual" />
 		</Node>
-    </Node>    
+    </Node>
 </Node>
