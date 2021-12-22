@@ -67,9 +67,9 @@ public:
     }
 
 protected:
-    SReal stiffness;
-    SReal size;
-    SReal showFactorSize;
+    typename DataTypes::Real stiffness;
+    typename DataTypes::Real size;
+    typename DataTypes::Real showFactorSize;
 
     virtual bool start_partial(const BodyPicked& picked);
     /*

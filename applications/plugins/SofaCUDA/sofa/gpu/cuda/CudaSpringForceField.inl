@@ -172,74 +172,32 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
     const sofa::type::vector<Spring>& springs = m->springs.getValue();
     if (!springs.empty())
     {
-        bool external = (m->mstate1!=m->mstate2);
-        if (external)
+        std::map<int,int> nsprings;
+        for (unsigned int i=0; i<springs.size(); i++)
         {
-            std::map<int,int> nsprings1;
-            std::map<int,int> nsprings2;
-            for (unsigned int i=0; i<springs.size(); i++)
-            {
-                nsprings1[springs[i].m1]++;
-                nsprings2[springs[i].m2]++;
-            }
-
-            int nmax1 = 0;
-            for (std::map<int,int>::const_iterator it = nsprings1.begin(); it != nsprings1.end(); ++it)
-                if (it->second > nmax1)
-                    nmax1 = it->second;
-            data.springs1.init(nsprings1.begin()->first, nsprings1.rbegin()->first - nsprings1.begin()->first + 1, nmax1);
-
-            int nmax2 = 0;
-            for (std::map<int,int>::const_iterator it = nsprings2.begin(); it != nsprings2.end(); ++it)
-                if (it->second > nmax2)
-                    nmax2 = it->second;
-            data.springs2.init(nsprings2.begin()->first, nsprings2.rbegin()->first - nsprings2.begin()->first + 1, nmax2);
-
-            nsprings1.clear();
-            nsprings2.clear();
-            for (unsigned int i=0; i<springs.size(); i++)
-            {
-                int m1 = springs[i].m1 - data.springs1.vertex0;
-                int m2 = springs[i].m2 - data.springs2.vertex0;
-                data.springs1.set(m1, nsprings1[m1]++, m2,
-                        (float)springs[i].initpos,
-                        (float)springs[i].ks,
-                        (float)springs[i].kd);
-                data.springs2.set(m2, nsprings2[m2]++, m1,
-                        (float)springs[i].initpos,
-                        (float)springs[i].ks,
-                        (float)springs[i].kd);
-            }
+            nsprings[springs[i].m1]++;
+            nsprings[springs[i].m2]++;
         }
-        else
-        {
-            std::map<int,int> nsprings;
-            for (unsigned int i=0; i<springs.size(); i++)
-            {
-                nsprings[springs[i].m1]++;
-                nsprings[springs[i].m2]++;
-            }
 
-            int nmax = 0;
-            for (std::map<int,int>::const_iterator it = nsprings.begin(); it != nsprings.end(); ++it)
-                if (it->second > nmax)
-                    nmax = it->second;
-            data.springs1.init(nsprings.begin()->first, nsprings.rbegin()->first - nsprings.begin()->first + 1, nmax);
-            std::cout << "CUDA SpringForceField: "<<springs.size()<<" springs, "<<data.springs1.nbVertex<<" attached points, max "<<data.springs1.nbSpringPerVertex<<" springs per point."<<std::endl;
-            nsprings.clear();
-            for (unsigned int i=0; i<springs.size(); i++)
-            {
-                int m1 = springs[i].m1 - data.springs1.vertex0;
-                int m2 = springs[i].m2 - data.springs1.vertex0;
-                data.springs1.set(m1, nsprings[m1]++, m2,
-                        (float)springs[i].initpos,
-                        (float)springs[i].ks,
-                        (float)springs[i].kd);
-                data.springs1.set(m2, nsprings[m2]++, m1,
-                        (float)springs[i].initpos,
-                        (float)springs[i].ks,
-                        (float)springs[i].kd);
-            }
+        int nmax = 0;
+        for (std::map<int,int>::const_iterator it = nsprings.begin(); it != nsprings.end(); ++it)
+            if (it->second > nmax)
+                nmax = it->second;
+        data.springs1.init(nsprings.begin()->first, nsprings.rbegin()->first - nsprings.begin()->first + 1, nmax);
+        std::cout << "CUDA SpringForceField: "<<springs.size()<<" springs, "<<data.springs1.nbVertex<<" attached points, max "<<data.springs1.nbSpringPerVertex<<" springs per point."<<std::endl;
+        nsprings.clear();
+        for (unsigned int i=0; i<springs.size(); i++)
+        {
+            int m1 = springs[i].m1 - data.springs1.vertex0;
+            int m2 = springs[i].m2 - data.springs1.vertex0;
+            data.springs1.set(m1, nsprings[m1]++, m2,
+                              (float)springs[i].initpos,
+                              (float)springs[i].ks,
+                              (float)springs[i].kd);
+            data.springs1.set(m2, nsprings[m2]++, m1,
+                              (float)springs[i].initpos,
+                              (float)springs[i].ks,
+                              (float)springs[i].kd);
         }
     }
     if (stiff)
@@ -251,147 +209,50 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 
 // -- InteractionForceField interface
 template<class TCoord, class TDeriv, class TReal>
-void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addForce(Main* m, bool stiff, VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
+void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addForce(Main* m, bool stiff, VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 {
     Data& data = m->data;
 
-    if (m->mstate1 == m->mstate2)
+    f.resize(x.size());
+    int d = data.springs1.vertex0;
+    if (data.springs1.nbSpringPerVertex > 0)
     {
-        VecDeriv& f = f1;
-        const VecCoord& x = x1;
-        const VecDeriv& v = v1;
-        f.resize(x.size());
-        int d = data.springs1.vertex0;
-        if (data.springs1.nbSpringPerVertex > 0)
-        {
-            if (!stiff)
-                Kernels::addForce(data.springs1.nbVertex,
-                        data.springs1.nbSpringPerVertex,
-                        data.springs1.springs.deviceRead(),
-                        (      Deriv*)f.deviceWrite() + d,
-                        (const Coord*)x.deviceRead()  + d,
-                        (const Deriv*)v.deviceRead()  + d);
-            else
-                Kernels::addForce(data.springs1.nbVertex,
-                        data.springs1.nbSpringPerVertex,
-                        data.springs1.springs.deviceRead(),
-                        (      Deriv*)f.deviceWrite() + d,
-                        (const Coord*)x.deviceRead()  + d,
-                        (const Deriv*)v.deviceRead()  + d,
-                        data.springs1.dfdx.deviceWrite());
-        }
-    }
-    else
-    {
-        f1.resize(x1.size());
-        f2.resize(x2.size());
-        int d1 = data.springs1.vertex0;
-        int d2 = data.springs2.vertex0;
-        if (data.springs1.nbSpringPerVertex > 0)
-        {
-            if (!stiff)
-                Kernels::addExternalForce(data.springs1.nbVertex,
-                        data.springs1.nbSpringPerVertex,
-                        data.springs1.springs.deviceRead(),
-                        (      Deriv*)f1.deviceWrite() + d1,
-                        (const Coord*)x1.deviceRead()  + d1,
-                        (const Deriv*)v1.deviceRead()  + d1,
-                        (const Coord*)x2.deviceRead()  + d2,
-                        (const Deriv*)v2.deviceRead()  + d2);
-            else
-                Kernels::addExternalForce(data.springs1.nbVertex,
-                        data.springs1.nbSpringPerVertex,
-                        data.springs1.springs.deviceRead(),
-                        (      Deriv*)f1.deviceWrite() + d1,
-                        (const Coord*)x1.deviceRead()  + d1,
-                        (const Deriv*)v1.deviceRead()  + d1,
-                        (const Coord*)x2.deviceRead()  + d2,
-                        (const Deriv*)v2.deviceRead()  + d2,
-                        data.springs1.dfdx.deviceWrite());
-        }
-        if (data.springs2.nbSpringPerVertex > 0)
-        {
-            if (!stiff)
-                Kernels::addExternalForce(data.springs2.nbVertex,
-                        data.springs2.nbSpringPerVertex,
-                        data.springs2.springs.deviceRead(),
-                        (      Deriv*)f2.deviceWrite() + d2,
-                        (const Coord*)x2.deviceRead()  + d2,
-                        (const Deriv*)v2.deviceRead()  + d2,
-                        (const Coord*)x1.deviceRead()  + d1,
-                        (const Deriv*)v1.deviceRead()  + d1);
-            else
-                Kernels::addExternalForce(data.springs2.nbVertex,
-                        data.springs2.nbSpringPerVertex,
-                        data.springs2.springs.deviceRead(),
-                        (      Deriv*)f2.deviceWrite() + d2,
-                        (const Coord*)x2.deviceRead()  + d2,
-                        (const Deriv*)v2.deviceRead()  + d2,
-                        (const Coord*)x1.deviceRead()  + d1,
-                        (const Deriv*)v1.deviceRead()  + d1,
-                        data.springs2.dfdx.deviceWrite());
-        }
+        if (!stiff)
+            Kernels::addForce(data.springs1.nbVertex,
+                              data.springs1.nbSpringPerVertex,
+                              data.springs1.springs.deviceRead(),
+                              (      Deriv*)f.deviceWrite() + d,
+                              (const Coord*)x.deviceRead()  + d,
+                              (const Deriv*)v.deviceRead()  + d);
+        else
+            Kernels::addForce(data.springs1.nbVertex,
+                              data.springs1.nbSpringPerVertex,
+                              data.springs1.springs.deviceRead(),
+                              (      Deriv*)f.deviceWrite() + d,
+                              (const Coord*)x.deviceRead()  + d,
+                              (const Deriv*)v.deviceRead()  + d,
+                              data.springs1.dfdx.deviceWrite());
     }
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addDForce(Main* m, bool stiff, VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, SReal kFactor, SReal /*bFactor*/)
+void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addDForce(Main* m, bool stiff, VecDeriv& df, const VecDeriv& dx, SReal kFactor, SReal /*bFactor*/)
 {
     if (!stiff) return;
     Data& data = m->data;
-    if (m->mstate1 == m->mstate2)
+    const VecCoord& x = m->getMState()->read(core::ConstVecCoordId::position())->getValue();
+    df.resize(x.size());
+    int d = data.springs1.vertex0;
+    if (data.springs1.nbSpringPerVertex > 0)
     {
-        VecDeriv& df = df1;
-        const VecDeriv& dx = dx1;
-        const VecCoord& x = m->mstate1->read(core::ConstVecCoordId::position())->getValue();
-        df.resize(x.size());
-        int d = data.springs1.vertex0;
-        if (data.springs1.nbSpringPerVertex > 0)
-        {
-            Kernels::addDForce(data.springs1.nbVertex,
-                    data.springs1.nbSpringPerVertex,
-                    data.springs1.springs.deviceRead(),
-                    (      Deriv*)df.deviceWrite() + d,
-                    (const Deriv*)dx.deviceRead() + d,
-                    (const Coord*)x.deviceRead()  + d,
-                    data.springs1.dfdx.deviceRead(),
-                    kFactor);
-        }
-    }
-    else
-    {
-        const VecCoord& x1 = m->mstate1->read(core::ConstVecCoordId::position())->getValue();
-        const VecCoord& x2 = m->mstate2->read(core::ConstVecCoordId::position())->getValue();
-        df1.resize(x1.size());
-        df2.resize(x2.size());
-        int d1 = data.springs1.vertex0;
-        int d2 = data.springs2.vertex0;
-        if (data.springs1.nbSpringPerVertex > 0)
-        {
-            Kernels::addExternalDForce(data.springs1.nbVertex,
-                    data.springs1.nbSpringPerVertex,
-                    data.springs1.springs.deviceRead(),
-                    (      Deriv*)df1.deviceWrite() + d1,
-                    (const Coord*)x1.deviceRead()  + d1,
-                    (const Deriv*)dx1.deviceRead()  + d1,
-                    (const Coord*)x2.deviceRead()  + d2,
-                    (const Deriv*)dx2.deviceRead()  + d2,
-                    data.springs1.dfdx.deviceRead(),
-                    kFactor);
-        }
-        if (data.springs2.nbSpringPerVertex > 0)
-        {
-            Kernels::addExternalDForce(data.springs2.nbVertex,
-                    data.springs2.nbSpringPerVertex,
-                    data.springs2.springs.deviceRead(),
-                    (      Deriv*)df2.deviceWrite() + d2,
-                    (const Deriv*)dx2.deviceRead() + d2,
-                    (const Coord*)x2.deviceRead()  + d2,
-                    (const Deriv*)dx1.deviceRead() + d1,
-                    (const Coord*)x1.deviceRead()  + d1,
-                    data.springs2.dfdx.deviceRead(),
-                    kFactor);
-        }
+        Kernels::addDForce(data.springs1.nbVertex,
+                           data.springs1.nbSpringPerVertex,
+                           data.springs1.springs.deviceRead(),
+                           (      Deriv*)df.deviceWrite() + d,
+                           (const Deriv*)dx.deviceRead() + d,
+                           (const Coord*)x.deviceRead()  + d,
+                           data.springs1.dfdx.deviceRead(),
+                           kFactor);
     }
 }
 
@@ -400,47 +261,36 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 #define CudaSpringForceField_ImplMethods(T) \
     template<> void SpringForceField< T >::init() \
     { \
-	    this->PairInteractionForceField< T >::init();   \
+	    Inherit1::init();   \
         data.init(this, false); \
     } \
-    template<> void SpringForceField< T >::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2) \
+    template<> void SpringForceField< T >::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) \
     { \
-		VecDeriv& f1 = *d_f1.beginEdit(); \
-		const VecCoord& x1 = d_x1.getValue(); \
-		const VecDeriv& v1 = d_v1.getValue(); \
-		VecDeriv& f2 = *d_f2.beginEdit(); \
-		const VecCoord& x2 = d_x2.getValue(); \
-		const VecDeriv& v2 = d_v2.getValue(); \
-		data.addForce(this, false, f1, f2, x1, x2, v1, v2);\
-		d_f1.endEdit(); \
-		d_f2.endEdit(); \
+        VecDeriv& _f = *f.beginEdit(); \
+        const VecCoord& _x = x.getValue(); \
+        const VecDeriv& _v = v.getValue(); \
+		data.addForce(this, false, _f, _x, _v);\
+        f.endEdit(); \
 	} \
     template<> void StiffSpringForceField< T >::init() \
     { \
-	    this->PairInteractionForceField< T >::init(); \
+	    Inherit1::init(); \
         data.init(this, true); \
     } \
-    template<> void StiffSpringForceField< T >::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2) \
+    template<> void StiffSpringForceField< T >::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) \
     { \
-		VecDeriv& f1 = *d_f1.beginEdit(); \
-		const VecCoord& x1 = d_x1.getValue(); \
-		const VecDeriv& v1 = d_v1.getValue(); \
-		VecDeriv& f2 = *d_f2.beginEdit(); \
-		const VecCoord& x2 = d_x2.getValue(); \
-		const VecDeriv& v2 = d_v2.getValue(); \
-		data.addForce(this, true, f1, f2, x1, x2, v1, v2); \
-		d_f1.endEdit(); \
-		d_f2.endEdit(); \
+        VecDeriv& _f = *f.beginEdit(); \
+        const VecCoord& _x = x.getValue(); \
+        const VecDeriv& _v = v.getValue(); \
+		data.addForce(this, true, _f, _x, _v); \
+        f.endEdit(); \
 	} \
-    template<> void StiffSpringForceField< T >::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df1, DataVecDeriv& d_df2, const DataVecDeriv& d_dx1, const DataVecDeriv& d_dx2) \
+    template<> void StiffSpringForceField< T >::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) \
     { \
-		VecDeriv& df1 = *d_df1.beginEdit(); \
-		const VecDeriv& dx1 = d_dx1.getValue(); \
-		VecDeriv& df2 = *d_df2.beginEdit(); \
-		const VecDeriv& dx2 = d_dx2.getValue(); \
-		data.addDForce(this, true, df1, df2, dx1, dx2, mparams->kFactor(), sofa::core::mechanicalparams::bFactor(mparams)); \
-		d_df1.endEdit(); \
-		d_df2.endEdit(); \
+        VecDeriv& _df = *df.beginEdit(); \
+        const VecDeriv& _dx = dx.getValue();\
+		data.addDForce(this, true, _df, _dx, mparams->kFactor(), sofa::core::mechanicalparams::bFactor(mparams)); \
+        df.endEdit(); \
 	}
 
 CudaSpringForceField_ImplMethods(gpu::cuda::CudaVec3fTypes);

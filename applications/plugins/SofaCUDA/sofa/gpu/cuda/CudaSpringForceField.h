@@ -135,8 +135,8 @@ public:
     {}
 
     static void init(Main* m, bool stiff);
-    static void addForce(Main* m, bool stiff, VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
-    static void addDForce (Main* m, bool stiff, VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, SReal kFactor, SReal bFactor);
+    static void addForce(Main* m, bool stiff, VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+    static void addDForce (Main* m, bool stiff, VecDeriv& df, const VecDeriv& dx, SReal kFactor, SReal bFactor);
 };
 
 //
@@ -146,10 +146,10 @@ public:
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaSpringForceField_DeclMethods(T) \
     template<> inline void SpringForceField< T >::init(); \
-    template<> inline void SpringForceField< T >::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2); \
+    template<> inline void SpringForceField< T >::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v); \
     template<> inline void StiffSpringForceField< T >::init(); \
-    template<> inline void StiffSpringForceField< T >::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2); \
-    template<> inline void StiffSpringForceField< T >::addDForce(const core::MechanicalParams*, DataVecDeriv& d_df1, DataVecDeriv& d_df2, const DataVecDeriv& d_dx1, const DataVecDeriv& d_dx2 );
+    template<> inline void StiffSpringForceField< T >::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v); \
+    template<> inline void StiffSpringForceField< T >::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx);
 
 CudaSpringForceField_DeclMethods(gpu::cuda::CudaVec3fTypes);
 CudaSpringForceField_DeclMethods(gpu::cuda::CudaVec3f1Types);

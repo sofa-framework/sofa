@@ -187,7 +187,7 @@ bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
             mstateCollision->getContext(),
             dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()),
             mstateCollision,
-            {interactionforcefield::LinearSpring<typename DataTypes::Real>{0, static_cast<sofa::Index>(index), stiffness, 0., picked.dist} }
+            {interactionforcefield::LinearSpring<typename DataTypes::Real>{0, static_cast<sofa::Index>(index), stiffness, 0., static_cast<typename DataTypes::Real>(picked.dist)} }
         );
     m_node = std::get<0>(createdComponents);
     m_mstate = std::get<1>(createdComponents);
