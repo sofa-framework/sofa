@@ -22,9 +22,6 @@
 #pragma once
 #include "SimpleDataWidget.h"
 #include "StructDataWidget.h"
-#ifdef TODOTOPO
-#include <SofaBaseTopology/PointSubsetData.h>
-#endif
 #include <sofa/core/topology/TopologyData.h>
 
 #include "QMouseWheelAdjustementGuard.h"
@@ -665,37 +662,7 @@ class vector_data_trait < sofa::type::vector<T> > : public vector_data_trait< st
 {
 };
 
-////////////////////////////////////////////////////////////////
-/// PointSubset support
-////////////////////////////////////////////////////////////////
-#ifdef TODOTOPO
-template<>
-class vector_data_trait < sofa::component::topology::PointSubset >
-{
-public:
-    typedef sofa::component::topology::PointSubset data_type;
-    typedef unsigned int value_type;
-    enum { NDIM = 1 };
-    static int size(const data_type& d) { return d.size(); }
-    static const char* header(const data_type& /*d*/, int /*i*/ = 0)
-    {
-        return nullptr;
-    }
-    static const value_type* get(const data_type& d, int i = 0)
-    {
-        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : nullptr;
-    }
-    static void set( const value_type& v, data_type& d, int i = 0)
-    {
-        if ((unsigned)i < (unsigned)size(d))
-            d[i] = v;
-    }
-    static void resize( int s, data_type& d)
-    {
-        d.resize(s);
-    }
-};
-#endif
+
 ////////////////////////////////////////////////////////////////
 /// std::map from strings support
 ////////////////////////////////////////////////////////////////

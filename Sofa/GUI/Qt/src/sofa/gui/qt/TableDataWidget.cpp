@@ -39,10 +39,6 @@ Creator<DataWidgetFactory, TableDataWidget< sofa::type::vector<float>, TABLE_HOR
 Creator<DataWidgetFactory, TableDataWidget< sofa::type::vector<double>, TABLE_HORIZONTAL > > DWClass_vectord("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::type::vector<std::string> > > DWClass_vectorstring("default",true);
 
-#ifdef TODOTOPO
-Creator<DataWidgetFactory, TableDataWidget< sofa::component::topology::PointSubset, TABLE_HORIZONTAL > > DWClass_PointSubset("default",true);
-#endif
-
 Creator<DataWidgetFactory, TableDataWidget< sofa::core::topology::BaseMeshTopology::SeqEdges      > > DWClass_SeqEdges     ("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::core::topology::BaseMeshTopology::SeqTriangles  > > DWClass_SeqTriangles ("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::core::topology::BaseMeshTopology::SeqQuads      > > DWClass_SeqQuads     ("default",true);
