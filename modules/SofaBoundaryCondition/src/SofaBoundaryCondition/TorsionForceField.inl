@@ -76,7 +76,7 @@ void TorsionForceField<DataTypes>::addForce(const MechanicalParams* /*params*/, 
 }
 
 template<typename DataTypes>
-void TorsionForceField<DataTypes>::addDForce(const MechanicalParams* params, DataVecDeriv& df, const DataVecDeriv& dx)
+void TorsionForceField<DataTypes>::addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
 {
 	const VecId& indices = m_indices.getValue();
 	const VecDeriv& dq = dx.getValue();
@@ -84,7 +84,7 @@ void TorsionForceField<DataTypes>::addDForce(const MechanicalParams* params, Dat
 	VecDeriv& dfq = *df.beginEdit();
 
 	const auto nNodes = indices.size();
-	const Real& kfact = params->kFactor();
+	const Real& kfact = mparams->kFactor();
 
 	Mat3 D;
 	D(0,0) = 1 - m_u(0)*m_u(0) ;	D(0,1) = -m_u(1)*m_u(0) ;		D(0,2) = -m_u(2)*m_u(0);

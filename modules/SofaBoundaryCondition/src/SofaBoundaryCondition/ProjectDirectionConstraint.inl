@@ -200,9 +200,9 @@ void ProjectDirectionConstraint<DataTypes>::projectJacobianMatrix(const core::Me
 }
 
 template <class DataTypes>
-void ProjectDirectionConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vdata)
+void ProjectDirectionConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
-    projectResponse(mparams,vdata);
+    projectResponse(mparams,vData);
 }
 
 template <class DataTypes>

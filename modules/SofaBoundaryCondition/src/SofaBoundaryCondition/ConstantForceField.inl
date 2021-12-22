@@ -369,13 +369,13 @@ void ConstantForceField<DataTypes>::computeForceFromTotalForce()
 
 
 template<class DataTypes>
-void ConstantForceField<DataTypes>::addForce(const core::MechanicalParams* params, DataVecDeriv& f1, const DataVecCoord& x1, const DataVecDeriv& v1)
+void ConstantForceField<DataTypes>::addForce(const core::MechanicalParams* params, DataVecDeriv& f, const DataVecCoord& x1, const DataVecDeriv& v1)
 {
     SOFA_UNUSED(params);
     SOFA_UNUSED(x1);
     SOFA_UNUSED(v1);
 
-    sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > _f1 = f1;
+    sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > _f1 = f;
     const VecIndex& indices = d_indices.getValue();
     const VecDeriv& forces = d_forces.getValue();
 

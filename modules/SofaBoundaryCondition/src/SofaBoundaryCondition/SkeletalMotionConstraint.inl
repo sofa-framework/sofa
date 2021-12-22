@@ -61,7 +61,7 @@ void SkeletalMotionConstraint<DataTypes>::reset()
 }
 
 template <class DataTypes>
-void SkeletalMotionConstraint<DataTypes>::findKeyTimes(Real cT)
+void SkeletalMotionConstraint<DataTypes>::findKeyTimes(Real ct)
 {
     //Note: works only if the times are sorted
     
@@ -78,7 +78,7 @@ void SkeletalMotionConstraint<DataTypes>::findKeyTimes(Real cT)
         for(unsigned int j = 0; j < skeletonJoint.mTimes.size(); ++j)
         {
             Real keyTime = (Real) skeletonJoint.mTimes[j];
-            if(keyTime <= cT)
+            if(keyTime <= ct)
             {
                 {
                     skeletonJoint.mPreviousMotionTime = keyTime;

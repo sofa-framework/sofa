@@ -93,7 +93,7 @@ public:
     void applyConstraint(const MechanicalParams* mparams,
                                  const MultiMatrixAccessor* matrix) override;
 
-    void applyConstraint(const MechanicalParams* mparams, BaseVector* vector,
+    void applyConstraint(const MechanicalParams* mparams, BaseVector* vect,
                                  const MultiMatrixAccessor* matrix) override;
 
     void setDirection (Coord dir);

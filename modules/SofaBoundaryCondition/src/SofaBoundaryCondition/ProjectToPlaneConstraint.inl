@@ -200,9 +200,9 @@ void ProjectToPlaneConstraint<DataTypes>::projectJacobianMatrix(const core::Mech
 }
 
 template <class DataTypes>
-void ProjectToPlaneConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vdata)
+void ProjectToPlaneConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
-    projectResponse(mparams,vdata);
+    projectResponse(mparams,vData);
 }
 
 template <class DataTypes>
