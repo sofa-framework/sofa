@@ -171,7 +171,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
     sofa::type::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
 
     const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    auto getEdgeLength = [x0](const sofa::topology::Edge& e, const VecCoord& pos)
+    auto getEdgeLength = [](const sofa::topology::Edge& e, const VecCoord& pos)
     {
         const auto& n0 = DataTypes::getCPos(pos[e[0]]);
         const auto& n1 = DataTypes::getCPos(pos[e[1]]);
