@@ -413,7 +413,8 @@ public:
 };
 
 #if !defined(SOFA_DEFAULTTYPE_SOLIDTYPES_CPP)
-extern template class SOFA_DEFAULTTYPE_API SolidTypes<double>;
+extern template class SOFA_DEFAULTTYPE_API SolidTypes<double>
+extern template class SOFA_DEFAULTTYPE_API SolidTypes<float>;
 
 #endif
 

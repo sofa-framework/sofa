@@ -126,8 +126,8 @@ void EdgeSetGeometryAlgorithms< DataTypes >::defineEdgeCubaturePoints() {
     /// integration with  accuracy of order 6.
     /// no closed form expression
     // copy values for integration in [-1;1] and translate it for integration in [0;1]
-    double varray[6];
-    double warray[6],warray0;
+    SReal varray[6];
+    SReal warray[6],warray0;
     size_t nbIPs=3;
 //	size_t order=6;
     size_t i;
@@ -349,21 +349,21 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::computeRestEdgeD
 
 // test if a point is on the triangle indexed by ind_e
 template<class DataTypes>
-bool EdgeSetGeometryAlgorithms<DataTypes>::isPointOnEdge(const sofa::type::Vec<3,double> &pt, const EdgeID ind_e) const
+bool EdgeSetGeometryAlgorithms<DataTypes>::isPointOnEdge(const sofa::type::Vec<3,SReal> &pt, const EdgeID ind_e) const
 {
-    const double ZERO = 1e-12;
+    const SReal ZERO = 1e-12;
 
-    sofa::type::Vec<3,double> p0 = pt;
+    sofa::type::Vec<3,SReal> p0 = pt;
 
     Coord vertices[2];
     getEdgeVertexCoordinates(ind_e, vertices);
 
-    sofa::type::Vec<3,double> p1; //(vertices[0][0], vertices[0][1], vertices[0][2]);
-    sofa::type::Vec<3,double> p2; //(vertices[1][0], vertices[1][1], vertices[1][2]);
+    sofa::type::Vec<3,SReal> p1; //(vertices[0][0], vertices[0][1], vertices[0][2]);
+    sofa::type::Vec<3,SReal> p2; //(vertices[1][0], vertices[1][1], vertices[1][2]);
     DataTypes::get(p1[0], p1[1], p1[2], vertices[0]);
     DataTypes::get(p2[0], p2[1], p2[2], vertices[1]);
 
-    sofa::type::Vec<3,double> v = (p0 - p1).cross(p0 - p2);
+    sofa::type::Vec<3,SReal> v = (p0 - p1).cross(p0 - p2);
 
     if(v.norm2() < ZERO)
         return true;
@@ -373,24 +373,24 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::isPointOnEdge(const sofa::type::Vec<3
 
 //
 template<class DataTypes>
-sofa::type::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::compute2PointsBarycoefs(
-    const sofa::type::Vec<3, double> &p,
+sofa::type::vector< SReal > EdgeSetGeometryAlgorithms<DataTypes>::compute2PointsBarycoefs(
+    const sofa::type::Vec<3, SReal> &p,
     PointID ind_p1,
     PointID ind_p2) const
 {
-    const double ZERO = 1e-6;
+    const SReal ZERO = 1e-6;
 
-    sofa::type::vector< double > baryCoefs;
+    sofa::type::vector< SReal > baryCoefs;
 
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
     const typename DataTypes::Coord& c0 = vect_c[ind_p1];
     const typename DataTypes::Coord& c1 = vect_c[ind_p2];
 
-    sofa::type::Vec<3,double> a; DataTypes::get(a[0], a[1], a[2], c0);
-    sofa::type::Vec<3,double> b; DataTypes::get(b[0], b[1], b[2], c1);
+    sofa::type::Vec<3,SReal> a; DataTypes::get(a[0], a[1], a[2], c0);
+    sofa::type::Vec<3,SReal> b; DataTypes::get(b[0], b[1], b[2], c1);
 
-    double dis = (b - a).norm();
-    double coef_a, coef_b;
+    SReal dis = (b - a).norm();
+    SReal coef_a, coef_b;
 
 
     if(dis < ZERO)
@@ -428,7 +428,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) co
 
     for (size_t i=0; i<numVertices; ++i)
     {
-        double x=0,y=0,z=0; DataTypes::get(x,y,z, vect_c[i]);
+        SReal x=0,y=0,z=0; DataTypes::get(x,y,z, vect_c[i]);
 
         myfile << i+1 << " " << x << " " << y << " " << z <<"\n";
     }
@@ -454,7 +454,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) co
 template<class Vec>
 bool is_point_on_edge(const Vec& p, const Vec& a, const Vec& b)
 {
-    const double ZERO = 1e-12;
+    const SReal ZERO = 1e-12;
     Vec v = (p - a).cross(p - b);
 
     if(v.norm2() < ZERO)
@@ -464,24 +464,24 @@ bool is_point_on_edge(const Vec& p, const Vec& a, const Vec& b)
 }
 
 template<class DataTypes>
-sofa::type::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computeRest2PointsBarycoefs(
-    const sofa::type::Vec<3,double> &p,
+sofa::type::vector< SReal > EdgeSetGeometryAlgorithms<DataTypes>::computeRest2PointsBarycoefs(
+    const sofa::type::Vec<3,SReal> &p,
     PointID ind_p1,
     PointID ind_p2) const
 {
-    const double ZERO = 1e-6;
+    const SReal ZERO = 1e-6;
 
-    sofa::type::vector< double > baryCoefs;
+    sofa::type::vector< SReal > baryCoefs;
 
     const typename DataTypes::VecCoord& vect_c = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
     const typename DataTypes::Coord& c0 = vect_c[ind_p1];
     const typename DataTypes::Coord& c1 = vect_c[ind_p2];
 
-    sofa::type::Vec<3,double> a; DataTypes::get(a[0], a[1], a[2], c0);
-    sofa::type::Vec<3,double> b; DataTypes::get(b[0], b[1], b[2], c1);
+    sofa::type::Vec<3,SReal> a; DataTypes::get(a[0], a[1], a[2], c0);
+    sofa::type::Vec<3,SReal> b; DataTypes::get(b[0], b[1], b[2], c1);
 
-    double dis = (b - a).norm();
-    double coef_a, coef_b;
+    SReal dis = (b - a).norm();
+    SReal coef_a, coef_b;
 
 
     if(dis < ZERO)
@@ -503,14 +503,14 @@ sofa::type::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computeRest2P
 }
 
 template<class Vec>
-sofa::type::vector< double > compute_2points_barycoefs(const Vec& p, const Vec& a, const Vec& b)
+sofa::type::vector< SReal > compute_2points_barycoefs(const Vec& p, const Vec& a, const Vec& b)
 {
-    const double ZERO = 1e-6;
+    const SReal ZERO = 1e-6;
 
-    sofa::type::vector< double > baryCoefs;
+    sofa::type::vector< SReal > baryCoefs;
 
-    double dis = (b - a).norm();
-    double coef_a, coef_b;
+    SReal dis = (b - a).norm();
+    SReal coef_a, coef_b;
 
     if(dis < ZERO)
     {
@@ -531,8 +531,8 @@ sofa::type::vector< double > compute_2points_barycoefs(const Vec& p, const Vec& 
 
 
 template<class DataTypes>
-sofa::type::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computePointProjectionOnEdge (const EdgeID edgeIndex,
-        sofa::type::Vec<3, double> c,
+sofa::type::vector< SReal > EdgeSetGeometryAlgorithms<DataTypes>::computePointProjectionOnEdge (const EdgeID edgeIndex,
+        sofa::type::Vec<3, SReal> c,
         bool& intersected)
 {
 
@@ -560,19 +560,19 @@ sofa::type::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computePointP
 
     // Compute Coord of second edge XH:
 
-    sofa::type::Vec<3,double> AB; DataTypes::get(AB[0], AB[1], AB[2], coord_AB);
-    sofa::type::Vec<3,double> AC; DataTypes::get(AC[0], AC[1], AC[2], coord_AC);
-    sofa::type::Vec<3,double> ortho_ABC = cross (AB, AC)*1000;
-    sofa::type::Vec<3,double> coef_CH = cross (ortho_ABC, AB)*1000;
+    sofa::type::Vec<3,SReal> AB; DataTypes::get(AB[0], AB[1], AB[2], coord_AB);
+    sofa::type::Vec<3,SReal> AC; DataTypes::get(AC[0], AC[1], AC[2], coord_AC);
+    sofa::type::Vec<3,SReal> ortho_ABC = cross (AB, AC)*1000;
+    sofa::type::Vec<3,SReal> coef_CH = cross (ortho_ABC, AB)*1000;
 
     for (unsigned int i = 0; i<Coord::spatial_dimensions; i++)
         coord_edge2[1][i] = coord_edge2[0][i] + (float)coef_CH[i];
 
     // Compute Coord of projection point H:
     Coord coord_H = compute2EdgesIntersection ( coord_edge1, coord_edge2, intersected);
-    sofa::type::Vec<3,double> h; DataTypes::get(h[0], h[1], h[2], coord_H);
+    sofa::type::Vec<3,SReal> h; DataTypes::get(h[0], h[1], h[2], coord_H);
 
-    sofa::type::vector< double > barycoord = compute2PointsBarycoefs(h, theEdge[0], theEdge[1]);
+    sofa::type::vector< SReal > barycoord = compute2PointsBarycoefs(h, theEdge[0], theEdge[1]);
     return barycoord;
 
 }
@@ -589,8 +589,8 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgePlaneIntersection (EdgeID 
 
     //plane equation
     normalOfPlane.normalize();
-    double d=normalOfPlane*pointOnPlane;
-    double t=(d-normalOfPlane*p1)/(normalOfPlane*(p2-p1));
+    SReal d=normalOfPlane*pointOnPlane;
+    SReal t=(d-normalOfPlane*p1)/(normalOfPlane*(p2-p1));
 
     if((t<1)&&(t>=0))
     {
@@ -614,8 +614,8 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::computeRestEdgePlaneIntersection (Edg
 
     //plane equation
     normalOfPlane.normalize();
-    double d=normalOfPlane*pointOnPlane;
-    double t=(d-normalOfPlane*p1)/(normalOfPlane*(p2-p1));
+    SReal d=normalOfPlane*pointOnPlane;
+    SReal t=(d-normalOfPlane*p1)/(normalOfPlane*(p2-p1));
 
     if((t<1)&&(t>=0))
     {
@@ -640,9 +640,9 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::compute2EdgesInt
 
     int ind1 = -1;
     int ind2 = -1;
-    double epsilon = 0.0001;
-    double lambda = 0.0;
-    double alpha = 0.0;
+    SReal epsilon = 0.0001;
+    SReal lambda = 0.0;
+    SReal alpha = 0.0;
 
     // Searching vector composante not null:
     for (unsigned int i=0; i<Coord::spatial_dimensions; i++)
@@ -657,7 +657,7 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::compute2EdgesInt
                     ind2 = j;
 
                     // Solving system:
-                    double coef_lambda = vec1[ind1] - ( vec1[ind2]*vec2[ind1]/vec2[ind2] );
+                    SReal coef_lambda = vec1[ind1] - ( vec1[ind2]*vec2[ind1]/vec2[ind2] );
 
                     if (coef_lambda < epsilon && coef_lambda > -epsilon)
                         break;
@@ -797,10 +797,10 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( type:
         {
             size_t n = weights.size();     // start index for this vertex
             weights.resize( n + ve.size() ); // concatenate all the W of the nodes
-            type::Vector3 a,u;
+            sofa::type::Vec<3, SReal> a,u;
 
             // axis x
-            a=type::Vector3(1,0,0);
+            a = { 1,0,0 };
             cholBksb(u,L,a); // solve EEt.u=x using the Cholesky decomposition
             for(size_t i=0; i<ve.size(); i++ )
             {
@@ -808,7 +808,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( type:
             }
 
             // axis y
-            a=type::Vector3(0,1,0);
+            a = { 0,1,0 };
             cholBksb(u,L,a); // solve EEt.u=y using the Cholesky decomposition
             for(size_t i=0; i<ve.size(); i++ )
             {
@@ -816,7 +816,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( type:
             }
 
             // axis z
-            a=type::Vector3(0,0,1);
+            a = { 0,0,1 };
             cholBksb(u,L,a); // solve EEt.u=z using the Cholesky decomposition
             for(size_t i=0; i<ve.size(); i++ )
             {
@@ -827,7 +827,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( type:
         {
             size_t n = weights.size();     // start index for this vertex
             weights.resize( n + ve.size() ); // concatenate all the W of the nodes
-            type::Vector3 a,u;
+            sofa::type::Vec<3, SReal> a,u;
 
             typedef Eigen::Matrix<SReal,3,3> EigenM33;
             EigenM33 emat = helper::eigenMat(EEt);
@@ -835,7 +835,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( type:
             Eigen::Matrix<SReal,3,1> solution;
 
             // axis x
-            a=type::Vector3(1,0,0);
+            a = { 1,0,0 };
             solution = jacobi.solve( helper::eigenVec(a) );
             // least-squares solve EEt.u=x
             for(int i=0; i<3; i++)
@@ -846,7 +846,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( type:
             }
 
             // axis y
-            a=type::Vector3(0,1,0);
+            a = { 0,1,0 };
             solution = jacobi.solve(helper::eigenVec(a) );
             // least-squares solve EEt.u=y
             for(int i=0; i<3; i++)
@@ -857,7 +857,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( type:
             }
 
             // axis z
-            a=type::Vector3(0,0,1);
+            a = { 0,0,1 };
             solution = jacobi.solve(helper::eigenVec(a) );
             // least-squares solve EEt.u=z
             for(int i=0; i<3; i++)

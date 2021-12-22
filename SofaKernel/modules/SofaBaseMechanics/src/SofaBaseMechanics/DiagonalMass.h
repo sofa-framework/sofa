@@ -164,7 +164,7 @@ protected:
     */
     void applyPointCreation(PointID pointIndex, MassType& m, const Point&,
         const sofa::type::vector< PointID >&,
-        const sofa::type::vector< double >&);
+        const sofa::type::vector< SReal >&);
 
     /** Method to update @sa d_vertexMass when a Point is removed.
     * Will be set as destruction callback in the PointData @sa d_vertexMass
@@ -178,7 +178,7 @@ protected:
     void applyEdgeCreation(const sofa::type::vector< EdgeID >& /*indices*/,
         const sofa::type::vector< Edge >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< EdgeID > >& /*ancestors*/,
-        const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/);
+        const sofa::type::vector< sofa::type::vector< SReal > >& /*coefs*/);
 
     /** Method to update @sa d_vertexMass when a Edge is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when EDGESREMOVED event is fired.
@@ -192,7 +192,7 @@ protected:
     void applyTriangleCreation(const sofa::type::vector< TriangleID >& /*indices*/,
         const sofa::type::vector< Triangle >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< TriangleID > >& /*ancestors*/,
-        const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/);
+        const sofa::type::vector< sofa::type::vector< SReal > >& /*coefs*/);
 
     /** Method to update @sa d_vertexMass when a Triangle is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when TRIANGLESREMOVED event is fired.
@@ -206,7 +206,7 @@ protected:
     void applyQuadCreation(const sofa::type::vector< QuadID >& /*indices*/,
         const sofa::type::vector< Quad >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< QuadID > >& /*ancestors*/,
-        const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/);
+        const sofa::type::vector< sofa::type::vector< SReal > >& /*coefs*/);
 
     /** Method to update @sa d_vertexMass when a Quad is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when QUADSREMOVED event is fired.
@@ -220,7 +220,7 @@ protected:
     void applyTetrahedronCreation(const sofa::type::vector< TetrahedronID >& /*indices*/,
         const sofa::type::vector< Tetrahedron >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< TetrahedronID > >& /*ancestors*/,
-        const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/);
+        const sofa::type::vector< sofa::type::vector< SReal > >& /*coefs*/);
 
     /** Method to update @sa d_vertexMass when a Tetrahedron is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when TETRAHEDRAREMOVED event is fired.
@@ -234,7 +234,7 @@ protected:
     void applyHexahedronCreation(const sofa::type::vector< HexahedronID >& /*indices*/,
         const sofa::type::vector< Hexahedron >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< HexahedronID > >& /*ancestors*/,
-        const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/);
+        const sofa::type::vector< sofa::type::vector< SReal > >& /*coefs*/);
     
     /** Method to update @sa d_vertexMass when a Hexahedron is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when HEXAHEDRAREMOVED event is fired.
@@ -363,16 +363,16 @@ void DiagonalMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>::init();
 template <>
 void DiagonalMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>::draw(const core::visual::VisualParams* vparams);
 template <>
-type::Vector6 DiagonalMass<defaulttype::Vec3Types, double>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
+type::Vector6 DiagonalMass<defaulttype::Vec3Types, SReal>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
 template <>
 type::Vector6 DiagonalMass<defaulttype::Rigid3Types,defaulttype::Rigid3Mass>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
 
 
 
 #if  !defined(SOFA_COMPONENT_MASS_DIAGONALMASS_CPP)
-extern template class SOFA_SOFABASEMECHANICS_API DiagonalMass<defaulttype::Vec3Types,double>;
-extern template class SOFA_SOFABASEMECHANICS_API DiagonalMass<defaulttype::Vec2Types,double>;
-extern template class SOFA_SOFABASEMECHANICS_API DiagonalMass<defaulttype::Vec1Types,double>;
+extern template class SOFA_SOFABASEMECHANICS_API DiagonalMass<defaulttype::Vec3Types,SReal>;
+extern template class SOFA_SOFABASEMECHANICS_API DiagonalMass<defaulttype::Vec2Types,SReal>;
+extern template class SOFA_SOFABASEMECHANICS_API DiagonalMass<defaulttype::Vec1Types,SReal>;
 extern template class SOFA_SOFABASEMECHANICS_API DiagonalMass<defaulttype::Rigid3Types,defaulttype::Rigid3Mass>;
 extern template class SOFA_SOFABASEMECHANICS_API DiagonalMass<defaulttype::Rigid2Types,defaulttype::Rigid2Mass>;
 

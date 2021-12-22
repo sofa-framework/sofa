@@ -321,9 +321,9 @@ void VisualModelImpl::drawShadow(const core::visual::VisualParams* vparams)
 void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
 {
     const auto &facetsImport = objLoader.getFacets();
-    const vector< Vector3 > &verticesImport = objLoader.getVertices();
-    const vector< Vector3 > &normalsImport = objLoader.getNormals();
-    const vector< Vector3 > &texCoordsImport = objLoader.getTexCoords();
+    const auto &verticesImport = objLoader.getVertices();
+    const auto&normalsImport = objLoader.getNormals();
+    const auto&texCoordsImport = objLoader.getTexCoords();
 
     const Material &materialImport = objLoader.getMaterial();
 
@@ -923,7 +923,7 @@ void VisualModelImpl::initFromTopology()
             m_quads.setCreationCallback([](Index elemID, VisualQuad& visuQuad,
                 const core::topology::BaseMeshTopology::Quad& topoQuad,
                 const sofa::type::vector< Index >& ancestors,
-                const sofa::type::vector< double >& coefs)
+                const sofa::type::vector< SReal >& coefs)
             {
                 SOFA_UNUSED(elemID);
                 SOFA_UNUSED(ancestors);
@@ -939,7 +939,7 @@ void VisualModelImpl::initFromTopology()
             m_triangles.setCreationCallback([](Index elemID, VisualTriangle& visuTri,
                 const core::topology::BaseMeshTopology::Triangle& topoTri,
                 const sofa::type::vector< Index >& ancestors,
-                const sofa::type::vector< double >& coefs)
+                const sofa::type::vector< SReal >& coefs)
             {
                 SOFA_UNUSED(elemID);
                 SOFA_UNUSED(ancestors);
@@ -954,7 +954,7 @@ void VisualModelImpl::initFromTopology()
             m_edges.setCreationCallback([](Index elemID, VisualEdge& visuEdge,
                 const core::topology::BaseMeshTopology::Edge& topoEdge,
                 const sofa::type::vector< Index >& ancestors,
-                const sofa::type::vector< double >& coefs)
+                const sofa::type::vector< SReal >& coefs)
             {
                 SOFA_UNUSED(elemID);
                 SOFA_UNUSED(ancestors);
@@ -997,7 +997,7 @@ void VisualModelImpl::initFromTopology()
             m_vtexcoords.setCreationCallback([this](Index pointIndex, TexCoord& tCoord,
                 const core::topology::BaseMeshTopology::Point& point,
                 const sofa::type::vector< Index >& ancestors,
-                const sofa::type::vector< double >& coefs)
+                const sofa::type::vector< SReal >& coefs)
             {
                 SOFA_UNUSED(pointIndex);
                 SOFA_UNUSED(point);

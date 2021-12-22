@@ -126,7 +126,7 @@ void TriangleOctreeModel::computeBoundingTree(int maxDepth)
     }
 }
 
-void TriangleOctreeModel::computeContinuousBoundingTree(double/* dt*/, int maxDepth)
+void TriangleOctreeModel::computeContinuousBoundingTree(SReal/* dt*/, int maxDepth)
 {
     computeBoundingTree(maxDepth);
 }

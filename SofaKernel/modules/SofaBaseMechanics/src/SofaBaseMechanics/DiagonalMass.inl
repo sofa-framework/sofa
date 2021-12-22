@@ -57,7 +57,7 @@ DiagonalMass<DataTypes, MassType>::DiagonalMass()
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes,MassType>::applyPointCreation(PointID, MassType &m, const Point &, const sofa::type::vector<PointID> &, const sofa::type::vector<double> &)
+void DiagonalMass<DataTypes,MassType>::applyPointCreation(PointID, MassType &m, const Point &, const sofa::type::vector<PointID> &, const sofa::type::vector<SReal> &)
 {
     m=0;
 }
@@ -77,7 +77,7 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes,MassType>::applyEdgeCreation(const sofa::type::vector< EdgeID >& edgeAdded,
         const sofa::type::vector< Edge >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< EdgeID > >& /*ancestors*/,
-        const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/)
+        const sofa::type::vector< sofa::type::vector< SReal > >& /*coefs*/)
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::EDGE)
     {
@@ -155,7 +155,7 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes,MassType>::applyTriangleCreation(const sofa::type::vector< TriangleID >& triangleAdded,
         const sofa::type::vector< Triangle >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< TriangleID > >& /*ancestors*/,
-        const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/)
+        const sofa::type::vector< sofa::type::vector< SReal > >& /*coefs*/)
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::TRIANGLE)
     {
@@ -238,7 +238,7 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::applyQuadCreation(const sofa::type::vector< QuadID >& quadAdded,
     const sofa::type::vector< Quad >& /*elems*/,
     const sofa::type::vector< sofa::type::vector< QuadID > >& /*ancestors*/,
-    const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/)
+    const sofa::type::vector< sofa::type::vector< SReal > >& /*coefs*/)
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::QUAD)
     {
@@ -326,7 +326,7 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes,MassType>::applyTetrahedronCreation(const sofa::type::vector< TetrahedronID >& tetrahedronAdded,
         const sofa::type::vector< Tetrahedron >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< TetrahedronID > >& /*ancestors*/,
-        const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/)
+        const sofa::type::vector< sofa::type::vector< SReal > >& /*coefs*/)
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::TETRAHEDRON)
     {
@@ -414,7 +414,7 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes,MassType>::applyHexahedronCreation(const sofa::type::vector< HexahedronID >& hexahedronAdded,
         const sofa::type::vector< Hexahedron >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< HexahedronID > >& /*ancestors*/,
-        const sofa::type::vector< sofa::type::vector< double > >& /*coefs*/)
+        const sofa::type::vector< sofa::type::vector< SReal > >& /*coefs*/)
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::HEXAHEDRON)
     {
@@ -651,7 +651,7 @@ void DiagonalMass<DataTypes, MassType>::initTopologyHandlers()
     d_vertexMass.setCreationCallback([this](Index pointIndex, MassType& m,
         const core::topology::BaseMeshTopology::Point& point,
         const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< double >& coefs)
+        const sofa::type::vector< SReal >& coefs)
     {
         applyPointCreation(pointIndex, m, point, ancestors, coefs);
     });

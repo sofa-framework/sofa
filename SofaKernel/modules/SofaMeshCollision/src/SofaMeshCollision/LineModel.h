@@ -120,7 +120,7 @@ public:
 
     void computeBoundingTree(int maxDepth=0) override;
 
-    void computeContinuousBoundingTree(double dt, int maxDepth=0) override;
+    void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
 
     /// Import the draw(param, index) method from the parent scope, this is needed to make it accessible
     /// in the current and child class. Otherwise the draw(param) will prevent name resolution

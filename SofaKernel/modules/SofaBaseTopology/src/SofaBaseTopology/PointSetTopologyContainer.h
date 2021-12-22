@@ -51,7 +51,7 @@ public:
     /// Procedural creation methods
     /// @{
     void clear() override;
-    void addPoint(double px, double py, double pz) override;
+    void addPoint(SReal px, SReal py, SReal pz) override;
     /// @}
 
 
