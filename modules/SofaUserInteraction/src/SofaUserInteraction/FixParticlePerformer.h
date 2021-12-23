@@ -67,11 +67,13 @@ public:
     using GetFixationPointsOnModelFunction = std::function<void(sofa::core::sptr<sofa::core::CollisionModel>, const Index, type::vector<Index>&, Coord&)>;
     using MapTypeFunction = std::unordered_map<std::type_index, GetFixationPointsOnModelFunction >;
 
-    static std::shared_ptr<MapTypeFunction> getMapInstance()
+    //static std::shared_ptr<MapTypeFunction> getMapInstance()
+    static MapTypeFunction* getMapInstance()
     {
         if (!s_mapSupportedModels)
         {
-            s_mapSupportedModels = std::make_shared<MapTypeFunction>();
+            //s_mapSupportedModels = std::make_shared<MapTypeFunction>();
+            s_mapSupportedModels = new MapTypeFunction();
         }
         return s_mapSupportedModels;
     }
@@ -111,7 +113,10 @@ protected:
 
     std::vector< simulation::Node * > fixations;
 
-    inline static std::shared_ptr<MapTypeFunction> s_mapSupportedModels;
+    // VS2017 does not like inline static with classes apparently, shared_ptr provokes a linkage error
+    // (works fine with VS2019 and VS2022)
+    //inline static std::shared_ptr<MapTypeFunction> s_mapSupportedModels;
+    inline static MapTypeFunction* s_mapSupportedModels = nullptr;
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_FIXPARTICLEPERFORMER_CPP)
