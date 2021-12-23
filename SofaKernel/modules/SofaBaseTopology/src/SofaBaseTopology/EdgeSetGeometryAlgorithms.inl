@@ -464,10 +464,10 @@ bool is_point_on_edge(const Vec& p, const Vec& a, const Vec& b)
 }
 
 template<class DataTypes>
-sofa::type::vector< SReal > EdgeSetGeometryAlgorithms<DataTypes>::computeRest2PointsBarycoefs(
-    const sofa::type::Vec<3,SReal> &p,
+auto EdgeSetGeometryAlgorithms<DataTypes>::computeRest2PointsBarycoefs(
+    const sofa::type::Vec<3, Real>& p,
     PointID ind_p1,
-    PointID ind_p2) const
+    PointID ind_p2) const -> sofa::type::vector<Real>
 {
     const SReal ZERO = 1e-6;
 
