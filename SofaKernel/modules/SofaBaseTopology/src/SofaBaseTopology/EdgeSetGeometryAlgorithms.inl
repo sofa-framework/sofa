@@ -454,7 +454,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) co
 template<class Vec>
 bool is_point_on_edge(const Vec& p, const Vec& a, const Vec& b)
 {
-    const Real ZERO = 1e-12;
+    const typename Vec::value_type ZERO = 1e-12;
     Vec v = (p - a).cross(p - b);
 
     if(v.norm2() < ZERO)
@@ -505,7 +505,7 @@ auto EdgeSetGeometryAlgorithms<DataTypes>::computeRest2PointsBarycoefs(
 template<class Vec>
 sofa::type::vector< typename Vec::value_type > compute_2points_barycoefs(const Vec& p, const Vec& a, const Vec& b)
 {
-    using Real = Vec::value_type;
+    using Real = typename Vec::value_type;
     const Real ZERO = 1e-6;
 
     sofa::type::vector< Real > baryCoefs;
