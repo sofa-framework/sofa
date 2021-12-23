@@ -415,32 +415,32 @@ void TriangleSetGeometryAlgorithms<DataTypes>::computeTriangleArea( BasicArrayIn
 
 // Computes the point defined by 2 indices of vertex and 1 barycentric coordinate
 template<class DataTypes>
-sofa::type::Vec<3, SReal> TriangleSetGeometryAlgorithms< DataTypes >::computeBaryEdgePoint(PointID p0, PointID p1, SReal coord_p) const
+auto TriangleSetGeometryAlgorithms< DataTypes >::computeBaryEdgePoint(PointID p0, PointID p1, Real coord_p) const -> sofa::type::Vec<3, Real>
 {
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-    sofa::type::Vec<3,SReal> c0; c0 = vect_c[p0];
-    sofa::type::Vec<3,SReal> c1; c1 = vect_c[p1];
+    sofa::type::Vec<3,Real> c0; c0 = vect_c[p0];
+    sofa::type::Vec<3,Real> c1; c1 = vect_c[p1];
     return c0*(1-coord_p) + c1*coord_p;
 }
 
 template<class DataTypes>
-sofa::type::Vec<3, SReal> TriangleSetGeometryAlgorithms< DataTypes >::computeBaryTrianglePoint(PointID p0, PointID p1, PointID p2, sofa::type::Vec<3,SReal>& coord_p) const
+auto TriangleSetGeometryAlgorithms< DataTypes >::computeBaryTrianglePoint(PointID p0, PointID p1, PointID p2, sofa::type::Vec<3,Real>& coord_p) const -> sofa::type::Vec<3, Real>
 {
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-    sofa::type::Vec<3,SReal> c0; c0 = vect_c[p0];
-    sofa::type::Vec<3,SReal> c1; c1 = vect_c[p1];
-    sofa::type::Vec<3,SReal> c2; c2 = vect_c[p2];
+    sofa::type::Vec<3,Real> c0; c0 = vect_c[p0];
+    sofa::type::Vec<3,Real> c1; c1 = vect_c[p1];
+    sofa::type::Vec<3,Real> c2; c2 = vect_c[p2];
     return c0*coord_p[0] + c1*coord_p[1] + c2*coord_p[2];
 }
 
 
 // Computes the opposite point to ind_p
 template<class DataTypes>
-sofa::type::Vec<3, SReal> TriangleSetGeometryAlgorithms< DataTypes >::getOppositePoint(PointID ind_p,
+auto TriangleSetGeometryAlgorithms< DataTypes >::getOppositePoint(PointID ind_p,
         const Edge& indices,
-        SReal coord_p) const
+        Real coord_p) const -> sofa::type::Vec<3, Real>
 {
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
@@ -471,12 +471,12 @@ sofa::type::Vec<3, SReal> TriangleSetGeometryAlgorithms< DataTypes >::getOpposit
         }
     }
 
-    return ((sofa::type::Vec<3,SReal>) p);
+    return p;
 }
 
 // Computes the normal vector of a triangle indexed by ind_t (not normed)
 template<class DataTypes>
-sofa::type::Vec<3,SReal> TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleNormal(const TriangleID ind_t) const
+auto TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleNormal(const TriangleID ind_t) const -> sofa::type::Vec<3, Real>
 {
     const Triangle &t = this->m_topology->getTriangle(ind_t);
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
@@ -500,14 +500,14 @@ sofa::type::Vec<3,SReal> TriangleSetGeometryAlgorithms< DataTypes >::computeTria
 
     sofa::type::Vec<3,Real> normal_t=(p1-p0).cross( p2-p0);
 
-    return ((sofa::type::Vec<3,SReal>) normal_t);
+    return normal_t;
 }
 
 // barycentric coefficients of point p in triangle (a,b,c) indexed by ind_t
 template<class DataTypes>
-sofa::type::vector< SReal > TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleBarycoefs(
+auto TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleBarycoefs(
     const TriangleID ind_t,
-    const sofa::type::Vec<3,SReal> &p) const
+    const sofa::type::Vec<3,Real> &p) const -> sofa::type::vector<Real>
 {
     const Triangle &t=this->m_topology->getTriangle(ind_t);
     return compute3PointsBarycoefs(p, t[0], t[1], t[2],false);
@@ -515,9 +515,9 @@ sofa::type::vector< SReal > TriangleSetGeometryAlgorithms< DataTypes >::computeT
 
 // barycentric coefficients of point p in initial triangle (a,b,c) indexed by ind_t
 template<class DataTypes>
-sofa::type::vector< SReal > TriangleSetGeometryAlgorithms< DataTypes >::computeRestTriangleBarycoefs(
+auto TriangleSetGeometryAlgorithms< DataTypes >::computeRestTriangleBarycoefs(
     const TriangleID ind_t,
-    const sofa::type::Vec<3, SReal>& p) const
+    const sofa::type::Vec<3, Real>& p) const -> sofa::type::vector<Real>
 {
     const Triangle& t = this->m_topology->getTriangle(ind_t);
     return compute3PointsBarycoefs(p, t[0], t[1], t[2], true);
@@ -525,15 +525,15 @@ sofa::type::vector< SReal > TriangleSetGeometryAlgorithms< DataTypes >::computeR
 
 // barycentric coefficients of point p in triangle whose vertices are indexed by (ind_p1,ind_p2,ind_p3)
 template<class DataTypes>
-sofa::type::vector< SReal > TriangleSetGeometryAlgorithms< DataTypes >::compute3PointsBarycoefs(
-    const sofa::type::Vec<3, SReal> &p,
+auto TriangleSetGeometryAlgorithms< DataTypes >::compute3PointsBarycoefs(
+    const sofa::type::Vec<3, Real> &p,
     PointID ind_p1,
     PointID ind_p2,
     PointID ind_p3,
-    bool bRest) const
+    bool bRest) const -> sofa::type::vector<Real>
 {
-    const SReal ZERO = 1e-12;
-    sofa::type::vector< SReal > baryCoefs;
+    const Real ZERO = 1e-12;
+    sofa::type::vector< Real > baryCoefs;
 
     const typename DataTypes::VecCoord& vect_c = (bRest ? (this->object->read(core::ConstVecCoordId::restPosition())->getValue()) : (this->object->read(core::ConstVecCoordId::position())->getValue()));
 
@@ -554,17 +554,17 @@ sofa::type::vector< SReal > TriangleSetGeometryAlgorithms< DataTypes >::compute3
     c[1] = (Real) (c2[1]);
     c[2] = (Real) (c2[2]);
 
-    sofa::type::Vec<3,SReal> M = (sofa::type::Vec<3,SReal>) (b-a).cross(c-a);
-    SReal norm2_M = M*(M);
+    sofa::type::Vec<3,Real> M = (sofa::type::Vec<3,Real>) (b-a).cross(c-a);
+    Real norm2_M = M*(M);
 
-    SReal coef_a, coef_b, coef_c;
+    Real coef_a, coef_b, coef_c;
 
     //if(norm2_M==0.0) // triangle (a,b,c) is flat
     if(norm2_M < ZERO) // triangle (a,b,c) is flat
     {
-        coef_a = (SReal) (1.0/3.0);
-        coef_b = (SReal) (1.0/3.0);
-        coef_c = (SReal) (1.0 - (coef_a + coef_b));
+        coef_a = (Real) (1.0/3.0);
+        coef_b = (Real) (1.0/3.0);
+        coef_c = (Real) (1.0 - (coef_a + coef_b));
     }
     else
     {
@@ -572,7 +572,7 @@ sofa::type::vector< SReal > TriangleSetGeometryAlgorithms< DataTypes >::compute3
 
         coef_a = N*((b-p).cross(c-p));
         coef_b = N*((c-p).cross(a-p));
-        coef_c = (SReal) (1.0 - (coef_a + coef_b)); //N*((a-p).cross(b-p));
+        coef_c = (Real) (1.0 - (coef_a + coef_b)); //N*((a-p).cross(b-p));
     }
 
     baryCoefs.push_back(coef_a);
@@ -642,7 +642,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInsideTriangle(const Tri
         TriangleID &ind_t_test,
         bool bRest) const
 {
-    const SReal ZERO = -1e-12;
+    const Real ZERO = -1e-12;
     const typename DataTypes::VecCoord& vect_c = bRest
         ? (this->object->read(core::ConstVecCoordId::restPosition())->getValue())
         :(this->object->read(core::ConstVecCoordId::position())->getValue());
@@ -676,9 +676,9 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInsideTriangle(const Tri
         sofa::type::Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
         sofa::type::Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
 
-        SReal v_01 = (SReal) ((ptest-p0)*(n_01));
-        SReal v_12 = (SReal) ((ptest-p1)*(n_12));
-        SReal v_20 = (SReal) ((ptest-p2)*(n_20));
+        Real v_01 = (Real) ((ptest-p0)*(n_01));
+        Real v_12 = (Real) ((ptest-p1)*(n_12));
+        Real v_20 = (Real) ((ptest-p2)*(n_20));
 
         bool is_inside = (v_01 > ZERO) && (v_12 > ZERO) && (v_20 > ZERO);
 
@@ -781,7 +781,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInTriangle(const Triangl
         const sofa::type::Vec<3,Real>& p,
         TriangleID &ind_t_test) const
 {
-    const SReal ZERO = 1e-12;
+    const Real ZERO = 1e-12;
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
     const Triangle &t=this->m_topology->getTriangle(ind_t);
 
@@ -814,9 +814,9 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInTriangle(const Triangl
         sofa::type::Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
         sofa::type::Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
 
-        SReal v_01 = (SReal) ((ptest-p0)*(n_01));
-        SReal v_12 = (SReal) ((ptest-p1)*(n_12));
-        SReal v_20 = (SReal) ((ptest-p2)*(n_20));
+        Real v_01 = (Real) ((ptest-p0)*(n_01));
+        Real v_12 = (Real) ((ptest-p1)*(n_12));
+        Real v_20 = (Real) ((ptest-p2)*(n_20));
 
         //bool is_inside = (v_01 > 0.0) && (v_12 > 0.0) && (v_20 > 0.0);
         bool is_inside = (v_01 > -ZERO) && (v_12 > -ZERO) && (v_20 >= -ZERO);
@@ -925,7 +925,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const t
         QuadID ind_q3,
         QuadID ind_q4)
 {
-    sofa::type::vector< SReal > baryCoefs;
+    sofa::type::vector< Real > baryCoefs;
 
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
@@ -953,10 +953,10 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const t
     //Test if one vertex is inside the triangle formed by the 3 others
     Coord CommonEdge[2], oppositeVertices[2];
 
-    oppositeVertices[0] = p1; sofa::type::Vec<3,SReal> A; A = p1;
-    CommonEdge[0] = p2;       sofa::type::Vec<3,SReal> C; C = p2;
-    CommonEdge[1] = p4;       sofa::type::Vec<3,SReal> B; B = p3;
-    oppositeVertices[1] = p3; sofa::type::Vec<3,SReal> D; D = p4;
+    oppositeVertices[0] = p1; sofa::type::Vec<3,Real> A; A = p1;
+    CommonEdge[0] = p2;       sofa::type::Vec<3,Real> C; C = p2;
+    CommonEdge[1] = p4;       sofa::type::Vec<3,Real> B; B = p3;
+    oppositeVertices[1] = p3; sofa::type::Vec<3,Real> D; D = p4;
 
     bool intersected = false;
 
@@ -965,10 +965,10 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const t
     if (intersected)
     {
 
-        sofa::type::Vec<3,SReal> X; DataTypes::get(X[0], X[1], X[2], inter);
+        sofa::type::Vec<3,Real> X; DataTypes::get(X[0], X[1], X[2], inter);
 
-        SReal ABAX = (A - B)*(A - X);
-        SReal CDCX = (C - D)*(C - X);
+        Real ABAX = (A - B)*(A - X);
+        Real CDCX = (C - D)*(C - X);
 
         if ( (ABAX < 0) || ((A - X).norm2() > (A - B).norm2()) )
             return true;
@@ -976,7 +976,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const t
             return false;
     }
 
-    sofa::type::Vec<3,SReal> G = (A+B+C)/3.0;
+    sofa::type::Vec<3,Real> G = (A+B+C)/3.0;
 
     if((G-C)*(G-C) <= (G-D)*(G-D))
         return true;
@@ -1036,16 +1036,16 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isDiagonalsIntersectionInQuad (
 
     if (intersected)
     {
-        sofa::type::Vec<3,SReal> A; DataTypes::get(A[0], A[1], A[2], CommonEdge[0]);
-        sofa::type::Vec<3,SReal> B; DataTypes::get(B[0], B[1], B[2], CommonEdge[1]);
+        sofa::type::Vec<3,Real> A; DataTypes::get(A[0], A[1], A[2], CommonEdge[0]);
+        sofa::type::Vec<3,Real> B; DataTypes::get(B[0], B[1], B[2], CommonEdge[1]);
 
-        sofa::type::Vec<3,SReal> C; DataTypes::get(C[0], C[1], C[2], oppositeVertices[0]);
-        sofa::type::Vec<3,SReal> D; DataTypes::get(D[0], D[1], D[2], oppositeVertices[1]);
+        sofa::type::Vec<3,Real> C; DataTypes::get(C[0], C[1], C[2], oppositeVertices[0]);
+        sofa::type::Vec<3,Real> D; DataTypes::get(D[0], D[1], D[2], oppositeVertices[1]);
 
-        sofa::type::Vec<3,SReal> X; DataTypes::get(X[0], X[1], X[2], inter);
+        sofa::type::Vec<3,Real> X; DataTypes::get(X[0], X[1], X[2], inter);
 
-        SReal ABAX = (A - B)*(A - X);
-        SReal CDCX = (C - D)*(C - X);
+        Real ABAX = (A - B)*(A - X);
+        Real CDCX = (C - D)*(C - X);
 
         if ( (ABAX < 0) || (CDCX < 0) || ((A - X).norm2() > (A - B).norm2()) || ((C - X).norm2() > (C - D).norm2()) )
             return false;
@@ -1117,9 +1117,9 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
         const TriangleID ind_t_from,
         const TriangleID ind_t_to,
         const Edge& indices_from,
-        const SReal &coord_from,
+        const Real &coord_from,
         const Edge& indices_to,
-        const SReal &coord_to,
+        const Real &coord_to,
         sofa::type::vector< TriangleID > &triangles_list_1,
         sofa::type::vector< TriangleID > &triangles_list_2) const
 {
@@ -1290,8 +1290,8 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
                 {
                     ind_triangle=shell[i];
 
-                    is_in_plane_from=isTriangleInPlane(ind_triangle,ind_p, (const sofa::type::Vec<3,SReal>&) plane_from);
-                    is_in_plane_to=isTriangleInPlane(ind_triangle,ind_p, (const sofa::type::Vec<3,SReal>&) plane_to);
+                    is_in_plane_from=isTriangleInPlane(ind_triangle,ind_p, (const sofa::type::Vec<3,Real>&) plane_from);
+                    is_in_plane_to=isTriangleInPlane(ind_triangle,ind_p, (const sofa::type::Vec<3,Real>&) plane_to);
 
                     if((ind_triangle != ind_t_from) && (ind_triangle != ind_t_to))
                     {
@@ -1313,8 +1313,8 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
                 {
                     ind_triangle=shell[i];
 
-                    is_in_plane_from=isTriangleInPlane(ind_triangle,ind_p, (const sofa::type::Vec<3,SReal>&) plane_from);
-                    is_in_plane_to=isTriangleInPlane(ind_triangle,ind_p, (const sofa::type::Vec<3,SReal>&) plane_to);
+                    is_in_plane_from=isTriangleInPlane(ind_triangle,ind_p, (const sofa::type::Vec<3,Real>&) plane_from);
+                    is_in_plane_to=isTriangleInPlane(ind_triangle,ind_p, (const sofa::type::Vec<3,Real>&) plane_to);
 
                     if((ind_triangle != ind_t_from) && (ind_triangle != ind_t_to))
                     {
@@ -1345,11 +1345,11 @@ void TriangleSetGeometryAlgorithms< DataTypes >::prepareVertexDuplication(const 
 // Computes the intersection of the segment from point a to point b and the triangle indexed by t
 template<class DataTypes>
 bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersection(bool is_entered,
-        const sofa::type::Vec<3,SReal>& a,
-        const sofa::type::Vec<3,SReal>& b,
+        const sofa::type::Vec<3,Real>& a,
+        const sofa::type::Vec<3,Real>& b,
         const TriangleID ind_t,
         sofa::type::vector<TriangleID> &indices,
-        SReal &baryCoef, SReal& coord_kmin) const
+        Real &baryCoef, Real& coord_kmin) const
 {
     // HYP : point a is in triangle indexed by t
     // is_entered == true => indices.size() == 2
@@ -1426,17 +1426,17 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
 
         if(norm2_v_ab_proj != 0.0) // pb_proj != pa
         {
-            SReal coord_t=0.0;
-            SReal coord_k=0.0;
+            Real coord_t=0.0;
+            Real coord_k=0.0;
 
-            SReal is_initialized=false;
+            Real is_initialized=false;
             coord_kmin=0.0;
 
-            SReal coord_test1;
-            SReal coord_test2;
+            Real coord_test1;
+            Real coord_test2;
 
-            SReal s_t;
-            SReal s_k;
+            Real s_t;
+            Real s_k;
 
             if(!is_full_01)
             {
@@ -1471,8 +1471,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
                 }
                 else // s_t != 0.0 and s_k != 0.0
                 {
-                    coord_k=SReal((pa-p0)*(n_01))*1.0/SReal(s_k);
-                    coord_t=SReal((p0-pa)*(n_proj))*1.0/SReal(s_t);
+                    coord_k=Real((pa-p0)*(n_01))*1.0/Real(s_k);
+                    coord_t=Real((p0-pa)*(n_proj))*1.0/Real(s_t);
 
                     is_intersected = ((coord_k > 0.0) && (coord_t >= 0.0 && coord_t <= 1.0));
                 }
@@ -1534,8 +1534,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
                 else   // s_t != 0.0 and s_k != 0.0
                 {
 
-                    coord_k=SReal((pa-p1)*(n_12))*1.0/SReal(s_k);
-                    coord_t=SReal((p1-pa)*(n_proj))*1.0/SReal(s_t);
+                    coord_k=Real((pa-p1)*(n_12))*1.0/Real(s_k);
+                    coord_t=Real((p1-pa)*(n_proj))*1.0/Real(s_t);
 
                     is_intersected = ((coord_k > 0.0) && (coord_t >= 0.0 && coord_t <= 1.0));
                 }
@@ -1596,8 +1596,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
                 }
                 else // s_t != 0.0 and s_k != 0.0
                 {
-                    coord_k=SReal((pa-p2)*(n_20))*1.0/SReal(s_k);
-                    coord_t=SReal((p2-pa)*(n_proj))*1.0/SReal(s_t);
+                    coord_k=Real((pa-p2)*(n_20))*1.0/Real(s_k);
+                    coord_t=Real((p2-pa)*(n_proj))*1.0/Real(s_t);
 
                     is_intersected = ((coord_k > 0.0) && (coord_t >= 0.0 && coord_t <= 1.0));
                 }
@@ -1753,8 +1753,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectionsLineTriangl
                 }
                 else // s_t != 0.0 and s_k != 0.0
                 {
-                    coord_k = SReal((pa - p0) * (n_01)) * 1.0 / SReal(s_k);
-                    coord_t = SReal((p0 - pa) * (n_proj)) * 1.0 / SReal(s_t);
+                    coord_k = Real((pa - p0) * (n_01)) * 1.0 / Real(s_k);
+                    coord_t = Real((p0 - pa) * (n_proj)) * 1.0 / Real(s_t);
 
                     is_intersected_01 = ((coord_k > 0.0) && (coord_t >= 0.0 && coord_t <= 1.0));
                 }
@@ -1821,8 +1821,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectionsLineTriangl
                 else   // s_t != 0.0 and s_k != 0.0
                 {
 
-                    coord_k = SReal((pa - p1) * (n_12)) * 1.0 / SReal(s_k);
-                    coord_t = SReal((p1 - pa) * (n_proj)) * 1.0 / SReal(s_t);
+                    coord_k = Real((pa - p1) * (n_12)) * 1.0 / Real(s_k);
+                    coord_t = Real((p1 - pa) * (n_proj)) * 1.0 / Real(s_t);
 
                     is_intersected_12 = ((coord_k > 0.0) && (coord_t >= 0.0 && coord_t <= 1.0));
                 }
@@ -1888,8 +1888,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectionsLineTriangl
                 }
                 else // s_t != 0.0 and s_k != 0.0
                 {
-                    coord_k = SReal((pa - p2) * (n_20)) * 1.0 / SReal(s_k);
-                    coord_t = SReal((p2 - pa) * (n_proj)) * 1.0 / SReal(s_t);
+                    coord_k = Real((pa - p2) * (n_20)) * 1.0 / Real(s_k);
+                    coord_t = Real((p2 - pa) * (n_proj)) * 1.0 / Real(s_t);
 
                     is_intersected_20 = ((coord_k > 0.0) && (coord_t >= 0.0 && coord_t <= 1.0));
                 }
@@ -1930,31 +1930,31 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectionsLineTriangl
 // and the triangular mesh
 template<class DataTypes>
 bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(const PointID last_point,
-        const sofa::type::Vec<3,SReal>& a,
-        const sofa::type::Vec<3,SReal>& b,
+        const sofa::type::Vec<3,Real>& a,
+        const sofa::type::Vec<3,Real>& b,
         TriangleID& ind_ta,
         TriangleID& ind_tb,
         sofa::type::vector< TriangleID > &triangles_list,
         sofa::type::vector< EdgeID> &edges_list,
-        sofa::type::vector< SReal >& coords_list,
+        sofa::type::vector< Real >& coords_list,
         bool& is_on_boundary) const
 {
 
     bool is_validated=true;
     bool is_intersected=true;
 
-    sofa::type::Vec<3,SReal> c_t_test = a;
+    sofa::type::Vec<3,Real> c_t_test = a;
 
     is_on_boundary = false;
 
     sofa::type::vector<PointID> indices;
 
-    SReal coord_t=0.0;
-    SReal coord_k=0.0;
-    SReal coord_k_test=0.0;
-    SReal dist_min=0.0;
+    Real coord_t=0.0;
+    Real coord_k=0.0;
+    Real coord_k_test=0.0;
+    Real dist_min=0.0;
 
-    sofa::type::Vec<3,SReal> p_current=a;
+    sofa::type::Vec<3,Real> p_current=a;
 
     TriangleID ind_t_current=ind_ta;
     EdgeID ind_edge;
@@ -2021,10 +2021,10 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
         const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-        sofa::type::Vec<3,SReal> c_t_current; // WARNING : conversion from 'SReal' to 'float', possible loss of data ! // typename DataTypes::Coord
-        c_t_current[0]=(SReal) ((1.0-coord_t)*((SReal) (vect_c[indices[0]][0]))+coord_t*((SReal) (vect_c[indices[1]][0])));
-        c_t_current[1]=(SReal) ((1.0-coord_t)*((SReal) (vect_c[indices[0]][1]))+coord_t*((SReal) (vect_c[indices[1]][1])));
-        c_t_current[2]=(SReal) ((1.0-coord_t)*((SReal) (vect_c[indices[0]][2]))+coord_t*((SReal) (vect_c[indices[1]][2])));
+        sofa::type::Vec<3,Real> c_t_current; // WARNING : conversion from 'Real' to 'float', possible loss of data ! // typename DataTypes::Coord
+        c_t_current[0]=(Real) ((1.0-coord_t)*((Real) (vect_c[indices[0]][0]))+coord_t*((Real) (vect_c[indices[1]][0])));
+        c_t_current[1]=(Real) ((1.0-coord_t)*((Real) (vect_c[indices[0]][1]))+coord_t*((Real) (vect_c[indices[1]][1])));
+        c_t_current[2]=(Real) ((1.0-coord_t)*((Real) (vect_c[indices[0]][2]))+coord_t*((Real) (vect_c[indices[1]][2])));
 
         p_current=c_t_current;
 
@@ -2089,12 +2089,12 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
                             if(is_intersected)
                             {
-                                sofa::type::Vec<3,SReal> c_t_test; // WARNING : conversion from 'SReal' to 'float', possible loss of data ! // typename DataTypes::Coord
-                                c_t_test[0]=(SReal) ((1.0-coord_t)*((SReal) (vect_c[indices[0]][0]))+coord_t*((SReal) (vect_c[indices[1]][0])));
-                                c_t_test[1]=(SReal) ((1.0-coord_t)*((SReal) (vect_c[indices[0]][1]))+coord_t*((SReal) (vect_c[indices[1]][1])));
-                                c_t_test[2]=(SReal) ((1.0-coord_t)*((SReal) (vect_c[indices[0]][2]))+coord_t*((SReal) (vect_c[indices[1]][2])));
+                                sofa::type::Vec<3,Real> c_t_test; // WARNING : conversion from 'Real' to 'float', possible loss of data ! // typename DataTypes::Coord
+                                c_t_test[0]=(Real) ((1.0-coord_t)*((Real) (vect_c[indices[0]][0]))+coord_t*((Real) (vect_c[indices[1]][0])));
+                                c_t_test[1]=(Real) ((1.0-coord_t)*((Real) (vect_c[indices[0]][1]))+coord_t*((Real) (vect_c[indices[1]][1])));
+                                c_t_test[2]=(Real) ((1.0-coord_t)*((Real) (vect_c[indices[0]][2]))+coord_t*((Real) (vect_c[indices[1]][2])));
 
-                                SReal dist_test=(b-c_t_test)*(b-c_t_test);
+                                Real dist_test=(b-c_t_test)*(b-c_t_test);
 
                                 if(is_test_init)
                                 {
@@ -2180,12 +2180,12 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
                             if(is_intersected)
                             {
-                                //Vec<3,SReal> c_t_test; // WARNING : conversion from 'SReal' to 'float', possible loss of data ! // typename DataTypes::Coord
-                                c_t_test[0]=(SReal) ((1.0-coord_t)*((SReal) (vect_c[indices[0]][0]))+coord_t*((SReal) (vect_c[indices[1]][0])));
-                                c_t_test[1]=(SReal) ((1.0-coord_t)*((SReal) (vect_c[indices[0]][1]))+coord_t*((SReal) (vect_c[indices[1]][1])));
-                                c_t_test[2]=(SReal) ((1.0-coord_t)*((SReal) (vect_c[indices[0]][2]))+coord_t*((SReal) (vect_c[indices[1]][2])));
+                                //Vec<3,Real> c_t_test; // WARNING : conversion from 'Real' to 'float', possible loss of data ! // typename DataTypes::Coord
+                                c_t_test[0]=(Real) ((1.0-coord_t)*((Real) (vect_c[indices[0]][0]))+coord_t*((Real) (vect_c[indices[1]][0])));
+                                c_t_test[1]=(Real) ((1.0-coord_t)*((Real) (vect_c[indices[0]][1]))+coord_t*((Real) (vect_c[indices[1]][1])));
+                                c_t_test[2]=(Real) ((1.0-coord_t)*((Real) (vect_c[indices[0]][2]))+coord_t*((Real) (vect_c[indices[1]][2])));
 
-                                SReal dist_test=(b-c_t_test)*(b-c_t_test);
+                                Real dist_test=(b-c_t_test)*(b-c_t_test);
 
                                 if(is_test_init)
                                 {
@@ -2253,11 +2253,11 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
 template <typename DataTypes>
 bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (const PointID last_point,
-        const sofa::type::Vec<3,SReal>& a, const sofa::type::Vec<3,SReal>& b,
+        const sofa::type::Vec<3,Real>& a, const sofa::type::Vec<3,Real>& b,
         TriangleID& ind_ta, TriangleID& ind_tb,// A verifier pourquoi la ref!
         sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
         sofa::type::vector<ElemID>& indices_list,
-        sofa::type::vector< sofa::type::Vec<3, SReal> >& coords_list) const
+        sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list) const
 {
     //// QUICK FIX TO USE THE NEW PATH DECLARATION (WITH ONLY EDGES COMING FROM PREVIOUS FUNCTION)
     //// ** TODO: create the real function handle different objects intersection **
@@ -2266,7 +2266,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
     // Output declarations
     sofa::type::vector<TriangleID> triangles_list;
     sofa::type::vector<EdgeID> edges_list;
-    sofa::type::vector< SReal > coordsEdge_list;
+    sofa::type::vector< Real > coordsEdge_list;
     bool pathOK;
     bool isOnPoint = false;
     bool is_on_boundary = false;
@@ -2288,7 +2288,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
     if (pathOK)
     {
         // creating new declaration path:
-        sofa::type::Vec<3,SReal> baryCoords;
+        sofa::type::Vec<3,Real> baryCoords;
 
         // 1 - First point a (for the moment: always a point in a triangle)
         if (last_point != sofa::InvalidID)
@@ -2301,7 +2301,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
         }
         else
         {
-            sofa::type::vector< SReal > coefs_a = computeTriangleBarycoefs (ind_ta, a);
+            sofa::type::vector< Real > coefs_a = computeTriangleBarycoefs (ind_ta, a);
             topoPath_list.push_back (core::topology::TopologyElementType::TRIANGLE);
             indices_list.push_back (ind_ta);
             for (unsigned int i = 0; i<3; i++)
@@ -2325,7 +2325,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
         }
 
         // 3 - Last point b (for the moment: always a point in a triangle)
-        sofa::type::vector< SReal > coefs_b = computeTriangleBarycoefs (ind_tb, b);
+        sofa::type::vector< Real > coefs_b = computeTriangleBarycoefs (ind_tb, b);
 
         for (unsigned int i = 0; i<3; i++)
             if (coefs_b[i] > 0.9999 )
@@ -2353,7 +2353,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
 
 /// Get the triangle in a given direction from a point.
 template <typename DataTypes>
-int TriangleSetGeometryAlgorithms<DataTypes>::getTriangleInDirection(PointID p, const sofa::type::Vec<3,SReal>& dir) const
+int TriangleSetGeometryAlgorithms<DataTypes>::getTriangleInDirection(PointID p, const sofa::type::Vec<3,Real>& dir) const
 {
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
     const sofa::type::vector<TriangleID> &shell=this->m_topology->getTrianglesAroundVertex(p);
@@ -2392,8 +2392,8 @@ int TriangleSetGeometryAlgorithms<DataTypes>::getTriangleInDirection(PointID p, 
             sofa::type::Vec<3,Real> n_01 = e1.cross(v_normal);
             sofa::type::Vec<3,Real> n_02 = e2.cross(v_normal);
 
-            SReal v_01 = (SReal) ((dtest)*(n_01));
-            SReal v_02 = (SReal) ((dtest)*(n_02));
+            Real v_01 = (Real) ((dtest)*(n_01));
+            Real v_02 = (Real) ((dtest)*(n_02));
 
             bool is_inside = (v_01 >= 0.0) && (v_02 < 0.0);
             if (is_inside) return ind_t;
@@ -2418,9 +2418,9 @@ void TriangleSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename
 
     for (size_t i=0; i<numVertices; ++i)
     {
-        SReal x = (SReal) vect_c[i][0];
-        SReal y = (SReal) vect_c[i][1];
-        SReal z = (SReal) vect_c[i][2];
+        Real x = (Real) vect_c[i][0];
+        Real y = (Real) vect_c[i][1];
+        Real z = (Real) vect_c[i][2];
 
         myfile << i+1 << " " << x << " " << y << " " << z <<"\n";
     }
@@ -2464,7 +2464,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::reorderTrianglesOrientationFromNo
         {
             TriangleID triId = _neighTri[i];
             triNormal = this->computeTriangleNormal(triId);
-            SReal prod = (firstNormal*triNormal)/(firstNormal.norm()*triNormal.norm());
+            Real prod = (firstNormal*triNormal)/(firstNormal.norm()*triNormal.norm());
             if (prod < 0.15) //change orientation
                 this->m_topology->reOrientateTriangle(triId);
         }
@@ -2534,7 +2534,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::reorderTrianglesOrientationFromNo
 template<class Real>
 bool is_point_in_triangle(const sofa::type::Vec<3,Real>& p, const sofa::type::Vec<3,Real>& a, const sofa::type::Vec<3,Real>& b, const sofa::type::Vec<3,Real>& c)
 {
-    const SReal ZERO = 1e-6;
+    const Real ZERO = 1e-6;
 
     sofa::type::Vec<3,Real> ptest = p;
     sofa::type::Vec<3,Real> p0 = a;
@@ -2674,12 +2674,12 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::Suture2Points(TriangleID ind_ta
     // Access the topology
     computeClosestIndexPair(ind_ta, ind_tb, ind1, ind2);
 
-    sofa::type::Vec<3, SReal> point_created = computeBaryEdgePoint(ind1, ind2, 0.5);
+    sofa::type::Vec<3, Real> point_created = computeBaryEdgePoint(ind1, ind2, 0.5);
 
-    sofa::type::vector< SReal > x_created;
-    x_created.push_back((SReal)point_created[0]);
-    x_created.push_back((SReal)point_created[1]);
-    x_created.push_back((SReal)point_created[2]);
+    sofa::type::vector< Real > x_created;
+    x_created.push_back((Real)point_created[0]);
+    x_created.push_back((Real)point_created[1]);
+    x_created.push_back((Real)point_created[2]);
 
     core::behavior::MechanicalState<DataTypes>* state = this->getDOF();
 
@@ -2698,14 +2698,14 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::Suture2Points(TriangleID ind_ta
 // Removes triangles along the list of points (ind_edge,coord) intersected by the segment from point a to point b and the triangular mesh
 
 template<class DataTypes>
-void TriangleSetGeometryAlgorithms< DataTypes >::RemoveAlongTrianglesList(const sofa::type::Vec<3, SReal>& a,
-    const sofa::type::Vec<3, SReal>& b,
+void TriangleSetGeometryAlgorithms< DataTypes >::RemoveAlongTrianglesList(const sofa::type::Vec<3, Real>& a,
+    const sofa::type::Vec<3, Real>& b,
     const TriangleID ind_ta,
     const TriangleID ind_tb)
 {
     sofa::type::vector< TriangleID > triangles_list;
     sofa::type::vector< EdgeID > edges_list;
-    sofa::type::vector< SReal > coords_list;
+    sofa::type::vector< Real > coords_list;
 
     bool is_intersected = false;
 
@@ -2728,7 +2728,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::RemoveAlongTrianglesList(const 
 
 template<class DataTypes>
 void TriangleSetGeometryAlgorithms< DataTypes >::InciseAlongLinesList(
-    const sofa::type::vector< sofa::type::Vec<3, SReal> >& input_points,
+    const sofa::type::vector< sofa::type::Vec<3, Real> >& input_points,
     const sofa::type::vector< TriangleID > &input_triangles)
 {
     // HYP : input_points.size() == input_triangles.size()
@@ -2738,21 +2738,21 @@ void TriangleSetGeometryAlgorithms< DataTypes >::InciseAlongLinesList(
     // Initialization for INTERSECTION method
     sofa::type::vector< TriangleID > triangles_list;
     sofa::type::vector< EdgeID > edges_list;
-    sofa::type::vector< SReal > coords_list;
+    sofa::type::vector< Real > coords_list;
 
     TriangleID ind_tb_final;
 
     bool is_on_boundary;
 
-    const sofa::type::Vec<3, SReal> a = input_points[0];
+    const sofa::type::Vec<3, Real> a = input_points[0];
     TriangleID ind_ta = input_triangles[0];
 
     unsigned int j = 0;
     bool is_validated = true;
     for (j = 0; is_validated && j < points_size - 1; ++j)
     {
-        const sofa::type::Vec<3, SReal> pa = input_points[j];
-        const sofa::type::Vec<3, SReal> pb = input_points[j + 1];
+        const sofa::type::Vec<3, Real> pa = input_points[j];
+        const sofa::type::Vec<3, Real> pb = input_points[j + 1];
         TriangleID ind_tpa = input_triangles[j];
         TriangleID ind_tpb = input_triangles[j + 1];
 
@@ -2771,7 +2771,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::InciseAlongLinesList(
         }
     }
 
-    const sofa::type::Vec<3, SReal> b = input_points[j];
+    const sofa::type::Vec<3, Real> b = input_points[j];
     TriangleID ind_tb = input_triangles[j];
 
     const Triangle &ta = m_container->getTriangle(ind_ta);
@@ -2788,7 +2788,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::InciseAlongLinesList(
 
     // Variables to accumulate the elements registered to be created or to be removed
     sofa::type::vector< sofa::type::vector< TriangleID > > p_ancestors;
-    sofa::type::vector< sofa::type::vector< SReal > > p_baryCoefs;
+    sofa::type::vector< sofa::type::vector< Real > > p_baryCoefs;
     sofa::type::vector< Triangle > triangles_to_create;
     sofa::type::vector< TriangleID > trianglesIndexList;
     sofa::type::vector< TriangleID > triangles_to_remove;
@@ -2806,21 +2806,21 @@ void TriangleSetGeometryAlgorithms< DataTypes >::InciseAlongLinesList(
     bool is_snap_b1 = false;
     bool is_snap_b2 = false;
 
-    SReal epsilon = 0.2; // INFO : epsilon is a threshold in [0,1] to control the snapping of the extremities to the closest vertex
+    Real epsilon = 0.2; // INFO : epsilon is a threshold in [0,1] to control the snapping of the extremities to the closest vertex
 
-    sofa::type::vector< SReal > a_baryCoefs =
-        computeTriangleBarycoefs(ind_ta, (const sofa::type::Vec<3, SReal> &) a);
+    sofa::type::vector< Real > a_baryCoefs =
+        computeTriangleBarycoefs(ind_ta, (const sofa::type::Vec<3, Real> &) a);
     snapping_test_triangle(epsilon, a_baryCoefs[0], a_baryCoefs[1], a_baryCoefs[2],
         is_snap_a0, is_snap_a1, is_snap_a2);
 
-    SReal is_snapping_a = is_snap_a0 || is_snap_a1 || is_snap_a2;
+    Real is_snapping_a = is_snap_a0 || is_snap_a1 || is_snap_a2;
 
-    sofa::type::vector< SReal > b_baryCoefs =
-        computeTriangleBarycoefs(ind_tb, (const sofa::type::Vec<3, SReal> &) b);
+    sofa::type::vector< Real > b_baryCoefs =
+        computeTriangleBarycoefs(ind_tb, (const sofa::type::Vec<3, Real> &) b);
     snapping_test_triangle(epsilon, b_baryCoefs[0], b_baryCoefs[1], b_baryCoefs[2],
         is_snap_b0, is_snap_b1, is_snap_b2);
 
-    SReal is_snapping_b = is_snap_b0 || is_snap_b1 || is_snap_b2;
+    Real is_snapping_b = is_snap_b0 || is_snap_b1 || is_snap_b2;
 
     if (is_validated) // intersection successfull
     {
@@ -2844,7 +2844,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::InciseAlongLinesList(
         // Treatment of particular case for first extremity a
 
         sofa::type::vector< TriangleID > a_first_ancestors;
-        sofa::type::vector< SReal > a_first_baryCoefs;
+        sofa::type::vector< Real > a_first_baryCoefs;
 
         if (!is_snapping_a)
         {
@@ -3012,7 +3012,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::InciseAlongLinesList(
             p_ancestors.push_back(p_first_ancestors);
             p_ancestors.push_back(p_first_ancestors);
 
-            sofa::type::vector< SReal > p_first_baryCoefs;
+            sofa::type::vector< Real > p_first_baryCoefs;
             p_first_baryCoefs.push_back(1.0 - coords_list[i]);
             p_first_baryCoefs.push_back(coords_list[i]);
             p_baryCoefs.push_back(p_first_baryCoefs);
@@ -3024,12 +3024,12 @@ void TriangleSetGeometryAlgorithms< DataTypes >::InciseAlongLinesList(
             {
                 // SNAPPING TEST
 
-                SReal gamma = 0.3;
+                Real gamma = 0.3;
                 bool is_snap_p1;
                 bool is_snap_p2;
 
                 snapping_test_edge(gamma, 1.0 - coords_list[i], coords_list[i], is_snap_p1, is_snap_p2);
-                SReal is_snapping_p = is_snap_p1 || is_snap_p2;
+                Real is_snapping_p = is_snap_p1 || is_snap_p2;
 
                 PointID ind_p;
 
@@ -3129,7 +3129,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::InciseAlongLinesList(
 
         // Treatment of particular case for second extremity b
         sofa::type::vector< TriangleID > b_first_ancestors;
-        sofa::type::vector< SReal > b_first_baryCoefs;
+        sofa::type::vector< Real > b_first_baryCoefs;
 
         if (!is_snapping_b)
         {
@@ -3302,15 +3302,15 @@ template<class DataTypes>
 int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& a, PointID pb, Coord& b,
     sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
     sofa::type::vector<ElemID>& indices_list,
-    sofa::type::vector< sofa::type::Vec<3, SReal> >& coords_list,
-    sofa::type::vector<EdgeID>& new_edges, SReal epsilonSnapPath, SReal epsilonSnapBorder)
+    sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list,
+    sofa::type::vector<EdgeID>& new_edges, Real epsilonSnapPath, Real epsilonSnapBorder)
 {
     //////// STEP 1.a : MODIFY PATH IF SNAP = TRUE (don't change border case here if they are near an edge)
     if (indices_list.empty()) return 0;
 
-    sofa::type::vector< sofa::type::vector<SReal> > points2Snap;
+    sofa::type::vector< sofa::type::vector<Real> > points2Snap;
 
-    //	SReal epsilon = 0.25; // to change to an input for snaping
+    //	Real epsilon = 0.25; // to change to an input for snaping
 
     if (epsilonSnapPath != 0.0)
         SnapAlongPath(topoPath_list, indices_list, coords_list, points2Snap, epsilonSnapPath);
@@ -3323,7 +3323,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
     const size_t nb_points = indices_list.size();
     sofa::type::vector< sofa::type::vector< PointID > > p_ancestors; 
     p_ancestors.reserve(nb_points);// WARNING
-    sofa::type::vector< sofa::type::vector< SReal > > p_baryCoefs; 
+    sofa::type::vector< sofa::type::vector< Real > > p_baryCoefs; 
     p_baryCoefs.reserve(nb_points);
     PointID next_point = m_container->getNbPoints();
     TriangleID next_triangle = (TriangleID)m_container->getNbTriangles();
@@ -3332,7 +3332,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
     sofa::type::vector< TriangleID > new_triangles_id;
     sofa::type::vector< TriangleID > removed_triangles;
     sofa::type::vector< sofa::type::vector< TriangleID > >  triangles_ancestors;
-    sofa::type::vector< sofa::type::vector< SReal > >  triangles_barycoefs;
+    sofa::type::vector< sofa::type::vector< Real > >  triangles_barycoefs;
 
 
     type::vector< core::topology::PointAncestorElem > srcElems;
@@ -3345,7 +3345,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
         p_ancestors.resize(p_ancestors.size() + 1);
         sofa::type::vector< PointID >& ancestors = p_ancestors.back();
         p_baryCoefs.resize(p_baryCoefs.size() + 1);
-        sofa::type::vector< SReal >& baryCoefs = p_baryCoefs.back();
+        sofa::type::vector< Real >& baryCoefs = p_baryCoefs.back();
 
 
         switch (topoPath_list[i])
@@ -3571,7 +3571,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
             PointID p1 = new_edge_points[i];
             EdgeID edgeIDFirst = firstObject;
             Edge theEdgeFirst = m_container->getEdge(firstObject);
-            sofa::type::Vec<3, SReal> pos1 = computeBaryEdgePoint(theEdgeFirst, coords_list[i][0]);
+            sofa::type::Vec<3, Real> pos1 = computeBaryEdgePoint(theEdgeFirst, coords_list[i][0]);
 
             switch (topoPath_list[i + 1])
             {
@@ -3627,7 +3627,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
                 PointID p2 = new_edge_points[i + 1];
                 EdgeID edgeIDSecond = indices_list[i + 1];
                 Edge theEdgeSecond = m_container->getEdge(edgeIDSecond);
-                sofa::type::Vec<3, SReal> pos2 = computeBaryEdgePoint(theEdgeSecond, coords_list[i + 1][0]);
+                sofa::type::Vec<3, Real> pos2 = computeBaryEdgePoint(theEdgeSecond, coords_list[i + 1][0]);
 
                 TriangleID triId;
                 Triangle tri;
@@ -3834,8 +3834,8 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
                 PointID quad[2][4];
                 PointID Tri1[3];
-                SReal tmp1 = 0.0; unsigned int cornerP1[3] = { 0,0,0 };
-                SReal tmp2 = 0.0; unsigned int cornerP2[3] = { 0,0,0 };
+                Real tmp1 = 0.0; unsigned int cornerP1[3] = { 0,0,0 };
+                Real tmp2 = 0.0; unsigned int cornerP2[3] = { 0,0,0 };
 
                 for (unsigned int j = 0; j < 3; j++) // find first corners
                 {
@@ -3950,7 +3950,7 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
                 const typename DataTypes::VecCoord& coords = (this->getDOF()->read(core::ConstVecCoordId::position())->getValue());
                 for (unsigned int j = 0; j < 2; j++)
                 {
-                    //Vec<3,SReal> pos[4];
+                    //Vec<3,Real> pos[4];
                     Coord pos[4];
                     for (unsigned int k = 0; k < 4; k++)
                     {
@@ -4098,13 +4098,13 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
         sofa::type::vector<PointID> id2Snap;
         sofa::type::vector< sofa::type::vector< PointID > > ancestors2Snap; 
         ancestors2Snap.resize(points2Snap.size());
-        sofa::type::vector< sofa::type::vector< SReal > > coefs2Snap; 
+        sofa::type::vector< sofa::type::vector< Real > > coefs2Snap; 
         coefs2Snap.resize(points2Snap.size());
 
         for (size_t i = 0; i < points2Snap.size(); i++)
         {
 
-            sofa::type::Vec<3, SReal> SnapedCoord;
+            sofa::type::Vec<3, Real> SnapedCoord;
             PointID firstAncestor = (PointID)points2Snap[i][4];
             PointID secondAncestor = (PointID)points2Snap[i][5];
 
@@ -4150,14 +4150,14 @@ int TriangleSetGeometryAlgorithms<DataTypes>::SplitAlongPath(PointID pa, Coord& 
 
 template<class DataTypes>
 void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
-    sofa::type::vector<ElemID>& indices_list, sofa::type::vector< sofa::type::Vec<3, SReal> >& coords_list,
-    sofa::type::vector< sofa::type::vector<SReal> >& points2Snap,
-    SReal epsilonSnapPath)
+    sofa::type::vector<ElemID>& indices_list, sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list,
+    sofa::type::vector< sofa::type::vector<Real> >& points2Snap,
+    Real epsilonSnapPath)
 {
     std::map <PointID, sofa::type::vector<PointID> > map_point2snap;
     std::map <PointID, sofa::type::vector<PointID> >::iterator it;
-    std::map <PointID, sofa::type::Vec<3, SReal> > map_point2bary;
-    SReal epsilon = epsilonSnapPath;
+    std::map <PointID, sofa::type::Vec<3, Real> > map_point2bary;
+    Real epsilon = epsilonSnapPath;
 
     //// STEP 1 - First loop to find concerned points
     for (size_t i = 0; i < indices_list.size(); i++)
@@ -4189,7 +4189,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
             if (it == map_point2snap.end()) // First time this point is encounter
             {
                 map_point2snap[Vertex2Snap] = sofa::type::vector<PointID>();
-                map_point2bary[Vertex2Snap] = sofa::type::Vec<3, SReal>();
+                map_point2bary[Vertex2Snap] = sofa::type::Vec<3, Real>();
             }
 
             break;
@@ -4197,7 +4197,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
         case core::topology::TopologyElementType::TRIANGLE:
         {
             PointID Vertex2Snap;
-            sofa::type::Vec<3, SReal>& barycoord = coords_list[i];
+            sofa::type::Vec<3, Real>& barycoord = coords_list[i];
             bool TriFind = false;
 
             for (unsigned int j = 0; j < 3; j++)
@@ -4214,7 +4214,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
             if (TriFind && (it == map_point2snap.end())) // First time this point is encounter
             {
                 map_point2snap[Vertex2Snap] = sofa::type::vector<PointID>();
-                map_point2bary[Vertex2Snap] = sofa::type::Vec<3, SReal>();
+                map_point2bary[Vertex2Snap] = sofa::type::Vec<3, Real>();
             }
 
             break;
@@ -4263,7 +4263,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
                     map_point2snap[thePoint].push_back((PointID)i);
                     // Compute new position.
                     // Step 1/3: Compute real coord of incision point on the edge
-                    const sofa::type::Vec<3, SReal>& coord_bary = computeBaryEdgePoint(theEdge, coords_list[i][0]);
+                    const sofa::type::Vec<3, Real>& coord_bary = computeBaryEdgePoint(theEdge, coords_list[i][0]);
 
                     // Step 2/3: Sum the different incision point position.
                     for (PointID j = 0; j < 3; j++)
@@ -4289,7 +4289,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapAlongPath(sofa::type::vector<
                     PointFind = true;
                     map_point2snap[thePoint].push_back((PointID)i);
 
-                    const sofa::type::Vec<3, SReal>& coord_bary = computeBaryTrianglePoint(theTriangle, coords_list[i]);
+                    const sofa::type::Vec<3, Real>& coord_bary = computeBaryTrianglePoint(theTriangle, coords_list[i]);
 
                     for (TriangleID j = 0; j < 3; j++)
                         map_point2bary[thePoint][j] += coord_bary[j];
@@ -4377,14 +4377,14 @@ template<class DataTypes>
 void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord& a, PointID pb, Coord& b,
     sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
     sofa::type::vector<ElemID>& indices_list,
-    sofa::type::vector< sofa::type::Vec<3, SReal> >& coords_list,
-    sofa::type::vector< sofa::type::vector<SReal> >& points2Snap,
-    SReal epsilonSnapBorder)
+    sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list,
+    sofa::type::vector< sofa::type::vector<Real> >& points2Snap,
+    Real epsilonSnapBorder)
 {
     bool snap_a = false;
     bool snap_b = false;
     bool intersected = true;
-    SReal epsilon = epsilonSnapBorder;
+    Real epsilon = epsilonSnapBorder;
 
     // Test if point has not already been snap on a point
     for (size_t i = 0; i < points2Snap.size(); i++)
@@ -4474,9 +4474,9 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                 }
                 else // need to create this point by projection
                 {
-                    sofa::type::Vec<3, SReal> thePoint; DataTypes::get(thePoint[0], thePoint[1], thePoint[2], a);
+                    sofa::type::Vec<3, Real> thePoint; DataTypes::get(thePoint[0], thePoint[1], thePoint[2], a);
 
-                    sofa::type::vector< SReal > new_coord = this->computePointProjectionOnEdge(theEdge, thePoint, intersected);
+                    sofa::type::vector< Real > new_coord = this->computePointProjectionOnEdge(theEdge, thePoint, intersected);
 
                     if (!intersected)
                         msg_error() << "Orthogonal projection failed";
@@ -4489,7 +4489,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                     coords_list[0][2] = 0.0;
 
                     Edge theEdgeFirst = m_container->getEdge(theEdge);
-                    sofa::type::Vec<3, SReal> pos1 = computeBaryEdgePoint(theEdgeFirst, new_coord[1]);
+                    sofa::type::Vec<3, Real> pos1 = computeBaryEdgePoint(theEdgeFirst, new_coord[1]);
                     for (unsigned int j = 0; j < std::min(3u, a.size()); j++)
                         a[j] = (decltype (a[j]))pos1[j];
 
@@ -4578,8 +4578,8 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                 }
                 else
                 {
-                    sofa::type::Vec<3, SReal> thePoint; DataTypes::get(thePoint[0], thePoint[1], thePoint[2], b);
-                    sofa::type::vector< SReal > new_coord = this->computePointProjectionOnEdge(theEdge, thePoint, intersected);
+                    sofa::type::Vec<3, Real> thePoint; DataTypes::get(thePoint[0], thePoint[1], thePoint[2], b);
+                    sofa::type::vector< Real > new_coord = this->computePointProjectionOnEdge(theEdge, thePoint, intersected);
 
                     if (!intersected)
                         msg_error() << "Orthogonal projection failed";
@@ -4591,7 +4591,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::SnapBorderPath(PointID pa, Coord&
                     coords_list.back()[2] = 0.0;
 
                     Edge theEdgeLast = m_container->getEdge(theEdge);
-                    sofa::type::Vec<3, SReal> pos1 = computeBaryEdgePoint(theEdgeLast, new_coord[1]);
+                    sofa::type::Vec<3, Real> pos1 = computeBaryEdgePoint(theEdgeLast, new_coord[1]);
                     for (unsigned int j = 0; j < std::min(3u, a.size()); j++)
                         a[j] = (decltype (a[j]))pos1[j];
 
@@ -4614,14 +4614,14 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::t
     bool& reachBorder)
 {
     sofa::type::vector< sofa::type::vector< PointID > > p_ancestors;
-    sofa::type::vector< sofa::type::vector< SReal > > p_baryCoefs;
+    sofa::type::vector< sofa::type::vector< Real > > p_baryCoefs;
     PointID next_point = m_container->getNbPoints();
     TriangleID next_triangle = (TriangleID)m_container->getNbTriangles();
     sofa::type::vector< Triangle > new_triangles;
     sofa::type::vector< TriangleID > new_triangles_id;
     sofa::type::vector< TriangleID > removed_triangles;
     sofa::type::vector< sofa::type::vector< TriangleID > >  triangles_ancestors;
-    sofa::type::vector< sofa::type::vector< SReal > >  triangles_barycoefs;
+    sofa::type::vector< sofa::type::vector< Real > >  triangles_barycoefs;
 
 
     const size_t nbEdges = edges.size();
@@ -4688,7 +4688,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::t
         p_ancestors.resize(p_ancestors.size() + 1);
         sofa::type::vector< PointID >& ancestors = p_ancestors.back();
         p_baryCoefs.resize(p_baryCoefs.size() + 1);
-        sofa::type::vector< SReal >& baryCoefs = p_baryCoefs.back();
+        sofa::type::vector< Real >& baryCoefs = p_baryCoefs.back();
         ancestors.push_back(p);
         baryCoefs.push_back(1.0);
         new_points.push_back(next_point);
@@ -4932,7 +4932,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
         size_t nbrTtri = triangleArray.size();
 
         sofa::type::RGBAColor color;
-        SReal normalLength = _drawNormalLength.getValue();
+        Real normalLength = _drawNormalLength.getValue();
 
         sofa::type::vector<sofa::type::Vector3> vertices;
         std::vector<sofa::type::RGBAColor> colors;
@@ -4940,7 +4940,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
         for (size_t i =0; i<nbrTtri; i++)
         {
             Triangle _tri = triangleArray[i];
-            sofa::type::Vec<3,SReal> normal = this->computeTriangleNormal((TriangleID)i);
+            sofa::type::Vec<3,Real> normal = this->computeTriangleNormal((TriangleID)i);
             normal.normalize();
 
             // compute bary triangle

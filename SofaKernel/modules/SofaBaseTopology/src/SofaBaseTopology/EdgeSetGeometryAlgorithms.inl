@@ -378,19 +378,19 @@ auto EdgeSetGeometryAlgorithms<DataTypes>::compute2PointsBarycoefs(
     PointID ind_p1,
     PointID ind_p2) const -> sofa::type::vector< Real >
 {
-    const DataTypes::Real ZERO = 1e-6;
+    const Real ZERO = 1e-6;
 
-    sofa::type::vector< DataTypes::Real > baryCoefs;
+    sofa::type::vector< Real > baryCoefs;
 
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
     const typename DataTypes::Coord& c0 = vect_c[ind_p1];
     const typename DataTypes::Coord& c1 = vect_c[ind_p2];
 
-    sofa::type::Vec<3, DataTypes::Real> a; DataTypes::get(a[0], a[1], a[2], c0);
-    sofa::type::Vec<3, DataTypes::Real> b; DataTypes::get(b[0], b[1], b[2], c1);
+    sofa::type::Vec<3, Real> a; DataTypes::get(a[0], a[1], a[2], c0);
+    sofa::type::Vec<3, Real> b; DataTypes::get(b[0], b[1], b[2], c1);
 
-    DataTypes::Real dis = (b - a).norm();
-    DataTypes::Real coef_a, coef_b;
+    Real dis = (b - a).norm();
+    Real coef_a, coef_b;
 
 
     if(dis < ZERO)
@@ -561,17 +561,17 @@ auto EdgeSetGeometryAlgorithms<DataTypes>::computePointProjectionOnEdge (const E
 
     // Compute Coord of second edge XH:
 
-    sofa::type::Vec<3, DataTypes::Real> AB; DataTypes::get(AB[0], AB[1], AB[2], coord_AB);
-    sofa::type::Vec<3, DataTypes::Real> AC; DataTypes::get(AC[0], AC[1], AC[2], coord_AC);
-    sofa::type::Vec<3, DataTypes::Real> ortho_ABC = cross (AB, AC)*1000;
-    sofa::type::Vec<3, DataTypes::Real> coef_CH = cross (ortho_ABC, AB)*1000;
+    sofa::type::Vec<3, Real> AB; DataTypes::get(AB[0], AB[1], AB[2], coord_AB);
+    sofa::type::Vec<3, Real> AC; DataTypes::get(AC[0], AC[1], AC[2], coord_AC);
+    sofa::type::Vec<3, Real> ortho_ABC = cross (AB, AC)*1000;
+    sofa::type::Vec<3, Real> coef_CH = cross (ortho_ABC, AB)*1000;
 
     for (unsigned int i = 0; i<Coord::spatial_dimensions; i++)
         coord_edge2[1][i] = coord_edge2[0][i] + (float)coef_CH[i];
 
     // Compute Coord of projection point H:
     Coord coord_H = compute2EdgesIntersection ( coord_edge1, coord_edge2, intersected);
-    sofa::type::Vec<3, DataTypes::Real> h; DataTypes::get(h[0], h[1], h[2], coord_H);
+    sofa::type::Vec<3, Real> h; DataTypes::get(h[0], h[1], h[2], coord_H);
 
     auto barycoord = compute2PointsBarycoefs(h, theEdge[0], theEdge[1]);
     return barycoord;
@@ -933,7 +933,7 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeSegmentIntersection(EdgeID
     Real deno, num;
     deno = d1010 * dbaba - dba10 * dba10;
     
-    if (abs(deno) > std::numeric_limits<typename DataTypes::Real>::epsilon())
+    if (abs(deno) > std::numeric_limits<Real>::epsilon())
     {
         num = d0aba * dba10 - d0a10 * dbaba;
 
