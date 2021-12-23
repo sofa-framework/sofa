@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.1" gravity="0 -9.81 0">
+
+    <VisualStyle displayFlags="showBehaviorModels hideForceFields showWireFrame" />
+
+    <RequiredPlugin name="SofaEngine"/>
+    <RequiredPlugin name="SofaImplicitOdeSolver"/>
+    <RequiredPlugin name="SofaMiscMapping"/>
+    <RequiredPlugin name="SofaMiscTopology"/>
+    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin name="SofaSimpleFem"/>
+    <RequiredPlugin name="SofaTopologyMapping"/>
+    <RequiredPlugin name="SofaBoundaryCondition"/>
+    <RequiredPlugin name="SofaDeformable"/>
+
+
+    <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
+    <CGLinearSolver iterations="10" tolerance="1e-5" threshold="1e-5"/>
+
+    <Node name="cube-a">
+
+        <RegularGridTopology name="grid"
+                             nx="10" ny="10" nz="10"
+                             xmin="-1" xmax="1"
+                             ymin="-1" ymax="1"
+                             zmin="-1" zmax="1"
+        />
+
+        <MechanicalObject template="Vec3d" name="dofs"/>
+        <UniformMass totalMass="1000"/>
+        <TetrahedronFEMForceField name="FEM" youngModulus="10000" poissonRatio="0.4" method="large" />
+        <BoxROI name="fixedBox" box="-1.01 -1 -1 -0.99 1 1"/>
+        <FixedConstraint indices="@fixedBox.indices"/>
+        <BoxROI name="box" box="0.99 -1 -1 1.01 1 1"/>
+
+        <Node name="Visual">
+            <TetrahedronSetTopologyContainer name="tetraContainer" />
+            <TetrahedronSetTopologyModifier/>
+            <Hexa2TetraTopologicalMapping input="@../grid" output="@tetraContainer" />
+
+            <TriangleSetTopologyContainer name="triangleContainer" />
+            <TriangleSetTopologyModifier/>
+            <Tetra2TriangleTopologicalMapping input="@tetraContainer" output="@triangleContainer" />
+
+            <OglModel topology="@triangleContainer" state="@../dofs" color="red"/>
+            <IdentityMapping input="@../dofs" output="@Visual" />
+        </Node>
+    </Node>
+
+    <Node name="cube-b">
+
+        <RegularGridTopology name="grid"
+                             nx="12" ny="12" nz="12"
+                             xmin="2" xmax="4"
+                             ymin="-1" ymax="1"
+                             zmin="-1" zmax="1"
+        />
+
+        <MechanicalObject template="Vec3d" name="dofs"/>
+        <UniformMass totalMass="1000"/>
+        <TetrahedronFEMForceField name="FEM" youngModulus="10000" poissonRatio="0.4" method="large" />
+        <BoxROI name="fixedBox" box="3.99 -1 -1 4.01 1 1"/>
+        <FixedConstraint indices="@fixedBox.indices"/>
+        <BoxROI name="box" box="1.99 -1 -1 2.01 1 1"/>
+
+        <Node name="Visual">
+            <TetrahedronSetTopologyContainer name="tetraContainer" />
+            <TetrahedronSetTopologyModifier/>
+            <Hexa2TetraTopologicalMapping input="@../grid" output="@tetraContainer" />
+
+            <TriangleSetTopologyContainer name="triangleContainer" />
+            <TriangleSetTopologyModifier/>
+            <Tetra2TriangleTopologicalMapping input="@tetraContainer" output="@triangleContainer" />
+
+            <OglModel topology="@triangleContainer" state="@../dofs" color="red"/>
+            <IdentityMapping input="@../dofs" output="@Visual" />
+        </Node>
+    </Node>
+
+    <Node name="merge">
+        <VisualStyle displayFlags="showForceFields" />
+
+        <EdgeTopologyFrom2PointSets name="edges" project2on1="false" project1on2="true"
+                positions1="@../cube-a/dofs.position" indices1="@../cube-a/box.indices"
+                positions2="@../cube-b/dofs.position" indices2="@../cube-b/box.indices"/>
+        <MechanicalObject name="dofs"/>
+        <MeshSpringForceField stiffness="10000" damping="1" linesStiffness="10000" linesDamping="1" drawMode="1" drawSpringSize="1"/>
+        <SubsetMultiMapping input="@../cube-a/dofs @../cube-b/dofs" output="@dofs" indexPairs="@edges.indexPairs"/>
+    </Node>
+
+</Node>

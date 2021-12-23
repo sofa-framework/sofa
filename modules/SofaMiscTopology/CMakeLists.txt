@@ -4,23 +4,25 @@ project(SofaMiscTopology LANGUAGES CXX)
 set(SOFAMISCTOPOLOGY_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
-	${SOFAMISCTOPOLOGY_SRC}/config.h.in
-	${SOFAMISCTOPOLOGY_SRC}/initSofaMiscTopology.h
+    ${SOFAMISCTOPOLOGY_SRC}/config.h.in
+    ${SOFAMISCTOPOLOGY_SRC}/initSofaMiscTopology.h
 )
 
 set(SOURCE_FILES
-	${SOFAMISCTOPOLOGY_SRC}/initSofaMiscTopology.cpp
+    ${SOFAMISCTOPOLOGY_SRC}/initSofaMiscTopology.cpp
 )
 
 list(APPEND HEADER_FILES
-	${SOFAMISCTOPOLOGY_SRC}/TopologicalChangeProcessor.h
-	${SOFAMISCTOPOLOGY_SRC}/TopologyChecker.h
+    ${SOFAMISCTOPOLOGY_SRC}/EdgeTopologyFrom2PointSets.h
+    ${SOFAMISCTOPOLOGY_SRC}/TopologicalChangeProcessor.h
+    ${SOFAMISCTOPOLOGY_SRC}/TopologyChecker.h
     ${SOFAMISCTOPOLOGY_SRC}/TopologyBoundingTrasher.h
     ${SOFAMISCTOPOLOGY_SRC}/TopologyBoundingTrasher.inl
 )
 list(APPEND SOURCE_FILES
-	${SOFAMISCTOPOLOGY_SRC}/TopologicalChangeProcessor.cpp
-	${SOFAMISCTOPOLOGY_SRC}/TopologyChecker.cpp
+    ${SOFAMISCTOPOLOGY_SRC}/EdgeTopologyFrom2PointSets.cpp
+    ${SOFAMISCTOPOLOGY_SRC}/TopologicalChangeProcessor.cpp
+    ${SOFAMISCTOPOLOGY_SRC}/TopologyChecker.cpp
     ${SOFAMISCTOPOLOGY_SRC}/TopologyBoundingTrasher.cpp
 )
 
