@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDATRIANGULARFEMFORCEFIELDOPTIM_INL
-#define SOFA_GPU_CUDA_CUDATRIANGULARFEMFORCEFIELDOPTIM_INL
+#pragma once
 
-#include "CudaTriangularFEMForceFieldOptim.h"
+#include <sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.h>
 #include <SofaGeneralSimpleFem/TriangularFEMForceFieldOptim.inl>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 extern "C"
@@ -49,14 +42,9 @@ void TriangularFEMForceFieldOptimCuda3f_addDForce(unsigned int size, void* f, co
     float gamma, float mu); //, const void* dfdx);
 }
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield 
 {
 
 using namespace gpu::cuda;
@@ -114,10 +102,4 @@ void TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3fTypes>::addDForce(const co
     d_df.endEdit();
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::forcefield
