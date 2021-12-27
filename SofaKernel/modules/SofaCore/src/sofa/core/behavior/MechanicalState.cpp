@@ -26,7 +26,7 @@ namespace sofa::core::behavior
 {
 using namespace sofa::defaulttype;
 
-template class SOFA_CORE_API MechanicalState<Vec3dTypes>;
+template class SOFA_CORE_API MechanicalState<Vec3Types>;
 template class SOFA_CORE_API MechanicalState<Vec2Types>;
 template class SOFA_CORE_API MechanicalState<Vec1Types>;
 template class SOFA_CORE_API MechanicalState<Vec6Types>;
