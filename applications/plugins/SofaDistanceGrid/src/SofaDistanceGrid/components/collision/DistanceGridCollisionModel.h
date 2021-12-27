@@ -518,7 +518,7 @@ public:
 
     Index addPoint(const Coord& P, Index index, Real&)
     {
-        type::Vector3 bary;
+        type::Vec3 bary;
         Index elem = this->model->getDeformCube(index).elem;
         bary = this->model->getDeformCube(index).baryCoords(P);
         return this->mapper->addPointInCube(elem,bary.ptr());
