@@ -23,14 +23,12 @@
 
 #include <SofaMiscFem/config.h>
 
-
-
 #include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/topology/TopologyData.h>
 #include <sofa/type/fixed_array.h>
 #include <sofa/type/vector.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
-#include <sofa/core/topology/TopologyData.h>
 
 
 namespace sofa::component::forcefield

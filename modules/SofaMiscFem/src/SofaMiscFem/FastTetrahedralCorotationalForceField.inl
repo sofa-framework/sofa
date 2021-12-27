@@ -23,9 +23,6 @@
 
 #include <SofaMiscFem/FastTetrahedralCorotationalForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <fstream> // for reading the file
-#include <iostream> //for debugging
-#include <sofa/core/topology/TopologyData.inl>
 #include <sofa/helper/decompose.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/topology/Topology.h>
