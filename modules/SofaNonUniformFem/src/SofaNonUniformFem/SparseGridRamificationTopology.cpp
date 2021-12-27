@@ -379,7 +379,7 @@ void SparseGridRamificationTopology::buildRamifiedFinestLevel()
         }
     }
 
-    type::vector<type::Vec<3,SReal> >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
+    type::vector<type::Vec3 >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
     nbPoints=0;
     for(unsigned i=0; i<hexahedraConnectedToThePoint.size(); ++i)
     {
@@ -714,7 +714,7 @@ void SparseGridRamificationTopology::buildFromFiner()
         }
     }
 
-    type::vector<type::Vec<3,SReal> >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
+    type::vector<type::Vec3 >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
     nbPoints=0;
     for(unsigned i=0; i<hexahedraConnectedToThePoint.size(); ++i)
     {

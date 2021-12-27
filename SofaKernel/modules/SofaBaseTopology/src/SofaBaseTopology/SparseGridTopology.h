@@ -49,7 +49,7 @@ class SOFA_SOFABASETOPOLOGY_API SparseGridTopology : public MeshTopology
 {
 public:
     SOFA_CLASS(SparseGridTopology,MeshTopology);
-    using Vector3 = sofa::type::Vec<3, SReal>;
+    using Vector3 = sofa::type::Vec3;
     typedef sofa::type::Vec3i   Vec3i;
     typedef sofa::type::fixed_array<Vector3,8> CubeCorners;
     typedef sofa::type::BoundingBox BoundingBox;

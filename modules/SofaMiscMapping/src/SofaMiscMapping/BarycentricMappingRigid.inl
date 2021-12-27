@@ -131,7 +131,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::init(const typename O
         const auto pos = out[i].getCenter(); // Rigid3dTypes::GetCPos(out[i]); // pos = defaulttype::Rigid3dType::getCPos(out[i]);
 
         //associate the point with the tetrahedron, point in Barycentric coors wrt. the closest tetra, store to an associated structure
-        sofa::type::Vec<3, SReal> coefs;
+        sofa::type::Vec3 coefs;
         int index = -1;
         SReal distance = 1e10;
         for ( unsigned int t = 0; t < tetrahedra.size(); t++ )

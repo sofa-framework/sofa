@@ -52,7 +52,7 @@ using MeshTopology::getHexahedron;
     SOFA_CLASS(GridTopology,MeshTopology);
     typedef sofa::type::Vec3i Vec3i;
     using Vector2 = sofa::type::Vec<2, SReal>;
-    using Vector3 = sofa::type::Vec<3, SReal>;
+    using Vector3 = sofa::type::Vec3;
     typedef Vector2 TextCoords2D;
     friend class GridUpdate;
 

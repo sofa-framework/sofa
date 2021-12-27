@@ -29,10 +29,10 @@ namespace sofa::type
 
 BoundingBox::bbox_t make_neutralBBox()
 {
-    typedef sofa::type::Vec<3, SReal>::value_type Real;
+    typedef sofa::type::Vec3::value_type Real;
     constexpr Real max_real = std::numeric_limits<Real>::max();
-    sofa::type::Vec<3, SReal> minBBox(max_real,max_real,max_real);
-    sofa::type::Vec<3, SReal> maxBBox(-max_real,-max_real,-max_real);
+    sofa::type::Vec3 minBBox(max_real,max_real,max_real);
+    sofa::type::Vec3 maxBBox(-max_real,-max_real,-max_real);
     return std::make_pair(minBBox,maxBBox);
 }
 
@@ -46,24 +46,24 @@ BoundingBox::BoundingBox(const bbox_t& bbox)
 {
 }
 
-BoundingBox::BoundingBox(const sofa::type::Vec<3, SReal>& minBBox, const sofa::type::Vec<3, SReal>& maxBBox)
+BoundingBox::BoundingBox(const sofa::type::Vec3& minBBox, const sofa::type::Vec3& maxBBox)
     :bbox(std::make_pair(minBBox,maxBBox))
 {
 }
 
 BoundingBox::BoundingBox(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal zmin, SReal zmax )
-    :bbox(std::make_pair(sofa::type::Vec<3, SReal>((SReal)xmin, (SReal)ymin, (SReal)zmin),sofa::type::Vec<3, SReal>( (SReal)xmax, (SReal)ymax, (SReal)zmax)))
+    :bbox(std::make_pair(sofa::type::Vec3((SReal)xmin, (SReal)ymin, (SReal)zmin),sofa::type::Vec3( (SReal)xmax, (SReal)ymax, (SReal)zmax)))
 {
 }
 
 
 BoundingBox::BoundingBox(const Vec6f& v )
-    :bbox(std::make_pair(sofa::type::Vec<3, SReal>(v[0],v[2],v[4]),sofa::type::Vec<3, SReal>(v[1],v[3],v[5])))
+    :bbox(std::make_pair(sofa::type::Vec3(v[0],v[2],v[4]),sofa::type::Vec3(v[1],v[3],v[5])))
 {
 }
 
 BoundingBox::BoundingBox(const Vec6d& v )
-    :bbox(std::make_pair(sofa::type::Vec<3, SReal>((SReal)v[0],(SReal)v[2],(SReal)v[4]),sofa::type::Vec<3, SReal>((SReal)v[1],(SReal)v[3],(SReal)v[5])))
+    :bbox(std::make_pair(sofa::type::Vec3((SReal)v[0],(SReal)v[2],(SReal)v[4]),sofa::type::Vec3((SReal)v[1],(SReal)v[3],(SReal)v[5])))
 {
 }
 
@@ -132,27 +132,27 @@ const SReal* BoundingBox::maxBBoxPtr() const
     return bbox.second.elems;
 }
 
-const sofa::type::Vec<3, SReal>& BoundingBox::minBBox() const
+const sofa::type::Vec3& BoundingBox::minBBox() const
 {
     return bbox.first;
 }
 
-const sofa::type::Vec<3, SReal>& BoundingBox::maxBBox() const
+const sofa::type::Vec3& BoundingBox::maxBBox() const
 {
     return bbox.second;
 }
 
-sofa::type::Vec<3, SReal>& BoundingBox::minBBox()
+sofa::type::Vec3& BoundingBox::minBBox()
 {
     return bbox.first;
 }
 
-sofa::type::Vec<3, SReal>& BoundingBox::maxBBox()
+sofa::type::Vec3& BoundingBox::maxBBox()
 {
     return bbox.second;
 }
 
-bool BoundingBox::contains(const sofa::type::Vec<3, SReal>& point) const
+bool BoundingBox::contains(const sofa::type::Vec3& point) const
 {
     return  point.x() >= minBBox().x() && point.x() <= maxBBox().x() &&
             point.y() >= minBBox().y() && point.y() <= maxBBox().y() &&
@@ -183,7 +183,7 @@ void BoundingBox::intersection(const BoundingBox& other)
     maxBBox().z() = std::min(maxBBox().z(), other.maxBBox().z());
 }
 
-void BoundingBox::include(const sofa::type::Vec<3, SReal>& point)
+void BoundingBox::include(const sofa::type::Vec3& point)
 {
     minBBox().x() = std::min( minBBox().x(), point.x());
     minBBox().y() = std::min( minBBox().y(), point.y());
@@ -207,7 +207,7 @@ void BoundingBox::include(const BoundingBox& other)
 
 void BoundingBox::inflate(const SReal amount)
 {
-    sofa::type::Vec<3, SReal> size(amount,amount,amount);
+    sofa::type::Vec3 size(amount,amount,amount);
     minBBox() -= size;
     maxBBox() += size;
 }
@@ -228,7 +228,7 @@ BoundingBox BoundingBox::getIntersection( const BoundingBox& other ) const
     return result;
 }
 
-BoundingBox BoundingBox::getInclude( const sofa::type::Vec<3, SReal>& point ) const
+BoundingBox BoundingBox::getInclude( const sofa::type::Vec3& point ) const
 {
     BoundingBox result;
 
@@ -262,7 +262,7 @@ BoundingBox BoundingBox::getInflate( SReal amount ) const
 {
     BoundingBox result;
 
-    sofa::type::Vec<3, SReal> size(amount,amount,amount);
+    sofa::type::Vec3 size(amount,amount,amount);
     result.minBBox() = minBBox() - size;
     result.maxBBox() = maxBBox() + size;
 

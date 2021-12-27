@@ -42,7 +42,7 @@ public:
 
     typedef type::Ray Ray;
     using Vec2 = sofa::type::Vec<2, SReal>;
-    using Vec3 = sofa::type::Vec<3, SReal>;
+    using Vec3 = sofa::type::Vec3;
     using Vec4 = sofa::type::Vec<4, SReal>;
 
     typedef type::Quat<SReal> Quat;

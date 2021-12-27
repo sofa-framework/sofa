@@ -48,7 +48,7 @@ protected:
     ~VoxelLoader() override;
 public:
 
-    Data< type::vector<sofa::type::Vec<3,SReal> > > positions; ///< Coordinates of the nodes loaded
+    Data< type::vector<sofa::type::Vec3 > > positions; ///< Coordinates of the nodes loaded
     Data< type::vector<Hexahedron > > hexahedra; ///< Hexahedra loaded
 
 

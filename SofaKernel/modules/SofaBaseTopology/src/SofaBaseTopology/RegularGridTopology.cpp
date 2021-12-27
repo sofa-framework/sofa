@@ -161,7 +161,7 @@ void RegularGridTopology::setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax,
     }
 }
 
-sofa::type::Vec<3, SReal> RegularGridTopology::getPointInGrid(int i, int j, int k) const
+sofa::type::Vec3 RegularGridTopology::getPointInGrid(int i, int j, int k) const
 {
     return d_p0.getValue()+dx*i+dy*j+dz*k;
 }
@@ -324,7 +324,7 @@ RegularGridTopology::Index RegularGridTopology::getCubeIndex( int i, int j, int 
     return (d_n.getValue()[0]-1)* ( (d_n.getValue()[1]-1)*k + j ) + i;
 }
 
-sofa::type::Vec<3, SReal> RegularGridTopology::getCubeCoordinate(RegularGridTopology::Index i) const
+sofa::type::Vec3 RegularGridTopology::getCubeCoordinate(RegularGridTopology::Index i) const
 {
     Vector3 result;
     result[0] = (SReal)(i%(d_n.getValue()[0]-1)); i/=(d_n.getValue()[0]-1);

@@ -70,7 +70,7 @@ public:
      * @return bool - true if incision has been performed.
      */
     bool incisionCollisionModel(sofa::core::CollisionElementIterator elem,
-                                sofa::type::Vec<3, SReal>& pos, bool firstInput,
+                                sofa::type::Vec3& pos, bool firstInput,
                                 int snapingValue = 0,
                                 int snapingBorderValue = 0);
 
@@ -93,10 +93,10 @@ public:
      */
     bool incisionCollisionModel(sofa::core::CollisionModel* model1,
                                 Index idx1,
-                                const sofa::type::Vec<3, SReal>& firstPoint,
+                                const sofa::type::Vec3& firstPoint,
                                 sofa::core::CollisionModel *model2,
                                 Index idx2,
-                                const sofa::type::Vec<3, SReal>& secondPoint,
+                                const sofa::type::Vec3& secondPoint,
                                 int snapingValue = 0,
                                 int snapingBorderValue = 0);
 
@@ -127,10 +127,10 @@ private:
      */
     bool incisionTriangleModel(TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model1,
                                Index idx1,
-                               const sofa::type::Vec<3, SReal>& firstPoint,
+                               const sofa::type::Vec3& firstPoint,
                                TriangleCollisionModel<sofa::defaulttype::Vec3Types> *model2,
                                Index idx2,
-                               const sofa::type::Vec<3, SReal>& secondPoint,
+                               const sofa::type::Vec3& secondPoint,
                                int snapingValue = 0,
                                int snapingBorderValue = 0);
 
@@ -148,7 +148,7 @@ private:
         sofa::core::topology::BaseMeshTopology::PointID indexPoint;
 
         /// Temporary point coordinate for successive incisions
-        sofa::type::Vec<3, SReal> coordPoint;
+        sofa::type::Vec3 coordPoint;
 
         /// Temporary triangle index for successive incisions
         sofa::core::topology::BaseMeshTopology::TriangleID indexTriangle;

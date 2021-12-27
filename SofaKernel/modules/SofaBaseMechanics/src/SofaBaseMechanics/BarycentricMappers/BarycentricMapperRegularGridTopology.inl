@@ -80,7 +80,7 @@ void BarycentricMapperRegularGridTopology<In,Out>::init ( const typename Out::Ve
     {
         for ( unsigned int i=0; i<out.size(); i++ )
         {
-            sofa::type::Vec < 3, SReal> coefs;
+            sofa::type::Vec3 coefs;
             Index cube = m_fromTopology->findCube ( Vector3 ( Out::getCPos(out[i]) ), coefs[0], coefs[1], coefs[2] );
             if ( cube==sofa::InvalidID )
                 cube = m_fromTopology->findNearestCube ( Vector3 ( Out::getCPos(out[i]) ), coefs[0], coefs[1], coefs[2] );

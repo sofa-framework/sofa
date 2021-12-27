@@ -305,7 +305,7 @@ public:
     void reOrientateTriangle(TriangleID id) override;
 
 public:
-    typedef type::vector<type::Vec<3, SReal > > SeqPoints;
+    typedef type::vector<type::Vec3> SeqPoints;
     Data< SeqPoints > seqPoints; ///< List of point positions
     Data<SeqEdges> seqEdges; ///< List of edge indices
     Data<SeqTriangles> seqTriangles; ///< List of triangle indices

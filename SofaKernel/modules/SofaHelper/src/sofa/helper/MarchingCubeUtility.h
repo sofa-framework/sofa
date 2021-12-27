@@ -44,7 +44,7 @@ public:
     typedef sofa::Index PointID;
     typedef Vec<3, int> Vec3i;
     typedef Vec<6, int> Vec6i;
-    using Vector3 = sofa::type::Vec<3, SReal>;
+    using Vector3 = sofa::type::Vec3;
 
     MarchingCubeUtility();
 

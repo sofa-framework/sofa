@@ -757,7 +757,7 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::applyRotation (const SReal rx, const SReal ry, const SReal rz)
 {
     sofa::type::Quat<SReal> q =
-            type::Quat< SReal >::createQuaterFromEuler(sofa::type::Vec< 3, SReal >(rx, ry, rz) * M_PI / 180.0);
+            type::Quat< SReal >::createQuaterFromEuler(sofa::type::Vec3(rx, ry, rz) * M_PI / 180.0);
     applyRotation(q);
 }
 

@@ -68,7 +68,7 @@ void SphereGridTopology::setRadius(SReal radius)
 }
 
 
-sofa::type::Vec<3, SReal> SphereGridTopology::getPoint(Index i) const
+sofa::type::Vec3 SphereGridTopology::getPoint(Index i) const
 {
     int x = i%d_n.getValue()[0]; i/=d_n.getValue()[0];
     int y = i%d_n.getValue()[1]; i/=d_n.getValue()[1];
@@ -76,7 +76,7 @@ sofa::type::Vec<3, SReal> SphereGridTopology::getPoint(Index i) const
     return getPointInGrid(x,y,z);
 }
 
-sofa::type::Vec<3, SReal> SphereGridTopology::getPointInGrid(int i, int j, int k) const
+sofa::type::Vec3 SphereGridTopology::getPointInGrid(int i, int j, int k) const
 {
     //return p0+dx*x+dy*y+dz*z;
     SReal r = d_radius.getValue();

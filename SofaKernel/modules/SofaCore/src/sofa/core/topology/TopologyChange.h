@@ -150,7 +150,7 @@ SOFA_CORE_API std::istream& operator >> (std::istream& in, TopologyElemID& d);
 /// Topology change informations related to the ancestor topology element of a point
 struct PointAncestorElem
 {
-    typedef type::Vec<3, SReal> LocalCoords;
+    typedef type::Vec3 LocalCoords;
 
     PointAncestorElem() : type(TopologyElementType::POINT), index(sofa::InvalidID) {}
 

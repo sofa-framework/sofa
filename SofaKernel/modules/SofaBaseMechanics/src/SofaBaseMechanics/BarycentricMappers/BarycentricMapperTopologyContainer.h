@@ -122,7 +122,7 @@ protected:
             elementId = std::numeric_limits<unsigned int>::max();
         }
 
-        sofa::type::Vec<3, SReal> baryCoords;
+        sofa::type::Vec3 baryCoords;
         SReal distance;
         unsigned int elementId;
     };

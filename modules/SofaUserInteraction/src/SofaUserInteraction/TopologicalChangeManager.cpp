@@ -408,7 +408,7 @@ Index TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::Collis
 
 
 // Handle Cutting (activated only for a triangular topology), using global variables to register the two last input points
-bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionElementIterator elem, sofa::type::Vec<3, SReal>& pos, const bool firstInput, int snapingValue, int snapingBorderValue)
+bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionElementIterator elem, sofa::type::Vec3& pos, const bool firstInput, int snapingValue, int snapingBorderValue)
 {
     Triangle triangle(elem);
     TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model = triangle.getCollisionModel();
@@ -452,8 +452,8 @@ void TopologicalChangeManager::setIncisionFirstCut(bool b)
 }
 
 // Handle Cutting for general model (only Triangle for the moment)
-bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionModel *firstModel , Index idxA, const sofa::type::Vec<3, SReal>& firstPoint,
-        sofa::core::CollisionModel *secondModel, Index idxB, const sofa::type::Vec<3, SReal>& secondPoint,
+bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionModel *firstModel , Index idxA, const sofa::type::Vec3& firstPoint,
+        sofa::core::CollisionModel *secondModel, Index idxB, const sofa::type::Vec3& secondPoint,
         int snapingValue, int snapingBorderValue)
 {
 
@@ -468,8 +468,8 @@ bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionModel
 
 
 // Perform incision in triangulation
-bool TopologicalChangeManager::incisionTriangleModel(TriangleCollisionModel<sofa::defaulttype::Vec3Types> *firstModel , core::topology::BaseMeshTopology::TriangleID idxA, const sofa::type::Vec<3, SReal>& firstPoint,
-        TriangleCollisionModel<sofa::defaulttype::Vec3Types> *secondModel, core::topology::BaseMeshTopology::TriangleID idxB, const sofa::type::Vec<3, SReal>& secondPoint,
+bool TopologicalChangeManager::incisionTriangleModel(TriangleCollisionModel<sofa::defaulttype::Vec3Types> *firstModel , core::topology::BaseMeshTopology::TriangleID idxA, const sofa::type::Vec3& firstPoint,
+        TriangleCollisionModel<sofa::defaulttype::Vec3Types> *secondModel, core::topology::BaseMeshTopology::TriangleID idxB, const sofa::type::Vec3& secondPoint,
         int snapingValue, int snapingBorderValue)
 {
 
@@ -531,7 +531,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleCollisionModel<sofa
         // Output declarations
         sofa::type::vector< sofa::core::topology::TopologyElementType> topoPath_list;
         sofa::type::vector<Index> indices_list;
-        sofa::type::vector< Vec<3, SReal> > coords2_list;
+        sofa::type::vector< Vec3 > coords2_list;
 
         // Snaping value: input are percentages, we need to transform it as real epsilon value;
         double epsilonSnap = (double)snapingValue/200;

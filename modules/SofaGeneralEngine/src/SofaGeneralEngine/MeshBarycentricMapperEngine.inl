@@ -203,7 +203,7 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
             for ( unsigned int i=0; i<(out).size(); i++ )
             {
                 auto pos = DataTypes::getCPos((out)[i]);
-                type::Vec<3, SReal> coefs;
+                type::Vec3 coefs;
                 int index = -1;
                 SReal distance = 1e10;
                 for ( unsigned int t = 0; t < triangles.size(); t++ )
@@ -267,7 +267,7 @@ void MeshBarycentricMapperEngine<DataTypes>::doUpdate()
         for ( unsigned int i=0; i<(out).size(); i++ )
         {
             auto pos = DataTypes::getCPos((out)[i]);
-            sofa::type::Vec<3, SReal> coefs;
+            sofa::type::Vec3 coefs;
             int index = -1;
             double distance = 1e10;
             for ( unsigned int t = 0; t < tetrahedra.size(); t++ )

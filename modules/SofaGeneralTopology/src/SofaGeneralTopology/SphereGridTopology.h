@@ -36,7 +36,7 @@ class SOFA_SOFAGENERALTOPOLOGY_API SphereGridTopology : public GridTopology
 {
 public:
     SOFA_CLASS(SphereGridTopology,GridTopology);
-    using Vector3 = sofa::type::Vec<3,SReal>;
+    using Vector3 = sofa::type::Vec3;
 protected:
     /// Default constructor
     SphereGridTopology();

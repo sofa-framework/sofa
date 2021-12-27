@@ -39,12 +39,12 @@ public:
 
     explicit Ray(const core::CollisionElementIterator& i);
 
-    const type::Vec<3, SReal>& origin() const;
-    const type::Vec<3, SReal>& direction() const;
+    const type::Vec3& origin() const;
+    const type::Vec3& direction() const;
     SReal l() const;
 
-    void setOrigin(const type::Vec<3, SReal>& newOrigin);
-    void setDirection(const type::Vec<3, SReal>& newDirection);
+    void setOrigin(const type::Vec3& newOrigin);
+    void setDirection(const type::Vec3& newDirection);
     void setL(SReal newL);
 };
 
@@ -89,7 +89,7 @@ public:
 
 protected:
     sofa::type::vector<SReal> length;
-    sofa::type::vector<type::Vec<3, SReal>> direction;
+    sofa::type::vector<type::Vec3> direction;
 
     Data<SReal> defaultLength; ///< TODO
 
@@ -107,7 +107,7 @@ inline Ray::Ray(const core::CollisionElementIterator& i)
 {
 }
 
-inline void Ray::setDirection(const type::Vec<3, SReal>& newDirection)
+inline void Ray::setDirection(const type::Vec3& newDirection)
 {
     model->direction[index] = newDirection;
 }

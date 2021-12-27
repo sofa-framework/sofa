@@ -50,7 +50,7 @@ public:
     SOFA_CLASS(BaseContext, Base);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseContext)
 
-    using Vec3 = sofa::type::Vec<3, SReal>;
+    using Vec3 = sofa::type::Vec3;
 
 protected:
     BaseContext();

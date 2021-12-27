@@ -34,11 +34,11 @@ class SOFA_TYPE_API BoundingBox
 {
 
 public:
-    typedef std::pair< sofa::type::Vec<3, SReal>, sofa::type::Vec<3, SReal> > bbox_t;
+    typedef std::pair< sofa::type::Vec3, sofa::type::Vec3 > bbox_t;
 
     BoundingBox();
     /// Define using the endpoints of the main diagonal
-    BoundingBox(const sofa::type::Vec<3, SReal>& minBBox, const sofa::type::Vec<3, SReal>& maxBBox);
+    BoundingBox(const sofa::type::Vec3& minBBox, const sofa::type::Vec3& maxBBox);
     BoundingBox(const bbox_t& bbox);
     /// Define using xmin, xmax, ymin, ymax, zmin, zmax in this order
     BoundingBox(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal zmin, SReal zmax );
@@ -61,24 +61,24 @@ public:
     SReal* maxBBoxPtr();
     const SReal* minBBoxPtr() const;
     const SReal* maxBBoxPtr() const;
-    const sofa::type::Vec<3, SReal>&  minBBox() const;
-    const sofa::type::Vec<3, SReal>&  maxBBox() const;
-    sofa::type::Vec<3, SReal>& minBBox();
-    sofa::type::Vec<3, SReal>& maxBBox();
+    const sofa::type::Vec3&  minBBox() const;
+    const sofa::type::Vec3&  maxBBox() const;
+    sofa::type::Vec3& minBBox();
+    sofa::type::Vec3& maxBBox();
 
-    bool contains( const sofa::type::Vec<3, SReal>& point) const;
+    bool contains( const sofa::type::Vec3& point) const;
     bool contains( const BoundingBox& other) const;
 
     bool intersect( const BoundingBox& other) const;
     void intersection( const BoundingBox& other);
 
-    void include( const sofa::type::Vec<3, SReal>& point);
+    void include( const sofa::type::Vec3& point);
     void include( const BoundingBox& other);
 
     void inflate( SReal amount );
 
     BoundingBox getIntersection( const BoundingBox& other ) const;
-    BoundingBox getInclude( const sofa::type::Vec<3, SReal>& point ) const;
+    BoundingBox getInclude( const sofa::type::Vec3& point ) const;
     BoundingBox getInclude( const BoundingBox& other ) const;
     BoundingBox getInflate( SReal amount ) const;
 
@@ -105,7 +105,7 @@ class TBoundingBox : public BoundingBox
 {
 public:
     TBoundingBox(const TReal* minBBoxPtr, const TReal* maxBBoxPtr)
-        :BoundingBox(sofa::type::Vec<3, SReal>(minBBoxPtr),sofa::type::Vec<3, SReal>(maxBBoxPtr))
+        :BoundingBox(sofa::type::Vec3(minBBoxPtr),sofa::type::Vec3(maxBBoxPtr))
     {
     }
 

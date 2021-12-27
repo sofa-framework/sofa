@@ -170,12 +170,12 @@ void RayCollisionModel::applyTranslation(double dx, double dy, double dz)
     }
 }
 
-const type::Vec<3,SReal>& Ray::origin() const
+const type::Vec3& Ray::origin() const
 {
     return model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue()[index];
 }
 
-const type::Vec<3, SReal>& Ray::direction() const
+const type::Vec3& Ray::direction() const
 {
     return model->direction[index];
 }
@@ -185,7 +185,7 @@ SReal Ray::l() const
     return model->length[index];
 }
 
-void Ray::setOrigin(const type::Vec<3, SReal>& newOrigin)
+void Ray::setOrigin(const type::Vec3& newOrigin)
 {
     auto xData = sofa::helper::getWriteAccessor(*model->getMechanicalState()->write(core::VecCoordId::position()));
     xData.wref()[index] = newOrigin;

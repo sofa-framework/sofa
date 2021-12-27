@@ -702,7 +702,7 @@ void VisualModelImpl::applyTranslation(const SReal dx, const SReal dy, const SRe
 
 void VisualModelImpl::applyRotation(const SReal rx, const SReal ry, const SReal rz)
 {
-    auto q = type::Quat<SReal>::createQuaterFromEuler( Vec<3,SReal>(rx,ry,rz)*M_PI/180.0);
+    auto q = type::Quat<SReal>::createQuaterFromEuler( Vec3(rx,ry,rz)*M_PI/180.0);
     applyRotation(q);
 }
 
