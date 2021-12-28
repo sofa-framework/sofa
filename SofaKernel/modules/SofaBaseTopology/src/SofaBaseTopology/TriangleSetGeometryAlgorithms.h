@@ -119,17 +119,17 @@ public:
     /** \brief Computes barycentric coefficients of point p in triangle (a,b,c) indexed by ind_t
     *
     */
-    sofa::type::vector< Real > computeTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3,Real> &p) const;
+    sofa::type::vector< SReal > computeTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3,Real> &p) const;
 
     /** \brief Computes barycentric coefficients of point p in initial triangle (a,b,c) indexed by ind_t
     *
     */
-    sofa::type::vector< Real > computeRestTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3, Real>& p) const;
+    sofa::type::vector< SReal > computeRestTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3, Real>& p) const;
 
     /** \brief Computes barycentric coefficients of point p in triangle whose vertices are indexed by (ind_p1,ind_p2,ind_p3)
      *
      */
-    sofa::type::vector< Real > compute3PointsBarycoefs( const sofa::type::Vec<3, Real> &p,
+    sofa::type::vector< SReal > compute3PointsBarycoefs( const sofa::type::Vec<3, Real> &p,
             PointID ind_p1,
             PointID ind_p2,
             PointID ind_p3,

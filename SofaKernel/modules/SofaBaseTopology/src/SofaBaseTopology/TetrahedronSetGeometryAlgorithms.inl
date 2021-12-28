@@ -1046,7 +1046,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filen
 
 
 template<class DataTypes>
-void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideTetrahedronsWithPlane(sofa::type::vector< sofa::type::vector<Real> >& coefs, sofa::type::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal)
+void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideTetrahedronsWithPlane(sofa::type::vector< sofa::type::vector<SReal> >& coefs, sofa::type::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal)
 {
     //Current topological state
     sofa::Size nbPoint=this->m_container->getNbPoints();
@@ -1160,13 +1160,13 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideTetrahedronsWithPlane
 
     //barycentric coodinates of to be added points
     sofa::type::vector< sofa::type::vector<PointID> > ancestors;
-    sofa::type::vector< sofa::type::vector<Real> > coefs;
+    sofa::type::vector< sofa::type::vector<SReal> > coefs;
     for( size_t i=0; i<intersectedPoints.size(); i++)
     {
         Edge theEdge=m_container->getEdge(intersectedEdgeID[i]);
         sofa::type::Vec<3,Real> p;
         p[0]=intersectedPoints[i][0]; p[1]=intersectedPoints[i][1]; p[2]=intersectedPoints[i][2];
-        sofa::type::vector< Real > coef = this->compute2PointsBarycoefs(p, theEdge[0], theEdge[1]);
+        sofa::type::vector< SReal > coef = this->compute2PointsBarycoefs(p, theEdge[0], theEdge[1]);
 
         sofa::type::vector< EdgeID > ancestor;
         ancestor.push_back(theEdge[0]); ancestor.push_back(theEdge[1]);
@@ -2157,7 +2157,7 @@ int TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideTetrahedronWithPlane(T
 
 
 template<class DataTypes>
-void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideRestTetrahedronsWithPlane(sofa::type::vector< sofa::type::vector<Real> >& coefs, sofa::type::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal)
+void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideRestTetrahedronsWithPlane(sofa::type::vector< sofa::type::vector<SReal> >& coefs, sofa::type::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal)
 {
     //Current topological state
     sofa::Size nbPoint=this->m_container->getNbPoints();
@@ -2271,13 +2271,13 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideRestTetrahedronsWithP
 
     //barycentric coodinates of to be added points
     sofa::type::vector< sofa::type::vector<PointID> > ancestors;
-    sofa::type::vector< sofa::type::vector<Real> > coefs;
+    sofa::type::vector< sofa::type::vector<SReal> > coefs;
     for(sofa::Index i=0; i<intersectedPoints.size(); i++)
     {
         Edge theEdge=m_container->getEdge(intersectedEdgeID[i]);
         sofa::type::Vec<3,Real> p;
         p[0]=intersectedPoints[i][0]; p[1]=intersectedPoints[i][1]; p[2]=intersectedPoints[i][2];
-        sofa::type::vector< Real > coef = this->computeRest2PointsBarycoefs(p, theEdge[0], theEdge[1]);
+        sofa::type::vector< SReal > coef = this->computeRest2PointsBarycoefs(p, theEdge[0], theEdge[1]);
 
         sofa::type::vector< EdgeID > ancestor;
         ancestor.push_back(theEdge[0]); ancestor.push_back(theEdge[1]);

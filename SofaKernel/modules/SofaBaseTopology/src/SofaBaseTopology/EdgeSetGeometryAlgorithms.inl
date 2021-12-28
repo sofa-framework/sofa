@@ -376,11 +376,11 @@ template<class DataTypes>
 auto EdgeSetGeometryAlgorithms<DataTypes>::compute2PointsBarycoefs(
     const sofa::type::Vec<3, Real> &p,
     PointID ind_p1,
-    PointID ind_p2) const -> sofa::type::vector< Real >
+    PointID ind_p2) const -> sofa::type::vector< SReal >
 {
     const Real ZERO = 1e-6;
 
-    sofa::type::vector< Real > baryCoefs;
+    sofa::type::vector< SReal > baryCoefs;
 
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
     const typename DataTypes::Coord& c0 = vect_c[ind_p1];
@@ -467,11 +467,11 @@ template<class DataTypes>
 auto EdgeSetGeometryAlgorithms<DataTypes>::computeRest2PointsBarycoefs(
     const sofa::type::Vec<3, Real>& p,
     PointID ind_p1,
-    PointID ind_p2) const -> sofa::type::vector<Real>
+    PointID ind_p2) const -> sofa::type::vector<SReal>
 {
     const Real ZERO = 1e-6;
 
-    sofa::type::vector< Real > baryCoefs;
+    sofa::type::vector< SReal > baryCoefs;
 
     const typename DataTypes::VecCoord& vect_c = (this->object->read(core::ConstVecCoordId::restPosition())->getValue());
     const typename DataTypes::Coord& c0 = vect_c[ind_p1];
@@ -534,7 +534,7 @@ sofa::type::vector< typename Vec::value_type > compute_2points_barycoefs(const V
 template<class DataTypes>
 auto EdgeSetGeometryAlgorithms<DataTypes>::computePointProjectionOnEdge (const EdgeID edgeIndex,
         sofa::type::Vec<3, Real> c,
-        bool& intersected) -> sofa::type::vector< Real >
+        bool& intersected) -> sofa::type::vector< SReal >
 {
 
     // Compute projection point coordinate H using parametric straight lines equations.
@@ -771,7 +771,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( type:
         EdgesAroundVertex ve = this->m_topology->getEdgesAroundVertex(pointId);
         edgeVec.resize(ve.size());
         numEdges.push_back(sofa::Size(ve.size()));            // number of edges attached to this point
-        sofa::type::Matrix3 EEt,L;
+        sofa::type::Mat<3,3,Real> EEt,L;
 
         // Solve E.W = I , where each column of E is an adjacent edge vector, W are the desired weights, and I is the 3x3 identity
         // Each row of W corresponds to an edge, and encode the contribution of the edge to the basis vectors x,y,z
