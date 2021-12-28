@@ -27,6 +27,7 @@
 namespace sofa::gpu::cuda
 {
 
+
 extern "C"
 {
 void TriangularFEMForceFieldOptimCuda3f_addForce(unsigned int size, void* f, const void* x, const void* v,
@@ -40,6 +41,21 @@ void TriangularFEMForceFieldOptimCuda3f_addDForce(unsigned int size, void* f, co
     unsigned int nbTriangles,
     const void* gpuTriangleInfo,
     float gamma, float mu); //, const void* dfdx);
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+void TriangularFEMForceFieldOptimCuda3d_addForce(unsigned int size, void* f, const void* x, const void* v,
+    void* triangleState, const void* triangleInfo,
+    unsigned int nbTriangles,
+    const void* gpuTriangleInfo,
+    double gamma, double mu);
+
+void TriangularFEMForceFieldOptimCuda3d_addDForce(unsigned int size, void* f, const void* dx, double kFactor,
+    const void* triangleState, const void* triangleInfo,
+    unsigned int nbTriangles,
+    const void* gpuTriangleInfo,
+    double gamma, double mu); //, const void* dfdx);
+#endif // SOFA_GPU_CUDA_DOUBLE
+
 }
 
 } // namespace sofa::gpu::cuda
@@ -62,10 +78,10 @@ void TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3fTypes>::addForce(const cor
     const InternalData::VecGPUTriangleInfo& gpuTriangleInfo = data.gpuTriangleInfo;
     const Real gamma = this->gamma;
     const Real mu = this->mu;
-
+        
     f.resize(x.size());
-
-    TriangularFEMForceFieldOptimCuda3f_addForce(x.size(), f.deviceWrite(), x.deviceRead(), v.deviceRead(),
+ 
+   TriangularFEMForceFieldOptimCuda3f_addForce(x.size(), f.deviceWrite(), x.deviceRead(), v.deviceRead(),
         triState.deviceWrite(), 
         triInfo.deviceRead(), 
         nbTriangles,
@@ -101,5 +117,63 @@ void TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3fTypes>::addDForce(const co
     
     d_df.endEdit();
 }
+
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+
+template <>
+void TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3dTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
+{
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& x = d_x.getValue();
+    const VecDeriv& v = d_v.getValue();
+
+    VecTriangleState& triState = *d_triangleState.beginEdit();
+    const VecTriangleInfo& triInfo = d_triangleInfo.getValue();
+    const unsigned int nbTriangles = m_topology->getNbTriangles();
+    const InternalData::VecGPUTriangleInfo& gpuTriangleInfo = data.gpuTriangleInfo;
+    const Real gamma = this->gamma;
+    const Real mu = this->mu;
+
+    f.resize(x.size());
+
+    TriangularFEMForceFieldOptimCuda3d_addForce(x.size(), f.deviceWrite(), x.deviceRead(), v.deviceRead(),
+        triState.deviceWrite(),
+        triInfo.deviceRead(),
+        nbTriangles,
+        gpuTriangleInfo.deviceRead(),
+        gamma, mu);
+
+    d_triangleState.endEdit();
+    d_f.endEdit();
+}
+
+template <>
+void TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3dTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
+{
+    VecDeriv& df = *d_df.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
+    const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
+
+    const VecTriangleState& triState = d_triangleState.getValue();
+    const VecTriangleInfo& triInfo = d_triangleInfo.getValue();
+    const unsigned int nbTriangles = m_topology->getNbTriangles();
+    const InternalData::VecGPUTriangleInfo& gpuTriangleInfo = data.gpuTriangleInfo;
+    const Real gamma = this->gamma;
+    const Real mu = this->mu;
+
+    df.resize(dx.size());
+
+    TriangularFEMForceFieldOptimCuda3d_addDForce(dx.size(), df.deviceWrite(), dx.deviceRead(), kFactor,
+        triState.deviceRead(),
+        triInfo.deviceRead(),
+        nbTriangles,
+        gpuTriangleInfo.deviceRead(),
+        gamma, mu);
+
+    d_df.endEdit();
+}
+
+#endif // SOFA_GPU_CUDA_DOUBLE
 
 } // namespace sofa::component::forcefield
