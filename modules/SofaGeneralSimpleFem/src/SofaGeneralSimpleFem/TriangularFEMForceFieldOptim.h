@@ -21,17 +21,11 @@
 ******************************************************************************/
 #pragma once
 #include <SofaGeneralSimpleFem/config.h>
-
-
-
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/Mat.h>
 #include <sofa/core/topology/TopologyData.h>
-
-#include <map>
-#include <sofa/helper/map.h>
 
 namespace sofa::component::forcefield
 {
@@ -127,7 +121,7 @@ public:
         Real bx, cx, cy, ss_factor;
         Transformation init_frame; // Mat<2,3,Real>
 
-        TriangleInfo() { }
+        TriangleInfo() :bx(0), cx(0), cy(0), ss_factor(0) { }
 
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const TriangleInfo& ti )

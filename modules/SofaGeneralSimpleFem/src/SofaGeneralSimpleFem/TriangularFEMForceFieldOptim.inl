@@ -19,16 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #pragma once
-#include "TriangularFEMForceFieldOptim.h"
-
+#include <SofaGeneralSimpleFem/TriangularFEMForceFieldOptim.h>
 #include <SofaBaseLinearSolver/BlocMatrixWriter.h>
-
 #include <sofa/core/visual/VisualParams.h>
-
 #include <sofa/core/topology/TopologyData.inl>
-
 #include <limits>
 
 
