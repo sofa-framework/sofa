@@ -42,8 +42,6 @@ template <class DataTypes>
 TriangularFEMForceFieldOptim<DataTypes>::TriangularFEMForceFieldOptim()
     : d_triangleInfo(initData(&d_triangleInfo, "triangleInfo", "Internal triangle data (persistent)"))
     , d_triangleState(initData(&d_triangleState, "triangleState", "Internal triangle data (time-dependent)"))
-    , d_vertexInfo(initData(&d_vertexInfo, "vertexInfo", "Internal point data"))
-    , d_edgeInfo(initData(&d_edgeInfo, "edgeInfo", "Internal edge data"))
     , d_poisson(initData(&d_poisson,(Real)(0.3),"poissonRatio","Poisson ratio in Hooke's law"))
     , d_young(initData(&d_young,(Real)(1000.0),"youngModulus","Young modulus in Hooke's law"))
     , d_damping(initData(&d_damping,(Real)0.,"damping","Ratio damping/stiffness"))
@@ -108,9 +106,6 @@ void TriangularFEMForceFieldOptim<DataTypes>::init()
     {
         createTriangleState(triangleIndex, ti, t, ancestors, coefs);
     });
-
-    d_edgeInfo.createTopologyHandler(m_topology);
-    d_vertexInfo.createTopologyHandler(m_topology);
 
     if (m_topology->getNbTriangles() == 0)
     {
@@ -244,16 +239,6 @@ void TriangularFEMForceFieldOptim<DataTypes>::reinit()
     d_triangleInfo.endEdit();
     d_triangleState.endEdit();
 
-    /// prepare to store info in the edge array
-    VecEdgeInfo& edgeInf = *(d_edgeInfo.beginEdit());
-    edgeInf.resize(m_topology->getNbEdges());
-    d_edgeInfo.endEdit();
-
-    /// prepare to store info in the vertex array
-    unsigned int nbPoints = m_topology->getNbPoints();
-    VecVertexInfo& vi = *(d_vertexInfo.beginEdit());
-    vi.resize(nbPoints);
-    d_vertexInfo.endEdit();
     data.reinit(this);
 }
 

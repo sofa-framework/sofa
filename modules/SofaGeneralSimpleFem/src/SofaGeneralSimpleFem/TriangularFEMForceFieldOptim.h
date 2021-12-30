@@ -182,56 +182,12 @@ public:
             return in;
         }
     };
-    /// Class to store FEM information on each edge, for topology modification handling
-    class EdgeInfo
-    {
-    public:
-        bool fracturable;
-
-        EdgeInfo()
-            : fracturable(false) { }
-
-        /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeInfo& /*ei*/ )
-        {
-            return os;
-        }
-
-        /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, EdgeInfo& /*ei*/ )
-        {
-            return in;
-        }
-    };
-
-    /// Class to store FEM information on each vertex, for topology modification handling
-    class VertexInfo
-    {
-    public:
-        VertexInfo()
-        /*:sumEigenValues(0.0)*/ {}
-
-        /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const VertexInfo& /*vi*/)
-        {
-            return os;
-        }
-        /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, VertexInfo& /*vi*/)
-        {
-            return in;
-        }
-    };
 
     /// Topology Data
     typedef typename VecCoord::template rebind<TriangleInfo>::other VecTriangleInfo;
     typedef typename VecCoord::template rebind<TriangleState>::other VecTriangleState;
-    typedef typename VecCoord::template rebind<VertexInfo>::other VecVertexInfo;
-    typedef typename VecCoord::template rebind<EdgeInfo>::other VecEdgeInfo;
-    core::topology::TriangleData<VecTriangleInfo> d_triangleInfo; ///< Internal triangle data (persistent)
-    core::topology::TriangleData<VecTriangleState> d_triangleState; ///< Internal triangle data (time-dependent)
-    core::topology::PointData<VecVertexInfo> d_vertexInfo; ///< Internal point data
-    core::topology::EdgeData<VecEdgeInfo> d_edgeInfo; ///< Internal edge data
+    topology::TriangleData<VecTriangleInfo> d_triangleInfo; ///< Internal triangle data (persistent)
+    topology::TriangleData<VecTriangleState> d_triangleState; ///< Internal triangle data (time-dependent)
 
     /** Method to create @sa TriangleInfo when a new triangle is created.
     * Will be set as creation callback in the TriangleData @sa d_triangleInfo
