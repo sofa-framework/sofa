@@ -245,6 +245,9 @@ void FastTetrahedralCorotationalForceField<DataTypes>::init()
     });
 
     updateTopologyInformation();
+
+    // init extra data storage
+    m_data.reinit(this);
 }
 
 

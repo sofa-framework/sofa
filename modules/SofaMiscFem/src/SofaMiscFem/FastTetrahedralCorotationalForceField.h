@@ -36,6 +36,18 @@
 namespace sofa::component::forcefield
 {
 
+template<class DataTypes>
+class FastTetrahedralCorotationalForceField;
+
+/// This class can be overridden if needed for additionnal storage within template specializations.
+template<class DataTypes>
+class FastTetrahedralCorotationalForceFieldData
+{
+public:
+    typedef FastTetrahedralCorotationalForceField<DataTypes> Main;
+    void reinit(Main* m) { SOFA_UNUSED(m); }
+};
+
 
 template<class DataTypes>
 class FastTetrahedralCorotationalForceField : public core::behavior::ForceField<DataTypes>
@@ -181,6 +193,9 @@ protected :
     static void computeQRRotation( Mat3x3 &r, const Coord *dp);
 
     core::topology::EdgeData<sofa::type::vector<Mat3x3> > &getEdgeInfo() {return edgeInfo;}
+    
+    typedef FastTetrahedralCorotationalForceFieldData<DataTypes> ExtraData;
+    ExtraData m_data;
 };
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_CPP)
