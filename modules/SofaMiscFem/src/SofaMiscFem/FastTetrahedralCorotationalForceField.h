@@ -22,9 +22,6 @@
 #pragma once
 
 #include <SofaMiscFem/config.h>
-
-
-
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/type/fixed_array.h>
 #include <sofa/type/vector.h>
@@ -111,9 +108,13 @@ protected:
         }
     };
 
-    core::topology::PointData<sofa::type::vector<Mat3x3> > pointInfo; ///< Internal point data
-    core::topology::EdgeData<sofa::type::vector<Mat3x3> > edgeInfo; ///< Internal edge data
-    core::topology::TetrahedronData<sofa::type::vector<TetrahedronRestInformation> > tetrahedronInfo; ///< Internal tetrahedron data
+    /// Topology Data
+    typedef typename VecCoord::template rebind<TetrahedronRestInformation>::other VecTetrahedronRestInformation;
+    typedef typename VecCoord::template rebind <Mat3x3>::other VecMat3x3;
+
+    core::topology::PointData<VecMat3x3 > pointInfo; ///< Internal point data
+    core::topology::EdgeData<VecMat3x3 > edgeInfo; ///< Internal edge data
+    core::topology::TetrahedronData<VecTetrahedronRestInformation > tetrahedronInfo; ///< Internal tetrahedron data
 
     /** Method to initialize @sa TetrahedronRestInformation when a new Tetrahedron is created.
     * Will be set as creation callback in the TetrahedronData @sa tetrahedronInfo
@@ -192,7 +193,7 @@ public:
 protected :
     static void computeQRRotation( Mat3x3 &r, const Coord *dp);
 
-    core::topology::EdgeData<sofa::type::vector<Mat3x3> > &getEdgeInfo() {return edgeInfo;}
+    core::topology::EdgeData< VecMat3x3 > &getEdgeInfo() {return edgeInfo;}
     
     typedef FastTetrahedralCorotationalForceFieldData<DataTypes> ExtraData;
     ExtraData m_data;

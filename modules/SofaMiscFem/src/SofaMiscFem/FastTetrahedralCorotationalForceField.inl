@@ -206,12 +206,12 @@ void FastTetrahedralCorotationalForceField<DataTypes>::init()
     }
 
     /// prepare to store info in the edge array
-    helper::WriteOnlyAccessor< Data< type::vector<Mat3x3 > > > edgeInf = edgeInfo;
+    helper::WriteOnlyAccessor< Data< VecMat3x3 > > edgeInf = edgeInfo;
     edgeInf.resize(m_topology->getNbEdges());
     edgeInfo.createTopologyHandler(m_topology);
 
     /// prepare to store info in the point array
-    helper::WriteOnlyAccessor< Data< type::vector<Mat3x3 > > > pointInf = pointInfo;
+    helper::WriteOnlyAccessor< Data< VecMat3x3 > > pointInf = pointInfo;
     pointInf.resize(m_topology->getNbPoints());
     pointInfo.createTopologyHandler(m_topology);
 
@@ -224,7 +224,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::init()
 
 
     /// initialize the data structure associated with each tetrahedron
-    helper::WriteOnlyAccessor< Data< type::vector<TetrahedronRestInformation > > > tetrahedronInf = tetrahedronInfo;
+    helper::WriteOnlyAccessor< Data< VecTetrahedronRestInformation > > tetrahedronInf = tetrahedronInfo;
     tetrahedronInf.resize(m_topology->getNbTetrahedra());
     
     for (Index i=0; i<m_topology->getNbTetrahedra(); ++i)
@@ -256,7 +256,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::updateTopologyInformation
 {
     int nbTetrahedra=m_topology->getNbTetrahedra();
 
-    helper::WriteOnlyAccessor< Data< type::vector<TetrahedronRestInformation > > > tetrahedronInf = tetrahedronInfo;
+    helper::WriteOnlyAccessor< Data< VecTetrahedronRestInformation > > tetrahedronInf = tetrahedronInfo;
 
     for(Index i=0; i<nbTetrahedra; i++ )
     {
@@ -318,7 +318,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
     int nbTetrahedra=m_topology->getNbTetrahedra();
     int i;
 
-    helper::WriteOnlyAccessor< Data< type::vector<TetrahedronRestInformation > > > tetrahedronInf = tetrahedronInfo;
+    helper::WriteOnlyAccessor< Data< VecTetrahedronRestInformation > > tetrahedronInf = tetrahedronInfo;
 
 
     Coord displ[6],sv;
@@ -423,8 +423,8 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
     if (updateMatrix==true)
     {
         // the matrix must be stored in edges
-        helper::WriteOnlyAccessor< Data< type::vector<TetrahedronRestInformation > > > tetrahedronInf = tetrahedronInfo;
-        helper::WriteOnlyAccessor< Data< type::vector<Mat3x3 > > > edgeDfDx = edgeInfo;
+        helper::WriteOnlyAccessor< Data< VecTetrahedronRestInformation > > tetrahedronInf = tetrahedronInfo;
+        helper::WriteOnlyAccessor< Data< VecMat3x3 > > edgeDfDx = edgeInfo;
 
         int nbTetrahedra=m_topology->getNbTetrahedra();
         Mat3x3 tmp;
@@ -462,7 +462,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
         }
     }
 
-    const type::vector<Mat3x3> &edgeDfDx = edgeInfo.getValue();
+    const VecMat3x3& edgeDfDx = edgeInfo.getValue();
     Coord deltax;
 
     // use the already stored matrix
@@ -500,9 +500,9 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::linear
     int nbPoints=m_topology->getNbPoints();
     int nbTetrahedra=m_topology->getNbTetrahedra();
 
-    helper::WriteOnlyAccessor< Data< type::vector<TetrahedronRestInformation > > > tetrahedronInf = tetrahedronInfo;
-    helper::WriteOnlyAccessor< Data< type::vector<Mat3x3 > > > edgeDfDx = edgeInfo;
-    helper::WriteOnlyAccessor< Data< type::vector<Mat3x3 > > > pointDfDx = pointInfo;
+    helper::WriteOnlyAccessor< Data< VecTetrahedronRestInformation > > tetrahedronInf = tetrahedronInfo;
+    helper::WriteOnlyAccessor< Data< VecMat3x3 > > edgeDfDx = edgeInfo;
+    helper::WriteOnlyAccessor< Data< VecMat3x3 > > pointDfDx = pointInfo;
 
     Mat3x3 tmp;
     if (updateMatrix==true) {
