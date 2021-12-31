@@ -22,20 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDAHEXAHEDRONFEMFORCEFIELD_INL
-#define SOFA_GPU_CUDA_CUDAHEXAHEDRONFEMFORCEFIELD_INL
-
+#pragma once
 #include <sofa/gpu/cuda/CudaHexahedronFEMForceField.h>
 #include <SofaSimpleFem/HexahedronFEMForceField.inl>
 #include <sofa/gpu/cuda/mycuda.h>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 extern "C"
@@ -102,14 +94,10 @@ public :
 };
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace cuda
+} // namespace sofa::cuda::gpu
 
-} // namespace gpu
 
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 using namespace gpu::cuda;
@@ -361,10 +349,4 @@ void HexahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::getRotations(linearalge
 }
 
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::forcefield

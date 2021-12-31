@@ -26,13 +26,19 @@
 #include <sofa/gpu/cuda/CudaHexahedronFEMForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
 
-namespace gpu
+namespace sofa::component::forcefield
 {
+template class SOFA_GPU_CUDA_API HexahedronFEMForceField<sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API HexahedronFEMForceField<sofa::gpu::cuda::CudaVec3f1Types>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API HexahedronFEMForceField<sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API HexahedronFEMForceField<sofa::gpu::cuda::CudaVec3d1Types>; 
+#endif // SOFA_GPU_CUDA_DOUBLE
 
-namespace cuda
+} // namespace sofa::component::forcefield
+
+namespace sofa::gpu::cuda
 {
 
 int HexahedronFEMForceFieldCudaClass = core::RegisterObject("Hexahedron FEM ForceField Supports GPU-side computations using CUDA")
@@ -44,8 +50,4 @@ int HexahedronFEMForceFieldCudaClass = core::RegisterObject("Hexahedron FEM Forc
 #endif // SOFA_GPU_CUDA_DOUBLE
 ;
 
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
+} // namespace sofa::gpu::cuda
