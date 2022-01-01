@@ -180,8 +180,8 @@ public:
     /// Topology Data
     typedef typename VecCoord::template rebind<TriangleInfo>::other VecTriangleInfo;
     typedef typename VecCoord::template rebind<TriangleState>::other VecTriangleState;
-    topology::TriangleData<VecTriangleInfo> d_triangleInfo; ///< Internal triangle data (persistent)
-    topology::TriangleData<VecTriangleState> d_triangleState; ///< Internal triangle data (time-dependent)
+    core::topology::TriangleData<VecTriangleInfo> d_triangleInfo; ///< Internal triangle data (persistent)
+    core::topology::TriangleData<VecTriangleState> d_triangleState; ///< Internal triangle data (time-dependent)
 
     /** Method to create @sa TriangleInfo when a new triangle is created.
     * Will be set as creation callback in the TriangleData @sa d_triangleInfo
