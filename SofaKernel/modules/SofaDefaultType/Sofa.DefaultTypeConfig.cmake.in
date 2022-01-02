@@ -13,7 +13,7 @@ endif()
 
 # Create alias to support compatibility, starting from v21.06
 # This alias will be deleted in v22.06
-if(NOT TARGET SofaCore) # test if alias was not already created
+if(NOT TARGET SofaDefaultType) # test if alias was not already created
     get_target_property(Sofa.DefaultType_IMPORTED Sofa.DefaultType IMPORTED)
     if(Sofa.DefaultType_IMPORTED)
         set_target_properties(Sofa.DefaultType PROPERTIES IMPORTED_GLOBAL TRUE)
