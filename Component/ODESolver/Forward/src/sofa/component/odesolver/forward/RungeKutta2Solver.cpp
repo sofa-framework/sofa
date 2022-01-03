@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralExplicitOdeSolver/RungeKutta2Solver.h>
+#include <sofa/component/odesolver/forward/RungeKutta2Solver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
@@ -28,7 +28,7 @@
 
 
 
-namespace sofa::component::odesolver
+namespace sofa::component::odesolver::forward
 {
 using core::VecId;
 using namespace core::behavior;
@@ -117,4 +117,4 @@ void RungeKutta2Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
 
 
 
-} //namespace sofa::component::odesolver
+} // namespace sofa::component::odesolver::forward

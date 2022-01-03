@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaExplicitOdeSolver/EulerSolver.h>
+#include <sofa/component/odesolver/forward/EulerSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
@@ -33,7 +33,7 @@ using sofa::simulation::mechanicalvisitor::MechanicalGetNonDiagonalMassesCountVi
 
 //#define SOFA_NO_VMULTIOP
 
-namespace sofa::component::odesolver
+namespace sofa::component::odesolver::forward
 {
 
 using namespace sofa::defaulttype;
@@ -338,4 +338,4 @@ void EulerExplicitSolver::solveSystem(core::behavior::MultiMatrix<simulation::co
     matrix->solve(solution, rhs);
 }
 
-} // namespace sofa::component::odesolver
+} // namespace sofa::component::odesolver::forward

@@ -21,11 +21,11 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMiscSolver/config.h>
+#include <sofa/component/odesolver/backward/config.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
 
-namespace sofa::component::odesolver
+namespace sofa::component::odesolver::backward
 {
 
 /** Implicit time integrator using Newmark scheme.
@@ -46,7 +46,7 @@ namespace sofa::component::odesolver
  * The current implementation first computes $a_t$ directly (as in the explicit solvers), then solves the previous system to compute $a_{t+dt}$, and finally computes the new position and velocity.
  *
 */
-class SOFA_SOFAMISCSOLVER_API NewmarkImplicitSolver : public sofa::core::behavior::OdeSolver
+class SOFA_COMPONENT_ODESOLVER_BACKWARD_API NewmarkImplicitSolver : public sofa::core::behavior::OdeSolver
 {
 protected:
     unsigned int cpt;
@@ -123,4 +123,4 @@ public:
 
 };
 
-} // namespace sofa::component::odesolver
+} // namespace sofa::component::odesolver::backward

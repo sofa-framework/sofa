@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaImplicitOdeSolver/StaticSolver.h>
+#include <sofa/component/odesolver/backward/StaticSolver.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
@@ -35,7 +35,7 @@
 
 using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor;
 
-namespace sofa::component::odesolver
+namespace sofa::component::odesolver::backward
 {
 
 using sofa::core::VecId;
@@ -465,4 +465,4 @@ int StaticSolverClass = sofa::core::RegisterObject("Static ODE Solver")
     .add< StaticSolver >()
 ;
 
-} // namespace sofa::component::odesolver
+} // namespace sofa::component::odesolver::backward

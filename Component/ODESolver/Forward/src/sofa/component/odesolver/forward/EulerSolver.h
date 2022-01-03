@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaExplicitOdeSolver/config.h>
+#include <sofa/component/odesolver/forward/config.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/MultiVec.h>
@@ -37,7 +37,7 @@ template<class T>
 class MultiMatrix;
 }
 
-namespace sofa::component::odesolver
+namespace sofa::component::odesolver::forward
 {
 
 /**
@@ -69,7 +69,7 @@ namespace sofa::component::odesolver
  *
  * The semi-implicit Euler method is more robust than the standard Euler method.
  */
-class SOFA_SOFAEXPLICITODESOLVER_API EulerExplicitSolver : public sofa::core::behavior::OdeSolver
+class SOFA_COMPONENT_ODESOLVER_FORWARD_API EulerExplicitSolver : public sofa::core::behavior::OdeSolver
 {
 public:
     SOFA_CLASS(EulerExplicitSolver, sofa::core::behavior::OdeSolver);
@@ -134,4 +134,4 @@ protected:
     DeprecatedAndRemoved d_optimizedForDiagonalMatrix{};
 };
 
-} // namespace sofa::component::odesolver
+} // namespace sofa::component::odesolver::forward

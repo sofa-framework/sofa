@@ -19,12 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMiscSolver/DampVelocitySolver.h>
+#include <sofa/component/odesolver/forward/DampVelocitySolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::odesolver
+namespace sofa::component::odesolver::forward
 {
 
 using namespace sofa::defaulttype;
@@ -56,4 +56,4 @@ void DampVelocitySolver::solve(const core::ExecParams* params, SReal dt, sofa::c
     msg_info() <<"DampVelocitySolver, final v = "<< vel ;
 }
 
-} // namespace sofa::component::odesolver
+} // namespace sofa::component::odesolver::forward

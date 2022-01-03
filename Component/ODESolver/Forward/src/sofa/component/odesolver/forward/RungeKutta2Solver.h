@@ -20,15 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralExplicitOdeSolver/config.h>
+#include <sofa/component/odesolver/forward/config.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
 
-namespace sofa::component::odesolver
+namespace sofa::component::odesolver::forward
 {
 
 /** A popular time integration method, much more precise than the EulerSolver */
-class SOFA_SOFAGENERALEXPLICITODESOLVER_API RungeKutta2Solver : public sofa::core::behavior::OdeSolver
+class SOFA_COMPONENT_ODESOLVER_FORWARD_API RungeKutta2Solver : public sofa::core::behavior::OdeSolver
 {
 public:
     SOFA_CLASS(RungeKutta2Solver, sofa::core::behavior::OdeSolver);
@@ -66,4 +66,4 @@ public:
     }
 };
 
-} //namespace sofa::component::odesolver
+} // namespace sofa::component::odesolver::forward

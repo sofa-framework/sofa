@@ -19,7 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMiscSolver/NewmarkImplicitSolver.h>
+#include <sofa/component/odesolver/backward/NewmarkImplicitSolver.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MultiMatrix.h>
 #include <sofa/simulation/MechanicalVisitor.h>
@@ -33,7 +34,7 @@
 
 
 
-namespace sofa::component::odesolver
+namespace sofa::component::odesolver::backward
 {
 
 using core::VecId;
@@ -179,4 +180,4 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
 int NewmarkImplicitSolverClass = core::RegisterObject("Implicit time integrator using Newmark scheme")
         .add< NewmarkImplicitSolver >();
 
-} // namespace sofa::component::odesolver
+} // namespace sofa::component::odesolver::backward
