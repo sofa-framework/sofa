@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <QObject>
+#include <sofa/gui/qt/config.h>
 
 namespace sofa::gui::qt
 {
@@ -33,7 +34,7 @@ namespace sofa::gui::qt
 ///
 /// This code is grabbed from:
 /// https://stackoverflow.com/questions/5821802/qspinbox-inside-a-qscrollarea-how-to-prevent-spin-box-from-stealing-focus-when
-class QMouseWheelAdjustmentGuard : public QObject
+class SOFA_SOFAGUIQT_API QMouseWheelAdjustmentGuard : public QObject
 {
 public:
     explicit QMouseWheelAdjustmentGuard(QObject *parent);

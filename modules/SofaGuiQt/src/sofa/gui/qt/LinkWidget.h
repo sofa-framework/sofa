@@ -172,7 +172,7 @@ protected:
 
 
 /// Widget used to display the name of a Link
-class QDisplayLinkInfoWidget: public QWidget
+class SOFA_SOFAGUIQT_API QDisplayLinkInfoWidget: public QWidget
 {
     Q_OBJECT
 public:
