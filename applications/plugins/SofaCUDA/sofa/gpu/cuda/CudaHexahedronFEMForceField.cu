@@ -1,23 +1,20 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -28,7 +25,7 @@
 #include <cuda.h>
 #include <stdio.h>
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
+#if defined(__cplusplus)
 namespace sofa
 {
 namespace gpu
@@ -416,9 +413,7 @@ __global__ void HexahedronFEMForceFieldCuda3t_calcForce_kernel(int nbElem, const
     CudaVec3<real> IJ = CudaHexahedronFEMForceFieldInputTextures<real,TIn>::getX(e->ij[index1], x);
 
     CudaVec3<real> horizontal = IB-IA + IC-ID + IH-IG + II-IJ;
-    //horizontal = horizontal*(real)0.25;
     CudaVec3<real> vertical = ID-IA + IC-IB + IJ-IG + II-IH;
-    //vertical = vertical*(real)0.25;
 
     CudaVec3<real> dA, dB, dC, dD, dG, dH, dI, dJ;
     //real nor = norm(horizontal);
@@ -826,7 +821,6 @@ __global__ void HexahedronFEMForceFieldCuda3t_calcDForce_kernel(int nbElem, cons
   }
 
   int HALFBSIZE = BSIZE<<1;
-  //extern __shared__ real temp[];
   real* temp = SharedMemory<real>::get();
 
   int index13 = umul24(index1,13);
@@ -992,7 +986,6 @@ __global__ void HexahedronFEMForceFieldCuda3t_addForce4_kernel(int /*nbVertex*/,
 
     velems+=(index0*nb4ElemPerVertex)+index1;
 
-    //if (index0+index1 < (nbVertex<<2))
     for (int s = 0; s < nb4ElemPerVertex; s++)
     {
         int i = *velems -1;
@@ -1004,7 +997,6 @@ __global__ void HexahedronFEMForceFieldCuda3t_addForce4_kernel(int /*nbVertex*/,
         }
     }
 
-    //int iout = (index1>>2)*3 + (index1&3)*((BSIZE/4)*3);
     int iout = fastmul((index1>>2) + ((index1&3)*(BSIZE/4)),3);
     temp[iout  ] = force.x;
     temp[iout+1] = force.y;
@@ -1037,7 +1029,6 @@ __global__ void HexahedronFEMForceFieldCuda3t_addForce8_kernel(int /*nbVertex*/,
 
     velems+=(index0*nb8ElemPerVertex)+index1;
 
-    //if (index0+index1 < (nbVertex<<2))
     for (int s = 0; s < nb8ElemPerVertex; s++)
     {
         int i = *velems -1;
@@ -1049,7 +1040,6 @@ __global__ void HexahedronFEMForceFieldCuda3t_addForce8_kernel(int /*nbVertex*/,
         }
     }
 
-    //int iout = (index1>>2)*3 + (index1&7)*((BSIZE/8)*3);
     int iout = fastmul((index1>>3) + ((index1&3)*(BSIZE/8)),3);
     if (index1&4)
     {
@@ -1149,7 +1139,6 @@ __global__ void HexahedronFEMForceFieldCuda3t_getRotations4_kernel(int nbVertex9
 
     velems+=index0 * nb4ElemPerVertex+index1;
 
-    //if (index0+index1<nbVertex) {
     for (int s = 0;s < nb4ElemPerVertex; s++)
     {
         int i = *velems -1;
@@ -1213,7 +1202,6 @@ __global__ void HexahedronFEMForceFieldCuda3t_getRotations8_kernel(int nbVertex9
 
     velems+=index0 * nb8ElemPerVertex+index1;
 
-    //if (index0+index1<nbVertex) {
     for (int s = 0;s < nb8ElemPerVertex; s++)
     {
         int i = *velems -1;
@@ -1234,7 +1222,6 @@ __global__ void HexahedronFEMForceFieldCuda3t_getRotations8_kernel(int nbVertex9
         R.x.x = 1.0;R.y.y = 1.0;R.z.z = 1.0;
     }
 
-    //int iout = (index1>>2)*3 + (index1&3)*((BSIZE/4)*3);
     int iout = fastmul((index1>>3) + ((index1&3)*(BSIZE/8)),9);
     if (index1&4)
     {
@@ -1388,7 +1375,7 @@ void HexaahedronFEMForceFieldCuda3f_getRotations(int gatherpt,int gatherbs,int n
     HexahedronFEMForceFieldCuda3t_getRotations_launch<float>(gatherpt,gatherbs,nbVertex,nbElemPerVertex,velems,erotation,irotation,nrotation);
 }
 
-#if defined(__cplusplus) && CUDA_VERSION < 2000
+#if defined(__cplusplus)
 } // namespace cuda
 } // namespace gpu
 } // namespace sofa

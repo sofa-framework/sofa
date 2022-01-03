@@ -1,23 +1,20 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -196,10 +193,6 @@ void HexahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDer
               data.velems[ block * (data.nbElementPerVertex * data.GATHER_BSIZE) + num * data.GATHER_BSIZE + thread ] = 1 + i * e.size() + j;
           }
       }
-
-//      for (unsigned int j=0;j<e.size();j++)
-//          data.setV(e[j], nelems[e[j]]++, i*e.size()+j);
-
   }
 
   m->_elementStiffnesses.endEdit();
@@ -251,23 +244,6 @@ void HexahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDer
 
 } // addDForce
 
-
-//template<class TCoord, class TDeriv, class TReal>
-//void HexahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::getNodeRotations(Main* m, sofa::gpu::cuda::CudaRotationMatrix<TReal> * diag, int offset)
-//{
-//    Data& data = *m->data;
-//
-//    Kernels::getRotations(
-//        data.GATHER_PT,
-//        data.GATHER_BSIZE,
-//        data.nbVertex,
-//        data.nbElementPerVertex,
-//        data.velems.deviceRead(),
-//        data.erotation.deviceRead(),
-//        data.irotation.deviceRead(),
-//        diag->getVector().deviceWrite(offset*9));
-//
-//} // addDForce
 
 template<>
 void HexahedronFEMForceField< gpu::cuda::CudaVec3fTypes >::reinit()	{ data->reinit(this);}
