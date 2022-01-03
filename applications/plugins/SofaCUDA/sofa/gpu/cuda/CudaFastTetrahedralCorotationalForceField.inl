@@ -33,15 +33,16 @@ extern "C"
 void FastTetrahedralCorotationalForceFieldCuda3f_addForce(unsigned int size, void* f, const void* x, const void* v,
     unsigned int nbTetrahedra, void* tetrahedronInfo, const void* gpuTetra);
 
-void FastTetrahedralCorotationalForceFieldCuda3f_addDForce(unsigned int size, void* f, const void* dx, float kFactor,
-    const void* triangleState, const void* triangleInfo,
-    unsigned int nbTriangles,
-    const void* gpuTriangleInfo,
-    float gamma, float mu); //, const void* dfdx);
+void FastTetrahedralCorotationalForceFieldCuda3f_computeEdgeMatrices(unsigned int nbTetrahedra, const void* tetrahedronInf, void* edgeDfDx, const void* gpuTetra);
+
+void FastTetrahedralCorotationalForceFieldCuda3f_addDForce(unsigned int nbedges, void* df, const void* dx, float kFactor,
+    const void* edgeDfDx, const void* gpuEdges);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 void FastTetrahedralCorotationalForceFieldCuda3d_addForce(unsigned int size, void* f, const void* x, const void* v,
     unsigned int nbTetrahedra, void* tetrahedronInfo, const void* gpuTetra);
+
+void FastTetrahedralCorotationalForceFieldCuda3d_computeEdgeMatrices(unsigned int nbTetrahedra, const void* tetrahedronInf, void* edgeDfDx, const void* gpuTetra);
 
 void FastTetrahedralCorotationalForceFieldCuda3d_addDForce(unsigned int size, void* f, const void* dx, double kFactor,
     const void* triangleState, const void* triangleInfo,
@@ -68,7 +69,6 @@ void FastTetrahedralCorotationalForceField<gpu::cuda::CudaVec3fTypes>::addForce(
 
     sofa::Size nbTetrahedra = m_topology->getNbTetrahedra();
     VecTetrahedronRestInformation& tetrahedronInf = *tetrahedronInfo.beginEdit();
-    const core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = m_topology->getTetrahedra();
     const ExtraData::VecGPUTetrahedron& gpuTetra = m_data.gpuTetrahedra;
 
     f.resize(x.size());
@@ -90,22 +90,15 @@ void FastTetrahedralCorotationalForceField<gpu::cuda::CudaVec3fTypes>::addDForce
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
-
-    unsigned int j;
-    int i;
-    int nbEdges = m_topology->getNbEdges();
+    const auto kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
+    
+    const ExtraData::VecGPUTetrahedron& gpuTetra = m_data.gpuTetrahedra;
 
     if (updateMatrix == true)
     {
-        // the matrix must be stored in edges
-        helper::WriteOnlyAccessor< Data< VecTetrahedronRestInformation > > tetrahedronInf = tetrahedronInfo;
-        helper::WriteOnlyAccessor< Data< VecMat3x3 > > edgeDfDx = edgeInfo;
-
-        int nbTetrahedra = m_topology->getNbTetrahedra();
-        Mat3x3 tmp;
-
-        updateMatrix = false;
+        sofa::Size nbTetrahedra = m_topology->getNbTetrahedra();
+        const VecTetrahedronRestInformation& tetrahedronInf = tetrahedronInfo.getValue();
+        VecMat3x3& edgeDfDx = *edgeInfo.beginEdit();
 
         // reset all edge matrices
         for (unsigned int j = 0; j < edgeDfDx.size(); j++)
@@ -113,44 +106,20 @@ void FastTetrahedralCorotationalForceField<gpu::cuda::CudaVec3fTypes>::addDForce
             edgeDfDx[j].clear();
         }
 
-        for (i = 0; i < nbTetrahedra; i++)
-        {
-            TetrahedronRestInformation& tetinfo = tetrahedronInf[i];
-            const core::topology::BaseMeshTopology::EdgesInTetrahedron& tea = m_topology->getEdgesInTetrahedron(i);
+        FastTetrahedralCorotationalForceFieldCuda3f_computeEdgeMatrices(nbTetrahedra, tetrahedronInf.deviceRead(), edgeDfDx.deviceWrite(), gpuTetra.deviceRead());
 
-            for (j = 0; j < 6; ++j)
-            {
-                unsigned int edgeID = tea[j];
-
-                // test if the tetrahedron edge has the same orientation as the global edge
-                tmp = tetinfo.linearDfDx[j] * tetinfo.rotation;
-
-                if (tetinfo.edgeOrientation[j] == 1)
-                {
-                    // store the two edge matrices since the stiffness matrix is not symmetric
-                    edgeDfDx[edgeID] += tetinfo.rotation.transposed() * tmp;
-                }
-                else
-                {
-                    edgeDfDx[edgeID] += tmp.transposed() * tetinfo.rotation;
-                }
-            }
-        }
+        updateMatrix = false;
+        edgeInfo.endEdit();
     }
+
 
     const VecMat3x3& edgeDfDx = edgeInfo.getValue();
-    Coord deltax;
-
-    // use the already stored matrix
-    for (i = 0; i < nbEdges; i++)
-    {
-        const core::topology::BaseMeshTopology::Edge& edge = m_topology->getEdge(i);
-
-        deltax = dx[edge[1]] - dx[edge[0]];
-        df[edge[1]] += edgeDfDx[i] * (deltax * kFactor);
-        df[edge[0]] -= edgeDfDx[i].multTranspose(deltax * kFactor);
-    }
-
+    const ExtraData::VecGPUEdge& gpuEdges = m_data.gpuEdges;
+    sofa::Size nbedges = m_topology->getNbEdges();
+    FastTetrahedralCorotationalForceFieldCuda3f_addDForce(nbedges, df.deviceWrite(), dx.deviceRead(), kFactor,
+        edgeDfDx.deviceRead(),
+        gpuEdges.deviceRead());
+    
     d_df.endEdit();
 }
 
@@ -175,6 +144,9 @@ void FastTetrahedralCorotationalForceField<gpu::cuda::CudaVec3dTypes>::addForce(
         nbTetrahedra,
         tetrahedronInf.deviceWrite(),
         gpuTetra.deviceRead());
+
+
+    updateMatrix = true; // next time assemble the matrix
 
     tetrahedronInfo.endEdit();
     d_f.endEdit();
