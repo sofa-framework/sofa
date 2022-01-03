@@ -20,6 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/testing/NumericTest.h>
+
+#include <sofa/type/trait/Rebind.h>
 using sofa::testing::NumericTest ;
 
 using ::testing::Types;
@@ -28,6 +30,7 @@ using ::testing::Types;
 using sofa::type::vector ;
 
 #include <sofa/type/Vec.h>
+#include <type_traits>
 
 #include <sofa/core/objectmodel/Data.h>
 using sofa::core::objectmodel::Data ;
@@ -44,6 +47,8 @@ class vector_test : public NumericTest<>,
 {
 public:
     void checkVector(const std::vector<std::string>& params) ;
+
+    void checkRebind();
 };
 
 template<class T>
@@ -78,6 +83,16 @@ void vector_test<T>::checkVector(const std::vector<std::string>& params)
 
     // restore cerr
     std::cerr.rdbuf( old );
+}
+
+template <class T>
+void vector_test<T>::checkRebind()
+{
+    EXPECT_TRUE(sofa::type::HasRebindTypedef<vector<T> >::value);
+    using rebinded = typename sofa::type::Rebind<vector<T> >::template to<int>;
+    using vec_int = vector<int>;
+    const bool isRebindOK = std::is_same_v<rebinded, vec_int >;
+    EXPECT_TRUE(isRebindOK);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -132,7 +147,10 @@ INSTANTIATE_TEST_SUITE_P(checkReadWriteBehavior,
                         vector_test_int,
                         ::testing::ValuesIn(intvalues));
 
-
+TEST_F(vector_test_int, checkRebind)
+{
+    this->checkRebind();
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
@@ -179,6 +197,10 @@ INSTANTIATE_TEST_SUITE_P(checkReadWriteBehavior,
                         vector_test_unsigned_int,
                         ::testing::ValuesIn(uintvalues));
 
+TEST_F(vector_test_unsigned_int, checkRebind)
+{
+    this->checkRebind();
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ///

@@ -48,13 +48,10 @@ namespace cuda
 template<typename T>
 struct DataTypeInfoManager
 {
-    template<class T2> struct rebind
+    template<class T2> struct SOFA_ATTRIBUTE_DEPRECATED__REBIND() rebind
     {
-        typedef DataTypeInfoManager<T2> other;
+        using other = DataTypeInfoManager<T2>;
     };
-
-    template<class T2>
-    using rebind_to = DataTypeInfoManager<T2>;
 
     static const bool ZeroConstructor = sofa::defaulttype::DataTypeInfo<T>::ZeroConstructor;
     static const bool SimpleCopy = sofa::defaulttype::DataTypeInfo<T>::SimpleCopy;

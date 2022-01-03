@@ -33,6 +33,8 @@
 #include <map>
 #include <sofa/helper/map.h>
 
+#include <sofa/type/trait/Rebind.h>
+
 namespace sofa::component::forcefield
 {
 
@@ -224,10 +226,10 @@ public:
     };
 
     /// Topology Data
-    typedef typename VecCoord::template rebind_to<TriangleInfo> VecTriangleInfo;
-    typedef typename VecCoord::template rebind_to<TriangleState> VecTriangleState;
-    typedef typename VecCoord::template rebind_to<VertexInfo> VecVertexInfo;
-    typedef typename VecCoord::template rebind_to<EdgeInfo> VecEdgeInfo;
+    using VecTriangleInfo  = sofa::type::rebind_to<VecCoord, TriangleInfo>;
+    using VecTriangleState = sofa::type::rebind_to<VecCoord, TriangleState>;
+    using VecVertexInfo    = sofa::type::rebind_to<VecCoord, VertexInfo>;
+    using VecEdgeInfo      = sofa::type::rebind_to<VecCoord, EdgeInfo>;
     core::topology::TriangleData<VecTriangleInfo> d_triangleInfo; ///< Internal triangle data (persistent)
     core::topology::TriangleData<VecTriangleState> d_triangleState; ///< Internal triangle data (time-dependent)
     core::topology::PointData<VecVertexInfo> d_vertexInfo; ///< Internal point data
