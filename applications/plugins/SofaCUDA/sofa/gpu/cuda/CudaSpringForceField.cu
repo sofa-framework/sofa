@@ -794,15 +794,23 @@ __global__ void StiffSpringForceFieldCuda3t_addExternalForce_kernel(unsigned int
             u -= pos1;
             relativeVelocity -= vel1;
 
-            real inverseLength = 1/sqrt(dot(u,u));
-            real d = 1/inverseLength;
-            u *= inverseLength;
-            real elongation = d - spring2.initpos;
-            real elongationVelocity = dot(u,relativeVelocity);
-            real forceIntensity = spring.ks*elongation+spring2.kd*elongationVelocity;
-            force += u*forceIntensity;
+            real d = sqrt(dot(u, u));
+            if (d > 1.0e-4)
+            {
+                real inverseLength = 1 / d;
+                real d = 1 / inverseLength;
+                u *= inverseLength;
+                real elongation = d - spring2.initpos;
+                real elongationVelocity = dot(u, relativeVelocity);
+                real forceIntensity = spring.ks * elongation + spring2.kd * elongationVelocity;
+                force += u * forceIntensity;
 
-            *dfdx = forceIntensity*inverseLength;
+                *dfdx = forceIntensity * inverseLength;
+            }
+            else
+            {
+                *dfdx = 0.0;
+            }
         }
         dfdx+=BSIZE;
     }
@@ -954,17 +962,22 @@ __global__ void StiffSpringForceFieldCuda3t_addForce_kernel(unsigned int nbSprin
             u -= pos1;
             relativeVelocity -= vel1;
 
-            //real inverseLength = 1/sqrt(dot(u,u));
-            //real d = __fdividef(1,inverseLength);
-            real d = sqrt(dot(u,u));
-            real inverseLength = 1.0f/d;
-            u *= inverseLength;
-            real elongation = d - spring2.initpos;
-            real elongationVelocity = dot(u,relativeVelocity);
-            real forceIntensity = spring.ks*elongation+spring2.kd*elongationVelocity;
-            force += u*forceIntensity;
+            real d = sqrt(dot(u, u));
+            if (d > 1.0e-4)
+            {
+                real inverseLength = 1.0f / d;
+                u *= inverseLength;
+                real elongation = d - spring2.initpos;
+                real elongationVelocity = dot(u, relativeVelocity);
+                real forceIntensity = spring.ks * elongation + spring2.kd * elongationVelocity;
 
-            *dfdx = forceIntensity*inverseLength;
+                force += u * forceIntensity;
+                *dfdx = forceIntensity * inverseLength;
+            }
+            else
+            {
+                *dfdx = 0.0;
+            }
         }
         dfdx+=BSIZE;
     }
@@ -1038,10 +1051,15 @@ __global__ void StiffSpringForceFieldCuda3t_addExternalDForce_kernel(unsigned in
             real uxuy = u.x*u.y;
             real uxuz = u.x*u.z;
             real uyuz = u.y*u.z;
-            real fact = (spring.ks-tgt)/(uxux+uyuy+uzuz);
-            dforce.x += fact*(uxux*du.x+uxuy*du.y+uxuz*du.z)+tgt*du.x;
-            dforce.y += fact*(uxuy*du.x+uyuy*du.y+uyuz*du.z)+tgt*du.y;
-            dforce.z += fact*(uxuz*du.x+uyuz*du.y+uzuz*du.z)+tgt*du.z;
+
+            real uDot = uxux + uyuy + uzuz;
+            if (uDot > 1.0e-4)
+            {
+                real fact = (spring.ks - tgt) / (uDot);
+                dforce.x += fact * (uxux * du.x + uxuy * du.y + uxuz * du.z) + tgt * du.x;
+                dforce.y += fact * (uxuy * du.x + uyuy * du.y + uyuz * du.z) + tgt * du.y;
+                dforce.z += fact * (uxuz * du.x + uyuz * du.y + uzuz * du.z) + tgt * du.z;
+            }
         }
         dfdx+=BSIZE;
     }
@@ -1188,10 +1206,16 @@ __global__ void StiffSpringForceFieldCuda3t_addDForce_kernel(unsigned int nbSpri
             real uxuy = u.x*u.y;
             real uxuz = u.x*u.z;
             real uyuz = u.y*u.z;
-            real fact = (spring.ks-tgt)/(uxux+uyuy+uzuz);
-            dforce.x += fact*(uxux*du.x+uxuy*du.y+uxuz*du.z)+tgt*du.x;
-            dforce.y += fact*(uxuy*du.x+uyuy*du.y+uyuz*du.z)+tgt*du.y;
-            dforce.z += fact*(uxuz*du.x+uyuz*du.y+uzuz*du.z)+tgt*du.z;
+
+            real uDot = uxux + uyuy + uzuz;
+            if (uDot > 1.0e-4)
+            {
+                // dF = ((k_s-f/l).U.U^T + f/l.I).dX
+                real fact = (spring.ks - tgt) / uDot;
+                dforce.x += fact * (uxux * du.x + uxuy * du.y + uxuz * du.z) + tgt * du.x;
+                dforce.y += fact * (uxuy * du.x + uyuy * du.y + uyuz * du.z) + tgt * du.y;
+                dforce.z += fact * (uxuz * du.x + uyuz * du.y + uzuz * du.z) + tgt * du.z;
+            }
         }
     }
 
