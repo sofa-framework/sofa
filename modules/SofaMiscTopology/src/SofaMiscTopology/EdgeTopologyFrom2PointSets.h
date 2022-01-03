@@ -63,7 +63,7 @@ protected:
     EdgeTopologyFrom2PointSets();
     void init() override;
 
-    static void EdgeTopologyFrom2PointSets::addPointSet(
+    static void addPointSet(
         InitTypes::VecCoord& outPositions,
         const InitTypes::VecCoord& inPositions,
         const sofa::type::vector<sofa::Index>& indices,
