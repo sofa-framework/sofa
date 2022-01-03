@@ -36,25 +36,54 @@ public:
     struct GPUTetrahedron
     {
         int indices[4];
+        int edgeIndices[6];
+    };
+
+    struct GPUEdge
+    {
+        int indices[2];
     };
 
     typedef gpu::cuda::CudaVector<GPUTetrahedron> VecGPUTetrahedron;
+    typedef gpu::cuda::CudaVector<GPUEdge> VecGPUEdge;
 
     VecGPUTetrahedron gpuTetrahedra;
+    VecGPUEdge gpuEdges;
 
     void reinit(Main* m)
     {
 
-        const core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = m->l_topology.get()->getTetrahedra();
+        sofa::core::topology::BaseMeshTopology* _topology = m->l_topology.get();
+        const core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = _topology->getTetrahedra();
         helper::WriteAccessor< VecGPUTetrahedron > _gpuTetrahedra = this->gpuTetrahedra;
 
+        // Copy tetra info for FEM algo
         _gpuTetrahedra.resize(tetrahedra.size());
         for (unsigned int i=0;i< tetrahedra.size();++i)
         {
+            GPUTetrahedron& gpuTetra = _gpuTetrahedra[i];
+            // copy tetra indices
             for (unsigned int j = 0; j < 4; ++j)
             {
-                _gpuTetrahedra[i].indices[j] = tetrahedra[i][j];
+                gpuTetra.indices[j] = tetrahedra[i][j];
             }
+
+            // copy tetra edge indices
+            const core::topology::BaseMeshTopology::EdgesInTetrahedron& tea = _topology->getEdgesInTetrahedron(i);
+            for (unsigned int j = 0; j < 6; ++j)
+            {
+                gpuTetra.edgeIndices[j] = tea[j];
+            }
+        }
+
+        // copy edge topology
+        const core::topology::BaseMeshTopology::SeqEdges& edges = _topology->getEdges();
+        helper::WriteAccessor< VecGPUEdge > _gpuEdges = this->gpuEdges;
+        _gpuEdges.resize(edges.size());
+        for (unsigned int i = 0; i < edges.size(); ++i)
+        {
+            _gpuEdges[i].indices[0] = edges[i][0];
+            _gpuEdges[i].indices[1] = edges[i][1];
         }
     }
 

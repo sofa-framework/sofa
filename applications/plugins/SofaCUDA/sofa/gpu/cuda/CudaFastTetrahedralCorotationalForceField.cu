@@ -36,6 +36,12 @@ namespace cuda
 struct GPUTetrahedron
 {
     int indices[4];
+    int edgeIndices[6];
+};
+
+struct GPUEdge
+{
+    int indices[2];
 };
 
 template <typename real>
@@ -129,62 +135,74 @@ __global__ void FastTetrahedralCorotationalForceFieldCudaVec3_addForce_kernel(in
 }
 
 
-//template <typename real>
-//__global__ void FastTetrahedralCorotationalForceFieldCudaVec3_addDForce_kernel(int size, CudaVec3<real>* df, const CudaVec3<real>* dx, real kFactor,
-//    const TriangleState<real>* triState, const TriangleInfo<real>* triInfo,
-//    unsigned int nbTriangles,
-//    const GPUTriangleInfo* gpuTriangleInfo,
-//    real gamma, real mu
-//)
-//{
-//    using CudaVec3 = CudaVec3<real>;
-//    int index0 = (blockIdx.x*BSIZE);
-//    int index = threadIdx.x;
-//    int i = index0+index;
-//    
-//    GPUTriangleInfo t = gpuTriangleInfo[i];
-//    const TriangleInfo<real>& ti = triInfo[i];
-//    const TriangleState<real>& ts = triState[i];
-//
-//    CudaVec3 da  = dx[t.ia];
-//    CudaVec3 dab = dx[t.ib]-da;
-//    CudaVec3 dac = dx[t.ic]-da;
-//    real dbx = dot(ts.frame_x, dab);
-//    real dby = dot(ts.frame_y, dab);
-//    real dcx = dot(ts.frame_x, dac);
-//    real dcy = dot(ts.frame_y, dac);
-//
-//    CudaVec3 dstrain = CudaVec3::make (
-//        ti.cy  * dbx,                             // ( cy,   0,  0,  0) * (dbx, dby, dcx, dcy)
-//        ti.bx * dcy - ti.cx * dby,                // (  0, -cx,  0, bx) * (dbx, dby, dcx, dcy)
-//        ti.bx * dcx - ti.cx * dbx + ti.cy * dby); // (-cx,  cy, bx,  0) * (dbx, dby, dcx, dcy)
-//
-//    real gammaXY = (dstrain.x + dstrain.y) * gamma;
-//
-//    CudaVec3 dstress = CudaVec3::make (
-//        mu*dstrain.x + gammaXY,    // (gamma+mu, gamma   ,    0) * dstrain
-//        mu*dstrain.y + gammaXY,    // (gamma   , gamma+mu,    0) * dstrain
-//        (float)(0.5)*mu*dstrain.z); // (       0,        0, mu/2) * dstrain
-//
-//    dstress *= ti.ss_factor * kFactor;
-//    CudaVec3 dfb = ts.frame_x * (ti.cy * dstress.x - ti.cx * dstress.z)  // (cy,   0, -cx) * dstress
-//            + ts.frame_y * (ti.cy * dstress.z - ti.cx * dstress.y);   // ( 0, -cx,  cy) * dstress
-//    CudaVec3 dfc = ts.frame_x * (ti.bx * dstress.z)                      // ( 0,   0,  bx) * dstress
-//            + ts.frame_y * (ti.bx * dstress.y);                       // ( 0,  bx,   0) * dstress
-//    CudaVec3 dfa = -dfb-dfc;
-//
-//    atomicAdd(&(df[t.ia].x), -dfa.x);
-//    atomicAdd(&(df[t.ia].y), -dfa.y);
-//    atomicAdd(&(df[t.ia].z), -dfa.z);
-//
-//    atomicAdd(&(df[t.ib].x), -dfb.x);
-//    atomicAdd(&(df[t.ib].y), -dfb.y);
-//    atomicAdd(&(df[t.ib].z), -dfb.z);
-//    
-//    atomicAdd(&(df[t.ic].x), -dfc.x);
-//    atomicAdd(&(df[t.ic].y), -dfc.y);
-//    atomicAdd(&(df[t.ic].z), -dfc.z);
-//}
+template <typename real>
+__global__ void FastTetrahedralCorotationalForceFieldCudaVec3_computeEdgeMatrices_kernel(unsigned int nbTetrahedra,
+    const GPUTetrahedronRestInformation<real>* tetrahedronInfo, matrix3<real>* edgeDfDx, const GPUTetrahedron* gpuTetra)
+{
+    int tetraId = (blockIdx.x * BSIZE) + threadIdx.x;
+
+    GPUTetrahedron tetra = gpuTetra[tetraId];
+    const GPUTetrahedronRestInformation<real>& tetraRInfo = tetrahedronInfo[tetraId];
+
+    for (unsigned int i = 0; i < 6; ++i)
+    {
+        unsigned int edgeID = tetra.edgeIndices[i];
+
+        // test if the tetrahedron edge has the same orientation as the global edge
+        matrix3<real> tmp = tetraRInfo.linearDfDx[i] * tetraRInfo.rotation;
+        matrix3<real> edgeMatrix;
+        if (tetraRInfo.edgeOrientation[i] == 1)
+        {
+            // store the two edge matrices since the stiffness matrix is not symmetric
+            matrix3<real> rot = tetraRInfo.rotation;
+            edgeMatrix = rot.transpose(rot) * tmp;
+        }
+        else
+        {
+            edgeMatrix = tmp.transpose(tmp) * tetraRInfo.rotation;
+        }
+
+        matrix3<real>& eDfDx = edgeDfDx[edgeID];
+        
+        atomicAdd(&eDfDx.x.x, edgeMatrix.x.x);
+        atomicAdd(&eDfDx.x.y, edgeMatrix.x.y);
+        atomicAdd(&eDfDx.x.z, edgeMatrix.x.z);
+
+        atomicAdd(&eDfDx.y.x, edgeMatrix.y.x);
+        atomicAdd(&eDfDx.y.y, edgeMatrix.y.y);
+        atomicAdd(&eDfDx.y.z, edgeMatrix.y.z);
+
+        atomicAdd(&eDfDx.z.x, edgeMatrix.z.x);
+        atomicAdd(&eDfDx.z.y, edgeMatrix.z.y);
+        atomicAdd(&eDfDx.z.z, edgeMatrix.z.z);
+    }
+}
+
+template <typename real>
+__global__ void FastTetrahedralCorotationalForceFieldCudaVec3_addDForce_kernel(unsigned int nbedges, CudaVec3<real>* df, const CudaVec3<real>* dx, real kFactor,
+    const matrix3<real>* edgeDfDx, const GPUEdge* gpuEdges)
+{
+    int edgeId = (blockIdx.x * BSIZE) + threadIdx.x;
+    GPUEdge edge = gpuEdges[edgeId];
+    matrix3<real> eDfDx = edgeDfDx[edgeId];
+
+    CudaVec3<real> deltax = dx[edge.indices[1]] - dx[edge.indices[0]];
+    deltax *= kFactor;
+
+    // use the already stored matrix
+    matrix3<real> eDfDxT = eDfDx.transpose(eDfDx);
+    CudaVec3<real> df0 = eDfDxT * deltax;
+
+    CudaVec3<real> df1 = eDfDx * deltax;
+
+    atomicAdd(&(df[edge.indices[0]].x), -df0.x);
+    atomicAdd(&(df[edge.indices[0]].y), -df0.y);
+    atomicAdd(&(df[edge.indices[0]].z), -df0.z);
+
+    atomicAdd(&(df[edge.indices[1]].x), df1.x);
+    atomicAdd(&(df[edge.indices[1]].y), df1.y);
+    atomicAdd(&(df[edge.indices[1]].z), df1.z);
+}
 
 
 //////////////////////
@@ -200,26 +218,33 @@ void FastTetrahedralCorotationalForceFieldCuda3f_addForce(unsigned int size, voi
     dim3 threads(BSIZE, 1);
     dim3 grid((nbTetrahedra + BSIZE - 1) / BSIZE, 1);
     {
-    FastTetrahedralCorotationalForceFieldCudaVec3_addForce_kernel<float> <<< grid, threads >>> (size, (CudaVec3f*)f, (const CudaVec3f*)x, (const CudaVec3f*)v,
-        nbTetrahedra, (GPUTetrahedronRestInformation<float>*)tetrahedronInfo, (const GPUTetrahedron*)gpuTetra);
-    mycudaDebugError("FastTetrahedralCorotationalForceFieldCuda3f_addForce_kernel"); }
+        FastTetrahedralCorotationalForceFieldCudaVec3_addForce_kernel<float> <<< grid, threads >>> (size, (CudaVec3f*)f, (const CudaVec3f*)x, (const CudaVec3f*)v,
+            nbTetrahedra, (GPUTetrahedronRestInformation<float>*)tetrahedronInfo, (const GPUTetrahedron*)gpuTetra);
+        mycudaDebugError("FastTetrahedralCorotationalForceFieldCuda3f_addForce_kernel"); 
+    }
 }
 
-void FastTetrahedralCorotationalForceFieldCuda3f_addDForce(unsigned int size, void* df, const void* dx, float kFactor,
-    const void* triangleState, const void* triangleInfo,
-    unsigned int nbTriangles,
-    const void* gpuTriangleInfo,
-    float gamma, float mu) //, const void* dfdx)
+void FastTetrahedralCorotationalForceFieldCuda3f_computeEdgeMatrices(unsigned int nbTetrahedra, const void* tetrahedronInfo, void* edgeDfDx, const void* gpuTetra)
 {
-    //dim3 threads(BSIZE, 1);
-    //dim3 grid((nbTriangles + BSIZE - 1) / BSIZE, 1);
-    //{FastTetrahedralCorotationalForceFieldCudaVec3_addDForce_kernel<float> <<< grid, threads >>> (size, (CudaVec3f*)df, (const CudaVec3f*)dx, kFactor,
-    //    (const TriangleState<float>*)triangleState,
-    //    (const TriangleInfo<float>*)triangleInfo,
-    //    nbTriangles,
-    //    (const GPUTriangleInfo*)gpuTriangleInfo,
-    //    gamma, mu
-    //    ); mycudaDebugError("FastTetrahedralCorotationalForceFieldCuda3f_addDForce_kernel"); }
+    dim3 threads(BSIZE, 1);
+    dim3 grid((nbTetrahedra + BSIZE - 1) / BSIZE, 1);
+    {        
+        FastTetrahedralCorotationalForceFieldCudaVec3_computeEdgeMatrices_kernel<float> <<< grid, threads >>> (nbTetrahedra,
+            (const GPUTetrahedronRestInformation<float>*)tetrahedronInfo, (matrix3<float>*)edgeDfDx,(const GPUTetrahedron*)gpuTetra);
+        mycudaDebugError("FastTetrahedralCorotationalForceFieldCuda3f_addForce_kernel"); 
+    }
+}
+
+void FastTetrahedralCorotationalForceFieldCuda3f_addDForce(unsigned int nbedges, void* df, const void* dx, float kFactor,
+    const void* edgeDfDx, const void* gpuEdges)
+{
+    dim3 threads(BSIZE, 1);
+    dim3 grid((nbedges + BSIZE - 1) / BSIZE, 1);
+    {
+        FastTetrahedralCorotationalForceFieldCudaVec3_addDForce_kernel<float> <<< grid, threads >>> (nbedges, (CudaVec3f*)df, (const CudaVec3f*)dx, kFactor,
+            (const matrix3<float>*)edgeDfDx, (const GPUEdge*)gpuEdges);
+        mycudaDebugError("FastTetrahedralCorotationalForceFieldCuda3f_addDForce_kernel"); 
+    }
 }
 
 
@@ -227,18 +252,12 @@ void FastTetrahedralCorotationalForceFieldCuda3f_addDForce(unsigned int size, vo
 void FastTetrahedralCorotationalForceFieldCuda3d_addForce(unsigned int size, void* f, const void* x, const void* v,
     unsigned int nbTetrahedra, void* tetrahedronInfo, const void* gpuTetra)
 {
-
     dim3 threads(BSIZE, 1);
-    dim3 grid((nbTriangles + BSIZE - 1) / BSIZE, 1);
+    dim3 grid((nbTetrahedra + BSIZE - 1) / BSIZE, 1);
     {
-
-        FastTetrahedralCorotationalForceFieldCudaVec3_addForce_kernel<double> <<< grid, threads >>> (size, (CudaVec3d*)f, (const CudaVec3d*)x, (const CudaVec3d*)v,
-            (TriangleState<double>*)triangleState,
-            (const TriangleInfo<double>*)triangleInfo,
-            nbTriangles,
-            (const GPUTriangleInfo*)gpuTriangleInfo,
-            gamma, mu
-            ); mycudaDebugError("FastTetrahedralCorotationalForceFieldCuda3f_addForce_kernel"); }
+        FastTetrahedralCorotationalForceFieldCudaVec3_addForce_kernel<double> << < grid, threads >> > (size, (CudaVec3f*)f, (const CudaVec3f*)x, (const CudaVec3f*)v,
+            nbTetrahedra, (GPUTetrahedronRestInformation<double>*)tetrahedronInfo, (const GPUTetrahedron*)gpuTetra);
+        mycudaDebugError("FastTetrahedralCorotationalForceFieldCuda3d_addForce_kernel"); }
 }
 
 void FastTetrahedralCorotationalForceFieldCuda3d_addDForce(unsigned int size, void* df, const void* dx, float kFactor,
