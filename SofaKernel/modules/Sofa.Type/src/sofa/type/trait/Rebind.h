@@ -24,19 +24,18 @@
 namespace sofa::type
 {
     // primary template handles types that have no nested ::rebind_to member:
-    template< class, class = void >
+    template< class T, class OtherType, class = void >
     struct HasRebindTypedef : std::false_type { };
 
     // specialization recognizes types that do have a nested ::rebind_to member:
-    template< class T >
-    struct HasRebindTypedef<T, std::void_t<typename T::rebind_to> > : std::true_type { };
-
+    template< class T, class OtherType >
+    struct HasRebindTypedef<T, OtherType, std::void_t<typename T::template rebind_to<OtherType> > > : std::true_type { };
 
     /**
      * Depending on the type _T, has a public member typedef to. Otherwise, there is no member typedef (this is the
      * case of this implementation).
      */
-    template<class _T, class Enable = void>
+    template<class _T, class _OtherType, class Enable = void>
     struct Rebind {};
 
     /**
@@ -45,11 +44,10 @@ namespace sofa::type
      *
      * \tparam _T Type that does have a nested ::rebind_to member
      */
-    template<class _T>
-    struct Rebind<_T, std::enable_if_t<HasRebindTypedef<_T>::value > >
+    template<class _T, class _OtherType>
+    struct Rebind<_T, _OtherType, std::enable_if_t<HasRebindTypedef<_T, _OtherType>::value > >
     {
-        template<class _Other>
-        using to = typename _T::template rebind_to<_Other>;
+        using to = typename _T::template rebind_to<_OtherType>;
     };
 
     template <class...>
@@ -61,8 +59,8 @@ namespace sofa::type
      * parameters is probably different from 1), a compilation error occurs.
      * \tparam _T Type that does NOT have a nested ::rebind_to member
      */
-    template<class _T>
-    struct Rebind<_T, std::enable_if_t<!HasRebindTypedef<_T>::value > >
+    template<class _T, class _OtherType>
+    struct Rebind<_T, _OtherType, std::enable_if_t<!HasRebindTypedef<_T, _OtherType>::value > >
     {
         static_assert(deny<_T>, "_T must match _T<A>");
     };
@@ -72,11 +70,10 @@ namespace sofa::type
      * a public member typedef \ref to.
      * \tparam _T Type that does NOT have a nested ::rebind_to member
      */
-    template<template<class> class _T, class A>
-    struct Rebind<_T<A>, std::enable_if_t<!HasRebindTypedef<_T<A> >::value > >
+    template<template<class> class _T, class A, class _OtherType>
+    struct Rebind<_T<A>, _OtherType, std::enable_if_t<!HasRebindTypedef<_T<A>, _OtherType >::value > >
     {
-        template<class _Other>
-        using to = _T<_Other>;
+        using to = _T<_OtherType>;
     };
 
     /**
@@ -91,5 +88,5 @@ namespace sofa::type
      * sofa::type::fixed_array. A compilation error would occur.
      */
     template <class T, class B>
-    using rebind_to = typename Rebind<T>::template to<B>;
+    using rebind_to = typename Rebind<T, B>::to;
 }

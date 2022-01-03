@@ -88,10 +88,11 @@ void vector_test<T>::checkVector(const std::vector<std::string>& params)
 template <class T>
 void vector_test<T>::checkRebind()
 {
-    EXPECT_TRUE(sofa::type::HasRebindTypedef<vector<T> >::value);
-    using rebinded = typename sofa::type::Rebind<vector<T> >::template to<int>;
+    constexpr bool hasRebind = sofa::type::HasRebindTypedef<vector<T>, int>::value;
+    EXPECT_TRUE(hasRebind);
+    using rebinded = typename sofa::type::Rebind<vector<T>, int >::to;
     using vec_int = vector<int>;
-    const bool isRebindOK = std::is_same_v<rebinded, vec_int >;
+    constexpr bool isRebindOK = std::is_same_v<rebinded, vec_int >;
     EXPECT_TRUE(isRebindOK);
 }
 
