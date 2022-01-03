@@ -10,11 +10,13 @@ if(NOT TARGET @PROJECT_NAME@)
 endif()
 
 # Create alias to support compatibility, starting from v21.06
-# This alias will be deleted in v21.12
-get_target_property(Sofa.SimulationCore_IMPORTED Sofa.SimulationCore IMPORTED)
-if(Sofa.SimulationCore_IMPORTED)
-    set_target_properties(Sofa.SimulationCore PROPERTIES IMPORTED_GLOBAL TRUE)
+# This alias will be deleted in v22.06
+if(NOT TARGET SofaSimulationCore) # test if alias was not already created
+    get_target_property(Sofa.SimulationCore_IMPORTED Sofa.SimulationCore IMPORTED)
+    if(Sofa.SimulationCore_IMPORTED)
+        set_target_properties(Sofa.SimulationCore PROPERTIES IMPORTED_GLOBAL TRUE)
+    endif()
+    add_library(SofaSimulationCore ALIAS Sofa.SimulationCore)
 endif()
-add_library(SofaSimulationCore ALIAS Sofa.SimulationCore)
 
 check_required_components(@PROJECT_NAME@)
