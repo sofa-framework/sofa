@@ -50,6 +50,9 @@ public :
         typedef CudaMemoryManager<T2> other;
     };
 
+    template<class T2>
+    using rebind_to = CudaMemoryManager<T2>;
+
     typedef T* host_pointer;
     typedef /*mutable*/ void* device_pointer;
 #if SOFACUDA_HAVE_SOFA_GL == 1

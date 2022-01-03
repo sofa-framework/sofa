@@ -49,7 +49,7 @@ public:
     typedef typename DataTypes::Coord    Coord   ;
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
-    typedef typename VecCoord::template rebind<VecCoord>::other VecType;
+    typedef typename VecCoord::template rebind_to<VecCoord> VecType;
 
 
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
@@ -95,7 +95,7 @@ protected:
             return in;
         }
     };
-    typedef typename VecCoord::template rebind<EdgeRestInformation>::other edgeRestInfoVector;
+    typedef typename VecCoord::template rebind_to<EdgeRestInformation> edgeRestInfoVector;
 
     VecCoord  _initialPoints;///< the intial positions of the points
 

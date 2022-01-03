@@ -224,10 +224,10 @@ public:
     };
 
     /// Topology Data
-    typedef typename VecCoord::template rebind<TriangleInfo>::other VecTriangleInfo;
-    typedef typename VecCoord::template rebind<TriangleState>::other VecTriangleState;
-    typedef typename VecCoord::template rebind<VertexInfo>::other VecVertexInfo;
-    typedef typename VecCoord::template rebind<EdgeInfo>::other VecEdgeInfo;
+    typedef typename VecCoord::template rebind_to<TriangleInfo> VecTriangleInfo;
+    typedef typename VecCoord::template rebind_to<TriangleState> VecTriangleState;
+    typedef typename VecCoord::template rebind_to<VertexInfo> VecVertexInfo;
+    typedef typename VecCoord::template rebind_to<EdgeInfo> VecEdgeInfo;
     core::topology::TriangleData<VecTriangleInfo> d_triangleInfo; ///< Internal triangle data (persistent)
     core::topology::TriangleData<VecTriangleState> d_triangleState; ///< Internal triangle data (time-dependent)
     core::topology::PointData<VecVertexInfo> d_vertexInfo; ///< Internal point data

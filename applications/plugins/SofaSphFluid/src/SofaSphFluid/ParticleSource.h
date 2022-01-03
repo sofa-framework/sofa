@@ -57,7 +57,7 @@ public:
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     //int lastparticle;
-    typedef typename VecCoord::template rebind<Index>::other VecIndex;
+    typedef typename VecCoord::template rebind_to<Index> VecIndex;
     typedef sofa::core::topology::TopologySubsetIndices SetIndex;
     typedef typename SetIndex::container_type SetIndexArray;
 

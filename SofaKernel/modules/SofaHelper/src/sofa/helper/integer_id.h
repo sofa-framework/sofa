@@ -239,6 +239,9 @@ public:
         typedef vector_id< T2, TIndex, CheckIndices, MM2 > other;
     };
 
+    template<class T2>
+    using rebind_to = vector_id< T2, TIndex, CheckIndices, typename MemoryManager::template rebind_to<T2> >;
+
     /// Basic constructor
     vector_id() : Inherit() {}
     /// Constructor

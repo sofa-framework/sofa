@@ -80,7 +80,7 @@ public:
     typedef sofa::linearalgebra::CompressedRowSparseMatrix<MBloc> MatrixType;
 
     /// Correspondance array
-    typedef typename InVecCoord::template rebind<Index>::other IndexArray;
+    typedef typename InVecCoord::template rebind_to<Index> IndexArray;
     typedef sofa::core::topology::PointSubsetData< IndexArray > SetIndex;
     SetIndex f_indices;
 

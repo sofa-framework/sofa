@@ -68,6 +68,9 @@ public:
         typedef vector< T2,CPUMemoryManager<T2> > other;
     };
 
+    template<class T2>
+    using rebind_to = vector< T2, CPUMemoryManager<T2> >;
+
     /// Basic constructor
     vector() : std::vector<T,Alloc>() {}
     /// Constructor

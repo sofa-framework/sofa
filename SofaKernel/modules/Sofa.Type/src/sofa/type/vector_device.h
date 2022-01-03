@@ -65,9 +65,15 @@ public:
     template<class T2> struct rebind
     {
         typedef vector_device<T2, 
-            typename memory_manager::template rebind<T2>::other, 
-            typename datatypeinfo_manager::template rebind<T2>::other > other;
+            typename memory_manager::template rebind<T2>::rebind_to,
+            typename datatypeinfo_manager::template rebind<T2>::rebind_to > other;
     };
+
+    template<class T2>
+    using rebind_to = vector_device<T2,
+                                typename memory_manager::template rebind_to<T2>,
+                                typename datatypeinfo_manager::template rebind_to<T2>
+    >;
 
 protected:
     Size     vectorSize;     ///< Current size of the vector

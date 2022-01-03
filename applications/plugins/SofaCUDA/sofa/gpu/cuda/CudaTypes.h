@@ -53,6 +53,9 @@ struct DataTypeInfoManager
         typedef DataTypeInfoManager<T2> other;
     };
 
+    template<class T2>
+    using rebind_to = DataTypeInfoManager<T2>;
+
     static const bool ZeroConstructor = sofa::defaulttype::DataTypeInfo<T>::ZeroConstructor;
     static const bool SimpleCopy = sofa::defaulttype::DataTypeInfo<T>::SimpleCopy;
 };

@@ -120,7 +120,7 @@ public :
       TetrahedronRestInformation() : restVolume(0), volScale(0), fiberDirection(), strainEnergy(0) {}
 
     };
-    typedef typename VecCoord::template rebind<TetrahedronRestInformation>::other tetrahedronRestInfoVector;
+    typedef typename VecCoord::template rebind_to<TetrahedronRestInformation> tetrahedronRestInfoVector;
     
 	
    /// data structure stored for each edge
@@ -138,7 +138,7 @@ public :
 
      EdgeInformation(): DfDx() { vertices[0]=0.f; vertices[1]=0.f; }
    };
-   typedef typename VecCoord::template rebind<EdgeInformation>::other edgeInformationVector;
+   typedef typename VecCoord::template rebind_to<EdgeInformation> edgeInformationVector;
 
  protected :
    core::topology::BaseMeshTopology* m_topology;

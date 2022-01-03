@@ -93,6 +93,8 @@ public:
         typedef CPUMemoryManager<T2> other;
     };
 
+    template<class T2>
+    using rebind_to = CPUMemoryManager<T2>;
 };
 
 }
