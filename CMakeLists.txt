@@ -275,7 +275,15 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
     include( "custom.cmake" )
 endif()
 
-# Regroup all test-related projects into an IDE folder
+## IDE directories
+# Sofa.Component
+sofa_get_all_targets(all_targets)
+foreach(target ${all_targets})
+    if(target MATCHES "Sofa.Component.*" AND NOT target MATCHES ".*_relocatable_install")
+        set_target_properties(${target} PROPERTIES FOLDER Sofa.Component) # IDE folder
+    endif()
+endforeach()
+# Testing
 if(TARGET Sofa.Testing) # No need to search for test targets if tests are not enabled
     sofa_get_all_targets(all_targets)
     foreach(target ${all_targets})
@@ -284,8 +292,9 @@ if(TARGET Sofa.Testing) # No need to search for test targets if tests are not en
         endif()
     endforeach()
 endif()
+##
 
-# Install configuration
+## Install configuration
 #install(FILES "${CMAKE_BINARY_DIR}/CMakeCache.txt" DESTINATION . COMPONENT headers)
 install(FILES "${CMAKE_SOURCE_DIR}/README.md" DESTINATION . COMPONENT applications)
 install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION . COMPONENT applications)
