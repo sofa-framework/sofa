@@ -389,7 +389,10 @@ void ObjectFactory::getEntriesFromTarget(std::vector<ClassEntry::SPtr>& result, 
             {
                 Creator::SPtr c = itc->second;
                 if (target == c->getTarget())
+                {
                     inTarget = true;
+                    break;
+                }
             }
             if (inTarget)
                 result.push_back(entry);
