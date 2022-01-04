@@ -21,46 +21,39 @@
 ******************************************************************************/
 #include <sofa/testing/config.h>
 
-#include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/objectmodel/vectorData.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest ;
 
-
 namespace sofa {
 
 using namespace core::objectmodel;
 
-class Data_test : public BaseTest
+struct DataFileNameVector_test: public ::testing::Test
 {
-public:
-    Data<int> dataInt;
-    Data<float> dataFloat;
-    Data<bool> dataBool;
-    Data<sofa::type::Vec3> dataVec3;
-    Data<sofa::type::vector<sofa::type::Vec3>> dataVectorVec3;
-    Data<sofa::type::vector<sofa::type::RGBAColor>> dataVectorColor;
+    DataFileNameVector dataFileNameVector;
+
+    DataFileNameVector_test()
+        : dataFileNameVector()
+    { }
+
+    void SetUp() override
+    {}
+
 };
 
-TEST_F(Data_test, getValueTypeString)
+TEST_F(DataFileNameVector_test , setValueAsString_spaces )
 {
-    EXPECT_EQ(dataInt.getValueTypeString(), "i");
-    EXPECT_EQ(dataFloat.getValueTypeString(), "f");
-    EXPECT_EQ(dataBool.getValueTypeString(), "bool");
-    EXPECT_EQ(dataVec3.getValueTypeString(), "Vec3d");
-    EXPECT_EQ(dataVectorVec3.getValueTypeString(), "vector<Vec3d>");
-    EXPECT_EQ(dataVectorColor.getValueTypeString(), "vector<RGBAColor>");
+    dataFileNameVector.setValueAsString( "['"+std::string(SOFA_TESTING_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(SOFA_TESTING_RESOURCES_DIR) + "/file with spaces.txt' ]" );
+    ASSERT_EQ( dataFileNameVector.getValue().size(), 2u );
 }
 
-TEST_F(Data_test, getNameWithValueTypeInfo)
+TEST_F(DataFileNameVector_test , read_spaces )
 {
-    EXPECT_EQ(dataInt.getValueTypeInfo()->name(), "i");
-    EXPECT_EQ(dataFloat.getValueTypeInfo()->name(), "f");
-    EXPECT_EQ(dataBool.getValueTypeInfo()->name(), "bool");
-    EXPECT_EQ(dataVec3.getValueTypeInfo()->name(), "Vec3d");
-    EXPECT_EQ(dataVectorVec3.getValueTypeInfo()->name(), "vector<Vec3d>");
-    EXPECT_EQ(dataVectorColor.getValueTypeInfo()->name(), "vector<RGBAColor>");
+    dataFileNameVector.read( "['" + std::string(SOFA_TESTING_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(SOFA_TESTING_RESOURCES_DIR) + "/file with spaces.txt' ]" );
+    ASSERT_EQ( dataFileNameVector.getValue().size(), 2u );
 }
-}// namespace sofa
+
+
+}

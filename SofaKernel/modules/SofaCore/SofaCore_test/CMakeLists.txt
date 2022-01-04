@@ -17,6 +17,8 @@ set(SOURCE_FILES
     objectmodel/DDGNode_test.cpp
     objectmodel/MultiLink_test.cpp
     objectmodel/SingleLink_test.cpp
+    objectmodel/VectorData_test.cpp
+    objectmodel/DataFileNameVector_test.cpp
     DataEngine_test.cpp
     TrackedData_test.cpp
     PathResolver_test.cpp
