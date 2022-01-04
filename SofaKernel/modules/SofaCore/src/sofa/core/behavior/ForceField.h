@@ -24,7 +24,7 @@
 #include <sofa/core/config.h>
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/core/behavior/SingleStateAccessor.h>
 
 namespace sofa::core::behavior
@@ -146,7 +146,7 @@ public:
     /// field must start adding its contribution.
     /// @param kFact stiffness factor that needs to be multiplied to each matrix entry.
     /// @param offset Starting index of the submatrix to fill in the global matrix.
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset);
+    virtual void addKToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal kFact, unsigned int &offset);
 
     void addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
@@ -158,7 +158,7 @@ public:
     \param scale weight applied to the matrix, typically ±params->kfactor() for a stiffness matrix
     */
     template<class IndexArray, class ElementMat>
-    void addToMatrix(sofa::defaulttype::BaseMatrix* bm, unsigned offset, const IndexArray& nodeIndex, const ElementMat& em, SReal scale )
+    void addToMatrix(sofa::linearalgebra::BaseMatrix* bm, unsigned offset, const IndexArray& nodeIndex, const ElementMat& em, SReal scale )
     {
         constexpr auto S = DataTypes::deriv_total_size; // size of node blocks
         for (unsigned n1=0; n1<nodeIndex.size(); n1++)
@@ -181,7 +181,7 @@ public:
         }
     }
 
-    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal bFact, unsigned int &offset);
+    virtual void addBToMatrix(sofa::linearalgebra::BaseMatrix * matrix, SReal bFact, unsigned int &offset);
     /// @}
 
     /// Pre-construction check method called by ObjectFactory.
@@ -189,9 +189,26 @@ public:
     template<class T>
     static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr) {
-            arg->logError(std::string("No mechanical state with the datatype '") + DataTypes::Name() + "' found in the context node.");
-            return false;
+        const std::string attributeName {"mstate"};
+        std::string mstateLink = arg->getAttribute(attributeName,"");
+        if (mstateLink.empty())
+        {
+            if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == nullptr)
+            {
+                arg->logError("Since the attribute '" + attributeName + "' has not been specified, a mechanical state "
+                    "with the datatype '" + DataTypes::Name() + "' has been searched in the current context, but not found.");
+                return false;
+            }
+        }
+        else
+        {
+            MechanicalState<DataTypes>* mstate = nullptr;
+            context->findLinkDest(mstate, mstateLink, nullptr);
+            if (!mstate)
+            {
+                arg->logError("Data attribute '" + attributeName + "' does not point to a valid mechanical state of datatype '" + std::string(DataTypes::Name()) + "'.");
+                return false;
+            }
         }
         return BaseObject::canCreate(obj, context, arg);
     }

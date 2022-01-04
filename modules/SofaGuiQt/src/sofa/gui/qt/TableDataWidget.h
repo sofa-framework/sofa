@@ -22,7 +22,7 @@
 #pragma once
 #include "SimpleDataWidget.h"
 #include "StructDataWidget.h"
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 
 #include "QModelViewTableDataContainer.h"
 

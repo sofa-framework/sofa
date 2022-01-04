@@ -120,19 +120,19 @@ bool BaseMapping::isMechanical() const
 /// @TODO Note that if the mapping provides this matrix, then a default implementation
 /// of all other related methods could be provided, or optionally used to verify the
 /// provided implementations for debugging.
-const sofa::defaulttype::BaseMatrix* BaseMapping::getJ(const MechanicalParams* /*mparams*/)
+const sofa::linearalgebra::BaseMatrix* BaseMapping::getJ(const MechanicalParams* /*mparams*/)
 {
     dmsg_error() << "Calling a virtual method not implemented." ;
     return getJ();
 }
 
-const sofa::defaulttype::BaseMatrix* BaseMapping::getJ()
+const sofa::linearalgebra::BaseMatrix* BaseMapping::getJ()
 {
     dmsg_error() << "Calling a virtual method not implemented." ;
     return nullptr;
 }
 
-sofa::defaulttype::BaseMatrix* BaseMapping::createMappedMatrix(const behavior::BaseMechanicalState* /*state1*/, const behavior::BaseMechanicalState* /*state2*/, func_createMappedMatrix)
+sofa::linearalgebra::BaseMatrix* BaseMapping::createMappedMatrix(const behavior::BaseMechanicalState* /*state1*/, const behavior::BaseMechanicalState* /*state2*/, func_createMappedMatrix)
 {
     dmsg_error() << "Calling a virtual method not implemented." ;
     return nullptr;

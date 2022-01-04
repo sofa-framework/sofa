@@ -15,7 +15,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-    <DefaultContactManager name="Response" response="default" />
+    <DefaultContactManager name="Response" response="PenalityContactForceField" />
     <DefaultCollisionGroupManager name="Group" />
     <Node name="ChainRigid">
         <Node name="TorusFixed">

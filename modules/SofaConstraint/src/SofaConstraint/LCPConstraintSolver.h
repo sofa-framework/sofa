@@ -29,8 +29,8 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/fwd.h>
 
-#include <SofaBaseLinearSolver/FullMatrix.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <sofa/linearalgebra/FullMatrix.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
 
 #include <sofa/helper/set.h>
 #include <sofa/helper/map.h>
@@ -171,14 +171,14 @@ private:
     void build_LCP();
     LCPConstraintProblem lcp1, lcp2, lcp3; // Triple buffer for LCP.
     LCPConstraintProblem *lcp, *last_lcp; /// use of last_lcp allows several LCPForceFeedback to be used in the same scene
-    sofa::component::linearsolver::LPtrFullMatrix<double>  *_W;
+    sofa::linearalgebra::LPtrFullMatrix<double>  *_W;
 
     /// multi-grid approach ///
     void MultigridConstraintsMerge();
     void MultigridConstraintsMerge_Compliance();
     void MultigridConstraintsMerge_Spatial();
     void build_Coarse_Compliance(std::vector<int> &/*constraint_merge*/, int /*sizeCoarseSystem*/);
-    sofa::component::linearsolver::LPtrFullMatrix<double>  _Wcoarse;
+    sofa::linearalgebra::LPtrFullMatrix<double>  _Wcoarse;
 
     std::vector< std::vector< int > > hierarchy_contact_group;
     std::vector< std::vector< int > > hierarchy_constraint_group;
@@ -188,7 +188,7 @@ private:
 
     /// common built-unbuilt
     sofa::core::objectmodel::BaseContext *context;
-    sofa::component::linearsolver::FullVector<double> *_dFree, *_result;
+    sofa::linearalgebra::FullVector<double> *_dFree, *_result;
     ///
     sofa::helper::system::thread::CTime timer;
     sofa::helper::system::thread::CTime timerTotal;
@@ -204,7 +204,7 @@ private:
     int nlcp_gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = nullptr);
     int gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = nullptr);
 
-    sofa::component::linearsolver::SparseMatrix<double> *_Wdiag;
+    sofa::linearalgebra::SparseMatrix<double> *_Wdiag;
     std::vector<core::behavior::BaseConstraintCorrection*> _cclist_elem1;
     std::vector<core::behavior::BaseConstraintCorrection*> _cclist_elem2;
 

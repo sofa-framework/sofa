@@ -25,7 +25,7 @@
 #include <sofa/type/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/BaseVector.h>
+#include <sofa/linearalgebra/BaseVector.h>
 #include <sofa/core/MechanicalParams.h>
 
 namespace sofa::component::forcefield
@@ -177,7 +177,7 @@ void LinearForceField<DataTypes>::addDForce(const core::MechanicalParams* mparam
 }
 
 template<class DataTypes>
-void LinearForceField<DataTypes>::addKToMatrix(defaulttype::BaseMatrix* matrix, SReal kFact, unsigned int& offset)
+void LinearForceField<DataTypes>::addKToMatrix(linearalgebra::BaseMatrix* matrix, SReal kFact, unsigned int& offset)
 {
     SOFA_UNUSED(matrix);
     SOFA_UNUSED(kFact);

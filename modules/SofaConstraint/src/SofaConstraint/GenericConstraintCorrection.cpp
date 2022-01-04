@@ -39,12 +39,12 @@ using sofa::core::objectmodel::BaseContext;
 using sofa::core::behavior::LinearSolver;
 using sofa::core::behavior::BaseConstraintCorrection;
 using sofa::core::behavior::ConstraintSolver;
-using sofa::defaulttype::BaseMatrix;
+using sofa::linearalgebra::BaseMatrix;
 using sofa::core::ConstraintParams;
 using sofa::core::MultiVecDerivId;
 using sofa::core::MultiVecCoordId;
 using sofa::core::ExecParams;
-using sofa::defaulttype::BaseVector;
+using sofa::linearalgebra::BaseVector;
 using sofa::core::RegisterObject;
 using sofa::core::ConstMultiVecDerivId;
 using sofa::core::VecDerivId;
@@ -186,7 +186,7 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const Constrain
     }
 }
 
-void GenericConstraintCorrection::computeMotionCorrectionFromLambda(const ConstraintParams* cparams, MultiVecDerivId dx, const defaulttype::BaseVector * lambda)
+void GenericConstraintCorrection::computeMotionCorrectionFromLambda(const ConstraintParams* cparams, MultiVecDerivId dx, const linearalgebra::BaseVector * lambda)
 {
     for (auto* linearSolver : m_linearSolvers)
     {
@@ -260,7 +260,7 @@ void GenericConstraintCorrection::applyContactForce(const BaseVector *f)
     applyMotionCorrection(&cparams, VecCoordId::position(), VecDerivId::velocity(), cparams.dx(), cparams.lambda());
 }
 
-void GenericConstraintCorrection::computeResidual(const ExecParams* params, defaulttype::BaseVector *lambda)
+void GenericConstraintCorrection::computeResidual(const ExecParams* params, linearalgebra::BaseVector *lambda)
 {
     for (auto* linearSolver : m_linearSolvers)
     {
@@ -269,7 +269,7 @@ void GenericConstraintCorrection::computeResidual(const ExecParams* params, defa
 }
 
 
-void GenericConstraintCorrection::getComplianceMatrix(defaulttype::BaseMatrix* Minv) const
+void GenericConstraintCorrection::getComplianceMatrix(linearalgebra::BaseMatrix* Minv) const
 {
     if (!m_ODESolver)
         return;

@@ -21,13 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/testing/TestMessageHandler.h>
+#include <sofa/config.h>
 
-//SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/testing/TestMessageHandler.h")
-
-namespace sofa::helper::logging
-{
-    using sofa::testing::MessageAsTestFailure;
-    using sofa::testing::IgnoreMessage;
-    using sofa::testing::MainGtestMessageHandler;
-}
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/testing/TestMessageHandler.h")

@@ -7,7 +7,7 @@
     <DefaultPipeline name="pipeline" depth="6" verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager name="response" response="default" />
+    <DefaultContactManager name="response" response="PenalityContactForceField" />
     <MinProximityIntersection name="proximity" alarmDistance="0.05" contactDistance="0.05" />
     <Node name="Head">
         <MeshOBJLoader name="meshLoader_0" filename="data/mesh/head.obj" handleSeams="1" />

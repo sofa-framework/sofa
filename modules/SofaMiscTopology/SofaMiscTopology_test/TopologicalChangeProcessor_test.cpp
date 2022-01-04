@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+#include <sofa/testing/BaseSimulationTest.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 

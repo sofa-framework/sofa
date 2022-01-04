@@ -30,12 +30,12 @@ using sofa::core::behavior::BaseMechanicalState;
 
 void CRSMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* mapping)
 {
-    const sofa::defaulttype::BaseMatrix* jmatrix = mapping->getJ();
+    const sofa::linearalgebra::BaseMatrix* jmatrix = mapping->getJ();
 
     if ((jmatrix != nullptr) && (mapping->isMechanical()) && (mapping->areMatricesMapped()))
     {
         const BaseMechanicalState* mappedState  = const_cast<const BaseMechanicalState*>(mapping->getMechTo()[0]);
-        defaulttype::BaseMatrix* mappedstiffness;
+        linearalgebra::BaseMatrix* mappedstiffness;
         mappedstiffness = mapping->createMappedMatrix(mappedState,mappedState,&CRSMultiMatrixAccessor::createMatrix);
         mappedMatrices[mappedState]=mappedstiffness;
 
@@ -49,13 +49,13 @@ void CRSMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* mappi
     }
 }
 
-defaulttype::BaseMatrix* CRSMultiMatrixAccessor::createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1,
+linearalgebra::BaseMatrix* CRSMultiMatrixAccessor::createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1,
                                                               const sofa::core::behavior::BaseMechanicalState* mstate2)
 {
     return createMatrix(mstate1, mstate2, false);
 }
 
-defaulttype::BaseMatrix* CRSMultiMatrixAccessor::createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1,
+linearalgebra::BaseMatrix* CRSMultiMatrixAccessor::createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1,
                                                               const sofa::core::behavior::BaseMechanicalState* mstate2,
                                                               bool doPrintInfo)
 {
@@ -120,7 +120,7 @@ void CRSMultiMatrixAccessor::computeGlobalMatrix()
         sofa::core::BaseMapping* m_mapping = mappingList[id];
         const BaseMechanicalState* instate  = const_cast<const BaseMechanicalState*>(m_mapping->getMechFrom()[0]);
         const BaseMechanicalState* outstate  = const_cast<const BaseMechanicalState*>(m_mapping->getMechTo()[0]);
-        const defaulttype::BaseMatrix* matrixJ = m_mapping->getJ();
+        const linearalgebra::BaseMatrix* matrixJ = m_mapping->getJ();
 
         msg_info_when(m_doPrintInfo, "CRSMultiMatrixAccessor") << "  " << id << "-th Mapping : " << m_mapping->getName() << " associated to matrix J["
             << matrixJ->rowSize() << "x" << matrixJ->colSize() << "] in the format _"
@@ -145,7 +145,7 @@ void CRSMultiMatrixAccessor::computeGlobalMatrix()
         const BaseMechanicalState* instate  = const_cast<const BaseMechanicalState*>(m_mapping->getMechFrom()[0]);
         const BaseMechanicalState* outstate  = const_cast<const BaseMechanicalState*>(m_mapping->getMechTo()[0]);
 
-        const defaulttype::BaseMatrix* matrixJ = m_mapping->getJ();
+        const linearalgebra::BaseMatrix* matrixJ = m_mapping->getJ();
         const unsigned int nbR_J = matrixJ->rowSize();
         const unsigned int nbC_J = matrixJ->colSize();
 
@@ -174,7 +174,7 @@ void CRSMultiMatrixAccessor::computeGlobalMatrix()
             const unsigned int sizeK1 = K1.matrix->rowSize() - offset1;
             const unsigned int sizeK2 = K2.matrix->rowSize() - offset2;
 
-            defaulttype::BaseMatrix* matrixJJ =const_cast<defaulttype::BaseMatrix*>(matrixJ);
+            linearalgebra::BaseMatrix* matrixJJ =const_cast<linearalgebra::BaseMatrix*>(matrixJ);
 
             int JblocRsize     = matrixJJ->getBlockRows();
             int JblocCsize     = matrixJJ->getBlockCols();
@@ -187,7 +187,7 @@ void CRSMultiMatrixAccessor::computeGlobalMatrix()
             int MelementSize   = K2.matrix->getElementSize();
 
             // creating a tempo matrix  tempoMatrix
-            defaulttype::BaseMatrix* tempoMatrix = createBlocSparseMatrix(JblocCsize, K2blocCsize, MelementSize, JnbBlocCol, K2nbBlocCol,m_doPrintInfo);
+            linearalgebra::BaseMatrix* tempoMatrix = createBlocSparseMatrix(JblocCsize, K2blocCsize, MelementSize, JnbBlocCol, K2nbBlocCol,m_doPrintInfo);
             // Matrix multiplication  tempoMatrix += Jt * K22
             opAddMulJTM(tempoMatrix,   matrixJJ, K2.matrix,       0,0      , JblocRsize, JblocCsize , K2blocCsize, JelementSize,MelementSize,m_doPrintInfo);
             // Matrix multiplication  K11         += tempoMatrix * J
@@ -260,7 +260,7 @@ void CRSMultiMatrixAccessor::computeGlobalMatrix()
 
                 // Matrix multiplication   I_12 += Jt * I_32
 
-                defaulttype::BaseMatrix* matrixJJ =const_cast<defaulttype::BaseMatrix*>(matrixJ);
+                linearalgebra::BaseMatrix* matrixJJ =const_cast<linearalgebra::BaseMatrix*>(matrixJ);
                 int JblocRsize     = matrixJJ->getBlockRows();
                 int JblocCsize     = matrixJJ->getBlockCols();
                 int I_32_blocCsize = I_32.matrix->getBlockCols();
@@ -297,7 +297,7 @@ void CRSMultiMatrixAccessor::computeGlobalMatrix()
                     << " J[" << nbR_J << "." << nbC_J << "]";
 
                 // Matrix multiplication  I_21 +=  I_23 * J
-                defaulttype::BaseMatrix* matrixJJ =const_cast<defaulttype::BaseMatrix*>(matrixJ);
+                linearalgebra::BaseMatrix* matrixJJ =const_cast<linearalgebra::BaseMatrix*>(matrixJ);
                 int I_23_blocRsize = I_23.matrix->getBlockRows();
                 int I_23_blocCsize = I_23.matrix->getBlockCols();
                 int JblocCsize     = matrixJJ->getBlockCols();

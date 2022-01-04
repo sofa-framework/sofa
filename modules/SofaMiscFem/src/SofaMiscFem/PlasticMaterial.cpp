@@ -23,7 +23,7 @@
 #include <SofaMiscFem/PlasticMaterial.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-
+#include <Eigen/SVD>
 namespace sofa::component::fem::material
 {
 
@@ -85,23 +85,18 @@ void PlasticMaterial::computeDStress(Vector3& dStress, Vector3& dStrain)
 
 SReal PlasticMaterial::computeVonMisesStrain(Vector3 &strain)
 {
-	NEWMAT::SymmetricMatrix e(2);
-	e = 0.0;
+	Eigen::Matrix<SReal, 2, 2> e;
+	e(0,0) = strain[0];
+	e(0,1) = strain[2];
+	e(1,0) = strain[2];
+	e(1,1) = strain[1];
 
-	NEWMAT::DiagonalMatrix D(2);
-	D = 0.0;
+	//compute eigenvalues and eigenvectors
+	Eigen::JacobiSVD svd(e, Eigen::ComputeThinU | Eigen::ComputeThinV);
 
-	NEWMAT::Matrix V(2,2);
-	V = 0.0;
+	const auto& S = svd.singularValues();
 
-	e(1,1) = strain[0];
-	e(1,2) = strain[2];
-	e(2,1) = strain[2];
-	e(2,2) = strain[1];
-
-	NEWMAT::Jacobi(e, D, V);
-
-	return 1/(1+_poissonRatio.getValue())*sqrt( 0.5*( (D(1,1)-D(2,2))*(D(1,1)-D(2,2)) + (D(2,2)-D(3,3))*(D(2,2)-D(3,3)) + (D(3,3)-D(1,1))*(D(3,3)-D(1,1)) ));
+	return 1/(1+_poissonRatio.getValue())*sqrt( 0.5*( (S(0)-S(1))*(S(0)-S(1)) + (S(1)-S(2))*(S(1)-S(2)) + (S(2)-S(0))*(S(2)-S(0)) ));
 }
 
 void PlasticMaterial::computeStressOnSection(Vector3& Stress, Vector3 Strain, int section)

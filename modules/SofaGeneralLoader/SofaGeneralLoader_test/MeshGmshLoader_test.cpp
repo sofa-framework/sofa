@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/helper/testing/BaseTest.h>
+#include <sofa/testing/BaseTest.h>
 #include <sofa/helper/system/FileRepository.h>
 
 #include <SofaGeneralLoader/MeshGmshLoader.h>
 #include <sofa/helper/BackTrace.h>
 
 using namespace sofa::component::loader;
-using sofa::helper::testing::BaseTest;
+using sofa::testing::BaseTest;
 using sofa::helper::BackTrace;
 
 namespace sofa

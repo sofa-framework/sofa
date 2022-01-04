@@ -30,7 +30,7 @@
 #include <sofa/type/vector.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 
 
 namespace sofa::component::forcefield
@@ -105,9 +105,9 @@ protected:
         }
     };
 
-    topology::PointData<sofa::type::vector<Mat3x3> > pointInfo; ///< Internal point data
-    topology::EdgeData<sofa::type::vector<Mat3x3> > edgeInfo; ///< Internal edge data
-    topology::TetrahedronData<sofa::type::vector<TetrahedronRestInformation> > tetrahedronInfo; ///< Internal tetrahedron data
+    core::topology::PointData<sofa::type::vector<Mat3x3> > pointInfo; ///< Internal point data
+    core::topology::EdgeData<sofa::type::vector<Mat3x3> > edgeInfo; ///< Internal edge data
+    core::topology::TetrahedronData<sofa::type::vector<TetrahedronRestInformation> > tetrahedronInfo; ///< Internal tetrahedron data
 
     /** Method to initialize @sa TetrahedronRestInformation when a new Tetrahedron is created.
     * Will be set as creation callback in the TetrahedronData @sa tetrahedronInfo
@@ -158,7 +158,7 @@ public:
         return 0.0;
     }
 
-    void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset) override;
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix *m, SReal kFactor, unsigned int &offset) override;
     void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ) override;
 
     void updateTopologyInformation();
@@ -187,7 +187,7 @@ public:
 protected :
     static void computeQRRotation( Mat3x3 &r, const Coord *dp);
 
-    topology::EdgeData<sofa::type::vector<Mat3x3> > &getEdgeInfo() {return edgeInfo;}
+    core::topology::EdgeData<sofa::type::vector<Mat3x3> > &getEdgeInfo() {return edgeInfo;}
 };
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_CPP)

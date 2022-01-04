@@ -857,7 +857,6 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
         switch(e->key())
         {
         case Qt::Key_A: // axis
-        case Qt::Key_S: // sofa screenshot
         case Qt::Key_H: // help page
         case Qt::Key_G: // show grid
         {
@@ -877,6 +876,13 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
         }
     }
     update();
+}
+
+
+void QtGLViewer::screenshot(const std::string& filename, int compression_level)
+{
+    SOFA_UNUSED(compression_level);
+    QGLViewer::saveSnapshot(QString::fromStdString(filename), false);
 }
 
 

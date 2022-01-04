@@ -23,4 +23,4 @@
 
 #include <SofaSimpleFem/config.h>
 
-#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>

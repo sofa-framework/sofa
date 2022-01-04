@@ -35,8 +35,7 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 #include <sofa/type/Quat.h>
-#include <newmat/newmat.h>
-#include <newmat/newmatap.h>
+#include <Eigen/SVD>
 #include <sofa/core/objectmodel/vectorData.h>
 
 #ifdef _OPENMP
@@ -323,12 +322,13 @@ protected:
             M/=(Real)nbpTotal;
 
             // get eigen vectors of the covariance matrix
-            NEWMAT::SymmetricMatrix e(3); e = 0.0;
-            for(size_t j=0; j<3; j++) { for(size_t k=j; k<3; k++)  e(j+1,k+1) = M[j][k]; for(size_t k=0; k<j; k++)  e(k+1,j+1) = e(j+1,k+1); }
-            NEWMAT::DiagonalMatrix D(3); D = 0.0;
-            NEWMAT::Matrix V(3,3); V = 0.0;
-            NEWMAT::Jacobi(e, D, V);
-            for(size_t j=0; j<3; j++) for(size_t k=0; k<3; k++) M[j][k]=V(j+1,k+1);
+            Eigen::Matrix<Real, 3, 3> e = Eigen::Matrix<Real, 3, 3>::Zero();
+
+            //compute eigenvalues and eigenvectors
+            Eigen::JacobiSVD svd(e, Eigen::ComputeThinU | Eigen::ComputeThinV);
+            auto V = svd.matrixV();
+
+            for(size_t j=0; j<3; j++) for(size_t k=0; k<3; k++) M[j][k]=V(j,k);
             if(type::determinant(M)<0) M*=(Real)-1.0;
             type::Mat<3,3,Real> MT=M.transposed();
 

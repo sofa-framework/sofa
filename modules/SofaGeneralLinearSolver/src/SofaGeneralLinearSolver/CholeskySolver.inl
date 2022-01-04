@@ -22,7 +22,7 @@
 #pragma once
 #include <SofaGeneralLinearSolver/CholeskySolver.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 #include "sofa/helper/system/thread/CTime.h"

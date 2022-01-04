@@ -57,9 +57,9 @@ public:
 
     void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx) override;
 
-    void addKToMatrix(sofa::defaulttype::BaseMatrix * /*m*/, SReal /*kFactor*/, unsigned int &/*offset*/) override {}
+    void addKToMatrix(sofa::linearalgebra::BaseMatrix * /*m*/, SReal /*kFactor*/, unsigned int &/*offset*/) override {}
 
-    void addBToMatrix(sofa::defaulttype::BaseMatrix * mat, SReal bFact, unsigned int& offset) override;
+    void addBToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal bFact, unsigned int& offset) override;
 
     SReal getPotentialEnergy(const core::MechanicalParams* params, const DataVecCoord& x) const override;
 

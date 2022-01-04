@@ -26,8 +26,8 @@ list(APPEND HEADER_FILES
     ${SRC_ROOT}/BlenderExporter.h
     ${SRC_ROOT}/BlenderExporter.inl
     ${SRC_ROOT}/MeshExporter.h
-    ${SRC_ROOT}/OBJExporter.h
     ${SRC_ROOT}/STLExporter.h
+    ${SRC_ROOT}/VisualModelOBJExporter.h
     ${SRC_ROOT}/VTKExporter.h
     ${SRC_ROOT}/WriteState.h
     ${SRC_ROOT}/WriteState.inl
@@ -38,8 +38,8 @@ list(APPEND HEADER_FILES
 list(APPEND SOURCE_FILES
     ${SRC_ROOT}/BlenderExporter.cpp
     ${SRC_ROOT}/MeshExporter.cpp
-    ${SRC_ROOT}/OBJExporter.cpp
     ${SRC_ROOT}/STLExporter.cpp
+    ${SRC_ROOT}/VisualModelOBJExporter.cpp
     ${SRC_ROOT}/VTKExporter.cpp
     ${SRC_ROOT}/WriteState.cpp
     ${SRC_ROOT}/WriteTopology.cpp

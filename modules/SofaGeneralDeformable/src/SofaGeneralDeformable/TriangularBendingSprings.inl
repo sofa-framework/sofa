@@ -24,7 +24,7 @@
 #include <SofaGeneralDeformable/TriangularBendingSprings.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 
 namespace sofa::component::forcefield
 {

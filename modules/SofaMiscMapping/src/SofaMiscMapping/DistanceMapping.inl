@@ -289,13 +289,13 @@ void DistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams* cparams, 
 
 
 template <class TIn, class TOut>
-const sofa::defaulttype::BaseMatrix* DistanceMapping<TIn, TOut>::getJ()
+const sofa::linearalgebra::BaseMatrix* DistanceMapping<TIn, TOut>::getJ()
 {
     return &jacobian;
 }
 
 template <class TIn, class TOut>
-const type::vector<sofa::defaulttype::BaseMatrix*>* DistanceMapping<TIn, TOut>::getJs()
+const type::vector<sofa::linearalgebra::BaseMatrix*>* DistanceMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
 }
@@ -347,7 +347,7 @@ void DistanceMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, 
 }
 
 template <class TIn, class TOut>
-const defaulttype::BaseMatrix* DistanceMapping<TIn, TOut>::getK()
+const linearalgebra::BaseMatrix* DistanceMapping<TIn, TOut>::getK()
 {
     return &K;
 }
@@ -714,7 +714,7 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
 
 
 template <class TIn, class TOut>
-const type::vector<sofa::defaulttype::BaseMatrix*>* DistanceMultiMapping<TIn, TOut>::getJs()
+const type::vector<sofa::linearalgebra::BaseMatrix*>* DistanceMultiMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
 }
@@ -782,7 +782,7 @@ void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mp
 
 
 template <class TIn, class TOut>
-const defaulttype::BaseMatrix* DistanceMultiMapping<TIn, TOut>::getK()
+const linearalgebra::BaseMatrix* DistanceMultiMapping<TIn, TOut>::getK()
 {
     return &K;
 }

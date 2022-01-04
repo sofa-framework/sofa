@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/core/behavior/ForceField.h>
-#include <SofaBaseTopology/TopologyData.h>
+#include <sofa/core/topology/TopologyData.h>
 
 #include <SofaGeneralSimpleFem/config.h>
 
@@ -38,7 +38,7 @@ using type::Vec;
 using type::Mat;
 using type::Vector3;
 using type::Quat;
-using topology::EdgeData;
+using core::topology::EdgeData;
 
 /** Compute Finite Element forces based on 6D beam elements.
 */

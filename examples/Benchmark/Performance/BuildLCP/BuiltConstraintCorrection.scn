@@ -14,7 +14,7 @@
     <BruteForceBroadPhase name="N2" />
     <BVHNarrowPhase />
     <LocalMinDistance name="Proximity" alarmDistance="0.35" contactDistance="0.1" />
-    <DefaultContactManager name="Response" response="FrictionContact" />
+    <DefaultContactManager name="Response" response="FrictionContactConstraint" />
     <LCPConstraintSolver tolerance="0.001" maxIt="1000" build_lcp="true"/>
     <Node>
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />

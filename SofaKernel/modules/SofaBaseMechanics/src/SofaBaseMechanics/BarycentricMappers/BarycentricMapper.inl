@@ -25,7 +25,7 @@
 namespace sofa::component::mapping::_barycentricmapper_
 {
 
-using sofa::component::linearsolver::CompressedRowSparseMatrix;
+using sofa::linearalgebra::CompressedRowSparseMatrix;
 
 template<class In, class Out>
 void BarycentricMapper<In,Out>::addMatrixContrib(CompressedRowSparseMatrix<MBloc>* m, int row, int col, Real value)
@@ -37,7 +37,7 @@ void BarycentricMapper<In,Out>::addMatrixContrib(CompressedRowSparseMatrix<MBloc
 
 
 template<class In, class Out>
-const sofa::defaulttype::BaseMatrix* BarycentricMapper<In,Out>::getJ(int outSize, int inSize)
+const sofa::linearalgebra::BaseMatrix* BarycentricMapper<In,Out>::getJ(int outSize, int inSize)
 {
     SOFA_UNUSED(outSize);
     SOFA_UNUSED(inSize);

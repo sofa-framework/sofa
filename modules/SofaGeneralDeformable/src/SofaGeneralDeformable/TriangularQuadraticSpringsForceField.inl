@@ -24,7 +24,7 @@
 #include <SofaGeneralDeformable/TriangularQuadraticSpringsForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 
 namespace sofa::component::forcefield
 {
@@ -50,7 +50,6 @@ void TriangularQuadraticSpringsForceField<DataTypes>::applyTriangleCreation(Inde
         const core::topology::Triangle &, const sofa::type::vector<Index> &,
         const sofa::type::vector<double> &)
 {
-    using namespace	sofa::component::topology;
     unsigned int j=0,k=0,l=0;
 
     typename DataTypes::Real area,squareRestLength[3],restLength[3],cotangent[3];
@@ -94,7 +93,6 @@ void TriangularQuadraticSpringsForceField<DataTypes>::applyTriangleCreation(Inde
 template< class DataTypes>
 void TriangularQuadraticSpringsForceField<DataTypes>::applyTriangleDestruction(Index triangleIndex, TriangleRestInformation &tinfo)
 {
-    using namespace	sofa::component::topology;
     unsigned int j;
 
     helper::WriteOnlyAccessor< Data< type::vector<EdgeRestInformation> > > edgeInf = edgeInfo;
@@ -213,8 +211,6 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
 template <class DataTypes>
 void TriangularQuadraticSpringsForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
-    using namespace	sofa::component::topology;
-
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
@@ -285,8 +281,6 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addForce(const core::Mecha
 template <class DataTypes>
 void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
-    using namespace	sofa::component::topology;
-
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
     Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());

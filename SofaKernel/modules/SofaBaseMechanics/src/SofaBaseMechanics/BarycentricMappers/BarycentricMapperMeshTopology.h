@@ -28,7 +28,7 @@ namespace sofa::component::mapping
 /// Groupe the using as early as possible to make very obvious what are the
 /// external dependencies of the following code.
 using core::visual::VisualParams;
-using sofa::defaulttype::BaseMatrix;
+using sofa::linearalgebra::BaseMatrix;
 using sofa::defaulttype::Vec3dTypes;
 using sofa::defaulttype::Vec3fTypes;
 

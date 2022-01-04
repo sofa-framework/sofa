@@ -42,7 +42,7 @@ template<>
 void RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForceId*/ )
 {}
 template<>
-const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::getK()
+const linearalgebra::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::getK()
 {
     msg_error() << "TODO: assembled geometric stiffness not implemented";
     return nullptr;

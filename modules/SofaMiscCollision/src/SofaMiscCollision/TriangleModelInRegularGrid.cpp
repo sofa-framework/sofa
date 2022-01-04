@@ -23,7 +23,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaMeshCollision/TriangleModel.inl>
-#include <SofaBaseTopology/TopologyData.inl>
+#include <sofa/core/topology/TopologyData.inl>
 #include <sofa/simulation/Node.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <sofa/core/CollisionElement.h>

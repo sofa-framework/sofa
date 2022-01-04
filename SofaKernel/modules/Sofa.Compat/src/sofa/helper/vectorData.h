@@ -20,22 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/core/config.h>
+#include <sofa/config.h>
 
-#include <sofa/core/objectmodel/vectorData.h>
-
-SOFA_DEPRECATED_HEADER("v21.06", "v21.12", "sofa/core/objectmodel/vectorData.h")
-
-namespace sofa::helper
-{
-    template<class T>
-    using vectorData = sofa::core::objectmodel::vectorData<T>;
-
-    using DataEngineDataType = sofa::core::objectmodel::DataEngineDataType;
-
-    // simulate the "enum"
-    constexpr auto DataEngineNothing = DataEngineDataType::DataEngineNothing;
-    constexpr auto DataEngineInput = DataEngineDataType::DataEngineInput;
-    constexpr auto DataEngineOutput = DataEngineDataType::DataEngineOutput;
-
-}
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/core/objectmodel/vectorData.h")

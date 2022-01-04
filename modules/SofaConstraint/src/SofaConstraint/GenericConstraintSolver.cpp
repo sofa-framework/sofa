@@ -262,7 +262,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
             cc->resetForUnbuiltResolution(current_cp->getF(), current_cp->constraints_sequence);
         }
 
-        sofa::component::linearsolver::SparseMatrix<double>* Wdiag = &current_cp->Wdiag;
+        sofa::linearalgebra::SparseMatrix<double>* Wdiag = &current_cp->Wdiag;
         Wdiag->resize(numConstraints, numConstraints);
 
         // for each contact, the constraint corrections that are involved with the contact are memorized

@@ -38,7 +38,7 @@
 #include <SceneCreator/config.h>
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/MultiVecId.h>
-#include <sofa/defaulttype/BaseVector.h>
+#include <sofa/linearalgebra/BaseVector.h>
 #include <Eigen/Dense>
 
 
@@ -56,7 +56,7 @@ class SOFA_SCENECREATOR_API GetVectorVisitor: public Visitor
 {
 public:
 //    typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1> Vector;
-    typedef defaulttype::BaseVector Vector;
+    typedef linearalgebra::BaseVector Vector;
     GetVectorVisitor( const sofa::core::ExecParams* params, Vector* vec, core::ConstVecId src );
     ~GetVectorVisitor() override;
 

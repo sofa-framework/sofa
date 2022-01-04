@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaDenseSolver LANGUAGES CXX)
 
-sofa_find_package(Newmat REQUIRED BOTH_SCOPES)
-sofa_find_package(SofaBase REQUIRED)
-sofa_find_package(SofaGeneralLinearSolver REQUIRED)
+sofa_find_package(SofaBaseLinearSolver REQUIRED)
 
 set(SOFADENSESOLVER_SRC "src/${PROJECT_NAME}")
 
@@ -17,21 +15,14 @@ set(SOURCE_FILES
     )
 
 list(APPEND HEADER_FILES
-    ${SOFADENSESOLVER_SRC}/LULinearSolver.h
-    ${SOFADENSESOLVER_SRC}/NewMatMatrix.h
-    ${SOFADENSESOLVER_SRC}/NewMatVector.h
     ${SOFADENSESOLVER_SRC}/SVDLinearSolver.h
     )
 list(APPEND SOURCE_FILES
-    ${SOFADENSESOLVER_SRC}/LULinearSolver.cpp
-    ${SOFADENSESOLVER_SRC}/NewMatCGLinearSolver.cpp
-    ${SOFADENSESOLVER_SRC}/NewMatCholeskySolver.cpp
     ${SOFADENSESOLVER_SRC}/SVDLinearSolver.cpp
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseLinearSolver SofaGeneralLinearSolver)
-target_link_libraries(${PROJECT_NAME} PUBLIC newmat)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseLinearSolver)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
@@ -41,9 +32,3 @@ sofa_create_package_with_targets(
     INCLUDE_INSTALL_DIR "SofaDenseSolver"
     RELOCATABLE "plugins"
 )
-
-cmake_dependent_option(SOFADENSESOLVER_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
-if(SOFADENSESOLVER_BUILD_TESTS)
-    enable_testing()
-    add_subdirectory(${PROJECT_NAME}_test)
-endif()

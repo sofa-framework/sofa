@@ -30,8 +30,8 @@
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
 
-#include <SofaBaseLinearSolver/SparseMatrix.h>
-#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
+#include <sofa/linearalgebra/FullMatrix.h>
 
 namespace sofa::component::constraintset
 {
@@ -57,7 +57,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
 
-    typedef std::list<defaulttype::BaseMatrix::Index> ListIndex;
+    typedef std::list<linearalgebra::BaseMatrix::Index> ListIndex;
     typedef sofa::core::behavior::ConstraintCorrection< TDataTypes > Inherit;
 protected:
     LinearSolverConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = nullptr);
@@ -67,9 +67,9 @@ public:
     void init() override;
 
 
-    void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, defaulttype::BaseMatrix* W) override;
+    void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, linearalgebra::BaseMatrix* W) override;
 
-    void getComplianceMatrix(defaulttype::BaseMatrix* ) const override;
+    void getComplianceMatrix(linearalgebra::BaseMatrix* ) const override;
 
     void computeMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, core::MultiVecDerivId f) override;
 
@@ -84,7 +84,7 @@ public:
     /// @name Deprecated API
     /// @{
 
-    void applyContactForce(const defaulttype::BaseVector *f) override;
+    void applyContactForce(const linearalgebra::BaseVector *f) override;
 
     void resetContactForce() override;
 
@@ -106,20 +106,20 @@ public:
 
     void setConstraintDForce(double *df, int begin, int end, bool update) override;
 
-    void getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end) override;
+    void getBlockDiagonalCompliance(linearalgebra::BaseMatrix* W, int begin, int end) override;
 
 protected:
 
     sofa::core::behavior::OdeSolver* odesolver;
     std::vector<sofa::core::behavior::LinearSolver*> linearsolvers;
 
-    linearsolver::SparseMatrix<SReal> J; ///< constraint matrix
-    linearsolver::FullVector<SReal> F; ///< forces computed from the constraints
+    linearalgebra::SparseMatrix<SReal> J; ///< constraint matrix
+    linearalgebra::FullVector<SReal> F; ///< forces computed from the constraints
 
     /**
     * @brief Compute the compliance matrix
     */
-    virtual void computeJ(sofa::defaulttype::BaseMatrix* W, const MatrixDeriv& j);
+    virtual void computeJ(sofa::linearalgebra::BaseMatrix* W, const MatrixDeriv& j);
 
 
     ////////////////////////// Inherited attributes ////////////////////////////
@@ -135,9 +135,9 @@ private:
     // new :  for non building the constraint system during solving process //
     VecDeriv constraint_disp, constraint_force;
     std::list<int> constraint_dofs;		// list of indices of each point which is involve with constraint // TODO : verify if useful !!
-    defaulttype::BaseMatrix* systemMatrix_buf;
-    defaulttype::BaseVector* systemRHVector_buf;
-    defaulttype::BaseVector* systemLHVector_buf;
+    linearalgebra::BaseMatrix* systemMatrix_buf;
+    linearalgebra::BaseVector* systemRHVector_buf;
+    linearalgebra::BaseVector* systemLHVector_buf;
 
 
     // par un vecteur de listes precaclues pour chaque contrainte

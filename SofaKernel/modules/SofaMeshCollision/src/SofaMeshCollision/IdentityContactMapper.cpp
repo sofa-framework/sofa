@@ -27,8 +27,8 @@ namespace sofa::component::collision
 
 using namespace defaulttype;
 
-ContactMapperCreator< ContactMapper<SphereCollisionModel<sofa::defaulttype::Vec3Types>> > SphereContactMapperClass("default",true);
-ContactMapperCreator< ContactMapper<PointCollisionModel<sofa::defaulttype::Vec3Types>> > PointContactMapperClass("default",true);
+ContactMapperCreator< ContactMapper<SphereCollisionModel<sofa::defaulttype::Vec3Types>> > SphereContactMapperClass("PenalityContactForceField",true);
+ContactMapperCreator< ContactMapper<PointCollisionModel<sofa::defaulttype::Vec3Types>> > PointContactMapperClass("PenalityContactForceField",true);
 
 template class SOFA_SOFAMESHCOLLISION_API ContactMapper<SphereCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
 template class SOFA_SOFAMESHCOLLISION_API ContactMapper<PointCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;

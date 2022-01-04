@@ -29,6 +29,8 @@ set(HEADER_FILES
     ${SRC_ROOT}/SparseCholeskySolver.h
     ${SRC_ROOT}/SparseLUSolver.h
     ${SRC_ROOT}/SparseLUSolver.inl
+    ${SRC_ROOT}/FillReducingOrdering.h
+    ${SRC_ROOT}/FillReducingOrdering.inl
     )
 set(SOURCE_FILES
     ${SRC_ROOT}/initSofaSparseSolver.cpp
@@ -36,6 +38,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/SparseLDLSolver.cpp
     ${SRC_ROOT}/SparseCholeskySolver.cpp
     ${SRC_ROOT}/SparseLUSolver.cpp
+    ${SRC_ROOT}/FillReducingOrdering.cpp
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

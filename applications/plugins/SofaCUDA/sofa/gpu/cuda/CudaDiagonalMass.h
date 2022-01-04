@@ -38,7 +38,7 @@ template<>
 class DiagonalMassInternalData<CudaVec3Types,float>
 {
 public :
-    typedef sofa::component::topology::PointData<CudaVector<float> > VecMass;
+    typedef sofa::core::topology::PointData<CudaVector<float> > VecMass;
     typedef CudaVector<float> MassVector;
 
     typedef CudaVec3fTypes GeometricalTypes ; /// assumes the geometry object type is 3D
@@ -49,7 +49,7 @@ template<>
 class DiagonalMassInternalData<CudaVec3dTypes,double>
 {
 public :
-    typedef sofa::component::topology::PointData<CudaVector<double> > VecMass;
+    typedef sofa::core::topology::PointData<CudaVector<double> > VecMass;
     typedef CudaVector<double> MassVector;
 
     typedef CudaVec3dTypes GeometricalTypes ; /// assumes the geometry object type is 3D

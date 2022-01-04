@@ -127,9 +127,9 @@ public:
 
     void addMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, SReal mFact, SReal bFact, SReal kFact);
 
-    void multiVector2BaseVector(core::ConstMultiVecId src, defaulttype::BaseVector *dest, const sofa::core::behavior::MultiMatrixAccessor* matrix);
-    void baseVector2MultiVector(const defaulttype::BaseVector *src, core::MultiVecId dest, const sofa::core::behavior::MultiMatrixAccessor* matrix);
-    void multiVectorPeqBaseVector(core::MultiVecDerivId dest, const defaulttype::BaseVector *src, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    void multiVector2BaseVector(core::ConstMultiVecId src, linearalgebra::BaseVector *dest, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    void baseVector2MultiVector(const linearalgebra::BaseVector *src, core::MultiVecId dest, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    void multiVectorPeqBaseVector(core::MultiVecDerivId dest, const linearalgebra::BaseVector *src, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
     /// @}
 

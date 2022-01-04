@@ -24,7 +24,7 @@
 
 #include <SofaPreconditioner/WarpPreconditioner.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/helper/accessor.h>
@@ -185,7 +185,7 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::solve(Matrix& Rcur, Vec
 
 /// Solve the system as constructed using the previous methods
 template<class TMatrix, class TVector,class ThreadManager>
-bool WarpPreconditioner<TMatrix,TVector,ThreadManager >::addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) {
+bool WarpPreconditioner<TMatrix,TVector,ThreadManager >::addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, double fact) {
     if (J->rowSize()==0 || !realSolver) return true;
 
     this->linearSystem.systemMatrix->rotateMatrix(&j_local,J);
@@ -194,13 +194,13 @@ bool WarpPreconditioner<TMatrix,TVector,ThreadManager >::addJMInvJt(defaulttype:
 }
 
 template<class TMatrix, class TVector,class ThreadManager>
-bool WarpPreconditioner<TMatrix,TVector,ThreadManager >::addMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) {
+bool WarpPreconditioner<TMatrix,TVector,ThreadManager >::addMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, double fact) {
     this->linearSystem.systemMatrix->rotateMatrix(&j_local,J);
     return realSolver->addMInvJt(result,&j_local,fact);
 }
 
 template<class TMatrix, class TVector,class ThreadManager>
-void WarpPreconditioner<TMatrix,TVector,ThreadManager >::computeResidual(const core::ExecParams* params, defaulttype::BaseVector* f) {
+void WarpPreconditioner<TMatrix,TVector,ThreadManager >::computeResidual(const core::ExecParams* params, linearalgebra::BaseVector* f) {
     realSolver->computeResidual(params,f);
 }
 

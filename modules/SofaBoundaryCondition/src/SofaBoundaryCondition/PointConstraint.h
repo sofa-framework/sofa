@@ -26,13 +26,13 @@
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/defaulttype/BaseVector.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
+#include <sofa/linearalgebra/BaseVector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/vector.h>
-#include <SofaBaseTopology/TopologySubsetIndices.h>
-#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <sofa/core/topology/TopologySubsetIndices.h>
+#include <sofa/linearalgebra/SparseMatrix.h>
 #include <set>
 
 namespace sofa::component::projectiveconstraintset
@@ -58,7 +58,7 @@ public:
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef type::vector<unsigned int> SetIndexArray;
-    typedef sofa::component::topology::TopologySubsetIndices SetIndex;
+    typedef sofa::core::topology::TopologySubsetIndices SetIndex;
 
 
     SetIndex f_indices; ///< Indices of the fixed points
@@ -76,10 +76,10 @@ public:
     void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
-    virtual const sofa::defaulttype::BaseMatrix* getJ(const core::MechanicalParams* );
+    virtual const sofa::linearalgebra::BaseMatrix* getJ(const core::MechanicalParams* );
 
     void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-    void applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 
@@ -87,7 +87,7 @@ public:
 protected :
 
     /// Matrix used in getJ
-    linearsolver::SparseMatrix<SReal> jacobian;
+    linearalgebra::SparseMatrix<SReal> jacobian;
 
 };
 

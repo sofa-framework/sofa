@@ -16,7 +16,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="0.3" contactDistance="0.1" />
-    <DefaultContactManager name="Response" response="FrictionContact" />
+    <DefaultContactManager name="Response" response="FrictionContactConstraint" />
     <DefaultCollisionGroupManager name="Group" />
     <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
     <Node name="ChainRigid">

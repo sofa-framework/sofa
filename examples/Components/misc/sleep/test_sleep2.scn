@@ -8,7 +8,7 @@
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.1" angleCone="0.0" />
-    <DefaultContactManager name="Response" response="FrictionContact" responseParams="mu=0.2" />
+    <DefaultContactManager name="Response" response="FrictionContactConstraint" responseParams="mu=0.2" />
 	<SleepController immobileThreshold="0.2" rotationThreshold="0.1" minTimeSinceWakeUp="0.1" printLog="1" />
 	
 	<LightManager />

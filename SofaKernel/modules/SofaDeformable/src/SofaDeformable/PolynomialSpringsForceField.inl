@@ -410,7 +410,7 @@ void PolynomialSpringsForceField<DataTypes>::addKToMatrix(const core::Mechanical
     {
         sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate1);
         if (!mref) return;
-        sofa::defaulttype::BaseMatrix* mat = mref.matrix;
+        sofa::linearalgebra::BaseMatrix* mat = mref.matrix;
         unsigned int offset = mref.offset;
 
         for (unsigned int index = 0; index < m_firstObjectIndices.size(); index++)

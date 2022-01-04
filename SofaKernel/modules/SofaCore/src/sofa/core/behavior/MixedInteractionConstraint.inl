@@ -47,7 +47,7 @@ bool MixedInteractionConstraint<DataTypes1, DataTypes2>::isActive() const
 }
 
 template<class DataTypes1, class DataTypes2>
-void MixedInteractionConstraint<DataTypes1, DataTypes2>::getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v)
+void MixedInteractionConstraint<DataTypes1, DataTypes2>::getConstraintViolation(const ConstraintParams* cParams, linearalgebra::BaseVector *v)
 {
     if (cParams)
     {
