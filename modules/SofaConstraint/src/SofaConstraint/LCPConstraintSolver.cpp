@@ -571,9 +571,9 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
                     p = p / merge_spatial_step;
                     posCoarse[i] = p;
                 }
-                std::pair< std::map<ConstCoord,int>::iterator, bool > res = coord2coarseId.insert(std::map<ConstCoord,int>::value_type(posCoarse, (int)num_group));
-                int idCoarse = res.first->second * 3;
-                if (res.second)
+                auto [insertIt, insertSuccess] = coord2coarseId.insert(std::map<ConstCoord,int>::value_type(posCoarse, (int)num_group));
+                int idCoarse = insertIt->second * 3;
+                if (insertSuccess)
                 {
                     // new group
                     newConstraintPositions.push_back(posCoarse);
