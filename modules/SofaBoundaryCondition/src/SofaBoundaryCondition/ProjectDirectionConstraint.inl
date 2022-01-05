@@ -88,10 +88,8 @@ void ProjectDirectionConstraint<DataTypes>::init()
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
-    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
-   
 
-    if (_topology)
+    if (sofa::core::topology::BaseMeshTopology* _topology = l_topology.get())
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
         
@@ -105,7 +103,7 @@ void ProjectDirectionConstraint<DataTypes>::init()
 
     const Indices & indices = f_indices.getValue();
 
-    Index maxIndex=this->mstate->getSize();
+    const Index maxIndex=this->mstate->getSize();
     for (unsigned int i=0; i<indices.size(); ++i)
     {
         const Index index=indices[i];
@@ -143,7 +141,7 @@ void  ProjectDirectionConstraint<DataTypes>::reinit()
 
     // resize the jacobian
     unsigned numBlocks = this->mstate->getSize();
-    unsigned blockSize = DataTypes::deriv_total_size;
+    const unsigned blockSize = DataTypes::deriv_total_size;
     jacobian.resize( numBlocks*blockSize,numBlocks*blockSize );
 
     // fill the jacobian in ascending order
@@ -154,7 +152,7 @@ void  ProjectDirectionConstraint<DataTypes>::reinit()
         if( it != tmp.end() && i==*it )  // constrained particle: set diagonal to projection block, and  the cursor to the next constraint
         {
             jacobian.insertBackBlock(i,i,bProjection);
-            it++;
+            ++it;
         }
         else           // unconstrained particle: set diagonal to identity block
         {
@@ -166,9 +164,9 @@ void  ProjectDirectionConstraint<DataTypes>::reinit()
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const Indices &indices = f_indices.getValue();
-    for( Indices::const_iterator it = indices.begin() ; it != indices.end() ; ++it )
+    for (const auto id : indices)
     {
-        m_origin.push_back( DataTypes::getCPos(x[*it]) );
+        m_origin.push_back(DataTypes::getCPos(x[id]));
     }
 
 }
@@ -200,9 +198,9 @@ void ProjectDirectionConstraint<DataTypes>::projectJacobianMatrix(const core::Me
 }
 
 template <class DataTypes>
-void ProjectDirectionConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vdata)
+void ProjectDirectionConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
-    projectResponse(mparams,vdata);
+    projectResponse(mparams,vData);
 }
 
 template <class DataTypes>

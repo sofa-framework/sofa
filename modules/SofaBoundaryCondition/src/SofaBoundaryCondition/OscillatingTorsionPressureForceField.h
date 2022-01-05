@@ -114,7 +114,7 @@ public:
 
     // returns the rotation of the driven part of the object relative to the original state (in radians)
     // this value is updated in addForce()
-    SReal getRotationAngle() { return rotationAngle; }
+    SReal getRotationAngle() const { return rotationAngle; }
 
 protected :
     OscillatingTorsionPressureForceField();

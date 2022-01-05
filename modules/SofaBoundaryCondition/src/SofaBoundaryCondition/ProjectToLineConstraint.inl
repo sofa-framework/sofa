@@ -88,9 +88,7 @@ void ProjectToLineConstraint<DataTypes>::init()
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
-    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
-
-    if (_topology)
+    if (sofa::core::topology::BaseMeshTopology* _topology = l_topology.get())
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
         
@@ -104,7 +102,7 @@ void ProjectToLineConstraint<DataTypes>::init()
 
     const Indices & indices = f_indices.getValue();
 
-    Index maxIndex=this->mstate->getSize();
+    const Index maxIndex=this->mstate->getSize();
     for (unsigned int i=0; i<indices.size(); ++i)
     {
         const Index index=indices[i];
@@ -148,7 +146,7 @@ void  ProjectToLineConstraint<DataTypes>::updateJacobian()
 
     // resize the jacobian
     unsigned numBlocks = this->mstate->getSize();
-    unsigned blockSize = DataTypes::deriv_total_size;
+    const unsigned blockSize = DataTypes::deriv_total_size;
     jacobian.resize( numBlocks*blockSize,numBlocks*blockSize );
 
     // fill the jacobian in ascending order
@@ -159,7 +157,7 @@ void  ProjectToLineConstraint<DataTypes>::updateJacobian()
         if( it!=tmp.end() && i==*it )  // constrained particle: set diagonal to projection block, and  the cursor to the next constraint
         {
             jacobian.insertBackBlock(i,i,bProjection);
-            it++;
+            ++it;
         }
         else           // unconstrained particle: set diagonal to identity block
         {
@@ -202,9 +200,9 @@ void ProjectToLineConstraint<DataTypes>::projectJacobianMatrix(const core::Mecha
 }
 
 template <class DataTypes>
-void ProjectToLineConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vdata)
+void ProjectToLineConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
-    projectResponse(mparams,vdata);
+    projectResponse(mparams,vData);
 }
 
 template <class DataTypes>

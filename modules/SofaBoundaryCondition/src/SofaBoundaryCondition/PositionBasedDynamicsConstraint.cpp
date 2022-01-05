@@ -63,12 +63,12 @@ void PositionBasedDynamicsConstraint<Rigid3Types>::projectPosition(const core::M
     SOFA_UNUSED(mparams);
 
     helper::WriteAccessor<DataVecCoord> res ( xData );
-    helper::ReadAccessor<DataVecCoord> tpos = position ;
+    const helper::ReadAccessor<DataVecCoord> tpos = position ;
     helper::WriteAccessor<DataVecDeriv> vel ( velocity );
     helper::WriteAccessor<DataVecCoord> old_pos ( old_position );
     if (tpos.size() != res.size()) { msg_error() << "Invalid target position vector size."; return; }
 
-    Real dt =  (Real)this->getContext()->getDt();
+    const Real dt =  (Real)this->getContext()->getDt();
     if(!dt) return;
 
     vel.resize(res.size());
@@ -80,7 +80,7 @@ void PositionBasedDynamicsConstraint<Rigid3Types>::projectPosition(const core::M
 
     Vec<3,Real> a; Real phi;
 
-    Real s = stiffness.getValue();
+    const Real s = stiffness.getValue();
     for( size_t i=0; i<res.size(); i++ )
     {
         res[i].getCenter() += ( tpos[i].getCenter() - res[i].getCenter()) * s;
