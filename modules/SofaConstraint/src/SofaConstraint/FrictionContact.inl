@@ -91,7 +91,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDe
 {
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
     // We need to remove duplicate contacts
-    const double minDist2 = 0.00000001f;
+    constexpr double minDist2 = 0.00000001f;
 
     contacts.clear();
 

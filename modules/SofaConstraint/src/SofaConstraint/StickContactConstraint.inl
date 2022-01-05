@@ -89,7 +89,7 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::setDetectionOutp
     if (!o) return;
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
     // We need to remove duplicate contacts
-    const double minDist2 = 0.00000001f;
+    constexpr double minDist2 = 0.00000001f;
 
 
     int SIZE = outputs.size();
