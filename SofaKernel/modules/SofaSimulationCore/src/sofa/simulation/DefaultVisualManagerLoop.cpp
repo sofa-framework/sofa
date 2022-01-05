@@ -28,10 +28,11 @@
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
+namespace sofa::core::objectmodel {
+    template class sofa::core::objectmodel::SingleLink< sofa::simulation::DefaultVisualManagerLoop, simulation::Node, BaseLink::FLAG_STOREPATH>;
+}
 
-namespace simulation
+namespace sofa::simulation
 {
 
 int DefaultVisualManagerLoopClass = core::RegisterObject("The simplest Visual Loop Manager, created by default when user do not put on scene")
@@ -40,7 +41,7 @@ int DefaultVisualManagerLoopClass = core::RegisterObject("The simplest Visual Lo
 
 DefaultVisualManagerLoop::DefaultVisualManagerLoop(simulation::Node* _gnode)
     : Inherit()
-    , l_node(initLink("targetNode","Link to the topology relevant for this object"))
+    , l_node(initLink("targetNode","Link to the scene's node where the rendering will take place"))
 {
     l_node.set(_gnode);
 }
@@ -160,8 +161,5 @@ simulation::Node* DefaultVisualManagerLoop::getNodeFromContext(BaseContext* cont
 {
     return dynamic_cast<simulation::Node*>(context);
 }
-
-
-} // namespace simulation
 
 } // namespace sofa
