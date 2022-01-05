@@ -609,7 +609,9 @@ RegisterObject::operator int()
         reg.deprecatedAliases = entry.deprecatedAliases;
 
         if(reg.compilationTarget.empty())
-            msg_warning("ObjectFactory") << "No compilationTarget for object " << entry.className;
+            dmsg_warning("ObjectFactory") << "No compilationTarget for object " << entry.className << msgendl
+                                          << "This is probably because '"<< entry.className <<"' is registered without proprely setting the compilation target it belong to."
+                                          << "To remove this warning you need to change sofa c++ code and register the object properly.";
 
         if (!entry.defaultTemplate.empty())
         {
