@@ -4,9 +4,9 @@ project(Sofa.Helper)
 # Eigen (header only)
 sofa_find_package(Eigen3 REQUIRED)
 # Json (header only) needed by AdvancedTimer
-sofa_find_package(Json 3.1.2 REQUIRED BOTH_SCOPES)
+sofa_find_package(Json 3.1.2 REQUIRED)
 # STB (header only)
-sofa_find_package(STB REQUIRED BOTH_SCOPES)
+sofa_find_package(STB REQUIRED)
 
 
 set(SRC_ROOT "src/sofa/helper")
