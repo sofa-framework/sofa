@@ -19,25 +19,44 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/MultiMapping.inl>
+#pragma once
 #include <sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/gui/qt/QModelViewTableDataContainer.h>
 
-namespace sofa::core
+namespace sofa::gui::qt
 {
-    using namespace sofa::gpu::cuda;
+////////////////////////////////////////////////////////////////
+/// variable-sized vectors support
+////////////////////////////////////////////////////////////////
 
-    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec1fTypes, CudaVec1fTypes >;
-    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec2fTypes, CudaVec1fTypes >;
-    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec2fTypes, CudaVec2fTypes >;
-    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec3fTypes, CudaVec3fTypes >;
-    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec3fTypes, CudaVec2fTypes >;
-    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec3fTypes, CudaVec1fTypes >;
-    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec6fTypes, CudaVec1fTypes >;
-    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec6fTypes, CudaVec6fTypes >;
-    template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3fTypes, CudaVec1fTypes >;
-    template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3fTypes, CudaVec3fTypes >;
-    template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3fTypes, CudaVec6fTypes >;
-    template class SOFA_GPU_CUDA_API MultiMapping< CudaRigid3fTypes, CudaRigid3fTypes >;
+template<class T>
+class vector_data_trait < sofa::gpu::cuda::CudaVector<T> >
+{
+public:
+    typedef sofa::gpu::cuda::CudaVector<T> data_type;
+    typedef T value_type;
+    enum { NDIM = 1 };
+    static int size(const data_type& d) {
+        return d.size();
+    }
+    static const char* header(const data_type& /*d*/, int /*i*/ = 0)
+    {
+        return nullptr;
+    }
+    static const value_type* get(const data_type& d, int i = 0)
+    {
+        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : nullptr;
+    }
+    static void set(const value_type& v, data_type& d, int i = 0)
+    {
+        if ((unsigned)i < (unsigned)size(d))
+            d[i] = v;
+    }
+    static void resize(int s, data_type& d)
+    {
+        d.resize(s);
+    }
+};
 
-    template class SOFA_GPU_CUDA_API MultiMapping< CudaVec3f1Types, CudaVec3f1Types >;
-}//namespace sofa::component::mapping
+
+} // namespace sofa::gui::qt

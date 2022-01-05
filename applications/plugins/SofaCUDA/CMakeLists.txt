@@ -258,6 +258,12 @@ else()
     message(STATUS "SofaCUDA: Plugin VolumetricRendering was not enabled/found, therefore CudaTetrahedralVisualModel will not be compiled.")
 endif()
 
+sofa_find_package(SofaGuiQt QUIET)
+if(SofaGuiQt_FOUND)
+    list(APPEND HEADER_FILES sofa/gpu/gui/CudaDataWidget.h)
+    list(APPEND SOURCE_FILES sofa/gpu/gui/CudaDataWidget.cpp)
+endif()
+
 find_package(SofaDistanceGrid QUIET)
 sofa_find_package(MiniFlowVR QUIET)
 
@@ -413,6 +419,10 @@ endif()
 
 if(MiniFlowVR_FOUND)
     target_link_libraries(${PROJECT_NAME} miniFlowVR)
+endif()
+
+if(SofaGuiQt_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaGuiQt)
 endif()
 
 
