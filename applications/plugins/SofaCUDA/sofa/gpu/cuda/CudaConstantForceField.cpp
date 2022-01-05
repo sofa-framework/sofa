@@ -33,8 +33,6 @@ namespace sofa::gpu::cuda
         .add< ConstantForceField<CudaVec2Types> >()
         .add< ConstantForceField<CudaVec1Types> >()
         .add< ConstantForceField<CudaVec6Types> >()
-        // .add< ConstantForceField<CudaRigid3Types> >() //Rigid3Types is a valid template, but CudaRigid3Types is not
-        // .add< ConstantForceField<CudaRigid2Types> >() //Rigid2Types is a valid template, but CudaRigid2Types is not
     ;
 }
 
@@ -46,6 +44,4 @@ namespace sofa::component::forcefield
     template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec2Types>;
     template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec1Types>;
     template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec6Types>;
-    // template class SOFA_GPU_CUDA_API ConstantForceField<CudaRigid3Types>; //Rigid3Types is a valid template, but CudaRigid3Types is not
-    // template class SOFA_GPU_CUDA_API ConstantForceField<CudaRigid2Types>; //Rigid2Types is a valid template, but CudaRigid2Types is not
 }
