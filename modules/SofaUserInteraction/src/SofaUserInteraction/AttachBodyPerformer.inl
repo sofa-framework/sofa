@@ -104,6 +104,13 @@ void AttachBodyPerformer<DataTypes>::clear()
             obj->cleanup();
             obj->getContext()->removeObject(obj);
         }
+        if (m_node)
+        {
+            for (auto* parent : m_node->getParents())
+            {
+                parent->removeChild(m_node);
+            }
+        }
         m_forcefield.reset();
         m_mstate.reset();
         m_subsetMapping.reset();
