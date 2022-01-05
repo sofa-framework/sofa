@@ -21,6 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/core/objectmodel/Base.h>
+#include <sofa/gui/qt/config.h>
 
 #include <QWidget>
 #include <QTextEdit>
@@ -33,7 +34,7 @@ namespace sofa::gui::qt
 {
 
 struct ModifyObjectFlags;
-class QDataDescriptionWidget : public QWidget
+class SOFA_SOFAGUIQT_API QDataDescriptionWidget : public QWidget
 {
     Q_OBJECT
 public:

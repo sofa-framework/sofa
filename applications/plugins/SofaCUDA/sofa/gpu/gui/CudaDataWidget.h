@@ -19,60 +19,44 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <OpenCTMPlugin/config.h>
+#pragma once
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/gui/qt/QModelViewTableDataContainer.h>
 
-namespace sofa
+namespace sofa::gui::qt
 {
+////////////////////////////////////////////////////////////////
+/// variable-sized vectors support
+////////////////////////////////////////////////////////////////
 
-namespace component
+template<class T>
+class vector_data_trait < sofa::gpu::cuda::CudaVector<T> >
 {
-
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_SOFAOPENCTM_API void initExternalModule();
-    SOFA_SOFAOPENCTM_API const char* getModuleName();
-    SOFA_SOFAOPENCTM_API const char* getModuleVersion();
-    SOFA_SOFAOPENCTM_API const char* getModuleLicense();
-    SOFA_SOFAOPENCTM_API const char* getModuleDescription();
-    SOFA_SOFAOPENCTM_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
+public:
+    typedef sofa::gpu::cuda::CudaVector<T> data_type;
+    typedef T value_type;
+    enum { NDIM = 1 };
+    static int size(const data_type& d) {
+        return d.size();
     }
-}
+    static const char* header(const data_type& /*d*/, int /*i*/ = 0)
+    {
+        return nullptr;
+    }
+    static const value_type* get(const data_type& d, int i = 0)
+    {
+        return ((unsigned)i < (unsigned)size(d)) ? &(d[i]) : nullptr;
+    }
+    static void set(const value_type& v, data_type& d, int i = 0)
+    {
+        if ((unsigned)i < (unsigned)size(d))
+            d[i] = v;
+    }
+    static void resize(int s, data_type& d)
+    {
+        d.resize(s);
+    }
+};
 
-const char* getModuleName()
-{
-    return "OpenCTM Plugin";
-}
 
-const char* getModuleVersion()
-{
-    return "0.1";
-}
-
-const char* getModuleLicense()
-{
-    return "Licence ZLIB";
-}
-
-const char* getModuleDescription()
-{
-    return "OpenCTM mesh format compatibility into SOFA";
-}
-
-const char* getModuleComponentList()
-{
-    return "OpenCTMLoader, OpenCTMExporter";
-}
-
-}
-
-}
-
+} // namespace sofa::gui::qt
