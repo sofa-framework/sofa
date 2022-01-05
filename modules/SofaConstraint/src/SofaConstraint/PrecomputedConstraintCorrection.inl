@@ -691,7 +691,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const lineara
     force.clear();
     force.resize(x_free.size());
 
-    std::list<int> activeDof;
+    std::list<int> activeDofs;
 
     MatrixDerivRowConstIterator rowItEnd = c.end();
 
@@ -707,30 +707,25 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const lineara
             {
                 unsigned int dof = colIt.index();
                 force[dof] += colIt.val() * fC1;
-                activeDof.push_back(dof);
+                activeDofs.push_back(dof);
             }
         }
     }
 
-    activeDof.sort();
-    activeDof.unique();
+    activeDofs.sort();
+    activeDofs.unique();
 
-
-    std::list<int>::iterator IterateurListe;
-    unsigned int i;
     unsigned int offset, offset2;
-    for (IterateurListe = activeDof.begin(); IterateurListe != activeDof.end(); ++IterateurListe)
+    for (const auto dofId : activeDofs)
     {
-        int f = (*IterateurListe);
-
-        for (i=0; i< dof_on_node; i++)
+        for (unsigned int i=0; i< dof_on_node; i++)
         {
-            Fbuf[i] = force[f][i];
+            Fbuf[i] = force[dofId][i];
         }
 
-        for(unsigned int v = 0 ; v < dx.size() ; v++)
+        for(unsigned int i = 0 ; i < dx.size() ; i++)
         {
-            offset =  v * dof_on_node * nbCols + f*dof_on_node;
+            offset =  i * dof_on_node * nbCols + dofId * dof_on_node;
             for (unsigned int j=0; j< dof_on_node; j++)
             {
                 offset2 = offset+ j*nbCols;
@@ -739,7 +734,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const lineara
                 {
                     DXbuf += appCompliance[ offset2 + i ] * Fbuf[i];
                 }
-                dx[v][j]+=DXbuf;
+                dx[i][j]+=DXbuf;
             }
         }
     }
