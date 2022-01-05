@@ -31,9 +31,9 @@ sofa_add_plugin(PreassembledMass PreassembledMass) # Depends on Flexible and Com
 sofa_add_plugin(ExternalBehaviorModel ExternalBehaviorModel)
 sofa_add_plugin_external(InvertibleFVM InvertibleFVM)
 sofa_add_plugin(MeshSTEPLoader MeshSTEPLoader)
-sofa_add_plugin(PluginExample PluginExample)
+sofa_add_plugin_external(PluginExample PluginExample)
 sofa_add_plugin(ManifoldTopologies ManifoldTopologies)
-sofa_add_plugin(OptiTrackNatNet OptiTrackNatNet)
+sofa_add_plugin_external(OptiTrackNatNet OptiTrackNatNet)
 sofa_add_plugin(SixenseHydra SixenseHydra)
 sofa_add_plugin(SofaOpenCL SofaOpenCL)
 sofa_add_plugin(Xitact Xitact)
@@ -50,7 +50,7 @@ sofa_add_plugin(LeapMotion LeapMotion)
 sofa_add_plugin(Geomagic Geomagic)
 sofa_add_plugin(SofaAssimp SofaAssimp) # ColladaSceneLoader Depends on Flexible and image
 sofa_add_plugin(SofaMatrix SofaMatrix ON) # Depends on image, CImgPlugin
-
+sofa_add_plugin_external(OpenCTMPlugin OpenCTMPlugin)
 
 sofa_add_plugin_experimental(PSL PSL)
 

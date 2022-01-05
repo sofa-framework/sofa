@@ -216,7 +216,7 @@ protected:
 
 
 
-class QPushButtonUpdater: public QPushButton
+class SOFA_SOFAGUIQT_API QPushButtonUpdater: public QPushButton
 {
     Q_OBJECT
 public:
@@ -228,7 +228,7 @@ public Q_SLOTS:
 };
 
 //Widget used to display the name of a Data and if needed the link to another Data
-class QDisplayDataInfoWidget: public QWidget
+class SOFA_SOFAGUIQT_API QDisplayDataInfoWidget: public QWidget
 {
     Q_OBJECT
 public:
