@@ -41,7 +41,6 @@ SOFA_SOFACONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3T
 
     const VecReal& comp = compliance.getValue();
 
-    VecReal usedComp;
     double  odeFactor = 1.0;
 
     this->getContext()->get(m_pOdeSolver);
@@ -66,6 +65,7 @@ SOFA_SOFACONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3T
 
     if (comp.size() != 7)
     {
+        VecReal usedComp;
         using sofa::component::mass::UniformMass;
         using sofa::defaulttype::Rigid3Types;
         using sofa::defaulttype::Rigid3Mass;
@@ -78,9 +78,8 @@ SOFA_SOFACONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3T
         if (node != nullptr)
         {
             core::behavior::BaseMass *m = node->mass;
-            UniformMass< Rigid3Types, Rigid3Mass > *um = dynamic_cast< UniformMass< Rigid3Types, Rigid3Mass >* > (m);
 
-            if (um)
+            if (UniformMass< Rigid3Types, Rigid3Mass > *um = dynamic_cast< UniformMass< Rigid3Types, Rigid3Mass >* > (m))
                 massValue = um->getVertexMass();
             else
                 msg_warning() << "No mass found.";

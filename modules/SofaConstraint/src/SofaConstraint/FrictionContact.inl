@@ -209,9 +209,9 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::creat
     if ( mu_ < 0.0 )
         msg_error() << "mu has to take positive values";
 
-    int i=0;
     if (m_constraint)
     {
+        int i=0;
         for (std::vector<sofa::core::collision::DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
         {
             sofa::core::collision::DetectionOutput* o = *it;

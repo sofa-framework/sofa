@@ -469,7 +469,7 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Compliance()
 void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
 {
     const int merge_spatial_step = this->merge_spatial_step.getValue();
-    const int merge_spatial_shift = 0; // merge_spatial_step/2
+    constexpr int merge_spatial_shift = 0; // merge_spatial_step/2
     const int merge_local_levels = this->merge_local_levels.getValue();
     int numConstraints = _numConstraints;
     int numContacts = numConstraints/3;
@@ -1380,7 +1380,7 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
     type::Vector3 showLevelTranslation = this->showLevelTranslation.getValue();
 
     const int merge_spatial_step = this->merge_spatial_step.getValue();
-    const int merge_spatial_shift = 0; // merge_spatial_step/2
+    constexpr int merge_spatial_shift = 0; // merge_spatial_step/2
     const int merge_local_levels = this->merge_local_levels.getValue();
 
     vparams->drawTool()->saveLastState();
