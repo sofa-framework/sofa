@@ -86,7 +86,7 @@ public:
     SingleLink<HermiteSplineConstraint<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
     
 protected:
-    HermiteSplineConstraint(core::behavior::MechanicalState<DataTypes>* mstate = nullptr);
+    explicit HermiteSplineConstraint(core::behavior::MechanicalState<DataTypes>* mstate = nullptr);
 
     ~HermiteSplineConstraint();
 public:

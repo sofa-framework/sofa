@@ -211,25 +211,15 @@ struct Hexahedron
                                  const Node& n4, const Node& n5, const Node& n6, const Node& n7)
     {
         constexpr Node n{};
-        //static_assert(std::distance(std::begin(n), std::end(n)) == 3, "volume can only be computed in 3 dimensions.");
+        static_assert(std::distance(std::begin(n), std::end(n)) == 3, "volume can only be computed in 3 dimensions.");
 
-        if constexpr (std::distance(std::begin(n), std::end(n)) == 3)
-        {
-            return sofa::geometry::Tetrahedron::volume(n0, n5, n1, n6)
-                 + sofa::geometry::Tetrahedron::volume(n0, n1, n3, n6)
-                 + sofa::geometry::Tetrahedron::volume(n1, n3, n6, n2)
-                 + sofa::geometry::Tetrahedron::volume(n6, n3, n0, n7)
-                 + sofa::geometry::Tetrahedron::volume(n6, n7, n0, n5)
-                 + sofa::geometry::Tetrahedron::volume(n7, n5, n4, n0);
-        }
-        else
-        {
-            BOOST_STATIC_WARNING(true)
-            //does not make sense to compute volume other than 3D
-            //but some code effectively wants 2d volumes(??)
-            //an exception may be a better solution
-            return static_cast<T>(0);
-        }
+        return sofa::geometry::Tetrahedron::volume(n0, n5, n1, n6)
+             + sofa::geometry::Tetrahedron::volume(n0, n1, n3, n6)
+             + sofa::geometry::Tetrahedron::volume(n1, n3, n6, n2)
+             + sofa::geometry::Tetrahedron::volume(n6, n3, n0, n7)
+             + sofa::geometry::Tetrahedron::volume(n6, n7, n0, n5)
+             + sofa::geometry::Tetrahedron::volume(n7, n5, n4, n0);
+
     }
 };
 

@@ -41,6 +41,7 @@ LinearVelocityConstraint<TDataTypes>::LinearVelocityConstraint()
     , d_keyVelocities(  initData(&d_keyVelocities,"velocities","velocities corresponding to the key times") )
     , d_coordinates( initData(&d_coordinates, "coordinates", "coordinates on which to apply velocities") )
     , l_topology(initLink("topology", "link to the topology container"))
+    , finished(false)
 {
     d_indices.beginEdit()->push_back(0);
     d_indices.endEdit();
@@ -111,9 +112,7 @@ void LinearVelocityConstraint<TDataTypes>::init()
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
-    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
-
-    if (_topology)
+    if (sofa::core::topology::BaseMeshTopology* _topology = l_topology.get())
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
@@ -300,8 +299,8 @@ void LinearVelocityConstraint<DataTypes>::findKeyTimes()
                 nextV = *it_v;
                 finished = true;
             }
-            it_t++;
-            it_v++;
+            ++it_t;
+            ++it_v;
         }
     }
 }// LinearVelocityConstraint::findKeyTimes
@@ -322,7 +321,7 @@ void LinearVelocityConstraint<TDataTypes>::draw(const core::visual::VisualParams
     vparams->drawTool()->disableLighting();
 
     std::vector<sofa::type::Vector3> vertices;
-    sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
+    const sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
     const VecDeriv& keyVelocities = d_keyVelocities.getValue();
     const SetIndexArray & indices = d_indices.getValue();
     for (unsigned int i=0 ; i<keyVelocities.size()-1 ; i++)

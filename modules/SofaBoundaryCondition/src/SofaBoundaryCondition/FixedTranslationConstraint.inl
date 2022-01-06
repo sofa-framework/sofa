@@ -84,9 +84,7 @@ void FixedTranslationConstraint<DataTypes>::init()
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
-    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
-    
-    if (_topology)
+    if (sofa::core::topology::BaseMeshTopology* _topology = l_topology.get())
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
@@ -183,7 +181,7 @@ void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParam
     vparams->drawTool()->disableLighting();
 
     std::vector<sofa::type::Vector3> vertices;
-    sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
+    const sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
 
     if (f_fixAll.getValue() == true)
     {

@@ -9,7 +9,7 @@
 #       - damien.marchal@univ-lille.1
 #############################################################################
 import threading
-import Queue
+from queue import Queue
 import tempfile 
 import sys
 from Cheetah.Template import Template
@@ -59,7 +59,7 @@ class SerialLauncher(Launcher):
 class ParallelLauncher(Launcher):
         def __init__(self, numprocess):
                 self.numprocess = numprocess
-                self.pendingtask = Queue.Queue()
+                self.pendingtask = Queue()
                 self.times = {}
                                
                 # Create the threads
