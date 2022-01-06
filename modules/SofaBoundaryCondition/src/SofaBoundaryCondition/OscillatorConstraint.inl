@@ -117,7 +117,7 @@ void OscillatorConstraint<TDataTypes>::projectJacobianMatrix(const core::Mechani
 }
 
 template <class TDataTypes>
-OscillatorConstraint<TDataTypes>::Oscillator::Oscillator()
+OscillatorConstraint<TDataTypes>::Oscillator::Oscillator(): index(0)
 {
 }
 

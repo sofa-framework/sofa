@@ -25,7 +25,7 @@ sofa_add_plugin_external(Compliant Compliant)
 sofa_add_subdirectory_external(SofaPython3 SofaPython3)
 sofa_add_plugin_external(CGALPlugin CGALPlugin) # Depends on image
 sofa_add_plugin_external(Flexible Flexible)     # Depends on image, CImgPlugin, SofaHighOrderTopology (soft)
-sofa_add_plugin(Registration Registration) # Depends on image, SofaPython, SofaSimpleGUI and #SOFADISTANCEGRID
+sofa_add_plugin_external(Registration Registration) # Depends on image, SofaPython, SofaGui and SofaDistanceGrid
 sofa_add_plugin(BulletCollisionDetection BulletCollisionDetection) # Depends on Compliant and LMConstraint
 sofa_add_plugin(PreassembledMass PreassembledMass) # Depends on Flexible and Compliant
 sofa_add_plugin(ExternalBehaviorModel ExternalBehaviorModel)
@@ -50,7 +50,7 @@ sofa_add_plugin(LeapMotion LeapMotion)
 sofa_add_plugin(Geomagic Geomagic)
 sofa_add_plugin(SofaAssimp SofaAssimp) # ColladaSceneLoader Depends on Flexible and image
 sofa_add_plugin(SofaMatrix SofaMatrix ON) # Depends on image, CImgPlugin
-
+sofa_add_plugin_external(OpenCTMPlugin OpenCTMPlugin)
 
 sofa_add_plugin_experimental(PSL PSL)
 

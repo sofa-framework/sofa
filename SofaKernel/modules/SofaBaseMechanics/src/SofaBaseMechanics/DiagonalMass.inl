@@ -152,6 +152,7 @@ void DiagonalMass<DataTypes,MassType>::applyEdgeDestruction(const sofa::type::ve
 
 
 template <class DataTypes, class MassType>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 2, int > >
 void DiagonalMass<DataTypes,MassType>::applyTriangleCreation(const sofa::type::vector< TriangleID >& triangleAdded,
         const sofa::type::vector< Triangle >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< TriangleID > >& /*ancestors*/,
@@ -194,8 +195,10 @@ void DiagonalMass<DataTypes,MassType>::applyTriangleCreation(const sofa::type::v
 }
 
 template <class DataTypes, class MassType>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 2, int > >
 void DiagonalMass<DataTypes,MassType>::applyTriangleDestruction(const sofa::type::vector<TriangleID > & triangleRemoved)
 {
+
     if (this->getMassTopologyType() == sofa::geometry::ElementType::TRIANGLE)
     {
         const auto& restPositions = this->getMState()->read(core::ConstVecCoordId::restPosition())->getValue();
@@ -203,14 +206,14 @@ void DiagonalMass<DataTypes,MassType>::applyTriangleDestruction(const sofa::type
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
 
-        typename DataTypes::Real md=getMassDensity();
-        typename DataTypes::Real mass=typename DataTypes::Real(0);
+        typename DataTypes::Real md = getMassDensity();
+        typename DataTypes::Real mass = typename DataTypes::Real(0);
         unsigned int i;
 
-        for (i=0; i<triangleRemoved.size(); ++i)
+        for (i = 0; i < triangleRemoved.size(); ++i)
         {
             /// get the triangle to be added
-            const Triangle &t= this->m_topology->getTriangle(triangleRemoved[i]);
+            const Triangle& t = this->m_topology->getTriangle(triangleRemoved[i]);
 
             /// compute its mass based on the mass density and the triangle area
             const auto& rpos0 = DataTypes::getCPos(restPositions[t[0]]);
@@ -221,9 +224,9 @@ void DiagonalMass<DataTypes,MassType>::applyTriangleDestruction(const sofa::type
             mass = (md * restTriangleArea) / (typename DataTypes::Real(3.0));
 
             /// removed  mass on its three vertices
-            masses[t[0]]-=mass;
-            masses[t[1]]-=mass;
-            masses[t[2]]-=mass;
+            masses[t[0]] -= mass;
+            masses[t[1]] -= mass;
+            masses[t[2]] -= mass;
 
             totalMass -= 3.0 * mass;
         }
@@ -235,6 +238,7 @@ void DiagonalMass<DataTypes,MassType>::applyTriangleDestruction(const sofa::type
 
 
 template <class DataTypes, class MassType>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 2, int > >
 void DiagonalMass<DataTypes, MassType>::applyQuadCreation(const sofa::type::vector< QuadID >& quadAdded,
     const sofa::type::vector< Quad >& /*elems*/,
     const sofa::type::vector< sofa::type::vector< QuadID > >& /*ancestors*/,
@@ -280,6 +284,7 @@ void DiagonalMass<DataTypes, MassType>::applyQuadCreation(const sofa::type::vect
 }
 
 template <class DataTypes, class MassType>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 2, int > >
 void DiagonalMass<DataTypes, MassType>::applyQuadDestruction(const sofa::type::vector<QuadID >& quadRemoved)
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::QUAD)
@@ -323,6 +328,7 @@ void DiagonalMass<DataTypes, MassType>::applyQuadDestruction(const sofa::type::v
 
 
 template <class DataTypes, class MassType>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 3, int > >
 void DiagonalMass<DataTypes,MassType>::applyTetrahedronCreation(const sofa::type::vector< TetrahedronID >& tetrahedronAdded,
         const sofa::type::vector< Tetrahedron >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< TetrahedronID > >& /*ancestors*/,
@@ -335,14 +341,14 @@ void DiagonalMass<DataTypes,MassType>::applyTetrahedronCreation(const sofa::type
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
 
-        typename DataTypes::Real md=getMassDensity();
-        typename DataTypes::Real mass=typename DataTypes::Real(0);
+        typename DataTypes::Real md = getMassDensity();
+        typename DataTypes::Real mass = typename DataTypes::Real(0);
         unsigned int i;
 
-        for (i=0; i<tetrahedronAdded.size(); ++i)
+        for (i = 0; i < tetrahedronAdded.size(); ++i)
         {
             /// get the tetrahedron to be added
-            const Tetrahedron &t= this->m_topology->getTetrahedron(tetrahedronAdded[i]);
+            const Tetrahedron& t = this->m_topology->getTetrahedron(tetrahedronAdded[i]);
 
             /// compute its mass based on the mass density and the tetrahedron volume
             const auto& rpos0 = DataTypes::getCPos(restPositions[t[0]]);
@@ -354,12 +360,12 @@ void DiagonalMass<DataTypes,MassType>::applyTetrahedronCreation(const sofa::type
             mass = (md * restTetraVolume) / (typename DataTypes::Real(4.0));
 
             /// added  mass on its four vertices
-            masses[t[0]]+=mass;
-            masses[t[1]]+=mass;
-            masses[t[2]]+=mass;
-            masses[t[3]]+=mass;
+            masses[t[0]] += mass;
+            masses[t[1]] += mass;
+            masses[t[2]] += mass;
+            masses[t[3]] += mass;
 
-            totalMass += 4.0*mass;
+            totalMass += 4.0 * mass;
         }
 
         this->cleanTracker();
@@ -368,6 +374,7 @@ void DiagonalMass<DataTypes,MassType>::applyTetrahedronCreation(const sofa::type
 }
 
 template <class DataTypes, class MassType>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 3, int > >
 void DiagonalMass<DataTypes,MassType>::applyTetrahedronDestruction(const sofa::type::vector<TetrahedronID> & tetrahedronRemoved)
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::TETRAHEDRON)
@@ -377,14 +384,14 @@ void DiagonalMass<DataTypes,MassType>::applyTetrahedronDestruction(const sofa::t
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
 
-        typename DataTypes::Real md=getMassDensity();
-        typename DataTypes::Real mass=typename DataTypes::Real(0);
+        typename DataTypes::Real md = getMassDensity();
+        typename DataTypes::Real mass = typename DataTypes::Real(0);
         unsigned int i;
 
-        for (i=0; i<tetrahedronRemoved.size(); ++i)
+        for (i = 0; i < tetrahedronRemoved.size(); ++i)
         {
             /// get the tetrahedron to be added
-            const Tetrahedron &t= this->m_topology->getTetrahedron(tetrahedronRemoved[i]);
+            const Tetrahedron& t = this->m_topology->getTetrahedron(tetrahedronRemoved[i]);
 
             /// compute its mass based on the mass density and the tetrahedron volume
             const auto& rpos0 = DataTypes::getCPos(restPositions[t[0]]);
@@ -396,12 +403,12 @@ void DiagonalMass<DataTypes,MassType>::applyTetrahedronDestruction(const sofa::t
             mass = (md * restTetraVolume) / (typename DataTypes::Real(4.0));
 
             // removed  mass on its four vertices
-            masses[t[0]]-=mass;
-            masses[t[1]]-=mass;
-            masses[t[2]]-=mass;
-            masses[t[3]]-=mass;
+            masses[t[0]] -= mass;
+            masses[t[1]] -= mass;
+            masses[t[2]] -= mass;
+            masses[t[3]] -= mass;
 
-            totalMass -= 4.0*mass;
+            totalMass -= 4.0 * mass;
         }
 
         this->cleanTracker();
@@ -411,6 +418,7 @@ void DiagonalMass<DataTypes,MassType>::applyTetrahedronDestruction(const sofa::t
 
 
 template <class DataTypes, class MassType>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 3, int > >
 void DiagonalMass<DataTypes,MassType>::applyHexahedronCreation(const sofa::type::vector< HexahedronID >& hexahedronAdded,
         const sofa::type::vector< Hexahedron >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< HexahedronID > >& /*ancestors*/,
@@ -423,14 +431,14 @@ void DiagonalMass<DataTypes,MassType>::applyHexahedronCreation(const sofa::type:
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
 
-        typename DataTypes::Real md=getMassDensity();
-        typename DataTypes::Real mass=typename DataTypes::Real(0);
+        typename DataTypes::Real md = getMassDensity();
+        typename DataTypes::Real mass = typename DataTypes::Real(0);
         unsigned int i;
 
-        for (i=0; i<hexahedronAdded.size(); ++i)
+        for (i = 0; i < hexahedronAdded.size(); ++i)
         {
             /// get the tetrahedron to be added
-            const Hexahedron &h=this->m_topology->getHexahedron(hexahedronAdded[i]);
+            const Hexahedron& h = this->m_topology->getHexahedron(hexahedronAdded[i]);
             // compute its mass based on the mass density and the tetrahedron volume
             const auto& rpos0 = DataTypes::getCPos(restPositions[h[0]]);
             const auto& rpos1 = DataTypes::getCPos(restPositions[h[1]]);
@@ -445,10 +453,10 @@ void DiagonalMass<DataTypes,MassType>::applyHexahedronCreation(const sofa::type:
             mass = (md * hexaVolume) / (typename DataTypes::Real(8.0));
 
             // added  mass on its eight vertices
-            for (unsigned int j=0; j<8; ++j)
-                masses[h[j]]+=mass;
+            for (unsigned int j = 0; j < 8; ++j)
+                masses[h[j]] += mass;
 
-            totalMass += 8.0*mass;
+            totalMass += 8.0 * mass;
         }
 
         this->cleanTracker();
@@ -457,6 +465,7 @@ void DiagonalMass<DataTypes,MassType>::applyHexahedronCreation(const sofa::type:
 }
 
 template <class DataTypes, class MassType>
+template <typename T, typename std::enable_if_t<T::spatial_dimensions >= 3, int > >
 void DiagonalMass<DataTypes,MassType>::applyHexahedronDestruction(const sofa::type::vector<HexahedronID> & hexahedronRemoved)
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::HEXAHEDRON)
@@ -466,14 +475,14 @@ void DiagonalMass<DataTypes,MassType>::applyHexahedronDestruction(const sofa::ty
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
 
-        typename DataTypes::Real md=getMassDensity();
-        typename DataTypes::Real mass=(typename DataTypes::Real) 0;
+        typename DataTypes::Real md = getMassDensity();
+        typename DataTypes::Real mass = (typename DataTypes::Real) 0;
         unsigned int i;
 
-        for (i=0; i<hexahedronRemoved.size(); ++i)
+        for (i = 0; i < hexahedronRemoved.size(); ++i)
         {
             /// get the tetrahedron to be added
-            const Hexahedron &h=this->m_topology->getHexahedron(hexahedronRemoved[i]);
+            const Hexahedron& h = this->m_topology->getHexahedron(hexahedronRemoved[i]);
 
             // compute its mass based on the mass density and the tetrahedron volume
             const auto& rpos0 = DataTypes::getCPos(restPositions[h[0]]);
@@ -489,10 +498,10 @@ void DiagonalMass<DataTypes,MassType>::applyHexahedronDestruction(const sofa::ty
             mass = (md * hexaVolume) / (typename DataTypes::Real(8.0));
 
             // removed  mass on its eight vertices
-            for (unsigned int j=0; j<8; ++j)
-                masses[h[j]]-=mass;
+            for (unsigned int j = 0; j < 8; ++j)
+                masses[h[j]] -= mass;
 
-            totalMass -= 8.0*mass;
+            totalMass -= 8.0 * mass;
         }
 
         this->cleanTracker();
@@ -660,7 +669,7 @@ void DiagonalMass<DataTypes, MassType>::initTopologyHandlers()
         applyPointDestruction(pointIndex, m);
     });
 
-    if (m_manageElementTypeChange == sofa::geometry::ElementType::EDGE)
+    if (m_massTopologyType == sofa::geometry::ElementType::EDGE)
     {
         d_vertexMass.linkToEdgeDataArray();
         d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::EDGESADDED, [this](const core::topology::TopologyChange* eventTopo) {
@@ -672,53 +681,61 @@ void DiagonalMass<DataTypes, MassType>::initTopologyHandlers()
             applyEdgeDestruction(edgeRemove->getArray());
         });
     }
-    if (m_manageElementTypeChange == sofa::geometry::ElementType::TRIANGLE)
+
+    if constexpr (DataTypes::spatial_dimensions >= 3)
     {
-        d_vertexMass.linkToTriangleDataArray();
-        d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESADDED, [this](const core::topology::TopologyChange* eventTopo) {
-            const core::topology::TrianglesAdded* tAdd = static_cast<const core::topology::TrianglesAdded*>(eventTopo);
-            applyTriangleCreation(tAdd->getIndexArray(), tAdd->getElementArray(), tAdd->ancestorsList, tAdd->coefs);
-        });
-        d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
-            const core::topology::TrianglesRemoved* tRemove = static_cast<const core::topology::TrianglesRemoved*>(eventTopo);
-            applyTriangleDestruction(tRemove->getArray());
-        });
+        if (m_massTopologyType == sofa::geometry::ElementType::TETRAHEDRON)
+        {
+            d_vertexMass.linkToTetrahedronDataArray();
+            d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAADDED, [this](const core::topology::TopologyChange* eventTopo) {
+                const core::topology::TetrahedraAdded* tAdd = static_cast<const core::topology::TetrahedraAdded*>(eventTopo);
+                applyTetrahedronCreation(tAdd->getIndexArray(), tAdd->getElementArray(), tAdd->ancestorsList, tAdd->coefs);
+                });
+            d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
+                const core::topology::TetrahedraRemoved* tRemove = static_cast<const core::topology::TetrahedraRemoved*>(eventTopo);
+                applyTetrahedronDestruction(tRemove->getArray());
+                });
+        }
+        if (m_massTopologyType == sofa::geometry::ElementType::HEXAHEDRON)
+        {
+            d_vertexMass.linkToHexahedronDataArray();
+            d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::HEXAHEDRAADDED, [this](const core::topology::TopologyChange* eventTopo) {
+                const core::topology::HexahedraAdded* hAdd = static_cast<const core::topology::HexahedraAdded*>(eventTopo);
+                applyHexahedronCreation(hAdd->getIndexArray(), hAdd->getElementArray(), hAdd->ancestorsList, hAdd->coefs);
+                });
+            d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::HEXAHEDRAREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
+                const core::topology::HexahedraRemoved* hRemove = static_cast<const core::topology::HexahedraRemoved*>(eventTopo);
+                applyHexahedronDestruction(hRemove->getArray());
+                });
+        }
     }
-    if (m_manageElementTypeChange == sofa::geometry::ElementType::QUAD)
+
+    if constexpr (DataTypes::spatial_dimensions >= 2)
     {
-        d_vertexMass.linkToQuadDataArray();
-        d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::QUADSADDED, [this](const core::topology::TopologyChange* eventTopo) {
-            const core::topology::QuadsAdded* qAdd = static_cast<const core::topology::QuadsAdded*>(eventTopo);
-            applyQuadCreation(qAdd->getIndexArray(), qAdd->getElementArray(), qAdd->ancestorsList, qAdd->coefs);
-        });
-        d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::QUADSREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
-            const core::topology::QuadsRemoved* qRemove = static_cast<const core::topology::QuadsRemoved*>(eventTopo);
-            applyQuadDestruction(qRemove->getArray());
-        });
-    }
-    if (m_manageElementTypeChange == sofa::geometry::ElementType::TETRAHEDRON)
-    {
-        d_vertexMass.linkToTetrahedronDataArray();
-        d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAADDED, [this](const core::topology::TopologyChange* eventTopo) {
-            const core::topology::TetrahedraAdded* tAdd = static_cast<const core::topology::TetrahedraAdded*>(eventTopo);
-            applyTetrahedronCreation(tAdd->getIndexArray(), tAdd->getElementArray(), tAdd->ancestorsList, tAdd->coefs);
-        });
-        d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TETRAHEDRAREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
-            const core::topology::TetrahedraRemoved* tRemove = static_cast<const core::topology::TetrahedraRemoved*>(eventTopo);
-            applyTetrahedronDestruction(tRemove->getArray());
-        });
-    }
-    if (m_manageElementTypeChange == sofa::geometry::ElementType::HEXAHEDRON)
-    {
-        d_vertexMass.linkToHexahedronDataArray();
-        d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::HEXAHEDRAADDED, [this](const core::topology::TopologyChange* eventTopo) {
-            const core::topology::HexahedraAdded* hAdd = static_cast<const core::topology::HexahedraAdded*>(eventTopo);
-            applyHexahedronCreation(hAdd->getIndexArray(), hAdd->getElementArray(), hAdd->ancestorsList, hAdd->coefs);
-        });
-        d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::HEXAHEDRAREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
-            const core::topology::HexahedraRemoved* hRemove = static_cast<const core::topology::HexahedraRemoved*>(eventTopo);
-            applyHexahedronDestruction(hRemove->getArray());
-        });
+        if (m_massTopologyType == sofa::geometry::ElementType::TRIANGLE)
+        {
+            d_vertexMass.linkToTriangleDataArray();
+            d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESADDED, [this](const core::topology::TopologyChange* eventTopo) {
+                const core::topology::TrianglesAdded* tAdd = static_cast<const core::topology::TrianglesAdded*>(eventTopo);
+                applyTriangleCreation(tAdd->getIndexArray(), tAdd->getElementArray(), tAdd->ancestorsList, tAdd->coefs);
+            });
+            d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::TRIANGLESREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
+                const core::topology::TrianglesRemoved* tRemove = static_cast<const core::topology::TrianglesRemoved*>(eventTopo);
+                applyTriangleDestruction(tRemove->getArray());
+            });
+        }
+        if (m_massTopologyType == sofa::geometry::ElementType::QUAD)
+        {
+            d_vertexMass.linkToQuadDataArray();
+            d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::QUADSADDED, [this](const core::topology::TopologyChange* eventTopo) {
+                const core::topology::QuadsAdded* qAdd = static_cast<const core::topology::QuadsAdded*>(eventTopo);
+                applyQuadCreation(qAdd->getIndexArray(), qAdd->getElementArray(), qAdd->ancestorsList, qAdd->coefs);
+            });
+            d_vertexMass.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::QUADSREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
+                const core::topology::QuadsRemoved* qRemove = static_cast<const core::topology::QuadsRemoved*>(eventTopo);
+                applyQuadDestruction(qRemove->getArray());
+            });
+        }
     }
 }
 
@@ -746,31 +763,31 @@ bool DiagonalMass<DataTypes, MassType>::checkTopology()
         if (m_topology->getNbHexahedra() > 0)
         {
             msg_info() << "Hexahedral topology found.";
-            m_manageElementTypeChange = sofa::geometry::ElementType::HEXAHEDRON;
+            m_massTopologyType = sofa::geometry::ElementType::HEXAHEDRON;
             return true;
         }
         else if (m_topology->getNbTetrahedra() > 0)
         {
             msg_info() << "Tetrahedral topology found.";
-            m_manageElementTypeChange = sofa::geometry::ElementType::TETRAHEDRON;
+            m_massTopologyType = sofa::geometry::ElementType::TETRAHEDRON;
             return true;
         }
         else if (m_topology->getNbQuads() > 0)
         {
             msg_info() << "Quad topology found.";
-            m_manageElementTypeChange = sofa::geometry::ElementType::QUAD;
+            m_massTopologyType = sofa::geometry::ElementType::QUAD;
             return true;
         }
         else if (m_topology->getNbTriangles() > 0)
         {
             msg_info() << "Triangular topology found."; 
-            m_manageElementTypeChange = sofa::geometry::ElementType::TRIANGLE;
+            m_massTopologyType = sofa::geometry::ElementType::TRIANGLE;
             return true;
         }
         else if (m_topology->getNbEdges() > 0)
         {
             msg_info() << "Edge topology found.";
-            m_manageElementTypeChange = sofa::geometry::ElementType::EDGE;
+            m_massTopologyType = sofa::geometry::ElementType::EDGE;
             return true;
         }
         else
@@ -947,119 +964,121 @@ typename DiagonalMass<DataTypes, MassType>::Real DiagonalMass<DataTypes, MassTyp
     masses.clear();
     masses.resize(this->mstate->getSize(), Real(0));
 
-    if (m_topology->getNbHexahedra() > 0 && m_manageElementTypeChange == sofa::geometry::ElementType::HEXAHEDRON)
+    if constexpr (DataTypes::spatial_dimensions >= 1)
     {
-        m_massTopologyType = sofa::geometry::ElementType::HEXAHEDRON;
-
-        for (Topology::HexahedronID i = 0; i < m_topology->getNbHexahedra(); ++i)
+        if (m_massTopologyType == sofa::geometry::ElementType::EDGE)
         {
-            const Hexahedron& h = m_topology->getHexahedron(i);
-
-            /// compute its mass based on the mass density and the hexahedron volume
-            const auto& rpos0 = DataTypes::getCPos(positions[h[0]]);
-            const auto& rpos1 = DataTypes::getCPos(positions[h[1]]);
-            const auto& rpos2 = DataTypes::getCPos(positions[h[2]]);
-            const auto& rpos3 = DataTypes::getCPos(positions[h[3]]);
-            const auto& rpos4 = DataTypes::getCPos(positions[h[4]]);
-            const auto& rpos5 = DataTypes::getCPos(positions[h[5]]);
-            const auto& rpos6 = DataTypes::getCPos(positions[h[6]]);
-            const auto& rpos7 = DataTypes::getCPos(positions[h[7]]);
-
-            const auto hexaVolume = sofa::geometry::Hexahedron::volume(rpos0, rpos1, rpos2, rpos3, rpos4, rpos5, rpos6, rpos7);
-            mass = (density * hexaVolume) / (typename DataTypes::Real(8.0));
-
-            for (unsigned int j = 0; j < h.size(); j++)
+            for (Topology::EdgeID i = 0; i < m_topology->getNbEdges(); ++i)
             {
-                masses[h[j]] += mass;
-                total_mass += mass;
+                const Edge& e = m_topology->getEdge(i);
+
+                const auto& pos0 = DataTypes::getCPos(positions[e[0]]);
+                const auto& pos1 = DataTypes::getCPos(positions[e[1]]);
+
+                const auto edgeLength = sofa::geometry::Edge::length(pos0, pos1);
+                mass = (density * edgeLength) / (Real(2.0));
+
+                for (unsigned int j = 0; j < e.size(); j++)
+                {
+                    masses[e[j]] += mass;
+                    total_mass += mass;
+                }
             }
         }
     }
-    else if (m_topology->getNbTetrahedra() > 0 && m_manageElementTypeChange == sofa::geometry::ElementType::TETRAHEDRON)
+
+    if constexpr (DataTypes::spatial_dimensions >= 2)
     {
-        m_massTopologyType = sofa::geometry::ElementType::TETRAHEDRON;
-
-        for (Topology::TetrahedronID i = 0; i < m_topology->getNbTetrahedra(); ++i)
+        if (m_massTopologyType == sofa::geometry::ElementType::TRIANGLE)
         {
-            const Tetrahedron& t = m_topology->getTetrahedron(i);
-
-            /// compute its mass based on the mass density and the tetrahedron volume
-            const auto& rpos0 = DataTypes::getCPos(positions[t[0]]);
-            const auto& rpos1 = DataTypes::getCPos(positions[t[1]]);
-            const auto& rpos2 = DataTypes::getCPos(positions[t[2]]);
-            const auto& rpos3 = DataTypes::getCPos(positions[t[3]]);
-
-            const auto tetraVolume = sofa::geometry::Tetrahedron::volume(rpos0, rpos1, rpos2, rpos3);
-            mass = (density * tetraVolume) / (typename DataTypes::Real(4.0));
-            for (unsigned int j = 0; j < t.size(); j++)
+            for (Topology::TriangleID i = 0; i < m_topology->getNbTriangles(); ++i)
             {
-                masses[t[j]] += mass;
-                total_mass += mass;
+                const Triangle& t = m_topology->getTriangle(i);
+
+                const auto& pos0 = DataTypes::getCPos(positions[t[0]]);
+                const auto& pos1 = DataTypes::getCPos(positions[t[1]]);
+                const auto& pos2 = DataTypes::getCPos(positions[t[2]]);
+
+                const auto triangleArea = sofa::geometry::Triangle::area(pos0, pos1, pos2);
+                mass = (density * triangleArea) / (Real(3.0));
+
+                for (unsigned int j = 0; j < t.size(); j++)
+                {
+                    masses[t[j]] += mass;
+                    total_mass += mass;
+                }
+            }
+        }
+
+        if (m_massTopologyType == sofa::geometry::ElementType::QUAD)
+        {
+            for (Topology::QuadID i = 0; i < m_topology->getNbQuads(); ++i)
+            {
+                const Quad& q = m_topology->getQuad(i);
+
+                const auto& pos0 = DataTypes::getCPos(positions[q[0]]);
+                const auto& pos1 = DataTypes::getCPos(positions[q[1]]);
+                const auto& pos2 = DataTypes::getCPos(positions[q[2]]);
+                const auto& pos3 = DataTypes::getCPos(positions[q[3]]);
+
+                const auto quadArea = sofa::geometry::Quad::area(pos0, pos1, pos2, pos3);
+                mass = (density * quadArea) / (Real(4.0));
+                for (unsigned int j = 0; j < q.size(); j++)
+                {
+                    masses[q[j]] += mass;
+                    total_mass += mass;
+                }
             }
         }
     }
-    else if (m_topology->getNbQuads() > 0 && m_manageElementTypeChange == sofa::geometry::ElementType::QUAD)
+
+    if constexpr (DataTypes::spatial_dimensions >= 3)
     {
-        m_massTopologyType = sofa::geometry::ElementType::QUAD;
-
-        for (Topology::QuadID i = 0; i < m_topology->getNbQuads(); ++i)
+        if (m_massTopologyType == sofa::geometry::ElementType::TETRAHEDRON)
         {
-            const Quad& q = m_topology->getQuad(i);
-
-            const auto& pos0 = DataTypes::getCPos(positions[q[0]]);
-            const auto& pos1 = DataTypes::getCPos(positions[q[1]]);
-            const auto& pos2 = DataTypes::getCPos(positions[q[2]]);
-            const auto& pos3 = DataTypes::getCPos(positions[q[3]]);
-
-            const auto quadArea = sofa::geometry::Quad::area(pos0, pos1, pos2, pos3);
-            mass = (density * quadArea) / (Real(4.0));
-            for (unsigned int j = 0; j < q.size(); j++)
+            for (Topology::TetrahedronID i = 0; i < m_topology->getNbTetrahedra(); ++i)
             {
-                masses[q[j]] += mass;
-                total_mass += mass;
+                const Tetrahedron& t = m_topology->getTetrahedron(i);
+
+                /// compute its mass based on the mass density and the tetrahedron volume
+                const auto& rpos0 = DataTypes::getCPos(positions[t[0]]);
+                const auto& rpos1 = DataTypes::getCPos(positions[t[1]]);
+                const auto& rpos2 = DataTypes::getCPos(positions[t[2]]);
+                const auto& rpos3 = DataTypes::getCPos(positions[t[3]]);
+
+                const auto tetraVolume = sofa::geometry::Tetrahedron::volume(rpos0, rpos1, rpos2, rpos3);
+                mass = (density * tetraVolume) / (typename DataTypes::Real(4.0));
+                for (unsigned int j = 0; j < t.size(); j++)
+                {
+                    masses[t[j]] += mass;
+                    total_mass += mass;
+                }
             }
         }
-    }
-    else if (m_topology->getNbTriangles() > 0 && m_manageElementTypeChange == sofa::geometry::ElementType::TRIANGLE)
-    {
-        m_massTopologyType = sofa::geometry::ElementType::TRIANGLE;
-
-        for (Topology::TriangleID i = 0; i < m_topology->getNbTriangles(); ++i)
+        if (m_massTopologyType == sofa::geometry::ElementType::HEXAHEDRON)
         {
-            const Triangle& t = m_topology->getTriangle(i);
-
-            const auto& pos0 = DataTypes::getCPos(positions[t[0]]);
-            const auto& pos1 = DataTypes::getCPos(positions[t[1]]);
-            const auto& pos2 = DataTypes::getCPos(positions[t[2]]);
-
-            const auto triangleArea = sofa::geometry::Triangle::area(pos0, pos1, pos2);
-            mass = (density * triangleArea) / (Real(3.0));
-            
-            for (unsigned int j = 0; j < t.size(); j++)
+            for (Topology::HexahedronID i = 0; i < m_topology->getNbHexahedra(); ++i)
             {
-                masses[t[j]] += mass;
-                total_mass += mass;
-            }
-        }
-    }
-    else if (m_topology->getNbEdges() > 0 && m_manageElementTypeChange == sofa::geometry::ElementType::EDGE)
-    {
-        m_massTopologyType = sofa::geometry::ElementType::EDGE;
+                const Hexahedron& h = m_topology->getHexahedron(i);
 
-        for (Topology::EdgeID i = 0; i < m_topology->getNbEdges(); ++i)
-        {
-            const Edge& e = m_topology->getEdge(i);
+                /// compute its mass based on the mass density and the hexahedron volume
+                const auto& rpos0 = DataTypes::getCPos(positions[h[0]]);
+                const auto& rpos1 = DataTypes::getCPos(positions[h[1]]);
+                const auto& rpos2 = DataTypes::getCPos(positions[h[2]]);
+                const auto& rpos3 = DataTypes::getCPos(positions[h[3]]);
+                const auto& rpos4 = DataTypes::getCPos(positions[h[4]]);
+                const auto& rpos5 = DataTypes::getCPos(positions[h[5]]);
+                const auto& rpos6 = DataTypes::getCPos(positions[h[6]]);
+                const auto& rpos7 = DataTypes::getCPos(positions[h[7]]);
 
-            const auto& pos0 = DataTypes::getCPos(positions[e[0]]);
-            const auto& pos1 = DataTypes::getCPos(positions[e[1]]);
+                const auto hexaVolume = sofa::geometry::Hexahedron::volume(rpos0, rpos1, rpos2, rpos3, rpos4, rpos5, rpos6, rpos7);
+                mass = (density * hexaVolume) / (typename DataTypes::Real(8.0));
 
-            const auto edgeLength = sofa::geometry::Edge::length(pos0, pos1);
-            mass = (density * edgeLength) / (Real(2.0));
-
-            for (unsigned int j = 0; j < e.size(); j++)
-            {
-                masses[e[j]] += mass;
-                total_mass += mass;
+                for (unsigned int j = 0; j < h.size(); j++)
+                {
+                    masses[h[j]] += mass;
+                    total_mass += mass;
+                }
             }
         }
     }
@@ -1438,6 +1457,5 @@ void DiagonalMass<DataTypes, MassType>::handleEvent(sofa::core::objectmodel::Eve
 {
      SOFA_UNUSED(event);
 }
-
 
 } // namespace sofa::component::mass

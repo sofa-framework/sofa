@@ -381,15 +381,22 @@ void ObjectFactory::getEntriesFromTarget(std::vector<ClassEntry::SPtr>& result, 
         it != itEnd; ++it)
     {
         ClassEntry::SPtr entry = it->second;
-        bool inTarget = false;
-        for (CreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
+        if(entry->className == it->first)
         {
-            Creator::SPtr c = itc->second;
-            if (target == c->getTarget())
-                inTarget = true;
+
+            bool inTarget = false;
+            for (CreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
+            {
+                Creator::SPtr c = itc->second;
+                if (target == c->getTarget())
+                {
+                    inTarget = true;
+                    break;
+                }
+            }
+            if (inTarget)
+                result.push_back(entry);
         }
-        if (inTarget)
-            result.push_back(entry);
     }
 }
 
@@ -441,12 +448,12 @@ static std::string xmlencode(const std::string& str)
     {
         switch(str[i])
         {
-            case '<': res += "&lt;"; break;
-            case '>': res += "&gt;"; break;
-            case '&': res += "&amp;"; break;
-            case '"': res += "&quot;"; break;
-            case '\'': res += "&apos;"; break;
-            default:  res += str[i];
+        case '<': res += "&lt;"; break;
+        case '>': res += "&gt;"; break;
+        case '&': res += "&amp;"; break;
+        case '"': res += "&quot;"; break;
+        case '\'': res += "&apos;"; break;
+        default:  res += str[i];
         }
     }
     return res;

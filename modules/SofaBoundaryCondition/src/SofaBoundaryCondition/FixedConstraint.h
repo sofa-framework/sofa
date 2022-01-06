@@ -106,7 +106,7 @@ public:
 
 
     void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
-    void applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    void applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     /** Project the given matrix (Experimental API).
       See doc in base parent class

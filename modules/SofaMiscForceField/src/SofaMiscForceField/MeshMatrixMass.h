@@ -235,6 +235,7 @@ protected:
     /** Method to update @sa d_vertexMass using mass matrix coefficient when a new Triangle is created.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when TRIANGLESADDED event is fired.
     */
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
     void applyVertexMassTriangleCreation(const sofa::type::vector< Index >& triangleAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Triangle >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
@@ -243,12 +244,14 @@ protected:
     /** Method to update @sa d_vertexMass using mass matrix coefficient when a Triangle is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when TRIANGLESREMOVED event is fired.
     */
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
     void applyVertexMassTriangleDestruction(const sofa::type::vector<Index>& triangleRemoved);
 
 
     /** Method to update @sa d_vertexMass using mass matrix coefficient when a new Quad is created.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when QUADSADDED event is fired.
     */
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
     void applyVertexMassQuadCreation(const sofa::type::vector< Index >& quadAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Quad >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
@@ -257,12 +260,14 @@ protected:
     /** Method to update @sa d_vertexMass using mass matrix coefficient when a Quad is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when QUADSREMOVED event is fired.
     */
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
     void applyVertexMassQuadDestruction(const sofa::type::vector<Index>& quadRemoved);
 
 
     /** Method to update @sa d_vertexMass using mass matrix coefficient when a new Tetrahedron is created.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when TETRAHEDRAADDED event is fired.
     */
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
     void applyVertexMassTetrahedronCreation(const sofa::type::vector< Index >& tetrahedronAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Tetrahedron >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
@@ -271,12 +276,14 @@ protected:
     /** Method to update @sa d_vertexMass using mass matrix coefficient when a Tetrahedron is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when TETRAHEDRAREMOVED event is fired.
     */
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
     void applyVertexMassTetrahedronDestruction(const sofa::type::vector<Index>& tetrahedronRemoved);
 
     
     /** Method to update @sa d_vertexMass using mass matrix coefficient when a new Hexahedron is created.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when HEXAHEDRAADDED event is fired.
     */
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
     void applyVertexMassHexahedronCreation(const sofa::type::vector< Index >& hexahedronAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Hexahedron >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
@@ -285,6 +292,7 @@ protected:
     /** Method to update @sa d_vertexMass using mass matrix coefficient when a Hexahedron is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when HEXAHEDRAREMOVED event is fired.
     */
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
     void applyVertexMassHexahedronDestruction(const sofa::type::vector<Index>& hexahedronRemoved);
    
 
@@ -306,6 +314,7 @@ protected:
     /** Method to update @sa d_edgeMass using mass matrix coefficient when a new Triangle is created.
     * Will be set as callback in the EdgeData @sa d_edgeMass to update the mass vector when TRIANGLESADDED event is fired.
     */
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
     void applyEdgeMassTriangleCreation(const sofa::type::vector< Index >& triangleAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Triangle >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
@@ -314,12 +323,14 @@ protected:
     /** Method to update @sa d_edgeMass using mass matrix coefficient when a Triangle is removed.
     * Will be set as callback in the EdgeData @sa d_edgeMass to update the mass vector when TRIANGLESREMOVED event is fired.
     */
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
     void applyEdgeMassTriangleDestruction(const sofa::type::vector<Index>& triangleRemoved);
 
 
     /** Method to update @sa d_edgeMass using mass matrix coefficient when a new Quad is created.
     * Will be set as callback in the EdgeData @sa d_edgeMass to update the mass vector when QUADSADDED event is fired.
     */
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
     void applyEdgeMassQuadCreation(const sofa::type::vector< Index >& quadAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Quad >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
@@ -328,12 +339,14 @@ protected:
     /** Method to update @sa d_edgeMass using mass matrix coefficient when a Quad is removed.
     * Will be set as callback in the EdgeData @sa d_edgeMass to update the mass vector when QUADSREMOVED event is fired.
     */
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
     void applyEdgeMassQuadDestruction(const sofa::type::vector<Index>& quadRemoved);
 
 
     /** Method to update @sa d_edgeMass using mass matrix coefficient when a new Tetrahedron is created.
     * Will be set as callback in the EdgeData @sa d_edgeMass to update the mass vector when TETRAHEDRAADDED event is fired.
     */
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
     void applyEdgeMassTetrahedronCreation(const sofa::type::vector< Index >& tetrahedronAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Tetrahedron >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
@@ -342,12 +355,14 @@ protected:
     /** Method to update @sa d_edgeMass using mass matrix coefficient when a Tetrahedron is removed.
     * Will be set as callback in the EdgeData @sa d_edgeMass to update the mass vector when TETRAHEDRAREMOVED event is fired.
     */
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
     void applyEdgeMassTetrahedronDestruction(const sofa::type::vector<Index>& tetrahedronRemoved);
 
 
     /** Method to update @sa d_edgeMass using mass matrix coefficient when a new Hexahedron is created.
     * Will be set as callback in the EdgeData @sa d_edgeMass to update the mass vector when HEXAHEDRAADDED event is fired.
     */
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
     void applyEdgeMassHexahedronCreation(const sofa::type::vector< Index >& hexahedronAdded,
         const sofa::type::vector< core::topology::BaseMeshTopology::Hexahedron >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
@@ -356,6 +371,7 @@ protected:
     /** Method to update @sa d_vertexMass using mass matrix coefficient when a Hexahedron is removed.
     * Will be set as callback in the EdgeData @sa d_edgeMass to update the mass vector when HEXAHEDRAREMOVED event is fired.
     */
+    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
     void applyEdgeMassHexahedronDestruction(const sofa::type::vector<Index>& /*indices*/);
 
 

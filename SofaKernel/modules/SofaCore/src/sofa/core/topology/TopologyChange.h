@@ -1460,11 +1460,11 @@ public:
 #ifndef SOFA_CORE_TOPOLOGY_TOPOLOGYCHANGE_DEFINITION
 namespace std
 {
-    extern template class std::list<const sofa::core::topology::TopologyChange*>;
+    extern template class SOFA_CORE_API std::list<const sofa::core::topology::TopologyChange*>;
 }
 namespace sofa::core::objectmodel
 {
-    extern template class Data<std::list<const sofa::core::topology::TopologyChange*>>;
+    extern template class SOFA_CORE_API Data<std::list<const sofa::core::topology::TopologyChange*>>;
 }
 
 #endif /// SOFA_CORE_TOPOLOGY_BASETOPOLOGYENGINE_DEFINITION

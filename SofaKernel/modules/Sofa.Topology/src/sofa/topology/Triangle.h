@@ -46,7 +46,7 @@ namespace sofa::topology
     * @return	index of the triangle in the given direction, if parameters allow it; sofa::InvalidID
     */
     template<typename Coordinates, typename VectorCoordinates, typename Real = SReal>
-    static constexpr sofa::Index getTriangleIDInDirection(const VectorCoordinates& trianglePositions, const sofa::type::vector<Triangle>& allTriangles,
+    static sofa::Index getTriangleIDInDirection(const VectorCoordinates& trianglePositions, const sofa::type::vector<Triangle>& allTriangles,
                                                           const sofa::type::vector<sofa::Index>& shellTriangles, const sofa::Index pointID, 
                                                           const Coordinates& direction)
     {
