@@ -100,9 +100,9 @@ public:
     /// the filename where to load the spring information
     sofa::core::objectmodel::DataFileName m_filename;
     /// By default, assume that all edges have the same stiffness
-    Data<double> m_stiffness;
+    Data<SReal> m_stiffness;
     /// By default, assume that all edges have the same viscosity
-    Data<double> m_viscosity;
+    Data<SReal> m_viscosity;
 
     Data<bool> m_useTopology; ///< Activate/Desactivate topology mode of the component (springs on each edge)
 
@@ -124,7 +124,7 @@ protected:
     void createEdgeInformation(Index, Spring& t,
         const core::topology::BaseMeshTopology::Edge& e,
         const sofa::type::vector<Index>& ancestors,
-        const sofa::type::vector<double>& coefs);
+        const sofa::type::vector<SReal>& coefs);
 
 public:
     bool load(const char *filename);

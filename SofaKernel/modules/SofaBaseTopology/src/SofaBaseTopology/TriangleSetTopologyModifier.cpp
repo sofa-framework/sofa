@@ -790,12 +790,13 @@ int TriangleSetTopologyModifier::InciseAlongEdge(EdgeID ind_edge, int* createdPo
 
     // Variables to accumulate the elements registered to be created or to be removed
     sofa::type::vector< sofa::type::vector< PointID > > p_ancestors;
-    sofa::type::vector< sofa::type::vector< double > > p_baryCoefs;
+    sofa::type::vector< sofa::type::vector< SReal > > p_baryCoefs;
     sofa::type::vector< Triangle > triangles_to_create;
     sofa::type::vector< TriangleID > trianglesIndexList;
     sofa::type::vector< TriangleID > triangles_to_remove;
 
-    sofa::type::vector<double> defaultCoefs; defaultCoefs.push_back(1.0);
+    sofa::type::vector<SReal> defaultCoefs; 
+    defaultCoefs.push_back(1.0);
 
     unsigned new_pa, new_pb;
 

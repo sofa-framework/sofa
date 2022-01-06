@@ -429,7 +429,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
             }
 
             const auto& ancestors = pointsAdded.ancestorsList;
-            vector< vector< double       > > coefs     = pointsAdded.coefs;
+            auto coefs     = pointsAdded.coefs;
 
             resize(prevSizeMechObj + nbPoints);
 
@@ -445,7 +445,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
                     for (unsigned int j = 0; j < ancestors[i].size(); ++j)
                     {
                         // constructng default coefs if none were defined
-                        if (coefs == (const vector< vector< double > >)0 || coefs[i].size() == 0)
+                        if (coefs == (const vector< vector< SReal > >)0 || coefs[i].size() == 0)
                             coefs2[i][j] = 1.0f / ancestors[i].size();
                         else
                             coefs2[i][j] = coefs[i][j];
@@ -515,7 +515,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
 
             const auto& indicesList = ( static_cast <const PointsMoved *> (*itBegin))->indicesList;
             const auto& ancestors = ( static_cast< const PointsMoved * >( *itBegin ) )->ancestorsList;
-            const vector< vector< double > >& coefs = ( static_cast< const PointsMoved * >( *itBegin ) )->baryCoefsList;
+            const auto& coefs = ( static_cast< const PointsMoved * >( *itBegin ) )->baryCoefsList;
 
             if (ancestors.size() != indicesList.size() || ancestors.empty())
             {
@@ -533,7 +533,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
                 for (unsigned int j = 0; j < ancestors[i].size(); ++j)
                 {
                     // constructng default coefs if none were defined
-                    if (coefs == (const vector< vector< double > >)0 || coefs[i].size() == 0)
+                    if (coefs == (const vector< vector< SReal > >)0 || coefs[i].size() == 0)
                         coefs2[i][j] = 1.0f / ancestors[i].size();
                     else
                         coefs2[i][j] = coefs[i][j];
@@ -757,7 +757,7 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::applyRotation (const SReal rx, const SReal ry, const SReal rz)
 {
     sofa::type::Quat<SReal> q =
-            type::Quat< SReal >::createQuaterFromEuler(sofa::type::Vec< 3, SReal >(rx, ry, rz) * M_PI / 180.0);
+            type::Quat< SReal >::createQuaterFromEuler(sofa::type::Vec3(rx, ry, rz) * M_PI / 180.0);
     applyRotation(q);
 }
 

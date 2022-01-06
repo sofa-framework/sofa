@@ -177,7 +177,7 @@ public:
 
     void computeBoundingTree(int maxDepth=0) override;
 
-    void computeContinuousBoundingTree(double dt, int maxDepth=0) override;
+    void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
 
     void draw(const core::visual::VisualParams*, Index index) override;
 

@@ -35,13 +35,13 @@ using namespace core;
 int SkinningMappingClass = core::RegisterObject("skin a model from a set of rigid dofs")
 
 // Rigid Types
-        .add< SkinningMapping< Rigid3Types, Vec3dTypes > >()
+        .add< SkinningMapping< Rigid3Types, Vec3Types > >()
 
 
 
         ;
 
-template class SOFA_SOFAGENERALRIGID_API SkinningMapping< Rigid3Types, Vec3dTypes >;
+template class SOFA_SOFAGENERALRIGID_API SkinningMapping< Rigid3Types, Vec3Types >;
 
 
 

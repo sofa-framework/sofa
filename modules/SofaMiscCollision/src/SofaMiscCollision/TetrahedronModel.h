@@ -43,30 +43,30 @@ public:
     Tetrahedron() {};
     explicit Tetrahedron(const core::CollisionElementIterator& i);
 
-    const type::Vector3& p1() const;
-    const type::Vector3& p2() const;
-    const type::Vector3& p3() const;
-    const type::Vector3& p4() const;
+    const type::Vec3& p1() const;
+    const type::Vec3& p2() const;
+    const type::Vec3& p3() const;
+    const type::Vec3& p4() const;
     int p1Index() const;
     int p2Index() const;
     int p3Index() const;
     int p4Index() const;
 
-    const type::Vector3& p1Free() const;
-    const type::Vector3& p2Free() const;
-    const type::Vector3& p3Free() const;
-    const type::Vector3& p4Free() const;
+    const type::Vec3& p1Free() const;
+    const type::Vec3& p2Free() const;
+    const type::Vec3& p3Free() const;
+    const type::Vec3& p4Free() const;
 
-    const type::Vector3& v1() const;
-    const type::Vector3& v2() const;
-    const type::Vector3& v3() const;
-    const type::Vector3& v4() const;
+    const type::Vec3& v1() const;
+    const type::Vec3& v2() const;
+    const type::Vec3& v3() const;
+    const type::Vec3& v4() const;
 
-    type::Vector3 getBary(const type::Vector3& p) const;
-    type::Vector3 getDBary(const type::Vector3& v) const;
+    type::Vec3 getBary(const type::Vec3& p) const;
+    type::Vec3 getDBary(const type::Vec3& v) const;
 
-    type::Vector3 getCoord(const type::Vector3& b) const;
-    type::Vector3 getDCoord(const type::Vector3& b) const;
+    type::Vec3 getCoord(const type::Vec3& b) const;
+    type::Vec3 getDCoord(const type::Vec3& b) const;
 
 };
 
@@ -87,7 +87,7 @@ public:
 protected:
     struct TetrahedronInfo
     {
-        type::Vector3 coord0;
+        type::Vec3 coord0;
         type::Matrix3 coord2bary;
         type::Matrix3 bary2coord;
     };
@@ -137,30 +137,30 @@ inline Tetrahedron::Tetrahedron(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<TetrahedronCollisionModel>(static_cast<TetrahedronCollisionModel*>(i.getCollisionModel()), i.getIndex())
 {}
 
-inline const type::Vector3& Tetrahedron::p1() const { return model->mstate->read(core::ConstVecCoordId::position())->getValue()[(*(model->tetra))[index][0]]; }
-inline const type::Vector3& Tetrahedron::p2() const { return model->mstate->read(core::ConstVecCoordId::position())->getValue()[(*(model->tetra))[index][1]]; }
-inline const type::Vector3& Tetrahedron::p3() const { return model->mstate->read(core::ConstVecCoordId::position())->getValue()[(*(model->tetra))[index][2]]; }
-inline const type::Vector3& Tetrahedron::p4() const { return model->mstate->read(core::ConstVecCoordId::position())->getValue()[(*(model->tetra))[index][3]]; }
+inline const type::Vec3& Tetrahedron::p1() const { return model->mstate->read(core::ConstVecCoordId::position())->getValue()[(*(model->tetra))[index][0]]; }
+inline const type::Vec3& Tetrahedron::p2() const { return model->mstate->read(core::ConstVecCoordId::position())->getValue()[(*(model->tetra))[index][1]]; }
+inline const type::Vec3& Tetrahedron::p3() const { return model->mstate->read(core::ConstVecCoordId::position())->getValue()[(*(model->tetra))[index][2]]; }
+inline const type::Vec3& Tetrahedron::p4() const { return model->mstate->read(core::ConstVecCoordId::position())->getValue()[(*(model->tetra))[index][3]]; }
 
-inline const type::Vector3& Tetrahedron::p1Free() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(model->tetra))[index][0]]; }
-inline const type::Vector3& Tetrahedron::p2Free() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(model->tetra))[index][1]]; }
-inline const type::Vector3& Tetrahedron::p3Free() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(model->tetra))[index][2]]; }
-inline const type::Vector3& Tetrahedron::p4Free() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(model->tetra))[index][3]]; }
+inline const type::Vec3& Tetrahedron::p1Free() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(model->tetra))[index][0]]; }
+inline const type::Vec3& Tetrahedron::p2Free() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(model->tetra))[index][1]]; }
+inline const type::Vec3& Tetrahedron::p3Free() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(model->tetra))[index][2]]; }
+inline const type::Vec3& Tetrahedron::p4Free() const { return model->mstate->read(core::ConstVecCoordId::freePosition())->getValue()[(*(model->tetra))[index][3]]; }
 
 inline int Tetrahedron::p1Index() const { return (*(model->tetra))[index][0]; }
 inline int Tetrahedron::p2Index() const { return (*(model->tetra))[index][1]; }
 inline int Tetrahedron::p3Index() const { return (*(model->tetra))[index][2]; }
 inline int Tetrahedron::p4Index() const { return (*(model->tetra))[index][3]; }
 
-inline const type::Vector3& Tetrahedron::v1() const { return model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(model->tetra))[index][0]]; }
-inline const type::Vector3& Tetrahedron::v2() const { return model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(model->tetra))[index][1]]; }
-inline const type::Vector3& Tetrahedron::v3() const { return model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(model->tetra))[index][2]]; }
-inline const type::Vector3& Tetrahedron::v4() const { return model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(model->tetra))[index][3]]; }
+inline const type::Vec3& Tetrahedron::v1() const { return model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(model->tetra))[index][0]]; }
+inline const type::Vec3& Tetrahedron::v2() const { return model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(model->tetra))[index][1]]; }
+inline const type::Vec3& Tetrahedron::v3() const { return model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(model->tetra))[index][2]]; }
+inline const type::Vec3& Tetrahedron::v4() const { return model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(model->tetra))[index][3]]; }
 
-inline type::Vector3 Tetrahedron::getBary(const type::Vector3& p) const { return model->elems[index].coord2bary*(p-model->elems[index].coord0); }
-inline type::Vector3 Tetrahedron::getDBary(const type::Vector3& v) const { return model->elems[index].coord2bary*(v); }
-inline type::Vector3 Tetrahedron::getCoord(const type::Vector3& b) const { return model->elems[index].bary2coord*b + model->elems[index].coord0; }
-inline type::Vector3 Tetrahedron::getDCoord(const type::Vector3& b) const { return model->elems[index].bary2coord*b; }
+inline type::Vec3 Tetrahedron::getBary(const type::Vec3& p) const { return model->elems[index].coord2bary*(p-model->elems[index].coord0); }
+inline type::Vec3 Tetrahedron::getDBary(const type::Vec3& v) const { return model->elems[index].coord2bary*(v); }
+inline type::Vec3 Tetrahedron::getCoord(const type::Vec3& b) const { return model->elems[index].bary2coord*b + model->elems[index].coord0; }
+inline type::Vec3 Tetrahedron::getDCoord(const type::Vec3& b) const { return model->elems[index].bary2coord*b; }
 
 /// Mapper for TetrahedronCollisionModel
 template<class DataTypes>
@@ -173,7 +173,7 @@ public:
     Index addPoint(const Coord& P, Index index, Real&)
     {
         Tetrahedron t(this->model, index);
-        type::Vector3 b = t.getBary(P);
+        auto b = t.getBary(P);
         return this->mapper->addPointInTetra(index, b.ptr());
     }
 };

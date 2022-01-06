@@ -79,7 +79,7 @@ public:
         bool is_activated;
         bool is_initialized;
 
-        EdgeInformation(int m1=0, int m2=0, double restlength=0.0, bool is_activated=false, bool is_initialized=false)
+        EdgeInformation(int m1=0, int m2=0, Real restlength=0.0, bool is_activated=false, bool is_initialized=false)
             : m1(m1), m2(m2), ks(Real(100000.0)), kd(Real(1.0)), restlength(restlength), is_activated(is_activated), is_initialized(is_initialized)
         {
         }
@@ -109,7 +109,7 @@ protected:
     void applyEdgeCreation(Index edgeIndex,
         EdgeInformation& ei,
         const core::topology::BaseMeshTopology::Edge&, const sofa::type::vector< Index >&,
-        const sofa::type::vector< double >&);
+        const sofa::type::vector< SReal >&);
 
     /** Method to update @sa edgeInfo when a new triangle is created.
     * Will be set as callback in the EdgeData @sa edgeInfo when TRIANGLESADDED event is fired
@@ -118,7 +118,7 @@ protected:
     void applyTriangleCreation(const type::vector<Index>& triangleAdded,
         const type::vector<core::topology::BaseMeshTopology::Triangle>&,
         const type::vector<type::vector<Index> >&,
-        const type::vector<type::vector<double> >&);
+        const type::vector<type::vector<SReal> >&);
 
     /** Method to update @sa edgeInfo when a triangle is removed.
     * Will be set as callback in the EdgeData @sa edgeInfo when TRIANGLESREMOVED event is fired

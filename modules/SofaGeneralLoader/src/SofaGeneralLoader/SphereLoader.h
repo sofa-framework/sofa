@@ -35,18 +35,18 @@ protected:
     SphereLoader();
 
 public:
-    // Point coordinates in 3D in double.
-    Data< type::vector<sofa::type::Vec<3,SReal> > > d_positions; ///< Sphere centers
+    // Point coordinates in 3D.
+    Data< type::vector<sofa::type::Vec3 > > d_positions; ///< Sphere centers
     Data< type::vector<SReal> > d_radius; ///< Radius of each sphere
-    Data< type::Vector3 > d_scale; ///< Scale applied to sphere positions
-    Data< type::Vector3 > d_rotation; ///< Rotation of the DOFs
-    Data< type::Vector3 > d_translation; ///< Translation applied to sphere positions
+    Data< type::Vec3 > d_scale; ///< Scale applied to sphere positions
+    Data< type::Vec3 > d_rotation; ///< Rotation of the DOFs
+    Data< type::Vec3 > d_translation; ///< Translation applied to sphere positions
     bool load() override;
 
     void applyTransform();
 
 protected:
-    type::vector<sofa::type::Vec<3,SReal> > m_savedPositions;
+    type::vector<sofa::type::Vec3 > m_savedPositions;
 };
 
 } //namespace sofa::component::loader

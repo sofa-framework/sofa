@@ -646,7 +646,7 @@ void MeshTopology::clear()
 
 void MeshTopology::addPoint(SReal px, SReal py, SReal pz)
 {
-    seqPoints.beginEdit()->push_back(type::Vec<3,SReal>((SReal)px, (SReal)py, (SReal)pz));
+    seqPoints.beginEdit()->push_back(type::Vec3((SReal)px, (SReal)py, (SReal)pz));
     seqPoints.endEdit();
     if (seqPoints.getValue().size() > nbPoints)
         nbPoints = (int)seqPoints.getValue().size();

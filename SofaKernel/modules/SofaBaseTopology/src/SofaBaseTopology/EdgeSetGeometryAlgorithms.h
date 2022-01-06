@@ -109,11 +109,11 @@ public:
     void getRestEdgeVertexCoordinates(const EdgeID i, Coord[2]) const;
 
     // test if a point is on the triangle indexed by ind_e
-    bool isPointOnEdge(const sofa::type::Vec<3, double> &pt, const EdgeID ind_e) const;
+    bool isPointOnEdge(const sofa::type::Vec<3, Real> &pt, const EdgeID ind_e) const;
 
     // compute barycentric coefficients
-    sofa::type::vector< double > compute2PointsBarycoefs(const sofa::type::Vec<3, double> &p, PointID ind_p1, PointID ind_p2) const;
-    sofa::type::vector< double > computeRest2PointsBarycoefs(const sofa::type::Vec<3, double> &p, PointID ind_p1, PointID ind_p2) const;
+    sofa::type::vector< SReal > compute2PointsBarycoefs(const sofa::type::Vec<3, Real> &p, PointID ind_p1, PointID ind_p2) const;
+    sofa::type::vector< SReal > computeRest2PointsBarycoefs(const sofa::type::Vec<3, Real> &p, PointID ind_p1, PointID ind_p2) const;
 
     /** \brief Compute the projection coordinate of a point C on the edge i. Using compute2EdgesIntersection().
     * @param i edgeID on which point is projected.
@@ -121,7 +121,7 @@ public:
     * @param intersected bool default value true, changed as false if no intersection is done.
     * @return barycentric coefficient of the projection in edgeID i.
     */
-    sofa::type::vector< double > computePointProjectionOnEdge (const EdgeID i, sofa::type::Vec<3,double> coord_x, bool& intersected);
+    sofa::type::vector< SReal > computePointProjectionOnEdge (const EdgeID i, sofa::type::Vec<3,Real> coord_x, bool& intersected);
 
     /** \brief Compute the intersection coordinate of the 2 input straight lines. Lines vector director are computed using coord given in input.
     * @param edge1 tab Coord[2] from the 2 vertices composing first edge

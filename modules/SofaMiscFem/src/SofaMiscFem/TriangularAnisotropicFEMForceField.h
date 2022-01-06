@@ -91,7 +91,7 @@ public:
         TriangleFiberDirection&,
         const core::topology::BaseMeshTopology::Triangle& t,
         const sofa::type::vector< unsigned int >&,
-        const sofa::type::vector< double >&);
+        const sofa::type::vector< SReal >&);
 
     /// Inherited member
     /// Bring inherited member in the current lookup context.

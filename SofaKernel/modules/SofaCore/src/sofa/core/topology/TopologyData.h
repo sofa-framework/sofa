@@ -88,7 +88,7 @@ public:
     virtual void add(const sofa::type::vector<Index>& index,
         const sofa::type::vector< TopologyElementType >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs,
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs,
         const sofa::type::vector< AncestorElem >& ancestorElems) override;
 
     /// Reorder the values.
@@ -97,7 +97,7 @@ public:
     /// Move a list of points
     void move(const sofa::type::vector<Index>& indexList,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs) override;
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs) override;
 
     /// Add Element after a displacement of vertices, ie. add element based on previous position topology revision.
     virtual void addOnMovedPosition(const sofa::type::vector<Index>& indexList,
@@ -120,13 +120,13 @@ public:
     * @param List of ancestor indices.
     * @param List of coefficient respect to the ancestor indices.
     */
-    void setCreationCallback(std::function<void(Index, value_type&, const TopologyElementType&, const sofa::type::vector< Index >&, const sofa::type::vector< double >&)> func) { p_onCreationCallback = func; }
+    void setCreationCallback(std::function<void(Index, value_type&, const TopologyElementType&, const sofa::type::vector< Index >&, const sofa::type::vector< SReal >&)> func) { p_onCreationCallback = func; }
 
     /// Method to add a Callback method to be registered in the TopologyHandler. This callback will be used when TopologyChangeType @sa type is fired.
     void addTopologyEventCallBack(core::topology::TopologyChangeType type, TopologyChangeCallback callback);
 
     std::function<void(Index, value_type&)> p_onDestructionCallback;
-    std::function<void(Index, value_type&, const TopologyElementType&, const sofa::type::vector< Index >&, const sofa::type::vector< double >&)> p_onCreationCallback;
+    std::function<void(Index, value_type&, const TopologyElementType&, const sofa::type::vector< Index >&, const sofa::type::vector< SReal >&)> p_onCreationCallback;
 
     ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
     SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2082)", "v21.06 (PR#2082)", "This method has been removed as it is not part of the new topology change design.")

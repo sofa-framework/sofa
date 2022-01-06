@@ -552,7 +552,7 @@ template <class DataTypes>
 typename RemovePrimitivePerformer<DataTypes>::VecIds RemovePrimitivePerformer<DataTypes>::getElementInZone(VecIds& elementsToTest)
 {
     // - STEP 0: Compute appropriate scale from BB:  selectorScale = 100 => zone = all mesh
-    type::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
+    type::Vec3 sceneMinBBox, sceneMaxBBox;
     core::objectmodel::BaseNode* root = mstateCollision->getContext()->toBaseNode();
     if (root) root = root->getRoot();
     if (root) { sceneMinBBox = root->f_bbox.getValue().minBBox(); sceneMaxBBox = root->f_bbox.getValue().maxBBox(); }

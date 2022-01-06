@@ -34,11 +34,11 @@ class SOFA_TYPE_API BoundingBox
 {
 
 public:
-    typedef std::pair< Vector3, Vector3 > bbox_t;
+    typedef std::pair< sofa::type::Vec3, sofa::type::Vec3 > bbox_t;
 
     BoundingBox();
     /// Define using the endpoints of the main diagonal
-    BoundingBox(const Vector3& minBBox, const Vector3& maxBBox);
+    BoundingBox(const sofa::type::Vec3& minBBox, const sofa::type::Vec3& maxBBox);
     BoundingBox(const bbox_t& bbox);
     /// Define using xmin, xmax, ymin, ymax, zmin, zmax in this order
     BoundingBox(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal zmin, SReal zmax );
@@ -61,24 +61,24 @@ public:
     SReal* maxBBoxPtr();
     const SReal* minBBoxPtr() const;
     const SReal* maxBBoxPtr() const;
-    const Vector3&  minBBox() const;
-    const Vector3&  maxBBox() const;
-    Vector3& minBBox();
-    Vector3& maxBBox();
+    const sofa::type::Vec3&  minBBox() const;
+    const sofa::type::Vec3&  maxBBox() const;
+    sofa::type::Vec3& minBBox();
+    sofa::type::Vec3& maxBBox();
 
-    bool contains( const sofa::type::Vector3& point) const;
+    bool contains( const sofa::type::Vec3& point) const;
     bool contains( const BoundingBox& other) const;
 
     bool intersect( const BoundingBox& other) const;
     void intersection( const BoundingBox& other);
 
-    void include( const sofa::type::Vector3& point);
+    void include( const sofa::type::Vec3& point);
     void include( const BoundingBox& other);
 
     void inflate( SReal amount );
 
     BoundingBox getIntersection( const BoundingBox& other ) const;
-    BoundingBox getInclude( const sofa::type::Vector3& point ) const;
+    BoundingBox getInclude( const sofa::type::Vec3& point ) const;
     BoundingBox getInclude( const BoundingBox& other ) const;
     BoundingBox getInflate( SReal amount ) const;
 
@@ -105,7 +105,7 @@ class TBoundingBox : public BoundingBox
 {
 public:
     TBoundingBox(const TReal* minBBoxPtr, const TReal* maxBBoxPtr)
-        :BoundingBox(Vector3(minBBoxPtr),Vector3(maxBBoxPtr))
+        :BoundingBox(sofa::type::Vec3(minBBoxPtr),sofa::type::Vec3(maxBBoxPtr))
     {
     }
 
@@ -118,11 +118,11 @@ class SOFA_TYPE_API BoundingBox2D
 {
 
 public:
-    typedef std::pair< Vector2, Vector2 > bbox_t;
+    typedef std::pair< sofa::type::Vec<2, SReal>, sofa::type::Vec<2, SReal> > bbox_t;
 
     BoundingBox2D();
     /// Define using the endpoints of the main diagonal
-    BoundingBox2D(const Vector2& minBBox, const Vector2& maxBBox);
+    BoundingBox2D(const sofa::type::Vec<2, SReal>& minBBox, const sofa::type::Vec<2, SReal>& maxBBox);
     BoundingBox2D(const bbox_t& bbox);
     /// Define using xmin, xmax, ymin, ymax in this order
     BoundingBox2D(SReal xmin, SReal xmax, SReal ymin, SReal ymax );
@@ -145,24 +145,24 @@ public:
     SReal* maxBBoxPtr();
     const SReal* minBBoxPtr() const;
     const SReal* maxBBoxPtr() const;
-    const Vector2&  minBBox() const;
-    const Vector2&  maxBBox() const;
-    Vector2& minBBox();
-    Vector2& maxBBox();
+    const sofa::type::Vec<2, SReal>&  minBBox() const;
+    const sofa::type::Vec<2, SReal>&  maxBBox() const;
+    sofa::type::Vec<2, SReal>& minBBox();
+    sofa::type::Vec<2, SReal>& maxBBox();
 
-    bool contains( const sofa::type::Vector2& point) const;
+    bool contains( const sofa::type::Vec<2, SReal>& point) const;
     bool contains( const BoundingBox2D& other) const;
 
     bool intersect( const BoundingBox2D& other) const;
     void intersection( const BoundingBox2D& other);
 
-    void include( const sofa::type::Vector2& point);
+    void include( const sofa::type::Vec<2, SReal>& point);
     void include( const BoundingBox2D& other);
 
     void inflate( SReal amount);
 
     BoundingBox2D getIntersection( const BoundingBox2D& other ) const;
-    BoundingBox2D getInclude( const sofa::type::Vector2& point ) const;
+    BoundingBox2D getInclude( const sofa::type::Vec<2, SReal>& point ) const;
     BoundingBox2D getInclude( const BoundingBox2D& other ) const;
     BoundingBox2D getInflate( SReal amount ) const;
 

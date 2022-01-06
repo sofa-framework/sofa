@@ -28,7 +28,7 @@ namespace sofa::component::collision
 template class SOFA_SOFAUSERINTERACTION_API  SuturePointPerformer<defaulttype::Vec3Types>;
 
 
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, SuturePointPerformer<defaulttype::Vec3dTypes> >  SuturePointPerformerVec3dClass("SuturePoints",true);
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, SuturePointPerformer<defaulttype::Vec3Types> >  SuturePointPerformerVec3Class("SuturePoints",true);
 
 
 } // namespace sofa::component::collision

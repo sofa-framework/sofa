@@ -88,7 +88,7 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_MAPPING_SIMPLETESSELATEDTETRAMECHANICALMAPPING_CPP)
 
-extern template class SOFA_SOFATOPOLOGYMAPPING_API SimpleTesselatedTetraMechanicalMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
+extern template class SOFA_SOFATOPOLOGYMAPPING_API SimpleTesselatedTetraMechanicalMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
 
 
 

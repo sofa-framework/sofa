@@ -38,7 +38,7 @@ template< class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::createTetrahedronInformation(Index tetrahedronIndex, TetrahedronInformation& tInfo,
         const core::topology::BaseMeshTopology::Tetrahedron& tetra,
         const sofa::type::vector<Index>& ancestors,
-        const sofa::type::vector<double>& coefs)
+        const sofa::type::vector<SReal>& coefs)
 {
     const core::topology::BaseMeshTopology::Tetrahedron t=this->m_topology->getTetrahedron(tetrahedronIndex);
     Index a = t[0];
@@ -136,14 +136,14 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::reinit()
     {
         createTetrahedronInformation(i, tetrahedronInf[i],
                 m_topology->getTetrahedron(i),  (const std::vector< Index > )0,
-                (const std::vector< double >)0);
+                (const std::vector< SReal >)0);
     }
 
     tetrahedronInfo.createTopologyHandler(m_topology);
     tetrahedronInfo.setCreationCallback([this](Index tetrahedronIndex, TetrahedronInformation& tInfo,
         const core::topology::BaseMeshTopology::Tetrahedron& tetra,
         const sofa::type::vector<Index>& ancestors,
-        const sofa::type::vector<double>& coefs)
+        const sofa::type::vector<SReal>& coefs)
     {
         createTetrahedronInformation(tetrahedronIndex, tInfo, tetra, ancestors, coefs);
     });

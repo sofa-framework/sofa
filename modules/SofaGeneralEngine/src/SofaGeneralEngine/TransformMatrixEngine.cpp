@@ -100,9 +100,9 @@ void TranslateTransformMatrixEngine::init()
 
 void TranslateTransformMatrixEngine::doUpdate()
 {
-    helper::ReadAccessor< Data<Matrix4> > inT = d_inT;
-    helper::ReadAccessor< Data<Vector3> > translation = d_translation;
-    helper::WriteAccessor< Data<Matrix4> > outT = d_outT;
+    auto inT = sofa::helper::getReadAccessor(d_inT);
+    auto translation = sofa::helper::getReadAccessor(d_translation);
+    auto outT = sofa::helper::getWriteOnlyAccessor(d_outT);
 
     Matrix4 myT;
     myT.identity();

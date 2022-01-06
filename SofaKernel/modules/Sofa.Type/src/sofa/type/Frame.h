@@ -41,7 +41,6 @@ The product F1F2 can be seen as a frame displacement F1 starting from the refere
 class SOFA_TYPE_API Frame
 {
 public:
-    typedef Vec<3,SReal> Vec3;
     typedef type::Quat<SReal> Quat;
     typedef Mat<3,3,SReal> Mat33;
 private:
