@@ -21,8 +21,7 @@
 ******************************************************************************/
 #include <SofaMiscSolver/initSofaMiscSolver.h>
 
-#include <sofa/component/odesolver/forward/init.h>
-#include <sofa/component/odesolver/backward/init.h>
+#include <sofa/helper/system/PluginManager.h>
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
@@ -37,8 +36,8 @@ void initSofaMiscSolver()
     {
         // msg_deprecated("SofaMiscSolver") << "SofaMiscSolver is deprecated; please load Sofa.Component.ODESolver.Forward and/or Sofa.Component.ODESolver.Backward instead.";
 
-        sofa::component::odesolver::forward::init();
-        sofa::component::odesolver::backward::init();
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.ODESolver.Forward");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.ODESolver.Backward");
 
         first = false;
     }

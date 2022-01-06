@@ -105,7 +105,7 @@ struct SceneChecker_test : public BaseSimulationTest
         root->init(sofa::core::execparams::defaultInstance());
 
         SceneCheckerVisitor checker(sofa::core::execparams::defaultInstance());
-        checker.addCheck( SceneCheckMissingRequiredPlugin::newSPtr() );
+        checker.addCheck(SceneCheckMissingRequiredPlugin::newSPtr() );
 
         if(missing)
         {
