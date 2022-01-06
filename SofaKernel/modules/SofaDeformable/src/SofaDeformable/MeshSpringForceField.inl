@@ -97,6 +97,7 @@ template<class DataTypes>
 void MeshSpringForceField<DataTypes>::init()
 {
     StiffSpringForceField<DataTypes>::clear();
+    core::behavior::SingleStateAccessor<DataTypes>::init();
 
     if (this->getMState())
     {
