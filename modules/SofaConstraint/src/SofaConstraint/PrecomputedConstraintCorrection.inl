@@ -730,9 +730,9 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const lineara
             {
                 offset2 = offset+ j*nbCols;
                 DXbuf=0.0;
-                for (i = 0; i < dof_on_node; i++)
+                for (unsigned int k = 0; k < dof_on_node; k++)
                 {
-                    DXbuf += appCompliance[ offset2 + i ] * Fbuf[i];
+                    DXbuf += appCompliance[ offset2 + k ] * Fbuf[k];
                 }
                 dx[i][j]+=DXbuf;
             }
