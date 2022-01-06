@@ -116,8 +116,8 @@ sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<
     {
         collisionState = dynamic_cast<MouseContainer*>(b.body->getContext()->getMechanicalState());
 
-        auto funcGetFixationPoints = s_mapSupportedModels.find(std::type_index(typeid(*b.body)));
-        if (funcGetFixationPoints != s_mapSupportedModels.end())
+        auto funcGetFixationPoints = (*getMapInstance()).find(std::type_index(typeid(*b.body)));
+        if (funcGetFixationPoints != (*getMapInstance()).end())
         {
             funcGetFixationPoints->second(b.body, idx, points, fixPoint);
         }
@@ -137,11 +137,5 @@ sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<
 
     return collisionState;
 }
-
-#ifndef WIN32
-template<typename DataTypes>
-    std::unordered_map<std::type_index, typename FixParticlePerformer<DataTypes>::GetFixationPointsOnModelFunction >
-    FixParticlePerformer<DataTypes>::s_mapSupportedModels;
-#endif // WIN32
 
 } // namespace sofa::component::collision
