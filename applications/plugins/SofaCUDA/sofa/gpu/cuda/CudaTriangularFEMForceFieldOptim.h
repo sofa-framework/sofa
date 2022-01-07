@@ -27,11 +27,12 @@
 namespace sofa::component::forcefield
 {
 
-template <>
-class TriangularFEMForceFieldOptimInternalData<gpu::cuda::CudaVec3Types>
+template <class TCoord, class TDeriv, class TReal>
+class TriangularFEMForceFieldOptimInternalData< gpu::cuda::CudaVectorTypes<TCoord, TDeriv, TReal> >
 {
 public:
-    typedef TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3Types> Main;
+    typedef gpu::cuda::CudaVectorTypes<TCoord, TDeriv, TReal> DataTypes;
+    typedef TriangularFEMForceFieldOptim<DataTypes> Main;
     
     struct GPUTriangleInfo
     {
