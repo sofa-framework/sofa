@@ -230,11 +230,11 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
     // Output declarations
     sofa::type::vector< sofa::core::topology::TopologyElementType> topoPath_list;
     sofa::type::vector<Index> indices_list;
-    sofa::type::vector< sofa::type::Vec<3, double> > coords2_list;
-    sofa::type::Vec<3,double> pointA = firstBody.point;
-    sofa::type::Vec<3,double> pointB = currentBody.point;
+    sofa::type::vector< sofa::type::Vec3 > coords2_list;
+    sofa::type::Vec3 pointA = firstBody.point;
+    sofa::type::Vec3 pointB = currentBody.point;
 
-    sofa::type::vector< sofa::type::Vec<3, double> > positions;
+    sofa::type::vector< sofa::type::Vec3 > positions;
     bool path_ok = topoGeo->computeIntersectedObjectsList(0, pointA, pointB, firstBody.indexCollisionElement, currentBody.indexCollisionElement, topoPath_list, indices_list, coords2_list);
 
     if (!path_ok)
@@ -254,7 +254,7 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
         else if (topoPath_list[i] == sofa::core::topology::TopologyElementType::EDGE)
         {
             sofa::core::topology::BaseMeshTopology::Edge theEdge = topoCon->getEdge(indices_list[i]);
-            const sofa::type::Vec<3, double> AB = topoGeo->getPointPosition(theEdge[1])- topoGeo->getPointPosition(theEdge[0]);
+            const auto AB = topoGeo->getPointPosition(theEdge[1])- topoGeo->getPointPosition(theEdge[0]);
             positions[i] = topoGeo->getPointPosition(theEdge[0]) + AB *coords2_list[i][0];
         }
         else if(topoPath_list[i] == sofa::core::topology::TopologyElementType::TRIANGLE)

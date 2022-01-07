@@ -99,14 +99,14 @@ void PointSetTopologyContainer::clear()
     points.clear();
 }
 
-void PointSetTopologyContainer::addPoint(double px, double py, double pz)
+void PointSetTopologyContainer::addPoint(SReal px, SReal py, SReal pz)
 {
     // NB: This implementation of addPoint was and is still very dangerous to use since it compromises any prior 
     // modifications that were done on the container. The new size is imposed by the size of the initPoints array,
     // which is not maintained whatsoever by the other add / remove point methods.
 
-    helper::WriteAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
-    initPoints.push_back(InitTypes::Coord((SReal)px, (SReal)py, (SReal)pz));
+    auto initPoints = sofa::helper::getWriteAccessor(d_initPoints);
+    initPoints.push_back(InitTypes::Coord(px, py, pz));
     if (initPoints.size() > nbPoints.getValue())
     {
         setNbPoints(Size(initPoints.size()));

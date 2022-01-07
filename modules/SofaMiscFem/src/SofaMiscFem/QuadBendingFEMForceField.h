@@ -176,7 +176,7 @@ public:
     void createQuadInformation(unsigned int quadIndex, QuadInformation&,
         const core::topology::BaseMeshTopology::Quad& t,
         const sofa::type::vector< unsigned int >&,
-        const sofa::type::vector< double >&);
+        const sofa::type::vector< SReal >&);
 
     sofa::core::topology::BaseMeshTopology* m_topology;
     

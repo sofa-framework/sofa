@@ -56,15 +56,15 @@ void Frame::clear()
 
 //void clear() { origin_.clear(); basis__.clear(); scale_=Vec3(1,1,1); }
 
-Frame::Vec3& Frame::getOrigin ()
+Vec3& Frame::getOrigin ()
 {
     return origin_;
 }
-const Frame::Vec3& Frame::getOrigin () const
+const Vec3& Frame::getOrigin () const
 {
     return origin_;
 }
-void Frame::setOrigin( const Frame::Vec3& origin )
+void Frame::setOrigin( const Vec3& origin )
 {
     origin_=origin;
 }
@@ -82,7 +82,7 @@ void Frame::setBasis( const Frame::Mat33& m )
     basis_=m;
 }
 
-void Frame::setTransform( const Frame::Vec3& origin, const Frame::Quat& orientation, const Frame::Vec3& scale )
+void Frame::setTransform( const Vec3& origin, const Frame::Quat& orientation, const Vec3& scale )
 {
     setOrigin(origin);
     orientation.toMatrix(basis_);

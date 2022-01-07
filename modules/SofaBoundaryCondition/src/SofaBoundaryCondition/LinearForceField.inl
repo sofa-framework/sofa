@@ -54,9 +54,7 @@ void LinearForceField<DataTypes>::init()
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
-    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
-    
-    if (_topology)
+    if (sofa::core::topology::BaseMeshTopology* _topology = l_topology.get())
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
         
@@ -113,9 +111,9 @@ void LinearForceField<DataTypes>::clearKeyForces()
 }
 
 template<class DataTypes>
-void LinearForceField<DataTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f1, const DataVecCoord& /*p1*/, const DataVecDeriv&)
+void LinearForceField<DataTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& /*p1*/, const DataVecDeriv&)
 {
-    sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > _f1 = f1;
+    sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > _f1 = f;
 
     Real cT = (Real) this->getContext()->getTime();
 
@@ -147,8 +145,8 @@ void LinearForceField<DataTypes>::addForce(const core::MechanicalParams* /*mpara
                     nextF = *it_f;
                     finished = true;
                 }
-                it_t++;
-                it_f++;
+                ++it_t;
+                ++it_f;
             }
             if (finished)
             {

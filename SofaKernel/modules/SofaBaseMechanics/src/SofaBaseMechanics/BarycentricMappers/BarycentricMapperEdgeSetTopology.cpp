@@ -26,6 +26,6 @@ namespace sofa::component::mapping
 
 using namespace sofa::defaulttype;
 
-template class SOFA_SOFABASEMECHANICS_API BarycentricMapperEdgeSetTopology< Vec3dTypes, Vec3dTypes>;
+template class SOFA_SOFABASEMECHANICS_API BarycentricMapperEdgeSetTopology< Vec3Types, Vec3Types>;
 
 } // namespace sofa::component::mapping

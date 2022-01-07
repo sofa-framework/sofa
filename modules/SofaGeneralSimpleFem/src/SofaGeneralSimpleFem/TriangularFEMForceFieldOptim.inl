@@ -95,7 +95,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::init()
     d_triangleInfo.setCreationCallback([this](Index triangleIndex, TriangleInfo& ti,
         const core::topology::BaseMeshTopology::Triangle& t,
         const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< double >& coefs)
+        const sofa::type::vector< SReal >& coefs)
     {
         createTriangleInfo(triangleIndex, ti, t, ancestors, coefs);
     });
@@ -104,7 +104,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::init()
     d_triangleState.setCreationCallback([this](Index triangleIndex, TriangleState& ti,
         const core::topology::BaseMeshTopology::Triangle& t,
         const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< double >& coefs)
+        const sofa::type::vector< SReal >& coefs)
     {
         createTriangleState(triangleIndex, ti, t, ancestors, coefs);
     });
@@ -202,13 +202,13 @@ void TriangularFEMForceFieldOptim<DataTypes>::initTriangleState(Index i, Triangl
 // --------------------------------------------------------------------------------------
 
 template< class DataTypes>
-void TriangularFEMForceFieldOptim<DataTypes>::createTriangleInfo(Index triangleIndex, TriangleInfo& ti, const Triangle& t, const sofa::type::vector<Index>&, const sofa::type::vector<double>&)
+void TriangularFEMForceFieldOptim<DataTypes>::createTriangleInfo(Index triangleIndex, TriangleInfo& ti, const Triangle& t, const sofa::type::vector<Index>&, const sofa::type::vector<SReal>&)
 {
     initTriangleInfo(triangleIndex, ti, t, this->mstate->read(core::ConstVecCoordId::restPosition())->getValue());
 }
 
 template< class DataTypes>
-void TriangularFEMForceFieldOptim<DataTypes>::createTriangleState(Index triangleIndex, TriangleState& ti, const Triangle& t, const sofa::type::vector<Index>&, const sofa::type::vector<double>&)
+void TriangularFEMForceFieldOptim<DataTypes>::createTriangleState(Index triangleIndex, TriangleState& ti, const Triangle& t, const sofa::type::vector<Index>&, const sofa::type::vector<SReal>&)
 {
     initTriangleState(triangleIndex, ti, t, this->mstate->read(core::ConstVecCoordId::position())->getValue());
 }

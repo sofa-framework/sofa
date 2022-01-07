@@ -124,16 +124,16 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
     using namespace sofa::linearalgebra;
     msg_info() << "Compute the initial invert matrix with CS_PARSE" ;
 
-    CompressedRowSparseMatrix<double> matSolv;
-    FullVector<double> r;
-    FullVector<double> b;
+    CompressedRowSparseMatrix<SReal> matSolv;
+    FullVector<SReal> r;
+    FullVector<SReal> b;
 
 // 	unsigned systemSize = internalData.Minv.colSize();
 
     matSolv.resize(systemSize,systemSize);
     r.resize(systemSize);
     b.resize(systemSize);
-    SparseCholeskySolver<CompressedRowSparseMatrix<double>, FullVector<double> > solver;
+    SparseCholeskySolver<CompressedRowSparseMatrix<SReal>, FullVector<SReal> > solver;
 
     for (unsigned int j=0; j<systemSize; j++)
     {
@@ -201,7 +201,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::computeActiveDofs(JMatrix& J)
 }
 
 template<class TMatrix,class TVector>
-bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, double fact)
+bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact)
 {
     using namespace sofa::linearalgebra;
 
@@ -230,7 +230,7 @@ bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(linearalgebra::BaseMat
 }
 
 template<class TMatrix,class TVector> template<class JMatrix>
-void PrecomputedLinearSolver<TMatrix,TVector>::ComputeResult(linearalgebra::BaseMatrix * result,JMatrix& J, float fact)
+void PrecomputedLinearSolver<TMatrix,TVector>::ComputeResult(linearalgebra::BaseMatrix * result,JMatrix& J, SReal fact)
 {
     unsigned nl = 0;
     internalData.JMinv.clear();

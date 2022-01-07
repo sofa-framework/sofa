@@ -102,7 +102,7 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_MAPPING_TUBULARMAPPING_CPP)
 
-extern template class SOFA_SOFAMISCMAPPING_API TubularMapping< defaulttype::Rigid3Types, defaulttype::Vec3dTypes >;
+extern template class SOFA_SOFAMISCMAPPING_API TubularMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
 
 
 

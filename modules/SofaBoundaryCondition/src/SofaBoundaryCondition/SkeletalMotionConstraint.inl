@@ -34,11 +34,13 @@ namespace sofa::component::projectiveconstraintset
 {
 
 template <class DataTypes>
-SkeletalMotionConstraint<DataTypes>::SkeletalMotionConstraint() : sofa::core::behavior::ProjectiveConstraintSet<DataTypes>()
+SkeletalMotionConstraint<DataTypes>::SkeletalMotionConstraint() :
+    sofa::core::behavior::ProjectiveConstraintSet<DataTypes>()
     , skeletonJoints(initData(&skeletonJoints, "joints", "skeleton joints"))
     , skeletonBones(initData(&skeletonBones, "bones", "skeleton bones"))
 	, animationSpeed(initData(&animationSpeed, 1.0f, "animationSpeed", "animation speed"))
     , active(initData(&active, true, "active", "is the constraint active?"))
+    , finished(false)
 {
 }
 
@@ -61,7 +63,7 @@ void SkeletalMotionConstraint<DataTypes>::reset()
 }
 
 template <class DataTypes>
-void SkeletalMotionConstraint<DataTypes>::findKeyTimes(Real cT)
+void SkeletalMotionConstraint<DataTypes>::findKeyTimes(Real ct)
 {
     //Note: works only if the times are sorted
     
@@ -78,7 +80,7 @@ void SkeletalMotionConstraint<DataTypes>::findKeyTimes(Real cT)
         for(unsigned int j = 0; j < skeletonJoint.mTimes.size(); ++j)
         {
             Real keyTime = (Real) skeletonJoint.mTimes[j];
-            if(keyTime <= cT)
+            if(keyTime <= ct)
             {
                 {
                     skeletonJoint.mPreviousMotionTime = keyTime;
@@ -341,8 +343,8 @@ void SkeletalMotionConstraint<DataTypes>::applyConstraint(const core::Mechanical
 template <class DataTypes>
 void SkeletalMotionConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned offset )
 {
-    unsigned blockSize = DataTypes::deriv_total_size;
-    unsigned size = this->mstate->getSize();
+    const unsigned blockSize = DataTypes::deriv_total_size;
+    const unsigned size = this->mstate->getSize();
     for( unsigned i=0; i<size; i++ )
     {
         M->clearRowsCols( offset + i * blockSize, offset + (i+1) * (blockSize) );

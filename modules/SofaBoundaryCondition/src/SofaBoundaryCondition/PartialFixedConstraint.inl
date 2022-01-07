@@ -171,10 +171,10 @@ template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
-    int o = matrix->getGlobalOffset(this->mstate.get());
+    const int o = matrix->getGlobalOffset(this->mstate.get());
     if (o >= 0)
     {
-        unsigned int offset = (unsigned int)o;
+        const unsigned int offset = (unsigned int)o;
         const unsigned int N = Deriv::size();
 
         const VecBool& blockedDirection = d_fixedDirections.getValue();
@@ -195,7 +195,7 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(const core::MechanicalPa
         else
         {
             const SetIndexArray & indices = this->d_indices.getValue();
-            for (unsigned int index : indices)
+            for (const unsigned int index : indices)
             {
                 for (unsigned int c = 0; c < N; ++c)
                 {
@@ -213,8 +213,7 @@ template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
-    core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get());
-    if(r)
+    if(const core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get()))
     {
         const unsigned int N = Deriv::size();
         const VecBool& blockedDirection = d_fixedDirections.getValue();
@@ -222,7 +221,7 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(const core::MechanicalPa
 
         if( this->d_fixAll.getValue() )
         {
-            unsigned size = this->mstate->getSize();
+            const unsigned size = this->mstate->getSize();
             for(unsigned int i=0; i<size; i++)
             {
                 // Reset Fixed Row and Col
@@ -277,7 +276,7 @@ void PartialFixedConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::Base
 
     if( this->d_fixAll.getValue() )
     {
-        unsigned size = this->mstate->getSize();
+        const unsigned size = this->mstate->getSize();
         for( unsigned i=0; i<size; i++ )
         {
             for (unsigned int c = 0; c < blockSize; ++c)

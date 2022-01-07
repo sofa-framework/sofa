@@ -46,7 +46,7 @@ class  SOFA_MISC_COLLISION_API  RayTriangleVisitor : public simulation::Visitor
 
 public:
 
-    typedef type::Vec<3,SReal> Vec3;
+    typedef type::Vec3 Vec3;
     type::Vec3d origin;    ///< Ray starting point
     type::Vec3d direction; ///< Ray direction
 

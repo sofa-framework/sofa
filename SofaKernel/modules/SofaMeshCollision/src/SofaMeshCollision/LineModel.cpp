@@ -30,7 +30,7 @@ int LineCollisionModelClass = core::RegisterObject("collision model using a line
         .add< LineCollisionModel<sofa::defaulttype::Vec3Types> >()
         ;
 
-template class SOFA_SOFAMESHCOLLISION_API TLine<sofa::defaulttype::Vec3dTypes>;
+template class SOFA_SOFAMESHCOLLISION_API TLine<sofa::defaulttype::Vec3Types>;
 template class SOFA_SOFAMESHCOLLISION_API LineCollisionModel<defaulttype::Vec3Types>;
 
 } // namespace sofa::component::collision

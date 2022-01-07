@@ -244,4 +244,11 @@ template<> const char* BTDMatrix<4, double>::Name() { return "BTDMatrix4d"; }
 template<> const char* BTDMatrix<5, double>::Name() { return "BTDMatrix5d"; }
 template<> const char* BTDMatrix<6, double>::Name() { return "BTDMatrix6d"; }
 
+template<> const char* BTDMatrix<1, float>::Name() { return "BTDMatrix1f"; }
+template<> const char* BTDMatrix<2, float>::Name() { return "BTDMatrix2f"; }
+template<> const char* BTDMatrix<3, float>::Name() { return "BTDMatrix3f"; }
+template<> const char* BTDMatrix<4, float>::Name() { return "BTDMatrix4f"; }
+template<> const char* BTDMatrix<5, float>::Name() { return "BTDMatrix5f"; }
+template<> const char* BTDMatrix<6, float>::Name() { return "BTDMatrix6f"; }
+
 } // namespace sofa::linearalgebra

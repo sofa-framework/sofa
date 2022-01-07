@@ -927,7 +927,9 @@ public:
         // Transformation between c2 and c1 frames
         quat = quat1*quat2.inverse();
         quat.normalize();
-        type::Vector3 axis; type::Quat<SReal>::value_type angle; quat.quatToAxis(axis, angle);
+        type::Vec3 axis; 
+        type::Quat<SReal>::value_type angle; 
+        quat.quatToAxis(axis, angle);
         axis*=angle;
         return Deriv(vCenter, axis);
     }
@@ -1875,7 +1877,7 @@ static void rotate( V1& v, Rot rotation )
 template<class V1, class V2>
 static void rigidTransform ( V1& points, V2& velocities, SReal tx, SReal ty, SReal tz, SReal rx, SReal ry, SReal rz )
 {
-    typedef type::Vec<3,SReal> Vec3;
+    typedef type::Vec3 Vec3;
     typedef type::Quat<SReal> Quat;
     Vec3 translation(tx,ty,tz);
     Quat rotation = Quat::createQuaterFromEuler(Vec3(rx,ry,rz));

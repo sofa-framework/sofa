@@ -213,7 +213,7 @@ NewComputation(const Vector3 &P1, const Vector3 &P2, const Vector3 &P3, const Ve
     double alpha, beta;
     Vector3 P1P2, P1P3, P1Q;
     type::Mat<3, 3, SReal> A;
-    type::Vec<3, SReal> b;
+    type::Vec3 b;
     type::Vec<6, SReal> result;
 
     P1P2 = P2 - P1;

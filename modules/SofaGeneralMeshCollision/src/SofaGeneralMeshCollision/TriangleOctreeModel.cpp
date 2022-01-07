@@ -97,7 +97,7 @@ void TriangleOctreeModel::computeBoundingTree(int maxDepth)
         pNorms[tri[i][0]]+=t.n();
         pNorms[tri[i][1]]+=t.n();
         pNorms[tri[i][2]]+=t.n();
-        const type::Vector3* pt[3];
+        const sofa::type::Vec3* pt[3];
         pt[0] = &t.p1();
         pt[1] = &t.p2();
         pt[2] = &t.p3();
@@ -126,7 +126,7 @@ void TriangleOctreeModel::computeBoundingTree(int maxDepth)
     }
 }
 
-void TriangleOctreeModel::computeContinuousBoundingTree(double/* dt*/, int maxDepth)
+void TriangleOctreeModel::computeContinuousBoundingTree(SReal/* dt*/, int maxDepth)
 {
     computeBoundingTree(maxDepth);
 }

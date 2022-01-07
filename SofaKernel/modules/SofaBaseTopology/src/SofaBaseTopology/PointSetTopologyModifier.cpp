@@ -85,7 +85,7 @@ void PointSetTopologyModifier::addPointsWarning(const sofa::Size nPoints, const 
 
 void PointSetTopologyModifier::addPointsWarning(const sofa::Size nPoints,
         const sofa::type::vector< sofa::type::vector< PointID > > &ancestors,
-        const sofa::type::vector< sofa::type::vector< double       > >& coefs,
+        const sofa::type::vector< sofa::type::vector< SReal       > >& coefs,
         const bool addDOF)
 {
     m_container->setPointTopologyToDirty();
@@ -124,7 +124,7 @@ void PointSetTopologyModifier::addPointsWarning(const sofa::Size nPoints,
 
     type::vector< PointID > newPointIndices;
     type::vector< type::vector< PointID > > ancestorPointIndices;
-    type::vector< type::vector< double       > > baryCoefs;
+    type::vector< type::vector< SReal       > > baryCoefs;
 
     newPointIndices.resize(nPoints);
     ancestorPointIndices.resize(nPoints);
@@ -276,7 +276,7 @@ void PointSetTopologyModifier::addPoints(const sofa::Size nPoints,
 
 void PointSetTopologyModifier::addPoints(const sofa::Size nPoints,
      const sofa::type::vector< sofa::type::vector< PointID > >& ancestors,
-     const sofa::type::vector< sofa::type::vector< double> >& coefs,
+     const sofa::type::vector< sofa::type::vector< SReal> >& coefs,
      const bool addDOF)
 {
     sofa::helper::AdvancedTimer::stepBegin("addPoints with ancestors");
@@ -305,7 +305,7 @@ void PointSetTopologyModifier::addPoints(const sofa::Size nPoints,
 
 void PointSetTopologyModifier::movePointsProcess (const sofa::type::vector<PointID>& id,
         const sofa::type::vector< sofa::type::vector< PointID > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs,
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs,
         const bool moveDOF)
 {
     m_container->setPointTopologyToDirty();

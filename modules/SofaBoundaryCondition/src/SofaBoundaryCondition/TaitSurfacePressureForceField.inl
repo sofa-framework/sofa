@@ -223,7 +223,7 @@ void TaitSurfacePressureForceField<DataTypes>::addForce(const core::MechanicalPa
     helper::ReadAccessor<DataVecCoord> x = d_x;
     //helper::ReadAccessor<DataVecDeriv> v = d_v;
     //helper::ReadAccessor<DataVecCoord> x0 = this->mstate->read(core::ConstVecCoordId::restPosition());
-    helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
+    const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
 
     computeMeshVolumeAndArea(*m_currentVolume.beginEdit(), *m_currentSurfaceArea.beginEdit(), x);
     m_currentVolume.endEdit();
@@ -283,7 +283,7 @@ void TaitSurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalP
     helper::ReadAccessor<DataVecDeriv> dx = d_dx;
     helper::ReadAccessor<DataVecCoord> x = mparams->readX(this->mstate);
     //helper::ReadAccessor<DataVecCoord> x0 = this->mstate->read(core::ConstVecCoordId::restPosition());
-    helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
+    const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
     helper::ReadAccessor<VecDeriv> gradV = this->gradV;
 
     const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
@@ -347,7 +347,7 @@ template<class MatrixWriter>
 void TaitSurfacePressureForceField<DataTypes>::addKToMatrixT(const core::MechanicalParams* mparams, MatrixWriter mwriter)
 {
     helper::ReadAccessor<DataVecCoord> x = mparams->readX(this->mstate);
-    helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
+    const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
 
     const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
     const Real currentPressure = m_currentPressure.getValue();
@@ -414,7 +414,7 @@ void TaitSurfacePressureForceField<DataTypes>::computeMeshVolumeAndArea(Real& vo
     Real volume6 = 0;
     Real area2 = 0;
 
-    helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
+    const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
     for (unsigned int i = 0; i < pressureTriangles.size(); i++)
     {
         Triangle t = pressureTriangles[i];
@@ -446,13 +446,13 @@ void TaitSurfacePressureForceField<DataTypes>::draw(const core::visual::VisualPa
 
     helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::ConstVecCoordId::position());
 
-    helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
+    const helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
 
-    std::vector< sofa::type::Vector3 > points;
     std::vector< sofa::type::Vec3i > indices;
     std::vector< type::Vector3 > normals;
     if (m_drawForceScale.getValue() != (Real)0.0)
     {
+        std::vector< sofa::type::Vector3 > points;
         points.clear();
         const Real fscale = m_currentPressure.getValue()*m_drawForceScale.getValue();
         for (unsigned int i=0; i<pressureTriangles.size(); i++)
