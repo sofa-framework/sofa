@@ -64,33 +64,6 @@ public:
     {   HexaahedronFEMForceFieldCuda3f1_getRotations(gatherpt,gatherbs,nbVertex, nbElemPerVertex, velems, erotation, irotation, nrotation); }
 };
 
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template<>
-class CudaKernelsHexahedronFEMForceField<CudaVec3dTypes>
-{
-public:
-    static void addForce(int /*gatherpt*/,int /*gatherbs*/,unsigned int /*nbElem*/, unsigned int /*nbVertex*/, unsigned int /*nbElemPerVertex*/, const void* /*elems*/,  void* /*rotation*/,const void* /*kmatrix*/, void* /*eforce*/, const void* /*velems*/, void* /*f*/, const void* /*x*/, const void* /*v*/)
-    {   /*HexahedronFEMForceFieldCuda3d_addForce(gatherpt,gatherbs,nbElem, nbVertex, nbElemPerVertex, elems, rotation, kmatrix, eforce, velems, f, x, v);*/ }
-    static void addDForce(int /*gatherpt*/,int /*gatherbs*/,unsigned int /*nbElem*/, unsigned int /*nbVertex*/, unsigned int /*nbElemPerVertex*/, const void* /*elems*/, const void* /*rotation*/, const void * /*kmatrix*/, void* /*eforce*/, const void* /*velems*/, void* /*df*/, const void* /*dx*/,double /*kfactor*/)
-    {   /*HexahedronFEMForceFieldCuda3d_addDForce(gatherpt,gatherbs,nbElem, nbVertex, nbElemPerVertex, elems, rotation, kmatrix, eforce, velems, df, dx,kfactor);*/ }
-    static void getRotations(int /*gatherpt*/,int /*gatherbs*/,unsigned int /*nbVertex*/, unsigned int /*nbElemPerVertex*/, const void* /*velems*/, const void* /*erotation*/, const void * /*irotation*/, void * /*nrotation*/)
-    {   /*HexaahedronFEMForceFieldCuda3d_getRotations(gatherpt,gatherbs,nbVertex, nbElemPerVertex, velems, erotation, irotation, nrotation);*/ }
-};
-
-template<>
-class CudaKernelsHexahedronFEMForceField<CudaVec3d1Types>
-{
-public :
-    static void addForce(int /*gatherpt*/,int /*gatherbs*/,unsigned int /*nbElem*/, unsigned int /*nbVertex*/, unsigned int /*nbElemPerVertex*/, const void* /*elems*/, void* /*rotation*/, const void* /*kmatrix*/, const void* /*velems*/, void* /*f*/, const void* /*x*/, const void* /*v*/)
-    {   /*HexahedronFEMForceFieldCuda3d1_addForce(gatherpt,gatherbs,nbElem, nbVertex, nbElemPerVertex, elems, rotation, kmatrix, eforce, velems, f, x, v);*/ }
-    static void addDForce(int /*gatherpt*/,int /*gatherbs*/,unsigned int /*nbElem*/, unsigned int /*nbVertex*/, unsigned int /*nbElemPerVertex*/, const void* /*elems*/, const void* /*rotation*/, const void * /*kmatrix*/, void* /*eforce*/, const void* /*velems*/, void* /*df*/, const void* /*dx*/,double /*kfactor*/)
-    {   /*HexahedronFEMForceFieldCuda3d1_addDForce(gatherpt,gatherbs,nbElem, nbVertex, nbElemPerVertex, elems, rotation, kmatrix, eforce, velems, df, dx,kfactor);*/ }
-    static void getRotations(int /*gatherpt*/,int /*gatherbs*/,unsigned int /*nbVertex*/, unsigned int /*nbElemPerVertex*/, const void* /*velems*/, const void* /*erotation*/, const void * /*irotation*/, void * /*nrotation*/)
-    {   /*HexaahedronFEMForceFieldCuda3d1_getRotations(gatherpt,gatherbs,nbVertex, nbElemPerVertex, velems, erotation, irotation, nrotation);*/ }
-};
-#endif // SOFA_GPU_CUDA_DOUBLE
-
 } // namespace sofa::cuda::gpu
 
 
@@ -323,6 +296,5 @@ void HexahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::getRotations(linearalge
         }
     }
 }
-
 
 } // namespace sofa::component::forcefield

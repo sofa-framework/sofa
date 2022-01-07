@@ -356,12 +356,6 @@ public:
     template<> void HexahedronFEMForceField< T >::getRotations(linearalgebra::BaseMatrix* rotations, int offset); \
 
 CudaHexahedronFEMForceField_DeclMethods(gpu::cuda::CudaVec3fTypes);
-//CudaHexahedronFEMForceField_DeclMethods(gpu::cuda::CudaVec3f1Types);
-
-#ifdef SOFA_GPU_CUDA_DOUBLE
-CudaHexahedronFEMForceField_DeclMethods(gpu::cuda::CudaVec3dTypes);
-CudaHexahedronFEMForceField_DeclMethods(gpu::cuda::CudaVec3d1Types);
-#endif // SOFA_GPU_CUDA_DOUBLE
 
 #undef CudaHexahedronFEMForceField_DeclMethods
 
