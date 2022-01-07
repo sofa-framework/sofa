@@ -71,21 +71,16 @@ __global__ void TriangularFEMForceFieldOptimCudaVec3_addForce_kernel(int size, C
     real gamma, real mu)
 {
     using CudaVec3 = CudaVec3<real>;
-    int index0 = (blockIdx.x*BSIZE);
-    int index = threadIdx.x;
-    int i = index0+index;
+    const int triangleID = (blockIdx.x * BSIZE) + threadIdx.x;
 
-    //printf("gridDim: %d x %d x %d\n", gridDim.x, gridDim.y, gridDim.z);
-    //printf("blockDim: %d x %d x %d\n", blockDim.x, blockDim.y, blockDim.z);
-    
-    GPUTriangleInfo t = gpuTriangleInfo[i];
-    const TriangleInfo<real>& ti = triInfo[i];
-    TriangleState<real>& ts = triState[i];
-    
-    CudaVec3 a  = x[t.ia];
-    CudaVec3 ab = x[t.ib]-a;
-    CudaVec3 ac = x[t.ic]-a;
-        
+    const GPUTriangleInfo& t = gpuTriangleInfo[triangleID];
+    const TriangleInfo<real>& ti = triInfo[triangleID];
+    TriangleState<real>& ts = triState[triangleID];
+
+    const CudaVec3 a = x[t.ia];
+    const CudaVec3 ab = x[t.ib] - a;
+    const CudaVec3 ac = x[t.ic] - a;
+            
     // compute locale frame inside the triangle frame: [ab] x [ac]
     CudaVec3 frame_x = ab;
     CudaVec3 n = cross(ab, ac);
@@ -108,7 +103,7 @@ __global__ void TriangularFEMForceFieldOptimCudaVec3_addForce_kernel(int size, C
         ti.bx * dcy,                // (  0, -cx,  0, bx) * (dbx, dby, dcx, dcy)
         ti.bx * dcx - ti.cx * dbx); // (-cx,  cy, bx,  0) * (dbx, dby, dcx, dcy)
 
-    float gammaXY = (strain.x + strain.y) * gamma;
+    const float gammaXY = (strain.x + strain.y) * gamma;
 
     CudaVec3 stress = CudaVec3::make (
         mu*strain.x + gammaXY,     // (gamma+mu, gamma   ,    0) * strain
@@ -150,28 +145,26 @@ __global__ void TriangularFEMForceFieldOptimCudaVec3_addDForce_kernel(int size, 
 )
 {
     using CudaVec3 = CudaVec3<real>;
-    int index0 = (blockIdx.x*BSIZE);
-    int index = threadIdx.x;
-    int i = index0+index;
+    const int triangleID = (blockIdx.x * BSIZE) + threadIdx.x;
     
-    GPUTriangleInfo t = gpuTriangleInfo[i];
-    const TriangleInfo<real>& ti = triInfo[i];
-    const TriangleState<real>& ts = triState[i];
+    const GPUTriangleInfo& t = gpuTriangleInfo[triangleID];
+    const TriangleInfo<real>& ti = triInfo[triangleID];
+    const TriangleState<real>& ts = triState[triangleID];
 
-    CudaVec3 da  = dx[t.ia];
-    CudaVec3 dab = dx[t.ib]-da;
-    CudaVec3 dac = dx[t.ic]-da;
-    real dbx = dot(ts.frame_x, dab);
-    real dby = dot(ts.frame_y, dab);
-    real dcx = dot(ts.frame_x, dac);
-    real dcy = dot(ts.frame_y, dac);
+    const CudaVec3 da  = dx[t.ia];
+    const CudaVec3 dab = dx[t.ib]-da;
+    const CudaVec3 dac = dx[t.ic]-da;
+    const real dbx = dot(ts.frame_x, dab);
+    const real dby = dot(ts.frame_y, dab);
+    const real dcx = dot(ts.frame_x, dac);
+    const real dcy = dot(ts.frame_y, dac);
 
-    CudaVec3 dstrain = CudaVec3::make (
+    const CudaVec3 dstrain = CudaVec3::make (
         ti.cy  * dbx,                             // ( cy,   0,  0,  0) * (dbx, dby, dcx, dcy)
         ti.bx * dcy - ti.cx * dby,                // (  0, -cx,  0, bx) * (dbx, dby, dcx, dcy)
         ti.bx * dcx - ti.cx * dbx + ti.cy * dby); // (-cx,  cy, bx,  0) * (dbx, dby, dcx, dcy)
 
-    real gammaXY = (dstrain.x + dstrain.y) * gamma;
+    const real gammaXY = (dstrain.x + dstrain.y) * gamma;
 
     CudaVec3 dstress = CudaVec3::make (
         mu*dstrain.x + gammaXY,    // (gamma+mu, gamma   ,    0) * dstrain
