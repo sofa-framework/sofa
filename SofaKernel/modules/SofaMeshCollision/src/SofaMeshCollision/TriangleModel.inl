@@ -276,7 +276,7 @@ void TriangleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 }
 
 template<class DataTypes>
-void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDepth)
+void TriangleCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
 

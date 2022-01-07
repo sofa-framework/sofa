@@ -50,7 +50,7 @@ public:
     SOFA_CLASS(BaseContext, Base);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseContext)
 
-    typedef type::Vector3 Vec3;
+    using Vec3 = sofa::type::Vec3;
 
 protected:
     BaseContext();

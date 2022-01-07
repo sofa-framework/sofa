@@ -25,12 +25,12 @@
 
 namespace std
 {
-    template class list<const sofa::core::topology::TopologyChange*>;
+    template class SOFA_CORE_API list<const sofa::core::topology::TopologyChange*>;
 }
 
 namespace sofa::core::objectmodel
 {
-    template class Data<std::list<const sofa::core::topology::TopologyChange*>>;
+    template class SOFA_CORE_API Data<std::list<const sofa::core::topology::TopologyChange*>>;
 }
 
 namespace sofa

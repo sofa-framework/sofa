@@ -19,16 +19,16 @@ using namespace defaulttype;
 using simulation::Node;
 using core::collision::Contact;
 
-Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, BulletConvexHullModel> > BulletConvexHullModelBulletConvexHullContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > BulletConvexHullModelSphereModelContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, RigidSphereModel> > BulletConvexHullModelRigidSphereModelContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > BulletConvexHullModelTriangleModelContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, LineCollisionModel<sofa::defaulttype::Vec3Types>> > BulletConvexHullModelLineModelContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, PointCollisionModel<sofa::defaulttype::Vec3Types>> > BulletConvexHullModelPointModelContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > BulletConvexHullModelOBBModelContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, CapsuleCollisionModel<sofa::defaulttype::Vec3Types>> > BulletConvexHullModelCapsuleModelContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>> > BulletConvexHullModelRigidCapsuleModelContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, CylinderCollisionModel<sofa::defaulttype::Rigid3Types>> > BulletConvexHullModelCylinderModelContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, BulletConvexHullModel> > BulletConvexHullModelBulletConvexHullContactClass("PenalityContactForceField",true);
+Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > BulletConvexHullModelSphereModelContactClass("PenalityContactForceField",true);
+Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, RigidSphereModel> > BulletConvexHullModelRigidSphereModelContactClass("PenalityContactForceField",true);
+Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > BulletConvexHullModelTriangleModelContactClass("PenalityContactForceField",true);
+Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, LineCollisionModel<sofa::defaulttype::Vec3Types>> > BulletConvexHullModelLineModelContactClass("PenalityContactForceField",true);
+Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, PointCollisionModel<sofa::defaulttype::Vec3Types>> > BulletConvexHullModelPointModelContactClass("PenalityContactForceField",true);
+Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > BulletConvexHullModelOBBModelContactClass("PenalityContactForceField",true);
+Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, CapsuleCollisionModel<sofa::defaulttype::Vec3Types>> > BulletConvexHullModelCapsuleModelContactClass("PenalityContactForceField",true);
+Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>> > BulletConvexHullModelRigidCapsuleModelContactClass("PenalityContactForceField",true);
+Creator<Contact::Factory, BarycentricPenalityContact<BulletConvexHullModel, CylinderCollisionModel<sofa::defaulttype::Rigid3Types>> > BulletConvexHullModelCylinderModelContactClass("PenalityContactForceField",true);
 
 
 Creator<Contact::Factory, BarycentricDistanceLMConstraintContact<BulletConvexHullModel, BulletConvexHullModel> > BCHullBCHullLMConstraintContactClassClass("distanceLMConstraint",true);

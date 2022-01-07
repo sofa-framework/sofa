@@ -180,7 +180,6 @@ void RigidDistanceGridCollisionModel::updateState()
 
     for (Size i=0; i<size; i++)
     {
-        Vector3 emin, emax;
         if (rigid)
         {
             const RigidTypes::Coord& xform = (rigid->read(core::ConstVecCoordId::position())->getValue())[i];
@@ -495,7 +494,7 @@ void FFDDistanceGridCollisionModel::init()
     for (int i=0; i<nbp; i++)
     {
         Vec3Types::Coord p0 = grid->meshPts[i];
-        Vector3 bary;
+        Vec3 bary;
         Index elem = (ffdRGrid ? ffdRGrid->findCube(p0,bary[0],bary[1],bary[2]) : ffdSGrid->findCube(p0,bary[0],bary[1],bary[2]));
         if (elem == sofa::InvalidID) continue;
         if (elem >= elems.size())
@@ -790,12 +789,12 @@ void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpara
 #endif // SOFADISTANCEGRID_HAVE_SOFA_GL == 1
 }
 
-ContactMapperCreator< ContactMapper<FFDDistanceGridCollisionModel> > FFDDistanceGridContactMapperClass("default", true);
+ContactMapperCreator< ContactMapper<FFDDistanceGridCollisionModel> > FFDDistanceGridContactMapperClass("PenalityContactForceField", true);
 
 template class SOFA_SOFADISTANCEGRID_API ContactMapper<FFDDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
 
 
-ContactMapperCreator< ContactMapper<RigidDistanceGridCollisionModel> > DistanceGridContactMapperClass("default", true);
+ContactMapperCreator< ContactMapper<RigidDistanceGridCollisionModel> > DistanceGridContactMapperClass("PenalityContactForceField", true);
 
 template class SOFA_SOFADISTANCEGRID_API ContactMapper<RigidDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
 

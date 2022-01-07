@@ -178,7 +178,7 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
     {
         createTetrahedronRestInformation(i, tetrahedronInf[i],
             m_topology->getTetrahedron(i),  (const type::vector< Index > )0,
-            (const type::vector< double >)0);
+            (const type::vector< SReal >)0);
     }
 
     /// set the call back function upon creation of a tetrahedron
@@ -186,7 +186,7 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
     m_tetrahedronInfo.setCreationCallback([this](Index tetrahedronIndex, TetrahedronRestInformation& tetraInfo,
         const core::topology::BaseMeshTopology::Tetrahedron& tetra,
         const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< double >& coefs)
+        const sofa::type::vector< SReal >& coefs)
     {
         createTetrahedronRestInformation(tetrahedronIndex, tetraInfo, tetra, ancestors, coefs);
     });
@@ -200,7 +200,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::createTetrahedronRestIn
     TetrahedronRestInformation& tinfo,
     const Tetrahedron&,
     const sofa::type::vector<Index>&,
-    const sofa::type::vector<double>&)
+    const sofa::type::vector<SReal>&)
 {
 
     const type::vector< Tetrahedron >& tetrahedronArray = m_topology->getTetrahedra();
@@ -506,7 +506,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addKToMatrix(sofa::line
 
 
 template<class DataTypes>
-Mat<3,3,double> TetrahedronHyperelasticityFEMForceField<DataTypes>::getPhi(int TetrahedronIndex)
+Mat<3,3,SReal> TetrahedronHyperelasticityFEMForceField<DataTypes>::getPhi(int TetrahedronIndex)
 {
     type::vector<TetrahedronRestInformation>& tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
 	TetrahedronRestInformation *tetInfo;

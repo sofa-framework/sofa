@@ -21,7 +21,7 @@ To speed up the collision detection, replace BVHNarrowPhase by ParallelBVHNarrow
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
     <LocalMinDistance name="Proximity" alarmDistance="2.5" contactDistance="1.0" angleCone="0.0"/>
-    <DefaultContactManager name="Response" response="FrictionContact"/>
+    <DefaultContactManager name="Response" response="FrictionContactConstraint"/>
     <Node name="Torus1">
         <MeshOBJLoader filename="mesh/torus2_for_collision.obj" name="loader"/>
         <MeshTopology src="@loader"/>

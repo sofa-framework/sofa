@@ -160,11 +160,10 @@ void QuadPressureForceField<DataTypes>::selectQuadsAlongPlane()
 {
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     std::vector<bool> vArray;
-    unsigned int i;
 
     vArray.resize(x.size());
 
-    for( i=0; i<x.size(); ++i)
+    for( unsigned int i=0; i<x.size(); ++i)
     {
         vArray[i]=isPointInPlane(x[i]);
     }
@@ -235,7 +234,7 @@ void QuadPressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
 
     vparams->drawTool()->disableLighting();
     std::vector<sofa::type::Vector3> vertices;
-    sofa::type::RGBAColor color = sofa::type::RGBAColor::green();
+    const sofa::type::RGBAColor color = sofa::type::RGBAColor::green();
 
     const sofa::type::vector<Index>& my_map = quadPressureMap.getMap2Elements();
 

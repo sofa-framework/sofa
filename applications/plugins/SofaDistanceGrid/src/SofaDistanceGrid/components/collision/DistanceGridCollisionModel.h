@@ -418,7 +418,8 @@ public:
             // we can use Newton's method using the jacobian of the deformation.
             type::Mat<3,3,double> m = Jdeform(b);
             type::Mat<3,3,double> minv;
-            minv.invert(m);
+            if(!minv.invert(m))
+                msg_error("FFDDistanceGridCollisionModel")<<"Non-invertible matrix in undeformDir";
             return minv*dir;
         }
 
@@ -517,7 +518,7 @@ public:
 
     Index addPoint(const Coord& P, Index index, Real&)
     {
-        type::Vector3 bary;
+        type::Vec3 bary;
         Index elem = this->model->getDeformCube(index).elem;
         bary = this->model->getDeformCube(index).baryCoords(P);
         return this->mapper->addPointInCube(elem,bary.ptr());

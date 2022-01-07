@@ -31,9 +31,6 @@
 #include <sofa/type/Mat.h>
 #include "TriangularFEMForceField.h"
 #include <sofa/core/topology/TopologyData.h>
-#include <newmat/newmat.h>
-#include <newmat/newmatap.h>
-
 
 
 namespace sofa::component::forcefield
@@ -94,7 +91,7 @@ public:
         TriangleFiberDirection&,
         const core::topology::BaseMeshTopology::Triangle& t,
         const sofa::type::vector< unsigned int >&,
-        const sofa::type::vector< double >&);
+        const sofa::type::vector< SReal >&);
 
     /// Inherited member
     /// Bring inherited member in the current lookup context.

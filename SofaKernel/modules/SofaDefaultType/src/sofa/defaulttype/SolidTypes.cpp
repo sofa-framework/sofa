@@ -29,6 +29,7 @@ namespace defaulttype
 {
 
 template class SOFA_DEFAULTTYPE_API SolidTypes<double>;
+template class SOFA_DEFAULTTYPE_API SolidTypes<float>;
 
 
 }// defaulttype

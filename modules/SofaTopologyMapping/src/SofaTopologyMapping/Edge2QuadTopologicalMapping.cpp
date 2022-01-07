@@ -519,12 +519,12 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                     unsigned int to_nVertices = (unsigned int)ta->getNbAddedVertices() * N;
                     sofa::type::vector< sofa::type::vector< Index > > to_ancestorsList;
-                    sofa::type::vector< sofa::type::vector< double > > to_coefs;
+                    sofa::type::vector< sofa::type::vector< SReal > > to_coefs;
 
                     for(unsigned int i =0; i < ta->getNbAddedVertices(); i++)
                     {
                         sofa::type::vector< Index > my_ancestors;
-                        sofa::type::vector< double > my_coefs;
+                        sofa::type::vector< SReal > my_coefs;
 
                         for(unsigned int j =0; j < N; j++)
                         {

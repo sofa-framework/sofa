@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
 set(EXTLIBS_TARGETS
-    newmat
     tinyxml
 )
 
@@ -9,12 +8,8 @@ set(EXTLIBS_TARGETS
 
 # Nlohmann JSON (header-only): see SofaKernel/cmake/Modules/FindJson.cmake
 set(JSON_ROOT "${SOFA_KERNEL_SOURCE_DIR}/extlibs/json" CACHE PATH "Nlohmann JSON directory")
-
-# Newmat
-find_package(Newmat QUIET)
-if(NOT Newmat_FOUND)
-    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/extlibs/newmat newmat)
-endif()
+# STB (header-only): see SofaKernel/cmake/Modules/FindSTB.cmake
+set(STB_ROOT "${SOFA_KERNEL_SOURCE_DIR}/extlibs/stb" CACHE PATH "STB directory")
 
 # TinyXML
 find_package(TinyXML QUIET)
@@ -28,4 +23,3 @@ foreach(target ${EXTLIBS_TARGETS})
     set_target_properties(${target} PROPERTIES DEBUG_POSTFIX "_d")
     set_target_properties(${target} PROPERTIES FOLDER "SofaExtlibs")
 endforeach()
-

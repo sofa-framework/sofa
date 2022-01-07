@@ -100,7 +100,7 @@ public:
 #if SOFASPARSESOLVER_HAVE_CSPARSE
     void loadMatrixWithCSparse(TMatrix& M);
 #endif
-    bool addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, double fact) override;
+    bool addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) override;
 
     /// Returns the sofa template name. By default the name of the c++ class signature is exposed...
     /// so we need to override that by implementing GetCustomTemplateName() function
@@ -117,7 +117,7 @@ public:
 
 protected :
     template<class JMatrix>
-    void ComputeResult(linearalgebra::BaseMatrix * result,JMatrix& J, float fact);
+    void ComputeResult(linearalgebra::BaseMatrix * result,JMatrix& J, SReal fact);
 
     PrecomputedLinearSolverInternalData<TMatrix,TVector> internalData;
 
@@ -134,7 +134,7 @@ private :
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_PRECOMPUTEDLINEARSOLVER_CPP)
-extern template class SOFA_SOFASPARSESOLVER_API PrecomputedLinearSolver< CompressedRowSparseMatrix<double> , FullVector<double> >;
+extern template class SOFA_SOFASPARSESOLVER_API PrecomputedLinearSolver< linearalgebra::CompressedRowSparseMatrix<SReal> , linearalgebra::FullVector<SReal> >;
 #endif
 
 } // namespace linearsolver

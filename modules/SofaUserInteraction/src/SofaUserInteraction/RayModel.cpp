@@ -39,7 +39,7 @@ using namespace sofa::defaulttype;
 RayCollisionModel::RayCollisionModel(SReal length)
     : defaultLength(initData(&defaultLength, length, "", "TODO"))
 {
-    this->contactResponse.setValue("ray"); // use RayContact response class
+    this->contactResponse.setValue("RayContact"); // use RayContact response class
 }
 
 void RayCollisionModel::resize(Size size)
@@ -170,30 +170,28 @@ void RayCollisionModel::applyTranslation(double dx, double dy, double dz)
     }
 }
 
-const type::Vector3& Ray::origin() const
+const type::Vec3& Ray::origin() const
 {
     return model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue()[index];
 }
 
-const type::Vector3& Ray::direction() const
+const type::Vec3& Ray::direction() const
 {
     return model->direction[index];
 }
 
-type::Vector3::value_type Ray::l() const
+SReal Ray::l() const
 {
     return model->length[index];
 }
 
-void Ray::setOrigin(const type::Vector3& newOrigin)
+void Ray::setOrigin(const type::Vec3& newOrigin)
 {
-    helper::WriteAccessor<Data<type::vector<type::Vector3> > > xData =
-        *model->getMechanicalState()->write(core::VecCoordId::position());
+    auto xData = sofa::helper::getWriteAccessor(*model->getMechanicalState()->write(core::VecCoordId::position()));
     xData.wref()[index] = newOrigin;
 
-    helper::WriteAccessor<Data<type::vector<type::Vector3> > > xDataFree =
-        *model->getMechanicalState()->write(core::VecCoordId::freePosition());
-    defaulttype::Vec3Types::VecCoord& freePos = xDataFree.wref();
+    auto xDataFree = sofa::helper::getWriteAccessor(*model->getMechanicalState()->write(core::VecCoordId::freePosition()));
+    auto& freePos = xDataFree.wref();
     freePos.resize(model->getMechanicalState()->getSize());
     freePos[index] = newOrigin;
 }

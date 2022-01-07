@@ -151,7 +151,7 @@ int main(int argc, char** argv)
     // contact manager
     DefaultContactManager::SPtr contactManager = New<DefaultContactManager>();
     contactManager->setName("Contact Manager");
-    contactManager->setDefaultResponseType("default");
+    contactManager->setDefaultResponseType("PenalityContactForceField");
     groot->addObject(contactManager);
 
     // collision group

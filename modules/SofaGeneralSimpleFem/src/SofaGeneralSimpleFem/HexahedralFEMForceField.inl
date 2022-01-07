@@ -121,13 +121,13 @@ void HexahedralFEMForceField<DataTypes>::reinit()
     {
         createHexahedronInformation(i,hexahedronInf[i],
             _topology->getHexahedron(i),  (const std::vector< Index > )0,
-            (const std::vector< double >)0);
+            (const std::vector< SReal >)0);
     }
     hexahedronInfo.createTopologyHandler(_topology);
     hexahedronInfo.setCreationCallback([this](Index hexahedronIndex, HexahedronInformation& hexaInfo,
         const core::topology::BaseMeshTopology::Hexahedron& hexa,
         const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< double >& coefs)
+        const sofa::type::vector< SReal >& coefs)
     {
         createHexahedronInformation(hexahedronIndex, hexaInfo, hexa, ancestors, coefs);
     });
@@ -138,7 +138,7 @@ template< class DataTypes>
 void HexahedralFEMForceField<DataTypes>::createHexahedronInformation(Index hexahedronIndex, HexahedronInformation&,
     const core::topology::BaseMeshTopology::Hexahedron&,
     const sofa::type::vector<Index>&,
-    const sofa::type::vector<double>&)
+    const sofa::type::vector<SReal>&)
 {
     switch (method)
     {

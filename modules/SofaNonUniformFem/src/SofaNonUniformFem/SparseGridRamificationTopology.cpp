@@ -248,15 +248,15 @@ bool SparseGridRamificationTopology::sharingTriangle(helper::io::Mesh* mesh, Ind
 
 
     const auto& facets = mesh->getFacets();
-    const type::vector<Vector3>& vertices = mesh->getVertices();
+    const auto& vertices = mesh->getVertices();
     for (unsigned int f=0; f<facets.size(); f++)
     {
         const auto& facet = facets[f][0];
 
         for (unsigned int j=1; j<facet.size(); j++) // Triangularize
         {
-            const Vector3& A = vertices[facet[j-1]];
-            const Vector3& B = vertices[facet[j]];
+            const auto& A = vertices[facet[j-1]];
+            const auto& B = vertices[facet[j]];
 
             //tester si la face commune intersecte facet
             // pour les 3 aretes de facet avec le carre
@@ -379,7 +379,7 @@ void SparseGridRamificationTopology::buildRamifiedFinestLevel()
         }
     }
 
-    type::vector<type::Vec<3,SReal> >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
+    type::vector<type::Vec3 >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
     nbPoints=0;
     for(unsigned i=0; i<hexahedraConnectedToThePoint.size(); ++i)
     {
@@ -425,9 +425,9 @@ void SparseGridRamificationTopology::buildFromFiner()
     // the cube size of the coarser mesh is twice the cube size of the finer mesh
     // if the finer mesh contains an odd number of cubes in any direction,
     // the coarser mesh will be a half cube size larger in that direction
-    Vector3 dx = _finerSparseGrid->_regularGrid->getDx();
-    Vector3 dy = _finerSparseGrid->_regularGrid->getDy();
-    Vector3 dz = _finerSparseGrid->_regularGrid->getDz();
+    const auto dx = _finerSparseGrid->_regularGrid->getDx();
+    const auto dy = _finerSparseGrid->_regularGrid->getDy();
+    const auto dz = _finerSparseGrid->_regularGrid->getDz();
     setXmax(getXmin() + (getNx()-1) * (SReal)2.0 * dx[0]);
     setYmax(getYmin() + (getNy()-1) * (SReal)2.0 * dy[1]);
     setZmax(getZmin() + (getNz()-1) * (SReal)2.0 * dz[2]);
@@ -714,7 +714,7 @@ void SparseGridRamificationTopology::buildFromFiner()
         }
     }
 
-    type::vector<type::Vec<3,SReal> >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
+    type::vector<type::Vec3 >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
     nbPoints=0;
     for(unsigned i=0; i<hexahedraConnectedToThePoint.size(); ++i)
     {

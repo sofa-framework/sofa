@@ -104,7 +104,7 @@ template<class DataTypes>
 SReal OscillatingTorsionPressureForceField<DataTypes>::getAmplitude()
 {
     SReal t = this->getContext()->getTime();
-    SReal val = cos( 6.2831853 * frequency.getValue() * t );
+    const SReal val = cos( 6.2831853 * frequency.getValue() * t );
     return val;
 }
 
@@ -136,7 +136,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::addForce(const core::Mecha
     rotationAngle = avgRotAngle;
 
     // calculate and apply penalty forces to ideal positions
-    type::Quat<SReal> quat( axis.getValue(), avgRotAngle );
+    const type::Quat<SReal> quat( axis.getValue(), avgRotAngle );
     Real avgError = 0, maxError = 0;
     int pointCnt = 0;
     Real appliedMoment = 0;
@@ -244,11 +244,10 @@ void OscillatingTorsionPressureForceField<DataTypes>::selectTrianglesAlongPlane(
 {
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     std::vector<bool> vArray;
-    unsigned int i;
 
     vArray.resize(x.size());
 
-    for( i=0; i<x.size(); ++i)
+    for( unsigned int i=0; i<x.size(); ++i)
     {
         vArray[i]=isPointInPlane(x[i]);
     }
@@ -309,7 +308,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::draw(const core::visual::V
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     vparams->drawTool()->disableLighting();
-    sofa::type::RGBAColor color = sofa::type::RGBAColor::green();
+    const sofa::type::RGBAColor color = sofa::type::RGBAColor::green();
     std::vector<sofa::type::Vector3> vertices;
 
     const sofa::type::vector<Index>& my_map = trianglePressureMap.getMap2Elements();

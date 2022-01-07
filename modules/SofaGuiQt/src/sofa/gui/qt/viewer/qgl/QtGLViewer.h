@@ -99,9 +99,9 @@ public:
                 ;
     }
 
-    static const char* viewerName()  { return "QGLViewer"; }
+    static const char* viewerName()  { return "QGLViewer (QtGLViewer)"; }
 
-    static const char* acceleratedName()  { return "&QGLViewer"; }
+    static const char* acceleratedName()  { return "&QGLViewer (QtGLViewer)"; }
 
     virtual void drawColourPicking (ColourPickingVisitor::ColourCode code) override;
 
@@ -141,6 +141,8 @@ public:
 
     void setCameraMode(core::visual::VisualParams::CameraType mode) override;
 
+    void screenshot(const std::string& filename, int compression_level = -1) override;
+
     QString helpString() const override;
 
 
@@ -150,7 +152,7 @@ private:
     void	PrintString(void* font, char* string);
     void	Display3DText(float x, float y, float z, char* string);
     void	DrawAxis(double xpos, double ypos, double zpos, double arrowSize);
-    void	DrawBox(Real* minBBox, Real* maxBBox, Real r=0.0);
+    void	DrawBox(SReal* minBBox, SReal* maxBBox, SReal r=0.0);
     void	DrawXYPlane(double zo, double xmin, double xmax, double ymin, double ymax, double step);
     void	DrawYZPlane(double xo, double ymin, double ymax, double zmin, double zmax, double step);
     void	DrawXZPlane(double yo, double xmin, double xmax, double zmin, double zmax, double step);

@@ -80,7 +80,7 @@ Index TopologySubsetData <TopologyElementType, VecT>::indexOfElement(Index index
 template <typename TopologyElementType, typename VecT>
 void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
     const sofa::type::vector<sofa::type::vector<Index> >& ancestors,
-    const sofa::type::vector<sofa::type::vector<double> >& coefs)
+    const sofa::type::vector<sofa::type::vector<SReal> >& coefs)
 {
     if (!this->getSparseDataStatus()) {
         this->m_lastElementIndex += nbElements;
@@ -102,7 +102,7 @@ void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
             if (ancestors.empty() || coefs.empty())
             {
                 const sofa::type::vector< Index > empty_vecint;
-                const sofa::type::vector< double > empty_vecdouble;
+                const sofa::type::vector< SReal > empty_vecdouble;
 
                 this->m_topologyHandler->applyCreateFunction(Index(size + i), t, empty_vecint, empty_vecdouble);
 
@@ -133,7 +133,7 @@ template <typename TopologyElementType, typename VecT>
 void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
     const sofa::type::vector< TopologyElementType >&,
     const sofa::type::vector<sofa::type::vector<Index> >& ancestors,
-    const sofa::type::vector<sofa::type::vector<double> >& coefs)
+    const sofa::type::vector<sofa::type::vector<SReal> >& coefs)
 {
     this->add(nbElements, ancestors, coefs);
 }
@@ -143,7 +143,7 @@ template <typename TopologyElementType, typename VecT>
 void TopologySubsetData <TopologyElementType, VecT>::add(const sofa::type::vector<Index>& index,
     const sofa::type::vector< TopologyElementType >& elems,
     const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-    const sofa::type::vector< sofa::type::vector< double > >& coefs,
+    const sofa::type::vector< sofa::type::vector< SReal > >& coefs,
     const sofa::type::vector< AncestorElem >& ancestorElems)
 {
     SOFA_UNUSED(elems);
@@ -155,7 +155,7 @@ void TopologySubsetData <TopologyElementType, VecT>::add(const sofa::type::vecto
 template <typename TopologyElementType, typename VecT>
 void TopologySubsetData <TopologyElementType, VecT>::move(const sofa::type::vector<Index>&,
     const sofa::type::vector< sofa::type::vector< Index > >&,
-    const sofa::type::vector< sofa::type::vector< double > >&)
+    const sofa::type::vector< sofa::type::vector< SReal > >&)
 {
 
 }

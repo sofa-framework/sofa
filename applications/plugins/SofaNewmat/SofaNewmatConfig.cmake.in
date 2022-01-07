@@ -1,0 +1,12 @@
+# CMake package configuration file for the @PACKAGE_NAME@ library
+
+@PACKAGE_GUARD@
+@PACKAGE_INIT@
+
+find_package(SofaFramework REQUIRED)
+
+if(NOT TARGET @PACKAGE_NAME@)
+    include("${CMAKE_CURRENT_LIST_DIR}/@PACKAGE_NAME@Targets.cmake")
+endif()
+
+check_required_components(@PACKAGE_NAME@)

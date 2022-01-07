@@ -495,7 +495,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             else
             {
                 type::vector< type::vector<Index> > ancestors;
-                type::vector< type::vector<double> > coefs;
+                type::vector< type::vector<SReal> > coefs;
                 size_t nDadd = 0;
                 size_t pD0 = pD2S.size();
                 pS2D.resize(pS0+nSadd);
@@ -663,7 +663,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             type::vector< core::topology::BaseMeshTopology::Edge > edgeArray;
             type::vector< Index > edgeIndexArray;
             type::vector< type::vector<Index> > ancestors;
-            type::vector< type::vector<double> > coefs;
+            type::vector< type::vector<SReal> > coefs;
             size_t nSadd = eAdd->getNbAddedEdges();
             unsigned int nDadd = 0;
             size_t eS0 = eS2D.size();
@@ -807,7 +807,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             type::vector< core::topology::BaseMeshTopology::Triangle > triangleArray;
             type::vector< Index > triangleIndexArray;
             type::vector< type::vector<Index> > ancestors;
-            type::vector< type::vector<double> > coefs;
+            type::vector< type::vector<SReal> > coefs;
             size_t nSadd = tAdd->getNbAddedTriangles();
             unsigned int nDadd = 0;
             size_t tS0 = tS2D.size();

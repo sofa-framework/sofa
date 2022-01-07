@@ -62,7 +62,8 @@ protected:
         int index;
         Coord normal;
         Coord pos;
-        Contact( int index=0, Coord normal=Coord(),Coord pos=Coord())
+
+        explicit Contact( int index=0, Coord normal=Coord(),Coord pos=Coord())
             : index(index),normal(normal),pos(pos)
         {
         }

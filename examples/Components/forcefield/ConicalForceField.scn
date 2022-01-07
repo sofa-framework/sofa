@@ -10,7 +10,7 @@
     <DefaultPipeline verbose="0" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager response="default" />
+    <DefaultContactManager response="PenalityContactForceField" />
     <DiscreteIntersection />
     <!--<DefaultCollisionGroupManager />-->
     <Node name="Liver">

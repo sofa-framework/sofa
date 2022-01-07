@@ -25,8 +25,8 @@ using std::vector;
 #include <string>
 using std::string;
 
-#include <sofa/testing/BaseTest.h>
-using sofa::testing::BaseTest;
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
@@ -54,7 +54,7 @@ namespace {
 std::string tempdir = std::filesystem::temp_directory_path().string() ;
 
 
-class STLExporter_test : public BaseTest {
+class STLExporter_test : public BaseSimulationTest {
 public:
     /// remove the file created...
     std::vector<std::string> dataPath ;

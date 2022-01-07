@@ -32,9 +32,9 @@ namespace sofa::component::linearsolver
 {
 
 int BTDLinearSolverClass = core::RegisterObject("Linear system solver using Thomas Algorithm for Block Tridiagonal matrices")
-    .add< BTDLinearSolver<linearalgebra::BTDMatrix<6,double>, linearalgebra::BlockVector<6,double> > >(true)
+    .add< BTDLinearSolver<linearalgebra::BTDMatrix<6, SReal>, linearalgebra::BlockVector<6, SReal> > >(true)
 ;
 
-template class SOFA_SOFAGENERALLINEARSOLVER_API BTDLinearSolver< linearalgebra::BTDMatrix<6, double>, linearalgebra::BlockVector<6, double> >;
+template class SOFA_SOFAGENERALLINEARSOLVER_API BTDLinearSolver< linearalgebra::BTDMatrix<6, SReal>, linearalgebra::BlockVector<6, SReal> >;
 
 } //namespace sofa::component::linearsolver

@@ -270,7 +270,7 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
         }
 
         // check stiffness matrix: compare its product with dx to actual force change
-        typedef linearalgebra::EigenBaseSparseMatrix<SReal> Sqmat;
+        typedef sofa::linearalgebra::EigenBaseSparseMatrix<SReal> Sqmat;
         Sqmat K( n*DataTypes::deriv_total_size, n*DataTypes::deriv_total_size );
         component::linearsolver::SingleMatrixAccessor accessor( &K );
         mparams.setKFactor(1.0);

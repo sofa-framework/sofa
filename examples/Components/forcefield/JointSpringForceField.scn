@@ -7,7 +7,7 @@
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showCollisionModels showMechanicalMappings" />
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-    <DefaultContactManager name="default41" response="default" />
+    <DefaultContactManager name="default41" response="PenalityContactForceField" />
     <DefaultPipeline name="default42" />
     <MinProximityIntersection name="default43" alarmDistance="1" contactDistance="0.5"/>
     <Node name="default44" gravity="0 -9.81 0">

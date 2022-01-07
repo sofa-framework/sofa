@@ -12,7 +12,7 @@
 	<DefaultPipeline name="defaultPipeline1"  verbose="0" />
 	<BruteForceBroadPhase/>
     <BVHNarrowPhase/>
-	<DefaultContactManager name="defaultContactManager1"  response="default" />
+	<DefaultContactManager name="defaultContactManager1"  response="PenalityContactForceField" />
 	<MinProximityIntersection name="Proximity"  alarmDistance="0.8"  contactDistance="0.5" />
 	<DefaultCollisionGroupManager name="treeCollisionGroupManager1" />
 	<Node 	name="SquareGravity"  >

@@ -46,7 +46,8 @@ public:
     
     std::string loaderType;
 
-    typedef sofa::type::Vector3 Vector3;
+    using Vector3 = sofa::type::Vec3;
+
     typedef sofa::type::PrimitiveGroup PrimitiveGroup;
     typedef sofa::type::Material Material;
     typedef sofa::Index PointID;

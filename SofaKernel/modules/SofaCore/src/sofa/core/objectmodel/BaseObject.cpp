@@ -256,7 +256,14 @@ void BaseObject::init()
     {
         if (data->isRequired() && !data->isSet())
         {
-            msg_error() << "Required data \"" << data->getName() << "\" has not been set. (Current value is " << data->getValueString() << ")" ;
+            if(data->hasDefaultValue())
+            {
+                msg_warning() << "Required data \"" << data->getName() << "\" has not been set. Falling back to default value: " << data->getValueString();
+            }
+            else
+            {
+                msg_error() << "Required data \"" << data->getName() << "\" has not been set. It must be set since it has no default value." ;
+            }
         }
     }
 }
