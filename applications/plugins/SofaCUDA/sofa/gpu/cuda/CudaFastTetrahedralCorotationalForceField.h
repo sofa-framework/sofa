@@ -27,11 +27,12 @@
 namespace sofa::component::forcefield
 {
 
-template <>
-class FastTetrahedralCorotationalForceFieldData<gpu::cuda::CudaVec3Types>
+template <class TCoord, class TDeriv, class TReal>
+class FastTetrahedralCorotationalForceFieldData<gpu::cuda::CudaVectorTypes<TCoord, TDeriv, TReal> >
 {
 public:
-    typedef FastTetrahedralCorotationalForceField<gpu::cuda::CudaVec3Types> Main;
+    typedef gpu::cuda::CudaVectorTypes<TCoord, TDeriv, TReal> DataTypes;
+    typedef FastTetrahedralCorotationalForceField<DataTypes> Main;
     
     struct GPUTetrahedron
     {
