@@ -44,11 +44,8 @@ void FastTetrahedralCorotationalForceFieldCuda3d_addForce(unsigned int size, voi
 
 void FastTetrahedralCorotationalForceFieldCuda3d_computeEdgeMatrices(unsigned int nbTetrahedra, const void* tetrahedronInf, void* edgeDfDx, const void* gpuTetra);
 
-void FastTetrahedralCorotationalForceFieldCuda3d_addDForce(unsigned int size, void* f, const void* dx, double kFactor,
-    const void* triangleState, const void* triangleInfo,
-    unsigned int nbTriangles,
-    const void* gpuTriangleInfo,
-    double gamma, double mu); //, const void* dfdx);
+void FastTetrahedralCorotationalForceFieldCuda3d_addDForce(unsigned int nbedges, void* df, const void* dx, float kFactor,
+    const void* edgeDfDx, const void* gpuEdges);
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 }
@@ -157,23 +154,35 @@ void FastTetrahedralCorotationalForceField<gpu::cuda::CudaVec3dTypes>::addDForce
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
+    const double kFactor = sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 
-    const VecTriangleState& triState = d_triangleState.getValue();
-    const VecTriangleInfo& triInfo = d_triangleInfo.getValue();
-    const unsigned int nbTriangles = m_topology->getNbTriangles();
-    const InternalData::VecGPUTriangleInfo& gpuTriangleInfo = data.gpuTriangleInfo;
-    const Real gamma = this->gamma;
-    const Real mu = this->mu;
+    const ExtraData::VecGPUTetrahedron& gpuTetra = m_data.gpuTetrahedra;
 
-    df.resize(dx.size());
+    if (updateMatrix == true)
+    {
+        sofa::Size nbTetrahedra = m_topology->getNbTetrahedra();
+        const VecTetrahedronRestInformation& tetrahedronInf = tetrahedronInfo.getValue();
+        VecMat3x3& edgeDfDx = *edgeInfo.beginEdit();
 
-    FastTetrahedralCorotationalForceFieldCuda3d_addDForce(dx.size(), df.deviceWrite(), dx.deviceRead(), kFactor,
-        triState.deviceRead(),
-        triInfo.deviceRead(),
-        nbTriangles,
-        gpuTriangleInfo.deviceRead(),
-        gamma, mu);
+        // reset all edge matrices
+        for (unsigned int j = 0; j < edgeDfDx.size(); j++)
+        {
+            edgeDfDx[j].clear();
+        }
+
+        FastTetrahedralCorotationalForceFieldCuda3d_computeEdgeMatrices(nbTetrahedra, tetrahedronInf.deviceRead(), edgeDfDx.deviceWrite(), gpuTetra.deviceRead());
+
+        updateMatrix = false;
+        edgeInfo.endEdit();
+    }
+
+
+    const VecMat3x3& edgeDfDx = edgeInfo.getValue();
+    const ExtraData::VecGPUEdge& gpuEdges = m_data.gpuEdges;
+    sofa::Size nbedges = m_topology->getNbEdges();
+    FastTetrahedralCorotationalForceFieldCuda3d_addDForce(nbedges, df.deviceWrite(), dx.deviceRead(), kFactor,
+        edgeDfDx.deviceRead(),
+        gpuEdges.deviceRead());
 
     d_df.endEdit();
 }

@@ -255,26 +255,32 @@ void FastTetrahedralCorotationalForceFieldCuda3d_addForce(unsigned int size, voi
     dim3 threads(BSIZE, 1);
     dim3 grid((nbTetrahedra + BSIZE - 1) / BSIZE, 1);
     {
-        FastTetrahedralCorotationalForceFieldCudaVec3_addForce_kernel<double> << < grid, threads >> > (size, (CudaVec3f*)f, (const CudaVec3f*)x, (const CudaVec3f*)v,
+        FastTetrahedralCorotationalForceFieldCudaVec3_addForce_kernel<double> << < grid, threads >> > (size, (CudaVec3d*)f, (const CudaVec3d*)x, (const CudaVec3d*)v,
             nbTetrahedra, (GPUTetrahedronRestInformation<double>*)tetrahedronInfo, (const GPUTetrahedron*)gpuTetra);
         mycudaDebugError("FastTetrahedralCorotationalForceFieldCuda3d_addForce_kernel"); }
 }
 
-void FastTetrahedralCorotationalForceFieldCuda3d_addDForce(unsigned int size, void* df, const void* dx, float kFactor,
-    const void* triangleState, const void* triangleInfo,
-    unsigned int nbTriangles,
-    const void* gpuTriangleInfo,
-    double gamma, double mu) //, const void* dfdx)
+void FastTetrahedralCorotationalForceFieldCuda3d_computeEdgeMatrices(unsigned int nbTetrahedra, const void* tetrahedronInfo, void* edgeDfDx, const void* gpuTetra)
 {
     dim3 threads(BSIZE, 1);
-    dim3 grid((nbTriangles + BSIZE - 1) / BSIZE, 1);
-    {FastTetrahedralCorotationalForceFieldCudaVec3_addDForce_kernel<double> <<< grid, threads >>> (size, (CudaVec3d*)df, (const CudaVec3d*)dx, kFactor,
-        (const TriangleState<double>*)triangleState,
-        (const TriangleInfo<double>*)triangleInfo,
-        nbTriangles,
-        (const GPUTriangleInfo*)gpuTriangleInfo,
-        gamma, mu
-        ); mycudaDebugError("FastTetrahedralCorotationalForceFieldCuda3f_addDForce_kernel"); }
+    dim3 grid((nbTetrahedra + BSIZE - 1) / BSIZE, 1);
+    {
+        FastTetrahedralCorotationalForceFieldCudaVec3_computeEdgeMatrices_kernel<double> << < grid, threads >> > (nbTetrahedra,
+            (const GPUTetrahedronRestInformation<double>*)tetrahedronInfo, (matrix3<double>*)edgeDfDx, (const GPUTetrahedron*)gpuTetra);
+        mycudaDebugError("FastTetrahedralCorotationalForceFieldCuda3d_computeEdgeMatrices_kernel");
+    }
+}
+
+void FastTetrahedralCorotationalForceFieldCuda3d_addDForce(unsigned int nbedges, void* df, const void* dx, float kFactor,
+    const void* edgeDfDx, const void* gpuEdges)
+{
+    dim3 threads(BSIZE, 1);
+    dim3 grid((nbedges + BSIZE - 1) / BSIZE, 1);
+    {
+        FastTetrahedralCorotationalForceFieldCudaVec3_addDForce_kernel<double> << < grid, threads >> > (nbedges, (CudaVec3d*)df, (const CudaVec3d*)dx, kFactor,
+            (const matrix3<double>*)edgeDfDx, (const GPUEdge*)gpuEdges);
+        mycudaDebugError("FastTetrahedralCorotationalForceFieldCuda3d_addDForce_kernel");
+    }
 }
 #endif
 
