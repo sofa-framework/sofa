@@ -29,8 +29,7 @@ namespace sofa::component::mapping
 
 using core::visual::VisualParams;
 using sofa::linearalgebra::BaseMatrix;
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::Vec3Types;
 using topology::RegularGridTopology;
 
 /// Class allowing barycentric mapping computation on a RegularGridTopology
@@ -86,7 +85,7 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERREGULARGRIDTOPOLOGY_CPP)
-extern template class SOFA_SOFABASEMECHANICS_API BarycentricMapperRegularGridTopology< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_SOFABASEMECHANICS_API BarycentricMapperRegularGridTopology< Vec3Types, Vec3Types >;
 
 
 #endif

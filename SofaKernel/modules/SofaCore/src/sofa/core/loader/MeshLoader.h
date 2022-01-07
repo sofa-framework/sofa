@@ -37,12 +37,13 @@ namespace sofa::core::loader
 {
 
 using sofa::type::PrimitiveGroup;
-using sofa::type::Vec3;
 using topology::Topology;
 
 class SOFA_CORE_API MeshLoader : public BaseLoader
 {
 public:
+    using Vec3 = sofa::type::Vec3;
+
     SOFA_ABSTRACT_CLASS(MeshLoader, BaseLoader);
 
     typedef topology::Topology::Edge Edge;
@@ -161,7 +162,7 @@ public:
     // polygons in 3D ?
 
     //Misc
-    Data< type::vector<sofa::type::Vec<3,SReal> > > d_normals; ///< Normals per vertex
+    Data< type::vector<sofa::type::Vec3 > > d_normals; ///< Normals per vertex
 
     // Groups
     Data< type::vector< PrimitiveGroup > > d_edgesGroups; ///< Groups of Edges
@@ -195,8 +196,8 @@ protected:
     type::Matrix4 d_previousTransformation;
 
 
-    void addPosition(type::vector< sofa::type::Vec<3, SReal> >& pPositions, const sofa::type::Vec<3, SReal>& p);
-    void addPosition(type::vector<sofa::type::Vec<3, SReal> >& pPositions,  SReal x, SReal y, SReal z);
+    void addPosition(type::vector< sofa::type::Vec3 >& pPositions, const sofa::type::Vec3& p);
+    void addPosition(type::vector<sofa::type::Vec3 >& pPositions,  SReal x, SReal y, SReal z);
 
     void addPolyline(type::vector<Polyline>& pPolylines, Polyline p);
 
@@ -233,9 +234,9 @@ protected:
 
     /// Deprecation with pointer versions
     SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
-    void addPosition(type::vector< sofa::type::Vec<3, SReal> >* pPositions, const sofa::type::Vec<3, SReal>& p) = delete;
+    void addPosition(type::vector< sofa::type::Vec3 >* pPositions, const sofa::type::Vec3& p) = delete;
     SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
-    void addPosition(type::vector<sofa::type::Vec<3, SReal> >* pPositions, SReal x, SReal y, SReal z) = delete;
+    void addPosition(type::vector<sofa::type::Vec3 >* pPositions, SReal x, SReal y, SReal z) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__REFERENCES_IN_MESHLOADER()
     void addPolyline(type::vector<Polyline>* pPolylines, Polyline p) = delete;

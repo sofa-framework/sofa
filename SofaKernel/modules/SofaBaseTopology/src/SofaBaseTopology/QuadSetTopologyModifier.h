@@ -70,7 +70,7 @@ public:
     */
     virtual void addQuads(const sofa::type::vector< Quad > &quads,
             const sofa::type::vector< sofa::type::vector< QuadID > > & ancestors,
-            const sofa::type::vector< sofa::type::vector< double > >& baryCoefs) ;
+            const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs) ;
 
     /** \brief Effectively Add a quad.
     */
@@ -108,7 +108,7 @@ protected:
         const sofa::type::vector< Quad >& quadsList,
         const sofa::type::vector< QuadID >& quadsIndexList,
         const sofa::type::vector< sofa::type::vector< QuadID > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& baryCoefs);
+        const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs);
 
     /** \brief Effectively Add some quads to this topology.
     *

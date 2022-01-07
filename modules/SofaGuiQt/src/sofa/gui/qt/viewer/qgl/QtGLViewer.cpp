@@ -343,7 +343,7 @@ void QtGLViewer::DrawAxis(double xpos, double ypos, double zpos,
 // ---
 // ---
 // ---------------------------------------------------
-void QtGLViewer::DrawBox(Real* minBBox, Real* maxBBox, Real r)
+void QtGLViewer::DrawBox(SReal* minBBox, SReal* maxBBox, SReal r)
 {
     if (r==0.0)
         r = (Vector3(maxBBox) - Vector3(minBBox)).norm() / 500;

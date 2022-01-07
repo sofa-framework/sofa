@@ -59,8 +59,7 @@ template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::applyConstraint(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
-    MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(mstate.get());
-    if(r)
+    if(const MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(mstate.get()))
     {
         /// Implement plane constraint only when the direction is along the coordinates directions
         // TODO : generalize projection to any direction
@@ -87,10 +86,10 @@ void FixedPlaneConstraint<DataTypes>::applyConstraint(const MechanicalParams* mp
                                                       const MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
-    int o = matrix->getGlobalOffset(mstate.get());
+    const int o = matrix->getGlobalOffset(mstate.get());
     if (o >= 0)
     {
-        unsigned int offset = (unsigned int)o;
+        const unsigned int offset = (unsigned int)o;
         /// Implement plane constraint only when the direction is along the coordinates directions
         // TODO : generalize projection to any direction
         Coord dir=d_direction.getValue();
@@ -145,7 +144,7 @@ template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned /*offset*/ )
 {
     /// clears the rows and columns associated with constrained particles
-    unsigned blockSize = DataTypes::deriv_total_size;
+    const unsigned blockSize = DataTypes::deriv_total_size;
 
     for(auto& index : d_indices.getValue())
     {
@@ -198,9 +197,7 @@ void FixedPlaneConstraint<DataTypes>::init()
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
-    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
-
-    if (_topology)
+    if (sofa::core::topology::BaseMeshTopology* _topology = l_topology.get())
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
         

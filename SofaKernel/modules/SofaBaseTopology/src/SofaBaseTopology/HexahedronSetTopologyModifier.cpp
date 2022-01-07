@@ -67,7 +67,7 @@ void HexahedronSetTopologyModifier::addHexahedra(const sofa::type::vector<Hexahe
 
 void HexahedronSetTopologyModifier::addHexahedra(const sofa::type::vector<Hexahedron> &hexahedra,
         const sofa::type::vector<sofa::type::vector<HexahedronID> > &ancestors,
-        const sofa::type::vector<sofa::type::vector<double> > &baryCoefs)
+        const sofa::type::vector<sofa::type::vector<SReal> > &baryCoefs)
 {
     size_t nhexa = m_container->getNbHexahedra();
 
@@ -239,7 +239,7 @@ void HexahedronSetTopologyModifier::addHexahedraWarning(const size_t nHexahedra,
         const sofa::type::vector< Hexahedron >& hexahedraList,
         const sofa::type::vector< HexahedronID >& hexahedraIndexList,
         const sofa::type::vector< sofa::type::vector< HexahedronID > > & ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& baryCoefs)
+        const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs)
 {
     m_container->setHexahedronTopologyToDirty();
     // Warning that hexahedra just got created

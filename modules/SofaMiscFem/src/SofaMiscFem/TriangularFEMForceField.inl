@@ -135,7 +135,7 @@ void TriangularFEMForceField<DataTypes>::init()
     triangleInfo.setCreationCallback([this](Index triangleIndex, TriangleInformation& triInfo,
         const core::topology::BaseMeshTopology::Triangle& triangle,
         const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< double >& coefs)
+        const sofa::type::vector< SReal >& coefs)
     {
         createTriangleInformation(triangleIndex, triInfo, triangle, ancestors, coefs);
     });
@@ -262,7 +262,7 @@ void TriangularFEMForceField<DataTypes>::reinit()
 
     for (Topology::TriangleID i=0; i<m_topology->getNbTriangles(); ++i)
     {
-        createTriangleInformation(i, triangleInf[i],  m_topology->getTriangle(i),  (const sofa::type::vector< Index > )0, (const sofa::type::vector< double >)0);
+        createTriangleInformation(i, triangleInf[i],  m_topology->getTriangle(i),  (const sofa::type::vector< Index > )0, (const sofa::type::vector< SReal >)0);
     }
 
     triangleInfo.endEdit();
@@ -309,7 +309,7 @@ template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::createTriangleInformation(Index triangleIndex, TriangleInformation&,
     const core::topology::BaseMeshTopology::Triangle& t,
     const sofa::type::vector< Index >&,
-    const sofa::type::vector< double >&)
+    const sofa::type::vector< SReal >&)
 {
     Index a = t[0];
     Index b = t[1];
@@ -1465,7 +1465,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         std::vector<sofa::type::Vector3> vertices;
         std::vector<sofa::type::RGBAColor> colorVector;
 
-        helper::ColorMap::evaluator<double> evalColor = p_drawColorMap->getEvaluator(minStress, maxStress);
+        auto evalColor = p_drawColorMap->getEvaluator(minStress, maxStress);
         for(Size i=0; i<nbTriangles; ++i)
         {
             const Triangle& tri = m_topology->getTriangle(i);

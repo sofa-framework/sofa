@@ -70,7 +70,7 @@ void QuadSetTopologyModifier::addQuads(const sofa::type::vector<Quad> &quads)
 
 void QuadSetTopologyModifier::addQuads(const sofa::type::vector<Quad> &quads,
         const sofa::type::vector<sofa::type::vector<QuadID> > &ancestors,
-        const sofa::type::vector<sofa::type::vector<double> > &baryCoefs)
+        const sofa::type::vector<sofa::type::vector<SReal> > &baryCoefs)
 {
     size_t nQuads = m_container->getNbQuads();
 
@@ -211,7 +211,7 @@ void QuadSetTopologyModifier::addQuadsWarning(const size_t nQuads,
         const sofa::type::vector< Quad >& quadsList,
         const sofa::type::vector< QuadID >& quadsIndexList,
         const sofa::type::vector< sofa::type::vector< QuadID > > & ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& baryCoefs)
+        const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs)
 {
     m_container->setQuadTopologyToDirty();
     // Warning that quads just got created

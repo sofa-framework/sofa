@@ -21,6 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_CPP
 #include <SofaMiscFem/FastTetrahedralCorotationalForceField.inl>
+#include <sofa/core/topology/TopologyData.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -29,10 +30,6 @@ namespace sofa::component::forcefield
 {
 
 using namespace sofa::defaulttype;
-
-
-using namespace sofa::defaulttype;
-
 
 // Register in the Factory
 int FastTetrahedralCorotationalForceFieldClass = core::RegisterObject("Fast Corotational Tetrahedral Mesh")

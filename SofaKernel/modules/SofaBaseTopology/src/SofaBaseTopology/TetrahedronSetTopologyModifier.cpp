@@ -76,7 +76,7 @@ void TetrahedronSetTopologyModifier::addTetrahedra(const sofa::type::vector<Tetr
 
 void TetrahedronSetTopologyModifier::addTetrahedra(const sofa::type::vector<Tetrahedron> &tetrahedra,
         const sofa::type::vector<sofa::type::vector<TetrahedronID> > &ancestors,
-        const sofa::type::vector<sofa::type::vector<double> > &baryCoefs)
+        const sofa::type::vector<sofa::type::vector<SReal> > &baryCoefs)
 {
     size_t ntetra = m_container->getNbTetrahedra();
 
@@ -258,7 +258,7 @@ void TetrahedronSetTopologyModifier::addTetrahedraWarning(const size_t nTetrahed
         const sofa::type::vector< Tetrahedron >& tetrahedraList,
         const sofa::type::vector< TetrahedronID >& tetrahedraIndexList,
         const sofa::type::vector< sofa::type::vector< TetrahedronID > > & ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& baryCoefs)
+        const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs)
 {
     m_container->setTetrahedronTopologyToDirty();
     // Warning that tetrahedra just got created

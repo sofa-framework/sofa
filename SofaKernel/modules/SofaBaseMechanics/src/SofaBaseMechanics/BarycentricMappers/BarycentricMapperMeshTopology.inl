@@ -145,21 +145,21 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
             }
             for ( std::size_t i=0; i<out.size(); i++ )
             {
-                Vector3 outPos = Out::getCPos(out[i]);
-                Vector3 coefs;
+                const auto outPos = Out::getCPos(out[i]);
+                sofa::type::Vec3 coefs;
                 Index index = sofa::InvalidID;
-                double distance = 1e10;
+                SReal distance = 1e10;
                 for ( Index t = 0; t < triangles.size(); t++ )
                 {
-                    Vec3d v = bases[t] * ( outPos - in[triangles[t][0]] );
-                    double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( ( v[2]<0?-v[2]:v[2] )-0.01,v[0]+v[1]-1 ) );
+                    const auto v = bases[t] * ( outPos - in[triangles[t][0]] );
+                    SReal d = std::max ( std::max (SReal(-v[0]), SReal(-v[1]) ),std::max ( SReal( ( v[2]<0?-v[2]:v[2] )-0.01), SReal(v[0]+v[1]-1 )));
                     if ( d>0 ) d = ( outPos-centers[t] ).norm2();
                     if ( d<distance ) { coefs = v; distance = d; index = (t); }
                 }
                 for ( Index q = 0; q < quads.size(); q++ )
                 {
-                    Vec3d v = bases[nbTriangles+q] * ( outPos - in[quads[q][0]] );
-                    double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( std::max ( v[1]-1,v[0]-1 ),std::max ( v[2]-0.01,-v[2]-0.01 ) ) );
+                    const auto v = bases[nbTriangles+q] * ( outPos - in[quads[q][0]] );
+                    SReal d = std::max ( std::max (SReal(-v[0]), SReal(-v[1])),std::max ( std::max (SReal(v[1]-1), SReal(v[0]-1)),std::max (SReal(v[2]-0.01), SReal(-v[2]-0.01) ) ) );
                     if ( d>0 ) d = ( outPos-centers[nbTriangles+q] ).norm2();
                     if ( d<distance ) { coefs = v; distance = d; index = nbTriangles+q; }
                 }
@@ -202,21 +202,21 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
         }
         for ( std::size_t i=0; i<out.size(); i++ )
         {
-            Vector3 pos = Out::getCPos(out[i]);
-            Vector3 coefs;
+            auto pos = Out::getCPos(out[i]);
+            sofa::type::Vec3 coefs;
             Index index = sofa::InvalidID;
             double distance = 1e10;
             for (Index t = 0; t < tetras.size(); t++ )
             {
-                Vector3 v = bases[t] * ( pos - in[tetras[t][0]] );
-                double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( -v[2],v[0]+v[1]+v[2]-1 ) );
+                const auto v = bases[t] * ( pos - in[tetras[t][0]] );
+                SReal d = std::max ( std::max ( SReal(-v[0]), SReal(-v[1]) ),std::max (SReal(-v[2]), SReal(v[0]+v[1]+v[2]-1) ) );
                 if ( d>0 ) d = ( pos-centers[t] ).norm2();
                 if ( d<distance ) { coefs = v; distance = d; index = (t); }
             }
             for (Index h = 0; h < hexas.size(); h++ )
             {
-                Vector3 v = bases[nbTetras+h] * ( pos - in[hexas[h][0]] );
-                double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( std::max ( -v[2],v[0]-1 ),std::max ( v[1]-1,v[2]-1 ) ) );
+                const auto v = bases[nbTetras+h] * ( pos - in[hexas[h][0]] );
+                SReal d = std::max ( std::max (SReal(-v[0]), SReal(-v[1]) ),std::max ( std::max (SReal(-v[2]), SReal(v[0]-1) ),std::max (SReal(v[1]-1), SReal(v[2]-1) ) ) );
                 if ( d>0 ) d = ( pos-centers[nbTetras+h] ).norm2();
                 if ( d<distance ) { coefs = v; distance = d; index = (nbTetras+h); }
             }

@@ -29,8 +29,7 @@ namespace sofa::component::mapping::_barycentricmapper_
 {
 
 using sofa::linearalgebra::BaseMatrix;
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::Vec3Types;
 
 /// Base class for barycentric mapping topology-specific mappers
 template<class In, class Out>
@@ -128,7 +127,7 @@ private:
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPER_CPP)
-extern template class SOFA_SOFABASEMECHANICS_API BarycentricMapper< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_SOFABASEMECHANICS_API BarycentricMapper< Vec3Types, Vec3Types >;
 #endif
 
 } // namespace sofa::component::mapping::_barycentricmapper_

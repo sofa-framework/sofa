@@ -38,7 +38,7 @@ void TriangularTensorMassForceField<DataTypes>::applyEdgeCreation(Index /*edgeIn
         EdgeRestInformation & ei,
         const core::topology::Edge &/*e*/,
         const sofa::type::vector<Index> &,
-        const sofa::type::vector<double> &)
+        const sofa::type::vector<SReal> &)
 {
     unsigned int u,v;
     /// set to zero the stiffness matrix
@@ -55,7 +55,7 @@ template< class DataTypes >
 void TriangularTensorMassForceField<DataTypes>::applyTriangleCreation(const sofa::type::vector<Index> &triangleAdded,
         const sofa::type::vector<core::topology::Triangle> &,
         const sofa::type::vector<sofa::type::vector<Index> > &,
-        const sofa::type::vector<sofa::type::vector<double> > &)
+        const sofa::type::vector<sofa::type::vector<SReal> > &)
 {
     using namespace core::topology;
     unsigned int i,j,k,l,u,v;
@@ -288,7 +288,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
     {
         applyEdgeCreation(i,edgeInf[i],m_topology->getEdge(i),
             (const sofa::type::vector<Index>)0,
-            (const sofa::type::vector<double>)0);
+            (const sofa::type::vector<SReal>)0);
     }
     // create edge tensor by calling the triangle creation function
     sofa::type::vector<Index> triangleAdded;
@@ -298,7 +298,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
     applyTriangleCreation(triangleAdded,
         (const sofa::type::vector<core::topology::Triangle>)0,
         (const sofa::type::vector<sofa::type::vector<Index> >)0,
-        (const sofa::type::vector<sofa::type::vector<double> >)0
+        (const sofa::type::vector<sofa::type::vector<SReal> >)0
                                       );
 
     edgeInfo.createTopologyHandler(m_topology);
@@ -307,7 +307,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
     edgeInfo.setCreationCallback([this](Index edgeIndex, EdgeRestInformation& ei,
         const core::topology::BaseMeshTopology::Edge& edge,
         const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< double >& coefs)
+        const sofa::type::vector< SReal >& coefs)
     {
         applyEdgeCreation(edgeIndex, ei, edge, ancestors, coefs);
     });

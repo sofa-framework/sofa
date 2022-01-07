@@ -29,10 +29,10 @@ namespace sofa::type
 
 BoundingBox::bbox_t make_neutralBBox()
 {
-    typedef sofa::type::Vector3::value_type Real;
+    typedef sofa::type::Vec3::value_type Real;
     constexpr Real max_real = std::numeric_limits<Real>::max();
-    sofa::type::Vector3 minBBox(max_real,max_real,max_real);
-    sofa::type::Vector3 maxBBox(-max_real,-max_real,-max_real);
+    sofa::type::Vec3 minBBox(max_real,max_real,max_real);
+    sofa::type::Vec3 maxBBox(-max_real,-max_real,-max_real);
     return std::make_pair(minBBox,maxBBox);
 }
 
@@ -46,24 +46,24 @@ BoundingBox::BoundingBox(const bbox_t& bbox)
 {
 }
 
-BoundingBox::BoundingBox(const Vector3& minBBox, const Vector3& maxBBox)
+BoundingBox::BoundingBox(const sofa::type::Vec3& minBBox, const sofa::type::Vec3& maxBBox)
     :bbox(std::make_pair(minBBox,maxBBox))
 {
 }
 
 BoundingBox::BoundingBox(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal zmin, SReal zmax )
-    :bbox(std::make_pair(Vector3((SReal)xmin, (SReal)ymin, (SReal)zmin),Vector3( (SReal)xmax, (SReal)ymax, (SReal)zmax)))
+    :bbox(std::make_pair(sofa::type::Vec3((SReal)xmin, (SReal)ymin, (SReal)zmin),sofa::type::Vec3( (SReal)xmax, (SReal)ymax, (SReal)zmax)))
 {
 }
 
 
 BoundingBox::BoundingBox(const Vec6f& v )
-    :bbox(std::make_pair(Vector3(v[0],v[2],v[4]),Vector3(v[1],v[3],v[5])))
+    :bbox(std::make_pair(sofa::type::Vec3(v[0],v[2],v[4]),sofa::type::Vec3(v[1],v[3],v[5])))
 {
 }
 
 BoundingBox::BoundingBox(const Vec6d& v )
-    :bbox(std::make_pair(Vector3((SReal)v[0],(SReal)v[2],(SReal)v[4]),Vector3((SReal)v[1],(SReal)v[3],(SReal)v[5])))
+    :bbox(std::make_pair(sofa::type::Vec3((SReal)v[0],(SReal)v[2],(SReal)v[4]),sofa::type::Vec3((SReal)v[1],(SReal)v[3],(SReal)v[5])))
 {
 }
 
@@ -132,27 +132,27 @@ const SReal* BoundingBox::maxBBoxPtr() const
     return bbox.second.elems;
 }
 
-const Vector3& BoundingBox::minBBox() const
+const sofa::type::Vec3& BoundingBox::minBBox() const
 {
     return bbox.first;
 }
 
-const Vector3& BoundingBox::maxBBox() const
+const sofa::type::Vec3& BoundingBox::maxBBox() const
 {
     return bbox.second;
 }
 
-Vector3& BoundingBox::minBBox()
+sofa::type::Vec3& BoundingBox::minBBox()
 {
     return bbox.first;
 }
 
-Vector3& BoundingBox::maxBBox()
+sofa::type::Vec3& BoundingBox::maxBBox()
 {
     return bbox.second;
 }
 
-bool BoundingBox::contains(const sofa::type::Vector3& point) const
+bool BoundingBox::contains(const sofa::type::Vec3& point) const
 {
     return  point.x() >= minBBox().x() && point.x() <= maxBBox().x() &&
             point.y() >= minBBox().y() && point.y() <= maxBBox().y() &&
@@ -183,7 +183,7 @@ void BoundingBox::intersection(const BoundingBox& other)
     maxBBox().z() = std::min(maxBBox().z(), other.maxBBox().z());
 }
 
-void BoundingBox::include(const sofa::type::Vector3& point)
+void BoundingBox::include(const sofa::type::Vec3& point)
 {
     minBBox().x() = std::min( minBBox().x(), point.x());
     minBBox().y() = std::min( minBBox().y(), point.y());
@@ -207,7 +207,7 @@ void BoundingBox::include(const BoundingBox& other)
 
 void BoundingBox::inflate(const SReal amount)
 {
-    Vector3 size(amount,amount,amount);
+    sofa::type::Vec3 size(amount,amount,amount);
     minBBox() -= size;
     maxBBox() += size;
 }
@@ -228,7 +228,7 @@ BoundingBox BoundingBox::getIntersection( const BoundingBox& other ) const
     return result;
 }
 
-BoundingBox BoundingBox::getInclude( const sofa::type::Vector3& point ) const
+BoundingBox BoundingBox::getInclude( const sofa::type::Vec3& point ) const
 {
     BoundingBox result;
 
@@ -262,7 +262,7 @@ BoundingBox BoundingBox::getInflate( SReal amount ) const
 {
     BoundingBox result;
 
-    Vector3 size(amount,amount,amount);
+    sofa::type::Vec3 size(amount,amount,amount);
     result.minBBox() = minBBox() - size;
     result.maxBBox() = maxBBox() + size;
 
@@ -278,10 +278,10 @@ namespace
 {
 BoundingBox2D::bbox_t make_neutralBBox2D()
 {
-    typedef sofa::type::Vector2::value_type Real;
+    typedef sofa::type::Vec<2, SReal>::value_type Real;
     constexpr Real max_real = std::numeric_limits<Real>::max();
-    sofa::type::Vector2 minBBox(max_real,max_real);
-    sofa::type::Vector2 maxBBox(-max_real,-max_real);
+    sofa::type::Vec<2, SReal> minBBox(max_real,max_real);
+    sofa::type::Vec<2, SReal> maxBBox(-max_real,-max_real);
     return std::make_pair(minBBox,maxBBox);
 }
 }
@@ -296,24 +296,24 @@ BoundingBox2D::BoundingBox2D(const bbox_t& bbox)
 {
 }
 
-BoundingBox2D::BoundingBox2D(const Vector2& minBBox, const Vector2& maxBBox)
+BoundingBox2D::BoundingBox2D(const sofa::type::Vec<2, SReal>& minBBox, const sofa::type::Vec<2, SReal>& maxBBox)
     :bbox(std::make_pair(minBBox,maxBBox))
 {
 }
 
 BoundingBox2D::BoundingBox2D(SReal xmin, SReal xmax, SReal ymin, SReal ymax )
-    :bbox(std::make_pair(Vector2((SReal)xmin, (SReal)ymin),Vector2((SReal)xmax,(SReal)ymax)))
+    :bbox(std::make_pair(sofa::type::Vec<2, SReal>((SReal)xmin, (SReal)ymin),sofa::type::Vec<2, SReal>((SReal)xmax,(SReal)ymax)))
 {
 }
 
 
 BoundingBox2D::BoundingBox2D(const Vec4f& v )
-    :bbox(std::make_pair(Vector2(v[0],v[2]),Vector2(v[1],v[3])))
+    :bbox(std::make_pair(sofa::type::Vec<2, SReal>(v[0],v[2]),sofa::type::Vec<2, SReal>(v[1],v[3])))
 {
 }
 
 BoundingBox2D::BoundingBox2D(const Vec4d& v )
-    :bbox(std::make_pair(Vector2((SReal)v[0],(SReal)v[2]),Vector2((SReal)v[1],(SReal)v[3])))
+    :bbox(std::make_pair(sofa::type::Vec<2, SReal>((SReal)v[0],(SReal)v[2]),sofa::type::Vec<2, SReal>((SReal)v[1],(SReal)v[3])))
 {
 }
 
@@ -378,27 +378,27 @@ const SReal* BoundingBox2D::maxBBoxPtr() const
     return bbox.second.elems;
 }
 
-const Vector2& BoundingBox2D::minBBox() const
+const sofa::type::Vec<2, SReal>& BoundingBox2D::minBBox() const
 {
     return bbox.first;
 }
 
-const Vector2& BoundingBox2D::maxBBox() const
+const sofa::type::Vec<2, SReal>& BoundingBox2D::maxBBox() const
 {
     return bbox.second;
 }
 
-Vector2& BoundingBox2D::minBBox()
+sofa::type::Vec<2, SReal>& BoundingBox2D::minBBox()
 {
     return bbox.first;
 }
 
-Vector2& BoundingBox2D::maxBBox()
+sofa::type::Vec<2, SReal>& BoundingBox2D::maxBBox()
 {
     return bbox.second;
 }
 
-bool BoundingBox2D::contains(const sofa::type::Vector2& point) const
+bool BoundingBox2D::contains(const sofa::type::Vec<2, SReal>& point) const
 {
     return  point.x() >= minBBox().x() && point.x() <= maxBBox().x() &&
             point.y() >= minBBox().y() && point.y() <= maxBBox().y();
@@ -425,7 +425,7 @@ void BoundingBox2D::intersection(const BoundingBox2D& other)
     maxBBox().y() = std::min(maxBBox().y(), other.maxBBox().y());
 }
 
-void BoundingBox2D::include(const sofa::type::Vector2& point)
+void BoundingBox2D::include(const sofa::type::Vec<2, SReal>& point)
 {
     minBBox().x() = std::min( minBBox().x(), point.x());
     minBBox().y() = std::min( minBBox().y(), point.y());
@@ -445,7 +445,7 @@ void BoundingBox2D::include(const BoundingBox2D& other)
 
 void BoundingBox2D::inflate(const SReal amount)
 {
-    Vector2 size(amount,amount);
+    sofa::type::Vec<2, SReal> size(amount,amount);
     minBBox() -= size;
     maxBBox() += size;
 }
@@ -463,7 +463,7 @@ BoundingBox2D BoundingBox2D::getIntersection( const BoundingBox2D& other ) const
     return result;
 }
 
-BoundingBox2D BoundingBox2D::getInclude( const sofa::type::Vector2& point ) const
+BoundingBox2D BoundingBox2D::getInclude( const sofa::type::Vec<2, SReal>& point ) const
 {
     BoundingBox2D result;
 
@@ -493,7 +493,7 @@ BoundingBox2D BoundingBox2D::getInflate( SReal amount ) const
 {
     BoundingBox2D result;
 
-    Vector2 size(amount,amount);
+    sofa::type::Vec<2, SReal> size(amount,amount);
     result.minBBox() = minBBox() - size;
     result.maxBBox() = maxBBox() + size;
 

@@ -76,7 +76,7 @@ void TorsionForceField<DataTypes>::addForce(const MechanicalParams* /*params*/, 
 }
 
 template<typename DataTypes>
-void TorsionForceField<DataTypes>::addDForce(const MechanicalParams* params, DataVecDeriv& df, const DataVecDeriv& dx)
+void TorsionForceField<DataTypes>::addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
 {
 	const VecId& indices = m_indices.getValue();
 	const VecDeriv& dq = dx.getValue();
@@ -84,7 +84,7 @@ void TorsionForceField<DataTypes>::addDForce(const MechanicalParams* params, Dat
 	VecDeriv& dfq = *df.beginEdit();
 
 	const auto nNodes = indices.size();
-	const Real& kfact = params->kFactor();
+	const Real& kfact = mparams->kFactor();
 
 	Mat3 D;
 	D(0,0) = 1 - m_u(0)*m_u(0) ;	D(0,1) = -m_u(1)*m_u(0) ;		D(0,2) = -m_u(2)*m_u(0);
@@ -100,7 +100,7 @@ void TorsionForceField<DataTypes>::addDForce(const MechanicalParams* params, Dat
 }
 
 template<typename DataTypes>
-void TorsionForceField<DataTypes>::addKToMatrix(linearalgebra::BaseMatrix* matrix, double kFact, unsigned int& offset)
+void TorsionForceField<DataTypes>::addKToMatrix(linearalgebra::BaseMatrix* matrix, SReal kFact, unsigned int& offset)
 {
 	const VecId& indices = m_indices.getValue();
 	const Real& tau = m_torque.getValue();
@@ -127,7 +127,7 @@ void TorsionForceField<DataTypes>::addKToMatrix(linearalgebra::BaseMatrix* matri
 		for(Size n = 0 ; n < nNodes ; ++n)
 		{
 			PointId id = indices[n];
-			unsigned int c = offset + Deriv::total_size*id;
+			const unsigned int c = offset + Deriv::total_size*id;
 
 			matrix->add(c+0, c+0, D(0,0));
 			matrix->add(c+0, c+1, D(0,1));
@@ -165,7 +165,7 @@ void TorsionForceField<Rigid3Types>::addForce(const core::MechanicalParams *, Da
 
 	for(Size n = 0 ; n < nNodes ; ++n)
 	{
-		PointId id = indices[n];
+		const PointId id = indices[n];
 		const Pos t = tau*m_u;
 		fq[id].getVCenter() += t.cross(q[id].getCenter() - (o + (q[id].getCenter() * m_u)*m_u) );
 		fq[id].getVOrientation() += t;
@@ -193,7 +193,7 @@ void TorsionForceField<Rigid3Types>::addDForce(const core::MechanicalParams *mpa
 
 	for(Size n = 0 ; n < nNodes ; ++n)
 	{
-		PointId id = indices[n];
+		const PointId id = indices[n];
 		dfq[id].getVCenter() += D * dq[id].getVCenter();
 	}
 }

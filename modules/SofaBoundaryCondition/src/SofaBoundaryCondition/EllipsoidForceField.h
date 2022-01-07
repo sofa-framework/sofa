@@ -62,7 +62,8 @@ protected:
     public:
         int index;
         Mat m;
-        Contact( int index=0, const Mat& m=Mat())
+
+        explicit Contact( int index=0, const Mat& m=Mat())
             : index(index), m(m)
         {
         }

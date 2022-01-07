@@ -33,7 +33,7 @@ typedef core::topology::BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 template< class DataTypes>
 void TriangularBendingSprings<DataTypes>::applyEdgeCreation(Index , EdgeInformation &ei, const core::topology::Edge &,
-    const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
+    const sofa::type::vector<Index> &, const sofa::type::vector<SReal> &)
 {
     /// set to zero the edge stiffness matrix
     for (auto u=0; u<N; ++u)
@@ -51,7 +51,7 @@ void TriangularBendingSprings<DataTypes>::applyEdgeCreation(Index , EdgeInformat
 
 template< class DataTypes>
 void TriangularBendingSprings<DataTypes>::applyTriangleCreation(const sofa::type::vector<Index> &triangleAdded, const sofa::type::vector<core::topology::Triangle> &, 
-    const sofa::type::vector<sofa::type::vector<Index> > &, const sofa::type::vector<sofa::type::vector<double> > &)
+    const sofa::type::vector<sofa::type::vector<Index> > &, const sofa::type::vector<sofa::type::vector<SReal> > &)
 {
     using namespace core::topology;
     Real m_ks=getKs();
@@ -340,7 +340,7 @@ void TriangularBendingSprings<DataTypes>::init()
     edgeInfo.setCreationCallback([this](Index edgeIndex, EdgeInformation& ei,
         const core::topology::BaseMeshTopology::Edge& edge,
         const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< double >& coefs)
+        const sofa::type::vector< SReal >& coefs)
     {
         applyEdgeCreation(edgeIndex, ei, edge, ancestors, coefs);
     });
@@ -383,7 +383,7 @@ void TriangularBendingSprings<DataTypes>::reinit()
 
         applyEdgeCreation(i, edgeInf[i],
             m_topology->getEdge(i),  (const sofa::type::vector< Index > )0,
-            (const sofa::type::vector< double >)0);
+            (const sofa::type::vector< SReal >)0);
     }
 
     // create edge tensor by calling the triangle creation function
@@ -394,7 +394,7 @@ void TriangularBendingSprings<DataTypes>::reinit()
     applyTriangleCreation(triangleAdded,
         (const sofa::type::vector<Triangle>)0,
         (const sofa::type::vector<sofa::type::vector<Index> >)0,
-        (const sofa::type::vector<sofa::type::vector<double> >)0);
+        (const sofa::type::vector<sofa::type::vector<SReal> >)0);
 }
 
 template <class DataTypes>

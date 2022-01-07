@@ -24,7 +24,7 @@
 
 
 #include <sofa/core/behavior/ForceField.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <sofa/core/topology/TopologySubsetData.h>
 #include <sofa/type/MatSym.h>
 
 namespace sofa::component::forcefield

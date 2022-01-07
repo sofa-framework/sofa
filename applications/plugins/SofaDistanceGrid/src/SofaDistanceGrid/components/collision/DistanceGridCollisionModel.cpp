@@ -494,7 +494,7 @@ void FFDDistanceGridCollisionModel::init()
     for (int i=0; i<nbp; i++)
     {
         Vec3Types::Coord p0 = grid->meshPts[i];
-        Vector3 bary;
+        Vec3 bary;
         Index elem = (ffdRGrid ? ffdRGrid->findCube(p0,bary[0],bary[1],bary[2]) : ffdSGrid->findCube(p0,bary[0],bary[1],bary[2]));
         if (elem == sofa::InvalidID) continue;
         if (elem >= elems.size())

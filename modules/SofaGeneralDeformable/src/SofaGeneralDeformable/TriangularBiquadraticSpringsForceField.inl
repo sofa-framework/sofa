@@ -37,7 +37,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::applyTriangleCreation(In
         TriangleRestInformation &tinfo,
         const Triangle &,
         const sofa::type::vector<Index> &,
-        const sofa::type::vector<double> &)
+        const sofa::type::vector<SReal> &)
 {
     using namespace sofa::defaulttype;
 
@@ -110,7 +110,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::applyEdgeCreation(Index 
         EdgeRestInformation &ei,
         const core::topology::Edge &,
         const sofa::type::vector<Index> &,
-        const sofa::type::vector<double> &)
+        const sofa::type::vector<SReal> &)
 
 {
     // store the rest length of the edge created
@@ -193,13 +193,13 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
     {
         applyEdgeCreation(i,edgeInf[i], m_topology->getEdge(i),  
             (const sofa::type::vector< Index > )0,
-            (const sofa::type::vector< double >)0 );
+            (const sofa::type::vector< SReal >)0 );
     }
     for (i=0; i<m_topology->getNbTriangles(); ++i)
     {
         applyTriangleCreation(i, triangleInf[i],
             m_topology->getTriangle(i),  (const sofa::type::vector< Index > )0,
-            (const sofa::type::vector< double >)0);
+            (const sofa::type::vector< SReal >)0);
     }
 
     // Edge info
@@ -207,7 +207,7 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
     edgeInfo.setCreationCallback([this](Index edgeIndex, EdgeRestInformation& ei,
         const core::topology::BaseMeshTopology::Edge& edge,
         const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< double >& coefs)
+        const sofa::type::vector< SReal >& coefs)
     {
         applyEdgeCreation(edgeIndex, ei, edge, ancestors, coefs);
     });
@@ -217,7 +217,7 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
     triangleInfo.setCreationCallback([this](Index triangleIndex, TriangleRestInformation& tinfo,
         const core::topology::BaseMeshTopology::Triangle& triangle,
         const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< double >& coefs)
+        const sofa::type::vector< SReal >& coefs)
     {
         applyTriangleCreation(triangleIndex, tinfo, triangle, ancestors, coefs);
     });

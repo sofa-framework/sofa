@@ -60,7 +60,7 @@ void StringMeshCreator::doClearBuffers()
 
 bool StringMeshCreator::doLoad()
 {
-    helper::WriteAccessor<Data<vector<sofa::type::Vector3> > > my_positions (d_positions);
+    auto my_positions = sofa::helper::getWriteOnlyAccessor(d_positions);
     unsigned numX = resolution.getValue();
 
     // Warning: Vertex creation order must be consistent with method vert.

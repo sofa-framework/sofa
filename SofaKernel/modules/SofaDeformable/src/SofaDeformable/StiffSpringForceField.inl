@@ -32,17 +32,17 @@ namespace sofa::component::interactionforcefield
 {
 
 template<class DataTypes>
-StiffSpringForceField<DataTypes>::StiffSpringForceField(double ks, double kd)
+StiffSpringForceField<DataTypes>::StiffSpringForceField(SReal ks, SReal kd)
     : StiffSpringForceField<DataTypes>(nullptr, nullptr, ks, kd)
 {
 }
 
 template<class DataTypes>
-StiffSpringForceField<DataTypes>::StiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks, double kd)
+StiffSpringForceField<DataTypes>::StiffSpringForceField(MechanicalState* object1, MechanicalState* object2, SReal ks, SReal kd)
     : SpringForceField<DataTypes>(object1, object2, ks, kd)
     , d_indices1(initData(&d_indices1, "indices1", "Indices of the source points on the first model"))
     , d_indices2(initData(&d_indices2, "indices2", "Indices of the fixed points on the second model"))
-    , d_length(initData(&d_length, 0.0, "length", "uniform length of all springs"))
+    , d_length(initData(&d_length, SReal(0.0), "length", "uniform length of all springs"))
 {
     this->addUpdateCallback("updateSprings", { &d_indices1, &d_indices2, &d_length, &this->ks, &this->kd}, [this](const core::DataTracker& t)
     {
@@ -162,7 +162,7 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
 }
 
 template<class DataTypes>
-void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& df1,const  VecDeriv& dx1, VecDeriv& df2,const  VecDeriv& dx2, sofa::Index i, const Spring& spring, double kFactor, double /*bFactor*/)
+void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& df1,const  VecDeriv& dx1, VecDeriv& df2,const  VecDeriv& dx2, sofa::Index i, const Spring& spring, SReal kFactor, SReal /*bFactor*/)
 {
     const sofa::Index a = spring.m1;
     const sofa::Index b = spring.m2;

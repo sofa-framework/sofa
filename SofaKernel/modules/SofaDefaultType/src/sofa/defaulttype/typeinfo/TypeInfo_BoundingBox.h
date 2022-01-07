@@ -111,7 +111,7 @@ struct BoundingBoxTypeInfo
         return ((ValueType*)&data)[index];
     }
 
-    static void setScalarValue (const void* data, sofa::Size index, double value)
+    static void setScalarValue (const void* data, sofa::Size index, SReal value)
     {
         ((ValueType*)&data)[index] = value;
     }

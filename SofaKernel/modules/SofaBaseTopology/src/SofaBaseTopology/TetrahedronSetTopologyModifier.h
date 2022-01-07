@@ -80,7 +80,7 @@ public:
     */
     virtual void addTetrahedra(const sofa::type::vector< Tetrahedron > &tetrahedra,
             const sofa::type::vector< sofa::type::vector< TetrahedronID > > & ancestors,
-            const sofa::type::vector< sofa::type::vector< double > >& baryCoefs) ;
+            const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs) ;
 
     /** \brief Add a tetrahedron.
     *
@@ -118,7 +118,7 @@ protected:
         const sofa::type::vector< Tetrahedron >& tetrahedraList,
         const sofa::type::vector< TetrahedronID >& tetrahedraIndexList,
         const sofa::type::vector< sofa::type::vector< TetrahedronID > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& baryCoefs);
+        const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs);
 
     /** \brief Actually Add some tetrahedra to this topology.
     *

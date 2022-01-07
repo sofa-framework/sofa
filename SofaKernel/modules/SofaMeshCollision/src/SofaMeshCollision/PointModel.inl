@@ -144,7 +144,7 @@ void PointCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 }
 
 template<class DataTypes>
-void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDepth)
+void PointCollisionModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int maxDepth)
 {
     CubeCollisionModel* cubeModel = createPrevious<CubeCollisionModel>();
     const auto npoints = mstate->getSize();
