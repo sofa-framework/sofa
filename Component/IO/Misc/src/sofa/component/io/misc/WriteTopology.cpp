@@ -19,18 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaExporter/WriteTopology.inl>
+#include <sofa/component/io/misc/WriteTopology.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/BaseMapping.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::io::misc
 {
 
 using namespace defaulttype;
@@ -91,7 +85,7 @@ void WriteTopologyCreator::addWriteTopology(core::topology::BaseMeshTopology* to
     context->get(mapping);
     if ( createInMapping || mapping == nullptr)
     {
-        sofa::component::misc::WriteTopology::SPtr wt;
+        sofa::component::io::misc::WriteTopology::SPtr wt;
         context->get(wt, this->subsetsToManage, core::objectmodel::BaseContext::Local);
 
         if (wt.get() == nullptr)
@@ -119,24 +113,15 @@ void WriteTopologyCreator::addWriteTopology(core::topology::BaseMeshTopology* to
 //if state is true, we activate all the write states present in the scene.
 simulation::Visitor::Result WriteTopologyActivator::processNodeTopDown( simulation::Node* gnode)
 {
-    sofa::component::misc::WriteTopology *wt = gnode->get< sofa::component::misc::WriteTopology >(this->subsetsToManage);
+    sofa::component::io::misc::WriteTopology *wt = gnode->get< sofa::component::io::misc::WriteTopology >(this->subsetsToManage);
     if (wt != nullptr) { changeStateWriter(wt);}
     return simulation::Visitor::RESULT_CONTINUE;
 }
 
-void WriteTopologyActivator::changeStateWriter(sofa::component::misc::WriteTopology* wt)
+void WriteTopologyActivator::changeStateWriter(sofa::component::io::misc::WriteTopology* wt)
 {
     if (!state) wt->reset();
     wt->f_listening.setValue(state);
 }
 
-
-
-
-
-
-} // namespace misc
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::io::misc

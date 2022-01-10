@@ -20,10 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralLoader/config.h>
+#include <sofa/component/io/mesh/config.h>
 
 #include <sofa/core/loader/MeshLoader.h>
-namespace sofa::component::loader
+namespace sofa::component::io::mesh
 {
 
 
@@ -32,7 +32,7 @@ namespace sofa::component::loader
 
   @author François Faure, 2012
 */
-class SOFA_SOFAGENERALLOADER_API GridMeshCreator : public sofa::core::loader::MeshLoader
+class SOFA_COMPONENT_IO_MESH_API GridMeshCreator : public sofa::core::loader::MeshLoader
 {
 public:
 
@@ -62,4 +62,4 @@ protected:
 
 
 
-} //namespace sofa::component::loader
+} //namespace sofa::component::io::mesh

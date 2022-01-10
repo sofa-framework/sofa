@@ -20,7 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralLoader/config.h>
+#include <sofa/component/io/misc/config.h>
+
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
@@ -33,12 +34,12 @@
 
 #include <fstream>
 
-namespace sofa::component::misc
+namespace sofa::component::io::misc
 {
 
 /** Read State vectors from file at each timestep
 */
-class SOFA_SOFAGENERALLOADER_API ReadState: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_IO_MISC_API ReadState: public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(ReadState,core::objectmodel::BaseObject);
@@ -98,7 +99,7 @@ public:
 
 
 ///Create ReadState component in the graph each time needed
-class SOFA_SOFAGENERALLOADER_API ReadStateCreator: public simulation::Visitor
+class SOFA_COMPONENT_IO_MISC_API ReadStateCreator: public simulation::Visitor
 {
 public:
     ReadStateCreator(const core::ExecParams* params);
@@ -118,7 +119,7 @@ protected:
     int counterReadState; //avoid to have two same files if two mechanical objects has the same name
 };
 
-class SOFA_SOFAGENERALLOADER_API ReadStateActivator: public simulation::Visitor
+class SOFA_COMPONENT_IO_MISC_API ReadStateActivator: public simulation::Visitor
 {
 public:
     ReadStateActivator(const core::ExecParams* params, bool active) : Visitor(params), state(active) {}
@@ -128,12 +129,12 @@ public:
     void setState(bool active) {state=active;}
     const char* getClassName() const override { return "ReadStateActivator"; }
 protected:
-    void changeStateReader(sofa::component::misc::ReadState *ws);
+    void changeStateReader(sofa::component::io::misc::ReadState *ws);
 
     bool state;
 };
 
-class SOFA_SOFAGENERALLOADER_API ReadStateModifier: public simulation::Visitor
+class SOFA_COMPONENT_IO_MISC_API ReadStateModifier: public simulation::Visitor
 {
 public:
     ReadStateModifier(const core::ExecParams* params, double _time) : Visitor(params), time(_time) {}
@@ -143,9 +144,9 @@ public:
     void setTime(double _time) { time=_time; }
     const char* getClassName() const override { return "ReadStateModifier"; }
 protected:
-    void changeTimeReader(sofa::component::misc::ReadState *rs) { rs->processReadState(time); }
+    void changeTimeReader(sofa::component::io::misc::ReadState *rs) { rs->processReadState(time); }
 
     double time;
 };
 
-} // namespace sofa::component::misc
+} // namespace sofa::component::io::misc

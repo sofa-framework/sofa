@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralLoader/config.h>
+#include <sofa/component/io/mesh/config.h>
 
 #include <sofa/core/loader/VoxelLoader.h>
 
-namespace sofa::component::loader
+namespace sofa::component::io::mesh
 {
 
-class SOFA_SOFAGENERALLOADER_API VoxelGridLoader : public sofa::core::loader::VoxelLoader
+class SOFA_COMPONENT_IO_MESH_API VoxelGridLoader : public sofa::core::loader::VoxelLoader
 {
 public:
     SOFA_CLASS(VoxelGridLoader,VoxelLoader);
@@ -99,4 +99,4 @@ protected:
     int bpp;
 };
 
-} //namespace sofa::component::loader
+} //namespace sofa::component::io::mesh

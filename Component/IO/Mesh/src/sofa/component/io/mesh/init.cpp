@@ -4,8 +4,8 @@ namespace sofa::component::io::mesh
 {
 
 extern "C" {
-    SOFACOMPONENTIOMESH_API void initExternalModule();
-    SOFACOMPONENTIOMESH_API const char* getModuleName();
+	SOFA_COMPONENT_IO_MESH_API void initExternalModule();
+	SOFA_COMPONENT_IO_MESH_API const char* getModuleName();
 }
 
 void initExternalModule()

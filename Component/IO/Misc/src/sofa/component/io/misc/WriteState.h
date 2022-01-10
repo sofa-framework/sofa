@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_WRITESTATE_H
-#define SOFA_COMPONENT_MISC_WRITESTATE_H
-#include <SofaExporter/config.h>
+#pragma once
+#include <sofa/component/io/misc/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
@@ -39,13 +38,7 @@
 
 #include <fstream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::io::misc
 {
 
 /** Write State vectors to file at a given set of time instants
@@ -54,7 +47,7 @@ namespace misc
  * Stop to write the state if the kinematic energy reach a given threshold (stopAt)
  * The energy will be measured at each period determined by keperiod
 */
-class SOFA_SOFAEXPORTER_API WriteState: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_IO_MISC_API WriteState: public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(WriteState,core::objectmodel::BaseObject);
@@ -116,7 +109,7 @@ public:
 };
 
 ///Create WriteState component in the graph each time needed
-class SOFA_SOFAEXPORTER_API WriteStateCreator: public simulation::Visitor
+class SOFA_COMPONENT_IO_MISC_API WriteStateCreator: public simulation::Visitor
 {
 public:
     WriteStateCreator(const core::ExecParams* params);
@@ -146,7 +139,7 @@ protected:
 
 };
 
-class SOFA_SOFAEXPORTER_API WriteStateActivator: public simulation::Visitor
+class SOFA_COMPONENT_IO_MISC_API WriteStateActivator: public simulation::Visitor
 {
 public:
     WriteStateActivator( const core::ExecParams* params, bool active) : Visitor(params), state(active) {}
@@ -156,15 +149,9 @@ public:
     void setState(bool active) { state=active; }
     const char* getClassName() const override { return "WriteStateActivator"; }
 protected:
-    void changeStateWriter(sofa::component::misc::WriteState *ws);
+    void changeStateWriter(sofa::component::io::misc::WriteState *ws);
 
     bool state;
 };
 
-} // namespace misc
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::io::misc

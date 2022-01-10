@@ -19,10 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_WRITESTATE_INL
-#define SOFA_COMPONENT_MISC_WRITESTATE_INL
+#pragma once
 
-#include <SofaExporter/WriteState.h>
+#include <sofa/component/io/misc/WriteState.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -30,15 +29,8 @@
 #include <fstream>
 #include <sstream>
 
-namespace sofa
+namespace sofa::component::io::misc
 {
-
-namespace component
-{
-
-namespace misc
-{
-
 
 WriteState::WriteState()
     : d_filename( initData(&d_filename, "filename", "output file name"))
@@ -393,10 +385,4 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
     }
 }
 
-} // namespace misc
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::io::misc

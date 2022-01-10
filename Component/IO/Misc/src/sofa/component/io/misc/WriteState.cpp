@@ -19,22 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaExporter/WriteState.inl>
+#include <sofa/component/io/misc/WriteState.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/BaseMapping.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::io::misc
 {
 
 using namespace defaulttype;
-
 
 
 int WriteStateClass = core::RegisterObject("Write State vectors to file at each timestep")
@@ -94,7 +87,7 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
     context->get(mapping);
     if ( createInMapping || mapping == nullptr)
     {
-        sofa::component::misc::WriteState::SPtr ws;
+        sofa::component::io::misc::WriteState::SPtr ws;
         context->get(ws, this->subsetsToManage, core::objectmodel::BaseContext::Local);
         if ( ws == nullptr )
         {
@@ -126,24 +119,15 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
 //if state is true, we activate all the write states present in the scene.
 simulation::Visitor::Result WriteStateActivator::processNodeTopDown( simulation::Node* gnode)
 {
-    sofa::component::misc::WriteState *ws = gnode->get< sofa::component::misc::WriteState >(this->subsetsToManage);
+    sofa::component::io::misc::WriteState *ws = gnode->get< sofa::component::io::misc::WriteState >(this->subsetsToManage);
     if (ws != nullptr) { changeStateWriter(ws);}
     return simulation::Visitor::RESULT_CONTINUE;
 }
 
-void WriteStateActivator::changeStateWriter(sofa::component::misc::WriteState*ws)
+void WriteStateActivator::changeStateWriter(sofa::component::io::misc::WriteState*ws)
 {
     if (!state) ws->reset();
     ws->f_listening.setValue(state);
 }
 
-
-
-
-
-
-} // namespace misc
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::io::misc

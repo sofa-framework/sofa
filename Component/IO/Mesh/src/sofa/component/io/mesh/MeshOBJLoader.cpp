@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaLoader/MeshOBJLoader.h>
+#include <sofa/component/io/mesh/MeshOBJLoader.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -27,7 +27,7 @@
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/system/Locale.h>
 
-namespace sofa::component::loader
+namespace sofa::component::io::mesh
 {
 
 using namespace sofa::type;
@@ -815,4 +815,4 @@ bool MeshOBJLoader::readMTL(const char* filename, type::vector<Material>& materi
 }
 
 
-} // namespace sofa::component::loader
+} // namespace sofa::component::io::mesh

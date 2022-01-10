@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralLoader/config.h>
+#include <sofa/component/io/misc/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
@@ -32,7 +32,7 @@
 #include <poll.h>
 #endif
 
-namespace sofa::component::misc
+namespace sofa::component::io::misc
 {
 
 #ifndef __linux__
@@ -102,4 +102,4 @@ private:
     void manageEvent(const input_event &ev);
 };
 
-} //namespace sofa::component::misc
+} // namespace sofa::component::io::misc

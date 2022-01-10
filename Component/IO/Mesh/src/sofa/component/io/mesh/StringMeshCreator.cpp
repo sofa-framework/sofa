@@ -20,10 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
-#include <SofaGeneralLoader/StringMeshCreator.h>
+#include <sofa/component/io/mesh/StringMeshCreator.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa::component::loader
+namespace sofa::component::io::mesh
 {
 
 using namespace sofa::type;
@@ -80,4 +80,4 @@ bool StringMeshCreator::doLoad()
 }
 
 
-} // namespace sofa::component::loader
+} // namespace sofa::component::io::mesh

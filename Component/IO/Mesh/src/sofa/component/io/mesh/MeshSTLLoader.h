@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralLoader/config.h>
+#include <sofa/component/io/mesh/config.h>
 #include <sofa/core/loader/MeshLoader.h>
 
-namespace sofa::component::loader
+namespace sofa::component::io::mesh
 {
 
 // Format doc: http://en.wikipedia.org/wiki/STL_(file_format)
-class SOFA_SOFAGENERALLOADER_API MeshSTLLoader : public sofa::core::loader::MeshLoader
+class SOFA_COMPONENT_IO_MESH_API MeshSTLLoader : public sofa::core::loader::MeshLoader
 {
 public:
     SOFA_CLASS(MeshSTLLoader,sofa::core::loader::MeshLoader);
@@ -54,4 +54,4 @@ public:
 
 };
 
-} //namespace sofa::component::loader
+} //namespace sofa::component::io::mesh

@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_WRITETOPOLOGY_H
-#define SOFA_COMPONENT_MISC_WRITETOPOLOGY_H
-#include <SofaExporter/config.h>
+#pragma once
+#include <sofa/component/io/misc/config.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -39,13 +38,7 @@
 
 #include <fstream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
+namespace sofa::component::io::misc
 {
 
 /** Write Topology containers informations into a file at a given set of time instants
@@ -57,7 +50,7 @@ namespace misc
  * Stop to write infos if the kinematic energy reach a given threshold (stopAt)
  * The energy will be measured at each period determined by keperiod
 */
-class SOFA_SOFAEXPORTER_API WriteTopology: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_IO_MISC_API WriteTopology: public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(WriteTopology,core::objectmodel::BaseObject);
@@ -107,7 +100,7 @@ public:
 
 
 ///Create WriteTopology component in the graph each time needed
-class SOFA_SOFAEXPORTER_API WriteTopologyCreator: public simulation::Visitor
+class SOFA_COMPONENT_IO_MISC_API WriteTopologyCreator: public simulation::Visitor
 {
 public:
     WriteTopologyCreator(const core::ExecParams* params);
@@ -133,7 +126,7 @@ protected:
 
 
 
-class SOFA_SOFAEXPORTER_API WriteTopologyActivator: public simulation::Visitor
+class SOFA_COMPONENT_IO_MISC_API WriteTopologyActivator: public simulation::Visitor
 {
 public:
     WriteTopologyActivator( const core::ExecParams* params, bool active) : Visitor(params), state(active) {}
@@ -143,15 +136,9 @@ public:
     void setState(bool active) { state=active; }
     const char* getClassName() const override { return "WriteTopologyActivator"; }
 protected:
-    void changeStateWriter(sofa::component::misc::WriteTopology *wt);
+    void changeStateWriter(sofa::component::io::misc::WriteTopology *wt);
 
     bool state;
 };
 
-} // namespace misc
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::io::misc

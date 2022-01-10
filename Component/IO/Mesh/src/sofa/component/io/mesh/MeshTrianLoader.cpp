@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
-#include <SofaGeneralLoader/MeshTrianLoader.h>
+#include <sofa/component/io/mesh/MeshTrianLoader.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <iostream>
@@ -28,7 +28,7 @@
 
 using namespace sofa::helper;
 
-namespace sofa::component::loader
+namespace sofa::component::io::mesh
 {
 
 using namespace sofa::type;
@@ -235,4 +235,4 @@ bool MeshTrianLoader::readTrian2 (const char* filename)
 
 
 
-} //namespace sofa::component::loader
+} //namespace sofa::component::io::mesh

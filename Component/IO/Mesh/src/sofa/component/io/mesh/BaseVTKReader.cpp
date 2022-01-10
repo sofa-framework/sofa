@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaLoader/BaseVTKReader.h>
-#include <SofaLoader/BaseVTKReader.inl>
+#include <sofa/component/io/mesh/BaseVTKReader.h>
+#include <sofa/component/io/mesh/BaseVTKReader.inl>
 
 #if defined(WIN32)
 #define strcasecmp stricmp
@@ -28,7 +28,7 @@
 
 #include <cstdint>
 
-namespace sofa::component::loader::basevtkreader
+namespace sofa::component::io::mesh::basevtkreader
 {
 
 
@@ -283,4 +283,4 @@ bool BaseVTKReader::readVTK(const char* filename)
     return readFile(filename);
 }
 
-} // namespace sofa::component::loader::basevtkreader
+} // namespace sofa::component::io::mesh::basevtkreader

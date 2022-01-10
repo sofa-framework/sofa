@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef STLEXPORTER_H_
 #define STLEXPORTER_H_
-#include <SofaExporter/config.h>
+#include <sofa/component/io/mesh/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -57,7 +57,7 @@ using sofa::core::visual::VisualModel ;
 using sofa::core::objectmodel::Event ;
 using sofa::simulation::BaseSimulationExporter ;
 
-class SOFA_SOFAEXPORTER_API STLExporter : public BaseSimulationExporter
+class SOFA_COMPONENT_IO_MESH_API STLExporter : public BaseSimulationExporter
 {
 public:
     SOFA_CLASS(STLExporter, BaseSimulationExporter);

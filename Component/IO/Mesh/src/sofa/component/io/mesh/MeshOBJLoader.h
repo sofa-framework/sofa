@@ -20,17 +20,17 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaLoader/config.h>
+#include <sofa/component/io/mesh/config.h>
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/type/SVector.h>
 #include <sofa/type/Material.h>
 
-namespace sofa::component::loader
+namespace sofa::component::io::mesh
 {
 
 using sofa::core::objectmodel::BaseData;
 
-class SOFA_SOFALOADER_API MeshOBJLoader : public sofa::core::loader::MeshLoader
+class SOFA_COMPONENT_IO_MESH_API MeshOBJLoader : public sofa::core::loader::MeshLoader
 {
 public:
     enum FaceType { EDGE, TRIANGLE, QUAD, NBFACETYPE };
@@ -84,5 +84,5 @@ public:
 using MeshObjLoader SOFA_ATTRIBUTE_DEPRECATED("v21.12 (PR#2428)", "v22.12", "MeshObjLoader has been renamed to MeshOBJLoader") = MeshOBJLoader;
 #endif // SOFA_BUILD_SOFALOADER
 
-} // namespace sofa::component::loader
+} // namespace sofa::component::io::mesh
 

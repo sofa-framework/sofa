@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralLoader/config.h>
+#include <sofa/component/io/mesh/config.h>
 
 #include <sofa/core/loader/BaseLoader.h>
 
-namespace sofa::component::loader
+namespace sofa::component::io::mesh
 {
 
 class SphereLoader : public sofa::core::loader::BaseLoader
@@ -49,4 +49,4 @@ protected:
     type::vector<sofa::type::Vec3 > m_savedPositions;
 };
 
-} //namespace sofa::component::loader
+} //namespace sofa::component::io::mesh

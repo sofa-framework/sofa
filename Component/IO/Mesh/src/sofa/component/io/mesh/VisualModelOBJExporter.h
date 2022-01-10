@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaExporter/config.h>
+#include <sofa/component/io/mesh/config.h>
 
 #include <sofa/simulation/BaseSimulationExporter.h>
 
@@ -36,7 +36,7 @@ using sofa::simulation::BaseSimulationExporter;
 using sofa::core::objectmodel::Event;
 using sofa::core::objectmodel::Base;
 
-class SOFA_SOFAEXPORTER_API VisualModelOBJExporter : public BaseSimulationExporter
+class SOFA_COMPONENT_IO_MESH_API VisualModelOBJExporter : public BaseSimulationExporter
 {
 public:
     SOFA_CLASS(VisualModelOBJExporter, BaseSimulationExporter);

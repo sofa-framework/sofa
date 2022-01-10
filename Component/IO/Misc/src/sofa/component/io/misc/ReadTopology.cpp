@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralLoader/ReadTopology.inl>
+#include <sofa/component/io/misc/ReadTopology.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa::component::misc
+namespace sofa::component::io::misc
 {
 
 using namespace defaulttype;
@@ -76,7 +76,7 @@ void ReadTopologyCreator::addReadTopology(core::topology::BaseMeshTopology* topo
     context->get(mapping);
     if (createInMapping || mapping== nullptr)
     {
-        sofa::component::misc::ReadTopology::SPtr rt;
+        sofa::component::io::misc::ReadTopology::SPtr rt;
         context->get(rt, this->subsetsToManage, core::objectmodel::BaseContext::Local);
         if (rt == nullptr)
         {
@@ -99,13 +99,13 @@ void ReadTopologyCreator::addReadTopology(core::topology::BaseMeshTopology* topo
 ///if state is true, we activate all the write states present in the scene.
 simulation::Visitor::Result ReadTopologyActivator::processNodeTopDown( simulation::Node* gnode)
 {
-    sofa::component::misc::ReadTopology *rt = gnode->get< sofa::component::misc::ReadTopology >(this->subsetsToManage);
+    sofa::component::io::misc::ReadTopology *rt = gnode->get< sofa::component::io::misc::ReadTopology >(this->subsetsToManage);
     if (rt != nullptr) { changeTopologyReader(rt);}
 
     return simulation::Visitor::RESULT_CONTINUE;
 }
 
-void ReadTopologyActivator::changeTopologyReader(sofa::component::misc::ReadTopology* rt)
+void ReadTopologyActivator::changeTopologyReader(sofa::component::io::misc::ReadTopology* rt)
 {
     if (!state) rt->reset();
     rt->f_listening.setValue(state);
@@ -117,10 +117,10 @@ simulation::Visitor::Result ReadTopologyModifier::processNodeTopDown( simulation
 {
     using namespace sofa::defaulttype;
 
-    sofa::component::misc::ReadTopology* rt = gnode->get< sofa::component::misc::ReadTopology>(this->subsetsToManage);
+    sofa::component::io::misc::ReadTopology* rt = gnode->get< sofa::component::io::misc::ReadTopology>(this->subsetsToManage);
     if (rt != nullptr) {changeTimeReader(rt);}
 
     return simulation::Visitor::RESULT_CONTINUE;
 }
 
-} //namespace sofa::component::misc
+} //namespace sofa::component::io::misc

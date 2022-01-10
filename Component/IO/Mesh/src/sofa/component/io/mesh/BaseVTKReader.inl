@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaLoader/BaseVTKReader.h>
+#include <sofa/component/io/mesh/BaseVTKReader.h>
 
 #include <istream>
 #include <fstream>
 
-namespace sofa::component::loader::basevtkreader
+namespace sofa::component::io::mesh::basevtkreader
 {
 
 using std::istringstream ;
@@ -197,4 +197,4 @@ BaseData* BaseVTKReader::VTKDataIO<T>::createSofaData()
 }
 
 
-} // namespace sofa::component::loader::basevtkloader
+} // namespace sofa::component::io::mesh::basevtkloader

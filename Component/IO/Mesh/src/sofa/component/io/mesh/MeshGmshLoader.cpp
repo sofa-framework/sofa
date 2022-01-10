@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
-#include <SofaGeneralLoader/MeshGmshLoader.h>
+#include <sofa/component/io/mesh/MeshGmshLoader.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
 #include <fstream>
 #include <sofa/helper/io/Mesh.h>
 
 
-namespace sofa::component::loader
+namespace sofa::component::io::mesh
 {
 
 using namespace sofa::type;
@@ -627,4 +627,4 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
 }
 
 
-} //namespace sofa::component::loader
+} //namespace sofa::component::io::mesh

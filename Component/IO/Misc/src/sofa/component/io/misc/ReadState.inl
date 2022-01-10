@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralLoader/ReadState.h>
+#include <sofa/component/io/misc/ReadState.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
@@ -34,7 +34,7 @@ using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVel
 #include <cstring>
 #include <sstream>
 
-namespace sofa::component::misc
+namespace sofa::component::io::misc
 {
 
 using type::Vector3;
@@ -273,4 +273,4 @@ void ReadState::processReadState()
     }
 }
 
-} // namespace sofa::component::misc
+} // namespace sofa::component::io::misc

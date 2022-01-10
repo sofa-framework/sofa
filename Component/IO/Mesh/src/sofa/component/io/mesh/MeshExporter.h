@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_MESHEXPORTER_H
 #define SOFA_COMPONENT_MISC_MESHEXPORTER_H
-#include <SofaExporter/config.h>
+#include <sofa/component/io/mesh/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -58,7 +58,7 @@ using sofa::core::topology::BaseMeshTopology ;
 using sofa::simulation::BaseSimulationExporter ;
 using sofa::core::topology::Topology ;
 
-class SOFA_SOFAEXPORTER_API MeshExporter : public BaseSimulationExporter
+class SOFA_COMPONENT_IO_MESH_API MeshExporter : public BaseSimulationExporter
 {
 public:
     SOFA_CLASS(MeshExporter, BaseSimulationExporter);

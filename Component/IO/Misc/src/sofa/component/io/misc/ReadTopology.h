@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralLoader/config.h>
+#include <sofa/component/io/misc/config.h>
 
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
@@ -34,12 +34,12 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <fstream>
 
-namespace sofa::component::misc
+namespace sofa::component::io::misc
 {
 
 /** Read Topology containers informations from file at each timestep
 */
-class SOFA_SOFAGENERALLOADER_API ReadTopology: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_IO_MISC_API ReadTopology: public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(ReadTopology,core::objectmodel::BaseObject);
@@ -109,7 +109,7 @@ public:
 
 
 ///Create ReadTopology component in the graph each time needed
-class SOFA_SOFAGENERALLOADER_API ReadTopologyCreator: public simulation::Visitor
+class SOFA_COMPONENT_IO_MISC_API ReadTopologyCreator: public simulation::Visitor
 {
 public:
     ReadTopologyCreator(const core::ExecParams* params);
@@ -131,7 +131,7 @@ protected:
 
 };
 
-class SOFA_SOFAGENERALLOADER_API ReadTopologyActivator: public simulation::Visitor
+class SOFA_COMPONENT_IO_MISC_API ReadTopologyActivator: public simulation::Visitor
 {
 public:
     ReadTopologyActivator(const core::ExecParams* params, bool active)
@@ -142,12 +142,12 @@ public:
     void setTopology(bool active) {state=active;}
     const char* getClassName() const override { return "ReadTopologyActivator"; }
 protected:
-    void changeTopologyReader(sofa::component::misc::ReadTopology *rt);
+    void changeTopologyReader(sofa::component::io::misc::ReadTopology *rt);
 
     bool state;
 };
 
-class SOFA_SOFAGENERALLOADER_API ReadTopologyModifier: public simulation::Visitor
+class SOFA_COMPONENT_IO_MISC_API ReadTopologyModifier: public simulation::Visitor
 {
 public:
     ReadTopologyModifier(const core::ExecParams* params, double _time)
@@ -159,9 +159,9 @@ public:
     void setTime(double _time) { time=_time; }
     const char* getClassName() const override { return "ReadTopologyModifier"; }
 protected:
-    void changeTimeReader(sofa::component::misc::ReadTopology *rt) { rt->processReadTopology(time); }
+    void changeTimeReader(sofa::component::io::misc::ReadTopology *rt) { rt->processReadTopology(time); }
 
     double time;
 };
 
-} // namespace sofa::component::misc
+} // namespace sofa::component::io::misc

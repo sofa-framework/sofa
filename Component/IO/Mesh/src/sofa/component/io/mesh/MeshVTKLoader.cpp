@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaLoader/MeshVTKLoader.h>
+#include <sofa/component/io/mesh/MeshVTKLoader.h>
 
 #include <iostream>
 #include <cstdio>
@@ -28,11 +28,11 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <SofaLoader/BaseVTKReader.h>
-using sofa::component::loader::BaseVTKReader ;
+#include <sofa/component/io/mesh/BaseVTKReader.h>
+using sofa::component::io::mesh::BaseVTKReader ;
 
 /// This is needed for template specialization.
-#include <SofaLoader/BaseVTKReader.inl>
+#include <sofa/component/io/mesh/BaseVTKReader.inl>
 
 #include <tinyxml.h>
 
@@ -41,7 +41,7 @@ using sofa::component::loader::BaseVTKReader ;
 #define checkErrorPtr(A) if (!A) { return nullptr; }
 #define checkErrorMsg(A, B) if (!A) { msg_error() << B << "\n" ; return false; }
 
-namespace sofa::component::loader
+namespace sofa::component::io::mesh
 {
 
 using namespace sofa::type;
@@ -1264,5 +1264,5 @@ bool XMLVTKReader::loadImageData(TiXmlHandle datasetFormatHandle)
 int MeshVTKLoaderClass = core::RegisterObject("Mesh loader for the VTK/VTU file format.")
         .add< MeshVTKLoader >();
 
-} /// namespace sofa::component::loader
+} /// namespace sofa::component::io::mesh
 

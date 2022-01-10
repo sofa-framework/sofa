@@ -19,12 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralLoader/ReadState.inl>
+#include <sofa/component/io/misc/ReadState.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa::component::misc
+namespace sofa::component::io::misc
 {
 
 using namespace defaulttype;
@@ -80,7 +80,7 @@ void ReadStateCreator::addReadState(sofa::core::behavior::BaseMechanicalState *m
     sofa::core::BaseMapping *mapping; context->get(mapping);
     if (createInMapping || mapping== nullptr)
     {
-        sofa::component::misc::ReadState::SPtr rs;
+        sofa::component::io::misc::ReadState::SPtr rs;
         context->get(rs, this->subsetsToManage, core::objectmodel::BaseContext::Local);
         if (rs == nullptr)
         {
@@ -103,13 +103,13 @@ void ReadStateCreator::addReadState(sofa::core::behavior::BaseMechanicalState *m
 ///if state is true, we activate all the write states present in the scene.
 simulation::Visitor::Result ReadStateActivator::processNodeTopDown( simulation::Node* gnode)
 {
-    sofa::component::misc::ReadState *rs = gnode->get< sofa::component::misc::ReadState >(this->subsetsToManage);
+    sofa::component::io::misc::ReadState *rs = gnode->get< sofa::component::io::misc::ReadState >(this->subsetsToManage);
     if (rs != nullptr) { changeStateReader(rs);}
 
     return simulation::Visitor::RESULT_CONTINUE;
 }
 
-void ReadStateActivator::changeStateReader(sofa::component::misc::ReadState* rs)
+void ReadStateActivator::changeStateReader(sofa::component::io::misc::ReadState* rs)
 {
     rs->reset();
     rs->f_listening.setValue(state);
@@ -121,10 +121,10 @@ simulation::Visitor::Result ReadStateModifier::processNodeTopDown( simulation::N
 {
     using namespace sofa::defaulttype;
 
-    sofa::component::misc::ReadState*rs = gnode->get< sofa::component::misc::ReadState>(this->subsetsToManage);
+    sofa::component::io::misc::ReadState*rs = gnode->get< sofa::component::io::misc::ReadState>(this->subsetsToManage);
     if (rs != nullptr) {changeTimeReader(rs);}
 
     return simulation::Visitor::RESULT_CONTINUE;
 }
 
-} // namespace sofa::component::misc
+} // namespace sofa::component::io::misc

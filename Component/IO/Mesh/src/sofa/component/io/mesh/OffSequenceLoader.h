@@ -20,19 +20,19 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralLoader/config.h>
+#include <sofa/component/io/mesh/config.h>
 
-#include <SofaGeneralLoader/MeshOffLoader.h>
+#include <sofa/component/io/mesh/MeshOffLoader.h>
 
-namespace sofa::component::loader
+namespace sofa::component::io::mesh
 {
 
 /** This class load a sequence of .off mesh files, ordered by index in their name
 */
-class SOFA_SOFAGENERALLOADER_API OffSequenceLoader : public MeshOffLoader
+class SOFA_COMPONENT_IO_MESH_API OffSequenceLoader : public MeshOffLoader
 {
 public:
-    SOFA_CLASS(OffSequenceLoader,sofa::component::loader::MeshOffLoader);
+    SOFA_CLASS(OffSequenceLoader, MeshOffLoader);
 protected:
     OffSequenceLoader();
 public:
@@ -63,4 +63,4 @@ private:
 
 };
 
-} // namespace sofa::component::loader
+} // namespace sofa::component::io::mesh

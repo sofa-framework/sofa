@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <SofaGeneralLoader/MeshSTLLoader.h>
+#include <sofa/component/io/mesh/MeshSTLLoader.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <iostream>
@@ -30,7 +30,7 @@
 #include <sstream>
 #include <string>
 
-namespace sofa::component::loader
+namespace sofa::component::io::mesh
 {
 
 using sofa::helper::getWriteOnlyAccessor;
@@ -322,4 +322,4 @@ void MeshSTLLoader::doClearBuffers()
     /// Nothing to do if no output is added to the "filename" dataTrackerEngine.
 }
 
-} //namespace sofa::component::loader
+} //namespace sofa::component::io::mesh

@@ -1,2 +1,16 @@
+#pragma once
+
 #include <sofa/config.h>
 #include <sofa/config/sharedlibrary_defines.h>
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_IO_MISC
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_COMPONENT_IO_MISC_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_COMPONENT_IO_MISC_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+namespace sofa::component::io::misc
+{
+	constexpr char* MODULE_NAME = "@PROJECT_NAME@";
+} // namespace sofa::component::io::misc

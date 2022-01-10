@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaGeneralLoader/VoxelGridLoader.h>
+#include <sofa/component/io/mesh/VoxelGridLoader.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/io/ImageRAW.h>
@@ -29,7 +29,7 @@
 #include <map>
 #include <algorithm>
 
-namespace sofa::component::loader
+namespace sofa::component::io::mesh
 {
 
 using namespace sofa::type;
@@ -445,4 +445,4 @@ type::vector<unsigned int> VoxelGridLoader::getHexaIndicesInGrid() const
     return idxInRegularGrid.getValue();
 }
 
-} //namespace sofa::component::loader
+} //namespace sofa::component::io::mesh

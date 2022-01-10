@@ -20,10 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
-#include <SofaGeneralLoader/GridMeshCreator.h>
+#include <sofa/component/io/mesh/GridMeshCreator.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa::component::loader
+namespace sofa::component::io::mesh
 {
 
 using namespace sofa::type;
@@ -152,4 +152,4 @@ bool GridMeshCreator::doLoad()
 }
 
 
-} // namespace sofa::component::loader
+} // namespace sofa::component::io::mesh

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralLoader/SphereLoader.h>
+#include <sofa/component/io/mesh/SphereLoader.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/Locale.h>
 #include <sofa/type/Quat.h>
@@ -31,7 +31,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using namespace sofa::type;
 
-namespace sofa::component::loader
+namespace sofa::component::io::mesh
 {
 
 int SphereLoaderClass = core::RegisterObject("Loader for sphere model description files")
@@ -185,4 +185,4 @@ bool SphereLoader::load()
     return true;
 }
 
-} // namespace sofa::component::loader
+} // namespace sofa::component::io::mesh

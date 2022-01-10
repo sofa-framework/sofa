@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <SofaExporter/config.h>
+#include <sofa/component/io/mesh/config.h>
 
 #include <sofa/core/State.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -54,7 +54,7 @@ namespace _blenderexporter_
 // TODO: currently the export only support soft body and hair simulations, clothes, smoke and fluid simulation could be added.
 
 template<class T>
-class SOFA_SOFAEXPORTER_API BlenderExporter: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_IO_MESH_API BlenderExporter: public core::objectmodel::BaseObject
 {
 public:
     typedef core::objectmodel::BaseObject Inherit;

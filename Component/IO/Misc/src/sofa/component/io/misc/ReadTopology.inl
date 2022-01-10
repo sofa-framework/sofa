@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralLoader/ReadTopology.h>
+#include <sofa/component/io/misc/ReadTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
@@ -29,7 +29,7 @@
 #include <cstring>
 #include <sstream>
 
-namespace sofa::component::misc
+namespace sofa::component::io::misc
 {
 
 ReadTopology::ReadTopology()
@@ -377,4 +377,4 @@ void ReadTopology::processReadTopology()
 
 }
 
-} //namespace sofa::component::misc
+} //namespace sofa::component::io::misc

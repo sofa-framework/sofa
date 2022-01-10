@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaLoader/config.h>
+#include <sofa/component/io/mesh/config.h>
 
 #include <string>
 #include <iosfwd>
@@ -28,7 +28,7 @@
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
-namespace sofa::component::loader::basevtkreader
+namespace sofa::component::io::mesh::basevtkreader
 {
 /// Use a per-file namespace. The role of this per-file namespace contain the names to make
 /// them private. Outside of this namespace the fully qualified name have to be used.
@@ -117,9 +117,9 @@ public:
     virtual bool readFile(const char* filename) = 0;
 };
 
-} // namespace sofa::component::loader::basevtkreader
+} // namespace sofa::component::io::mesh::basevtkreader
 
-namespace sofa::component::loader
+namespace sofa::component::io::mesh
 {
 /// Importing the names defined in the per-file namespace into the classical
 /// sofa namespace structre so that the classes are accessible with
@@ -128,4 +128,4 @@ namespace sofa::component::loader
 using basevtkreader::VTKDatasetFormat ;
 using basevtkreader::BaseVTKReader ;
 
-} // namespace sofa::component::loader
+} // namespace sofa::component::io::mesh

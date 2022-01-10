@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaExporter/BlenderExporter.h>
+#include <sofa/component/io/mesh/BlenderExporter.h>
 #include <iomanip>
 #include <iostream>
 

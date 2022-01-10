@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
-#include <SofaGeneralLoader/MeshOffLoader.h>
+#include <sofa/component/io/mesh/MeshOffLoader.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <fstream>
 
-namespace sofa::component::loader
+namespace sofa::component::io::mesh
 {
 
 using namespace sofa::type;
@@ -145,4 +145,4 @@ bool MeshOffLoader::readOFF (std::ifstream &file, const char* /* filename */ )
 
     return true;
 }
-} //namespace sofa::component::loader
+} //namespace sofa::component::io::mesh

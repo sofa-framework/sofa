@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralLoader/MeshXspLoader.h>
+#include <sofa/component/io/mesh/MeshXspLoader.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/helper/io/XspLoader.h>
@@ -34,7 +34,7 @@ using sofa::type::Vec3;
 #include <sofa/core/topology/Topology.h>
 using sofa::core::topology::Topology;
 
-namespace sofa::component::loader
+namespace sofa::component::io::mesh
 {
 
 class MeshXspLoadDataHook : public XspLoaderDataHook
@@ -100,4 +100,4 @@ void MeshXspLoader::doClearBuffers()
 
 int MeshXspLoaderClass = core::RegisterObject("Specific mesh loader for Xsp file format.")
         .add< MeshXspLoader >();
-} //namespace sofa::component::loader
+} //namespace sofa::component::io::mesh

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaGeneralLoader/OffSequenceLoader.h>
+#include <sofa/component/io/mesh/OffSequenceLoader.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/simulation/AnimateBeginEvent.h>
@@ -28,7 +28,7 @@
 #include <sstream>
 #include <fstream>
 
-namespace sofa::component::loader
+namespace sofa::component::io::mesh
 {
 
 using namespace sofa::defaulttype;
@@ -37,7 +37,8 @@ int OffSequenceLoaderClass = core::RegisterObject("Read and load an .off file at
         .add< OffSequenceLoader >();
 
 
-OffSequenceLoader::OffSequenceLoader():sofa::component::loader::MeshOffLoader()
+OffSequenceLoader::OffSequenceLoader()
+    : MeshOffLoader()
     , nbFiles( initData(&nbFiles,(int)1,"nbOfFiles","number of files in the sequence") )
     , stepDuration( initData(&stepDuration,0.04,"stepDuration","how long each file is loaded") )
     , firstIndex(0) , currentIndex(0)
@@ -169,4 +170,4 @@ bool OffSequenceLoader::load(const char * filename)
 }
 
 
-} // namespace sofa::component::loader
+} // namespace sofa::component::io::mesh

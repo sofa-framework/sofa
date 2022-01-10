@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef VTKEXPORTER_H_
 #define VTKEXPORTER_H_
-#include <SofaExporter/config.h>
+#include <sofa/component/io/mesh/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -36,7 +36,7 @@ namespace sofa::component
 namespace _vtkexporter_
 {
 
-class SOFA_SOFAEXPORTER_API VTKExporter : public core::objectmodel::BaseObject
+class SOFA_COMPONENT_IO_MESH_API VTKExporter : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(VTKExporter,core::objectmodel::BaseObject);
