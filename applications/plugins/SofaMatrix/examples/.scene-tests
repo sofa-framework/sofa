@@ -1,0 +1,2 @@
+# No need for more than 1 iteration to test an export
+iterations "GlobalSystemMatrixExporter.scn" "1"
