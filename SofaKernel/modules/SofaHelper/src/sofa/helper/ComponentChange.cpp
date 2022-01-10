@@ -702,6 +702,35 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
 
    // SofaGeneralImplicitOdeSolver was deprecated in #2571
    { "VariationalSymplecticSolver", CreatableMoved("v22.06", "SofaGeneralImplicitOdeSolver", "Sofa.Component.ODESolver.Backward") },
+
+   // SofaLoader was deprecated in #2582
+   { "MeshOBJLoader", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.Mesh") },
+   { "MeshVTKLoader", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.Mesh") },
+
+   // SofaGeneralLoader was deprecated in #2582
+   { "MeshGmshLoader", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.Mesh") },
+   { "GIDMeshLoader", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.Mesh") },
+   { "GridMeshCreator", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.Mesh") },
+   { "MeshOffLoader", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.Mesh") },
+   { "MeshSTLLoader", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.Mesh") },
+   { "MeshTrianLoader", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.Mesh") },
+   { "MeshXspLoader", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.Mesh") },
+   { "OffSequenceLoader", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.Mesh") },
+   { "SphereLoader", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.Mesh") },
+   { "StringMeshCreator", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.Mesh") },
+   { "VoxelGridLoader", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.Mesh") },
+   { "ReadState", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.Misc") },
+   { "ReadTopology", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.Misc") },
+   { "InputEventReader", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.Misc") },
+
+   // SofaExporter was deprecated in #2582
+   { "BlenderExporter", CreatableMoved("v22.06", "SofaGeneralImplicitOdeSolver", "Sofa.Component.IO.Mesh") },
+   { "MeshExporter", CreatableMoved("v22.06", "SofaGeneralImplicitOdeSolver", "Sofa.Component.IO.Mesh") },
+   { "STLExporter", CreatableMoved("v22.06", "SofaGeneralImplicitOdeSolver", "Sofa.Component.IO.Mesh") },
+   { "VisualModelOBJExporter", CreatableMoved("v22.06", "SofaGeneralImplicitOdeSolver", "Sofa.Component.IO.Mesh") },
+   { "VTKExporter", CreatableMoved("v22.06", "SofaGeneralImplicitOdeSolver", "Sofa.Component.IO.Mesh") },
+   { "WriteState", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.Misc") },
+   { "WriteTopology", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.MIsc") },
 };
 
 } // namespace sofa::helper::lifecycle
