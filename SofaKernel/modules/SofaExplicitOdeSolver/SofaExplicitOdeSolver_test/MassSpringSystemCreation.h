@@ -81,12 +81,17 @@ simulation::Node::SPtr createMassSpringSystem(
     massPtr->d_totalMass.setValue(mass);
 
     // attach a spring
-    sofa::component::interactionforcefield::CreateSpringBetweenObjects<StiffSpringForceField3>(
+    auto components = sofa::component::interactionforcefield::CreateSpringBetweenObjects<StiffSpringForceField3>(
         root.get(),
         FixedPoint.get(),
         massDof.get(),
         {component::interactionforcefield::LinearSpring<typename DataTypes::Real>{0, 0, stiffness, 0., restLength} }
     );
+
+    EXPECT_NE(std::get<0>(components), nullptr);
+    EXPECT_NE(std::get<1>(components), nullptr);
+    EXPECT_NE(std::get<2>(components), nullptr);
+    EXPECT_NE(std::get<3>(components), nullptr);
 
     return root;
 }
