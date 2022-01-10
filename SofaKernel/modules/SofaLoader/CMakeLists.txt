@@ -3,30 +3,19 @@ project(SofaLoader LANGUAGES CXX)
 
 set(SOFALOADER_SRC "src/${PROJECT_NAME}")
 
-sofa_find_package(TinyXML REQUIRED)
-
 set(HEADER_FILES
     ${SOFALOADER_SRC}/config.h.in
     ${SOFALOADER_SRC}/initSofaLoader.h
-    ${SOFALOADER_SRC}/BaseVTKReader.h
-    ${SOFALOADER_SRC}/BaseVTKReader.inl
-    ${SOFALOADER_SRC}/MeshOBJLoader.h
-    ${SOFALOADER_SRC}/MeshVTKLoader.h
 )
 
 set(SOURCE_FILES
     ${SOFALOADER_SRC}/initSofaLoader.cpp
-    ${SOFALOADER_SRC}/BaseVTKReader.cpp
-    ${SOFALOADER_SRC}/BaseVTKReader.inl
-    ${SOFALOADER_SRC}/MeshOBJLoader.cpp
-    ${SOFALOADER_SRC}/MeshVTKLoader.cpp
 )
 
-sofa_find_package(SofaFramework REQUIRED) # SofaCore
+sofa_find_package(SofaCore REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore)
-target_link_libraries(${PROJECT_NAME} PRIVATE tinyxml) # Private because not exported in API
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
