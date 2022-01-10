@@ -1,11 +1,11 @@
-#include <sofa/component/io/mesh/config.h>
+#include <sofa/component/io/mesh/init.h>
 
 namespace sofa::component::io::mesh
 {
-
+	
 extern "C" {
-	SOFA_COMPONENT_IO_MESH_API void initExternalModule();
-	SOFA_COMPONENT_IO_MESH_API const char* getModuleName();
+	SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+	SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
 }
 
 void initExternalModule()
@@ -20,6 +20,11 @@ void initExternalModule()
 const char* getModuleName()
 {
 	return MODULE_NAME;
+}
+
+void init()
+{
+	initExternalModule();
 }
 
 } // namespace sofa::component::io::mesh

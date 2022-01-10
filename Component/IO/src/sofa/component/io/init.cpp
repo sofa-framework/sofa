@@ -4,8 +4,8 @@ namespace sofa::component::io
 {
 
 extern "C" {
-    SOFACOMPONENTIO_API void initExternalModule();
-    SOFACOMPONENTIO_API const char* getModuleName();
+	SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+	SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
 }
 
 void initExternalModule()
