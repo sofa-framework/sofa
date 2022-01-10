@@ -5,7 +5,7 @@ unset(GKLIB_PATH CACHE)
 get_filename_component(GKLIB_PATH "GKlib" ABSOLUTE)
 include(GKlib/GKlibSystem.cmake)
 
-file(GLOB metis_sources libmetis/*.c)
+file(GLOB metis_sources libmetis/*.c libmetis/*.h include/*.h)
 
 # The code must be relocatable if we want to link a shared library against it.
 if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xClang")
