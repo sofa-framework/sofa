@@ -12,17 +12,15 @@ set(SOURCE_FILES
     ${SOFAGENERALLOADER_SRC}/initSofaGeneralLoader.cpp
     )
 
-# sofa_find_package(ZLIB REQUIRED BOTH_SCOPES)
-
-sofa_find_package(SofaFramework REQUIRED) # SofaCore SofaHelper SofaSimulationCore
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaHelper SofaSimulationCore)
-# target_link_libraries(${PROJECT_NAME} PUBLIC ZLIB::ZLIB)
-# if(CMAKE_SYSTEM_NAME STREQUAL Windows)
-#     sofa_install_libraries(TARGETS ZLIB::ZLIB)
-# endif()
 
+message(WARNING "${PROJECT_NAME} module is deprecated; its components are in Sofa.Component.IO.Mesh and Sofa.Component.IO.Misc.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.IO.Mesh REQUIRED)
+sofa_find_package(Sofa.Component.IO.Misc REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.IO.Mesh)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.IO.Misc)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaExporter LANGUAGES CXX)
 
-sofa_find_package(SofaSimulationCore REQUIRED)
-# sofa_find_package(ZLIB REQUIRED)
-
 set(SRC_ROOT src/SofaExporter)
 
 set(HEADER_FILES
@@ -15,12 +12,15 @@ set(SOURCE_FILES
     ${SRC_ROOT}/initSofaExporter.cpp
     )
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore)
-# target_link_libraries(${PROJECT_NAME} PUBLIC ZLIB::ZLIB)
-# if(CMAKE_SYSTEM_NAME STREQUAL Windows)
-#     sofa_install_libraries(TARGETS ZLIB::ZLIB)
-# endif()
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+
+message(WARNING "${PROJECT_NAME} module is deprecated; its components are in Sofa.Component.IO.Mesh and Sofa.Component.IO.Misc.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.IO.Mesh REQUIRED)
+sofa_find_package(Sofa.Component.IO.Misc REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.IO.Mesh)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.IO.Misc)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME SofaExporter
