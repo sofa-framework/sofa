@@ -32,7 +32,7 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#if SOFAEXPORTER_HAVE_ZLIB
+#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
 #include <zlib.h>
 #endif
 
@@ -67,7 +67,7 @@ public:
 protected:
     core::behavior::BaseMechanicalState* mmodel;
     std::ofstream* outfile;
-#if SOFAEXPORTER_HAVE_ZLIB
+#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
     gzFile gzfile;
 #endif
     unsigned int nextIteration;

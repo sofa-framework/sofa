@@ -10,6 +10,8 @@
 #  define SOFA_COMPONENT_IO_MESH_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
+#cmakedefine01 SOFA_COMPONENT_IO_MESH_HAVE_ZLIB
+
 namespace sofa::component::io::mesh
 {
 	constexpr char* MODULE_NAME = "@PROJECT_NAME@";

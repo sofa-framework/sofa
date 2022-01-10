@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/simulation/Visitor.h>
 
-#if SOFAEXPORTER_HAVE_ZLIB
+#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
 #include <zlib.h>
 #endif
 
@@ -68,7 +68,7 @@ public:
 protected:
     core::topology::BaseMeshTopology* m_topology;
     std::ofstream* outfile;
-#if SOFAEXPORTER_HAVE_ZLIB
+#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
     gzFile gzfile;
 #endif
     unsigned int nextTime;

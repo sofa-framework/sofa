@@ -24,8 +24,6 @@
 
 #include <sofa/config.h>
 
-#cmakedefine01 SOFAEXPORTER_HAVE_ZLIB
-
 #ifdef SOFA_BUILD_EXPORTER
 #  define SOFA_TARGET SofaExporter
 #  define SOFA_SOFAEXPORTER_API SOFA_EXPORT_DYNAMIC_LIBRARY

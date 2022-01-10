@@ -26,7 +26,7 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/Visitor.h>
 
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
 #include <zlib.h>
 #endif
 
@@ -55,7 +55,7 @@ public:
 protected:
     core::topology::BaseMeshTopology* m_topology;
     std::ifstream* infile;
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
     gzFile gzfile;
 #endif
     double nextTime;

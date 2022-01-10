@@ -52,12 +52,17 @@ set(SOURCE_FILES
     ${SOFACOMPONENTIOMESH_SOURCE_DIR}/STLExporter.cpp
 )
 
-sofa_find_package(TinyXML REQUIRED) # for BaseVTKReader
+sofa_find_package(TinyXML REQUIRED) # BaseVTKReader
+sofa_find_package(ZLIB REQUIRED) # BlenderExporter
 sofa_find_package(SofaSimulationCore REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${WRAPPER_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore)
 target_link_libraries(${PROJECT_NAME} PRIVATE tinyxml)
+target_link_libraries(${PROJECT_NAME} PUBLIC ZLIB::ZLIB)
+if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+    sofa_install_libraries(TARGETS ZLIB::ZLIB)
+endif()
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

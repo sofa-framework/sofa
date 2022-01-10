@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/simulation/Visitor.h>
 
-#if SOFAEXPORTER_HAVE_ZLIB
+#if SOFA_COMPONENT_IO_MESH_HAVE_ZLIB
 #include <zlib.h>
 #endif
 

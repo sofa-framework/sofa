@@ -26,10 +26,15 @@ set(SOURCE_FILES
     ${SOFACOMPONENTIOMISC_SOURCE_DIR}/WriteTopology.cpp
 )
 
+sofa_find_package(ZLIB REQUIRED)
 sofa_find_package(SofaSimulationCore REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${WRAPPER_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore)
+target_link_libraries(${PROJECT_NAME} PUBLIC ZLIB::ZLIB)
+if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+    sofa_install_libraries(TARGETS ZLIB::ZLIB)
+endif()
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

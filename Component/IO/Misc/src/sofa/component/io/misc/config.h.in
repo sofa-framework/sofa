@@ -10,6 +10,8 @@
 #  define SOFA_COMPONENT_IO_MISC_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
+#cmakedefine01 SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+
 namespace sofa::component::io::misc
 {
 	constexpr char* MODULE_NAME = "@PROJECT_NAME@";

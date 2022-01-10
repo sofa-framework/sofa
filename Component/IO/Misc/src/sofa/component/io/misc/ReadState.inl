@@ -49,7 +49,7 @@ ReadState::ReadState()
     , d_translation( initData(&d_translation, Vector3(0.,0.,0.), "translation", "translate the input mechanical object"))
     , mmodel(nullptr)
     , infile(nullptr)
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
     , gzfile(nullptr)
 #endif
     , nextTime(0)
@@ -66,7 +66,7 @@ ReadState::~ReadState()
 {
     if (infile)
         delete infile;
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
     if (gzfile)
         gzclose(gzfile);
 #endif
@@ -91,7 +91,7 @@ void ReadState::reset()
         delete infile;
         infile = nullptr;
     }
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
     if (gzfile)
     {
         gzclose(gzfile);
@@ -104,7 +104,7 @@ void ReadState::reset()
     {
         msg_error() << "ERROR: empty filename";
     }
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
     else if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
     {
         gzfile = gzopen(filename.c_str(),"rb");
@@ -159,7 +159,7 @@ bool ReadState::readNext(double time, std::vector<std::string>& validLines)
 {
     if (!mmodel) return false;
     if (!infile
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
         && !gzfile
 #endif
        )
@@ -169,7 +169,7 @@ bool ReadState::readNext(double time, std::vector<std::string>& validLines)
     std::string line, cmd;
     while (nextTime <= time)
     {
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
         if (gzfile)
         {
             if (gzeof(gzfile))

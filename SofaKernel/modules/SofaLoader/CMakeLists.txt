@@ -12,10 +12,13 @@ set(SOURCE_FILES
     ${SOFALOADER_SRC}/initSofaLoader.cpp
 )
 
-sofa_find_package(SofaCore REQUIRED)
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore)
+
+message(WARNING "${PROJECT_NAME} module is deprecated; its components are in Sofa.Component.IO.Mesh.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.IO.Mesh REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.IO.Mesh)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

@@ -35,7 +35,7 @@ int ReadStateClass = core::RegisterObject("Read State vectors from file at each 
 ReadStateCreator::ReadStateCreator(const core::ExecParams* params)
     : Visitor(params)
     , sceneName("")
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -49,7 +49,7 @@ ReadStateCreator::ReadStateCreator(const core::ExecParams* params)
 ReadStateCreator::ReadStateCreator(const std::string &n, bool _createInMapping, const core::ExecParams* params, bool i, int c)
     : Visitor(params)
     , sceneName(n)
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")

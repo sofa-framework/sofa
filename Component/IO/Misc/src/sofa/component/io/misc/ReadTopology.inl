@@ -39,7 +39,7 @@ ReadTopology::ReadTopology()
     , f_loop( initData(&f_loop, false, "loop", "set to 'true' to re-read the file when reaching the end"))
     , m_topology(nullptr)
     , infile(nullptr)
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
     , gzfile(nullptr)
 #endif
     , nextTime(0.0)
@@ -53,7 +53,7 @@ ReadTopology::~ReadTopology()
 {
     if (infile)
         delete infile;
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
     if (gzfile)
         gzclose(gzfile);
 #endif
@@ -82,7 +82,7 @@ void ReadTopology::reset()
         infile = nullptr;
     }
 
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
     if (gzfile)
     {
         gzclose(gzfile);
@@ -99,7 +99,7 @@ void ReadTopology::reset()
     {
         msg_error() << "Compressed file doesn't exist:" << filename;
     }
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
     else if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
     {
         gzfile = gzopen(filename.c_str(),"rb");
@@ -152,7 +152,7 @@ bool ReadTopology::readNext(double time, std::vector<std::string>& validLines)
 {
     if (!m_topology) return false;
     if (!infile
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
         && !gzfile
 #endif
        )
@@ -167,7 +167,7 @@ bool ReadTopology::readNext(double time, std::vector<std::string>& validLines)
     while ((double)nextTime <= (time + epsilon))
     {
 
-#if SOFAGENERALLOADER_HAVE_ZLIB
+#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
         if (gzfile)
         {
 
