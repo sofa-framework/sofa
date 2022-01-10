@@ -105,6 +105,7 @@ template<class DataTypes>
 void TriangleBendingSprings<DataTypes>::init()
 {
     StiffSpringForceField<DataTypes>::clear();
+    core::behavior::SingleStateAccessor<DataTypes>::init();
 
     // Set the bending springs
 

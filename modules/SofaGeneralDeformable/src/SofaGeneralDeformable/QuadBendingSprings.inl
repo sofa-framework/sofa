@@ -87,6 +87,8 @@ void QuadBendingSprings<DataTypes>::registerEdge( IndexPair ab, IndexPair cd, st
 template<class DataTypes>
 void QuadBendingSprings<DataTypes>::init()
 {
+    core::behavior::SingleStateAccessor<DataTypes>::init();
+
     // Set the bending springs
 
     std::map< IndexPair, IndexPair > edgeMap;
