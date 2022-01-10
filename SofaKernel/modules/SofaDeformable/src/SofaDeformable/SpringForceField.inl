@@ -103,8 +103,8 @@ void SpringForceField<DataTypes>::addForce(const core::MechanicalParams*, DataVe
     const DataVecDeriv& v)
 {
     VecDeriv& _f = *sofa::helper::getWriteAccessor(f);
-    auto _x = sofa::helper::getReadAccessor(x);
-    auto _v = sofa::helper::getReadAccessor(v);
+    auto _x = x.getValue();
+    auto _v = v.getValue();
 
     const type::vector<Spring>& springs= this->springs.getValue();
 
