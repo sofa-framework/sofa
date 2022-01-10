@@ -310,6 +310,12 @@ public:
                     }
 
                     createdNode->addObject(createdObject);
+
+                    msg_warning("SpringForceField") << "The component is defined to work on 2 objects (object1='"
+                        << object1 << "' and object2='" << object2 << "'). In this case, a new Node (name='" <<
+                        createdNode->getName() << "') is created, and the component is inserted in it. The root path ('"
+                        << createdObject->getPathName() << "') "
+                        "might be different than the one you expected.";
                 }
                 else
                 {
@@ -399,6 +405,8 @@ CreateSpringBetweenObjects(
 
             return {createdNode, mstate, mapping, createdObject};
         }
+
+        dmsg_error("SpringForceField")<< "CreateSpringBetweenObjects cannot work on Node type different from DAGNode";
     }
     return {nullptr, nullptr, nullptr, nullptr};
 }
