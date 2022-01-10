@@ -208,7 +208,7 @@ protected:
     void createTetrahedronInformation(Index tetrahedronIndex, TetrahedronInformation& tInfo,
         const core::topology::BaseMeshTopology::Tetrahedron& tetra,
         const sofa::type::vector<Index>& ancestors,
-        const sofa::type::vector<double>& coefs);
+        const sofa::type::vector<SReal>& coefs);
 
     void computeStrainDisplacement( StrainDisplacementTransposed &J, Coord a, Coord b, Coord c, Coord d );
     Real peudo_determinant_for_coef ( const type::Mat<2, 3, Real>&  M );

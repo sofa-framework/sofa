@@ -30,11 +30,11 @@ using namespace defaulttype;
 
 // Register in the Factory
 int DeformableOnRigidFrameMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
-        .add< DeformableOnRigidFrameMapping< Vec3dTypes, Rigid3Types, Vec3dTypes > >()
+        .add< DeformableOnRigidFrameMapping< Vec3Types, Rigid3Types, Vec3Types > >()
 
         ;
 
-template class SOFA_SOFAMISCMAPPING_API DeformableOnRigidFrameMapping< Vec3dTypes, Rigid3Types, Vec3dTypes >;
+template class SOFA_SOFAMISCMAPPING_API DeformableOnRigidFrameMapping< Vec3Types, Rigid3Types, Vec3Types >;
 
 
 } // namespace sofa::component::mapping

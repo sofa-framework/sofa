@@ -348,7 +348,7 @@ GridTopology::Index GridTopology::getIndex( int i, int j, int k ) const
 }
 
 
-sofa::type::Vector3 GridTopology::getPoint(Index i) const
+sofa::type::Vec3 GridTopology::getPoint(Index i) const
 {
     int x = i%d_n.getValue()[0]; i/=d_n.getValue()[0];
     int y = i%d_n.getValue()[1]; i/=d_n.getValue()[1];
@@ -357,13 +357,13 @@ sofa::type::Vector3 GridTopology::getPoint(Index i) const
     return getPointInGrid(x,y,z);
 }
 
-sofa::type::Vector3 GridTopology::getPointInGrid(int i, int j, int k) const
+sofa::type::Vec3 GridTopology::getPointInGrid(int i, int j, int k) const
 {
     Index id = this->getIndex(i, j, k);
     if (id < seqPoints.getValue().size())
         return seqPoints.getValue()[id];
     else
-        return sofa::type::Vector3();
+        return sofa::type::Vec3();
 }
 
 

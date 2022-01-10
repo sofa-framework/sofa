@@ -63,7 +63,7 @@ public:
     StaticSolver();
 
 public:
-    void solve (const sofa::core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
+    void solve (const sofa::core::ExecParams* params /* PARAMS FIRST */, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     /** The list of squared residual norms (r.dot(r) = ||r||^2) of every newton iterations of the last solve call. */
     auto squared_residual_norms() const -> const std::vector<SReal> & { return p_squared_residual_norms; }

@@ -114,7 +114,7 @@ public:
     /// Apply adding current elementType elements
     virtual void applyCreateFunction(Index, value_type& t,
         const sofa::type::vector< Index >&,
-        const sofa::type::vector< double >&) 
+        const sofa::type::vector< SReal >&)
     {
         t = m_defaultValue;
     }
@@ -123,14 +123,14 @@ public:
     /// Apply adding current elementType elements
     virtual void applyCreateFunction(Index i, value_type& t, const TopologyElementType&,
         const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< double >& coefs)
+        const sofa::type::vector< SReal >& coefs)
     {
         applyCreateFunction(i, t, ancestors, coefs);
     }
 
     virtual void applyCreateFunction(Index i, value_type& t, const TopologyElementType& e,
         const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< double >& coefs,
+        const sofa::type::vector< SReal >& coefs,
         const AncestorElem* /*ancestorElem*/)
     {
         applyCreateFunction(i, t, e, ancestors, coefs);
@@ -146,7 +146,7 @@ public:
 
     ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
     SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2171)", "v21.06 (PR#2171)", "This method has been removed as it has never been used and is not needed. Use applyCreateFunction to add a callback.")
-    bool applyTestCreateFunction(Index /*index*/, const sofa::type::vector< Index >& /*ancestors*/, const sofa::type::vector< double >& /*coefs*/) = delete;
+    bool applyTestCreateFunction(Index /*index*/, const sofa::type::vector< Index >& /*ancestors*/, const sofa::type::vector< SReal >& /*coefs*/) = delete;
 
 protected:
     t_topologicalData* m_topologyData;

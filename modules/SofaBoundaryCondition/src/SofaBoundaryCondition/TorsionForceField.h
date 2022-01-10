@@ -91,7 +91,7 @@ public:
 	void bwdInit() override;
 	void addForce(const MechanicalParams *, DataVecDeriv &f, const DataVecCoord &x, const DataVecDeriv &v) override;
 	void addDForce(const MechanicalParams *mparams, DataVecDeriv &df, const DataVecDeriv &dx) override;
-	void addKToMatrix(linearalgebra::BaseMatrix *matrix, double kFact, unsigned int &offset) override;
+	void addKToMatrix(linearalgebra::BaseMatrix *matrix, SReal kFact, unsigned int &offset) override;
 
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
 

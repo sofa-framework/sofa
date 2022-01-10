@@ -488,7 +488,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
             auto tetraColor = sofa::type::RGBAColor(0.0f, float(Ratio), 0.5f-float(Ratio), 1.0f);
 
             Tetrahedron tetra = m_topology->getTetrahedron(i);
-            sofa::type::Vec<3,SReal> point[4];
+            sofa::type::Vec3 point[4];
 
             for (sofa::Index j = 0; j<4; j++)
                 point[j] = restPosition[tetra[j]];

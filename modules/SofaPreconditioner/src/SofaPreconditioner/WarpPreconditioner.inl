@@ -185,7 +185,7 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::solve(Matrix& Rcur, Vec
 
 /// Solve the system as constructed using the previous methods
 template<class TMatrix, class TVector,class ThreadManager>
-bool WarpPreconditioner<TMatrix,TVector,ThreadManager >::addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, double fact) {
+bool WarpPreconditioner<TMatrix,TVector,ThreadManager >::addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) {
     if (J->rowSize()==0 || !realSolver) return true;
 
     this->linearSystem.systemMatrix->rotateMatrix(&j_local,J);
@@ -194,7 +194,7 @@ bool WarpPreconditioner<TMatrix,TVector,ThreadManager >::addJMInvJt(linearalgebr
 }
 
 template<class TMatrix, class TVector,class ThreadManager>
-bool WarpPreconditioner<TMatrix,TVector,ThreadManager >::addMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, double fact) {
+bool WarpPreconditioner<TMatrix,TVector,ThreadManager >::addMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact) {
     this->linearSystem.systemMatrix->rotateMatrix(&j_local,J);
     return realSolver->addMInvJt(result,&j_local,fact);
 }

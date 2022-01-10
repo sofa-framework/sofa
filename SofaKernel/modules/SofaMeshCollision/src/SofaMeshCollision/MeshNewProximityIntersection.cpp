@@ -247,14 +247,14 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
 
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const SReal dist2 = alarmDist*alarmDist;
-    const Vector3& p1 = e1.p1();
-    const Vector3& p2 = e1.p2();
-    const Vector3& p3 = e1.p3();
-    Vector3& pn = e1.n();
-    const Vector3& q1 = e2.p1();
-    const Vector3& q2 = e2.p2();
-    const Vector3& q3 = e2.p3();
-    Vector3& qn = e2.n();
+    const auto& p1 = e1.p1();
+    const auto& p2 = e1.p2();
+    const auto& p3 = e1.p3();
+    auto& pn = e1.n();
+    const auto& q1 = e2.p1();
+    const auto& q2 = e2.p2();
+    const auto& q3 = e2.p3();
+    auto& qn = e2.n();
 
     
     if(neighbor)

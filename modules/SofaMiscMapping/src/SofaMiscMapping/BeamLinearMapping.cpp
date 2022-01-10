@@ -33,13 +33,13 @@ using namespace defaulttype;
 // Register in the Factory
 int BeamLinearMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
 
-        .add< BeamLinearMapping< Rigid3Types, Vec3dTypes > >()
+        .add< BeamLinearMapping< Rigid3Types, Vec3Types > >()
 
 
 
         ;
 
-template class SOFA_SOFAMISCMAPPING_API BeamLinearMapping< Rigid3Types, Vec3dTypes >;
+template class SOFA_SOFAMISCMAPPING_API BeamLinearMapping< Rigid3Types, Vec3Types >;
 
 
 } // namespace sofa::component::mapping

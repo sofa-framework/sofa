@@ -91,7 +91,7 @@ template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::ini
     tetrahedronInfo.setCreationCallback([this](Index tetrahedronIndex, TetrahedronRestInformation& tetraInfo,
         const core::topology::BaseMeshTopology::Tetrahedron& tetra,
         const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< double >& coefs)
+        const sofa::type::vector< SReal >& coefs)
     {
         createTetrahedronRestInformation(tetrahedronIndex, tetraInfo, tetra, ancestors, coefs);
     });
@@ -182,7 +182,7 @@ template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::ini
     /// initialize the data structure associated with each tetrahedron
     for (size_t i=0;i<m_topology->getNbTetrahedra();++i) {
         createTetrahedronRestInformation(i, tetrahedronInf[i], m_topology->getTetrahedron(i),  
-            (const type::vector< Index > )0, (const type::vector< double >)0);
+            (const type::vector< Index > )0, (const type::vector< SReal >)0);
     }
     /// set the call back function upon creation of a tetrahedron
 
@@ -200,7 +200,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::createTetrahedronRestInformati
     TetrahedronRestInformation& tinfo,
     const core::topology::BaseMeshTopology::Tetrahedron&,
     const sofa::type::vector<Index>&,
-    const sofa::type::vector<double>&)
+    const sofa::type::vector<SReal>&)
 {
 
     const type::vector< core::topology::BaseMeshTopology::Tetrahedron >& tetrahedronArray = m_topology->getTetrahedra();

@@ -37,7 +37,7 @@ namespace controller
 using sofa::defaulttype::Rigid3Types;
 
 template <>
-void LCPForceFeedback< Rigid3Types >::computeForce(double x, double y, double z, double, double, double, double, double& fx, double& fy, double& fz)
+void LCPForceFeedback< Rigid3Types >::computeForce(SReal x, SReal y, SReal z, SReal, SReal, SReal, SReal, SReal& fx, SReal& fy, SReal& fz)
 {
     Rigid3Types::VecCoord state;
     Rigid3Types::VecDeriv forces;
@@ -51,9 +51,9 @@ void LCPForceFeedback< Rigid3Types >::computeForce(double x, double y, double z,
 
 
 template <>
-void LCPForceFeedback< Rigid3Types >::computeWrench(const sofa::defaulttype::SolidTypes<double>::Transform &world_H_tool,
-        const sofa::defaulttype::SolidTypes<double>::SpatialVector &/*V_tool_world*/,
-        sofa::defaulttype::SolidTypes<double>::SpatialVector &W_tool_world )
+void LCPForceFeedback< Rigid3Types >::computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool,
+        const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &/*V_tool_world*/,
+        sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world )
 {
     if (!this->d_activate.getValue())
     {

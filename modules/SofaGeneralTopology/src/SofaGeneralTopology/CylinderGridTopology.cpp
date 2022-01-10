@@ -74,7 +74,7 @@ void CylinderGridTopology::setLength(SReal length)
     d_length.setValue(length);
 }
 
-Vector3 CylinderGridTopology::getPointInGrid(int i, int j, int k) const
+sofa::type::Vec3 CylinderGridTopology::getPointInGrid(int i, int j, int k) const
 {
     //return p0+dx*x+dy*y+dz*z;
     SReal r = d_radius.getValue();

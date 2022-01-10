@@ -27,8 +27,8 @@ namespace sofa::component::mapping
 
 using sofa::type::Mat3x3d;
 using sofa::type::Vector3;
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::Vec3Types;
+
 typedef typename sofa::core::topology::BaseMeshTopology::Quad Quad;
 
 /// Class allowing barycentric mapping computation on a QuadSetTopology
@@ -57,7 +57,7 @@ protected:
     type::vector<SReal> getBaryCoef(const Real fx, const Real fy);
     void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Quad& element) override;
     void computeCenter(Vector3& center, const typename In::VecCoord& in, const Quad& element) override;
-    void computeDistance(double& d, const Vector3& v) override;
+    void computeDistance(SReal& d, const Vector3& v) override;
     void addPointInElement(const Index elementIndex, const SReal* baryCoords) override;
 
     using Inherit1::d_map;
@@ -67,7 +67,7 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERQUADSETTOPOLOGY_CPP)
-extern template class SOFA_SOFABASEMECHANICS_API BarycentricMapperQuadSetTopology< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_SOFABASEMECHANICS_API BarycentricMapperQuadSetTopology< Vec3Types, Vec3Types >;
 
 
 #endif

@@ -321,9 +321,9 @@ void VisualModelImpl::drawShadow(const core::visual::VisualParams* vparams)
 void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
 {
     const auto &facetsImport = objLoader.getFacets();
-    const vector< Vector3 > &verticesImport = objLoader.getVertices();
-    const vector< Vector3 > &normalsImport = objLoader.getNormals();
-    const vector< Vector3 > &texCoordsImport = objLoader.getTexCoords();
+    const auto &verticesImport = objLoader.getVertices();
+    const auto&normalsImport = objLoader.getNormals();
+    const auto&texCoordsImport = objLoader.getTexCoords();
 
     const Material &materialImport = objLoader.getMaterial();
 
@@ -702,7 +702,7 @@ void VisualModelImpl::applyTranslation(const SReal dx, const SReal dy, const SRe
 
 void VisualModelImpl::applyRotation(const SReal rx, const SReal ry, const SReal rz)
 {
-    auto q = type::Quat<SReal>::createQuaterFromEuler( Vec<3,SReal>(rx,ry,rz)*M_PI/180.0);
+    auto q = type::Quat<SReal>::createQuaterFromEuler( Vec3(rx,ry,rz)*M_PI/180.0);
     applyRotation(q);
 }
 
@@ -923,7 +923,7 @@ void VisualModelImpl::initFromTopology()
             m_quads.setCreationCallback([](Index elemID, VisualQuad& visuQuad,
                 const core::topology::BaseMeshTopology::Quad& topoQuad,
                 const sofa::type::vector< Index >& ancestors,
-                const sofa::type::vector< double >& coefs)
+                const sofa::type::vector< SReal >& coefs)
             {
                 SOFA_UNUSED(elemID);
                 SOFA_UNUSED(ancestors);
@@ -939,7 +939,7 @@ void VisualModelImpl::initFromTopology()
             m_triangles.setCreationCallback([](Index elemID, VisualTriangle& visuTri,
                 const core::topology::BaseMeshTopology::Triangle& topoTri,
                 const sofa::type::vector< Index >& ancestors,
-                const sofa::type::vector< double >& coefs)
+                const sofa::type::vector< SReal >& coefs)
             {
                 SOFA_UNUSED(elemID);
                 SOFA_UNUSED(ancestors);
@@ -954,7 +954,7 @@ void VisualModelImpl::initFromTopology()
             m_edges.setCreationCallback([](Index elemID, VisualEdge& visuEdge,
                 const core::topology::BaseMeshTopology::Edge& topoEdge,
                 const sofa::type::vector< Index >& ancestors,
-                const sofa::type::vector< double >& coefs)
+                const sofa::type::vector< SReal >& coefs)
             {
                 SOFA_UNUSED(elemID);
                 SOFA_UNUSED(ancestors);
@@ -997,7 +997,7 @@ void VisualModelImpl::initFromTopology()
             m_vtexcoords.setCreationCallback([this](Index pointIndex, TexCoord& tCoord,
                 const core::topology::BaseMeshTopology::Point& point,
                 const sofa::type::vector< Index >& ancestors,
-                const sofa::type::vector< double >& coefs)
+                const sofa::type::vector< SReal >& coefs)
             {
                 SOFA_UNUSED(pointIndex);
                 SOFA_UNUSED(point);
@@ -1267,7 +1267,7 @@ void VisualModelImpl::computeUVSphereProjection()
     sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
     this->computeBBox(vparams);
 
-    Vector3 center = (this->f_bbox.getValue().minBBox() + this->f_bbox.getValue().maxBBox())*0.5f;
+    auto center = (this->f_bbox.getValue().minBBox() + this->f_bbox.getValue().maxBBox())*0.5f;
     
     // Map mesh vertices to sphere
     // transform cart to spherical coordinates (r, theta, phi) and sphere to cart back with radius = 1

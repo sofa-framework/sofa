@@ -28,8 +28,7 @@ namespace sofa::component::mapping
 
 using sofa::type::Mat3x3d;
 using sofa::type::Vector3;
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::Vec3Types;
 
 typedef typename sofa::core::topology::BaseMeshTopology::Hexahedron Hexahedron;
 
@@ -53,7 +52,7 @@ public:
     type::vector<SReal> getBaryCoef(const Real fx, const Real fy, const Real fz);
     void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Hexahedron& element) override;
     void computeCenter(Vector3& center, const typename In::VecCoord& in, const Hexahedron& element) override;
-    void computeDistance(double& d, const Vector3& v) override;
+    void computeDistance(SReal& d, const Vector3& v) override;
     void addPointInElement(const Index elementIndex, const SReal* baryCoords) override;
 
     Index addPointInCube(const Index index, const SReal* baryCoords) override;
@@ -77,7 +76,7 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERHEXAHEDRONSETTOPOLOGY_CPP)
-extern template class SOFA_SOFABASEMECHANICS_API BarycentricMapperHexahedronSetTopology< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_SOFABASEMECHANICS_API BarycentricMapperHexahedronSetTopology< Vec3Types, Vec3Types >;
 
 
 #endif

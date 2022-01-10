@@ -236,7 +236,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename,
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".obj")
     {
         Mesh* mesh = Mesh::Create(filename);
-        const type::vector<Vector3> & vertices = mesh->getVertices();
+        const auto & vertices = mesh->getVertices();
 
         Coord bbmin, bbmax;
         if (!vertices.empty())

@@ -187,7 +187,7 @@ public:
     void createTriangleInformation(Index triangleIndex, TriangleInformation&,
         const core::topology::BaseMeshTopology::Triangle& t,
         const sofa::type::vector< Index >&,
-        const sofa::type::vector< double >&);
+        const sofa::type::vector< SReal >&);
 
     sofa::core::topology::BaseMeshTopology* m_topology;
 

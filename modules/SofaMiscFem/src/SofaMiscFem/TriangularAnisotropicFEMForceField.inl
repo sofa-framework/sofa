@@ -58,7 +58,7 @@ TriangularAnisotropicFEMForceField<DataTypes>::~TriangularAnisotropicFEMForceFie
 }
 
 template< class DataTypes>
-void TriangularAnisotropicFEMForceField<DataTypes>::createTriangleInfo(Index triangleIndex, TriangleFiberDirection&, const core::topology::BaseMeshTopology::Triangle &t, const sofa::type::vector<unsigned int> &, const sofa::type::vector<double> &)
+void TriangularAnisotropicFEMForceField<DataTypes>::createTriangleInfo(Index triangleIndex, TriangleFiberDirection&, const core::topology::BaseMeshTopology::Triangle &t, const sofa::type::vector<unsigned int> &, const sofa::type::vector<SReal> &)
 {
     //const Triangle &t = m_topology->getTriangle(triangleIndex);
     Index a = t[0];
@@ -102,7 +102,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::init()
     localFiberDirection.setCreationCallback([this](Index triangleIndex, TriangleFiberDirection& triInfo,
         const core::topology::BaseMeshTopology::Triangle& t,
         const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< double >& coefs)
+        const sofa::type::vector< SReal >& coefs)
     {
         createTriangleInfo(triangleIndex, triInfo, t, ancestors, coefs);
     });

@@ -541,7 +541,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::computeActiveDofs(JMatrix& J)
 }
 
 template<class TDataTypes>
-bool PrecomputedWarpPreconditioner<TDataTypes>::addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, double fact)
+bool PrecomputedWarpPreconditioner<TDataTypes>::addJMInvJt(linearalgebra::BaseMatrix* result, linearalgebra::BaseMatrix* J, SReal fact)
 {
     if (! _rotate) this->rotateConstraints();  //already rotate with Preconditionner
     _rotate = false;
