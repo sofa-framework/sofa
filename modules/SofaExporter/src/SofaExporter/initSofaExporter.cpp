@@ -22,6 +22,8 @@
 #include <string>
 #include <SofaExporter/initSofaExporter.h>
 
+#include <sofa/helper/system/PluginManager.h>
+
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/Node.h>
 
@@ -39,6 +41,11 @@ void initSofaExporter()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaExporter") << "SofaExporter is deprecated; please load Sofa.Component.IO.Mesh and/or Sofa.Component.IO.Misc instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.IO.Mesh");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.IO.Misc");
+
         first = false;
     }
 }
