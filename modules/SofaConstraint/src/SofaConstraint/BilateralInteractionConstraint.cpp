@@ -69,15 +69,13 @@ public:
             const typename BilateralInteractionConstraint<T>::Coord P = x1[m1Indices[pid]];
             const typename BilateralInteractionConstraint<T>::Coord Q = x2[m2Indices[pid]];
 
-            type::Quat<SReal> qP, qQ, dQP, qQ2;
+            type::Quat<SReal> qP, qQ, dQP;
             qP = P.getOrientation();
             qQ = Q.getOrientation();
             qP.normalize();
             qQ.normalize();
             dQP = qP.quatDiff(qQ, qP);
             dQP.normalize();
-
-            qQ2 = qP*dQP;
 
             typename BilateralInteractionConstraint<T>::Coord df;
             df.getCenter() = Q.getCenter() - P.getCenter();
