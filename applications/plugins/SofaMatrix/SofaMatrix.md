@@ -27,7 +27,7 @@ The link can be explicit. Example:
 <GlobalSystemMatrixExporter linearSolver="@pathToLinearSolver"/>
 ```
 
-The link can be implicit. Example:
+The link can be implicit. I.e the component will search for a linear solver in the current Node. Example:
 ```xml
 <SparseLDLSolver/>
 <GlobalSystemMatrixExporter/>
@@ -47,7 +47,7 @@ The link can be explicit. Example:
 <GlobalSystemMatrixImage linearSolver="@pathToLinearSolver"/>
 ```
 
-The link can be implicit. Example:
+The link can be implicit. I.e the component will search for a linear solver in the current Node. Example:
 ```xml
 <SparseLDLSolver/>
 <GlobalSystemMatrixImage/>
