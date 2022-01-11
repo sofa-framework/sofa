@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="root" gravity="0 -9 -1" dt="0.01">
-<RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="SofaBoundaryCondition"/>
     <RequiredPlugin name="SofaCUDA"/>
     <RequiredPlugin name="SofaGeneralSimpleFem"/>
     <RequiredPlugin name="SofaImplicitOdeSolver"/>
@@ -32,10 +32,11 @@
         <FixedConstraint indices="9900 9901 9902 9903 9996 9997 9998 9999" />
 
         <TriangularFEMForceFieldOptim name="FEM" youngModulus="600" poissonRatio="0.3" method="large" template="CudaVec3f"/>
-            <Node name="Visu">
-                <OglModel name="Visual" color="green" />
-                <IdentityMapping input="@../dofs" output="@Visual" />
-            </Node>
+      
+        <Node name="Visu">
+            <OglModel name="Visual" color="green" />
+            <IdentityMapping input="@../dofs" output="@Visual" />
+        </Node>
     </Node>
     
    
@@ -53,9 +54,10 @@
         <FixedConstraint indices="9900 9901 9902 9903 9996 9997 9998 9999" />
         
         <TriangularFEMForceFieldOptim name="FEM" youngModulus="600" poissonRatio="0.3" method="large" template="Vec3"/>
+      
         <Node name="Visu">
-          <OglModel name="Visual" color="red" />
-          <IdentityMapping input="@../dofs" output="@Visual" />
+            <OglModel name="Visual" color="red" />
+            <IdentityMapping input="@../dofs" output="@Visual" />
         </Node>
     </Node>
 </Node>

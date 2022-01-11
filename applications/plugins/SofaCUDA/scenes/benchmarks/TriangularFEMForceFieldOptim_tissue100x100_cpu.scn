@@ -1,12 +1,11 @@
 <?xml version="1.0" ?>
 <Node name="root" gravity="0 -9 -1" dt="0.01">
-<RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [FixedConstraint] -->
-  <RequiredPlugin name="SofaGeneralSimpleFem"/>
-  <RequiredPlugin name="SofaImplicitOdeSolver"/>
-  <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin name="SofaBoundaryCondition"/>
+    <RequiredPlugin name="SofaGeneralSimpleFem"/>
+    <RequiredPlugin name="SofaImplicitOdeSolver"/>
+    <RequiredPlugin name="SofaOpenglVisual"/>
 
-  <VisualStyle displayFlags="showBehaviorModels showVisual" />
-	
+    <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
     <DefaultPipeline verbose="0" />
@@ -32,8 +31,8 @@
         
         <TriangularFEMForceFieldOptim name="FEM" youngModulus="600" poissonRatio="0.3" method="large" template="Vec3"/>
         <Node name="Visu">
-          <OglModel name="Visual" color="red" />
-          <IdentityMapping input="@../dofs" output="@Visual" />
+            <OglModel name="Visual" color="red" />
+            <IdentityMapping input="@../dofs" output="@Visual" />
         </Node>
     </Node>
 </Node>
