@@ -10,7 +10,7 @@ The plugin contains the following components that can be placed into a SOFA scen
 
 GlobalSystemMatrixExporter is a component to export the matrix of a linear system.
 It supports the following file formats:
-* **txt**: exports a Python-like list of list, containing all the matrix values including the zeros.
+* **txt**: exports a Python-like list of lists, containing all the matrix values including the zeros.
 It uses the `operator<<` in `BaseMatrix`.
 * **csv**: exports a simple comma-separated values file, containing all the matrix values including the zeros.
 * **jpg**: exports a binary image where white pixel means the value is zero, and black
