@@ -8,8 +8,26 @@ The plugin contains the following components that can be placed into a SOFA scen
 
 ### GlobalSystemMatrixExporter
 
-GlobalSystemMatrixExporter is a component to export the matrix of a linear system.
-It supports the following file formats:
+GlobalSystemMatrixExporter is a component to export the matrix of a linear system as a file.
+
+#### Filename
+
+A Data "filename" is available to specify the name of the exported file.
+If "filename" is not set, it gets the name of the component.
+
+"filename" can be an absolute path, or relative to the SOFA executable.
+Directories are created if necessary.
+
+The extension in "filename" defines the file format.
+
+A number is added after the filename.
+It corresponds to the number of elapsed time steps when the file is exported.
+
+Depending on the Data "exportEveryNumberOfSteps", the matrix can be export only at specified number of time steps.
+
+#### Supported File Format
+
+GlobalSystemMatrixExporter supports the following file formats:
 * **txt**: exports a Python-like list of lists, containing all the matrix values including the zeros.
 It uses the `operator<<` in `BaseMatrix`.
 * **csv**: exports a simple comma-separated values file, containing all the matrix values including the zeros.
@@ -20,7 +38,9 @@ pixel means the value is non-zero.
 * **bmp**: exports a binary image where white pixel means the value is zero, and black
   pixel means the value is non-zero.
 
-GlobalSystemMatrixExporter must have a link to a linear solver (a component inhereting from `sofa::core::behavior::LinearSolver`).
+#### Link to Linear Solver
+
+GlobalSystemMatrixExporter must have a link to a linear solver (a component inheriting from `sofa::core::behavior::LinearSolver`).
 
 The link can be explicit. Example:
 ```xml
@@ -39,6 +59,8 @@ A use case is available in the examples folder.
 
 GlobalSystemMatrixImage is a component to visualize the matrix of a linear system in a
 Qt widget.
+
+#### Link to Linear Solver
 
 GlobalSystemMatrixImage must have a link to a linear solver (a component inhereting from `sofa::core::behavior::LinearSolver`).
 
