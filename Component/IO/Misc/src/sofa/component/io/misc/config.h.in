@@ -14,5 +14,5 @@
 
 namespace sofa::component::io::misc
 {
-	constexpr char* MODULE_NAME = "@PROJECT_NAME@";
+	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
 } // namespace sofa::component::io::misc

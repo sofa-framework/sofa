@@ -14,7 +14,7 @@
 
 namespace sofa::component::io::mesh
 {
-	constexpr char* MODULE_NAME = "@PROJECT_NAME@";
+	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
 } // namespace sofa::component::io::mesh
 
 // DEPRECATION MACROS
