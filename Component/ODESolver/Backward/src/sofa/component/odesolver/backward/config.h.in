@@ -12,5 +12,5 @@
 
 namespace sofa::component::odesolver::backward
 {
-	constexpr char* MODULE_NAME = "@PROJECT_NAME@";
+	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
 } // namespace sofa::component::odesolver::backward
