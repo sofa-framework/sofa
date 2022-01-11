@@ -19,28 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDALINEMODEL_H
-#define SOFA_GPU_CUDA_CUDALINEMODEL_H
+#pragma once
 
-#include "CudaTypes.h"
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include <SofaMeshCollision/LineModel.h>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 typedef sofa::component::collision::LineCollisionModel<CudaVec3fTypes> CudaLineModel;
 typedef sofa::component::collision::TLine<CudaVec3fTypes> CudaLine;
 
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::gpu::cuda

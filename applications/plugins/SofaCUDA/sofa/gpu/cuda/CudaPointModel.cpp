@@ -19,20 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaPointModel.h"
+#include <sofa/gpu/cuda/CudaPointModel.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/CubeModel.h>
-#include <fstream>
-#include <sofa/gl/gl.h>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 int CudaPointCollisionModelClass = core::RegisterObject("GPU-based point collision model using CUDA")
@@ -156,8 +148,4 @@ void CudaPointCollisionModel::computeBoundingTree(int maxDepth)
     }
 }
 
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
+} // namespace sofa::gpu::cuda

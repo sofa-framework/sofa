@@ -19,28 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDATRIANGLEMODEL_H
-#define SOFA_GPU_CUDA_CUDATRIANGLEMODEL_H
+#pragma once
 
-#include "CudaTypes.h"
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include <SofaMeshCollision/TriangleModel.h>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 typedef sofa::component::collision::TriangleCollisionModel<CudaVec3fTypes> CudaTriangleModel;
 typedef sofa::component::collision::TTriangle<CudaVec3fTypes> CudaTriangle;
 
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::gpu::cuda

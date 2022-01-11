@@ -19,35 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDASPHEREMODEL_H
-#define SOFA_GPU_CUDA_CUDASPHEREMODEL_H
+#pragma once
 
-#include "CudaTypes.h"
-
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include <SofaBaseCollision/SphereModel.h>
 
-namespace sofa
+namespace sofa::gpu::cuda
 {
 
-namespace gpu
+//using CudaSphere = sofa::component::collision::TSphere<gpu::cuda::CudaVec3Types>;
+
+} // namespace sofa::gpu::cuda
+
+
+namespace sofa::component::collision
 {
-
-namespace cuda
-{
-
-using CudaSphere = sofa::component::collision::TSphere<gpu::cuda::CudaVec3Types>;
-
-
-} // namespace cuda
-
-} // namespace gpu
-
-
-namespace component
-{
-namespace collision
-{
-
 
 #if  !defined(SOFA_BUILD_GPU_CUDA)
 extern template class SOFA_GPU_CUDA_API sofa::component::collision::SphereCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
@@ -58,11 +44,4 @@ extern template class SOFA_GPU_CUDA_API sofa::component::collision::SphereCollis
 #endif // SOFA_GPU_CUDA_DOUBLE
 #endif
 
-} // namespace collision
-
-} // namespace component
-
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::collision
