@@ -3,8 +3,9 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(SofaFramework QUIET REQUIRED)
-find_package(TinyXML QUIET REQUIRED)
+find_package(Sofa.Component.IO.Mesh QUIET REQUIRED)
+
+message(WARNING "@PROJECT_NAME@ module is deprecated, use Sofa.Component.IO.Mesh instead.")
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")

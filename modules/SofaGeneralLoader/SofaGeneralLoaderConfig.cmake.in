@@ -3,12 +3,10 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(SofaFramework QUIET REQUIRED)
+find_package(Sofa.Component.IO.Mesh QUIET REQUIRED)
+find_package(Sofa.Component.IO.Misc QUIET REQUIRED)
 
-set(SOFAGENERALLOADER_HAVE_ZLIB @SOFAGENERALLOADER_HAVE_ZLIB@)
-if (SOFAGENERALLOADER_HAVE_ZLIB)
-    find_package(ZLIB QUIET REQUIRED)
-endif()
+message(WARNING "@PROJECT_NAME@ module is deprecated, use Sofa.Component.IO.Mesh and Sofa.Component.IO.Misc instead.")
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
