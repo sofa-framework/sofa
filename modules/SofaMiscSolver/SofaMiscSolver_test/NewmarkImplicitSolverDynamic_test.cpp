@@ -228,7 +228,7 @@ TYPED_TEST( NewmarkImplicitDynamic_test , newmarkImplicitSolverDynamicTest_high_
    //this->loadScene("EulerImplicitSpringDynamicTest.xml");
     // rm = 0.1  and rk=0
    this->generateDiscreteMassPositions (0.1, 100, 10,1, 0,10, 2, 0,0.25,0.5,0.1,0.1);
-   this-> compareSimulatedToTheoreticalPositions(5e-16,0.1);
+   this-> compareSimulatedToTheoreticalPositions(9e-15,0.1);
 }
 
 // Test case: h=0.01 K=10 m=10 rm=0 rk=0.1
