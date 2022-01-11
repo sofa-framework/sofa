@@ -29,13 +29,7 @@ using sofa::simulation::ExportVisualModelOBJVisitor ;
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 using sofa::core::objectmodel::KeypressedEvent ;
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace _visualmodelobjexporter_
+namespace sofa::component::_visualmodelobjexporter_
 {
 
 int VisualModelOBJExporterClass = core::RegisterObject("Export the scene under the Wavefront OBJ format."
@@ -101,8 +95,4 @@ void VisualModelOBJExporter::handleEvent(Event *event)
     BaseSimulationExporter::handleEvent(event) ;
 }
 
-}
-
-}
-
-}
+} // namespace sofa::component::_visualmodelobjexporter_

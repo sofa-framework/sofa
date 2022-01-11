@@ -27,9 +27,7 @@
 
 #include <fstream>
 
-namespace sofa::component
-{
-namespace _visualmodelobjexporter_
+namespace sofa::component::_visualmodelobjexporter_
 {
 
 using sofa::simulation::BaseSimulationExporter;
@@ -50,12 +48,10 @@ protected:
     ~VisualModelOBJExporter() override;
 };
 
-} // namespace _visualmodelobjexporter_
+} // namespace sofa::component::_visualmodelobjexporter_
 
 // Import the object in the exporter namespace to avoid having all the object straight in component.
-namespace exporter
+namespace sofa::component::io::mesh
 {
-    using VisualModelOBJExporter = _visualmodelobjexporter_::VisualModelOBJExporter;
-} // namespace exporter
-
-} // namespace sofa::component
+    using VisualModelOBJExporter = sofa::component::_visualmodelobjexporter_::VisualModelOBJExporter;
+} // namespace sofa::component::io::mesh

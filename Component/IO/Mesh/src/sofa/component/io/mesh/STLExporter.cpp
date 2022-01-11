@@ -36,13 +36,7 @@ using sofa::core::objectmodel::BaseContext ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::core::objectmodel::ComponentState ;
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace _stlexporter_
+namespace sofa::component::_stlexporter_
 {
 
 int STLExporterClass = core::RegisterObject("Save a topology in file")
@@ -328,9 +322,4 @@ void STLExporter::handleEvent(Event *event)
     BaseSimulationExporter::handleEvent(event) ;
 }
 
-} // namespace misc
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::_stlexporter_

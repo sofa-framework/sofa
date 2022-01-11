@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef STLEXPORTER_H_
-#define STLEXPORTER_H_
+#pragma once
 #include <sofa/component/io/mesh/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -46,9 +45,7 @@ namespace sofa {
 
 
 ////////////////////////////////// DECLARATION /////////////////////////////////////////////////////
-namespace sofa::component
-{
-namespace _stlexporter_
+namespace sofa::component::_stlexporter_
 {
 
 using sofa::core::behavior::BaseMechanicalState ;
@@ -86,19 +83,9 @@ private:
     VisualModel*         m_inputvmodel   {nullptr};
 };
 
-} // namespace _stlexporter_
+} // namespace sofa::component::_stlexporter_
 
-namespace exporter {
-    using STLExporter = _stlexporter_::STLExporter;
-} // namespace exporter
-
-// Import the object in the "old" namespaces to allow smooth update of code base.
-namespace misc {
-    using STLExporter
-        SOFA_ATTRIBUTE_DISABLED("v17.12 (PR#372)", "v21.12", "Use sofa::component::STLExporter instead.")
-        = DeprecatedAndRemoved;
-} // namespace misc
-
-} // namespace sofa::component
-
-#endif /* STLEXPORTER_H_ */
+namespace sofa::component::io::mesh
+{
+    using STLExporter = sofa::component::_stlexporter_::STLExporter;
+} // namespace sofa::component::io::mesh

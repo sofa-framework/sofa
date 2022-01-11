@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef VTKEXPORTER_H_
-#define VTKEXPORTER_H_
+#pragma once
 #include <sofa/component/io/mesh/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -31,9 +30,7 @@
 
 #include <fstream>
 
-namespace sofa::component
-{
-namespace _vtkexporter_
+namespace sofa::component::_vtkexporter_
 {
 
 class SOFA_COMPONENT_IO_MESH_API VTKExporter : public core::objectmodel::BaseObject
@@ -92,19 +89,9 @@ public:
     void handleEvent(sofa::core::objectmodel::Event *) override;
 };
 
-} // namespace _vtkexporter_
+} // namespace sofa::component::_vtkexporter_
 
-namespace exporter {
+namespace sofa::component::io::mesh 
+{
     using VTKExporter = _vtkexporter_::VTKExporter;
-} // namespace exporter
-
-// Import the object in the "old" namespace to allow smooth update of code base.
-namespace misc {
-    using VTKExporter
-        SOFA_ATTRIBUTE_DISABLED__SOFAEXPORTER_NAMESPACE_2106()
-        = DeprecatedAndRemoved;
-} // namespace misc
-
-} // namespace sofa::component
-
-#endif /* VTKEXPORTER_H_ */
+} // namespace sofa::component::io::mesh 

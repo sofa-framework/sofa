@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_MESHEXPORTER_H
-#define SOFA_COMPONENT_MISC_MESHEXPORTER_H
+#pragma once
+
 #include <sofa/component/io/mesh/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -47,9 +47,7 @@ namespace sofa {
 
 
 ////////////////////////////////// DECLARATION /////////////////////////////////////////////////////
-namespace sofa::component
-{
-namespace _meshexporter_
+namespace sofa::component::_meshexporter_
 {
 
 using sofa::core::behavior::BaseMechanicalState ;
@@ -105,20 +103,10 @@ protected:
     std::string getMeshFilename(const char* ext);
 };
 
-} // namespace _meshexporter_
+} // namespace sofa::component::_meshexporter_
 
-// Import the object in the exporter namespace to avoid having all the object straight in component.
-namespace exporter {
+// Import the object in the namespace to avoid having all the object straight in component.
+namespace sofa::component::io::mesh
+{
     using MeshExporter = _meshexporter_::MeshExporter;
-} // namespace exporter
-
-// Import the object in the "old" namespace to allow smooth update of code base.
-namespace misc {
-    using MeshExporter
-        SOFA_ATTRIBUTE_DISABLED__SOFAEXPORTER_NAMESPACE_1712()
-        = DeprecatedAndRemoved;
-} // namespace misc
-
-} // namespace sofa::component
-
-#endif // SOFA_COMPONENT_MISC_MESHEXPORTER_H
+} // namespace sofa::component::io::mesh
