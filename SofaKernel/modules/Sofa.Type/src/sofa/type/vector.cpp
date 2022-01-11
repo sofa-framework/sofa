@@ -30,7 +30,7 @@ namespace sofa::type
 void SOFA_TYPE_API vector_access_failure(const void* vec, unsigned size, unsigned i, const std::type_info& type)
 {
     std::ostringstream oss;
-    oss << "in vector<" << type.name() << "> " << std::hex << (long)vec << std::dec << " size " << size << " : invalid index " << (int)i;
+    oss << "in vector<" << type.name() << "> " << std::hex << vec << std::dec << " size " << size << " : invalid index " << (int)i;
     throw std::logic_error(oss.str());
 }
 

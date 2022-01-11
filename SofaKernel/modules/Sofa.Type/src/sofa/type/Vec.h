@@ -422,6 +422,7 @@ public:
     }
 
     /// Vector negation.
+    template<typename = std::enable_if_t<std::is_signed_v<ValueType> > >
     constexpr Vec<N,ValueType> operator-() const noexcept
     {
         Vec<N,ValueType> r(NOINIT);
