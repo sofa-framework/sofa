@@ -289,37 +289,42 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
                     (const Deriv*)v2.deviceRead() + d2);
             }
             else
+            {
                 Kernels::addExternalForce(data.springs1.nbVertex,
-                        data.springs1.nbSpringPerVertex,
-                        data.springs1.springs.deviceRead(),
-                        (      Deriv*)f1.deviceWrite() + d1,
-                        (const Coord*)x1.deviceRead()  + d1,
-                        (const Deriv*)v1.deviceRead()  + d1,
-                        (const Coord*)x2.deviceRead()  + d2,
-                        (const Deriv*)v2.deviceRead()  + d2,
-                        data.springs1.dfdx.deviceWrite());
+                    data.springs1.nbSpringPerVertex,
+                    data.springs1.springs.deviceRead(),
+                    (Deriv*)f1.deviceWrite() + d1,
+                    (const Coord*)x1.deviceRead() + d1,
+                    (const Deriv*)v1.deviceRead() + d1,
+                    (const Coord*)x2.deviceRead() + d2,
+                    (const Deriv*)v2.deviceRead() + d2,
+                    data.springs1.dfdx.deviceWrite());
+            }
         }
         if (data.springs2.nbSpringPerVertex > 0)
         {
             if (!stiff)
+            {
                 Kernels::addExternalForce(data.springs2.nbVertex,
-                        data.springs2.nbSpringPerVertex,
-                        data.springs2.springs.deviceRead(),
-                        (      Deriv*)f2.deviceWrite() + d2,
-                        (const Coord*)x2.deviceRead()  + d2,
-                        (const Deriv*)v2.deviceRead()  + d2,
-                        (const Coord*)x1.deviceRead()  + d1,
-                        (const Deriv*)v1.deviceRead()  + d1);
-            else
+                    data.springs2.nbSpringPerVertex,
+                    data.springs2.springs.deviceRead(),
+                    (Deriv*)f2.deviceWrite() + d2,
+                    (const Coord*)x2.deviceRead() + d2,
+                    (const Deriv*)v2.deviceRead() + d2,
+                    (const Coord*)x1.deviceRead() + d1,
+                    (const Deriv*)v1.deviceRead() + d1);
+            }
+            else {
                 Kernels::addExternalForce(data.springs2.nbVertex,
-                        data.springs2.nbSpringPerVertex,
-                        data.springs2.springs.deviceRead(),
-                        (      Deriv*)f2.deviceWrite() + d2,
-                        (const Coord*)x2.deviceRead()  + d2,
-                        (const Deriv*)v2.deviceRead()  + d2,
-                        (const Coord*)x1.deviceRead()  + d1,
-                        (const Deriv*)v1.deviceRead()  + d1,
-                        data.springs2.dfdx.deviceWrite());
+                    data.springs2.nbSpringPerVertex,
+                    data.springs2.springs.deviceRead(),
+                    (Deriv*)f2.deviceWrite() + d2,
+                    (const Coord*)x2.deviceRead() + d2,
+                    (const Deriv*)v2.deviceRead() + d2,
+                    (const Coord*)x1.deviceRead() + d1,
+                    (const Deriv*)v1.deviceRead() + d1,
+                    data.springs2.dfdx.deviceWrite());
+            }
         }
     }
 }
