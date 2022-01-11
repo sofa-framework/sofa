@@ -91,7 +91,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDe
 {
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
     // We need to remove duplicate contacts
-    const double minDist2 = 0.00000001f;
+    constexpr double minDist2 = 0.00000001f;
 
     contacts.clear();
 
@@ -108,18 +108,18 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDe
     // the following procedure cancels the duplicated detection outputs
     for (int cpt=0; cpt<SIZE; cpt++)
     {
-        sofa::core::collision::DetectionOutput* o = &outputs[cpt];
+        sofa::core::collision::DetectionOutput* detectionOutput = &outputs[cpt];
 
         bool found = false;
         for (unsigned int i=0; i<contacts.size() && !found; i++)
         {
             sofa::core::collision::DetectionOutput* p = contacts[i];
-            if ((o->point[0]-p->point[0]).norm2()+(o->point[1]-p->point[1]).norm2() < minDist2)
+            if ((detectionOutput->point[0]-p->point[0]).norm2()+(detectionOutput->point[1]-p->point[1]).norm2() < minDist2)
                 found = true;
         }
 
         if (!found)
-            contacts.push_back(o);
+            contacts.push_back(detectionOutput);
     }
 
     // DUPLICATED CONTACTS FOUND
@@ -209,9 +209,9 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::creat
     if ( mu_ < 0.0 )
         msg_error() << "mu has to take positive values";
 
-    int i=0;
     if (m_constraint)
     {
+        int i=0;
         for (std::vector<sofa::core::collision::DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
         {
             sofa::core::collision::DetectionOutput* o = *it;

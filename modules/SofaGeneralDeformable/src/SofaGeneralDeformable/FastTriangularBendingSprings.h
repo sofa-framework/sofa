@@ -173,7 +173,7 @@ protected:
     void applyEdgeCreation(Index edgeIndex,
         EdgeSpring& ei,
         const core::topology::BaseMeshTopology::Edge&, const sofa::type::vector< Index >&,
-        const sofa::type::vector< double >&);
+        const sofa::type::vector< SReal >&);
 
     /** Method to update @sa d_edgeSprings when a new triangle is created.
     * Will be set as callback in the EdgeData @sa d_edgeSprings when TRIANGLESADDED event is fired
@@ -182,7 +182,7 @@ protected:
     void applyTriangleCreation(const sofa::type::vector<Index>& triangleAdded,
         const sofa::type::vector<core::topology::BaseMeshTopology::Triangle>&,
         const sofa::type::vector<sofa::type::vector<Index> >&,
-        const sofa::type::vector<sofa::type::vector<double> >&);
+        const sofa::type::vector<sofa::type::vector<SReal> >&);
 
     /** Method to update @sa d_edgeSprings when a triangle is removed.
     * Will be set as callback in the EdgeData @sa d_edgeSprings when TRIANGLESREMOVED event is fired

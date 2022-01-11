@@ -193,17 +193,17 @@ void UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>::draw(const 
 template <>
 void UniformMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>::draw(const core::visual::VisualParams* vparams);
 template <>
-double UniformMass<defaulttype::Rigid3Types,defaulttype::Rigid3Mass>::getPotentialEnergy ( const core::MechanicalParams*, const DataVecCoord& x ) const;
+SReal UniformMass<defaulttype::Rigid3Types,defaulttype::Rigid3Mass>::getPotentialEnergy ( const core::MechanicalParams*, const DataVecCoord& x ) const;
 template <>
-double UniformMass<defaulttype::Rigid2Types,defaulttype::Rigid2Mass>::getPotentialEnergy ( const core::MechanicalParams*, const DataVecCoord& x ) const;
+SReal UniformMass<defaulttype::Rigid2Types,defaulttype::Rigid2Mass>::getPotentialEnergy ( const core::MechanicalParams*, const DataVecCoord& x ) const;
 template <>
 void UniformMass<defaulttype::Vec6Types,double>::draw(const core::visual::VisualParams* vparams);
 
 #if !defined(SOFA_COMPONENT_MASS_UNIFORMMASS_CPP)
-extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec3Types, double>;
-extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec2Types, double>;
-extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec1Types, double>;
-extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec6Types, double>;
+extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec3Types, SReal>;
+extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec2Types, SReal>;
+extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec1Types, SReal>;
+extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec6Types, SReal>;
 extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>;
 extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>;
 #endif

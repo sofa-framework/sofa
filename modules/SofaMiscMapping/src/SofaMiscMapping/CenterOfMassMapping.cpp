@@ -37,7 +37,7 @@ int CenterOfMassMappingClass = core::RegisterObject("Set the point to the center
         .add< CenterOfMassMapping< Rigid2Types, Vec2Types > >()
 ;
 
-template class SOFA_SOFAMISCMAPPING_API CenterOfMassMapping< Rigid3Types, Vec3dTypes >;
+template class SOFA_SOFAMISCMAPPING_API CenterOfMassMapping< Rigid3Types, Vec3Types >;
 
 
 } // namespace sofa::component::mapping

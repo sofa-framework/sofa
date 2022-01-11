@@ -171,7 +171,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
     sofa::type::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
 
     const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    auto getEdgeLength = [x0](const sofa::topology::Edge& e, const VecCoord& pos)
+    auto getEdgeLength = [](const sofa::topology::Edge& e, const VecCoord& pos)
     {
         const auto& n0 = DataTypes::getCPos(pos[e[0]]);
         const auto& n1 = DataTypes::getCPos(pos[e[1]]);
@@ -327,11 +327,10 @@ void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
 {
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     std::vector<bool> vArray;
-    unsigned int i;
 
     vArray.resize(x.size());
 
-    for( i=0; i<x.size(); ++i)
+    for( unsigned int i=0; i<x.size(); ++i)
     {
         vArray[i]=isPointInPlane(x[i]);
     }
@@ -363,7 +362,7 @@ void EdgePressureForceField<DataTypes>::selectEdgesFromIndices(const type::vecto
 
     sofa::type::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
 
-    unsigned int sizeTest = m_topology->getNbEdges();
+    const unsigned int sizeTest = m_topology->getNbEdges();
 
     for (unsigned int i = 0; i < inputIndices.size(); ++i)
     {
@@ -418,7 +417,7 @@ void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
 
     vparams->drawTool()->saveLastState();
 
-    SReal aSC = arrowSizeCoef.getValue();
+    const SReal aSC = arrowSizeCoef.getValue();
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     vparams->drawTool()->disableLighting();

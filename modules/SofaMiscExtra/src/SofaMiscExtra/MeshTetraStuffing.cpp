@@ -902,13 +902,32 @@ void MeshTetraStuffing::draw(const core::visual::VisualParams* vparams)
         return;
 
     const SeqPoints& outP = outputPoints.getValue();
-    vparams->drawTool()->drawPoints(intersections, 2, sofa::type::RGBAColor::red());
-    vparams->drawTool()->drawPoints(outP, 1, sofa::type::RGBAColor::green());
+
+    std::vector<type::Vector3> verticesP;
+    std::vector<type::Vector3> verticesIntersections;
+    std::vector<type::Vector3> verticesDiags;
+    std::vector<type::Vector3> verticesSnaps;
+    auto fillVertices = [](std::vector<type::Vector3>& vertices, const SeqPoints& source)
+    {
+        vertices.reserve(source.size());
+        for (const auto& p : source)
+        {
+            vertices.emplace_back(type::Vector3{ double(p[0]), double(p[1]) , double(p[2]) });
+        }
+    };
+    fillVertices(verticesP, outP);
+    fillVertices(verticesIntersections, intersections);
+    fillVertices(verticesDiags, diags);
+    fillVertices(verticesSnaps, snaps);
+
+
+    vparams->drawTool()->drawPoints(verticesIntersections, 2, sofa::type::RGBAColor::red());
+    vparams->drawTool()->drawPoints(verticesP, 1, sofa::type::RGBAColor::green());
     if (!diags.empty())
-        vparams->drawTool()->drawLines(diags, 1, sofa::type::RGBAColor::cyan());
+        vparams->drawTool()->drawLines(verticesDiags, 1, sofa::type::RGBAColor::cyan());
 
     if (!snaps.empty())
-        vparams->drawTool()->drawPoints(snaps, 4, sofa::type::RGBAColor::blue());
+        vparams->drawTool()->drawPoints(verticesSnaps, 4, sofa::type::RGBAColor::blue());
 }
 
 } //  sofa::component::misc

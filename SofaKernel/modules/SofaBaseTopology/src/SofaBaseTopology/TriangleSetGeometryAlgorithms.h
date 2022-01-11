@@ -119,17 +119,17 @@ public:
     /** \brief Computes barycentric coefficients of point p in triangle (a,b,c) indexed by ind_t
     *
     */
-    sofa::type::vector< double > computeTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3,double> &p) const;
+    sofa::type::vector< SReal > computeTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3,Real> &p) const;
 
     /** \brief Computes barycentric coefficients of point p in initial triangle (a,b,c) indexed by ind_t
     *
     */
-    sofa::type::vector< double > computeRestTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3, double>& p) const;
+    sofa::type::vector< SReal > computeRestTriangleBarycoefs(const TriangleID ind_t, const sofa::type::Vec<3, Real>& p) const;
 
     /** \brief Computes barycentric coefficients of point p in triangle whose vertices are indexed by (ind_p1,ind_p2,ind_p3)
      *
      */
-    sofa::type::vector< double > compute3PointsBarycoefs( const sofa::type::Vec<3,double> &p,
+    sofa::type::vector< SReal > compute3PointsBarycoefs( const sofa::type::Vec<3, Real> &p,
             PointID ind_p1,
             PointID ind_p2,
             PointID ind_p3,
@@ -153,8 +153,8 @@ public:
     /** \brief Computes the point defined by 2 indices of vertex and 1 barycentric coordinate
      *
      */
-    sofa::type::Vec<3,double> computeBaryEdgePoint(PointID p0, PointID p1, double coord_p) const;
-    sofa::type::Vec<3,double> computeBaryEdgePoint(Edge e, double coord_p) const
+    sofa::type::Vec<3, Real> computeBaryEdgePoint(PointID p0, PointID p1, Real coord_p) const;
+    sofa::type::Vec<3, Real> computeBaryEdgePoint(Edge e, Real coord_p) const
     {
         return computeBaryEdgePoint(e[0], e[1], coord_p);
     }
@@ -162,8 +162,8 @@ public:
     /** \brief Computes the point defined by 3 indices of vertex and 1 barycentric coordinate
      *
      */
-    sofa::type::Vec<3,double> computeBaryTrianglePoint(PointID p0, PointID p1, PointID p2, sofa::type::Vec<3,double>& coord_p) const;
-    sofa::type::Vec<3,double> computeBaryTrianglePoint(Triangle& t, sofa::type::Vec<3,double>& coord_p) const
+    sofa::type::Vec<3, Real> computeBaryTrianglePoint(PointID p0, PointID p1, PointID p2, sofa::type::Vec<3, Real>& coord_p) const;
+    sofa::type::Vec<3, Real> computeBaryTrianglePoint(Triangle& t, sofa::type::Vec<3, Real>& coord_p) const
     {
         return computeBaryTrianglePoint(t[0], t[1], t[2], coord_p);
     }
@@ -172,7 +172,7 @@ public:
     /** \brief Computes the normal vector of a triangle indexed by ind_t (not normed)
      *
      */
-    sofa::type::Vec<3,double> computeTriangleNormal(const TriangleID ind_t) const;
+    sofa::type::Vec<3, Real> computeTriangleNormal(const TriangleID ind_t) const;
 
     /** \brief Tests how to triangularize a quad whose vertices are defined by (p_q1, p_q2, ind_q3, ind_q4) according to the Delaunay criterion
     *
@@ -202,7 +202,7 @@ public:
     /** \brief Computes the opposite point to ind_p
      *
      */
-    sofa::type::Vec<3,double> getOppositePoint(PointID ind_p, const Edge& indices, double coord_p) const;
+    sofa::type::Vec<3, Real> getOppositePoint(PointID ind_p, const Edge& indices, Real coord_p) const;
 
     /** \brief Tests if a triangle indexed by ind_t (and incident to the vertex indexed by ind_p) is included or not in the plane defined by (ind_p, plane_vect)
      *
@@ -215,8 +215,8 @@ public:
      */
     void prepareVertexDuplication(const PointID ind_p,
             const TriangleID ind_t_from, const TriangleID ind_t_to,
-            const Edge& indices_from, const double &coord_from,
-            const Edge& indices_to, const double &coord_to,
+            const Edge& indices_from, const Real& coord_from,
+            const Edge& indices_to, const Real& coord_to,
             sofa::type::vector< TriangleID > &triangles_list_1,
             sofa::type::vector< TriangleID > &triangles_list_2) const;
 
@@ -230,11 +230,11 @@ public:
      * @param coord_kmin : barycoef of the intersection point on the vecteur AB.
      */
     bool computeSegmentTriangleIntersection(bool is_entered,
-            const sofa::type::Vec<3,double>& a,
-            const sofa::type::Vec<3,double>& b,
+            const sofa::type::Vec<3,Real>& a,
+            const sofa::type::Vec<3,Real>& b,
             const TriangleID ind_t,
             sofa::type::vector<PointID> &indices,
-            double &baryCoef, double& coord_kmin) const;
+            Real &baryCoef, Real& coord_kmin) const;
 
     /** \brief Computes the intersections of the vector from point a to point b and the triangle indexed by t
     *
@@ -256,12 +256,12 @@ public:
      *
      */
     bool computeIntersectedPointsList(const PointID last_point,
-            const sofa::type::Vec<3,double>& a,
-            const sofa::type::Vec<3,double>& b,
+            const sofa::type::Vec<3,Real>& a,
+            const sofa::type::Vec<3,Real>& b,
             TriangleID& ind_ta, TriangleID& ind_tb,
             sofa::type::vector< TriangleID > &triangles_list,
             sofa::type::vector< EdgeID > &edges_list,
-            sofa::type::vector< double >& coords_list,
+            sofa::type::vector< Real >& coords_list,
             bool& is_on_boundary) const;
 
     /** \brief Computes the list of objects (points, edges, triangles) intersected by the segment from point a to point b and the triangular mesh.
@@ -272,16 +272,16 @@ public:
      * (i.e 0 coord for a point, 1 for and edge and 3 for a triangle).
      */
     bool computeIntersectedObjectsList (const PointID last_point,
-            const sofa::type::Vec<3,double>& a, const sofa::type::Vec<3,double>& b,
+            const sofa::type::Vec<3,Real>& a, const sofa::type::Vec<3,Real>& b,
             TriangleID& ind_ta, TriangleID& ind_tb,
             sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
             sofa::type::vector<ElemID>& indices_list,
-            sofa::type::vector< sofa::type::Vec<3, double> >& coords_list) const;
+            sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list) const;
 
 
     /** \brief Get the triangle in a given direction from a point.
      */
-    int getTriangleInDirection(PointID p, const sofa::type::Vec<3,double>& dir) const;
+    int getTriangleInDirection(PointID p, const sofa::type::Vec<3,Real>& dir) const;
 
 
     /** \brief Write the current mesh into a msh file
@@ -308,13 +308,13 @@ public:
 
     /** \brief Removes triangles along the list of points (ind_edge,coord) intersected by the vector from point a to point b and the triangular mesh
      */
-    void RemoveAlongTrianglesList(const sofa::type::Vec<3, double>& a,
-        const sofa::type::Vec<3, double>& b,
+    void RemoveAlongTrianglesList(const sofa::type::Vec<3, Real>& a,
+        const sofa::type::Vec<3, Real>& b,
         const TriangleID ind_ta, const TriangleID ind_tb);
 
     /** \brief Incises along the list of points (ind_edge,coord) intersected by the sequence of input segments (list of input points) and the triangular mesh
      */
-    void InciseAlongLinesList(const sofa::type::vector< sofa::type::Vec<3, double> >& input_points,
+    void InciseAlongLinesList(const sofa::type::vector< sofa::type::Vec<3, Real> >& input_points,
         const sofa::type::vector< TriangleID > &input_triangles);
 
 
@@ -326,25 +326,25 @@ public:
     virtual int SplitAlongPath(PointID pa, Coord& a, PointID pb, Coord& b,
         sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
         sofa::type::vector<ElemID>& indices_list,
-        sofa::type::vector< sofa::type::Vec<3, double> >& coords_list,
-        sofa::type::vector<EdgeID>& new_edges, double epsilonSnapPath = 0.0, double epsilonSnapBorder = 0.0);
+        sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list,
+        sofa::type::vector<EdgeID>& new_edges, Real epsilonSnapPath = 0.0, Real epsilonSnapBorder = 0.0);
 
 
 
     /* void SnapAlongPath (sofa::type::vector<TriangleID>& triangles_list, sofa::type::vector<EdgeID>& edges_list,
-      sofa::type::vector<double>& coords_list, sofa::type::vector<double>& points2Snap);*/
+      sofa::type::vector<Real>& coords_list, sofa::type::vector<Real>& points2Snap);*/
 
     void SnapAlongPath(sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
-        sofa::type::vector<ElemID>& indices_list, sofa::type::vector< sofa::type::Vec<3, double> >& coords_list,
-        sofa::type::vector< sofa::type::vector<double> >& points2Snap,
-        double epsilonSnapPath);
+        sofa::type::vector<ElemID>& indices_list, sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list,
+        sofa::type::vector< sofa::type::vector<Real> >& points2Snap,
+        Real epsilonSnapPath);
 
     void SnapBorderPath(PointID pa, Coord& a, PointID pb, Coord& b,
         sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
         sofa::type::vector<ElemID>& indices_list,
-        sofa::type::vector< sofa::type::Vec<3, double> >& coords_list,
-        sofa::type::vector< sofa::type::vector<double> >& points2Snap,
-        double epsilonSnapBorder);
+        sofa::type::vector< sofa::type::Vec<3, Real> >& coords_list,
+        sofa::type::vector< sofa::type::vector<Real> >& points2Snap,
+        Real epsilonSnapBorder);
 
 
 
@@ -391,12 +391,12 @@ bool is_point_in_halfplane(const sofa::type::Vec<3,Real>& p,
         const sofa::type::Vec<3,Real>& c,
         unsigned int ind_p0, unsigned int ind_p1, unsigned int ind_p2);
 
-void SOFA_SOFABASETOPOLOGY_API snapping_test_triangle(double epsilon,
-        double alpha0, double alpha1, double alpha2,
+void SOFA_SOFABASETOPOLOGY_API snapping_test_triangle(SReal epsilon,
+        SReal alpha0, SReal alpha1, SReal alpha2,
         bool& is_snap_0, bool& is_snap_1, bool& is_snap_2);
 
-void SOFA_SOFABASETOPOLOGY_API snapping_test_edge(double epsilon,
-        double alpha0, double alpha1,
+void SOFA_SOFABASETOPOLOGY_API snapping_test_edge(SReal epsilon,
+        SReal alpha0, SReal alpha1,
         bool& is_snap_0, bool& is_snap_1);
 
 template< class Real>

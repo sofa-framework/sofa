@@ -469,7 +469,7 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Compliance()
 void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
 {
     const int merge_spatial_step = this->merge_spatial_step.getValue();
-    const int merge_spatial_shift = 0; // merge_spatial_step/2
+    constexpr int merge_spatial_shift = 0; // merge_spatial_step/2
     const int merge_local_levels = this->merge_local_levels.getValue();
     int numConstraints = _numConstraints;
     int numContacts = numConstraints/3;
@@ -571,9 +571,9 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
                     p = p / merge_spatial_step;
                     posCoarse[i] = p;
                 }
-                std::pair< std::map<ConstCoord,int>::iterator, bool > res = coord2coarseId.insert(std::map<ConstCoord,int>::value_type(posCoarse, (int)num_group));
-                int idCoarse = res.first->second * 3;
-                if (res.second)
+                auto [insertIt, insertSuccess] = coord2coarseId.insert(std::map<ConstCoord,int>::value_type(posCoarse, (int)num_group));
+                int idCoarse = insertIt->second * 3;
+                if (insertSuccess)
                 {
                     // new group
                     newConstraintPositions.push_back(posCoarse);
@@ -1380,7 +1380,7 @@ void LCPConstraintSolver::draw(const core::visual::VisualParams* vparams)
     type::Vector3 showLevelTranslation = this->showLevelTranslation.getValue();
 
     const int merge_spatial_step = this->merge_spatial_step.getValue();
-    const int merge_spatial_shift = 0; // merge_spatial_step/2
+    constexpr int merge_spatial_shift = 0; // merge_spatial_step/2
     const int merge_local_levels = this->merge_local_levels.getValue();
 
     vparams->drawTool()->saveLastState();

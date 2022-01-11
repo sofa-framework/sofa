@@ -34,7 +34,7 @@ template<class DataTypes>
 void VectorSpringForceField<DataTypes>::createEdgeInformation(Index, Spring &t,
         const core::topology::BaseMeshTopology::Edge & e,
         const sofa::type::vector<Index> & ancestors,
-        const sofa::type::vector<double> & coefs)
+        const sofa::type::vector<SReal> & coefs)
 {
     const typename DataTypes::VecCoord& x0 = this->getObject1()->read(core::ConstVecCoordId::restPosition())->getValue();
     t.restVector = x0[e[1]] - x0[e[0]];
@@ -126,8 +126,8 @@ VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _obje
     , m_potentialEnergy( 0.0 ), useTopology( false )
     , springArray( initData(&springArray, "springs", "springs data"))
     , m_filename( initData(&m_filename,std::string(""),"filename","File name from which the spring informations are loaded") )
-    , m_stiffness( initData(&m_stiffness,1.0,"stiffness","Default edge stiffness used in absence of file information") )
-    , m_viscosity( initData(&m_viscosity,1.0,"viscosity","Default edge viscosity used in absence of file information") )
+    , m_stiffness( initData(&m_stiffness,SReal(1.0),"stiffness","Default edge stiffness used in absence of file information") )
+    , m_viscosity( initData(&m_viscosity, SReal(1.0),"viscosity","Default edge viscosity used in absence of file information") )
     , m_useTopology( initData(&m_useTopology, false, "useTopology", "Activate/Desactivate topology mode of the component (springs on each edge)"))
     , l_topology(initLink("topology", "link to the topology container"))    
     , m_topology(nullptr)
@@ -168,7 +168,7 @@ void VectorSpringForceField<DataTypes>::init()
         springArray.setCreationCallback([this](Index edgeIndex, Spring& t,
             const core::topology::BaseMeshTopology::Edge& e,
             const sofa::type::vector<Index>& ancestors,
-            const sofa::type::vector<double>& coefs)
+            const sofa::type::vector<SReal>& coefs)
         {
             createEdgeInformation(edgeIndex, t, e, ancestors, coefs);
         });

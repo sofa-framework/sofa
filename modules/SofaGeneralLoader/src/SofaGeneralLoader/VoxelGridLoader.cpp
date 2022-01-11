@@ -101,8 +101,9 @@ void VoxelGridLoader::reinit()
     clear();
     const Vec6i&	ROI = roi.getValue();
 
-    type::vector<unsigned int>& _idxInRegularGrid = *idxInRegularGrid.beginEdit();
-    type::vector<Vector3>& seqPoints = *positions.beginEdit();
+    auto _idxInRegularGrid = sofa::helper::getWriteOnlyAccessor(idxInRegularGrid);
+    auto seqPoints = sofa::helper::getWriteOnlyAccessor(positions);
+
     if(generateHexa.getValue())
     {
         const unsigned int numVoxelsX = dataResolution.getValue()[0];
@@ -149,7 +150,7 @@ void VoxelGridLoader::reinit()
                     if ( keepPoint.find ( pidx ) != keepPoint.end() )
                     {
                         renumberingMap[pidx] = pointIdx;
-                        Vector3& pnt = seqPoints[pointIdx];
+                        auto& pnt = seqPoints[pointIdx];
                         pnt[0] = i*voxelSize.getValue()[0];
                         pnt[1] = j*voxelSize.getValue()[1];
                         pnt[2] = k*voxelSize.getValue()[2];
@@ -210,23 +211,18 @@ void VoxelGridLoader::reinit()
         msg_info() << "inserting (" << seqPoints.size() << ") points done." ;
 
     }
-    idxInRegularGrid.endEdit();
-    positions.endEdit();
 }
 
 void VoxelGridLoader::clear()
 {
-    type::vector<Vector3>& seqPoints = *positions.beginEdit();
+    auto seqPoints = sofa::helper::getWriteOnlyAccessor(positions);
     seqPoints.clear();
-    positions.endEdit();
 
-    type::vector<Hexahedron>& seqHexahedra = *hexahedra.beginEdit();
+    auto seqHexahedra = sofa::helper::getWriteOnlyAccessor(hexahedra);
     seqHexahedra.clear();
-    hexahedra.endEdit();
 
-    type::vector<unsigned int>& _idxInRegularGrid = *idxInRegularGrid.beginEdit();
+    auto _idxInRegularGrid = sofa::helper::getWriteOnlyAccessor(idxInRegularGrid);
     _idxInRegularGrid.clear();
-    idxInRegularGrid.endEdit();
 
 }
 

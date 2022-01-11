@@ -38,7 +38,7 @@ class SOFA_SOFABASETOPOLOGY_API RegularGridTopology : public GridTopology
 public:
     typedef sofa::type::Vec<3, int> Vec3i;
     typedef sofa::type::Vec<3, unsigned int> Vec3ui;
-    typedef sofa::type::Vector3 Vector3;
+    using Vector3 = sofa::type::Vec3;
     typedef sofa::type::BoundingBox BoundingBox;
     SOFA_CLASS(RegularGridTopology,GridTopology);
 protected:

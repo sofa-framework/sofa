@@ -133,13 +133,13 @@ public:
     virtual Real getMu() const { return mu;}
 
     SReal getPotentialEnergy(const core::MechanicalParams* mparams) const override;
-    void setYoungModulus(const double modulus)
+    void setYoungModulus(const Real modulus)
     {
-        f_youngModulus.setValue((Real)modulus);
+        f_youngModulus.setValue(modulus);
     }
-    void setPoissonRatio(const double ratio)
+    void setPoissonRatio(const Real ratio)
     {
-        f_poissonRatio.setValue((Real)ratio);
+        f_poissonRatio.setValue(ratio);
     }
     void draw(const core::visual::VisualParams* vparams) override;
     /// compute lambda and mu based on the Young modulus and Poisson ratio
@@ -151,7 +151,7 @@ public:
     void createEdgeRestInformation(Index edgeIndex, EdgeRestInformation& ei,
         const core::topology::BaseMeshTopology::Edge&,
         const sofa::type::vector< Index >&,
-        const sofa::type::vector< double >&);
+        const sofa::type::vector< SReal >&);
 
     /** Method to update @sa edgeInfo when a new Tetrahedron is created.
     * Will be set as callback in the EdgeData @sa edgeInfo when TETRAHEDRAADDED event is fired
@@ -160,7 +160,7 @@ public:
     void applyTetrahedronCreation(const sofa::type::vector<Index>& tetrahedronAdded,
         const sofa::type::vector<core::topology::BaseMeshTopology::Tetrahedron>&,
         const sofa::type::vector<sofa::type::vector<Index> >&,
-        const sofa::type::vector<sofa::type::vector<double> >&);
+        const sofa::type::vector<sofa::type::vector<SReal> >&);
 
     /** Method to update @sa d_edgeSprings when a triangle is removed.
     * Will be set as callback in the EdgeData @sa edgeInfo when TETRAHEDRAREMOVED event is fired

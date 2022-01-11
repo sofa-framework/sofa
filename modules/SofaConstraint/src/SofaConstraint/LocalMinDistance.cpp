@@ -1216,7 +1216,7 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ) const
         return true;
 
     BaseMeshTopology* topology = p.getCollisionModel()->getCollisionTopology();
-    const type::vector<Vector3>& x =(p.getCollisionModel()->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
+    const auto& x =(p.getCollisionModel()->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
 
     const auto& trianglesAroundVertex = topology->getTrianglesAroundVertex(p.getIndex());
     const auto& edgesAroundVertex = topology->getEdgesAroundVertex(p.getIndex());
@@ -1284,9 +1284,7 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ) const
     LineCollisionModel<sofa::defaulttype::Vec3Types> *lM = l.getCollisionModel();
     bool bothSide_computation = lM->bothSide.getValue();
 
-    Vector3 nMean;
-    Vector3 n1, n2;
-    Vector3 t1, t2;
+    Vector3 n1;
 
     const Vector3 &pt1 = l.p1();
     const Vector3 &pt2 = l.p2();
@@ -1295,12 +1293,11 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ) const
     AB.normalize();
 
     BaseMeshTopology* topology = l.getCollisionModel()->getCollisionTopology();
-    const type::vector<Vector3>& x =(l.getCollisionModel()->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
+    const auto& x =(l.getCollisionModel()->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
     const auto& trianglesAroundEdge = topology->getTrianglesAroundEdge(l.getIndex());
 
     if ( trianglesAroundEdge.size() == 2)
     {
-
         // which triangle is left ?
         const BaseMeshTopology::Triangle& triangle0 = topology->getTriangle(trianglesAroundEdge[0]);
         bool triangle0_is_left=false;
@@ -1314,16 +1311,16 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ) const
         const BaseMeshTopology::Triangle& triangleRight = triangle0_is_left ? topology->getTriangle(trianglesAroundEdge[1]): topology->getTriangle(trianglesAroundEdge[0]);
         n1 = cross(x[triangleRight[1]]-x[triangleRight[0]], x[triangleRight[2]]-x[triangleRight[0]]);
         n1.normalize();
-        nMean = n1;
-        t1 = cross(n1, AB);
+        Vector3 nMean=n1;
+        Vector3 t1=cross(n1, AB);
         t1.normalize(); // necessary ?
 
         // compute the normal of the triangle situated on the left
         const BaseMeshTopology::Triangle& triangleLeft = triangle0_is_left ? topology->getTriangle(trianglesAroundEdge[0]): topology->getTriangle(trianglesAroundEdge[1]);
-        n2 = cross(x[triangleLeft[1]]-x[triangleLeft[0]], x[triangleLeft[2]]-x[triangleLeft[0]]);
+        Vector3 n2=cross(x[triangleLeft[1]]-x[triangleLeft[0]], x[triangleLeft[2]]-x[triangleLeft[0]]);
         n2.normalize();
         nMean += n2;
-        t2 = cross(AB, n2);
+        Vector3 t2=cross(AB, n2);
         t2.normalize(); // necessary ?
 
         nMean.normalize();

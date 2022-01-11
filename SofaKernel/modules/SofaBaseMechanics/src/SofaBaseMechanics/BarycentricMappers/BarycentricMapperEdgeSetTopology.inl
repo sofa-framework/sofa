@@ -90,7 +90,7 @@ void BarycentricMapperEdgeSetTopology<In,Out>::computeCenter(Vector3& center, co
 }
 
 template <class In, class Out>
-void BarycentricMapperEdgeSetTopology<In,Out>::computeDistance(double& d, const Vector3& v)
+void BarycentricMapperEdgeSetTopology<In,Out>::computeDistance(SReal& d, const Vector3& v)
 {
     //Not implemented for Edge
     SOFA_UNUSED(d);

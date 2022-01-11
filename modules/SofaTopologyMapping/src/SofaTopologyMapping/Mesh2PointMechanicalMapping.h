@@ -83,10 +83,8 @@ protected:
 
 
 
-#if  !defined(SOFA_COMPONENT_MAPPING_MESH2POINTMECHANICALMAPPING_CPP)  //// ATTENTION PB COMPIL WIN3Z
-extern template class SOFA_SOFATOPOLOGYMAPPING_API Mesh2PointMechanicalMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
-
-
+#if  !defined(SOFA_COMPONENT_MAPPING_MESH2POINTMECHANICALMAPPING_CPP)
+extern template class SOFA_SOFATOPOLOGYMAPPING_API Mesh2PointMechanicalMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
 #endif
 
 } //namespace sofa::component::mapping

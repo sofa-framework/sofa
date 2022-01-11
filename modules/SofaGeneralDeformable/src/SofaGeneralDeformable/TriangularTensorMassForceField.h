@@ -97,7 +97,7 @@ protected:
     void applyEdgeCreation(Index edgeIndex, EdgeRestInformation&,
         const core::topology::BaseMeshTopology::Edge& e,
         const sofa::type::vector<Index>&,
-        const sofa::type::vector<double>&);
+        const sofa::type::vector<SReal>&);
 
     /** Method to update @sa edgeInfo when a new triangle is created.
     * Will be set as callback in the EdgeData @sa edgeInfo when TRIANGLESADDED event is fired
@@ -106,7 +106,7 @@ protected:
     void applyTriangleCreation(const sofa::type::vector<Index>& triangleAdded,
         const sofa::type::vector<core::topology::BaseMeshTopology::Triangle>&,
         const sofa::type::vector<sofa::type::vector<Index> >&,
-        const sofa::type::vector<sofa::type::vector<double> >&);
+        const sofa::type::vector<sofa::type::vector<SReal> >&);
 
     /** Method to update @sa edgeInfo when a triangle is removed.
     * Will be set as callback in the EdgeData @sa edgeInfo when TRIANGLESREMOVED event is fired
@@ -147,11 +147,11 @@ public:
     virtual Real getLambda() const { return lambda;}
     virtual Real getMu() const { return mu;}
 
-    void setYoungModulus(const double modulus)
+    void setYoungModulus(const Real modulus)
     {
         f_youngModulus.setValue((Real)modulus);
     }
-    void setPoissonRatio(const double ratio)
+    void setPoissonRatio(const Real ratio)
     {
         f_poissonRatio.setValue((Real)ratio);
     }

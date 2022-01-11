@@ -378,14 +378,20 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
         colorValue = color.getValue();
 
         sofa::type::Quat<SReal> q=vars.pos6D.getOrientation();
-        double R[4][4];
+        SReal R[4][4];
 
         vparams->drawTool()->pushMatrix();
 
         sofa::type::Quat<SReal> q1=q.inverse();
         q1.buildRotationMatrix(R);
         vparams->drawTool()->translate(cx2, cy2, cz2);
-        vparams->drawTool()->multMatrix((float*)(&R[0][0]));
+        //convert forcefully to float (in case SReal is double)
+        float Rfloat[4][4];
+        for (auto i = 0; i < 4; i++)
+            for (auto j = 0; j < 4; j++)
+                Rfloat[i][j] = R[i][j];
+
+        vparams->drawTool()->multMatrix(&Rfloat[0][0]);
 
         sofa::type::Vector3 center(cx1, cy1, cz1);
         sofa::type::Vector3 radii(rx, ry, (stiffness.getValue()>0 ? rz : -rz));

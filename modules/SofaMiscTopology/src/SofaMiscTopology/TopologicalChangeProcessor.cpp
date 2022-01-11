@@ -435,7 +435,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
 
                 type::vector< type::vector< Index > > p_ancestors(nbElements);
-                sofa::type::vector< type::vector< double > > p_baryCoefs(nbElements);
+                sofa::type::vector< type::vector< SReal > > p_baryCoefs(nbElements);
                 for(size_t i=0; i<nbElements; ++i)
                 {
                     auto& ancestor = p_ancestors[i];
@@ -444,7 +444,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     ancestor[0] = t[0];
                     ancestor[1] = t[1];
                     ancestor[2] = t[2];
-                    type::vector<double>& baryCoef = p_baryCoefs[i];
+                    type::vector<SReal>& baryCoef = p_baryCoefs[i];
                     baryCoef.resize(3);
                     baryCoef[0] = baryCoords[i][0];
                     baryCoef[1] = baryCoords[i][1];
@@ -477,7 +477,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             {
 
                 type::vector<type::vector<Index> >  p_ancestors(nbElements);
-                type::vector<type::vector<double> >        p_baryCoefs(nbElements);
+                type::vector<type::vector<SReal> >        p_baryCoefs(nbElements);
 
                 if(!str.eof() )
                 {
@@ -625,8 +625,8 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
             m_topology->getContext()->get(triangleGeo);
 
-            Vector3 a;
-            Vector3 b;
+            sofa::type::Vec3 a;
+            sofa::type::Vec3 b;
             Index ind_ta;
             Index ind_tb;
             Index a_last = sofa::InvalidID;
@@ -679,7 +679,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 // Output declarations
                 sofa::type::vector<sofa::core::topology::TopologyElementType>       topoPath_list;
                 sofa::type::vector<Index> indices_list;
-                sofa::type::vector<Vec<3, double> > coords2_list;
+                sofa::type::vector<Vec3 > coords2_list;
 
                 if (firstCut)
                     a_last
@@ -689,7 +689,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     core::behavior::MechanicalState<Vec3Types> * mstate =
                         m_topology->getContext()->get< core::behavior::MechanicalState<Vec3Types> > ();
                     //get the coordinates of the mechanical state
-                    const type::vector<Vector3> &v_coords = mstate->read(core::ConstVecCoordId::position())->getValue();
+                    const auto &v_coords = mstate->read(core::ConstVecCoordId::position())->getValue();
                     a = v_coords[a_last];
                 }
 
@@ -876,7 +876,7 @@ void TopologicalChangeProcessor::saveIndices()
             sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
             m_topology->getContext()->get(triangleGeo);
 
-            sofa::type::vector< double > baryCoef = triangleGeo->computeTriangleBarycoefs( triInd, constCoord);
+            const auto baryCoef = triangleGeo->computeTriangleBarycoefs( triInd, constCoord);
 
             Vector3 barycentricCoordinates(baryCoef[0], baryCoef[1], baryCoef[2]);
             Vec3Types::Coord aCoord[3];
@@ -937,7 +937,7 @@ void TopologicalChangeProcessor::saveIndices()
 
                 triangleIncisionInformation[i].triangleIndices[0] = triIndex;
 
-                sofa::type::vector< double > newBaryCoef = triangleGeo->computeTriangleBarycoefs( triangleIncisionInformation[i].triangleIndices[0], newPosition);
+                const auto newBaryCoef = triangleGeo->computeTriangleBarycoefs( triangleIncisionInformation[i].triangleIndices[0], newPosition);
 
                 for (unsigned int j = 0 ; j < 3 ; j++)
                     triangleIncisionInformation[i].barycentricCoordinates.front()[j] = newBaryCoef[j];
@@ -1049,7 +1049,7 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, Index& triangl
      ***********/
     for ( unsigned int i = 0 ; i < nbTriangle ; i++)
     {
-        Vector3 minAABB, maxAABB;
+        sofa::type::Vec3 minAABB, maxAABB;
         triangleGeo->computeTriangleAABB(i, minAABB, maxAABB);
         bool isPointInAABB = true;
         for (int j = 0 ; j < 3 ; j++)
@@ -1104,7 +1104,7 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, Index& triangl
     for (unsigned int i = 0 ; i < nbTriangle ; i++)
     {
         //get the normal of the current triangle
-        Vector3 normal = triangleGeo->computeTriangleNormal(i);
+        auto normal = triangleGeo->computeTriangleNormal(i);
         SReal normalNorm = normal.norm();
         if (!normalNorm)
             break;
@@ -1113,12 +1113,12 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, Index& triangl
         SReal a = normal[0], b = normal[1], c = normal[2];
 
         //get the coordinates points of the triangle
-        Vector3 points[3];
+        sofa::type::Vec3 points[3];
         triangleGeo->getTriangleVertexCoordinates(i, points);
 
         //get d in the equation of the plane of the triangle ax+by+cz + d = 0
         SReal d = - (points[0][0] * a + points[0][1] * b + points[0][2] * c );
-        Vector3 projectedPoint;
+        sofa::type::Vec3 projectedPoint;
 
         projectedPoint[0] = ((b * b + c * c) * x - a * b * y - a * c * z - d * a) /*/normalNorm*/;
         projectedPoint[1] = (- a * b * x + (a * a + c * c) * y - b * c * z - d * b) /*/normalNorm*/;
@@ -1198,8 +1198,8 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
 
     Vec3Types::Coord aCoord[3];
     Vec3Types::Coord bCoord[3];
-    Vector3 a;
-    Vector3 b;
+    sofa::type::Vec3 a;
+    sofa::type::Vec3 b;
 
     sofa::Index a_last = sofa::InvalidID;
     sofa::Index b_last = sofa::InvalidID;
@@ -1247,7 +1247,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
         // Output declarations
         sofa::type::vector< sofa::core::topology::TopologyElementType> topoPath_list;
         sofa::type::vector<Index> indices_list;
-        sofa::type::vector< Vec<3, double> > coords2_list;
+        sofa::type::vector< Vec3 > coords2_list;
 
         if(firstCut)
             a_last = sofa::InvalidID;
@@ -1255,7 +1255,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
         {
             core::behavior::MechanicalState<Vec3Types>* mstate = m_topology->getContext()->get<core::behavior::MechanicalState<Vec3Types> >();
             //get the coordinates of the mechanical state
-            const type::vector<Vector3> &v_coords =  mstate->read(core::ConstVecCoordId::position())->getValue();
+            const auto &v_coords =  mstate->read(core::ConstVecCoordId::position())->getValue();
             a = v_coords[a_last];
         }
 
@@ -1350,7 +1350,7 @@ void TopologicalChangeProcessor::updateTriangleIncisionInformation()
 
             //update the triangle barycentric coordinates corresponding to the current coordinates
             const Vector3 constCoord = triangleIncisionInformation[i].coordinates[j];
-            sofa::type::vector< double > baryCoef = triangleGeo->computeTriangleBarycoefs( newTriangleIndexb, constCoord);
+            const auto baryCoef = triangleGeo->computeTriangleBarycoefs( newTriangleIndexb, constCoord);
             triangleIncisionInformation[i].barycentricCoordinates[j] = Vector3(baryCoef[0], baryCoef[1], baryCoef[2]);
         }
     }

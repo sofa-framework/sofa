@@ -35,7 +35,7 @@ namespace sofa::helper
 
 /// base function to compute center of mass, mass and inertia tensor from a mesh
 template<typename Rigid3MassType>
-void generateRigid(Rigid3MassType& mass, type::Vector3& center, const helper::io::Mesh* mesh )
+void generateRigid(Rigid3MassType& mass, type::Vec3& center, const helper::io::Mesh* mesh )
 {
     using namespace sofa::helper;
     // Geometric Tools, Inc.
@@ -53,7 +53,7 @@ void generateRigid(Rigid3MassType& mass, type::Vector3& center, const helper::io
             (SReal)0.0, (SReal)0.0, (SReal)0.0, (SReal)0.0, (SReal)0.0, (SReal)0.0
                             };
 
-    const type::vector<type::Vector3>& points = mesh->getVertices();
+    const auto& points = mesh->getVertices();
     const auto& facets = mesh->getFacets();
     for (unsigned int i = 0; i < facets.size(); i++)
     {
@@ -61,14 +61,14 @@ void generateRigid(Rigid3MassType& mass, type::Vector3& center, const helper::io
         for (unsigned int j = 2; j < v.size(); j++)
         {
             // get vertices of current triangle
-            const type::Vector3 kV0 = points[v[0  ]];
-            const type::Vector3 kV1 = points[v[j-1]];
-            const type::Vector3 kV2 = points[v[j  ]];
+            const auto kV0 = points[v[0  ]];
+            const auto kV1 = points[v[j-1]];
+            const auto kV2 = points[v[j  ]];
 
             // get cross product of edges
-            type::Vector3 kV1mV0 = kV1 - kV0;
-            type::Vector3 kV2mV0 = kV2 - kV0;
-            type::Vector3 kN = cross(kV1mV0,kV2mV0);
+            auto kV1mV0 = kV1 - kV0;
+            auto kV2mV0 = kV2 - kV0;
+            auto kN = cross(kV1mV0,kV2mV0);
 
             // compute integral terms
             SReal fTmp0, fTmp1, fTmp2;
@@ -135,7 +135,7 @@ void generateRigid(Rigid3MassType& mass, type::Vector3& center, const helper::io
     mass.mass = mass.volume;
 
     // center of mass
-    center = type::Vector3(afIntegral[1]/afIntegral[0],afIntegral[2]/afIntegral[0],afIntegral[3]/afIntegral[0]);
+    center = {afIntegral[1]/afIntegral[0],afIntegral[2]/afIntegral[0],afIntegral[3]/afIntegral[0]};
 
     // inertia relative to world origin
     mass.inertiaMatrix[0][0] = afIntegral[5] + afIntegral[6];
@@ -164,19 +164,19 @@ void generateRigid(Rigid3MassType& mass, type::Vector3& center, const helper::io
 
 /// user friendly function to compute center of mass, mass and inertia tensor from a mesh, a density, a scale and a rotation
 template<typename Rigid3MassType>
-void generateRigid(Rigid3MassType& mass, type::Vector3& center, io::Mesh *mesh
+void generateRigid(Rigid3MassType& mass, type::Vec3& center, io::Mesh *mesh
                                   , SReal density
-                                  , const type::Vector3& scale = type::Vector3(1,1,1)
-                                  , const type::Vector3& rotation /*Euler angles*/ = type::Vector3(0,0,0)
+                                  , const type::Vec3& scale = type::Vec3(1,1,1)
+                                  , const type::Vec3& rotation /*Euler angles*/ = type::Vec3(0,0,0)
                                   )
 {
-    if( scale != type::Vector3(1, 1, 1) ) {
+    if( scale != type::Vec3(1, 1, 1) ) {
         for(size_t i = 0, n = mesh->getVertices().size(); i < n; ++i) {
             mesh->getVertices()[i] = mesh->getVertices()[i].linearProduct(scale);
         }
     }
 
-    if( rotation != type::Vector3(0,0,0) ) {
+    if( rotation != type::Vec3(0,0,0) ) {
 
         type::Quat q = type::Quat<SReal>::createQuaterFromEuler( rotation*M_PI/180.0 );
 
@@ -195,10 +195,10 @@ void generateRigid(Rigid3MassType& mass, type::Vector3& center, io::Mesh *mesh
 
 /// user friendly function to compute center of mass, mass and inertia tensor from a mesh file, a density, a scale and a rotation
 template<typename Rigid3MassType>
-bool generateRigid(Rigid3MassType& mass, type::Vector3& center, const std::string& meshFilename
+bool generateRigid(Rigid3MassType& mass, type::Vec3& center, const std::string& meshFilename
                                   , SReal density
-                                  , const type::Vector3& scale = type::Vector3(1,1,1)
-                                  , const type::Vector3& rotation /*Euler angles*/ = type::Vector3(0,0,0)
+                                  , const type::Vec3& scale = type::Vec3(1,1,1)
+                                  , const type::Vec3& rotation /*Euler angles*/ = type::Vec3(0,0,0)
                                   )
 {
     sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create( meshFilename );
@@ -219,8 +219,8 @@ struct GenerateRigidInfo
 {
     type::Matrix3 inertia;
     type::Quat<SReal> inertia_rotation;
-    type::Vector3 inertia_diagonal;
-    type::Vector3 com;
+    type::Vec3 inertia_diagonal;
+    type::Vec3 com;
     SReal mass;
 };
 
@@ -230,8 +230,8 @@ void generateRigid( GenerateRigidInfo& res
                                   , io::Mesh *mesh
                                   , std::string const& meshName
                                   , SReal density
-                                  , const type::Vector3& scale = type::Vector3(1,1,1)
-                                  , const type::Vector3& rotation /*Euler angles*/ = type::Vector3(0,0,0)
+                                  , const type::Vec3& scale = type::Vec3(1,1,1)
+                                  , const type::Vec3& rotation /*Euler angles*/ = type::Vec3(0,0,0)
                                   )
 
 {
@@ -282,8 +282,8 @@ template<typename Rigid3MassType>
 bool generateRigid( GenerateRigidInfo& res
                                   , const std::string& meshFilename
                                   , SReal density
-                                  , const type::Vector3& scale = type::Vector3(1,1,1)
-                                  , const type::Vector3& rotation /*Euler angles*/ = type::Vector3(0,0,0)
+                                  , const type::Vec3& scale = type::Vec3(1,1,1)
+                                  , const type::Vec3& rotation /*Euler angles*/ = type::Vec3(0,0,0)
                                   )
 {
     sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create( meshFilename );

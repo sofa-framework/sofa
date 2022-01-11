@@ -198,7 +198,7 @@ public:
     void createTetrahedronRestInformation(Index, TetrahedronRestInformation& t,
         const core::topology::BaseMeshTopology::Tetrahedron&,
         const sofa::type::vector<Index>&,
-        const sofa::type::vector<double>&);
+        const sofa::type::vector<SReal>&);
 	
   protected:
     /// the array that describes the complete material energy and its derivatives

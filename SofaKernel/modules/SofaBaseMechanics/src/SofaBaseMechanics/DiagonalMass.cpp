@@ -23,6 +23,7 @@
 
 #include <SofaBaseMechanics/DiagonalMass.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/topology/Edge.h>
 
 using sofa::core::visual::VisualParams ;
 using sofa::core::MechanicalParams ;

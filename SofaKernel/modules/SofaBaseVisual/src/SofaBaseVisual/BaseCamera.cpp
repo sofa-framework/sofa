@@ -594,9 +594,9 @@ BaseCamera::Vec3 BaseCamera::viewportToScreenPoint(const BaseCamera::Vec3& p) co
 }
 BaseCamera::Vec3 BaseCamera::viewportToWorldPoint(const BaseCamera::Vec3& p)
 {
-    Vec3 nsPosition = Vec3(p.x() * 2.0 - 1.0, (1.0 - p.y()) * 2.0 - 1.0, p.z() * 2.0 - 1.0);
+    Vec3 nsPosition{ p.x() * 2.0 - 1.0, (1.0 - p.y()) * 2.0 - 1.0, p.z() * 2.0 - 1.0 };
 
-    Mat4 glP, glM, invertglP, invertglM;
+    sofa::type::Mat4x4d glP, glM, invertglP, invertglM;
     getOpenGLProjectionMatrix(glP.ptr());
     getOpenGLModelViewMatrix(glM.ptr());
 
@@ -608,7 +608,7 @@ BaseCamera::Vec3 BaseCamera::viewportToWorldPoint(const BaseCamera::Vec3& p)
     SOFA_UNUSED(canInvert2);
 
     Vec4 vsPosition = invertglP.transposed() * Vec4(nsPosition, 1.0);
-    if(isEqual(vsPosition.w(), 0.0))
+    if(isEqual(vsPosition.w(), SReal(0.0)))
     {
         return Vec3(std::nan(""), std::nan(""), std::nan(""));
     }
@@ -620,13 +620,13 @@ BaseCamera::Vec3 BaseCamera::viewportToWorldPoint(const BaseCamera::Vec3& p)
 
 BaseCamera::Vec3 BaseCamera::worldToScreenPoint(const BaseCamera::Vec3& p)
 {
-    Mat4 glP, glM;
+    sofa::type::Mat4x4d glP, glM;
     getOpenGLProjectionMatrix(glP.ptr());
     getOpenGLModelViewMatrix(glM.ptr());
 
     Vec4 nsPosition = (glP.transposed() * glM.transposed() * Vec4(p, 1.0));
 
-    if(isEqual(nsPosition.w(), 0.0))
+    if(isEqual(nsPosition.w(), SReal(0.0)))
     {
         return Vec3(std::nan(""), std::nan(""), std::nan(""));
     }

@@ -438,7 +438,7 @@ typename DataTypes::Coord TetrahedronSetGeometryAlgorithms<DataTypes>::computeTe
 template< class DataTypes>
 bool TetrahedronSetGeometryAlgorithms< DataTypes >::isPointInTetrahedron(const TetraID ind_t, const sofa::type::Vec<3,Real>& pTest) const
 {
-    const double ZERO = 1e-15;
+    const Real ZERO = 1e-15;
 
     const Tetrahedron t = this->m_topology->getTetrahedron(ind_t);
     const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
@@ -448,12 +448,12 @@ bool TetrahedronSetGeometryAlgorithms< DataTypes >::isPointInTetrahedron(const T
     const sofa::type::Vec<3,Real> t2(p[t[2]][0], p[t[2]][1], p[t[2]][2]);
     const sofa::type::Vec<3,Real> t3(p[t[3]][0], p[t[3]][1], p[t[3]][2]);
 
-    double v0 = tripleProduct(t1-pTest, t2-pTest, t3-pTest);
-    double v1 = tripleProduct(pTest-t0, t2-t0, t3-t0);
-    double v2 = tripleProduct(t1-t0, pTest-t0, t3-t0);
-    double v3 = tripleProduct(t1-t0, t2-t0, pTest-t0);
+    Real v0 = tripleProduct(t1-pTest, t2-pTest, t3-pTest);
+    Real v1 = tripleProduct(pTest-t0, t2-t0, t3-t0);
+    Real v2 = tripleProduct(t1-t0, pTest-t0, t3-t0);
+    Real v3 = tripleProduct(t1-t0, t2-t0, pTest-t0);
 
-    double V = tripleProduct(t1-t0, t2-t0, t3-t0);
+    Real V = tripleProduct(t1-t0, t2-t0, t3-t0);
     if(fabs(V)>ZERO)
         return (v0/V > -ZERO) && (v1/V > -ZERO) && (v2/V > -ZERO) && (v3/V > -ZERO);
 
@@ -464,7 +464,7 @@ bool TetrahedronSetGeometryAlgorithms< DataTypes >::isPointInTetrahedron(const T
 template< class DataTypes>
 bool TetrahedronSetGeometryAlgorithms< DataTypes >::isPointInTetrahedron(const TetraID ind_t, const sofa::type::Vec<3,Real>& pTest, sofa::type::Vec<4,Real>& shapeFunctions) const
 {
-    const double ZERO = 1e-15;
+    const Real ZERO = 1e-15;
 
     const Tetrahedron t = this->m_topology->getTetrahedron(ind_t);
     const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
@@ -474,12 +474,12 @@ bool TetrahedronSetGeometryAlgorithms< DataTypes >::isPointInTetrahedron(const T
     const sofa::type::Vec<3,Real> t2(p[t[2]][0], p[t[2]][1], p[t[2]][2]);
     const sofa::type::Vec<3,Real> t3(p[t[3]][0], p[t[3]][1], p[t[3]][2]);
 
-    double v0 = tripleProduct(t1-pTest, t2-pTest, t3-pTest);
-    double v1 = tripleProduct(pTest-t0, t2-t0, t3-t0);
-    double v2 = tripleProduct(t1-t0, pTest-t0, t3-t0);
-    double v3 = tripleProduct(t1-t0, t2-t0, pTest-t0);
+    Real v0 = tripleProduct(t1-pTest, t2-pTest, t3-pTest);
+    Real v1 = tripleProduct(pTest-t0, t2-t0, t3-t0);
+    Real v2 = tripleProduct(t1-t0, pTest-t0, t3-t0);
+    Real v3 = tripleProduct(t1-t0, t2-t0, pTest-t0);
 
-    double V = tripleProduct(t1-t0, t2-t0, t3-t0);
+    Real V = tripleProduct(t1-t0, t2-t0, t3-t0);
     if(fabs(V)>ZERO)
     {
         if( (v0/V > -ZERO) && (v1/V > -ZERO) && (v2/V > -ZERO) && (v3/V > -ZERO) )
@@ -1019,9 +1019,9 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filen
 
     for (size_t i=0; i<numVertices; ++i)
     {
-        double x = (double) vect_c[i][0];
-        double y = (double) vect_c[i][1];
-        double z = (double) vect_c[i][2];
+        Real x = (Real) vect_c[i][0];
+        Real y = (Real) vect_c[i][1];
+        Real z = (Real) vect_c[i][2];
 
         myfile << i+1 << " " << x << " " << y << " " << z <<"\n";
     }
@@ -1046,7 +1046,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filen
 
 
 template<class DataTypes>
-void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideTetrahedronsWithPlane(sofa::type::vector< sofa::type::vector<double> >& coefs, sofa::type::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal)
+void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideTetrahedronsWithPlane(sofa::type::vector< sofa::type::vector<SReal> >& coefs, sofa::type::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal)
 {
     //Current topological state
     sofa::Size nbPoint=this->m_container->getNbPoints();
@@ -1160,13 +1160,13 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideTetrahedronsWithPlane
 
     //barycentric coodinates of to be added points
     sofa::type::vector< sofa::type::vector<PointID> > ancestors;
-    sofa::type::vector< sofa::type::vector<double> > coefs;
+    sofa::type::vector< sofa::type::vector<SReal> > coefs;
     for( size_t i=0; i<intersectedPoints.size(); i++)
     {
         Edge theEdge=m_container->getEdge(intersectedEdgeID[i]);
-        sofa::type::Vec<3,double> p;
+        sofa::type::Vec<3,Real> p;
         p[0]=intersectedPoints[i][0]; p[1]=intersectedPoints[i][1]; p[2]=intersectedPoints[i][2];
-        sofa::type::vector< double > coef = this->compute2PointsBarycoefs(p, theEdge[0], theEdge[1]);
+        sofa::type::vector< SReal > coef = this->compute2PointsBarycoefs(p, theEdge[0], theEdge[1]);
 
         sofa::type::vector< EdgeID > ancestor;
         ancestor.push_back(theEdge[0]); ancestor.push_back(theEdge[1]);
@@ -2157,7 +2157,7 @@ int TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideTetrahedronWithPlane(T
 
 
 template<class DataTypes>
-void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideRestTetrahedronsWithPlane(sofa::type::vector< sofa::type::vector<double> >& coefs, sofa::type::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal)
+void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideRestTetrahedronsWithPlane(sofa::type::vector< sofa::type::vector<SReal> >& coefs, sofa::type::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal)
 {
     //Current topological state
     sofa::Size nbPoint=this->m_container->getNbPoints();
@@ -2271,13 +2271,13 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::subDivideRestTetrahedronsWithP
 
     //barycentric coodinates of to be added points
     sofa::type::vector< sofa::type::vector<PointID> > ancestors;
-    sofa::type::vector< sofa::type::vector<double> > coefs;
+    sofa::type::vector< sofa::type::vector<SReal> > coefs;
     for(sofa::Index i=0; i<intersectedPoints.size(); i++)
     {
         Edge theEdge=m_container->getEdge(intersectedEdgeID[i]);
-        sofa::type::Vec<3,double> p;
+        sofa::type::Vec<3,Real> p;
         p[0]=intersectedPoints[i][0]; p[1]=intersectedPoints[i][1]; p[2]=intersectedPoints[i][2];
-        sofa::type::vector< double > coef = this->computeRest2PointsBarycoefs(p, theEdge[0], theEdge[1]);
+        sofa::type::vector< SReal > coef = this->computeRest2PointsBarycoefs(p, theEdge[0], theEdge[1]);
 
         sofa::type::vector< EdgeID > ancestor;
         ancestor.push_back(theEdge[0]); ancestor.push_back(theEdge[1]);

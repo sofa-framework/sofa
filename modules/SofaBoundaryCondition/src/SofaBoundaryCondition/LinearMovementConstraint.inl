@@ -43,6 +43,7 @@ LinearMovementConstraint<DataTypes>::LinearMovementConstraint()
     , d_relativeMovements( initData(&d_relativeMovements, bool(true), "relativeMovements", "If true, movements are relative to first position, absolute otherwise") )
     , showMovement( initData(&showMovement, bool(false), "showMovement", "Visualization of the movement to be applied to constrained dofs."))
     , l_topology(initLink("topology", "link to the topology container"))
+    , finished(false)
 {
     // default to indice 0
     m_indices.beginEdit()->push_back(0);
@@ -114,9 +115,7 @@ void LinearMovementConstraint<DataTypes>::init()
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
-    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
-
-    if (_topology)
+    if (sofa::core::topology::BaseMeshTopology* _topology = l_topology.get())
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
@@ -328,8 +327,8 @@ void LinearMovementConstraint<DataTypes>::findKeyTimes()
                 nextM = *it_m;
                 finished = true;
             }
-            it_t++;
-            it_m++;
+            ++it_t;
+            ++it_m;
         }
     }
 }
@@ -341,9 +340,9 @@ void LinearMovementConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::Ba
     static const unsigned blockSize = DataTypes::deriv_total_size;
 
     // clears the rows and columns associated with fixed particles
-    for(SetIndexArray::const_iterator it= m_indices.getValue().begin(), iend=m_indices.getValue().end(); it!=iend; it++ )
+    for (const auto id : m_indices.getValue())
     {
-        M->clearRowsCols( offset + (*it) * blockSize, offset + (*it+1) * (blockSize) );
+        M->clearRowsCols( offset + id * blockSize, offset + (id+1) * blockSize );
     }
     
 }
@@ -354,8 +353,7 @@ template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
-    core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get());
-    if(r)
+    if(const core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get()))
     {
         const unsigned int N = Deriv::size();
         const SetIndexArray & indices = m_indices.getValue();
@@ -376,10 +374,10 @@ template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
-    int o = matrix->getGlobalOffset(this->mstate.get());
+    const int o = matrix->getGlobalOffset(this->mstate.get());
     if (o >= 0)
     {
-        unsigned int offset = (unsigned int)o;
+        const unsigned int offset = (unsigned int)o;
         const unsigned int N = Deriv::size();
 
         const SetIndexArray & indices = m_indices.getValue();
@@ -399,7 +397,7 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
         return;
 
     vparams->drawTool()->saveLastState();
-    sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
+    const sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
 
     if (showMovement.getValue())
     {

@@ -29,7 +29,7 @@ namespace sofa::core::topology
 
 /// static variable to be used when not all information are provided during topological event.
 static const sofa::type::vector< Index > s_empty_ancestors;
-static const sofa::type::vector< double > s_empty_coefficients;
+static const sofa::type::vector< SReal > s_empty_coefficients;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////   Generic Topology Data Implementation   /////////////////////////////////////
@@ -235,7 +235,7 @@ template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::add(const sofa::type::vector<Index>& index,
     const sofa::type::vector< TopologyElementType >& elems,
     const sofa::type::vector<sofa::type::vector<Index> >& ancestors,
-    const sofa::type::vector<sofa::type::vector<double> >& coefs,
+    const sofa::type::vector<sofa::type::vector<SReal > >& coefs,
     const sofa::type::vector< AncestorElem >& ancestorElems)
 {
     std::size_t nbElements = index.size();
@@ -280,7 +280,7 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::type::vector<Inde
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::move(const sofa::type::vector<Index>& indexList,
     const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-    const sofa::type::vector< sofa::type::vector< double > >& coefs)
+    const sofa::type::vector< sofa::type::vector< SReal > >& coefs)
 {
     helper::WriteOnlyAccessor<Data< container_type > > data = this;
 
@@ -314,7 +314,7 @@ void TopologyData <TopologyElementType, VecT>::addOnMovedPosition(const sofa::ty
 
     // Recompute data
     sofa::type::vector< Index > ancestors;
-    sofa::type::vector< double >  coefs;
+    sofa::type::vector< SReal >  coefs;
     coefs.push_back(1.0);
     ancestors.resize(1);
 

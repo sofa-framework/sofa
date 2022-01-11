@@ -49,7 +49,6 @@ See [Authors.txt](https://github.com/sofa-framework/sofa/blob/master/Authors.txt
 SOFA is LGPL, except:
 - applications/projects (GPL)
 - applications/tutorials (GPL)
-- applications/plugins/Registration (QPL)
 - sub-directories with a license file specifying a different license
 
 LGPL refers to the GNU Lesser General Public License as published by the Free Software
