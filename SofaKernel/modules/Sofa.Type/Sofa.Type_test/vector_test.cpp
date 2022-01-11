@@ -44,6 +44,7 @@ class vector_test : public NumericTest<>,
 {
 public:
     void checkVector(const std::vector<std::string>& params) ;
+    void checkVectorAccessFailure() const;
 };
 
 template<class T>
@@ -80,6 +81,22 @@ void vector_test<T>::checkVector(const std::vector<std::string>& params)
     std::cerr.rdbuf( old );
 }
 
+template <class T>
+void vector_test<T>::checkVectorAccessFailure() const
+{
+    sofa::type::vector<T> initializedVector(12);
+
+    EXPECT_NO_THROW(initializedVector[11]);
+    if constexpr (sofa::type::isEnabledVectorAccessChecking)
+    {
+        EXPECT_THROW(initializedVector[12], std::logic_error);
+    }
+    else
+    {
+        //initializedVector[12] leads to an undefined behavior
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
 /// TEST THE vector<int> behavior
@@ -89,6 +106,10 @@ typedef vector_test<int> vector_test_int;
 TEST_P(vector_test_int, checkReadWriteBehavior)
 {
     this->checkVector(GetParam()) ;
+}
+TEST_F(vector_test_int, checkVectorAccessFailure)
+{
+    this->checkVectorAccessFailure() ;
 }
 
 std::vector<std::vector<std::string>> intvalues={
@@ -143,6 +164,10 @@ typedef vector_test<unsigned int> vector_test_unsigned_int;
 TEST_P(vector_test_unsigned_int, checkReadWriteBehavior)
 {
     this->checkVector(GetParam()) ;
+}
+TEST_F(vector_test_unsigned_int, checkVectorAccessFailure)
+{
+    this->checkVectorAccessFailure() ;
 }
 
 std::vector<std::vector<std::string>> uintvalues={
