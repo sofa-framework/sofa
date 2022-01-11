@@ -876,7 +876,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
 
         for(j=0; j<dimension; )
         {
-            const unsigned int nb = constraintsResolutions[j]->getNbLines();
+            const unsigned int nbDofs = constraintsResolutions[j]->getNbLines();
 
             if(tabErrors[j])
                 graph_constraints.push_back(tabErrors[j]);
@@ -885,7 +885,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
             else
                 graph_constraints.push_back(tol);
 
-            j += nb;
+            j += nbDofs;
         }
         solver->graphConstraints.endEdit();
 
@@ -984,10 +984,10 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
             std::copy_n(&dfree[j], nb, &d[j]);
 
             //   (b) contribution of forces are added to d
-            for (ConstraintCorrectionIterator iter=cclist_elems[j].begin(); iter!=cclist_elems[j].end(); ++iter)
+            for (auto* el : cclist_elems[j])
             {
-                if(*iter)
-                    (*iter)->addConstraintDisplacement(d, j, j+nb-1);
+                if (el)
+                    el->addConstraintDisplacement(d, j, j+nb-1);
             }
 
             //3. the specific resolution of the constraint(s) is called
@@ -1043,10 +1043,10 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
                     force[j+l] -= errF[l]; // DForce
                 }
 
-                for (ConstraintCorrectionIterator iter=cclist_elems[j].begin(); iter!=cclist_elems[j].end(); ++iter)
+                for (auto* el : cclist_elems[j])
                 {
-                    if(*iter)
-                        (*iter)->setConstraintDForce(force, j, j+nb-1, update);
+                    if (el)
+                        el->setConstraintDForce(force, j, j+nb-1, update);
                 }
                 std::copy(tempF.begin(), tempF.end(), &force[j]);
             }
