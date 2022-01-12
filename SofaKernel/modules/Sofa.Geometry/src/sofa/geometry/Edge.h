@@ -97,7 +97,7 @@ struct Edge
         static constexpr auto pointBaryCoefs(const sofa::type::Vec<3, T>& point, const Node& n0, const Node& n1)
     {
         sofa::type::Vec<2, T> baryCoefs;
-        T dis = (n1 - n0).norm();
+        const T dis = (n1 - n0).norm();
 
         if (dis < 1e-6) // TODO: change this threshold to limit
         {
