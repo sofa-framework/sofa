@@ -194,7 +194,7 @@ public:
         isEmpty = false;
         elems[0] = v;
     }
-    void addFront(TDestPtr v)
+    void addBegin(TDestPtr v)
     {
         isEmpty = false;
         elems[0] = v;
