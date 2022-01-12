@@ -20,7 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPINGRIGID_CPP
+#include <SofaMiscMapping/config.h>
 #include <SofaMiscMapping/BarycentricMappingRigid.inl>
+
 #include <SofaBaseMechanics/BarycentricMappers/TopologyBarycentricMapper.inl>
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.inl>
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.inl>

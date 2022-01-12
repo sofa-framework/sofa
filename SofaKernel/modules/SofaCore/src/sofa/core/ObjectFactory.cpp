@@ -25,9 +25,11 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/ComponentChange.h>
 #include <sofa/helper/StringUtils.h>
-
+#include <algorithm>
 namespace sofa::core
 {
+
+std::map<std::string, std::vector<std::string>> aliases;
 
 bool ObjectFactory::ClassEntry::isADeprecatedAlias(const std::string& name) const
 {
@@ -79,6 +81,12 @@ std::string ObjectFactory::shortName(std::string classname)
 bool ObjectFactory::addAlias(std::string name, std::string target, bool force,
                              ClassEntry::SPtr* previous)
 {
+    auto& tmp = aliases[name];
+    if( std::find(tmp.begin(), tmp.end(), target) == tmp.end() )
+        tmp.push_back(target);
+
+    return true;
+
     // Check that the pointed class does exist
     ClassEntryMap::iterator it = registry.find(target);
     if (it == registry.end())
@@ -101,6 +109,8 @@ bool ObjectFactory::addAlias(std::string name, std::string target, bool force,
         ClassEntry::SPtr& entry = aliasEntry;
         *previous = entry;
     }
+
+    msg_error("ObjectFactory::addAlias() >> ") << pointedEntry->className << " new alias " << target << "=>" << pointedEntry->aliases.size() << name;
 
     registry[name] = pointedEntry;
     pointedEntry->aliases.insert(name);
@@ -159,42 +169,48 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     const auto previous_errors = arg->getErrors();
     arg->clearErrors();
 
-    // For every classes in the registery
-    ClassEntryMap::iterator it = registry.find(classname);
-    if (it != registry.end()) // Found the classname
+    bool isInTheFactory = false;
+    for(auto& realclassname : aliases[classname])
     {
-        entry = it->second;
-        // If no template has been given or if the template does not exist, first try with the default one
-        if(templatename.empty() || entry->creatorMap.find(templatename) == entry->creatorMap.end())
-            templatename = entry->defaultTemplate;
 
-        CreatorMap::iterator it2 = entry->creatorMap.find(templatename);
-        if (it2 != entry->creatorMap.end())
+        // For every classes in the registery
+        ClassEntryMap::iterator it = registry.find(realclassname);
+        if (it != registry.end()) // Found the classname
         {
-            Creator::SPtr c = it2->second;
-            if (c->canCreate(context, arg)) {
-                creators.push_back(*it2);
-            } else {
-                creators_errors[templatename] = arg->getErrors();
-                arg->clearErrors();
-            }
-        }
+            isInTheFactory = true;
+            entry = it->second;
+            // If no template has been given or if the template does not exist, first try with the default one
+            if(templatename.empty() || entry->creatorMap.find(templatename) == entry->creatorMap.end())
+                templatename = entry->defaultTemplate;
 
-        // If object cannot be created with the given template (or the default one), try all possible ones
-        if (creators.empty())
-        {
-            CreatorMap::iterator it3;
-            for (it3 = entry->creatorMap.begin(); it3 != entry->creatorMap.end(); ++it3)
+            CreatorMap::iterator it2 = entry->creatorMap.find(templatename);
+            if (it2 != entry->creatorMap.end())
             {
-                if (it3->first == templatename)
-                    continue; // We already tried to create the object with the specified (or default) template
-
-                Creator::SPtr c = it3->second;
-                if (c->canCreate(context, arg)){
-                    creators.push_back(*it3);
+                Creator::SPtr c = it2->second;
+                if (c->canCreate(context, arg)) {
+                    creators.push_back(*it2);
                 } else {
-                    creators_errors[it3->first] = arg->getErrors();
+                    creators_errors[templatename] = arg->getErrors();
                     arg->clearErrors();
+                }
+            }
+
+            // If object cannot be created with the given template (or the default one), try all possible ones
+            if (creators.empty())
+            {
+                CreatorMap::iterator it3;
+                for (it3 = entry->creatorMap.begin(); it3 != entry->creatorMap.end(); ++it3)
+                {
+                    if (it3->first == templatename)
+                        continue; // We already tried to create the object with the specified (or default) template
+
+                    Creator::SPtr c = it3->second;
+                    if (c->canCreate(context, arg)){
+                        creators.push_back(*it3);
+                    } else {
+                        creators_errors[it3->first] = arg->getErrors();
+                        arg->clearErrors();
+                    }
                 }
             }
         }
@@ -210,7 +226,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
 
         using sofa::helper::lifecycle::ComponentChange;
         using sofa::helper::lifecycle::uncreatableComponents;
-        if(it == registry.end())
+        if(!isInTheFactory)
         {
             arg->logError("The object is not in the factory.");
             if( uncreatableComponents.find(classname) != uncreatableComponents.end() )
@@ -649,14 +665,14 @@ RegisterObject::operator int()
         {
             if (reg.aliases.find(alias) == reg.aliases.end())
             {
-                ObjectFactory::getInstance()->addAlias(alias,fullname);
+                ObjectFactory::getInstance()->addAlias(alias, fullname);
             }
         }
 
-        if (!ObjectFactory::HasCreator(reg.className))
-        {
-            ObjectFactory::getInstance()->addAlias(reg.className,fullname);
-        }
+        //if (!ObjectFactory::HasCreator(reg.className))
+        //{
+        ObjectFactory::getInstance()->addAlias(reg.className, fullname);
+        //}
         return 1;
     }
 }

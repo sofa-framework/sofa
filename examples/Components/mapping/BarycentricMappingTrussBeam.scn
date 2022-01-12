@@ -46,7 +46,7 @@
             <UniformMass vertexMass="0.001 0.001 [0.0001 0 0 0 0.0001 0 0 0 0.0001]" />
             <BeamFEMForceField name="BeamFEM" radius="0.005" youngModulus="3000000000" poissonRatio="0.45" />
             <ConstantForceField indices="5" forces="0 0 0 -10 0 0" />
-            <BarycentricMapping isMechanical="true" input="@TrussMO" output="@BeamMO" />
+            <BarycentricMapping isMechanical="true" input="@TrussMO" output="@BeamMO" template="Vec3d,Rigid3d"/>
             <Node name="VisuThread">
                 <MechanicalObject name="Quads" />
                 <include href="Objects/QuadSetTopology.xml" />
