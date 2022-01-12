@@ -121,8 +121,8 @@ struct Edge
         static constexpr bool intersectionWithPlane(const Node& n0, const Node& n1, const sofa::type::Vec<3, T>& planP0, const sofa::type::Vec<3, T>& normal, sofa::type::Vec<3, T>& intersection)
     {
         //plane equation
-        sofa::type::Vec<3, T> planNorm = normal.normalized();
-        T d = planNorm * planP0;
+        const sofa::type::Vec<3, T> planNorm = normal.normalized();
+        const T d = planNorm * planP0;
 
         //compute intersection between line and plane equation
         T t = (d - planNorm * n0) / (planNorm * (n1 - n0));
@@ -132,8 +132,7 @@ struct Edge
             intersection = edgeP1 + (edgeP2 - edgeP1) * t;
             return true;
         }
-        else
-            return false;
+        return false;
     }
 };
 
