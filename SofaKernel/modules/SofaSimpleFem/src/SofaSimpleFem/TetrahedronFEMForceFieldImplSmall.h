@@ -31,19 +31,19 @@ class TetrahedronFEMForceFieldImplSmall : public TetrahedronFEMForceFieldImpl<Da
 public:
 
     using Inherit = TetrahedronFEMForceFieldImpl<DataTypes>;
-    using Inherit::Real;
-    using Inherit::Coord;
-    using Inherit::Deriv;
-    using Inherit::VecCoord;
-    using Inherit::Element;
-    using Inherit::VecElement;
-    using Inherit::Displacement;
-    using Inherit::MaterialStiffness;
-    using Inherit::VecStrainDisplacement;
-    using Inherit::Force;
-    using Inherit::FiniteElementArrays;
-    using Inherit::Transformation;
-    using Inherit::StiffnessMatrix;
+    using typename Inherit::Real;
+    using typename Inherit::Coord;
+    using typename Inherit::Deriv;
+    using typename Inherit::VecCoord;
+    using typename Inherit::Element;
+    using typename Inherit::VecElement;
+    using typename Inherit::Displacement;
+    using typename Inherit::MaterialStiffness;
+    using typename Inherit::VecStrainDisplacement;
+    using typename Inherit::Force;
+    using typename Inherit::FiniteElementArrays;
+    using typename Inherit::Transformation;
+    using typename Inherit::StiffnessMatrix;
 
     void init(const FiniteElementArrays& finiteElementArrays) override;
     void addForce(const FiniteElementArrays& finiteElementArrays) override;
@@ -57,9 +57,9 @@ protected:
 
     void addForceElementAssembled(const FiniteElementArrays& finiteElementArrays, const Element& element, const unsigned int elementIndex);
 
-    static Displacement computeDisplacement(const VecCoord& initialPoints, const VecCoord& positions, const Element& element);
+    static typename Inherit::Displacement computeDisplacement(const VecCoord& initialPoints, const VecCoord& positions, const Element& element);
 
-    static Displacement computeDisplacement(
+    static typename Inherit::Displacement computeDisplacement(
         const Coord& a_0, const Coord& b_0, const Coord& c_0, const Coord& d_0,
         const Coord& a  , const Coord& b  , const Coord& c  , const Coord& d
     );

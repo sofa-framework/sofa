@@ -31,29 +31,29 @@ class TetrahedronFEMForceFieldImplCorotational : public TetrahedronFEMForceField
 public:
 
     using Inherit = TetrahedronFEMForceFieldImpl<DataTypes>;
-    using Inherit::Real;
-    using Inherit::Coord;
-    using Inherit::Deriv;
-    using Inherit::VecCoord;
-    using Inherit::VecDeriv;
-    using Inherit::Element;
-    using Inherit::VecElement;
-    using Inherit::Displacement;
-    using Inherit::MaterialStiffness;
-    using Inherit::StrainDisplacement;
-    using Inherit::VecStrainDisplacement;
-    using Inherit::Force;
-    using Inherit::FiniteElementArrays;
-    using Inherit::Transformation;
-    using Inherit::StiffnessMatrix;
+    using typename Inherit::Real;
+    using typename Inherit::Coord;
+    using typename Inherit::Deriv;
+    using typename Inherit::VecCoord;
+    using typename Inherit::VecDeriv;
+    using typename Inherit::Element;
+    using typename Inherit::VecElement;
+    using typename Inherit::Displacement;
+    using typename Inherit::MaterialStiffness;
+    using typename Inherit::StrainDisplacement;
+    using typename Inherit::VecStrainDisplacement;
+    using typename Inherit::Force;
+    using typename Inherit::FiniteElementArrays;
+    using typename Inherit::Transformation;
+    using typename Inherit::StiffnessMatrix;
 
     void init(const FiniteElementArrays& finiteElementArrays) override;
     void addForce(const FiniteElementArrays& finiteElementArrays) override;
     void addDForce(const FiniteElementArrays& finiteElementArrays, Real kFactor) override;
 
-    Displacement getDisplacement(const VecCoord& positions, const Element& element, unsigned elementIndex) const override;
+    typename Inherit::Displacement getDisplacement(const VecCoord& positions, const Element& element, unsigned elementIndex) const override;
 
-    Transformation getRotation(const unsigned int elementIndex) const override
+    typename Inherit::Transformation getRotation(const unsigned int elementIndex) const override
     {
         return m_rotations[elementIndex];
     }
@@ -89,7 +89,7 @@ protected:
     virtual type::fixed_array<Coord,4>
     computeRotatedInitialElement(const Transformation& rotation, const Element& element, const VecCoord& initialPoints) const;
 
-    StiffnessMatrix computeStiffnessMatrix(const MaterialStiffness &K, const StrainDisplacement &J, unsigned elementIndex) const override;
+    typename Inherit::StiffnessMatrix computeStiffnessMatrix(const MaterialStiffness &K, const StrainDisplacement &J, unsigned elementIndex) const override;
 };
 
 }
