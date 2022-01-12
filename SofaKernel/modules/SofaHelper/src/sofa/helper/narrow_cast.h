@@ -62,11 +62,9 @@ namespace sofa::helper
             throw narrowing_error{};
         }
 
-        if constexpr (std::is_arithmetic_v<T>)
+        if constexpr (std::is_arithmetic_v<T> && std::is_signed_v<T> != std::is_signed_v<U>)
         {
-            constexpr bool is_different_signedness = std::is_signed_v<T> != std::is_signed_v<U>;
-
-            if (is_different_signedness && (t < T{}) != (u < U{}))
+            if ((t < T{}) != (u < U{}))
             {
                 throw narrowing_error{};
             }
