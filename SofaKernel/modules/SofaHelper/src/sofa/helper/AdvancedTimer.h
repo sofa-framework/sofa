@@ -188,7 +188,7 @@ public:
                 const auto it = idfac.idsMap.find(name);
                 if (it == idfac.idsMap.end())
                 {
-                    const auto idsMapSize = idfac.idsMap.size();
+                    const auto idsMapSize = static_cast<unsigned int>(idfac.idsMap.size());
                     idfac.idsMap.insert({name, idsMapSize});
                     idfac.idsList.push_back(name);
                     return idsMapSize;
