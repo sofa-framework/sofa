@@ -16,3 +16,7 @@ namespace sofa::component::io::misc
 {
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
 } // namespace sofa::component::io::misc
+
+// Keep the previous macros
+#define SOFAGENERALLOADER_HAVE_ZLIB SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+#define SOFAEXPORTER_HAVE_ZLIB SOFA_COMPONENT_IO_MISC_HAVE_ZLIB

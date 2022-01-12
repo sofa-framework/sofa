@@ -18,6 +18,9 @@ namespace sofa::component::io::mesh
 } // namespace sofa::component::io::mesh
 
 // DEPRECATION MACROS
+// Keep the previous macros
+#define SOFAGENERALLOADER_HAVE_ZLIB SOFA_COMPONENT_IO_MESH_HAVE_ZLIB
+#define SOFAEXPORTER_HAVE_ZLIB SOFA_COMPONENT_IO_MESH_HAVE_ZLIB
 
 #define SOFA_ATTRIBUTE_DEPRECATED__SOFAEXPORTER_NAMESPACE_1712() \
     SOFA_ATTRIBUTE_DEPRECATED( \
