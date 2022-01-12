@@ -32,13 +32,13 @@ class TetrahedronFEMForceFieldImplPolar : public TetrahedronFEMForceFieldImplCor
 protected:
 
     using Inherit = TetrahedronFEMForceFieldImplCorotational<DataTypes>;
-    using Inherit::Transformation;
-    using Inherit::Coord;
-    using Inherit::VecCoord;
-    using Inherit::Real;
-    using Inherit::Displacement;
-    using Inherit::Element;
-    using Inherit::FiniteElementArrays;
+    using typename Inherit::Transformation;
+    using typename Inherit::Coord;
+    using typename Inherit::VecCoord;
+    using typename Inherit::Real;
+    using typename Inherit::Displacement;
+    using typename Inherit::Element;
+    using typename Inherit::FiniteElementArrays;
 
     void computeRotation(Transformation& rotation, const VecCoord& positions, Index a, Index b, Index c, Index d, unsigned elementIndex) const override;
 

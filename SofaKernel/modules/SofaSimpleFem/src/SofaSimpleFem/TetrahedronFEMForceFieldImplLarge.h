@@ -31,9 +31,9 @@ class TetrahedronFEMForceFieldImplLarge : public TetrahedronFEMForceFieldImplCor
 {
 public:
     using Inherit = TetrahedronFEMForceFieldImplCorotational<DataTypes>;
-    using Inherit::Transformation;
-    using Inherit::Coord;
-    using Inherit::VecCoord;
+    using typename Inherit::Transformation;
+    using typename Inherit::Coord;
+    using typename Inherit::VecCoord;
 
 protected:
 

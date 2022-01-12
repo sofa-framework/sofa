@@ -31,12 +31,12 @@ class TetrahedronFEMForceFieldImplSVD : public TetrahedronFEMForceFieldImplPolar
 {
 public:
     using Inherit = TetrahedronFEMForceFieldImplCorotational<DataTypes>;
-    using Inherit::FiniteElementArrays;
-    using Inherit::Transformation;
-    using Inherit::Coord;
-    using Inherit::VecCoord;
-    using Inherit::Real;
-    using Inherit::Displacement;
+    using typename Inherit::FiniteElementArrays;
+    using typename Inherit::Transformation;
+    using typename Inherit::Coord;
+    using typename Inherit::VecCoord;
+    using typename Inherit::Real;
+    using typename Inherit::Displacement;
 
     void init(const FiniteElementArrays& finiteElementArrays) override;
 

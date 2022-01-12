@@ -199,7 +199,8 @@ void TetrahedronFEMForceFieldImplCorotational<DataTypes>::addForceAssembled(
     }
     else
     {
-        if (static bool first = true)
+        static bool first = true;
+        if (first)
         {
             msg_error("TetrahedronFEMForceFieldImpl") << "Assembled matrix with plasticity is not supported";
             first = false;
@@ -236,7 +237,7 @@ void TetrahedronFEMForceFieldImplCorotational<DataTypes>::addForceElementAssembl
     (*finiteElementArrays.strainDisplacements)[elementIndex][9][0] = 0;
     (*finiteElementArrays.strainDisplacements)[elementIndex][10][1] = 0;
 
-    assembleStiffnessMatrix(finiteElementArrays, element, elementIndex);
+    this->assembleStiffnessMatrix(finiteElementArrays, element, elementIndex);
 
     Force F;
     Inherit::computeForce(F,

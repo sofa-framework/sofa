@@ -112,7 +112,8 @@ void TetrahedronFEMForceFieldImplSmall<DataTypes>::addForceAssembled(const Finit
     }
     else
     {
-        if (static bool first = true)
+        static bool first = true;
+        if (first)
         {
             msg_error("TetrahedronFEMForceFieldImpl") << "Assembled matrix with plasticity is not supported";
             first = false;
@@ -149,7 +150,7 @@ void TetrahedronFEMForceFieldImplSmall<DataTypes>::addForceElementAssembled(
         *finiteElementArrays.positions,
         element);
 
-    const auto JKJt = assembleStiffnessMatrix(finiteElementArrays, element, elementIndex);
+    const auto JKJt = this->assembleStiffnessMatrix(finiteElementArrays, element, elementIndex);
 
     const auto F = JKJt * displacement;
 
