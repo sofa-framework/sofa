@@ -422,13 +422,20 @@ public:
     }
 
     /// Vector negation.
-    template<typename = std::enable_if_t<std::is_signed_v<ValueType> > >
-    constexpr Vec<N,ValueType> operator-() const noexcept
+    constexpr Vec<N, ValueType> operator-() const noexcept
     {
-        Vec<N,ValueType> r(NOINIT);
-        for (Size i=0; i<N; i++)
-            r[i]=-this->elems[i];
-        return r;
+        if constexpr (std::is_unsigned_v<ValueType>)
+        {
+            static_assert("Trying to negate an unsigned vector");
+            return *this;
+        }
+        else
+        {
+            Vec<N,ValueType> r(NOINIT);
+            for (Size i=0; i<N; i++)
+                r[i]=-this->elems[i];
+            return r;
+        }
     }
 
     /// Squared norm.
