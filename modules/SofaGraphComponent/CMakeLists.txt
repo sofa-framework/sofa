@@ -19,11 +19,8 @@ list(APPEND HEADER_FILES
     ${SOFAGRAPHCOMPONENT_SRC}/AddRecordedCameraButtonSetting.h
     ${SOFAGRAPHCOMPONENT_SRC}/AttachBodyButtonSetting.h
     ${SOFAGRAPHCOMPONENT_SRC}/FixPickedParticleButtonSetting.h
-    ${SOFAGRAPHCOMPONENT_SRC}/Gravity.h
     ${SOFAGRAPHCOMPONENT_SRC}/InteractingBehaviorModel.h
     ${SOFAGRAPHCOMPONENT_SRC}/MouseButtonSetting.h
-    ${SOFAGRAPHCOMPONENT_SRC}/PauseAnimation.h
-    ${SOFAGRAPHCOMPONENT_SRC}/PauseAnimationOnEvent.h
     ${SOFAGRAPHCOMPONENT_SRC}/SofaDefaultPathSetting.h
     ${SOFAGRAPHCOMPONENT_SRC}/StatsSetting.h
     ${SOFAGRAPHCOMPONENT_SRC}/ViewerSetting.h
@@ -36,17 +33,13 @@ list(APPEND HEADER_FILES
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckUsingAlias.h
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckerVisitor.h
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckerListener.h
-    ${SOFAGRAPHCOMPONENT_SRC}/APIVersion.h
     )
 list(APPEND SOURCE_FILES
     ${SOFAGRAPHCOMPONENT_SRC}/AddFrameButtonSetting.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/AddRecordedCameraButtonSetting.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/AttachBodyButtonSetting.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/FixPickedParticleButtonSetting.cpp
-    ${SOFAGRAPHCOMPONENT_SRC}/Gravity.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/MouseButtonSetting.cpp
-    ${SOFAGRAPHCOMPONENT_SRC}/PauseAnimation.cpp
-    ${SOFAGRAPHCOMPONENT_SRC}/PauseAnimationOnEvent.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/SofaDefaultPathSetting.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/StatsSetting.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/ViewerSetting.cpp
@@ -58,7 +51,6 @@ list(APPEND SOURCE_FILES
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckUsingAlias.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckerVisitor.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckerListener.cpp
-    ${SOFAGRAPHCOMPONENT_SRC}/APIVersion.cpp
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

@@ -6,22 +6,10 @@ set(SOFABASEUTILS_SRC "src/${PROJECT_NAME}")
 set(HEADER_FILES
     ${SOFABASEUTILS_SRC}/config.h.in
     ${SOFABASEUTILS_SRC}/initSofaBaseUtils.h
-    ${SOFABASEUTILS_SRC}/messageHandlerComponent.h
-    ${SOFABASEUTILS_SRC}/MakeAliasComponent.h
-    ${SOFABASEUTILS_SRC}/MakeDataAliasComponent.h
-    ${SOFABASEUTILS_SRC}/InfoComponent.h
-    ${SOFABASEUTILS_SRC}/RequiredPlugin.h
-    ${SOFABASEUTILS_SRC}/AddResourceRepository.h
 )
 
 set(SOURCE_FILES
     ${SOFABASEUTILS_SRC}/initSofaBaseUtils.cpp
-    ${SOFABASEUTILS_SRC}/messageHandlerComponent.cpp
-    ${SOFABASEUTILS_SRC}/MakeAliasComponent.cpp
-    ${SOFABASEUTILS_SRC}/MakeDataAliasComponent.cpp
-    ${SOFABASEUTILS_SRC}/InfoComponent.cpp
-    ${SOFABASEUTILS_SRC}/RequiredPlugin.cpp
-    ${SOFABASEUTILS_SRC}/AddResourceRepository.cpp
 )
 
 sofa_find_package(SofaFramework REQUIRED) # SofaCore
