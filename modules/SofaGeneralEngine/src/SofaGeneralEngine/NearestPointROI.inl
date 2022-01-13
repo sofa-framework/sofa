@@ -106,13 +106,13 @@ template <class DataTypes>
 void NearestPointROI<DataTypes>::computeNearestPointMaps(const VecCoord& x1, const VecCoord& x2)
 {
     Coord pt2;
-    auto dist = [](const Coord& a, const Coord& b) { return (b - a).norm(); };
-    auto cmp = [&pt2, &dist](const Coord& a, const Coord& b) {
+    constexpr auto dist = [](const Coord& a, const Coord& b) { return (b - a).norm(); };
+    constexpr auto cmp = [&pt2, &dist](const Coord& a, const Coord& b) {
         return dist(a, pt2) < dist(b, pt2);
     };
 
-    auto indices1 = f_indices1.beginEdit();
-    auto indices2 = f_indices2.beginEdit();
+    auto indices1 = sofa::helper::getWriteOnlyAccessor(f_indices1);
+    auto indices2 = sofa::helper::getWriteOnlyAccessor(f_indices2);
     indices1->clear();
     indices2->clear();
 
@@ -128,12 +128,9 @@ void NearestPointROI<DataTypes>::computeNearestPointMaps(const VecCoord& x1, con
             indices2->push_back(i2);
         }
     }
-    
-    f_indices1.endEdit();
-    f_indices2.endEdit();
 
     // Check coherency of size between indices vectors 1 and 2
-    if (f_indices1.getValue().size() != f_indices2.getValue().size())
+    if (indices1.size() != indices2.size())
     {
         msg_error() << "Size mismatch between indices1 and indices2";
     }
