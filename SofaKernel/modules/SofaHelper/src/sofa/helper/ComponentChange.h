@@ -121,7 +121,7 @@ public:
         output << "This component has been MOVED from " << fromPlugin << " to " << toPlugin << " since SOFA " << sinceVersion << ". "
                 << "You can still use this component because " << fromPlugin << " loaded " << toPlugin <<". "
                <<  "It is advised to directly load " << toPlugin << " from now on, e.g. you may add:"
-               <<  "You can do it by adding <RequiredPlugin name='" << toPlugin << "'/>";
+               <<  "<RequiredPlugin name='" << toPlugin << "'/>";
         m_message = output.str();
         m_changeVersion = sinceVersion;
     }
