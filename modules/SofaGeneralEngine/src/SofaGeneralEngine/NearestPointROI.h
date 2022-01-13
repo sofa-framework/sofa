@@ -35,7 +35,13 @@ namespace sofa::component::engine
 {
 
 /**
- * Attach given pair of particles, projecting the positions of the second particles to the first ones.
+ * Given two mechanical states, find correspondance between degrees of freedom, based on the minimal distance.
+ *
+ * Project all the points from the second mechanical state on the first one. This done by finding the point in the
+ * first mechanical state closest to each point in the second mechanical state. If the distance is less than a provided
+ * distance (named radius), the indices of the degrees of freedom in their respective mechanical states is added to
+ * an output list.
+ *
  */
 template <class DataTypes>
 class NearestPointROI : public sofa::core::DataEngine, public core::behavior::PairStateAccessor<DataTypes, DataTypes>

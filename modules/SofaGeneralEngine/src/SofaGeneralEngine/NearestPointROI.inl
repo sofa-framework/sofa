@@ -121,10 +121,13 @@ void NearestPointROI<DataTypes>::computeNearestPointMaps(const VecCoord& x1, con
     for (unsigned int i2 = 0; i2 < x2.size(); ++i2)
     {
         pt2 = x2[i2];
-        auto el = std::min_element(std::begin(x1), std::end(x1), cmp);
-        if (dist(*el, pt2) < maxR) 
+
+        //find the nearest element from pt2 in x1
+        auto pt1 = std::min_element(std::begin(x1), std::end(x1), cmp);
+
+        if (dist(*pt1, pt2) < maxR)
         {
-            indices1->push_back(std::distance(std::begin(x1), el));
+            indices1->push_back(std::distance(std::begin(x1), pt1));
             indices2->push_back(i2);
         }
     }
