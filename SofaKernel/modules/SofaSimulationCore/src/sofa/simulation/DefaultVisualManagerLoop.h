@@ -30,8 +30,7 @@ namespace sofa::core::objectmodel
 {
 // Forward declaration for extern template declaration. This design permit to
 // not #include<sofa::simulation::Node>
-class DefaultVisualManagerLoop;
-extern template class SingleLink< DefaultVisualManagerLoop, simulation::Node, BaseLink::FLAG_STOREPATH>;
+extern template class SingleLink< sofa::simulation::DefaultVisualManagerLoop, simulation::Node, BaseLink::FLAG_STOREPATH>;
 }
 
 namespace sofa::simulation
