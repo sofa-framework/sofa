@@ -53,8 +53,15 @@ list(APPEND SOURCE_FILES
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckerListener.cpp
     )
 
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaSimulationCore SofaBaseUtils SofaBaseCollision)
+
+message(WARNING "${PROJECT_NAME} module is partly deprecated; some of its components are now in Sofa.Component.Utility.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.Utility REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Utility)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

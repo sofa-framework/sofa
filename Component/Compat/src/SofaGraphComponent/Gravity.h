@@ -19,68 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseUtils/initSofaBaseUtils.h>
+#pragma once
+#include <sofa/component/utility/Gravity.h>
 
-#include <sofa/helper/system/PluginManager.h>
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/utility/Gravity.h")
 
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
-
-namespace sofa::component
+namespace sofa::component::contextobject
 {
 
-void initSofaBaseUtils()
-{
-    static bool first = true;
-    if (first)
-    {        
-        // msg_deprecated("SofaBaseUtils") << "SofaBaseUtils is deprecated; please load Sofa.Component.Utility instead.";
+    using Gravity = sofa::component::utility::Gravity;
 
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Utility");
-
-        first = false;
-    }
-}
-
-extern "C" {
-    SOFA_SOFABASEUTILS_API void initExternalModule();
-    SOFA_SOFABASEUTILS_API const char* getModuleName();
-    SOFA_SOFABASEUTILS_API const char* getModuleVersion();
-    SOFA_SOFABASEUTILS_API const char* getModuleLicense();
-    SOFA_SOFABASEUTILS_API const char* getModuleDescription();
-    SOFA_SOFABASEUTILS_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{
-    initSofaBaseUtils();
-}
-
-const char* getModuleName()
-{
-    return sofa_tostring(SOFA_TARGET);
-}
-
-const char* getModuleVersion()
-{
-    return sofa_tostring(SOFABASEUTILS_VERSION);
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This plugin contains contains features about Base Utils.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-
-} // namespace sofa::component
+} // namespace sofa::component::contextobject

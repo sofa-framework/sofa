@@ -47,7 +47,7 @@ using sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::MessageDispatcher;
 
-#include <sofa/component/utility/messageHandlerComponent.h>
+#include <sofa/component/utility/MessageHandlerComponent.h>
 
 using std::string;
 

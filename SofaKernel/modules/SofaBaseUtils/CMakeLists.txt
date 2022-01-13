@@ -12,10 +12,13 @@ set(SOURCE_FILES
     ${SOFABASEUTILS_SRC}/initSofaBaseUtils.cpp
 )
 
-sofa_find_package(SofaFramework REQUIRED) # SofaCore
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore)
+
+message(WARNING "${PROJECT_NAME} module is deprecated; its components are in Sofa.Component.Utility.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.Utility REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Utility)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
