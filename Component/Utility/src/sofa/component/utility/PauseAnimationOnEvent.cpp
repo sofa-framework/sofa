@@ -19,12 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGraphComponent/PauseAnimationOnEvent.h>
+#include <sofa/component/utility/PauseAnimationOnEvent.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/PauseEvent.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::misc
+namespace sofa::component::utility
 {
 
 PauseAnimationOnEvent::PauseAnimationOnEvent() : paused(false)
@@ -63,4 +63,4 @@ int PauseAnimationOnEventClass = core::RegisterObject("PauseAnimationOnEvent")
 
 
 
-} // namespace sofa::component::misc
+} // namespace sofa::component::utility

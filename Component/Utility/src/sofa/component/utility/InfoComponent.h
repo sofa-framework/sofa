@@ -22,10 +22,10 @@
 #pragma once
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <SofaBaseUtils/config.h>
+#include <sofa/component/utility/config.h>
 
 
-namespace sofa::component::infocomponent
+namespace sofa::component::utility::infocomponent
 {
 
 /// I use a per-file namespace so that I can employ the 'using' keywords without
@@ -36,7 +36,7 @@ using sofa::core::objectmodel::BaseObject ;
 
 /// Despite this component does absolutely nothin... it is very usefull as it can be used to
 /// retain information scene graph.
-class SOFA_SOFABASEUTILS_API InfoComponent : public BaseObject
+class SOFA_COMPONENT_UTILITY_API InfoComponent : public BaseObject
 {
 public:
     SOFA_CLASS(InfoComponent, BaseObject);
@@ -45,11 +45,11 @@ public:
     ~InfoComponent() override{}
 };
 
-} // namespace sofa::component::infocomponent
+} // namespace sofa::component::utility::infocomponent
 
-namespace sofa::component
+namespace sofa::component::utility
 {
 /// Import the component from the per-file namespace.
 using infocomponent::InfoComponent ;
 
-} // namespace sofa::component
+} // namespace sofa::component::utility

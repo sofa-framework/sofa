@@ -21,19 +21,19 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGraphComponent/config.h>
+#include <sofa/component/utility/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/type/Vec.h>
 
-namespace sofa::component::misc
+namespace sofa::component::utility
 {
 
 /**
  * Abstract class defining how to pause the animation.
  */
-class PauseAnimation: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_UTILITY_API PauseAnimation: public core::objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(PauseAnimation, core::objectmodel::BaseObject);
@@ -52,4 +52,4 @@ protected:
     sofa::core::objectmodel::BaseNode* root;
 };
 
-} // namespace sofa::component::misc
+} // namespace sofa::component::utility

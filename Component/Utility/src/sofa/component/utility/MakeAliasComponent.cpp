@@ -25,11 +25,11 @@ using sofa::core::ObjectFactory ;
 
 using sofa::core::objectmodel::ComponentState ;
 
-#include <SofaBaseUtils/MakeAliasComponent.h>
+#include <sofa/component/utility/MakeAliasComponent.h>
 
 using std::string;
 
-namespace sofa::component::makealiascomponent
+namespace sofa::component::utility::makealiascomponent
 {
 
 MakeAliasComponent::MakeAliasComponent() :
@@ -80,4 +80,4 @@ int MakeAliasComponentClass = RegisterObject("This object create an alias to a c
         .add< MakeAliasComponent >()
         ;
 
-} // namespace sofa::component::makealiascomponent
+} // namespace sofa::component::utility::makealiascomponent

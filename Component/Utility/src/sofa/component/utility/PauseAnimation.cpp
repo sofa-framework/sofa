@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGraphComponent/PauseAnimation.h>
+#include <sofa/component/utility/PauseAnimation.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa::component::misc
+namespace sofa::component::utility
 {
 
 PauseAnimation::PauseAnimation()
@@ -52,4 +52,4 @@ void PauseAnimation::pause()
         root->getContext()->setAnimate(false);
 }
 
-} // namespace sofa::component::misc
+} // namespace sofa::component::utility

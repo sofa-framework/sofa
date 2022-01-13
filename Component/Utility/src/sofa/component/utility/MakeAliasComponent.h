@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaBaseUtils/config.h>
+#include <sofa/component/utility/config.h>
 
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -29,7 +29,7 @@
 
 #include <string>
 
-namespace sofa::component::makealiascomponent
+namespace sofa::component::utility::makealiascomponent
 {
 
 /// I use a per-file namespace so that I can employ the 'using' keywords without
@@ -38,7 +38,7 @@ namespace sofa::component::makealiascomponent
 /// for ease of use
 /// 
 /// A component to add alias to other components.
-class SOFA_SOFABASEUTILS_API MakeAliasComponent : public core::objectmodel::BaseObject
+class SOFA_COMPONENT_UTILITY_API MakeAliasComponent : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(MakeAliasComponent, core::objectmodel::BaseObject);
@@ -63,11 +63,11 @@ public:
     }
 };
 
-} // namespace sofa::component::makealiascomponent
+} // namespace sofa::component::utility::makealiascomponent
 
-namespace sofa::component
+namespace sofa::component::utility
 {
 /// Import the component from the per-file namespace.
 using makealiascomponent::MakeAliasComponent ;
 
-} // namespace sofa::component
+} // namespace sofa::component::utility
