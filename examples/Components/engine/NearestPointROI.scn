@@ -15,12 +15,15 @@
     <FreeMotionAnimationLoop parallelODESolving="true"/>
     <GenericConstraintSolver tolerance="0.001" maxIterations="1000" unbuilt="true" multithreading="true"/>
 
+    <!--
+        This Node shows how NearestPointROI is used to create constraints to link close vertices
+    -->
     <Node name="BilateralInteractionConstraint">
         <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <Node name="M1">
             <MechanicalObject name="mo"/>
-            <UniformMass vertexMass="1" />
+            <UniformMass totalMass="160" />
             <RegularGridTopology nx="4" ny="4" nz="10" xmin="0" xmax="3" ymin="0" ymax="3" zmin="0" zmax="9" />
             <BoxROI box="-0.1 -0.1 -0.1 3.1 3.1 0.1" name="box"/>
             <FixedConstraint indices="@box.indices"/>
@@ -29,14 +32,14 @@
         </Node>
         <Node name="M2">
             <MechanicalObject name="mo"/>
-            <UniformMass vertexMass="1" />
+            <UniformMass totalMass="160" />
             <RegularGridTopology nx="4" ny="4" nz="10" xmin="0" xmax="3" ymin="0" ymax="3" zmin="9" zmax="18" />
             <TetrahedronFEMForceField name="FEM" youngModulus="20000" poissonRatio="0.3" computeVonMisesStress="1" showVonMisesStressPerElement="true"/>
             <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0"/>
         </Node>
         <Node name="M3">
             <MechanicalObject name="mo"/>
-            <UniformMass vertexMass="1" />
+            <UniformMass totalMass="160" />
             <RegularGridTopology nx="4" ny="4" nz="10" xmin="0" xmax="3" ymin="0" ymax="3" zmin="18" zmax="27" />
             <BoxROI box="-0.1 -0.1 26.99 3.1 3.1 27.1" name="box"/>
             <FixedConstraint indices="@box.indices"/>
@@ -51,28 +54,31 @@
         <BilateralInteractionConstraint template="Vec3d" object1="@M2" object2="@M3" first_point="@np2.indices1" second_point="@np2.indices2" />
     </Node>
 
+    <!--
+        This Node shows how NearestPointROI is used to create SubsetMultiMapping and EdgeSetTopologyContainer.
+    -->
     <Node name="Springs">
         <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1"/>
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <Node name="M1">
             <MechanicalObject name="mo"/>
-            <UniformMass vertexMass="1" />
+            <UniformMass totalMass="160" />
             <RegularGridTopology nx="4" ny="4" nz="10" xmin="4" xmax="7" ymin="0" ymax="3" zmin="0" zmax="9" />
             <BoxROI box="3.9 -0.1 -0.1 7.1 3.1 0.1" name="box"/>
             <FixedConstraint indices="@box.indices"/>
             <TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" computeVonMisesStress="1" showVonMisesStressPerElement="true"/>
             <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0"/>
         </Node>
-        <Node name="M2">
+        <Node name="M2"> <!-- This object has a higher resolution than the others -->
             <MechanicalObject name="mo"/>
-            <UniformMass vertexMass="1" />
-            <RegularGridTopology nx="4" ny="4" nz="10" xmin="4" xmax="7" ymin="0" ymax="3" zmin="9" zmax="18" />
+            <UniformMass totalMass="160" />
+            <RegularGridTopology nx="8" ny="8" nz="20" xmin="4" xmax="7" ymin="0" ymax="3" zmin="9" zmax="18" />
             <TetrahedronFEMForceField name="FEM" youngModulus="20000" poissonRatio="0.3" computeVonMisesStress="1" showVonMisesStressPerElement="true"/>
             <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0"/>
         </Node>
         <Node name="M3">
             <MechanicalObject name="mo"/>
-            <UniformMass vertexMass="1" />
+            <UniformMass totalMass="160" />
             <RegularGridTopology nx="4" ny="4" nz="10" xmin="4" xmax="7" ymin="0" ymax="3" zmin="18" zmax="27" />
             <BoxROI box="3.9 -0.1 26.99 7.1 3.1 27.1" name="box"/>
             <FixedConstraint indices="@box.indices"/>
@@ -87,7 +93,9 @@
             Springs are created based on the topology.
         -->
         <Node name="merge1">
-            <NearestPointROI template="Vec3" name="np" object1="@../M1/mo" object2="@../M2/mo" radius="0.1"/>
+            <BoxROI name="box1" position="@../M1/mo.position" box="3.9 -0.1 8.9 7.1 3.1 9.1"/>
+            <BoxROI name="box2" position="@../M2/mo.position" box="3.9 -0.1 8.9 7.1 3.1 9.1"/>
+            <NearestPointROI template="Vec3" name="np" object1="@../M1/mo" object2="@../M2/mo" radius="1e5" filterIndices1="@box1.indices" filterIndices2="@box2.indices"/>
             <MechanicalObject name="dofs"/>
             <SubsetMultiMapping input="@../M1/mo @../M2/mo" output="@dofs" indexPairs="@np.indexPairs"/>
             <EdgeSetTopologyContainer edges="@np.edges"/>
@@ -95,7 +103,9 @@
         </Node>
 
         <Node name="merge2">
-            <NearestPointROI template="Vec3" name="np" object1="@../M2/mo" object2="@../M3/mo" radius="0.1"/>
+            <BoxROI name="box1" position="@../M2/mo.position" box="3.9 -0.1 17.9 7.1 3.1 18.1"/>
+            <BoxROI name="box2" position="@../M3/mo.position" box="3.9 -0.1 17.9 7.1 3.1 18.1"/>
+            <NearestPointROI template="Vec3" name="np" object1="@../M2/mo" object2="@../M3/mo" radius="1e5" filterIndices1="@box1.indices" filterIndices2="@box2.indices"/>
             <MechanicalObject name="dofs"/>
             <SubsetMultiMapping input="@../M2/mo @../M3/mo" output="@dofs" indexPairs="@np.indexPairs"/>
             <EdgeSetTopologyContainer edges="@np.edges"/>

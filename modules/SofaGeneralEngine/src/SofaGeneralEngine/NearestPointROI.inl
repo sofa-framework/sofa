@@ -29,10 +29,12 @@ template <class DataTypes>
 NearestPointROI<DataTypes>::NearestPointROI()
     : Inherit1()
     , Inherit2(nullptr, nullptr)
+    , d_filterIndices1( initData(&d_filterIndices1,"filterIndices1","Indices of the points to consider on the first model") )
+    , d_filterIndices2( initData(&d_filterIndices2,"filterIndices2","Indices of the points to consider on the first model") )
     , f_radius( initData(&f_radius,(Real)1,"radius", "Radius to search corresponding fixed point") )
     , d_useRestPosition(initData(&d_useRestPosition, true, "useRestPosition", "If true will use restPosition only at init"))
-    , f_indices1( initData(&f_indices1,"indices1","Indices of the points on the first model") )
-    , f_indices2( initData(&f_indices2,"indices2","Indices of the points on the second model") )
+    , f_indices1( initData(&f_indices1,"indices1","Indices from the first model associated to a dof from the second model") )
+    , f_indices2( initData(&f_indices2,"indices2","Indices from the second model associated to a dof from the first model") )
     , d_edges(initData(&d_edges, "edges", "List of edge indices"))
     , d_indexPairs(initData(&d_indexPairs, "indexPairs", "list of couples (parent index + index in the parent)"))
 {
@@ -110,9 +112,22 @@ void NearestPointROI<DataTypes>::computeNearestPointMaps(const VecCoord& x1, con
 {
     Coord pt2;
     constexpr auto dist = [](const Coord& a, const Coord& b) { return (b - a).norm2(); };
-    constexpr auto cmp = [&pt2, &dist](const Coord& a, const Coord& b) {
-        return dist(a, pt2) < dist(b, pt2);
+    const auto cmp = [&pt2, &x1, &dist](const Index a, const Index b) {
+        return dist(x1[a], pt2) < dist(x1[b], pt2);
     };
+
+    auto filterIndices1 = sofa::helper::getWriteAccessor(d_filterIndices1);
+    auto filterIndices2 = sofa::helper::getWriteAccessor(d_filterIndices2);
+    if (filterIndices1.empty())
+    {
+        filterIndices1.resize(x1.size());
+        std::iota(filterIndices1.begin(), filterIndices1.end(), 0);
+    }
+    if (filterIndices2.empty())
+    {
+        filterIndices2.resize(x2.size());
+        std::iota(filterIndices2.begin(), filterIndices2.end(), 0);
+    }
 
     auto indices1 = sofa::helper::getWriteOnlyAccessor(f_indices1);
     auto indices2 = sofa::helper::getWriteOnlyAccessor(f_indices2);
@@ -128,16 +143,17 @@ void NearestPointROI<DataTypes>::computeNearestPointMaps(const VecCoord& x1, con
     const Real maxR = f_radius.getValue();
     const auto maxRSquared = maxR * maxR;
 
-    for (unsigned int i2 = 0; i2 < x2.size(); ++i2)
+    for (const auto i2 : filterIndices2)
     {
         pt2 = x2[i2];
 
         //find the nearest element from pt2 in x1
-        auto pt1 = std::min_element(std::begin(x1), std::end(x1), cmp);
+        auto i1 = *std::min_element(std::begin(filterIndices1), std::end(filterIndices1), cmp);
+        const auto& pt1 = x1[i1];
 
-        if (dist(*pt1, pt2) < maxRSquared)
+        if (dist(pt1, pt2) < maxRSquared)
         {
-            indices1->push_back(std::distance(std::begin(x1), pt1));
+            indices1->push_back(i1);
             indices2->push_back(i2);
             edges->emplace_back(i2 * 2, i2 * 2 + 1);
 
