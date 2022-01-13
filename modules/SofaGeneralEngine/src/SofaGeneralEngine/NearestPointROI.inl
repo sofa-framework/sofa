@@ -107,7 +107,7 @@ template <class DataTypes>
 void NearestPointROI<DataTypes>::computeNearestPointMaps(const VecCoord& x1, const VecCoord& x2)
 {
     Coord pt2;
-    constexpr auto dist = [](const Coord& a, const Coord& b) { return (b - a).norm(); };
+    constexpr auto dist = [](const Coord& a, const Coord& b) { return (b - a).norm2(); };
     constexpr auto cmp = [&pt2, &dist](const Coord& a, const Coord& b) {
         return dist(a, pt2) < dist(b, pt2);
     };
@@ -118,6 +118,7 @@ void NearestPointROI<DataTypes>::computeNearestPointMaps(const VecCoord& x1, con
     indices2->clear();
 
     const Real maxR = f_radius.getValue();
+    const auto maxRSquared = maxR * maxR;
 
     for (unsigned int i2 = 0; i2 < x2.size(); ++i2)
     {
@@ -126,7 +127,7 @@ void NearestPointROI<DataTypes>::computeNearestPointMaps(const VecCoord& x1, con
         //find the nearest element from pt2 in x1
         auto pt1 = std::min_element(std::begin(x1), std::end(x1), cmp);
 
-        if (dist(*pt1, pt2) < maxR)
+        if (dist(*pt1, pt2) < maxRSquared)
         {
             indices1->push_back(std::distance(std::begin(x1), pt1));
             indices2->push_back(i2);
