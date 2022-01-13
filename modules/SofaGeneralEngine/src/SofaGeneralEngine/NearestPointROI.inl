@@ -21,16 +21,9 @@
 ******************************************************************************/
 #pragma once
 #include <SofaGeneralEngine/NearestPointROI.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/type/RGBAColor.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <iostream>
-#include <sofa/simulation/Node.h>
 
 namespace sofa::component::engine
 {
-
-using sofa::simulation::Node ;
 
 template <class DataTypes>
 NearestPointROI<DataTypes>::NearestPointROI()

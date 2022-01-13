@@ -25,26 +25,18 @@
 #include <sofa/core/behavior/PairInteractionProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/objectmodel/Event.h>
-#include <sofa/linearalgebra/BaseMatrix.h>
-#include <sofa/linearalgebra/BaseVector.h>
-#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/vector.h>
 #include <sofa/core/topology/TopologySubsetIndices.h>
-#include <set>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/config.h>
 
-
-
 namespace sofa::component::engine
 {
-/** Attach given pair of particles, projecting the positions of the second particles to the first ones.
-*/
 
-using sofa::core::behavior::MechanicalState ;
-
+/**
+ * Attach given pair of particles, projecting the positions of the second particles to the first ones.
+ */
 template <class DataTypes>
 class NearestPointROI : public sofa::core::DataEngine
 {
@@ -63,16 +55,14 @@ public:
     typedef type::vector<unsigned int> SetIndexArray;
     typedef sofa::core::topology::TopologySubsetIndices SetIndex;
 
-public:
     SetIndex f_indices1; ///< Indices of the source points on the first model
     SetIndex f_indices2; ///< Indices of the fixed points on the second model
     Data<Real> f_radius; ///< Radius to search corresponding fixed point if no indices are given
     Data<bool> d_useRestPosition; ///< If true will use rest position only at init. Otherwise will recompute the maps at each update. Default is true.
     
-    SingleLink<NearestPointROI<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;
-    SingleLink<NearestPointROI<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
+    SingleLink<NearestPointROI<DataTypes>, core::behavior::MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;
+    SingleLink<NearestPointROI<DataTypes>, core::behavior::MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
 
-public:
     NearestPointROI();
     ~NearestPointROI() override;
 
