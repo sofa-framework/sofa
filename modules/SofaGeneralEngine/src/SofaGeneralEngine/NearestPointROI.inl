@@ -34,7 +34,8 @@ NearestPointROI<DataTypes>::NearestPointROI()
     , f_radius( initData(&f_radius,(Real)1,"radius", "Radius to search corresponding fixed point") )
     , d_useRestPosition(initData(&d_useRestPosition, true, "useRestPosition", "If true will use restPosition only at init"))
 {
-
+    f_indices1.setGroup("Output");
+    f_indices2.setGroup("Output");
 }
 
 template <class DataTypes>
