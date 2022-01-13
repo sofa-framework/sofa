@@ -38,10 +38,10 @@ namespace sofa::component::engine
  * Attach given pair of particles, projecting the positions of the second particles to the first ones.
  */
 template <class DataTypes>
-class NearestPointROI : public sofa::core::DataEngine
+class NearestPointROI : public sofa::core::DataEngine, public core::behavior::PairStateAccessor<DataTypes, DataTypes>
 {
-public:    
-    SOFA_CLASS(SOFA_TEMPLATE(NearestPointROI, DataTypes), sofa::core::DataEngine);
+public:
+    SOFA_CLASS2(SOFA_TEMPLATE(NearestPointROI, DataTypes), sofa::core::DataEngine, SOFA_TEMPLATE2(core::behavior::PairStateAccessor, DataTypes, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -59,9 +59,6 @@ public:
     SetIndex f_indices2; ///< Indices of the fixed points on the second model
     Data<Real> f_radius; ///< Radius to search corresponding fixed point if no indices are given
     Data<bool> d_useRestPosition; ///< If true will use rest position only at init. Otherwise will recompute the maps at each update. Default is true.
-    
-    SingleLink<NearestPointROI<DataTypes>, core::behavior::MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;
-    SingleLink<NearestPointROI<DataTypes>, core::behavior::MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
 
     NearestPointROI();
     ~NearestPointROI() override;

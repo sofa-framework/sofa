@@ -27,12 +27,12 @@ namespace sofa::component::engine
 
 template <class DataTypes>
 NearestPointROI<DataTypes>::NearestPointROI()
-    : f_indices1( initData(&f_indices1,"indices1","Indices of the points on the first model") )
+    : Inherit1()
+    , Inherit2(nullptr, nullptr)
+    , f_indices1( initData(&f_indices1,"indices1","Indices of the points on the first model") )
     , f_indices2( initData(&f_indices2,"indices2","Indices of the points on the second model") )
     , f_radius( initData(&f_radius,(Real)1,"radius", "Radius to search corresponding fixed point") )
     , d_useRestPosition(initData(&d_useRestPosition, true, "useRestPosition", "If true will use restPosition only at init"))
-    , mstate1(initLink("object1", "First object to constrain"))
-    , mstate2(initLink("object2", "Second object to constrain"))
 {
 
 }
@@ -45,36 +45,13 @@ NearestPointROI<DataTypes>::~NearestPointROI()
 template <class DataTypes>
 void NearestPointROI<DataTypes>::init()
 {
-    // Test inputs
-    bool success = true;
-    if (mstate1 && !mstate1.get())
-    {
-        msg_error_when(!mstate1.get()) << "Cannot Initialize, mstate1 link is pointing to invalid object!";
-        success = false;
-    }
-    else if (!mstate1)
-    {
-        msg_error_when(!mstate1) << "Cannot Initialize, mstate1 link is invalid!";
-        success = false;
-    }
+    Inherit2::init();
 
-    if (mstate2 && !mstate2.get())
-    {
-        msg_error_when(!mstate2.get()) << "Cannot Initialize, mstate2 link is pointing to invalid object!";
-        success = false;
-    }
-    else if (!mstate2)
-    {
-        msg_error_when(!mstate2) << "Cannot Initialize, mstate2 link is invalid!";
-        success = false;
-    }
-
-    if (!success)
+    if (!this->mstate1 || !this->mstate2)
     {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
-
 
     if (d_useRestPosition.getValue())
     {
@@ -95,11 +72,14 @@ template <class DataTypes>
 void NearestPointROI<DataTypes>::reinit()
 {
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-    if(f_radius.getValue() <= 0){
+    if(f_radius.getValue() <= 0)
+    {
         msg_error() << "Radius must be a positive real.";
         return;
     }
-    if(!this->mstate1 || !this->mstate2){
+
+    if(!this->mstate1 || !this->mstate2)
+    {
         msg_error() << "2 valid mechanicalobjects are required.";
         return;
     }
@@ -115,7 +95,7 @@ void NearestPointROI<DataTypes>::doUpdate()
     const VecCoord& x1 = this->mstate1->read(vecCoordId)->getValue();
     const VecCoord& x2 = this->mstate2->read(vecCoordId)->getValue();
 
-    if (x1.size() == 0 || x2.size() == 0)
+    if (x1.empty() || x2.empty())
         return;
 
     computeNearestPointMaps(x1, x2);
