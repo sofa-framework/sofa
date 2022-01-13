@@ -29,13 +29,13 @@ template <class DataTypes>
 NearestPointROI<DataTypes>::NearestPointROI()
     : Inherit1()
     , Inherit2(nullptr, nullptr)
-    , f_indices1( initData(&f_indices1,"indices1","Indices of the points on the first model") )
-    , f_indices2( initData(&f_indices2,"indices2","Indices of the points on the second model") )
     , f_radius( initData(&f_radius,(Real)1,"radius", "Radius to search corresponding fixed point") )
     , d_useRestPosition(initData(&d_useRestPosition, true, "useRestPosition", "If true will use restPosition only at init"))
+    , f_indices1( initData(&f_indices1,"indices1","Indices of the points on the first model") )
+    , f_indices2( initData(&f_indices2,"indices2","Indices of the points on the second model") )
+    , d_edges(initData(&d_edges, "edges", "List of edge indices"))
+    , d_indexPairs(initData(&d_indexPairs, "indexPairs", "list of couples (parent index + index in the parent)"))
 {
-    f_indices1.setGroup("Output");
-    f_indices2.setGroup("Output");
 }
 
 template <class DataTypes>
@@ -67,6 +67,8 @@ void NearestPointROI<DataTypes>::init()
 
     addOutput(&f_indices1);
     addOutput(&f_indices2);
+    addOutput(&d_edges);
+    addOutput(&d_indexPairs);
 }
 
 template <class DataTypes>
@@ -117,6 +119,12 @@ void NearestPointROI<DataTypes>::computeNearestPointMaps(const VecCoord& x1, con
     indices1->clear();
     indices2->clear();
 
+    auto edges = sofa::helper::getWriteOnlyAccessor(d_edges);
+    edges->clear();
+
+    auto indexPairs = sofa::helper::getWriteOnlyAccessor(d_indexPairs);
+    indexPairs->clear();
+
     const Real maxR = f_radius.getValue();
     const auto maxRSquared = maxR * maxR;
 
@@ -131,6 +139,13 @@ void NearestPointROI<DataTypes>::computeNearestPointMaps(const VecCoord& x1, con
         {
             indices1->push_back(std::distance(std::begin(x1), pt1));
             indices2->push_back(i2);
+            edges->emplace_back(i2 * 2, i2 * 2 + 1);
+
+            indexPairs->push_back(0);
+            indexPairs->push_back(indices1->back());
+
+            indexPairs->push_back(1);
+            indexPairs->push_back(indices2->back());
         }
     }
 
