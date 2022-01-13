@@ -591,7 +591,7 @@ bool Node::doAddObject(BaseObject::SPtr sobj, sofa::core::objectmodel::TypeOfIns
     if(insertionLocation == sofa::core::objectmodel::TypeOfInsertion::AtEnd)
         object.add(sobj);
     else
-        object.addFront(sobj);
+        object.addBegin(sobj);
 
     BaseObject* obj = sobj.get();
 

@@ -274,7 +274,7 @@ public:
         c.push_back(TValueType(v));
         return index;
     }
-    static std::size_t addFront(T& c, TDestPtr v)
+    static std::size_t addBegin(T& c, TDestPtr v)
     {
         c.insert(c.begin(), TValueType(v));
         return 0;
@@ -383,11 +383,11 @@ public:
         TraitsContainer::clear(m_value);
     }
 
-    bool addFront(DestPtr v)
+    bool addBegin(DestPtr v)
     {
         if (!v)
             return false;
-        std::size_t index = TraitsContainer::addFront(m_value,v);
+        std::size_t index = TraitsContainer::addBegin(m_value,v);
         updateCounter();
         added(v, index);
         return true;
