@@ -22,6 +22,8 @@
 #pragma once
 #include <SofaGeneralObjectInteraction/config.h>
 #include <SofaDeformable/StiffSpringForceField.h>
+#include <sofa/simulation/Node.h>
+#include <SofaEngine/BoxROI.h>
 
 namespace sofa::component::interactionforcefield
 {
@@ -62,6 +64,20 @@ public:
     Data<bool>  forceOldBehavior; ///< Keep using the old behavior
 
     void draw(const core::visual::VisualParams* vparams) override;
+
+    /// Construction method called by ObjectFactory.
+    template<class T>
+    static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
+        if (context) context->addObject(obj);
+        if (arg) obj->parse(arg);
+
+        typename engine::BoxROI<DataTypes>::SPtr boxROI = sofa::core::objectmodel::New<engine::BoxROI<DataTypes> >();
+        if (context) context->addObject(boxROI);
+
+        return obj;
+    }
 
 };
 
