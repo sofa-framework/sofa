@@ -21,11 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaGeneralObjectInteraction/config.h>
-
-
-
 #include <SofaDeformable/StiffSpringForceField.h>
-#include <sofa/type/Vec.h>
 
 namespace sofa::component::interactionforcefield
 {
@@ -53,12 +49,9 @@ public:
 
 protected:
 
-    //float Xmin,Xmax,Ymin,Ymax,Zmin,Zmax;
-
-
-
     BoxStiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks=100.0, double kd=5.0);
     BoxStiffSpringForceField(double ks=100.0, double kd=5.0);
+
 public:
     void init() override;
     void bwdInit() override;
@@ -67,7 +60,6 @@ public:
     Data<Vec6>  box_object2; ///< Box for the object2 where springs will be attached
     Data<SReal> factorRestLength; ///< Factor used to compute the rest length of the springs generated
     Data<bool>  forceOldBehavior; ///< Keep using the old behavior
-    // -- VisualModel interface
 
     void draw(const core::visual::VisualParams* vparams) override;
 
