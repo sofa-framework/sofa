@@ -307,12 +307,16 @@ void SpringForceField<DataTypes>::computeBBox(const core::ExecParams* params, bo
         minBBox[c] = max_real;
     }
 
+    bool foundSpring = false;
+
     for (const auto& spring : springsValue)
     {
         if (spring.enabled)
         {
             if (spring.m1 < p1.size() && spring.m2 < p2.size())
             {
+                foundSpring = true;
+
                 const auto& a = p1[spring.m1];
                 const auto& b = p2[spring.m2];
                 for (const auto& p : {a, b})
@@ -329,7 +333,10 @@ void SpringForceField<DataTypes>::computeBBox(const core::ExecParams* params, bo
         }
     }
 
-    this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+    if (foundSpring)
+    {
+        this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
+    }
 }
 
 template<class DataTypes>
