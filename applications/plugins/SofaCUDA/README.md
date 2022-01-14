@@ -24,6 +24,7 @@ For example, `MechanicalObject<CudaVec3Types>` is a specialization of `Mechanica
 
 The result is that the user just has to change the template parameter in the scene, in order to use the CUDA version of the same component.
 For example, in XML, `<MechanicalObject template="Vec3f" />` is the CPU version of `MechanicalObject`, and `<MechanicalObject template="CudaVec3f" />` is the GPU version.
+Note that in SOFA Vec3Types are by default in double (Vec3d), except if you compile in float only (CMake option: SOFA_FLOATING_POINT_TYPE). However CudaVec3Types are using float on the device. You can activate double precision using CMake option: SOFACUDA_DOUBLE).
 
 ## Performances
 
