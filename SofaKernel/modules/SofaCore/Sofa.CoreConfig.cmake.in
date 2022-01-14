@@ -6,6 +6,7 @@
 find_package(Sofa.Topology QUIET REQUIRED)
 find_package(Sofa.Helper QUIET REQUIRED)
 find_package(Sofa.DefaultType QUIET REQUIRED)
+find_package(Sofa.Component.Compat QUIET)
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
