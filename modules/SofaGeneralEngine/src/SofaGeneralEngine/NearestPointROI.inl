@@ -26,9 +26,9 @@ namespace sofa::component::engine
 {
 
 template <class DataTypes>
-NearestPointROI<DataTypes>::NearestPointROI()
+NearestPointROI<DataTypes>::NearestPointROI(core::behavior::MechanicalState<DataTypes>* mm1, core::behavior::MechanicalState<DataTypes>* mm2)
     : Inherit1()
-    , Inherit2(nullptr, nullptr)
+    , Inherit2(mm1, mm2)
     , d_filterIndices1( initData(&d_filterIndices1,"filterIndices1","Indices of the points to consider on the first model") )
     , d_filterIndices2( initData(&d_filterIndices2,"filterIndices2","Indices of the points to consider on the first model") )
     , f_radius( initData(&f_radius,(Real)1,"radius", "Radius to search corresponding fixed point") )

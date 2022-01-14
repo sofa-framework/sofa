@@ -74,7 +74,7 @@ public:
     Data< type::vector<unsigned> > d_indexPairs;        ///< Two indices per child: the parent, and the index within the parent. Could be used with a SubsetMultiMapping
     ///@}
 
-    NearestPointROI();
+    explicit NearestPointROI(core::behavior::MechanicalState<DataTypes> * = nullptr, core::behavior::MechanicalState<DataTypes> *mm2 = nullptr);
     ~NearestPointROI() override;
 
     void init() override;
