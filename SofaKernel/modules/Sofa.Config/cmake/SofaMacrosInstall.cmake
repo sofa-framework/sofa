@@ -713,6 +713,10 @@ function(sofa_set_project_install_relocatable project_name binary_dir install_di
         set(custom_target ${project_name}_${binary_dirname}_relocatable_install)
     endif()
 
+    if(NOT IS_ABSOLUTE ${install_dir})
+        set(install_dir ${CMAKE_INSTALL_PREFIX}/${install_dir})
+    endif()
+
     # Hack to make installed plugin independant and keep the add_subdirectory mechanism
     # Does not fail if cmakepatch file already exists thanks to "|| true"
     if(WIN32)
@@ -727,7 +731,7 @@ function(sofa_set_project_install_relocatable project_name binary_dir install_di
                 if not exist \"${binary_dir}/cmake_install.cmakepatch\"
                 echo set ( CMAKE_INSTALL_PREFIX_BACK_${project_name}_${binary_dirname} \"${escaped_dollar}\{CMAKE_INSTALL_PREFIX\}\" )
                     > \"${binary_dir}/cmake_install.cmakepatch\"
-                && echo set ( CMAKE_INSTALL_PREFIX \"${escaped_dollar}\{CMAKE_INSTALL_PREFIX\}/${install_dir}/${project_name}\" )
+                && echo set ( CMAKE_INSTALL_PREFIX \"${install_dir}/${project_name}\" )
                     >> \"${binary_dir}/cmake_install.cmakepatch\"
                 && type \"${binary_dir_windows}\\cmake_install.cmake\" >> \"${binary_dir_windows}\\cmake_install.cmakepatch\"
                 && echo set ( CMAKE_INSTALL_PREFIX \"${escaped_dollar}\{CMAKE_INSTALL_PREFIX_BACK_${project_name}_${binary_dirname}\}\" )
@@ -741,7 +745,7 @@ function(sofa_set_project_install_relocatable project_name binary_dir install_di
                 test ! -e ${binary_dir}/cmake_install.cmakepatch
                 && echo \" set ( CMAKE_INSTALL_PREFIX_BACK_${project_name}_${binary_dirname} \\"\\$$\{CMAKE_INSTALL_PREFIX\}\\" ) \"
                     > "${binary_dir}/cmake_install.cmakepatch"
-                && echo \" set ( CMAKE_INSTALL_PREFIX \\"\\$$\{CMAKE_INSTALL_PREFIX\}/${install_dir}/${project_name}\\" ) \"
+                && echo \" set ( CMAKE_INSTALL_PREFIX \\"${install_dir}/${project_name}\\" ) \"
                     >> "${binary_dir}/cmake_install.cmakepatch"
                 && cat ${binary_dir}/cmake_install.cmake >> ${binary_dir}/cmake_install.cmakepatch
                 && echo \" set ( CMAKE_INSTALL_PREFIX \\"\\$$\{CMAKE_INSTALL_PREFIX_BACK_${project_name}_${binary_dirname}\}\\" ) \"
