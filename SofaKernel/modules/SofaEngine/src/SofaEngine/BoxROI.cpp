@@ -31,12 +31,16 @@ using namespace sofa::defaulttype;
 
 int BoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/quad/tetrahedron/hexahedron) inside given boxes")
         .add< BoxROI<Vec3Types> >(true) //default
+        .add< BoxROI<Vec2Types> >()
+        .add< BoxROI<Vec1Types> >()
         .add< BoxROI<Rigid3Types> >()
         .add< BoxROI<Vec6Types> >()
  
         ;
 
 template class SOFA_SOFAENGINE_API BoxROI<Vec3Types>;
+template class SOFA_SOFAENGINE_API BoxROI<Vec2Types>;
+template class SOFA_SOFAENGINE_API BoxROI<Vec1Types>;
 template class SOFA_SOFAENGINE_API BoxROI<Rigid3Types>;
 template class SOFA_SOFAENGINE_API BoxROI<Vec6Types>;
  
