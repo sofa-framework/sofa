@@ -23,7 +23,7 @@
 
 #include <sofa/component/io/misc/WriteTopology.h>
 
-SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/misc/WriteTopology.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/misc/WriteTopology.h")
 
 namespace sofa::component::misc
 {
