@@ -234,7 +234,7 @@ else()
     )
 endif()
 
-set(README_FILES SofaCUDA.txt)
+set(README_FILES README.md)
 
 find_package(CUDA REQUIRED)
 
