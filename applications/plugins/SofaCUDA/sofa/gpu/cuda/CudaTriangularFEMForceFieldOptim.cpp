@@ -19,39 +19,29 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
-#include "CudaTriangularFEMForceFieldOptim.inl"
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/ForceField.inl>
-#include <SofaGeneralSimpleFem/TriangularFEMForceFieldOptim.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::forcefield
 {
 
 template class SOFA_GPU_CUDA_API TriangularFEMForceFieldOptim<sofa::gpu::cuda::CudaVec3fTypes>;
-}
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API TriangularFEMForceFieldOptim<sofa::gpu::cuda::CudaVec3dTypes>;
+#endif // SOFA_GPU_CUDA_DOUBLE
 
-}
+} // sofa::component::forcefield
 
 
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 int TriangularFEMForceFieldOptimCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::forcefield::TriangularFEMForceFieldOptim<CudaVec3fTypes> >()
-        ;
+    .add< component::forcefield::TriangularFEMForceFieldOptim<CudaVec3fTypes> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+    .add< component::forcefield::TriangularFEMForceFieldOptim<CudaVec3dTypes> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+    ;
 
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
+} // sofa::gpu::cuda
