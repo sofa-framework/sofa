@@ -90,6 +90,7 @@ protected:
 extern template class SOFA_SOFAGENERALENGINE_API NearestPointROI<defaulttype::Vec3Types>;
 extern template class SOFA_SOFAGENERALENGINE_API NearestPointROI<defaulttype::Vec2Types>;
 extern template class SOFA_SOFAGENERALENGINE_API NearestPointROI<defaulttype::Vec1Types>;
+extern template class SOFA_SOFAGENERALENGINE_API NearestPointROI<defaulttype::Vec6Types>;
 extern template class SOFA_SOFAGENERALENGINE_API NearestPointROI<defaulttype::Rigid3Types>;
 extern template class SOFA_SOFAGENERALENGINE_API NearestPointROI<defaulttype::Rigid2Types>;
 #endif
