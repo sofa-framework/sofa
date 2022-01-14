@@ -37,6 +37,7 @@ NearestPointROI<DataTypes>::NearestPointROI(core::behavior::MechanicalState<Data
     , f_indices2( initData(&f_indices2,"indices2","Indices from the second model associated to a dof from the first model") )
     , d_edges(initData(&d_edges, "edges", "List of edge indices"))
     , d_indexPairs(initData(&d_indexPairs, "indexPairs", "list of couples (parent index + index in the parent)"))
+    , d_distances(initData(&d_distances, "distances", "List of distances between pairs of points"))
 {
 }
 
@@ -71,6 +72,7 @@ void NearestPointROI<DataTypes>::init()
     addOutput(&f_indices2);
     addOutput(&d_edges);
     addOutput(&d_indexPairs);
+    addOutput(&d_distances);
 }
 
 template <class DataTypes>
@@ -140,6 +142,9 @@ void NearestPointROI<DataTypes>::computeNearestPointMaps(const VecCoord& x1, con
     auto indexPairs = sofa::helper::getWriteOnlyAccessor(d_indexPairs);
     indexPairs->clear();
 
+    auto distances = sofa::helper::getWriteOnlyAccessor(d_distances);
+    distances->clear();
+
     const Real maxR = f_radius.getValue();
     const auto maxRSquared = maxR * maxR;
 
@@ -151,7 +156,8 @@ void NearestPointROI<DataTypes>::computeNearestPointMaps(const VecCoord& x1, con
         auto i1 = *std::min_element(std::begin(filterIndices1), std::end(filterIndices1), cmp);
         const auto& pt1 = x1[i1];
 
-        if (dist(pt1, pt2) < maxRSquared)
+        const auto d = dist(pt1, pt2);
+        if (d < maxRSquared)
         {
             indices1->push_back(i1);
             indices2->push_back(i2);
@@ -162,6 +168,8 @@ void NearestPointROI<DataTypes>::computeNearestPointMaps(const VecCoord& x1, con
 
             indexPairs->push_back(1);
             indexPairs->push_back(indices2->back());
+
+            distances->push_back(std::sqrt(d));
         }
     }
 
