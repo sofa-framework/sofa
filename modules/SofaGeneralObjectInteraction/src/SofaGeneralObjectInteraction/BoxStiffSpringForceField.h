@@ -24,6 +24,7 @@
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <sofa/simulation/Node.h>
 #include <SofaEngine/BoxROI.h>
+#include <sofa/core/behavior/MechanicalState.h>
 
 namespace sofa::component::interactionforcefield
 {
@@ -73,8 +74,33 @@ public:
         if (context) context->addObject(obj);
         if (arg) obj->parse(arg);
 
-        typename engine::BoxROI<DataTypes>::SPtr boxROI = sofa::core::objectmodel::New<engine::BoxROI<DataTypes> >();
-        if (context) context->addObject(boxROI);
+        MechanicalState* mstate1 = nullptr;
+        MechanicalState* mstate2 = nullptr;
+        std::string object1 = arg->getAttribute("object1","@./");
+        std::string object2 = arg->getAttribute("object2","@./");
+        if (object1.empty()) object1 = "@./";
+        if (object2.empty()) object2 = "@./";
+
+        context->findLinkDest(mstate1, object1, nullptr);
+        context->findLinkDest(mstate2, object2, nullptr);
+
+        sofa::type::fixed_array<typename engine::BoxROI<DataTypes>::SPtr, 2> boxes;
+        for (const auto* mstate : {mstate1, mstate2})
+        {
+            typename engine::BoxROI<DataTypes>::SPtr boxROI = sofa::core::objectmodel::New<engine::BoxROI<DataTypes> >();
+            boxes[mstate != mstate1] = boxROI;
+            boxROI->setName("box_" + mstate->getName());
+            boxROI->d_X0.setParent(mstate->findData("position"));
+            if (arg)
+            {
+                const std::string boxString = arg->getAttribute("box_object1");
+                boxROI->d_alignedBoxes.read(boxString);
+            }
+            if (context)
+            {
+                context->addObject(boxROI);
+            }
+        }
 
         return obj;
     }
