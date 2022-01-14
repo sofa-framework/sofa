@@ -171,7 +171,7 @@ protected:
     void computeOrientedBoxes();
 
     bool isPointInOrientedBox(const CPos& p, const OrientedBox& box);
-    bool isPointInAlignedBox(const typename DataTypes::CPos& p, const Vec6& box);
+    static bool isPointInAlignedBox(const typename DataTypes::CPos& p, const Vec6& box);
     bool isPointInBoxes(const CPos& p);
     bool isPointInBoxes(const PointID& pid);
     bool isEdgeInBoxes(const Edge& e);
