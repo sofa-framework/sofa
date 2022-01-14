@@ -64,6 +64,7 @@ public:
     SetIndex d_indices2; ///< Indices of the fixed points on the second model
 
     core::objectmodel::Data<SReal> d_length;
+
 protected:
     sofa::type::vector<Mat>  dfdx;
 

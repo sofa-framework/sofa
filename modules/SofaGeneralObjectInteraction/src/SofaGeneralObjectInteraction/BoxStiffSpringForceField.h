@@ -24,7 +24,7 @@
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <sofa/simulation/Node.h>
 #include <SofaEngine/BoxROI.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <SofaGeneralEngine/NearestPointROI.h>
 
 namespace sofa::component::interactionforcefield
 {
@@ -32,39 +32,12 @@ namespace sofa::component::interactionforcefield
 /** Set springs between the particles located inside a given box.
 */
 template <class DataTypes>
-class BoxStiffSpringForceField : public sofa::component::interactionforcefield::StiffSpringForceField<DataTypes>
+class BoxStiffSpringForceField : public sofa::core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(BoxStiffSpringForceField, DataTypes), SOFA_TEMPLATE(StiffSpringForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(BoxStiffSpringForceField, DataTypes), sofa::core::objectmodel::BaseObject);
 
-    typedef StiffSpringForceField<DataTypes> Inherit;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename Coord::value_type Real;
-    typedef typename Inherit::Spring Spring;
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
-
-    typedef type::Vec<6,Real> Vec6;
-
-    using Index = sofa::Index;
-
-protected:
-
-    BoxStiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks=100.0, double kd=5.0);
-    BoxStiffSpringForceField(double ks=100.0, double kd=5.0);
-
-public:
-    void init() override;
-    void bwdInit() override;
-
-    Data<Vec6>  box_object1; ///< Box for the object1 where springs will be attached
-    Data<Vec6>  box_object2; ///< Box for the object2 where springs will be attached
-    Data<SReal> factorRestLength; ///< Factor used to compute the rest length of the springs generated
-    Data<bool>  forceOldBehavior; ///< Keep using the old behavior
-
-    void draw(const core::visual::VisualParams* vparams) override;
 
     /// Construction method called by ObjectFactory.
     template<class T>
@@ -87,19 +60,43 @@ public:
         sofa::type::fixed_array<typename engine::BoxROI<DataTypes>::SPtr, 2> boxes;
         for (const auto* mstate : {mstate1, mstate2})
         {
-            typename engine::BoxROI<DataTypes>::SPtr boxROI = sofa::core::objectmodel::New<engine::BoxROI<DataTypes> >();
-            boxes[mstate != mstate1] = boxROI;
+            auto boxROI = sofa::core::objectmodel::New<engine::BoxROI<DataTypes> >();
+            const std::size_t id = mstate != mstate1;
+            boxes[id] = boxROI;
             boxROI->setName("box_" + mstate->getName());
             boxROI->d_X0.setParent(mstate->findData("position"));
             if (arg)
             {
-                const std::string boxString = arg->getAttribute("box_object1");
+                const std::string boxString = arg->getAttribute("box_object" + std::to_string(id+1), "");
                 boxROI->d_alignedBoxes.read(boxString);
             }
             if (context)
             {
                 context->addObject(boxROI);
             }
+        }
+
+        auto np = sofa::core::objectmodel::New<sofa::component::engine::NearestPointROI<DataTypes> >(mstate1, mstate2);
+        np->f_radius.setValue(std::numeric_limits<typename DataTypes::Real>::max());
+        np->setName(helper::NameDecoder::shortName(np->getClassName()));
+        if (context)
+        {
+            context->addObject(np);
+        }
+
+        np->d_filterIndices1.setParent(&boxes[0]->d_indices);
+        np->d_filterIndices2.setParent(&boxes[1]->d_indices);
+
+        auto springs = sofa::core::objectmodel::New<sofa::component::interactionforcefield::StiffSpringForceField<DataTypes> >(mstate1, mstate2);
+        springs->d_indices1.setParent(&np->f_indices1);
+        springs->d_indices2.setParent(&np->f_indices2);
+        if (arg)
+        {
+            springs->parse(arg);
+        }
+        if (context)
+        {
+            context->addObject(springs);
         }
 
         return obj;

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_BOXSTIFFSPRINGFORCEFIELD_CPP
-#include <SofaGeneralObjectInteraction/BoxStiffSpringForceField.inl>
+#include <SofaGeneralObjectInteraction/BoxStiffSpringForceField.h>
 #include <SofaDeformable/StiffSpringForceField.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/core/ObjectFactory.h>
