@@ -29,6 +29,7 @@
 #include "CudaSphereModel.h"
 #include "CudaPointModel.h"
 
+#include <SofaConstraint/LocalMinDistance.h>
 #include <SofaUserInteraction/MouseInteractor.inl>
 #include <SofaBaseCollision/NewProximityIntersection.inl>
 #include <SofaMeshCollision/MeshNewProximityIntersection.inl>
@@ -116,6 +117,60 @@ public:
     }
 
 };
+
+
+
+class CudaLocalMinDistance : public sofa::component::collision::LocalMinDistance
+{
+public:
+    SOFA_CLASS(CudaLocalMinDistance, sofa::component::collision::LocalMinDistance);
+    
+    using CudaSphereCollisionModel = sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>;
+
+    bool testIntersection(CudaSphereCollisionModel&, CudaSphereCollisionModel&) {}
+
+    virtual void init() override
+    {
+        intersectors.add<CudaSphereCollisionModel, CudaSphereCollisionModel, LocalMinDistance>(this); // sphere-sphere is always activated
+
+        
+        //intersectors.add<TriangleCollisionModel<CudaVec3fTypes>, SphereCollisionModel<CudaVec3fTypes>, LocalMinDistance>(this);
+        //intersectors.add<LineCollisionModel<CudaVec3fTypes>, SphereCollisionModel<CudaVec3fTypes>, LocalMinDistance>(this);
+
+        //sofa::component::collision::LocalMinDistance::init();
+
+        //intersectors.add<SphereCollisionModel<CudaVec3fTypes>, PointCollisionModel<CudaVec3fTypes>, LocalMinDistance>(this); // sphere-point is always activated
+
+        //intersectors.add<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, LocalMinDistance>(this); // point-point is always activated
+        //intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>, LocalMinDistance>(this);
+        //intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, LocalMinDistance>(this);
+        //intersectors.add<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, LocalMinDistance>(this);
+        //intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>, LocalMinDistance>(this);
+        //intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>, LocalMinDistance>(this);
+
+        //intersectors.ignore<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>();			// never the case with LMD
+        //intersectors.ignore<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>>();		// never the case with LMD
+
+        //intersectors.ignore<RayCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>>();
+        //intersectors.ignore<RayCollisionModel, LineCollisionModel<sofa::defaulttype::Vec3Types>>();
+        //intersectors.add<RayCollisionModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LocalMinDistance>(this);
+        //intersectors.add<RayCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>, LocalMinDistance>(this);
+
+
+
+
+        //sofa::component::collision::LocalMinDistance::init();
+        /*intersectors.add<CudaSphereCollisionModel, CudaSphereCollisionModel, NewProximityIntersection>(this);
+        RayDiscreteIntersection* rayIntersector = new RayDiscreteIntersection(this, false);
+        intersectors.add<RayCollisionModel, CudaSphereCollisionModel, RayDiscreteIntersection>(rayIntersector);
+        MeshNewProximityIntersection* meshIntersector = new MeshNewProximityIntersection(this, false);
+        intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, CudaSphereCollisionModel, MeshNewProximityIntersection>(meshIntersector);*/
+    }
+
+};
+
+
+
 
 
 int CudaProximityIntersectionClass = core::RegisterObject("GPGPU Proximity Intersection based on CUDA")

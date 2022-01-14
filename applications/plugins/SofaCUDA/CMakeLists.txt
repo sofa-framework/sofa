@@ -253,6 +253,7 @@ find_package(SofaMiscFem REQUIRED)
 find_package(SofaValidation REQUIRED)
 find_package(SofaMiscForceField REQUIRED)
 find_package(SofaGeneralObjectInteraction REQUIRED)
+find_package(SofaConstraint REQUIRED)
 
 find_package(VolumetricRendering QUIET)
 
@@ -411,6 +412,7 @@ target_link_libraries(${PROJECT_NAME}
     SofaValidation
     SofaMiscForceField
     SofaGeneralObjectInteraction
+    SofaConstraint
     )
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
