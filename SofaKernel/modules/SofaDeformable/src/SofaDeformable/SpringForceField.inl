@@ -298,23 +298,32 @@ void SpringForceField<DataTypes>::computeBBox(const core::ExecParams* params, bo
 
     constexpr Real max_real = std::numeric_limits<Real>::max();
     constexpr Real min_real = std::numeric_limits<Real>::lowest();
-    Real maxBBox[3] = {min_real,min_real,min_real};
-    Real minBBox[3] = {max_real,max_real,max_real};
+    Real maxBBox[DataTypes::spatial_dimensions];
+    Real minBBox[DataTypes::spatial_dimensions];
+
+    for (int c = 0; c < DataTypes::spatial_dimensions; ++c)
+    {
+        maxBBox[c] = min_real;
+        minBBox[c] = max_real;
+    }
 
     for (const auto& spring : springsValue)
     {
         if (spring.enabled)
         {
-            const auto& a = p1[spring.m1];
-            const auto& b = p2[spring.m2];
-            for (const auto& p : {a, b})
+            if (spring.m1 < p1.size() && spring.m2 < p2.size())
             {
-                for (int c=0; c<3; c++)
+                const auto& a = p1[spring.m1];
+                const auto& b = p2[spring.m2];
+                for (const auto& p : {a, b})
                 {
-                    if (p[c] > maxBBox[c])
-                        maxBBox[c] = p[c];
-                    else if (p[c] < minBBox[c])
-                        minBBox[c] = p[c];
+                    for (int c = 0; c < DataTypes::spatial_dimensions; ++c)
+                    {
+                        if (p[c] > maxBBox[c])
+                            maxBBox[c] = p[c];
+                        else if (p[c] < minBBox[c])
+                            minBBox[c] = p[c];
+                    }
                 }
             }
         }
