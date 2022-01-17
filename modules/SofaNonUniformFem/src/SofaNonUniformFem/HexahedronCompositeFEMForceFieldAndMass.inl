@@ -24,6 +24,7 @@
 #include <SofaNonUniformFem/HexahedronCompositeFEMForceFieldAndMass.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaNonUniformFem/SparseGridMultipleTopology.h>
+#include <SofaNonUniformFem/SparseGridRamificationTopology.h>
 #include <iomanip>
 
 #include <Eigen/Dense>
