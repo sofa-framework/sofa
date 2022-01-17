@@ -89,30 +89,30 @@ inline size_t lfactorial(size_t n)
 template < class Real >
 Real binomial(const size_t p, const size_t q) 
 {
-    return dynamiccontainer::binomial(p,q);
+    return dynamiccontainer::binomial<Real>(p,q);
 }
 
 template <class Real>
 Real multinomial(const size_t n,type::vector<unsigned char> valArray)
 {
-    return dynamiccontainer::binomial(n, valArray);
+    return dynamiccontainer::multinomial<Real>(n, valArray);
 }
 
 template <size_t N, class Real>
 Real multinomial(const size_t n,const sofa::type::Vec<N,unsigned char> tbi)
 {
-    return dynamiccontainer::multinomial(n, tbi);
+    return dynamiccontainer::multinomial<N,Real>(n, tbi);
 }
 
 template <size_t N, class Real>
 Real multinomialVector(const sofa::type::vector< sofa::type::Vec<N,unsigned char> > tbiArray)
 {
-    return dynamiccontainer::multinomialVector(tbiArray);
+    return dynamiccontainer::multinomialVector<N,Real>(tbiArray);
 }
 template <size_t N, class Real>
 Real binomialVector(const sofa::type::Vec<N,unsigned char>  tbi1,const sofa::type::Vec<N,unsigned char>  tbi2)
 {
-    return dynamiccontainer::binomialVector(tbi1, tbi2);
+    return dynamiccontainer::binomialVector<N,Real>(tbi1, tbi2);
 }
 
 } // namespace sofa::component::topology

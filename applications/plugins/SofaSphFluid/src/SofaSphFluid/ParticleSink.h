@@ -34,6 +34,7 @@
 #include <sofa/core/topology/TopologySubsetIndices.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBaseTopology/PointSetTopologyModifier.h>
 #include <sofa/type/RGBAColor.h>
 #include <vector>
 #include <iterator>
@@ -47,10 +48,6 @@ namespace sofa
 
 namespace component
 {
-namespace topology
-{
-    class PointSetTopologyModifier;
-}
 
 namespace misc
 {
