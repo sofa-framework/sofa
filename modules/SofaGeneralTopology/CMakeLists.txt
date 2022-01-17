@@ -12,19 +12,6 @@ set(SOURCE_FILES
     ${SOFAGENERALTOPOLOGY_SRC}/initSofaGeneralTopology.cpp
     )
 
-list(APPEND HEADER_FILES
-    ${SOFAGENERALTOPOLOGY_SRC}/CubeTopology.h
-    ${SOFAGENERALTOPOLOGY_SRC}/CylinderGridTopology.h
-    ${SOFAGENERALTOPOLOGY_SRC}/SphereGridTopology.h
-    ${SOFAGENERALTOPOLOGY_SRC}/SphereQuadTopology.h
-    )
-list(APPEND SOURCE_FILES
-    ${SOFAGENERALTOPOLOGY_SRC}/CubeTopology.cpp
-    ${SOFAGENERALTOPOLOGY_SRC}/CylinderGridTopology.cpp
-    ${SOFAGENERALTOPOLOGY_SRC}/SphereGridTopology.cpp
-    ${SOFAGENERALTOPOLOGY_SRC}/SphereQuadTopology.cpp
-    )
-
 sofa_find_package(SofaBase REQUIRED) # SofaBaseTopology
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
