@@ -201,6 +201,10 @@ public:
     void dumpHTML(std::ostream& out = std::cout);
 
     void setCallback(OnCreateCallback cb) { m_callbackOnCreate = cb ; }
+
+private:
+    bool hasCreatorNoAlias(const std::string& classname);
+    //bool hasNoAlias(const std::string& classname);
 };
 
 template<class BaseClass>

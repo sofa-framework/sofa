@@ -53,7 +53,18 @@ ObjectFactory::ClassEntry& ObjectFactory::getEntry(std::string classname)
 /// Test if a creator exists for a given classname
 bool ObjectFactory::hasCreator(std::string classname)
 {
-    ClassEntryMap::iterator it = registry.find(classname);
+    for(auto& realclassname : aliases[classname])
+    {
+        if(hasCreatorNoAlias(realclassname))
+            return true;
+    }
+    return false;
+}
+
+/// Test if a creator exists for a given classname
+bool ObjectFactory::hasCreatorNoAlias(const std::string& realclassname)
+{    
+    ClassEntryMap::iterator it = registry.find(realclassname);
     if (it == registry.end())
         return false;
     ClassEntry::SPtr entry = it->second;
@@ -64,15 +75,18 @@ std::string ObjectFactory::shortName(std::string classname)
 {
     std::string shortname;
 
-    ClassEntryMap::iterator it = registry.find(classname);
-    if (it != registry.end())
+    for(auto& realclassname : aliases[classname])
     {
-        ClassEntry::SPtr entry = it->second;
-        if(!entry->creatorMap.empty())
+        ClassEntryMap::iterator it = registry.find(realclassname);
+        if (it != registry.end())
         {
-            CreatorMap::iterator it = entry->creatorMap.begin();
-            Creator::SPtr c = it->second;
-            shortname = c->getClass()->shortName;
+            ClassEntry::SPtr entry = it->second;
+            if(!entry->creatorMap.empty())
+            {
+                CreatorMap::iterator it = entry->creatorMap.begin();
+                Creator::SPtr c = it->second;
+                shortname = c->getClass()->shortName;
+            }
         }
     }
     return shortname;
@@ -669,10 +683,7 @@ RegisterObject::operator int()
             }
         }
 
-        //if (!ObjectFactory::HasCreator(reg.className))
-        //{
         ObjectFactory::getInstance()->addAlias(reg.className, fullname);
-        //}
         return 1;
     }
 }
