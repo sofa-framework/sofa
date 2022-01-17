@@ -12,6 +12,7 @@ include(Sofa.Component.Topology.StaticContainer.cmake)
 include(Sofa.Component.Topology.DynamicContainer.cmake)
 include(Sofa.Component.Topology.Grid.cmake)
 include(Sofa.Component.Topology.Mapping.cmake)
+include(Sofa.Component.Topology.Utility.cmake)
 
 set(SOURCE_FILES
     ${SOFACOMPONENTCOMPATSRC_ROOT}/init.cpp
