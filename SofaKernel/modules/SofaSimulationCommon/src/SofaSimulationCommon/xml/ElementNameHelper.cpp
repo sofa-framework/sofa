@@ -38,21 +38,14 @@ ElementNameHelper::~ElementNameHelper()
 
 std::string ElementNameHelper::resolveName(const std::string& type, const std::string& name)
 {
-    std::string resolvedName;
-    if(name.empty())
-    {
-        std::string radix = core::ObjectFactory::ShortName(type);
-        registerName(radix);
-        std::ostringstream oss;
-        oss << radix << instanceCounter[radix];
-        resolvedName = oss.str();
-    }
-    else
-    {
-        resolvedName = name;
-    }
-    return resolvedName;
+    if(!name.empty())
+        return name;
 
+    std::string radix = sofa::core::ObjectFactory::ShortName(type);
+    registerName(radix);
+    std::ostringstream oss;
+    oss << radix << instanceCounter[radix];
+    return oss.str();
 }
 
 void ElementNameHelper::registerName(const std::string& name)
