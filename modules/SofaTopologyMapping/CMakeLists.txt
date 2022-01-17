@@ -12,10 +12,13 @@ set(SOURCE_FILES
     ${SOFATOPOLOGYMAPPING_SRC}/initSofaTopologyMapping.cpp
 )
 
-sofa_find_package(SofaBaseTopology REQUIRED)
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
+
+message(WARNING "${PROJECT_NAME} module is deprecated; its components are in Sofa.Component.Topology.Mapping.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.Topology.Mapping REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Topology.Mapping)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
