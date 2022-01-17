@@ -28,5 +28,6 @@ namespace sofa::component::topology
 {
 
     using MultilevelHexahedronSetTopologyContainer = sofa::component::topology::dynamiccontainer::MultilevelHexahedronSetTopologyContainer;
-
+    using MultilevelModification = sofa::component::topology::dynamiccontainer::MultilevelModification;
+    
 } // namespace sofa::component::topology
