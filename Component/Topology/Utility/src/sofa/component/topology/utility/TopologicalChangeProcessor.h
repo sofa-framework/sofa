@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMiscTopology/config.h>
+#include <sofa/component/topology/utility/config.h>
 
 
 #include <sofa/simulation/AnimateBeginEvent.h>
@@ -36,7 +36,7 @@
 
 #include <fstream>
 
-namespace sofa::component::misc
+namespace sofa::component::topology::utility
 {
 
 class TriangleIncisionInformation;
@@ -46,7 +46,7 @@ class TriangleIncisionInformation;
  *
  * SIMPLE METHODE FOR THE MOMENT. DON'T HANDLE MULTIPLE TOPOLOGIES
 */
-class SOFA_SOFAMISCTOPOLOGY_API TopologicalChangeProcessor: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_TOPOLOGY_UTILITY_API TopologicalChangeProcessor: public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(TopologicalChangeProcessor,core::objectmodel::BaseObject);
@@ -212,4 +212,4 @@ public:
     }
 };
 
-} // namespace sofa::component::misc
+} // namespace sofa::component::topology::utility

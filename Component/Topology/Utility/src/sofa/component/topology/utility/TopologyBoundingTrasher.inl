@@ -20,19 +20,19 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMiscTopology/TopologyBoundingTrasher.h>
+#include <sofa/component/topology/utility/TopologyBoundingTrasher.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-#include <SofaBaseTopology/EdgeSetTopologyModifier.h>
-#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
-#include <SofaBaseTopology/QuadSetTopologyModifier.h>
-#include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/EdgeSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/QuadSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/HexahedronSetTopologyModifier.h>
 
 
-namespace sofa::component::misc
+namespace sofa::component::topology::utility
 {
 
 using namespace sofa::core::topology;
@@ -336,4 +336,4 @@ void TopologyBoundingTrasher<DataTypes>::draw(const core::visual::VisualParams* 
     }
 }
 
-} // namespace sofa::component::misc
+} // namespace sofa::component::topology::utility

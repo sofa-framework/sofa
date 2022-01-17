@@ -19,12 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MISC_TOPOLOGYBOUNDINGTRASHER_CPP
-#include <SofaMiscTopology/TopologyBoundingTrasher.inl>
+#define SOFA_COMPONENT_TOPOLOGY_UTILITY_TOPOLOGYBOUNDINGTRASHER_CPP
+
+#include <sofa/component/topology/utility/TopologyBoundingTrasher.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::misc
+namespace sofa::component::topology::utility
 {
 
 using namespace sofa::type;
@@ -33,6 +34,6 @@ using namespace sofa::defaulttype;
 int TopologyBoundingTrasherClass = core::RegisterObject("A class to remove all elements going outside from the given Bounding Box.")
         .add< TopologyBoundingTrasher<Vec3Types>  >(true);
 
-template class SOFA_SOFAMISCTOPOLOGY_API TopologyBoundingTrasher<Vec3Types>;
+template class SOFA_COMPONENT_TOPOLOGY_UTILITY_API TopologyBoundingTrasher<Vec3Types>;
 
-} // namespace sofa::component::misc
+} // namespace sofa::component::topology::utility

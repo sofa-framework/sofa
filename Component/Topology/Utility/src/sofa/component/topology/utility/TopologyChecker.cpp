@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMiscTopology/TopologyChecker.h>
+#include <sofa/component/topology/utility/TopologyChecker.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -30,7 +30,7 @@
 
 #include <sofa/simulation/Simulation.h>
 
-namespace sofa::component::misc
+namespace sofa::component::topology::utility
 {
 
 using namespace defaulttype;
@@ -989,5 +989,5 @@ void TopologyChecker::draw(const core::visual::VisualParams* vparams)
 
 }
 
-} // namespace sofa::component::misc
+} // namespace sofa::component::topology::utility
 

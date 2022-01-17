@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMiscTopology/TopologicalChangeProcessor.h>
+#include <sofa/component/topology/utility/TopologicalChangeProcessor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -43,7 +43,7 @@
     #define DEBUG_MSG false
 #endif
 
-namespace sofa::component::misc
+namespace sofa::component::topology::utility
 {
 
 using namespace sofa::type;
@@ -1426,4 +1426,4 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
     }
 }
 
-} // namespace sofa::component::misc
+} // namespace sofa::component::topology::utility

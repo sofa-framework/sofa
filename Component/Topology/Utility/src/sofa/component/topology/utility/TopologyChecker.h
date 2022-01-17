@@ -21,14 +21,14 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMiscTopology/config.h>
+#include <sofa/component/topology/utility/config.h>
 
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-namespace sofa::component::misc
+namespace sofa::component::topology::utility
 {
 
 /** 
@@ -42,7 +42,7 @@ namespace sofa::component::misc
 *   - At each level the topology is checked through the main element container and also the cross topology containers
 *   - Each method return a bool and will display msg_error if problems are detected.
 */
-class SOFA_SOFAMISCTOPOLOGY_API TopologyChecker: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_TOPOLOGY_UTILITY_API TopologyChecker: public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(TopologyChecker, core::objectmodel::BaseObject);
@@ -164,4 +164,4 @@ protected:
 };
 
 
-} // namespace sofa::component::misc
+} // namespace sofa::component::topology::utility

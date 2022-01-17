@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMiscTopology/config.h>
+#include <sofa/component/topology/utility/config.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -30,7 +30,7 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
     /// forward declaration to avoid adding includes in .h
     class EdgeSetTopologyModifier;
@@ -40,7 +40,7 @@ namespace sofa::component::topology
     class HexahedronSetTopologyModifier;
 }
 
-namespace sofa::component::misc
+namespace sofa::component::topology::utility
 {
 
     using core::topology::BaseMeshTopology;
@@ -51,7 +51,7 @@ namespace sofa::component::misc
  *
 */
 template <class DataTypes>
-class SOFA_SOFAMISCTOPOLOGY_API TopologyBoundingTrasher: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_TOPOLOGY_UTILITY_API TopologyBoundingTrasher: public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(TopologyBoundingTrasher, DataTypes), core::objectmodel::BaseObject);
@@ -95,18 +95,18 @@ protected:
     core::topology::BaseMeshTopology::SPtr m_topology;
     sofa::core::topology::TopologyElementType m_topologyType;
 
-    sofa::core::sptr<sofa::component::topology::EdgeSetTopologyModifier> edgeModifier;
-    sofa::core::sptr<sofa::component::topology::TriangleSetTopologyModifier> triangleModifier;
-    sofa::core::sptr<sofa::component::topology::QuadSetTopologyModifier> quadModifier;
-    sofa::core::sptr<sofa::component::topology::TetrahedronSetTopologyModifier> tetraModifier;
-    sofa::core::sptr<sofa::component::topology::HexahedronSetTopologyModifier> hexaModifier;
+    sofa::core::sptr<dynamiccontainer::EdgeSetTopologyModifier> edgeModifier;
+    sofa::core::sptr<dynamiccontainer::TriangleSetTopologyModifier> triangleModifier;
+    sofa::core::sptr<dynamiccontainer::QuadSetTopologyModifier> quadModifier;
+    sofa::core::sptr<dynamiccontainer::TetrahedronSetTopologyModifier> tetraModifier;
+    sofa::core::sptr<dynamiccontainer::HexahedronSetTopologyModifier> hexaModifier;
 
     type::vector<Index> m_indicesToRemove;
 };
 
-#if  !defined(SOFA_COMPONENT_MISC_TOPOLOGYBOUNDINGTRASHER_CPP)
-extern template class SOFA_SOFAMISCTOPOLOGY_API TopologyBoundingTrasher<sofa::defaulttype::Vec3Types>;
-#endif //  !defined(SOFA_COMPONENT_MISC_TOPOLOGYBOUNDINGTRASHER_CPP)
+#if  !defined(SOFA_COMPONENT_TOPOLOGY_UTILITY_TOPOLOGYBOUNDINGTRASHER_CPP)
+extern template class SOFA_COMPONENT_TOPOLOGY_UTILITY_API TopologyBoundingTrasher<sofa::defaulttype::Vec3Types>;
+#endif //  !defined(SOFA_COMPONENT_TOPOLOGY_UTILITY_TOPOLOGYBOUNDINGTRASHER_CPP)
 
 
-} // namespace sofa::component::misc
+} // namespace sofa::component::topology::utility

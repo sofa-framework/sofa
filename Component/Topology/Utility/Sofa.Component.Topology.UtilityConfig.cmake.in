@@ -4,7 +4,7 @@
 @PACKAGE_INIT@
 
 find_package(Sofa.SimulationCore QUIET REQUIRED)
-find_package(Sofa.Component.Topology.StaticContainer QUIET REQUIRED)
+find_package(Sofa.Component.Topology.DynamicContainer QUIET REQUIRED)
 
 set(SOFA_COMPONENT_TOPOLOGY_UTILITY_HAVE_ZLIB @SOFA_COMPONENT_TOPOLOGY_UTILITY_HAVE_ZLIB@)
 if (SOFA_COMPONENT_TOPOLOGY_UTILITY_HAVE_ZLIB)
