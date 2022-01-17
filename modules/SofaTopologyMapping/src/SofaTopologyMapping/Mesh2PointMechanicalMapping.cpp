@@ -25,7 +25,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::topology::mapping
+namespace sofa::component::mapping
 {
 
 using namespace sofa::defaulttype;
@@ -40,9 +40,9 @@ int Mesh2PointMechanicalMappingClass = core::RegisterObject("Mechanical mapping 
         ;
 
 
-template class SOFA_COMPONENT_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< Vec3Types, Vec3Types >;
+template class SOFA_SOFATOPOLOGYMAPPING_API Mesh2PointMechanicalMapping< Vec3Types, Vec3Types >;
 
 
 
 
-} //namespace sofa::component::topology::mapping
+} //namespace sofa::component::mapping

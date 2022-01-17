@@ -22,10 +22,10 @@
 #pragma once
 #include "Mesh2PointMechanicalMapping.h"
 
-#include <sofa/component/topology/mapping/Mesh2PointTopologicalMapping.h>
+#include <SofaTopologyMapping/Mesh2PointTopologicalMapping.h>
 
 
-namespace sofa::component::topology::mapping
+namespace sofa::component::mapping
 {
 
 
@@ -381,6 +381,8 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::MechanicalParam
 template <class TIn, class TOut>
 void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/, Data<InMatrixDeriv>& dOut, const Data<OutMatrixDeriv>& dIn)
 {
+    using topology::Mesh2PointTopologicalMapping;
+
     if (!topoMap)
         return;
 
@@ -419,13 +421,13 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
 
                 switch (source.first)
                 {
-                case Mesh2PointTopologicalMapping::POINT:
+                case topology::Mesh2PointTopologicalMapping::POINT:
                 {
                     o.addCol(source.second, data);
 
                     break;
                 }
-                case Mesh2PointTopologicalMapping::EDGE:
+                case topology::Mesh2PointTopologicalMapping::EDGE:
                 {
                     core::topology::BaseMeshTopology::Edge e = edges[source.second];
                     typename In::Deriv f = data;
@@ -460,7 +462,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
 
                     break;
                 }
-                case Mesh2PointTopologicalMapping::TRIANGLE:
+                case topology::Mesh2PointTopologicalMapping::TRIANGLE:
                 {
                     core::topology::BaseMeshTopology::Triangle t = triangles[source.second];
                     typename In::Deriv f = data;
@@ -499,7 +501,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
 
                     break;
                 }
-                case Mesh2PointTopologicalMapping::QUAD:
+                case topology::Mesh2PointTopologicalMapping::QUAD:
                 {
                     core::topology::BaseMeshTopology::Quad q = quads[source.second];
                     typename In::Deriv f = data;
@@ -539,7 +541,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
 
                     break;
                 }
-                case Mesh2PointTopologicalMapping::TETRA:
+                case topology::Mesh2PointTopologicalMapping::TETRA:
                 {
                     core::topology::BaseMeshTopology::Tetra t = tetrahedra[source.second];
                     typename In::Deriv f = data;
@@ -582,7 +584,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
 
                     break;
                 }
-                case Mesh2PointTopologicalMapping::HEXA:
+                case topology::Mesh2PointTopologicalMapping::HEXA:
                 {
                     core::topology::BaseMeshTopology::Hexa h = hexahedra[source.second];
                     typename In::Deriv f = data;
@@ -645,4 +647,4 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
     dOut.endEdit();
 }
 
-} //namespace sofa::component::topology::mapping
+} //namespace sofa::component::mapping
