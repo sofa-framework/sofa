@@ -1,0 +1,20 @@
+#pragma once
+
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_TOPOLOGY_UTILITY
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_COMPONENT_TOPOLOGY_UTILITY_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_COMPONENT_TOPOLOGY_UTILITY_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#cmakedefine01 SOFA_COMPONENT_TOPOLOGY_UTILITY_HAVE_ZLIB
+// Keep the previous macros
+#define SOFAMISCTOPOLOGY_HAVE_ZLIB SOFA_COMPONENT_TOPOLOGY_UTILITY_HAVE_ZLIB
+
+namespace sofa::component::topology::utility
+{
+	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+} // namespace sofa::component::topology::utility
