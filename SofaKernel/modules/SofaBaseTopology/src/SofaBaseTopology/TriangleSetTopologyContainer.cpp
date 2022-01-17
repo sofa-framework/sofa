@@ -280,12 +280,12 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
 
                 if (!foundEdge)
                 {
-                    msg_error() << "Cannot find edge " << j
+                    msg_warning() << "Cannot find edge " << j
                         << " [" << t[(j + 1) % 3] << ", " << t[(j + 2) % 3] << "]"
-                        << " in triangle " << i;
-                    m_edgesInTriangle.clear();
-                    this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-                    return;
+                        << " from triangle " << i << " [" << t << "]" << " in edge list: edge is added to the list";
+                    sofa::helper::getWriteAccessor(d_edge)->emplace_back(std::min(t[(j + 1) % 3], t[(j + 2) % 3]), std::max(t[(j + 1) % 3], t[(j + 2) % 3]));
+                    m_edgesInTriangle[i][j] = m_edge.size() - 1;
+                    foundEdge = true;
                 }
             }
         }
