@@ -12,10 +12,14 @@ set(SOURCE_FILES
     ${SOFAGENERALTOPOLOGY_SRC}/initSofaGeneralTopology.cpp
     )
 
-sofa_find_package(SofaBase REQUIRED) # SofaBaseTopology
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
+
+message(WARNING "${PROJECT_NAME} module is deprecated; its components are in Sofa.Component.Topology.Grid and Sofa.Component.Topology.StaticContainer.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.Topology.StaticContainer REQUIRED)
+sofa_find_package(Sofa.Component.Topology.Grid REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Topology.StaticContainer Sofa.Component.Topology.Grid)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

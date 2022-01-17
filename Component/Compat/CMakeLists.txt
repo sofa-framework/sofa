@@ -8,6 +8,10 @@ include(Sofa.Component.ODESolver.Forward.cmake)
 include(Sofa.Component.IO.Mesh.cmake)
 include(Sofa.Component.Playback.cmake)
 include(Sofa.Component.SceneUtility.cmake)
+include(Sofa.Component.Topology.StaticContainer.cmake)
+include(Sofa.Component.Topology.DynamicContainer.cmake)
+include(Sofa.Component.Topology.Grid.cmake)
+include(Sofa.Component.Topology.Mapping.cmake)
 
 set(SOURCE_FILES
     ${SOFACOMPONENTCOMPATSRC_ROOT}/init.cpp
