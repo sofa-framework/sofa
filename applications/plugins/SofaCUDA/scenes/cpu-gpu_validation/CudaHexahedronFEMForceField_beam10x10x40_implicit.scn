@@ -1,0 +1,76 @@
+<?xml version="1.0" ?>
+<Node name="root" gravity="0 -9 0" dt="0.02">
+    <RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="SofaCUDA"/> <!-- Needed to use components [BoxROI, DiagonalMass, FixedConstraint, HexahedronFEMForceField, IdentityMapping, MechanicalObject] -->
+    <RequiredPlugin name="SofaEngine"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="SofaImplicitOdeSolver"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="SofaOpenglVisual"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaSimpleFem"/> <!-- Needed to use components [HexahedronFEMForceField] -->
+    <RequiredPlugin name="SofaTopologyMapping"/> <!-- Needed to use components [Hexa2QuadTopologicalMapping] -->
+    <VisualStyle displayFlags="showBehaviorModels showVisual" />
+	
+    <DefaultAnimationLoop />
+    <DefaultVisualManagerLoop />
+    <DefaultPipeline verbose="0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    <DefaultContactManager response="default" />
+    <DiscreteIntersection/>
+    
+    <Node name="HexahedronFEMForceField-GPU-Green">
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="20" name="linear solver" tolerance="1.0e-6" threshold="1.0e-6" />
+        
+        <RegularGridTopology name="grid" n="40 10 10" min="0 6 -2" max="16 10 2" />
+        <MechanicalObject name="Volume" template="CudaVec3f"/>
+
+        <HexahedronSetTopologyContainer name="Container" src="@grid"/>
+        <HexahedronSetTopologyModifier name="Modifier" />
+        
+        <DiagonalMass totalMass="50.0" />
+        <BoxROI name="ROI1" box="-0.1 5 -3 0.1 11 3" drawBoxes="1" />
+        
+        <FixedConstraint indices="@ROI1.indices" />
+        <HexahedronFEMForceField name="FEM" template="CudaVec3f" youngModulus="2000" poissonRatio="0.3" method="large" />
+
+        <Node name="surface">
+            <QuadSetTopologyContainer name="Container" />
+            <QuadSetTopologyModifier name="Modifier" />
+            
+            <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
+            <Node name="Visu">
+                <OglModel name="Visual" color="green" />
+                <IdentityMapping input="@../../Volume" output="@Visual" />
+            </Node>
+        </Node>
+    </Node>
+    
+
+    <Node name="HexahedronFEMForceField-CPU-red">
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="20" name="linear solver" tolerance="1.0e-6" threshold="1.0e-6" />
+        
+        <RegularGridTopology name="grid" n="40 10 10" min="0 6 -2" max="16 10 2" />
+        <MechanicalObject name="Volume" template="Vec3"/>
+
+        <HexahedronSetTopologyContainer name="Container" src="@grid"/>
+        <HexahedronSetTopologyModifier name="Modifier" />
+
+        <DiagonalMass totalMass="50.0" />
+        <BoxROI name="ROI1" box="-0.1 5 -3 0.1 11 3" drawBoxes="1" />
+        
+        <FixedConstraint indices="@ROI1.indices" />
+        <HexahedronFEMForceField name="FEM" template="Vec3" youngModulus="2000" poissonRatio="0.3" method="large" />
+        
+        <Node name="surface">
+            <QuadSetTopologyContainer name="Container" />
+            <QuadSetTopologyModifier name="Modifier" />
+            
+            <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
+            <Node name="Visu">
+                <OglModel name="Visual" color="red" />
+                <IdentityMapping input="@../../Volume" output="@Visual" />
+            </Node>
+        </Node>
+    </Node>
+</Node>
