@@ -26,8 +26,6 @@
 #include <sofa/component/topology/dynamiccontainer/HexahedronSetGeometryAlgorithms.h>
 #include <sofa/component/topology/dynamiccontainer/DynamicSparseGridTopologyContainer.h>
 #include <sofa/core/behavior/MechanicalState.h>
-// TODO: this class should use MechanicalState rather than MechanicalObject, but currently cannot because of the use of the deprecated translation property
-#include <SofaBaseMechanics/MechanicalObject.h>
 
 namespace sofa::component::topology::dynamiccontainer
 {
@@ -44,8 +42,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-    //typedef sofa::core::behavior::MechanicalState<DataTypes> MObject;
-    typedef sofa::component::container::MechanicalObject<DataTypes> MObject;
+    typedef sofa::core::behavior::MechanicalState<DataTypes> MObject;
 protected:
     DynamicSparseGridGeometryAlgorithms()
         : HexahedronSetGeometryAlgorithms<DataTypes>()
