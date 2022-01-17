@@ -283,8 +283,11 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
                     msg_warning() << "Cannot find edge " << j
                         << " [" << t[(j + 1) % 3] << ", " << t[(j + 2) % 3] << "]"
                         << " from triangle " << i << " [" << t << "]" << " in edge list: edge is added to the list";
-                    sofa::helper::getWriteAccessor(d_edge)->emplace_back(std::min(t[(j + 1) % 3], t[(j + 2) % 3]), std::max(t[(j + 1) % 3], t[(j + 2) % 3]));
+                    const Edge e{std::min(t[(j + 1) % 3], t[(j + 2) % 3]), std::max(t[(j + 1) % 3], t[(j + 2) % 3])};
+                    sofa::helper::getWriteAccessor(d_edge)->emplace_back(e);
                     m_edgesInTriangle[i][j] = m_edge.size() - 1;
+                    edgesAroundVertexMap.insert(std::make_pair(e[0], (EdgeID)(m_edge.size() - 1)));
+                    edgesAroundVertexMap.insert(std::make_pair(e[1], (EdgeID)(m_edge.size() - 1)));
                     foundEdge = true;
                 }
             }
