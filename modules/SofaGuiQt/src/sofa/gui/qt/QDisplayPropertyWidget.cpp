@@ -577,10 +577,9 @@ void QDisplayPropertyWidget::updateListViewItem()
         core::objectmodel::Base* object = objectIterator->second.first;
         QTreeWidgetItem* item = objectIterator->second.second;
 
-        if (sofa::simulation::node::getNodeFrom(object))
+        if (sofa::core::castTo<simulation::Node*>(object))
         {
             item->setText(0, QString::fromStdString(object->getName()));
-            //emit nodeNameModification(node);
         }
         else
         {
