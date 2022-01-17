@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/config.h>
+#include <sofa/component/topology/dynamiccontainer/config.h>
 
-#include <SofaBaseTopology/QuadSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/QuadSetTopologyModifier.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 class HexahedronSetTopologyContainer;
 
@@ -34,7 +34,7 @@ class HexahedronSetGeometryAlgorithms;
 /**
 * A class that modifies the topology by adding and removing hexahedra
 */
-class SOFA_SOFABASETOPOLOGY_API HexahedronSetTopologyModifier : public QuadSetTopologyModifier
+class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API HexahedronSetTopologyModifier : public QuadSetTopologyModifier
 {
 public:
     SOFA_CLASS(HexahedronSetTopologyModifier,QuadSetTopologyModifier);
@@ -207,4 +207,4 @@ private:
     HexahedronSetTopologyContainer* 	m_container;
 };
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

@@ -21,10 +21,10 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDGEOMETRYALGORITHMS_CPP
 
-#include <SofaNonUniformFem/DynamicSparseGridGeometryAlgorithms.inl>
+#include <sofa/component/topology/dynamiccontainer/DynamicSparseGridGeometryAlgorithms.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 
 using namespace sofa::defaulttype;
@@ -40,8 +40,8 @@ int DynamicSparseGridGeometryAlgorithms<Vec2Types>::findNearestElementInRestPos(
     return HexahedronSetGeometryAlgorithms<Vec2Types>::findNearestElementInRestPos(pos, baryC, distance);
 }
 
-template class SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridGeometryAlgorithms<Vec3Types>;
-template class SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridGeometryAlgorithms<Vec2Types>;
+template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API DynamicSparseGridGeometryAlgorithms<Vec3Types>;
+template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API DynamicSparseGridGeometryAlgorithms<Vec2Types>;
 
 
-} // namespace sofa::component::topology
+} // namespace sofa::component::topology::dynamiccontainer

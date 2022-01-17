@@ -19,16 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTopologyMapping/Triangle2EdgeTopologicalMapping.h>
+#include <sofa/component/topology/mapping/Triangle2EdgeTopologicalMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
-#include <SofaBaseTopology/EdgeSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/EdgeSetTopologyModifier.h>
 
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
-#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyModifier.h>
 
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/type/Vec.h>
@@ -36,12 +36,12 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::mapping
 {
 
 using namespace sofa::defaulttype;
 
-using namespace sofa::component::topology;
+using namespace sofa::component::topology::mapping;
 using namespace sofa::core::topology;
 
 // Register in the Factory
@@ -316,7 +316,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
         }
         case core::topology::POINTSREMOVED:
         {
-            const auto& tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
+            const auto& tab = ( static_cast< const sofa::core::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
             sofa::type::vector<Index> indices;
 
@@ -360,7 +360,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
         */
         case core::topology::TRIANGLESADDED:
         {
-            const sofa::component::topology::TrianglesAdded *trianglesAdded = static_cast< const sofa::component::topology::TrianglesAdded * >(*itBegin);
+            const auto *trianglesAdded = static_cast< const sofa::core::topology::TrianglesAdded * >(*itBegin);
 
             sofa::type::vector< BaseMeshTopology::Edge > edges_to_create;
             sofa::type::vector< BaseMeshTopology::EdgeID > edgeId_to_create;
@@ -433,7 +433,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
         }
         case core::topology::POINTSADDED:
         {
-            const sofa::component::topology::PointsAdded *ta=static_cast< const sofa::component::topology::PointsAdded * >( *itBegin );
+            const auto *ta=static_cast< const sofa::core::topology::PointsAdded * >( *itBegin );
             m_outTopoModifier->addPoints(ta->getNbAddedVertices(), ta->ancestorsList, ta->coefs, false);
             break;
         }
@@ -450,4 +450,4 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
     sofa::helper::AdvancedTimer::stepEnd("Update Triangle2EdgeTopologicalMapping");
 }
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::mapping

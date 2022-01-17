@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/EdgeSetTopologyContainer.h>
 #include <sofa/core/topology/TopologyHandler.h>
 
 #include <sofa/core/ObjectFactory.h>
@@ -33,7 +33,7 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/connected_components.hpp>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 
 using namespace std;
@@ -582,4 +582,4 @@ bool EdgeSetTopologyContainer::linkTopologyHandlerToData(core::topology::Topolog
     }
 }
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

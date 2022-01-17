@@ -24,7 +24,7 @@
 #include <sstream>
 #include "SparseGridRamificationTopology.h"
 
-namespace sofa::component::topology
+namespace sofa::component::topology::grid
 {
 
 int SparseGridRamificationTopologyClass = core::RegisterObject("Sparse grid in 3D (modified)")
@@ -1283,4 +1283,4 @@ bool SparseGridRamificationTopology::intersectionSegmentTriangle(Vector3 s0, Vec
     return false;
 }
 
-} // namespace sofa::component::topology
+} // namespace sofa::component::topology::grid

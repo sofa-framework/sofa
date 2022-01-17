@@ -20,15 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_CPP
-#include <SofaBaseTopology/NumericalIntegrationDescriptor.inl>
+#include <sofa/component/topology/dynamiccontainer/NumericalIntegrationDescriptor.inl>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 
-template class  SOFA_SOFABASETOPOLOGY_API NumericalIntegrationDescriptor<SReal,4>;
-template class  SOFA_SOFABASETOPOLOGY_API NumericalIntegrationDescriptor<SReal,3>;
-template class  SOFA_SOFABASETOPOLOGY_API NumericalIntegrationDescriptor<SReal,1>;
+template class  SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API NumericalIntegrationDescriptor<SReal,4>;
+template class  SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API NumericalIntegrationDescriptor<SReal,3>;
+template class  SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API NumericalIntegrationDescriptor<SReal,1>;
 
 
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

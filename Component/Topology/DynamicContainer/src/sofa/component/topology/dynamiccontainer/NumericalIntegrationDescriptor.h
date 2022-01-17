@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/config.h>
+#include <sofa/component/topology/dynamiccontainer/config.h>
 
 #include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/type/vector.h>
 #include <sofa/helper/set.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 
 /// Cross product for 3-elements vectors.
@@ -66,10 +66,10 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_CPP)
-extern template class SOFA_SOFABASETOPOLOGY_API NumericalIntegrationDescriptor<SReal, 4>;
-extern template class SOFA_SOFABASETOPOLOGY_API NumericalIntegrationDescriptor<SReal, 3>;
-extern template class SOFA_SOFABASETOPOLOGY_API NumericalIntegrationDescriptor<SReal, 1>;
+extern template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API NumericalIntegrationDescriptor<SReal, 4>;
+extern template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API NumericalIntegrationDescriptor<SReal, 3>;
+extern template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API NumericalIntegrationDescriptor<SReal, 1>;
 
 #endif
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

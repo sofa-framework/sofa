@@ -19,17 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyModifier.h>
 #include <sofa/core/topology/TopologyHandler.h>
 
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyContainer.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <algorithm>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 int TriangleSetTopologyModifierClass = core::RegisterObject("Triangle set topology modifier")
         .add< TriangleSetTopologyModifier >()
@@ -950,4 +950,4 @@ void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
     sofa::helper::AdvancedTimer::stepEnd("TriangleSetTopologyModifier::propagateTopologicalEngineChanges");
 }
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

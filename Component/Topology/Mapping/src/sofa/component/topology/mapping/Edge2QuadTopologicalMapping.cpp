@@ -19,13 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTopologyMapping/Edge2QuadTopologicalMapping.h>
+#include <sofa/component/topology/mapping/Edge2QuadTopologicalMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <SofaBaseTopology/QuadSetTopologyModifier.h>
-#include <SofaBaseTopology/QuadSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/QuadSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/QuadSetTopologyContainer.h>
 
 #include <sofa/core/topology/TopologyChange.h>
 
@@ -40,12 +40,12 @@
 #include <sofa/defaulttype/RigidTypes.h>
 
 
-namespace sofa::component::topology
+namespace sofa::component::topology::mapping
 {
 
 using namespace sofa::defaulttype;
 
-using namespace sofa::component::topology;
+using namespace sofa::component::topology::mapping;
 using namespace sofa::core::topology;
 
 // Register in the Factory
@@ -111,10 +111,10 @@ void Edge2QuadTopologicalMapping::init()
         {
             msg_info() << "Edge2QuadTopologicalMapping - to = quad";
 
-            QuadSetTopologyModifier *to_tstm;
+            dynamiccontainer::QuadSetTopologyModifier *to_tstm;
             toModel->getContext()->get(to_tstm);
 
-            QuadSetTopologyContainer *to_tstc;
+            dynamiccontainer::QuadSetTopologyContainer *to_tstc;
             toModel->getContext()->get(to_tstc);
 
             const sofa::type::vector<Edge> &edgeArray=fromModel->getEdges();
@@ -289,7 +289,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
     if (fromModel)
     {
 
-        QuadSetTopologyModifier *to_tstm;
+        dynamiccontainer::QuadSetTopologyModifier *to_tstm;
         toModel->getContext()->get(to_tstm);
 
         if (toModel)
@@ -515,7 +515,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::topology::POINTSADDED:
                 {
-                    const sofa::component::topology::PointsAdded *ta=static_cast< const sofa::component::topology::PointsAdded * >( *itBegin );
+                    const auto *ta=static_cast< const sofa::core::topology::PointsAdded * >( *itBegin );
 
                     unsigned int to_nVertices = (unsigned int)ta->getNbAddedVertices() * N;
                     sofa::type::vector< sofa::type::vector< Index > > to_ancestorsList;
@@ -562,4 +562,4 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
     return;
 }
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::mapping

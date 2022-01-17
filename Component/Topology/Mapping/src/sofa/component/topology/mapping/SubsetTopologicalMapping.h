@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaTopologyMapping/config.h>
+#include <sofa/component/topology/mapping/config.h>
 
 #include <sofa/core/topology/TopologicalMapping.h>
 
@@ -29,7 +29,7 @@
 
 #include <sofa/core/BaseMapping.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::mapping
 {
 
 /**
@@ -37,7 +37,7 @@ namespace sofa::component::topology
  * The implementation currently assumes that both topology have been initialized identically.
  */
 
-class SOFA_SOFATOPOLOGYMAPPING_API SubsetTopologicalMapping : public sofa::core::topology::TopologicalMapping
+class SOFA_COMPONENT_TOPOLOGY_MAPPING_API SubsetTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
 public:
     SOFA_CLASS(SubsetTopologicalMapping,sofa::core::topology::TopologicalMapping);
@@ -85,4 +85,4 @@ public:
 
 };
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::mapping

@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseTopology/EdgeSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/EdgeSetTopologyModifier.h>
 
-#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/EdgeSetTopologyContainer.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
@@ -36,7 +36,7 @@
 #include <boost/graph/cuthill_mckee_ordering.hpp>
 #include <boost/graph/bandwidth.hpp>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 using namespace sofa::defaulttype;
 int EdgeSetTopologyModifierClass = core::RegisterObject("Edge set topology modifier")
@@ -982,4 +982,4 @@ void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
 }
 
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

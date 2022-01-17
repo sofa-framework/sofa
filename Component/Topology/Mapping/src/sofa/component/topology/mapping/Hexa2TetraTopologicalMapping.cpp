@@ -19,31 +19,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTopologyMapping/Hexa2TetraTopologicalMapping.h>
+#include <sofa/component/topology/mapping/Hexa2TetraTopologicalMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/HexahedronSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/HexahedronSetTopologyModifier.h>
 
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyModifier.h>
 
 #include <sofa/core/topology/TopologyChange.h>
 
-#include <SofaBaseTopology/GridTopology.h>
+#include <sofa/component/topology/grid/GridTopology.h>
 
 #include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::mapping
 {
 
 using namespace sofa::defaulttype;
 
-using namespace sofa::component::topology;
+using namespace sofa::component::topology::mapping;
 using namespace sofa::core::topology;
 
 // Register in the Factory
@@ -64,7 +64,9 @@ Hexa2TetraTopologicalMapping::~Hexa2TetraTopologicalMapping()
 }
 
 void Hexa2TetraTopologicalMapping::init()
-{    
+{
+    using namespace dynamiccontainer;
+
     // INITIALISATION of TETRAHEDRAL mesh from HEXAHEDRAL mesh :
 
     // recheck models
@@ -117,7 +119,7 @@ void Hexa2TetraTopologicalMapping::init()
     int ny = 1;
     //int nz = 1;
     {
-        topology::GridTopology* grid = dynamic_cast<topology::GridTopology*>(fromModel.get());
+        auto* grid = dynamic_cast<grid::GridTopology*>(fromModel.get());
         if (grid != nullptr)
         {
             nx = grid->getNx()-1;
@@ -209,4 +211,4 @@ void Hexa2TetraTopologicalMapping::updateTopologicalMappingTopDown()
 }
 
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::mapping

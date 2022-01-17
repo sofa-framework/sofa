@@ -38,8 +38,8 @@
  *        3. Return false.
  */
 
-#include <SofaBaseTopology/polygon_cube_intersection/polygon_cube_intersection.h>
-#include <SofaBaseTopology/polygon_cube_intersection/vec.h>
+#include <sofa/component/topology/grid/polygon_cube_intersection/polygon_cube_intersection.h>
+#include <sofa/component/topology/grid/polygon_cube_intersection/vec.h>
 
 namespace sofa
 {

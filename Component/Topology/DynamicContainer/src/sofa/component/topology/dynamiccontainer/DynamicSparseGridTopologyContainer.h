@@ -21,18 +21,18 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaNonUniformFem/config.h>
+#include <sofa/component/topology/dynamiccontainer/config.h>
 
-#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/HexahedronSetTopologyContainer.h>
 #include <sofa/core/topology/TopologyData.h>
 #include <sofa/helper/map.h>
 #include <sofa/type/Vec.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 
 /** a class that stores a sparse regular grid of hexahedra and provides a better loading and access to neighbors than HexahedronSetTopologyContainer */
-class SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridTopologyContainer : public HexahedronSetTopologyContainer
+class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API DynamicSparseGridTopologyContainer : public HexahedronSetTopologyContainer
 {
     friend class DynamicSparseGridTopologyModifier;
 
@@ -59,4 +59,4 @@ public:
 
 };
 
-} // namespace sofa::component::topology
+} // namespace sofa::component::topology::dynamiccontainer

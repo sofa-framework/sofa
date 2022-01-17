@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralTopology/CubeTopology.h>
+#include <sofa/component/topology/staticcontainer/CubeTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::staticcontainer
 {
 
 using namespace sofa::type;
@@ -367,4 +367,4 @@ Vector3 CubeTopology::getPoint(int x, int y, int z) const
     return p0+dx*x+dy*y+dz*z;
 }
 
-} // namespace sofa::component::topology
+} // namespace sofa::component::topology::staticcontainer

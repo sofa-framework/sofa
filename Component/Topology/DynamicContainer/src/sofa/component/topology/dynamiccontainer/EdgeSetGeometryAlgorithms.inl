@@ -25,14 +25,14 @@
 #include <Eigen/Dense>
 #include <Eigen/Jacobi>
 
-#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
+#include <sofa/component/topology/dynamiccontainer/EdgeSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/MatEigen.h>
 #include <sofa/type/Mat_solve_Cholesky.h>
-#include <SofaBaseTopology/CommonAlgorithms.h>
-#include <SofaBaseTopology/PointSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/dynamiccontainer/CommonAlgorithms.h>
+#include <sofa/component/topology/dynamiccontainer/PointSetGeometryAlgorithms.inl>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 
 template< class DataTypes>
@@ -944,4 +944,4 @@ bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeSegmentIntersection(EdgeID
 }
 
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

@@ -20,19 +20,17 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/config.h>
+#include <sofa/component/topology/staticcontainer/config.h>
 
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/type/vector.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::staticcontainer
 {
 
-class MeshTopology;
-
-class SOFA_SOFABASETOPOLOGY_API MeshTopology : public core::topology::BaseMeshTopology
+class SOFA_COMPONENT_TOPOLOGY_STATICCONTAINER_API MeshTopology : public core::topology::BaseMeshTopology
 {
 public:
     SOFA_CLASS(MeshTopology,core::topology::BaseMeshTopology);
@@ -624,4 +622,4 @@ protected:
     sofa::core::topology::TopologyElementType m_upperElementType;
 };
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::staticcontainer

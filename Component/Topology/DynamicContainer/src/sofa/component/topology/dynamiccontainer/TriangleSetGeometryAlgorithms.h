@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/config.h>
+#include <sofa/component/topology/dynamiccontainer/config.h>
 
-#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
+#include <sofa/component/topology/dynamiccontainer/EdgeSetGeometryAlgorithms.h>
 #include <sofa/type/Vec.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 
 class TriangleSetTopologyContainer;
@@ -391,11 +391,11 @@ bool is_point_in_halfplane(const sofa::type::Vec<3,Real>& p,
         const sofa::type::Vec<3,Real>& c,
         unsigned int ind_p0, unsigned int ind_p1, unsigned int ind_p2);
 
-void SOFA_SOFABASETOPOLOGY_API snapping_test_triangle(SReal epsilon,
+void SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API snapping_test_triangle(SReal epsilon,
         SReal alpha0, SReal alpha1, SReal alpha2,
         bool& is_snap_0, bool& is_snap_1, bool& is_snap_2);
 
-void SOFA_SOFABASETOPOLOGY_API snapping_test_edge(SReal epsilon,
+void SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API snapping_test_edge(SReal epsilon,
         SReal alpha0, SReal alpha1,
         bool& is_snap_0, bool& is_snap_1);
 
@@ -409,8 +409,8 @@ template< class Real>
 inline Real areaProduct(const type::Vec<1,Real>& , const type::Vec<1,Real>&  );
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_CPP)
-extern template class SOFA_SOFABASETOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Vec3Types>;
-extern template class SOFA_SOFABASETOPOLOGY_API TriangleSetGeometryAlgorithms<defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API TriangleSetGeometryAlgorithms<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API TriangleSetGeometryAlgorithms<defaulttype::Vec2Types>;
 #endif
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralTopology/SphereGridTopology.h>
+#include <sofa/component/topology/grid/SphereGridTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::grid
 {
 
 using namespace sofa::type;
@@ -103,4 +103,4 @@ sofa::type::Vec3 SphereGridTopology::getPointInGrid(int i, int j, int k) const
     return d_center.getValue()+axisX*p[0] + axisY*p[1] + axisZ * p[2];
 }
 
-} // namespace sofa::component::topology
+} // namespace sofa::component::topology::grid

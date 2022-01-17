@@ -19,12 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaNonUniformFem/SparseGridMultipleTopology.h>
+#include <sofa/component/topology/grid/SparseGridMultipleTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::grid
 {
 
 int SparseGridMultipleTopologyClass = core::RegisterObject("Sparse grid in 3D")
@@ -270,5 +270,5 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
     this->setFinerSparseGrid(_virtualFinerLevels[nb-1].get());
 }
 
-} // namespace sofa::component::topology
+} // namespace sofa::component::topology::grid
 

@@ -19,13 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTopologyMapping/SimpleTesselatedTetraTopologicalMapping.h>
+#include <sofa/component/topology/mapping/SimpleTesselatedTetraTopologicalMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyModifier.h>
 #include <sofa/core/topology/TopologyChange.h>
 
 #include <sofa/core/topology/TopologyData.inl>
@@ -35,10 +35,10 @@
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::mapping
 {
 using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
+using namespace sofa::component::topology::mapping;
 using namespace sofa::core::topology;
 using sofa::type::fixed_array;
 
@@ -59,6 +59,8 @@ SimpleTesselatedTetraTopologicalMapping::SimpleTesselatedTetraTopologicalMapping
 
 void SimpleTesselatedTetraTopologicalMapping::init()
 {
+    using namespace dynamiccontainer;
+
     if(fromModel)
     {
         TetrahedronSetTopologyContainer *from_tstc;
@@ -158,7 +160,7 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingBottomUp()
     {
         //TetrahedronSetTopologyContainer *from_tstc;
         //fromModel->getContext()->get(from_tstc);
-        TetrahedronSetTopologyModifier *from_tstm;
+        dynamiccontainer::TetrahedronSetTopologyModifier *from_tstm;
         fromModel->getContext()->get(from_tstm);
         //TetrahedronSetTopologyContainer *to_tstc;
         //toModel->getContext()->get(to_tstc);
@@ -567,4 +569,4 @@ void SimpleTesselatedTetraTopologicalMapping::removeInputTetrahedra( const sofa:
     tetraSource.endEdit();
 }
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::mapping

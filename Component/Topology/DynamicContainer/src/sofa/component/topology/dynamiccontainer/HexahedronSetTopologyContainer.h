@@ -42,15 +42,15 @@
 
 
 #pragma once
-#include <SofaBaseTopology/QuadSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/QuadSetTopologyContainer.h>
 
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 class HexahedronSetTopologyModifier;
 
 /** a class that stores a set of hexahedra and provides access with adjacent quads, edges and vertices */
-class SOFA_SOFABASETOPOLOGY_API HexahedronSetTopologyContainer : public QuadSetTopologyContainer
+class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API HexahedronSetTopologyContainer : public QuadSetTopologyContainer
 {
     friend class HexahedronSetTopologyModifier;
 
@@ -450,4 +450,4 @@ protected:
 
 };
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

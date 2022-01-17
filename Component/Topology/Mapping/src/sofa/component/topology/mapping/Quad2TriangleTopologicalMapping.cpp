@@ -19,31 +19,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTopologyMapping/Quad2TriangleTopologicalMapping.h>
+#include <sofa/component/topology/mapping/Quad2TriangleTopologicalMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
-#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyModifier.h>
 
-#include <SofaBaseTopology/QuadSetTopologyContainer.h>
-#include <SofaBaseTopology/QuadSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/QuadSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/QuadSetTopologyModifier.h>
 
 #include <sofa/core/topology/TopologyChange.h>
-#include <SofaBaseTopology/GridTopology.h>
+#include <sofa/component/topology/grid/GridTopology.h>
 
 #include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::mapping
 {
 
 using namespace sofa::defaulttype;
 
-using namespace sofa::component::topology;
+using namespace sofa::component::topology::mapping;
 using namespace sofa::core::topology;
 
 /// Input Topology
@@ -70,6 +70,8 @@ Quad2TriangleTopologicalMapping::~Quad2TriangleTopologicalMapping()
 
 void Quad2TriangleTopologicalMapping::init()
 {
+    using namespace dynamiccontainer;
+
     bool modelsOk = true;
     if (!fromModel)
     {
@@ -130,7 +132,7 @@ void Quad2TriangleTopologicalMapping::init()
     int ny = 1;
 
     {
-        const auto * grid = dynamic_cast<const topology::GridTopology*>(fromModel.get());
+        const auto * grid = dynamic_cast<const grid::GridTopology*>(fromModel.get());
         if (grid != nullptr)
         {
             nx = grid->getNx()-1;
@@ -192,6 +194,7 @@ Index Quad2TriangleTopologicalMapping::getFromIndex(Index ind)
 
 void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 {
+    using namespace dynamiccontainer;
 
     if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;
@@ -371,7 +374,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::POINTSREMOVED:
         {
-            const Topology::SetIndices & tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
+            const Topology::SetIndices & tab = ( static_cast< const sofa::core::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
             sofa::type::vector<Index> indices;
 
@@ -411,7 +414,7 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::POINTSADDED:
         {
-            const auto * ta=static_cast< const sofa::component::topology::PointsAdded * >( *itBegin );
+            const auto * ta=static_cast< const sofa::core::topology::PointsAdded * >( *itBegin );
 
             to_tstm->addPoints(ta->getNbAddedVertices(), ta->ancestorsList, ta->coefs, false);
             break;
@@ -429,4 +432,4 @@ void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 }
 
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::mapping

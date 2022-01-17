@@ -21,15 +21,15 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaNonUniformFem/config.h>
+#include <sofa/component/topology/dynamiccontainer/config.h>
 
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
-#include <SofaNonUniformFem/DynamicSparseGridTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/HexahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/dynamiccontainer/DynamicSparseGridTopologyContainer.h>
 #include <sofa/core/behavior/MechanicalState.h>
 // TODO: this class should use MechanicalState rather than MechanicalObject, but currently cannot because of the use of the deprecated translation property
 #include <SofaBaseMechanics/MechanicalObject.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 
 /**
@@ -68,15 +68,15 @@ protected:
 
 
 template <>
-int SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec2Types>::findNearestElementInRestPos(const Coord& pos, sofa::type::Vector3& baryC, Real& distance) const;
+int SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec2Types>::findNearestElementInRestPos(const Coord& pos, sofa::type::Vector3& baryC, Real& distance) const;
 
 template <>
-int SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec1Types>::findNearestElementInRestPos(const Coord& pos, sofa::type::Vector3& baryC, Real& distance) const;
+int SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec1Types>::findNearestElementInRestPos(const Coord& pos, sofa::type::Vector3& baryC, Real& distance) const;
 
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDGEOMETRYALGORITHMS_CPP)
-extern template class SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec3Types>;
-extern template class SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec2Types>;
 #endif
 
-} // namespace sofa::component::topology
+} // namespace sofa::component::topology::dynamiccontainer

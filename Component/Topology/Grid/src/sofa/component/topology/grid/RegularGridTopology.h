@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/config.h>
+#include <sofa/component/topology/grid/config.h>
 
-#include <SofaBaseTopology/GridTopology.h>
+#include <sofa/component/topology/grid/GridTopology.h>
 #include <sofa/type/Vec.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::grid
 {
 
 /**
@@ -33,7 +33,7 @@ namespace sofa::component::topology
   In c++, resolution is set in the constructor or using method setSize of the parent class, while the spatial extent is set using method setPos.
   In xml, see example files.
   */
-class SOFA_SOFABASETOPOLOGY_API RegularGridTopology : public GridTopology
+class SOFA_COMPONENT_TOPOLOGY_GRID_API RegularGridTopology : public GridTopology
 {
 public:
     typedef sofa::type::Vec<3, int> Vec3i;
@@ -163,4 +163,4 @@ protected:
     SReal inv_dx2, inv_dy2, inv_dz2;
 };
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::grid

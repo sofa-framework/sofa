@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/config.h>
+#include <sofa/component/topology/dynamiccontainer/config.h>
 
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/NumericalIntegrationDescriptor.h>
+#include <sofa/component/topology/dynamiccontainer/TriangleSetGeometryAlgorithms.h>
+#include <sofa/component/topology/dynamiccontainer/NumericalIntegrationDescriptor.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 
 class TetrahedronSetTopologyContainer;
@@ -184,8 +184,8 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETGEOMETRYALGORITHMS_CPP)
-extern template class SOFA_SOFABASETOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec3Types>;
-extern template class SOFA_SOFABASETOPOLOGY_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API TetrahedronSetGeometryAlgorithms<defaulttype::Vec2Types>;
 #endif
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

@@ -19,16 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/HexahedronSetTopologyModifier.h>
 
 #include <sofa/core/topology/TopologyChange.h>
-#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/HexahedronSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/TopologyHandler.h>
 
 #include <algorithm>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 int HexahedronSetTopologyModifierClass = core::RegisterObject("Hexahedron set topology modifier")
         .add< HexahedronSetTopologyModifier >();
@@ -627,4 +627,4 @@ void HexahedronSetTopologyModifier::propagateTopologicalEngineChanges()
 }
 
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

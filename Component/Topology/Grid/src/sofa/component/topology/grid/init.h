@@ -1,8 +1,8 @@
 #pragma once
 
-#include <sofa/component/io/mesh/config.h>
+#include <sofa/component/topology/grid/config.h>
 
-namespace sofa::component::io::mesh
+namespace sofa::component::topology::grid
 {
-    SOFA_COMPONENT_IO_MESH_API void init();
-} // namespace sofa::component::io::mesh
+    SOFA_COMPONENT_TOPOLOGY_GRID_API void init();
+} // namespace sofa::component::topology::grid

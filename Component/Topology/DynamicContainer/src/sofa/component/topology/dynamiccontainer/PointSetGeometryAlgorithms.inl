@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/PointSetGeometryAlgorithms.h>
+#include <sofa/component/topology/dynamiccontainer/PointSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Tag.h>
 #include <sofa/simulation/fwd.h>
 #include <sofa/simulation/Simulation.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 
 using sofa::core::objectmodel::ComponentState;
@@ -291,4 +291,4 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
 }
 
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

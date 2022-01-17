@@ -21,11 +21,11 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaNonUniformFem/DynamicSparseGridGeometryAlgorithms.h>
+#include <sofa/component/topology/dynamiccontainer/DynamicSparseGridGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseTopology/CommonAlgorithms.h>
+#include <sofa/component/topology/dynamiccontainer/CommonAlgorithms.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 
 template < class DataTypes >
@@ -122,4 +122,4 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
     return index;
 }
 
-} // namespace sofa::component::topology
+} // namespace sofa::component::topology::dynamiccontainer

@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_CPP
-#include <SofaBaseTopology/PointSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/dynamiccontainer/PointSetGeometryAlgorithms.inl>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 
 using namespace sofa::defaulttype;
@@ -36,11 +36,11 @@ int PointSetGeometryAlgorithmsClass = core::RegisterObject("Point set geometry a
 
         ;
 
-template class SOFA_SOFABASETOPOLOGY_API PointSetGeometryAlgorithms<Vec3Types>;
-template class SOFA_SOFABASETOPOLOGY_API PointSetGeometryAlgorithms<Vec2Types>;
-template class SOFA_SOFABASETOPOLOGY_API PointSetGeometryAlgorithms<Vec1Types>;
-template class SOFA_SOFABASETOPOLOGY_API PointSetGeometryAlgorithms<Rigid3Types>;
-template class SOFA_SOFABASETOPOLOGY_API PointSetGeometryAlgorithms<Rigid2Types>;
+template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API PointSetGeometryAlgorithms<Vec3Types>;
+template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API PointSetGeometryAlgorithms<Vec2Types>;
+template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API PointSetGeometryAlgorithms<Vec1Types>;
+template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API PointSetGeometryAlgorithms<Rigid3Types>;
+template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API PointSetGeometryAlgorithms<Rigid2Types>;
 
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

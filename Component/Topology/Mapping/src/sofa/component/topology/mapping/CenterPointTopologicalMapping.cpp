@@ -23,16 +23,16 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <SofaBaseTopology/PointSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/PointSetTopologyModifier.h>
 
 #include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::mapping
 {
 using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
+using namespace sofa::component::topology::mapping;
 using namespace sofa::core::topology;
 
 // Register in the Factory
@@ -70,7 +70,7 @@ void CenterPointTopologicalMapping::updateTopologicalMappingTopDown()
         std::list<const TopologyChange *>::const_iterator changeIt = fromModel->beginChange();
         std::list<const TopologyChange *>::const_iterator itEnd = fromModel->endChange();
 
-        PointSetTopologyModifier *to_pstm;
+        dynamiccontainer::PointSetTopologyModifier *to_pstm;
         toModel->getContext()->get(to_pstm);
 
         while( changeIt != itEnd )
@@ -99,4 +99,4 @@ void CenterPointTopologicalMapping::updateTopologicalMappingTopDown()
     }
 }
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::mapping

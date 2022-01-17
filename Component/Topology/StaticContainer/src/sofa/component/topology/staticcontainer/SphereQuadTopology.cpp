@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralTopology/SphereQuadTopology.h>
+#include <sofa/component/topology/staticcontainer/SphereQuadTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::staticcontainer
 {
 
 using namespace sofa::type;
@@ -54,4 +54,4 @@ Vector3 SphereQuadTopology::getPoint(int x, int y, int z) const
     return center.getValue()+p*radius.getValue();
 }
 
-} // namespace sofa::component::topology
+} // namespace sofa::component::topology::staticcontainer

@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaNonUniformFem/DynamicSparseGridTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/DynamicSparseGridTopologyContainer.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/core/loader/VoxelLoader.h>
 #include <sofa/core/topology/TopologyData.inl>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 
 using namespace std;
@@ -101,6 +101,6 @@ void DynamicSparseGridTopologyContainer::init()
 
 }
 
-} // namespace sofa::component::topology
+} // namespace sofa::component::topology::dynamiccontainer
 
 

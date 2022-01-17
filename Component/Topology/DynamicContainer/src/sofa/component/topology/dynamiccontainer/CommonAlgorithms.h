@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/config.h>
+#include <sofa/component/topology/dynamiccontainer/config.h>
 
 #include <sofa/type/Vec.h>
 #include <sofa/type/vector.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 
 
@@ -178,4 +178,4 @@ Real binomialVector(const sofa::type::Vec<N,unsigned char>  tbi1,const sofa::typ
     return(result);
 }
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

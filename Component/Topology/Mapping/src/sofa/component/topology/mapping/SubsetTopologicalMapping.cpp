@@ -19,37 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTopologyMapping/SubsetTopologicalMapping.h>
+#include <sofa/component/topology/mapping/SubsetTopologicalMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
-#include <SofaBaseTopology/EdgeSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/EdgeSetTopologyModifier.h>
 
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
-#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyModifier.h>
 
-#include <SofaBaseTopology/QuadSetTopologyContainer.h>
-#include <SofaBaseTopology/QuadSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/QuadSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/QuadSetTopologyModifier.h>
 
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyModifier.h>
 
-#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/HexahedronSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/HexahedronSetTopologyModifier.h>
 
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::mapping
 {
 
 using namespace sofa::defaulttype;
 
-using namespace sofa::component::topology;
+using namespace sofa::component::topology::mapping;
 using namespace sofa::core::topology;
 
 // Register in the Factory
@@ -391,6 +391,8 @@ Index SubsetTopologicalMapping::getGlobIndex(Index ind)
 
 void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
 {
+    using namespace dynamiccontainer;
+
     if (!fromModel || !toModel) return;
 
     std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
@@ -932,4 +934,4 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
     }
 }
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::mapping

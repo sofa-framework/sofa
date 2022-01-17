@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
+#include <sofa/component/topology/dynamiccontainer/TriangleSetGeometryAlgorithms.h>
 
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
-#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyModifier.h>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseTopology/CommonAlgorithms.h>
+#include <sofa/component/topology/dynamiccontainer/CommonAlgorithms.h>
 #include <fstream>
 
 #ifdef NDEBUG
@@ -36,7 +36,7 @@
 #endif //
 
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 const size_t permutation3[6][3]={{0,1,2},{0,2,1},{1,0,2},{1,2,0},{2,0,1},{2,1,0}};
 template< class DataTypes>
@@ -4964,4 +4964,4 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
 }
 
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaTopologyMapping/config.h>
+#include <sofa/component/topology/mapping/config.h>
 
 #include <sofa/core/topology/TopologicalMapping.h>
 
@@ -29,10 +29,13 @@
 
 #include <sofa/core/BaseMapping.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
+    class TriangleSetTopologyModifier;
+} // namespace sofa::component::topology::dynamiccontainer
 
-class TriangleSetTopologyModifier;
+namespace sofa::component::topology::mapping
+{
 
 /**
  * This class, called Tetra2TriangleTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
@@ -43,7 +46,7 @@ class TriangleSetTopologyModifier;
  * Tetra2TriangleTopologicalMapping class is templated by the pair (INPUT TOPOLOGY, OUTPUT TOPOLOGY)
  *
 */
-class SOFA_SOFATOPOLOGYMAPPING_API Tetra2TriangleTopologicalMapping : public sofa::core::topology::TopologicalMapping
+class SOFA_COMPONENT_TOPOLOGY_MAPPING_API Tetra2TriangleTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
 public:
     SOFA_CLASS(Tetra2TriangleTopologicalMapping,sofa::core::topology::TopologicalMapping);
@@ -82,7 +85,7 @@ protected:
     Data<bool> noNewTriangles; ///< If true no new triangles are being created
     Data<bool> noInitialTriangles; ///< If true the list of initial triangles is initially empty. Only additional triangles will be added in the list
     sofa::type::vector<Index> addedTriangleIndex;
-    TriangleSetTopologyModifier* m_outTopoModifier; ///< Pointer to the output topology modifier
+    dynamiccontainer::TriangleSetTopologyModifier* m_outTopoModifier; ///< Pointer to the output topology modifier
 };
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::mapping

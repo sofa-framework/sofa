@@ -20,16 +20,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/config.h>
+#include <sofa/component/topology/dynamiccontainer/config.h>
 
-#include <SofaBaseTopology/PointSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/PointSetTopologyContainer.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 
 
 /** a class that stores a set of edges  and provides access to the adjacency between points and edges */
-class SOFA_SOFABASETOPOLOGY_API EdgeSetTopologyContainer : public PointSetTopologyContainer
+class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API EdgeSetTopologyContainer : public PointSetTopologyContainer
 {
     friend class EdgeSetTopologyModifier;
 
@@ -229,4 +229,4 @@ public:
 
 };
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/config.h>
+#include <sofa/component/topology/dynamiccontainer/config.h>
 
 #include <sofa/type/vector.h>
 #include <sofa/core/topology/BaseTopology.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 class PointSetTopologyContainer;
 
@@ -35,7 +35,7 @@ class PointSetGeometryAlgorithms;
 /**
 * A class that can apply basic topology transformations on a set of points.
 */
-class SOFA_SOFABASETOPOLOGY_API PointSetTopologyModifier : public core::topology::TopologyModifier
+class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API PointSetTopologyModifier : public core::topology::TopologyModifier
 {
 public:
     SOFA_CLASS(PointSetTopologyModifier,core::topology::TopologyModifier);
@@ -231,4 +231,4 @@ private:
     PointSetTopologyContainer* 	m_container;
 };
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

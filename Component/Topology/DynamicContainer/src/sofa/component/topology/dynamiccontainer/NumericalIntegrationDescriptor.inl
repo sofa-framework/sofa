@@ -20,10 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/NumericalIntegrationDescriptor.h>
+#include <sofa/component/topology/dynamiccontainer/NumericalIntegrationDescriptor.h>
 #include <map>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 
 template< typename Real, int N>
@@ -67,4 +67,4 @@ void NumericalIntegrationDescriptor<Real,N>::addQuadratureMethod(const Quadratur
 	quadratureMap.insert(std::pair<QuadratureMethodKey,QuadraturePointArray>(QuadratureMethodKey(qt,order),qpa));
 }
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

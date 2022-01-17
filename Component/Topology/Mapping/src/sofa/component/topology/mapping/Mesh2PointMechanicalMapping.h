@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaTopologyMapping/config.h>
+#include <sofa/component/topology/mapping/config.h>
 
 #include <sofa/core/Mapping.h>
 
@@ -28,9 +28,9 @@
 #include <sofa/defaulttype/TopologyTypes.h>
 
 namespace sofa::core::topology { class BaseMeshTopology; }
-namespace sofa::component::topology { class Mesh2PointTopologicalMapping; }
+namespace sofa::component::topology::mapping { class Mesh2PointTopologicalMapping; }
 
-namespace sofa::component::mapping
+namespace sofa::component::topology::mapping
 {
 
 template <class TIn, class TOut>
@@ -76,7 +76,7 @@ public:
     void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in) override;
 
 protected:
-    topology::Mesh2PointTopologicalMapping* topoMap;
+    Mesh2PointTopologicalMapping* topoMap;
     core::topology::BaseMeshTopology* inputTopo;
     core::topology::BaseMeshTopology* outputTopo;
 };
@@ -84,7 +84,7 @@ protected:
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_MESH2POINTMECHANICALMAPPING_CPP)
-extern template class SOFA_SOFATOPOLOGYMAPPING_API Mesh2PointMechanicalMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
+extern template class SOFA_COMPONENT_TOPOLOGY_MAPPING_API Mesh2PointMechanicalMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
 #endif
 
-} //namespace sofa::component::mapping
+} //namespace sofa::component::topology::mapping

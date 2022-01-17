@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyModifier.h>
 
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyContainer.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
@@ -29,7 +29,7 @@
 
 #include <algorithm>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 int TetrahedronSetTopologyModifierClass = core::RegisterObject("Tetrahedron set topology modifier")
         .add< TetrahedronSetTopologyModifier >();
@@ -651,4 +651,4 @@ void TetrahedronSetTopologyModifier::propagateTopologicalEngineChanges()
     TriangleSetTopologyModifier::propagateTopologicalEngineChanges();
 }
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

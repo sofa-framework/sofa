@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaNonUniformFem/config.h>
+#include <sofa/component/topology/dynamiccontainer/config.h>
 
-#include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/HexahedronSetTopologyModifier.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 
 class DynamicSparseGridTopologyContainer;
@@ -32,7 +32,7 @@ class DynamicSparseGridTopologyContainer;
 /**
 * A class that modifies the topology by adding and removing hexahedra
 */
-class SOFA_SOFANONUNIFORMFEM_API DynamicSparseGridTopologyModifier : public HexahedronSetTopologyModifier
+class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API DynamicSparseGridTopologyModifier : public HexahedronSetTopologyModifier
 {
 public:
     SOFA_CLASS(DynamicSparseGridTopologyModifier,HexahedronSetTopologyModifier);
@@ -82,4 +82,4 @@ private:
     DynamicSparseGridTopologyContainer* m_DynContainer;
 };
 
-} // namespace sofa::component::topology
+} // namespace sofa::component::topology::dynamiccontainer

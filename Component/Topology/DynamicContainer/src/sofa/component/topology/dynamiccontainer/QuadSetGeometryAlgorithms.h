@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/config.h>
+#include <sofa/component/topology/dynamiccontainer/config.h>
 
-#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
+#include <sofa/component/topology/dynamiccontainer/EdgeSetGeometryAlgorithms.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 /**
 * A class that provides geometry information on an QuadSet.
@@ -130,9 +130,9 @@ template< class Real>
 inline Real areaProduct(const type::Vec<1,Real>& , const type::Vec<1,Real>&  );
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_CPP)
-extern template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec3Types>;
-extern template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API QuadSetGeometryAlgorithms<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API QuadSetGeometryAlgorithms<defaulttype::Vec2Types>;
 
 #endif
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralTopology/CubeTopology.h>
+#include <sofa/component/topology/staticcontainer/CubeTopology.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::staticcontainer
 {
 
-class SOFA_SOFAGENERALTOPOLOGY_API SphereQuadTopology : public CubeTopology
+class SOFA_COMPONENT_TOPOLOGY_STATICCONTAINER_API SphereQuadTopology : public CubeTopology
 {
 public:
     SOFA_CLASS(SphereQuadTopology,CubeTopology);
@@ -41,4 +41,4 @@ protected:
     Data< SReal > radius; ///< Radius of the sphere
 };
 
-} // namespace sofa::component::topology
+} // namespace sofa::component::topology::staticcontainer

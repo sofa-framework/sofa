@@ -20,10 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaTopologyMapping/SimpleTesselatedTetraMechanicalMapping.h>
+#include <sofa/component/topology/mapping/SimpleTesselatedTetraMechanicalMapping.h>
 #include <sofa/core/topology/TopologyData.inl>
 
-namespace sofa::component::mapping
+namespace sofa::component::topology::mapping
 {
 
 template <class TIn, class TOut>
@@ -184,4 +184,4 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJT( const core::Con
     dOut.endEdit();
 }
 
-} //namespace sofa::component::mapping
+} //namespace sofa::component::topology::mapping

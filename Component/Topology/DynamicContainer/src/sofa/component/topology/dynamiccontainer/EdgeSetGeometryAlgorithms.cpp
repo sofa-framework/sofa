@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_CPP
-#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/dynamiccontainer/EdgeSetGeometryAlgorithms.inl>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 using namespace sofa::defaulttype;
 int EdgeSetGeometryAlgorithmsClass = core::RegisterObject("Edge set geometry algorithms")
@@ -38,11 +38,11 @@ int EdgeSetGeometryAlgorithmsClass = core::RegisterObject("Edge set geometry alg
 
         ;
 
-template class SOFA_SOFABASETOPOLOGY_API EdgeSetGeometryAlgorithms<Vec3Types>;
-template class SOFA_SOFABASETOPOLOGY_API EdgeSetGeometryAlgorithms<Vec2Types>;
-template class SOFA_SOFABASETOPOLOGY_API EdgeSetGeometryAlgorithms<Vec1Types>;
-template class SOFA_SOFABASETOPOLOGY_API EdgeSetGeometryAlgorithms<Rigid3Types>;
-template class SOFA_SOFABASETOPOLOGY_API EdgeSetGeometryAlgorithms<Rigid2Types>;
+template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API EdgeSetGeometryAlgorithms<Vec3Types>;
+template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API EdgeSetGeometryAlgorithms<Vec2Types>;
+template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API EdgeSetGeometryAlgorithms<Vec1Types>;
+template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API EdgeSetGeometryAlgorithms<Rigid3Types>;
+template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API EdgeSetGeometryAlgorithms<Rigid2Types>;
 
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

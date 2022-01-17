@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralTopology/config.h>
+#include <sofa/component/topology/grid/config.h>
 
-#include <SofaBaseTopology/GridTopology.h>
+#include <sofa/component/topology/grid/GridTopology.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::grid
 {
 
 /** \brief Define a sphere grid topology
@@ -32,7 +32,7 @@ namespace sofa::component::topology
  * Position and direction are set by @sa d_center and @sa d_axis
  * nz discretisation is along the sphere axis
   */
-class SOFA_SOFAGENERALTOPOLOGY_API SphereGridTopology : public GridTopology
+class SOFA_COMPONENT_TOPOLOGY_GRID_API SphereGridTopology : public GridTopology
 {
 public:
     SOFA_CLASS(SphereGridTopology,GridTopology);
@@ -71,4 +71,4 @@ public:
 
 };
 
-} // namespace sofa::component::topology
+} // namespace sofa::component::topology::grid

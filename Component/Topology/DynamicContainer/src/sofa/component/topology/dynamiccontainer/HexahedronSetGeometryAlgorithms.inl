@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/dynamiccontainer/HexahedronSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseTopology/CommonAlgorithms.h>
+#include <sofa/component/topology/dynamiccontainer/CommonAlgorithms.h>
 #include <sofa/core/topology/Topology.h>
 #include <fstream>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 
 using sofa::core::topology::verticesInHexahedronArray;
@@ -899,4 +899,4 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
 
 
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

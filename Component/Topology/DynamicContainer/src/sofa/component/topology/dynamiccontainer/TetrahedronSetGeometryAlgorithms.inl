@@ -20,16 +20,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/dynamiccontainer/TetrahedronSetGeometryAlgorithms.h>
 
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyModifier.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseTopology/CommonAlgorithms.h>
-#include <SofaBaseTopology/NumericalIntegrationDescriptor.inl>
+#include <sofa/component/topology/dynamiccontainer/CommonAlgorithms.h>
+#include <sofa/component/topology/dynamiccontainer/NumericalIntegrationDescriptor.inl>
 #include <fstream>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 
 using sofa::core::objectmodel::ComponentState;
@@ -3341,4 +3341,4 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
 
 
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

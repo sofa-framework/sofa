@@ -20,10 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaTopologyMapping/config.h>
+#include <sofa/component/topology/mapping/config.h>
 
 #include <sofa/core/topology/TopologicalMapping.h>
-#include <SofaBaseTopology/PointSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/PointSetTopologyModifier.h>
 
 #include <sofa/type/Vec.h>
 #include <map>
@@ -33,7 +33,7 @@
 #include <sofa/core/topology/TopologyData.h>
 
 
-namespace sofa::component::topology
+namespace sofa::component::topology::mapping
 {
 /**
  * This class, called Mesh2PointTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
@@ -47,7 +47,7 @@ namespace sofa::component::topology
  *
 */
 
-class SOFA_SOFATOPOLOGYMAPPING_API Mesh2PointTopologicalMapping : public sofa::core::topology::TopologicalMapping
+class SOFA_COMPONENT_TOPOLOGY_MAPPING_API Mesh2PointTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
 public:
     SOFA_CLASS(Mesh2PointTopologicalMapping,sofa::core::topology::TopologicalMapping);
@@ -135,10 +135,10 @@ protected:
 
     std::set<unsigned int> pointsToRemove;
 
-    size_t addInputPoint(Index i, PointSetTopologyModifier* toPointMod=nullptr); ///< Returns the number of points added inside the output topology. 
-    void addInputEdge(Index i, PointSetTopologyModifier* toPointMod=nullptr);
-    void addInputTriangle(Index i, PointSetTopologyModifier* toPointMod=nullptr);
-    void addInputTetrahedron(Index i, PointSetTopologyModifier* toPointMod=nullptr);
+    size_t addInputPoint(Index i, dynamiccontainer::PointSetTopologyModifier* toPointMod=nullptr); ///< Returns the number of points added inside the output topology. 
+    void addInputEdge(Index i, dynamiccontainer::PointSetTopologyModifier* toPointMod=nullptr);
+    void addInputTriangle(Index i, dynamiccontainer::PointSetTopologyModifier* toPointMod=nullptr);
+    void addInputTetrahedron(Index i, dynamiccontainer::PointSetTopologyModifier* toPointMod=nullptr);
 
     void swapInput(Element elem, Index i1, Index i2);
     void removeInput(Element elem, const sofa::type::vector<Index>& tab );
@@ -159,4 +159,4 @@ protected:
     bool initDone;
 };
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::mapping

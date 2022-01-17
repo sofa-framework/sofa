@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_QUADSETGEOMETRYALGORITHMS_CPP
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/dynamiccontainer/QuadSetGeometryAlgorithms.h>
+#include <sofa/component/topology/dynamiccontainer/QuadSetGeometryAlgorithms.inl>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 using namespace sofa::defaulttype;
 int QuadSetGeometryAlgorithmsClass = core::RegisterObject("Quad set geometry algorithms")
@@ -35,8 +35,8 @@ int QuadSetGeometryAlgorithmsClass = core::RegisterObject("Quad set geometry alg
 
         ;
 
-template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<Vec3Types>;
-template class SOFA_SOFABASETOPOLOGY_API QuadSetGeometryAlgorithms<Vec2Types>;
+template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API QuadSetGeometryAlgorithms<Vec3Types>;
+template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API QuadSetGeometryAlgorithms<Vec2Types>;
 
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

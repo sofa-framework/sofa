@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/config.h>
+#include <sofa/component/topology/grid/config.h>
 
-#include <SofaBaseTopology/MeshTopology.h>
+#include <sofa/component/topology/staticcontainer/MeshTopology.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::grid
 {
 
 
@@ -41,7 +41,7 @@ enum class Grid_dimension
 /** \brief
  * Define a regular grid topology, with no spatial information.
   */
-class SOFA_SOFABASETOPOLOGY_API GridTopology : public MeshTopology
+class SOFA_COMPONENT_TOPOLOGY_GRID_API GridTopology : public staticcontainer::MeshTopology
 {
 
 public:
@@ -194,4 +194,4 @@ public:
     Data<bool> d_createTexCoords;
 };
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::grid

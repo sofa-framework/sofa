@@ -19,16 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseTopology/QuadSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/QuadSetTopologyModifier.h>
 
-#include <SofaBaseTopology/QuadSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/QuadSetTopologyContainer.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/TopologyHandler.h>
 
 #include <algorithm>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 int QuadSetTopologyModifierClass = core::RegisterObject("Quad set topology modifier")
         .add< QuadSetTopologyModifier >();
@@ -513,4 +513,4 @@ void QuadSetTopologyModifier::propagateTopologicalEngineChanges()
 }
 
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

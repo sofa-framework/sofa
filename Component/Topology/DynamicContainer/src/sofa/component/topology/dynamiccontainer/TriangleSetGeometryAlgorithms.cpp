@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_CPP
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/dynamiccontainer/TriangleSetGeometryAlgorithms.inl>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 using namespace sofa::defaulttype;
 
@@ -37,13 +37,13 @@ int TriangleSetGeometryAlgorithmsClass = core::RegisterObject("Triangle set geom
 
 
 // methods specilizations declaration
-template<> SOFA_SOFABASETOPOLOGY_API
+template<> SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API
 int TriangleSetGeometryAlgorithms<defaulttype::Vec2Types>::SplitAlongPath(PointID pa, Coord& a, PointID pb, Coord& b,
     sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
     sofa::type::vector<ElemID>& indices_list,
     sofa::type::vector< sofa::type::Vec3 >& coords_list,
     sofa::type::vector<EdgeID>& new_edges, SReal epsilonSnapPath, SReal epsilonSnapBorder);
-template<> SOFA_SOFABASETOPOLOGY_API
+template<> SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API
 int TriangleSetGeometryAlgorithms<defaulttype::Vec1Types>::SplitAlongPath(PointID pa, Coord& a, PointID pb, Coord& b,
     sofa::type::vector< sofa::core::topology::TopologyElementType>& topoPath_list,
     sofa::type::vector<ElemID>& indices_list,
@@ -52,8 +52,8 @@ int TriangleSetGeometryAlgorithms<defaulttype::Vec1Types>::SplitAlongPath(PointI
 
 
 
-template class SOFA_SOFABASETOPOLOGY_API TriangleSetGeometryAlgorithms<Vec3Types>;
-template class SOFA_SOFABASETOPOLOGY_API TriangleSetGeometryAlgorithms<Vec2Types>;
+template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API TriangleSetGeometryAlgorithms<Vec3Types>;
+template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API TriangleSetGeometryAlgorithms<Vec2Types>;
 
 
 template<>
@@ -80,7 +80,7 @@ int TriangleSetGeometryAlgorithms<defaulttype::Vec1Types>::SplitAlongPath(PointI
 
 
 
-void SOFA_SOFABASETOPOLOGY_API snapping_test_triangle(SReal epsilon, SReal alpha0, SReal alpha1, SReal alpha2,
+void SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API snapping_test_triangle(SReal epsilon, SReal alpha0, SReal alpha1, SReal alpha2,
         bool& is_snap_0, bool& is_snap_1, bool& is_snap_2)
 {
     is_snap_0=false;
@@ -104,7 +104,7 @@ void SOFA_SOFABASETOPOLOGY_API snapping_test_triangle(SReal epsilon, SReal alpha
     }
 }
 
-void SOFA_SOFABASETOPOLOGY_API snapping_test_edge(SReal epsilon,	SReal alpha0, SReal alpha1,
+void SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API snapping_test_edge(SReal epsilon,	SReal alpha0, SReal alpha1,
         bool& is_snap_0, bool& is_snap_1)
 {
     is_snap_0=false;
@@ -120,4 +120,4 @@ void SOFA_SOFABASETOPOLOGY_API snapping_test_edge(SReal epsilon,	SReal alpha0, S
     }
 }
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

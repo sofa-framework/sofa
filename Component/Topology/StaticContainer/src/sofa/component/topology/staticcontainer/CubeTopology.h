@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralTopology/config.h>
+#include <sofa/component/topology/staticcontainer/config.h>
 
-#include <SofaBaseTopology/MeshTopology.h>
+#include <sofa/component/topology/staticcontainer/MeshTopology.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::staticcontainer
 {
 
-class SOFA_SOFAGENERALTOPOLOGY_API CubeTopology : public MeshTopology
+class SOFA_COMPONENT_TOPOLOGY_STATICCONTAINER_API CubeTopology : public MeshTopology
 {
 public:
     SOFA_CLASS(CubeTopology,MeshTopology);
@@ -107,4 +107,4 @@ protected:
     void updateQuads();
 };
 
-} // namespace sofa::component::topology
+} // namespace sofa::component::topology::staticcontainer

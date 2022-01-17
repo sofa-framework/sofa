@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/config.h>
+#include <sofa/component/topology/dynamiccontainer/config.h>
 
-#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/EdgeSetTopologyContainer.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 class TriangleSetTopologyModifier;
 
@@ -32,7 +32,7 @@ class TriangleSetTopologyModifier;
 /*! \class TriangleSetTopologyContainer
 \brief: Object that stores a set of triangles and provides access
 to each triangle and its edges and vertices */
-class SOFA_SOFABASETOPOLOGY_API TriangleSetTopologyContainer : public EdgeSetTopologyContainer
+class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API TriangleSetTopologyContainer : public EdgeSetTopologyContainer
 {
     friend class TriangleSetTopologyModifier;
 
@@ -361,4 +361,4 @@ protected:
 
 };
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

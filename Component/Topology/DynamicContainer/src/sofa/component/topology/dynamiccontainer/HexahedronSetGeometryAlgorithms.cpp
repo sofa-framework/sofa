@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETGEOMETRYALGORITHMS_CPP
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/dynamiccontainer/HexahedronSetGeometryAlgorithms.inl>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 using namespace sofa::defaulttype;
 int HexahedronSetGeometryAlgorithmsClass = core::RegisterObject("Hexahedron set geometry algorithms")
@@ -34,8 +34,8 @@ int HexahedronSetGeometryAlgorithmsClass = core::RegisterObject("Hexahedron set 
 
         ;
 
-template class SOFA_SOFABASETOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec3Types>;
-template class SOFA_SOFABASETOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec2Types>;
+template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API HexahedronSetGeometryAlgorithms<Vec3Types>;
+template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API HexahedronSetGeometryAlgorithms<Vec2Types>;
 
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

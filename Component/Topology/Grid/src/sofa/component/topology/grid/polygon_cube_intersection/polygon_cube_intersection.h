@@ -22,7 +22,7 @@
 #ifndef SOFA_HELPER_PCUBE_H
 #define SOFA_HELPER_PCUBE_H
 
-#include <SofaBaseTopology/config.h>
+#include <sofa/component/topology/grid/config.h>
 
 namespace sofa
 {
@@ -108,7 +108,7 @@ namespace polygon_cube_intersection
  * vertex test below.  Normally one would call the fast_polygon_intersects_cube
  * utility instead which combines both of these tests.
  */
-extern SOFA_SOFABASETOPOLOGY_API int
+extern SOFA_COMPONENT_TOPOLOGY_GRID_API int
 polygon_intersects_cube(int nverts, const float verts[/* nverts */][3],
         const float polynormal[3],
         int already_know_verts_are_outside_cube,
@@ -124,7 +124,7 @@ polygon_intersects_cube(int nverts, const float verts[/* nverts */][3],
  * Note that unlike polygon_intersects_cube(), this routine does use the
  * already_know_verts_are_outside_cube argument.
  */
-extern SOFA_SOFABASETOPOLOGY_API int
+extern SOFA_COMPONENT_TOPOLOGY_GRID_API int
 fast_polygon_intersects_cube(int nverts, const float verts[/* nverts */][3],
         const float polynormal[3],
         int already_know_verts_are_outside_cube,
@@ -138,7 +138,7 @@ fast_polygon_intersects_cube(int nverts, const float verts[/* nverts */][3],
  * centered at the origin (trivial accept), 0 if all vertices are outside
  * of any testing plane (trivial reject), -1 otherwise (couldn't help).
  */
-extern SOFA_SOFABASETOPOLOGY_API int
+extern SOFA_COMPONENT_TOPOLOGY_GRID_API int
 trivial_vertex_tests(int nverts, const float verts[/* nverts */][3],
         int already_know_verts_are_outside_cube);
 
@@ -149,7 +149,7 @@ trivial_vertex_tests(int nverts, const float verts[/* nverts */][3],
  * Returns 1 if the given line segment intersects the cube of edge length 1
  * centered at the origin, 0 otherwise.
  */
-extern SOFA_SOFABASETOPOLOGY_API int
+extern SOFA_COMPONENT_TOPOLOGY_GRID_API int
 segment_intersects_cube(const float v0[3], const float v1[3]);
 
 
@@ -163,7 +163,7 @@ segment_intersects_cube(const float v0[3], const float v1[3]);
  * standard direction (towards the eye when looking at the polygon so that
  * it's CCW).
  */
-extern SOFA_SOFABASETOPOLOGY_API int
+extern SOFA_COMPONENT_TOPOLOGY_GRID_API int
 polygon_contains_point_3d(int nverts, const float verts[/* nverts */][3],
         const float polynormal[3],
         float point[3]);
@@ -179,7 +179,7 @@ polygon_contains_point_3d(int nverts, const float verts[/* nverts */][3],
  *  (see Graphics Gems III) but is slightly more efficient than Newell's
  *  for triangles and quads (slightly less efficient for higher polygons).
  */
-SOFA_SOFABASETOPOLOGY_API float *
+SOFA_COMPONENT_TOPOLOGY_GRID_API float *
 get_polygon_normal(float normal[3],
         int nverts, const float verts[/* nverts */][3]);
 

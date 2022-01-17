@@ -20,10 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/config.h>
+#include <sofa/component/topology/grid/config.h>
 
-#include <SofaBaseTopology/MeshTopology.h>
-#include <SofaBaseTopology/RegularGridTopology.h>
+#include <sofa/component/topology/staticcontainer/MeshTopology.h>
+#include <sofa/component/topology/grid/RegularGridTopology.h>
 #include <sofa/helper/MarchingCubeUtility.h>
 #include <sofa/type/Vec.h>
 
@@ -36,7 +36,7 @@ namespace sofa::core::loader
     class VoxelLoader;
 }
 
-namespace sofa::component::topology
+namespace sofa::component::topology::grid
 {
 
 class RegularGridTopology;
@@ -45,7 +45,7 @@ class RegularGridTopology;
  * Valid cells are tagged by a Type BOUNDARY or INSIDE
  * WARNING: the corresponding node in the XML file has to be placed BEFORE the MechanicalObject node, in order to excute its init() before the MechanicalObject one in order to be able to give dofs
  */
-class SOFA_SOFABASETOPOLOGY_API SparseGridTopology : public MeshTopology
+class SOFA_COMPONENT_TOPOLOGY_GRID_API SparseGridTopology : public staticcontainer::MeshTopology
 {
 public:
     SOFA_CLASS(SparseGridTopology,MeshTopology);
@@ -300,17 +300,17 @@ public :
     const SeqHexahedra& getHexahedra() override
     {
         if( !_alreadyInit ) init();
-        return sofa::component::topology::MeshTopology::getHexahedra();
+        return staticcontainer::MeshTopology::getHexahedra();
     }
 
     Size getNbPoints() const override
     {
         if( !_alreadyInit ) const_cast<SparseGridTopology*>(this)->init();
-        return sofa::component::topology::MeshTopology::getNbPoints();
+        return staticcontainer::MeshTopology::getNbPoints();
     }
 
     /// TODO 2018-07-23 epernod: check why this method is override to return the same result as parent class.
     Size getNbHexahedra() override { return Size(this->getHexahedra().size());}
 };
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::grid

@@ -19,16 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTopologyMapping/Hexa2QuadTopologicalMapping.h>
+#include <sofa/component/topology/mapping/Hexa2QuadTopologicalMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <SofaBaseTopology/QuadSetTopologyContainer.h>
-#include <SofaBaseTopology/QuadSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/QuadSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/QuadSetTopologyModifier.h>
 
-#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/HexahedronSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/HexahedronSetTopologyModifier.h>
 
 #include <sofa/core/topology/TopologyChange.h>
 
@@ -37,7 +37,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::mapping
 {
 
 using namespace sofa::defaulttype;
@@ -60,6 +60,8 @@ Hexa2QuadTopologicalMapping::Hexa2QuadTopologicalMapping()
 
 void Hexa2QuadTopologicalMapping::init()
 {
+    using namespace dynamiccontainer;
+
     bool modelsOk = true;
     if (!fromModel)
     {
@@ -157,7 +159,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
         return;
 
     sofa::helper::AdvancedTimer::stepBegin("Update Hexa2QuadTopologicalMapping");
-    QuadSetTopologyModifier *to_tstm;
+    dynamiccontainer::QuadSetTopologyModifier *to_tstm;
     toModel->getContext()->get(to_tstm);
 
     auto itBegin=fromModel->beginChange();
@@ -354,7 +356,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::POINTSREMOVED:
         {
-            const Topology::SetIndices & tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
+            const Topology::SetIndices & tab = ( static_cast< const sofa::core::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
             Topology::SetIndices indices;
 
@@ -404,4 +406,4 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
     sofa::helper::AdvancedTimer::stepEnd("Update Hexa2QuadTopologicalMapping");
 }
 
-} //namespace sofa::component::topology
+} // namespace sofa::component::topology::mapping

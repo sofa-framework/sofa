@@ -19,12 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseTopology/GridTopology.h>
+#include <sofa/component/topology/grid/GridTopology.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/type/Vec.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::grid
 {
 
 int GridTopologyClass = core::RegisterObject("Base class fo a regular grid in 3D")
@@ -425,4 +425,4 @@ GridTopology::Quad GridTopology::getQuad(int x, int y, int z)
                 point(1, y+1, z+1),point(1, y, z+1));
 }
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::grid

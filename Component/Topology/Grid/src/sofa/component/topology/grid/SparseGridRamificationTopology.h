@@ -21,15 +21,15 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaNonUniformFem/config.h>
+#include <sofa/component/topology/grid/config.h>
 
-#include <SofaBaseTopology/SparseGridTopology.h>
+#include <sofa/component/topology/grid/SparseGridTopology.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::grid
 {
 
 /// a SparseGridTopology where each resulting cube contains only one independant connexe component (nodes can be multiplied by using virtual nodes)
-class SOFA_SOFANONUNIFORMFEM_API SparseGridRamificationTopology : public SparseGridTopology
+class SOFA_COMPONENT_TOPOLOGY_GRID_API SparseGridRamificationTopology : public SparseGridTopology
 {
 public:
     SOFA_CLASS(SparseGridRamificationTopology,SparseGridTopology);
@@ -135,4 +135,4 @@ public :
 
 };
 
-} // namespace sofa::component::topology
+} // namespace sofa::component::topology::grid

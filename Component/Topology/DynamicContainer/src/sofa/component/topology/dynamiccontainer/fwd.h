@@ -21,11 +21,11 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaBaseTopology/config.h>
+#include <sofa/component/topology/dynamiccontainer/config.h>
 #include <iosfwd>
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 class TetrahedronSetTopologyContainer;
-SOFA_SOFABASETOPOLOGY_API std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t);
-SOFA_SOFABASETOPOLOGY_API std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t);
+SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t);
+SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t);
 }

@@ -19,14 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseTopology/SparseGridTopology.h>
+#include <sofa/component/topology/grid/SparseGridTopology.h>
 
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/type/fixed_array.h>
-#include <SofaBaseTopology/polygon_cube_intersection/polygon_cube_intersection.h>
+#include <sofa/component/topology/grid/polygon_cube_intersection/polygon_cube_intersection.h>
 #include <sofa/core/loader/VoxelLoader.h>
 
 #include <fstream>
@@ -39,7 +39,7 @@ using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-namespace sofa::component::topology
+namespace sofa::component::topology::grid
 {
 
 int SparseGridTopologyClass = core::RegisterObject("Sparse grid in 3D")
@@ -1442,4 +1442,4 @@ void SparseGridTopology::propagateFrom( const Vec3i &point,
     if(z<regularGrid->getNz()-2) seed.push(Vec3i(x,y,z+1));
 }
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::grid

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseTopology/MeshTopology.h>
+#include <sofa/component/topology/staticcontainer/MeshTopology.h>
 
 #include <sofa/core/topology/Topology.h>
 #include <sofa/helper/visual/DrawTool.h>
@@ -27,7 +27,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <algorithm>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::staticcontainer
 {
 
 using type::vector;
@@ -2777,4 +2777,4 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
 
 }
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::staticcontainer

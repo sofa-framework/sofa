@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaTopologyMapping/config.h>
+#include <sofa/component/topology/mapping/config.h>
 
 #include <sofa/core/topology/TopologicalMapping.h>
 
@@ -31,7 +31,7 @@
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/topology/TopologyData.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::mapping
 {
 
 /**
@@ -87,4 +87,4 @@ protected:
     type::vector<int> pointMappedFromHexa;
 };
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::mapping

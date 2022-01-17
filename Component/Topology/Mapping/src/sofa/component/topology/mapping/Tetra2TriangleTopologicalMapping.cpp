@@ -19,16 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTopologyMapping/Tetra2TriangleTopologicalMapping.h>
+#include <sofa/component/topology/mapping/Tetra2TriangleTopologicalMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
-#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyModifier.h>
 
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyModifier.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/core/topology/TopologyChange.h>
@@ -37,12 +37,12 @@
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::mapping
 {
 
 using namespace sofa::defaulttype;
 
-using namespace sofa::component::topology;
+using namespace sofa::component::topology::mapping;
 using namespace sofa::core::topology;
 
 // Register in the Factory
@@ -82,14 +82,14 @@ void Tetra2TriangleTopologicalMapping::init()
     }
 
     // Making sure the output topology is derived from the triangle topology container
-    if (!dynamic_cast<TriangleSetTopologyContainer *>(toModel.get())) {
+    if (!dynamic_cast<dynamiccontainer::TriangleSetTopologyContainer *>(toModel.get())) {
         msg_error() << "The output topology '" << toModel.getPath() << "' is not a derived class of TriangleSetTopologyContainer. "
                     << "Consider setting the '" << toModel.getName() << "' data attribute to a valid"
                                                                         " TriangleSetTopologyContainer derived object.";
         modelsOk = false;
     } else {
         // Making sure a topology modifier exists at the same level as the output topology
-        TriangleSetTopologyModifier *to_tstm;
+        dynamiccontainer::TriangleSetTopologyModifier *to_tstm;
         toModel->getContext()->get(to_tstm);
         if (!to_tstm) {
             msg_error() << "No TriangleSetTopologyModifier found in the output topology node '"
@@ -449,7 +449,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
         case core::topology::POINTSREMOVED:
         {
-            const auto pointRemoved = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
+            const auto pointRemoved = ( static_cast< const sofa::core::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
             sofa::type::vector<Index> indices;
 
@@ -588,4 +588,4 @@ bool Tetra2TriangleTopologicalMapping::checkTopologies()
     return allOk;
 }
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::mapping

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaTopologyMapping/config.h>
+#include <sofa/component/topology/mapping/config.h>
 
 #include <sofa/core/topology/TopologicalMapping.h>
 
@@ -31,7 +31,7 @@
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::mapping
 {
 
 /**
@@ -44,7 +44,7 @@ namespace sofa::component::topology
 *
 */
 
-class SOFA_SOFATOPOLOGYMAPPING_API Edge2QuadTopologicalMapping : public sofa::core::topology::TopologicalMapping
+class SOFA_COMPONENT_TOPOLOGY_MAPPING_API Edge2QuadTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
 public:
     SOFA_CLASS(Edge2QuadTopologicalMapping,sofa::core::topology::TopologicalMapping);
@@ -104,4 +104,4 @@ protected:
 
 };
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::mapping

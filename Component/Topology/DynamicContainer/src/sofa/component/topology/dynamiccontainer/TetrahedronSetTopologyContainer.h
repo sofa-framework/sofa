@@ -20,16 +20,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/config.h>
+#include <sofa/component/topology/dynamiccontainer/config.h>
 
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyContainer.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 class TetrahedronSetTopologyModifier;
 
 /** a class that stores a set of tetrahedra and provides access with adjacent triangles, edges and vertices */
-class SOFA_SOFABASETOPOLOGY_API TetrahedronSetTopologyContainer : public TriangleSetTopologyContainer
+class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API TetrahedronSetTopologyContainer : public TriangleSetTopologyContainer
 {
     friend class TetrahedronSetTopologyModifier;
 
@@ -430,4 +430,4 @@ protected:
     bool m_tetrahedronTopologyDirty = false;
 };
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

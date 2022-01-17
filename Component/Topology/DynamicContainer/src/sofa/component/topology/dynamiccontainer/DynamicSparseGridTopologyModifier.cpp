@@ -19,15 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaNonUniformFem/DynamicSparseGridTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/DynamicSparseGridTopologyModifier.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaNonUniformFem/DynamicSparseGridTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/DynamicSparseGridTopologyContainer.h>
 #include <algorithm>
 #include <functional>
 #include <iostream>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 
 int DynamicSparseGridTopologyModifierClass = core::RegisterObject ( "Hexahedron set topology modifier" )
@@ -126,4 +126,4 @@ void DynamicSparseGridTopologyModifier::renumberAttributes( const sofa::type::ve
     everRenumbered = true;
 }
 
-} // namespace sofa::component::topology
+} // namespace sofa::component::topology::dynamiccontainer

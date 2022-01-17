@@ -19,17 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseTopology/PointSetTopologyModifier.h>
+#include <sofa/component/topology/dynamiccontainer/PointSetTopologyModifier.h>
 
 #include <sofa/simulation/StateChangeVisitor.h>
 #include <sofa/simulation/TopologyChangeVisitor.h>
 #include <sofa/core/topology/TopologyChange.h>
-#include <SofaBaseTopology/PointSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/PointSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/topology/TopologyHandler.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 int PointSetTopologyModifierClass = core::RegisterObject("Point set topology modifier")
         .add< PointSetTopologyModifier >();
@@ -492,4 +492,4 @@ void PointSetTopologyModifier::notifyEndingEvent()
     propagateTopologicalChanges();
 }
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

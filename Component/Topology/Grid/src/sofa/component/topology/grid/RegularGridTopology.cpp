@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseTopology/RegularGridTopology.h>
+#include <sofa/component/topology/grid/RegularGridTopology.h>
 
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::grid
 {
 
 using namespace sofa::type;
@@ -411,4 +411,4 @@ int RegularGridTopologyClass = core::RegisterObject("Regular grid in 3D")
         ;
 
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::grid

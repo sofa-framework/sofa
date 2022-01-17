@@ -21,22 +21,19 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaNonUniformFem/config.h>
+#include <sofa/component/topology/grid/config.h>
+#include <sofa/component/topology/grid/SparseGridRamificationTopology.h>
 
 #include <string>
 
-
-#include <SofaNonUniformFem/SparseGridRamificationTopology.h>
-
-
-namespace sofa::component::topology
+namespace sofa::component::topology::grid
 {
 
 /**
 Build a SparseGridTopology for several given Triangular meshes.
 A stiffness coefficient has to be assigned for each mesh. The last found stiffness coefficient is used for an element shared by several meshes => The mesh ordering is important, and so, more specific stiffness informations must appear in last.
 */
-class SOFA_SOFANONUNIFORMFEM_API SparseGridMultipleTopology : public SparseGridRamificationTopology
+class SOFA_COMPONENT_TOPOLOGY_GRID_API SparseGridMultipleTopology : public SparseGridRamificationTopology
 {
 public :
     SOFA_CLASS(SparseGridMultipleTopology,SparseGridRamificationTopology);
@@ -98,5 +95,5 @@ protected :
     void assembleRegularGrids(type::vector<Type>& regularGridTypes,type::vector< float >& regularStiffnessCoefs,type::vector< float >& regularMassCoefs);
 };
 
-} // namespace sofa::component::topology
+} // namespace sofa::component::topology::grid
 

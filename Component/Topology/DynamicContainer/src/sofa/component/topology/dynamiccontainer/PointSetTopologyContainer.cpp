@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseTopology/PointSetTopologyContainer.h>
+#include <sofa/component/topology/dynamiccontainer/PointSetTopologyContainer.h>
 
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/ObjectFactory.h>
@@ -27,7 +27,7 @@
 
 #include <algorithm>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 
 namespace
@@ -228,4 +228,4 @@ bool PointSetTopologyContainer::linkTopologyHandlerToData(core::topology::Topolo
 }
 
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

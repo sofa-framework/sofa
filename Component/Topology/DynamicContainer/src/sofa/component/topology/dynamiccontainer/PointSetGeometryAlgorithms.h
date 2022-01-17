@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/config.h>
+#include <sofa/component/topology/dynamiccontainer/config.h>
 
 #include <sofa/core/topology/BaseTopology.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -28,7 +28,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 
 /**
@@ -124,13 +124,13 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_CPP)
-extern template class SOFA_SOFABASETOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec3Types>;
-extern template class SOFA_SOFABASETOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec2Types>;
-extern template class SOFA_SOFABASETOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Vec1Types>;
-extern template class SOFA_SOFABASETOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Rigid3Types>;
-extern template class SOFA_SOFABASETOPOLOGY_API PointSetGeometryAlgorithms<defaulttype::Rigid2Types>;
+extern template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API PointSetGeometryAlgorithms<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API PointSetGeometryAlgorithms<defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API PointSetGeometryAlgorithms<defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API PointSetGeometryAlgorithms<defaulttype::Rigid3Types>;
+extern template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API PointSetGeometryAlgorithms<defaulttype::Rigid2Types>;
 
 
 #endif
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer

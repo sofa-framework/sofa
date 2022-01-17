@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseTopology/config.h>
+#include <sofa/component/topology/dynamiccontainer/config.h>
 
-#include <SofaBaseTopology/PointSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/NumericalIntegrationDescriptor.h>
+#include <sofa/component/topology/dynamiccontainer/PointSetGeometryAlgorithms.h>
+#include <sofa/component/topology/dynamiccontainer/NumericalIntegrationDescriptor.h>
 #include <sofa/type/Vec.h>
 
 #include <sofa/type/RGBAColor.h>
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 /** \brief A class used as an interface with an array : Useful to compute geometric information on each edge in an efficient way
  *
@@ -171,13 +171,13 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_CPP)
-extern template class SOFA_SOFABASETOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Vec3Types>;
-extern template class SOFA_SOFABASETOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Vec2Types>;
-extern template class SOFA_SOFABASETOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Vec1Types>;
-extern template class SOFA_SOFABASETOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Rigid3Types>;
-extern template class SOFA_SOFABASETOPOLOGY_API EdgeSetGeometryAlgorithms<defaulttype::Rigid2Types>;
+extern template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API EdgeSetGeometryAlgorithms<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API EdgeSetGeometryAlgorithms<defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API EdgeSetGeometryAlgorithms<defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API EdgeSetGeometryAlgorithms<defaulttype::Rigid3Types>;
+extern template class SOFA_COMPONENT_TOPOLOGY_DYNAMICCONTAINER_API EdgeSetGeometryAlgorithms<defaulttype::Rigid2Types>;
 
 
 #endif
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::topology::dynamiccontainer
