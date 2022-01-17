@@ -30,7 +30,7 @@
 
 #include <set>
 
-namespace sofa::component::topology
+namespace sofa::component::topology::dynamiccontainer
 {
 
 using namespace std;
@@ -807,4 +807,4 @@ void MultilevelHexahedronSetTopologyContainer::Component::split(std::set<Compone
     }
 }
 
-} // namespace sofa::component::topology
+} // namespace sofa::component::topology::dynamiccontainer
