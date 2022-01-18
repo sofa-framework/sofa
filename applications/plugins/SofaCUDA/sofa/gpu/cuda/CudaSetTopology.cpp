@@ -42,14 +42,9 @@
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.inl>
 
 
-namespace sofa
+namespace sofa::component::topology::dynamiccontainer
 {
 
-namespace component
-{
-
-namespace topology
-{
 using namespace sofa::defaulttype;
 using namespace sofa::core;
 using namespace sofa::gpu::cuda;
@@ -188,8 +183,4 @@ template class SOFA_GPU_CUDA_API HexahedronSetGeometryAlgorithms<CudaVec3fTypes>
 template class SOFA_GPU_CUDA_API HexahedronSetGeometryAlgorithms<CudaVec3f1Types>;
 
 
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::topology::dynamiccontainer
