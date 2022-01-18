@@ -536,5 +536,26 @@ using core::objectmodel::Data;
 
 } // namespace sofa
 
+/**
+ * Macro simplifying the declaration of a Data within the header file of a component.
+ *
+ * Example:
+ * SOFA_DATA(unsigned, d_maxIter, 25u, "iterations", "Maximum number of iterations of the Conjugate Gradient solution");
+ * can be substituted to:
+ * sofa::core::objectmodel::Data<unsigned> d_maxIter { initData(&d_maxIter, unsigned(25u), "iterations", "Maximum number of iterations of the Conjugate Gradient solution") };
+ *
+ * The example declares a Data which type is Data<unsigned>, its variable name is d_maxIter, its initialization value is
+ * 25u and its name is "iterations".
+ *
+ * \warning None of the parameter can accept a comma. This is particulary annoying for Type which can be a templated
+ * type with more than one template parameter, hence a seraparating comma. An example of this situation can be
+ * Data< std::map<std::string, std::vector<Real> >. There are several solutions to this problem:
+ * 1) Using the traditional declaration: Data< std::map<std::string, std::vector<Real> > { initData(...) };
+ * 2) Using an alias: typedef std::map<std::string, std::vector<Real> GraphType; SOFA_DATA(GraphType, ...);
+ * 3) Using the SOFA_TEMPLATE macros: SOFA_DATA(SOFA_TEMPLATE2(std::map, std::string, std::vector<Real>), ...)
+ */
+#define SOFA_DATA(Type, VariableName, Value, Name, Help) \
+    sofa::core::objectmodel::Data<Type> VariableName { initData(&VariableName, Type(Value), Name, Help) }
+
 #endif  // SOFA_CORE_OBJECTMODEL_DATA_H
 

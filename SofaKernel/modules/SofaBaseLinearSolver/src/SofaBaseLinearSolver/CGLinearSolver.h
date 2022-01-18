@@ -40,20 +40,13 @@ public:
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
     typedef std::map<std::string,sofa::type::vector<SReal> > GraphType;
 
-    Data<unsigned> d_maxIter
-    { initData(&d_maxIter, 25u, "iterations", "Maximum number of iterations of the Conjugate Gradient solution") };
-
-    Data<SReal> d_tolerance
-    { initData(&d_tolerance, SReal(1e-5), "tolerance", "Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)") };
-
-    Data<SReal> d_smallDenominatorThreshold
-    { initData(&d_smallDenominatorThreshold, SReal(1e-5), "threshold", "Minimum value of the denominator (pT A p)^ in the conjugate Gradient solution") };
-
-    Data<bool> d_warmStart
-    { initData(&d_warmStart, bool(false), "warmStart", "Use previous solution as initial solution") };
-
-    Data<GraphType> d_graph
-    { initData(&d_graph, GraphType({}), "graph", "Graph of residuals at each iteration") };
+    SOFA_DATA(unsigned, d_maxIter, 25u, "iterations", "Maximum number of iterations of the Conjugate Gradient solution");
+    SOFA_DATA(SReal, d_tolerance, 1e-5, "tolerance",
+              "Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)");
+    SOFA_DATA(SReal, d_smallDenominatorThreshold, 1e-5, "threshold",
+              "Minimum value of the denominator (pT A p)^ in the conjugate Gradient solution");
+    SOFA_DATA(bool     , d_warmStart, false, "warmStart", "Use previous solution as initial solution");
+    SOFA_DATA(GraphType, d_graph    , {}   , "graph"    , "Graph of residuals at each iteration");
 
 protected:
 
