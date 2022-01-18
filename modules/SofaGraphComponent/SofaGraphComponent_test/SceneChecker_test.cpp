@@ -82,6 +82,13 @@ struct SceneChecker_test : public BaseSimulationTest
         sofa::component::initSofaBaseUtils();
         sofa::component::initSofaBaseMechanics();
         sofa::component::initSofaMeshCollision();
+
+        sofa::helper::system::PluginManager::getInstance().getPluginMap();
+        auto& map = PluginManager::getInstance().getPluginMap();
+        for (const auto& elem : map)
+        {
+            std::cout <<  elem.second.getModuleName() << std::endl;
+        }
     }
 
     void checkRequiredPlugin(bool missing)

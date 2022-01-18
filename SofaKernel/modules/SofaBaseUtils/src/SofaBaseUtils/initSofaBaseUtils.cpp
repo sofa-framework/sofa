@@ -22,6 +22,7 @@
 #include <SofaBaseUtils/initSofaBaseUtils.h>
 
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/component/utility/init.h>
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
@@ -36,7 +37,8 @@ void initSofaBaseUtils()
     {        
         // msg_deprecated("SofaBaseUtils") << "SofaBaseUtils is deprecated; please load Sofa.Component.Utility instead.";
 
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Utility");
+        // sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Utility");
+        sofa::component::utility::init(); // force-load this module, like SofaBaseUtils
 
         first = false;
     }
