@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <SofaBaseTopology/initSofaBaseTopology.h>
 
+#include <sofa/helper/system/PluginManager.h>
+
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
@@ -32,6 +34,12 @@ void initSofaBaseTopology()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaBaseTopology") << "SofaBaseTopology is deprecated; please load Sofa.Component.Topology.StaticContainer, Sofa.Component.Topology.Grid and/or Sofa.Component.Topology.DynamicContainer instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Topology.StaticContainer");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Topology.Grid");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Topology.DynamicContainer");
+
         first = false;
     }
 }
