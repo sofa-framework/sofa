@@ -250,32 +250,28 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
 
 
     // create a temporary map to find redundant edges
-    std::map<Edge, EdgeID> edgeMap;
+    std::map<Edge, std::size_t> edgeMap;
     helper::WriteAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
 
-    for (size_t i=0; i<m_triangle.size(); ++i)
+    auto edgesInTriangleIt = m_edgesInTriangle.begin();
+    for (const auto& t : m_triangle)
     {
-        const Triangle &t = m_triangle[i];
-        for(unsigned int j=0; j<3; ++j)
+        auto& edgesInT = *edgesInTriangleIt++;
+        for(unsigned int j = 0; j < Triangle::static_size; ++j)
         {
             const PointID v1 = t[(j+1)%3];
             const PointID v2 = t[(j+2)%3];
 
             // sort vertices in lexicographic order
-            const Edge e = ((v1<v2) ? Edge(v1,v2) : Edge(v2,v1));
+            const Edge e { v1<v2 ? Edge(v1,v2) : Edge(v2,v1) };
+            const auto edgeMapIt = edgeMap.emplace(e, edgeMap.size());
 
-            if(edgeMap.find(e) == edgeMap.end())
+            if (edgeMapIt.second)
             {
-                // edge not in edgeMap so create a new one
-                const size_t edgeIndex = edgeMap.size();
-                /// add new edge
-                edgeMap[e] = (EdgeID)edgeIndex;
-                //			  m_edge.push_back(e);
-                m_edge.push_back(Edge(v1,v2));
-
+                m_edge->emplace_back(v1,v2);
             }
 
-            m_edgesInTriangle[i][j] = edgeMap[e];
+            edgesInT[j] = edgeMapIt.first->second;
         }
     }
 }
