@@ -26,7 +26,12 @@
 namespace sofa::helper
 {
     /// If true, narrow_cast will check if the value changed after the narrow conversion. Otherwise, no check is performed
-    constexpr bool forceNarrowCastChecking = NDEBUG;
+#if defined(NDEBUG)
+    constexpr bool forceNarrowCastChecking = false;
+#else
+    constexpr bool forceNarrowCastChecking = true;
+#endif
+
 
     /**
      * \brief Explicit narrow conversion
@@ -57,14 +62,16 @@ namespace sofa::helper
     {
         const T t = narrow_cast_nocheck<T>(u);
 
-        if (static_cast<U>(t) != u)
+        using U_decay = std::decay_t<U>;
+
+        if (static_cast<U_decay>(t) != u)
         {
             throw narrowing_error{};
         }
 
-        if constexpr (std::is_arithmetic_v<T> && std::is_signed_v<T> != std::is_signed_v<U>)
+        if constexpr (std::is_arithmetic_v<T> && std::is_signed_v<T> != std::is_signed_v<U_decay>)
         {
-            if ((t < T{}) != (u < U{}))
+            if ((t < T{}) != (u < U_decay{}))
             {
                 throw narrowing_error{};
             }
