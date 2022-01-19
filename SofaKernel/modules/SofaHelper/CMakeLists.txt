@@ -31,6 +31,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/MatEigen.h
     ${SRC_ROOT}/MemoryManager.h
     ${SRC_ROOT}/NameDecoder.h
+    ${SRC_ROOT}/narrow_cast.h
     ${SRC_ROOT}/OptionsGroup.h
     ${SRC_ROOT}/OwnershipSPtr.h
     ${SRC_ROOT}/Polynomial_LD.h
