@@ -45,10 +45,12 @@ class CudaMemoryManager : public sofa::helper::MemoryManager<T>
 {
 
 public :
-    template<class T2> struct rebind
+
+    template<class T2> struct SOFA_ATTRIBUTE_DEPRECATED__REBIND() rebind
     {
-        typedef CudaMemoryManager<T2> other;
+        using other = CudaMemoryManager<T2>;
     };
+
 
     typedef T* host_pointer;
     typedef /*mutable*/ void* device_pointer;

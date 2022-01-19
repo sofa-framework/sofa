@@ -63,10 +63,14 @@ public:
     /// const reference to a value (read only)
     typedef typename std::vector<T,Alloc>::const_reference const_reference;
 
-    template<class T2> struct rebind
+    template<class T2>
+    using rebind_to = vector< T2, CPUMemoryManager<T2> >;
+
+    template<class T2> struct SOFA_ATTRIBUTE_DEPRECATED__REBIND() rebind
     {
-        typedef vector< T2,CPUMemoryManager<T2> > other;
+        using other = rebind_to<T2>;
     };
+
 
     /// Basic constructor
     vector() : std::vector<T,Alloc>() {}

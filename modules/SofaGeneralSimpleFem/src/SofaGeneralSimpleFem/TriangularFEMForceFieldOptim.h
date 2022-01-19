@@ -27,6 +27,8 @@
 #include <sofa/type/Mat.h>
 #include <sofa/core/topology/TopologyData.h>
 
+#include <sofa/type/trait/Rebind.h>
+
 namespace sofa::component::forcefield
 {
 
@@ -178,8 +180,9 @@ public:
     };
 
     /// Topology Data
-    typedef typename VecCoord::template rebind<TriangleInfo>::other VecTriangleInfo;
-    typedef typename VecCoord::template rebind<TriangleState>::other VecTriangleState;
+    using VecTriangleInfo  = sofa::type::rebind_to<VecCoord, TriangleInfo>;
+    using VecTriangleState = sofa::type::rebind_to<VecCoord, TriangleState>;
+
     core::topology::TriangleData<VecTriangleInfo> d_triangleInfo; ///< Internal triangle data (persistent)
     core::topology::TriangleData<VecTriangleState> d_triangleState; ///< Internal triangle data (time-dependent)
 
