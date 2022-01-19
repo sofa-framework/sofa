@@ -65,6 +65,10 @@ NodeSPtr SOFA_SOFASIMULATIONGRAPH_API createChild( NodeSPtr& node, const std::st
 ///The parameter "params" is for passing specific data argument to the created object (including the node name).
 NodeSPtr SOFA_SOFASIMULATIONGRAPH_API createChild(NodeSPtr node, BaseObjectDescription& desc);
 
+///@brief create a child to the provided node.
+///The parameter "params" is for passing specific data argument to the created object (including the node name).
+NodeSPtr SOFA_SOFASIMULATIONGRAPH_API createNode(const std::string& name);
+
 void SOFA_SOFASIMULATIONGRAPH_API dumpScene(NodeSPtr root) ;
 
 template<class T>

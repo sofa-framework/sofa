@@ -22,7 +22,6 @@
 #pragma once
 
 #include <SofaMiscFem/config.h>
-
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/TopologyData.h>
 #include <sofa/type/fixed_array.h>
@@ -33,6 +32,18 @@
 
 namespace sofa::component::forcefield
 {
+
+template<class DataTypes>
+class FastTetrahedralCorotationalForceField;
+
+/// This class can be overridden if needed for additionnal storage within template specializations.
+template<class DataTypes>
+class FastTetrahedralCorotationalForceFieldData
+{
+public:
+    typedef FastTetrahedralCorotationalForceField<DataTypes> Main;
+    void reinit(Main* m) { SOFA_UNUSED(m); }
+};
 
 
 template<class DataTypes>
@@ -81,10 +92,8 @@ protected:
         Mat3x3 linearDfDx[6];  // the off-diagonal 3x3 block matrices that makes the 12x12 linear elastic matrix
         Mat3x3 rotation; // rotation from deformed to rest configuration
         Mat3x3 restRotation; // used for QR decomposition
-        //unsigned int v[4]; // the indices of the 4 vertices
 
         Real edgeOrientation[6];
-
 
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const TetrahedronRestInformation& /*eri*/ )
@@ -97,15 +106,15 @@ protected:
         {
             return in;
         }
-
-        TetrahedronRestInformation()
-        {
-        }
     };
 
-    core::topology::PointData<sofa::type::vector<Mat3x3> > pointInfo; ///< Internal point data
-    core::topology::EdgeData<sofa::type::vector<Mat3x3> > edgeInfo; ///< Internal edge data
-    core::topology::TetrahedronData<sofa::type::vector<TetrahedronRestInformation> > tetrahedronInfo; ///< Internal tetrahedron data
+    /// Topology Data
+    typedef typename VecCoord::template rebind<TetrahedronRestInformation>::other VecTetrahedronRestInformation;
+    typedef typename VecCoord::template rebind <Mat3x3>::other VecMat3x3;
+
+    core::topology::PointData<VecMat3x3 > pointInfo; ///< Internal point data
+    core::topology::EdgeData<VecMat3x3 > edgeInfo; ///< Internal edge data
+    core::topology::TetrahedronData<VecTetrahedronRestInformation > tetrahedronInfo; ///< Internal tetrahedron data
 
     /** Method to initialize @sa TetrahedronRestInformation when a new Tetrahedron is created.
     * Will be set as creation callback in the TetrahedronData @sa tetrahedronInfo
@@ -119,10 +128,9 @@ protected:
     VecCoord  _initialPoints;///< the intial positions of the points
 
     bool updateMatrix;
-    bool updateTopologyInfo;
 
     Data<std::string> f_method; ///< the computation method of the displacements
-    RotationDecompositionMethod decompositionMethod;
+    RotationDecompositionMethod m_decompositionMethod;
 
     Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
     Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
@@ -174,7 +182,7 @@ public:
     }
     void setRotationDecompositionMethod( const RotationDecompositionMethod m)
     {
-        decompositionMethod=m;
+        m_decompositionMethod = m;
     }
     void draw(const core::visual::VisualParams* vparams) override;
     /// compute lambda and mu based on the Young modulus and Poisson ratio
@@ -185,7 +193,10 @@ public:
 protected :
     static void computeQRRotation( Mat3x3 &r, const Coord *dp);
 
-    core::topology::EdgeData<sofa::type::vector<Mat3x3> > &getEdgeInfo() {return edgeInfo;}
+    core::topology::EdgeData< VecMat3x3 > &getEdgeInfo() {return edgeInfo;}
+    
+    typedef FastTetrahedralCorotationalForceFieldData<DataTypes> ExtraData;
+    ExtraData m_data;
 };
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_CPP)

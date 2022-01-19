@@ -19,30 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_BOXROI_CPP
-#include <SofaEngine/BoxROI.inl>
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/gpu/cuda/CudaHexahedronFEMForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::engine::boxroi
+
+namespace sofa::component::forcefield
+{
+template class SOFA_GPU_CUDA_API HexahedronFEMForceField<sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API HexahedronFEMForceField<sofa::gpu::cuda::CudaVec3f1Types>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API HexahedronFEMForceField<sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API HexahedronFEMForceField<sofa::gpu::cuda::CudaVec3d1Types>; 
+#endif // SOFA_GPU_CUDA_DOUBLE
+
+} // namespace sofa::component::forcefield
+
+namespace sofa::gpu::cuda
 {
 
-using namespace sofa::defaulttype;
+int HexahedronFEMForceFieldCudaClass = core::RegisterObject("Hexahedron FEM ForceField Supports GPU-side computations using CUDA")
+.add< component::forcefield::HexahedronFEMForceField<CudaVec3fTypes> >()
+.add< component::forcefield::HexahedronFEMForceField<CudaVec3f1Types> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+.add< component::forcefield::HexahedronFEMForceField<CudaVec3dTypes> >()
+.add< component::forcefield::HexahedronFEMForceField<CudaVec3d1Types> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+;
 
-int BoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/quad/tetrahedron/hexahedron) inside given boxes")
-        .add< BoxROI<Vec3Types> >(true) //default
-        .add< BoxROI<Vec2Types> >()
-        .add< BoxROI<Vec1Types> >()
-        .add< BoxROI<Rigid3Types> >()
-        .add< BoxROI<Vec6Types> >()
- 
-        ;
-
-template class SOFA_SOFAENGINE_API BoxROI<Vec3Types>;
-template class SOFA_SOFAENGINE_API BoxROI<Vec2Types>;
-template class SOFA_SOFAENGINE_API BoxROI<Vec1Types>;
-template class SOFA_SOFAENGINE_API BoxROI<Rigid3Types>;
-template class SOFA_SOFAENGINE_API BoxROI<Vec6Types>;
- 
-
-} // namespace sofa::component::engine::boxroi
+} // namespace sofa::gpu::cuda
