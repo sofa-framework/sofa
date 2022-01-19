@@ -12,6 +12,7 @@ ignore "quadSpringSphereCUDA.scn"
 iterations "raptor-cpu.scn" "10"
 timeout "raptor-cpu.scn" "60"
 ignore "raptor-cuda.scn"
+ignore "raptor.scn"
 
 iterations "raptor-surface-cpu.scn" "10"
 timeout "raptor-surface-cpu.scn" "60"
