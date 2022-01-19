@@ -236,101 +236,48 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
     if (hasEdgesInTriangle()) // created by upper topology
         return;
 
-    helper::ReadAccessor< Data< sofa::type::vector<Triangle> > > m_triangle = d_triangle;
-
-
-    bool foundEdge = true;
+    const helper::ReadAccessor< Data< sofa::type::vector<Triangle> > > m_triangle = d_triangle;
 
     if (hasEdges())
     {
-        /// there are already existing edges : must use an inefficient method. Parse all triangles and find the edge that match each triangle edge
-        helper::ReadAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
-        const size_t numTriangles = getNumberOfTriangles();
-        const size_t numEdges = getNumberOfEdges();
-
-        m_edgesInTriangle.resize(numTriangles);
-        /// create a multi map where the key is a vertex index and the content is the indices of edges adjacent to that vertex.
-        std::multimap<PointID, EdgeID> edgesAroundVertexMap;
-        std::multimap<PointID, EdgeID>::iterator it;
-
-        for (size_t edge=0; edge<numEdges; ++edge)  //Todo: check if not better using multimap <PointID ,TriangleID> and for each edge, push each triangle present in both shell
-        {
-            edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][0], (EdgeID)edge));
-            edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][1], (EdgeID)edge));
-        }
-        for ( size_t i = 0 ; (i < numTriangles) && (foundEdge == true) ; ++i )
-        {
-            const Triangle &t = m_triangle[i];
-            // adding edge i in the edge shell of both points
-            for ( unsigned int j = 0 ; (j < 3) && (foundEdge == true) ; ++j )
-            {
-                //finding edge i in edge array
-                std::pair<std::multimap<PointID, EdgeID>::iterator, std::multimap<PointID, EdgeID>::iterator > itPair=edgesAroundVertexMap.equal_range(t[(j+1)%3]);
-
-                foundEdge=false;
-                for(it=itPair.first; (it!=itPair.second) && (foundEdge==false); ++it)
-                {
-                    EdgeID edge = (*it).second;
-                    if ( (m_edge[edge][0] == t[(j+1)%3] && m_edge[edge][1] == t[(j+2)%3]) || (m_edge[edge][0] == t[(j+2)%3] && m_edge[edge][1] == t[(j+1)%3]))
-                    {
-                        m_edgesInTriangle[i][j] = edge;
-                        foundEdge=true;
-                    }
-                }
-
-                if (!foundEdge)
-                {
-                    msg_warning() << "Cannot find edge " << j
-                        << " [" << t[(j + 1) % 3] << ", " << t[(j + 2) % 3] << "]"
-                        << " from triangle " << i << " [" << t << "]" << " in edge list: edge is added to the list";
-                    const Edge e{std::min(t[(j + 1) % 3], t[(j + 2) % 3]), std::max(t[(j + 1) % 3], t[(j + 2) % 3])};
-                    sofa::helper::getWriteAccessor(d_edge)->emplace_back(e);
-                    m_edgesInTriangle[i][j] = m_edge.size() - 1;
-                    edgesAroundVertexMap.insert(std::make_pair(e[0], (EdgeID)(m_edge.size() - 1)));
-                    edgesAroundVertexMap.insert(std::make_pair(e[1], (EdgeID)(m_edge.size() - 1)));
-                    foundEdge = true;
-                }
-            }
-        }
+        msg_warning() << "Previously defined edges will be overwritten by edges from triangles";
+        sofa::helper::getWriteOnlyAccessor(d_edge).clear();
     }
-    if(!hasEdges() || foundEdge == false) // To optimize, this method should be called without creating edgesArray before.
+
+    /// create edge array and triangle edge array at the same time
+    const size_t numTriangles = getNumberOfTriangles();
+    m_edgesInTriangle.resize(numTriangles);
+
+
+    // create a temporary map to find redundant edges
+    std::map<Edge, EdgeID> edgeMap;
+    helper::WriteAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
+
+    for (size_t i=0; i<m_triangle.size(); ++i)
     {
-        /// create edge array and triangle edge array at the same time
-        const size_t numTriangles = getNumberOfTriangles();
-        m_edgesInTriangle.resize(numTriangles);
-
-
-        // create a temporary map to find redundant edges
-        std::map<Edge, EdgeID> edgeMap;
-        helper::WriteAccessor< Data< sofa::type::vector<Edge> > > m_edge = d_edge;
-
-        for (size_t i=0; i<m_triangle.size(); ++i)
+        const Triangle &t = m_triangle[i];
+        for(unsigned int j=0; j<3; ++j)
         {
-            const Triangle &t = m_triangle[i];
-            for(unsigned int j=0; j<3; ++j)
+            const PointID v1 = t[(j+1)%3];
+            const PointID v2 = t[(j+2)%3];
+
+            // sort vertices in lexicographic order
+            const Edge e = ((v1<v2) ? Edge(v1,v2) : Edge(v2,v1));
+
+            if(edgeMap.find(e) == edgeMap.end())
             {
-                const PointID v1 = t[(j+1)%3];
-                const PointID v2 = t[(j+2)%3];
+                // edge not in edgeMap so create a new one
+                const size_t edgeIndex = edgeMap.size();
+                /// add new edge
+                edgeMap[e] = (EdgeID)edgeIndex;
+                //			  m_edge.push_back(e);
+                m_edge.push_back(Edge(v1,v2));
 
-                // sort vertices in lexicographic order
-                const Edge e = ((v1<v2) ? Edge(v1,v2) : Edge(v2,v1));
-
-                if(edgeMap.find(e) == edgeMap.end())
-                {
-                    // edge not in edgeMap so create a new one
-                    const size_t edgeIndex = edgeMap.size();
-                    /// add new edge
-                    edgeMap[e] = (EdgeID)edgeIndex;
-//			  m_edge.push_back(e);
-                    m_edge.push_back(Edge(v1,v2));
-
-                }
-
-                m_edgesInTriangle[i][j] = edgeMap[e];
             }
+
+            m_edgesInTriangle[i][j] = edgeMap[e];
         }
     }
-
 }
 
 
