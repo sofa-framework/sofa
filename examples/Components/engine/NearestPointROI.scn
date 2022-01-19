@@ -95,7 +95,7 @@
         <Node name="merge1">
             <BoxROI name="box1" position="@../M1/mo.position" box="3.9 -0.1 8.9 7.1 3.1 9.1"/>
             <BoxROI name="box2" position="@../M2/mo.position" box="3.9 -0.1 8.9 7.1 3.1 9.1"/>
-            <NearestPointROI template="Vec3" name="np" object1="@../M1/mo" object2="@../M2/mo" radius="1e5" filterIndices1="@box1.indices" filterIndices2="@box2.indices"/>
+            <NearestPointROI template="Vec3" name="np" object1="@../M1/mo" object2="@../M2/mo" radius="1e5" inputIndices1="@box1.indices" inputIndices2="@box2.indices"/>
             <MechanicalObject name="dofs"/>
             <SubsetMultiMapping input="@../M1/mo @../M2/mo" output="@dofs" indexPairs="@np.indexPairs"/>
             <EdgeSetTopologyContainer edges="@np.edges"/>
@@ -105,7 +105,7 @@
         <Node name="merge2">
             <BoxROI name="box1" position="@../M2/mo.position" box="3.9 -0.1 17.9 7.1 3.1 18.1"/>
             <BoxROI name="box2" position="@../M3/mo.position" box="3.9 -0.1 17.9 7.1 3.1 18.1"/>
-            <NearestPointROI template="Vec3" name="np" object1="@../M2/mo" object2="@../M3/mo" radius="1e5" filterIndices1="@box1.indices" filterIndices2="@box2.indices"/>
+            <NearestPointROI template="Vec3" name="np" object1="@../M2/mo" object2="@../M3/mo" radius="1e5" inputIndices1="@box1.indices" inputIndices2="@box2.indices"/>
             <MechanicalObject name="dofs"/>
             <SubsetMultiMapping input="@../M2/mo @../M3/mo" output="@dofs" indexPairs="@np.indexPairs"/>
             <EdgeSetTopologyContainer edges="@np.edges"/>
