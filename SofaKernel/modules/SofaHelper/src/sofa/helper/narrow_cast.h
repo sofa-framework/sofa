@@ -57,7 +57,7 @@ namespace sofa::helper
     {
         const T t = narrow_cast_nocheck<T>(u);
 
-        if (static_cast<U>(t) != u)
+        if (static_cast<std::decay_t<U> >(t) != u)
         {
             throw narrowing_error{};
         }

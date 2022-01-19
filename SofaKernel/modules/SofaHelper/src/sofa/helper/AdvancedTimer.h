@@ -28,6 +28,7 @@
 #include <ostream>
 #include <string>
 #include <map>
+#include <sofa/helper/narrow_cast.h>
 
 namespace sofa::simulation
 {
@@ -188,7 +189,7 @@ public:
                 const auto it = idfac.idsMap.find(name);
                 if (it == idfac.idsMap.end())
                 {
-                    const auto idsMapSize = static_cast<unsigned int>(idfac.idsMap.size());
+                    const auto idsMapSize = sofa::helper::narrow_cast<unsigned int>(idfac.idsMap.size());
                     idfac.idsMap.insert({name, idsMapSize});
                     idfac.idsList.push_back(name);
                     return idsMapSize;
