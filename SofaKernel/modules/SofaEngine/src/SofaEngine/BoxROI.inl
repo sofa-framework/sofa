@@ -133,13 +133,6 @@ template<class DataTypes>
 void BoxROI<DataTypes>::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
 {
     Inherit1::parse(arg);
-
-    if constexpr (DataTypes::spatial_dimensions != 3)
-    {
-        static const std::string message = "\nOriented bounding boxes are not supported in " + std::to_string(DataTypes::spatial_dimensions) + "D";
-        d_orientedBoxes.setHelp(d_orientedBoxes.getHelp() + message);
-        msg_warning_when(d_orientedBoxes.isSet()) << message;
-    }
 }
 
 
@@ -303,6 +296,13 @@ void BoxROI<DataTypes>::init()
             if (alignedBoxes[bi][1] > alignedBoxes[bi][4]) std::swap(alignedBoxes[bi][1], alignedBoxes[bi][4]);
             if (alignedBoxes[bi][2] > alignedBoxes[bi][5]) std::swap(alignedBoxes[bi][2], alignedBoxes[bi][5]);
         }
+    }
+
+    if constexpr (DataTypes::spatial_dimensions != 3)
+    {
+        static const std::string message = "\nOriented bounding boxes are not supported in " + std::to_string(DataTypes::spatial_dimensions) + "D";
+        d_orientedBoxes.setHelp(d_orientedBoxes.getHelp() + message);
+        msg_warning_when(d_orientedBoxes.isSet()) << message;
     }
 
     computeOrientedBoxes();
