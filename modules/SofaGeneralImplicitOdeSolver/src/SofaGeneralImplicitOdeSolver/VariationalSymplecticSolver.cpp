@@ -231,6 +231,8 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt
 			ops[2].second.push_back(std::make_pair(x_1.id(),1.0));
 			vop.v_multiop(ops);
 
+			mop.propagateX(x_1);
+
 			err_newton = resi.norm()/positionNorm; /// this should decrease
 			i_newton++;
 
