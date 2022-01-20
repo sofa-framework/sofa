@@ -29,8 +29,8 @@ template <class DataTypes>
 NearestPointROI<DataTypes>::NearestPointROI(core::behavior::MechanicalState<DataTypes>* mm1, core::behavior::MechanicalState<DataTypes>* mm2)
     : Inherit1()
     , Inherit2(mm1, mm2)
-    , d_filterIndices1( initData(&d_filterIndices1,"filterIndices1","Indices of the points to consider on the first model") )
-    , d_filterIndices2( initData(&d_filterIndices2,"filterIndices2","Indices of the points to consider on the first model") )
+    , d_inputIndices1( initData(&d_inputIndices1,"inputIndices1","Indices of the points to consider on the first model") )
+    , d_inputIndices2( initData(&d_inputIndices2,"inputIndices2","Indices of the points to consider on the first model") )
     , f_radius( initData(&f_radius,(Real)1,"radius", "Radius to search corresponding fixed point") )
     , d_useRestPosition(initData(&d_useRestPosition, true, "useRestPosition", "If true will use restPosition only at init"))
     , f_indices1( initData(&f_indices1,"indices1","Indices from the first model associated to a dof from the second model") )
@@ -118,8 +118,8 @@ void NearestPointROI<DataTypes>::computeNearestPointMaps(const VecCoord& x1, con
         return dist(x1[a], pt2) < dist(x1[b], pt2);
     };
 
-    auto filterIndices1 = sofa::helper::getWriteAccessor(d_filterIndices1);
-    auto filterIndices2 = sofa::helper::getWriteAccessor(d_filterIndices2);
+    auto filterIndices1 = sofa::helper::getWriteAccessor(d_inputIndices1);
+    auto filterIndices2 = sofa::helper::getWriteAccessor(d_inputIndices2);
     if (filterIndices1.empty())
     {
         filterIndices1.resize(x1.size());

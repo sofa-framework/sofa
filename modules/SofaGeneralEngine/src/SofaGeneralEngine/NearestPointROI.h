@@ -61,8 +61,8 @@ public:
     typedef type::vector<unsigned int> SetIndexArray;
     typedef sofa::core::topology::TopologySubsetIndices SetIndex;
 
-    SetIndex d_filterIndices1; ///< Only these indices are considered in the first model
-    SetIndex d_filterIndices2; ///< Only these indices are considered in the second model
+    SetIndex d_inputIndices1; ///< Only these indices are considered in the first model
+    SetIndex d_inputIndices2; ///< Only these indices are considered in the second model
     Data<Real> f_radius; ///< Radius to search corresponding fixed point if no indices are given
     Data<bool> d_useRestPosition; ///< If true will use rest position only at init. Otherwise will recompute the maps at each update. Default is true.
 
