@@ -159,22 +159,22 @@ void Simulation::init ( Node* root )
 
     if (!root->getAnimationLoop())
     {
-        msg_warning("Simulation") <<
+        msg_warning(root) <<
             "Default Animation Manager Loop will be used. Add DefaultAnimationLoop to the root node of scene file to remove this warning";
         
         DefaultAnimationLoop::SPtr aloop = sofa::core::objectmodel::New<DefaultAnimationLoop>(root);
         aloop->setName(sofa::helper::NameDecoder::shortName(aloop->getClassName()));
-        root->addObject(aloop);
+        root->addObject(aloop,sofa::core::objectmodel::TypeOfInsertion::AtBegin);
     }
 
     if(!root->getVisualLoop())
     {
-        msg_warning("Simulation") <<
+        msg_warning(root) <<
             "Default Visual Manager Loop will be used. Add DefaultVisualManagerLoop to the root node of scene file to remove this warning";
 
         DefaultVisualManagerLoop::SPtr vloop = sofa::core::objectmodel::New<DefaultVisualManagerLoop>(root);
         vloop->setName(sofa::helper::NameDecoder::shortName(vloop->getClassName()));
-        root->addObject(vloop);
+        root->addObject(vloop,sofa::core::objectmodel::TypeOfInsertion::AtBegin);
     }
 
     // all the objects have now been created, update the links

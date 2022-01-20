@@ -22,14 +22,10 @@
 #include "ComponentChange.h"
 
 
-namespace sofa
-{
-namespace helper
-{
-namespace lifecycle
+namespace sofa::helper::lifecycle
 {
 
-std::map<std::string, Deprecated> deprecatedComponents = {
+const std::map<std::string, Deprecated, std::less<> > deprecatedComponents = {
     // SofaMiscForceField
     {"MatrixMass", Deprecated("v19.06", "v19.12")},
     {"RayTraceDetection", Deprecated("v21.06", "v21.12")},
@@ -38,7 +34,7 @@ std::map<std::string, Deprecated> deprecatedComponents = {
     {"PointConstraint", Deprecated("v21.12", "v22.06")},
 };
 
-std::map<std::string, ComponentChange> uncreatableComponents = {
+const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents = {
     // SofaDistanceGrid was pluginized in #389
     {"BarycentricPenalityContact", Pluginized("v17.12", "SofaMeshCollision")},
     {"DistanceGridCollisionModel", Pluginized("v17.12", "SofaDistanceGrid")},
@@ -684,7 +680,6 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
 
 };
 
-} // namespace lifecycle
-} // namespace helper
-} // namespace sofa
+const std::map< std::string, CreatableMoved, std::less<> > movedComponents = {};
 
+} // namespace sofa::helper::lifecycle
