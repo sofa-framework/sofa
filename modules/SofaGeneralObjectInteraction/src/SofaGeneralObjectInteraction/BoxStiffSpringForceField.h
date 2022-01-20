@@ -84,8 +84,8 @@ public:
             context->addObject(np);
         }
 
-        np->d_filterIndices1.setParent(&boxes[0]->d_indices);
-        np->d_filterIndices2.setParent(&boxes[1]->d_indices);
+        np->d_inputIndices1.setParent(&boxes[0]->d_indices);
+        np->d_inputIndices2.setParent(&boxes[1]->d_indices);
 
         auto springs = sofa::core::objectmodel::New<sofa::component::interactionforcefield::StiffSpringForceField<DataTypes> >(mstate1, mstate2);
         springs->d_indices1.setParent(&np->f_indices1);
