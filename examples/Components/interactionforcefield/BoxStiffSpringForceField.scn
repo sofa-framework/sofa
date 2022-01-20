@@ -80,6 +80,6 @@
         </Node>
     </Node>
 
-    <BoxStiffSpringForceField template="Vec3d" name="Spring12" stiffness="100000" object1="@Liver1/Surf" object2="@Liver2/Surf" box_object1="0.5 3 -1 2 6 2" box_object2="7 3 -1 9.5 6 2" forceOldBehavior="0" />
-    <BoxStiffSpringForceField template="Vec3d" name="Spring23" stiffness="1000000" object1="@Liver2" object2="@Liver3" box_object1="13 0 -3 15 1 2" box_object2="18 3 -1 20 6 0" forceOldBehavior="0"/>
+    <BoxStiffSpringForceField template="Vec3d" name="Spring12" stiffness="100000" object1="@Liver1/Surf" object2="@Liver2/Surf" box_object1="0.5 3 -1 2 6 2" box_object2="7 3 -1 9.5 6 2"/>
+    <BoxStiffSpringForceField template="Vec3d" name="Spring23" stiffness="1000000" object1="@Liver2" object2="@Liver3" box_object1="13 0 -3 15 1 2" box_object2="18 3 -1 20 6 0"/>
 </Node>
