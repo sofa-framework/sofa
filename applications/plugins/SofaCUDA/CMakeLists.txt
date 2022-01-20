@@ -55,6 +55,8 @@ set(HEADER_FILES
     
 
     ### FEM
+    sofa/gpu/cuda/CudaHexahedronFEMForceField.h
+    sofa/gpu/cuda/CudaHexahedronFEMForceField.inl
     sofa/gpu/cuda/CudaHexahedronTLEDForceField.h
     sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.h
     sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.inl
@@ -129,6 +131,7 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaUniformMass.cpp
 
     ### FEM
+    sofa/gpu/cuda/CudaHexahedronFEMForceField.cpp
     sofa/gpu/cuda/CudaHexahedronTLEDForceField.cpp
     sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.cpp
     sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.cpp
@@ -189,13 +192,13 @@ set(CUDA_SOURCES
     sofa/gpu/cuda/CudaUniformMass.cu
 
     ### FEM
+    sofa/gpu/cuda/CudaHexahedronFEMForceField.cu
     sofa/gpu/cuda/CudaHexahedronTLEDForceField.cu
     sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.cu
     sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.cu
     sofa/gpu/cuda/CudaTetrahedronFEMForceField.cu
     sofa/gpu/cuda/CudaTetrahedronTLEDForceField.cu
     sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cu
-    
 
     ### ForceFields
     sofa/gpu/cuda/CudaEllipsoidForceField.cu
@@ -231,7 +234,7 @@ else()
     )
 endif()
 
-set(README_FILES SofaCUDA.txt)
+set(README_FILES README.md)
 
 find_package(CUDA REQUIRED)
 

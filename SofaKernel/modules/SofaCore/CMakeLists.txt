@@ -138,6 +138,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/MouseEvent.h
     ${SRC_ROOT}/objectmodel/SPtr.h
     ${SRC_ROOT}/objectmodel/ScriptEvent.h
+    ${SRC_ROOT}/objectmodel/TypeOfInsertion.h
     ${SRC_ROOT}/objectmodel/Tag.h
     ${SRC_ROOT}/objectmodel/vectorData.h
     ${SRC_ROOT}/objectmodel/vectorLinks.h

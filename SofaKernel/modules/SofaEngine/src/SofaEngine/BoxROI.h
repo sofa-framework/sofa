@@ -171,7 +171,7 @@ protected:
     void computeOrientedBoxes();
 
     bool isPointInOrientedBox(const CPos& p, const OrientedBox& box);
-    bool isPointInAlignedBox(const typename DataTypes::CPos& p, const Vec6& box);
+    static bool isPointInAlignedBox(const typename DataTypes::CPos& p, const Vec6& box);
     bool isPointInBoxes(const CPos& p);
     bool isPointInBoxes(const PointID& pid);
     bool isEdgeInBoxes(const Edge& e);
@@ -190,6 +190,8 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)
 extern template class SOFA_SOFAENGINE_API BoxROI<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAENGINE_API BoxROI<defaulttype::Vec2Types>;
+extern template class SOFA_SOFAENGINE_API BoxROI<defaulttype::Vec1Types>;
 extern template class SOFA_SOFAENGINE_API BoxROI<defaulttype::Rigid3Types>;
 extern template class SOFA_SOFAENGINE_API BoxROI<defaulttype::Vec6Types>;
  
