@@ -21,22 +21,15 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
 
-#define SOFADEFORMABLE_VERSION @PROJECT_VERSION@
+namespace sofa::core::objectmodel
+{
+/// Enum proposing two alternatives on where to add a new object in a node
+enum class TypeOfInsertion
+{
+    AtEnd,
+    AtBegin
+};
 
-#ifdef SOFA_BUILD_SOFADEFORMABLE
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_SOFADEFORMABLE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFADEFORMABLE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+};
 
-#ifdef SOFA_BUILD_SOFADEFORMABLE
-#define SOFA_ATTRIBUTE_DISABLED__STIFFSPRINGFORCEFIELD_DATANAME(msg)
-#else
-#define SOFA_ATTRIBUTE_DISABLED__STIFFSPRINGFORCEFIELD_DATANAME(msg) \
-SOFA_ATTRIBUTE_DISABLED( \
-"v22.06 (PR#2602)", "v22.12", msg)
-#endif

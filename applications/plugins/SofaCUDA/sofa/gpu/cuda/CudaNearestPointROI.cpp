@@ -19,24 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include "CudaTypes.h"
+#include <sofa/core/ObjectFactory.h>
+#include <SofaGeneralEngine/NearestPointROI.inl>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+namespace sofa
+{
 
-#define SOFADEFORMABLE_VERSION @PROJECT_VERSION@
+namespace component::engine
+{
 
-#ifdef SOFA_BUILD_SOFADEFORMABLE
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_SOFADEFORMABLE_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFADEFORMABLE_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+template class SOFA_GPU_CUDA_API NearestPointROI<gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API NearestPointROI<gpu::cuda::CudaVec3f1Types>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API NearestPointROI<gpu::cuda::CudaVec2dTypes>;
+template class SOFA_GPU_CUDA_API NearestPointROI<gpu::cuda::CudaVec3dTypes>;
+#endif // SOFA_GPU_CUDA_DOUBLE
 
-#ifdef SOFA_BUILD_SOFADEFORMABLE
-#define SOFA_ATTRIBUTE_DISABLED__STIFFSPRINGFORCEFIELD_DATANAME(msg)
-#else
-#define SOFA_ATTRIBUTE_DISABLED__STIFFSPRINGFORCEFIELD_DATANAME(msg) \
-SOFA_ATTRIBUTE_DISABLED( \
-"v22.06 (PR#2602)", "v22.12", msg)
-#endif
+} // namespace component::engine
+
+namespace gpu::cuda
+{
+
+int NearestPointROICudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< component::engine::NearestPointROI<CudaVec3fTypes> >()
+        .add< component::engine::NearestPointROI<CudaVec3f1Types> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< component::engine::NearestPointROI<CudaVec3dTypes> >()
+        .add< component::engine::NearestPointROI<CudaVec3d1Types> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+        ;
+
+} // namespace gpu::cuda
+
+} // namespace sofa

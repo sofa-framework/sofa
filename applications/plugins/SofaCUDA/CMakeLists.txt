@@ -165,6 +165,7 @@ set(SOURCE_FILES
 
     sofa/gpu/cuda/CudaBeamLinearMapping.cpp
     sofa/gpu/cuda/CudaBoxROI.cpp
+    sofa/gpu/cuda/CudaNearestPointROI.cpp
     sofa/gpu/cuda/CudaSphereROI.cpp
 
     sofa/gpu/cuda/CudaExtraMonitor.cpp
@@ -234,7 +235,7 @@ else()
     )
 endif()
 
-set(README_FILES SofaCUDA.txt)
+set(README_FILES README.md)
 
 find_package(CUDA REQUIRED)
 

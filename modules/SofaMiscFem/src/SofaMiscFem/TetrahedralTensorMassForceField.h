@@ -31,6 +31,7 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 #include <sofa/core/topology/TopologyData.h>
+#include <sofa/type/trait/Rebind.h>
 
 
 namespace sofa::component::forcefield
@@ -49,7 +50,7 @@ public:
     typedef typename DataTypes::Coord    Coord   ;
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
-    typedef typename VecCoord::template rebind<VecCoord>::other VecType;
+    using VecType = sofa::type::rebind_to<VecCoord, VecCoord>;
 
 
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
@@ -95,7 +96,7 @@ protected:
             return in;
         }
     };
-    typedef typename VecCoord::template rebind<EdgeRestInformation>::other edgeRestInfoVector;
+    using edgeRestInfoVector = type::rebind_to<VecCoord, EdgeRestInformation>;
 
     VecCoord  _initialPoints;///< the intial positions of the points
 

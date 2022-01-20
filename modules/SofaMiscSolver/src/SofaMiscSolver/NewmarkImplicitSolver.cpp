@@ -100,7 +100,7 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
 
     // 2. Compute right hand term of equation on a_{t+h}
 
-    mop.computeForce(b,true,false);
+    mop.computeForce(b);
     //b = f;
     // b = M a
     if (rM != 0.0 || rK != 0.0 || beta != 0.5)
@@ -176,7 +176,7 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
     a.eq(aResult);
 }
 
-int NewmarkImplicitSolverClass = core::RegisterObject("Implicit time integratorusing Newmark scheme")
+int NewmarkImplicitSolverClass = core::RegisterObject("Implicit time integrator using Newmark scheme")
         .add< NewmarkImplicitSolver >();
 
 } // namespace sofa::component::odesolver
