@@ -58,57 +58,45 @@ namespace sofa
         //size_t -> int: out of range
         {
             constexpr size_t a = static_cast<size_t>(std::numeric_limits<int>::max()) + 1;
-            if constexpr (sofa::helper::forceNarrowCastChecking)
-            {
-                EXPECT_THROW(sofa::helper::narrow_cast<int>(a), sofa::helper::narrowing_error);
-            }
-            else
-            {
-                constexpr int b = std::numeric_limits<int>::min(); // overflow
-                EXPECT_EQ(sofa::helper::narrow_cast<int>(a), b);
-            }
+#if !defined(NDEBUG)
+            EXPECT_THROW(sofa::helper::narrow_cast<int>(a), sofa::helper::narrowing_error);
+#else
+            constexpr int b = std::numeric_limits<int>::min(); // overflow
+            EXPECT_EQ(sofa::helper::narrow_cast<int>(a), b);
+#endif
         }
 
         //unsigned int -> int : out of range
         {
             constexpr unsigned int a = static_cast<unsigned int>(std::numeric_limits<int>::max()) + 1;
-            if constexpr (sofa::helper::forceNarrowCastChecking)
-            {
-                EXPECT_THROW(sofa::helper::narrow_cast<int>(a), sofa::helper::narrowing_error);
-            }
-            else
-            {
-                constexpr int b = std::numeric_limits<int>::min(); // overflow
-                EXPECT_EQ(sofa::helper::narrow_cast<int>(a), b);
-            }
+#if !defined(NDEBUG)
+            EXPECT_THROW(sofa::helper::narrow_cast<int>(a), sofa::helper::narrowing_error);
+#else
+            constexpr int b = std::numeric_limits<int>::min(); // overflow
+            EXPECT_EQ(sofa::helper::narrow_cast<int>(a), b);
+#endif
         }
 
         //int -> unsigned int : negative value
         {
             constexpr int a = -1;
-            if constexpr (sofa::helper::forceNarrowCastChecking)
-            {
-                EXPECT_THROW(sofa::helper::narrow_cast<unsigned int>(a), sofa::helper::narrowing_error);
-            }
-            else
-            {
-                constexpr int b = std::numeric_limits<unsigned int>::max();
-                EXPECT_EQ(sofa::helper::narrow_cast<unsigned int>(a), b);
-            }
+#if !defined(NDEBUG)
+            EXPECT_THROW(sofa::helper::narrow_cast<unsigned int>(a), sofa::helper::narrowing_error);
+#else
+            constexpr int b = std::numeric_limits<unsigned int>::max();
+            EXPECT_EQ(sofa::helper::narrow_cast<unsigned int>(a), b);
+#endif
         }
 
         //int -> short: out of range
         {
             constexpr int a = static_cast<size_t>(std::numeric_limits<short>::max()) + 1;
-            if constexpr (sofa::helper::forceNarrowCastChecking)
-            {
-                EXPECT_THROW(sofa::helper::narrow_cast<short>(a), sofa::helper::narrowing_error);
-            }
-            else
-            {
-                constexpr int b = std::numeric_limits<short>::min(); // overflow
-                EXPECT_EQ(sofa::helper::narrow_cast<short>(a), b);
-            }
+#if !defined(NDEBUG)
+            EXPECT_THROW(sofa::helper::narrow_cast<short>(a), sofa::helper::narrowing_error);
+#else
+            constexpr int b = std::numeric_limits<short>::min(); // overflow
+            EXPECT_EQ(sofa::helper::narrow_cast<short>(a), b);
+#endif
         }
     }
 }
