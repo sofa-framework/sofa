@@ -19,21 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDASUBSETMAPPING_INL
-#define SOFA_GPU_CUDA_CUDASUBSETMAPPING_INL
+#pragma once
 
-#include "CudaSubsetMapping.h"
+#include <sofa/gpu/cuda/CudaSubsetMapping.h>
 #include <SofaBaseMechanics/SubsetMapping.inl>
 #include <sofa/core/topology/TopologySubsetData.inl>
-#include <sofa/core/MechanicalParams.h>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 extern "C"
@@ -59,16 +51,12 @@ extern "C"
     void SubsetMappingCuda3f_3f1_applyJT1(unsigned int size, const void* map, void* out, const void* in);
 }
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
 
-namespace component
+namespace sofa::component::mapping
 {
-
-namespace mapping
-{
-
+    
 using namespace gpu::cuda;
 
 template <>
@@ -265,10 +253,4 @@ void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3f1Types>::apply
     dOut.endEdit();
 }
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mapping
