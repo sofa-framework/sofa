@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDACONTACTMAPPER_H
-#define SOFA_GPU_CUDA_CUDACONTACTMAPPER_H
+#pragma once
 
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <SofaMeshCollision/RigidContactMapper.inl>
@@ -33,13 +32,8 @@
 #include <sofa/gpu/cuda/CudaSubsetMapping.h>
 
 
-namespace sofa
-{
 
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 extern "C"
@@ -48,17 +42,14 @@ extern "C"
     void SubsetContactMapperCuda3f_setPoints1(unsigned int size, unsigned int nbTests, unsigned int maxPoints, unsigned int nbPointsPerElem, const void* tests, const void* contacts, void* map);
 }
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
 
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::gpu::cuda;
 using sofa::core::collision::GPUDetectionOutputVector;
 
 
@@ -199,8 +190,6 @@ public:
 
 } // namespace collision
 
-} // namespace component
 
-} // namespace sofa
 
-#endif
+} // namespace sofa::component::collision
