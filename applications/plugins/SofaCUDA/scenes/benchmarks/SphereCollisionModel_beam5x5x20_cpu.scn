@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.02">
+    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin name="SofaImplicitOdeSolver"/>
+    <RequiredPlugin name="SofaLoader"/>
+    <RequiredPlugin name="SofaMeshCollision"/>
+    <RequiredPlugin name="SofaSimpleFem"/>
+    <RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="SofaEngine"/> <!-- Needed to use components [BoxROI] -->
+    <RequiredPlugin name="SofaTopologyMapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping, Tetra2TriangleTopologicalMapping] response="CudaPenalityContactForceField"-->
+
+    <VisualStyle displayFlags="showBehaviorModels hideForceFields" />
+    <DefaultPipeline verbose="0" draw="0" />
+    <BruteForceBroadPhase/>
+    <BVHNarrowPhase/>
+    
+    <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="1.0" />
+    <DefaultContactManager name="Response" />
+
+    <Node name="Beam">
+        <RegularGridTopology name="grid" n="20 5 5" min="0 6 -2" max="16 10 2" />
+        <TetrahedronSetTopologyContainer name="BeamTopo" />
+        <TetrahedronSetTopologyModifier name="Modifier" />
+
+        <Hexa2TetraTopologicalMapping input="@grid" output="@BeamTopo" />
+    </Node>
+
+    <Node name="TetrahedronFEMForceField-GPU-Green">
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="20" name="linear solver" tolerance="1.0e-6" threshold="1.0e-6" />
+        
+        <MechanicalObject position="@../Beam/grid.position" name="Volume" template="Vec3"/>
+
+        <TetrahedronSetTopologyContainer name="Container" src="@../Beam/BeamTopo"/>
+        <TetrahedronSetTopologyModifier name="Modifier" />
+        <TetrahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3" />
+
+        <DiagonalMass totalMass="50.0" />
+        <BoxROI name="ROI1" box="-0.1 5 -3 0.1 11 3" drawBoxes="1" />
+        
+        <FixedConstraint indices="@ROI1.indices" />
+        <TetrahedronFEMForceField template="Vec3" name="FEM" computeGlobalMatrix="false" method="large" poissonRatio="0.3" youngModulus="1000" />
+        
+        <Node name="surface">
+            <TriangleSetTopologyContainer name="Container" />
+            <TriangleSetTopologyModifier name="Modifier" />
+            <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
+            
+            <SphereCollisionModel radius="0.5"/>
+            
+            <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" />
+            <Node name="Visu">
+                <OglModel name="Visual" color="green" />
+                <IdentityMapping input="@../../Volume" output="@Visual" />
+            </Node>
+        </Node>
+    </Node> 
+
+            
+    
+    <Node name="Floor">
+        <RegularGridTopology name="gridFloor" n="20 1 20" min="0 2.5 -10" max="20 2.5 10" />
+        <MechanicalObject position="@gridFloor.position" template="Vec3"/>
+        <MeshTopology name="topoF" src="@gridFloor" />
+        <SphereCollisionModel name="FloorPoint" simulated="0" moving="0" radius="0.5" contactStiffness="1000"/>
+        <OglModel name="FloorV" src="@topoF" />
+    </Node>
+</Node>
