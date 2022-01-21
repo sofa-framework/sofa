@@ -27,6 +27,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/topology/TopologySubsetIndices.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/type/trait/Rebind.h>
 
 namespace sofa
 {
@@ -57,7 +58,7 @@ public:
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     //int lastparticle;
-    typedef typename VecCoord::template rebind<Index>::other VecIndex;
+    using VecIndex = type::rebind_to<VecCoord, Index>;
     typedef sofa::core::topology::TopologySubsetIndices SetIndex;
     typedef typename SetIndex::container_type SetIndexArray;
 

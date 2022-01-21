@@ -149,6 +149,7 @@ public:
     void setDrawMode(int m) {drawMode.setValue(m);}
 
     void draw(const core::visual::VisualParams* vparams) override;
+    void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 
     // -- Modifiers
 

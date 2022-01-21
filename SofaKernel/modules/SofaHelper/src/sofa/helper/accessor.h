@@ -182,7 +182,7 @@ public:
     const_iterator end() const { return vref->end(); }
 
     ///////// Access the container for reading ////////////////
-    operator  const_container_type () const { return  *vref; }
+    operator const_container_type& () const { return  *vref; }
     const_container_type* operator->() const { return vref; }
     const_container_type& operator* () const { return  *vref; }
     const_container_type& ref() const { return *vref; }          ///< this duplicate operator* (remove ?)

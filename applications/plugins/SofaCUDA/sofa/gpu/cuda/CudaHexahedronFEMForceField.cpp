@@ -19,16 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef THMPGSPATIALHASHING_CONFIG_H
-#define THMPGSPATIALHASHING_CONFIG_H
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/gpu/cuda/CudaHexahedronFEMForceField.inl>
+#include <sofa/core/ObjectFactory.h>
 
-#include <sofa/config.h>
 
-#ifdef SOFA_BUILD_THMPGSPATIALHASHING
-#  define SOFA_TARGET THMPGSpatialHashing
-#  define SOFA_THMPGSPATIALHASHING_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_THMPGSPATIALHASHING_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace sofa::component::forcefield
+{
+template class SOFA_GPU_CUDA_API HexahedronFEMForceField<sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API HexahedronFEMForceField<sofa::gpu::cuda::CudaVec3f1Types>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API HexahedronFEMForceField<sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API HexahedronFEMForceField<sofa::gpu::cuda::CudaVec3d1Types>; 
+#endif // SOFA_GPU_CUDA_DOUBLE
 
-#endif
+} // namespace sofa::component::forcefield
+
+namespace sofa::gpu::cuda
+{
+
+int HexahedronFEMForceFieldCudaClass = core::RegisterObject("Hexahedron FEM ForceField Supports GPU-side computations using CUDA")
+.add< component::forcefield::HexahedronFEMForceField<CudaVec3fTypes> >()
+.add< component::forcefield::HexahedronFEMForceField<CudaVec3f1Types> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+.add< component::forcefield::HexahedronFEMForceField<CudaVec3dTypes> >()
+.add< component::forcefield::HexahedronFEMForceField<CudaVec3d1Types> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+;
+
+} // namespace sofa::gpu::cuda

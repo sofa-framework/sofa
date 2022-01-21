@@ -27,6 +27,9 @@ using sofa::core::ObjectFactory ;
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
 
+#include <SofaSimulationGraph/DAGNode.h>
+using sofa::simulation::graph::DAGNode;
+
 #include <SofaSimulationGraph/SimpleApi.h>
 using sofa::core::objectmodel::BaseObjectDescription ;
 
@@ -122,6 +125,11 @@ Node::SPtr createChild(Node::SPtr node, BaseObjectDescription& desc)
     Node::SPtr tmp = node->createChild(desc.getName());
     tmp->parse(&desc);
     return tmp;
+}
+
+Node::SPtr createNode(const std::string& name)
+{
+    return core::objectmodel::New<DAGNode>(name);
 }
 
 } // namespace sofa::simpleapi
