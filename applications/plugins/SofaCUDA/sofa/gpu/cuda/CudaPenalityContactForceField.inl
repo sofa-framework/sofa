@@ -88,7 +88,7 @@ void PenalityContactForceField<CudaVec3fTypes>::addContact(sofa::Index m1, sofa:
     c.index1 = index1;
     c.index2 = index2;
     c.norm = norm;
-    c.dist = dist +2;
+    c.dist = dist;
     c.ks = ks;
     c.pen = 0;
     c.age = 0;

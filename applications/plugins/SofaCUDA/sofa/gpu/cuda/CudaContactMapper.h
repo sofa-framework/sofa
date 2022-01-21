@@ -169,6 +169,9 @@ public:
     int addPoint(const Coord& P, int index, Real& r)
     {
         int i = this->Inherit::addPoint(P, index, r);
+        CudaSphere s(this->model, index);
+        r = s.r();
+
         return i;
     }
 
