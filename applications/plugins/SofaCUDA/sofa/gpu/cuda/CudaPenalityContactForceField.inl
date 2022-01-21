@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "CudaPenalityContactForceField.h"
+#include <sofa/gpu/cuda/CudaPenalityContactForceField.h>
 #include <SofaObjectInteraction/PenalityContactForceField.inl>
 #include <sofa/gl/template.h>
 
@@ -39,7 +39,6 @@ extern "C"
 
 namespace sofa::component::interactionforcefield
 {
-
 using namespace gpu::cuda;
 
 //template<>
@@ -48,6 +47,7 @@ void PenalityContactForceField<CudaVec3fTypes>::clear(int reserve)
     //prevContacts.swap(contacts); // save old contacts in prevContacts
     contacts.clear();
     pen.clear();
+    pContacts.clear();
     if (reserve)
     {
         contacts.reserve(reserve);
@@ -56,7 +56,7 @@ void PenalityContactForceField<CudaVec3fTypes>::clear(int reserve)
 }
 
 //template<>
-void PenalityContactForceField<CudaVec3fTypes>::addContact(int /*m1*/, int /*m2*/, const Deriv& norm, Real dist, Real ks, Real /*mu_s*/, Real /*mu_v*/, int /*oldIndex*/)
+void PenalityContactForceField<CudaVec3fTypes>::addContact(sofa::Index m1, sofa::Index m2, sofa::Index index1, sofa::Index index2, const Deriv& norm, Real dist, Real ks, Real mu_s, Real mu_v, sofa::Index oldIndex)
 {
     /*
     int i = contacts.size();
@@ -79,11 +79,19 @@ void PenalityContactForceField<CudaVec3fTypes>::addContact(int /*m1*/, int /*m2*
        c.age = 0;
     }
     */
-    sofa::type::Vec4f c(norm, dist);
-    Real fact = helper::rsqrt(ks);
-    c *= fact;
-    contacts.push_back(c);
-    pen.push_back(0);
+
+    auto i = pContacts.size();
+    pContacts.resize(i + 1);
+    Contact& c = pContacts[i];
+    c.m1 = m1;
+    c.m2 = m2;
+    c.index1 = index1;
+    c.index2 = index2;
+    c.norm = norm;
+    c.dist = dist +2;
+    c.ks = ks;
+    c.pen = 0;
+    c.age = 0;
 }
 
 void PenalityContactForceField<CudaVec3fTypes>::setContacts(Real d0, Real stiffness, sofa::core::collision::GPUDetectionOutputVector* outputs, bool useDistance, type::Mat3x3f* normXForm)
@@ -131,22 +139,21 @@ void PenalityContactForceField<CudaVec3fTypes>::addForce(const core::MechanicalP
     pen.resize(contacts.size());
     f1.resize(x1.size());
     f2.resize(x2.size());
-#if 0
-    for (unsigned int i=0; i<contacts.size(); i++)
+
+#if 1
+    for (unsigned int i=0; i<pContacts.size(); i++)
     {
-        sofa::type::Vec4f c = contacts[i];
-        //Coord u = x2[c.m2]-x1[c.m1];
-        Coord u = x2[i]-x1[i];
-        Coord norm(c[0],c[1],c[2]);
-        //c.pen = c.dist - u*c.norm;
-        Real p = c[3] - u*norm;
-        pen[i] = p;
-        if (p > 0)
+        Contact& c = pContacts[i];
+        Coord u = x2[c.m2] - x1[c.m1];
+        c.pen = c.dist - u * c.norm;
+
+        if (c.pen > 0)
         {
-            //Real fN = c.ks * c.pen;
-            Deriv force = -norm*p; //fN;
-            f1[i]+=force;
-            f2[i]-=force;
+            Real fN = c.ks * c.pen;
+            Deriv force = -c.norm * fN;
+
+            f1[c.m1] += force;
+            f2[c.m2] -= force;
         }
     }
 #else
@@ -169,21 +176,19 @@ void PenalityContactForceField<CudaVec3fTypes>::addDForce(const core::Mechanical
 
     df1.resize(dx1.size());
     df2.resize(dx2.size());
-#if 0
-    for (unsigned int i=0; i<contacts.size(); i++)
+#if 1
+    for (sofa::Index i = 0; i < pContacts.size(); i++)
     {
-        if (pen[i] > 0) // + dpen > 0)
+        const Contact& c = pContacts[i];
+        if (c.pen > 0) // + dpen > 0)
         {
-            sofa::type::Vec4f c = contacts[i];
-            //Coord du = dx2[c.m2]-dx1[c.m1];
-            Coord du = dx2[i]-dx1[i];
-            Coord norm(c[0],c[1],c[2]);
-            Real dpen = - du*norm;
+            Coord du = dx2[c.m2] - dx1[c.m1];
+            Real dpen = -du * c.norm;
             //if (c.pen < 0) dpen += c.pen; // start penality at distance 0
-            //Real dfN = c.ks * dpen;
-            Deriv dforce = -norm*(dpen*kFactor); //dfN;
-            df1[i]+=dforce;
-            df2[i]-=dforce;
+            Real dfN = c.ks * dpen * (Real)kFactor;
+            Deriv dforce = -c.norm * dfN;
+            df1[c.m1] += dforce;
+            df2[c.m2] -= dforce;
         }
     }
 #else

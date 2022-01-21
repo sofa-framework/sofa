@@ -21,13 +21,12 @@
 ******************************************************************************/
 #pragma once
 
-#include "CudaTypes.h"
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include <SofaObjectInteraction/PenalityContactForceField.h>
 #include <sofa/gpu/cuda/CudaCollisionDetection.h>
 
 namespace sofa::component::interactionforcefield
 {
-
 using sofa::gpu::cuda::CudaVec3fTypes;
 
 template<>
@@ -46,25 +45,12 @@ public:
     typedef Coord::value_type Real;
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
 
-//protected:
-    /*
-    struct Contact
-    {
-        int m1, m2;   ///< the two extremities of the spring: masses m1 and m2
-        Deriv norm;   ///< contact normal, from m1 to m2
-        Real dist;    ///< minimum distance between the points
-        Real ks;      ///< spring stiffness
-        Real mu_s;    ///< coulomb friction coefficient (currently unused)
-        Real mu_v;    ///< viscous friction coefficient
-        Real pen;     ///< current penetration
-        int age;      ///< how old is this contact
-    };
-    */
+    using Contact = PenalityContact<DataTypes>;
+
+    sofa::gpu::cuda::CudaVector<Contact> pContacts;
+
     sofa::gpu::cuda::CudaVector<sofa::type::Vec4f> contacts;
     sofa::gpu::cuda::CudaVector<float> pen;
-
-    // contacts from previous frame
-    //std::vector<Contact> prevContacts;
 
 //public:
 
@@ -79,7 +65,7 @@ public:
 
     void clear(int reserve = 0);
 
-    void addContact(int m1, int m2, const Deriv& norm, Real dist, Real ks, Real mu_s = 0.0f, Real mu_v = 0.0f, int oldIndex = 0);
+    void addContact(sofa::Index m1, sofa::Index m2, sofa::Index index1, sofa::Index index2, const Deriv& norm, Real dist, Real ks, Real mu_s = 0.0f, Real mu_v = 0.0f, sofa::Index oldIndex = 0);
 
     void setContacts(Real distance, Real ks, sofa::core::collision::GPUDetectionOutputVector* outputs, bool useDistance, type::Mat3x3f* normXForm = NULL);
 
