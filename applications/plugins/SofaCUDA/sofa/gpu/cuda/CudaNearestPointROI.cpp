@@ -19,64 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "config.h"
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/core/ObjectFactory.h>
+#include <SofaGeneralEngine/NearestPointROI.inl>
 
 namespace sofa
 {
 
-namespace component
+namespace component::engine
 {
 
-    //Here are just several convenient functions to help user to know what contains the plugin
+template class SOFA_GPU_CUDA_API NearestPointROI<gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API NearestPointROI<gpu::cuda::CudaVec3f1Types>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API NearestPointROI<gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API NearestPointROI<gpu::cuda::CudaVec3d1Types>;
+#endif // SOFA_GPU_CUDA_DOUBLE
 
-    extern "C" {
-                SOFA_THMPGSPATIALHASHING_API void initExternalModule();
-                SOFA_THMPGSPATIALHASHING_API const char* getModuleName();
-                SOFA_THMPGSPATIALHASHING_API const char* getModuleVersion();
-                SOFA_THMPGSPATIALHASHING_API const char* getModuleLicense();
-                SOFA_THMPGSPATIALHASHING_API const char* getModuleDescription();
-                SOFA_THMPGSPATIALHASHING_API const char* getModuleComponentList();
-    }
+} // namespace component::engine
 
-    void initExternalModule()
-    {
-        static bool first = true;
-        if (first)
-        {
-            first = false;
-        }
-    }
+namespace gpu::cuda
+{
 
-    const char* getModuleName()
-    {
-      return "THMPGSpatialHashing";
-    }
+int NearestPointROICudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< component::engine::NearestPointROI<CudaVec3fTypes> >()
+        .add< component::engine::NearestPointROI<CudaVec3f1Types> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< component::engine::NearestPointROI<CudaVec3dTypes> >()
+        .add< component::engine::NearestPointROI<CudaVec3d1Types> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+        ;
 
-    const char* getModuleVersion()
-    {
-        return "0.2";
-    }
+} // namespace gpu::cuda
 
-    const char* getModuleLicense()
-    {
-        return "LGPL";
-    }
-
-
-    const char* getModuleDescription()
-    {
-        return "TODO: replace this with the description of your plugin";
-    }
-
-    const char* getModuleComponentList()
-    {
-      /// string containing the names of the classes provided by the plugin
-      return "THMPGSpatialHashing";
-      //return "MyMappingPendulumInPlane, MyBehaviorModel, MyProjectiveConstraintSet";
-    }
-
-
-
-}
-
-}
+} // namespace sofa

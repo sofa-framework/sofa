@@ -28,6 +28,7 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/Factory.h>
+#include <sofa/type/trait/Rebind.h>
 #include <limits>
 
 namespace sofa
@@ -233,11 +234,14 @@ public:
     typedef typename Inherit::iterator iterator;
     typedef typename Inherit::const_iterator const_iterator;
 
-    template<class T2> struct rebind
+    template<class T2>
+    using rebind_to = vector_id< T2, TIndex, CheckIndices, type::rebind_to<MemoryManager, T2> >;
+
+    template<class T2> struct SOFA_ATTRIBUTE_DEPRECATED__REBIND() rebind
     {
-        typedef typename MemoryManager::template rebind<T2>::other MM2;
-        typedef vector_id< T2, TIndex, CheckIndices, MM2 > other;
+        using other = rebind_to<T2>;
     };
+
 
     /// Basic constructor
     vector_id() : Inherit() {}
