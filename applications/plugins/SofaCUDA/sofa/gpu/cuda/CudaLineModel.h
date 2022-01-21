@@ -27,7 +27,9 @@
 namespace sofa::gpu::cuda
 {
 
-typedef sofa::component::collision::LineCollisionModel<CudaVec3fTypes> CudaLineModel;
-typedef sofa::component::collision::TLine<CudaVec3fTypes> CudaLine;
+using CudaLineCollisionModel = sofa::component::collision::LineCollisionModel<CudaVec3Types>;
+using CudaLineCollisionModelf1 = sofa::component::collision::LineCollisionModel<CudaVec3f1Types>;
+
+using CudaLine = sofa::component::collision::TLine<CudaVec3fTypes>;
 
 } // namespace sofa::gpu::cuda

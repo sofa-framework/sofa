@@ -23,11 +23,14 @@
 
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <SofaMeshCollision/TriangleModel.h>
+#include <SofaMeshCollision/TriangleModel.inl>
 
 namespace sofa::gpu::cuda
 {
 
-typedef sofa::component::collision::TriangleCollisionModel<CudaVec3fTypes> CudaTriangleModel;
-typedef sofa::component::collision::TTriangle<CudaVec3fTypes> CudaTriangle;
+using CudaTriangleCollisionModel = sofa::component::collision::TriangleCollisionModel<CudaVec3Types>;
+using CudaTriangleCollisionModelf1 = sofa::component::collision::TriangleCollisionModel<CudaVec3f1Types>;
+
+using CudaTriangle = sofa::component::collision::TTriangle<CudaVec3fTypes>;
 
 } // namespace sofa::gpu::cuda
