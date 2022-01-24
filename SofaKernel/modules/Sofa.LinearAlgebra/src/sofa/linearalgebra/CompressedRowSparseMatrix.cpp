@@ -107,11 +107,11 @@ void filterValuesFromBlocs(TMatrix& self, CompressedRowSparseMatrix<type::Mat<L,
 
                 for (sofa::Size c = 0; c < C; ++c)
                 {
-                    typename TMatrix::Block val = sofa::helper::narrow_cast<TMatrix::Block>(rowB[c]);
+                    auto val = sofa::helper::narrow_cast<typename TMatrix::Block>(rowB[c]);
                     if ((*filter)(i+lb,j+c,val,ref))
                     {
                         self.colsIndex.push_back(j+c);
-                        self.colsValue.push_back(sofa::helper::narrow_cast<TMatrix::Block>(b[lb][c]));
+                        self.colsValue.push_back(sofa::helper::narrow_cast<typename TMatrix::Block>(b[lb][c]));
                         ++vid;
                     }
                 }
