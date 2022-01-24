@@ -39,5 +39,9 @@ namespace sofa::component::io::misc
 } // namespace sofa::component::io::misc
 
 // Keep the previous macros
+#ifndef SOFAGENERALLOADER_HAVE_ZLIB
 #define SOFAGENERALLOADER_HAVE_ZLIB SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+#endif
+#ifndef SOFAEXPORTER_HAVE_ZLIB
 #define SOFAEXPORTER_HAVE_ZLIB SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+#endif
