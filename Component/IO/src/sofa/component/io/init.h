@@ -21,16 +21,9 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
-
-#ifdef SOFA_BUILD_SOFA_COMPONENT_IO
-#  define SOFA_COMPONENT_IO_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_COMPONENT_IO_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/component/io/config.h>
 
 namespace sofa::component::io
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+    SOFA_COMPONENT_IO_API void init();
 } // namespace sofa::component::io

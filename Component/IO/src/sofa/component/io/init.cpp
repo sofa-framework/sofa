@@ -43,4 +43,9 @@ const char* getModuleName()
     return MODULE_NAME;
 }
 
+void init()
+{
+    initExternalModule();
+}
+
 } // namespace sofa::component::io

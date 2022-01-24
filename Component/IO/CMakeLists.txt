@@ -13,6 +13,7 @@ endforeach()
 
 set(HEADER_FILES
     ${SOFACOMPONENTIO_SOURCE_DIR}/config.h.in
+    ${SOFACOMPONENTIO_SOURCE_DIR}/init.h
 )
 
 set(SOURCE_FILES
