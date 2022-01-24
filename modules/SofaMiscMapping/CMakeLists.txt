@@ -12,53 +12,6 @@ set(SOURCE_FILES
     ${SOFAMISCMAPPING_SRC}/initSofaMiscMapping.cpp
     )
 
-list(APPEND HEADER_FILES
-    ${SOFAMISCMAPPING_SRC}/BarycentricMappingRigid.h
-    ${SOFAMISCMAPPING_SRC}/BarycentricMappingRigid.inl
-    ${SOFAMISCMAPPING_SRC}/BeamLinearMapping.h
-    ${SOFAMISCMAPPING_SRC}/BeamLinearMapping.inl
-    ${SOFAMISCMAPPING_SRC}/CenterOfMassMapping.h
-    ${SOFAMISCMAPPING_SRC}/CenterOfMassMapping.inl
-    ${SOFAMISCMAPPING_SRC}/CenterOfMassMappingOperation.h
-    ${SOFAMISCMAPPING_SRC}/CenterOfMassMulti2Mapping.h
-    ${SOFAMISCMAPPING_SRC}/CenterOfMassMulti2Mapping.inl
-    ${SOFAMISCMAPPING_SRC}/CenterOfMassMultiMapping.h
-    ${SOFAMISCMAPPING_SRC}/CenterOfMassMultiMapping.inl
-    ${SOFAMISCMAPPING_SRC}/DeformableOnRigidFrameMapping.h
-    ${SOFAMISCMAPPING_SRC}/DeformableOnRigidFrameMapping.inl
-    ${SOFAMISCMAPPING_SRC}/DistanceFromTargetMapping.h
-    ${SOFAMISCMAPPING_SRC}/DistanceFromTargetMapping.inl
-    ${SOFAMISCMAPPING_SRC}/DistanceMapping.h
-    ${SOFAMISCMAPPING_SRC}/DistanceMapping.inl
-    ${SOFAMISCMAPPING_SRC}/IdentityMultiMapping.h
-    ${SOFAMISCMAPPING_SRC}/IdentityMultiMapping.inl
-    ${SOFAMISCMAPPING_SRC}/SquareDistanceMapping.h
-    ${SOFAMISCMAPPING_SRC}/SquareDistanceMapping.inl
-    ${SOFAMISCMAPPING_SRC}/SquareMapping.h
-    ${SOFAMISCMAPPING_SRC}/SquareMapping.inl
-    ${SOFAMISCMAPPING_SRC}/SubsetMultiMapping.h
-    ${SOFAMISCMAPPING_SRC}/SubsetMultiMapping.inl
-    ${SOFAMISCMAPPING_SRC}/TubularMapping.h
-    ${SOFAMISCMAPPING_SRC}/TubularMapping.inl
-    ${SOFAMISCMAPPING_SRC}/VoidMapping.h
-    )
-list(APPEND SOURCE_FILES
-    ${SOFAMISCMAPPING_SRC}/BarycentricMappingRigid.cpp
-    ${SOFAMISCMAPPING_SRC}/BeamLinearMapping.cpp
-    ${SOFAMISCMAPPING_SRC}/CenterOfMassMapping.cpp
-    ${SOFAMISCMAPPING_SRC}/CenterOfMassMulti2Mapping.cpp
-    ${SOFAMISCMAPPING_SRC}/CenterOfMassMultiMapping.cpp
-    ${SOFAMISCMAPPING_SRC}/DeformableOnRigidFrameMapping.cpp
-    ${SOFAMISCMAPPING_SRC}/DistanceFromTargetMapping.cpp
-    ${SOFAMISCMAPPING_SRC}/DistanceMapping.cpp
-    ${SOFAMISCMAPPING_SRC}/IdentityMultiMapping.cpp
-    ${SOFAMISCMAPPING_SRC}/SquareDistanceMapping.cpp
-    ${SOFAMISCMAPPING_SRC}/SquareMapping.cpp
-    ${SOFAMISCMAPPING_SRC}/SubsetMultiMapping.cpp
-    ${SOFAMISCMAPPING_SRC}/TubularMapping.cpp
-    ${SOFAMISCMAPPING_SRC}/VoidMapping.cpp
-    )
-
 sofa_find_package(SofaSimpleFem REQUIRED)
 sofa_find_package(SofaRigid REQUIRED) 
 sofa_find_package(SofaGeneralSimpleFem REQUIRED)
