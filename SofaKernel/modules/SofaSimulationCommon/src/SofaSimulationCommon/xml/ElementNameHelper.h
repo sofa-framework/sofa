@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <SofaSimulationCommon/config.h>
 #include <map>
 #include <string>
 
 namespace sofa::simulation::xml
 {
 
-
-class ElementNameHelper
+class SOFA_ATTRIBUTE_DEPRECATED__ELEMENTNAMEHELPER() ElementNameHelper
 {
 protected:
     std::map<std::string, int> instanceCounter;
