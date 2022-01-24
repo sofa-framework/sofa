@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralRigid/config.h>
+#include <sofa/component/mapping/config.h>
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -181,7 +181,7 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_CPP)
-extern template class SOFA_SOFAGENERALRIGID_API LineSetSkinningMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API LineSetSkinningMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
 
 
 #endif

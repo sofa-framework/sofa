@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_CPP
-#include <SofaGeneralRigid/LineSetSkinningMapping.inl>
+#include <sofa/component/mapping/LineSetSkinningMapping.inl>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -37,7 +37,7 @@ int HandMappingClass = core::RegisterObject("skin a model from a set of rigid li
         ;
 
 
-template class SOFA_SOFAGENERALRIGID_API LineSetSkinningMapping< Rigid3Types, Vec3Types >;
+template class SOFA_COMPONENT_MAPPING_API LineSetSkinningMapping< Rigid3Types, Vec3Types >;
 
 
 

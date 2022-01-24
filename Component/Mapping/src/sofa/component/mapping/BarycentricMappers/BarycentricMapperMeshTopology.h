@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseMechanics/BarycentricMappers/TopologyBarycentricMapper.h>
+#include <sofa/component/mapping/BarycentricMappers/TopologyBarycentricMapper.h>
 
 namespace sofa::component::mapping
 {
@@ -103,7 +103,7 @@ private:
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERMESHTOPOLOGY_CPP)
-extern template class SOFA_SOFABASEMECHANICS_API BarycentricMapperMeshTopology< Vec3Types, Vec3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperMeshTopology< Vec3Types, Vec3Types >;
 
 
 #endif

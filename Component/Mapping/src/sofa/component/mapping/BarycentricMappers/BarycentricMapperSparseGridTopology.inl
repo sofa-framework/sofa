@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperSparseGridTopology.h>
+#include <sofa/component/mapping/BarycentricMappers/BarycentricMapperSparseGridTopology.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/State.h>

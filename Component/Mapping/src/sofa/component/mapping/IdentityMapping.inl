@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseMechanics/IdentityMapping.h>
+#include <sofa/component/mapping/IdentityMapping.h>
 #include <sofa/core/MappingHelper.h>
 
 

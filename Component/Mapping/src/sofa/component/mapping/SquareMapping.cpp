@@ -36,8 +36,8 @@ int SquareMappingClass = core::RegisterObject("Compute the square")
 
         ;
 
-template class SOFA_SOFAMISCMAPPING_API SquareMapping< Vec1Types, Vec1Types >;
-template class SOFA_SOFAMISCMAPPING_API SquareMapping< Rigid3Types, Vec1Types >;
+template class SOFA_COMPONENT_MAPPING_API SquareMapping< Vec1Types, Vec1Types >;
+template class SOFA_COMPONENT_MAPPING_API SquareMapping< Rigid3Types, Vec1Types >;
 
 
 } // namespace sofa::component::mapping

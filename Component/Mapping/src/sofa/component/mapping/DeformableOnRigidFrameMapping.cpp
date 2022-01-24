@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAMEMAPPING_CPP
-#include <SofaMiscMapping/DeformableOnRigidFrameMapping.inl>
+#include <sofa/component/mapping/DeformableOnRigidFrameMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::mapping
@@ -34,7 +34,7 @@ int DeformableOnRigidFrameMappingClass = core::RegisterObject("Set the positions
 
         ;
 
-template class SOFA_SOFAMISCMAPPING_API DeformableOnRigidFrameMapping< Vec3Types, Rigid3Types, Vec3Types >;
+template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Vec3Types, Rigid3Types, Vec3Types >;
 
 
 } // namespace sofa::component::mapping

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
+#include <sofa/component/mapping/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
 
 namespace sofa::component::mapping
 {

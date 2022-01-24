@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_CPP
 
-#include <SofaRigid/RigidRigidMapping.inl>
+#include <sofa/component/mapping/RigidRigidMapping.inl>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -34,6 +34,6 @@ using namespace defaulttype;
 int RigidRigidMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
         .add< RigidRigidMapping< Rigid3Types, Rigid3Types > >();
 
-template class SOFA_SOFARIGID_API RigidRigidMapping< Rigid3Types, Rigid3Types >;
+template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Rigid3Types, Rigid3Types >;
 
 } // namespace sofa::component::mapping

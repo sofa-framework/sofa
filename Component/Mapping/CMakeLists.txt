@@ -116,10 +116,12 @@ set(SOURCE_FILES
 
 sofa_find_package(SofaSimulationCore REQUIRED)
 sofa_find_package(Sofa.Component.Topology.Grid REQUIRED)
+sofa_find_package(Sofa.Component.Topology.Mapping REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Topology.Grid)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Topology.Mapping)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

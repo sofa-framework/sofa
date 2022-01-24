@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaTopologyMapping/config.h>
+#include <sofa/component/mapping/config.h>
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <SofaTopologyMapping/SimpleTesselatedTetraTopologicalMapping.h>
+#include <sofa/component/topology/mapping/SimpleTesselatedTetraTopologicalMapping.h>
 #include <sofa/type/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -81,14 +81,14 @@ public:
     void applyJT(const core::ConstraintParams* cparams, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn) override;
 
 protected:
-    topology::SimpleTesselatedTetraTopologicalMapping* topoMap;
+    topology::mapping::SimpleTesselatedTetraTopologicalMapping* topoMap;
     core::topology::BaseMeshTopology* inputTopo;
     core::topology::BaseMeshTopology* outputTopo;
 };
 
 #if  !defined(SOFA_COMPONENT_MAPPING_SIMPLETESSELATEDTETRAMECHANICALMAPPING_CPP)
 
-extern template class SOFA_SOFATOPOLOGYMAPPING_API SimpleTesselatedTetraMechanicalMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API SimpleTesselatedTetraMechanicalMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
 
 
 

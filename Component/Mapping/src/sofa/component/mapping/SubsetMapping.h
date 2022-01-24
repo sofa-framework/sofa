@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseMechanics/config.h>
+#include <sofa/component/mapping/config.h>
 
 #include <sofa/core/topology/TopologySubsetData.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
@@ -134,9 +134,9 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_MAPPING_SUBSETMAPPING_CPP)
 
-extern template class SOFA_SOFABASEMECHANICS_API SubsetMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types >;
-extern template class SOFA_SOFABASEMECHANICS_API SubsetMapping< sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec1Types >;
-extern template class SOFA_SOFABASEMECHANICS_API SubsetMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API SubsetMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API SubsetMapping< sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec1Types >;
+extern template class SOFA_COMPONENT_MAPPING_API SubsetMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types >;
 
 #endif
 

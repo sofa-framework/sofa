@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMiscMapping/IdentityMultiMapping.h>
+#include <sofa/component/mapping/IdentityMultiMapping.h>
 #include <sofa/core/MappingHelper.h>
 
 namespace sofa::component::mapping

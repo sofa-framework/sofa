@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaRigid/RigidMapping.h>
+#include <sofa/component/mapping/RigidMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/behavior/MechanicalState.h>

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseMechanics/config.h>
+#include <sofa/component/mapping/config.h>
 
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/core/Mapping.h>
@@ -126,15 +126,15 @@ public:
 
 #if  !defined(SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_CPP)
 
-extern template class SOFA_SOFABASEMECHANICS_API IdentityMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
-extern template class SOFA_SOFABASEMECHANICS_API IdentityMapping< defaulttype::Vec2Types, defaulttype::Vec2Types >;
-extern template class SOFA_SOFABASEMECHANICS_API IdentityMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
-extern template class SOFA_SOFABASEMECHANICS_API IdentityMapping< defaulttype::Vec6Types, defaulttype::Vec6Types >;
-extern template class SOFA_SOFABASEMECHANICS_API IdentityMapping< defaulttype::Vec6Types, defaulttype::Vec3Types >;
-extern template class SOFA_SOFABASEMECHANICS_API IdentityMapping< defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
-extern template class SOFA_SOFABASEMECHANICS_API IdentityMapping< defaulttype::Rigid2Types, defaulttype::Rigid2Types >;
-extern template class SOFA_SOFABASEMECHANICS_API IdentityMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
-extern template class SOFA_SOFABASEMECHANICS_API IdentityMapping< defaulttype::Rigid2Types, defaulttype::Vec2Types >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< defaulttype::Vec2Types, defaulttype::Vec2Types >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< defaulttype::Vec6Types, defaulttype::Vec6Types >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< defaulttype::Vec6Types, defaulttype::Vec3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< defaulttype::Rigid2Types, defaulttype::Rigid2Types >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API IdentityMapping< defaulttype::Rigid2Types, defaulttype::Vec2Types >;
 
 #endif
 

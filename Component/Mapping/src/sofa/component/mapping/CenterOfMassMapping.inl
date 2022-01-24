@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMiscMapping/CenterOfMassMapping.h>
+#include <sofa/component/mapping/CenterOfMassMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/defaulttype/VecTypes.h>

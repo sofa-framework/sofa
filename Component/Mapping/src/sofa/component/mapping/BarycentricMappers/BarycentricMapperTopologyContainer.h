@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseMechanics/BarycentricMappers/TopologyBarycentricMapper.h>
+#include <sofa/component/mapping/BarycentricMappers/TopologyBarycentricMapper.h>
 
 #include <sofa/core/topology/TopologyData.inl>
 #include <unordered_map>
@@ -180,11 +180,11 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERTOPOLOGYCONTAINER_CPP)
-extern template class SOFA_SOFABASEMECHANICS_API BarycentricMapperTopologyContainer< Vec3Types, Vec3Types , typename BarycentricMapper<Vec3Types, Vec3Types>::MappingData1D, Edge>;
-extern template class SOFA_SOFABASEMECHANICS_API BarycentricMapperTopologyContainer< Vec3Types, Vec3Types , typename BarycentricMapper<Vec3Types, Vec3Types>::MappingData2D, Triangle>;
-extern template class SOFA_SOFABASEMECHANICS_API BarycentricMapperTopologyContainer< Vec3Types, Vec3Types , typename BarycentricMapper<Vec3Types, Vec3Types>::MappingData2D, Quad>;
-extern template class SOFA_SOFABASEMECHANICS_API BarycentricMapperTopologyContainer< Vec3Types, Vec3Types , typename BarycentricMapper<Vec3Types, Vec3Types>::MappingData3D, Tetrahedron>;
-extern template class SOFA_SOFABASEMECHANICS_API BarycentricMapperTopologyContainer< Vec3Types, Vec3Types , typename BarycentricMapper<Vec3Types, Vec3Types>::MappingData3D, Hexahedron>;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTopologyContainer< Vec3Types, Vec3Types , typename BarycentricMapper<Vec3Types, Vec3Types>::MappingData1D, Edge>;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTopologyContainer< Vec3Types, Vec3Types , typename BarycentricMapper<Vec3Types, Vec3Types>::MappingData2D, Triangle>;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTopologyContainer< Vec3Types, Vec3Types , typename BarycentricMapper<Vec3Types, Vec3Types>::MappingData2D, Quad>;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTopologyContainer< Vec3Types, Vec3Types , typename BarycentricMapper<Vec3Types, Vec3Types>::MappingData3D, Tetrahedron>;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTopologyContainer< Vec3Types, Vec3Types , typename BarycentricMapper<Vec3Types, Vec3Types>::MappingData3D, Hexahedron>;
 
 
 #endif

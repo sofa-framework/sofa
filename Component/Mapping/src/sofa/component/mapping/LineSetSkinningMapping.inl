@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #pragma once
-#include <SofaGeneralRigid/LineSetSkinningMapping.h>
+#include <sofa/component/mapping/LineSetSkinningMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 

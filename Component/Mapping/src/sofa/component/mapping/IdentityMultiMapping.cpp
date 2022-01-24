@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_IDENTITYMULTIMAPPING_CPP
 
-#include <SofaMiscMapping/IdentityMultiMapping.inl>
+#include <sofa/component/mapping/IdentityMultiMapping.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
@@ -38,8 +38,8 @@ int IdentityMultiMappingClass = core::RegisterObject("Concatenate several States
 
         ;
 
-template class SOFA_SOFAMISCMAPPING_API IdentityMultiMapping< Vec3Types, Vec3Types >;
-template class SOFA_SOFAMISCMAPPING_API IdentityMultiMapping< Rigid3Types, Rigid3Types >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMultiMapping< Vec3Types, Vec3Types >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMultiMapping< Rigid3Types, Rigid3Types >;
 
 
 } // namespace sofa::component::mapping

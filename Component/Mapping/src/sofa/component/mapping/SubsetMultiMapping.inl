@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMiscMapping/SubsetMultiMapping.h>
+#include <sofa/component/mapping/SubsetMultiMapping.h>
 
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/core/MappingHelper.h>

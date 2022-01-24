@@ -21,8 +21,8 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMiscMapping/CenterOfMassMulti2Mapping.h>
-#include <SofaMiscMapping/CenterOfMassMappingOperation.h>
+#include <sofa/component/mapping/CenterOfMassMulti2Mapping.h>
+#include <sofa/component/mapping/CenterOfMassMappingOperation.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <algorithm>

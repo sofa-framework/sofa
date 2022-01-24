@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseMechanics/BarycentricMappers/TopologyBarycentricMapper.h>
+#include <sofa/component/mapping/BarycentricMappers/TopologyBarycentricMapper.h>
 
 #include <SofaBaseTopology/SparseGridTopology.h>
 
@@ -84,7 +84,7 @@ protected:
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPERSPARSEGRIDTOPOLOGY_CPP)
-extern template class SOFA_SOFABASEMECHANICS_API BarycentricMapperSparseGridTopology< Vec3Types, Vec3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperSparseGridTopology< Vec3Types, Vec3Types >;
 
 
 #endif

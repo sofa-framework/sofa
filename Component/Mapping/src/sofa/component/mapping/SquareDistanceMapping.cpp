@@ -37,8 +37,8 @@ int SquareDistanceMappingClass = core::RegisterObject("Compute square edge exten
 
         ;
 
-template class SOFA_SOFAMISCMAPPING_API SquareDistanceMapping< Vec3Types, Vec1Types >;
-template class SOFA_SOFAMISCMAPPING_API SquareDistanceMapping< Rigid3Types, Vec1Types >;
+template class SOFA_COMPONENT_MAPPING_API SquareDistanceMapping< Vec3Types, Vec1Types >;
+template class SOFA_COMPONENT_MAPPING_API SquareDistanceMapping< Rigid3Types, Vec1Types >;
 
 
 } // namespace sofa::component::mapping
