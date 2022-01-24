@@ -301,7 +301,8 @@ void AffineMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
             point = DataTypes::getCPos(x[index]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawPoints(points, 10, sofa::type::RGBAColor(1,0.5,0.5,1));
+        constexpr sofa::type::RGBAColor color(1,0.5,0.5,1);
+        vparams->drawTool()->drawPoints(points, 10, color);
     }
 }
 

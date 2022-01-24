@@ -180,7 +180,7 @@ void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
         std::vector<sofa::type::Vector3> vertices;
         helper::ReadAccessor< Data<VecCoord> > in(input_position);
 
-        sofa::type::RGBAColor color(1.0f, 0.76078431372f, 0.0f, 1.0f);
+        constexpr sofa::type::RGBAColor color(1.0f, 0.76078431372f, 0.0f, 1.0f);
         vparams->drawTool()->setMaterial(color);
 
         for (unsigned int i=0; i<tri.size(); ++i)
@@ -199,7 +199,7 @@ void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
     {
         std::vector<sofa::type::Vector3> vertices;
         helper::ReadAccessor< Data<VecCoord> > out(output_position);
-        sofa::type::RGBAColor color(0.0f, 0.6f, 0.8f, 1.0f);
+        constexpr sofa::type::RGBAColor color(0.0f, 0.6f, 0.8f, 1.0f);
 
         for (unsigned int i=0; i<tri.size(); ++i)
         {

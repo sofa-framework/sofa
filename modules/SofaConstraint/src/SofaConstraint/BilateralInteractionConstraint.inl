@@ -517,8 +517,8 @@ void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualP
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
 
-    sofa::type::RGBAColor colorActive = sofa::type::RGBAColor::magenta();
-    sofa::type::RGBAColor colorNotActive = sofa::type::RGBAColor::green();
+    constexpr sofa::type::RGBAColor colorActive = sofa::type::RGBAColor::magenta();
+    constexpr sofa::type::RGBAColor colorNotActive = sofa::type::RGBAColor::green();
     std::vector< sofa::type::Vector3 > vertices;
 
     unsigned minp = std::min(m1.getValue().size(),m2.getValue().size());

@@ -64,7 +64,7 @@ void DrawToolGL::init()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void DrawToolGL::drawPoints(const std::vector<Vector3> &points, float size, const RGBAColor& color=RGBAColor(1.0f,1.0f,1.0f,1.0f))
+void DrawToolGL::drawPoints(const std::vector<Vector3> &points, float size, const RGBAColor& color=RGBAColor::white())
 {
     setMaterial(color);
     glPointSize(size);
@@ -162,7 +162,7 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void DrawToolGL::drawLines(const std::vector<Vector3> &points, const std::vector< type::Vec<2,int> > &index, float size, const RGBAColor& color=RGBAColor(1.0f,1.0f,1.0f,1.0f))
+void DrawToolGL::drawLines(const std::vector<Vector3> &points, const std::vector< type::Vec<2,int> > &index, float size, const RGBAColor& color=RGBAColor::white())
 {
     setMaterial(color);
     glLineWidth(size);
@@ -324,7 +324,7 @@ void DrawToolGL::drawTriangles(const std::vector<Vector3> &points, const Vector3
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void DrawToolGL::drawTriangles(const std::vector<Vector3> &points, const std::vector< type::Vec<3,int> > &index,
-        const std::vector<Vector3> &normal, const RGBAColor& color=RGBAColor(1.0f,1.0f,1.0f,1.0f))
+        const std::vector<Vector3> &normal, const RGBAColor& color=RGBAColor::white())
 {
     setMaterial(color);
     glBegin(GL_TRIANGLES);

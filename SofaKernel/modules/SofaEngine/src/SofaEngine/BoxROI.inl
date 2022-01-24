@@ -716,7 +716,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         return;
 
     const VecCoord& x0 = d_X0.getValue();
-    auto color = sofa::type::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f);
+    constexpr auto color = sofa::type::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f);
 
 
     ///draw the boxes

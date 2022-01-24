@@ -183,7 +183,7 @@ void PairBoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels() && !this->_drawSize.getValue())
         return;
 
-    sofa::type::RGBAColor color(1.0f, 0.4f, 0.4f, 1.0f);
+    constexpr sofa::type::RGBAColor color(1.0f, 0.4f, 0.4f, 1.0f);
 
     vparams->drawTool()->saveLastState();
     /// Draw inclusive box

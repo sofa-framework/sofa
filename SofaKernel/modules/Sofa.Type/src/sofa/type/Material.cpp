@@ -63,7 +63,7 @@ Material::Material()
 {
     ambient =  RGBAColor( 0.2f,0.2f,0.2f,1.0f);
     diffuse =  RGBAColor( 0.75f,0.75f,0.75f,1.0f);
-    specular =  RGBAColor( 1.0f,1.0f,1.0f,1.0f);
+    specular =  RGBAColor::white();
     emissive =  RGBAColor( 0.0f,0.0f,0.0f,0.0f);
 
     shininess =  45.0f;

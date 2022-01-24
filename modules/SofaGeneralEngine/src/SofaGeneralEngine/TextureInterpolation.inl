@@ -295,7 +295,7 @@ void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* vpa
 
         // Recompute, in case Box has moved.
         float scale = (float)(sceneMaxBBox - sceneMinBBox).norm() * showIndicesScale.getValue();
-        sofa::type::RGBAColor color4(1.0,1.0,1.0,1.0);
+        constexpr sofa::type::RGBAColor color4(1.0,1.0,1.0,1.0);
         for (unsigned int i = 0; i<nbr; i++)
         {
             std::ostringstream oss;
