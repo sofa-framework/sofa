@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_CPP
 
-#include <SofaMiscMapping/SubsetMultiMapping.inl>
+#include <sofa/component/mapping/SubsetMultiMapping.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
@@ -40,9 +40,9 @@ int SubsetMultiMappingClass = core::RegisterObject("Compute a subset of the inpu
 
         ;
 
-template class SOFA_SOFAMISCMAPPING_API SubsetMultiMapping< Vec3Types, Vec3Types >;
-template class SOFA_SOFAMISCMAPPING_API SubsetMultiMapping< Vec1Types, Vec1Types >;
-template class SOFA_SOFAMISCMAPPING_API SubsetMultiMapping< Rigid3Types, Rigid3Types >;
-template class SOFA_SOFAMISCMAPPING_API SubsetMultiMapping< Rigid3Types, Vec3Types >;
+template class SOFA_COMPONENT_MAPPING_API SubsetMultiMapping< Vec3Types, Vec3Types >;
+template class SOFA_COMPONENT_MAPPING_API SubsetMultiMapping< Vec1Types, Vec1Types >;
+template class SOFA_COMPONENT_MAPPING_API SubsetMultiMapping< Rigid3Types, Rigid3Types >;
+template class SOFA_COMPONENT_MAPPING_API SubsetMultiMapping< Rigid3Types, Vec3Types >;
 
 } // namespace sofa::component::mapping

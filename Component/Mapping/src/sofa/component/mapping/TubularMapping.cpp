@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_TUBULARMAPPING_CPP
 
-#include <SofaMiscMapping/TubularMapping.inl>
+#include <sofa/component/mapping/TubularMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
@@ -39,6 +39,6 @@ int TubularMappingClass = core::RegisterObject("Create a Tube around rigid point
 
         ;
 
-template class SOFA_SOFAMISCMAPPING_API TubularMapping< Rigid3Types, Vec3Types >;
+template class SOFA_COMPONENT_MAPPING_API TubularMapping< Rigid3Types, Vec3Types >;
 
 } // namespace sofa::component::mapping

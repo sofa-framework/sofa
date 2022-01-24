@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_CPP
-#include <SofaMiscMapping/BeamLinearMapping.inl>
+#include <sofa/component/mapping/BeamLinearMapping.inl>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -39,7 +39,7 @@ int BeamLinearMappingClass = core::RegisterObject("Set the positions and velocit
 
         ;
 
-template class SOFA_SOFAMISCMAPPING_API BeamLinearMapping< Rigid3Types, Vec3Types >;
+template class SOFA_COMPONENT_MAPPING_API BeamLinearMapping< Rigid3Types, Vec3Types >;
 
 
 } // namespace sofa::component::mapping

@@ -20,19 +20,19 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseMechanics/BarycentricMapping.h>
+#include <sofa/component/mapping/BarycentricMapping.h>
 
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseTopology/SparseGridTopology.h>
 
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.h>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperRegularGridTopology.h>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperSparseGridTopology.h>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperEdgeSetTopology.h>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTriangleSetTopology.h>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperQuadSetTopology.h>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h>
+#include <sofa/component/mapping/BarycentricMappers/BarycentricMapperMeshTopology.h>
+#include <sofa/component/mapping/BarycentricMappers/BarycentricMapperRegularGridTopology.h>
+#include <sofa/component/mapping/BarycentricMappers/BarycentricMapperSparseGridTopology.h>
+#include <sofa/component/mapping/BarycentricMappers/BarycentricMapperEdgeSetTopology.h>
+#include <sofa/component/mapping/BarycentricMappers/BarycentricMapperTriangleSetTopology.h>
+#include <sofa/component/mapping/BarycentricMappers/BarycentricMapperQuadSetTopology.h>
+#include <sofa/component/mapping/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
+#include <sofa/component/mapping/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h>
 
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 

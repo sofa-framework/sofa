@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaRigid/config.h>
+#include <sofa/component/mapping/config.h>
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -168,8 +168,8 @@ template<>
 const linearalgebra::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::getK();
 
 #if  !defined(SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP)
-extern template class SOFA_SOFARIGID_API RigidMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3Types >;
-extern template class SOFA_SOFARIGID_API RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >;
+extern template class SOFA_COMPONENT_MAPPING_API RigidMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >;
 #endif
 
 } // namespace sofa::component::mapping

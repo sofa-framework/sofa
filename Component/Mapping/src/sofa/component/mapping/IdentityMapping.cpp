@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_CPP
-#include <SofaBaseMechanics/IdentityMapping.inl>
+#include <sofa/component/mapping/IdentityMapping.inl>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -50,14 +50,14 @@ int IdentityMappingClass = core::RegisterObject("Special case of mapping where t
 
         ;
 
-template class SOFA_SOFABASEMECHANICS_API IdentityMapping< Vec3Types, Vec3Types >;
-template class SOFA_SOFABASEMECHANICS_API IdentityMapping< Vec2Types, Vec2Types >;
-template class SOFA_SOFABASEMECHANICS_API IdentityMapping< Vec1Types, Vec1Types >;
-template class SOFA_SOFABASEMECHANICS_API IdentityMapping< Vec6Types, Vec3Types >;
-template class SOFA_SOFABASEMECHANICS_API IdentityMapping< Vec6Types, Vec6Types >;
-template class SOFA_SOFABASEMECHANICS_API IdentityMapping< Rigid3Types, Rigid3Types >;
-template class SOFA_SOFABASEMECHANICS_API IdentityMapping< Rigid2Types, Rigid2Types >;
-template class SOFA_SOFABASEMECHANICS_API IdentityMapping< Rigid3Types, Vec3Types >;
-template class SOFA_SOFABASEMECHANICS_API IdentityMapping< Rigid2Types, Vec2Types >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec3Types, Vec3Types >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec2Types, Vec2Types >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec1Types, Vec1Types >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6Types, Vec3Types >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Vec6Types, Vec6Types >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3Types, Rigid3Types >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid2Types, Rigid2Types >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid3Types, Vec3Types >;
+template class SOFA_COMPONENT_MAPPING_API IdentityMapping< Rigid2Types, Vec2Types >;
 
 } // namespace sofa::component::mapping

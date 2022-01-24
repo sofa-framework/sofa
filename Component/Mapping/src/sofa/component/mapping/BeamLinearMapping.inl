@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMiscMapping/BeamLinearMapping.h>
+#include <sofa/component/mapping/BeamLinearMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>

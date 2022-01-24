@@ -21,20 +21,20 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMiscMapping/config.h>
+#include <sofa/component/mapping/config.h>
 
-#include <SofaBaseMechanics/BarycentricMapping.h>
+#include <sofa/component/mapping/BarycentricMapping.h>
 #include <sofa/core/topology/TopologyData.h>
 
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTriangleSetTopology.h>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperQuadSetTopology.h>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperEdgeSetTopology.h>
+#include <sofa/component/mapping/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
+#include <sofa/component/mapping/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h>
+#include <sofa/component/mapping/BarycentricMappers/BarycentricMapperTriangleSetTopology.h>
+#include <sofa/component/mapping/BarycentricMappers/BarycentricMapperQuadSetTopology.h>
+#include <sofa/component/mapping/BarycentricMappers/BarycentricMapperEdgeSetTopology.h>
 
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperRegularGridTopology.h>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperSparseGridTopology.h>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.h>
+#include <sofa/component/mapping/BarycentricMappers/BarycentricMapperRegularGridTopology.h>
+#include <sofa/component/mapping/BarycentricMappers/BarycentricMapperSparseGridTopology.h>
+#include <sofa/component/mapping/BarycentricMappers/BarycentricMapperMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa::component::mapping
@@ -122,28 +122,28 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPINGRIGID_CPP)
-extern template class SOFA_SOFAMISCMAPPING_API BarycentricMapping< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
-extern template class SOFA_SOFAMISCMAPPING_API BarycentricMapperRegularGridTopology< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
-extern template class SOFA_SOFAMISCMAPPING_API BarycentricMapperSparseGridTopology< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
-extern template class SOFA_SOFAMISCMAPPING_API BarycentricMapperMeshTopology< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
-extern template class SOFA_SOFAMISCMAPPING_API BarycentricMapperEdgeSetTopology< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
-extern template class SOFA_SOFAMISCMAPPING_API BarycentricMapperTriangleSetTopology< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
-extern template class SOFA_SOFAMISCMAPPING_API BarycentricMapperQuadSetTopology< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
-extern template class SOFA_SOFAMISCMAPPING_API BarycentricMapperTetrahedronSetTopologyRigid< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
-extern template class SOFA_SOFAMISCMAPPING_API BarycentricMapperTetrahedronSetTopology< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
-extern template class SOFA_SOFAMISCMAPPING_API BarycentricMapperHexahedronSetTopology< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapping< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperRegularGridTopology< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperSparseGridTopology< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperMeshTopology< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperEdgeSetTopology< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTriangleSetTopology< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperQuadSetTopology< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTetrahedronSetTopologyRigid< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTetrahedronSetTopology< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapperHexahedronSetTopology< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
 
 
 #endif
 
 namespace _topologybarycentricmapper_
 {
-    extern template class SOFA_SOFAMISCMAPPING_API TopologyBarycentricMapper< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
+    extern template class SOFA_COMPONENT_MAPPING_API TopologyBarycentricMapper< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
 } // namesapce _topologybarycentricmapper_
 
 namespace _barycentricmapper_
 {
-    extern template class SOFA_SOFAMISCMAPPING_API BarycentricMapper< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
+    extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapper< defaulttype::Vec3Types, defaulttype::Rigid3Types >;
 } // namesapce _barycentricmapper_
 
 } // namespace sofa::component::mapping

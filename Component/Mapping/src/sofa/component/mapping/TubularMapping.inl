@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMiscMapping/TubularMapping.h>
+#include <sofa/component/mapping/TubularMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::component::mapping

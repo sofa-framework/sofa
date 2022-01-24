@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralRigid/SkinningMapping.h>
+#include <sofa/component/mapping/SkinningMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/core/behavior/MechanicalState.h>

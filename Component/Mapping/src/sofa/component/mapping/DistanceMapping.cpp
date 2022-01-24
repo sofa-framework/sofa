@@ -42,10 +42,10 @@ int DistanceMultiMappingClass = core::RegisterObject("Compute edge extensions")
 
         ;
 
-template class SOFA_SOFAMISCMAPPING_API DistanceMapping< Vec3Types, Vec1Types >;
-template class SOFA_SOFAMISCMAPPING_API DistanceMapping< Rigid3Types, Vec1Types >;
-template class SOFA_SOFAMISCMAPPING_API DistanceMultiMapping< Vec3Types, Vec1Types >;
-template class SOFA_SOFAMISCMAPPING_API DistanceMultiMapping< Rigid3Types, Vec1Types >;
+template class SOFA_COMPONENT_MAPPING_API DistanceMapping< Vec3Types, Vec1Types >;
+template class SOFA_COMPONENT_MAPPING_API DistanceMapping< Rigid3Types, Vec1Types >;
+template class SOFA_COMPONENT_MAPPING_API DistanceMultiMapping< Vec3Types, Vec1Types >;
+template class SOFA_COMPONENT_MAPPING_API DistanceMultiMapping< Rigid3Types, Vec1Types >;
 
 
 } // namespace sofa::component::mapping

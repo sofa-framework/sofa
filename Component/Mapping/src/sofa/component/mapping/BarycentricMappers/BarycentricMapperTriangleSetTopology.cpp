@@ -19,13 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTriangleSetTopology.inl>
+#include <sofa/component/mapping/BarycentricMappers/BarycentricMapperTriangleSetTopology.inl>
 
 namespace sofa::component::mapping
 {
 
 using namespace sofa::defaulttype;
 
-template class SOFA_SOFABASEMECHANICS_API BarycentricMapperTriangleSetTopology< Vec3Types, Vec3Types >;
+template class SOFA_COMPONENT_MAPPING_API BarycentricMapperTriangleSetTopology< Vec3Types, Vec3Types >;
 
 } // namespace sofa::component::mapping

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaTopologyMapping/SimpleTesselatedTetraMechanicalMapping.h>
+#include <sofa/component/mapping/SimpleTesselatedTetraMechanicalMapping.h>
 #include <sofa/core/topology/TopologyData.inl>
 
 namespace sofa::component::mapping

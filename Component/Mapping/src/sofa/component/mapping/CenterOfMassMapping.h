@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMiscMapping/config.h>
+#include <sofa/component/mapping/config.h>
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/behavior/BaseMass.h>
@@ -109,8 +109,8 @@ protected :
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_CENTEROFMASSMAPPING_CPP)
-extern template class SOFA_SOFAMISCMAPPING_API CenterOfMassMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3Types >;
-extern template class SOFA_SOFAMISCMAPPING_API CenterOfMassMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >;
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >;
 #endif
 
 } // namespace sofa::component::mapping

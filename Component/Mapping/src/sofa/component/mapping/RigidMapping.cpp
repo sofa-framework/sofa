@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP
-#include <SofaRigid/RigidMapping.inl>
+#include <sofa/component/mapping/RigidMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::mapping
@@ -34,8 +34,8 @@ int RigidMappingClass = core::RegisterObject("Set the positions and velocities o
         .add< RigidMapping< Rigid2Types, Vec2Types > >()
         ;
 
-template class SOFA_SOFARIGID_API RigidMapping< Rigid3Types, Vec3Types >;
-template class SOFA_SOFARIGID_API RigidMapping< Rigid2Types, Vec2Types >;
+template class SOFA_COMPONENT_MAPPING_API RigidMapping< Rigid3Types, Vec3Types >;
+template class SOFA_COMPONENT_MAPPING_API RigidMapping< Rigid2Types, Vec2Types >;
 
 
 template<>

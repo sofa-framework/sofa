@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseMechanics/config.h>
+#include <sofa/component/mapping/config.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -127,7 +127,7 @@ private:
 };
 
 #if !defined(SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPER_CPP)
-extern template class SOFA_SOFABASEMECHANICS_API BarycentricMapper< Vec3Types, Vec3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API BarycentricMapper< Vec3Types, Vec3Types >;
 #endif
 
 } // namespace sofa::component::mapping::_barycentricmapper_

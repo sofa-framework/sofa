@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTIMAPPING_CPP
 
-#include <SofaMiscMapping/CenterOfMassMultiMapping.inl>
+#include <sofa/component/mapping/CenterOfMassMultiMapping.inl>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -39,9 +39,9 @@ int CenterOfMassMultiMappingClass = core::RegisterObject("Set the point to the c
 
         ;
 
-template class SOFA_SOFAMISCMAPPING_API CenterOfMassMultiMapping< Vec3Types, Vec3Types >;
-template class SOFA_SOFAMISCMAPPING_API CenterOfMassMultiMapping< Rigid3Types, Rigid3Types >;
-template class SOFA_SOFAMISCMAPPING_API CenterOfMassMultiMapping< Rigid3Types, Vec3Types >;
+template class SOFA_COMPONENT_MAPPING_API CenterOfMassMultiMapping< Vec3Types, Vec3Types >;
+template class SOFA_COMPONENT_MAPPING_API CenterOfMassMultiMapping< Rigid3Types, Rigid3Types >;
+template class SOFA_COMPONENT_MAPPING_API CenterOfMassMultiMapping< Rigid3Types, Vec3Types >;
 
 
 } // namespace sofa::component::mapping

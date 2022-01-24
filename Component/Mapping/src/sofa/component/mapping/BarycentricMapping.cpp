@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_CPP
-#include <SofaBaseMechanics/BarycentricMapping.inl>
+#include <sofa/component/mapping/BarycentricMapping.inl>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
@@ -37,6 +37,6 @@ int BarycentricMappingClass = core::RegisterObject("Mapping using barycentric co
 
         ;
 
-template class SOFA_SOFABASEMECHANICS_API BarycentricMapping< Vec3Types, Vec3Types >;
+template class SOFA_COMPONENT_MAPPING_API BarycentricMapping< Vec3Types, Vec3Types >;
 
 } // namespace sofa::component::mapping

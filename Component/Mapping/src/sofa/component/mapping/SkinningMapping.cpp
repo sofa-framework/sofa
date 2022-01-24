@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP
 
-#include <SofaGeneralRigid/SkinningMapping.inl>
+#include <sofa/component/mapping/SkinningMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::mapping
@@ -41,7 +41,7 @@ int SkinningMappingClass = core::RegisterObject("skin a model from a set of rigi
 
         ;
 
-template class SOFA_SOFAGENERALRIGID_API SkinningMapping< Rigid3Types, Vec3Types >;
+template class SOFA_COMPONENT_MAPPING_API SkinningMapping< Rigid3Types, Vec3Types >;
 
 
 

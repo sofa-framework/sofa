@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseMechanics/SubsetMapping.h>
+#include <sofa/component/mapping/SubsetMapping.h>
 
 namespace sofa::component::mapping
 {

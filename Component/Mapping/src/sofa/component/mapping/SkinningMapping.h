@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralRigid/config.h>
+#include <sofa/component/mapping/config.h>
 
 #include <sofa/core/Mapping.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -123,7 +123,7 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
-extern template class SOFA_SOFAGENERALRIGID_API SkinningMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API SkinningMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3Types >;
 
 #endif // !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
 

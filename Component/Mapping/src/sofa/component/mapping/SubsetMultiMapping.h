@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMiscMapping/config.h>
+#include <sofa/component/mapping/config.h>
 
 #include <sofa/core/MultiMapping.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
@@ -102,10 +102,10 @@ protected :
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_CPP)
-extern template class SOFA_SOFAMISCMAPPING_API SubsetMultiMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
-extern template class SOFA_SOFAMISCMAPPING_API SubsetMultiMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
-extern template class SOFA_SOFAMISCMAPPING_API SubsetMultiMapping< defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
-extern template class SOFA_SOFAMISCMAPPING_API SubsetMultiMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API SubsetMultiMapping< defaulttype::Vec3Types, defaulttype::Vec3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API SubsetMultiMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
+extern template class SOFA_COMPONENT_MAPPING_API SubsetMultiMapping< defaulttype::Rigid3Types, defaulttype::Rigid3Types >;
+extern template class SOFA_COMPONENT_MAPPING_API SubsetMultiMapping< defaulttype::Rigid3Types, defaulttype::Vec3Types >;
 
 #endif
 

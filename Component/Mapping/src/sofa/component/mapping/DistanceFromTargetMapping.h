@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMiscMapping/config.h>
+#include <sofa/component/mapping/config.h>
 
 #include <sofa/core/Mapping.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
@@ -141,9 +141,9 @@ protected:
 
 
 #if  !defined(SOFA_COMPONENT_MAPPING_DistanceFromTargetMapping_CPP)
-extern template class SOFA_SOFAMISCMAPPING_API DistanceFromTargetMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
-extern template class SOFA_SOFAMISCMAPPING_API DistanceFromTargetMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
-extern template class SOFA_SOFAMISCMAPPING_API DistanceFromTargetMapping< defaulttype::Rigid3Types, defaulttype::Vec1Types >;
+extern template class SOFA_COMPONENT_MAPPING_API DistanceFromTargetMapping< defaulttype::Vec3Types, defaulttype::Vec1Types >;
+extern template class SOFA_COMPONENT_MAPPING_API DistanceFromTargetMapping< defaulttype::Vec1Types, defaulttype::Vec1Types >;
+extern template class SOFA_COMPONENT_MAPPING_API DistanceFromTargetMapping< defaulttype::Rigid3Types, defaulttype::Vec1Types >;
 
 
 #endif

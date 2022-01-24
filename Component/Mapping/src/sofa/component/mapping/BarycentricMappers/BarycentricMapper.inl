@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapper.h>
+#include <sofa/component/mapping/BarycentricMappers/BarycentricMapper.h>
 
 namespace sofa::component::mapping::_barycentricmapper_
 {

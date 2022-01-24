@@ -21,8 +21,8 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMiscMapping/BarycentricMappingRigid.h>
-#include <SofaBaseMechanics/BarycentricMapping.inl>
+#include <sofa/component/mapping/BarycentricMappingRigid.h>
+#include <sofa/component/mapping/BarycentricMapping.inl>
 
 #include <sofa/helper/decompose.h>
 
