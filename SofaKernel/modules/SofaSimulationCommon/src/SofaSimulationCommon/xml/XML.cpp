@@ -31,6 +31,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <cstring>
 #include <tinyxml.h>
+#include <sofa/core/NameHelper.h>
 
 /* For loading the scene */
 
@@ -178,7 +179,7 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHel
         classType = "MultiMappingObject";
     }
 
-    name = elementNameHelper.resolveName(type,name);
+    name = sofa::core::NameHelper::getInstance().resolveName(type, name);
 
     BaseElement* node = BaseElement::Create(classType,name,type);
     if (node==nullptr)

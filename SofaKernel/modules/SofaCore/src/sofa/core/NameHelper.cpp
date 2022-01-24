@@ -19,47 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <SofaGeneralMeshCollision/config.h>
-
-#include <SofaBaseCollision/BruteForceBroadPhase.h>
-#include <SofaGeneralMeshCollision/DirectSAPNarrowPhase.h>
+#include <sstream>
 #include <sofa/core/NameHelper.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::collision
+namespace sofa::core
 {
 
-class SOFA_SOFAGENERALMESHCOLLISION_API DirectSAP final : public sofa::core::objectmodel::BaseObject
+NameHelper& NameHelper::getInstance()
 {
-public:
-    SOFA_CLASS(DirectSAP, sofa::core::objectmodel::BaseObject);
+    static NameHelper nameHelper;
+    return nameHelper;
+}
 
-    void init() override;
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
+std::string NameHelper::resolveName(const std::string& type, const std::string& name)
+{
+    std::string resolvedName;
+    if(name.empty())
     {
-        BruteForceBroadPhase::SPtr broadPhase = sofa::core::objectmodel::New<BruteForceBroadPhase>();
-        broadPhase->setName(sofa::core::NameHelper::getInstance().resolveName(broadPhase->getClassName(), {}));
-        if (context) context->addObject(broadPhase);
-
-        DirectSAPNarrowPhase::SPtr narrowPhase = sofa::core::objectmodel::New<DirectSAPNarrowPhase>();
-        narrowPhase->setName(sofa::core::NameHelper::getInstance().resolveName(narrowPhase->getClassName(), {}));
-        if (context) context->addObject(narrowPhase);
-
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
-
-        return obj;
+        const std::string radix = sofa::core::ObjectFactory::ShortName(type);
+        registerName(radix);
+        std::ostringstream oss;
+        oss << radix << m_instanceCounter[radix];
+        resolvedName = oss.str();
     }
+    else
+    {
+        resolvedName = name;
+    }
+    return resolvedName;
+}
 
-protected:
-    DirectSAP() = default;
-    ~DirectSAP() override = default;
+void NameHelper::registerName(const std::string& name)
+{
+    if( m_instanceCounter.find(name) != m_instanceCounter.end())
+    {
+        m_instanceCounter[name]++;
+    }
+    else
+    {
+        m_instanceCounter[name] = 1;
+    }
+}
 
-};
-
-} // namespace sofa::component::collision
+}//namespace sofa::core

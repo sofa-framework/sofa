@@ -30,6 +30,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/MultiMapping.h
     ${SRC_ROOT}/MultiMapping.inl
     ${SRC_ROOT}/MultiVecId.h
+    ${SRC_ROOT}/NameHelper.h
     ${SRC_ROOT}/ObjectFactory.h
     ${SRC_ROOT}/PathResolver.h
     ${SRC_ROOT}/SofaLibrary.h
@@ -185,6 +186,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/MechanicalParams.cpp
     ${SRC_ROOT}/Multi2Mapping.cpp
     ${SRC_ROOT}/MultiMapping.cpp
+    ${SRC_ROOT}/NameHelper.cpp
     ${SRC_ROOT}/ObjectFactory.cpp
     ${SRC_ROOT}/PathResolver.cpp
     ${SRC_ROOT}/SofaLibrary.cpp

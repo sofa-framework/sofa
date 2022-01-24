@@ -21,45 +21,29 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGeneralMeshCollision/config.h>
+#include <sofa/core/config.h>
+#include <string>
+#include <map>
 
-#include <SofaBaseCollision/BruteForceBroadPhase.h>
-#include <SofaGeneralMeshCollision/DirectSAPNarrowPhase.h>
-#include <sofa/core/NameHelper.h>
-
-namespace sofa::component::collision
+namespace sofa::core
 {
 
-class SOFA_SOFAGENERALMESHCOLLISION_API DirectSAP final : public sofa::core::objectmodel::BaseObject
+/**
+ * Helper class to get a unique name for a component, based on a counter prefix.
+ */
+class SOFA_CORE_API NameHelper
 {
 public:
-    SOFA_CLASS(DirectSAP, sofa::core::objectmodel::BaseObject);
 
-    void init() override;
+    static NameHelper& getInstance();
+    std::string resolveName(const std::string& type, const std::string& name);
 
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
-    {
-        BruteForceBroadPhase::SPtr broadPhase = sofa::core::objectmodel::New<BruteForceBroadPhase>();
-        broadPhase->setName(sofa::core::NameHelper::getInstance().resolveName(broadPhase->getClassName(), {}));
-        if (context) context->addObject(broadPhase);
+private:
+    NameHelper() = default;
 
-        DirectSAPNarrowPhase::SPtr narrowPhase = sofa::core::objectmodel::New<DirectSAPNarrowPhase>();
-        narrowPhase->setName(sofa::core::NameHelper::getInstance().resolveName(narrowPhase->getClassName(), {}));
-        if (context) context->addObject(narrowPhase);
+    std::map<std::string, int> m_instanceCounter;
 
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
-
-        return obj;
-    }
-
-protected:
-    DirectSAP() = default;
-    ~DirectSAP() override = default;
-
+    void registerName(const std::string& name);
 };
 
-} // namespace sofa::component::collision
+}
