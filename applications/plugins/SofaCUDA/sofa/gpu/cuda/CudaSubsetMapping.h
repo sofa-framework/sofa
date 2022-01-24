@@ -55,14 +55,14 @@ public:
         }
         if (maxNOut <= 1)
         {
-            msg_info() << "CudaSubsetMapping: strict subset, no need for mapT.";
+            msg_info("SubsetMappingInternalData") << "CudaSubsetMapping: strict subset, no need for mapT.";
             // at most one duplicated points per input. mapT is not necessary
             mapT.clear();
         }
         else
         {
             int nbloc = (insize+BSIZE-1)/BSIZE;
-            msg_info() << "CudaSubsetMapping: mapT with " << maxNOut << " entries per DOF and " << nbloc << " blocs.";
+            msg_info("SubsetMappingInternalData") << "CudaSubsetMapping: mapT with " << maxNOut << " entries per DOF and " << nbloc << " blocs.";
             mapT.resize(nbloc*(BSIZE*maxNOut));
             for (unsigned int i=0; i<mapT.size(); i++)
                 mapT[i] = -1;

@@ -22,15 +22,18 @@
 #pragma once
 
 #include <SofaMeshCollision/BarycentricContactMapper.h>
+#include <SofaMeshCollision/BarycentricContactMapper.inl>
 #include <SofaMeshCollision/RigidContactMapper.inl>
 #include <SofaMeshCollision/SubsetContactMapper.inl>
 #include <sofa/gpu/cuda/CudaDistanceGridCollisionModel.h>
 #include <sofa/gpu/cuda/CudaPointModel.h>
 #include <sofa/gpu/cuda/CudaSphereModel.h>
+#include <sofa/gpu/cuda/CudaTriangleModel.h>
 #include <sofa/gpu/cuda/CudaCollisionDetection.h>
 #include <sofa/gpu/cuda/CudaRigidMapping.h>
 #include <sofa/gpu/cuda/CudaSubsetMapping.h>
 
+#include <sofa/gpu/cuda/CudaBarycentricMapping.inl>
 
 
 namespace sofa::gpu::cuda
@@ -189,4 +192,54 @@ public:
     }
 };
 
+template<class DataTypes>
+class ContactMapper<CudaTriangleCollisionModel, DataTypes> : public BarycentricContactMapper<CudaTriangleCollisionModel, DataTypes>
+{
+public:
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    using Index = sofa::Index;
+    Index addPoint(const Coord& P, Index index, Real&)
+    {
+        auto nbt = this->model->getCollisionTopology()->getNbTriangles();
+        if (index < nbt)
+            return this->mapper->createPointInTriangle(P, index, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
+        else
+        {
+            Index qindex = (index - nbt) / 2;
+            auto nbq = this->model->getCollisionTopology()->getNbQuads();
+            if (qindex < nbq)
+                return this->mapper->createPointInQuad(P, qindex, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
+            else
+            {
+                msg_error("ContactMapper<CudaTriangleCollisionModel>") << "Invalid contact element index " << index << " on a topology with " << nbt << " triangles and " << nbq << " quads." << msgendl
+                    << "model=" << this->model->getName() << " size=" << this->model->getSize();
+                return sofa::InvalidID;
+            }
+        }
+    }
+
+    Index addPointB(const Coord& P, Index index, Real& /*r*/, const type::Vec3& baryP)
+    {
+        auto nbt = this->model->getCollisionTopology()->getNbTriangles();
+        if (index < nbt)
+            return this->mapper->addPointInTriangle(index, baryP.ptr());
+        else
+        {
+            // TODO: barycentric coordinates usage for quads
+            Index qindex = (index - nbt) / 2;
+            auto nbq = this->model->getCollisionTopology()->getNbQuads();
+            if (qindex < nbq)
+                return this->mapper->createPointInQuad(P, qindex, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
+            else
+            {
+                msg_error("ContactMapper<CudaTriangleCollisionModel>") << "Invalid contact element index " << index << " on a topology with " << nbt << " triangles and " << nbq << " quads." << msgendl
+                    << "model=" << this->model->getName() << " size=" << this->model->getSize();
+                return sofa::InvalidID;
+            }
+        }
+    }
+
+    inline Index addPointB(const Coord& P, Index index, Real& r) { return addPoint(P, index, r); }
+};
 } // namespace sofa::component::collision
