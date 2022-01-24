@@ -23,7 +23,6 @@
 #include <typeinfo>
 #include <cstdlib>
 #include <SofaSimulationCommon/xml/XML.h>
-#include <SofaSimulationCommon/xml/ElementNameHelper.h>
 #include <sofa/helper/logging/Message.h>
 #include <sofa/helper/system/Locale.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -95,13 +94,13 @@ void recReplaceAttribute(BaseElement* node, const char* attr, const char* value,
 }
 
 
-BaseElement* includeNode  (TiXmlNode* root,const char *basefilename, ElementNameHelper& resolveElementName);
+BaseElement* includeNode  (TiXmlNode* root,const char *basefilename);
 BaseElement* attributeNode(TiXmlNode* root,const char *basefilename);
 void recursiveMergeNode(BaseElement* destNode, BaseElement* srcNode);
 
 int numDefault=0;
 
-BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHelper& elementNameHelper, bool isRoot = false)
+BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot = false)
 {
     //if (!xmlStrcmp(root->name,(const xmlChar*)"text")) return nullptr;
 
@@ -124,7 +123,7 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHel
 
     if (std::string(element->Value())=="include")
     {
-        return includeNode(root, basefilename, elementNameHelper);
+        return includeNode(root, basefilename);
     }
 
     std::string classType,name, type;
@@ -171,7 +170,7 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHel
             // we found a replacement xml
             element->SetAttribute("href",filename.c_str());
             element->RemoveAttribute("type");
-            return includeNode(root, basefilename, elementNameHelper);
+            return includeNode(root, basefilename);
         }
     }
     if( deriveFromMultiMapping(type))
@@ -205,7 +204,7 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHel
 
     for (TiXmlNode* child = root->FirstChild() ; child != nullptr; child = child->NextSibling())
     {
-        BaseElement* childnode = createNode(child, basefilename, elementNameHelper);
+        BaseElement* childnode = createNode(child, basefilename);
         if (childnode != nullptr)
         {
             //  if the current node is an included node, with the special name Group, we only add the objects.
@@ -242,7 +241,6 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHel
 
 BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc, bool fromMem)
 {
-    ElementNameHelper resolveElementName;
     const TiXmlElement* hRoot = doc.RootElement();
 
     if (hRoot == nullptr)
@@ -256,7 +254,7 @@ BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc, b
         basefilename = filename ;
     else
         basefilename = sofa::helper::system::SetDirectory::GetRelativeFromDir(filename,sofa::helper::system::SetDirectory::GetCurrentDir().c_str());
-    BaseElement* graph = createNode((TiXmlElement*)hRoot, basefilename.c_str(),resolveElementName, true);
+    BaseElement* graph = createNode((TiXmlElement*)hRoot, basefilename.c_str(), true);
 
     if (graph == nullptr)
     {
@@ -313,7 +311,7 @@ BaseElement* loadFromFile(const char *filename)
 }
 
 
-BaseElement* includeNode(TiXmlNode* root,const char *basefilename, ElementNameHelper& resolveElementName)
+BaseElement* includeNode(TiXmlNode* root,const char *basefilename)
 {
     TiXmlElement* element = root->ToElement();
     if (!element) return nullptr;
@@ -344,7 +342,7 @@ BaseElement* includeNode(TiXmlNode* root,const char *basefilename, ElementNameHe
         //xmlFreeDoc(doc);
         return nullptr;
     }
-    BaseElement* result = createNode(newroot, filename.c_str(),resolveElementName, true);
+    BaseElement* result = createNode(newroot, filename.c_str(), true);
     if (result)
     {
         if (result->getName() == "Group") result->setIncludeNodeType(INCLUDE_NODE_GROUP);
