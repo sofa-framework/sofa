@@ -21,6 +21,9 @@
 ******************************************************************************/
 #include <sofa/component/odesolver/init.h>
 
+#include <sofa/component/odesolver/backward/init.h>
+#include <sofa/component/odesolver/forward/init.h>
+
 namespace sofa::component::odesolver
 {
     
@@ -34,6 +37,10 @@ void initExternalModule()
     static bool first = true;
     if (first)
     {
+        // force dependencies at compile-time
+        sofa::component::odesolver::backward::init();
+        sofa::component::odesolver::forward::init();
+
         first = false;
     }
 }
