@@ -10,18 +10,12 @@ set(HEADER_FILES
     ${SOFARIGID_SRC}/JointSpring.inl
     ${SOFARIGID_SRC}/JointSpringForceField.h
     ${SOFARIGID_SRC}/JointSpringForceField.inl
-    ${SOFARIGID_SRC}/RigidMapping.h
-    ${SOFARIGID_SRC}/RigidMapping.inl
-    ${SOFARIGID_SRC}/RigidRigidMapping.h
-    ${SOFARIGID_SRC}/RigidRigidMapping.inl
 )
 
 set(SOURCE_FILES
     ${SOFARIGID_SRC}/initSofaRigid.cpp
     ${SOFARIGID_SRC}/JointSpring.cpp
     ${SOFARIGID_SRC}/JointSpringForceField.cpp
-    ${SOFARIGID_SRC}/RigidMapping.cpp
-    ${SOFARIGID_SRC}/RigidRigidMapping.cpp
 )
 
 sofa_find_package(SofaBaseMechanics REQUIRED)

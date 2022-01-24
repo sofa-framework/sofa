@@ -12,16 +12,6 @@ set(SOURCE_FILES
     ${SOFAGENERALRIGID_SRC}/initSofaGeneralRigid.cpp
     )
 
-list(APPEND HEADER_FILES
-    ${SOFAGENERALRIGID_SRC}/LineSetSkinningMapping.h
-    ${SOFAGENERALRIGID_SRC}/LineSetSkinningMapping.inl
-    ${SOFAGENERALRIGID_SRC}/SkinningMapping.h
-    ${SOFAGENERALRIGID_SRC}/SkinningMapping.inl
-    )
-list(APPEND SOURCE_FILES
-    ${SOFAGENERALRIGID_SRC}/LineSetSkinningMapping.cpp
-    ${SOFAGENERALRIGID_SRC}/SkinningMapping.cpp
-    )
 
 sofa_find_package(SofaBase REQUIRED)
 
