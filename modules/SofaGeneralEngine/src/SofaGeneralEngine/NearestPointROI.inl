@@ -21,27 +21,24 @@
 ******************************************************************************/
 #pragma once
 #include <SofaGeneralEngine/NearestPointROI.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/type/RGBAColor.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <iostream>
-#include <sofa/simulation/Node.h>
 
 namespace sofa::component::engine
 {
 
-using sofa::simulation::Node ;
-
 template <class DataTypes>
-NearestPointROI<DataTypes>::NearestPointROI()
-    : f_indices1( initData(&f_indices1,"indices1","Indices of the points on the first model") )
-    , f_indices2( initData(&f_indices2,"indices2","Indices of the points on the second model") )
+NearestPointROI<DataTypes>::NearestPointROI(core::behavior::MechanicalState<DataTypes>* mm1, core::behavior::MechanicalState<DataTypes>* mm2)
+    : Inherit1()
+    , Inherit2(mm1, mm2)
+    , d_inputIndices1( initData(&d_inputIndices1,"inputIndices1","Indices of the points to consider on the first model") )
+    , d_inputIndices2( initData(&d_inputIndices2,"inputIndices2","Indices of the points to consider on the first model") )
     , f_radius( initData(&f_radius,(Real)1,"radius", "Radius to search corresponding fixed point") )
     , d_useRestPosition(initData(&d_useRestPosition, true, "useRestPosition", "If true will use restPosition only at init"))
-    , mstate1(initLink("object1", "First object to constrain"))
-    , mstate2(initLink("object2", "Second object to constrain"))
+    , f_indices1( initData(&f_indices1,"indices1","Indices from the first model associated to a dof from the second model") )
+    , f_indices2( initData(&f_indices2,"indices2","Indices from the second model associated to a dof from the first model") )
+    , d_edges(initData(&d_edges, "edges", "List of edge indices"))
+    , d_indexPairs(initData(&d_indexPairs, "indexPairs", "list of couples (parent index + index in the parent)"))
+    , d_distances(initData(&d_distances, "distances", "List of distances between pairs of points"))
 {
-
 }
 
 template <class DataTypes>
@@ -52,36 +49,13 @@ NearestPointROI<DataTypes>::~NearestPointROI()
 template <class DataTypes>
 void NearestPointROI<DataTypes>::init()
 {
-    // Test inputs
-    bool success = true;
-    if (mstate1 && !mstate1.get())
-    {
-        msg_error_when(!mstate1.get()) << "Cannot Initialize, mstate1 link is pointing to invalid object!";
-        success = false;
-    }
-    else if (!mstate1)
-    {
-        msg_error_when(!mstate1) << "Cannot Initialize, mstate1 link is invalid!";
-        success = false;
-    }
+    Inherit2::init();
 
-    if (mstate2 && !mstate2.get())
-    {
-        msg_error_when(!mstate2.get()) << "Cannot Initialize, mstate2 link is pointing to invalid object!";
-        success = false;
-    }
-    else if (!mstate2)
-    {
-        msg_error_when(!mstate2) << "Cannot Initialize, mstate2 link is invalid!";
-        success = false;
-    }
-
-    if (!success)
+    if (!this->mstate1 || !this->mstate2)
     {
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
-
 
     if (d_useRestPosition.getValue())
     {
@@ -96,17 +70,23 @@ void NearestPointROI<DataTypes>::init()
 
     addOutput(&f_indices1);
     addOutput(&f_indices2);
+    addOutput(&d_edges);
+    addOutput(&d_indexPairs);
+    addOutput(&d_distances);
 }
 
 template <class DataTypes>
 void NearestPointROI<DataTypes>::reinit()
 {
     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
-    if(f_radius.getValue() <= 0){
+    if(f_radius.getValue() <= 0)
+    {
         msg_error() << "Radius must be a positive real.";
         return;
     }
-    if(!this->mstate1 || !this->mstate2){
+
+    if(!this->mstate1 || !this->mstate2)
+    {
         msg_error() << "2 valid mechanicalobjects are required.";
         return;
     }
@@ -122,7 +102,7 @@ void NearestPointROI<DataTypes>::doUpdate()
     const VecCoord& x1 = this->mstate1->read(vecCoordId)->getValue();
     const VecCoord& x2 = this->mstate2->read(vecCoordId)->getValue();
 
-    if (x1.size() == 0 || x2.size() == 0)
+    if (x1.empty() || x2.empty())
         return;
 
     computeNearestPointMaps(x1, x2);
@@ -133,34 +113,68 @@ template <class DataTypes>
 void NearestPointROI<DataTypes>::computeNearestPointMaps(const VecCoord& x1, const VecCoord& x2)
 {
     Coord pt2;
-    auto dist = [](const Coord& a, const Coord& b) { return (b - a).norm(); };
-    auto cmp = [&pt2, &dist](const Coord& a, const Coord& b) {
-        return dist(a, pt2) < dist(b, pt2);
+    constexpr auto dist = [](const Coord& a, const Coord& b) { return (b - a).norm2(); };
+    const auto cmp = [&pt2, &x1, &dist](const Index a, const Index b) {
+        return dist(x1[a], pt2) < dist(x1[b], pt2);
     };
 
-    auto indices1 = f_indices1.beginEdit();
-    auto indices2 = f_indices2.beginEdit();
+    auto filterIndices1 = sofa::helper::getWriteAccessor(d_inputIndices1);
+    auto filterIndices2 = sofa::helper::getWriteAccessor(d_inputIndices2);
+    if (filterIndices1.empty())
+    {
+        filterIndices1.resize(x1.size());
+        std::iota(filterIndices1.begin(), filterIndices1.end(), 0);
+    }
+    if (filterIndices2.empty())
+    {
+        filterIndices2.resize(x2.size());
+        std::iota(filterIndices2.begin(), filterIndices2.end(), 0);
+    }
+
+    auto indices1 = sofa::helper::getWriteOnlyAccessor(f_indices1);
+    auto indices2 = sofa::helper::getWriteOnlyAccessor(f_indices2);
     indices1->clear();
     indices2->clear();
 
-    const Real maxR = f_radius.getValue();
+    auto edges = sofa::helper::getWriteOnlyAccessor(d_edges);
+    edges->clear();
 
-    for (unsigned int i2 = 0; i2 < x2.size(); ++i2)
+    auto indexPairs = sofa::helper::getWriteOnlyAccessor(d_indexPairs);
+    indexPairs->clear();
+
+    auto distances = sofa::helper::getWriteOnlyAccessor(d_distances);
+    distances->clear();
+
+    const Real maxR = f_radius.getValue();
+    const auto maxRSquared = maxR * maxR;
+
+    for (const auto i2 : filterIndices2)
     {
         pt2 = x2[i2];
-        auto el = std::min_element(std::begin(x1), std::end(x1), cmp);
-        if (dist(*el, pt2) < maxR) 
+
+        //find the nearest element from pt2 in x1
+        auto i1 = *std::min_element(std::begin(filterIndices1), std::end(filterIndices1), cmp);
+        const auto& pt1 = x1[i1];
+
+        const auto d = dist(pt1, pt2);
+        if (d < maxRSquared)
         {
-            indices1->push_back(std::distance(std::begin(x1), el));
+            indices1->push_back(i1);
             indices2->push_back(i2);
+            edges->emplace_back(i2 * 2, i2 * 2 + 1);
+
+            indexPairs->push_back(0);
+            indexPairs->push_back(indices1->back());
+
+            indexPairs->push_back(1);
+            indexPairs->push_back(indices2->back());
+
+            distances->push_back(std::sqrt(d));
         }
     }
-    
-    f_indices1.endEdit();
-    f_indices2.endEdit();
 
     // Check coherency of size between indices vectors 1 and 2
-    if (f_indices1.getValue().size() != f_indices2.getValue().size())
+    if (indices1.size() != indices2.size())
     {
         msg_error() << "Size mismatch between indices1 and indices2";
     }
