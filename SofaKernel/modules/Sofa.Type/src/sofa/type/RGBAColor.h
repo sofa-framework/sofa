@@ -83,14 +83,14 @@ public:
 
     void set(float r, float g, float b, float a) ;
 
-    constexpr bool operator==(const fixed_array<float,4>& b) const
+    bool operator==(const fixed_array<float,4>& b) const
     {
         for (int i=0; i<4; i++)
             if ( fabs( this->elems[i] - b[i] ) > RGBACOLOR_EQUALITY_THRESHOLD ) return false;
         return true;
     }
 
-    constexpr bool operator!=(const fixed_array<float,4>& b) const
+    bool operator!=(const fixed_array<float,4>& b) const
     {
         for (int i=0; i<4; i++)
             if ( fabs( this->elems[i] - b[i] ) > RGBACOLOR_EQUALITY_THRESHOLD ) return true;
