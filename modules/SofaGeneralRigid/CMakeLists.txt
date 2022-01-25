@@ -13,10 +13,16 @@ set(SOURCE_FILES
     )
 
 
-sofa_find_package(SofaBase REQUIRED)
+sofa_find_package(SofaBaseMechanics REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseMechanics)
+
+message(WARNING "${PROJECT_NAME} module is being deprecated; some of its components are in Sofa.Component.Mapping.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.Mapping REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Mapping)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
