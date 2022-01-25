@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <optional>
 #include <SofaDeformable/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
