@@ -22,6 +22,7 @@
 #pragma once
 #include <sofa/linearalgebra/BaseMatrix.h>
 #include <SofaDeformable/StiffSpringForceField.h>
+#include <SofaDeformable/SpringForceField.inl>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 #include <sofa/helper/AdvancedTimer.h>
@@ -45,6 +46,9 @@ StiffSpringForceField<DataTypes>::StiffSpringForceField(MechanicalState* mstate,
     , d_lengths(initData(&d_lengths, "lengths", "List of lengths to create the springs. Must have the same than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere"))
 {
     this->addAlias(&d_lengths, "length");
+    d_indices1.setGroup("Inputs");
+    d_indices2.setGroup("Inputs");
+    d_lengths.setGroup("Inputs");
 
     this->addUpdateCallback("updateSprings", { &d_indices1, &d_indices2, &d_lengths, &this->ks, &this->kd}, [this](const core::DataTracker& t)
     {
@@ -132,17 +136,26 @@ void StiffSpringForceField<DataTypes>::createSpringsFromInputs()
 
     msg_info() << "Inputs have changed, recompute  Springs From Data Inputs";
 
-    type::vector<Spring>& _springs = *this->springs.beginEdit();
-    _springs.clear();
-
-
+    sofa::helper::getWriteAccessor(this->springs).clear();
 
     const SReal& _ks = this->ks.getValue();
     const SReal& _kd = this->kd.getValue();
-    for (sofa::Index i = 0; i<indices1.size(); ++i)
-        _springs.push_back(Spring(indices1[i], indices2[i], _ks, _kd, lengths[i]));
 
-    this->springs.endEdit();
+    sofa::type::vector<Spring> springsToAdd;
+    springsToAdd.reserve(indices1.size());
+    for (sofa::Index i = 0; i<indices1.size(); ++i)
+    {
+        springsToAdd.emplace_back(indices1[i], indices2[i], _ks, _kd, lengths[i]);
+    }
+
+    if (this->isLinkingTwoObjects())
+    {
+        this->addSpringsBetweenTwoObjects(springsToAdd.begin(), springsToAdd.end());
+    }
+    else
+    {
+        this->addSprings(springsToAdd.begin(), springsToAdd.end());
+    }
 }
 
 

@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <optional>
 #include <SofaDeformable/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
@@ -67,6 +68,24 @@ public:
         return out;
     }
 
+    sofa::Index& getIndex(sofa::Index id)
+    {
+        if (id == 0)
+        {
+            return m1;
+        }
+        return m2;
+    }
+
+    const sofa::Index& getIndex(sofa::Index id) const
+    {
+        if (id == 0)
+        {
+            return m1;
+        }
+        return m2;
+    }
+
 };
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
@@ -76,7 +95,25 @@ class SpringForceFieldInternalData
 public:
 };
 
-/// Set of simple springs between particles
+/**
+ * Set of simple springs between particles
+ *
+ * SpringForceField is a traditional ForceField. This means that it applies forces on a single MechanicalState it is
+ * linked to. However, it is often useful to define springs between two different objects. In that case,
+ * SpringForceField must be defined along with several other components:
+ * 1) A MechanicalState that will be the fusion of the two objects
+ * 2) A SubsetMultiMapping to map the two objects with the third MechanicalState
+ * Those extra components are here to transform the context where springs are defined between DoFs of two
+ * MechanicalState, to a context where springs are defined between DoFs of a single MechanicalState.
+ * Some functions are implemented to help building such a situation:
+ * * The create function checks if the provided attributes refer to multiple mechanical states. In that case, it creates
+ * automatically the required extra components.
+ * * The CreateSpringBetweenObjects function creates automatically the required extra components.
+ *
+ * It is sometimes handy to add springs after the creation of the component. Some methods are available, but they can
+ * have different behavior depending on whether SpringForceField is defined on a single object, or as springs between
+ * two objects.
+ */
 template<class DataTypes>
 class SpringForceField : public core::behavior::ForceField<DataTypes>
 {
@@ -92,11 +129,6 @@ public:
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
-    typedef helper::ReadAccessor< Data< VecCoord > > RDataRefVecCoord;
-    typedef helper::WriteAccessor< Data< VecCoord > > WDataRefVecCoord;
-    typedef helper::ReadAccessor< Data< VecDeriv > > RDataRefVecDeriv;
-    typedef helper::WriteAccessor< Data< VecDeriv > > WDataRefVecDeriv;
-
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
 
     typedef LinearSpring<Real> Spring;
@@ -106,6 +138,10 @@ public:
     Data<float> showArrowSize; ///< size of the axis
     Data<int> drawMode;             ///Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
     Data<sofa::type::vector<Spring> > springs; ///< pairs of indices, stiffness, damping, rest length
+
+    /// Link to a multi mapping in case this spring links two objects
+    SingleLink<SpringForceField<DataTypes>, mapping::SubsetMultiMapping<DataTypes, DataTypes>, BaseLink::FLAG_STRONGLINK> m_mapping
+    { initLink("mapping", "Link to a multi mapping in case this spring links two objects") };
 
 protected:
     core::objectmodel::DataFileName fileSprings;
@@ -171,24 +207,43 @@ public:
         this->springs.endEdit();
     }
 
-    void addSpring(sofa::Index m1, sofa::Index m2, SReal ks, SReal kd, SReal initlen)
-    {
-        springs.beginEdit()->push_back(Spring(m1,m2,ks,kd,initlen));
-        springs.endEdit();
-    }
+    /// Add a spring between two DoFs of the mechanical state this force field is acting on. In this case, the indices
+    /// refer to the mechanical state this component is acting on
+    void addSpring(sofa::Index m1, sofa::Index m2, SReal ks, SReal kd, SReal initlen);
+    /// Add a spring between two DoFs of the mechanical state this force field is acting on. In this case, the indices
+    /// refer to the mechanical state this component is acting on
+    void addSpring(const Spring & spring);
+    /// Add a spring between the first two objects defined as the input of the mapping. This function must be used
+    /// when the SpringForceField is used to defined springs between two different objects
+    void addSpringBetweenTwoObjects(const Spring & spring);
 
-    void addSpring(const Spring & spring)
-    {
-        springs.beginEdit()->push_back(spring);
-        springs.endEdit();
-    }
+    template<class InputIt>
+    void addSprings(InputIt first, InputIt last);
+
+    template<class InputIt>
+    void addSpringsBetweenTwoObjects(InputIt first, InputIt last);
 
     void handleTopologyChange(core::topology::Topology *topo) override;
 
+    MechanicalState* getMState1();
+    MechanicalState* getMState2();
+    bool isLinkingTwoObjects();
 
-    protected:
+
+protected:
     /// stream to export Potential Energy to gnuplot files
     std::ofstream* m_gnuplotFileEnergy;
+
+    /// Initialize the link to the SubsetMultiMapping if not done yet. A SubsetMultiMapping is not necessarily found
+    void initializeMappingLink();
+
+    /**
+     * \brief Update the mapping Data in case the new spring connects two mechanical states.
+     * \param spring A new spring to be added
+     * \return A pair consisting of a new spring expressed in local indices, and a bool denoting whether the mapping
+     * needs to be updated.
+     */
+    std::pair<Spring, bool> updateMappingIndexPairs(const Spring & spring);
 
 public:
 

@@ -96,6 +96,8 @@ void SpringForceField<DataTypes>::init()
     if (!fileSprings.getValue().empty())
         load(fileSprings.getFullPath().c_str());
     this->Inherit::init();
+
+    initializeMappingLink();
 }
 
 template <class DataTypes>
@@ -313,10 +315,177 @@ void SpringForceField<DataTypes>::computeBBox(const core::ExecParams* params, bo
     }
 }
 
+template <class DataTypes>
+void SpringForceField<DataTypes>::addSpring(sofa::Index m1, sofa::Index m2, SReal ks, SReal kd, SReal initlen)
+{
+    addSpring(Spring(m1,m2,ks,kd,initlen));
+}
+
+template <class DataTypes>
+void SpringForceField<DataTypes>::addSpring(const Spring& spring)
+{
+    sofa::helper::getWriteAccessor(springs)->push_back(spring);
+}
+
+template <class DataTypes>
+void SpringForceField<DataTypes>::addSpringBetweenTwoObjects(const Spring& spring)
+{
+    initializeMappingLink();
+
+    if (!m_mapping)
+    {
+        msg_error() << "No mapping found. " << this->getClassName() << " must work with a SubsetMultiMapping in order"
+            " to define springs between objects";
+        return;
+    }
+
+    const auto localSpring = updateMappingIndexPairs(spring);
+    if (localSpring.second)
+    {
+        m_mapping->init();
+    }
+
+    this->addSpring(localSpring.first);
+}
+
+template <class DataTypes>
+template <class InputIt>
+void SpringForceField<DataTypes>::addSprings(InputIt first, InputIt last)
+{
+    auto s = sofa::helper::getWriteAccessor(springs);
+    while(first != last)
+    {
+        s->push_back(*first++);
+    }
+}
+
+template <class DataTypes>
+template <class InputIt>
+void SpringForceField<DataTypes>::addSpringsBetweenTwoObjects(InputIt first, InputIt last)
+{
+    initializeMappingLink();
+
+    if (!m_mapping)
+    {
+        msg_error() << "No mapping found. " << this->getClassName() << " must work with a SubsetMultiMapping in order"
+            " to define springs between objects";
+        return;
+    }
+
+    bool mustReinitMapping = false;
+    while(first != last)
+    {
+        const auto localSpring = updateMappingIndexPairs(*first++);
+        mustReinitMapping |= localSpring.second;
+        this->addSpring(localSpring.first);
+    }
+
+    if (mustReinitMapping)
+    {
+        m_mapping->init();
+    }
+}
+
 template<class DataTypes>
 void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology *topo)
 {
     //TODO
 }
 
+template <class DataTypes>
+typename SpringForceField<DataTypes>::MechanicalState* SpringForceField<DataTypes>::getMState1()
+{
+    initializeMappingLink();
+
+    if (m_mapping)
+    {
+        const auto models = m_mapping->getMechFrom();
+        if (!models.empty())
+        {
+            if (auto* baseState = models.front())
+            {
+                return dynamic_cast<MechanicalState*>(baseState);
+            }
+        }
+    }
+    return nullptr;
+}
+
+template <class DataTypes>
+typename SpringForceField<DataTypes>::MechanicalState* SpringForceField<DataTypes>::getMState2()
+{
+    initializeMappingLink();
+
+    if (m_mapping)
+    {
+        const auto models = m_mapping->getMechFrom();
+        if (models.size() > 1)
+        {
+            if (auto* baseState = models[1])
+            {
+                return dynamic_cast<MechanicalState*>(baseState);
+            }
+        }
+    }
+    return nullptr;
+}
+
+template <class DataTypes>
+bool SpringForceField<DataTypes>::isLinkingTwoObjects()
+{
+    return this->getMState1() != nullptr && this->getMState2() != nullptr;
+}
+
+template <class DataTypes>
+void SpringForceField<DataTypes>::initializeMappingLink()
+{
+    if (!m_mapping)
+    {
+        auto* mapping = this->getContext()->template get<mapping::SubsetMultiMapping<DataTypes, DataTypes> >();
+        m_mapping.set(mapping);
+    }
+}
+
+template <class DataTypes>
+std::pair<typename SpringForceField<DataTypes>::Spring, bool>
+SpringForceField<DataTypes>::updateMappingIndexPairs(const Spring & spring)
+{
+    if (m_mapping)
+    {
+        auto indexPairs = sofa::helper::getWriteAccessor(m_mapping->indexPairs);
+        Spring localSpring { spring };
+
+        sofa::type::fixed_array<bool, 2> hasFoundLocalDoF(false, false);
+
+        for (sofa::Index i = 0; i < indexPairs.size(); i+=2)
+        {
+            const auto currentMStateId = indexPairs[i];
+            const auto currentMStateDoFId = indexPairs[i+1];
+
+            for (sofa::Index j = 0; j < 2; ++j)
+            {
+                if (j == currentMStateId && spring.getIndex(j) == currentMStateDoFId)
+                {
+                    localSpring.getIndex(j) = i / 2;
+                    hasFoundLocalDoF[j] = true;
+                }
+            }
+            if (hasFoundLocalDoF[0] && hasFoundLocalDoF[1])
+                break;
+        }
+
+        for (sofa::Index j = 0; j < 2; ++j)
+        {
+            if (!hasFoundLocalDoF[j]) // local index #j is not managed by the mapping. It needs to be added
+            {
+                indexPairs.push_back(j);
+                indexPairs.push_back(spring.getIndex(j));
+                localSpring.getIndex(j) = indexPairs.size() / 2;
+            }
+        }
+
+        return {localSpring, !hasFoundLocalDoF[0] || !hasFoundLocalDoF[1]};
+    }
+    return {};
+}
 } // namespace sofa::component::interactionforcefield
