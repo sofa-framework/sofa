@@ -24,13 +24,13 @@
 #include <sofa/config.h>
 #include <sofa/config/sharedlibrary_defines.h>
 
-#ifdef BUILD_SOFACOMPONENTTOPOLOGY
-#  define SOFACOMPONENTTOPOLOGY_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_SOFA_COMPONENT_TOPOLOGY
+#  define SOFA_COMPONENT_TOPOLOGY_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFACOMPONENTTOPOLOGY_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_COMPONENT_TOPOLOGY_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
 namespace sofa::component::topology
 {
-	constexpr char* MODULE_NAME = "@PROJECT_NAME@";
+	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
 } // namespace sofa::component::topology

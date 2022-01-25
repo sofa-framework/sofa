@@ -19,28 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 #include <sofa/component/topology/config.h>
 
 namespace sofa::component::topology
 {
-
-extern "C" {
-	SOFACOMPONENTTOPOLOGY_API void initExternalModule();
-	SOFACOMPONENTTOPOLOGY_API const char* getModuleName();
-}
-
-void initExternalModule()
-{
-	static bool first = true;
-	if (first)
-	{
-		first = false;
-	}
-}
-
-const char* getModuleName()
-{
-	return MODULE_NAME;
-}
-
+	SOFA_COMPONENT_TOPOLOGY_API void init();
 } // namespace sofa::component::topology

@@ -21,26 +21,45 @@
 ******************************************************************************/
 #include <sofa/component/topology/config.h>
 
+#include <sofa/component/topology/staticcontainer/init.h>
+#include <sofa/component/topology/dynamiccontainer/init.h>
+#include <sofa/component/topology/grid/init.h>
+#include <sofa/component/topology/mapping/init.h>
+#include <sofa/component/topology/utility/init.h>
+
 namespace sofa::component::topology
 {
 
 extern "C" {
-	SOFACOMPONENTTOPOLOGY_API void initExternalModule();
-	SOFACOMPONENTTOPOLOGY_API const char* getModuleName();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
 }
 
 void initExternalModule()
 {
-	static bool first = true;
-	if (first)
-	{
-		first = false;
-	}
+    static bool first = true;
+    if (first)
+    {
+        // force dependencies at compile-time
+        sofa::component::topology::staticcontainer::init();
+        sofa::component::topology::dynamiccontainer::init();
+        sofa::component::topology::grid::init();
+        sofa::component::topology::mapping::init();
+        sofa::component::topology::utility::init();
+
+        first = false;
+    }
 }
 
 const char* getModuleName()
 {
-	return MODULE_NAME;
+    return MODULE_NAME;
 }
+
+void init()
+{
+    initExternalModule();
+}
+
 
 } // namespace sofa::component::topology
