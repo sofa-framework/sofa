@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaGeneralRigid/initSofaGeneralRigid.h>
 
+#include <sofa/helper/system/PluginManager.h>
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
@@ -33,6 +34,10 @@ void initSofaGeneralRigid()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaGeneralRigid") << "SofaGeneralRigid is being deprecated; please load Sofa.Component.Mapping instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Mapping");
+
         first = false;
     }
 }

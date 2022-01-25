@@ -12,17 +12,13 @@ set(SOURCE_FILES
     ${SOFAMISCMAPPING_SRC}/initSofaMiscMapping.cpp
     )
 
-sofa_find_package(SofaSimpleFem REQUIRED)
-sofa_find_package(SofaRigid REQUIRED) 
-sofa_find_package(SofaGeneralSimpleFem REQUIRED)
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem SofaRigid SofaGeneralSimpleFem)
 
-if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    # Silence attribute warnings (for example, ignored already defined external template)
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
-endif()
+message(WARNING "${PROJECT_NAME} module is deprecated; its components are in Sofa.Component.Mapping.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.Mapping REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Mapping)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
