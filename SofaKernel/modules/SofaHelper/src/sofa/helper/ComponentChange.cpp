@@ -789,7 +789,7 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "SparseGridMultipleTopology", CreatableMoved("v22.06", "SofaNonUniformFem", "Sofa.Component.Topology.Container.Grid") },
     { "SparseGridRamificationTopology", CreatableMoved("v22.06", "SofaNonUniformFem", "Sofa.Component.Topology.Container.Grid") },
 
-    // SofaTopologicalMapping was deprecated in #2612 and ...
+    // SofaTopologicalMapping was deprecated in #2612 and #XXXX
     { "CenterPointTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
     { "Edge2QuadTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
     { "Hexa2QuadTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
@@ -802,8 +802,10 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "SubsetTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
     { "Tetra2TriangleTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
     { "Triangle2EdgeTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "Mesh2PointMechanicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Mapping") },
+    { "SimpleTesselatedTetraMechanicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Mapping") },
 
-    // SofaMiscMapping was deprecated in #2612
+    // SofaMiscTopology was deprecated in #2612
     { "TopologicalChangeProcessor", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Topology.Utility") },
     { "TopologyBoundingTrasher", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Topology.Utility") },
     { "TopologyChecker", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Topology.Utility") },
@@ -920,10 +922,36 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     // SofaBaseMechanics was deprecated in #2752 and ...
     { "DiagonalMass", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mass") },
     { "UniformMass", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mass") },
+    { "BarycentricMapping", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mapping") },
+    { "IdentityMapping", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mapping") },
+    { "MappedObject", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mapping") },
+    { "SubsetMapping", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mapping") },
     
     // SofaMiscForceField was deprecated in #2752 and ...
     { "MeshMatrixMass", CreatableMoved("v22.06", "SofaMiscForceField", "Sofa.Component.Mass") },
 
+    // SofaRigid was deprecated in #XXXX and ...
+    { "RigidMapping", CreatableMoved("v22.06", "SofaRigid", "Sofa.Component.Mapping") },
+    { "RigidRigidMapping", CreatableMoved("v22.06", "SofaRigid", "Sofa.Component.Mapping") },
+
+    // SofaGeneralRigid was deprecated in #XXXX and ...
+    { "LineSetSkinningMapping", CreatableMoved("v22.06", "SofaGeneralRigid", "Sofa.Component.Mapping") },
+    { "SkinningMapping", CreatableMoved("v22.06", "SofaGeneralRigid", "Sofa.Component.Mapping") },
+
+    // SofaMiscMapping was deprecated in #XXXX
+    { "BeamLinearMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping") },
+    { "CenterOfMassMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping") },
+    { "CenterOfMassMulti2Mapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping") },
+    { "CenterOfMassMultiMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping") },
+    { "DeformableOnRigidFrameMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping") },
+    { "DistanceFromTargetMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping") },
+    { "DistanceMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping") },
+    { "IdentityMultiMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping") },
+    { "SquareDistanceMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping") },
+    { "SubsetMultiMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping") },
+    { "TubularMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping") },
+    { "VoidMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping") },
+    
 };
 
 } // namespace sofa::helper::lifecycle
