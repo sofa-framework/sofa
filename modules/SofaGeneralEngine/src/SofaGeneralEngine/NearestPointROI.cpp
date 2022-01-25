@@ -23,20 +23,24 @@
 #include <SofaGeneralEngine/NearestPointROI.inl>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/simulation/Node.h>
-
 namespace sofa::component::engine
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::helper;
 
 int NearestPointROIClass = core::RegisterObject("Attach given pair of particles, projecting the positions of the second particles to the first ones")
         .add< NearestPointROI<Vec3Types> >()
         .add< NearestPointROI<Vec2Types> >()
         .add< NearestPointROI<Vec1Types> >()
+        .add< NearestPointROI<Vec6Types> >()
         .add< NearestPointROI<Rigid3Types> >()
         .add< NearestPointROI<Rigid2Types> >()
         ;
 
+template class SOFA_SOFAGENERALENGINE_API NearestPointROI<sofa::defaulttype::Vec3Types>;
+template class SOFA_SOFAGENERALENGINE_API NearestPointROI<sofa::defaulttype::Vec2Types>;
+template class SOFA_SOFAGENERALENGINE_API NearestPointROI<sofa::defaulttype::Vec1Types>;
+template class SOFA_SOFAGENERALENGINE_API NearestPointROI<sofa::defaulttype::Vec6Types>;
+template class SOFA_SOFAGENERALENGINE_API NearestPointROI<sofa::defaulttype::Rigid3Types>;
+template class SOFA_SOFAGENERALENGINE_API NearestPointROI<sofa::defaulttype::Rigid2Types>;
 } //namespace sofa::component::engine
