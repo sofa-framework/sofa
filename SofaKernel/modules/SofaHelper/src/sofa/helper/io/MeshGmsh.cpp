@@ -28,6 +28,7 @@
 #include <istream>
 #include <fstream>
 #include <string>
+#include <sofa/helper/narrow_cast.h>
 
 namespace sofa
 {
@@ -284,7 +285,7 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
                 {
                     HighOrderEdgePosition hoep;
                     hoep[0] = nodes[2];
-                    hoep[1] = m_edges.size() - 1;
+                    hoep[1] = sofa::helper::narrow_cast<PointID>(m_edges.size() - 1);
                     hoep[2] = 1;
                     hoep[3] = 1;
                     m_highOrderEdgePositions.push_back(hoep);
@@ -306,7 +307,7 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
                             edgeSet.insert(e);
                             m_edges.push_back(Edge(v0, v1));
                             hoep[0] = nodes[j + 3];
-                            hoep[1] = m_edges.size() - 1;
+                            hoep[1] = sofa::helper::narrow_cast<PointID>(m_edges.size() - 1);
                             hoep[2] = 1;
                             hoep[3] = 1;
                             m_highOrderEdgePositions.push_back(hoep);
@@ -330,7 +331,7 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
                             edgeSet.insert(e);
                             m_edges.push_back(Edge(v0, v1));
                             hoep[0] = nodes[j + 4];
-                            hoep[1] = m_edges.size() - 1;
+                            hoep[1] = sofa::helper::narrow_cast<PointID>(m_edges.size() - 1);
                             hoep[2] = 1;
                             hoep[3] = 1;
                             m_highOrderEdgePositions.push_back(hoep);
@@ -505,7 +506,7 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
                     {
                         HighOrderEdgePosition hoep;
                         hoep[0] = nodes[2];
-                        hoep[1] = m_edges.size() - 1;
+                        hoep[1] = sofa::helper::narrow_cast<PointID>(m_edges.size() - 1);
                         hoep[2] = 1;
                         hoep[3] = 1;
                         m_highOrderEdgePositions.push_back(hoep);
@@ -529,7 +530,7 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
                                 edgeSet.insert(e);
                                 m_edges.push_back(Edge(v0, v1));
                                 hoep[0] = nodes[j + 3];
-                                hoep[1] = m_edges.size() - 1;
+                                hoep[1] = sofa::helper::narrow_cast<PointID>(m_edges.size() - 1);
                                 hoep[2] = 1;
                                 hoep[3] = 1;
                                 m_highOrderEdgePositions.push_back(hoep);
@@ -555,7 +556,7 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
                                 edgeSet.insert(e);
                                 m_edges.push_back(Edge(v0, v1));
                                 hoep[0] = nodes[j + 4];
-                                hoep[1] = m_edges.size() - 1;
+                                hoep[1] = sofa::helper::narrow_cast<PointID>(m_edges.size() - 1);
                                 hoep[2] = 1;
                                 hoep[3] = 1;
                                 m_highOrderEdgePositions.push_back(hoep);

@@ -422,7 +422,8 @@ public:
     }
 
     /// Vector negation.
-    constexpr Vec<N,ValueType> operator-() const noexcept
+    template <typename T = ValueType, std::enable_if_t< !std::is_unsigned_v<T>, int > = 0 >
+    constexpr Vec<N, ValueType> operator-() const noexcept
     {
         Vec<N,ValueType> r(NOINIT);
         for (Size i=0; i<N; i++)
