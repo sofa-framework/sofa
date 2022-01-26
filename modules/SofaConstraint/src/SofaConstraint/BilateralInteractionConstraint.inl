@@ -134,7 +134,7 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const Cons
             int tm1 = m1Indices[pid];
             int tm2 = m2Indices[pid];
 
-            const type::Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
+            constexpr type::Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
 
             cid[pid] = constraintId;
             constraintId += 3;
@@ -221,7 +221,7 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const Cons
             }
             dfree[pid] = dfree_loc;
 
-            const type::Vec<3, Real> cx(1.0,0,0), cy(0,1.0,0), cz(0,0,1.0);
+            constexpr type::Vec<3, Real> cx(1.0,0,0), cy(0,1.0,0), cz(0,0,1.0);
 
             cid[pid] = constraintId;
 
