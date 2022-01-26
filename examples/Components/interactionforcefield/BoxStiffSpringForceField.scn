@@ -31,7 +31,7 @@
             <BarycentricMapping input="@.." output="@VisualModel" />
         </Node>
         <Node name="Surf">
-	        <SphereLoader filename="mesh/liver.sph" />
+            <SphereLoader filename="mesh/liver.sph" />
             <MechanicalObject position="@[-1].position" />
             <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius" />
             <BarycentricMapping />
@@ -52,7 +52,7 @@
             <BarycentricMapping input="@.." output="@VisualModel" />
         </Node>
         <Node name="Surf">
-	        <SphereLoader filename="mesh/liver.sph" />
+            <SphereLoader filename="mesh/liver.sph" />
             <MechanicalObject position="@[-1].position" translation="10 0 0" rotation="0 180 0" />
             <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius" />
             <BarycentricMapping />
@@ -73,7 +73,7 @@
             <BarycentricMapping input="@.." output="@VisualModel" />
         </Node>
         <Node name="Surf">
-	        <SphereLoader filename="mesh/liver.sph" />
+            <SphereLoader filename="mesh/liver.sph" />
             <MechanicalObject position="@[-1].position" translation="20 0 0" rotation="0 90 0" />
             <SphereCollisionModel name="CollisionModel" listRadius="@[-2].listRadius" />
             <BarycentricMapping />
