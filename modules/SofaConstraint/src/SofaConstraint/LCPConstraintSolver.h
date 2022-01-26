@@ -39,7 +39,6 @@
 namespace sofa::component::constraintset
 {
 
-/// Christian : WARNING: this class is already defined in sofa::helper
 class LCPConstraintProblem : public ConstraintProblem
 {
 public:
@@ -130,7 +129,6 @@ public:
 
 
     Data<bool> displayDebug; ///< Display debug information.
-    Data<bool> displayTime; ///< Display time for each important step of LCPConstraintSolver.
     Data<bool> initial_guess; ///< activate LCP results history to improve its resolution performances.
     Data<bool> build_lcp; ///< LCP is not fully built to increase performance in some case.
     Data<double> tol; ///< residual error threshold for termination of the Gauss-Seidel algorithm
@@ -190,13 +188,6 @@ private:
     sofa::core::objectmodel::BaseContext *context;
     sofa::linearalgebra::FullVector<double> *_dFree, *_result;
     ///
-    sofa::helper::system::thread::CTime timer;
-    sofa::helper::system::thread::CTime timerTotal;
-
-    double time;
-    double timeTotal;
-    double timeScale;
-
 
     /// for unbuilt lcp ///
     void build_problem_info();
