@@ -8,16 +8,10 @@ set(SOFAGENERALVISUAL_SRC "src/${PROJECT_NAME}")
 set(HEADER_FILES
     ${SOFAGENERALVISUAL_SRC}/config.h.in
     ${SOFAGENERALVISUAL_SRC}/initSofaGeneralVisual.h
-    ${SOFAGENERALVISUAL_SRC}/RecordedCamera.h
-    ${SOFAGENERALVISUAL_SRC}/VisualTransform.h
-    ${SOFAGENERALVISUAL_SRC}/Visual3DText.h
     )
 
 set(SOURCE_FILES
     ${SOFAGENERALVISUAL_SRC}/initSofaGeneralVisual.cpp
-    ${SOFAGENERALVISUAL_SRC}/RecordedCamera.cpp
-    ${SOFAGENERALVISUAL_SRC}/VisualTransform.cpp
-    ${SOFAGENERALVISUAL_SRC}/Visual3DText.cpp
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

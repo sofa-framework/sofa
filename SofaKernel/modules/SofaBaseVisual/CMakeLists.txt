@@ -6,22 +6,12 @@ set(SOFABASEVISUAL_SRC "src/${PROJECT_NAME}")
 set(HEADER_FILES
     ${SOFABASEVISUAL_SRC}/config.h.in
     ${SOFABASEVISUAL_SRC}/initSofaBaseVisual.h
-    ${SOFABASEVISUAL_SRC}/BaseCamera.h
     ${SOFABASEVISUAL_SRC}/BackgroundSetting.h
-    ${SOFABASEVISUAL_SRC}/Camera.h
-    ${SOFABASEVISUAL_SRC}/InteractiveCamera.h
-    ${SOFABASEVISUAL_SRC}/VisualModelImpl.h
-    ${SOFABASEVISUAL_SRC}/VisualStyle.h
 )
 
 set(SOURCE_FILES
     ${SOFABASEVISUAL_SRC}/initSofaBaseVisual.cpp
-    ${SOFABASEVISUAL_SRC}/BaseCamera.cpp
     ${SOFABASEVISUAL_SRC}/BackgroundSetting.cpp
-    ${SOFABASEVISUAL_SRC}/Camera.cpp
-    ${SOFABASEVISUAL_SRC}/InteractiveCamera.cpp
-    ${SOFABASEVISUAL_SRC}/VisualModelImpl.cpp
-    ${SOFABASEVISUAL_SRC}/VisualStyle.cpp
 )
 
 sofa_find_package(TinyXML REQUIRED)
