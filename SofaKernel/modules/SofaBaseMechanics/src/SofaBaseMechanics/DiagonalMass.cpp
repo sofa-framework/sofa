@@ -314,10 +314,10 @@ int DiagonalMassClass = core::RegisterObject("Define a specific mass for each pa
 
         ;
 
-template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Vec3Types,double>;
-template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Vec2Types,double>;
-template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Vec1Types,double>;
-template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Rigid3Types,Rigid3Mass>;
-template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Rigid2Types,Rigid2Mass>;
+template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Vec3Types>;
+template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Vec2Types>;
+template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Vec1Types>;
+template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Rigid3Types>;
+template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Rigid2Types>;
 
 } // namespace sofa::component::mass

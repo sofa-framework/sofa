@@ -30,10 +30,14 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/TopologySubsetIndices.h>
 
+#include <type_traits>
+
 namespace sofa::component::mass
 {
 
-template <class DataTypes, class TMassType>
+template <class DataTypes,
+          class TMassType = std::conditional_t<std::is_same_v<DataTypes, sofa::defaulttype::StdRigidTypes<DataTypes::spatial_dimensions, typename DataTypes::Real> >, defaulttype::RigidMass<DataTypes::spatial_dimensions, typename DataTypes::Real>, DataTypes::Real> >
+
 class UniformMass : public core::behavior::Mass<DataTypes>
 {
 public:
@@ -200,12 +204,12 @@ template <>
 void UniformMass<defaulttype::Vec6Types,double>::draw(const core::visual::VisualParams* vparams);
 
 #if !defined(SOFA_COMPONENT_MASS_UNIFORMMASS_CPP)
-extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec3Types, SReal>;
-extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec2Types, SReal>;
-extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec1Types, SReal>;
-extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec6Types, SReal>;
-extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>;
-extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>;
+extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec3Types>;
+extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec2Types>;
+extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec1Types>;
+extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec6Types>;
+extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Rigid2Types>;
 #endif
 
 } // namespace sofa::component::mass

@@ -79,9 +79,9 @@ int MeshMatrixMassClass = core::RegisterObject("Define a specific mass for each 
 
         ;
 
-template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<Vec3Types,Vec3Types::Real>;
-template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<Vec2Types,Vec2Types::Real>;
-template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<Vec1Types,Vec1Types::Real>;
+template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<Vec3Types>;
+template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<Vec2Types>;
+template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<Vec1Types>;
 
 
 

@@ -34,6 +34,8 @@
 #include <sofa/helper/map.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
+#include <type_traits>
+
 namespace sofa::component::mass
 {
 
@@ -50,7 +52,8 @@ public:
 };
 
 
-template <class DataTypes, class TMassType>
+template <class DataTypes,
+          class TMassType = std::conditional_t<std::is_same_v<DataTypes, sofa::defaulttype::StdRigidTypes<DataTypes::spatial_dimensions, typename DataTypes::Real> >, defaulttype::RigidMass<DataTypes::spatial_dimensions, typename DataTypes::Real>, DataTypes::Real> >
 class MeshMatrixMass : public core::behavior::Mass<DataTypes>
 {
 public:
@@ -117,7 +120,6 @@ protected:
     /// Internal data required for Cuda computation (copy of vertex mass for deviceRead)
     MeshMatrixMassInternalData<DataTypes, MassType> data;
     friend class MeshMatrixMassInternalData<DataTypes, MassType>;
-
 
 public:
     virtual void clear();
@@ -379,9 +381,9 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_MASS_MESHMATRIXMASS_CPP)
-extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec3Types,defaulttype::Vec3Types::Real>;
-extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec2Types,defaulttype::Vec2Types::Real>;
-extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec1Types,defaulttype::Vec1Types::Real>;
+extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec2Types>;
+extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec1Types>;
 
 #endif
 
