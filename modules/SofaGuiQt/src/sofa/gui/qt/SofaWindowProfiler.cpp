@@ -93,12 +93,6 @@ SReal convertInMs(ctime_t t, int nbIter=1)
     return 1000.0 * SReal(t) / SReal (timer_freqd * nbIter);
 }
 
-ctime_t convertInCTime(SReal timeInMs)
-{
-    static SReal timer_freqd = static_cast<SReal>(CTime::getTicksPerSec());
-    return timer_freqd * timeInMs / 1000.;
-}
-
 ///////////////////////////////////////// AnimationSubStepData ///////////////////////////////////
 
 SofaWindowProfiler::AnimationSubStepData::AnimationSubStepData(int level, std::string name, ctime_t start)
