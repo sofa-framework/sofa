@@ -93,6 +93,12 @@ SReal convertInMs(ctime_t t, int nbIter=1)
     return 1000.0 * SReal(t) / SReal (timer_freqd * nbIter);
 }
 
+ctime_t convertInCTime(SReal timeInMs)
+{
+    static SReal timer_freqd = static_cast<SReal>(CTime::getTicksPerSec());
+    return timer_freqd * timeInMs / 1000.;
+}
+
 ///////////////////////////////////////// AnimationSubStepData ///////////////////////////////////
 
 SofaWindowProfiler::AnimationSubStepData::AnimationSubStepData(int level, std::string name, ctime_t start)
@@ -176,6 +182,8 @@ SReal SofaWindowProfiler::AnimationSubStepData::getStepMs(const std::string& ste
 SofaWindowProfiler::AnimationStepData::AnimationStepData(int step, const std::string& idString)
     : m_stepIteration(step)
     , m_totalMs(0.0)
+    , m_idString(idString)
+    , m_overheadMs(0.)
 {
     m_subSteps.clear();
     
@@ -278,11 +286,16 @@ bool SofaWindowProfiler::AnimationStepData::processData(const std::string& idStr
     m_totalMs = convertInMs(tEnd - t0);
 
     // update percentage
-    SReal invTotalMs = 100 / m_totalMs;
+    const SReal invTotalMs = 100. / m_totalMs;
+    SReal totalChildrenMs = 0.0;
     for (unsigned int i=0; i<m_subSteps.size(); i++)
     {
         m_subSteps[i]->computeTimeAndPercentage(invTotalMs);
+        totalChildrenMs += m_subSteps[i]->m_totalMs;
     }
+
+    m_selfMs = m_totalMs - totalChildrenMs;
+    m_selfPercent = 100. * m_selfMs / m_totalMs;
 
     return true;
 }
@@ -381,12 +394,16 @@ void SofaWindowProfiler::activateATimer(bool activate)
 
 void SofaWindowProfiler::pushStepData()
 {
+    const ctime_t start = CTime::getRefTime();
+
     m_profilingData.pop_front();
     const static std::string idString = "Animate";
     m_profilingData.push_back(new AnimationStepData(m_step, idString));
     m_step++;
 
     updateChart();
+
+    m_profilingData.back()->m_overheadMs = convertInMs(CTime::getRefTime() - start);
 }
 
 
@@ -591,6 +608,7 @@ void SofaWindowProfiler::updateSummaryLabels(int step)
     const AnimationStepData* stepData = m_profilingData.at(step);
     label_stepValue->setText(QString::number(stepData->m_stepIteration));
     label_timeValue->setText(QString::number(stepData->m_totalMs));
+    label_overheadValue->setText(QString::number(stepData->m_overheadMs));
 }
 
 void SofaWindowProfiler::updateTree(int step)
@@ -602,13 +620,9 @@ void SofaWindowProfiler::updateTree(int step)
     //clear old values
     tree_steps->clear();
 
-    // add new step items
-    QList<QTreeWidgetItem*> children;
-    for (auto* substep : stepData->m_subSteps)
-    {
-        children << addTreeItem(substep);
-    }
-    tree_steps->addTopLevelItems(children);
+    QList<QTreeWidgetItem*> root;
+    root << addTreeItem(stepData);
+    tree_steps->addTopLevelItems(root);
 
     //Expand the first two levels
     for (int i = 0; i < tree_steps->topLevelItemCount(); ++i)
@@ -665,6 +679,35 @@ QTreeWidgetItem* SofaWindowProfiler::addTreeItem(AnimationSubStepData* subStep)
     return treeItem;
 }
 
+QTreeWidgetItem* SofaWindowProfiler::addTreeItem(const AnimationStepData* step)
+{
+    QStringList columns;
+    columns << QString::fromStdString(step->m_idString);
+    columns << "100";
+    columns << QString::number(step->m_selfPercent, 'g', 2);
+    columns << QString::number(step->m_totalMs);
+    columns << QString::number(step->m_selfMs);
+
+    QTreeWidgetItem* treeItem = new QTreeWidgetItem(columns);
+
+    QFont font = QApplication::font();
+    font.setBold(true);
+
+    for (int i = 0; i<treeItem->columnCount(); i++)
+        treeItem->setFont(i, font);
+
+    // add new step items
+    QList<QTreeWidgetItem*> children;
+    for (auto* substep : step->m_subSteps)
+    {
+        children << addTreeItem(substep);
+    }
+
+    treeItem->addChildren(children);
+
+    return treeItem;
+}
+
 void SofaWindowProfiler::onStepSelected(QTreeWidgetItem *item, int /*column*/)
 {
     if (item->parent())
@@ -700,15 +743,19 @@ void SofaWindowProfiler::onStepSelected(QTreeWidgetItem *item, int /*column*/)
             m_checkedSeries.erase(it);
         }
 
-        int cpt = 0;
-        QVector<QPointF> seriesPoints;
-        for (auto* stepData : m_profilingData)
+        if (item->parent())
         {
-            const SReal value = stepData->getStepMs(m_selectedStep, m_selectedParentStep);
-            seriesPoints << QPointF(cpt++, value);
+            m_chart->addSeries(m_selectionSeries);
+            int cpt = 0;
+            QVector<QPointF> seriesPoints;
+            for (auto* stepData : m_profilingData)
+            {
+                const SReal value = stepData->getStepMs(m_selectedStep, m_selectedParentStep);
+                seriesPoints << QPointF(cpt++, value);
+            }
+            m_selectionSeries->replace(seriesPoints);
+            m_selectionSeries->setName(QString(m_selectedStep.c_str()));
         }
-        m_selectionSeries->replace(seriesPoints);
-        m_selectionSeries->setName(QString(m_selectedStep.c_str()));
     }
 }
 

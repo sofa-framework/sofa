@@ -90,6 +90,23 @@
              </property>
             </widget>
            </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_overhead">
+             <property name="toolTip">
+              <string>Overhead due to the process of the timers. Close this window to avoid the overhead.</string>
+             </property>
+             <property name="text">
+              <string>Overhead (ms)</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QLabel" name="label_overheadValue">
+             <property name="text">
+              <string>0</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
          <item>
