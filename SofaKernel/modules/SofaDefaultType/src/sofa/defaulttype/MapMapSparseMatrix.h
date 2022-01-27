@@ -22,7 +22,7 @@
 #ifndef SOFA_DEFAULTTYPE_MAPMAPSPARSEMATRIX_H
 #define SOFA_DEFAULTTYPE_MAPMAPSPARSEMATRIX_H
 
-#include <map>
+#include <unordered_map>
 #include <sofa/linearalgebra/BaseVector.h>
 
 namespace sofa
@@ -46,7 +46,7 @@ class MapMapSparseMatrix
 public:
     typedef T Data;
     typedef unsigned int KeyType;
-    typedef typename std::map< KeyType, T > RowType;
+    typedef typename std::unordered_map< KeyType, T > RowType;
 
     /// Removes every matrix elements
     void clear()
@@ -132,7 +132,7 @@ public:
 
 protected:
 
-    typedef std::map< KeyType, RowType > SparseMatrix;
+    typedef std::unordered_map< KeyType, RowType > SparseMatrix;
 
     /// Data container
     SparseMatrix m_data;
