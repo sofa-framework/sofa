@@ -198,6 +198,8 @@ bool SofaWindowProfiler::AnimationStepData::processData(const std::string& idStr
 {
     type::vector<Record> _records = sofa::helper::AdvancedTimer::getRecords(idString);
 
+    m_totalTimers = 0;
+
     //AnimationSubStepData* currentSubStep = nullptr;
     std::stack<AnimationSubStepData*> processStack;
     int level = 0;
@@ -254,6 +256,7 @@ bool SofaWindowProfiler::AnimationStepData::processData(const std::string& idStr
 
         if (rec.type == Record::REND || rec.type == Record::RSTEP_END)
         {
+            ++m_totalTimers;
             --level;
 //            for (int i=0; i<level; ++i)
 //                std::cout << ".";
@@ -603,6 +606,7 @@ void SofaWindowProfiler::updateSummaryLabels(int step)
     label_stepValue->setText(QString::number(stepData->m_stepIteration));
     label_timeValue->setText(QString::number(stepData->m_totalMs));
     label_overheadValue->setText(QString::number(stepData->m_overheadMs));
+    label_timersCounterValue->setText(QString::number(stepData->m_totalTimers));
 }
 
 void SofaWindowProfiler::updateTree(int step)

@@ -177,6 +177,9 @@ public:
 
         /// The overhead due to timers processing. In milliseconds
         SReal m_overheadMs;
+
+        /// Total number of timers in this step
+        unsigned int m_totalTimers {};
     protected:
         bool processData(const std::string& idString);
     };
