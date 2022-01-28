@@ -55,12 +55,13 @@ public:
 };
 
 
-template <class DataTypes,
-          class TMassType = typename sofa::component::mass::MassTypes<DataTypes>::type >
+template <class DataTypes>
 class MeshMatrixMass : public core::behavior::Mass<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(MeshMatrixMass,DataTypes,TMassType), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(MeshMatrixMass,DataTypes), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
+
+    using TMassType = typename sofa::component::mass::MassTypes<DataTypes>::type;
 
     typedef core::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord                    VecCoord;
@@ -105,7 +106,7 @@ public:
     Data< std::map < std::string, sofa::type::vector<double> > > f_graph; ///< Graph of the controlled potential
 
     /// Link to be set to the topology container in the component graph.
-    SingleLink<MeshMatrixMass<DataTypes, TMassType>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    SingleLink<MeshMatrixMass<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
 

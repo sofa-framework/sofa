@@ -52,12 +52,13 @@ public :
     typedef sofa::defaulttype::StdVectorTypes< Vec3, Vec3, Real > GeometricalTypes ; /// assumes the geometry object type is 3D
 };
 
-template <class DataTypes,
-          class TMassType = typename sofa::component::mass::MassTypes<DataTypes>::type >
+template <class DataTypes>
 class DiagonalMass : public core::behavior::Mass<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(DiagonalMass,DataTypes,TMassType), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(DiagonalMass,DataTypes), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
+
+    using TMassType = typename sofa::component::mass::MassTypes<DataTypes>::type;
 
     typedef core::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -107,7 +108,7 @@ public:
     int m_initializationProcess;
 
     /// Link to be set to the topology container in the component graph. 
-    SingleLink<DiagonalMass<DataTypes, TMassType>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    SingleLink<DiagonalMass<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
     ////////////////////////// Inherited attributes ////////////////////////////
@@ -356,25 +357,25 @@ private:
 
 // Specialization for rigids
 template <>
-SReal DiagonalMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>::getPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x) const;
+SReal DiagonalMass<defaulttype::Rigid3Types>::getPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x) const;
 template <>
-SReal DiagonalMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>::getPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x) const;
+SReal DiagonalMass<defaulttype::Rigid2Types>::getPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x) const;
 template <>
-void DiagonalMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>::draw(const core::visual::VisualParams* vparams);
+void DiagonalMass<defaulttype::Rigid3Types>::draw(const core::visual::VisualParams* vparams);
 template <>
-void DiagonalMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>::reinit();
+void DiagonalMass<defaulttype::Rigid3Types>::reinit();
 template <>
-void DiagonalMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>::reinit();
+void DiagonalMass<defaulttype::Rigid2Types>::reinit();
 template <>
-void DiagonalMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>::init();
+void DiagonalMass<defaulttype::Rigid3Types>::init();
 template <>
-void DiagonalMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>::init();
+void DiagonalMass<defaulttype::Rigid2Types>::init();
 template <>
-void DiagonalMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>::draw(const core::visual::VisualParams* vparams);
+void DiagonalMass<defaulttype::Rigid2Types>::draw(const core::visual::VisualParams* vparams);
 template <>
-type::Vector6 DiagonalMass<defaulttype::Vec3Types, SReal>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
+type::Vector6 DiagonalMass<defaulttype::Vec3Types>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
 template <>
-type::Vector6 DiagonalMass<defaulttype::Rigid3Types,defaulttype::Rigid3Mass>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
+type::Vector6 DiagonalMass<defaulttype::Rigid3Types>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
 
 
 
