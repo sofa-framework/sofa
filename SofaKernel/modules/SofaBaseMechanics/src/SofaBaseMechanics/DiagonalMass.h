@@ -53,7 +53,7 @@ public :
 };
 
 template <class DataTypes,
-          class TMassType = sofa::component::mass::MassTypes<DataTypes>::type >
+          class TMassType = typename sofa::component::mass::MassTypes<DataTypes>::type >
 class DiagonalMass : public core::behavior::Mass<DataTypes>
 {
 public:

@@ -56,7 +56,7 @@ public:
 
 
 template <class DataTypes,
-          class TMassType = sofa::component::mass::MassTypes<DataTypes>::type >
+          class TMassType = typename sofa::component::mass::MassTypes<DataTypes>::type >
 class MeshMatrixMass : public core::behavior::Mass<DataTypes>
 {
 public:

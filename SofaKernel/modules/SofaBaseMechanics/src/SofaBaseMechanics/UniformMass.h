@@ -39,7 +39,7 @@ namespace sofa::component::mass
 {
 
 template <class DataTypes,
-          class TMassType = sofa::component::mass::MassTypes<DataTypes>::type >
+          class TMassType = typename sofa::component::mass::MassTypes<DataTypes>::type >
 
 class UniformMass : public core::behavior::Mass<DataTypes>
 {
