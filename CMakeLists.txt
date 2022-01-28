@@ -182,9 +182,10 @@ add_subdirectory(extlibs)
 option(SOFA_ENABLE_LEGACY_HEADERS "Enable the compatibility layer (headers located in legacy folders)." ON)
 if(SOFA_ENABLE_LEGACY_HEADERS)
     message("Using legacy headers is enabled.")
-    message("Headers from v21.06 are usable, but it is advised to change your code to use the new headers introduced in v21.12.")
+    message("Headers from v21.12 are usable, but it is advised to change your code to use the new headers introduced in v22.06.")
 
     add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Compat)
+    add_subdirectory(Component/Compat)
 endif()
 
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
@@ -193,6 +194,9 @@ add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
 if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
     add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Testing)
 endif()
+
+# SOFA-NG Components
+add_subdirectory(Component)
 
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
 
@@ -271,7 +275,15 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
     include( "custom.cmake" )
 endif()
 
-# Regroup all test-related projects into an IDE folder
+## IDE directories
+# Sofa.Component
+sofa_get_all_targets(all_targets)
+foreach(target ${all_targets})
+    if(target MATCHES "Sofa.Component.*" AND NOT target MATCHES ".*_relocatable_install")
+        set_target_properties(${target} PROPERTIES FOLDER Sofa.Component) # IDE folder
+    endif()
+endforeach()
+# Testing
 if(TARGET Sofa.Testing) # No need to search for test targets if tests are not enabled
     sofa_get_all_targets(all_targets)
     foreach(target ${all_targets})
@@ -280,8 +292,9 @@ if(TARGET Sofa.Testing) # No need to search for test targets if tests are not en
         endif()
     endforeach()
 endif()
+##
 
-# Install configuration
+## Install configuration
 #install(FILES "${CMAKE_BINARY_DIR}/CMakeCache.txt" DESTINATION . COMPONENT headers)
 install(FILES "${CMAKE_SOURCE_DIR}/README.md" DESTINATION . COMPONENT applications)
 install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION . COMPONENT applications)
