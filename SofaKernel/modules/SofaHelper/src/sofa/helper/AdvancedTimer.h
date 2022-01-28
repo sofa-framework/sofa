@@ -28,6 +28,7 @@
 #include <ostream>
 #include <string>
 #include <map>
+#include <unordered_map>
 #include <sofa/helper/narrow_cast.h>
 
 namespace sofa::simulation
@@ -166,7 +167,7 @@ public:
 
             /// the list of the id names. the Ids are the indices in the vector
             std::vector<std::string> idsList;
-            std::map<std::string, unsigned int> idsMap;
+            std::unordered_map<std::string, unsigned int> idsMap;
 
             IdFactory()
             {
@@ -190,7 +191,7 @@ public:
                 if (it == idfac.idsMap.end())
                 {
                     const auto idsMapSize = sofa::helper::narrow_cast<unsigned int>(idfac.idsMap.size());
-                    idfac.idsMap.insert({name, idsMapSize});
+                    idfac.idsMap.insert(it, {name, idsMapSize});
                     idfac.idsList.push_back(name);
                     return idsMapSize;
                 }
