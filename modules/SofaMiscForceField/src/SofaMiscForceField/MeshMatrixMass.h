@@ -30,6 +30,9 @@
 #include <sofa/type/vector.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
+#include <SofaBaseMechanics/MassVecTypes.h>
+#include <SofaBaseMechanics/MassRigidTypes.h>
+
 //VERY IMPORTANT FOR GRAPHS
 #include <sofa/helper/map.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -53,7 +56,7 @@ public:
 
 
 template <class DataTypes,
-          class TMassType = std::conditional_t<std::is_same_v<DataTypes, sofa::defaulttype::StdRigidTypes<DataTypes::spatial_dimensions, typename DataTypes::Real> >, defaulttype::RigidMass<DataTypes::spatial_dimensions, typename DataTypes::Real>, DataTypes::Real> >
+          class TMassType = sofa::component::mass::MassTypes<DataTypes>::type >
 class MeshMatrixMass : public core::behavior::Mass<DataTypes>
 {
 public:

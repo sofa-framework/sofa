@@ -13,6 +13,9 @@ set(HEADER_FILES
     ${SOFABASEMECHANICS_SRC}/DiagonalMass.inl
     ${SOFABASEMECHANICS_SRC}/IdentityMapping.h
     ${SOFABASEMECHANICS_SRC}/IdentityMapping.inl
+    ${SOFABASEMECHANICS_SRC}/MassTypes.h
+    ${SOFABASEMECHANICS_SRC}/MassVecTypes.h
+    ${SOFABASEMECHANICS_SRC}/MassRigidTypes.h
     ${SOFABASEMECHANICS_SRC}/MappedObject.h
     ${SOFABASEMECHANICS_SRC}/MappedObject.inl
     ${SOFABASEMECHANICS_SRC}/MechanicalObject.h

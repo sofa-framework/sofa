@@ -23,14 +23,16 @@
 
 #include <SofaBaseMechanics/config.h>
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/behavior/Mass.h>
-#include <sofa/core/topology/TopologyData.h>
 #include <sofa/type/vector.h>
+#include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/type/Vec.h>
+#include <sofa/core/behavior/Mass.h>
+#include <sofa/core/topology/TopologyData.h>
 #include <sofa/core/objectmodel/DataFileName.h>
+
+#include <SofaBaseMechanics/MassVecTypes.h>
+#include <SofaBaseMechanics/MassRigidTypes.h>
 
 #include <type_traits>
 
@@ -51,7 +53,7 @@ public :
 };
 
 template <class DataTypes,
-          class TMassType = std::conditional_t<std::is_same_v<DataTypes, sofa::defaulttype::StdRigidTypes<DataTypes::spatial_dimensions, typename DataTypes::Real> >, defaulttype::RigidMass<DataTypes::spatial_dimensions, typename DataTypes::Real>, DataTypes::Real> >
+          class TMassType = sofa::component::mass::MassTypes<DataTypes>::type >
 class DiagonalMass : public core::behavior::Mass<DataTypes>
 {
 public:

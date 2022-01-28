@@ -30,20 +30,23 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/TopologySubsetIndices.h>
 
+#include <SofaBaseMechanics/MassVecTypes.h>
+#include <SofaBaseMechanics/MassRigidTypes.h>
+
 #include <type_traits>
 
 namespace sofa::component::mass
 {
 
 template <class DataTypes,
-          class TMassType = std::conditional_t<std::is_same_v<DataTypes, sofa::defaulttype::StdRigidTypes<DataTypes::spatial_dimensions, typename DataTypes::Real> >, defaulttype::RigidMass<DataTypes::spatial_dimensions, typename DataTypes::Real>, DataTypes::Real> >
+          class TMassType = sofa::component::mass::MassTypes<DataTypes>::type >
 
 class UniformMass : public core::behavior::Mass<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(UniformMass,DataTypes,TMassType),
                SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
-
+    
     typedef core::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
