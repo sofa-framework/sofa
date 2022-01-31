@@ -24,7 +24,7 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/testing/NumericTest.h>
 using sofa::testing::NumericTest;
 
-#include <SofaExplicitOdeSolver_test/MassSpringSystemCreation.h>
+#include <sofa/component/odesolver/testing/MassSpringSystemCreation.h>
 
 #include <SceneCreator/SceneCreator.h>
 
