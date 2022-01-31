@@ -22,15 +22,13 @@
 #pragma once
 
 #include <sofa/core/config.h>
-#include <type_traits>
 
 namespace sofa::component::mass
 {
 
-template<typename T, typename = void>
+template<typename T>
 struct MassType
 {
-    using type = std::false_type;
 };
 
 
