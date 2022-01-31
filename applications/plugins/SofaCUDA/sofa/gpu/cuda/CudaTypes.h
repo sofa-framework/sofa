@@ -835,29 +835,16 @@ template<> struct DataTypeName<sofa::gpu::cuda::Vec3d1> { static const char* nam
 // define MassType for CudaTypes
 namespace sofa::component::mass
 {
-    template<typename DataTypes>
-    struct MassType<DataTypes,
-        std::enable_if_t < std::is_same_v<DataTypes, sofa::gpu::cuda::CudaVectorTypes< type::Vec<DataTypes::spatial_dimensions, typename DataTypes::Real>, type::Vec<DataTypes::spatial_dimensions, typename DataTypes::Real>, typename DataTypes::Real > > >
-    >
+    template<class TCoord, class TDeriv, class TReal>
+    struct MassType<sofa::gpu::cuda::CudaVectorTypes< TCoord, TDeriv, TReal> >
     {
-        using type = typename DataTypes::Real;
+        using type = TReal;
     };
 
-    template<typename DataTypes>
-    struct MassType<DataTypes,
-        std::enable_if_t < std::is_same_v<DataTypes, sofa::gpu::cuda::CudaVectorTypes< gpu::cuda::Vec3r1<typename DataTypes::Real>, gpu::cuda::Vec3r1<typename DataTypes::Real>, typename DataTypes::Real > > >
-    >
+    template<int N, typename real>
+    struct MassType<sofa::gpu::cuda::CudaRigidTypes<N, real> >
     {
-        using type = typename DataTypes::Real;
-    };
-
-
-    template<typename DataTypes>
-    struct MassType<DataTypes,
-        std::enable_if_t < std::is_same_v<DataTypes, sofa::gpu::cuda::CudaRigidTypes<DataTypes::spatial_dimensions, typename DataTypes::Real> > >
-    >
-    {
-        using type = sofa::defaulttype::RigidMass< DataTypes::spatial_dimensions, typename DataTypes::Real>;
+        using type = sofa::defaulttype::RigidMass<N, real>;
     };
 
 } // namespace sofa::component::mass

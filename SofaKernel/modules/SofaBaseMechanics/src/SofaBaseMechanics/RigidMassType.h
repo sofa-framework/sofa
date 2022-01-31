@@ -24,17 +24,14 @@
 #include <sofa/core/config.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <SofaBaseMechanics/MassType.h>
-#include <type_traits>
 
 namespace sofa::component::mass
 {
 
-template<typename DataTypes> 
-struct MassType<DataTypes,
-                 std::enable_if_t < std::is_same_v<DataTypes, sofa::defaulttype::StdRigidTypes<DataTypes::spatial_dimensions, typename DataTypes::Real> > >
-> 
+template<sofa::Size N, typename real>
+struct MassType<sofa::defaulttype::StdRigidTypes<N, real> >
 {
-    using type = sofa::defaulttype::RigidMass< DataTypes::spatial_dimensions, typename DataTypes::Real>;
+    using type = sofa::defaulttype::RigidMass< N, real>;
 };
 
 

@@ -29,12 +29,10 @@
 namespace sofa::component::mass
 {
 
-template<typename DataTypes>
-struct MassType<DataTypes,
-                std::enable_if_t < std::is_same_v<DataTypes, defaulttype::StdVectorTypes< type::Vec<DataTypes::spatial_dimensions, typename DataTypes::Real>, type::Vec<DataTypes::spatial_dimensions, typename DataTypes::Real>, typename DataTypes::Real > > >
->
+template<class TCoord, class TDeriv, class TReal>
+struct MassType<defaulttype::StdVectorTypes< TCoord, TDeriv, TReal> >
 {
-    using type = typename DataTypes::Real;
+    using type = TReal;
 };
 
 
