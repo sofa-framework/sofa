@@ -448,7 +448,7 @@ void FastTriangularBendingSprings<DataTypes>::draw(const core::visual::VisualPar
     vparams->drawTool()->disableLighting();
 
     const type::vector<EdgeSpring>& edgeInf = d_edgeSprings.getValue();
-    sofa::type::RGBAColor color = sofa::type::RGBAColor::green();
+    constexpr sofa::type::RGBAColor color = sofa::type::RGBAColor::green();
     std::vector<sofa::type::Vector3> vertices;
 
     for(i=0; i<edgeInf.size(); ++i)

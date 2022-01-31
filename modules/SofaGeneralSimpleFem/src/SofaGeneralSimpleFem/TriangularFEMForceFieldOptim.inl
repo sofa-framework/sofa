@@ -749,10 +749,10 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
     {
         std::vector< Vector3 > points[4];
 
-        const sofa::type::RGBAColor c0(1,0,0,1);
-        const sofa::type::RGBAColor c1(0,1,0,1);
-        const sofa::type::RGBAColor c2(1,0.5,0,1);
-        const sofa::type::RGBAColor c3(0,0,1,1);
+        constexpr sofa::type::RGBAColor c0 = sofa::type::RGBAColor::red();
+        constexpr sofa::type::RGBAColor c1 = sofa::type::RGBAColor::green();
+        constexpr sofa::type::RGBAColor c2(1,0.5,0,1);
+        constexpr sofa::type::RGBAColor c3 = sofa::type::RGBAColor::blue();
 
         points[0].reserve(nbTriangles*2);
         points[1].reserve(nbTriangles*2);

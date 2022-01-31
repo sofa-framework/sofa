@@ -569,7 +569,7 @@ void RecordedCamera::draw(const core::visual::VisualParams* vparams)
             return;
 
         vparams->drawTool()->disableLighting();
-        sofa::type::RGBAColor color(0,1,0.5,1);
+        constexpr sofa::type::RGBAColor color(0,1,0.5,1);
         std::vector<sofa::type::Vector3> vertices;
 
         // Camera positions
@@ -603,7 +603,7 @@ void RecordedCamera::draw(const core::visual::VisualParams* vparams)
             return;
 
         vparams->drawTool()->disableLighting();
-        sofa::type::RGBAColor color(0,1,0.5,1);
+        constexpr sofa::type::RGBAColor color(0,1,0.5,1);
         std::vector<sofa::type::Vector3> vertices;
 
         // Camera positions
