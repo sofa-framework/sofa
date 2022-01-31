@@ -3,11 +3,9 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaExplicitOdeSolver_test)
 
 set(HEADER_FILES
-    MassSpringSystemCreation.h
 )
 
-set(SOURCE_FILES
-    EulerExplicitSolverDynamic_test.cpp)
+set(SOURCE_FILES)
 
 sofa_find_package(SofaExplicitOdeSolver REQUIRED)
 

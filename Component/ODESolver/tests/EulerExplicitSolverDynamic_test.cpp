@@ -24,8 +24,6 @@ using sofa::testing::BaseSimulationTest;
 
 #include <SceneCreator/SceneCreator.h>
 
-#include "MassSpringSystemCreation.h"
-
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -40,6 +38,7 @@ typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Type
 
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <sofa/component/odesolver/testing/MassSpringSystemCreation.h>
 
 namespace sofa {
 
