@@ -222,6 +222,21 @@ public:
     /// Answer wether mass matrix is lumped or not
     bool isLumped() const { return d_lumping.getValue(); }
 
+    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override
+    {
+        Inherited::parse(arg);
+
+        if (arg->getAttribute("template"))
+        {
+            auto splitTemplates = sofa::helper::split(std::string(arg->getAttribute("template")), ',');
+            if (splitTemplates.size() > 1)
+            {
+                msg_warning() << "MassType is not required anymore and the template is deprecated, please delete it from your scene." << msgendl
+                    << "As your mass is templated on " << DataTypes::Name() << ", MassType has been defined as " << sofa::helper::NameDecoder::getTypeName<MassType>() << " .";
+                msg_warning() << "If you want to set the template, you must write now \"template='" << DataTypes::Name() << "'\" .";
+            }
+        }
+    }
 
 protected:
     /** Method to initialize @sa MassType when a new Point is created to compute mass coefficient matrix.
