@@ -107,7 +107,7 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
     simulatedScene->addObject(cgLinearSolver);
 
     using MechanicalObjectRigid3 = sofa::component::container::MechanicalObject<sofa::defaulttype::RigidTypes>;
-    using UniformMassRigid3 = sofa::component::mass::UniformMass<sofa::defaulttype::RigidTypes, sofa::defaulttype::Rigid3dMass>;
+    using UniformMassRigid3 = sofa::component::mass::UniformMass<sofa::defaulttype::RigidTypes>;
     using RigidMappingRigid3_to_3 = sofa::component::mapping::RigidMapping<sofa::defaulttype::RigidTypes, sofa::defaulttype::Vec3Types>;
     using FixedConstraintRigid3 = sofa::component::projectiveconstraintset::FixedConstraint<sofa::defaulttype::RigidTypes>;
     // The rigid object
@@ -118,7 +118,7 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
 
 
     using MechanicalObject3 = sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types>;
-    using UniformMassRigid3 = sofa::component::mass::UniformMass<sofa::defaulttype::RigidTypes, sofa::defaulttype::Rigid3dMass>;
+    using UniformMassRigid3 = sofa::component::mass::UniformMass<sofa::defaulttype::RigidTypes>;
     using RigidMappingRigid3_to_3 = sofa::component::mapping::RigidMapping<sofa::defaulttype::RigidTypes, sofa::defaulttype::Vec3Types>;
     using FixedConstraintRigid3 = sofa::component::projectiveconstraintset::FixedConstraint<sofa::defaulttype::Rigid3Types>;
     // Particles mapped to the rigid object
@@ -133,7 +133,7 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
 
     // The deformable grid, connected to its 2 parents using a MultiMapping
     using SubsetMultiMapping3_to_3 = SubsetMultiMapping<sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types>;
-    using UniformMass3 = sofa::component::mass::UniformMass<sofa::defaulttype::Vec3Types, SReal>;
+    using UniformMass3 = sofa::component::mass::UniformMass<sofa::defaulttype::Vec3Types>;
     using HexahedronFEMForceField3 = HexahedronFEMForceField<sofa::defaulttype::Vec3Types>;
 
 
