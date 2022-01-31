@@ -19,13 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseVisual/VisualStyle.h>
+#include <sofa/component/visual/VisualStyle.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/Node.h>
-namespace sofa::component::visualmodel
+namespace sofa::component::visual
 {
 
 using namespace sofa::core::visual;
@@ -75,4 +75,4 @@ helper::WriteAccessor<sofa::core::visual::DisplayFlags> addVisualStyle( simulati
     return helper::getWriteAccessor(visualStyle->displayFlags);
 }
 
-} // namespace sofa::component::visualmodel
+} // namespace sofa::component::visual

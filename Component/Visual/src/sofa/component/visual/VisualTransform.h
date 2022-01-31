@@ -20,19 +20,19 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralVisual/config.h>
+#include <sofa/component/visual/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa::component::visualmodel
+namespace sofa::component::visual
 {
 
 /// Visually apply a (translation,rotation) transformation to visual elements rendering within a node or a sub-graph.
 /// This can be used to change where elements are rendered, but has no effect on the actual simulation.
 /// It can be used for example to correctly render forcefields applied to a mesh that is then transformed by a rigid DOF using DeformableOnRigidFrameMapping.
 
-class SOFA_SOFAGENERALVISUAL_API VisualTransform : public sofa::core::visual::VisualModel
+class SOFA_COMPONENT_VISUAL_API VisualTransform : public sofa::core::visual::VisualModel
 {
 public:
     SOFA_CLASS(VisualTransform,sofa::core::visual::VisualModel);
@@ -61,4 +61,4 @@ protected:
 };
 
 
-} // namespace sofa::component::visualmodel
+} // namespace sofa::component::visual

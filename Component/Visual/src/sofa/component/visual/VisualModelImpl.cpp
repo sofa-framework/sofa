@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseVisual/VisualModelImpl.h>
+#include <sofa/component/visual/VisualModelImpl.h>
 
 #include <sofa/core/topology/TopologyData.inl>
 #include <SofaBaseTopology/SparseGridTopology.h>
@@ -41,7 +41,7 @@
 #include <map>
 #include <memory>
 
-namespace sofa::component::visualmodel
+namespace sofa::component::visual
 {
 using sofa::type::RGBAColor;
 using sofa::type::Material;
@@ -1689,4 +1689,4 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
     tindex+=nbt;
 }
 
-} // namespace sofa::component::visualmodel
+} // namespace sofa::component::visual

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseVisual/BaseCamera.h>
+#include <sofa/component/visual/BaseCamera.h>
 
 
 #include <sofa/core/ObjectFactory.h>
@@ -40,7 +40,7 @@ using sofa::helper::isEqual;
 
 using sofa::type::RGBAColor ;
 
-namespace sofa::component::visualmodel
+namespace sofa::component::visual
 {
 
 BaseCamera::BaseCamera()
@@ -962,4 +962,4 @@ void BaseCamera::drawCamera(const core::visual::VisualParams* vparams)
     dt->setLightingEnabled(true);
 }
 
-} // namespace sofa::component::visualmodel
+} // namespace sofa::component::visual

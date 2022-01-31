@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralVisual/config.h>
+#include <sofa/component/visual/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/type/RGBAColor.h>
@@ -35,11 +35,11 @@ namespace sofa::core::behavior
     class BaseMechanicalState;
 } // namespace sofa::core::behavior
 
-namespace sofa::component::visualmodel
+namespace sofa::component::visual
 {
 
 /// Draw camera-oriented (billboard) 3D text
-class SOFA_SOFAGENERALVISUAL_API Visual3DText : public core::visual::VisualModel
+class SOFA_COMPONENT_VISUAL_API Visual3DText : public core::visual::VisualModel
 {
 
 public:
@@ -65,4 +65,4 @@ public:
 
 };
 
-} // namespace sofa::component::visualmodel
+} // namespace sofa::component::visual

@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaGeneralVisual/Visual3DText.h>
+#include <sofa/component/visual/Visual3DText.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
 
 
-namespace sofa::component::visualmodel
+namespace sofa::component::visual
 {
 
 int Visual3DTextClass = core::RegisterObject("Display 3D camera-oriented text")
@@ -72,4 +72,4 @@ void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace sofa::component::visualmodel
+} // namespace sofa::component::visual

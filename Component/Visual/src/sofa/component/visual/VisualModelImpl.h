@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseVisual/config.h>
+#include <sofa/component/visual/config.h>
 
 #include <sofa/core/State.h>
 #include <sofa/core/visual/VisualModel.h>
@@ -33,12 +33,12 @@
 #include <sofa/core/topology/TopologyData.inl>
 #include <string>
 
-namespace sofa::component::visualmodel
+namespace sofa::component::visual
 {
 
 using sofa::core::objectmodel::Data ;
 
-class SOFA_SOFABASEVISUAL_API Vec3State : public core::State< sofa::defaulttype::Vec3Types >
+class SOFA_COMPONENT_VISUAL_API Vec3State : public core::State< sofa::defaulttype::Vec3Types >
 {
 public:
     core::topology::PointData< VecCoord > m_positions; ///< Vertices coordinates
@@ -71,7 +71,7 @@ public:
  *
  */
 
-class SOFA_SOFABASEVISUAL_API VisualModelImpl : public core::visual::VisualModel, public Vec3State //, public RigidState
+class SOFA_COMPONENT_VISUAL_API VisualModelImpl : public core::visual::VisualModel, public Vec3State //, public RigidState
 {
 public:
     SOFA_CLASS2(VisualModelImpl, core::visual::VisualModel, Vec3State);
@@ -430,4 +430,4 @@ protected:
 };
 
 
-} // namespace sofa::component::visualmodel
+} // namespace sofa::component::visual

@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseVisual/config.h>
+#include <sofa/component/visual/config.h>
 
-#include <SofaBaseVisual/BaseCamera.h>
+#include <sofa/component/visual/BaseCamera.h>
 
-namespace sofa::component::visualmodel
+namespace sofa::component::visual
 {
 
-class SOFA_SOFABASEVISUAL_API Camera : public BaseCamera
+class SOFA_COMPONENT_VISUAL_API Camera : public BaseCamera
 {
 public:
     SOFA_CLASS(Camera, BaseCamera);
@@ -43,4 +43,4 @@ private:
 
 };
 
-} // namespace sofa::component::visualmodel
+} // namespace sofa::component::visual
