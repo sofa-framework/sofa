@@ -30,8 +30,8 @@
 #include <sofa/type/vector.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-#include <SofaBaseMechanics/MassVecTypes.h>
-#include <SofaBaseMechanics/MassRigidTypes.h>
+#include <SofaBaseMechanics/VecMassType.h>
+#include <SofaBaseMechanics/RigidMassType.h>
 
 //VERY IMPORTANT FOR GRAPHS
 #include <sofa/helper/map.h>
@@ -61,7 +61,7 @@ class MeshMatrixMass : public core::behavior::Mass<DataTypes>
 public:
     SOFA_CLASS(SOFA_TEMPLATE(MeshMatrixMass,DataTypes), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
 
-    using TMassType = typename sofa::component::mass::MassTypes<DataTypes>::type;
+    using TMassType = typename sofa::component::mass::MassType<DataTypes>::type;
 
     typedef core::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord                    VecCoord;

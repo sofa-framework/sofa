@@ -34,7 +34,7 @@
 #include <sofa/helper/accessor.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/gpu/cuda/CudaMemoryManager.h>
-#include <SofaBaseMechanics/MassTypes.h>
+#include <SofaBaseMechanics/MassType.h>
 #include <iostream>
 
 namespace sofa
@@ -836,7 +836,7 @@ template<> struct DataTypeName<sofa::gpu::cuda::Vec3d1> { static const char* nam
 namespace sofa::component::mass
 {
     template<typename DataTypes>
-    struct MassTypes<DataTypes,
+    struct MassType<DataTypes,
         std::enable_if_t < std::is_same_v<DataTypes, sofa::gpu::cuda::CudaVectorTypes< type::Vec<DataTypes::spatial_dimensions, typename DataTypes::Real>, type::Vec<DataTypes::spatial_dimensions, typename DataTypes::Real>, typename DataTypes::Real > > >
     >
     {
@@ -844,7 +844,7 @@ namespace sofa::component::mass
     };
 
     template<typename DataTypes>
-    struct MassTypes<DataTypes,
+    struct MassType<DataTypes,
         std::enable_if_t < std::is_same_v<DataTypes, sofa::gpu::cuda::CudaVectorTypes< gpu::cuda::Vec3r1<typename DataTypes::Real>, gpu::cuda::Vec3r1<typename DataTypes::Real>, typename DataTypes::Real > > >
     >
     {
@@ -853,7 +853,7 @@ namespace sofa::component::mass
 
 
     template<typename DataTypes>
-    struct MassTypes<DataTypes,
+    struct MassType<DataTypes,
         std::enable_if_t < std::is_same_v<DataTypes, sofa::gpu::cuda::CudaRigidTypes<DataTypes::spatial_dimensions, typename DataTypes::Real> > >
     >
     {

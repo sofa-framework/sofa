@@ -31,8 +31,8 @@
 #include <sofa/core/topology/TopologyData.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#include <SofaBaseMechanics/MassVecTypes.h>
-#include <SofaBaseMechanics/MassRigidTypes.h>
+#include <SofaBaseMechanics/VecMassType.h>
+#include <SofaBaseMechanics/RigidMassType.h>
 
 #include <type_traits>
 
@@ -58,7 +58,7 @@ class DiagonalMass : public core::behavior::Mass<DataTypes>
 public:
     SOFA_CLASS(SOFA_TEMPLATE(DiagonalMass,DataTypes), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
 
-    using TMassType = typename sofa::component::mass::MassTypes<DataTypes>::type;
+    using TMassType = typename sofa::component::mass::MassType<DataTypes>::type;
 
     typedef core::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;

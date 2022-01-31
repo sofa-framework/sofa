@@ -28,10 +28,9 @@ namespace sofa::component::mass
 {
 
 template<typename T, typename = void>
-struct MassTypes 
+struct MassType
 {
     using type = std::false_type;
-    static_assert(true, "No MassTypes defined for this DataTypes.");
 };
 
 

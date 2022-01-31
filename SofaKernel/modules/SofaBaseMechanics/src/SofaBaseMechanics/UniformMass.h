@@ -30,8 +30,8 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/TopologySubsetIndices.h>
 
-#include <SofaBaseMechanics/MassVecTypes.h>
-#include <SofaBaseMechanics/MassRigidTypes.h>
+#include <SofaBaseMechanics/VecMassType.h>
+#include <SofaBaseMechanics/RigidMassType.h>
 
 #include <type_traits>
 
@@ -46,7 +46,7 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(UniformMass,DataTypes),
                SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
 
-    using TMassType = typename sofa::component::mass::MassTypes<DataTypes>::type;
+    using TMassType = typename sofa::component::mass::MassType<DataTypes>::type;
     
     typedef core::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;

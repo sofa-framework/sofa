@@ -23,14 +23,14 @@
 
 #include <sofa/core/config.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseMechanics/MassTypes.h>
+#include <SofaBaseMechanics/MassType.h>
 #include <type_traits>
 
 namespace sofa::component::mass
 {
 
 template<typename DataTypes>
-struct MassTypes<DataTypes,
+struct MassType<DataTypes,
                 std::enable_if_t < std::is_same_v<DataTypes, defaulttype::StdVectorTypes< type::Vec<DataTypes::spatial_dimensions, typename DataTypes::Real>, type::Vec<DataTypes::spatial_dimensions, typename DataTypes::Real>, typename DataTypes::Real > > >
 >
 {
