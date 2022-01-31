@@ -63,6 +63,7 @@ TopologicalChangeProcessor::TopologicalChangeProcessor()
     , m_loop( initData(&m_loop, false, "loop", "set to 'true' to re-read the file when reaching the end"))
     , m_useDataInputs( initData(&m_useDataInputs, false, "useDataInputs", "If true, will perform operation using Data input lists rather than text file."))
     , m_timeToRemove( initData(&m_timeToRemove, 0.0, "timeToRemove", "If using option useDataInputs, time at which will be done the operations. Possibility to use the interval Data also."))
+    , m_pointsToRemove(initData (&m_pointsToRemove, "pointsToRemove", "List of point IDs to be removed."))
     , m_edgesToRemove (initData (&m_edgesToRemove, "edgesToRemove", "List of edge IDs to be removed."))
     , m_trianglesToRemove (initData (&m_trianglesToRemove, "trianglesToRemove", "List of triangle IDs to be removed."))
     , m_quadsToRemove (initData (&m_quadsToRemove, "quadsToRemove", "List of quad IDs to be removed."))
@@ -218,6 +219,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
             return;
 
         // process topological changes
+        helper::ReadAccessor< Data<type::vector<Index> > > points = m_pointsToRemove;
         helper::ReadAccessor< Data<type::vector<Index> > > edges = m_edgesToRemove;
         helper::ReadAccessor< Data<type::vector<Index> > > triangles = m_trianglesToRemove;
         helper::ReadAccessor< Data<type::vector<Index> > > quads = m_quadsToRemove;
@@ -287,6 +289,19 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
                 topoMod->removeItems(vitems);
             else
                 msg_error() << "No EdgeTopology available";
+        }
+
+        if (!points.empty())
+        {
+            sofa::component::topology::PointSetTopologyModifier* topoMod;
+            m_topology->getContext()->get(topoMod);
+            type::vector<Index> vitems;
+            vitems.assign(points.begin(), points.end());
+
+            if (topoMod)
+                topoMod->removeItems(vitems);
+            else
+                msg_error() << "No PointTopology available";
         }
 
         // iterate, time set to infini if no interval.
