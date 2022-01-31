@@ -533,18 +533,10 @@ void TriangleFEMForceField<DataTypes>::computeRotationLarge( Transformation &r, 
     // second vector in the plane of the two first edges
     // third vector orthogonal to first and second
 
-    Coord edgex = p[b] - p[a];
-    edgex.normalize();
-
-    Coord edgey = p[c] - p[a];
-    edgey.normalize();
-
-    Coord edgez;
-    edgez = cross(edgex, edgey);
-    edgez.normalize();
-
-    edgey = cross(edgez, edgex);
-    edgey.normalize();
+    const Coord edgex = (p[b]-p[a]).normalized();
+          Coord edgey = p[c]-p[a];
+    const Coord edgez = cross( edgex, edgey ).normalized();
+                edgey = cross( edgez, edgex );
 
     r[0][0] = edgex[0];
     r[0][1] = edgex[1];

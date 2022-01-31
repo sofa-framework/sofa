@@ -425,11 +425,9 @@ void HexahedralFEMForceField<DataTypes>::computeRotationLarge( Transformation &r
     edgex.normalize();
     edgey.normalize();
 
-    Coord edgez = cross( edgex, edgey );
-    edgez.normalize();
+    const Coord edgez = cross( edgex, edgey );
 
     edgey = cross( edgez, edgex );
-    edgey.normalize();
 
     r[0][0] = edgex[0];
     r[0][1] = edgex[1];
