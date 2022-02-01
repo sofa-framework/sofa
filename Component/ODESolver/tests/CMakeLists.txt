@@ -15,7 +15,7 @@ set(SOURCE_FILES
     RungeKutta2ExplicitSolverDynamic_test.cpp
 )
 
-add_definitions("-DSOFAIMPLICITODESOLVER_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
+add_definitions("-DSOFACOMPONENTODESOLVER_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 # dependencies are managed directly in the target_link_libraries pass
