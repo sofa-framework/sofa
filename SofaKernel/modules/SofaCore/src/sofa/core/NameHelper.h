@@ -23,7 +23,7 @@
 
 #include <sofa/core/config.h>
 #include <string>
-#include <map>
+#include <unordered_map>
 
 namespace sofa::core
 {
@@ -35,15 +35,11 @@ class SOFA_CORE_API NameHelper
 {
 public:
 
-    static NameHelper& getInstance();
     std::string resolveName(const std::string& type, const std::string& name);
 
 private:
-    NameHelper() = default;
 
-    std::map<std::string, int> m_instanceCounter;
-
-    void registerName(const std::string& name);
+    std::unordered_map<std::string, int> m_instanceCounter;
 };
 
 }

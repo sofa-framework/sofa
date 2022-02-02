@@ -26,21 +26,14 @@
 namespace sofa::core
 {
 
-NameHelper& NameHelper::getInstance()
-{
-    static NameHelper nameHelper;
-    return nameHelper;
-}
-
 std::string NameHelper::resolveName(const std::string& type, const std::string& name)
 {
     std::string resolvedName;
     if(name.empty())
     {
         const std::string radix = sofa::core::ObjectFactory::ShortName(type);
-        registerName(radix);
         std::ostringstream oss;
-        oss << radix << m_instanceCounter[radix];
+        oss << radix << m_instanceCounter[radix]++;
         resolvedName = oss.str();
     }
     else
@@ -48,18 +41,6 @@ std::string NameHelper::resolveName(const std::string& type, const std::string& 
         resolvedName = name;
     }
     return resolvedName;
-}
-
-void NameHelper::registerName(const std::string& name)
-{
-    if( m_instanceCounter.find(name) != m_instanceCounter.end())
-    {
-        m_instanceCounter[name]++;
-    }
-    else
-    {
-        m_instanceCounter[name] = 1;
-    }
 }
 
 }//namespace sofa::core

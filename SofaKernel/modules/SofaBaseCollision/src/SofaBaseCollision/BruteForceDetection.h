@@ -41,11 +41,11 @@ public:
     static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
     {
         BruteForceBroadPhase::SPtr broadPhase = sofa::core::objectmodel::New<BruteForceBroadPhase>();
-        broadPhase->setName(sofa::core::NameHelper::getInstance().resolveName(broadPhase->getClassName(), {}));
+        broadPhase->setName(context->getNameHelper().resolveName(broadPhase->getClassName(), {}));
         if (context) context->addObject(broadPhase);
 
         BVHNarrowPhase::SPtr narrowPhase = sofa::core::objectmodel::New<BVHNarrowPhase>();
-        narrowPhase->setName(sofa::core::NameHelper::getInstance().resolveName(narrowPhase->getClassName(), {}));
+        narrowPhase->setName(context->getNameHelper().resolveName(narrowPhase->getClassName(), {}));
         if (context) context->addObject(narrowPhase);
 
         typename T::SPtr obj = sofa::core::objectmodel::New<T>();
