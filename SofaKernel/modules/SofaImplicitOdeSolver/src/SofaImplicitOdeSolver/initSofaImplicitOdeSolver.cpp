@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaImplicitOdeSolver/initSofaImplicitOdeSolver.h>
 
+#include <sofa/helper/system/PluginManager.h>
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
@@ -33,6 +34,10 @@ void initSofaImplicitOdeSolver()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaImplicitOdeSolver") << "SofaImplicitOdeSolver is deprecated; please load Sofa.Component.ODESolver.Backward instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.ODESolver.Backward");
+
         first = false;
     }
 }

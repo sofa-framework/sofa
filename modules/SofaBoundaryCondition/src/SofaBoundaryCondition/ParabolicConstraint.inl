@@ -222,7 +222,7 @@ void ParabolicConstraint<DataTypes>::draw(const core::visual::VisualParams* vpar
     Real nbStep = t/dt;
 
     vparams->drawTool()->disableLighting();
-    const sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
+    constexpr sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
     std::vector<sofa::type::Vector3> vertices;
 
     for (unsigned int i=0 ; i< nbStep ; i++)

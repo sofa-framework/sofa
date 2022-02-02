@@ -290,10 +290,12 @@ void UniformMass<Vec6Types, MassType>::drawVec6Impl(const core::visual::VisualPa
     std::vector<Vector3> vertices;
     std::vector<sofa::type::RGBAColor> colors;
 
-    sofa::type::RGBAColor colorSet[3];
-    colorSet[0] = sofa::type::RGBAColor::red();
-    colorSet[1] = sofa::type::RGBAColor::green();
-    colorSet[2] = sofa::type::RGBAColor::blue();
+    constexpr sofa::type::RGBAColor colorSet[3]
+    {
+        sofa::type::RGBAColor::red(),
+        sofa::type::RGBAColor::green(),
+        sofa::type::RGBAColor::blue()
+    };
 
     for (unsigned int i=0; i<indices.size(); i++)
     {

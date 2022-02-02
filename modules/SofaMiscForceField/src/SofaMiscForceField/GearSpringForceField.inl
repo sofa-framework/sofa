@@ -325,7 +325,7 @@ void GearSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
     const VecCoord& p2 =this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
     vparams->drawTool()->disableLighting();
-    sofa::type::RGBAColor color(1, 1, 0, 1);
+    constexpr const sofa::type::RGBAColor& color = sofa::type::RGBAColor::yellow();
     const type::vector<Spring>& springs = this->springs.getValue();
 
     float radius = showFactorSize.getValue() / 15; //see helper/gl/Cylinder.cpp

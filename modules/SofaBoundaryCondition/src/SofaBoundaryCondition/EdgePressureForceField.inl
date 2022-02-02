@@ -422,7 +422,7 @@ void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams* v
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     vparams->drawTool()->disableLighting();
 
-    const sofa::type::RGBAColor& color = sofa::type::RGBAColor::yellow();
+    constexpr const sofa::type::RGBAColor& color = sofa::type::RGBAColor::yellow();
 
     std::vector<sofa::type::Vector3> vertices;
 

@@ -298,6 +298,13 @@ void BoxROI<DataTypes>::init()
         }
     }
 
+    if constexpr (DataTypes::spatial_dimensions != 3)
+    {
+        static const std::string message = "\nOriented bounding boxes are not supported in " + std::to_string(DataTypes::spatial_dimensions) + "D";
+        d_orientedBoxes.setHelp(d_orientedBoxes.getHelp() + message);
+        msg_warning_when(d_orientedBoxes.isSet()) << message;
+    }
+
     computeOrientedBoxes();
 
     update();
@@ -314,6 +321,11 @@ void BoxROI<DataTypes>::reinit()
 template <class DataTypes>
 void BoxROI<DataTypes>::computeOrientedBoxes()
 {
+    if constexpr (DataTypes::spatial_dimensions != 3)
+    {
+        return;
+    }
+
     const vector<Vec10>& orientedBoxes = d_orientedBoxes.getValue();
 
     if(orientedBoxes.empty())
@@ -323,18 +335,18 @@ void BoxROI<DataTypes>::computeOrientedBoxes()
 
     for(unsigned int i=0; i<orientedBoxes.size(); i++)
     {
-        Vec10 box = orientedBoxes[i];
+        const Vec10& box = orientedBoxes[i];
 
-        Vec3 p0 = Vec3(box[0], box[1], box[2]);
-        Vec3 p1 = Vec3(box[3], box[4], box[5]);
-        Vec3 p2 = Vec3(box[6], box[7], box[8]);
+        const Vec3 p0 = Vec3(box[0], box[1], box[2]);
+        const Vec3 p1 = Vec3(box[3], box[4], box[5]);
+        const Vec3 p2 = Vec3(box[6], box[7], box[8]);
         double depth = box[9];
 
         Vec3 normal = (p1-p0).cross(p2-p0);
         normal.normalize();
 
-        Vec3 p3 = p0 + (p2-p1);
-        Vec3 p6 = p2 + normal * depth;
+        const Vec3 p3 = p0 + (p2-p1);
+        const Vec3 p6 = p2 + normal * depth;
 
         Vec3 plane0 = (p1-p0).cross(normal);
         plane0.normalize();
@@ -366,30 +378,43 @@ void BoxROI<DataTypes>::computeOrientedBoxes()
 template <class DataTypes>
 bool BoxROI<DataTypes>::isPointInOrientedBox(const typename DataTypes::CPos& point, const OrientedBox& box)
 {
-    Vec3 pv0 = Vec3(point[0]-box.p0[0], point[1]-box.p0[1], point[2]-box.p0[2]);
-    Vec3 pv1 = Vec3(point[0]-box.p2[0], point[1]-box.p2[1], point[2]-box.p2[2]);
-
-
-    if( fabs(dot(pv0, box.plane0)) <= box.width && fabs(dot(pv1, box.plane1)) <= box.width )
+    if constexpr (DataTypes::spatial_dimensions != 3)
     {
-        if ( fabs(dot(pv0, box.plane2)) <= box.length && fabs(dot(pv1, box.plane3)) <= box.length )
+        return false;
+    }
+    else
+    {
+        const Vec3 pv0 = Vec3(point[0]-box.p0[0], point[1]-box.p0[1], point[2]-box.p0[2]);
+        const Vec3 pv1 = Vec3(point[0]-box.p2[0], point[1]-box.p2[1], point[2]-box.p2[2]);
+
+        if( fabs(dot(pv0, box.plane0)) <= box.width && fabs(dot(pv1, box.plane1)) <= box.width )
         {
-            if ( !(fabs(dot(pv0, box.normal)) <= fabs(box.depth/2)) )
+            if ( fabs(dot(pv0, box.plane2)) <= box.length && fabs(dot(pv1, box.plane3)) <= box.length )
+            {
+                if ( !(fabs(dot(pv0, box.normal)) <= fabs(box.depth/2)) )
+                    return false;
+            }
+            else
                 return false;
         }
         else
             return false;
-    }
-    else
-        return false;
 
-    return true;
+        return true;
+    }
 }
 
 template <class DataTypes>
 bool BoxROI<DataTypes>::isPointInAlignedBox(const typename DataTypes::CPos& p, const Vec6& box)
 {
-    return ( p[0] >= box[0] && p[0] <= box[3] && p[1] >= box[1] && p[1] <= box[4] && p[2] >= box[2] && p[2] <= box[5] );
+    for (std::size_t i = 0; i < DataTypes::spatial_dimensions; ++i)
+    {
+        if (p[i] < box[i] || p[i] > box[i + 3])
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 template <class DataTypes>
@@ -401,9 +426,12 @@ bool BoxROI<DataTypes>::isPointInBoxes(const typename DataTypes::CPos& p)
         if (isPointInAlignedBox(p, alignedBoxes[i]))
             return true;
 
-    for (unsigned int i=0; i<m_orientedBoxes.size(); ++i)
-        if (isPointInOrientedBox(p, m_orientedBoxes[i]))
-            return true;
+    if constexpr (DataTypes::spatial_dimensions == 3)
+    {
+        for (unsigned int i=0; i<m_orientedBoxes.size(); ++i)
+            if (isPointInOrientedBox(p, m_orientedBoxes[i]))
+                return true;
+    }
 
     return false;
 }
@@ -716,7 +744,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         return;
 
     const VecCoord& x0 = d_X0.getValue();
-    auto color = sofa::type::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f);
+    constexpr auto color = sofa::type::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f);
 
 
     ///draw the boxes

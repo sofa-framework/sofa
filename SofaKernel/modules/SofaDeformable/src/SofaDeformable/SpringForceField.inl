@@ -211,10 +211,10 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
             points[3].push_back(point2);
         }
     }
-    const RGBAColor c0 = RGBAColor::red();
-    const RGBAColor c1 = RGBAColor::green();
-    const RGBAColor c2 {1.0f, 0.5f, 0.0f, 1.0f };
-    const RGBAColor c3{ 0.0f, 1.0f, 0.5f, 1.0f };
+    constexpr RGBAColor c0 = RGBAColor::red();
+    constexpr RGBAColor c1 = RGBAColor::green();
+    constexpr RGBAColor c2 {1.0f, 0.5f, 0.0f, 1.0f };
+    constexpr RGBAColor c3{ 0.0f, 1.0f, 0.5f, 1.0f };
 
     if (showArrowSize.getValue()==0 || drawMode.getValue() == 0)
     {

@@ -681,6 +681,28 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
 
 };
 
-const std::map< std::string, CreatableMoved, std::less<> > movedComponents = {};
+const std::map< std::string, CreatableMoved, std::less<> > movedComponents = 
+{
+   /***********************/
+   // MOVED SINCE v22.06
+   // SofaMiscSolver was deprecated in #2571
+   { "DampVelocitySolver", CreatableMoved("v22.06", "SofaMiscSolver", "Sofa.Component.ODESolver.Forward") },
+   { "NewmarkImplicitSolver", CreatableMoved("v22.06", "SofaMiscSolver", "Sofa.Component.ODESolver.Backward") },
+
+   // SofaExplicitOdeSolver was deprecated in #2571
+   { "EulerExplicitSolver", CreatableMoved("v22.06", "SofaExplicitOdeSolver", "Sofa.Component.ODESolver.Forward") },
+
+   // SofaImplicitOdeSolver was deprecated in #2571
+   { "EulerImplicitSolver", CreatableMoved("v22.06", "SofaImplicitOdeSolver", "Sofa.Component.ODESolver.Backward") },
+   { "StaticSolver", CreatableMoved("v22.06", "SofaImplicitOdeSolver", "Sofa.Component.ODESolver.Backward") },
+
+   // SofaGeneralExplicitOdeSolver was deprecated in #2571
+   { "CentralDifferenceSolver", CreatableMoved("v22.06", "SofaGeneralExplicitOdeSolver", "Sofa.Component.ODESolver.Forward") },
+   { "RungeKutta2Solver", CreatableMoved("v22.06", "SofaGeneralExplicitOdeSolver", "Sofa.Component.ODESolver.Forward") },
+   { "RungeKutta4Solver", CreatableMoved("v22.06", "SofaGeneralExplicitOdeSolver", "Sofa.Component.ODESolver.Forward") },
+
+   // SofaGeneralImplicitOdeSolver was deprecated in #2571
+   { "VariationalSymplecticSolver", CreatableMoved("v22.06", "SofaGeneralImplicitOdeSolver", "Sofa.Component.ODESolver.Backward") },
+};
 
 } // namespace sofa::helper::lifecycle
