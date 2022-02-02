@@ -23,19 +23,14 @@
 #define SOFA_SOFADISTANCEGRID_DISTANCEGRID_H
 #include <SofaDistanceGrid/config.h>
 
+#include <map>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/rmath.h>
 
 ///// Forward declaration
-namespace sofa
+namespace sofa::helper::io
 {
-    namespace helper
-    {
-        namespace io
-        {
-            class Mesh ;
-        }
-    }
+    class Mesh ;
 }
 
 
