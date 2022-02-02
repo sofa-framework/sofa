@@ -15,7 +15,7 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore)
 
-message(WARNING "${PROJECT_NAME} module is deprecated; its components are in Sofa.Component.ODESolver.Backward and Sofa.Component.ODESolver.Forward.")
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.ODESolver.Backward and Sofa.Component.ODESolver.Forward instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.ODESolver.Backward REQUIRED)
