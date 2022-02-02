@@ -14,7 +14,7 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-message(WARNING "${PROJECT_NAME} module is deprecated; its components are in Sofa.Component.IO.Mesh.")
+message(WARNING "${PROJECT_NAME} is deprecated. It will be removed at v23.06. Use Sofa.Component.IO.Mesh instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.IO.Mesh REQUIRED)

@@ -39,6 +39,7 @@ namespace sofa::component::playback
 } // namespace sofa::component::playback
 
 // Keep the previous macros
+// This backward compatibility will be removed at v23.06
 #ifndef SOFAGENERALLOADER_HAVE_ZLIB
 #define SOFAGENERALLOADER_HAVE_ZLIB SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
 #endif
