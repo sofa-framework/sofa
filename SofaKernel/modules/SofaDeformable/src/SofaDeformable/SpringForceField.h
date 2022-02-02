@@ -30,6 +30,8 @@
 
 #include <sofa/core/objectmodel/DataFileName.h>
 
+#include <sofa/core/topology/TopologySubsetIndices.h>
+
 namespace sofa::component::interactionforcefield
 {
 
@@ -59,7 +61,7 @@ public:
 
     inline friend std::ostream& operator << ( std::ostream& out, const LinearSpring<Real>& s )
     {
-        out<<s.m1<<" "<<s.m2<<" "<<s.ks<<" "<<s.kd<<" "<<s.initpos<<"\n";
+        out<<s.m1<<" "<<s.m2<<" "<<s.ks<<" "<<s.kd<<" "<<s.initpos;
         return out;
     }
 
@@ -106,6 +108,16 @@ public:
 
 protected:
     core::objectmodel::DataFileName fileSprings;
+
+    std::array<sofa::core::topology::TopologySubsetIndices, 2> d_springsIndices
+    {
+        sofa::core::topology::TopologySubsetIndices {initData ( &d_springsIndices[0], "springsIndices1", "List of indices in springs from the first mstate", true, true)},
+        sofa::core::topology::TopologySubsetIndices {initData ( &d_springsIndices[1], "springsIndices2", "List of indices in springs from the second mstate", true, true)}
+    };
+
+    void initializeTopologyHandler(sofa::core::topology::TopologySubsetIndices& indices, core::topology::BaseMeshTopology* topology, sofa::Index mstateId);
+    void updateTopologyIndicesFromSprings();
+    void applyRemovedPoints(const sofa::core::topology::PointsRemoved* pointsRemoved, sofa::Index mstateId);
 
 protected:
     bool maskInUse;
@@ -177,15 +189,25 @@ public:
     {
         springs.beginEdit()->push_back(Spring(m1,m2,ks,kd,initlen));
         springs.endEdit();
+
+        d_springsIndices[0].beginEdit()->push_back(m1);
+        d_springsIndices[0].endEdit();
+
+        d_springsIndices[1].beginEdit()->push_back(m2);
+        d_springsIndices[1].endEdit();
     }
 
     void addSpring(const Spring & spring)
     {
         springs.beginEdit()->push_back(spring);
         springs.endEdit();
-    }
 
-    void handleTopologyChange(core::topology::Topology *topo) override;
+        d_springsIndices[0].beginEdit()->push_back(spring.m1);
+        d_springsIndices[0].endEdit();
+
+        d_springsIndices[1].beginEdit()->push_back(spring.m2);
+        d_springsIndices[1].endEdit();
+    }
 
     /// initialization to export kinetic, potential energy  and force intensity to gnuplot files format
     void initGnuplot(const std::string path) override;

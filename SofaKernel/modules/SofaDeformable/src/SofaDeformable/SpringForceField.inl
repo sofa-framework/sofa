@@ -90,12 +90,118 @@ void SpringForceField<DataTypes>::reinit()
 }
 
 template <class DataTypes>
+void SpringForceField<DataTypes>::updateTopologyIndicesFromSprings()
+{
+    auto& indices1 = *d_springsIndices[0].beginEdit();
+    auto& indices2 = *d_springsIndices[1].beginEdit();
+    indices1.clear();
+    indices2.clear();
+    for (const auto& spring : sofa::helper::getReadAccessor(springs))
+    {
+        indices1.push_back(spring.m1);
+        indices2.push_back(spring.m2);
+    }
+    d_springsIndices[0].endEdit();
+    d_springsIndices[1].endEdit();
+}
+
+template <class DataTypes>
+void SpringForceField<DataTypes>::applyRemovedPoints(const sofa::core::topology::PointsRemoved* pointsRemoved, sofa::Index mstateId)
+{
+    if (pointsRemoved == nullptr)
+        return;
+
+    core::topology::BaseMeshTopology* modifiedTopology;
+    if (mstateId == 0)
+    {
+        modifiedTopology = this->getMState1()->getContext()->getMeshTopology();
+    }
+    else
+    {
+        modifiedTopology = this->getMState2()->getContext()->getMeshTopology();
+    }
+
+    if (modifiedTopology == nullptr)
+        return;
+
+    const auto& tab = pointsRemoved->getArray();
+
+    if (tab.empty())
+        return;
+
+    type::vector<Spring>& springsValue = *sofa::helper::getWriteAccessor(this->springs);
+    auto nbPoints = modifiedTopology->getNbPoints();
+
+    for (const auto pntId : tab)
+    {
+        --nbPoints;
+
+        sofa::type::vector<sofa::Index> toDelete;
+        sofa::Index i {};
+        for (const auto& spring : springsValue)
+        {
+            auto& id = mstateId == 0 ? spring.m1 : spring.m2;
+            if (id == pntId)
+            {
+                dmsg_info() << "Spring " << spring << " has a removed point: REMOVED";
+                toDelete.push_back(i);
+            }
+            ++i;
+        }
+
+        for (auto it = toDelete.rbegin(); it != toDelete.rend(); ++it)
+        {
+            springsValue.erase(springsValue.begin() + (*it));
+        }
+
+        for (auto& spring : springsValue)
+        {
+            auto& id = mstateId == 0 ? spring.m1 : spring.m2;
+            if (id == nbPoints)
+            {
+                dmsg_info() << "Spring " << spring << " has a renumbered point: MODIFY from " << id << " to " << pntId;
+                id = pntId;
+            }
+        }
+    }
+}
+
+template <class DataTypes>
 void SpringForceField<DataTypes>::init()
 {
     // Load
     if (!fileSprings.getValue().empty())
         load(fileSprings.getFullPath().c_str());
     this->Inherit::init();
+
+    initializeTopologyHandler(d_springsIndices[0], this->mstate1->getContext()->getMeshTopology(), 0);
+    initializeTopologyHandler(d_springsIndices[1], this->mstate2->getContext()->getMeshTopology(), 1);
+
+    updateTopologyIndicesFromSprings();
+}
+
+template <class DataTypes>
+void SpringForceField<DataTypes>::initializeTopologyHandler(sofa::core::topology::TopologySubsetIndices& indices,
+    core::topology::BaseMeshTopology* topology, sofa::Index mstateId)
+{
+    if (topology)
+    {
+        indices.createTopologyHandler(topology);
+
+        indices.addTopologyEventCallBack(core::topology::TopologyChangeType::POINTSREMOVED,
+            [this, mstateId](const core::topology::TopologyChange* change)
+            {
+                const auto* pointsRemoved = static_cast<const core::topology::PointsRemoved*>(change);
+                msg_info(this) << "Removed points: [" << pointsRemoved->getArray() << "]";
+                applyRemovedPoints(pointsRemoved, mstateId);
+            });
+        indices.addTopologyEventCallBack(core::topology::TopologyChangeType::ENDING_EVENT,
+            [this](const core::topology::TopologyChange*)
+            {
+                msg_info(this) << "Update topology indices from springs";
+                updateTopologyIndicesFromSprings();
+            });
+    }
 }
 
 template<class DataTypes>
@@ -336,98 +442,6 @@ void SpringForceField<DataTypes>::computeBBox(const core::ExecParams* params, bo
     if (foundSpring)
     {
         this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
-    }
-}
-
-template<class DataTypes>
-void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology *topo)
-{
-    if(this->mstate1->getContext()->getTopology() == topo)
-    {
-        core::topology::BaseMeshTopology*	_topology = topo->toBaseMeshTopology();
-
-        if(_topology != nullptr)
-        {
-            std::list<const core::topology::TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-            std::list<const core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
-
-            while( itBegin != itEnd )
-            {
-                core::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
-
-                switch( changeType )
-                {
-                case core::topology::POINTSREMOVED:
-                {
-
-                    break;
-                }
-
-                default:
-                    break;
-                } // switch( changeType )
-
-                ++itBegin;
-            } // while( changeIt != last; )
-        }
-    }
-
-    if(this->mstate2->getContext()->getTopology() == topo)
-    {
-        core::topology::BaseMeshTopology*	_topology = topo->toBaseMeshTopology();
-
-        if(_topology != nullptr)
-        {
-            std::list<const core::topology::TopologyChange *>::const_iterator changeIt=_topology->beginChange();
-            std::list<const core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
-
-            while( changeIt != itEnd )
-            {
-                core::topology::TopologyChangeType changeType = (*changeIt)->getChangeType();
-
-                switch( changeType )
-                {
-                case core::topology::POINTSREMOVED:
-                {
-                    auto nbPoints = _topology->getNbPoints();
-                    const auto& tab = (static_cast<const sofa::core::topology::PointsRemoved *>(*changeIt))->getArray();
-
-                    type::vector<Spring>& springs = *this->springs.beginEdit();
-                    // springs.push_back(Spring(m1,m2,ks,kd,initpos));
-
-                    for(sofa::Index i=0; i<tab.size(); ++i)
-                    {
-                        sofa::Index pntId = tab[i];
-                        nbPoints -= 1;
-
-                        for(sofa::Index j=0; j<springs.size(); ++j)
-                        {
-                            Spring& spring = springs[j];
-                            if(spring.m2 == pntId)
-                            {
-                                spring = springs[springs.size() - 1];
-                                springs.resize(springs.size() - 1);
-                            }
-
-                            if(spring.m2 == nbPoints)
-                            {
-                                spring.m2 = pntId;
-                            }
-                        }
-                    }
-
-                    this->springs.endEdit();
-
-                    break;
-                }
-
-                default:
-                    break;
-                } // switch( changeType )
-
-                ++changeIt;
-            } // while( changeIt != last; )
-        }
     }
 }
 
