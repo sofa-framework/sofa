@@ -3,11 +3,11 @@
 @PACKAGE_INIT@
 
 find_package(Sofa.Component.IO.Mesh QUIET REQUIRED)
-find_package(Sofa.Component.IO.Misc QUIET REQUIRED)
+find_package(Sofa.Component.Playback QUIET REQUIRED)
 
 get_property(@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE SET)
 if(NOT @PROJECT_NAME@_SENT_DEPRECATION_MESSAGE)
-    message(WARNING "@PROJECT_NAME@ module is deprecated, use Sofa.Component.IO.Mesh and Sofa.Component.IO.Misc instead.")
+    message(WARNING "@PROJECT_NAME@ module is deprecated, use Sofa.Component.IO.Mesh and Sofa.Component.Playback instead.")
 endif()
 set_property(GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE TRUE)
 

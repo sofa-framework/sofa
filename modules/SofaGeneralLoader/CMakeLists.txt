@@ -14,13 +14,13 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-message(WARNING "${PROJECT_NAME} module is deprecated; its components are in Sofa.Component.IO.Mesh and Sofa.Component.IO.Misc.")
+message(WARNING "${PROJECT_NAME} module is deprecated; its components are in Sofa.Component.IO.Mesh and Sofa.Component.Playback.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.IO.Mesh REQUIRED)
-sofa_find_package(Sofa.Component.IO.Misc REQUIRED)
+sofa_find_package(Sofa.Component.Playback REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.IO.Mesh)
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.IO.Misc)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Playback)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
