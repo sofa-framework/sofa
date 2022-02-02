@@ -20,6 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/io/misc/WriteState.inl>
+#include <sofa/component/playback/WriteState.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/misc/WriteState.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/playback/WriteState.inl")

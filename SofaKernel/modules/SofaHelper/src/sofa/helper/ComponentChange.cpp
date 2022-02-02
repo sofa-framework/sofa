@@ -719,9 +719,9 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
    { "SphereLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
    { "StringMeshCreator", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
    { "VoxelGridLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
-   { "ReadState", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Misc") },
-   { "ReadTopology", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Misc") },
-   { "InputEventReader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Misc") },
+   { "ReadState", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.Playback") },
+   { "ReadTopology", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.Playback") },
+   { "InputEventReader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.Playback") },
 
    // SofaExporter was deprecated in #2582
    { "BlenderExporter", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.IO.Mesh") },
@@ -729,8 +729,8 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
    { "STLExporter", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.IO.Mesh") },
    { "VisualModelOBJExporter", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.IO.Mesh") },
    { "VTKExporter", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.IO.Mesh") },
-   { "WriteState", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.IO.Misc") },
-   { "WriteTopology", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.IO.MIsc") },
+   { "WriteState", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.Playback") },
+   { "WriteTopology", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.Playback") },
 };
 
 } // namespace sofa::helper::lifecycle

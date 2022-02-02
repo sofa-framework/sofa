@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/io/misc/config.h>
+#include <sofa/component/playback/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
@@ -28,18 +28,18 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
 #include <zlib.h>
 #endif
 
 #include <fstream>
 
-namespace sofa::component::io::misc
+namespace sofa::component::playback
 {
 
 /** Read State vectors from file at each timestep
 */
-class SOFA_COMPONENT_IO_MISC_API ReadState: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_PLAYBACK_API ReadState: public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(ReadState,core::objectmodel::BaseObject);
@@ -55,7 +55,7 @@ public:
 protected:
     core::behavior::BaseMechanicalState* mmodel;
     std::ifstream* infile;
-#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     gzFile gzfile;
 #endif
     double nextTime;
@@ -99,7 +99,7 @@ public:
 
 
 ///Create ReadState component in the graph each time needed
-class SOFA_COMPONENT_IO_MISC_API ReadStateCreator: public simulation::Visitor
+class SOFA_COMPONENT_PLAYBACK_API ReadStateCreator: public simulation::Visitor
 {
 public:
     ReadStateCreator(const core::ExecParams* params);
@@ -119,7 +119,7 @@ protected:
     int counterReadState; //avoid to have two same files if two mechanical objects has the same name
 };
 
-class SOFA_COMPONENT_IO_MISC_API ReadStateActivator: public simulation::Visitor
+class SOFA_COMPONENT_PLAYBACK_API ReadStateActivator: public simulation::Visitor
 {
 public:
     ReadStateActivator(const core::ExecParams* params, bool active) : Visitor(params), state(active) {}
@@ -129,12 +129,12 @@ public:
     void setState(bool active) {state=active;}
     const char* getClassName() const override { return "ReadStateActivator"; }
 protected:
-    void changeStateReader(sofa::component::io::misc::ReadState *ws);
+    void changeStateReader(sofa::component::playback::ReadState *ws);
 
     bool state;
 };
 
-class SOFA_COMPONENT_IO_MISC_API ReadStateModifier: public simulation::Visitor
+class SOFA_COMPONENT_PLAYBACK_API ReadStateModifier: public simulation::Visitor
 {
 public:
     ReadStateModifier(const core::ExecParams* params, double _time) : Visitor(params), time(_time) {}
@@ -144,9 +144,9 @@ public:
     void setTime(double _time) { time=_time; }
     const char* getClassName() const override { return "ReadStateModifier"; }
 protected:
-    void changeTimeReader(sofa::component::io::misc::ReadState *rs) { rs->processReadState(time); }
+    void changeTimeReader(sofa::component::playback::ReadState *rs) { rs->processReadState(time); }
 
     double time;
 };
 
-} // namespace sofa::component::io::misc
+} // namespace sofa::component::playback

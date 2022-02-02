@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/io/misc/InputEventReader.h>
+#include <sofa/component/playback/InputEventReader.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sys/types.h>
@@ -30,7 +30,7 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
-namespace sofa::component::io::misc
+namespace sofa::component::playback
 {
 
 // Register in the Factory
@@ -269,4 +269,4 @@ void InputEventReader::handleEvent(core::objectmodel::Event *event)
     }
 }
 
-} //namespace sofa::component::io::misc
+} //namespace sofa::component::playback

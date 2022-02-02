@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/io/misc/WriteTopology.h>
+#include <sofa/component/playback/WriteTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -29,7 +29,7 @@
 #include <fstream>
 #include <sstream>
 
-namespace sofa::component::io::misc
+namespace sofa::component::playback
 {
 
 WriteTopology::WriteTopology()
@@ -42,7 +42,7 @@ WriteTopology::WriteTopology()
     , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
     , outfile(nullptr)
-    #if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+    #if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     , gzfile(nullptr)
     #endif
     , nextTime(0)
@@ -56,7 +56,7 @@ WriteTopology::~WriteTopology()
 {
     if (outfile)
         delete outfile;
-#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     if (gzfile)
         gzclose(gzfile);
 #endif
@@ -86,7 +86,7 @@ void WriteTopology::init()
     if (filename.empty())
         return;
 
-#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
     {
         gzfile = gzopen(filename.c_str(),"wb");
@@ -121,7 +121,7 @@ void WriteTopology::handleEvent(sofa::core::objectmodel::Event* event)
     {
         if (!m_topology) return;
         if (!outfile
-        #if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+        #if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
                 && !gzfile
         #endif
                 )
@@ -153,7 +153,7 @@ void WriteTopology::handleEvent(sofa::core::objectmodel::Event* event)
 
         if (writeCurrent)
         {
-#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
             if (gzfile)
             {
                 std::ostringstream str;
@@ -268,4 +268,4 @@ void WriteTopology::handleEvent(sofa::core::objectmodel::Event* event)
     }
 }
 
-} // namespace sofa::component::io::misc
+} // namespace sofa::component::playback

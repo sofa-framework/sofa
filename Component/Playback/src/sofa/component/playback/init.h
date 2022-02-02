@@ -21,9 +21,9 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/io/misc/config.h>
+#include <sofa/component/playback/config.h>
 
-namespace sofa::component::io::misc
+namespace sofa::component::playback
 {
-    SOFA_COMPONENT_IO_MISC_API void init();
-} // namespace sofa::component::io::misc
+    SOFA_COMPONENT_PLAYBACK_API void init();
+} // namespace sofa::component::playback

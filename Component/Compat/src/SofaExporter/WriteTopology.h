@@ -21,14 +21,14 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/io/misc/WriteTopology.h>
+#include <sofa/component/playback/WriteTopology.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/misc/WriteTopology.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/playback/WriteTopology.h")
 
 namespace sofa::component::misc
 {
-    using WriteTopology = sofa::component::io::misc::WriteTopology;
-    using WriteTopologyCreator = sofa::component::io::misc::WriteTopologyCreator;
-    using WriteTopologyActivator = sofa::component::io::misc::WriteTopologyActivator;
+    using WriteTopology = sofa::component::playback::WriteTopology;
+    using WriteTopologyCreator = sofa::component::playback::WriteTopologyCreator;
+    using WriteTopologyActivator = sofa::component::playback::WriteTopologyActivator;
 
 } // namespace sofa::component::misc

@@ -19,12 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/io/misc/WriteState.inl>
+#include <sofa/component/playback/WriteState.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/BaseMapping.h>
 
-namespace sofa::component::io::misc
+namespace sofa::component::playback
 {
 
 using namespace defaulttype;
@@ -36,7 +36,7 @@ int WriteStateClass = core::RegisterObject("Write State vectors to file at each 
 WriteStateCreator::WriteStateCreator(const core::ExecParams* params)
     :simulation::Visitor(params)
     , sceneName("")
-#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -51,7 +51,7 @@ WriteStateCreator::WriteStateCreator(const core::ExecParams* params)
 WriteStateCreator::WriteStateCreator(const core::ExecParams* params, const std::string &n, bool _recordX, bool _recordV, bool _recordF, bool _createInMapping, int c)
     :simulation::Visitor(params)
     , sceneName(n)
-#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -87,7 +87,7 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
     context->get(mapping);
     if ( createInMapping || mapping == nullptr)
     {
-        sofa::component::io::misc::WriteState::SPtr ws;
+        sofa::component::playback::WriteState::SPtr ws;
         context->get(ws, this->subsetsToManage, core::objectmodel::BaseContext::Local);
         if ( ws == nullptr )
         {
@@ -119,15 +119,15 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
 //if state is true, we activate all the write states present in the scene.
 simulation::Visitor::Result WriteStateActivator::processNodeTopDown( simulation::Node* gnode)
 {
-    sofa::component::io::misc::WriteState *ws = gnode->get< sofa::component::io::misc::WriteState >(this->subsetsToManage);
+    sofa::component::playback::WriteState *ws = gnode->get< sofa::component::playback::WriteState >(this->subsetsToManage);
     if (ws != nullptr) { changeStateWriter(ws);}
     return simulation::Visitor::RESULT_CONTINUE;
 }
 
-void WriteStateActivator::changeStateWriter(sofa::component::io::misc::WriteState*ws)
+void WriteStateActivator::changeStateWriter(sofa::component::playback::WriteState*ws)
 {
     if (!state) ws->reset();
     ws->f_listening.setValue(state);
 }
 
-} // namespace sofa::component::io::misc
+} // namespace sofa::component::playback

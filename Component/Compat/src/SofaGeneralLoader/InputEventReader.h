@@ -21,12 +21,12 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/io/misc/InputEventReader.h>
+#include <sofa/component/playback/InputEventReader.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/misc/InputEventReader.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/playback/InputEventReader.h")
 
 namespace sofa::component::misc
 {
-    using InputEventReader = sofa::component::io::misc::InputEventReader;
+    using InputEventReader = sofa::component::playback::InputEventReader;
 
 } // namespace sofa::component::loader

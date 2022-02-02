@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/io/misc/config.h>
+#include <sofa/component/playback/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
@@ -32,13 +32,13 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
 #include <zlib.h>
 #endif
 
 #include <fstream>
 
-namespace sofa::component::io::misc
+namespace sofa::component::playback
 {
 
 /** Write State vectors to file at a given set of time instants
@@ -47,7 +47,7 @@ namespace sofa::component::io::misc
  * Stop to write the state if the kinematic energy reach a given threshold (stopAt)
  * The energy will be measured at each period determined by keperiod
 */
-class SOFA_COMPONENT_IO_MISC_API WriteState: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_PLAYBACK_API WriteState: public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(WriteState,core::objectmodel::BaseObject);
@@ -67,7 +67,7 @@ public:
 protected:
     core::behavior::BaseMechanicalState* mmodel;
     std::ofstream* outfile;
-#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     gzFile gzfile;
 #endif
     unsigned int nextIteration;
@@ -109,7 +109,7 @@ public:
 };
 
 ///Create WriteState component in the graph each time needed
-class SOFA_COMPONENT_IO_MISC_API WriteStateCreator: public simulation::Visitor
+class SOFA_COMPONENT_PLAYBACK_API WriteStateCreator: public simulation::Visitor
 {
 public:
     WriteStateCreator(const core::ExecParams* params);
@@ -139,7 +139,7 @@ protected:
 
 };
 
-class SOFA_COMPONENT_IO_MISC_API WriteStateActivator: public simulation::Visitor
+class SOFA_COMPONENT_PLAYBACK_API WriteStateActivator: public simulation::Visitor
 {
 public:
     WriteStateActivator( const core::ExecParams* params, bool active) : Visitor(params), state(active) {}
@@ -149,9 +149,9 @@ public:
     void setState(bool active) { state=active; }
     const char* getClassName() const override { return "WriteStateActivator"; }
 protected:
-    void changeStateWriter(sofa::component::io::misc::WriteState *ws);
+    void changeStateWriter(sofa::component::playback::WriteState *ws);
 
     bool state;
 };
 
-} // namespace sofa::component::io::misc
+} // namespace sofa::component::playback

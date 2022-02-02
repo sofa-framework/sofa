@@ -24,24 +24,24 @@
 #include <sofa/config.h>
 #include <sofa/config/sharedlibrary_defines.h>
 
-#ifdef SOFA_BUILD_SOFA_COMPONENT_IO_MISC
+#ifdef SOFA_BUILD_SOFA_COMPONENT_PLAYBACK
 #  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_COMPONENT_IO_MISC_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#  define SOFA_COMPONENT_PLAYBACK_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_COMPONENT_IO_MISC_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_COMPONENT_PLAYBACK_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#cmakedefine01 SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+#cmakedefine01 SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
 
-namespace sofa::component::io::misc
+namespace sofa::component::playback
 {
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-} // namespace sofa::component::io::misc
+} // namespace sofa::component::playback
 
 // Keep the previous macros
 #ifndef SOFAGENERALLOADER_HAVE_ZLIB
-#define SOFAGENERALLOADER_HAVE_ZLIB SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+#define SOFAGENERALLOADER_HAVE_ZLIB SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
 #endif
 #ifndef SOFAEXPORTER_HAVE_ZLIB
-#define SOFAEXPORTER_HAVE_ZLIB SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+#define SOFAEXPORTER_HAVE_ZLIB SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
 #endif

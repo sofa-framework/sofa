@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/io/misc/init.h>
+#include <sofa/component/playback/init.h>
 
-namespace sofa::component::io::misc
+namespace sofa::component::playback
 {
     
 extern "C" {
@@ -48,4 +48,4 @@ void init()
     initExternalModule();
 }
 
-} // namespace sofa::component::io::misc
+} // namespace sofa::component::playback

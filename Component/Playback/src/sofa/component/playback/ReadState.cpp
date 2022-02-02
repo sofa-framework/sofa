@@ -19,12 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/io/misc/ReadState.inl>
+#include <sofa/component/playback/ReadState.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa::component::io::misc
+namespace sofa::component::playback
 {
 
 using namespace defaulttype;
@@ -35,7 +35,7 @@ int ReadStateClass = core::RegisterObject("Read State vectors from file at each 
 ReadStateCreator::ReadStateCreator(const core::ExecParams* params)
     : Visitor(params)
     , sceneName("")
-#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -49,7 +49,7 @@ ReadStateCreator::ReadStateCreator(const core::ExecParams* params)
 ReadStateCreator::ReadStateCreator(const std::string &n, bool _createInMapping, const core::ExecParams* params, bool i, int c)
     : Visitor(params)
     , sceneName(n)
-#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -80,7 +80,7 @@ void ReadStateCreator::addReadState(sofa::core::behavior::BaseMechanicalState *m
     sofa::core::BaseMapping *mapping; context->get(mapping);
     if (createInMapping || mapping== nullptr)
     {
-        sofa::component::io::misc::ReadState::SPtr rs;
+        sofa::component::playback::ReadState::SPtr rs;
         context->get(rs, this->subsetsToManage, core::objectmodel::BaseContext::Local);
         if (rs == nullptr)
         {
@@ -103,13 +103,13 @@ void ReadStateCreator::addReadState(sofa::core::behavior::BaseMechanicalState *m
 ///if state is true, we activate all the write states present in the scene.
 simulation::Visitor::Result ReadStateActivator::processNodeTopDown( simulation::Node* gnode)
 {
-    sofa::component::io::misc::ReadState *rs = gnode->get< sofa::component::io::misc::ReadState >(this->subsetsToManage);
+    sofa::component::playback::ReadState *rs = gnode->get< sofa::component::playback::ReadState >(this->subsetsToManage);
     if (rs != nullptr) { changeStateReader(rs);}
 
     return simulation::Visitor::RESULT_CONTINUE;
 }
 
-void ReadStateActivator::changeStateReader(sofa::component::io::misc::ReadState* rs)
+void ReadStateActivator::changeStateReader(sofa::component::playback::ReadState* rs)
 {
     rs->reset();
     rs->f_listening.setValue(state);
@@ -121,10 +121,10 @@ simulation::Visitor::Result ReadStateModifier::processNodeTopDown( simulation::N
 {
     using namespace sofa::defaulttype;
 
-    sofa::component::io::misc::ReadState*rs = gnode->get< sofa::component::io::misc::ReadState>(this->subsetsToManage);
+    sofa::component::playback::ReadState*rs = gnode->get< sofa::component::playback::ReadState>(this->subsetsToManage);
     if (rs != nullptr) {changeTimeReader(rs);}
 
     return simulation::Visitor::RESULT_CONTINUE;
 }
 
-} // namespace sofa::component::io::misc
+} // namespace sofa::component::playback

@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/io/misc/ReadTopology.inl>
+#include <sofa/component/playback/ReadTopology.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa::component::io::misc
+namespace sofa::component::playback
 {
 
 using namespace defaulttype;
@@ -34,7 +34,7 @@ int ReadTopologyClass = core::RegisterObject("Read topology containers informati
 ReadTopologyCreator::ReadTopologyCreator(const core::ExecParams* params)
     :Visitor(params)
     , sceneName("")
-#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -48,7 +48,7 @@ ReadTopologyCreator::ReadTopologyCreator(const core::ExecParams* params)
 ReadTopologyCreator::ReadTopologyCreator(const std::string &n, bool _createInMapping, const core::ExecParams* params, bool i, int c)
     :Visitor(params)
     , sceneName(n)
-#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -76,7 +76,7 @@ void ReadTopologyCreator::addReadTopology(core::topology::BaseMeshTopology* topo
     context->get(mapping);
     if (createInMapping || mapping== nullptr)
     {
-        sofa::component::io::misc::ReadTopology::SPtr rt;
+        sofa::component::playback::ReadTopology::SPtr rt;
         context->get(rt, this->subsetsToManage, core::objectmodel::BaseContext::Local);
         if (rt == nullptr)
         {
@@ -99,13 +99,13 @@ void ReadTopologyCreator::addReadTopology(core::topology::BaseMeshTopology* topo
 ///if state is true, we activate all the write states present in the scene.
 simulation::Visitor::Result ReadTopologyActivator::processNodeTopDown( simulation::Node* gnode)
 {
-    sofa::component::io::misc::ReadTopology *rt = gnode->get< sofa::component::io::misc::ReadTopology >(this->subsetsToManage);
+    sofa::component::playback::ReadTopology *rt = gnode->get< sofa::component::playback::ReadTopology >(this->subsetsToManage);
     if (rt != nullptr) { changeTopologyReader(rt);}
 
     return simulation::Visitor::RESULT_CONTINUE;
 }
 
-void ReadTopologyActivator::changeTopologyReader(sofa::component::io::misc::ReadTopology* rt)
+void ReadTopologyActivator::changeTopologyReader(sofa::component::playback::ReadTopology* rt)
 {
     if (!state) rt->reset();
     rt->f_listening.setValue(state);
@@ -117,10 +117,10 @@ simulation::Visitor::Result ReadTopologyModifier::processNodeTopDown( simulation
 {
     using namespace sofa::defaulttype;
 
-    sofa::component::io::misc::ReadTopology* rt = gnode->get< sofa::component::io::misc::ReadTopology>(this->subsetsToManage);
+    sofa::component::playback::ReadTopology* rt = gnode->get< sofa::component::playback::ReadTopology>(this->subsetsToManage);
     if (rt != nullptr) {changeTimeReader(rt);}
 
     return simulation::Visitor::RESULT_CONTINUE;
 }
 
-} //namespace sofa::component::io::misc
+} //namespace sofa::component::playback

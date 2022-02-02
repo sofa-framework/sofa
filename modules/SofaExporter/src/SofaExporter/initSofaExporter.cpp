@@ -41,10 +41,10 @@ void initSofaExporter()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaExporter") << "SofaExporter is deprecated; please load Sofa.Component.IO.Mesh and/or Sofa.Component.IO.Misc instead.";
+        // msg_deprecated("SofaExporter") << "SofaExporter is deprecated; please load Sofa.Component.IO.Mesh and/or Sofa.Component.Playback instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.IO.Mesh");
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.IO.Misc");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Playback");
 
         first = false;
     }

@@ -21,15 +21,15 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/io/misc/ReadState.h>
+#include <sofa/component/playback/ReadState.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/misc/ReadState.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/playback/ReadState.h")
 
 namespace sofa::component::misc
 {
-    using ReadState = sofa::component::io::misc::ReadState;
-    using ReadStateCreator = sofa::component::io::misc::ReadStateCreator;
-    using ReadStateActivator = sofa::component::io::misc::ReadStateActivator;
-    using ReadStateModifier = sofa::component::io::misc::ReadStateModifier;
+    using ReadState = sofa::component::playback::ReadState;
+    using ReadStateCreator = sofa::component::playback::ReadStateCreator;
+    using ReadStateActivator = sofa::component::playback::ReadStateActivator;
+    using ReadStateModifier = sofa::component::playback::ReadStateModifier;
 
 } // namespace sofa::component::misc

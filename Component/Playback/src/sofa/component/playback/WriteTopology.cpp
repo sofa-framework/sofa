@@ -19,12 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/io/misc/WriteTopology.inl>
+#include <sofa/component/playback/WriteTopology.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/BaseMapping.h>
 
-namespace sofa::component::io::misc
+namespace sofa::component::playback
 {
 
 using namespace defaulttype;
@@ -39,7 +39,7 @@ int WriteTopologyClass = core::RegisterObject("Write topology containers informa
 WriteTopologyCreator::WriteTopologyCreator(const core::ExecParams* params)
     :Visitor(params)
     ,sceneName("")
-#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -54,7 +54,7 @@ WriteTopologyCreator::WriteTopologyCreator(const core::ExecParams* params)
 WriteTopologyCreator::WriteTopologyCreator(const std::string &n, bool _writeContainers, bool _writeShellContainers, bool _createInMapping, const core::ExecParams* params, int c)
     :Visitor(params)
     , sceneName(n)
-#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     , extension(".txt.gz")
 #else
     , extension(".txt")
@@ -85,7 +85,7 @@ void WriteTopologyCreator::addWriteTopology(core::topology::BaseMeshTopology* to
     context->get(mapping);
     if ( createInMapping || mapping == nullptr)
     {
-        sofa::component::io::misc::WriteTopology::SPtr wt;
+        sofa::component::playback::WriteTopology::SPtr wt;
         context->get(wt, this->subsetsToManage, core::objectmodel::BaseContext::Local);
 
         if (wt.get() == nullptr)
@@ -113,15 +113,15 @@ void WriteTopologyCreator::addWriteTopology(core::topology::BaseMeshTopology* to
 //if state is true, we activate all the write states present in the scene.
 simulation::Visitor::Result WriteTopologyActivator::processNodeTopDown( simulation::Node* gnode)
 {
-    sofa::component::io::misc::WriteTopology *wt = gnode->get< sofa::component::io::misc::WriteTopology >(this->subsetsToManage);
+    sofa::component::playback::WriteTopology *wt = gnode->get< sofa::component::playback::WriteTopology >(this->subsetsToManage);
     if (wt != nullptr) { changeStateWriter(wt);}
     return simulation::Visitor::RESULT_CONTINUE;
 }
 
-void WriteTopologyActivator::changeStateWriter(sofa::component::io::misc::WriteTopology* wt)
+void WriteTopologyActivator::changeStateWriter(sofa::component::playback::WriteTopology* wt)
 {
     if (!state) wt->reset();
     wt->f_listening.setValue(state);
 }
 
-} // namespace sofa::component::io::misc
+} // namespace sofa::component::playback

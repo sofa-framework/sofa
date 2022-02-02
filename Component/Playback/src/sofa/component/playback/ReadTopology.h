@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/io/misc/config.h>
+#include <sofa/component/playback/config.h>
 
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/Visitor.h>
 
-#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
 #include <zlib.h>
 #endif
 
@@ -34,12 +34,12 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <fstream>
 
-namespace sofa::component::io::misc
+namespace sofa::component::playback
 {
 
 /** Read Topology containers informations from file at each timestep
 */
-class SOFA_COMPONENT_IO_MISC_API ReadTopology: public core::objectmodel::BaseObject
+class SOFA_COMPONENT_PLAYBACK_API ReadTopology: public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(ReadTopology,core::objectmodel::BaseObject);
@@ -55,7 +55,7 @@ public:
 protected:
     core::topology::BaseMeshTopology* m_topology;
     std::ifstream* infile;
-#if SOFA_COMPONENT_IO_MISC_HAVE_ZLIB
+#if SOFA_COMPONENT_PLAYBACK_HAVE_ZLIB
     gzFile gzfile;
 #endif
     double nextTime;
@@ -109,7 +109,7 @@ public:
 
 
 ///Create ReadTopology component in the graph each time needed
-class SOFA_COMPONENT_IO_MISC_API ReadTopologyCreator: public simulation::Visitor
+class SOFA_COMPONENT_PLAYBACK_API ReadTopologyCreator: public simulation::Visitor
 {
 public:
     ReadTopologyCreator(const core::ExecParams* params);
@@ -131,7 +131,7 @@ protected:
 
 };
 
-class SOFA_COMPONENT_IO_MISC_API ReadTopologyActivator: public simulation::Visitor
+class SOFA_COMPONENT_PLAYBACK_API ReadTopologyActivator: public simulation::Visitor
 {
 public:
     ReadTopologyActivator(const core::ExecParams* params, bool active)
@@ -142,12 +142,12 @@ public:
     void setTopology(bool active) {state=active;}
     const char* getClassName() const override { return "ReadTopologyActivator"; }
 protected:
-    void changeTopologyReader(sofa::component::io::misc::ReadTopology *rt);
+    void changeTopologyReader(sofa::component::playback::ReadTopology *rt);
 
     bool state;
 };
 
-class SOFA_COMPONENT_IO_MISC_API ReadTopologyModifier: public simulation::Visitor
+class SOFA_COMPONENT_PLAYBACK_API ReadTopologyModifier: public simulation::Visitor
 {
 public:
     ReadTopologyModifier(const core::ExecParams* params, double _time)
@@ -159,9 +159,9 @@ public:
     void setTime(double _time) { time=_time; }
     const char* getClassName() const override { return "ReadTopologyModifier"; }
 protected:
-    void changeTimeReader(sofa::component::io::misc::ReadTopology *rt) { rt->processReadTopology(time); }
+    void changeTimeReader(sofa::component::playback::ReadTopology *rt) { rt->processReadTopology(time); }
 
     double time;
 };
 
-} // namespace sofa::component::io::misc
+} // namespace sofa::component::playback

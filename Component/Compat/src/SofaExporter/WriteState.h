@@ -21,14 +21,14 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/io/misc/WriteState.h>
+#include <sofa/component/playback/WriteState.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/io/misc/WriteState.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/playback/WriteState.h")
 
 namespace sofa::component::misc
 {
-    using WriteState = sofa::component::io::misc::WriteState;
-    using WriteStateCreator = sofa::component::io::misc::WriteStateCreator;
-    using WriteStateActivator = sofa::component::io::misc::WriteStateActivator;
+    using WriteState = sofa::component::playback::WriteState;
+    using WriteStateCreator = sofa::component::playback::WriteStateCreator;
+    using WriteStateActivator = sofa::component::playback::WriteStateActivator;
 
 } // namespace sofa::component::misc

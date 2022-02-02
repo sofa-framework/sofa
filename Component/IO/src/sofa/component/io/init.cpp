@@ -22,7 +22,6 @@
 #include <sofa/component/io/config.h>
 
 #include <sofa/component/io/mesh/init.h>
-#include <sofa/component/io/misc/init.h>
 
 namespace sofa::component::io
 {
@@ -39,7 +38,6 @@ void initExternalModule()
     {        
         // force dependencies at compile-time
         sofa::component::io::mesh::init();
-        sofa::component::io::misc::init();
 
         first = false;
     }
