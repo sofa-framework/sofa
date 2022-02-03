@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/utility/PauseAnimationOnEvent.h>
+#include <sofa/component/sceneutility/PauseAnimationOnEvent.h>
 
 // SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/utility/PauseAnimationOnEvent.h")
 
 namespace sofa::component::misc
 {
 
-    using PauseAnimationOnEvent = sofa::component::utility::PauseAnimationOnEvent;
+    using PauseAnimationOnEvent = sofa::component::sceneutility::PauseAnimationOnEvent;
 
 } // namespace sofa::component::misc

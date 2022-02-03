@@ -21,16 +21,16 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/utility/config.h>
+#include <sofa/component/sceneutility/config.h>
 
-#include <sofa/component/utility/PauseAnimation.h>
+#include <sofa/component/sceneutility/PauseAnimation.h>
 
-namespace sofa::component::utility
+namespace sofa::component::sceneutility
 {
 
 /**
 */
-class SOFA_COMPONENT_UTILITY_API PauseAnimationOnEvent : public PauseAnimation
+class SOFA_COMPONENT_SCENEUTILITY_API PauseAnimationOnEvent : public PauseAnimation
 {
 public:
     SOFA_CLASS(PauseAnimationOnEvent,PauseAnimation);
@@ -49,4 +49,4 @@ public:
 };
 
 
-} // namespace sofa::component::utility
+} // namespace sofa::component::sceneutility

@@ -21,16 +21,16 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/utility/config.h>
+#include <sofa/component/sceneutility/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
 
 
-namespace sofa::component::utility::_apiversion_
+namespace sofa::component::sceneutility::_apiversion_
 {
 
-class SOFA_COMPONENT_UTILITY_API APIVersion : public BaseObject
+class SOFA_COMPONENT_SCENEUTILITY_API APIVersion : public BaseObject
 {
 
 public:
@@ -47,10 +47,10 @@ private:
     Data<std::string>  d_level ; ///< The API Level of the scene ('17.06', '17.12', '18.06', ...)
 };
 
-} // namespace namespace sofa::component::utility
+} // namespace namespace sofa::component::sceneutility
 
-namespace sofa::component::utility
+namespace sofa::component::sceneutility
 {
 using _apiversion_::APIVersion ;
 
-} // namespace sofa::component::utility
+} // namespace sofa::component::sceneutility

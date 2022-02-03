@@ -20,20 +20,20 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/utility/MakeAliasComponent.h>
+#include <sofa/component/sceneutility/MakeAliasComponent.h>
 
 // SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/utility/MakeAliasComponent.h")
 
 namespace sofa::component::makealiascomponent
 {
 
-    using MakeAliasComponent = sofa::component::utility::MakeAliasComponent;
+    using MakeAliasComponent = sofa::component::sceneutility::MakeAliasComponent;
 
 } // namespace sofa::component::makealiascomponent
 
 namespace sofa::component
 {
 
-    using MakeAliasComponent = sofa::component::utility::MakeAliasComponent;
+    using MakeAliasComponent = sofa::component::sceneutility::MakeAliasComponent;
 
 } // namespace sofa::component

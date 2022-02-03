@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/utility/config.h>
+#include <sofa/component/sceneutility/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -28,10 +28,10 @@
 using sofa::helper::system::FileRepository;
 using sofa::core::objectmodel::DataFileName;
 
-namespace sofa::component::utility
+namespace sofa::component::sceneutility
 {
 
-class SOFA_COMPONENT_UTILITY_API BaseAddResourceRepository: public sofa::core::objectmodel::BaseObject
+class SOFA_COMPONENT_SCENEUTILITY_API BaseAddResourceRepository: public sofa::core::objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseAddResourceRepository, sofa::core::objectmodel::BaseObject);
@@ -57,7 +57,7 @@ private:
 
 
 /// Add a new path to DataRepository
-class SOFA_COMPONENT_UTILITY_API AddDataRepository: public BaseAddResourceRepository
+class SOFA_COMPONENT_SCENEUTILITY_API AddDataRepository: public BaseAddResourceRepository
 {
 public:
     SOFA_CLASS(AddDataRepository, BaseAddResourceRepository);
@@ -68,7 +68,7 @@ protected:
 
 
 /// Add a new path to PluginRepository
-class SOFA_COMPONENT_UTILITY_API AddPluginRepository: public BaseAddResourceRepository
+class SOFA_COMPONENT_SCENEUTILITY_API AddPluginRepository: public BaseAddResourceRepository
 {
 public:
     SOFA_CLASS(AddPluginRepository, BaseAddResourceRepository);
@@ -78,4 +78,4 @@ protected:
 };
 
 
-} // namespace sofa::component::utility
+} // namespace sofa::component::sceneutility

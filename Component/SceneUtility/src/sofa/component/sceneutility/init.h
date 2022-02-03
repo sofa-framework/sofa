@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/utility/config.h>
+#include <sofa/component/sceneutility/config.h>
 
-namespace sofa::component::utility
+namespace sofa::component::sceneutility
 {
-    SOFA_COMPONENT_UTILITY_API void init();
-} // namespace sofa::component::utility
+    SOFA_COMPONENT_SCENEUTILITY_API void init();
+} // namespace sofa::component::sceneutility

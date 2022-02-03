@@ -14,11 +14,11 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-message(WARNING "${PROJECT_NAME} module is deprecated; its components are in Sofa.Component.Utility.")
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.SceneUtility instead.")
 
 # forward to the new sofang module
-sofa_find_package(Sofa.Component.Utility REQUIRED)
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Utility)
+sofa_find_package(Sofa.Component.SceneUtility REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.SceneUtility)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

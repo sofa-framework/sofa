@@ -30,7 +30,7 @@ using sofa::core::RegisterObject ;
 #include <sofa/version.h>
 #include <numeric>
 
-namespace sofa::component::utility::_apiversion_
+namespace sofa::component::sceneutility::_apiversion_
 {
 
 APIVersion::APIVersion() :
@@ -77,4 +77,4 @@ const std::string& APIVersion::getApiLevel()
 int APIVersionClass = core::RegisterObject("Specify the APIVersion of the component used in a scene.")
         .add< APIVersion >();
 
-} // namespace sofa::component::utility
+} // namespace sofa::component::sceneutility

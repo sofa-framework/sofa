@@ -20,16 +20,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/utility/config.h>
+#include <sofa/component/sceneutility/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/objectmodel/Data.h>
 
-namespace sofa::component::utility
+namespace sofa::component::sceneutility
 {
 
-class SOFA_COMPONENT_UTILITY_API RequiredPlugin : public core::objectmodel::BaseObject
+class SOFA_COMPONENT_SCENEUTILITY_API RequiredPlugin : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(RequiredPlugin,core::objectmodel::BaseObject);
@@ -56,4 +56,4 @@ public:
 
 };
 
-} // namespace sofa::component::utility
+} // namespace sofa::component::sceneutility

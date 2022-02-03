@@ -47,11 +47,11 @@ using sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::MessageDispatcher;
 
-#include <sofa/component/utility/MessageHandlerComponent.h>
+#include <sofa/component/sceneutility/MessageHandlerComponent.h>
 
 using std::string;
 
-namespace sofa::component::utility
+namespace sofa::component::sceneutility
 {
 
 MessageHandlerComponent::MessageHandlerComponent() :
@@ -156,4 +156,4 @@ int FileMessageHandlerComponentClass = RegisterObject("This component dump all t
                                                       "a file.")
         .add< FileMessageHandlerComponent >()
         ;
-} // namespace sofa::component::utility
+} // namespace sofa::component::sceneutility

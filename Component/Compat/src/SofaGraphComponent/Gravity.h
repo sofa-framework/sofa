@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/utility/Gravity.h>
+#include <sofa/component/sceneutility/Gravity.h>
 
 // SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/utility/Gravity.h")
 
 namespace sofa::component::contextobject
 {
 
-    using Gravity = sofa::component::utility::Gravity;
+    using Gravity = sofa::component::sceneutility::Gravity;
 
 } // namespace sofa::component::contextobject

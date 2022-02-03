@@ -57,11 +57,11 @@ list(APPEND SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaSimulationCore SofaBaseUtils SofaBaseCollision)
 
-message(WARNING "${PROJECT_NAME} module is partly deprecated; some of its components are now in Sofa.Component.Utility.")
+message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.SceneUtility instead.")
 
 # forward to the new sofang module
-sofa_find_package(Sofa.Component.Utility REQUIRED)
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Utility)
+sofa_find_package(Sofa.Component.SceneUtility REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.SceneUtility)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

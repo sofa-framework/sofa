@@ -20,20 +20,20 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/utility/InfoComponent.h>
+#include <sofa/component/sceneutility/InfoComponent.h>
 
 // SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/utility/InfoComponent.h")
 
 namespace sofa::component::infocomponent
 {
 
-    using InfoComponent = sofa::component::utility::InfoComponent;
+    using InfoComponent = sofa::component::sceneutility::InfoComponent;
 
 } // namespace sofa::component::infocomponent
 
 namespace sofa::component
 {
 
-    using InfoComponent = sofa::component::utility::InfoComponent;
+    using InfoComponent = sofa::component::sceneutility::InfoComponent;
 
 } // namespace sofa::component

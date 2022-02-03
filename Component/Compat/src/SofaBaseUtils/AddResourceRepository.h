@@ -20,15 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/utility/AddResourceRepository.h>
+#include <sofa/component/sceneutility/AddResourceRepository.h>
 
 // SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/utility/AddResourceRepository.h")
 
 namespace sofa::component::misc
 {
 
-    using BaseAddResourceRepository = sofa::component::utility::BaseAddResourceRepository;
-    using AddDataRepository = sofa::component::utility::AddDataRepository;
-    using AddPluginRepository = sofa::component::utility::AddPluginRepository;
+    using BaseAddResourceRepository = sofa::component::sceneutility::BaseAddResourceRepository;
+    using AddDataRepository = sofa::component::sceneutility::AddDataRepository;
+    using AddPluginRepository = sofa::component::sceneutility::AddPluginRepository;
 
 } // namespace sofa::component::misc

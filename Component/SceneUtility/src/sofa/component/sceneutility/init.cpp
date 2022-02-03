@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/utility/init.h>
+#include <sofa/component/sceneutility/init.h>
 
-namespace sofa::component::utility
+namespace sofa::component::sceneutility
 {
 
 extern "C" {
@@ -48,4 +48,4 @@ void init()
     initExternalModule();
 }
 
-} // namespace sofa::component::utility
+} // namespace sofa::component::sceneutility

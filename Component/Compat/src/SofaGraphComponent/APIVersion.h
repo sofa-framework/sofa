@@ -20,20 +20,20 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/utility/APIVersion.h>
+#include <sofa/component/sceneutility/APIVersion.h>
 
 // SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/utility/APIVersion.h")
 
 namespace sofa::component::_apiversion_
 {
 
-    using APIVersion = sofa::component::utility::APIVersion;
+    using APIVersion = sofa::component::sceneutility::APIVersion;
 
 } // namespace sofa::component::_apiversion_
 
 namespace sofa::component
 {
 
-    using APIVersion = sofa::component::utility::APIVersion;
+    using APIVersion = sofa::component::sceneutility::APIVersion;
 
 } // namespace sofa::component
