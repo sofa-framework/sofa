@@ -30,7 +30,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <cstring>
 #include <tinyxml.h>
-#include <sofa/core/ComponentNameHelper.h>
 
 /* For loading the scene */
 
@@ -94,13 +93,13 @@ void recReplaceAttribute(BaseElement* node, const char* attr, const char* value,
 }
 
 
-BaseElement* includeNode  (TiXmlNode* root,const char *basefilename, sofa::core::ComponentNameHelper& nameHelper);
+BaseElement* includeNode  (TiXmlNode* root,const char *basefilename);
 BaseElement* attributeNode(TiXmlNode* root,const char *basefilename);
 void recursiveMergeNode(BaseElement* destNode, BaseElement* srcNode);
 
 int numDefault=0;
 
-BaseElement* createNode(TiXmlNode* root, const char *basefilename, sofa::core::ComponentNameHelper& nameHelper, bool isRoot = false)
+BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot = false)
 {
     //if (!xmlStrcmp(root->name,(const xmlChar*)"text")) return nullptr;
 
@@ -123,7 +122,7 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename, sofa::core::C
 
     if (std::string(element->Value())=="include")
     {
-        return includeNode(root, basefilename, nameHelper);
+        return includeNode(root, basefilename);
     }
 
     std::string classType,name, type;
@@ -170,15 +169,13 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename, sofa::core::C
             // we found a replacement xml
             element->SetAttribute("href",filename.c_str());
             element->RemoveAttribute("type");
-            return includeNode(root, basefilename, nameHelper);
+            return includeNode(root, basefilename);
         }
     }
     if( deriveFromMultiMapping(type))
     {
         classType = "MultiMappingObject";
     }
-
-    name = nameHelper.resolveName(type, name);
 
     BaseElement* node = BaseElement::Create(classType,name,type);
     if (node==nullptr)
@@ -204,7 +201,7 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename, sofa::core::C
 
     for (TiXmlNode* child = root->FirstChild() ; child != nullptr; child = child->NextSibling())
     {
-        BaseElement* childnode = createNode(child, basefilename, nameHelper);
+        BaseElement* childnode = createNode(child, basefilename);
         if (childnode != nullptr)
         {
             //  if the current node is an included node, with the special name Group, we only add the objects.
@@ -249,14 +246,12 @@ BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc, b
         return nullptr;
     }
 
-    sofa::core::ComponentNameHelper nameHelper;
-
     std::string basefilename;
     if(fromMem)
         basefilename = filename ;
     else
         basefilename = sofa::helper::system::SetDirectory::GetRelativeFromDir(filename,sofa::helper::system::SetDirectory::GetCurrentDir().c_str());
-    BaseElement* graph = createNode((TiXmlElement*)hRoot, basefilename.c_str(), nameHelper, true);
+    BaseElement* graph = createNode((TiXmlElement*)hRoot, basefilename.c_str(), true);
 
     if (graph == nullptr)
     {
@@ -313,7 +308,7 @@ BaseElement* loadFromFile(const char *filename)
 }
 
 
-BaseElement* includeNode(TiXmlNode* root,const char *basefilename, sofa::core::ComponentNameHelper& nameHelper)
+BaseElement* includeNode(TiXmlNode* root,const char *basefilename)
 {
     TiXmlElement* element = root->ToElement();
     if (!element) return nullptr;
@@ -344,7 +339,7 @@ BaseElement* includeNode(TiXmlNode* root,const char *basefilename, sofa::core::C
         //xmlFreeDoc(doc);
         return nullptr;
     }
-    BaseElement* result = createNode(newroot, filename.c_str(), nameHelper, true);
+    BaseElement* result = createNode(newroot, filename.c_str(), true);
     if (result)
     {
         if (result->getName() == "Group") result->setIncludeNodeType(INCLUDE_NODE_GROUP);
