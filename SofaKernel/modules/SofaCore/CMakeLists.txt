@@ -12,6 +12,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/CollisionElement.h
     ${SRC_ROOT}/CollisionModel.h
     ${SRC_ROOT}/ComponentLibrary.h
+    ${SRC_ROOT}/ComponentNameHelper.h
     ${SRC_ROOT}/ConstraintParams.h
     ${SRC_ROOT}/DataEngine.h
     ${SRC_ROOT}/DataTracker.h
@@ -30,7 +31,6 @@ set(HEADER_FILES
     ${SRC_ROOT}/MultiMapping.h
     ${SRC_ROOT}/MultiMapping.inl
     ${SRC_ROOT}/MultiVecId.h
-    ${SRC_ROOT}/NameHelper.h
     ${SRC_ROOT}/ObjectFactory.h
     ${SRC_ROOT}/PathResolver.h
     ${SRC_ROOT}/SofaLibrary.h
@@ -174,6 +174,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/CategoryLibrary.cpp
     ${SRC_ROOT}/CollisionModel.cpp
     ${SRC_ROOT}/ComponentLibrary.cpp
+    ${SRC_ROOT}/ComponentNameHelper.cpp
     ${SRC_ROOT}/ConstraintParams.cpp
     ${SRC_ROOT}/DataEngine.cpp
     ${SRC_ROOT}/DataTracker.cpp
@@ -186,7 +187,6 @@ set(SOURCE_FILES
     ${SRC_ROOT}/MechanicalParams.cpp
     ${SRC_ROOT}/Multi2Mapping.cpp
     ${SRC_ROOT}/MultiMapping.cpp
-    ${SRC_ROOT}/NameHelper.cpp
     ${SRC_ROOT}/ObjectFactory.cpp
     ${SRC_ROOT}/PathResolver.cpp
     ${SRC_ROOT}/SofaLibrary.cpp

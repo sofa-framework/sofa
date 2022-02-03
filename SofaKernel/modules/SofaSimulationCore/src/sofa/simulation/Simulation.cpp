@@ -47,7 +47,7 @@
 #include <sofa/helper/init.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/NameHelper.h>
+#include <sofa/core/ComponentNameHelper.h>
 
 #include <sofa/simulation/SceneLoaderFactory.h>
 

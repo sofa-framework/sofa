@@ -30,7 +30,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <cstring>
 #include <tinyxml.h>
-#include <sofa/core/NameHelper.h>
+#include <sofa/core/ComponentNameHelper.h>
 
 /* For loading the scene */
 
@@ -94,13 +94,13 @@ void recReplaceAttribute(BaseElement* node, const char* attr, const char* value,
 }
 
 
-BaseElement* includeNode  (TiXmlNode* root,const char *basefilename, sofa::core::NameHelper& nameHelper);
+BaseElement* includeNode  (TiXmlNode* root,const char *basefilename, sofa::core::ComponentNameHelper& nameHelper);
 BaseElement* attributeNode(TiXmlNode* root,const char *basefilename);
 void recursiveMergeNode(BaseElement* destNode, BaseElement* srcNode);
 
 int numDefault=0;
 
-BaseElement* createNode(TiXmlNode* root, const char *basefilename, sofa::core::NameHelper& nameHelper, bool isRoot = false)
+BaseElement* createNode(TiXmlNode* root, const char *basefilename, sofa::core::ComponentNameHelper& nameHelper, bool isRoot = false)
 {
     //if (!xmlStrcmp(root->name,(const xmlChar*)"text")) return nullptr;
 
@@ -249,7 +249,7 @@ BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc, b
         return nullptr;
     }
 
-    sofa::core::NameHelper nameHelper;
+    sofa::core::ComponentNameHelper nameHelper;
 
     std::string basefilename;
     if(fromMem)
@@ -313,7 +313,7 @@ BaseElement* loadFromFile(const char *filename)
 }
 
 
-BaseElement* includeNode(TiXmlNode* root,const char *basefilename, sofa::core::NameHelper& nameHelper)
+BaseElement* includeNode(TiXmlNode* root,const char *basefilename, sofa::core::ComponentNameHelper& nameHelper)
 {
     TiXmlElement* element = root->ToElement();
     if (!element) return nullptr;

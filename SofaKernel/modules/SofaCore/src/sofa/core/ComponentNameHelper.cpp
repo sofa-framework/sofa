@@ -19,27 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <sofa/core/config.h>
-#include <string>
-#include <unordered_map>
+#include <sstream>
+#include <sofa/core/ComponentNameHelper.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa::core
 {
 
-/**
- * Helper class to get a unique name for a component, based on a counter prefix.
- */
-class SOFA_CORE_API NameHelper
+std::string ComponentNameHelper::resolveName(const std::string& type, const std::string& name)
 {
-public:
-
-    std::string resolveName(const std::string& type, const std::string& name);
-
-private:
-
-    std::unordered_map<std::string, int> m_instanceCounter;
-};
-
+    if (name.empty())
+    {
+        const std::string radix = sofa::core::ObjectFactory::ShortName(type);
+        std::ostringstream oss;
+        oss << radix << m_instanceCounter[radix]++;
+        return oss.str();
+    }
+    return name;
 }
+
+}//namespace sofa::core

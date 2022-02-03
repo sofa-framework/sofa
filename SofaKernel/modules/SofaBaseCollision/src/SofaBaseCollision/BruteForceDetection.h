@@ -24,7 +24,7 @@
 
 #include <SofaBaseCollision/BruteForceBroadPhase.h>
 #include <SofaBaseCollision/BVHNarrowPhase.h>
-#include <sofa/core/NameHelper.h>
+#include <sofa/core/ComponentNameHelper.h>
 
 namespace sofa::component::collision
 {

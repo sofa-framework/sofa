@@ -25,7 +25,7 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/ClassInfo.h>
 #include <sofa/core/objectmodel/TypeOfInsertion.h>
-#include <sofa/core/NameHelper.h>
+#include <sofa/core/ComponentNameHelper.h>
 
 namespace sofa::simulation
 {
@@ -385,7 +385,7 @@ public:
     /// @}
 
     /// Returns utilitary object to uniquely name objects in the context
-    NameHelper& getNameHelper() { return m_nameHelper; }
+    ComponentNameHelper& getNameHelper() { return m_nameHelper; }
 
     /// @name Visitors.
     /// @{
@@ -411,7 +411,7 @@ public:
     friend std::ostream SOFA_CORE_API & operator << (std::ostream& out, const BaseContext& c );
 
 protected:
-    NameHelper m_nameHelper;
+    ComponentNameHelper m_nameHelper;
 };
 
 } // namespace sofa::core::objectmodel

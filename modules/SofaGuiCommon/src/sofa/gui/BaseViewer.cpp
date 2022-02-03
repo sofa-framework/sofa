@@ -28,7 +28,7 @@
 #include <sofa/core/visual/DisplayFlags.h>
 #include <SofaGraphComponent/ViewerSetting.h>
 #include <SofaBaseVisual/InteractiveCamera.h>
-#include <sofa/core/NameHelper.h>
+#include <sofa/core/ComponentNameHelper.h>
 
 namespace sofa::gui
 {
