@@ -91,7 +91,7 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::invert(TMatrix& M)
 
     int * M_colptr = (int *) &this->Mfiltered.getRowBegin()[0];
     int * M_rowind = (int *) &this->Mfiltered.getColsIndex()[0];
-    Inherit1::Real * M_values = (Inherit1::Real *) &this->Mfiltered.getColsValue()[0];
+    Real * M_values = (Real *) &this->Mfiltered.getColsValue()[0];
 
     if(M_colptr==nullptr || M_rowind==nullptr || M_values==nullptr || this->Mfiltered.getRowBegin().size() < (size_t)n )
     {

@@ -51,6 +51,7 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE3(AsyncSparseLDLSolver,TMatrix,TVector,TThreadManager), SOFA_TEMPLATE3(SparseLDLSolver,TMatrix,TVector,TThreadManager));
 
     using InvertData = typename Inherit1::InvertData;
+    using Real = typename Inherit1::Real;
 
     void init() override;
 
