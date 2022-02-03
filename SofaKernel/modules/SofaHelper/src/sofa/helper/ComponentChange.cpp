@@ -743,7 +743,6 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
 
     // SofaGraphComponent was deprecated in #2582 and ...
     { "APIVersion", CreatableMoved("v22.06", "SofaGraphComponent", "Sofa.Component.Utility") },
-    { "Gravity", CreatableMoved("v22.06", "SofaGraphComponent", "Sofa.Component.Utility") },
 };
 
 } // namespace sofa::helper::lifecycle
