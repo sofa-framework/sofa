@@ -720,9 +720,9 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "SphereLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
     { "StringMeshCreator", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
     { "VoxelGridLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
-    { "ReadState", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Misc") },
-    { "ReadTopology", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Misc") },
-    { "InputEventReader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Misc") },
+    { "ReadState", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.Playback") },
+    { "ReadTopology", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.Playback") },
+    { "InputEventReader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.Playback") },
 
     // SofaExporter was deprecated in #2582
     { "BlenderExporter", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.IO.Mesh") },
@@ -734,15 +734,15 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "WriteTopology", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.Playback") },
 
     // SofaBaseUtils was deprecated in #2582 and ...
-    { "AddResourceRepository", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.Utility") },
-    { "MakeAliasComponent", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.Utility") },
-    { "MakeDataAliasComponent", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.Utility") },
-    { "MessageHandlerComponent", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.Utility") },
-    { "FileMessageHandlerComponent", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.Utility") },
-    { "RequiredPlugin", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.Utility") },
+    { "AddResourceRepository", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.SceneUtility") },
+    { "MakeAliasComponent", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.SceneUtility") },
+    { "MakeDataAliasComponent", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.SceneUtility") },
+    { "MessageHandlerComponent", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.SceneUtility") },
+    { "FileMessageHandlerComponent", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.SceneUtility") },
+    { "RequiredPlugin", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.SceneUtility") },
 
     // SofaGraphComponent was deprecated in #2582 and ...
-    { "APIVersion", CreatableMoved("v22.06", "SofaGraphComponent", "Sofa.Component.Utility") },
+    { "APIVersion", CreatableMoved("v22.06", "SofaGraphComponent", "Sofa.Component.SceneUtility") },
 };
 
 } // namespace sofa::helper::lifecycle
