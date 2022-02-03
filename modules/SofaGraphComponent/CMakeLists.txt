@@ -15,6 +15,7 @@ set(SOURCE_FILES
     )
 
 list(APPEND HEADER_FILES
+    ${SOFAGRAPHCOMPONENT_SRC}/Gravity.h
     ${SOFAGRAPHCOMPONENT_SRC}/AddFrameButtonSetting.h
     ${SOFAGRAPHCOMPONENT_SRC}/AddRecordedCameraButtonSetting.h
     ${SOFAGRAPHCOMPONENT_SRC}/AttachBodyButtonSetting.h
@@ -35,6 +36,7 @@ list(APPEND HEADER_FILES
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckerListener.h
     )
 list(APPEND SOURCE_FILES
+    ${SOFAGRAPHCOMPONENT_SRC}/Gravity.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/AddFrameButtonSetting.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/AddRecordedCameraButtonSetting.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/AttachBodyButtonSetting.cpp
