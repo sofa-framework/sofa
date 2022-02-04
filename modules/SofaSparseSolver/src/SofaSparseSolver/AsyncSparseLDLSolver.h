@@ -52,12 +52,15 @@ public:
 
     using InvertData = typename Inherit1::InvertData;
     using Real = typename Inherit1::Real;
+    using ResMatrixType = typename Inherit1::ResMatrixType;
+    using JMatrixType = typename Inherit1::JMatrixType;
 
     void init() override;
 
     void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
     void solveSystem() override;
     void invert(TMatrix& M) override;
+    bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, SReal fact) override;
 
 protected:
 
