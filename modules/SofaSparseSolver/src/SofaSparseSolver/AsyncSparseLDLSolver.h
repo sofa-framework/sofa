@@ -55,12 +55,17 @@ public:
     using ResMatrixType = typename Inherit1::ResMatrixType;
     using JMatrixType = typename Inherit1::JMatrixType;
 
+    bool isAsyncSolver() override { return true; }
+
     void init() override;
 
     void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
     void solveSystem() override;
     void invert(TMatrix& M) override;
     bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, SReal fact) override;
+
+    bool hasUpdatedMatrix() override;
+    void updateSystemMatrix() override;
 
 protected:
 
@@ -80,6 +85,8 @@ protected:
     void copyAsyncInvertData();
 
     std::atomic<bool> newInvertDataReady { false };
+
+    bool m_hasUpdatedMatrix { false };
 };
 
 } //sofa::component::linearsolver

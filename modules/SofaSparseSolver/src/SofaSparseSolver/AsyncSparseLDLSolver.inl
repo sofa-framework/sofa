@@ -40,6 +40,7 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::setSystemMBKMatrix(
     {
         sofa::helper::ScopedAdvancedTimer setSystemMBKMatrixTimer("setSystemMBKMatrix");
         Inherit1::setSystemMBKMatrix(mparams);
+        m_hasUpdatedMatrix = true;
     }
 }
 
@@ -120,10 +121,22 @@ bool AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::addJMInvJtLocal(TMa
 }
 
 template <class TMatrix, class TVector, class TThreadManager>
+bool AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::hasUpdatedMatrix()
+{
+    return m_hasUpdatedMatrix;
+}
+
+template <class TMatrix, class TVector, class TThreadManager>
+void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::updateSystemMatrix()
+{
+    m_hasUpdatedMatrix = false;
+}
+
+template <class TMatrix, class TVector, class TThreadManager>
 bool AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::isAsyncTaskFinished() const
 {
     return m_asyncResult.valid() &&
-    m_asyncResult.wait_for(std::chrono::seconds(0)) == std::future_status::ready;
+    m_asyncResult.wait_for(std::chrono::seconds(0)) == std::future_status::ready && newInvertDataReady;
 }
 
 template <class TMatrix, class TVector, class TThreadManager>
@@ -136,6 +149,7 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::launchAsyncTask()
 template <class TMatrix, class TVector, class TThreadManager>
 void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::asyncTask()
 {
+    newInvertDataReady = false;
     this->invert(*this->linearSystem.systemMatrix);
     newInvertDataReady = true;
 }
