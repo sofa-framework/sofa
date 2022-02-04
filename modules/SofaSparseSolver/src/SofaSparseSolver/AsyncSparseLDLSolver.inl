@@ -137,19 +137,7 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::copyAsyncInvertData
     if (this->invertData)
     {
         sofa::helper::ScopedAdvancedTimer invertDataCopyTimer("invertDataCopy");
-        // *static_cast<InvertData*>(this->invertData.get()) = m_asyncInvertData;
-        InvertData& data = *static_cast<InvertData*>(this->invertData.get());
-
-        //instead of copying all the structure, only the data required in the solve function are copied
-        data.n = m_asyncInvertData.n;
-        data.invD = m_asyncInvertData.invD;
-        data.perm = m_asyncInvertData.perm;
-        data.L_colptr = m_asyncInvertData.L_colptr;
-        data.L_rowind = m_asyncInvertData.L_rowind;
-        data.L_values = m_asyncInvertData.L_values;
-        data.LT_colptr = m_asyncInvertData.LT_colptr;
-        data.LT_rowind = m_asyncInvertData.LT_rowind;
-        data.LT_values = m_asyncInvertData.LT_values;
+        *static_cast<InvertData*>(this->invertData.get()) = m_asyncInvertData;
     }
 }
 }
