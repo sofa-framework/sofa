@@ -20,7 +20,7 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-message(WARNING "${PROJECT_NAME} module is being deprecated; some of its components are in Sofa.Component.Topology.Mapping.")
+message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Topology.Mapping.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.Topology.Mapping REQUIRED)

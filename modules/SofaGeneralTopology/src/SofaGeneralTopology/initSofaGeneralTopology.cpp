@@ -34,7 +34,7 @@ void initSofaGeneralTopology()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaGeneralTopology") << "SofaGeneralTopology is deprecated; please load Sofa.Component.Topology.StaticContainer and/or Sofa.Component.Topology.Grid instead.";
+        // msg_deprecated("SofaGeneralTopology") << "SofaGeneralTopology is deprecated;. It will be removed at v23.06. Use Sofa.Component.Topology.StaticContainer and/or Sofa.Component.Topology.Grid instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Topology.StaticContainer");
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Topology.Grid");

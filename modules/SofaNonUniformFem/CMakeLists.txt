@@ -54,7 +54,7 @@ if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
 endif()
 
-message(WARNING "${PROJECT_NAME} module is being deprecated; some of its components are in Sofa.Component.Topology.Grid and Sofa.Component.Topology.DynamicContainer.")
+message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Topology.Grid and Sofa.Component.Topology.DynamicContainer instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.Topology.Grid REQUIRED)

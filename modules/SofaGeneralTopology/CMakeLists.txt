@@ -14,7 +14,7 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-message(WARNING "${PROJECT_NAME} module is deprecated; its components are in Sofa.Component.Topology.Grid and Sofa.Component.Topology.StaticContainer.")
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.Topology.Grid and Sofa.Component.Topology.StaticContainer instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.Topology.StaticContainer REQUIRED)

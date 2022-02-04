@@ -35,7 +35,7 @@ void initSofaNonUniformFem()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaNonUniformFem") << "SofaNonUniformFem is deprecated; please load Sofa.Component.Topology.DynamicContainer and/or Sofa.Component.Topology.Grid instead.";
+        // msg_deprecated("SofaNonUniformFem") << "SofaNonUniformFem is deprecated. It will be removed at v23.06. You may use Sofa.Component.Topology.DynamicContainer and/or Sofa.Component.Topology.Grid instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Topology.DynamicContainer");
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Topology.Grid");
