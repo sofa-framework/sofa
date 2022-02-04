@@ -59,6 +59,7 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::solveSystem()
             copyAsyncInvertData();
         }
         launchAsyncTask();
+        hasNewMatrix = false;
     }
 
     if (waitForAsyncTask)
