@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/sceneutility/RequiredPlugin.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/utility/RequiredPlugin.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/sceneutility/RequiredPlugin.h")
 
 namespace sofa::component::misc
 {
