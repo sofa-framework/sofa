@@ -1,15 +1,17 @@
 <?xml version="1.0" ?>
 <!-- Generated from benchmark_cubes.pscn -->
 <Node name="root" dt="0.01" gravity="0 -9.81 0">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name="SofaConstraint"/>
-    <RequiredPlugin name="SofaMeshCollision"/>
-    <RequiredPlugin name="SofaRigid"/>
-    <RequiredPlugin name="SofaImplicitOdeSolver"/>
-    <RequiredPlugin name="SofaLoader"/>
-    <RequiredPlugin name="SofaGeneralEngine"/>
-    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/>
-    <RequiredPlugin name="SofaMiscCollision"/>
+    <Node name="pluginList"/>
+        <RequiredPlugin name="SofaOpenglVisual"/>
+        <RequiredPlugin name="SofaConstraint"/>
+        <RequiredPlugin name="SofaMeshCollision"/>
+        <RequiredPlugin name="SofaRigid"/>
+        <RequiredPlugin name="SofaImplicitOdeSolver"/>
+        <RequiredPlugin name="SofaLoader"/>
+        <RequiredPlugin name="SofaGeneralEngine"/>
+        <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/>
+        <RequiredPlugin name="SofaMiscCollision"/>
+    </Node>
 
 
     <VisualStyle displayFlags="showBehavior showCollisionModels" />
