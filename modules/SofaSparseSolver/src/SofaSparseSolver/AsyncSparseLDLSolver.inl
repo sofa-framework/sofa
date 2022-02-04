@@ -40,26 +40,25 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::setSystemMBKMatrix(
     {
         sofa::helper::ScopedAdvancedTimer setSystemMBKMatrixTimer("setSystemMBKMatrix");
         Inherit1::setSystemMBKMatrix(mparams);
-        hasNewMatrix = true;
-    }
-    else
-    {
-        hasNewMatrix = false;
     }
 }
 
 template <class TMatrix, class TVector, class TThreadManager>
 void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::solveSystem()
 {
-    if (hasNewMatrix)
+    sofa::helper::ScopedAdvancedTimer invertDataCopyTimer("AsyncSolve");
+
+    if (newInvertDataReady)
     {
-        {
-            sofa::helper::ScopedAdvancedTimer matrixCopyTimer("matrixCopy");
-            this->getMatrixInvertData(this->linearSystem.systemMatrix);
-            copyAsyncInvertData();
-        }
+        newInvertDataReady = false;
+        copyAsyncInvertData();
+    }
+
+    if (this->linearSystem.needInvert)
+    {
+        this->getMatrixInvertData(this->linearSystem.systemMatrix);
         launchAsyncTask();
-        hasNewMatrix = false;
+        this->linearSystem.needInvert = false;
     }
 
     if (waitForAsyncTask)
@@ -68,6 +67,12 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::solveSystem()
         waitForAsyncTask = false;
         if (m_asyncResult.valid())
             m_asyncResult.get();
+        copyAsyncInvertData();
+    }
+
+    if (newInvertDataReady)
+    {
+        newInvertDataReady = false;
         copyAsyncInvertData();
     }
 
@@ -123,6 +128,7 @@ template <class TMatrix, class TVector, class TThreadManager>
 void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::asyncTask()
 {
     this->invert(*this->linearSystem.systemMatrix);
+    newInvertDataReady = true;
 }
 
 template <class TMatrix, class TVector, class TThreadManager>
@@ -130,7 +136,20 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::copyAsyncInvertData
 {
     if (this->invertData)
     {
-        *static_cast<InvertData*>(this->invertData.get()) = m_asyncInvertData;
+        sofa::helper::ScopedAdvancedTimer invertDataCopyTimer("invertDataCopy");
+        // *static_cast<InvertData*>(this->invertData.get()) = m_asyncInvertData;
+        InvertData& data = *static_cast<InvertData*>(this->invertData.get());
+
+        //instead of copying all the structure, only the data required in the solve function are copied
+        data.n = m_asyncInvertData.n;
+        data.invD = m_asyncInvertData.invD;
+        data.perm = m_asyncInvertData.perm;
+        data.L_colptr = m_asyncInvertData.L_colptr;
+        data.L_rowind = m_asyncInvertData.L_rowind;
+        data.L_values = m_asyncInvertData.L_values;
+        data.LT_colptr = m_asyncInvertData.LT_colptr;
+        data.LT_rowind = m_asyncInvertData.LT_rowind;
+        data.LT_values = m_asyncInvertData.LT_values;
     }
 }
 }

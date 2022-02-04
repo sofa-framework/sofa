@@ -71,11 +71,12 @@ protected:
     void launchAsyncTask();
     void asyncTask();
 
-    bool hasNewMatrix { false };
     bool waitForAsyncTask { true };
 
     /// Copy the invert data from the async thread to the main thread
     void copyAsyncInvertData();
+
+    std::atomic<bool> newInvertDataReady { false };
 };
 
 } //sofa::component::linearsolver
