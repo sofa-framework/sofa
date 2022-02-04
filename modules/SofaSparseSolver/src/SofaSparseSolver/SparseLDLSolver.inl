@@ -94,6 +94,7 @@ bool SparseLDLSolver<TMatrix,TVector,TThreadManager>::addJMInvJtLocal(TMatrix * 
     if (J->rowSize()==0) return true;
 
     Jlocal2global.clear();
+    Jlocal2global.reserve(J->rowSize());
     for (typename SparseMatrix<Real>::LineConstIterator jit = J->begin(), jitend = J->end(); jit != jitend; ++jit) {
         int l = jit->first;
         Jlocal2global.push_back(l);
