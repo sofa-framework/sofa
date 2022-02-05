@@ -50,6 +50,7 @@ template<class TMatrix, class TVector,class ThreadManager>
 WarpPreconditioner<TMatrix,TVector,ThreadManager >::WarpPreconditioner()
     : solverName(initData(&solverName, std::string(""), "solverName", "Name of the solver/preconditioner to warp"))
     , f_useRotationFinder(initData(&f_useRotationFinder, (unsigned)0, "useRotationFinder", "Which rotation Finder to use" ) )
+    , d_update_step(initData(&d_update_step, 1u, "update_step", "Number of steps before the next refresh of the system matrix in the main solver" ) )
 {
 
     realSolver = nullptr;
@@ -94,7 +95,7 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::bwdInit() {
 }
 
 template<class TMatrix, class TVector,class ThreadManager>
-typename  WarpPreconditioner<TMatrix, TVector, ThreadManager >::Index 
+typename  WarpPreconditioner<TMatrix, TVector, ThreadManager >::Index
 WarpPreconditioner<TMatrix,TVector,ThreadManager >::getSystemDimention(const sofa::core::MechanicalParams* mparams) {
     simulation::common::MechanicalOperations mops(mparams, this->getContext());
 
@@ -116,7 +117,11 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::setSystemMBKMatrix(cons
         if (!this->linearSystem.systemMatrix) this->linearSystem.systemMatrix = this->createMatrix();
     }
 
-    realSolver->setSystemMBKMatrix(mparams);
+    if (first || d_update_step.getValue() > 0 && next_refresh_step >= d_update_step.getValue() || d_update_step.getValue() < 0)
+    {
+        realSolver->setSystemMBKMatrix(mparams);
+        next_refresh_step = 1;
+    }
 
     if (first) {
         updateSystemSize = getSystemDimention(mparams);
@@ -169,6 +174,7 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::invert(Matrix& /*Rcur*/
 
 template<class TMatrix, class TVector,class ThreadManager>
 void WarpPreconditioner<TMatrix,TVector,ThreadManager >::updateSystemMatrix() {
+    ++next_refresh_step;
     realSolver->updateSystemMatrix();
 }
 

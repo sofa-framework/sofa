@@ -13,7 +13,7 @@
     <Node name="M1">
         <EulerImplicitSolver name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
         <ShewchukPCGLinearSolver iterations="1000" preconditioners="preconditioner" update_step="1"/>
-        <WarpPreconditioner name="preconditioner" solverName="factorization" printLog="true"/>
+        <WarpPreconditioner name="preconditioner" solverName="factorization" update_step="15"/>
         <AsyncSparseLDLSolver name="factorization"/>
         <MechanicalObject />
         <UniformMass vertexMass="1" />
