@@ -39,63 +39,12 @@
 namespace sofa::component::constraintset
 {
 
-/// Christian : WARNING: this class is already defined in sofa::helper
 class LCPConstraintProblem : public ConstraintProblem
 {
 public:
     double mu;
 
     void solveTimed(double tolerance, int maxIt, double timeout) override;
-};
-
-class MechanicalGetConstraintInfoVisitor : public simulation::BaseMechanicalVisitor
-{
-public:
-    typedef core::behavior::BaseConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
-    typedef core::behavior::BaseConstraint::VecPersistentID VecPersistentID;
-    typedef core::behavior::BaseConstraint::VecConstCoord VecConstCoord;
-    typedef core::behavior::BaseConstraint::VecConstDeriv VecConstDeriv;
-    typedef core::behavior::BaseConstraint::VecConstArea VecConstArea;
-
-    MechanicalGetConstraintInfoVisitor(const core::ConstraintParams* params, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
-        : simulation::BaseMechanicalVisitor(params)
-        , _blocks(blocks)
-        , _ids(ids)
-        , _positions(positions)
-        , _directions(directions)
-        , _areas(areas)
-        , _cparams(params)
-    {}
-
-    Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override
-    {
-        if (core::behavior::BaseConstraint *c=cSet->toBaseConstraint())
-        {
-            ctime_t t0 = begin(node, c);
-            c->getConstraintInfo(_cparams, _blocks, _ids, _positions, _directions, _areas);
-            end(node, c, t0);
-        }
-        return RESULT_CONTINUE;
-    }
-
-
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/) override
-    {
-        return false;
-    }
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override { return "MechanicalGetConstraintInfoVisitor";}
-
-private:
-    VecConstraintBlockInfo& _blocks;
-    VecPersistentID& _ids;
-    VecConstCoord& _positions;
-    VecConstDeriv& _directions;
-    VecConstArea& _areas;
-    const core::ConstraintParams* _cparams;
 };
 
 class SOFA_SOFACONSTRAINT_API LCPConstraintSolver : public ConstraintSolverImpl
@@ -130,7 +79,6 @@ public:
 
 
     Data<bool> displayDebug; ///< Display debug information.
-    Data<bool> displayTime; ///< Display time for each important step of LCPConstraintSolver.
     Data<bool> initial_guess; ///< activate LCP results history to improve its resolution performances.
     Data<bool> build_lcp; ///< LCP is not fully built to increase performance in some case.
     Data<double> tol; ///< residual error threshold for termination of the Gauss-Seidel algorithm
@@ -190,13 +138,6 @@ private:
     sofa::core::objectmodel::BaseContext *context;
     sofa::linearalgebra::FullVector<double> *_dFree, *_result;
     ///
-    sofa::helper::system::thread::CTime timer;
-    sofa::helper::system::thread::CTime timerTotal;
-
-    double time;
-    double timeTotal;
-    double timeScale;
-
 
     /// for unbuilt lcp ///
     void build_problem_info();
