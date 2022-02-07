@@ -72,6 +72,13 @@ WarpPreconditioner<TMatrix,TVector,ThreadManager >::~WarpPreconditioner()
     rotationWork[1] = nullptr;
 }
 
+template <class TMatrix, class TVector, class ThreadManager>
+void WarpPreconditioner<TMatrix, TVector, ThreadManager>::init()
+{
+    Inherit1::init();
+    first = true;
+}
+
 template<class TMatrix, class TVector,class ThreadManager>
 void WarpPreconditioner<TMatrix,TVector,ThreadManager >::bwdInit() {
     this->getContext()->get(realSolver, solverName.getValue());
