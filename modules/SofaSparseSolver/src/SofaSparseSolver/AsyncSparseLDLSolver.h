@@ -50,6 +50,8 @@ class AsyncSparseLDLSolver : public SparseLDLSolver<TMatrix, TVector, TThreadMan
 public:
     SOFA_CLASS(SOFA_TEMPLATE3(AsyncSparseLDLSolver,TMatrix,TVector,TThreadManager), SOFA_TEMPLATE3(SparseLDLSolver,TMatrix,TVector,TThreadManager));
 
+    using Matrix = typename Inherit1::Matrix;
+    using Vector = typename Inherit1::Vector;
     using InvertData = typename Inherit1::InvertData;
     using Real = typename Inherit1::Real;
     using ResMatrixType = typename Inherit1::ResMatrixType;
@@ -62,6 +64,7 @@ public:
 
     void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
     void solveSystem() override;
+    void solve (Matrix& M, Vector& x, Vector& b) override;
     void invert(TMatrix& M) override;
     bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, SReal fact) override;
 
@@ -72,8 +75,12 @@ public:
 
 protected:
 
-    /// Output of the asynchronous factorization. Copied to the regular data when requested.
-    InvertData m_asyncInvertData;
+    /// A second instantiation is needed to differentiate the one which is computed asynchronously, and the one which
+    /// is used to solve the system in the main thread
+    InvertData m_secondInvertData;
+
+    InvertData* m_mainThreadInvertData { nullptr };
+    InvertData* m_asyncThreadInvertData { nullptr };
 
     /// Result of the asynchronous task
     std::future<void> m_asyncResult;
@@ -87,7 +94,7 @@ protected:
     bool waitForAsyncTask { true };
 
     /// Copy the invert data from the async thread to the main thread
-    void copyAsyncInvertData();
+    void swapInvertData();
 
     std::atomic<bool> newInvertDataReady { false };
 

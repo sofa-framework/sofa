@@ -45,7 +45,8 @@ SparseLDLSolver<TMatrix,TVector,TThreadManager>::SparseLDLSolver()
 {}
 
 template<class TMatrix, class TVector, class TThreadManager>
-void SparseLDLSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& z, Vector& r) {
+void SparseLDLSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& z, Vector& r)
+{
     Inherit::solve_cpu(&z[0],&r[0],(InvertData *) this->getMatrixInvertData(&M));
 }
 

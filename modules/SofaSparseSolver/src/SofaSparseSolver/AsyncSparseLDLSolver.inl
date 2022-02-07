@@ -31,6 +31,8 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::init()
 {
     Inherit1::init();
     waitForAsyncTask = true;
+    m_asyncThreadInvertData = &m_secondInvertData;
+    m_mainThreadInvertData = static_cast<InvertData*>(this->invertData.get());
 }
 
 template <class TMatrix, class TVector, class TThreadManager>
@@ -51,12 +53,16 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::solveSystem()
 
     if (newInvertDataReady)
     {
-        copyAsyncInvertData();
+        swapInvertData();
     }
 
     if (this->linearSystem.needInvert)
     {
-        this->getMatrixInvertData(this->linearSystem.systemMatrix);
+        if (this->invertData == nullptr)
+        {
+            this->getMatrixInvertData(this->linearSystem.systemMatrix);
+            m_mainThreadInvertData = static_cast<InvertData*>(this->invertData.get());
+        }
         launchAsyncFactorization();
         this->linearSystem.needInvert = false;
     }
@@ -70,7 +76,7 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::solveSystem()
 
     if (newInvertDataReady)
     {
-        copyAsyncInvertData();
+        swapInvertData();
     }
 
     this->solve(*this->linearSystem.systemMatrix, *this->linearSystem.systemLHVector, *this->linearSystem.systemRHVector);
@@ -81,6 +87,12 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::solveSystem()
 }
 
 template <class TMatrix, class TVector, class TThreadManager>
+void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::solve(Matrix& M, Vector& x, Vector& b)
+{
+    Inherit1::solve_cpu(&x[0],&b[0], m_mainThreadInvertData);
+}
+
+template <class TMatrix, class TVector, class TThreadManager>
 void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::invert(TMatrix& M)
 {
     if (this->f_saveMatrixToFile.getValue())
@@ -88,7 +100,7 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::invert(TMatrix& M)
         saveMatrix(M);
     }
 
-    Inherit1::factorize(M, &m_asyncInvertData);
+    Inherit1::factorize(M, m_asyncThreadInvertData);
 }
 
 template <class TMatrix, class TVector, class TThreadManager>
@@ -97,7 +109,7 @@ bool AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::addJMInvJtLocal(TMa
 {
     if (newInvertDataReady)
     {
-        copyAsyncInvertData();
+        swapInvertData();
     }
     return Inherit1::addJMInvJtLocal(M, result, J, fact);
 }
@@ -143,12 +155,11 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::asyncFactorization(
 }
 
 template <class TMatrix, class TVector, class TThreadManager>
-void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::copyAsyncInvertData()
+void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::swapInvertData()
 {
     if (this->invertData)
     {
-        sofa::helper::ScopedAdvancedTimer invertDataCopyTimer("invertDataCopy");
-        *static_cast<InvertData*>(this->invertData.get()) = m_asyncInvertData;
+        std::swap(m_mainThreadInvertData, m_asyncThreadInvertData);
     }
     newInvertDataReady = false;
 }
