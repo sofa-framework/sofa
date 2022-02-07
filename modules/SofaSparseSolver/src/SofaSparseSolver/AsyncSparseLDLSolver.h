@@ -68,6 +68,8 @@ public:
     bool hasUpdatedMatrix() override;
     void updateSystemMatrix() override;
 
+    ~AsyncSparseLDLSolver() override;
+
 protected:
 
     /// Output of the asynchronous factorization. Copied to the regular data when requested.

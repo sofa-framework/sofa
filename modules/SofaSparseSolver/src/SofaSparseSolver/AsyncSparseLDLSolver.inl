@@ -115,11 +115,17 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::updateSystemMatrix(
 }
 
 template <class TMatrix, class TVector, class TThreadManager>
+AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::~AsyncSparseLDLSolver()
+{
+    if (m_asyncResult.valid())
+        m_asyncResult.get();
+}
+
+template <class TMatrix, class TVector, class TThreadManager>
 bool AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::isAsyncFactorizationFinished() const
 {
     return m_asyncResult.valid() &&
-        m_asyncResult.wait_for(std::chrono::seconds(0)) == std::future_status::ready &&
-        newInvertDataReady;
+        m_asyncResult.wait_for(std::chrono::seconds(0)) == std::future_status::ready;
 }
 
 template <class TMatrix, class TVector, class TThreadManager>
