@@ -104,16 +104,14 @@ void SparseLDLSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
     factorize(M, (InvertData *) this->getMatrixInvertData(&M));
 }
 
-/// Default implementation of Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
-template<class TMatrix, class TVector, class TThreadManager>
-bool SparseLDLSolver<TMatrix,TVector,TThreadManager>::addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, SReal fact) {
-    using namespace sofa::linearalgebra;
-
+template <class TMatrix, class TVector, class TThreadManager>
+bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMatrixType* result, const JMatrixType* J, SReal fact, InvertData* data)
+{
     if (J->rowSize()==0) return true;
 
     Jlocal2global.clear();
     Jlocal2global.reserve(J->rowSize());
-    for (typename SparseMatrix<Real>::LineConstIterator jit = J->begin(), jitend = J->end(); jit != jitend; ++jit) {
+    for (auto jit = J->begin(), jitend = J->end(); jit != jitend; ++jit) {
         int l = jit->first;
         Jlocal2global.push_back(l);
     }
@@ -122,16 +120,16 @@ bool SparseLDLSolver<TMatrix,TVector,TThreadManager>::addJMInvJtLocal(TMatrix * 
 
     const unsigned int JlocalRowSize = (unsigned int)Jlocal2global.size();
 
-    InvertData* data = (InvertData*)this->getMatrixInvertData(M);
+
 
     JLinv.clear();
     JLinv.resize(J->rowSize(), data->n);
     JLinvDinv.resize(J->rowSize(), data->n);
 
     unsigned int localRow = 0;
-    for (typename SparseMatrix<Real>::LineConstIterator jit = J->begin(), jitend = J->end(); jit != jitend; ++jit, ++localRow) {
+    for (auto jit = J->begin(), jitend = J->end(); jit != jitend; ++jit, ++localRow) {
         Real* line = JLinv[localRow];
-        for (typename SparseMatrix<Real>::LElementConstIterator it = jit->second.begin(), i2end = jit->second.end(); it != i2end; ++it) {
+        for (auto it = jit->second.begin(), i2end = jit->second.end(); it != i2end; ++it) {
             int col = data->invperm[it->first];
             double val = it->second;
 
@@ -179,6 +177,15 @@ bool SparseLDLSolver<TMatrix,TVector,TThreadManager>::addJMInvJtLocal(TMatrix * 
     }
 
     return true;
+}
+
+/// Default implementation of Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
+template<class TMatrix, class TVector, class TThreadManager>
+bool SparseLDLSolver<TMatrix,TVector,TThreadManager>::addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, SReal fact) {
+
+    InvertData* data = (InvertData*)this->getMatrixInvertData(M);
+
+    return doAddJMInvJtLocal(result, J, fact, data);
 }
 
 } // namespace sofa::component::linearsolver

@@ -111,7 +111,7 @@ bool AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::addJMInvJtLocal(TMa
     {
         swapInvertData();
     }
-    return Inherit1::addJMInvJtLocal(M, result, J, fact);
+    return Inherit1::doAddJMInvJtLocal(result, J, fact, m_mainThreadInvertData);
 }
 
 template <class TMatrix, class TVector, class TThreadManager>

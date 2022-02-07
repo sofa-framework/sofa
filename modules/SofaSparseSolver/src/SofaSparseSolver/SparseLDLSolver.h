@@ -59,6 +59,7 @@ public :
 
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void invert(Matrix& M) override;
+    bool doAddJMInvJtLocal(ResMatrixType* result, const JMatrixType* J, SReal fact, InvertData* data);
     bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, SReal fact) override;
     int numStep;
 
