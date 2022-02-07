@@ -453,7 +453,7 @@ void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->saveLastState();
 
     const VecCoord* x0 = &f_X0.getValue();
-    const sofa::type::RGBAColor& color = sofa::type::RGBAColor::cyan();
+    constexpr const sofa::type::RGBAColor& color = sofa::type::RGBAColor::cyan();
 
     if(p_drawSphere.getValue()) // old classical drawing by points
     {

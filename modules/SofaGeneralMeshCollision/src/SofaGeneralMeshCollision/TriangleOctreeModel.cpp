@@ -52,7 +52,7 @@ void TriangleOctreeModel::draw (const core::visual::VisualParams* vparams)
 
         vparams->drawTool()->enableLighting();
         const float* getCol = getColor4f();
-        auto color = sofa::type::RGBAColor(getCol[0], getCol[1], getCol[2], getCol[3]);
+        const auto color = sofa::type::RGBAColor(getCol[0], getCol[1], getCol[2], getCol[3]);
         vparams->drawTool()->setMaterial(color);
 
         if(octreeRoot)

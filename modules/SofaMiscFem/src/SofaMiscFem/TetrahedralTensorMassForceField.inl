@@ -473,7 +473,7 @@ void TetrahedralTensorMassForceField<DataTypes>::draw(const core::visual::Visual
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,true);
 
-    sofa::type::RGBAColor color(0,1,0,1);
+    constexpr sofa::type::RGBAColor color = sofa::type::RGBAColor::green();
     std::vector<sofa::type::Vector3> vertices;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();

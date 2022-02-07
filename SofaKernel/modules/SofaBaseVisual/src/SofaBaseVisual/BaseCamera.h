@@ -22,7 +22,6 @@
 #pragma once
 #include <SofaBaseVisual/config.h>
 
-#include <SofaBaseVisual/BackgroundSetting.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Ray.h>
@@ -88,9 +87,6 @@ public:
     
     Data<type::vector<SReal> > p_modelViewMatrix; ///< ModelView Matrix
     Data<type::vector<SReal> > p_projectionMatrix; ///< Projection Matrix
-
-    SingleLink<BaseCamera, sofa::component::configurationsetting::BackgroundSetting,
-               BaseLink::FLAG_STOREPATH> l_background ;
 
     BaseCamera();
     ~BaseCamera() override;

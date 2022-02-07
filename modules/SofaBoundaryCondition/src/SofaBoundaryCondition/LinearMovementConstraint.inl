@@ -397,7 +397,7 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
         return;
 
     vparams->drawTool()->saveLastState();
-    const sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
+    constexpr sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
 
     if (showMovement.getValue())
     {

@@ -52,34 +52,34 @@ public:
 
     static bool read(const std::string& str, RGBAColor& color) ;
 
-    static RGBAColor white()  { return RGBAColor(1.0,1.0,1.0,1.0); }
-    static RGBAColor black()  { return RGBAColor(0.0,0.0,0.0,1.0); }
-    static RGBAColor red()    { return RGBAColor(1.0,0.0,0.0,1.0); }
-    static RGBAColor green()  { return RGBAColor(0.0,1.0,0.0,1.0); }
-    static RGBAColor blue()   { return RGBAColor(0.0,0.0,1.0,1.0); }
-    static RGBAColor cyan()   { return RGBAColor(0.0,1.0,1.0,1.0); }
-    static RGBAColor magenta() { return RGBAColor(1.0,0.0,1.0,1.0); }
-    static RGBAColor yellow()  { return RGBAColor(1.0,1.0,0.0,1.0); }
-    static RGBAColor gray()    { return RGBAColor(0.5,0.5,0.5,1.0); }
-    static RGBAColor darkgray() { return RGBAColor(0.25,0.25,0.25,1.0); }
-    static RGBAColor lightgray()  { return RGBAColor(0.75,0.75,0.75,1.0); }
+    constexpr static const RGBAColor& white();
+    constexpr static const RGBAColor& black();
+    constexpr static const RGBAColor& red();
+    constexpr static const RGBAColor& green();
+    constexpr static const RGBAColor& blue();
+    constexpr static const RGBAColor& cyan();
+    constexpr static const RGBAColor& magenta();
+    constexpr static const RGBAColor& yellow();
+    constexpr static const RGBAColor& gray();
+    constexpr static const RGBAColor& darkgray();
+    constexpr static const RGBAColor& lightgray();
 
     /// @brief enlight a color by a given factor.
     static RGBAColor lighten(const RGBAColor& in, const SReal factor);
 
-    inline float& r(){ return this->elems[0] ; }
-    inline float& g(){ return this->elems[1] ; }
-    inline float& b(){ return this->elems[2] ; }
-    inline float& a(){ return this->elems[3] ; }
-    inline const float& r() const { return this->elems[0] ; }
-    inline const float& g() const { return this->elems[1] ; }
-    inline const float& b() const { return this->elems[2] ; }
-    inline const float& a() const { return this->elems[3] ; }
+    constexpr float& r(){ return this->elems[0] ; }
+    constexpr float& g(){ return this->elems[1] ; }
+    constexpr float& b(){ return this->elems[2] ; }
+    constexpr float& a(){ return this->elems[3] ; }
+    constexpr const float& r() const { return this->elems[0] ; }
+    constexpr const float& g() const { return this->elems[1] ; }
+    constexpr const float& b() const { return this->elems[2] ; }
+    constexpr const float& a() const { return this->elems[3] ; }
 
-    inline void r(const float r){ this->elems[0]=r; }
-    inline void g(const float g){ this->elems[1]=g; }
-    inline void b(const float b){ this->elems[2]=b; }
-    inline void a(const float a){ this->elems[3]=a; }
+    constexpr void r(const float r){ this->elems[0]=r; }
+    constexpr void g(const float g){ this->elems[1]=g; }
+    constexpr void b(const float b){ this->elems[2]=b; }
+    constexpr void a(const float a){ this->elems[3]=a; }
 
     void set(float r, float g, float b, float a) ;
 
@@ -102,10 +102,34 @@ public:
     friend SOFA_TYPE_API std::ostream& operator<<(std::ostream& i, const RGBAColor& t) ;
     friend SOFA_TYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t) ;
 
-    RGBAColor() ;
-    RGBAColor(const fixed_array<float, 4>&) ;
-    RGBAColor(const float r, const float g, const float b, const float a) ;
+    constexpr RGBAColor() : fixed_array<float, 4>(1.f, 1.f, 1.f, 1.f) {}
+    constexpr RGBAColor(const fixed_array<float, 4>& c) : fixed_array<float, 4>(c) {}
+    constexpr RGBAColor(float r, float g, float b, float a) : fixed_array<float, 4>(r, g, b, a) {}
 
 };
+
+inline constexpr RGBAColor g_white     {1.0f,1.0f,1.0f,1.0f};
+inline constexpr RGBAColor g_black     {0.0f,0.0f,0.0f,1.0f};
+inline constexpr RGBAColor g_red       {1.0f,0.0f,0.0f,1.0f};
+inline constexpr RGBAColor g_green     {0.0f,1.0f,0.0f,1.0f};
+inline constexpr RGBAColor g_blue      {0.0f,0.0f,1.0f,1.0f};
+inline constexpr RGBAColor g_cyan      {0.0f,1.0f,1.0f,1.0f};
+inline constexpr RGBAColor g_magenta   {1.0f,0.0f,1.0f,1.0f};
+inline constexpr RGBAColor g_yellow    {1.0f,1.0f,0.0f,1.0f};
+inline constexpr RGBAColor g_gray      {0.5f,0.5f,0.5f,1.0f};
+inline constexpr RGBAColor g_darkgray  {0.25f,0.25f,0.25f,1.0f};
+inline constexpr RGBAColor g_lightgray {0.75f,0.75f,0.75f,1.0f};
+
+constexpr const RGBAColor& RGBAColor::white()    { return g_white;     }
+constexpr const RGBAColor& RGBAColor::black()    { return g_black;     }
+constexpr const RGBAColor& RGBAColor::red()      { return g_red;       }
+constexpr const RGBAColor& RGBAColor::green()    { return g_green;     }
+constexpr const RGBAColor& RGBAColor::blue()     { return g_blue;      }
+constexpr const RGBAColor& RGBAColor::cyan()     { return g_cyan;      }
+constexpr const RGBAColor& RGBAColor::magenta()  { return g_magenta;   }
+constexpr const RGBAColor& RGBAColor::yellow()   { return g_yellow;    }
+constexpr const RGBAColor& RGBAColor::gray()     { return g_gray;      }
+constexpr const RGBAColor& RGBAColor::darkgray() { return g_darkgray;  }
+constexpr const RGBAColor& RGBAColor::lightgray(){ return g_lightgray; }
 
 } // namespace sofa::type

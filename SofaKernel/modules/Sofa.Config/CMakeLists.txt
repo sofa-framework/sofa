@@ -296,7 +296,7 @@ configure_file(cmake/CMakeParseLibraryList.cmake ${CMAKE_BINARY_DIR}/lib/cmake/C
 install(FILES cmake/CMakeParseLibraryList.cmake DESTINATION lib/cmake/${PROJECT_NAME} COMPONENT headers)
 
 # SofaMacros*.cmake
-set(macro_files SofaMacros.cmake SofaMacrosConfigure.cmake SofaMacrosInstall.cmake SofaMacrosPython.cmake SofaMacrosUtils.cmake)
+set(macro_files SofaMacros.cmake SofaMacrosConfigure.cmake SofaMacrosInstall.cmake SofaMacrosPython.cmake SofaMacrosUtils.cmake SofaNGMacros.cmake)
 foreach(macro_file ${macro_files})
     configure_file(cmake/${macro_file} ${CMAKE_BINARY_DIR}/lib/cmake/${macro_file} COPYONLY)
     install(FILES cmake/${macro_file} DESTINATION lib/cmake/${PROJECT_NAME} COMPONENT headers)
