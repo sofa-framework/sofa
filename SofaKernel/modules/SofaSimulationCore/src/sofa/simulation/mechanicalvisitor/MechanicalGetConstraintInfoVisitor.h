@@ -26,7 +26,7 @@
 
 namespace sofa::simulation::mechanicalvisitor
 {
-class MechanicalGetConstraintInfoVisitor : public simulation::BaseMechanicalVisitor
+class SOFA_SIMULATION_CORE_API MechanicalGetConstraintInfoVisitor : public simulation::BaseMechanicalVisitor
 {
 public:
     typedef core::behavior::BaseConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
