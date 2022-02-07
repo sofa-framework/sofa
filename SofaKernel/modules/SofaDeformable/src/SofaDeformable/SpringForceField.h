@@ -167,47 +167,13 @@ public:
 
     // -- Modifiers
 
-    void clear(sofa::Size reserve=0)
-    {
-        sofa::type::vector<Spring>& springs = *this->springs.beginEdit();
-        springs.clear();
-        if (reserve) springs.reserve(reserve);
-        this->springs.endEdit();
-    }
+    void clear(sofa::Size reserve=0);
 
-    void removeSpring(sofa::Index idSpring)
-    {
-        if (idSpring >= (this->springs.getValue()).size())
-            return;
+    void removeSpring(sofa::Index idSpring);
 
-        sofa::type::vector<Spring>& springs = *this->springs.beginEdit();
-        springs.erase(springs.begin() +idSpring );
-        this->springs.endEdit();
-    }
+    void addSpring(sofa::Index m1, sofa::Index m2, SReal ks, SReal kd, SReal initlen);
 
-    void addSpring(sofa::Index m1, sofa::Index m2, SReal ks, SReal kd, SReal initlen)
-    {
-        springs.beginEdit()->push_back(Spring(m1,m2,ks,kd,initlen));
-        springs.endEdit();
-
-        d_springsIndices[0].beginEdit()->push_back(m1);
-        d_springsIndices[0].endEdit();
-
-        d_springsIndices[1].beginEdit()->push_back(m2);
-        d_springsIndices[1].endEdit();
-    }
-
-    void addSpring(const Spring & spring)
-    {
-        springs.beginEdit()->push_back(spring);
-        springs.endEdit();
-
-        d_springsIndices[0].beginEdit()->push_back(spring.m1);
-        d_springsIndices[0].endEdit();
-
-        d_springsIndices[1].beginEdit()->push_back(spring.m2);
-        d_springsIndices[1].endEdit();
-    }
+    void addSpring(const Spring & spring);
 
     /// initialization to export kinetic, potential energy  and force intensity to gnuplot files format
     void initGnuplot(const std::string path) override;

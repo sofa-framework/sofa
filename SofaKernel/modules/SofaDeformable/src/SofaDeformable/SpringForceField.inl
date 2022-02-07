@@ -92,8 +92,8 @@ void SpringForceField<DataTypes>::reinit()
 template <class DataTypes>
 void SpringForceField<DataTypes>::updateTopologyIndicesFromSprings()
 {
-    auto& indices1 = *d_springsIndices[0].beginEdit();
-    auto& indices2 = *d_springsIndices[1].beginEdit();
+    auto& indices1 = *sofa::helper::getWriteOnlyAccessor(d_springsIndices[0]);
+    auto& indices2 = *sofa::helper::getWriteOnlyAccessor(d_springsIndices[1]);
     indices1.clear();
     indices2.clear();
     for (const auto& spring : sofa::helper::getReadAccessor(springs))
@@ -443,6 +443,46 @@ void SpringForceField<DataTypes>::computeBBox(const core::ExecParams* params, bo
     {
         this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
     }
+}
+
+template <class DataTypes>
+void SpringForceField<DataTypes>::clear(sofa::Size reserve)
+{
+    sofa::type::vector<Spring>& springs = *this->springs.beginEdit();
+    springs.clear();
+    if (reserve) springs.reserve(reserve);
+    this->springs.endEdit();
+}
+
+template <class DataTypes>
+void SpringForceField<DataTypes>::removeSpring(sofa::Index idSpring)
+{
+    if (idSpring >= (this->springs.getValue()).size())
+        return;
+
+    sofa::type::vector<Spring>& springs = *this->springs.beginEdit();
+    springs.erase(springs.begin() +idSpring );
+    this->springs.endEdit();
+}
+
+template <class DataTypes>
+void SpringForceField<DataTypes>::addSpring(sofa::Index m1, sofa::Index m2, SReal ks, SReal kd, SReal initlen)
+{
+    springs.beginEdit()->push_back(Spring(m1,m2,ks,kd,initlen));
+    springs.endEdit();
+
+    sofa::helper::getWriteAccessor(d_springsIndices[0]).push_back(m1);
+    sofa::helper::getWriteAccessor(d_springsIndices[1]).push_back(m2);
+}
+
+template <class DataTypes>
+void SpringForceField<DataTypes>::addSpring(const Spring& spring)
+{
+    springs.beginEdit()->push_back(spring);
+    springs.endEdit();
+
+    sofa::helper::getWriteAccessor(d_springsIndices[0]).push_back(spring.m1);
+    sofa::helper::getWriteAccessor(d_springsIndices[1]).push_back(spring.m2);
 }
 
 template<class DataTypes>
