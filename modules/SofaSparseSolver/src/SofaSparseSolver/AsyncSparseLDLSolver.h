@@ -55,6 +55,7 @@ public:
     using ResMatrixType = typename Inherit1::ResMatrixType;
     using JMatrixType = typename Inherit1::JMatrixType;
 
+
     bool isAsyncSolver() override { return true; }
 
     void init() override;
@@ -69,15 +70,17 @@ public:
 
 protected:
 
+    /// Output of the asynchronous factorization. Copied to the regular data when requested.
     InvertData m_asyncInvertData;
 
+    /// Result of the asynchronous task
     std::future<void> m_asyncResult;
-    unsigned int m_asyncTimeStepCounter {};
 
-    bool isAsyncTaskFinished() const;
+    /// Return true if an asynchronous factorization has been launched and is finished
+    bool isAsyncFactorizationFinished() const;
 
-    void launchAsyncTask();
-    void asyncTask();
+    void launchAsyncFactorization();
+    void asyncFactorization();
 
     bool waitForAsyncTask { true };
 

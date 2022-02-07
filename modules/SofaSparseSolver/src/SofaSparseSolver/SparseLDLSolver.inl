@@ -49,23 +49,27 @@ void SparseLDLSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& 
     Inherit::solve_cpu(&z[0],&r[0],(InvertData *) this->getMatrixInvertData(&M));
 }
 
-template<class TMatrix, class TVector, class TThreadManager>
-void SparseLDLSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M) {
-    if (f_saveMatrixToFile.getValue())
-    {
-        std::ofstream f;
-        std::string name=d_filename.getValue().c_str();
-        if (d_filename.getValue().find("%d"))
-        {
-            char bname[100];
-            snprintf(bname, 100, d_filename.getValue().c_str(), numStep);
-            name=bname;
-        }
-        f.open(name);
-        f << std::scientific << std::setprecision(d_precision.getValue()) << M;
-        f.close();
-    }
 
+template <class TMatrix, class TVector, class TThreadManager>
+void SparseLDLSolver<TMatrix, TVector, TThreadManager>::saveMatrix(Matrix& M)
+{
+    std::ofstream f;
+    std::string name=d_filename.getValue().c_str();
+    if (d_filename.getValue().find("%d"))
+    {
+        char bname[100];
+        snprintf(bname, 100, d_filename.getValue().c_str(), numStep);
+        name=bname;
+    }
+    f.open(name);
+    f << std::scientific << std::setprecision(d_precision.getValue()) << M;
+    f.close();
+}
+
+template <class TMatrix, class TVector, class TThreadManager>
+bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::factorize(
+    Matrix& M, InvertData * invertData)
+{
     Mfiltered.copyNonZeros(M);
     Mfiltered.compress();
 
@@ -78,12 +82,25 @@ void SparseLDLSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M) {
     if(M_colptr==nullptr || M_rowind==nullptr || M_values==nullptr || Mfiltered.getRowBegin().size() < (size_t)n )
     {
         msg_warning() << "Invalid Linear System to solve. Please insure that there is enough constraints (not rank deficient)." ;
-        return ;
+        return true;
     }
 
-    Inherit::factorize(n,M_colptr,M_rowind,M_values,(InvertData *) this->getMatrixInvertData(&M));
+    Inherit::factorize(n,M_colptr,M_rowind,M_values, invertData);
 
     numStep++;
+
+    return false;
+}
+
+template<class TMatrix, class TVector, class TThreadManager>
+void SparseLDLSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
+{
+    if (f_saveMatrixToFile.getValue())
+    {
+        saveMatrix(M);
+    }
+
+    factorize(M, (InvertData *) this->getMatrixInvertData(&M));
 }
 
 /// Default implementation of Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
