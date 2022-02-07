@@ -97,7 +97,7 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::invert(TMatrix& M)
 {
     if (this->f_saveMatrixToFile.getValue())
     {
-        saveMatrix(M);
+        this->saveMatrix(M);
     }
 
     Inherit1::factorize(M, m_asyncThreadInvertData);
