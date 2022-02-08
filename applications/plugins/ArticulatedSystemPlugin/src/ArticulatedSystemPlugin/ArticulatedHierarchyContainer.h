@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralRigid/config.h>
+#include <ArticulatedSystemPlugin/config.h>
 
 #include <sofa/simulation/fwd.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaGeneralRigid/bvh/BVHLoader.h>
+#include <ArticulatedSystemPlugin/bvh/BVHLoader.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/simulation/fwd.h>
@@ -40,7 +40,7 @@ class Articulation;
 * @see ArticulatedCenter
 * @see Articulation
 */
-class SOFA_SOFAGENERALRIGID_API ArticulatedHierarchyContainer : public virtual core::objectmodel::BaseObject
+class SOFA_ARTICULATEDSYSTEMPLUGIN_API ArticulatedHierarchyContainer : public virtual core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(ArticulatedHierarchyContainer,core::objectmodel::BaseObject);
@@ -89,7 +89,7 @@ private:
 *	All the variables which are defined in this class can be modified once sofa is running.
 */
 
-class SOFA_SOFAGENERALRIGID_API ArticulationCenter : public virtual core::objectmodel::BaseObject
+class SOFA_ARTICULATEDSYSTEMPLUGIN_API ArticulationCenter : public virtual core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(ArticulationCenter,core::objectmodel::BaseObject);
@@ -202,7 +202,7 @@ public:
 *	An articulation is defined by an axis, an orientation and an index.
 *	All the variables which are defined in this class can be modified once sofa is running.
 */
-class SOFA_SOFAGENERALRIGID_API Articulation : public virtual core::objectmodel::BaseObject
+class SOFA_ARTICULATEDSYSTEMPLUGIN_API Articulation : public virtual core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(Articulation,core::objectmodel::BaseObject);

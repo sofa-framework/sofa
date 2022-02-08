@@ -19,32 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaGeneralRigid/config.h>
 
-#include <vector>
+#include <ArticulatedSystemPlugin/ArticulatedHierarchyContainer.inl>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::helper::io::bvh
+namespace sofa::component::container
 {
 
-class SOFA_SOFAGENERALRIGID_API BVHMotion
-{
-public:
-    BVHMotion()
-    {
-        frameCount = 0;
-        frameTime = 0.0;
-    };
+// Register in the Factory
+int ArticulatedHierarchyContainerClass = core::RegisterObject("This class allow to store and retrieve all the articulation centers from an articulated rigid object")
+        .add< ArticulatedHierarchyContainer >()
+        ;
 
-    virtual ~BVHMotion() = default;
+// Register in the Factory
+int ArticulationCenterClass = core::RegisterObject("This class defines an articulation center. This contains a set of articulations.")
+        .add< ArticulationCenter >()
+        ;
 
-    void init(double _fTime, unsigned int _fCount, unsigned int _fSize);
+// Register in the Factory
+int ArticulationClass = core::RegisterObject("This class defines an articulation by an axis, an orientation and an index.")
+        .add< Articulation >()
+        ;
 
-    int frameCount;
-    double frameTime;
-    std::vector< std::vector<double> > frames;
-
-    void debug(void);
-};
-
-} // namespace sofa::helper::io::bvh
+} // namespace sofa::component::container

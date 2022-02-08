@@ -20,35 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralRigid/config.h>
 
-#include <SofaGeneralRigid/bvh/BVHJoint.h>
-#include <SofaGeneralRigid/bvh/BVHMotion.h>
+#include <sofa/config.h>
 
-namespace sofa::helper::io::bvh
-{
+#define ARTICULATEDSYSTEMPLUGIN_VERSION @PROJECT_VERSION@
 
-/**
-*	This class defines a BVH File Loader
-*	This files describe a hierarchical articulated model and also an associated motion
-*	see http://www.cs.wisc.edu/graphics/Courses/cs-838-1999/Jeff/BVH.html for the file format specification
-*/
-class SOFA_SOFAGENERALRIGID_API BVHLoader
-{
-public:
-    BVHLoader() {};
-    virtual ~BVHLoader() {};
-
-    BVHJoint *load(const char *filename);
-
-private:
-    BVHJoint *parseJoint(FILE *f, bool isEndSite=false, BVHJoint *parent=nullptr);
-    BVHOffset *parseOffset(FILE *f);
-    BVHChannels *parseChannels(FILE *f);
-
-    void parseMotion(FILE *f, BVHJoint *j);
-    void setFrameTime(BVHJoint *j, double _frameTime);
-    void parseFrames(BVHJoint *j, unsigned int frameIndex, FILE *f);
-};
-
-} // namespace sofa::helper::io::bvh
+#ifdef SOFA_BUILD_ARTICULATEDSYSTEMPLUGIN
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_ARTICULATEDSYSTEMPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_ARTICULATEDSYSTEMPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif

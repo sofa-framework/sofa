@@ -19,22 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_CPP
+#include <ArticulatedSystemPlugin/bvh/BVHMotion.h>
+#include <sofa/helper/logging/Messaging.h>
 
-#include <SofaGeneralRigid/ArticulatedSystemMapping.inl>
+#include <iostream>
 
-#include <sofa/core/ObjectFactory.h>
-
-namespace sofa::component::mapping
+namespace sofa::helper::io::bvh
 {
 
-using namespace sofa::defaulttype;
+void BVHMotion::init(double _fTime, unsigned int _fCount, unsigned int _fSize)
+{
+    frameTime = _fTime;
+    frameCount = _fCount;
 
-// Register in the Factory
-int ArticulatedSystemMappingClass = core::RegisterObject("Mapping between a set of 6D DOF's and a set of angles (µ) using an articulated hierarchy container. ")
-        .add< ArticulatedSystemMapping< Vec1Types, Rigid3Types, Rigid3Types > >();
+    frames.resize(frameCount);
 
-template class SOFA_SOFAGENERALRIGID_API ArticulatedSystemMapping< Vec1Types, Rigid3Types, Rigid3Types >;
+    for (int i=0; i<frameCount; i++)
+        frames[i].resize(_fSize);
+}
 
+void BVHMotion::debug(void)
+{
+    for (unsigned int i=0; i<frames.size(); i++)
+    {
+        std::stringstream tmpmsg;
+        for (unsigned int j=0; j<frames[i].size(); j++)
+            tmpmsg << frames[i][j] << " ";
+        msg_info("BVHMotion") ;
+    }
+}
 
-} //namespace sofa::component::mapping
+} // namespace sofa::helper::io::bvh

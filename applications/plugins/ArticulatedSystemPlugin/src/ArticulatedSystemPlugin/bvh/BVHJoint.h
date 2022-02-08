@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralRigid/config.h>
+#include <ArticulatedSystemPlugin/config.h>
 
-#include <SofaGeneralRigid/bvh/BVHChannels.h>
-#include <SofaGeneralRigid/bvh/BVHOffset.h>
-#include <SofaGeneralRigid/bvh/BVHMotion.h>
+#include <ArticulatedSystemPlugin/bvh/BVHChannels.h>
+#include <ArticulatedSystemPlugin/bvh/BVHOffset.h>
+#include <ArticulatedSystemPlugin/bvh/BVHMotion.h>
 #include <cstdio>		// fopen and friends
 #include <cstring>
 
@@ -38,7 +38,7 @@ namespace sofa::helper::io::bvh
 *		A Motion that contains a set of key positions. Each of them contains the channels value that must be set at the current timestep.
 *		The EndOfSite Flag is set to true if the Joint is a Leaf.
 */
-class SOFA_SOFAGENERALRIGID_API BVHJoint
+class SOFA_ARTICULATEDSYSTEMPLUGIN_API BVHJoint
 {
 public:
     BVHJoint(const char *_name, bool _endSite=false, BVHJoint *_parent=nullptr);

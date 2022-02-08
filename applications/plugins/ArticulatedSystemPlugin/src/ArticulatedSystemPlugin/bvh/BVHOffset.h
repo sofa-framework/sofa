@@ -19,26 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#include <SofaGeneralRigid/ArticulatedHierarchyContainer.inl>
-#include <sofa/core/ObjectFactory.h>
+#include <ArticulatedSystemPlugin/config.h>
 
-namespace sofa::component::container
+namespace sofa::helper::io::bvh
 {
 
-// Register in the Factory
-int ArticulatedHierarchyContainerClass = core::RegisterObject("This class allow to store and retrieve all the articulation centers from an articulated rigid object")
-        .add< ArticulatedHierarchyContainer >()
-        ;
+class SOFA_ARTICULATEDSYSTEMPLUGIN_API BVHOffset
+{
+public:
+    BVHOffset(double _x, double _y, double _z)
+        :x(_x),y(_y),z(_z) {}
 
-// Register in the Factory
-int ArticulationCenterClass = core::RegisterObject("This class defines an articulation center. This contains a set of articulations.")
-        .add< ArticulationCenter >()
-        ;
+    virtual ~BVHOffset() {};
 
-// Register in the Factory
-int ArticulationClass = core::RegisterObject("This class defines an articulation by an axis, an orientation and an index.")
-        .add< Articulation >()
-        ;
+    double x,y,z;
+};
 
-} // namespace sofa::component::container
+} // namespace sofa::helper::io::bvh

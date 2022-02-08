@@ -19,22 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_CPP
 
-#include <SofaGeneralRigid/config.h>
+#include <ArticulatedSystemPlugin/ArticulatedSystemMapping.inl>
 
-namespace sofa::helper::io::bvh
+#include <sofa/core/ObjectFactory.h>
+
+namespace sofa::component::mapping
 {
 
-class SOFA_SOFAGENERALRIGID_API BVHOffset
-{
-public:
-    BVHOffset(double _x, double _y, double _z)
-        :x(_x),y(_y),z(_z) {}
+using namespace sofa::defaulttype;
 
-    virtual ~BVHOffset() {};
+// Register in the Factory
+int ArticulatedSystemMappingClass = core::RegisterObject("Mapping between a set of 6D DOF's and a set of angles (µ) using an articulated hierarchy container. ")
+        .add< ArticulatedSystemMapping< Vec1Types, Rigid3Types, Rigid3Types > >();
 
-    double x,y,z;
-};
+template class SOFA_ARTICULATEDSYSTEMPLUGIN_API ArticulatedSystemMapping< Vec1Types, Rigid3Types, Rigid3Types >;
 
-} // namespace sofa::helper::io::bvh
+
+} //namespace sofa::component::mapping

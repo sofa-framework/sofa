@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralRigid/bvh/BVHJoint.h>
+#include <ArticulatedSystemPlugin/bvh/BVHJoint.h>
 
 #include <sofa/helper/config.h>
 #include <sofa/helper/logging/Messaging.h>
