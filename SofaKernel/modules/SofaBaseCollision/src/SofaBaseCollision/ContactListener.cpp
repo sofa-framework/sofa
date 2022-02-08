@@ -138,7 +138,12 @@ type::vector<double> ContactListener::getDistances() const
     const sofa::Size numberOfContacts = getNumberOfContacts();
     if (0 < numberOfContacts){ // can be 0
         distances.reserve(numberOfContacts);
+        unsigned int counter = 0; // loop over m_ContactsVectorBuffer seems to be invalid sometimes (values way bigger that numberOfContacts)
         for (const auto& c: m_ContactsVectorBuffer[0][0]){
+            if (++counter > numberOfContacts) {
+                printf("Encountered invalid ContactsVector in ContactListener!\n");
+                break;
+            }
             distances.emplace_back(c.value);
         }
     }
@@ -151,7 +156,12 @@ std::vector<std::tuple<unsigned int, sofa::type::Vector3, unsigned int, sofa::ty
     const sofa::Size numberOfContacts = getNumberOfContacts();
     if (0 < numberOfContacts){ // can be 0
         contactPoints.reserve(numberOfContacts);
+        unsigned int counter = 0; // loop over m_ContactsVectorBuffer seems to be invalid sometimes (values way bigger that numberOfContacts)
         for (const auto& c: m_ContactsVectorBuffer[0][0]){
+            if (++counter > numberOfContacts) {
+                printf("Encountered invalid ContactsVector in ContactListener!\n");
+                break;
+            }
             unsigned int firstID = m_CollisionModel1 != c.elem.first.getCollisionModel();
             unsigned int secondID = !firstID;
             contactPoints.emplace_back(firstID, c.point[0], secondID, c.point[1]);
@@ -166,7 +176,12 @@ std::vector<std::tuple<unsigned int, unsigned int, unsigned int, unsigned int>> 
     const sofa::Size numberOfContacts = getNumberOfContacts();
     if (0 < numberOfContacts){ // can be 0
         contactElements.reserve(numberOfContacts);
+        unsigned int counter = 0; // loop over m_ContactsVectorBuffer seems to be invalid sometimes (values way bigger that numberOfContacts)
         for (const auto& c: m_ContactsVectorBuffer[0][0]){
+            if (++counter > numberOfContacts) {
+                printf("Encountered invalid ContactsVector in ContactListener!\n");
+                break;
+            }
             unsigned int firstID = m_CollisionModel1 != c.elem.first.getCollisionModel();
             unsigned int secondID = !firstID;
             contactElements.emplace_back(firstID, c.elem.first.getIndex(), secondID, c.elem.second.getIndex());
