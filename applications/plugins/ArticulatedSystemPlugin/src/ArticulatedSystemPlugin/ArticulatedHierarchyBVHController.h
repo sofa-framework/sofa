@@ -30,20 +30,13 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef SOFA_COMPONENT_CONTROLLER_ARTICULATEDHIERARCHYBVHCONTROLLER_H
-#define SOFA_COMPONENT_CONTROLLER_ARTICULATEDHIERARCHYBVHCONTROLLER_H
+#pragma once
 #include <ArticulatedSystemPlugin/config.h>
 
 #include <ArticulatedSystemPlugin/ArticulatedHierarchyController.h>
 #include <ArticulatedSystemPlugin/bvh/BVHLoader.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace controller
+namespace sofa::component::controller
 {
 
 /**
@@ -97,10 +90,4 @@ protected:
     int n;
 };
 
-} // namespace controller
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_COMPONENT_CONTROLLER_ARTICULATEDHIERARCHYBVHCONTROLLER_H
+} // namespace sofa::component::controller

@@ -46,13 +46,7 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace controller
+namespace sofa::component::controller
 {
 
 using namespace sofa::helper;
@@ -95,8 +89,8 @@ void ArticulatedHierarchyController::buildPropagationArticulationsChain(void)
     ArtVecIt artIt;
     ArtVecIt artItEnd;
 
-    ArticulationCenter *activeArticulationCenter = NULL;
-    Articulation *activeArticulation = NULL;
+    ArticulationCenter *activeArticulationCenter = nullptr;
+    Articulation *activeArticulation = nullptr;
 
     for (unsigned int i=0; i<articulationsIndices.getValue().size(); i++)
     {
@@ -105,7 +99,7 @@ void ArticulatedHierarchyController::buildPropagationArticulationsChain(void)
         artCenterIt = m_artCenterVec.begin();
         artCenterItEnd = m_artCenterVec.end();
 
-        while ((artCenterIt != artCenterItEnd) && (activeArticulationCenter == NULL))
+        while ((artCenterIt != artCenterItEnd) && (activeArticulationCenter == nullptr))
         {
             artIt = (*artCenterIt)->articulations.begin();
             artItEnd = (*artCenterIt)->articulations.end();
@@ -124,15 +118,15 @@ void ArticulatedHierarchyController::buildPropagationArticulationsChain(void)
 
         std::vector< int > propagationArticulationsArray;
 
-        if ((activeArticulation != NULL) && (activeArticulationCenter != NULL))
+        if ((activeArticulation != nullptr) && (activeArticulationCenter != nullptr))
         {
             buildArray(propagationArticulationsArray, activeArticulation, activeArticulationCenter);
         }
 
         articulationsPropagationChains.insert(std::make_pair(activeArticulationIndex, propagationArticulationsArray));
 
-        activeArticulation = NULL;
-        activeArticulationCenter = NULL;
+        activeArticulation = nullptr;
+        activeArticulationCenter = nullptr;
     }
 }
 
@@ -420,8 +414,4 @@ int ArticulatedHierarchyControllerClass = core::RegisterObject("Implements an us
         .add< ArticulatedHierarchyController >()
         ;
 
-} // namespace controller
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::controller

@@ -30,9 +30,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+#pragma once
 
-#ifndef SOFA_COMPONENT_CONTROLLER_ARTICULATEDHIERARCHYCONTROLLER_H
-#define SOFA_COMPONENT_CONTROLLER_ARTICULATEDHIERARCHYCONTROLLER_H
 #include <ArticulatedSystemPlugin/config.h>
 
 #include <SofaUserInteraction/Controller.h>
@@ -43,13 +42,7 @@
 
 #include <map>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace controller
+namespace sofa::component::controller
 {
 
 using sofa::component::container::ArticulatedHierarchyContainer;
@@ -165,10 +158,4 @@ protected:
 };
 
 
-} // namespace controller
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_COMPONENT_CONTROLLER_ARTICULATEDHIERARCHYCONTROLLER_H
+} // namespace sofa::component::controller
