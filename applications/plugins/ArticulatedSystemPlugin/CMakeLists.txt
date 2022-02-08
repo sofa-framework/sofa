@@ -9,6 +9,8 @@ set(HEADER_FILES
     ${ARTICULATEDSYSTEMPLUGIN_SRC_DIR}/ArticulatedHierarchyContainer.inl
     ${ARTICULATEDSYSTEMPLUGIN_SRC_DIR}/ArticulatedSystemMapping.h
     ${ARTICULATEDSYSTEMPLUGIN_SRC_DIR}/ArticulatedSystemMapping.inl
+    ${ARTICULATEDSYSTEMPLUGIN_SRC_DIR}/ArticulatedHierarchyController.h
+    ${ARTICULATEDSYSTEMPLUGIN_SRC_DIR}/ArticulatedHierarchyBVHController.h
     ${ARTICULATEDSYSTEMPLUGIN_SRC_DIR}/bvh/BVHChannels.h
     ${ARTICULATEDSYSTEMPLUGIN_SRC_DIR}/bvh/BVHJoint.h
     ${ARTICULATEDSYSTEMPLUGIN_SRC_DIR}/bvh/BVHLoader.h
@@ -19,17 +21,20 @@ set(SOURCE_FILES
     ${ARTICULATEDSYSTEMPLUGIN_SRC_DIR}/init.cpp
     ${ARTICULATEDSYSTEMPLUGIN_SRC_DIR}/ArticulatedHierarchyContainer.cpp
     ${ARTICULATEDSYSTEMPLUGIN_SRC_DIR}/ArticulatedSystemMapping.cpp
+    ${ARTICULATEDSYSTEMPLUGIN_SRC_DIR}/ArticulatedHierarchyController.cpp
+    ${ARTICULATEDSYSTEMPLUGIN_SRC_DIR}/ArticulatedHierarchyBVHController.cpp
     ${ARTICULATEDSYSTEMPLUGIN_SRC_DIR}/bvh/BVHJoint.cpp
     ${ARTICULATEDSYSTEMPLUGIN_SRC_DIR}/bvh/BVHLoader.cpp
     ${ARTICULATEDSYSTEMPLUGIN_SRC_DIR}/bvh/BVHMotion.cpp
     )
 
 find_package(SofaBaseMechanics REQUIRED)
+find_package(SofaUserInteraction REQUIRED)
 
 # Create the plugin library.
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-target_link_libraries(${PROJECT_NAME} SofaBaseMechanics)
+target_link_libraries(${PROJECT_NAME} SofaBaseMechanics SofaUserInteraction)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
