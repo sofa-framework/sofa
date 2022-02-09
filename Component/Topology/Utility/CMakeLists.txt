@@ -20,11 +20,11 @@ set(SOURCE_FILES
 )
 
 sofa_find_package(SofaSimulationCore REQUIRED)
-sofa_find_package(Sofa.Component.Topology.DynamicContainer REQUIRED)
+sofa_find_package(Sofa.Component.Topology.Container.Dynamic REQUIRED)
 sofa_find_package(ZLIB BOTH_SCOPES)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore Sofa.Component.Topology.DynamicContainer)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore Sofa.Component.Topology.Container.Dynamic)
 if(ZLIB_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC ZLIB::ZLIB)
     if(CMAKE_SYSTEM_NAME STREQUAL Windows)

@@ -24,15 +24,15 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/topology/dynamiccontainer/HexahedronSetTopologyContainer.h>
-#include <sofa/component/topology/dynamiccontainer/HexahedronSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/HexahedronSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/HexahedronSetTopologyModifier.h>
 
-#include <sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyContainer.h>
-#include <sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyModifier.h>
 
 #include <sofa/core/topology/TopologyChange.h>
 
-#include <sofa/component/topology/grid/GridTopology.h>
+#include <sofa/component/topology/container/grid/GridTopology.h>
 
 #include <sofa/type/Vec.h>
 #include <map>
@@ -65,7 +65,7 @@ Hexa2TetraTopologicalMapping::~Hexa2TetraTopologicalMapping()
 
 void Hexa2TetraTopologicalMapping::init()
 {
-    using namespace dynamiccontainer;
+    using namespace container::dynamic;
 
     // INITIALISATION of TETRAHEDRAL mesh from HEXAHEDRAL mesh :
 
@@ -119,7 +119,7 @@ void Hexa2TetraTopologicalMapping::init()
     int ny = 1;
     //int nz = 1;
     {
-        auto* grid = dynamic_cast<grid::GridTopology*>(fromModel.get());
+        auto* grid = dynamic_cast<container::grid::GridTopology*>(fromModel.get());
         if (grid != nullptr)
         {
             nx = grid->getNx()-1;

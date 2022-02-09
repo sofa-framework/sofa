@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/topology/dynamiccontainer/QuadSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/QuadSetGeometryAlgorithms.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/dynamiccontainer/QuadSetGeometryAlgorithms.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/QuadSetGeometryAlgorithms.h")
 
 namespace sofa::component::topology
 {
 
     template < class DataTypes >
-    using QuadSetGeometryAlgorithms = sofa::component::topology::dynamiccontainer::QuadSetGeometryAlgorithms<DataTypes>;
+    using QuadSetGeometryAlgorithms = sofa::component::topology::container::dynamic::QuadSetGeometryAlgorithms<DataTypes>;
 
 } // namespace sofa::component::topology

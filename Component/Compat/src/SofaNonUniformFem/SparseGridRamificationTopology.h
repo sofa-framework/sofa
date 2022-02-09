@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/topology/grid/SparseGridRamificationTopology.h>
+#include <sofa/component/topology/container/grid/SparseGridRamificationTopology.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/grid/SparseGridRamificationTopology.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/grid/SparseGridRamificationTopology.h")
 
 namespace sofa::component::topology
 {
 
-    using SparseGridRamificationTopology = sofa::component::topology::grid::SparseGridRamificationTopology;
+    using SparseGridRamificationTopology = sofa::component::topology::container::grid::SparseGridRamificationTopology;
 
 } // namespace sofa::component::topology

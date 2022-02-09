@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/topology/grid/polygon_cube_intersection/polygon_cube_intersection.h>
+#include <sofa/component/topology/container/grid/polygon_cube_intersection/polygon_cube_intersection.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/grid/polygon_cube_intersection/polygon_cube_intersection.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/grid/polygon_cube_intersection/polygon_cube_intersection.h")

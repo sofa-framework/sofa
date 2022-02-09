@@ -20,6 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/topology/dynamiccontainer/EdgeSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/container/dynamic/EdgeSetGeometryAlgorithms.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/dynamiccontainer/EdgeSetGeometryAlgorithms.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/EdgeSetGeometryAlgorithms.inl")

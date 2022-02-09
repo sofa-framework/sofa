@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/topology/dynamiccontainer/TetrahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/dynamiccontainer/TetrahedronSetGeometryAlgorithms.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.h")
 
 namespace sofa::component::topology
 {
 
     template < class DataTypes >
-    using TetrahedronSetGeometryAlgorithms = sofa::component::topology::dynamiccontainer::TetrahedronSetGeometryAlgorithms<DataTypes>;
+    using TetrahedronSetGeometryAlgorithms = sofa::component::topology::container::dynamic::TetrahedronSetGeometryAlgorithms<DataTypes>;
 
 } // namespace sofa::component::topology

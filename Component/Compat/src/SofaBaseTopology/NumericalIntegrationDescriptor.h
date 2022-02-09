@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/topology/dynamiccontainer/NumericalIntegrationDescriptor.h>
+#include <sofa/component/topology/container/dynamic/NumericalIntegrationDescriptor.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/dynamiccontainer/NumericalIntegrationDescriptor.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/NumericalIntegrationDescriptor.h")
 
 namespace sofa::component::topology
 {
 
     template< typename Real, int N>
-    using NumericalIntegrationDescriptor = sofa::component::topology::dynamiccontainer::NumericalIntegrationDescriptor<Real,N>;
+    using NumericalIntegrationDescriptor = sofa::component::topology::container::dynamic::NumericalIntegrationDescriptor<Real,N>;
 
 } // namespace sofa::component::topology

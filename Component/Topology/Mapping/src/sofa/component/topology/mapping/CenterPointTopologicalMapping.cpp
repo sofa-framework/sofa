@@ -23,7 +23,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/topology/dynamiccontainer/PointSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/PointSetTopologyModifier.h>
 
 #include <sofa/type/Vec.h>
 #include <map>
@@ -70,7 +70,7 @@ void CenterPointTopologicalMapping::updateTopologicalMappingTopDown()
         std::list<const TopologyChange *>::const_iterator changeIt = fromModel->beginChange();
         std::list<const TopologyChange *>::const_iterator itEnd = fromModel->endChange();
 
-        dynamiccontainer::PointSetTopologyModifier *to_pstm;
+        container::dynamic::PointSetTopologyModifier *to_pstm;
         toModel->getContext()->get(to_pstm);
 
         while( changeIt != itEnd )

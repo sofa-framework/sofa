@@ -24,8 +24,8 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/topology/dynamiccontainer/QuadSetTopologyModifier.h>
-#include <sofa/component/topology/dynamiccontainer/QuadSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/QuadSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/QuadSetTopologyContainer.h>
 
 #include <sofa/core/topology/TopologyChange.h>
 
@@ -111,10 +111,10 @@ void Edge2QuadTopologicalMapping::init()
         {
             msg_info() << "Edge2QuadTopologicalMapping - to = quad";
 
-            dynamiccontainer::QuadSetTopologyModifier *to_tstm;
+            container::dynamic::QuadSetTopologyModifier *to_tstm;
             toModel->getContext()->get(to_tstm);
 
-            dynamiccontainer::QuadSetTopologyContainer *to_tstc;
+            container::dynamic::QuadSetTopologyContainer *to_tstc;
             toModel->getContext()->get(to_tstc);
 
             const sofa::type::vector<Edge> &edgeArray=fromModel->getEdges();
@@ -289,7 +289,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
     if (fromModel)
     {
 
-        dynamiccontainer::QuadSetTopologyModifier *to_tstm;
+        container::dynamic::QuadSetTopologyModifier *to_tstm;
         toModel->getContext()->get(to_tstm);
 
         if (toModel)

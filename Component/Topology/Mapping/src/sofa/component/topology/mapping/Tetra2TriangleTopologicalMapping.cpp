@@ -24,11 +24,11 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyContainer.h>
-#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyModifier.h>
 
-#include <sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyContainer.h>
-#include <sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyModifier.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/core/topology/TopologyChange.h>
@@ -82,14 +82,14 @@ void Tetra2TriangleTopologicalMapping::init()
     }
 
     // Making sure the output topology is derived from the triangle topology container
-    if (!dynamic_cast<dynamiccontainer::TriangleSetTopologyContainer *>(toModel.get())) {
+    if (!dynamic_cast<container::dynamic::TriangleSetTopologyContainer *>(toModel.get())) {
         msg_error() << "The output topology '" << toModel.getPath() << "' is not a derived class of TriangleSetTopologyContainer. "
                     << "Consider setting the '" << toModel.getName() << "' data attribute to a valid"
                                                                         " TriangleSetTopologyContainer derived object.";
         modelsOk = false;
     } else {
         // Making sure a topology modifier exists at the same level as the output topology
-        dynamiccontainer::TriangleSetTopologyModifier *to_tstm;
+        container::dynamic::TriangleSetTopologyModifier *to_tstm;
         toModel->getContext()->get(to_tstm);
         if (!to_tstm) {
             msg_error() << "No TriangleSetTopologyModifier found in the output topology node '"

@@ -24,20 +24,20 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/topology/dynamiccontainer/EdgeSetTopologyContainer.h>
-#include <sofa/component/topology/dynamiccontainer/EdgeSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/EdgeSetTopologyModifier.h>
 
-#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyContainer.h>
-#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyModifier.h>
 
-#include <sofa/component/topology/dynamiccontainer/QuadSetTopologyContainer.h>
-#include <sofa/component/topology/dynamiccontainer/QuadSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/QuadSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/QuadSetTopologyModifier.h>
 
-#include <sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyContainer.h>
-#include <sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyModifier.h>
 
-#include <sofa/component/topology/dynamiccontainer/HexahedronSetTopologyContainer.h>
-#include <sofa/component/topology/dynamiccontainer/HexahedronSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/HexahedronSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/HexahedronSetTopologyModifier.h>
 
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/type/Vec.h>
@@ -391,7 +391,7 @@ Index SubsetTopologicalMapping::getGlobIndex(Index ind)
 
 void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
 {
-    using namespace dynamiccontainer;
+    using namespace container::dynamic;
 
     if (!fromModel || !toModel) return;
 

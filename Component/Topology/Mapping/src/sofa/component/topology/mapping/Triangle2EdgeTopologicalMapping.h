@@ -29,7 +29,7 @@
 
 #include <sofa/core/BaseMapping.h>
 
-namespace sofa::component::topology::dynamiccontainer
+namespace sofa::component::topology::container::dynamic
 {
     class EdgeSetTopologyModifier;
 }
@@ -78,7 +78,7 @@ public:
 
 private:
     /// Pointer to the output topology modifier
-    dynamiccontainer::EdgeSetTopologyModifier* m_outTopoModifier;
+    container::dynamic::EdgeSetTopologyModifier* m_outTopoModifier;
 };
 
 } //namespace sofa::component::topology::mapping

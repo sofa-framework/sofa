@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/topology/grid/SparseGridTopology.h>
+#include <sofa/component/topology/container/grid/SparseGridTopology.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/grid/SparseGridTopology.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/grid/SparseGridTopology.h")
 
 namespace sofa::component::topology
 {
 
-    using SparseGridTopology = sofa::component::topology::grid::SparseGridTopology;
+    using SparseGridTopology = sofa::component::topology::container::grid::SparseGridTopology;
 
 } // namespace sofa::component::topology

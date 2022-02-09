@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyModifier.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/dynamiccontainer/TriangleSetTopologyModifier.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/TriangleSetTopologyModifier.h")
 
 // some files are included in the original file
 #include <SofaBaseTopology/EdgeSetTopologyModifier.h>
@@ -31,6 +31,6 @@
 namespace sofa::component::topology
 {
 
-    using TriangleSetTopologyModifier = sofa::component::topology::dynamiccontainer::TriangleSetTopologyModifier;
+    using TriangleSetTopologyModifier = sofa::component::topology::container::dynamic::TriangleSetTopologyModifier;
 
 } // namespace sofa::component::topology

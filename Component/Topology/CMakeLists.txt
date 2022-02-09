@@ -3,7 +3,7 @@ project(Sofa.Component.Topology LANGUAGES CXX)
 
 set(SOFACOMPONENTTOPOLOGY_SOURCE_DIR "src/sofa/component/topology")
 
-set(SOFACOMPONENTTOPOLOGY_DIRS StaticContainer Grid DynamicContainer Mapping Utility)
+set(SOFACOMPONENTTOPOLOGY_DIRS Container Mapping Utility)
 set(SOFACOMPONENTTOPOLOGY_TARGETS)
 foreach(topology_dir ${SOFACOMPONENTTOPOLOGY_DIRS})
 	sofang_add_component_subdirectory(${topology_dir} ${PROJECT_NAME}.${topology_dir})

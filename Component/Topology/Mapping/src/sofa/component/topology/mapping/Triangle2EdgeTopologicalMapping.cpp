@@ -24,11 +24,11 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/topology/dynamiccontainer/EdgeSetTopologyContainer.h>
-#include <sofa/component/topology/dynamiccontainer/EdgeSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/EdgeSetTopologyModifier.h>
 
-#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyContainer.h>
-#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyModifier.h>
 
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/type/Vec.h>

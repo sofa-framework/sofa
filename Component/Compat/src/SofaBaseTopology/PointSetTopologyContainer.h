@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/topology/dynamiccontainer/PointSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/PointSetTopologyContainer.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/dynamiccontainer/PointSetTopologyContainer.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/PointSetTopologyContainer.h")
 
 namespace sofa::component::topology
 {
 
-    using PointSetTopologyContainer = sofa::component::topology::dynamiccontainer::PointSetTopologyContainer;
+    using PointSetTopologyContainer = sofa::component::topology::container::dynamic::PointSetTopologyContainer;
 
 } // namespace sofa::component::topology

@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/topology/dynamiccontainer/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/EdgeSetTopologyContainer.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/dynamiccontainer/EdgeSetTopologyContainer.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/EdgeSetTopologyContainer.h")
 
 namespace sofa::component::topology
 {
 
-    using EdgeSetTopologyContainer = sofa::component::topology::dynamiccontainer::EdgeSetTopologyContainer;
+    using EdgeSetTopologyContainer = sofa::component::topology::container::dynamic::EdgeSetTopologyContainer;
 
 } // namespace sofa::component::topology

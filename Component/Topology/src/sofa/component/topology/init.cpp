@@ -19,11 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/topology/config.h>
+#include <sofa/component/topology/init.h>
 
-#include <sofa/component/topology/staticcontainer/init.h>
-#include <sofa/component/topology/dynamiccontainer/init.h>
-#include <sofa/component/topology/grid/init.h>
+#include <sofa/component/topology/container/init.h>
 #include <sofa/component/topology/mapping/init.h>
 #include <sofa/component/topology/utility/init.h>
 
@@ -41,9 +39,7 @@ void initExternalModule()
     if (first)
     {
         // force dependencies at compile-time
-        sofa::component::topology::staticcontainer::init();
-        sofa::component::topology::dynamiccontainer::init();
-        sofa::component::topology::grid::init();
+        sofa::component::topology::container::init();
         sofa::component::topology::mapping::init();
         sofa::component::topology::utility::init();
 

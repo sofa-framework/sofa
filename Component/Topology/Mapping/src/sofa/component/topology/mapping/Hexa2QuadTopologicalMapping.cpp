@@ -24,11 +24,11 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/topology/dynamiccontainer/QuadSetTopologyContainer.h>
-#include <sofa/component/topology/dynamiccontainer/QuadSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/QuadSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/QuadSetTopologyModifier.h>
 
-#include <sofa/component/topology/dynamiccontainer/HexahedronSetTopologyContainer.h>
-#include <sofa/component/topology/dynamiccontainer/HexahedronSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/HexahedronSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/HexahedronSetTopologyModifier.h>
 
 #include <sofa/core/topology/TopologyChange.h>
 
@@ -60,7 +60,7 @@ Hexa2QuadTopologicalMapping::Hexa2QuadTopologicalMapping()
 
 void Hexa2QuadTopologicalMapping::init()
 {
-    using namespace dynamiccontainer;
+    using namespace container::dynamic;
 
     bool modelsOk = true;
     if (!fromModel)
@@ -159,7 +159,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
         return;
 
     sofa::helper::AdvancedTimer::stepBegin("Update Hexa2QuadTopologicalMapping");
-    dynamiccontainer::QuadSetTopologyModifier *to_tstm;
+    container::dynamic::QuadSetTopologyModifier *to_tstm;
     toModel->getContext()->get(to_tstm);
 
     auto itBegin=fromModel->beginChange();

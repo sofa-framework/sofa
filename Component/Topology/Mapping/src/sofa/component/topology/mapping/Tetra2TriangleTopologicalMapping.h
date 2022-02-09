@@ -29,10 +29,10 @@
 
 #include <sofa/core/BaseMapping.h>
 
-namespace sofa::component::topology::dynamiccontainer
+namespace sofa::component::topology::container::dynamic
 {
     class TriangleSetTopologyModifier;
-} // namespace sofa::component::topology::dynamiccontainer
+} // namespace sofa::component::topology::container::dynamic
 
 namespace sofa::component::topology::mapping
 {
@@ -85,7 +85,7 @@ protected:
     Data<bool> noNewTriangles; ///< If true no new triangles are being created
     Data<bool> noInitialTriangles; ///< If true the list of initial triangles is initially empty. Only additional triangles will be added in the list
     sofa::type::vector<Index> addedTriangleIndex;
-    dynamiccontainer::TriangleSetTopologyModifier* m_outTopoModifier; ///< Pointer to the output topology modifier
+    container::dynamic::TriangleSetTopologyModifier* m_outTopoModifier; ///< Pointer to the output topology modifier
 };
 
 } //namespace sofa::component::topology::mapping

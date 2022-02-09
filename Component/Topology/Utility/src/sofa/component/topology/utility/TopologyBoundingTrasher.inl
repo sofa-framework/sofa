@@ -25,11 +25,11 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-#include <sofa/component/topology/dynamiccontainer/EdgeSetTopologyModifier.h>
-#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyModifier.h>
-#include <sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyModifier.h>
-#include <sofa/component/topology/dynamiccontainer/QuadSetTopologyModifier.h>
-#include <sofa/component/topology/dynamiccontainer/HexahedronSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/EdgeSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/QuadSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/HexahedronSetTopologyModifier.h>
 
 
 namespace sofa::component::topology::utility

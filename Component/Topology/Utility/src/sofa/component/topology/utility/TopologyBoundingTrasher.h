@@ -30,7 +30,7 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 
 
-namespace sofa::component::topology::dynamiccontainer
+namespace sofa::component::topology::container::dynamic
 {
     /// forward declaration to avoid adding includes in .h
     class EdgeSetTopologyModifier;
@@ -95,11 +95,11 @@ protected:
     core::topology::BaseMeshTopology::SPtr m_topology;
     sofa::core::topology::TopologyElementType m_topologyType;
 
-    sofa::core::sptr<dynamiccontainer::EdgeSetTopologyModifier> edgeModifier;
-    sofa::core::sptr<dynamiccontainer::TriangleSetTopologyModifier> triangleModifier;
-    sofa::core::sptr<dynamiccontainer::QuadSetTopologyModifier> quadModifier;
-    sofa::core::sptr<dynamiccontainer::TetrahedronSetTopologyModifier> tetraModifier;
-    sofa::core::sptr<dynamiccontainer::HexahedronSetTopologyModifier> hexaModifier;
+    sofa::core::sptr<container::dynamic::EdgeSetTopologyModifier> edgeModifier;
+    sofa::core::sptr<container::dynamic::TriangleSetTopologyModifier> triangleModifier;
+    sofa::core::sptr<container::dynamic::QuadSetTopologyModifier> quadModifier;
+    sofa::core::sptr<container::dynamic::TetrahedronSetTopologyModifier> tetraModifier;
+    sofa::core::sptr<container::dynamic::HexahedronSetTopologyModifier> hexaModifier;
 
     type::vector<Index> m_indicesToRemove;
 };

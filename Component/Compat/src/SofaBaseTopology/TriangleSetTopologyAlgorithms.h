@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyAlgorithms.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/dynamiccontainer/TriangleSetTopologyAlgorithms.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/TriangleSetTopologyAlgorithms.h")
 
 namespace sofa::component::topology
 {
 
-    using TriangleSetTopologyAlgorithms = sofa::component::topology::dynamiccontainer::TriangleSetTopologyAlgorithms;
+    using TriangleSetTopologyAlgorithms = sofa::component::topology::container::dynamic::TriangleSetTopologyAlgorithms;
 
 } // namespace sofa::component::topology

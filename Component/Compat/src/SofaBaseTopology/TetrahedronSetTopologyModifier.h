@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyModifier.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyModifier.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/TetrahedronSetTopologyModifier.h")
 
 // some files are included in the original file
 #include <SofaBaseTopology/TriangleSetTopologyModifier.h>
@@ -32,6 +32,6 @@
 namespace sofa::component::topology
 {
 
-    using TetrahedronSetTopologyModifier = sofa::component::topology::dynamiccontainer::TetrahedronSetTopologyModifier;
+    using TetrahedronSetTopologyModifier = sofa::component::topology::container::dynamic::TetrahedronSetTopologyModifier;
 
 } // namespace sofa::component::topology

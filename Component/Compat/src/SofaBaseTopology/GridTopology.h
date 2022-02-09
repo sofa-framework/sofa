@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/topology/grid/GridTopology.h>
+#include <sofa/component/topology/container/grid/GridTopology.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/grid/GridTopology.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/grid/GridTopology.h")
 
 namespace sofa::component::topology
 {
 
-    using GridTopology = sofa::component::topology::grid::GridTopology;
-    using Grid_dimension = sofa::component::topology::grid::Grid_dimension;
+    using GridTopology = sofa::component::topology::container::grid::GridTopology;
+    using Grid_dimension = sofa::component::topology::container::grid::Grid_dimension;
 
 } // namespace sofa::component::topology

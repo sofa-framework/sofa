@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/topology/dynamiccontainer/EdgeSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/EdgeSetTopologyModifier.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/dynamiccontainer/EdgeSetTopologyModifier.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/EdgeSetTopologyModifier.h")
 
 // some files are included in the original file
 #include <SofaBaseTopology/PointSetTopologyModifier.h>
@@ -30,6 +30,6 @@
 namespace sofa::component::topology
 {
 
-    using EdgeSetTopologyModifier = sofa::component::topology::dynamiccontainer::EdgeSetTopologyModifier;
+    using EdgeSetTopologyModifier = sofa::component::topology::container::dynamic::EdgeSetTopologyModifier;
 
 } // namespace sofa::component::topology

@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/topology/grid/RegularGridTopology.h>
+#include <sofa/component/topology/container/grid/RegularGridTopology.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/grid/RegularGridTopology.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/grid/RegularGridTopology.h")
 
 // for Grid_dimension
 #include <SofaBaseTopology/GridTopology.h>
@@ -30,6 +30,6 @@
 namespace sofa::component::topology
 {
 
-    using RegularGridTopology = sofa::component::topology::grid::RegularGridTopology;
+    using RegularGridTopology = sofa::component::topology::container::grid::RegularGridTopology;
 
 } // namespace sofa::component::topology

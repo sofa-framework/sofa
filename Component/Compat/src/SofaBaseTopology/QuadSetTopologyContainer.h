@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/topology/dynamiccontainer/QuadSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/QuadSetTopologyContainer.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/dynamiccontainer/QuadSetTopologyContainer.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/QuadSetTopologyContainer.h")
 
 namespace sofa::component::topology
 {
 
-    using QuadSetTopologyContainer = sofa::component::topology::dynamiccontainer::QuadSetTopologyContainer;
+    using QuadSetTopologyContainer = sofa::component::topology::container::dynamic::QuadSetTopologyContainer;
 
 } // namespace sofa::component::topology

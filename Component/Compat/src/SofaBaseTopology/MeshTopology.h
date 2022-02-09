@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/topology/staticcontainer/MeshTopology.h>
+#include <sofa/component/topology/container/nondynamic/MeshTopology.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/staticcontainer/MeshTopology.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/nondynamic/MeshTopology.h")
 
 namespace sofa::component::topology
 {
 
-    using MeshTopology = sofa::component::topology::staticcontainer::MeshTopology;
+    using MeshTopology = sofa::component::topology::container::nondynamic::MeshTopology;
 
 } // namespace sofa::component::topology

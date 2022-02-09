@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/topology/dynamiccontainer/HexahedronSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/HexahedronSetTopologyContainer.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/dynamiccontainer/HexahedronSetTopologyContainer.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/HexahedronSetTopologyContainer.h")
 
 namespace sofa::component::topology
 {
 
-    using HexahedronSetTopologyContainer = sofa::component::topology::dynamiccontainer::HexahedronSetTopologyContainer;
+    using HexahedronSetTopologyContainer = sofa::component::topology::container::dynamic::HexahedronSetTopologyContainer;
 
 } // namespace sofa::component::topology

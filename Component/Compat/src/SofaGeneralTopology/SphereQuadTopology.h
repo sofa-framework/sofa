@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/topology/staticcontainer/SphereQuadTopology.h>
+#include <sofa/component/topology/container/nondynamic/SphereQuadTopology.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/staticcontainer/SphereQuadTopology.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/nondynamic/SphereQuadTopology.h")
 
 namespace sofa::component::topology
 {
 
-    using SphereQuadTopology = sofa::component::topology::staticcontainer::SphereQuadTopology;
+    using SphereQuadTopology = sofa::component::topology::container::nondynamic::SphereQuadTopology;
 
 } // namespace sofa::component::topology

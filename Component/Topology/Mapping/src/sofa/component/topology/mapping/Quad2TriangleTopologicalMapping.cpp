@@ -24,14 +24,14 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyContainer.h>
-#include <sofa/component/topology/dynamiccontainer/TriangleSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyModifier.h>
 
-#include <sofa/component/topology/dynamiccontainer/QuadSetTopologyContainer.h>
-#include <sofa/component/topology/dynamiccontainer/QuadSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/QuadSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/QuadSetTopologyModifier.h>
 
 #include <sofa/core/topology/TopologyChange.h>
-#include <sofa/component/topology/grid/GridTopology.h>
+#include <sofa/component/topology/container/grid/GridTopology.h>
 
 #include <sofa/type/Vec.h>
 #include <map>
@@ -70,7 +70,7 @@ Quad2TriangleTopologicalMapping::~Quad2TriangleTopologicalMapping()
 
 void Quad2TriangleTopologicalMapping::init()
 {
-    using namespace dynamiccontainer;
+    using namespace container::dynamic;
 
     bool modelsOk = true;
     if (!fromModel)
@@ -132,7 +132,7 @@ void Quad2TriangleTopologicalMapping::init()
     int ny = 1;
 
     {
-        const auto * grid = dynamic_cast<const grid::GridTopology*>(fromModel.get());
+        const auto * grid = dynamic_cast<const container::grid::GridTopology*>(fromModel.get());
         if (grid != nullptr)
         {
             nx = grid->getNx()-1;
@@ -194,7 +194,7 @@ Index Quad2TriangleTopologicalMapping::getFromIndex(Index ind)
 
 void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 {
-    using namespace dynamiccontainer;
+    using namespace container::dynamic;
 
     if (this->d_componentState.getValue() != sofa::core::objectmodel::ComponentState::Valid)
         return;

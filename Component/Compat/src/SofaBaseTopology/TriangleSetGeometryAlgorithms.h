@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/topology/dynamiccontainer/TriangleSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetGeometryAlgorithms.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/dynamiccontainer/TriangleSetGeometryAlgorithms.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/container/dynamic/TriangleSetGeometryAlgorithms.h")
 
 namespace sofa::component::topology
 {
 
     template < class DataTypes >
-    using TriangleSetGeometryAlgorithms = sofa::component::topology::dynamiccontainer::TriangleSetGeometryAlgorithms<DataTypes>;
+    using TriangleSetGeometryAlgorithms = sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<DataTypes>;
 
 } // namespace sofa::component::topology
