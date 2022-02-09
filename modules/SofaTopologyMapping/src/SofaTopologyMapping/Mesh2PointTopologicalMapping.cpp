@@ -19,24 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/topology/mapping/Mesh2PointTopologicalMapping.h>
+#include <SofaTopologyMapping/Mesh2PointTopologicalMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyContainer.h>
-#include <sofa/component/topology/dynamiccontainer/TetrahedronSetTopologyModifier.h>
-#include <sofa/component/topology/dynamiccontainer/PointSetTopologyModifier.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
+#include <SofaBaseTopology/PointSetTopologyModifier.h>
 #include <sofa/core/topology/TopologyChange.h>
 
 #include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::topology::mapping
+namespace sofa::component::topology
 {
 using namespace sofa::defaulttype;
-using namespace sofa::component::topology::mapping;
+using namespace sofa::component::topology;
 using namespace sofa::core::topology;
 using type::vector;
 
@@ -68,7 +68,6 @@ Mesh2PointTopologicalMapping::Mesh2PointTopologicalMapping ()
 
 void Mesh2PointTopologicalMapping::init()
 {
-    using namespace dynamiccontainer;
     initDone = true;
     if(fromModel)
     {
@@ -83,7 +82,7 @@ void Mesh2PointTopologicalMapping::init()
             toModel->getContext()->get(toEdgeMod, sofa::core::objectmodel::BaseContext::Local);
             TriangleSetTopologyModifier *toTriangleMod = nullptr;
             toModel->getContext()->get(toTriangleMod, sofa::core::objectmodel::BaseContext::Local);
-            TetrahedronSetTopologyModifier *toTetrahedronMod = nullptr;
+			TetrahedronSetTopologyModifier *toTetrahedronMod = nullptr;
             toModel->getContext()->get(toTetrahedronMod, sofa::core::objectmodel::BaseContext::Local);
             //QuadSetTopologyModifier *toQuadMod = nullptr;
             //TetrahedronSetTopologyModifier *toTetrahedronMod = nullptr;
@@ -382,7 +381,7 @@ bool Mesh2PointTopologicalMapping::internalCheck(const char* step, const type::f
 }
 
 
-size_t Mesh2PointTopologicalMapping::addInputPoint(Index i, dynamiccontainer::PointSetTopologyModifier* toPointMod)
+size_t Mesh2PointTopologicalMapping::addInputPoint(Index i, PointSetTopologyModifier* toPointMod)
 {
     if( pointsMappedFrom[POINT].size() < i+1)
         pointsMappedFrom[POINT].resize(i+1);
@@ -413,7 +412,7 @@ size_t Mesh2PointTopologicalMapping::addInputPoint(Index i, dynamiccontainer::Po
 
 }
 
-void Mesh2PointTopologicalMapping::addInputEdge(Index i, dynamiccontainer::PointSetTopologyModifier* toPointMod)
+void Mesh2PointTopologicalMapping::addInputEdge(Index i, PointSetTopologyModifier* toPointMod)
 {
     if (pointsMappedFrom[EDGE].size() < i + 1)
         pointsMappedFrom[EDGE].resize(i + 1);
@@ -449,7 +448,7 @@ void Mesh2PointTopologicalMapping::addInputEdge(Index i, dynamiccontainer::Point
     }
 }
 
-void Mesh2PointTopologicalMapping::addInputTriangle(Index i, dynamiccontainer::PointSetTopologyModifier* toPointMod)
+void Mesh2PointTopologicalMapping::addInputTriangle(Index i, PointSetTopologyModifier* toPointMod)
 {
     if (pointsMappedFrom[TRIANGLE].size() < i+1)
         pointsMappedFrom[TRIANGLE].resize(i+1);
@@ -488,7 +487,7 @@ void Mesh2PointTopologicalMapping::addInputTriangle(Index i, dynamiccontainer::P
 }
 
 
-void Mesh2PointTopologicalMapping::addInputTetrahedron(Index i, dynamiccontainer::PointSetTopologyModifier* toPointMod)
+void Mesh2PointTopologicalMapping::addInputTetrahedron(Index i, PointSetTopologyModifier* toPointMod)
 {
     if (pointsMappedFrom[TETRA].size() < i+1)
         pointsMappedFrom[TETRA].resize(i+1);
@@ -530,8 +529,6 @@ void Mesh2PointTopologicalMapping::addInputTetrahedron(Index i, dynamiccontainer
 
 void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
 {
-    using namespace dynamiccontainer;
-
     if(fromModel && toModel && initDone)
     {
         std::list<const TopologyChange *>::const_iterator changeIt=fromModel->beginChange();
@@ -909,4 +906,4 @@ void Mesh2PointTopologicalMapping::removeOutputPoints( const sofa::type::vector<
     pointSource.resize(last + 1);
 }
 
-} //namespace sofa::component::topology::mapping
+} //namespace sofa::component::topology

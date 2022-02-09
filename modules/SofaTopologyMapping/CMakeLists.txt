@@ -8,14 +8,21 @@ set(HEADER_FILES
     ${SOFATOPOLOGYMAPPING_SRC}/initSofaTopologyMapping.h
     ${SOFATOPOLOGYMAPPING_SRC}/Mesh2PointMechanicalMapping.h
     ${SOFATOPOLOGYMAPPING_SRC}/Mesh2PointMechanicalMapping.inl
+    ${SOFATOPOLOGYMAPPING_SRC}/Mesh2PointTopologicalMapping.h
+    ${SOFATOPOLOGYMAPPING_SRC}/SimpleTesselatedHexaTopologicalMapping.h
     ${SOFATOPOLOGYMAPPING_SRC}/SimpleTesselatedTetraMechanicalMapping.h
     ${SOFATOPOLOGYMAPPING_SRC}/SimpleTesselatedTetraMechanicalMapping.inl
+    ${SOFATOPOLOGYMAPPING_SRC}/SimpleTesselatedTetraTopologicalMapping.h
+    ${SOFATOPOLOGYMAPPING_SRC}/Mesh2PointTopologicalMapping.h
 )
 
 set(SOURCE_FILES
     ${SOFATOPOLOGYMAPPING_SRC}/initSofaTopologyMapping.cpp
     ${SOFATOPOLOGYMAPPING_SRC}/Mesh2PointMechanicalMapping.cpp
+    ${SOFATOPOLOGYMAPPING_SRC}/Mesh2PointTopologicalMapping.cpp
+    ${SOFATOPOLOGYMAPPING_SRC}/SimpleTesselatedHexaTopologicalMapping.cpp
     ${SOFATOPOLOGYMAPPING_SRC}/SimpleTesselatedTetraMechanicalMapping.cpp
+    ${SOFATOPOLOGYMAPPING_SRC}/SimpleTesselatedTetraTopologicalMapping.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

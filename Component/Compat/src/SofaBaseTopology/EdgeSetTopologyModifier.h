@@ -24,6 +24,9 @@
 
 // SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/dynamiccontainer/EdgeSetTopologyModifier.h")
 
+// some files are included in the original file
+#include <SofaBaseTopology/PointSetTopologyModifier.h>
+
 namespace sofa::component::topology
 {
 
