@@ -30,11 +30,11 @@ set(SOURCE_FILES
 
 sofa_find_package(Sofa.SimulationCore REQUIRED)
 sofa_find_package(TinyXML REQUIRED) # BaseCamera
-sofa_find_package(Sofa.Component.Topology.Grid REQUIRED) # VisualModelImpl
+sofa_find_package(Sofa.Component.Topology.Container.Grid REQUIRED) # VisualModelImpl
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.SimulationCore)
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Topology.Grid)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Topology.Container.Grid)
 target_link_libraries(${PROJECT_NAME} PRIVATE tinyxml)
 
 sofa_create_package_with_targets(
