@@ -626,13 +626,11 @@ public:
                      x.z * v.x.z + y.z * v.y.z + z.z * v.z.z );
     }
 
-    __device__ matrix3<real> transpose(matrix3<real> v)
+    __device__ matrix3<real> transpose(const matrix3<real>& v) const
     {
-        matrix3<real> M;
-        M.x = CudaVec3<real>::make(v.x.x, v.y.x, v.z.x);
-        M.y = CudaVec3<real>::make(v.x.y, v.y.y, v.z.y);
-        M.z = CudaVec3<real>::make(v.x.z, v.y.z, v.z.z);
-        return M;
+        return make(v.x.x, v.y.x, v.z.x,
+                    v.x.y, v.y.y, v.z.y,
+                    v.x.z, v.y.z, v.z.z);
     }
 
     __device__ real determinant(matrix3<real> v)
