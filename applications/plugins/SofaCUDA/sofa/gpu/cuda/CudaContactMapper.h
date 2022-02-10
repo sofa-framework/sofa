@@ -186,10 +186,4 @@ public:
     }
 };
 
-
-
-} // namespace collision
-
-
-
 } // namespace sofa::component::collision
