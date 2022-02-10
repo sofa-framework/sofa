@@ -19,72 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_POINTSPLATMODEL_H
-#define SOFA_COMPONENT_VISUALMODEL_POINTSPLATMODEL_H
-#include "config.h"
+#pragma once
 
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/topology/TopologyData.h>
-#include <sofa/type/RGBAColor.h>
+#include <sofa/config.h>
 
-namespace sofa
-{
-namespace core
-{
-namespace topology
-{
-class BaseMeshTopology;
-}
-namespace behavior
-{
-class BaseMechanicalState;
-}
-}
+#if __has_include(<sofa/gl/component/model/PointSplatModel.h>)
+#include <sofa/gl/component/model/PointSplatModel.h>
+#define SOFAGL_COMPONENT_POINTSPLATMODEL
 
-namespace component
-{
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/model/PointSplatModel.h")
 
-namespace visualmodel
-{
-
-class SOFA_OPENGL_VISUAL_API PointSplatModel : public core::visual::VisualModel
-{
-public:
-    SOFA_CLASS(PointSplatModel,core::visual::VisualModel);
-protected:
-    PointSplatModel();
-    ~PointSplatModel() override;
-public:
-    void init() override;
-
-    void reinit() override;
-
-    virtual bool isTransparent() {return true;}
-
-    void drawTransparent(const core::visual::VisualParams* vparams) override;
-
-private:
-    Data<float>		radius; ///< Radius of the spheres.
-    Data<int>		textureSize; ///< Size of the billboard texture.
-    Data<float>		alpha; ///< Opacity of the billboards. 1.0 is 100% opaque.
-    Data<sofa::type::RGBAColor>	color; ///< Billboard color.(default=[1.0,1.0,1.0,1.0])
-
-    core::topology::BaseMeshTopology*	_topology;
-    core::behavior::BaseMechanicalState* _mstate;
-
-    unsigned char *texture_data;
-    sofa::core::topology::PointData<sofa::type::vector<unsigned char> >		pointData; ///< scalar field modulating point colors
-
-    typedef defaulttype::Vec3fTypes::Coord Coord;
-    typedef defaulttype::Vec3fTypes::VecCoord VecCoord;
-    typedef defaulttype::Vec3fTypes::Real Real;
-};
-
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
+#else
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/PointSplatModel.h> instead of this one."
 #endif
+
+#ifdef SOFAGL_COMPONENT_POINTSPLATMODEL
+
+namespace sofa::component::visualmodel
+{
+    using PointSplatModel = sofa::gl::component::model::PointSplatModel;
+
+} // namespace sofa::component::visualmodel
+
+#endif // SOFAGL_COMPONENT_POINTSPLATMODEL

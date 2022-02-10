@@ -19,73 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_OGLVIEWPORT_H_
-#define SOFA_COMPONENT_VISUALMODEL_OGLVIEWPORT_H_
-#include "config.h"
+#pragma once
 
-#include <sofa/core/visual/VisualManager.h>
-#include <sofa/type/Vec.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/type/BoundingBox.h>
+#include <sofa/config.h>
 
-#include <sofa/gl/FrameBufferObject.h>
-#include <sofa/core/visual/VisualParams.h>
+#if __has_include(<sofa/gl/component/onscreen/OglViewport.h>)
+#include <sofa/gl/component/onscreen/OglViewport.h>
+#define SOFAGL_COMPONENT_OGLVIEWPORT
 
-namespace sofa
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/onscreen/OglViewport.h")
+
+#else
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/onscreen/OglViewport.h> instead of this one."
+#endif
+
+#ifdef SOFAGL_COMPONENT_OGLVIEWPORT
+
+namespace sofa::component::visualmodel
 {
+    using OglViewport = sofa::gl::component::onscreen::OglViewport;
 
-namespace component
-{
+} // namespace sofa::component::visualmodel
 
-namespace visualmodel
-{
-
-class OglViewport : public core::visual::VisualManager
-{
-public:
-    typedef defaulttype::RigidCoord<3,double> RigidCoord;
-    typedef core::visual::VisualParams::Viewport Viewport;
-
-    SOFA_CLASS(OglViewport, core::visual::VisualManager);
-
-    Data<type::Vec<2, int> > p_screenPosition; ///< Viewport position
-    Data<type::Vec<2, unsigned int> > p_screenSize; ///< Viewport size
-    Data<type::Vec3f> p_cameraPosition; ///< Camera's position in eye's space
-    Data<type::Quat<SReal>> p_cameraOrientation; ///< Camera's orientation
-    Data<RigidCoord > p_cameraRigid; ///< Camera's rigid coord
-    Data<double> p_zNear; ///< Camera's ZNear
-    Data<double> p_zFar; ///< Camera's ZFar
-    Data<double> p_fovy; ///< Field of View (Y axis)
-    Data<bool> p_enabled; ///< Enable visibility of the viewport
-    Data<bool> p_advancedRendering; ///< If true, viewport will be hidden if advancedRendering visual flag is not enabled
-    Data<bool> p_useFBO; ///< Use a FBO to render the viewport
-    Data<bool> p_swapMainView; ///< Swap this viewport with the main view
-    Data<bool> p_drawCamera; ///< Draw a frame representing the camera (see it in main viewport)
-
-    std::unique_ptr<sofa::gl::FrameBufferObject> fbo;
-
-protected:
-    OglViewport();
-    ~OglViewport() override;
-public:
-    void init() override;
-    void draw(const core::visual::VisualParams* vparams) override;
-    void initVisual() override;
-    void preDrawScene(core::visual::VisualParams* vp) override;
-    bool drawScene(core::visual::VisualParams* vp) override;
-    void postDrawScene(core::visual::VisualParams* vp) override;
-
-    bool isVisible(const core::visual::VisualParams* vparams);
-
-protected:
-    void renderToViewport(core::visual::VisualParams* vp);
-    void renderFBOToScreen(core::visual::VisualParams* vp);
-
-};
-}
-
-}
-
-}
-
-#endif /* SOFA_COMPONENT_VISUALMODEL_OGLVIEWPORT_H_ */
+#endif // SOFAGL_COMPONENT_OGLVIEWPORT

@@ -19,45 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_OGLSHADOWSHADER
-#define SOFA_COMPONENT_OGLSHADOWSHADER
-#include "config.h"
+#pragma once
 
-#include <SofaOpenglVisual/OglShader.h>
+#include <sofa/config.h>
 
-namespace sofa
+#if __has_include(<sofa/gl/component/rendering/OglShadowShader.h>)
+#include <sofa/gl/component/rendering/OglShadowShader.h>
+#define SOFAGL_COMPONENT_OGLSHADOWSHADER
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering/OglShadowShader.h")
+
+#else
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/OglShadowShader.h> instead of this one."
+#endif
+
+#ifdef SOFAGL_COMPONENT_OGLSHADOWSHADER
+
+namespace sofa::component::visualmodel
 {
+    using OglShadowShader = sofa::gl::component::rendering::OglShadowShader;
 
-namespace component
-{
+} // namespace sofa::component::visualmodel
 
-namespace visualmodel
-{
-
-class SOFA_OPENGL_VISUAL_API OglShadowShader : public sofa::component::visualmodel::OglShader
-{
-public:
-    SOFA_CLASS(OglShadowShader, sofa::component::visualmodel::OglShader);
-protected:
-    OglShadowShader();
-    ~OglShadowShader() override;
-public:
-    void init() override;
-
-    virtual void initShaders(unsigned int numberOfLights, bool softShadow);
-
-protected:
-    static const std::string PATH_TO_SHADOW_VERTEX_SHADERS;
-    static const std::string PATH_TO_SHADOW_FRAGMENT_SHADERS;
-    static const std::string PATH_TO_SOFT_SHADOW_VERTEX_SHADERS;
-    static const std::string PATH_TO_SOFT_SHADOW_FRAGMENT_SHADERS;
-
-};
-
-}//namespace visualmodel
-
-} //namespace component
-
-} //namespace sofa
-
-#endif //SOFA_COMPONENT_OGLSHADOWSHADER
+#endif // SOFAGL_COMPONENT_OGLSHADOWSHADER

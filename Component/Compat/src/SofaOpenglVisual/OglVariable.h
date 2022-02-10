@@ -19,396 +19,54 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_H
-#define SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_H
-#include "config.h"
+#pragma once
 
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/type/Mat.h>
-#include <sofa/gl/template.h>
-#include <SofaOpenglVisual/OglShader.h>
+#include <sofa/config.h>
 
-namespace sofa
+#if __has_include(<sofa/gl/component/rendering/OglVariable.h>)
+#include <sofa/gl/component/rendering/OglVariable.h>
+#define SOFAGL_COMPONENT_OGLVARIABLE
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering/OglVariable.h")
+
+#else
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/OglVariable.h> instead of this one."
+#endif
+
+#ifdef SOFAGL_COMPONENT_OGLVARIABLE
+
+namespace sofa::component::visualmodel
 {
-
-namespace component
-{
-
-namespace visualmodel
-{
-
-/**
- *  \brief Defines an uniform variable for a OglShader.
- *
- *  This is an abstract class which pass a value to an uniform
- *  variable defined into the shader.
- *  At the moment, following types are supported :
- *   - int, ivec2, ivec3, ivec4;
- *   - float, vec2, vec3, vec4;
- *   - int[], ivec2[], ivec3[], ivec4[];
- *   - float[], vec2[], vec3[], vec4[];
- */
-
-template<class DataTypes>
-class OglVariable : public core::visual::VisualModel, public OglShaderElement
-{
-public:
-    SOFA_CLASS2(OglVariable, core::visual::VisualModel, OglShaderElement);
-
-    Data< DataTypes > value;
-
-protected:
-    OglVariable(): value(initData(&value, DataTypes(), "value", "Set Uniform Value"))
-    {
-        addAlias(&value, "values"); // some variable types hold multiple values, so we authorize both names for this attribute
-    }
-
-    ~OglVariable() override {}
-public:
-    virtual void setValue( const DataTypes& v ) { value.setValue(v); }
-    void init() override { OglShaderElement::init(); }
-    void initVisual() override { core::visual::VisualModel::initVisual(); }
-    void pushValue() { initVisual(); }
-    void reinit() override { init();	initVisual(); }
-	void updateVisual() override { initVisual(); }
-
-    /// Returns the type of shader element (texture, macro, variable, or attribute)
-    ShaderElementType getSEType() const override { return core::visual::ShaderElement::SE_VARIABLE; }
-    // Returns the value of the shader element
-    const core::objectmodel::BaseData* getSEValue() const override { return &value; }
-    // Returns the value of the shader element
-    core::objectmodel::BaseData* getSEValue() override { return &value; }
-
-};
-
-/** SINGLE INT VARIABLE **/
-class SOFA_OPENGL_VISUAL_API OglIntVariable : public OglVariable< int>
-{
-public:
-    SOFA_CLASS(OglIntVariable, OglVariable< int>);
-
-    OglIntVariable();
-    virtual ~OglIntVariable() { }
-
-    void initVisual() override;
-};
-
-class SOFA_OPENGL_VISUAL_API OglInt2Variable : public OglVariable<type::Vec<2, int> >
-{
-
-public:
-    SOFA_CLASS(OglInt2Variable, SOFA_TEMPLATE(OglVariable, SOFA_TEMPLATE2(type::Vec, 2, int)));
-
-    OglInt2Variable();
-    virtual ~OglInt2Variable() { }
-
-    void initVisual() override;
-};
-
-class SOFA_OPENGL_VISUAL_API OglInt3Variable : public OglVariable<type::Vec<3, int> >
-{
-public:
-    SOFA_CLASS(OglInt3Variable, SOFA_TEMPLATE(OglVariable, SOFA_TEMPLATE2(type::Vec, 3, int)));
-
-    OglInt3Variable();
-    virtual ~OglInt3Variable() { }
-
-    void initVisual() override;
-};
-
-class SOFA_OPENGL_VISUAL_API OglInt4Variable : public OglVariable<type::Vec<4, int> >
-{
-public:
-    SOFA_CLASS(OglInt4Variable, SOFA_TEMPLATE(OglVariable, SOFA_TEMPLATE2(type::Vec, 4, int)));
-
-    OglInt4Variable();
-    virtual ~OglInt4Variable() { }
-
-    void initVisual() override;
-};
-
-/** SINGLE FLOAT VARIABLE **/
-
-class SOFA_OPENGL_VISUAL_API OglFloatVariable : public OglVariable<float>
-{
-public:
-    SOFA_CLASS(OglFloatVariable, OglVariable<float>);
-
-    OglFloatVariable();
-    virtual ~OglFloatVariable() { }
-
-    void initVisual() override;
-};
-
-class SOFA_OPENGL_VISUAL_API OglFloat2Variable : public OglVariable<type::Vec2f>
-{
-public:
-    SOFA_CLASS(OglFloat2Variable, OglVariable<type::Vec2f>);
-
-    OglFloat2Variable();
-    virtual ~OglFloat2Variable() { }
-
-    void initVisual() override;
-};
-
-class SOFA_OPENGL_VISUAL_API OglFloat3Variable : public OglVariable<type::Vec3f>
-{
-public:
-    SOFA_CLASS(OglFloat3Variable, OglVariable<type::Vec3f>);
-
-    OglFloat3Variable();
-    virtual ~OglFloat3Variable() { }
-
-    void initVisual() override;
-};
-
-class SOFA_OPENGL_VISUAL_API OglFloat4Variable : public OglVariable<type::Vec4f>
-{
-public:
-    SOFA_CLASS(OglFloat4Variable, OglVariable<type::Vec4f>);
-
-    OglFloat4Variable();
-    virtual ~OglFloat4Variable() { }
-
-    void initVisual() override;
-};
-
-/** INT VECTOR VARIABLE **/
-class SOFA_OPENGL_VISUAL_API OglIntVectorVariable : public OglVariable<type::vector<GLint> >
-{
-public:
-    SOFA_CLASS(OglIntVectorVariable, OglVariable<type::vector<GLint> >);
-
-    OglIntVectorVariable();
-    virtual ~OglIntVectorVariable() { }
-
-    void init() override;
-    void initVisual() override;
-};
-
-class SOFA_OPENGL_VISUAL_API OglIntVector2Variable : public OglIntVectorVariable
-{
-
-public:
-    SOFA_CLASS(OglIntVector2Variable, OglIntVectorVariable);
-
-    OglIntVector2Variable();
-    ~OglIntVector2Variable() override { }
-
-    void init() override;
-    void initVisual() override;
-};
-
-class SOFA_OPENGL_VISUAL_API OglIntVector3Variable : public OglIntVectorVariable
-{
-public:
-    SOFA_CLASS(OglIntVector3Variable, OglIntVectorVariable);
-
-    OglIntVector3Variable();
-    ~OglIntVector3Variable() override { }
-
-    void init() override;
-    void initVisual() override;
-};
-
-class SOFA_OPENGL_VISUAL_API OglIntVector4Variable : public OglIntVectorVariable
-{
-public:
-    SOFA_CLASS(OglIntVector4Variable, OglIntVectorVariable);
-
-    OglIntVector4Variable();
-    ~OglIntVector4Variable() override { }
-
-    void init() override;
-    void initVisual() override;
-};
-
-/** FLOAT VECTOR VARIABLE **/
-class SOFA_OPENGL_VISUAL_API OglFloatVectorVariable : public OglVariable<type::vector<float> >
-{
-public:
-    SOFA_CLASS(OglFloatVectorVariable, OglVariable<type::vector<float> >);
-
-    OglFloatVectorVariable();
-    virtual ~OglFloatVectorVariable() { }
-
-    void init() override;
-    void initVisual() override;
-};
-
-class SOFA_OPENGL_VISUAL_API OglFloatVector2Variable : public OglVariable<type::vector<type::Vec2f> >
-{
-public:
-    SOFA_CLASS(OglFloatVector2Variable, OglVariable<type::vector<type::Vec2f> >);
-
-    OglFloatVector2Variable();
-    virtual ~OglFloatVector2Variable() { }
-
-    void init() override;
-    void initVisual() override;
-};
-
-class SOFA_OPENGL_VISUAL_API OglFloatVector3Variable : public OglVariable<type::vector<type::Vec3f> >
-{
-public:
-    SOFA_CLASS(OglFloatVector3Variable, OglVariable<type::vector<type::Vec3f> >);
-
-    OglFloatVector3Variable();
-    virtual ~OglFloatVector3Variable() { }
-
-    void init() override;
-    void initVisual() override;
-};
-
-class SOFA_OPENGL_VISUAL_API OglFloatVector4Variable : public OglVariable<type::vector<type::Vec4f> >
-{
-public:
-    SOFA_CLASS(OglFloatVector4Variable, OglVariable<type::vector<type::Vec4f> >);
-
-    OglFloatVector4Variable();
-    virtual ~OglFloatVector4Variable() { }
-
-    void init() override;
-    void initVisual() override;
-};
-
-/** Matrix VARIABLE **/
-class SOFA_OPENGL_VISUAL_API OglMatrix2Variable : public OglVariable<type::vector<float> >
-{
-public:
-    SOFA_CLASS(OglMatrix2Variable,OglVariable<type::vector<float> >);
-
-    Data<bool> transpose; ///< Transpose the matrix (e.g. to use row-dominant matrices in OpenGL
-
-    OglMatrix2Variable();
-    virtual ~OglMatrix2Variable() { }
-
-    virtual void setTranspose( const bool& v ) { transpose.setValue(v); }
-
-    void init() override;
-    void initVisual() override;
-};
-
-class SOFA_OPENGL_VISUAL_API OglMatrix3Variable : public OglMatrix2Variable
-{
-public:
-    SOFA_CLASS(OglMatrix3Variable,OglMatrix2Variable);
-
-    OglMatrix3Variable();
-    ~OglMatrix3Variable() override { }
-
-    void init() override;
-    void initVisual() override;
-};
-
-class SOFA_OPENGL_VISUAL_API OglMatrix4Variable : public OglMatrix2Variable
-{
-public:
-    SOFA_CLASS(OglMatrix4Variable,OglMatrix2Variable);
-
-    OglMatrix4Variable();
-    ~OglMatrix4Variable() override { }
-
-    void init() override;
-    void initVisual() override;
-};
-
-class SOFA_OPENGL_VISUAL_API OglMatrix2x3Variable : public OglMatrix2Variable
-{
-public:
-    SOFA_CLASS(OglMatrix2x3Variable,OglMatrix2Variable);
-
-    OglMatrix2x3Variable();
-    ~OglMatrix2x3Variable() override { }
-
-    void init() override;
-    void initVisual() override;
-};
-
-class SOFA_OPENGL_VISUAL_API OglMatrix3x2Variable : public OglMatrix2Variable
-{
-public:
-    SOFA_CLASS(OglMatrix3x2Variable,OglMatrix2Variable);
-
-    OglMatrix3x2Variable();
-    ~OglMatrix3x2Variable() override { }
-
-    void init() override;
-    void initVisual() override;
-};
-
-class SOFA_OPENGL_VISUAL_API OglMatrix2x4Variable : public OglMatrix2Variable
-{
-public:
-    SOFA_CLASS(OglMatrix2x4Variable,OglMatrix2Variable);
-
-    OglMatrix2x4Variable();
-    ~OglMatrix2x4Variable() override { }
-
-    void init() override;
-    void initVisual() override;
-};
-
-class SOFA_OPENGL_VISUAL_API OglMatrix4x2Variable : public OglMatrix2Variable
-{
-public:
-    SOFA_CLASS(OglMatrix4x2Variable,OglMatrix2Variable);
-
-    OglMatrix4x2Variable();
-    ~OglMatrix4x2Variable() override { }
-
-    void init() override;
-    void initVisual() override;
-};
-
-class SOFA_OPENGL_VISUAL_API OglMatrix3x4Variable : public OglMatrix2Variable
-{
-public:
-    SOFA_CLASS(OglMatrix3x4Variable,OglMatrix2Variable);
-
-    OglMatrix3x4Variable();
-    ~OglMatrix3x4Variable() override { }
-
-    void init() override;
-    void initVisual() override;
-};
-
-class SOFA_OPENGL_VISUAL_API OglMatrix4x3Variable : public OglMatrix2Variable
-{
-public:
-    SOFA_CLASS(OglMatrix4x3Variable,OglMatrix2Variable);
-
-    OglMatrix4x3Variable();
-    ~OglMatrix4x3Variable() override { }
-
-    void init() override;
-    void initVisual() override;
-};
-
-class SOFA_OPENGL_VISUAL_API OglMatrix4VectorVariable : public OglVariable<type::vector<type::Mat4x4f> >
-{
-public:
-    SOFA_CLASS(OglMatrix4VectorVariable,OglVariable<type::vector<type::Mat4x4f> >);
-
-    OglMatrix4VectorVariable();
-    virtual ~OglMatrix4VectorVariable() { }
-
-    void init() override;
-    void initVisual() override;
-
-    Data<bool> transpose; ///< Transpose the matrix (e.g. to use row-dominant matrices in OpenGL
-    virtual void setTranspose( const bool& v ) { transpose.setValue(v); }
-
-};
-
-
-
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_H
+    template<class DataTypes>
+    using OglVariable = sofa::gl::component::rendering::OglVariable<DataTypes>;
+
+    using OglIntVariable = sofa::gl::component::rendering::OglIntVariable;
+    using OglInt2Variable = sofa::gl::component::rendering::OglInt2Variable;
+    using OglInt3Variable = sofa::gl::component::rendering::OglInt3Variable;
+    using OglInt4Variable = sofa::gl::component::rendering::OglInt4Variable;
+    using OglFloatVariable = sofa::gl::component::rendering::OglFloatVariable;
+    using OglFloat2Variable = sofa::gl::component::rendering::OglFloat2Variable;
+    using OglFloat3Variable = sofa::gl::component::rendering::OglFloat3Variable;
+    using OglFloat4Variable = sofa::gl::component::rendering::OglFloat4Variable;
+    using OglIntVectorVariable = sofa::gl::component::rendering::OglIntVectorVariable;
+    using OglIntVector2Variable = sofa::gl::component::rendering::OglIntVector2Variable;
+    using OglIntVector3Variable = sofa::gl::component::rendering::OglIntVector3Variable;
+    using OglIntVector4Variable = sofa::gl::component::rendering::OglIntVector4Variable;
+    using OglFloatVectorVariable = sofa::gl::component::rendering::OglFloatVectorVariable;
+    using OglFloatVector2Variable = sofa::gl::component::rendering::OglFloatVector2Variable;
+    using OglFloatVector3Variable = sofa::gl::component::rendering::OglFloatVector3Variable;
+    using OglFloatVector4Variable = sofa::gl::component::rendering::OglFloatVector4Variable;
+    using OglMatrix2Variable = sofa::gl::component::rendering::OglMatrix2Variable;
+    using OglMatrix3Variable = sofa::gl::component::rendering::OglMatrix3Variable;
+    using OglMatrix4Variable = sofa::gl::component::rendering::OglMatrix4Variable;
+    using OglMatrix2x3Variable = sofa::gl::component::rendering::OglMatrix2x3Variable;
+    using OglMatrix3x2Variable = sofa::gl::component::rendering::OglMatrix3x2Variable;
+    using OglMatrix2x4Variable = sofa::gl::component::rendering::OglMatrix2x4Variable;
+    using OglMatrix4x2Variable = sofa::gl::component::rendering::OglMatrix4x2Variable;
+    using OglMatrix3x4Variable = sofa::gl::component::rendering::OglMatrix3x4Variable;
+    using OglMatrix4x3Variable = sofa::gl::component::rendering::OglMatrix4x3Variable;
+    using OglMatrix4VectorVariable = sofa::gl::component::rendering::OglMatrix4VectorVariable;
+
+} // namespace sofa::component::visualmodel
+
+#endif // SOFAGL_COMPONENT_OGLVARIABLE

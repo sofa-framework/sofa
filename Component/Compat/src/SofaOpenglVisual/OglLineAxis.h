@@ -19,51 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_OGLLINEAXIS_H
-#define SOFA_OGLLINEAXIS_H
-#include "config.h"
+#pragma once
 
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/config.h>
 
-namespace sofa
+#if __has_include(<sofa/gl/component/model/OglLineAxis.h>)
+#include <sofa/gl/component/model/OglLineAxis.h>
+#define SOFAGL_COMPONENT_OGLLINEAXIS
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/model/OglLineAxis.h")
+
+#else
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/OglLineAxis.h> instead of this one."
+#endif
+
+#ifdef SOFAGL_COMPONENT_OGLLINEAXIS
+
+namespace sofa::component::visualmodel
 {
+    using OglLineAxis = sofa::gl::component::model::OglLineAxis;
 
-namespace component
-{
+} // namespace sofa::component::visualmodel
 
-namespace visualmodel
-{
-
-class OglLineAxis : public core::visual::VisualModel
-{
-public:
-    SOFA_CLASS(OglLineAxis, VisualModel);
-
-    Data<std::string> axis; ///< Axis to draw
-    Data<float> size; ///< Size of the squared grid
-    Data<float> thickness; ///< Thickness of the lines in the grid
-    Data<bool> draw; ///< Display the grid or not
-
-    OglLineAxis();
-
-    void init() override;
-    void reinit() override;
-    void drawVisual(const core::visual::VisualParams*) override;
-    void updateVisual() override;
-
-protected:
-
-    bool drawX;
-    bool drawY;
-    bool drawZ;
-
-};
-
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_OGLLINEAXIS_H
+#endif // SOFAGL_COMPONENT_OGLLINEAXIS

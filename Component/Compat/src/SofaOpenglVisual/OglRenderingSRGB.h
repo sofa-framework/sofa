@@ -19,39 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_OGLRENDERING_SRGB_H
-#define SOFA_OGLRENDERING_SRGB_H
-#include "config.h"
+#pragma once
 
-#include <sofa/core/visual/VisualManager.h>
-#include <sofa/core/visual/VisualParams.h>
+#include <sofa/config.h>
 
-namespace sofa
+#if __has_include(<sofa/gl/component/rendering/OglRenderingSRGB.h>)
+#include <sofa/gl/component/rendering/OglRenderingSRGB.h>
+#define SOFAGL_COMPONENT_OGLRENDERINGSRGB
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering/OglRenderingSRGB.h")
+
+#else
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/OglRenderingSRGB.h> instead of this one."
+#endif
+
+#ifdef SOFAGL_COMPONENT_OGLRENDERINGSRGB
+
+namespace sofa::component::visualmodel
 {
+    using OglRenderingSRGB = sofa::gl::component::rendering::OglRenderingSRGB;
 
-namespace component
-{
+} // namespace sofa::component::visualmodel
 
-namespace visualmodel
-{
-
-/**
- *  \brief The utility to enable/disable sRGB rendering
- */
-
-class SOFA_OPENGL_VISUAL_API OglRenderingSRGB : public core::visual::VisualManager
-{
-public:
-    SOFA_CLASS(OglRenderingSRGB, core::visual::VisualManager);
-
-    void fwdDraw(core::visual::VisualParams* ) override;
-    void bwdDraw(core::visual::VisualParams* ) override;
-};
-
-}//namespace visualmodel
-
-}//namespace component
-
-}//namespace sofa
-
-#endif //SOFA_RENDERING_SRGB_H
+#endif // SOFAGL_COMPONENT_OGLRENDERINGSRGB

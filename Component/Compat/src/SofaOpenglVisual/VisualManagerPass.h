@@ -19,78 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMANAGERPASS_H
-#define SOFA_COMPONENT_VISUALMANAGERPASS_H
-#include "config.h"
+#pragma once
 
-#include <SofaOpenglVisual/CompositingVisualLoop.h>
-#include <sofa/core/visual/VisualManager.h>
-#include <sofa/gl/FrameBufferObject.h>
-#include <SofaOpenglVisual/OglShader.h>
-#include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/objectmodel/Event.h>
-#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/config.h>
 
-namespace sofa
+#if __has_include(<sofa/gl/component/rendering/VisualManagerPass.h>)
+#include <sofa/gl/component/rendering/VisualManagerPass.h>
+#define SOFAGL_COMPONENT_VISUALMANAGERPASS
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering/VisualManagerPass.h")
+
+#else
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/VisualManagerPass.h> instead of this one."
+#endif
+
+#ifdef SOFAGL_COMPONENT_VISUALMANAGERPASS
+
+namespace sofa::component::visualmodel
 {
+    using VisualManagerPass = sofa::gl::component::rendering::VisualManagerPass;
 
-namespace component
-{
+} // namespace sofa::component::visualmodel
 
-namespace visualmodel
-{
-
-/**
- *  \brief Render pass element: render the relevant tagged objects in a FBO
- */
-
-class SOFA_OPENGL_VISUAL_API VisualManagerPass : public core::visual::VisualManager
-{
-public:
-    SOFA_CLASS(VisualManagerPass, core::visual::VisualManager);
-
-    Data<float> factor; ///< set the resolution factor for the output pass. default value:1.0
-    Data<bool> renderToScreen; ///< if true, this pass will be displayed on screen (only one renderPass in the scene must be defined as renderToScreen)
-    Data<std::string> outputName; ///< name the output texture
-protected:
-    bool checkMultipass(sofa::core::objectmodel::BaseContext* con);
-    bool multiPassEnabled;
-
-    std::unique_ptr<sofa::gl::FrameBufferObject> fbo;
-    bool prerendered;
-
-    GLint passWidth;
-    GLint passHeight;
-public:
-    VisualManagerPass();
-    ~VisualManagerPass() override;
-
-
-    void init() override;
-    void initVisual() override;
-
-    void preDrawScene(core::visual::VisualParams* vp) override;
-    bool drawScene(core::visual::VisualParams* vp) override;
-    void postDrawScene(core::visual::VisualParams* vp) override;
-
-
-    void draw(const core::visual::VisualParams* vparams) override;
-    void fwdDraw(core::visual::VisualParams*) override;
-    void bwdDraw(core::visual::VisualParams*) override;
-
-    void handleEvent(sofa::core::objectmodel::Event* /*event*/) override;
-
-    virtual bool isPrerendered() {return prerendered;}
-
-    virtual sofa::gl::FrameBufferObject& getFBO() {return *fbo;}
-    bool hasFilledFbo();
-    std::string getOutputName();
-};
-
-}//namespace visualmodel
-
-}//namespace component
-
-}//namespace sofa
-
-#endif //SOFA_COMPONENT_LIGHT_MANAGER_H
+#endif // SOFAGL_COMPONENT_VISUALMANAGERPASS

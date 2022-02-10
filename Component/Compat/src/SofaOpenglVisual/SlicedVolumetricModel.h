@@ -19,100 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_SlicedVolumetricModel_H
-#define SOFA_COMPONENT_VISUALMODEL_SlicedVolumetricModel_H
-#include "config.h"
+#pragma once
 
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/type/RGBAColor.h>
-#include <sofa/core/topology/TopologyData.h>
+#include <sofa/config.h>
 
-#include <sofa/gl/template.h>
+#if __has_include(<sofa/gl/component/model/SlicedVolumetricModel.h>)
+#include <sofa/gl/component/model/SlicedVolumetricModel.h>
+#define SOFAGL_COMPONENT_SLICEDVOLUMETRICMODEL
 
-namespace sofa
-{
-namespace core
-{
-namespace topology
-{
-class BaseMeshTopology;
-}
-namespace behavior
-{
-class BaseMechanicalState;
-}
-}
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/model/SlicedVolumetricModel.h")
 
-namespace component
-{
-
-namespace visualmodel
-{
-
-class SOFA_OPENGL_VISUAL_API SlicedVolumetricModel : public core::visual::VisualModel
-{
-public:
-    SOFA_CLASS(SlicedVolumetricModel, core::visual::VisualModel);
-protected:
-    SlicedVolumetricModel();
-    ~SlicedVolumetricModel() override;
-public:
-    void init() override;
-
-    void reinit() override;
-
-    virtual bool isTransparent() {return true;}
-
-    void drawTransparent(const core::visual::VisualParams* vparams) override;
-
-protected:
-//    void setColor(float r, float g, float b);
-//    void setColor(std::string color);
-
-    void findAndDrawTriangles();
-
-    Data<float>		alpha; ///< Opacity of the billboards. 1.0 is 100% opaque.
-    Data<sofa::type::RGBAColor>	color; ///< Billboard color.(default=1.0,1.0,1.0,1.0)
-
-    Data<int> _nbPlanes; ///< Number of billboards.
-    int _nbPlanesOld;
-
-    core::topology::BaseMeshTopology*	_topology;
-    core::behavior::BaseMechanicalState* _mstate;
-
-    unsigned char *texture_data;
-
-    typedef defaulttype::Vec3fTypes::Coord Coord;
-    typedef defaulttype::Vec3fTypes::VecCoord VecCoord;
-    typedef defaulttype::Vec3fTypes::Real Real;
-
-
-    bool _first;
-    GLuint _texname;
-    int _width,_height,_depth;
-    Coord vRight,vUp,_planeNormal;
-    Real _radius;
-    Real _planeSeparations;
-    void computePlaneSeparations();
-
-    typedef core::topology::BaseMeshTopology::Edge Edge;
-    typedef std::pair< Coord , Coord > Intersection; // position, texture coord
-    typedef std::map< Edge, Intersection > EdgesMap;
-
-    static const int __edges__[12][2];
-
-    int intersectionSegmentPlane( const Coord&s0,const Coord&s1, const Coord&segmentDirection, const Coord& planeNormal, const Real& planeConstant, Real & m_fLineT );
-
-    VecCoord _textureCoordinates;
-
-    double _minBBox[3], _maxBBox[3];
-};
-
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
+#else
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/SlicedVolumetricModel.h> instead of this one."
 #endif
+
+#ifdef SOFAGL_COMPONENT_SLICEDVOLUMETRICMODEL
+
+namespace sofa::component::visualmodel
+{
+    using SlicedVolumetricModel = sofa::gl::component::model::SlicedVolumetricModel;
+
+} // namespace sofa::component::visualmodel
+
+#endif // SOFAGL_COMPONENT_SLICEDVOLUMETRICMODEL

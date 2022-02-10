@@ -19,56 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_OGLGRID_H
-#define SOFA_OGLGRID_H
-#include "config.h"
+#pragma once
 
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/type/RGBAColor.h>
+#include <sofa/config.h>
 
-namespace sofa
+#if __has_include(<sofa/gl/component/model/OglGrid.h>)
+#include <sofa/gl/component/model/OglGrid.h>
+#define SOFAGL_COMPONENT_OGLGRID
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/model/OglGrid.h")
+
+#else
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/OglGrid.h> instead of this one."
+#endif
+
+#ifdef SOFAGL_COMPONENT_OGLGRID
+
+namespace sofa::component::visualmodel
 {
+    using OglGrid = sofa::gl::component::model::OglGrid;
 
-namespace component
-{
+} // namespace sofa::component::visualmodel
 
-namespace visualmodel
-{
-
-class OglGrid : public core::visual::VisualModel
-{
-public:
-    SOFA_CLASS(OglGrid, VisualModel);
-
-    typedef sofa::type::Vector3 Vector3;
-
-    enum PLANE {PLANE_X, PLANE_Y, PLANE_Z};
-
-    Data<std::string> plane; ///< Plane of the grid
-    PLANE internalPlane;
-
-    Data<float> size; ///< Size of the squared grid
-    Data<int> nbSubdiv; ///< Number of subdivisions
-
-    Data<sofa::type::RGBAColor> color; ///< Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)
-    Data<float> thickness; ///< Thickness of the lines in the grid
-    Data<bool> draw; ///< Display the grid or not
-
-    OglGrid();
-
-    void init() override;
-    void reinit() override;
-    void drawVisual(const core::visual::VisualParams*) override;
-    void updateVisual() override;
-
-protected:
-
-};
-
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_OGLGRID_H
+#endif // SOFAGL_COMPONENT_OGLGRID

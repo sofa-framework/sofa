@@ -19,62 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_COMPOSITINGVISUALLOOP_H
-#define SOFA_SIMULATION_COMPOSITINGVISUALLOOP_H
-#include "config.h"
+#pragma once
 
-#include <sofa/simulation/DefaultVisualManagerLoop.h>
-#include <sofa/core/visual/VisualParams.h>
+#include <sofa/config.h>
 
-#include <SofaOpenglVisual/OglShader.h>
-#include <SofaOpenglVisual/VisualManagerPass.h>
+#if __has_include(<sofa/gl/component/rendering/CompositingVisualLoop.h>)
+#include <sofa/gl/component/rendering/CompositingVisualLoop.h>
+#define SOFAGL_COMPONENT_COMPOSITINGVISUALLOOP
 
-#include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/objectmodel/Event.h>
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering/CompositingVisualLoop.h")
 
-namespace sofa
+#else
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/CompositingVisualLoop.h> instead of this one."
+#endif
+
+#ifdef SOFAGL_COMPONENT_COMPOSITINGVISUALLOOP
+
+namespace sofa::component::visualmodel
 {
+    using CompositingVisualLoop = sofa::gl::component::rendering::CompositingVisualLoop;
 
-namespace component
-{
+} // namespace sofa::component::visualmodel
 
-namespace visualmodel
-{
-
-/**
- *  \Compositing visual loop: render multiple passes and composite them into one single rendered frame
- */
-
-class SOFA_OPENGL_VISUAL_API CompositingVisualLoop : public simulation::DefaultVisualManagerLoop
-{
-public:
-    SOFA_CLASS(CompositingVisualLoop,simulation::DefaultVisualManagerLoop);
-
-    ///Files where vertex shader is defined
-    sofa::core::objectmodel::DataFileName vertFilename;
-    ///Files where fragment shader is defined
-    sofa::core::objectmodel::DataFileName fragFilename;
-
-private:
-
-    void traceFullScreenQuad();
-    void defaultRendering(sofa::core::visual::VisualParams* vparams);
-
-protected:
-    CompositingVisualLoop(simulation::Node* gnode = nullptr);
-
-    ~CompositingVisualLoop() override;
-
-public:
-
-    void init() override;
-    void initVisual() override;
-    void drawStep(sofa::core::visual::VisualParams* vparams) override;
-};
-
-} // namespace visualmodel
-
-} // namespace component
-
-} //sofa
-#endif  /* SOFA_SIMULATION_COMPOSITINGVISUALLOOP_H */
+#endif // SOFAGL_COMPONENT_COMPOSITINGVISUALLOOP

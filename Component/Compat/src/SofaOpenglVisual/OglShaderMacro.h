@@ -19,70 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef OGLSHADERMACRO_H_
-#define OGLSHADERMACRO_H_
-#include "config.h"
+#pragma once
 
-#include <SofaOpenglVisual/OglShader.h>
+#include <sofa/config.h>
 
-namespace sofa
+#if __has_include(<sofa/gl/component/rendering/OglShaderMacro.h>)
+#include <sofa/gl/component/rendering/OglShaderMacro.h>
+#define SOFAGL_COMPONENT_OGLSHADERMACRO
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering/OglShaderMacro.h")
+
+#else
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/OglShaderMacro.h> instead of this one."
+#endif
+
+#ifdef SOFAGL_COMPONENT_OGLSHADERMACRO
+
+namespace sofa::component::visualmodel
 {
+    using OglShaderMacro = sofa::gl::component::rendering::OglShaderMacro;
 
-namespace component
-{
+} // namespace sofa::component::visualmodel
 
-namespace visualmodel
-{
-
-/**
- *  \brief Small class to define macro into an OglShader.
- *
- *  This small abstract class describes macro into an OpenGL shader
- *  (GLSL). It was mainly written for implementing #ifdef macro
- *  into shader, and therefore, to have a multi-purpose shader (and not
- *  many fragmented shaders).
- *
- */
-
-class SOFA_OPENGL_VISUAL_API OglShaderMacro : public OglShaderElement
-{
-public:
-    SOFA_CLASS(OglShaderMacro, OglShaderElement);
-protected:
-    OglShaderMacro();
-    ~OglShaderMacro() override;
-public:
-    void init() override;
-
-    /// Returns the type of shader element (texture, macro, variable, or attribute)
-    ShaderElementType getSEType() const override { return core::visual::ShaderElement::SE_MACRO; }
-    // Returns the value of the shader element
-    const core::objectmodel::BaseData* getSEValue() const override { return nullptr; }
-    // Returns the value of the shader element
-    core::objectmodel::BaseData* getSEValue() override { return nullptr; }
-};
-
-
-class SOFA_OPENGL_VISUAL_API OglShaderDefineMacro : public OglShaderMacro
-{
-public:
-    SOFA_CLASS(OglShaderDefineMacro, OglShaderMacro);
-protected:
-    Data<std::string> value; ///< Set a value for define macro
-public:
-    OglShaderDefineMacro();
-    ~OglShaderDefineMacro() override;
-    void init() override;
-    // Returns the value of the shader element
-    const core::objectmodel::BaseData* getSEValue() const override { return &value; }
-    // Returns the value of the shader element
-    core::objectmodel::BaseData* getSEValue() override { return &value; }
-};
-
-}
-
-}
-
-}
-
-#endif /*OGLSHADERMACRO_H_*/
+#endif // SOFAGL_COMPONENT_OGLSHADERMACRO

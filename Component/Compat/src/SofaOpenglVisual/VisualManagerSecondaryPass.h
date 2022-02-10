@@ -19,70 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMANAGER_SECONDARY_PASS_H
-#define SOFA_COMPONENT_VISUALMANAGER_SECONDARY_PASS_H
-#include "config.h"
+#pragma once
 
-#include <SofaOpenglVisual/VisualManagerPass.h>
-#include <sofa/core/objectmodel/DataFileName.h>
-#include <SofaOpenglVisual/OglShader.h>
+#include <sofa/config.h>
 
-namespace sofa
+#if __has_include(<sofa/gl/component/rendering/VisualManagerSecondaryPass.h>)
+#include <sofa/gl/component/rendering/VisualManagerSecondaryPass.h>
+#define SOFAGL_COMPONENT_VISUALMANAGERSECONDARYPASS
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering/VisualManagerSecondaryPass.h")
+
+#else
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/VisualManagerSecondaryPass.h> instead of this one."
+#endif
+
+#ifdef SOFAGL_COMPONENT_VISUALMANAGERSECONDARYPASS
+
+namespace sofa::component::visualmodel
 {
+    using VisualManagerSecondaryPass = sofa::gl::component::rendering::VisualManagerSecondaryPass;
 
-namespace component
-{
+} // namespace sofa::component::visualmodel
 
-namespace visualmodel
-{
-
-/**
- *  \brief Render pass element: render the relevant tagged objects in a FBO
- */
-
-class SOFA_OPENGL_VISUAL_API VisualManagerSecondaryPass : public component::visualmodel::VisualManagerPass
-{
-public:
-    SOFA_CLASS(VisualManagerSecondaryPass, component::visualmodel::VisualManagerPass);
-
-    Data< sofa::core::objectmodel::TagSet > input_tags; ///< list of input passes used as source textures
-    Data< sofa::core::objectmodel::TagSet > output_tags; ///< output reference tag (use it if the resulting fbo is used as a source for another secondary pass)
-    sofa::core::objectmodel::DataFileName fragFilename;
-
-protected:
-    OglShader::SPtr m_shaderPostproc;
-    SingleLink<VisualManagerSecondaryPass, OglShader, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_shader;
-
-    VisualManagerSecondaryPass();
-    ~VisualManagerSecondaryPass() override;
-
-    virtual void traceFullScreenQuad();
-
-public:
-    void init() override;
-    void initVisual() override;
-
-    void preDrawScene(core::visual::VisualParams* vp) override;
-    bool drawScene(core::visual::VisualParams* vp) override;
-
-    void bindInput(core::visual::VisualParams* /*vp*/);
-    void unbindInput();
-
-    sofa::gl::FrameBufferObject& getFBO() override {return *fbo;}
-
-    const sofa::core::objectmodel::TagSet& getOutputTags() {return output_tags.getValue();}
-
-private:
-
-    void initShaderInputTexId();
-    int nbFbo;
-};
-
-}//namespace visualmodel
-
-}//namespace component
-
-}//namespace sofa
-
-
-#endif // SOFA_CORE_VISUAL_VISUALMANAGER_H
+#endif // SOFAGL_COMPONENT_VISUALMANAGERSECONDARYPASS

@@ -19,72 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_LABEL_H
-#define SOFA_COMPONENT_VISUALMODEL_LABEL_H
-#include <string>
+#pragma once
 
-#include "config.h"
+#include <sofa/config.h>
 
-#include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/helper/OptionsGroup.h>
-#include <sofa/type/vector.h>
-#include <sofa/helper/rmath.h>
-#include <sofa/gl/template.h>
-#include <sofa/type/Vec.h>
-#include <SofaBaseVisual/BackgroundSetting.h>
+#if __has_include(<sofa/gl/component/onscreen/OglLabel.h>)
+#include <sofa/gl/component/onscreen/OglLabel.h>
+#define SOFAGL_COMPONENT_OGLLABEL
 
-namespace sofa
-{
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/onscreen/OglLabel.h")
 
-namespace component
-{
-
-namespace visualmodel
-{
-
-class SOFA_OPENGL_VISUAL_API OglLabel : public core::visual::VisualModel
-{
-public:
-    SOFA_CLASS(OglLabel, core::visual::VisualModel);
-
-public:
-    Data<std::string>            d_prefix; ///< The prefix of the text to display
-    Data<std::string>            d_label; ///< The text to display
-    Data<std::string>            d_suffix; ///< The suffix of the text to display
-    Data<unsigned int>           d_x; ///< The x position of the text on the screen
-    Data<unsigned int>           d_y; ///< The y position of the text on the screen
-    Data<unsigned int>           d_fontsize; ///< The size of the font used to display the text on the screen
-    Data<sofa::type::RGBAColor> d_color; ///< The color of the text to display. (default='gray')
-    Data<bool>                   d_selectContrastingColor ; ///< Overide the color value but one that contrast with the background color
-    Data<unsigned int>           d_updateLabelEveryNbSteps; ///< Update the display of the label every nb of time steps
-    Data<bool>                   d_visible; ///< Is label displayed
-
-    void init() override;
-    void reinit() override;
-    void updateVisual() override;
-    void drawVisual(const core::visual::VisualParams* vparams) override;
-
-    void handleEvent(core::objectmodel::Event *) override;
-
-    void parse(core::objectmodel::BaseObjectDescription *arg) override;
-    void setColor(float r, float g, float b, float a) ;
-
-
-protected:
-    OglLabel();
-    ~OglLabel() override {}
-
-    unsigned int                 m_stepCounter;
-
-private:
-    std::string                  m_internalLabel;
-};
-
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
+#else
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/onscreen/OglLabel.h> instead of this one."
 #endif
+
+#ifdef SOFAGL_COMPONENT_OGLLABEL
+
+namespace sofa::component::visualmodel
+{
+    using OglLabel = sofa::gl::component::onscreen::OglLabel;
+
+} // namespace sofa::component::visualmodel
+
+#endif // SOFAGL_COMPONENT_OGLLABEL

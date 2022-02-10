@@ -19,196 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_OGLSHADER
-#define SOFA_COMPONENT_OGLSHADER
-#include "config.h"
+#pragma once
 
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/visual/Shader.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/gl/template.h>
-#include <sofa/gl/GLSLShader.h>
-#include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/config.h>
 
-namespace sofa
-{
+#if __has_include(<sofa/gl/component/rendering/OglShader.h>)
+#include <sofa/gl/component/rendering/OglShader.h>
+#define SOFAGL_COMPONENT_OGLSHADER
 
-namespace component
-{
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering/OglShader.h")
 
-namespace visualmodel
-{
-
-/**
- *  \brief Utility to use shader for a visual model in OpenGL.
- *
- *  This class is used to implement shader into Sofa, for visual rendering
- *  or for special treatment that needs shader mechanism.
- *  The 3 kinds of shaders can be defined : vertex, triangle and fragment.
- *  Geometry shader is only available with Nvidia's >8 series
- *  and Ati's >2K series.
- */
-
-class SOFA_OPENGL_VISUAL_API OglShader : public core::visual::Shader, public core::visual::VisualModel
-{
-public:
-    SOFA_CLASS2(OglShader, core::visual::Shader, core::visual::VisualModel);
-
-    ///Activates or not the shader
-    Data<bool> turnOn;
-    ///Tells if it must be activated automatically(value false : the visitor will switch the shader)
-    ///or manually (value true : useful when another component wants to use it for itself only)
-    Data<bool> passive;
-
-    ///Files where vertex shader is defined
-    sofa::core::objectmodel::DataFileNameVector vertFilename;
-    ///Files where fragment shader is defined
-    sofa::core::objectmodel::DataFileNameVector fragFilename;
-#ifdef GL_GEOMETRY_SHADER_EXT
-    ///Files where geometry shader is defined
-    sofa::core::objectmodel::DataFileNameVector geoFilename;
+#else
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/OglShader.h> instead of this one."
 #endif
 
-#ifdef GL_TESS_CONTROL_SHADER
-    ///Files where tessellation control shader is defined
-    sofa::core::objectmodel::DataFileNameVector tessellationControlFilename;
-#endif
-#ifdef GL_TESS_EVALUATION_SHADER
-    ///Files where tessellation evaluation shader is defined
-    sofa::core::objectmodel::DataFileNameVector tessellationEvaluationFilename;
-#endif
+#ifdef SOFAGL_COMPONENT_OGLSHADER
 
-#ifdef GL_GEOMETRY_SHADER_EXT
-    ///Describes the input type of primitive if geometry shader is used
-    Data<int> geometryInputType;
-    ///Describes the output type of primitive if geometry shader is used
-    Data<int> geometryOutputType;
-    ///Describes the number of vertices in output if geometry shader is used
-    Data<int> geometryVerticesOut;
-#endif
-
-#ifdef GL_TESS_CONTROL_SHADER
-    Data<GLfloat> tessellationOuterLevel; ///< For tessellation without control shader: default outer level (edge subdivisions)
-    Data<GLfloat> tessellationInnerLevel; ///< For tessellation without control shader: default inner level (face subdivisions)
-#endif
-
-    Data<unsigned int> indexActiveShader; ///< Set current active shader
-
-    // enable writing gl_BackColor in the vertex shader
-    Data<bool> backfaceWriting; ///< it enables writing to gl_BackColor inside a GLSL vertex shader
-
-    Data<bool> clampVertexColor; ///< clamp the vertex color between 0 and 1
-
-protected:
-    ///OpenGL shader
-    std::vector<sofa::gl::GLSLShader*> shaderVector;
-
-    OglShader();
-    ~OglShader() override;
-public:
-    void initVisual() override;
-    void init() override;
-    void reinit() override;
-    void drawVisual(const core::visual::VisualParams* vparams) override;
-    void updateVisual() override;
-    void parse(core::objectmodel::BaseObjectDescription* arg) override;
-
-    void start() override;
-    void stop() override;
-    bool isActive() override;
-
-    unsigned int getNumberOfShaders();
-    unsigned int getCurrentIndex();
-    void setCurrentIndex(const unsigned int index);
-
-    void addDefineMacro(const unsigned int index, const std::string &name, const std::string &value);
-
-    void setTexture(const unsigned int index, const char* name, unsigned short unit);
-
-    void setInt(const unsigned int index, const char* name, int i);
-    void setInt2(const unsigned int index, const char* name, int i1, int i2);
-    void setInt3(const unsigned int index, const char* name, int i1, int i2, int i3);
-    void setInt4(const unsigned int index, const char* name, int i1, int i2, int i3, int i4);
-
-    void setFloat(const unsigned int index, const char* name, float f1);
-    void setFloat2(const unsigned int index, const char* name, float f1, float f2);
-    void setFloat3(const unsigned int index, const char* name, float f1, float f2, float f3);
-    void setFloat4(const unsigned int index, const char* name, float f1, float f2, float f3, float f4);
-
-    void setIntVector(const unsigned int index, const char* name, int count, const GLint* i);
-    void setIntVector2(const unsigned int index, const char* name, int count, const GLint* i);
-    void setIntVector3(const unsigned int index, const char* name, int count, const GLint* i);
-    void setIntVector4(const unsigned int index, const char* name, int count, const GLint* i);
-
-    void setFloatVector(const unsigned int index, const char* name, int count, const float* f);
-    void setFloatVector2(const unsigned int index, const char* name, int count, const float* f);
-    void setFloatVector3(const unsigned int index, const char* name, int count, const float* f);
-    void setFloatVector4(const unsigned int index, const char* name, int count, const float* f);
-
-    void setMatrix2(const unsigned int index, const char* name, int count, bool transpose, const float* f);
-    void setMatrix3(const unsigned int index, const char* name, int count, bool transpose, const float* f);
-    void setMatrix4(const unsigned int index, const char* name, int count, bool transpose, const float* f);
-    void setMatrix2x3(const unsigned int index, const char* name, int count, bool transpose, const float* f);
-    void setMatrix3x2(const unsigned int index, const char* name, int count, bool transpose, const float* f);
-    void setMatrix2x4(const unsigned int index, const char* name, int count, bool transpose, const float* f);
-    void setMatrix4x2(const unsigned int index, const char* name, int count, bool transpose, const float* f);
-    void setMatrix3x4(const unsigned int index, const char* name, int count, bool transpose, const float* f);
-    void setMatrix4x3(const unsigned int index, const char* name, int count, bool transpose, const float* f);
-
-    GLint getAttribute(const unsigned int index, const char* name);
-    GLint getUniform(const unsigned int index, const char* name);
-
-    GLint getGeometryInputType(const unsigned int index) ;
-    void  setGeometryInputType(const unsigned int index, GLint v) ;
-
-    GLint getGeometryOutputType(const unsigned int index) ;
-    void  setGeometryOutputType(const unsigned int index, GLint v) ;
-
-    GLint getGeometryVerticesOut(const unsigned int index) ;
-    void  setGeometryVerticesOut(const unsigned int index, GLint v);
-
-
-    bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
-    bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
-
-};
-
-/**
- *  \brief Abstract class which defines a element to be used with a OglShader.
- *
- *  This is only an partial implementation of the interface ShaderElement
- *  which adds a pointer to its corresponding shader (where it will be used)
- *  and the id (or name) of the element.
- */
-
-class SOFA_OPENGL_VISUAL_API OglShaderElement : public core::visual::ShaderElement
+namespace sofa::component::visualmodel
 {
-protected:
-    ///Name of element (corresponding with the shader)
-    Data<std::string> id;
-    ///Name of element (corresponding with the shader)
-    Data<unsigned int> indexShader;
-    ///Shader to use the element with
-    std::set<OglShader*> shaders;
-public:
-    OglShaderElement();
-    ~OglShaderElement() override {}
-    void init() override;
-    const std::string getId() const {return id.getValue();}
-    void setID( std::string str ) { *(id.beginEdit()) = str; id.endEdit();}
-    void setIndexShader( unsigned int index) { *(indexShader.beginEdit()) = index; indexShader.endEdit();}
+    using OglShader = sofa::gl::component::rendering::OglShader;
 
-    // Returns the ID of the shader element
-    const std::string& getSEID() const override { return id.getValue(); }
+} // namespace sofa::component::visualmodel
 
-    //virtual void setInShader(OglShader& s) = 0;
-};
-
-}//namespace visualmodel
-
-} //namespace component
-
-} //namespace sofa
-
-#endif //SOFA_COMPONENT_OGLSHADER
+#endif // SOFAGL_COMPONENT_OGLSHADER

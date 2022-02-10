@@ -19,97 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ORDERINDEPENDENTTRANSPARENCYMANAGER_H
-#define SOFA_COMPONENT_ORDERINDEPENDENTTRANSPARENCYMANAGER_H
+#pragma once
 
-#include "config.h"
+#include <sofa/config.h>
 
-#include <sofa/core/visual/VisualManager.h>
-#include <sofa/gl/GLSLShader.h>
-#include <SofaOpenglVisual/OglOITShader.h>
+#if __has_include(<sofa/gl/component/rendering/OrderIndependentTransparencyManager.h>)
+#include <sofa/gl/component/rendering/OrderIndependentTransparencyManager.h>
+#define SOFAGL_COMPONENT_ORDERINDEPENDENTTRANSPARENCYMANAGER
 
-namespace sofa
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering/OrderIndependentTransparencyManager.h")
+
+#else
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/OrderIndependentTransparencyManager.h> instead of this one."
+#endif
+
+#ifdef SOFAGL_COMPONENT_ORDERINDEPENDENTTRANSPARENCYMANAGER
+
+namespace sofa::component::visualmodel
 {
+    using OrderIndependentTransparencyManager = sofa::gl::component::rendering::OrderIndependentTransparencyManager;
 
-namespace component
-{
+} // namespace sofa::component::visualmodel
 
-namespace visualmodel
-{
-
-/**
- *  \brief Utility to manage transparency (translucency) into an Opengl scene
- *  \note Reference: http://jcgt.org/published/0002/02/09/paper.pdf
- */
-
-class SOFA_OPENGL_VISUAL_API OrderIndependentTransparencyManager : public core::visual::VisualManager
-{
-    class FrameBufferObject
-    {
-    public:
-        FrameBufferObject();
-
-        void init(int w, int h);
-        void destroy();
-
-        void copyDepth(GLuint fromFBO);
-
-        void bind();
-
-        void bindTextures();
-        void releaseTextures();
-
-    private:
-        GLuint id;
-
-        int width;
-        int height;
-
-        GLuint depthRenderbuffer;
-        GLuint accumulationTexture;
-        GLuint revealageTexture;
-
-    };
-
-public:
-    SOFA_CLASS(OrderIndependentTransparencyManager, core::visual::VisualManager);
-
-public:
-    Data<float> depthScale; ///< Depth scale
-
-protected:
-    OrderIndependentTransparencyManager();
-    ~OrderIndependentTransparencyManager() override;
-
-public:
-    void init() override;
-    void bwdInit() override;
-    void reinit() override;
-    void initVisual() override;
-
-    void preDrawScene(core::visual::VisualParams* vp) override;
-    bool drawScene(core::visual::VisualParams* vp) override;
-    void postDrawScene(core::visual::VisualParams* vp) override;
-
-    void draw(const core::visual::VisualParams* vparams) override;
-    void fwdDraw(core::visual::VisualParams*) override;
-    void bwdDraw(core::visual::VisualParams*) override;
-
-protected:
-    void drawOpaques(core::visual::VisualParams* vp);
-    void drawTransparents(core::visual::VisualParams* vp, sofa::gl::GLSLShader* oitShader);
-
-private:
-    FrameBufferObject            fbo;
-    sofa::gl::GLSLShader accumulationShader;
-    sofa::gl::GLSLShader compositionShader;
-
-};
-
-}// namespace visualmodel
-
-}// namespace component
-
-}// namespace sofa
-
-#endif //SOFA_COMPONENT_ORDERINDEPENDENTTRANSPARENCYMANAGER_H
+#endif // SOFAGL_COMPONENT_ORDERINDEPENDENTTRANSPARENCYMANAGER

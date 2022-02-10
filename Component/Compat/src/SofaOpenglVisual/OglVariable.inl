@@ -19,58 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_INL
-#define SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_INL
+#pragma once
 
-#include <SofaOpenglVisual/OglVariable.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/config.h>
+#include "OglVariable.h" // just forward to the compat header
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
-{
-
-//
-//template<class DataTypes>
-//OglVariable<DataTypes>::OglVariable()
-//: value(initData(&value, DataTypes(), "value", "Set Uniform Value"))
-//{
-//    addAlias(&value, "values"); // some variable types hold multiple values, so we authorize both names for this attribute
-//}
-//
-//template<class DataTypes>
-//OglVariable<DataTypes>::~OglVariable()
-//{
-//}
-//
-//template<class DataTypes>
-//void OglVariable<DataTypes>::init()
-//{
-//    OglShaderElement::init();
-//}
-//
-//template<class DataTypes>
-//void OglVariable<DataTypes>::initVisual()
-//{
-//    core::visual::VisualModel::initVisual();
-//}
-//
-//template<class DataTypes>
-//void OglVariable<DataTypes>::reinit()
-//{
-//    init();
-//    initVisual();
-//}
-
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_H
+SOFA_DEPRECATED_HEADER_NOT_REPLACED("v22.06", "v23.06")

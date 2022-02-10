@@ -19,63 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_POSTPROCESSMANAGER_H_
-#define SOFA_COMPONENT_POSTPROCESSMANAGER_H_
-#include "config.h"
+#pragma once
 
-#include <sofa/core/visual/VisualManager.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/gl/FrameBufferObject.h>
-#include <SofaOpenglVisual/OglShader.h>
-#include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/config.h>
 
-namespace sofa
+#if __has_include(<sofa/gl/component/rendering/PostProcessManager.h>)
+#include <sofa/gl/component/rendering/PostProcessManager.h>
+#define SOFAGL_COMPONENT_POSTPROCESSMANAGER
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering/PostProcessManager.h")
+
+#else
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/PostProcessManager.h> instead of this one."
+#endif
+
+#ifdef SOFAGL_COMPONENT_POSTPROCESSMANAGER
+
+namespace sofa::component::visualmodel
 {
+    using PostProcessManager = sofa::gl::component::rendering::PostProcessManager;
 
-namespace component
-{
+} // namespace sofa::component::visualmodel
 
-namespace visualmodel
-{
-
-class SOFA_OPENGL_VISUAL_API PostProcessManager : public core::visual::VisualManager
-{
-public:
-    SOFA_CLASS(PostProcessManager,core::visual::VisualModel);
-
-private:
-    static const std::string DEPTH_OF_FIELD_VERTEX_SHADER;
-    static const std::string DEPTH_OF_FIELD_FRAGMENT_SHADER;
-    Data<double> zNear; ///< Set zNear distance (for Depth Buffer)
-    Data<double> zFar; ///< Set zFar distance (for Depth Buffer)
-    std::unique_ptr<sofa::gl::FrameBufferObject> fbo;
-    OglShader* dofShader;
-    bool postProcessEnabled;
-
-public:
-    ///Files where vertex shader is defined
-    sofa::core::objectmodel::DataFileName vertFilename;
-    ///Files where fragment shader is defined
-    sofa::core::objectmodel::DataFileName fragFilename;
-protected:
-    PostProcessManager();
-    ~PostProcessManager() override;
-public:
-    void init() override;
-    void reinit() override { };
-    void initVisual() override;
-
-    void preDrawScene(core::visual::VisualParams* vp) override;
-    bool drawScene(core::visual::VisualParams* vp) override;
-    void postDrawScene(core::visual::VisualParams* vp) override;
-
-    void handleEvent(sofa::core::objectmodel::Event* event) override;
-};
-
-} //visualmodel
-
-} //component
-
-} //sofa
-
-#endif /* SOFA_COMPONENT_POSTPROCESSMANAGER_H_ */
+#endif // SOFAGL_COMPONENT_POSTPROCESSMANAGER

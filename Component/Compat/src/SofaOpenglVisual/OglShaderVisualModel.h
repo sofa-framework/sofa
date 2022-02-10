@@ -19,71 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef OGLSHADERVISUALMODEL_H_
-#define OGLSHADERVISUALMODEL_H_
-#include "config.h"
+#pragma once
 
-#include <SofaOpenglVisual/OglModel.h>
-#include <SofaOpenglVisual/OglShader.h>
-#include <SofaOpenglVisual/OglAttribute.h>
-#include <SofaOpenglVisual/OglVariable.h>
+#include <sofa/config.h>
 
-namespace sofa
+#if __has_include(<sofa/gl/component/rendering/OglShaderVisualModel.h>)
+#include <sofa/gl/component/rendering/OglShaderVisualModel.h>
+#define SOFAGL_COMPONENT_OGLSHADERVISUALMODEL
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering/OglShaderVisualModel.h")
+
+#else
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/OglShaderVisualModel.h> instead of this one."
+#endif
+
+#ifdef SOFAGL_COMPONENT_OGLSHADERVISUALMODEL
+
+namespace sofa::component::visualmodel
 {
+    using OglShaderVisualModel = sofa::gl::component::rendering::OglShaderVisualModel;
 
-namespace component
-{
+} // namespace sofa::component::visualmodel
 
-namespace visualmodel
-{
-
-
-class SOFA_OPENGL_VISUAL_API OglShaderVisualModel : public OglModel
-{
-public:
-    using Inherit = OglModel;
-    SOFA_CLASS(OglShaderVisualModel, Inherit);
-
-protected:
-    GLuint abo;
-    OglShader* shader;
-    int restPosition_lastUpdate;
-public:
-    // These attributes are public due to dynamic topologies updates.
-    OglFloat3Attribute* vrestpositions;
-    OglFloat3Attribute* vrestnormals;
-
-    OglMatrix4Variable* modelMatrixUniform;
-protected:
-    OglShaderVisualModel();
-    ~OglShaderVisualModel() override;
-public:
-    void init() override;
-    void initVisual() override;
-
-    void updateVisual() override;
-
-    //void putRestPositions(const Vec3fTypes::VecCoord& positions);
-
-    void bwdDraw(core::visual::VisualParams*) override;
-    void fwdDraw(core::visual::VisualParams*) override;
-
-    // handle topological changes
-    void handleTopologyChange() override;
-    void computeRestPositions();
-    void computeRestNormals();
-
-private:
-    void pushTransformMatrix(float* matrix) override;
-    void popTransformMatrix() override;
-
-
-};
-
-} //namespace visualmodel
-
-} //namespace component
-
-} //namespace sofa
-
-#endif /* OGLSHADERVISUALMODEL_H_ */
+#endif // SOFAGL_COMPONENT_OGLSHADERVISUALMODEL

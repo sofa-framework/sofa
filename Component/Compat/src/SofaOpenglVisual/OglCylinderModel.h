@@ -19,86 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_POINTSPLATMODEL_H
-#define SOFA_COMPONENT_VISUALMODEL_POINTSPLATMODEL_H
-#include "config.h"
+#pragma once
 
-#include <sofa/core/visual/VisualModel.h>
-#include <SofaBaseVisual/VisualModelImpl.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/topology/TopologyData.h>
-#include <sofa/core/topology/Topology.h>
-#include <sofa/type/RGBAColor.h>
+#include <sofa/config.h>
 
-namespace sofa
-{
-namespace core
-{
-namespace topology
-{
-class BaseMeshTopology;
-}
-namespace behavior
-{
-class BaseMechanicalState;
-}
-}
+#if __has_include(<sofa/gl/component/model/OglCylinderModel.h>)
+#include <sofa/gl/component/model/OglCylinderModel.h>
+#define SOFAGL_COMPONENT_OGLCYLINDERMODEL
 
-namespace component
-{
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/model/OglCylinderModel.h")
 
-namespace visualmodel
-{
-
-
-// I have no idea what is Ogl in this component ?...
-class SOFA_OPENGL_VISUAL_API OglCylinderModel : public core::visual::VisualModel, public Vec3State
-{
-public:
-    SOFA_CLASS2(OglCylinderModel,core::visual::VisualModel,Vec3State);
-
-    using Index = sofa::Index;
-protected:
-    OglCylinderModel();
-    ~OglCylinderModel() override;
-public:
-    void init() override;
-
-    void reinit() override;
-
-    void drawVisual(const core::visual::VisualParams* vparams) override;
-
-    void exportOBJ(std::string /*name*/, std::ostream* /*out*/, std::ostream* /*mtl*/, Index& /*vindex*/, Index& /*nindex*/, Index& /*tindex*/, int& /*count*/) override;
-
-private:
-    void setColor(float r, float g, float b, float a);
-    void setColor(std::string color);
-
-private:
-    Data<float>		radius; ///< Radius of the cylinder.
-    // Data<float>		alpha;
-    Data<sofa::type::RGBAColor>	color; ///< Color of the cylinders.
-
-    typedef sofa::type::vector<core::topology::Edge>  SeqEdges;
-    Data<SeqEdges> d_edges; ///< List of edge indices
-
-
-    float r,g,b,a;
-    // sofa::core::topology::PointData<sofa::type::vector<unsigned char> >		pointData;
-
-    typedef Vec3State::Coord Coord;
-    typedef Vec3State::VecCoord VecCoord;
-    typedef Vec3State::Real Real;
-
-public:
-    bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
-    bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
-};
-
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
+#else
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/OglCylinderModel.h> instead of this one."
 #endif
+
+#ifdef SOFAGL_COMPONENT_OGLCYLINDERMODEL
+
+namespace sofa::component::visualmodel
+{
+    using OglCylinderModel = sofa::gl::component::model::OglCylinderModel;
+
+} // namespace sofa::component::visualmodel
+
+#endif // SOFAGL_COMPONENT_OGLCYLINDERMODEL

@@ -19,51 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CLIPPLANE_H
-#define SOFA_COMPONENT_CLIPPLANE_H
-#include "config.h"
+#pragma once
 
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/gl/template.h>
+#include <sofa/config.h>
 
-namespace sofa
-{
+#if __has_include(<sofa/gl/component/rendering/ClipPlane.h>)
+#include <sofa/gl/component/rendering/ClipPlane.h>
+#define SOFAGL_COMPONENT_CLIPPLANE
 
-namespace component
-{
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering/ClipPlane.h")
 
-namespace visualmodel
-{
-
-class SOFA_OPENGL_VISUAL_API ClipPlane : public core::visual::VisualModel
-{
-public:
-    SOFA_CLASS(ClipPlane, core::visual::VisualModel);
-
-    Data<sofa::type::Vector3> position; ///< Point crossed by the clipping plane
-    Data<sofa::type::Vector3> normal; ///< Normal of the clipping plane, pointing toward the clipped region
-    Data<int> id; ///< Clipping plane OpenGL ID
-    Data<bool> active; ///< Control whether the clipping plane should be applied or not
-
-    virtual sofa::core::objectmodel::ComponentState checkDataValues();
-    void init() override;
-    void reinit() override;
-    void fwdDraw(core::visual::VisualParams*) override;
-    void bwdDraw(core::visual::VisualParams*) override;
-
-protected:
-    ClipPlane();
-    ~ClipPlane() override;
-
-    GLboolean wasActive;
-    double saveEq[4];
-};
-
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
+#else
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/ClipPlane.h> instead of this one."
 #endif
+
+#ifdef SOFAGL_COMPONENT_CLIPPLANE
+
+namespace sofa::component::visualmodel
+{
+    using ClipPlane = sofa::gl::component::rendering::ClipPlane;
+
+} // namespace sofa::component::visualmodel
+
+#endif // SOFAGL_COMPONENT_CLIPPLANE

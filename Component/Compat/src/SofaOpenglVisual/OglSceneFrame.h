@@ -19,54 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_OGLSCENEFRAME_H
-#define SOFA_OGLSCENEFRAME_H
-#include "config.h"
+#pragma once
 
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/gl/glu.h>
-#include <sofa/helper/OptionsGroup.h>
+#include <sofa/config.h>
 
-namespace sofa
+#if __has_include(<sofa/gl/component/model/OglSceneFrame.h>)
+#include <sofa/gl/component/model/OglSceneFrame.h>
+#define SOFAGL_COMPONENT_OGLSCENEFRAME
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/model/OglSceneFrame.h")
+
+#else
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/OglSceneFrame.h> instead of this one."
+#endif
+
+#ifdef SOFAGL_COMPONENT_OGLSCENEFRAME
+
+namespace sofa::component::visualmodel
 {
+    using OglSceneFrame = sofa::gl::component::model::OglSceneFrame;
 
-namespace component
-{
+} // namespace sofa::component::visualmodel
 
-namespace visualmodel
-{
-
-class OglSceneFrame : public core::visual::VisualModel
-{
-
-public:
-    SOFA_CLASS(OglSceneFrame, VisualModel);
-
-    typedef core::visual::VisualParams::Viewport Viewport;
-
-    Data<bool> drawFrame; ///< Display the frame or not
-    Data<sofa::helper::OptionsGroup> style; ///< Style of the frame
-    Data<sofa::helper::OptionsGroup> alignment; ///< Alignment of the frame in the view
-
-    OglSceneFrame();
-
-    void init() override;
-    void reinit() override;
-    void draw(const core::visual::VisualParams*) override;
-    void updateVisual() override;
-
-
-protected:
-
-    GLUquadricObj *quadratic;
-
-};
-
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_OGLSCENEFRAME_H
+#endif // SOFAGL_COMPONENT_OGLSCENEFRAME

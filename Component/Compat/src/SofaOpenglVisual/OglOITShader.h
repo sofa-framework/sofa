@@ -19,42 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_OGLOITSHADER
-#define SOFA_COMPONENT_OGLOITSHADER
-#include "config.h"
+#pragma once
 
-#include <SofaOpenglVisual/OglShader.h>
+#include <sofa/config.h>
 
-namespace sofa
+#if __has_include(<sofa/gl/component/rendering/OglOITShader.h>)
+#include <sofa/gl/component/rendering/OglOITShader.h>
+#define SOFAGL_COMPONENT_OGLOITSHADER
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering/OglOITShader.h")
+
+#else
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/OglOITShader.h> instead of this one."
+#endif
+
+#ifdef SOFAGL_COMPONENT_OGLOITSHADER
+
+namespace sofa::component::visualmodel
 {
+    using OglOITShader = sofa::gl::component::rendering::OglOITShader;
 
-namespace component
-{
+} // namespace sofa::component::visualmodel
 
-namespace visualmodel
-{
-
-class SOFA_OPENGL_VISUAL_API OglOITShader : public sofa::component::visualmodel::OglShader
-{
-public:
-    SOFA_CLASS(OglOITShader, sofa::component::visualmodel::OglShader);
-protected:
-    OglOITShader();
-    ~OglOITShader() override;
-
-public:
-    sofa::gl::GLSLShader* accumulationShader();
-
-public:
-    static const std::string PATH_TO_OIT_ACCUMULATION_VERTEX_SHADERS;
-    static const std::string PATH_TO_OIT_ACCUMULATION_FRAGMENT_SHADERS;
-
-};
-
-}//namespace visualmodel
-
-} //namespace component
-
-} //namespace sofa
-
-#endif //SOFA_COMPONENT_OGLOITSHADER
+#endif // SOFAGL_COMPONENT_OGLOITSHADER

@@ -19,149 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_OGLMODEL_H
-#define SOFA_COMPONENT_VISUALMODEL_OGLMODEL_H
-#include "config.h"
+#pragma once
 
-#include <vector>
-#include <string>
-#include <sofa/gl/template.h>
-#include <sofa/gl/Texture.h>
-#include <sofa/helper/OptionsGroup.h>
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/type/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseVisual/VisualModelImpl.h>
+#include <sofa/config.h>
 
-#define   NB_MAX_TEXTURES 16
+#if __has_include(<sofa/gl/component/model/OglModel.h>)
+#include <sofa/gl/component/model/OglModel.h>
+#define SOFAGL_COMPONENT_OGLMODEL
 
-namespace sofa
-{
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/model/OglModel.h")
 
-namespace component
-{
-
-namespace visualmodel
-{
-
-/**
- *  \brief Main class for rendering 3D model in SOFA.
- *
- *  This class implements VisuelModelImpl with rendering functions
- *  using OpenGL.
- *
- */
-
-class SOFA_OPENGL_VISUAL_API OglModel : public VisualModelImpl
-{
-public:
-    using Inherit = VisualModelImpl;
-
-    SOFA_CLASS(OglModel, Inherit);
-
-
-    Data<bool> blendTransparency; ///< Blend transparent parts
-protected:
-    Data<bool> premultipliedAlpha; ///< is alpha premultiplied ?
-    Data<bool> writeZTransparent; ///< Write into Z Buffer for Transparent Object
-    Data<bool> alphaBlend; ///< Enable alpha blending
-    Data<bool> depthTest; ///< Enable depth testing
-    Data<int> cullFace; ///< Face culling (0 = no culling, 1 = cull back faces, 2 = cull front faces)
-    Data<GLfloat> lineWidth; ///< Line width (set if != 1, only for lines rendering)
-    Data<GLfloat> pointSize; ///< Point size (set if != 1, only for points rendering)
-    Data<bool> lineSmooth; ///< Enable smooth line rendering
-    Data<bool> pointSmooth; ///< Enable smooth point rendering
-    /// Suppress field for save as function
-    Data < bool > isEnabled;
-
-    // primitive types
-    Data<sofa::helper::OptionsGroup> primitiveType; ///< Select types of primitives to send (necessary for some shader types such as geometry or tesselation)
-
-    //alpha blend function
-    Data<sofa::helper::OptionsGroup> blendEquation; ///< if alpha blending is enabled this specifies how source and destination colors are combined
-    Data<sofa::helper::OptionsGroup> sourceFactor; ///< if alpha blending is enabled this specifies how the red, green, blue, and alpha source blending factors are computed
-    Data<sofa::helper::OptionsGroup> destFactor; ///< if alpha blending is enabled this specifies how the red, green, blue, and alpha destination blending factors are computed
-    GLenum blendEq, sfactor, dfactor;
-
-    sofa::gl::Texture *tex; //this texture is used only if a texture name is specified in the scn
-    GLuint vbo, iboEdges, iboTriangles, iboQuads;
-    bool VBOGenDone, initDone, useEdges, useTriangles, useQuads, canUsePatches;
-    size_t oldVerticesSize, oldNormalsSize, oldTexCoordsSize, oldTangentsSize, oldBitangentsSize, oldEdgesSize, oldTrianglesSize, oldQuadsSize;
-
-    /// These two buffers are used to convert the data field to float type before being sent to
-    /// opengl
-    std::vector<sofa::type::Vec3f> verticesTmpBuffer;
-    std::vector<sofa::type::Vec3f> normalsTmpBuffer;
-
-    void internalDraw(const core::visual::VisualParams* vparams, bool transparent) override;
-
-    void drawGroup(int ig, bool transparent);
-    void drawGroups(bool transparent);
-
-    virtual void pushTransformMatrix(float* matrix) { glPushMatrix(); glMultMatrixf(matrix); }
-    virtual void popTransformMatrix() { glPopMatrix(); }
-
-    std::vector<sofa::gl::Texture*> textures;
-
-    std::map<int, int> materialTextureIdMap; //link between a material and a texture
-
-    GLenum getGLenum(const char* c ) const;
-
-
-    OglModel();
-
-    ~OglModel() override;
-public:
-
-    bool loadTexture(const std::string& filename) override;
-    bool loadTextures() override;
-
-    void initTextures();
-    void initVisual() override;
-
-    void init() override { VisualModelImpl::init(); }
-    void parse(core::objectmodel::BaseObjectDescription* arg) override;
-
-    void updateBuffers() override;
-
-    void deleteBuffers() override;
-    void deleteTextures() override;
-
-    bool hasTransparent() override;
-    bool hasTexture();
-
-public:
-    bool isUseEdges()	{ return useEdges; }
-    bool isUseTriangles()	{ return useTriangles; }
-    bool isUseQuads()	{ return useQuads; }
-
-    sofa::gl::Texture* getTex() const	{ return tex; }
-    GLuint getVbo()	{ return vbo;	}
-    GLuint getIboEdges() { return iboEdges; }
-    GLuint getIboTriangles() { return iboTriangles; }
-    GLuint getIboQuads()    { return iboQuads; }
-    const std::vector<sofa::gl::Texture*>& getTextures() const { return textures;	}
-
-    void createVertexBuffer();
-    void createEdgesIndicesBuffer();
-    void createTrianglesIndicesBuffer();
-    void createQuadsIndicesBuffer();
-    void initVertexBuffer();
-    void initEdgesIndicesBuffer();
-    void initTrianglesIndicesBuffer();
-    void initQuadsIndicesBuffer();
-    void updateVertexBuffer();
-    void updateEdgesIndicesBuffer();
-    void updateTrianglesIndicesBuffer();
-    void updateQuadsIndicesBuffer();
-};
-
-typedef sofa::type::Vec<3,GLfloat> GLVec3f;
-
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
+#else
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/OglModel.h> instead of this one."
 #endif
+
+#ifdef SOFAGL_COMPONENT_OGLMODEL
+
+namespace sofa::component::visualmodel
+{
+    using OglModel = sofa::gl::component::model::OglModel;
+
+} // namespace sofa::component::visualmodel
+
+#endif // SOFAGL_COMPONENT_OGLMODEL
