@@ -229,4 +229,52 @@ TEST(GeometryEdge_test, pointBaryCoefs3f)
     EXPECT_FLOAT_EQ(res6[1], 0.5f);
 }
 
+
+TEST(GeometryEdge_test, intersectionWithPlane3f)
+{
+    const sofa::type::Vec3f a1{ 0.f, 0.f, 0.f };
+    const sofa::type::Vec3f b1{ 2.f, 2.f, 2.f };
+
+    const sofa::type::Vec3f planP{ 0.f, 1.f, 0.f };
+    const sofa::type::Vec3f planN1{ 0.f, 1.f, 0.f };
+    sofa::type::Vec3f inter{ 0.f, 0.f, 0.f };
+
+    // basic cases
+    bool res = sofa::geometry::Edge::intersectionWithPlane(a1, b1, planP, planN1, inter);
+    EXPECT_EQ(res, true);
+    EXPECT_FLOAT_EQ(inter[0], 1.0f);
+    EXPECT_FLOAT_EQ(inter[1], 1.0f);
+    EXPECT_FLOAT_EQ(inter[2], 1.0f);
+
+    const sofa::type::Vec3f planN2{ 1.f, 2.f, 1.f };
+    bool res2 = sofa::geometry::Edge::intersectionWithPlane(a1, b1, planP, planN2, inter);
+    EXPECT_EQ(res2, true);
+    EXPECT_FLOAT_EQ(inter[0], 0.5f);
+    EXPECT_FLOAT_EQ(inter[1], 0.5f);
+    EXPECT_FLOAT_EQ(inter[2], 0.5f);
+
+    // border case: plan - Edge intersection on Edge node
+    const sofa::type::Vec3f planN3{ 1.f, 0.f, 0.f };
+    bool res3 = sofa::geometry::Edge::intersectionWithPlane(a1, b1, planP, planN3, inter);
+    EXPECT_EQ(res3, true);
+    EXPECT_FLOAT_EQ(inter[0], 0.0f);
+    EXPECT_FLOAT_EQ(inter[1], 0.0f);
+    EXPECT_FLOAT_EQ(inter[2], 0.0f);
+
+    // negative case: plan - Edge has no intersection
+    const sofa::type::Vec3f planN4{ -1.f, 2.f, -1.f };
+    bool res4 = sofa::geometry::Edge::intersectionWithPlane(a1, b1, planP, planN4, inter);
+    EXPECT_EQ(res4, false);
+    EXPECT_FLOAT_EQ(inter[0], 0.0f);
+    EXPECT_FLOAT_EQ(inter[1], 0.0f);
+    EXPECT_FLOAT_EQ(inter[2], 0.0f);
+
+    // failing case: Edge length == 0
+    bool res5 = sofa::geometry::Edge::intersectionWithPlane(a1, a1, planP, planN1, inter);
+    EXPECT_EQ(res5, false);
+    EXPECT_FLOAT_EQ(inter[0], 0.0f);
+    EXPECT_FLOAT_EQ(inter[1], 0.0f);
+    EXPECT_FLOAT_EQ(inter[2], 0.0f);
+}
+
 }// namespace sofa

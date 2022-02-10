@@ -137,6 +137,9 @@ struct Edge
     [[nodiscard]]
     static constexpr bool intersectionWithPlane(const Node& n0, const Node& n1, const sofa::type::Vec<3, T>& planP0, const sofa::type::Vec<3, T>& normal, sofa::type::Vec<3, T>& intersection)
     {
+        constexpr Node n{}; 
+        static_assert(std::distance(std::begin(n), std::end(n)) == 3, "Plan - Edge intersection can only be computed in 3 dimensions.");
+
         //plane equation
         const sofa::type::Vec<3, T> planNorm = normal.normalized();
         const T d = planNorm * planP0;
@@ -151,7 +154,7 @@ struct Edge
         const T t = (d - planNorm * n0) / denominator;
         if ((t <= 1) && (t >= 0))
         {
-            intersection = edgeP1 + (edgeP2 - edgeP1) * t;
+            intersection = n0 + (n1 - n0) * t;
             return true;
         }
         return false;
