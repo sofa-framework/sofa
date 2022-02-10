@@ -20,36 +20,20 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/component/sceneutility/MakeAliasComponent.h>
 
-#include <SofaGraphComponent/config.h>
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/sceneutility/MakeAliasComponent.h")
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/type/Vec.h>
-
-namespace sofa::component::misc
+namespace sofa::component::makealiascomponent
 {
 
-/**
- * Abstract class defining how to pause the animation.
- */
-class PauseAnimation: public core::objectmodel::BaseObject
+    using MakeAliasComponent = sofa::component::sceneutility::MakeAliasComponent;
+
+} // namespace sofa::component::makealiascomponent
+
+namespace sofa::component
 {
-public:
-    SOFA_ABSTRACT_CLASS(PauseAnimation, core::objectmodel::BaseObject);
 
-protected:
-    PauseAnimation ();
-    ~PauseAnimation () override;
-public:
-    void init() override;
+    using MakeAliasComponent = sofa::component::sceneutility::MakeAliasComponent;
 
-    virtual bool isPaused() = 0;
-
-    virtual void pause();
-
-protected:
-    sofa::core::objectmodel::BaseNode* root;
-};
-
-} // namespace sofa::component::misc
+} // namespace sofa::component

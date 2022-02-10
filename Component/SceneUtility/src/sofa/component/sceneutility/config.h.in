@@ -20,62 +20,18 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseUtils/config.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/helper/system/FileRepository.h>
-using sofa::helper::system::FileRepository;
-using sofa::core::objectmodel::DataFileName;
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-namespace sofa::component::misc
+#ifdef SOFA_BUILD_SOFA_COMPONENT_SCENEUTILITY
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_COMPONENT_SCENEUTILITY_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_COMPONENT_SCENEUTILITY_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+namespace sofa::component::sceneutility
 {
-
-class SOFA_SOFABASEUTILS_API BaseAddResourceRepository: public sofa::core::objectmodel::BaseObject
-{
-public:
-    SOFA_ABSTRACT_CLASS(BaseAddResourceRepository, sofa::core::objectmodel::BaseObject);
-
-protected:
-    BaseAddResourceRepository();
-    ~BaseAddResourceRepository() override;
-
-    FileRepository* m_repository;
-
-public:
-    DataFileName d_repositoryPath; ///< Path to add to the pool of resources
-
-    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
-    bool updateRepositoryPath();
-    void cleanup() override;
-
-private:
-    std::string m_currentAddedPath;
-
-    virtual FileRepository* getFileRepository() = 0;
-};
-
-
-/// Add a new path to DataRepository
-class SOFA_SOFABASEUTILS_API AddDataRepository: public BaseAddResourceRepository
-{
-public:
-    SOFA_CLASS(AddDataRepository, BaseAddResourceRepository);
-
-protected:
-    FileRepository* getFileRepository() override { return &sofa::helper::system::DataRepository; }
-};
-
-
-/// Add a new path to PluginRepository
-class SOFA_SOFABASEUTILS_API AddPluginRepository: public BaseAddResourceRepository
-{
-public:
-    SOFA_CLASS(AddPluginRepository, BaseAddResourceRepository);
-
-protected:
-    FileRepository* getFileRepository() override { return &sofa::helper::system::PluginRepository; }
-};
-
-
-} // namespace sofa::component::misc
+	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+} // namespace sofa::component::sceneutility

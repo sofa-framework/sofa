@@ -20,37 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/component/sceneutility/config.h>
 
-#include <SofaGraphComponent/config.h>
-
-#include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
-
-
-namespace sofa::component::_apiversion_
+namespace sofa::component::sceneutility
 {
-
-class SOFA_SOFAGRAPHCOMPONENT_API APIVersion : public BaseObject
-{
-
-public:
-    SOFA_CLASS(APIVersion, BaseObject);
-
-    const std::string& getApiLevel() ;
-    void init() override ;
-
-protected:
-    APIVersion() ;
-    ~APIVersion() override ;
-    void checkInputData() ;
-private:
-    Data<std::string>  d_level ; ///< The API Level of the scene ('17.06', '17.12', '18.06', ...)
-};
-
-} // namespace sofa::component::_apiversion_
-
-namespace sofa::component
-{
-using _apiversion_::APIVersion ;
-
-} // namespace sofa::component
+    SOFA_COMPONENT_SCENEUTILITY_API void init();
+} // namespace sofa::component::sceneutility

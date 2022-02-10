@@ -21,53 +21,36 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaBaseUtils/config.h>
+#include <sofa/component/sceneutility/config.h>
 
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/objectmodel/Data.h>
+using sofa::core::objectmodel::BaseObject ;
 
-#include <string>
 
-namespace sofa::component::makealiascomponent
+namespace sofa::component::sceneutility::_apiversion_
 {
 
-/// I use a per-file namespace so that I can employ the 'using' keywords without
-/// fearing it will leack names into the global namespace. When closing this namespace
-/// selected object from this per-file namespace are then imported into their parent namespace.
-/// for ease of use
-/// 
-/// A component to add alias to other components.
-class SOFA_SOFABASEUTILS_API MakeAliasComponent : public core::objectmodel::BaseObject
+class SOFA_COMPONENT_SCENEUTILITY_API APIVersion : public BaseObject
 {
+
 public:
-    SOFA_CLASS(MakeAliasComponent, core::objectmodel::BaseObject);
+    SOFA_CLASS(APIVersion, BaseObject);
 
-    MakeAliasComponent() ;
-    ~MakeAliasComponent() override{}
+    const std::string& getApiLevel() ;
+    void init() override ;
 
-    /// Inherited from BaseObject.
-    /// Parse the given description to assign values to this object's fields and
-    /// potentially other parameters.
-    void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
-
-    Data<std::string>   d_targetcomponent       ; ///< The component class for which to create an alias.
-    Data<std::string>   d_alias                 ; ///< The new alias of the component.
-
-    /// Returns the sofa class name. By default the name of the c++ class is exposed... but
-    /// Here we want it to be MakeAlias so we need to customize it.
-    /// More details on the name customization infrastructure is in NameDecoder.h
-    static std::string GetCustomClassName()
-    {
-        return "MakeAlias" ;
-    }
+protected:
+    APIVersion() ;
+    ~APIVersion() override ;
+    void checkInputData() ;
+private:
+    Data<std::string>  d_level ; ///< The API Level of the scene ('17.06', '17.12', '18.06', ...)
 };
 
-} // namespace sofa::component::makealiascomponent
+} // namespace namespace sofa::component::sceneutility
 
-namespace sofa::component
+namespace sofa::component::sceneutility
 {
-/// Import the component from the per-file namespace.
-using makealiascomponent::MakeAliasComponent ;
+using _apiversion_::APIVersion ;
 
-} // namespace sofa::component
+} // namespace sofa::component::sceneutility

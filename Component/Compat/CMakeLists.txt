@@ -7,6 +7,7 @@ include(Sofa.Component.ODESolver.Backward.cmake)
 include(Sofa.Component.ODESolver.Forward.cmake)
 include(Sofa.Component.IO.Mesh.cmake)
 include(Sofa.Component.Playback.cmake)
+include(Sofa.Component.SceneUtility.cmake)
 
 set(SOURCE_FILES
     ${SOFACOMPONENTCOMPATSRC_ROOT}/init.cpp

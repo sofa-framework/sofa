@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaBaseUtils/RequiredPlugin.h>
+#include <sofa/component/sceneutility/RequiredPlugin.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
@@ -30,7 +30,7 @@ using sofa::helper::system::FileSystem;
 
 using sofa::helper::system::PluginManager;
 
-namespace sofa::component::misc
+namespace sofa::component::sceneutility
 {
 
 int RequiredPluginClass = core::RegisterObject("Load the required plugins")
@@ -150,4 +150,4 @@ bool RequiredPlugin::loadPlugin()
     return !hasFailed;
 }
 
-} // namespace sofa::component::misc
+} // namespace sofa::component::sceneutility

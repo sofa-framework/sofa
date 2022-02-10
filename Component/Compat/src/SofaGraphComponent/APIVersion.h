@@ -19,48 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGraphComponent/PauseAnimationOnEvent.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/PauseEvent.h>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
+#include <sofa/component/sceneutility/APIVersion.h>
 
-namespace sofa::component::misc
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/sceneutility/APIVersion.h")
+
+namespace sofa::component::_apiversion_
 {
 
-PauseAnimationOnEvent::PauseAnimationOnEvent() : paused(false)
+    using APIVersion = sofa::component::sceneutility::APIVersion;
+
+} // namespace sofa::component::_apiversion_
+
+namespace sofa::component
 {
-}
 
+    using APIVersion = sofa::component::sceneutility::APIVersion;
 
-PauseAnimationOnEvent::~PauseAnimationOnEvent()
-{
-
-}
-
-void PauseAnimationOnEvent::init()
-{
-    PauseAnimation::init();
-    this->f_listening.setValue(true);
-}
-
-bool PauseAnimationOnEvent::isPaused()
-{
-    return paused;
-}
-
-void PauseAnimationOnEvent::handleEvent(sofa::core::objectmodel::Event* event)
-{
-    if (sofa::simulation::PauseEvent::checkEventType(event))
-    {
-        paused = true;
-        pause();
-    }
-}
-
-int PauseAnimationOnEventClass = core::RegisterObject("PauseAnimationOnEvent")
-        .add< PauseAnimationOnEvent >();
-
-
-
-
-} // namespace sofa::component::misc
+} // namespace sofa::component

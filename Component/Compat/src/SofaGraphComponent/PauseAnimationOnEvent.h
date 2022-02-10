@@ -20,40 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseUtils/config.h>
+#include <sofa/component/sceneutility/PauseAnimationOnEvent.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/objectmodel/Data.h>
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/sceneutility/PauseAnimationOnEvent.h")
 
 namespace sofa::component::misc
 {
 
-class SOFA_SOFABASEUTILS_API RequiredPlugin : public core::objectmodel::BaseObject
-{
-public:
-    SOFA_CLASS(RequiredPlugin,core::objectmodel::BaseObject);
-    sofa::core::objectmodel::Data<type::vector<std::string> > d_pluginName; ///< plugin name (or several names if you need to load different plugins or a plugin with several alternate names)
-    sofa::core::objectmodel::Data<type::vector<type::fixed_array<std::string,2> > > d_suffixMap; ///< standard->custom suffixes pairs (to be used if the plugin is compiled outside of Sofa with a non standard way of differenciating versions), using ! to represent empty suffix
-
-    sofa::core::objectmodel::Data<bool> d_stopAfterFirstNameFound; ///< Stop after the first plugin name that is loaded successfully
-    sofa::core::objectmodel::Data<bool> d_stopAfterFirstSuffixFound; ///< For each plugin name, stop after the first suffix that is loaded successfully
-    sofa::core::objectmodel::Data<bool> d_requireOne; ///< Display an error message if no plugin names were successfully loaded
-    sofa::core::objectmodel::Data<bool> d_requireAll; ///< Display an error message if any plugin names failed to be loaded
-
-    sofa::core::objectmodel::Data<type::vector<std::string> > d_loadedPlugins; ///< name of the loaded plugins
-
-protected:
-    RequiredPlugin();
-    ~RequiredPlugin() override = default;
-
-public:
-
-    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
-
-    /// load a list of plugins requested in Data
-    bool loadPlugin();
-
-};
+    using PauseAnimationOnEvent = sofa::component::sceneutility::PauseAnimationOnEvent;
 
 } // namespace sofa::component::misc

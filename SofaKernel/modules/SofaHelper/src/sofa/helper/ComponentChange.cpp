@@ -682,55 +682,67 @@ const std::map<std::string, ComponentChange, std::less<> > uncreatableComponents
 
 const std::map< std::string, CreatableMoved, std::less<> > movedComponents = 
 {
-   /***********************/
-   // MOVED SINCE v22.06
-   // SofaMiscSolver was deprecated in #2571
-   { "DampVelocitySolver", CreatableMoved("v22.06", "SofaMiscSolver", "Sofa.Component.ODESolver.Forward") },
-   { "NewmarkImplicitSolver", CreatableMoved("v22.06", "SofaMiscSolver", "Sofa.Component.ODESolver.Backward") },
 
-   // SofaExplicitOdeSolver was deprecated in #2571
-   { "EulerExplicitSolver", CreatableMoved("v22.06", "SofaExplicitOdeSolver", "Sofa.Component.ODESolver.Forward") },
+    /***********************/
+    // MOVED SINCE v22.06
+    // SofaMiscSolver was deprecated in #2571
+    { "DampVelocitySolver", CreatableMoved("v22.06", "SofaMiscSolver", "Sofa.Component.ODESolver.Forward") },
+    { "NewmarkImplicitSolver", CreatableMoved("v22.06", "SofaMiscSolver", "Sofa.Component.ODESolver.Backward") },
 
-   // SofaImplicitOdeSolver was deprecated in #2571
-   { "EulerImplicitSolver", CreatableMoved("v22.06", "SofaImplicitOdeSolver", "Sofa.Component.ODESolver.Backward") },
-   { "StaticSolver", CreatableMoved("v22.06", "SofaImplicitOdeSolver", "Sofa.Component.ODESolver.Backward") },
+    // SofaExplicitOdeSolver was deprecated in #2571
+    { "EulerExplicitSolver", CreatableMoved("v22.06", "SofaExplicitOdeSolver", "Sofa.Component.ODESolver.Forward") },
 
-   // SofaGeneralExplicitOdeSolver was deprecated in #2571
-   { "CentralDifferenceSolver", CreatableMoved("v22.06", "SofaGeneralExplicitOdeSolver", "Sofa.Component.ODESolver.Forward") },
-   { "RungeKutta2Solver", CreatableMoved("v22.06", "SofaGeneralExplicitOdeSolver", "Sofa.Component.ODESolver.Forward") },
-   { "RungeKutta4Solver", CreatableMoved("v22.06", "SofaGeneralExplicitOdeSolver", "Sofa.Component.ODESolver.Forward") },
+    // SofaImplicitOdeSolver was deprecated in #2571
+    { "EulerImplicitSolver", CreatableMoved("v22.06", "SofaImplicitOdeSolver", "Sofa.Component.ODESolver.Backward") },
+    { "StaticSolver", CreatableMoved("v22.06", "SofaImplicitOdeSolver", "Sofa.Component.ODESolver.Backward") },
 
-   // SofaGeneralImplicitOdeSolver was deprecated in #2571
-   { "VariationalSymplecticSolver", CreatableMoved("v22.06", "SofaGeneralImplicitOdeSolver", "Sofa.Component.ODESolver.Backward") },
+    // SofaGeneralExplicitOdeSolver was deprecated in #2571
+    { "CentralDifferenceSolver", CreatableMoved("v22.06", "SofaGeneralExplicitOdeSolver", "Sofa.Component.ODESolver.Forward") },
+    { "RungeKutta2Solver", CreatableMoved("v22.06", "SofaGeneralExplicitOdeSolver", "Sofa.Component.ODESolver.Forward") },
+    { "RungeKutta4Solver", CreatableMoved("v22.06", "SofaGeneralExplicitOdeSolver", "Sofa.Component.ODESolver.Forward") },
 
-   // SofaLoader was deprecated in #2582
-   { "MeshOBJLoader", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.Mesh") },
-   { "MeshVTKLoader", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.Mesh") },
+    // SofaGeneralImplicitOdeSolver was deprecated in #2571
+    { "VariationalSymplecticSolver", CreatableMoved("v22.06", "SofaGeneralImplicitOdeSolver", "Sofa.Component.ODESolver.Backward") },
 
-   // SofaGeneralLoader was deprecated in #2582
-   { "MeshGmshLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
-   { "GIDMeshLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
-   { "GridMeshCreator", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
-   { "MeshOffLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
-   { "MeshSTLLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
-   { "MeshTrianLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
-   { "MeshXspLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
-   { "OffSequenceLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
-   { "SphereLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
-   { "StringMeshCreator", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
-   { "VoxelGridLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
-   { "ReadState", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.Playback") },
-   { "ReadTopology", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.Playback") },
-   { "InputEventReader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.Playback") },
+    // SofaLoader was deprecated in #2582
+    { "MeshOBJLoader", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.Mesh") },
+    { "MeshVTKLoader", CreatableMoved("v22.06", "SofaLoader", "Sofa.Component.IO.Mesh") },
 
-   // SofaExporter was deprecated in #2582
-   { "BlenderExporter", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.IO.Mesh") },
-   { "MeshExporter", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.IO.Mesh") },
-   { "STLExporter", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.IO.Mesh") },
-   { "VisualModelOBJExporter", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.IO.Mesh") },
-   { "VTKExporter", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.IO.Mesh") },
-   { "WriteState", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.Playback") },
-   { "WriteTopology", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.Playback") },
+    // SofaGeneralLoader was deprecated in #2582
+    { "MeshGmshLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
+    { "GIDMeshLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
+    { "GridMeshCreator", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
+    { "MeshOffLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
+    { "MeshSTLLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
+    { "MeshTrianLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
+    { "MeshXspLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
+    { "OffSequenceLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
+    { "SphereLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
+    { "StringMeshCreator", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
+    { "VoxelGridLoader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.IO.Mesh") },
+    { "ReadState", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.Playback") },
+    { "ReadTopology", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.Playback") },
+    { "InputEventReader", CreatableMoved("v22.06", "SofaGeneralLoader", "Sofa.Component.Playback") },
+
+    // SofaExporter was deprecated in #2582
+    { "BlenderExporter", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.IO.Mesh") },
+    { "MeshExporter", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.IO.Mesh") },
+    { "STLExporter", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.IO.Mesh") },
+    { "VisualModelOBJExporter", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.IO.Mesh") },
+    { "VTKExporter", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.IO.Mesh") },
+    { "WriteState", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.Playback") },
+    { "WriteTopology", CreatableMoved("v22.06", "SofaExporter", "Sofa.Component.Playback") },
+
+    // SofaBaseUtils was deprecated in #2582 and ...
+    { "AddResourceRepository", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.SceneUtility") },
+    { "MakeAliasComponent", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.SceneUtility") },
+    { "MakeDataAliasComponent", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.SceneUtility") },
+    { "MessageHandlerComponent", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.SceneUtility") },
+    { "FileMessageHandlerComponent", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.SceneUtility") },
+    { "RequiredPlugin", CreatableMoved("v22.06", "SofaBaseUtils", "Sofa.Component.SceneUtility") },
+
+    // SofaGraphComponent was deprecated in #2582 and ...
+    { "APIVersion", CreatableMoved("v22.06", "SofaGraphComponent", "Sofa.Component.SceneUtility") },
 };
 
 } // namespace sofa::helper::lifecycle

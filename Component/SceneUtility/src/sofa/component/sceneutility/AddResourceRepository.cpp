@@ -21,14 +21,14 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MISC_ADDRESOURCEREPOSITORY_CPP
 
-#include <SofaBaseUtils/AddResourceRepository.h>
+#include <sofa/component/sceneutility/AddResourceRepository.h>
 
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem;
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::misc
+namespace sofa::component::sceneutility
 {
 
 BaseAddResourceRepository::BaseAddResourceRepository()
@@ -117,4 +117,4 @@ static int AddPluginRepositoryClass = core::RegisterObject("Add a path to Plugin
     .add< AddPluginRepository >();
 
 
-} // namespace sofa::component::misc
+} // namespace sofa::component::sceneutility

@@ -21,34 +21,35 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGraphComponent/config.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/component/sceneutility/config.h>
 
-#include <SofaGraphComponent/PauseAnimation.h>
 
-#include <fstream>
-
-namespace sofa::component::misc
+namespace sofa::component::sceneutility::infocomponent
 {
 
-/**
-*/
-class PauseAnimationOnEvent : public PauseAnimation
+/// I use a per-file namespace so that I can employ the 'using' keywords without
+/// fearing it will leack names into the global namespace. When closing this namespace
+/// selected object from this per-file namespace are then imported into their parent namespace.
+/// for ease of use
+using sofa::core::objectmodel::BaseObject ;
+
+/// Despite this component does absolutely nothin... it is very usefull as it can be used to
+/// retain information scene graph.
+class SOFA_COMPONENT_SCENEUTILITY_API InfoComponent : public BaseObject
 {
 public:
-    SOFA_CLASS(PauseAnimationOnEvent,PauseAnimation);
-protected:
-    PauseAnimationOnEvent();
+    SOFA_CLASS(InfoComponent, BaseObject);
 
-    ~PauseAnimationOnEvent() override;
-public:
-    void init() override;
-
-    bool paused;
-    bool isPaused() override;
-
-    void handleEvent(sofa::core::objectmodel::Event* event) override;
-
+    InfoComponent() {}
+    ~InfoComponent() override{}
 };
 
+} // namespace sofa::component::sceneutility::infocomponent
 
-} // namespace sofa::component::misc
+namespace sofa::component::sceneutility
+{
+/// Import the component from the per-file namespace.
+using infocomponent::InfoComponent ;
+
+} // namespace sofa::component::sceneutility

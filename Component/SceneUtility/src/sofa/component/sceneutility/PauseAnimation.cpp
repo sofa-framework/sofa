@@ -19,37 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/component/sceneutility/PauseAnimation.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/simulation/Node.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <SofaBaseUtils/config.h>
-
-
-namespace sofa::component::infocomponent
+namespace sofa::component::sceneutility
 {
 
-/// I use a per-file namespace so that I can employ the 'using' keywords without
-/// fearing it will leack names into the global namespace. When closing this namespace
-/// selected object from this per-file namespace are then imported into their parent namespace.
-/// for ease of use
-using sofa::core::objectmodel::BaseObject ;
-
-/// Despite this component does absolutely nothin... it is very usefull as it can be used to
-/// retain information scene graph.
-class SOFA_SOFABASEUTILS_API InfoComponent : public BaseObject
+PauseAnimation::PauseAnimation()
+    : root(nullptr)
 {
-public:
-    SOFA_CLASS(InfoComponent, BaseObject);
+}
 
-    InfoComponent() {}
-    ~InfoComponent() override{}
-};
-
-} // namespace sofa::component::infocomponent
-
-namespace sofa::component
+PauseAnimation::~PauseAnimation()
 {
-/// Import the component from the per-file namespace.
-using infocomponent::InfoComponent ;
+}
 
-} // namespace sofa::component
+void PauseAnimation::init()
+{
+    BaseObject::init();
+    //simu = sofa::simulation::getSimulation();
+    simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext());
+    root = dynamic_cast<simulation::Node *>(context->getRootContext());
+
+    //root = dynamic_cast<sofa::core::objectmodel::BaseNode*>(this->getContext());
+    // TODO: add methods in BaseNode to get parent nodes and/or root node
+}
+
+void PauseAnimation::pause()
+{
+    if (root)
+        root->getContext()->setAnimate(false);
+}
+
+} // namespace sofa::component::sceneutility

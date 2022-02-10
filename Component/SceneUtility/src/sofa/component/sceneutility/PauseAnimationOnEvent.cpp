@@ -19,62 +19,48 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/BaseNode.h>
-using sofa::core::objectmodel::BaseNode ;
-
+#include <sofa/component/sceneutility/PauseAnimationOnEvent.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/simulation/PauseEvent.h>
 #include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory ;
-using sofa::core::RegisterObject ;
 
-#include "APIVersion.h"
-#include <sofa/version.h>
-#include <numeric>
-
-namespace sofa::component::_apiversion_
+namespace sofa::component::sceneutility
 {
 
-APIVersion::APIVersion() :
-     d_level ( initData(&d_level, std::string(SOFA_VERSION_STR), "level", "The API Level of the scene ('17.06', '17.12', '18.06', ...)"))
+PauseAnimationOnEvent::PauseAnimationOnEvent() : paused(false)
 {
 }
 
-APIVersion::~APIVersion()
+
+PauseAnimationOnEvent::~PauseAnimationOnEvent()
 {
+
 }
 
-void APIVersion::init()
+void PauseAnimationOnEvent::init()
 {
-    Inherit1::init();
-    checkInputData() ;
+    PauseAnimation::init();
+    this->f_listening.setValue(true);
 }
 
-void APIVersion::checkInputData()
+bool PauseAnimationOnEvent::isPaused()
 {
-    if(!d_level.isSet() && !name.isSet() ){
-        msg_warning() << "The level is not set. Using " << SOFA_VERSION_STR << " as default value. " ;
-        return ;
-    }
-    if( !d_level.isSet() && name.isSet() ){
-        d_level.setValue(getName());
-    }
+    return paused;
+}
 
-    const auto & API_version = d_level.getValue();
-    static const std::set<std::string> allowedAPIVersions { "17.06", "17.12", "18.06", "18.12", "19.06", "19.12", "20.06", "20.12", SOFA_VERSION_STR } ;
-    if( allowedAPIVersions.find(API_version) == std::cend(allowedAPIVersions) )
+void PauseAnimationOnEvent::handleEvent(sofa::core::objectmodel::Event* event)
+{
+    if (sofa::simulation::PauseEvent::checkEventType(event))
     {
-        auto allowedVersionStr = std::accumulate(std::next(allowedAPIVersions.begin()), allowedAPIVersions.end(), *(allowedAPIVersions.begin()), [](const std::string & s, const std::string & v) {
-            return s + ", " + v;
-        });
-        msg_warning() << "The provided level '"<< API_version <<"' is not valid. Allowed versions are [" << allowedVersionStr << "]." ;
+        paused = true;
+        pause();
     }
 }
 
-const std::string& APIVersion::getApiLevel()
-{
-    return d_level.getValue() ;
-}
+int PauseAnimationOnEventClass = core::RegisterObject("PauseAnimationOnEvent")
+        .add< PauseAnimationOnEvent >();
 
-int APIVersionClass = core::RegisterObject("Specify the APIVersion of the component used in a scene.")
-        .add< APIVersion >();
 
-} // namespace sofa::component::_apiversion_
+
+
+} // namespace sofa::component::sceneutility

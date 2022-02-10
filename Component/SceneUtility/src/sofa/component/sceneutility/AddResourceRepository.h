@@ -19,68 +19,63 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGraphComponent/initSofaGraphComponent.h>
+#pragma once
+#include <sofa/component/sceneutility/config.h>
 
-#include <sofa/helper/system/PluginManager.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/helper/system/FileRepository.h>
+using sofa::helper::system::FileRepository;
+using sofa::core::objectmodel::DataFileName;
 
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
-
-namespace sofa::component
+namespace sofa::component::sceneutility
 {
 
-void initSofaGraphComponent()
+class SOFA_COMPONENT_SCENEUTILITY_API BaseAddResourceRepository: public sofa::core::objectmodel::BaseObject
 {
-    static bool first = true;
-    if (first)
-    {        
-        // msg_deprecated("SofaGraphComponent") << "SofaGraphComponent is deprecated. It will be removed at v23.06. Use Sofa.Component.SceneUtility and ... instead.";
+public:
+    SOFA_ABSTRACT_CLASS(BaseAddResourceRepository, sofa::core::objectmodel::BaseObject);
 
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.SceneUtility");
+protected:
+    BaseAddResourceRepository();
+    ~BaseAddResourceRepository() override;
 
-        first = false;
-    }
-}
+    FileRepository* m_repository;
 
-extern "C" {
-    SOFA_SOFAGRAPHCOMPONENT_API void initExternalModule();
-    SOFA_SOFAGRAPHCOMPONENT_API const char* getModuleName();
-    SOFA_SOFAGRAPHCOMPONENT_API const char* getModuleVersion();
-    SOFA_SOFAGRAPHCOMPONENT_API const char* getModuleLicense();
-    SOFA_SOFAGRAPHCOMPONENT_API const char* getModuleDescription();
-    SOFA_SOFAGRAPHCOMPONENT_API const char* getModuleComponentList();
-}
+public:
+    DataFileName d_repositoryPath; ///< Path to add to the pool of resources
 
-void initExternalModule()
+    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
+    bool updateRepositoryPath();
+    void cleanup() override;
+
+private:
+    std::string m_currentAddedPath;
+
+    virtual FileRepository* getFileRepository() = 0;
+};
+
+
+/// Add a new path to DataRepository
+class SOFA_COMPONENT_SCENEUTILITY_API AddDataRepository: public BaseAddResourceRepository
 {
-    initSofaGraphComponent();
-}
+public:
+    SOFA_CLASS(AddDataRepository, BaseAddResourceRepository);
 
-const char* getModuleName()
+protected:
+    FileRepository* getFileRepository() override { return &sofa::helper::system::DataRepository; }
+};
+
+
+/// Add a new path to PluginRepository
+class SOFA_COMPONENT_SCENEUTILITY_API AddPluginRepository: public BaseAddResourceRepository
 {
-    return sofa_tostring(SOFA_TARGET);
-}
+public:
+    SOFA_CLASS(AddPluginRepository, BaseAddResourceRepository);
 
-const char* getModuleVersion()
-{
-    return sofa_tostring(SOFAGRAPHCOMPONENT_VERSION);
-}
+protected:
+    FileRepository* getFileRepository() override { return &sofa::helper::system::PluginRepository; }
+};
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
 
-const char* getModuleDescription()
-{
-    return "This plugin contains contains features about General Visual.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-
-} // namespace sofa::component
+} // namespace sofa::component::sceneutility

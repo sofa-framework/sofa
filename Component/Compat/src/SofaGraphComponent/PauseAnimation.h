@@ -19,37 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGraphComponent/PauseAnimation.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/Node.h>
+#pragma once
+#include <sofa/component/sceneutility/PauseAnimation.h>
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/sceneutility/PauseAnimation.h")
 
 namespace sofa::component::misc
 {
 
-PauseAnimation::PauseAnimation()
-    : root(nullptr)
-{
-}
-
-PauseAnimation::~PauseAnimation()
-{
-}
-
-void PauseAnimation::init()
-{
-    BaseObject::init();
-    //simu = sofa::simulation::getSimulation();
-    simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext());
-    root = dynamic_cast<simulation::Node *>(context->getRootContext());
-
-    //root = dynamic_cast<sofa::core::objectmodel::BaseNode*>(this->getContext());
-    // TODO: add methods in BaseNode to get parent nodes and/or root node
-}
-
-void PauseAnimation::pause()
-{
-    if (root)
-        root->getContext()->setAnimate(false);
-}
+    using PauseAnimation = sofa::component::sceneutility::PauseAnimation;
 
 } // namespace sofa::component::misc

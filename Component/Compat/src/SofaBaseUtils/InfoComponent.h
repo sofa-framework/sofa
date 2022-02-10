@@ -19,13 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::RegisterObject ;
+#pragma once
+#include <sofa/component/sceneutility/InfoComponent.h>
 
-#include <SofaBaseUtils/InfoComponent.h>
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/sceneutility/InfoComponent.h")
 
 namespace sofa::component::infocomponent
 {
-int InfoComponentClass = RegisterObject("This object retain the info/error message")
-        .add< InfoComponent >();
+
+    using InfoComponent = sofa::component::sceneutility::InfoComponent;
+
 } // namespace sofa::component::infocomponent
+
+namespace sofa::component
+{
+
+    using InfoComponent = sofa::component::sceneutility::InfoComponent;
+
+} // namespace sofa::component
