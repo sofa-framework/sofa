@@ -14,6 +14,10 @@ include(Sofa.Component.Topology.Container.Grid.cmake)
 include(Sofa.Component.Topology.Mapping.cmake)
 include(Sofa.Component.Topology.Utility.cmake)
 include(Sofa.Component.Visual.cmake)
+include(Sofa.GL.Component.OnScreen.cmake)
+include(Sofa.GL.Component.Model.cmake)
+include(Sofa.GL.Component.Rendering.cmake)
+
 
 set(SOURCE_FILES
     ${SOFACOMPONENTCOMPATSRC_ROOT}/init.cpp
