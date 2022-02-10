@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaOpenglVisual/VisualManagerPass.h>
+#include <sofa/gl/component/rendering/VisualManagerPass.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>

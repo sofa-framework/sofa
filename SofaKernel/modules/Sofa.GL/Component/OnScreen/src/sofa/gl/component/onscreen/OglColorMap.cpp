@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaOpenglVisual/OglColorMap.h>
+#include <sofa/gl/component/onscreen/OglColorMap.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>

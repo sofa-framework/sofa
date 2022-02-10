@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_VISUALMODEL_POINTSPLATMODEL_H
 #define SOFA_COMPONENT_VISUALMODEL_POINTSPLATMODEL_H
-#include "config.h"
+#include <sofa/gl/component/model/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
@@ -52,7 +52,7 @@ namespace visualmodel
 
 
 // I have no idea what is Ogl in this component ?...
-class SOFA_OPENGL_VISUAL_API OglCylinderModel : public core::visual::VisualModel, public Vec3State
+class SOFA_GL_COMPONENT_MODEL_API OglCylinderModel : public core::visual::VisualModel, public Vec3State
 {
 public:
     SOFA_CLASS2(OglCylinderModel,core::visual::VisualModel,Vec3State);

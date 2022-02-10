@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaOpenglVisual/OglRenderingSRGB.h>
+#include <sofa/gl/component/rendering/OglRenderingSRGB.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 

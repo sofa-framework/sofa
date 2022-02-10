@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaOpenglVisual/OglModel.h>
-#include <SofaOpenglVisual/OrderIndependentTransparencyManager.h>
+#include <sofa/gl/component/model/OglModel.h>
+#include <sofa/gl/component/rendering/OrderIndependentTransparencyManager.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>

@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaOpenglVisual/Light.h>
+#include <sofa/gl/component/rendering/Light.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaOpenglVisual/LightManager.h>
+#include <sofa/gl/component/rendering/LightManager.h>
 #include <sofa/gl/glu.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/fwd.h>

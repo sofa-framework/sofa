@@ -25,7 +25,7 @@
 
 #include <sofa/core/loader/VoxelLoader.h>
 
-#include <SofaOpenglVisual/OglCylinderModel.h>
+#include <sofa/gl/component/model/OglCylinderModel.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/topology/TopologyData.inl>

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaOpenglVisual/ClipPlane.h>
+#include <sofa/gl/component/rendering/ClipPlane.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <cmath>

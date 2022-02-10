@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaOpenglVisual/VisualManagerSecondaryPass.h>
+#include <sofa/gl/component/rendering/VisualManagerSecondaryPass.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/ObjectFactory.h>
 

@@ -21,11 +21,11 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_VISUALMANAGER_SECONDARY_PASS_H
 #define SOFA_COMPONENT_VISUALMANAGER_SECONDARY_PASS_H
-#include "config.h"
+#include <sofa/gl/component/rendering/config.h>
 
-#include <SofaOpenglVisual/VisualManagerPass.h>
+#include <sofa/gl/component/rendering/VisualManagerPass.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <SofaOpenglVisual/OglShader.h>
+#include <sofa/gl/component/rendering/OglShader.h>
 
 namespace sofa
 {
@@ -40,7 +40,7 @@ namespace visualmodel
  *  \brief Render pass element: render the relevant tagged objects in a FBO
  */
 
-class SOFA_OPENGL_VISUAL_API VisualManagerSecondaryPass : public component::visualmodel::VisualManagerPass
+class SOFA_GL_COMPONENT_RENDERING_API VisualManagerSecondaryPass : public component::visualmodel::VisualManagerPass
 {
 public:
     SOFA_CLASS(VisualManagerSecondaryPass, component::visualmodel::VisualManagerPass);

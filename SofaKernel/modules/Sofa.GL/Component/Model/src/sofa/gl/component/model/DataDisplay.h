@@ -21,12 +21,12 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_VISUALMODEL_DATADISPLAY_H
 #define SOFA_COMPONENT_VISUALMODEL_DATADISPLAY_H
-#include "config.h"
+#include <sofa/gl/component/model/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <SofaOpenglVisual/OglColorMap.h>
-#include <SofaBaseVisual/VisualModelImpl.h>
+#include <sofa/gl/component/onscreen/OglColorMap.h>
+#include <sofa/component/visual/VisualModelImpl.h>
 
 #include <sofa/type/RGBAColor.h>
 
@@ -39,7 +39,7 @@ namespace component
 namespace visualmodel
 {
 
-class SOFA_OPENGL_VISUAL_API DataDisplay : public core::visual::VisualModel, public Vec3State
+class SOFA_GL_COMPONENT_MODEL_API DataDisplay : public core::visual::VisualModel, public component::visual::Vec3State
 {
 public:
     SOFA_CLASS2(DataDisplay, core::visual::VisualModel, Vec3State);

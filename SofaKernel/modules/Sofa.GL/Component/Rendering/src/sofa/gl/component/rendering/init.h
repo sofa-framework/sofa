@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/gl/component/rendering/config.h>
+#include <sofa/gl/component/rendering//config.h>
 
 namespace sofa::gl::component::rendering
 {

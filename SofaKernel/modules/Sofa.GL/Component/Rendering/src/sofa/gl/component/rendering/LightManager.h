@@ -21,15 +21,15 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LIGHTMANAGER_H
 #define SOFA_COMPONENT_LIGHTMANAGER_H
-#include "config.h"
+#include <sofa/gl/component/rendering/config.h>
 
 #include <sofa/defaulttype/SolidTypes.h>
-#include <SofaOpenglVisual/Light.h>
+#include <sofa/gl/component/rendering/Light.h>
 #include <sofa/core/visual/VisualManager.h>
 #include <sofa/type/Mat.h>
 #include <sofa/type/RGBAColor.h>
 
-#include <SofaOpenglVisual/OglShadowShader.h>
+#include <sofa/gl/component/rendering/OglShadowShader.h>
 
 namespace sofa
 {
@@ -47,7 +47,7 @@ namespace visualmodel
  *  It centralizes all the Lights and managed them.
  *
  */
-class SOFA_OPENGL_VISUAL_API LightManager : public core::visual::VisualManager
+class SOFA_GL_COMPONENT_RENDERING_API LightManager : public core::visual::VisualManager
 {
 public:
     SOFA_CLASS(LightManager, core::visual::VisualManager);

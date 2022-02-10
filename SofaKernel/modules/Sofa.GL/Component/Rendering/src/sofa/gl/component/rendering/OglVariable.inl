@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_INL
 #define SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_INL
 
-#include <SofaOpenglVisual/OglVariable.h>
+#include <sofa/gl/component/rendering/OglVariable.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 

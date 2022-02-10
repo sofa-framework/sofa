@@ -19,14 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaOpenglVisual/OglShaderVisualModel.h>
+#include <sofa/gl/component/rendering/OglShaderVisualModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaOpenglVisual/OglAttribute.inl>
+#include <sofa/gl/component/rendering/OglAttribute.inl>
 
 namespace sofa
 {

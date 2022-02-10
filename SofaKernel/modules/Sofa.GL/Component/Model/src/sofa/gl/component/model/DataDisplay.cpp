@@ -30,7 +30,7 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <SofaOpenglVisual/DataDisplay.h>
+#include <sofa/gl/component/model/DataDisplay.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 

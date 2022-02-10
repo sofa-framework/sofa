@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_OGLSHADER
 #define SOFA_COMPONENT_OGLSHADER
-#include "config.h"
+#include <sofa/gl/component/rendering/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -50,7 +50,7 @@ namespace visualmodel
  *  and Ati's >2K series.
  */
 
-class SOFA_OPENGL_VISUAL_API OglShader : public core::visual::Shader, public core::visual::VisualModel
+class SOFA_GL_COMPONENT_RENDERING_API OglShader : public core::visual::Shader, public core::visual::VisualModel
 {
 public:
     SOFA_CLASS2(OglShader, core::visual::Shader, core::visual::VisualModel);
@@ -182,7 +182,7 @@ public:
  *  and the id (or name) of the element.
  */
 
-class SOFA_OPENGL_VISUAL_API OglShaderElement : public core::visual::ShaderElement
+class SOFA_GL_COMPONENT_RENDERING_API OglShaderElement : public core::visual::ShaderElement
 {
 protected:
     ///Name of element (corresponding with the shader)

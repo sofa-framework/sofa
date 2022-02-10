@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_VISUALMODEL_POINTSPLATMODEL_H
 #define SOFA_COMPONENT_VISUALMODEL_POINTSPLATMODEL_H
-#include "config.h"
+#include <sofa/gl/component/model/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -48,7 +48,7 @@ namespace component
 namespace visualmodel
 {
 
-class SOFA_OPENGL_VISUAL_API PointSplatModel : public core::visual::VisualModel
+class SOFA_GL_COMPONENT_MODEL_API PointSplatModel : public core::visual::VisualModel
 {
 public:
     SOFA_CLASS(PointSplatModel,core::visual::VisualModel);

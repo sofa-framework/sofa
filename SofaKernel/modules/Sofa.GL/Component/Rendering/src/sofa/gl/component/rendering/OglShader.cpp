@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaOpenglVisual/OglShader.h>
-#include <SofaOpenglVisual/CompositingVisualLoop.h>
+#include <sofa/gl/component/rendering/OglShader.h>
+#include <sofa/gl/component/rendering/CompositingVisualLoop.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>

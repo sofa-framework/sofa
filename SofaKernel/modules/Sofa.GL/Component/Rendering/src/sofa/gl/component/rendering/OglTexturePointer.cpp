@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaOpenglVisual/OglTexturePointer.h>
+#include <sofa/gl/component/rendering/OglTexturePointer.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>

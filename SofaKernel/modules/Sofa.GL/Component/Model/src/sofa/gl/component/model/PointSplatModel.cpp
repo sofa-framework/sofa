@@ -30,7 +30,7 @@
 
 #include <sofa/core/loader/VoxelLoader.h>
 
-#include <SofaOpenglVisual/PointSplatModel.h>
+#include <sofa/gl/component/model/PointSplatModel.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/topology/TopologyData.inl>

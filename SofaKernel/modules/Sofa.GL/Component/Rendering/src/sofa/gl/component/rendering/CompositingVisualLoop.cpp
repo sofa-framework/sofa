@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaOpenglVisual/CompositingVisualLoop.h>
+#include <sofa/gl/component/rendering/CompositingVisualLoop.h>
 #include <sofa/core/ObjectFactory.h>
 #include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/core/visual/DisplayFlags.h>

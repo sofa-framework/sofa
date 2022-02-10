@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gl/component/rendering/init.h>
+#include <sofa/gl/component/rendering//init.h>
 
 namespace sofa::gl::component::rendering
 {

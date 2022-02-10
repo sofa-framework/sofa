@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaOpenglVisual/OglModel.h>
+#include <sofa/gl/component/model/OglModel.h>
 #include <sofa/core/topology/TopologyData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/FileRepository.h>

@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_VISUALMODEL_LABEL_H
 #include <string>
 
-#include "config.h"
+#include <sofa/gl/component/onscreen/config.h>
 
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/visual/VisualModel.h>
@@ -43,7 +43,7 @@ namespace component
 namespace visualmodel
 {
 
-class SOFA_OPENGL_VISUAL_API OglLabel : public core::visual::VisualModel
+class SOFA_GL_COMPONENT_ONSCREEN_API OglLabel : public core::visual::VisualModel
 {
 public:
     SOFA_CLASS(OglLabel, core::visual::VisualModel);

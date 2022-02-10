@@ -22,11 +22,11 @@
 #ifndef SOFA_COMPONENT_ORDERINDEPENDENTTRANSPARENCYMANAGER_H
 #define SOFA_COMPONENT_ORDERINDEPENDENTTRANSPARENCYMANAGER_H
 
-#include "config.h"
+#include <sofa/gl/component/rendering/config.h>
 
 #include <sofa/core/visual/VisualManager.h>
 #include <sofa/gl/GLSLShader.h>
-#include <SofaOpenglVisual/OglOITShader.h>
+#include <sofa/gl/component/rendering/OglOITShader.h>
 
 namespace sofa
 {
@@ -42,7 +42,7 @@ namespace visualmodel
  *  \note Reference: http://jcgt.org/published/0002/02/09/paper.pdf
  */
 
-class SOFA_OPENGL_VISUAL_API OrderIndependentTransparencyManager : public core::visual::VisualManager
+class SOFA_GL_COMPONENT_RENDERING_API OrderIndependentTransparencyManager : public core::visual::VisualManager
 {
     class FrameBufferObject
     {

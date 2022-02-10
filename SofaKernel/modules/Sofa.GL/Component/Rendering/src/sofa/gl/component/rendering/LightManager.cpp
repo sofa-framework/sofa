@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaOpenglVisual/LightManager.h>
+#include <sofa/gl/component/rendering/LightManager.h>
 using sofa::component::visualmodel::OglShadowShader;
 
 #include <sofa/core/visual/VisualParams.h>
@@ -30,7 +30,7 @@ using sofa::core::visual::VisualParams ;
 
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 
-#include <SofaOpenglVisual/OglTexture.h>
+#include <sofa/gl/component/rendering/OglTexture.h>
 using sofa::component::visualmodel::OglTexture ;
 
 using sofa::core::objectmodel::BaseContext ;

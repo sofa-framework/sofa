@@ -33,7 +33,7 @@
 
 #include <sofa/core/loader/VoxelLoader.h>
 
-#include <SofaOpenglVisual/SlicedVolumetricModel.h>
+#include <sofa/gl/component/model/SlicedVolumetricModel.h>
 #include <sofa/core/visual/VisualParams.h>
 
 

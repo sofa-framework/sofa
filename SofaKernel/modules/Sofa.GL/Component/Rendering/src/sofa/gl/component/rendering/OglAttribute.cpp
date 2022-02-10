@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaOpenglVisual/OglAttribute.inl>
+#include <sofa/gl/component/rendering/OglAttribute.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

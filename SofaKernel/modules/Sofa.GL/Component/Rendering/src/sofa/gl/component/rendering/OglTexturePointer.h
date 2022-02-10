@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef OGLTEXTUREPOINTER_H_
 #define OGLTEXTUREPOINTER_H_
-#include "config.h"
+#include <sofa/gl/component/rendering/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -29,8 +29,8 @@
 #include <sofa/gl/template.h>
 #include <sofa/gl/Texture.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <SofaOpenglVisual/OglShader.h>
-#include <SofaOpenglVisual/OglTexture.h>
+#include <sofa/gl/component/rendering/OglShader.h>
+#include <sofa/gl/component/rendering/OglTexture.h>
 
 namespace sofa
 {
@@ -49,7 +49,7 @@ namespace visualmodel
  *  At the moment, only texture2D is supported.
  */
 
-class SOFA_OPENGL_VISUAL_API OglTexturePointer :  public core::visual::VisualModel, public OglShaderElement
+class SOFA_GL_COMPONENT_RENDERING_API OglTexturePointer :  public core::visual::VisualModel, public OglShaderElement
 {
 public:
     SOFA_CLASS2(OglTexturePointer, core::visual::VisualModel, OglShaderElement);

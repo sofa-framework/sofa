@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_VISUALMODEL_OGLMODEL_H
 #define SOFA_COMPONENT_VISUALMODEL_OGLMODEL_H
-#include "config.h"
+#include <sofa/gl/component/model/config.h>
 
 #include <vector>
 #include <string>
@@ -52,7 +52,7 @@ namespace visualmodel
  *
  */
 
-class SOFA_OPENGL_VISUAL_API OglModel : public VisualModelImpl
+class SOFA_GL_COMPONENT_MODEL_API OglModel : public VisualModelImpl
 {
 public:
     using Inherit = VisualModelImpl;

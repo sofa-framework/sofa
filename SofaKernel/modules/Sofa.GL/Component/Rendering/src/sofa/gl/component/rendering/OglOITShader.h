@@ -21,9 +21,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_OGLOITSHADER
 #define SOFA_COMPONENT_OGLOITSHADER
-#include "config.h"
+#include <sofa/gl/component/rendering/config.h>
 
-#include <SofaOpenglVisual/OglShader.h>
+#include <sofa/gl/component/rendering/OglShader.h>
 
 namespace sofa
 {
@@ -34,7 +34,7 @@ namespace component
 namespace visualmodel
 {
 
-class SOFA_OPENGL_VISUAL_API OglOITShader : public sofa::component::visualmodel::OglShader
+class SOFA_GL_COMPONENT_RENDERING_API OglOITShader : public sofa::component::visualmodel::OglShader
 {
 public:
     SOFA_CLASS(OglOITShader, sofa::component::visualmodel::OglShader);

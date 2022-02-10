@@ -21,9 +21,9 @@
 ******************************************************************************/
 #ifndef OGLSHADERMACRO_H_
 #define OGLSHADERMACRO_H_
-#include "config.h"
+#include <sofa/gl/component/rendering/config.h>
 
-#include <SofaOpenglVisual/OglShader.h>
+#include <sofa/gl/component/rendering/OglShader.h>
 
 namespace sofa
 {
@@ -44,7 +44,7 @@ namespace visualmodel
  *
  */
 
-class SOFA_OPENGL_VISUAL_API OglShaderMacro : public OglShaderElement
+class SOFA_GL_COMPONENT_RENDERING_API OglShaderMacro : public OglShaderElement
 {
 public:
     SOFA_CLASS(OglShaderMacro, OglShaderElement);
@@ -63,7 +63,7 @@ public:
 };
 
 
-class SOFA_OPENGL_VISUAL_API OglShaderDefineMacro : public OglShaderMacro
+class SOFA_GL_COMPONENT_RENDERING_API OglShaderDefineMacro : public OglShaderMacro
 {
 public:
     SOFA_CLASS(OglShaderDefineMacro, OglShaderMacro);

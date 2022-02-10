@@ -19,12 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaOpenglVisual/OglShadowShader.h>
+#include <sofa/gl/component/rendering/OglShadowShader.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <SofaOpenglVisual/LightManager.h>
+#include <sofa/gl/component/rendering/LightManager.h>
 
 namespace sofa
 {

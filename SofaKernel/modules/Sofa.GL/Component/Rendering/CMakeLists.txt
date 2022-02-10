@@ -52,9 +52,10 @@ set(SOURCE_FILES
 
 sofa_find_package(SofaSimulationCore REQUIRED)
 sofa_find_package(Sofa.GL REQUIRED)
+sofa_find_package(Sofa.GL.Component.Model REQUIRED) # for OglModel
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore Sofa.GL)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore Sofa.GL Sofa.GL.Component.Model)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

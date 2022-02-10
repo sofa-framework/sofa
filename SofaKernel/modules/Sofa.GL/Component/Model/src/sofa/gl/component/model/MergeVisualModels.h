@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_ENGINE_MERGEVISUALMODELS_H
 #define SOFA_COMPONENT_ENGINE_MERGEVISUALMODELS_H
 
-#include <SofaOpenglVisual/config.h>
+#include <sofa/gl/component/model/config.h>
 
 #include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/objectmodel/vectorLinks.h>
 #include <sofa/core/objectmodel/Link.h>
-#include <SofaOpenglVisual/OglModel.h>
+#include <sofa/gl/component/model/OglModel.h>
 
 namespace sofa
 {
@@ -46,7 +46,7 @@ namespace visualmodel
 /**
  * This class merges several visual models.
  */
-class SOFA_OPENGL_VISUAL_API MergeVisualModels : public OglModel
+class SOFA_GL_COMPONENT_MODEL_API MergeVisualModels : public OglModel
 {
 public:
     using Inherit = OglModel;

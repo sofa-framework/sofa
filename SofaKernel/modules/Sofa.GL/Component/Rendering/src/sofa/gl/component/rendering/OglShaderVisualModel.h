@@ -21,12 +21,12 @@
 ******************************************************************************/
 #ifndef OGLSHADERVISUALMODEL_H_
 #define OGLSHADERVISUALMODEL_H_
-#include "config.h"
+#include <sofa/gl/component/rendering/config.h>
 
-#include <SofaOpenglVisual/OglModel.h>
-#include <SofaOpenglVisual/OglShader.h>
-#include <SofaOpenglVisual/OglAttribute.h>
-#include <SofaOpenglVisual/OglVariable.h>
+#include <sofa/gl/component/model/OglModel.h>
+#include <sofa/gl/component/rendering/OglShader.h>
+#include <sofa/gl/component/rendering/OglAttribute.h>
+#include <sofa/gl/component/rendering/OglVariable.h>
 
 namespace sofa
 {
@@ -38,7 +38,7 @@ namespace visualmodel
 {
 
 
-class SOFA_OPENGL_VISUAL_API OglShaderVisualModel : public OglModel
+class SOFA_GL_COMPONENT_RENDERING_API OglShaderVisualModel : public OglModel
 {
 public:
     using Inherit = OglModel;

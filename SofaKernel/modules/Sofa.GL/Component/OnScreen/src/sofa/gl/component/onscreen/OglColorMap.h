@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_VISUALMODEL_OGLCOLORMAP_H
 #define SOFA_COMPONENT_VISUALMODEL_OGLCOLORMAP_H
-#include "config.h"
+#include <sofa/gl/component/onscreen/config.h>
 
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/visual/VisualModel.h>
@@ -43,7 +43,7 @@ namespace component
 namespace visualmodel
 {
 
-class SOFA_OPENGL_VISUAL_API OglColorMap : public sofa::core::visual::VisualModel
+class SOFA_GL_COMPONENT_ONSCREEN_API OglColorMap : public sofa::core::visual::VisualModel
 {
 public:
     SOFA_CLASS(OglColorMap, sofa::core::visual::VisualModel);

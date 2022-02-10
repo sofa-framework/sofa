@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaOpenglVisual/OglViewport.h>
+#include <sofa/gl/component/onscreen/OglViewport.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>

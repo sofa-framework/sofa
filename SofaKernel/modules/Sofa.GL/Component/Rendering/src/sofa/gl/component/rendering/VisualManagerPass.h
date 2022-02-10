@@ -21,12 +21,12 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_VISUALMANAGERPASS_H
 #define SOFA_COMPONENT_VISUALMANAGERPASS_H
-#include "config.h"
+#include <sofa/gl/component/rendering/config.h>
 
-#include <SofaOpenglVisual/CompositingVisualLoop.h>
+#include <sofa/gl/component/rendering/CompositingVisualLoop.h>
 #include <sofa/core/visual/VisualManager.h>
 #include <sofa/gl/FrameBufferObject.h>
-#include <SofaOpenglVisual/OglShader.h>
+#include <sofa/gl/component/rendering/OglShader.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -44,7 +44,7 @@ namespace visualmodel
  *  \brief Render pass element: render the relevant tagged objects in a FBO
  */
 
-class SOFA_OPENGL_VISUAL_API VisualManagerPass : public core::visual::VisualManager
+class SOFA_GL_COMPONENT_RENDERING_API VisualManagerPass : public core::visual::VisualManager
 {
 public:
     SOFA_CLASS(VisualManagerPass, core::visual::VisualManager);

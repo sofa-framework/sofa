@@ -21,13 +21,13 @@
 ******************************************************************************/
 #ifndef SOFA_SIMULATION_COMPOSITINGVISUALLOOP_H
 #define SOFA_SIMULATION_COMPOSITINGVISUALLOOP_H
-#include "config.h"
+#include <sofa/gl/component/rendering/config.h>
 
 #include <sofa/simulation/DefaultVisualManagerLoop.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <SofaOpenglVisual/OglShader.h>
-#include <SofaOpenglVisual/VisualManagerPass.h>
+#include <sofa/gl/component/rendering/OglShader.h>
+#include <sofa/gl/component/rendering/VisualManagerPass.h>
 
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/objectmodel/Event.h>
@@ -45,7 +45,7 @@ namespace visualmodel
  *  \Compositing visual loop: render multiple passes and composite them into one single rendered frame
  */
 
-class SOFA_OPENGL_VISUAL_API CompositingVisualLoop : public simulation::DefaultVisualManagerLoop
+class SOFA_GL_COMPONENT_RENDERING_API CompositingVisualLoop : public simulation::DefaultVisualManagerLoop
 {
 public:
     SOFA_CLASS(CompositingVisualLoop,simulation::DefaultVisualManagerLoop);
