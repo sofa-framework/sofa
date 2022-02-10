@@ -19,35 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_SlicedVolumetricModel_H
-#define SOFA_COMPONENT_VISUALMODEL_SlicedVolumetricModel_H
+#pragma once
+
 #include <sofa/gl/component/model/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/core/topology/TopologyData.h>
-
 #include <sofa/gl/template.h>
 
-namespace sofa
+namespace sofa::core::topology
 {
-namespace core
-{
-namespace topology
-{
-class BaseMeshTopology;
-}
-namespace behavior
-{
-class BaseMechanicalState;
-}
-}
+    class BaseMeshTopology;
+} // namespace sofa::core::topology
 
-namespace component
+namespace sofa::core::behavior
 {
+    class BaseMechanicalState;
+} // namespace sofa::core::behavior
 
-namespace visualmodel
+namespace sofa::gl::component::model
 {
 
 class SOFA_GL_COMPONENT_MODEL_API SlicedVolumetricModel : public core::visual::VisualModel
@@ -109,10 +101,4 @@ protected:
     double _minBBox[3], _maxBBox[3];
 };
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::gl::component::model

@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef OGLSHADERVISUALMODEL_H_
-#define OGLSHADERVISUALMODEL_H_
+#pragma once
+
 #include <sofa/gl/component/rendering/config.h>
 
 #include <sofa/gl/component/model/OglModel.h>
@@ -28,20 +28,14 @@
 #include <sofa/gl/component/rendering/OglAttribute.h>
 #include <sofa/gl/component/rendering/OglVariable.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 
-class SOFA_GL_COMPONENT_RENDERING_API OglShaderVisualModel : public OglModel
+class SOFA_GL_COMPONENT_RENDERING_API OglShaderVisualModel : public sofa::gl::component::model::OglModel
 {
 public:
-    using Inherit = OglModel;
+    using Inherit = sofa::gl::component::model::OglModel;
     SOFA_CLASS(OglShaderVisualModel, Inherit);
 
 protected:
@@ -80,10 +74,4 @@ private:
 
 };
 
-} //namespace visualmodel
-
-} //namespace component
-
-} //namespace sofa
-
-#endif /* OGLSHADERVISUALMODEL_H_ */
+} // namespace sofa::gl::component::rendering

@@ -25,13 +25,7 @@
 #include <cmath>
 using sofa::core::objectmodel::ComponentState ;
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 int ClipPlaneClass = core::RegisterObject("OpenGL Clipping Plane")
@@ -110,8 +104,4 @@ void ClipPlane::bwdDraw(core::visual::VisualParams*)
     }
 }
 
-} // namespace visualmodel
-
-} //namespace component
-
-} //namespace sofa
+} // namespace sofa::gl::component::rendering

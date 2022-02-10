@@ -27,14 +27,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/Node.h>
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 using namespace sofa::gl;
@@ -406,7 +399,7 @@ void VisualOITDrawVisitor::processVisualModel(simulation::Node* node, core::visu
 {
     bool hasTexture = false;
 
-    OglModel* oglModel = dynamic_cast<OglModel*>(vm);
+    auto* oglModel = dynamic_cast<model::OglModel*>(vm);
     if(oglModel)
     {
         oglModel->blendTransparency.setValue(false);
@@ -433,8 +426,4 @@ void VisualOITDrawVisitor::processVisualModel(simulation::Node* node, core::visu
     vm->drawTransparent(vparams);
 }
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::gl::component::rendering

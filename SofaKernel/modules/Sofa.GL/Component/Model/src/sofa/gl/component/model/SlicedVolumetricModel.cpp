@@ -41,13 +41,7 @@
 
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::model
 {
 
 int SlicedVolumetricModelClass = core::RegisterObject("A simple visualization for a cloud of points.")
@@ -101,7 +95,7 @@ void SlicedVolumetricModel::init()
     }
 
 
-    if( topology::SparseGridTopology* sparseGrid = dynamic_cast<topology::SparseGridTopology*>(_topology ) )
+    if( auto* sparseGrid = dynamic_cast<sofa::component::topology::grid::SparseGridTopology*>(_topology ) )
     {
         _minBBox[0] = sparseGrid->getXmin();
         _minBBox[1] = sparseGrid->getYmin();
@@ -441,9 +435,4 @@ int SlicedVolumetricModel::intersectionSegmentPlane( const Coord&s0,const Coord&
     else return 0;
 }
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::gl::component::model

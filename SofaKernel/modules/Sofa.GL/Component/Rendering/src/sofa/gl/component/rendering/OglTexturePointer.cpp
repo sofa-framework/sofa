@@ -24,12 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
 
-namespace sofa
-{
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 // Register the OglTexturePointer class in the Factory
@@ -100,6 +95,4 @@ void OglTexturePointer::unbind()
         l_oglTexture->unbind();
 }
 
-}//end of namespaces
-}
-}
+} // namespace sofa::gl::component::rendering

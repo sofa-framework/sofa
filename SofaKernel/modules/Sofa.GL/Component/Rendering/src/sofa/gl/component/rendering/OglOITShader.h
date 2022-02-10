@@ -19,25 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_OGLOITSHADER
-#define SOFA_COMPONENT_OGLOITSHADER
+#pragma once
+
 #include <sofa/gl/component/rendering/config.h>
 
 #include <sofa/gl/component/rendering/OglShader.h>
 
-namespace sofa
+namespace sofa::gl::component::rendering
 {
 
-namespace component
-{
-
-namespace visualmodel
-{
-
-class SOFA_GL_COMPONENT_RENDERING_API OglOITShader : public sofa::component::visualmodel::OglShader
+class SOFA_GL_COMPONENT_RENDERING_API OglOITShader : public sofa::gl::component::rendering::OglShader
 {
 public:
-    SOFA_CLASS(OglOITShader, sofa::component::visualmodel::OglShader);
+    SOFA_CLASS(OglOITShader, sofa::gl::component::rendering::OglShader);
 protected:
     OglOITShader();
     ~OglOITShader() override;
@@ -51,10 +45,4 @@ public:
 
 };
 
-}//namespace visualmodel
-
-} //namespace component
-
-} //namespace sofa
-
-#endif //SOFA_COMPONENT_OGLOITSHADER
+} // namespace sofa::gl::component::rendering

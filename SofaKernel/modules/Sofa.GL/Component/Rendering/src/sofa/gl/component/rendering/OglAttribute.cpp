@@ -22,13 +22,7 @@
 #include <sofa/gl/component/rendering/OglAttribute.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 using namespace sofa::defaulttype;
@@ -49,8 +43,4 @@ int OglUInt2AttributeClass = core::RegisterObject ( "OglUInt2Attribute" ).add< O
 int OglUInt3AttributeClass = core::RegisterObject ( "OglUInt3Attribute" ).add< OglUInt3Attribute >();
 int OglUInt4AttributeClass = core::RegisterObject ( "OglUInt4Attribute" ).add< OglUInt4Attribute >();
 
-} // namespace visual
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::gl::component::rendering

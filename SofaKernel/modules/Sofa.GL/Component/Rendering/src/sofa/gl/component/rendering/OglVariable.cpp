@@ -22,13 +22,7 @@
 #include <sofa/gl/component/rendering/OglVariable.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 /** SINGLE INT VARIABLE **/
@@ -799,8 +793,4 @@ void OglMatrix4VectorVariable::initVisual()
 }
 
 
-} // namespace visual
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::gl::component::rendering

@@ -26,17 +26,11 @@
 #include <sofa/gl/gl.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::model
 {
 
 int OglLineAxisClass = core::RegisterObject("Display scene axis")
-        .add< component::visualmodel::OglLineAxis >()
+        .add< OglLineAxis >()
         ;
 
 using namespace sofa::defaulttype;
@@ -105,8 +99,4 @@ void OglLineAxis::drawVisual(const core::visual::VisualParams* /*vparams*/)
 }
 
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::gl::component::model

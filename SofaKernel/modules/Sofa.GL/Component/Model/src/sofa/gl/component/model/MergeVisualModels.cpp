@@ -22,13 +22,7 @@
 #include "MergeVisualModels.h"
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::model
 {
 
 int MergeVisualModelsClass = core::RegisterObject("Merge several visual models")
@@ -36,9 +30,4 @@ int MergeVisualModelsClass = core::RegisterObject("Merge several visual models")
 
 
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::gl::component::model

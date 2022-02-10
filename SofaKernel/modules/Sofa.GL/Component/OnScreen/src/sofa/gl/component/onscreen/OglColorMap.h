@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_OGLCOLORMAP_H
-#define SOFA_COMPONENT_VISUALMODEL_OGLCOLORMAP_H
+#pragma once
 #include <sofa/gl/component/onscreen/config.h>
 
 #include <sofa/core/objectmodel/Data.h>
@@ -34,13 +33,7 @@
 #include <string>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::onscreen
 {
 
 class SOFA_GL_COMPONENT_ONSCREEN_API OglColorMap : public sofa::core::visual::VisualModel
@@ -118,10 +111,4 @@ public:
     }
 };
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::gl::component::onscreen

@@ -24,12 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
 
-namespace sofa
-{
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 // Register the OglTexture* objects in the Object Factory
@@ -292,6 +287,4 @@ void OglTexture2D::init()
 }
 
 
-}//end of namespaces
-}
-}
+} // namespace sofa::gl::component::rendering

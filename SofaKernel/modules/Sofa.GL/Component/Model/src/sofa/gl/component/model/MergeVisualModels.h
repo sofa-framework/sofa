@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_MERGEVISUALMODELS_H
-#define SOFA_COMPONENT_ENGINE_MERGEVISUALMODELS_H
+#pragma once
 
 #include <sofa/gl/component/model/config.h>
 
@@ -34,13 +33,7 @@
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/gl/component/model/OglModel.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::model
 {
 
 /**
@@ -289,15 +282,6 @@ public:
         update();
     }
 
-
-
 };
 
-
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::gl::component::model

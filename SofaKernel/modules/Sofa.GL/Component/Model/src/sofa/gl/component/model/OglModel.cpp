@@ -31,14 +31,7 @@
 #include <cstring>
 #include <sofa/type/RGBAColor.h>
 
-//#define DEBUG_DRAW
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::model
 {
 
 using sofa::type::RGBAColor;
@@ -47,7 +40,7 @@ using namespace sofa::type;
 using namespace sofa::defaulttype;
 
 int OglModelClass = core::RegisterObject("Generic visual model for OpenGL display")
-    .add< sofa::component::visualmodel::OglModel >();
+    .add< OglModel >();
 
 template<class T>
 const T* getData(const sofa::type::vector<T>& v) { return &v[0]; }
@@ -1076,9 +1069,4 @@ GLenum OglModel::getGLenum(const char* c ) const
 }
 
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::gl::component::model

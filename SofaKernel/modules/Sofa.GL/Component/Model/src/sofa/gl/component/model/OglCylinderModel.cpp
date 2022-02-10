@@ -19,25 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaOpenglVisual/config.h>
+#include <sofa/gl/component/model/OglCylinderModel.h>
+#include <sofa/gl/component/model/config.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
-
-#include <sofa/core/loader/VoxelLoader.h>
-
-#include <sofa/gl/component/model/OglCylinderModel.h>
 #include <sofa/core/visual/VisualParams.h>
-
 #include <sofa/core/topology/TopologyData.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::model
 {
 
 int OglCylinderModelClass = core::RegisterObject("A simple visualization for set of cylinder.")
@@ -175,11 +166,4 @@ void OglCylinderModel::exportOBJ(std::string name, std::ostream* out, std::ostre
     vindex += nbv;
 }
 
-
-
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::gl::component::model

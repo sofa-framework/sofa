@@ -21,13 +21,8 @@
 ******************************************************************************/
 #include "OglShaderMacro.h"
 #include <sofa/core/ObjectFactory.h>
-namespace sofa
-{
 
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 //Register OglIntVariable in the Object Factory
@@ -66,8 +61,4 @@ void OglShaderDefineMacro::init()
         (*it)->addDefineMacro(indexShader.getValue(), id.getValue(), value.getValue());
 }
 
-}
-
-}
-
-}
+} // namespace sofa::gl::component::rendering

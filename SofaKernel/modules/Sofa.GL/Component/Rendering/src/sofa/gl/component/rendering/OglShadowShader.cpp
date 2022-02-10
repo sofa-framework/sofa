@@ -26,15 +26,8 @@
 
 #include <sofa/gl/component/rendering/LightManager.h>
 
-namespace sofa
+namespace sofa::gl::component::rendering
 {
-
-namespace component
-{
-
-namespace visualmodel
-{
-
 
 //Register OglShader in the Object Factory
 int OglShadowShaderClass = core::RegisterObject("This component sets the shader system responsible of the shadowing.")
@@ -93,8 +86,4 @@ void OglShadowShader::initShaders(unsigned int /* numberOfLights */, bool softSh
     fragFilename.endEdit();
 }
 
-}//namespace visualmodel
-
-} //namespace component
-
-} //namespace sofa
+} // namespace sofa::gl::component::rendering

@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef _OGL_ATTRIBUTE_INL_
-#define _OGL_ATTRIBUTE_INL_
+#pragma once
 
 #include <sofa/gl/component/rendering/OglAttribute.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -28,13 +27,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/TopologyData.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 template < int size, unsigned int type, class DataTypes>
@@ -237,10 +230,4 @@ void OglAttribute< size, type, DataTypes>::reinit()
     _needUpdate = true;
 }
 
-} // namespace visual
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::gl::component::rendering

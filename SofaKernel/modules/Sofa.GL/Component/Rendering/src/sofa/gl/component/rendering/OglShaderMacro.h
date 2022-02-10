@@ -19,19 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef OGLSHADERMACRO_H_
-#define OGLSHADERMACRO_H_
+#pragma once
+
 #include <sofa/gl/component/rendering/config.h>
 
 #include <sofa/gl/component/rendering/OglShader.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 /**
@@ -79,10 +73,4 @@ public:
     core::objectmodel::BaseData* getSEValue() override { return &value; }
 };
 
-}
-
-}
-
-}
-
-#endif /*OGLSHADERMACRO_H_*/
+} // namespace sofa::gl::component::rendering

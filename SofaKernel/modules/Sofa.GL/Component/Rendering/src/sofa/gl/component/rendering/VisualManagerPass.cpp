@@ -24,13 +24,7 @@
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 using namespace sofa::gl;
@@ -72,8 +66,8 @@ VisualManagerPass::~VisualManagerPass()
 
 bool VisualManagerPass::checkMultipass(sofa::core::objectmodel::BaseContext* con)
 {
-    sofa::component::visualmodel::CompositingVisualLoop* isMultipass=nullptr;
-    isMultipass= con->core::objectmodel::BaseContext::get<sofa::component::visualmodel::CompositingVisualLoop>();
+    sofa::gl::component::rendering::CompositingVisualLoop* isMultipass=nullptr;
+    isMultipass= con->core::objectmodel::BaseContext::get<sofa::gl::component::rendering::CompositingVisualLoop>();
     return (isMultipass!=nullptr);
 }
 
@@ -184,8 +178,4 @@ bool VisualManagerPass::hasFilledFbo()
 }
 
 
-}//namespace visualmodel
-
-}//namespace component
-
-}//namespace sofa
+} // namespace sofa::gl::component::rendering

@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_OGLGRID_H
-#define SOFA_OGLGRID_H
+#pragma once
 #include <sofa/gl/component/model/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/type/RGBAColor.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::model
 {
 
 class OglGrid : public core::visual::VisualModel
@@ -65,10 +58,4 @@ protected:
 
 };
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_OGLGRID_H
+} // namespace sofa::gl::component::model

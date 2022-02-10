@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_OGLSCENEFRAME_H
-#define SOFA_OGLSCENEFRAME_H
+#pragma once
 #include <sofa/gl/component/model/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
@@ -28,13 +27,7 @@
 #include <sofa/gl/glu.h>
 #include <sofa/helper/OptionsGroup.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::model
 {
 
 class OglSceneFrame : public core::visual::VisualModel
@@ -63,10 +56,4 @@ protected:
 
 };
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_OGLSCENEFRAME_H
+} // namespace sofa::gl::component::model

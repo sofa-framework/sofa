@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef OGLTEXTURE_H_
-#define OGLTEXTURE_H_
+#pragma once
+
 #include <sofa/gl/component/rendering/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
@@ -31,13 +31,7 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/gl/component/rendering/OglShader.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 /**
@@ -121,10 +115,4 @@ public:
     void init() override;
 };
 
-}
-
-}
-
-}
-
-#endif /*OGLTEXTURE_H_*/
+} // namespace sofa::gl::component::rendering

@@ -19,10 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_LABEL_H
-#define SOFA_COMPONENT_VISUALMODEL_LABEL_H
-#include <string>
-
+#pragma once
 #include <sofa/gl/component/onscreen/config.h>
 
 #include <sofa/core/objectmodel/Data.h>
@@ -34,13 +31,7 @@
 #include <sofa/type/Vec.h>
 #include <SofaBaseVisual/BackgroundSetting.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::onscreen
 {
 
 class SOFA_GL_COMPONENT_ONSCREEN_API OglLabel : public core::visual::VisualModel
@@ -81,10 +72,4 @@ private:
     std::string                  m_internalLabel;
 };
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::gl::component::onscreen

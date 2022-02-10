@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_H
-#define SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_H
+#pragma once
 #include <sofa/gl/component/rendering/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
@@ -30,13 +29,7 @@
 #include <sofa/gl/template.h>
 #include <sofa/gl/component/rendering/OglShader.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 /**
@@ -403,12 +396,4 @@ public:
 
 };
 
-
-
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_H
+} // namespace sofa::gl::component::rendering

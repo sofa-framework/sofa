@@ -30,13 +30,7 @@
 #include <sofa/gl/glu.h>
 #include <SofaBaseVisual/VisualStyle.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::onscreen
 {
 
 using namespace sofa::type;
@@ -99,7 +93,7 @@ bool OglViewport::isVisible(const core::visual::VisualParams*)
         return false;
     if (p_advancedRendering.getValue())
     {
-        VisualStyle* vstyle = nullptr;
+        sofa::component::visual::VisualStyle* vstyle = nullptr;
         this->getContext()->get(vstyle);
         if (vstyle && !vstyle->displayFlags.getValue().getShowAdvancedRendering())
             return false;
@@ -466,8 +460,4 @@ void OglViewport::draw(const core::visual::VisualParams* vparams)
 	}
 }
 
-}
-
-}
-
-}
+} // namespace sofa::gl::component::onscreen

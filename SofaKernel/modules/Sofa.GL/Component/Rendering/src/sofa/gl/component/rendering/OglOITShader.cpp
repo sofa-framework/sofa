@@ -26,15 +26,8 @@
 
 #include <sofa/gl/component/rendering/LightManager.h>
 
-namespace sofa
+namespace sofa::gl::component::rendering
 {
-
-namespace component
-{
-
-namespace visualmodel
-{
-
 
 //Register OglShader in the Object Factory
 int OglOITShaderClass = core::RegisterObject("OglOITShader")
@@ -71,8 +64,4 @@ sofa::gl::GLSLShader* OglOITShader::accumulationShader()
     return shaderVector[0];
 }
 
-}//namespace visualmodel
-
-} //namespace component
-
-} //namespace sofa
+} // namespace sofa::gl::component::rendering

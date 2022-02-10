@@ -30,13 +30,7 @@
 #include <string>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::onscreen
 {
 
 int OglColorMapClass = core::RegisterObject("Provides color palette and support for conversion of numbers to colors.")
@@ -277,8 +271,4 @@ void OglColorMap::drawVisual(const core::visual::VisualParams* vparams)
 }
 
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::gl::component::onscreen

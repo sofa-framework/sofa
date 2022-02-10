@@ -27,14 +27,7 @@
 #include <sofa/simulation/fwd.h>
 #include <sofa/simulation/Simulation.h>
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 //Register DirectionalLight in the Object Factory
@@ -986,8 +979,4 @@ GLuint SpotLight::getColorTexture()
         return m_shadowFBO->getColorTexture();
 }
 
-}
-
-} //namespace component
-
-} //namespace sofa
+} // namespace sofa::gl::component::rendering

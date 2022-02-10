@@ -22,15 +22,9 @@
 #include <SofaOpenglVisual/config.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include "OglSceneFrame.h"
+#include <sofa/gl/component/model/OglSceneFrame.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::model
 {
 
 int OglSceneFrameClass = core::RegisterObject("Display a frame at the corner of the scene view")
@@ -290,8 +284,4 @@ void OglSceneFrame::draw(const core::visual::VisualParams* vparams)
 
 }
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::gl::component::model

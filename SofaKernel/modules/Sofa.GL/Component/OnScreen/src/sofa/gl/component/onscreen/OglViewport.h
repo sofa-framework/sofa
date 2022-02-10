@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_OGLVIEWPORT_H_
-#define SOFA_COMPONENT_VISUALMODEL_OGLVIEWPORT_H_
+#pragma once
 #include <sofa/gl/component/onscreen/config.h>
 
 #include <sofa/core/visual/VisualManager.h>
@@ -31,13 +30,7 @@
 #include <sofa/gl/FrameBufferObject.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::onscreen
 {
 
 class OglViewport : public core::visual::VisualManager
@@ -82,10 +75,5 @@ protected:
     void renderFBOToScreen(core::visual::VisualParams* vp);
 
 };
-}
 
-}
-
-}
-
-#endif /* SOFA_COMPONENT_VISUALMODEL_OGLVIEWPORT_H_ */
+} // namespace sofa::gl::component::onscreen

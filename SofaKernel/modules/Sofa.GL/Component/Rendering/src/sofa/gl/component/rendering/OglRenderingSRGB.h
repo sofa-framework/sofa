@@ -19,20 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_OGLRENDERING_SRGB_H
-#define SOFA_OGLRENDERING_SRGB_H
+#pragma once
+
 #include <sofa/gl/component/rendering/config.h>
 
 #include <sofa/core/visual/VisualManager.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 /**
@@ -48,10 +42,4 @@ public:
     void bwdDraw(core::visual::VisualParams* ) override;
 };
 
-}//namespace visualmodel
-
-}//namespace component
-
-}//namespace sofa
-
-#endif //SOFA_RENDERING_SRGB_H
+} // namespace sofa::gl::component::rendering

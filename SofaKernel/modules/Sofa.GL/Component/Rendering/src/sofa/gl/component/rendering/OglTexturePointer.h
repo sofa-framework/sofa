@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef OGLTEXTUREPOINTER_H_
-#define OGLTEXTUREPOINTER_H_
+#pragma once
 #include <sofa/gl/component/rendering/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
@@ -32,13 +31,7 @@
 #include <sofa/gl/component/rendering/OglShader.h>
 #include <sofa/gl/component/rendering/OglTexture.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 /**
@@ -55,7 +48,7 @@ public:
     SOFA_CLASS2(OglTexturePointer, core::visual::VisualModel, OglShaderElement);
 
 protected:
-    typedef SingleLink< OglTexturePointer, component::visualmodel::OglTexture, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkTexture;
+    typedef SingleLink< OglTexturePointer, gl::component::rendering::OglTexture, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkTexture;
     LinkTexture l_oglTexture;
 
     OglTexturePointer();
@@ -87,10 +80,4 @@ public:
     core::objectmodel::BaseData* getSEValue() override { return &textureUnit; }
 };
 
-}
-
-}
-
-}
-
-#endif /*OGLTEXTUREPOINTER_H_*/
+} // namespace sofa::gl::component::rendering

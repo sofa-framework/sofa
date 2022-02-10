@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ORDERINDEPENDENTTRANSPARENCYMANAGER_H
-#define SOFA_COMPONENT_ORDERINDEPENDENTTRANSPARENCYMANAGER_H
+#pragma once
 
 #include <sofa/gl/component/rendering/config.h>
 
@@ -28,13 +27,7 @@
 #include <sofa/gl/GLSLShader.h>
 #include <sofa/gl/component/rendering/OglOITShader.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 /**
@@ -106,10 +99,4 @@ private:
 
 };
 
-}// namespace visualmodel
-
-}// namespace component
-
-}// namespace sofa
-
-#endif //SOFA_COMPONENT_ORDERINDEPENDENTTRANSPARENCYMANAGER_H
+}// namespace sofa::gl::component::rendering

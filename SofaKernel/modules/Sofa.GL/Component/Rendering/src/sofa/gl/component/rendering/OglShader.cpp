@@ -26,15 +26,8 @@
 #include <sofa/helper/system/FileRepository.h>
 
 
-namespace sofa
+namespace sofa::gl::component::rendering
 {
-
-namespace component
-{
-
-namespace visualmodel
-{
-
 
 //Register OglShader in the Object Factory
 int OglShaderClass = core::RegisterObject("OglShader")
@@ -557,8 +550,8 @@ void OglShaderElement::init()
         id.setValue(this->getName());
 
     /*when no multipass is active */
-    sofa::component::visualmodel::CompositingVisualLoop* isMultipass=nullptr;
-    isMultipass= mycontext->core::objectmodel::BaseContext::get<sofa::component::visualmodel::CompositingVisualLoop>();
+    sofa::gl::component::rendering::CompositingVisualLoop* isMultipass=nullptr;
+    isMultipass= mycontext->core::objectmodel::BaseContext::get<sofa::gl::component::rendering::CompositingVisualLoop>();
     if(isMultipass==nullptr)
     {
         if ( OglShader* shader = mycontext->core::objectmodel::BaseContext::get<OglShader>(this->getTags()) )
@@ -593,8 +586,4 @@ void OglShaderElement::init()
 }
 
 
-}//namespace visualmodel
-
-} //namespace component
-
-} //namespace sofa
+} // namespace sofa::gl::component::rendering

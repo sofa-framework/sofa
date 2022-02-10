@@ -26,11 +26,7 @@
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
-namespace component
-{
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 int CompositingVisualLoopClass = core::RegisterObject("Visual loop enabling multipass rendering. Needs multiple fbo data and a compositing shader")
@@ -72,8 +68,8 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
     if ( !l_node ) return;
 
     sofa::core::visual::tristate renderingState;
-    component::visualmodel::VisualStyle::SPtr visualStyle = nullptr;
-    l_node->get(visualStyle);
+    sofa::component::visual::VisualStyle::SPtr visualStyle = nullptr;
+    gRoot->get(visualStyle);
     const sofa::core::visual::DisplayFlags &backupFlags = vparams->displayFlags();
     const sofa::core::visual::DisplayFlags &currentFlags = visualStyle->displayFlags.getValue();
     vparams->displayFlags() = sofa::core::visual::merge_displayFlags(backupFlags, currentFlags);
@@ -144,7 +140,4 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
     }
 }
 
-
-} // namespace visualmodel
-} // namespace component
-} //sofa
+} // namespace sofa::gl::component::rendering

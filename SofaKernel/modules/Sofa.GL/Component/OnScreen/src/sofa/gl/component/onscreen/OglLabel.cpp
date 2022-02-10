@@ -30,13 +30,7 @@
 #include <string>
 #include <iostream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::onscreen
 {
 
 using sofa::component::configurationsetting::BackgroundSetting ;
@@ -194,8 +188,4 @@ int OglLabelClass = core::RegisterObject("Display 2D text in the viewport.")
         .add< OglLabel >()
         ;
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::gl::component::onscreen

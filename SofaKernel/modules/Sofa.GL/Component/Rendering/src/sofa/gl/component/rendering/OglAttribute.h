@@ -20,8 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef _OGL_ATTRIBUTE_H_
-#define _OGL_ATTRIBUTE_H_
+#pragma once
+
 #include <sofa/gl/component/rendering/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
@@ -29,13 +29,7 @@
 #include <sofa/gl/component/rendering/OglShader.h>
 #include <sofa/core/topology/TopologyData.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 template< int size, unsigned int type, class TDataTypes>
@@ -215,10 +209,4 @@ public:
 
 };
 
-} // namespace visual
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::gl::component::rendering

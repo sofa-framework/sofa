@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_DATADISPLAY_H
-#define SOFA_COMPONENT_VISUALMODEL_DATADISPLAY_H
+#pragma once
 #include <sofa/gl/component/model/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
@@ -30,16 +29,10 @@
 
 #include <sofa/type/RGBAColor.h>
 
-namespace sofa
+namespace sofa::gl::component::model
 {
 
-namespace component
-{
-
-namespace visualmodel
-{
-
-class SOFA_GL_COMPONENT_MODEL_API DataDisplay : public core::visual::VisualModel, public component::visual::Vec3State
+class SOFA_GL_COMPONENT_MODEL_API DataDisplay : public core::visual::VisualModel, public sofa::component::visual::Vec3State
 {
 public:
     SOFA_CLASS2(DataDisplay, core::visual::VisualModel, Vec3State);
@@ -64,7 +57,7 @@ public:
     Data<float> d_shininess; ///< Shininess for rendering point-based data [0,128].  <0 means no specularity
     Data<Real> d_transparency; ///< Add transparency when we draw triangles (this allows to see inside the volume).
 
-    visualmodel::OglColorMap *colorMap;
+    gl::component::onscreen::OglColorMap *colorMap;
     core::State<DataTypes> *state;
     core::topology::BaseMeshTopology* m_topology;
 
@@ -87,10 +80,4 @@ protected:
     DataDisplay();
 };
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
-#endif // #ifndef SOFA_COMPONENT_VISUALMODEL_DATADISPLAY_H
+} // namespace sofa::gl::component::model

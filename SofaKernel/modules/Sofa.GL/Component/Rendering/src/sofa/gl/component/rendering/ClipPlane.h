@@ -19,21 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CLIPPLANE_H
-#define SOFA_COMPONENT_CLIPPLANE_H
+#pragma once
 #include <sofa/gl/component/rendering/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/gl/template.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 class SOFA_GL_COMPONENT_RENDERING_API ClipPlane : public core::visual::VisualModel
@@ -60,10 +53,4 @@ protected:
     double saveEq[4];
 };
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::gl::component::rendering

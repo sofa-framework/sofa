@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_COMPOSITINGVISUALLOOP_H
-#define SOFA_SIMULATION_COMPOSITINGVISUALLOOP_H
+#pragma once
+
 #include <sofa/gl/component/rendering/config.h>
 
 #include <sofa/simulation/DefaultVisualManagerLoop.h>
@@ -32,13 +32,7 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/objectmodel/Event.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 /**
@@ -72,9 +66,4 @@ public:
     void drawStep(sofa::core::visual::VisualParams* vparams) override;
 };
 
-} // namespace visualmodel
-
-} // namespace component
-
-} //sofa
-#endif  /* SOFA_SIMULATION_COMPOSITINGVISUALLOOP_H */
+} // namespace sofa::gl::component::rendering

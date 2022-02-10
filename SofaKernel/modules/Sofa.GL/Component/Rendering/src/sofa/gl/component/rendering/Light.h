@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LIGHT
-#define SOFA_COMPONENT_LIGHT
+#pragma once
 #include <sofa/gl/component/rendering/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
@@ -33,13 +32,7 @@
 #include <sofa/gl/FrameBufferObject.h>
 #include <sofa/gl/component/rendering/OglShader.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 /**
@@ -205,10 +198,4 @@ private:
 
 };
 
-} //namespace visualmodel
-
-} //namespace component
-
-} //namespace sofa
-
-#endif //SOFA_COMPONENT_LIGHT
+} // namespace sofa::gl::component::rendering

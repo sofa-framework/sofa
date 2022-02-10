@@ -25,17 +25,11 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::model
 {
 
 int OglGridClass = core::RegisterObject("Display a simple grid")
-        .add< component::visualmodel::OglGrid>()
+        .add< OglGrid>()
         ;
 
 using namespace sofa::defaulttype;
@@ -178,8 +172,4 @@ void OglGrid::drawVisual(const core::visual::VisualParams* vparams)
 
 }
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::gl::component::model

@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_OGLMODEL_H
-#define SOFA_COMPONENT_VISUALMODEL_OGLMODEL_H
+#pragma once
 #include <sofa/gl/component/model/config.h>
 
 #include <vector>
@@ -35,13 +34,7 @@
 
 #define   NB_MAX_TEXTURES 16
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::model
 {
 
 /**
@@ -52,10 +45,10 @@ namespace visualmodel
  *
  */
 
-class SOFA_GL_COMPONENT_MODEL_API OglModel : public VisualModelImpl
+class SOFA_GL_COMPONENT_MODEL_API OglModel : public sofa::component::visual::VisualModelImpl
 {
 public:
-    using Inherit = VisualModelImpl;
+    using Inherit = sofa::component::visual::VisualModelImpl;
 
     SOFA_CLASS(OglModel, Inherit);
 
@@ -158,10 +151,4 @@ public:
 
 typedef sofa::type::Vec<3,GLfloat> GLVec3f;
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::gl::component::model

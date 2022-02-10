@@ -38,13 +38,7 @@
 #include <sofa/type/RGBAColor.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::model
 {
 
 int PointSplatModelClass = core::RegisterObject("A simple visualization for a cloud of points.")
@@ -242,9 +236,4 @@ void PointSplatModel::drawTransparent(const core::visual::VisualParams* vparams)
     glPopAttrib();
 }
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::gl::component::model

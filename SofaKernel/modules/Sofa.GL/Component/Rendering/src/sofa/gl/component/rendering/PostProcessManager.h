@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_POSTPROCESSMANAGER_H_
-#define SOFA_COMPONENT_POSTPROCESSMANAGER_H_
+#pragma once
+
 #include <sofa/gl/component/rendering/config.h>
 
 #include <sofa/core/visual/VisualManager.h>
@@ -29,13 +29,7 @@
 #include <sofa/gl/component/rendering/OglShader.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 class SOFA_GL_COMPONENT_RENDERING_API PostProcessManager : public core::visual::VisualManager
@@ -72,10 +66,4 @@ public:
     void handleEvent(sofa::core::objectmodel::Event* event) override;
 };
 
-} //visualmodel
-
-} //component
-
-} //sofa
-
-#endif /* SOFA_COMPONENT_POSTPROCESSMANAGER_H_ */
+} // namespace sofa::gl::component::rendering

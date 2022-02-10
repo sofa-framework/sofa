@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMANAGERPASS_H
-#define SOFA_COMPONENT_VISUALMANAGERPASS_H
+#pragma once
+
 #include <sofa/gl/component/rendering/config.h>
 
 #include <sofa/gl/component/rendering/CompositingVisualLoop.h>
@@ -31,13 +31,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 /**
@@ -87,10 +81,4 @@ public:
     std::string getOutputName();
 };
 
-}//namespace visualmodel
-
-}//namespace component
-
-}//namespace sofa
-
-#endif //SOFA_COMPONENT_LIGHT_MANAGER_H
+} // namespace sofa::gl::component::rendering

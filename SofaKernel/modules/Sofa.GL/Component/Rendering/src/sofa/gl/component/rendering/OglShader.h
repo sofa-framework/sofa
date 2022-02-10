@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_OGLSHADER
-#define SOFA_COMPONENT_OGLSHADER
+#pragma once
+
 #include <sofa/gl/component/rendering/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
@@ -31,13 +31,7 @@
 #include <sofa/gl/GLSLShader.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 /**
@@ -205,10 +199,4 @@ public:
     //virtual void setInShader(OglShader& s) = 0;
 };
 
-}//namespace visualmodel
-
-} //namespace component
-
-} //namespace sofa
-
-#endif //SOFA_COMPONENT_OGLSHADER
+} // namespace sofa::gl::component::rendering

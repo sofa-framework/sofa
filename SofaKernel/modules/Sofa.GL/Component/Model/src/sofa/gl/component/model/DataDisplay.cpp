@@ -34,19 +34,12 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::model
 {
 
 using namespace sofa::type;
 using namespace sofa::defaulttype;
-using sofa::component::visualmodel::OglColorMap;
+using sofa::gl::component::onscreen::OglColorMap;
 
 int DataDisplayClass = core::RegisterObject("Rendering of meshes colored by data")
         .add< DataDisplay >()
@@ -509,8 +502,4 @@ void DataDisplay::computeNormals()
         m_normals[i].normalize();
 }
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::gl::component::model

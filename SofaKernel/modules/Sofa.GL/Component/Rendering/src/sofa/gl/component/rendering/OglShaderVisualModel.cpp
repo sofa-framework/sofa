@@ -28,13 +28,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/gl/component/rendering/OglAttribute.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 using namespace sofa::core::topology;
@@ -273,8 +267,4 @@ void OglShaderVisualModel::computeRestNormals()
 }
 
 
-} //namespace visualmodel
-
-} //namespace component
-
-} //namespace sofa
+} // namespace sofa::gl::component::rendering

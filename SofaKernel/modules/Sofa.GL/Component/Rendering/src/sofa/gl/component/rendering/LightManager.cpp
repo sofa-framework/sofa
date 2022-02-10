@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/gl/component/rendering/LightManager.h>
-using sofa::component::visualmodel::OglShadowShader;
+using sofa::gl::component::rendering::OglShadowShader;
 
 #include <sofa/core/visual/VisualParams.h>
 using sofa::core::visual::VisualParams ;
@@ -31,7 +31,7 @@ using sofa::core::visual::VisualParams ;
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 
 #include <sofa/gl/component/rendering/OglTexture.h>
-using sofa::component::visualmodel::OglTexture ;
+using sofa::gl::component::rendering::OglTexture ;
 
 using sofa::core::objectmodel::BaseContext ;
 using sofa::core::RegisterObject ;
@@ -40,13 +40,7 @@ using sofa::type::Mat ;
 
 using sofa::type::RGBAColor ;
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 //Register LightManager in the Object Factory
@@ -522,8 +516,4 @@ void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
 
 }
 
-}//namespace visualmodel
-
-}//namespace component
-
-}//namespace sofa
+} // namespace sofa::gl::component::rendering

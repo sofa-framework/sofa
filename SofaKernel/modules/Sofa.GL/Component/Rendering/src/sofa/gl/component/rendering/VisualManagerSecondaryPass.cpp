@@ -23,13 +23,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 using namespace sofa::gl;
@@ -327,6 +321,4 @@ bool VisualManagerSecondaryPass::drawScene(VisualParams* vp)
         return false;
 }
 
-} //namespaces
-}
-}
+} //  namespace sofa::gl::component::rendering

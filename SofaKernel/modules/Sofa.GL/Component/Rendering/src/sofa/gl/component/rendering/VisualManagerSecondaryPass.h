@@ -19,31 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMANAGER_SECONDARY_PASS_H
-#define SOFA_COMPONENT_VISUALMANAGER_SECONDARY_PASS_H
+#pragma once
+
 #include <sofa/gl/component/rendering/config.h>
 
 #include <sofa/gl/component/rendering/VisualManagerPass.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/gl/component/rendering/OglShader.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 /**
  *  \brief Render pass element: render the relevant tagged objects in a FBO
  */
 
-class SOFA_GL_COMPONENT_RENDERING_API VisualManagerSecondaryPass : public component::visualmodel::VisualManagerPass
+class SOFA_GL_COMPONENT_RENDERING_API VisualManagerSecondaryPass : public gl::component::rendering::VisualManagerPass
 {
 public:
-    SOFA_CLASS(VisualManagerSecondaryPass, component::visualmodel::VisualManagerPass);
+    SOFA_CLASS(VisualManagerSecondaryPass, gl::component::rendering::VisualManagerPass);
 
     Data< sofa::core::objectmodel::TagSet > input_tags; ///< list of input passes used as source textures
     Data< sofa::core::objectmodel::TagSet > output_tags; ///< output reference tag (use it if the resulting fbo is used as a source for another secondary pass)
@@ -78,11 +72,4 @@ private:
     int nbFbo;
 };
 
-}//namespace visualmodel
-
-}//namespace component
-
-}//namespace sofa
-
-
-#endif // SOFA_CORE_VISUAL_VISUALMANAGER_H
+} // namespace sofa::gl::component::rendering

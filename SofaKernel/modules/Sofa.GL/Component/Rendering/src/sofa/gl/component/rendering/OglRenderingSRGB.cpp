@@ -23,14 +23,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 using namespace simulation;
@@ -54,6 +47,4 @@ void OglRenderingSRGB::bwdDraw(core::visual::VisualParams* /*vp*/)
 #endif
 }
 
-}
-}
-}
+} // namespace sofa::gl::component::rendering

@@ -24,13 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace visualmodel
+namespace sofa::gl::component::rendering
 {
 
 //Register PostProcessManager in the Object Factory
@@ -62,7 +56,7 @@ PostProcessManager::~PostProcessManager()
 void PostProcessManager::init()
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
-    dofShader = context->core::objectmodel::BaseContext::get<sofa::component::visualmodel::OglShader>();
+    dofShader = context->core::objectmodel::BaseContext::get<sofa::gl::component::rendering::OglShader>();
 
     if (!dofShader)
     {
@@ -213,8 +207,4 @@ void PostProcessManager::handleEvent(sofa::core::objectmodel::Event* /*event*/)
 {
 }
 
-} //visualmodel
-
-} //component
-
-} //sofa
+} // namespace sofa::gl::component::rendering

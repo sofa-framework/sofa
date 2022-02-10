@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_VISUALMODEL_POINTSPLATMODEL_H
-#define SOFA_COMPONENT_VISUALMODEL_POINTSPLATMODEL_H
+#pragma once
 #include <sofa/gl/component/model/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
@@ -28,24 +27,17 @@
 #include <sofa/core/topology/TopologyData.h>
 #include <sofa/type/RGBAColor.h>
 
-namespace sofa
+namespace sofa::core::topology
 {
-namespace core
-{
-namespace topology
-{
-class BaseMeshTopology;
-}
-namespace behavior
-{
-class BaseMechanicalState;
-}
-}
+    class BaseMeshTopology;
+} // namespace sofa::core::topology
 
-namespace component
+namespace sofa::core::behavior
 {
+    class BaseMechanicalState;
+} // namespace sofa::core::behavior
 
-namespace visualmodel
+namespace sofa::gl::component::model
 {
 
 class SOFA_GL_COMPONENT_MODEL_API PointSplatModel : public core::visual::VisualModel
@@ -81,10 +73,4 @@ private:
     typedef defaulttype::Vec3fTypes::Real Real;
 };
 
-} // namespace visualmodel
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::gl::component::model
