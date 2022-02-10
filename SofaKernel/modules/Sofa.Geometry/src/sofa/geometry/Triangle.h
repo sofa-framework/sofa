@@ -71,24 +71,26 @@ struct Triangle
         }
     }
 
-
+    /**
+    * @brief	Compute the normal of a triangle
+    * @remark   triangle normal computation is only possible in 3D
+    * @remark   normal returned is not normalised
+    * @tparam   Node iterable container (or sofa::type::Vec with cross() and norm())
+    * @tparam   T scalar
+    * @param	n0,n1,n2 nodes of the triangle
+    * @return	Vec3 normal of this triangle
+    */
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
-        [[nodiscard]]
+    [[nodiscard]]
     static constexpr auto normal(const Node& n0, const Node& n1, const Node& n2)
     {
-        if constexpr (std::is_same_v < Node, sofa::type::Vec<3, T> >)
-        {
-            sofa::type::Vec<3, T> normal_t = (n1 - n0).cross(n2 - n0);
-            return normal_t;
-        }
-        else /*if constexpr (std::is_same_v< Node, sofa::type::Vec<2, T> >)*/
-        {
-            // shoelace formula
-            return sofa::type::Vec<3, T>();
-        }
+        constexpr Node n{};
+        static_assert(std::distance(std::begin(n), std::end(n)) == 3, "Triangle normal can only be computed in 3 dimensions.");
+
+        return (n1 - n0).cross(n2 - n0);
     }
 };
 
