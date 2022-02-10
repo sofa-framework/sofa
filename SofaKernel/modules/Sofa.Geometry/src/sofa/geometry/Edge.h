@@ -89,44 +89,66 @@ struct Edge
     }
 
 
-
+    /**
+    * @brief	Compute the barycentric coefficients of input point on Edge (n0, n1)
+    * @tparam   Node iterable container
+    * @tparam   T scalar
+    * @param	point: position of the point to compute the coefficients
+    * @param	n0,n1: nodes of the edge
+    * @return	sofa::type::Vec<2, T> barycentric coefficients
+    */
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
-        static constexpr auto pointBaryCoefs(const sofa::type::Vec<3, T>& point, const Node& n0, const Node& n1)
+    static constexpr auto pointBaryCoefs(const Node& point, const Node& n0, const Node& n1)
     {
         sofa::type::Vec<2, T> baryCoefs;
-        const T dis = (n1 - n0).norm();
+        const T dist = (n1 - n0).norm();
 
-        if (dis < 1e-6) // TODO: change this threshold to limit
+        if (dist < EQUALITY_THRESHOLD)
         {
             baryCoefs[0] = 0.5;
             baryCoefs[1] = 0.5;
         }
         else
         {
-            baryCoefs[0] = (point - n1).norm() / dis;
-            baryCoefs[1] = (point - n0).norm() / dis;
+            baryCoefs[0] = (point - n1).norm() / dist;
+            baryCoefs[1] = (point - n0).norm() / dist;
         }
 
         return baryCoefs;
     }
 
 
+    /**
+    * @brief	Compute the intersection between a plan (defined by a point and a normal) and the Edge (n0, n1)
+    * @tparam   Node iterable container
+    * @tparam   T scalar
+    * @param	n0,n1 nodes of the edge
+    * @param	planP0,normal position and normal defining the plan
+    * @param    intersection position of the intersection (if one) between the plan and the Edge
+    * @return	bool true if there is an intersection, otherwise false
+    */
     template<typename Node,
         typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
-        static constexpr bool intersectionWithPlane(const Node& n0, const Node& n1, const sofa::type::Vec<3, T>& planP0, const sofa::type::Vec<3, T>& normal, sofa::type::Vec<3, T>& intersection)
+    [[nodiscard]]
+    static constexpr bool intersectionWithPlane(const Node& n0, const Node& n1, const sofa::type::Vec<3, T>& planP0, const sofa::type::Vec<3, T>& normal, sofa::type::Vec<3, T>& intersection)
     {
         //plane equation
         const sofa::type::Vec<3, T> planNorm = normal.normalized();
         const T d = planNorm * planP0;
 
         //compute intersection between line and plane equation
-        T t = (d - planNorm * n0) / (planNorm * (n1 - n0));
+        const T denominator = planNorm * (n1 - n0);
+        if (denominator < EQUALITY_THRESHOLD)
+        {
+            return false;
+        }
 
+        const T t = (d - planNorm * n0) / denominator;
         if ((t <= 1) && (t >= 0))
         {
             intersection = edgeP1 + (edgeP2 - edgeP1) * t;
