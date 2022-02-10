@@ -1,3 +1,3 @@
 # ArticulatedSystemPlugin
 
-Note: Controllers have created by the company Digital Trainers
+Note: Controllers have been created by the company Digital Trainers
