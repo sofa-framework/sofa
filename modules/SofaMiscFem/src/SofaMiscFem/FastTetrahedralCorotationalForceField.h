@@ -78,7 +78,7 @@ public:
     typedef sofa::Index Index;
     
 
-protected:    
+public:
     /// data structure stored for each tetrahedron
     class TetrahedronRestInformation
     {
@@ -147,6 +147,7 @@ protected:
     /// Link to be set to the topology container in the component graph.
     SingleLink<FastTetrahedralCorotationalForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
+protected:
     FastTetrahedralCorotationalForceField();
 
     virtual ~FastTetrahedralCorotationalForceField();
