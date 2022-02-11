@@ -74,7 +74,7 @@ struct Triangle
     /**
     * @brief	Compute the normal of a triangle
     * @remark   triangle normal computation is only possible in 3D
-    * @remark   normal returned is not normalised
+    * @remark   normal returned is not normalized
     * @tparam   Node iterable container (or sofa::type::Vec with cross() and norm())
     * @tparam   T scalar
     * @param	n0,n1,n2 nodes of the triangle
