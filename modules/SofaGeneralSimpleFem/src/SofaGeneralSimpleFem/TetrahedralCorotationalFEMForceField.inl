@@ -767,7 +767,7 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::computeRotationLarg
     const Coord edgex = (p[b]-p[a]).normalized();
           Coord edgey = p[c]-p[a];
     const Coord edgez = cross( edgex, edgey ).normalized();
-                edgey = cross( edgez, edgex );
+                edgey = cross( edgez, edgex ); //edgey is unit vector because edgez and edgex are orthogonal unit vectors
 
     r[0][0] = edgex[0];
     r[0][1] = edgex[1];

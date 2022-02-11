@@ -829,13 +829,11 @@ void HexahedronFEMForceField<DataTypes>::initLarge(int i, const Element &elem)
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::computeRotationLarge( Transformation &r, Coord &edgex, Coord &edgey)
 {
-
     edgex.normalize();
-    edgey.normalize();
 
-    const Coord edgez = cross( edgex, edgey );
+    const Coord edgez = cross( edgex, edgey ).normalized();
 
-    edgey = cross( edgez, edgex );
+    edgey = cross( edgez, edgex ); //edgey is unit vector because edgez and edgex are orthogonal unit vectors
 
     r[0][0] = edgex[0];
     r[0][1] = edgex[1];
