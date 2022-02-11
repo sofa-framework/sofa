@@ -158,6 +158,7 @@ public:
         AnimationStepData()
             : m_stepIteration(-1)
             , m_totalMs(0.0)
+            , m_overheadMs(0.)
         {}
 
         AnimationStepData(int step, const std::string& idString);
@@ -168,8 +169,17 @@ public:
         virtual ~AnimationStepData();
         int m_stepIteration;
         SReal m_totalMs;
+        SReal m_selfMs {}; ///< Difference between the total time and the time of all children
+        SReal m_selfPercent {}; ///< Difference between the total time and the time of all children as a percentage
+        std::string m_idString; ///< Name of the timer
 
         sofa::type::vector<AnimationSubStepData*> m_subSteps;
+
+        /// The overhead due to timers processing. In milliseconds
+        SReal m_overheadMs;
+
+        /// Total number of timers in this step
+        unsigned int m_totalTimers {};
     protected:
         bool processData(const std::string& idString);
     };
@@ -184,6 +194,8 @@ protected:
     void updateChart();
     /// Method to add new QTreeWidgetItem item inside the QTreeWidget using the data from \sa AnimationSubStepData
     QTreeWidgetItem* addTreeItem(AnimationSubStepData* subStep);
+
+    QTreeWidgetItem* addTreeItem(const AnimationStepData* step);
 
 public slots:
     void closeEvent( QCloseEvent* ) override
