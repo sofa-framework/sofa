@@ -301,7 +301,7 @@ void TopologicalChangeProcessor::processTopologicalChanges(double time)
             if (topoMod)
                 topoMod->removeItems(vitems);
             else
-                msg_error() << "No PointTopology available";
+                msg_error() << "No PointTopology Modifier available";
         }
 
         // iterate, time set to infini if no interval.
