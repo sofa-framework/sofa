@@ -122,12 +122,12 @@ struct Edge
 
 
     /**
-    * @brief	Compute the intersection between a plan (defined by a point and a normal) and the Edge (n0, n1)
+    * @brief	Compute the intersection between a plane (defined by a point and a normal) and the Edge (n0, n1)
     * @tparam   Node iterable container
     * @tparam   T scalar
     * @param	n0,n1 nodes of the edge
-    * @param	planP0,normal position and normal defining the plan
-    * @param    intersection position of the intersection (if one) between the plan and the Edge
+    * @param	planeP0,normal position and normal defining the plan
+    * @param    intersection position of the intersection (if one) between the plane and the Edge
     * @return	bool true if there is an intersection, otherwise false
     */
     template<typename Node,
@@ -135,23 +135,23 @@ struct Edge
         typename = std::enable_if_t<std::is_scalar_v<T>>
     >
     [[nodiscard]]
-    static constexpr bool intersectionWithPlane(const Node& n0, const Node& n1, const sofa::type::Vec<3, T>& planP0, const sofa::type::Vec<3, T>& normal, sofa::type::Vec<3, T>& intersection)
+    static constexpr bool intersectionWithPlane(const Node& n0, const Node& n1, const sofa::type::Vec<3, T>& planeP0, const sofa::type::Vec<3, T>& normal, sofa::type::Vec<3, T>& intersection)
     {
         constexpr Node n{}; 
-        static_assert(std::distance(std::begin(n), std::end(n)) == 3, "Plan - Edge intersection can only be computed in 3 dimensions.");
+        static_assert(std::distance(std::begin(n), std::end(n)) == 3, "Plane - Edge intersection can only be computed in 3 dimensions.");
 
         //plane equation
-        const sofa::type::Vec<3, T> planNorm = normal.normalized();
-        const T d = planNorm * planP0;
+        const sofa::type::Vec<3, T> planeNorm = normal.normalized();
+        const T d = planeNorm * planeP0;
 
         //compute intersection between line and plane equation
-        const T denominator = planNorm * (n1 - n0);
+        const T denominator = planeNorm * (n1 - n0);
         if (denominator < EQUALITY_THRESHOLD)
         {
             return false;
         }
 
-        const T t = (d - planNorm * n0) / denominator;
+        const T t = (d - planeNorm * n0) / denominator;
         if ((t <= 1) && (t >= 0))
         {
             intersection = n0 + (n1 - n0) * t;
