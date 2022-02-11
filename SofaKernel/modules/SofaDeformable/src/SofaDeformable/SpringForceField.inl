@@ -101,8 +101,6 @@ void SpringForceField<DataTypes>::updateTopologyIndicesFromSprings()
         indices1.push_back(spring.m1);
         indices2.push_back(spring.m2);
     }
-    d_springsIndices[0].endEdit();
-    d_springsIndices[1].endEdit();
 }
 
 template <class DataTypes>
@@ -111,6 +109,11 @@ void SpringForceField<DataTypes>::applyRemovedPoints(const sofa::core::topology:
     if (pointsRemoved == nullptr)
         return;
 
+    const auto& tab = pointsRemoved->getArray();
+
+    if (tab.empty())
+        return;
+    
     core::topology::BaseMeshTopology* modifiedTopology;
     if (mstateId == 0)
     {
@@ -124,37 +127,35 @@ void SpringForceField<DataTypes>::applyRemovedPoints(const sofa::core::topology:
     if (modifiedTopology == nullptr)
         return;
 
-    const auto& tab = pointsRemoved->getArray();
-
-    if (tab.empty())
-        return;
-
     type::vector<Spring>& springsValue = *sofa::helper::getWriteAccessor(this->springs);
     auto nbPoints = modifiedTopology->getNbPoints();
 
-    for (const auto pntId : tab)
+    for (const auto pntId : tab) // iterate on the pointIds to remove
     {
         --nbPoints;
 
         sofa::type::vector<sofa::Index> toDelete;
         sofa::Index i {};
-        for (const auto& spring : springsValue)
+        for (const auto& spring : springsValue) // loop on the list of springs to find springs with targeted pointId
         {
             auto& id = mstateId == 0 ? spring.m1 : spring.m2;
             if (id == pntId)
             {
-                dmsg_info() << "Spring " << spring << " has a removed point: REMOVED";
+                dmsg_info() << "Spring " << spring << " has a point to be removed: REMOVED pointId: " << pntId;
                 toDelete.push_back(i);
             }
             ++i;
         }
 
-        for (auto it = toDelete.rbegin(); it != toDelete.rend(); ++it)
+        for (auto it = toDelete.rbegin(); it != toDelete.rend(); ++it) // delete accumulated springs to be removed
         {
             springsValue.erase(springsValue.begin() + (*it));
         }
+        
+        if (pntId == nbPoints) // no need to renumbered springs as last pointId has just been removed
+            continue;
 
-        for (auto& spring : springsValue)
+        for (auto& spring : springsValue) // renumbered spring with last point indices to match the swap-pop_back process
         {
             auto& id = mstateId == 0 ? spring.m1 : spring.m2;
             if (id == nbPoints)
