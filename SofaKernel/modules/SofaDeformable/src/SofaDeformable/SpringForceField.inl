@@ -101,6 +101,7 @@ void SpringForceField<DataTypes>::updateTopologyIndicesFromSprings()
         indices1.push_back(spring.m1);
         indices2.push_back(spring.m2);
     }
+    areSpringIndicesDirty = false;
 }
 
 template <class DataTypes>
@@ -152,10 +153,10 @@ void SpringForceField<DataTypes>::applyRemovedPoints(const sofa::core::topology:
             springsValue.erase(springsValue.begin() + (*it));
         }
         
-        if (pntId == nbPoints) // no need to renumbered springs as last pointId has just been removed
+        if (pntId == nbPoints) // no need to renumber springs as last pointId has just been removed
             continue;
 
-        for (auto& spring : springsValue) // renumbered spring with last point indices to match the swap-pop_back process
+        for (auto& spring : springsValue) // renumber spring with last point indices to match the swap-pop_back process
         {
             auto& id = mstateId == 0 ? spring.m1 : spring.m2;
             if (id == nbPoints)
@@ -164,6 +165,8 @@ void SpringForceField<DataTypes>::applyRemovedPoints(const sofa::core::topology:
                 id = pntId;
             }
         }
+
+        areSpringIndicesDirty = true;
     }
 }
 
@@ -199,8 +202,11 @@ void SpringForceField<DataTypes>::initializeTopologyHandler(sofa::core::topology
         indices.addTopologyEventCallBack(core::topology::TopologyChangeType::ENDING_EVENT,
             [this](const core::topology::TopologyChange*)
             {
-                msg_info(this) << "Update topology indices from springs";
-                updateTopologyIndicesFromSprings();
+                if (areSpringIndicesDirty)
+                {
+                    msg_info(this) << "Update topology indices from springs";
+                    updateTopologyIndicesFromSprings();
+                }
             });
     }
 }
