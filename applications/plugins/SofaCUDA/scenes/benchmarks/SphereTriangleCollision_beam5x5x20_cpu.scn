@@ -1,15 +1,13 @@
 <?xml version="1.0"?>
 <Node name="root" dt="0.02">
     <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name="SofaImplicitOdeSolver"/>
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/>
     <RequiredPlugin name="SofaLoader"/>
     <RequiredPlugin name="SofaMeshCollision"/>
     <RequiredPlugin name="SofaSimpleFem"/>
     <RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [FixedConstraint] -->
     <RequiredPlugin name="SofaEngine"/> <!-- Needed to use components [BoxROI] -->
     <RequiredPlugin name="SofaTopologyMapping"/> <!-- Needed to use components [Hexa2TetraTopologicalMapping, Tetra2TriangleTopologicalMapping] response="CudaPenalityContactForceField"-->
-    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
-    <RequiredPlugin name="SofaConstraint"/> <!-- Needed to use components [FreeMotionAnimationLoop, LCPConstraintSolver, LocalMinDistance, UncoupledConstraintCorrection] -->
 
     <VisualStyle displayFlags="showBehaviorModels hideForceFields" />
     <DefaultVisualManagerLoop />
@@ -31,11 +29,10 @@
         <Hexa2TetraTopologicalMapping input="@grid" output="@BeamTopo" />
     </Node>
 
-
     <Node name="TetrahedronFEMForceField-GPU-Green">
-    <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
-    <CGLinearSolver iterations="20" name="linear solver" tolerance="1.0e-6" threshold="1.0e-6" />
-
+        <EulerImplicitSolver name="cg_odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="20" name="linear solver" tolerance="1.0e-6" threshold="1.0e-6" />
+        
         <MechanicalObject position="@../Beam/grid.position" name="Volume" template="Vec3"/>
 
         <TetrahedronSetTopologyContainer name="Container" src="@../Beam/BeamTopo"/>
@@ -50,12 +47,14 @@
         
         <UncoupledConstraintCorrection useOdeSolverIntegrationFactors="0"/>
         <Node name="surface">
-            <TriangleSetTopologyContainer name="Container" />
+            <TriangleSetTopologyContainer name="ContainerTri" />
             <TriangleSetTopologyModifier name="Modifier" />
-            <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" />
+            <TriangleSetGeometryAlgorithms template="Vec3" name="GeomAlgo" drawNormals="0"/>
             
-            <SphereCollisionModel radius="0.5"/>
-            <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" />
+            
+            <Tetra2TriangleTopologicalMapping input="@../Container" output="@ContainerTri" />        
+            <TriangleCollisionModel contactStiffness="1000"/>
+ 
             <Node name="Visu">
                 <OglModel name="Visual" color="green" />
                 <IdentityMapping input="@../../Volume" output="@Visual" />
