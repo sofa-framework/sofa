@@ -70,9 +70,7 @@ template class SOFA_GPU_CUDA_API FixParticlePerformer< CudaVec3dTypes >;
 #endif
 
 ContactMapperCreator< ContactMapper<CudaSphereCollisionModel> > CudaSphereContactMapperClass("PenalityContactForceField",true);
-ContactMapperCreator< ContactMapper<CudaTriangleCollisionModel> > CudaTriangleContactMapperClass("PenalityContactForceField", true);
-//ContactMapperCreator< ContactMapper<CudaLineCollisionModel> > CudaLineContactMapperClass("PenalityContactForceField", true);
-//ContactMapperCreator< ContactMapper<CudaPointCollisionModel> > CudaPointContactMapperClass("PenalityContactForceField", true);
+ContactMapperCreator< ContactMapper<CudaTriangleCollisionModel> > CudaTiangleContactMapperClass("PenalityContactForceField", true);
 
 helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<CudaVec3fTypes> > ComponentMouseInteractionCudaVec3fClass ("MouseSpringCudaVec3f",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer <CudaVec3fTypes> >  AttachBodyPerformerCudaVec3fClass("AttachBody",true);
@@ -87,28 +85,10 @@ using namespace core::collision;
 using namespace sofa::helper;
 const Creator<Contact::Factory, BarycentricPenalityContact<CudaSphereCollisionModel, CudaSphereCollisionModel, gpu::cuda::CudaVec3Types> > CudaSphereSpherePenalityContactClass("PenalityContactForceField", true);
 const Creator<Contact::Factory, BarycentricPenalityContact<CudaSphereCollisionModel, CudaTriangleCollisionModel, gpu::cuda::CudaVec3Types> > CudaSphereTrianglePenalityContactClass("PenalityContactForceField", true);
-//const Creator<Contact::Factory, BarycentricPenalityContact<CudaSphereCollisionModel, CudaLineCollisionModel, gpu::cuda::CudaVec3Types> > CudaSphereLinePenalityContactClass("PenalityContactForceField", true);
-//const Creator<Contact::Factory, BarycentricPenalityContact<CudaSphereCollisionModel, CudaPointCollisionModel, gpu::cuda::CudaVec3Types> > CudaSpherePointPenalityContactClass("PenalityContactForceField", true);
-
-//const Creator<Contact::Factory, BarycentricPenalityContact<CudaTriangleCollisionModel, CudaTriangleCollisionModel, gpu::cuda::CudaVec3Types> > CudaTriangleTrianglePenalityContactClass("PenalityContactForceField", true);
-//const Creator<Contact::Factory, BarycentricPenalityContact<CudaTriangleCollisionModel, CudaLineCollisionModel, gpu::cuda::CudaVec3Types> > CudaTriangleLinePenalityContactClass("PenalityContactForceField", true);
-//const Creator<Contact::Factory, BarycentricPenalityContact<CudaTriangleCollisionModel, CudaPointCollisionModel, gpu::cuda::CudaVec3Types> > CudaTrianglePointPenalityContactClass("PenalityContactForceField", true);
-//
-//const Creator<Contact::Factory, BarycentricPenalityContact<CudaLineCollisionModel, CudaLineCollisionModel, gpu::cuda::CudaVec3Types> > CudaTriangleTrianglePenalityContactClass("PenalityContactForceField", true);
-//const Creator<Contact::Factory, BarycentricPenalityContact<CudaLineCollisionModel, CudaPointCollisionModel, gpu::cuda::CudaVec3Types> > CudaTriangleLinePenalityContactClass("PenalityContactForceField", true);
+const Creator<Contact::Factory, BarycentricPenalityContact<CudaTriangleCollisionModel, CudaSphereCollisionModel, gpu::cuda::CudaVec3Types> > CudaTriangleSpherePenalityContactClass("PenalityContactForceField", true);
 
 template class SOFA_GPU_CUDA_API BarycentricPenalityContact<CudaSphereCollisionModel, CudaSphereCollisionModel, gpu::cuda::CudaVec3Types>;
 template class SOFA_GPU_CUDA_API BarycentricPenalityContact<CudaSphereCollisionModel, CudaTriangleCollisionModel, gpu::cuda::CudaVec3Types>;
-//template class SOFA_GPU_CUDA_API BarycentricPenalityContact<CudaSphereCollisionModel, CudaLineCollisionModel, gpu::cuda::CudaVec3Types>;
-//template class SOFA_GPU_CUDA_API BarycentricPenalityContact<CudaSphereCollisionModel, CudaPointCollisionModel, gpu::cuda::CudaVec3Types>;
-
-//template class SOFA_GPU_CUDA_API BarycentricPenalityContact<CudaTriangleCollisionModel, CudaTriangleCollisionModel, gpu::cuda::CudaVec3Types>;
-//template class SOFA_GPU_CUDA_API BarycentricPenalityContact<CudaTriangleCollisionModel, CudaLineCollisionModel, gpu::cuda::CudaVec3Types>;
-//template class SOFA_GPU_CUDA_API BarycentricPenalityContact<CudaTriangleCollisionModel, CudaPointCollisionModel, gpu::cuda::CudaVec3Types>;
-//
-//template class SOFA_GPU_CUDA_API BarycentricPenalityContact<CudaLineCollisionModel, CudaLineCollisionModel, gpu::cuda::CudaVec3Types>;
-//template class SOFA_GPU_CUDA_API BarycentricPenalityContact<CudaLineCollisionModel, CudaPointCollisionModel, gpu::cuda::CudaVec3Types>;
-
 
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -148,12 +128,12 @@ public:
     {
         sofa::component::collision::NewProximityIntersection::init();
         intersectors.add<CudaSphereCollisionModel, CudaSphereCollisionModel, NewProximityIntersection>(this);
-        intersectors.add<CudaSphereCollisionModel, CudaTriangleCollisionModel, NewProximityIntersection>(this);
+        //intersectors.add<CudaSphereCollisionModel, CudaTriangleCollisionModel, NewProximityIntersection>(this);
         
         RayDiscreteIntersection* rayIntersector = new RayDiscreteIntersection(this, false);
         intersectors.add<RayCollisionModel,        CudaSphereCollisionModel,   RayDiscreteIntersection>(rayIntersector);
-        MeshNewProximityIntersection* meshIntersector = new MeshNewProximityIntersection(this, false);
-        intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>,   CudaSphereCollisionModel,   MeshNewProximityIntersection>(meshIntersector);
+        //MeshNewProximityIntersection* meshIntersector = new MeshNewProximityIntersection(this, false);
+        //intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>,   CudaSphereCollisionModel,   MeshNewProximityIntersection>(meshIntersector);
 
         
 
@@ -184,6 +164,129 @@ int CudaMinProximityIntersectionClass = core::RegisterObject("GPGPU Proximity In
     .add< CudaMinProximityIntersection >();
 
 
+
+
+class CudaMeshMinProximityIntersection : public core::collision::BaseIntersector
+{
+    typedef MinProximityIntersection::OutputVector OutputVector;
+
+public:
+    CudaMeshMinProximityIntersection(MinProximityIntersection* object, bool addSelf = true)
+        : intersection(object)
+    {
+        intersection->intersectors.add<CudaTriangleCollisionModel, CudaSphereCollisionModel, CudaMeshMinProximityIntersection>(this);        
+    }
+
+
+    bool testIntersection(CudaTriangle& e2, CudaSphere& e1)
+    {
+        const SReal alarmDist = intersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+
+        const type::Vector3 x13 = e2.p1() - e2.p2();
+        const type::Vector3 x23 = e2.p1() - e2.p3();
+        const type::Vector3 x03 = e2.p1() - e1.center();
+        type::Matrix2 A;
+        type::Vector2 b;
+        A[0][0] = x13 * x13;
+        A[1][1] = x23 * x23;
+        A[0][1] = A[1][0] = x13 * x23;
+        b[0] = x13 * x03;
+        b[1] = x23 * x03;
+        const SReal det = type::determinant(A);
+
+        SReal alpha = 0.5;
+        SReal beta = 0.5;
+
+        //if (det < -0.000001 || det > 0.000001)
+        {
+            alpha = (b[0] * A[1][1] - b[1] * A[0][1]) / det;
+            beta = (b[1] * A[0][0] - b[0] * A[1][0]) / det;
+            if (alpha < 0.000001 ||
+                beta < 0.000001 ||
+                alpha + beta  > 0.999999)
+                return false;
+        }
+
+        type::Vector3 P, Q, PQ;
+        P = e1.center();
+        Q = e2.p1() - x13 * alpha - x23 * beta;
+        PQ = Q - P;
+
+        if (PQ.norm2() < alarmDist * alarmDist)
+        {
+            return true;
+        }
+        else
+            return false;
+    }
+
+    int computeIntersection(CudaTriangle& e2, CudaSphere& e1, OutputVector* contacts)
+    {
+        const SReal alarmDist = intersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+
+        const type::Vector3 x13 = e2.p1() - e2.p2();
+        const type::Vector3 x23 = e2.p1() - e2.p3();
+        const type::Vector3 x03 = e2.p1() - e1.center();
+        type::Matrix2 A;
+        type::Vector2 b;
+        A[0][0] = x13 * x13;
+        A[1][1] = x23 * x23;
+        A[0][1] = A[1][0] = x13 * x23;
+        b[0] = x13 * x03;
+        b[1] = x23 * x03;
+        const SReal det = type::determinant(A);
+
+        SReal alpha = 0.5;
+        SReal beta = 0.5;
+
+        //if (det < -0.000001 || det > 0.000001)
+        {
+            alpha = (b[0] * A[1][1] - b[1] * A[0][1]) / det;
+            beta = (b[1] * A[0][0] - b[0] * A[1][0]) / det;
+            if (alpha < 0.000001 ||
+                beta < 0.000001 ||
+                alpha + beta  > 0.999999)
+                return 0;
+        }
+
+        type::Vector3 P = e1.center();
+        type::Vector3 Q = e2.p1() - x13 * alpha - x23 * beta;
+        type::Vector3 QP = P - Q;
+        //Vector3 PQ = Q-P;
+
+        if (QP.norm2() >= alarmDist * alarmDist)
+            return 0;
+
+        const SReal contactDist = intersection->getContactDistance() + e1.r() + e1.getProximity() + e2.getProximity();
+
+        contacts->resize(contacts->size() + 1);
+        sofa::core::collision::DetectionOutput* detection = &*(contacts->end() - 1);
+        detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+        detection->id = e1.getIndex();
+        detection->normal = QP;
+        detection->value = detection->normal.norm();
+        if (detection->value > 1e-15)
+        {
+            detection->normal /= detection->value;
+        }
+        else
+        {
+            msg_warning(intersection) << "Null distance between contact detected";
+            detection->normal = type::Vector3(1, 0, 0);
+        }
+        detection->value -= contactDist;
+        detection->point[0] = Q;
+        detection->point[1] = e1.getContactPointByNormal(detection->normal);
+
+        return 1;
+    }
+
+
+protected:
+    MinProximityIntersection* intersection;
+};
+
+IntersectorCreator<MinProximityIntersection, CudaMeshMinProximityIntersection> CudaMeshMinProximityIntersectors("CudaMesh");
 
 sofa::helper::Creator<core::collision::Contact::Factory, component::collision::RayContact<sofa::component::collision::SphereCollisionModel<gpu::cuda::CudaVec3Types>> > RayCudaSphereContactClass("RayContact",true);
 

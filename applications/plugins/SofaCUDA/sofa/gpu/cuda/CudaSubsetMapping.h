@@ -55,7 +55,7 @@ public:
         }
         if (maxNOut <= 1)
         {
-            msg_info("SubsetMappingInternalData") << "CudaSubsetMapping: strict subset, no need for mapT.";
+            //msg_info("SubsetMappingInternalData") << "CudaSubsetMapping: strict subset, no need for mapT.";
             // at most one duplicated points per input. mapT is not necessary
             mapT.clear();
         }

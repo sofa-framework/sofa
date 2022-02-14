@@ -202,8 +202,10 @@ public:
     Index addPoint(const Coord& P, Index index, Real&)
     {
         auto nbt = this->model->getCollisionTopology()->getNbTriangles();
-        if (index < nbt)
+        if (index < nbt) 
+        {
             return this->mapper->createPointInTriangle(P, index, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
+        }
         else
         {
             Index qindex = (index - nbt) / 2;
