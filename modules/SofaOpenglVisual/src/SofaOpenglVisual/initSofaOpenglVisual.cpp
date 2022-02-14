@@ -23,8 +23,9 @@
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::RegisterObject;
 
-#include <SofaOpenglVisual/initSofaOpenglVisual.h>
+#include <sofa/helper/system/PluginManager.h>
 
+#include <SofaOpenglVisual/initSofaOpenglVisual.h>
 
 namespace sofa
 {
@@ -37,6 +38,12 @@ void initSofaOpenglVisual()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaOpenglVisual") << "SofaOpenglVisual is deprecated;. Use Sofa.GL.Component.OnScreen, Sofa.GL.Component.Model and Sofa.GL.Component.Rendering instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.GL.Component.OnScreen");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.GL.Component.Model");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.GL.Component.Rendering");
+        
         first = false;
     }
 }
