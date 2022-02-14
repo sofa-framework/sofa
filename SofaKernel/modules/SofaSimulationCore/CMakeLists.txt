@@ -94,6 +94,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeForceVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeGeometricStiffness.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalEndIntegrationVisitor.h
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalGetConstraintInfoVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalGetConstraintJacobianVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalGetMatrixDimensionVisitor.h
     ${SRC_ROOT}/mechanicalvisitor/MechanicalGetMomentumVisitor.h
@@ -215,6 +216,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeForceVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalComputeGeometricStiffness.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalEndIntegrationVisitor.cpp
+    ${SRC_ROOT}/mechanicalvisitor/MechanicalGetConstraintInfoVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalGetConstraintJacobianVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalGetMatrixDimensionVisitor.cpp
     ${SRC_ROOT}/mechanicalvisitor/MechanicalGetMomentumVisitor.cpp

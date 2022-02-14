@@ -23,6 +23,7 @@
 #define SOFA_HELPER_MEMORYMANAGER_H
 
 #include <sofa/helper/config.h>
+#include <sofa/type/config.h>
 #include <cstring>
 
 namespace sofa
@@ -88,9 +89,9 @@ class CPUMemoryManager : public MemoryManager<T>
 {
 public:
 
-    template<class T2> struct rebind
+    template<class T2> struct SOFA_ATTRIBUTE_DEPRECATED__REBIND() rebind
     {
-        typedef CPUMemoryManager<T2> other;
+        using other = CPUMemoryManager<T2>;
     };
 
 };

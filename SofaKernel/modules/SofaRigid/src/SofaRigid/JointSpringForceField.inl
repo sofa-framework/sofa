@@ -373,7 +373,7 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     type::vector<Vector3> vertices;
     std::vector<sofa::type::RGBAColor> colors;
 
-    auto yellow = sofa::type::RGBAColor::yellow();
+    constexpr auto yellow = sofa::type::RGBAColor::yellow();
 
     for (sofa::Index i=0; i<springs.size(); i++)
     {

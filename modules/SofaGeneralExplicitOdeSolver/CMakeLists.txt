@@ -12,21 +12,13 @@ set(SOURCE_FILES
     ${SOFAGENERALEXPLICITODESOLVER_SRC}/initSofaGeneralExplicitOdeSolver.cpp
     )
 
-list(APPEND HEADER_FILES
-    ${SOFAGENERALEXPLICITODESOLVER_SRC}/CentralDifferenceSolver.h
-    ${SOFAGENERALEXPLICITODESOLVER_SRC}/RungeKutta2Solver.h
-    ${SOFAGENERALEXPLICITODESOLVER_SRC}/RungeKutta4Solver.h
-    )
-list(APPEND SOURCE_FILES
-    ${SOFAGENERALEXPLICITODESOLVER_SRC}/CentralDifferenceSolver.cpp
-    ${SOFAGENERALEXPLICITODESOLVER_SRC}/RungeKutta2Solver.cpp
-    ${SOFAGENERALEXPLICITODESOLVER_SRC}/RungeKutta4Solver.cpp
-    )
-
-sofa_find_package(SofaFramework REQUIRED) # SofaSimulationCore
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore)
+
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.ODESolver.Forward instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.ODESolver.Forward REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.ODESolver.Forward)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

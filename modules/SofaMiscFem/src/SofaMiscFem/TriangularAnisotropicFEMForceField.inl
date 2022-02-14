@@ -312,7 +312,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::Vis
     if (showFiber.getValue() && lfd.size() >= (unsigned)m_topology->getNbTriangles())
     {
         vparams->drawTool()->saveLastState();
-        sofa::type::RGBAColor color(0, 0, 0, 1.0);
+        constexpr sofa::type::RGBAColor color = sofa::type::RGBAColor::black();
         std::vector<sofa::type::Vector3> vertices;
 
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();

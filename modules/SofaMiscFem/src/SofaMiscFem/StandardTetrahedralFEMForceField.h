@@ -34,6 +34,7 @@
 #include <sofa/core/topology/TopologyData.h>
 #include <string>
 #include <map>
+#include <sofa/type/trait/Rebind.h>
 
 
 namespace sofa::component::forcefield
@@ -120,7 +121,7 @@ public :
       TetrahedronRestInformation() : restVolume(0), volScale(0), fiberDirection(), strainEnergy(0) {}
 
     };
-    typedef typename VecCoord::template rebind<TetrahedronRestInformation>::other tetrahedronRestInfoVector;
+	using tetrahedronRestInfoVector  = type::rebind_to<VecCoord, TetrahedronRestInformation>;
     
 	
    /// data structure stored for each edge
@@ -138,7 +139,7 @@ public :
 
      EdgeInformation(): DfDx() { vertices[0]=0.f; vertices[1]=0.f; }
    };
-   typedef typename VecCoord::template rebind<EdgeInformation>::other edgeInformationVector;
+   using edgeInformationVector  = type::rebind_to<VecCoord, EdgeInformation>;
 
  protected :
    core::topology::BaseMeshTopology* m_topology;

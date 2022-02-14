@@ -282,7 +282,12 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
                 {
                     msg_error() << "Cannot find edge " << j
                         << " [" << t[(j + 1) % 3] << ", " << t[(j + 2) % 3] << "]"
-                        << " in triangle " << i;
+                        << " in triangle " << i << " [" << t << "]" << " in the provided edge list ("
+                        << this->d_edge.getLinkPath() << "). It shows an inconsistency between the edge list ("
+                        << this->d_edge.getLinkPath() << ") and the triangle list (" << this->d_triangle.getLinkPath()
+                        << "). Either fix the topology (probably in a mesh file), or provide only the triangle list to '"
+                        << this->getPathName() << "' and not the edges. In the latter case, the edge list will be "
+                        "computed from triangles.";
                     m_edgesInTriangle.clear();
                     this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
                     return;

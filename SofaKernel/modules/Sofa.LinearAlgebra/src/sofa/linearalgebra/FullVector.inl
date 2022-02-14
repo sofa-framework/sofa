@@ -34,7 +34,7 @@ void FullVector<Real>::checkIndex(Index n) const
 {
     if (n >= cursize)
     {
-        msg_error("FullVector") << "in vector<" << sofa::helper::gettypename(typeid(*this)) << "> " << std::hex << (long)this << std::dec << " size " << cursize << " : invalid index " << (int)n;
+        msg_error("FullVector") << "in vector<" << sofa::helper::gettypename(typeid(*this)) << "> " << std::hex << this << std::dec << " size " << cursize << " : invalid index " << (int)n;
         sofa::helper::BackTrace::dump();
         assert(n < cursize);
     }

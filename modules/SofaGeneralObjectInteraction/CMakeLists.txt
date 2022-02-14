@@ -30,9 +30,11 @@ list(APPEND SOURCE_FILES
     )
 
 sofa_find_package(SofaDeformable REQUIRED)
+sofa_find_package(SofaEngine REQUIRED)
+sofa_find_package(SofaGeneralEngine REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaDeformable)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaDeformable SofaEngine SofaGeneralEngine)
 
 if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Silence attribute warnings (for example, ignored already defined external template)

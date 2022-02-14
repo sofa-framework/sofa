@@ -236,10 +236,10 @@ bool BaseData::genericCopyValueFrom(const BaseData* parent)
     void* dataValue = this->beginEditVoidPtr();
 
     // First decide how many values will be copied
-    std::size_t inSize = 1;
-    std::size_t outSize = 1;
-    std::size_t copySize = 1;
-    std::size_t nbl = 1;
+    sofa::Size inSize = 1;
+    sofa::Size outSize = 1;
+    sofa::Size copySize = 1;
+    sofa::Size nbl = 1;
     if (dataInfo->FixedSize())
     {
         outSize = dataInfo->size();
@@ -259,13 +259,13 @@ bool BaseData::genericCopyValueFrom(const BaseData* parent)
     }
     else
     {
-        std::size_t dataBSize = dataInfo->size();
-        std::size_t parentBSize = parentInfo->size();
+        const auto dataBSize = dataInfo->size();
+        const auto parentBSize = parentInfo->size();
         if (dataBSize > parentBSize)
             msgs << "parent Data type " << parentInfo->name() << " contains " << parentBSize << " values per element while Data type " << dataInfo->name() << " requires " << dataBSize << " values.";
         else if (dataBSize < parentBSize)
             msgs << "parent Data type " << parentInfo->name() << " contains " << parentBSize << " values per element while Data type " << dataInfo->name() << " only requires " << dataBSize << " values.";
-        std::size_t parentSize = parentInfo->size(parentValue);
+        const auto parentSize = parentInfo->size(parentValue);
         inSize = parentBSize;
         outSize = dataBSize;
         nbl = parentSize / parentBSize;
@@ -278,22 +278,22 @@ bool BaseData::genericCopyValueFrom(const BaseData* parent)
     if (dataInfo->Integer() && parentInfo->Integer())
     {
         // integer conversion
-        for (size_t l=0; l<nbl; ++l)
-            for (size_t c=0; c<copySize; ++c)
+        for (decltype(nbl) l=0; l<nbl; ++l)
+            for (decltype(copySize) c=0; c<copySize; ++c)
                 dataInfo->setIntegerValue(dataValue, l*outSize+c, parentInfo->getIntegerValue(parentValue, l*inSize+c));
     }
     else if ((dataInfo->Integer() || dataInfo->Scalar()) && (parentInfo->Integer() || parentInfo->Scalar()))
     {
         // scalar conversion
-        for (size_t l=0; l<nbl; ++l)
-            for (size_t c=0; c<copySize; ++c)
+        for (decltype(nbl) l=0; l<nbl; ++l)
+            for (decltype(copySize) c=0; c<copySize; ++c)
                 dataInfo->setScalarValue(dataValue, l*outSize+c, parentInfo->getScalarValue(parentValue, l*inSize+c));
     }
     else
     {
         // text conversion
-        for (size_t l=0; l<nbl; ++l)
-            for (size_t c=0; c<copySize; ++c)
+        for (decltype(nbl) l=0; l<nbl; ++l)
+            for (decltype(copySize) c=0; c<copySize; ++c)
                 dataInfo->setTextValue(dataValue, l*outSize+c, parentInfo->getTextValue(parentValue, l*inSize+c));
     }
 

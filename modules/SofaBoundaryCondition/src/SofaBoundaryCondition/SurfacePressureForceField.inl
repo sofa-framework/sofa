@@ -501,7 +501,7 @@ void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams
 
     vparams->drawTool()->disableLighting();
 
-    const sofa::type::RGBAColor boxcolor(0.0f, 0.8f, 0.3f, 1.0f);
+    constexpr sofa::type::RGBAColor boxcolor(0.0f, 0.8f, 0.3f, 1.0f);
 
     vparams->drawTool()->setMaterial(boxcolor);
     vparams->drawTool()->drawBoundingBox(DataTypes::getCPos(m_min.getValue()), DataTypes::getCPos(m_max.getValue()));
@@ -514,7 +514,7 @@ void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams
     if (m_drawForceScale.getValue() && m_f.size()==x.size())
     {
         std::vector< type::Vector3 > points;
-        const sofa::type::RGBAColor color(0,1,0.5,1);
+        constexpr sofa::type::RGBAColor color(0,1,0.5,1);
 
         for (unsigned int i=0; i<x.size(); i++)
         {

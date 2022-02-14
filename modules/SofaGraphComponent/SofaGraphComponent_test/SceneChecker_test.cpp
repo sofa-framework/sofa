@@ -86,9 +86,9 @@ struct SceneChecker_test : public BaseSimulationTest
 
     void checkRequiredPlugin(bool missing)
     {
-        PluginManager::getInstance().loadPluginByName("SofaExplicitOdeSolver");
+        PluginManager::getInstance().loadPluginByName("Sofa.Component.ODESolver.Forward");
 
-        std::string missStr = missing ? "" : "<RequiredPlugin name='SofaExplicitOdeSolver'/> \n";
+        std::string missStr = missing ? "" : "<RequiredPlugin name='Sofa.Component.ODESolver.Forward'/> \n";
         std::stringstream scene;
         scene << "<?xml version='1.0'?>                                             \n"
               << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >      \n"
@@ -105,7 +105,7 @@ struct SceneChecker_test : public BaseSimulationTest
         root->init(sofa::core::execparams::defaultInstance());
 
         SceneCheckerVisitor checker(sofa::core::execparams::defaultInstance());
-        checker.addCheck( SceneCheckMissingRequiredPlugin::newSPtr() );
+        checker.addCheck(SceneCheckMissingRequiredPlugin::newSPtr() );
 
         if(missing)
         {

@@ -251,7 +251,7 @@ void ProximityROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
     vparams->drawTool()->saveLastState();
 
-    const sofa::type::RGBAColor& color = sofa::type::RGBAColor::cyan();
+    constexpr const sofa::type::RGBAColor& color = sofa::type::RGBAColor::cyan();
 
     if(p_drawSphere.getValue()) // old classical drawing by points
     {

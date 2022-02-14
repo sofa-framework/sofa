@@ -456,7 +456,7 @@ void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::Visual
         return;
 
     sofa::type::vector<type::Vector3> vertices;
-    const sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
+    constexpr sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
 
     if (showMovement.getValue())
     {

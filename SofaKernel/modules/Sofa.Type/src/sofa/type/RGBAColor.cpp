@@ -81,26 +81,6 @@ static void extractValidatedHexaString(std::istream& in, std::string& s)
     in.clear(in.rdstate() & ~std::ios_base::failbit) ;
 }
 
-
-RGBAColor::RGBAColor() : fixed_array<float, 4>(1.f,1.f,1.f,1.f)
-{
-}
-
-
-RGBAColor::RGBAColor(const fixed_array<float, 4>& c) : fixed_array<float, 4>(c)
-{
-}
-
-
-RGBAColor::RGBAColor(const float pr, const float pg, const float pb, const float pa)
-{
-    r(pr);
-    g(pg);
-    b(pb);
-    a(pa);
-}
-
-
 bool RGBAColor::read(const std::string& str, RGBAColor& color)
 {
     std::stringstream s(str);

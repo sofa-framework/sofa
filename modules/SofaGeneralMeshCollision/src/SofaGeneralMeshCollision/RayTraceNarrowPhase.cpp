@@ -232,7 +232,7 @@ void RayTraceNarrowPhase::draw (const core::visual::VisualParams* vparams)
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
 
-    sofa::type::RGBAColor color(1.0, 0.0, 1.0, 1.0);
+    constexpr sofa::type::RGBAColor color = sofa::type::RGBAColor::magenta();
     vparams->drawTool()->setPolygonMode(0, true);
     std::vector<sofa::type::Vector3> vertices;
 

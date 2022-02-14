@@ -23,6 +23,7 @@
 #define SOFA_CORE_OBJECTMODEL_BASENODE_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/TypeOfInsertion.h>
 
 namespace sofa
 {
@@ -90,7 +91,7 @@ public:
     virtual void moveChild(BaseNode::SPtr node) = 0;
 
     /// Add a generic object
-    virtual bool addObject(BaseObject::SPtr obj) = 0;
+    virtual bool addObject(BaseObject::SPtr obj, TypeOfInsertion = TypeOfInsertion::AtEnd) = 0;
 
     /// Remove a generic object
     virtual bool removeObject(BaseObject::SPtr obj) = 0;

@@ -3,7 +3,9 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(SofaDeformable QUIET REQUIRED) # SofaDeformable
+find_package(SofaDeformable QUIET REQUIRED)
+find_package(SofaEngine QUIET REQUIRED)
+find_package(SofaGeneralEngine QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")

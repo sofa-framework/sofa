@@ -11,7 +11,7 @@ using sofa::core::execparams::defaultInstance;
 namespace sofa
 {
 
-struct From_test : public BaseTest
+struct Import_test : public BaseTest
 {
     void testFromImport()
     {
@@ -20,7 +20,7 @@ struct From_test : public BaseTest
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
                  "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-                 "   <Import fromPlugin='SofaBaseUtils' components='RequiredPlugin'/>            \n"
+                 "   <Import fromPlugin='Sofa.Component.SceneUtility' components='RequiredPlugin'/>            \n"
                  "</Node>                                                                        \n" ;
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
@@ -38,8 +38,8 @@ struct From_test : public BaseTest
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
                  "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-                 "   <Import fromPlugin='SofaBaseUtils' components='RequiredPlugin' as='AliasedName'/> \n"
-                 "   <AliasedName name='SofaBaseUtils'/>                                         \n"
+                 "   <Import fromPlugin='Sofa.Component.SceneUtility' components='RequiredPlugin' as='AliasedName'/> \n"
+                 "   <AliasedName name='Sofa.Component.SceneUtility'/>                                         \n"
                  "</Node>                                                                        \n" ;
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
@@ -69,8 +69,8 @@ struct From_test : public BaseTest
     }
 };
 
-TEST_F(From_test, testFromImportSyntax ) { testFromImport(); }
-TEST_F(From_test, testFromImportAsSyntax ) { testFromImportAs(); }
-TEST_F(From_test, testFromInvalidPluginName ) { testFromInvalidPluginName(); }
+TEST_F(Import_test, testFromImportSyntax ) { testFromImport(); }
+TEST_F(Import_test, testFromImportAsSyntax ) { testFromImportAs(); }
+TEST_F(Import_test, testFromInvalidPluginName ) { testFromInvalidPluginName(); }
 
 }

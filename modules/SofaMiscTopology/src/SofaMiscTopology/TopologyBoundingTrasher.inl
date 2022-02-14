@@ -300,7 +300,7 @@ void TopologyBoundingTrasher<DataTypes>::draw(const core::visual::VisualParams* 
     if (d_drawBox.getValue())
     {
         const Vec6& border = d_borders.getValue();
-        auto color = sofa::type::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f);
+        constexpr auto color = sofa::type::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f);
         std::vector<Vector3> vertices;
         const Real& Xmin = border[0];
         const Real& Xmax = border[3];

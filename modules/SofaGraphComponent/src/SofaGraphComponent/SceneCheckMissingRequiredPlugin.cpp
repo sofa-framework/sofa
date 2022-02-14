@@ -28,8 +28,8 @@
 #include <SofaBaseUtils/RequiredPlugin.h>
 using sofa::component::misc::RequiredPlugin;
 
-#include <SofaBaseUtils/ImportComponent.h>
-using sofa::component::ImportComponent;
+#include <sofa/component/sceneutility/ImportComponent.h>
+using sofa::component::sceneutility::ImportComponent;
 
 #include <sofa/simulation/Node.h>
 
