@@ -161,6 +161,7 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaTriangleModel.cpp
 
     ### Constraints
+    sofa/gpu/cuda/CudaConstraintCorrection.cpp
     sofa/gpu/cuda/CudaFixedConstraint.cpp
     sofa/gpu/cuda/CudaFixedTranslationConstraint.cpp
     sofa/gpu/cuda/CudaLinearMovementConstraint.cpp
