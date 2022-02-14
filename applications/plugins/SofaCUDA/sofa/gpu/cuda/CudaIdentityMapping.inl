@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDAIDENTITYMAPPING_INL
-#define SOFA_GPU_CUDA_CUDAIDENTITYMAPPING_INL
+#pragma once
 
-#include "CudaIdentityMapping.h"
+#include <sofa/gpu/cuda/CudaIdentityMapping.h>
 #include <SofaBaseMechanics/IdentityMapping.inl>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 extern "C"
@@ -42,14 +35,9 @@ extern "C"
     void MechanicalObjectCudaVec3f1_vPEq(unsigned int size, void* res, const void* a);
 }
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping
 {
 
 using namespace sofa::defaulttype;
@@ -148,10 +136,4 @@ void IdentityMapping<gpu::cuda::CudaVec3f1Types, gpu::cuda::CudaVec3f1Types>::ap
 
 
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mapping

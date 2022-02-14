@@ -323,15 +323,13 @@ void BilateralInteractionConstraint<defaulttype::Rigid3Types>::addContact(Deriv 
 
 
 
-int BilateralInteractionConstraintClass = core::RegisterObject("TODO-BilateralInteractionConstraint")
-                .add< BilateralInteractionConstraint<Vec3Types> >()
+int BilateralInteractionConstraintClass = core::RegisterObject("BilateralInteractionConstraint defining an holonomic equality constraint (attachment)")
+        .add< BilateralInteractionConstraint<Vec3Types> >()
         .add< BilateralInteractionConstraint<Rigid3Types> >()
-        
         ;
 
 template class SOFA_SOFACONSTRAINT_API BilateralInteractionConstraint<Vec3Types>;
 template class SOFA_SOFACONSTRAINT_API BilateralInteractionConstraint<Rigid3Types>;
-
 
 }
 

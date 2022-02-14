@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,35 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDASUBSETMAPPING_CPP
-#define SOFA_GPU_CUDA_CUDASUBSETMAPPING_CPP
 
-#include <sofa/gpu/cuda/CudaTypes.h>
-#include <sofa/gpu/cuda/CudaSubsetMapping.inl>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/simulation/mechanicalvisitor/MechanicalGetConstraintInfoVisitor.h>
+#include <sofa/core/ConstraintParams.h>
 
-namespace sofa::component::mapping
+namespace sofa::simulation::mechanicalvisitor
 {
-using namespace sofa::gpu::cuda;
 
-template class SOFA_GPU_CUDA_API SubsetMapping< CudaVec3fTypes, CudaVec3fTypes >;
-template class SOFA_GPU_CUDA_API SubsetMapping< CudaVec3f1Types, CudaVec3f1Types >;
-template class SOFA_GPU_CUDA_API SubsetMapping< CudaVec3f1Types, CudaVec3fTypes >;
-template class SOFA_GPU_CUDA_API SubsetMapping< CudaVec3fTypes, CudaVec3f1Types >;
+MechanicalGetConstraintInfoVisitor::MechanicalGetConstraintInfoVisitor(const core::ConstraintParams* params,
+    VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions,
+    VecConstArea& areas)
+    : simulation::BaseMechanicalVisitor(params)
+    , _blocks(blocks)
+    , _ids(ids)
+    , _positions(positions)
+    , _directions(directions)
+    , _areas(areas)
+    , _cparams(params)
+{}
 
-} // namespace sofa::component::mapping
-
-namespace sofa::gpu::cuda
+Visitor::Result MechanicalGetConstraintInfoVisitor::fwdConstraintSet(simulation::Node* node,
+    core::behavior::BaseConstraintSet* cSet)
 {
-using namespace sofa::component::mapping;
+    if (core::behavior::BaseConstraint *c=cSet->toBaseConstraint())
+    {
+        const ctime_t t0 = begin(node, c);
+        c->getConstraintInfo(_cparams, _blocks, _ids, _positions, _directions, _areas);
+        end(node, c, t0);
+    }
+    return RESULT_CONTINUE;
+}
 
-int SubsetMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< SubsetMapping< CudaVec3fTypes, CudaVec3fTypes > >()
-        .add< SubsetMapping< CudaVec3f1Types, CudaVec3f1Types > >()
-        .add< SubsetMapping< CudaVec3f1Types, CudaVec3fTypes > >()
-        .add< SubsetMapping< CudaVec3fTypes, CudaVec3f1Types > >()
-        ;
+bool MechanicalGetConstraintInfoVisitor::stopAtMechanicalMapping(simulation::Node*,
+    core::BaseMapping*)
+{
+    return false;
+}
 
-} // namespace sofa::gpu::cuda
-
-#endif // SOFA_GPU_CUDA_CUDASUBSETMAPPING_CPP
+} //namespace sofa::simulation::mechanicalvisitor

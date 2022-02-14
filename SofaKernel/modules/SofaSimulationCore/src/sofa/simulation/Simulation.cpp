@@ -60,6 +60,7 @@
 #include <cstring>
 
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionAndVelocityVisitor;
@@ -427,6 +428,8 @@ void Simulation::exportOBJ ( Node* root, const char* filename, bool exportMTL )
 
 void Simulation::dumpState ( Node* root, std::ofstream& out )
 {
+    sofa::helper::ScopedAdvancedTimer dumpStateTimer("dumpState");
+
     sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     out<<root->getTime() <<" ";
     WriteStateVisitor ( params, out ).execute ( root );
