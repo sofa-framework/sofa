@@ -19,39 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/topology/container/nondynamic/SphereQuadTopology.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
 
-namespace sofa::component::topology::container::nondynamic
+#include <sofa/component/topology/container/constant/config.h>
+
+namespace sofa::component::topology::container::constant
 {
-
-using namespace sofa::type;
-using namespace sofa::defaulttype;
-
-int SphereQuadTopologyClass = core::RegisterObject("Sphere topology constructed with deformed quads")
-        .addAlias("SphereQuad")
-        .add< SphereQuadTopology >()
-        ;
-
-SphereQuadTopology::SphereQuadTopology(int nx, int ny, int nz)
-    : CubeTopology(nx, ny, nz),
-      center(initData(&center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the sphere")),
-      radius(initData(&radius,(SReal)1.0,"radius", "Radius of the sphere"))
-{
-}
-
-SphereQuadTopology::SphereQuadTopology()
-    : center(initData(&center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the sphere")),
-      radius(initData(&radius,(SReal)1.0,"radius", "Radius of the sphere"))
-{
-}
-
-Vector3 SphereQuadTopology::getPoint(int x, int y, int z) const
-{
-    Vector3 p((2*x)/(SReal)(nx.getValue()-1) - 1, (2*y)/(SReal)(ny.getValue()-1) - 1, (2*z)/(SReal)(nz.getValue()-1) - 1);
-    p.normalize();
-    return center.getValue()+p*radius.getValue();
-}
-
-} // namespace sofa::component::topology::container::nondynamic
+    SOFA_COMPONENT_TOPOLOGY_CONTAINER_CONSTANT_API void init();
+} // namespace sofa::component::topology::container::constant

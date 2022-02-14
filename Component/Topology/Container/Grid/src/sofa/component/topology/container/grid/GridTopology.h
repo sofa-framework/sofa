@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/topology/container/grid/config.h>
 
-#include <sofa/component/topology/container/nondynamic/MeshTopology.h>
+#include <sofa/component/topology/container/constant/MeshTopology.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -41,7 +41,7 @@ enum class Grid_dimension
 /** \brief
  * Define a regular grid topology, with no spatial information.
   */
-class SOFA_COMPONENT_TOPOLOGY_CONTAINER_GRID_API GridTopology : public container::nondynamic::MeshTopology
+class SOFA_COMPONENT_TOPOLOGY_CONTAINER_GRID_API GridTopology : public container::constant::MeshTopology
 {
 
 public:

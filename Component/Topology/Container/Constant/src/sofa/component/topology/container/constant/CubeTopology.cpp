@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/topology/container/nondynamic/CubeTopology.h>
+#include <sofa/component/topology/container/constant/CubeTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::topology::container::nondynamic
+namespace sofa::component::topology::container::constant
 {
 
 using namespace sofa::type;
@@ -367,4 +367,4 @@ Vector3 CubeTopology::getPoint(int x, int y, int z) const
     return p0+dx*x+dy*y+dz*z;
 }
 
-} // namespace sofa::component::topology::container::nondynamic
+} // namespace sofa::component::topology::container::constant

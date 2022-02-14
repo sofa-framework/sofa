@@ -20,17 +20,17 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/topology/container/nondynamic/config.h>
+#include <sofa/component/topology/container/constant/config.h>
 
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/type/vector.h>
 
-namespace sofa::component::topology::container::nondynamic
+namespace sofa::component::topology::container::constant
 {
 
-class SOFA_COMPONENT_TOPOLOGY_CONTAINER_NONDYNAMIC_API MeshTopology : public core::topology::BaseMeshTopology
+class SOFA_COMPONENT_TOPOLOGY_CONTAINER_CONSTANT_API MeshTopology : public core::topology::BaseMeshTopology
 {
 public:
     SOFA_CLASS(MeshTopology,core::topology::BaseMeshTopology);
@@ -622,4 +622,4 @@ protected:
     sofa::core::topology::TopologyElementType m_upperElementType;
 };
 
-} //namespace sofa::component::topology::container::nondynamic
+} //namespace sofa::component::topology::container::constant

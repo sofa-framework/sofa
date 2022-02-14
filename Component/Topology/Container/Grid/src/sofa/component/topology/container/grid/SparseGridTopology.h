@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/topology/container/grid/config.h>
 
-#include <sofa/component/topology/container/nondynamic/MeshTopology.h>
+#include <sofa/component/topology/container/constant/MeshTopology.h>
 #include <sofa/component/topology/container/grid/RegularGridTopology.h>
 #include <sofa/helper/MarchingCubeUtility.h>
 #include <sofa/type/Vec.h>
@@ -45,7 +45,7 @@ class RegularGridTopology;
  * Valid cells are tagged by a Type BOUNDARY or INSIDE
  * WARNING: the corresponding node in the XML file has to be placed BEFORE the MechanicalObject node, in order to excute its init() before the MechanicalObject one in order to be able to give dofs
  */
-class SOFA_COMPONENT_TOPOLOGY_CONTAINER_GRID_API SparseGridTopology : public container::nondynamic::MeshTopology
+class SOFA_COMPONENT_TOPOLOGY_CONTAINER_GRID_API SparseGridTopology : public container::constant::MeshTopology
 {
 public:
     SOFA_CLASS(SparseGridTopology,MeshTopology);
@@ -300,13 +300,13 @@ public :
     const SeqHexahedra& getHexahedra() override
     {
         if( !_alreadyInit ) init();
-        return container::nondynamic::MeshTopology::getHexahedra();
+        return container::constant::MeshTopology::getHexahedra();
     }
 
     Size getNbPoints() const override
     {
         if( !_alreadyInit ) const_cast<SparseGridTopology*>(this)->init();
-        return container::nondynamic::MeshTopology::getNbPoints();
+        return container::constant::MeshTopology::getNbPoints();
     }
 
     /// TODO 2018-07-23 epernod: check why this method is override to return the same result as parent class.

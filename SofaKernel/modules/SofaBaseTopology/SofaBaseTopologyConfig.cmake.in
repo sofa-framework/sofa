@@ -5,11 +5,11 @@
 
 get_property(@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE SET)
 if(NOT @PROJECT_NAME@_SENT_DEPRECATION_MESSAGE)
-    message(WARNING "@PROJECT_NAME@ module is deprecated. It will be removed at v23.06. Use Sofa.Component.Topology.Container.Grid, Sofa.Component.Topology.Container.NonDynamic and Sofa.Component.Topology.Container.Dynamic instead.")
+    message(WARNING "@PROJECT_NAME@ module is deprecated. It will be removed at v23.06. Use Sofa.Component.Topology.Container.Grid, Sofa.Component.Topology.Container.Constant and Sofa.Component.Topology.Container.Dynamic instead.")
 endif()
 set_property(GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE TRUE)
 
-find_package(Sofa.Component.Topology.Container.NonDynamic QUIET REQUIRED)
+find_package(Sofa.Component.Topology.Container.Constant QUIET REQUIRED)
 find_package(Sofa.Component.Topology.Container.Grid QUIET REQUIRED)
 find_package(Sofa.Component.Topology.Container.Dynamic QUIET REQUIRED)
 

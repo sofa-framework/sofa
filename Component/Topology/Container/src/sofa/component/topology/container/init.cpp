@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/component/topology/container/init.h>
 
-#include <sofa/component/topology/container/nondynamic/init.h>
+#include <sofa/component/topology/container/constant/init.h>
 #include <sofa/component/topology/container/dynamic/init.h>
 #include <sofa/component/topology/container/grid/init.h>
 
@@ -39,7 +39,7 @@ void initExternalModule()
     if (first)
     {
         // force dependencies at compile-time
-        sofa::component::topology::container::nondynamic::init();
+        sofa::component::topology::container::constant::init();
         sofa::component::topology::container::dynamic::init();
         sofa::component::topology::container::grid::init();
 

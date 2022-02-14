@@ -19,19 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/component/topology/container/constant/init.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
-
-#ifdef SOFA_BUILD_SOFA_COMPONENT_TOPOLOGY_CONTAINER_NONDYNAMIC
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_COMPONENT_TOPOLOGY_CONTAINER_NONDYNAMIC_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_COMPONENT_TOPOLOGY_CONTAINER_NONDYNAMIC_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace sofa::component::topology::container::nondynamic
+namespace sofa::component::topology::container::constant
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-} // namespace sofa::component::topology::container::nondynamic
+    
+extern "C" {
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+}
+
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
+const char* getModuleName()
+{
+    return MODULE_NAME;
+}
+
+void init()
+{
+    initExternalModule();
+}
+
+} // namespace sofa::component::topology::container::constant

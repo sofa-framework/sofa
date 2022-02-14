@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/topology/container/nondynamic/config.h>
+#include <sofa/component/topology/container/constant/config.h>
 
-#include <sofa/component/topology/container/nondynamic/MeshTopology.h>
+#include <sofa/component/topology/container/constant/MeshTopology.h>
 
-namespace sofa::component::topology::container::nondynamic
+namespace sofa::component::topology::container::constant
 {
 
-class SOFA_COMPONENT_TOPOLOGY_CONTAINER_NONDYNAMIC_API CubeTopology : public MeshTopology
+class SOFA_COMPONENT_TOPOLOGY_CONTAINER_CONSTANT_API CubeTopology : public MeshTopology
 {
 public:
     SOFA_CLASS(CubeTopology,MeshTopology);
@@ -107,4 +107,4 @@ protected:
     void updateQuads();
 };
 
-} // namespace sofa::component::topology::container::nondynamic
+} // namespace sofa::component::topology::container::constant

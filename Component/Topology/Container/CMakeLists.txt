@@ -3,7 +3,7 @@ project(Sofa.Component.Topology.Container LANGUAGES CXX)
 
 set(SOFACOMPONENTTOPOLOGYCONTAINER_SOURCE_DIR "src/sofa/component/topology/container")
 
-set(SOFACOMPONENTTOPOLOGYCONTAINER_DIRS NonDynamic Dynamic Grid)
+set(SOFACOMPONENTTOPOLOGYCONTAINER_DIRS Constant Dynamic Grid)
 set(SOFACOMPONENTTOPOLOGYCONTAINER_TARGETS)
 foreach(container_dir ${SOFACOMPONENTTOPOLOGYCONTAINER_DIRS})
 	sofang_add_component_subdirectory(${container_dir} ${PROJECT_NAME}.${container_dir})

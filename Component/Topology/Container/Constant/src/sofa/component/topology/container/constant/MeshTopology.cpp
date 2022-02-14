@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/topology/container/nondynamic/MeshTopology.h>
+#include <sofa/component/topology/container/constant/MeshTopology.h>
 
 #include <sofa/core/topology/Topology.h>
 #include <sofa/helper/visual/DrawTool.h>
@@ -27,7 +27,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <algorithm>
 
-namespace sofa::component::topology::container::nondynamic
+namespace sofa::component::topology::container::constant
 {
 
 using type::vector;
@@ -2777,4 +2777,4 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
 
 }
 
-} //namespace sofa::component::topology::container::nondynamic
+} //namespace sofa::component::topology::container::constant

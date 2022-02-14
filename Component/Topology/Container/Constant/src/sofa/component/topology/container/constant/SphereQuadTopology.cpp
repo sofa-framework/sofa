@@ -19,33 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/topology/container/nondynamic/init.h>
+#include <sofa/component/topology/container/constant/SphereQuadTopology.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::topology::container::nondynamic
+namespace sofa::component::topology::container::constant
 {
-    
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+
+using namespace sofa::type;
+using namespace sofa::defaulttype;
+
+int SphereQuadTopologyClass = core::RegisterObject("Sphere topology constructed with deformed quads")
+        .addAlias("SphereQuad")
+        .add< SphereQuadTopology >()
+        ;
+
+SphereQuadTopology::SphereQuadTopology(int nx, int ny, int nz)
+    : CubeTopology(nx, ny, nz),
+      center(initData(&center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the sphere")),
+      radius(initData(&radius,(SReal)1.0,"radius", "Radius of the sphere"))
+{
 }
 
-void initExternalModule()
+SphereQuadTopology::SphereQuadTopology()
+    : center(initData(&center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the sphere")),
+      radius(initData(&radius,(SReal)1.0,"radius", "Radius of the sphere"))
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
 }
 
-const char* getModuleName()
+Vector3 SphereQuadTopology::getPoint(int x, int y, int z) const
 {
-    return MODULE_NAME;
+    Vector3 p((2*x)/(SReal)(nx.getValue()-1) - 1, (2*y)/(SReal)(ny.getValue()-1) - 1, (2*z)/(SReal)(nz.getValue()-1) - 1);
+    p.normalize();
+    return center.getValue()+p*radius.getValue();
 }
 
-void init()
-{
-    initExternalModule();
-}
-
-} // namespace sofa::component::topology::container::nondynamic
+} // namespace sofa::component::topology::container::constant
