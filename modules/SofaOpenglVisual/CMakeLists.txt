@@ -1,10 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaOpenglVisual LANGUAGES CXX)
 
-sofa_find_package(SofaFramework REQUIRED) # SofaSimulationCore
-sofa_find_package(SofaBaseVisual REQUIRED)
-sofa_find_package(Sofa.GL REQUIRED)
-
 set(HEADER_FILES
     src/SofaOpenglVisual/config.h
     src/SofaOpenglVisual/initSofaOpenglVisual.h
@@ -19,7 +15,7 @@ set(EXTRA_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-message(WARNING "${PROJECT_NAME} is deprecated. It will be removed at v23.06. Use Sofa.Component.IO.Mesh and Sofa.Component.Playback instead.")
+message(WARNING "${PROJECT_NAME} is deprecated. It will be removed at v23.06. Use Sofa.GL.Component.OnScreen, Sofa.GL.Component.Model and Sofa.GL.Component.Rendering instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.GL.Component.OnScreen REQUIRED)
@@ -37,11 +33,3 @@ sofa_create_package_with_targets(
     INCLUDE_INSTALL_DIR "SofaOpenglVisual"
     RELOCATABLE "plugins"
     )
-
-# Tests
-# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
-cmake_dependent_option(SOFAOPENGLVISUAL_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
-if(SOFAOPENGLVISUAL_BUILD_TESTS)
-    enable_testing()
-    add_subdirectory(SofaOpenglVisual_test)
-endif()
