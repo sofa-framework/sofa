@@ -29,11 +29,12 @@
 namespace sofa::core
 {
 
+std::map<const sofa::core::objectmodel::BaseClass*, ObjectFactory::ClassEntry::SPtr> class_cache;
 std::map<std::string, std::vector<std::string>> aliases;
 
 bool ObjectFactory::ClassEntry::isADeprecatedAlias(const std::string& name) const
 {
-    return std::find(deprecatedAliases.begin(), deprecatedAliases.end(), name) != deprecatedAliases.end();
+    return std::find(aliases.begin(), aliases.end(), name) != aliases.end();
 }
 
 ObjectFactory::~ObjectFactory()
@@ -56,6 +57,12 @@ void ObjectFactory::addEntry(const std::string& fullname, ObjectFactory::ClassEn
     if (existingEntryI == registry.end())
     {
         registry[fullname] = std::make_shared<ClassEntry>(entry);
+
+        for (auto& templateCreator : entry.creatorMap)
+        {
+            class_cache[templateCreator.second.get()->getClass()] = registry[fullname];
+        }
+
         return;
     }
 
@@ -75,7 +82,6 @@ void ObjectFactory::addEntry(const std::string& fullname, ObjectFactory::ClassEn
     for (auto& templateCreator : entry.creatorMap)
     {
         const std::string & template_name = templateCreator.first;
-        std::cout << "REGISTERING ENTRY: " << entry.className << " = " << template_name << std::endl;
         if (existingEntry->creatorMap.find(template_name) != existingEntry->creatorMap.end()) {
             if (template_name.empty()) {
                 msg_warning("ObjectFactory") << "Class already registered: " << entry.className;
@@ -84,18 +90,28 @@ void ObjectFactory::addEntry(const std::string& fullname, ObjectFactory::ClassEn
             }
         } else {
             existingEntry->creatorMap.insert(templateCreator);
+            class_cache[templateCreator.second.get()->getClass()] = existingEntry;
         }
     }
+}
+
+const ObjectFactory::ClassEntry& ObjectFactory::getEntry(const sofa::core::objectmodel::BaseClass* baseclass) const
+{
+    auto it = class_cache.find(baseclass);
+    if (it == class_cache.end())
+        throw std::runtime_error("There is no factory entry for "+baseclass->className+"."+baseclass->templateName);
+
+    return *class_cache[baseclass].get();
 }
 
 ObjectFactory::ClassEntry& ObjectFactory::getEntry(std::string fullname)
 {
     if (registry.find(fullname) == registry.end())
     {
-        registry[fullname] = ClassEntry::SPtr(new ClassEntry);
-        //registry[fullname]->className = fullname;
-    }
+        msg_warning("ObjectFactory::getEntry") << "adding a new entry for" << fullname;
 
+        registry[fullname] = ClassEntry::SPtr(new ClassEntry);
+    }
     return *registry[fullname];
 }
 
@@ -474,11 +490,9 @@ void ObjectFactory::getAllEntries(std::vector<ClassEntry::SPtr>& result)
 void ObjectFactory::getEntriesFromTarget(std::vector<ClassEntry::SPtr>& result, std::string target)
 {
     result.clear();
-    std::cout <<" REGISTRY DUMP" << std::endl;
     for(auto& it : registry)
     {
         ClassEntry::SPtr entry = it.second;
-        std::cout << "HO " << entry->compilationTarget << "." << entry->className << " linked to " << it.first << std::endl;
         if (target == entry->compilationTarget)
         {
             result.push_back(entry);
@@ -630,8 +644,6 @@ RegisterObject& RegisterObject::addTargetName(std::string val)
 
 RegisterObject& RegisterObject::addAlias(std::string val, bool doWarning)
 {
-    if(doWarning)
-        entry.deprecatedAliases.insert(val);
     entry.aliases.insert(val);
     return *this;
 }
@@ -695,6 +707,7 @@ RegisterObject::operator int()
     // bind the entry to a short name for backward compatibility
     ObjectFactory::getInstance()->addAlias(entry.className, fullname);
 
+    // bind each alias to the fullname.
     for(auto& alias : entry.aliases)
     {
         ObjectFactory::getInstance()->addAlias(alias, fullname);

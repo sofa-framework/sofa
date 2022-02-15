@@ -91,7 +91,6 @@ public:
 
         std::string className;
         std::set<std::string> aliases;
-        std::set<std::string> deprecatedAliases;
         std::string description;
         std::string authors;
         std::string license;
@@ -118,6 +117,7 @@ public:
 
     /// Get an entry given a class name (or alias)
     ClassEntry& getEntry(std::string classname);
+    const ClassEntry& getEntry(const sofa::core::objectmodel::BaseClass* baseclass) const;
 
     /// Test if a creator exists for a given classname
     bool hasCreator(std::string classname);
