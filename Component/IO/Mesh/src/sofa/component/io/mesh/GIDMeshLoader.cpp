@@ -23,8 +23,8 @@
 #include <string>
 #include <fstream>
 
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/component/io/mesh/GIDMeshLoader.h>
+#include <sofa/core/ObjectFactory.h>
 
 using namespace sofa::helper;
 

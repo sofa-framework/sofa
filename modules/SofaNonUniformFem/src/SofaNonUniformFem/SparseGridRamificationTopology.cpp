@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/core/ObjectFactory.h>
 #include <sstream>
 #include "SparseGridRamificationTopology.h"
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::topology
 {
