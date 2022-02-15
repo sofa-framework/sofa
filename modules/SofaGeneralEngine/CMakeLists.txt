@@ -227,4 +227,3 @@ if(SOFAGENERALENGINE_BUILD_TESTS)
     enable_testing()
     add_subdirectory(${PROJECT_NAME}_test)
 endif()
-

@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
-#include <SceneCreator/SceneCreator.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation;

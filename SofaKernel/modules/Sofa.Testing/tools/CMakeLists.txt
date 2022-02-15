@@ -6,6 +6,7 @@ set(SOFATESTINGTOOLS_SRC "src/sofa/testing/tools")
 
 # only header files
 set(HEADER_FILES
+    ${SOFATESTINGTOOLS_SRC}/DataEngineTestCreation.h
     ${SOFATESTINGTOOLS_SRC}/MassSpringSystemCreation.h
     ${SOFATESTINGTOOLS_SRC}/SunPlanetSystemCreation.h
 )

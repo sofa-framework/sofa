@@ -20,12 +20,15 @@ set(SOURCE_FILES
     objectmodel/VectorData_test.cpp
     objectmodel/DataFileNameVector_test.cpp
     DataEngine_test.cpp
-    TrackedData_test.cpp
+    Engine_test.cpp
     PathResolver_test.cpp
+    TestEngine.cpp
+    TrackedData_test.cpp
 )
 
 set(HEADER_FILES
     objectmodel/BaseLink_test.h
+    TestEngine.h
     )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
