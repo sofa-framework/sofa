@@ -44,17 +44,13 @@ public:
 };
 
 int A = RegisterObject("Loads a plugin and import its content into the current namespace. ")
-        .add< TestObject<int> >()
-        .addTargetName("FirstNameSpace");
+        .add< TestObject<int> >();
 int B1 = RegisterObject("Loads a plugin and import its content into the current namespace. ")
-        .add< TestObject<double> >()
-        .addTargetName("SecondNameSpace");
+        .add< TestObject<double> >();
 int B2 = RegisterObject("Loads a plugin and import its content into the current namespace. ")
-        .add< TestObject<long> >()
-        .addTargetName("SecondNameSpace");
+        .add< TestObject<long> >();
 int B3 = RegisterObject("Loads a plugin and import its content into the current namespace. ")
-        .add< TestObject2<int> >()
-        .addTargetName("SecondNameSpace");
+        .add< TestObject2<int> >();
 
 class ObjectFactory_test: public BaseTest
 {
@@ -64,41 +60,14 @@ public:
         {
             EXPECT_MSG_EMIT(Warning);
             int C = RegisterObject("Loads a plugin and import its content into the current namespace. ")
-                    .add< TestObject<long> >()
-                    .addTargetName("SecondNameSpace");
+                    .add< TestObject<long> >();
             SOFA_UNUSED(C);
         }
     }
 
-    void testMultipleNamespace()
-    {
-        // There is only one object in the OneNameSpace target.
-        std::vector<ObjectFactory::ClassEntry::SPtr> entries;
-        ObjectFactory::getInstance()->getEntriesFromTarget(entries, "FirstNameSpace");
-        ASSERT_EQ(entries.size(), 1);
-
-        // But two the SecondNameSpace target.
-        std::vector<ObjectFactory::ClassEntry::SPtr> entries2;
-        ObjectFactory::getInstance()->getEntriesFromTarget(entries2, "SecondNameSpace");
-        ASSERT_EQ(entries2.size(), 2);
-    }
-
-    void testObjectCreation()
-    {
-        ASSERT_TRUE(ObjectFactory::getInstance()->hasObjectEntry("FirstNameSpace.TestObject"));
-        auto& entry1 = ObjectFactory::getInstance()->getEntry("FirstNameSpace.TestObject");
-        ASSERT_EQ(entry1.className, "TestObject");
-        ASSERT_EQ(entry1.compilationTarget, "FirstNameSpace");
-
-        ASSERT_TRUE(ObjectFactory::getInstance()->hasObjectEntry("SecondNameSpace.TestObject"));
-        auto& entry2 = ObjectFactory::getInstance()->getEntry("SecondNameSpace.TestObject");
-        ASSERT_EQ(entry2.className, "TestObject");
-        ASSERT_EQ(entry2.compilationTarget, "SecondNameSpace");
-    }
-
     void testValidAlias()
     {
-        ASSERT_TRUE(ObjectFactory::getInstance()->addAlias("FirstAlias", "FirstNameSpace.TestObject"));
+        ASSERT_TRUE(ObjectFactory::getInstance()->addAlias("FirstAlias", "TestObject"));
     }
 
     void testInvalidAlias()
@@ -111,49 +80,23 @@ public:
 
     void testDuplicatedAlias()
     {
-        EXPECT_MSG_NOEMIT(Error);
-        ASSERT_TRUE(ObjectFactory::getInstance()->addAlias("DuplicatedAlias", "FirstNameSpace.TestObject"));
-        ASSERT_TRUE(ObjectFactory::getInstance()->addAlias("DuplicatedAlias", "FirstNameSpace.TestObject"));
+        EXPECT_MSG_EMIT(Error);
+        ASSERT_TRUE(ObjectFactory::getInstance()->addAlias("DuplicatedAlias", "TestObject"));
+        ASSERT_FALSE(ObjectFactory::getInstance()->addAlias("DuplicatedAlias", "TestObject"));
     }
 
     void testHasCreator()
     {
-        // validate the hasCreator method without use of alias
-        ASSERT_TRUE(ObjectFactory::getInstance()->hasCreator("FirstNameSpace.TestObject", "int"));
-        ASSERT_FALSE(ObjectFactory::getInstance()->hasCreator("FirstNameSpace.TestObject", "double"));
-        ASSERT_TRUE(ObjectFactory::getInstance()->hasCreator("SecondNameSpace.TestObject", "double"));
-        ASSERT_TRUE(ObjectFactory::getInstance()->hasCreator("SecondNameSpace.TestObject", "long"));
-        ASSERT_FALSE(ObjectFactory::getInstance()->hasCreator("SecondNameSpace.TestObject", "int"));
-
         // validate the hasCreator method with use of alias when the alias is pointing
         // to two different entries in the factory
-        ASSERT_TRUE(ObjectFactory::getInstance()->hasCreator("TestObject", "long"));
-        ASSERT_TRUE(ObjectFactory::getInstance()->hasCreator("TestObject", "int"));
-        ASSERT_TRUE(ObjectFactory::getInstance()->hasCreator("TestObject", "double"));
-        ASSERT_FALSE(ObjectFactory::getInstance()->hasCreator("TestObject", "float"));
-    }
-
-    void testAutomaticAliasCreationForBackwardCompatibility()
-    {
-        ASSERT_TRUE(ObjectFactory::getInstance()->hasCreator("FirstNameSpace.TestObject"));
-        ASSERT_TRUE(ObjectFactory::getInstance()->hasCreator("TestObject"));
-    }
-
+        ASSERT_TRUE(ObjectFactory::HasCreator("TestObject"));
+        ASSERT_TRUE(ObjectFactory::HasCreator("TestObject2"));
+   }
 };
 
 TEST_F(ObjectFactory_test, testDuplicatedRegistration)
 {
     this->testDuplicatedRegistration();
-}
-
-TEST_F(ObjectFactory_test, testAliasToMultipleNamespace )
-{
-    this->testMultipleNamespace();
-}
-
-TEST_F(ObjectFactory_test, testObjectCreation )
-{
-    this->testObjectCreation();
 }
 
 TEST_F(ObjectFactory_test, testValidAlias )
@@ -175,11 +118,6 @@ TEST_F(ObjectFactory_test, testDuplicatedAlias )
 TEST_F(ObjectFactory_test, testHasCreator )
 {
     this->testHasCreator();
-}
-
-TEST_F(ObjectFactory_test, testAutomaticAliasCreationForBackwardCompatibility )
-{
-    this->testAutomaticAliasCreationForBackwardCompatibility();
 }
 
 }// namespace sofa
