@@ -17,6 +17,7 @@ include(Sofa.Component.Visual.cmake)
 include(Sofa.GL.Component.OnScreen.cmake)
 include(Sofa.GL.Component.Model.cmake)
 include(Sofa.GL.Component.Rendering.cmake)
+include(Sofa.GL.Component.Engine.cmake)
 
 
 set(SOURCE_FILES

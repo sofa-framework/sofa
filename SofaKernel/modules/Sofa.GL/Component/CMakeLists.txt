@@ -3,7 +3,7 @@ project(Sofa.GL.Component LANGUAGES CXX)
 
 set(SOFAGLCOMPONENT_SOURCE_DIR "src/sofa/gl/component")
 
-set(SOFAGLCOMPONENT_DIRS OnScreen Model Rendering)
+set(SOFAGLCOMPONENT_DIRS OnScreen Model Rendering Engine)
 set(SOFAGLCOMPONENT_TARGETS)
 foreach(gl_dir ${SOFAGLCOMPONENT_DIRS})
     sofang_add_component_subdirectory(${gl_dir} ${PROJECT_NAME}.${gl_dir})
