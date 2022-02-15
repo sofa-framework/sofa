@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+
+#include <sofa/component/sceneutility/config.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 using sofa::core::objectmodel::BaseNode ;
 

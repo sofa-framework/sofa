@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/component/io/mesh/StringMeshCreator.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::io::mesh
 {

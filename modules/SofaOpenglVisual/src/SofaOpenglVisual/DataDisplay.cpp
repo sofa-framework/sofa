@@ -28,11 +28,11 @@
 # define isnan(x) (std::isnan(x))
 #endif
 
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <SofaOpenglVisual/DataDisplay.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/ObjectFactory.h>
 
 
 namespace sofa

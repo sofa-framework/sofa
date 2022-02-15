@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/component/io/mesh/config.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/io/mesh/MeshGmshLoader.h>
 #include <sofa/core/visual/VisualParams.h>
