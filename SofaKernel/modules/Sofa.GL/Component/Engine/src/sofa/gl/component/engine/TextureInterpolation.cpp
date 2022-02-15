@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_TEXTUREINTERPOLATION_CPP
-#include <SofaGeneralEngine/TextureInterpolation.inl>
+#include <sofa/gl/component/engine/TextureInterpolation.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::gl::component::engine
 {
 
 using namespace sofa::defaulttype;
@@ -36,10 +36,10 @@ int TextureInterpolationClass = core::RegisterObject("Create texture coordinate 
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API TextureInterpolation <Vec1Types>;
-template class SOFA_SOFAGENERALENGINE_API TextureInterpolation <Vec2Types>;
-template class SOFA_SOFAGENERALENGINE_API TextureInterpolation <Vec3Types>;
+template class SOFA_GL_COMPONENT_ENGINE_API TextureInterpolation <Vec1Types>;
+template class SOFA_GL_COMPONENT_ENGINE_API TextureInterpolation <Vec2Types>;
+template class SOFA_GL_COMPONENT_ENGINE_API TextureInterpolation <Vec3Types>;
  
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::gl::component::engine

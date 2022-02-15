@@ -15,6 +15,6 @@ if(NOT CMAKE_SYSTEM_NAME STREQUAL Darwin)
 endif()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} Sofa.Testing Sofa.GL.Component)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing Sofa.GL.Component SofaBaseMechanics)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

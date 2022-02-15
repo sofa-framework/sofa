@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/gl/component/engine/config.h>
 
 
 
@@ -30,7 +30,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/map.h>
 
-namespace sofa::component::engine
+namespace sofa::gl::component::engine
 {
 
 /**
@@ -98,9 +98,9 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_TEXTUREINTERPOLATION_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API TextureInterpolation<defaulttype::Vec1Types>;
-extern template class SOFA_SOFAGENERALENGINE_API TextureInterpolation<defaulttype::Vec2Types>;
-extern template class SOFA_SOFAGENERALENGINE_API TextureInterpolation<defaulttype::Vec3Types>;
+extern template class SOFA_GL_COMPONENT_ENGINE_API TextureInterpolation<defaulttype::Vec1Types>;
+extern template class SOFA_GL_COMPONENT_ENGINE_API TextureInterpolation<defaulttype::Vec2Types>;
+extern template class SOFA_GL_COMPONENT_ENGINE_API TextureInterpolation<defaulttype::Vec3Types>;
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::gl::component::engine

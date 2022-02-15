@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/TextureInterpolation.h>
+#include <sofa/gl/component/engine/TextureInterpolation.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/fwd.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/gl/gl.h>
 
-namespace sofa::component::engine
+namespace sofa::gl::component::engine
 {
 
 template <class DataTypes>
@@ -310,4 +310,4 @@ void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* vpa
 }
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::gl::component::engine
