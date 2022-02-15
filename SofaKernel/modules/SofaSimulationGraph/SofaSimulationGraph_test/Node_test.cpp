@@ -27,40 +27,66 @@ using namespace sofa::simpleapi ;
 
 #include "Node_test.h"
 
-namespace sofa {
-
-struct Node_test : public BaseSimulationTest
+namespace sofa
 {
-    void test1()
-    {
-        /* create trivial DAG :
-         *
-         * A
-         * |\
-         * B C
-         * |
-         * D
-         *
-         */
-        EXPECT_MSG_NOEMIT(Error, Warning);
 
-        SceneInstance si("A") ;
-        Node::SPtr B = createChild(si.root, "B");
-        Node::SPtr D = createChild(B, "D");
-        BaseObject::SPtr C = core::objectmodel::New<Dummy>("C");
-        si.root->addObject(C);
-
-        EXPECT_STREQ(si.root->getPathName().c_str(), "/");
-        EXPECT_STREQ(B->getPathName().c_str(), "/B");
-        EXPECT_STREQ(C->getPathName().c_str(), "/C");
-        EXPECT_STREQ(D->getPathName().c_str(), "/B/D");
-    }
-};
-
-TEST_F( Node_test, getPathName)
+TEST( Node_test, getPathName)
 {
-    this->test1() ;
+    /* create trivial DAG :
+     *
+     * A
+     * |\
+     * B C
+     * |
+     * D
+     *
+     */
+    EXPECT_MSG_NOEMIT(Error, Warning);
+
+    Node::SPtr root = sofa::simpleapi::createNode("A");
+    Node::SPtr B = createChild(root, "B");
+    Node::SPtr D = createChild(B, "D");
+    BaseObject::SPtr C = core::objectmodel::New<Dummy>("C");
+    root->addObject(C);
+
+    EXPECT_STREQ(root->getPathName().c_str(), "/");
+    EXPECT_STREQ(B->getPathName().c_str(), "/B");
+    EXPECT_STREQ(C->getPathName().c_str(), "/C");
+    EXPECT_STREQ(D->getPathName().c_str(), "/B/D");
 }
+
+TEST(Node_test, addObject)
+{
+    sofa::core::sptr<Node> root = sofa::simpleapi::createNode("root");
+    BaseObject::SPtr A = core::objectmodel::New<Dummy>("A");
+    BaseObject::SPtr B = core::objectmodel::New<Dummy>("B");
+
+    root->addObject(A);
+
+    // adds a second object after the last one.
+    root->addObject(B);
+    auto b = dynamic_cast< sofa::core::objectmodel::BaseContext*>(root.get());
+    ASSERT_NE(b, nullptr);
+    ASSERT_EQ(b->getObjects()[0]->getName(), "A");
+    ASSERT_EQ(b->getObjects()[1]->getName(), "B");
+}
+
+TEST(Node_test, addObjectAtFront)
+{
+    sofa::core::sptr<Node> root = sofa::simpleapi::createNode("root");
+    BaseObject::SPtr A = core::objectmodel::New<Dummy>("A");
+    BaseObject::SPtr B = core::objectmodel::New<Dummy>("B");
+
+    root->addObject(A);
+
+    // adds a second object before the first one.
+    root->addObject(B, sofa::core::objectmodel::TypeOfInsertion::AtBegin);
+    auto b = dynamic_cast< sofa::core::objectmodel::BaseContext*>(root.get());
+    ASSERT_NE(b, nullptr);
+    ASSERT_EQ(b->getObjects()[0]->getName(), "B");
+    ASSERT_EQ(b->getObjects()[1]->getName(), "A");
+}
+
 
 }// namespace sofa
 

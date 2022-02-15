@@ -118,7 +118,7 @@ void QuadBendingFEMForceField<DataTypes>::init()
     quadInfo.setCreationCallback([this](Index quadIndex, QuadInformation& qInfo,
         const core::topology::BaseMeshTopology::Quad& q,
         const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< double >& coefs)
+        const sofa::type::vector< SReal >& coefs)
     {
         createQuadInformation(quadIndex, qInfo, q, ancestors, coefs);
     });
@@ -182,7 +182,7 @@ void QuadBendingFEMForceField<DataTypes>::reinit()
     {
         createQuadInformation(i, quadInf[i],  m_topology->getQuad(i),
             (const sofa::type::vector< unsigned int > )0,
-            (const sofa::type::vector< double >)0);
+            (const sofa::type::vector< SReal >)0);
     }
     edgeInfo.endEdit();
     quadInfo.endEdit();
@@ -197,7 +197,7 @@ template< class DataTypes>
 void QuadBendingFEMForceField<DataTypes>::createQuadInformation(unsigned int quadIndex, QuadInformation&,
     const core::topology::BaseMeshTopology::Quad& t,
     const sofa::type::vector<unsigned int>&,
-    const sofa::type::vector<double>&)
+    const sofa::type::vector<SReal>&)
 {
     Index idx0 = t[0];
     Index idx1 = t[1];

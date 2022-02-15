@@ -62,7 +62,8 @@ protected:
         int index;
         Coord normal;
         Real fact;
-        Contact( int index=0, Coord normal=Coord(),Real fact=Real(0))
+
+        explicit Contact( int index=0, Coord normal=Coord(),Real fact=Real(0))
             : index(index),normal(normal),fact(fact)
         {
         }

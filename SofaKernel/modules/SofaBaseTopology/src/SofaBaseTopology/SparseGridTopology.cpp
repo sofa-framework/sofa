@@ -715,7 +715,7 @@ void SparseGridTopology::voxelizeTriangleMesh(helper::io::Mesh* mesh,
         const Vector3& vertex = vertices[i];
         Index index = regularGrid->findHexa(vertex);
 
-        if (index > 0)
+        if (index != InvalidID)
             regularGridTypes[index] = BOUNDARY;
 
         // Case where 'findHexa' did not find the right hexa
@@ -928,7 +928,7 @@ void SparseGridTopology::buildFromRegularGridTypes(sofa::core::sptr<RegularGridT
         }
     }
 
-    type::vector<type::Vec<3,SReal> >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
+    type::vector<type::Vec3 >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
     // compute corner indices
     int cornerCounter=0;
 
@@ -1088,7 +1088,7 @@ void SparseGridTopology::buildFromFiner()
 
     // compute corner indices
     int cornerCounter=0;
-    type::vector<type::Vec<3,SReal> >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
+    type::vector<type::Vec3 >& seqPoints = *this->seqPoints.beginEdit(); seqPoints.clear();
     for(MapBetweenCornerPositionAndIndice::iterator it=cubeCornerPositionIndiceMap.begin(); it!=cubeCornerPositionIndiceMap.end(); ++it,++cornerCounter)
     {
         (*it).second = cornerCounter;

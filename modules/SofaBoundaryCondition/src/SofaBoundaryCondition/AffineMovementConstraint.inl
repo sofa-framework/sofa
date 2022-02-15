@@ -96,9 +96,7 @@ void AffineMovementConstraint<DataTypes>::init()
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
-    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
-
-    if (_topology)
+    if (sofa::core::topology::BaseMeshTopology* _topology = l_topology.get())
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";        
 
@@ -202,11 +200,11 @@ template <class DataTypes>
 void AffineMovementConstraint<DataTypes>::projectMatrix( sofa::linearalgebra::BaseMatrix* M, unsigned /*offset*/ )
 {
     // clears the rows and columns associated with constrained particles
-    unsigned blockSize = DataTypes::deriv_total_size;
+    const unsigned blockSize = DataTypes::deriv_total_size;
 
-    for(SetIndexArray::const_iterator it= m_indices.getValue().begin(), iend=m_indices.getValue().end(); it!=iend; it++ )
+    for (const auto id : m_indices.getValue())
     {
-        M->clearRowsCols((*it) * blockSize,(*it+1) * (blockSize) );
+        M->clearRowsCols( id * blockSize, (id+1) * blockSize );
     }
 }
 
@@ -248,9 +246,9 @@ void AffineMovementConstraint<defaulttype::Rigid3Types>::transform(const SetInde
 {
     // Get quaternion and translation values
     RotationMatrix rotationMat(0);
-    Quat quat =  m_quaternion.getValue();
+    const Quat quat =  m_quaternion.getValue();
     quat.toMatrix(rotationMat);
-    Vector3 translation = m_translation.getValue();
+    const Vector3 translation = m_translation.getValue();
 
     // Apply transformation
     for (size_t i=0; i < indices.size() ; ++i)
@@ -292,18 +290,19 @@ template <class DataTypes>
 void AffineMovementConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     const SetIndexArray & indices = m_indices.getValue();
-    std::vector< Vector3 > points;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Vector3 point;
 
     if(m_drawConstrainedPoints.getValue())
     {
+        std::vector< Vector3 > points;
         for( auto& index : indices )
         {
             point = DataTypes::getCPos(x[index]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawPoints(points, 10, sofa::type::RGBAColor(1,0.5,0.5,1));
+        constexpr sofa::type::RGBAColor color(1,0.5,0.5,1);
+        vparams->drawTool()->drawPoints(points, 10, color);
     }
 }
 

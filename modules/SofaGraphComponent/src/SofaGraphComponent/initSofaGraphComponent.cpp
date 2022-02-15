@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <SofaGraphComponent/initSofaGraphComponent.h>
 
+#include <sofa/helper/system/PluginManager.h>
+
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
@@ -31,7 +33,11 @@ void initSofaGraphComponent()
 {
     static bool first = true;
     if (first)
-    {
+    {        
+        // msg_deprecated("SofaGraphComponent") << "SofaGraphComponent is deprecated. It will be removed at v23.06. Use Sofa.Component.SceneUtility and ... instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.SceneUtility");
+
         first = false;
     }
 }

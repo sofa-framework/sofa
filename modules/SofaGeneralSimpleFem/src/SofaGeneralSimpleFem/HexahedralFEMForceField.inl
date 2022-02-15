@@ -121,13 +121,13 @@ void HexahedralFEMForceField<DataTypes>::reinit()
     {
         createHexahedronInformation(i,hexahedronInf[i],
             _topology->getHexahedron(i),  (const std::vector< Index > )0,
-            (const std::vector< double >)0);
+            (const std::vector< SReal >)0);
     }
     hexahedronInfo.createTopologyHandler(_topology);
     hexahedronInfo.setCreationCallback([this](Index hexahedronIndex, HexahedronInformation& hexaInfo,
         const core::topology::BaseMeshTopology::Hexahedron& hexa,
         const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< double >& coefs)
+        const sofa::type::vector< SReal >& coefs)
     {
         createHexahedronInformation(hexahedronIndex, hexaInfo, hexa, ancestors, coefs);
     });
@@ -138,7 +138,7 @@ template< class DataTypes>
 void HexahedralFEMForceField<DataTypes>::createHexahedronInformation(Index hexahedronIndex, HexahedronInformation&,
     const core::topology::BaseMeshTopology::Hexahedron&,
     const sofa::type::vector<Index>&,
-    const sofa::type::vector<double>&)
+    const sofa::type::vector<SReal>&)
 {
     switch (method)
     {
@@ -672,61 +672,61 @@ void HexahedralFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         Coord p6 = x[g]-(x[g]-center)*percentage;
         Coord p7 = x[h]-(x[h]-center)*percentage;
 
-        sofa::type::fixed_array<float, 4> color = sofa::type::fixed_array<float, 4>(0.7f, 0.7f, 0.1f, 1.0f);
-        colorVector.push_back(sofa::type::RGBAColor(color));
-        colorVector.push_back(sofa::type::RGBAColor(color));
-        colorVector.push_back(sofa::type::RGBAColor(color));
-        colorVector.push_back(sofa::type::RGBAColor(color));
+        constexpr sofa::type::RGBAColor color1(0.7f, 0.7f, 0.1f, 1.0f);
+        colorVector.push_back(color1);
+        colorVector.push_back(color1);
+        colorVector.push_back(color1);
+        colorVector.push_back(color1);
         vertices.push_back(DataTypes::getCPos(p5));
         vertices.push_back(DataTypes::getCPos(p1));
         vertices.push_back(DataTypes::getCPos(p3));
         vertices.push_back(DataTypes::getCPos(p7));
 
-        color = sofa::type::fixed_array<float, 4>(0.7f, 0.0f, 0.0f, 1.0f);
-        colorVector.push_back(sofa::type::RGBAColor(color));
-        colorVector.push_back(sofa::type::RGBAColor(color));
-        colorVector.push_back(sofa::type::RGBAColor(color));
-        colorVector.push_back(sofa::type::RGBAColor(color));
+        constexpr sofa::type::RGBAColor color2(0.7f, 0.0f, 0.0f, 1.0f);
+        colorVector.push_back(color2);
+        colorVector.push_back(color2);
+        colorVector.push_back(color2);
+        colorVector.push_back(color2);
         vertices.push_back(DataTypes::getCPos(p1));
         vertices.push_back(DataTypes::getCPos(p0));
         vertices.push_back(DataTypes::getCPos(p2));
         vertices.push_back(DataTypes::getCPos(p3));
 
-        color = sofa::type::fixed_array<float, 4>(0.0f, 0.7f, 0.0f, 1.0f);
-        colorVector.push_back(sofa::type::RGBAColor(color));
-        colorVector.push_back(sofa::type::RGBAColor(color));
-        colorVector.push_back(sofa::type::RGBAColor(color));
-        colorVector.push_back(sofa::type::RGBAColor(color));
+        constexpr sofa::type::RGBAColor color3(0.0f, 0.7f, 0.0f, 1.0f);
+        colorVector.push_back(color3);
+        colorVector.push_back(color3);
+        colorVector.push_back(color3);
+        colorVector.push_back(color3);
         vertices.push_back(DataTypes::getCPos(p0));
         vertices.push_back(DataTypes::getCPos(p4));
         vertices.push_back(DataTypes::getCPos(p6));
         vertices.push_back(DataTypes::getCPos(p2));
 
-        color = sofa::type::fixed_array<float, 4>(0.0f, 0.0f, 0.7f, 1.0f);
-        colorVector.push_back(sofa::type::RGBAColor(color));
-        colorVector.push_back(sofa::type::RGBAColor(color));
-        colorVector.push_back(sofa::type::RGBAColor(color));
-        colorVector.push_back(sofa::type::RGBAColor(color));
+        constexpr sofa::type::RGBAColor color4(0.0f, 0.0f, 0.7f, 1.0f);
+        colorVector.push_back(color4);
+        colorVector.push_back(color4);
+        colorVector.push_back(color4);
+        colorVector.push_back(color4);
         vertices.push_back(DataTypes::getCPos(p4));
         vertices.push_back(DataTypes::getCPos(p5));
         vertices.push_back(DataTypes::getCPos(p7));
         vertices.push_back(DataTypes::getCPos(p6));
 
-        color = sofa::type::fixed_array<float, 4>(0.1f, 0.7f, 0.7f, 1.0f);
-        colorVector.push_back(sofa::type::RGBAColor(color));
-        colorVector.push_back(sofa::type::RGBAColor(color));
-        colorVector.push_back(sofa::type::RGBAColor(color));
-        colorVector.push_back(sofa::type::RGBAColor(color));
+        constexpr sofa::type::RGBAColor color5(0.1f, 0.7f, 0.7f, 1.0f);
+        colorVector.push_back(color5);
+        colorVector.push_back(color5);
+        colorVector.push_back(color5);
+        colorVector.push_back(color5);
         vertices.push_back(DataTypes::getCPos(p7));
         vertices.push_back(DataTypes::getCPos(p3));
         vertices.push_back(DataTypes::getCPos(p2));
         vertices.push_back(DataTypes::getCPos(p6));
 
-        color = sofa::type::fixed_array<float, 4>(0.7f, 0.1f, 0.7f, 1.0f);
-        colorVector.push_back(sofa::type::RGBAColor(color));
-        colorVector.push_back(sofa::type::RGBAColor(color));
-        colorVector.push_back(sofa::type::RGBAColor(color));
-        colorVector.push_back(sofa::type::RGBAColor(color));
+        constexpr sofa::type::RGBAColor color6(0.1f, 0.7f, 0.7f, 1.0f);
+        colorVector.push_back(color6);
+        colorVector.push_back(color6);
+        colorVector.push_back(color6);
+        colorVector.push_back(color6);
         vertices.push_back(DataTypes::getCPos(p1));
         vertices.push_back(DataTypes::getCPos(p5));
         vertices.push_back(DataTypes::getCPos(p4));

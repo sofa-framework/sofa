@@ -194,6 +194,11 @@ public:
         isEmpty = false;
         elems[0] = v;
     }
+    void addBegin(TDestPtr v)
+    {
+        isEmpty = false;
+        elems[0] = v;
+    }
     const TPtr& operator[](std::size_t i) const
     {
         return elems[i];
@@ -268,6 +273,11 @@ public:
         std::size_t index = c.size();
         c.push_back(TValueType(v));
         return index;
+    }
+    static std::size_t addBegin(T& c, TDestPtr v)
+    {
+        c.insert(c.begin(), TValueType(v));
+        return 0;
     }
     static std::size_t find(const T& c, TDestPtr v)
     {
@@ -371,6 +381,16 @@ public:
     void clear()
     {
         TraitsContainer::clear(m_value);
+    }
+
+    bool addBegin(DestPtr v)
+    {
+        if (!v)
+            return false;
+        std::size_t index = TraitsContainer::addBegin(m_value,v);
+        updateCounter();
+        added(v, index);
+        return true;
     }
 
     bool add(DestPtr v)

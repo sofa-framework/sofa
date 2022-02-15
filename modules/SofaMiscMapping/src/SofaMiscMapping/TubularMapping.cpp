@@ -34,11 +34,11 @@ using namespace core::behavior;
 
 // Register in the Factory
 int TubularMappingClass = core::RegisterObject("Create a Tube around rigid points")
-        .add< TubularMapping< Rigid3Types, Vec3dTypes > > ()
+        .add< TubularMapping< Rigid3Types, Vec3Types > > ()
 
 
         ;
 
-template class SOFA_SOFAMISCMAPPING_API TubularMapping< Rigid3Types, Vec3dTypes >;
+template class SOFA_SOFAMISCMAPPING_API TubularMapping< Rigid3Types, Vec3Types >;
 
 } // namespace sofa::component::mapping

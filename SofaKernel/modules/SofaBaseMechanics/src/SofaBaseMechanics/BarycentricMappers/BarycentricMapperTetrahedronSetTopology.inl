@@ -85,7 +85,7 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::computeCenter(Vector3& cen
 }
 
 template <class In, class Out>
-void BarycentricMapperTetrahedronSetTopology<In,Out>::computeDistance(double& d, const Vector3& v)
+void BarycentricMapperTetrahedronSetTopology<In,Out>::computeDistance(SReal& d, const Vector3& v)
 {
     d = std::max ( std::max ( -v[0],-v[1] ), std::max ( -v[2],v[0]+v[1]+v[2]-1 ) );
 }

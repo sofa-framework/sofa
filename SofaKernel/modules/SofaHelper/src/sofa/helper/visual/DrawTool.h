@@ -58,71 +58,71 @@ public:
 
     /// @name Primitive rendering methods
     /// @{
-    virtual void drawPoints(const std::vector<Vector3> &points, float size,  const  RGBAColor& colour) = 0 ;
-    virtual void drawPoints(const std::vector<Vector3> &points, float size, const std::vector<RGBAColor>& colour) = 0;
+    virtual void drawPoints(const std::vector<Vector3> &points, float size,  const  RGBAColor& color) = 0 ;
+    virtual void drawPoints(const std::vector<Vector3> &points, float size, const std::vector<RGBAColor>& color) = 0;
 
-    virtual void drawLine(const Vector3 &p1, const Vector3 &p2, const RGBAColor& colour) =  0;
+    virtual void drawLine(const Vector3 &p1, const Vector3 &p2, const RGBAColor& color) =  0;
     virtual void drawInfiniteLine(const Vector3 &point, const Vector3 &direction, const RGBAColor& color) = 0;
-    virtual void drawLines(const std::vector<Vector3> &points, float size, const RGBAColor& colour) = 0 ;
-    virtual void drawLines(const std::vector<Vector3> &points, float size, const std::vector<RGBAColor>& colours) = 0 ;
-    virtual void drawLines(const std::vector<Vector3> &points, const std::vector< Vec2i > &index , float size, const RGBAColor& colour) = 0 ;
+    virtual void drawLines(const std::vector<Vector3> &points, float size, const RGBAColor& color) = 0 ;
+    virtual void drawLines(const std::vector<Vector3> &points, float size, const std::vector<RGBAColor>& colors) = 0 ;
+    virtual void drawLines(const std::vector<Vector3> &points, const std::vector< Vec2i > &index , float size, const RGBAColor& color) = 0 ;
 
-    virtual void drawLineStrip(const std::vector<Vector3> &points, float size, const RGBAColor& colour) = 0 ;
-    virtual void drawLineLoop(const std::vector<Vector3> &points, float size, const RGBAColor& colour) = 0 ;
+    virtual void drawLineStrip(const std::vector<Vector3> &points, float size, const RGBAColor& color) = 0 ;
+    virtual void drawLineLoop(const std::vector<Vector3> &points, float size, const RGBAColor& color) = 0 ;
 
     virtual void drawDisk(float radius, double from, double to, int resolution, const RGBAColor& color) = 0;
     virtual void drawCircle(float radius, float lineThickness, int resolution, const RGBAColor& color) = 0;
 
-    virtual void drawTriangles(const std::vector<Vector3> &points, const RGBAColor& colour) = 0 ;
-    virtual void drawTriangles(const std::vector<Vector3> &points, const Vector3& normal, const RGBAColor& colour) = 0 ;
+    virtual void drawTriangles(const std::vector<Vector3> &points, const RGBAColor& color) = 0 ;
+    virtual void drawTriangles(const std::vector<Vector3> &points, const Vector3& normal, const RGBAColor& color) = 0 ;
     virtual void drawTriangles(const std::vector<Vector3> &points,
             const std::vector< Vec3i > &index,
             const std::vector<Vector3>  &normal,
-            const RGBAColor& colour) = 0 ;
+            const RGBAColor& color) = 0 ;
     virtual void drawTriangles(const std::vector<Vector3> &points,
         const std::vector< Vec3i > &index,
         const std::vector<Vector3>  &normal,
-        const std::vector<RGBAColor>& colour) = 0;
+        const std::vector<RGBAColor>& color) = 0;
     virtual void drawTriangles(const std::vector<Vector3> &points,
-            const std::vector< RGBAColor > &colour) = 0 ;
+            const std::vector< RGBAColor > &color) = 0 ;
     virtual void drawTriangles(const std::vector<Vector3> &points,
             const std::vector<Vector3>  &normal,
-            const std::vector< RGBAColor > &colour) = 0 ;
+            const std::vector< RGBAColor > &color) = 0 ;
     virtual void drawTriangleStrip(const std::vector<Vector3> &points,
             const std::vector<Vector3>  &normal,
-            const RGBAColor& colour) = 0 ;
+            const RGBAColor& color) = 0 ;
     virtual void drawTriangleFan(const std::vector<Vector3> &points,
             const std::vector<Vector3>  &normal,
-            const RGBAColor& colour) = 0 ;
+            const RGBAColor& color) = 0 ;
 
 
 
     virtual void drawFrame   (const Vector3& position, const Quaternion &orientation, const Vec3f &size) = 0 ;
-    virtual void drawFrame   (const Vector3& position, const Quaternion &orientation, const Vec3f &size, const RGBAColor &colour) = 0 ;
+    virtual void drawFrame   (const Vector3& position, const Quaternion &orientation, const Vec3f &size, const RGBAColor &color) = 0 ;
 
-    virtual void drawSpheres (const std::vector<Vector3> &points, const std::vector<float>& radius, const RGBAColor& colour) = 0;
-    virtual void drawSpheres (const std::vector<Vector3> &points, float radius, const RGBAColor& colour) = 0 ;
-    virtual void drawFakeSpheres(const std::vector<Vector3> &points, const std::vector<float>& radius, const RGBAColor& colour) = 0;
-    virtual void drawFakeSpheres(const std::vector<Vector3> &points, float radius, const RGBAColor& colour) = 0;
+    virtual void drawSpheres (const std::vector<Vector3> &points, const std::vector<float>& radius, const RGBAColor& color) = 0;
+    virtual void drawSpheres (const std::vector<Vector3> &points, float radius, const RGBAColor& color) = 0 ;
+    virtual void drawFakeSpheres(const std::vector<Vector3> &points, const std::vector<float>& radius, const RGBAColor& color) = 0;
+    virtual void drawFakeSpheres(const std::vector<Vector3> &points, float radius, const RGBAColor& color) = 0;
 
-    virtual void drawCone    (const Vector3& p1, const Vector3 &p2, float radius1, float radius2, const RGBAColor& colour, int subd=16) = 0 ;
+    virtual void drawCone    (const Vector3& p1, const Vector3 &p2, float radius1, float radius2, const RGBAColor& color, int subd=16) = 0 ;
 
     /// Draw a cube of size one centered on the current point.
-    virtual void drawCube    (const float& radius, const RGBAColor& colour, const int& subd=16) = 0 ;
+    virtual void drawCube    (const float& radius, const RGBAColor& color, const int& subd=16) = 0 ;
 
-    virtual void drawCylinder(const Vector3& p1, const Vector3 &p2, float radius, const RGBAColor& colour,  int subd=16) = 0 ;
+    virtual void drawCylinder(const Vector3& p1, const Vector3 &p2, float radius, const RGBAColor& color,  int subd=16) = 0 ;
 
-    virtual void drawCapsule(const Vector3& p1, const Vector3 &p2, float radius, const RGBAColor& colour,  int subd=16) = 0 ;
+    virtual void drawCapsule(const Vector3& p1, const Vector3 &p2, float radius, const RGBAColor& color,  int subd=16) = 0 ;
 
-    virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, const RGBAColor& colour,  int subd=16) = 0 ;
-    virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, float coneLength, const RGBAColor& colour,  int subd=16) = 0 ;
+    virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, const RGBAColor& color,  int subd=16) = 0 ;
+    virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, float coneLength, const RGBAColor& color,  int subd=16) = 0 ;
     virtual void drawArrow   (const Vector3& p1, const Vector3 &p2, float radius, float coneLength, float coneRadius, const RGBAColor& color,  int subd=16) = 0;
 
     /// Draw a cross (3 lines) centered on p
-    virtual void drawCross(const Vector3&p, float length, const RGBAColor& colour) = 0;
+    virtual void drawCross(const Vector3&p, float length, const RGBAColor& color) = 0;
 
     /// Draw a plus sign of size one centered on the current point.
-    virtual void drawPlus    (const float& radius, const RGBAColor& colour, const int& subd=16) = 0 ;
+    virtual void drawPlus    (const float& radius, const RGBAColor& color, const int& subd=16) = 0 ;
 
     virtual void drawPoint(const Vector3 &p, const RGBAColor &c) = 0 ;
     virtual void drawPoint(const Vector3 &p, const Vector3 &n, const RGBAColor &c) = 0 ;
@@ -148,22 +148,23 @@ public:
     virtual void drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
             const Vector3 &normal1, const Vector3 &normal2, const Vector3 &normal3, const Vector3 &normal4,
             const RGBAColor &c1, const RGBAColor &c2, const RGBAColor &c3, const RGBAColor &c4) = 0 ;
-    virtual void drawQuads(const std::vector<Vector3> &points, const RGBAColor& colour) = 0 ;
-    virtual void drawQuads(const std::vector<Vector3> &points, const std::vector<RGBAColor>& colours) = 0 ;
+    virtual void drawQuads(const std::vector<Vector3> &points, const RGBAColor& color) = 0 ;
+    virtual void drawQuads(const std::vector<Vector3> &points, const std::vector<RGBAColor>& colors) = 0 ;
 
-    virtual void drawTetrahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3, const RGBAColor &colour) = 0 ;
-    virtual void drawTetrahedra(const std::vector<Vector3> &points, const RGBAColor& colour) = 0;
+    virtual void drawTetrahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3, const RGBAColor &color) = 0 ;
+    virtual void drawScaledTetrahedron(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, const RGBAColor& color, const float scale) = 0;
+    virtual void drawTetrahedra(const std::vector<Vector3> &points, const RGBAColor& color) = 0;
     //Scale each tetrahedron
-    virtual void drawScaledTetrahedra(const std::vector<Vector3> &points, const RGBAColor& colour, const float scale) = 0;
+    virtual void drawScaledTetrahedra(const std::vector<Vector3> &points, const RGBAColor& color, const float scale) = 0;
 
     virtual void drawHexahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3,
-        const Vector3 &p4, const Vector3 &p5, const Vector3 &p6, const Vector3 &p7, const RGBAColor &colour) = 0;
-    virtual void drawHexahedra(const std::vector<Vector3> &points, const RGBAColor& colour) = 0;
+        const Vector3 &p4, const Vector3 &p5, const Vector3 &p6, const Vector3 &p7, const RGBAColor &color) = 0;
+    virtual void drawHexahedra(const std::vector<Vector3> &points, const RGBAColor& color) = 0;
     //Scale each hexahedron
-    virtual void drawScaledHexahedra(const std::vector<Vector3> &points, const RGBAColor& colour, const float scale) = 0;
+    virtual void drawScaledHexahedra(const std::vector<Vector3> &points, const RGBAColor& color, const float scale) = 0;
 
     virtual void drawSphere( const Vector3 &p, float radius) = 0 ;
-    virtual void drawSphere(const Vector3 &p, float radius, const RGBAColor& colour) = 0;
+    virtual void drawSphere(const Vector3 &p, float radius, const RGBAColor& color) = 0;
     virtual void drawEllipsoid(const Vector3 &p, const Vector3 &radii) = 0;
 
     virtual void drawBoundingBox( const Vector3 &min, const Vector3 &max, float size = 1.0 ) = 0;
@@ -185,9 +186,9 @@ public:
     /// @}
 
     /// @name Drawing style methods.
-    virtual void setMaterial(const RGBAColor &colour) = 0 ;
+    virtual void setMaterial(const RGBAColor &color) = 0 ;
 
-    virtual void resetMaterial(const RGBAColor &colour) = 0 ;
+    virtual void resetMaterial(const RGBAColor &color) = 0 ;
     virtual void resetMaterial() = 0 ;
 
     virtual void setPolygonMode(int _mode, bool _wireframe) = 0 ;
@@ -230,46 +231,46 @@ public:
     // Necessary to not break existing code
     // as std::vector<RGBAColor> is not a std::vector<Vec4f>
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawPoints(const std::vector<Vector3>& points, float size, const std::vector<Vec4f>& colour) = delete;
+    void drawPoints(const std::vector<Vector3>& points, float size, const std::vector<Vec4f>& color) = delete;
     
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawLines(const std::vector<Vector3>& points, float size, const std::vector<Vec4f>& colours) = delete;
+    void drawLines(const std::vector<Vector3>& points, float size, const std::vector<Vec4f>& colors) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawTriangles(const std::vector<Vector3>& points, const std::vector< Vec3i >& index, const std::vector<Vector3>& normal, const std::vector<Vec4f>& colour) = delete;
+    void drawTriangles(const std::vector<Vector3>& points, const std::vector< Vec3i >& index, const std::vector<Vector3>& normal, const std::vector<Vec4f>& color) = delete;
 
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawTriangles(const std::vector<Vector3>& points, const std::vector< Vec4f >& colour) = delete;
+    void drawTriangles(const std::vector<Vector3>& points, const std::vector< Vec4f >& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
     void drawTriangles(const std::vector<Vector3>& points,
             const std::vector<Vector3>& normal,
-            const std::vector< Vec4f >& colour) = delete;
+            const std::vector< Vec4f >& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawQuads(const std::vector<Vector3>& points, const std::vector<Vec4f>& colours) = delete;
+    void drawQuads(const std::vector<Vector3>& points, const std::vector<Vec4f>& colors) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawPoints(const std::vector<Vector3>& points, float size, const Vec4f& colour) = delete;
+    void drawPoints(const std::vector<Vector3>& points, float size, const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawLine(const Vector3& p1, const Vector3& p2, const Vec4f& colour) = delete;
+    void drawLine(const Vector3& p1, const Vector3& p2, const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
     void drawInfiniteLine(const Vector3& point, const Vector3& direction, const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawLines(const std::vector<Vector3>& points, float size, const Vec4f& colour) = delete;
+    void drawLines(const std::vector<Vector3>& points, float size, const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawLines(const std::vector<Vector3>& points, const std::vector< Vec2i >& index, float size, const Vec4f& colour) = delete;
+    void drawLines(const std::vector<Vector3>& points, const std::vector< Vec2i >& index, float size, const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawLineStrip(const std::vector<Vector3>& points, float size, const Vec4f& colour) = delete;
+    void drawLineStrip(const std::vector<Vector3>& points, float size, const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawLineLoop(const std::vector<Vector3>& points, float size, const Vec4f& colour) = delete;
+    void drawLineLoop(const std::vector<Vector3>& points, float size, const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
     void drawDisk(float radius, double from, double to, int resolution, const Vec4f& color) = delete;
@@ -278,68 +279,68 @@ public:
     void drawCircle(float radius, float lineThickness, int resolution, const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawTriangles(const std::vector<Vector3>& points, const Vec4f& colour) = delete;
+    void drawTriangles(const std::vector<Vector3>& points, const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawTriangles(const std::vector<Vector3>& points, const Vector3& normal, const Vec4f& colour) = delete;
+    void drawTriangles(const std::vector<Vector3>& points, const Vector3& normal, const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
     void drawTriangles(const std::vector<Vector3>& points,
         const std::vector< Vec3i >& index,
         const std::vector<Vector3>& normal,
-        const Vec4f& colour) = delete;
+        const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
     void drawTriangleStrip(const std::vector<Vector3>& points,
         const std::vector<Vector3>& normal,
-        const Vec4f& colour) = delete;
+        const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
     void drawTriangleFan(const std::vector<Vector3>& points,
         const std::vector<Vector3>& normal,
-        const Vec4f& colour) = delete;
+        const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawFrame(const Vector3& position, const Quaternion& orientation, const Vec3f& size, const Vec4f& colour) = delete;
+    void drawFrame(const Vector3& position, const Quaternion& orientation, const Vec3f& size, const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawSpheres(const std::vector<Vector3>& points, const std::vector<float>& radius, const Vec4f& colour) = delete;
+    void drawSpheres(const std::vector<Vector3>& points, const std::vector<float>& radius, const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawSpheres(const std::vector<Vector3>& points, float radius, const Vec4f& colour) = delete;
+    void drawSpheres(const std::vector<Vector3>& points, float radius, const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawFakeSpheres(const std::vector<Vector3>& points, const std::vector<float>& radius, const Vec4f& colour) = delete;
+    void drawFakeSpheres(const std::vector<Vector3>& points, const std::vector<float>& radius, const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawFakeSpheres(const std::vector<Vector3>& points, float radius, const Vec4f& colour) = delete;
+    void drawFakeSpheres(const std::vector<Vector3>& points, float radius, const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawCone(const Vector3& p1, const Vector3& p2, float radius1, float radius2, const Vec4f& colour, int subd = 16) = delete;
+    void drawCone(const Vector3& p1, const Vector3& p2, float radius1, float radius2, const Vec4f& color, int subd = 16) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawCube(const float& radius, const Vec4f& colour, const int& subd = 16) = delete;
+    void drawCube(const float& radius, const Vec4f& color, const int& subd = 16) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawCylinder(const Vector3& p1, const Vector3& p2, float radius, const Vec4f& colour, int subd = 16) = delete;
+    void drawCylinder(const Vector3& p1, const Vector3& p2, float radius, const Vec4f& color, int subd = 16) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawCapsule(const Vector3& p1, const Vector3& p2, float radius, const Vec4f& colour, int subd = 16) = delete;
+    void drawCapsule(const Vector3& p1, const Vector3& p2, float radius, const Vec4f& color, int subd = 16) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawArrow(const Vector3& p1, const Vector3& p2, float radius, const Vec4f& colour, int subd = 16) = delete;
+    void drawArrow(const Vector3& p1, const Vector3& p2, float radius, const Vec4f& color, int subd = 16) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawArrow(const Vector3& p1, const Vector3& p2, float radius, float coneLength, const Vec4f& colour, int subd = 16) = delete;
+    void drawArrow(const Vector3& p1, const Vector3& p2, float radius, float coneLength, const Vec4f& color, int subd = 16) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
     void drawArrow(const Vector3& p1, const Vector3& p2, float radius, float coneLength, float coneRadius, const Vec4f& color, int subd = 16) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawCross(const Vector3& p, float length, const Vec4f& colour) = delete;
+    void drawCross(const Vector3& p, float length, const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawPlus(const float& radius, const Vec4f& colour, const int& subd = 16) = delete;
+    void drawPlus(const float& radius, const Vec4f& color, const int& subd = 16) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
     void drawPoint(const Vector3& p, const Vec4f& c) = delete;
@@ -367,29 +368,29 @@ public:
         const Vec4f& c1, const Vec4f& c2, const Vec4f& c3, const Vec4f& c4) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawQuads(const std::vector<Vector3>& points, const Vec4f& colour) = delete;
+    void drawQuads(const std::vector<Vector3>& points, const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawTetrahedron(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vec4f& colour) = delete;
+    void drawTetrahedron(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawTetrahedra(const std::vector<Vector3>& points, const Vec4f& colour) = delete;
+    void drawTetrahedra(const std::vector<Vector3>& points, const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawScaledTetrahedra(const std::vector<Vector3>& points, const Vec4f& colour, const float scale) = delete;
+    void drawScaledTetrahedra(const std::vector<Vector3>& points, const Vec4f& color, const float scale) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
     void drawHexahedron(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3,
-        const Vector3& p4, const Vector3& p5, const Vector3& p6, const Vector3& p7, const Vec4f& colour) = delete;
+        const Vector3& p4, const Vector3& p5, const Vector3& p6, const Vector3& p7, const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawHexahedra(const std::vector<Vector3>& points, const Vec4f& colour) = delete;
+    void drawHexahedra(const std::vector<Vector3>& points, const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawScaledHexahedra(const std::vector<Vector3>& points, const Vec4f& colour, const float scale) = delete;
+    void drawScaledHexahedra(const std::vector<Vector3>& points, const Vec4f& color, const float scale) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void drawSphere(const Vector3& p, float radius, const Vec4f& colour) = delete;
+    void drawSphere(const Vector3& p, float radius, const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
     void draw3DText(const Vector3& p, float scale, const Vec4f& color, const char* text) = delete;
@@ -398,10 +399,10 @@ public:
     void draw3DText_Indices(const std::vector<Vector3>& positions, float scale, const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void setMaterial(const Vec4f& colour) = delete;
+    void setMaterial(const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
-    void resetMaterial(const Vec4f& colour) = delete;
+    void resetMaterial(const Vec4f& color) = delete;
 
     SOFA_ATTRIBUTE_DISABLED__DRAWTOOL_USES_RGBACOLOR()
     void writeOverlayText(int x, int y, unsigned fontSize, const Vec4f& color, const char* text) = delete;

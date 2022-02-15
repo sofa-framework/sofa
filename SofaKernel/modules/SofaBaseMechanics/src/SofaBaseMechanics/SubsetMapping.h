@@ -29,6 +29,7 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/vector.h>
+#include <sofa/type/trait/Rebind.h>
 
 
 namespace sofa::component::mapping
@@ -80,7 +81,7 @@ public:
     typedef sofa::linearalgebra::CompressedRowSparseMatrix<MBloc> MatrixType;
 
     /// Correspondance array
-    typedef typename InVecCoord::template rebind<Index>::other IndexArray;
+    using IndexArray = sofa::type::rebind_to<InVecCoord, Index>;
     typedef sofa::core::topology::PointSubsetData< IndexArray > SetIndex;
     SetIndex f_indices;
 
@@ -133,7 +134,7 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_MAPPING_SUBSETMAPPING_CPP)
 
-extern template class SOFA_SOFABASEMECHANICS_API SubsetMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_SOFABASEMECHANICS_API SubsetMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types >;
 extern template class SOFA_SOFABASEMECHANICS_API SubsetMapping< sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec1Types >;
 extern template class SOFA_SOFABASEMECHANICS_API SubsetMapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types >;
 

@@ -79,7 +79,7 @@ public:
     */
     virtual void addHexahedra(const sofa::type::vector< Hexahedron > &hexahedra,
             const sofa::type::vector< sofa::type::vector< HexahedronID > > & ancestors,
-            const sofa::type::vector< sofa::type::vector< double > >& baryCoefs) ;
+            const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs) ;
 
     /** \brief Add a hexahedron.
     */
@@ -112,7 +112,7 @@ protected:
         const sofa::type::vector< Hexahedron >& hexahedraList,
         const sofa::type::vector< HexahedronID >& hexahedraIndexList,
         const sofa::type::vector< sofa::type::vector< HexahedronID > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& baryCoefs);
+        const sofa::type::vector< sofa::type::vector< SReal > >& baryCoefs);
 
     /** \brief Actually Add some hexahedra to this topology.
     *

@@ -23,7 +23,7 @@
 #include <SofaBoundaryCondition/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
-#include <SofaBaseTopology/TopologySubsetData.h>
+#include <sofa/core/topology/TopologySubsetData.h>
 
 namespace sofa::component::forcefield
 {

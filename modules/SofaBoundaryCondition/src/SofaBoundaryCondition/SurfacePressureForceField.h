@@ -135,7 +135,7 @@ protected:
      * @brief Returns next pressure value in pulse mode.
      * Pressure is computed according to the pressureSpeed attribute and the simulation time step.
      */
-    const Real computePulseModePressure(void);
+    Real computePulseModePressure();
 
 
     /**

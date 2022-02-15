@@ -138,6 +138,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/objectmodel/MouseEvent.h
     ${SRC_ROOT}/objectmodel/SPtr.h
     ${SRC_ROOT}/objectmodel/ScriptEvent.h
+    ${SRC_ROOT}/objectmodel/TypeOfInsertion.h
     ${SRC_ROOT}/objectmodel/Tag.h
     ${SRC_ROOT}/objectmodel/vectorData.h
     ${SRC_ROOT}/objectmodel/vectorLinks.h
@@ -293,6 +294,11 @@ endif()
 if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Silence attribute warnings (for example, ignored already defined external template)
     target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
+endif()
+
+# SOFA-NG: make everybody be able to use Sofa.Component.Compat
+if(TARGET Sofa.Component.Compat)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Compat)
 endif()
 
 sofa_create_package_with_targets(

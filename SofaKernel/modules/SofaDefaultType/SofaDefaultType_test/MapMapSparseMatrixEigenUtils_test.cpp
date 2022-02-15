@@ -114,10 +114,14 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionEigenSparseMapMapSparseVec
     int indexEntry = 0;
     for (auto row = mat.begin(); row != mat.end(); ++row)
     {
-
         for (auto col = row.begin(); col != row.end(); ++col)
         {
-            EXPECT_EQ( matEntries[indexEntry++].value(), col.val()[0]  );
+            EXPECT_NE(std::find_if(matEntries.begin(), matEntries.end(),
+                [&col, &row](const auto& el )
+                {
+                    return col.index() == el.col() && row.index() == col.row() && col.val().front() == el.value();
+                }), matEntries.end());
+            ++indexEntry;
         }
     }
 

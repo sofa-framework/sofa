@@ -31,6 +31,7 @@
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 #include <sofa/core/topology/TopologyData.h>
+#include <sofa/type/trait/Rebind.h>
 
 
 namespace sofa::component::forcefield
@@ -49,7 +50,7 @@ public:
     typedef typename DataTypes::Coord    Coord   ;
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
-    typedef typename VecCoord::template rebind<VecCoord>::other VecType;
+    using VecType = sofa::type::rebind_to<VecCoord, VecCoord>;
 
 
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
@@ -95,7 +96,7 @@ protected:
             return in;
         }
     };
-    typedef typename VecCoord::template rebind<EdgeRestInformation>::other edgeRestInfoVector;
+    using edgeRestInfoVector = type::rebind_to<VecCoord, EdgeRestInformation>;
 
     VecCoord  _initialPoints;///< the intial positions of the points
 
@@ -132,13 +133,13 @@ public:
     virtual Real getMu() const { return mu;}
 
     SReal getPotentialEnergy(const core::MechanicalParams* mparams) const override;
-    void setYoungModulus(const double modulus)
+    void setYoungModulus(const Real modulus)
     {
-        f_youngModulus.setValue((Real)modulus);
+        f_youngModulus.setValue(modulus);
     }
-    void setPoissonRatio(const double ratio)
+    void setPoissonRatio(const Real ratio)
     {
-        f_poissonRatio.setValue((Real)ratio);
+        f_poissonRatio.setValue(ratio);
     }
     void draw(const core::visual::VisualParams* vparams) override;
     /// compute lambda and mu based on the Young modulus and Poisson ratio
@@ -150,7 +151,7 @@ public:
     void createEdgeRestInformation(Index edgeIndex, EdgeRestInformation& ei,
         const core::topology::BaseMeshTopology::Edge&,
         const sofa::type::vector< Index >&,
-        const sofa::type::vector< double >&);
+        const sofa::type::vector< SReal >&);
 
     /** Method to update @sa edgeInfo when a new Tetrahedron is created.
     * Will be set as callback in the EdgeData @sa edgeInfo when TETRAHEDRAADDED event is fired
@@ -159,7 +160,7 @@ public:
     void applyTetrahedronCreation(const sofa::type::vector<Index>& tetrahedronAdded,
         const sofa::type::vector<core::topology::BaseMeshTopology::Tetrahedron>&,
         const sofa::type::vector<sofa::type::vector<Index> >&,
-        const sofa::type::vector<sofa::type::vector<double> >&);
+        const sofa::type::vector<sofa::type::vector<SReal> >&);
 
     /** Method to update @sa d_edgeSprings when a triangle is removed.
     * Will be set as callback in the EdgeData @sa edgeInfo when TETRAHEDRAREMOVED event is fired

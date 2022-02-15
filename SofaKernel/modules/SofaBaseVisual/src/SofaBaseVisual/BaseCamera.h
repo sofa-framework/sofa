@@ -22,7 +22,6 @@
 #pragma once
 #include <SofaBaseVisual/config.h>
 
-#include <SofaBaseVisual/BackgroundSetting.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Ray.h>
@@ -41,9 +40,10 @@ public:
     SOFA_CLASS(BaseCamera, core::objectmodel::BaseObject);
 
     typedef type::Ray Ray;
-    typedef type::Vector4 Vec4;
-    typedef type::Vector3 Vec3;
-    typedef type::Vector2 Vec2;
+    using Vec2 = sofa::type::Vec<2, SReal>;
+    using Vec3 = sofa::type::Vec3;
+    using Vec4 = sofa::type::Vec<4, SReal>;
+
     typedef type::Quat<SReal> Quat;
 
     enum Side {LEFT, RIGHT, MONO};
@@ -87,9 +87,6 @@ public:
     
     Data<type::vector<SReal> > p_modelViewMatrix; ///< ModelView Matrix
     Data<type::vector<SReal> > p_projectionMatrix; ///< Projection Matrix
-
-    SingleLink<BaseCamera, sofa::component::configurationsetting::BackgroundSetting,
-               BaseLink::FLAG_STOREPATH> l_background ;
 
     BaseCamera();
     ~BaseCamera() override;

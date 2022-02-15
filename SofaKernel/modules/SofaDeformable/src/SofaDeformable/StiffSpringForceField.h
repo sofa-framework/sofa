@@ -63,7 +63,10 @@ public:
     SetIndex d_indices1; ///< Indices of the source points on the first model
     SetIndex d_indices2; ///< Indices of the fixed points on the second model
 
-    core::objectmodel::Data<SReal> d_length;
+    SOFA_ATTRIBUTE_DISABLED__STIFFSPRINGFORCEFIELD_DATANAME("To fix your code, use d_lengths")
+    DeprecatedAndRemoved d_length;
+
+    core::objectmodel::Data<sofa::type::vector<SReal> > d_lengths;
 protected:
     sofa::type::vector<Mat>  dfdx;
 
@@ -71,10 +74,10 @@ protected:
     void addSpringForce(Real& potentialEnergy, VecDeriv& f1,const  VecCoord& p1,const VecDeriv& v1, VecDeriv& f2,const  VecCoord& p2,const  VecDeriv& v2, sofa::Index i, const Spring& spring) override;
 
     /// Apply the stiffness, i.e. accumulate df given dx
-    virtual void addSpringDForce(VecDeriv& df1,const  VecDeriv& dx1, VecDeriv& df2,const  VecDeriv& dx2, sofa::Index i, const Spring& spring, double kFactor, double bFactor);
+    virtual void addSpringDForce(VecDeriv& df1,const  VecDeriv& dx1, VecDeriv& df2,const  VecDeriv& dx2, sofa::Index i, const Spring& spring, SReal kFactor, SReal bFactor);
 
-    StiffSpringForceField(double ks=100.0, double kd=5.0);
-    StiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks=100.0, double kd=5.0);
+    StiffSpringForceField(SReal ks=100.0, SReal kd=5.0);
+    StiffSpringForceField(MechanicalState* object1, MechanicalState* object2, SReal ks=100.0, SReal kd=5.0);
 
     /// Will create the set of springs using \sa d_indices1 and \sa d_indices2 with \sa d_length
     void createSpringsFromInputs();

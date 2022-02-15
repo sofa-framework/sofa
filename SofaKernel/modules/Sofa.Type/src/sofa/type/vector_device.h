@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/type/config.h>
+#include <sofa/type/trait/Rebind.h>
 
 // maximum number of bytes we allow to increase the size when of a vector in a single step when we reserve on the host or device
 #define SOFA_VECTOR_HOST_STEP_SIZE 32768
@@ -62,12 +63,17 @@ public:
     typedef MemoryManager memory_manager;
     typedef DataTypeInfoManager datatypeinfo_manager;
 
-    template<class T2> struct rebind
+    template<class T2>
+    using rebind_to = vector_device<T2,
+                                    sofa::type::rebind_to<memory_manager, T2>,
+                                    sofa::type::rebind_to<datatypeinfo_manager, T2> >;
+
+    template<class T2> struct SOFA_ATTRIBUTE_DEPRECATED__REBIND() rebind
     {
-        typedef vector_device<T2, 
-            typename memory_manager::template rebind<T2>::other, 
-            typename datatypeinfo_manager::template rebind<T2>::other > other;
+        using other = rebind_to<T2>;
     };
+
+
 
 protected:
     Size     vectorSize;     ///< Current size of the vector

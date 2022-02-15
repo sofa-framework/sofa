@@ -87,7 +87,7 @@ public:
         return eigenVector.coeff((IndexEigen)i);
     }
 
-    void set(Index i, double v) override
+    void set(Index i, SReal v) override
     {
 #if EIGEN_CHECK
         if (i >= rowSize() || j >= colSize())
@@ -115,7 +115,7 @@ public:
 
 
 
-    void add(Index i, double v) override
+    void add(Index i, SReal v) override
     {
 #if EIGEN_CHECK
         if (i >= rowSize() || j >= colSize())

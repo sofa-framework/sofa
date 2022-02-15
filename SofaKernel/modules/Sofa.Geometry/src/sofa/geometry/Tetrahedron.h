@@ -27,7 +27,6 @@
 #include <sofa/type/vector_algebra.h>
 #include <sofa/type/Vec.h>
 #include <iterator>
-#include <boost/serialization/static_warning.hpp>
 
 namespace sofa::geometry
 {
@@ -54,23 +53,14 @@ struct Tetrahedron
     static constexpr auto volume(const Node& n0, const Node& n1, const Node& n2, const Node& n3)
     {
         constexpr Node n{};
-        //static_assert(std::distance(std::begin(n), std::end(n)) == 3, "volume can only be computed in 3 dimensions.");
+        static_assert(std::distance(std::begin(n), std::end(n)) == 3, "volume can only be computed in 3 dimensions.");
 
-        if constexpr (std::distance(std::begin(n), std::end(n)) == 3)
-        {
-            const auto a = n1 - n0;
-            const auto b = n2 - n0;
-            const auto c = n3 - n0;
+        const auto a = n1 - n0;
+        const auto b = n2 - n0;
+        const auto c = n3 - n0;
 
-            return std::abs(sofa::type::dot(sofa::type::cross(a, b), c) / static_cast<T>(6));
-        }
-        else
-        {
-            BOOST_STATIC_WARNING(true)
-            //does not make sense to compute volume other than 3D
-            //but some code effectively wants 2d volumes(??)
-            return static_cast<T>(0);
-        }
+        return std::abs(sofa::type::dot(sofa::type::cross(a, b), c) / static_cast<T>(6));
+
     }
 };
 

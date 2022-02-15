@@ -77,17 +77,17 @@ public:
     */
     virtual void add(sofa::Size nbElements,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs);
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs);
 
     virtual void add(sofa::Size nbElements,
         const sofa::type::vector< TopologyElementType >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs);
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs);
 
     void add(const sofa::type::vector<Index>& index,
         const sofa::type::vector< TopologyElementType >& elems,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs,
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs,
         const sofa::type::vector< AncestorElem >& ancestorElems) override;
 
     /// Remove the data using a set of indices. Will remove only the data contains by this subset.
@@ -99,7 +99,7 @@ public:
     /// Move a list of points. TODO epernod 2021-05-24: check if needed and implement it if needed.
     void move(const sofa::type::vector<Index>& indexList,
         const sofa::type::vector< sofa::type::vector< Index > >& ancestors,
-        const sofa::type::vector< sofa::type::vector< double > >& coefs) override;
+        const sofa::type::vector< sofa::type::vector< SReal > >& coefs) override;
 
     /// Add Element after a displacement of vertices, ie. add element based on previous position topology revision.
     /// TODO epernod 2021-05-24: check if needed and implement it if needed.

@@ -24,6 +24,7 @@
 #include <sofa/core/fwd.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/ClassInfo.h>
+#include <sofa/core/objectmodel/TypeOfInsertion.h>
 
 namespace sofa::simulation
 {
@@ -50,7 +51,7 @@ public:
     SOFA_CLASS(BaseContext, Base);
     SOFA_BASE_CAST_IMPLEMENTATION(BaseContext)
 
-    typedef type::Vector3 Vec3;
+    using Vec3 = sofa::type::Vec3;
 
 protected:
     BaseContext();
@@ -369,7 +370,7 @@ public:
     /// @{
 
     /// Add an object, or return false if not supported
-    virtual bool addObject( sptr<BaseObject> /*obj*/ )
+    virtual bool addObject( sptr<BaseObject> /*obj*/, TypeOfInsertion = TypeOfInsertion::AtEnd)
     {
         return false;
     }

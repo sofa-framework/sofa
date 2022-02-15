@@ -801,9 +801,11 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
         i += res[i]->getNbLines();
     }
 
-    std::map < std::string, sofa::type::vector<double> >* graphs = d_graphForces.beginEdit();
-    graphs->clear();
-    d_graphForces.endEdit();
+    {
+        auto* graphs = d_graphForces.beginEdit();
+        graphs->clear();
+        d_graphForces.endEdit();
+    }
 
     if(d_schemeCorrection.getValue())
     {

@@ -41,7 +41,7 @@ ConicalForceField<DataTypes>::ConicalForceField()
 
     , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness"))
     , damping(initData(&damping, (Real)5, "damping", "force damping"))
-    , color(initData(&color, sofa::type::RGBAColor(0.0f,0.0f,1.0f,1.0f), "color", "cone color. (default=0.0,0.0,0.0,1.0,1.0)"))
+    , color(initData(&color, sofa::type::RGBAColor::blue(), "color", "cone color. (default=0.0,0.0,0.0,1.0,1.0)"))
 {
 }
 

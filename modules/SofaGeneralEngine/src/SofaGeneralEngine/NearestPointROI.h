@@ -25,31 +25,29 @@
 #include <sofa/core/behavior/PairInteractionProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/objectmodel/Event.h>
-#include <sofa/linearalgebra/BaseMatrix.h>
-#include <sofa/linearalgebra/BaseVector.h>
-#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/vector.h>
 #include <sofa/core/topology/TopologySubsetIndices.h>
-#include <set>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/config.h>
 
-
-
 namespace sofa::component::engine
 {
-/** Attach given pair of particles, projecting the positions of the second particles to the first ones.
-*/
 
-using sofa::core::behavior::MechanicalState ;
-
+/**
+ * Given two mechanical states, find correspondance between degrees of freedom, based on the minimal distance.
+ *
+ * Project all the points from the second mechanical state on the first one. This done by finding the point in the
+ * first mechanical state closest to each point in the second mechanical state. If the distance is less than a provided
+ * distance (named radius), the indices of the degrees of freedom in their respective mechanical states is added to
+ * an output list.
+ *
+ */
 template <class DataTypes>
-class NearestPointROI : public sofa::core::DataEngine
+class NearestPointROI : public sofa::core::DataEngine, public core::behavior::PairStateAccessor<DataTypes, DataTypes>
 {
-public:    
-    SOFA_CLASS(SOFA_TEMPLATE(NearestPointROI, DataTypes), sofa::core::DataEngine);
+public:
+    SOFA_CLASS2(SOFA_TEMPLATE(NearestPointROI, DataTypes), sofa::core::DataEngine, SOFA_TEMPLATE2(core::behavior::PairStateAccessor, DataTypes, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -63,17 +61,21 @@ public:
     typedef type::vector<unsigned int> SetIndexArray;
     typedef sofa::core::topology::TopologySubsetIndices SetIndex;
 
-public:
-    SetIndex f_indices1; ///< Indices of the source points on the first model
-    SetIndex f_indices2; ///< Indices of the fixed points on the second model
+    SetIndex d_inputIndices1; ///< Only these indices are considered in the first model
+    SetIndex d_inputIndices2; ///< Only these indices are considered in the second model
     Data<Real> f_radius; ///< Radius to search corresponding fixed point if no indices are given
     Data<bool> d_useRestPosition; ///< If true will use rest position only at init. Otherwise will recompute the maps at each update. Default is true.
-    
-    SingleLink<NearestPointROI<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate1;
-    SingleLink<NearestPointROI<DataTypes>, MechanicalState<DataTypes>, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mstate2;
 
-public:
-    NearestPointROI();
+    /// Output Data
+    ///@{
+    SetIndex f_indices1; ///< Indices of the source points on the first model
+    SetIndex f_indices2; ///< Indices of the fixed points on the second model
+    Data< sofa::type::vector<topology::Edge> > d_edges; ///< List of edges. The indices point to a list composed as an interleaved fusion of output degrees of freedom. It could be used to fuse two mechanical objects and create a topology from the fusion.
+    Data< type::vector<unsigned> > d_indexPairs;        ///< Two indices per child: the parent, and the index within the parent. Could be used with a SubsetMultiMapping
+    Data< type::vector<Real> > d_distances; /// List of distances between pairs of points
+    ///@}
+
+    explicit NearestPointROI(core::behavior::MechanicalState<DataTypes> * = nullptr, core::behavior::MechanicalState<DataTypes> *mm2 = nullptr);
     ~NearestPointROI() override;
 
     void init() override;
@@ -89,6 +91,7 @@ protected:
 extern template class SOFA_SOFAGENERALENGINE_API NearestPointROI<defaulttype::Vec3Types>;
 extern template class SOFA_SOFAGENERALENGINE_API NearestPointROI<defaulttype::Vec2Types>;
 extern template class SOFA_SOFAGENERALENGINE_API NearestPointROI<defaulttype::Vec1Types>;
+extern template class SOFA_SOFAGENERALENGINE_API NearestPointROI<defaulttype::Vec6Types>;
 extern template class SOFA_SOFAGENERALENGINE_API NearestPointROI<defaulttype::Rigid3Types>;
 extern template class SOFA_SOFAGENERALENGINE_API NearestPointROI<defaulttype::Rigid2Types>;
 #endif

@@ -109,7 +109,7 @@ public:
     void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
     SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
     template<class MatrixWriter>
-    void addKToMatrixT(const core::MechanicalParams* mparams, MatrixWriter m);
+    void addKToMatrixT(const core::MechanicalParams* mparams, MatrixWriter mwriter);
 
     void draw(const core::visual::VisualParams* vparams) override;
 

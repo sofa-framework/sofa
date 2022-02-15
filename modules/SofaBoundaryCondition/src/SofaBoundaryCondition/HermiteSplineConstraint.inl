@@ -75,9 +75,7 @@ void HermiteSplineConstraint<DataTypes>::init()
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
-    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
-
-    if (_topology)
+    if (sofa::core::topology::BaseMeshTopology* _topology = l_topology.get())
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
@@ -232,7 +230,7 @@ void HermiteSplineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
     vparams->drawTool()->disableLighting();
 
     std::vector<sofa::type::Vector3> vertices;
-    sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
+    constexpr sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
 
     const Vec3R& mx0 = m_x0.getValue();
     const Vec3R& mx1 = m_x0.getValue();
@@ -253,13 +251,11 @@ void HermiteSplineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
     }
     vparams->drawTool()->drawLineStrip(vertices, 2, color);
 
-    color = sofa::type::RGBAColor::red();
-
     vertices.clear();
     vertices.push_back(sofa::type::Vector3(mx0[0], mx0[1], mx0[2]));
     vertices.push_back(sofa::type::Vector3(mx1[0], mx1[1], mx1[2]));
 
-    vparams->drawTool()->drawPoints(vertices, 5.0, color);
+    vparams->drawTool()->drawPoints(vertices, 5.0, sofa::type::RGBAColor::red());
 
     //display control tangents
     vertices.clear();
@@ -268,7 +264,7 @@ void HermiteSplineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
     vertices.push_back(mx1);
     vertices.push_back(mx1 + mdx1*0.1);
 
-    vparams->drawTool()->drawLines(vertices, 1.0, color);
+    vparams->drawTool()->drawLines(vertices, 1.0, sofa::type::RGBAColor::red());
     vparams->drawTool()->restoreLastState();
 }
 

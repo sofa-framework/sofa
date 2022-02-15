@@ -103,7 +103,7 @@ void RayCollisionModel::draw(const core::visual::VisualParams* vparams, Index in
 
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->disableLighting();
-    sofa::type::RGBAColor color(1.0, 0.0, 1.0, 1.0);
+    constexpr sofa::type::RGBAColor color = sofa::type::RGBAColor::magenta();
     vparams->drawTool()->drawLine(p1,p2,color);
     vparams->drawTool()->restoreLastState();
 }
@@ -170,30 +170,28 @@ void RayCollisionModel::applyTranslation(double dx, double dy, double dz)
     }
 }
 
-const type::Vector3& Ray::origin() const
+const type::Vec3& Ray::origin() const
 {
     return model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue()[index];
 }
 
-const type::Vector3& Ray::direction() const
+const type::Vec3& Ray::direction() const
 {
     return model->direction[index];
 }
 
-type::Vector3::value_type Ray::l() const
+SReal Ray::l() const
 {
     return model->length[index];
 }
 
-void Ray::setOrigin(const type::Vector3& newOrigin)
+void Ray::setOrigin(const type::Vec3& newOrigin)
 {
-    helper::WriteAccessor<Data<type::vector<type::Vector3> > > xData =
-        *model->getMechanicalState()->write(core::VecCoordId::position());
+    auto xData = sofa::helper::getWriteAccessor(*model->getMechanicalState()->write(core::VecCoordId::position()));
     xData.wref()[index] = newOrigin;
 
-    helper::WriteAccessor<Data<type::vector<type::Vector3> > > xDataFree =
-        *model->getMechanicalState()->write(core::VecCoordId::freePosition());
-    defaulttype::Vec3Types::VecCoord& freePos = xDataFree.wref();
+    auto xDataFree = sofa::helper::getWriteAccessor(*model->getMechanicalState()->write(core::VecCoordId::freePosition()));
+    auto& freePos = xDataFree.wref();
     freePos.resize(model->getMechanicalState()->getSize());
     freePos[index] = newOrigin;
 }

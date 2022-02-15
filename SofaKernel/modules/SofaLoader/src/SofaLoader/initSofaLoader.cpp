@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaLoader/initSofaLoader.h>
 
+#include <sofa/helper/system/PluginManager.h>
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
@@ -33,6 +34,10 @@ void initSofaLoader()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaLoader") << "SofaLoader is deprecated. It will be removed at v23.06. Use Sofa.Component.IO.Mesh instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.IO.Mesh");
+
         first = false;
     }
 }

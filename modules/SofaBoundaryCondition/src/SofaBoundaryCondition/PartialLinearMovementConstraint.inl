@@ -53,6 +53,7 @@ PartialLinearMovementConstraint<DataTypes>::PartialLinearMovementConstraint()
     , Z0 ( initData ( &Z0, Real(0.0),"Z0","Size of specimen in Z-direction" ) )
     , movedDirections( initData(&movedDirections,"movedDirections","for each direction, 1 if moved, 0 if free") )
     , l_topology(initLink("topology", "link to the topology container"))
+    , finished(false)
 {
     // default to indice 0
     m_indices.beginEdit()->push_back(0);
@@ -129,9 +130,7 @@ void PartialLinearMovementConstraint<DataTypes>::init()
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
-    sofa::core::topology::BaseMeshTopology* _topology = l_topology.get();
-
-    if (_topology)
+    if (sofa::core::topology::BaseMeshTopology* _topology = l_topology.get())
     {
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
@@ -393,8 +392,8 @@ void PartialLinearMovementConstraint<DataTypes>::findKeyTimes()
                 nextM = *it_m;
                 finished = true;
             }
-            it_t++;
-            it_m++;
+            ++it_t;
+            ++it_m;
         }
     }
 }
@@ -405,9 +404,9 @@ void PartialLinearMovementConstraint<DataTypes>::applyConstraint(const core::Mec
 {
     SOFA_UNUSED(mparams);
     const SetIndexArray & indices = m_indices.getValue();
-    core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get());
 
-    if (r) {
+    if (core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get()))
+    {
         VecBool movedDirection = movedDirections.getValue();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
@@ -429,7 +428,7 @@ template <class DataTypes>
 void PartialLinearMovementConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, linearalgebra::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SOFA_UNUSED(mparams);
-    int o = matrix->getGlobalOffset(this->mstate.get());
+    const int o = matrix->getGlobalOffset(this->mstate.get());
     if (o >= 0) {
         unsigned int offset = (unsigned int)o;
         VecBool movedDirection = movedDirections.getValue();
@@ -457,12 +456,11 @@ void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::Visual
         return;
 
     sofa::type::vector<type::Vector3> vertices;
-    sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
+    constexpr sofa::type::RGBAColor color(1, 0.5, 0.5, 1);
 
     if (showMovement.getValue())
     {
         vparams->drawTool()->disableLighting();
-        type::Vector3 v0, v1;
 
         const SetIndexArray & indices = m_indices.getValue();
         const VecDeriv& keyMovements = m_keyMovements.getValue();
@@ -470,8 +468,8 @@ void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::Visual
         {
             for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             {
-                v0 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i]);
-                v1 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i + 1]);
+                const type::Vector3 v0 { DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i]) };
+                const type::Vector3 v1 { DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i + 1]) };
 
                 vertices.push_back(v0);
                 vertices.push_back(v1);

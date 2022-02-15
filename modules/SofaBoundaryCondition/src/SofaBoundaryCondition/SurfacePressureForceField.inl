@@ -51,6 +51,7 @@ SurfacePressureForceField<DataTypes>::SurfacePressureForceField():
     m_mainDirection(initData(&m_mainDirection, Deriv(), "mainDirection", "Main direction for pressure application")),
     m_drawForceScale(initData(&m_drawForceScale, (Real)0, "drawForceScale", "DEBUG: scale used to render force vectors"))
     , l_topology(initLink("topology", "link to the topology container"))
+    , state(INCREASE)
     , m_topology(nullptr)
 {
 
@@ -87,7 +88,7 @@ void SurfacePressureForceField<DataTypes>::init()
         return;
     }
 
-    state = ( m_pressure.getValue() > 0 ) ? INCREASE : DECREASE;
+    state = m_pressure.getValue() > 0 ? INCREASE : DECREASE;
 
     if (m_pulseMode.getValue() && (m_pressureSpeed.getValue() == 0.0))
     {
@@ -239,9 +240,7 @@ void SurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalParam
 template<class DataTypes>
 void SurfacePressureForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
-
-
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
+    const sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::linearalgebra::BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
     Real kFact = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
@@ -452,7 +451,7 @@ bool SurfacePressureForceField<DataTypes>::isInPressuredBox(const Coord &x) cons
 }
 
 template<class DataTypes>
-const typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceField<DataTypes>::computePulseModePressure()
+typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceField<DataTypes>::computePulseModePressure()
 {
     SReal dt = this->getContext()->getDt();
 
@@ -502,7 +501,7 @@ void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams
 
     vparams->drawTool()->disableLighting();
 
-    const sofa::type::RGBAColor boxcolor(0.0f, 0.8f, 0.3f, 1.0f);
+    constexpr sofa::type::RGBAColor boxcolor(0.0f, 0.8f, 0.3f, 1.0f);
 
     vparams->drawTool()->setMaterial(boxcolor);
     vparams->drawTool()->drawBoundingBox(DataTypes::getCPos(m_min.getValue()), DataTypes::getCPos(m_max.getValue()));
@@ -515,7 +514,7 @@ void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams
     if (m_drawForceScale.getValue() && m_f.size()==x.size())
     {
         std::vector< type::Vector3 > points;
-        const sofa::type::RGBAColor color(0,1,0.5,1);
+        constexpr sofa::type::RGBAColor color(0,1,0.5,1);
 
         for (unsigned int i=0; i<x.size(); i++)
         {
@@ -532,9 +531,7 @@ template<>
 void SurfacePressureForceField<defaulttype::Rigid3Types>::addDForce(const core::MechanicalParams* mparams ,
                                                                      DataVecDeriv& d_df , const DataVecDeriv& d_dx)
 {
-
-
-    Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
+    const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
 	VecDeriv& df       = *(d_df.beginEdit());
 	const VecDeriv& dx =   d_dx.getValue()  ;
 
@@ -544,7 +541,7 @@ void SurfacePressureForceField<defaulttype::Rigid3Types>::addDForce(const core::
 
 		for (unsigned int j=0; j<derivTriNormalIndices[i].size(); j++)
 		{
-			unsigned int v = derivTriNormalIndices[i][j];
+            const unsigned int v = derivTriNormalIndices[i][j];
 			df[i].getVCenter() += (derivTriNormalValues[i][j] * dx[v].getVCenter())*kFactor;
 
 		}
@@ -679,7 +676,7 @@ void SurfacePressureForceField<defaulttype::Rigid3Types>::addTriangleSurfacePres
 	{
         defaulttype::Rigid3Types::CPos n = ab.cross(ac);
 		n.normalize();
-		Real scal = n * m_mainDirection.getValue().getVCenter();
+        const Real scal = n * m_mainDirection.getValue().getVCenter();
 		p *= fabs(scal);
 	}
 
@@ -693,14 +690,14 @@ void SurfacePressureForceField<defaulttype::Rigid3Types>::addQuadSurfacePressure
 {
 	Quad q = m_topology->getQuad(quadId);
 
-    defaulttype::Rigid3Types::CPos ab = x[q[1]].getCenter() - x[q[0]].getCenter();
-    defaulttype::Rigid3Types::CPos ac = x[q[2]].getCenter() - x[q[0]].getCenter();
-    defaulttype::Rigid3Types::CPos ad = x[q[3]].getCenter() - x[q[0]].getCenter();
+    const defaulttype::Rigid3Types::CPos ab = x[q[1]].getCenter() - x[q[0]].getCenter();
+    const defaulttype::Rigid3Types::CPos ac = x[q[2]].getCenter() - x[q[0]].getCenter();
+    const defaulttype::Rigid3Types::CPos ad = x[q[3]].getCenter() - x[q[0]].getCenter();
 
-    defaulttype::Rigid3Types::CPos p1 = (ab.cross(ac)) * (pressure / static_cast<Real>(6.0));
-    defaulttype::Rigid3Types::CPos p2 = (ac.cross(ad)) * (pressure / static_cast<Real>(6.0));
+    const defaulttype::Rigid3Types::CPos p1 = (ab.cross(ac)) * (pressure / static_cast<Real>(6.0));
+    const defaulttype::Rigid3Types::CPos p2 = (ac.cross(ad)) * (pressure / static_cast<Real>(6.0));
 
-    defaulttype::Rigid3Types::CPos p = p1 + p2;
+    const defaulttype::Rigid3Types::CPos p = p1 + p2;
 
 	f[q[0]].getVCenter() += p;
 	f[q[1]].getVCenter() += p1;

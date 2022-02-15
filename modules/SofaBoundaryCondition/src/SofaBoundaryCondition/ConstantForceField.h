@@ -103,7 +103,7 @@ public:
     void doUpdateInternal() override;
 
     /// Set a force to a given particle
-    void setForce( unsigned i, const Deriv& f );
+    void setForce( unsigned i, const Deriv& force );
 
     using Inherit::addAlias ;
     using Inherit::addKToMatrix;

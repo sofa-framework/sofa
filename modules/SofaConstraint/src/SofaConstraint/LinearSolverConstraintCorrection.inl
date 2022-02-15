@@ -488,25 +488,27 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
         std::vector< std::vector<unsigned int> > ordering_per_dof;
         ordering_per_dof.resize(mstate->getSize());   // for each dof, provide the list of constraint for which this dof is the smallest involved
 
-        MatrixDerivRowConstIterator rowItEnd = constraints.end();
-        unsigned int c = 0;
-
-        // we process each constraint of the Mechanical State to know the smallest dofs
-        // the constraints that are concerns the object are removed
-        for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != rowItEnd; ++rowIt)
+        rowItEnd = constraints.end();
         {
-            ordering_per_dof[VecMinDof[c]].push_back(rowIt.index());
-            c++;
-            renumbering.remove( rowIt.index() );
+            unsigned int constraintId = 0;
+
+            // we process each constraint of the Mechanical State to know the smallest dofs
+            // the constraints that are concerns the object are removed
+            for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != rowItEnd; ++rowIt)
+            {
+                ordering_per_dof[VecMinDof[constraintId]].push_back(rowIt.index());
+                constraintId++;
+                renumbering.remove( rowIt.index() );
+            }
         }
 
 
         // fill the end renumbering list with the new order
         for (size_t dof = 0; dof < mstate->getSize(); dof++)
         {
-            for (size_t c = 0; c < ordering_per_dof[dof].size(); c++)
+            for (size_t constraintId = 0; constraintId < ordering_per_dof[dof].size(); constraintId++)
             {
-                renumbering.push_back(ordering_per_dof[dof][c]); // push_back the list of constraint by starting from the smallest dof
+                renumbering.push_back(ordering_per_dof[dof][constraintId]); // push_back the list of constraint by starting from the smallest dof
             }
         }
     }

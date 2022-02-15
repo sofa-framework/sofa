@@ -21,6 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_LINEARSOLVER_COMPRESSEDROWSPARSEMATRIX_CPP
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
+#include <sofa/helper/narrow_cast.h>
 
 namespace sofa::linearalgebra
 {
@@ -93,7 +94,7 @@ void filterValuesFromBlocs(TMatrix& self, CompressedRowSparseMatrix<type::Mat<L,
 
         typename TMatrix::Range rowRange(M.rowBegin[rowId], M.rowBegin[rowId+1]);
 
-        for (Index lb = 0; lb<C ; lb++)
+        for (sofa::Size lb = 0; lb<C ; lb++)
         {
             self.rowIndex.push_back(i+lb);
             self.rowBegin.push_back(vid);
@@ -106,11 +107,11 @@ void filterValuesFromBlocs(TMatrix& self, CompressedRowSparseMatrix<type::Mat<L,
 
                 for (sofa::Size c = 0; c < C; ++c)
                 {
-                    typename TMatrix::Block val = rowB[c];
+                    auto val = sofa::helper::narrow_cast<typename TMatrix::Block>(rowB[c]);
                     if ((*filter)(i+lb,j+c,val,ref))
                     {
                         self.colsIndex.push_back(j+c);
-                        self.colsValue.push_back(b[lb][c]);
+                        self.colsValue.push_back(sofa::helper::narrow_cast<typename TMatrix::Block>(b[lb][c]));
                         ++vid;
                     }
                 }

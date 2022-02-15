@@ -90,7 +90,7 @@ public:
 
 protected:
     /// translation
-    Data<type::Vector3> d_translation;
+    Data<type::Vec3> d_translation;
 
 };
 

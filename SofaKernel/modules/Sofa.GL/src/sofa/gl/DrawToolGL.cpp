@@ -64,7 +64,7 @@ void DrawToolGL::init()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void DrawToolGL::drawPoints(const std::vector<Vector3> &points, float size, const RGBAColor& color=RGBAColor(1.0f,1.0f,1.0f,1.0f))
+void DrawToolGL::drawPoints(const std::vector<Vector3> &points, float size, const RGBAColor& color=RGBAColor::white())
 {
     setMaterial(color);
     glPointSize(size);
@@ -162,7 +162,7 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void DrawToolGL::drawLines(const std::vector<Vector3> &points, const std::vector< type::Vec<2,int> > &index, float size, const RGBAColor& color=RGBAColor(1.0f,1.0f,1.0f,1.0f))
+void DrawToolGL::drawLines(const std::vector<Vector3> &points, const std::vector< type::Vec<2,int> > &index, float size, const RGBAColor& color=RGBAColor::white())
 {
     setMaterial(color);
     glLineWidth(size);
@@ -324,7 +324,7 @@ void DrawToolGL::drawTriangles(const std::vector<Vector3> &points, const Vector3
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void DrawToolGL::drawTriangles(const std::vector<Vector3> &points, const std::vector< type::Vec<3,int> > &index,
-        const std::vector<Vector3> &normal, const RGBAColor& color=RGBAColor(1.0f,1.0f,1.0f,1.0f))
+        const std::vector<Vector3> &normal, const RGBAColor& color=RGBAColor::white())
 {
     setMaterial(color);
     glBegin(GL_TRIANGLES);
@@ -974,6 +974,26 @@ void DrawToolGL::drawTetrahedron(const Vector3 &p0, const Vector3 &p1, const Vec
         this->internalDrawTriangle(p0,p1,p3, cross((p1-p0),(p3-p0)), color);
         this->internalDrawTriangle(p0,p2,p3, cross((p2-p0),(p3-p0)), color);
         this->internalDrawTriangle(p1,p2,p3, cross((p2-p1),(p3-p1)), color);
+    } glEnd();
+    resetMaterial(color);
+}
+
+void DrawToolGL::drawScaledTetrahedron(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, const RGBAColor& color, const float scale)
+{
+    setMaterial(color);
+    glBegin(GL_TRIANGLES);
+    {
+        Vector3 center = (p0 + p1 + p2 + p3) / 4.0;
+
+        Vector3 np0 = ((p0 - center) * scale) + center;
+        Vector3 np1 = ((p1 - center) * scale) + center;
+        Vector3 np2 = ((p2 - center) * scale) + center;
+        Vector3 np3 = ((p3 - center) * scale) + center;
+
+        this->internalDrawTriangle(np0, np1, np2, cross((p1 - p0), (p2 - p0)), color);
+        this->internalDrawTriangle(np0, np1, np3, cross((p1 - p0), (p3 - p0)), color);
+        this->internalDrawTriangle(np0, np2, np3, cross((p2 - p0), (p3 - p0)), color);
+        this->internalDrawTriangle(np1, np2, np3, cross((p2 - p1), (p3 - p1)), color);
     } glEnd();
     resetMaterial(color);
 }

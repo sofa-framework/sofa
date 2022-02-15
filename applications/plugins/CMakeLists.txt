@@ -25,14 +25,14 @@ sofa_add_plugin_external(Compliant Compliant)
 sofa_add_subdirectory_external(SofaPython3 SofaPython3)
 sofa_add_plugin_external(CGALPlugin CGALPlugin) # Depends on image
 sofa_add_plugin_external(Flexible Flexible)     # Depends on image, CImgPlugin, SofaHighOrderTopology (soft)
-sofa_add_plugin(Registration Registration) # Depends on image, SofaPython, SofaSimpleGUI and #SOFADISTANCEGRID
+sofa_add_plugin_external(Registration Registration) # Depends on image, SofaPython, SofaGui and SofaDistanceGrid
 sofa_add_plugin(BulletCollisionDetection BulletCollisionDetection) # Depends on Compliant and LMConstraint
 sofa_add_plugin(PreassembledMass PreassembledMass) # Depends on Flexible and Compliant
 sofa_add_plugin(ExternalBehaviorModel ExternalBehaviorModel)
 sofa_add_plugin_external(InvertibleFVM InvertibleFVM)
 sofa_add_plugin(MeshSTEPLoader MeshSTEPLoader)
 sofa_add_plugin_external(PluginExample PluginExample)
-sofa_add_plugin(ManifoldTopologies ManifoldTopologies)
+sofa_add_plugin_external(ManifoldTopologies ManifoldTopologies)
 sofa_add_plugin_external(OptiTrackNatNet OptiTrackNatNet)
 sofa_add_plugin(SixenseHydra SixenseHydra)
 sofa_add_plugin(SofaOpenCL SofaOpenCL)
@@ -43,7 +43,7 @@ sofa_add_plugin(PersistentContact PersistentContact)
 sofa_add_plugin(Sensable Sensable)
 sofa_add_plugin(SensableEmulation SensableEmulation)
 sofa_add_plugin(SofaHAPI SofaHAPI)
-sofa_add_plugin(THMPGSpatialHashing THMPGSpatialHashing)
+sofa_add_plugin_external(THMPGSpatialHashing THMPGSpatialHashing)
 sofa_add_plugin(SofaCarving SofaCarving)
 sofa_add_plugin_external(RigidScale RigidScale)
 sofa_add_plugin(LeapMotion LeapMotion)

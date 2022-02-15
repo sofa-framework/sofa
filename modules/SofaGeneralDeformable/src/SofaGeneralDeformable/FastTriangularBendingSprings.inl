@@ -35,7 +35,7 @@ namespace sofa::component::forcefield
 typedef core::topology::BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 template< class DataTypes>
-void FastTriangularBendingSprings<DataTypes>::applyEdgeCreation(Index /*edgeIndex*/, EdgeSpring &ei, const core::topology::BaseMeshTopology::Edge &, const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
+void FastTriangularBendingSprings<DataTypes>::applyEdgeCreation(Index /*edgeIndex*/, EdgeSpring &ei, const core::topology::BaseMeshTopology::Edge &, const sofa::type::vector<Index> &, const sofa::type::vector<SReal> &)
 {
     ei.is_activated=false;
     ei.is_initialized=false;
@@ -44,7 +44,7 @@ void FastTriangularBendingSprings<DataTypes>::applyEdgeCreation(Index /*edgeInde
 
 
 template< class DataTypes>
-void FastTriangularBendingSprings<DataTypes>::applyTriangleCreation(const sofa::type::vector<Index> &triangleAdded, const sofa::type::vector<core::topology::BaseMeshTopology::Triangle> &, const sofa::type::vector<sofa::type::vector<Index> > &, const sofa::type::vector<sofa::type::vector<double> > &)
+void FastTriangularBendingSprings<DataTypes>::applyTriangleCreation(const sofa::type::vector<Index> &triangleAdded, const sofa::type::vector<core::topology::BaseMeshTopology::Triangle> &, const sofa::type::vector<sofa::type::vector<Index> > &, const sofa::type::vector<sofa::type::vector<SReal> > &)
 {
     typename MechanicalState::ReadVecCoord restPosition = this->mstate->readRestPositions();
 
@@ -328,7 +328,7 @@ void FastTriangularBendingSprings<DataTypes>::init()
     d_edgeSprings.setCreationCallback([this](Index edgeIndex, EdgeSpring& ei,
         const core::topology::BaseMeshTopology::Edge& edge,
         const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< double >& coefs)
+        const sofa::type::vector< SReal >& coefs)
     {
         applyEdgeCreation(edgeIndex, ei, edge, ancestors, coefs);
     });
@@ -369,7 +369,7 @@ void FastTriangularBendingSprings<DataTypes>::reinit()
     {
         applyEdgeCreation(i, edgeInf[i],
             m_topology->getEdge(i), (const sofa::type::vector< Index > )0,
-            (const sofa::type::vector< double >)0);
+            (const sofa::type::vector< SReal >)0);
     }
 
     // create edge tensor by calling the triangle creation function
@@ -380,7 +380,7 @@ void FastTriangularBendingSprings<DataTypes>::reinit()
     applyTriangleCreation(triangleAdded,
         (const sofa::type::vector<core::topology::BaseMeshTopology::Triangle>)0,
         (const sofa::type::vector<sofa::type::vector<Index> >)0,
-        (const sofa::type::vector<sofa::type::vector<double> >)0);
+        (const sofa::type::vector<sofa::type::vector<SReal> >)0);
 }
 
 template <class DataTypes>
@@ -448,7 +448,7 @@ void FastTriangularBendingSprings<DataTypes>::draw(const core::visual::VisualPar
     vparams->drawTool()->disableLighting();
 
     const type::vector<EdgeSpring>& edgeInf = d_edgeSprings.getValue();
-    sofa::type::RGBAColor color = sofa::type::RGBAColor::green();
+    constexpr sofa::type::RGBAColor color = sofa::type::RGBAColor::green();
     std::vector<sofa::type::Vector3> vertices;
 
     for(i=0; i<edgeInf.size(); ++i)

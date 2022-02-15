@@ -87,9 +87,9 @@ void FixedRotationConstraint<DataTypes>::projectPosition(const core::MechanicalP
     for (unsigned int i = 0; i < x.size(); ++i)
     {
         // Current orientations
-        sofa::type::Quat<SReal> Q = x[i].getOrientation();
+        const sofa::type::Quat<SReal>& Q = x[i].getOrientation();
         // Previous orientations
-        sofa::type::Quat<SReal> Q_prev = previousOrientation[i];
+        const sofa::type::Quat<SReal>& Q_prev = previousOrientation[i];
 
         auto project = [](const Vec3 a, const Vec3 b) -> Vec3 {
             return (a * b) * b;

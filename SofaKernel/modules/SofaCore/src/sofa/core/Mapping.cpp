@@ -35,17 +35,17 @@ using namespace core;
 
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec1Types >;
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec2Types >;
-template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec3dTypes >;
+template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec1Types, sofa::defaulttype::Vec3Types >;
 
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec2Types, sofa::defaulttype::Vec2Types >;
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec2Types, sofa::defaulttype::Vec1Types >;
 
-template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes >;
-template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec2Types >;
-template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec1Types >;
+template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types >;
+template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec2Types >;
+template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec1Types >;
 
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec6Types, sofa::defaulttype::Vec6Types >;
-template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec6Types, sofa::defaulttype::Vec3dTypes >;
+template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec6Types, sofa::defaulttype::Vec3Types >;
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec6Types, sofa::defaulttype::Vec1Types >;
 
 // Rigid templates
@@ -53,10 +53,10 @@ template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid2Types, sofa::defa
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Rigid2Types >;
 
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec6Types >;
-template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3dTypes >;
+template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec3Types >;
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Vec1Types >;
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types >;
-template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Rigid3Types >;
+template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Rigid3Types >;
 
 
 // cross templates

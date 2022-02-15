@@ -453,7 +453,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
                 surfaceTri.push_back(i);
         }
 
-        auto colorLine = sofa::type::RGBAColor::red();
+        constexpr auto colorLine = sofa::type::RGBAColor::red();
         type::vector<sofa::type::Vector3> vertices;
 
         for (sofa::Index i=0; i<surfaceTri.size(); ++i)
@@ -480,7 +480,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
                 maxDiffusion = d_tetraDiffusionCoefficient.getValue()[i];
         }
 
-        colorLine = sofa::type::Vec4f(0.2f, 0.2f, 0.2f, 1.0f);
+        constexpr sofa::type::RGBAColor colorLine2(0.2f, 0.2f, 0.2f, 1.0f);
         vertices.clear();
         for (sofa::Index i = 0; i<nbrTetra; ++i)
         {
@@ -488,7 +488,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
             auto tetraColor = sofa::type::RGBAColor(0.0f, float(Ratio), 0.5f-float(Ratio), 1.0f);
 
             Tetrahedron tetra = m_topology->getTetrahedron(i);
-            sofa::type::Vec<3,SReal> point[4];
+            sofa::type::Vec3 point[4];
 
             for (sofa::Index j = 0; j<4; j++)
                 point[j] = restPosition[tetra[j]];
@@ -507,7 +507,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
                 vertices.push_back(point[j]);
             }
         }
-        vparams->drawTool()->drawLines(vertices, 1, colorLine);
+        vparams->drawTool()->drawLines(vertices, 1, colorLine2);
 
     }
 

@@ -40,7 +40,7 @@ typedef EdgesInTetrahedron		EdgesInTetrahedron;
 
 
 template< class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::createEdgeRestInformation(Index, EdgeRestInformation &ei, const core::topology::BaseMeshTopology::Edge &edge, const sofa::type::vector<Index> &, const sofa::type::vector<double> &)
+void TetrahedralTensorMassForceField<DataTypes>::createEdgeRestInformation(Index, EdgeRestInformation &ei, const core::topology::BaseMeshTopology::Edge &edge, const sofa::type::vector<Index> &, const sofa::type::vector<SReal> &)
 {
     unsigned int u,v;
     /// set to zero the stiffness matrix
@@ -60,7 +60,7 @@ template< class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::applyTetrahedronCreation(const sofa::type::vector<Index> &tetrahedronAdded,
         const sofa::type::vector<Tetrahedron> &,
         const sofa::type::vector<sofa::type::vector<Index> > &,
-        const sofa::type::vector<sofa::type::vector<double> > &)
+        const sofa::type::vector<sofa::type::vector<SReal> > &)
 {
     unsigned int i,j,k,l,u,v;
 
@@ -294,7 +294,7 @@ TetrahedralTensorMassForceField<DataTypes>::init()
     {
         createEdgeRestInformation(i, edgeInf[i],
                 m_topology->getEdge(i),  (const sofa::type::vector< Index > )0,
-                (const sofa::type::vector< double >)0);
+                (const sofa::type::vector< SReal >)0);
     }
     // create edge tensor by calling the tetrahedron creation function
     sofa::type::vector<Index> tetrahedronAdded;
@@ -304,13 +304,13 @@ TetrahedralTensorMassForceField<DataTypes>::init()
     applyTetrahedronCreation(tetrahedronAdded,
         (const sofa::type::vector<Tetrahedron>)0,
         (const sofa::type::vector<sofa::type::vector<Index> >)0,
-        (const sofa::type::vector<sofa::type::vector<double> >)0);
+        (const sofa::type::vector<sofa::type::vector<SReal> >)0);
 
 
     edgeInfo.setCreationCallback([this](Index edgeIndex, EdgeRestInformation& ei,
         const core::topology::BaseMeshTopology::Edge& edge,
         const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< double >& coefs)
+        const sofa::type::vector< SReal >& coefs)
     {
         createEdgeRestInformation(edgeIndex, ei, edge, ancestors, coefs);
     });
@@ -473,7 +473,7 @@ void TetrahedralTensorMassForceField<DataTypes>::draw(const core::visual::Visual
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,true);
 
-    sofa::type::RGBAColor color(0,1,0,1);
+    constexpr sofa::type::RGBAColor color = sofa::type::RGBAColor::green();
     std::vector<sofa::type::Vector3> vertices;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();

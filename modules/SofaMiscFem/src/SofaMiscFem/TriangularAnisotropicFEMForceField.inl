@@ -58,7 +58,7 @@ TriangularAnisotropicFEMForceField<DataTypes>::~TriangularAnisotropicFEMForceFie
 }
 
 template< class DataTypes>
-void TriangularAnisotropicFEMForceField<DataTypes>::createTriangleInfo(Index triangleIndex, TriangleFiberDirection&, const core::topology::BaseMeshTopology::Triangle &t, const sofa::type::vector<unsigned int> &, const sofa::type::vector<double> &)
+void TriangularAnisotropicFEMForceField<DataTypes>::createTriangleInfo(Index triangleIndex, TriangleFiberDirection&, const core::topology::BaseMeshTopology::Triangle &t, const sofa::type::vector<unsigned int> &, const sofa::type::vector<SReal> &)
 {
     //const Triangle &t = m_topology->getTriangle(triangleIndex);
     Index a = t[0];
@@ -102,7 +102,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::init()
     localFiberDirection.setCreationCallback([this](Index triangleIndex, TriangleFiberDirection& triInfo,
         const core::topology::BaseMeshTopology::Triangle& t,
         const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< double >& coefs)
+        const sofa::type::vector< SReal >& coefs)
     {
         createTriangleInfo(triangleIndex, triInfo, t, ancestors, coefs);
     });
@@ -312,7 +312,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::Vis
     if (showFiber.getValue() && lfd.size() >= (unsigned)m_topology->getNbTriangles())
     {
         vparams->drawTool()->saveLastState();
-        sofa::type::RGBAColor color(0, 0, 0, 1.0);
+        constexpr sofa::type::RGBAColor color = sofa::type::RGBAColor::black();
         std::vector<sofa::type::Vector3> vertices;
 
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
