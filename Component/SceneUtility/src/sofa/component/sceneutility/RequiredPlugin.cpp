@@ -35,9 +35,7 @@ namespace sofa::component::sceneutility
 
 int RequiredPluginClass = core::RegisterObject("Load the required plugins")
         .add< RequiredPlugin >()
-        .addTargetName(sofa_tostring(SOFA_TARGET))
-        .addAlias("RequiredPlugin", false)
-        ;
+        .addTargetName(sofa_tostring(SOFA_TARGET));
 
 RequiredPlugin::RequiredPlugin()
     : d_pluginName( initData(&d_pluginName, "pluginName", "plugin name (or several names if you need to load different plugins or a plugin with several alternate names)"))

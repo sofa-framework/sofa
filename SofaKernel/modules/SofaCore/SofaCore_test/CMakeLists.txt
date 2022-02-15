@@ -20,8 +20,9 @@ set(SOURCE_FILES
     objectmodel/VectorData_test.cpp
     objectmodel/DataFileNameVector_test.cpp
     DataEngine_test.cpp
-    TrackedData_test.cpp
+    ObjectFactory_test.cpp
     PathResolver_test.cpp
+    TrackedData_test.cpp
 )
 
 set(HEADER_FILES

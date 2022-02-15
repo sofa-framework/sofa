@@ -389,9 +389,8 @@ void QDisplayPropertyWidget::setDescription(const QString& component, const QStr
         if(!entry.description.empty() && std::string("TODO") != entry.description)
             addDescriptionItem(groupItem, "Description", QString::fromStdString(entry.description));
 
-        core::ObjectFactory::CreatorMap::iterator it = entry.creatorMap.find(base->getTemplateName());
-        if(entry.creatorMap.end() != it && *it->second->getTarget())
-            addDescriptionItem(groupItem, "Provided by", QString(it->second->getTarget()));
+        if(!entry.compilationTarget.empty())
+            addDescriptionItem(groupItem, "Provided by", QString::fromStdString(entry.compilationTarget));
 
         if(!entry.authors.empty() && std::string("TODO") != entry.authors)
             addDescriptionItem(groupItem, "Authors", QString::fromStdString(entry.authors));

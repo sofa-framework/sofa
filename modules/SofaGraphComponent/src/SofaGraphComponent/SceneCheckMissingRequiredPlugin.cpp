@@ -55,19 +55,12 @@ void SceneCheckMissingRequiredPlugin::doCheckOn(Node* node)
     for (const auto& object : node->object)
     {
         const ObjectFactory::ClassEntry entry = ObjectFactory::getInstance()->getEntry(object->getClassName());
-        if(!entry.creatorMap.empty())
+        const std::string pluginName = entry.compilationTarget;
+        const std::string path = PluginManager::getInstance().findPlugin(pluginName);
+        if( PluginManager::getInstance().pluginIsLoaded(path)
+                && m_loadedPlugins.find(pluginName) == m_loadedPlugins.end() )
         {
-            ObjectFactory::CreatorMap::const_iterator it = entry.creatorMap.find(object->getTemplateName());
-            if(entry.creatorMap.end() != it && *it->second->getTarget())
-            {
-                const std::string pluginName = it->second->getTarget();
-                const std::string path = PluginManager::getInstance().findPlugin(pluginName);
-                if( PluginManager::getInstance().pluginIsLoaded(path)
-                        && m_loadedPlugins.find(pluginName) == m_loadedPlugins.end() )
-                {
-                    m_requiredPlugins[pluginName].push_back(object->getClassName());
-                }
-            }
+            m_requiredPlugins[pluginName].push_back(object->getClassName());
         }
     }
 

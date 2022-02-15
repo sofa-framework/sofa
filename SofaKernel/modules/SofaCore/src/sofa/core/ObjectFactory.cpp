@@ -40,14 +40,63 @@ ObjectFactory::~ObjectFactory()
 {
 }
 
-ObjectFactory::ClassEntry& ObjectFactory::getEntry(std::string classname)
+bool ObjectFactory::hasObjectEntry(const std::string& fullname) const
 {
-    if (registry.find(classname) == registry.end()) {
-        registry[classname] = ClassEntry::SPtr(new ClassEntry);
-        registry[classname]->className = classname;
+    return registry.find(fullname) != registry.end();
+}
+
+void ObjectFactory::addEntry(const std::string& fullname, ObjectFactory::ClassEntry& entry)
+{
+    if(entry.compilationTarget.empty())
+        dmsg_warning("ObjectFactory") << "No compilationTarget for object " << entry.className << msgendl
+                                      << "This is probably because '"<< entry.className <<"' is registered without proprely setting the compilation target it belong to."
+                                          << "To remove this warning you need to change sofa c++ code and register the object properly.";
+
+    auto existingEntryI = registry.find(fullname);
+    if (existingEntryI == registry.end())
+    {
+        registry[fullname] = std::make_shared<ClassEntry>(entry);
+        return;
     }
 
-    return *registry[classname];
+    auto existingEntry = existingEntryI->second;
+    if (!entry.defaultTemplate.empty())
+    {
+        if (!existingEntry->defaultTemplate.empty())
+        {
+            msg_warning("ObjectFactory") << "Default template for class " << entry.className << " already registered (" << existingEntry->defaultTemplate << "), do not register " << existingEntry->defaultTemplate << " as the default";
+        }
+        else
+        {
+            existingEntry->defaultTemplate = entry.defaultTemplate;
+        }
+    }
+
+    for (auto& templateCreator : entry.creatorMap)
+    {
+        const std::string & template_name = templateCreator.first;
+        std::cout << "REGISTERING ENTRY: " << entry.className << " = " << template_name << std::endl;
+        if (existingEntry->creatorMap.find(template_name) != existingEntry->creatorMap.end()) {
+            if (template_name.empty()) {
+                msg_warning("ObjectFactory") << "Class already registered: " << entry.className;
+            } else {
+                msg_warning("ObjectFactory") << "Class already registered: " << entry.className << "<" << template_name << ">";
+            }
+        } else {
+            existingEntry->creatorMap.insert(templateCreator);
+        }
+    }
+}
+
+ObjectFactory::ClassEntry& ObjectFactory::getEntry(std::string fullname)
+{
+    if (registry.find(fullname) == registry.end())
+    {
+        registry[fullname] = ClassEntry::SPtr(new ClassEntry);
+        //registry[fullname]->className = fullname;
+    }
+
+    return *registry[fullname];
 }
 
 /// Test if a creator exists for a given classname
@@ -56,6 +105,16 @@ bool ObjectFactory::hasCreator(std::string classname)
     for(auto& realclassname : aliases[classname])
     {
         if(hasCreatorNoAlias(realclassname))
+            return true;
+    }
+    return false;
+}
+
+bool ObjectFactory::hasCreator(const std::string& classname, const std::string& templatename)
+{
+    for(auto& realclassname : aliases[classname])
+    {
+        if(hasCreatorNoAlias(realclassname, templatename))
             return true;
     }
     return false;
@@ -70,6 +129,21 @@ bool ObjectFactory::hasCreatorNoAlias(const std::string& realclassname)
     ClassEntry::SPtr entry = it->second;
     return (!entry->creatorMap.empty());
 }
+
+bool ObjectFactory::hasCreatorNoAlias(const std::string& realclassname, const std::string& templatename)
+{
+    ClassEntryMap::iterator it = registry.find(realclassname);
+    if (it == registry.end())
+        return false;
+    ClassEntry::SPtr entries = it->second;
+    for(auto& entry : entries->creatorMap)
+    {
+        if(entry.first == templatename)
+            return true;
+    }
+    return false;
+}
+
 
 std::string ObjectFactory::shortName(std::string classname)
 {
@@ -92,42 +166,30 @@ std::string ObjectFactory::shortName(std::string classname)
     return shortname;
 }
 
-bool ObjectFactory::addAlias(std::string name, std::string target, bool force,
+bool ObjectFactory::addAlias(std::string name, std::string target,
+                             bool force,
                              ClassEntry::SPtr* previous)
 {
-    auto& tmp = aliases[name];
-    if( std::find(tmp.begin(), tmp.end(), target) == tmp.end() )
-        tmp.push_back(target);
-
-    return true;
-
-    // Check that the pointed class does exist
+    // Check that the target exists in the factory
     ClassEntryMap::iterator it = registry.find(target);
     if (it == registry.end())
     {
-        msg_error("ObjectFactory::addAlias()") << "Target class for alias '" << target << "' not found: " << name;
-        return false;
+        // Check that the target is not already an alias, in that case duplicate it.
+        if(aliases.find(target)==aliases.end())
+        {
+            msg_error("ObjectFactory::addAlias()") << "Unable to find a target class '" << target << "' for alias '"<< name <<"'.";
+            return false;
+        }
+        // Copy the alias content to the new one.
+        aliases[name] = aliases[target];
+        return true;
     }
 
-    ClassEntry::SPtr& pointedEntry = it->second;
-    ClassEntry::SPtr& aliasEntry = registry[name];
-
-    // Check that the alias does not already exist, unless 'force' is true
-    if (aliasEntry.get()!=nullptr && !force)
+    auto& tmp = aliases[name];
+    if( std::find(tmp.begin(), tmp.end(), target) == tmp.end() )
     {
-        msg_error("ObjectFactory::addAlias()") << "Name already exists: " << name;
-        return false;
+        tmp.push_back(target);
     }
-
-    if (previous) {
-        ClassEntry::SPtr& entry = aliasEntry;
-        *previous = entry;
-    }
-
-    msg_error("ObjectFactory::addAlias() >> ") << pointedEntry->className << " new alias " << target << "=>" << pointedEntry->aliases.size() << name;
-
-    registry[name] = pointedEntry;
-    pointedEntry->aliases.insert(name);
     return true;
 }
 
@@ -412,25 +474,14 @@ void ObjectFactory::getAllEntries(std::vector<ClassEntry::SPtr>& result)
 void ObjectFactory::getEntriesFromTarget(std::vector<ClassEntry::SPtr>& result, std::string target)
 {
     result.clear();
-    for(ClassEntryMap::iterator it = registry.begin(), itEnd = registry.end();
-        it != itEnd; ++it)
+    std::cout <<" REGISTRY DUMP" << std::endl;
+    for(auto& it : registry)
     {
-        ClassEntry::SPtr entry = it->second;
-        if(entry->className == it->first)
+        ClassEntry::SPtr entry = it.second;
+        std::cout << "HO " << entry->compilationTarget << "." << entry->className << " linked to " << it.first << std::endl;
+        if (target == entry->compilationTarget)
         {
-
-            bool inTarget = false;
-            for (CreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
-            {
-                Creator::SPtr c = itc->second;
-                if (target == c->getTarget())
-                {
-                    inTarget = true;
-                    break;
-                }
-            }
-            if (inTarget)
-                result.push_back(entry);
+            result.push_back(entry);
         }
     }
 }
@@ -454,17 +505,10 @@ void ObjectFactory::dump(std::ostream& out)
     for (ClassEntryMap::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)
     {
         ClassEntry::SPtr entry = it->second;
-        if (entry->className != it->first) continue;
-        out << "class " << entry->className <<" :\n";
-        if (!entry->aliases.empty())
-        {
-            out << "  aliases :";
-            for (std::set<std::string>::iterator it = entry->aliases.begin(), itend = entry->aliases.end(); it != itend; ++it)
-                out << " " << *it;
-            out << "\n";
-        }
+        out << "object " << it->first <<" :\n";
+
         if (!entry->description.empty())
-            out << entry->description;
+            out << "  " << entry->description;
         if (!entry->authors.empty())
             out << "  authors : " << entry->authors << "\n";
         if (!entry->license.empty())
@@ -473,6 +517,17 @@ void ObjectFactory::dump(std::ostream& out)
         {
             out << "  template instance : " << itc->first << "\n";
         }
+    }
+
+    out << "\n";
+    for(auto& k : aliases)
+    {
+        out << "aliases " << k.first << ":\n";
+        for(auto& alias : k.second)
+        {
+            out << " " << alias;
+        }
+        out << "\n";
     }
 }
 
@@ -618,9 +673,6 @@ RegisterObject& RegisterObject::addCreator(std::string classname,
     {
         entry.className = classname;
         entry.creatorMap[templatename] =  creator;
-
-        if(entry.compilationTarget.empty())
-            entry.compilationTarget = creator->getTarget();
     }
     return *this;
 }
@@ -628,64 +680,27 @@ RegisterObject& RegisterObject::addCreator(std::string classname,
 RegisterObject::operator int()
 {
     if (entry.className.empty())
-    {
         return 0;
-    }
-    else
+
+    std::string fullname = entry.className;
+    if(!entry.compilationTarget.empty())
+        fullname = entry.compilationTarget + "." + entry.className;
+
+    // register the corresponding factory entry
+    ObjectFactory::getInstance()->addEntry(fullname, entry);
+
+    // bind the entry to a public name
+    ObjectFactory::getInstance()->addAlias(fullname, fullname, false);
+
+    // bind the entry to a short name for backward compatibility
+    ObjectFactory::getInstance()->addAlias(entry.className, fullname);
+
+    for(auto& alias : entry.aliases)
     {
-        std::string fullname = entry.className;
-        if(!entry.compilationTarget.empty())
-            fullname = entry.compilationTarget + "." + entry.className;
-
-        ObjectFactory::ClassEntry& reg = ObjectFactory::getInstance()->getEntry(fullname);
-        reg.className = entry.className;
-        reg.compilationTarget = entry.compilationTarget;
-        reg.description += entry.description;
-        reg.authors += entry.authors;
-        reg.license += entry.license;
-        reg.deprecatedAliases = entry.deprecatedAliases;
-
-        if(reg.compilationTarget.empty())
-            dmsg_warning("ObjectFactory") << "No compilationTarget for object " << entry.className << msgendl
-                                          << "This is probably because '"<< entry.className <<"' is registered without proprely setting the compilation target it belong to."
-                                          << "To remove this warning you need to change sofa c++ code and register the object properly.";
-
-        if (!entry.defaultTemplate.empty())
-        {
-            if (!reg.defaultTemplate.empty())
-            {
-                msg_warning("ObjectFactory") << "Default template for class " << entry.className << " already registered (" << reg.defaultTemplate << "), do not register " << entry.defaultTemplate << " as the default";
-            }
-            else
-            {
-                reg.defaultTemplate = entry.defaultTemplate;
-            }
-        }
-        for (auto & creator_entry : entry.creatorMap)
-        {
-            const std::string & template_name = creator_entry.first;
-            if (reg.creatorMap.find(template_name) != reg.creatorMap.end()) {
-                if (template_name.empty()) {
-                    msg_warning("ObjectFactory") << "Class already registered: " << entry.className;
-                } else {
-                    msg_warning("ObjectFactory") << "Class already registered: " << entry.className << "<" << template_name << ">";
-                }
-            } else {
-                reg.creatorMap.insert(creator_entry);
-            }
-        }
-
-        for (const auto & alias : entry.aliases)
-        {
-            if (reg.aliases.find(alias) == reg.aliases.end())
-            {
-                ObjectFactory::getInstance()->addAlias(alias, fullname);
-            }
-        }
-
-        ObjectFactory::getInstance()->addAlias(reg.className, fullname);
-        return 1;
+        ObjectFactory::getInstance()->addAlias(alias, fullname);
     }
+    return 1;
+
 }
 
 } // namespace sofa::core

@@ -6,6 +6,7 @@ using sofa::testing::BaseTest;
 using sofa::simulation::SceneLoaderXML ;
 using sofa::simulation::Node ;
 
+
 using sofa::core::execparams::defaultInstance; 
 
 namespace sofa

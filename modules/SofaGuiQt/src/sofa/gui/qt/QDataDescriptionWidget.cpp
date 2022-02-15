@@ -110,10 +110,10 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
             addRow(boxLayout, "Description", entry.description, nextRow, 20);
             nextRow++;
         }
-        core::ObjectFactory::CreatorMap::iterator it = entry.creatorMap.find(object->getTemplateName());
-        if (it != entry.creatorMap.end() && *it->second->getTarget())
+
+        if(!entry.compilationTarget.empty())
         {
-            addRow(boxLayout, "Provided by",it->second->getTarget(), nextRow, 20);
+            addRow(boxLayout, "Provided by",entry.compilationTarget, nextRow, 20);
             nextRow++;
         }
 

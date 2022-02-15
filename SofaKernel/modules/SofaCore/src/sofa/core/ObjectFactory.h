@@ -77,7 +77,7 @@ public:
         std::string shortName(objectmodel::BaseObjectDescription* arg) = delete;
 
         /// The name of the library or executable containing the binary code for this component
-        virtual const char* getTarget() = 0;
+        //virtual const char* getTarget() = 0;
 
         virtual const char* getHeaderFileLocation() = 0;
     };
@@ -113,11 +113,15 @@ public:
 
     ~ObjectFactory();
 
+    bool hasObjectEntry(const std::string& fullname) const;
+    void addEntry(const std::string& fullname, ClassEntry& entry);
+
     /// Get an entry given a class name (or alias)
     ClassEntry& getEntry(std::string classname);
 
     /// Test if a creator exists for a given classname
     bool hasCreator(std::string classname);
+    bool hasCreator(const std::string& classname, const std::string& templatename);
 
     /// Return the shortname for this classname. Empty string if
     /// no creator exists for this classname.
@@ -204,7 +208,7 @@ public:
 
 private:
     bool hasCreatorNoAlias(const std::string& classname);
-    //bool hasNoAlias(const std::string& classname);
+    bool hasCreatorNoAlias(const std::string& classname, const std::string&);
 };
 
 template<class BaseClass>
@@ -271,19 +275,17 @@ public:
         return RealObject::GetClass();
     }
     /// The name of the library or executable containing the binary code for this component
-    const char* getTarget() override
-    {
-#ifdef SOFA_TARGET
-        return sofa_tostring(SOFA_TARGET);
-#else
-        return "";
-#endif
-    }
+    //const char* getTarget() override
+    //{
+    //    return compilationTarget.c_str();
+    //}
 
     const char* getHeaderFileLocation() override
     {
         return RealObject::HeaderFileLocation();
     }
+private:
+    //std::string compilationTarget;
 };
 
 /**
@@ -346,7 +348,16 @@ public:
         if (defaultTemplate)
             entry.defaultTemplate = templatename;
 
-        return addCreator(classname, templatename, ObjectFactory::Creator::SPtr(new ObjectCreator<RealObject>));
+        if(entry.compilationTarget.empty())
+        {
+#ifdef SOFA_TARGET
+                entry.compilationTarget = sofa_tostring(SOFA_TARGET);
+#else
+                entry.compilationTarget = "";
+               #endif
+        }
+
+        return addCreator(classname, templatename, ObjectFactory::Creator::SPtr(new ObjectCreator<RealObject>()));
     }
 
     /// This is the final operation that will actually commit the additions to the ObjectFactory.
