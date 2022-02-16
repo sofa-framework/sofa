@@ -42,7 +42,6 @@ CompositingVisualLoop::CompositingVisualLoop(simulation::Node* _gnode)
       vertFilename(initData(&vertFilename, (std::string) "shaders/compositing.vert", "vertFilename", "Set the vertex shader filename to load")),
       fragFilename(initData(&fragFilename, (std::string) "shaders/compositing.frag", "fragFilename", "Set the fragment shader filename to load"))
 {
-    //assert(gRoot);
 }
 
 CompositingVisualLoop::~CompositingVisualLoop()
@@ -53,8 +52,8 @@ void CompositingVisualLoop::initVisual()
 
 void CompositingVisualLoop::init()
 {
-    if (!gRoot)
-        gRoot = dynamic_cast<simulation::Node*>(this->getContext());
+    if (!l_node)
+        l_node = dynamic_cast<simulation::Node*>(this->getContext());
 }
 
 //should not be called if scene file is well formed
@@ -62,20 +61,19 @@ void CompositingVisualLoop::defaultRendering(sofa::core::visual::VisualParams* v
 {
     vparams->pass() = sofa::core::visual::VisualParams::Std;
     sofa::simulation::VisualDrawVisitor act ( vparams );
-    gRoot->execute ( &act );
+    l_node->execute ( &act );
     vparams->pass() = sofa::core::visual::VisualParams::Transparent;
     sofa::simulation::VisualDrawVisitor act2 ( vparams );
-    gRoot->execute ( &act2 );
+    l_node->execute ( &act2 );
 }
 
 void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
 {
-    if ( !gRoot ) return;
+    if ( !l_node ) return;
 
     sofa::core::visual::tristate renderingState;
-    //vparams->displayFlags().setShowRendering(false);
     component::visualmodel::VisualStyle::SPtr visualStyle = nullptr;
-    gRoot->get(visualStyle);
+    l_node->get(visualStyle);
     const sofa::core::visual::DisplayFlags &backupFlags = vparams->displayFlags();
     const sofa::core::visual::DisplayFlags &currentFlags = visualStyle->displayFlags.getValue();
     vparams->displayFlags() = sofa::core::visual::merge_displayFlags(backupFlags, currentFlags);
@@ -92,7 +90,7 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
         dmsg_info() << "Advanced Rendering is ON" ;
     }
     //should not happen: the compositing loop relies on one or more rendered passes done by the VisualManagerPass component
-    if (gRoot->visualManager.empty())
+    if (l_node->visualManager.empty())
     {
         msg_error() << "CompositingVisualLoop: no VisualManagerPass found. Disable multipass rendering.";
         defaultRendering(vparams);
@@ -103,7 +101,7 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
     {
         if (renderingState == sofa::core::visual::tristate::false_value || renderingState == sofa::core::visual::tristate::neutral_value) return;
 
-        sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator begin = gRoot->visualManager.begin(), end = gRoot->visualManager.end(), it;
+        sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator begin = l_node->visualManager.begin(), end = l_node->visualManager.end(), it;
         //preDraw sequence
         it=begin;
         for (it = begin; it != end; ++it)
@@ -127,7 +125,7 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
         }
 
         //postDraw sequence
-        sofa::simulation::Node::Sequence<core::visual::VisualManager>::reverse_iterator rbegin = gRoot->visualManager.rbegin(), rend = gRoot->visualManager.rend(), rit;
+        sofa::simulation::Node::Sequence<core::visual::VisualManager>::reverse_iterator rbegin = l_node->visualManager.rbegin(), rend = l_node->visualManager.rend(), rit;
         for (rit = rbegin; rit != rend; ++rit)
             (*rit)->postDrawScene(vparams);
 
@@ -143,7 +141,6 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
         glUseProgramObjectARB(0);
         glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindBufferARB(GL_ARRAY_BUFFER, 0);
-        //glViewport(vparams->viewport()[0],vparams->viewport()[1],vparams->viewport()[2],vparams->viewport()[3]);
     }
 }
 

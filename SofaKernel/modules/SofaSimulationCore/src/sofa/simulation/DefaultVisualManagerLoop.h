@@ -19,33 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_DEFAULTVISUALMANAGERLOOP_H
-#define SOFA_SIMULATION_DEFAULTVISUALMANAGERLOOP_H
+#pragma once
 
+#include <sofa/simulation/config.h>               // config.h *must*  be the first include
+#include <sofa/simulation/fwd.h>
 #include <sofa/core/visual/VisualLoop.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/simulation/config.h>
-#include <sofa/simulation/fwd.h>
 
-namespace sofa {
-namespace core {
-namespace visual {
-    class VisualParams;
-} // namespace visual
-} // namespace core
+namespace sofa::core::objectmodel
+{
+// Forward declaration for extern template declaration. This design permit to
+// not #include<sofa::simulation::Node>
+extern template class SingleLink< sofa::simulation::DefaultVisualManagerLoop, simulation::Node, BaseLink::FLAG_STOREPATH>;
 }
 
-namespace sofa
-{
-namespace simulation
+namespace sofa::simulation
 {
 
 /**
  *  \brief Default VisualManager Loop to be created when no VisualManager found on simulation::node.
  *
- *
  */
-
 class SOFA_SIMULATION_CORE_API DefaultVisualManagerLoop : public sofa::core::visual::VisualLoop
 {
 public:
@@ -87,13 +81,10 @@ public:
         return obj;
     }
 
+    SingleLink< DefaultVisualManagerLoop, simulation::Node, BaseLink::FLAG_STOREPATH> l_node;  ///< Link to the scene's node where the rendering will take place
+
 protected:
     static simulation::Node* getNodeFromContext(BaseContext*);
-    simulation::Node* gRoot;
 };
 
-} // namespace simulation
-
 } // namespace sofa
-
-#endif  /* SOFA_SIMULATION_DEFAULTVISUALMANAGERLOOP_H */
