@@ -25,7 +25,7 @@
 
 #include <sofa/core/Mapping.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
-#include <SofaBaseTopology/PointSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/PointSetTopologyContainer.h>
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/RGBAColor.h>

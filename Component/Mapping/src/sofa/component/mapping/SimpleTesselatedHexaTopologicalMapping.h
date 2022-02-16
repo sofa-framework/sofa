@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaTopologyMapping/config.h>
+#include <sofa/component/mapping/config.h>
 
 #include <sofa/core/topology/TopologicalMapping.h>
 
@@ -31,7 +31,7 @@
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/topology/TopologyData.h>
 
-namespace sofa::component::topology
+namespace sofa::component::mapping
 {
 
 /**
@@ -46,7 +46,7 @@ namespace sofa::component::topology
  *
 */
 
-class SimpleTesselatedHexaTopologicalMapping : public sofa::core::topology::TopologicalMapping
+class SOFA_COMPONENT_MAPPING_API SimpleTesselatedHexaTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
 public:
     SOFA_CLASS(SimpleTesselatedHexaTopologicalMapping,sofa::core::topology::TopologicalMapping);
@@ -87,4 +87,4 @@ protected:
     type::vector<int> pointMappedFromHexa;
 };
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::mapping

@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/mapping/BarycentricMappers/TopologyBarycentricMapper.h>
 
-#include <SofaBaseTopology/RegularGridTopology.h>
+#include <sofa/component/topology/container/grid/RegularGridTopology.h>
 
 namespace sofa::component::mapping
 {
@@ -30,7 +30,7 @@ namespace sofa::component::mapping
 using core::visual::VisualParams;
 using sofa::linearalgebra::BaseMatrix;
 using sofa::defaulttype::Vec3Types;
-using topology::RegularGridTopology;
+using topology::container::grid::RegularGridTopology;
 
 /// Class allowing barycentric mapping computation on a RegularGridTopology
 template<class In, class Out>
@@ -57,7 +57,7 @@ public:
     void clear(std::size_t reserve=0) override;
     void resize( core::State<Out>* toModel ) override;
     virtual bool isEmpty() {return this->m_map.size() == 0;}
-    virtual void setTopology(topology::RegularGridTopology* _topology) {this->m_fromTopology = _topology;}
+    virtual void setTopology(topology::container::grid::RegularGridTopology* _topology) {this->m_fromTopology = _topology;}
     RegularGridTopology *getTopology() {return this->m_fromTopology;}
     Index addPointInCube(const Index cubeIndex, const SReal* baryCoords) override;
 

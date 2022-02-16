@@ -26,7 +26,7 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/core/MultiMapping.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
-#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/EdgeSetTopologyContainer.h>
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/RGBAColor.h>
@@ -80,7 +80,7 @@ public:
     typedef Data<OutVecDeriv> OutDataVecDeriv;
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
-    typedef topology::EdgeSetTopologyContainer::SeqEdges SeqEdges;
+    typedef topology::container::dynamic::EdgeSetTopologyContainer::SeqEdges SeqEdges;
     typedef type::Vec<In::spatial_dimensions,Real> Direction;
 
 
@@ -116,7 +116,7 @@ protected:
     SquareDistanceMapping();
     virtual ~SquareDistanceMapping();
 
-    topology::EdgeSetTopologyContainer* edgeContainer;  ///< where the edges are defined
+    topology::container::dynamic::EdgeSetTopologyContainer* edgeContainer;  ///< where the edges are defined
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
     type::vector<linearalgebra::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
     SparseKMatrixEigen K;                               ///< Assembled geometric stiffness matrix

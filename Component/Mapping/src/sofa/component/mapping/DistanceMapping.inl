@@ -66,7 +66,7 @@ void DistanceMapping<TIn, TOut>::init()
 
     }
 
-    m_edgeContainer = dynamic_cast<topology::EdgeSetTopologyContainer*>(l_topology.get());
+    m_edgeContainer = dynamic_cast<topology::container::dynamic::EdgeSetTopologyContainer*>(l_topology.get());
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
     if (m_edgeContainer == nullptr)
@@ -453,7 +453,7 @@ void DistanceMultiMapping<TIn, TOut>::init()
 
     }
 
-    m_edgeContainer = dynamic_cast<topology::EdgeSetTopologyContainer*>(l_topology.get());
+    m_edgeContainer = dynamic_cast<topology::container::dynamic::EdgeSetTopologyContainer*>(l_topology.get());
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
     
     if (m_edgeContainer == nullptr)

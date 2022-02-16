@@ -51,7 +51,7 @@ struct DistanceMappingTest : public sofa::mapping_test::Mapping_test<DistanceMap
         map->f_computeDistance.setValue(true);
         map->d_geometricStiffness.setValue(1);
 
-        component::topology::EdgeSetTopologyContainer::SPtr edges = modeling::addNew<component::topology::EdgeSetTopologyContainer>(this->root);
+        component::topology::container::dynamic::EdgeSetTopologyContainer::SPtr edges = modeling::addNew<component::topology::container::dynamic::EdgeSetTopologyContainer>(this->root);
         edges->addEdge( 0, 1 );
 
         // parent positions

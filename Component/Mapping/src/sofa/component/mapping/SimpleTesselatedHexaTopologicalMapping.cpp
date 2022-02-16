@@ -19,13 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTopologyMapping/SimpleTesselatedHexaTopologicalMapping.h>
+#include <sofa/component/mapping/SimpleTesselatedHexaTopologicalMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/HexahedronSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/HexahedronSetTopologyModifier.h>
 #include <sofa/core/topology/TopologyChange.h>
 
 
@@ -33,11 +33,11 @@
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::topology
+namespace sofa::component::mapping
 {
 using namespace sofa::type;
 using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
+using namespace sofa::component::mapping;
 using namespace sofa::core::topology;
 using sofa::type::fixed_array;
 
@@ -329,4 +329,4 @@ void SimpleTesselatedHexaTopologicalMapping::init()
     }
 }
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::mapping
