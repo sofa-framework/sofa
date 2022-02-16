@@ -38,7 +38,7 @@ typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Type
 
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/testing/tools/MassSpringSystemCreation.h>
+#include <sofa/component/odesolver/testing/MassSpringSystemCreation.h>
 
 namespace sofa {
 
