@@ -25,13 +25,6 @@
 #include <SofaConstraint/UncoupledConstraintCorrection.inl>
 #include <sofa/core/behavior/ConstraintCorrection.inl>
 
-#include <SofaConstraint/LinearSolverConstraintCorrection.h>
-#include <SofaConstraint/LinearSolverConstraintCorrection.inl>
-
-#include <SofaConstraint/PrecomputedConstraintCorrection.h>
-#include <SofaConstraint/PrecomputedConstraintCorrection.inl>
-
-
 namespace sofa::component::constraintset
 {
 using namespace sofa::gpu::cuda;
@@ -43,25 +36,5 @@ const int CudaUncoupledConstraintCorrectionClass = core::RegisterObject("Support
 .add< UncoupledConstraintCorrection< CudaVec3fTypes > >()
 .add< UncoupledConstraintCorrection< CudaVec3f1Types > >()
 ;
-
-
-
-template class SOFA_GPU_CUDA_API LinearSolverConstraintCorrection< CudaVec3fTypes >;
-template class SOFA_GPU_CUDA_API LinearSolverConstraintCorrection< CudaVec3f1Types >;
-
-const int CudaLinearSolverConstraintCorrectionClass = core::RegisterObject("Supports GPU-side computations using CUDA.")
-.add< LinearSolverConstraintCorrection< CudaVec3fTypes > >()
-.add< LinearSolverConstraintCorrection< CudaVec3f1Types > >()
-;
-
-
-template class SOFA_GPU_CUDA_API PrecomputedConstraintCorrection< CudaVec3fTypes >;
-template class SOFA_GPU_CUDA_API PrecomputedConstraintCorrection< CudaVec3f1Types >;
-
-int CudaPrecomputedConstraintCorrectionClass = core::RegisterObject("Supports GPU-side computations using CUDA.")
-.add< PrecomputedConstraintCorrection< CudaVec3fTypes > >()
-.add< PrecomputedConstraintCorrection< CudaVec3f1Types > >()
-;
-
 
 } // namespace sofa::component::constraintset
