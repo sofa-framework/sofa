@@ -22,8 +22,8 @@
 #pragma once
 #include <sofa/component/mapping/BarycentricMapping.h>
 
-#include <SofaBaseTopology/RegularGridTopology.h>
-#include <SofaBaseTopology/SparseGridTopology.h>
+#include <sofa/component/topology/container/grid/RegularGridTopology.h>
+#include <sofa/component/topology/container/grid/SparseGridTopology.h>
 
 #include <sofa/component/mapping/BarycentricMappers/BarycentricMapperMeshTopology.h>
 #include <sofa/component/mapping/BarycentricMappers/BarycentricMapperRegularGridTopology.h>
@@ -145,7 +145,7 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ()
 {
     using sofa::core::behavior::BaseMechanicalState;
     using sofa::core::topology::TopologyContainer;
-    using sofa::component::topology::SparseGridTopology;
+    using sofa::component::topology::container::grid::SparseGridTopology;
 
     using RegularGridMapper = BarycentricMapperRegularGridTopology< InDataTypes, OutDataTypes >;
     using SparseGridMapper =  BarycentricMapperSparseGridTopology< InDataTypes, OutDataTypes >;

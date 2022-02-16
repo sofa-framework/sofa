@@ -19,13 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTopologyMapping/SimpleTesselatedTetraTopologicalMapping.h>
+#include <sofa/component/mapping/SimpleTesselatedTetraTopologicalMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyModifier.h>
 #include <sofa/core/topology/TopologyChange.h>
 
 #include <sofa/core/topology/TopologyData.inl>
@@ -35,10 +35,10 @@
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::topology
+namespace sofa::component::mapping
 {
 using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
+using namespace sofa::component::topology::container::dynamic;
 using namespace sofa::core::topology;
 using sofa::type::fixed_array;
 
@@ -567,4 +567,4 @@ void SimpleTesselatedTetraTopologicalMapping::removeInputTetrahedra( const sofa:
     tetraSource.endEdit();
 }
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::mapping

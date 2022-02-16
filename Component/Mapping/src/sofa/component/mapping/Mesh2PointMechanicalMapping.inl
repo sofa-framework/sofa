@@ -22,7 +22,7 @@
 #pragma once
 #include "Mesh2PointMechanicalMapping.h"
 
-#include <sofa/component/topology/mapping/Mesh2PointTopologicalMapping.h>
+#include <sofa/component/mapping/Mesh2PointTopologicalMapping.h>
 
 
 namespace sofa::component::mapping
@@ -381,7 +381,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::MechanicalParam
 template <class TIn, class TOut>
 void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/, Data<InMatrixDeriv>& dOut, const Data<OutMatrixDeriv>& dIn)
 {
-    using topology::mapping::Mesh2PointTopologicalMapping;
+    using mapping::Mesh2PointTopologicalMapping;
 
     if (!topoMap)
         return;

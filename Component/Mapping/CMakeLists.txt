@@ -128,10 +128,12 @@ set(SOURCE_FILES
 )
 
 sofa_find_package(SofaSimulationCore REQUIRED)
+sofa_find_package(Sofa.Component.Topology.Container.Dynamic REQUIRED)
 sofa_find_package(Sofa.Component.Topology.Container.Grid REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Topology.Container.Dynamic)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Topology.Container.Grid)
 
 sofa_create_package_with_targets(

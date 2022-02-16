@@ -4,6 +4,7 @@
 @PACKAGE_INIT@
 
 find_package(Sofa.SimulationCore QUIET REQUIRED)
+find_package(Sofa.Component.Topology.Container.Dynamic QUIET REQUIRED)
 find_package(Sofa.Component.Topology.Container.Grid QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)

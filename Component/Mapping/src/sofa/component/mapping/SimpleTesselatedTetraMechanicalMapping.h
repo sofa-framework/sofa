@@ -24,7 +24,7 @@
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/topology/mapping/SimpleTesselatedTetraTopologicalMapping.h>
+#include <sofa/component/mapping/SimpleTesselatedTetraTopologicalMapping.h>
 #include <sofa/type/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -81,7 +81,7 @@ public:
     void applyJT(const core::ConstraintParams* cparams, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn) override;
 
 protected:
-    topology::mapping::SimpleTesselatedTetraTopologicalMapping* topoMap;
+    mapping::SimpleTesselatedTetraTopologicalMapping* topoMap;
     core::topology::BaseMeshTopology* inputTopo;
     core::topology::BaseMeshTopology* outputTopo;
 };

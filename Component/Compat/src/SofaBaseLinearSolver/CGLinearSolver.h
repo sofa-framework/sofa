@@ -31,4 +31,3 @@ namespace sofa::component::linearsolver
     using CGLinearSolver = sofa::component::linearsolver::iterative::CGLinearSolver<TMatrix, TVector>;
 
 } // namespace sofa::component::linearsolver
-

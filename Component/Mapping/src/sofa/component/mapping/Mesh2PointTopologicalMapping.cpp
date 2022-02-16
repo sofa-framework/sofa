@@ -19,24 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTopologyMapping/Mesh2PointTopologicalMapping.h>
+#include <sofa/component/mapping/Mesh2PointTopologicalMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
-#include <SofaBaseTopology/PointSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/PointSetTopologyModifier.h>
 #include <sofa/core/topology/TopologyChange.h>
 
 #include <sofa/type/Vec.h>
 #include <map>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::topology
+namespace sofa::component::mapping
 {
 using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
+using namespace sofa::component::topology::container::dynamic;
 using namespace sofa::core::topology;
 using type::vector;
 
@@ -906,4 +906,4 @@ void Mesh2PointTopologicalMapping::removeOutputPoints( const sofa::type::vector<
     pointSource.resize(last + 1);
 }
 
-} //namespace sofa::component::topology
+} //namespace sofa::component::mapping

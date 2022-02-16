@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/mapping/BarycentricMappers/TopologyBarycentricMapper.h>
 
-#include <SofaBaseTopology/SparseGridTopology.h>
+#include <sofa/component/topology/container/grid/SparseGridTopology.h>
 
 namespace sofa::component::mapping
 {
@@ -74,11 +74,11 @@ public:
     friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperSparseGridTopology<I, O> & b );
 
 protected:
-    BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology,
+    BarycentricMapperSparseGridTopology(topology::container::grid::SparseGridTopology* fromTopology,
         core::topology::BaseMeshTopology* _toTopology);
 
     sofa::type::vector<CubeData> m_map;
-    topology::SparseGridTopology* m_fromTopology {nullptr};
+    topology::container::grid::SparseGridTopology* m_fromTopology {nullptr};
     MatrixType* m_matrixJ {nullptr};
     bool m_updateJ {false};
 };

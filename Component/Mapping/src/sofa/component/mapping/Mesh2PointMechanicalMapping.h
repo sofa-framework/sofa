@@ -27,7 +27,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/TopologyTypes.h>
 
-#include <sofa/component/topology/mapping/Mesh2PointTopologicalMapping.h>
+#include <sofa/component/mapping/Mesh2PointTopologicalMapping.h>
 
 namespace sofa::core::topology { class BaseMeshTopology; }
 
@@ -77,7 +77,7 @@ public:
     void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in) override;
 
 protected:
-    topology::mapping::Mesh2PointTopologicalMapping* topoMap;
+    mapping::Mesh2PointTopologicalMapping* topoMap;
     core::topology::BaseMeshTopology* inputTopo;
     core::topology::BaseMeshTopology* outputTopo;
 };

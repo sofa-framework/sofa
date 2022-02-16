@@ -52,7 +52,7 @@ SquareDistanceMapping<TIn, TOut>::~SquareDistanceMapping()
 template <class TIn, class TOut>
 void SquareDistanceMapping<TIn, TOut>::init()
 {
-    edgeContainer = dynamic_cast<topology::EdgeSetTopologyContainer*>( this->getContext()->getMeshTopology() );
+    edgeContainer = dynamic_cast<topology::container::dynamic::EdgeSetTopologyContainer*>( this->getContext()->getMeshTopology() );
     msg_error_when(!edgeContainer) << "No EdgeSetTopologyContainer found ! ";
 
     SeqEdges links = edgeContainer->getEdges();
