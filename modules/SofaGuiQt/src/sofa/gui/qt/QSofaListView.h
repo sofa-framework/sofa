@@ -63,7 +63,7 @@ public:
     sofa::core::objectmodel::Base* asBase()
     {
         if( isNode() )
-            return sofa::simulation::node::toBase(ptr.Node);
+            return sofa::core::castToBase(ptr.Node);
         if( isObject() )
             return dynamic_cast<sofa::core::objectmodel::Base*>(ptr.Object);
         return nullptr;

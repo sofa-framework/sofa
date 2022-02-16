@@ -23,6 +23,7 @@
 * User of this library should read the documentation
 * in the logging.h file.
 ******************************************************************************/
+#include <sofa/component/sceneutility/config.h>
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::RegisterObject ;
 

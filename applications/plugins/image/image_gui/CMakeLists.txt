@@ -23,13 +23,18 @@ set(SOURCE_FILES
 include(../imagetoolbox/imagetoolbox.cmake)
 
 find_package(SofaGuiQt REQUIRED QUIET)
-find_package(Qt5 COMPONENTS Core Gui Widgets QUIET)
-
-if(Qt5Core_FOUND)
-    qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
+find_package(Qt5 COMPONENTS Core QUIET)
+if (NOT Qt5Core_FOUND)
+    if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.16")
+        find_package(Qt6 COMPONENTS Core CoreTools REQUIRED QUIET)
+        if (Qt6Core_FOUND)
+            qt6_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
+            message(FATAL_ERROR "Image_gui is not compatible with Qt6 yet.") # to remove once image_gui has been updated
+        endif()
+        # else() should never happened as it would already break in SofaGuiQt
+    endif()
 else()
-    find_package(Qt4 COMPONENTS qtcore)
-    qt4_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
+    qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
 endif()
 
 set(MOC_FILES_GROUP "Generated")

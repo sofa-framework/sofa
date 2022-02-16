@@ -21,6 +21,7 @@
 ******************************************************************************/
 
 #include <map>
+#include <SofaOpenglVisual/config.h>
 #include <sofa/gl/template.h>
 #include <sofa/core/ObjectFactory.h>
 

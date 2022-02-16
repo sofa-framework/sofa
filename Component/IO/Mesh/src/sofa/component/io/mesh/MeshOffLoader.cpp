@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/component/io/mesh/MeshOffLoader.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/ObjectFactory.h>
 #include <fstream>
 
 namespace sofa::component::io::mesh

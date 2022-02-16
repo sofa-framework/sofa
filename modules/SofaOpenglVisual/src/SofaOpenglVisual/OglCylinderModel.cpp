@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include <sofa/core/ObjectFactory.h>
-
+#include <SofaOpenglVisual/config.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 
@@ -31,6 +29,7 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/topology/TopologyData.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
