@@ -29,6 +29,9 @@
 namespace sofa::component::mass
 {
 
+/*
+ * Mass components templated on VecTypes will use Real (scalar) type for their MassType.
+ */
 template<class TCoord, class TDeriv, class TReal>
 struct MassType<defaulttype::StdVectorTypes< TCoord, TDeriv, TReal> >
 {
