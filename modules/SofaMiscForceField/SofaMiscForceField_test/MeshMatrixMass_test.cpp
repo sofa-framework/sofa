@@ -91,13 +91,13 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename type::vector<MassType> VecMass;
-    typedef MeshMatrixMass<TDataTypes, TMassType> TheMeshMatrixMass ;
+    typedef MeshMatrixMass<TDataTypes> TheMeshMatrixMass ;
 
     simulation::Simulation* simulation = nullptr;
     simulation::Node::SPtr root;
     simulation::Node::SPtr node;
     typename MechanicalObject<DataTypes>::SPtr mstate;
-    typename MeshMatrixMass<DataTypes, MassType>::SPtr mass;
+    typename MeshMatrixMass<DataTypes>::SPtr mass;
 
     void SetUp() override
     {
@@ -121,7 +121,7 @@ public:
         node->addObject(mstate);
         node->addObject(topologyContainer);
         node->addObject(geometryAlgorithms);
-        mass = New<MeshMatrixMass<DataTypes, MassType> >();
+        mass = New<MeshMatrixMass<DataTypes> >();
         node->addObject(mass);
     }
 

@@ -19,34 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
-#include "CudaUniformMass.inl"
-#include <sofa/core/behavior/Mass.inl>
-#include <sofa/core/behavior/ForceField.inl>
-#include <sofa/core/ObjectFactory.h>
+#pragma once
 
-namespace sofa
+#include <sofa/core/config.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <SofaBaseMechanics/MassType.h>
+
+namespace sofa::component::mass
 {
 
-namespace gpu
+/*
+ * Mass components templated on RigidTypes will use the associated RigidMass class for their MassType.
+ */
+template<sofa::Size N, typename real>
+struct MassType<sofa::defaulttype::StdRigidTypes<N, real> >
 {
+    using type = sofa::defaulttype::RigidMass< N, real>;
+};
 
-namespace cuda
-{
 
-int UniformMassCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::mass::UniformMass<CudaVec3fTypes> >()
-        .add< component::mass::UniformMass<CudaVec3f1Types> >()
-        .add< component::mass::UniformMass<CudaRigid3fTypes> >()
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::mass::UniformMass<CudaVec3dTypes> >()
-        .add< component::mass::UniformMass<CudaVec3d1Types> >()
-        .add< component::mass::UniformMass<CudaRigid3dTypes > >()
-#endif // SOFA_GPU_CUDA_DOUBLE
-        ;
-
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
+} // namespace sofa::component::mass

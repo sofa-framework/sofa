@@ -91,7 +91,7 @@ int main(int argc, char** argv)
     x[1] = { endPos,0,0 };
 
     // mass
-    using UniformMass3 = sofa::component::mass::UniformMass<sofa::defaulttype::Vec3Types, SReal>;
+    using UniformMass3 = sofa::component::mass::UniformMass<sofa::defaulttype::Vec3Types>;
     auto mass = sofa::core::objectmodel::New<UniformMass3>();
     deformableBody->addObject(mass);
     mass->setMass(1);
@@ -126,7 +126,7 @@ int main(int argc, char** argv)
     rigid_x[0] = { {endPos - attach + splength,0,0}, sofa::type::Quatd::identity() };
 
     // mass
-    using UniformMassRigid3 = sofa::component::mass::UniformMass<sofa::defaulttype::RigidTypes, sofa::defaulttype::Rigid3dMass>;
+    using UniformMassRigid3 = sofa::component::mass::UniformMass<sofa::defaulttype::RigidTypes>;
     UniformMassRigid3::SPtr rigidMass = sofa::core::objectmodel::New<UniformMassRigid3>();
     rigidBody->addObject(rigidMass);
     rigidMass->setName("M2");

@@ -42,7 +42,7 @@ using namespace modeling;
 template<typename DataTypes>
 void createUniformMass(simulation::Node::SPtr node, component::container::MechanicalObject<DataTypes>& /*dofs*/)
 {
-    node->addObject(sofa::core::objectmodel::New<component::mass::UniformMass<DataTypes, typename DataTypes::Real> >());
+    node->addObject(sofa::core::objectmodel::New<component::mass::UniformMass<DataTypes> >());
 }
 
 template <typename _DataTypes>

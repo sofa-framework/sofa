@@ -30,9 +30,14 @@
 #include <sofa/type/vector.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
+#include <SofaBaseMechanics/VecMassType.h>
+#include <SofaBaseMechanics/RigidMassType.h>
+
 //VERY IMPORTANT FOR GRAPHS
 #include <sofa/helper/map.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+
+#include <type_traits>
 
 namespace sofa::component::mass
 {
@@ -50,11 +55,13 @@ public:
 };
 
 
-template <class DataTypes, class TMassType>
+template <class DataTypes>
 class MeshMatrixMass : public core::behavior::Mass<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(MeshMatrixMass,DataTypes,TMassType), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(MeshMatrixMass,DataTypes), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
+
+    using TMassType = typename sofa::component::mass::MassType<DataTypes>::type;
 
     typedef core::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord                    VecCoord;
@@ -99,7 +106,7 @@ public:
     Data< std::map < std::string, sofa::type::vector<double> > > f_graph; ///< Graph of the controlled potential
 
     /// Link to be set to the topology container in the component graph.
-    SingleLink<MeshMatrixMass<DataTypes, TMassType>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    SingleLink<MeshMatrixMass<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
 
@@ -117,7 +124,6 @@ protected:
     /// Internal data required for Cuda computation (copy of vertex mass for deviceRead)
     MeshMatrixMassInternalData<DataTypes, MassType> data;
     friend class MeshMatrixMassInternalData<DataTypes, MassType>;
-
 
 public:
     virtual void clear();
@@ -216,6 +222,21 @@ public:
     /// Answer wether mass matrix is lumped or not
     bool isLumped() const { return d_lumping.getValue(); }
 
+    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override
+    {
+        Inherited::parse(arg);
+
+        if (arg->getAttribute("template"))
+        {
+            auto splitTemplates = sofa::helper::split(std::string(arg->getAttribute("template")), ',');
+            if (splitTemplates.size() > 1)
+            {
+                msg_warning() << "MassType is not required anymore and the template is deprecated, please delete it from your scene." << msgendl
+                    << "As your mass is templated on " << DataTypes::Name() << ", MassType has been defined as " << sofa::helper::NameDecoder::getTypeName<MassType>() << " .";
+                msg_warning() << "If you want to set the template, you must write now \"template='" << DataTypes::Name() << "'\" .";
+            }
+        }
+    }
 
 protected:
     /** Method to initialize @sa MassType when a new Point is created to compute mass coefficient matrix.
@@ -379,9 +400,9 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_MASS_MESHMATRIXMASS_CPP)
-extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec3Types,defaulttype::Vec3Types::Real>;
-extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec2Types,defaulttype::Vec2Types::Real>;
-extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec1Types,defaulttype::Vec1Types::Real>;
+extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec2Types>;
+extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec1Types>;
 
 #endif
 

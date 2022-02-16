@@ -134,7 +134,7 @@ protected:
     typename Dofs::SPtr m_internalDofs;
     component::topology::RegularGridTopology::SPtr m_internalTopology;
     typename component::forcefield::HexahedronFEMForceField<DataTypes>::SPtr m_internalForceField;
-    typename component::mass::UniformMass<DataTypes,Real>::SPtr m_internalMass;
+    typename component::mass::UniformMass<DataTypes>::SPtr m_internalMass;
     sofa::simulation::Node::SPtr m_internalNode;
 
     int mapExposedInternalIndices[8]; ///< identity mapping between exposed SOFA dofs and internal model dofs
