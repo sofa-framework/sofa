@@ -74,6 +74,14 @@ set(HEADER_FILES
     ${SOFACOMPONENTMAPPING_SOURCE_DIR}/TubularMapping.h
     ${SOFACOMPONENTMAPPING_SOURCE_DIR}/TubularMapping.inl
     ${SOFACOMPONENTMAPPING_SOURCE_DIR}/VoidMapping.h
+    ${SOFACOMPONENTMAPPING_SOURCE_DIR}/Mesh2PointMechanicalMapping.h
+    ${SOFACOMPONENTMAPPING_SOURCE_DIR}/Mesh2PointMechanicalMapping.inl
+    ${SOFACOMPONENTMAPPING_SOURCE_DIR}/Mesh2PointTopologicalMapping.h
+    ${SOFACOMPONENTMAPPING_SOURCE_DIR}/SimpleTesselatedHexaTopologicalMapping.h
+    ${SOFACOMPONENTMAPPING_SOURCE_DIR}/SimpleTesselatedTetraMechanicalMapping.h
+    ${SOFACOMPONENTMAPPING_SOURCE_DIR}/SimpleTesselatedTetraMechanicalMapping.inl
+    ${SOFACOMPONENTMAPPING_SOURCE_DIR}/SimpleTesselatedTetraTopologicalMapping.h
+    ${SOFACOMPONENTMAPPING_SOURCE_DIR}/Mesh2PointTopologicalMapping.h
 )
 
 set(SOURCE_FILES
@@ -112,16 +120,19 @@ set(SOURCE_FILES
     ${SOFACOMPONENTMAPPING_SOURCE_DIR}/SubsetMultiMapping.cpp
     ${SOFACOMPONENTMAPPING_SOURCE_DIR}/TubularMapping.cpp
     ${SOFACOMPONENTMAPPING_SOURCE_DIR}/VoidMapping.cpp
+    ${SOFACOMPONENTMAPPING_SOURCE_DIR}/Mesh2PointMechanicalMapping.cpp
+    ${SOFACOMPONENTMAPPING_SOURCE_DIR}/Mesh2PointTopologicalMapping.cpp
+    ${SOFACOMPONENTMAPPING_SOURCE_DIR}/SimpleTesselatedHexaTopologicalMapping.cpp
+    ${SOFACOMPONENTMAPPING_SOURCE_DIR}/SimpleTesselatedTetraMechanicalMapping.cpp
+    ${SOFACOMPONENTMAPPING_SOURCE_DIR}/SimpleTesselatedTetraTopologicalMapping.cpp
 )
 
 sofa_find_package(SofaSimulationCore REQUIRED)
-sofa_find_package(Sofa.Component.Topology.Grid REQUIRED)
-sofa_find_package(Sofa.Component.Topology.Mapping REQUIRED)
+sofa_find_package(Sofa.Component.Topology.Container.Grid REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore)
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Topology.Grid)
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Topology.Mapping)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Topology.Container.Grid)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
