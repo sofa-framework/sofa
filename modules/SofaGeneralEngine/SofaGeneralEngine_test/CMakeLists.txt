@@ -4,6 +4,8 @@ project(SofaGeneralEngine_test)
 
 set(SOURCE_FILES ../../empty.cpp)
 
+set(HEADER_FILES DataEngineTestCreation.h)
+
 list(APPEND SOURCE_FILES
     AverageCoord_test.cpp
     ClusteringEngine_test.cpp
@@ -25,6 +27,6 @@ list(APPEND SOURCE_FILES
     )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} Sofa.Testing Sofa.Testing.Tools SofaGeneralEngine SofaLoader SofaBase)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaGeneralEngine SofaLoader SofaBase)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

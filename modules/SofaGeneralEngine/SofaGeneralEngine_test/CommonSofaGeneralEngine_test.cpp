@@ -24,7 +24,7 @@ using sofa::testing::BaseTest;
 
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/testing/tools/DataEngineTestCreation.h>
+#include "DataEngineTestCreation.h"
 
 #include <SofaGeneralEngine/config.h>
 #include <SofaGeneralEngine/AverageCoord.h>
