@@ -19,4 +19,4 @@ add_definitions("-DSOFACOMPONENTODESOLVER_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOUR
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 # dependencies are managed directly in the target_link_libraries pass
-target_link_libraries(${PROJECT_NAME} Sofa.Testing Sofa.Testing.Tools Sofa.Component.ODESolver SofaBaseUtils SofaBaseMechanics SofaDeformable SofaBoundaryCondition SceneCreator)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing Sofa.Component.ODESolver.Testing Sofa.Component.ODESolver SofaBaseUtils SofaBaseMechanics SofaDeformable SofaBoundaryCondition SceneCreator)

@@ -62,6 +62,3 @@ set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Testing)
 
 # test the tests...
 add_subdirectory(${PROJECT_NAME}_test)
-
-# add header-only tools (test templates, etc)
-add_subdirectory(tools)
