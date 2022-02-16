@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/component/io/mesh/MeshTrianLoader.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/ObjectFactory.h>
 
 #include <iostream>
 #include <fstream>

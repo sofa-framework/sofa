@@ -22,7 +22,6 @@
 
 #include <map>
 #include <sofa/gl/template.h>
-#include <sofa/core/ObjectFactory.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
@@ -37,6 +36,7 @@
 #include <sofa/core/topology/TopologyData.inl>
 
 #include <sofa/type/RGBAColor.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {

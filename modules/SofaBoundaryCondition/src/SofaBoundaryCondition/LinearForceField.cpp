@@ -21,6 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_CPP
 
+#include <SofaBoundaryCondition/config.h>
 #include <sofa/core/ObjectFactory.h>
 #include "LinearForceField.inl"
 
