@@ -26,6 +26,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <SofaNonUniformFem/DynamicSparseGridTopologyContainer.h>
+#include <SofaNonUniformFem/DynamicSparseGridGeometryAlgorithms.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/type/SVector.h>
 #include <sofa/helper/set.h>
@@ -38,18 +39,6 @@
 #define TYPE_STIFFNESS_DIFFUSION 2
 #define TYPE_VORONOI 3
 #define TYPE_HARMONIC_STIFFNESS 4
-
-namespace sofa::component::topology
-{
-
-class HexahedronSetTopologyContainer;
-
-class HexahedronSetTopologyModifier;
-
-template < class DataTypes >
-class DynamicSparseGridGeometryAlgorithms;
-
-} // namespace sofa::component::topology
 
 namespace sofa::component::engine
 {

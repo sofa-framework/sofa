@@ -27,6 +27,7 @@
 #include <sofa/helper/set.h>
 // Including constraint, force and mass
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/NumericalIntegrationDescriptor.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
 #include <sofa/defaulttype/VecTypes.h>
 

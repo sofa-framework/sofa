@@ -743,6 +743,70 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
 
     // SofaGraphComponent was deprecated in #2582 and ...
     { "APIVersion", CreatableMoved("v22.06", "SofaGraphComponent", "Sofa.Component.SceneUtility") },
+    
+    // SofaBaseTopology was deprecated in #2612
+    { "EdgeSetGeometryAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "EdgeSetTopologyAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "EdgeSetTopologyContainer", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "EdgeSetTopologyModifier", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "HexahedronSetGeometryAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "HexahedronSetTopologyAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "HexahedronSetTopologyContainer", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "HexahedronSetTopologyModifier", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "PointSetGeometryAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "PointSetTopologyAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "PointSetTopologyContainer", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "PointSetTopologyModifier", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "QuadSetGeometryAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "QuadSetTopologyAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "QuadSetTopologyContainer", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "QuadSetTopologyModifier", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "TetrahedronSetGeometryAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "TetrahedronSetTopologyAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "TetrahedronSetTopologyContainer", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "TetrahedronSetTopologyModifier", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "TriangleSetGeometryAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "TriangleSetTopologyAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "TriangleSetTopologyContainer", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "TriangleSetTopologyModifier", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
+    { "MeshTopology", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Constant") },
+    { "GridTopology", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Grid") },
+    { "RegularGridTopology", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Grid") },
+    { "SparseGridTopology", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Grid") },
+
+    // SofaGeneralTopology was deprecated in #2612
+    { "CubeTopology", CreatableMoved("v22.06", "SofaGeneralTopology", "Sofa.Component.Topology.Container.Constant") },
+    { "SphereQuadTopology", CreatableMoved("v22.06", "SofaGeneralTopology", "Sofa.Component.Topology.Container.Constant") },
+    { "CylinderGridTopology", CreatableMoved("v22.06", "SofaGeneralTopology", "Sofa.Component.Topology.Container.Grid") },
+    { "SphereGridTopology", CreatableMoved("v22.06", "SofaGeneralTopology", "Sofa.Component.Topology.Container.Grid") },
+
+    // SofaNonUniformFem was deprecated in #2612 and ...
+    { "DynamicSparseGridGeometryAlgorithms", CreatableMoved("v22.06", "SofaNonUniformFem", "Sofa.Component.Topology.Container.Dynamic") },
+    { "DynamicSparseGridTopologyAlgorithms", CreatableMoved("v22.06", "SofaNonUniformFem", "Sofa.Component.Topology.Container.Dynamic") },
+    { "DynamicSparseGridTopologyContainer", CreatableMoved("v22.06", "SofaNonUniformFem", "Sofa.Component.Topology.Container.Dynamic") },
+    { "DynamicSparseGridTopologyModifier", CreatableMoved("v22.06", "SofaNonUniformFem", "Sofa.Component.Topology.Container.Dynamic") },
+    { "MultilevelHexahedronSetTopologyContainer", CreatableMoved("v22.06", "SofaNonUniformFem", "Sofa.Component.Topology.Container.Dynamic") },
+    { "SparseGridMultipleTopology", CreatableMoved("v22.06", "SofaNonUniformFem", "Sofa.Component.Topology.Container.Grid") },
+    { "SparseGridRamificationTopology", CreatableMoved("v22.06", "SofaNonUniformFem", "Sofa.Component.Topology.Container.Grid") },
+
+    // SofaTopologicalMapping was deprecated in #2612 and ...
+    { "CenterPointTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "Edge2QuadTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "Hexa2QuadTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "Hexa2TetraTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "IdentityTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "Mesh2PointTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "Quad2TriangleTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "SimpleTesselatedHexaTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "SimpleTesselatedTetraTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "SubsetTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "Tetra2TriangleTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+    { "Triangle2EdgeTopologicalMapping", CreatableMoved("v22.06", "SofaTopologicalMapping", "Sofa.Component.Topology.Mapping") },
+
+    // SofaMiscMapping was deprecated in #2612
+    { "TopologicalChangeProcessor", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Topology.Utility") },
+    { "TopologyBoundingTrasher", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Topology.Utility") },
+    { "TopologyChecker", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Topology.Utility") },
 };
 
 } // namespace sofa::helper::lifecycle

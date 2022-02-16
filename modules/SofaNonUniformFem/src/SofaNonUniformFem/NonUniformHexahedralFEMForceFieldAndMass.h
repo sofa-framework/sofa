@@ -24,15 +24,8 @@
 #include <SofaNonUniformFem/config.h>
 
 #include <SofaGeneralSimpleFem/HexahedralFEMForceFieldAndMass.h>
+#include <SofaNonUniformFem/MultilevelHexahedronSetTopologyContainer.h>
 #include <sofa/core/topology/TopologyChange.h>
-
-namespace sofa::component::topology
-{
-
-    class MultilevelHexahedronSetTopologyContainer;
-class MultilevelModification;
-
-} // namespace sofa::component::topology
 
 namespace sofa::component::forcefield
 {
