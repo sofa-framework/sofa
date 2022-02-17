@@ -44,7 +44,7 @@ class TriangleIncisionInformation;
 /** Read file containing topological modification. Or apply input modifications
  * A timestep has to be established for each modification.
  *
- * SIMPLE METHODE FOR THE MOMENT. DON'T HANDLE MULTIPLE TOPOLOGIES
+ * SIMPLE METHOD FOR THE MOMENT. DON'T HANDLE MULTIPLE TOPOLOGIES
 */
 class SOFA_COMPONENT_TOPOLOGY_UTILITY_API TopologicalChangeProcessor: public core::objectmodel::BaseObject
 {
@@ -64,6 +64,7 @@ public:
     // Inputs for operations on Data
     Data <bool> m_useDataInputs; ///< If true, will perform operation using Data input lists rather than text file.
     Data <double> m_timeToRemove; ///< If using option useDataInputs, time at which will be done the operations. Possibility to use the interval Data also.
+    Data <sofa::type::vector<Index> > m_pointsToRemove; ///< List of point IDs to be removed.
     Data <sofa::type::vector<Index> > m_edgesToRemove; ///< List of edge IDs to be removed.
     Data <sofa::type::vector<Index> > m_trianglesToRemove; ///< List of triangle IDs to be removed.
     Data <sofa::type::vector<Index> > m_quadsToRemove; ///< List of quad IDs to be removed.

@@ -492,4 +492,10 @@ void PointSetTopologyModifier::notifyEndingEvent()
     propagateTopologicalChanges();
 }
 
+void PointSetTopologyModifier::removeItems(const sofa::type::vector<PointID>& indices)
+{
+    auto copy = indices;
+    removePoints(copy);
+}
+
 } //namespace sofa::component::topology::container::dynamic

@@ -124,8 +124,7 @@ public:
 
     /** \brief Generic method to remove a list of items.
     */
-    void removeItems(const sofa::type::vector<  PointID  >& /*items*/) override
-    { }
+    void removeItems(const sofa::type::vector<  PointID  >& /*items*/) override;
 
 protected:
     /** \brief Sends a message to warn that some points were added in this topology.
