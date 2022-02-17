@@ -114,11 +114,8 @@ set(SOURCE_FILES
 
     ### Mappings
     sofa/gpu/cuda/CudaBarycentricMapping-3f.cpp
-    sofa/gpu/cuda/CudaBarycentricMapping-3f1-3f.cpp
-    sofa/gpu/cuda/CudaBarycentricMapping-3f1-d.cpp
-    sofa/gpu/cuda/CudaBarycentricMapping-3f1-f.cpp
     sofa/gpu/cuda/CudaBarycentricMapping-3f1.cpp
-    sofa/gpu/cuda/CudaBarycentricMapping-f.cpp
+    sofa/gpu/cuda/CudaBarycentricMapping-3f1-3f.cpp
     sofa/gpu/cuda/CudaBarycentricMapping.cpp
     sofa/gpu/cuda/CudaBarycentricMappingRigid.cpp
     sofa/gpu/cuda/CudaIdentityMapping.cpp

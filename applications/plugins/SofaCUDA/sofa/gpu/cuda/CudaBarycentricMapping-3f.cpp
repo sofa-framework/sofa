@@ -255,7 +255,8 @@ void BarycentricMapperMeshTopology<CudaVec3fTypes,CudaVec3fTypes>::resize( core:
 
 // Instantiations involving only CudaVec3fTypes
 template class SOFA_GPU_CUDA_API BarycentricMapping< CudaVec3fTypes, CudaVec3fTypes>;
-
+template class SOFA_GPU_CUDA_API BarycentricMapping< CudaVec3fTypes, Vec3Types>;
+template class SOFA_GPU_CUDA_API BarycentricMapping< Vec3Types, CudaVec3fTypes>;
 
 } // namespace sofa::component::mapping::linear
 
@@ -267,8 +268,10 @@ using namespace sofa::core;
 using namespace sofa::core::behavior;
 using namespace sofa::component::mapping;
 
-int BarycentricMappingCudaClass_3f = core::RegisterObject("Supports GPU-side computations using CUDA")
+const int BarycentricMappingCudaClass_3f = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< BarycentricMapping< CudaVec3fTypes, CudaVec3fTypes> >()
+        .add< BarycentricMapping< CudaVec3fTypes, Vec3Types> >()
+        .add< BarycentricMapping< Vec3Types, CudaVec3fTypes> >()
         ;
 
 } // namespace sofa::gpu::cuda
