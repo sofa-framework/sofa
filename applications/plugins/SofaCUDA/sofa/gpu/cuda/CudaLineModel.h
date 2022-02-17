@@ -27,6 +27,9 @@
 namespace sofa::gpu::cuda
 {
 
+SOFA_CUDA_ATTRIBUTE_DEPRECATED("v22.06 (PR #2673)", "CudaLineCollisionModel")
+CudaDeprecatedAndRemoved CudaLineModel;
+
 using CudaLineCollisionModel = sofa::component::collision::LineCollisionModel<CudaVec3Types>;
 using CudaLineCollisionModelf1 = sofa::component::collision::LineCollisionModel<CudaVec3f1Types>;
 
