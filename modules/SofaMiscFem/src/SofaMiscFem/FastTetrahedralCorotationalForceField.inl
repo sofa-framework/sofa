@@ -283,16 +283,10 @@ void FastTetrahedralCorotationalForceField<DataTypes>::computeQRRotation( Mat3x3
     // second vector in the plane of the two first edges
     // third vector orthogonal to first and second
 
-    Coord edgex = dp[0];
-    edgex.normalize();
-
-    Coord edgey = dp[1];
-
-    Coord edgez = cross( edgex, edgey );
-    edgez.normalize();
-
-    edgey = cross( edgez, edgex );
-    edgey.normalize();
+    const Coord edgex = dp[0].normalized();
+          Coord edgey = dp[1];
+    const Coord edgez = cross( edgex, edgey ).normalized();
+                edgey = cross( edgez, edgex ); //edgey is unit vector because edgez and edgex are orthogonal unit vectors
 
     r[0][0] = edgex[0];
     r[0][1] = edgex[1];

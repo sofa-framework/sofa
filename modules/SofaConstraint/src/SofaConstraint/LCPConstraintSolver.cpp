@@ -29,6 +29,10 @@
 #include <sofa/helper/ScopedAdvancedTimer.h>
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/fwd.h>
+
+#include <sofa/simulation/mechanicalvisitor/MechanicalGetConstraintInfoVisitor.h>
+using sofa::simulation::mechanicalvisitor::MechanicalGetConstraintInfoVisitor;
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
@@ -58,20 +62,13 @@ bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams
 
     msg_info() <<" propagate DXn performed - collision called" ;
 
-    time = 0.0;
-    timeTotal=0.0;
-    timeScale = 1000.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
+    helper::ScopedAdvancedTimer resetContactForceTimer("resetContactForce");
 
     for (auto cc : constraintCorrections)
     {
         cc->resetContactForce();
     }
 
-    if ( displayTime.getValue() )
-    {
-        time = (double) timer.getTime();
-        timeTotal = (double) timerTotal.getTime();
-    }
     return true;
 }
 
@@ -84,22 +81,15 @@ bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/
 
     if(build_lcp.getValue())
     {
-        build_LCP();
+        helper::ScopedAdvancedTimer buildTimer("build_LCP");
 
-        if ( displayTime.getValue() )
-        {
-            dmsg_info()<<" build_LCP " << ( (double) timer.getTime() - time)*timeScale<<" ms";
-            time = (double) timer.getTime();
-        }
+        build_LCP();
     }
     else
     {
+        helper::ScopedAdvancedTimer buildTimer("build_problem");
+
         build_problem_info();
-        if ( displayTime.getValue() )
-        {
-            dmsg_info()<<" build_problem " << ( (double) timer.getTime() - time)*timeScale<<" ms";
-            time = (double) timer.getTime();
-        }
     }
     return true;
 }
@@ -187,12 +177,6 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
         }
     }
 
-    if ( displayTime.getValue() )
-    {
-        msg_info() <<" TOTAL solve_LCP " <<( (double) timer.getTime() - time)*timeScale<<" ms" ;
-        time = (double) timer.getTime();
-    }
-
     f_graph.endEdit();
     return true;
 }
@@ -216,15 +200,11 @@ bool LCPConstraintSolver::applyCorrection(const core::ConstraintParams * /*cPara
 
     dmsg_info() <<"applyContactForce in constraintCorrection done" ;
 
-    dmsg_info() <<" TotalTime "
-                <<( (double) timerTotal.getTime() - timeTotal)*timeScale <<" ms" ;
-
     return true;
 }
 
 LCPConstraintSolver::LCPConstraintSolver()
     : displayDebug(initData(&displayDebug, false, "displayDebug","Display debug information."))
-    , displayTime(initData(&displayTime, false, "displayTime","Display time for each important step of LCPConstraintSolver."))
     , initial_guess(initData(&initial_guess, true, "initial_guess","activate LCP results history to improve its resolution performances."))
     , build_lcp(initData(&build_lcp, true, "build_lcp", "LCP is not fully built to increase performance in some case."))
     , tol( initData(&tol, 0.001, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
@@ -725,30 +705,34 @@ void LCPConstraintSolver::build_problem_info()
     // as _Wdiag is a sparse matrix resize do not allocate memory
     _Wdiag->resize(_numConstraints,_numConstraints);
 
-    sofa::helper::AdvancedTimer::stepBegin("Get Constraint Value");
-    MechanicalGetConstraintViolationVisitor(&cparams, _dFree).execute(context);
-    sofa::helper::AdvancedTimer::stepEnd  ("Get Constraint Value");
+    {
+        helper::ScopedAdvancedTimer getConstraintValueTimer("Get Constraint Value");
+        MechanicalGetConstraintViolationVisitor(&cparams, _dFree).execute(context);
+    }
 
     dmsg_info() <<"LCPConstraintSolver: "<<_numConstraints<<" constraints, mu = "<<_mu;
 
-    int nLevels = 1;
-    if (multi_grid.getValue())
     {
-        nLevels = multi_grid_levels.getValue();
-        if (nLevels < 2) nLevels = 2;
-    }
-    hierarchy_constraintBlockInfo.resize(nLevels);
-    hierarchy_constraintIds.resize(nLevels);
-    hierarchy_constraintPositions.resize(nLevels);
-    hierarchy_constraintDirections.resize(nLevels);
-    hierarchy_constraintAreas.resize(nLevels);
-    for (int l=0; l<nLevels; ++l)
-    {
-        hierarchy_constraintBlockInfo[l].clear();
-        hierarchy_constraintIds[l].clear();
-        hierarchy_constraintPositions[l].clear();
-        hierarchy_constraintDirections[l].clear();
-        hierarchy_constraintAreas[l].clear();
+        helper::ScopedAdvancedTimer buildHierarchyTimer("Build Hierarchy");
+        int nLevels = 1;
+        if (multi_grid.getValue())
+        {
+            nLevels = multi_grid_levels.getValue();
+            if (nLevels < 2) nLevels = 2;
+        }
+        hierarchy_constraintBlockInfo.resize(nLevels);
+        hierarchy_constraintIds.resize(nLevels);
+        hierarchy_constraintPositions.resize(nLevels);
+        hierarchy_constraintDirections.resize(nLevels);
+        hierarchy_constraintAreas.resize(nLevels);
+        for (int l=0; l<nLevels; ++l)
+        {
+            hierarchy_constraintBlockInfo[l].clear();
+            hierarchy_constraintIds[l].clear();
+            hierarchy_constraintPositions[l].clear();
+            hierarchy_constraintDirections[l].clear();
+            hierarchy_constraintAreas[l].clear();
+        }
     }
 
     if ((initial_guess.getValue() || multi_grid.getValue() || showLevels.getValue()) && (_numConstraints != 0))
@@ -843,14 +827,6 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
     if(!_numConstraints)
         return 0;
 
-    double time = 0.0;
-    double timeScale = 1000.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
-    if ( displayTime.getValue() )
-    {
-        time = (double) helper::system::thread::CTime::getTime();
-    }
-
-
     if(_mu==0.0)
     {
         msg_error() << "frictionless case with unbuilt nlcp is not implemented";
@@ -862,6 +838,9 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
         msg_error() << "dim should be dividable by 3 in nlcp_gaussseidel";
         return 0;
     }
+
+    sofa::helper::advancedtimer::stepBegin("build_constraints");
+
     int numContacts =  _numConstraints/3;
 
     int it,c1;
@@ -894,13 +873,9 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
         }
     }
 
-    if ( displayTime.getValue() )
-    {
-        dmsg_info() << " build_constraints " << ( (double) timer.getTime() - time)*timeScale<<" ms" ;
-        time = (double) timer.getTime();
-    }
+    sofa::helper::advancedtimer::stepEnd("build_constraints");
 
-
+    auto linkConstraintTimer = std::make_unique<sofa::helper::ScopedAdvancedTimer>("link_constraints");
 
     //////// Important component if the LCP is not build :
     // for each contact, the pair of constraint correction that is involved with the contact is memorized
@@ -958,12 +933,8 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
     unbuilt_d.resize(_numConstraints);
     double *d = &(unbuilt_d[0]);
 
-    if ( displayTime.getValue() )
-    {
-        msg_info()<<" link_constraints " << ( (double) timer.getTime() - time)*timeScale<<" ms";
-        time = (double) timer.getTime();
-    }
-
+    linkConstraintTimer.reset();
+    auto buildDiagonalTimer = std::make_unique<sofa::helper::ScopedAdvancedTimer>("build_diagonal");
 
     //////////////
     // Beginning of iterative computations
@@ -1014,11 +985,9 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
     dmsg_info() <<" Compliance In constraint Space : \n W ="<<(* _W)<<msgendl
                 <<"getBlockDiagonalCompliance   \n Wdiag = "<<(* _Wdiag) ;
 
-    if (displayTime.getValue())
-    {
-        dmsg_info() <<" build_diagonal " << ( (double) timer.getTime() - time)*timeScale<<" ms" ;
-        time = (double) timer.getTime();
-    }
+    buildDiagonalTimer.reset();
+
+    helper::ScopedAdvancedTimer gaussSeidelTimer("GAUSS_SEIDEL");
 
     double error = 0;
     double dn, dt, ds, fn, ft, fs, fn0;
@@ -1097,9 +1066,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
 
         if (error < _tol*(numContacts+1))
         {
-            msg_info_when(displayTime.getValue()) << "convergence after "<<it<<" iterations - error"<<error<<msgendl
-                                                  <<" GAUSS_SEIDEL iterations  " << ( (double) timer.getTime() - time)*timeScale<<" ms";
-
+            msg_info() << "convergence after "<<it<<" iterations - error " << error;
 
             sofa::helper::AdvancedTimer::valSet("GS iterations", it+1);
             return 1;
@@ -1108,9 +1075,6 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
     }
 
     sofa::helper::AdvancedTimer::valSet("GS iterations", it);
-
-    msg_info_when( displayTime.getValue() ) <<" GAUSS_SEIDEL iterations  "
-                                           << ( (double) timer.getTime() - time)*timeScale<<" ms" ;
 
     msg_warning() << "No convergence in unbuilt nlcp gaussseidel function : error ="
                 <<error <<" after "<< it<<" iterations";
@@ -1129,14 +1093,7 @@ int LCPConstraintSolver::gaussseidel_unbuilt(double *dfree, double *f, std::vect
 
 int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* /*residuals*/)
 {
-    double time = 0.0;
-    double timeScale = 1.0;
-    if ( displayTime.getValue() )
-    {
-        time = (double) helper::system::thread::CTime::getTime();
-        timeScale = 1000.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
-    }
-
+    auto buildConstraintsTimer = std::make_unique<sofa::helper::ScopedAdvancedTimer>("build_constraints");
 
     if(_mu!=0.0)
     {
@@ -1166,13 +1123,8 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
         cc->resetForUnbuiltResolution(f, contact_sequence);
     }
 
-    if ( displayTime.getValue() )
-    {
-        msg_info() << " build_constraints " << ( (double) timer.getTime() - time)*timeScale<<" ms" ;
-        time = (double) timer.getTime();
-    }
-
-
+    buildConstraintsTimer.reset();
+    auto linkConstraintsTimer = std::make_unique<sofa::helper::ScopedAdvancedTimer>("link_constraints");
 
     //////// Important component if the LCP is not build :
     // for each contact, the pair of constraint correction that is involved with the contact is memorized
@@ -1227,11 +1179,8 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
     unbuilt_d.resize(_numConstraints);
     double *d = &(unbuilt_d[0]);
 
-    if ( displayTime.getValue() )
-    {
-        msg_info() <<" link_constraints " << ( (double) timer.getTime() - time)*timeScale<<" ms" ;
-        time = (double) timer.getTime();
-    }
+    linkConstraintsTimer.reset();
+    auto buildDiagonalTimer = std::make_unique<sofa::helper::ScopedAdvancedTimer>("build_diagonal");
 
     //////////////
     // Beginning of iterative computations
@@ -1260,11 +1209,8 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
         W11[c1] = _Wdiag->element(c1, c1);
     }
 
-    if ( displayTime.getValue() )
-    {
-        msg_info() <<" build_diagonal " << ( (double) timer.getTime() - time)*timeScale<<" ms" ;
-        time = (double) timer.getTime();
-    }
+    buildDiagonalTimer.reset();
+    sofa::helper::ScopedAdvancedTimer gaussSeidelTimer("GAUSS_SEIDEL");
 
     double error = 0;
     double dn, fn, fn0;
@@ -1323,20 +1269,12 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
 
         if (error < _tol*(numContacts+1))
         {
-            if ( displayTime.getValue() )
-            {
-                msg_info() <<"convergence after "<<it<<" iterations - error = "<<error << msgendl
-                           <<" GAUSS_SEIDEL iterations  " << ( (double) timer.getTime() - time)*timeScale<<" ms" ;
-            }
+            msg_info()<<"convergence after "<<it<<" iterations - error = " << error;
             sofa::helper::AdvancedTimer::valSet("GS iterations", it+1);
 
             return 1;
         }
     }
-
-    msg_info_when(displayTime.getValue()) <<" GAUSS_SEIDEL iterations "
-                                         << ( (double) timer.getTime() - time)*timeScale<<" ms" ;
-
 
     sofa::helper::AdvancedTimer::valSet("GS iterations", it);
 

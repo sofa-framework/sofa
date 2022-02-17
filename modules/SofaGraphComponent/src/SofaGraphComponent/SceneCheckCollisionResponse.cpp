@@ -67,6 +67,7 @@ void SceneCheckCollisionResponse::doCheckOn(Node* node)
         {
             const std::string response = contactManager[0]->response.getValue().getSelectedItem();
 
+            /// If StickContactConstraint is chosen, make sure the scene includes a FreeMotionAnimationLoop and a GenericConstraintSolver (specifically)
             if ( response == "StickContactConstraint" )
             {
                 sofa::core::behavior::BaseAnimationLoop* animationLoop;
@@ -83,7 +84,7 @@ void SceneCheckCollisionResponse::doCheckOn(Node* node)
                     m_message <<"A GenericConstraintSolver must be in the scene to solve StickContactConstraint" << msgendl;
                 }
             }
-            /// If StickContactConstraint is chosen, make sure the scene includes a FreeMotionAnimationLoop and a GenericConstraintSolver (specifically)
+            /// If FrictionContactConstraint is chosen, make sure the scene includes a FreeMotionAnimationLoop
             else if ( response == "FrictionContactConstraint")
             {
                 sofa::core::behavior::BaseAnimationLoop* animationLoop;

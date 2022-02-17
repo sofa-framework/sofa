@@ -100,7 +100,6 @@ ConstraintSolver::SPtr createConstraintSolver(OdeSolver* solver1, OdeSolver* sol
         if (auto* lcp2 = dynamic_cast<constraintset::LCPConstraintSolver*>(csolver2))
         {
             constraintset::LCPConstraintSolver::SPtr newSolver = sofa::core::objectmodel::New<constraintset::LCPConstraintSolver>();
-            newSolver->displayTime.setValue(lcp1->displayTime.getValue() | lcp2->displayTime.getValue());
             newSolver->initial_guess.setValue(lcp1->initial_guess.getValue() | lcp2->initial_guess.getValue());
             newSolver->build_lcp.setValue(lcp1->build_lcp.getValue() | lcp2->build_lcp.getValue());
             newSolver->tol.setValue(lcp1->tol.getValue() < lcp2->tol.getValue() ? lcp1->tol.getValue() : lcp2->tol.getValue() );

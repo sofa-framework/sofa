@@ -12,29 +12,13 @@ set(SOURCE_FILES
 	${SOFAMISCTOPOLOGY_SRC}/initSofaMiscTopology.cpp
 )
 
-list(APPEND HEADER_FILES
-	${SOFAMISCTOPOLOGY_SRC}/TopologicalChangeProcessor.h
-	${SOFAMISCTOPOLOGY_SRC}/TopologyChecker.h
-    ${SOFAMISCTOPOLOGY_SRC}/TopologyBoundingTrasher.h
-    ${SOFAMISCTOPOLOGY_SRC}/TopologyBoundingTrasher.inl
-)
-list(APPEND SOURCE_FILES
-	${SOFAMISCTOPOLOGY_SRC}/TopologicalChangeProcessor.cpp
-	${SOFAMISCTOPOLOGY_SRC}/TopologyChecker.cpp
-    ${SOFAMISCTOPOLOGY_SRC}/TopologyBoundingTrasher.cpp
-)
-
-sofa_find_package(SofaBase REQUIRED) # SofaBaseTopology
-sofa_find_package(ZLIB BOTH_SCOPES)
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
-if(ZLIB_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC ZLIB::ZLIB)
-    if(CMAKE_SYSTEM_NAME STREQUAL Windows)
-        sofa_install_libraries(TARGETS ZLIB::ZLIB)
-    endif()
-endif()
+
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.Topology.Utility instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.Topology.Utility REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Topology.Utility)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

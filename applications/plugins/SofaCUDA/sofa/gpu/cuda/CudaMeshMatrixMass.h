@@ -47,22 +47,22 @@ public:
 };
 
 template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes, float>::copyVertexMass();
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes>::copyVertexMass();
 
 template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes, float>::addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes>::addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
 
 template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes, float>::addForce(const core::MechanicalParams*, DataVecDeriv& /*vf*/, const DataVecCoord& /* */, const DataVecDeriv& /* */);
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes>::addForce(const core::MechanicalParams*, DataVecDeriv& /*vf*/, const DataVecCoord& /* */, const DataVecDeriv& /* */);
 
 template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes, float>::accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f);
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes>::accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f);
 
 
 
 
 template<>
-class MeshMatrixMassInternalData<CudaVec2fTypes,float>
+class MeshMatrixMassInternalData<CudaVec2fTypes, float>
 {
 public:
     /// Cuda vector copying the vertex mass (enabling deviceRead)
@@ -73,22 +73,22 @@ public:
 };
 
 template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>::copyVertexMass();
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes>::copyVertexMass();
 
 template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>::addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes>::addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
 
 template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>::addForce(const core::MechanicalParams*, DataVecDeriv& /*vf*/, const DataVecCoord& /* */, const DataVecDeriv& /* */);
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes>::addForce(const core::MechanicalParams*, DataVecDeriv& /*vf*/, const DataVecCoord& /* */, const DataVecDeriv& /* */);
 
 template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>::accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f);
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes>::accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f);
 
 
 
 
 template<>
-class MeshMatrixMassInternalData<CudaVec1fTypes,float>
+class MeshMatrixMassInternalData<CudaVec1fTypes, float>
 {
 public:
     /// Cuda vector copying the vertex mass (enabling deviceRead)
@@ -99,27 +99,27 @@ public:
 };
 
 template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>::copyVertexMass();
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes>::copyVertexMass();
 
 template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>::addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes>::addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
 
 template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>::addForce(const core::MechanicalParams*, DataVecDeriv& /*vf*/, const DataVecCoord& /* */, const DataVecDeriv& /* */);
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes>::addForce(const core::MechanicalParams*, DataVecDeriv& /*vf*/, const DataVecCoord& /* */, const DataVecDeriv& /* */);
 
 template<>
-void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>::accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f);
+void MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes>::accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f);
 
 
 #ifndef SOFA_GPU_CUDA_CUDAMESHMATRIXMASS_CPP
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes, float>;
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>;
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes, float>;
+template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes>;
+template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1fTypes>;
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec3dTypes, double>;
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec2dTypes, double>;
-template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1dTypes, double>;
+template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec2dTypes>;
+template class SOFA_GPU_CUDA_API MeshMatrixMass<sofa::gpu::cuda::CudaVec1dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 #endif //SOFA_GPU_CUDA_CUDAMESHMATRIXMASS_CPP

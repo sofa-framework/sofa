@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_COLLISION_DISTANCEGRIDCOLLISIONMODEL_CPP
 #include <fstream>
 #include <sstream>
-
+#include <SofaDistanceGrid/config.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>

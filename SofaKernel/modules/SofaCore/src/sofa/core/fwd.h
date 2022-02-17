@@ -191,7 +191,7 @@ namespace sofa::core
 template<class Source>
 sofa::core::objectmodel::Base* castToBase(Source*b){ return b; }
 
-/// Dynamic cast from Base* into the type parameter Des
+/// Dynamic cast from Base* into the type parameter Dest
 template<class Dest>
 Dest castTo(sofa::core::objectmodel::Base* base){ return dynamic_cast<Dest>(base); }
 

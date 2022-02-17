@@ -28,10 +28,11 @@
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa
-{
+namespace sofa::core::objectmodel {
+    template class sofa::core::objectmodel::SingleLink< sofa::simulation::DefaultVisualManagerLoop, simulation::Node, BaseLink::FLAG_STOREPATH>;
+}
 
-namespace simulation
+namespace sofa::simulation
 {
 
 int DefaultVisualManagerLoopClass = core::RegisterObject("The simplest Visual Loop Manager, created by default when user do not put on scene")
@@ -40,9 +41,9 @@ int DefaultVisualManagerLoopClass = core::RegisterObject("The simplest Visual Lo
 
 DefaultVisualManagerLoop::DefaultVisualManagerLoop(simulation::Node* _gnode)
     : Inherit()
-    , gRoot(_gnode)
+    , l_node(initLink("targetNode","Link to the scene's node where the rendering will take place"))
 {
-    //assert(gRoot);
+    l_node.set(_gnode);
 }
 
 DefaultVisualManagerLoop::~DefaultVisualManagerLoop()
@@ -52,28 +53,28 @@ DefaultVisualManagerLoop::~DefaultVisualManagerLoop()
 
 void DefaultVisualManagerLoop::init()
 {
-    if (!gRoot)
-        gRoot = dynamic_cast<simulation::Node*>(this->getContext());
+    if (!l_node)
+        l_node = dynamic_cast<simulation::Node*>(this->getContext());
 }
 
 
 void DefaultVisualManagerLoop::initStep(sofa::core::ExecParams* params)
 {
-    if ( !gRoot ) return;
-    gRoot->execute<VisualInitVisitor>(params);
+    if ( !l_node ) return;
+    l_node->execute<VisualInitVisitor>(params);
     // Do a visual update now as it is not done in load() anymore
     /// \todo Separate this into another method?
-    gRoot->execute<VisualUpdateVisitor>(params);
+    l_node->execute<VisualUpdateVisitor>(params);
 }
 
 void DefaultVisualManagerLoop::updateStep(sofa::core::ExecParams* params)
 {
-    if ( !gRoot ) return;
+    if ( !l_node ) return;
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("UpdateVisual");
 #endif
 
-    gRoot->execute<VisualUpdateVisitor>(params);
+    l_node->execute<VisualUpdateVisitor>(params);
     
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("UpdateVisual");
@@ -83,26 +84,26 @@ void DefaultVisualManagerLoop::updateStep(sofa::core::ExecParams* params)
 void DefaultVisualManagerLoop::updateContextStep(sofa::core::visual::VisualParams* vparams)
 {
     UpdateVisualContextVisitor vis(vparams);
-    vis.execute(gRoot);
+    vis.execute(l_node);
 }
 
 void DefaultVisualManagerLoop::drawStep(sofa::core::visual::VisualParams* vparams)
 {
-    if ( !gRoot ) return;
-    if (gRoot->visualManager.empty())
+    if ( !l_node ) return;
+    if (l_node->visualManager.empty())
     {
         vparams->pass() = sofa::core::visual::VisualParams::Std;
         VisualDrawVisitor act ( vparams );
         act.setTags(this->getTags());
-        gRoot->execute ( &act );
+        l_node->execute ( &act );
         vparams->pass() = sofa::core::visual::VisualParams::Transparent;
         VisualDrawVisitor act2 ( vparams );
         act2.setTags(this->getTags());
-        gRoot->execute ( &act2 );
+        l_node->execute ( &act2 );
     }
     else
     {
-        Node::Sequence<core::visual::VisualManager>::iterator begin = gRoot->visualManager.begin(), end = gRoot->visualManager.end(), it;
+        Node::Sequence<core::visual::VisualManager>::iterator begin = l_node->visualManager.begin(), end = l_node->visualManager.end(), it;
         for (it = begin; it != end; ++it)
             (*it)->preDrawScene(vparams);
         bool rendered = false; // true if a manager did the rendering
@@ -118,13 +119,13 @@ void DefaultVisualManagerLoop::drawStep(sofa::core::visual::VisualParams* vparam
 
             VisualDrawVisitor act ( vparams );
             act.setTags(this->getTags());
-            gRoot->execute ( &act );
+            l_node->execute ( &act );
             vparams->pass() = sofa::core::visual::VisualParams::Transparent;
             VisualDrawVisitor act2 ( vparams );
             act2.setTags(this->getTags());
-            gRoot->execute ( &act2 );
+            l_node->execute ( &act2 );
         }
-        Node::Sequence<core::visual::VisualManager>::reverse_iterator rbegin = gRoot->visualManager.rbegin(), rend = gRoot->visualManager.rend(), rit;
+        Node::Sequence<core::visual::VisualManager>::reverse_iterator rbegin = l_node->visualManager.rbegin(), rend = l_node->visualManager.rend(), rit;
         for (rit = rbegin; rit != rend; ++rit)
             (*rit)->postDrawScene(vparams);
     }
@@ -133,8 +134,8 @@ void DefaultVisualManagerLoop::drawStep(sofa::core::visual::VisualParams* vparam
 void DefaultVisualManagerLoop::computeBBoxStep(sofa::core::visual::VisualParams* vparams, SReal* minBBox, SReal* maxBBox, bool init)
 {
     VisualComputeBBoxVisitor act(vparams);
-    if ( gRoot )
-        gRoot->execute ( act );
+    if ( l_node )
+        l_node->execute ( act );
 
     if (init)
     {
@@ -160,8 +161,5 @@ simulation::Node* DefaultVisualManagerLoop::getNodeFromContext(BaseContext* cont
 {
     return dynamic_cast<simulation::Node*>(context);
 }
-
-
-} // namespace simulation
 
 } // namespace sofa

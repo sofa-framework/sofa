@@ -76,7 +76,7 @@ using namespace gpu::cuda;
 
 // -- Mass interface
 template <>
-void UniformMass<CudaVec3fTypes, float>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor)
+void UniformMass<CudaVec3fTypes>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
@@ -87,7 +87,7 @@ void UniformMass<CudaVec3fTypes, float>::addMDx(const core::MechanicalParams* /*
 }
 
 template <>
-void UniformMass<CudaVec3fTypes, float>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_a, const DataVecDeriv& d_f)
+void UniformMass<CudaVec3fTypes>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_a, const DataVecDeriv& d_f)
 {
     VecDeriv& a = *d_a.beginEdit();
     const VecDeriv& f = d_f.getValue();
@@ -98,7 +98,7 @@ void UniformMass<CudaVec3fTypes, float>::accFromF(const core::MechanicalParams* 
 }
 
 template <>
-void UniformMass<CudaVec3fTypes, float>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/)
+void UniformMass<CudaVec3fTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/)
 {
     VecDeriv& f = *d_f.beginEdit();
     //const VecCoord& x = d_x.getValue();
@@ -115,7 +115,7 @@ void UniformMass<CudaVec3fTypes, float>::addForce(const core::MechanicalParams* 
 }
 
 template <>
-void UniformMass<CudaVec3f1Types, float>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor)
+void UniformMass<CudaVec3f1Types>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
@@ -126,7 +126,7 @@ void UniformMass<CudaVec3f1Types, float>::addMDx(const core::MechanicalParams* /
 }
 
 template <>
-void UniformMass<CudaVec3f1Types, float>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_a, const DataVecDeriv& d_f)
+void UniformMass<CudaVec3f1Types>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_a, const DataVecDeriv& d_f)
 {
     VecDeriv& a = *d_a.beginEdit();
     const VecDeriv& f = d_f.getValue();
@@ -137,7 +137,7 @@ void UniformMass<CudaVec3f1Types, float>::accFromF(const core::MechanicalParams*
 }
 
 template <>
-void UniformMass<CudaVec3f1Types, float>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/)
+void UniformMass<CudaVec3f1Types>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/)
 {
     VecDeriv& f = *d_f.beginEdit();
     //const VecCoord& x = d_x.getValue();
@@ -154,7 +154,7 @@ void UniformMass<CudaVec3f1Types, float>::addForce(const core::MechanicalParams*
 }
 
 template<>
-void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::RigidMass<3,float> >::addMDx(const core::MechanicalParams * /*mparams*/, DataVecDeriv &f, const DataVecDeriv &dx, SReal factor)
+void UniformMass<gpu::cuda::CudaRigid3fTypes>::addMDx(const core::MechanicalParams * /*mparams*/, DataVecDeriv &f, const DataVecDeriv &dx, SReal factor)
 {
         VecDeriv& _f = *f.beginEdit();
         const VecDeriv& _dx = dx.getValue();
@@ -169,7 +169,7 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::RigidMass<3,flo
 }
 
 template<>
-void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::RigidMass<3,float> >::accFromF(const core::MechanicalParams * /*mparams*/, DataVecDeriv &a, const DataVecDeriv &f)
+void UniformMass<gpu::cuda::CudaRigid3fTypes>::accFromF(const core::MechanicalParams * /*mparams*/, DataVecDeriv &a, const DataVecDeriv &f)
 {
         VecDeriv& _a = *a.beginEdit();
         VecDeriv _f = f.getValue();
@@ -180,7 +180,7 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::RigidMass<3,flo
 }
 
 template<>
-void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::RigidMass<3,float> >::addForce(const core::MechanicalParams * /*mparams*/, DataVecDeriv &f, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/)
+void UniformMass<gpu::cuda::CudaRigid3fTypes>::addForce(const core::MechanicalParams * /*mparams*/, DataVecDeriv &f, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/)
 {
 
         VecDeriv& _f = *f.beginEdit();
@@ -196,7 +196,7 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::RigidMass<3,flo
 
 
 template <>
-SReal UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::RigidMass<3,float> >::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& d_x) const
+SReal UniformMass<gpu::cuda::CudaRigid3fTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& d_x) const
 {
     const VecCoord& x = d_x.getValue();
 
@@ -211,13 +211,13 @@ SReal UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::RigidMass<3,flo
 }
 
 template <>
-SReal UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::RigidMass<3,float> >::getElementMass(sofa::Index) const
+SReal UniformMass<gpu::cuda::CudaRigid3fTypes>::getElementMass(sofa::Index) const
 {
     return (SReal)(d_vertexMass.getValue().mass);
 }
 
 template <>
-void UniformMass<gpu::cuda::CudaRigid3fTypes, defaulttype::RigidMass<3,float> >::draw(const core::visual::VisualParams* vparams)
+void UniformMass<gpu::cuda::CudaRigid3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
 #if SOFACUDA_HAVE_SOFA_GL == 1
     if (!vparams->displayFlags().getShowBehaviorModels())
@@ -251,7 +251,7 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes, defaulttype::RigidMass<3,float> >:
 
 // -- Mass interface
 template <>
-void UniformMass<CudaVec3dTypes, double>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor)
+void UniformMass<CudaVec3dTypes>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
@@ -262,7 +262,7 @@ void UniformMass<CudaVec3dTypes, double>::addMDx(const core::MechanicalParams* /
 }
 
 template <>
-void UniformMass<CudaVec3dTypes, double>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_a, const DataVecDeriv& d_f)
+void UniformMass<CudaVec3dTypes>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_a, const DataVecDeriv& d_f)
 {
     VecDeriv& a = *d_a.beginEdit();
     const VecDeriv& f = d_f.getValue();
@@ -273,7 +273,7 @@ void UniformMass<CudaVec3dTypes, double>::accFromF(const core::MechanicalParams*
 }
 
 template <>
-void UniformMass<CudaVec3dTypes, double>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/)
+void UniformMass<CudaVec3dTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/)
 {
     VecDeriv& f = *d_f.beginEdit();
     //const VecCoord& x = d_x.getValue();
@@ -308,7 +308,7 @@ void UniformMass<CudaVec3dTypes, double>::addForce(const core::MechanicalParams*
 // }
 
 template <>
-void UniformMass<CudaVec3d1Types, double>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor)
+void UniformMass<CudaVec3d1Types>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
@@ -319,7 +319,7 @@ void UniformMass<CudaVec3d1Types, double>::addMDx(const core::MechanicalParams* 
 }
 
 template <>
-void UniformMass<CudaVec3d1Types, double>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_a, const DataVecDeriv& d_f)
+void UniformMass<CudaVec3d1Types>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_a, const DataVecDeriv& d_f)
 {
     VecDeriv& a = *d_a.beginEdit();
     const VecDeriv& f = d_f.getValue();
@@ -330,7 +330,7 @@ void UniformMass<CudaVec3d1Types, double>::accFromF(const core::MechanicalParams
 }
 
 template <>
-void UniformMass<CudaVec3d1Types, double>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/)
+void UniformMass<CudaVec3d1Types>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /*d_x*/, const DataVecDeriv& /*d_v*/)
 {
     VecDeriv& f = *d_f.beginEdit();
     //const VecCoord& x = d_x.getValue();
@@ -365,7 +365,7 @@ void UniformMass<CudaVec3d1Types, double>::addForce(const core::MechanicalParams
 // }
 
 template <>
-SReal UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::RigidMass<3,double> >::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& d_x) const
+SReal UniformMass<gpu::cuda::CudaRigid3dTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& d_x) const
 {
     const VecCoord& x = d_x.getValue();
 
@@ -380,13 +380,13 @@ SReal UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::RigidMass<3,dou
 }
 
 template <>
-SReal UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::RigidMass<3,double> >::getElementMass(sofa::Index) const
+SReal UniformMass<gpu::cuda::CudaRigid3dTypes>::getElementMass(sofa::Index) const
 {
     return (SReal)(d_vertexMass.getValue().mass);
 }
 
 template <>
-void UniformMass<gpu::cuda::CudaRigid3dTypes, sofa::defaulttype::RigidMass<3,double> >::draw(const core::visual::VisualParams* vparams )
+void UniformMass<gpu::cuda::CudaRigid3dTypes>::draw(const core::visual::VisualParams* vparams )
 {
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;

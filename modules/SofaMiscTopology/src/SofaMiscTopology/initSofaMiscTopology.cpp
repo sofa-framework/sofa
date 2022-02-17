@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <SofaMiscTopology/initSofaMiscTopology.h>
 
+#include <sofa/helper/system/PluginManager.h>
+
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
@@ -32,6 +34,10 @@ void initSofaMiscTopology()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaMiscTopology") << "SofaMiscTopology is deprecated. It will be removed at v23.06. Use Sofa.Component.Topology.Utility instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Topology.Utility");
+
         first = false;
     }
 }

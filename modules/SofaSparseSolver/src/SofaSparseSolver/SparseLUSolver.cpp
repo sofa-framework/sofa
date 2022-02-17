@@ -20,8 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_LINEARSOLVER_SPARSELUSOLVER_CPP
-#include <sofa/core/ObjectFactory.h>
+#include <SofaSparseSolver/config.h>
 #include <SofaSparseSolver/SparseLUSolver.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::linearsolver
 {
