@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaOpenglVisual/config.h>
+#include <sofa/gl/component/model/config.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/gl/component/model/OglSceneFrame.h>

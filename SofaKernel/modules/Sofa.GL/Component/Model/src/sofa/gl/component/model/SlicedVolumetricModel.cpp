@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #include <map>
-#include <SofaOpenglVisual/config.h>
+#include <sofa/gl/component/model/config.h>
 #include <sofa/gl/template.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -95,7 +95,7 @@ void SlicedVolumetricModel::init()
     }
 
 
-    if( auto* sparseGrid = dynamic_cast<sofa::component::topology::grid::SparseGridTopology*>(_topology ) )
+    if( auto* sparseGrid = dynamic_cast<sofa::component::topology::container::grid::SparseGridTopology*>(_topology ) )
     {
         _minBBox[0] = sparseGrid->getXmin();
         _minBBox[1] = sparseGrid->getYmin();
