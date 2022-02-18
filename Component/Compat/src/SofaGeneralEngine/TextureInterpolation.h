@@ -24,9 +24,9 @@
 
 // SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/engine/TextureInterpolation.h")
 
-namespace sofa::gl::component::engine
+namespace sofa::component::engine
 {
     template <class DataTypes>
-    using TextureInterpolation = sofa::component::visual::TextureInterpolation<DataTypes>;
+    using TextureInterpolation = sofa::gl::component::engine::TextureInterpolation<DataTypes>;
 
-} // namespace sofa::gl::component::engine
+} // namespace sofa::component::engine
