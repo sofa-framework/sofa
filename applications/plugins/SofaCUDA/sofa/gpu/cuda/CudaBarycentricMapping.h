@@ -28,6 +28,8 @@
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperSparseGridTopology.h>
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.h>
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
+#include <SofaBaseTopology/RegularGridTopology.h>
+#include <SofaBaseTopology/SparseGridTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
 namespace sofa
