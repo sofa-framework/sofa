@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_H
-#define SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_H
+#pragma once
+
 #include <sofa/component/linearsolver/direct/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
@@ -32,13 +32,7 @@
 #include <cmath>
 #include <csparse.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver::direct
 {
 
 /// Direct linear solver based on Sparse Cholesky factorization, implemented with the CSPARSE library
@@ -76,11 +70,4 @@ extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseCholeskySolve
 extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseCholeskySolver< sofa::linearalgebra::CompressedRowSparseMatrix<float>, sofa::linearalgebra::FullVector<float> >;
 #endif
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-
-#endif
+} // namespace sofa::component::linearsolver::direct
