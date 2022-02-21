@@ -12,20 +12,6 @@ set(SOURCE_FILES
     ${SOFAGENERALLINEARSOLVER_SRC}/initSofaGeneralLinearSolver.cpp
     )
 
-list(APPEND HEADER_FILES
-    ${SOFAGENERALLINEARSOLVER_SRC}/BTDLinearSolver.h
-    ${SOFAGENERALLINEARSOLVER_SRC}/BTDLinearSolver.inl
-    ${SOFAGENERALLINEARSOLVER_SRC}/CholeskySolver.h
-    ${SOFAGENERALLINEARSOLVER_SRC}/CholeskySolver.inl
-    ${SOFAGENERALLINEARSOLVER_SRC}/MinResLinearSolver.h
-    ${SOFAGENERALLINEARSOLVER_SRC}/MinResLinearSolver.inl
-    )
-list(APPEND SOURCE_FILES
-    ${SOFAGENERALLINEARSOLVER_SRC}/BTDLinearSolver.cpp
-    ${SOFAGENERALLINEARSOLVER_SRC}/CholeskySolver.cpp
-    ${SOFAGENERALLINEARSOLVER_SRC}/MinResLinearSolver.cpp
-    )
-
 sofa_find_package(SofaBase REQUIRED)
 sofa_find_package(SofaFramework REQUIRED) # SofaSimulationCore
 

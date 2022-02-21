@@ -14,25 +14,8 @@ set(SOURCE_FILES
 
 # Sources
 list(APPEND HEADER_FILES
-    ${SRC_ROOT}/BlockJacobiPreconditioner.h
-    ${SRC_ROOT}/BlockJacobiPreconditioner.inl
-    ${SRC_ROOT}/JacobiPreconditioner.h
-    ${SRC_ROOT}/JacobiPreconditioner.inl
-    ${SRC_ROOT}/PrecomputedWarpPreconditioner.h
-    ${SRC_ROOT}/PrecomputedWarpPreconditioner.inl
-    ${SRC_ROOT}/SSORPreconditioner.h
-    ${SRC_ROOT}/SSORPreconditioner.inl
-    ${SRC_ROOT}/ShewchukPCGLinearSolver.h
-    ${SRC_ROOT}/WarpPreconditioner.h
-    ${SRC_ROOT}/WarpPreconditioner.inl
     )
 list(APPEND SOURCE_FILES
-    ${SRC_ROOT}/BlockJacobiPreconditioner.cpp
-    ${SRC_ROOT}/JacobiPreconditioner.cpp
-    ${SRC_ROOT}/PrecomputedWarpPreconditioner.cpp
-    ${SRC_ROOT}/SSORPreconditioner.cpp
-    ${SRC_ROOT}/ShewchukPCGLinearSolver.cpp
-    ${SRC_ROOT}/WarpPreconditioner.cpp
     )
 
 # Dependencies
