@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaDenseSolver/SVDLinearSolver.h>
+#include <sofa/component/linearsolver/direct/SVDLinearSolver.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/linearalgebra/FullMatrix.h>

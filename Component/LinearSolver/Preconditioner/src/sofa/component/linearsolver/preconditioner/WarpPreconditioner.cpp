@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaPreconditioner/WarpPreconditioner.inl>
+#include <sofa/component/linearsolver/preconditioner/WarpPreconditioner.inl>
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/LinearSolver.h>

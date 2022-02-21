@@ -3,7 +3,7 @@ project(Sofa.Component.LinearSolver LANGUAGES CXX)
 
 set(SOFACOMPONENTLINEARSOLVER_SOURCE_DIR "src/sofa/component/linearsolver")
 
-set(SOFACOMPONENTLINEARSOLVER_DIRS Direct Iterative Preconditioner)
+set(SOFACOMPONENTLINEARSOLVER_DIRS Iterative Direct Preconditioner)
 set(SOFACOMPONENTLINEARSOLVER_TARGETS)
 foreach(linearsolver_dir ${SOFACOMPONENTLINEARSOLVER_DIRS})
     sofang_add_component_subdirectory(${linearsolver_dir} ${PROJECT_NAME}.${linearsolver_dir})

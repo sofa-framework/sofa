@@ -20,10 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaDenseSolver/config.h>
+#include <sofa/component/linearsolver/direct/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 
 namespace sofa::component::linearsolver
 {
@@ -38,7 +38,7 @@ namespace sofa::component::linearsolver
   */
 
 template<class TMatrix, class TVector>
-class SOFA_SOFADENSESOLVER_API SVDLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
+class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SVDLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(SVDLinearSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));

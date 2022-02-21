@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_LINEARSOLVER_PRECOMPUTEDLINEARSOLVER_CPP
 
-#include <SofaSparseSolver/PrecomputedLinearSolver.inl>
+#include <sofa/component/linearsolver/direct/PrecomputedLinearSolver.inl>
 
 namespace sofa
 {
@@ -38,7 +38,7 @@ int PrecomputedLinearSolverClass = core::RegisterObject("Linear system solver ba
         .add< PrecomputedLinearSolver< CompressedRowSparseMatrix<SReal> , FullVector<SReal> > >()
         ;
 
-template class SOFA_SOFASPARSESOLVER_API PrecomputedLinearSolver< CompressedRowSparseMatrix<SReal> , FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API PrecomputedLinearSolver< CompressedRowSparseMatrix<SReal> , FullVector<SReal> >;
 
 } // namespace linearsolver
 

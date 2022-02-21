@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralLinearSolver/MinResLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/MinResLinearSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/linearalgebra/FullMatrix.h>
 #include <sofa/linearalgebra/SparseMatrix.h>

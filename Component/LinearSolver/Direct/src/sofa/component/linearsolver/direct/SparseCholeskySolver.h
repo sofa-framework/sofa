@@ -21,10 +21,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_H
 #define SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_H
-#include <SofaSparseSolver/config.h>
+#include <sofa/component/linearsolver/direct/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
@@ -72,8 +72,8 @@ public :
 };
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_CPP)
-extern template class SOFA_SOFASPARSESOLVER_API SparseCholeskySolver< sofa::linearalgebra::CompressedRowSparseMatrix<double>, sofa::linearalgebra::FullVector<double> >;
-extern template class SOFA_SOFASPARSESOLVER_API SparseCholeskySolver< sofa::linearalgebra::CompressedRowSparseMatrix<float>, sofa::linearalgebra::FullVector<float> >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseCholeskySolver< sofa::linearalgebra::CompressedRowSparseMatrix<double>, sofa::linearalgebra::FullVector<double> >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseCholeskySolver< sofa::linearalgebra::CompressedRowSparseMatrix<float>, sofa::linearalgebra::FullVector<float> >;
 #endif
 
 } // namespace linearsolver

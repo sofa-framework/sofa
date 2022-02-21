@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_WARPPRECONDITIONER_INL
 #define SOFA_COMPONENT_LINEARSOLVER_WARPPRECONDITIONER_INL
 
-#include <SofaPreconditioner/WarpPreconditioner.h>
+#include <sofa/component/linearsolver/preconditioner/WarpPreconditioner.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/core/objectmodel/BaseContext.h>

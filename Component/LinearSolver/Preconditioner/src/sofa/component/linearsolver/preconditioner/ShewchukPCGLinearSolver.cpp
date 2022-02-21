@@ -21,13 +21,13 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/LinearSolver.h>
-#include <SofaPreconditioner/ShewchukPCGLinearSolver.h>
+#include <sofa/component/linearsolver/preconditioner/ShewchukPCGLinearSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>

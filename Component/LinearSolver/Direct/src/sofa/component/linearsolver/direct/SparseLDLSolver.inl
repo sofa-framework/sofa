@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SparseLDLSolver_INL
 #define SOFA_COMPONENT_LINEARSOLVER_SparseLDLSolver_INL
 
-#include <SofaSparseSolver/SparseLDLSolver.h>
+#include <sofa/component/linearsolver/direct/SparseLDLSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include "sofa/helper/system/thread/CTime.h"

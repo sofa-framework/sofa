@@ -20,8 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_LINEARSOLVER_SPARSELUSOLVER_CPP
-#include <SofaSparseSolver/config.h>
-#include <SofaSparseSolver/SparseLUSolver.inl>
+#include <sofa/component/linearsolver/direct/config.h>
+#include <sofa/component/linearsolver/direct/SparseLUSolver.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::linearsolver
@@ -33,7 +33,7 @@ int SparseLUSolverClass = core::RegisterObject("Direct linear solver based on Sp
         .add< SparseLUSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >()
         ;
 
-template class SOFA_SOFASPARSESOLVER_API SparseLUSolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
+template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseLUSolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
 
 } // namespace sofa::component::linearsolver
 

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaPreconditioner/SSORPreconditioner.inl>
+#include <sofa/component/linearsolver/preconditioner/SSORPreconditioner.inl>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 

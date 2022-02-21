@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #pragma once
-#include <SofaSparseSolver/FillReducingOrdering.h>
+#include <sofa/component/linearsolver/direct/FillReducingOrdering.h>
 
 namespace sofa::component::engine
 {

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseLinearSolver/config.h>
+#include <sofa/component/linearsolver/iterative/config.h>
 
 #include <sofa/simulation/fwd.h>
 #include <sofa/core/behavior/MultiVec.h>
@@ -40,7 +40,7 @@ public:
     MultExpr(T1& a, T2& b) : a(a), b(b) {}
 };
 
-class SOFA_SOFABASELINEARSOLVER_API GraphScatteredMatrix
+class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API GraphScatteredMatrix
 {
 public:
     typedef SReal Real;
@@ -67,7 +67,7 @@ public:
     static const char* Name() { return "GraphScattered"; }
 };
 
-class SOFA_SOFABASELINEARSOLVER_API GraphScatteredVector : public sofa::core::behavior::MultiVecDeriv
+class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API GraphScatteredVector : public sofa::core::behavior::MultiVecDeriv
 {
 public:
     typedef sofa::core::behavior::MultiVecDeriv Inherit;

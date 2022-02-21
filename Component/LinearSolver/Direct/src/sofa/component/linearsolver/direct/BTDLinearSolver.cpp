@@ -21,12 +21,12 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_LINEARSOLVER_BTDLINEARSOLVER_CPP
 
-#include <SofaGeneralLinearSolver/BTDLinearSolver.inl>
+#include <sofa/component/linearsolver/direct/BTDLinearSolver.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/linearalgebra/BTDMatrix.inl>
 #include <sofa/linearalgebra/BlocFullMatrix.inl>
 #include <sofa/linearalgebra/BlockVector.inl>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.inl>
 
 namespace sofa::component::linearsolver
 {
@@ -35,6 +35,6 @@ int BTDLinearSolverClass = core::RegisterObject("Linear system solver using Thom
     .add< BTDLinearSolver<linearalgebra::BTDMatrix<6, SReal>, linearalgebra::BlockVector<6, SReal> > >(true)
 ;
 
-template class SOFA_SOFAGENERALLINEARSOLVER_API BTDLinearSolver< linearalgebra::BTDMatrix<6, SReal>, linearalgebra::BlockVector<6, SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API BTDLinearSolver< linearalgebra::BTDMatrix<6, SReal>, linearalgebra::BlockVector<6, SReal> >;
 
 } //namespace sofa::component::linearsolver

@@ -21,10 +21,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_BLOCKJACOBIPRECONDITIONER_H
 #define SOFA_COMPONENT_LINEARSOLVER_BLOCKJACOBIPRECONDITIONER_H
-#include <SofaPreconditioner/config.h>
+#include <sofa/component/linearsolver/preconditioner/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/linearalgebra/DiagonalMatrix.h>

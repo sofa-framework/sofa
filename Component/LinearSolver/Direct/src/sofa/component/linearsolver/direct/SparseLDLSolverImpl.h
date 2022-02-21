@@ -21,10 +21,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVERIMPL_H
 #define SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVERIMPL_H
-#include <SofaSparseSolver/config.h>
+#include <sofa/component/linearsolver/direct/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 
 extern "C" {
 #include <metis.h>

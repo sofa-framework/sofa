@@ -21,10 +21,10 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_PrecomputedLinearSolver_H
 #define SOFA_COMPONENT_LINEARSOLVER_PrecomputedLinearSolver_H
-#include <SofaSparseSolver/config.h>
+#include <sofa/component/linearsolver/direct/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/linearalgebra/FullMatrix.h>
@@ -134,7 +134,7 @@ private :
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_PRECOMPUTEDLINEARSOLVER_CPP)
-extern template class SOFA_SOFASPARSESOLVER_API PrecomputedLinearSolver< linearalgebra::CompressedRowSparseMatrix<SReal> , linearalgebra::FullVector<SReal> >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API PrecomputedLinearSolver< linearalgebra::CompressedRowSparseMatrix<SReal> , linearalgebra::FullVector<SReal> >;
 #endif
 
 } // namespace linearsolver

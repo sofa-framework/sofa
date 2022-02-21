@@ -21,11 +21,11 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_PPRECOMPUTEDWARPPRECONDITIONER_H
 #define SOFA_COMPONENT_LINEARSOLVER_PPRECOMPUTEDWARPPRECONDITIONER_H
-#include <SofaPreconditioner/config.h>
+#include <sofa/component/linearsolver/preconditioner/config.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/LinearSolver.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <sofa/linearalgebra/FullMatrix.h>

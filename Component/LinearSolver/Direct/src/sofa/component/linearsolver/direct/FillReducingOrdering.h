@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <SofaSparseSolver/config.h>
+#include <sofa/component/linearsolver/direct/config.h>
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -92,6 +92,6 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_FillReducingOrdering_CPP)
-    extern template class SOFA_SOFASPARSESOLVER_API FillReducingOrdering<defaulttype::Vec3Types>;
+    extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API FillReducingOrdering<defaulttype::Vec3Types>;
 #endif
 }// sofa::component::engine

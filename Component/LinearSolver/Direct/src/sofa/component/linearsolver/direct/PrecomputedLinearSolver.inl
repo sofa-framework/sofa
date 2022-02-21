@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_PRECOMPUTEDLINEARSOLVER_INL
 #define SOFA_COMPONENT_COLLISION_PRECOMPUTEDLINEARSOLVER_INL
 
-#include <SofaSparseSolver/PrecomputedLinearSolver.h>
+#include <sofa/component/linearsolver/direct/PrecomputedLinearSolver.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
@@ -32,19 +32,17 @@
 #include <cmath>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/behavior/LinearSolver.h>
 
 #include <sofa/core/behavior/OdeSolver.h>
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
 
-#if SOFASPARSESOLVER_HAVE_CSPARSE
-#include <SofaSparseSolver/SparseCholeskySolver.h>
+#if SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE
+#include <sofa/component/linearsolver/direct/SparseCholeskySolver.h>
 #endif
 
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
-#include <SofaGeneralLinearSolver/CholeskySolver.h>
 
 namespace sofa
 {

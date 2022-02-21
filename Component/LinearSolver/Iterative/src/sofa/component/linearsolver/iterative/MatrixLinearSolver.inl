@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalGetConstraintJacobianVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalGetConstraintJacobianVisitor;

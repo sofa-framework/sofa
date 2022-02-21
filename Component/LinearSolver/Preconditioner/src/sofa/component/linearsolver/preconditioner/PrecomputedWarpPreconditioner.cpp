@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaPreconditioner/PrecomputedWarpPreconditioner.inl>
+#include <sofa/component/linearsolver/preconditioner/PrecomputedWarpPreconditioner.inl>
 
 namespace sofa
 {

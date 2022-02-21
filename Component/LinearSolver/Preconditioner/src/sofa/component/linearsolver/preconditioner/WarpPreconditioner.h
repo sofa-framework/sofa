@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_WARPPRECONDITIONER_H
 #define SOFA_COMPONENT_LINEARSOLVER_WARPPRECONDITIONER_H
-#include <SofaPreconditioner/config.h>
+#include <sofa/component/linearsolver/preconditioner/config.h>
 
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/core/behavior/LinearSolver.h>
@@ -31,7 +31,7 @@
 #include <cmath>
 #include <sofa/linearalgebra/RotationMatrix.h>
 #include <sofa/core/behavior/BaseRotationFinder.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 
 #include <map>
 

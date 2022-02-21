@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaPreconditioner/BlockJacobiPreconditioner.inl>
+#include <sofa/component/linearsolver/preconditioner/BlockJacobiPreconditioner.inl>
 
 namespace sofa
 {

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseLinearSolver/GraphScatteredTypes.h>
+#include <sofa/component/linearsolver/iterative/GraphScatteredTypes.h>
 
 #include <sofa/simulation/MechanicalOperations.h>
 

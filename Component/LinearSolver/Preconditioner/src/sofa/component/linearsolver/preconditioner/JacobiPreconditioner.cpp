@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaPreconditioner/JacobiPreconditioner.inl>
+#include <sofa/component/linearsolver/preconditioner/JacobiPreconditioner.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

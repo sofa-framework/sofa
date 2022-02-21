@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseLinearSolver/config.h>
+#include <sofa/component/linearsolver/iterative/config.h>
 
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/linearalgebra/BaseMatrix.h>
@@ -30,7 +30,7 @@ namespace sofa::component::linearsolver
 
 /** Special case to access a single square matrix.
 */
-class SOFA_SOFABASELINEARSOLVER_API SingleMatrixAccessor : public core::behavior::MultiMatrixAccessor
+class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API SingleMatrixAccessor : public core::behavior::MultiMatrixAccessor
 {
 public:
     typedef linearalgebra::BaseMatrix BaseMatrix;

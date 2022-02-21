@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseLinearSolver/config.h>
+#include <sofa/component/linearsolver/iterative/config.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <vector>
 #include <map>
@@ -40,7 +40,7 @@ namespace sofa::component::linearsolver
  * see all scenes in example/Component/linearsolver/MatrixContribution*  for tests
  *
  * */
-class SOFA_SOFABASELINEARSOLVER_API DefaultMultiMatrixAccessor : public sofa::core::behavior::MultiMatrixAccessor
+class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API DefaultMultiMatrixAccessor : public sofa::core::behavior::MultiMatrixAccessor
 {
 public:
     DefaultMultiMatrixAccessor();

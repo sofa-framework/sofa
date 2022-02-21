@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_CPP
-#include <SofaSparseSolver/SparseCholeskySolver.h>
+#include <sofa/component/linearsolver/direct/SparseCholeskySolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -119,7 +119,7 @@ int SparseCholeskySolverClass = core::RegisterObject("Direct linear solver based
         .add< SparseCholeskySolver< CompressedRowSparseMatrix<float>,FullVector<float> > >()
         ;
 
-template class SOFA_SOFASPARSESOLVER_API SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
-template class SOFA_SOFASPARSESOLVER_API SparseCholeskySolver< CompressedRowSparseMatrix<float>,FullVector<float> >;
+template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
+template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseCholeskySolver< CompressedRowSparseMatrix<float>,FullVector<float> >;
 
 } // namespace sofa::component::linearsolver

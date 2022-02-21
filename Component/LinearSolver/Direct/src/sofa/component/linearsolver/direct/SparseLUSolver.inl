@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SparseLUSolver_INL
 #define SOFA_COMPONENT_LINEARSOLVER_SparseLUSolver_INL
 
-#include <SofaSparseSolver/SparseLUSolver.h>
+#include <sofa/component/linearsolver/direct/SparseLUSolver.h>
 
 namespace sofa
 {

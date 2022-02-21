@@ -21,9 +21,9 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SparseLUSolver_H
 #define SOFA_COMPONENT_LINEARSOLVER_SparseLUSolver_H
-#include <SofaSparseSolver/config.h>
+#include <sofa/component/linearsolver/direct/config.h>
 
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <csparse.h>
 
 namespace sofa::component::linearsolver
@@ -82,7 +82,7 @@ protected :
 };
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSELUSOLVER_CPP)
-    extern template class SOFA_SOFASPARSESOLVER_API SparseLUSolver< sofa::linearalgebra::CompressedRowSparseMatrix< double>, sofa::linearalgebra::FullVector<double> >;
+    extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseLUSolver< sofa::linearalgebra::CompressedRowSparseMatrix< double>, sofa::linearalgebra::FullVector<double> >;
 #endif
 
 } // namespace sofa::component::linearsolver

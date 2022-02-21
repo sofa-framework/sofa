@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseLinearSolver/config.h>
+#include <sofa/component/linearsolver/iterative/config.h>
 
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/behavior/LinearSolver.h>
-#include <SofaBaseLinearSolver/GraphScatteredTypes.h>
+#include <sofa/component/linearsolver/iterative/GraphScatteredTypes.h>
 #include <sofa/linearalgebra/FullVector.h>
 #include <sofa/linearalgebra/FullMatrix.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
@@ -36,9 +36,9 @@
 #include <sofa/linearalgebra/RotationMatrix.h>
 
 #if SOFABASELINEARSOLVER_ENABLE_CRSMULTIMATRIXACCESSOR
-#include <SofaBaseLinearSolver/CRSMultiMatrixAccessor.h>
+#include <sofa/component/linearsolver/iterative/CRSMultiMatrixAccessor.h>
 #else
-#include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
+#include <sofa/component/linearsolver/iterative/DefaultMultiMatrixAccessor.h>
 #endif // SOFABASELINEARSOLVER_ENABLE_CRSMULTIMATRIXACCESSOR
 
 namespace sofa::component::linearsolver
@@ -374,89 +374,89 @@ public:
     void deleteTempVector(GraphScatteredVector* v) { delete v; }
 };
 
-template<> SOFA_SOFABASELINEARSOLVER_API
+template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::resetSystem();
 
-template<> SOFA_SOFABASELINEARSOLVER_API
+template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::resizeSystem(Size);
 
-template<> SOFA_SOFABASELINEARSOLVER_API
+template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::setSystemMBKMatrix(const core::MechanicalParams* mparams);
 
-template<> SOFA_SOFABASELINEARSOLVER_API
+template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::rebuildSystem(SReal massFactor, SReal forceFactor);
 
-template<> SOFA_SOFABASELINEARSOLVER_API
+template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::setSystemRHVector(core::MultiVecDerivId v);
 
-template<> SOFA_SOFABASELINEARSOLVER_API
+template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::setSystemLHVector(core::MultiVecDerivId v);
 
-template<> SOFA_SOFABASELINEARSOLVER_API
+template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::solveSystem();
 
-template<> SOFA_SOFABASELINEARSOLVER_API
+template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 GraphScatteredVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::createPersistentVector();
 
-template<> SOFA_SOFABASELINEARSOLVER_API
+template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 linearalgebra::BaseMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemBaseMatrix();
 
-template<> SOFA_SOFABASELINEARSOLVER_API
+template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 const core::behavior::MultiMatrixAccessor* MatrixLinearSolver<GraphScatteredMatrix, GraphScatteredVector, NoThreadManager>::getSystemMultiMatrixAccessor() const;
 
-template<> SOFA_SOFABASELINEARSOLVER_API
+template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 linearalgebra::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemRHBaseVector();
 
-template<> SOFA_SOFABASELINEARSOLVER_API
+template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 linearalgebra::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getSystemLHBaseVector();
 
-template<> SOFA_SOFABASELINEARSOLVER_API
+template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::setSystemMatrix(GraphScatteredMatrix * matrix);
 
-template<> SOFA_SOFABASELINEARSOLVER_API
+template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::applyConstraintForce(const sofa::core::ConstraintParams* /*cparams*/, sofa::core::MultiVecDerivId /*dx*/, const linearalgebra::BaseVector* /*f*/);
 
-template<> SOFA_SOFABASELINEARSOLVER_API
+template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::computeResidual(const core::ExecParams* params,linearalgebra::BaseVector* f);
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_CPP)
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< GraphScatteredMatrix, GraphScatteredVector, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< GraphScatteredMatrix, GraphScatteredVector, NoThreadManager >;
 /// Extern template declarations don't prevent implicit instanciation in the case
 /// of explicitely specialized classes.  (See section 14.3.7 of the C++ standard
 /// [temp.expl.spec]). We have to declare non-specialized member functions by
 /// hand to prevent MSVC from complaining that it doesn't find their definition.
-extern template SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::MatrixLinearSolver();
-extern template SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::~MatrixLinearSolver();
-extern template SOFA_SOFABASELINEARSOLVER_API void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::invertSystem();
-extern template SOFA_SOFABASELINEARSOLVER_API bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::addJMInvJt(linearalgebra::BaseMatrix*, linearalgebra::BaseMatrix*, SReal);
-extern template SOFA_SOFABASELINEARSOLVER_API bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::addMInvJt(linearalgebra::BaseMatrix*, linearalgebra::BaseMatrix*, SReal);
-extern template SOFA_SOFABASELINEARSOLVER_API bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::addJMInvJtLocal(GraphScatteredMatrix*, ResMatrixType*, const JMatrixType*, SReal);
-extern template SOFA_SOFABASELINEARSOLVER_API bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::addMInvJtLocal(GraphScatteredMatrix*, ResMatrixType*, const  JMatrixType*, SReal);
-extern template SOFA_SOFABASELINEARSOLVER_API bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::buildComplianceMatrix(const core::ConstraintParams*, linearalgebra::BaseMatrix*, SReal);
-extern template SOFA_SOFABASELINEARSOLVER_API MatrixInvertData* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getMatrixInvertData(linearalgebra::BaseMatrix * m);
-extern template SOFA_SOFABASELINEARSOLVER_API MatrixInvertData* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::createInvertData();
+extern template SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::MatrixLinearSolver();
+extern template SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::~MatrixLinearSolver();
+extern template SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::invertSystem();
+extern template SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::addJMInvJt(linearalgebra::BaseMatrix*, linearalgebra::BaseMatrix*, SReal);
+extern template SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::addMInvJt(linearalgebra::BaseMatrix*, linearalgebra::BaseMatrix*, SReal);
+extern template SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::addJMInvJtLocal(GraphScatteredMatrix*, ResMatrixType*, const JMatrixType*, SReal);
+extern template SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::addMInvJtLocal(GraphScatteredMatrix*, ResMatrixType*, const  JMatrixType*, SReal);
+extern template SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API bool MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::buildComplianceMatrix(const core::ConstraintParams*, linearalgebra::BaseMatrix*, SReal);
+extern template SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixInvertData* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::getMatrixInvertData(linearalgebra::BaseMatrix * m);
+extern template SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixInvertData* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector,NoThreadManager>::createInvertData();
 
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< linearalgebra::FullMatrix<double>, linearalgebra::FullVector<double>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< linearalgebra::FullMatrix<float>, linearalgebra::FullVector<float>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< linearalgebra::SparseMatrix<double>, linearalgebra::FullVector<double>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< linearalgebra::SparseMatrix<float>, linearalgebra::FullVector<float>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<double>, linearalgebra::FullVector<double>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<float>, linearalgebra::FullVector<float>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<2,2,double> >, linearalgebra::FullVector<double>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<2,2,float> >, linearalgebra::FullVector<float>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,double> >, linearalgebra::FullVector<double>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,float> >, linearalgebra::FullVector<float>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<4,4,double> >, linearalgebra::FullVector<double>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<4,4,float> >, linearalgebra::FullVector<float>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<6,6,double> >, linearalgebra::FullVector<double>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<6,6,float> >, linearalgebra::FullVector<float>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<8,8,double> >, linearalgebra::FullVector<double>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<8,8,float> >, linearalgebra::FullVector<float>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< linearalgebra::DiagonalMatrix<double>, linearalgebra::FullVector<double>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< linearalgebra::DiagonalMatrix<float>, linearalgebra::FullVector<float>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< linearalgebra::BlockDiagonalMatrix<3,double>, linearalgebra::FullVector<double>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< linearalgebra::RotationMatrix<double>, linearalgebra::FullVector<double>, NoThreadManager >;
-extern template class SOFA_SOFABASELINEARSOLVER_API MatrixLinearSolver< linearalgebra::RotationMatrix<float>, linearalgebra::FullVector<float>, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::FullMatrix<double>, linearalgebra::FullVector<double>, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::FullMatrix<float>, linearalgebra::FullVector<float>, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::SparseMatrix<double>, linearalgebra::FullVector<double>, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::SparseMatrix<float>, linearalgebra::FullVector<float>, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<double>, linearalgebra::FullVector<double>, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<float>, linearalgebra::FullVector<float>, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<2,2,double> >, linearalgebra::FullVector<double>, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<2,2,float> >, linearalgebra::FullVector<float>, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,double> >, linearalgebra::FullVector<double>, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,float> >, linearalgebra::FullVector<float>, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<4,4,double> >, linearalgebra::FullVector<double>, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<4,4,float> >, linearalgebra::FullVector<float>, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<6,6,double> >, linearalgebra::FullVector<double>, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<6,6,float> >, linearalgebra::FullVector<float>, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<8,8,double> >, linearalgebra::FullVector<double>, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<8,8,float> >, linearalgebra::FullVector<float>, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::DiagonalMatrix<double>, linearalgebra::FullVector<double>, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::DiagonalMatrix<float>, linearalgebra::FullVector<float>, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::BlockDiagonalMatrix<3,double>, linearalgebra::FullVector<double>, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::RotationMatrix<double>, linearalgebra::FullVector<double>, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::RotationMatrix<float>, linearalgebra::FullVector<float>, NoThreadManager >;
 #endif
 
 

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 
 #include <sofa/helper/AdvancedTimer.h>

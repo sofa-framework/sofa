@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_BLOCKJACOBIPRECONDITIONER_INL
 #define SOFA_COMPONENT_LINEARSOLVER_BLOCKJACOBIPRECONDITIONER_INL
 
-#include <SofaPreconditioner/BlockJacobiPreconditioner.h>
+#include <sofa/component/linearsolver/preconditioner/BlockJacobiPreconditioner.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SSORPRECONDITIONER_INL
 #define SOFA_COMPONENT_LINEARSOLVER_SSORPRECONDITIONER_INL
-#include <SofaPreconditioner/SSORPreconditioner.h>
+#include <sofa/component/linearsolver/preconditioner/SSORPreconditioner.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>

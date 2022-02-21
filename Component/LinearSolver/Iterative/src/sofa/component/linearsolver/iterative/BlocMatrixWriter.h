@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseLinearSolver/config.h>
+#include <sofa/component/linearsolver/iterative/config.h>
 
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <sofa/linearalgebra/matrix_bloc_traits.h>

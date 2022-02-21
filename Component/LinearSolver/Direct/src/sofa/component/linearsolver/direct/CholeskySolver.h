@@ -20,10 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralLinearSolver/config.h>
+#include <sofa/component/linearsolver/direct/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/linearalgebra/FullMatrix.h>
@@ -61,8 +61,8 @@ private :
 };
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_CHOLESKYSOLVER_CPP)
-extern template class SOFA_SOFAGENERALLINEARSOLVER_API CholeskySolver< linearalgebra::SparseMatrix<double>, linearalgebra::FullVector<double> >;
-extern template class SOFA_SOFAGENERALLINEARSOLVER_API CholeskySolver< linearalgebra::FullMatrix<double>, linearalgebra::FullVector<double> >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API CholeskySolver< linearalgebra::SparseMatrix<double>, linearalgebra::FullVector<double> >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API CholeskySolver< linearalgebra::FullMatrix<double>, linearalgebra::FullVector<double> >;
 
 #endif
 

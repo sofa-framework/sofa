@@ -31,7 +31,7 @@
 #include <cmath>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/behavior/RotationFinder.h>
 #include <sofa/core/behavior/LinearSolver.h>
@@ -39,14 +39,10 @@
 #include <sofa/type/Quat.h>
 
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 
-#if SOFAPRECONDITIONER_HAVE_SOFASPARSESOLVER
-#include <SofaSparseSolver/SparseCholeskySolver.h>
+#include <sofa/component/linearsolver/direct/SparseCholeskySolver.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
-#else
-#include <SofaGeneralLinearSolver/CholeskySolver.h>
-#endif
 
 #include <sofa/simulation/Node.h>
 
@@ -205,7 +201,6 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
     }
 }
 
-#if SOFAPRECONDITIONER_HAVE_SOFASPARSESOLVER
 template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M)
 {
@@ -260,14 +255,6 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M
     tmpStr << "Precomputing constraint correction : " << std::fixed << 100.0f << " %" ;
     msg_info() << tmpStr.str();
 }
-#else
-template<class TDataTypes>
-void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& /*M*/)
-{
-    msg_warning("PrecomputedWarpPreconditioner") << "you don't have CS_parse CG will be use, (if also can specify solverName to accelerate the precomputation" ;
-    loadMatrixWithSolver();
-}
-#endif
 
 template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()

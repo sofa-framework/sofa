@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralLinearSolver/CholeskySolver.h>
+#include <sofa/component/linearsolver/direct/CholeskySolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
