@@ -21,8 +21,9 @@
 ******************************************************************************/
 #include <sofa/component/linearsolver/init.h>
 
-#include <sofa/component/linearsolver/direct/init.h>
 #include <sofa/component/linearsolver/iterative/init.h>
+#include <sofa/component/linearsolver/direct/init.h>
+#include <sofa/component/linearsolver/preconditioner/init.h>
 
 namespace sofa::component::linearsolver
 {
@@ -40,6 +41,7 @@ void initExternalModule()
         // force dependencies at compile-time
         sofa::component::linearsolver::direct::init();
         sofa::component::linearsolver::iterative::init();
+        sofa::component::linearsolver::preconditioner::init();
 
         first = false;
     }
