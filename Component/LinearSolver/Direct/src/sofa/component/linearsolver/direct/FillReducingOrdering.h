@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #pragma once
 
 #include <sofa/component/linearsolver/direct/config.h>
@@ -34,7 +33,7 @@ extern "C" {
 #include <metis.h>
 }
 
-namespace sofa::component::engine
+namespace sofa::component::linearsolver::direct
 {
 
 /**
@@ -92,6 +91,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_FillReducingOrdering_CPP)
-    extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API FillReducingOrdering<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API FillReducingOrdering<defaulttype::Vec3Types>;
 #endif
-}// sofa::component::engine
+
+}// namespace sofa::component::linearsolver::direct

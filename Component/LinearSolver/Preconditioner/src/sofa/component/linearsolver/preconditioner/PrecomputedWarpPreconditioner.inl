@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_PPRECOMPUTEDWARPPRECONDITIONER_INL
-#define SOFA_COMPONENT_LINEARSOLVER_PPRECOMPUTEDWARPPRECONDITIONER_INL
+#pragma once
 
 #include "PrecomputedWarpPreconditioner.h"
 #include <sofa/linearalgebra/SparseMatrix.h>
@@ -47,13 +46,7 @@
 #include <sofa/simulation/Node.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver::preconditioner
 {
 
 template<class TDataTypes>
@@ -215,7 +208,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M
     b.resize(systemSize);
     for (unsigned int j=0; j<systemSize; j++) b.set(j,0.0);
 
-    SparseCholeskySolver<CompressedRowSparseMatrix<Real>, FullVector<Real> > solver;
+    component::linearsolver::direct::SparseCholeskySolver<CompressedRowSparseMatrix<Real>, FullVector<Real> > solver;
 
     msg_info() << "Precomputing constraint correction LU decomposition " ;
     solver.invert(M);
@@ -282,7 +275,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     const sofa::type::Vec3d gravity_zero(0.0,0.0,0.0);
     this->getContext()->setGravity(gravity_zero);
 
-    CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* CGlinearSolver;
+    component::linearsolver::iterative::CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* CGlinearSolver;
     core::behavior::LinearSolver* linearSolver;
 
     if (solverName.getValue().empty())
@@ -294,7 +287,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
     {
         core::objectmodel::BaseObject* ptr = nullptr;
         this->getContext()->get(ptr, solverName.getValue());
-        CGlinearSolver = dynamic_cast<CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>*>(ptr);
+        CGlinearSolver = dynamic_cast<component::linearsolver::iterative::CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>*>(ptr);
         linearSolver = ptr->toLinearSolver();
     }
 
@@ -672,10 +665,4 @@ void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualP
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::linearsolver::preconditioner

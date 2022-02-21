@@ -19,14 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_SparseLUSolver_H
-#define SOFA_COMPONENT_LINEARSOLVER_SparseLUSolver_H
+#pragma once
 #include <sofa/component/linearsolver/direct/config.h>
 
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <csparse.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::direct
 {
 
 //defaut structure for a LU factorization
@@ -85,6 +84,4 @@ protected :
     extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseLUSolver< sofa::linearalgebra::CompressedRowSparseMatrix< double>, sofa::linearalgebra::FullVector<double> >;
 #endif
 
-} // namespace sofa::component::linearsolver
-
-#endif
+} // namespace sofa::component::linearsolver::direct

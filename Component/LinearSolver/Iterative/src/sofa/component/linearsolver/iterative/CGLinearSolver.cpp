@@ -30,7 +30,7 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalVMultiOpVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVMultiOpVisitor;
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::iterative
 {
 
 using namespace sofa::type;
@@ -90,4 +90,4 @@ template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< Compres
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<8,8,double> >, FullVector<double> >;
 
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::component::linearsolver::iterative

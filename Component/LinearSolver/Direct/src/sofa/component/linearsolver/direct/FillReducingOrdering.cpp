@@ -24,7 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::component::linearsolver::direct
 {
 
 using namespace sofa::defaulttype;
@@ -35,4 +35,4 @@ int FillReducingOrderingClass = core::RegisterObject("Reorder the degrees of fre
 
 template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API FillReducingOrdering<Vec3Types>;
 
-} //namespace sofa::component::engine
+} // namespace sofa::component::linearsolver::direct

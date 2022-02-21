@@ -24,8 +24,7 @@
 *   - jeremie.allard@insimo.fr (InSimo)
 *******************************************************************************/
 
-#ifndef SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_H
-#define SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_H
+#pragma once
 #include <sofa/component/linearsolver/direct/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
@@ -39,20 +38,20 @@
 #include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::direct
 {
 
 /// Direct linear solver based on Sparse LDL^T factorization, implemented with the CSPARSE library
 template<class TMatrix, class TVector, class TThreadManager = NoThreadManager>
-class SparseLDLSolver : public sofa::component::linearsolver::SparseLDLSolverImpl<TMatrix,TVector, TThreadManager>
+class SparseLDLSolver : public SparseLDLSolverImpl<TMatrix,TVector, TThreadManager>
 {
 public :
-    SOFA_CLASS(SOFA_TEMPLATE3(SparseLDLSolver,TMatrix,TVector,TThreadManager),SOFA_TEMPLATE3(sofa::component::linearsolver::SparseLDLSolverImpl,TMatrix,TVector,TThreadManager));
+    SOFA_CLASS(SOFA_TEMPLATE3(SparseLDLSolver,TMatrix,TVector,TThreadManager),SOFA_TEMPLATE3(SparseLDLSolverImpl,TMatrix,TVector,TThreadManager));
 
     typedef TMatrix Matrix;
     typedef TVector Vector;
     typedef typename Matrix::Real Real;
-    typedef sofa::component::linearsolver::SparseLDLSolverImpl<TMatrix,TVector,TThreadManager> Inherit;
+    typedef SparseLDLSolverImpl<TMatrix,TVector,TThreadManager> Inherit;
     typedef typename Inherit::ResMatrixType ResMatrixType;
     typedef typename Inherit::JMatrixType JMatrixType;
     typedef SparseLDLImplInvertData<type::vector<int>, type::vector<Real> > InvertData;
@@ -112,7 +111,4 @@ extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseLDLSolver< so
 
 #endif
 
-
-} // namespace sofa::component::linearsolver
-
-#endif
+} // namespace sofa::component::linearsolver::direct

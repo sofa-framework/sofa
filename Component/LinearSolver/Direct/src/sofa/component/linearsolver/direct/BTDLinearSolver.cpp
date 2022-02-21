@@ -28,7 +28,7 @@
 #include <sofa/linearalgebra/BlockVector.inl>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.inl>
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::direct
 {
 
 int BTDLinearSolverClass = core::RegisterObject("Linear system solver using Thomas Algorithm for Block Tridiagonal matrices")
@@ -37,4 +37,4 @@ int BTDLinearSolverClass = core::RegisterObject("Linear system solver using Thom
 
 template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API BTDLinearSolver< linearalgebra::BTDMatrix<6, SReal>, linearalgebra::BlockVector<6, SReal> >;
 
-} //namespace sofa::component::linearsolver
+} //namespace sofa::component::linearsolver::direct

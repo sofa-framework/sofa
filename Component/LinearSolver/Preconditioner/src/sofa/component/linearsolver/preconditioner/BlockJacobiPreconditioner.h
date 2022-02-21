@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_BLOCKJACOBIPRECONDITIONER_H
-#define SOFA_COMPONENT_LINEARSOLVER_BLOCKJACOBIPRECONDITIONER_H
+#pragma once
 #include <sofa/component/linearsolver/preconditioner/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
@@ -32,13 +31,7 @@
 
 #include <cmath>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver::preconditioner
 {
 
 template<class TVector>
@@ -78,10 +71,5 @@ public:
 
 };
 
-} // namespace linearsolver
+} // namespace sofa::component::linearsolver::preconditioner
 
-} // namespace component
-
-} // namespace sofa
-
-#endif

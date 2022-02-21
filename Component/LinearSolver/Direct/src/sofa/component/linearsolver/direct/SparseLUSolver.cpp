@@ -24,7 +24,7 @@
 #include <sofa/component/linearsolver/direct/SparseLUSolver.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::direct
 {
 
 using namespace sofa::linearalgebra;
@@ -35,5 +35,5 @@ int SparseLUSolverClass = core::RegisterObject("Direct linear solver based on Sp
 
 template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseLUSolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::component::linearsolver::direct
 

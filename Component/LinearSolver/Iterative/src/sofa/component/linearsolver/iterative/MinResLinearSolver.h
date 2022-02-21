@@ -28,7 +28,7 @@
 #include <cmath>
 
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::iterative
 {
 
 /// Linear system solver using the MINRES iterative algorithm
@@ -71,4 +71,4 @@ extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MinResLinearSolv
 extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MinResLinearSolver< CompressedRowSparseMatrix<type::Mat<8,8,SRreal> >, FullVector<SRreal> >;
 #endif
 
-} //namespace sofa::component::linearsolver
+} //namespace sofa::component::linearsolver::iterative

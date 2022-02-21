@@ -19,18 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_SparseLUSolver_INL
-#define SOFA_COMPONENT_LINEARSOLVER_SparseLUSolver_INL
+#pragma once
 
 #include <sofa/component/linearsolver/direct/SparseLUSolver.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver::direct
 {
 
 using namespace sofa::defaulttype;
@@ -91,10 +84,4 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
 }
 
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::linearsolver::direct

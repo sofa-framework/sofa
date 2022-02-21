@@ -24,7 +24,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::direct
 {
 
 using namespace sofa::defaulttype;
@@ -38,4 +38,4 @@ template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API CholeskySolver< SparseMatr
 template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API CholeskySolver< FullMatrix<double>, FullVector<double> >;
 
 
-} //namespace sofa::component::linearsolver
+} //namespace sofa::component::linearsolver::direct

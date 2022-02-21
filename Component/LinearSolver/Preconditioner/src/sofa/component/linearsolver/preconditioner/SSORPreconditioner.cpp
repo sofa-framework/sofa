@@ -24,13 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver::preconditioner
 {
 
 using namespace sofa::defaulttype;
@@ -47,9 +41,4 @@ int SSORPreconditionerClass = core::RegisterObject("Linear system solver / preco
         .addAlias("SSORSolver")
         ;
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::linearsolver::preconditioner

@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_PrecomputedLinearSolver_H
-#define SOFA_COMPONENT_LINEARSOLVER_PrecomputedLinearSolver_H
+#pragma once
 #include <sofa/component/linearsolver/direct/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
@@ -33,13 +32,7 @@
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <fstream>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver::direct
 {
 
 template<class TMatrix, class TVector>
@@ -137,10 +130,4 @@ private :
 extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API PrecomputedLinearSolver< linearalgebra::CompressedRowSparseMatrix<SReal> , linearalgebra::FullVector<SReal> >;
 #endif
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::linearsolver::direct

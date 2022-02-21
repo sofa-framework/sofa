@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_WARPPRECONDITIONER_H
-#define SOFA_COMPONENT_LINEARSOLVER_WARPPRECONDITIONER_H
+#pragma once
 #include <sofa/component/linearsolver/preconditioner/config.h>
 
 #include <sofa/simulation/MechanicalVisitor.h>
@@ -35,13 +34,7 @@
 
 #include <map>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver::preconditioner
 {
 
 /// Linear system solver wrapping another (precomputed) linear solver by a per-node rotation matrix
@@ -106,10 +99,4 @@ private :
 };
 
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::linearsolver::preconditioner

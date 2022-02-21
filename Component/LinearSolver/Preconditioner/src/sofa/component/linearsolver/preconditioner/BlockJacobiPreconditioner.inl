@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_BLOCKJACOBIPRECONDITIONER_INL
-#define SOFA_COMPONENT_LINEARSOLVER_BLOCKJACOBIPRECONDITIONER_INL
+#pragma once
 
 #include <sofa/component/linearsolver/preconditioner/BlockJacobiPreconditioner.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -32,13 +31,7 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <cmath>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver::preconditioner
 {
 
 template<class TMatrix, class TVector>
@@ -60,10 +53,4 @@ void BlockJacobiPreconditioner<TMatrix,TVector>::invert(Matrix& M)
     msg_info() << M;
 }
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::linearsolver::preconditioner

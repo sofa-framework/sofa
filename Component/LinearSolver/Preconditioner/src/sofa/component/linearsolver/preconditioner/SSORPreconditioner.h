@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_SSORPRECONDITIONER_H
-#define SOFA_COMPONENT_LINEARSOLVER_SSORPRECONDITIONER_H
+#pragma once
 #include <sofa/component/linearsolver/preconditioner/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
@@ -31,13 +30,7 @@
 
 #include <cmath>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver::preconditioner
 {
 
 /// Linear system solver / preconditioner based on Successive Over Relaxation (SSOR).
@@ -82,10 +75,4 @@ protected :
 
 };
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::linearsolver::preconditioner

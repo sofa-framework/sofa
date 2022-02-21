@@ -23,7 +23,7 @@
 #include <sofa/component/linearsolver/direct/BTDLinearSolver.h>
 #include <sofa/linearalgebra/FullMatrix.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::direct
 {
 
 /// Factorize M
@@ -791,4 +791,4 @@ bool BTDLinearSolver<Matrix,Vector>::addJMInvJt(RMatrix& result, JMatrix& J, dou
     return true;
 }
 
-} //namespace sofa::component::linearsolver
+} //namespace sofa::component::linearsolver::direct

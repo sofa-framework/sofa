@@ -32,7 +32,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::iterative
 {
 
 /// Linear system solver using the conjugate gradient iterative algorithm
@@ -258,4 +258,4 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
 }
 
 
-} //namespace sofa::component::linearsolver
+} //namespace sofa::component::linearsolver::iterative

@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_WARPPRECONDITIONER_INL
-#define SOFA_COMPONENT_LINEARSOLVER_WARPPRECONDITIONER_INL
+#pragma once
 
 #include <sofa/component/linearsolver/preconditioner/WarpPreconditioner.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -37,13 +36,7 @@
 
 #include <sofa/type/Quat.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver::preconditioner
 {
 
 template<class TMatrix, class TVector,class ThreadManager>
@@ -217,10 +210,4 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::computeResidual(const c
     realSolver->computeResidual(params,f);
 }
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::linearsolver::preconditioner

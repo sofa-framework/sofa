@@ -24,7 +24,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::iterative
 {
 
 using namespace sofa::type;
@@ -58,4 +58,4 @@ template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MinResLinearSolver< Com
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<8,8,double> >, FullVector<double> >;
 
 
-} //namespace sofa::component::linearsolver
+} //namespace sofa::component::linearsolver::iterative

@@ -23,13 +23,7 @@
 
 #include <sofa/component/linearsolver/direct/PrecomputedLinearSolver.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver::direct
 {
 
 using namespace sofa::linearalgebra;
@@ -40,9 +34,4 @@ int PrecomputedLinearSolverClass = core::RegisterObject("Linear system solver ba
 
 template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API PrecomputedLinearSolver< CompressedRowSparseMatrix<SReal> , FullVector<SReal> >;
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::linearsolver::direct

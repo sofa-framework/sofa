@@ -30,7 +30,7 @@ extern "C" {
 #include <metis.h>
 }
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::direct
 {
 
 //defaut structure for a LDL factorization
@@ -371,6 +371,6 @@ protected : //the folowing variables are used during the factorization they cann
     type::vector<int> tran_countvec;
 };
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::component::linearsolver::direct
 
 #endif

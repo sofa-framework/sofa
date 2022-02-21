@@ -30,7 +30,7 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <cmath>
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::direct
 {
 
 template<class TMatrix, class TVector>
@@ -109,4 +109,4 @@ void CholeskySolver<TMatrix,TVector>::invert(Matrix& M)
     }
 }
 
-} //namespace sofa::component::linearsolver
+} //namespace sofa::component::linearsolver::direct

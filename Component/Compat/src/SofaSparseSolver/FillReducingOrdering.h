@@ -24,3 +24,10 @@
 #include <sofa/component/linearsolver/direct/FillReducingOrdering.h>
 
 // SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/direct/FillReducingOrdering.h")
+
+namespace sofa::component::linearsolver
+{
+	template<class DataTypes>
+    using FillReducingOrdering = sofa::component::linearsolver::direct::FillReducingOrdering<DataTypes>;
+
+} // namespace sofa::component::linearsolver

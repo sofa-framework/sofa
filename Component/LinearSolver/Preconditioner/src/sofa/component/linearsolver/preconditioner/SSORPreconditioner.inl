@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_SSORPRECONDITIONER_INL
-#define SOFA_COMPONENT_LINEARSOLVER_SSORPRECONDITIONER_INL
+#pragma once
 #include <sofa/component/linearsolver/preconditioner/SSORPreconditioner.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/linearalgebra/SparseMatrix.h>
@@ -31,13 +30,7 @@
 #include <cmath>
 #include <sofa/helper/system/thread/CTime.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver::preconditioner
 {
 
 template<class TMatrix, class TVector, class TThreadManager>
@@ -284,10 +277,4 @@ void SSORPreconditioner<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
     for (Index j=0; j<n; j++) data->inv_diag[j] = 1.0 / M.element(j,j);
 }
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::linearsolver::preconditioner

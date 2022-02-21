@@ -19,22 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_SparseLDLSolver_INL
-#define SOFA_COMPONENT_LINEARSOLVER_SparseLDLSolver_INL
+#pragma once
 
 #include <sofa/component/linearsolver/direct/SparseLDLSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include "sofa/helper/system/thread/CTime.h"
+#include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <cmath>
-#include <sofa/helper/system/thread/CTime.h>
 #include <fstream>
 #include <iomanip>      // std::setprecision
 #include <string>
 
-namespace sofa::component::linearsolver {
+namespace sofa::component::linearsolver::direct 
+{
 
 template<class TMatrix, class TVector, class TThreadManager>
 SparseLDLSolver<TMatrix,TVector,TThreadManager>::SparseLDLSolver()
@@ -166,13 +165,12 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::doAddJMInvJtLocal(ResMat
 
 /// Default implementation of Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
 template<class TMatrix, class TVector, class TThreadManager>
-bool SparseLDLSolver<TMatrix,TVector,TThreadManager>::addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, SReal fact) {
+bool SparseLDLSolver<TMatrix,TVector,TThreadManager>::addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, SReal fact) 
+{
 
     InvertData* data = (InvertData*)this->getMatrixInvertData(M);
 
     return doAddJMInvJtLocal(result, J, fact, data);
 }
 
-} // namespace sofa::component::linearsolver
-
-#endif
+} // namespace sofa::component::linearsolver::direct

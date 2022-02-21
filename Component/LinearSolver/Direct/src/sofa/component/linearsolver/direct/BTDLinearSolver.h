@@ -30,7 +30,7 @@
 #include <cmath>
 #include <sofa/type/Mat.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::direct
 {
 /// Linear system solver using Thomas Algorithm for Block Tridiagonal matrices
 ///
@@ -181,4 +181,4 @@ private:
 extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API BTDLinearSolver< linearalgebra::BTDMatrix<6, double>, linearalgebra::BlockVector<6, double> >;
 #endif
 
-} //namespace sofa::component::linearsolver
+} //namespace sofa::component::linearsolver::direct

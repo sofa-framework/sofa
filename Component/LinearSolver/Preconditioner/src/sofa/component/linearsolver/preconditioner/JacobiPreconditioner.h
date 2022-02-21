@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_JACOBIPRECONDITIONER_H
-#define SOFA_COMPONENT_LINEARSOLVER_JACOBIPRECONDITIONER_H
+#pragma once
 #include <sofa/component/linearsolver/preconditioner/config.h>
 
 #include <sofa/core/behavior/LinearSolver.h>
@@ -30,13 +29,7 @@
 
 #include <cmath>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver::preconditioner
 {
 
 /// Linear solver based on a diagonal matrix (i.e. Jacobi preconditioner)
@@ -67,10 +60,4 @@ public:
 
 };
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::linearsolver::preconditioner

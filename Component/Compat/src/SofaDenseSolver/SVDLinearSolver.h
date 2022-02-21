@@ -21,6 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/linearsolver/direct/SVDLinearSolver.inl>
+#include <sofa/component/linearsolver/direct/SVDLinearSolver.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/direct/SVDLinearSolver.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/direct/SVDLinearSolver.h")
+
+namespace sofa::component::linearsolver
+{
+	template<class TMatrix, class TVector>
+    using SVDLinearSolver = sofa::component::linearsolver::direct::SVDLinearSolver<TMatrix, TVector>;
+
+} // namespace sofa::component::linearsolver

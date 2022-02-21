@@ -30,7 +30,7 @@
 #include <Eigen/Dense>
 #include <Eigen/Core>
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::direct
 {
 using core::VecId;
 using namespace sofa::defaulttype;
@@ -132,4 +132,4 @@ int SVDLinearSolverClass = core::RegisterObject("Linear system solver using a SV
         .addAlias("SVD")
         ;
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::component::linearsolver::direct

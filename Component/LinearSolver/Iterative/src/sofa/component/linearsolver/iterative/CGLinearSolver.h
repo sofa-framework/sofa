@@ -25,7 +25,7 @@
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <sofa/helper/map.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::iterative
 {
 
 /// Linear system solver using the conjugate gradient iterative algorithm
@@ -113,4 +113,4 @@ extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< 
 
 #endif
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::component::linearsolver::iterative

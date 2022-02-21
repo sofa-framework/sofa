@@ -21,13 +21,7 @@
 ******************************************************************************/
 #include <sofa/component/linearsolver/preconditioner/PrecomputedWarpPreconditioner.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver::preconditioner
 {
 
 int PrecomputedWarpPreconditionerClass = core::RegisterObject("Linear system solver based on a precomputed inverse matrix, wrapped by a per-node rotation matrix")
@@ -35,9 +29,4 @@ int PrecomputedWarpPreconditionerClass = core::RegisterObject("Linear system sol
 
         ;
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::linearsolver::preconditioner

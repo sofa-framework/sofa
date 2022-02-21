@@ -22,13 +22,7 @@
 #include <sofa/component/linearsolver/preconditioner/JacobiPreconditioner.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver::preconditioner
 {
 
 using namespace sofa::linearalgebra;
@@ -42,9 +36,4 @@ int JacobiPreconditionerClass = core::RegisterObject("Linear solver based on a d
         .addAlias("JacobiSolver")
         ;
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::linearsolver::preconditioner

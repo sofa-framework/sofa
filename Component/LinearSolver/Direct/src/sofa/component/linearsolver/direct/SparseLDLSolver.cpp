@@ -24,13 +24,7 @@
 #include <sofa/component/linearsolver/direct/SparseLDLSolver.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
+namespace sofa::component::linearsolver::direct
 {
 
 using namespace sofa::linearalgebra;
@@ -45,8 +39,4 @@ template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseLDLSolver< Compresse
 template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseLDLSolver< CompressedRowSparseMatrix< type::Mat<3,3,double> >,FullVector<double> >;
 
 
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::linearsolver::direct

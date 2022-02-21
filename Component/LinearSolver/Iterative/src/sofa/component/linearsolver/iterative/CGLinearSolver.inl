@@ -27,7 +27,7 @@
 #include <sofa/helper/ScopedAdvancedTimer.h>
 using sofa::helper::ScopedAdvancedTimer ;
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::iterative
 {
 
 /// Linear system solver using the conjugate gradient iterative algorithm
@@ -352,4 +352,4 @@ inline void CGLinearSolver<TMatrix,TVector>::cgstep_alpha(const core::ExecParams
     r.peq(q,-alpha);
 }
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::component::linearsolver::iterative

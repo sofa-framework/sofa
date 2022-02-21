@@ -23,7 +23,7 @@
 #pragma once
 #include <sofa/component/linearsolver/direct/FillReducingOrdering.h>
 
-namespace sofa::component::engine
+namespace sofa::component::linearsolver::direct
 {
 
 template <class DataTypes>
@@ -177,4 +177,4 @@ void FillReducingOrdering<DataTypes>::updateElements(
     }
 }
 
-} // namespace sofa::component::engine
+} // namespace sofa::component::linearsolver::direct

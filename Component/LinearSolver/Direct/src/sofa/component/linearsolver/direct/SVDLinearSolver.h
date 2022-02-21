@@ -25,7 +25,7 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::direct
 {
 
 /** Linear system solver using the JacobiSVD decomposition of the Eigen library (http://eigen.tuxfamily.org/  , see also an excellent introduction in Numerical Recipes.)
@@ -59,4 +59,4 @@ public:
 
 };
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::component::linearsolver::direct

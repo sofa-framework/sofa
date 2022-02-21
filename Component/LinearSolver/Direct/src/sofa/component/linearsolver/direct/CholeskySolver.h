@@ -31,7 +31,7 @@
 
 #include <cmath>
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::direct
 {
 
 /// Direct linear solver based on Cholesky factorization, for dense matrices
@@ -66,4 +66,4 @@ extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API CholeskySolver< lin
 
 #endif
 
-} //namespace sofa::component::linearsolver
+} //namespace sofa::component::linearsolver::direct
