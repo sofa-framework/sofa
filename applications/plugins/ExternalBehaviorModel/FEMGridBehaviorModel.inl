@@ -99,7 +99,7 @@ void FEMGridBehaviorModel<DataTypes>::init()
     m_internalForceField->setPoissonRatio( _poissonRatio.getValue() );
 
 
-    m_internalMass = sofa::core::objectmodel::New< component::mass::UniformMass<DataTypes,Real> >();
+    m_internalMass = sofa::core::objectmodel::New< component::mass::UniformMass<DataTypes> >();
     m_internalMass->d_totalMass.setValue( _totalMass.getValue() );
 
 

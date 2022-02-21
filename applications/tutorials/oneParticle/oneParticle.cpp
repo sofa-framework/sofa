@@ -93,7 +93,7 @@ int main(int argc, char** argv)
     dof->showObjectScale.setValue(10.);
 
     // Its properties, i.e, a simple mass node
-    using UniformMass3 = sofa::component::mass::UniformMass<sofa::defaulttype::Vec3Types, SReal>;
+    using UniformMass3 = sofa::component::mass::UniformMass<sofa::defaulttype::Vec3Types>;
     auto mass = sofa::core::objectmodel::New<UniformMass3>();
     mass->setName("mass");
     particule_node->addObject(mass);

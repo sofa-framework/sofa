@@ -6,28 +6,19 @@ set(SOFABASEUTILS_SRC "src/${PROJECT_NAME}")
 set(HEADER_FILES
     ${SOFABASEUTILS_SRC}/config.h.in
     ${SOFABASEUTILS_SRC}/initSofaBaseUtils.h
-    ${SOFABASEUTILS_SRC}/messageHandlerComponent.h
-    ${SOFABASEUTILS_SRC}/MakeAliasComponent.h
-    ${SOFABASEUTILS_SRC}/MakeDataAliasComponent.h
-    ${SOFABASEUTILS_SRC}/InfoComponent.h
-    ${SOFABASEUTILS_SRC}/RequiredPlugin.h
-    ${SOFABASEUTILS_SRC}/AddResourceRepository.h
 )
 
 set(SOURCE_FILES
     ${SOFABASEUTILS_SRC}/initSofaBaseUtils.cpp
-    ${SOFABASEUTILS_SRC}/messageHandlerComponent.cpp
-    ${SOFABASEUTILS_SRC}/MakeAliasComponent.cpp
-    ${SOFABASEUTILS_SRC}/MakeDataAliasComponent.cpp
-    ${SOFABASEUTILS_SRC}/InfoComponent.cpp
-    ${SOFABASEUTILS_SRC}/RequiredPlugin.cpp
-    ${SOFABASEUTILS_SRC}/AddResourceRepository.cpp
 )
 
-sofa_find_package(SofaFramework REQUIRED) # SofaCore
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore)
+
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.SceneUtility instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.SceneUtility REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.SceneUtility)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

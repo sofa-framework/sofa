@@ -37,6 +37,7 @@
 #include <cstring>
 
 #include <sofa/simulation/ExportGnuplotVisitor.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 using namespace sofa::simulation;
 using sofa::helper::system::FileSystem;
@@ -120,6 +121,8 @@ void BaseGUI::configureGUI(sofa::simulation::Node::SPtr groot)
 
 void BaseGUI::exportGnuplot(sofa::simulation::Node* node, std::string /*gnuplot_directory*/ )
 {
+    sofa::helper::ScopedAdvancedTimer exportGnuplotTimer("exportGnuplot");
+
     sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     ExportGnuplotVisitor expg ( params, node->getTime());
     node->execute ( expg );

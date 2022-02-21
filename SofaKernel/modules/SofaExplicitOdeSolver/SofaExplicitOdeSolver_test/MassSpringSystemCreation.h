@@ -48,7 +48,7 @@ simulation::Node::SPtr createMassSpringSystem(
 
     typedef component::container::MechanicalObject<defaulttype::Vec3Types> MechanicalObject3;
     typedef component::projectiveconstraintset::FixedConstraint<defaulttype::Vec3Types> FixedConstraint3;
-    typedef component::mass::UniformMass<defaulttype::Vec3Types, SReal> UniformMass3;
+    typedef component::mass::UniformMass<defaulttype::Vec3Types> UniformMass3;
     typedef component::interactionforcefield::StiffSpringForceField<defaulttype::Vec3Types > StiffSpringForceField3;
 
     // Fixed point

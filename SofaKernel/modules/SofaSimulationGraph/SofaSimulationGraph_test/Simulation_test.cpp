@@ -113,7 +113,7 @@ struct Scene_test: public NumericTest<SReal>
     /// create a component and replace it with an other one
     void objectDestruction_replace()
     {
-        typedef InstrumentedObject<component::mass::UniformMass<defaulttype::Vec3Types, SReal> > Component;
+        typedef InstrumentedObject<component::mass::UniformMass<defaulttype::Vec3Types> > Component;
 
         objectCounter = 0;
         Component::SPtr toto = core::objectmodel::New<Component>();
@@ -125,7 +125,7 @@ struct Scene_test: public NumericTest<SReal>
     /// create a component and replace it with an other one
     void objectDestruction_delete()
     {
-        typedef InstrumentedObject<component::mass::UniformMass<defaulttype::Vec3Types, SReal> > Component;
+        typedef InstrumentedObject<component::mass::UniformMass<defaulttype::Vec3Types> > Component;
 
         objectCounter = 0;
         Component::SPtr toto = core::objectmodel::New<Component>();
@@ -134,7 +134,7 @@ struct Scene_test: public NumericTest<SReal>
     /// create a component and set it to nullptr
     void objectDestruction_setNull()
     {
-        typedef InstrumentedObject<component::mass::UniformMass<defaulttype::Vec3Types, SReal> > Component;
+        typedef InstrumentedObject<component::mass::UniformMass<defaulttype::Vec3Types> > Component;
 
         objectCounter = 0;
         Component::SPtr toto = core::objectmodel::New<Component>();
@@ -145,7 +145,7 @@ struct Scene_test: public NumericTest<SReal>
     /// create a component and set it to nullptr
     void objectDestruction_reset()
     {
-        typedef InstrumentedObject<component::mass::UniformMass<defaulttype::Vec3Types, SReal> > Component;
+        typedef InstrumentedObject<component::mass::UniformMass<defaulttype::Vec3Types> > Component;
 
         objectCounter = 0;
         Component::SPtr toto = core::objectmodel::New<Component>();
@@ -219,7 +219,7 @@ struct Scene_test: public NumericTest<SReal>
 protected:
     void createScene()
     {
-        typedef component::mass::UniformMass<defaulttype::Vec3Types, SReal> UniformMass3;
+        typedef component::mass::UniformMass<defaulttype::Vec3Types> UniformMass3;
 
         objectCounter = 0;
 

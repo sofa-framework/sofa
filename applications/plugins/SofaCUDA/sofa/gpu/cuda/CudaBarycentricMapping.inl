@@ -36,6 +36,7 @@
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTriangleSetTopology.inl>
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperEdgeSetTopology.inl>
 #include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.inl>
+#include <SofaBaseTopology/MeshTopology.h>
 
 namespace sofa
 {

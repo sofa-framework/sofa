@@ -45,7 +45,7 @@ using BarycentricMapping3 = sofa::component::mapping::BarycentricMapping<Vec3Typ
 #include <SofaBaseMechanics/MechanicalObject.h>
 using MechanicalObject3 = sofa::component::container::MechanicalObject<Vec3Types>;
 #include <SofaBaseMechanics/UniformMass.h>
-using UniformMass3 = sofa::component::mass::UniformMass<Vec3Types, SReal>;
+using UniformMass3 = sofa::component::mass::UniformMass<Vec3Types>;
 #include <SofaBaseTopology/MeshTopology.h>
 using sofa::component::topology::MeshTopology;
 #include <SofaBaseVisual/VisualStyle.h>

@@ -12,52 +12,15 @@ set(SOURCE_FILES
     ${SOFAGENERALLOADER_SRC}/initSofaGeneralLoader.cpp
     )
 
-list(APPEND HEADER_FILES
-    ${SOFAGENERALLOADER_SRC}/ReadState.h
-    ${SOFAGENERALLOADER_SRC}/ReadState.inl
-    ${SOFAGENERALLOADER_SRC}/ReadTopology.h
-    ${SOFAGENERALLOADER_SRC}/ReadTopology.inl
-    ${SOFAGENERALLOADER_SRC}/GIDMeshLoader.h
-    ${SOFAGENERALLOADER_SRC}/GridMeshCreator.h
-    ${SOFAGENERALLOADER_SRC}/InputEventReader.h
-    ${SOFAGENERALLOADER_SRC}/MeshGmshLoader.h
-    ${SOFAGENERALLOADER_SRC}/MeshOffLoader.h
-    ${SOFAGENERALLOADER_SRC}/MeshSTLLoader.h
-    ${SOFAGENERALLOADER_SRC}/MeshTrianLoader.h
-    ${SOFAGENERALLOADER_SRC}/MeshXspLoader.h
-    ${SOFAGENERALLOADER_SRC}/OffSequenceLoader.h
-    ${SOFAGENERALLOADER_SRC}/SphereLoader.h
-    ${SOFAGENERALLOADER_SRC}/StringMeshCreator.h
-    ${SOFAGENERALLOADER_SRC}/VoxelGridLoader.h
-    )
-list(APPEND SOURCE_FILES
-    ${SOFAGENERALLOADER_SRC}/ReadState.cpp
-    ${SOFAGENERALLOADER_SRC}/ReadTopology.cpp
-    ${SOFAGENERALLOADER_SRC}/GIDMeshLoader.cpp
-    ${SOFAGENERALLOADER_SRC}/GridMeshCreator.cpp
-    ${SOFAGENERALLOADER_SRC}/InputEventReader.cpp
-    ${SOFAGENERALLOADER_SRC}/MeshGmshLoader.cpp
-    ${SOFAGENERALLOADER_SRC}/MeshOffLoader.cpp
-    ${SOFAGENERALLOADER_SRC}/MeshSTLLoader.cpp
-    ${SOFAGENERALLOADER_SRC}/MeshTrianLoader.cpp
-    ${SOFAGENERALLOADER_SRC}/MeshXspLoader.cpp
-    ${SOFAGENERALLOADER_SRC}/OffSequenceLoader.cpp
-    ${SOFAGENERALLOADER_SRC}/SphereLoader.cpp
-    ${SOFAGENERALLOADER_SRC}/StringMeshCreator.cpp
-    ${SOFAGENERALLOADER_SRC}/VoxelGridLoader.cpp
-    )
-
-sofa_find_package(ZLIB REQUIRED BOTH_SCOPES)
-
-sofa_find_package(SofaFramework REQUIRED) # SofaCore SofaHelper SofaSimulationCore
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaHelper SofaSimulationCore)
-target_link_libraries(${PROJECT_NAME} PUBLIC ZLIB::ZLIB)
-if(CMAKE_SYSTEM_NAME STREQUAL Windows)
-    sofa_install_libraries(TARGETS ZLIB::ZLIB)
-endif()
 
+message(WARNING "${PROJECT_NAME} is deprecated. It will be removed at v23.06. Use Sofa.Component.IO.Mesh and Sofa.Component.Playback instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.IO.Mesh REQUIRED)
+sofa_find_package(Sofa.Component.Playback REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.IO.Mesh)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Playback)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

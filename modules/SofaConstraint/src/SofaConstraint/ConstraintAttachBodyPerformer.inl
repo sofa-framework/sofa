@@ -181,7 +181,7 @@ bool ConstraintAttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& p
 
     type::Vec3d normal = point1-point2;
 
-    bconstraint->addContact(normal, point1, point2, (point2-point1).norm(), 0, index, point2, point1);
+    bconstraint->addContact(normal, point1, point2, normal.norm(), 0, index, point2, point1);
 
     const core::objectmodel::TagSet &tags=mstateCollision->getTags();
     for (auto tag : tags)

@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaGeneralLoader/initSofaGeneralLoader.h>
 
+#include <sofa/helper/system/PluginManager.h>
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
@@ -33,6 +34,11 @@ void initSofaGeneralLoader()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaGeneralLoader") << "SofaGeneralLoader is deprecated. It will be removed at v23.06. Use Sofa.Component.IO.Mesh and/or Sofa.Component.Playback instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.IO.Mesh");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Playback");
+
         first = false;
     }
 }

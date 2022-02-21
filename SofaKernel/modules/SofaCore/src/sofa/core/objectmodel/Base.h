@@ -453,7 +453,7 @@ public:
     /// The default implementation return the class name.
     ///
     /// This method should be used as follow :
-    /// \code  std::string type = Base::shortNam<B>(); \endcode
+    /// \code  std::string type = Base::shortName<B>(); \endcode
     /// This way derived classes can redefine the shortName method
     template< class T>
     static std::string shortName(const T* ptr = nullptr, BaseObjectDescription* = nullptr )

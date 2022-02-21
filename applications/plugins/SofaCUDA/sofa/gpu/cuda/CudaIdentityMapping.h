@@ -19,26 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDAIDENTITYMAPPING_H
-#define SOFA_GPU_CUDA_CUDAIDENTITYMAPPING_H
+#pragma once
 
-#include "CudaTypes.h"
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include <SofaBaseMechanics/IdentityMapping.h>
-#include <sofa/core/behavior/MechanicalState.h>
 
-namespace sofa
+namespace sofa::component::mapping
 {
-
-namespace component
-{
-
-namespace mapping
-{
-
-using namespace sofa::defaulttype;
-using namespace sofa::core;
-using namespace sofa::core::behavior;
-using namespace sofa::gpu::cuda;
 
 template <>
 inline void IdentityMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes>::apply( const core::MechanicalParams* mparams, OutDataVecCoord& dOut, const InDataVecCoord& dIn );
@@ -101,10 +88,4 @@ extern template class SOFA_GPU_CUDA_API  IdentityMapping< Vec3Types, CudaVec3dTy
 #endif
 
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // sofa::component::mapping

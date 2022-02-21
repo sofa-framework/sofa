@@ -60,6 +60,7 @@
 #include <cstring>
 
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalProjectPositionAndVelocityVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionAndVelocityVisitor;
@@ -372,18 +373,11 @@ void Simulation::draw ( sofa::core::visual::VisualParams* vparams, Node* root )
 {
     sofa::helper::AdvancedTimer::stepBegin("Simulation::draw");
 
-    sofa::core::visual::VisualLoop* vloop = root->getVisualLoop();
-    if(vloop)
+    for(auto& visualLoop : root->getTreeObjects<sofa::core::visual::VisualLoop>())
     {
         if (!vparams) vparams = sofa::core::visual::visualparams::defaultInstance();
         vparams->update();
-
-        vloop->drawStep(vparams);
-    }
-    else
-    {
-        msg_error() <<"Simulation::draw(): VisualLoop expected at the root node";
-        return;
+        visualLoop->drawStep(vparams);
     }
 
     sofa::helper::AdvancedTimer::stepEnd("Simulation::draw");
@@ -427,6 +421,8 @@ void Simulation::exportOBJ ( Node* root, const char* filename, bool exportMTL )
 
 void Simulation::dumpState ( Node* root, std::ofstream& out )
 {
+    sofa::helper::ScopedAdvancedTimer dumpStateTimer("dumpState");
+
     sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     out<<root->getTime() <<" ";
     WriteStateVisitor ( params, out ).execute ( root );

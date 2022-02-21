@@ -54,7 +54,7 @@ namespace sofa {
         typedef typename DataTypes::VecCoord VecCoord;
         typedef typename DataTypes::VecDeriv VecDeriv;
         typedef container::MechanicalObject<DataTypes> MechanicalObject;
-        typedef component::mass::UniformMass<DataTypes, Real> UniformMass;
+        typedef component::mass::UniformMass<DataTypes> UniformMass;
         typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
         /// Root of the scene graph

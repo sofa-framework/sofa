@@ -27,8 +27,9 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/TopologyTypes.h>
 
+#include <SofaTopologyMapping/Mesh2PointTopologicalMapping.h>
+
 namespace sofa::core::topology { class BaseMeshTopology; }
-namespace sofa::component::topology { class Mesh2PointTopologicalMapping; }
 
 namespace sofa::component::mapping
 {

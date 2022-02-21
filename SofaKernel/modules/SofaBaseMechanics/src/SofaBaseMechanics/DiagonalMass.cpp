@@ -37,9 +37,9 @@ using sofa::core::objectmodel::ComponentState ;
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
-template <class RigidTypes, class RigidMass>
+template <class RigidTypes>
 template <class T>
-SReal DiagonalMass<RigidTypes, RigidMass>::getPotentialEnergyRigidImpl( const MechanicalParams* mparams,
+SReal DiagonalMass<RigidTypes>::getPotentialEnergyRigidImpl( const MechanicalParams* mparams,
                                                                         const DataVecCoord& x) const
 {
     SOFA_UNUSED(mparams) ;
@@ -59,9 +59,9 @@ SReal DiagonalMass<RigidTypes, RigidMass>::getPotentialEnergyRigidImpl( const Me
 }
 
 
-template <class RigidTypes, class RigidMass>
+template <class RigidTypes>
 template <class T>
-void DiagonalMass<RigidTypes, RigidMass>::drawRigid3dImpl(const VisualParams* vparams)
+void DiagonalMass<RigidTypes>::drawRigid3dImpl(const VisualParams* vparams)
 {
     const MassVector &masses= d_vertexMass.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
@@ -107,9 +107,9 @@ void DiagonalMass<RigidTypes, RigidMass>::drawRigid3dImpl(const VisualParams* vp
 }
 
 
-template <class RigidTypes, class RigidMass>
+template <class RigidTypes>
 template <class T>
-void DiagonalMass<RigidTypes, RigidMass>::drawRigid2dImpl(const VisualParams* vparams)
+void DiagonalMass<RigidTypes>::drawRigid2dImpl(const VisualParams* vparams)
 {
     const MassVector &masses= d_vertexMass.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
@@ -127,9 +127,9 @@ void DiagonalMass<RigidTypes, RigidMass>::drawRigid2dImpl(const VisualParams* vp
     }
 }
 
-template <class RigidTypes, class RigidMass>
+template <class RigidTypes>
 template <class T>
-void DiagonalMass<RigidTypes, RigidMass>::initRigidImpl()
+void DiagonalMass<RigidTypes>::initRigidImpl()
 {
     if(this->getContext()==nullptr){
         dmsg_error(this) << "Calling the initRigidImpl function is only possible if the object has a valid associated context \n" ;
@@ -186,9 +186,9 @@ void DiagonalMass<RigidTypes, RigidMass>::initRigidImpl()
     this->d_componentState.setValue(ComponentState::Valid) ;
 }
 
-template <class RigidTypes, class RigidMass>
+template <class RigidTypes>
 template <class T>
-type::Vector6 DiagonalMass<RigidTypes,RigidMass>::getMomentumRigid3Impl ( const MechanicalParams*,
+type::Vector6 DiagonalMass<RigidTypes>::getMomentumRigid3Impl ( const MechanicalParams*,
                                                                     const DataVecCoord& vx,
                                                                     const DataVecDeriv& vv ) const
 {
@@ -211,9 +211,9 @@ type::Vector6 DiagonalMass<RigidTypes,RigidMass>::getMomentumRigid3Impl ( const 
     return momentum;
 }
 
-template <class Vec3Types, class Vec3Mass>
+template <class Vec3Types>
 template <class T>
-type::Vector6 DiagonalMass<Vec3Types, Vec3Mass>::getMomentumVec3Impl( const MechanicalParams*,
+type::Vector6 DiagonalMass<Vec3Types>::getMomentumVec3Impl( const MechanicalParams*,
                                                                 const DataVecCoord& vx,
                                                                 const DataVecDeriv& vv ) const
 {
@@ -238,58 +238,58 @@ type::Vector6 DiagonalMass<Vec3Types, Vec3Mass>::getMomentumVec3Impl( const Mech
 
 
 template <>
-SReal DiagonalMass<Rigid3Types, Rigid3Mass>::getPotentialEnergy( const MechanicalParams* mparams,
+SReal DiagonalMass<Rigid3Types>::getPotentialEnergy( const MechanicalParams* mparams,
                                                                    const DataVecCoord& x) const
 {
     return getPotentialEnergyRigidImpl<Rigid3Types>(mparams, x) ;
 }
 
 template <>
-SReal DiagonalMass<Rigid2Types, Rigid2Mass>::getPotentialEnergy( const MechanicalParams* mparams,
+SReal DiagonalMass<Rigid2Types>::getPotentialEnergy( const MechanicalParams* mparams,
                                                                    const DataVecCoord& x) const
 {
     return getPotentialEnergyRigidImpl<Rigid2Types>(mparams, x) ;
 }
 
 template <>
-void DiagonalMass<Rigid3Types, Rigid3Mass>::draw(const VisualParams* vparams)
+void DiagonalMass<Rigid3Types>::draw(const VisualParams* vparams)
 {
     drawRigid3dImpl<Rigid3Types>(vparams) ;
 }
 
 template <>
-void DiagonalMass<Rigid3Types, Rigid3Mass>::reinit()
+void DiagonalMass<Rigid3Types>::reinit()
 {
     Inherited::reinit();
 }
 
 template <>
-void DiagonalMass<Rigid2Types, Rigid2Mass>::reinit()
+void DiagonalMass<Rigid2Types>::reinit()
 {
     Inherited::reinit();
 }
 
 template <>
-void DiagonalMass<Rigid3Types, Rigid3Mass>::init()
+void DiagonalMass<Rigid3Types>::init()
 {
     initRigidImpl<Rigid3Types>() ;
 }
 
 template <>
-void DiagonalMass<Rigid2Types, Rigid2Mass>::init()
+void DiagonalMass<Rigid2Types>::init()
 {
     initRigidImpl<Rigid2Types>() ;
 }
 
 template <>
-void DiagonalMass<Rigid2Types, Rigid2Mass>::draw(const VisualParams* vparams)
+void DiagonalMass<Rigid2Types>::draw(const VisualParams* vparams)
 {
     drawRigid2dImpl<Rigid2Types>(vparams);
 }
 
 
 template <>
-type::Vector6 DiagonalMass<Vec3Types, double>::getMomentum ( const MechanicalParams* mparams,
+type::Vector6 DiagonalMass<Vec3Types>::getMomentum ( const MechanicalParams* mparams,
                                                         const DataVecCoord& vx,
                                                         const DataVecDeriv& vv ) const
 {
@@ -297,7 +297,7 @@ type::Vector6 DiagonalMass<Vec3Types, double>::getMomentum ( const MechanicalPar
 }
 
 template <>
-type::Vector6 DiagonalMass<Rigid3Types,Rigid3Mass>::getMomentum ( const MechanicalParams* mparams,
+type::Vector6 DiagonalMass<Rigid3Types>::getMomentum ( const MechanicalParams* mparams,
                                                               const DataVecCoord& vx,
                                                               const DataVecDeriv& vv ) const
 {
@@ -306,18 +306,18 @@ type::Vector6 DiagonalMass<Rigid3Types,Rigid3Mass>::getMomentum ( const Mechanic
 
 // Register in the Factory
 int DiagonalMassClass = core::RegisterObject("Define a specific mass for each particle")
-        .add< DiagonalMass<Vec3Types,double> >()
-        .add< DiagonalMass<Vec2Types,double> >()
-        .add< DiagonalMass<Vec1Types,double> >()
-        .add< DiagonalMass<Rigid3Types,Rigid3Mass> >()
-        .add< DiagonalMass<Rigid2Types,Rigid2Mass> >()
+        .add< DiagonalMass<Vec3Types> >()
+        .add< DiagonalMass<Vec2Types> >()
+        .add< DiagonalMass<Vec1Types> >()
+        .add< DiagonalMass<Rigid3Types> >()
+        .add< DiagonalMass<Rigid2Types> >()
 
         ;
 
-template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Vec3Types,double>;
-template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Vec2Types,double>;
-template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Vec1Types,double>;
-template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Rigid3Types,Rigid3Mass>;
-template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Rigid2Types,Rigid2Mass>;
+template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Vec3Types>;
+template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Vec2Types>;
+template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Vec1Types>;
+template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Rigid3Types>;
+template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Rigid2Types>;
 
 } // namespace sofa::component::mass

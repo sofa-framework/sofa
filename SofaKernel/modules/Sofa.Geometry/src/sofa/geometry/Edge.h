@@ -87,6 +87,78 @@ struct Edge
     {
         return std::sqrt(squaredLength(n0, n1));
     }
+
+
+    /**
+    * @brief	Compute the barycentric coefficients of input point on Edge (n0, n1)
+    * @tparam   Node iterable container
+    * @tparam   T scalar
+    * @param	point: position of the point to compute the coefficients
+    * @param	n0,n1: nodes of the edge
+    * @return	sofa::type::Vec<2, T> barycentric coefficients
+    */
+    template<typename Node,
+        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+        typename = std::enable_if_t<std::is_scalar_v<T>>
+    >
+    static constexpr auto pointBaryCoefs(const Node& point, const Node& n0, const Node& n1)
+    {
+        sofa::type::Vec<2, T> baryCoefs;
+        const T dist = (n1 - n0).norm();
+
+        if (dist < EQUALITY_THRESHOLD)
+        {
+            baryCoefs[0] = 0.5;
+            baryCoefs[1] = 0.5;
+        }
+        else
+        {
+            baryCoefs[0] = (point - n1).norm() / dist;
+            baryCoefs[1] = (point - n0).norm() / dist;
+        }
+
+        return baryCoefs;
+    }
+
+
+    /**
+    * @brief	Compute the intersection between a plane (defined by a point and a normal) and the Edge (n0, n1)
+    * @tparam   Node iterable container
+    * @tparam   T scalar
+    * @param	n0,n1 nodes of the edge
+    * @param	planeP0,normal position and normal defining the plan
+    * @param    intersection position of the intersection (if one) between the plane and the Edge
+    * @return	bool true if there is an intersection, otherwise false
+    */
+    template<typename Node,
+        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+        typename = std::enable_if_t<std::is_scalar_v<T>>
+    >
+    [[nodiscard]]
+    static constexpr bool intersectionWithPlane(const Node& n0, const Node& n1, const sofa::type::Vec<3, T>& planeP0, const sofa::type::Vec<3, T>& normal, sofa::type::Vec<3, T>& intersection)
+    {
+        constexpr Node n{}; 
+        static_assert(std::distance(std::begin(n), std::end(n)) == 3, "Plane - Edge intersection can only be computed in 3 dimensions.");
+
+        //plane equation
+        const sofa::type::Vec<3, T> planeNorm = normal.normalized();
+        const T d = planeNorm * planeP0;
+
+        //compute intersection between line and plane equation
+        const T denominator = planeNorm * (n1 - n0);
+        if (denominator < EQUALITY_THRESHOLD)
+        {
+            return false;
+        }
+
+        const T t = (d - planeNorm * n0) / denominator;
+        if ((t <= 1) && (t >= 0))
+        {
+            intersection = n0 + (n1 - n0) * t;
+            return true;
+        }
+        return false;
+    }
 };
 
 } // namespace sofa::geometry

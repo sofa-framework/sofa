@@ -24,7 +24,6 @@
 
 #include <SofaSphFluid/config.h>
 #include <SofaSphFluid/ParticleSink.h>
-#include <SofaBaseTopology/PointSetTopologyModifier.h>
 
 namespace sofa
 {

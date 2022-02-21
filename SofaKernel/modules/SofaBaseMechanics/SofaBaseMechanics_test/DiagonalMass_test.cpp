@@ -26,6 +26,7 @@ using sofa::core::ExecParams ;
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/EdgeSetTopologyModifier.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <SofaBaseTopology/TriangleSetTopologyModifier.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
@@ -87,13 +88,13 @@ public:
 
     typedef typename DataTypes::Real Real;
     typedef typename type::vector<MassType> VecMass;
-    typedef DiagonalMass<TDataTypes, TMassType> TheDiagonalMass ;
+    typedef DiagonalMass<TDataTypes> TheDiagonalMass ;
 
     simulation::Simulation* simulation = nullptr;
     simulation::Node::SPtr root;
     simulation::Node::SPtr node;
     typename MechanicalObject<DataTypes>::SPtr mstate;
-    typename DiagonalMass<DataTypes, MassType>::SPtr mass;
+    typename DiagonalMass<DataTypes>::SPtr mass;
 
     void SetUp() override
     {
@@ -117,7 +118,7 @@ public:
         node->addObject(mstate);
         node->addObject(topologyContainer);
         node->addObject(geometryAlgorithms);
-        mass = New<DiagonalMass<DataTypes, MassType> >();
+        mass = New<DiagonalMass<DataTypes> >();
         mass->f_printLog.setValue(1.0);
         node->addObject(mass);
     }

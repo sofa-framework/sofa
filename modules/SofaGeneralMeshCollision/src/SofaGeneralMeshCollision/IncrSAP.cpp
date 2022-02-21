@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <SofaGeneralMeshCollision/config.h>
 #include <sofa/core/ObjectFactory.h>
 #include <SofaGeneralMeshCollision/IncrSAP.h>
 

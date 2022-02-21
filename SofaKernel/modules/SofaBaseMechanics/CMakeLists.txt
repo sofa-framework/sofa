@@ -13,16 +13,19 @@ set(HEADER_FILES
     ${SOFABASEMECHANICS_SRC}/DiagonalMass.inl
     ${SOFABASEMECHANICS_SRC}/IdentityMapping.h
     ${SOFABASEMECHANICS_SRC}/IdentityMapping.inl
+    ${SOFABASEMECHANICS_SRC}/MassType.h
     ${SOFABASEMECHANICS_SRC}/MappedObject.h
     ${SOFABASEMECHANICS_SRC}/MappedObject.inl
     ${SOFABASEMECHANICS_SRC}/MechanicalObject.h
     ${SOFABASEMECHANICS_SRC}/MechanicalObject.inl
+    ${SOFABASEMECHANICS_SRC}/RigidMassType.h
     ${SOFABASEMECHANICS_SRC}/SubsetMapping.h
     ${SOFABASEMECHANICS_SRC}/SubsetMapping.inl
     ${SOFABASEMECHANICS_SRC}/SubsetMultiMapping.h
     ${SOFABASEMECHANICS_SRC}/SubsetMultiMapping.inl
     ${SOFABASEMECHANICS_SRC}/UniformMass.h
     ${SOFABASEMECHANICS_SRC}/UniformMass.inl
+    ${SOFABASEMECHANICS_SRC}/VecMassType.h
     ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapper.h
     ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapper.inl
     ${SOFABASEMECHANICS_SRC}/BarycentricMappers/TopologyBarycentricMapper.h

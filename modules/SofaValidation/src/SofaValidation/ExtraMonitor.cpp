@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MISC_EXTRAMONITOR_CPP
+#include <SofaValidation/config.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>

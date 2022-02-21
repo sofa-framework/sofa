@@ -66,6 +66,8 @@
 #include <sofa/simulation/DeactivatedNodeVisitor.h>
 #include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
+
 #include <sofa/helper/system/SetDirectory.h>
 using sofa::helper::system::SetDirectory;
 
@@ -2371,6 +2373,8 @@ void RealGUI::redraw()
 void RealGUI::exportOBJ (simulation::Node* root,  bool exportMTL )
 {
     if ( !root ) return;
+
+    sofa::helper::ScopedAdvancedTimer exportOBJTimer("exportOBJ");
 
     std::string sceneFileName(this->windowFilePath ().toStdString());
     std::ostringstream ofilename;
