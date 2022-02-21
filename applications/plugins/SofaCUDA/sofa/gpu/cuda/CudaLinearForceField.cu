@@ -49,7 +49,7 @@ extern "C"
 template<class real>
 __global__ void LinearForceFieldCudaRigid3t_addForce_kernel(unsigned size, const int* indices, real fx, real fy, real fz, real frx, real fry, real frz, CudaRigidDeriv3<real>* f)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
 
     CudaRigidDeriv3<real> force = CudaRigidDeriv3<real>::make(fx, fy, fz, frx, fry, frz);
     if (index < size)

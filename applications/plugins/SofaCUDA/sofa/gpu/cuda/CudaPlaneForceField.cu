@@ -72,8 +72,8 @@ extern "C"
 template<class real>
 __global__ void PlaneForceFieldCuda3t_addForce_kernel(int size, GPUPlane<real> plane, real* penetration, real* f, const real* x, const real* v)
 {
-    int index0 = umul24(blockIdx.x,BSIZE);
-    int index0_3 = umul24(blockIdx.x,BSIZE*3); //index0*3;
+    int index0 = blockIdx.x * BSIZE;
+    int index0_3 = index0 * 3;
 
     penetration += index0;
     f += index0_3;
@@ -81,7 +81,7 @@ __global__ void PlaneForceFieldCuda3t_addForce_kernel(int size, GPUPlane<real> p
     v += index0_3;
 
     int index = threadIdx.x;
-    int index_3 = umul24(index,3); //index*3;
+    int index_3 = index * 3;
 
     //! Dynamically allocated shared memory to reorder global memory access
     __shared__  real temp[BSIZE*3];
@@ -137,7 +137,7 @@ __global__ void PlaneForceFieldCuda3t_addForce_kernel(int size, GPUPlane<real> p
 template<class real>
 __global__ void PlaneForceFieldCuda3t1_addForce_kernel(int size, GPUPlane<real> plane, real* penetration, CudaVec4<real>* f, const CudaVec4<real>* x, const CudaVec4<real>* v)
 {
-    int index = umul24(blockIdx.x,BSIZE) + threadIdx.x;
+    int index = blockIdx.x * BSIZE + threadIdx.x;
 
     CudaVec4<real> xi = x[index];
     real d = dot(CudaVec3<real>::make(xi),CudaVec3<real>::make(plane.normal_x,plane.normal_y,plane.normal_z))-plane.d;
@@ -164,15 +164,15 @@ __global__ void PlaneForceFieldCuda3t1_addForce_kernel(int size, GPUPlane<real> 
 template<class real>
 __global__ void PlaneForceFieldCuda3t_addDForce_kernel(int size, GPUPlane<real> plane, const real* penetration, real* df, const real* dx)
 {
-    int index0 = umul24(blockIdx.x,BSIZE);
-    int index0_3 = umul24(blockIdx.x,BSIZE*3); //index0*3;
+    int index0 = blockIdx.x * BSIZE;
+    int index0_3 = index0 * 3;
 
     penetration += index0;
     df += index0_3;
     dx += index0_3;
 
     int index = threadIdx.x;
-    int index_3 = umul24(index,3); //index*3;
+    int index_3 = index * 3;
 
     //! Dynamically allocated shared memory to reorder global memory access
     __shared__  real temp[BSIZE*3];
@@ -215,7 +215,7 @@ __global__ void PlaneForceFieldCuda3t_addDForce_kernel(int size, GPUPlane<real> 
 template<class real>
 __global__ void PlaneForceFieldCuda3t1_addDForce_kernel(int size, GPUPlane<real> plane, const real* penetration, CudaVec4<real>* df, const CudaVec4<real>* dx)
 {
-    int index = umul24(blockIdx.x,BSIZE) + threadIdx.x;
+    int index = blockIdx.x * BSIZE + threadIdx.x;
 
     CudaVec4<real> dxi = dx[index];
     real d = penetration[index];

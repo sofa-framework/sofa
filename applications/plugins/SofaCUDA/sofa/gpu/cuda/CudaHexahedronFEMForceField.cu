@@ -260,7 +260,7 @@ public:
 
     static __inline__ __device__ CudaVec3<real> getX(int i, const TIn* x)
     {
-	int i3 = umul24(i,3);
+	int i3 = i * 3;
 	float x1 = tex1Dfetch(tex_3f_x, i3);
 	float x2 = tex1Dfetch(tex_3f_x, i3+1);
 	float x3 = tex1Dfetch(tex_3f_x, i3+2);
@@ -279,7 +279,7 @@ public:
 
     static __inline__ __device__ CudaVec3<real> getDX(int i, const TIn* dx)
     {
-	int i3 = umul24(i,3);
+	int i3 = i * 3;
 	float x1 = tex1Dfetch(tex_3f_dx, i3);
 	float x2 = tex1Dfetch(tex_3f_dx, i3+1);
 	float x3 = tex1Dfetch(tex_3f_dx, i3+2);
@@ -352,7 +352,7 @@ public:
 
     static __inline__ __device__ CudaVec3<real> getElementForce(int i, const TIn* x)
     {
-	int i3 = umul24(i,3);
+	int i3 = i * 3;
 	float x1 = tex1Dfetch(tex_3f_eforce, i3);
 	float x2 = tex1Dfetch(tex_3f_eforce, i3+1);
 	float x3 = tex1Dfetch(tex_3f_eforce, i3+2);
@@ -391,7 +391,7 @@ public:
 template<typename real, class TIn>
 __global__ void HexahedronFEMForceFieldCuda3t_calcForce_kernel(int nbElem, const GPUElement<real>* elems, GPURotation<real>* rotation,const GPUKMatrix<real>* kmatrix, real* eforce, const TIn* x)
 {
-  int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+  int index0 = blockIdx.x * BSIZE; //blockDim.x;
   int index1 = threadIdx.x;
   int index = index0+index1;
 
@@ -581,7 +581,7 @@ __global__ void HexahedronFEMForceFieldCuda3t_calcForce_kernel(int nbElem, const
     
   int HALFBSIZE = BSIZE<<1;
   extern __shared__ real temp[];
-  int index13 = umul24(index1,13);
+  int index13 = index1 * 13;
 
   temp[index13+0 ] = fA.x;
   temp[index13+1 ] = fA.y;
@@ -599,7 +599,7 @@ __global__ void HexahedronFEMForceFieldCuda3t_calcForce_kernel(int nbElem, const
   __syncthreads();
 
   // we write only the 4th first vertices of hexahedron
-  real* out = ((real*)eforce)+(umul24(blockIdx.x,BSIZE*32))+index1+umul24(index1>>4,16);
+  real* out = ((real*)eforce)+(blockIdx.x*BSIZE*32)+index1+(index1>>4)*16;
   real v = 0;
   index1 += (index1>>4) - (index1>>2);
 
@@ -654,7 +654,7 @@ __global__ void HexahedronFEMForceFieldCuda3t_calcForce_kernel(int nbElem, const
   __syncthreads();
 
   index1 = threadIdx.x;
-  out = ((real*)eforce)+(umul24(blockIdx.x,BSIZE*32))+index1+umul24(index1>>4,16)+16;
+  out = ((real*)eforce)+(blockIdx.x*BSIZE*32)+index1+(index1>>4)*16+16;
   index1 += (index1>>4) - (index1>>2);
 
    v = temp[index1]; index1 += (BSIZE+(BSIZE>>4)-(BSIZE>>2)); 
@@ -695,7 +695,7 @@ __global__ void HexahedronFEMForceFieldCuda3t_calcForce_kernel(int nbElem, const
 
 template<typename real, class TIn>
 __global__ void HexahedronFEMForceFieldCuda3t_calcDForce_kernel(int nbElem, const GPUElement<real>* elems, const GPURotation<real>* rotation,const GPUKMatrix<real>* kmatrix, real* eforce, const TIn* x, real fact) {
-  int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+  int index0 = blockIdx.x * BSIZE; //blockDim.x;
   int index1 = threadIdx.x;
   int index = index0+index1;
 
@@ -823,7 +823,7 @@ __global__ void HexahedronFEMForceFieldCuda3t_calcDForce_kernel(int nbElem, cons
   int HALFBSIZE = BSIZE<<1;
   real* temp = SharedMemory<real>::get();
 
-  int index13 = umul24(index1,13);
+  int index13 = index1 * 13;
   temp[index13+0 ] = fA.x;
   temp[index13+1 ] = fA.y;
   temp[index13+2 ] = fA.z;
@@ -840,7 +840,7 @@ __global__ void HexahedronFEMForceFieldCuda3t_calcDForce_kernel(int nbElem, cons
   __syncthreads();
 
   // we write only the 4th first vertices of hexahedron
-  real* out = ((real*)eforce)+(umul24(blockIdx.x,BSIZE*32))+index1+umul24(index1>>4,16);
+  real* out = ((real*)eforce)+(blockIdx.x*BSIZE*32)+index1+(index1>>4)*16;
   real v = 0;
   index1 += (index1>>4) - (index1>>2);
 
@@ -896,7 +896,7 @@ __global__ void HexahedronFEMForceFieldCuda3t_calcDForce_kernel(int nbElem, cons
 
 
   index1 = threadIdx.x;
-  out = ((real*)eforce)+(umul24(blockIdx.x,BSIZE*32))+index1+umul24(index1>>4,16)+16;
+  out = ((real*)eforce)+(blockIdx.x*BSIZE*32)+index1+(index1>>4)*16+16;
   index1 += (index1>>4) - (index1>>2);
 
   v = temp[index1]; index1 += (BSIZE+(BSIZE>>4)-(BSIZE>>2)); 
@@ -1070,7 +1070,7 @@ __global__ void HexahedronFEMForceFieldCuda3t_addForce8_kernel(int /*nbVertex*/,
 template<typename real, int BSIZE>
 __global__ void HexahedronFEMForceFieldCuda3t_getRotations1_kernel(int nbVertex, unsigned int nbElemPerVertex, const int* velems, const GPURotation<real>* erotation, const GPURotation<real>* irotation,real * nrotation)
 {
-    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    int index0 = blockIdx.x * BSIZE; //blockDim.x;
     int index1 = threadIdx.x;
     int index9 = fastmul(index1,9); //3*index1;
 
@@ -1081,7 +1081,7 @@ __global__ void HexahedronFEMForceFieldCuda3t_getRotations1_kernel(int nbVertex,
     matrix3<real> R = matrix3<real>::make();
     int ne=0;
 
-    velems+=umul24(index0,nbElemPerVertex)+index1;
+    velems += index0 * nbElemPerVertex + index1;
 
     if (index0+index1<nbVertex) {
         for (int s = 0;s < nbElemPerVertex; s++)
@@ -1129,7 +1129,7 @@ __global__ void HexahedronFEMForceFieldCuda3t_getRotations1_kernel(int nbVertex,
 template<typename real, int BSIZE>
 __global__ void HexahedronFEMForceFieldCuda3t_getRotations4_kernel(int nbVertex9, unsigned int nb4ElemPerVertex, const int* velems, const GPURotation<real>* erotation, const GPURotation<real>* irotation,real * nrotation)
 {
-    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    int index0 = blockIdx.x * BSIZE; //blockDim.x;
     int index1 = threadIdx.x;
 
     __shared__  real temp[BSIZE*9];
@@ -1192,7 +1192,7 @@ __global__ void HexahedronFEMForceFieldCuda3t_getRotations4_kernel(int nbVertex9
 template<typename real, int BSIZE>
 __global__ void HexahedronFEMForceFieldCuda3t_getRotations8_kernel(int nbVertex9, unsigned int nb8ElemPerVertex, const int* velems, const GPURotation<real>* erotation, const GPURotation<real>* irotation,real * nrotation)
 {
-    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    int index0 = blockIdx.x * BSIZE; //blockDim.x;
     int index1 = threadIdx.x;
 
     __shared__  real temp[BSIZE/2*9];

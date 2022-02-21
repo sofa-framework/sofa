@@ -61,7 +61,7 @@ extern "C"
 template<class real>
 __global__ void LinearMovementConstraintCudaVec6t_projectPositionIndexed_kernel(unsigned size, const int* indices, real dirX, real dirY, real dirZ, real dirU, real dirV, real dirW, const CudaVec6<real>* x0, CudaVec6<real>* x)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
 
     CudaVec6<real> m = CudaVec6<real>::make(dirX, dirY, dirZ, dirU, dirV, dirW);
     if (index < size)
@@ -74,7 +74,7 @@ __global__ void LinearMovementConstraintCudaVec6t_projectPositionIndexed_kernel(
 template<class real>
 __global__ void LinearMovementConstraintCudaRigid3t_projectResponseIndexed_kernel(unsigned size, const int* indices, CudaRigidDeriv3<real>* dx)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
 
     if (index < size)
     {
@@ -85,7 +85,7 @@ __global__ void LinearMovementConstraintCudaRigid3t_projectResponseIndexed_kerne
 template<class real>
 __global__ void LinearMovementConstraintCudaRigid3t_projectPositionIndexed_kernel(unsigned size, const int* indices, real dirX, real dirY, real dirZ, real dirU, real dirV, real dirW, const CudaRigidCoord3<real>* x0, CudaRigidCoord3<real>* x)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
 
     CudaRigidCoord3<real> m = CudaRigidCoord3<real>::make(dirX, dirY, dirZ, dirU, dirV, dirW, 0.0);
     if (index < size)
@@ -99,7 +99,7 @@ __global__ void LinearMovementConstraintCudaRigid3t_projectPositionIndexed_kerne
 template<class real>
 __global__ void LinearMovementConstraintCudaRigid3t_projectVelocityIndexed_kernel(unsigned size, const int* indices, real velX, real velY, real velZ, real velU, real velV, real velW, CudaRigidDeriv3<real>* dx)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
 
     CudaRigidDeriv3<real> vel = CudaRigidDeriv3<real>::make(velX, velY, velZ, velU, velV, velW);
     if (index < size)

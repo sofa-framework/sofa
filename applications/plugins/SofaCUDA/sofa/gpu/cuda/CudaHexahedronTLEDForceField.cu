@@ -164,7 +164,7 @@ static void setX(const void* x)
 // Device function returning the position of vertex i as a float3
 static __device__ CudaVec3f getX(int i)
 {
-    int i3 = umul24(i,3);
+    int i3 = i * 3;
     float x1 = tex1Dfetch(texX, i3);
     float x2 = tex1Dfetch(texX, i3+1);
     float x3 = tex1Dfetch(texX, i3+2);
@@ -183,7 +183,7 @@ static void setX0(const void* x0)
 // Device function returning the rest position of vertex i as a float3
 static __device__ CudaVec3f getX0(int i)
 {
-    int i3 = umul24(i,3);
+    int i3 = i * 3;
     float x1 = tex1Dfetch(texX0, i3);
     float x2 = tex1Dfetch(texX0, i3+1);
     float x3 = tex1Dfetch(texX0, i3+2);
@@ -210,7 +210,7 @@ static void setX0(const void* x0)
  */
 __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel0(float Lambda, float Mu, int nbElem, float4* F0_gpu, float4* F1_gpu, float4* F2_gpu, float4* F3_gpu, float4* F4_gpu, float4* F5_gpu, float4* F6_gpu, float4* F7_gpu)
 {
-    int index0 = umul24(blockIdx.x,BSIZE);
+    int index0 = blockIdx.x * BSIZE;
     int index1 = threadIdx.x;
     int index = index0+index1;
 
@@ -383,7 +383,7 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel0(float Lambda, f
  */
 __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel1(float Lambda, float Mu, int nbElem, float4* F0_gpu, float4* F1_gpu, float4* F2_gpu, float4* F3_gpu, float4* F4_gpu, float4* F5_gpu, float4* F6_gpu, float4* F7_gpu)
 {
-    int index0 = umul24(blockIdx.x,BSIZE);
+    int index0 = blockIdx.x * BSIZE;
     int index1 = threadIdx.x;
     int index = index0+index1;
 
@@ -563,7 +563,7 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel1(float Lambda, f
  */
 __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel2(float Lambda, float Mu, int nbElem, float4 * Di1, float4 * Di2, float4 * Dv1, float4 * Dv2, float4* F0_gpu, float4* F1_gpu, float4* F2_gpu, float4* F3_gpu, float4* F4_gpu, float4* F5_gpu, float4* F6_gpu, float4* F7_gpu)
 {
-    int index0 = umul24(blockIdx.x,BSIZE);
+    int index0 = blockIdx.x * BSIZE;
     int index1 = threadIdx.x;
     int index = index0+index1;
 
@@ -781,7 +781,7 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel2(float Lambda, f
  */
 __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel3(float Lambda, float Mu, int nbElem, float4 * Di1, float4 * Di2, float4 * Dv1, float4 * Dv2, float4* F0_gpu, float4* F1_gpu, float4* F2_gpu, float4* F3_gpu, float4* F4_gpu, float4* F5_gpu, float4* F6_gpu, float4* F7_gpu)
 {
-    int index0 = umul24(blockIdx.x,BSIZE);
+    int index0 = blockIdx.x * BSIZE;
     int index1 = threadIdx.x;
     int index = index0+index1;
 
@@ -1148,12 +1148,12 @@ __device__ float4 computeForce_hex(const int node, const float4 Dh0_a, const flo
  */
 __global__ void CudaHexahedronTLEDForceField3f_addForce_kernel(int nbVertex, unsigned int valence, float* f/*, float* test*/)
 {
-    int index0 = umul24(blockIdx.x,BSIZE);
+    int index0 = blockIdx.x * BSIZE;
     int index1 = threadIdx.x;
     int index = index0+index1;
 
-    int index3 = umul24(index1,3); //3*index1;
-    int iext = umul24(blockIdx.x,BSIZE*3)+index1; //index0*3+index1;
+    int index3 = index1 * 3; //3*index1;
+    int iext = index0 * 3 + index1;
 
     //! Dynamically allocated shared memory to reorder global memory access
     extern  __shared__  float temp[];

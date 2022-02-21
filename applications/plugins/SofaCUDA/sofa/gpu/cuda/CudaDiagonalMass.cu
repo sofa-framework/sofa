@@ -48,7 +48,7 @@ extern "C"
 template<class real>
 __global__ void DiagonalMassCuda_addMDx_kernel(int size,real factor, const real * mass, const real* dx, real* res)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
     int index3 = index * 3;
     if (index < size)
     {
@@ -61,7 +61,7 @@ __global__ void DiagonalMassCuda_addMDx_kernel(int size,real factor, const real 
 template<class real>
 __global__ void DiagonalMassCuda_accFromF_kernel(int size, const real * inv_mass, const real* f, real* a)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
     int index3 = index * 3;
     if (index < size)
     {
@@ -74,7 +74,7 @@ __global__ void DiagonalMassCuda_accFromF_kernel(int size, const real * inv_mass
 template<class real>
 __global__ void DiagonalMassCuda_addForce_kernel(int size, const real * mass, real g_x, real g_y, real g_z, real* f)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
     int index3 = index * 3;
     if (index < size)
     {

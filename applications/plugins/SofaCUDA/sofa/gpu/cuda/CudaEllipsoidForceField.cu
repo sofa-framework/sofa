@@ -64,8 +64,8 @@ int EllipsoidForceFieldCuda3f_getNTmp()
 
 __global__ void EllipsoidForceFieldCuda3f_addForce_kernel(int size, GPUEllipsoid ellipsoid, float* tmp, float* f, const float* x, const float* v)
 {
-    int index0 = umul24(blockIdx.x,BSIZE);
-    int index0_3 = umul24(blockIdx.x,BSIZE*3); //index0*3;
+    int index0 = blockIdx.x * BSIZE;
+    int index0_3 = index0 * 3;
 
     tmp += index0*NTMP;
     f += index0_3;
@@ -73,7 +73,7 @@ __global__ void EllipsoidForceFieldCuda3f_addForce_kernel(int size, GPUEllipsoid
     v += index0_3;
 
     int index = threadIdx.x;
-    int index_3 = umul24(index,3); //index*3;
+    int index_3 = index * 3;
 
     //! Dynamically allocated shared memory to reorder global memory access
     extern  __shared__  float temp[];
@@ -157,8 +157,8 @@ __global__ void EllipsoidForceFieldCuda3f_addForce_kernel(int size, GPUEllipsoid
 
 __global__ void EllipsoidForceFieldCuda3f1_addForce_kernel(int size, GPUEllipsoid ellipsoid, float* tmp, CudaVec4<float>* f, const CudaVec4<float>* x, const CudaVec4<float>* v)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
-    tmp += umul24(blockIdx.x,BSIZE*NTMP);
+    int index = blockIdx.x * BSIZE+threadIdx.x;
+    tmp += blockIdx.x * BSIZE * NTMP;
 
     CudaVec4<float> temp = x[index];
     CudaVec3<float> dp = CudaVec3<float>::make(temp) - ellipsoid.center;
@@ -220,15 +220,15 @@ __global__ void EllipsoidForceFieldCuda3f1_addForce_kernel(int size, GPUEllipsoi
 
 __global__ void EllipsoidForceFieldCuda3f_addDForce_kernel(int size, const float* tmp, float* df, const float* dx, float factor)
 {
-    int index0 = umul24(blockIdx.x,BSIZE);
-    int index0_3 = umul24(blockIdx.x,BSIZE*3); //index0*3;
+    int index0 = blockIdx.x * BSIZE;
+    int index0_3 = index0 * 3;
 
     tmp += index0*NTMP;
     df += index0_3;
     dx += index0_3;
 
     int index = threadIdx.x;
-    int index_3 = umul24(index,3); //index*3;
+    int index_3 = index * 3;
 
     //! Dynamically allocated shared memory to reorder global memory access
     extern  __shared__  float temp[];
@@ -276,8 +276,8 @@ __global__ void EllipsoidForceFieldCuda3f_addDForce_kernel(int size, const float
 
 __global__ void EllipsoidForceFieldCuda3f1_addDForce_kernel(int size, const float* tmp, CudaVec4<float>* df, const CudaVec4<float>* dx, float factor)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
-    tmp += umul24(blockIdx.x,BSIZE*NTMP);
+    int index = blockIdx.x * BSIZE+threadIdx.x;
+    tmp += blockIdx.x * BSIZE * NTMP;
 
     CudaVec4<float> dxi = dx[index];
     float d = tmp[threadIdx.x+0*BSIZE];
