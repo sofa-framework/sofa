@@ -177,5 +177,8 @@ protected :
 
 };
 
+#if !defined(SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_PRECOMPUTEDWARPPRECONDITIONER_CPP)
+extern template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API PrecomputedWarpPreconditioner< defaulttype::Vec3Types >;
+#endif // !defined(SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_PRECOMPUTEDWARPPRECONDITIONER_CPP)
 
 } // namespace sofa::component::linearsolver::preconditioner

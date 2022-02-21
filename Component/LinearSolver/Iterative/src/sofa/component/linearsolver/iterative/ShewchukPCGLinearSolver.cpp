@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_SHEWCHUKPCGLINEARSOLVER_CPP
 #include <sofa/component/linearsolver/iterative/ShewchukPCGLinearSolver.inl>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <sofa/core/ObjectFactory.h>
@@ -29,7 +30,9 @@ namespace sofa::component::linearsolver::iterative
 {
 
 int ShewchukPCGLinearSolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
-.add< ShewchukPCGLinearSolver<GraphScatteredMatrix,GraphScatteredVector> >(true)
-.addAlias("PCGLinearSolver");
+    .add< ShewchukPCGLinearSolver<GraphScatteredMatrix,GraphScatteredVector> >(true)
+    .addAlias("PCGLinearSolver");
+
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API ShewchukPCGLinearSolver<GraphScatteredMatrix, GraphScatteredVector>;
 
 } // namespace sofa::component::linearsolver::iterative

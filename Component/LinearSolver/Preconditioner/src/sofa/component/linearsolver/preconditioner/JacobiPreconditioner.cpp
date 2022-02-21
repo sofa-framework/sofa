@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_JACOBIPRECONDITIONER_CPP
 #include <sofa/component/linearsolver/preconditioner/JacobiPreconditioner.inl>
 #include <sofa/core/ObjectFactory.h>
 
@@ -28,12 +29,11 @@ namespace sofa::component::linearsolver::preconditioner
 using namespace sofa::linearalgebra;
 
 int JacobiPreconditionerClass = core::RegisterObject("Linear solver based on a diagonal matrix (i.e. Jacobi preconditioner)")
-//.add< JacobiPreconditioner<GraphScatteredMatrix,GraphScatteredVector> >(true)
         .add< JacobiPreconditioner<DiagonalMatrix<double>, FullVector<double> > >(true)
-//.add< JacobiPreconditioner<SparseMatrix<double>, FullVector<double> > >()
-//.add< JacobiPreconditioner<FullMatrix<double>, FullVector<double> > >()
         .addAlias("JacobiLinearSolver")
         .addAlias("JacobiSolver")
         ;
+
+template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API JacobiPreconditioner<DiagonalMatrix<double>, FullVector<double> >;
 
 } // namespace sofa::component::linearsolver::preconditioner

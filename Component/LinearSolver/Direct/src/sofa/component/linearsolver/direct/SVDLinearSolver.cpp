@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_LINEARSOLVER_DIRECT_SVDLINEARSOLVER_CPP
 #include <sofa/component/linearsolver/direct/SVDLinearSolver.inl>
 
 #include <sofa/linearalgebra/FullMatrix.h>
@@ -39,5 +40,10 @@ int SVDLinearSolverClass = core::RegisterObject("Linear system solver using a SV
         .addAlias("SVDLinear")
         .addAlias("SVD")
         ;
+
+template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SVDLinearSolver< FullMatrix<double>, FullVector<double> >;
+template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SVDLinearSolver< FullMatrix<float>, FullVector<float> >;
+template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SVDLinearSolver< CompressedRowSparseMatrix<double>, FullVector<double> >;
+template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SVDLinearSolver< CompressedRowSparseMatrix<type::Mat<3, 3, double>>, FullVector<double> >;
 
 } // namespace sofa::component::linearsolver::direct

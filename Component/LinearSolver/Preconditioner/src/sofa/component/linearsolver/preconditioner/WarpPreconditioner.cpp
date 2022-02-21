@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_WARPPRECONDITIONER_CPP
+
 #include <sofa/component/linearsolver/preconditioner/WarpPreconditioner.inl>
 #include <sofa/linearalgebra/RotationMatrix.h>
 #include <sofa/core/ObjectFactory.h>
@@ -30,8 +32,9 @@ namespace sofa::component::linearsolver::preconditioner
 using namespace sofa::linearalgebra;
 
 int WarpPreconditionerClass = core::RegisterObject("Linear system solver wrapping another (precomputed) linear solver by a per-node rotation matrix")
-.add< WarpPreconditioner< RotationMatrix<double>, FullVector<double>, NoThreadManager > >()
-
+    .add< WarpPreconditioner< RotationMatrix<double>, FullVector<double>, NoThreadManager > >()
 ;
+template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API WarpPreconditioner< RotationMatrix<double>, FullVector<double>, NoThreadManager >;
+
 
 } // namespace sofa::component::linearsolver::preconditioner

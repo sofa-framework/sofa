@@ -58,6 +58,10 @@ public:
         return TMatrix::Name();
     }
 
+#if !defined(SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_JACOBIPRECONDITIONER_CPP)
+extern template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API JacobiPreconditioner<DiagonalMatrix<double>, FullVector<double> >;
+#endif // !defined(SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_JACOBIPRECONDITIONER_CPP)
+
 };
 
 } // namespace sofa::component::linearsolver::preconditioner

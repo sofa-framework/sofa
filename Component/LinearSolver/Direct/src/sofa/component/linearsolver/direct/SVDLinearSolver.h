@@ -38,7 +38,7 @@ namespace sofa::component::linearsolver::direct
   */
 
 template<class TMatrix, class TVector>
-class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SVDLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
+class SVDLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(SVDLinearSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
@@ -58,5 +58,12 @@ public:
     Data<Real> f_conditionNumber; ///< Condition number of the matrix: ratio between the largest and smallest singular values. Computed in method solve.
 
 };
+
+#if !defined(SOFA_COMPONENT_LINEARSOLVER_DIRECT_SVDLINEARSOLVER_CPP)
+extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SVDLinearSolver< linearalgebra::FullMatrix<double>, linearalgebra::FullVector<double> >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SVDLinearSolver< linearalgebra::FullMatrix<float>, linearalgebra::FullVector<float> >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SVDLinearSolver< linearalgebra::CompressedRowSparseMatrix<double>, linearalgebra::FullVector<double> >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SVDLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<3, 3, double>>, linearalgebra::FullVector<double> >;
+#endif
 
 } // namespace sofa::component::linearsolver::direct

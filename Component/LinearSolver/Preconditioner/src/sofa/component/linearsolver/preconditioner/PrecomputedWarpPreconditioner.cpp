@@ -19,14 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_PRECOMPUTEDWARPPRECONDITIONER_CPP
 #include <sofa/component/linearsolver/preconditioner/PrecomputedWarpPreconditioner.inl>
 
 namespace sofa::component::linearsolver::preconditioner
 {
 
 int PrecomputedWarpPreconditionerClass = core::RegisterObject("Linear system solver based on a precomputed inverse matrix, wrapped by a per-node rotation matrix")
-        .add< PrecomputedWarpPreconditioner< defaulttype::Vec3Types > >()
+    .add< PrecomputedWarpPreconditioner< defaulttype::Vec3Types > >()
+    ;
 
-        ;
+template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API PrecomputedWarpPreconditioner< defaulttype::Vec3Types >;
 
 } // namespace sofa::component::linearsolver::preconditioner
