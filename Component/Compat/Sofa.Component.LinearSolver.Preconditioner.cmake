@@ -9,7 +9,6 @@ list(APPEND HEADER_FILES
     ${SOFAPRECONDITIONER_SRC}/PrecomputedWarpPreconditioner.inl
     ${SOFAPRECONDITIONER_SRC}/SSORPreconditioner.h
     ${SOFAPRECONDITIONER_SRC}/SSORPreconditioner.inl
-    ${SOFAPRECONDITIONER_SRC}/ShewchukPCGLinearSolver.h
     ${SOFAPRECONDITIONER_SRC}/WarpPreconditioner.h
     ${SOFAPRECONDITIONER_SRC}/WarpPreconditioner.inl
 )
