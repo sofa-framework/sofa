@@ -34,6 +34,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseMechanics/SubsetMultiMapping.h>
 #include <sofa/core/topology/TopologySubsetIndices.h>
+#include <sofa/component/topology/container/dynamic/PointSetTopologyContainer.h>
 
 namespace sofa::component::interactionforcefield
 {
@@ -336,6 +337,10 @@ public:
                     mstate->setName(mergeName);
                     createdNode->addObject(mstate);
 
+                    auto topology = core::objectmodel::New<sofa::component::topology::container::dynamic::PointSetTopologyContainer>();
+                    topology->setName("topology");
+                    createdNode->addObject(topology);
+
                     auto mapping = core::objectmodel::New<mapping::SubsetMultiMapping<DataTypes, DataTypes> >();
                     mapping->setName("multiMapping");
                     createdNode->addObject(mapping);
@@ -422,6 +427,10 @@ CreateSpringBetweenObjects(
             auto mstate = core::objectmodel::New<sofa::component::container::MechanicalObject<DataTypes> >();
             mstate->setName(mergeName);
             createdNode->addObject(mstate);
+
+            auto topology = core::objectmodel::New<sofa::component::topology::container::dynamic::PointSetTopologyContainer>();
+            topology->setName("topology");
+            createdNode->addObject(topology);
 
             auto mapping = core::objectmodel::New<mapping::SubsetMultiMapping<DataTypes, DataTypes> >();
             mapping->setName("multiMapping");

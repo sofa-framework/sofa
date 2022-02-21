@@ -190,6 +190,7 @@ void SpringForceField<DataTypes>::initializeTopologyHandler(sofa::core::topology
 {
     if (topology)
     {
+        msg_info() << "The Data " << indices.getName() << " will follow topological changes from " << topology->getPathName();
         indices.createTopologyHandler(topology);
 
         indices.addTopologyEventCallBack(core::topology::TopologyChangeType::POINTSREMOVED,
