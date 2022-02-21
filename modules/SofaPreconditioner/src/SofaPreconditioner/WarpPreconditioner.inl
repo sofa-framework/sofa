@@ -50,7 +50,7 @@ template<class TMatrix, class TVector,class ThreadManager>
 WarpPreconditioner<TMatrix,TVector,ThreadManager >::WarpPreconditioner()
     : solverName(initData(&solverName, std::string(""), "solverName", "Name of the solver/preconditioner to warp"))
     , f_useRotationFinder(initData(&f_useRotationFinder, (unsigned)0, "useRotationFinder", "Which rotation Finder to use" ) )
-    , d_update_step(initData(&d_update_step, 1u, "update_step", "Number of steps before the next refresh of the system matrix in the main solver" ) )
+    , d_updateStep(initData(&d_updateStep, 1u, "update_step", "Number of steps before the next refresh of the system matrix in the main solver" ) )
 {
 
     realSolver = nullptr;
@@ -124,10 +124,10 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::setSystemMBKMatrix(cons
         if (!this->linearSystem.systemMatrix) this->linearSystem.systemMatrix = this->createMatrix();
     }
 
-    if (first || d_update_step.getValue() > 0 && next_refresh_step >= d_update_step.getValue() || d_update_step.getValue() == 0)
+    if (first || d_updateStep.getValue() > 0 && nextRefreshStep >= d_updateStep.getValue() || d_updateStep.getValue() == 0)
     {
         realSolver->setSystemMBKMatrix(mparams);
-        next_refresh_step = 1;
+        nextRefreshStep = 1;
     }
 
     if (first) {
@@ -181,7 +181,7 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::invert(Matrix& /*Rcur*/
 
 template<class TMatrix, class TVector,class ThreadManager>
 void WarpPreconditioner<TMatrix,TVector,ThreadManager >::updateSystemMatrix() {
-    ++next_refresh_step;
+    ++nextRefreshStep;
     realSolver->updateSystemMatrix();
 }
 

@@ -61,7 +61,7 @@ public:
 
     Data <std::string> solverName; ///< Name of the solver/preconditioner to warp
     Data<unsigned> f_useRotationFinder; ///< Which rotation Finder to use
-    Data<unsigned> d_update_step; ///< Number of steps before the next refresh of the system matrix in the main solver
+    Data<unsigned> d_updateStep; ///< Number of steps before the next refresh of the system matrix in the main solver
 
 protected:
     WarpPreconditioner();
@@ -97,7 +97,7 @@ private :
 
     int indexwork;
     bool first;
-    unsigned next_refresh_step {};
+    unsigned nextRefreshStep {};
 
     TRotationMatrix * rotationWork[2];
     std::vector<sofa::core::behavior::BaseRotationFinder *> rotationFinders;
