@@ -178,8 +178,8 @@ void SpringForceField<DataTypes>::init()
         load(fileSprings.getFullPath().c_str());
     this->Inherit::init();
 
-    initializeTopologyHandler(d_springsIndices[0], this->mstate1->getContext()->getMeshTopology(), 0);
-    initializeTopologyHandler(d_springsIndices[1], this->mstate2->getContext()->getMeshTopology(), 1);
+    initializeTopologyHandler(d_springsIndices[0], this->getContext()->getMeshTopology(), 0);
+    initializeTopologyHandler(d_springsIndices[1], this->getContext()->getMeshTopology(), 1);
 
     updateTopologyIndicesFromSprings();
 }
@@ -429,18 +429,6 @@ void SpringForceField<DataTypes>::computeBBox(const core::ExecParams* params, bo
 }
 
 template <class DataTypes>
-void SpringForceField<DataTypes>::addSpring(sofa::Index m1, sofa::Index m2, SReal ks, SReal kd, SReal initlen)
-{
-    addSpring(Spring(m1,m2,ks,kd,initlen));
-}
-
-template <class DataTypes>
-void SpringForceField<DataTypes>::addSpring(const Spring& spring)
-{
-    sofa::helper::getWriteAccessor(springs)->push_back(spring);
-}
-
-template <class DataTypes>
 void SpringForceField<DataTypes>::addSpringBetweenTwoObjects(const Spring& spring)
 {
     initializeMappingLink();
@@ -468,7 +456,12 @@ void SpringForceField<DataTypes>::addSprings(InputIt first, InputIt last)
     auto s = sofa::helper::getWriteAccessor(springs);
     while(first != last)
     {
-        s->push_back(*first++);
+        s->push_back(*first);
+
+        sofa::helper::getWriteAccessor(d_springsIndices[0]).push_back(first->m1);
+        sofa::helper::getWriteAccessor(d_springsIndices[1]).push_back(first->m2);
+
+        ++first;
     }
 }
 
@@ -519,21 +512,16 @@ void SpringForceField<DataTypes>::removeSpring(sofa::Index idSpring)
     this->springs.endEdit();
 }
 
-    template <class DataTypes>
-    void SpringForceField<DataTypes>::addSpring(sofa::Index m1, sofa::Index m2, SReal ks, SReal kd, SReal initlen)
+template <class DataTypes>
+void SpringForceField<DataTypes>::addSpring(sofa::Index m1, sofa::Index m2, SReal ks, SReal kd, SReal initlen)
 {
-    springs.beginEdit()->push_back(Spring(m1,m2,ks,kd,initlen));
-    springs.endEdit();
-
-    sofa::helper::getWriteAccessor(d_springsIndices[0]).push_back(m1);
-    sofa::helper::getWriteAccessor(d_springsIndices[1]).push_back(m2);
+    addSpring(Spring(m1,m2,ks,kd,initlen));
 }
 
-    template <class DataTypes>
-    void SpringForceField<DataTypes>::addSpring(const Spring& spring)
+template <class DataTypes>
+void SpringForceField<DataTypes>::addSpring(const Spring& spring)
 {
-    springs.beginEdit()->push_back(spring);
-    springs.endEdit();
+    sofa::helper::getWriteAccessor(springs)->push_back(spring);
 
     sofa::helper::getWriteAccessor(d_springsIndices[0]).push_back(spring.m1);
     sofa::helper::getWriteAccessor(d_springsIndices[1]).push_back(spring.m2);
