@@ -70,7 +70,7 @@ struct SpringSolverDynamic_test : public NumericTest<typename _DataTypes::Real>
     void loadScene(std::string sceneName)
     {
         // Load the scene from the xml file
-        std::string fileName = std::string(SOFACOMPONENTODESOLVER_TEST_SCENES_DIR) + "/" + sceneName;
+        std::string fileName = std::string(SOFACOMPONENTODESOLVERBACKWARD_TEST_SCENES_DIR) + "/" + sceneName;
         root = sofa::simulation::getSimulation()->load(fileName.c_str());
     }
 
