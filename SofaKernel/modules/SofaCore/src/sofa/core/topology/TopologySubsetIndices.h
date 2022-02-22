@@ -42,8 +42,7 @@ public:
     typedef Index value_type;
     typedef sofa::core::topology::TopologySubsetData < core::topology::BaseMeshTopology::Point, container_type> Inherit;
 
-    /// Default Constructor to init Data
-    explicit TopologySubsetIndices(const typename sofa::core::topology::BaseTopologyData< type::vector<Index> >::InitData& data);
+    using sofa::core::topology::TopologySubsetData<core::topology::BaseMeshTopology::Point, type::vector<Index> >::TopologySubsetData;
     
     Index indexOfElement(Index index) override;
 

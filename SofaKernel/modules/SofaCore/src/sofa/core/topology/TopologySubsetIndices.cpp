@@ -28,11 +28,6 @@
 namespace sofa::core::topology
 {
 
-TopologySubsetIndices::TopologySubsetIndices(const typename sofa::core::topology::BaseTopologyData< type::vector<Index> >::InitData& data)
-    : sofa::core::topology::TopologySubsetData< core::topology::BaseMeshTopology::Point, type::vector<Index> >(data)
-{
-
-}
 
 Index TopologySubsetIndices::indexOfElement(Index index)
 {

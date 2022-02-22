@@ -47,8 +47,7 @@ public:
     typedef core::topology::TopologyChangeElementInfo<TopologyElementType> ChangeElementInfo;
     typedef typename ChangeElementInfo::AncestorElem    AncestorElem;
 
-    /// Default Constructor to init Data
-    TopologySubsetData(const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data);
+    using sofa::core::topology::TopologyData<TopologyElementType, VecT>::TopologyData;
 
     /// Method to set a vector map to rull this subsetData. Will set @sa m_usingMap to true Otherwise will use the Data as the map
     void setMap2Elements(const sofa::type::vector<Index> _map2Elements);
@@ -141,7 +140,7 @@ protected:
     sofa::type::vector<Index> m_map2Elements;
 
     /// boolen to set subdata as concerne, will allow to add element
-    bool m_isConcerned;
+    bool m_isConcerned { false };
 };
 
 

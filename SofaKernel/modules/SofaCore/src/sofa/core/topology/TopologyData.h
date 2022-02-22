@@ -62,8 +62,7 @@ public:
     typedef typename sofa::core::topology::TopologyDataHandler< TopologyElementType, VecT>  TopologyDataElementHandler;
     typedef typename TopologyDataElementHandler::TopologyChangeCallback TopologyChangeCallback;
 
-    /// Constructor
-    TopologyData(const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data);
+    using sofa::core::topology::BaseTopologyData<VecT>::BaseTopologyData;
 
 
     /// Function to create topology handler to manage this Data. @param Pointer to dynamic topology is needed.
@@ -145,9 +144,9 @@ public:
     virtual void createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology, sofa::core::topology::TopologyDataHandler< TopologyElementType, VecT>* topoHandler) = delete;
     
 protected:
-    std::unique_ptr<TopologyDataElementHandler> m_topologyHandler;
+    std::unique_ptr<TopologyDataElementHandler> m_topologyHandler { nullptr };
 
-    bool m_isTopologyDynamic;
+    bool m_isTopologyDynamic { false };
 
     void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Point*);
     void linkToElementDataArray(sofa::core::topology::BaseMeshTopology::Edge*);

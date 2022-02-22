@@ -35,14 +35,6 @@ static const sofa::type::vector< SReal > s_empty_coefficients;
 /////////////////////////////   Generic Topology Data Implementation   /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template <typename TopologyElementType, typename VecT>
-TopologyData <TopologyElementType, VecT>::TopologyData(const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-    : sofa::core::topology::BaseTopologyData< VecT >(data)
-    , m_topologyHandler(nullptr)
-    , m_isTopologyDynamic(false)
-{
-}
-
 
 template <typename TopologyElementType, typename VecT>
 void TopologyData <TopologyElementType, VecT>::createTopologyHandler(sofa::core::topology::BaseMeshTopology* _topology)

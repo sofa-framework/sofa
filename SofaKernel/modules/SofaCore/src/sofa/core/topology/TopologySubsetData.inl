@@ -31,13 +31,6 @@ namespace sofa::core::topology
 /////////////////////////////   Generic Topology Data Implementation   /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template <typename TopologyElementType, typename VecT>
-TopologySubsetData <TopologyElementType, VecT>::TopologySubsetData(const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
-    : sofa::core::topology::TopologyData< TopologyElementType, VecT >(data)
-    , m_isConcerned(false)
-{
-
-}
 
 ///////////////////// Private functions on TopologySubsetData changes /////////////////////////////
 template <typename TopologyElementType, typename VecT>
