@@ -93,13 +93,14 @@ add-comment() {
         line_number="$(grep -n '^[	 A-Za-z:_-]*Data[	 ]*<.*>[	 ]*'"$member"'[	 ]*;[	 ]*$' "$file_h" | grep -Eo '^[^:]+' | cut -f1 -d: | head -1)"
     fi
     previous_line_number=$((line_number-1)) # get previous line
-    if [[ $previous_line_number < 1 ]]; then
+    if [ "$previous_line_number" -lt 1 ]; then
         # Ignore not pattern-matching member declaration
         # if FORCE==false, it means that the declaration is already commented
         return 1
     fi
 
     # Search if there is a Doxygen comment on previous line
+    # echo "Search Doxygen comment ($file_h:$previous_line_number)"
     if sed "${previous_line_number}q;d" "$file_h" | grep -q "^[	 ]*///"; then
         #echo "Comment found above $member"
         # TODO: in FORCE mode we should remove this comment
@@ -109,7 +110,7 @@ add-comment() {
     # Rewrite the member declaration with Doxygen comment at the end.
     local escaped_comment="$(echo "$comment" | escape-for-sed)"
     if [[ "$FORCE" == "true" ]]; then # PERMISSIVE PATTERN
-        sed -ie 's/^\(.*Data[	 ]*<.*>[	 ]*'"$member"'[	 ]*;\)/\1 \/\/\/< '"$escaped_comment"'/g' "$file_h"
+        sed -ie 's/^\(.*Data[	 ]*<.*>[	 ]*'"$member"'[	 ]*;\).*$/\1 \/\/\/< '"$escaped_comment"'/g' "$file_h"
     else # STRICT PATTERN
         sed -ie 's/^\(.*Data[	 ]*<.*>[	 ]*'"$member"'[	 ]*;\)[	 ]*$/\1 \/\/\/< '"$escaped_comment"'/g' "$file_h"
     fi
