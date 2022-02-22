@@ -52,12 +52,15 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/BaseProjectiveConstraintSet.h
     ${SRC_ROOT}/behavior/BaseRotationFinder.h
     ${SRC_ROOT}/behavior/BaseVectorOperations.h
+    ${SRC_ROOT}/behavior/BlocMatrixWriter.h
     ${SRC_ROOT}/behavior/Constraint.h
     ${SRC_ROOT}/behavior/Constraint.inl
     ${SRC_ROOT}/behavior/ConstraintCorrection.h
     ${SRC_ROOT}/behavior/ConstraintCorrection.inl
     ${SRC_ROOT}/behavior/ConstraintResolution.h
     ${SRC_ROOT}/behavior/ConstraintSolver.h
+    ${SRC_ROOT}/behavior/CRSMultiMatrixAccessor.h
+    ${SRC_ROOT}/behavior/DefaultMultiMatrixAccessor.h
     ${SRC_ROOT}/behavior/ForceField.h
     ${SRC_ROOT}/behavior/ForceField.inl
     ${SRC_ROOT}/behavior/LinearSolver.h
@@ -85,6 +88,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.inl
     ${SRC_ROOT}/behavior/RotationFinder.h
     ${SRC_ROOT}/behavior/StateAccessor.h
+    ${SRC_ROOT}/behavior/SingleMatrixAccessor.h
     ${SRC_ROOT}/behavior/SingleStateAccessor.h
     ${SRC_ROOT}/behavior/fwd.h
     ${SRC_ROOT}/collision/BroadPhaseDetection.h
@@ -204,6 +208,8 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/ConstraintCorrection.cpp
     ${SRC_ROOT}/behavior/ConstraintResolution.cpp
     ${SRC_ROOT}/behavior/ConstraintSolver.cpp
+    ${SRC_ROOT}/behavior/CRSMultiMatrixAccessor.cpp
+    ${SRC_ROOT}/behavior/DefaultMultiMatrixAccessor.cpp
     ${SRC_ROOT}/behavior/ForceField.cpp
     ${SRC_ROOT}/behavior/LinearSolver.cpp
     ${SRC_ROOT}/behavior/Mass.cpp
@@ -217,6 +223,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/behavior/PairInteractionForceField.cpp
     ${SRC_ROOT}/behavior/PairInteractionProjectiveConstraintSet.cpp
     ${SRC_ROOT}/behavior/ProjectiveConstraintSet.cpp
+    ${SRC_ROOT}/behavior/SingleMatrixAccessor.cpp
     ${SRC_ROOT}/behavior/fwd.cpp
     ${SRC_ROOT}/collision/BroadPhaseDetection.cpp
     ${SRC_ROOT}/collision/Contact.cpp
