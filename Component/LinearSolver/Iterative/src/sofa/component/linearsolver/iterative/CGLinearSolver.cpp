@@ -66,28 +66,28 @@ using namespace sofa::linearalgebra;
 
 int CGLinearSolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
         .add< CGLinearSolver< GraphScatteredMatrix, GraphScatteredVector > >(true)
-        .add< CGLinearSolver< FullMatrix<double>, FullVector<double> > >()
-        .add< CGLinearSolver< SparseMatrix<double>, FullVector<double> > >()
-        .add< CGLinearSolver< CompressedRowSparseMatrix<double>, FullVector<double> > >()
-        .add< CGLinearSolver< CompressedRowSparseMatrix<Mat<2,2,double> >, FullVector<double> > >()
-        .add< CGLinearSolver< CompressedRowSparseMatrix<Mat<3,3,double> >, FullVector<double> > >()
-        .add< CGLinearSolver< CompressedRowSparseMatrix<Mat<4,4,double> >, FullVector<double> > >()
-        .add< CGLinearSolver< CompressedRowSparseMatrix<Mat<6,6,double> >, FullVector<double> > >()
-        .add< CGLinearSolver< CompressedRowSparseMatrix<Mat<8,8,double> >, FullVector<double> > >()
+        .add< CGLinearSolver< FullMatrix<SReal>, FullVector<SReal> > >()
+        .add< CGLinearSolver< SparseMatrix<SReal>, FullVector<SReal> > >()
+        .add< CGLinearSolver< CompressedRowSparseMatrix<SReal>, FullVector<SReal> > >()
+        .add< CGLinearSolver< CompressedRowSparseMatrix<Mat<2,2,SReal> >, FullVector<SReal> > >()
+        .add< CGLinearSolver< CompressedRowSparseMatrix<Mat<3,3,SReal> >, FullVector<SReal> > >()
+        .add< CGLinearSolver< CompressedRowSparseMatrix<Mat<4,4,SReal> >, FullVector<SReal> > >()
+        .add< CGLinearSolver< CompressedRowSparseMatrix<Mat<6,6,SReal> >, FullVector<SReal> > >()
+        .add< CGLinearSolver< CompressedRowSparseMatrix<Mat<8,8,SReal> >, FullVector<SReal> > >()
 
         .addAlias("CGSolver")
         .addAlias("ConjugateGradient")
         ;
 
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< GraphScatteredMatrix, GraphScatteredVector >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< FullMatrix<double>, FullVector<double> >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< SparseMatrix<double>, FullVector<double> >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< CompressedRowSparseMatrix<double>, FullVector<double> >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<2,2,double> >, FullVector<double> >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<3,3,double> >, FullVector<double> >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<4,4,double> >, FullVector<double> >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<6,6,double> >, FullVector<double> >;
-template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<8,8,double> >, FullVector<double> >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< FullMatrix<SReal>, FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< SparseMatrix<SReal>, FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< CompressedRowSparseMatrix<SReal>, FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<2,2,SReal> >, FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<3,3,SReal> >, FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<4,4,SReal> >, FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<6,6,SReal> >, FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<8,8,SReal> >, FullVector<SReal> >;
 
 
 } // namespace sofa::component::linearsolver::iterative

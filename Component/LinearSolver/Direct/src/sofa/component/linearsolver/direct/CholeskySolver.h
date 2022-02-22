@@ -61,8 +61,8 @@ private :
 };
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_CHOLESKYSOLVER_CPP)
-extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API CholeskySolver< linearalgebra::SparseMatrix<double>, linearalgebra::FullVector<double> >;
-extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API CholeskySolver< linearalgebra::FullMatrix<double>, linearalgebra::FullVector<double> >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API CholeskySolver< linearalgebra::SparseMatrix<SReal>, linearalgebra::FullVector<SReal> >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API CholeskySolver< linearalgebra::FullMatrix<SReal>, linearalgebra::FullVector<SReal> >;
 
 #endif
 

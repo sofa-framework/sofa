@@ -31,11 +31,11 @@ using namespace sofa::defaulttype;
 using namespace sofa::linearalgebra;
 
 int CholeskySolverClass = core::RegisterObject("Direct linear solver based on Cholesky factorization, for dense matrices")
-        .add< CholeskySolver< SparseMatrix<double>, FullVector<double> > >(true)
-        .add< CholeskySolver< FullMatrix<double>, FullVector<double> > >();
+        .add< CholeskySolver< SparseMatrix<SReal>, FullVector<SReal> > >(true)
+        .add< CholeskySolver< FullMatrix<SReal>, FullVector<SReal> > >();
 
-template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API CholeskySolver< SparseMatrix<double>, FullVector<double> >;
-template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API CholeskySolver< FullMatrix<double>, FullVector<double> >;
+template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API CholeskySolver< SparseMatrix<SReal>, FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API CholeskySolver< FullMatrix<SReal>, FullVector<SReal> >;
 
 
 } //namespace sofa::component::linearsolver::direct

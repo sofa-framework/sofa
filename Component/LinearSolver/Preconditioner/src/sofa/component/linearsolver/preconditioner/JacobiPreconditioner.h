@@ -59,7 +59,7 @@ public:
     }
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_JACOBIPRECONDITIONER_CPP)
-extern template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API JacobiPreconditioner<DiagonalMatrix<double>, FullVector<double> >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API JacobiPreconditioner<DiagonalMatrix<SReal>, FullVector<SReal> >;
 #endif // !defined(SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_JACOBIPRECONDITIONER_CPP)
 
 };

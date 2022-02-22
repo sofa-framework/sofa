@@ -28,8 +28,8 @@ namespace sofa::component::linearsolver::preconditioner
 using namespace sofa::linearalgebra;
 
 int BlockJacobiPreconditionerClass = core::RegisterObject("Linear solver based on a NxN bloc diagonal matrix (i.e. block Jacobi preconditioner)")
-        .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<3,double> ,FullVector<double> > >();
+        .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<3,SReal> ,FullVector<SReal> > >();
 
-template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API BlockJacobiPreconditioner<BlockDiagonalMatrix<3, double>, FullVector<double> >;
+template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API BlockJacobiPreconditioner<BlockDiagonalMatrix<3, SReal>, FullVector<SReal> >;
 
 } // namespace sofa::component::linearsolver::preconditioner

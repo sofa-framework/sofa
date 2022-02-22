@@ -72,7 +72,7 @@ public:
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_BLOCKJACOBIPRECONDITIONER_CPP)
-extern template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API BlockJacobiPreconditioner<BlockDiagonalMatrix<3, double>, FullVector<double> >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API BlockJacobiPreconditioner<BlockDiagonalMatrix<3, SReal>, FullVector<SReal> >;
 #endif // !defined(SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_BLOCKJACOBIPRECONDITIONER_CPP)
 
 } // namespace sofa::component::linearsolver::preconditioner

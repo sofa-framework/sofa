@@ -30,10 +30,10 @@ namespace sofa::component::linearsolver::direct
 using namespace sofa::linearalgebra;
 
 int SparseLUSolverClass = core::RegisterObject("Direct linear solver based on Sparse LU factorization, implemented with the CSPARSE library")
-        .add< SparseLUSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >()
+        .add< SparseLUSolver< CompressedRowSparseMatrix<SReal>,FullVector<SReal> > >()
         ;
 
-template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseLUSolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
+template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseLUSolver< CompressedRowSparseMatrix<SReal>,FullVector<SReal> >;
 
 } // namespace sofa::component::linearsolver::direct
 

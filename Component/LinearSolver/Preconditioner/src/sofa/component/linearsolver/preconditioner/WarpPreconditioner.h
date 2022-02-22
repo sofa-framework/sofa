@@ -99,7 +99,7 @@ private :
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_WARPPRECONDITIONER_CPP)
-template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API WarpPreconditioner< linearalgebra::RotationMatrix<double>, linearalgebra::FullVector<double>, NoThreadManager >;
+template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API WarpPreconditioner< linearalgebra::RotationMatrix<SReal>, linearalgebra::FullVector<SReal>, NoThreadManager >;
 #endif // !defined(SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_WARPPRECONDITIONER_CPP)
 
 } // namespace sofa::component::linearsolver::preconditioner
