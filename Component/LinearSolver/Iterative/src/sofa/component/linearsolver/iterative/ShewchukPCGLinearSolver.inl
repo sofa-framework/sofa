@@ -26,6 +26,8 @@
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/helper/map.h>
+#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 #include <cmath>
 
