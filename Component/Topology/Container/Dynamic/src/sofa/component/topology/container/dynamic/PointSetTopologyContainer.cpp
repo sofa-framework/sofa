@@ -165,7 +165,10 @@ void PointSetTopologyContainer::addPoints(const Size nPoints)
 
 void PointSetTopologyContainer::removePoints(const Size nPoints)
 {
-    setNbPoints( nbPoints.getValue() - nPoints );
+    if (nPoints < nbPoints.getValue())
+    {
+        setNbPoints( nbPoints.getValue() - nPoints );
+    }
 }
 
 void PointSetTopologyContainer::addPoint()
