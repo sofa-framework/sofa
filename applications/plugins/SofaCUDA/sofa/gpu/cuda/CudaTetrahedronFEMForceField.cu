@@ -710,18 +710,18 @@ __global__ void TetrahedronFEMForceFieldCuda3t_calcForce_kernel(int nbElem, cons
 template<typename real,int BSIZE>
 __global__ void TetrahedronFEMForceFieldCuda3t_addForce1_kernel(int nbVertex, unsigned int nbElemPerVertex, const CudaVec4<real>* eforce, const int* velems, real* f)
 {
-    int index0 = fastmul(blockIdx.x,BSIZE); //blockDim.x;
+    int index0 = blockIdx.x * BSIZE; //blockDim.x;
     int index1 = threadIdx.x;
-    int index3 = fastmul(index1,3); //3*index1;
+    int index3 = 3 * index1;
 
     //! Shared memory buffer to reorder global memory access
     __shared__  real temp[BSIZE*3];
 
-    int iext = fastmul(blockIdx.x,BSIZE*3)+index1; //index0*3+index1;
+    int iext = index0 * 3 + index1;
 
     CudaVec3<real> force = CudaVec3<real>::make(0.0f,0.0f,0.0f);
 
-    velems+=fastmul(index0,nbElemPerVertex)+index1;
+    velems += index0 * nbElemPerVertex + index1;
 
     if (index0+index1 < nbVertex)
         for (int s = 0; s < nbElemPerVertex; s++)
@@ -749,7 +749,7 @@ __global__ void TetrahedronFEMForceFieldCuda3t_addForce1_kernel(int nbVertex, un
 template<typename real,int BSIZE>
 __global__ void TetrahedronFEMForceFieldCuda3t_addForce4_kernel(int nbVertex, unsigned int nb4ElemPerVertex, const CudaVec4<real>* eforce, const int* velems, real* f)
 {
-    int index0 = fastmul(blockIdx.x,BSIZE); //blockDim.x;
+    int index0 = blockIdx.x * BSIZE; //blockDim.x;
     int index1 = threadIdx.x;
 
     //! Shared memory buffer to reorder global memory access
@@ -772,7 +772,7 @@ __global__ void TetrahedronFEMForceFieldCuda3t_addForce4_kernel(int nbVertex, un
     }
 
     //int iout = (index1>>2)*3 + (index1&3)*((BSIZE/4)*3);
-    int iout = fastmul((index1>>2) + ((index1&3)*(BSIZE/4)),3);
+    int iout = ((index1>>2) + ((index1&3)*(BSIZE/4)))*3;
     temp[iout  ] = force.x;
     temp[iout+1] = force.y;
     temp[iout+2] = force.z;
@@ -785,7 +785,7 @@ __global__ void TetrahedronFEMForceFieldCuda3t_addForce4_kernel(int nbVertex, un
 
         real res = temp[index1] + temp[index1+ (BSIZE/4)*3] + temp[index1+ 2*(BSIZE/4)*3] + temp[index1+ 3*(BSIZE/4)*3];
 
-        int iext = fastmul(blockIdx.x,(BSIZE/4)*3)+index1; //index0*3+index1;
+        int iext = blockIdx.x*(BSIZE/4)*3+index1; //index0*3+index1;
 
         f[iext] += res;
     }
@@ -794,7 +794,7 @@ __global__ void TetrahedronFEMForceFieldCuda3t_addForce4_kernel(int nbVertex, un
 template<typename real,int BSIZE>
 __global__ void TetrahedronFEMForceFieldCuda3t_addForce8_kernel(int nbVertex, unsigned int nb8ElemPerVertex, const CudaVec4<real>* eforce, const int* velems, real* f)
 {
-    int index0 = fastmul(blockIdx.x,BSIZE); //blockDim.x;
+    int index0 = blockIdx.x*BSIZE; //blockDim.x;
     int index1 = threadIdx.x;
 
     //! Shared memory buffer to reorder global memory access
@@ -817,7 +817,7 @@ __global__ void TetrahedronFEMForceFieldCuda3t_addForce8_kernel(int nbVertex, un
     }
 
     //int iout = (index1>>2)*3 + (index1&7)*((BSIZE/8)*3);
-    int iout = fastmul((index1>>3) + ((index1&3)*(BSIZE/8)),3);
+    int iout = ((index1>>3) + ((index1&3)*(BSIZE/8)))*3;
     if (index1&4)
     {
         temp[iout  ] = force.x;
@@ -838,7 +838,7 @@ __global__ void TetrahedronFEMForceFieldCuda3t_addForce8_kernel(int nbVertex, un
         // we need to merge 4 values together
         real res = temp[index1] + temp[index1+ (BSIZE/8)*3] + temp[index1+ 2*(BSIZE/8)*3] + temp[index1+ 3*(BSIZE/8)*3];
 
-        int iext = fastmul(blockIdx.x,(BSIZE/8)*3)+index1; //index0*3+index1;
+        int iext = blockIdx.x*(BSIZE/8)*3+index1; //index0*3+index1;
 
         f[iext] += res;
     }
