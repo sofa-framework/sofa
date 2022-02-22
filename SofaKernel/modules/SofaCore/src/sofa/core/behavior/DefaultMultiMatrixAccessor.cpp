@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/linearsolver/iterative/DefaultMultiMatrixAccessor.h>
+#include <sofa/core/behavior/DefaultMultiMatrixAccessor.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
@@ -30,9 +30,9 @@ using sofa::core::behavior::BaseMechanicalState;
 
 /// This line registers the DefaultMultiMatrixAccessor to the messaging system
 /// allowing to use msg_info() instead of msg_info("DefaultMultiMatrixAccessor")
-MSG_REGISTER_CLASS(sofa::component::linearsolver::DefaultMultiMatrixAccessor, "DefaultMultiMatrixAccessor")
+MSG_REGISTER_CLASS(sofa::core::behavior::DefaultMultiMatrixAccessor, "DefaultMultiMatrixAccessor")
 
-namespace sofa::component::linearsolver
+namespace sofa::core::behavior
 {
 
 
@@ -579,4 +579,4 @@ linearalgebra::BaseMatrix* DefaultMultiMatrixAccessor::createMatrixImpl(const so
     return m;
 }
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::core::behavior

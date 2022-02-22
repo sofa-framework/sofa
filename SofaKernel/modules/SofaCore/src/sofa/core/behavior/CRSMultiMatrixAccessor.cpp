@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseLinearSolver/CRSMultiMatrixAccessor.h>
+#include <sofa/core/behavior/CRSMultiMatrixAccessor.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/BaseMapping.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::core::behavior
 {
 
 using sofa::core::behavior::BaseMechanicalState;
@@ -318,4 +318,4 @@ void CRSMultiMatrixAccessor::computeGlobalMatrix()
     }//end of mapping loop
 }
 
-} //namespace sofa::component::linearsolver
+} //namespace sofa::core::behavior

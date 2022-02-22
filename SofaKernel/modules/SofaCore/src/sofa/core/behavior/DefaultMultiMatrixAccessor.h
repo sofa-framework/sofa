@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/linearsolver/iterative/config.h>
+#include <sofa/core/config.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <vector>
 #include <map>
 
-namespace sofa::component::linearsolver
+namespace sofa::core::behavior
 {
 
 /* DefaultMultiMatrixAccessor is a simplest class managing the global matrix setup.
@@ -40,7 +40,7 @@ namespace sofa::component::linearsolver
  * see all scenes in example/Component/linearsolver/MatrixContribution*  for tests
  *
  * */
-class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API DefaultMultiMatrixAccessor : public sofa::core::behavior::MultiMatrixAccessor
+class SOFA_CORE_API DefaultMultiMatrixAccessor : public sofa::core::behavior::MultiMatrixAccessor
 {
 public:
     DefaultMultiMatrixAccessor();
@@ -128,4 +128,4 @@ protected:
     std::vector<sofa::core::BaseMapping*> mappingList;
 };
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::core::behavior

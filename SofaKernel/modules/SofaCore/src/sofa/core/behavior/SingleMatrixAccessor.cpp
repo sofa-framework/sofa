@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include "SingleMatrixAccessor.h"
 
-namespace sofa::component::linearsolver
+namespace sofa::core::behavior
 {
 
 SingleMatrixAccessor::~SingleMatrixAccessor()
@@ -48,4 +48,4 @@ SingleMatrixAccessor::MatrixRef SingleMatrixAccessor::getMatrix(const core::beha
 }
 
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::core::behavior

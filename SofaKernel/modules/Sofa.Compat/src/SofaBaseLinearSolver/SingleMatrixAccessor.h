@@ -21,6 +21,12 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/linearsolver/iterative/SingleMatrixAccessor.h>
+#include <sofa/core/behavior/SingleMatrixAccessor.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/iterative/SingleMatrixAccessor.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/core/behavior/SingleMatrixAccessor.h")
+
+namespace sofa::component::linearsolver
+{
+    using SingleMatrixAccessor = sofa::core::behavior::SingleMatrixAccessor;
+
+} // namespace sofa::component::linearsolver

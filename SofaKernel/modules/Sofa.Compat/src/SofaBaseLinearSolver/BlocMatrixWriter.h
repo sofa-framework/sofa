@@ -21,6 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/linearsolver/iterative/BlocMatrixWriter.h>
+#include <sofa/core/behavior/BlocMatrixWriter.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/iterative/BlocMatrixWriter.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/core/behavior/BlocMatrixWriter.h")
+
+namespace sofa::component::linearsolver
+{
+    template<typename TBloc>
+    using BlocMatrixWriter = sofa::core::behavior::BlocMatrixWriter<TBloc>;
+
+} // namespace sofa::component::linearsolver

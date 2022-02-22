@@ -21,6 +21,12 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/linearsolver/iterative/CRSMultiMatrixAccessor.h>
+#include <sofa/core/behavior/CRSMultiMatrixAccessor.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/iterative/CRSMultiMatrixAccessor.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/core/behavior/CRSMultiMatrixAccessor.h")
+
+namespace sofa::component::linearsolver
+{
+    using CRSMultiMatrixAccessor = sofa::core::behavior::CRSMultiMatrixAccessor;
+
+} // namespace sofa::component::linearsolver

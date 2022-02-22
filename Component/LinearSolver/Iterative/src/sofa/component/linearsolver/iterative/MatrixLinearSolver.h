@@ -36,9 +36,9 @@
 #include <sofa/linearalgebra/RotationMatrix.h>
 
 #if SOFABASELINEARSOLVER_ENABLE_CRSMULTIMATRIXACCESSOR
-#include <sofa/component/linearsolver/iterative/CRSMultiMatrixAccessor.h>
+#include <sofa/core/behavior/CRSMultiMatrixAccessor.h>
 #else
-#include <sofa/component/linearsolver/iterative/DefaultMultiMatrixAccessor.h>
+#include <sofa/core/behavior/DefaultMultiMatrixAccessor.h>
 #endif // SOFABASELINEARSOLVER_ENABLE_CRSMULTIMATRIXACCESSOR
 
 namespace sofa::component::linearsolver
@@ -329,9 +329,9 @@ protected:
         core::MultiVecDerivId solutionVecId;
 
 #if SOFABASELINEARSOLVER_ENABLE_CRSMULTIMATRIXACCESSOR
-        CRSMultiMatrixAccessor matrixAccessor;
+        core::behavior::CRSMultiMatrixAccessor matrixAccessor;
 #else
-        DefaultMultiMatrixAccessor matrixAccessor;
+        core::behavior::DefaultMultiMatrixAccessor matrixAccessor;
 #endif // SOFABASELINEARSOLVER_ENABLE_CRSMULTIMATRIXACCESSOR
 
         LinearSystemData()

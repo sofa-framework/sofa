@@ -20,10 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
+#include <sofa/core/behavior/DefaultMultiMatrixAccessor.h>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::core::behavior
 {
 
 
@@ -34,7 +34,7 @@ namespace sofa::component::linearsolver
  * To be able to creat  linearalgebra::CompressedRowSparseMatrix, it is needle to know about block format of relied to the
  * size of DOF of mapped Mechanical state and input-output Mechanical State of the mapping
  * */
-class SOFA_SOFABASELINEARSOLVER_API CRSMultiMatrixAccessor : public DefaultMultiMatrixAccessor
+class SOFA_CORE_API CRSMultiMatrixAccessor : public DefaultMultiMatrixAccessor
 {
 public:
     CRSMultiMatrixAccessor() : DefaultMultiMatrixAccessor() {}
@@ -508,4 +508,4 @@ inline bool opAddMulMJ(linearalgebra::BaseMatrix* out, linearalgebra::BaseMatrix
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::core::behavior

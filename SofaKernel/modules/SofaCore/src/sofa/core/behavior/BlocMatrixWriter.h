@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/linearsolver/iterative/config.h>
+#include <sofa/core/config.h>
 
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <sofa/linearalgebra/matrix_bloc_traits.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::core::behavior
 {
 
 /// This class is a helper to efficiently implement addKToMatrix in forcefields (and is could later be used for mapping, etc.)
@@ -167,4 +167,4 @@ public:
     }
 };
 
-} // namespace sofa::component::linearsolver
+} // namespace sofa::core::behavior
