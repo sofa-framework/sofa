@@ -378,6 +378,9 @@ public:
    /// if this mechanical object stores independent dofs (in opposition to mapped dofs)
    bool isIndependent() const;
 
+    /// Get the associated topology
+    [[nodiscard]] core::topology::BaseMeshTopology* getTopology() const;
+
 protected :
 
     /// @name Initial geometric transformations

@@ -2883,5 +2883,9 @@ bool MechanicalObject<DataTypes>::isIndependent() const
     return static_cast<const simulation::Node*>(this->getContext())->mechanicalMapping.empty();
 }
 
-
+template <class DataTypes>
+core::topology::BaseMeshTopology* MechanicalObject<DataTypes>::getTopology() const
+{
+    return l_topology.get();
+}
 } // namespace sofa::component::container
