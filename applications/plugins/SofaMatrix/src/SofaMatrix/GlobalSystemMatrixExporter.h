@@ -44,6 +44,7 @@ public:
 
 protected:
     Data<sofa::helper::OptionsGroup> d_fileFormat;
+    Data<int> d_precision;
 
     GlobalSystemMatrixExporter();
 
