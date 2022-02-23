@@ -19,18 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
-#include "CudaTriangleModel.h"
+#include <sofa/gpu/cuda/CudaTriangleModel.h>
 #include <SofaMeshCollision/TriangleModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template class SOFA_GPU_CUDA_API TriangleCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
@@ -40,17 +33,12 @@ template class SOFA_GPU_CUDA_API TriangleCollisionModel<sofa::gpu::cuda::CudaVec
 template class SOFA_GPU_CUDA_API TriangleCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace collision
+} // namespace sofa::component::collision
 
-} // namespace component
-
-namespace gpu
+namespace sofa::gpu::cuda
 {
 
-namespace cuda
-{
-
-int TriangleModelCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+const int TriangleModelCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::collision::TriangleCollisionModel<CudaVec3fTypes> >()
         .add< component::collision::TriangleCollisionModel<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -59,8 +47,5 @@ int TriangleModelCudaClass = core::RegisterObject("Supports GPU-side computation
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-} // namespace sofa
