@@ -19,46 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaGeneralVisual/config.h>
+#include <sofa/component/visual/Camera.h>
 
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::visualmodel
+namespace sofa::component::visual
 {
 
-/// Visually apply a (translation,rotation) transformation to visual elements rendering within a node or a sub-graph.
-/// This can be used to change where elements are rendered, but has no effect on the actual simulation.
-/// It can be used for example to correctly render forcefields applied to a mesh that is then transformed by a rigid DOF using DeformableOnRigidFrameMapping.
+int CameraClass = core::RegisterObject("A Camera that render the scene from a given location & orientation.")
+                    .add<Camera>() ;
 
-class SOFA_SOFAGENERALVISUAL_API VisualTransform : public sofa::core::visual::VisualModel
+Camera::Camera()
 {
-public:
-    SOFA_CLASS(VisualTransform,sofa::core::visual::VisualModel);
+    p_computeZClip.setValue(false) ;
+}
 
-    typedef defaulttype::Rigid3Types::Coord Coord;
+Camera::~Camera()
+{
+}
 
-protected:
-    VisualTransform();
-    ~VisualTransform() override;
-public:
-    void fwdDraw(sofa::core::visual::VisualParams* vparams) override;
-    void bwdDraw(sofa::core::visual::VisualParams* vparams) override;
-
-    void draw(const sofa::core::visual::VisualParams* vparams) override;
-    void drawVisual(const sofa::core::visual::VisualParams* vparams) override;
-    void drawTransparent(const sofa::core::visual::VisualParams* vparams) override;
-
-    Data<Coord> transform; ///< Transformation to apply
-    Data<bool> recursive; ///< True to apply transform to all nodes below
-
-    void push(const sofa::core::visual::VisualParams* vparams);
-    void pop(const sofa::core::visual::VisualParams* vparams);
-
-protected:
-    int nbpush;
-};
-
-
-} // namespace sofa::component::visualmodel
+} // namespace sofa::component::visual

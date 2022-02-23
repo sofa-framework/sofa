@@ -19,23 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseVisual/Camera.h>
+#pragma once
+#include <sofa/component/visual/BaseCamera.h>
 
-#include <sofa/core/ObjectFactory.h>
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/visual/BaseCamera.h")
 
 namespace sofa::component::visualmodel
 {
+    using BaseCamera = sofa::component::visual::BaseCamera;
 
-int CameraClass = core::RegisterObject("A Camera that render the scene from a given location & orientation.")
-                    .add<Camera>() ;
-
-Camera::Camera()
-{
-    p_computeZClip.setValue(false) ;
-}
-
-Camera::~Camera()
-{
-}
-
-} // namespace sofa::component::visualmodel
+} // namespace sofa::component::visual

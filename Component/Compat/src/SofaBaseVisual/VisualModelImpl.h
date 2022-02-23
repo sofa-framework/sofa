@@ -19,73 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralVisual/VisualTransform.h>
+#pragma once
+#include <sofa/component/visual/VisualModelImpl.h>
 
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ObjectFactory.h>
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/visual/VisualModelImpl.h")
 
 namespace sofa::component::visualmodel
 {
+    using Vec3State = sofa::component::visual::Vec3State;
+    using VisualModelImpl = sofa::component::visual::VisualModelImpl;
 
-int VisualTransformClass = sofa::core::RegisterObject("TODO")
-        .add<VisualTransform>();
-
-VisualTransform::VisualTransform()
-    : transform(initData(&transform,"transform","Transformation to apply"))
-    , recursive(initData(&recursive,false,"recursive","True to apply transform to all nodes below"))
-    , nbpush(0)
-{
-}
-
-VisualTransform::~VisualTransform()
-{
-}
-
-void VisualTransform::push(const sofa::core::visual::VisualParams* vparams)
-{
-    Coord xform = transform.getValue();
-    vparams->drawTool()->pushMatrix();
-    ++nbpush;
-    float glTransform[16];
-    xform.writeOpenGlMatrix ( glTransform );
-    vparams->drawTool()->multMatrix( glTransform );
-
-}
-
-void VisualTransform::pop(const sofa::core::visual::VisualParams* vparams)
-{
-    if (nbpush > 0)
-    {
-        vparams->drawTool()->popMatrix();
-        --nbpush;
-    }
-}
-
-void VisualTransform::fwdDraw(sofa::core::visual::VisualParams* vparams)
-{
-    push(vparams);
-}
-
-void VisualTransform::draw(const sofa::core::visual::VisualParams* /*vparams*/)
-{
-    //pop(vparams);
-}
-
-void VisualTransform::drawVisual(const sofa::core::visual::VisualParams* vparams)
-{
-    if (!recursive.getValue())
-        pop(vparams);
-}
-
-void VisualTransform::drawTransparent(const sofa::core::visual::VisualParams* vparams)
-{
-    if (!recursive.getValue())
-        pop(vparams);
-}
-
-void VisualTransform::bwdDraw(sofa::core::visual::VisualParams* vparams)
-{
-    pop(vparams);
-}
-
-} // namespace sofa::component::visualmodel
+} // namespace sofa::component::visual

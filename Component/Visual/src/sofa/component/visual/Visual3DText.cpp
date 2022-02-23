@@ -19,28 +19,57 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaBaseVisual/config.h>
 
-#include <SofaBaseVisual/BaseCamera.h>
+#include <sofa/component/visual/Visual3DText.h>
 
-namespace sofa::component::visualmodel
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/visual/VisualParams.h>
+
+
+namespace sofa::component::visual
 {
 
-class SOFA_SOFABASEVISUAL_API Camera : public BaseCamera
+int Visual3DTextClass = core::RegisterObject("Display 3D camera-oriented text")
+        .add< Visual3DText >()
+        ;
+
+
+
+Visual3DText::Visual3DText()
+    : d_text(initData(&d_text, "text", "Test to display"))
+    , d_position(initData(&d_position, type::Vec3f(), "position", "3d position"))
+    , d_scale(initData(&d_scale, 1.f, "scale", "text scale"))
+    , d_color(initData(&d_color, sofa::type::RGBAColor(1.0,1.0,1.0,1.0), "color", "text color. (default=[1.0,1.0,1.0,1.0])"))
+    , d_depthTest(initData(&d_depthTest, true, "depthTest", "perform depth test"))
 {
-public:
-    SOFA_CLASS(Camera, BaseCamera);
+}
 
-protected:
-    Camera();
-    ~Camera() override;
 
-public:
-    void manageEvent(core::objectmodel::Event* e) override { SOFA_UNUSED(e); }
+void Visual3DText::init()
+{
+    VisualModel::init();
 
-private:
+    reinit();
 
-};
+    updateVisual();
+}
 
-} // namespace sofa::component::visualmodel
+void Visual3DText::reinit()
+{
+}
+
+void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
+{
+    if(!vparams->displayFlags().getShowVisualModels()) return;
+
+    const type::Vec3f& pos = d_position.getValue();
+    float scale = d_scale.getValue();
+
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableDepthTest();
+    vparams->drawTool()->setLightingEnabled(true);
+    vparams->drawTool()->draw3DText(pos,scale,d_color.getValue(),d_text.getValue().c_str());
+    vparams->drawTool()->restoreLastState();
+}
+
+} // namespace sofa::component::visual

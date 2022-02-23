@@ -19,68 +19,51 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralVisual/initSofaGeneralVisual.h>
+#pragma once
+#include <sofa/component/visual/config.h>
 
-#include <sofa/helper/system/PluginManager.h>
+#include <sofa/component/visual/BaseCamera.h>
+#include <sofa/helper/visual/Trackball.h>
 
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
+namespace sofa::core::objectmodel
+{
+    class MouseEvent;
+    class KeypressedEvent;
+    class KeyreleasedEvent;
+} // namespace sofa::core::objectmodel
 
-namespace sofa::component
+namespace sofa::component::visual
 {
 
-void initSofaGeneralVisual()
+class SOFA_COMPONENT_VISUAL_API InteractiveCamera : public BaseCamera
 {
-    static bool first = true;
-    if (first)
-    {
-        // msg_deprecated("SofaGeneralVisual") << "SofaGeneralVisual is deprecated. It will be removed at v23.06. Use Sofa.Component.Visual instead.";
+public:
+    SOFA_CLASS(InteractiveCamera, BaseCamera);
 
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Visual");
+    enum  { TRACKBALL_MODE, PAN_MODE, ZOOM_MODE, WHEEL_ZOOM_MODE, NONE_MODE };
+    enum  { CAMERA_LOOKAT_PIVOT = 0, CAMERA_POSITION_PIVOT = 1, SCENE_CENTER_PIVOT = 2, WORLD_CENTER_PIVOT = 3};
 
-        first = false;
-    }
-}
+    Data<double> p_zoomSpeed; ///< Zoom Speed
+    Data<double> p_panSpeed; ///< Pan Speed
+    Data<int> p_pivot; ///< Pivot (0 => Camera lookAt, 1 => Camera position, 2 => Scene center, 3 => World center
 
-extern "C" {
-    SOFA_SOFAGENERALVISUAL_API void initExternalModule();
-    SOFA_SOFAGENERALVISUAL_API const char* getModuleName();
-    SOFA_SOFAGENERALVISUAL_API const char* getModuleVersion();
-    SOFA_SOFAGENERALVISUAL_API const char* getModuleLicense();
-    SOFA_SOFAGENERALVISUAL_API const char* getModuleDescription();
-    SOFA_SOFAGENERALVISUAL_API const char* getModuleComponentList();
-}
+protected:
+    InteractiveCamera();
+    ~InteractiveCamera() override;
+public:
+private:
+    int currentMode;
+    bool isMoving;
+    int lastMousePosX, lastMousePosY;
+    helper::visual::Trackball currentTrackball;
 
-void initExternalModule()
-{
-    initSofaGeneralVisual();
-}
+    void internalUpdate() override;
+protected:
+    void moveCamera(int x, int y);
+    void manageEvent(core::objectmodel::Event* e) override;
+    void processMouseEvent(core::objectmodel::MouseEvent* me);
+    void processKeyPressedEvent(core::objectmodel::KeypressedEvent* kpe);
+    void processKeyReleasedEvent(core::objectmodel::KeyreleasedEvent* kre);
+};
 
-const char* getModuleName()
-{
-    return sofa_tostring(SOFA_TARGET);
-}
-
-const char* getModuleVersion()
-{
-    return sofa_tostring(SOFAGENERALVISUAL_VERSION);
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This plugin contains contains features about General Visual.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-
-} // namespace sofa::component
+} // namespace sofa::component::visual

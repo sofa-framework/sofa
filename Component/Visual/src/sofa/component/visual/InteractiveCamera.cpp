@@ -19,14 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseVisual/InteractiveCamera.h>
+#include <sofa/component/visual/InteractiveCamera.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 
-namespace sofa::component::visualmodel
+namespace sofa::component::visual
 {
 
 int InteractiveCameraClass = core::RegisterObject("InteractiveCamera")
@@ -267,4 +267,4 @@ void InteractiveCamera::processKeyReleasedEvent(core::objectmodel::KeyreleasedEv
 
 }
 
-} // namespace sofa::component::visualmodel
+} // namespace sofa::component::visual

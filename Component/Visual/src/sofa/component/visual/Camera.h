@@ -20,50 +20,27 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseVisual/config.h>
+#include <sofa/component/visual/config.h>
 
-#include <SofaBaseVisual/BaseCamera.h>
-#include <sofa/helper/visual/Trackball.h>
+#include <sofa/component/visual/BaseCamera.h>
 
-namespace sofa::core::objectmodel
-{
-    class MouseEvent;
-    class KeypressedEvent;
-    class KeyreleasedEvent;
-} // namespace sofa::core::objectmodel
-
-namespace sofa::component::visualmodel
+namespace sofa::component::visual
 {
 
-class SOFA_SOFABASEVISUAL_API InteractiveCamera : public BaseCamera
+class SOFA_COMPONENT_VISUAL_API Camera : public BaseCamera
 {
 public:
-    SOFA_CLASS(InteractiveCamera, BaseCamera);
-
-    enum  { TRACKBALL_MODE, PAN_MODE, ZOOM_MODE, WHEEL_ZOOM_MODE, NONE_MODE };
-    enum  { CAMERA_LOOKAT_PIVOT = 0, CAMERA_POSITION_PIVOT = 1, SCENE_CENTER_PIVOT = 2, WORLD_CENTER_PIVOT = 3};
-
-    Data<double> p_zoomSpeed; ///< Zoom Speed
-    Data<double> p_panSpeed; ///< Pan Speed
-    Data<int> p_pivot; ///< Pivot (0 => Camera lookAt, 1 => Camera position, 2 => Scene center, 3 => World center
+    SOFA_CLASS(Camera, BaseCamera);
 
 protected:
-    InteractiveCamera();
-    ~InteractiveCamera() override;
+    Camera();
+    ~Camera() override;
+
 public:
+    void manageEvent(core::objectmodel::Event* e) override { SOFA_UNUSED(e); }
+
 private:
-    int currentMode;
-    bool isMoving;
-    int lastMousePosX, lastMousePosY;
-    helper::visual::Trackball currentTrackball;
 
-    void internalUpdate() override;
-protected:
-    void moveCamera(int x, int y);
-    void manageEvent(core::objectmodel::Event* e) override;
-    void processMouseEvent(core::objectmodel::MouseEvent* me);
-    void processKeyPressedEvent(core::objectmodel::KeypressedEvent* kpe);
-    void processKeyReleasedEvent(core::objectmodel::KeyreleasedEvent* kre);
 };
 
-} // namespace sofa::component::visualmodel
+} // namespace sofa::component::visual

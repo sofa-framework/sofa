@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseVisual/config.h>
+#include <sofa/component/visual/config.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/type/Vec.h>
@@ -31,10 +31,10 @@
 #include <sofa/helper/OptionsGroup.h>
 
 
-namespace sofa::component::visualmodel
+namespace sofa::component::visual
 {
 
-class SOFA_SOFABASEVISUAL_API BaseCamera : public core::objectmodel::BaseObject
+class SOFA_COMPONENT_VISUAL_API BaseCamera : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(BaseCamera, core::objectmodel::BaseObject);
@@ -277,4 +277,4 @@ protected:
     double currentZNear, currentZFar;
 };
 
-} // namespace sofa::component::visualmodel
+} // namespace sofa::component::visual

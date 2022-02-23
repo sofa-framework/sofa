@@ -19,68 +19,50 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralVisual/initSofaGeneralVisual.h>
+#pragma once
+#include <sofa/component/visual/config.h>
 
-#include <sofa/helper/system/PluginManager.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/type/RGBAColor.h>
 
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
+namespace sofa::core::topology
+{
+    class BaseMeshTopology;
+} // namespace sofa::core::topology
 
-namespace sofa::component
+namespace sofa::core::behavior
+{
+    class BaseMechanicalState;
+} // namespace sofa::core::behavior
+
+namespace sofa::component::visual
 {
 
-void initSofaGeneralVisual()
+/// Draw camera-oriented (billboard) 3D text
+class SOFA_COMPONENT_VISUAL_API Visual3DText : public core::visual::VisualModel
 {
-    static bool first = true;
-    if (first)
-    {
-        // msg_deprecated("SofaGeneralVisual") << "SofaGeneralVisual is deprecated. It will be removed at v23.06. Use Sofa.Component.Visual instead.";
 
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Visual");
+public:
+    SOFA_CLASS(Visual3DText,core::visual::VisualModel);
 
-        first = false;
-    }
-}
+protected:
+    Visual3DText();
 
-extern "C" {
-    SOFA_SOFAGENERALVISUAL_API void initExternalModule();
-    SOFA_SOFAGENERALVISUAL_API const char* getModuleName();
-    SOFA_SOFAGENERALVISUAL_API const char* getModuleVersion();
-    SOFA_SOFAGENERALVISUAL_API const char* getModuleLicense();
-    SOFA_SOFAGENERALVISUAL_API const char* getModuleDescription();
-    SOFA_SOFAGENERALVISUAL_API const char* getModuleComponentList();
-}
+public:
+    void init() override;
 
-void initExternalModule()
-{
-    initSofaGeneralVisual();
-}
+    void reinit() override;
 
-const char* getModuleName()
-{
-    return sofa_tostring(SOFA_TARGET);
-}
+    void drawTransparent(const core::visual::VisualParams* vparams) override;
 
-const char* getModuleVersion()
-{
-    return sofa_tostring(SOFAGENERALVISUAL_VERSION);
-}
+public:
+    Data<std::string> d_text; ///< Test to display
+    Data<type::Vec3f> d_position; ///< 3d position
+    Data<float> d_scale; ///< text scale
+    Data<sofa::type::RGBAColor> d_color; ///< text color. (default=[1.0,1.0,1.0,1.0])
+    Data<bool> d_depthTest; ///< perform depth test
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
 
-const char* getModuleDescription()
-{
-    return "This plugin contains contains features about General Visual.";
-}
+};
 
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-
-} // namespace sofa::component
+} // namespace sofa::component::visual

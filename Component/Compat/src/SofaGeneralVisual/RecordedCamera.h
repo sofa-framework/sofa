@@ -19,57 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
+#include <sofa/component/visual/RecordedCamera.h>
 
-#include <SofaGeneralVisual/Visual3DText.h>
-
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/core/visual/VisualParams.h>
-
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/visual/RecordedCamera.h")
 
 namespace sofa::component::visualmodel
 {
+    using RecordedCamera = sofa::component::visual::RecordedCamera;
 
-int Visual3DTextClass = core::RegisterObject("Display 3D camera-oriented text")
-        .add< Visual3DText >()
-        ;
-
-
-
-Visual3DText::Visual3DText()
-    : d_text(initData(&d_text, "text", "Test to display"))
-    , d_position(initData(&d_position, type::Vec3f(), "position", "3d position"))
-    , d_scale(initData(&d_scale, 1.f, "scale", "text scale"))
-    , d_color(initData(&d_color, sofa::type::RGBAColor(1.0,1.0,1.0,1.0), "color", "text color. (default=[1.0,1.0,1.0,1.0])"))
-    , d_depthTest(initData(&d_depthTest, true, "depthTest", "perform depth test"))
-{
-}
-
-
-void Visual3DText::init()
-{
-    VisualModel::init();
-
-    reinit();
-
-    updateVisual();
-}
-
-void Visual3DText::reinit()
-{
-}
-
-void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
-{
-    if(!vparams->displayFlags().getShowVisualModels()) return;
-
-    const type::Vec3f& pos = d_position.getValue();
-    float scale = d_scale.getValue();
-
-    vparams->drawTool()->saveLastState();
-    vparams->drawTool()->disableDepthTest();
-    vparams->drawTool()->setLightingEnabled(true);
-    vparams->drawTool()->draw3DText(pos,scale,d_color.getValue(),d_text.getValue().c_str());
-    vparams->drawTool()->restoreLastState();
-}
-
-} // namespace sofa::component::visualmodel
+} // namespace sofa::component::visual

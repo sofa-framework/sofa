@@ -19,68 +19,46 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralVisual/initSofaGeneralVisual.h>
+#pragma once
+#include <sofa/component/visual/config.h>
 
-#include <sofa/helper/system/PluginManager.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
-
-namespace sofa::component
+namespace sofa::component::visual
 {
 
-void initSofaGeneralVisual()
+/// Visually apply a (translation,rotation) transformation to visual elements rendering within a node or a sub-graph.
+/// This can be used to change where elements are rendered, but has no effect on the actual simulation.
+/// It can be used for example to correctly render forcefields applied to a mesh that is then transformed by a rigid DOF using DeformableOnRigidFrameMapping.
+
+class SOFA_COMPONENT_VISUAL_API VisualTransform : public sofa::core::visual::VisualModel
 {
-    static bool first = true;
-    if (first)
-    {
-        // msg_deprecated("SofaGeneralVisual") << "SofaGeneralVisual is deprecated. It will be removed at v23.06. Use Sofa.Component.Visual instead.";
+public:
+    SOFA_CLASS(VisualTransform,sofa::core::visual::VisualModel);
 
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Visual");
+    typedef defaulttype::Rigid3Types::Coord Coord;
 
-        first = false;
-    }
-}
+protected:
+    VisualTransform();
+    ~VisualTransform() override;
+public:
+    void fwdDraw(sofa::core::visual::VisualParams* vparams) override;
+    void bwdDraw(sofa::core::visual::VisualParams* vparams) override;
 
-extern "C" {
-    SOFA_SOFAGENERALVISUAL_API void initExternalModule();
-    SOFA_SOFAGENERALVISUAL_API const char* getModuleName();
-    SOFA_SOFAGENERALVISUAL_API const char* getModuleVersion();
-    SOFA_SOFAGENERALVISUAL_API const char* getModuleLicense();
-    SOFA_SOFAGENERALVISUAL_API const char* getModuleDescription();
-    SOFA_SOFAGENERALVISUAL_API const char* getModuleComponentList();
-}
+    void draw(const sofa::core::visual::VisualParams* vparams) override;
+    void drawVisual(const sofa::core::visual::VisualParams* vparams) override;
+    void drawTransparent(const sofa::core::visual::VisualParams* vparams) override;
 
-void initExternalModule()
-{
-    initSofaGeneralVisual();
-}
+    Data<Coord> transform; ///< Transformation to apply
+    Data<bool> recursive; ///< True to apply transform to all nodes below
 
-const char* getModuleName()
-{
-    return sofa_tostring(SOFA_TARGET);
-}
+    void push(const sofa::core::visual::VisualParams* vparams);
+    void pop(const sofa::core::visual::VisualParams* vparams);
 
-const char* getModuleVersion()
-{
-    return sofa_tostring(SOFAGENERALVISUAL_VERSION);
-}
+protected:
+    int nbpush;
+};
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
 
-const char* getModuleDescription()
-{
-    return "This plugin contains contains features about General Visual.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-
-} // namespace sofa::component
+} // namespace sofa::component::visual

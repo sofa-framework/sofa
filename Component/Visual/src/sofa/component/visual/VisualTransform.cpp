@@ -19,50 +19,73 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaGeneralVisual/config.h>
+#include <sofa/component/visual/VisualTransform.h>
 
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/type/RGBAColor.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::core::topology
-{
-    class BaseMeshTopology;
-} // namespace sofa::core::topology
-
-namespace sofa::core::behavior
-{
-    class BaseMechanicalState;
-} // namespace sofa::core::behavior
-
-namespace sofa::component::visualmodel
+namespace sofa::component::visual
 {
 
-/// Draw camera-oriented (billboard) 3D text
-class SOFA_SOFAGENERALVISUAL_API Visual3DText : public core::visual::VisualModel
+int VisualTransformClass = sofa::core::RegisterObject("TODO")
+        .add<VisualTransform>();
+
+VisualTransform::VisualTransform()
+    : transform(initData(&transform,"transform","Transformation to apply"))
+    , recursive(initData(&recursive,false,"recursive","True to apply transform to all nodes below"))
+    , nbpush(0)
 {
+}
 
-public:
-    SOFA_CLASS(Visual3DText,core::visual::VisualModel);
+VisualTransform::~VisualTransform()
+{
+}
 
-protected:
-    Visual3DText();
+void VisualTransform::push(const sofa::core::visual::VisualParams* vparams)
+{
+    Coord xform = transform.getValue();
+    vparams->drawTool()->pushMatrix();
+    ++nbpush;
+    float glTransform[16];
+    xform.writeOpenGlMatrix ( glTransform );
+    vparams->drawTool()->multMatrix( glTransform );
 
-public:
-    void init() override;
+}
 
-    void reinit() override;
+void VisualTransform::pop(const sofa::core::visual::VisualParams* vparams)
+{
+    if (nbpush > 0)
+    {
+        vparams->drawTool()->popMatrix();
+        --nbpush;
+    }
+}
 
-    void drawTransparent(const core::visual::VisualParams* vparams) override;
+void VisualTransform::fwdDraw(sofa::core::visual::VisualParams* vparams)
+{
+    push(vparams);
+}
 
-public:
-    Data<std::string> d_text; ///< Test to display
-    Data<type::Vec3f> d_position; ///< 3d position
-    Data<float> d_scale; ///< text scale
-    Data<sofa::type::RGBAColor> d_color; ///< text color. (default=[1.0,1.0,1.0,1.0])
-    Data<bool> d_depthTest; ///< perform depth test
+void VisualTransform::draw(const sofa::core::visual::VisualParams* /*vparams*/)
+{
+    //pop(vparams);
+}
 
+void VisualTransform::drawVisual(const sofa::core::visual::VisualParams* vparams)
+{
+    if (!recursive.getValue())
+        pop(vparams);
+}
 
-};
+void VisualTransform::drawTransparent(const sofa::core::visual::VisualParams* vparams)
+{
+    if (!recursive.getValue())
+        pop(vparams);
+}
 
-} // namespace sofa::component::visualmodel
+void VisualTransform::bwdDraw(sofa::core::visual::VisualParams* vparams)
+{
+    pop(vparams);
+}
+
+} // namespace sofa::component::visual

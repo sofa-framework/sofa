@@ -807,6 +807,17 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "TopologicalChangeProcessor", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Topology.Utility") },
     { "TopologyBoundingTrasher", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Topology.Utility") },
     { "TopologyChecker", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Topology.Utility") },
+
+    // SofaBaseVisual was deprecated in #2679
+    { "Camera", CreatableMoved("v22.06", "SofaBaseVisual", "Sofa.Component.Visual") },
+    { "InteractiveCamera", CreatableMoved("v22.06", "SofaBaseVisual", "Sofa.Component.Visual") },
+    { "VisualModelImpl", CreatableMoved("v22.06", "SofaBaseVisual", "Sofa.Component.Visual") },
+    { "VisualStyle", CreatableMoved("v22.06", "SofaBaseVisual", "Sofa.Component.Visual") },
+
+    // SofaGeneralVisual was deprecated in #2679
+    { "RecordedCamera", CreatableMoved("v22.06", "SofaGeneralVisual", "Sofa.Component.Visual") },
+    { "Visual3DText", CreatableMoved("v22.06", "SofaGeneralVisual", "Sofa.Component.Visual") },
+    { "VisualTransform", CreatableMoved("v22.06", "SofaGeneralVisual", "Sofa.Component.Visual") },
 };
 
 } // namespace sofa::helper::lifecycle
