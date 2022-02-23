@@ -39,32 +39,23 @@ namespace sofa::component::linearsolver {
 template<class TMatrix, class TVector, class TThreadManager>
 SparseLDLSolver<TMatrix,TVector,TThreadManager>::SparseLDLSolver()
     : numStep(0)
-    , f_saveMatrixToFile( initData(&f_saveMatrixToFile, false, "savingMatrixToFile", "save matrix to a text file (can be very slow, as full matrix is stored"))
-    , d_filename( initData(&d_filename, std::string("MatrixInLDL_%04d.txt"),"savingFilename", "Name of file where system matrix (mass, stiffness and damping) will be stored."))
-    , d_precision( initData(&d_precision, 6, "savingPrecision", "Number of digits used to store system's matrix. Default is 6."))
 {}
+
+template <class TMatrix, class TVector, class TThreadManager>
+void SparseLDLSolver<TMatrix, TVector, TThreadManager>::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
+{
+    Inherit1::parse(arg);
+
+    if (arg->getAttribute("savingMatrixToFile"))
+    {
+        msg_warning() << "It is no longer possible to export the linear system matrix from within SparseLDLSolver. Instead, use the component GlobalSystemMatrixExporter.";
+    }
+}
 
 template<class TMatrix, class TVector, class TThreadManager>
 void SparseLDLSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& z, Vector& r)
 {
     Inherit::solve_cpu(&z[0],&r[0],(InvertData *) this->getMatrixInvertData(&M));
-}
-
-
-template <class TMatrix, class TVector, class TThreadManager>
-void SparseLDLSolver<TMatrix, TVector, TThreadManager>::saveMatrix(Matrix& M)
-{
-    std::ofstream f;
-    std::string name=d_filename.getValue().c_str();
-    if (d_filename.getValue().find("%d"))
-    {
-        char bname[100];
-        snprintf(bname, 100, d_filename.getValue().c_str(), numStep);
-        name=bname;
-    }
-    f.open(name);
-    f << std::scientific << std::setprecision(d_precision.getValue()) << M;
-    f.close();
 }
 
 template <class TMatrix, class TVector, class TThreadManager>
@@ -96,11 +87,6 @@ bool SparseLDLSolver<TMatrix, TVector, TThreadManager>::factorize(
 template<class TMatrix, class TVector, class TThreadManager>
 void SparseLDLSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
 {
-    if (f_saveMatrixToFile.getValue())
-    {
-        saveMatrix(M);
-    }
-
     factorize(M, (InvertData *) this->getMatrixInvertData(&M));
 }
 
