@@ -94,7 +94,7 @@ bool ObjectElement::initNode()
     auto& objName = *obj->name.beginEdit();
     if (objName.empty())
     {
-        objName = ctx->getNameHelper().resolveName(this->getType(), objName);
+        objName = ctx->getNameHelper().resolveName(obj->getClassName(), objName);
     }
     obj->name.endEdit();
 

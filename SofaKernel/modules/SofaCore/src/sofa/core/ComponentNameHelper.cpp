@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sstream>
 #include <sofa/core/ComponentNameHelper.h>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/NameDecoder.h>
 
 namespace sofa::core
 {
@@ -30,7 +30,7 @@ std::string ComponentNameHelper::resolveName(const std::string& type, const std:
 {
     if (name.empty())
     {
-        const std::string radix = sofa::core::ObjectFactory::ShortName(type);
+        const std::string radix = helper::NameDecoder::shortName(type);
         std::ostringstream oss;
         oss << radix << m_instanceCounter[radix]++;
         return oss.str();
