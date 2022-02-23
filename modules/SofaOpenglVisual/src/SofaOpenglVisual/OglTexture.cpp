@@ -205,6 +205,14 @@ void OglTexture::init()
 
 void OglTexture::initVisual()
 {
+    if (img == nullptr)
+    {
+        msg_error() << "Cannot create OpenGL texture: invalid image data";
+        enabled.setValue(false);
+        d_componentState.setValue(core::objectmodel::ComponentState::Invalid);
+        return;
+    }
+
 #ifdef GL_MAX_TEXTURE_IMAGE_UNITS_ARB //http://developer.nvidia.com/object/General_FAQ.html#t6
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS_ARB, &MAX_NUMBER_OF_TEXTURE_UNIT);
 #else
