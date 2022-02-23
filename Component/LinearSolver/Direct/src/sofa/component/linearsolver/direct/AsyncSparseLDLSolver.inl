@@ -20,12 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaSparseSolver/AsyncSparseLDLSolver.h>
+
+#include <sofa/component/linearsolver/direct/AsyncSparseLDLSolver.h>
 #include <sofa/simulation/mechanicalvisitor/MechanicalMultiVectorFromBaseVectorVisitor.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::direct
 {
+
 template <class TMatrix, class TVector, class TThreadManager>
 void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::init()
 {
@@ -158,4 +160,5 @@ void AsyncSparseLDLSolver<TMatrix, TVector, TThreadManager>::swapInvertData()
     }
     newInvertDataReady = false;
 }
-}
+
+} // namespace sofa::component::linearsolver::direct

@@ -19,21 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSparseSolver/AsyncSparseLDLSolver.inl>
+#define SOFA_COMPONENT_LINEARSOLVER_ASYNCSPARSELDLSOLVER_CPP
+
+#include <sofa/component/linearsolver/direct/AsyncSparseLDLSolver.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::direct
 {
 
 using linearalgebra::CompressedRowSparseMatrix;
 using linearalgebra::FullVector;
 
 int AsyncSparseLDLSolverClass = core::RegisterObject("Asynchronous direct Linear Solver using a Sparse LDL^T factorization.")
-    .add< AsyncSparseLDLSolver< CompressedRowSparseMatrix<double>                , FullVector<double> > >(true)
-    .add< AsyncSparseLDLSolver< CompressedRowSparseMatrix<type::Mat<3,3,double> >, FullVector<double> > >()
+    .add< AsyncSparseLDLSolver< CompressedRowSparseMatrix<SReal>                , FullVector<SReal> > >(true)
+    .add< AsyncSparseLDLSolver< CompressedRowSparseMatrix<type::Mat<3,3,SReal> >, FullVector<SReal> > >()
 ;
 
-template class SOFA_SOFASPARSESOLVER_API AsyncSparseLDLSolver< CompressedRowSparseMatrix<double>                 ,FullVector<double> >;
-template class SOFA_SOFASPARSESOLVER_API AsyncSparseLDLSolver< CompressedRowSparseMatrix< type::Mat<3,3,double> >,FullVector<double> >;
+template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API AsyncSparseLDLSolver< CompressedRowSparseMatrix<SReal>                 ,FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API AsyncSparseLDLSolver< CompressedRowSparseMatrix< type::Mat<3,3,SReal> >,FullVector<SReal> >;
 
-} //sofa::component::linearsolver
+} // namespace sofa::component::linearsolver::direct

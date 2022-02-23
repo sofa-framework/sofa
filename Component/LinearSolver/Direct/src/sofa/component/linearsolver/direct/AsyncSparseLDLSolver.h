@@ -20,11 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaSparseSolver/config.h>
-#include <future>
-#include <SofaSparseSolver/SparseLDLSolver.h>
+#include <sofa/component/linearsolver/direct/config.h>
 
-namespace sofa::component::linearsolver
+#include <future>
+#include <sofa/component/linearsolver/direct/SparseLDLSolver.h>
+
+namespace sofa::component::linearsolver::direct
 {
 
 /**
@@ -101,4 +102,9 @@ protected:
     bool m_hasUpdatedMatrix { false };
 };
 
-} //sofa::component::linearsolver
+#if  !defined(SOFA_COMPONENT_LINEARSOLVER_ASYNCSPARSELDLSOLVER_CPP)
+extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API AsyncSparseLDLSolver< sofa::linearalgebra::CompressedRowSparseMatrix< SReal>, sofa::linearalgebra::FullVector<SReal> >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API AsyncSparseLDLSolver< sofa::linearalgebra::CompressedRowSparseMatrix< type::Mat<3, 3, SReal> >, sofa::linearalgebra::FullVector<SReal> >;
+#endif
+
+} // namespace sofa::component::linearsolver::direct
