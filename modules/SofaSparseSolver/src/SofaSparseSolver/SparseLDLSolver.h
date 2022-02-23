@@ -59,6 +59,7 @@ public :
 
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void invert(Matrix& M) override;
+    bool doAddJMInvJtLocal(ResMatrixType* result, const JMatrixType* J, SReal fact, InvertData* data);
     bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, SReal fact) override;
     int numStep;
 
@@ -80,7 +81,7 @@ public :
         {
             const std::string header = "SparseLDLSolver(" + std::string(arg->getAttribute("name", "")) + ")";
             msg_warning(header) << "Template is empty\n"
-                                << "By default SparseLDLSolver uses blocks with a single double (to handle all cases of simulations).\n"
+                                << "By default " << helper::NameDecoder::getClassName<T>() << " uses blocks with a single double (to handle all cases of simulations).\n"
                                 << "If you are using only 3D DOFs, you may consider using blocks of Matrix3 to speedup the calculations.\n"
                                 << "If it is the case, add " << "template=\"CompressedRowSparseMatrixMat3x3d\" " << "to this object in your scene\n"
                                 << "Otherwise, if you want to disable this message, add " << "template=\"CompressedRowSparseMatrixd\" " << ".";
@@ -95,6 +96,9 @@ protected :
     type::vector<int> Jlocal2global;
     sofa::linearalgebra::FullMatrix<Real> JLinvDinv, JLinv;
     sofa::linearalgebra::CompressedRowSparseMatrix<Real> Mfiltered;
+
+    bool factorize(Matrix& M, InvertData * invertData);
+    void saveMatrix(Matrix& M);
 };
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_CPP)
