@@ -62,7 +62,7 @@ void ContactListener::handleEvent( core::objectmodel::Event* _event )
 {
     if (simulation::CollisionBeginEvent::checkEventType(_event))
     {
-        m_ContactsVectorBuffer = m_ContactsVector;
+        m_ContactsVector.swap(m_ContactsVectorBuffer);
         m_ContactsVector.clear();
     }
 
@@ -89,7 +89,7 @@ void ContactListener::handleEvent( core::objectmodel::Event* _event )
                 {
                     if ( const type::vector<DetectionOutput>* contacts = dynamic_cast<type::vector<DetectionOutput>*>(it.second) )
                     {
-                        m_ContactsVector.push_back( contacts );
+                        m_ContactsVector.push_back( *contacts );
                     }
                 }
             }
@@ -106,7 +106,7 @@ void ContactListener::handleEvent( core::objectmodel::Event* _event )
                 {
                     if ( const type::vector<DetectionOutput>* contacts = dynamic_cast<type::vector<DetectionOutput>*>(it.second) )
                     {
-                        m_ContactsVector.push_back( contacts );
+                        m_ContactsVector.push_back( *contacts );
                     }
                 }
             }
@@ -119,7 +119,7 @@ sofa::Size ContactListener::getNumberOfContacts() const
 {
     if (!m_ContactsVectorBuffer.empty())
     {
-        const sofa::Size numberOfContacts = m_ContactsVectorBuffer[0][0].size();
+        const sofa::Size numberOfContacts = m_ContactsVectorBuffer[0].size();
         if (0 < numberOfContacts && ((numberOfContacts <= m_CollisionModel1->getSize()) || (numberOfContacts <= m_CollisionModel2->getSize()))){
             return numberOfContacts;
         }
@@ -138,7 +138,7 @@ type::vector<double> ContactListener::getDistances() const
     const sofa::Size numberOfContacts = getNumberOfContacts();
     if (0 < numberOfContacts){ // can be 0
         distances.reserve(numberOfContacts);
-        for (const auto& c: m_ContactsVectorBuffer[0][0]){
+        for (const auto& c: m_ContactsVectorBuffer[0]){
             distances.emplace_back(c.value);
         }
     }
@@ -151,7 +151,7 @@ std::vector<std::tuple<unsigned int, sofa::type::Vector3, unsigned int, sofa::ty
     const sofa::Size numberOfContacts = getNumberOfContacts();
     if (0 < numberOfContacts){ // can be 0
         contactPoints.reserve(numberOfContacts);
-        for (const auto& c: m_ContactsVectorBuffer[0][0]){
+        for (const auto& c: m_ContactsVectorBuffer[0]){
             unsigned int firstID = m_CollisionModel1 != c.elem.first.getCollisionModel();
             unsigned int secondID = !firstID;
             contactPoints.emplace_back(firstID, c.point[0], secondID, c.point[1]);
@@ -166,7 +166,7 @@ std::vector<std::tuple<unsigned int, unsigned int, unsigned int, unsigned int>> 
     const sofa::Size numberOfContacts = getNumberOfContacts();
     if (0 < numberOfContacts){ // can be 0
         contactElements.reserve(numberOfContacts);
-        for (const auto& c: m_ContactsVectorBuffer[0][0]){
+        for (const auto& c: m_ContactsVectorBuffer[0]){
             unsigned int firstID = m_CollisionModel1 != c.elem.first.getCollisionModel();
             unsigned int secondID = !firstID;
             contactElements.emplace_back(firstID, c.elem.first.getIndex(), secondID, c.elem.second.getIndex());
@@ -175,7 +175,7 @@ std::vector<std::tuple<unsigned int, unsigned int, unsigned int, unsigned int>> 
     return contactElements;
 }
 
-type::vector<const type::vector<DetectionOutput>* > ContactListener::getContactsVector() const
+type::vector<type::vector<DetectionOutput>> ContactListener::getContactsVector() const
 {
     return m_ContactsVector;
 }

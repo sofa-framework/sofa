@@ -219,7 +219,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getComplianceMatrix(linearalge
 template< class DataTypes >
 void LinearSolverConstraintCorrection< DataTypes >::computeMotionCorrection(const core::ConstraintParams* /*cparams*/, core::MultiVecDerivId dx, core::MultiVecDerivId f)
 {
-    if (mstate)
+    if (mstate && !linearsolvers.empty())
     {
         linearsolvers[0]->setSystemRHVector(f);
         linearsolvers[0]->setSystemLHVector(dx);

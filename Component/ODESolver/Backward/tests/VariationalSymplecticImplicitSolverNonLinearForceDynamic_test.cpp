@@ -40,7 +40,7 @@ using sofa::testing::NumericTest;
 
 #include <sofa/defaulttype/VecTypes.h>
 
-#include "SunPlanetSystemCreation.h"
+#include <sofa/component/odesolver/testing/SunPlanetSystemCreation.h>
 
 // For atan2 ??
 //#include <sofa/helper/rmath.h>

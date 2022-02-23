@@ -21,24 +21,26 @@
 ******************************************************************************/
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
+#include <sofa/testing/NumericTest.h>
+using sofa::testing::NumericTest;
+
+#include <sofa/component/odesolver/testing/MassSpringSystemCreation.h>
 
 #include <SceneCreator/SceneCreator.h>
 
-#include <SofaExplicitOdeSolver_test/MassSpringSystemCreation.h>
 
-#include <sofa/simulation/Node.h>
+
+//Including Simulation
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/Node.h>
 
+// Including mechanical object
 #include <SofaBaseMechanics/MechanicalObject.h>
-typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
+using MechanicalObject3 = sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> ;
 
 // Solvers
-#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
-
-#include <sofa/defaulttype/VecTypes.h>
-
+#include <SofaGeneralExplicitOdeSolver/CentralDifferenceSolver.h>
 
 namespace sofa {
 
@@ -53,33 +55,31 @@ Test the dynamic behavior of solver: study a mass-spring system under gravity in
 The movement follows the equation:
 x(t)= A cos(wt + phi) with w the pulsation w=sqrt(K/M), K the stiffness, M the mass and phi the phase.
 In this test: x(t=0)= 1 and v(t=0)=0 and K = spring stiffness and phi = 0 of material thus x(t)= cos(wt)
-This tests generates the discrete mass position obtained with euler implicit solver with different parameter values (K,M,h).
+This tests generates the discrete mass position obtained with central difference solver with different parameter values (K,M,h).
 Then it compares the effective mass position to the computed mass position every time step.
 */
 
 template <typename _DataTypes>
-struct EulerImplicitDynamic_test : public BaseSimulationTest
+struct CentralDifferenceExplicitSolverDynamic_test : public BaseSimulationTest
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
 
     typedef container::MechanicalObject<DataTypes> MechanicalObject;
-    typedef component::odesolver::EulerImplicitSolver EulerImplicitSolver;
-    typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
-
+    typedef component::odesolver::CentralDifferenceSolver CentralDifferenceSolver;
 
     /// Root of the scene graph
     simulation::Node::SPtr root;      
     /// Tested simulation
     simulation::Simulation* simulation;  
-    /// Position and velocity array
+    /// Position, velocity and acceleration array
     vector<double> positionsArray;
     vector<double> velocitiesArray;
-
+    vector<double> accelerationsArray;
     
     /// Create the context for the scene
-    void createScene(double K, double m, double l0, double rm = 0, double rk=0)
-    { 
+    void createScene(double K, double m, double l0,double rm)
+    {
         // Init simulation
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
         root = simulation::getSimulation()->createNewGraph("root");
@@ -88,14 +88,8 @@ struct EulerImplicitDynamic_test : public BaseSimulationTest
         root->setGravity(Coord(0,-10,0));
 
         // Solver
-        EulerImplicitSolver::SPtr eulerSolver = addNew<EulerImplicitSolver> (root);
-        eulerSolver->f_rayleighStiffness.setValue(rk);
-        eulerSolver->f_rayleighMass.setValue(rm);
-
-        CGLinearSolver::SPtr cgLinearSolver = addNew<CGLinearSolver>   (root);
-        cgLinearSolver->d_maxIter.setValue(3000);
-        cgLinearSolver->d_tolerance.setValue(1e-9);
-        cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-9);
+        CentralDifferenceSolver::SPtr centralDifferenceSolver = addNew<CentralDifferenceSolver> (root);
+        centralDifferenceSolver->f_rayleighMass.setValue(double(rm));
 
         // Set initial positions and velocities of fixed point and mass
         MechanicalObject3::VecCoord xFixed(1);
@@ -105,10 +99,10 @@ struct EulerImplicitDynamic_test : public BaseSimulationTest
         MechanicalObject3::VecCoord xMass(1);
         MechanicalObject3::DataTypes::set( xMass[0], 0., 1.,0.);
         MechanicalObject3::VecDeriv vMass(1);
-        MechanicalObject3::DataTypes::set( vFixed[0], 0.,0.,0.);
+        MechanicalObject3::DataTypes::set( vMass[0], 0., 0., 0.);
 
-        // Add mass spring system
-        root =  sofa::createMassSpringSystem<DataTypes>(
+        // Mass spring system
+        root = sofa::createMassSpringSystem<DataTypes>(
                 root,   // add mass spring system to the node containing solver
                 K,      // stiffness
                 m,      // mass
@@ -117,11 +111,11 @@ struct EulerImplicitDynamic_test : public BaseSimulationTest
                 vFixed, // Initial velocity of fixed point
                 xMass,  // Initial position of mass
                 vMass); // Initial velocity of mass
-
     }
 
+
     /// Generate discrete mass position values with euler implicit solver
-    void generateDiscreteMassPositions (double h, double K, double m, double z0, double v0,double g, double finalTime, double rm, double rk)
+    void generateDiscreteMassPositions (double h, double K, double m, double z0, double v0,double g, double finalTime, double rm)
     {
         int size = 0 ;
 
@@ -131,7 +125,11 @@ struct EulerImplicitDynamic_test : public BaseSimulationTest
             size = int(finalTime/h);
             positionsArray.reserve(size);
             velocitiesArray.reserve(size);
+            accelerationsArray.reserve(size);
         }
+
+        // First acceleration
+        accelerationsArray.push_back((-K*(z0-z0)-m*g)/m);
 
         // First position is z0
         positionsArray.push_back(double(z0));
@@ -139,14 +137,43 @@ struct EulerImplicitDynamic_test : public BaseSimulationTest
         // First velocity is v0
         velocitiesArray.push_back(v0);
 
-        // Compute velocities
-        double denominator = h*(h+rk)*K+(1+h*rm)*m;
-        double constant = (-(rk+h)*K-rm*m);
+        double pos,acc,vel;
 
-        for(int i=1;i< size+1; i++)
+        if(rm == 0)
         {
-            velocitiesArray.push_back(velocitiesArray[i-1]+h*(-K*(positionsArray[i-1]-z0)-m*g+velocitiesArray[i-1]*constant)/(denominator));
-            positionsArray.push_back(positionsArray[i-1]+h*velocitiesArray[i]);
+            for(int i=1;i< size+1; i++)
+            {
+                acc = (-K*(positionsArray[i-1]-z0) - m*g)/m;
+                vel = velocitiesArray[i-1]+acc*h;
+                pos = positionsArray[i-1]+vel*h;
+
+                // Fill array
+                positionsArray.push_back(pos);
+                accelerationsArray.push_back(acc);
+                velocitiesArray.push_back(vel);
+
+            }
+
+        }
+
+        else
+        {
+            double constantVel =  ((1.0/h) - (rm/2.0))/((1.0/h) + (rm/2.0));
+            double constantAcc = 1.0/((1.0/h) + (rm/2.0));
+
+            for(int i=1;i< size+1; i++)
+            {
+               acc = (-K*(positionsArray[i-1]-z0) - m*g)/m;
+               vel = velocitiesArray[i-1] * constantVel  + acc*constantAcc;
+               pos = positionsArray[i-1]+vel*h;
+
+                // Fill array
+                positionsArray.push_back(pos);
+                accelerationsArray.push_back(acc);
+                velocitiesArray.push_back(vel);
+
+            }
+
         }
 
     }
@@ -200,38 +227,30 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_SUITE(EulerImplicitDynamic_test, DataTypes);
+TYPED_TEST_SUITE(CentralDifferenceExplicitSolverDynamic_test, DataTypes);
 
-// Test case: h=0.1 k=100 m =10 rm=0 rk=0
-TYPED_TEST( EulerImplicitDynamic_test , eulerImplicitSolverDynamicTest_high_dt_without_damping)
+// Test case: h=0.01 k=100 m =10 rm=0.1 rk=0.1
+TYPED_TEST( CentralDifferenceExplicitSolverDynamic_test , centralDifferenceExplicitSolverDynamicTest_medium_dt_without_damping)
 {
-   this->createScene(100,10,1,0,0); // k,m,l0,rm,rk
-   this->generateDiscreteMassPositions (0.1, 100, 10, 1, 0, 10, 2, 0, 0);
+   this->createScene(100,10,1,0); // k,m,l0
+   this->generateDiscreteMassPositions (0.01, 100, 10, 1, 0, 10, 2, 0);
+   this-> compareSimulatedToTheoreticalPositions(4e-16,0.01);
+}
+
+// Test case: h=0.1 K=1000 m = 10
+TYPED_TEST( CentralDifferenceExplicitSolverDynamic_test , rungeKutta2ExplicitSolverDynamicTest_high_dt_with_damping)
+{
+   this->createScene(1000,10,1,0.1); // k,m,l0
+   this->generateDiscreteMassPositions (0.1, 1000, 10, 1, 0, 10, 2, 0.1);
    this-> compareSimulatedToTheoreticalPositions(5e-16,0.1);
 }
 
-// Test case: h=0.1 k=100 m =10 rm=0.1 rk=0.1
-TYPED_TEST( EulerImplicitDynamic_test , eulerImplicitSolverDynamicTest_high_dt_with_damping)
+// Test case: h=0.001 k=100 m=100
+TYPED_TEST( CentralDifferenceExplicitSolverDynamic_test , rungeKutta2ExplicitSolverDynamicTest_small_dt_with_damping)
 {
-   this->createScene(100,10,1,0.1,0.1); // k,m,l0,rm,rk
-   this->generateDiscreteMassPositions (0.1, 100, 10,1, 0, 10, 2, 0.1, 0.1);
-   this-> compareSimulatedToTheoreticalPositions(5e-16,0.1);
-}
-
-// Test case: h=0.01 K=10 m=10 rm=0 rk=0.1
-TYPED_TEST( EulerImplicitDynamic_test , eulerImplicitSolverDynamicTest_medium_dt_with_rayleigh_stiffness)
-{
-   this->createScene(10,10,1,0,0.1); // k,m,l0,rm,rk
-   this->generateDiscreteMassPositions (0.01, 10, 10, 1, 0, 10, 2, 0, 0.1);
-   this-> compareSimulatedToTheoreticalPositions(6e-15,0.01);
-}
-
-// Test case: h=0.001 K=10 m = 100 rm=0.1 rk=0
-TYPED_TEST( EulerImplicitDynamic_test , eulerImplicitSolverDynamicTest_small_dt_with_rayleigh_mass)
-{
-   this->createScene(10,100,1,0.1,0); // k,m,l0,rm,rk
-   this->generateDiscreteMassPositions (0.001, 10, 100, 1, 0, 10, 2, 0.1, 0);
-   this-> compareSimulatedToTheoreticalPositions(5e-16,0.001);
+   this->createScene(100,100,1,0.1); // k,m,l0
+   this->generateDiscreteMassPositions (0.001, 100, 100, 1, 0, 10, 2, 0.1);
+   this-> compareSimulatedToTheoreticalPositions(2e-16,0.001);
 }
 
 } // namespace sofa

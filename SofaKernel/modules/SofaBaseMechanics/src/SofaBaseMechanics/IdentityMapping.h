@@ -24,6 +24,7 @@
 
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/core/Mapping.h>
+#include <sofa/core/Mapping.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/vector.h>

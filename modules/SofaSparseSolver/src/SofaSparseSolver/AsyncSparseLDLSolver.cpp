@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,14 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/component/topology/mapping/SimpleTesselatedTetraTopologicalMapping.h>
+#include <SofaSparseSolver/AsyncSparseLDLSolver.inl>
+#include <sofa/core/ObjectFactory.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/topology/mapping/SimpleTesselatedTetraTopologicalMapping.h")
-
-namespace sofa::component::topology
+namespace sofa::component::linearsolver
 {
 
-    using SimpleTesselatedTetraTopologicalMapping = sofa::component::topology::mapping::SimpleTesselatedTetraTopologicalMapping;
+using linearalgebra::CompressedRowSparseMatrix;
+using linearalgebra::FullVector;
 
-} // namespace sofa::component::topology
+int AsyncSparseLDLSolverClass = core::RegisterObject("Asynchronous direct Linear Solver using a Sparse LDL^T factorization.")
+    .add< AsyncSparseLDLSolver< CompressedRowSparseMatrix<double>                , FullVector<double> > >(true)
+    .add< AsyncSparseLDLSolver< CompressedRowSparseMatrix<type::Mat<3,3,double> >, FullVector<double> > >()
+;
+
+template class SOFA_SOFASPARSESOLVER_API AsyncSparseLDLSolver< CompressedRowSparseMatrix<double>                 ,FullVector<double> >;
+template class SOFA_SOFASPARSESOLVER_API AsyncSparseLDLSolver< CompressedRowSparseMatrix< type::Mat<3,3,double> >,FullVector<double> >;
+
+} //sofa::component::linearsolver

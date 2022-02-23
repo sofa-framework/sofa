@@ -19,7 +19,6 @@ include(Sofa.GL.Component.Model.cmake)
 include(Sofa.GL.Component.Rendering.cmake)
 include(Sofa.GL.Component.Engine.cmake)
 
-
 set(SOURCE_FILES
     ${SOFACOMPONENTCOMPATSRC_ROOT}/init.cpp
 )

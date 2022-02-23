@@ -24,7 +24,7 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/testing/NumericTest.h>
 using sofa::testing::NumericTest;
 
-#include <SofaExplicitOdeSolver_test/MassSpringSystemCreation.h>
+#include <sofa/component/odesolver/testing/MassSpringSystemCreation.h>
 
 #include <SceneCreator/SceneCreator.h>
 
@@ -38,7 +38,7 @@ using sofa::testing::NumericTest;
 using MechanicalObject3 = sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> ;
 
 // Solvers
-#include <SofaGeneralImplicitOdeSolver/VariationalSymplecticSolver.h>
+#include <SofaGeneralExplicitOdeSolver/RungeKutta2Solver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 
 #include <sofa/defaulttype/VecTypes.h>
@@ -49,25 +49,25 @@ using namespace component;
 using namespace defaulttype;
 using namespace simulation;
 using namespace modeling;
+using type::vector;
 
 /**  Dynamic solver test.
 Test the dynamic behavior of solver: study a mass-spring system under gravity initialize with spring rest length it will oscillate around its equilibrium position if there is no damping.
 The movement follows the equation:
 x(t)= A cos(wt + phi) with w the pulsation w=sqrt(K/M), K the stiffness, M the mass and phi the phase.
 In this test: x(t=0)= 1 and v(t=0)=0 and K = spring stiffness and phi = 0 of material thus x(t)= cos(wt)
-This tests generates the discrete mass position obtained with variational symplectic explicit solver with different parameter values (K,M,h).
+This tests generates the discrete mass position obtained with rungeKutta2 solver with different parameter values (K,M,h).
 Then it compares the effective mass position to the computed mass position every time step.
 */
 
 template <typename _DataTypes>
-struct VariationalSymplecticExplicitSolverDynamic_test : public BaseSimulationTest
+struct RungeKutta2ExplicitSolverDynamic_test : public BaseSimulationTest
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Real Real;
 
     typedef container::MechanicalObject<DataTypes> MechanicalObject;
-    typedef component::odesolver::VariationalSymplecticSolver VariationalSymplecticSolver;
+    typedef component::odesolver::RungeKutta2Solver RungeKutta2Solver;
     typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
 
@@ -75,13 +75,13 @@ struct VariationalSymplecticExplicitSolverDynamic_test : public BaseSimulationTe
     simulation::Node::SPtr root;      
     /// Tested simulation
     simulation::Simulation* simulation;  
-    /// Position and velocity array
-    type::vector<Real> positionsArray;
-    type::vector<Real> velocitiesArray;
-    type::vector<Real> energiesArray;
+    /// Position, velocity and acceleration array
+    vector<double> positionsArray;
+    vector<double> velocitiesArray;
+    vector<double> accelerationsArray;
     
     /// Create the context for the scene
-    void createScene(double K, double m, double l0, double rm=0)
+    void createScene(double K, double m, double l0)
     {
         // Init simulation
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
@@ -91,10 +91,7 @@ struct VariationalSymplecticExplicitSolverDynamic_test : public BaseSimulationTe
         root->setGravity(Coord(0,-10,0));
 
         // Solver
-        VariationalSymplecticSolver::SPtr variationalSolver = addNew<VariationalSymplecticSolver> (root);
-        // Explicit solver
-        variationalSolver->f_explicit.setValue("true");
-        variationalSolver->f_rayleighMass.setValue(rm);
+        RungeKutta2Solver::SPtr rungeKutta2Solver = addNew<RungeKutta2Solver> (root);
 
         CGLinearSolver::SPtr cgLinearSolver = addNew<CGLinearSolver> (root);
         cgLinearSolver->d_maxIter.setValue(3000);
@@ -109,7 +106,7 @@ struct VariationalSymplecticExplicitSolverDynamic_test : public BaseSimulationTe
         MechanicalObject3::VecCoord xMass(1);
         MechanicalObject3::DataTypes::set( xMass[0], 0., 1.,0.);
         MechanicalObject3::VecDeriv vMass(1);
-        MechanicalObject3::DataTypes::set( vFixed[0], 0.,0.,0.);
+        MechanicalObject3::DataTypes::set( vMass[0], 0., 0., 0.);
 
         // Mass spring system
         root = sofa::createMassSpringSystem<DataTypes>(
@@ -121,11 +118,11 @@ struct VariationalSymplecticExplicitSolverDynamic_test : public BaseSimulationTe
                 vFixed, // Initial velocity of fixed point
                 xMass,  // Initial position of mass
                 vMass); // Initial velocity of mass
-
     }
 
-    /// Generate discrete mass position values with variational sympletic implicit solver
-    void generateDiscreteMassPositions (double h, double K, double m, double z0, double v0,double g, double finalTime, double rm)
+
+    /// Generate discrete mass position values with euler implicit solver
+    void generateDiscreteMassPositions (double h, double K, double m, double z0, double v0,double g, double finalTime)
     {
         int size = 0 ;
 
@@ -135,24 +132,30 @@ struct VariationalSymplecticExplicitSolverDynamic_test : public BaseSimulationTe
             size = int(finalTime/h);
             positionsArray.reserve(size);
             velocitiesArray.reserve(size);
-            energiesArray.reserve(size);
+            accelerationsArray.reserve(size);
         }
 
-        // First velocity is v0
-        velocitiesArray.push_back(v0);
-
         // First acceleration
-        energiesArray.push_back(m*v0);
+        accelerationsArray.push_back((-K*(z0-z0)-m*g)/m);
 
         // First position is z0
         positionsArray.push_back(double(z0));
 
-        // Compute velocities, energies and positions
+        // First velocity is v0
+        velocitiesArray.push_back(v0);
+
         for(int i=1;i< size+1; i++)
         {
-            velocitiesArray.push_back((energiesArray[i-1]+h*(-K*(positionsArray[i-1]-z0)-m*g-rm*m*velocitiesArray[i-1]))/m);
-            energiesArray.push_back(m*velocitiesArray[i]);
-            positionsArray.push_back(positionsArray[i-1]+h*velocitiesArray[i]);
+            // At time t + h/2
+            double newPos = positionsArray[i-1]+0.5*h*velocitiesArray[i-1];
+            double newVel = velocitiesArray[i-1]+0.5*h*accelerationsArray[i-1];
+            double acc    = (-K*(newPos-z0)-m*g)/m;
+
+            // At time t + h
+            positionsArray.push_back(positionsArray[i-1]+h*newVel);
+            velocitiesArray.push_back(velocitiesArray[i-1]+h*acc);
+            accelerationsArray.push_back((-K*(positionsArray[i]-z0)-m*g)/m);
+
         }
 
     }
@@ -206,30 +209,30 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_SUITE(VariationalSymplecticExplicitSolverDynamic_test, DataTypes);
+TYPED_TEST_SUITE(RungeKutta2ExplicitSolverDynamic_test, DataTypes);
 
-// Test case: h=0.001
-TYPED_TEST( VariationalSymplecticExplicitSolverDynamic_test , variationalSymplecticExplicitSolverDynamicTest_small_dt_without_damping)
+// Test case: h=0.1 k=100 m =10 rm=0.1 rk=0.1
+TYPED_TEST( RungeKutta2ExplicitSolverDynamic_test , rungeKutta2ExplicitSolverDynamicTest_medium_dt)
 {
-   this->createScene(100,10,1,0); // k,m,l0
-   this->generateDiscreteMassPositions (0.001, 100, 10, 1, 0, 10, 2, 0);
-   this-> compareSimulatedToTheoreticalPositions(1.9e-14,0.001);
+   this->createScene(100,10,1); // k,m,l0
+   this->generateDiscreteMassPositions (0.01, 100, 10, 1, 0,10, 2);
+   this-> compareSimulatedToTheoreticalPositions(5e-16,0.01);
 }
 
-// Test case: h=0.01 k=1000 m =10 rm=0.1
-TYPED_TEST( VariationalSymplecticExplicitSolverDynamic_test , variationalSymplecticExplicitSolverDynamicTest_medium_dt_with_damping)
+// Test case: h=0.1 K=1000 m = 10
+TYPED_TEST( RungeKutta2ExplicitSolverDynamic_test , rungeKutta2ExplicitSolverDynamicTest_high_dt)
 {
-     this->createScene(1000,10,1,0.1); // k,m,l0
-     this->generateDiscreteMassPositions (0.01, 1000, 10, 1, 0, 10, 2, 0.1);
-     this-> compareSimulatedToTheoreticalPositions(2.3e-16,0.01);
+   this->createScene(1000,10,1); // k,m,l0
+   this->generateDiscreteMassPositions (0.1, 1000, 10, 1, 0, 10, 2);
+   this-> compareSimulatedToTheoreticalPositions(5e-16,0.1);
 }
 
-// Test case: h=0.1 K=10 m=10 rm=0.1
-TYPED_TEST( VariationalSymplecticExplicitSolverDynamic_test , variationalSymplecticExplicitSolverDynamicTest_high_dt_with_damping)
+// Test case: h=0.001 k=100 m=100
+TYPED_TEST( RungeKutta2ExplicitSolverDynamic_test , rungeKutta2ExplicitSolverDynamicTest_small_dt)
 {
-   this->createScene(10,10,1,0.1); // k,m,l0
-   this->generateDiscreteMassPositions (0.1, 10, 10, 1, 0, 10, 2, 0.1);
-   this-> compareSimulatedToTheoreticalPositions(1.8e-15,0.1);
+   this->createScene(100,100,1); // k,m,l0
+   this->generateDiscreteMassPositions (0.001, 100, 100, 1, 0, 10, 2);
+   this-> compareSimulatedToTheoreticalPositions(9e-16,0.001);
 }
 
 } // namespace sofa
