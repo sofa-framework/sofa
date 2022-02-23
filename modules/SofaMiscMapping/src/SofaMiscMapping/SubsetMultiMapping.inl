@@ -25,6 +25,7 @@
 
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/core/MappingHelper.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 namespace sofa::component::mapping
 {
@@ -36,6 +37,13 @@ void SubsetMultiMapping<TIn, TOut>::init()
     const unsigned indexPairSize = indexPairs.getValue().size()/2;
 
     this->toModels[0]->resize( indexPairSize );
+    if (auto* mobject = dynamic_cast<sofa::component::container::MechanicalObject<Out> *>(this->toModels[0]))
+    {
+        if (auto* topology = mobject->getTopology())
+        {
+            topology->setNbPoints(indexPairSize);
+        }
+    }
 
     Inherit::init();
 
