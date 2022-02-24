@@ -90,7 +90,7 @@ void GenerateRigidMass<DataTypes, MassType>::doUpdate()
 template <class DataTypes, class MassType>
 void GenerateRigidMass<DataTypes, MassType>::integrateMesh()
 {
-    for (size_t i=0 ; i<10 ; ++i)
+    for (sofa::Size i=0 ; i<10 ; ++i)
         afIntegral[i] = 0.0;
 
     const type::vector<Vector3>& positions = m_positions.getValue();
