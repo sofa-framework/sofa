@@ -36,13 +36,9 @@
 #include <sofa/core/objectmodel/ComponentState.h>
 #include <sofa/core/DataTracker.h>
 #include <sofa/core/DataTrackerCallback.h>
+#include <sofa/type/fwd.h>
 
 #include <sofa/helper/system/SofaOStream.h>
-
-namespace sofa::type
-{
-    class BoundingBox;
-}
 
 // forward declaration of castable classes
 // @author Matthieu Nesme, 2015
