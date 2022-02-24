@@ -22,7 +22,6 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASE_H
 #define SOFA_CORE_OBJECTMODEL_BASE_H
 
-#include <sofa/type/BoundingBox.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/core/objectmodel/BaseClass.h>
@@ -39,6 +38,11 @@
 #include <sofa/core/DataTrackerCallback.h>
 
 #include <sofa/helper/system/SofaOStream.h>
+
+namespace sofa::type
+{
+    class BoundingBox;
+}
 
 // forward declaration of castable classes
 // @author Matthieu Nesme, 2015
