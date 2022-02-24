@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaExporter LANGUAGES CXX)
 
-sofa_find_package(SofaFramework REQUIRED)
-sofa_find_package(ZLIB REQUIRED)
-
 set(SRC_ROOT src/SofaExporter)
 
 set(HEADER_FILES
@@ -15,42 +12,15 @@ set(SOURCE_FILES
     ${SRC_ROOT}/initSofaExporter.cpp
     )
 
-set(EXTRA_FILES
-    README.md
-    examples/MeshExporter.scn
-    examples/STLExporter.scn
-    examples/OBJExporter.scn
-    )
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-list(APPEND HEADER_FILES
-    ${SRC_ROOT}/BlenderExporter.h
-    ${SRC_ROOT}/BlenderExporter.inl
-    ${SRC_ROOT}/MeshExporter.h
-    ${SRC_ROOT}/STLExporter.h
-    ${SRC_ROOT}/VisualModelOBJExporter.h
-    ${SRC_ROOT}/VTKExporter.h
-    ${SRC_ROOT}/WriteState.h
-    ${SRC_ROOT}/WriteState.inl
-    ${SRC_ROOT}/WriteTopology.h
-    ${SRC_ROOT}/WriteTopology.inl
-    )
+message(WARNING "${PROJECT_NAME} is deprecated. It will be removed at v23.06. Use Sofa.Component.IO.Mesh and Sofa.Component.Playback instead.")
 
-list(APPEND SOURCE_FILES
-    ${SRC_ROOT}/BlenderExporter.cpp
-    ${SRC_ROOT}/MeshExporter.cpp
-    ${SRC_ROOT}/STLExporter.cpp
-    ${SRC_ROOT}/VisualModelOBJExporter.cpp
-    ${SRC_ROOT}/VTKExporter.cpp
-    ${SRC_ROOT}/WriteState.cpp
-    ${SRC_ROOT}/WriteTopology.cpp
-    )
-
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore)
-target_link_libraries(${PROJECT_NAME} PUBLIC ZLIB::ZLIB)
-if(CMAKE_SYSTEM_NAME STREQUAL Windows)
-    sofa_install_libraries(TARGETS ZLIB::ZLIB)
-endif()
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.IO.Mesh REQUIRED)
+sofa_find_package(Sofa.Component.Playback REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.IO.Mesh)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Playback)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME SofaExporter

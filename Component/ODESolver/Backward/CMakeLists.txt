@@ -32,3 +32,8 @@ sofa_create_package_with_targets(
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
+
+cmake_dependent_option(SOFANG_ENABLE_TESTING_SOFA_COMPONENT_ODESOLVER_BACKWARD "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFANG_ENABLE_TESTING_SOFA_COMPONENT_ODESOLVER_BACKWARD)
+    add_subdirectory(tests)
+endif()

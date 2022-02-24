@@ -35,14 +35,15 @@ namespace defaulttype
 
 
 template< class TBloc >
-struct MapMapSparseMatrixToEigenSparse
+class MapMapSparseMatrixToEigenSparse
 {
 
 };
 
 template <typename TVec, typename Real>
-struct MapMapSparseMatrixToEigenSparseVec 
+class MapMapSparseMatrixToEigenSparseVec
 {
+public:
     typedef MapMapSparseMatrix< TVec >                 TMapMapSparseMatrix;
     typedef Eigen::SparseMatrix<Real, Eigen::RowMajor> EigenSparseMatrix;
 
@@ -93,7 +94,7 @@ class MapMapSparseMatrixToEigenSparse< sofa::defaulttype::RigidDeriv<N, Real > >
 
 
 template< class TBloc >
-struct EigenSparseToMapMapSparseMatrix
+class EigenSparseToMapMapSparseMatrix
 {
 
 };

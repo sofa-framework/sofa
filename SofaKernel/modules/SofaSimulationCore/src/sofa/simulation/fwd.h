@@ -46,14 +46,19 @@ namespace sofa::simulation
     class LocalStorage;
     class MutationListener;
     class Visitor;
+
+    class DefaultVisualManagerLoop;
 }
 
 namespace sofa::simulation::node
 {
-SOFA_SIMULATION_CORE_API sofa::core::objectmodel::Base* toBase(Node*);
 SOFA_SIMULATION_CORE_API sofa::core::objectmodel::BaseContext* toBaseContext(Node*);
-SOFA_SIMULATION_CORE_API Node* getNodeFrom(sofa::core::objectmodel::Base*);
 SOFA_SIMULATION_CORE_API Node* getNodeFrom(sofa::core::objectmodel::BaseContext*);
+}
+
+namespace sofa::core
+{
+SOFA_DECLARE_OPAQUE_FUNCTION_BETWEEN_BASE_AND(sofa::simulation::Node);
 }
 
 namespace sofa::simulation::common

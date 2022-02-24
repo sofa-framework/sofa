@@ -30,6 +30,8 @@
 
 #include <sofa/core/objectmodel/DataFileName.h>
 
+#include <sofa/core/topology/TopologySubsetIndices.h>
+
 namespace sofa::component::interactionforcefield
 {
 
@@ -59,7 +61,7 @@ public:
 
     inline friend std::ostream& operator << ( std::ostream& out, const LinearSpring<Real>& s )
     {
-        out<<s.m1<<" "<<s.m2<<" "<<s.ks<<" "<<s.kd<<" "<<s.initpos<<"\n";
+        out<<s.m1<<" "<<s.m2<<" "<<s.ks<<" "<<s.kd<<" "<<s.initpos;
         return out;
     }
 
@@ -106,6 +108,17 @@ public:
 
 protected:
     core::objectmodel::DataFileName fileSprings;
+
+    std::array<sofa::core::topology::TopologySubsetIndices, 2> d_springsIndices
+    {
+        sofa::core::topology::TopologySubsetIndices {initData ( &d_springsIndices[0], "springsIndices1", "List of indices in springs from the first mstate", true, true)},
+        sofa::core::topology::TopologySubsetIndices {initData ( &d_springsIndices[1], "springsIndices2", "List of indices in springs from the second mstate", true, true)}
+    };
+    bool areSpringIndicesDirty { true };
+
+    void initializeTopologyHandler(sofa::core::topology::TopologySubsetIndices& indices, core::topology::BaseMeshTopology* topology, sofa::Index mstateId);
+    void updateTopologyIndicesFromSprings();
+    void applyRemovedPoints(const sofa::core::topology::PointsRemoved* pointsRemoved, sofa::Index mstateId);
 
 protected:
     bool maskInUse;
@@ -155,37 +168,13 @@ public:
 
     // -- Modifiers
 
-    void clear(sofa::Size reserve=0)
-    {
-        sofa::type::vector<Spring>& springs = *this->springs.beginEdit();
-        springs.clear();
-        if (reserve) springs.reserve(reserve);
-        this->springs.endEdit();
-    }
+    void clear(sofa::Size reserve=0);
 
-    void removeSpring(sofa::Index idSpring)
-    {
-        if (idSpring >= (this->springs.getValue()).size())
-            return;
+    void removeSpring(sofa::Index idSpring);
 
-        sofa::type::vector<Spring>& springs = *this->springs.beginEdit();
-        springs.erase(springs.begin() +idSpring );
-        this->springs.endEdit();
-    }
+    void addSpring(sofa::Index m1, sofa::Index m2, SReal ks, SReal kd, SReal initlen);
 
-    void addSpring(sofa::Index m1, sofa::Index m2, SReal ks, SReal kd, SReal initlen)
-    {
-        springs.beginEdit()->push_back(Spring(m1,m2,ks,kd,initlen));
-        springs.endEdit();
-    }
-
-    void addSpring(const Spring & spring)
-    {
-        springs.beginEdit()->push_back(spring);
-        springs.endEdit();
-    }
-
-    void handleTopologyChange(core::topology::Topology *topo) override;
+    void addSpring(const Spring & spring);
 
     /// initialization to export kinetic, potential energy  and force intensity to gnuplot files format
     void initGnuplot(const std::string path) override;

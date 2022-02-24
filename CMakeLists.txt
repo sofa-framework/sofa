@@ -259,6 +259,12 @@ if (SOFA_BUILD_ADD_SCENES)
     add_subdirectory(examples)
 endif()
 
+## SOFA shaders
+option(SOFA_BUILD_ADD_SHADERS "Add SOFA shaders as a project of the build." OFF)
+if (SOFA_BUILD_ADD_SHADERS)
+    add_subdirectory(share/shaders)
+endif()
+
 ## Build external projects at the same time
 set(SOFA_EXTERNAL_DIRECTORIES "" CACHE STRING "list of paths separated by ';'")
 if(NOT "${SOFA_EXTERNAL_DIRECTORIES}" STREQUAL "")

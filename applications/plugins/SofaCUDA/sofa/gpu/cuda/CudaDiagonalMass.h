@@ -58,26 +58,26 @@ public :
 
 
 template <>
-void DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::addMDx(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor);
+void DiagonalMass<gpu::cuda::CudaVec3fTypes>::addMDx(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor);
 
 template <>
-void DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::accFromF(const core::MechanicalParams* mparams, DataVecDeriv& d_a, const DataVecDeriv& d_f);
+void DiagonalMass<gpu::cuda::CudaVec3fTypes>::accFromF(const core::MechanicalParams* mparams, DataVecDeriv& d_a, const DataVecDeriv& d_f);
 
 template<>
-void DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
+void DiagonalMass<gpu::cuda::CudaVec3fTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
 
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 // -- Mass interface
 template <>
-void DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::addMDx(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor);
+void DiagonalMass<gpu::cuda::CudaVec3dTypes>::addMDx(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor);
 
 template <>
-void DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::accFromF(const core::MechanicalParams* mparams, DataVecDeriv& d_a, const DataVecDeriv& d_f);
+void DiagonalMass<gpu::cuda::CudaVec3dTypes>::accFromF(const core::MechanicalParams* mparams, DataVecDeriv& d_a, const DataVecDeriv& d_f);
 
 template<>
-void DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
+void DiagonalMass<gpu::cuda::CudaVec3dTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
 
 // template<>
 // bool DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::addBBox(double* minBBox, double* maxBBox);
@@ -85,9 +85,9 @@ void DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::addForce(const core::Mecha
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 #ifndef SOFA_GPU_CUDA_CUDADIAGONALMASS_CPP
-extern template class SOFA_GPU_CUDA_API component::mass::DiagonalMass<CudaVec3fTypes, float>;
+extern template class SOFA_GPU_CUDA_API component::mass::DiagonalMass<CudaVec3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-extern template class SOFA_GPU_CUDA_API component::mass::DiagonalMass<CudaVec3dTypes, double>;
+extern template class SOFA_GPU_CUDA_API component::mass::DiagonalMass<CudaVec3dTypes>;
 #endif
 #endif
 

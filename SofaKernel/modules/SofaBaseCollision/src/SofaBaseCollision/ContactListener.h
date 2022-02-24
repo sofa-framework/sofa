@@ -50,8 +50,6 @@ public:
 
     void init(void) override;
 
-    virtual void beginContact(const type::vector<const type::vector<DetectionOutput>* >& ) {}
-    virtual void endContact(void*) {}
 
     void handleEvent( core::objectmodel::Event* event ) override;
 
@@ -62,7 +60,7 @@ public:
     type::vector<double> getDistances() const;
 
     // Returns the full ContactsVector
-    type::vector<const type::vector<DetectionOutput>* > getContactsVector() const;
+    type::vector<type::vector<DetectionOutput>> getContactsVector() const;
 
     // Returns the contact points in the form of a vector of tuples containing two positive integers and two Vector3.
     // The Vector3 store the X, Y, Z coordinates of the points in contact
@@ -157,9 +155,12 @@ protected:
     const CollisionModel* m_CollisionModel2;
 
 private:
-    type::vector<const type::vector<DetectionOutput>* > m_ContactsVector;
-    type::vector<const type::vector<DetectionOutput>* > m_ContactsVectorBuffer;
+    type::vector<type::vector<DetectionOutput>> m_ContactsVector;
+    type::vector<type::vector<DetectionOutput>> m_ContactsVectorBuffer;
     core::collision::NarrowPhaseDetection* m_NarrowPhase;
+
+    virtual void beginContact(const type::vector<type::vector<DetectionOutput>>& ) {}
+    virtual void endContact(void*) {}
 };
 
 } // namespace sofa::core::collision

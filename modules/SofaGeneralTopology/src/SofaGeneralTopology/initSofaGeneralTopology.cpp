@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <SofaGeneralTopology/initSofaGeneralTopology.h>
 
+#include <sofa/helper/system/PluginManager.h>
+
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
@@ -32,6 +34,11 @@ void initSofaGeneralTopology()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaGeneralTopology") << "SofaGeneralTopology is deprecated;. It will be removed at v23.06. Use Sofa.Component.Topology.Container.Constant and/or Sofa.Component.Topology.Container.Grid instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Topology.Container.Constant");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Topology.Container.Grid");
+
         first = false;
     }
 }

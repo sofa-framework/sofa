@@ -269,7 +269,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
 #if SOFAGUIQT_HAVE_QT5_CHARTS
         //Energy Widget
-        if (simulation::Node* real_node = sofa::simulation::node::getNodeFrom(basenode))
+        if (simulation::Node* real_node = sofa::core::castTo<simulation::Node*>(basenode))
         {
             if (dialogFlags_.REINIT_FLAG)
             {
@@ -279,7 +279,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         }
 
         //Momentum Widget
-        if (simulation::Node* real_node = sofa::simulation::node::getNodeFrom(basenode))
+        if (simulation::Node* real_node = sofa::core::castTo<simulation::Node*>(basenode))
         {
             if (dialogFlags_.REINIT_FLAG)
             {
@@ -495,23 +495,24 @@ void ModifyObject::updateValues()
     //Make the update of all the values
     if (basenode)
     {
-        bool isNode =( sofa::simulation::node::getNodeFrom(basenode) != nullptr);
-        //If the current element is a node of the graph, we first apply the transformations
-        if (transformation && dialogFlags_.REINIT_FLAG && isNode)
+        simulation::Node* node = sofa::core::castTo<sofa::simulation::Node*>(basenode);
+        core::objectmodel::BaseObject* object = sofa::core::castTo<core::objectmodel::BaseObject*>(basenode);
+        if(dialogFlags_.REINIT_FLAG)
         {
-            simulation::Node* current_node = sofa::simulation::node::getNodeFrom(basenode);
-            if (!transformation->isDefaultValues())
-                transformation->applyTransformation(current_node);
-            transformation->setDefaultValues();
-        }
-
-        if (dialogFlags_.REINIT_FLAG)
-        {
-            if (sofa::core::objectmodel::BaseObject *obj = dynamic_cast< sofa::core::objectmodel::BaseObject* >(basenode))
+            if (node && transformation)
             {
-                obj->reinit();
+                if (!transformation->isDefaultValues())
+                    transformation->applyTransformation(node);
+                transformation->setDefaultValues();
+                node->reinit(sofa::core::execparams::defaultInstance());
             }
-            else if (simulation::Node *n = sofa::simulation::node::getNodeFrom(basenode)) n->reinit(sofa::core::execparams::defaultInstance());
+            else if (object){
+                object->reinit();
+            }
+            else {
+                throw std::runtime_error("Invalid type, only Node and BaseObject are supported. "
+                                         "This is a BUG, please report to https://github.com/sofa-framework/sofa/issues");
+            }
         }
 
     }

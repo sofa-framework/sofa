@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaTopologyMapping/initSofaTopologyMapping.h>
 
+#include <sofa/helper/system/PluginManager.h>
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
@@ -33,6 +34,10 @@ void initSofaTopologyMapping()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaTopologyMapping") << "SofaTopologyMapping is deprecated;. It will be removed at v23.06. You may use Sofa.Component.Topology.Mapping instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Topology.Mapping");
+
         first = false;
     }
 }

@@ -313,7 +313,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
                         if(generateCollisionModels.getValue())
                         {
-                            UniformMass<Rigid3Types, Rigid3Mass>::SPtr currentUniformMass = sofa::core::objectmodel::New<UniformMass<Rigid3Types, Rigid3Mass> >();
+                            UniformMass<Rigid3Types>::SPtr currentUniformMass = sofa::core::objectmodel::New<UniformMass<Rigid3Types> >();
                             {
                                 // adding the generated UniformMass to its parent Node
                                 currentSubNode->addObject(currentUniformMass);
@@ -378,7 +378,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             }
                         }
 
-                        UniformMass<Rigid3Types, Rigid3Mass>::SPtr currentUniformMass = sofa::core::objectmodel::New<UniformMass<Rigid3Types, Rigid3Mass> >();
+                        UniformMass<Rigid3Types>::SPtr currentUniformMass = sofa::core::objectmodel::New<UniformMass<Rigid3Types> >();
                         {
                             // adding the generated UniformMass to its parent Node
                             currentSubNode->addObject(currentUniformMass);

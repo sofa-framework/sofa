@@ -61,6 +61,7 @@ public:
 
     Data <std::string> solverName; ///< Name of the solver/preconditioner to warp
     Data<unsigned> f_useRotationFinder; ///< Which rotation Finder to use
+    Data<unsigned> d_updateStep; ///< Number of steps before the next refresh of the system matrix in the main solver
 
 protected:
     WarpPreconditioner();
@@ -69,6 +70,7 @@ public:
 
     ~WarpPreconditioner();
 
+    void init() override;
     void bwdInit() override;
 
     void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
@@ -95,6 +97,7 @@ private :
 
     int indexwork;
     bool first;
+    unsigned nextRefreshStep {};
 
     TRotationMatrix * rotationWork[2];
     std::vector<sofa::core::behavior::BaseRotationFinder *> rotationFinders;

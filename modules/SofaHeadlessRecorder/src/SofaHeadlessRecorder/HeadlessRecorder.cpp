@@ -31,6 +31,7 @@ using sofa::helper::system::SetDirectory;
 #include <sofa/gl/Texture.h>
 
 #include <sofa/gui/ArgumentParser.h>
+#include <SofaBaseVisual/InteractiveCamera.h>
 #include <thread>
 #include <chrono>
 

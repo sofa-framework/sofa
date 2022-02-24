@@ -72,7 +72,7 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseTest
     typedef component::container::MechanicalObject<DataTypes> DOF;
     typedef typename component::topology::RegularGridTopology RegularGridTopology;
     typedef typename component::forcefield::TetrahedronDiffusionFEMForceField<DataTypes> TetrahedronDiffusionFEMForceField;
-    typedef typename component::mass::DiagonalMass<DataTypes, Real> DiagonalMass;
+    typedef typename component::mass::DiagonalMass<DataTypes> DiagonalMass;
 
     /// @name Scene elements
     /// {

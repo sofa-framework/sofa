@@ -12,23 +12,14 @@ set(SOURCE_FILES
     ${SOFAGENERALTOPOLOGY_SRC}/initSofaGeneralTopology.cpp
     )
 
-list(APPEND HEADER_FILES
-    ${SOFAGENERALTOPOLOGY_SRC}/CubeTopology.h
-    ${SOFAGENERALTOPOLOGY_SRC}/CylinderGridTopology.h
-    ${SOFAGENERALTOPOLOGY_SRC}/SphereGridTopology.h
-    ${SOFAGENERALTOPOLOGY_SRC}/SphereQuadTopology.h
-    )
-list(APPEND SOURCE_FILES
-    ${SOFAGENERALTOPOLOGY_SRC}/CubeTopology.cpp
-    ${SOFAGENERALTOPOLOGY_SRC}/CylinderGridTopology.cpp
-    ${SOFAGENERALTOPOLOGY_SRC}/SphereGridTopology.cpp
-    ${SOFAGENERALTOPOLOGY_SRC}/SphereQuadTopology.cpp
-    )
-
-sofa_find_package(SofaBase REQUIRED) # SofaBaseTopology
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
+
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.Topology.Container.Grid and Sofa.Component.Topology.Container.Constant instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.Topology.Container.Constant REQUIRED)
+sofa_find_package(Sofa.Component.Topology.Container.Grid REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Topology.Container.Constant Sofa.Component.Topology.Container.Grid)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

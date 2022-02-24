@@ -24,21 +24,16 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 
-namespace sofa::simulation::node
+namespace sofa::core
 {
-sofa::simulation::Node* getNodeFrom(sofa::core::objectmodel::Base* context)
-{
-    return dynamic_cast<sofa::simulation::Node*>(context);
+SOFA_DEFINE_OPAQUE_FUNCTIONS_BETWEEN_BASE_AND(sofa::simulation::Node);
 }
 
+namespace sofa::simulation::node
+{
 sofa::simulation::Node* getNodeFrom(sofa::core::objectmodel::BaseContext* context)
 {
     return dynamic_cast<sofa::simulation::Node*>(context);
-}
-
-sofa::core::objectmodel::Base* toBase(Node* node)
-{
-    return static_cast<sofa::core::objectmodel::Base*>(node);
 }
 
 sofa::core::objectmodel::BaseContext* toBaseContext(sofa::simulation::Node* node)

@@ -62,7 +62,7 @@ using namespace sofa::gpu::cuda;
 
 
 template<>
-void MeshMatrixMass<CudaVec3fTypes, float>::copyVertexMass()
+void MeshMatrixMass<CudaVec3fTypes>::copyVertexMass()
 {
     type::vector<MassType>& vertexInf = *(d_vertexMass.beginEdit());
     data.vMass.resize(m_topology->getNbPoints());
@@ -74,7 +74,7 @@ void MeshMatrixMass<CudaVec3fTypes, float>::copyVertexMass()
 }
 
 template<>
-void MeshMatrixMass<CudaVec3fTypes, float>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor)
+void MeshMatrixMass<CudaVec3fTypes>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
@@ -85,7 +85,7 @@ void MeshMatrixMass<CudaVec3fTypes, float>::addMDx(const core::MechanicalParams*
 }
 
 template<>
-void MeshMatrixMass<CudaVec3fTypes, float>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /* */, const DataVecDeriv& /* */)
+void MeshMatrixMass<CudaVec3fTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /* */, const DataVecDeriv& /* */)
 {
     VecDeriv& f = *d_f.beginEdit();
     const CudaVector<float>& vertexMass = data.vMass;
@@ -96,7 +96,7 @@ void MeshMatrixMass<CudaVec3fTypes, float>::addForce(const core::MechanicalParam
 }
 
 template<>
-void MeshMatrixMass<CudaVec3fTypes, float>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& a, const DataVecDeriv& f)
+void MeshMatrixMass<CudaVec3fTypes>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& a, const DataVecDeriv& f)
 {
     VecDeriv& _acc = *a.beginEdit();
     const VecDeriv& _f = f.getValue();
@@ -111,7 +111,7 @@ void MeshMatrixMass<CudaVec3fTypes, float>::accFromF(const core::MechanicalParam
 
 
 template<>
-void MeshMatrixMass<CudaVec2fTypes, float>::copyVertexMass()
+void MeshMatrixMass<CudaVec2fTypes>::copyVertexMass()
 {
     type::vector<MassType>& vertexInf = *(d_vertexMass.beginEdit());
     data.vMass.resize(m_topology->getNbPoints());
@@ -123,7 +123,7 @@ void MeshMatrixMass<CudaVec2fTypes, float>::copyVertexMass()
 }
 
 template<>
-void MeshMatrixMass<CudaVec2fTypes, float>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor)
+void MeshMatrixMass<CudaVec2fTypes>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
@@ -134,7 +134,7 @@ void MeshMatrixMass<CudaVec2fTypes, float>::addMDx(const core::MechanicalParams*
 }
 
 template<>
-void MeshMatrixMass<CudaVec2fTypes, float>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /* */, const DataVecDeriv& /* */)
+void MeshMatrixMass<CudaVec2fTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /* */, const DataVecDeriv& /* */)
 {
     VecDeriv& f = *d_f.beginEdit();
     const CudaVector<float>& vertexMass = data.vMass;
@@ -145,7 +145,7 @@ void MeshMatrixMass<CudaVec2fTypes, float>::addForce(const core::MechanicalParam
 }
 
 template<>
-void MeshMatrixMass<CudaVec2fTypes, float>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& a, const DataVecDeriv& f)
+void MeshMatrixMass<CudaVec2fTypes>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& a, const DataVecDeriv& f)
 {
     VecDeriv& _acc = *a.beginEdit();
     const VecDeriv& _f = f.getValue();
@@ -160,7 +160,7 @@ void MeshMatrixMass<CudaVec2fTypes, float>::accFromF(const core::MechanicalParam
 
 
 template<>
-void MeshMatrixMass<CudaVec1fTypes, float>::copyVertexMass()
+void MeshMatrixMass<CudaVec1fTypes>::copyVertexMass()
 {
     type::vector<MassType>& vertexInf = *(d_vertexMass.beginEdit());
     data.vMass.resize(m_topology->getNbPoints());
@@ -172,7 +172,7 @@ void MeshMatrixMass<CudaVec1fTypes, float>::copyVertexMass()
 }
 
 template<>
-void MeshMatrixMass<CudaVec1fTypes, float>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor)
+void MeshMatrixMass<CudaVec1fTypes>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
@@ -183,7 +183,7 @@ void MeshMatrixMass<CudaVec1fTypes, float>::addMDx(const core::MechanicalParams*
 }
 
 template<>
-void MeshMatrixMass<CudaVec1fTypes, float>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /* */, const DataVecDeriv& /* */)
+void MeshMatrixMass<CudaVec1fTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /* */, const DataVecDeriv& /* */)
 {
     VecDeriv& f = *d_f.beginEdit();
     const CudaVector<float>& vertexMass = data.vMass;
@@ -194,7 +194,7 @@ void MeshMatrixMass<CudaVec1fTypes, float>::addForce(const core::MechanicalParam
 }
 
 template<>
-void MeshMatrixMass<CudaVec1fTypes, float>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& a, const DataVecDeriv& f)
+void MeshMatrixMass<CudaVec1fTypes>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& a, const DataVecDeriv& f)
 {
     VecDeriv& _acc = *a.beginEdit();
     const VecDeriv& _f = f.getValue();

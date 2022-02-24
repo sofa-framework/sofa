@@ -103,7 +103,7 @@ struct PlaneForceField_test : public BaseSimulationTest
     typedef PlaneForceField<DataTypes>                                  PlaneForceFieldType;
     typedef MechanicalObject<DataTypes>                                 MechanicalObjectType;
     typedef EulerImplicitSolver                                         EulerImplicitSolverType;
-    typedef UniformMass<DataTypes,MassType>                             TypedUniformMass;
+    typedef UniformMass<DataTypes>                             TypedUniformMass;
 
     /// Root of the scene graph, created by the constructor and re-used in the tests
     simulation::Simulation*               m_simulation {nullptr};

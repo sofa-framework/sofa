@@ -63,9 +63,8 @@ struct TemplateTypes
 template <typename TTemplateTypes>
 struct UniformMassTest :  public BaseTest
 {
-    typedef UniformMass<typename TTemplateTypes::DataTypes,
-    typename TTemplateTypes::MassTypes> TheUniformMass ;
-    typedef UniformMass<Rigid3Types, Rigid3Mass> UniformMassRigid;
+    typedef UniformMass<typename TTemplateTypes::DataTypes> TheUniformMass ;
+    typedef UniformMass<Rigid3Types> UniformMassRigid;
 
     /// Bring parents members in the current lookup context.
     /// more info at: https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html

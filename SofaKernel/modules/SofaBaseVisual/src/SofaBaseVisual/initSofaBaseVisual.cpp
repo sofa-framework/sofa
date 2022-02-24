@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaBaseVisual/initSofaBaseVisual.h>
 
+#include <sofa/helper/system/PluginManager.h>
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
@@ -33,6 +34,9 @@ void initSofaBaseVisual()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaBaseVisual") << "SofaBaseVisual is deprecated. It will be removed at v23.06. Use Sofa.Component.Visual and ... instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Visual");
         first = false;
     }
 }

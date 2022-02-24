@@ -92,4 +92,28 @@ TYPED_TEST(Geometry3DTriangle_test, flat_area)
 }
 
 
+TEST(GeometryTriangle_test, normal3f)
+{
+    // normal case
+    const sofa::type::Vec3f a{ 0.f, 0.f, 0.f };
+    const sofa::type::Vec3f b{ 0.f, 2.f, 0.f };
+    const sofa::type::Vec3f c{ 0.f, 0.f, 2.f };
+
+    auto normal = sofa::geometry::Triangle::normal(a, b, c);
+    EXPECT_FLOAT_EQ(normal[0], 4.f);
+    EXPECT_FLOAT_EQ(normal[1], 0.f);
+    EXPECT_FLOAT_EQ(normal[2], 0.f);
+
+    // flat triangle case
+    const sofa::type::Vec3f a2{ 0.f, 0.f, 0.f };
+    const sofa::type::Vec3f b2{ 0.f, 2.f, 0.f };
+    const sofa::type::Vec3f c2{ 0.f, 1.f, 0.f };
+    
+    normal = sofa::geometry::Triangle::normal(a2, b2, c2);
+    EXPECT_FLOAT_EQ(normal[0], 0.f);
+    EXPECT_FLOAT_EQ(normal[1], 0.f);
+    EXPECT_FLOAT_EQ(normal[2], 0.f);
+}
+
+
 }// namespace sofa

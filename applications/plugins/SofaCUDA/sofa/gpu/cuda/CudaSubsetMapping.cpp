@@ -19,24 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
-#include "CudaSubsetMapping.inl"
+#ifndef SOFA_GPU_CUDA_CUDASUBSETMAPPING_CPP
+#define SOFA_GPU_CUDA_CUDASUBSETMAPPING_CPP
+
+#include <sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/gpu/cuda/CudaSubsetMapping.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/Mapping.inl>
 
-namespace sofa
+namespace sofa::component::mapping
 {
-
-namespace component
-{
-
-namespace mapping
-{
-using namespace sofa::defaulttype;
-using namespace sofa::core;
-using namespace sofa::core::behavior;
 using namespace sofa::gpu::cuda;
 
 template class SOFA_GPU_CUDA_API SubsetMapping< CudaVec3fTypes, CudaVec3fTypes >;
@@ -44,20 +35,10 @@ template class SOFA_GPU_CUDA_API SubsetMapping< CudaVec3f1Types, CudaVec3f1Types
 template class SOFA_GPU_CUDA_API SubsetMapping< CudaVec3f1Types, CudaVec3fTypes >;
 template class SOFA_GPU_CUDA_API SubsetMapping< CudaVec3fTypes, CudaVec3f1Types >;
 
+} // namespace sofa::component::mapping
 
-
-} // namespace mapping
-
-} // namespace component
-
-namespace gpu
+namespace sofa::gpu::cuda
 {
-
-namespace cuda
-{
-using namespace sofa::defaulttype;
-using namespace sofa::core;
-using namespace sofa::core::behavior;
 using namespace sofa::component::mapping;
 
 int SubsetMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
@@ -65,12 +46,8 @@ int SubsetMappingCudaClass = core::RegisterObject("Supports GPU-side computation
         .add< SubsetMapping< CudaVec3f1Types, CudaVec3f1Types > >()
         .add< SubsetMapping< CudaVec3f1Types, CudaVec3fTypes > >()
         .add< SubsetMapping< CudaVec3fTypes, CudaVec3f1Types > >()
-
-
         ;
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-} // namespace sofa
+#endif // SOFA_GPU_CUDA_CUDASUBSETMAPPING_CPP

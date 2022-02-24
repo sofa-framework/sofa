@@ -30,16 +30,24 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/TopologySubsetIndices.h>
 
+#include <SofaBaseMechanics/VecMassType.h>
+#include <SofaBaseMechanics/RigidMassType.h>
+
+#include <type_traits>
+
 namespace sofa::component::mass
 {
 
-template <class DataTypes, class TMassType>
+template <class DataTypes>
+
 class UniformMass : public core::behavior::Mass<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(UniformMass,DataTypes,TMassType),
+    SOFA_CLASS(SOFA_TEMPLATE(UniformMass,DataTypes),
                SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
 
+    using TMassType = typename sofa::component::mass::MassType<DataTypes>::type;
+    
     typedef core::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -81,7 +89,7 @@ public:
     ////////////////////////////////////////////////////////////////////////////
 
     /// Link to be set to the topology container in the component graph.
-    SingleLink <UniformMass<DataTypes, MassType>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    SingleLink <UniformMass<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
     UniformMass();
@@ -144,6 +152,21 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
+    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override
+    {
+        Inherited::parse(arg);
+
+        if (arg->getAttribute("template"))
+        {
+            auto splitTemplates = sofa::helper::split(std::string(arg->getAttribute("template")), ',');
+            if (splitTemplates.size() > 1)
+            {
+                msg_warning() << "MassType is not required anymore and the template is deprecated, please delete it from your scene." << msgendl
+                    << "As your mass is templated on " << DataTypes::Name() << ", MassType has been defined as " << sofa::helper::NameDecoder::getTypeName<MassType>() << " .";
+                msg_warning() << "If you want to set the template, you must write now \"template='" << DataTypes::Name() << "'\" .";
+            }
+        }
+    }
 
 private:
     void updateMassOnResize(sofa::Size newSize);
@@ -185,27 +208,27 @@ private:
 
 // Specialization for rigids
 template <>
-void UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>::init();
+void UniformMass<defaulttype::Rigid3Types>::init();
 template <>
-void UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>::loadRigidMass ( const std::string&  );
+void UniformMass<defaulttype::Rigid3Types>::loadRigidMass ( const std::string&  );
 template <>
-void UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>::draw(const core::visual::VisualParams* vparams);
+void UniformMass<defaulttype::Rigid3Types>::draw(const core::visual::VisualParams* vparams);
 template <>
-void UniformMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>::draw(const core::visual::VisualParams* vparams);
+void UniformMass<defaulttype::Rigid2Types>::draw(const core::visual::VisualParams* vparams);
 template <>
-SReal UniformMass<defaulttype::Rigid3Types,defaulttype::Rigid3Mass>::getPotentialEnergy ( const core::MechanicalParams*, const DataVecCoord& x ) const;
+SReal UniformMass<defaulttype::Rigid3Types>::getPotentialEnergy ( const core::MechanicalParams*, const DataVecCoord& x ) const;
 template <>
-SReal UniformMass<defaulttype::Rigid2Types,defaulttype::Rigid2Mass>::getPotentialEnergy ( const core::MechanicalParams*, const DataVecCoord& x ) const;
+SReal UniformMass<defaulttype::Rigid2Types>::getPotentialEnergy ( const core::MechanicalParams*, const DataVecCoord& x ) const;
 template <>
-void UniformMass<defaulttype::Vec6Types,double>::draw(const core::visual::VisualParams* vparams);
+void UniformMass<defaulttype::Vec6Types>::draw(const core::visual::VisualParams* vparams);
 
 #if !defined(SOFA_COMPONENT_MASS_UNIFORMMASS_CPP)
-extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec3Types, SReal>;
-extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec2Types, SReal>;
-extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec1Types, SReal>;
-extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec6Types, SReal>;
-extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>;
-extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Rigid2Types, defaulttype::Rigid2Mass>;
+extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec3Types>;
+extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec2Types>;
+extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec1Types>;
+extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec6Types>;
+extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Rigid3Types>;
+extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Rigid2Types>;
 #endif
 
 } // namespace sofa::component::mass

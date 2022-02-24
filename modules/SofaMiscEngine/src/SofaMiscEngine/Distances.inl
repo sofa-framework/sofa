@@ -23,8 +23,8 @@
 
 #include <SofaMiscEngine/Distances.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaNonUniformFem/DynamicSparseGridGeometryAlgorithms.inl>
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.inl>
+#include <SofaNonUniformFem/DynamicSparseGridGeometryAlgorithms.h>
+#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 #include <sofa/core/loader/VoxelLoader.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/type/RGBAColor.h>

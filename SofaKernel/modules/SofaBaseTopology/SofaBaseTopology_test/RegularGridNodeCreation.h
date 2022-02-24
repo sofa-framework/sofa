@@ -62,7 +62,7 @@ PatchTestStruct<DataTypes> createRegularGridScene(
     PatchTestStruct<DataTypes> patchStruct;
     typedef typename DataTypes::Real Real;
     typedef typename component::container::MechanicalObject<DataTypes> MechanicalObject;
-    typedef typename sofa::component::mass::UniformMass <DataTypes, Real> UniformMass;
+    typedef typename sofa::component::mass::UniformMass <DataTypes> UniformMass;
     typedef component::topology::RegularGridTopology RegularGridTopology;
     typedef typename component::engine::BoxROI<DataTypes> BoxRoi;
     typedef typename sofa::component::engine::PairBoxROI<DataTypes> PairBoxRoi;

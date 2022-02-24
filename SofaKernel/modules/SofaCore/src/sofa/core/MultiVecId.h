@@ -24,6 +24,8 @@
 
 #include <sofa/core/VecId.h>
 #include <sofa/core/objectmodel/Data.h>
+#include <map>
+
 namespace sofa
 {
 

@@ -17,28 +17,14 @@ set(SOURCE_FILES
     )
 
 list(APPEND HEADER_FILES
-    ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridGeometryAlgorithms.h
-    ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridGeometryAlgorithms.inl
-    ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridTopologyAlgorithms.h
-    ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridTopologyContainer.h
-    ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridTopologyModifier.h
-    ${SOFANONUNIFORMFEM_SRC}/MultilevelHexahedronSetTopologyContainer.h
     ${SOFANONUNIFORMFEM_SRC}/NonUniformHexahedralFEMForceFieldAndMass.h
     ${SOFANONUNIFORMFEM_SRC}/NonUniformHexahedralFEMForceFieldAndMass.inl
     ${SOFANONUNIFORMFEM_SRC}/NonUniformHexahedronFEMForceFieldAndMass.h
     ${SOFANONUNIFORMFEM_SRC}/NonUniformHexahedronFEMForceFieldAndMass.inl
-    ${SOFANONUNIFORMFEM_SRC}/SparseGridMultipleTopology.h
-    ${SOFANONUNIFORMFEM_SRC}/SparseGridRamificationTopology.h
     )
 list(APPEND SOURCE_FILES
-    ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridGeometryAlgorithms.cpp
-    ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridTopologyContainer.cpp
-    ${SOFANONUNIFORMFEM_SRC}/DynamicSparseGridTopologyModifier.cpp
-    ${SOFANONUNIFORMFEM_SRC}/MultilevelHexahedronSetTopologyContainer.cpp
     ${SOFANONUNIFORMFEM_SRC}/NonUniformHexahedralFEMForceFieldAndMass.cpp
     ${SOFANONUNIFORMFEM_SRC}/NonUniformHexahedronFEMForceFieldAndMass.cpp
-    ${SOFANONUNIFORMFEM_SRC}/SparseGridMultipleTopology.cpp
-    ${SOFANONUNIFORMFEM_SRC}/SparseGridRamificationTopology.cpp
     )
 
 sofa_find_package(SofaDenseSolver QUIET)
@@ -67,6 +53,13 @@ if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Silence attribute warnings (for example, ignored already defined external template)
     target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
 endif()
+
+message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Topology.Container.Grid and Sofa.Component.Topology.Container.Dynamic instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.Topology.Container.Grid REQUIRED)
+sofa_find_package(Sofa.Component.Topology.Container.Dynamic REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Topology.Container.Grid Sofa.Component.Topology.Container.Dynamic)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
