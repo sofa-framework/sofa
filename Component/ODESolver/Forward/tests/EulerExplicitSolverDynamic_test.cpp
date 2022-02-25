@@ -33,9 +33,6 @@ using sofa::testing::BaseSimulationTest;
 #include <SofaBaseMechanics/MechanicalObject.h>
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
 
-// Solvers
-#include <SofaExplicitOdeSolver/EulerSolver.h>
-
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa {
@@ -61,7 +58,6 @@ struct EulerExplicitDynamic_test : public component::odesolver::testing::ODESolv
     typedef typename DataTypes::Coord Coord;
 
     typedef container::MechanicalObject<DataTypes> MechanicalObject;
-    typedef component::odesolver::EulerExplicitSolver EulerExplicitSolver;
 
     /// Position and velocity array
     vector<double> positionsArray;

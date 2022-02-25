@@ -25,7 +25,6 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/testing/NumericTest.h>
 using sofa::testing::NumericTest;
 
-#include <sofa/component/odesolver/testing/MassSpringSystemCreation.h>
 #include <sofa/component/odesolver/testing/ODESolverSpringTest.h>
 
 //Including Simulation
@@ -39,7 +38,6 @@ using MechanicalObject3 = sofa::component::container::MechanicalObject<sofa::def
 
 // Solvers
 #include <SofaGeneralImplicitOdeSolver/VariationalSymplecticSolver.h>
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 

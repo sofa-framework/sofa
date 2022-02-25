@@ -21,12 +21,8 @@
 ******************************************************************************/
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
-#include <sofa/testing/NumericTest.h>
-using sofa::testing::NumericTest;
 
 #include <sofa/component/odesolver/testing/ODESolverSpringTest.h>
-
-#include <SceneCreator/SceneCreator.h>
 
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
@@ -37,10 +33,6 @@ using sofa::testing::NumericTest;
 #include <SofaBaseMechanics/MechanicalObject.h>
 using MechanicalObject3 = sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> ;
 
-// Solvers
-#include <SofaGeneralExplicitOdeSolver/RungeKutta4Solver.h>
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
-
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa {
@@ -48,7 +40,6 @@ namespace sofa {
 using namespace component;
 using namespace defaulttype;
 using namespace simulation;
-using namespace modeling;
 using type::vector;
 
 /**  Dynamic solver test.
@@ -74,8 +65,6 @@ struct RungeKutta4ExplicitSolverDynamic_test : public component::odesolver::test
     typedef typename DataTypes::Real Real;
 
     typedef container::MechanicalObject<DataTypes> MechanicalObject;
-    typedef component::odesolver::RungeKutta4Solver RungeKutta4Solver;
-    typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
     /// Position, velocity and acceleration array
     vector<double> positionsArray;

@@ -26,12 +26,6 @@ using sofa::testing::BaseSimulationTest;
 using sofa::testing::NumericTest;
 
 #include <SofaSimulationGraph/SimpleApi.h>
-#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
-#include <SofaBaseMechanics/UniformMass.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaBoundaryCondition/FixedConstraint.h>
-#include <SofaDeformable/StiffSpringForceField.h>
 
 #include <sofa/simulation/Simulation.h>
 #include <sofa/component/odesolver/testing/EigenTestUtilities.h>
@@ -44,12 +38,6 @@ using namespace testing;
 using namespace defaulttype;
 using core::objectmodel::New;
 
-using sofa::component::mass::UniformMass;
-using sofa::component::container::MechanicalObject;
-using sofa::component::interactionforcefield::StiffSpringForceField;
-using sofa::component::projectiveconstraintset::FixedConstraint;
-using sofa::component::odesolver::EulerImplicitSolver;
-typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
 /// Create a stiff string
 Node::SPtr massSpringString(Node::SPtr parent,

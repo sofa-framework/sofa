@@ -37,10 +37,6 @@ using sofa::testing::NumericTest;
 #include <SofaBaseMechanics/MechanicalObject.h>
 using MechanicalObject3 = sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> ;
 
-// Solvers
-#include <SofaGeneralExplicitOdeSolver/RungeKutta2Solver.h>
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
-
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa {
@@ -67,8 +63,6 @@ struct RungeKutta2ExplicitSolverDynamic_test : public component::odesolver::test
     typedef typename DataTypes::Coord Coord;
 
     typedef container::MechanicalObject<DataTypes> MechanicalObject;
-    typedef component::odesolver::RungeKutta2Solver RungeKutta2Solver;
-    typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
     /// Position, velocity and acceleration array
     vector<double> positionsArray;

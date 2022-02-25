@@ -22,7 +22,6 @@
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
-#include <sofa/component/odesolver/testing/MassSpringSystemCreation.h>
 #include <sofa/component/odesolver/testing/ODESolverSpringTest.h>
 
 #include <sofa/simulation/Node.h>
@@ -31,10 +30,6 @@ using sofa::testing::BaseSimulationTest;
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
-
-// Solvers
-#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 
