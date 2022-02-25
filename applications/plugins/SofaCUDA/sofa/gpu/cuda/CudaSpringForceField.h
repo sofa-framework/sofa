@@ -105,6 +105,11 @@ namespace sofa::component::solidmechanics::spring
             {
                 int bloc = vertex / BSIZE;
                 int b_x = vertex % BSIZE;
+
+            std::cout << "set: bloc: " << bloc << " | b_x: " << b_x << std::endl;
+            int id1 = 2 * bloc * BSIZE * nbSpringPerVertex + 2 * spring * BSIZE + b_x;
+            int id2 = 2 * bloc * BSIZE * nbSpringPerVertex + 2 * spring * BSIZE + b_x + BSIZE;
+            std::cout << "set: id1: " << id1 << " | id2: " << id2 << std::endl;
                 springs[2 * bloc * BSIZE * nbSpringPerVertex // start of the bloc
                     + 2 * spring * BSIZE                 // offset to the spring
                     + b_x                          // offset to the vertex

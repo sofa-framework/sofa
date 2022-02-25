@@ -739,35 +739,51 @@ __global__ void StiffSpringForceFieldCuda3t_addExternalForce_kernel(unsigned int
     const int index0 = blockIdx.x * BSIZE; //blockDim.x;
     const int index1 = threadIdx.x;
 
+
     //! Dynamically allocated shared memory to reorder global memory access
     __shared__  real temp[BSIZE*6];
 
     // First copy x and v inside temp
     const int iext = index0 * 3 + index1;
-    temp[index1        ] = x1[iext        ];
-    temp[index1+  BSIZE] = x1[iext+  BSIZE];
-    temp[index1+2*BSIZE] = x1[iext+2*BSIZE];
-    temp[index1+3*BSIZE] = v1[iext        ];
-    temp[index1+4*BSIZE] = v1[iext+  BSIZE];
-    temp[index1+5*BSIZE] = v1[iext+2*BSIZE];
+    const int index3 = 3 * index1;
+    const int index6 = 6 * index1;
+
+    //printf("#### StiffSpringForceFieldCuda3t_addExternalForce_kernel: %d %d   %d \n", index1, iext, umul24(blockIdx.x, BSIZE * 3));
+
+    //printf("#### threadIdx.x threadIdx.y threadIdx.z: %d %d %d | %d %d %d \n", threadIdx.x, threadIdx.y, threadIdx.z, blockDim.x, blockDim.y, blockDim.z);
+
+    //printf("#### Tmp: index1 %d | index1+BSIZE: %d | index1+2*BSIZE: %d \n", index1, index1 + BSIZE, index1 + 2 * BSIZE);
+    
+
+    temp[index6    ] = x1[index3    ];
+    temp[index6 + 1] = x1[index3 + 1];
+    temp[index6 + 2] = x1[index3 + 2];
+    temp[index6 + 3] = v1[index3    ];
+    temp[index6 + 4] = v1[index3 + 1];
+    temp[index6 + 5] = v1[index3 + 2];
+    //printf("#### x1: iext %d | iext+BSIZE: %d | iext+2*BSIZE: %d  -- %f  %f  %f\n", iext, iext + BSIZE, iext + 2 * BSIZE, temp[index1], temp[index1 + BSIZE], temp[index1 + 2 * BSIZE]);
 
     __syncthreads();
 
-    const int index3 = index1 * 3; //3*index1;
-    CudaVec3<real> pos1 = CudaVec3<real>::make(temp[index3  ],temp[index3+1],temp[index3+2]);
-    CudaVec3<real> vel1 = CudaVec3<real>::make(temp[index3  +3*BSIZE],temp[index3+1+3*BSIZE],temp[index3+2+3*BSIZE]);
+    
+    CudaVec3<real> pos1 = CudaVec3<real>::make(temp[index6],temp[index6 + 1],temp[index6 + 2]);
+    CudaVec3<real> vel1 = CudaVec3<real>::make(temp[index6 + 3],temp[index6 + 4],temp[index6 + 5]);
     CudaVec3<real> force = CudaVec3<real>::make(0.0f,0.0f,0.0f);
 
-    springs+=(index0*nbSpringPerVertex<<1)+index1;
-    dfdx+=index0*nbSpringPerVertex+index1;
+    springs += ((index0 * nbSpringPerVertex) << 1) + index1;
+    dfdx += (index0 * nbSpringPerVertex) + index1;
 
     for (int s = 0; s < nbSpringPerVertex; s++)
     {
         GPUSpring spring = *springs;
+        printf("#### springs avant: %d %f \n", spring.index, spring.ks);
         --spring.index;
+        
         springs+=BSIZE;
+        printf("#### springs apres: %d %f \n", spring.index, spring.ks);
         GPUSpring2 spring2 = *(const GPUSpring2*)springs;
         springs+=BSIZE;
+        printf("#### springs apres2: %f %f \n", spring2.initpos, spring2.kd);
         if (spring.index != -1)
         {
             //Coord u = p2[b]-p1[a];
@@ -793,7 +809,7 @@ __global__ void StiffSpringForceFieldCuda3t_addExternalForce_kernel(unsigned int
 
             u -= pos1;
             relativeVelocity -= vel1;
-
+            //printf("#### [%d - %d]  u: %f   %f   %f \n", spring.index, index3, u.x, u.y, u.z);
             real d = sqrt(dot(u, u));
             if (d > 1.0e-4)
             {
@@ -823,9 +839,11 @@ __global__ void StiffSpringForceFieldCuda3t_addExternalForce_kernel(unsigned int
 
     __syncthreads();
 
-    f1[iext        ] += temp[index1        ];
-    f1[iext+  BSIZE] += temp[index1+  BSIZE];
-    f1[iext+2*BSIZE] += temp[index1+2*BSIZE];
+    f1[index3] += temp[index3];
+    f1[index3 + 1] += temp[index3 + 1];
+    f1[index3 + 2] += temp[index3 + 2];
+
+    //printf("#### StiffSpringForceFieldCuda3t_addExternalForce_kernel: force %f %f %f \n", force.x, force.y, force.z);
 }
 
 template<typename real>
@@ -1003,21 +1021,21 @@ __global__ void StiffSpringForceFieldCuda3t_addExternalDForce_kernel(unsigned in
 
     //! Dynamically allocated shared memory to reorder global memory access
     __shared__  real temp[BSIZE*6];
+    const int index3 = 3 * index1;
 
     // First copy dx and x inside temp
     const int iext = index0 * 3 + index1;
-    temp[index1        ] = dx1[iext        ];
-    temp[index1+  BSIZE] = dx1[iext+  BSIZE];
-    temp[index1+2*BSIZE] = dx1[iext+2*BSIZE];
-    temp[index1+3*BSIZE] = x1[iext        ];
-    temp[index1+4*BSIZE] = x1[iext+  BSIZE];
-    temp[index1+5*BSIZE] = x1[iext+2*BSIZE];
+    temp[index1        ] = dx1[index3];
+    temp[index1+  BSIZE] = dx1[index3 +  1];
+    temp[index1+2*BSIZE] = dx1[index3 +2];
+    temp[index1+3*BSIZE] = x1[index3];
+    temp[index1+4*BSIZE] = x1[index3 +  1];
+    temp[index1+5*BSIZE] = x1[index3 +2];
 
     __syncthreads();
 
-    const int index3 = index1 * 3; //3*index1;
-    CudaVec3<real> dpos1 = CudaVec3<real>::make(temp[index3  ],temp[index3+1],temp[index3+2]);
-    CudaVec3<real> pos1 = CudaVec3<real>::make(temp[index3  +3*BSIZE],temp[index3+1+3*BSIZE],temp[index3+2+3*BSIZE]);
+    CudaVec3<real> dpos1 = CudaVec3<real>::make(temp[index1],temp[index1 + BSIZE],temp[index1 + 2 * BSIZE]);
+    CudaVec3<real> pos1 = CudaVec3<real>::make(temp[index1 +3*BSIZE],temp[index1 +4*BSIZE],temp[index1 +5*BSIZE]);
     CudaVec3<real> dforce = CudaVec3<real>::make(0.0f,0.0f,0.0f);
 
     springs+=(index0*nbSpringPerVertex<<1)+index1;
@@ -1072,9 +1090,9 @@ __global__ void StiffSpringForceFieldCuda3t_addExternalDForce_kernel(unsigned in
 
     __syncthreads();
 
-    f1[iext        ] += temp[index1        ];
-    f1[iext+  BSIZE] += temp[index1+  BSIZE];
-    f1[iext+2*BSIZE] += temp[index1+2*BSIZE];
+    f1[index3] += temp[index3];
+    f1[index3+1] += temp[index3 +  1];
+    f1[index3+2] += temp[index3 +2];
 }
 
 template<typename real>
@@ -1292,8 +1310,10 @@ void StiffSpringForceFieldCuda3f1_addForce(unsigned int size, unsigned int nbSpr
 
 void StiffSpringForceFieldCuda3f_addExternalForce(unsigned int size, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* x1, const void* v1, const void* x2, const void* v2, void* dfdx)
 {
+    
     CudaSpringForceFieldInputTextures<float,CudaVec3<float> >::setX2((const CudaVec3<float>*)x2);
     CudaSpringForceFieldInputTextures<float,CudaVec3<float> >::setV2((const CudaVec3<float>*)v2);
+    printf("########## StiffSpringForceFieldCuda3f_addExternalForce %d  ##############\n", size + BSIZE - 1);
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
     {StiffSpringForceFieldCuda3t_addExternalForce_kernel<float><<< grid, threads >>>(nbSpringPerVertex, (const GPUSpring*)springs, (float*)f1, (const float*)x1, (const float*)v1, (const float*)x2, (const float*)v2, (float*)dfdx); mycudaDebugError("StiffSpringForceFieldCuda3t_addExternalForce_kernel<float>");}

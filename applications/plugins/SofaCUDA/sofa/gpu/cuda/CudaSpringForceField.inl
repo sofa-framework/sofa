@@ -157,7 +157,11 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 {
     Data& data = m->data;
     m->Inherit::init();
+
     const sofa::type::vector<Spring>& springs = m->springs.getValue();
+    
+    std::cout << "SpringForceFieldInternalData init: " << springs.size() << std::endl;
+
     if (!springs.empty())
     {
         bool external = (m->mstate1!=m->mstate2);
@@ -242,7 +246,7 @@ template<class TCoord, class TDeriv, class TReal>
 void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addForce(Main* m, bool stiff, VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
 {
     Data& data = m->data;
-
+    std::cout << "addForce: " << std::endl;
     if (m->mstate1 == m->mstate2)
     {
         VecDeriv& f = f1;
@@ -270,15 +274,17 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
         }
     }
     else
-    {
+    {        
         f1.resize(x1.size());
         f2.resize(x2.size());
         int d1 = data.springs1.vertex0;
         int d2 = data.springs2.vertex0;
+        std::cout << "passe la 0: d1 "<< d1 << " | d2: " << d2 << std::endl;
 
         if (data.springs1.nbSpringPerVertex > 0)
         {
             if (!stiff) {
+                std::cout << "passe la1" << std::endl;
                 Kernels::addExternalForce(data.springs1.nbVertex,
                     data.springs1.nbSpringPerVertex,
                     data.springs1.springs.deviceRead(),
@@ -290,6 +296,12 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
             }
             else
             {
+                std::cout << "passe la12 " << std::endl;
+                for (int i = 0; i < x1.size(); ++i)
+                {
+                    std::cout << i << " -> " << x1[i] << std::endl;
+                }
+
                 Kernels::addExternalForce(data.springs1.nbVertex,
                     data.springs1.nbSpringPerVertex,
                     data.springs1.springs.deviceRead(),
@@ -305,6 +317,7 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
         {
             if (!stiff)
             {
+                std::cout << "passe la 21: " << std::endl;
                 Kernels::addExternalForce(data.springs2.nbVertex,
                     data.springs2.nbSpringPerVertex,
                     data.springs2.springs.deviceRead(),
@@ -315,6 +328,7 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
                     (const Deriv*)v1.deviceRead() + d1);
             }
             else {
+                std::cout << "passe la 22: " << std::endl;
                 Kernels::addExternalForce(data.springs2.nbVertex,
                     data.springs2.nbSpringPerVertex,
                     data.springs2.springs.deviceRead(),
