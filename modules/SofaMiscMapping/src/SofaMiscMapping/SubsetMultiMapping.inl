@@ -53,8 +53,10 @@ void SubsetMultiMapping<TIn, TOut>::initializeTopologyIndices()
         parents[indexPairsAccessor[i * 2]].push_back(indexPairsAccessor[i * 2 + 1]);
     }
 
-    for (const auto& [parentId, indices] : parents)
+    for (const auto& p : parents)
     {
+        const auto parentId = p.first;
+        const auto& indices = p.second;
         auto* d = new sofa::core::topology::TopologySubsetIndices("Parent #" + std::to_string(parentId) + " indices", true, true);
         d->setName("parent"+std::to_string(parentId));
         this->addData(d);
