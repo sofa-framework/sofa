@@ -415,6 +415,23 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 	    this->PairInteractionForceField< T >::init(); \
         data.init(this, true); \
     } \
+    template<> void StiffSpringForceField< T >::createSpringsFromInputs() \
+    { \
+        const auto& indices1 = d_indices1.getValue();\
+        const auto& indices2 = d_indices2.getValue();\
+        if (indices1.empty() || (indices1.size() != indices2.size())) { return; }\
+        auto lengths = sofa::helper::getWriteAccessor(d_lengths);\
+        if (lengths.size() != indices1.size())\
+        { lengths->resize(indices1.size(), lengths->back()); }\
+        type::vector<Spring>& _springs = *this->springs.beginEdit();\
+        _springs.clear();\
+        const SReal& _ks = this->ks.getValue();\
+        const SReal& _kd = this->kd.getValue();\
+        for (sofa::Index i = 0; i < indices1.size(); ++i)\
+            _springs.push_back(Spring(indices1[i], indices2[i], _ks, _kd, lengths[i]));\
+        this->springs.endEdit();\
+        data.init(this, true); \
+    } \
     template<> void StiffSpringForceField< T >::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2) \
     { \
 		VecDeriv& f1 = *d_f1.beginEdit(); \

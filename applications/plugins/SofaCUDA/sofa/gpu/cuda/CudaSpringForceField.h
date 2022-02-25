@@ -135,6 +135,7 @@ namespace sofa::component::solidmechanics::spring
     template<> inline void SpringForceField< T >::init(); \
     template<> inline void SpringForceField< T >::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2); \
     template<> inline void StiffSpringForceField< T >::init(); \
+    template<> inline void StiffSpringForceField< T >::createSpringsFromInputs(); \
     template<> inline void StiffSpringForceField< T >::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2); \
     template<> inline void StiffSpringForceField< T >::addDForce(const core::MechanicalParams*, DataVecDeriv& d_df1, DataVecDeriv& d_df2, const DataVecDeriv& d_dx1, const DataVecDeriv& d_dx2 );
 
