@@ -48,7 +48,7 @@ void SparseLDLSolver<TMatrix, TVector, TThreadManager>::parse(sofa::core::object
 
     if (arg->getAttribute("savingMatrixToFile"))
     {
-        msg_warning() << "It is no longer possible to export the linear system matrix from within SparseLDLSolver. Instead, use the component GlobalSystemMatrixExporter.";
+        msg_warning() << "It is no longer possible to export the linear system matrix from within " << this->getClassName() <<  ". Instead, use the component GlobalSystemMatrixExporter (from the SofaMatrix plugin).";
     }
 }
 
