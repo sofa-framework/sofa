@@ -27,25 +27,72 @@
 #include <sofa/core/MappingHelper.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
+#include "sofa/simulation/Node.h"
+#include "SofaBaseTopology/PointSetTopologyModifier.h"
+
 namespace sofa::component::mapping
 {
 
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::init()
+void SubsetMultiMapping<TIn, TOut>::initializeTopologyIndices()
 {
-    assert( indexPairs.getValue().size()%2==0 );
-    const unsigned indexPairSize = indexPairs.getValue().size()/2;
+    auto& indexPairsAccessor = *helper::getWriteAccessor(indexPairs);
+    const auto indexPairSize = indexPairsAccessor.size() / 2;
 
-    this->toModels[0]->resize( indexPairSize );
-    if (auto* mobject = dynamic_cast<sofa::component::container::MechanicalObject<Out> *>(this->toModels[0]))
+    for (const auto &[parentId, data] : m_topologyIndices)
     {
-        if (auto* topology = mobject->getTopology())
+        if (data)
         {
-            topology->setNbPoints(indexPairSize);
+            sofa::helper::getWriteAccessor(*data)->clear();
         }
     }
 
-    Inherit::init();
+    std::map<unsigned int, sofa::type::vector<unsigned int> > parents;
+    for(std::size_t i=0; i<indexPairSize; i++)
+    {
+        parents[indexPairsAccessor[i * 2]].push_back(indexPairsAccessor[i * 2 + 1]);
+    }
+
+    for (const auto& [parentId, indices] : parents)
+    {
+        auto* d = new sofa::core::topology::TopologySubsetIndices("Parent #" + std::to_string(parentId) + " indices", true, true);
+        d->setName("parent"+std::to_string(parentId));
+        this->addData(d);
+        m_topologyIndices.emplace(parentId, d);
+
+        auto& indicesData = *sofa::helper::getWriteAccessor(*d);
+        indicesData.reserve(indices.size());
+        for (const auto id : indices)
+            indicesData.push_back(id);
+
+        if (parentId < this->fromModels.size())
+        {
+            if (const auto from = this->fromModels[parentId])
+            {
+                if (auto* topology = from->getContext()->getMeshTopology())
+                {
+                    d->createTopologyHandler(topology);
+                    d->addTopologyEventCallBack(core::topology::TopologyChangeType::POINTSREMOVED,
+                        [this, topology, parentId](const core::topology::TopologyChange* change)
+                        {
+                            const auto* pointsRemoved = static_cast<const core::topology::PointsRemoved*>(change);
+                            msg_info(this) << "Removed points: [" << pointsRemoved->getArray() << "] in parent topology " << topology->getPathName();
+                            applyRemovedPoints(pointsRemoved, parentId, topology);
+                        });
+                }
+            }
+        }
+        else
+        {
+            msg_error() << "Parent with id " << parentId << " cannot be found: only " << this->fromModels.size() << " parents are available";
+        }
+    }
+}
+
+template <class TIn, class TOut>
+void SubsetMultiMapping<TIn, TOut>::initializeMappingMatrices()
+{
+    const unsigned indexPairSize = indexPairs.getValue().size()/2;
 
     unsigned Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size;
 
@@ -82,6 +129,27 @@ void SubsetMultiMapping<TIn, TOut>::init()
 }
 
 template <class TIn, class TOut>
+void SubsetMultiMapping<TIn, TOut>::init()
+{
+    assert( indexPairs.getValue().size()%2==0 );
+    const unsigned indexPairSize = indexPairs.getValue().size()/2;
+    this->toModels[0]->resize( indexPairSize );
+    if (auto* mobject = dynamic_cast<sofa::component::container::MechanicalObject<Out> *>(this->toModels[0]))
+    {
+        if (auto* topology = mobject->getTopology())
+        {
+            topology->setNbPoints(indexPairSize);
+        }
+    }
+
+
+    initializeTopologyIndices();
+    Inherit::init();
+
+    initializeMappingMatrices();
+}
+
+template <class TIn, class TOut>
 SubsetMultiMapping<TIn, TOut>::SubsetMultiMapping()
     : Inherit()
     , indexPairs( initData( &indexPairs, type::vector<unsigned>(), "indexPairs", "list of couples (parent index + index in the parent)"))
@@ -94,6 +162,75 @@ SubsetMultiMapping<TIn, TOut>::~SubsetMultiMapping()
     {
         delete baseMatrices[i];
     }
+}
+
+template <class TIn, class TOut>
+void SubsetMultiMapping<TIn, TOut>::applyRemovedPoints(const core::topology::PointsRemoved* pointsRemoved, const unsigned int parentId, core::topology::BaseMeshTopology* parentTopology)
+{
+    auto& indexPairsValue = *helper::getWriteAccessor(indexPairs);
+
+    //identify points to remove in the target object
+    sofa::type::vector<core::topology::Topology::PointID> removedPointsInTarget;
+    for(std::size_t i = 0; i < indexPairsValue.size() / 2; i++)
+    {
+        for (const auto removed : pointsRemoved->getArray())
+        {
+            if (indexPairsValue[i * 2] == parentId && indexPairsValue[i * 2 + 1] == removed)
+            {
+                removedPointsInTarget.push_back(i);
+            }
+        }
+    }
+    msg_info(this) << "Request to remove points: [" << removedPointsInTarget << "] in target";
+
+    //renumber indexPairs
+    auto nbPoints = parentTopology->getNbPoints();
+    for (const auto removed : pointsRemoved->getArray())
+    {
+        --nbPoints;
+
+        sofa::type::vector<core::topology::Topology::PointID> indicesToDelete;
+        for(std::size_t i = 0; i < indexPairsValue.size() / 2; i++)
+        {
+            if (indexPairsValue[i * 2] == parentId && indexPairsValue[i * 2 + 1] == removed)
+            {
+                indicesToDelete.push_back(i);
+            }
+        }
+
+        for (auto it = indicesToDelete.rbegin(); it != indicesToDelete.rend(); ++it)
+        {
+            indexPairsValue.erase(indexPairsValue.begin() + 2 * (*it) + 1);
+            indexPairsValue.erase(indexPairsValue.begin() + 2 * (*it));
+        }
+
+        if (removed == nbPoints)
+            continue;
+
+        for(std::size_t i = 0; i < indexPairsValue.size() / 2; i++)
+        {
+            if (indexPairsValue[i * 2] == parentId && indexPairsValue[i * 2 + 1] == nbPoints)
+            {
+                indexPairsValue[i * 2 + 1] = removed;
+            }
+        }
+    }
+
+    //propagate the topology changes to the current context through the topology modifier of the Node
+    sofa::component::topology::PointSetTopologyModifier* topoMod { nullptr };
+    this->getContext()->get(topoMod, core::objectmodel::BaseContext::SearchDirection::Local);
+    if (topoMod)
+    {
+        topoMod->removeItems(removedPointsInTarget);
+    }
+    else
+    {
+        msg_error() << "No topology modifier has been found in the context of the target state. Consider adding one in order to support propagation of topological changes through the mapping.";
+    }
+
+    //brutal re-init based on the new indexPairs
+    Inherit::init();
+    initializeMappingMatrices();
 }
 
 template <class TIn, class TOut>

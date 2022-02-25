@@ -27,6 +27,7 @@
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/topology/TopologySubsetIndices.h>
 
 namespace sofa::component::mapping
 {
@@ -94,9 +95,16 @@ public:
 protected :
 
     SubsetMultiMapping();
-    virtual ~SubsetMultiMapping();
+    ~SubsetMultiMapping() override;
 
     type::vector<linearalgebra::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+
+    void initializeTopologyIndices();
+    void initializeMappingMatrices();
+
+    std::map<unsigned, sofa::core::topology::TopologySubsetIndices*> m_topologyIndices; ///< Map a parent id to a list of indices in this parent
+
+    void applyRemovedPoints(const core::topology::PointsRemoved* pointsRemoved, unsigned int parentId, core::topology::BaseMeshTopology* parentTopology);
 
 };
 
