@@ -115,11 +115,21 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public BaseSimulationTest
         simulation::Node::SPtr root = simpleapi::createRootNode(simu, "root");
         //*******
         // begin create scene under the root node
+        sofa::simpleapi::importPlugin("Sofa.Component.ODESolver");
+        sofa::simpleapi::importPlugin("SofaBaseLinearSolver");
+        sofa::simpleapi::importPlugin("SofaBaseMechanics");
+        sofa::simpleapi::importPlugin("SofaDeformable");
+        sofa::simpleapi::importPlugin("SofaBoundaryCondition");
+
+        // remove warnings
+        simpleapi::createObject(root, "DefaultAnimationLoop", {});
+        simpleapi::createObject(root, "DefaultVisualManagerLoop", {});
+
         simpleapi::createObject(root, "EulerImplicitSolver", {});
         simpleapi::createObject(root, "CGLinearSolver", {
-            { "maxIter", simpleapi::str(25)},
+            { "iterations", simpleapi::str(25)},
             { "tolerance", simpleapi::str(1e-5)},
-            { "smallDenominatorThreshold", simpleapi::str(1e-5)},
+            { "threshold", simpleapi::str(1e-5)},
         });
 
         simulation::Node::SPtr string = massSpringString (
@@ -131,8 +141,9 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public BaseSimulationTest
                     1000.0, // stiffness
                     0.1     // damping ratio
                     );
-        simpleapi::createObject(root, "FixedConstraint", {
-            { "indices", simpleapi::str(0)}
+
+        simpleapi::createObject(string, "FixedConstraint", {
+            { "indices", "0"}
         });
 
         Vec3d expected(0,-0.00981,0); // expected position of second particle after relaxation
@@ -201,44 +212,53 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
         // create scene
         root->setGravity(Vec3(0,0,0));
 
+        sofa::simpleapi::importPlugin("Sofa.Component.ODESolver");
+        sofa::simpleapi::importPlugin("SofaBaseLinearSolver");
+        sofa::simpleapi::importPlugin("SofaBaseMechanics");
+        sofa::simpleapi::importPlugin("SofaDeformable");
+        sofa::simpleapi::importPlugin("SofaBoundaryCondition");
+        // remove warnings
+        simpleapi::createObject(root, "DefaultAnimationLoop", {});
+        simpleapi::createObject(root, "DefaultVisualManagerLoop", {});
+
         simpleapi::createObject(root, "EulerImplicitSolver", {});
         simpleapi::createObject(root, "CGLinearSolver", {
-            { "maxIter", simpleapi::str(25)},
+            { "iterations", simpleapi::str(25)},
             { "tolerance", simpleapi::str(1e-5)},
-            { "smallDenominatorThreshold", simpleapi::str(1e-5)},
+            { "threshold", simpleapi::str(1e-5)},
             });
 
         simpleapi::createObject(root, "MechanicalObject", {
             {"name", "DOF"},
-            {"size", simpleapi::str(1)},
             {"position", simpleapi::str("0.0 2.0 0.0")},
             {"velocity", simpleapi::str("0.0 0.0 0.0")}
         });
 
         simpleapi::createObject(root, "UniformMass", {
             { "name","mass"},
-            { "vertexMass", simpleapi::str("1.0")}
+            { "vertexMass", "1.0"}
         });
 
         // create a child node with its own DOF
         simulation::Node::SPtr child = root->createChild("childNode");
-        simpleapi::createObject(root, "MechanicalObject", {
+        simpleapi::createObject(child, "MechanicalObject", {
             {"name", "childDof"},
-            {"size", simpleapi::str(1)},
             {"position", simpleapi::str("0.0 -1.0 0.0")},
             {"velocity", simpleapi::str("0.0 0.0 0.0")}
         });
 
-        simpleapi::createObject(root, "UniformMass", {
+        simpleapi::createObject(child, "UniformMass", {
             { "name","childMass"},
             { "vertexMass", simpleapi::str("1.0")}
         });
 
         // attach a spring
         std::ostringstream oss;
-        oss << 0 << 0 << 1000.0 << 0.1 << 1.0f;
+        oss << 0 << " " << 0 << " " << 1000.0 << " " << 0.1 << " " << 1.0f;
         simpleapi::createObject(root, "StiffSpringForceField", {
-            {"spring", oss.str()}
+            {"spring", oss.str()},
+            { "object1", "@/DOF"},
+            { "object2", "@childNode/childDof"},
         });
 
         Vec3d expected(0,0,0); // expected position of second particle after relaxation

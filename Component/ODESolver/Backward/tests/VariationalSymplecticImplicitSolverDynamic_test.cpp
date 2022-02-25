@@ -84,7 +84,7 @@ struct VariationalSymplecticImplicitSolverDynamic_test : public component::odeso
         simpleapi::createObject(m_si.root, "VariationalSymplecticSolver", {
             { "rayleighStiffness", simpleapi::str(rk)},
             { "rayleighMass", simpleapi::str(rm)},
-            { "computeHamiltonian", simpleapi::str(true)},
+            { "computeHamiltonian", "1"},
             { "newtonError", simpleapi::str(1e-12)},
             { "newtonSteps", simpleapi::str(4)}
             });
@@ -141,8 +141,8 @@ struct VariationalSymplecticImplicitSolverDynamic_test : public component::odeso
 
         // Get mechanical object
         simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
-        typename MechanicalObject::SPtr dofs = massNode->get<MechanicalObject>(m_si.root->SearchDown);
-        typename VariationalSymplecticSolver::SPtr variationalSolver = massNode->get<VariationalSymplecticSolver>(m_si.root->SearchDown);
+        typename container::MechanicalObject<_DataTypes>::SPtr dofs = massNode->get<container::MechanicalObject<_DataTypes>>(m_si.root->SearchDown);
+        typename VariationalSymplecticSolver::SPtr variationalSolver = m_si.root->get<VariationalSymplecticSolver>(m_si.root->SearchDown);
         
 
         // Animate

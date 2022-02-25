@@ -46,7 +46,8 @@ struct ODESolverSpringTest : public BaseSimulationTest
         sofa::simpleapi::importPlugin("Sofa.Component.ODESolver");
         sofa::simpleapi::importPlugin("SofaBaseLinearSolver");
         sofa::simpleapi::importPlugin("SofaBaseMechanics");
-        sofa::simpleapi::importPlugin("SofaDeformable");
+        sofa::simpleapi::importPlugin("SofaDeformable"); 
+        sofa::simpleapi::importPlugin("SofaBoundaryCondition");
 
         // remove warnings
         simpleapi::createObject(m_si.root, "DefaultAnimationLoop", {});
@@ -54,8 +55,8 @@ struct ODESolverSpringTest : public BaseSimulationTest
         
         simpleapi::createObject(m_si.root, "CGLinearSolver", {
             { "iterations", simpleapi::str(3000)},
-            { "tolerance", simpleapi::str(1e-9)},
-            { "threshold", simpleapi::str(1e-9)},
+            { "tolerance", simpleapi::str(1e-12)},
+            { "threshold", simpleapi::str(1e-12)},
             });
 
         // Add mass spring system
@@ -64,10 +65,10 @@ struct ODESolverSpringTest : public BaseSimulationTest
             simpleapi::str(K),      // stiffness
             simpleapi::str(m),      // mass
             simpleapi::str(l0),     // spring rest length
-            "0.0 2.0 0.0", // Initial position of fixed point
-            "0.0 0.0 0.0", // Initial velocity of fixed point
-            "0.0 1.0 0.0",  // Initial position of mass
-            "0.0 0.0 0.0"); // Initial velocity of mass
+            std::string("0.0 2.0 0.0"), // Initial position of fixed point
+            std::string("0.0 0.0 0.0"), // Initial velocity of fixed point
+            std::string("0.0 1.0 0.0"),  // Initial position of mass
+            std::string("0.0 0.0 0.0")); // Initial velocity of mass
     }
 };
 

@@ -41,10 +41,11 @@ inline simulation::Node::SPtr createMassSpringSystem(
     const std::string& vMass)
 {
     // Fixed point
-    simulation::Node::SPtr fixedPointNode = root->createChild("FixedPointNode");
+    auto fixedPointNode = simpleapi::createChild(root, "FixedPointNode" );
 
     simpleapi::createObject(fixedPointNode, "MechanicalObject", {
         { "name","fixedPoint"},
+        { "template","Vec3"},
         { "position", xFixedPoint},
         { "velocity", vFixedPoint},
     });
@@ -52,14 +53,14 @@ inline simulation::Node::SPtr createMassSpringSystem(
     simpleapi::createObject(fixedPointNode, "FixedConstraint", {
         { "name","fixed"},
         { "indices", "0"},
-        { "velocity", vFixedPoint},
     });
 
     // Mass
-    simulation::Node::SPtr massNode = root->createChild("MassNode");
+    auto massNode = simpleapi::createChild(root, "MassNode");
 
     simpleapi::createObject(massNode, "MechanicalObject", {
         { "name","massDof"},
+        { "template","Vec3"},
         { "position", xMass},
         { "velocity", vMass}
     });
@@ -70,12 +71,12 @@ inline simulation::Node::SPtr createMassSpringSystem(
     });
 
     std::ostringstream oss;
-    oss << 0 << 0 << stiffness << 0 << restLength;
+    oss << 0 << " " << 0 << " " << stiffness << " " << 0 << " " << restLength;
 
     // attach a spring
     simpleapi::createObject(root, "StiffSpringForceField", {
         { "name","ff"},
-        { "springs", oss.str()},
+        { "spring", oss.str()},
         { "object1", "@FixedPointNode/fixedPoint"},
         { "object2", "@MassNode/massDof"},
     });

@@ -77,9 +77,9 @@ struct VariationalSymplecticExplicitSolverDynamic_test : public component::odeso
         this->prepareScene(K, m, l0);
         // add ODE Solver to test
         simpleapi::createObject(m_si.root, "VariationalSymplecticSolver", {
-            { "explicit", simpleapi::str(true)},
+            { "explicitIntegration", simpleapi::str(true)},
             { "rayleighMass", simpleapi::str(rm)}
-            });
+        });
 
     }
 
@@ -126,7 +126,7 @@ struct VariationalSymplecticExplicitSolverDynamic_test : public component::odeso
 
         // Get mechanical object
         simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
-        typename MechanicalObject::SPtr dofs = massNode->get<MechanicalObject>(m_si.root->SearchDown);
+        typename container::MechanicalObject<_DataTypes>::SPtr dofs = massNode->get<container::MechanicalObject<_DataTypes>>(m_si.root->SearchDown);
 
         // Animate
         do
