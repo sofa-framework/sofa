@@ -26,8 +26,6 @@ using sofa::testing::NumericTest;
 
 #include <sofa/component/odesolver/testing/ODESolverSpringTest.h>
 
-#include <SceneCreator/SceneCreator.h>
-
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -44,7 +42,6 @@ namespace sofa {
 using namespace component;
 using namespace defaulttype;
 using namespace simulation;
-using namespace modeling;
 using type::vector;
 
 /**  Dynamic solver test.
