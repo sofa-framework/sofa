@@ -22,7 +22,6 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASE_H
 #define SOFA_CORE_OBJECTMODEL_BASE_H
 
-#include <sofa/type/BoundingBox.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/core/objectmodel/BaseClass.h>
@@ -37,6 +36,7 @@
 #include <sofa/core/objectmodel/ComponentState.h>
 #include <sofa/core/DataTracker.h>
 #include <sofa/core/DataTrackerCallback.h>
+#include <sofa/type/fwd.h>
 
 #include <sofa/helper/system/SofaOStream.h>
 
