@@ -35,7 +35,7 @@
 
         <SubsetMultiMapping input="@../FixedPointNode/dof @../MassNode/dof" output="@dofs" indexPairs="0 0  0 1  0 2  0 3     1 0  1 1  1 2  1 3" printLog="true"/>
         <PointSetTopologyContainer name="container" printLog="true"/>
-<!--        <PointSetTopologyModifier name="modifier" printLog="true" />-->
+        <PointSetTopologyModifier name="modifier" printLog="true" />
         <StiffSpringForceField spring="
             2 4 100 0 1
             1 6 100 0 1
