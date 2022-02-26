@@ -48,3 +48,12 @@ namespace sofa::component::linearsolver::direct
 #ifndef SOFASPARSESOLVER_HAVE_CSPARSE
 #define SOFASPARSESOLVER_HAVE_CSPARSE SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_CSPARSE
 #endif
+
+
+#ifdef SOFA_BUILD_SOFA_COMPONENT_LINEARSOLVER_DIRECT
+#define SOFA_ATTRIBUTE_DISABLED__SPARSELDLSOLVER_MATRIXEXPORT
+#else
+#define SOFA_ATTRIBUTE_DISABLED__SPARSELDLSOLVER_MATRIXEXPORT \
+    SOFA_ATTRIBUTE_DISABLED( \
+    "v22.06 (PR#2725)", "v22.12", "It is no longer possible to export the linear system matrix from within SparseLDLSolver. Instead, use the component GlobalSystemMatrixExporter.")
+#endif
