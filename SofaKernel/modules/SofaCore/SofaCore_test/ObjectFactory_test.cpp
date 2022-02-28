@@ -56,13 +56,11 @@ class ObjectFactory_test: public BaseTest
 {
 public:
     void testDuplicatedRegistration()
-    {
-        {
-            EXPECT_MSG_EMIT(Warning);
-            int C = RegisterObject("Already registered object.")
+    {       
+        EXPECT_MSG_EMIT(Warning);
+        int C = RegisterObject("Already registered object.")
                     .add< TestObject<long> >();
-            SOFA_UNUSED(C);
-        }
+        SOFA_UNUSED(C);
     }
 
     void testValidAlias()
@@ -72,10 +70,8 @@ public:
 
     void testInvalidAlias()
     {
-        {
-            EXPECT_MSG_EMIT(Error);
-            ASSERT_FALSE(ObjectFactory::getInstance()->addAlias("InvalidAlias", "NoWhere"));
-        }
+        EXPECT_MSG_EMIT(Error);
+        ASSERT_FALSE(ObjectFactory::getInstance()->addAlias("InvalidAlias", "NoWhere"));
     }
 
     void testDuplicatedAlias()
