@@ -50,6 +50,7 @@ template<class TMatrix, class TVector,class ThreadManager>
 WarpPreconditioner<TMatrix,TVector,ThreadManager >::WarpPreconditioner()
     : solverName(initData(&solverName, std::string(""), "solverName", "Name of the solver/preconditioner to warp"))
     , f_useRotationFinder(initData(&f_useRotationFinder, (unsigned)0, "useRotationFinder", "Which rotation Finder to use" ) )
+    , d_updateStep(initData(&d_updateStep, 1u, "update_step", "Number of steps before the next refresh of the system matrix in the main solver" ) )
 {
 
     realSolver = nullptr;
@@ -69,6 +70,13 @@ WarpPreconditioner<TMatrix,TVector,ThreadManager >::~WarpPreconditioner()
 
     rotationWork[0] = nullptr;
     rotationWork[1] = nullptr;
+}
+
+template <class TMatrix, class TVector, class ThreadManager>
+void WarpPreconditioner<TMatrix, TVector, ThreadManager>::init()
+{
+    Inherit1::init();
+    first = true;
 }
 
 template<class TMatrix, class TVector,class ThreadManager>
@@ -94,7 +102,7 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::bwdInit() {
 }
 
 template<class TMatrix, class TVector,class ThreadManager>
-typename  WarpPreconditioner<TMatrix, TVector, ThreadManager >::Index 
+typename  WarpPreconditioner<TMatrix, TVector, ThreadManager >::Index
 WarpPreconditioner<TMatrix,TVector,ThreadManager >::getSystemDimention(const sofa::core::MechanicalParams* mparams) {
     simulation::common::MechanicalOperations mops(mparams, this->getContext());
 
@@ -116,7 +124,11 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::setSystemMBKMatrix(cons
         if (!this->linearSystem.systemMatrix) this->linearSystem.systemMatrix = this->createMatrix();
     }
 
-    realSolver->setSystemMBKMatrix(mparams);
+    if (first || d_updateStep.getValue() > 0 && nextRefreshStep >= d_updateStep.getValue() || d_updateStep.getValue() == 0)
+    {
+        realSolver->setSystemMBKMatrix(mparams);
+        nextRefreshStep = 1;
+    }
 
     if (first) {
         updateSystemSize = getSystemDimention(mparams);
@@ -169,6 +181,7 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::invert(Matrix& /*Rcur*/
 
 template<class TMatrix, class TVector,class ThreadManager>
 void WarpPreconditioner<TMatrix,TVector,ThreadManager >::updateSystemMatrix() {
+    ++nextRefreshStep;
     realSolver->updateSystemMatrix();
 }
 

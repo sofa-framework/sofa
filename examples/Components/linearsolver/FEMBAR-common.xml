@@ -1,0 +1,24 @@
+<!-- A prefab declaring a beam, to be used in all examples matching FEMBAR-*.scn -->
+<Node name="Group">
+    <Node name="plugins">
+        <RequiredPlugin name="SofaBoundaryCondition"/>
+        <RequiredPlugin name="SofaImplicitOdeSolver"/>
+        <RequiredPlugin name="SofaEngine"/>
+
+        <RequiredPlugin name="SofaSimpleFem"/>
+        <RequiredPlugin name="SofaSparseSolver"/>
+        <RequiredPlugin name="SofaPreconditioner"/>
+    </Node>
+
+    <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+
+    <DefaultAnimationLoop name="animationLoop"/>
+    <DefaultVisualManagerLoop name="visualLoop"/>
+
+    <EulerImplicitSolver name="odesolver" rayleighStiffness="0.1" rayleighMass="0.1" />
+    <MechanicalObject name="DoFs" />
+    <UniformMass name="mass" totalMass="320" />
+    <RegularGridTopology name="grid" nx="4" ny="4" nz="20" xmin="-9" xmax="-6" ymin="0" ymax="3" zmin="0" zmax="19" />
+    <BoxROI name="box" box="-10 -1 -0.0001  -5 4 0.0001"/>
+    <FixedConstraint indices="@box.indices" />
+</Node>

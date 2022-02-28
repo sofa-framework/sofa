@@ -67,13 +67,13 @@ void AverageCoord<DataTypes>::doUpdate()
     const VecIndex& indices = d_indices.getValue();
 
     Coord c;
-    unsigned int n = (indices.empty()) ? coord.size() : indices.size();
+    const auto n = (indices.empty()) ? coord.size() : indices.size();
 
-    for( unsigned i=0; i< n; ++i )
+    for( std::size_t i = 0; i < n; ++i )
     {
         c += coord[ (indices.empty()) ? i : indices[i]];
     }
-    c *= 1./n;
+    c *= 1./ static_cast<typename Coord::value_type>(n);
 
     d_average.setValue(c);
 }

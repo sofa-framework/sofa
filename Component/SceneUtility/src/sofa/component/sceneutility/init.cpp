@@ -31,11 +31,7 @@ extern "C" {
 
 void initExternalModule()
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
+    init();
 }
 
 const char* getModuleName()
@@ -45,7 +41,11 @@ const char* getModuleName()
 
 void init()
 {
-    initExternalModule();
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
 }
 
 } // namespace sofa::component::sceneutility

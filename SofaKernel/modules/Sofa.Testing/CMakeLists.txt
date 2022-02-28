@@ -60,6 +60,5 @@ sofa_create_package_with_targets(
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Testing)
 
-if(SOFA_BUILD_TESTS)
-    add_subdirectory(${PROJECT_NAME}_test)
-endif()
+# test the tests...
+add_subdirectory(${PROJECT_NAME}_test)

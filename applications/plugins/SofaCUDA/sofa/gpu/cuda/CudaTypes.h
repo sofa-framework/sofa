@@ -46,6 +46,14 @@ namespace gpu
 namespace cuda
 {
 
+// Empty class to be used to highlight deprecated objects in SofaCUDA plugin at compilation time.
+class CudaDeprecatedAndRemoved {};
+
+#define SOFA_CUDA_ATTRIBUTE_DEPRECATED(removeDate, toFixMsg) \
+    [[deprecated( \
+        "Has been DEPRECATED and removed since " removeDate ". " \
+        " To fix your code use " toFixMsg)]]
+
 template<typename T>
 struct DataTypeInfoManager
 {

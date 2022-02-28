@@ -19,16 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaSphereModel.h"
+#include <sofa/gpu/cuda/CudaSphereModel.h>
 #include <SofaBaseCollision/SphereModel.inl>
 #include <sofa/core/ObjectFactory.h>
-namespace sofa
-{
 
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision
 {
 
 template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
@@ -38,17 +33,13 @@ template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3d
 template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace collision
+} // namespace sofa::component::collision
 
-} // namespace component
 
-namespace gpu
+namespace sofa::gpu::cuda
 {
 
-namespace cuda
-{
-
-int CudaSphereModelClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+const int CudaSphereModelClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::collision::SphereCollisionModel<CudaVec3fTypes> >()
         .add< component::collision::SphereCollisionModel<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -58,8 +49,5 @@ int CudaSphereModelClass = core::RegisterObject("Supports GPU-side computations 
         .addAlias("CudaSphere")
         .addAlias("CudaSphereModel");
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-} // namespace sofa

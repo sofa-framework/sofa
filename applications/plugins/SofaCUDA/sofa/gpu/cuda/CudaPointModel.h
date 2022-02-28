@@ -19,11 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDAPOINTCOLLISIONMODEL_H
-#define SOFA_GPU_CUDA_CUDAPOINTCOLLISIONMODEL_H
+#pragma once
 
-#include "CudaTypes.h"
-
+#include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/core/CollisionModel.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -110,5 +108,3 @@ inline std::size_t CudaPoint::getSize()
 }
 
 } // namespace sofa::gpu::cuda
-
-#endif
