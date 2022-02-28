@@ -20,24 +20,26 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaSimulationCommon/config.h>
-#include <map>
+
+#include <sofa/core/config.h>
 #include <string>
+#include <unordered_map>
 
-namespace sofa::simulation::xml
+namespace sofa::core
 {
 
-class SOFA_ATTRIBUTE_DEPRECATED__ELEMENTNAMEHELPER() ElementNameHelper
+/**
+ * Helper class to get a unique name for a component, based on a counter suffix.
+ */
+class SOFA_CORE_API ComponentNameHelper
 {
-protected:
-    std::map<std::string, int> instanceCounter;
-    void registerName(const std::string& name);
-
 public:
-    ElementNameHelper();
-    ~ElementNameHelper(); //terminal class.
 
     std::string resolveName(const std::string& type, const std::string& name);
+
+private:
+
+    std::unordered_map<std::string, unsigned int> m_instanceCounter;
 };
 
-} // namespace sofa::simulation::xml
+}

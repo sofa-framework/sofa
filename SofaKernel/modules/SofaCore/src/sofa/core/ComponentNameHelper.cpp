@@ -19,25 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaSimulationCommon/config.h>
-#include <map>
-#include <string>
+#include <sstream>
+#include <sofa/core/ComponentNameHelper.h>
+#include <sofa/helper/NameDecoder.h>
 
-namespace sofa::simulation::xml
+namespace sofa::core
 {
 
-class SOFA_ATTRIBUTE_DEPRECATED__ELEMENTNAMEHELPER() ElementNameHelper
+std::string ComponentNameHelper::resolveName(const std::string& type, const std::string& name)
 {
-protected:
-    std::map<std::string, int> instanceCounter;
-    void registerName(const std::string& name);
+    if (name.empty())
+    {
+        const std::string radix = helper::NameDecoder::shortName(type);
+        std::ostringstream oss;
+        oss << radix << m_instanceCounter[radix]++;
+        return oss.str();
+    }
+    return name;
+}
 
-public:
-    ElementNameHelper();
-    ~ElementNameHelper(); //terminal class.
-
-    std::string resolveName(const std::string& type, const std::string& name);
-};
-
-} // namespace sofa::simulation::xml
+}//namespace sofa::core
