@@ -21,6 +21,8 @@
 ******************************************************************************/
 #define SOFA_CORE_OBJECTMODEL_BASE_CPP
 #include <sofa/core/objectmodel/Base.h>
+
+#include <sofa/type/BoundingBox.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/PathResolver.h>

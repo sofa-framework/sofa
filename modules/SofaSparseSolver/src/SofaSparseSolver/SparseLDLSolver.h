@@ -57,15 +57,21 @@ public :
     typedef typename Inherit::JMatrixType JMatrixType;
     typedef SparseLDLImplInvertData<type::vector<int>, type::vector<Real> > InvertData;
 
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void invert(Matrix& M) override;
     bool doAddJMInvJtLocal(ResMatrixType* result, const JMatrixType* J, SReal fact, InvertData* data);
     bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, SReal fact) override;
     int numStep;
 
-    Data<bool> f_saveMatrixToFile;      ///< save matrix to a text file (can be very slow, as full matrix is stored)
-    sofa::core::objectmodel::DataFileName d_filename;   ///< file where this matrix will be saved
-    Data<int> d_precision;      ///< number of digits used to save system's matrix, default is 6
+    SOFA_ATTRIBUTE_DISABLED__SPARSELDLSOLVER_MATRIXEXPORT
+    DeprecatedAndRemoved f_saveMatrixToFile;
+
+    SOFA_ATTRIBUTE_DISABLED__SPARSELDLSOLVER_MATRIXEXPORT
+    DeprecatedAndRemoved d_filename;
+
+    SOFA_ATTRIBUTE_DISABLED__SPARSELDLSOLVER_MATRIXEXPORT
+    DeprecatedAndRemoved d_precision;
 
     MatrixInvertData * createInvertData() override {
         return new InvertData();
@@ -98,7 +104,6 @@ protected :
     sofa::linearalgebra::CompressedRowSparseMatrix<Real> Mfiltered;
 
     bool factorize(Matrix& M, InvertData * invertData);
-    void saveMatrix(Matrix& M);
 };
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_CPP)
