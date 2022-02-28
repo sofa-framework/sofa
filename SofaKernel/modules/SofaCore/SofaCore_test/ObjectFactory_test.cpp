@@ -59,7 +59,7 @@ public:
     {
         {
             EXPECT_MSG_EMIT(Warning);
-            int C = RegisterObject("Loads a plugin and import its content into the current namespace. ")
+            int C = RegisterObject("Already registered object.")
                     .add< TestObject<long> >();
             SOFA_UNUSED(C);
         }
