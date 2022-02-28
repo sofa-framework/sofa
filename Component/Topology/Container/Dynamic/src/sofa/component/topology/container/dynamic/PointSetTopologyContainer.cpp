@@ -165,9 +165,13 @@ void PointSetTopologyContainer::addPoints(const Size nPoints)
 
 void PointSetTopologyContainer::removePoints(const Size nPoints)
 {
-    if (nPoints < nbPoints.getValue())
+    if (nPoints <= nbPoints.getValue())
     {
         setNbPoints( nbPoints.getValue() - nPoints );
+    }
+    else
+    {
+        msg_error() << "Trying to set a negative number of points";
     }
 }
 
