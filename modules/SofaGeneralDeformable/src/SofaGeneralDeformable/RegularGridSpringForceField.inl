@@ -419,8 +419,7 @@ void RegularGridSpringForceField<DataTypes>::draw(const core::visual::VisualPara
     using namespace sofa::defaulttype;
 
     if (!vparams->displayFlags().getShowForceFields()) return;
-    assert(this->mstate1);
-    assert(this->mstate2);
+    assert(this->getMState());
 
     vparams->drawTool()->saveLastState();
 
