@@ -43,13 +43,13 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(TestObject2, Type), sofa::core::objectmodel::BaseObject);
 };
 
-int A = RegisterObject("Loads a plugin and import its content into the current namespace. ")
+int A = RegisterObject("Dummy test object.")
         .add< TestObject<int> >();
-int B1 = RegisterObject("Loads a plugin and import its content into the current namespace. ")
+int B1 = RegisterObject("Dummy test object.")
         .add< TestObject<double> >();
-int B2 = RegisterObject("Loads a plugin and import its content into the current namespace. ")
+int B2 = RegisterObject("Dummy test object.")
         .add< TestObject<long> >();
-int B3 = RegisterObject("Loads a plugin and import its content into the current namespace. ")
+int B3 = RegisterObject("Dummy test object.")
         .add< TestObject2<int> >();
 
 class ObjectFactory_test: public BaseTest
