@@ -48,8 +48,10 @@ if(NOT metis_FOUND)
     message(STATUS "Sofa.Component.LinearSolver.Direct: using built-in metis library")
     add_subdirectory(extlibs/metis-5.1.0)
 endif()
-
 sofa_set_01(SOFA_COMPONENT_LINEARSOLVER_DIRECT_HAVE_METIS VALUE TRUE)
+
+# make sure you have threads for AsyncSparseLDLSolver
+sofa_find_package(Threads REQUIRED)
 
 sofa_find_package(SofaSimulationCore REQUIRED)
 sofa_find_package(Sofa.Component.LinearSolver.Iterative REQUIRED) # Only for MatrixLinearSolver which will move to core
@@ -57,6 +59,7 @@ sofa_find_package(Sofa.Component.LinearSolver.Iterative REQUIRED) # Only for Mat
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${WRAPPER_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore Sofa.Component.LinearSolver.Iterative)
 target_link_libraries(${PROJECT_NAME} PUBLIC metis csparse)
+target_link_libraries(${PROJECT_NAME} PUBLIC Threads::Threads)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
