@@ -493,7 +493,7 @@ __global__ void SPHFluidForceFieldCuda3t_computeDensity_kernel(int size, const i
     __shared__ int2 range;
     __shared__ int ghost;
     __shared__ real temp_x[BSIZE*3];
-    int tx3 = __umul24(threadIdx.x,3);
+    int tx3 = threadIdx.x * 3;
     for (int cell = blockIdx.x; cell < size; cell += gridDim.x)
     {
         __syncthreads();
@@ -578,7 +578,7 @@ __global__ void SPHFluidForceFieldCuda3t_addForce_kernel(int size, const int *ce
     __shared__ int ghost;
     __shared__ real temp_x[BSIZE*4];
     __shared__ real temp_v[BSIZE*3];
-    int tx3 = __umul24(threadIdx.x,3);
+    int tx3 = threadIdx.x * 3;
     int tx4 = threadIdx.x << 2;
     for (int cell = blockIdx.x; cell < size; cell += gridDim.x)
     {
@@ -672,7 +672,7 @@ __global__ void SPHFluidForceFieldCuda3t_addDForce_kernel(int size, const int *c
     __shared__ real temp_x[BSIZE*4];
     __shared__ real temp_v[BSIZE*3];
     __shared__ real temp_dx[BSIZE*3];
-    int tx3 = __umul24(threadIdx.x,3);
+    int tx3 = threadIdx.x * 3;
     int tx4 = threadIdx.x << 2;
     for (int cell = blockIdx.x; cell < size; cell += gridDim.x)
     {

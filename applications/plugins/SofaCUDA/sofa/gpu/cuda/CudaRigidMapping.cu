@@ -45,13 +45,13 @@ extern "C"
 
 __global__ void RigidMappingCuda3f_apply_kernel(unsigned int size, CudaVec3<float> rotation_x, CudaVec3<float> rotation_y, CudaVec3<float> rotation_z, CudaVec3<float> translation, float* out, float* rotated, const float* in)
 {
-    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    int index0 = blockIdx.x * BSIZE; //blockDim.x;
     int index1 = threadIdx.x;
 
     //! Dynamically allocated shared memory to reorder global memory access
     extern  __shared__  float temp[];
 
-    int base = umul24(index0,3);
+    int base = index0 * 3;
     in  += base;
     out += base;
     rotated += base;
@@ -62,7 +62,7 @@ __global__ void RigidMappingCuda3f_apply_kernel(unsigned int size, CudaVec3<floa
 
     __syncthreads();
 
-    int index3 = umul24(3,index1);
+    int index3 = index1 * 3;
     CudaVec3<float> p = CudaVec3<float>::make(temp[index3  ],temp[index3+1],temp[index3+2]);
 
     // rotated
@@ -93,13 +93,13 @@ __global__ void RigidMappingCuda3f_apply_kernel(unsigned int size, CudaVec3<floa
 
 __global__ void RigidMappingCuda3f_applyJ_kernel(unsigned int size, CudaVec3<float> v, CudaVec3<float> omega, float* out, const float* rotated)
 {
-    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    int index0 = blockIdx.x * BSIZE; //blockDim.x;
     int index1 = threadIdx.x;
 
     //! Dynamically allocated shared memory to reorder global memory access
     extern  __shared__  float temp[];
 
-    int base = umul24(index0,3);
+    int base = index0 * 3;
     out += base;
     rotated += base;
 
@@ -109,7 +109,7 @@ __global__ void RigidMappingCuda3f_applyJ_kernel(unsigned int size, CudaVec3<flo
 
     __syncthreads();
 
-    int index3 = umul24(3,index1);
+    int index3 = index1 * 3;
     CudaVec3<float> p = v - cross(CudaVec3<float>::make(temp[index3  ],temp[index3+1],temp[index3+2]),omega);
 
     temp[index3  ] = p.x;
@@ -125,7 +125,7 @@ __global__ void RigidMappingCuda3f_applyJ_kernel(unsigned int size, CudaVec3<flo
 
 __global__ void RigidMappingCuda3f_applyJT_kernel(unsigned int size, unsigned int nbloc, float* out, const float* rotated, const float* in)
 {
-    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    int index0 = blockIdx.x * BSIZE; //blockDim.x;
     int index1 = threadIdx.x;
 
     //! Dynamically allocated shared memory to reorder global memory access
@@ -134,12 +134,12 @@ __global__ void RigidMappingCuda3f_applyJT_kernel(unsigned int size, unsigned in
     CudaVec3<float> t = CudaVec3<float>::make(0.0f, 0.0f, 0.0f);
     CudaVec3<float> r = CudaVec3<float>::make(0.0f, 0.0f, 0.0f);
 
-    int index3 = umul24(3,index1);
+    int index3 = index1 * 3;
 
     while (index0 < size)
     {
 
-        int base = umul24(index0,3);
+        int base = index0 * 3;
 
         temp[index1        ] = in[base+index1        ];
         temp[index1+  BSIZE] = in[base+index1+  BSIZE];
@@ -157,7 +157,7 @@ __global__ void RigidMappingCuda3f_applyJT_kernel(unsigned int size, unsigned in
             r += cross(CudaVec3<float>::make(temp[index3  +3*BSIZE],temp[index3+1+3*BSIZE],temp[index3+2+3*BSIZE]),v);
         }
         __syncthreads();
-        index0 += umul24(nbloc, BSIZE);
+        index0 += nbloc * BSIZE;
     }
 
     temp[index3  ] = t.x;
@@ -192,7 +192,7 @@ __global__ void RigidMappingCuda3f_applyJT_kernel(unsigned int size, unsigned in
     __syncthreads();
     if (index1 < 6)
     {
-        out[umul24(blockIdx.x,6) + index1] = temp[index1];
+        out[blockIdx.x * 6 + index1] = temp[index1];
     }
 }
 
