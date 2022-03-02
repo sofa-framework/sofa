@@ -43,7 +43,7 @@ public:
     SOFA_CLASS(RayTraceNarrowPhase, core::collision::NarrowPhaseDetection);
 
 private:
-    Data < bool > bDraw;
+    Data < bool > bDraw; ///< enable/disable display of results
 
 protected:
     RayTraceNarrowPhase();

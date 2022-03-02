@@ -222,7 +222,7 @@ public:
     Data<std::string> f_method; ///< large: large displacements, small: small displacements
     Data<type::vector<Real> > f_poisson; ///< Poisson ratio in Hooke's law (vector)
     Data<type::vector<Real> > f_young; ///< Young modulus in Hooke's law (vector)
-    Data<Real> f_thickness;
+    Data<Real> f_thickness; ///< Thickness of the elements
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<QuadBendingFEMForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

@@ -76,7 +76,7 @@ public:
     Data< int > d_pressureType; ///< 0 = none, 1 = default pressure
     Data< int > d_viscosityType; ///< 0 = none, 1 = default viscosity using kernel Laplacian, 2 = artificial viscosity
     Data< int > d_surfaceTensionType; ///< 0 = none, 1 = default surface tension using kernel Laplacian, 2 = cohesion forces surface tension from Becker et al. 2007
-    Data< bool > d_debugGrid;
+    Data< bool > d_debugGrid; ///< If true will store additionnal information on the grid to check neighbors and draw them
 protected:
     struct Particle
     {

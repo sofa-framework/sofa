@@ -56,7 +56,7 @@ public:
     }
 
     Data<bool> m_solveVelocityConstraintFirst; ///< solve separately velocity constraint violations before position constraint violations
-    Data<bool> d_threadSafeVisitor;
+    Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
     Data<bool> d_parallelCollisionDetectionAndFreeMotion; ///<If true, executes free motion and collision detection in parallel
     Data<bool> d_parallelODESolving; ///<If true, executes all free motions in parallel
 

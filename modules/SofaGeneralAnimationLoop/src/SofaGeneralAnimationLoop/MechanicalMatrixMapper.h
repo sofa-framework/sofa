@@ -106,13 +106,13 @@ public:
 
 protected:
 
-    Data<type::vector<std::string>> d_forceFieldList;
+    Data<type::vector<std::string>> d_forceFieldList; ///< List of ForceField Names to work on (by default will take all)
     SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::simulation::Node , BaseLink::FLAG_STOREPATH > l_nodeToParse;
-    Data <bool> d_stopAtNodeToParse;
-    Data <bool> d_skipJ1tKJ1;
-    Data <bool> d_skipJ2tKJ2;
-    Data <bool> d_fastMatrixProduct;
-    Data <bool> d_parallelTasks;
+    Data <bool> d_stopAtNodeToParse; ///< Boolean to choose whether forceFields in children Nodes of NodeToParse should be considered.
+    Data <bool> d_skipJ1tKJ1; ///< Boolean to choose whether to skip J1tKJ1 to avoid 2 contributions, in case 2 MechanicalMatrixMapper are used
+    Data <bool> d_skipJ2tKJ2; ///< Boolean to choose whether to skip J2tKJ2 to avoid 2 contributions, in case 2 MechanicalMatrixMapper are used
+    Data <bool> d_fastMatrixProduct; ///< If true, an accelerated method to compute matrix products based on the pre-computation of the matrices intersection is used. Regular matrix product otherwise.
+    Data <bool> d_parallelTasks; ///< Execute some tasks in parallel for better performances
     SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseMechanicalState , BaseLink::FLAG_NONE > l_mechanicalState;
     SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseMass , BaseLink::FLAG_NONE > l_mappedMass;
     MultiLink  < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseForceField, BaseLink::FLAG_NONE > l_forceField;

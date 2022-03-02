@@ -134,7 +134,7 @@ public:
     sofa::core::objectmodel::DataFileName f_infilename; ///< input file containing constant joint force
     Data <Real > f_period; ///< period between outputs
     Data<bool> f_reinit; ///< flag enabling reinitialization of the output file at each timestep
-    Data<sofa::type::vector<Spring> > d_springs;
+    Data<sofa::type::vector<Spring> > d_springs; ///< pairs of indices, stiffness, damping, rest length
 
     /// bool to allow the display of the 2 parts of springs torsions
     Data<bool> d_showLawfulTorsion;
