@@ -429,7 +429,7 @@ RealGUI::RealGUI ( const char* viewername)
     fpsLabel->setMinimumSize ( fpsLabel->sizeHint() );
     fpsLabel->clear();
 
-    timeLabel = new QLabel ( "Time: 999.9999 s", statusBar() );
+    timeLabel = new QLabel ( "Time: 999.9999", statusBar() );
     timeLabel->setMinimumSize ( timeLabel->sizeHint() );
     timeLabel->clear();
     statusBar()->addWidget ( fpsLabel );
