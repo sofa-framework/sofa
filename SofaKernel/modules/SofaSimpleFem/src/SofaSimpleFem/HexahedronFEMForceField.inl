@@ -50,8 +50,8 @@ using namespace sofa::defaulttype;
 template <class DataTypes>
 HexahedronFEMForceField<DataTypes>::HexahedronFEMForceField()
     : f_method(initData(&f_method,std::string("large"),"method","\"large\" or \"polar\" or \"small\" displacements" ))
-    , f_poissonRatio(initData(&f_poissonRatio,(Real)0.45f,"poissonRatio","FEM Poisson Ratio [0,0.5["))
-    , f_youngModulus(initData(&f_youngModulus,(Real)5000,"youngModulus","FEM Young's modulus"))
+    , f_poissonRatio(initData(&f_poissonRatio,(Real)0.45f,"poissonRatio","FEM Poisson Ratio in Hooke's law [0,0.5["))
+    , f_youngModulus(initData(&f_youngModulus,(Real)5000,"youngModulus","FEM Young's modulus in Hooke's law"))
     , f_updateStiffnessMatrix(initData(&f_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
     , f_assembling(initData(&f_assembling,false,"assembling",""))
     , _gatherPt(initData(&_gatherPt,"gatherPt","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))

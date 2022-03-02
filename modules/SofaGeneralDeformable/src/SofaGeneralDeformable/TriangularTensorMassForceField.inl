@@ -228,7 +228,7 @@ template <class DataTypes> TriangularTensorMassForceField<DataTypes>::Triangular
     , _initialPoints(0)
     , updateMatrix(true)
     , f_poissonRatio(initData(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
-    , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
+    , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young's modulus in Hooke's law"))
     , l_topology(initLink("topology", "link to the topology container"))
     , lambda(0)
     , mu(0)
