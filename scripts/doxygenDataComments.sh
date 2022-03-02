@@ -38,7 +38,7 @@ fi
 
 force-one-lined-data-declarations() {
     rm -f "$TMP_FILE"
-    local grep_pattern='^[	 A-Za-z:_-]*Data[[:space:]]*<.*>[[:space:]]*[A-Za-z_-]+[[:space:]]*,[[:space:]]*.*;.*$'
+    local grep_pattern='^[[:space:]A-Za-z:_-]*Data[[:space:]]*<.*>[[:space:]]*[A-Za-z_-]+[[:space:]]*,[[:space:]]*.*;.*$'
     grep -Er --include \*.h "$grep_pattern" "$SRC_DIR" | sort | uniq > "$TMP_FILE"
     count="$(wc -l < "$TMP_FILE")"
 
@@ -64,8 +64,8 @@ force-one-lined-data-declarations() {
 }
 
 escape-for-sed() {
-    #                       \n become space             \ are removed          / become \/                ( become \(                ) become \)
-    echo "$( perl -p -e 's/\\n/ /g' $1 | perl -p -e 's/\\//g' | perl -p -e 's/\//\\\//g' | perl -p -e 's/\(/\\\(/g' | perl -p -e 's/\)/\\\)/g' )"
+    #                    \n become space             \ are removed          / become \/                ( become \(                ) become \)                & become \&
+    echo "$( perl -p -e 's/\\n/ /g' $1 | perl -p -e 's/\\//g' | perl -p -e 's/\//\\\//g' | perl -p -e 's/\(/\\\(/g' | perl -p -e 's/\)/\\\)/g' | perl -p -e 's/&/\\&/g' )"
 }
 
 fix-inline-comment() {
@@ -73,8 +73,8 @@ fix-inline-comment() {
     local member="$2"
 
     # FIX inline comments: "// DataComment" and "/// DataComment" to "///< DataComment"
-    if grep -q '^[	 A-Za-z:_-]*Data[[:space:]]*<.*>[[:space:]]*'"$member"'[[:space:]]*;[[:space:]]*///*[[:space:]][[:space:]]*' "$file_h"; then
-        sed -ie 's/^\([	 A-Za-z:_-]*Data[[:space:]]*<.*>[[:space:]]*'"$member"'[[:space:]]*;[[:space:]]*\)\/\/\/*[[:space:]][[:space:]]*\(.*\)$/\1\/\/\/< \2/g' "$file_h"
+    if grep -q '^[[:space:]A-Za-z:_-]*Data[[:space:]]*<.*>[[:space:]]*'"$member"'[[:space:]]*;[[:space:]]*///*[[:space:]][[:space:]]*' "$file_h"; then
+        sed -ie 's/^\([[:space:]A-Za-z:_-]*Data[[:space:]]*<.*>[[:space:]]*'"$member"'[[:space:]]*;[[:space:]]*\)\/\/\/*[[:space:]][[:space:]]*\(.*\)$/\1\/\/\/< \2/g' "$file_h"
         rm -f "$file_h"e 2> /dev/null # Created by Windows only
     fi
 }
@@ -88,9 +88,9 @@ add-comment() {
     # Warning: if two similar member declarations are detected, we only care about the first one
     # TODO: handle the others
     if [[ "$FORCE" == "true" ]]; then # PERMISSIVE PATTERN
-        line_number="$(grep -n '^[	 A-Za-z:_-]*Data[[:space:]]*<.*>[[:space:]]*'"$member"'[[:space:]]*;' "$file_h" | grep -Eo '^[^:]+' | cut -f1 -d: | head -1)"
+        line_number="$(grep -n '^[[:space:]A-Za-z:_-]*Data[[:space:]]*<.*>[[:space:]]*'"$member"'[[:space:]]*;' "$file_h" | grep -Eo '^[^:]+' | cut -f1 -d: | head -1)"
     else # STRICT PATTERN
-        line_number="$(grep -n '^[	 A-Za-z:_-]*Data[[:space:]]*<.*>[[:space:]]*'"$member"'[[:space:]]*;[[:space:]]*$' "$file_h" | grep -Eo '^[^:]+' | cut -f1 -d: | head -1)"
+        line_number="$(grep -n '^[[:space:]A-Za-z:_-]*Data[[:space:]]*<.*>[[:space:]]*'"$member"'[[:space:]]*;[[:space:]]*$' "$file_h" | grep -Eo '^[^:]+' | cut -f1 -d: | head -1)"
     fi
     previous_line_number=$((line_number-1)) # get previous line
     if [ "$previous_line_number" -lt 1 ]; then
@@ -103,8 +103,8 @@ add-comment() {
     # Search if there is a Doxygen comment on previous line
     # echo "Search Doxygen comment ($file_h:$previous_line_number)"
     if sed "${previous_line_number}q;d" "$file_h" | grep -q '^[[:space:]]*///'; then
-        echo "$file_h: $member: Comment found above."
         # TODO: in FORCE mode we should remove this comment
+        #echo "$file_h:$line_number: $member: Comment found above."
         return 1
     fi
 
