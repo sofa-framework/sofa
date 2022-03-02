@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #pragma once
-#include <SofaGeneralRigid/ArticulatedSystemMapping.h>
+#include <ArticulatedSystemPlugin/ArticulatedSystemMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/visual/DrawTool.h>
 

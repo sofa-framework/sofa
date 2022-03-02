@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralRigid/config.h>
+#include <ArticulatedSystemPlugin/config.h>
 
 #include <sofa/core/Multi2Mapping.h>
 
-#include <SofaGeneralRigid/ArticulatedHierarchyContainer.h>
+#include <ArticulatedSystemPlugin/ArticulatedHierarchyContainer.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -223,7 +223,7 @@ private:
 
 #if  !defined(SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_CPP)
 
-extern template class SOFA_SOFAGENERALRIGID_API ArticulatedSystemMapping< sofa::defaulttype::Vec1Types, sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types >;
+extern template class SOFA_ARTICULATEDSYSTEMPLUGIN_API ArticulatedSystemMapping< sofa::defaulttype::Vec1Types, sofa::defaulttype::Rigid3Types, sofa::defaulttype::Rigid3Types >;
 
 
 

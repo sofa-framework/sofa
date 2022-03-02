@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGeneralRigid/ArticulatedHierarchyContainer.h>
+#include <ArticulatedSystemPlugin/ArticulatedHierarchyContainer.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MechanicalState.h>

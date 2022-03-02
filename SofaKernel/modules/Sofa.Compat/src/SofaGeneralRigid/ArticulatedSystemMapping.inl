@@ -19,26 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#include <SofaGeneralRigid/ArticulatedHierarchyContainer.inl>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/config.h>
 
-namespace sofa::component::container
-{
-
-// Register in the Factory
-int ArticulatedHierarchyContainerClass = core::RegisterObject("This class allow to store and retrieve all the articulation centers from an articulated rigid object")
-        .add< ArticulatedHierarchyContainer >()
-        ;
-
-// Register in the Factory
-int ArticulationCenterClass = core::RegisterObject("This class defines an articulation center. This contains a set of articulations.")
-        .add< ArticulationCenter >()
-        ;
-
-// Register in the Factory
-int ArticulationClass = core::RegisterObject("This class defines an articulation by an axis, an orientation and an index.")
-        .add< Articulation >()
-        ;
-
-} // namespace sofa::component::container
+SOFA_DEPRECATED_HEADER("v22.06", "v22.12", "ArticulatedSystemPlugin/ArticulatedSystemMapping.inl")

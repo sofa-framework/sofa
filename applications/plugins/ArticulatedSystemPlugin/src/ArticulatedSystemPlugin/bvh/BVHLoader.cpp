@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralRigid/bvh/BVHLoader.h>
+#include <ArticulatedSystemPlugin/bvh/BVHLoader.h>
 
 #include <sofa/helper/system/Locale.h>
 #include <iostream>

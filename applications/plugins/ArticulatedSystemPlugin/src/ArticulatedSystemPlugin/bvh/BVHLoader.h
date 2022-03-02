@@ -19,34 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralRigid/bvh/BVHMotion.h>
-#include <sofa/helper/logging/Messaging.h>
+#pragma once
+#include <ArticulatedSystemPlugin/config.h>
 
-#include <iostream>
+#include <ArticulatedSystemPlugin/bvh/BVHJoint.h>
+#include <ArticulatedSystemPlugin/bvh/BVHMotion.h>
 
 namespace sofa::helper::io::bvh
 {
 
-void BVHMotion::init(double _fTime, unsigned int _fCount, unsigned int _fSize)
+/**
+*	This class defines a BVH File Loader
+*	This files describe a hierarchical articulated model and also an associated motion
+*	see http://www.cs.wisc.edu/graphics/Courses/cs-838-1999/Jeff/BVH.html for the file format specification
+*/
+class SOFA_ARTICULATEDSYSTEMPLUGIN_API BVHLoader
 {
-    frameTime = _fTime;
-    frameCount = _fCount;
+public:
+    BVHLoader() {};
+    virtual ~BVHLoader() {};
 
-    frames.resize(frameCount);
+    BVHJoint *load(const char *filename);
 
-    for (int i=0; i<frameCount; i++)
-        frames[i].resize(_fSize);
-}
+private:
+    BVHJoint *parseJoint(FILE *f, bool isEndSite=false, BVHJoint *parent=nullptr);
+    BVHOffset *parseOffset(FILE *f);
+    BVHChannels *parseChannels(FILE *f);
 
-void BVHMotion::debug(void)
-{
-    for (unsigned int i=0; i<frames.size(); i++)
-    {
-        std::stringstream tmpmsg;
-        for (unsigned int j=0; j<frames[i].size(); j++)
-            tmpmsg << frames[i][j] << " ";
-        msg_info("BVHMotion") ;
-    }
-}
+    void parseMotion(FILE *f, BVHJoint *j);
+    void setFrameTime(BVHJoint *j, double _frameTime);
+    void parseFrames(BVHJoint *j, unsigned int frameIndex, FILE *f);
+};
 
 } // namespace sofa::helper::io::bvh
