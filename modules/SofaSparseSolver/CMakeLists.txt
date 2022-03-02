@@ -15,6 +15,9 @@ if(NOT metis_FOUND)
 endif()
 sofa_set_01(SOFASPARSESOLVER_HAVE_METIS VALUE TRUE)
 
+# make sure you have threads for AsyncSparseLDLSolver
+sofa_find_package(Threads REQUIRED)
+
 set(SRC_ROOT src/SofaSparseSolver)
 
 # Sources
@@ -47,6 +50,7 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseLinearSolver SofaGeneralLinearSolver)
 target_link_libraries(${PROJECT_NAME} PUBLIC metis csparse)
+target_link_libraries(${PROJECT_NAME} PUBLIC Threads::Threads)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME SofaSparseSolver
