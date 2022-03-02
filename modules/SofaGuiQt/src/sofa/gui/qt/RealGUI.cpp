@@ -1639,7 +1639,7 @@ void RealGUI::eventNewTime()
     {
         double time = root->getTime();
         char buf[100];
-        sprintf ( buf, "Time: %.3g s", time );
+        sprintf ( buf, "Time: %.3g", time );
         timeLabel->setText ( buf );
     }
 #endif
