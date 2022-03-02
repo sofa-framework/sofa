@@ -19,22 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_TOPOLOGY_TOPOLOGICALMAPPING_H
-#define SOFA_CORE_TOPOLOGY_TOPOLOGICALMAPPING_H
+#pragma once
 
+#include <sofa/core/topology/BaseTopologicalMapping.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace topology
+namespace sofa::core::topology
 {
 
 /**
-*  \brief This Interface is a new kind of Mapping, called TopologicalMapping, which converts an INPUT TOPOLOGY to an OUTPUT TOPOLOGY (both topologies are of type BaseTopology)
+*  \brief This Interface is a kind of Mapping, called TopologicalMapping, which converts an INPUT TOPOLOGY to an OUTPUT TOPOLOGY (both topologies are of type BaseTopology)
 *
 * It first initializes the mesh of the output topology from the mesh of the input topology,
 * and it creates the two Index Maps that maintain the correspondence between the indices of their common elements.
@@ -45,15 +39,13 @@ namespace topology
 * So, at each time step, the geometrical and adjacency information are consistent in both topologies.
 *
 */
-class TopologicalMapping : public virtual objectmodel::BaseObject
+class TopologicalMapping : public virtual BaseTopologicalMapping
 {
 public:
-    SOFA_ABSTRACT_CLASS(TopologicalMapping, objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(TopologicalMapping, BaseTopologicalMapping);
 
-    /// Input Topology
-    typedef BaseMeshTopology In;
-    /// Output Topology
-    typedef BaseMeshTopology Out;
+    using BaseTopologicalMapping::In;
+    using BaseTopologicalMapping::Out;
 
     using Index = sofa::Index;
 
@@ -72,6 +64,9 @@ public:
         this->toModel.set( to );
     };
 
+    bool isTopologyAnInput(core::topology::Topology* topology) override;
+    bool isTopologyAnOutput(core::topology::Topology* topology) override;
+
     /// Set the path to the objects mapped in the scene graph
     void setPathInputObject(const std::string &o) {fromModel.setPath(o);}
     void setPathOutputObject(const std::string &o) {toModel.setPath(o);}
@@ -81,18 +76,6 @@ public:
 
     /// Accessor to the OUTPUT topology of the TopologicalMapping :
     Out* getTo() {return toModel.get();}
-
-    /// Method called at each topological changes propagation which comes from the INPUT topology to adapt the OUTPUT topology :
-    virtual void updateTopologicalMappingTopDown() = 0;
-
-    /// Method called at each topological changes propagation which comes from the OUTPUT topology to adapt the INPUT topology :
-    virtual void updateTopologicalMappingBottomUp() {}
-
-    /// Return true if this mapping is able to propagate topological changes from input to output model
-    virtual bool propagateFromInputToOutputModel() { return true; }
-
-    /// Return true if this mapping is able to propagate topological changes from output to input model
-    virtual bool propagateFromOutputToInputModel() { return false; }
 
     /// return true if the output topology subdivide the input one. (the topology uses the Loc2GlobVec/Glob2LocMap/In2OutMap structs and share the same DOFs)
     virtual bool isTheOutputTopologySubdividingTheInputOne() { return true; }
@@ -235,10 +218,10 @@ public:
 protected:
     /// Input source BaseTopology
     SingleLink<TopologicalMapping, In, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> fromModel;
-    //In* fromModel;
+
     /// Output target BaseTopology
     SingleLink<TopologicalMapping, Out, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> toModel;
-    //Out* toModel;
+
 
     // Two index maps :
 
@@ -253,10 +236,5 @@ protected:
     std::map<Index, sofa::type::vector<Index> > In2OutMap;
 };
 
-} // namespace topology
+} // namespace sofa::core::topology
 
-} // namespace core
-
-} // namespace sofa
-
-#endif

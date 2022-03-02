@@ -19,20 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/topology/TopologicalMapping.h>
+#pragma once
+
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 namespace sofa::core::topology
 {
 
-bool TopologicalMapping::isTopologyAnInput(core::topology::Topology* topology)
+class BaseTopologicalMapping : public virtual objectmodel::BaseObject
 {
-    return fromModel.get() == topology;
-}
+public:
+    SOFA_ABSTRACT_CLASS(BaseTopologicalMapping, objectmodel::BaseObject);
 
-bool TopologicalMapping::isTopologyAnOutput(core::topology::Topology* topology)
-{
-    return toModel.get() == topology;
-}
+    /// Input Topology
+    using In = BaseMeshTopology;
+    /// Output Topology
+    using Out = BaseMeshTopology;
 
-} /// namespace sofa::core::topology
+    /// Method called at each topological changes propagation which comes from the INPUT topologies to adapt the OUTPUT topologies :
+    virtual void updateTopologicalMappingTopDown() = 0;
 
+    /// Method called at each topological changes propagation which comes from the OUTPUT topologies to adapt the INPUT topologies :
+    virtual void updateTopologicalMappingBottomUp() {}
+
+    /// Return true if this mapping is able to propagate topological changes from input to output topologies
+    virtual bool propagateFromInputToOutputModel() { return true; }
+
+    /// Return true if this mapping is able to propagate topological changes from output to input topologies
+    virtual bool propagateFromOutputToInputModel() { return false; }
+
+    virtual bool isTopologyAnInput(core::topology::Topology* topology) { return false; }
+    virtual bool isTopologyAnOutput(core::topology::Topology* topology) { return false; }
+
+};
+
+} // namespace sofa::core::topology

@@ -33,7 +33,7 @@ namespace sofa::component::topology::mapping
 {
 
 /**
- * This class is a specific implementation of TopologicalMapping where the destination topology should be kept identical to the source topology.
+ * This class is a specific implementation of TopologicalMapping where the destination topology is a subset of the source topology.
  * The implementation currently assumes that both topology have been initialized identically.
  */
 
