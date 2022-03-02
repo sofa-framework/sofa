@@ -43,33 +43,6 @@ using std::endl;
 #define is(n1, n2) (! xmlStrcmp((const xmlChar*)n1,(const xmlChar*)n2))
 #define getProp(n) ( xmlGetProp(cur, (const xmlChar*)n) )
 
-namespace // namespace anonymous
-{
-
-const std::string multimappingName  = "MultiMapping";
-const std::string multi2mappingName = "Multi2Mapping";
-
-bool deriveFromMultiMapping( const std::string& className)
-{
-    if( sofa::core::ObjectFactory::HasCreator(className) )
-    {
-        sofa::core::ObjectFactory::ClassEntry& entry = core::ObjectFactory::getInstance()->getEntry(className);
-        sofa::core::ObjectFactory::CreatorMap::const_iterator iter;
-        for( iter = entry.creatorMap.begin(); iter != entry.creatorMap.end(); ++iter )
-        {
-            const std::string& name = iter->first;
-            if(name.substr(0,multimappingName.size()) == multimappingName
-               || name.substr(0,multi2mappingName.size()) == multi2mappingName)
-            {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-} // namespace anonymous
-
 void recReplaceAttribute(BaseElement* node, const char* attr, const char* value, const char* nodename=nullptr)
 {
     if (nodename)
@@ -171,10 +144,6 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot =
             element->RemoveAttribute("type");
             return includeNode(root, basefilename);
         }
-    }
-    if( deriveFromMultiMapping(type))
-    {
-        classType = "MultiMappingObject";
     }
 
     BaseElement* node = BaseElement::Create(classType,name,type);

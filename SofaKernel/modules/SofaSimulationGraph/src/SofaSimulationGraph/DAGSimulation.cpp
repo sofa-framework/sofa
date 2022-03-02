@@ -49,11 +49,6 @@ DAGSimulation::DAGSimulation()
     // Safety check; it could be elsewhere, but here is a good place, I guess.
     if (!sofa::simulation::graph::isInitialized())
         sofa::helper::printUninitializedLibraryWarning("SofaSimulationGraph", "sofa::simulation::graph::init()");
-
-    // I have no idea what this 'DuplicateEntry()' call is for, but it causes an error when we
-    // create several DAGSimulation, so I added the preceding 'if' (Marc Legendre, nov. 2013)
-    if (! sofa::simulation::xml::BaseElement::NodeFactory::HasKey("MultiMappingObject") )
-        sofa::simulation::xml::BaseElement::NodeFactory::DuplicateEntry("DAGNodeMultiMapping","MultiMappingObject");
 }
 
 DAGSimulation::~DAGSimulation()
