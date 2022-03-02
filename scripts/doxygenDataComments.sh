@@ -38,7 +38,7 @@ fi
 
 force-one-lined-data-declarations() {
     rm -f "$TMP_FILE"
-    local grep_pattern='^[	 A-Za-z:_-]*Data[	 ]*<.*>[	 ]*[A-Za-z_-]+[	 ]*,[	 ]*.*;.*$'
+    local grep_pattern='^[	 A-Za-z:_-]*Data[[:space:]]*<.*>[[:space:]]*[A-Za-z_-]+[[:space:]]*,[[:space:]]*.*;.*$'
     grep -Er --include \*.h "$grep_pattern" "$SRC_DIR" | sort | uniq > "$TMP_FILE"
     count="$(wc -l < "$TMP_FILE")"
 
@@ -55,7 +55,7 @@ force-one-lined-data-declarations() {
 
         # CONVERT multiple Data declaration to one-lined Data declarations.
         while grep -Eq "$grep_pattern" "$file"; do
-            sed -ie 's/^\(.*Data[	 ]*<.*>[	 ]*\)\([A-Za-z_-]*\)[	 ]*,[	 ]*\(.*\);\(.*\)$/\1\2;\4\n\1\3;\4/g' "$file"
+            sed -ie 's/^\(.*Data[[:space:]]*<.*>[[:space:]]*\)\([A-Za-z_-]*\)[[:space:]]*,[[:space:]]*\(.*\);\(.*\)$/\1\2;\4\n\1\3;\4/g' "$file"
             rm -f "$file"e 2> /dev/null # Created by Windows only
         done
     done < "$TMP_FILE"
@@ -73,8 +73,8 @@ fix-inline-comment() {
     local member="$2"
 
     # FIX inline comments: "// DataComment" and "/// DataComment" to "///< DataComment"
-    if grep -q '^[	 A-Za-z:_-]*Data[	 ]*<.*>[	 ]*'"$member"'[	 ]*;[	 ]*///*[	 ][	 ]*' "$file_h"; then
-        sed -ie 's/^\([	 A-Za-z:_-]*Data[	 ]*<.*>[	 ]*'"$member"'[	 ]*;[	 ]*\)\/\/\/*[	 ][	 ]*\(.*\)$/\1\/\/\/< \2/g' "$file_h"
+    if grep -q '^[	 A-Za-z:_-]*Data[[:space:]]*<.*>[[:space:]]*'"$member"'[[:space:]]*;[[:space:]]*///*[[:space:]][[:space:]]*' "$file_h"; then
+        sed -ie 's/^\([	 A-Za-z:_-]*Data[[:space:]]*<.*>[[:space:]]*'"$member"'[[:space:]]*;[[:space:]]*\)\/\/\/*[[:space:]][[:space:]]*\(.*\)$/\1\/\/\/< \2/g' "$file_h"
         rm -f "$file_h"e 2> /dev/null # Created by Windows only
     fi
 }
@@ -88,12 +88,13 @@ add-comment() {
     # Warning: if two similar member declarations are detected, we only care about the first one
     # TODO: handle the others
     if [[ "$FORCE" == "true" ]]; then # PERMISSIVE PATTERN
-        line_number="$(grep -n '^[	 A-Za-z:_-]*Data[	 ]*<.*>[	 ]*'"$member"'[	 ]*;' "$file_h" | grep -Eo '^[^:]+' | cut -f1 -d: | head -1)"
+        line_number="$(grep -n '^[	 A-Za-z:_-]*Data[[:space:]]*<.*>[[:space:]]*'"$member"'[[:space:]]*;' "$file_h" | grep -Eo '^[^:]+' | cut -f1 -d: | head -1)"
     else # STRICT PATTERN
-        line_number="$(grep -n '^[	 A-Za-z:_-]*Data[	 ]*<.*>[	 ]*'"$member"'[	 ]*;[	 ]*$' "$file_h" | grep -Eo '^[^:]+' | cut -f1 -d: | head -1)"
+        line_number="$(grep -n '^[	 A-Za-z:_-]*Data[[:space:]]*<.*>[[:space:]]*'"$member"'[[:space:]]*;[[:space:]]*$' "$file_h" | grep -Eo '^[^:]+' | cut -f1 -d: | head -1)"
     fi
     previous_line_number=$((line_number-1)) # get previous line
     if [ "$previous_line_number" -lt 1 ]; then
+        # echo "$file_h: $member: $line_number"
         # Ignore not pattern-matching member declaration
         # if FORCE==false, it means that the declaration is already commented
         return 1
@@ -101,8 +102,8 @@ add-comment() {
 
     # Search if there is a Doxygen comment on previous line
     # echo "Search Doxygen comment ($file_h:$previous_line_number)"
-    if sed "${previous_line_number}q;d" "$file_h" | grep -q "^[	 ]*///"; then
-        #echo "Comment found above $member"
+    if sed "${previous_line_number}q;d" "$file_h" | grep -q '^[[:space:]]*///'; then
+        echo "$file_h: $member: Comment found above."
         # TODO: in FORCE mode we should remove this comment
         return 1
     fi
@@ -110,9 +111,9 @@ add-comment() {
     # Rewrite the member declaration with Doxygen comment at the end.
     local escaped_comment="$(echo "$comment" | escape-for-sed)"
     if [[ "$FORCE" == "true" ]]; then # PERMISSIVE PATTERN
-        sed -ie 's/^\(.*Data[	 ]*<.*>[	 ]*'"$member"'[	 ]*;\).*$/\1 \/\/\/< '"$escaped_comment"'/g' "$file_h"
+        sed -ie 's/^\(.*Data[[:space:]]*<.*>[[:space:]]*'"$member"'[[:space:]]*;\).*$/\1 \/\/\/< '"$escaped_comment"'/g' "$file_h"
     else # STRICT PATTERN
-        sed -ie 's/^\(.*Data[	 ]*<.*>[	 ]*'"$member"'[	 ]*;\)[	 ]*$/\1 \/\/\/< '"$escaped_comment"'/g' "$file_h"
+        sed -ie 's/^\(.*Data[[:space:]]*<.*>[[:space:]]*'"$member"'[[:space:]]*;\)[[:space:]]*$/\1 \/\/\/< '"$escaped_comment"'/g' "$file_h"
     fi
     rm -f "$file_h"e 2> /dev/null # Created by Windows only
 
@@ -124,7 +125,7 @@ generate-doxygen-data-comments() {
     rm -f "$TMP_FILE"
     # Count initData calls
     echo "Counting initData calls..."
-    grep -Er --include \*.h --include \*.inl --include \*.cpp "^[^/]*initData[	 ]*\(.*\)[	 ]*\).*$" "$SRC_DIR" | sort | uniq > "$TMP_FILE"
+    grep -Er --include \*.h --include \*.inl --include \*.cpp '^[^/]*initData[[:space:]]*\(.*\)[[:space:]]*\).*$' "$SRC_DIR" | sort | uniq > "$TMP_FILE"
     count="$(wc -l < "$TMP_FILE")"
     echo "$count calls counted."
 
