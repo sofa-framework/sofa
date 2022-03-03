@@ -376,8 +376,8 @@ public:
         exp_rotatedInitPos[1] = Mat33(Vec3(0, 0, 0), Vec3(1.4142135, 0, 0), Vec3(0.707107, 1.2247449, 0));
         exp_rotMat[1] = Mat33(Vec3(0, -0.81649661, -0.57735), Vec3(0.707107, 0.40824831, -0.57735), Vec3(0.707107, -0.40824831, 0.57735));
         exp_stiffnessMat[1] = Mat33(Vec3(95.1676, 28.550287, 0), Vec3(28.550287, 95.1676, 0), Vec3(0, 0, 33.30867));
-        exp_strainDispl[1][0] = Vec3(-1, 0, -1); exp_strainDispl[1][1] = Vec3(0, -1, -1); exp_strainDispl[1][2] = Vec3(1, 0, 0);
-        exp_strainDispl[1][3] = Vec3(0, 0, 1); exp_strainDispl[1][4] = Vec3(0, 0, 1); exp_strainDispl[1][5] = Vec3(0, 1, 0);
+        exp_strainDispl[1][0] = Vec3(-0.707107, 0, -0.408248); exp_strainDispl[1][1] = Vec3(0, -0.408248, -0.707107); exp_strainDispl[1][2] = Vec3(0.707107, 0, -0.408248);
+        exp_strainDispl[1][3] = Vec3(0, -0.408248, 0.707107); exp_strainDispl[1][4] = Vec3(0, 0, 0.816497); exp_strainDispl[1][5] = Vec3(0, 0.816497, 0);
 
         if (FEMType == 0)
         {
