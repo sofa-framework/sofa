@@ -27,19 +27,20 @@
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/topology/BaseTopologicalMapping.h>
 
 namespace sofa::component::mapping
 {
 
 /**
- * @class SubsetMapping
+ * @class SubsetMultiMapping
  * @brief Compute a subset of input points
  */
 template <class TIn, class TOut>
-class SubsetMultiMapping : public core::MultiMapping<TIn, TOut>
+class SubsetMultiMapping : public core::MultiMapping<TIn, TOut>, public virtual core::topology::BaseTopologicalMapping
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(SubsetMultiMapping, TIn, TOut), SOFA_TEMPLATE2(core::MultiMapping, TIn, TOut));
+    SOFA_CLASS2(SOFA_TEMPLATE2(SubsetMultiMapping, TIn, TOut), SOFA_TEMPLATE2(core::MultiMapping, TIn, TOut), core::topology::BaseTopologicalMapping);
 
     typedef core::MultiMapping<TIn, TOut> Inherit;
     typedef TIn In;
@@ -88,16 +89,30 @@ public:
     /// Experimental API used to handle multimappings in matrix assembly. Returns pointers to matrices associated with parent states, consistently with  getFrom().
     virtual const type::vector<sofa::linearalgebra::BaseMatrix*>* getJs() override;
 
+    void updateTopologicalMappingTopDown() override;
+    bool isTopologyAnInput(core::topology::Topology* topology) override;
+    bool isTopologyAnOutput(core::topology::Topology* topology) override;
+
 
     Data< type::vector<unsigned> > indexPairs;                     ///< Two indices per child: the parent, and the index within the parent
 
 protected :
 
     SubsetMultiMapping();
-    virtual ~SubsetMultiMapping();
+    ~SubsetMultiMapping() override;
+
+    void checkInputOutput();
+    void initializeOutputTopologies();
+    void initializeMappingMatrices();
 
     type::vector<linearalgebra::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
+    MultiLink<SubsetMultiMapping, core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_inputTopologies;
+    MultiLink<SubsetMultiMapping, core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_outputTopologies;
+
+    void propagateRemovedPoints(const sofa::type::vector<core::topology::Topology::PointID>& removedPointsInOutput);
+    void propagateEndingEvent();
+    void applyRemovePoints(const core::topology::TopologyChange* topoChange, core::topology::BaseMeshTopology* inputTopology);
 };
 
 

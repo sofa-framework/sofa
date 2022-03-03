@@ -25,9 +25,18 @@
 
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
 #include <sofa/core/MappingHelper.h>
+#include <sofa/component/topology/container/dynamic/PointSetTopologyModifier.h>
 
 namespace sofa::component::mapping
 {
+
+template <class TIn, class TOut>
+SubsetMultiMapping<TIn, TOut>::SubsetMultiMapping()
+    : Inherit()
+    , indexPairs( initData( &indexPairs, type::vector<unsigned>(), "indexPairs", "list of couples (parent index + index in the parent)"))
+    , l_inputTopologies( initLink("inputTopologies", "Optional list of topologies matching the list of input states"))
+    , l_outputTopologies( initLink("outputTopologies", "Optional list of topologies matching the list of output states"))
+    {}
 
 template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::init()
@@ -35,10 +44,81 @@ void SubsetMultiMapping<TIn, TOut>::init()
     assert( indexPairs.getValue().size()%2==0 );
     const unsigned indexPairSize = indexPairs.getValue().size()/2;
 
+    checkInputOutput();
+
     this->toModels[0]->resize( indexPairSize );
+    initializeOutputTopologies();
 
     Inherit::init();
 
+    initializeMappingMatrices();
+}
+
+template <class TIn, class TOut>
+void SubsetMultiMapping<TIn, TOut>::checkInputOutput()
+{
+    msg_error_when(!l_inputTopologies.empty() && this->fromModels.size() != l_inputTopologies.size())<< "Inconsistency "
+        "between " << l_inputTopologies.getName() << " (" << l_inputTopologies.size() << " elements) and " <<
+        this->fromModels.getName() << " (" << this->fromModels.size() << " elements)";
+
+    msg_warning_when(this->toModels.size() > 1) << "Found " << this->toModels.size() << " mapping output: only the first one will be considered.";
+    msg_error_when(!l_outputTopologies.empty() && this->toModels.size() != l_outputTopologies.size()) << "Inconsistency "
+        "between " << l_outputTopologies.getName() << " (" << l_outputTopologies.size() << " elements) and " <<
+        this->toModels.getName() << " (" << this->toModels.size() << " elements)";
+
+    if (f_printLog.getValue())
+    {
+        const auto inputSize = std::min(this->fromModels.size(), l_inputTopologies.size());
+        for (std::size_t i = 0; i < inputSize; ++i)
+        {
+            if (l_inputTopologies[i] && this->fromModels[i])
+            {
+                msg_info() << "[Input " << i+1 << "/" << inputSize << "] Topology " << l_inputTopologies[i]->getPathName() << " is associated to state " << this->fromModels[i]->getPathName();
+            }
+            else
+            {
+                msg_info_when(!l_inputTopologies[i]) << "[Input " << i+1 << "/" << inputSize << "] Topology is invalid";
+                msg_error_when(!this->fromModels[i]) << "[Input " << i+1 << "/" << inputSize << "] State is invalid";
+            }
+        }
+        const auto outputSize = std::min(this->toModels.size(), l_outputTopologies.size());
+        for (std::size_t i = 0; i < outputSize; ++i)
+        {
+            if (l_outputTopologies[i] && this->toModels[i])
+            {
+                msg_info() << "[Output " << i+1 << "/" << outputSize << "] Topology " << l_outputTopologies[i]->getPathName() << " is associated to state " << this->toModels[i]->getPathName();
+            }
+            else
+            {
+                msg_info_when(!l_outputTopologies[i]) << "[Output " << i+1 << "/" << outputSize << "] Topology is invalid";
+                msg_error_when(!this->toModels[i]) << "[Output " << i+1 << "/" << outputSize << "] State is invalid";
+            }
+        }
+    }
+}
+
+template <class TIn, class TOut>
+void SubsetMultiMapping<TIn, TOut>::initializeOutputTopologies()
+{
+    const unsigned indexPairSize = indexPairs.getValue().size()/2;
+    for (auto topology = l_outputTopologies.begin(); topology != l_outputTopologies.end(); ++topology)
+    {
+        if (*topology)
+        {
+            msg_info() << "Initialization of output topology " << (*topology)->getPathName() << " with " << indexPairSize << " points";
+            (*topology)->setNbPoints(indexPairSize);
+        }
+        else
+        {
+            msg_error() << "Found an invalid output topology in links " << l_outputTopologies.getName();
+        }
+    }
+}
+
+template <class TIn, class TOut>
+void SubsetMultiMapping<TIn, TOut>::initializeMappingMatrices()
+{
+    const unsigned indexPairSize = indexPairs.getValue().size()/2;
     unsigned Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size;
 
 
@@ -74,12 +154,6 @@ void SubsetMultiMapping<TIn, TOut>::init()
 }
 
 template <class TIn, class TOut>
-SubsetMultiMapping<TIn, TOut>::SubsetMultiMapping()
-    : Inherit()
-    , indexPairs( initData( &indexPairs, type::vector<unsigned>(), "indexPairs", "list of couples (parent index + index in the parent)"))
-{}
-
-template <class TIn, class TOut>
 SubsetMultiMapping<TIn, TOut>::~SubsetMultiMapping()
 {
     for(unsigned i=0; i<baseMatrices.size(); i++ )
@@ -92,6 +166,169 @@ template <class TIn, class TOut>
 const type::vector<sofa::linearalgebra::BaseMatrix*>* SubsetMultiMapping<TIn, TOut>::getJs()
 {
     return &baseMatrices;
+}
+
+template <class TIn, class TOut>
+void SubsetMultiMapping<TIn, TOut>::propagateRemovedPoints(const sofa::type::vector<core::topology::Topology::PointID>& removedPointsInOutput)
+{
+    unsigned int nbValidTopologies = 0;
+    for (auto topology = l_outputTopologies.begin(); topology != l_outputTopologies.end(); ++topology)
+    {
+        if (*topology)
+        {
+            ++nbValidTopologies;
+            sofa::component::topology::container::dynamic::PointSetTopologyModifier *modifier;
+            (*topology)->getContext()->get(modifier);
+
+            if (modifier)
+            {
+                modifier->removeItems(removedPointsInOutput);
+            }
+            else
+            {
+                msg_error() << "A topological change occurs, but no topology modifier has been found in the context of "
+                    "the topology " << (*topology)->getPathName() << ": the topological change will not be properly "
+                    "propagated";
+            }
+        }
+    }
+    msg_error_when(nbValidTopologies == 0) << "A topological change occurs, but no output topology has been provided: the "
+        "topological change will not be properly propagated";
+}
+
+template <class TIn, class TOut>
+void SubsetMultiMapping<TIn, TOut>::propagateEndingEvent()
+{
+    for (auto topology = l_outputTopologies.begin(); topology != l_outputTopologies.end(); ++topology)
+    {
+        if (*topology)
+        {
+            sofa::component::topology::container::dynamic::PointSetTopologyModifier *modifier;
+            (*topology)->getContext()->get(modifier);
+
+            if (modifier)
+            {
+                modifier->notifyEndingEvent();
+            }
+        }
+    }
+}
+
+template <class TIn, class TOut>
+void SubsetMultiMapping<TIn, TOut>::applyRemovePoints(const core::topology::TopologyChange* topoChange, core::topology::BaseMeshTopology* inputTopology)
+{
+    const auto *pRem = static_cast< const core::topology::PointsRemoved * >( topoChange );
+    const sofa::type::vector<Index> tab = pRem->getArray();
+
+    auto& indexPairsValue = *helper::getWriteAccessor(indexPairs);
+
+    const auto inputId = std::distance(l_inputTopologies.begin(),
+        std::find_if(l_inputTopologies.begin(), l_inputTopologies.end(), [inputTopology](const auto t) { return t.get() == inputTopology;}));
+
+    //identify points to remove in the output object
+    sofa::type::vector<core::topology::Topology::PointID> removedPointsInOutput;
+    for(std::size_t i = 0; i < indexPairsValue.size() / 2; i++)
+    {
+        for (const auto removed : tab)
+        {
+            if (indexPairsValue[i * 2] == inputId && indexPairsValue[i * 2 + 1] == removed)
+            {
+                removedPointsInOutput.push_back(i);
+            }
+        }
+    }
+    msg_info(this) << "Request to remove points: [" << removedPointsInOutput << "] in target";
+
+    //renumber indexPairs
+    auto nbPoints = inputTopology->getNbPoints();
+    for (const auto removed : tab)
+    {
+        --nbPoints;
+
+        sofa::type::vector<core::topology::Topology::PointID> indicesToDelete;
+        for(std::size_t i = 0; i < indexPairsValue.size() / 2; i++)
+        {
+            if (indexPairsValue[i * 2] == inputId && indexPairsValue[i * 2 + 1] == removed)
+            {
+                indicesToDelete.push_back(i);
+            }
+        }
+
+        for (auto it = indicesToDelete.rbegin(); it != indicesToDelete.rend(); ++it)
+        {
+            indexPairsValue.erase(indexPairsValue.begin() + 2 * (*it) + 1);
+            indexPairsValue.erase(indexPairsValue.begin() + 2 * (*it));
+        }
+
+        if (removed == nbPoints)
+            continue;
+
+        for(std::size_t i = 0; i < indexPairsValue.size() / 2; i++)
+        {
+            if (indexPairsValue[i * 2] == inputId && indexPairsValue[i * 2 + 1] == nbPoints)
+            {
+                indexPairsValue[i * 2 + 1] = removed;
+            }
+        }
+    }
+
+    //propagate the topology changes to the current context through the topology modifier of the Node
+    propagateRemovedPoints(removedPointsInOutput);
+
+    //brutal re-init based on the new indexPairs
+    Inherit::init();
+    initializeMappingMatrices();
+}
+
+template <class TIn, class TOut>
+void SubsetMultiMapping<TIn, TOut>::updateTopologicalMappingTopDown()
+{
+    for (auto topology = l_inputTopologies.begin(); topology != l_inputTopologies.end(); ++topology)
+    {
+        if (*topology)
+        {
+            auto itBegin = (*topology)->beginChange();
+            auto itEnd = (*topology)->endChange();
+
+            if (itBegin != itEnd)
+            {
+                msg_info() << "Topological change from " << (*topology)->getPathName();
+
+                while( itBegin != itEnd )
+                {
+                    const core::topology::TopologyChange* topoChange = *itBegin++;
+
+                    switch(topoChange->getChangeType())
+                    {
+                    case core::topology::ENDING_EVENT:
+                    {
+                        propagateEndingEvent();
+                        break;
+                    }
+                    case core::topology::POINTSREMOVED:
+                    {
+                        applyRemovePoints(topoChange, *topology);
+                        break;
+                    }
+                    default:
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
+
+template <class TIn, class TOut>
+bool SubsetMultiMapping<TIn, TOut>::isTopologyAnInput(core::topology::Topology* topology)
+{
+    return std::any_of(l_inputTopologies.begin(), l_inputTopologies.end(), [topology](const auto t) { return t.get() == topology;});
+}
+
+template <class TIn, class TOut>
+bool SubsetMultiMapping<TIn, TOut>::isTopologyAnOutput(core::topology::Topology* topology)
+{
+    return std::any_of(l_outputTopologies.begin(), l_outputTopologies.end(), [topology](const auto t) { return t.get() == topology;});
 }
 
 template <class TIn, class TOut>

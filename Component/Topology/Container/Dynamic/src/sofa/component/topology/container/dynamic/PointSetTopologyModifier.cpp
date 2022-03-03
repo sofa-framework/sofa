@@ -437,11 +437,11 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
     sofa::core::topology::EndingEvent* e = new sofa::core::topology::EndingEvent();
     m_container->addTopologyChange(e);
     this->propagateTopologicalEngineChanges();
-    
+
     sofa::core::ExecParams* params = sofa::core::execparams::defaultInstance();
     sofa::simulation::TopologyChangeVisitor a(params, m_container);
 
-    getContext()->executeVisitor(&a);
+    this->getContext()->getRootContext()->executeVisitor(&a);
 
     // remove the changes we just propagated, so that we don't send them again next time
     m_container->resetTopologyChangeList();
