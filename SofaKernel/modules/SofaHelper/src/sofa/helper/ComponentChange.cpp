@@ -843,6 +843,13 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "PrecomputedWarpPreconditioner", CreatableMoved("v22.06", "SofaPreconditioner", "Sofa.Component.LinearSolver.Preconditioner") },
     { "SSORPreconditioner", CreatableMoved("v22.06", "SofaPreconditioner", "Sofa.Component.LinearSolver.Preconditioner") },
     { "WarpPreconditioner", CreatableMoved("v22.06", "SofaPreconditioner", "Sofa.Component.LinearSolver.Preconditioner") },
+    
+    // SofaBaseMechanics was deprecated in #XXXX and ...
+    { "DiagonalMass", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mass") },
+    { "UniformMass", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mass") },
+    
+    // SofaMiscForceField was deprecated in #XXXX and ...
+    { "MeshMatrixMass", CreatableMoved("v22.06", "SofaMiscForceField", "Sofa.Component.Mass") },
 };
 
 } // namespace sofa::helper::lifecycle
