@@ -19,14 +19,11 @@ list(APPEND HEADER_FILES
     ${SOFAGENERALOBJECTINTERACTION_SRC}/BoxStiffSpringForceField.inl
     ${SOFAGENERALOBJECTINTERACTION_SRC}/InteractionEllipsoidForceField.h
     ${SOFAGENERALOBJECTINTERACTION_SRC}/InteractionEllipsoidForceField.inl
-    ${SOFAGENERALOBJECTINTERACTION_SRC}/RepulsiveSpringForceField.h
-    ${SOFAGENERALOBJECTINTERACTION_SRC}/RepulsiveSpringForceField.inl
     )
 list(APPEND SOURCE_FILES
     ${SOFAGENERALOBJECTINTERACTION_SRC}/AttachConstraint.cpp
     ${SOFAGENERALOBJECTINTERACTION_SRC}/BoxStiffSpringForceField.cpp
     ${SOFAGENERALOBJECTINTERACTION_SRC}/InteractionEllipsoidForceField.cpp
-    ${SOFAGENERALOBJECTINTERACTION_SRC}/RepulsiveSpringForceField.cpp
     )
 
 sofa_find_package(SofaDeformable REQUIRED)
@@ -36,10 +33,11 @@ sofa_find_package(SofaGeneralEngine REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaDeformable SofaEngine SofaGeneralEngine)
 
-if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    # Silence attribute warnings (for example, ignored already defined external template)
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
-endif()
+message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.SolidMechanics.Spring instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.SolidMechanics.Spring REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.SolidMechanics.Spring)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

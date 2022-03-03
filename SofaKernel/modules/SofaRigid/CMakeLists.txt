@@ -6,28 +6,21 @@ set(SOFARIGID_SRC "src/${PROJECT_NAME}")
 set(HEADER_FILES
     ${SOFARIGID_SRC}/config.h.in
     ${SOFARIGID_SRC}/initSofaRigid.h
-    ${SOFARIGID_SRC}/JointSpring.h
-    ${SOFARIGID_SRC}/JointSpring.inl
-    ${SOFARIGID_SRC}/JointSpringForceField.h
-    ${SOFARIGID_SRC}/JointSpringForceField.inl
 )
 
 set(SOURCE_FILES
     ${SOFARIGID_SRC}/initSofaRigid.cpp
-    ${SOFARIGID_SRC}/JointSpring.cpp
-    ${SOFARIGID_SRC}/JointSpringForceField.cpp
 )
 
-sofa_find_package(SofaBaseMechanics REQUIRED)
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseMechanics)
 
-message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Mapping instead.")
+message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Mapping and Sofa.Component.SolidMechanics.Spring instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.Mapping REQUIRED)
+sofa_find_package(Sofa.Component.SolidMechanics.Spring REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Mapping)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.SolidMechanics.Spring)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
