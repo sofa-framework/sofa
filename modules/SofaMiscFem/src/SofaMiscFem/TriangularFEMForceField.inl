@@ -1008,10 +1008,7 @@ void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index ele
         Coord B = R_0_2 * (p[b]-p[a]);
         Coord C = R_0_2 * (p[c]-p[a]);
 
-        if (_anisotropicMaterial)
-            computeStrainDisplacement(J, elementIndex, A, B, C);
-        else
-            J = triangleInf[elementIndex].strainDisplacementMatrix;
+        computeStrainDisplacement(J, elementIndex, A, B, C);
         computeStrain(strain, J, D);
         computeStress(stress, triangleInf[elementIndex].materialMatrix, strain);
         computeStiffness(J,K,triangleInf[elementIndex].materialMatrix);
