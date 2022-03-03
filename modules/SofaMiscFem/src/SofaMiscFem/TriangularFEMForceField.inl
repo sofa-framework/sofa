@@ -195,7 +195,7 @@ void TriangularFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Inde
     {
         Transformation R_0_1;
         R_0_1 = m_initialTransformation.getValue()[i];
-        tinfo->initialTransformation = R_0_1;
+        tinfo->initialTransformation.transpose(R_0_1);
         tinfo->rotatedInitialElements = m_rotatedInitialElements.getValue()[i];
     }
     else
@@ -210,7 +210,7 @@ void TriangularFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Inde
 
         computeRotationLarge( R_0_1, (initialPoints), a, b, c );
 
-        tinfo->initialTransformation = R_0_1;
+        tinfo->initialTransformation.transpose(R_0_1);
 
         if ( a >= (initialPoints).size() || b >= (initialPoints).size() || c >= (initialPoints).size() )
         {
