@@ -818,6 +818,9 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "RecordedCamera", CreatableMoved("v22.06", "SofaGeneralVisual", "Sofa.Component.Visual") },
     { "Visual3DText", CreatableMoved("v22.06", "SofaGeneralVisual", "Sofa.Component.Visual") },
     { "VisualTransform", CreatableMoved("v22.06", "SofaGeneralVisual", "Sofa.Component.Visual") },
+
+    // SofaSimpleFem was deprecated in #XXXX and ....
+    { "TetrahedronDiffusionFEMForceField", CreatableMoved("v22.06", "SofaSimpleFem", "Sofa.Component.Diffusion") },
 };
 
 } // namespace sofa::helper::lifecycle
