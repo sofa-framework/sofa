@@ -91,6 +91,9 @@ public:
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
 
+        createObject(m_root, "DefaultAnimationLoop");
+        createObject(m_root, "DefaultVisualManagerLoop");
+
         createObject(m_root, "MechanicalObject", {{"template","Vec3d"}, {"position", "0 0 0  1 0 0  0 1 0  1 1 1"} });
         createObject(m_root, "TriangleSetTopologyContainer", { {"triangles","0 1 2  1 3 2"} });
         createObject(m_root, "TriangleSetTopologyModifier");
@@ -123,6 +126,9 @@ public:
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
         m_root->setGravity(type::Vec3(0.0, 10.0, 0.0));
         m_root->setDt(0.01);
+
+        createObject(m_root, "DefaultAnimationLoop");
+        createObject(m_root, "DefaultVisualManagerLoop");
 
         createObject(m_root, "RegularGridTopology", { {"name", "grid"}, 
             {"n", str(type::Vec3(nbrGrid, nbrGrid, 1))}, {"min", "0 0 0"}, {"max", "10 10 0"} });
@@ -232,6 +238,9 @@ public:
     void checkNoTopology(int FEMType)
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
+        createObject(m_root, "DefaultAnimationLoop");
+        createObject(m_root, "DefaultVisualManagerLoop");
+
         createObject(m_root, "MechanicalObject", { {"template","Vec3d"}, {"position", "0 0 0  1 0 0  0 1 0"} });
         if (FEMType == 0) // TriangleModel
         {
@@ -258,6 +267,9 @@ public:
     void checkEmptyTopology(int FEMType)
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
+        createObject(m_root, "DefaultAnimationLoop");
+        createObject(m_root, "DefaultVisualManagerLoop");
+
         createObject(m_root, "MechanicalObject", { {"template","Vec3d"} });
         createObject(m_root, "TriangleSetTopologyContainer");
         if (FEMType == 0) // TriangleModel
@@ -286,6 +298,8 @@ public:
     void checkDefaultAttributes(int FEMType)
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
+        createObject(m_root, "DefaultAnimationLoop");
+        createObject(m_root, "DefaultVisualManagerLoop");
 
         createObject(m_root, "MechanicalObject", { {"template","Vec3d"}, {"position", "0 0 0  1 0 0  0 1 0"} });
         createObject(m_root, "TriangleSetTopologyContainer", { {"triangles","0 1 2"} });
