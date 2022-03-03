@@ -21,9 +21,9 @@
 ******************************************************************************/
 #include <sofa/gl/component/init.h>
 
-#include <sofa/gl/component/onscreen/init.h>
-#include <sofa/gl/component/model/init.h>
-#include <sofa/gl/component/rendering/init.h>
+#include <sofa/gl/component/rendering2d/init.h>
+#include <sofa/gl/component/rendering3d/init.h>
+#include <sofa/gl/component/shader/init.h>
 
 namespace sofa::gl::component
 {
@@ -38,9 +38,9 @@ void initExternalModule()
     static bool first = true;
     if (first)
     {
-        sofa::gl::component::onscreen::init();
-        sofa::gl::component::model::init();
-        sofa::gl::component::rendering::init();
+        sofa::gl::component::rendering2d::init();
+        sofa::gl::component::rendering3d::init();
+        sofa::gl::component::shader::init();
         
         first = false;
     }

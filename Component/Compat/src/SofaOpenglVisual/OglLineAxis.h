@@ -23,21 +23,21 @@
 
 #include <sofa/config.h>
 
-#if __has_include(<sofa/gl/component/model/OglLineAxis.h>)
-#include <sofa/gl/component/model/OglLineAxis.h>
+#if __has_include(<sofa/gl/component/rendering3d/OglLineAxis.h>)
+#include <sofa/gl/component/rendering3d/OglLineAxis.h>
 #define SOFAGL_COMPONENT_OGLLINEAXIS
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/model/OglLineAxis.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering3d/OglLineAxis.h")
 
 #else
-#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/OglLineAxis.h> instead of this one."
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/OglLineAxis.h> instead of this one."
 #endif
 
 #ifdef SOFAGL_COMPONENT_OGLLINEAXIS
 
 namespace sofa::component::visualmodel
 {
-    using OglLineAxis = sofa::gl::component::model::OglLineAxis;
+    using OglLineAxis = sofa::gl::component::rendering3d::OglLineAxis;
 
 } // namespace sofa::component::visualmodel
 

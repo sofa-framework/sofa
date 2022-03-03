@@ -23,21 +23,21 @@
 
 #include <sofa/config.h>
 
-#if __has_include(<sofa/gl/component/onscreen/OglLabel.h>)
-#include <sofa/gl/component/onscreen/OglLabel.h>
+#if __has_include(<sofa/gl/component/rendering2d/OglLabel.h>)
+#include <sofa/gl/component/rendering2d/OglLabel.h>
 #define SOFAGL_COMPONENT_OGLLABEL
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/onscreen/OglLabel.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering2d/OglLabel.h")
 
 #else
-#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/onscreen/OglLabel.h> instead of this one."
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering2d/OglLabel.h> instead of this one."
 #endif
 
 #ifdef SOFAGL_COMPONENT_OGLLABEL
 
 namespace sofa::component::visualmodel
 {
-    using OglLabel = sofa::gl::component::onscreen::OglLabel;
+    using OglLabel = sofa::gl::component::rendering2d::OglLabel;
 
 } // namespace sofa::component::visualmodel
 

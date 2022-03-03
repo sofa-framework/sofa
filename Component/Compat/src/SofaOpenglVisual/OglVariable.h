@@ -23,14 +23,14 @@
 
 #include <sofa/config.h>
 
-#if __has_include(<sofa/gl/component/rendering/OglVariable.h>)
-#include <sofa/gl/component/rendering/OglVariable.h>
+#if __has_include(<sofa/gl/component/shader/OglVariable.h>)
+#include <sofa/gl/component/shader/OglVariable.h>
 #define SOFAGL_COMPONENT_OGLVARIABLE
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering/OglVariable.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/OglVariable.h")
 
 #else
-#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/OglVariable.h> instead of this one."
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/OglVariable.h> instead of this one."
 #endif
 
 #ifdef SOFAGL_COMPONENT_OGLVARIABLE
@@ -38,34 +38,34 @@
 namespace sofa::component::visualmodel
 {
     template<class DataTypes>
-    using OglVariable = sofa::gl::component::rendering::OglVariable<DataTypes>;
+    using OglVariable = sofa::gl::component::shader::OglVariable<DataTypes>;
 
-    using OglIntVariable = sofa::gl::component::rendering::OglIntVariable;
-    using OglInt2Variable = sofa::gl::component::rendering::OglInt2Variable;
-    using OglInt3Variable = sofa::gl::component::rendering::OglInt3Variable;
-    using OglInt4Variable = sofa::gl::component::rendering::OglInt4Variable;
-    using OglFloatVariable = sofa::gl::component::rendering::OglFloatVariable;
-    using OglFloat2Variable = sofa::gl::component::rendering::OglFloat2Variable;
-    using OglFloat3Variable = sofa::gl::component::rendering::OglFloat3Variable;
-    using OglFloat4Variable = sofa::gl::component::rendering::OglFloat4Variable;
-    using OglIntVectorVariable = sofa::gl::component::rendering::OglIntVectorVariable;
-    using OglIntVector2Variable = sofa::gl::component::rendering::OglIntVector2Variable;
-    using OglIntVector3Variable = sofa::gl::component::rendering::OglIntVector3Variable;
-    using OglIntVector4Variable = sofa::gl::component::rendering::OglIntVector4Variable;
-    using OglFloatVectorVariable = sofa::gl::component::rendering::OglFloatVectorVariable;
-    using OglFloatVector2Variable = sofa::gl::component::rendering::OglFloatVector2Variable;
-    using OglFloatVector3Variable = sofa::gl::component::rendering::OglFloatVector3Variable;
-    using OglFloatVector4Variable = sofa::gl::component::rendering::OglFloatVector4Variable;
-    using OglMatrix2Variable = sofa::gl::component::rendering::OglMatrix2Variable;
-    using OglMatrix3Variable = sofa::gl::component::rendering::OglMatrix3Variable;
-    using OglMatrix4Variable = sofa::gl::component::rendering::OglMatrix4Variable;
-    using OglMatrix2x3Variable = sofa::gl::component::rendering::OglMatrix2x3Variable;
-    using OglMatrix3x2Variable = sofa::gl::component::rendering::OglMatrix3x2Variable;
-    using OglMatrix2x4Variable = sofa::gl::component::rendering::OglMatrix2x4Variable;
-    using OglMatrix4x2Variable = sofa::gl::component::rendering::OglMatrix4x2Variable;
-    using OglMatrix3x4Variable = sofa::gl::component::rendering::OglMatrix3x4Variable;
-    using OglMatrix4x3Variable = sofa::gl::component::rendering::OglMatrix4x3Variable;
-    using OglMatrix4VectorVariable = sofa::gl::component::rendering::OglMatrix4VectorVariable;
+    using OglIntVariable = sofa::gl::component::shader::OglIntVariable;
+    using OglInt2Variable = sofa::gl::component::shader::OglInt2Variable;
+    using OglInt3Variable = sofa::gl::component::shader::OglInt3Variable;
+    using OglInt4Variable = sofa::gl::component::shader::OglInt4Variable;
+    using OglFloatVariable = sofa::gl::component::shader::OglFloatVariable;
+    using OglFloat2Variable = sofa::gl::component::shader::OglFloat2Variable;
+    using OglFloat3Variable = sofa::gl::component::shader::OglFloat3Variable;
+    using OglFloat4Variable = sofa::gl::component::shader::OglFloat4Variable;
+    using OglIntVectorVariable = sofa::gl::component::shader::OglIntVectorVariable;
+    using OglIntVector2Variable = sofa::gl::component::shader::OglIntVector2Variable;
+    using OglIntVector3Variable = sofa::gl::component::shader::OglIntVector3Variable;
+    using OglIntVector4Variable = sofa::gl::component::shader::OglIntVector4Variable;
+    using OglFloatVectorVariable = sofa::gl::component::shader::OglFloatVectorVariable;
+    using OglFloatVector2Variable = sofa::gl::component::shader::OglFloatVector2Variable;
+    using OglFloatVector3Variable = sofa::gl::component::shader::OglFloatVector3Variable;
+    using OglFloatVector4Variable = sofa::gl::component::shader::OglFloatVector4Variable;
+    using OglMatrix2Variable = sofa::gl::component::shader::OglMatrix2Variable;
+    using OglMatrix3Variable = sofa::gl::component::shader::OglMatrix3Variable;
+    using OglMatrix4Variable = sofa::gl::component::shader::OglMatrix4Variable;
+    using OglMatrix2x3Variable = sofa::gl::component::shader::OglMatrix2x3Variable;
+    using OglMatrix3x2Variable = sofa::gl::component::shader::OglMatrix3x2Variable;
+    using OglMatrix2x4Variable = sofa::gl::component::shader::OglMatrix2x4Variable;
+    using OglMatrix4x2Variable = sofa::gl::component::shader::OglMatrix4x2Variable;
+    using OglMatrix3x4Variable = sofa::gl::component::shader::OglMatrix3x4Variable;
+    using OglMatrix4x3Variable = sofa::gl::component::shader::OglMatrix4x3Variable;
+    using OglMatrix4VectorVariable = sofa::gl::component::shader::OglMatrix4VectorVariable;
 
 } // namespace sofa::component::visualmodel
 

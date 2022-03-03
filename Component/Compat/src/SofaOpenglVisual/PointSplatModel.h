@@ -23,21 +23,21 @@
 
 #include <sofa/config.h>
 
-#if __has_include(<sofa/gl/component/model/PointSplatModel.h>)
-#include <sofa/gl/component/model/PointSplatModel.h>
+#if __has_include(<sofa/gl/component/rendering3d/PointSplatModel.h>)
+#include <sofa/gl/component/rendering3d/PointSplatModel.h>
 #define SOFAGL_COMPONENT_POINTSPLATMODEL
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/model/PointSplatModel.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering3d/PointSplatModel.h")
 
 #else
-#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/PointSplatModel.h> instead of this one."
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/PointSplatModel.h> instead of this one."
 #endif
 
 #ifdef SOFAGL_COMPONENT_POINTSPLATMODEL
 
 namespace sofa::component::visualmodel
 {
-    using PointSplatModel = sofa::gl::component::model::PointSplatModel;
+    using PointSplatModel = sofa::gl::component::rendering3d::PointSplatModel;
 
 } // namespace sofa::component::visualmodel
 

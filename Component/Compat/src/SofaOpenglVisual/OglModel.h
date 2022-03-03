@@ -23,21 +23,21 @@
 
 #include <sofa/config.h>
 
-#if __has_include(<sofa/gl/component/model/OglModel.h>)
-#include <sofa/gl/component/model/OglModel.h>
+#if __has_include(<sofa/gl/component/rendering3d/OglModel.h>)
+#include <sofa/gl/component/rendering3d/OglModel.h>
 #define SOFAGL_COMPONENT_OGLMODEL
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/model/OglModel.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering3d/OglModel.h")
 
 #else
-#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/OglModel.h> instead of this one."
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering3d/OglModel.h> instead of this one."
 #endif
 
 #ifdef SOFAGL_COMPONENT_OGLMODEL
 
 namespace sofa::component::visualmodel
 {
-    using OglModel = sofa::gl::component::model::OglModel;
+    using OglModel = sofa::gl::component::rendering3d::OglModel;
 
 } // namespace sofa::component::visualmodel
 

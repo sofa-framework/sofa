@@ -23,21 +23,21 @@
 
 #include <sofa/config.h>
 
-#if __has_include(<sofa/gl/component/rendering/OrderIndependentTransparencyManager.h>)
-#include <sofa/gl/component/rendering/OrderIndependentTransparencyManager.h>
+#if __has_include(<sofa/gl/component/shader/OrderIndependentTransparencyManager.h>)
+#include <sofa/gl/component/shader/OrderIndependentTransparencyManager.h>
 #define SOFAGL_COMPONENT_ORDERINDEPENDENTTRANSPARENCYMANAGER
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering/OrderIndependentTransparencyManager.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/OrderIndependentTransparencyManager.h")
 
 #else
-#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/OrderIndependentTransparencyManager.h> instead of this one."
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/OrderIndependentTransparencyManager.h> instead of this one."
 #endif
 
 #ifdef SOFAGL_COMPONENT_ORDERINDEPENDENTTRANSPARENCYMANAGER
 
 namespace sofa::component::visualmodel
 {
-    using OrderIndependentTransparencyManager = sofa::gl::component::rendering::OrderIndependentTransparencyManager;
+    using OrderIndependentTransparencyManager = sofa::gl::component::shader::OrderIndependentTransparencyManager;
 
 } // namespace sofa::component::visualmodel
 

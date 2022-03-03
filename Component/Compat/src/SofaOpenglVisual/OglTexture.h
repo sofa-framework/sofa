@@ -23,21 +23,21 @@
 
 #include <sofa/config.h>
 
-#if __has_include(<sofa/gl/component/rendering/OglTexture.h>)
-#include <sofa/gl/component/rendering/OglTexture.h>
+#if __has_include(<sofa/gl/component/shader/OglTexture.h>)
+#include <sofa/gl/component/shader/OglTexture.h>
 #define SOFAGL_COMPONENT_OGLTEXTURE
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering/OglTexture.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/OglTexture.h")
 
 #else
-#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/OglTexture.h> instead of this one."
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/OglTexture.h> instead of this one."
 #endif
 
 #ifdef SOFAGL_COMPONENT_OGLTEXTURE
 
 namespace sofa::component::visualmodel
 {
-    using OglTexture = sofa::gl::component::rendering::OglTexture;
+    using OglTexture = sofa::gl::component::shader::OglTexture;
 
 } // namespace sofa::component::visualmodel
 

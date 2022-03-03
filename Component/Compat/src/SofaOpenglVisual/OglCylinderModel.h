@@ -23,21 +23,21 @@
 
 #include <sofa/config.h>
 
-#if __has_include(<sofa/gl/component/model/OglCylinderModel.h>)
-#include <sofa/gl/component/model/OglCylinderModel.h>
+#if __has_include(<sofa/gl/component/rendering3d/OglCylinderModel.h>)
+#include <sofa/gl/component/rendering3d/OglCylinderModel.h>
 #define SOFAGL_COMPONENT_OGLCYLINDERMODEL
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/model/OglCylinderModel.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering3d/OglCylinderModel.h")
 
 #else
-#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/OglCylinderModel.h> instead of this one."
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/OglCylinderModel.h> instead of this one."
 #endif
 
 #ifdef SOFAGL_COMPONENT_OGLCYLINDERMODEL
 
 namespace sofa::component::visualmodel
 {
-    using OglCylinderModel = sofa::gl::component::model::OglCylinderModel;
+    using OglCylinderModel = sofa::gl::component::rendering3d::OglCylinderModel;
 
 } // namespace sofa::component::visualmodel
 

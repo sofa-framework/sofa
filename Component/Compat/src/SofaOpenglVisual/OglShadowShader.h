@@ -23,21 +23,21 @@
 
 #include <sofa/config.h>
 
-#if __has_include(<sofa/gl/component/rendering/OglShadowShader.h>)
-#include <sofa/gl/component/rendering/OglShadowShader.h>
+#if __has_include(<sofa/gl/component/shader/OglShadowShader.h>)
+#include <sofa/gl/component/shader/OglShadowShader.h>
 #define SOFAGL_COMPONENT_OGLSHADOWSHADER
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering/OglShadowShader.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/OglShadowShader.h")
 
 #else
-#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/OglShadowShader.h> instead of this one."
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/OglShadowShader.h> instead of this one."
 #endif
 
 #ifdef SOFAGL_COMPONENT_OGLSHADOWSHADER
 
 namespace sofa::component::visualmodel
 {
-    using OglShadowShader = sofa::gl::component::rendering::OglShadowShader;
+    using OglShadowShader = sofa::gl::component::shader::OglShadowShader;
 
 } // namespace sofa::component::visualmodel
 

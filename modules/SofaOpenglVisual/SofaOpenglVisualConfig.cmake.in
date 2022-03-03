@@ -4,13 +4,13 @@
 
 get_property(@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE SET)
 if(NOT @PROJECT_NAME@_SENT_DEPRECATION_MESSAGE)
-    message(WARNING "@PROJECT_NAME@ module is deprecated. It will be removed at v23.06. Use Sofa.GL.Component.OnScreen, Sofa.GL.Component.Model and Sofa.GL.Component.Rendering instead.")
+    message(WARNING "@PROJECT_NAME@ module is deprecated. It will be removed at v23.06. Use Sofa.GL.Component.Rendering2D, Sofa.GL.Component.Rendering3D and Sofa.GL.Component.Shader instead.")
 endif()
 set_property(GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE TRUE)
 
-find_package(Sofa.GL.Component.OnScreen QUIET REQUIRED)
-find_package(Sofa.GL.Component.Model QUIET REQUIRED)
-find_package(Sofa.GL.Component.Rendering QUIET REQUIRED)
+find_package(Sofa.GL.Component.Rendering2D QUIET REQUIRED)
+find_package(Sofa.GL.Component.Rendering3D QUIET REQUIRED)
+find_package(Sofa.GL.Component.Shader QUIET REQUIRED)
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")

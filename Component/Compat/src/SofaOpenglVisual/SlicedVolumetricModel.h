@@ -23,21 +23,21 @@
 
 #include <sofa/config.h>
 
-#if __has_include(<sofa/gl/component/model/SlicedVolumetricModel.h>)
-#include <sofa/gl/component/model/SlicedVolumetricModel.h>
+#if __has_include(<sofa/gl/component/rendering3d/SlicedVolumetricModel.h>)
+#include <sofa/gl/component/rendering3d/SlicedVolumetricModel.h>
 #define SOFAGL_COMPONENT_SLICEDVOLUMETRICMODEL
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/model/SlicedVolumetricModel.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering3d/SlicedVolumetricModel.h")
 
 #else
-#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/SlicedVolumetricModel.h> instead of this one."
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/SlicedVolumetricModel.h> instead of this one."
 #endif
 
 #ifdef SOFAGL_COMPONENT_SLICEDVOLUMETRICMODEL
 
 namespace sofa::component::visualmodel
 {
-    using SlicedVolumetricModel = sofa::gl::component::model::SlicedVolumetricModel;
+    using SlicedVolumetricModel = sofa::gl::component::rendering3d::SlicedVolumetricModel;
 
 } // namespace sofa::component::visualmodel
 

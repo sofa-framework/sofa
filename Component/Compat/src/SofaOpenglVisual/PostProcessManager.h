@@ -23,21 +23,21 @@
 
 #include <sofa/config.h>
 
-#if __has_include(<sofa/gl/component/rendering/PostProcessManager.h>)
-#include <sofa/gl/component/rendering/PostProcessManager.h>
+#if __has_include(<sofa/gl/component/shader/PostProcessManager.h>)
+#include <sofa/gl/component/shader/PostProcessManager.h>
 #define SOFAGL_COMPONENT_POSTPROCESSMANAGER
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering/PostProcessManager.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/PostProcessManager.h")
 
 #else
-#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/PostProcessManager.h> instead of this one."
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/PostProcessManager.h> instead of this one."
 #endif
 
 #ifdef SOFAGL_COMPONENT_POSTPROCESSMANAGER
 
 namespace sofa::component::visualmodel
 {
-    using PostProcessManager = sofa::gl::component::rendering::PostProcessManager;
+    using PostProcessManager = sofa::gl::component::shader::PostProcessManager;
 
 } // namespace sofa::component::visualmodel
 

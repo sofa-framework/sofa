@@ -23,24 +23,24 @@
 
 #include <sofa/config.h>
 
-#if __has_include(<sofa/gl/component/rendering/Light.h>)
-#include <sofa/gl/component/rendering/Light.h>
+#if __has_include(<sofa/gl/component/shader/Light.h>)
+#include <sofa/gl/component/shader/Light.h>
 #define SOFAGL_COMPONENT_LIGHT
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering/Light.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/Light.h")
 
 #else
-#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/Light.h> instead of this one."
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/Light.h> instead of this one."
 #endif
 
 #ifdef SOFAGL_COMPONENT_LIGHT
 
 namespace sofa::component::visualmodel
 {
-    using Light = sofa::gl::component::rendering::Light;
-    using SpotLight = sofa::gl::component::rendering::SpotLight;
-    using PositionalLight = sofa::gl::component::rendering::PositionalLight;
-    using DirectionalLight = sofa::gl::component::rendering::DirectionalLight;
+    using Light = sofa::gl::component::shader::Light;
+    using SpotLight = sofa::gl::component::shader::SpotLight;
+    using PositionalLight = sofa::gl::component::shader::PositionalLight;
+    using DirectionalLight = sofa::gl::component::shader::DirectionalLight;
 
 } // namespace sofa::component::visualmodel
 

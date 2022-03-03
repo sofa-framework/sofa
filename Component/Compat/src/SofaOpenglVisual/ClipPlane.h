@@ -23,21 +23,21 @@
 
 #include <sofa/config.h>
 
-#if __has_include(<sofa/gl/component/rendering/ClipPlane.h>)
-#include <sofa/gl/component/rendering/ClipPlane.h>
+#if __has_include(<sofa/gl/component/rendering3d/ClipPlane.h>)
+#include <sofa/gl/component/rendering3d/ClipPlane.h>
 #define SOFAGL_COMPONENT_CLIPPLANE
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering/ClipPlane.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering3d/ClipPlane.h")
 
 #else
-#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/ClipPlane.h> instead of this one."
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering3d/ClipPlane.h> instead of this one."
 #endif
 
 #ifdef SOFAGL_COMPONENT_CLIPPLANE
 
 namespace sofa::component::visualmodel
 {
-    using ClipPlane = sofa::gl::component::rendering::ClipPlane;
+    using ClipPlane = sofa::gl::component::rendering3d::ClipPlane;
 
 } // namespace sofa::component::visualmodel
 

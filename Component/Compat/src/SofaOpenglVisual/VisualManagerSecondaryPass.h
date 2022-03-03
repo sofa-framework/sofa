@@ -23,21 +23,21 @@
 
 #include <sofa/config.h>
 
-#if __has_include(<sofa/gl/component/rendering/VisualManagerSecondaryPass.h>)
-#include <sofa/gl/component/rendering/VisualManagerSecondaryPass.h>
+#if __has_include(<sofa/gl/component/shader/VisualManagerSecondaryPass.h>)
+#include <sofa/gl/component/shader/VisualManagerSecondaryPass.h>
 #define SOFAGL_COMPONENT_VISUALMANAGERSECONDARYPASS
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering/VisualManagerSecondaryPass.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/VisualManagerSecondaryPass.h")
 
 #else
-#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/VisualManagerSecondaryPass.h> instead of this one."
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/VisualManagerSecondaryPass.h> instead of this one."
 #endif
 
 #ifdef SOFAGL_COMPONENT_VISUALMANAGERSECONDARYPASS
 
 namespace sofa::component::visualmodel
 {
-    using VisualManagerSecondaryPass = sofa::gl::component::rendering::VisualManagerSecondaryPass;
+    using VisualManagerSecondaryPass = sofa::gl::component::shader::VisualManagerSecondaryPass;
 
 } // namespace sofa::component::visualmodel
 

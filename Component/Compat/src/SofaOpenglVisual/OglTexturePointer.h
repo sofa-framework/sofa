@@ -23,21 +23,21 @@
 
 #include <sofa/config.h>
 
-#if __has_include(<sofa/gl/component/rendering/OglTexturePointer.h>)
-#include <sofa/gl/component/rendering/OglTexturePointer.h>
+#if __has_include(<sofa/gl/component/shader/OglTexturePointer.h>)
+#include <sofa/gl/component/shader/OglTexturePointer.h>
 #define SOFAGL_COMPONENT_OGLTEXTUREPOINTER
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/rendering/OglTexturePointer.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gl/component/shader/OglTexturePointer.h")
 
 #else
-#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/rendering/OglTexturePointer.h> instead of this one."
+#error "SofaOpenglVisual contents has been moved to Sofa.GL.Component. Include <sofa/gl/component/shader/OglTexturePointer.h> instead of this one."
 #endif
 
 #ifdef SOFAGL_COMPONENT_OGLTEXTUREPOINTER
 
 namespace sofa::component::visualmodel
 {
-    using OglTexturePointer = sofa::gl::component::rendering::OglTexturePointer;
+    using OglTexturePointer = sofa::gl::component::shader::OglTexturePointer;
 
 } // namespace sofa::component::visualmodel
 
