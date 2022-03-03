@@ -19,68 +19,55 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseMechanics/initSofaBaseMechanics.h>
+#pragma once
+#include <sofa/component/mass/config.h>
 
-#include <sofa/helper/system/PluginManager.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
-
-namespace sofa::component
+namespace sofa::component::mass
 {
 
-void initSofaBaseMechanics()
+/**
+ * Helper struct to add entries in a BaseMatrix, based on the type of Mass (MassType).
+ *
+ * This class is specialized for Rigid types.
+ *
+ * The default implementation assumes it deals with Vec types: Deriv is a Vec type, and
+ * MassType is a floating point.
+ */
+template<class Deriv, class MassType>
+struct AddMToMatrixFunctor
 {
-    static bool first = true;
-    if (first)
+    static_assert(std::is_floating_point_v<MassType>, "Default implementation of AddMToMatrixFunctor assumes MassType is a floating point");
+
+    void operator()(linearalgebra::BaseMatrix * mat, MassType mass, int pos, MassType fact)
     {
-        // msg_deprecated("SofaBaseMechanics") << "SofaBaseMechanics is being deprecated;. It will be removed at v23.06. You may use Sofa.Component.Mass instead.";
-
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Mass");
-
-        first = false;
+        this->operator()(mat, mass, pos, pos, fact);
     }
-}
 
-extern "C" {
-    SOFA_SOFABASEMECHANICS_API void initExternalModule();
-    SOFA_SOFABASEMECHANICS_API const char* getModuleName();
-    SOFA_SOFABASEMECHANICS_API const char* getModuleVersion();
-    SOFA_SOFABASEMECHANICS_API const char* getModuleLicense();
-    SOFA_SOFABASEMECHANICS_API const char* getModuleDescription();
-    SOFA_SOFABASEMECHANICS_API const char* getModuleComponentList();
-}
+    ///Method to add non-diagonal terms
+    void operator()(linearalgebra::BaseMatrix * mat, MassType mass, int posRow, int posColumn, MassType fact)
+    {
+        const auto m = mass * fact;
+        for (unsigned int i = 0; i < Deriv::total_size; ++i)
+            mat->add(posRow + i, posColumn + i, m);
+    }
+};
 
-void initExternalModule()
+/**
+ * Specialization for Rigid types
+ */
+template<sofa::Size N, typename Real>
+struct AddMToMatrixFunctor< defaulttype::RigidDeriv<N,Real>, defaulttype::RigidMass<N,Real> >
 {
-    initSofaBaseMechanics();
-}
+    void operator()(linearalgebra::BaseMatrix * mat, const defaulttype::RigidMass<N,Real>& mass, int pos, Real fact)
+    {
+        const auto m = mass.mass * fact;
+        for (sofa::Size i = 0; i < N; ++i)
+            mat->add(pos + i, pos + i, m);
+        mat->add(pos + N, pos + N, mass.inertiaMassMatrix * fact);
+    }
+};
 
-const char* getModuleName()
-{
-    return sofa_tostring(SOFA_TARGET);
-}
-
-const char* getModuleVersion()
-{
-    return sofa_tostring(SOFABASEMECHANICS_VERSION);
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This plugin contains contains features about Base Mechanics.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-
-} // namespace sofa::component
+} // namespace sofa::component::mass

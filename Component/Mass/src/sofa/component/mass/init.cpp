@@ -19,29 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-
-#include <sofa/core/config.h>
+#include <sofa/component/mass/init.h>
 
 namespace sofa::component::mass
 {
-/*
- * This (empty) templated struct is used for determining a type of mass according to
- * the associated DataType. 
- * The generic version of it does not contain any type/definition,  
- * and will provoke an error if one is trying to determine a MassType without having
- * specialized this struct first.
- * For example, MassType specialized on Vec<N,Real> should return Real as its type.
- * (see VecMassType.h)
- * 
- * This is used by the Mass components to find a MassType according to their DataType.
- */
-template<typename DataType>
-struct MassType
-{
-    // if you want to associate a mass type YourType for a particular DataType
-    // using type = YourType;
-};
+    
+extern "C" {
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+}
 
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
+const char* getModuleName()
+{
+    return MODULE_NAME;
+}
+
+void init()
+{
+    initExternalModule();
+}
 
 } // namespace sofa::component::mass

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MASS_UNIFORMMASS_CPP
 
-#include <SofaBaseMechanics/UniformMass.inl>
+#include <sofa/component/mass/UniformMass.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
@@ -415,7 +415,7 @@ void UniformMass<VecTypes>::addMDxToVectorVecImpl(linearalgebra::BaseVector *res
 }
 
 
-template<> SOFA_SOFABASEMECHANICS_API
+template<> SOFA_COMPONENT_MASS_API
 void UniformMass<Rigid3Types>::constructor_message()
 {
     d_filenameMass.setDisplayed(true) ;
@@ -423,7 +423,7 @@ void UniformMass<Rigid3Types>::constructor_message()
     d_filenameMass.setValue("unused") ;
 }
 
-template<> SOFA_SOFABASEMECHANICS_API
+template<> SOFA_COMPONENT_MASS_API
 void UniformMass<Rigid3Types>::init()
 {
     initDefaultImpl() ;
@@ -436,45 +436,45 @@ void UniformMass<Rigid3Types>::init()
 
 
 template<>
-SOFA_SOFABASEMECHANICS_API
+SOFA_COMPONENT_MASS_API
 void UniformMass<Rigid3Types>::loadRigidMass(const string& filename)
 {
     loadFromFileRigidImpl<Rigid3Types>(filename) ;
 }
 
-template <> SOFA_SOFABASEMECHANICS_API
+template <> SOFA_COMPONENT_MASS_API
 void UniformMass<Rigid3Types>::draw(const VisualParams* vparams)
 {
     drawRigid3DImpl<Rigid3Types>(vparams) ;
 }
 
-template <> SOFA_SOFABASEMECHANICS_API
+template <> SOFA_COMPONENT_MASS_API
 void UniformMass<Rigid2Types>::draw(const VisualParams* vparams)
 {
     drawRigid2DImpl<Rigid3Types>(vparams) ;
 }
 
-template <> SOFA_SOFABASEMECHANICS_API
+template <> SOFA_COMPONENT_MASS_API
 SReal UniformMass<Rigid3Types>::getPotentialEnergy( const MechanicalParams* params,
                                                                  const DataVecCoord& d_x ) const
 {
     return getPotentialEnergyRigidImpl<Rigid3Types>(params, d_x) ;
 }
 
-template <> SOFA_SOFABASEMECHANICS_API
+template <> SOFA_COMPONENT_MASS_API
 SReal UniformMass<Rigid2Types>::getPotentialEnergy( const MechanicalParams* params,
                                                                  const DataVecCoord& vx ) const
 {
     return getPotentialEnergyRigidImpl<Rigid2Types>(params, vx) ;
 }
 
-template <> SOFA_SOFABASEMECHANICS_API
+template <> SOFA_COMPONENT_MASS_API
 void UniformMass<Vec6Types>::draw(const core::visual::VisualParams* vparams)
 {
     drawVec6Impl<Vec6Types>(vparams) ;
 }
 
-template <> SOFA_SOFABASEMECHANICS_API
+template <> SOFA_COMPONENT_MASS_API
 void UniformMass<Vec3Types>::addMDxToVector(linearalgebra::BaseVector *resVect,
                                                      const VecDeriv* dx,
                                                      SReal mFact,
@@ -483,7 +483,7 @@ void UniformMass<Vec3Types>::addMDxToVector(linearalgebra::BaseVector *resVect,
     addMDxToVectorVecImpl<Vec3Types>(resVect, dx,mFact,offset) ;
 }
 
-template <> SOFA_SOFABASEMECHANICS_API
+template <> SOFA_COMPONENT_MASS_API
 Vector6 UniformMass<Vec3Types>::getMomentum ( const MechanicalParams* params,
                                                        const DataVecCoord& d_x,
                                                        const DataVecDeriv& d_v ) const
@@ -491,7 +491,7 @@ Vector6 UniformMass<Vec3Types>::getMomentum ( const MechanicalParams* params,
     return getMomentumVec3DImpl<Vec3Types>(params, d_x, d_v) ;
 }
 
-template <> SOFA_SOFABASEMECHANICS_API
+template <> SOFA_COMPONENT_MASS_API
 Vector6 UniformMass<Rigid3Types>::getMomentum ( const MechanicalParams* params,
                                                              const DataVecCoord& d_x,
                                                              const DataVecDeriv& d_v ) const
@@ -530,12 +530,12 @@ int UniformMassClass = core::RegisterObject("Define the same mass for all the pa
 /// avoid the code generation of the template for each compilation unit.
 /// see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 
-template class SOFA_SOFABASEMECHANICS_API UniformMass<Vec3Types>;
-template class SOFA_SOFABASEMECHANICS_API UniformMass<Vec2Types>;
-template class SOFA_SOFABASEMECHANICS_API UniformMass<Vec1Types>;
-template class SOFA_SOFABASEMECHANICS_API UniformMass<Vec6Types>;
-template class SOFA_SOFABASEMECHANICS_API UniformMass<Rigid3Types>;
-template class SOFA_SOFABASEMECHANICS_API UniformMass<Rigid2Types>;
+template class SOFA_COMPONENT_MASS_API UniformMass<Vec3Types>;
+template class SOFA_COMPONENT_MASS_API UniformMass<Vec2Types>;
+template class SOFA_COMPONENT_MASS_API UniformMass<Vec1Types>;
+template class SOFA_COMPONENT_MASS_API UniformMass<Vec6Types>;
+template class SOFA_COMPONENT_MASS_API UniformMass<Rigid3Types>;
+template class SOFA_COMPONENT_MASS_API UniformMass<Rigid2Types>;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////

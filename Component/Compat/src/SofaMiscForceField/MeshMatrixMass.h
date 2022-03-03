@@ -21,22 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/config.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseMechanics/MassType.h>
-#include <type_traits>
+#include <sofa/component/mass/MeshMatrixMass.h>
 
-namespace sofa::component::mass
-{
-
-/*
- * Mass components templated on VecTypes will use Real (scalar) type for their MassType.
- */
-template<class TCoord, class TDeriv, class TReal>
-struct MassType<defaulttype::StdVectorTypes< TCoord, TDeriv, TReal> >
-{
-    using type = TReal;
-};
-
-
-} // namespace sofa::component::mass
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mass/MeshMatrixMass.h")

@@ -6,24 +6,16 @@ set(SOFABASEMECHANICS_SRC "src/${PROJECT_NAME}")
 set(HEADER_FILES
     ${SOFABASEMECHANICS_SRC}/config.h.in
     ${SOFABASEMECHANICS_SRC}/initSofaBaseMechanics.h
-    ${SOFABASEMECHANICS_SRC}/AddMToMatrixFunctor.h
     ${SOFABASEMECHANICS_SRC}/BarycentricMapping.h
     ${SOFABASEMECHANICS_SRC}/BarycentricMapping.inl
-    ${SOFABASEMECHANICS_SRC}/DiagonalMass.h
-    ${SOFABASEMECHANICS_SRC}/DiagonalMass.inl
     ${SOFABASEMECHANICS_SRC}/IdentityMapping.h
     ${SOFABASEMECHANICS_SRC}/IdentityMapping.inl
-    ${SOFABASEMECHANICS_SRC}/MassType.h
     ${SOFABASEMECHANICS_SRC}/MappedObject.h
     ${SOFABASEMECHANICS_SRC}/MappedObject.inl
     ${SOFABASEMECHANICS_SRC}/MechanicalObject.h
     ${SOFABASEMECHANICS_SRC}/MechanicalObject.inl
-    ${SOFABASEMECHANICS_SRC}/RigidMassType.h
     ${SOFABASEMECHANICS_SRC}/SubsetMapping.h
     ${SOFABASEMECHANICS_SRC}/SubsetMapping.inl
-    ${SOFABASEMECHANICS_SRC}/UniformMass.h
-    ${SOFABASEMECHANICS_SRC}/UniformMass.inl
-    ${SOFABASEMECHANICS_SRC}/VecMassType.h
     ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapper.h
     ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapper.inl
     ${SOFABASEMECHANICS_SRC}/BarycentricMappers/TopologyBarycentricMapper.h
@@ -51,12 +43,10 @@ set(HEADER_FILES
 set(SOURCE_FILES
     ${SOFABASEMECHANICS_SRC}/initSofaBaseMechanics.cpp
     ${SOFABASEMECHANICS_SRC}/BarycentricMapping.cpp
-    ${SOFABASEMECHANICS_SRC}/DiagonalMass.cpp
     ${SOFABASEMECHANICS_SRC}/IdentityMapping.cpp
     ${SOFABASEMECHANICS_SRC}/MappedObject.cpp
     ${SOFABASEMECHANICS_SRC}/MechanicalObject.cpp
     ${SOFABASEMECHANICS_SRC}/SubsetMapping.cpp
-    ${SOFABASEMECHANICS_SRC}/UniformMass.cpp
     ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapper.cpp
     ${SOFABASEMECHANICS_SRC}/BarycentricMappers/TopologyBarycentricMapper.cpp
     ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperMeshTopology.cpp
@@ -74,12 +64,13 @@ sofa_find_package(SofaBaseTopology REQUIRED)
 sofa_find_package(SofaBaseLinearSolver REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaBaseLinearSolver)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaBaseLinearSolver)
 
-if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    # Silence attribute warnings (for example, ignored already defined external template)
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
-endif()
+message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Mass instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.Mass REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Mass)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

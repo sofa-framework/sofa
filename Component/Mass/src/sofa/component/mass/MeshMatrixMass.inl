@@ -21,13 +21,12 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMiscForceField/MeshMatrixMass.h>
+#include <sofa/component/mass/MeshMatrixMass.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/core/topology/TopologyData.inl>
-#include <SofaBaseTopology/RegularGridTopology.h>
-#include <SofaBaseMechanics/AddMToMatrixFunctor.h>
+#include <sofa/component/mass/AddMToMatrixFunctor.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/type/vector.h>
 #include <sofa/simulation/AnimateEndEvent.h>
