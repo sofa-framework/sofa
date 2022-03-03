@@ -29,6 +29,7 @@ include(Sofa.Component.Mapping.MappedMatrix.cmake)
 include(Sofa.Component.SolidMechanics.Spring.cmake)
 include(Sofa.Component.SolidMechanics.FEM.Elastic.cmake)
 include(Sofa.Component.SolidMechanics.FEM.HyperElastic.cmake)
+include(Sofa.Component.SolidMechanics.TensorMass.cmake)
 
 set(SOURCE_FILES
     ${SOFACOMPONENTCOMPATSRC_ROOT}/init.cpp

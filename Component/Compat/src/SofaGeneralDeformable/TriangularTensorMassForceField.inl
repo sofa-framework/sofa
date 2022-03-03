@@ -19,42 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/solidmechanics/init.h>
+#pragma once
 
-#include <sofa/component/solidmechanics/spring/init.h>
-#include <sofa/component/solidmechanics/fem/init.h>
-#include <sofa/component/solidmechanics/tensormass/init.h>
+#include <sofa/component/solidmechanics/tensormass/TriangularTensorMassForceField.inl>
 
-namespace sofa::component::solidmechanics
-{
-    
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
-
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        // force dependencies at compile-time
-        sofa::component::solidmechanics::spring::init();
-        sofa::component::solidmechanics::fem::init();
-        sofa::component::solidmechanics::tensormass::init();
-
-        first = false;
-    }
-}
-
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-void init()
-{
-    initExternalModule();
-}
-
-} // namespace sofa::component::solidmechanics
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/tensormass/TriangularTensorMassForceField.inl")

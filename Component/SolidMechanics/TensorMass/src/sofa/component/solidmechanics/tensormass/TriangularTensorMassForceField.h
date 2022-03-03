@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGeneralDeformable/config.h>
+#include <sofa/component/solidmechanics/tensormass/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -29,7 +29,7 @@
 #include <sofa/type/Mat.h>
 #include <sofa/core/topology/TopologyData.h>
 
-namespace sofa::component::forcefield
+namespace sofa::component::solidmechanics::tensormass
 {
 
 template<class DataTypes>
@@ -172,9 +172,9 @@ protected :
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_CPP)
 
-extern template class SOFA_SOFAGENERALDEFORMABLE_API TriangularTensorMassForceField<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_TENSORMASS_API TriangularTensorMassForceField<sofa::defaulttype::Vec3Types>;
 
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_CPP)
 
-} // sofa::component::forcefield
+} // namespace sofa::component::solidmechanics::tensormass

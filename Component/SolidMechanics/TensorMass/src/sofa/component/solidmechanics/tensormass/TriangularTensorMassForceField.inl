@@ -21,14 +21,12 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGeneralDeformable/TriangularTensorMassForceField.h>
+#include <sofa/component/solidmechanics/tensormass/TriangularTensorMassForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <fstream> // for reading the file
-#include <iostream> //for debugging
 #include <sofa/type/RGBAColor.h>
 #include <sofa/core/topology/TopologyData.inl>
 
-namespace sofa::component::forcefield
+namespace sofa::component::solidmechanics::tensormass
 {
 
 typedef core::topology::BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
@@ -437,4 +435,4 @@ void TriangularTensorMassForceField<DataTypes>::draw(const core::visual::VisualP
     vparams->drawTool()->restoreLastState();
 }
 
-} // sofa::component::forcefield
+} // namespace sofa::component::solidmechanics::tensormass

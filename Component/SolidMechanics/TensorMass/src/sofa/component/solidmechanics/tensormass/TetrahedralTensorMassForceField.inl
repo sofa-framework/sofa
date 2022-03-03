@@ -21,15 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/solidmechanics/fem/elastic/TetrahedralTensorMassForceField.h>
+#include <sofa/component/solidmechanics/tensormass/TetrahedralTensorMassForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
-#include <fstream> // for reading the file
-#include <iostream> //for debugging
 #include <sofa/core/topology/TopologyData.inl>
 #include <sofa/helper/AdvancedTimer.h>
 
-namespace sofa::component::solidmechanics::fem::elastic
+namespace sofa::component::solidmechanics::tensormass
 {
 
 typedef core::topology::BaseMeshTopology::Tetra				Tetra;
@@ -493,4 +491,4 @@ void TetrahedralTensorMassForceField<DataTypes>::draw(const core::visual::Visual
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace sofa::component::solidmechanics::fem::elastic
+} // namespace sofa::component::solidmechanics::tensormass

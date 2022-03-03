@@ -19,42 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/solidmechanics/init.h>
+#define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALTENSORMASSFORCEFIELD_CPP
 
-#include <sofa/component/solidmechanics/spring/init.h>
-#include <sofa/component/solidmechanics/fem/init.h>
-#include <sofa/component/solidmechanics/tensormass/init.h>
+#include <sofa/component/solidmechanics/tensormass/TetrahedralTensorMassForceField.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::solidmechanics
+
+namespace sofa::component::solidmechanics::tensormass
 {
-    
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        // force dependencies at compile-time
-        sofa::component::solidmechanics::spring::init();
-        sofa::component::solidmechanics::fem::init();
-        sofa::component::solidmechanics::tensormass::init();
+using namespace sofa::defaulttype;
 
-        first = false;
-    }
-}
+// Register in the Factory
+int TetrahedralTensorMassForceFieldClass = core::RegisterObject("Linear Elastic Tetrahedral Mesh")
+        .add< TetrahedralTensorMassForceField<Vec3Types> >()
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
+        ;
 
-void init()
-{
-    initExternalModule();
-}
+template class SOFA_COMPONENT_SOLIDMECHANICS_TENSORMASS_API TetrahedralTensorMassForceField<Vec3Types>;
 
-} // namespace sofa::component::solidmechanics
+} // namespace sofa::component::solidmechanics::tensormass
