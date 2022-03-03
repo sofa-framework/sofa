@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/solidmechanics/fem/elastic/TetrahedralTensorMassForceField.inl>
+#include <sofa/component/solidmechanics/tensormass/TetrahedralTensorMassForceField.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/elastic/TetrahedralTensorMassForceField.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/tensormass/TetrahedralTensorMassForceField.inl")

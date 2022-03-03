@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/solidmechanics/fem/elastic/config.h>
+#include <sofa/component/solidmechanics/tensormass/config.h>
 
 
 
@@ -34,7 +34,7 @@
 #include <sofa/type/trait/Rebind.h>
 
 
-namespace sofa::component::solidmechanics::fem::elastic
+namespace sofa::component::solidmechanics::tensormass
 {
 
 
@@ -179,10 +179,10 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALTENSORMASSFORCEFIELD_CPP)
 
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API TetrahedralTensorMassForceField<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_TENSORMASS_API TetrahedralTensorMassForceField<sofa::defaulttype::Vec3Types>;
 
 
 #endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALTENSORMASSFORCEFIELD_CPP)
 
 
-} // namespace sofa::component::solidmechanics::fem::elastic
+} // namespace sofa::component::solidmechanics::tensormass

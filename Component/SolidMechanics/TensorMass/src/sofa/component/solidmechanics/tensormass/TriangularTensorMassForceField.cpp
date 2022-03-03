@@ -19,42 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/solidmechanics/init.h>
+#define SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_CPP
 
-#include <sofa/component/solidmechanics/spring/init.h>
-#include <sofa/component/solidmechanics/fem/init.h>
-#include <sofa/component/solidmechanics/tensormass/init.h>
+#include <sofa/component/solidmechanics/tensormass/TriangularTensorMassForceField.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::solidmechanics
+
+namespace sofa::component::solidmechanics::tensormass
 {
-    
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        // force dependencies at compile-time
-        sofa::component::solidmechanics::spring::init();
-        sofa::component::solidmechanics::fem::init();
-        sofa::component::solidmechanics::tensormass::init();
+using namespace sofa::defaulttype;
 
-        first = false;
-    }
-}
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
+// Register in the Factory
+int TriangularTensorMassForceFieldClass = core::RegisterObject("Linear Elastic Membrane on a Triangular Mesh")
+        .add< TriangularTensorMassForceField<Vec3Types> >()
 
-void init()
-{
-    initExternalModule();
-}
+        ;
 
-} // namespace sofa::component::solidmechanics
+template class SOFA_COMPONENT_SOLIDMECHANICS_TENSORMASS_API TriangularTensorMassForceField<Vec3Types>;
+
+
+} // namespace sofa::component::solidmechanics::tensormass

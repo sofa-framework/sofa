@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/solidmechanics/fem/elastic/TetrahedralTensorMassForceField.h>
+#include <sofa/component/solidmechanics/tensormass/TetrahedralTensorMassForceField.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/elastic/TetrahedralTensorMassForceField.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/tensormass/TetrahedralTensorMassForceField.h")
 
 namespace sofa::component::forcefield
 {
     template<class DataTypes>
-    using TetrahedralTensorMassForceField = sofa::component::solidmechanics::fem::elastic::TetrahedralTensorMassForceField<DataTypes>;
+    using TetrahedralTensorMassForceField = sofa::component::solidmechanics::tensormass::TetrahedralTensorMassForceField<DataTypes>;
 
 } // namespace sofa::component::forcefield
