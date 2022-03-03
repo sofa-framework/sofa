@@ -26,7 +26,7 @@
 namespace sofa::core::topology
 {
 
-class BaseTopologicalMapping : public virtual objectmodel::BaseObject
+class SOFA_CORE_API BaseTopologicalMapping : public virtual objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseTopologicalMapping, objectmodel::BaseObject);

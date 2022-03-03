@@ -39,7 +39,7 @@ namespace sofa::core::topology
 * So, at each time step, the geometrical and adjacency information are consistent in both topologies.
 *
 */
-class TopologicalMapping : public virtual BaseTopologicalMapping
+class SOFA_CORE_API TopologicalMapping : public virtual BaseTopologicalMapping
 {
 public:
     SOFA_ABSTRACT_CLASS(TopologicalMapping, BaseTopologicalMapping);
