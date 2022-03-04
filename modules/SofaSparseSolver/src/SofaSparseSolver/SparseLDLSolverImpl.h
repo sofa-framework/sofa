@@ -158,7 +158,11 @@ public:
 
 protected :
 
-    SparseLDLSolverImpl() : Inherit() {}
+    Data<bool> d_useSymbolicDecomposition ;
+
+    SparseLDLSolverImpl() : Inherit() 
+    , d_useSymbolicDecomposition(initData(&d_useSymbolicDecomposition, true ,"useSymbolicDecomposition", "If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step."))
+     {}
 
     template<class VecInt,class VecReal>
     void solve_cpu(Real * x,const Real * b,SparseLDLImplInvertData<VecInt,VecReal> * data) {
@@ -283,7 +287,7 @@ protected :
         memcpy(data->P_values.data(),M_values,data->P_nnz * sizeof(Real));
 
         // we test if the matrix has the same struct as previous factorized matrix
-        if (data->new_factorization_needed) {
+        if (data->new_factorization_needed  || !d_useSymbolicDecomposition.getValue() ) {
             msg_info() << "Recomputing new factorization" ;
 
             data->perm.clear();data->perm.fastResize(data->n);
@@ -332,7 +336,7 @@ protected :
 
         // split the bloc diag in data->Bdiag
 
-        if (data->new_factorization_needed) {
+        if (data->new_factorization_needed  || !d_useSymbolicDecomposition.getValue() ) {
             //Compute transpose in tran_colptr, tran_rowind, tran_values, tran_D
             tran_countvec.clear();
             tran_countvec.resize(data->n);
@@ -345,7 +349,7 @@ protected :
             for (int j=0;j<data->n;j++) tran_colptr[j+1] = tran_colptr[j] + tran_countvec[j];
         }
 
-        //we clear tran_countvec becaus we use it now to stro hown many value are written on each line
+        //we clear tran_countvec because we use it now to store how many values are written on each line
         tran_countvec.clear();
         tran_countvec.resize(data->n);
 
@@ -360,14 +364,11 @@ protected :
     }
 
     type::vector<Real> Tmp;
-protected : //the folowing variables are used during the factorization they canno be used in the main thread !
+protected : //the folowing variables are used during the factorization they cannot be used in the main thread !
     type::vector<int> xadj,adj,t_xadj,t_adj;
     type::vector<Real> Y;
     type::vector<int> Lnz,Flag,Pattern;
     type::vector<int> tran_countvec;
-
-//    type::vector<int> perm, invperm; //premutation inverse
-
 };
 
 } // namespace sofa::component::linearsolver
