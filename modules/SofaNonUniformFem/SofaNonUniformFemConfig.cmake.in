@@ -5,7 +5,7 @@
 
 get_property(@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE SET)
 if(NOT @PROJECT_NAME@_SENT_DEPRECATION_MESSAGE)
-    message(WARNING "@PROJECT_NAME@ module is being deprecated. It will be removed at v23.06. Use Sofa.Component.Topology.Container.Grid, Sofa.Component.Topology.Container.Dynamic and Sofa.Component.SolidMechanics.FEM.NonUniform instead.")
+    message(WARNING "@PROJECT_NAME@ module is deprecated. It will be removed at v23.06. Use Sofa.Component.Topology.Container.Grid, Sofa.Component.Topology.Container.Dynamic and Sofa.Component.SolidMechanics.FEM.NonUniform instead.")
 endif()
 set_property(GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE TRUE)
 
