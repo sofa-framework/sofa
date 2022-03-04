@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDAPENALITYCONTACTFORCEFIELD_INL
-#define SOFA_GPU_CUDA_CUDAPENALITYCONTACTFORCEFIELD_INL
+#pragma once
 
 #include "CudaPenalityContactForceField.h"
-#include <SofaObjectInteraction/PenalityContactForceField.inl>
+#include <sofa/component/solidmechanics/spring/PenalityContactForceField.inl>
 #include <sofa/gl/template.h>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 extern "C"
@@ -42,14 +35,9 @@ extern "C"
     void PenalityContactForceFieldCuda3f_addDForce(unsigned int size, const void* contacts, const void* penetration, void* f1, const void* dx1, void* f2, const void* dx2, double factor);
 }
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::solidmechanics::spring
 {
 
 using namespace gpu::cuda;
@@ -266,10 +254,4 @@ void PenalityContactForceField<CudaVec3fTypes>::draw(const core::visual::VisualP
 #endif // SOFACUDA_HAVE_SOFA_GL == 1
 }
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::solidmechanics::spring

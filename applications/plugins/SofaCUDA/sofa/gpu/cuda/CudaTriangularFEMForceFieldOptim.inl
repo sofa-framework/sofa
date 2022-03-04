@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.h>
-#include <SofaGeneralSimpleFem/TriangularFEMForceFieldOptim.inl>
+#include <sofa/component/solidmechanics/fem/elastic/TriangularFEMForceFieldOptim.inl>
 
 namespace sofa::gpu::cuda
 {
@@ -60,7 +60,7 @@ void TriangularFEMForceFieldOptimCuda3d_addDForce(unsigned int size, void* f, co
 
 } // namespace sofa::gpu::cuda
 
-namespace sofa::component::forcefield 
+namespace sofa::component::solidmechanics::fem::elastic
 {
 
 using namespace gpu::cuda;
@@ -176,4 +176,4 @@ void TriangularFEMForceFieldOptim<gpu::cuda::CudaVec3dTypes>::addDForce(const co
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace sofa::component::forcefield
+} // namespace sofa::component::solidmechanics::fem::elastic

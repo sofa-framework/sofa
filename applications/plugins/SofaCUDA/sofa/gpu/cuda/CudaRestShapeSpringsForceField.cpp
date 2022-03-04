@@ -22,17 +22,11 @@
 #include "CudaTypes.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ForceField.inl>
-#include <SofaDeformable/RestShapeSpringsForceField.inl>
+#include <sofa/component/solidmechanics/spring/RestShapeSpringsForceField.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::solidmechanics::spring
 {
 
 template class SOFA_GPU_CUDA_API RestShapeSpringsForceField<gpu::cuda::CudaVec3fTypes>;
@@ -42,27 +36,18 @@ template class SOFA_GPU_CUDA_API RestShapeSpringsForceField<gpu::cuda::CudaVec3d
 template class SOFA_GPU_CUDA_API RestShapeSpringsForceField<gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace engine
+} // namespace sofa::component::solidmechanics::spring
 
-} // namespace component
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 int RestShapeSpringsForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::forcefield::RestShapeSpringsForceField<CudaVec3fTypes> >()
-        .add< component::forcefield::RestShapeSpringsForceField<CudaVec3f1Types> >()
+        .add< sofa::component::solidmechanics::spring::RestShapeSpringsForceField<CudaVec3fTypes> >()
+        .add< sofa::component::solidmechanics::spring::RestShapeSpringsForceField<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::forcefield::RestShapeSpringsForceField<CudaVec3dTypes> >()
-        .add< component::forcefield::RestShapeSpringsForceField<CudaVec3d1Types> >()
+        .add< sofa::component::solidmechanics::spring::RestShapeSpringsForceField<CudaVec3dTypes> >()
+        .add< sofa::component::solidmechanics::spring::RestShapeSpringsForceField<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
+} // namespace sofa::gpu::cuda
