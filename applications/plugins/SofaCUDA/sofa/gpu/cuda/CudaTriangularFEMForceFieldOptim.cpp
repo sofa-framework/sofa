@@ -23,7 +23,7 @@
 #include <sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::forcefield
+namespace sofa::component::solidmechanics::fem::elastic
 {
 
 template class SOFA_GPU_CUDA_API TriangularFEMForceFieldOptim<sofa::gpu::cuda::CudaVec3fTypes>;
@@ -31,16 +31,16 @@ template class SOFA_GPU_CUDA_API TriangularFEMForceFieldOptim<sofa::gpu::cuda::C
 template class SOFA_GPU_CUDA_API TriangularFEMForceFieldOptim<sofa::gpu::cuda::CudaVec3dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // sofa::component::forcefield
+} // namespace sofa::component::solidmechanics::fem::elastic
 
 
 namespace sofa::gpu::cuda
 {
 
 int TriangularFEMForceFieldOptimCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-    .add< component::forcefield::TriangularFEMForceFieldOptim<CudaVec3fTypes> >()
+    .add< sofa::component::solidmechanics::fem::elastic::TriangularFEMForceFieldOptim<CudaVec3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-    .add< component::forcefield::TriangularFEMForceFieldOptim<CudaVec3dTypes> >()
+    .add< sofa::component::solidmechanics::fem::elastic::TriangularFEMForceFieldOptim<CudaVec3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
     ;
 

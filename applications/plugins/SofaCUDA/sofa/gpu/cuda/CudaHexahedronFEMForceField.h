@@ -32,7 +32,7 @@ class CudaKernelsHexahedronFEMForceField;
 
 } // namespace sofa::gpu::cuda
 
-namespace sofa::component::forcefield
+namespace sofa::component::solidmechanics::fem::elastic
 {
 
 template <class TCoord, class TDeriv, class TReal>
@@ -359,4 +359,4 @@ CudaHexahedronFEMForceField_DeclMethods(gpu::cuda::CudaVec3fTypes);
 
 #undef CudaHexahedronFEMForceField_DeclMethods
 
-} // namespace sofa::component::forcefield
+} // namespace sofa::component::solidmechanics::fem::elastic

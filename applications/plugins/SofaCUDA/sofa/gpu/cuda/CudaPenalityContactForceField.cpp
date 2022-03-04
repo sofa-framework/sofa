@@ -33,8 +33,8 @@ namespace cuda
 {
 
 int PenalityContactForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::interactionforcefield::PenalityContactForceField<CudaVec3fTypes> >()
-        .add< component::interactionforcefield::PenalityContactForceField<CudaVec3f1Types> >()
+        .add< sofa::component::solidmechanics::spring::PenalityContactForceField<CudaVec3fTypes> >()
+        .add< sofa::component::solidmechanics::spring::PenalityContactForceField<CudaVec3f1Types> >()
         ;
 
 } // namespace cuda
