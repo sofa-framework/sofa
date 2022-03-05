@@ -411,7 +411,7 @@ public:
             {
                 typename TriangularFEM::TriangleInformation triangleInfo = triFEM->triangleInfo.getValue()[id];
                 const type::fixed_array <Coord, 3>& rotatedInitPos = triangleInfo.rotatedInitialElements;
-                const Mat33& rotMat = triangleInfo.initialTransformation;
+                const Mat33& rotMat = triangleInfo.rotation;
                 const Mat33& stiffnessMat = triangleInfo.materialMatrix;
                 const Mat63& strainDispl = triangleInfo.strainDisplacementMatrix;
 
@@ -557,7 +557,7 @@ public:
             
             typename TriangularFEM::TriangleInformation triangleInfo = triFEM->triangleInfo.getValue()[idTri];
             const type::fixed_array <Coord, 3>& rotatedInitPos = triangleInfo.rotatedInitialElements;
-            const Mat33& rotMat = triangleInfo.initialTransformation; // rotMat: [1 0 0,0 1 0,0 0 1]
+            const Mat33& rotMat = triangleInfo.rotation;
             const Mat33& stiffnessMat = triangleInfo.materialMatrix;
             const Mat63& strainDispl = triangleInfo.strainDisplacementMatrix;
 
