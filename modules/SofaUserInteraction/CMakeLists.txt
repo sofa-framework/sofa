@@ -31,7 +31,6 @@ list(APPEND HEADER_FILES
     ${SOFAUSERINTERACTION_SRC}/RayContact.h
     ${SOFAUSERINTERACTION_SRC}/RayDiscreteIntersection.h
     ${SOFAUSERINTERACTION_SRC}/RayDiscreteIntersection.inl
-    ${SOFAUSERINTERACTION_SRC}/RayModel.h
     ${SOFAUSERINTERACTION_SRC}/RayNewProximityIntersection.h
     ${SOFAUSERINTERACTION_SRC}/RayTraceDetection.h
     ${SOFAUSERINTERACTION_SRC}/SleepController.h
@@ -55,7 +54,6 @@ list(APPEND SOURCE_FILES
     ${SOFAUSERINTERACTION_SRC}/MechanicalStateController.cpp
     ${SOFAUSERINTERACTION_SRC}/RayContact.cpp
     ${SOFAUSERINTERACTION_SRC}/RayDiscreteIntersection.cpp
-    ${SOFAUSERINTERACTION_SRC}/RayModel.cpp
     ${SOFAUSERINTERACTION_SRC}/RayNewProximityIntersection.cpp
     ${SOFAUSERINTERACTION_SRC}/RayTraceDetection.cpp
     ${SOFAUSERINTERACTION_SRC}/SleepController.cpp
@@ -76,10 +74,11 @@ sofa_find_package(SofaGraphComponent REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaGeneralMeshCollision SofaGeneralVisual SofaTopologyMapping SofaDeformable SofaBoundaryCondition SofaGraphComponent)
 
-if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    # Silence attribute warnings (for example, ignored already defined external template)
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
-endif()
+message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Collision.Model instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.Collision.Model REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Model)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
@@ -87,5 +86,4 @@ sofa_create_package_with_targets(
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
-    RELOCATABLE "plugins"
 )

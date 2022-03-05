@@ -21,7 +21,11 @@
 ******************************************************************************/
 #pragma once
 
+<<<<<<< HEAD:SofaKernel/modules/SofaHelper/src/sofa/helper/TriangleOctree.h
 #include <sofa/helper/config.h>
+=======
+#include <sofa/component/collision/model/config.h>
+>>>>>>> 0320ba3e13 (create module collision and sub model):Component/Collision/Model/src/sofa/component/collision/model/TriangleOctree.h
 
 #include <sofa/type/Vec.h>
 #include <sofa/type/vector.h>
@@ -44,7 +48,11 @@ namespace visual
 
 class TriangleOctree;
 
+<<<<<<< HEAD:SofaKernel/modules/SofaHelper/src/sofa/helper/TriangleOctree.h
 class SOFA_HELPER_API TriangleOctreeRoot
+=======
+class SOFA_COMPONENT_COLLISION_MODEL_API TriangleOctreeRoot
+>>>>>>> 0320ba3e13 (create module collision and sub model):Component/Collision/Model/src/sofa/component/collision/model/TriangleOctree.h
 {
 public:
     /*THIS STATIC CUBE SIZE MUST BE CHANGED, it represents the size of the occtree cube*/
@@ -81,7 +89,11 @@ protected:
     void calcTriangleAABB(int t, double* bb, double& size);
 };
 
+<<<<<<< HEAD:SofaKernel/modules/SofaHelper/src/sofa/helper/TriangleOctree.h
 class SOFA_HELPER_API TriangleOctree
+=======
+class SOFA_COMPONENT_COLLISION_MODEL_API TriangleOctree
+>>>>>>> 0320ba3e13 (create module collision and sub model):Component/Collision/Model/src/sofa/component/collision/model/TriangleOctree.h
 {
 public:
     static constexpr int CUBE_SIZE = TriangleOctreeRoot::CUBE_SIZE;
