@@ -19,16 +19,29 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALLINEARMOVEMENTCONSTRAINT_CPP
+#include <sofa/component/constraint/projective/PartialLinearMovementConstraint.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+namespace sofa::component::constraint::projective
+{
 
-#define SOFABOUNDARYCONDITION_VERSION @PROJECT_VERSION@
+//declaration of the class, for the factory
+int PartialLinearMovementConstraintClass = core::RegisterObject("translate given particles")
+        .add< PartialLinearMovementConstraint<defaulttype::Vec3Types> >()
+        .add< PartialLinearMovementConstraint<defaulttype::Vec2Types> >()
+        .add< PartialLinearMovementConstraint<defaulttype::Vec1Types> >()
+        .add< PartialLinearMovementConstraint<defaulttype::Vec6Types> >()
+        .add< PartialLinearMovementConstraint<defaulttype::Rigid3Types> >()
 
-#ifdef SOFA_BUILD_SOFABOUNDARYCONDITION
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+        ;
+
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PartialLinearMovementConstraint<defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PartialLinearMovementConstraint<defaulttype::Vec2Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PartialLinearMovementConstraint<defaulttype::Vec1Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PartialLinearMovementConstraint<defaulttype::Vec6Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PartialLinearMovementConstraint<defaulttype::Rigid3Types>;
+
+} // namespace sofa::component::constraint::projective

@@ -19,16 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_OSCILLATORCONSTRAINT_CPP
+#include <sofa/component/constraint/projective/OscillatorConstraint.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+namespace sofa::component::constraint::projective
+{
 
-#define SOFABOUNDARYCONDITION_VERSION @PROJECT_VERSION@
+using namespace sofa::defaulttype;
+using namespace sofa::helper;
 
-#ifdef SOFA_BUILD_SOFABOUNDARYCONDITION
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+int OscillatorConstraintClass = core::RegisterObject("Apply a sinusoidal trajectory to given points")
+        .add< OscillatorConstraint<Vec3Types> >()
+        .add< OscillatorConstraint<Rigid3Types> >();
+
+template class OscillatorConstraint<Rigid3Types>;
+template class OscillatorConstraint<Vec3Types>;
+
+} // namespace sofa::component::constraint::projective

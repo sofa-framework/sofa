@@ -19,16 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDROTATIONCONSTRAINT_CPP
+#include <sofa/component/constraint/projective/FixedRotationConstraint.inl>
+#include <sofa/core/ObjectFactory.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-#define SOFABOUNDARYCONDITION_VERSION @PROJECT_VERSION@
+namespace sofa::component::constraint::projective
+{
 
-#ifdef SOFA_BUILD_SOFABOUNDARYCONDITION
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+using namespace sofa::defaulttype;
+
+
+int FixedRotationConstraintClass = core::RegisterObject("Prevents rotation around x or/and y or/and z axis")
+        .add< FixedRotationConstraint<Rigid3Types> >()
+        ;
+
+template class FixedRotationConstraint<Rigid3Types>;
+
+} // namespace sofa::component::constraint::projective

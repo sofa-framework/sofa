@@ -3,7 +3,7 @@ project(Sofa.Component.Constraint LANGUAGES CXX)
 
 set(SOFACOMPONENTCONSTRAINT_SOURCE_DIR "src/sofa/component/constraint")
 
-set(SOFACOMPONENTCONSTRAINT_DIRS Lagrangian ) # Projective
+set(SOFACOMPONENTCONSTRAINT_DIRS Lagrangian Projective)
 set(SOFACOMPONENTCONSTRAINT_TARGETS)
 foreach(constraint_dir ${SOFACOMPONENTCONSTRAINT_DIRS})
 	sofang_add_component_subdirectory(${constraint_dir} ${PROJECT_NAME}.${constraint_dir})

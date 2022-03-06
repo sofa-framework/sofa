@@ -21,14 +21,9 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/component/constraint/projective/config.h>
 
-#define SOFABOUNDARYCONDITION_VERSION @PROJECT_VERSION@
-
-#ifdef SOFA_BUILD_SOFABOUNDARYCONDITION
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace sofa::component::constraint::projective
+{
+    SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API void init();
+} // namespace sofa::component::constraint::projective

@@ -19,16 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_HERMITESPLINECONSTRAINT_CPP
+#include <sofa/component/constraint/projective/HermiteSplineConstraint.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+namespace sofa::component::constraint::projective
+{
 
-#define SOFABOUNDARYCONDITION_VERSION @PROJECT_VERSION@
+int HermiteSplineConstraintClass = core::RegisterObject("Apply a hermite cubic spline trajectory to given points")
+        .add< HermiteSplineConstraint<defaulttype::Vec3Types> >()
+        .add< HermiteSplineConstraint<defaulttype::Rigid3Types> >()
+        ;
 
-#ifdef SOFA_BUILD_SOFABOUNDARYCONDITION
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+template <>
+void HermiteSplineConstraint<defaulttype::Rigid3Types>::init()
+{
+    this->core::behavior::ProjectiveConstraintSet<defaulttype::Rigid3Types>::init();
+}
+
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API HermiteSplineConstraint<defaulttype::Rigid3Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API HermiteSplineConstraint<defaulttype::Vec3Types>;
+
+} // namespace sofa::component::constraint::projective

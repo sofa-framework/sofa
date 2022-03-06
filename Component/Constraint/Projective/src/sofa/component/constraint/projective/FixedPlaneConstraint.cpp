@@ -19,16 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANECONSTRAINT_CPP
+#include <sofa/component/constraint/projective/FixedPlaneConstraint.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+namespace sofa::component::constraint::projective
+{
 
-#define SOFABOUNDARYCONDITION_VERSION @PROJECT_VERSION@
+using namespace sofa::defaulttype;
+using namespace sofa::helper;
 
-#ifdef SOFA_BUILD_SOFABOUNDARYCONDITION
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+
+int FixedPlaneConstraintClass = core::RegisterObject("Project particles on a given plane")
+        .add< FixedPlaneConstraint<Rigid3Types> >()
+        .add< FixedPlaneConstraint<Vec3Types> >()
+        .add< FixedPlaneConstraint<Vec6Types> >()
+
+        ;
+
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedPlaneConstraint<defaulttype::Rigid3Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedPlaneConstraint<defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedPlaneConstraint<defaulttype::Vec6Types>;
+
+} // namespace sofa::component::constraint::projective

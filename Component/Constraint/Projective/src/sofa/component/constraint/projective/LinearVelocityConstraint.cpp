@@ -19,16 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARVELOCITYCONSTRAINT_CPP
+#include <sofa/component/constraint/projective/LinearVelocityConstraint.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+namespace sofa::component::constraint::projective
+{
 
-#define SOFABOUNDARYCONDITION_VERSION @PROJECT_VERSION@
+using namespace sofa::defaulttype;
+using namespace sofa::helper;
 
-#ifdef SOFA_BUILD_SOFABOUNDARYCONDITION
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+//declaration of the class, for the factory
+int LinearVelocityConstraintClass = core::RegisterObject("apply velocity to given particles")
+        .add< LinearVelocityConstraint<Vec3Types> >()
+        .add< LinearVelocityConstraint<Vec2Types> >()
+        .add< LinearVelocityConstraint<Vec1Types> >()
+        .add< LinearVelocityConstraint<Vec6Types> >()
+        .add< LinearVelocityConstraint<Rigid3Types> >()
+
+        ;
+
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearVelocityConstraint<Vec3Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearVelocityConstraint<Vec2Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearVelocityConstraint<Vec1Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearVelocityConstraint<Vec6Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearVelocityConstraint<Rigid3Types>;
+
+} // namespace sofa::component::constraint::projective

@@ -19,40 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/constraint/config.h>
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_LINEARMOVEMENTCONSTRAINT_CPP
+#include <sofa/component/constraint/projective/LinearMovementConstraint.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/component/constraint/lagrangian/init.h>
-#include <sofa/component/constraint/projective/init.h>
-
-namespace sofa::component::constraint
+namespace sofa::component::constraint::projective
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+template <> SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API
+void LinearMovementConstraint<defaulttype::Rigid3Types>::init()
+{    
+    this->core::behavior::ProjectiveConstraintSet<defaulttype::Rigid3Types>::init();
+
+    x0.resize(0);
+    nextM = prevM = Deriv();
+
+    currentTime = -1.0;
+    finished = false;
 }
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::constraint::lagrangian::init();
-        sofa::component::constraint::projective::init();
 
-        first = false;
-    }
-}
+//declaration of the class, for the factory
+int LinearMovementConstraintClass = core::RegisterObject("translate given particles")
+        .add< LinearMovementConstraint<defaulttype::Vec3Types> >()
+        .add< LinearMovementConstraint<defaulttype::Vec2Types> >()
+        .add< LinearMovementConstraint<defaulttype::Vec1Types> >()
+        .add< LinearMovementConstraint<defaulttype::Vec6Types> >()
+        .add< LinearMovementConstraint<defaulttype::Rigid3Types> >();
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
 
-void init()
-{
-    initExternalModule();
-}
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearMovementConstraint<defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearMovementConstraint<defaulttype::Vec2Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearMovementConstraint<defaulttype::Vec1Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearMovementConstraint<defaulttype::Vec6Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API LinearMovementConstraint<defaulttype::Rigid3Types>;
 
-} // namespace sofa::component::constraint
+} // namespace sofa::component::constraint::projective

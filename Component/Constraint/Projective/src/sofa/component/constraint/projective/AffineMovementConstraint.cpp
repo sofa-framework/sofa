@@ -19,16 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFABOUNDARYCONDITION_AFFINEMOVEMENT_CONSTRAINT_CPP
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/component/constraint/projective/config.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-#define SOFABOUNDARYCONDITION_VERSION @PROJECT_VERSION@
+#include <sofa/component/constraint/projective/AffineMovementConstraint.inl>
 
-#ifdef SOFA_BUILD_SOFABOUNDARYCONDITION
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace sofa::component::constraint::projective
+{
+
+int AffineMovementConstraintRegister = core::RegisterObject("Constraint the movement by a rigid transform.")
+        .add< AffineMovementConstraint<defaulttype::Vec3Types> >()
+        .add< AffineMovementConstraint<defaulttype::Rigid3Types> >()
+        ;
+
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API AffineMovementConstraint<defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API AffineMovementConstraint<defaulttype::Rigid3Types>;
+ 
+} // namespace sofa::component::constraint::projective

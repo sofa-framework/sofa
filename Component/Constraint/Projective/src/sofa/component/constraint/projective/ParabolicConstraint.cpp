@@ -19,16 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARABOLICCONSTRAINT_CPP
+#include <sofa/component/constraint/projective/ParabolicConstraint.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+namespace sofa::component::constraint::projective
+{
 
-#define SOFABOUNDARYCONDITION_VERSION @PROJECT_VERSION@
+int ParabolicConstraintClass = core::RegisterObject("Apply a parabolic trajectory to given points")
+        .add< ParabolicConstraint<defaulttype::Vec3Types> >()
+        .add< ParabolicConstraint<defaulttype::Rigid3Types> >();
 
-#ifdef SOFA_BUILD_SOFABOUNDARYCONDITION
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+template class ParabolicConstraint<defaulttype::Rigid3Types>;
+template class ParabolicConstraint<defaulttype::Vec3Types>;
+
+} // namespace sofa::component::constraint::projective

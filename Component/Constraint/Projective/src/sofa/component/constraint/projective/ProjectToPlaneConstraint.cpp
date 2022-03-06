@@ -19,16 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPlaneConstraint_CPP
+#include <sofa/component/constraint/projective/ProjectToPlaneConstraint.inl>
+#include <sofa/core/ObjectFactory.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+namespace sofa::component::constraint::projective
+{
 
-#define SOFABOUNDARYCONDITION_VERSION @PROJECT_VERSION@
+using namespace sofa::defaulttype;
+using namespace sofa::helper;
 
-#ifdef SOFA_BUILD_SOFABOUNDARYCONDITION
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+
+int ProjectToPlaneConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
+        .add< ProjectToPlaneConstraint<Vec3Types> >()
+        .add< ProjectToPlaneConstraint<Vec2Types> >()
+
+        ;
+
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectToPlaneConstraint<Vec3Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API ProjectToPlaneConstraint<Vec2Types>;
+
+} // namespace sofa::component::constraint::projective
+

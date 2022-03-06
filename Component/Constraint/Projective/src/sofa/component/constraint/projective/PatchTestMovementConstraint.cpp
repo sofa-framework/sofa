@@ -19,16 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PATCHTESTMOVEMENTCONSTRAINT_CPP
+#include <sofa/component/constraint/projective/PatchTestMovementConstraint.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+namespace sofa::component::constraint::projective
+{
 
-#define SOFABOUNDARYCONDITION_VERSION @PROJECT_VERSION@
+//declaration of the class, for the factory
+int PatchTestMovementConstraintClass = core::RegisterObject("bilinear constraint")
+        .add< PatchTestMovementConstraint<defaulttype::Vec3Types> >()
+        .add< PatchTestMovementConstraint<defaulttype::Rigid3Types> >()
 
-#ifdef SOFA_BUILD_SOFABOUNDARYCONDITION
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+        ;
+
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PatchTestMovementConstraint<defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API PatchTestMovementConstraint<defaulttype::Rigid3Types>;
+
+
+} // namespace sofa::component::constraint::projective

@@ -1,11 +1,11 @@
 /******************************************************************************
-*                 SOFA, Simulation Open-Framework Architecture                *
+*                 SOFA, Simulatconstraintn Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
+* the Free Software Foundatconstraintn; either versconstraintn 2.1 of the License, or (at     *
+* your optconstraintn) any later versconstraintn.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
@@ -17,18 +17,35 @@
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
-* Contact information: contact@sofa-framework.org                             *
+* Contact informatconstraintn: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/component/constraint/projective/init.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+namespace sofa::component::constraint::projective
+{
 
-#define SOFABOUNDARYCONDITION_VERSION @PROJECT_VERSION@
+extern "C" {
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+}
 
-#ifdef SOFA_BUILD_SOFABOUNDARYCONDITION
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
+const char* getModuleName()
+{
+    return MODULE_NAME;
+}
+
+void init()
+{
+    initExternalModule();
+}
+
+} // namespace sofa::component::constraint::projective

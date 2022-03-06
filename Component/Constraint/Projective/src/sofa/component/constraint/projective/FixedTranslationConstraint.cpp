@@ -19,16 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDTRANSLATIONCONSTRAINT_CPP
+#include <sofa/component/constraint/projective/FixedTranslationConstraint.inl>
+#include <sofa/core/ObjectFactory.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-#define SOFABOUNDARYCONDITION_VERSION @PROJECT_VERSION@
+namespace sofa::component::constraint::projective
+{
 
-#ifdef SOFA_BUILD_SOFABOUNDARYCONDITION
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFABOUNDARYCONDITION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+using namespace sofa::defaulttype;
+using namespace sofa::helper;
+
+int FixedTranslationConstraintClass = core::RegisterObject("Attach given rigids to their initial positions but they still can have rotations")
+        .add< FixedTranslationConstraint<Rigid3Types> >()
+        .add< FixedTranslationConstraint<Rigid2Types> >()
+        .add< FixedTranslationConstraint<Vec6Types> >()
+
+        ;
+
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedTranslationConstraint<Rigid3Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedTranslationConstraint<Rigid2Types>;
+template class SOFA_COMPONENT_CONSTRAINT_PROJECTIVE_API FixedTranslationConstraint<Vec6Types>;
+
+
+} // namespace sofa::component::constraint::projective
