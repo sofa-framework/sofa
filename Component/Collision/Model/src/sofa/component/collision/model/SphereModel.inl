@@ -28,7 +28,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::ComponentState ;
 
-namespace sofa::component::collision
+namespace sofa::component::collision::model
 {
 
 template<class DataTypes>
@@ -288,4 +288,4 @@ void SphereCollisionModel<DataTypes>::computeBBox(const core::ExecParams* params
     this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::model

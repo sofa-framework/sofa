@@ -25,10 +25,11 @@
 #include <sofa/core/collision/Contact.h>
 #include <sofa/helper/Factory.h>
 
+//TODO: use fwd declaration
+#include <SofaUserInteraction/RayModel.h>
+
 namespace sofa::component::collision
 {
-
-class RayCollisionModel;
 
 class SOFA_SOFAUSERINTERACTION_API BaseRayContact : public core::collision::Contact
 {

@@ -25,11 +25,11 @@
 
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 
+//TODO: use fwd declaration
+#include <SofaBaseCollision/CubeModel.h>
+
 namespace sofa::component::collision
 {
-
-class CubeCollisionModel;
-
 /**
  *  \brief It is a Ray Trace based collision detection algorithm
  *

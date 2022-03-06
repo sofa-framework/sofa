@@ -29,7 +29,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::model
 {
 
 template<class DataTypes>
@@ -240,4 +240,4 @@ extern template class SOFA_COMPONENT_COLLISION_MODEL_API TTriangle<defaulttype::
 extern template class SOFA_COMPONENT_COLLISION_MODEL_API TriangleCollisionModel<defaulttype::Vec3Types>;
 #endif
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::model

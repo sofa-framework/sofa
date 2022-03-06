@@ -30,7 +30,7 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <vector>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::model
 {
 
 using core::topology::BaseMeshTopology;
@@ -643,4 +643,4 @@ template<class DataTypes>
 inline bool TLine<DataTypes>::hasFreePosition() const { return this->model->mstate->read(core::ConstVecCoordId::freePosition())->isSet(); }
 
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::model

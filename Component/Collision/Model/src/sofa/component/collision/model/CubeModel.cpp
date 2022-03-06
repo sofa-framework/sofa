@@ -26,7 +26,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <algorithm>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::model
 {
 
 using namespace sofa::type;
@@ -340,4 +340,4 @@ void CubeCollisionModel::computeBoundingTree(int maxDepth)
     dmsg_info() << "<CubeCollisionModel::computeBoundingTree(" << maxDepth << ")";
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::model

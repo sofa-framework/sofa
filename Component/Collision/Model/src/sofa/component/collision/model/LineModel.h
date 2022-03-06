@@ -27,7 +27,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::model
 {
 
 template<class DataTypes>
@@ -192,4 +192,4 @@ extern template class SOFA_COMPONENT_COLLISION_MODEL_API TLine<sofa::defaulttype
 extern template class SOFA_COMPONENT_COLLISION_MODEL_API LineCollisionModel<sofa::defaulttype::Vec3Types>;
 #endif
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::model

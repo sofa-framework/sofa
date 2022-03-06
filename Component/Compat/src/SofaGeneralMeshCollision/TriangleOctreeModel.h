@@ -20,32 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMeshCollision/config.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <SofaMeshCollision/TriangleModel.h>
-#include <sofa/geometry/Triangle.h>
 
-SOFA_DEPRECATED_HEADER_NOT_REPLACED("v22.06", "v22.12")
+#include <sofa/component/collision/model/TriangleOctreeModel.h>
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/model/TriangleOctreeModel.h")
+
+#include <SofaGeneralMeshCollision/TriangleOctree.h>
 
 namespace sofa::component::collision
 {
+    using TriangleOctreeModel = sofa::component::collision::model::TriangleOctreeModel;
 
-/// this class computes if a Triangle P intersects a ray
-class SOFA_ATTRIBUTE_DEPRECATED("v22.06", "v22.12", "Use sofa::geometry::Triangle::rayIntersection instead.") RayTriangleIntersection
-{
-public:
-    RayTriangleIntersection() = default;
-    ~RayTriangleIntersection() = default;
-
-    bool NewComputation( const sofa::type::Vector3 &p1, const sofa::type::Vector3 &p2, const sofa::type::Vector3 &p3, const sofa::type::Vector3 &origin, const sofa::type::Vector3 &direction,  SReal &t,  SReal &u, SReal &v)
-    {
-        return sofa::geometry::Triangle::rayIntersection(p1, p2, p3, origin, direction, t, u, v);
-    }
-
-    bool RayTriangleIntersection::NewComputation(TTriangle<sofa::defaulttype::Vec3Types>* triP, const sofa::type::Vector3& origin, const sofa::type::Vector3& direction, SReal& t, SReal& u, SReal& v)
-    {
-        return NewComputation(triP->p1(), triP->p2(), triP->p3(), origin, direction, t, u, v);
-    }
-};
-
-} //namespace sofa::component::collision
+} // namespace sofa::component::collision

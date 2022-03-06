@@ -26,7 +26,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/component/collision/model/CubeModel.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::model
 {
 
 int RayCollisionModelClass = core::RegisterObject("Collision model representing a ray in space, e.g. a mouse click")
@@ -197,4 +197,4 @@ void Ray::setOrigin(const type::Vec3& newOrigin)
 }
 
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::model

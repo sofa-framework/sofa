@@ -26,8 +26,12 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <set>
 
-
 namespace sofa::component::collision
+{
+    class BaseRayContact;
+}
+
+namespace sofa::component::collision::model
 {
 
 class RayCollisionModel;
@@ -47,8 +51,6 @@ public:
     void setDirection(const type::Vec3& newDirection);
     void setL(SReal newL);
 };
-
-class BaseRayContact;
 
 class SOFA_COMPONENT_COLLISION_MODEL_API RayCollisionModel : public core::CollisionModel
 {
@@ -117,4 +119,4 @@ inline void Ray::setL(SReal newL)
     model->length[index] = newL;
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::model

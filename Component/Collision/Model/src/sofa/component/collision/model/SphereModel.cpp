@@ -23,7 +23,7 @@
 #include <sofa/component/collision/model/SphereModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::model
 {
 
 using namespace sofa::type;
@@ -54,4 +54,4 @@ template class SOFA_COMPONENT_COLLISION_MODEL_API TSphere<defaulttype::Vec3Types
 template class SOFA_COMPONENT_COLLISION_MODEL_API SphereCollisionModel<defaulttype::Vec3Types>;
 template class SOFA_COMPONENT_COLLISION_MODEL_API SphereCollisionModel<defaulttype::Rigid3Types>;
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::model

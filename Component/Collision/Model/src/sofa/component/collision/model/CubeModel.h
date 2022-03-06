@@ -25,7 +25,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::model
 {
 
 class CubeCollisionModel;
@@ -182,4 +182,4 @@ inline const sofa::type::Vector3& Cube::getConeAxis() const
     return model->elems[index].coneAxis;
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::model

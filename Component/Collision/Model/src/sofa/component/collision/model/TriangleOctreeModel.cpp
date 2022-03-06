@@ -31,7 +31,7 @@ namespace sofa::component::topology
 typedef core::topology::BaseMeshTopology::Triangle	Triangle;
 } // namespace sofa::component::topology
 
-namespace sofa::component::collision
+namespace sofa::component::collision::model
 {
 
 int TriangleOctreeModelClass =	core::RegisterObject ("collision model using a triangular mesh mapped to an Octree").add <	TriangleOctreeModel > ().addAlias ("TriangleOctree");
@@ -138,4 +138,4 @@ void TriangleOctreeModel::buildOctree()
     TriangleOctreeRoot::buildOctree();
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::model

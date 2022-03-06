@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/config.h>
 
-SOFA_DISABLED_HEADER("v21.06", "v21.12", "SofaMeshCollision/LineModel.h")
+#include <sofa/component/collision/model/LineModel.inl>
 
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/model/LineModel.inl")

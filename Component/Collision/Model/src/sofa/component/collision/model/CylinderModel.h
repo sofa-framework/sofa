@@ -26,7 +26,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::model
 {
 
 template<class DataTypes>
@@ -161,4 +161,4 @@ extern template class SOFA_COMPONENT_COLLISION_MODEL_API TCylinder<defaulttype::
 extern template class SOFA_COMPONENT_COLLISION_MODEL_API CylinderCollisionModel<defaulttype::Rigid3Types>;
 #endif
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::model

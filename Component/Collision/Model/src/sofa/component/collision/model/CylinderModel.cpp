@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_COLLISION_CYLINDERCOLLISIONMODEL_CPP
 #include <sofa/component/collision/model/CylinderModel.inl>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::model
 {
 
 using namespace sofa::defaulttype;
@@ -36,4 +36,4 @@ int RigidCylinderCollisionModelClass = core::RegisterObject("Collision model whi
 template class SOFA_COMPONENT_COLLISION_MODEL_API TCylinder<defaulttype::Rigid3Types>;
 template class SOFA_COMPONENT_COLLISION_MODEL_API CylinderCollisionModel<defaulttype::Rigid3Types>;
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::model

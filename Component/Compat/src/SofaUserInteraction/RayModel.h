@@ -20,7 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/collision/model/config.h>
 
-#include <sofa/component/collision/model/CubeModel.h>
+#include <sofa/component/collision/model/RayModel.h>
 
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/model/RayModel.h")
+
+namespace sofa::component::collision
+{
+    using Ray = sofa::component::collision::model::Ray;
+    using RayCollisionModel = sofa::component::collision::model::RayCollisionModel;
+
+} // namespace sofa::component::collision

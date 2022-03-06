@@ -27,7 +27,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::model
 {
 
 template<class DataTypes>
@@ -215,4 +215,4 @@ extern template class SOFA_COMPONENT_COLLISION_MODEL_API SphereCollisionModel<de
 extern template class SOFA_COMPONENT_COLLISION_MODEL_API SphereCollisionModel<defaulttype::Rigid3Types>;
 #endif
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::model

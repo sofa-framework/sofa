@@ -23,7 +23,7 @@
 #include <sofa/component/collision/model/TriangleModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::model
 {
 
 int TriangleCollisionModelClass = core::RegisterObject("collision model using a triangular mesh, as described in BaseMeshTopology")
@@ -34,4 +34,4 @@ template class SOFA_COMPONENT_COLLISION_MODEL_API TTriangle<defaulttype::Vec3Typ
 template class SOFA_COMPONENT_COLLISION_MODEL_API TriangleCollisionModel<defaulttype::Vec3Types>;
 
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::model

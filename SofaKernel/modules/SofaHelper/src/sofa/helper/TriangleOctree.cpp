@@ -19,13 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-<<<<<<< HEAD:SofaKernel/modules/SofaHelper/src/sofa/helper/TriangleOctree.cpp
 #include <sofa/helper/TriangleOctree.h>
-=======
-#include <sofa/component/collision/model/TriangleModel.inl>
-#include <sofa/component/collision/model/TriangleOctree.h>
-#include <sofa/core/visual/VisualParams.h>
->>>>>>> 0320ba3e13 (create module collision and sub model):Component/Collision/Model/src/sofa/component/collision/model/TriangleOctree.cpp
 
 #include <sofa/helper/visual/DrawTool.h>
 

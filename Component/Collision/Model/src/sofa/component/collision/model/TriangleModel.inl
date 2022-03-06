@@ -30,7 +30,7 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <vector>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::model
 {
 
 template<class DataTypes>
@@ -535,4 +535,4 @@ inline typename DataTypes::Deriv TriangleCollisionModel<DataTypes>::velocity(Ind
                                                                                                 m_mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(m_triangles))[index][2]])/((Real)(3.0)); }
 
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::model

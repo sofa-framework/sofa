@@ -20,7 +20,21 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/collision/model/config.h>
 
 #include <sofa/component/collision/model/SphereModel.h>
 
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/model/SphereModel.h")
+
+namespace sofa::component::collision
+{
+    template<class DataTypes>
+    using TSphere = sofa::component::collision::model::TSphere<DataTypes>;
+    template<class DataTypes>
+    using SphereCollisionModel = sofa::component::collision::model::SphereCollisionModel<DataTypes>;
+
+    using Sphere = TSphere<sofa::defaulttype::Vec3Types>;
+    using RigidSphere = TSphere<sofa::defaulttype::Rigid3Types>;
+    using RigidSphereModel = SphereCollisionModel<sofa::defaulttype::Rigid3Types>;
+
+
+} // namespace sofa::component::collision

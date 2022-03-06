@@ -30,7 +30,7 @@
 #include <sofa/component/collision/model/TriangleModel.h>
 
 
-namespace sofa::component::collision
+namespace sofa::component::collision::model
 {
 
 class SOFA_COMPONENT_COLLISION_MODEL_API TriangleOctreeModel : public  TriangleCollisionModel<sofa::defaulttype::Vec3Types>, public helper::TriangleOctreeRoot
@@ -50,4 +50,4 @@ public:
     void buildOctree ();
 };
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::model

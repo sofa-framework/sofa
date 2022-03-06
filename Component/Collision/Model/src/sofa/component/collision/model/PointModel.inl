@@ -29,7 +29,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/component/collision/model/CubeModel.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::model
 {
 
 template<class DataTypes>
@@ -388,4 +388,4 @@ void PointCollisionModel<DataTypes>::draw(const core::visual::VisualParams* vpar
 }
 
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::model

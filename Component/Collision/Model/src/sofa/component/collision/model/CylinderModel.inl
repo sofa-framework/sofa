@@ -25,7 +25,7 @@
 #include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/helper/visual/DrawTool.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::model
 {
 
 using sofa::core::objectmodel::ComponentState;
@@ -306,4 +306,4 @@ Data< typename CylinderCollisionModel<DataTypes>::VecAxisCoord > & CylinderColli
     return d_cylinder_local_axes;
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::model

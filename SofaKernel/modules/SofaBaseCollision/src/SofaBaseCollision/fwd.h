@@ -20,13 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseCollision/config.h>
-namespace sofa::component::collision
-{
-template<class DataTypes>
-class SphereCollisionModel;
 
-template<class TDataTypes>
-class TSphere;
+#include <sofa/config.h>
 
-}
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaBaseCollision/CubeModel.h>

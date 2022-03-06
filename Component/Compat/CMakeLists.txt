@@ -38,6 +38,7 @@ include(Sofa.Component.Constraint.Lagrangian.Solver.cmake)
 include(Sofa.Component.Constraint.Projective.cmake)
 include(Sofa.Component.AnimationLoop.cmake)
 include(Sofa.Component.MechanicalLoad.cmake)
+include(Sofa.Component.Collision.Model.cmake)
 
 set(SOURCE_FILES
     ${SOFACOMPONENTCOMPATSRC_ROOT}/init.cpp

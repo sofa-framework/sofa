@@ -27,7 +27,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::model
 {
 
 template<class DataTypes>
@@ -182,4 +182,4 @@ inline bool TPoint<DataTypes>::hasFreePosition() const { return this->model->mst
 extern template class SOFA_COMPONENT_COLLISION_MODEL_API PointCollisionModel<defaulttype::Vec3Types>;
 #endif
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::model

@@ -22,6 +22,7 @@
 #include <SofaGeneralMeshCollision/RayTraceNarrowPhase.h>
 #include <sofa/core/ObjectFactory.h>
 #include <SofaBaseCollision/CubeModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
 #include <SofaGeneralMeshCollision/TriangleOctreeModel.h>
 #include <sofa/core/visual/VisualParams.h>
 

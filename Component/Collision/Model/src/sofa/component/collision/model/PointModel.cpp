@@ -23,7 +23,7 @@
 #include <sofa/component/collision/model/PointModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::model
 {
 
 int PointCollisionModelClass = core::RegisterObject("Collision model which represents a set of points")
@@ -32,4 +32,4 @@ int PointCollisionModelClass = core::RegisterObject("Collision model which repre
 
 template class SOFA_COMPONENT_COLLISION_MODEL_API PointCollisionModel<defaulttype::Vec3Types>;
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::model
