@@ -961,8 +961,19 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "TubularMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.Linear") },
     { "VoidMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.Linear") },
 
-    // SofaConstraint was deprecated in #2635 and ...
+    // SofaConstraint was deprecated in #2635, #2790 and ...
     { "MappingGeometricStiffnessForceField", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Mapping.MappedMatrix") },
+    { "BilateralInteractionConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian") },
+    { "GenericConstraintCorrection", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian") },
+    { "GenericConstraintSolver", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian") },
+    { "LCPConstraintSolver", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian") },
+    { "LinearSolverConstraintCorrection", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian") },
+    { "PrecomputedConstraintCorrection", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian") },
+    { "SlidingConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian") },
+    { "StopperConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian") },
+    { "UncoupledConstraintCorrection", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian") },
+    { "UniformConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian") },
+    { "UnilateralInteractionConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian") },
 
     // SofaGeneralAnimationLoop was deprecated in #2635 and ...
     { "MechanicalMatrixMapper", CreatableMoved("v22.06", "SofaGeneralAnimationLoop", "Sofa.Component.Mapping.MappedMatrix") },
@@ -1024,6 +1035,32 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
 
     // SofaGeneralObjectInteraction was deprecated in #2759
     { "RepulsiveSpringForceField", CreatableMoved("v22.06", "SofaGeneralObjectInteraction", "Sofa.Component.SolidMechanics.Spring") },
+    
+    // SofaGeneralObjectInteraction was deprecated in #2790 and ...
+    { "AttachConstraint", CreatableMoved("v22.06", "SofaGeneralObjectInteraction", "Sofa.Component.Constraint.Projective") },
+
+    // SofaBoundaryCondition was deprecated in #2790 and ...
+    { "AffineMovementConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "FixedConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "FixedPlaneConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "FixedRotationConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "FixedTranslationConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "HermiteSplineConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "LinearMovementConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "LinearVelocityConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "OscillatorConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "ParabolicConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "PartialFixedConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "PartialLinearMovementConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "PatchTestMovementConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "PointConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "PositionBasedDynamicsConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "ProjectDirectionConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "ProjectToLineConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "ProjectToPlaneConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "ProjectToPointConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "AttachConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
+    { "SkeletalMotionConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
 
 };
 
