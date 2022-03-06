@@ -1,0 +1,66 @@
+cmake_minimum_required(VERSION 3.12)
+project(Sofa.Component.Constraint.Lagrangian LANGUAGES CXX)
+
+set(SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR "src/sofa/component/constraint/lagrangian")
+
+set(HEADER_FILES
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/config.h.in
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/BilateralConstraintResolution.h
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/BilateralInteractionConstraint.h
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/BilateralInteractionConstraint.inl
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/ConstraintSolverImpl.h
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/ConstraintStoreLambdaVisitor.h
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/GenericConstraintCorrection.h
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/GenericConstraintSolver.h
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/LCPConstraintSolver.h
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/LinearSolverConstraintCorrection.h
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/LinearSolverConstraintCorrection.inl
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/PrecomputedConstraintCorrection.h
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/PrecomputedConstraintCorrection.inl
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/SlidingConstraint.h
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/SlidingConstraint.inl
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/StopperConstraint.h
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/StopperConstraint.inl
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/UncoupledConstraintCorrection.h
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/UncoupledConstraintCorrection.inl
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/UniformConstraint.h
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/UniformConstraint.inl
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/UnilateralInteractionConstraint.h
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/UnilateralInteractionConstraint.inl
+)
+
+set(SOURCE_FILES
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/init.cpp
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/BilateralInteractionConstraint.cpp
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/ConstraintSolverImpl.cpp
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/ConstraintStoreLambdaVisitor.cpp
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/GenericConstraintCorrection.cpp
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/GenericConstraintSolver.cpp
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/LCPConstraintSolver.cpp
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/LinearSolverConstraintCorrection.cpp
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/PrecomputedConstraintCorrection.cpp
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/SlidingConstraint.cpp
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/StopperConstraint.cpp
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/UncoupledConstraintCorrection.cpp
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/UniformConstraint.cpp
+    ${SOFACOMPONENTCONSTRAINTLAGRANGIAN_SOURCE_DIR}/UnilateralInteractionConstraint.cpp
+)
+
+sofa_find_package(Sofa.SimulationCore REQUIRED)
+sofa_find_package(Sofa.Component.Mass REQUIRED) # UncoupledCC needs UniformMass
+sofa_find_package(Sofa.Component.LinearSolver.Iterative REQUIRED) # PrecomputedCC needs CGLinearSolver
+sofa_find_package(Sofa.Component.ODESolver.Backward REQUIRED) # PrecomputedCC needs EulerSolver
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${WRAPPER_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.SimulationCore)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Mass)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.LinearSolver.Iterative)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.ODESolver.Backward)
+
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+)
