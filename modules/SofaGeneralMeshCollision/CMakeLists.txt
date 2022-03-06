@@ -13,23 +13,15 @@ set(SOURCE_FILES
     )
 
 list(APPEND HEADER_FILES
-    ${SOFAGENERALMESHCOLLISION_SRC}/DirectSAP.h
-    ${SOFAGENERALMESHCOLLISION_SRC}/DirectSAPNarrowPhase.h
-    ${SOFAGENERALMESHCOLLISION_SRC}/DSAPBox.h
-    ${SOFAGENERALMESHCOLLISION_SRC}/IncrSAP.h
+
     ${SOFAGENERALMESHCOLLISION_SRC}/MeshDiscreteIntersection.h
     ${SOFAGENERALMESHCOLLISION_SRC}/MeshDiscreteIntersection.inl
     ${SOFAGENERALMESHCOLLISION_SRC}/MeshMinProximityIntersection.h
-    ${SOFAGENERALMESHCOLLISION_SRC}/RayTraceNarrowPhase.h
     )
 list(APPEND SOURCE_FILES
-    ${SOFAGENERALMESHCOLLISION_SRC}/DirectSAP.cpp
-    ${SOFAGENERALMESHCOLLISION_SRC}/DirectSAPNarrowPhase.cpp
-    ${SOFAGENERALMESHCOLLISION_SRC}/DSAPBox.cpp
-    ${SOFAGENERALMESHCOLLISION_SRC}/IncrSAP.cpp
+
     ${SOFAGENERALMESHCOLLISION_SRC}/MeshDiscreteIntersection.cpp
     ${SOFAGENERALMESHCOLLISION_SRC}/MeshMinProximityIntersection.cpp
-    ${SOFAGENERALMESHCOLLISION_SRC}/RayTraceNarrowPhase.cpp
     )
 
 sofa_find_package(SofaBase REQUIRED) # SofaBaseCollision
@@ -40,11 +32,13 @@ sofa_find_package(SofaRigid REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaObjectInteraction SofaRigid SofaBaseCollision SofaMeshCollision)
 
-message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Collision.Model instead.")
+message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Collision.Model and Sofa.Component.Collision.Detection.Algorithm instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.Collision.Model REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Detection.Algorithm REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Model)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Detection.Algorithm)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

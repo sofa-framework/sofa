@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaUserInteraction/initSofaUserInteraction.h>
 
+#include <sofa/helper/system/PluginManager.h>
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
@@ -33,6 +34,11 @@ void initSofaUserInteraction()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaUserInteraction") << "SofaUserInteraction is being deprecated;. It will be removed at v23.06. You may use Sofa.Component.Collision.Model and Sofa.Component.Collision.Detection.Algorithm instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Model");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Detection.Algorithm");
+
         first = false;
     }
 }

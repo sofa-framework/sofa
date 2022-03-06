@@ -19,69 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseCollision/initSofaBaseCollision.h>
+#include <sofa/component/collision/detection/init.h>
 
-#include <sofa/helper/system/PluginManager.h>
+#include <sofa/component/collision/detection/algorithm/init.h>
 
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
-
-namespace sofa::component
+namespace sofa::component::collision::detection
 {
 
-void initSofaBaseCollision()
+extern "C" {
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+}
+
+void initExternalModule()
 {
     static bool first = true;
     if (first)
     {        
-        // msg_deprecated("SofaBaseCollision") << "SofaBaseCollision is being deprecated;. It will be removed at v23.06. You may use Sofa.Component.Collision.Model and Sofa.Component.Collision.Detection.Algorithm instead.";
-
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Model");
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Detection.Algorithm");
+        // force dependencies at compile-time
+        sofa::component::collision::detection::algorithm::init();
 
         first = false;
     }
 }
 
-extern "C" {
-    SOFA_SOFABASECOLLISION_API void initExternalModule();
-    SOFA_SOFABASECOLLISION_API const char* getModuleName();
-    SOFA_SOFABASECOLLISION_API const char* getModuleVersion();
-    SOFA_SOFABASECOLLISION_API const char* getModuleLicense();
-    SOFA_SOFABASECOLLISION_API const char* getModuleDescription();
-    SOFA_SOFABASECOLLISION_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{
-    initSofaBaseCollision();
-}
-
 const char* getModuleName()
 {
-    return sofa_tostring(SOFA_TARGET);
+    return MODULE_NAME;
 }
 
-const char* getModuleVersion()
+void init()
 {
-    return sofa_tostring(SOFABASECOLLISION_VERSION);
+    initExternalModule();
 }
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This plugin contains contains features about Base Collision.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-
-} // namespace sofa::component
+} // namespace sofa::component::collision::detection

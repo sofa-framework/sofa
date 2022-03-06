@@ -19,18 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/component/collision/detection/algorithm/DSAPBox.h>
+#include <sofa/component/collision/detection/algorithm/EndPoint.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
-
-#ifdef SOFA_BUILD_SOFA_COMPONENT_COLLISION
-#  define SOFA_COMPONENT_COLLISION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_COMPONENT_COLLISION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::algorithm
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-} // namespace sofa::component::collision
+
+void DSAPBox::update(int axis, double alarmDist)
+{
+    min->value = (cube.minVect())[axis] - alarmDist;
+    max->value = (cube.maxVect())[axis] + alarmDist;
+}
+
+double DSAPBox::squaredDistance(const DSAPBox &other) const
+{
+    double dist2 = 0;
+
+    for (int axis = 0; axis < 3; ++axis)
+    {
+        dist2 += squaredDistance(other, axis);
+    }
+
+    return dist2;
+}
+
+double DSAPBox::squaredDistance(const DSAPBox &other, int axis) const
+{
+    const type::Vector3 &min0 = this->cube.minVect();
+    const type::Vector3 &max0 = this->cube.maxVect();
+    const type::Vector3 &min1 = other.cube.minVect();
+    const type::Vector3 &max1 = other.cube.maxVect();
+
+    if (min0[axis] > max1[axis])
+    {
+        return std::pow(min0[axis] - max1[axis], 2);
+    }
+
+    if (min1[axis] > max0[axis])
+    {
+        return std::pow(min1[axis] - max0[axis], 2);
+    }
+
+    return 0;
+}
+}

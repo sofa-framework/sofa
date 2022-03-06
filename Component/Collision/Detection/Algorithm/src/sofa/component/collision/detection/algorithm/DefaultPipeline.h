@@ -20,17 +20,41 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/component/collision/detection/algorithm/config.h>
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/simulation/PipelineImpl.h>
 
-#ifdef SOFA_BUILD_SOFA_COMPONENT_COLLISION
-#  define SOFA_COMPONENT_COLLISION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_COMPONENT_COLLISION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::algorithm
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-} // namespace sofa::component::collision
+
+class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API DefaultPipeline : public sofa::simulation::PipelineImpl
+{
+public:
+    SOFA_CLASS(DefaultPipeline,sofa::simulation::PipelineImpl);
+
+    Data<bool> d_doPrintInfoMessage;
+    Data<bool> d_doDebugDraw;
+    Data<int>  d_depth;
+protected:
+    DefaultPipeline();
+public:
+    void init() override;
+
+    /// get the set of response available with the current collision pipeline
+    std::set< std::string > getResponseList() const override;
+protected:
+    // -- Pipeline interface
+    /// Remove collision response from last step
+    void doCollisionReset() override;
+    /// Detect new collisions. Note that this step must not modify the simulation graph
+    void doCollisionDetection(const sofa::type::vector<core::CollisionModel*>& collisionModels) override;
+    /// Add collision response in the simulation graph
+    void doCollisionResponse() override;
+
+    virtual void checkDataValues() ;
+
+public:
+    static const int defaultDepthValue;
+};
+
+} // namespace sofa::component::collision::detection::algorithm

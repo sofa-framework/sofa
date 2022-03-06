@@ -21,16 +21,46 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/component/collision/detection/algorithm/config.h>
 
-#ifdef SOFA_BUILD_SOFA_COMPONENT_COLLISION
-#  define SOFA_COMPONENT_COLLISION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_COMPONENT_COLLISION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/core/collision/NarrowPhaseDetection.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::model
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-} // namespace sofa::component::collision
+    class CubeCollisionModel;
+}
+
+namespace sofa::component::collision::detection::algorithm
+{
+/**
+ *  \brief It is a Ray Trace based collision detection algorithm
+ *
+ *   For each point in one object, we trace a ray following the oposite of the point's normal
+ *   up to find a triangle in the other object. Both triangles are tested to evaluate if they are in
+ *   colliding state. It must be used with a TriangleOctreeModel,as an octree is used to traverse the object.
+ */
+class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API RayTraceNarrowPhase : public core::collision::NarrowPhaseDetection
+{
+public:
+    SOFA_CLASS(RayTraceNarrowPhase, core::collision::NarrowPhaseDetection);
+
+private:
+    Data < bool > bDraw; ///< enable/disable display of results
+
+protected:
+    RayTraceNarrowPhase();
+
+public:
+    void addCollisionPair (const std::pair < core::CollisionModel *,
+            core::CollisionModel * >&cmPair) override;
+
+    void findPairsVolume (model::CubeCollisionModel * cm1, model::CubeCollisionModel* cm2);
+
+    void draw (const core::visual::VisualParams* vparams) override;
+    void setDraw (bool val)
+    {
+        bDraw.setValue (val);
+    }
+};
+
+}

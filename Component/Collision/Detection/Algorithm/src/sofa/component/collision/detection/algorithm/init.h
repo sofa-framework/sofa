@@ -21,16 +21,9 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/component/collision/detection/algorithm/config.h>
 
-#ifdef SOFA_BUILD_SOFA_COMPONENT_COLLISION
-#  define SOFA_COMPONENT_COLLISION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_COMPONENT_COLLISION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::algorithm
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-} // namespace sofa::component::collision
+    SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API void init();
+} // namespace sofa::component::collision::detection::algorithm

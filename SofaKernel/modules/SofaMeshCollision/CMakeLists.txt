@@ -11,8 +11,6 @@ set(HEADER_FILES
     ${SOFAMESHCOLLISION_SRC}/BarycentricContactMapper.inl
     ${SOFAMESHCOLLISION_SRC}/BarycentricPenalityContact.h
     ${SOFAMESHCOLLISION_SRC}/BarycentricPenalityContact.inl
-    ${SOFAMESHCOLLISION_SRC}/CollisionPM.h
-    ${SOFAMESHCOLLISION_SRC}/EndPoint.h
     ${SOFAMESHCOLLISION_SRC}/IdentityContactMapper.h
     ${SOFAMESHCOLLISION_SRC}/IdentityContactMapper.inl
     ${SOFAMESHCOLLISION_SRC}/MeshNewProximityIntersection.h

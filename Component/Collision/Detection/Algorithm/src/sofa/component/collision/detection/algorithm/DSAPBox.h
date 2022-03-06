@@ -21,16 +21,42 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/component/collision/detection/algorithm/config.h>
 
-#ifdef SOFA_BUILD_SOFA_COMPONENT_COLLISION
-#  define SOFA_COMPONENT_COLLISION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_COMPONENT_COLLISION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/component/collision/model/CubeModel.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::algorithm
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-} // namespace sofa::component::collision
+
+class EndPoint;
+
+/**
+ * SAPBox is a simple bounding box. It contains a Cube which contains only one final
+ * CollisionElement and pointers to min and max EndPoints. min and max end points
+ * are respectively min and max coordinates of the cube on a coordinate axis.
+ * min and max are updated with the method update(int i), so min and max have
+ * min/max values on the i-th axis after the method update(int i).
+ */
+class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API DSAPBox
+{
+public:
+    explicit DSAPBox(const model::Cube &c, EndPoint *mi = nullptr, EndPoint *ma = nullptr) : cube(c), min(mi), max(ma)
+    {}
+
+    void update(int axis, double alarmDist);
+
+    [[nodiscard]]
+    double squaredDistance(const DSAPBox &other) const;
+
+    /// Compute the squared distance from this to other on a specific axis
+    [[nodiscard]]
+    double squaredDistance(const DSAPBox &other, int axis) const;
+
+    void show() const;
+
+    model::Cube cube;
+    EndPoint *min{nullptr};
+    EndPoint *max{nullptr};
+};
+
+}

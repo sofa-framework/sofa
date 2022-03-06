@@ -19,18 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
 
-#include <sofa/config.h>
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/component/collision/detection/algorithm/RayTraceDetection.h>
 
-#ifdef SOFA_BUILD_SOFA_COMPONENT_COLLISION
-#  define SOFA_COMPONENT_COLLISION_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_COMPONENT_COLLISION_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/core/ObjectFactory.h>
+#include <numeric>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::algorithm
 {
-	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-} // namespace sofa::component::collision
+
+int RayTraceDetectionClass = core::RegisterObject(
+        "Collision detection using TriangleOctreeModel").add<RayTraceDetection>();
+
+
+void RayTraceDetection::init()
+{
+    const std::string broadPhaseComponentsString = sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::collision::BroadPhaseDetection>();
+    const std::string narrowPhaseComponentsString = sofa::core::ObjectFactory::getInstance()->listClassesDerivedFrom<sofa::core::collision::NarrowPhaseDetection>();
+
+    msg_deprecated() << "As a replacement, use a BroadPhase component, such as [" << broadPhaseComponentsString
+                     << "]," << msgendl
+                     << "  AND a NarrowPhase component, such as [" << narrowPhaseComponentsString << "]." << msgendl
+                     << "  " << BruteForceBroadPhase::GetClass()->className << " and " << RayTraceNarrowPhase::GetClass()->className << " have been automatically added to your scene for backward compatibility.";
+}
+
+} // namespace sofa::component::collision::detection::algorithm

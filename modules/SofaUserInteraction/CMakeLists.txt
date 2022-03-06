@@ -32,7 +32,6 @@ list(APPEND HEADER_FILES
     ${SOFAUSERINTERACTION_SRC}/RayDiscreteIntersection.h
     ${SOFAUSERINTERACTION_SRC}/RayDiscreteIntersection.inl
     ${SOFAUSERINTERACTION_SRC}/RayNewProximityIntersection.h
-    ${SOFAUSERINTERACTION_SRC}/RayTraceDetection.h
     ${SOFAUSERINTERACTION_SRC}/SleepController.h
     ${SOFAUSERINTERACTION_SRC}/TopologicalChangeManager.h
     ${SOFAUSERINTERACTION_SRC}/RemovePrimitivePerformer.h
@@ -55,7 +54,6 @@ list(APPEND SOURCE_FILES
     ${SOFAUSERINTERACTION_SRC}/RayContact.cpp
     ${SOFAUSERINTERACTION_SRC}/RayDiscreteIntersection.cpp
     ${SOFAUSERINTERACTION_SRC}/RayNewProximityIntersection.cpp
-    ${SOFAUSERINTERACTION_SRC}/RayTraceDetection.cpp
     ${SOFAUSERINTERACTION_SRC}/SleepController.cpp
     ${SOFAUSERINTERACTION_SRC}/TopologicalChangeManager.cpp
     ${SOFAUSERINTERACTION_SRC}/RemovePrimitivePerformer.cpp
@@ -74,11 +72,13 @@ sofa_find_package(SofaGraphComponent REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaGeneralMeshCollision SofaGeneralVisual SofaTopologyMapping SofaDeformable SofaBoundaryCondition SofaGraphComponent)
 
-message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Collision.Model instead.")
+message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Collision.Model and Sofa.Component.Collision.Detection.Algorithm instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.Collision.Model REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Detection.Algorithm REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Model)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Detection.Algorithm)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
