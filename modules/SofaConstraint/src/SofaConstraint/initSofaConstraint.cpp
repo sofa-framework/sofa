@@ -34,9 +34,10 @@ void initSofaConstraint()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaConstraint") << "SofaConstraint is deprecated. It will be removed at v23.06. You may use Sofa.Component.Mapping.MappedMatrix instead.";
+        // msg_deprecated("SofaConstraint") << "SofaConstraint is deprecated. It will be removed at v23.06. You may use Sofa.Component.Mapping.MappedMatrix and Sofa.Component.Constraint.Lagrangian instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Mapping.MappedMatrix");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Constraint.Lagrangian");
 
         first = false;
     }
