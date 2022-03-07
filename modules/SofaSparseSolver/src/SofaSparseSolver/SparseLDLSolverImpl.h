@@ -159,9 +159,11 @@ public:
 protected :
 
     Data<bool> d_useSymbolicDecomposition ;
+    Data<bool> d_applyPermutation ;
 
     SparseLDLSolverImpl() : Inherit() 
     , d_useSymbolicDecomposition(initData(&d_useSymbolicDecomposition, true ,"useSymbolicDecomposition", "If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step."))
+    , d_applyPermutation(initData(&d_applyPermutation, true ,"applyPermutation", "If true the solver will apply a fill-reducing permutation to the matrix of the system."))
      {}
 
     template<class VecInt,class VecReal>
@@ -255,7 +257,19 @@ protected :
         // We give NULL and NULL to use the default option (see doc of metis for details) !
         // If you have the error "SparseLDLSolver failure to factorize, D(k,k) is zero" that probably means that you use the previsou version of metis.
         // In this case you have to download and install the last version from : www.cs.umn.edu/~metis‎
-        METIS_NodeND(&n, xadj.data(), adj.data(), NULL, NULL, perm,invperm);
+        if( d_applyPermutation.getValue() )
+        {
+            METIS_NodeND(&n, xadj.data(), adj.data(), NULL, NULL, perm,invperm);
+        }
+        else 
+        { // if the boolean is false, we store the identity
+            for(int j=0; j<n ;++j)
+            {
+                perm[j] = j ;
+                invperm[j] = j ;
+            }
+        }
+
     }
 
     void LDL_symbolic (int n,int * M_colptr,int * M_rowind,int * colptr,int * perm,int * invperm,int * Parent) {
