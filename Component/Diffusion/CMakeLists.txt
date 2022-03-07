@@ -4,7 +4,7 @@ project(Sofa.Component.Diffusion LANGUAGES CXX)
 set(SOFACOMPONENTDIFFUSION_SOURCE_DIR "src/sofa/component/diffusion")
 
 set(HEADER_FILES
-	${SOFACOMPONENTDIFFUSION_SOURCE_DIR}/config.h.in
+    ${SOFACOMPONENTDIFFUSION_SOURCE_DIR}/config.h.in
     ${SOFACOMPONENTDIFFUSION_SOURCE_DIR}/init.h
     ${SOFACOMPONENTDIFFUSION_SOURCE_DIR}/TetrahedronDiffusionFEMForceField.h
     ${SOFACOMPONENTDIFFUSION_SOURCE_DIR}/TetrahedronDiffusionFEMForceField.inl
