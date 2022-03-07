@@ -22,7 +22,6 @@
 #include <SofaMeshCollision/TriangleModel.inl>
 #include <SofaGeneralMeshCollision/TriangleOctree.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaMeshCollision/RayTriangleIntersection.h>
 
 namespace sofa::component::collision
 {
@@ -113,14 +112,12 @@ int TriangleOctree::nearestTriangle (int minIndex,
         const type::Vector3 & origin,
         const type::Vector3 & direction, traceResult &result)
 {
-    static RayTriangleIntersection intersectionSolver;
     const TriangleOctreeRoot::VecCoord& pos = *tm->octreePos;
     //Triangle t1 (tm, minIndex);
     TriangleOctreeRoot::Tri t1 = (*tm->octreeTriangles)[minIndex];
     double minDist;
     SReal t, u, v;
-    //if (intersectionSolver.NewComputation (&t1, origin, direction, t, u, v))
-    if (intersectionSolver.NewComputation (pos[t1[0]], pos[t1[1]], pos[t1[2]], origin, direction, t, u, v))
+    if (sofa::geometry::Triangle::rayIntersection(pos[t1[0]], pos[t1[1]], pos[t1[2]], origin, direction, t, u, v))
     {
         result.u = u;
         result.v = v;
@@ -136,8 +133,7 @@ int TriangleOctree::nearestTriangle (int minIndex,
     {
         //Triangle t2 (tm, objects[i]);
         TriangleOctreeRoot::Tri t2 = (*tm->octreeTriangles)[objects[i]];
-        if (!intersectionSolver.
-            NewComputation (pos[t2[0]], pos[t2[1]], pos[t2[2]], origin, direction, t, u, v))
+        if (!sofa::geometry::Triangle::rayIntersection(pos[t2[0]], pos[t2[1]], pos[t2[2]], origin, direction, t, u, v))
             continue;
 
         if (t < minDist)
@@ -479,14 +475,12 @@ void TriangleOctree::allTriangles (const type::Vector3 & origin,
         const type::Vector3 & direction,
         type::vector<traceResult>& results)
 {
-    static RayTriangleIntersection intersectionSolver;
     const TriangleOctreeRoot::VecCoord& pos = *tm->octreePos;
     SReal t, u, v;
     for (unsigned int i = 0; i < objects.size (); i++)
     {
         TriangleOctreeRoot::Tri t2 = (*tm->octreeTriangles)[objects[i]];
-        if (intersectionSolver.
-            NewComputation (pos[t2[0]], pos[t2[1]], pos[t2[2]], origin, direction, t, u, v))
+        if (sofa::geometry::Triangle::rayIntersection(pos[t2[0]], pos[t2[1]], pos[t2[2]], origin, direction, t, u, v))
         {
             traceResult result;
             result.u = u;
