@@ -90,8 +90,120 @@ struct Triangle
         constexpr Node n{};
         static_assert(std::distance(std::begin(n), std::end(n)) == 3, "Triangle normal can only be computed in 3 dimensions.");
 
-        return (n1 - n0).cross(n2 - n0);
+        // Vec gives access to cross() and operator-
+        if constexpr (std::is_same_v < Node, sofa::type::Vec<3, T> >)
+        {
+            const auto a = n1 - n0;
+            const auto b = n2 - n0;
+
+            return a.cross(b);
+        }
+        else
+        {
+            Node a{}, b{};
+            std::transform(n1.cbegin(), n1.cend(), n0.cbegin(), a.begin(), std::minus<T>());
+            std::transform(n2.cbegin(), n2.cend(), n0.cbegin(), b.begin(), std::minus<T>());
+
+            return Node{ a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2] , a[0] * b[1] - a[1] * b[0] };
+        }
+
     }
+
+    /**
+    * @brief	Test if a ray intersects a triangle, and gives barycentric coordinates of the intersection if applicable
+    * @remark   Implementation for 3D only
+    * @tparam   Node iterable container (or sofa::type::Vec with cross() and norm())
+    * @tparam   T scalar
+    * @param	n0,n1,n2 nodes of the triangle
+    * @param	t, u, v barycentric coefficients of the potential intersection in the triangle
+    * @return	either if the given ray intersects the given triangle or not
+    */
+    template<typename Node,
+        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+        typename = std::enable_if_t<std::is_scalar_v<T>>
+    >
+    [[nodiscard]]
+    static constexpr bool rayIntersection(const Node& n0, const Node& n1, const Node& n2, const Node& origin, const Node& direction, T& t, T& u, T& v)
+    {
+        constexpr Node n{};
+        static_assert(std::distance(std::begin(n), std::end(n)) == 3, "Ray-Triangle is only computed in 3 dimensions.");
+        static_assert(std::is_same_v<Node,sofa::type::Vec<3, T> >, "rayIntersection is only implemented for sofa::type::Vec3.");
+
+        constexpr T epsilon = std::numeric_limits<T>::epsilon();
+        constexpr T zero = static_cast<T>(0);
+        constexpr T one = static_cast<T>(1);
+
+        t = 0; u = 0; v = 0;
+
+        const auto e0 = n1 - n0;
+        const auto e1 = n2 - n0;
+
+        sofa::type::Vector3 tvec, pvec, qvec;
+        T det, inv_det;
+
+        pvec = sofa::type::cross(direction, e1);
+
+        det = sofa::type::dot(e0, pvec);
+        if constexpr(std::is_floating_point_v<T>)
+        {
+            inv_det = 1.0 / det;
+            if (std::isnan(det))
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if (std::abs(det) <= epsilon)
+            {
+                return false;
+            }
+            inv_det = 1.0 / det;
+        }
+
+        tvec = origin - n0;
+
+        u = sofa::type::dot(tvec, pvec) * inv_det;
+        if (u < zero - epsilon || u > one + epsilon)
+            return false;
+
+        qvec = sofa::type::cross(tvec, e0);
+
+        v = sofa::type::dot(direction, qvec) * inv_det;
+        if (v < zero - epsilon|| (u + v) > one + epsilon)
+            return false;
+
+        t = sofa::type::dot(e1, qvec) * inv_det;
+
+        if (t < epsilon || t != t || v != v || u != u)
+            return false;
+
+        return true;
+    }
+
+   /**
+   * @brief	Test if a ray intersects a triangle
+   * @remark   Implementation for 3D only
+   * @tparam   Node iterable container (or sofa::type::Vec with cross() and norm())
+   * @tparam   T scalar
+   * @param	n0,n1,n2 nodes of the triangle
+   * @return	either if the given ray intersects the given triangle or not
+   */
+    template<typename Node,
+        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
+        typename = std::enable_if_t<std::is_scalar_v<T>>
+    >
+    [[nodiscard]]
+    static constexpr bool rayIntersection(const Node& n0, const Node& n1, const Node& n2, const Node& origin, const Node& direction)
+    {
+        constexpr Node n{};
+        static_assert(std::distance(std::begin(n), std::end(n)) == 3, "Ray-Triangle is only computed in 3 dimensions.");
+        static_assert(std::is_same_v<Node, sofa::type::Vec<3, T> >, "rayIntersection is only implemented for sofa::type::Vec3.");
+
+        T t, u, v;
+        return rayIntersection(n0, n1, n2, origin, direction, t, u, v);
+    }
+
 };
 
 } // namespace sofa::geometry
