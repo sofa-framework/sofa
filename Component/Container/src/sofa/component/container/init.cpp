@@ -19,70 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseMechanics/initSofaBaseMechanics.h>
+#include <sofa/component/container/init.h>
 
-#include <sofa/helper/system/PluginManager.h>
-
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
-
-namespace sofa::component
+namespace sofa::component::container
 {
-
-void initSofaBaseMechanics()
-{
-    static bool first = true;
-    if (first)
-    {
-        // msg_deprecated("SofaBaseMechanics") << "SofaBaseMechanics is being deprecated;. It will be removed at v23.06. You may use Sofa.Component.Mass and Sofa.Component.Mapping and Sofa.Component.Container  instead.";
-
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Mass");
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Mapping");
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Container");
-
-        first = false;
-    }
-}
-
+    
 extern "C" {
-    SOFA_SOFABASEMECHANICS_API void initExternalModule();
-    SOFA_SOFABASEMECHANICS_API const char* getModuleName();
-    SOFA_SOFABASEMECHANICS_API const char* getModuleVersion();
-    SOFA_SOFABASEMECHANICS_API const char* getModuleLicense();
-    SOFA_SOFABASEMECHANICS_API const char* getModuleDescription();
-    SOFA_SOFABASEMECHANICS_API const char* getModuleComponentList();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
 }
 
 void initExternalModule()
 {
-    initSofaBaseMechanics();
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
 }
 
 const char* getModuleName()
 {
-    return sofa_tostring(SOFA_TARGET);
+    return MODULE_NAME;
 }
 
-const char* getModuleVersion()
+void init()
 {
-    return sofa_tostring(SOFABASEMECHANICS_VERSION);
+    initExternalModule();
 }
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This plugin contains contains features about Base Mechanics.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-
-} // namespace sofa::component
+} // namespace sofa::component::container
