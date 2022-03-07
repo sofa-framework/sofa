@@ -1187,7 +1187,7 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h
         J = triangleInf[i].strainDisplacementMatrix;
         computeStrain(strain, J, D);
         computeStress(stress, triangleInf[i].materialMatrix, strain);
-        F = J * stress * triangleInf[i].area;
+        F = J * stress;
 
         v[a] += (Coord(-h*F[0], -h*F[1], 0)) * kFactor;
         v[b] += (Coord(-h*F[2], -h*F[3], 0)) * kFactor;
