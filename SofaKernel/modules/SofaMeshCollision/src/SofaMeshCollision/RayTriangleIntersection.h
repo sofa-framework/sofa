@@ -32,8 +32,8 @@ class TTriangle;
 class SOFA_SOFAMESHCOLLISION_API RayTriangleIntersection
 {
 public:
-    RayTriangleIntersection(); // start a Proximity solver
-    ~RayTriangleIntersection();
+    RayTriangleIntersection() = default;
+    ~RayTriangleIntersection() = default;
 
     bool NewComputation( const sofa::type::Vector3 &p1, const sofa::type::Vector3 &p2, const sofa::type::Vector3 &p3, const sofa::type::Vector3 &origin, const sofa::type::Vector3 &direction,  SReal &t,  SReal &u, SReal &v);
     bool NewComputation(TTriangle<sofa::defaulttype::Vec3Types>* triP, const sofa::type::Vector3& origin, const sofa::type::Vector3& direction, SReal& t, SReal& u, SReal& v);
