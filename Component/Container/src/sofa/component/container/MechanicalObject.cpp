@@ -20,7 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP
-#include <SofaBaseMechanics/MechanicalObject.inl>
+
+#include <sofa/component/container/MechanicalObject.inl>
 #include <sofa/type/Quat.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -43,12 +44,12 @@ int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
 
 // template specialization must be in the same namespace as original namespace for GCC 4.1
 // g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
-template class SOFA_SOFABASEMECHANICS_API MechanicalObject<Vec3Types>;
-template class SOFA_SOFABASEMECHANICS_API MechanicalObject<Vec2Types>;
-template class SOFA_SOFABASEMECHANICS_API MechanicalObject<Vec1Types>;
-template class SOFA_SOFABASEMECHANICS_API MechanicalObject<Vec6Types>;
-template class SOFA_SOFABASEMECHANICS_API MechanicalObject<Rigid3Types>;
-template class SOFA_SOFABASEMECHANICS_API MechanicalObject<Rigid2Types>;
+template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec3Types>;
+template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec2Types>;
+template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec1Types>;
+template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec6Types>;
+template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Rigid3Types>;
+template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Rigid2Types>;
 
 
 

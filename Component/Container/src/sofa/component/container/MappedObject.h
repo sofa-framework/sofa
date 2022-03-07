@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseMechanics/config.h>
+#include <sofa/component/container/config.h>
 
 #include <sofa/core/State.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -122,13 +122,12 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_CONTAINER_MAPPEDOBJECT_CPP)
-extern template class MappedObject<defaulttype::Vec3Types>;
-extern template class MappedObject<defaulttype::Vec2Types>;
-extern template class MappedObject<defaulttype::Vec1Types>;
-extern template class MappedObject<defaulttype::Vec6Types>;
-extern template class MappedObject<defaulttype::Rigid3Types>;
-extern template class MappedObject<defaulttype::Rigid2Types>;
-
+extern template class SOFA_COMPONENT_CONTAINER_API MappedObject<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_CONTAINER_API MappedObject<defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_CONTAINER_API MappedObject<defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_CONTAINER_API MappedObject<defaulttype::Vec6Types>;
+extern template class SOFA_COMPONENT_CONTAINER_API MappedObject<defaulttype::Rigid3Types>;
+extern template class SOFA_COMPONENT_CONTAINER_API MappedObject<defaulttype::Rigid2Types>;
 #endif
 
 } // namespace sofa::component::container
