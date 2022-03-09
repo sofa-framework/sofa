@@ -11,6 +11,7 @@ endif()
 sofa_add_subdirectory_external(SofaHighOrder SofaHighOrder)
 
 sofa_add_plugin(CImgPlugin CImgPlugin ON) # ON by default and first as it is used by other plugins.
+sofa_add_plugin(ArticulatedSystemPlugin ArticulatedSystemPlugin ON)
 sofa_add_plugin(SofaEulerianFluid SofaEulerianFluid)
 sofa_add_plugin(SofaSphFluid SofaSphFluid)
 sofa_add_plugin(SofaDistanceGrid SofaDistanceGrid) # Depends on SofaMiscCollision

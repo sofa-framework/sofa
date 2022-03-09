@@ -57,8 +57,8 @@ public:
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
 
     // connected objects indices
-    Data<VecIndex> d_firstObjectPoints;
-    Data<VecIndex> d_secondObjectPoints;
+    Data<VecIndex> d_firstObjectPoints; ///< points related to the first object
+    Data<VecIndex> d_secondObjectPoints; ///< points related to the second object
 
     // polynomial data
     /// Describe set of polynomial coefficients combines in one array.
@@ -69,16 +69,16 @@ public:
     /// Describe set of polynomial degrees fro every spring
     Data< type::vector<unsigned int> > d_polynomialDegree;
 
-    Data<int> d_computeZeroLength;                    /// Flag to verify if initial length has to be computed during the first iteration
-    Data<VecReal> d_zeroLength;                       /// Springs initial lengths
-    Data<bool> d_recomputeIndices;
+    Data<int> d_computeZeroLength;                    ///< Flag to verify if initial length has to be computed during the first iteration
+    Data<VecReal> d_zeroLength;                       ///< Springs initial lengths
+    Data<bool> d_recomputeIndices; ///< Recompute indices (should be false for BBOX)
 
-    Data <bool> d_compressible;                       /// flag to put compressible springs
+    Data <bool> d_compressible;                       ///< flag to put compressible springs
 
-    Data<int> d_drawMode;                             /// Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
+    Data<int> d_drawMode;                             ///< Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
     Data<float> d_showArrowSize;                      ///< size of the axis
-    Data<sofa::type::RGBAColor> d_springColor;
-    Data<float> d_showIndicesScale;
+    Data<sofa::type::RGBAColor> d_springColor; ///< spring color
+    Data<float> d_showIndicesScale; ///< Scale for indices display. (default=0.02)
 
 
     // data to compute spring derivatives

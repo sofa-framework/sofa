@@ -33,7 +33,7 @@ public:
     typedef typename DataTypes::Real Real;
 
 private:
-    Data< VecCoord > m_positions;
+    Data< VecCoord > m_positions; ///< Vertices coordinates
 	VecCoord m_previousPositions;
 
     GLuint m_posVBO;
@@ -59,13 +59,13 @@ protected:
     OglFluidModel();
     virtual ~OglFluidModel();
 public:
-    Data<unsigned int> d_debugFBO;
-    Data<float> d_spriteRadius;
-    Data<float> d_spriteThickness;
-    Data<float> d_spriteBlurRadius;
-    Data<float> d_spriteBlurScale;
-    Data<float> d_spriteBlurDepthFalloff;
-    Data<sofa::type::RGBAColor> d_spriteDiffuseColor;
+    Data<unsigned int> d_debugFBO; ///< DEBUG FBO
+    Data<float> d_spriteRadius; ///< Radius of sprites
+    Data<float> d_spriteThickness; ///< Thickness of sprites
+    Data<float> d_spriteBlurRadius; ///< Blur radius (in pixels)
+    Data<float> d_spriteBlurScale; ///< Blur scale
+    Data<float> d_spriteBlurDepthFalloff; ///< Blur Depth Falloff
+    Data<sofa::type::RGBAColor> d_spriteDiffuseColor; ///< Diffuse Color
 
 
     void init() override;

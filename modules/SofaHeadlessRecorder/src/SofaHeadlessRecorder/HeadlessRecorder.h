@@ -27,7 +27,7 @@
 #include <sofa/simulation/fwd.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/gl/DrawToolGL.h>
-#include <SofaBaseVisual/InteractiveCamera.h>
+#include <SofaBaseVisual/BaseCamera.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <csignal>

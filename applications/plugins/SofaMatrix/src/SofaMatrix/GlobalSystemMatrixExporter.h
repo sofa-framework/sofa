@@ -43,7 +43,7 @@ public:
     void doInit() override;
 
 protected:
-    Data<sofa::helper::OptionsGroup> d_fileFormat;
+    Data<sofa::helper::OptionsGroup> d_fileFormat; ///< File format
     Data<int> d_precision;
 
     GlobalSystemMatrixExporter();

@@ -139,8 +139,8 @@ __device__ __inline__ float3 getPos3(const float3* pos, int index0, int index)
 {
     //return pos[index];
 
-    int index03 = __umul24(index0,3);
-    int index3 = __umul24(threadIdx.x,3);
+    int index03 = index0 * 3;
+    int index3 = threadIdx.x * 3;
     ftemp[threadIdx.x] = ((const float*)pos)[index03+threadIdx.x];
     ftemp[threadIdx.x+BSIZE] = ((const float*)pos)[index03+threadIdx.x+BSIZE];
     ftemp[threadIdx.x+2*BSIZE] = ((const float*)pos)[index03+threadIdx.x+2*BSIZE];
@@ -155,7 +155,7 @@ __device__ __inline__ float4 getPos4(const float4* pos, int index0, int index)
 
 __device__ __inline__ float4 getPos4(const float3* pos, int index0, int index)
 {
-    int index3 = __umul24(threadIdx.x,3);
+    int index3 = threadIdx.x * 3;
     pos += index0;
     ftemp[threadIdx.x] = ((const float*)pos)[threadIdx.x];
     ftemp[threadIdx.x+BSIZE] = ((const float*)pos)[threadIdx.x+BSIZE];

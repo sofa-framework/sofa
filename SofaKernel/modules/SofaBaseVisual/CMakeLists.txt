@@ -6,30 +6,24 @@ set(SOFABASEVISUAL_SRC "src/${PROJECT_NAME}")
 set(HEADER_FILES
     ${SOFABASEVISUAL_SRC}/config.h.in
     ${SOFABASEVISUAL_SRC}/initSofaBaseVisual.h
-    ${SOFABASEVISUAL_SRC}/BaseCamera.h
     ${SOFABASEVISUAL_SRC}/BackgroundSetting.h
-    ${SOFABASEVISUAL_SRC}/Camera.h
-    ${SOFABASEVISUAL_SRC}/InteractiveCamera.h
-    ${SOFABASEVISUAL_SRC}/VisualModelImpl.h
-    ${SOFABASEVISUAL_SRC}/VisualStyle.h
 )
 
 set(SOURCE_FILES
     ${SOFABASEVISUAL_SRC}/initSofaBaseVisual.cpp
-    ${SOFABASEVISUAL_SRC}/BaseCamera.cpp
     ${SOFABASEVISUAL_SRC}/BackgroundSetting.cpp
-    ${SOFABASEVISUAL_SRC}/Camera.cpp
-    ${SOFABASEVISUAL_SRC}/InteractiveCamera.cpp
-    ${SOFABASEVISUAL_SRC}/VisualModelImpl.cpp
-    ${SOFABASEVISUAL_SRC}/VisualStyle.cpp
 )
 
-sofa_find_package(TinyXML REQUIRED)
-sofa_find_package(SofaBaseTopology REQUIRED)
+sofa_find_package(Sofa.SimulationCore REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaDefaultType)
-target_link_libraries(${PROJECT_NAME} PRIVATE tinyxml) # Private because not exported in API
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore)
+
+message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Visual instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.Visual REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Visual)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

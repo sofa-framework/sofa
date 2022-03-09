@@ -108,7 +108,7 @@ public:
     Data<Vec3> d_inputForceFeedback; ///< Input force feedback in case of no LCPForceFeedback is found (manual setting)
 
     // Input parameters
-    Data<bool> d_manualStart; /// < Bool to unactive the automatic start of the device at init. initDevice need to be called manually. False by default.
+    Data<bool> d_manualStart; ///< Bool to unactive the automatic start of the device at init. initDevice need to be called manually. False by default.
     Data<bool> d_emitButtonEvent; ///< Bool to send event through the graph when button are pushed/released
     Data<bool> d_frameVisu; ///< Visualize the frame corresponding to the device tooltip
     Data<bool> d_omniVisu; ///< Visualize the frame of the interface in the virtual scene

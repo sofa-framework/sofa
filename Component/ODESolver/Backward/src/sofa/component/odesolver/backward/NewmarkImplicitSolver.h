@@ -63,7 +63,7 @@ public:
     Data<double> d_gamma; ///< Newmark scheme gamma coefficient
     Data<double> d_beta; ///< Newmark scheme beta coefficient
 
-    Data<bool> d_threadSafeVisitor;
+    Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
 
     void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 

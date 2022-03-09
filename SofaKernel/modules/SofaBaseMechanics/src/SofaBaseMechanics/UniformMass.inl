@@ -548,16 +548,18 @@ void UniformMass<DataTypes>::addMToMatrix (const MechanicalParams *mparams,
 {
     const MassType& m = d_vertexMass.getValue();
 
-    const size_t N = DataTypeInfo<Deriv>::size();
+    static constexpr auto N = Deriv::total_size;
 
     AddMToMatrixFunctor<Deriv,MassType> calc;
     MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(mstate);
 
-    Real mFactor = Real(sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue()));
+    const Real mFactor = Real(sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue()));
 
     ReadAccessor<Data<SetIndexArray > > indices = d_indices;
-    for ( unsigned int i=0; i<indices.size(); i++ )
-        calc ( r.matrix, m, int(r.offset + N*indices[i]), mFactor);
+    for (auto id : *indices)
+    {
+        calc ( r.matrix, m, int(r.offset + N * id), mFactor);
+    }
 }
 
 

@@ -12,6 +12,7 @@ set(HEADER_FILES
     ${SRC_ROOT}/CollisionElement.h
     ${SRC_ROOT}/CollisionModel.h
     ${SRC_ROOT}/ComponentLibrary.h
+    ${SRC_ROOT}/ComponentNameHelper.h
     ${SRC_ROOT}/ConstraintParams.h
     ${SRC_ROOT}/DataEngine.h
     ${SRC_ROOT}/DataTracker.h
@@ -173,6 +174,7 @@ set(SOURCE_FILES
     ${SRC_ROOT}/CategoryLibrary.cpp
     ${SRC_ROOT}/CollisionModel.cpp
     ${SRC_ROOT}/ComponentLibrary.cpp
+    ${SRC_ROOT}/ComponentNameHelper.cpp
     ${SRC_ROOT}/ConstraintParams.cpp
     ${SRC_ROOT}/DataEngine.cpp
     ${SRC_ROOT}/DataTracker.cpp

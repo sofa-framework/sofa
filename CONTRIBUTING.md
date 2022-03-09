@@ -3,13 +3,13 @@
 Welcome to the SOFA Community! Here is a brief summary of how it is structured:
 
 - SOFA Users: people using SOFA by writing scenes or using the SOFA API.
-- SOFA Developpers: people programming into SOFA, modifying the API, writing plugins.
+- SOFA Developers: people programming into SOFA, modifying the API, writing plugins.
 - SOFA Contributors: (awesome) people proposing their changes in SOFA code via pull-requests.
 - SOFA Reviewers: people reviewing and merging the pull-requests. This group is validated by the Scientific and Technical Committee (STC).
 - SOFA Consortium: research centers and companies willing to share the cost of development and maintenance of SOFA, hosted by Inria.
 - SOFA Consortium Staff: administrators of SOFA and its ecosystem. This group is directed by the Executive Committee (EC).
 
-All SOFA Developpers are gladly invited to the SOFA-dev meetings.  
+All SOFA Developers are gladly invited to the SOFA-dev meetings.  
 They take place remotely every Wednesday at 10 a.m. CET and are animated by the SOFA Reviewers + the Consortium Staff.  
 [Subscribe to SOFA-dev mailing-list](https://sympa.inria.fr/sympa/subscribe/sofa-dev) to get the agenda, reports and conference room url.
 
@@ -26,9 +26,9 @@ A more detailed definition of the committees is available [in the SOFA website](
 Please **read carefully** [the GitHub guide on Contributing to Open Source](https://guides.github.com/activities/contributing-to-open-source/). We also recommend you to check this [more detailed documentation on issues and pull requests](https://help.github.com/categories/collaborating-with-issues-and-pull-requests/).
 
 
-# Forum
+# Support - Discussion forum
 
-For any **question** (help needed, problem of understanding SOFA, announcements), create a topic on [the SOFA forum](https://www.sofa-framework.org/community/forum/) and benefit from the feedback of the community.
+For any **question** (help needed, problem of understanding SOFA, announcements), create a topic on [the SOFA GitHub Discussions](https://github.com/sofa-framework/sofa/discussions) and benefit from the feedback of the community.
 
 When creating a new topic, pay attention to some tips:
 
@@ -41,7 +41,7 @@ When creating a new topic, pay attention to some tips:
 
 For **bug tracking**, **feature proposals** and **task management**, create a [SOFA issue](https://github.com/sofa-framework/sofa/issues)! There is nothing to it and whatever issue you are having, you are likely not the only one, so others will find your issue helpful, too. Issues labeled "discussion" are also used for larger topics: architecture, future of SOFA, long term dev, etc.
 
-Please **DO NOT create an issue for questions or support**. Use [the SOFA forum](https://www.sofa-framework.org/community/forum/) instead.
+Please **DO NOT create an issue for questions or support**. Use [the GitHub Discussions](https://github.com/sofa-framework/sofa/discussions) instead.
 
 When creating an issue, pay attention to the following tips:
 
