@@ -47,7 +47,8 @@ public slots:
     virtual void doExport();
     virtual void doDisplay();
     virtual void doClose();
-    virtual void taskFinished();
+    virtual void taskFinished(int exitCode ,QProcess::ExitStatus exitStatus);
+    virtual void taskError(QProcess::ProcessError error);
     virtual void changeFilter();
     virtual void setFilter();
 
