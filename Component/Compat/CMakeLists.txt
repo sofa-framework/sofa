@@ -14,9 +14,9 @@ include(Sofa.Component.Topology.Container.Grid.cmake)
 include(Sofa.Component.Topology.Mapping.cmake)
 include(Sofa.Component.Topology.Utility.cmake)
 include(Sofa.Component.Visual.cmake)
-include(Sofa.GL.Component.OnScreen.cmake)
-include(Sofa.GL.Component.Model.cmake)
-include(Sofa.GL.Component.Rendering.cmake)
+include(Sofa.GL.Component.Rendering2D.cmake)
+include(Sofa.GL.Component.Rendering3D.cmake)
+include(Sofa.GL.Component.Shader.cmake)
 include(Sofa.GL.Component.Engine.cmake)
 
 set(SOURCE_FILES

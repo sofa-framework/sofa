@@ -38,11 +38,11 @@ void initSofaOpenglVisual()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaOpenglVisual") << "SofaOpenglVisual is deprecated;. Use Sofa.GL.Component.OnScreen, Sofa.GL.Component.Model and Sofa.GL.Component.Rendering instead.";
+        // msg_deprecated("SofaOpenglVisual") << "SofaOpenglVisual is deprecated;. Use Sofa.GL.Component.Rendering2D, Sofa.GL.Component.Rendering3D and Sofa.GL.Component.Shader instead.";
 
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.GL.Component.OnScreen");
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.GL.Component.Model");
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.GL.Component.Rendering");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.GL.Component.Rendering2D");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.GL.Component.Rendering3D");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.GL.Component.Shader");
         
         first = false;
     }
