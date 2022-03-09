@@ -11,7 +11,7 @@
     <Node name="M1">
         <EulerImplicitSolver name="odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <SparseLDLSolver printLog="false" template="CompressedRowSparseMatrixMat3x3d"/>
-        <GlobalSystemMatrixExporter exportEveryNumberOfSteps="1" filename="global_matrix_ldl" printLog="true" format="txt"/>
+        <GlobalSystemMatrixExporter exportEveryNumberOfSteps="1" filename="global_matrix_ldl" printLog="true" format="txt" precision="12"/>
         <MechanicalObject />
         <UniformMass vertexMass="1"/>
         <RegularGridTopology nx="4" ny="4" nz="10" xmin="-9" xmax="-6" ymin="0" ymax="3" zmin="0" zmax="9" />
