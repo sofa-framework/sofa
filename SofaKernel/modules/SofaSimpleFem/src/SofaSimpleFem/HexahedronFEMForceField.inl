@@ -746,7 +746,7 @@ void HexahedronFEMForceField<DataTypes>::initSmall(int i, const Element &elem)
     for(int w=0; w<8; ++w)
         _rotatedInitialElements[i][w] =  _rotations[i]*_initialPoints.getValue()[elem[w]];
 
-    auto& stiffnesses = *sofa::helper::getWriteAccessor(_elementStiffnesses);
+    auto& stiffnesses = *sofa::helper::getWriteOnlyAccessor(_elementStiffnesses);
     if( stiffnesses.size() <= i )
     {
         stiffnesses.resize( i + 1 );
@@ -776,7 +776,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceSmall ( WDataRefVecDeriv
             D[indice+j] = _rotatedInitialElements[i][k][j] - nodes[k][j];
     }
 
-    auto& stiffnesses = *sofa::helper::getWriteAccessor(_elementStiffnesses);
+    auto& stiffnesses = *sofa::helper::getWriteOnlyAccessor(_elementStiffnesses);
     if(f_updateStiffnessMatrix.getValue())
         computeElementStiffness( stiffnesses[i], _materialsStiffnesses[i], deformed, i, _sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0 );
 
@@ -820,7 +820,7 @@ void HexahedronFEMForceField<DataTypes>::initLarge(int i, const Element &elem)
     for(int w=0; w<8; ++w)
         _rotatedInitialElements[i][w] =  _rotations[i]*_initialPoints.getValue()[elem[w]];
 
-    auto& stiffnesses = *sofa::helper::getWriteAccessor(_elementStiffnesses);
+    auto& stiffnesses = *sofa::helper::getWriteOnlyAccessor(_elementStiffnesses);
     if( stiffnesses.size() <= i )
     {
         stiffnesses.resize( i + 1 );
@@ -879,7 +879,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceLarge( WDataRefVecDeriv 
             D[indice+j] = _rotatedInitialElements[i][k][j] - deformed[k][j];
     }
 
-    auto& stiffnesses = *sofa::helper::getWriteAccessor(_elementStiffnesses);
+    auto& stiffnesses = *sofa::helper::getWriteOnlyAccessor(_elementStiffnesses);
     if(f_updateStiffnessMatrix.getValue())
         computeElementStiffness( stiffnesses[i], _materialsStiffnesses[i], deformed, i, _sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0 );
 
@@ -920,7 +920,7 @@ void HexahedronFEMForceField<DataTypes>::initPolar(int i, const Element& elem)
         _rotatedInitialElements[i][j] =  _rotations[i] * nodes[j];
     }
 
-    auto& stiffnesses = *sofa::helper::getWriteAccessor(_elementStiffnesses);
+    auto& stiffnesses = *sofa::helper::getWriteOnlyAccessor(_elementStiffnesses);
     if( stiffnesses.size() <= i )
     {
         stiffnesses.resize( i + 1 );
@@ -1077,7 +1077,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( WDataRefVecDeriv 
     //forces
     Displacement F;
 
-    auto& stiffnesses = *sofa::helper::getWriteAccessor(_elementStiffnesses);
+    auto& stiffnesses = *sofa::helper::getWriteOnlyAccessor(_elementStiffnesses);
     if(f_updateStiffnessMatrix.getValue())
         computeElementStiffness( stiffnesses[i], _materialsStiffnesses[i], deformed, i, _sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0);
 
