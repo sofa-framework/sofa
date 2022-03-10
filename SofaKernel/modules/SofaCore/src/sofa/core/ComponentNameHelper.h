@@ -29,13 +29,24 @@ namespace sofa::core
 {
 
 /**
- * Helper class to get a unique name for a component, based on a counter suffix.
+ * Helper class to name a component based on its type.
+ *
+ * Two conventions are available for legacy reasons:
+ * - XML: use a counter to add a unique suffix at the end of the name
+ * - Python: the short name of the type is returned
  */
 class SOFA_CORE_API ComponentNameHelper
 {
 public:
 
-    std::string resolveName(const std::string& type, const std::string& name);
+    enum class Convention : char
+    {
+        xml,
+        python
+    };
+
+    std::string resolveName(const std::string& type, const std::string& name, Convention convention);
+    std::string resolveName(const std::string& type, Convention convention);
 
 private:
 

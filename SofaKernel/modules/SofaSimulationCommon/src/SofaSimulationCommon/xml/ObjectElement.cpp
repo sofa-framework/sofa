@@ -94,7 +94,7 @@ bool ObjectElement::initNode()
     auto& objName = *obj->name.beginEdit();
     if (objName.empty())
     {
-        objName = ctx->getNameHelper().resolveName(obj->getClassName(), objName);
+        objName = ctx->getNameHelper().resolveName(obj->getClassName(), objName, sofa::core::ComponentNameHelper::Convention::xml);
     }
     obj->name.endEdit();
 
