@@ -13,6 +13,7 @@ Switch the 'activated' flag of each Node and compare the performances.
     <RequiredPlugin name="SofaMiscForceField"/>
     <RequiredPlugin name="SofaSimpleFem"/>
     <RequiredPlugin name="SofaSparseSolver"/>
+    <RequiredPlugin name="SofaMatrix"/>
 
     <VisualStyle displayFlags="showForceFields hideVisualModels showBehaviorModels" />
 

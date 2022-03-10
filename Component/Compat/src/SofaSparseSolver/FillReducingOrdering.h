@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/linearsolver/direct/FillReducingOrdering.h>
+#include <sofa/config.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/direct/FillReducingOrdering.h")
+#if __has_include(<SofaMatrix/FillReducingOrdering.h>)
+#include <SofaMatrix/FillReducingOrdering.h>>
 
-namespace sofa::component::linearsolver
-{
-	template<class DataTypes>
-    using FillReducingOrdering = sofa::component::linearsolver::direct::FillReducingOrdering<DataTypes>;
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "SofaMatrix/FillReducingOrdering.h")
 
-} // namespace sofa::component::linearsolver
+#else
+#error "FillReducingOrdering component has been moved to SofaMatrix plugin."
+#endif

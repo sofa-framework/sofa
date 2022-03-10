@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/linearsolver/direct/config.h>
+#include <SofaMatrix/config.h>
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -33,7 +33,7 @@ extern "C" {
 #include <metis.h>
 }
 
-namespace sofa::component::linearsolver::direct
+namespace sofa::component::linearsolver
 {
 
 /**
@@ -91,7 +91,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_FillReducingOrdering_CPP)
-extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API FillReducingOrdering<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAMATRIX_API FillReducingOrdering<defaulttype::Vec3Types>;
 #endif
 
-}// namespace sofa::component::linearsolver::direct
+}// namespace sofa::component::linearsolver

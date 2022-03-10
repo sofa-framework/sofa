@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_FillReducingOrdering_CPP
-#include <sofa/component/linearsolver/direct/FillReducingOrdering.inl>
+#include <SofaMatrix/FillReducingOrdering.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::linearsolver::direct
+namespace sofa::component::linearsolver
 {
 
 using namespace sofa::defaulttype;
@@ -33,6 +33,6 @@ int FillReducingOrderingClass = core::RegisterObject("Reorder the degrees of fre
     .add< FillReducingOrdering<Vec3Types> >()
     ;
 
-template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API FillReducingOrdering<Vec3Types>;
+template class SOFA_SOFAMATRIX_API FillReducingOrdering<Vec3Types>;
 
-} // namespace sofa::component::linearsolver::direct
+} // namespace sofa::component::linearsolver

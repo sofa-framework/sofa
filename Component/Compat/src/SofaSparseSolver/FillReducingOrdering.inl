@@ -21,6 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/linearsolver/direct/FillReducingOrdering.inl>
+#include <sofa/config.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/linearsolver/direct/FillReducingOrdering.inl")
+#if __has_include(<SofaMatrix/FillReducingOrdering.inl>)
+#include <SofaMatrix/FillReducingOrdering.inl>>
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "SofaMatrix/FillReducingOrdering.inl")
+
+#else
+#error "FillReducingOrdering component has been moved to SofaMatrix plugin."
+#endif

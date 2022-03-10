@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #pragma once
-#include <sofa/component/linearsolver/direct/FillReducingOrdering.h>
 
-namespace sofa::component::linearsolver::direct
+#include <SofaMatrix/FillReducingOrdering.h>
+
+namespace sofa::component::linearsolver
 {
 
 template <class DataTypes>
@@ -177,4 +177,4 @@ void FillReducingOrdering<DataTypes>::updateElements(
     }
 }
 
-} // namespace sofa::component::linearsolver::direct
+} // namespace sofa::component::linearsolver
