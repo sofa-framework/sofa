@@ -64,7 +64,7 @@ private:
     void updateBoxes();
 
     Data<bool> d_draw; ///< enable/disable display of results
-    Data<bool> d_showOnlyInvestigatedBoxes;
+    Data<bool> d_showOnlyInvestigatedBoxes; ///< Show only boxes which will be sent to narrow phase
     Data<int> d_nbPairs; ///< number of pairs of elements sent to narrow phase
 
     /// Store a permanent list of end points

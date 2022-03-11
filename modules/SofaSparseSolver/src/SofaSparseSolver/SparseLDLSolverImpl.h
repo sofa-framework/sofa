@@ -159,11 +159,17 @@ public:
 protected :
 
     Data<bool> d_useSymbolicDecomposition ;
+<<<<<<< apply_fill-in-permutation
     Data<bool> d_applyPermutation ;
 
     SparseLDLSolverImpl() : Inherit() 
     , d_useSymbolicDecomposition(initData(&d_useSymbolicDecomposition, true ,"useSymbolicDecomposition", "If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step."))
     , d_applyPermutation(initData(&d_applyPermutation, true ,"applyPermutation", "If true the solver will apply a fill-reducing permutation to the matrix of the system."))
+=======
+
+    SparseLDLSolverImpl() : Inherit() 
+    , d_useSymbolicDecomposition(initData(&d_useSymbolicDecomposition, true ,"useSymbolicDecomposition", "If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step."))
+>>>>>>> master
      {}
 
     template<class VecInt,class VecReal>

@@ -48,8 +48,8 @@ public:
 
     void getConstraintResolution(const sofa::core::ConstraintParams* cParams, std::vector<sofa::core::behavior::ConstraintResolution*>& crVector, unsigned int& offset) override;
 
-    sofa::Data<bool> d_iterative;
-    sofa::Data<bool> d_constraintRestPos;
+    sofa::Data<bool> d_iterative; ///< Iterate over the bilateral constraints, otherwise a block factorisation is computed.
+    sofa::Data<bool> d_constraintRestPos; ///< if false, constrains the pos to be zero / if true constraint the current position to stay at rest position
 protected:
 
     unsigned int m_constraintIndex;
