@@ -9,6 +9,7 @@
     <RequiredPlugin pluginName='SofaGeneralEngine'/> 
     <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
     <RequiredPlugin pluginName='SofaMiscMapping'/>
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/>
 
     <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
     <FreeMotionAnimationLoop solveVelocityConstraintFirst="true" />
