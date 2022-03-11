@@ -144,7 +144,7 @@ struct Triangle
         if constexpr(std::is_floating_point_v<TReal>)
         {
             inv_det = one / det;
-            if (std::isnan(det))
+            if (std::isnan(inv_det))
             {
                 return false;
             }
