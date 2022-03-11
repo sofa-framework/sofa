@@ -38,8 +38,7 @@ namespace sofa::component::linearsolver {
 
 template<class TMatrix, class TVector, class TThreadManager>
 SparseLDLSolver<TMatrix,TVector,TThreadManager>::SparseLDLSolver()
-    : numStep(0)
-{}
+    : numStep(0){}
 
 template <class TMatrix, class TVector, class TThreadManager>
 void SparseLDLSolver<TMatrix, TVector, TThreadManager>::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
