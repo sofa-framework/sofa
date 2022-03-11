@@ -118,33 +118,30 @@ struct Triangle
     * @param	t, u, v barycentric coefficients of the potential intersection in the triangle
     * @return	either if the given ray intersects the given triangle or not
     */
-    template<typename Node,
-        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
-        typename = std::enable_if_t<std::is_scalar_v<T>>
-    >
+    template<typename TReal>
     [[nodiscard]]
-    static constexpr bool rayIntersection(const Node& n0, const Node& n1, const Node& n2, const Node& origin, const Node& direction, T& t, T& u, T& v)
+    static constexpr bool rayIntersection(const sofa::type::Vec<3, TReal>& n0, const sofa::type::Vec<3, TReal>& n1, const sofa::type::Vec<3, TReal>& n2, const sofa::type::Vec<3, TReal>& origin, const sofa::type::Vec<3, TReal>& direction, TReal& t, TReal& u, TReal& v)
     {
-        constexpr Node n{};
-        static_assert(std::distance(std::begin(n), std::end(n)) == 3, "Ray-Triangle is only computed in 3 dimensions.");
-        static_assert(std::is_same_v<Node,sofa::type::Vec<3, T> >, "rayIntersection is only implemented for sofa::type::Vec3.");
 
-        static constexpr T epsilon = std::numeric_limits<T>::epsilon();
-        static constexpr T zero = static_cast<T>(0);
-        static constexpr T one = static_cast<T>(1);
+        static constexpr TReal epsilon = std::numeric_limits<TReal>::epsilon();
+        static constexpr TReal zero = static_cast<TReal>(0);
+        static constexpr TReal one = static_cast<TReal>(1);
 
         t = 0; u = 0; v = 0;
 
         const auto e0 = n1 - n0;
         const auto e1 = n2 - n0;
 
-        sofa::type::Vector3 tvec, pvec, qvec;
-        T det, inv_det;
+        sofa::type::Vector3 tvec(type::NOINIT);
+        sofa::type::Vector3 pvec(type::NOINIT);
+        sofa::type::Vector3 qvec(type::NOINIT);
+        TReal det;
+        TReal inv_det;
 
         pvec = sofa::type::cross(direction, e1);
 
         det = sofa::type::dot(e0, pvec);
-        if constexpr(std::is_floating_point_v<T>)
+        if constexpr(std::is_floating_point_v<TReal>)
         {
             inv_det = one / det;
             if (std::isnan(det))
@@ -189,18 +186,11 @@ struct Triangle
    * @param	n0,n1,n2 nodes of the triangle
    * @return	either if the given ray intersects the given triangle or not
    */
-    template<typename Node,
-        typename T = std::decay_t<decltype(*std::begin(std::declval<Node>()))>,
-        typename = std::enable_if_t<std::is_scalar_v<T>>
-    >
+    template<typename TReal>
     [[nodiscard]]
-    static constexpr bool rayIntersection(const Node& n0, const Node& n1, const Node& n2, const Node& origin, const Node& direction)
+    static constexpr bool rayIntersection(const sofa::type::Vec<3, TReal>& n0, const sofa::type::Vec<3, TReal>& n1, const sofa::type::Vec<3, TReal>& n2, const sofa::type::Vec<3, TReal>& origin, const sofa::type::Vec<3, TReal>& direction)
     {
-        constexpr Node n{};
-        static_assert(std::distance(std::begin(n), std::end(n)) == 3, "Ray-Triangle is only computed in 3 dimensions.");
-        static_assert(std::is_same_v<Node, sofa::type::Vec<3, T> >, "rayIntersection is only implemented for sofa::type::Vec3.");
-
-        T t, u, v;
+        TReal t, u, v;
         return rayIntersection(n0, n1, n2, origin, direction, t, u, v);
     }
 
