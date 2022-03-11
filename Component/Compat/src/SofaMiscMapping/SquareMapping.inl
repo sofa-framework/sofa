@@ -20,6 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/mapping/SquareMapping.inl>
+#include <sofa/component/mapping/linear/SquareMapping.inl>
 
 // SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/SquareMapping.inl")

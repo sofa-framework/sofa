@@ -20,6 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/mapping/SimpleTesselatedTetraMechanicalMapping.h>
+#include <sofa/component/mapping/linear/SimpleTesselatedTetraMechanicalMapping.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/SimpleTesselatedTetraMechanicalMapping.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/SimpleTesselatedTetraMechanicalMapping.h")
+
+namespace sofa::component::mapping
+{
+	template<class TIn, class TOut>
+    using SimpleTesselatedTetraMechanicalMapping = sofa::component::mapping::linear::SimpleTesselatedTetraMechanicalMapping<TIn, TOut>;
+
+} // namespace sofa::component::mapping

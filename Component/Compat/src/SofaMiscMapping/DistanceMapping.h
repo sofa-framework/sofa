@@ -20,6 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/mapping/DistanceMapping.h>
+#include <sofa/component/mapping/nonlinear/DistanceMapping.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/DistanceMapping.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/nonlinear/DistanceMapping.h")
+
+namespace sofa::component::mapping
+{
+	template<class TIn, class TOut>
+    using RigidRigidMapping = sofa::component::mapping::nonlinear::RigidRigidMapping<TIn, TOut>;
+
+} // namespace sofa::component::mapping

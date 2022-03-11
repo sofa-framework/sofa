@@ -20,6 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/mapping/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.h")
+
+namespace sofa::component::mapping
+{
+	template<class In, class Out>
+	using BarycentricMapperTetrahedronSetTopology = namespace sofa::component::mapping::linear::BarycentricMapperTetrahedronSetTopology<In, Out>;
+}
