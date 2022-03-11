@@ -2,11 +2,13 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaMatrix VERSION 1.0 LANGUAGES CXX)
 
 sofa_find_package(SofaCore REQUIRED)
+sofa_find_package(SofaConstraint REQUIRED)
 sofa_find_package(CImgPlugin REQUIRED)
 sofa_find_package(SofaGuiQt REQUIRED QUIET)
 
 set(SOFA_MODULES
     SofaCore
+    SofaConstraint
     CImgPlugin
 )
 
@@ -14,11 +16,13 @@ set(SOFAMATRIX_SRC_DIR src/${PROJECT_NAME})
 
 set(HEADER_FILES
     ${SOFAMATRIX_SRC_DIR}/config.h.in
+    ${SOFAMATRIX_SRC_DIR}/ComplianceMatrixExporter.h
     ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixExporter.h
     ${SOFAMATRIX_SRC_DIR}/MatrixImageExporter.h
 )
 set(SOURCE_FILES
     ${SOFAMATRIX_SRC_DIR}/initSofaMatrix.cpp
+    ${SOFAMATRIX_SRC_DIR}/ComplianceMatrixExporter.cpp
     ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixExporter.cpp
     ${SOFAMATRIX_SRC_DIR}/MatrixImageExporter.cpp
 )
@@ -34,10 +38,12 @@ if (NOT SofaGuiQt_FOUND)
     message(NOTICE "[SofaMatrix] Module SofaGuiQt not found: some components (GlobalSystemMatrixImage) will not be compiled")
 else()
     list(APPEND HEADER_FILES
+        ${SOFAMATRIX_SRC_DIR}/ComplianceMatrixImage.h
         ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixImage.h
         ${SOFAMATRIX_SRC_DIR}/BaseMatrixImageProxy.h
     )
     list(APPEND SOURCE_FILES
+        ${SOFAMATRIX_SRC_DIR}/ComplianceMatrixImage.cpp
         ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixImage.cpp
         ${SOFAMATRIX_SRC_DIR}/BaseMatrixImageViewerWidget.cpp
     )
