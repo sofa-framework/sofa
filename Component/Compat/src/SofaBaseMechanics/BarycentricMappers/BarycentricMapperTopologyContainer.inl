@@ -20,6 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/mapping/BarycentricMappers/BarycentricMapperTopologyContainer.inl>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperTopologyContainer.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/BarycentricMappers/BarycentricMapperTopologyContainer.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperTopologyContainer.inl")

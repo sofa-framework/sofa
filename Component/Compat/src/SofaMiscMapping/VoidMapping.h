@@ -20,6 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/mapping/VoidMapping.h>
+#include <sofa/component/mapping/linear/VoidMapping.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/VoidMapping.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/VoidMapping.h")
+
+namespace sofa::component::mapping
+{
+    using VoidMapping = sofa::component::mapping::linear::VoidMapping;
+
+} // namespace sofa::component::mapping

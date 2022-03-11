@@ -20,6 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/mapping/LineSetSkinningMapping.h>
+#include <sofa/component/mapping/linear/LineSetSkinningMapping.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/LineSetSkinningMapping.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/LineSetSkinningMapping.h")
+
+namespace sofa::component::mapping
+{
+	template<class TIn, class TOut>
+    using LineSetSkinningMapping = sofa::component::mapping::linear::LineSetSkinningMapping<TIn, TOut>;
+
+} // namespace sofa::component::mapping

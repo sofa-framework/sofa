@@ -20,6 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/mapping/BarycentricMapping.h>
+#include <sofa/component/mapping/linear/BarycentricMapping.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/BarycentricMapping.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/BarycentricMapping.h")
+
+namespace sofa::component::mapping
+{
+	template<class TIn, class TOut>
+    using BarycentricMapping = sofa::component::mapping::linear::BarycentricMapping<TIn, TOut>;
+
+} // namespace sofa::component::mapping

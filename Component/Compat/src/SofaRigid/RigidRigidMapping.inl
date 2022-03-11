@@ -20,6 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/mapping/RigidRigidMapping.inl>
+#include <sofa/component/mapping/nonlinear/RigidRigidMapping.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/RigidRigidMapping.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/nonlinear/RigidRigidMapping.inl")

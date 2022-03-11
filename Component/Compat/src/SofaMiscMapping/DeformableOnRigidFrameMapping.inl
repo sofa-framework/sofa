@@ -20,6 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/mapping/DeformableOnRigidFrameMapping.inl>
+#include <sofa/component/mapping/linear/DeformableOnRigidFrameMapping.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/DeformableOnRigidFrameMapping.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/linear/DeformableOnRigidFrameMapping.inl")

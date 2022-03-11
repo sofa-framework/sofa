@@ -33,10 +33,6 @@ list(APPEND HEADER_FILES
     ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperTetrahedronSetTopology.inl
     ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperHexahedronSetTopology.h
     ${SOFABASEMECHANICS_SRC}/BarycentricMappers/BarycentricMapperHexahedronSetTopology.inl
-    ${SOFARIGID_SRC}/RigidMapping.h
-    ${SOFARIGID_SRC}/RigidMapping.inl
-    ${SOFARIGID_SRC}/RigidRigidMapping.h
-    ${SOFARIGID_SRC}/RigidRigidMapping.inl
     ${SOFAGENERALRIGID_SRC}/LineSetSkinningMapping.h
     ${SOFAGENERALRIGID_SRC}/LineSetSkinningMapping.inl
     ${SOFAGENERALRIGID_SRC}/SkinningMapping.h
@@ -58,16 +54,8 @@ list(APPEND HEADER_FILES
     ${SOFAMISCMAPPING_SRC}/CenterOfMassMultiMapping.inl
     ${SOFAMISCMAPPING_SRC}/DeformableOnRigidFrameMapping.h
     ${SOFAMISCMAPPING_SRC}/DeformableOnRigidFrameMapping.inl
-    ${SOFAMISCMAPPING_SRC}/DistanceFromTargetMapping.h
-    ${SOFAMISCMAPPING_SRC}/DistanceFromTargetMapping.inl
-    ${SOFAMISCMAPPING_SRC}/DistanceMapping.h
-    ${SOFAMISCMAPPING_SRC}/DistanceMapping.inl
     ${SOFAMISCMAPPING_SRC}/IdentityMultiMapping.h
     ${SOFAMISCMAPPING_SRC}/IdentityMultiMapping.inl
-    ${SOFAMISCMAPPING_SRC}/SquareDistanceMapping.h
-    ${SOFAMISCMAPPING_SRC}/SquareDistanceMapping.inl
-    ${SOFAMISCMAPPING_SRC}/SquareMapping.h
-    ${SOFAMISCMAPPING_SRC}/SquareMapping.inl
     ${SOFAMISCMAPPING_SRC}/SubsetMultiMapping.h
     ${SOFAMISCMAPPING_SRC}/SubsetMultiMapping.inl
     ${SOFAMISCMAPPING_SRC}/TubularMapping.h
