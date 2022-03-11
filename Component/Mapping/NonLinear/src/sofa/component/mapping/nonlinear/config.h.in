@@ -19,39 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/mapping/init.h>
+#pragma once
 
-#include <sofa/component/mapping/linear/init.h>
-#include <sofa/component/mapping/nonlinear/init.h>
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-namespace sofa::component::mapping
+#ifdef SOFA_BUILD_SOFA_COMPONENT_MAPPING_NONLINEAR
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_COMPONENT_MAPPING_NONLINEAR_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_COMPONENT_MAPPING_NONLINEAR_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+namespace sofa::component::mapping::nonlinear
 {
-
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
-
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        sofa::component::mapping::linear::init();
-        sofa::component::mapping::nonlinear::init();
-
-        first = false;
-    }
-}
-
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-void init()
-{
-    initExternalModule();
-}
-
-} // namespace sofa::component::mapping
+	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+} // namespace sofa::component::mapping::nonlinear

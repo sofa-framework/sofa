@@ -19,39 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/mapping/init.h>
+#define SOFA_COMPONENT_MAPPING_IDENTITYMULTIMAPPING_CPP
 
-#include <sofa/component/mapping/linear/init.h>
-#include <sofa/component/mapping/nonlinear/init.h>
+#include <sofa/component/mapping/linear/IdentityMultiMapping.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::mapping
+using namespace sofa::defaulttype;
+
+namespace sofa::component::mapping::linear
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
+// Register in the Factory
+int IdentityMultiMappingClass = core::RegisterObject("Concatenate several States together")
+    .add< IdentityMultiMapping< Vec3Types, Vec3Types > >()
+    .add< IdentityMultiMapping< Rigid3Types, Rigid3Types > >()
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        sofa::component::mapping::linear::init();
-        sofa::component::mapping::nonlinear::init();
+        ;
 
-        first = false;
-    }
-}
+template class SOFA_COMPONENT_MAPPING_LINEAR_API IdentityMultiMapping< Vec3Types, Vec3Types >;
+template class SOFA_COMPONENT_MAPPING_LINEAR_API IdentityMultiMapping< Rigid3Types, Rigid3Types >;
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
 
-void init()
-{
-    initExternalModule();
-}
-
-} // namespace sofa::component::mapping
+} // namespace sofa::component::mapping::linear

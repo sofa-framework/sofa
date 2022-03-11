@@ -19,39 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/mapping/init.h>
+#define SOFA_COMPONENT_MAPPING_DistanceMapping_CPP
 
-#include <sofa/component/mapping/linear/init.h>
-#include <sofa/component/mapping/nonlinear/init.h>
+#include "DistanceMapping.inl"
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::mapping
+namespace sofa::component::mapping::nonlinear
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
+using namespace defaulttype;
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        sofa::component::mapping::linear::init();
-        sofa::component::mapping::nonlinear::init();
 
-        first = false;
-    }
-}
+// Register in the Factory
+int DistanceMappingClass = core::RegisterObject("Compute edge extensions")
+        .add< DistanceMapping< Vec3Types, Vec1Types > >()
+        .add< DistanceMapping< Rigid3Types, Vec1Types > >()
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
+        ;
+int DistanceMultiMappingClass = core::RegisterObject("Compute edge extensions")
+        .add< DistanceMultiMapping< Vec3Types, Vec1Types > >()
+        .add< DistanceMultiMapping< Rigid3Types, Vec1Types > >()
 
-void init()
-{
-    initExternalModule();
-}
+        ;
 
-} // namespace sofa::component::mapping
+template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceMapping< Vec3Types, Vec1Types >;
+template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceMapping< Rigid3Types, Vec1Types >;
+template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceMultiMapping< Vec3Types, Vec1Types >;
+template class SOFA_COMPONENT_MAPPING_NONLINEAR_API DistanceMultiMapping< Rigid3Types, Vec1Types >;
+
+
+} // namespace sofa::component::mapping::nonlinear

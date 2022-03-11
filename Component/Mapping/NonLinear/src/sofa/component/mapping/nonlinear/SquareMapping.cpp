@@ -19,39 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/mapping/init.h>
+#define SOFA_COMPONENT_MAPPING_SquareMapping_CPP
 
-#include <sofa/component/mapping/linear/init.h>
-#include <sofa/component/mapping/nonlinear/init.h>
+#include "SquareMapping.inl"
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::mapping
+namespace sofa::component::mapping::nonlinear
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
+using namespace defaulttype;
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        sofa::component::mapping::linear::init();
-        sofa::component::mapping::nonlinear::init();
 
-        first = false;
-    }
-}
+// Register in the Factory
+int SquareMappingClass = core::RegisterObject("Compute the square")
+        .add< SquareMapping< Vec1Types, Vec1Types > >()
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
+        ;
 
-void init()
-{
-    initExternalModule();
-}
+template class SOFA_COMPONENT_MAPPING_NONLINEAR_API SquareMapping< Vec1Types, Vec1Types >;
+template class SOFA_COMPONENT_MAPPING_NONLINEAR_API SquareMapping< Rigid3Types, Vec1Types >;
 
-} // namespace sofa::component::mapping
+
+} // namespace sofa::component::mapping::nonlinear

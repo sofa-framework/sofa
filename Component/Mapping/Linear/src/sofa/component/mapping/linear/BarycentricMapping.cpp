@@ -19,39 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/mapping/init.h>
+#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_CPP
+#include <sofa/component/mapping/linear/BarycentricMapping.inl>
 
-#include <sofa/component/mapping/linear/init.h>
-#include <sofa/component/mapping/nonlinear/init.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::mapping
+namespace sofa::component::mapping::linear
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
+using namespace sofa::defaulttype;
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        sofa::component::mapping::linear::init();
-        sofa::component::mapping::nonlinear::init();
+// Register in the Factory
+int BarycentricMappingClass = core::RegisterObject("Mapping using barycentric coordinates of the child with respect to cells of its parent")
+        .add< BarycentricMapping< Vec3Types, Vec3Types > >(true)
 
-        first = false;
-    }
-}
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
+        ;
 
-void init()
-{
-    initExternalModule();
-}
+template class SOFA_COMPONENT_MAPPING_LINEAR_API BarycentricMapping< Vec3Types, Vec3Types >;
 
-} // namespace sofa::component::mapping
+} // namespace sofa::component::mapping::linear
