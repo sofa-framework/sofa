@@ -19,39 +19,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/mapping/init.h>
+#define SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP
 
-#include <sofa/component/mapping/linear/init.h>
-#include <sofa/component/mapping/nonlinear/init.h>
+#include <sofa/component/mapping/linear/SkinningMapping.inl>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::mapping
+namespace sofa::component::mapping::linear
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
+using namespace defaulttype;
+using namespace core;
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        sofa::component::mapping::linear::init();
-        sofa::component::mapping::nonlinear::init();
 
-        first = false;
-    }
-}
+// Register in the Factory
+int SkinningMappingClass = core::RegisterObject("skin a model from a set of rigid dofs")
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
+// Rigid Types
+        .add< SkinningMapping< Rigid3Types, Vec3Types > >()
 
-void init()
-{
-    initExternalModule();
-}
 
-} // namespace sofa::component::mapping
+
+        ;
+
+template class SOFA_COMPONENT_MAPPING_LINEAR_API SkinningMapping< Rigid3Types, Vec3Types >;
+
+
+
+
+} //namespace sofa::component::mapping::linear

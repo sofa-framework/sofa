@@ -19,39 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/mapping/init.h>
+#define SOFA_COMPONENT_MAPPING_TUBULARMAPPING_CPP
 
-#include <sofa/component/mapping/linear/init.h>
-#include <sofa/component/mapping/nonlinear/init.h>
+#include <sofa/component/mapping/linear/TubularMapping.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/MechanicalState.h>
 
-namespace sofa::component::mapping
+namespace sofa::component::mapping::linear
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
+using namespace sofa::defaulttype;
+using namespace core;
+using namespace core::behavior;
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        sofa::component::mapping::linear::init();
-        sofa::component::mapping::nonlinear::init();
+// Register in the Factory
+int TubularMappingClass = core::RegisterObject("Create a Tube around rigid points")
+        .add< TubularMapping< Rigid3Types, Vec3Types > > ()
 
-        first = false;
-    }
-}
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
+        ;
 
-void init()
-{
-    initExternalModule();
-}
+template class SOFA_COMPONENT_MAPPING_LINEAR_API TubularMapping< Rigid3Types, Vec3Types >;
 
-} // namespace sofa::component::mapping
+} // namespace sofa::component::mapping::linear

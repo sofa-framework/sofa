@@ -19,39 +19,54 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/mapping/init.h>
+#pragma once
 
-#include <sofa/component/mapping/linear/init.h>
-#include <sofa/component/mapping/nonlinear/init.h>
+namespace sofa::component::mapping::linear {
 
-namespace sofa::component::mapping
+template<typename Model>
+struct CenterOfMassMappingOperation
 {
+    typedef typename Model::VecCoord VecCoord;
+    typedef typename Model::Coord Coord;
+    typedef typename Model::Deriv Deriv;
+    typedef typename Model::VecDeriv VecDeriv;
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
-
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        sofa::component::mapping::linear::init();
-        sofa::component::mapping::nonlinear::init();
-
-        first = false;
+public :
+    static inline const VecCoord *getVecCoord(const Model *m, const sofa::core::VecId id) {
+        return m->getVecCoord(id.index);
     }
-}
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
+    static inline VecDeriv *getVecDeriv(Model *m, const sofa::core::VecId id) { return m->getVecDeriv(id.index); }
 
-void init()
-{
-    initExternalModule();
-}
+    static inline const sofa::core::behavior::BaseMass *fetchMass(const Model *m) {
+        sofa::core::behavior::BaseMass *mass = m->getContext()->getMass();
+        return mass;
+    }
 
-} // namespace sofa::component::mapping
+    static inline double computeTotalMass(const Model *model, const sofa::core::behavior::BaseMass *mass) {
+        double result = 0.0;
+        const unsigned int modelSize = static_cast<unsigned int>(model->getSize());
+        for (unsigned int i = 0; i < modelSize; i++) {
+            result += mass->getElementMass(i);
+        }
+        return result;
+    }
+
+    static inline Coord WeightedCoord(const VecCoord *v, const sofa::core::behavior::BaseMass *m) {
+        Coord c;
+        for (unsigned int i = 0; i < v->size(); i++) {
+            c += (*v)[i] * m->getElementMass(i);
+        }
+        return c;
+    }
+
+    static inline Deriv WeightedDeriv(const VecDeriv *v, const sofa::core::behavior::BaseMass *m) {
+        Deriv d;
+        for (unsigned int i = 0; i < v->size(); i++) {
+            d += (*v)[i] * m->getElementMass(i);
+        }
+        return d;
+    }
+};
+
+}

@@ -19,39 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/mapping/init.h>
+#define SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP
+#include <sofa/component/mapping/nonlinear/RigidMapping.inl>
+#include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/mapping/linear/init.h>
-#include <sofa/component/mapping/nonlinear/init.h>
-
-namespace sofa::component::mapping
+namespace sofa::component::mapping::nonlinear
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
+using namespace defaulttype;
 
-void initExternalModule()
+// Register in the Factory
+int RigidMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
+        .add< RigidMapping< Rigid3Types, Vec3Types > >()
+        .add< RigidMapping< Rigid2Types, Vec2Types > >()
+        ;
+
+template class SOFA_COMPONENT_MAPPING_NONLINEAR_API RigidMapping< Rigid3Types, Vec3Types >;
+template class SOFA_COMPONENT_MAPPING_NONLINEAR_API RigidMapping< Rigid2Types, Vec2Types >;
+
+
+template<>
+void RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForceId*/ )
+{}
+template<>
+const linearalgebra::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2Types, sofa::defaulttype::Vec2Types >::getK()
 {
-    static bool first = true;
-    if (first)
-    {
-        sofa::component::mapping::linear::init();
-        sofa::component::mapping::nonlinear::init();
-
-        first = false;
-    }
+    msg_error() << "TODO: assembled geometric stiffness not implemented";
+    return nullptr;
 }
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-void init()
-{
-    initExternalModule();
-}
-
-} // namespace sofa::component::mapping
+} // namespace sofa::component::mapping::nonlinear

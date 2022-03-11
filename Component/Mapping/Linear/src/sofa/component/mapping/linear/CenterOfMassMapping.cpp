@@ -19,39 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/mapping/init.h>
+#define SOFA_COMPONENT_MAPPING_CENTEROFMASSMAPPING_CPP
 
-#include <sofa/component/mapping/linear/init.h>
-#include <sofa/component/mapping/nonlinear/init.h>
+#include <sofa/component/mapping/linear/CenterOfMassMapping.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::mapping
+namespace sofa::component::mapping::linear
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
+using namespace sofa::defaulttype;
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        sofa::component::mapping::linear::init();
-        sofa::component::mapping::nonlinear::init();
+// Register in the Factory
+int CenterOfMassMappingClass = core::RegisterObject("Set the point to the center of mass of the DOFs it is attached to")
+        .add< CenterOfMassMapping< Rigid3Types, Vec3Types > >()
+        .add< CenterOfMassMapping< Rigid2Types, Vec2Types > >()
+;
 
-        first = false;
-    }
-}
+template class SOFA_COMPONENT_MAPPING_LINEAR_API CenterOfMassMapping< Rigid3Types, Vec3Types >;
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
 
-void init()
-{
-    initExternalModule();
-}
-
-} // namespace sofa::component::mapping
+} // namespace sofa::component::mapping::linear

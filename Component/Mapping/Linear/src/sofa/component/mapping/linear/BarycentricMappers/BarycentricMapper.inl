@@ -19,39 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/mapping/init.h>
+#pragma once
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapper.h>
 
-#include <sofa/component/mapping/linear/init.h>
-#include <sofa/component/mapping/nonlinear/init.h>
-
-namespace sofa::component::mapping
+namespace sofa::component::mapping::linear::_barycentricmapper_
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
+using sofa::linearalgebra::CompressedRowSparseMatrix;
 
-void initExternalModule()
+template<class In, class Out>
+void BarycentricMapper<In,Out>::addMatrixContrib(CompressedRowSparseMatrix<MBloc>* m, int row, int col, Real value)
 {
-    static bool first = true;
-    if (first)
-    {
-        sofa::component::mapping::linear::init();
-        sofa::component::mapping::nonlinear::init();
-
-        first = false;
-    }
+    MBloc* b = m->wbloc(row, col, true); // get write access to a matrix bloc, creating it if not found
+    for (int i=0; i < ((int)NIn < (int)NOut ? (int)NIn : (int)NOut); ++i)
+        (*b)[i][i] += value;
 }
 
-const char* getModuleName()
+
+template<class In, class Out>
+const sofa::linearalgebra::BaseMatrix* BarycentricMapper<In,Out>::getJ(int outSize, int inSize)
 {
-    return MODULE_NAME;
+    SOFA_UNUSED(outSize);
+    SOFA_UNUSED(inSize);
+    dmsg_error() << " getJ() NOT IMPLEMENTED BY " << sofa::helper::NameDecoder::decodeClassName(typeid(*this)) ;
+    return nullptr;
 }
 
-void init()
+template<class In, class Out>
+void BarycentricMapper<In,Out>::applyOnePoint( const Index& hexaId, typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
-    initExternalModule();
+    SOFA_UNUSED(hexaId);
+    SOFA_UNUSED(out);
+    SOFA_UNUSED(in);
 }
 
-} // namespace sofa::component::mapping
+} // namespace sofa::component::mapping::linear::_barycentricmapper_

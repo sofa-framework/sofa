@@ -19,39 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/mapping/init.h>
+#define SOFA_COMPONENT_MAPPING_SUBSETMAPPING_CPP
+#include <sofa/component/mapping/linear/SubsetMapping.inl>
 
-#include <sofa/component/mapping/linear/init.h>
-#include <sofa/component/mapping/nonlinear/init.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::mapping
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+
+namespace sofa::component::mapping::linear
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
+using namespace sofa::defaulttype;
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        sofa::component::mapping::linear::init();
-        sofa::component::mapping::nonlinear::init();
+int SubsetMappingClass = core::RegisterObject("TODO-SubsetMappingClass")
+        .add< SubsetMapping< Vec3Types, Vec3Types > >()
+        .add< SubsetMapping< Vec1Types, Vec1Types > >()
+        .add< SubsetMapping< Rigid3Types, Rigid3Types > >()
+        .addAlias("SurfaceIdentityMapping")
+        ;
 
-        first = false;
-    }
-}
+template class SOFA_COMPONENT_MAPPING_LINEAR_API SubsetMapping< Vec3Types, Vec3Types >;
+template class SOFA_COMPONENT_MAPPING_LINEAR_API SubsetMapping< Vec1Types, Vec1Types >;
+template class SOFA_COMPONENT_MAPPING_LINEAR_API SubsetMapping< Rigid3Types, Rigid3Types >;
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-void init()
-{
-    initExternalModule();
-}
-
-} // namespace sofa::component::mapping
+} // namespace sofa::component::mapping::linear

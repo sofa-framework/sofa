@@ -19,39 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/mapping/init.h>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperMeshTopology.inl>
 
-#include <sofa/component/mapping/linear/init.h>
-#include <sofa/component/mapping/nonlinear/init.h>
-
-namespace sofa::component::mapping
+namespace sofa::component::mapping::linear
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
+using namespace sofa::defaulttype;
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        sofa::component::mapping::linear::init();
-        sofa::component::mapping::nonlinear::init();
+template class SOFA_COMPONENT_MAPPING_LINEAR_API BarycentricMapperMeshTopology< Vec3Types, Vec3Types >;
 
-        first = false;
-    }
-}
-
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-void init()
-{
-    initExternalModule();
-}
-
-} // namespace sofa::component::mapping
+} // namespace sofa::component::mapping::linear

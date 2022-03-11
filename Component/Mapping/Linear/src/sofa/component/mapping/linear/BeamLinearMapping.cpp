@@ -19,39 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/mapping/init.h>
+#define SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_CPP
+#include <sofa/component/mapping/linear/BeamLinearMapping.inl>
 
-#include <sofa/component/mapping/linear/init.h>
-#include <sofa/component/mapping/nonlinear/init.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::mapping
+
+namespace sofa::component::mapping::linear
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
+using namespace defaulttype;
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        sofa::component::mapping::linear::init();
-        sofa::component::mapping::nonlinear::init();
+// Register in the Factory
+int BeamLinearMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a beam using linear interpolation between DOFs")
 
-        first = false;
-    }
-}
+        .add< BeamLinearMapping< Rigid3Types, Vec3Types > >()
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
 
-void init()
-{
-    initExternalModule();
-}
 
-} // namespace sofa::component::mapping
+        ;
+
+template class SOFA_COMPONENT_MAPPING_LINEAR_API BeamLinearMapping< Rigid3Types, Vec3Types >;
+
+
+} // namespace sofa::component::mapping::linear

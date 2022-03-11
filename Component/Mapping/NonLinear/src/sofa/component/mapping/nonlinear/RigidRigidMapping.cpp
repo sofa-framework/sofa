@@ -19,39 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/mapping/init.h>
+#define SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_CPP
 
-#include <sofa/component/mapping/linear/init.h>
-#include <sofa/component/mapping/nonlinear/init.h>
+#include <sofa/component/mapping/nonlinear/RigidRigidMapping.inl>
 
-namespace sofa::component::mapping
+#include <sofa/core/ObjectFactory.h>
+
+namespace sofa::component::mapping::nonlinear
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
+using namespace defaulttype;
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        sofa::component::mapping::linear::init();
-        sofa::component::mapping::nonlinear::init();
+// Register in the Factory
+int RigidRigidMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
+        .add< RigidRigidMapping< Rigid3Types, Rigid3Types > >();
 
-        first = false;
-    }
-}
+template class SOFA_COMPONENT_MAPPING_NONLINEAR_API RigidRigidMapping< Rigid3Types, Rigid3Types >;
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-void init()
-{
-    initExternalModule();
-}
-
-} // namespace sofa::component::mapping
+} // namespace sofa::component::mapping::nonlinear

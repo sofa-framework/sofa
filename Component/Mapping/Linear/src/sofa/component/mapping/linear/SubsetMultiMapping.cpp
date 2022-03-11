@@ -19,39 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/mapping/init.h>
+#define SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_CPP
 
-#include <sofa/component/mapping/linear/init.h>
-#include <sofa/component/mapping/nonlinear/init.h>
+#include <sofa/component/mapping/linear/SubsetMultiMapping.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::mapping
+using namespace sofa::defaulttype;
+
+namespace sofa::component::mapping::linear
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
+// Register in the Factory
+int SubsetMultiMappingClass = core::RegisterObject("Compute a subset of the input MechanicalObjects according to a dof index list")
+    .add< SubsetMultiMapping< Vec3Types, Vec3Types > >()
+    .add< SubsetMultiMapping< Vec1Types, Vec1Types > >()
+    .add< SubsetMultiMapping< Rigid3Types, Rigid3Types > >()
+    .add< SubsetMultiMapping< Rigid3Types, Vec3Types > >()
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        sofa::component::mapping::linear::init();
-        sofa::component::mapping::nonlinear::init();
+        ;
 
-        first = false;
-    }
-}
+template class SOFA_COMPONENT_MAPPING_LINEAR_API SubsetMultiMapping< Vec3Types, Vec3Types >;
+template class SOFA_COMPONENT_MAPPING_LINEAR_API SubsetMultiMapping< Vec1Types, Vec1Types >;
+template class SOFA_COMPONENT_MAPPING_LINEAR_API SubsetMultiMapping< Rigid3Types, Rigid3Types >;
+template class SOFA_COMPONENT_MAPPING_LINEAR_API SubsetMultiMapping< Rigid3Types, Vec3Types >;
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-void init()
-{
-    initExternalModule();
-}
-
-} // namespace sofa::component::mapping
+} // namespace sofa::component::mapping::linear
