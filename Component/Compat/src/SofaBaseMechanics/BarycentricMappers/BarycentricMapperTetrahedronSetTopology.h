@@ -27,5 +27,5 @@
 namespace sofa::component::mapping
 {
 	template<class In, class Out>
-	using BarycentricMapperTetrahedronSetTopology = namespace sofa::component::mapping::linear::BarycentricMapperTetrahedronSetTopology<In, Out>;
+	using BarycentricMapperTetrahedronSetTopology = sofa::component::mapping::linear::BarycentricMapperTetrahedronSetTopology<In, Out>;
 }

@@ -27,5 +27,5 @@
 namespace sofa::component::mapping
 {
 	template<class In, class Out>
-	using BarycentricMapperTopologyContainer = namespace sofa::component::mapping::linear::BarycentricMapperTopologyContainer<In, Out>;
+	using BarycentricMapperTopologyContainer = sofa::component::mapping::linear::BarycentricMapperTopologyContainer<In, Out>;
 }

@@ -27,6 +27,6 @@
 namespace sofa::component::mapping
 {
 	template<class TIn, class TOut>
-    using RigidRigidMapping = sofa::component::mapping::nonlinear::RigidRigidMapping<TIn, TOut>;
+    using SquareDistanceMapping = sofa::component::mapping::nonlinear::SquareDistanceMapping<TIn, TOut>;
 
 } // namespace sofa::component::mapping
