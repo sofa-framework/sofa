@@ -26,7 +26,7 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/core/MultiMapping.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
-#include <sofa/component/topology/container/dynamic/EdgeSetTopologyContainer.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/RGBAColor.h>
@@ -79,7 +79,7 @@ public:
     typedef Data<OutVecDeriv> OutDataVecDeriv;
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
-    typedef topology::container::dynamic::EdgeSetTopologyContainer::SeqEdges SeqEdges;
+    typedef sofa::core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef type::Vec<In::spatial_dimensions,Real> Direction;
 
 
@@ -120,7 +120,6 @@ protected:
     DistanceMapping();
     virtual ~DistanceMapping();
 
-    topology::container::dynamic::EdgeSetTopologyContainer* m_edgeContainer;  ///< where the edges are defined
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
     type::vector<linearalgebra::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
     SparseKMatrixEigen K;                               ///< Assembled geometric stiffness matrix
@@ -135,7 +134,7 @@ protected:
 
 /** Maps point positions from serveral mstates to distances (in distance unit).
   Type TOut corresponds to a scalar value.
-  The pairs are given in an EdgeSetTopologyContainer in the same node.
+  The pairs are given in a topology with edges in the same node.
   The points index are given as pair(mstate_index,dof_index) in the Data indexPairs.
   If the rest lengths are not defined, they are set using the initial values.
   If computeDistance is set to true, the rest lengths are set to 0.
@@ -175,8 +174,8 @@ public:
     typedef linearalgebra::EigenSparseMatrix<TIn,TOut>   SparseMatrixEigen;
     typedef linearalgebra::EigenSparseMatrix<TIn,TIn>    SparseKMatrixEigen;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
-    typedef topology::container::dynamic::EdgeSetTopologyContainer::SeqEdges SeqEdges;
     typedef typename type::vector<const InVecCoord*> vecConstInVecCoord;
+    typedef sofa::core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef type::Vec<In::spatial_dimensions,Real> Direction;
 
 
@@ -284,7 +283,6 @@ protected:
     DistanceMultiMapping();
     virtual ~DistanceMultiMapping();
 
-    topology::container::dynamic::EdgeSetTopologyContainer* m_edgeContainer;  ///< where the edges are defined
     type::vector<linearalgebra::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
     type::vector<Direction> directions;                         ///< Unit vectors in the directions of the lines
     type::vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
