@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaMatrix VERSION 1.0 LANGUAGES CXX)
 
-sofa_find_package(SofaBaseLinearSolver REQUIRED)
+sofa_find_package(SofaCore REQUIRED)
 sofa_find_package(CImgPlugin REQUIRED)
 sofa_find_package(SofaGuiQt REQUIRED QUIET)
 
 set(SOFA_MODULES
-    SofaBaseLinearSolver
+    SofaCore
     CImgPlugin
 )
 
