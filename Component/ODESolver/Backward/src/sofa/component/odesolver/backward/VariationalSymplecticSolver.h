@@ -51,7 +51,7 @@ public:
     Data<bool> f_computeHamiltonian; ///< Compute hamiltonian
     Data<double> f_hamiltonianEnergy; ///< hamiltonian energy
     Data<bool> f_useIncrementalPotentialEnergy; ///< use real potential energy, if false use approximate potential energy
-    Data<bool> d_threadSafeVisitor;
+    Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
 
     VariationalSymplecticSolver();
 

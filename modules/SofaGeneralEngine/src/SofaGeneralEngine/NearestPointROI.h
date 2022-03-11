@@ -72,7 +72,7 @@ public:
     SetIndex f_indices2; ///< Indices of the fixed points on the second model
     Data< sofa::type::vector<topology::Edge> > d_edges; ///< List of edges. The indices point to a list composed as an interleaved fusion of output degrees of freedom. It could be used to fuse two mechanical objects and create a topology from the fusion.
     Data< type::vector<unsigned> > d_indexPairs;        ///< Two indices per child: the parent, and the index within the parent. Could be used with a SubsetMultiMapping
-    Data< type::vector<Real> > d_distances; /// List of distances between pairs of points
+    Data< type::vector<Real> > d_distances; ///< List of distances between pairs of points
     ///@}
 
     explicit NearestPointROI(core::behavior::MechanicalState<DataTypes> * = nullptr, core::behavior::MechanicalState<DataTypes> *mm2 = nullptr);

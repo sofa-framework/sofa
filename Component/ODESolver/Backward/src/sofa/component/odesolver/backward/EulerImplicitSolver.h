@@ -104,7 +104,7 @@ public:
     Data<bool> f_firstOrder; ///< Use backward Euler scheme for first order ode system.
     Data<bool> d_trapezoidalScheme; ///< Optional: use the trapezoidal scheme instead of the implicit Euler scheme and get second order accuracy in time
     Data<bool> f_solveConstraint; ///< Apply ConstraintSolver (requires a ConstraintSolver in the same node as this solver, disabled by by default for now)
-    Data<bool> d_threadSafeVisitor;
+    Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
 
 protected:
     EulerImplicitSolver();

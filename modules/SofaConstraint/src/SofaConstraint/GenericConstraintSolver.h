@@ -98,7 +98,6 @@ public:
     void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = nullptr) override;
     void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
 
-    Data<bool> displayTime; ///< Display time for each important step of GenericConstraintSolver.
     Data<int> maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
     Data<double> tolerance; ///< residual error threshold for termination of the Gauss-Seidel algorithm
     Data<double> sor; ///< Successive Over Relaxation parameter (0-2)
@@ -140,13 +139,6 @@ protected:
 
     sofa::core::MultiVecDerivId m_lambdaId;
     sofa::core::MultiVecDerivId m_dxId;
-
-    sofa::helper::system::thread::CTime timer;
-    sofa::helper::system::thread::CTime timerTotal;
-
-    double time;
-    double timeTotal;
-    double timeScale;
 
 private:
 

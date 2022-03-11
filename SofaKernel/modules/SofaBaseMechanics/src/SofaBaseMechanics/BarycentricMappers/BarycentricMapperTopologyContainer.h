@@ -129,7 +129,7 @@ protected:
 
     using Inherit1::m_fromTopology;
 
-    core::topology::PointData< type::vector<MappingDataType > > d_map;
+    core::topology::PointData< type::vector<MappingDataType > > d_map; ///< mapper data
     MatrixType* m_matrixJ {nullptr};
     bool m_updateJ {false};
 

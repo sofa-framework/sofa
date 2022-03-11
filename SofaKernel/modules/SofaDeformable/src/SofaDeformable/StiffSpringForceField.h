@@ -66,7 +66,7 @@ public:
     SOFA_ATTRIBUTE_DISABLED__STIFFSPRINGFORCEFIELD_DATANAME("To fix your code, use d_lengths")
     DeprecatedAndRemoved d_length;
 
-    core::objectmodel::Data<sofa::type::vector<SReal> > d_lengths;
+    core::objectmodel::Data<sofa::type::vector<SReal> > d_lengths; ///< List of lengths to create the springs. Must have the same than indices1 & indices2, or if only one element, it will be applied to all springs. If empty, 0 will be applied everywhere
 protected:
     sofa::type::vector<Mat>  dfdx;
 
