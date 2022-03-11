@@ -201,6 +201,8 @@ protected :
     }
 
     void LDL_ordering(int n,int * M_colptr,int * M_rowind,int * perm,int * invperm) {
+        if( d_applyPermutation.getValue() )
+        {
         //Compute transpose in tran_colptr, tran_rowind, tran_values, tran_D
         tran_countvec.clear();
         tran_countvec.resize(n);
@@ -218,7 +220,7 @@ protected :
         t_xadj[0] = 0;
         for (int j=0;j<n;j++) t_xadj[j+1] = t_xadj[j] + tran_countvec[j];
 
-        //we clear tran_countvec becaus we use it now to stro hown many value are written on each line
+        //we clear tran_countvec because we use it now to store hown many values are written on each line
         tran_countvec.clear();
         tran_countvec.resize(n);
 
@@ -257,8 +259,7 @@ protected :
         // We give NULL and NULL to use the default option (see doc of metis for details) !
         // If you have the error "SparseLDLSolver failure to factorize, D(k,k) is zero" that probably means that you use the previsou version of metis.
         // In this case you have to download and install the last version from : www.cs.umn.edu/~metis‎
-        if( d_applyPermutation.getValue() )
-        {
+        
             METIS_NodeND(&n, xadj.data(), adj.data(), NULL, NULL, perm,invperm);
         }
         else 
