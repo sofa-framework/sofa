@@ -46,7 +46,6 @@ DistanceMapping<TIn, TOut>::DistanceMapping()
     , d_color(initData(&d_color,sofa::type::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     , d_geometricStiffness(initData(&d_geometricStiffness, 2u, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_edgeContainer(nullptr)
 {
 }
 
@@ -61,22 +60,20 @@ void DistanceMapping<TIn, TOut>::init()
 {
     if (l_topology.empty())
     {
-        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopologyLink());
-
     }
 
-    m_edgeContainer = dynamic_cast<topology::container::dynamic::EdgeSetTopologyContainer*>(l_topology.get());
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-    if (m_edgeContainer == nullptr)
+    if (l_topology->getNbEdges() < 1)
     {
-        msg_error() << "No EdgeSetTopologyContainer component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        msg_error() << "No topology component containg edges found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
         sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
 
-    SeqEdges links = m_edgeContainer->getEdges();
+    SeqEdges links = l_topology->getEdges();
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
 
     this->getToModel()->resize( links.size() );
@@ -137,7 +134,7 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
     helper::WriteOnlyAccessor< Data<OutVecCoord> >  out = dOut;
     helper::ReadAccessor< Data<InVecCoord> >  in = dIn;
     helper::ReadAccessor<Data<type::vector<Real> > > restLengths(f_restLengths);
-    SeqEdges links = m_edgeContainer->getEdges();
+    const SeqEdges& links = l_topology->getEdges();
 
     jacobian.clear();
 
@@ -237,7 +234,7 @@ void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
     }
     else
     {
-        const SeqEdges& links = m_edgeContainer->getEdges();
+        const SeqEdges& links = l_topology->getEdges();
 
         for(unsigned i=0; i<links.size(); i++ )
         {
@@ -310,8 +307,8 @@ void DistanceMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, 
     if( !geometricStiffness ) { K.resize(0,0); return; }
 
 
-    helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[this->toModel.get()].read() );
-    const SeqEdges& links = m_edgeContainer->getEdges();
+    helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[this->toModel.get()].read() );    
+    const SeqEdges& links = l_topology->getEdges();
 
     unsigned int size = this->fromModel->getSize();
     K.resizeBlocks(size,size);
@@ -360,7 +357,7 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->saveLastState();
 
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
-    const SeqEdges& links = m_edgeContainer->getEdges();
+    const SeqEdges& links = l_topology->getEdges();
 
     if( d_showObjectScale.getValue() == 0 )
     {
@@ -404,7 +401,6 @@ DistanceMultiMapping<TIn, TOut>::DistanceMultiMapping()
     , d_indexPairs(initData(&d_indexPairs, "indexPairs", "list of couples (parent index + index in the parent)"))
     , d_geometricStiffness(initData(&d_geometricStiffness, (unsigned)2, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
     , l_topology(initLink("topology", "link to the topology container"))
-    , m_edgeContainer(nullptr)
 {
 }
 
@@ -448,22 +444,21 @@ void DistanceMultiMapping<TIn, TOut>::init()
 {
     if (l_topology.empty())
     {
-        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        msg_warning() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopologyLink());
 
     }
 
-    m_edgeContainer = dynamic_cast<topology::container::dynamic::EdgeSetTopologyContainer*>(l_topology.get());
     msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
     
-    if (m_edgeContainer == nullptr)
+    if (l_topology->getNbEdges() < 1)
     {
-        msg_error() << "No EdgeSetTopologyContainer component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        msg_error() << "No Topology component containing edges found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
         sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
-    
-    const SeqEdges& links = m_edgeContainer->getEdges();
+
+    const SeqEdges& links = l_topology->getEdges();
 
     this->getToModels()[0]->resize( links.size() );
 
@@ -526,7 +521,7 @@ void DistanceMultiMapping<TIn, TOut>::apply(const type::vector<OutVecCoord*>& ou
 
     const type::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
     helper::ReadAccessor<Data<type::vector<Real> > > restLengths(f_restLengths);
-    const SeqEdges& links = m_edgeContainer->getEdges();
+    const SeqEdges& links = l_topology->getEdges();
 
 
     unsigned totalInSize = 0;
@@ -641,7 +636,7 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
 
     const SReal kfactor = mparams->kFactor();
     const OutVecDeriv& childForce = this->getToModels()[0]->readForces().ref();
-    const SeqEdges& links = m_edgeContainer->getEdges();
+    const SeqEdges& links = l_topology->getEdges();
     const type::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
 
     unsigned size = this->getFromModels().size();
@@ -726,7 +721,7 @@ void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mp
     if( !geometricStiffness ) { K.resize(0,0); return; }
 
     helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[(const core::State<TOut>*)this->getToModels()[0]].read() );
-    const SeqEdges& links = m_edgeContainer->getEdges();
+    const SeqEdges& links = l_topology->getEdges();
     const type::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
 
     for(size_t i=0; i<links.size(); i++)
@@ -792,7 +787,7 @@ void DistanceMultiMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
 {
     if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 
-    const SeqEdges& links = m_edgeContainer->getEdges();
+    const SeqEdges& links = l_topology->getEdges();
 
     const type::vector<type::Vec2i>& pairs = d_indexPairs.getValue();
 
