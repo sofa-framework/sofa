@@ -32,7 +32,7 @@ namespace sofa::component::collision
 template <class DataTypes>
 class TTriangle;
 
-/// this class computes if a Triangle P intersects a line segment
+/// this class computes if a Triangle P intersects a ray
 class SOFA_ATTRIBUTE_DEPRECATED("v22.06", "v22.12", "Use sofa::geometry::Triangle::rayIntersection instead.") RayTriangleIntersection
 {
 public:

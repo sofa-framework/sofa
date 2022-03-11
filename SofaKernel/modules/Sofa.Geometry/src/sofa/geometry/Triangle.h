@@ -129,9 +129,9 @@ struct Triangle
         static_assert(std::distance(std::begin(n), std::end(n)) == 3, "Ray-Triangle is only computed in 3 dimensions.");
         static_assert(std::is_same_v<Node,sofa::type::Vec<3, T> >, "rayIntersection is only implemented for sofa::type::Vec3.");
 
-        constexpr T epsilon = std::numeric_limits<T>::epsilon();
-        constexpr T zero = static_cast<T>(0);
-        constexpr T one = static_cast<T>(1);
+        static constexpr T epsilon = std::numeric_limits<T>::epsilon();
+        static constexpr T zero = static_cast<T>(0);
+        static constexpr T one = static_cast<T>(1);
 
         t = 0; u = 0; v = 0;
 
@@ -146,7 +146,7 @@ struct Triangle
         det = sofa::type::dot(e0, pvec);
         if constexpr(std::is_floating_point_v<T>)
         {
-            inv_det = 1.0 / det;
+            inv_det = one / det;
             if (std::isnan(det))
             {
                 return false;
@@ -158,7 +158,7 @@ struct Triangle
             {
                 return false;
             }
-            inv_det = 1.0 / det;
+            inv_det = one / det;
         }
 
         tvec = origin - n0;
@@ -170,7 +170,7 @@ struct Triangle
         qvec = sofa::type::cross(tvec, e0);
 
         v = sofa::type::dot(direction, qvec) * inv_det;
-        if (v < zero - epsilon|| (u + v) > one + epsilon)
+        if (v < zero - epsilon || (u + v) > one + epsilon)
             return false;
 
         t = sofa::type::dot(e1, qvec) * inv_det;
