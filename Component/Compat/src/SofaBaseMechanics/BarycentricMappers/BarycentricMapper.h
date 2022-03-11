@@ -27,11 +27,11 @@
 namespace sofa::component::mapping::_barycentricmapper_
 {
 	template<class In, class Out>
-	using BarycentricMapper = namespace sofa::component::mapping::linear::_barycentricmapper_::BarycentricMapper<In, Out>;
+	using BarycentricMapper = sofa::component::mapping::linear::_barycentricmapper_::BarycentricMapper<In, Out>;
 }
 
 namespace sofa::component::mapping
 {
 	template<class In, class Out>
-	using BarycentricMapper = namespace sofa::component::mapping::linear::_barycentricmapper_::BarycentricMapper<In, Out>;
+	using BarycentricMapper = sofa::component::mapping::linear::_barycentricmapper_::BarycentricMapper<In, Out>;
 }

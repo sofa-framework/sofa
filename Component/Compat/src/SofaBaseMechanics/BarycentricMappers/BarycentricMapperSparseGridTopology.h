@@ -27,5 +27,5 @@
 namespace sofa::component::mapping
 {
 	template<class In, class Out>
-	using BarycentricMapperSparseGridTopology = namespace sofa::component::mapping::linear::BarycentricMapperSparseGridTopology<In, Out>;
+	using BarycentricMapperSparseGridTopology = sofa::component::mapping::linear::BarycentricMapperSparseGridTopology<In, Out>;
 }

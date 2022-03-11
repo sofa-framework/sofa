@@ -23,6 +23,7 @@
 #include <SofaMiscMapping/SquareDistanceMapping.h>
 
 #include <SofaBaseMechanics_test/MappingTestCreation.h>
+#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 
 namespace sofa {
 namespace {
