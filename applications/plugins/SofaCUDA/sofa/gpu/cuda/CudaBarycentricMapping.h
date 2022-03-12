@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDABARYCENTRICMAPPING_H
-#define SOFA_GPU_CUDA_CUDABARYCENTRICMAPPING_H
+#pragma once
 
 #include "CudaTypes.h"
 #include <SofaBaseMechanics/BarycentricMapping.h>
@@ -32,13 +31,7 @@
 #include <SofaBaseTopology/SparseGridTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping::linear
 {
 
 template <typename VecIn, typename VecOut>
@@ -295,10 +288,4 @@ public:
     }
 };
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mapping::linear

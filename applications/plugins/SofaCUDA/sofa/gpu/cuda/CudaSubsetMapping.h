@@ -24,7 +24,7 @@
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <SofaBaseMechanics/SubsetMapping.h>
 
-namespace sofa::component::mapping
+namespace sofa::component::mapping::linear
 {
 
 template <>
@@ -152,4 +152,4 @@ extern template class SOFA_GPU_CUDA_API SubsetMapping< CudaVec3f1Types, CudaVec3
 extern template class SOFA_GPU_CUDA_API SubsetMapping< CudaVec3fTypes, CudaVec3f1Types >;
 #endif
 
-} // namespace sofa::component::mapping
+} // namespace sofa::component::mapping::linear

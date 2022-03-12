@@ -54,7 +54,7 @@ extern "C"
 } // namespace sofa::gpu::cuda
 
 
-namespace sofa::component::mapping
+namespace sofa::component::mapping::linear
 {
     
 using namespace gpu::cuda;
@@ -253,4 +253,4 @@ void SubsetMapping<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3f1Types>::apply
     dOut.endEdit();
 }
 
-} // namespace sofa::component::mapping
+} // namespace sofa::component::mapping::linear
