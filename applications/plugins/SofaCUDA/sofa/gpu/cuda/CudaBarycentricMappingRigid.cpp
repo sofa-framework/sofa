@@ -42,13 +42,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping::linear
 {
 
 using namespace sofa::defaulttype;
@@ -200,9 +194,4 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3Types, defaulttype::Rigid3Ty
 
 template class SOFA_GPU_CUDA_API BarycentricMapping< CudaVec3Types, Rigid3Types >;
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::mapping::linear

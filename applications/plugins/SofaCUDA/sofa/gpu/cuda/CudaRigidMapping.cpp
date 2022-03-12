@@ -26,13 +26,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/Mapping.inl>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping::nonlinear
 {
 
 using namespace sofa::defaulttype;
@@ -61,19 +55,15 @@ template class SOFA_GPU_CUDA_API RigidMapping< CudaRigid3fTypes, CudaVec3d1Types
 template class SOFA_GPU_CUDA_API RigidMapping< Rigid3fTypes, CudaVec3d1Types>;
 template class SOFA_GPU_CUDA_API RigidMapping< Rigid3dTypes, CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
-} // namespace mapping
 
-} // namespace component
+} // namespace sofa::component::mapping::nonlinear
 
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 using namespace sofa::defaulttype;
 using namespace sofa::core;
 using namespace sofa::core::behavior;
-using namespace sofa::component::mapping;
+using namespace sofa::component::mapping::nonlinear;
 
 int RigidMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< RigidMapping< CudaRigid3fTypes, CudaVec3fTypes> >()
@@ -98,8 +88,4 @@ int RigidMappingCudaClass = core::RegisterObject("Supports GPU-side computations
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
+} //namespace sofa::gpu::cuda

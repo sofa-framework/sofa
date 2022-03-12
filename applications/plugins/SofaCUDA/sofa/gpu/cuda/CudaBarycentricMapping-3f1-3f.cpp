@@ -24,13 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping::linear
 {
 
 using namespace sofa::defaulttype;
@@ -423,14 +417,9 @@ template class SOFA_GPU_CUDA_API BarycentricMapping< CudaVec3fTypes, CudaVec3f1T
 
 
 
-} // namespace mapping
+} // namespace sofa::component::mapping::linear
 
-} // namespace component
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 using namespace sofa::defaulttype;
@@ -443,8 +432,4 @@ int BarycentricMappingCudaClass_3f1_3f = core::RegisterObject("Supports GPU-side
         .add< BarycentricMapping< CudaVec3fTypes, CudaVec3f1Types> >()
         ;
 
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
+} // namespace sofa::gpu::cuda
