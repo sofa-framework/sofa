@@ -20,12 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaConstraint/MappingGeometricStiffnessForceField.h>
+#include <sofa/component/mapping/mappedmatrix/MappingGeometricStiffnessForceField.h>
 
 #include <sofa/core/behavior/ForceField.inl>
-#include <SofaBaseLinearSolver/BlocMatrixWriter.h>
 
-namespace sofa::constraint
+namespace sofa::component::mapping::mappedmatrix
 {
 
 template< class DataTypes> 
@@ -79,4 +78,4 @@ void MappingGeometricStiffnessForceField<DataTypes>::addKToMatrix(const sofa::co
     }
 }
 
-} // namespace sofa::constraint
+} // namespace sofa::component::mapping::mappedmatrix

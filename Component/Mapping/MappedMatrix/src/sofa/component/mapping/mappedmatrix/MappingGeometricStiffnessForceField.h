@@ -20,10 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/component/mapping/mappedmatrix/config.h>
+
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/behavior/ForceField.h>
 
-namespace sofa::constraint
+namespace sofa::component::mapping::mappedmatrix
 {
 
 template <class DataTypes>
@@ -59,4 +61,9 @@ private:
     MappingLink l_mapping;
 };
 
-} // namespace sofa::constraint
+#if !defined(MAPPINGGEOMETRICSTIFFNESSFORCEFIELD_CPP)
+extern template class SOFA_COMPONENT_MAPPING_MAPPEDMATRIX_API MappingGeometricStiffnessForceField<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_MAPPING_MAPPEDMATRIX_API MappingGeometricStiffnessForceField<defaulttype::Rigid3Types>;
+#endif
+
+} // namespace sofa::component::mapping::mappedmatrix

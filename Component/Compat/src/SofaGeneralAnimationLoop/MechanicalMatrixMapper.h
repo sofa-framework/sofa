@@ -19,17 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaConstraint/config.h>
-#include <SofaConstraint/MappingGeometricStiffnessForceField.inl>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/VecTypes.h>
+#pragma once
+#include <sofa/component/mapping/mappedmatrix/MechanicalMatrixMapper.h>
 
-namespace sofa::constraint
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mapping/mappedmatrix/MechanicalMatrixMapper.h")
+
+namespace sofa::component::interactionforcefield
 {
-int GeometricStiffnessForceFieldClass = sofa::core::RegisterObject("A ForceField that assembles the geometric stiffness stored in a Mapping")
-.add<MappingGeometricStiffnessForceField<sofa::defaulttype::Vec3Types> >()
-.add<MappingGeometricStiffnessForceField<sofa::defaulttype::Rigid3Types> >()
-;
-
-} // namespace sofa::constraint
+    template<typename TDataTypes1, typename TDataTypes2>
+    using MechanicalMatrixMapper = sofa::component::mapping::mappedmatrix::MechanicalMatrixMapper<TDataTypes1, TDataTypes2>;
+    
+} // namespace sofa::component::interactionforcefield

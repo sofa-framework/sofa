@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include "MechanicalMatrixMapper.h"
+#include <sofa/component/mapping/mappedmatrix/MechanicalMatrixMapper.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/AdvancedTimer.h>
@@ -51,7 +51,7 @@ using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
 #include <sofa/simulation/Node.h>
 
 
-namespace sofa::component::interactionforcefield
+namespace sofa::component::mapping::mappedmatrix
 {
 template <typename TDataTypes1, typename TDataTypes2>
 void MechanicalMatrixMapper<TDataTypes1, TDataTypes2>::computeMatrixProduct(
@@ -678,4 +678,4 @@ SReal MechanicalMatrixMapper<DataTypes1, DataTypes2>::getPotentialEnergy(const M
     return 0.0;
 }
 
-} // namespace sofa::component::interactionforcefield
+} // namespace sofa::component::mapping::mappedmatrix
