@@ -20,12 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ANIMATIONLOOP_MECHANICALMATRIXMAPPER_CPP
-#include "MechanicalMatrixMapper.inl"
+#include <sofa/component/mapping/mappedmatrix/MechanicalMatrixMapper.inl>
+
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::interactionforcefield
+namespace sofa::component::mapping::mappedmatrix
 {
 
 using namespace sofa::defaulttype;
@@ -44,14 +45,14 @@ int MechanicalMatrixMapperClass = core::RegisterObject("This component allows to
         ;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<Rigid3Types, Rigid3Types>;
-template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<Vec3Types, Rigid3Types>;
-template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<Vec3Types, Vec3Types>;
-template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<Vec1Types, Rigid3Types>;
-template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<Vec1Types, Vec3Types>;
-template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<Vec1Types, Vec1Types>;
-template class SOFA_SOFAGENERALANIMATIONLOOP_API MechanicalMatrixMapper<Rigid3Types, Vec1Types> ;
+template class SOFA_COMPONENT_MAPPING_MAPPEDMATRIX_API MechanicalMatrixMapper<Rigid3Types, Rigid3Types>;
+template class SOFA_COMPONENT_MAPPING_MAPPEDMATRIX_API MechanicalMatrixMapper<Vec3Types, Rigid3Types>;
+template class SOFA_COMPONENT_MAPPING_MAPPEDMATRIX_API MechanicalMatrixMapper<Vec3Types, Vec3Types>;
+template class SOFA_COMPONENT_MAPPING_MAPPEDMATRIX_API MechanicalMatrixMapper<Vec1Types, Rigid3Types>;
+template class SOFA_COMPONENT_MAPPING_MAPPEDMATRIX_API MechanicalMatrixMapper<Vec1Types, Vec3Types>;
+template class SOFA_COMPONENT_MAPPING_MAPPEDMATRIX_API MechanicalMatrixMapper<Vec1Types, Vec1Types>;
+template class SOFA_COMPONENT_MAPPING_MAPPEDMATRIX_API MechanicalMatrixMapper<Rigid3Types, Vec1Types> ;
 
 
 
-} // namespace sofa::component::interactionforcefield
+} // namespace sofa::component::mapping::mappedmatrix

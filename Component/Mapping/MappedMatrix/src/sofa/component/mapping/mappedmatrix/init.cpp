@@ -19,13 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/mapping/init.h>
-
-#include <sofa/component/mapping/linear/init.h>
-#include <sofa/component/mapping/nonlinear/init.h>
 #include <sofa/component/mapping/mappedmatrix/init.h>
 
-namespace sofa::component::mapping
+namespace sofa::component::mapping::mappedmatrix
 {
 
 extern "C" {
@@ -38,10 +34,6 @@ void initExternalModule()
     static bool first = true;
     if (first)
     {
-        sofa::component::mapping::linear::init();
-        sofa::component::mapping::nonlinear::init();
-        sofa::component::mapping::mappedmatrix::init();
-
         first = false;
     }
 }
@@ -56,4 +48,4 @@ void init()
     initExternalModule();
 }
 
-} // namespace sofa::component::mapping
+} // namespace sofa::component::mapping::mappedmatrix
