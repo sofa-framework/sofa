@@ -25,6 +25,7 @@
 
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 extern "C" {
 #include <metis.h>
@@ -302,6 +303,7 @@ protected :
         memcpy(data->P_values.data(),M_values,data->P_nnz * sizeof(Real));
 
         // we test if the matrix has the same struct as previous factorized matrix
+        sofa::helper::AdvancedTimer::stepBegin("symbolic_factorization");
         if (data->new_factorization_needed  || !d_useSymbolicDecomposition.getValue() ) {
             msg_info() << "Recomputing new factorization" ;
 
@@ -333,6 +335,7 @@ protected :
             data->LT_rowind.clear();data->LT_rowind.fastResize(data->L_nnz);
             data->LT_values.clear();data->LT_values.fastResize(data->L_nnz);
         }
+        sofa::helper::AdvancedTimer::stepEnd("symbolic_factorization");
 
         Real * D = data->invD.data();
         int * rowind = data->L_rowind.data();
@@ -343,11 +346,14 @@ protected :
         Real * tran_values = data->LT_values.data();
 
         //Numeric Factorization
+        sofa::helper::AdvancedTimer::stepBegin("numeric_factorization");
         LDL_numeric(data->n,M_colptr,M_rowind,M_values,colptr,rowind,values,D,
                     data->perm.data(),data->invperm.data(),data->Parent.data());
 
         //inverse the diagonal
         for (int i=0;i<data->n;i++) D[i] = 1.0/D[i];
+
+        sofa::helper::AdvancedTimer::stepEnd("numeric_factorization");
 
         // split the bloc diag in data->Bdiag
 
