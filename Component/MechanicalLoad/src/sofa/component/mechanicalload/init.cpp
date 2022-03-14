@@ -19,69 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBoundaryCondition/initSofaBoundaryCondition.h>
+#include <sofa/component/mechanicalload/init.h>
 
-#include <sofa/helper/system/PluginManager.h>
-
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
-
-namespace sofa::component
+namespace sofa::component::mechanicalload
 {
-
-void initSofaBoundaryCondition()
-{
-    static bool first = true;
-    if (first)
-    {
-        // msg_deprecated("SofaBoundaryCondition") << "SofaBoundaryCondition is deprecated. It will be removed at v23.06. You may use Sofa.Component.Constraint.Projective and Sofa.Component.MechanicalLoad instead.";
-
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Constraint.Projective");
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.MechanicalLoad");
-
-        first = false;
-    }
-}
-
+    
 extern "C" {
-    SOFA_SOFABOUNDARYCONDITION_API void initExternalModule();
-    SOFA_SOFABOUNDARYCONDITION_API const char* getModuleName();
-    SOFA_SOFABOUNDARYCONDITION_API const char* getModuleVersion();
-    SOFA_SOFABOUNDARYCONDITION_API const char* getModuleLicense();
-    SOFA_SOFABOUNDARYCONDITION_API const char* getModuleDescription();
-    SOFA_SOFABOUNDARYCONDITION_API const char* getModuleComponentList();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
 }
 
 void initExternalModule()
 {
-    initSofaBoundaryCondition();
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
 }
 
 const char* getModuleName()
 {
-    return sofa_tostring(SOFA_TARGET);
+    return MODULE_NAME;
 }
 
-const char* getModuleVersion()
+void init()
 {
-    return sofa_tostring(SOFABOUNDARYCONDITION_VERSION);
+    initExternalModule();
 }
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This plugin contains contains features about Boundary Condition.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-
-} // namespace sofa::component
+} // namespace sofa::component::mechanicalload
