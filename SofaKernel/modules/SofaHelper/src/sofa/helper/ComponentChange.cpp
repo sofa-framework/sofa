@@ -952,6 +952,11 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "TubularMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.Linear") },
     { "VoidMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.Linear") },
 
+    // SofaConstraint was deprecated in #2635 and ...
+    { "MappingGeometricStiffnessForceField", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Mapping.MappedMatrix") },
+
+    // SofaGeneralAnimationLoop was deprecated in #2635 and ...
+    { "MechanicalMatrixMapper", CreatableMoved("v22.06", "SofaGeneralAnimationLoop", "Sofa.Component.Mapping.MappedMatrix") },
 };
 
 } // namespace sofa::helper::lifecycle
