@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDASPHEREFORCEFIELD_INL
-#define SOFA_GPU_CUDA_CUDASPHEREFORCEFIELD_INL
+#pragma once
 
 #include "CudaSphereForceField.h"
 #include <SofaBoundaryCondition/SphereForceField.inl>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 extern "C"
@@ -43,14 +36,9 @@ extern "C"
     void SphereForceFieldCuda3f1_addDForce(unsigned int size, GPUSphere* sphere, const void* penetration, void* f, const void* dx); //, const void* dfdx);
 }
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::mechanicalload
 {
 
 using namespace gpu::cuda;
@@ -123,10 +111,5 @@ void SphereForceField<gpu::cuda::CudaVec3f1Types>::addDForce(const core::Mechani
     d_df.endEdit();
 }
 
-} // namespace forcefield
+} // namespace sofa::component::mechanicalload
 
-} // namespace component
-
-} // namespace sofa
-
-#endif

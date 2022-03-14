@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDAPLANEFORCEFIELD_INL
-#define SOFA_GPU_CUDA_CUDAPLANEFORCEFIELD_INL
+#pragma once
 
 #include "CudaPlaneForceField.h"
 #include <SofaBoundaryCondition/PlaneForceField.inl>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 extern "C"
@@ -55,14 +48,9 @@ extern "C"
 
 }
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::mechanicalload
 {
 
 using namespace gpu::cuda;
@@ -211,10 +199,4 @@ void PlaneForceField<gpu::cuda::CudaVec3d1Types>::addDForce(const core::Mechanic
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mechanicalload
