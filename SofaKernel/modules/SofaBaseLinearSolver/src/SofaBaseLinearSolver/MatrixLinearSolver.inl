@@ -268,7 +268,7 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
         }
         else
         {
-            dmsg_error("MatrixLinearSolver") << "AsyncMatrixLinearSolver::addJMInvJt is only implemented for linearalgebra::SparseMatrix<Real>" ;
+            dmsg_error() << "addJMInvJt is only implemented for linearalgebra::SparseMatrix<Real>" ;
             return false;
         }
     }
