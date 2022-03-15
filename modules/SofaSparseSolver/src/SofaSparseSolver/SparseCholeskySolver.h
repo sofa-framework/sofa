@@ -31,6 +31,9 @@
 #include <sofa/helper/map.h>
 #include <cmath>
 #include <csparse.h>
+extern "C" {
+#include <metis.h>
+}
 
 namespace sofa
 {
@@ -53,22 +56,26 @@ public:
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
     Data<bool> f_verbose; ///< Dump system state at each iteration
+    cs A;
+    cs* permuted_A;
+    css *S;
+    csn *N;
+    int * A_i;
+    int * A_p;
+    int *perm,*iperm;
+    type::vector<double> A_x,z_tmp,r_tmp,tmp;
+    Data<bool> d_applyPermutation ;
 
     SparseCholeskySolver();
     ~SparseCholeskySolver();
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void invert(Matrix& M) override;
 
-public :
-    cs A;
-    css *S;
-    csn *N;
-    int * A_i;
-    int * A_p;
-    type::vector<double> A_x,z_tmp,r_tmp,tmp;
-
     void solveT(double * z, double * r);
     void solveT(float * z, float * r);
+
+    void fill_reducing_perm(cs A,int * perm,int * invperm);
+    css* symbolic_Chol(cs *A);
 };
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_CPP)

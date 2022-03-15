@@ -26,6 +26,10 @@
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <csparse.h>
 
+extern "C" {
+#include <metis.h>
+}
+
 namespace sofa::component::linearsolver
 {
 
@@ -34,9 +38,11 @@ template<class Real>
 class SparseLUInvertData : public MatrixInvertData {
 public :
 
-    css *S;
-    csn *N;
+    css *S; //store the permutations and the number of non null values by rows and by lines of the LU factorization
+    csn *N; // store the partial pivot and the LU factorization
     cs A;
+    cs* permuted_A;
+    int *perm,*iperm; // fill reducing permutation
     type::vector<sofa::Index> A_i, A_p;
     type::vector<Real> A_x;
     Real * tmp;
@@ -68,13 +74,19 @@ public:
 
     Data<bool> f_verbose; ///< Dump system state at each iteration
     Data<double> f_tol; ///< tolerance of factorization
-
-    SparseLUSolver();
+    
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void invert(Matrix& M) override;
 
+    SparseLUSolver();
+
 protected :
 
+    Data<bool> d_applyPermutation ;
+  
+    void fill_reducing_perm(cs A,int * perm,int * invperm);
+    css* symbolic_LU(cs *A);
+    
     MatrixInvertData * createInvertData() override {
         return new SparseLUInvertData<Real>();
     }
