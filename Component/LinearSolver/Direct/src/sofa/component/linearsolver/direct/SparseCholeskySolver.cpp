@@ -29,11 +29,9 @@ namespace sofa::component::linearsolver::direct
 using namespace sofa::linearalgebra;
 
 int SparseCholeskySolverClass = core::RegisterObject("Direct linear solver based on Sparse Cholesky factorization, implemented with the CSPARSE library")
-        .add< SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> > >(true)
-        .add< SparseCholeskySolver< CompressedRowSparseMatrix<float>,FullVector<float> > >()
+        .add< SparseCholeskySolver< CompressedRowSparseMatrix<SReal>,FullVector<SReal> > >()
         ;
 
-template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
-template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseCholeskySolver< CompressedRowSparseMatrix<float>,FullVector<float> >;
+template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseCholeskySolver< CompressedRowSparseMatrix<SReal>,FullVector<SReal> >;
 
 } // namespace sofa::component::linearsolver::direct

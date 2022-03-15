@@ -34,15 +34,13 @@ using namespace sofa::linearalgebra;
 
 int SVDLinearSolverClass = core::RegisterObject("Linear system solver using a SVD decomposition of a dense matrix")
         .add< SVDLinearSolver< FullMatrix<SReal>, FullVector<SReal> > >()
-        .add< SVDLinearSolver< FullMatrix<float>, FullVector<float> > >()
         .add< SVDLinearSolver< CompressedRowSparseMatrix<SReal>, FullVector<SReal> > >()
         .add< SVDLinearSolver< CompressedRowSparseMatrix<type::Mat<3,3, SReal>>, FullVector<SReal> > >()
         .addAlias("SVDLinear")
         .addAlias("SVD")
         ;
 
-template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SVDLinearSolver< FullMatrix<double>, FullVector<double> >;
-template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SVDLinearSolver< FullMatrix<float>, FullVector<float> >;
+template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SVDLinearSolver< FullMatrix<SReal>, FullVector<SReal> >;
 template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SVDLinearSolver< CompressedRowSparseMatrix<SReal>, FullVector<SReal> >;
 template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SVDLinearSolver< CompressedRowSparseMatrix<type::Mat<3, 3, SReal>>, FullVector<SReal> >;
 

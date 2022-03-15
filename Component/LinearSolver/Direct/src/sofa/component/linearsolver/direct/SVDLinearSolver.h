@@ -60,8 +60,7 @@ public:
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_DIRECT_SVDLINEARSOLVER_CPP)
-extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SVDLinearSolver< linearalgebra::FullMatrix<double>, linearalgebra::FullVector<double> >;
-extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SVDLinearSolver< linearalgebra::FullMatrix<float>, linearalgebra::FullVector<float> >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SVDLinearSolver< linearalgebra::FullMatrix<SReal>, linearalgebra::FullVector<SReal> >;
 extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SVDLinearSolver< linearalgebra::CompressedRowSparseMatrix<SReal>, linearalgebra::FullVector<SReal> >;
 extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SVDLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<3, 3, SReal>>, linearalgebra::FullVector<SReal> >;
 #endif
