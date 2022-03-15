@@ -201,7 +201,8 @@ protected :
         }
     }
 
-    void LDL_ordering(int n,int * M_colptr,int * M_rowind,int * perm,int * invperm) {
+    void LDL_ordering(int n,int * M_colptr,int * M_rowind,int * perm,int * invperm)
+    {
         if( d_applyPermutation.getValue() )
         {
             //Compute transpose in tran_colptr, tran_rowind, tran_values, tran_D
@@ -210,10 +211,10 @@ protected :
 
             //First we count the number of value on each row.
             for (int j=0;j<n;j++) {
-            for (int i=M_colptr[j];i<M_colptr[j+1];i++) {
-                int col = M_rowind[i];
-                if (col>j) tran_countvec[col]++;
-            }
+                for (int i=M_colptr[j];i<M_colptr[j+1];i++) {
+                    int col = M_rowind[i];
+                    if (col>j) tran_countvec[col]++;
+                }
             }
 
             //Now we make a scan to build tran_colptr
@@ -227,13 +228,13 @@ protected :
 
             t_adj.resize(t_xadj[n]);
             for (int j=0;j<n;j++) {
-            for (int i=M_colptr[j];i<M_colptr[j+1];i++) {
-                int line = M_rowind[i];
-                if (line>j) {
-                    t_adj[t_xadj[line] + tran_countvec[line]] = j;
-                    tran_countvec[line]++;
+                for (int i=M_colptr[j];i<M_colptr[j+1];i++) {
+                    int line = M_rowind[i];
+                    if (line>j) {
+                        t_adj[t_xadj[line] + tran_countvec[line]] = j;
+                        tran_countvec[line]++;
+                    }
                 }
-            }
             }
 
             adj.clear();
