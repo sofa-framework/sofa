@@ -819,7 +819,7 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "Visual3DText", CreatableMoved("v22.06", "SofaGeneralVisual", "Sofa.Component.Visual") },
     { "VisualTransform", CreatableMoved("v22.06", "SofaGeneralVisual", "Sofa.Component.Visual") },
 
-    // SofaSimpleFem was deprecated in #XXXX and ....
+    // SofaSimpleFem was deprecated in #2753 and ....
     { "TetrahedronDiffusionFEMForceField", CreatableMoved("v22.06", "SofaSimpleFem", "Sofa.Component.Diffusion") },
 };
 
