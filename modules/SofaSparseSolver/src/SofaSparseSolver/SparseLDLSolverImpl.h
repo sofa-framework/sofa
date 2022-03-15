@@ -201,7 +201,8 @@ protected :
         }
     }
 
-    void LDL_ordering(int n,int * M_colptr,int * M_rowind,int * perm,int * invperm) {
+    void LDL_ordering(int n,int * M_colptr,int * M_rowind,int * perm,int * invperm)
+    {
         if( d_applyPermutation.getValue() )
         {
             //Compute transpose in tran_colptr, tran_rowind, tran_values, tran_D
@@ -210,10 +211,10 @@ protected :
 
             //First we count the number of value on each row.
             for (int j=0;j<n;j++) {
-            for (int i=M_colptr[j];i<M_colptr[j+1];i++) {
-                int col = M_rowind[i];
-                if (col>j) tran_countvec[col]++;
-            }
+                for (int i=M_colptr[j];i<M_colptr[j+1];i++) {
+                    int col = M_rowind[i];
+                    if (col>j) tran_countvec[col]++;
+                }
             }
 
             //Now we make a scan to build tran_colptr
@@ -227,13 +228,13 @@ protected :
 
             t_adj.resize(t_xadj[n]);
             for (int j=0;j<n;j++) {
-            for (int i=M_colptr[j];i<M_colptr[j+1];i++) {
-                int line = M_rowind[i];
-                if (line>j) {
-                    t_adj[t_xadj[line] + tran_countvec[line]] = j;
-                    tran_countvec[line]++;
+                for (int i=M_colptr[j];i<M_colptr[j+1];i++) {
+                    int line = M_rowind[i];
+                    if (line>j) {
+                        t_adj[t_xadj[line] + tran_countvec[line]] = j;
+                        tran_countvec[line]++;
+                    }
                 }
-            }
             }
 
             adj.clear();
@@ -303,8 +304,9 @@ protected :
         memcpy(data->P_values.data(),M_values,data->P_nnz * sizeof(Real));
 
         // we test if the matrix has the same struct as previous factorized matrix
-        sofa::helper::AdvancedTimer::stepBegin("symbolic_factorization");
-        if (data->new_factorization_needed  || !d_useSymbolicDecomposition.getValue() ) {
+        if (data->new_factorization_needed  || !d_useSymbolicDecomposition.getValue() )
+        {
+            sofa::helper::ScopedAdvancedTimer factorizationTimer("symbolic_factorization");
             msg_info() << "Recomputing new factorization" ;
 
             data->perm.clear();data->perm.fastResize(data->n);
@@ -335,7 +337,6 @@ protected :
             data->LT_rowind.clear();data->LT_rowind.fastResize(data->L_nnz);
             data->LT_values.clear();data->LT_values.fastResize(data->L_nnz);
         }
-        sofa::helper::AdvancedTimer::stepEnd("symbolic_factorization");
 
         Real * D = data->invD.data();
         int * rowind = data->L_rowind.data();
@@ -346,14 +347,14 @@ protected :
         Real * tran_values = data->LT_values.data();
 
         //Numeric Factorization
-        sofa::helper::AdvancedTimer::stepBegin("numeric_factorization");
-        LDL_numeric(data->n,M_colptr,M_rowind,M_values,colptr,rowind,values,D,
-                    data->perm.data(),data->invperm.data(),data->Parent.data());
+        {
+            sofa::helper::ScopedAdvancedTimer factorizationTimer("numeric_factorization");
+            LDL_numeric(data->n,M_colptr,M_rowind,M_values,colptr,rowind,values,D,
+                        data->perm.data(),data->invperm.data(),data->Parent.data());
 
-        //inverse the diagonal
-        for (int i=0;i<data->n;i++) D[i] = 1.0/D[i];
-
-        sofa::helper::AdvancedTimer::stepEnd("numeric_factorization");
+            //inverse the diagonal
+            for (int i=0;i<data->n;i++) D[i] = 1.0/D[i];
+        }
 
         // split the bloc diag in data->Bdiag
 
