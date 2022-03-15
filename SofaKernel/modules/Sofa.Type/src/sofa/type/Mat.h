@@ -1105,9 +1105,8 @@ constexpr Mat<L,L,Real> tensorProduct(const Vec<L,Real> a, const Vec<L,Real> b )
 
     for( typename Mat::Size i=0 ; i<L ; ++i )
     {
-        m[i][i] = a[i]*b[i];
-        for( typename Mat::Size j=i+1 ; j<L ; ++j )
-            m[i][j] = m[j][i] = a[i]*b[j];
+        for( typename Mat::Size j=0 ; j<L ; ++j )
+            m[i][j] = a[i]*b[j];
     }
 
     return m;
