@@ -29,13 +29,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/gl/template.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::constraint::projective
 {
 
 template<>
@@ -114,14 +108,9 @@ template class SOFA_GPU_CUDA_API FixedTranslationConstraint<gpu::cuda::CudaVec6d
 template class SOFA_GPU_CUDA_API FixedTranslationConstraint<gpu::cuda::CudaRigid3dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-}// namespace projectiveconstraintset
+}// namespace sofa::component::constraint::projective
 
-}// namespace component
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 
@@ -139,8 +128,4 @@ int FixedTranslationConstraintCudaClass = core::RegisterObject("Supports GPU-sid
         ;
 
 
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
+} // namespace sofa::gpu::cuda
