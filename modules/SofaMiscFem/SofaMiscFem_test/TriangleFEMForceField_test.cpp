@@ -91,6 +91,9 @@ public:
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
 
+        createObject(m_root, "DefaultAnimationLoop");
+        createObject(m_root, "DefaultVisualManagerLoop");
+
         createObject(m_root, "MechanicalObject", {{"template","Vec3d"}, {"position", "0 0 0  1 0 0  0 1 0  1 1 1"} });
         createObject(m_root, "TriangleSetTopologyContainer", { {"triangles","0 1 2  1 3 2"} });
         createObject(m_root, "TriangleSetTopologyModifier");
@@ -123,6 +126,9 @@ public:
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
         m_root->setGravity(type::Vec3(0.0, 10.0, 0.0));
         m_root->setDt(0.01);
+
+        createObject(m_root, "DefaultAnimationLoop");
+        createObject(m_root, "DefaultVisualManagerLoop");
 
         createObject(m_root, "RegularGridTopology", { {"name", "grid"}, 
             {"n", str(type::Vec3(nbrGrid, nbrGrid, 1))}, {"min", "0 0 0"}, {"max", "10 10 0"} });
@@ -232,6 +238,9 @@ public:
     void checkNoTopology(int FEMType)
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
+        createObject(m_root, "DefaultAnimationLoop");
+        createObject(m_root, "DefaultVisualManagerLoop");
+
         createObject(m_root, "MechanicalObject", { {"template","Vec3d"}, {"position", "0 0 0  1 0 0  0 1 0"} });
         if (FEMType == 0) // TriangleModel
         {
@@ -258,6 +267,9 @@ public:
     void checkEmptyTopology(int FEMType)
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
+        createObject(m_root, "DefaultAnimationLoop");
+        createObject(m_root, "DefaultVisualManagerLoop");
+
         createObject(m_root, "MechanicalObject", { {"template","Vec3d"} });
         createObject(m_root, "TriangleSetTopologyContainer");
         if (FEMType == 0) // TriangleModel
@@ -286,6 +298,8 @@ public:
     void checkDefaultAttributes(int FEMType)
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
+        createObject(m_root, "DefaultAnimationLoop");
+        createObject(m_root, "DefaultVisualManagerLoop");
 
         createObject(m_root, "MechanicalObject", { {"template","Vec3d"}, {"position", "0 0 0  1 0 0  0 1 0"} });
         createObject(m_root, "TriangleSetTopologyContainer", { {"triangles","0 1 2"} });
@@ -362,8 +376,8 @@ public:
         exp_rotatedInitPos[1] = Mat33(Vec3(0, 0, 0), Vec3(1.4142135, 0, 0), Vec3(0.707107, 1.2247449, 0));
         exp_rotMat[1] = Mat33(Vec3(0, -0.81649661, -0.57735), Vec3(0.707107, 0.40824831, -0.57735), Vec3(0.707107, -0.40824831, 0.57735));
         exp_stiffnessMat[1] = Mat33(Vec3(95.1676, 28.550287, 0), Vec3(28.550287, 95.1676, 0), Vec3(0, 0, 33.30867));
-        exp_strainDispl[1][0] = Vec3(-1, 0, -1); exp_strainDispl[1][1] = Vec3(0, -1, -1); exp_strainDispl[1][2] = Vec3(1, 0, 0);
-        exp_strainDispl[1][3] = Vec3(0, 0, 1); exp_strainDispl[1][4] = Vec3(0, 0, 1); exp_strainDispl[1][5] = Vec3(0, 1, 0);
+        exp_strainDispl[1][0] = Vec3(-0.707107, 0, -0.408248); exp_strainDispl[1][1] = Vec3(0, -0.408248, -0.707107); exp_strainDispl[1][2] = Vec3(0.707107, 0, -0.408248);
+        exp_strainDispl[1][3] = Vec3(0, -0.408248, 0.707107); exp_strainDispl[1][4] = Vec3(0, 0, 0.816497); exp_strainDispl[1][5] = Vec3(0, 0.816497, 0);
 
         if (FEMType == 0)
         {
@@ -397,7 +411,7 @@ public:
             {
                 typename TriangularFEM::TriangleInformation triangleInfo = triFEM->triangleInfo.getValue()[id];
                 const type::fixed_array <Coord, 3>& rotatedInitPos = triangleInfo.rotatedInitialElements;
-                const Mat33& rotMat = triangleInfo.initialTransformation;
+                const Mat33& rotMat = triangleInfo.rotation;
                 const Mat33& stiffnessMat = triangleInfo.materialMatrix;
                 const Mat63& strainDispl = triangleInfo.strainDisplacementMatrix;
 
@@ -543,7 +557,7 @@ public:
             
             typename TriangularFEM::TriangleInformation triangleInfo = triFEM->triangleInfo.getValue()[idTri];
             const type::fixed_array <Coord, 3>& rotatedInitPos = triangleInfo.rotatedInitialElements;
-            const Mat33& rotMat = triangleInfo.initialTransformation; // rotMat: [1 0 0,0 1 0,0 0 1]
+            const Mat33& rotMat = triangleInfo.rotation;
             const Mat33& stiffnessMat = triangleInfo.materialMatrix;
             const Mat63& strainDispl = triangleInfo.strainDisplacementMatrix;
 
@@ -731,12 +745,12 @@ TEST_F(TriangleFEMForceField3_test, checkTriangularFEMForceField_wrongAttributes
     this->checkWrongAttributes(1);
 }
 
-TEST_F(TriangleFEMForceField3_test, DISABLED_checkTriangularFEMForceField_init)
+TEST_F(TriangleFEMForceField3_test, checkTriangularFEMForceField_init)
 {
     this->checkInit(1);
 }
 
-TEST_F(TriangleFEMForceField3_test, DISABLED_checkTriangularFEMForceField_values)
+TEST_F(TriangleFEMForceField3_test, checkTriangularFEMForceField_values)
 {
     this->checkFEMValues(1);
 }
