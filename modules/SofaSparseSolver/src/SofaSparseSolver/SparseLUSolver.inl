@@ -112,9 +112,9 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::fill_reducing_perm(cs A,int
     int n = A.n;
     if(d_applyPermutation.getValue() )
     {
-        sofa::type::vector<int> adj,xadj;
-
-        CSR_to_adj( A.n, A.p , A.i , adj, xadj);
+        sofa::type::vector<int> adj, xadj, t_adj, t_xadj, tran_countvec;
+        
+        CSR_to_adj( A.n, A.p , A.i , adj, xadj, t_adj, t_xadj, tran_countvec );
 
         METIS_NodeND(&n, xadj.data(), adj.data(), NULL, NULL, perm,invperm);
 
