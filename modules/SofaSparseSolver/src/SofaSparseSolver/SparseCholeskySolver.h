@@ -31,6 +31,7 @@
 #include <sofa/helper/map.h>
 #include <cmath>
 #include <csparse.h>
+#include"CSR_to_adj.h"
 extern "C" {
 #include <metis.h>
 }

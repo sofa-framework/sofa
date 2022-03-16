@@ -26,7 +26,7 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
-
+#include"CSR_to_adj.h"
 extern "C" {
 #include <metis.h>
 }
@@ -205,6 +205,8 @@ protected :
     {
         if( d_applyPermutation.getValue() )
         {
+            CSR_to_adj( n, M_colptr, M_rowind, adj, xadj, t_adj, t_xadj, tran_countvec );
+            /*
             //Compute transpose in tran_colptr, tran_rowind, tran_values, tran_D
             tran_countvec.clear();
             tran_countvec.resize(n);
@@ -261,7 +263,7 @@ protected :
             // We give NULL and NULL to use the default option (see doc of metis for details) !
             // If you have the error "SparseLDLSolver failure to factorize, D(k,k) is zero" that probably means that you use the previsou version of metis.
             // In this case you have to download and install the last version from : www.cs.umn.edu/~metis‎
-        
+        */
             METIS_NodeND(&n, xadj.data(), adj.data(), NULL, NULL, perm,invperm);
         }
         else 
