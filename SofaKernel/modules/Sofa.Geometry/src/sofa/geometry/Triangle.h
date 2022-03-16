@@ -123,18 +123,18 @@ struct Triangle
     static constexpr bool rayIntersection(const sofa::type::Vec<3, TReal>& n0, const sofa::type::Vec<3, TReal>& n1, const sofa::type::Vec<3, TReal>& n2, const sofa::type::Vec<3, TReal>& origin, const sofa::type::Vec<3, TReal>& direction, TReal& t, TReal& u, TReal& v)
     {
 
-        static constexpr TReal epsilon = std::numeric_limits<TReal>::epsilon();
-        static constexpr TReal zero = static_cast<TReal>(0);
-        static constexpr TReal one = static_cast<TReal>(1);
+        constexpr TReal epsilon = std::numeric_limits<TReal>::epsilon();
+        constexpr TReal zero = static_cast<TReal>(0);
+        constexpr TReal one = static_cast<TReal>(1);
 
         t = 0; u = 0; v = 0;
 
         const auto e0 = n1 - n0;
         const auto e1 = n2 - n0;
 
-        sofa::type::Vector3 tvec(type::NOINIT);
-        sofa::type::Vector3 pvec(type::NOINIT);
-        sofa::type::Vector3 qvec(type::NOINIT);
+        sofa::type::Vec<3, TReal> tvec(type::NOINIT);
+        sofa::type::Vec<3, TReal> pvec(type::NOINIT);
+        sofa::type::Vec<3, TReal> qvec(type::NOINIT);
         TReal det;
         TReal inv_det;
 
