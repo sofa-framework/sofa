@@ -58,14 +58,13 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& x
     SparseLUInvertData<Real> * invertData = (SparseLUInvertData<Real>*) this->getMatrixInvertData(&M);
     int n = invertData->A.n;
 
-    sofa::helper::AdvancedTimer::stepBegin("solve");
+    sofa::helper::ScopedAdvancedTimer solveTimer("solve");
 
     cs_pvec (n, invertData->perm.data() , b.ptr(), invertData->tmp) ; // x = P*b
     cs_lsolve (invertData->N->L, invertData->tmp) ;		// x = L\x 
     cs_usolve (invertData->N->U, invertData->tmp) ;		// x = U\x 
     cs_pvec (n, invertData->iperm.data() , invertData->tmp, x.ptr()) ;	// b = Q*x 
     
-    sofa::helper::AdvancedTimer::stepEnd("solve");
 }
 
 template<class TMatrix, class TVector,class TThreadManager>
@@ -95,22 +94,21 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
 
     invertData->tmp = (Real *) cs_malloc (invertData->A.n, sizeof (Real)) ;
 
-    sofa::helper::AdvancedTimer::stepBegin("fill_reducing_permutation");
     fill_reducing_perm(invertData->A, invertData->perm.data(), invertData->iperm.data() ); // compute the fill reducing permutation
-    sofa::helper::AdvancedTimer::stepEnd("fill_reducing_permutation");
 
     invertData->permuted_A = cs_permute(&(invertData->A), invertData->iperm.data(), invertData->perm.data(), 1); 
     invertData->S = symbolic_LU( invertData->permuted_A );
 
-    sofa::helper::AdvancedTimer::stepBegin("LU_factorization");
+    sofa::helper::ScopedAdvancedTimer factorizationTimer("factorization");
     invertData->N = cs_lu ( invertData->permuted_A, invertData->S, f_tol.getValue()) ;		/* numeric LU factorization */
-    sofa::helper::AdvancedTimer::stepEnd("LU_factorization");
 }
 
 
 template<class TMatrix, class TVector,class TThreadManager>
 void SparseLUSolver<TMatrix,TVector,TThreadManager>::fill_reducing_perm(cs A,int * perm,int * invperm)
 {
+    sofa::helper::ScopedAdvancedTimer permTimer("permutation");
+    
     int n = A.n;
     if(d_applyPermutation.getValue() )
     {

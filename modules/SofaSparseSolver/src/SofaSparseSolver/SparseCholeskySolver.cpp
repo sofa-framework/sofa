@@ -71,13 +71,11 @@ void SparseCholeskySolver<TMatrix,TVector>::solveT(float * z, float * r)
     z_tmp.resize(n);
     r_tmp.resize(n);
     for (int i=0; i<n; i++) r_tmp[i] = (double) r[i];
-
-    sofa::helper::AdvancedTimer::stepBegin("solve");
+ 
     cs_pvec(n, perm.data(), r_tmp.data() ,tmp.data() );
     cs_lsolve (N->L, tmp.data() );			//x = L\x
     cs_ltsolve (N->L, tmp.data() );			//x = L'\x/
     cs_pvec( n, iperm.data() , tmp.data() , z_tmp.data() );
-    sofa::helper::AdvancedTimer::stepEnd("solve");
     
     for (int i=0; i<n; i++) z[i] = (float) z_tmp[i];
 }
@@ -86,6 +84,7 @@ void SparseCholeskySolver<TMatrix,TVector>::solveT(float * z, float * r)
 template<class TMatrix, class TVector>
 void SparseCholeskySolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vector& r)
 {
+    sofa::helper::ScopedAdvancedTimer solveTimer("solve");
     solveT(z.ptr(),r.ptr());
 }
 
@@ -118,9 +117,8 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
     S = symbolic_Chol( &A ); // symbolic analysis
     permuted_A = cs_permute( &(A), iperm.data() , perm.data() , 1);
 
-    sofa::helper::AdvancedTimer::stepBegin("factorization");
+    sofa::helper::ScopedAdvancedTimer factorizationTimer("factorization");
     N = cs_chol (&A, S) ;		/* numeric Cholesky factorization */
-    sofa::helper::AdvancedTimer::stepEnd("factorization");
 }
 
 template<class TMatrix, class TVector>
