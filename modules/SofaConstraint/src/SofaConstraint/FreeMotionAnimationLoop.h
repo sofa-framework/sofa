@@ -56,7 +56,7 @@ public:
     }
 
     Data<bool> m_solveVelocityConstraintFirst; ///< solve separately velocity constraint violations before position constraint violations
-    Data<bool> d_threadSafeVisitor;
+    Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
     Data<bool> d_parallelCollisionDetectionAndFreeMotion; ///<If true, executes free motion and collision detection in parallel
     Data<bool> d_parallelODESolving; ///<If true, executes all free motions in parallel
 
@@ -64,11 +64,11 @@ protected:
     FreeMotionAnimationLoop(simulation::Node* gnode);
     ~FreeMotionAnimationLoop() override ;
 
-    ///< pointer towards a possible ConstraintSolver present in the scene graph
-    sofa::core::behavior::ConstraintSolver *constraintSolver;
-
     ///< pointer towards a default ConstraintSolver (LCPConstraintSolver) used in case none was found in the scene graph
     sofa::core::sptr<sofa::core::behavior::ConstraintSolver> defaultSolver;
+
+    ///< The ConstraintSolver used in this animation loop (required)
+    SingleLink<FreeMotionAnimationLoop, sofa::core::behavior::ConstraintSolver, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_constraintSolver;
 
     void FreeMotionAndCollisionDetection(const sofa::core::ExecParams* params, const core::ConstraintParams& cparams, SReal dt,
                                          sofa::core::MultiVecId pos,

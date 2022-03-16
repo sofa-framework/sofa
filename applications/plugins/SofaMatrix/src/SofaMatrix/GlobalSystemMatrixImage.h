@@ -45,7 +45,7 @@ protected:
     void init() override;
     void handleEvent(core::objectmodel::Event *event) override;
 
-    Data< type::BaseMatrixImageProxy > d_bitmap; /// A proxy to visualize the produced image in the GUI through a DataWidget
+    Data< type::BaseMatrixImageProxy > d_bitmap; ///< A proxy to visualize the produced image in the GUI through a DataWidget
     SingleLink<GlobalSystemMatrixImage, sofa::core::behavior::LinearSolver, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_linearSolver;
 };
 

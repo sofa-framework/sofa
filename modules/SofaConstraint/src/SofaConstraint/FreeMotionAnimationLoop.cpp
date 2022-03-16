@@ -72,8 +72,8 @@ FreeMotionAnimationLoop::FreeMotionAnimationLoop(simulation::Node* gnode)
     , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
     , d_parallelCollisionDetectionAndFreeMotion(initData(&d_parallelCollisionDetectionAndFreeMotion, false, "parallelCollisionDetectionAndFreeMotion", "If true, executes free motion step and collision detection step in parallel."))
     , d_parallelODESolving(initData(&d_parallelODESolving, false, "parallelODESolving", "If true, solves all the ODEs in parallel during the free motion step."))
-    , constraintSolver(nullptr)
     , defaultSolver(nullptr)
+    , l_constraintSolver(initLink("constraintSolver", "The ConstraintSolver used in this animation loop (required)"))
 {
     d_parallelCollisionDetectionAndFreeMotion.setGroup("Multithreading");
     d_parallelODESolving.setGroup("Multithreading");
@@ -91,6 +91,7 @@ void FreeMotionAnimationLoop::parse ( sofa::core::objectmodel::BaseObjectDescrip
 
     defaultSolver = sofa::core::objectmodel::New<constraintset::LCPConstraintSolver>();
     defaultSolver->parse(arg);
+    defaultSolver->setName(defaultSolver->getContext()->getNameHelper().resolveName(defaultSolver->getClassName(), {}));
 }
 
 
@@ -104,13 +105,31 @@ void FreeMotionAnimationLoop::init()
     MultiVecDeriv df(&vop, core::VecDerivId::dforce());
     df.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
 
-    getContext()->get(constraintSolver, core::objectmodel::BaseContext::SearchDown);
-    if (constraintSolver == nullptr && defaultSolver != nullptr)
+    if (!l_constraintSolver)
     {
-        msg_error() << "No ConstraintSolver found, using default LCPConstraintSolver";
-        getContext()->addObject(defaultSolver);
-        constraintSolver = defaultSolver.get();
-        defaultSolver = nullptr;
+        l_constraintSolver.set(this->getContext()->get<sofa::core::behavior::ConstraintSolver>(core::objectmodel::BaseContext::SearchDown));
+        if (!l_constraintSolver)
+        {
+            if (defaultSolver != nullptr)
+            {
+                msg_warning() << "A ConstraintSolver is required by " << this->getClassName() << " but has not been found:"
+                    " a default LCPConstraintSolver is automatically added in the scene for you. To remove this warning, add"
+                    " a ConstraintSolver in the scene.";
+                getContext()->addObject(defaultSolver);
+                l_constraintSolver.set(defaultSolver);
+                defaultSolver = nullptr;
+            }
+            else
+            {
+                msg_fatal() << "A ConstraintSolver is required by " << this->getClassName() << " but has not been found:"
+                    " a default LCPConstraintSolver could not be automatically added in the scene. To remove this error, add"
+                    " a ConstraintSolver in the scene.";
+            }
+        }
+        else
+        {
+            msg_info() << "Constraint solver found: '" << l_constraintSolver->getPathName() << "'";
+        }
     }
     else
     {
@@ -154,8 +173,8 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     core::ConstraintParams cparams(*params);
     cparams.setX(freePos);
     cparams.setV(freeVel);
-    cparams.setDx(constraintSolver->getDx());
-    cparams.setLambda(constraintSolver->getLambda());
+    cparams.setDx(l_constraintSolver->getDx());
+    cparams.setLambda(l_constraintSolver->getLambda());
     cparams.setOrder(m_solveVelocityConstraintFirst.getValue() ? core::ConstraintParams::VEL : core::ConstraintParams::POS_AND_VEL);
 
     MultiVecDeriv dx(&vop, core::VecDerivId::dx());
@@ -231,21 +250,21 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     FreeMotionAndCollisionDetection(params, cparams, dt, pos, freePos, freeVel, &mop);
 
     // Solve constraints
-    if (constraintSolver)
+    if (l_constraintSolver)
     {
         ScopedAdvancedTimer timer("ConstraintSolver");
 
         if (cparams.constOrder() == core::ConstraintParams::VEL )
         {
-            constraintSolver->solveConstraint(&cparams, vel);
+            l_constraintSolver->solveConstraint(&cparams, vel);
             pos.eq(pos, vel, dt);
         }
         else
         {
-            constraintSolver->solveConstraint(&cparams, pos, vel);
+            l_constraintSolver->solveConstraint(&cparams, pos, vel);
         }
 
-        MultiVecDeriv cdx(&vop, constraintSolver->getDx());
+        MultiVecDeriv cdx(&vop, l_constraintSolver->getDx());
         mop.projectResponse(cdx);
         mop.propagateDx(cdx, true);
     }

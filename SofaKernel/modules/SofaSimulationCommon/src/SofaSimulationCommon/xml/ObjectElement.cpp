@@ -91,6 +91,13 @@ bool ObjectElement::initNode()
         msg_error(ctx) << tmp.str() ;
         return false;
     }
+    auto& objName = *obj->name.beginEdit();
+    if (objName.empty())
+    {
+        objName = ctx->getNameHelper().resolveName(obj->getClassName(), objName);
+    }
+    obj->name.endEdit();
+
     setObject(obj);
     /// display any unused attributes
     for (AttributeMap::iterator it = attributes.begin(), itend = attributes.end(); it != itend; ++it)

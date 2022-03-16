@@ -47,6 +47,7 @@
 #include <sofa/helper/init.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/ComponentNameHelper.h>
 
 #include <sofa/simulation/SceneLoaderFactory.h>
 
@@ -164,7 +165,7 @@ void Simulation::init ( Node* root )
             "Default Animation Manager Loop will be used. Add DefaultAnimationLoop to the root node of scene file to remove this warning";
         
         DefaultAnimationLoop::SPtr aloop = sofa::core::objectmodel::New<DefaultAnimationLoop>(root);
-        aloop->setName(sofa::helper::NameDecoder::shortName(aloop->getClassName()));
+        aloop->setName(root->getNameHelper().resolveName(aloop->getClassName(), {}));
         root->addObject(aloop,sofa::core::objectmodel::TypeOfInsertion::AtBegin);
     }
 
@@ -174,7 +175,7 @@ void Simulation::init ( Node* root )
             "Default Visual Manager Loop will be used. Add DefaultVisualManagerLoop to the root node of scene file to remove this warning";
 
         DefaultVisualManagerLoop::SPtr vloop = sofa::core::objectmodel::New<DefaultVisualManagerLoop>(root);
-        vloop->setName(sofa::helper::NameDecoder::shortName(vloop->getClassName()));
+        vloop->setName(root->getNameHelper().resolveName(vloop->getClassName(), {}));
         root->addObject(vloop,sofa::core::objectmodel::TypeOfInsertion::AtBegin);
     }
 

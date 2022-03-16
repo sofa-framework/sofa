@@ -43,7 +43,8 @@ public:
     void doInit() override;
 
 protected:
-    Data<sofa::helper::OptionsGroup> d_fileFormat;
+    Data<sofa::helper::OptionsGroup> d_fileFormat; ///< File format
+    Data<int> d_precision; ///< Number of digits used to write an entry of the matrix, default is 6
 
     GlobalSystemMatrixExporter();
 

@@ -63,7 +63,7 @@ extern "C"
 template<class real>
 __global__ void FixedConstraintCuda1t_projectResponseContiguous_kernel(int size, real* dx)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
     if (index < size)
         dx[index] = 0.0f;
 }
@@ -71,7 +71,7 @@ __global__ void FixedConstraintCuda1t_projectResponseContiguous_kernel(int size,
 template<class real>
 __global__ void FixedConstraintCuda3t_projectResponseContiguous_kernel(int size, CudaVec3<real>* dx)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
     if (index < size)
         dx[index] = CudaVec3<real>::make(0.0f,0.0f,0.0f);
 }
@@ -79,7 +79,7 @@ __global__ void FixedConstraintCuda3t_projectResponseContiguous_kernel(int size,
 template<class real>
 __global__ void FixedConstraintCuda3t1_projectResponseContiguous_kernel(int size, CudaVec4<real>* dx)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
     if (index < size)
         dx[index] = CudaVec4<real>::make(0.0f,0.0f,0.0f,0.0f);
 }
@@ -87,7 +87,7 @@ __global__ void FixedConstraintCuda3t1_projectResponseContiguous_kernel(int size
 template<class real>
 __global__ void FixedConstraintCudaRigid3t_projectResponseContiguous_kernel(int size, CudaRigidDeriv3<real>* dx)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
     if (index < size)
         dx[index] = CudaRigidDeriv3<real>::make(0.0f,0.0f,0.0f,0.0f,0.0f,0.0f);
 }
@@ -95,7 +95,7 @@ __global__ void FixedConstraintCudaRigid3t_projectResponseContiguous_kernel(int 
 template<class real>
 __global__ void FixedConstraintCuda1t_projectResponseIndexed_kernel(int size, const int* indices, real* dx)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
     if (index < size)
         dx[indices[index]] = 0.0f;
 }
@@ -103,7 +103,7 @@ __global__ void FixedConstraintCuda1t_projectResponseIndexed_kernel(int size, co
 template<class real>
 __global__ void FixedConstraintCuda3t_projectResponseIndexed_kernel(int size, const int* indices, CudaVec3<real>* dx)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
     if (index < size)
         dx[indices[index]] = CudaVec3<real>::make(0.0f,0.0f,0.0f);
 }
@@ -111,7 +111,7 @@ __global__ void FixedConstraintCuda3t_projectResponseIndexed_kernel(int size, co
 template<class real>
 __global__ void FixedConstraintCuda3t1_projectResponseIndexed_kernel(int size, const int* indices, CudaVec4<real>* dx)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
     if (index < size)
         dx[indices[index]] = CudaVec4<real>::make(0.0f,0.0f,0.0f,0.0f);
 }
@@ -119,7 +119,7 @@ __global__ void FixedConstraintCuda3t1_projectResponseIndexed_kernel(int size, c
 template<class real>
 __global__ void FixedConstraintCudaRigid3t_projectResponseIndexed_kernel(int size, const int* indices, CudaRigidDeriv3<real>* dx)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
     if (index < size)
         dx[indices[index]] = CudaRigidDeriv3<real>::make(0.0f,0.0f,0.0f,0.0f,0.0f,0.0f);
 }

@@ -64,8 +64,8 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
 
-    Data< type::vector<sofa::Index> > d_points;
-    Data< type::vector<sofa::Index> > d_external_points;
+    Data< type::vector<sofa::Index> > d_points; ///< points controlled by the rest shape springs
+    Data< type::vector<sofa::Index> > d_external_points; ///< points from the external Mechancial State that define the rest shape springs
 
     /// polynomial data
     /// Describe set of polynomial coefficients combines in one array.
@@ -77,14 +77,14 @@ public:
     Data< type::vector<sofa::Size> > d_polynomialDegree;
 
 
-    Data<bool> d_recomputeIndices;
+    Data<bool> d_recomputeIndices; ///< Recompute indices (should be false for BBOX)
     Data<bool> d_drawSpring;                      ///< draw Spring
-    Data<sofa::type::RGBAColor> d_springColor;
-    Data<float> d_showIndicesScale;
+    Data<sofa::type::RGBAColor> d_springColor; ///< spring color
+    Data<float> d_showIndicesScale; ///< Scale for indices display. (default=0.02)
 
-    Data<VecReal> d_zeroLength;       /// Springs initial lengths
-    Data<double> d_smoothShift;
-    Data<double> d_smoothScale;
+    Data<VecReal> d_zeroLength;       ///< Springs initial lengths
+    Data<double> d_smoothShift; ///< denominator correction adding shift value
+    Data<double> d_smoothScale; ///< denominator correction adding scale
 
     SingleLink<PolynomialRestShapeSpringsForceField<DataTypes>, sofa::core::behavior::MechanicalState<DataTypes>,
         BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> d_restMState;

@@ -14,13 +14,6 @@ set(SOURCE_FILES
     ${SOFADENSESOLVER_SRC}/initSofaDenseSolver.cpp
     )
 
-list(APPEND HEADER_FILES
-    ${SOFADENSESOLVER_SRC}/SVDLinearSolver.h
-    )
-list(APPEND SOURCE_FILES
-    ${SOFADENSESOLVER_SRC}/SVDLinearSolver.cpp
-    )
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseLinearSolver)
 

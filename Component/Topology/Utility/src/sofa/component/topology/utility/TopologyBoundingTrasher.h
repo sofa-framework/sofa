@@ -83,8 +83,8 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 
 public:
-    Data<VecCoord> d_positions;
-    Data<Vec6>  d_borders;
+    Data<VecCoord> d_positions; ///< position coordinates of the topology object to interact with.
+    Data<Vec6>  d_borders; ///< List of boxes defined by xmin,ymin,zmin, xmax,ymax,zmax
     Data<bool>  d_drawBox; ///< draw bounding box
 
     /// Link to be set to the topology container in the component graph.

@@ -24,6 +24,7 @@
 
 #include <SofaBaseCollision/BruteForceBroadPhase.h>
 #include <SofaBaseCollision/BVHNarrowPhase.h>
+#include <sofa/core/ComponentNameHelper.h>
 
 namespace sofa::component::collision
 {
@@ -40,11 +41,11 @@ public:
     static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
     {
         BruteForceBroadPhase::SPtr broadPhase = sofa::core::objectmodel::New<BruteForceBroadPhase>();
-        broadPhase->setName("bruteForceBroadPhase");
+        broadPhase->setName(context->getNameHelper().resolveName(broadPhase->getClassName(), {}));
         if (context) context->addObject(broadPhase);
 
         BVHNarrowPhase::SPtr narrowPhase = sofa::core::objectmodel::New<BVHNarrowPhase>();
-        narrowPhase->setName("BVHNarrowPhase");
+        narrowPhase->setName(context->getNameHelper().resolveName(narrowPhase->getClassName(), {}));
         if (context) context->addObject(narrowPhase);
 
         typename T::SPtr obj = sofa::core::objectmodel::New<T>();

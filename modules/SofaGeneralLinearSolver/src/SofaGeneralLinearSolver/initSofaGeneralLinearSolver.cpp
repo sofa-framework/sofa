@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaGeneralLinearSolver/initSofaGeneralLinearSolver.h>
 
+#include <sofa/helper/system/PluginManager.h>
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
@@ -33,6 +34,11 @@ void initSofaGeneralLinearSolver()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaGeneralLinearSolver") << "SofaGeneralLinearSolver is deprecated. It will be removed at v23.06. Use Sofa.Component.LinearSolver.Iterative and Sofa.Component.LinearSolver.Direct instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.LinearSolver.Iterative");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.LinearSolver.Direct");
+
         first = false;
     }
 }

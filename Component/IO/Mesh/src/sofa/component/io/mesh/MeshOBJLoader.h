@@ -53,18 +53,18 @@ protected:
     FaceType faceType;
 
 public:
-    Data<bool> d_handleSeams;
-    Data<bool> d_loadMaterial;
-    Data<sofa::type::Material> d_material;
-    Data <type::vector<sofa::type::Material> > d_materials;
-    Data <type::SVector <type::SVector <int> > > d_faceList;
-    Data <type::SVector <type::SVector <int> > > d_texIndexList;
-    Data <type::vector<sofa::type::Vector3> > d_positionsList;
-    Data< type::vector<sofa::type::Vector2> > d_texCoordsList;
-    Data <type::SVector<type::SVector<int> > > d_normalsIndexList;
-    Data <type::vector<sofa::type::Vector3> > d_normalsList;
-    Data< type::vector<sofa::type::Vector2> > d_texCoords;
-    Data< bool > d_computeMaterialFaces;
+    Data<bool> d_handleSeams; ///< Preserve UV and normal seams information (vertices with multiple UV and/or normals)
+    Data<bool> d_loadMaterial; ///< Load the related MTL file or use a default one?
+    Data<sofa::type::Material> d_material; ///< Default material
+    Data <type::vector<sofa::type::Material> > d_materials; ///< List of materials
+    Data <type::SVector <type::SVector <int> > > d_faceList; ///< List of face definitions.
+    Data <type::SVector <type::SVector <int> > > d_texIndexList; ///< Indices of textures coordinates used in faces definition.
+    Data <type::vector<sofa::type::Vector3> > d_positionsList; ///< Vertex positions definition
+    Data< type::vector<sofa::type::Vector2> > d_texCoordsList; ///< Texture coordinates definition
+    Data <type::SVector<type::SVector<int> > > d_normalsIndexList; ///< List of normals of elements of the mesh loaded.
+    Data <type::vector<sofa::type::Vector3> > d_normalsList; ///< Normals definition
+    Data< type::vector<sofa::type::Vector2> > d_texCoords; ///< Texture coordinates of all faces, to be used as the parent data of a VisualModel texcoords data
+    Data< bool > d_computeMaterialFaces; ///< True to activate export of Data instances containing list of face indices for each material
     type::vector< Data <type::vector<unsigned int> >* > d_subsets_indices;
 
     /// If vertices have multiple normals/texcoords, then we need to separate them

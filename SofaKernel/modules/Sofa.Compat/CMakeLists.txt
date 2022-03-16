@@ -93,7 +93,14 @@ set(HEADER_FILES
     ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/EigenVectorWrapper.h
     ${SOFACOMPATSRC_ROOT}/SofaEigen2Solver/SVDLinearSolver.h
     ${SOFACOMPATSRC_ROOT}/SofaExporter/OBJExporter.h
-
+    ${SOFACOMPATSRC_ROOT}/SofaGeneralRigid/ArticulatedHierarchyContainer.h
+    ${SOFACOMPATSRC_ROOT}/SofaGeneralRigid/ArticulatedHierarchyContainer.inl
+    ${SOFACOMPATSRC_ROOT}/SofaGeneralRigid/ArticulatedSystemMapping.h
+    ${SOFACOMPATSRC_ROOT}/SofaGeneralRigid/ArticulatedSystemMapping.inl
+    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/BlocMatrixWriter.h
+    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h
+    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/CRSMultiMatrixAccessor.h
+    ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/SingleMatrixAccessor.h
 )
 
 set(SOURCE_FILES

@@ -55,8 +55,8 @@ extern "C"
 
 __global__ void SphereForceFieldCuda3f_addForce_kernel(int size, GPUSphere sphere, CudaVec4<float>* penetration, float* f, const float* x, const float* v)
 {
-    int index0 = umul24(blockIdx.x,BSIZE);
-    int index0_3 = umul24(blockIdx.x,BSIZE*3); //index0*3;
+    int index0 = blockIdx.x * BSIZE;
+    int index0_3 = index0 * 3;
 
     penetration += index0;
     f += index0_3;
@@ -64,7 +64,7 @@ __global__ void SphereForceFieldCuda3f_addForce_kernel(int size, GPUSphere spher
     v += index0_3;
 
     int index = threadIdx.x;
-    int index_3 = umul24(index,3); //index*3;
+    int index_3 = index * 3;
 
     //! Dynamically allocated shared memory to reorder global memory access
     extern  __shared__  float temp[];
@@ -125,7 +125,7 @@ __global__ void SphereForceFieldCuda3f_addForce_kernel(int size, GPUSphere spher
 
 __global__ void SphereForceFieldCuda3f1_addForce_kernel(int size, GPUSphere sphere, CudaVec4<float>* penetration, CudaVec4<float>* f, const CudaVec4<float>* x, const CudaVec4<float>* v)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
 
     CudaVec4<float> temp = x[index];
     CudaVec3<float> dp = CudaVec3<float>::make(temp) - sphere.center;
@@ -158,15 +158,15 @@ __global__ void SphereForceFieldCuda3f1_addForce_kernel(int size, GPUSphere sphe
 
 __global__ void SphereForceFieldCuda3f_addDForce_kernel(int size, GPUSphere sphere, const CudaVec4<float>* penetration, float* df, const float* dx)
 {
-    int index0 = umul24(blockIdx.x,BSIZE);
-    int index0_3 = umul24(blockIdx.x,BSIZE*3); //index0*3;
+    int index0 = blockIdx.x * BSIZE;
+    int index0_3 = index0 * 3;
 
     penetration += index0;
     df += index0_3;
     dx += index0_3;
 
     int index = threadIdx.x;
-    int index_3 = umul24(index,3); //index*3;
+    int index_3 = index * 3;
 
     //! Dynamically allocated shared memory to reorder global memory access
     extern  __shared__  float temp[];
@@ -209,7 +209,7 @@ __global__ void SphereForceFieldCuda3f_addDForce_kernel(int size, GPUSphere sphe
 
 __global__ void SphereForceFieldCuda3f1_addDForce_kernel(int size, GPUSphere sphere, const CudaVec4<float>* penetration, CudaVec4<float>* df, const CudaVec4<float>* dx)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
 
     CudaVec4<float> dxi = dx[index];
     CudaVec4<float> d = penetration[index];

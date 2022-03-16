@@ -60,7 +60,7 @@ __global__ void MeshMatrixMassCuda_addMDx3f_kernel(real factor, real massLumping
 {
     int tx = threadIdx.x;
     int tx2 = tx/3;
-    int index1 = umul24(blockIdx.x,BSIZE);
+    int index1 = blockIdx.x * BSIZE;
     int index2 = index1*3;
 
     __shared__ real s_dx[BSIZE];
@@ -87,7 +87,7 @@ __global__ void MeshMatrixMassCuda_addMDx3f_kernel(real factor, real massLumping
 template<class real>
 __global__ void MeshMatrixMassCuda_addForce3f_kernel(int dim, real *  f, const real * vertexMass, real g_x, real g_y, real massLumpingCoeff)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
     int index2 = index * 3;
     if (index < dim)
     {
@@ -100,7 +100,7 @@ __global__ void MeshMatrixMassCuda_addForce3f_kernel(int dim, real *  f, const r
 template<class real>
 __global__ void MeshMatrixMassCuda_accFromF3f_kernel(int dim, real * acc, const real * f, const real * vertexMass, real massLumpingCoeff)
 {
-//    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+//    int index = blockIdx.x * BSIZE+threadIdx.x;
 //    int index2 = index * 2;
 //    if (index < dim) {
 //      acc[index2+0] = f[index2+0] / (vertexMass[index2+0] * massLumpingCoeff);
@@ -108,7 +108,7 @@ __global__ void MeshMatrixMassCuda_accFromF3f_kernel(int dim, real * acc, const 
 //    }
     int tx = threadIdx.x;
     int tx2 = tx/3;
-    int index1 = umul24(blockIdx.x,BSIZE);
+    int index1 = blockIdx.x * BSIZE;
     int index2 = index1*3;
 
     __shared__ real s_f[BSIZE];
@@ -176,7 +176,7 @@ __global__ void MeshMatrixMassCuda_addMDx2f_kernel(real factor, real massLumping
 {
     int tx = threadIdx.x;
     int tx2 = tx>>1;
-    int index1 = umul24(blockIdx.x,BSIZE);
+    int index1 = blockIdx.x * BSIZE;
     int index2 = index1<<1;
 
     __shared__ real s_dx[BSIZE];
@@ -203,7 +203,7 @@ __global__ void MeshMatrixMassCuda_addMDx2f_kernel(real factor, real massLumping
 template<class real>
 __global__ void MeshMatrixMassCuda_addForce2f_kernel(int dim, real *  f, const real * vertexMass, real g_x, real g_y, real massLumpingCoeff)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
     int index2 = index * 2;
     if (index < dim)
     {
@@ -215,7 +215,7 @@ __global__ void MeshMatrixMassCuda_addForce2f_kernel(int dim, real *  f, const r
 template<class real>
 __global__ void MeshMatrixMassCuda_accFromF2f_kernel(int dim, real * acc, const real * f, const real * vertexMass, real massLumpingCoeff)
 {
-//    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+//    int index = blockIdx.x * BSIZE+threadIdx.x;
 //    int index2 = index * 2;
 //    if (index < dim) {
 //      acc[index2+0] = f[index2+0] / (vertexMass[index2+0] * massLumpingCoeff);
@@ -223,7 +223,7 @@ __global__ void MeshMatrixMassCuda_accFromF2f_kernel(int dim, real * acc, const 
 //    }
     int tx = threadIdx.x;
     int tx2 = tx>>1;
-    int index1 = umul24(blockIdx.x,BSIZE);
+    int index1 = blockIdx.x * BSIZE;
     int index2 = index1<<1;
 
     __shared__ real s_f[BSIZE];
@@ -290,7 +290,7 @@ template<class real>
 __global__ void MeshMatrixMassCuda_addMDx1f_kernel(real factor, real massLumpingCoeff,const real * vertexMass, const real* dx, real* res)
 {
     int tx = threadIdx.x;
-    int index = umul24(blockIdx.x,BSIZE);
+    int index = blockIdx.x * BSIZE;
 
     __shared__ real s_dx[BSIZE];
     __shared__ real s_vertexMass[BSIZE];
@@ -314,7 +314,7 @@ __global__ void MeshMatrixMassCuda_addMDx1f_kernel(real factor, real massLumping
 template<class real>
 __global__ void MeshMatrixMassCuda_addForce1f_kernel(int dim, real *  f, const real * vertexMass, real g_x, real g_y, real massLumpingCoeff)
 {
-    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    int index = blockIdx.x * BSIZE+threadIdx.x;
     if (index < dim)
     {
         f[index] += vertexMass[index] * massLumpingCoeff * g_x;
@@ -324,14 +324,14 @@ __global__ void MeshMatrixMassCuda_addForce1f_kernel(int dim, real *  f, const r
 template<class real>
 __global__ void MeshMatrixMassCuda_accFromF1f_kernel(int dim, real * acc, const real * f, const real * vertexMass, real massLumpingCoeff)
 {
-//    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+//    int index = blockIdx.x * BSIZE+threadIdx.x;
 //    int index2 = index * 2;
 //    if (index < dim) {
 //      acc[index2+0] = f[index2+0] / (vertexMass[index2+0] * massLumpingCoeff);
 //      acc[index2+1] = f[index2+1] / (vertexMass[index2+1] * massLumpingCoeff);
 //    }
     int tx = threadIdx.x;
-    int index = umul24(blockIdx.x,BSIZE);
+    int index = blockIdx.x * BSIZE;
 
     __shared__ real s_f[BSIZE];
     __shared__ real s_vertexMass[BSIZE];

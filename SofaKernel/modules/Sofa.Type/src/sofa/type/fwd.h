@@ -100,4 +100,8 @@ typedef Mat<4,4,SReal> Matrix4;
 template <typename RealType> class Quat;
 using Quatd = type::Quat<double>;
 using Quatf = type::Quat<float>;
+
+class BoundingBox;
+class BoundingBox1D;
+class BoundingBox2D;
 }

@@ -89,8 +89,8 @@ __global__ void PenalityContactForceFieldCuda3f_setContacts_kernel(const GPUTest
 __global__ void PenalityContactForceFieldCuda3f_addForce_kernel(int size, const CudaVec4<float>* contacts, float* pen, float* f1, const float* x1, const float* v1, float* f2, const float* x2, const float* v2)
 //, GPUSphere sphere, CudaVec4<float>* penetration, float* f, const float* x, const float* v)
 {
-    int index0 = umul24(blockIdx.x,BSIZE);
-    int index0_3 = umul24(blockIdx.x,BSIZE*3); //index0*3;
+    int index0 = blockIdx.x * BSIZE;
+    int index0_3 = index0 * 3;
 
     contacts += index0;
     pen += index0;
@@ -102,7 +102,7 @@ __global__ void PenalityContactForceFieldCuda3f_addForce_kernel(int size, const 
     v2 += index0_3;
 
     int index = threadIdx.x;
-    int index_3 = umul24(index,3); //index*3;
+    int index_3 = index * 3;
 
     //! Dynamically allocated shared memory to reorder global memory access
     extern  __shared__  float temp[];
@@ -142,8 +142,8 @@ __global__ void PenalityContactForceFieldCuda3f_addForce_kernel(int size, const 
 
 __global__ void PenalityContactForceFieldCuda3f_addDForce_kernel(int size, const CudaVec4<float>* contacts, const float* pen, float* df1, const float* dx1, float* df2, const float* dx2, float factor)
 {
-    int index0 = umul24(blockIdx.x,BSIZE);
-    int index0_3 = umul24(blockIdx.x,BSIZE*3); //index0*3;
+    int index0 = blockIdx.x * BSIZE;
+    int index0_3 = index0 * 3;
 
     contacts += index0;
     pen += index0;
@@ -153,7 +153,7 @@ __global__ void PenalityContactForceFieldCuda3f_addDForce_kernel(int size, const
     dx2 += index0_3;
 
     int index = threadIdx.x;
-    int index_3 = umul24(index,3); //index*3;
+    int index_3 = index * 3;
 
     //! Dynamically allocated shared memory to reorder global memory access
     extern  __shared__  float temp[];
