@@ -521,7 +521,7 @@ void TriangleFEMForceField<DataTypes>::initLarge()
         _rotatedInitialElements[i][2] -= _rotatedInitialElements[i][0];
         _rotatedInitialElements[i][0] = Coord(0,0,0);
 
-        computeStrainDisplacement(_strainDisplacements[i], _initialPoints.getValue()[a], _initialPoints.getValue()[b], _initialPoints.getValue()[c] );
+        computeStrainDisplacement(_strainDisplacements[i], _rotatedInitialElements[i][0], _rotatedInitialElements[i][1], _rotatedInitialElements[i][2]);
     }
 }
 

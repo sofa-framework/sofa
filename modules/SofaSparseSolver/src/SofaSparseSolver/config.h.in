@@ -34,12 +34,4 @@
 #  define SOFA_SOFASPARSESOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#ifdef SOFA_BUILD_SOFASPARSESOLVER
-#define SOFA_ATTRIBUTE_DISABLED__SPARSELDLSOLVER_MATRIXEXPORT
-#else
-#define SOFA_ATTRIBUTE_DISABLED__SPARSELDLSOLVER_MATRIXEXPORT \
-    SOFA_ATTRIBUTE_DISABLED( \
-    "v22.06 (PR#2725)", "v22.12", "It is no longer possible to export the linear system matrix from within SparseLDLSolver. Instead, use the component GlobalSystemMatrixExporter.")
-#endif
-
 #endif
