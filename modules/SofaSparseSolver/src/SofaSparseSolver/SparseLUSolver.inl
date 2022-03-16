@@ -61,9 +61,11 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& x
     sofa::helper::ScopedAdvancedTimer solveTimer("solve");
 
     cs_pvec (n, invertData->perm.data() , b.ptr(), invertData->tmp) ; // x = P*b
+    cs_pvec (n, invertData->N->Pinv , invertData->tmp, invertData->tmp);
     cs_lsolve (invertData->N->L, invertData->tmp) ;		// x = L\x 
     cs_usolve (invertData->N->U, invertData->tmp) ;		// x = U\x 
-    cs_pvec (n, invertData->iperm.data() , invertData->tmp, x.ptr()) ;	// b = Q*x 
+    cs_ipvec (n, invertData->N->Pinv , invertData->tmp, invertData->tmp );
+    cs_pvec (n, invertData->iperm.data() , invertData->tmp , x.ptr()) ;	// b = Q*x 
     
 }
 
