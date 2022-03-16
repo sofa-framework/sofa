@@ -60,10 +60,10 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& x
 
     sofa::helper::AdvancedTimer::stepBegin("solve");
 
-    cs_pvec (n, invertData->perm, b.ptr(), invertData->tmp) ; // x = P*b
+    cs_pvec (n, invertData->perm.data() , b.ptr(), invertData->tmp) ; // x = P*b
     cs_lsolve (invertData->N->L, invertData->tmp) ;		// x = L\x 
     cs_usolve (invertData->N->U, invertData->tmp) ;		// x = U\x 
-    cs_pvec (n, invertData->iperm, invertData->tmp, x.ptr()) ;	// b = Q*x 
+    cs_pvec (n, invertData->iperm.data() , invertData->tmp, x.ptr()) ;	// b = Q*x 
     
     sofa::helper::AdvancedTimer::stepEnd("solve");
 }
@@ -90,16 +90,16 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
     invertData->A.nz = -1;							// # of entries in triplet matrix, -1 for compressed-col
     cs_dropzeros( &invertData->A );
 
-    invertData->perm = new int[invertData->A.n ];
-    invertData->iperm = new int[invertData->A.n ];
+    invertData->perm.resize(invertData->A.n);
+    invertData->iperm.resize(invertData->A.n);
 
     invertData->tmp = (Real *) cs_malloc (invertData->A.n, sizeof (Real)) ;
 
     sofa::helper::AdvancedTimer::stepBegin("fill_reducing_permutation");
-    fill_reducing_perm(invertData->A, invertData->perm, invertData->iperm); // compute the fill reducing permutation
+    fill_reducing_perm(invertData->A, invertData->perm.data(), invertData->iperm.data() ); // compute the fill reducing permutation
     sofa::helper::AdvancedTimer::stepEnd("fill_reducing_permutation");
 
-    invertData->permuted_A = cs_permute(&(invertData->A), invertData->iperm, invertData->perm, 1); 
+    invertData->permuted_A = cs_permute(&(invertData->A), invertData->iperm.data(), invertData->perm.data(), 1); 
     invertData->S = symbolic_LU( invertData->permuted_A );
 
     sofa::helper::AdvancedTimer::stepBegin("LU_factorization");

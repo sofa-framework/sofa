@@ -73,10 +73,10 @@ void SparseCholeskySolver<TMatrix,TVector>::solveT(float * z, float * r)
     for (int i=0; i<n; i++) r_tmp[i] = (double) r[i];
 
     sofa::helper::AdvancedTimer::stepBegin("solve");
-    cs_pvec(n, perm, r_tmp.data() ,tmp.data() );
+    cs_pvec(n, perm.data(), r_tmp.data() ,tmp.data() );
     cs_lsolve (N->L, tmp.data() );			//x = L\x
     cs_ltsolve (N->L, tmp.data() );			//x = L'\x/
-    cs_pvec( n, iperm , tmp.data() , z_tmp.data() );
+    cs_pvec( n, iperm.data() , tmp.data() , z_tmp.data() );
     sofa::helper::AdvancedTimer::stepEnd("solve");
     
     for (int i=0; i<n; i++) z[i] = (float) z_tmp[i];
@@ -111,12 +111,12 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
     cs_dropzeros( &A );
     tmp.resize(A.n);
     
-    perm = new int[A.n ];
-    iperm = new int[A.n ];
+    perm.resize(A.n);
+    iperm.resize(A.n);
 
-    fill_reducing_perm(A , perm, iperm); // compute the fill reducing permutation
+    fill_reducing_perm(A , perm.data(), iperm.data() ); // compute the fill reducing permutation
     S = symbolic_Chol( &A ); // symbolic analysis
-    permuted_A = cs_permute( &(A), iperm, perm, 1);
+    permuted_A = cs_permute( &(A), iperm.data() , perm.data() , 1);
 
     sofa::helper::AdvancedTimer::stepBegin("factorization");
     N = cs_chol (&A, S) ;		/* numeric Cholesky factorization */

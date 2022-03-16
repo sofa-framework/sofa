@@ -42,7 +42,7 @@ public :
     csn *N; // store the partial pivot and the LU factorization
     cs A;
     cs* permuted_A;
-    int *perm,*iperm; // fill reducing permutation
+    type::vector<int> perm,iperm; // fill reducing permutation
     type::vector<sofa::Index> A_i, A_p;
     type::vector<Real> A_x;
     Real * tmp;

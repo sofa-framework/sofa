@@ -62,7 +62,7 @@ public:
     csn *N;
     int * A_i;
     int * A_p;
-    int *perm,*iperm;
+    type::vector<int> perm,iperm;
     type::vector<double> A_x,z_tmp,r_tmp,tmp;
     Data<bool> d_applyPermutation ;
 
