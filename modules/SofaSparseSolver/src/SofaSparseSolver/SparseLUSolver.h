@@ -86,7 +86,7 @@ protected :
 
     Data<bool> d_applyPermutation ;
   
-    void fill_reducing_perm(cs A,int * perm,int * invperm);
+    void fill_reducing_perm(cs A, int * perm, int * invperm);
     css* symbolic_LU(cs *A);
     
     MatrixInvertData * createInvertData() override {
