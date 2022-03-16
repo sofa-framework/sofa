@@ -22,9 +22,7 @@
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
-#include <SceneCreator/SceneCreator.h>
-
-#include <sofa/component/odesolver/testing/MassSpringSystemCreation.h>
+#include <sofa/component/odesolver/testing/ODESolverSpringTest.h>
 
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
@@ -32,10 +30,6 @@ using sofa::testing::BaseSimulationTest;
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
-
-// Solvers
-#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -45,7 +39,6 @@ namespace sofa {
 using namespace component;
 using namespace defaulttype;
 using namespace simulation;
-using namespace modeling;
 using type::vector;
 
 /**  Dynamic solver test.
@@ -58,65 +51,24 @@ Then it compares the effective mass position to the computed mass position every
 */
 
 template <typename _DataTypes>
-struct EulerImplicitDynamic_test : public BaseSimulationTest
+struct EulerImplicitDynamic_test : public component::odesolver::testing::ODESolverSpringTest
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
 
-    typedef container::MechanicalObject<DataTypes> MechanicalObject;
-    typedef component::odesolver::EulerImplicitSolver EulerImplicitSolver;
-    typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
-
-
-    /// Root of the scene graph
-    simulation::Node::SPtr root;      
-    /// Tested simulation
-    simulation::Simulation* simulation;  
     /// Position and velocity array
     vector<double> positionsArray;
     vector<double> velocitiesArray;
 
-    
     /// Create the context for the scene
     void createScene(double K, double m, double l0, double rm = 0, double rk=0)
-    { 
-        // Init simulation
-        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-        root = simulation::getSimulation()->createNewGraph("root");
-
-        // Create the scene
-        root->setGravity(Coord(0,-10,0));
-
-        // Solver
-        EulerImplicitSolver::SPtr eulerSolver = addNew<EulerImplicitSolver> (root);
-        eulerSolver->f_rayleighStiffness.setValue(rk);
-        eulerSolver->f_rayleighMass.setValue(rm);
-
-        CGLinearSolver::SPtr cgLinearSolver = addNew<CGLinearSolver>   (root);
-        cgLinearSolver->d_maxIter.setValue(3000);
-        cgLinearSolver->d_tolerance.setValue(1e-9);
-        cgLinearSolver->d_smallDenominatorThreshold.setValue(1e-9);
-
-        // Set initial positions and velocities of fixed point and mass
-        MechanicalObject3::VecCoord xFixed(1);
-        MechanicalObject3::DataTypes::set( xFixed[0], 0., 2.,0.);
-        MechanicalObject3::VecDeriv vFixed(1);
-        MechanicalObject3::DataTypes::set( vFixed[0], 0.,0.,0.);
-        MechanicalObject3::VecCoord xMass(1);
-        MechanicalObject3::DataTypes::set( xMass[0], 0., 1.,0.);
-        MechanicalObject3::VecDeriv vMass(1);
-        MechanicalObject3::DataTypes::set( vFixed[0], 0.,0.,0.);
-
-        // Add mass spring system
-        root =  sofa::createMassSpringSystem<DataTypes>(
-                root,   // add mass spring system to the node containing solver
-                K,      // stiffness
-                m,      // mass
-                l0,     // spring rest length
-                xFixed, // Initial position of fixed point
-                vFixed, // Initial velocity of fixed point
-                xMass,  // Initial position of mass
-                vMass); // Initial velocity of mass
+    {
+        this->prepareScene(K, m, l0);
+        // add ODE Solver to test
+        simpleapi::createObject(m_si.root, "EulerImplicitSolver", {
+            { "rayleighStiffness", simpleapi::str(rk)},
+            { "rayleighMass", simpleapi::str(rm)}
+        });
 
     }
 
@@ -156,12 +108,12 @@ struct EulerImplicitDynamic_test : public BaseSimulationTest
     {
         int i = 0;
         // Init simulation
-        sofa::simulation::getSimulation()->init(root.get());
-        double time = root->getTime();
+        m_si.initScene();
+        double time = m_si.root->getTime();
 
         // Get mechanical object
-        simulation::Node::SPtr massNode = root->getChild("MassNode");
-        typename MechanicalObject::SPtr dofs = massNode->get<MechanicalObject>(root->SearchDown);
+        simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
+        typename container::MechanicalObject<_DataTypes>::SPtr dofs = massNode->get<container::MechanicalObject<_DataTypes>>(m_si.root->SearchDown);
 
         // Animate
         do
@@ -182,8 +134,8 @@ struct EulerImplicitDynamic_test : public BaseSimulationTest
             }
 
             //Animate
-            sofa::simulation::getSimulation()->animate(root.get(),h);
-            time = root->getTime();
+            m_si.simulate(h);
+            time = m_si.root->getTime();
             // Iterate
             i++;
         }
