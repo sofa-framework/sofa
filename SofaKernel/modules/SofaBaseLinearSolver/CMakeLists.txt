@@ -3,48 +3,22 @@ project(SofaBaseLinearSolver LANGUAGES CXX)
 
 set(SOFABASELINEARSOLVER_SRC "src/${PROJECT_NAME}")
 
-option(SOFABASELINEARSOLVER_ENABLE_CRSMULTIMATRIXACCESSOR "Use CompressedRowSparseMatrix to store global matrix (caution: it will lead to compile CRSMultiMatrixAcessor, which takes a considerable time to compile)" OFF)
-mark_as_advanced(FORCE SOFABASELINEARSOLVER_ENABLE_CRSMULTIMATRIXACCESSOR)
-
 set(HEADER_FILES
     ${SOFABASELINEARSOLVER_SRC}/config.h.in
     ${SOFABASELINEARSOLVER_SRC}/initSofaBaseLinearSolver.h
-    ${SOFABASELINEARSOLVER_SRC}/BlocMatrixWriter.h
-    ${SOFABASELINEARSOLVER_SRC}/CGLinearSolver.h
-    ${SOFABASELINEARSOLVER_SRC}/CGLinearSolver.inl
-    ${SOFABASELINEARSOLVER_SRC}/DefaultMultiMatrixAccessor.h
-    ${SOFABASELINEARSOLVER_SRC}/GraphScatteredTypes.h
-    ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver.h
-    ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver.inl
-    ${SOFABASELINEARSOLVER_SRC}/SingleMatrixAccessor.h
 )
 
 set(SOURCE_FILES
     ${SOFABASELINEARSOLVER_SRC}/initSofaBaseLinearSolver.cpp
-    ${SOFABASELINEARSOLVER_SRC}/CGLinearSolver.cpp
-
-    ${SOFABASELINEARSOLVER_SRC}/DefaultMultiMatrixAccessor.cpp
-    ${SOFABASELINEARSOLVER_SRC}/GraphScatteredTypes.cpp
-    ${SOFABASELINEARSOLVER_SRC}/MatrixLinearSolver.cpp
-    ${SOFABASELINEARSOLVER_SRC}/SingleMatrixAccessor.cpp
 )
 
-
-if(SOFABASELINEARSOLVER_ENABLE_CRSMULTIMATRIXACCESSOR)
-    list(APPEND HEADER_FILES ${SOFABASELINEARSOLVER_SRC}/CRSMultiMatrixAccessor.h)
-    list(APPEND SOURCE_FILES ${SOFABASELINEARSOLVER_SRC}/CRSMultiMatrixAccessor.cpp)
-endif()
-
-
-sofa_find_package(SofaFramework REQUIRED) # SofaSimulationCore
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore)
 
-if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    # Silence attribute warnings (for example, ignored already defined external template)
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
-endif()
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.LinearSolver.Iterative instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.LinearSolver.Iterative REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.LinearSolver.Iterative)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
