@@ -26,8 +26,9 @@
 
 namespace sofa::defaulttype
 {
-bool writeMatrixImage(const std::string& filename, sofa::linearalgebra::BaseMatrix* matrix)
+bool writeMatrixImage(const std::string& filename, sofa::linearalgebra::BaseMatrix* matrix, int precision)
 {
+    SOFA_UNUSED(precision);
     if (matrix)
     {
         const auto nx = matrix->colSize();
@@ -58,7 +59,7 @@ void initializeMatrixExporterComponents()
     static bool first = true;
     if (first)
     {
-        constexpr auto addMatrixExporter = [](const std::string& format, std::function<bool(const std::string&, sofa::linearalgebra::BaseMatrix*)> exporter)
+        constexpr auto addMatrixExporter = [](const std::string& format, sofa::defaulttype::MatrixExportFunction exporter)
         {
             //Add an exporter which writes a matrix as an image
             sofa::defaulttype::matrixExporterMap.insert({format, exporter});

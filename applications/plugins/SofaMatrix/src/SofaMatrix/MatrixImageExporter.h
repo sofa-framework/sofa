@@ -27,7 +27,7 @@
 
 namespace sofa::defaulttype
 {
-bool SOFA_SOFAMATRIX_API writeMatrixImage(const std::string& filename, sofa::linearalgebra::BaseMatrix* matrix);
+bool SOFA_SOFAMATRIX_API writeMatrixImage(const std::string& filename, sofa::linearalgebra::BaseMatrix* matrix, int precision);
 } //namespace sofa::defaulttype
 
 namespace sofa::component

@@ -185,30 +185,22 @@ list(APPEND SOURCE_FILES
 
 sofa_find_package(SofaMeshCollision REQUIRED)
 sofa_find_package(SofaGeneralMeshCollision REQUIRED)
-sofa_find_package(Sofa.GL QUIET)
-
-if(Sofa.GL_FOUND)
-    list(APPEND HEADER_FILES
-        ${SOFAGENERALENGINE_SRC}/TextureInterpolation.h
-        ${SOFAGENERALENGINE_SRC}/TextureInterpolation.inl
-        )
-    list(APPEND SOURCE_FILES
-        ${SOFAGENERALENGINE_SRC}/TextureInterpolation.cpp
-        )
-endif()
-
-
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaGeneralMeshCollision) 
 
-if(Sofa.GL_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL) # Needs OpenGL for TextureInterpolation
-endif()  
-
 if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     # Silence attribute warnings (for example, ignored already defined external template)
     target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
+endif()
+
+sofa_find_package(Sofa.GL QUIET)
+if(Sofa.GL_FOUND)
+    message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.GL.Component.Engine instead.")
+    sofa_find_package(Sofa.GL.Component.Engine QUIET)
+    if(Sofa.GL.Component.Engine_FOUND)
+        target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GL.Component.Engine) 
+    endif()
 endif()
 
 sofa_create_package_with_targets(
