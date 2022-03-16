@@ -42,6 +42,7 @@ SparseCholeskySolver<TMatrix,TVector>::SparseCholeskySolver()
     , S(nullptr), N(nullptr)
     , d_applyPermutation(initData(&d_applyPermutation, true ,"applyPermutation", "If true the solver will apply a fill-reducing permutation to the matrix of the system."))
 {
+        computePermutation = true;
 }
 
 template<class TMatrix, class TVector>
@@ -57,10 +58,8 @@ void SparseCholeskySolver<TMatrix,TVector>::solveT(double * z, double * r)
     int n = A.n;
 
     cs_ipvec (n, S->Pinv, r, (double*) &(tmp[0]));	//x = P*b
-
     cs_lsolve (N->L, (double*) &(tmp[0]));			//x = L\x
     cs_ltsolve (N->L, (double*) &(tmp[0]));			//x = L'\x/
-
     cs_pvec (n, S->Pinv, (double*) &(tmp[0]), z);	 //b = P'*x
 }
 
@@ -113,7 +112,11 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
     perm.resize(A.n);
     iperm.resize(A.n);
 
-    fill_reducing_perm(A , perm.data(), iperm.data() ); // compute the fill reducing permutation
+    if(computePermutation)
+    {
+        fill_reducing_perm(A , perm.data(), iperm.data() ); // compute the fill reducing permutation
+        computePermutation = false;
+    }
     S = symbolic_Chol( &A ); // symbolic analysis
     permuted_A = cs_permute( &(A), iperm.data() , perm.data() , 1);
 

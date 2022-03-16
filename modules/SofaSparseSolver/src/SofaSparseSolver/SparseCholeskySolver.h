@@ -65,6 +65,8 @@ public:
     int * A_p;
     type::vector<int> perm,iperm;
     type::vector<double> A_x,z_tmp,r_tmp,tmp;
+
+    bool computePermutation;
     Data<bool> d_applyPermutation ;
 
     SparseCholeskySolver();

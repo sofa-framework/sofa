@@ -46,9 +46,11 @@ public :
     type::vector<sofa::Index> A_i, A_p;
     type::vector<Real> A_x;
     Real * tmp;
+    bool computePermutation;
     SparseLUInvertData()
     {
         S=nullptr; N=nullptr; tmp=nullptr;
+        computePermutation=true;
     }
 
     ~SparseLUInvertData()

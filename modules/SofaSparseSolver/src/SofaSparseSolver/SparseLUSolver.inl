@@ -94,7 +94,10 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
 
     invertData->tmp = (Real *) cs_malloc (invertData->A.n, sizeof (Real)) ;
 
-    fill_reducing_perm(invertData->A, invertData->perm.data(), invertData->iperm.data() ); // compute the fill reducing permutation
+    if( invertData->computePermutation){
+        fill_reducing_perm(invertData->A, invertData->perm.data(), invertData->iperm.data() ); // compute the fill reducing permutation
+        invertData->computePermutation = false;
+        }
 
     invertData->permuted_A = cs_permute(&(invertData->A), invertData->iperm.data(), invertData->perm.data(), 1); 
     invertData->S = symbolic_LU( invertData->permuted_A );
