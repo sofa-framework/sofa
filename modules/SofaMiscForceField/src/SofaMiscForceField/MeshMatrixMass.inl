@@ -2138,14 +2138,14 @@ void MeshMatrixMass<DataTypes>::addMToMatrix(const core::MechanicalParams *mpara
     const auto &vertexMass= d_vertexMass.getValue();
     const auto &edgeMass= d_edgeMass.getValue();
 
-    size_t nbEdges=m_topology->getNbEdges();
+    const size_t nbEdges=m_topology->getNbEdges();
     sofa::Index v0,v1;
 
-    const int N = defaulttype::DataTypeInfo<Deriv>::size();
+    static constexpr auto N = Deriv::total_size;
     AddMToMatrixFunctor<Deriv,MassType> calc;
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     sofa::linearalgebra::BaseMatrix* mat = r.matrix;
-    Real mFactor = Real(sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue()));
+    const Real mFactor = Real(sofa::core::mechanicalparams::mFactorIncludingRayleighDamping(mparams, this->rayleighMass.getValue()));
 
     if((mat->colSize()) != (linearalgebra::BaseMatrix::Index)(m_topology->getNbPoints()*N) || (mat->rowSize()) != (linearalgebra::BaseMatrix::Index)(m_topology->getNbPoints()*N))
     {

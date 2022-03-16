@@ -821,6 +821,32 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
 
     // SofaSimpleFem was deprecated in #2753 and ....
     { "TetrahedronDiffusionFEMForceField", CreatableMoved("v22.06", "SofaSimpleFem", "Sofa.Component.Diffusion") },
+
+    // SofaBaseLinearSolver was deprecated in #2717
+    { "CGLinearSolver", CreatableMoved("v22.06", "SofaBaseLinearSolver", "Sofa.Component.LinearSolver.Iterative") },
+
+    // SofaGeneralLinearSolver was deprecated in #2717
+    { "MinResLinearSolver", CreatableMoved("v22.06", "SofaGeneralLinearSolver", "Sofa.Component.LinearSolver.Iterative") },
+    { "BTDLinearSolver", CreatableMoved("v22.06", "SofaGeneralLinearSolver", "Sofa.Component.LinearSolver.Direct") },
+    { "CholeskySolver", CreatableMoved("v22.06", "SofaGeneralLinearSolver", "Sofa.Component.LinearSolver.Direct") },
+        
+    // SofaSparseSolver was deprecated in #2717
+    { "FillReducingOrdering", CreatableMoved("v22.06", "SofaGeneralLinearSolver", "Sofa.Component.LinearSolver.Direct") },
+    { "PrecomputedLinearSolver", CreatableMoved("v22.06", "SofaGeneralLinearSolver", "Sofa.Component.LinearSolver.Direct") },
+    { "SparseCholeskySolver", CreatableMoved("v22.06", "SofaSparseSolver", "Sofa.Component.LinearSolver.Direct") },
+    { "SparseLDLSolver", CreatableMoved("v22.06", "SofaSparseSolver", "Sofa.Component.LinearSolver.Direct") },
+    { "SparseLUSolver", CreatableMoved("v22.06", "SofaSparseSolver", "Sofa.Component.LinearSolver.Direct") },
+
+    // SofaDenseSolver was deprecated in #2717
+    { "SVDLinearSolver", CreatableMoved("v22.06", "SofaDenseSolver", "Sofa.Component.LinearSolver.Direct") },
+        
+    // SofaPreconditioner was deprecated in #2717
+    { "ShewchukPCGLinearSolver", CreatableMoved("v22.06", "SofaPreconditioner", "Sofa.Component.LinearSolver.Iterative") },
+    { "BlockJacobiPreconditioner", CreatableMoved("v22.06", "SofaPreconditioner", "Sofa.Component.LinearSolver.Preconditioner") },
+    { "PrecomputedWarpPreconditioner", CreatableMoved("v22.06", "SofaPreconditioner", "Sofa.Component.LinearSolver.Preconditioner") },
+    { "SSORPreconditioner", CreatableMoved("v22.06", "SofaPreconditioner", "Sofa.Component.LinearSolver.Preconditioner") },
+    { "WarpPreconditioner", CreatableMoved("v22.06", "SofaPreconditioner", "Sofa.Component.LinearSolver.Preconditioner") },
+
 };
 
 } // namespace sofa::helper::lifecycle

@@ -20,6 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaSparseSolver/initSofaSparseSolver.h>
+
+#include <sofa/helper/system/PluginManager.h>
+
 #include <sofa/core/ObjectFactory.h>
 #include <string>
 
@@ -34,6 +37,10 @@ void initSofaSparseSolver()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaSparseSolver") << "SofaSparseSolver is deprecated. It will be removed at v23.06. Use Sofa.Component.LinearSolver.Direct instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.LinearSolver.Direct");
+
         first = false;
     }
 }

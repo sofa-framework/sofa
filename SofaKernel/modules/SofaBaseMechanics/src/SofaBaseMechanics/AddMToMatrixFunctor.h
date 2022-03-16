@@ -27,69 +27,45 @@
 namespace sofa::component::mass
 {
 
+/**
+ * Helper struct to add entries in a BaseMatrix, based on the type of Mass (MassType).
+ *
+ * This class is specialized for Rigid types.
+ *
+ * The default implementation assumes it deals with Vec types: Deriv is a Vec type, and
+ * MassType is a floating point.
+ */
 template<class Deriv, class MassType>
-class AddMToMatrixFunctor
+struct AddMToMatrixFunctor
 {
-public:
-    void operator()(linearalgebra::BaseMatrix * mat, const MassType& mass, int pos, double fact)
+    static_assert(std::is_floating_point_v<MassType>, "Default implementation of AddMToMatrixFunctor assumes MassType is a floating point");
+
+    void operator()(linearalgebra::BaseMatrix * mat, MassType mass, int pos, MassType fact)
     {
-        const double m = mass*fact;
-        for (unsigned int i=0; i<Deriv::size(); ++i)
-            mat->add(pos+i, pos+i, m);
+        this->operator()(mat, mass, pos, pos, fact);
     }
 
     ///Method to add non-diagonal terms
-    void operator()(linearalgebra::BaseMatrix * mat, const MassType& mass, int posRow, int posColumn, double fact)
+    void operator()(linearalgebra::BaseMatrix * mat, MassType mass, int posRow, int posColumn, MassType fact)
     {
-        const double m = mass*fact;
-        for (unsigned int i=0; i<Deriv::size(); ++i)
-            mat->add(posRow+i, posColumn+i, m);
+        const auto m = mass * fact;
+        for (unsigned int i = 0; i < Deriv::total_size; ++i)
+            mat->add(posRow + i, posColumn + i, m);
     }
 };
 
-template<int N, typename Real>
-class AddMToMatrixFunctor< type::Vec<N,Real>, type::Mat<N,N,Real> >
+/**
+ * Specialization for Rigid types
+ */
+template<sofa::Size N, typename Real>
+struct AddMToMatrixFunctor< defaulttype::RigidDeriv<N,Real>, defaulttype::RigidMass<N,Real> >
 {
-public:
-    void operator()(linearalgebra::BaseMatrix * mat, const type::Mat<N,N,Real>& mass, int pos, double fact)
+    void operator()(linearalgebra::BaseMatrix * mat, const defaulttype::RigidMass<N,Real>& mass, int pos, Real fact)
     {
-        for (int i=0; i<N; ++i)
-            for (int j=0; j<N; ++j)
-            {
-                mat->add(pos+i, pos+j, mass[i][j]*fact);
-            }
-    }
-};
-
-template<typename Real>
-class AddMToMatrixFunctor< defaulttype::RigidDeriv<3,Real>, defaulttype::RigidMass<3,Real> >
-{
-public:
-    enum { N=3 };
-    void operator()(linearalgebra::BaseMatrix * mat, const defaulttype::RigidMass<N,Real>& mass, int pos, double fact)
-    {
-        const double m = mass.mass*fact;
-        for (int i=0; i<N; ++i)
-            mat->add(pos+i, pos+i, m);
-        for (int i=0; i<N; ++i)
-            for (int j=0; j<N; ++j)
-            {
-                mat->add(pos+N+i, pos+N+j, mass.inertiaMassMatrix[i][j]*fact);
-            }
-    }
-};
-
-template<typename Real>
-class AddMToMatrixFunctor< defaulttype::RigidDeriv<2,Real>, defaulttype::RigidMass<2,Real> >
-{
-public:
-    enum { N=2 };
-    void operator()(linearalgebra::BaseMatrix * mat, const defaulttype::RigidMass<N,Real>& mass, int pos, double fact)
-    {
-        const double m = mass.mass*fact;
-        for (int i=0; i<N; ++i)
-            mat->add(pos+i, pos+i, m);
-        mat->add(pos+N, pos+N, mass.inertiaMassMatrix*fact);
+        const auto m = mass.mass * fact;
+        for (sofa::Size i = 0; i < N; ++i)
+            mat->add(pos + i, pos + i, m);
+        mat->add(pos + N, pos + N, mass.inertiaMassMatrix * fact);
     }
 };
 

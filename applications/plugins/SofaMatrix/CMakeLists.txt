@@ -1,12 +1,14 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaMatrix VERSION 1.0 LANGUAGES CXX)
 
-sofa_find_package(SofaBaseLinearSolver REQUIRED)
+sofa_find_package(Sofa.Core REQUIRED)
+sofa_find_package(SofaSparseSolver REQUIRED)
 sofa_find_package(CImgPlugin REQUIRED)
 sofa_find_package(SofaGuiQt REQUIRED QUIET)
 
 set(SOFA_MODULES
-    SofaBaseLinearSolver
+    SofaSparseSolver
+    Sofa.Core
     CImgPlugin
 )
 
@@ -16,11 +18,14 @@ set(HEADER_FILES
     ${SOFAMATRIX_SRC_DIR}/config.h.in
     ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixExporter.h
     ${SOFAMATRIX_SRC_DIR}/MatrixImageExporter.h
+    ${SOFAMATRIX_SRC_DIR}/FillReducingOrdering.h
+    ${SOFAMATRIX_SRC_DIR}/FillReducingOrdering.inl
 )
 set(SOURCE_FILES
     ${SOFAMATRIX_SRC_DIR}/initSofaMatrix.cpp
     ${SOFAMATRIX_SRC_DIR}/GlobalSystemMatrixExporter.cpp
     ${SOFAMATRIX_SRC_DIR}/MatrixImageExporter.cpp
+    ${SOFAMATRIX_SRC_DIR}/FillReducingOrdering.cpp
 )
 set(README_FILES
     SofaMatrix.md
