@@ -116,7 +116,7 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::fill_reducing_perm(cs A,int
         
         CSR_to_adj( A.n, A.p , A.i , adj, xadj, t_adj, t_xadj, tran_countvec );
 
-        METIS_NodeND(&n, xadj.data(), adj.data(), NULL, NULL, perm,invperm);
+        METIS_NodeND(&n, xadj.data(), adj.data(), nullptr, nullptr, perm,invperm);
 
     }
     else
