@@ -72,8 +72,8 @@ inline void StateAccessor::computeBBox(const core::ExecParams* params, bool only
 
     static constexpr SReal max_real = std::numeric_limits<SReal>::max();
     static constexpr SReal min_real = std::numeric_limits<SReal>::lowest();
-    SReal maxBBox[3] { min_real, min_real, min_real};
-    SReal minBBox[3] { max_real, max_real, max_real};
+    SReal maxBBox[3] { min_real, min_real, min_real };
+    SReal minBBox[3] { max_real, max_real, max_real };
 
     bool anyMState = false;
 
