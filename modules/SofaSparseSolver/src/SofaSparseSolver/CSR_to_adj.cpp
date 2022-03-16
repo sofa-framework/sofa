@@ -1,4 +1,4 @@
-#include"CSR_to_adj.h"
+#include <SofaSparseSolver/CSR_to_adj.h>
 
 namespace sofa::component::linearsolver
 {
