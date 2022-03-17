@@ -19,8 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_CPP
+#include <SofaObjectInteraction/PenalityContactForceField.inl>
+#include <sofa/core/behavior/PairInteractionForceField.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/solidmechanics/spring/PenalityContactForceField.inl>
+namespace sofa::component::interactionforcefield
+{
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/spring/PenalityContactForceField.inl")
+using namespace sofa::defaulttype;
+
+// Register in the Factory
+int PenalityContactForceFieldClass = core::RegisterObject("Contact using repulsive springs")
+        .add< PenalityContactForceField<Vec3Types> >()
+        ;
+
+template class SOFA_SOFAOBJECTINTERACTION_API PenalityContactForceField<Vec3Types>;
+
+
+} // namespace sofa::component::interactionforcefield

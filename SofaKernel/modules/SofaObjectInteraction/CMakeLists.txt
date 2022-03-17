@@ -6,19 +6,18 @@ set(SOFAOBJECTINTERACTION_SRC "src/${PROJECT_NAME}")
 set(HEADER_FILES
     ${SOFAOBJECTINTERACTION_SRC}/config.h.in
     ${SOFAOBJECTINTERACTION_SRC}/initSofaObjectInteraction.h
+    ${SOFAOBJECTINTERACTION_SRC}/PenalityContactForceField.h
+    ${SOFAOBJECTINTERACTION_SRC}/PenalityContactForceField.inl
 )
 
 set(SOURCE_FILES
     ${SOFAOBJECTINTERACTION_SRC}/initSofaObjectInteraction.cpp
+    ${SOFAOBJECTINTERACTION_SRC}/PenalityContactForceField.cpp
 )
 
+sofa_find_package(SofaDeformable REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-
-message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.SolidMechanics.Spring instead.")
-
-# forward to the new sofang module
-sofa_find_package(Sofa.Component.SolidMechanics.Spring REQUIRED)
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.SolidMechanics.Spring)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaDeformable)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
