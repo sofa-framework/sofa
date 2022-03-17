@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralMeshCollision/MeshMinProximityIntersection.h>
+#include <sofa/component/collision/detection/intersection/MeshMinProximityIntersection.h>
 
-#include <SofaBaseCollision/DiscreteIntersection.h>
+#include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
 #include <sofa/core/collision/Intersection.inl>
 #include <sofa/core/collision/IntersectorFactory.h>
 

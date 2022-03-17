@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseCollision/NewProximityIntersection.h>
+#include <sofa/component/collision/detection/intersection/NewProximityIntersection.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/Vec.h>
 

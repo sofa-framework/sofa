@@ -3,7 +3,7 @@ project(Sofa.Component.Collision.Detection LANGUAGES CXX)
 
 set(SOFACOMPONENTCOLLISIONDETECTION_SOURCE_DIR "src/sofa/component/collision/detection")
 
-set(SOFACOMPONENTCOLLISIONDETECTION_DIRS Algorithm ) # Intersection
+set(SOFACOMPONENTCOLLISIONDETECTION_DIRS Algorithm Intersection)
 set(SOFACOMPONENTCOLLISIONDETECTION_TARGETS)
 foreach(detection_dir ${SOFACOMPONENTCOLLISIONDETECTION_DIRS})
 	sofang_add_component_subdirectory(${detection_dir} ${PROJECT_NAME}.${detection_dir})

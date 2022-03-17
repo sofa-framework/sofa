@@ -20,35 +20,46 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/component/collision/detection/intersection/config.h>
 
-#include <SofaGeneralMeshCollision/config.h>
-
-#include <sofa/core/collision/Intersection.h>
-
-#include <SofaMeshCollision/LineModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaBaseCollision/SphereModel.h>
+#include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
 
 namespace sofa::component::collision
 {
 
-class DiscreteIntersection;
-
-class SOFA_SOFAGENERALMESHCOLLISION_API MeshDiscreteIntersection : public core::collision::BaseIntersector
+/**
+ * Base class for intersections methods using proximities.
+ * It introduces Datas for the alarm distance and contact distance.
+ * Cubes intersection is modified to use proximities.
+ */
+class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API BaseProximityIntersection : public DiscreteIntersection
 {
-    typedef core::collision::BaseIntersector::OutputVector OutputVector;
-
 public:
-    MeshDiscreteIntersection(DiscreteIntersection* object, bool addSelf=true);
-
-    bool testIntersection(Triangle&, Line&);
-    template<class T> bool testIntersection(TSphere<T>&, Triangle&);
-
-    int computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts);
-    template<class T> int computeIntersection(TSphere<T>&, Triangle&, OutputVector*);
-
+    SOFA_ABSTRACT_CLASS(BaseProximityIntersection,DiscreteIntersection);
+    Data<SReal> alarmDistance; ///< Proximity detection distance
+    Data<SReal> contactDistance; ///< Distance below which a contact is created
 protected:
-    DiscreteIntersection* intersection;
+    BaseProximityIntersection();
+    ~BaseProximityIntersection() override { }
+public:
+    /// Returns true if algorithm uses proximity
+    bool useProximity() const override { return true; }
+
+    /// Returns the alarm distance (must returns 0 if useProximity() is false)
+    SReal getAlarmDistance() const override { return alarmDistance.getValue(); }
+
+    /// Returns the contact distance (must returns 0 if useProximity() is false)
+    SReal getContactDistance() const override { return contactDistance.getValue(); }
+
+    /// Sets the alarm distance (if useProximity() is false, the alarm distance is equal to 0)
+    void setAlarmDistance(SReal v) override { alarmDistance.setValue(v); }
+
+    /// Sets the contact distance (if useProximity() is false, the contact distance is equal to 0)
+    void setContactDistance(SReal v) override { contactDistance.setValue(v); }
+
+    /// Intersectors for cubes using proximities
+    bool testIntersection(Cube& cube1, Cube& cube2) override;
+    int computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts) override;
 
 };
 

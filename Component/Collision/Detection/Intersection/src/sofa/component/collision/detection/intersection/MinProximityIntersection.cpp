@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_MINPROXIMITYINTERSECTION_CPP
-#include <SofaBaseCollision/MinProximityIntersection.h>
+#include <sofa/component/collision/detection/intersection/MinProximityIntersection.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/type/Vec.h>
@@ -28,7 +28,7 @@
 
 namespace sofa::core::collision
 {
-    template class SOFA_SOFABASECOLLISION_API IntersectorFactory<component::collision::MinProximityIntersection>;
+    template class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API IntersectorFactory<component::collision::MinProximityIntersection>;
 } // namespace sofa::core::collision
 
 namespace sofa::component::collision

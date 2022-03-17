@@ -22,6 +22,7 @@
 #include <sofa/component/collision/detection/init.h>
 
 #include <sofa/component/collision/detection/algorithm/init.h>
+#include <sofa/component/collision/detection/intersection/init.h>
 
 namespace sofa::component::collision::detection
 {
@@ -38,6 +39,7 @@ void initExternalModule()
     {        
         // force dependencies at compile-time
         sofa::component::collision::detection::algorithm::init();
+        sofa::component::collision::detection::intersection::init();
 
         first = false;
     }

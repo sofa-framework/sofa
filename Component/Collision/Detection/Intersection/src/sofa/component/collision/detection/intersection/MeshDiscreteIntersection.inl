@@ -21,8 +21,8 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGeneralMeshCollision/MeshDiscreteIntersection.h>
-#include <SofaBaseCollision/DiscreteIntersection.h>
+#include <sofa/component/collision/detection/intersection/MeshDiscreteIntersection.h>
+#include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
 
 namespace sofa::component::collision
 {

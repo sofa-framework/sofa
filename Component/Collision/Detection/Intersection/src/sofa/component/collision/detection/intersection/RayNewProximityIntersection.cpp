@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaUserInteraction/RayNewProximityIntersection.h>
+#include <sofa/component/collision/detection/intersection/RayNewProximityIntersection.h>
 
 #include <sofa/core/collision/Intersection.inl>
 #include <sofa/helper/proximity.h>

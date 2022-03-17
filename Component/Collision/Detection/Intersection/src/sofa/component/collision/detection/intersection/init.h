@@ -19,40 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/init.h>
+#pragma once
 
-#include <sofa/component/collision/model/init.h>
-#include <sofa/component/collision/detection/init.h>
+#include <sofa/component/collision/detection/intersection/config.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::intersection
 {
-
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
-
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::collision::model::init();
-        sofa::component::collision::detection::init();
-
-        first = false;
-    }
-}
-
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-void init()
-{
-    initExternalModule();
-}
-
-} // namespace sofa::component::collision
+    SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API void init();
+} // namespace sofa::component::collision::detection::intersection

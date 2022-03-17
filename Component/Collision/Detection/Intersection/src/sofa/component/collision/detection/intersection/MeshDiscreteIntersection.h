@@ -20,37 +20,36 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaUserInteraction/config.h>
 
-#include <SofaBaseCollision/NewProximityIntersection.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaMeshCollision/LineModel.h>
-#include <SofaMeshCollision/PointModel.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <SofaUserInteraction/RayModel.h>
+#include <sofa/component/collision/detection/intersection/config.h>
+
+#include <sofa/core/collision/Intersection.h>
+
+#include <sofa/component/collision/model/LineModel.h>
+#include <sofa/component/collision/model/TriangleModel.h>
+#include <sofa/component/collision/model/SphereModel.h>
 
 namespace sofa::component::collision
 {
 
-class SOFA_SOFAUSERINTERACTION_API RayNewProximityIntersection : public core::collision::BaseIntersector
+class DiscreteIntersection;
+
+class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API MeshDiscreteIntersection : public core::collision::BaseIntersector
 {
-    typedef NewProximityIntersection::OutputVector OutputVector;
+    typedef core::collision::BaseIntersector::OutputVector OutputVector;
 
 public:
-    RayNewProximityIntersection(NewProximityIntersection* object, bool addSelf=true);
+    MeshDiscreteIntersection(DiscreteIntersection* object, bool addSelf=true);
 
-	bool testIntersection(Ray& t1, Triangle& t2);
-    int computeIntersection(Ray& t1, Triangle& t2, OutputVector*);
+    bool testIntersection(Triangle&, Line&);
+    template<class T> bool testIntersection(TSphere<T>&, Triangle&);
 
-    // why rigidsphere has a different collision detection compared to RayDiscreteIntersection?
-    bool testIntersection(Ray& rRay, RigidSphere& rSphere);
-    int computeIntersection(Ray& rRay, RigidSphere& rSphere, OutputVector*);
-
+    int computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts);
+    template<class T> int computeIntersection(TSphere<T>&, Triangle&, OutputVector*);
 
 protected:
+    DiscreteIntersection* intersection;
 
-    NewProximityIntersection* intersection;
 };
 
-} //namespace sofa::component::collision
+} // namespace sofa::component::collision

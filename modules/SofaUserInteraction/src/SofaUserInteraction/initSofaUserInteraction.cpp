@@ -34,10 +34,11 @@ void initSofaUserInteraction()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaUserInteraction") << "SofaUserInteraction is being deprecated;. It will be removed at v23.06. You may use Sofa.Component.Collision.Model and Sofa.Component.Collision.Detection.Algorithm instead.";
+        // msg_deprecated("SofaUserInteraction") << "SofaUserInteraction is being deprecated;. It will be removed at v23.06. You may use Sofa.Component.Collision.Model, Sofa.Component.Collision.Detection.Algorithm and Sofa.Component.Collision.Detection.Intersection instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Model");
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Detection.Algorithm");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Detection.Intersection");
 
         first = false;
     }

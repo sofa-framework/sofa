@@ -19,45 +19,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseCollision/BaseProximityIntersection.h>
+#pragma once
+#include <sofa/component/collision/detection/intersection/config.h>
+
+#include <sofa/component/collision/detection/intersection/NewProximityIntersection.h>
+#include <sofa/component/collision/model/SphereModel.h>
+#include <sofa/component/collision/model/TriangleModel.h>
+#include <sofa/component/collision/model/LineModel.h>
+#include <sofa/component/collision/model/PointModel.h>
+#include <sofa/component/collision/model/CubeModel.h>
+#include <sofa/component/collision/model/RayModel.h>
 
 namespace sofa::component::collision
 {
-BaseProximityIntersection::BaseProximityIntersection()
-    : alarmDistance(initData(&alarmDistance, (SReal)1.0, "alarmDistance","Proximity detection distance"))
-    , contactDistance(initData(&contactDistance, (SReal)0.5, "contactDistance","Distance below which a contact is created"))
+
+class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API RayNewProximityIntersection : public core::collision::BaseIntersector
 {
-	alarmDistance.setRequired(true);
-	contactDistance.setRequired(true);
-}
+    typedef NewProximityIntersection::OutputVector OutputVector;
+
+public:
+    RayNewProximityIntersection(NewProximityIntersection* object, bool addSelf=true);
+
+	bool testIntersection(Ray& t1, Triangle& t2);
+    int computeIntersection(Ray& t1, Triangle& t2, OutputVector*);
+
+    // why rigidsphere has a different collision detection compared to RayDiscreteIntersection?
+    bool testIntersection(Ray& rRay, RigidSphere& rSphere);
+    int computeIntersection(Ray& rRay, RigidSphere& rSphere, OutputVector*);
 
 
-bool BaseProximityIntersection::testIntersection(Cube& cube1, Cube& cube2)
-{
-    const auto& minVect1 = cube1.minVect();
-    const auto& minVect2 = cube2.minVect();
-    const auto& maxVect1 = cube1.maxVect();
-    const auto& maxVect2 = cube2.maxVect();
+protected:
 
-    const auto alarmDist = getAlarmDistance() + cube1.getProximity() + cube2.getProximity();
+    NewProximityIntersection* intersection;
+};
 
-    for (int i = 0; i < 3; i++)
-    {
-        if (minVect1[i] > maxVect2[i] + alarmDist || minVect2[i] > maxVect1[i] + alarmDist)
-            return false;
-    }
-
-    return true;
-}
-
-int BaseProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts)
-{
-    SOFA_UNUSED(cube1);
-    SOFA_UNUSED(cube2);
-    SOFA_UNUSED(contacts);
-
-    return 0;
-}
-
-
-} // namespace sofa::component::collision
+} //namespace sofa::component::collision

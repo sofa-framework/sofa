@@ -21,19 +21,19 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGeneralMeshCollision/config.h>
+#include <sofa/component/collision/detection/intersection/config.h>
 
-#include <SofaBaseCollision/MinProximityIntersection.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaMeshCollision/LineModel.h>
-#include <SofaMeshCollision/PointModel.h>
-#include <SofaBaseCollision/CubeModel.h>
+#include <sofa/component/collision/detection/intersection/MinProximityIntersection.h>
+#include <sofa/component/collision/model/intersection/SphereModel.h>
+#include <sofa/component/collision/model/TriangleModel.h>
+#include <sofa/component/collision/model/LineModel.h>
+#include <sofa/component/collision/model/PointModel.h>
+#include <sofa/component/collision/model/CubeModel.h>
 
 namespace sofa::component::collision
 {
 
-class SOFA_SOFAGENERALMESHCOLLISION_API MeshMinProximityIntersection : public core::collision::BaseIntersector
+class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API MeshMinProximityIntersection : public core::collision::BaseIntersector
 {
     typedef MinProximityIntersection::OutputVector OutputVector;
 

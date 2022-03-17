@@ -21,13 +21,13 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_CPP
 
-#include <SofaBaseCollision/DiscreteIntersection.h>
+#include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/collision/Intersection.inl>
 
 namespace sofa::core::collision
 {
-    template class SOFA_SOFABASECOLLISION_API IntersectorFactory<component::collision::DiscreteIntersection>;
+    template class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API IntersectorFactory<component::collision::DiscreteIntersection>;
 } // namespace sofa::core::collision
 
 namespace sofa::component::collision

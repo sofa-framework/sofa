@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_NEWPROXIMITYINTERSECTION_CPP
-#include <SofaBaseCollision/NewProximityIntersection.inl>
+#include <sofa/component/collision/detection/intersection/NewProximityIntersection.inl>
 
 #include <sofa/core/collision/Intersection.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::core::collision
 {
-    template class SOFA_SOFABASECOLLISION_API IntersectorFactory<component::collision::NewProximityIntersection>;
+    template class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API IntersectorFactory<component::collision::NewProximityIntersection>;
 } // namespace sofa::core::collision
 
 namespace sofa::component::collision

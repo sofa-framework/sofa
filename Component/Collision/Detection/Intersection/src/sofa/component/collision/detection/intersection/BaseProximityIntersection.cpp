@@ -19,39 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaUserInteraction/config.h>
-
-#include <sofa/core/collision/Intersection.h>
-
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaMeshCollision/PointModel.h>
-#include <SofaMeshCollision/LineModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <SofaUserInteraction/RayModel.h>
-#include <SofaBaseCollision/DiscreteIntersection.h>
+#include <sofa/component/collision/detection/intersection/BaseProximityIntersection.h>
 
 namespace sofa::component::collision
 {
-class SOFA_SOFAUSERINTERACTION_API RayDiscreteIntersection : public core::collision::BaseIntersector
+BaseProximityIntersection::BaseProximityIntersection()
+    : alarmDistance(initData(&alarmDistance, (SReal)1.0, "alarmDistance","Proximity detection distance"))
+    , contactDistance(initData(&contactDistance, (SReal)0.5, "contactDistance","Distance below which a contact is created"))
 {
+	alarmDistance.setRequired(true);
+	contactDistance.setRequired(true);
+}
 
-    typedef DiscreteIntersection::OutputVector OutputVector;
 
-public:
-    RayDiscreteIntersection(DiscreteIntersection* object, bool addSelf=true);
+bool BaseProximityIntersection::testIntersection(Cube& cube1, Cube& cube2)
+{
+    const auto& minVect1 = cube1.minVect();
+    const auto& minVect2 = cube2.minVect();
+    const auto& maxVect1 = cube1.maxVect();
+    const auto& maxVect2 = cube2.maxVect();
 
-    template<class T> bool testIntersection(Ray&, TSphere<T>&);
-    bool testIntersection(Ray&, Triangle&);
+    const auto alarmDist = getAlarmDistance() + cube1.getProximity() + cube2.getProximity();
 
-    template<class T> int computeIntersection(Ray&, TSphere<T>&, OutputVector*);
-    int computeIntersection(Ray&, Triangle&, OutputVector*);
+    for (int i = 0; i < 3; i++)
+    {
+        if (minVect1[i] > maxVect2[i] + alarmDist || minVect2[i] > maxVect1[i] + alarmDist)
+            return false;
+    }
 
-protected:
+    return true;
+}
 
-    DiscreteIntersection* intersection;
+int BaseProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts)
+{
+    SOFA_UNUSED(cube1);
+    SOFA_UNUSED(cube2);
+    SOFA_UNUSED(contacts);
 
-};
+    return 0;
+}
 
-} //namespace sofa::component::collision
+
+} // namespace sofa::component::collision

@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseCollision/config.h>
+#include <sofa/component/collision/detection/intersection/config.h>
 
-#include <SofaBaseCollision/BaseProximityIntersection.h>
+#include <sofa/component/collision/detection/intersection/BaseProximityIntersection.h>
 
 namespace sofa::component::collision
 {
@@ -49,7 +49,7 @@ namespace sofa::component::collision
  * - Triangle/RigidSphere
  * - Triangle/Sphere
  */
-class SOFA_SOFABASECOLLISION_API NewProximityIntersection : public BaseProximityIntersection
+class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API NewProximityIntersection : public BaseProximityIntersection
 {
 public:
     SOFA_CLASS(NewProximityIntersection,BaseProximityIntersection);
@@ -82,7 +82,7 @@ protected:
 namespace sofa::core::collision
 {
 #if  !defined(SOFA_COMPONENT_COLLISION_NEWPROXIMITYINTERSECTION_CPP)
-extern template class SOFA_SOFABASECOLLISION_API IntersectorFactory<component::collision::NewProximityIntersection>;
+extern template class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API IntersectorFactory<component::collision::NewProximityIntersection>;
 #endif
 
 } // namespace sofa::core::collision

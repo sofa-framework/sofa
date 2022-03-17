@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseCollision/config.h>
+#include <sofa/component/collision/detection/intersection/config.h>
 
-#include <SofaBaseCollision/BaseProximityIntersection.h>
+#include <sofa/component/collision/detection/intersection/BaseProximityIntersection.h>
 
 namespace sofa::component::collision
 {
@@ -50,7 +50,7 @@ namespace sofa::component::collision
  * Note that MeshMinProximityIntersection ignores Triangle/Line and Triangle/Triangle intersections.
  * Datas can be set to ignore some pairs of collision models (useSphereTriangle, usePointPoint, etc).
  */
-class SOFA_SOFABASECOLLISION_API MinProximityIntersection : public BaseProximityIntersection
+class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API MinProximityIntersection : public BaseProximityIntersection
 {
 public:
     SOFA_CLASS(MinProximityIntersection,BaseProximityIntersection);
@@ -93,6 +93,6 @@ public:
 namespace sofa::core::collision
 {
 #if  !defined(SOFA_COMPONENT_COLLISION_MINPROXIMITYINTERSECTION_CPP)
-extern template class SOFA_SOFABASECOLLISION_API IntersectorFactory<component::collision::MinProximityIntersection>;
+extern template class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API IntersectorFactory<component::collision::MinProximityIntersection>;
 #endif
 } // namespace sofa::core::collision

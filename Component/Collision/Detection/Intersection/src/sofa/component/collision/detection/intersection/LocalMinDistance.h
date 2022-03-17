@@ -20,16 +20,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaConstraint/config.h>
+#include <sofa/component/collision/detection/intersection/config.h>
 
-#include <SofaBaseCollision/BaseProximityIntersection.h>
+#include <sofa/component/collision/detection/intersection/BaseProximityIntersection.h>
 
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaMeshCollision/LineModel.h>
-#include <SofaMeshCollision/PointModel.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <SofaUserInteraction/RayModel.h>
+#include <sofa/component/collision/model/SphereModel.h>
+#include <sofa/component/collision/model/TriangleModel.h>
+#include <sofa/component/collision/model/LineModel.h>
+#include <sofa/component/collision/model/PointModel.h>
+#include <sofa/component/collision/model/CubeModel.h>
+#include <sofa/component/collision/model/RayModel.h>
 
 namespace sofa::component::collision
 {

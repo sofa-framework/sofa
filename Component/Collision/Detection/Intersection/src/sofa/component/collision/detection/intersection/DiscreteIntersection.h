@@ -20,16 +20,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseCollision/config.h>
+#include <sofa/component/collision/detection/intersection/config.h>
 
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/collision/IntersectorFactory.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaBaseCollision/CubeModel.h>
+#include <sofa/component/collision/model/SphereModel.h>
+#include <sofa/component/collision/model/CubeModel.h>
 
 namespace sofa::component::collision
 {
-class SOFA_SOFABASECOLLISION_API DiscreteIntersection : public core::collision::Intersection, public core::collision::BaseIntersector
+class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API DiscreteIntersection : public core::collision::Intersection, public core::collision::BaseIntersector
 {
 public:
     SOFA_CLASS(DiscreteIntersection,sofa::core::collision::Intersection);
@@ -99,6 +99,6 @@ protected:
 namespace sofa::core::collision
 {
 #if  !defined(SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_CPP)
-extern template class SOFA_SOFABASECOLLISION_API IntersectorFactory<component::collision::DiscreteIntersection>;
+extern template class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API IntersectorFactory<component::collision::DiscreteIntersection>;
 #endif
 } // namespace sofa::core::collision
