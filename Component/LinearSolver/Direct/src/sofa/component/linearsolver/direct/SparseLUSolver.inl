@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/linearsolver/direct/SparseLUSolver.h>
+#include <sofa/helper/ScopedAdvancedTimer.h>
 
 namespace sofa::component::linearsolver::direct
 {
@@ -39,27 +40,32 @@ template<class TMatrix, class TVector,class TThreadManager>
 SparseLUSolver<TMatrix,TVector,TThreadManager>::SparseLUSolver()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , f_tol( initData(&f_tol,0.001,"tolerance","tolerance of factorization") )
+    , d_applyPermutation(initData(&d_applyPermutation, true ,"applyPermutation", "If true the solver will apply a fill-reducing permutation to the matrix of the system."))
 {
 }
 
 
 template<class TMatrix, class TVector,class TThreadManager>
-void SparseLUSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& z, Vector& r)
+void SparseLUSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& x, Vector& b)
 {
     SparseLUInvertData<Real> * invertData = (SparseLUInvertData<Real>*) this->getMatrixInvertData(&M);
     int n = invertData->A.n;
 
-    cs_ipvec (n, invertData->N->Pinv, r.ptr(), invertData->tmp) ;	/* x = P*b */
-    cs_lsolve (invertData->N->L, invertData->tmp) ;		/* x = L\x */
-    cs_usolve (invertData->N->U, invertData->tmp) ;		/* x = U\x */
-    cs_ipvec (n, invertData->S->Q, invertData->tmp, z.ptr()) ;	/* b = Q*x */
+    sofa::helper::ScopedAdvancedTimer solveTimer("solve");
+
+    cs_pvec (n, invertData->perm.data() , b.ptr(), invertData->tmp) ; // x = P*b
+    cs_pvec (n, invertData->N->Pinv , invertData->tmp, invertData->tmp);//partial pivot
+    cs_lsolve (invertData->N->L, invertData->tmp) ;		// x = L\x
+    cs_usolve (invertData->N->U, invertData->tmp) ;		// x = U\x
+    cs_ipvec (n, invertData->N->Pinv , invertData->tmp, invertData->tmp );
+    cs_pvec (n, invertData->iperm.data() , invertData->tmp , x.ptr()) ;	// b = Q*x
+
 }
 
 template<class TMatrix, class TVector,class TThreadManager>
 void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
 {
     SparseLUInvertData<Real> * invertData = (SparseLUInvertData<Real>*) this->getMatrixInvertData(&M);
-    int order = -1; //?????
 
     if (invertData->S) cs_sfree(invertData->S);
     if (invertData->N) cs_nfree(invertData->N);
@@ -78,10 +84,64 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
     invertData->A.nz = -1;							// # of entries in triplet matrix, -1 for compressed-col
     cs_dropzeros( &invertData->A );
 
+    invertData->perm.resize(invertData->A.n);
+    invertData->iperm.resize(invertData->A.n);
+
     invertData->tmp = (Real *) cs_malloc (invertData->A.n, sizeof (Real)) ;
-    invertData->S = cs_sqr (&invertData->A, order, 0) ;		/* ordering and symbolic analysis */
-    invertData->N = cs_lu (&invertData->A, invertData->S, f_tol.getValue()) ;		/* numeric LU factorization */
+
+    if( invertData->computePermutation){
+        fill_reducing_perm(invertData->A, invertData->perm.data(), invertData->iperm.data() ); // compute the fill reducing permutation
+        invertData->computePermutation = false;
+        }
+
+    invertData->permuted_A = cs_permute(&(invertData->A), invertData->iperm.data(), invertData->perm.data(), 1);
+    invertData->S = symbolic_LU( invertData->permuted_A );
+
+    sofa::helper::ScopedAdvancedTimer factorizationTimer("factorization");
+    invertData->N = cs_lu ( invertData->permuted_A, invertData->S, f_tol.getValue()) ;		/* numeric LU factorization */
 }
 
+
+template<class TMatrix, class TVector,class TThreadManager>
+void SparseLUSolver<TMatrix,TVector,TThreadManager>::fill_reducing_perm(cs A,int * perm,int * invperm)
+{
+    sofa::helper::ScopedAdvancedTimer permTimer("permutation");
+
+    int n = A.n;
+    if(d_applyPermutation.getValue() )
+    {
+        sofa::type::vector<int> adj, xadj, t_adj, t_xadj, tran_countvec;
+
+        CSR_to_adj( A.n, A.p , A.i , adj, xadj, t_adj, t_xadj, tran_countvec );
+
+        METIS_NodeND(&n, xadj.data(), adj.data(), nullptr, nullptr, perm,invperm);
+
+    }
+    else
+    {
+        for(int j=0;j<n;j++)
+        {
+            perm[j] = j;
+            invperm[j] = j;
+        }
+    }
+
+}
+
+template<class TMatrix, class TVector,class TThreadManager>
+css* SparseLUSolver<TMatrix,TVector,TThreadManager>::symbolic_LU(cs *A)
+{// based on cs_sqr
+
+    int n;
+    css *S ;
+    if (!A) return (NULL) ;		    /* check inputs */
+    n = A->n ;
+    S = (css*)cs_calloc (1, sizeof (css)) ;	    /* allocate symbolic analysis */
+    if (!S) return (NULL) ;		    /* out of memory */
+	S->unz = 4*(A->p [n]) + n ;	    /* for LU factorization only, */
+	S->lnz = S->unz ;		    /* guess nnz(L) and nnz(U) */
+
+    return S ;
+}
 
 } // namespace sofa::component::linearsolver::direct
