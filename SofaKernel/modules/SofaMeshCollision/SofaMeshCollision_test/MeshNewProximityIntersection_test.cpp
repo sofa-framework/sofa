@@ -22,7 +22,7 @@
 
 #include <gtest/gtest.h>
 
-#include <SofaMeshCollision/MeshNewProximityIntersection.inl>
+#include <SofaMeshCollision/MeshNewProximityIntersection.h>
 
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
