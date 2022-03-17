@@ -200,6 +200,12 @@ add_subdirectory(Component)
 
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
 
+# SOFA-NG Plugins
+option(SOFA_WITH_OPENGL "Compile Sofa with OpenGL support. This will define the SOFA_WITH_OPENGL and SOFA_NO_OPENGL CMake variables." ON)
+if(SOFA_WITH_OPENGL)
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.GL)
+endif()
+
 ## Modules
 ## in the consortium convention a module is a similar to a plugin the difference is that
 ## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.

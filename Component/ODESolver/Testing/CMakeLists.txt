@@ -4,15 +4,16 @@ project(Sofa.Component.ODESolver.Testing)
 
 set(SOFACOMPONENTODESOLVERTESTING_SRC "src/sofa/component/odesolver/testing")
 
-# only header files
 set(HEADER_FILES
+    ${SOFACOMPONENTODESOLVERTESTING_SRC}/EigenTestUtilities.h
     ${SOFACOMPONENTODESOLVERTESTING_SRC}/MassSpringSystemCreation.h
+    ${SOFACOMPONENTODESOLVERTESTING_SRC}/ODESolverSpringTest.h
     ${SOFACOMPONENTODESOLVERTESTING_SRC}/SunPlanetSystemCreation.h
 )
 
 set(SOURCE_FILES
-    ${SOFACOMPONENTODESOLVERTESTING_SRC}/empty.cpp # because of not interface type
+    ${SOFACOMPONENTODESOLVERTESTING_SRC}/empty.cpp 
 )
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC src/)
-target_link_libraries(${PROJECT_NAME} Sofa.Config)
+target_link_libraries(${PROJECT_NAME} Sofa.Config Sofa.SimulationCore)

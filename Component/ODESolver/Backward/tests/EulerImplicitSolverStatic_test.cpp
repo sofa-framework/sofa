@@ -25,33 +25,69 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/testing/NumericTest.h>
 using sofa::testing::NumericTest;
 
-#include <SceneCreator/SceneCreator.h>
-#include <SceneCreator/SceneUtils.h>
-#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
-#include <SofaBaseMechanics/UniformMass.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaBoundaryCondition/FixedConstraint.h>
-#include <SofaDeformable/StiffSpringForceField.h>
+#include <SofaSimulationGraph/SimpleApi.h>
 
 #include <sofa/simulation/Simulation.h>
+#include <sofa/component/odesolver/testing/EigenTestUtilities.h>
 
 
 namespace sofa {
 
-using namespace modeling;
 using namespace type;
 using namespace testing;
 using namespace defaulttype;
 using core::objectmodel::New;
 
-using sofa::component::mass::UniformMass;
-using sofa::component::container::MechanicalObject;
-using sofa::component::interactionforcefield::StiffSpringForceField;
-using sofa::component::projectiveconstraintset::FixedConstraint;
-using sofa::component::odesolver::EulerImplicitSolver;
-typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
+/// Create a stiff string
+Node::SPtr massSpringString(Node::SPtr parent,
+    double x0, double y0, double z0, // start point,
+    double x1, double y1, double z1, // end point
+    unsigned numParticles,
+    double totalMass,
+    double stiffnessValue,
+    double dampingRatio)
+{
+    static unsigned numObject = 1;
+    std::ostringstream oss;
+    oss << "string_" << numObject++;
+
+    Vec3d startPoint(x0, y0, z0), endPoint(x1, y1, z1);
+    SReal totalLength = (endPoint - startPoint).norm();
+
+    std::stringstream positions;
+    std::stringstream springs;
+    for (unsigned i = 0; i < numParticles; i++)
+    {
+        double alpha = (double)i / (numParticles - 1);
+        Vec3d currpos = startPoint * (1 - alpha) + endPoint * alpha;
+        positions << simpleapi::str(currpos) << " ";
+
+        if (i > 0)
+        {
+            springs << simpleapi::str(i - 1) << " " << simpleapi::str(i) << " " << simpleapi::str(stiffnessValue)
+                << " " << simpleapi::str(dampingRatio) << " " << simpleapi::str(totalLength / (numParticles - 1));
+        }
+    }
+
+    Node::SPtr node = simpleapi::createChild(parent, oss.str());
+    simpleapi::createObject(node, "MechanicalObject", {
+                                {"name", oss.str() + "_DOF"},
+                                {"size", simpleapi::str(numParticles)},
+                                {"position", positions.str()}
+        });
+
+    simpleapi::createObject(node, "UniformMass", {
+                                {"name",oss.str() + "_mass"},
+                                {"vertexMass", simpleapi::str(totalMass / numParticles)} });
+
+    simpleapi::createObject(node, "StiffSpringForceField", {
+                                {"name", oss.str() + "_spring"},
+                                {"spring", springs.str()}
+        });
+
+    return node;
+}
 
 /** Test convergence to a static solution.
  * Mass-spring string composed of two particles in gravity, one is fixed.
@@ -63,17 +99,28 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public BaseSimulationTest
     {
         EXPECT_MSG_NOEMIT(Error) ;
         //*******
-        simulation::Node::SPtr root = modeling::initSofa();
+        auto simu = simpleapi::createSimulation();
+        simulation::Node::SPtr root = simpleapi::createRootNode(simu, "root");
         //*******
         // begin create scene under the root node
+        sofa::simpleapi::importPlugin("Sofa.Component.ODESolver");
+        sofa::simpleapi::importPlugin("SofaBaseLinearSolver");
+        sofa::simpleapi::importPlugin("SofaBaseMechanics");
+        sofa::simpleapi::importPlugin("SofaDeformable");
+        sofa::simpleapi::importPlugin("SofaBoundaryCondition");
 
-        EulerImplicitSolver::SPtr eulerSolver = addNew<EulerImplicitSolver>(root);
-        CGLinearSolver::SPtr linearSolver = addNew<CGLinearSolver>(root);
-        linearSolver->d_maxIter.setValue(25);
-        linearSolver->d_tolerance.setValue(1e-5);
-        linearSolver->d_smallDenominatorThreshold.setValue(1e-5);
+        // remove warnings
+        simpleapi::createObject(root, "DefaultAnimationLoop", {});
+        simpleapi::createObject(root, "DefaultVisualManagerLoop", {});
 
-        simulation::Node::SPtr string = massSpringString(
+        simpleapi::createObject(root, "EulerImplicitSolver", {});
+        simpleapi::createObject(root, "CGLinearSolver", {
+            { "iterations", simpleapi::str(25)},
+            { "tolerance", simpleapi::str(1e-5)},
+            { "threshold", simpleapi::str(1e-5)},
+        });
+
+        simulation::Node::SPtr string = massSpringString (
                     root, // attached to root node
                     0,1,0,     // first particle position
                     0,0,0,     // last  particle position
@@ -82,30 +129,32 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public BaseSimulationTest
                     1000.0, // stiffness
                     0.1     // damping ratio
                     );
-        FixedConstraint<Vec3Types>::SPtr fixed = modeling::addNew<FixedConstraint<Vec3Types> >(string,"fixedConstraint");
-        fixed->addConstraint(0);      // attach first particle
+
+        simpleapi::createObject(string, "FixedConstraint", {
+            { "indices", "0"}
+        });
 
         Vec3d expected(0,-0.00981,0); // expected position of second particle after relaxation
 
         // end create scene
         //*********
-        initScene(root);
+        simu->init(root.get());
         //*********
         // run simulation
 
-        Vector x0, x1, v0, v1;
-        x0 = getVector( core::VecId::position() ); //cerr<<"EulerImplicit_test, initial positions : " << x0.transpose() << endl;
-        v0 = getVector( core::VecId::velocity() );
+        Eigen::VectorXd x0, x1, v0, v1;
+        x0 = component::odesolver::testing::getVector( root, core::VecId::position() ); //cerr<<"EulerImplicit_test, initial positions : " << x0.transpose() << endl;
+        v0 = component::odesolver::testing::getVector( root, core::VecId::velocity() );
 
-        Vector::RealScalar dx, dv;
+        Eigen::VectorXd::RealScalar dx, dv;
         unsigned n=0;
         const unsigned nMax=100;
         const double  precision = 1.e-4;
         do {
-            sofa::simulation::getSimulation()->animate(root.get(),1.0);
+            simu->animate(root.get(),1.0);
 
-            x1 = getVector( core::VecId::position() ); //cerr<<"EulerImplicit_test, new positions : " << x1.transpose() << endl;
-            v1 = getVector( core::VecId::velocity() );
+            x1 = component::odesolver::testing::getVector( root, core::VecId::position() ); //cerr<<"EulerImplicit_test, new positions : " << x1.transpose() << endl;
+            v1 = component::odesolver::testing::getVector( root, core::VecId::velocity() );
 
             dx = (x0-x1).lpNorm<Eigen::Infinity>();
             dv = (v0-v1).lpNorm<Eigen::Infinity>();
@@ -145,63 +194,72 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
     EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium()
     {
         //*******
-        simulation::Node::SPtr root = modeling::initSofa();
+        auto simu = simpleapi::createSimulation();
+        simulation::Node::SPtr root = simpleapi::createRootNode(simu, "root");
         //*******
         // create scene
         root->setGravity(Vec3(0,0,0));
 
-        EulerImplicitSolver::SPtr eulerSolver = addNew<EulerImplicitSolver> (root );
-        CGLinearSolver::SPtr linearSolver = addNew<CGLinearSolver> (root );
-        linearSolver->d_maxIter.setValue(25);
-        linearSolver->d_tolerance.setValue(1e-5);
-        linearSolver->d_smallDenominatorThreshold.setValue(1e-5);
+        sofa::simpleapi::importPlugin("Sofa.Component.ODESolver");
+        sofa::simpleapi::importPlugin("SofaBaseLinearSolver");
+        sofa::simpleapi::importPlugin("SofaBaseMechanics");
+        sofa::simpleapi::importPlugin("SofaDeformable");
+        sofa::simpleapi::importPlugin("SofaBoundaryCondition");
+        // remove warnings
+        simpleapi::createObject(root, "DefaultAnimationLoop", {});
+        simpleapi::createObject(root, "DefaultVisualManagerLoop", {});
 
+        simpleapi::createObject(root, "EulerImplicitSolver", {});
+        simpleapi::createObject(root, "CGLinearSolver", {
+            { "iterations", simpleapi::str(25)},
+            { "tolerance", simpleapi::str(1e-5)},
+            { "threshold", simpleapi::str(1e-5)},
+            });
 
-        MechanicalObject<Vec3Types>::SPtr DOF = addNew<MechanicalObject<Vec3Types> >(root,"DOF");
+        simpleapi::createObject(root, "MechanicalObject", {
+            {"name", "DOF"},
+            {"position", simpleapi::str("0.0 2.0 0.0")},
+            {"velocity", simpleapi::str("0.0 0.0 0.0")}
+        });
 
-        UniformMass<Vec3Types>::SPtr mass = addNew<UniformMass<Vec3Types> >(root,"mass");
-        mass->d_vertexMass.setValue( 1. );
-
+        simpleapi::createObject(root, "UniformMass", {
+            { "name","mass"},
+            { "vertexMass", "1.0"}
+        });
 
         // create a child node with its own DOF
         simulation::Node::SPtr child = root->createChild("childNode");
-        MechanicalObject<Vec3Types>::SPtr childDof = addNew<MechanicalObject<Vec3Types> >(child);
-        UniformMass<Vec3Types>::SPtr childMass = addNew<UniformMass<Vec3Types> >(child,"childMass");
-        childMass->d_vertexMass.setValue( 1. );
+        simpleapi::createObject(child, "MechanicalObject", {
+            {"name", "childDof"},
+            {"position", simpleapi::str("0.0 -1.0 0.0")},
+            {"velocity", simpleapi::str("0.0 0.0 0.0")}
+        });
+
+        simpleapi::createObject(child, "UniformMass", {
+            { "name","childMass"},
+            { "vertexMass", simpleapi::str("1.0")}
+        });
 
         // attach a spring
-        StiffSpringForceField<Vec3Types>::SPtr spring = New<StiffSpringForceField<Vec3Types> >(DOF.get(), childDof.get());
-        root->addObject(spring);
-        spring->addSpring(0,0,  1000. ,0.1, 1.);
-
-        // set position and velocity vectors, using DataTypes::set to cope with tests in dimension 2
-        MechanicalObject<Vec3Types>::VecCoord xp(1),xc(1);
-        MechanicalObject<Vec3Types>::DataTypes::set( xp[0], 0., 2.,0.);
-        MechanicalObject<Vec3Types>::DataTypes::set( xc[0], 0.,-1.,0.);
-        MechanicalObject<Vec3Types>::VecDeriv vp(1),vc(1);
-        MechanicalObject<Vec3Types>::DataTypes::set( vp[0], 0.,0.,0.);
-        MechanicalObject<Vec3Types>::DataTypes::set( vc[0], 0.,0.,0.);
-        // copy the position and velocities to the scene graph
-        DOF->resize(1);
-        childDof->resize(1);
-        MechanicalObject<Vec3Types>::WriteVecCoord xdof = DOF->writePositions(), xchildDof = childDof->writePositions();
-        copyToData( xdof, xp );
-        copyToData( xchildDof, xc );
-        MechanicalObject<Vec3Types>::WriteVecDeriv vdof = DOF->writeVelocities(), vchildDof = childDof->writeVelocities();
-        copyToData( vdof, vp );
-        copyToData( vchildDof, vc );
+        std::ostringstream oss;
+        oss << 0 << " " << 0 << " " << 1000.0 << " " << 0.1 << " " << 1.0f;
+        simpleapi::createObject(root, "StiffSpringForceField", {
+            {"spring", oss.str()},
+            { "object1", "@/DOF"},
+            { "object2", "@childNode/childDof"},
+        });
 
         Vec3d expected(0,0,0); // expected position of second particle after relaxation
 
         // end create scene
         //*********
-        initScene(root);
+        simu->init(root.get());
         //*********
         // run simulation
 
-        Vector x0, x1, v0, v1;
-        x0 = getVector( core::VecId::position() ); //cerr<<"EulerImplicit_test, initial positions : " << x0.transpose() << endl;
-        v0 = getVector( core::VecId::velocity() );
+        Eigen::VectorXd x0, x1, v0, v1;
+        x0 = component::odesolver::testing::getVector(root, core::VecId::position() ); //cerr<<"EulerImplicit_test, initial positions : " << x0.transpose() << endl;
+        v0 = component::odesolver::testing::getVector(root, core::VecId::velocity() );
 
         SReal dx, dv;
         unsigned n=0;
@@ -210,8 +268,8 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
         do {
             sofa::simulation::getSimulation()->animate(root.get(),1.0);
 
-            x1 = getVector( core::VecId::position() ); //cerr<<"EulerImplicit_test, new positions : " << x1.transpose() << endl;
-            v1 = getVector( core::VecId::velocity() );
+            x1 = component::odesolver::testing::getVector(root, core::VecId::position() ); //cerr<<"EulerImplicit_test, new positions : " << x1.transpose() << endl;
+            v1 = component::odesolver::testing::getVector(root, core::VecId::velocity() );
 
             dx = (x0-x1).lpNorm<Eigen::Infinity>();
             dv = (v0-v1).lpNorm<Eigen::Infinity>();

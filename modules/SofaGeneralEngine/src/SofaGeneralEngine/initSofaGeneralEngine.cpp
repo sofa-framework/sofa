@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <SofaGeneralEngine/initSofaGeneralEngine.h>
 
+#include <sofa/helper/system/PluginManager.h>
+
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
@@ -32,6 +34,11 @@ void initSofaGeneralEngine()
     static bool first = true;
     if (first)
     {
+#if SOFAGENERALENGINE_HAVE_SOFA_GL == 1
+        // msg_deprecated("SofaGeneralEngine") << "SofaGeneralEngine is deprecated;. It will be removed at v23.06. Use Sofa.GL.Component.Engine if you need TextureInterpolation.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.GL.Component.Engine");
+#endif // SOFAGENERALENGINE_HAVE_SOFA_GL == 1
         first = false;
     }
 }
