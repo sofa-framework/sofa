@@ -20,18 +20,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaConstraint/config.h>
+#include <sofa/component/collision/response/contact/config.h>
 
+#include <sofa/helper/Factory.h>
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/Intersection.h>
-#include <SofaBaseMechanics/BarycentricMapping.h>
-#include <SofaConstraint/UnilateralInteractionConstraint.h>
-#include <sofa/helper/Factory.h>
-#include <SofaBaseCollision/BaseContactMapper.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/BaseMapping.h>
+#include <sofa/component/constraint/lagragian/UnilateralInteractionConstraint.h>
+#include <sofa/component/collision/response/mapper/BaseContactMapper.h>
+#include <sofa/component/collision/response/contact/ContactIdentifier.h>
 
-#include <SofaConstraint/ContactIdentifier.h>
 namespace sofa::component::collision
 {
 template <class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes = sofa::defaulttype::Vec3Types >

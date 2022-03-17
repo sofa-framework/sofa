@@ -20,8 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMeshCollision/BarycentricContactMapper.h>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.h>
+#include <sofa/component/collision/response/mapper/BarycentricContactMapper.h>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperMeshTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/DeleteVisitor.h>

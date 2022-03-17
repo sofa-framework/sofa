@@ -20,24 +20,25 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_RIGIDCONTACTMAPPER_CPP
-#include <SofaMeshCollision/RigidContactMapper.inl>
+#include <sofa/component/collision/response/mapper/RigidContactMapper.inl>
 #include <sofa/helper/Factory.inl>
 
 namespace sofa::component::collision
 {
 
 using namespace defaulttype;
+using namespace sofa::component::collision::model;
 
 ContactMapperCreator< ContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>,Vec3Types> > CylinderModelContactMapperClass("PenalityContactForceField", true);
 ContactMapperCreator< ContactMapper<RigidSphereModel,Vec3Types> > RigidSphereContactMapperClass("PenalityContactForceField", true);
 
 
-template class SOFA_SOFAMESHCOLLISION_API ContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>,Vec3Types>;
-template class SOFA_SOFAMESHCOLLISION_API ContactMapper<RigidSphereModel,Vec3Types>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>,Vec3Types>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper<RigidSphereModel,Vec3Types>;
 
-template SOFA_SOFAMESHCOLLISION_API void RigidContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>::cleanup();
-template SOFA_SOFAMESHCOLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>::createMapping(const char*);
-template SOFA_SOFAMESHCOLLISION_API void RigidContactMapper<RigidSphereModel, defaulttype::Vec3Types>::cleanup();
-template SOFA_SOFAMESHCOLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<RigidSphereModel, defaulttype::Vec3Types>::createMapping(const char*);
+template SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API void RigidContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>::cleanup();
+template SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, defaulttype::Vec3Types>::createMapping(const char*);
+template SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API void RigidContactMapper<RigidSphereModel, defaulttype::Vec3Types>::cleanup();
+template SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<RigidSphereModel, defaulttype::Vec3Types>::createMapping(const char*);
 
 } //namespace sofa::component::collision

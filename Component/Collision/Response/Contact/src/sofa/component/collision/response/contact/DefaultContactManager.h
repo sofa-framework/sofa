@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseCollision/config.h>
+#include <sofa/component/collision/response/contact/config.h>
 
 #include <sofa/core/collision/ContactManager.h>
 #include <sofa/simulation/fwd.h>
@@ -31,7 +31,7 @@
 namespace sofa::component::collision
 {
 
-class SOFA_SOFABASECOLLISION_API DefaultContactManager : public core::collision::ContactManager
+class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API DefaultContactManager : public core::collision::ContactManager
 {
 public :
     SOFA_CLASS(DefaultContactManager,sofa::core::collision::ContactManager);

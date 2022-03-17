@@ -20,18 +20,19 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_CPP
-#include <SofaMeshCollision/BarycentricContactMapper.inl>
+#include <sofa/component/collision/response/mapper/BarycentricContactMapper.inl>
 #include <sofa/helper/Factory.inl>
 
 namespace sofa::component::collision
 {
 
 using namespace defaulttype;
+using namespace sofa::component::collision::model;
 
 ContactMapperCreator< ContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>> > LineContactMapperClass("PenalityContactForceField",true);
 ContactMapperCreator< ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleContactMapperClass("PenalityContactForceField",true);
 
-template class SOFA_SOFAMESHCOLLISION_API ContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
-template class SOFA_SOFAMESHCOLLISION_API ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
 
 } //namespace sofa::component::collision

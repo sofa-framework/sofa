@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_CPP
-#include <SofaObjectInteraction/PenalityContactForceField.inl>
+#include <sofa/component/collision/response/contact/PenalityContactForceField.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
@@ -35,7 +35,7 @@ int PenalityContactForceFieldClass = core::RegisterObject("Contact using repulsi
         .add< PenalityContactForceField<Vec3Types> >()
         ;
 
-template class SOFA_SOFAOBJECTINTERACTION_API PenalityContactForceField<Vec3Types>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API PenalityContactForceField<Vec3Types>;
 
 
 } // namespace sofa::component::interactionforcefield

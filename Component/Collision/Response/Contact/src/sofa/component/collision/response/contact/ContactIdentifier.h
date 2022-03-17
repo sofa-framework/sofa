@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaConstraint/config.h>
+#include <sofa/component/collision/response/contact/config.h>
 
 #include <sofa/core/collision/DetectionOutput.h>
 #include <list>
@@ -29,7 +29,7 @@
 namespace sofa::component::collision
 {
 
-class SOFA_SOFACONSTRAINT_API ContactIdentifier
+class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API ContactIdentifier
 {
 public:
     ContactIdentifier();

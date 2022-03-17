@@ -20,17 +20,18 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_CPP
-#include <SofaMeshCollision/IdentityContactMapper.inl>
+#include <sofa/component/collision/response/mapper/IdentityContactMapper.inl>
 
 namespace sofa::component::collision
 {
 
 using namespace defaulttype;
+using namespace sofa::component::collision::model;
 
 ContactMapperCreator< ContactMapper<SphereCollisionModel<sofa::defaulttype::Vec3Types>> > SphereContactMapperClass("PenalityContactForceField",true);
 ContactMapperCreator< ContactMapper<PointCollisionModel<sofa::defaulttype::Vec3Types>> > PointContactMapperClass("PenalityContactForceField",true);
 
-template class SOFA_SOFAMESHCOLLISION_API ContactMapper<SphereCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
-template class SOFA_SOFAMESHCOLLISION_API ContactMapper<PointCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper<SphereCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper<PointCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
 
 } //namespace sofa::component::collision

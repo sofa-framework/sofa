@@ -20,21 +20,21 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaUserInteraction/config.h>
+#include <sofa/component/collision/response/contact/config.h>
 
 #include <sofa/core/collision/Contact.h>
 #include <sofa/helper/Factory.h>
 
 //TODO: use fwd declaration
-#include <SofaUserInteraction/RayModel.h>
+#include <sofa/component/collision/model/RayModel.h>
 
 namespace sofa::component::collision
 {
 
-class SOFA_SOFAUSERINTERACTION_API BaseRayContact : public core::collision::Contact
+class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseRayContact : public core::collision::Contact
 {
 public:
-    typedef RayCollisionModel CollisionModel1;
+    typedef model::RayCollisionModel CollisionModel1;
 
 protected:
     CollisionModel1* model1;
@@ -61,7 +61,7 @@ template<class CM2>
 class RayContact : public BaseRayContact
 {
 public:
-    typedef RayCollisionModel CollisionModel1;
+    typedef model::RayCollisionModel CollisionModel1;
     typedef CM2 CollisionModel2;
     typedef core::collision::Intersection Intersection;
     typedef core::collision::TDetectionOutputVector<CollisionModel1, CollisionModel2> OutputVector;

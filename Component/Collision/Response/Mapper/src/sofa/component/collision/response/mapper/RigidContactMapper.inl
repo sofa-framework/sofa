@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMeshCollision/RigidContactMapper.h>
+#include <sofa/component/collision/response/mapper/RigidContactMapper.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/DeleteVisitor.h>

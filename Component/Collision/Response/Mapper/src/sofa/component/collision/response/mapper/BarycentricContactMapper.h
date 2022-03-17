@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMeshCollision/config.h>
+#include <sofa/component/collision/response/mapper/config.h>
 
-#include <SofaBaseMechanics/BarycentricMapping.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaBaseCollision/BaseContactMapper.h>
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaMeshCollision/LineModel.h>
+#include <sofa/component/mapping/linear/BarycentricMapping.h>
+#include <sofa/component/container/MechanicalObject.h>
+#include <sofa/component/collision/response/mapper/BaseContactMapper.h>
+#include <sofa/component/collision/model/TriangleModel.h>
+#include <sofa/component/collision/model/LineModel.h>
 
 namespace sofa::component::collision
 {
@@ -182,15 +182,15 @@ public:
 };
 
 #if !defined(SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_CPP)
-extern template class SOFA_SOFAMESHCOLLISION_API ContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
-extern template class SOFA_SOFAMESHCOLLISION_API ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper<model::LineCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper<model::TriangleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
 
 #  ifdef _MSC_VER
 // Manual declaration of non-specialized members, to avoid warnings from MSVC.
-extern template SOFA_SOFAMESHCOLLISION_API void BarycentricContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>, defaulttype::Vec3Types>::cleanup();
-extern template SOFA_SOFAMESHCOLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* BarycentricContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>, defaulttype::Vec3Types>::createMapping(const char*);
-extern template SOFA_SOFAMESHCOLLISION_API void BarycentricContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, defaulttype::Vec3Types>::cleanup();
-extern template SOFA_SOFAMESHCOLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* BarycentricContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, defaulttype::Vec3Types>::createMapping(const char*);
+extern template SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API void BarycentricContactMapper<model::LineCollisionModel<sofa::defaulttype::Vec3Types>, defaulttype::Vec3Types>::cleanup();
+extern template SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API core::behavior::MechanicalState<defaulttype::Vec3Types>* BarycentricContactMapper<model::LineCollisionModel<sofa::defaulttype::Vec3Types>, defaulttype::Vec3Types>::createMapping(const char*);
+extern template SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API void BarycentricContactMapper<model::TriangleCollisionModel<sofa::defaulttype::Vec3Types>, defaulttype::Vec3Types>::cleanup();
+extern template SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API core::behavior::MechanicalState<defaulttype::Vec3Types>* BarycentricContactMapper<model::TriangleCollisionModel<sofa::defaulttype::Vec3Types>, defaulttype::Vec3Types>::createMapping(const char*);
 #  endif // _MSC_VER
 #endif
 

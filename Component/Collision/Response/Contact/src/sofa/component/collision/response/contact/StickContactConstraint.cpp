@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaConstraint/StickContactConstraint.inl>
+#include <sofa/component/collision/response/contact/StickContactConstraint.inl>
 
 namespace sofa::component::collision
 {
@@ -28,6 +28,7 @@ using namespace defaulttype;
 using namespace sofa::helper;
 using simulation::Node;
 using namespace sofa::core::collision;
+using namespace sofa::component::collision::model;
 
 Creator<Contact::Factory, StickContactConstraint<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > PointPointStickContactConstraintClass("StickContactConstraint",true);
 Creator<Contact::Factory, StickContactConstraint<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > LineSphereStickContactConstraintClass("StickContactConstraint",true);
@@ -40,15 +41,15 @@ Creator<Contact::Factory, StickContactConstraint<TriangleCollisionModel<sofa::de
 Creator<Contact::Factory, StickContactConstraint<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > SphereSphereStickContactConstraintClass("StickContactConstraint",true);
 Creator<Contact::Factory, StickContactConstraint<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > SpherePointStickContactConstraintClass("StickContactConstraint",true);
 
-template class SOFA_SOFACONSTRAINT_API StickContactConstraint<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_SOFACONSTRAINT_API StickContactConstraint<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_SOFACONSTRAINT_API StickContactConstraint<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_SOFACONSTRAINT_API StickContactConstraint<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_SOFACONSTRAINT_API StickContactConstraint<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_SOFACONSTRAINT_API StickContactConstraint<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_SOFACONSTRAINT_API StickContactConstraint<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_SOFACONSTRAINT_API StickContactConstraint<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_SOFACONSTRAINT_API StickContactConstraint<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_SOFACONSTRAINT_API StickContactConstraint<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API StickContactConstraint<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API StickContactConstraint<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API StickContactConstraint<LineCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API StickContactConstraint<LineCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API StickContactConstraint<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API StickContactConstraint<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API StickContactConstraint<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API StickContactConstraint<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API StickContactConstraint<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API StickContactConstraint<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
 
 } //namespace sofa::component::collision

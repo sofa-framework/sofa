@@ -20,11 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaObjectInteraction/PenalityContactForceField.h>
+#include <sofa/component/collision/response/contact/PenalityContactForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
-#include <cassert>
-#include <iostream>
 
 namespace sofa::component::interactionforcefield
 {

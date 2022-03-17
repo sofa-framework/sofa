@@ -20,8 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include "sofa/config.h"
-#include <SofaBaseCollision/config.h>
+
+#include <sofa/component/collision/response/contact/config.h>
 #include <sofa/type/Vec.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -39,7 +39,7 @@ namespace sofa::core::collision
 // forward declaration
 class NarrowPhaseDetection;
 
-class SOFA_SOFABASECOLLISION_API ContactListener : public virtual core::objectmodel::BaseObject
+class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API ContactListener : public virtual core::objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(ContactListener, core::objectmodel::BaseObject);

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaObjectInteraction/config.h>
+#include <sofa/component/collision/response/contact/config.h>
 
 #include <sofa/core/behavior/PairInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -125,7 +125,7 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_CPP)
-extern template class SOFA_SOFAOBJECTINTERACTION_API PenalityContactForceField<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API PenalityContactForceField<defaulttype::Vec3Types>;
 
 #endif
 

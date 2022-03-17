@@ -36,7 +36,7 @@ set(SOURCE_FILES
 sofa_find_package(Sofa.SimulationCore REQUIRED)
 sofa_find_package(Sofa.Component.Collision.Model REQUIRED)
 sofa_find_package(Sofa.Component.Collision.Response.Mapper REQUIRED)
-# sofa_find_package(Sofa.Component.Constraint.Lagrangian) # FrictionContact needs UnilateralCC
+# sofa_find_package(Sofa.Component.Constraint.Lagrangian) # FrictionContact needs UnilateralCC, StickConttact BilateralInteractionConstraint
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.SimulationCore)

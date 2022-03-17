@@ -20,9 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMeshCollision/BarycentricPenalityContact.h>
+#include <sofa/component/collision/response/contact/BarycentricPenalityContact.h>
+
+#include <sofa/component/collision/response/mapper/BaseContactMapper.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseCollision/BaseContactMapper.h>
 
 namespace sofa::component::collision
 {

@@ -19,24 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaUserInteraction/RayContact.h>
+#include <sofa/component/collision/response/contact/RayContact.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaUserInteraction/RayModel.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
+#include <sofa/component/collision/model/RayModel.h>
+#include <sofa/component/collision/model/SphereModel.h>
+#include <sofa/component/collision/model/TriangleModel.h>
 
 namespace sofa::component::collision
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::component::collision::model;
 
 Creator<core::collision::Contact::Factory, RayContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>> > RaySphereContactClass("RayContact",true);
 Creator<core::collision::Contact::Factory, RayContact<RigidSphereModel> > RayRigidSphereContactClass("RayContact",true);
 Creator<core::collision::Contact::Factory, RayContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > RayTriangleContactClass("RayContact",true);
 
-template class SOFA_SOFAUSERINTERACTION_API RayContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
-template class SOFA_SOFAUSERINTERACTION_API RayContact<RigidSphereModel>;
-template class SOFA_SOFAUSERINTERACTION_API RayContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API RayContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API RayContact<RigidSphereModel>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API RayContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>>;
 
 BaseRayContact::BaseRayContact(CollisionModel1* model1, core::collision::Intersection* /*instersectionMethod*/)
     : model1(model1)

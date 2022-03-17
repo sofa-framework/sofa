@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_SUBSETCONTACTMAPPER_CPP
 
-#include <SofaMeshCollision/SubsetContactMapper.inl>
+#include <sofa/component/collision/response/mapper/SubsetContactMapper.inl>
 
 namespace sofa::component::collision
 {

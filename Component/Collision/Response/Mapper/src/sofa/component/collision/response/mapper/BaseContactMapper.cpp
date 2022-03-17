@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_BASECONTACTMAPPER_CPP
 
-#include <SofaBaseCollision/BaseContactMapper.h>
+#include <sofa/component/collision/response/mapper/BaseContactMapper.h>
 
 #include <sofa/helper/Factory.inl>
 
@@ -43,15 +43,15 @@ std::string GenerateStringID::generate(){
 }
 
 
-//template class SOFA_SOFABASECOLLISION_API BaseContactMapper<defaulttype::Vec2Types>;
-template class SOFA_SOFABASECOLLISION_API BaseContactMapper<defaulttype::Vec3Types>;
-template class SOFA_SOFABASECOLLISION_API BaseContactMapper<defaulttype::Rigid3Types>;
+//template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API BaseContactMapper<defaulttype::Vec2Types>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API BaseContactMapper<defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API BaseContactMapper<defaulttype::Rigid3Types>;
 
 
 } // namespace sofa::component::collision
 
 namespace sofa::helper
 {
-template class SOFA_SOFABASECOLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3Types>, core::CollisionModel* >;
-template class SOFA_SOFABASECOLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Rigid3Types>, core::CollisionModel* >;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3Types>, core::CollisionModel* >;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Rigid3Types>, core::CollisionModel* >;
 } // namespace sofa::helper

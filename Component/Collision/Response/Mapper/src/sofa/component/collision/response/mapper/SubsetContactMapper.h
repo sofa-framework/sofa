@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMeshCollision/config.h>
+#include <sofa/component/collision/response/mapper/config.h>
 
 #include <sofa/helper/Factory.h>
-#include <SofaBaseMechanics/SubsetMapping.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/mapping/linear/SubsetMapping.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/simulation/Node.h>
-#include <SofaBaseCollision/BaseContactMapper.h>
+#include <sofa/component/collision/response/mapper/BaseContactMapper.h>
 
 
 namespace sofa::component::collision

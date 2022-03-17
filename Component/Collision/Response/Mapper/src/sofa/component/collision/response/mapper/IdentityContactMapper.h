@@ -20,15 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMeshCollision/config.h>
+#include <sofa/component/collision/response/mapper/config.h>
 
 #include <sofa/helper/Factory.h>
-#include <SofaBaseMechanics/IdentityMapping.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaBaseCollision/BaseContactMapper.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaMeshCollision/PointModel.h>
-#include <SofaBaseMechanics/IdentityMapping.h>
+#include <sofa/component/mapping/linear/IdentityMapping.h>
+#include <sofa/component/container/MechanicalObject.h>
+#include <sofa/component/collision/mapper/BaseContactMapper.h>
+#include <sofa/component/collision/model/SphereModel.h>
+#include <sofa/component/collision/model/PointModel.h>
 
 namespace sofa::component::collision
 {
@@ -184,8 +183,8 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_CPP)
-extern template class SOFA_SOFAMESHCOLLISION_API ContactMapper<SphereCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
-extern template class SOFA_SOFAMESHCOLLISION_API ContactMapper<PointCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper<model::SphereCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper<model::PointCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
 #endif
 
 } //namespace sofa::component::collision
