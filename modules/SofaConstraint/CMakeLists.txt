@@ -15,17 +15,9 @@ set(SOURCE_FILES
 list(APPEND HEADER_FILES
     ${SOFACONSTRAINT_SRC}/ConstraintAttachBodyPerformer.h
     ${SOFACONSTRAINT_SRC}/ConstraintAttachBodyPerformer.inl
-    ${SOFACONSTRAINT_SRC}/ContactIdentifier.h
-    ${SOFACONSTRAINT_SRC}/FrictionContact.h
-    ${SOFACONSTRAINT_SRC}/FrictionContact.inl
-    ${SOFACONSTRAINT_SRC}/StickContactConstraint.h
-    ${SOFACONSTRAINT_SRC}/StickContactConstraint.inl
     )
 list(APPEND SOURCE_FILES
     ${SOFACONSTRAINT_SRC}/ConstraintAttachBodyPerformer.cpp
-    ${SOFACONSTRAINT_SRC}/ContactIdentifier.cpp
-    ${SOFACONSTRAINT_SRC}/FrictionContact.cpp
-    ${SOFACONSTRAINT_SRC}/StickContactConstraint.cpp
     )
 
 sofa_find_package(SofaBase REQUIRED) # SofaBaseLinearSolver
@@ -36,7 +28,7 @@ sofa_find_package(SofaUserInteraction REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaImplicitOdeSolver SofaUserInteraction SofaBaseLinearSolver)
 
-message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Mapping.MappedMatrix, Sofa.Component.Constraint.Lagrangian.Model, Sofa.Component.Constraint.Lagrangian.Correction, Sofa.Component.Constraint.Lagrangian.Solver, Sofa.Component.AnimationLoop and Sofa.Component.Collision.Detection.Intersection instead.")
+message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Mapping.MappedMatrix, Sofa.Component.Constraint.Lagrangian.Model, Sofa.Component.Constraint.Lagrangian.Correction, Sofa.Component.Constraint.Lagrangian.Solver, Sofa.Component.AnimationLoop, Sofa.Component.Collision.Detection.Intersection and Sofa.Component.Collision.Response.Contact instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.Mapping.MappedMatrix REQUIRED)
@@ -45,12 +37,14 @@ sofa_find_package(Sofa.Component.Constraint.Lagrangian.Correction REQUIRED)
 sofa_find_package(Sofa.Component.Constraint.Lagrangian.Solver REQUIRED)
 sofa_find_package(Sofa.Component.AnimationLoop REQUIRED)
 sofa_find_package(Sofa.Component.Collision.Detection.Intersection REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Response.Contact REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Mapping.MappedMatrix)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Constraint.Lagrangian.Model)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Constraint.Lagrangian.Correction)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Constraint.Lagrangian.Solver)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.AnimationLoop)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Detection.Intersection)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Response.Contact)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
