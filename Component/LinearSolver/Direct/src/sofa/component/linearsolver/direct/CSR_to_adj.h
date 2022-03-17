@@ -1,8 +1,7 @@
 #ifndef SOFA_CSR_TO_ADJ_H
 #define SOFA_CSR_TO_ADJ_H
 
-#include <SofaSparseSolver/config.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 
 extern "C" {
 #include <metis.h>

@@ -24,10 +24,8 @@
 #include <sofa/component/linearsolver/direct/config.h>
 
 #include <sofa/helper/ScopedAdvancedTimer.h>
-#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
-#include <sofa/helper/ScopedAdvancedTimer.h>
-#include <SofaSparseSolver/CSR_to_adj.h>
+#include <sofa/component/linearsolver/direct/CSR_to_adj.h>
 extern "C" {
 #include <metis.h>
 }

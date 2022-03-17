@@ -24,7 +24,7 @@
 
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <csparse.h>
-#include <SofaSparseSolver/CSR_to_adj.h>
+#include <sofa/component/linearsolver/direct/CSR_to_adj.h>
 extern "C" {
 #include <metis.h>
 }
