@@ -20,14 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMeshCollision/MeshNewProximityIntersection.h>
-#include <SofaBaseCollision/NewProximityIntersection.inl>
-#include <sofa/core/visual/VisualParams.h>
+#include <sofa/component/collision/detection/intersection/MeshNewProximityIntersection.h>
+#include <sofa/component/collision/detection/intersection/NewProximityIntersection.inl>
 #include <sofa/type/Mat.h>
 #include <sofa/type/Vec.h>
 #include <sofa/core/collision/Intersection.inl>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::intersection
 {
 
 inline int MeshNewProximityIntersection::doIntersectionLineLine(SReal dist2, const type::Vector3& p1, const type::Vector3& p2, const type::Vector3& q1, const type::Vector3& q2, OutputVector* contacts, int id, const type::Vector3& /*n*/, bool /*useNormal*/)
@@ -121,6 +120,8 @@ inline int MeshNewProximityIntersection::doIntersectionLinePoint(SReal dist2, co
 
 inline int MeshNewProximityIntersection::doIntersectionTrianglePoint2(SReal dist2, int flags, const type::Vector3& p1, const type::Vector3& p2, const type::Vector3& p3, const type::Vector3& /*n*/, const type::Vector3& q, OutputVector* contacts, int id, bool swapElems)
 {
+    using model::TriangleCollisionModel;
+
     const type::Vector3 AB = p2-p1;
     const type::Vector3 AC = p3-p1;
     const type::Vector3 AQ = q -p1;
@@ -223,6 +224,8 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint2(SReal dist
 
 inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2, int flags, const type::Vector3& p1, const type::Vector3& p2, const type::Vector3& p3, const type::Vector3& /*n*/, const type::Vector3& q, OutputVector* contacts, int id, bool swapElems, bool /*useNormal*/)
 {
+    using model::TriangleCollisionModel;
+
     const type::Vector3 AB = p2-p1;
     const type::Vector3 AC = p3-p1;
     const type::Vector3 AQ = q -p1;
@@ -327,7 +330,7 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2
 }
 
 template <class T>
-bool MeshNewProximityIntersection::testIntersection(TSphere<T>& e1, Point& e2)
+bool MeshNewProximityIntersection::testIntersection(model::TSphere<T>& e1, model::Point& e2)
 {
     OutputVector contacts;
     const double alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r();
@@ -336,7 +339,7 @@ bool MeshNewProximityIntersection::testIntersection(TSphere<T>& e1, Point& e2)
 }
 
 template<class T>
-int MeshNewProximityIntersection::computeIntersection(TSphere<T>& e1, Point& e2, OutputVector* contacts)
+int MeshNewProximityIntersection::computeIntersection(model::TSphere<T>& e1, model::Point& e2, OutputVector* contacts)
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r();
     int n = intersection->doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.p(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex());
@@ -353,7 +356,7 @@ int MeshNewProximityIntersection::computeIntersection(TSphere<T>& e1, Point& e2,
 }
 
 template <class T>
-bool MeshNewProximityIntersection::testIntersection(Line& e1, TSphere<T>& e2)
+bool MeshNewProximityIntersection::testIntersection(model::Line& e1, model::TSphere<T>& e2)
 {
     SOFA_UNUSED(e1);
     SOFA_UNUSED(e2);
@@ -363,7 +366,7 @@ bool MeshNewProximityIntersection::testIntersection(Line& e1, TSphere<T>& e2)
 }
 
 template<class T>
-int MeshNewProximityIntersection::computeIntersection(Line& e1, TSphere<T>& e2, OutputVector* contacts)
+int MeshNewProximityIntersection::computeIntersection(model::Line& e1, model::TSphere<T>& e2, OutputVector* contacts)
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e2.r();
     int n = doIntersectionLinePoint(alarmDist*alarmDist, e1.p1(),e1.p2(), e2.center(), contacts, e2.getIndex());
@@ -380,7 +383,7 @@ int MeshNewProximityIntersection::computeIntersection(Line& e1, TSphere<T>& e2, 
 }
 
 template <class T>
-bool MeshNewProximityIntersection::testIntersection(Triangle& e1, TSphere<T>& e2)
+bool MeshNewProximityIntersection::testIntersection(model::Triangle& e1, model::TSphere<T>& e2)
 {
     SOFA_UNUSED(e1);
     SOFA_UNUSED(e2);
@@ -390,7 +393,7 @@ bool MeshNewProximityIntersection::testIntersection(Triangle& e1, TSphere<T>& e2
 }
 
 template<class T>
-int MeshNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& e2, OutputVector* contacts)
+int MeshNewProximityIntersection::computeIntersection(model::Triangle& e1, model::TSphere<T>& e2, OutputVector* contacts)
 {
     int flags = e1.flags();
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e2.r();
@@ -500,4 +503,4 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& 
     return 1;
 }
 
-} //namespace sofa::component::collision
+} // namespace sofa::component::collision::detection::intersection

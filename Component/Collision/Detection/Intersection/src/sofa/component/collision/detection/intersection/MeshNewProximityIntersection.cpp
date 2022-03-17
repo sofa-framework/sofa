@@ -19,17 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMeshCollision/MeshNewProximityIntersection.inl>
+#include <sofa/component/collision/detection/intersection/MeshNewProximityIntersection.inl>
+
 #include <sofa/core/collision/Intersection.inl>
 #include <sofa/core/collision/IntersectorFactory.h>
 
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::intersection
 {
 
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
+using namespace sofa::component::collision::model;
 
 IntersectorCreator<NewProximityIntersection, MeshNewProximityIntersection> MeshNewProximityIntersectors("Mesh");
 
@@ -342,4 +344,4 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
 
 
 
-} //namespace sofa::component::collision
+} // namespace sofa::component::collision::detection::intersection

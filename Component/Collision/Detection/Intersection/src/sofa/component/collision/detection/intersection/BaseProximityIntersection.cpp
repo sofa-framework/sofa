@@ -21,8 +21,11 @@
 ******************************************************************************/
 #include <sofa/component/collision/detection/intersection/BaseProximityIntersection.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::intersection
 {
+
+using namespace sofa::component::collision::model;
+
 BaseProximityIntersection::BaseProximityIntersection()
     : alarmDistance(initData(&alarmDistance, (SReal)1.0, "alarmDistance","Proximity detection distance"))
     , contactDistance(initData(&contactDistance, (SReal)0.5, "contactDistance","Distance below which a contact is created"))
@@ -60,4 +63,4 @@ int BaseProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, Out
 }
 
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::detection::intersection

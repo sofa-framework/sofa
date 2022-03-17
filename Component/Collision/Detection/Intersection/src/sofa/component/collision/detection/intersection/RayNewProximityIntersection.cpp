@@ -28,12 +28,13 @@
 #include <sofa/core/collision/IntersectorFactory.h>
 #include <sofa/type/Mat.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::intersection
 {
 
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
+using namespace sofa::component::collision::model;
 using sofa::helper::DistanceSegTri;
 
 IntersectorCreator<NewProximityIntersection, RayNewProximityIntersection> RayNewProximityIntersectors("Ray");
@@ -245,4 +246,4 @@ int RayNewProximityIntersection::computeIntersection(Ray& rRay, RigidSphere& rSp
 }
 
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::detection::intersection

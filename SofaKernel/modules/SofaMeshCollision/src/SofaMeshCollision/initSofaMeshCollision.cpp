@@ -39,10 +39,11 @@ void initSofaMeshCollision()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaMeshCollision") << "SofaMeshCollision is being deprecated;. It will be removed at v23.06. You may use Sofa.Component.Collision.Model.";
+        // msg_deprecated("SofaMeshCollision") << "SofaMeshCollision is being deprecated;. It will be removed at v23.06. You may use Sofa.Component.Collision.Model and Sofa.Component.Collision.Detection.Intersection instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Model");
-
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Detection.Intersection");
+        
         first = false;
     }
 

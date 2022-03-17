@@ -30,7 +30,7 @@
 #include <sofa/component/collision/model/CubeModel.h>
 #include <sofa/component/collision/model/RayModel.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::intersection
 {
 
 class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API RayNewProximityIntersection : public core::collision::BaseIntersector
@@ -40,12 +40,12 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API RayNewProximityInterse
 public:
     RayNewProximityIntersection(NewProximityIntersection* object, bool addSelf=true);
 
-	bool testIntersection(Ray& t1, Triangle& t2);
-    int computeIntersection(Ray& t1, Triangle& t2, OutputVector*);
+	bool testIntersection(model::Ray & t1, model::Triangle& t2);
+    int computeIntersection(model::Ray& t1, model::Triangle& t2, OutputVector*);
 
     // why rigidsphere has a different collision detection compared to RayDiscreteIntersection?
-    bool testIntersection(Ray& rRay, RigidSphere& rSphere);
-    int computeIntersection(Ray& rRay, RigidSphere& rSphere, OutputVector*);
+    bool testIntersection(model::Ray& rRay, model::RigidSphere& rSphere);
+    int computeIntersection(model::Ray& rRay, model::RigidSphere& rSphere, OutputVector*);
 
 
 protected:
@@ -53,4 +53,4 @@ protected:
     NewProximityIntersection* intersection;
 };
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::detection::intersection

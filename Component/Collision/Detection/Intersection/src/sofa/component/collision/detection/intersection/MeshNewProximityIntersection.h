@@ -20,48 +20,48 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaMeshCollision/config.h>
+#include <sofa/component/collision/detection/intersection/config.h>
 
-#include <SofaBaseCollision/NewProximityIntersection.h>
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaMeshCollision/LineModel.h>
-#include <SofaMeshCollision/PointModel.h>
+#include <sofa/component/collision/detection/intersection/NewProximityIntersection.h>
+#include <sofa/component/collision/model/TriangleModel.h>
+#include <sofa/component/collision/model/LineModel.h>
+#include <sofa/component/collision/model/PointModel.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::intersection
 {
 
-class SOFA_SOFAMESHCOLLISION_API MeshNewProximityIntersection : public core::collision::BaseIntersector
+class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API MeshNewProximityIntersection : public core::collision::BaseIntersector
 {
     typedef NewProximityIntersection::OutputVector OutputVector;
 
 public:
     MeshNewProximityIntersection(NewProximityIntersection* object, bool addSelf=true);
 
-    bool testIntersection(Point&, Point&);
-    int computeIntersection(Point&, Point&, OutputVector*);
-    bool testIntersection(Line&, Point&);
-    int computeIntersection(Line&, Point&, OutputVector*);
-    bool testIntersection(Line&, Line&);
-    int computeIntersection(Line&, Line&, OutputVector*);
-    bool testIntersection(Triangle&, Point&);
-    int computeIntersection(Triangle&, Point&, OutputVector*);
-    bool testIntersection(Triangle&, Line&);
-    int computeIntersection(Triangle&, Line&, OutputVector*);
-    bool testIntersection(Triangle&, Triangle&);
-    int computeIntersection(Triangle&, Triangle&, OutputVector*);
+    bool testIntersection(model::Point&, model::Point&);
+    int computeIntersection(model::Point&, model::Point&, OutputVector*);
+    bool testIntersection(model::Line&, model::Point&);
+    int computeIntersection(model::Line&, model::Point&, OutputVector*);
+    bool testIntersection(model::Line&, model::Line&);
+    int computeIntersection(model::Line&, model::Line&, OutputVector*);
+    bool testIntersection(model::Triangle&, model::Point&);
+    int computeIntersection(model::Triangle&, model::Point&, OutputVector*);
+    bool testIntersection(model::Triangle&, model::Line&);
+    int computeIntersection(model::Triangle&, model::Line&, OutputVector*);
+    bool testIntersection(model::Triangle&, model::Triangle&);
+    int computeIntersection(model::Triangle&, model::Triangle&, OutputVector*);
 
     template <class T>
-    bool testIntersection(TSphere<T>& sph, Point& pt);
+    bool testIntersection(model::TSphere<T>& sph, model::Point& pt);
     template <class T> 
-    int computeIntersection(TSphere<T>& sph, Point& pt, OutputVector*);
+    int computeIntersection(model::TSphere<T>& sph, model::Point& pt, OutputVector*);
     template <class T>
-    bool testIntersection(Line&, TSphere<T>&);
+    bool testIntersection(model::Line&, model::TSphere<T>&);
     template <class T> 
-    int computeIntersection(Line& line, TSphere<T>& sph, OutputVector*);
+    int computeIntersection(model::Line& line, model::TSphere<T>& sph, OutputVector*);
     template <class T>
-    bool testIntersection(Triangle&, TSphere<T>&);
+    bool testIntersection(model::Triangle&, model::TSphere<T>&);
     template <class T> 
-    int computeIntersection(Triangle& tri, TSphere<T>& sph, OutputVector*);
+    int computeIntersection(model::Triangle& tri, model::TSphere<T>& sph, OutputVector*);
 
     static inline int doIntersectionLineLine(SReal dist2, const type::Vector3& p1, const type::Vector3& p2, const type::Vector3& q1, const type::Vector3& q2, OutputVector* contacts, int id, const type::Vector3& n=type::Vector3(), bool useNormal=false);
     static inline int doIntersectionLinePoint(SReal dist2, const type::Vector3& p1, const type::Vector3& p2, const type::Vector3& q, OutputVector* contacts, int id, bool swapElems = false);
@@ -73,4 +73,4 @@ protected:
     NewProximityIntersection* intersection;
 };
 
-} //namespace sofa::component::collision
+} // namespace sofa::component::collision::detection::intersection

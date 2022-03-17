@@ -13,8 +13,6 @@ set(HEADER_FILES
     ${SOFAMESHCOLLISION_SRC}/BarycentricPenalityContact.inl
     ${SOFAMESHCOLLISION_SRC}/IdentityContactMapper.h
     ${SOFAMESHCOLLISION_SRC}/IdentityContactMapper.inl
-    ${SOFAMESHCOLLISION_SRC}/MeshNewProximityIntersection.h
-    ${SOFAMESHCOLLISION_SRC}/MeshNewProximityIntersection.inl
     ${SOFAMESHCOLLISION_SRC}/RayTriangleIntersection.h
     ${SOFAMESHCOLLISION_SRC}/RigidContactMapper.h
     ${SOFAMESHCOLLISION_SRC}/RigidContactMapper.inl
@@ -27,8 +25,6 @@ set(SOURCE_FILES
     ${SOFAMESHCOLLISION_SRC}/BarycentricContactMapper.cpp
     ${SOFAMESHCOLLISION_SRC}/BarycentricPenalityContact.cpp
     ${SOFAMESHCOLLISION_SRC}/IdentityContactMapper.cpp
-    ${SOFAMESHCOLLISION_SRC}/MeshNewProximityIntersection.cpp
-    ${SOFAMESHCOLLISION_SRC}/PointModel.cpp
     ${SOFAMESHCOLLISION_SRC}/RigidContactMapper.cpp
     ${SOFAMESHCOLLISION_SRC}/SubsetContactMapper.cpp
 )
@@ -42,11 +38,13 @@ sofa_find_package(SofaRigid REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaObjectInteraction SofaRigid SofaBaseCollision SofaBaseMechanics SofaBaseTopology)
 
-message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Collision.Model instead.")
+message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Collision.Model and Sofa.Component.Collision.Detection.Intersection instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.Collision.Model REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Detection.Intersection REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Model)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Detection.Intersection)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

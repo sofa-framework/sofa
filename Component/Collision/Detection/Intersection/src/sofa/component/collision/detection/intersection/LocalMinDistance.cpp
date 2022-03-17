@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_LOCALMINDISTANCE_CPP
-#include <SofaConstraint/LocalMinDistance.h>
+#include <sofa/component/collision/detection/intersection/LocalMinDistance.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/proximity.h>
 #include <sofa/core/collision/Intersection.inl>
@@ -31,18 +31,18 @@
 
 namespace sofa::core::collision
 {
-    template class SOFA_SOFACONSTRAINT_API IntersectorFactory<component::collision::LocalMinDistance>;
+    template class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API IntersectorFactory<component::collision::detection::intersection::LocalMinDistance>;
 
 } // namespace sofa::core::collision
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::intersection
 {
 
 using namespace sofa::core::collision;
 using namespace helper;
 using namespace sofa::type;
 using namespace sofa::defaulttype;
-
+using namespace sofa::component::collision::model;
 using core::topology::BaseMeshTopology;
 
 
@@ -1393,4 +1393,4 @@ bool LocalMinDistance::testValidity(Triangle &t, const Vector3 &PQ) const
     return n * PQ >= 0.0;
 }
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::detection::intersection

@@ -24,12 +24,12 @@
 #include <sofa/component/collision/detection/intersection/MeshDiscreteIntersection.h>
 #include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::intersection
 {
 
 
 template<class T>
-bool MeshDiscreteIntersection::testIntersection( TSphere<T>& sph, Triangle& triangle)
+bool MeshDiscreteIntersection::testIntersection(model::TSphere<T>& sph, model::Triangle& triangle)
 {
     double EPSILON = 0.00001;
     //Vertices of the triangle:
@@ -80,7 +80,7 @@ bool MeshDiscreteIntersection::testIntersection( TSphere<T>& sph, Triangle& tria
 }
 
 template<class T>
-int MeshDiscreteIntersection::computeIntersection( TSphere<T>& sph, Triangle& triangle, OutputVector* contacts)
+int MeshDiscreteIntersection::computeIntersection(model::TSphere<T>& sph, model::Triangle& triangle, OutputVector* contacts)
 {
     double EPSILON = 0.00001;
     //Vertices of the triangle:
@@ -140,4 +140,4 @@ int MeshDiscreteIntersection::computeIntersection( TSphere<T>& sph, Triangle& tr
     return 0; // No intersection: passed all tests for intersections !
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::detection::intersection

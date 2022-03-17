@@ -32,7 +32,7 @@
 #include <sofa/component/collision/model/CubeModel.h>
 #include <sofa/component/collision/model/RayModel.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::intersection
 {
 class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API RayDiscreteIntersection : public core::collision::BaseIntersector
 {
@@ -42,11 +42,11 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API RayDiscreteIntersectio
 public:
     RayDiscreteIntersection(DiscreteIntersection* object, bool addSelf=true);
 
-    template<class T> bool testIntersection(Ray&, TSphere<T>&);
-    bool testIntersection(Ray&, Triangle&);
+    template<class T> bool testIntersection(model::Ray&, model::TSphere<T>&);
+    bool testIntersection(model::Ray&, model::Triangle&);
 
-    template<class T> int computeIntersection(Ray&, TSphere<T>&, OutputVector*);
-    int computeIntersection(Ray&, Triangle&, OutputVector*);
+    template<class T> int computeIntersection(model::Ray&, model::TSphere<T>&, OutputVector*);
+    int computeIntersection(model::Ray&, model::Triangle&, OutputVector*);
 
 protected:
 
@@ -54,4 +54,4 @@ protected:
 
 };
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::detection::intersection

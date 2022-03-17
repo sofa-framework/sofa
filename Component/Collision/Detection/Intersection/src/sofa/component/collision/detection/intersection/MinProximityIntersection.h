@@ -24,7 +24,7 @@
 
 #include <sofa/component/collision/detection/intersection/BaseProximityIntersection.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::intersection
 {
 
 /**
@@ -69,8 +69,8 @@ public:
 
     bool getUseSurfaceNormals() const;
 
-    bool testIntersection(Cube& cube1, Cube& cube2) override;
-    int computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts) override;
+    bool testIntersection(model::Cube& cube1, model::Cube& cube2) override;
+    int computeIntersection(model::Cube& cube1, model::Cube& cube2, OutputVector* contacts) override;
 
     template<typename SphereType1, typename SphereType2>
     bool testIntersection(SphereType1& sph1, SphereType2& sph2)
@@ -88,11 +88,11 @@ public:
 
 };
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::detection::intersection
 
 namespace sofa::core::collision
 {
 #if  !defined(SOFA_COMPONENT_COLLISION_MINPROXIMITYINTERSECTION_CPP)
-extern template class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API IntersectorFactory<component::collision::MinProximityIntersection>;
+extern template class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API IntersectorFactory<component::collision::detection::intersection::MinProximityIntersection>;
 #endif
 } // namespace sofa::core::collision

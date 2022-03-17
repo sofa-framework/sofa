@@ -26,12 +26,13 @@
 #include <sofa/core/collision/IntersectorFactory.h>
 
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::intersection
 {
 
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
+using namespace sofa::component::collision::model;
 
 IntersectorCreator<MinProximityIntersection, MeshMinProximityIntersection> MeshMinProximityIntersectors("Mesh");
 
@@ -474,4 +475,4 @@ int MeshMinProximityIntersection::computeIntersection(Point& e1, Point& e2, Outp
     return 1;
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::detection::intersection

@@ -27,12 +27,12 @@
 #include <algorithm>
 
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::intersection
 {
 
 
 template<class T>
-bool RayDiscreteIntersection::testIntersection(Ray& ray1, TSphere<T>& sph2)
+bool RayDiscreteIntersection::testIntersection(model::Ray & ray1, model::TSphere<T>& sph2)
 {
     // Center of the sphere
     const type::Vector3 sph2Pos(sph2.center());
@@ -50,7 +50,7 @@ bool RayDiscreteIntersection::testIntersection(Ray& ray1, TSphere<T>& sph2)
 }
 
 template<class T>
-int RayDiscreteIntersection::computeIntersection(Ray& ray1, TSphere<T>& sph2, OutputVector* contacts)
+int RayDiscreteIntersection::computeIntersection(model::Ray& ray1, model::TSphere<T>& sph2, OutputVector* contacts)
 {
     // Center of the sphere
     const type::Vector3 sph2Pos(sph2.center());
@@ -84,4 +84,4 @@ int RayDiscreteIntersection::computeIntersection(Ray& ray1, TSphere<T>& sph2, Ou
     return 1;
 }
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::detection::intersection

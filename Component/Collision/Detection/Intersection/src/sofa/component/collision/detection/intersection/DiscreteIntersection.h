@@ -27,7 +27,7 @@
 #include <sofa/component/collision/model/SphereModel.h>
 #include <sofa/component/collision/model/CubeModel.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::intersection
 {
 class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API DiscreteIntersection : public core::collision::Intersection, public core::collision::BaseIntersector
 {
@@ -47,16 +47,16 @@ public:
 
     //Intersectors
     // Cube
-    virtual bool testIntersection(Cube& cube1, Cube& cube2);
-    virtual int computeIntersection(Cube& cube1, Cube& cube2, OutputVector* contacts);
+    virtual bool testIntersection(model::Cube& cube1, model::Cube& cube2);
+    virtual int computeIntersection(model::Cube& cube1, model::Cube& cube2, OutputVector* contacts);
 
     //Sphere
-    virtual bool testIntersection(Sphere& sph1, Sphere& sph2);
-    virtual int computeIntersection(Sphere& sph1, Sphere& sph2, OutputVector* contacts);
-    virtual bool testIntersection(RigidSphere& sph1, RigidSphere& sph2);
-    virtual int computeIntersection(RigidSphere& sph1, RigidSphere& sph2, OutputVector* contacts);
-    virtual bool testIntersection(Sphere& sph1, RigidSphere& sph2);
-    virtual int computeIntersection(Sphere& sph1, RigidSphere& sph2, OutputVector* contacts);
+    virtual bool testIntersection(model::Sphere& sph1, model::Sphere& sph2);
+    virtual int computeIntersection(model::Sphere& sph1, model::Sphere& sph2, OutputVector* contacts);
+    virtual bool testIntersection(model::RigidSphere& sph1, model::RigidSphere& sph2);
+    virtual int computeIntersection(model::RigidSphere& sph1, model::RigidSphere& sph2, OutputVector* contacts);
+    virtual bool testIntersection(model::Sphere& sph1, model::RigidSphere& sph2);
+    virtual int computeIntersection(model::Sphere& sph1, model::RigidSphere& sph2, OutputVector* contacts);
 
 protected:
 
@@ -94,11 +94,11 @@ protected:
     }
 };
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::detection::intersection
 
 namespace sofa::core::collision
 {
 #if  !defined(SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_CPP)
-extern template class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API IntersectorFactory<component::collision::DiscreteIntersection>;
+extern template class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API IntersectorFactory<component::collision::detection::intersection::DiscreteIntersection>;
 #endif
 } // namespace sofa::core::collision

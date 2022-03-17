@@ -31,7 +31,7 @@
 #include <sofa/component/collision/model/CubeModel.h>
 #include <sofa/component/collision/model/RayModel.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::intersection
 {
 
 /**
@@ -54,7 +54,7 @@ namespace sofa::component::collision
  * - Ray/Point
  * - Ray/Line
  */
-class SOFA_SOFACONSTRAINT_API LocalMinDistance : public BaseProximityIntersection
+class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API LocalMinDistance : public BaseProximityIntersection
 {
 public:
     SOFA_CLASS(LocalMinDistance,BaseProximityIntersection);
@@ -72,40 +72,40 @@ protected:
 public:
     void init() override;
 
-    bool testIntersection(Cube& ,Cube&) override;
+    bool testIntersection(model::Cube& ,model::Cube&) override;
 
-    bool testIntersection(Point&, Point&);
-    bool testIntersection(Sphere&, Point&);
-    bool testIntersection(Sphere&, Sphere&) override;
-    bool testIntersection(Line&, Point&);
-    bool testIntersection(Line&, Sphere&);
-    bool testIntersection(Line&, Line&);
-    bool testIntersection(Triangle&, Point&);
-    bool testIntersection(Triangle&, Sphere&);
-    bool testIntersection(Ray&, Sphere&);
-    bool testIntersection(Ray&, Triangle&);
+    bool testIntersection(model::Point&, model::Point&);
+    bool testIntersection(model::Sphere&, model::Point&);
+    bool testIntersection(model::Sphere&, model::Sphere&) override;
+    bool testIntersection(model::Line&, model::Point&);
+    bool testIntersection(model::Line&, model::Sphere&);
+    bool testIntersection(model::Line&, model::Line&);
+    bool testIntersection(model::Triangle&, model::Point&);
+    bool testIntersection(model::Triangle&, model::Sphere&);
+    bool testIntersection(model::Ray&, model::Sphere&);
+    bool testIntersection(model::Ray&, model::Triangle&);
 
-    int computeIntersection(Cube&, Cube&, OutputVector*) override;
-    int computeIntersection(Point&, Point&, OutputVector*);
-    int computeIntersection(Sphere&, Point&, OutputVector*);
-    int computeIntersection(Sphere&, Sphere&, OutputVector*) override;
-    int computeIntersection(Line&, Point&, OutputVector*);
-    int computeIntersection(Line&, Sphere&, OutputVector*);
-    int computeIntersection(Line&, Line&, OutputVector*);
-    int computeIntersection(Triangle&, Point&, OutputVector*);
-    int computeIntersection(Triangle&, Sphere&, OutputVector*);
-    int computeIntersection(Ray&, Sphere&, OutputVector*);
-    int computeIntersection(Ray&, Triangle&, OutputVector*);
+    int computeIntersection(model::Cube&, model::Cube&, OutputVector*) override;
+    int computeIntersection(model::Point&, model::Point&, OutputVector*);
+    int computeIntersection(model::Sphere&, model::Point&, OutputVector*);
+    int computeIntersection(model::Sphere&, model::Sphere&, OutputVector*) override;
+    int computeIntersection(model::Line&, model::Point&, OutputVector*);
+    int computeIntersection(model::Line&, model::Sphere&, OutputVector*);
+    int computeIntersection(model::Line&, model::Line&, OutputVector*);
+    int computeIntersection(model::Triangle&, model::Point&, OutputVector*);
+    int computeIntersection(model::Triangle&, model::Sphere&, OutputVector*);
+    int computeIntersection(model::Ray&, model::Sphere&, OutputVector*);
+    int computeIntersection(model::Ray&, model::Triangle&, OutputVector*);
 
     /// These methods check the validity of a found intersection.
     /// According to the local configuration around the found intersected primitive,
     /// we build a "Region Of Interest" geometric cone.
     /// Pertinent intersections have to belong to this cone, others are not taking into account anymore.
-    bool testValidity(Sphere&, const type::Vector3&) const { return true; }
-    bool testValidity(Point&, const type::Vector3&) const;
-    bool testValidity(Line&, const type::Vector3&) const;
-    bool testValidity(Triangle&, const type::Vector3&) const;
+    bool testValidity(model::Sphere&, const type::Vector3&) const { return true; }
+    bool testValidity(model::Point&, const type::Vector3&) const;
+    bool testValidity(model::Line&, const type::Vector3&) const;
+    bool testValidity(model::Triangle&, const type::Vector3&) const;
 
 };
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::detection::intersection

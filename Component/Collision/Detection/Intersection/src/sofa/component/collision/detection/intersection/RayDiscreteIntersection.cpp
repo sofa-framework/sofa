@@ -29,12 +29,13 @@
 
 #include <sofa/component/collision/detection/intersection/MinProximityIntersection.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::intersection
 {
 
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
+using namespace sofa::component::collision::model;
 
 IntersectorCreator<DiscreteIntersection, RayDiscreteIntersection> RayDiscreteIntersectors("Ray");
 
@@ -98,4 +99,4 @@ int RayDiscreteIntersection::computeIntersection(Ray& e1, Triangle& e2, OutputVe
     return 1;
 }
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::detection::intersection

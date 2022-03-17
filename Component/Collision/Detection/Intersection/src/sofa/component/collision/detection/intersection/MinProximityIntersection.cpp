@@ -28,14 +28,15 @@
 
 namespace sofa::core::collision
 {
-    template class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API IntersectorFactory<component::collision::MinProximityIntersection>;
+    template class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API IntersectorFactory<component::collision::detection::intersection::MinProximityIntersection>;
 } // namespace sofa::core::collision
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::intersection
 {
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
+using namespace sofa::component::collision::model;
 using namespace helper;
 
 int MinProximityIntersectionClass = core::RegisterObject("A set of methods to compute if two primitives are close enough to consider they collide")
@@ -84,4 +85,4 @@ bool MinProximityIntersection::getUseSurfaceNormals() const
     return useSurfaceNormals.getValue();
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::detection::intersection

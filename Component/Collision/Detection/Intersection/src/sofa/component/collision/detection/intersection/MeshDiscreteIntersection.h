@@ -29,7 +29,7 @@
 #include <sofa/component/collision/model/TriangleModel.h>
 #include <sofa/component/collision/model/SphereModel.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::intersection
 {
 
 class DiscreteIntersection;
@@ -41,15 +41,15 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API MeshDiscreteIntersecti
 public:
     MeshDiscreteIntersection(DiscreteIntersection* object, bool addSelf=true);
 
-    bool testIntersection(Triangle&, Line&);
-    template<class T> bool testIntersection(TSphere<T>&, Triangle&);
+    bool testIntersection(model::Triangle&, model::Line&);
+    template<class T> bool testIntersection(model::TSphere<T>&, model::Triangle&);
 
-    int computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts);
-    template<class T> int computeIntersection(TSphere<T>&, Triangle&, OutputVector*);
+    int computeIntersection(model::Triangle& e1, model::Line& e2, OutputVector* contacts);
+    template<class T> int computeIntersection(model::TSphere<T>&, model::Triangle&, OutputVector*);
 
 protected:
     DiscreteIntersection* intersection;
 
 };
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::detection::intersection

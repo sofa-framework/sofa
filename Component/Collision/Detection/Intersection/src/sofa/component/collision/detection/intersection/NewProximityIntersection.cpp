@@ -27,14 +27,15 @@
 
 namespace sofa::core::collision
 {
-    template class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API IntersectorFactory<component::collision::NewProximityIntersection>;
+    template class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API IntersectorFactory<component::collision::detection::intersection::NewProximityIntersection>;
 } // namespace sofa::core::collision
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::intersection
 {
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
+using namespace sofa::component::collision::model;
 using namespace helper;
 
 int NewProximityIntersectionClass = core::RegisterObject("Optimized Proximity Intersection based on Triangle-Triangle tests, ignoring Edge-Edge cases")
@@ -75,4 +76,4 @@ int NewProximityIntersection::computeIntersection(Cube& cube1, Cube& cube2, Outp
 }
 
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::detection::intersection

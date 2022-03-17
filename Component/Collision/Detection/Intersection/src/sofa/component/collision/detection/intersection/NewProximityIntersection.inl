@@ -25,7 +25,7 @@
 #include <sofa/type/Vec.h>
 
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::intersection
 {
 
 inline int NewProximityIntersection::doIntersectionPointPoint(SReal dist2,
@@ -85,4 +85,4 @@ int NewProximityIntersection::computeIntersection(SphereType1& sph1, SphereType2
 }
 
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::detection::intersection

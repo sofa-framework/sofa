@@ -24,12 +24,13 @@
 #include <sofa/core/collision/Intersection.inl>
 #include <sofa/core/collision/IntersectorFactory.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::intersection
 {
 
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
+using namespace sofa::component::collision::model;
 
 IntersectorCreator<DiscreteIntersection, MeshDiscreteIntersection> MeshDiscreteIntersectors("Mesh");
 
@@ -85,4 +86,4 @@ int MeshDiscreteIntersection::computeIntersection(Triangle& e1, Line& e2, Output
     return 1;
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::detection::intersection

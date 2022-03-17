@@ -27,14 +27,15 @@
 
 namespace sofa::core::collision
 {
-    template class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API IntersectorFactory<component::collision::DiscreteIntersection>;
+    template class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API IntersectorFactory<component::collision::detection::intersection::DiscreteIntersection>;
 } // namespace sofa::core::collision
 
-namespace sofa::component::collision
+namespace sofa::component::collision::detection::intersection
 {
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
+using namespace sofa::component::collision::model;
 
 int DiscreteIntersectionClass = core::RegisterObject("TODO-DiscreteIntersectionClass")
         .add< DiscreteIntersection >()
@@ -123,4 +124,4 @@ int DiscreteIntersection::computeIntersection(Sphere& sph1, RigidSphere& sph2, O
     return computeIntersectionSphere(sph1, sph2, contacts, this->getAlarmDistance(), this->getContactDistance());
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::detection::intersection
