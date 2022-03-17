@@ -39,6 +39,8 @@ include(Sofa.Component.Constraint.Projective.cmake)
 include(Sofa.Component.AnimationLoop.cmake)
 include(Sofa.Component.MechanicalLoad.cmake)
 include(Sofa.Component.Collision.Model.cmake)
+include(Sofa.Component.Collision.Detection.Algorithm.cmake)
+include(Sofa.Component.Collision.Detection.Intersection.cmake)
 
 set(SOURCE_FILES
     ${SOFACOMPONENTCOMPATSRC_ROOT}/init.cpp
