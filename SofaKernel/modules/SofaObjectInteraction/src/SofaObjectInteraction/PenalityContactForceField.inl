@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/solidmechanics/spring/PenalityContactForceField.h>
+#include <SofaObjectInteraction/PenalityContactForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 #include <cassert>
 #include <iostream>
 
-namespace sofa::component::solidmechanics::spring
+namespace sofa::component::interactionforcefield
 {
 
 template<class DataTypes>
@@ -251,4 +251,4 @@ void PenalityContactForceField<DataTypes>::grabPoint(
 
 }
 
-} // namespace sofa::component::solidmechanics::spring
+} // namespace sofa::component::interactionforcefield

@@ -1,6 +1,5 @@
 set(SOFADEFORMABLE_SRC src/SofaDeformable)
 set(SOFARIGID_SRC src/SofaRigid)
-set(SOFAOBJECTINTERACTION_SRC src/SofaObjectInteraction)
 set(SOFAGENERALDEFORMABLE_SRC src/SofaGeneralDeformable)
 set(SOFAGENERALOBJECTINTERACTION_SRC src/SofaGeneralObjectInteraction)
 set(SOFAMISCFORCEFIELD_SRC src/SofaMiscForceField)
@@ -24,8 +23,6 @@ list(APPEND HEADER_FILES
     ${SOFARIGID_SRC}/JointSpring.inl
     ${SOFARIGID_SRC}/JointSpringForceField.h
     ${SOFARIGID_SRC}/JointSpringForceField.inl
-    ${SOFAOBJECTINTERACTION_SRC}/PenalityContactForceField.h
-    ${SOFAOBJECTINTERACTION_SRC}/PenalityContactForceField.inl
     ${SOFAGENERALDEFORMABLE_SRC}/FastTriangularBendingSprings.h
     ${SOFAGENERALDEFORMABLE_SRC}/FastTriangularBendingSprings.inl
     ${SOFAGENERALDEFORMABLE_SRC}/FrameSpringForceField.h

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/solidmechanics/spring/config.h>
+#include <SofaObjectInteraction/config.h>
 
 #include <sofa/core/behavior/PairInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -28,7 +28,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <vector>
 
-namespace sofa::component::solidmechanics::spring
+namespace sofa::component::interactionforcefield
 {
 
 /** Distance-based, frictionless penalty force. The force is applied to vertices attached to collision elements.
@@ -125,8 +125,8 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_CPP)
-extern template class SOFA_COMPONENT_SOLIDMECHANICS_SPRING_API PenalityContactForceField<defaulttype::Vec3Types>;
+extern template class SOFA_SOFAOBJECTINTERACTION_API PenalityContactForceField<defaulttype::Vec3Types>;
 
 #endif
 
-} // namespace sofa::component::solidmechanics::spring
+} // namespace sofa::component::interactionforcefield
