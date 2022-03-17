@@ -48,7 +48,6 @@ void SparseCholeskySolver<TMatrix,TVector>::solveT(double * z, double * r)
 {
     int n = A.n;
     
-
     cs_pvec(n, perm.data(), r ,tmp.data() );
     cs_lsolve (N->L, tmp.data() );			//x = L\x
     cs_ltsolve (N->L, tmp.data() );			//x = L'\x/
@@ -63,11 +62,6 @@ void SparseCholeskySolver<TMatrix,TVector>::solveT(float * z, float * r)
     z_tmp.resize(n);
     r_tmp.resize(n);
     for (int i=0; i<n; i++) r_tmp[i] = (double) r[i];
-<<<<<<< HEAD:modules/SofaSparseSolver/src/SofaSparseSolver/SparseCholeskySolver.cpp
-    
-=======
-
->>>>>>> 2c8b207e24be33a5a17b9f9bdcb9ca359d1f697e:Component/LinearSolver/Direct/src/sofa/component/linearsolver/direct/SparseCholeskySolver.inl
     cs_pvec(n, perm.data(), r_tmp.data() ,tmp.data() );
     cs_lsolve (N->L, tmp.data() );			//x = L\x
     cs_ltsolve (N->L, tmp.data() );			//x = L'\x/

@@ -24,9 +24,8 @@
 #include <sofa/component/linearsolver/direct/config.h>
 
 #include <sofa/helper/ScopedAdvancedTimer.h>
-#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
-
+#include <sofa/component/linearsolver/direct/CSR_to_adj.h>
 extern "C" {
 #include <metis.h>
 }
@@ -205,66 +204,17 @@ protected :
     {
         if( d_applyPermutation.getValue() )
         {
-            //Compute transpose in tran_colptr, tran_rowind, tran_values, tran_D
-            tran_countvec.clear();
-            tran_countvec.resize(n);
-
-            //First we count the number of value on each row.
-            for (int j=0;j<n;j++) {
-                for (int i=M_colptr[j];i<M_colptr[j+1];i++) {
-                    int col = M_rowind[i];
-                    if (col>j) tran_countvec[col]++;
-                }
-            }
-
-            //Now we make a scan to build tran_colptr
-            t_xadj.resize(n+1);
-            t_xadj[0] = 0;
-            for (int j=0;j<n;j++) t_xadj[j+1] = t_xadj[j] + tran_countvec[j];
-
-            //we clear tran_countvec because we use it now to store hown many values are written on each line
-            tran_countvec.clear();
-            tran_countvec.resize(n);
-
-            t_adj.resize(t_xadj[n]);
-            for (int j=0;j<n;j++) {
-                for (int i=M_colptr[j];i<M_colptr[j+1];i++) {
-                    int line = M_rowind[i];
-                    if (line>j) {
-                        t_adj[t_xadj[line] + tran_countvec[line]] = j;
-                        tran_countvec[line]++;
-                    }
-                }
-            }
-
-            adj.clear();
-            xadj.resize(n+1);
-            xadj[0] = 0;
-            for (int j=0; j<n; j++)
-            {
-                //copy the lower part
-                for (int ip = t_xadj[j]; ip < t_xadj[j+1]; ip++) {
-                    adj.push_back(t_adj[ip]);
-                }
-
-                //copy only the upper part
-                for (int ip = M_colptr[j]; ip < M_colptr[j+1]; ip++) {
-                    int col = M_rowind[ip];
-                    if (col > j) adj.push_back(col);
-                }
-
-                xadj[j+1] = adj.size();
-            }
+            CSR_to_adj( n, M_colptr, M_rowind, adj, xadj, t_adj, t_xadj, tran_countvec );
 
             //int numflag = 0, options = 0;
             // The new API of metis requires pointers on numflag and "options" which are "structure" to parametrize the factorization
             // We give NULL and NULL to use the default option (see doc of metis for details) !
             // If you have the error "SparseLDLSolver failure to factorize, D(k,k) is zero" that probably means that you use the previsou version of metis.
             // In this case you have to download and install the last version from : www.cs.umn.edu/~metis‎
-        
-            METIS_NodeND(&n, xadj.data(), adj.data(), NULL, NULL, perm,invperm);
+
+            METIS_NodeND(&n, xadj.data(), adj.data(), nullptr, nullptr, perm,invperm);
         }
-        else 
+        else
         { // if the boolean is false, we store the identity
             for(int j=0; j<n ;++j)
             {
