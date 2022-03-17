@@ -51,15 +51,32 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& x
     SparseLUInvertData<Real> * invertData = (SparseLUInvertData<Real>*) this->getMatrixInvertData(&M);
     int n = invertData->A.n;
 
-    sofa::helper::ScopedAdvancedTimer solveTimer("solve");
-
-    cs_pvec (n, invertData->perm.data() , b.ptr(), invertData->tmp) ; // x = P*b
+    
+    if(d_applyPermutation.getValue() )
+    {
+        cs_pvec (n, invertData->perm.data() , b.ptr(), invertData->tmp) ; // x = P*b
+    }
+    else
+    {
+        invertData->tmp = b.ptr() ;
+    }
     cs_pvec (n, invertData->N->Pinv , invertData->tmp, invertData->tmp);// partial pivot
-    cs_lsolve (invertData->N->L, invertData->tmp) ;		// x = L\x
-    cs_usolve (invertData->N->U, invertData->tmp) ;		// x = U\x
-    cs_ipvec (n, invertData->N->Pinv , invertData->tmp, invertData->tmp );
-    cs_pvec (n, invertData->iperm.data() , invertData->tmp , x.ptr()) ;	// b = Q*x
+    {
+        sofa::helper::ScopedAdvancedTimer solveTimer("solve");
+        cs_lsolve (invertData->N->L, invertData->tmp) ;		// x = L\x
+        cs_usolve (invertData->N->U, invertData->tmp) ;		// x = U\x
+    }
+    
 
+    if(d_applyPermutation.getValue())
+    {
+        cs_ipvec (n, invertData->N->Pinv , invertData->tmp, invertData->tmp );
+        cs_pvec (n, invertData->iperm.data() , invertData->tmp , x.ptr()) ;	// b = Q*x
+    }
+    else
+    {
+        cs_ipvec (n, invertData->N->Pinv , invertData->tmp, x.ptr() );
+    }
 }
 
 template<class TMatrix, class TVector,class TThreadManager>
@@ -93,8 +110,13 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
         fill_reducing_perm(invertData->A, invertData->perm.data(), invertData->iperm.data() ); // compute the fill reducing permutation
         invertData->computePermutation = false;
         }
-
+    if(d_applyPermutation.getValue() )
+    {
     invertData->permuted_A = cs_permute(&(invertData->A), invertData->iperm.data(), invertData->perm.data(), 1);
+    }
+    else{
+        invertData->permuted_A = &(invertData->A);
+    }
     invertData->S = symbolic_LU( invertData->permuted_A );
 
     sofa::helper::ScopedAdvancedTimer factorizationTimer("factorization");
@@ -115,7 +137,6 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::fill_reducing_perm(cs A,int
         CSR_to_adj( A.n, A.p , A.i , adj, xadj, t_adj, t_xadj, tran_countvec );
 
         METIS_NodeND(&n, xadj.data(), adj.data(), nullptr, nullptr, perm,invperm);
-
     }
     else
     {

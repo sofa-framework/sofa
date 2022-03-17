@@ -48,10 +48,28 @@ void SparseCholeskySolver<TMatrix,TVector>::solveT(double * z, double * r)
 {
     int n = A.n;
     
-    cs_pvec(n, perm.data(), r ,tmp.data() );
-    cs_lsolve (N->L, tmp.data() );			//x = L\x
-    cs_ltsolve (N->L, tmp.data() );			//x = L'\x/
-    cs_pvec( n, iperm.data() , tmp.data() , z );
+    if(d_applyPermutation.getValue() )
+    {
+        cs_pvec(n, perm.data(), r ,tmp.data() );
+    }
+    else
+    {
+        for (int i=0; i<n; i++) tmp[i] = (double) r[i];// pointer on different types
+        //tmp = (void*)r;
+    }
+    {
+        sofa::helper::ScopedAdvancedTimer solveTimer("solve");
+        cs_lsolve (N->L, tmp.data() );			//x = L\x
+        cs_ltsolve (N->L, tmp.data() );			//x = L'\x/
+    }
+    if(d_applyPermutation.getValue() )
+    {
+        cs_pvec( n, iperm.data() , tmp.data() , z );
+    }
+    else
+    {
+        for (int i=0; i<n; i++) z[i] = tmp[i];
+    }
 }
 
 
@@ -62,19 +80,35 @@ void SparseCholeskySolver<TMatrix,TVector>::solveT(float * z, float * r)
     z_tmp.resize(n);
     r_tmp.resize(n);
     for (int i=0; i<n; i++) r_tmp[i] = (double) r[i];
-    cs_pvec(n, perm.data(), r_tmp.data() ,tmp.data() );
-    cs_lsolve (N->L, tmp.data() );			//x = L\x
-    cs_ltsolve (N->L, tmp.data() );			//x = L'\x/
-    cs_pvec( n, iperm.data() , tmp.data() , z_tmp.data() );
-
-    for (int i=0; i<n; i++) z[i] = (float) z_tmp[i];
+    if(d_applyPermutation.getValue() )
+    {
+        cs_pvec(n, perm.data(), r_tmp.data() ,tmp.data() );
+    }
+    else
+    {
+        for (int i=0; i<n; i++) tmp[i] =  r_tmp[i];
+    }
+    {
+        sofa::helper::ScopedAdvancedTimer solveTimer("solve");
+        cs_lsolve (N->L, tmp.data() );			//x = L\x
+        cs_ltsolve (N->L, tmp.data() );			//x = L'\x/
+    }
+    if(d_applyPermutation.getValue() )
+    {
+        cs_pvec( n, iperm.data() , tmp.data() , z_tmp.data() );
+        for (int i=0; i<n; i++) z[i] = (float) z_tmp[i];
+    }
+    else
+    {
+        for (int i=0; i<n; i++) z[i] = (float) tmp[i];
+    }
+    
 }
 
 
 template<class TMatrix, class TVector>
 void SparseCholeskySolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vector& r)
 {
-    sofa::helper::ScopedAdvancedTimer solveTimer("solve");
     solveT(z.ptr(),r.ptr());
 }
 
@@ -109,7 +143,14 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
         computePermutation = false;
     }
 
-    permuted_A = cs_permute( &(A), iperm.data() , perm.data() , 1);
+    if(d_applyPermutation.getValue() )
+    {
+        permuted_A = cs_permute( &(A), iperm.data() , perm.data() , 1);
+    }
+    else
+    {
+        permuted_A = &A ;
+    }
     S = symbolic_Chol( permuted_A ); // symbolic analysis   
     sofa::helper::ScopedAdvancedTimer factorizationTimer("factorization");
     N = cs_chol (permuted_A, S) ;		/* numeric Cholesky factorization */
@@ -129,15 +170,6 @@ void SparseCholeskySolver<TMatrix,TVector>::fill_reducing_perm(cs A,int * perm,i
         METIS_NodeND(&n, xadj.data(), adj.data(), nullptr, nullptr, perm,invperm);
 
     }
-    else
-    {
-        for(int j=0;j<n;j++)
-        {
-            perm[j] = j;
-            invperm[j] = j;
-        }
-    }
-
 }
 
 template<class TMatrix, class TVector>
