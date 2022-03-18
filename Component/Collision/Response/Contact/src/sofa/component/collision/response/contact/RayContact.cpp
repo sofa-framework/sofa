@@ -25,7 +25,7 @@
 #include <sofa/component/collision/model/SphereModel.h>
 #include <sofa/component/collision/model/TriangleModel.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::contact
 {
 
 using namespace sofa::defaulttype;
@@ -53,4 +53,4 @@ BaseRayContact::~BaseRayContact()
 }
 
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::response::contact

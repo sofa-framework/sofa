@@ -23,9 +23,9 @@
 
 #include <sofa/component/collision/response/mapper/SubsetContactMapper.inl>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::mapper
 {
 
 using namespace defaulttype;
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::response::mapper

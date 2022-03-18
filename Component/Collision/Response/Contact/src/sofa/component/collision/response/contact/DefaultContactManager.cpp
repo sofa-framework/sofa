@@ -27,7 +27,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/core/collision/Pipeline.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::contact
 {
 
 int DefaultContactManagerClass = core::RegisterObject("Default class to create reactions to the collisions")
@@ -390,4 +390,4 @@ void DefaultContactManager::setContactTags(core::CollisionModel* model1, core::C
     }
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::response::contact

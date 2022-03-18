@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/component/collision/response/contact/ContactIdentifier.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::contact
 {
 
 ContactIdentifier::ContactIdentifier()
@@ -40,4 +40,4 @@ ContactIdentifier::~ContactIdentifier()
     availableId.push_back(id);
 }
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::response::contact

@@ -23,7 +23,7 @@
 #include <sofa/component/collision/response/mapper/RigidContactMapper.inl>
 #include <sofa/helper/Factory.inl>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::mapper
 {
 
 using namespace defaulttype;
@@ -41,4 +41,4 @@ template SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API core::behavior::Mechanical
 template SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API void RigidContactMapper<RigidSphereModel, defaulttype::Vec3Types>::cleanup();
 template SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<RigidSphereModel, defaulttype::Vec3Types>::createMapping(const char*);
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::response::mapper

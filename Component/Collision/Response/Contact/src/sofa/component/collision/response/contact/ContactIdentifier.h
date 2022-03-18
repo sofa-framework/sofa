@@ -26,7 +26,7 @@
 #include <list>
 
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::contact
 {
 
 class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API ContactIdentifier
@@ -47,4 +47,4 @@ inline long cantorPolynomia(sofa::core::collision::DetectionOutput::ContactId x,
     return (long)(((x+y)*(x+y)+3*x+y)/2);
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::response::contact

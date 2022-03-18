@@ -25,7 +25,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/DeleteVisitor.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::mapper
 {
 
 template < class TCollisionModel, class DataTypes >
@@ -85,4 +85,4 @@ typename RigidContactMapper<TCollisionModel,DataTypes>::MMechanicalState* RigidC
     return outmodel.get();
 }
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::response::mapper

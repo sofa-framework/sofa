@@ -27,7 +27,7 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::mapper
 {
 
 using namespace defaulttype;
@@ -48,10 +48,10 @@ template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API BaseContactMapper<de
 template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API BaseContactMapper<defaulttype::Rigid3Types>;
 
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::response::mapper
 
 namespace sofa::helper
 {
-template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3Types>, core::CollisionModel* >;
-template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Rigid3Types>, core::CollisionModel* >;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API Factory< std::string, sofa::component::collision::response::mapper::BaseContactMapper<defaulttype::Vec3Types>, core::CollisionModel* >;
+template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API Factory< std::string, sofa::component::collision::response::mapper::BaseContactMapper<defaulttype::Rigid3Types>, core::CollisionModel* >;
 } // namespace sofa::helper

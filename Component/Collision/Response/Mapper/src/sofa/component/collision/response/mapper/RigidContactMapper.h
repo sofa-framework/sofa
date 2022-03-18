@@ -30,7 +30,7 @@
 #include <sofa/component/collision/model/CylinderModel.h>
 #include <sofa/simulation/fwd.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::mapper
 {
 
 /// Base class for all mappers using RigidMapping
@@ -124,14 +124,14 @@ class ContactMapper<RigidSphereModel,TVec3Types > : public RigidContactMapper<Ri
     public:
         sofa::Index addPoint(const typename TVec3Types::Coord & P, sofa::Index index,typename TVec3Types::Real & r)
         {
-            RigidSphere e(this->model, index);
-            const typename SphereCollisionModel<sofa::defaulttype::Rigid3Types>::DataTypes::Coord & rCenter = e.rigidCenter();
+            model::RigidSphere e(this->model, index);
+            const typename model::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::DataTypes::Coord & rCenter = e.rigidCenter();
             const typename TVec3Types::Coord & cP = P - rCenter.getCenter();
             const type::Quat<SReal> & ori = rCenter.getOrientation();
 
             //r = e.r();
 
-            return RigidContactMapper<RigidSphereModel,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
+            return RigidContactMapper<model::RigidSphereModel,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
         }
 };
 
@@ -158,4 +158,4 @@ extern template SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API void RigidContactMa
 extern template SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<model::RigidSphereModel, defaulttype::Vec3Types>::createMapping(const char*);
 #endif
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::response::mapper

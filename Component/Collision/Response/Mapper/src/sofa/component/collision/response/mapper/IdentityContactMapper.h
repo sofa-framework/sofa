@@ -29,7 +29,7 @@
 #include <sofa/component/collision/model/SphereModel.h>
 #include <sofa/component/collision/model/PointModel.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::mapper
 {
 
 /// Base class for IdentityMapping based mappers
@@ -176,7 +176,7 @@ public:
 
     Index addPoint(const Coord& /*P*/, Index index, Real& r)
     {
-        Sphere e(this->model, index);
+        model::Sphere e(this->model, index);
         r = e.r();
         return index;
     }
@@ -187,4 +187,4 @@ extern template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper
 extern template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper<model::PointCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
 #endif
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::response::mapper

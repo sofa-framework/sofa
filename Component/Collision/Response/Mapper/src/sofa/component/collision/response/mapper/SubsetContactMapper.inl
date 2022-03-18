@@ -25,7 +25,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/DeleteVisitor.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::mapper
 {
 
 template < class TCollisionModel, class DataTypes >
@@ -149,4 +149,4 @@ void SubsetContactMapper<TCollisionModel,DataTypes>::updateXfree()
     }
 }
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::response::mapper

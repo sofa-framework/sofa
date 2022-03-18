@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/component/collision/response/contact/StickContactConstraint.inl>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::contact
 {
 
 using namespace defaulttype;
@@ -52,4 +52,4 @@ template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API StickContactConstra
 template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API StickContactConstraint<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>>;
 template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API StickContactConstraint<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::response::contact

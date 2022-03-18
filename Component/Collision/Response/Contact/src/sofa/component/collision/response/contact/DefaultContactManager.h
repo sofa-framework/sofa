@@ -28,7 +28,7 @@
 #include <sofa/helper/map_ptr_stable_compare.h>
 
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::contact
 {
 
 class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API DefaultContactManager : public core::collision::ContactManager
@@ -144,4 +144,4 @@ protected:
 };
 
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::response::contact

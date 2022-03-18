@@ -25,7 +25,7 @@
 #include <sofa/component/collision/response/mapper/BaseContactMapper.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::contact
 {
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
@@ -71,8 +71,8 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
     if (ff==nullptr)
     {
-        MechanicalState1* mstate1 = mapper1.createMapping(GenerateStringID::generate().c_str());
-        MechanicalState2* mstate2 = mapper2.createMapping(GenerateStringID::generate().c_str());
+        MechanicalState1* mstate1 = mapper1.createMapping(mapper::GenerateStringID::generate().c_str());
+        MechanicalState2* mstate2 = mapper2.createMapping(mapper::GenerateStringID::generate().c_str());
         ff = sofa::core::objectmodel::New<ResponseForceField>(mstate1,mstate2);
         ff->setName( getName() );
         setInteractionTags(mstate1, mstate2);
@@ -237,4 +237,4 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
         ff->addTag(*it);
 }
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::response::contact

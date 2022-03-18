@@ -24,7 +24,7 @@
 #include <sofa/component/collision/response/mapper/RigidContactMapper.inl>
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.inl>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::contact
 {
 
 using namespace defaulttype;
@@ -64,4 +64,4 @@ template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API FrictionContact<Lin
 template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API FrictionContact<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, RigidSphereModel>;
 template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API FrictionContact<RigidSphereModel, PointCollisionModel<sofa::defaulttype::Vec3Types>>;
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::response::contact

@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_CPP
 #include <sofa/component/collision/response/mapper/IdentityContactMapper.inl>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::mapper
 {
 
 using namespace defaulttype;
@@ -34,4 +34,4 @@ ContactMapperCreator< ContactMapper<PointCollisionModel<sofa::defaulttype::Vec3T
 template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper<SphereCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
 template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper<PointCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::response::mapper

@@ -28,7 +28,7 @@
 #include <sofa/component/collision/model/TriangleModel.h>
 #include <sofa/component/collision/model/LineModel.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::mapper
 {
 
 /// Base class for all mappers using BarycentricMapping
@@ -194,4 +194,4 @@ extern template SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API core::behavior::Mec
 #  endif // _MSC_VER
 #endif
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::response::mapper

@@ -31,7 +31,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/BaseMapping.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::contact
 {
 
 template <class TCollisionModel1, class TCollisionModel2>
@@ -55,8 +55,8 @@ protected:
     CollisionModel1* model1;
     CollisionModel2* model2;
     Intersection* intersectionMethod;
-    ContactMapper<CollisionModel1,DataTypes1> mapper1;
-    ContactMapper<CollisionModel2,DataTypes2> mapper2;
+    mapper::ContactMapper<CollisionModel1,DataTypes1> mapper1;
+    mapper::ContactMapper<CollisionModel2,DataTypes2> mapper2;
 
     constraintset::BilateralInteractionConstraint<sofa::defaulttype::Vec3Types>::SPtr m_constraint;
     core::objectmodel::BaseContext* parent;
@@ -91,4 +91,4 @@ public:
 };
 
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::response::contact

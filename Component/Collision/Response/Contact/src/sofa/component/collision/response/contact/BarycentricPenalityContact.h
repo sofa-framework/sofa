@@ -34,7 +34,7 @@
 #include <sofa/component/collision/model/CylinderModel.h>
 
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::contact
 {
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes = sofa::defaulttype::Vec3Types >
@@ -60,8 +60,8 @@ protected:
     CollisionModel2* model2;
     Intersection* intersectionMethod;
 
-    ContactMapper<CollisionModel1,DataTypes1> mapper1;
-    ContactMapper<CollisionModel2,DataTypes2> mapper2;
+    mapper::ContactMapper<CollisionModel1,DataTypes1> mapper1;
+    mapper::ContactMapper<CollisionModel2,DataTypes2> mapper2;
 
     typename ResponseForceField::SPtr ff;
     core::objectmodel::BaseContext* parent;
@@ -114,4 +114,4 @@ extern template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BarycentricP
 extern template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BarycentricPenalityContact<model::CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, model::RigidSphereModel>;
 #endif
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::response::contact

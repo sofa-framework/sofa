@@ -30,7 +30,7 @@
 #include <sofa/component/collision/response/mapper/BaseContactMapper.h>
 #include <sofa/component/collision/response/contact/ContactIdentifier.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::contact
 {
 template <class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes = sofa::defaulttype::Vec3Types >
 class FrictionContact : public core::collision::Contact, public ContactIdentifier
@@ -57,8 +57,8 @@ protected:
     CollisionModel2* model2;
     Intersection* intersectionMethod;
     bool selfCollision; ///< true if model1==model2 (in this case, only mapper1 is used)
-    ContactMapper<CollisionModel1,DataTypes1> mapper1;
-    ContactMapper<CollisionModel2,DataTypes2> mapper2;
+    mapper::ContactMapper<CollisionModel1,DataTypes1> mapper1;
+    mapper::ContactMapper<CollisionModel2,DataTypes2> mapper2;
 
     constraintset::UnilateralInteractionConstraint<sofa::defaulttype::Vec3Types>::SPtr m_constraint;
     core::objectmodel::BaseContext* parent;
@@ -88,4 +88,4 @@ public:
     void removeResponse() override;
 };
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::response::contact

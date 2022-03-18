@@ -26,10 +26,10 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <set>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::contact
 {
     class BaseRayContact;
-}
+} // namespace sofa::component::collision::response::contact
 
 namespace sofa::component::collision::model
 {
@@ -84,10 +84,10 @@ public:
 
 
     void applyTranslation(const double dx,const double dy,const double dz);
-    virtual void addContact(BaseRayContact* contact) { contacts.insert(contact); }
-    virtual void removeContact(BaseRayContact* contact) { contacts.erase(contact); }
+    virtual void addContact(response::contact::BaseRayContact* contact) { contacts.insert(contact); }
+    virtual void removeContact(response::contact::BaseRayContact* contact) { contacts.erase(contact); }
 
-    virtual const std::set<BaseRayContact*> &getContacts() const { return contacts;}
+    virtual const std::set<response::contact::BaseRayContact*> &getContacts() const { return contacts;}
 
 protected:
     sofa::type::vector<SReal> length;
@@ -95,7 +95,7 @@ protected:
 
     Data<SReal> defaultLength; ///< TODO
 
-    std::set<BaseRayContact*> contacts;
+    std::set<response::contact::BaseRayContact*> contacts;
     core::behavior::MechanicalState<defaulttype::Vec3Types>* mstate;
 
 };

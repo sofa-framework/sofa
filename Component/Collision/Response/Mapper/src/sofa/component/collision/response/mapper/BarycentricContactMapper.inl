@@ -26,7 +26,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/DeleteVisitor.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::mapper
 {
 
 template < class TCollisionModel, class DataTypes >
@@ -72,4 +72,4 @@ typename BarycentricContactMapper<TCollisionModel,DataTypes>::MMechanicalState* 
     return mstate.get();
 }
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::response::mapper

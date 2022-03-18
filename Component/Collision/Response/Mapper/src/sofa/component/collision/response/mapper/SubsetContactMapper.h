@@ -29,7 +29,7 @@
 #include <sofa/component/collision/response/mapper/BaseContactMapper.h>
 
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::mapper
 {
 
 
@@ -69,4 +69,4 @@ public:
     void updateXfree();
 };
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::response::mapper

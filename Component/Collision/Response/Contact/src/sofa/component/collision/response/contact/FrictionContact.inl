@@ -29,7 +29,7 @@
 #include <sofa/simulation/Node.h>
 #include <iostream>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::contact
 {
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes  >
@@ -269,4 +269,4 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setIn
         m_constraint->addTag(*it);
 }
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::response::contact

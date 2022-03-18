@@ -27,7 +27,7 @@
 #include <sofa/component/collision/response/mapper/RigidContactMapper.inl>
 #include <sofa/simulation/Node.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::contact
 {
 
 template < class TCollisionModel1, class TCollisionModel2 >
@@ -126,9 +126,9 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
     if (!m_constraint)
     {
         msg_info() << "Creating StickContactConstraint bilateral constraints";
-        MechanicalState1* mstate1 = mapper1.createMapping(GenerateStringID::generate().c_str());
-        MechanicalState2* mstate2 = mapper2.createMapping(GenerateStringID::generate().c_str());
-        m_constraint = sofa::core::objectmodel::New<constraintset::BilateralInteractionConstraint<defaulttype::Vec3Types> >(mstate1, mstate2);
+        MechanicalState1* mstate1 = mapper1.createMapping(mapper::GenerateStringID::generate().c_str());
+        MechanicalState2* mstate2 = mapper2.createMapping(mapper::GenerateStringID::generate().c_str());
+        m_constraint = sofa::core::objectmodel::New<constraint::lagrangian::BilateralInteractionConstraint<defaulttype::Vec3Types> >(mstate1, mstate2);
         m_constraint->setName( getName() );
     }
 
@@ -231,4 +231,4 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::removeResponse()
     }
 }
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::response::contact

@@ -28,7 +28,7 @@
 //TODO: use fwd declaration
 #include <sofa/component/collision/model/RayModel.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::contact
 {
 
 class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseRayContact : public core::collision::Contact
@@ -86,4 +86,4 @@ public:
     std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() override { return std::make_pair(model1,model2); }
 };
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::response::contact

@@ -23,7 +23,7 @@
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.inl>
 #include <sofa/helper/Factory.inl>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::mapper
 {
 
 using namespace defaulttype;
@@ -35,4 +35,4 @@ ContactMapperCreator< ContactMapper<TriangleCollisionModel<sofa::defaulttype::Ve
 template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
 template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::collision::response::mapper
