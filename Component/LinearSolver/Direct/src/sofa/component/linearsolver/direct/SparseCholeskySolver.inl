@@ -47,7 +47,7 @@ SparseCholeskySolver<TMatrix,TVector>::~SparseCholeskySolver()
 }
 
 template<class TMatrix, class TVector>
-void SparseCholeskySolver<TMatrix,TVector>::solveT(double * z, double * r)
+void SparseCholeskySolver<TMatrix,TVector>::solveT(double * x, double * b)
 {
     int n = A.n;
     
@@ -55,26 +55,25 @@ void SparseCholeskySolver<TMatrix,TVector>::solveT(double * z, double * r)
     {
         case 0://None->identity
         default:
-            cs_ipvec (n, S->Pinv, r , (double*) tmp.data() );	//used here to copy, Pinv = Id
-            cs_lsolve (N->L, (double*) tmp.data() );			//x = L\x
-            cs_ltsolve (N->L, (double*) tmp.data() );			//x = L'\x/
-            cs_pvec (n, S->Pinv, (double*) tmp.data() , z );	 //used here to copy, transpose(Pinv) = Id
+            cs_lsolve (N->L, b );			//x = L\x
+            cs_ltsolve (N->L, b );			//x = L'\x/
+            cs_pvec (n, S->Pinv, b , x );	 //used here to copy, transpose(Pinv) = Id
             break;
     
         case 1://SuiteSparse
             
-            cs_ipvec (n, S->Pinv,  r , (double*) tmp.data() );	//x = P*b , permutation on rows
+            cs_ipvec (n, S->Pinv,  b, (double*) tmp.data() );	//x = P*b , permutation on rows
             cs_lsolve (N->L, (double*) tmp.data() );			//x = L\x
             cs_ltsolve (N->L, (double*) tmp.data() );			//x = L'\x/
-            cs_pvec (n, S->Pinv, (double*) tmp.data() , z );	 //b = P'*x , permutation on columns
+            cs_pvec (n, S->Pinv, (double*) tmp.data() , x );	 //b = P'*x , permutation on columns
             break;
 
         case 2://METIS
 
-            cs_ipvec (n, perm.data(),  r , tmp.data() );	//x = P*b , permutation on rowsl;
+            cs_ipvec (n, perm.data(),  b , tmp.data() );	//x = P*b , permutation on rowsl;
             cs_lsolve (N->L, tmp.data() );			//x = L\x
             cs_ltsolve (N->L, tmp.data() );			//x = L'\x/
-            cs_pvec (n, perm.data() , tmp.data() , z );	 //b = P'*x , permutation on columns
+            cs_pvec (n, perm.data() , tmp.data() , x );	 //b = P'*x , permutation on columns
             break;
 
     }
@@ -82,7 +81,7 @@ void SparseCholeskySolver<TMatrix,TVector>::solveT(double * z, double * r)
 
 
 template<class TMatrix, class TVector>
-void SparseCholeskySolver<TMatrix,TVector>::solveT(float * z, float * r)
+void SparseCholeskySolver<TMatrix,TVector>::solveT(float * x, float * b)
 {
     int n = A.n;
 
@@ -90,25 +89,24 @@ void SparseCholeskySolver<TMatrix,TVector>::solveT(float * z, float * r)
     {
         case 0://None->identity
         default:
-            cs_ipvec (n, S->Pinv, (double*) r , (double*) tmp.data() );	//used here to copy, Pinv = Id
-            cs_lsolve (N->L, (double*) tmp.data() );			//x = L\x
-            cs_ltsolve (N->L, (double*) tmp.data() );			//x = L'\x/
-            cs_pvec (n, S->Pinv, (double*) tmp.data() , (double*) z );	 //used here to copy, transopse(Pinv) = Id
+            cs_lsolve (N->L, (double*) b );			//x = L\x
+            cs_ltsolve (N->L, (double*) b );			//x = L'\x/
+            cs_pvec (n, S->Pinv, (double*) b , (double*) x );	 //used here to copy, transopse(Pinv) = Id
             break;
     
         case 1://SuiteSparse
             
-            cs_ipvec (n, S->Pinv, (double*) r , (double*) tmp.data() );	//x = P*b , permutation on rows
+            cs_ipvec (n, S->Pinv, (double*) b , (double*) tmp.data() );	//x = P*b , permutation on rows
             cs_lsolve (N->L, (double*) tmp.data() );			//x = L\x
             cs_ltsolve (N->L, (double*) tmp.data() );			//x = L'\x/
-            cs_pvec (n, S->Pinv, (double*) tmp.data() , (double*) z );	 //b = P'*x , permutation on columns
+            cs_pvec (n, S->Pinv, (double*) tmp.data() , (double*) x );	 //b = P'*x , permutation on columns
             break;
 
         case 2://METIS
-            cs_pvec (n, perm.data(),  (double*) r , (double*) tmp.data() );	//x = P*b , permutation on rows
+            cs_pvec (n, perm.data(),  (double*) b , (double*) tmp.data() );	//x = P*b , permutation on rows
             cs_lsolve (N->L, (double*) tmp.data() );			//x = L\x
             cs_ltsolve (N->L, (double*) tmp.data() );			//x = L'\x/
-            cs_ipvec (n, perm.data() , (double*) tmp.data() , (double*) z );	 //b = P'*x , permutation on columns
+            cs_ipvec (n, perm.data() , (double*) tmp.data() , (double*) x );	 //b = P'*x , permutation on columns
             break;
 
     }
