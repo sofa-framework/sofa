@@ -20,46 +20,54 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/component/mass/config.h>
 
-#include <SofaGeneralMeshCollision/config.h>
+#include <sofa/linearalgebra/BaseMatrix.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-#include <SofaBaseCollision/BruteForceBroadPhase.h>
-#include <SofaGeneralMeshCollision/DirectSAPNarrowPhase.h>
-#include <sofa/core/ComponentNameHelper.h>
-
-namespace sofa::component::collision
+namespace sofa::component::mass
 {
 
-class SOFA_SOFAGENERALMESHCOLLISION_API DirectSAP final : public sofa::core::objectmodel::BaseObject
+/**
+ * Helper struct to add entries in a BaseMatrix, based on the type of Mass (MassType).
+ *
+ * This class is specialized for Rigid types.
+ *
+ * The default implementation assumes it deals with Vec types: Deriv is a Vec type, and
+ * MassType is a floating point.
+ */
+template<class Deriv, class MassType>
+struct AddMToMatrixFunctor
 {
-public:
-    SOFA_CLASS(DirectSAP, sofa::core::objectmodel::BaseObject);
+    static_assert(std::is_floating_point_v<MassType>, "Default implementation of AddMToMatrixFunctor assumes MassType is a floating point");
 
-    void init() override;
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
+    void operator()(linearalgebra::BaseMatrix * mat, MassType mass, int pos, MassType fact)
     {
-        BruteForceBroadPhase::SPtr broadPhase = sofa::core::objectmodel::New<BruteForceBroadPhase>();
-        broadPhase->setName(context->getNameHelper().resolveName(broadPhase->getClassName(), core::ComponentNameHelper::Convention::python));
-        if (context) context->addObject(broadPhase);
-
-        DirectSAPNarrowPhase::SPtr narrowPhase = sofa::core::objectmodel::New<DirectSAPNarrowPhase>();
-        narrowPhase->setName(context->getNameHelper().resolveName(narrowPhase->getClassName(), core::ComponentNameHelper::Convention::python));
-        if (context) context->addObject(narrowPhase);
-
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
-
-        return obj;
+        this->operator()(mat, mass, pos, pos, fact);
     }
 
-protected:
-    DirectSAP() = default;
-    ~DirectSAP() override = default;
-
+    ///Method to add non-diagonal terms
+    void operator()(linearalgebra::BaseMatrix * mat, MassType mass, int posRow, int posColumn, MassType fact)
+    {
+        const auto m = mass * fact;
+        for (unsigned int i = 0; i < Deriv::total_size; ++i)
+            mat->add(posRow + i, posColumn + i, m);
+    }
 };
 
-} // namespace sofa::component::collision
+/**
+ * Specialization for Rigid types
+ */
+template<sofa::Size N, typename Real>
+struct AddMToMatrixFunctor< defaulttype::RigidDeriv<N,Real>, defaulttype::RigidMass<N,Real> >
+{
+    void operator()(linearalgebra::BaseMatrix * mat, const defaulttype::RigidMass<N,Real>& mass, int pos, Real fact)
+    {
+        const auto m = mass.mass * fact;
+        for (sofa::Size i = 0; i < N; ++i)
+            mat->add(pos + i, pos + i, m);
+        mat->add(pos + N, pos + N, mass.inertiaMassMatrix * fact);
+    }
+};
+
+} // namespace sofa::component::mass

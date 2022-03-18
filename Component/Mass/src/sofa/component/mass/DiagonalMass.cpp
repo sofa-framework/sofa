@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MASS_DIAGONALMASS_CPP
 
-#include <SofaBaseMechanics/DiagonalMass.inl>
+#include <sofa/component/mass/DiagonalMass.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/topology/Edge.h>
 
@@ -314,10 +314,10 @@ int DiagonalMassClass = core::RegisterObject("Define a specific mass for each pa
 
         ;
 
-template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Vec3Types>;
-template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Vec2Types>;
-template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Vec1Types>;
-template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Rigid3Types>;
-template class SOFA_SOFABASEMECHANICS_API DiagonalMass<Rigid2Types>;
+template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec3Types>;
+template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec2Types>;
+template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec1Types>;
+template class SOFA_COMPONENT_MASS_API DiagonalMass<Rigid3Types>;
+template class SOFA_COMPONENT_MASS_API DiagonalMass<Rigid2Types>;
 
 } // namespace sofa::component::mass

@@ -21,45 +21,23 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGeneralMeshCollision/config.h>
+#include <sofa/component/mass/config.h>
 
-#include <SofaBaseCollision/BruteForceBroadPhase.h>
-#include <SofaGeneralMeshCollision/DirectSAPNarrowPhase.h>
-#include <sofa/core/ComponentNameHelper.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/component/mass/MassType.h>
+#include <type_traits>
 
-namespace sofa::component::collision
+namespace sofa::component::mass
 {
 
-class SOFA_SOFAGENERALMESHCOLLISION_API DirectSAP final : public sofa::core::objectmodel::BaseObject
+/*
+ * Mass components templated on VecTypes will use Real (scalar) type for their MassType.
+ */
+template<class TCoord, class TDeriv, class TReal>
+struct MassType<defaulttype::StdVectorTypes< TCoord, TDeriv, TReal> >
 {
-public:
-    SOFA_CLASS(DirectSAP, sofa::core::objectmodel::BaseObject);
-
-    void init() override;
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
-    {
-        BruteForceBroadPhase::SPtr broadPhase = sofa::core::objectmodel::New<BruteForceBroadPhase>();
-        broadPhase->setName(context->getNameHelper().resolveName(broadPhase->getClassName(), core::ComponentNameHelper::Convention::python));
-        if (context) context->addObject(broadPhase);
-
-        DirectSAPNarrowPhase::SPtr narrowPhase = sofa::core::objectmodel::New<DirectSAPNarrowPhase>();
-        narrowPhase->setName(context->getNameHelper().resolveName(narrowPhase->getClassName(), core::ComponentNameHelper::Convention::python));
-        if (context) context->addObject(narrowPhase);
-
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
-
-        return obj;
-    }
-
-protected:
-    DirectSAP() = default;
-    ~DirectSAP() override = default;
-
+    using type = TReal;
 };
 
-} // namespace sofa::component::collision
+
+} // namespace sofa::component::mass

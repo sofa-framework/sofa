@@ -21,21 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/core/config.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <SofaBaseMechanics/MassType.h>
+#include <sofa/component/mass/MeshMatrixMass.h>
 
-namespace sofa::component::mass
-{
-
-/*
- * Mass components templated on RigidTypes will use the associated RigidMass class for their MassType.
- */
-template<sofa::Size N, typename real>
-struct MassType<sofa::defaulttype::StdRigidTypes<N, real> >
-{
-    using type = sofa::defaulttype::RigidMass< N, real>;
-};
-
-
-} // namespace sofa::component::mass
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mass/MeshMatrixMass.h")

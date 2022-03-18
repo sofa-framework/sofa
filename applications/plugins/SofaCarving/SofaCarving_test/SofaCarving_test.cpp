@@ -26,6 +26,7 @@
 #include <sofa/testing/BaseSimulationTest.h>
 #include <SofaBaseUtils/initSofaBaseUtils.h>
 #include <SofaBaseLinearSolver/initSofaBaseLinearSolver.h>
+#include <SofaBaseMechanics/initSofaBaseMechanics.h>
 
 using namespace sofa::testing;
 using namespace sofa::component::collision;
@@ -59,6 +60,7 @@ bool SofaCarving_test::createScene(const std::string& carvingDistance)
 {
     sofa::component::initSofaBaseUtils(); // needed to instanciate RequiredPlugin
     sofa::component::initSofaBaseLinearSolver(); // needed to instanciate CGLinearSolver
+    sofa::component::initSofaBaseMechanics(); // needed to instanciate DiagonalMass
 
     m_simu = createSimulation("DAG");
     m_root = createRootNode(m_simu, "root");

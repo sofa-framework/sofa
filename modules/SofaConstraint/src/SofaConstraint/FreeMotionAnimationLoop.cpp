@@ -91,7 +91,7 @@ void FreeMotionAnimationLoop::parse ( sofa::core::objectmodel::BaseObjectDescrip
 
     defaultSolver = sofa::core::objectmodel::New<constraintset::LCPConstraintSolver>();
     defaultSolver->parse(arg);
-    defaultSolver->setName(defaultSolver->getContext()->getNameHelper().resolveName(defaultSolver->getClassName(), {}));
+    defaultSolver->setName(defaultSolver->getContext()->getNameHelper().resolveName(defaultSolver->getClassName(), core::ComponentNameHelper::Convention::python));
 }
 
 

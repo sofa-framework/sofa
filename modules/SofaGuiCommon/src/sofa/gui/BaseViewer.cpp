@@ -208,7 +208,7 @@ bool BaseViewer::load()
         if (!currentCamera)
         {
             currentCamera = sofa::core::objectmodel::New<component::visualmodel::InteractiveCamera>();
-            currentCamera->setName(groot->getNameHelper().resolveName(currentCamera->getClassName(), {}));
+            currentCamera->setName(groot->getNameHelper().resolveName(currentCamera->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
             groot->addObject(currentCamera);
             //currentCamera->p_position.forceSet();
             //currentCamera->p_orientation.forceSet();
@@ -219,7 +219,7 @@ bool BaseViewer::load()
         if (!visualStyle)
         {
             visualStyle = sofa::core::objectmodel::New<component::visualmodel::VisualStyle>();
-            visualStyle->setName(groot->getNameHelper().resolveName(visualStyle->getClassName(), {}));
+            visualStyle->setName(groot->getNameHelper().resolveName(visualStyle->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
 
             core::visual::DisplayFlags* displayFlags = visualStyle->displayFlags.beginEdit();
             displayFlags->setShowVisualModels(sofa::core::visual::tristate::true_value);

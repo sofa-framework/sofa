@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseMechanics/config.h>
+#include <sofa/component/mass/config.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/Mass.h>
@@ -30,8 +30,8 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/TopologySubsetIndices.h>
 
-#include <SofaBaseMechanics/VecMassType.h>
-#include <SofaBaseMechanics/RigidMassType.h>
+#include <sofa/component/mass/VecMassType.h>
+#include <sofa/component/mass/RigidMassType.h>
 
 #include <type_traits>
 
@@ -223,12 +223,12 @@ template <>
 void UniformMass<defaulttype::Vec6Types>::draw(const core::visual::VisualParams* vparams);
 
 #if !defined(SOFA_COMPONENT_MASS_UNIFORMMASS_CPP)
-extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec3Types>;
-extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec2Types>;
-extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec1Types>;
-extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Vec6Types>;
-extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Rigid3Types>;
-extern template class SOFA_SOFABASEMECHANICS_API UniformMass<defaulttype::Rigid2Types>;
+extern template class SOFA_COMPONENT_MASS_API UniformMass<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_MASS_API UniformMass<defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_MASS_API UniformMass<defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_MASS_API UniformMass<defaulttype::Vec6Types>;
+extern template class SOFA_COMPONENT_MASS_API UniformMass<defaulttype::Rigid3Types>;
+extern template class SOFA_COMPONENT_MASS_API UniformMass<defaulttype::Rigid2Types>;
 #endif
 
 } // namespace sofa::component::mass

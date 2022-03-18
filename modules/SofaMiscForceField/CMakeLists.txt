@@ -15,12 +15,9 @@ set(SOURCE_FILES
 list(APPEND HEADER_FILES
     ${SOFAMISCFORCEFIELD_SRC}/GearSpringForceField.h
     ${SOFAMISCFORCEFIELD_SRC}/GearSpringForceField.inl
-    ${SOFAMISCFORCEFIELD_SRC}/MeshMatrixMass.h
-    ${SOFAMISCFORCEFIELD_SRC}/MeshMatrixMass.inl
     )
 list(APPEND SOURCE_FILES
     ${SOFAMISCFORCEFIELD_SRC}/GearSpringForceField.cpp
-    ${SOFAMISCFORCEFIELD_SRC}/MeshMatrixMass.cpp
     )
 
 sofa_find_package(SofaFramework REQUIRED) # SofaHelper
@@ -33,10 +30,11 @@ sofa_find_package(SofaMiscTopology REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDeformable SofaBoundaryCondition SofaMiscTopology SofaGeneralTopology SofaBaseMechanics)
 
-if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    # Silence attribute warnings (for example, ignored already defined external template)
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
-endif()
+message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Mass instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.Mass REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Mass)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

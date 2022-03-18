@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMiscForceField/config.h>
+#include <sofa/component/mass/config.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/Mass.h>
@@ -30,8 +30,8 @@
 #include <sofa/type/vector.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-#include <SofaBaseMechanics/VecMassType.h>
-#include <SofaBaseMechanics/RigidMassType.h>
+#include <sofa/component/mass/VecMassType.h>
+#include <sofa/component/mass/RigidMassType.h>
 
 //VERY IMPORTANT FOR GRAPHS
 #include <sofa/helper/map.h>
@@ -400,9 +400,9 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_MASS_MESHMATRIXMASS_CPP)
-extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec3Types>;
-extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec2Types>;
-extern template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec1Types>;
 
 #endif
 

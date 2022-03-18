@@ -21,45 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGeneralMeshCollision/config.h>
+#include <sofa/component/mass/UniformMass.inl>
 
-#include <SofaBaseCollision/BruteForceBroadPhase.h>
-#include <SofaGeneralMeshCollision/DirectSAPNarrowPhase.h>
-#include <sofa/core/ComponentNameHelper.h>
-
-namespace sofa::component::collision
-{
-
-class SOFA_SOFAGENERALMESHCOLLISION_API DirectSAP final : public sofa::core::objectmodel::BaseObject
-{
-public:
-    SOFA_CLASS(DirectSAP, sofa::core::objectmodel::BaseObject);
-
-    void init() override;
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T*, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
-    {
-        BruteForceBroadPhase::SPtr broadPhase = sofa::core::objectmodel::New<BruteForceBroadPhase>();
-        broadPhase->setName(context->getNameHelper().resolveName(broadPhase->getClassName(), core::ComponentNameHelper::Convention::python));
-        if (context) context->addObject(broadPhase);
-
-        DirectSAPNarrowPhase::SPtr narrowPhase = sofa::core::objectmodel::New<DirectSAPNarrowPhase>();
-        narrowPhase->setName(context->getNameHelper().resolveName(narrowPhase->getClassName(), core::ComponentNameHelper::Convention::python));
-        if (context) context->addObject(narrowPhase);
-
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>();
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
-
-        return obj;
-    }
-
-protected:
-    DirectSAP() = default;
-    ~DirectSAP() override = default;
-
-};
-
-} // namespace sofa::component::collision
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mass/UniformMass.inl")
