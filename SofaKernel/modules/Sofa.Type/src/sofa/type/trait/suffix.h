@@ -47,6 +47,6 @@ struct suffix<int>
 };
 
 template<class T>
-inline constexpr const char* suffix_v = typename suffix<T>::value;
+inline constexpr const char* suffix_v = suffix<T>::value;
 
 } //namespace sofa::type::trait
