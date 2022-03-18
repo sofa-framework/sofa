@@ -31,8 +31,10 @@
 
 #include <tuple>
 
-namespace sofa::core::collision
+namespace sofa::component::collision::response::contact
 {
+using namespace sofa::core;
+using namespace sofa::core::collision;
 
 int ContactListenerClass = core::RegisterObject("ContactListener .. ").add< ContactListener >();
 
@@ -68,7 +70,7 @@ void ContactListener::handleEvent( core::objectmodel::Event* _event )
     else if (simulation::CollisionEndEvent::checkEventType(_event))
     {
 
-        const NarrowPhaseDetection::DetectionOutputMap& detectionOutputsMap = m_NarrowPhase->getDetectionOutputs();
+        const auto& detectionOutputsMap = m_NarrowPhase->getDetectionOutputs();
 
         if ( detectionOutputsMap.empty() )
         {
@@ -179,4 +181,4 @@ type::vector<type::vector<DetectionOutput>> ContactListener::getContactsVector()
     return m_ContactsVector;
 }
 
-} // namespace sofa::core::collision
+} // namespace sofa::component::collision::response::contact

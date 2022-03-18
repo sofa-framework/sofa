@@ -26,6 +26,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/collision/DetectionOutput.h>
+#include <sofa/core/collision/NarrowPhaseDetection.h>
 
 namespace sofa::core
 {
@@ -33,7 +34,7 @@ namespace sofa::core
     class CollisionModel;
 } // namespace sofa::core
 
-namespace sofa::core::collision
+namespace sofa::component::collision::response::contact
 {
 
 // forward declaration
@@ -45,7 +46,7 @@ public:
     SOFA_ABSTRACT_CLASS(ContactListener, core::objectmodel::BaseObject);
 
 
-    ContactListener( CollisionModel* collModel1 = nullptr, CollisionModel* collModel2 = nullptr );
+    ContactListener(core::CollisionModel* collModel1 = nullptr, core::CollisionModel* collModel2 = nullptr );
     ~ContactListener() override ;
 
     void init(void) override;
@@ -60,7 +61,7 @@ public:
     type::vector<double> getDistances() const;
 
     // Returns the full ContactsVector
-    type::vector<type::vector<DetectionOutput>> getContactsVector() const;
+    type::vector<type::vector<core::collision::DetectionOutput>> getContactsVector() const;
 
     // Returns the contact points in the form of a vector of tuples containing two positive integers and two Vector3.
     // The Vector3 store the X, Y, Z coordinates of the points in contact
@@ -109,8 +110,8 @@ public:
     template<class T>
     static typename T::SPtr create(T* , core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        CollisionModel* collModel1 = nullptr;
-        CollisionModel* collModel2 = nullptr;
+        core::CollisionModel* collModel1 = nullptr;
+        core::CollisionModel* collModel2 = nullptr;
 
         std::string collModelPath1;
         std::string collModelPath2;
@@ -151,16 +152,16 @@ public:
     }
 
 protected:
-    const CollisionModel* m_CollisionModel1;
-    const CollisionModel* m_CollisionModel2;
+    const core::CollisionModel* m_CollisionModel1;
+    const core::CollisionModel* m_CollisionModel2;
 
 private:
-    type::vector<type::vector<DetectionOutput>> m_ContactsVector;
-    type::vector<type::vector<DetectionOutput>> m_ContactsVectorBuffer;
+    type::vector<type::vector<core::collision::DetectionOutput>> m_ContactsVector;
+    type::vector<type::vector<core::collision::DetectionOutput>> m_ContactsVectorBuffer;
     core::collision::NarrowPhaseDetection* m_NarrowPhase;
 
-    virtual void beginContact(const type::vector<type::vector<DetectionOutput>>& ) {}
+    virtual void beginContact(const type::vector<type::vector<core::collision::DetectionOutput>>& ) {}
     virtual void endContact(void*) {}
 };
 
-} // namespace sofa::core::collision
+} // namespace sofa::component::collision::response::contact
