@@ -314,7 +314,7 @@ public:
     EigenVector<EigenVectorDerived> operator*(const EigenVector<EigenVectorDerived>& v)
     {
         return EigenVector<EigenVectorDerived>(
-            EigenVector<EigenVectorDerived>::EigenType(p_eigen_matrix * v.vector()));
+            typename EigenVector<EigenVectorDerived>::EigenType(p_eigen_matrix * v.vector()));
     }
 
     /** Sets the entire row i to zero */
