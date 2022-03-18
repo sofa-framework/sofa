@@ -175,5 +175,7 @@ template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< Dia
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< BlockDiagonalMatrix<3,double>, FullVector<double>, NoThreadManager >;
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< RotationMatrix<double>, FullVector<double>, NoThreadManager >;
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< RotationMatrix<float>, FullVector<float>, NoThreadManager >;
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API sofa::component::linearsolver::MatrixLinearSolver< eigen::EigenMatrix<Eigen::SparseMatrix<SReal, Eigen::RowMajor> >, eigen::EigenVector<Eigen::Matrix<SReal, Eigen::Dynamic, 1 > > >;
+
 
 } // namespace sofa::component::linearsolver

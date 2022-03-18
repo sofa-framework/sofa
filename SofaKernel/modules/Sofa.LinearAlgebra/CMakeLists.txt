@@ -36,6 +36,9 @@ set(HEADER_FILES
     ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixStorageOrder.h
     ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixStorageOrder[EigenSparseMatrix].h
     ${SOFALINEARALGEBRASRC_ROOT}/matrix_bloc_traits.h
+
+    ${SOFALINEARALGEBRASRC_ROOT}/eigen/EigenMatrix.h
+    ${SOFALINEARALGEBRASRC_ROOT}/eigen/EigenVector.h
 )
 
 set(SOURCE_FILES
@@ -51,6 +54,9 @@ set(SOURCE_FILES
     ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixProduct[EigenSparseMatrix].cpp
     ${SOFALINEARALGEBRASRC_ROOT}/SparseMatrixStorageOrder[EigenSparseMatrix].cpp
     ${SOFALINEARALGEBRASRC_ROOT}/init.cpp
+
+    ${SOFALINEARALGEBRASRC_ROOT}/eigen/EigenMatrix.cpp
+    ${SOFALINEARALGEBRASRC_ROOT}/eigen/EigenVector.cpp
 )
 
 sofa_find_package(Eigen3 REQUIRED)

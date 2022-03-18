@@ -109,6 +109,7 @@ extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< 
 extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<4,4,SReal> >, linearalgebra::FullVector<SReal> >;
 extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<6,6,SReal> >, linearalgebra::FullVector<SReal> >;
 extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< linearalgebra::CompressedRowSparseMatrix<type::Mat<8,8,SReal> >, linearalgebra::FullVector<SReal> >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< eigen::EigenMatrix<Eigen::SparseMatrix<SReal, Eigen::RowMajor> >, eigen::EigenVector<Eigen::Matrix<SReal, Eigen::Dynamic, 1 > > >;
 
 
 #endif

@@ -34,6 +34,8 @@
 #include <sofa/linearalgebra/DiagonalMatrix.h>
 #include <sofa/linearalgebra/BlockDiagonalMatrix.h>
 #include <sofa/linearalgebra/RotationMatrix.h>
+#include <sofa/linearalgebra/eigen/EigenMatrix.h>
+#include <sofa/linearalgebra/eigen/EigenVector.h>
 
 #if SOFA_CORE_ENABLE_CRSMULTIMATRIXACCESSOR
 #include <sofa/core/behavior/CRSMultiMatrixAccessor.h>
@@ -457,6 +459,8 @@ extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolv
 extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::BlockDiagonalMatrix<3,double>, linearalgebra::FullVector<double>, NoThreadManager >;
 extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::RotationMatrix<double>, linearalgebra::FullVector<double>, NoThreadManager >;
 extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API MatrixLinearSolver< linearalgebra::RotationMatrix<float>, linearalgebra::FullVector<float>, NoThreadManager >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API sofa::component::linearsolver::MatrixLinearSolver< linearalgebra::eigen::EigenMatrix<Eigen::SparseMatrix<SReal, Eigen::RowMajor> >, linearalgebra::eigen::EigenVector<Eigen::Matrix<SReal, Eigen::Dynamic, 1 > > >;
+
 #endif
 
 

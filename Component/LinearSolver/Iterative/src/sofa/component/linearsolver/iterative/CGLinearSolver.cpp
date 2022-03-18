@@ -74,6 +74,7 @@ int CGLinearSolverClass = core::RegisterObject("Linear system solver using the c
         .add< CGLinearSolver< CompressedRowSparseMatrix<Mat<4,4,SReal> >, FullVector<SReal> > >()
         .add< CGLinearSolver< CompressedRowSparseMatrix<Mat<6,6,SReal> >, FullVector<SReal> > >()
         .add< CGLinearSolver< CompressedRowSparseMatrix<Mat<8,8,SReal> >, FullVector<SReal> > >()
+        .add< CGLinearSolver< eigen::EigenMatrix<Eigen::SparseMatrix<SReal, Eigen::RowMajor> >, eigen::EigenVector<Eigen::Matrix<SReal, Eigen::Dynamic, 1 > > > >()
 
         .addAlias("CGSolver")
         .addAlias("ConjugateGradient")
@@ -88,6 +89,6 @@ template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< Compres
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<4,4,SReal> >, FullVector<SReal> >;
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<6,6,SReal> >, FullVector<SReal> >;
 template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< CompressedRowSparseMatrix<type::Mat<8,8,SReal> >, FullVector<SReal> >;
-
+template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< eigen::EigenMatrix<Eigen::SparseMatrix<SReal, Eigen::RowMajor> >, eigen::EigenVector<Eigen::Matrix<SReal, Eigen::Dynamic, 1 > > >;
 
 } // namespace sofa::component::linearsolver::iterative
