@@ -58,7 +58,7 @@ void SparseCholeskySolver<TMatrix,TVector>::solveT(double * z, double * r)
             cs_ipvec (n, S->Pinv, r , (double*) tmp.data() );	//used here to copy, Pinv = Id
             cs_lsolve (N->L, (double*) tmp.data() );			//x = L\x
             cs_ltsolve (N->L, (double*) tmp.data() );			//x = L'\x/
-            cs_pvec (n, S->Pinv, (double*) tmp.data() , z );	 //used here to copy, transopse(Pinv) = Id
+            cs_pvec (n, S->Pinv, (double*) tmp.data() , z );	 //used here to copy, transpose(Pinv) = Id
             break;
     
         case 1://SuiteSparse
