@@ -23,6 +23,8 @@ include(Sofa.Component.LinearSolver.Iterative.cmake)
 include(Sofa.Component.LinearSolver.Direct.cmake)
 include(Sofa.Component.LinearSolver.Preconditioner.cmake)
 include(Sofa.Component.Mass.cmake)
+include(Sofa.Component.Constraint.Lagrangian.cmake)
+include(Sofa.Component.Constraint.Projective.cmake)
 include(Sofa.Component.Mapping.Linear.cmake)
 include(Sofa.Component.Mapping.NonLinear.cmake)
 include(Sofa.Component.Mapping.MappedMatrix.cmake)
@@ -41,6 +43,8 @@ include(Sofa.Component.MechanicalLoad.cmake)
 include(Sofa.Component.Collision.Model.cmake)
 include(Sofa.Component.Collision.Detection.Algorithm.cmake)
 include(Sofa.Component.Collision.Detection.Intersection.cmake)
+include(Sofa.Component.Collision.Response.Mapper.cmake)
+include(Sofa.Component.Collision.Response.Contact.cmake)
 
 set(SOURCE_FILES
     ${SOFACOMPONENTCOMPATSRC_ROOT}/init.cpp
