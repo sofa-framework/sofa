@@ -23,6 +23,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVERIMPL_H
 #include <sofa/component/linearsolver/direct/config.h>
 
+#include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 
@@ -159,10 +160,12 @@ public:
 protected :
 
     Data<bool> d_useSymbolicDecomposition ;
+    Data<bool> d_applyPermutation ;
 
     SparseLDLSolverImpl() : Inherit() 
     , d_useSymbolicDecomposition(initData(&d_useSymbolicDecomposition, true ,"useSymbolicDecomposition", "If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step."))
-     {}
+    , d_applyPermutation(initData(&d_applyPermutation, true ,"applyPermutation", "If true the solver will apply a fill-reducing permutation to the matrix of the system."))
+    {}
 
     template<class VecInt,class VecReal>
     void solve_cpu(Real * x,const Real * b,SparseLDLImplInvertData<VecInt,VecReal> * data) {
@@ -198,64 +201,78 @@ protected :
         }
     }
 
-    void LDL_ordering(int n,int * M_colptr,int * M_rowind,int * perm,int * invperm) {
-        //Compute transpose in tran_colptr, tran_rowind, tran_values, tran_D
-        tran_countvec.clear();
-        tran_countvec.resize(n);
-
-        //First we count the number of value on each row.
-        for (int j=0;j<n;j++) {
-          for (int i=M_colptr[j];i<M_colptr[j+1];i++) {
-              int col = M_rowind[i];
-              if (col>j) tran_countvec[col]++;
-          }
-        }
-
-        //Now we make a scan to build tran_colptr
-        t_xadj.resize(n+1);
-        t_xadj[0] = 0;
-        for (int j=0;j<n;j++) t_xadj[j+1] = t_xadj[j] + tran_countvec[j];
-
-        //we clear tran_countvec becaus we use it now to stro hown many value are written on each line
-        tran_countvec.clear();
-        tran_countvec.resize(n);
-
-        t_adj.resize(t_xadj[n]);
-        for (int j=0;j<n;j++) {
-          for (int i=M_colptr[j];i<M_colptr[j+1];i++) {
-            int line = M_rowind[i];
-            if (line>j) {
-                t_adj[t_xadj[line] + tran_countvec[line]] = j;
-                tran_countvec[line]++;
-            }
-          }
-        }
-
-        adj.clear();
-        xadj.resize(n+1);
-        xadj[0] = 0;
-        for (int j=0; j<n; j++)
+    void LDL_ordering(int n,int * M_colptr,int * M_rowind,int * perm,int * invperm)
+    {
+        if( d_applyPermutation.getValue() )
         {
-            //copy the lower part
-            for (int ip = t_xadj[j]; ip < t_xadj[j+1]; ip++) {
-                adj.push_back(t_adj[ip]);
+            //Compute transpose in tran_colptr, tran_rowind, tran_values, tran_D
+            tran_countvec.clear();
+            tran_countvec.resize(n);
+
+            //First we count the number of value on each row.
+            for (int j=0;j<n;j++) {
+                for (int i=M_colptr[j];i<M_colptr[j+1];i++) {
+                    int col = M_rowind[i];
+                    if (col>j) tran_countvec[col]++;
+                }
             }
 
-            //copy only the upper part
-            for (int ip = M_colptr[j]; ip < M_colptr[j+1]; ip++) {
-                int col = M_rowind[ip];
-                if (col > j) adj.push_back(col);
+            //Now we make a scan to build tran_colptr
+            t_xadj.resize(n+1);
+            t_xadj[0] = 0;
+            for (int j=0;j<n;j++) t_xadj[j+1] = t_xadj[j] + tran_countvec[j];
+
+            //we clear tran_countvec because we use it now to store hown many values are written on each line
+            tran_countvec.clear();
+            tran_countvec.resize(n);
+
+            t_adj.resize(t_xadj[n]);
+            for (int j=0;j<n;j++) {
+                for (int i=M_colptr[j];i<M_colptr[j+1];i++) {
+                    int line = M_rowind[i];
+                    if (line>j) {
+                        t_adj[t_xadj[line] + tran_countvec[line]] = j;
+                        tran_countvec[line]++;
+                    }
+                }
             }
 
-            xadj[j+1] = adj.size();
+            adj.clear();
+            xadj.resize(n+1);
+            xadj[0] = 0;
+            for (int j=0; j<n; j++)
+            {
+                //copy the lower part
+                for (int ip = t_xadj[j]; ip < t_xadj[j+1]; ip++) {
+                    adj.push_back(t_adj[ip]);
+                }
+
+                //copy only the upper part
+                for (int ip = M_colptr[j]; ip < M_colptr[j+1]; ip++) {
+                    int col = M_rowind[ip];
+                    if (col > j) adj.push_back(col);
+                }
+
+                xadj[j+1] = adj.size();
+            }
+
+            //int numflag = 0, options = 0;
+            // The new API of metis requires pointers on numflag and "options" which are "structure" to parametrize the factorization
+            // We give NULL and NULL to use the default option (see doc of metis for details) !
+            // If you have the error "SparseLDLSolver failure to factorize, D(k,k) is zero" that probably means that you use the previsou version of metis.
+            // In this case you have to download and install the last version from : www.cs.umn.edu/~metis‎
+        
+            METIS_NodeND(&n, xadj.data(), adj.data(), NULL, NULL, perm,invperm);
+        }
+        else 
+        { // if the boolean is false, we store the identity
+            for(int j=0; j<n ;++j)
+            {
+                perm[j] = j ;
+                invperm[j] = j ;
+            }
         }
 
-        //int numflag = 0, options = 0;
-        // The new API of metis requires pointers on numflag and "options" which are "structure" to parametrize the factorization
-        // We give NULL and NULL to use the default option (see doc of metis for details) !
-        // If you have the error "SparseLDLSolver failure to factorize, D(k,k) is zero" that probably means that you use the previsou version of metis.
-        // In this case you have to download and install the last version from : www.cs.umn.edu/~metis‎
-        METIS_NodeND(&n, xadj.data(), adj.data(), NULL, NULL, perm,invperm);
     }
 
     void LDL_symbolic (int n,int * M_colptr,int * M_rowind,int * colptr,int * perm,int * invperm,int * Parent) {
@@ -287,7 +304,9 @@ protected :
         memcpy(data->P_values.data(),M_values,data->P_nnz * sizeof(Real));
 
         // we test if the matrix has the same struct as previous factorized matrix
-        if (data->new_factorization_needed  || !d_useSymbolicDecomposition.getValue() ) {
+        if (data->new_factorization_needed  || !d_useSymbolicDecomposition.getValue() )
+        {
+            sofa::helper::ScopedAdvancedTimer factorizationTimer("symbolic_factorization");
             msg_info() << "Recomputing new factorization" ;
 
             data->perm.clear();data->perm.fastResize(data->n);
@@ -328,11 +347,14 @@ protected :
         Real * tran_values = data->LT_values.data();
 
         //Numeric Factorization
-        LDL_numeric(data->n,M_colptr,M_rowind,M_values,colptr,rowind,values,D,
-                    data->perm.data(),data->invperm.data(),data->Parent.data());
+        {
+            sofa::helper::ScopedAdvancedTimer factorizationTimer("numeric_factorization");
+            LDL_numeric(data->n,M_colptr,M_rowind,M_values,colptr,rowind,values,D,
+                        data->perm.data(),data->invperm.data(),data->Parent.data());
 
-        //inverse the diagonal
-        for (int i=0;i<data->n;i++) D[i] = 1.0/D[i];
+            //inverse the diagonal
+            for (int i=0;i<data->n;i++) D[i] = 1.0/D[i];
+        }
 
         // split the bloc diag in data->Bdiag
 

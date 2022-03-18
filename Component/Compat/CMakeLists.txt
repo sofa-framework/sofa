@@ -15,9 +15,14 @@ include(Sofa.Component.Topology.Mapping.cmake)
 include(Sofa.Component.Topology.Utility.cmake)
 include(Sofa.Component.Visual.cmake)
 include(Sofa.Component.Diffusion.cmake)
+include(Sofa.GL.Component.Rendering2D.cmake)
+include(Sofa.GL.Component.Rendering3D.cmake)
+include(Sofa.GL.Component.Shader.cmake)
+include(Sofa.GL.Component.Engine.cmake)
 include(Sofa.Component.LinearSolver.Iterative.cmake)
 include(Sofa.Component.LinearSolver.Direct.cmake)
 include(Sofa.Component.LinearSolver.Preconditioner.cmake)
+include(Sofa.Component.Mass.cmake)
 
 set(SOURCE_FILES
     ${SOFACOMPONENTCOMPATSRC_ROOT}/init.cpp

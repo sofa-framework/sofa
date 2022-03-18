@@ -268,6 +268,7 @@ void GenGraphForm::doExport()
         graph->executeVisitor(&act);
     }
     fdot.close();
+    msg_info("GenGraphForm") << "File saved in " << dotfile.toStdString();
 
     QStringList argv0;
     if (layoutDirV->isChecked())
@@ -342,7 +343,7 @@ void GenGraphForm::doDisplay()
 {
     if (exportedFile==QString("")) return;
 
-    std::cout << "OPEN " << exportedFile.toStdString() << std::endl;
+    msg_info("GenGraphForm") << "OPEN " << exportedFile.toStdString();
 
 #ifdef WIN32
     ShellExecuteA(nullptr, "open", exportedFile.toStdString().c_str(), nullptr, nullptr, SW_SHOWNORMAL);
@@ -387,9 +388,15 @@ void GenGraphForm::addTask(QStringList argv)
         runTask();
 }
 
-void GenGraphForm::taskFinished()
+void GenGraphForm::taskFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-    std::cout << "TASK FINISHED" << std::endl;
+    static const std::map<QProcess::ExitStatus, std::string> exitStatusMap {
+        { QProcess::ExitStatus::NormalExit, "normal exit"},
+        { QProcess::ExitStatus::CrashExit, "crash exit"},
+    };
+    const auto it = exitStatusMap.find(exitStatus);
+    const auto exitStatusString = it == exitStatusMap.end() ? "unknown" : it->second;
+    msg_info("GenGraphForm") << "TASK FINISHED (exit code: " << exitCode << ", exit status: " << exitStatusString << ")";
     if (currentTask == nullptr) return;
 
     delete currentTask;
@@ -405,13 +412,41 @@ void GenGraphForm::taskFinished()
     }
 }
 
+void GenGraphForm::taskError(QProcess::ProcessError error)
+{
+    static const std::map<QProcess::ProcessError, std::string> errorMap {
+        { QProcess::ProcessError::FailedToStart, "failed to start"},
+        { QProcess::ProcessError::Crashed, "crashed"},
+        { QProcess::ProcessError::Timedout, "timed out"},
+        { QProcess::ProcessError::ReadError, "read error"},
+        { QProcess::ProcessError::WriteError, "write error"},
+        { QProcess::ProcessError::UnknownError, "unknown error"},
+    };
+    const auto it = errorMap.find(error);
+    const auto errorString = it == errorMap.end() ? "unknown" : it->second;
+    msg_error("GenGraphForm") << "An error occured: " << errorString;
+
+    if (error == QProcess::ProcessError::FailedToStart)
+    {
+        msg_error("GenGraphForm") << "Check that the required program (Graphviz) is in your PATH environment variable";
+    }
+
+    exportButton->setText("&Export");
+    if (currentTask)
+    {
+        currentTask->kill();
+        delete currentTask;
+        currentTask = nullptr;
+    }
+}
+
 void GenGraphForm::runTask()
 {
     QStringList argv = tasks.front();
     tasks.pop_front();
     exportButton->setText("&Kill");
     QString cmd = argv.join(QString(" "));
-    std::cout << "STARTING TASK " << cmd.toStdString() << std::endl;
+    msg_info("GenGraphForm") << "STARTING TASK " << cmd.toStdString();
 
     auto* p = new QProcess(this);
     QString program = argv.front();
@@ -421,7 +456,8 @@ void GenGraphForm::runTask()
 #else
     p->setProcessChannelMode(QProcess::ForwardedChannels);
 #endif
-    connect(p,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(taskFinished()));
+    connect(p,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(taskFinished(int, QProcess::ExitStatus)));
+    connect(p,SIGNAL(errorOccurred(QProcess::ProcessError)),this,SLOT(taskError(QProcess::ProcessError)));
     p->start(program, argv);
     currentTask = p;
 }

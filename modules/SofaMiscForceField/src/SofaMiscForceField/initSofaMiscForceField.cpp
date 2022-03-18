@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <SofaMiscForceField/initSofaMiscForceField.h>
 
+#include <sofa/helper/system/PluginManager.h>
+
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
@@ -32,6 +34,10 @@ void initSofaMiscForceField()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaMiscForceField") << "SofaMiscForceField is being deprecated;. It will be removed at v23.06. You may use Sofa.Component.Mass instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Mass");
+        
         first = false;
     }
 }
