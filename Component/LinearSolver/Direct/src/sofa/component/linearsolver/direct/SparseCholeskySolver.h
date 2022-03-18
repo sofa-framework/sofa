@@ -32,6 +32,7 @@
 #include <cmath>
 #include <csparse.h>
 #include <sofa/component/linearsolver/direct/CSR_to_adj.h>
+#include <sofa/helper/OptionsGroup.h>
 extern "C" {
 #include <metis.h>
 }
@@ -61,7 +62,7 @@ public:
     type::vector<double> A_x,z_tmp,r_tmp,tmp;
 
     bool computePermutation;
-    Data<bool> d_applyPermutation ;
+    Data<sofa::helper::OptionsGroup> type_perm;
 
     SparseCholeskySolver();
     ~SparseCholeskySolver();

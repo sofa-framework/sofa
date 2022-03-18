@@ -9,10 +9,12 @@ void CSR_to_adj(int n,int * M_colptr,int * M_rowind, type::vector<int>& adj, typ
     tran_countvec.resize(n);
 
     //First we count the number of value on each row.
-    for (int j=0;j<n;j++) {
-        for (int i=M_colptr[j];i<M_colptr[j+1];i++) {
-        int col = M_rowind[i];
-        if (col>j) tran_countvec[col]++;
+    for (int j=0;j<n;j++) 
+    {
+        for (int i=M_colptr[j];i<M_colptr[j+1];i++) 
+        {
+            int col = M_rowind[i];
+            if (col>j) tran_countvec[col]++;
         }
     }
 
@@ -26,14 +28,17 @@ void CSR_to_adj(int n,int * M_colptr,int * M_rowind, type::vector<int>& adj, typ
     tran_countvec.resize(n);
 
     t_adj.resize(t_xadj[n]);
-    for (int j=0;j<n;j++) {
-        for (int i=M_colptr[j];i<M_colptr[j+1];i++) {
+    for (int j=0;j<n;j++) 
+    {
+        for (int i=M_colptr[j];i<M_colptr[j+1];i++) 
+        {
             int line = M_rowind[i];
-            if (line>j) {
+            if (line>j)
+            {
                 t_adj[t_xadj[line] + tran_countvec[line]] = j;
                 tran_countvec[line]++;
+            }
         }
-    }
     }
 
     adj.clear();
@@ -42,12 +47,14 @@ void CSR_to_adj(int n,int * M_colptr,int * M_rowind, type::vector<int>& adj, typ
     for (int j=0; j<n; j++)
     {
         //copy the lower part
-        for (int ip = t_xadj[j]; ip < t_xadj[j+1]; ip++) {
+        for (int ip = t_xadj[j]; ip < t_xadj[j+1]; ip++) 
+        {
             adj.push_back(t_adj[ip]);
         }
 
         //copy only the upper part
-        for (int ip = M_colptr[j]; ip < M_colptr[j+1]; ip++) {
+        for (int ip = M_colptr[j]; ip < M_colptr[j+1]; ip++) 
+        {
             int col = M_rowind[ip];
             if (col > j) adj.push_back(col);
         }

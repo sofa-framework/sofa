@@ -25,6 +25,7 @@
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <csparse.h>
 #include <sofa/component/linearsolver/direct/CSR_to_adj.h>
+#include <sofa/helper/OptionsGroup.h>
 extern "C" {
 #include <metis.h>
 }
@@ -83,7 +84,7 @@ public:
 
 protected :
 
-    Data<bool> d_applyPermutation ;
+    Data<sofa::helper::OptionsGroup> type_perm;
   
     void fill_reducing_perm(cs A, int * perm, int * invperm);
     css* symbolic_LU(cs *A);
