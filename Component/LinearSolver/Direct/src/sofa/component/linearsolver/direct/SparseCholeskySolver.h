@@ -61,8 +61,8 @@ public:
     type::vector<int> perm,iperm;
     type::vector<double> A_x,z_tmp,r_tmp,tmp;
 
-    bool computePermutation;
-    Data<sofa::helper::OptionsGroup> type_perm;
+    Data<sofa::helper::OptionsGroup> d_type_perm;
+    sofa::helper::OptionsGroup d_type_permOptions;
 
     SparseCholeskySolver();
     ~SparseCholeskySolver();

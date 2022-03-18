@@ -40,11 +40,11 @@ template<class TMatrix, class TVector,class TThreadManager>
 SparseLUSolver<TMatrix,TVector,TThreadManager>::SparseLUSolver()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , f_tol( initData(&f_tol,0.001,"tolerance","tolerance of factorization") )
-    , type_perm(initData(&type_perm, "permutation", "Type of fill reducing permutation"))
+    , d_type_perm(initData(&d_type_perm, "permutation", "Type of fill reducing permutation"))
+    , d_type_permOptions(3,"None", "SuiteSparse", "METIS")
 {
-    sofa::helper::OptionsGroup type_permOptions(3,"None", "SuiteSparse", "METIS");
-    type_permOptions.setSelectedItem(1); // default SuiteSparse
-    type_perm.setValue(type_permOptions);
+    d_type_permOptions.setSelectedItem(1); // default SuiteSparse
+    d_type_perm.setValue(d_type_permOptions);
 }
 
 
@@ -54,7 +54,7 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& x
     SparseLUInvertData<Real> * invertData = (SparseLUInvertData<Real>*) this->getMatrixInvertData(&M);
     int n = invertData->A.n;
 
-    switch( type_perm.getValue().getSelectedId() )
+    switch( d_type_perm.getValue().getSelectedId() )
     {
         
         case 0://None->Identity
@@ -115,7 +115,7 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
 
     invertData->tmp = (Real *) cs_malloc (invertData->A.n, sizeof (Real)) ;
 
-    switch( type_perm.getValue().getSelectedId() )
+    switch( d_type_perm.getValue().getSelectedId() )
     {
         case 0://None->Identity
         default:
@@ -162,12 +162,9 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::fill_reducing_perm(cs A,int
     sofa::helper::ScopedAdvancedTimer permTimer("permutation");
 
     int n = A.n;
-    if( type_perm.getValue().getSelectedId() == 2 )
-    {//METIS
-        sofa::type::vector<int> adj, xadj, t_adj, t_xadj, tran_countvec;
-        CSR_to_adj( A.n, A.p , A.i , adj, xadj, t_adj, t_xadj, tran_countvec );
-        METIS_NodeND(&n, xadj.data(), adj.data(), nullptr, nullptr, perm,invperm);
-    }
+    sofa::type::vector<int> adj, xadj, t_adj, t_xadj, tran_countvec;
+    CSR_to_adj( A.n, A.p , A.i , adj, xadj, t_adj, t_xadj, tran_countvec );
+    METIS_NodeND(&n, xadj.data(), adj.data(), nullptr, nullptr, perm,invperm);
 
 }
 

@@ -31,12 +31,11 @@ template<class TMatrix, class TVector>
 SparseCholeskySolver<TMatrix,TVector>::SparseCholeskySolver()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , S(nullptr), N(nullptr)
-    , type_perm(initData(&type_perm, "permutation", "Type of fill reducing permutation"))
+    , d_type_perm(initData(&d_type_perm, "permutation", "Type of fill reducing permutation"))
+    , d_type_permOptions(3,"None", "SuiteSparse", "METIS")
 {
-    computePermutation = true;
-    sofa::helper::OptionsGroup type_permOptions(3,"None", "SuiteSparse", "METIS");
-    type_permOptions.setSelectedItem(1); // default SuiteSparse
-    type_perm.setValue(type_permOptions);
+    d_type_permOptions.setSelectedItem(1); // default SuiteSparse
+    d_type_perm.setValue(d_type_permOptions);
 }
 
 template<class TMatrix, class TVector>
@@ -50,8 +49,10 @@ template<class TMatrix, class TVector>
 void SparseCholeskySolver<TMatrix,TVector>::solveT(double * x, double * b)
 {
     int n = A.n;
+
+    sofa::helper::ScopedAdvancedTimer solveTimer("solve");
     
-    switch( type_perm.getValue().getSelectedId() )
+    switch( d_type_perm.getValue().getSelectedId() )
     {
         case 0://None->identity
         default:
@@ -85,28 +86,35 @@ void SparseCholeskySolver<TMatrix,TVector>::solveT(float * x, float * b)
 {
     int n = A.n;
 
-    switch( type_perm.getValue().getSelectedId() )
+    sofa::helper::ScopedAdvancedTimer solveTimer("solve");
+
+    switch( d_type_perm.getValue().getSelectedId() )
     {
         case 0://None->identity
         default:
-            cs_lsolve (N->L, (double*) b );			//x = L\x
-            cs_ltsolve (N->L, (double*) b );			//x = L'\x/
-            cs_pvec (n, S->Pinv, (double*) b , (double*) x );	 //used here to copy, transopse(Pinv) = Id
+            {  
+                cs_lsolve (N->L, (double*) b );			//x = L\x
+                cs_ltsolve (N->L, (double*) b );			//x = L'\x/
+                cs_pvec (n, S->Pinv, (double*) b , (double*) x );	 //used here to copy, transopse(Pinv) = Id
+            }
             break;
     
         case 1://SuiteSparse
-            
-            cs_ipvec (n, S->Pinv, (double*) b , (double*) tmp.data() );	//x = P*b , permutation on rows
-            cs_lsolve (N->L, (double*) tmp.data() );			//x = L\x
-            cs_ltsolve (N->L, (double*) tmp.data() );			//x = L'\x/
-            cs_pvec (n, S->Pinv, (double*) tmp.data() , (double*) x );	 //b = P'*x , permutation on columns
+            {
+                cs_ipvec (n, S->Pinv, (double*) b , (double*) tmp.data() );	//x = P*b , permutation on rows
+                cs_lsolve (N->L, (double*) tmp.data() );			//x = L\x
+                cs_ltsolve (N->L, (double*) tmp.data() );			//x = L'\x/
+                cs_pvec (n, S->Pinv, (double*) tmp.data() , (double*) x );	 //b = P'*x , permutation on columns
+            }
             break;
 
         case 2://METIS
-            cs_pvec (n, perm.data(),  (double*) b , (double*) tmp.data() );	//x = P*b , permutation on rows
-            cs_lsolve (N->L, (double*) tmp.data() );			//x = L\x
-            cs_ltsolve (N->L, (double*) tmp.data() );			//x = L'\x/
-            cs_ipvec (n, perm.data() , (double*) tmp.data() , (double*) x );	 //b = P'*x , permutation on columns
+            {
+                cs_pvec (n, perm.data(),  (double*) b , (double*) tmp.data() );	//x = P*b , permutation on rows
+                cs_lsolve (N->L, (double*) tmp.data() );			//x = L\x
+                cs_ltsolve (N->L, (double*) tmp.data() );			//x = L'\x/
+                cs_ipvec (n, perm.data() , (double*) tmp.data() , (double*) x );	 //b = P'*x , permutation on columns
+            }
             break;
 
     }
@@ -141,38 +149,35 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
     cs_dropzeros( &A );
     tmp.resize(A.n);
 
-    switch (type_perm.getValue().getSelectedId() )
+    sofa::helper::ScopedAdvancedTimer factorization_permTimer("factorization_perm");
+
+    switch (d_type_perm.getValue().getSelectedId() )
     {
         case 0:
         default://None->identity
             {
-                sofa::helper::ScopedAdvancedTimer factorization_permTimer("factorization_perm");
                 S = symbolic_Chol (&A) ;		/* ordering and symbolic analysis */
                 N = cs_chol (&A, S) ;		/* numeric Cholesky factorization */
-                break;
             }
+            break;
+
         case 1://SuiteSparse
             {
-                sofa::helper::ScopedAdvancedTimer factorization_permTimer("factorization_perm");
                 int order = -1;
                 S = cs_schol (&A, order) ;		/* ordering and symbolic analysis */
                 N = cs_chol (&A, S) ;		/* numeric Cholesky factorization */
             }
             break;
+
         case 2://METIS
             perm.resize(A.n);
             iperm.resize(A.n);
-            { 
-                sofa::helper::ScopedAdvancedTimer factorization_permTimer("factorization_perm");
-                if(computePermutation)
-                {
-                    fill_reducing_perm(A , perm.data(), iperm.data() ); // compute the fill reducing permutation
-                    computePermutation = false;
-                }
-                permuted_A = cs_permute( &A , perm.data() , iperm.data() , 1);
-                S = symbolic_Chol( permuted_A ); // symbolic analysis  
-                N = cs_chol (permuted_A, S) ;		/* numeric Cholesky factorization */
-            }
+            
+            fill_reducing_perm(A , iperm.data(), perm.data() ); // compute the fill reducing permutation
+    
+            permuted_A = cs_permute( &A , perm.data() , iperm.data() , 1);
+            S = symbolic_Chol( permuted_A ); // symbolic analysis  
+            N = cs_chol (permuted_A, S) ;		/* numeric Cholesky factorization */
 
             break;
     }
@@ -185,7 +190,7 @@ void SparseCholeskySolver<TMatrix,TVector>::fill_reducing_perm(cs A,int * perm,i
     int n = A.n;
     sofa::type::vector<int> adj, xadj, t_adj, t_xadj, tran_countvec;
     CSR_to_adj( A.n, A.p , A.i , adj, xadj, t_adj, t_xadj, tran_countvec );
-    METIS_NodeND(&n, xadj.data(), adj.data(), nullptr, nullptr, perm,invperm);
+    METIS_NodeND(&n, xadj.data(), adj.data(), nullptr, nullptr, perm, invperm);
 
 }
 

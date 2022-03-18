@@ -84,7 +84,8 @@ public:
 
 protected :
 
-    Data<sofa::helper::OptionsGroup> type_perm;
+    Data<sofa::helper::OptionsGroup> d_type_perm;
+    sofa::helper::OptionsGroup d_type_permOptions;
   
     void fill_reducing_perm(cs A, int * perm, int * invperm);
     css* symbolic_LU(cs *A);
