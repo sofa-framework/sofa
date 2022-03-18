@@ -313,8 +313,9 @@ public:
     template<class EigenVectorDerived>
     EigenVector<EigenVectorDerived> operator*(const EigenVector<EigenVectorDerived>& v)
     {
+        using EigenType = typename EigenVector<EigenVectorDerived>::EigenType;
         return EigenVector<EigenVectorDerived>(
-            typename EigenVector<EigenVectorDerived>::EigenType(p_eigen_matrix * v.vector()));
+            EigenType(p_eigen_matrix * v.vector()).eval());
     }
 
     /** Sets the entire row i to zero */
