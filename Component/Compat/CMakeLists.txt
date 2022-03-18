@@ -21,6 +21,7 @@ include(Sofa.GL.Component.Engine.cmake)
 include(Sofa.Component.LinearSolver.Iterative.cmake)
 include(Sofa.Component.LinearSolver.Direct.cmake)
 include(Sofa.Component.LinearSolver.Preconditioner.cmake)
+include(Sofa.Component.Mass.cmake)
 
 set(SOURCE_FILES
     ${SOFACOMPONENTCOMPATSRC_ROOT}/init.cpp

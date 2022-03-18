@@ -19,68 +19,29 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseMechanics/initSofaBaseMechanics.h>
+#pragma once
 
-#include <sofa/helper/system/PluginManager.h>
+#include <sofa/component/mass/config.h>
 
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
-
-namespace sofa::component
+namespace sofa::component::mass
 {
-
-void initSofaBaseMechanics()
+/*
+ * This (empty) templated struct is used for determining a type of mass according to
+ * the associated DataType. 
+ * The generic version of it does not contain any type/definition,  
+ * and will provoke an error if one is trying to determine a MassType without having
+ * specialized this struct first.
+ * For example, MassType specialized on Vec<N,Real> should return Real as its type.
+ * (see VecMassType.h)
+ * 
+ * This is used by the Mass components to find a MassType according to their DataType.
+ */
+template<typename DataType>
+struct MassType
 {
-    static bool first = true;
-    if (first)
-    {
-        // msg_deprecated("SofaBaseMechanics") << "SofaBaseMechanics is being deprecated;. It will be removed at v23.06. You may use Sofa.Component.Mass instead.";
+    // if you want to associate a mass type YourType for a particular DataType
+    // using type = YourType;
+};
 
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Mass");
 
-        first = false;
-    }
-}
-
-extern "C" {
-    SOFA_SOFABASEMECHANICS_API void initExternalModule();
-    SOFA_SOFABASEMECHANICS_API const char* getModuleName();
-    SOFA_SOFABASEMECHANICS_API const char* getModuleVersion();
-    SOFA_SOFABASEMECHANICS_API const char* getModuleLicense();
-    SOFA_SOFABASEMECHANICS_API const char* getModuleDescription();
-    SOFA_SOFABASEMECHANICS_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{
-    initSofaBaseMechanics();
-}
-
-const char* getModuleName()
-{
-    return sofa_tostring(SOFA_TARGET);
-}
-
-const char* getModuleVersion()
-{
-    return sofa_tostring(SOFABASEMECHANICS_VERSION);
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This plugin contains contains features about Base Mechanics.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-
-} // namespace sofa::component
+} // namespace sofa::component::mass

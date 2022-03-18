@@ -19,68 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseMechanics/initSofaBaseMechanics.h>
+#pragma once
 
-#include <sofa/helper/system/PluginManager.h>
+#include <sofa/component/mass/config.h>
 
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/component/mass/MassType.h>
+#include <type_traits>
 
-namespace sofa::component
+namespace sofa::component::mass
 {
 
-void initSofaBaseMechanics()
+/*
+ * Mass components templated on VecTypes will use Real (scalar) type for their MassType.
+ */
+template<class TCoord, class TDeriv, class TReal>
+struct MassType<defaulttype::StdVectorTypes< TCoord, TDeriv, TReal> >
 {
-    static bool first = true;
-    if (first)
-    {
-        // msg_deprecated("SofaBaseMechanics") << "SofaBaseMechanics is being deprecated;. It will be removed at v23.06. You may use Sofa.Component.Mass instead.";
+    using type = TReal;
+};
 
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Mass");
 
-        first = false;
-    }
-}
-
-extern "C" {
-    SOFA_SOFABASEMECHANICS_API void initExternalModule();
-    SOFA_SOFABASEMECHANICS_API const char* getModuleName();
-    SOFA_SOFABASEMECHANICS_API const char* getModuleVersion();
-    SOFA_SOFABASEMECHANICS_API const char* getModuleLicense();
-    SOFA_SOFABASEMECHANICS_API const char* getModuleDescription();
-    SOFA_SOFABASEMECHANICS_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{
-    initSofaBaseMechanics();
-}
-
-const char* getModuleName()
-{
-    return sofa_tostring(SOFA_TARGET);
-}
-
-const char* getModuleVersion()
-{
-    return sofa_tostring(SOFABASEMECHANICS_VERSION);
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This plugin contains contains features about Base Mechanics.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-
-} // namespace sofa::component
+} // namespace sofa::component::mass

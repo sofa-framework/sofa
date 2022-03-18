@@ -8,7 +8,7 @@ endif()
 
 set(SOFACOMPONENT_SOURCE_DIR "src/sofa/component")
 
-set(SOFACOMPONENT_DIRS ODESolver IO Playback SceneUtility Topology Visual LinearSolver) # PhysicalModel Constraint AnimationLoop Mapping Container Collision Engine UI Controller) # Device
+set(SOFACOMPONENT_DIRS ODESolver IO Playback SceneUtility Topology Visual LinearSolver Mass) # PhysicalModel Constraint AnimationLoop Mapping Container Collision Engine UI Controller) # Device
 set(SOFACOMPONENT_TARGETS)
 foreach(component_dir ${SOFACOMPONENT_DIRS})
 	sofang_add_component_subdirectory(${component_dir} ${PROJECT_NAME}.${component_dir})

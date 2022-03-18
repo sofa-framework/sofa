@@ -896,7 +896,7 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "MinResLinearSolver", CreatableMoved("v22.06", "SofaGeneralLinearSolver", "Sofa.Component.LinearSolver.Iterative") },
     { "BTDLinearSolver", CreatableMoved("v22.06", "SofaGeneralLinearSolver", "Sofa.Component.LinearSolver.Direct") },
     { "CholeskySolver", CreatableMoved("v22.06", "SofaGeneralLinearSolver", "Sofa.Component.LinearSolver.Direct") },
-        
+
     // SofaSparseSolver was deprecated in #2717
     { "FillReducingOrdering", CreatableMoved("v22.06", "SofaGeneralLinearSolver", "Sofa.Component.LinearSolver.Direct") },
     { "PrecomputedLinearSolver", CreatableMoved("v22.06", "SofaGeneralLinearSolver", "Sofa.Component.LinearSolver.Direct") },
@@ -913,6 +913,13 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "PrecomputedWarpPreconditioner", CreatableMoved("v22.06", "SofaPreconditioner", "Sofa.Component.LinearSolver.Preconditioner") },
     { "SSORPreconditioner", CreatableMoved("v22.06", "SofaPreconditioner", "Sofa.Component.LinearSolver.Preconditioner") },
     { "WarpPreconditioner", CreatableMoved("v22.06", "SofaPreconditioner", "Sofa.Component.LinearSolver.Preconditioner") },
+
+    // SofaBaseMechanics was deprecated in #2752 and ...
+    { "DiagonalMass", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mass") },
+    { "UniformMass", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mass") },
+    
+    // SofaMiscForceField was deprecated in #2752 and ...
+    { "MeshMatrixMass", CreatableMoved("v22.06", "SofaMiscForceField", "Sofa.Component.Mass") },
 
 };
 

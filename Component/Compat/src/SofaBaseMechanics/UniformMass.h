@@ -20,53 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseMechanics/config.h>
-#include <sofa/linearalgebra/BaseMatrix.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa::component::mass
-{
+#include <sofa/component/mass/UniformMass.h>
 
-/**
- * Helper struct to add entries in a BaseMatrix, based on the type of Mass (MassType).
- *
- * This class is specialized for Rigid types.
- *
- * The default implementation assumes it deals with Vec types: Deriv is a Vec type, and
- * MassType is a floating point.
- */
-template<class Deriv, class MassType>
-struct AddMToMatrixFunctor
-{
-    static_assert(std::is_floating_point_v<MassType>, "Default implementation of AddMToMatrixFunctor assumes MassType is a floating point");
-
-    void operator()(linearalgebra::BaseMatrix * mat, MassType mass, int pos, MassType fact)
-    {
-        this->operator()(mat, mass, pos, pos, fact);
-    }
-
-    ///Method to add non-diagonal terms
-    void operator()(linearalgebra::BaseMatrix * mat, MassType mass, int posRow, int posColumn, MassType fact)
-    {
-        const auto m = mass * fact;
-        for (unsigned int i = 0; i < Deriv::total_size; ++i)
-            mat->add(posRow + i, posColumn + i, m);
-    }
-};
-
-/**
- * Specialization for Rigid types
- */
-template<sofa::Size N, typename Real>
-struct AddMToMatrixFunctor< defaulttype::RigidDeriv<N,Real>, defaulttype::RigidMass<N,Real> >
-{
-    void operator()(linearalgebra::BaseMatrix * mat, const defaulttype::RigidMass<N,Real>& mass, int pos, Real fact)
-    {
-        const auto m = mass.mass * fact;
-        for (sofa::Size i = 0; i < N; ++i)
-            mat->add(pos + i, pos + i, m);
-        mat->add(pos + N, pos + N, mass.inertiaMassMatrix * fact);
-    }
-};
-
-} // namespace sofa::component::mass
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mass/UniformMass.h")
