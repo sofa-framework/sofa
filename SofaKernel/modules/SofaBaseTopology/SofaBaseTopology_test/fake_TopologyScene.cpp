@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #include <sofa/helper/system/FileRepository.h>
-#include <SofaLoader/MeshOBJLoader.h>
+#include <sofa/component/io/mesh/MeshOBJLoader.h>
 #include <SofaBase/initSofaBase.h>
 #include <sofa/helper/Utils.h>
 #include "fake_TopologyScene.h"
