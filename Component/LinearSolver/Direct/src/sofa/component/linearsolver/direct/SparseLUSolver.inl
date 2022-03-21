@@ -40,11 +40,11 @@ template<class TMatrix, class TVector,class TThreadManager>
 SparseLUSolver<TMatrix,TVector,TThreadManager>::SparseLUSolver()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , f_tol( initData(&f_tol,0.001,"tolerance","tolerance of factorization") )
-    , d_type_perm(initData(&d_type_perm, "permutation", "Type of fill reducing permutation"))
-    , d_type_permOptions(3,"None", "SuiteSparse", "METIS")
+    , d_typePermutation(initData(&d_typePermutation , "permutation", "Type of fill reducing permutation"))
+    , d_typePermutationOptions(3,"None", "SuiteSparse", "METIS")
 {
-    d_type_permOptions.setSelectedItem(1); // default SuiteSparse
-    d_type_perm.setValue(d_type_permOptions);
+    d_typePermutationOptions.setSelectedItem(1); // default SuiteSparse
+    d_typePermutation.setValue(d_typePermutationOptions);
 }
 
 
@@ -54,11 +54,11 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& x
     SparseLUInvertData<Real> * invertData = (SparseLUInvertData<Real>*) this->getMatrixInvertData(&M);
     int n = invertData->A.n;
 
-    switch( d_type_perm.getValue().getSelectedId() )
+    switch( d_typePermutation.getValue().getSelectedId() )
     {
         
         case 0://None->Identity
-        default:
+
         {
             sofa::helper::ScopedAdvancedTimer solveTimer("solve");
             cs_ipvec (n, invertData->N->Pinv, b.ptr(), invertData->tmp) ;	/* x = P*b */
@@ -88,6 +88,9 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& x
             cs_pvec (n, invertData->iperm.data() , invertData->tmp , x.ptr()) ;	// b = Q*x permutation on columns
             break;
         }
+
+        default:
+            break;
     }
 }
 
@@ -115,10 +118,9 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
 
     invertData->tmp = (Real *) cs_malloc (invertData->A.n, sizeof (Real)) ;
 
-    switch( d_type_perm.getValue().getSelectedId() )
+    switch( d_typePermutation.getValue().getSelectedId() )
     {
         case 0://None->Identity
-        default:
         {
             sofa::helper::ScopedAdvancedTimer factorizationTimer("factorization");
             invertData->S = symbolic_LU( &(invertData->A) );	/* ordering and symbolic analysis */
@@ -151,6 +153,9 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
             invertData->N = cs_lu ( invertData->permuted_A, invertData->S, f_tol.getValue()) ;		/* numeric LU factorization */
             break;
         }
+
+        default:
+            break;
 
     }
 }

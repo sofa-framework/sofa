@@ -84,8 +84,8 @@ public:
 
 protected :
 
-    Data<sofa::helper::OptionsGroup> d_type_perm;
-    sofa::helper::OptionsGroup d_type_permOptions;
+    Data<sofa::helper::OptionsGroup> d_typePermutation;
+    sofa::helper::OptionsGroup d_typePermutationOptions;
   
     void fill_reducing_perm(cs A, int * perm, int * invperm);
     css* symbolic_LU(cs *A);

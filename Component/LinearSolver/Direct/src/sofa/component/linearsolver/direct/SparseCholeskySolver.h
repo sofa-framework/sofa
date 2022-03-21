@@ -61,8 +61,7 @@ public:
     type::vector<int> perm,iperm;
     type::vector<double> A_x,z_tmp,r_tmp,tmp;
 
-    Data<sofa::helper::OptionsGroup> d_type_perm;
-    sofa::helper::OptionsGroup d_type_permOptions;
+    Data<sofa::helper::OptionsGroup> d_typePermutation;
 
     SparseCholeskySolver();
     ~SparseCholeskySolver();
@@ -72,7 +71,7 @@ public:
     void solveT(double * z, double * r);
     void solveT(float * z, float * r);
 
-    void fill_reducing_perm(cs A,int * perm,int * invperm);
+    void fill_reducing_perm(const cs &A,int * perm,int * invperm);
     css* symbolic_Chol(cs *A);
 };
 
