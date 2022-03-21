@@ -961,7 +961,7 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "TubularMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.Linear") },
     { "VoidMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.Linear") },
 
-    // SofaConstraint was deprecated in #2635, #2790 and ...
+    // SofaConstraint was deprecated in #2635, #2790 and #2796
     { "MappingGeometricStiffnessForceField", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Mapping.MappedMatrix") },
     { "BilateralInteractionConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Model") },
     { "GenericConstraintCorrection", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Correction") },
@@ -974,9 +974,13 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "UncoupledConstraintCorrection", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Correction") },
     { "UniformConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Model") },
     { "UnilateralInteractionConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Model") },
+    { "ConstraintAnimationLoop", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.AnimationLoop") },
+    { "FreeMotionAnimationLoop", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.AnimationLoop") },
 
-    // SofaGeneralAnimationLoop was deprecated in #2635 and ...
+    // SofaGeneralAnimationLoop was deprecated in #2635 and #2796
     { "MechanicalMatrixMapper", CreatableMoved("v22.06", "SofaGeneralAnimationLoop", "Sofa.Component.Mapping.MappedMatrix") },
+    { "MultiStepAnimationLoop", CreatableMoved("v22.06", "SofaGeneralAnimationLoop", "Sofa.Component.AnimationLoop") },
+    { "MultiTagAnimationLoop", CreatableMoved("v22.06", "SofaGeneralAnimationLoop", "Sofa.Component.AnimationLoop") },
 
     // SofaSimpleFem was deprecated in #2759
     { "HexahedronFEMForceField", CreatableMoved("v22.06", "SofaSimpleFem", "Sofa.Component.SolidMechanics.FEM.Elastic") },
@@ -1035,7 +1039,7 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
 
     // SofaGeneralObjectInteraction was deprecated in #2759
     { "RepulsiveSpringForceField", CreatableMoved("v22.06", "SofaGeneralObjectInteraction", "Sofa.Component.SolidMechanics.Spring") },
-    
+
     // SofaGeneralObjectInteraction was deprecated in #2790 and ...
     { "AttachConstraint", CreatableMoved("v22.06", "SofaGeneralObjectInteraction", "Sofa.Component.Constraint.Projective") },
 
