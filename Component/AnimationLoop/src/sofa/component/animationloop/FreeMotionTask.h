@@ -66,4 +66,4 @@ private:
     bool m_parallelSolve {false };
 };
 
-}
+} // namespace sofa::component::animationloop

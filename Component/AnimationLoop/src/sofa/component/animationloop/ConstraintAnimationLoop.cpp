@@ -19,10 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaConstraint/ConstraintAnimationLoop.h>
+#include <sofa/component/animationloop/ConstraintAnimationLoop.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <SofaConstraint/ConstraintSolverImpl.h>
+#include <sofa/component/constraint/lagrangian/ConstraintSolverImpl.h>
 #include <sofa/core/behavior/ConstraintResolution.h>
 
 #include <sofa/simulation/AnimateBeginEvent.h>
@@ -477,7 +477,7 @@ void ConstraintAnimationLoop::getIndividualConstraintViolations(const core::Exec
     cparams.setX(core::ConstVecCoordId::freePosition());
     cparams.setV(core::ConstVecDerivId::freeVelocity());
 
-    constraintset::MechanicalGetConstraintViolationVisitor(&cparams, getCP()->getDfree()).execute(context);
+    constraint::lagrangian::MechanicalGetConstraintViolationVisitor(&cparams, getCP()->getDfree()).execute(context);
 }
 
 void ConstraintAnimationLoop::getIndividualConstraintSolvingProcess(const core::ExecParams* params, simulation::Node *context)

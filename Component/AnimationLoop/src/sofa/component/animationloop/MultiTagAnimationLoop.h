@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGeneralAnimationLoop/config.h>
+#include <sofa/component/animationloop/config.h>
 
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/simulation/CollisionAnimationLoop.h>
@@ -31,7 +31,7 @@ namespace sofa::component::animationloop
 
 /** Simple animation loop that given a list of tags, animate the graph one tag after another.
 */
-class SOFA_SOFAGENERALANIMATIONLOOP_API MultiTagAnimationLoop : public sofa::simulation::CollisionAnimationLoop
+class SOFA_COMPONENT_ANIMATIONLOOP_API MultiTagAnimationLoop : public sofa::simulation::CollisionAnimationLoop
 {
 public:
     typedef sofa::simulation::CollisionAnimationLoop Inherit;

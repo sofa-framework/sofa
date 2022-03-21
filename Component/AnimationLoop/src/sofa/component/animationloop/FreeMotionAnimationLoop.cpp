@@ -19,10 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaConstraint/FreeMotionAnimationLoop.h>
+#include <sofa/component/animationloop/FreeMotionAnimationLoop.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <SofaConstraint/LCPConstraintSolver.h>
+#include <sofa/component/constraint/lagrangian/LCPConstraintSolver.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/VecId.h>
@@ -41,7 +41,7 @@
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include <sofa/simulation/TaskScheduler.h>
-#include <SofaConstraint/FreeMotionTask.h>
+#include <sofa/component/animationloop/FreeMotionTask.h>
 #include <sofa/simulation/CollisionVisitor.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalVInitVisitor.h>
@@ -89,7 +89,7 @@ void FreeMotionAnimationLoop::parse ( sofa::core::objectmodel::BaseObjectDescrip
 {
     simulation::CollisionAnimationLoop::parse(arg);
 
-    defaultSolver = sofa::core::objectmodel::New<constraintset::LCPConstraintSolver>();
+    defaultSolver = sofa::core::objectmodel::New<constraint::lagrangian::LCPConstraintSolver>();
     defaultSolver->parse(arg);
     defaultSolver->setName(defaultSolver->getContext()->getNameHelper().resolveName(defaultSolver->getClassName(), core::ComponentNameHelper::Convention::python));
 }
