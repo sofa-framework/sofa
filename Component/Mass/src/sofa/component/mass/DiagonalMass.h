@@ -39,7 +39,7 @@
 namespace sofa::component::mass
 {
 
-template<class DataTypes, class TMassType>
+template<class DataTypes, class TMassType, class GeometricalTypes>
 class DiagonalMassInternalData
 {
 public :
@@ -49,14 +49,21 @@ public :
 
     // In case of non 3D template
     typedef sofa::type::Vec<3,Real> Vec3;
-    typedef sofa::defaulttype::StdVectorTypes< Vec3, Vec3, Real > GeometricalTypes ; /// assumes the geometry object type is 3D
 };
 
-template <class DataTypes>
+/**
+* @class    DiagonalMass
+* @brief    This component computes the integral of this mass density over the volume of the object geometry but it supposes that the Mass matrix is diagonal.
+* @remark   Similar to MeshMatrixMass but it does not simplify the Mass Matrix as diagonal.
+* @remark   https://www.sofa-framework.org/community/doc/components/masses/diagonalmass/
+* @tparam   DataTypes type of the state associated to this mass
+* @tparam   GeometricalTypes type of the geometry, i.e type of the state associated with the topology (if the topology and the mass relates to the same state, this will be the same as DataTypes)
+*/
+template <class DataTypes, class GeometricalTypes = DataTypes>
 class DiagonalMass : public core::behavior::Mass<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(DiagonalMass,DataTypes), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE2(DiagonalMass,DataTypes, GeometricalTypes), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
 
     using TMassType = typename sofa::component::mass::MassType<DataTypes>::type;
 
@@ -70,9 +77,8 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef TMassType MassType;
 
-    typedef typename DiagonalMassInternalData<DataTypes,TMassType>::VecMass VecMass;
-    typedef typename DiagonalMassInternalData<DataTypes,TMassType>::MassVector MassVector;
-    typedef typename DiagonalMassInternalData<DataTypes,TMassType>::GeometricalTypes GeometricalTypes;
+    typedef typename DiagonalMassInternalData<DataTypes,TMassType,GeometricalTypes>::VecMass VecMass;
+    typedef typename DiagonalMassInternalData<DataTypes,TMassType,GeometricalTypes>::MassVector MassVector;
 
     VecMass d_vertexMass; ///< values of the particles masses
 
@@ -108,7 +114,7 @@ public:
     int m_initializationProcess;
 
     /// Link to be set to the topology container in the component graph. 
-    SingleLink<DiagonalMass<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    SingleLink<DiagonalMass<DataTypes, GeometricalTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
 
 protected:
     ////////////////////////// Inherited attributes ////////////////////////////
@@ -127,6 +133,9 @@ protected:
 
     /// Pointer to the topology container. Will be set by link @sa l_topology
     sofa::core::topology::BaseMeshTopology* m_topology;
+
+    /// Pointer to the state owning geometrical positions, associated with the topology
+    typename sofa::core::behavior::MechanicalState<GeometricalTypes>::SPtr m_geometryState;
 
 protected:
     DiagonalMass();
@@ -393,10 +402,13 @@ type::Vector6 DiagonalMass<defaulttype::Rigid3Types>::getMomentum ( const core::
 #if  !defined(SOFA_COMPONENT_MASS_DIAGONALMASS_CPP)
 extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec2Types, defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec1Types, defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec1Types, defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Rigid3Types>;
 extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Rigid2Types>;
-
+extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Rigid2Types, defaulttype::Rigid3Types>;
 #endif
 
 } // namespace sofa::component::mass
