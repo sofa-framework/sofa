@@ -310,12 +310,15 @@ public:
     inline void add(Index i, Index j, const sofa::type::Mat2x2d & m) override { add_block<double, 2, 2>(i, j, m);}
     inline void add(Index i, Index j, const sofa::type::Mat2x2f & m) override { add_block<float, 2, 2>(i, j, m);}
 
+    /**
+     * Return the matrix-vector product
+     */
     template<class EigenVectorDerived>
-    EigenVector<EigenVectorDerived> operator*(const EigenVector<EigenVectorDerived>& v)
+    EigenVector<EigenVectorDerived> operator*(const EigenVector<EigenVectorDerived>& v) const
     {
         using EigenType = typename EigenVector<EigenVectorDerived>::EigenType;
         return EigenVector<EigenVectorDerived>(
-            EigenType(p_eigen_matrix * v.vector()).eval());
+            EigenType(p_eigen_matrix * v.vector()));
     }
 
     /** Sets the entire row i to zero */

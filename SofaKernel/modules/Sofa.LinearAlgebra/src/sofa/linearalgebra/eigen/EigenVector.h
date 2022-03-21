@@ -85,6 +85,14 @@ public:
      */
     EigenVector() = default;
 
+    /**
+     * Move constructor
+     */
+    EigenVector(std::remove_reference_t<Derived>&& eigen_vector)
+    {
+        p_eigen_vector = std::move(eigen_vector);
+    }
+
     /** Number of elements in the vector */
     [[nodiscard]]
     Index size() const final {return static_cast<int>(p_eigen_vector.size());}
