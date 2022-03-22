@@ -121,7 +121,6 @@ template <class DataTypes>
 TetrahedronDiffusionFEMForceField<DataTypes>::TetrahedronDiffusionFEMForceField()
     : d_constantDiffusionCoefficient(initData(&d_constantDiffusionCoefficient, (Real)1.0, "constantDiffusionCoefficient","Constant diffusion coefficient")),
       d_tetraDiffusionCoefficient( initData(&d_tetraDiffusionCoefficient, "tetraDiffusionCoefficient","Diffusion coefficient for each tetrahedron, by default equal to constantDiffusionCoefficient.")),
-      d_1DDiffusion(initData(&d_1DDiffusion, false, "scalarDiffusion","if true, diffuse only on the first dimension.")),
       d_transverseAnisotropyRatio(initData(&d_transverseAnisotropyRatio, (Real)1.0, "anisotropyRatio","Anisotropy ratio (r²>1).\n Default is 1.0 = isotropy.")),
       d_transverseAnisotropyDirectionArray(initData(&d_transverseAnisotropyDirectionArray, "transverseAnisotropyArray","Data to handle topology on tetrahedra")),
       d_tagMeshMechanics(initData(&d_tagMeshMechanics, std::string("meca"),"tagMechanics","Tag of the Mechanical Object.")),
@@ -173,7 +172,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::init()
     }
 
     /// Initialize all the diffusion coefficients (for tetras) to the value given by the user.
-    sofa::type::vector<Real>& tetraDiff = *(d_tetraDiffusionCoefficient.beginEdit());
+    auto tetraDiff = sofa::helper::getWriteOnlyAccessor(d_tetraDiffusionCoefficient);
     loadedDiffusivity = false;
 
     /// case no potential vector input
@@ -195,7 +194,6 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::init()
 
         msg_info() << "diffusion coefficient is loaded per tetra";
     }
-    d_tetraDiffusionCoefficient.endEdit();
 
     /// Get the mechanical object containing the mesh position in 3D
     core::objectmodel::Tag mechanicalTag(d_tagMeshMechanics.getValue());
@@ -311,37 +309,35 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::addForce (const core::Mechani
 {
     helper::AdvancedTimer::stepBegin("addForceDiffusion");
 
-    VecDeriv& f = *dataf.beginEdit();
+    auto f = sofa::helper::getWriteOnlyAccessor(dataf);
     const VecCoord& x = datax.getValue();
 
     sofa::Index v0,v1;
 
     Coord dp;
-
-    for(sofa::Index i=0; i<nbEdges; i++ )
+    const auto& edges = m_topology->getEdges();
+    for (sofa::Index i = 0; i < nbEdges; i++)
     {
-        v0=m_topology->getEdge(i)[0];
-        v1=m_topology->getEdge(i)[1];
+        v0 = edges[i][0];
+        v1 = edges[i][1];
 
         //Case 1D Diffusion
-        if (d_1DDiffusion.getValue())
+        if constexpr (DataTypes::spatial_dimensions == 1)
         {
-            dp[0] = (x[v1][0]-x[v0][0]) * edgeDiffusionCoefficient[i];
+            dp[0] = (x[v1][0] - x[v0][0]) * edgeDiffusionCoefficient[i];
 
-            f[v1][0]+=dp[0];
-            f[v0][0]-=dp[0];
+            f[v1][0] += dp[0];
+            f[v0][0] -= dp[0];
         }
-        //Case 3D Diffusion
-        else
+        else //Case >1D Diffusion
         {
-            dp = (x[v1]-x[v0]) * edgeDiffusionCoefficient[i];
+            dp = (x[v1] - x[v0]) * edgeDiffusionCoefficient[i];
 
-            f[v1]+=dp;
-            f[v0]-=dp;
+            f[v1] += dp;
+            f[v0] -= dp;
         }
     }
 
-    dataf.endEdit() ;
     sofa::helper::AdvancedTimer::stepEnd("addForceDiffusion");
 }
 
@@ -350,27 +346,28 @@ template <class DataTypes>
 void TetrahedronDiffusionFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv&   datadF , const DataVecDeriv&   datadX)
 {
     sofa::helper::AdvancedTimer::stepBegin("addDForceDiffusion");
-    VecDeriv& df = *datadF.beginEdit();
+    auto df = sofa::helper::getWriteOnlyAccessor(datadF);
     const VecDeriv& dx=datadX.getValue();
     Real kFactor = mparams->kFactor();
 
     sofa::Index v0,v1;
 
     Coord dp;
-
+    const auto& edges = m_topology->getEdges();
     for(sofa::Index i=0; i<nbEdges; i++ )
     {
-        v0=m_topology->getEdge(i)[0];
-        v1=m_topology->getEdge(i)[1];
+        v0 = edges[i][0];
+        v1 = edges[i][1];
 
-        if (d_1DDiffusion.getValue())
+        //Case 1D Diffusion
+        if constexpr (DataTypes::spatial_dimensions == 1)
         {
             dp[0] = (dx[v1][0]-dx[v0][0]) * edgeDiffusionCoefficient[i] * kFactor;
 
             df[v1][0]+=dp[0];
             df[v0][0]-=dp[0];
         }
-        else
+        else //Case >1D Diffusion
         {
             dp = (dx[v1]-dx[v0]) * edgeDiffusionCoefficient[i] * kFactor;
 
@@ -378,7 +375,6 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::addDForce(const sofa::core::M
             df[v0]-=dp;
         }
     }
-    datadF.endEdit() ;
     sofa::helper::AdvancedTimer::stepEnd("addDForceDiffusion");
 }
 
@@ -402,11 +398,11 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::addKToMatrix(const core::Mech
 
     sofa::Index v0,v1;
 
-
+    const auto& edges = m_topology->getEdges();
     for(sofa::Index i=0; i<nbEdges; i++ )
     {
-        v0=m_topology->getEdge(i)[0];
-        v1=m_topology->getEdge(i)[1];
+        v0 = edges[i][0];
+        v1 = edges[i][1];
 
         mat->add(offset+N*v1, offset+N*v0, -kFactor * edgeDiffusionCoefficient[i]);
         mat->add(offset+N*v0, offset+N*v1, -kFactor * edgeDiffusionCoefficient[i]);
