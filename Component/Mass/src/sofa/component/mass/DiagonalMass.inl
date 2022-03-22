@@ -751,6 +751,15 @@ bool DiagonalMass<DataTypes, GeometricalTypes>::checkTopology()
 
     }
 
+    m_topology = l_topology.get();
+    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+
+    if (m_topology == nullptr)
+    {
+        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
+        return false;
+    }
+
     sofa::core::behavior::BaseMechanicalState::SPtr baseState;
     m_topology->getContext()->get(baseState);
     if (baseState == nullptr)
@@ -771,15 +780,6 @@ bool DiagonalMass<DataTypes, GeometricalTypes>::checkTopology()
             msg_info() << "Topology is associated with the state: '" << m_geometryState->getPathName() << "'";
         }
 
-    }
-
-    m_topology = l_topology.get();
-    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
-
-    if (m_topology == nullptr)
-    {
-        msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        return false;
     }
 
     if (m_topology)
@@ -986,7 +986,7 @@ typename DiagonalMass<DataTypes, GeometricalTypes>::Real DiagonalMass<DataTypes,
     masses.clear();
     masses.resize(this->mstate->getSize(), Real(0));
 
-    if constexpr (DataTypes::spatial_dimensions >= 1)
+    if constexpr (GeometricalTypes::spatial_dimensions >= 1)
     {
         if (m_massTopologyType == sofa::geometry::ElementType::EDGE)
         {
@@ -1009,7 +1009,7 @@ typename DiagonalMass<DataTypes, GeometricalTypes>::Real DiagonalMass<DataTypes,
         }
     }
 
-    if constexpr (DataTypes::spatial_dimensions >= 2)
+    if constexpr (GeometricalTypes::spatial_dimensions >= 2)
     {
         if (m_massTopologyType == sofa::geometry::ElementType::TRIANGLE)
         {
@@ -1054,7 +1054,7 @@ typename DiagonalMass<DataTypes, GeometricalTypes>::Real DiagonalMass<DataTypes,
         }
     }
 
-    if constexpr (DataTypes::spatial_dimensions >= 3)
+    if constexpr (GeometricalTypes::spatial_dimensions >= 3)
     {
         if (m_massTopologyType == sofa::geometry::ElementType::TETRAHEDRON)
         {

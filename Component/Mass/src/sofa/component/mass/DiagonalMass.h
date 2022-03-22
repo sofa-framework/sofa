@@ -201,7 +201,7 @@ protected:
     /** Method to update @sa d_vertexMass when a new Triangle is created.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when TRIANGLESADDED event is fired.
     */
-    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
+    template <typename T = GeometricalTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
     void applyTriangleCreation(const sofa::type::vector< TriangleID >& /*indices*/,
         const sofa::type::vector< Triangle >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< TriangleID > >& /*ancestors*/,
@@ -210,14 +210,14 @@ protected:
     /** Method to update @sa d_vertexMass when a Triangle is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when TRIANGLESREMOVED event is fired.
     */
-    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
+    template <typename T = GeometricalTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
     void applyTriangleDestruction(const sofa::type::vector<TriangleID>& /*indices*/);
 
 
     /** Method to update @sa d_vertexMass when a new Quad is created.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when QUADSADDED event is fired.
     */
-    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
+    template <typename T = GeometricalTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
     void applyQuadCreation(const sofa::type::vector< QuadID >& /*indices*/,
         const sofa::type::vector< Quad >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< QuadID > >& /*ancestors*/,
@@ -226,14 +226,14 @@ protected:
     /** Method to update @sa d_vertexMass when a Quad is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when QUADSREMOVED event is fired.
     */
-    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
+    template <typename T = GeometricalTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
     void applyQuadDestruction(const sofa::type::vector<QuadID>& /*indices*/);
     
 
     /** Method to update @sa d_vertexMass when a new Tetrahedron is created.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when TETRAHEDRAADDED event is fired.
     */
-    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
+    template <typename T = GeometricalTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
     void applyTetrahedronCreation(const sofa::type::vector< TetrahedronID >& /*indices*/,
         const sofa::type::vector< Tetrahedron >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< TetrahedronID > >& /*ancestors*/,
@@ -242,14 +242,14 @@ protected:
     /** Method to update @sa d_vertexMass when a Tetrahedron is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when TETRAHEDRAREMOVED event is fired.
     */
-    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
+    template <typename T = GeometricalTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
     void applyTetrahedronDestruction(const sofa::type::vector<TetrahedronID>& /*indices*/);
 
 
     /** Method to update @sa d_vertexMass when a new Hexahedron is created.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when HEXAHEDRAADDED event is fired.
     */
-    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
+    template <typename T = GeometricalTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
     void applyHexahedronCreation(const sofa::type::vector< HexahedronID >& /*indices*/,
         const sofa::type::vector< Hexahedron >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< HexahedronID > >& /*ancestors*/,
@@ -258,7 +258,7 @@ protected:
     /** Method to update @sa d_vertexMass when a Hexahedron is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when HEXAHEDRAREMOVED event is fired.
     */
-    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
+    template <typename T = GeometricalTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
     void applyHexahedronDestruction(const sofa::type::vector<HexahedronID>& /*indices*/);
 
 public:
@@ -338,9 +338,13 @@ public:
             auto splitTemplates = sofa::helper::split(std::string(arg->getAttribute("template")), ',');
             if (splitTemplates.size() > 1)
             {
-                msg_warning() << "MassType is not required anymore and the template is deprecated, please delete it from your scene." << msgendl
-                    << "As your mass is templated on " << DataTypes::Name() << ", MassType has been defined as " << sofa::helper::NameDecoder::getTypeName<MassType>() << " .";
-                msg_warning() << "If you want to set the template, you must write now \"template='" << DataTypes::Name() << "'\" .";
+                // check if the given 2nd template is the deprecated MassType one
+                if (splitTemplates[1] == "float" || splitTemplates[1] == "double" || splitTemplates[1].find("RigidMass") != std::string::npos)
+                {
+                    msg_warning() << "MassType is not required anymore and the template is deprecated, please delete it from your scene." << msgendl
+                        << "As your mass is templated on " << DataTypes::Name() << ", MassType has been defined as " << sofa::helper::NameDecoder::getTypeName<MassType>() << " .";
+                    msg_warning() << "If you want to set the template, you must write now \"template='" << DataTypes::Name() << "'\" .";
+                }
             }
         }
         if (arg->getAttribute("mass"))

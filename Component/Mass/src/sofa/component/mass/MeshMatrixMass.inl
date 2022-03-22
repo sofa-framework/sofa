@@ -1117,7 +1117,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::initTopologyHandlers(sofa::cor
     bool hasQuads = false;
 
 
-    if constexpr (DataTypes::spatial_dimensions >= 3)
+    if constexpr (GeometricalTypes::spatial_dimensions >= 3)
     {
         if (topologyType == TopologyElementType::HEXAHEDRON)
         {
@@ -1175,7 +1175,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::initTopologyHandlers(sofa::cor
         }
     }
 
-    if constexpr (DataTypes::spatial_dimensions >= 2)
+    if constexpr (GeometricalTypes::spatial_dimensions >= 2)
     {
         if (topologyType == TopologyElementType::QUAD || hasQuads)
         {
@@ -1397,7 +1397,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::computeMass()
     for (Index i = 0; i<nbEdges; ++i)
         applyEdgeMassCreation(i, my_edgeMassInfo[i], edges[i], emptyAncestor, emptyCoefficient);
 
-    if constexpr (DataTypes::spatial_dimensions >= 2)
+    if constexpr (GeometricalTypes::spatial_dimensions >= 2)
     {
         if (getMassTopologyType() == TopologyElementType::QUAD)
         {
@@ -1436,7 +1436,7 @@ void MeshMatrixMass<DataTypes, GeometricalTypes>::computeMass()
         }
     }
 
-    if constexpr (DataTypes::spatial_dimensions >= 3)
+    if constexpr (GeometricalTypes::spatial_dimensions >= 3)
     {
         if (getMassTopologyType() == TopologyElementType::HEXAHEDRON)
         {
