@@ -203,3 +203,13 @@ TEST(MatTypesTest, invert55)
         EXPECT_EQ(M, Mtest);
     }
 }
+
+TEST(MatTypesTest, tensorProduct)
+{
+    Vec<2,SReal> v1(0.,1.), v2(1.,2.);
+    Mat<2, 2, SReal> Mtest = tensorProduct(v1,v2);
+
+    Mat<2, 2, SReal> M(Mat<2, 2, SReal>::Line(0.,  0.),
+                       Mat<2, 2, SReal>::Line( 1., 2.));
+    EXPECT_EQ(M, Mtest);
+}

@@ -1098,17 +1098,14 @@ constexpr Mat<3, 3, Real> crossProductMatrix(const Vec<3, Real>& v) noexcept
 
 /// return a * b^T
 template<sofa::Size L,class Real>
-constexpr Mat<L,L,Real> tensorProduct(const Vec<L,Real> a, const Vec<L,Real> b ) noexcept
+constexpr Mat<L,L,Real> tensorProduct(const Vec<L,Real>& a, const Vec<L,Real>& b ) noexcept
 {
-    typedef Mat<L,L,Real> Mat;
+    typedef MatNoInit<L,L,Real> Mat;
     Mat m;
 
     for( typename Mat::Size i=0 ; i<L ; ++i )
-    {
-        m[i][i] = a[i]*b[i];
-        for( typename Mat::Size j=i+1 ; j<L ; ++j )
-            m[i][j] = m[j][i] = a[i]*b[j];
-    }
+        for( typename Mat::Size j=0 ; j<L ; ++j )
+            m[i][j] = a[i]*b[j];
 
     return m;
 }
