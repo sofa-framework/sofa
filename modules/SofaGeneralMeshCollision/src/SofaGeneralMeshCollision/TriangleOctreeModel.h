@@ -27,12 +27,12 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaMeshCollision/TriangleModel.h>
-#include <SofaGeneralMeshCollision/TriangleOctree.h>
+#include <sofa/helper/TriangleOctree.h>
 
 namespace sofa::component::collision
 {
 
-class SOFA_SOFAGENERALMESHCOLLISION_API TriangleOctreeModel : public  TriangleCollisionModel<sofa::defaulttype::Vec3Types>, public TriangleOctreeRoot
+class SOFA_SOFAGENERALMESHCOLLISION_API TriangleOctreeModel : public  TriangleCollisionModel<sofa::defaulttype::Vec3Types>, public helper::TriangleOctreeRoot
 {
 public:
     SOFA_CLASS(TriangleOctreeModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>);
