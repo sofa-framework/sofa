@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMeshCollision/TriangleModel.inl>
-#include <SofaGeneralMeshCollision/TriangleOctree.h>
-#include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/TriangleOctree.h>
 
-namespace sofa::component::collision
+#include <sofa/helper/visual/DrawTool.h>
+
+namespace sofa::helper
 {
 
 TriangleOctree::~TriangleOctree()
@@ -38,25 +38,25 @@ TriangleOctree::~TriangleOctree()
     }
 }
 
-void TriangleOctree::draw (const core::visual::VisualParams* vparams)
+void TriangleOctree::draw (sofa::helper::visual::DrawTool* drawTool)
 {
     type::Vector3 center;
     if ( objects.size ())
     {
         center =
             (type::Vector3 (x, y, z) + type::Vector3 (size / 2, size / 2, size / 2));
-        vparams->drawTool()->pushMatrix();
-        vparams->drawTool()->translate((float)center[0], (float)center[1], (float)center[2]);
-        vparams->drawTool()->setPolygonMode(0, false);
-        vparams->drawTool()->drawCube(size, sofa::type::RGBAColor(0.5, 0.5, 0.5, 1.0));
-        vparams->drawTool()->popMatrix();
+        drawTool->pushMatrix();
+        drawTool->translate((float)center[0], (float)center[1], (float)center[2]);
+        drawTool->setPolygonMode(0, false);
+        drawTool->drawCube(size, sofa::type::RGBAColor(0.5, 0.5, 0.5, 1.0));
+        drawTool->popMatrix();
 
-        vparams->drawTool()->setPolygonMode(0, true);
+        drawTool->setPolygonMode(0, true);
     }
     for (int i = 0; i < 8; i++)
     {
         if (childVec[i])
-            childVec[i]->draw(vparams);
+            childVec[i]->draw(drawTool);
     }
 }
 
@@ -890,4 +890,4 @@ void TriangleOctreeRoot::calcTriangleAABB(int tId, double* bb, double& size)
             fabs (bb[5] - bb[4]));
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::helper
