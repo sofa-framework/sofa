@@ -19,68 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimpleFem/initSofaSimpleFem.h>
+#define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_CPP
 
-#include <sofa/helper/system/PluginManager.h>
-
+#include <sofa/component/diffusion/TetrahedronDiffusionFEMForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
+#include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component
+namespace sofa::component::diffusion
 {
 
-void initSofaSimpleFem()
-{
-    static bool first = true;
-    if (first)
-    {
-        // msg_deprecated("SofaSimpleFem") << "SofaSimpleFem is being deprecated;. It will be removed at v23.06. You may use Sofa.Component.Diffusion instead.";
+using namespace sofa::defaulttype;
 
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Diffusion");
 
-        first = false;
-    }
-}
+// Register in the Factory
+int TetrahedronDiffusionFEMForceFieldClass = core::RegisterObject("Isotropic or anisotropic diffusion on Tetrahedral Meshes")
+  .add< TetrahedronDiffusionFEMForceField<Vec1Types> >()
+  .add< TetrahedronDiffusionFEMForceField<Vec2Types> >(true)
+  .add< TetrahedronDiffusionFEMForceField<Vec3Types> >()
+;
 
-extern "C" {
-    SOFA_SOFASIMPLEFEM_API void initExternalModule();
-    SOFA_SOFASIMPLEFEM_API const char* getModuleName();
-    SOFA_SOFASIMPLEFEM_API const char* getModuleVersion();
-    SOFA_SOFASIMPLEFEM_API const char* getModuleLicense();
-    SOFA_SOFASIMPLEFEM_API const char* getModuleDescription();
-    SOFA_SOFASIMPLEFEM_API const char* getModuleComponentList();
-}
+template class SOFA_COMPONENT_DIFFUSION_API TetrahedronDiffusionFEMForceField<Vec1Types>;
+template class SOFA_COMPONENT_DIFFUSION_API TetrahedronDiffusionFEMForceField<Vec2Types>;
+template class SOFA_COMPONENT_DIFFUSION_API TetrahedronDiffusionFEMForceField<Vec3Types>;
 
-void initExternalModule()
-{
-    initSofaSimpleFem();
-}
-
-const char* getModuleName()
-{
-    return sofa_tostring(SOFA_TARGET);
-}
-
-const char* getModuleVersion()
-{
-    return sofa_tostring(SOFASIMPLEFEM_VERSION);
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This plugin contains contains features about Simple Fem.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-
-} //namespace sofa::component::forcefield
+} // namespace sofa::component::diffusion

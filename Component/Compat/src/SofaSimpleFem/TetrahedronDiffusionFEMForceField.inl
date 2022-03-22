@@ -19,68 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimpleFem/initSofaSimpleFem.h>
+#pragma once
 
-#include <sofa/helper/system/PluginManager.h>
+#include <sofa/component/diffusion/TetrahedronDiffusionFEMForceField.inl>
 
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
-
-namespace sofa::component
-{
-
-void initSofaSimpleFem()
-{
-    static bool first = true;
-    if (first)
-    {
-        // msg_deprecated("SofaSimpleFem") << "SofaSimpleFem is being deprecated;. It will be removed at v23.06. You may use Sofa.Component.Diffusion instead.";
-
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Diffusion");
-
-        first = false;
-    }
-}
-
-extern "C" {
-    SOFA_SOFASIMPLEFEM_API void initExternalModule();
-    SOFA_SOFASIMPLEFEM_API const char* getModuleName();
-    SOFA_SOFASIMPLEFEM_API const char* getModuleVersion();
-    SOFA_SOFASIMPLEFEM_API const char* getModuleLicense();
-    SOFA_SOFASIMPLEFEM_API const char* getModuleDescription();
-    SOFA_SOFASIMPLEFEM_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{
-    initSofaSimpleFem();
-}
-
-const char* getModuleName()
-{
-    return sofa_tostring(SOFA_TARGET);
-}
-
-const char* getModuleVersion()
-{
-    return sofa_tostring(SOFASIMPLEFEM_VERSION);
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This plugin contains contains features about Simple Fem.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-
-} //namespace sofa::component::forcefield
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/diffusion/TetrahedronDiffusionFEMForceField.inl")
