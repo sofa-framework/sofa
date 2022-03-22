@@ -819,6 +819,79 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "Visual3DText", CreatableMoved("v22.06", "SofaGeneralVisual", "Sofa.Component.Visual") },
     { "VisualTransform", CreatableMoved("v22.06", "SofaGeneralVisual", "Sofa.Component.Visual") },
 
+    // SofaSimpleFem was deprecated in #2753 and ....
+    { "TetrahedronDiffusionFEMForceField", CreatableMoved("v22.06", "SofaSimpleFem", "Sofa.Component.Diffusion") },
+
+    // SofaOpenglVisual was deprecated in #2709
+    { "DataDisplay", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Rendering3D") },
+    { "MergeVisualModels", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Rendering3D") },
+    { "OglCylinderModel", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Rendering3D") },
+    { "OglGrid", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Rendering3D") },
+    { "OglLineAxis", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Rendering3D") },
+    { "OglModel", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Rendering3D") },
+    { "PointSplatModel", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Rendering3D") },
+    { "SlicedVolumetricModel", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Rendering3D") },
+    { "OglColorMap", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Rendering2D") },
+    { "OglLabel", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Rendering2D") },
+    { "OglViewport", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Rendering2D") },
+    { "ClipPlane", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "CompositingVisualLoop", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "DirectionalLight", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "PositionalLight", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "SpotLight", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "LightManager", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloatAttribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloat2Attribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloat3Attribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloat4Attribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglIntAttribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglInt2Attribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglInt3Attribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglInt4Attribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglUIntAttribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglUInt2Attribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglUInt3Attribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglUInt4Attribute", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglOITShader", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglRenderingSRGB", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglShader", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglShaderMacro", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglShaderVisualModel", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglShadowShader", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglTexture", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglTexture2D", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglIntVariable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglInt2Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglInt3Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglInt4Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloatVariable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloat2Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloat3Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloat4Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglIntVectorVariable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglInt2VectorVariable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglInt3VectorVariable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglInt4VectorVariable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloatVectorVariable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloat2VectorVariable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloat3VectorVariable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglFloat4VectorVariable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglMatrix2Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglMatrix3Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglMatrix4Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglMatrix2x3Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglMatrix3x2Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglMatrix2x4Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglMatrix4x2Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglMatrix3x4Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglMatrix4x3Variable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OglMatrix4VectorVariable", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "OrderIndependentTransparencyManager", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "PostProcessManager", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "VisualManagerPass", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "VisualManagerSecondaryPass", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Shader") },
+    { "TextureInterpolation", CreatableMoved("v22.06", "SofaOpenglVisual", "Sofa.GL.Component.Engine") },
+
     // SofaBaseLinearSolver was deprecated in #2717
     { "CGLinearSolver", CreatableMoved("v22.06", "SofaBaseLinearSolver", "Sofa.Component.LinearSolver.Iterative") },
 
@@ -826,7 +899,7 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "MinResLinearSolver", CreatableMoved("v22.06", "SofaGeneralLinearSolver", "Sofa.Component.LinearSolver.Iterative") },
     { "BTDLinearSolver", CreatableMoved("v22.06", "SofaGeneralLinearSolver", "Sofa.Component.LinearSolver.Direct") },
     { "CholeskySolver", CreatableMoved("v22.06", "SofaGeneralLinearSolver", "Sofa.Component.LinearSolver.Direct") },
-        
+
     // SofaSparseSolver was deprecated in #2717
     { "FillReducingOrdering", CreatableMoved("v22.06", "SofaGeneralLinearSolver", "Sofa.Component.LinearSolver.Direct") },
     { "PrecomputedLinearSolver", CreatableMoved("v22.06", "SofaGeneralLinearSolver", "Sofa.Component.LinearSolver.Direct") },
@@ -843,6 +916,14 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "PrecomputedWarpPreconditioner", CreatableMoved("v22.06", "SofaPreconditioner", "Sofa.Component.LinearSolver.Preconditioner") },
     { "SSORPreconditioner", CreatableMoved("v22.06", "SofaPreconditioner", "Sofa.Component.LinearSolver.Preconditioner") },
     { "WarpPreconditioner", CreatableMoved("v22.06", "SofaPreconditioner", "Sofa.Component.LinearSolver.Preconditioner") },
+
+    // SofaBaseMechanics was deprecated in #2752 and ...
+    { "DiagonalMass", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mass") },
+    { "UniformMass", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mass") },
+    
+    // SofaMiscForceField was deprecated in #2752 and ...
+    { "MeshMatrixMass", CreatableMoved("v22.06", "SofaMiscForceField", "Sofa.Component.Mass") },
+
 };
 
 } // namespace sofa::helper::lifecycle

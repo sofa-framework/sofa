@@ -31,7 +31,7 @@
 #include <SofaMiscForceField/LennardJonesForceField.h>
 
 
-namespace sofa
+namespace sofa::component::odesolver::testing
 {
 
 typedef component::container::MechanicalObject<defaulttype::Vec3Types> MechanicalObject3;
@@ -89,4 +89,4 @@ simulation::Node::SPtr createSunPlanetSystem(
 
 }
 
-} // namespace sofa
+} // namespace sofa::component::odesolver::testing

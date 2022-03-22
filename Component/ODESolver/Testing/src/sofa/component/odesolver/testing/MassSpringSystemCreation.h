@@ -21,21 +21,71 @@
 ******************************************************************************/
 #pragma once
 
-#include <SceneCreator/SceneCreator.h>
+#include <SofaSimulationGraph/SimpleApi.h>
 
 #include <sofa/testing/NumericTest.h>
 #include <sofa/simulation/Node.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaBaseMechanics/UniformMass.h>
-#include <SofaBoundaryCondition/FixedConstraint.h>
-#include <SofaDeformable/StiffSpringForceField.h>
 
-namespace sofa
+namespace sofa::component::odesolver::testing
 {
 
-/// Create a mass srping system
+/// Create a mass spring system
+inline simulation::Node::SPtr createMassSpringSystem(
+    simulation::Node::SPtr root,
+    const std::string& stiffness,
+    const std::string& mass,
+    const std::string& restLength,
+    const std::string& xFixedPoint,
+    const std::string& vFixedPoint,
+    const std::string& xMass,
+    const std::string& vMass)
+{
+    // Fixed point
+    auto fixedPointNode = simpleapi::createChild(root, "FixedPointNode" );
+
+    simpleapi::createObject(fixedPointNode, "MechanicalObject", {
+        { "name","fixedPoint"},
+        { "template","Vec3"},
+        { "position", xFixedPoint},
+        { "velocity", vFixedPoint},
+    });
+
+    simpleapi::createObject(fixedPointNode, "FixedConstraint", {
+        { "name","fixed"},
+        { "indices", "0"},
+    });
+
+    // Mass
+    auto massNode = simpleapi::createChild(root, "MassNode");
+
+    simpleapi::createObject(massNode, "MechanicalObject", {
+        { "name","massDof"},
+        { "template","Vec3"},
+        { "position", xMass},
+        { "velocity", vMass}
+    });
+
+    simpleapi::createObject(massNode, "UniformMass", {
+        { "name","mass"},
+        { "totalMass", mass}
+    });
+
+    std::ostringstream oss;
+    oss << 0 << " " << 0 << " " << stiffness << " " << 0 << " " << restLength;
+
+    // attach a spring
+    simpleapi::createObject(root, "StiffSpringForceField", {
+        { "name","ff"},
+        { "spring", oss.str()},
+        { "object1", "@FixedPointNode/fixedPoint"},
+        { "object2", "@MassNode/massDof"},
+    });
+
+    return root;
+}
+
 template<typename DataTypes>
-simulation::Node::SPtr createMassSpringSystem(
+inline simulation::Node::SPtr createMassSpringSystem(
     simulation::Node::SPtr root,
     double stiffness,
     double mass,
@@ -45,47 +95,11 @@ simulation::Node::SPtr createMassSpringSystem(
     typename DataTypes::VecCoord xMass,
     typename DataTypes::VecDeriv vMass)
 {
-
-    typedef component::container::MechanicalObject<defaulttype::Vec3Types> MechanicalObject3;
-    typedef component::projectiveconstraintset::FixedConstraint<defaulttype::Vec3Types> FixedConstraint3;
-    typedef component::mass::UniformMass<defaulttype::Vec3Types> UniformMass3;
-    typedef component::interactionforcefield::StiffSpringForceField<defaulttype::Vec3Types > StiffSpringForceField3;
-
-    // Fixed point
-    simulation::Node::SPtr fixedPointNode = root->createChild("FixedPointNode");
-    MechanicalObject3::SPtr FixedPoint = modeling::addNew<MechanicalObject3>(fixedPointNode, "fixedPoint");
-
-    // Set position and velocity
-    FixedPoint->resize(1);
-    MechanicalObject3::WriteVecCoord xdof = FixedPoint->writePositions();
-    sofa::testing::copyToData(xdof, xFixedPoint);
-    MechanicalObject3::WriteVecDeriv vdof = FixedPoint->writeVelocities();
-    sofa::testing::copyToData(vdof, vFixedPoint);
-
-    FixedConstraint3::SPtr fixed = modeling::addNew<FixedConstraint3>(fixedPointNode, "FixedPointNode");
-    fixed->addConstraint(0);      // attach particle
-
-
-    // Mass
-    simulation::Node::SPtr massNode = root->createChild("MassNode");
-    MechanicalObject3::SPtr massDof = modeling::addNew<MechanicalObject3>(massNode, "massNode");
-
-    // Set position and velocity
-    FixedPoint->resize(1);
-    MechanicalObject3::WriteVecCoord xMassDof = massDof->writePositions();
-    sofa::testing::copyToData(xMassDof, xMass);
-    MechanicalObject3::WriteVecDeriv vMassDof = massDof->writeVelocities();
-    sofa::testing::copyToData(vMassDof, vMass);
-
-    UniformMass3::SPtr massPtr = modeling::addNew<UniformMass3>(massNode, "mass");
-    massPtr->d_totalMass.setValue(mass);
-
-    // attach a spring
-    StiffSpringForceField3::SPtr spring = core::objectmodel::New<StiffSpringForceField3>(FixedPoint.get(), massDof.get());
-    root->addObject(spring);
-    spring->addSpring(0, 0, stiffness, 0, restLength);
-
-    return root;
+    return createMassSpringSystem(root,
+        simpleapi::str(stiffness), simpleapi::str(mass), simpleapi::str(restLength),
+        simpleapi::str(xFixedPoint), simpleapi::str(vFixedPoint),
+        simpleapi::str(xMass), simpleapi::str(vMass)
+    );
 }
 
-} // namespace sofa
+} // namespace sofa::component::odesolver::testing
