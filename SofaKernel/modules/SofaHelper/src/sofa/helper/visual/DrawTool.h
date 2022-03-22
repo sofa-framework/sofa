@@ -24,7 +24,6 @@
 #include <sofa/helper/config.h>
 #include <sofa/type/RGBAColor.h>
 #include <sofa/type/Vec.h>
-#include <sofa/defaulttype/fwd.h>
 #include <sofa/type/Quat.h>
 #include <vector>
 
