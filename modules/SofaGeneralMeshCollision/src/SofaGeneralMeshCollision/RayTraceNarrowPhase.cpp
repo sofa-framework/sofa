@@ -29,6 +29,7 @@ namespace sofa::component::collision
 {
 
 using sofa::core::collision::TDetectionOutputVector;
+using sofa::helper::TriangleOctree;
 
 int RayTraceNarrowPhaseClass = core::RegisterObject("Collision detection using TriangleOctreeModel").add < RayTraceNarrowPhase > ();
 
