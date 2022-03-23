@@ -162,7 +162,7 @@ protected:
     StrainDisplacement InvalidStrainDisplacement;
 
     /// Pointer to the utils class which store methods common to TriangleFEMForceField
-    TriangleFEMUtils<DataTypes>* m_triangleUtils;
+    TriangleFEMUtils<DataTypes> m_triangleUtils;
 };
 
 

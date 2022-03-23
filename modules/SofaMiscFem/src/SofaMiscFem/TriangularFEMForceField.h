@@ -289,7 +289,7 @@ private:
     bool p_computeDrawInfo;
     sofa::helper::ColorMap* p_drawColorMap;
 
-    TriangleFEMUtils<DataTypes>* m_triangleUtils;
+    TriangleFEMUtils<DataTypes> m_triangleUtils;
 };
 
 
