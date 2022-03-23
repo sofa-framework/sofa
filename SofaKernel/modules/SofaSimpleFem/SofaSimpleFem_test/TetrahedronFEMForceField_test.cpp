@@ -878,7 +878,15 @@ component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3Types>
 
 
 
+//TEST_F(TetrahedronFEMForceField3_test, testTetrahedronFEMPerformance)
+//{
+//    this->testFEMPerformance(0);
+//}
 
+/// Tests for TriangleFEMForceField
+typedef TetrahedronFEMForceField_test<Vec3Types> TetrahedronFEMForceField3_test;
+
+TEST_F(TetrahedronFEMForceField3_test, checkCreation)
 /// Tests for TriangleFEMForceField
 typedef TetrahedronFEMForceField_test<Vec3Types> TetrahedronFEMForceField3_test;
 
@@ -895,9 +903,20 @@ TEST_F(TetrahedronFEMForceField3_test, checkNoTopology)
 TEST_F(TetrahedronFEMForceField3_test, checkEmptyTopology)
 {
     this->checkEmptyTopology(0);
+/// Tests for TriangularFEMForceField  TODO: remove them when component has been fully merged into TriangleFEMForceField
+typedef TetrahedronFEMForceField_test<Vec3Types> TetrahedralCorotationalFEMForceField3_test;
+
+TEST_F(TetrahedralCorotationalFEMForceField3_test, checkCreation)
+{
+    this->checkCreation(1);
 }
 
 TEST_F(TetrahedronFEMForceField3_test, checkDefaultAttributes)
+
+/// Test TriangularOptim: TODO check where to put those tests
+typedef TetrahedronFEMForceField_test<Vec3Types> FastTetrahedralCorotationalForceField3_test;
+
+TEST_F(FastTetrahedralCorotationalForceField3_test, checkCreation)
 {
     this->checkDefaultAttributes(0);
 }
