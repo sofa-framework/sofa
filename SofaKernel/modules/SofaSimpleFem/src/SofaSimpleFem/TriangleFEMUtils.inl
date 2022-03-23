@@ -130,15 +130,19 @@ constexpr void TriangleFEMUtils<DataTypes>::computeForceLarge(Displacement& F, c
 template<class DataTypes>
 constexpr void TriangleFEMUtils<DataTypes>::computeStrainDisplacementGlobal(StrainDisplacement& J, const Coord& pA, const Coord& pB, const Coord& pC) const
 {
-    Coord ab_cross_ac = cross(pB - pA, pC - pA);
-    Real determinant = ab_cross_ac.norm();
+    const Coord ab_cross_ac = cross(pB - pA, pC - pA);
+    const Real determinant = ab_cross_ac.norm();
+    
+    Real invDet = 0.0;
+    if (abs(determinant) > std::numeric_limits<Real>::epsilon())
+        invDet = 1 / determinant;
 
-    Real x13 = (pA[0] - pC[0]) / determinant;
-    Real x21 = (pB[0] - pA[0]) / determinant;
-    Real x32 = (pC[0] - pB[0]) / determinant;
-    Real y12 = (pA[1] - pB[1]) / determinant;
-    Real y23 = (pB[1] - pC[1]) / determinant;
-    Real y31 = (pC[1] - pA[1]) / determinant;
+    const Real x13 = (pA[0] - pC[0]) * invDet;
+    const Real x21 = (pB[0] - pA[0]) * invDet;
+    const Real x32 = (pC[0] - pB[0]) * invDet;
+    const Real y12 = (pA[1] - pB[1]) * invDet;
+    const Real y23 = (pB[1] - pC[1]) * invDet;
+    const Real y31 = (pC[1] - pA[1]) * invDet;
 
     J[0][0] = y23;
     J[0][1] = 0;
@@ -214,14 +218,19 @@ constexpr void TriangleFEMUtils<DataTypes>::computeStrainDisplacementGlobal(Stra
 template<class DataTypes>
 constexpr void TriangleFEMUtils<DataTypes>::computeStrainDisplacementLocal(StrainDisplacement& J, const Coord& pB, const Coord& pC) const
 {
-    // local computation taking into account that a = [0, 0, 0]
-    Real determinant = pB[0] * pC[1]; // b = [x, 0, 0], c = [y, y, 0]
-    J[0][0] = J[1][2] = -pC[1] / determinant;
-    J[0][2] = J[1][1] = (pC[0] - pB[0]) / determinant;
-    J[2][0] = J[3][2] = pC[1] / determinant;
-    J[2][2] = J[3][1] = -pC[0] / determinant;
+    // local computation taking into account that a = [0, 0, 0], b = [x, 0, 0], c = [y, y, 0]
+    const Real determinant = pB[0] * pC[1];
+
+    Real invDet = 0.0;
+    if (abs(determinant) > std::numeric_limits<Real>::epsilon())
+        invDet = 1 / determinant;
+
+    J[0][0] = J[1][2] = -pC[1] * invDet;
+    J[0][2] = J[1][1] = (pC[0] - pB[0]) * invDet;
+    J[2][0] = J[3][2] = pC[1] * invDet;
+    J[2][2] = J[3][1] = -pC[0] * invDet;
     J[4][0] = J[5][2] = 0;
-    J[4][2] = J[5][1] = pB[0] / determinant;
+    J[4][2] = J[5][1] = pB[0] * invDet;
     J[1][0] = J[3][0] = J[5][0] = J[0][1] = J[2][1] = J[4][1] = 0;
 }
 
