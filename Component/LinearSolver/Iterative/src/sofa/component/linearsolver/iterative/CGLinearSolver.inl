@@ -34,8 +34,8 @@ namespace sofa::component::linearsolver::iterative
 template<class TMatrix, class TVector>
 CGLinearSolver<TMatrix,TVector>::CGLinearSolver()
     : d_maxIter( initData(&d_maxIter, 25u,"iterations","Maximum number of iterations of the Conjugate Gradient solution") )
-    , d_tolerance( initData(&d_tolerance,(SReal)1e-5,"tolerance","Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)") )
-    , d_smallDenominatorThreshold( initData(&d_smallDenominatorThreshold,(SReal)1e-5,"threshold","Minimum value of the denominator (pT A p)^ in the conjugate Gradient solution") )
+    , d_tolerance( initData(&d_tolerance,(Real)1e-5,"tolerance","Desired accuracy of the Conjugate Gradient solution evaluating: |r|²/|b|² (ratio of current residual norm over initial residual norm)") )
+    , d_smallDenominatorThreshold( initData(&d_smallDenominatorThreshold,(Real)1e-5,"threshold","Minimum value of the denominator (pT A p)^ in the conjugate Gradient solution") )
     , d_warmStart( initData(&d_warmStart,false,"warmStart","Use previous solution as initial solution") )
     , d_graph( initData(&d_graph,"graph","Graph of residuals at each iteration") )
 {
@@ -108,7 +108,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
     Vector& q = *vtmp.createTempVector(); // temporary vector computing A*p
     Vector& r = *vtmp.createTempVector(); // residual
 
-    double rho, rho_1=0, alpha, beta;
+    Real rho, rho_1=0, alpha, beta;
 
     msg_info() << "b = " << b ;
 
@@ -125,14 +125,14 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
     }
 
     /// Compute the norm of the right-hand-side vector b
-    double normb = b.norm();
+    const auto normb = b.norm();
 
-    std::map < std::string, sofa::type::vector<SReal> >& graph = *d_graph.beginEdit();
-    sofa::type::vector<SReal>& graph_error = graph[std::string("Error")];
+    std::map < std::string, sofa::type::vector<Real> >& graph = *d_graph.beginEdit();
+    sofa::type::vector<Real>& graph_error = graph[std::string("Error")];
     graph_error.clear();
     graph_error.push_back(1);
 
-    sofa::type::vector<SReal>& graph_den = graph[std::string("Denominator")];
+    sofa::type::vector<Real>& graph_den = graph[std::string("Denominator")];
     graph_den.clear();
 
 
@@ -163,8 +163,9 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
             rho = r.dot(r);
 
             /// Compute the error from the norm of ρ and b
-            double normr = sqrt(rho);
-            double err = normr/normb;
+            const auto normr = sqrt(rho);
+            const auto err = normr/normb;
+            assert(!std::isnan(err));
 
             graph_error.push_back(err);
 
@@ -228,7 +229,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
             msg_info() << "q = A p : " << q;
 
             /// Compute the denominator : pT A p
-            double den = p.dot(q);
+            const auto den = p.dot(q);
 
             graph_den.push_back(den);
 
@@ -301,7 +302,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
         {
             p = r;
             q = A*p;
-            double den = p.dot(q);
+            const auto den = p.dot(q);
 
             if(den != 0.0)
             {
@@ -335,7 +336,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
 }
 
 template<class TMatrix, class TVector>
-inline void CGLinearSolver<TMatrix,TVector>::cgstep_beta(const core::ExecParams* /*params*/, Vector& p, Vector& r, SReal beta)
+inline void CGLinearSolver<TMatrix,TVector>::cgstep_beta(const core::ExecParams* /*params*/, Vector& p, Vector& r, Real beta)
 {
     // p = p*beta + r
     p *= beta;
@@ -343,7 +344,7 @@ inline void CGLinearSolver<TMatrix,TVector>::cgstep_beta(const core::ExecParams*
 }
 
 template<class TMatrix, class TVector>
-inline void CGLinearSolver<TMatrix,TVector>::cgstep_alpha(const core::ExecParams* /*params*/, Vector& x, Vector& r, Vector& p, Vector& q, SReal alpha)
+inline void CGLinearSolver<TMatrix,TVector>::cgstep_alpha(const core::ExecParams* /*params*/, Vector& x, Vector& r, Vector& p, Vector& q, Real alpha)
 {
     // x = x + alpha p
     x.peq(p,alpha);
