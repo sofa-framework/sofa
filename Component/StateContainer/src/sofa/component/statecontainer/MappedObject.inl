@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/container/MappedObject.h>
+#include <sofa/component/statecontainer/MappedObject.h>
 
 #include <sofa/core/behavior/BaseMechanicalState.h>
 
-namespace sofa::component::container
+namespace sofa::component::statecontainer
 {
 
 template <class DataTypes>
@@ -58,4 +58,4 @@ void MappedObject<DataTypes>::init()
     }
 }
 
-} // namespace sofa::component::container
+} // namespace sofa::component::statecontainer

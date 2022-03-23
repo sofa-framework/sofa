@@ -13,21 +13,17 @@ set(SOURCE_FILES
 
 )
 
-sofa_find_package(SofaBaseTopology REQUIRED)
-sofa_find_package(SofaBaseLinearSolver REQUIRED)
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaBaseLinearSolver)
 
-message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Mass, Sofa.Component.Mapping.Linear and Sofa.Component.Container instead.")
+message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Mass, Sofa.Component.Mapping.Linear and Sofa.Component.StateContainer instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.Mass REQUIRED)
 sofa_find_package(Sofa.Component.Mapping.Linear REQUIRED)
-sofa_find_package(Sofa.Component.Container REQUIRED)
+sofa_find_package(Sofa.Component.StateContainer REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Mass)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Mapping.Linear)
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Container)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.StateContainer)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

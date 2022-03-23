@@ -20,6 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/container/MappedObject.inl>
+#include <sofa/component/statecontainer/MappedObject.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/container/MappedObject.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/statecontainer/MappedObject.inl")
