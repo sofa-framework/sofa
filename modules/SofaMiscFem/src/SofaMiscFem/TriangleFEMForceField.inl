@@ -194,7 +194,7 @@ void TriangleFEMForceField<DataTypes>::addDForce(const core::MechanicalParams* m
 }
 
 template <class DataTypes>
-void TriangleFEMForceField<DataTypes>::applyStiffness(VecCoord& v, Real h, const VecCoord& x, const SReal& kFactor)
+void TriangleFEMForceField<DataTypes>::applyStiffness(VecCoord& v, Real h, const VecCoord& x, const Real& kFactor)
 {
     if (method == SMALL)
     {
@@ -315,7 +315,7 @@ void TriangleFEMForceField<DataTypes>::accumulateForceSmall(VecCoord& f, const V
 }
 
 template <class DataTypes>
-void TriangleFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord& v, Real h, const VecCoord& x, const SReal& kFactor)
+void TriangleFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord& v, Real h, const VecCoord& x, const Real& kFactor)
 {
     typename VecElement::const_iterator it;
     unsigned int i(0);
@@ -456,7 +456,7 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord& f, const V
 
 
 template <class DataTypes>
-void TriangleFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord& v, Real h, const VecCoord& x, const SReal& kFactor)
+void TriangleFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord& v, Real h, const VecCoord& x, const Real& kFactor)
 {
     typename VecElement::const_iterator it;
     unsigned int i(0);

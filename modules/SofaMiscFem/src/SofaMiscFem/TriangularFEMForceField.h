@@ -229,18 +229,18 @@ protected :
     void computePrincipalStress(Index elementIndex, type::Vec<3,Real> &stress);
 
     /// f += Kx where K is the stiffness matrix and x a displacement
-    virtual void applyStiffness( VecCoord& f, Real h, const VecCoord& x, const SReal &kFactor );
+    virtual void applyStiffness( VecCoord& f, Real h, const VecCoord& x, const Real &kFactor );
     virtual void computeMaterialStiffness(int i, Index& a, Index& b, Index& c);
 
     ////////////// small displacements method
     void initSmall(int i, Index&a, Index&b, Index&c);
     void accumulateForceSmall( VecCoord& f, const VecCoord & p);
-    void applyStiffnessSmall( VecCoord& f, Real h, const VecCoord& x, const SReal &kFactor );
+    void applyStiffnessSmall( VecCoord& f, Real h, const VecCoord& x, const Real &kFactor );
 
     ////////////// large displacements method
     void initLarge(int i, Index&a, Index&b, Index&c);
     void accumulateForceLarge( VecCoord& f, const VecCoord & p);
-    void applyStiffnessLarge( VecCoord& f, Real h, const VecCoord& x, const SReal &kFactor );
+    void applyStiffnessLarge( VecCoord& f, Real h, const VecCoord& x, const Real &kFactor );
 
     bool updateMatrix;
 

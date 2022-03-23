@@ -138,20 +138,20 @@ public:
 protected:
 
     /// f += Kx where K is the stiffness matrix and x a displacement
-    virtual void applyStiffness(VecCoord& f, Real h, const VecCoord& x, const SReal& kFactor);
+    virtual void applyStiffness(VecCoord& f, Real h, const VecCoord& x, const Real& kFactor);
     void computeMaterialStiffnesses();
 
     ////////////// small displacements method
     void initSmall();
     void accumulateForceSmall(VecCoord& f, const VecCoord& p, bool implicit = false);
-    void applyStiffnessSmall(VecCoord& f, Real h, const VecCoord& x, const SReal& kFactor);
+    void applyStiffnessSmall(VecCoord& f, Real h, const VecCoord& x, const Real& kFactor);
 
     ////////////// large displacements method
     sofa::type::vector< type::fixed_array <Coord, 3> > _rotatedInitialElements;   ///< The initials positions in its frame
     sofa::type::vector< Transformation > _rotations;
     void initLarge();
     void accumulateForceLarge(VecCoord& f, const VecCoord& p, bool implicit = false);
-    void applyStiffnessLarge(VecCoord& f, Real h, const VecCoord& x, const SReal& kFactor);
+    void applyStiffnessLarge(VecCoord& f, Real h, const VecCoord& x, const Real& kFactor);
 
     //// stiffness matrix assembly
     void computeElementStiffnessMatrix(StiffnessMatrix& S, StiffnessMatrix& SR, const MaterialStiffness& K, const StrainDisplacement& J, const Transformation& Rot);

@@ -861,7 +861,7 @@ void TriangularFEMForceField<DataTypes>::computeStressAlongDirection(Real& stres
 // --- Apply functions
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord& v, Real h, const VecCoord& x, const SReal& kFactor)
+void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord& v, Real h, const VecCoord& x, const Real& kFactor)
 {
     Displacement dX;
     type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
@@ -905,7 +905,7 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord& v, Real h
 
 
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::applyStiffness(VecCoord& v, Real h, const VecCoord& x, const SReal& kFactor)
+void TriangularFEMForceField<DataTypes>::applyStiffness(VecCoord& v, Real h, const VecCoord& x, const Real& kFactor)
 {
     if (method == SMALL)
     {
@@ -921,7 +921,7 @@ void TriangularFEMForceField<DataTypes>::applyStiffness(VecCoord& v, Real h, con
 // ---
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord& v, Real h, const VecCoord& x, const SReal& kFactor)
+void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord& v, Real h, const VecCoord& x, const Real& kFactor)
 {
     Displacement dX;
     Coord x_2;
