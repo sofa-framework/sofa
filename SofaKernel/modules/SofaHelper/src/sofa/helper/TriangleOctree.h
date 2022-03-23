@@ -30,12 +30,6 @@
 
 /*THIS STATIC CUBE SIZE MUST BE CHANGED, it represents the size of the occtree cube*/
 #define CUBE_SIZE 800
-#define bb_max(a,b) (((a)>(b))?(a):(b))
-#define bb_max3(a,b,c) bb_max((bb_max(a,b)),c)
-
-#define bb_min(a,b) (((a)<(b))?(a):(b))
-#define bb_min3(a,b,c) bb_min(bb_min(a,b),c)
-
 
 namespace sofa::helper
 {
