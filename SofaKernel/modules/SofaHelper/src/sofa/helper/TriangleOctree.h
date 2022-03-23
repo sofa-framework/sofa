@@ -28,6 +28,12 @@
 #include <sofa/topology/Triangle.h>
 #include <set>
 
+// fwd declaration for depreciation
+namespace sofa::core::visual
+{
+    class VisualParams;
+}
+
 namespace sofa::helper
 {
 
@@ -35,6 +41,7 @@ namespace visual
 {
     class DrawTool;
 }
+
 class TriangleOctree;
 
 class SOFA_HELPER_API TriangleOctreeRoot
@@ -116,7 +123,10 @@ public:
             childVec[i] = nullptr;
     }
 
-    void draw (sofa::helper::visual::DrawTool* vparams);
+    void draw(sofa::helper::visual::DrawTool* drawtool);
+
+    SOFA_ATTRIBUTE_DISABLED("v22.06", "v22.12", "This function now takes directly a DrawTool instead of a VisualParams.")
+    void draw(const sofa::core::visual::VisualParams* vparams) = delete;
 
     /// Find the nearest triangle intersecting the given ray, or -1 of not found
     int trace (type::Vector3 origin, type::Vector3 direction, traceResult &result);
