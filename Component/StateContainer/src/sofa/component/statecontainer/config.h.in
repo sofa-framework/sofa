@@ -21,9 +21,17 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/container/config.h>
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-namespace sofa::component::container
+#ifdef SOFA_BUILD_SOFA_COMPONENT_STATECONTAINER
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_COMPONENT_STATECONTAINER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_COMPONENT_STATECONTAINER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+namespace sofa::component::statecontainer
 {
-    SOFA_COMPONENT_CONTAINER_API void init();
-} // namespace sofa::component::container
+	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+} // namespace sofa::component::statecontainer

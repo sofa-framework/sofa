@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/container/config.h>
+#include <sofa/component/statecontainer/config.h>
 
 #include <sofa/core/fwd.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -39,7 +39,7 @@
 #include <sofa/core/topology/TopologyData.h>
 #endif // SOFA_HAVE_NEW_TOPOLOGYCHANGES
 
-namespace sofa::component::container
+namespace sofa::component::statecontainer
 {
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
@@ -448,31 +448,31 @@ protected :
 
 };
 
-template<> SOFA_COMPONENT_CONTAINER_API
+template<> SOFA_COMPONENT_STATECONTAINER_API
 void MechanicalObject<defaulttype::Rigid3Types>::applyRotation (const type::Quat<SReal> q);
 
-template<> SOFA_COMPONENT_CONTAINER_API
+template<> SOFA_COMPONENT_STATECONTAINER_API
 void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorSameSize(core::VecId dest, const linearalgebra::BaseVector* src, unsigned int &offset );
 
 
-template<> SOFA_COMPONENT_CONTAINER_API
+template<> SOFA_COMPONENT_STATECONTAINER_API
 void MechanicalObject<defaulttype::Rigid3Types>::addFromBaseVectorDifferentSize(core::VecId dest, const linearalgebra::BaseVector* src, unsigned int &offset );
 
 
-template<> SOFA_COMPONENT_CONTAINER_API
+template<> SOFA_COMPONENT_STATECONTAINER_API
 void MechanicalObject<defaulttype::Rigid3Types>::draw(const core::visual::VisualParams* vparams);
 
 
 
 
 #if  !defined(SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP)
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Vec3Types>;
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Vec2Types>;
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Vec1Types>;
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Vec6Types>;
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Rigid3Types>;
-extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::Rigid2Types>;
+extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Vec6Types>;
+extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Rigid3Types>;
+extern template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<defaulttype::Rigid2Types>;
 
 #endif
 
-} // namespace sofa::component::container
+} // namespace sofa::component::statecontainer

@@ -31,7 +31,7 @@ include(Sofa.Component.SolidMechanics.FEM.Elastic.cmake)
 include(Sofa.Component.SolidMechanics.FEM.HyperElastic.cmake)
 include(Sofa.Component.SolidMechanics.TensorMass.cmake)
 include(Sofa.Component.Visual.cmake)
-include(Sofa.Component.Container.cmake)
+include(Sofa.Component.StateContainer.cmake)
 
 set(SOURCE_FILES
     ${SOFACOMPONENTCOMPATSRC_ROOT}/init.cpp

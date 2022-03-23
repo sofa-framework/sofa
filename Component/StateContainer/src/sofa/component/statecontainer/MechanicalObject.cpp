@@ -21,12 +21,12 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP
 
-#include <sofa/component/container/MechanicalObject.inl>
+#include <sofa/component/statecontainer/MechanicalObject.inl>
 #include <sofa/type/Quat.h>
 #include <sofa/core/ObjectFactory.h>
 
 
-namespace sofa::component::container
+namespace sofa::component::statecontainer
 {
 
 using namespace core::behavior;
@@ -44,12 +44,12 @@ int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
 
 // template specialization must be in the same namespace as original namespace for GCC 4.1
 // g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
-template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec3Types>;
-template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec2Types>;
-template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec1Types>;
-template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Vec6Types>;
-template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Rigid3Types>;
-template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<Rigid2Types>;
+template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<Vec3Types>;
+template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<Vec2Types>;
+template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<Vec1Types>;
+template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<Vec6Types>;
+template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<Rigid3Types>;
+template class SOFA_COMPONENT_STATECONTAINER_API MechanicalObject<Rigid2Types>;
 
 
 
@@ -248,4 +248,4 @@ void MechanicalObject<defaulttype::Rigid3Types>::draw(const core::visual::Visual
     vparams->drawTool()->restoreLastState();
 }
 
-} // namespace sofa::component::container
+} // namespace sofa::component::statecontainer

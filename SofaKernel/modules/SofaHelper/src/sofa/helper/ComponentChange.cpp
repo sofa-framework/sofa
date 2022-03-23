@@ -929,8 +929,8 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "BarycentricMapping", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mapping.Linear") },
     { "IdentityMapping", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mapping.Linear") },
     { "SubsetMapping", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mapping.Linear") },
-    { "MechanicalObject", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Container") },
-    { "MappedObject", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Container") },
+    { "MechanicalObject", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.StateContainer") },
+    { "MappedObject", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.StateContainer") },
     
     // SofaMiscForceField was deprecated in #2752 and ...
     { "MeshMatrixMass", CreatableMoved("v22.06", "SofaMiscForceField", "Sofa.Component.Mass") },

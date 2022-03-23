@@ -19,33 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/container/init.h>
+#define SOFA_COMPONENT_CONTAINER_MAPPEDOBJECT_CPP
 
-namespace sofa::component::container
+#include <sofa/component/statecontainer/MappedObject.inl>
+
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/VecTypes.h>
+
+namespace sofa::component::statecontainer
 {
-    
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
+using namespace defaulttype;
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
+int MappedObjectClass = core::RegisterObject("Mapped state vectors")
+        .add< MappedObject<Vec1Types> >()
+        .add< MappedObject<Vec3Types> >(true) // default template
+        .add< MappedObject<Vec2Types> >()
+        .add< MappedObject<Vec6Types> >()
+        .add< MappedObject<Rigid3Types> >()
+        .add< MappedObject<Rigid2Types> >()
+        ;
 
-void init()
-{
-    initExternalModule();
-}
+template class SOFA_COMPONENT_STATECONTAINER_API MappedObject<Vec1Types>;
+template class SOFA_COMPONENT_STATECONTAINER_API MappedObject<Vec2Types>;
+template class SOFA_COMPONENT_STATECONTAINER_API MappedObject<Vec3Types>;
+template class SOFA_COMPONENT_STATECONTAINER_API MappedObject<Vec6Types>;
+template class SOFA_COMPONENT_STATECONTAINER_API MappedObject<Rigid3Types>;
+template class SOFA_COMPONENT_STATECONTAINER_API MappedObject<Rigid2Types>;
 
-} // namespace sofa::component::container
+} // namespace sofa::component::statecontainer
