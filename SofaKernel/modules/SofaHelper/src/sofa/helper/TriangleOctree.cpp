@@ -456,7 +456,7 @@ int TriangleOctree::trace (type::Vector3 origin, type::Vector3 direction,traceRe
     double ty1 = (CUBE_SIZE - origin[1]) / direction[1];
     double tz0 = (-CUBE_SIZE - origin[2]) / direction[2];
     double tz1 = (CUBE_SIZE - origin[2]) / direction[2];
-    if (bb_max3 (tx0, ty0, tz0) < bb_min3 (tx1, ty1, tz1))
+    if (std::max({ tx0, ty0, tz0 }) < std::min({ tx1, ty1, tz1 }))
         return trace (origin, direction, tx0, ty0, tz0, tx1, ty1, tz1, a, b,origin1,direction1,result);
     return -1;
 
@@ -749,7 +749,7 @@ void TriangleOctree::traceAllStart(type::Vector3 origin, type::Vector3 direction
     double ty1 = (CUBE_SIZE - origin[1]) / direction[1];
     double tz0 = (-CUBE_SIZE - origin[2]) / direction[2];
     double tz1 = (CUBE_SIZE - origin[2]) / direction[2];
-    if (bb_max3 (tx0, ty0, tz0) < bb_min3 (tx1, ty1, tz1))
+    if (std::max({ tx0, ty0, tz0 }) < std::min({ tx1, ty1, tz1 }))
         traceAll (origin, direction, tx0, ty0, tz0, tx1, ty1, tz1, a, b,origin1,direction1,results);
 }
 
@@ -883,11 +883,11 @@ void TriangleOctreeRoot::calcTriangleAABB(int tId, double* bb, double& size)
     Coord p3 = (*octreePos)[t[2]];
     for (int i = 0; i < 3; i++)
     {
-        bb[i * 2] = bb_min3 (p1[i], p2[i], p3[i]);
-        bb[(i * 2) + 1] = bb_max3 (p1[i], p2[i], p3[i]);
+        bb[i * 2] = std::min({ p1[i], p2[i], p3[i] });
+        bb[(i * 2) + 1] = std::max({ p1[i], p2[i], p3[i] });
     }
-    size = bb_max3 (fabs (bb[1] - bb[0]), fabs (bb[3] - bb[2]),
-            fabs (bb[5] - bb[4]));
+    size = std::max({ fabs(bb[1] - bb[0]), fabs(bb[3] - bb[2]),
+            fabs(bb[5] - bb[4]) });
 }
 
 } // namespace sofa::helper
