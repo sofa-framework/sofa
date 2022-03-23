@@ -212,10 +212,10 @@ void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
     _materialsStiffnesses.resize(_indexedElements->size());
     const VecCoord& p = _initialPoints.getValue();
 
-    const Real& _p = f_poisson.getValue();
-    const Real& _1_p = 1 - _p;
-    const Real& Estrain = f_young.getValue() / ((1 + _p) * (1 - 2 * _p));
-    const Real& Estress = f_young.getValue() / (1 - _p * _p);
+    const Real _p = f_poisson.getValue();
+    const Real _1_p = 1 - _p;
+    const Real Estrain = f_young.getValue() / ((1 + _p) * (1 - 2 * _p));
+    const Real Estress = f_young.getValue() / (1 - _p * _p);
 
     for (unsigned i = 0; i < _indexedElements->size(); ++i)
     {
@@ -285,31 +285,28 @@ void TriangleFEMForceField<DataTypes>::accumulateForceSmall(VecCoord& f, const V
         Index b = (*_indexedElements)[elementIndex][1];
         Index c = (*_indexedElements)[elementIndex][2];
 
-        Coord deforme_a, deforme_b, deforme_c;
-        deforme_b = p[b] - p[a];
-        deforme_c = p[c] - p[a];
-        deforme_a = Coord(0, 0, 0);
+        const auto deforme_b = p[b] - p[a];
+        const auto deforme_c = p[c] - p[a];
 
         // displacements
-        Displacement Depl;
+        Displacement Depl(NOINIT);
         m_triangleUtils->computeDisplacementSmall(Depl, _rotatedInitialElements[elementIndex], deforme_b, deforme_c);
 
-        StrainDisplacement J;
+        StrainDisplacement J(NOINIT);
         m_triangleUtils->computeStrainDisplacementLocal(J, deforme_b, deforme_c);
         if (implicit)
             _strainDisplacements[elementIndex] = J;
 
         // compute strain
-        type::Vec<3, Real> strain;
+        type::Vec<3, Real> strain(NOINIT);
         m_triangleUtils->computeStrain(strain, J, Depl, true);
 
         // compute stress
-        type::Vec<3, Real> stress;
+        type::Vec<3, Real> stress(NOINIT);
         m_triangleUtils->computeStress(stress, _materialsStiffnesses[elementIndex], strain, true);
 
         // compute force on element
-        Displacement F;
-        F = J * stress;
+        const Displacement F = J * stress;
 
         f[a] += Coord(F[0], F[1], 0);
         f[b] += Coord(F[2], F[3], 0);
@@ -341,11 +338,11 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord& v, Real h, 
 
 
         // compute strain
-        type::Vec<3, Real> strain;
+        type::Vec<3, Real> strain(NOINIT);
         m_triangleUtils->computeStrain(strain, _strainDisplacements[i], dX, true);
 
         // compute stress
-        type::Vec<3, Real> stress;
+        type::Vec<3, Real> stress(NOINIT);
         m_triangleUtils->computeStress(stress, _materialsStiffnesses[i], strain, true);
 
         // compute force on element
@@ -383,7 +380,7 @@ void TriangleFEMForceField<DataTypes>::initLarge()
         // first vector on first edge
         // second vector in the plane of the two first edges
         // third vector orthogonal to first and second
-        Transformation R_0_1;
+        Transformation R_0_1(NOINIT);
         m_triangleUtils->computeRotationLarge(R_0_1, pA, pB, pC);
         _rotations[i].transpose(R_0_1);
 
@@ -533,7 +530,7 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
         Index b = (*it)[1];
         Index c = (*it)[2];
 
-        colorVector.push_back(sofa::type::RGBAColor(0, 1, 0, 1));
+        colorVector.push_back(sofa::type::RGBAColor::green());
         vertices.push_back(sofa::type::Vector3(x[a]));
         colorVector.push_back(sofa::type::RGBAColor(0, 0.5, 0.5, 1));
         vertices.push_back(sofa::type::Vector3(x[b]));

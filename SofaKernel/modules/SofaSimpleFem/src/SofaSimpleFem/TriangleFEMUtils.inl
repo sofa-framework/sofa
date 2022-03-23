@@ -249,9 +249,7 @@ constexpr void TriangleFEMUtils<DataTypes>::computeStrain(type::Vec<3, Real>& st
 {    
     if (fullMethod) // _anisotropicMaterial or SMALL case
     {
-        type::Mat<3, 6, Real> Jt;
-        Jt.transpose(J);
-        strain = Jt * D;
+        strain = J.multTranspose(D);
     }
     else
     {
