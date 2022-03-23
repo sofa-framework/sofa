@@ -45,12 +45,12 @@ Components/linearsolver/FEMBAR_ShewchukPCGLinearSolver.scn 1e-8 0 1
 Components/linearsolver/FEMBAR_SparseCholeskySolver.scn 100 1e-8 0 1
 Components/linearsolver/FEMBAR_SparseLDLSolver.scn 100 1e-8 0 1
 Components/linearsolver/FEMBAR_SparseLUSolver.scn 100 1e-8 0 1
-Components/linearsolver/preconditioner/FEMBAR_ShewchukPCGLinearSolver_BlockJacobiPreconditioner.scn 100 1e-8 0 1
-Components/linearsolver/preconditioner/FEMBAR_ShewchukPCGLinearSolver_JacobiPreconditioner.scn 100 1e-8 0 1
-Components/linearsolver/preconditioner/FEMBAR_ShewchukPCGLinearSolver_NoPreconditioner.scn 100 1e-8 0 1
-Components/linearsolver/preconditioner/FEMBAR_ShewchukPCGLinearSolver_PrecomputedWarpPreconditioner.scn 100 1e-8 0 1
-Components/linearsolver/preconditioner/FEMBAR_ShewchukPCGLinearSolver_SSORPreconditioner.scn 100 1e-8 0 1
-Components/linearsolver/preconditioner/FEMBAR_ShewchukPCGLinearSolver_WarpPreconditioner.scn 100 1e-8 0 1
+Components/linearsolver/precond/FEMBAR_ShewchukPCGLinearSolver_BlockJacobiPreconditioner.scn 100 1e-8 0 1
+Components/linearsolver/precond/FEMBAR_ShewchukPCGLinearSolver_JacobiPreconditioner.scn 100 1e-8 0 1
+Components/linearsolver/precond/FEMBAR_ShewchukPCGLinearSolver_NoPreconditioner.scn 100 1e-8 0 1
+Components/linearsolver/precond/FEMBAR_ShewchukPCGLinearSolver_PrecomputedWarpPreconditioner.scn 100 1e-8 0 1
+Components/linearsolver/precond/FEMBAR_ShewchukPCGLinearSolver_SSORPreconditioner.scn 100 1e-8 0 1
+Components/linearsolver/precond/FEMBAR_ShewchukPCGLinearSolver_WarpPreconditioner.scn 100 1e-8 0 1
 
 
 ### Benchmark scenes ###
