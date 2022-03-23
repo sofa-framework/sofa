@@ -23,7 +23,7 @@
 
 #include <sofa/component/solidmechanics/fem/hyperelastic/config.h>
 
-#include <sofa/component/solidmechanics/fem/hyperelastic/BaseMaterial.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/BaseMaterial.h>
 #include <sofa/type/Vec.h>
 
 namespace sofa::component::solidmechanics::fem::hyperelastic::material

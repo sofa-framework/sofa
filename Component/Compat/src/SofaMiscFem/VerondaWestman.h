@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/solidmechanics/fem/hyperelastic/VerondaWestman.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/VerondaWestman.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/hyperelastic/VerondaWestman.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/hyperelastic/material/VerondaWestman.h")
 
 namespace sofa::component::fem
 {
     template<class DataTypes>
-    using VerondaWestman = sofa::component::solidmechanics::fem::hyperelastic::VerondaWestman<DataTypes>;
+    using VerondaWestman = sofa::component::solidmechanics::fem::hyperelastic::material::VerondaWestman<DataTypes>;
 
 } // namespace sofa::component::fem

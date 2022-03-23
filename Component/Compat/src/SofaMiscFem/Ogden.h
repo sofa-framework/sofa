@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/solidmechanics/fem/hyperelastic/Ogden.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/Ogden.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/hyperelastic/Ogden.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/hyperelastic/material/Ogden.h")
 
 namespace sofa::component::fem
 {
     template<class DataTypes>
-    using Ogden = sofa::component::solidmechanics::fem::hyperelastic::Ogden<DataTypes>;
+    using Ogden = sofa::component::solidmechanics::fem::hyperelastic::material::Ogden<DataTypes>;
 
 } // namespace sofa::component::fem

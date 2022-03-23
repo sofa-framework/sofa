@@ -21,14 +21,15 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/solidmechanics/fem/hyperelastic/BoyceAndArruda.h>
-#include <sofa/component/solidmechanics/fem/hyperelastic/NeoHookean.h>
-#include <sofa/component/solidmechanics/fem/hyperelastic/MooneyRivlin.h>
-#include <sofa/component/solidmechanics/fem/hyperelastic/VerondaWestman.h>
-#include <sofa/component/solidmechanics/fem/hyperelastic/STVenantKirchhoff.h>
-#include <sofa/component/solidmechanics/fem/hyperelastic/Costa.h>
-#include <sofa/component/solidmechanics/fem/hyperelastic/Ogden.h>
 #include <sofa/component/solidmechanics/fem/hyperelastic/TetrahedronHyperelasticityFEMForceField.h>
+
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/BoyceAndArruda.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/NeoHookean.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/MooneyRivlin.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/VerondaWestman.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/STVenantKirchhoff.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/Costa.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/Ogden.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ForceField.inl>
@@ -63,6 +64,7 @@ template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::~
 
 template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataTypes>::init()
 {
+    using namespace material;
     msg_info() << "initializing TetrahedronHyperelasticityFEMForceField";
 
     this->Inherited::init();

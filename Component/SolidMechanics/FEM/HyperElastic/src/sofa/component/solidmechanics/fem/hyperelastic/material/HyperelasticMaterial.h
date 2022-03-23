@@ -35,7 +35,7 @@
 #include <Eigen/QR>
 #include <Eigen/Eigenvalues>
 
-namespace sofa::component::solidmechanics::fem::hyperelastic
+namespace sofa::component::solidmechanics::fem::hyperelastic::material
 {
 
 template<typename Real>
@@ -134,4 +134,4 @@ public:
   virtual ~StrainInformation() {}
 };
 
-} // namespace sofa::component::solidmechanics::fem::hyperelastic
+} // namespace sofa::component::solidmechanics::fem::hyperelastic::material

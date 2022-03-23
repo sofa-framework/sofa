@@ -21,22 +21,20 @@
 ******************************************************************************/
 #pragma once
 
+#include <sofa/component/solidmechanics/fem/hyperelastic/StandardTetrahedralFEMForceField.h>
 
-#include <sofa/component/solidmechanics/fem/hyperelastic/BoyceAndArruda.h>
-#include <sofa/component/solidmechanics/fem/hyperelastic/NeoHookean.h>
-#include <sofa/component/solidmechanics/fem/hyperelastic/MooneyRivlin.h>
-#include <sofa/component/solidmechanics/fem/hyperelastic/VerondaWestman.h>
-#include <sofa/component/solidmechanics/fem/hyperelastic/STVenantKirchhoff.h>
-#include <sofa/component/solidmechanics/fem/hyperelastic/HyperelasticMaterial.h>
-#include <sofa/component/solidmechanics/fem/hyperelastic/Costa.h>
-#include <sofa/component/solidmechanics/fem/hyperelastic/Ogden.h>
-#include "StandardTetrahedralFEMForceField.h"
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/BoyceAndArruda.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/NeoHookean.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/MooneyRivlin.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/VerondaWestman.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/STVenantKirchhoff.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/HyperelasticMaterial.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/Costa.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/Ogden.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/MechanicalParams.h>
-#include <fstream> // for reading the file
-#include <iostream> //for debugging
 #include <sofa/core/topology/TopologyData.inl>
 #include <algorithm>
 #include <iterator>
@@ -69,6 +67,7 @@ template <class DataTypes> StandardTetrahedralFEMForceField<DataTypes>::~Standar
 
 template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::init()
 {
+    using namespace material;
     this->Inherited::init();
     if (l_topology.empty())
     {

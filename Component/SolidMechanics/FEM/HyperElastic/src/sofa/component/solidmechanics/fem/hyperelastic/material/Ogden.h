@@ -24,7 +24,7 @@
 #include <sofa/component/solidmechanics/fem/hyperelastic/config.h>
 
 
-#include <sofa/component/solidmechanics/fem/hyperelastic/HyperelasticMaterial.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/HyperelasticMaterial.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 #include <sofa/type/MatSym.h>
@@ -33,7 +33,7 @@
 #include <Eigen/QR>
 #include <Eigen/Eigenvalues>
 
-namespace sofa::component::solidmechanics::fem::hyperelastic
+namespace sofa::component::solidmechanics::fem::hyperelastic::material
 {
 
 /** a Class that describe a generic hyperelastic material : exemple of Boyce and Arruda
@@ -233,4 +233,4 @@ class Ogden: public HyperelasticMaterial<DataTypes>
 
 };
 
-} // namespace sofa::component::solidmechanics::fem::hyperelastic
+} // namespace sofa::component::solidmechanics::fem::hyperelastic::material
