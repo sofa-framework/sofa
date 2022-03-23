@@ -408,22 +408,25 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord& f, const V
     for (it = _indexedElements->begin(); it != _indexedElements->end(); ++it, ++elementIndex)
     {
         // triangle vertex indices
-        Index a = (*_indexedElements)[elementIndex][0];
-        Index b = (*_indexedElements)[elementIndex][1];
-        Index c = (*_indexedElements)[elementIndex][2];
+        const Index a = (*_indexedElements)[elementIndex][0];
+        const Index b = (*_indexedElements)[elementIndex][1];
+        const Index c = (*_indexedElements)[elementIndex][2];
+
+        const Coord& pA = p[a];
+        const Coord& pB = p[b];
+        const Coord& pC = p[c];
 
         // Rotation matrix (deformed and displaced Triangle/world)
         Transformation R_2_0, R_0_2;
-        m_triangleUtils->computeRotationLarge(R_0_2, p[a], p[b], p[c]);
+        m_triangleUtils->computeRotationLarge(R_0_2, pA, pB, pC);
 
         // positions of the deformed points in the local frame
-        Coord deforme_a, deforme_b, deforme_c;
-        deforme_b = R_0_2 * (p[b] - p[a]);
-        deforme_c = R_0_2 * (p[c] - p[a]);
+        const Coord deforme_b = R_0_2 * (pB - pA);
+        const Coord deforme_c = R_0_2 * (pC - pA);
 
         // displacements in the local frame
         Displacement Depl;
-        m_triangleUtils->computeDisplacementLarge(Depl, R_0_2, _rotatedInitialElements[elementIndex], p[a], p[b], p[c]);
+        m_triangleUtils->computeDisplacementLarge(Depl, R_0_2, _rotatedInitialElements[elementIndex], pA, pB, pC);
 
         // Strain-displacement matrix
         StrainDisplacement J;
