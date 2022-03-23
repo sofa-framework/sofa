@@ -39,8 +39,8 @@ typedef Eigen::SparseMatrix<SReal>    SparseMatrixEigen;
 typedef Eigen::SparseVector<SReal>    SparseVectorEigen;
 typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1>       VectorEigen;
 
-SOFA_MATRIXMANIPULATOR_DEPRECATED()
-struct SOFA_LINEARALGEBRA_API LLineManipulator
+SOFA_LINEARALGEBRA_API
+struct SOFA_MATRIXMANIPULATOR_DEPRECATED() LLineManipulator
 {
     typedef std::pair<unsigned int, SReal> LineCombination;
     typedef type::vector< LineCombination > InternalData;
@@ -74,8 +74,8 @@ protected:
     InternalData _data;
 };
 
-SOFA_MATRIXMANIPULATOR_DEPRECATED()
-struct SOFA_LINEARALGEBRA_API LMatrixManipulator
+SOFA_LINEARALGEBRA_API
+struct SOFA_MATRIXMANIPULATOR_DEPRECATED() LMatrixManipulator
 {
     void init(const SparseMatrixEigen& L);
 
