@@ -247,17 +247,18 @@ constexpr void TriangleFEMUtils<DataTypes>::computeStrainDisplacementLocal(Strai
 template<class DataTypes>
 constexpr void TriangleFEMUtils<DataTypes>::computeStrain(type::Vec<3, Real>& strain, const StrainDisplacement& J, const Displacement& D, bool fullMethod) const
 {    
-    type::Mat<3, 6, Real> Jt;
-    Jt.transpose(J);
     if (fullMethod) // _anisotropicMaterial or SMALL case
     {
+        type::Mat<3, 6, Real> Jt;
+        Jt.transpose(J);
         strain = Jt * D;
     }
     else
-    {        
-        strain[0] = Jt[0][0] * D[0] + Jt[0][2] * D[2];
-        strain[1] = Jt[1][1] * D[1] + Jt[1][3] * D[3] + Jt[1][5] * D[5];
-        strain[2] = Jt[2][0] * D[0] + Jt[2][1] * D[1] + Jt[2][2] * D[2] + Jt[2][3] * D[3] + Jt[2][4] * D[4];
+    {
+        // Use directly J to avoid computing Jt
+        strain[0] = J[0][0] * D[0] + J[2][0] * D[2];
+        strain[1] = J[1][1] * D[1] + J[3][1] * D[3] + J[5][1] * D[5];
+        strain[2] = J[0][2] * D[0] + J[1][2] * D[1] + J[2][2] * D[2] + J[3][2] * D[3] + J[4][2] * D[4];
     }
 }
 
