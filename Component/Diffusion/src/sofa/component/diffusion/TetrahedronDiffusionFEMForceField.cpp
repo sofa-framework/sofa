@@ -19,24 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_CPP
 
-#include <sofa/core/config.h>
+#include <sofa/component/diffusion/TetrahedronDiffusionFEMForceField.inl>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseMechanics/MassType.h>
-#include <type_traits>
 
-namespace sofa::component::mass
+namespace sofa::component::diffusion
 {
 
-/*
- * Mass components templated on VecTypes will use Real (scalar) type for their MassType.
- */
-template<class TCoord, class TDeriv, class TReal>
-struct MassType<defaulttype::StdVectorTypes< TCoord, TDeriv, TReal> >
-{
-    using type = TReal;
-};
+using namespace sofa::defaulttype;
 
 
-} // namespace sofa::component::mass
+// Register in the Factory
+int TetrahedronDiffusionFEMForceFieldClass = core::RegisterObject("Isotropic or anisotropic diffusion on Tetrahedral Meshes")
+  .add< TetrahedronDiffusionFEMForceField<Vec1Types> >()
+  .add< TetrahedronDiffusionFEMForceField<Vec2Types> >(true)
+  .add< TetrahedronDiffusionFEMForceField<Vec3Types> >()
+;
+
+template class SOFA_COMPONENT_DIFFUSION_API TetrahedronDiffusionFEMForceField<Vec1Types>;
+template class SOFA_COMPONENT_DIFFUSION_API TetrahedronDiffusionFEMForceField<Vec2Types>;
+template class SOFA_COMPONENT_DIFFUSION_API TetrahedronDiffusionFEMForceField<Vec3Types>;
+
+} // namespace sofa::component::diffusion

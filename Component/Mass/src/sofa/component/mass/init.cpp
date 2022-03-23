@@ -19,31 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_CPP
+#include <sofa/component/mass/init.h>
 
-#include <SofaSimpleFem/TetrahedronDiffusionFEMForceField.inl>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
-
-namespace sofa::component::forcefield
+namespace sofa::component::mass
 {
+    
+extern "C" {
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+}
 
-using namespace sofa::defaulttype;
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
+const char* getModuleName()
+{
+    return MODULE_NAME;
+}
 
-// Register in the Factory
-int TetrahedronDiffusionFEMForceFieldClass = core::RegisterObject("Isotropic or anisotropic diffusion on Tetrahedral Meshes")
-  .add< TetrahedronDiffusionFEMForceField<Vec1Types> >()
-  .add< TetrahedronDiffusionFEMForceField<Vec2Types> >(true)
-  .add< TetrahedronDiffusionFEMForceField<Vec3Types> >()
+void init()
+{
+    initExternalModule();
+}
 
-;
-
-  template class SOFA_SOFASIMPLEFEM_API TetrahedronDiffusionFEMForceField<Vec1Types>;
-  template class SOFA_SOFASIMPLEFEM_API TetrahedronDiffusionFEMForceField<Vec2Types>;
-  template class SOFA_SOFASIMPLEFEM_API TetrahedronDiffusionFEMForceField<Vec3Types>;
-
-
-
-
-} //namespace sofa::component::forcefield
+} // namespace sofa::component::mass

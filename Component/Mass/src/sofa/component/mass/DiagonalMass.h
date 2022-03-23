@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaBaseMechanics/config.h>
+#include <sofa/component/mass/config.h>
 
 #include <sofa/type/vector.h>
 #include <sofa/type/Vec.h>
@@ -31,8 +31,8 @@
 #include <sofa/core/topology/TopologyData.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#include <SofaBaseMechanics/VecMassType.h>
-#include <SofaBaseMechanics/RigidMassType.h>
+#include <sofa/component/mass/VecMassType.h>
+#include <sofa/component/mass/RigidMassType.h>
 
 #include <type_traits>
 
@@ -391,11 +391,11 @@ type::Vector6 DiagonalMass<defaulttype::Rigid3Types>::getMomentum ( const core::
 
 
 #if  !defined(SOFA_COMPONENT_MASS_DIAGONALMASS_CPP)
-extern template class SOFA_SOFABASEMECHANICS_API DiagonalMass<defaulttype::Vec3Types>;
-extern template class SOFA_SOFABASEMECHANICS_API DiagonalMass<defaulttype::Vec2Types>;
-extern template class SOFA_SOFABASEMECHANICS_API DiagonalMass<defaulttype::Vec1Types>;
-extern template class SOFA_SOFABASEMECHANICS_API DiagonalMass<defaulttype::Rigid3Types>;
-extern template class SOFA_SOFABASEMECHANICS_API DiagonalMass<defaulttype::Rigid2Types>;
+extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Rigid3Types>;
+extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Rigid2Types>;
 
 #endif
 

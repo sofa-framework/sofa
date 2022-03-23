@@ -26,16 +26,24 @@
 namespace sofa::core
 {
 
-std::string ComponentNameHelper::resolveName(const std::string& type, const std::string& name)
+std::string ComponentNameHelper::resolveName(const std::string& type, const std::string& name, Convention convention)
 {
     if (name.empty())
     {
-        const std::string radix = helper::NameDecoder::shortName(type);
-        std::ostringstream oss;
-        oss << radix << m_instanceCounter[radix]++;
-        return oss.str();
+        return resolveName(type, convention);
     }
     return name;
+}
+
+std::string ComponentNameHelper::resolveName(const std::string& type, Convention convention)
+{
+    std::string radix = type;
+    if (convention == Convention::xml)
+    {
+        return radix + std::to_string((m_instanceCounter[radix]++) + 1);
+    }
+
+    return radix;
 }
 
 }//namespace sofa::core

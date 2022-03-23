@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MASS_MESHMATRIXMASS_CPP
 
-#include <SofaMiscForceField/MeshMatrixMass.inl>
+#include <sofa/component/mass/MeshMatrixMass.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::mass
@@ -79,9 +79,9 @@ int MeshMatrixMassClass = core::RegisterObject("Define a specific mass for each 
 
         ;
 
-template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<Vec3Types>;
-template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<Vec2Types>;
-template class SOFA_SOFAMISCFORCEFIELD_API MeshMatrixMass<Vec1Types>;
+template class SOFA_COMPONENT_MASS_API MeshMatrixMass<Vec3Types>;
+template class SOFA_COMPONENT_MASS_API MeshMatrixMass<Vec2Types>;
+template class SOFA_COMPONENT_MASS_API MeshMatrixMass<Vec1Types>;
 
 
 

@@ -48,6 +48,8 @@ public:
         return l_mechanicalStates.getValue();
     }
 
+    void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
+
 protected:
 
     StateAccessor()
@@ -62,5 +64,37 @@ protected:
     MultiLink < StateAccessor, BaseMechanicalState, BaseLink::FLAG_DUPLICATE > l_mechanicalStates;
 
 };
+
+
+inline void StateAccessor::computeBBox(const core::ExecParams* params, bool onlyVisible)
+{
+    if( !onlyVisible ) return;
+
+    static constexpr SReal max_real = std::numeric_limits<SReal>::max();
+    static constexpr SReal min_real = std::numeric_limits<SReal>::lowest();
+    SReal maxBBox[3] { min_real, min_real, min_real };
+    SReal minBBox[3] { max_real, max_real, max_real };
+
+    bool anyMState = false;
+
+    for (const auto mstate : l_mechanicalStates)
+    {
+        if (mstate)
+        {
+            const auto& bbox = mstate->f_bbox.getValue();
+            for (unsigned int i = 0; i < 3; ++i)
+            {
+                maxBBox[i] = std::max(maxBBox[i], bbox.maxBBox()[i]);
+                minBBox[i] = std::min(minBBox[i], bbox.minBBox()[i]);
+            }
+            anyMState = true;
+        }
+    }
+
+    if (anyMState)
+    {
+        this->f_bbox.setValue(sofa::type::TBoundingBox(minBBox,maxBBox));
+    }
+}
 
 } // namespace sofa::core::behavior

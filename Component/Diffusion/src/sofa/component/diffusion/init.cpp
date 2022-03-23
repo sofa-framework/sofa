@@ -19,54 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaBaseMechanics/config.h>
-#include <sofa/linearalgebra/BaseMatrix.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/component/diffusion/init.h>
 
-namespace sofa::component::mass
+namespace sofa::component::diffusion
 {
+    
+extern "C" {
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+}
 
-/**
- * Helper struct to add entries in a BaseMatrix, based on the type of Mass (MassType).
- *
- * This class is specialized for Rigid types.
- *
- * The default implementation assumes it deals with Vec types: Deriv is a Vec type, and
- * MassType is a floating point.
- */
-template<class Deriv, class MassType>
-struct AddMToMatrixFunctor
+void initExternalModule()
 {
-    static_assert(std::is_floating_point_v<MassType>, "Default implementation of AddMToMatrixFunctor assumes MassType is a floating point");
-
-    void operator()(linearalgebra::BaseMatrix * mat, MassType mass, int pos, MassType fact)
+    static bool first = true;
+    if (first)
     {
-        this->operator()(mat, mass, pos, pos, fact);
+        first = false;
     }
+}
 
-    ///Method to add non-diagonal terms
-    void operator()(linearalgebra::BaseMatrix * mat, MassType mass, int posRow, int posColumn, MassType fact)
-    {
-        const auto m = mass * fact;
-        for (unsigned int i = 0; i < Deriv::total_size; ++i)
-            mat->add(posRow + i, posColumn + i, m);
-    }
-};
-
-/**
- * Specialization for Rigid types
- */
-template<sofa::Size N, typename Real>
-struct AddMToMatrixFunctor< defaulttype::RigidDeriv<N,Real>, defaulttype::RigidMass<N,Real> >
+const char* getModuleName()
 {
-    void operator()(linearalgebra::BaseMatrix * mat, const defaulttype::RigidMass<N,Real>& mass, int pos, Real fact)
-    {
-        const auto m = mass.mass * fact;
-        for (sofa::Size i = 0; i < N; ++i)
-            mat->add(pos + i, pos + i, m);
-        mat->add(pos + N, pos + N, mass.inertiaMassMatrix * fact);
-    }
-};
+    return MODULE_NAME;
+}
 
-} // namespace sofa::component::mass
+void init()
+{
+    initExternalModule();
+}
+
+} // namespace sofa::component::diffusion
