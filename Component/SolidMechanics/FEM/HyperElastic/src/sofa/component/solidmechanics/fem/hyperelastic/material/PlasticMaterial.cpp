@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/solidmechanics/fem/hyperelastic/PlasticMaterial.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/PlasticMaterial.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <Eigen/SVD>

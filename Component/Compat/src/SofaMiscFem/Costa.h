@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/solidmechanics/fem/hyperelastic/Costa.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/Costa.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/hyperelastic/Costa.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/hyperelastic/material/Costa.h")
 
 namespace sofa::component::fem
 {
     template<class DataTypes>
-    using Costa = sofa::component::solidmechanics::fem::hyperelastic::Costa<DataTypes>;
+    using Costa = sofa::component::solidmechanics::fem::hyperelastic::material::Costa<DataTypes>;
 
 } // namespace sofa::component::fem

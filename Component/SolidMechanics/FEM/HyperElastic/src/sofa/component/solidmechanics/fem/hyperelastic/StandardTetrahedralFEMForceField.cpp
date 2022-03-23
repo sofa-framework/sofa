@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_CPP
 
-#include "StandardTetrahedralFEMForceField.inl"
+#include <sofa/component/solidmechanics/fem/hyperelastic/StandardTetrahedralFEMForceField.inl>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>

@@ -24,14 +24,13 @@
 
 #include <sofa/component/solidmechanics/fem/hyperelastic/config.h>
 
-#include <sofa/component/solidmechanics/fem/hyperelastic/HyperelasticMaterial.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/HyperelasticMaterial.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 #include <sofa/type/MatSym.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/TopologyData.h>
-#include <string>
 #include <map>
 
 namespace sofa::component::solidmechanics::fem::hyperelastic
@@ -85,7 +84,7 @@ class TetrahedronHyperelasticityFEMForceField : public core::behavior::ForceFiel
 
 public :
 	
-    MaterialParameters<DataTypes> globalParameters;
+    material::MaterialParameters<DataTypes> globalParameters;
 
 	
 	class MatrixList
@@ -96,7 +95,7 @@ public :
 
 
     /// data structure stored for each tetrahedron
-	class TetrahedronRestInformation : public StrainInformation<DataTypes>
+	class TetrahedronRestInformation : public material::StrainInformation<DataTypes>
     {
     public:
         /// shape vector at the rest configuration
@@ -198,7 +197,7 @@ public:
 
     /// the array that describes the complete material energy and its derivatives
 
-    HyperelasticMaterial<DataTypes> *m_myMaterial;
+    material::HyperelasticMaterial<DataTypes> *m_myMaterial;
 
     void testDerivatives();
 

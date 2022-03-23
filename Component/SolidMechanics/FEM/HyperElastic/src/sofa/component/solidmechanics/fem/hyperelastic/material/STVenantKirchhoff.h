@@ -23,13 +23,13 @@
 
 #include <sofa/component/solidmechanics/fem/hyperelastic/config.h>
 
-#include <sofa/component/solidmechanics/fem/hyperelastic/HyperelasticMaterial.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/HyperelasticMaterial.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 #include <string>
 
 
-namespace sofa::component::solidmechanics::fem::hyperelastic
+namespace sofa::component::solidmechanics::fem::hyperelastic::material
 {
 
 /** a Class that describe a generic hyperelastic material : exemple of Boyce and Arruda
@@ -107,4 +107,4 @@ public:
 };
 
 
-} // namespace sofa::component::solidmechanics::fem::hyperelastic
+} // namespace sofa::component::solidmechanics::fem::hyperelastic::material

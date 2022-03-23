@@ -24,16 +24,14 @@
 #include <sofa/component/solidmechanics/fem/hyperelastic/config.h>
 
 
-#include <sofa/component/solidmechanics/fem/hyperelastic/HyperelasticMaterial.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/HyperelasticMaterial.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 #include <sofa/type/MatSym.h>
+#include <sofa/type/trait/Rebind.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/TopologyData.h>
-#include <string>
-#include <map>
-#include <sofa/type/trait/Rebind.h>
 
 
 namespace sofa::component::solidmechanics::fem::hyperelastic
@@ -77,13 +75,13 @@ class StandardTetrahedralFEMForceField: public core::behavior::ForceField<DataTy
 
 public :
 	
-    MaterialParameters<DataTypes> globalParameters;
+    material::MaterialParameters<DataTypes> globalParameters;
 
 	
 	
 
     /// data structure stored for each tetrahedron
-	class TetrahedronRestInformation : public StrainInformation<DataTypes>
+	class TetrahedronRestInformation : public material::StrainInformation<DataTypes>
     {
     public:
 
@@ -202,14 +200,14 @@ public:
   protected:
     /// the array that describes the complete material energy and its derivatives
 
-	HyperelasticMaterial<DataTypes> *myMaterial;
+    material::HyperelasticMaterial<DataTypes> *myMaterial;
 
     core::topology::TetrahedronData<tetrahedronRestInfoVector> tetrahedronInfo; ///< Internal tetrahedron data
     core::topology::EdgeData<edgeInformationVector> edgeInfo; ///< Internal edge data
 
 
-        void testDerivatives();
-        void saveMesh( const char *filename );
+    void testDerivatives();
+    void saveMesh( const char *filename );
 	
 	VecCoord myposition;
 };

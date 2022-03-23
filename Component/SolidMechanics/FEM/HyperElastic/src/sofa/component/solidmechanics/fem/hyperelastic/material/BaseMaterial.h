@@ -26,7 +26,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/type/Vec.h>
 
-namespace sofa::component::solidmechanics::fem::hyperelastic
+namespace sofa::component::solidmechanics::fem::hyperelastic::material
 {
 
 /**
@@ -64,4 +64,4 @@ private:
 	
 };
 
-} // namespace sofa::component::solidmechanics::fem::hyperelastic
+} // namespace sofa::component::solidmechanics::fem::hyperelastic::material

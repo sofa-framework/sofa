@@ -23,14 +23,13 @@
 
 #include <sofa/component/solidmechanics/fem/hyperelastic/config.h>
 
-
-#include <sofa/component/solidmechanics/fem/hyperelastic/HyperelasticMaterial.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/material/HyperelasticMaterial.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Mat.h>
 #include <string>
 
 
-namespace sofa::component::solidmechanics::fem::hyperelastic
+namespace sofa::component::solidmechanics::fem::hyperelastic::material
 {
 
 /** a Class that describe a generic hyperelastic material : exemple of Boyce and Arruda
@@ -43,28 +42,26 @@ the determinant of the deformation gradient J and the right Cauchy Green deforma
 
 
 template<class DataTypes>
-class MooneyRivlin : public HyperelasticMaterial<DataTypes>{
+class VerondaWestman : public HyperelasticMaterial<DataTypes>{
 
   typedef typename DataTypes::Coord::value_type Real;
   typedef type::Mat<3,3,Real> Matrix3;
   typedef type::Mat<6,6,Real> Matrix6;
   typedef type::MatSym<3,Real> MatrixSym;
- 
-  virtual Real getStrainEnergy(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param) {
-	  MatrixSym inversematrix;
+
+	virtual Real getStrainEnergy(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param) {
 		MatrixSym C=sinfo->deformationTensor;
-		invertMatrix(inversematrix,C);
 		Real I1=sinfo->trC;
 		Real I1square=(Real)(C[0]*C[0] + C[2]*C[2]+ C[5]*C[5]+2*(C[1]*C[1] + C[3]*C[3] + C[4]*C[4]));
 		Real I2=(Real)((pow(I1,(Real)2)- I1square)/2);
 		Real c1=param.parameterArray[0];
 		Real c2=param.parameterArray[1];
 		Real k0=param.parameterArray[2];
-		return c1*(I1*pow(sinfo->J,(-2/3))-3)+c2*(I2*pow(sinfo->J,(-4/3)))+k0*log(sinfo->J)*log(sinfo->J)/2;
+		return c1*(exp(c2*(pow(sinfo->J,(Real)(-2.0/3.0))*I1-3))-1)-c1*c2*(pow(sinfo->J,(Real)(-4.0/3.0))*I2-3)/2+k0*log(sinfo->J)*log(sinfo->J)/2;
 
-  }
+	}
 
-	 virtual void deriveSPKTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,MatrixSym &SPKTensorGeneral){
+	  virtual void deriveSPKTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,MatrixSym &SPKTensorGeneral){
 		MatrixSym inversematrix;
 		MatrixSym C=sinfo->deformationTensor;
 		invertMatrix(inversematrix,C);
@@ -76,7 +73,8 @@ class MooneyRivlin : public HyperelasticMaterial<DataTypes>{
 		Real k0=param.parameterArray[2];
 		MatrixSym ID;
 		ID.identity();
-		SPKTensorGeneral=(-1*inversematrix*I1/3+ID)*(2*c1*pow(sinfo->J,(Real)(-2.0/3.0)))+(-1*inversematrix*2*I2/3+ID*I1-C)*(2*c2*pow(sinfo->J,(Real)(-4.0/3.0)))+inversematrix*k0*log(sinfo->J);
+		SPKTensorGeneral=(ID-inversematrix*I1/3)*2*c1*c2*pow(sinfo->J,(Real)(-2.0/3.0))*exp(c2*(pow(sinfo->J,(Real)(-2.0/3.0))*I1-3))
+			+(ID*I1-C-inversematrix*I2*2/3)*(-c1*c2*pow(sinfo->J,(Real)(-4.0/3.0)))+inversematrix*k0*log(sinfo->J);
 	}
 	
 
@@ -105,12 +103,13 @@ class MooneyRivlin : public HyperelasticMaterial<DataTypes>{
 		//trH
 		Real trH=inputTensor[0]+inputTensor[2]+inputTensor[5];
 
-		outputTensor=((ID-inversematrix*I1/(Real)3.0)*(-_trHC)/(Real)3.0+Firstmatrix*I1/(Real)3.0-inversematrix*trH/(Real)3.0)*(Real)2.0*c1*pow(sinfo->J,(Real)(-2.0/3.0))
-			+((inversematrix*(Real)(-2.0)*I2/(Real)3.0+ID*I1-C)*(Real)(-2.0)*_trHC/(Real)3.0+Firstmatrix*(Real)2.0*I2/(Real)3.0-inversematrix*(Real)2.0*(I1*trH-trHC)/(Real)3.0+ID*trH-inputTensor)*(Real)2.0*c2*pow(sinfo->J,(Real)(-4.0/3.0))
-			+inversematrix*_trHC*k0/(Real)2.0-Firstmatrix*k0*log(sinfo->J);
+		outputTensor=(inversematrix*I1*_trHC/(Real)9.0-inversematrix*trH/(Real)3.0+Firstmatrix/(Real)3.0*I1-ID*_trHC/(Real)3.0)*(Real)2.0*c1*c2*pow(sinfo->J,(Real)(-2.0/3.0))*exp(c2*(I1*pow(sinfo->J,(Real)(-2.0/3.0))-(Real)3.0))
+			+(ID-inversematrix*I1/(Real)3.0)*exp(c2*(I1*pow(sinfo->J,(Real)(-2.0/3.0))-(Real)3))*(Real)2*c1*c2*c2*pow(sinfo->J,(Real)(-4.0/3.0))*(-I1*_trHC/(Real)3.0+trH)
+			+(inversematrix*(Real)(-4.0)*_trHC*I2/9.0+inversematrix*(Real)2.0*I1*trH/3.0-inversematrix*(Real)2.0*trHC/3.0-Firstmatrix*(Real)2.0*I2/3.0+ID*_trHC*I1*(Real)(2.0/3.0)-ID*trH-C*_trHC*(Real)(2.0/3.0)+inputTensor)*c1*c2*pow(sinfo->J,(Real)(-4.0/3.0))
+			+Firstmatrix*(Real)(-k0)*log(sinfo->J)+inversematrix*k0*_trHC/(Real)2.0; 
 	
 	}
-	virtual void ElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param, Matrix6 &outputTensor)  {
+	virtual void ElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,Matrix6 &outputTensor)  {
 		MatrixSym _C;
 		MatrixSym ID;
 		ID.identity();
@@ -185,8 +184,8 @@ class MooneyRivlin : public HyperelasticMaterial<DataTypes>{
 		Real c1=param.parameterArray[0];
 		Real c2=param.parameterArray[1];
 		Real k0=param.parameterArray[2];
-	/*	
-		// C-1:H
+
+	/*	// C-1:H
 		Real _trHC=inputTensor[0]*inversematrix[0]+inputTensor[2]*inversematrix[2]+inputTensor[5]*inversematrix[5]
 		+2*inputTensor[1]*inversematrix[1]+2*inputTensor[3]*inversematrix[3]+2*inputTensor[4]*inversematrix[4];
 		MatrixSym Firstmatrix;
@@ -198,13 +197,18 @@ class MooneyRivlin : public HyperelasticMaterial<DataTypes>{
 
 		//trH
 		Real trH=inputTensor[0]+inputTensor[2]+inputTensor[5];*/
+		
+		outputTensor=((trC_HC_*I1/(Real)9.0-trC_HID/(Real)3.0+C_H_C/(Real)3.0*I1-trID_HC_/(Real)3.0)*(Real)2.0*c1*c2*pow(sinfo->J,(Real)(-2.0/3.0))*exp(c2*(I1*pow(sinfo->J,(Real)(-2.0/3.0))-(Real)3.0))
+			+(trC_HC_*I1*I1/(Real)9.0-trC_HID*I1/(Real)3.0-trID_HC_*I1/(Real)3.0+trIDHID)*(Real)2*c1*c2*c2*pow(sinfo->J,(Real)(-4.0/3.0))*exp(c2*(I1*pow(sinfo->J,(Real)(-2.0/3.0))-(Real)3))
+			+(trC_HC_*(-1.0)*(Real)4.0*I2/(Real)9.0+trC_HID*(Real)2.0*I1/(Real)3.0-trC_HC*(Real)2.0/(Real)3.0-C_H_C*(Real)2.0*I2/(Real)3.0+trID_HC_*I1*(Real)(2.0/3.0)-trIDHID-trCH_C*(Real)(2.0/3.0)+IDHID)*c1*c2*pow(sinfo->J,(Real)(-4.0/3.0))
+			-C_H_C*k0*log(sinfo->J)+trC_HC_*k0/(Real)2.0)*2.0; 
+	
+	
 
-		outputTensor=(((trC_HC_*I1/(Real)3.0-trID_HC_)/(Real)3.0+C_H_C*I1/(Real)3.0-trC_HID/(Real)3.0)*(Real)2.0*c1*pow(sinfo->J,(Real)(-2.0/3.0))
-			+((trC_HC_*(Real)(-2.0)*I2/(Real)3.0+trID_HC_*I1-trCH_C)*(-2.0)/(Real)3.0+C_H_C*(Real)2.0*I2/(Real)3.0-(trC_HID*I1-trC_HC)*(Real)2.0/(Real)3.0+trIDHID-IDHID)*(Real)2.0*c2*pow(sinfo->J,(Real)(-4.0/3.0))
-			+trC_HC_*k0/(Real)2.0-C_H_C*k0*log(sinfo->J))*2.0;
-
+		
 	}
 
 };
 
-} // namespace sofa::component::solidmechanics::fem::hyperelastic
+
+} // namespace sofa::component::solidmechanics::fem::hyperelastic::material
