@@ -28,9 +28,6 @@
 #include <sofa/topology/Triangle.h>
 #include <set>
 
-/*THIS STATIC CUBE SIZE MUST BE CHANGED, it represents the size of the occtree cube*/
-#define CUBE_SIZE 800
-
 namespace sofa::helper
 {
 
@@ -43,6 +40,9 @@ class TriangleOctree;
 class SOFA_HELPER_API TriangleOctreeRoot
 {
 public:
+    /*THIS STATIC CUBE SIZE MUST BE CHANGED, it represents the size of the occtree cube*/
+    static constexpr int CUBE_SIZE = 800;
+
     typedef sofa::topology::Triangle Tri;
     typedef sofa::type::vector<sofa::topology::Triangle> SeqTriangles;
     typedef sofa::type::Vector3 Coord;
@@ -77,6 +77,8 @@ protected:
 class SOFA_HELPER_API TriangleOctree
 {
 public:
+    static constexpr int CUBE_SIZE = TriangleOctreeRoot::CUBE_SIZE;
+
     class traceResult
     {
     public:
