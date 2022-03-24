@@ -14,27 +14,15 @@ set(SOURCE_FILES
     ${SOFAMISCENGINE_SRC}/initSofaMiscEngine.cpp
     )
 
-list(APPEND HEADER_FILES
-    ${SOFAMISCENGINE_SRC}/DisplacementMatrixEngine.h
-    ${SOFAMISCENGINE_SRC}/DisplacementMatrixEngine.inl
-    ${SOFAMISCENGINE_SRC}/Distances.h
-    ${SOFAMISCENGINE_SRC}/Distances.inl
-    ${SOFAMISCENGINE_SRC}/ProjectiveTransformEngine.h
-    ${SOFAMISCENGINE_SRC}/ProjectiveTransformEngine.inl
-    )
-list(APPEND SOURCE_FILES
-    ${SOFAMISCENGINE_SRC}/DisplacementMatrixEngine.cpp
-    ${SOFAMISCENGINE_SRC}/Distances.cpp
-    ${SOFAMISCENGINE_SRC}/ProjectiveTransformEngine.cpp
-    )
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaNonUniformFem)
 
-if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    # Silence attribute warnings (for example, ignored already defined external template)
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
-endif()
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.Engine.Geometry and Sofa.Component.Engine.Transform instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.Engine.Geometry REQUIRED)
+sofa_find_package(Sofa.Component.Engine.Transform REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Engine.Geometry)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Engine.Transform)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
@@ -44,4 +32,3 @@ sofa_create_package_with_targets(
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
     RELOCATABLE "plugins"
     )
-

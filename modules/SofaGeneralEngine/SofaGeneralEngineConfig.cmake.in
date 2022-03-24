@@ -3,15 +3,25 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
+find_package(Sofa.GL.Component.Engine QUIET)
+
 get_property(@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE SET)
 if(NOT @PROJECT_NAME@_SENT_DEPRECATION_MESSAGE)
-    message(WARNING "@PROJECT_NAME@ module is being deprecated. It will be removed at v23.06. You may use Sofa.GL.Component.Engine instead.")
+    message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.Engine.Data, Sofa.Component.Engine.Geometry, 
+        Sofa.Component.Engine.Math, Sofa.Component.Engine.Mesh, Sofa.Component.Engine.Rigid, Sofa.Component.Engine.ROI and Sofa.Component.Engine.Transform instead.")
+    if(Sofa.GL.Component.Engine_FOUND)
+        message(WARNING "Moreover, use Sofa.GL.Component.Engine if you need TextureInterpolation.")
+    endif()
 endif()
 set_property(GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE TRUE)
 
-find_package(SofaMeshCollision QUIET REQUIRED)
-find_package(SofaGeneralMeshCollision QUIET REQUIRED)
-find_package(Sofa.GL.Component.Engine QUIET REQUIRED)
+sofa_find_package(Sofa.Component.Engine.Data REQUIRED QUIET)
+sofa_find_package(Sofa.Component.Engine.Geometry REQUIRED QUIET)
+sofa_find_package(Sofa.Component.Engine.Math REQUIRED QUIET)
+sofa_find_package(Sofa.Component.Engine.Mesh REQUIRED QUIET)
+sofa_find_package(Sofa.Component.Engine.Rigid REQUIRED QUIET)
+sofa_find_package(Sofa.Component.Engine.ROI REQUIRED QUIET)
+sofa_find_package(Sofa.Component.Engine.Transform REQUIRED QUIET)
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")

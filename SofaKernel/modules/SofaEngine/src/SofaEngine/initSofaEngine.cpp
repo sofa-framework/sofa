@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaEngine/initSofaEngine.h>
 
+#include <sofa/helper/system/PluginManager.h>
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
@@ -33,6 +34,10 @@ void initSofaEngine()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaEngine") << "SofaEngine is deprecated. It will be removed at v23.06. Use Sofa.Component.Engine.ROI instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Engine.ROI");
+
         first = false;
     }
 }

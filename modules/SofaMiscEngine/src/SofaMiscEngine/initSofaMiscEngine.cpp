@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <SofaMiscEngine/initSofaMiscEngine.h>
 
+#include <sofa/helper/system/PluginManager.h>
+
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
@@ -32,6 +34,11 @@ void initSofaMiscEngine()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaMiscEngine") << "SofaMiscEngine is deprecated. It will be removed at v23.06. Use Sofa.Component.Engine.Geometry and Sofa.Component.Engine.Transform instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Engine.Geometry");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Engine.Transform");
+
         first = false;
     }
 }

@@ -34,8 +34,19 @@ void initSofaGeneralEngine()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaEngine") << "SofaGeneralEngine is deprecated. It will be removed at v23.06. Use Sofa.Component.Engine.Data, Sofa.Component.Engine.Geometry, 
+        // Sofa.Component.Engine.Math, Sofa.Component.Engine.Mesh, Sofa.Component.Engine.Rigid, Sofa.Component.Engine.ROI and Sofa.Component.Engine.Transform instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Engine.Data");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Engine.Geometry");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Engine.Math");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Engine.Mesh");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Engine.Rigid");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Engine.ROI");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Engine.Transform");
+
 #if SOFAGENERALENGINE_HAVE_SOFA_GL == 1
-        // msg_deprecated("SofaGeneralEngine") << "SofaGeneralEngine is deprecated;. It will be removed at v23.06. Use Sofa.GL.Component.Engine if you need TextureInterpolation.";
+        // msg_deprecated("SofaGeneralEngine") << "Moreover, use Sofa.GL.Component.Engine if you need TextureInterpolation.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.GL.Component.Engine");
 #endif // SOFAGENERALENGINE_HAVE_SOFA_GL == 1
