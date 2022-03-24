@@ -3,12 +3,6 @@
 ignore "cpu-gpu_validation/.*"
 
 # All benchmarks are heavy scenes. Ignore CUDA version and only compute 10 iterations of the cpu one.
-iterations "benchmarks/FastTetrahedralCorotationalForceField_beam10x10x40_cpu.scn" "10"
-ignore "benchmarks/FastTetrahedralCorotationalForceField_beam10x10x40_gpu.scn"
-
-iterations "benchmarks/FastTetrahedralCorotationalForceField_beam16x16x76_cpu.scn" "10"
-ignore "benchmarks/FastTetrahedralCorotationalForceField_beam16x16x76_gpu.scn"
-
 iterations "benchmarks/HexahedronFEMForceField_beam10x10x40_cpu.scn" "10"
 ignore "benchmarks/HexahedronFEMForceField_beam10x10x40_gpu.scn"
 
