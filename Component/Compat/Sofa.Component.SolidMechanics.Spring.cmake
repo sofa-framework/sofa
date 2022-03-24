@@ -45,8 +45,6 @@ list(APPEND HEADER_FILES
     ${SOFAGENERALDEFORMABLE_SRC}/VectorSpringForceField.inl
     ${SOFAGENERALOBJECTINTERACTION_SRC}/RepulsiveSpringForceField.h
     ${SOFAGENERALOBJECTINTERACTION_SRC}/RepulsiveSpringForceField.inl
-    ${SOFAGENERALOBJECTINTERACTION_SRC}/RepulsiveSpringForceField.h
-    ${SOFAGENERALOBJECTINTERACTION_SRC}/RepulsiveSpringForceField.inl
     ${SOFAMISCFORCEFIELD_SRC}/GearSpringForceField.h
     ${SOFAMISCFORCEFIELD_SRC}/GearSpringForceField.inl
 )
