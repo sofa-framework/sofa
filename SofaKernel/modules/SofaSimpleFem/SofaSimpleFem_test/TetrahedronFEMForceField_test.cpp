@@ -185,6 +185,26 @@ public:
             simulation::getSimulation()->unload(m_root);
     }
 
+    void addTetraFEMForceField(Node::SPtr node, int FEMType, SReal young, SReal poisson, std::string method)
+    {
+        if (FEMType == 0) // TetrahedronFEMForceField
+        {
+            createObject(node, "TetrahedronFEMForceField", {
+                {"name","FEM"}, {"youngModulus", str(young)}, {"poissonRatio", str(poisson)}, {"method", method} });
+        }
+        else if (FEMType == 1)
+        {
+            createObject(node, "TetrahedralCorotationalFEMForceField", {
+                {"name","FEM"}, {"youngModulus", str(young)}, {"poissonRatio", str(poisson)}, {"method", method} });
+        }
+        else
+        {
+            createObject(node, "FastTetrahedralCorotationalForceField", {
+                {"name","FEM"}, {"youngModulus", str(young)}, {"poissonRatio", str(poisson)}, {"method", method} });
+        }
+    }
+
+    
     void createSingleTetrahedronFEMScene(int FEMType, float young, float poisson, std::string method)
     {
         m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
@@ -197,21 +217,8 @@ public:
         createObject(m_root, "TetrahedronSetTopologyModifier");
         createObject(m_root, "TetrahedronSetGeometryAlgorithms", { {"template","Vec3d"} });
 
-        if (FEMType == 0) // TetrahedronFEMForceField
-        {
-            createObject(m_root, "TetrahedronFEMForceField", {
-                {"name","FEM"}, {"youngModulus", str(young)}, {"poissonRatio", str(poisson)}, {"method", method} });
-        }
-        else if (FEMType == 1)
-        {
-            createObject(m_root, "TetrahedralCorotationalFEMForceField", {
-                {"name","FEM"}, {"youngModulus", str(young)}, {"poissonRatio", str(poisson)}, {"method", method} });
-        }
-        else
-        {
-            createObject(m_root, "FastTetrahedralCorotationalForceField", {
-                {"name","FEM"}, {"youngModulus", str(young)}, {"poissonRatio", str(poisson)}, {"method", method} });
-        }
+        addTetraFEMForceField(m_root, FEMType, young, poisson, method);
+        
         createObject(m_root, "DiagonalMass", {
             {"name","mass"}, {"massDensity","0.1"} });
         /// Init simulation
@@ -258,23 +265,7 @@ public:
         createObject(FEMNode, "DiagonalMass", {
             {"name","mass"}, {"massDensity","1.0"} });
 
-        if (FEMType == 0) // TetrahedronFEMForceField
-        {
-            createObject(FEMNode, "TetrahedronFEMForceField", {
-                {"name","CFEM"}, {"youngModulus","600"}, {"poissonRatio","0.3"}, {"method","large"} });
-        }
-        else if (FEMType == 1)
-        {
-            createObject(FEMNode, "TetrahedralCorotationalFEMForceField", {
-                {"name","CFEM"}, {"youngModulus","600"}, {"poissonRatio","0.3"}, {"method","large"} });
-        }
-        else
-        {
-            createObject(FEMNode, "FastTetrahedralCorotationalForceField", {
-                {"name","CFEM"}, {"youngModulus","600"}, {"poissonRatio","0.3"}, {"method","large"} });
-        }
-
-        
+        addTetraFEMForceField(FEMNode, FEMType, 600, 0.3, "large");
 
         ASSERT_NE(m_root.get(), nullptr);
 
@@ -306,7 +297,7 @@ public:
             ASSERT_TRUE(tetraFEM.get() != nullptr);
             ASSERT_FLOAT_EQ(tetraFEM->_poissonRatio.getValue(), 0.4);
             ASSERT_FLOAT_EQ(tetraFEM->_youngModulus.getValue(), 10000);
-            //ASSERT_EQ(tetraFEM->f_method.getValue(), 0);
+            ASSERT_EQ(tetraFEM->f_method.getValue(), "large");
         }
         else
         {
@@ -314,138 +305,116 @@ public:
             ASSERT_TRUE(tetraFEM.get() != nullptr);
             ASSERT_FLOAT_EQ(tetraFEM->f_poissonRatio.getValue(), 0.4);
             ASSERT_FLOAT_EQ(tetraFEM->f_youngModulus.getValue(), 10000);
-            //ASSERT_EQ(tetraFEM->f_method.getValue(), 0);
+            ASSERT_EQ(tetraFEM->f_method.getValue(), "large");
         }
     }
 
-    //void checkNoTopology(int FEMType)
-    //{
-    //    m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
-    //    createObject(m_root, "DefaultAnimationLoop");
-    //    createObject(m_root, "DefaultVisualManagerLoop");
+    void checkNoTopology(int FEMType)
+    {
+        m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
+        createObject(m_root, "DefaultAnimationLoop");
+        createObject(m_root, "DefaultVisualManagerLoop");
 
-    //    createObject(m_root, "MechanicalObject", { {"template","Vec3d"}, {"position", "0 0 0  1 0 0  0 1 0"} });
-    //    if (FEMType == 0) // TriangleModel
-    //    {
-    //        createObject(m_root, "TriangleFEMForceField", {
-    //            {"name","FEM"}, {"youngModulus", "100"}, {"poissonRatio", "0.3"}, {"method", "large"} });
-    //    }
-    //    else if (FEMType == 1)
-    //    {
-    //        createObject(m_root, "TriangularFEMForceField", {
-    //            {"name","FEM"}, {"youngModulus", "100"}, {"poissonRatio", "0.3"}, {"method", "large"} });
-    //    }
-    //    else
-    //    {
-    //        createObject(m_root, "TriangularFEMForceFieldOptim", {
-    //            {"name","FEM"}, {"youngModulus", "100"}, {"poissonRatio", "0.3"}, {"method", "large"} });
-    //    }
+        createObject(m_root, "MechanicalObject", { {"template","Vec3d"}, {"position", "0 0 0  1 0 0  0 1 0  0 0 1"} });
+        addTetraFEMForceField(m_root, FEMType, 100, 0.3, "large");
 
-    //    EXPECT_MSG_EMIT(Error);
+        
+        EXPECT_MSG_EMIT(Error);
 
-    //    /// Init simulation
-    //    sofa::simulation::getSimulation()->init(m_root.get());
-    //}
+        /// Init simulation
+        sofa::simulation::getSimulation()->init(m_root.get());
+    }
 
-    //void checkEmptyTopology(int FEMType)
-    //{
-    //    m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
-    //    createObject(m_root, "DefaultAnimationLoop");
-    //    createObject(m_root, "DefaultVisualManagerLoop");
+    void checkEmptyTopology(int FEMType)
+    {
+        m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
+        createObject(m_root, "DefaultAnimationLoop");
+        createObject(m_root, "DefaultVisualManagerLoop");
 
-    //    createObject(m_root, "MechanicalObject", { {"template","Vec3d"} });
-    //    createObject(m_root, "TriangleSetTopologyContainer");
-    //    if (FEMType == 0) // TriangleModel
-    //    {
-    //        createObject(m_root, "TriangleFEMForceField", {
-    //            {"name","FEM"}, {"youngModulus", "100"}, {"poissonRatio", "0.3"}, {"method", "large"} });
-    //    }
-    //    else if (FEMType == 1)
-    //    {
-    //        createObject(m_root, "TriangularFEMForceField", {
-    //            {"name","FEM"}, {"youngModulus", "100"}, {"poissonRatio", "0.3"}, {"method", "large"} });
-    //    }
-    //    else
-    //    {
-    //        createObject(m_root, "TriangularFEMForceFieldOptim", {
-    //            {"name","FEM"}, {"youngModulus", "100"}, {"poissonRatio", "0.3"}, {"method", "large"} });
-    //    }
+        createObject(m_root, "MechanicalObject", { {"template","Vec3d"} });
+        createObject(m_root, "TetrahedronSetTopologyContainer");
+        addTetraFEMForceField(m_root, FEMType, 100, 0.3, "large");
 
-    //    EXPECT_MSG_EMIT(Warning);
+        EXPECT_MSG_EMIT(Warning);
 
-    //    /// Init simulation
-    //    sofa::simulation::getSimulation()->init(m_root.get());
-    //}
+        /// Init simulation
+        sofa::simulation::getSimulation()->init(m_root.get());
+    }
 
 
-    //void checkDefaultAttributes(int FEMType)
-    //{
-    //    m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
-    //    createObject(m_root, "DefaultAnimationLoop");
-    //    createObject(m_root, "DefaultVisualManagerLoop");
+    void checkDefaultAttributes(int FEMType)
+    {
+        m_root = sofa::simpleapi::createRootNode(m_simulation, "root");
+        createObject(m_root, "DefaultAnimationLoop");
+        createObject(m_root, "DefaultVisualManagerLoop");
 
-    //    createObject(m_root, "MechanicalObject", { {"template","Vec3d"}, {"position", "0 0 0  1 0 0  0 1 0"} });
-    //    createObject(m_root, "TriangleSetTopologyContainer", { {"triangles","0 1 2"} });
-    //    createObject(m_root, "TriangleSetTopologyModifier");
-    //    createObject(m_root, "TriangleSetGeometryAlgorithms", { {"template","Vec3d"} });
+        createObject(m_root, "MechanicalObject", { {"template","Vec3d"}, {"position", "0 0 0  1 0 0  0 1 0  0 0 1"} });
+        createObject(m_root, "TetrahedronSetTopologyContainer", { {"tetrahedra","2 3 1 0"} });
+        createObject(m_root, "TetrahedronSetTopologyModifier");
+        createObject(m_root, "TetrahedronSetGeometryAlgorithms", { {"template","Vec3d"} });
+       
+        if (FEMType == 0) 
+        {
+            createObject(m_root, "TetrahedronFEMForceField");
+        }
+        else if (FEMType == 1)
+        {
+            createObject(m_root, "TetrahedralCorotationalFEMForceField");
+        }
+        else
+        {
+            createObject(m_root, "FastTetrahedralCorotationalForceField");
+        }
 
-    //    if (FEMType == 0) // TriangleModel
-    //    {
-    //        createObject(m_root, "TriangleFEMForceField");
-    //    }
-    //    else if (FEMType == 1)
-    //    {
-    //        createObject(m_root, "TriangularFEMForceField");
-    //    }
-    //    else
-    //    {
-    //        createObject(m_root, "TriangularFEMForceFieldOptim");
-    //    }
+        EXPECT_MSG_EMIT(Warning);
 
-    //    EXPECT_MSG_EMIT(Warning);
-
-    //    /// Init simulation
-    //    sofa::simulation::getSimulation()->init(m_root.get());
-    //    if (FEMType == 0)
-    //    {
-    //        typename TriangleFEM::SPtr triFEM = m_root->getTreeObject<TriangleFEM>();
-    //        ASSERT_TRUE(triFEM.get() != nullptr);
-    //        ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.3);
-    //        ASSERT_FLOAT_EQ(triFEM->getYoung(), 1000);
-    //        ASSERT_EQ(triFEM->getMethod(), 0);
-    //    }
-    //    else if (FEMType == 1)
-    //    {
-    //        typename TriangularFEM::SPtr triFEM = m_root->getTreeObject<TriangularFEM>();
-    //        ASSERT_TRUE(triFEM.get() != nullptr);
-    //        ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.3); // Not the same default values
-    //        ASSERT_FLOAT_EQ(triFEM->getYoung(), 1000);
-    //        ASSERT_EQ(triFEM->getMethod(), 0);
-    //    }
-    //    else
-    //    {
-    //        typename TriangularFEMOptim::SPtr triFEM = m_root->getTreeObject<TriangularFEMOptim>();
-    //        ASSERT_TRUE(triFEM.get() != nullptr);
-    //        ASSERT_FLOAT_EQ(triFEM->getPoisson(), 0.3); // Not the same default values
-    //        ASSERT_FLOAT_EQ(triFEM->getYoung(), 1000);
-    //    }
-    //}
-
-
-    //void checkWrongAttributes(int FEMType)
-    //{
-    //    EXPECT_MSG_EMIT(Warning);
-    //    createSingleTriangleFEMScene(FEMType, -100, -0.3, "toto");
-    //}
+        /// Init simulation
+        sofa::simulation::getSimulation()->init(m_root.get());
+        
+        if (FEMType == 0)
+        {
+            typename TetrahedronFEM::SPtr tetraFEM = m_root->getTreeObject<TetrahedronFEM>();
+            ASSERT_TRUE(tetraFEM.get() != nullptr);
+            ASSERT_FLOAT_EQ(tetraFEM->_poissonRatio.getValue(), 0.4);
+            ASSERT_FLOAT_EQ(tetraFEM->_youngModulus.getValue()[0], 10000);
+            ASSERT_EQ(tetraFEM->f_method.getValue(), "large");
+        }
+        else if (FEMType == 1)
+        {
+            typename TetraCorotationalFEM::SPtr tetraFEM = m_root->getTreeObject<TetraCorotationalFEM>();
+            ASSERT_TRUE(tetraFEM.get() != nullptr);
+            ASSERT_FLOAT_EQ(tetraFEM->_poissonRatio.getValue(), 0.4);
+            ASSERT_FLOAT_EQ(tetraFEM->_youngModulus.getValue(), 10000);
+            ASSERT_EQ(tetraFEM->f_method.getValue(), "large");
+        }
+        else
+        {
+            typename FastTetraCorotationalFEM::SPtr tetraFEM = m_root->getTreeObject<FastTetraCorotationalFEM>();
+            ASSERT_TRUE(tetraFEM.get() != nullptr);
+            ASSERT_FLOAT_EQ(tetraFEM->f_poissonRatio.getValue(), 0.4);
+            ASSERT_FLOAT_EQ(tetraFEM->f_youngModulus.getValue(), 10000);
+            ASSERT_EQ(tetraFEM->f_method.getValue(), "large");
+        }
+    }
 
 
+    void checkWrongAttributes(int FEMType)
+    {
+        EXPECT_MSG_EMIT(Warning);
+        createSingleTetrahedronFEMScene(FEMType, -100, -0.3, "toto");
+    }
 
 
+    void checkInit(int FEMType)
+    {
+        // TODO
+    }
 
 
-
-
-
+    void checkFEMValues(int FEMType)
+    {
+        // TODO
+    }
 
 
     void testFEMPerformance(int FEMType)
@@ -506,6 +475,8 @@ public:
         //timeMin : 5.95179
         //timeMax : 6.16263
     }
+
+
 };
 
 
@@ -542,13 +513,6 @@ component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3Types>
 
 
 
-//TEST_F(TetrahedronFEMForceField3_test, testTetrahedronFEMPerformance)
-//{
-//    this->testFEMPerformance(0);
-//}
-
-
-
 
 /// Tests for TriangleFEMForceField
 typedef TetrahedronFEMForceField_test<Vec3Types> TetrahedronFEMForceField3_test;
@@ -558,7 +522,35 @@ TEST_F(TetrahedronFEMForceField3_test, checkCreation)
     this->checkCreation(0);
 }
 
+TEST_F(TetrahedronFEMForceField3_test, checkNoTopology)
+{
+    this->checkNoTopology(0);
+}
 
+TEST_F(TetrahedronFEMForceField3_test, checkEmptyTopology)
+{
+    this->checkEmptyTopology(0);
+}
+
+TEST_F(TetrahedronFEMForceField3_test, checkDefaultAttributes)
+{
+    this->checkDefaultAttributes(0);
+}
+
+TEST_F(TetrahedronFEMForceField3_test, checkWrongAttributes)
+{
+    this->checkWrongAttributes(0);
+}
+
+TEST_F(TetrahedronFEMForceField3_test, checkInit)
+{
+    this->checkInit(0);
+}
+
+TEST_F(TetrahedronFEMForceField3_test, checkFEMValues)
+{
+    this->checkFEMValues(0);
+}
 
 
 
@@ -570,6 +562,36 @@ TEST_F(TetrahedralCorotationalFEMForceField3_test, checkCreation)
     this->checkCreation(1);
 }
 
+TEST_F(TetrahedralCorotationalFEMForceField3_test, checkNoTopology)
+{
+    this->checkNoTopology(1);
+}
+
+TEST_F(TetrahedralCorotationalFEMForceField3_test, checkEmptyTopology)
+{
+    this->checkEmptyTopology(1);
+}
+
+TEST_F(TetrahedralCorotationalFEMForceField3_test, checkDefaultAttributes)
+{
+    this->checkDefaultAttributes(1);
+}
+
+TEST_F(TetrahedralCorotationalFEMForceField3_test, checkWrongAttributes)
+{
+    this->checkWrongAttributes(1);
+}
+
+TEST_F(TetrahedralCorotationalFEMForceField3_test, checkInit)
+{
+    this->checkInit(1);
+}
+
+TEST_F(TetrahedralCorotationalFEMForceField3_test, checkFEMValues)
+{
+    this->checkFEMValues(1);
+}
+
 
 
 /// Test TriangularOptim: TODO check where to put those tests
@@ -578,6 +600,55 @@ typedef TetrahedronFEMForceField_test<Vec3Types> FastTetrahedralCorotationalForc
 TEST_F(FastTetrahedralCorotationalForceField3_test, checkCreation)
 {
     this->checkCreation(2);
+}
+
+TEST_F(FastTetrahedralCorotationalForceField3_test, checkNoTopology)
+{
+    this->checkNoTopology(2);
+}
+
+TEST_F(FastTetrahedralCorotationalForceField3_test, checkEmptyTopology)
+{
+    this->checkEmptyTopology(2);
+}
+
+TEST_F(FastTetrahedralCorotationalForceField3_test, checkDefaultAttributes)
+{
+    this->checkDefaultAttributes(2);
+}
+
+TEST_F(FastTetrahedralCorotationalForceField3_test, checkWrongAttributes)
+{
+    this->checkWrongAttributes(2);
+}
+
+TEST_F(FastTetrahedralCorotationalForceField3_test, checkInit)
+{
+    this->checkInit(2);
+}
+
+TEST_F(FastTetrahedralCorotationalForceField3_test, checkFEMValues)
+{
+    this->checkFEMValues(2);
+}
+
+
+// performances tests. Disabled by default
+
+TEST_F(TetrahedronFEMForceField3_test, testFEMPerformance)
+{
+    this->testFEMPerformance(0);
+}
+
+TEST_F(TetrahedralCorotationalFEMForceField3_test, testFEMPerformance)
+{
+    this->testFEMPerformance(1);
+}
+
+
+TEST_F(FastTetrahedralCorotationalForceField3_test, testFEMPerformance)
+{
+    this->testFEMPerformance(2);
 }
 
 
