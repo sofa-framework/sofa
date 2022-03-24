@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_MERGEMESHES_CPP
-#include <SofaGeneralEngine/MergeMeshes.inl>
+#include <sofa/component/engine/mesh/MergeMeshes.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::engine
@@ -35,11 +35,11 @@ int MergeMeshesClass = core::RegisterObject("Merge several meshes")
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API MergeMeshes<defaulttype::Vec1Types>;
-template class SOFA_SOFAGENERALENGINE_API MergeMeshes<defaulttype::Vec2Types>;
-template class SOFA_SOFAGENERALENGINE_API MergeMeshes<defaulttype::Vec3Types>;
-template class SOFA_SOFAGENERALENGINE_API MergeMeshes<defaulttype::Rigid2Types>;
-template class SOFA_SOFAGENERALENGINE_API MergeMeshes<defaulttype::Rigid3Types>;
+template class SOFA_COMPONENT_ENGINE_MESH_API MergeMeshes<defaulttype::Vec1Types>;
+template class SOFA_COMPONENT_ENGINE_MESH_API MergeMeshes<defaulttype::Vec2Types>;
+template class SOFA_COMPONENT_ENGINE_MESH_API MergeMeshes<defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_MESH_API MergeMeshes<defaulttype::Rigid2Types>;
+template class SOFA_COMPONENT_ENGINE_MESH_API MergeMeshes<defaulttype::Rigid3Types>;
  
 
 

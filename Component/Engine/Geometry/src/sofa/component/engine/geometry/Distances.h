@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMiscEngine/config.h>
+#include <sofa/component/engine/geometry/config.h>
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -205,7 +205,7 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_DISTANCES_CPP)
-extern template class SOFA_SOFAMISCENGINE_API Distances<defaulttype::Vec3Types>; 
+extern template class SOFA_COMPONENT_ENGINE_GEOMETRY_API Distances<defaulttype::Vec3Types>; 
 #endif
 
 } // namespace sofa::component::engine

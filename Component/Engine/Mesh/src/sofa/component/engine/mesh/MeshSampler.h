@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/mesh/config.h>
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -93,7 +93,7 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_MESHSAMPLER_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API MeshSampler<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_ENGINE_MESH_API MeshSampler<defaulttype::Vec3Types>;
  
 #endif
 

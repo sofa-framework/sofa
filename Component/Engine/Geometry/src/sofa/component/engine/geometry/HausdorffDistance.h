@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/geometry/config.h>
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -80,11 +80,11 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_HAUSDORFFDISTANCE_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API HausdorffDistance<defaulttype::Vec1Types>;
-extern template class SOFA_SOFAGENERALENGINE_API HausdorffDistance<defaulttype::Vec2Types>;
-extern template class SOFA_SOFAGENERALENGINE_API HausdorffDistance<defaulttype::Vec3Types>;
-extern template class SOFA_SOFAGENERALENGINE_API HausdorffDistance<defaulttype::Rigid2Types>;
-extern template class SOFA_SOFAGENERALENGINE_API HausdorffDistance<defaulttype::Rigid3Types>;
+extern template class SOFA_COMPONENT_ENGINE_GEOMETRY_API HausdorffDistance<defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_ENGINE_GEOMETRY_API HausdorffDistance<defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_ENGINE_GEOMETRY_API HausdorffDistance<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_ENGINE_GEOMETRY_API HausdorffDistance<defaulttype::Rigid2Types>;
+extern template class SOFA_COMPONENT_ENGINE_GEOMETRY_API HausdorffDistance<defaulttype::Rigid3Types>;
  
 #endif
 

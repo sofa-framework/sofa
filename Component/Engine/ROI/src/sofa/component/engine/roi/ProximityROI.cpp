@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_PROXIMITYROI_CPP
-#include <SofaGeneralEngine/ProximityROI.inl>
+#include <sofa/component/engine/roi/ProximityROI.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -35,8 +35,8 @@ int ProximityROIClass = core::RegisterObject("Find the N closest primitives from
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API ProximityROI<Vec3Types>;
-//template class SOFA_SOFAGENERALENGINE_API SphereROI<Rigid3Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API ProximityROI<Vec3Types>;
+//template class SOFA_COMPONENT_ENGINE_ROI_API SphereROI<Rigid3Types>;
  
 
 

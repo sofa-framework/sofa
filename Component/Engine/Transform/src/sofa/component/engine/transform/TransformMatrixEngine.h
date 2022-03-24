@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/transform/config.h>
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -33,7 +33,7 @@
 namespace sofa::component::engine
 {
 
-class SOFA_SOFAGENERALENGINE_API AbstractTransformMatrixEngine : public core::DataEngine
+class SOFA_COMPONENT_ENGINE_TRANSFORM_API AbstractTransformMatrixEngine : public core::DataEngine
 {
 public:
     SOFA_ABSTRACT_CLASS(AbstractTransformMatrixEngine, core::DataEngine);
@@ -60,7 +60,7 @@ protected:
  * This engine inverts the input transform and outputs the resulting transformation matrix.
  * T_output = T_input^-1
  */
-class SOFA_SOFAGENERALENGINE_API InvertTransformMatrixEngine : public AbstractTransformMatrixEngine
+class SOFA_COMPONENT_ENGINE_TRANSFORM_API InvertTransformMatrixEngine : public AbstractTransformMatrixEngine
 {
 public:
     SOFA_CLASS(InvertTransformMatrixEngine, AbstractTransformMatrixEngine);
@@ -75,7 +75,7 @@ protected:
  * This engine compose the input transform (if any) with the given translation and outputs the resulting transformation matrix.
  * T_output = T_input * T_translate
  */
-class SOFA_SOFAGENERALENGINE_API TranslateTransformMatrixEngine : public AbstractTransformMatrixEngine
+class SOFA_COMPONENT_ENGINE_TRANSFORM_API TranslateTransformMatrixEngine : public AbstractTransformMatrixEngine
 {
 public:
     SOFA_CLASS(TranslateTransformMatrixEngine, AbstractTransformMatrixEngine);
@@ -98,7 +98,7 @@ protected:
  * This engine produces a rotation transformation matrix. It is composed with the input transform if any.
  * T_output = T_input * T_rotate
  */
-class SOFA_SOFAGENERALENGINE_API RotateTransformMatrixEngine : public AbstractTransformMatrixEngine
+class SOFA_COMPONENT_ENGINE_TRANSFORM_API RotateTransformMatrixEngine : public AbstractTransformMatrixEngine
 {
 public:
     SOFA_CLASS(RotateTransformMatrixEngine, AbstractTransformMatrixEngine);
@@ -121,7 +121,7 @@ protected:
  * This engine compose the input transform (if any) with the given scale transformation and outputs the resulting transformation matrix.
  * T_output = T_input * T_scale
  */
-class SOFA_SOFAGENERALENGINE_API ScaleTransformMatrixEngine : public AbstractTransformMatrixEngine
+class SOFA_COMPONENT_ENGINE_TRANSFORM_API ScaleTransformMatrixEngine : public AbstractTransformMatrixEngine
 {
 public:
     SOFA_CLASS(ScaleTransformMatrixEngine, AbstractTransformMatrixEngine);

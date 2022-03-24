@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaEngine/config.h>
+#include <sofa/component/engine/roi/config.h>
 
 #include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -189,11 +189,11 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)
-extern template class SOFA_SOFAENGINE_API BoxROI<defaulttype::Vec3Types>;
-extern template class SOFA_SOFAENGINE_API BoxROI<defaulttype::Vec2Types>;
-extern template class SOFA_SOFAENGINE_API BoxROI<defaulttype::Vec1Types>;
-extern template class SOFA_SOFAENGINE_API BoxROI<defaulttype::Rigid3Types>;
-extern template class SOFA_SOFAENGINE_API BoxROI<defaulttype::Vec6Types>;
+extern template class SOFA_COMPONENT_ENGINE_ROI_API BoxROI<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_ENGINE_ROI_API BoxROI<defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_ENGINE_ROI_API BoxROI<defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_ENGINE_ROI_API BoxROI<defaulttype::Rigid3Types>;
+extern template class SOFA_COMPONENT_ENGINE_ROI_API BoxROI<defaulttype::Vec6Types>;
  
 #endif
 

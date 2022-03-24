@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/Vertex2Frame.h>
+#include <sofa/component/engine/rigid/Vertex2Frame.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/Quat.h>
 

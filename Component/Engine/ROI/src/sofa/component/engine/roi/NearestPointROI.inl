@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/NearestPointROI.h>
+#include <sofa/component/engine/roi/NearestPointROI.h>
 
 namespace sofa::component::engine
 {

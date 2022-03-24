@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/mesh/config.h>
 
 
 
@@ -74,7 +74,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_DILATEENGINE_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API DilateEngine<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_ENGINE_MESH_API DilateEngine<defaulttype::Vec3Types>;
 #endif
 
 } //namespace sofa::component::engine

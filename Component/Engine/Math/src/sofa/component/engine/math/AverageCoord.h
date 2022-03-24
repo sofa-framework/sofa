@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/math/config.h>
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -70,10 +70,10 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_AverageCoord_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API AverageCoord<defaulttype::Vec2Types>;
-extern template class SOFA_SOFAGENERALENGINE_API AverageCoord<defaulttype::Vec3Types>;
-extern template class SOFA_SOFAGENERALENGINE_API AverageCoord<defaulttype::Rigid2Types>;
-extern template class SOFA_SOFAGENERALENGINE_API AverageCoord<defaulttype::Rigid3Types>;
+extern template class SOFA_COMPONENT_ENGINE_MATH_API AverageCoord<defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_ENGINE_MATH_API AverageCoord<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_ENGINE_MATH_API AverageCoord<defaulttype::Rigid2Types>;
+extern template class SOFA_COMPONENT_ENGINE_MATH_API AverageCoord<defaulttype::Rigid3Types>;
  
 #endif
 

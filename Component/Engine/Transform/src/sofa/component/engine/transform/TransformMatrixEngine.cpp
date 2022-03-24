@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaGeneralEngine/TransformMatrixEngine.h>
+#include <sofa/component/engine/transform/TransformMatrixEngine.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/accessor.h>

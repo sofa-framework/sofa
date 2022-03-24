@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/roi/config.h>
 
 #include <sofa/core/behavior/PairInteractionProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -88,12 +88,12 @@ protected:
 
 
 #if  !defined(SOFA_COMPONENT_ENGINE_NearestPointROI_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API NearestPointROI<defaulttype::Vec3Types>;
-extern template class SOFA_SOFAGENERALENGINE_API NearestPointROI<defaulttype::Vec2Types>;
-extern template class SOFA_SOFAGENERALENGINE_API NearestPointROI<defaulttype::Vec1Types>;
-extern template class SOFA_SOFAGENERALENGINE_API NearestPointROI<defaulttype::Vec6Types>;
-extern template class SOFA_SOFAGENERALENGINE_API NearestPointROI<defaulttype::Rigid3Types>;
-extern template class SOFA_SOFAGENERALENGINE_API NearestPointROI<defaulttype::Rigid2Types>;
+extern template class SOFA_COMPONENT_ENGINE_ROI_API NearestPointROI<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_ENGINE_ROI_API NearestPointROI<defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_ENGINE_ROI_API NearestPointROI<defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_ENGINE_ROI_API NearestPointROI<defaulttype::Vec6Types>;
+extern template class SOFA_COMPONENT_ENGINE_ROI_API NearestPointROI<defaulttype::Rigid3Types>;
+extern template class SOFA_COMPONENT_ENGINE_ROI_API NearestPointROI<defaulttype::Rigid2Types>;
 #endif
 
 } //namespace sofa::component::engine

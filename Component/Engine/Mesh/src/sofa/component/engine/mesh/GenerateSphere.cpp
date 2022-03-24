@@ -34,7 +34,7 @@ int GenerateSphereClass = core::RegisterObject("Generate a sphereical (Bezier) T
         ;
 
 
-template class SOFA_SOFAGENERALENGINE_API GenerateSphere<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_MESH_API GenerateSphere<Vec3Types>;
  
 
 

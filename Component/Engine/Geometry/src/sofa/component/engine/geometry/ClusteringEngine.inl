@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/ClusteringEngine.h>
+#include <sofa/component/engine/geometry/ClusteringEngine.h>
 #include <iostream>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>

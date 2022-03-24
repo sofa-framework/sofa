@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_MATHOP_CPP
-#include <SofaGeneralEngine/MathOp.inl>
+#include <sofa/component/engine/math/MathOp.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::engine
@@ -39,16 +39,16 @@ int MathOpClass = core::RegisterObject("Apply a math operation to combine severa
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API MathOp< type::vector<int> >;
-template class SOFA_SOFAGENERALENGINE_API MathOp< type::vector<bool> >;
+template class SOFA_COMPONENT_ENGINE_MATH_API MathOp< type::vector<int> >;
+template class SOFA_COMPONENT_ENGINE_MATH_API MathOp< type::vector<bool> >;
 
-template class SOFA_SOFAGENERALENGINE_API MathOp< type::vector<double> >;
-template class SOFA_SOFAGENERALENGINE_API MathOp< type::vector<type::Vec2d> >;
-template class SOFA_SOFAGENERALENGINE_API MathOp< type::vector<type::Vec3d> >;
-template class SOFA_SOFAGENERALENGINE_API MathOp< defaulttype::Rigid2Types::VecCoord >;
-template class SOFA_SOFAGENERALENGINE_API MathOp< defaulttype::Rigid2Types::VecDeriv >;
-template class SOFA_SOFAGENERALENGINE_API MathOp< defaulttype::Rigid3Types::VecCoord >;
-template class SOFA_SOFAGENERALENGINE_API MathOp< defaulttype::Rigid3Types::VecDeriv >;
+template class SOFA_COMPONENT_ENGINE_MATH_API MathOp< type::vector<double> >;
+template class SOFA_COMPONENT_ENGINE_MATH_API MathOp< type::vector<type::Vec2d> >;
+template class SOFA_COMPONENT_ENGINE_MATH_API MathOp< type::vector<type::Vec3d> >;
+template class SOFA_COMPONENT_ENGINE_MATH_API MathOp< defaulttype::Rigid2Types::VecCoord >;
+template class SOFA_COMPONENT_ENGINE_MATH_API MathOp< defaulttype::Rigid2Types::VecDeriv >;
+template class SOFA_COMPONENT_ENGINE_MATH_API MathOp< defaulttype::Rigid3Types::VecCoord >;
+template class SOFA_COMPONENT_ENGINE_MATH_API MathOp< defaulttype::Rigid3Types::VecDeriv >;
  
 
 

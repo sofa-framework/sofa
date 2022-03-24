@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_NearestPointROI_CPP
-#include <SofaGeneralEngine/NearestPointROI.inl>
+#include <sofa/component/engine/roi/NearestPointROI.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::engine
@@ -37,10 +37,10 @@ int NearestPointROIClass = core::RegisterObject("Attach given pair of particles,
         .add< NearestPointROI<Rigid2Types> >()
         ;
 
-template class SOFA_SOFAGENERALENGINE_API NearestPointROI<sofa::defaulttype::Vec3Types>;
-template class SOFA_SOFAGENERALENGINE_API NearestPointROI<sofa::defaulttype::Vec2Types>;
-template class SOFA_SOFAGENERALENGINE_API NearestPointROI<sofa::defaulttype::Vec1Types>;
-template class SOFA_SOFAGENERALENGINE_API NearestPointROI<sofa::defaulttype::Vec6Types>;
-template class SOFA_SOFAGENERALENGINE_API NearestPointROI<sofa::defaulttype::Rigid3Types>;
-template class SOFA_SOFAGENERALENGINE_API NearestPointROI<sofa::defaulttype::Rigid2Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API NearestPointROI<sofa::defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API NearestPointROI<sofa::defaulttype::Vec2Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API NearestPointROI<sofa::defaulttype::Vec1Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API NearestPointROI<sofa::defaulttype::Vec6Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API NearestPointROI<sofa::defaulttype::Rigid3Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API NearestPointROI<sofa::defaulttype::Rigid2Types>;
 } //namespace sofa::component::engine

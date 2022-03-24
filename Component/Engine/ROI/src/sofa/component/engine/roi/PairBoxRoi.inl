@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/PairBoxRoi.h>
+#include <sofa/component/engine/roi/PairBoxRoi.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/BoundingBox.h>
 #include <sofa/type/RGBAColor.h>

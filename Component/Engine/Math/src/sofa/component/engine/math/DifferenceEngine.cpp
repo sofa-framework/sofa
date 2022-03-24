@@ -35,8 +35,8 @@ int DifferenceEngineClass = core::RegisterObject("Computing the difference betwe
 
         ;
 
-template class SOFA_SOFAGENERALENGINE_API DifferenceEngine<Vec1d>;
-template class SOFA_SOFAGENERALENGINE_API DifferenceEngine<Vec3d>;
+template class SOFA_COMPONENT_ENGINE_MATH_API DifferenceEngine<Vec1d>;
+template class SOFA_COMPONENT_ENGINE_MATH_API DifferenceEngine<Vec3d>;
 
 
 } //namespace sofa::component::engine

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_BOXROI_CPP
-#include <SofaEngine/BoxROI.inl>
+#include <sofa/component/engine/roi/BoxROI.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -38,11 +38,11 @@ int BoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangl
  
         ;
 
-template class SOFA_SOFAENGINE_API BoxROI<Vec3Types>;
-template class SOFA_SOFAENGINE_API BoxROI<Vec2Types>;
-template class SOFA_SOFAENGINE_API BoxROI<Vec1Types>;
-template class SOFA_SOFAENGINE_API BoxROI<Rigid3Types>;
-template class SOFA_SOFAENGINE_API BoxROI<Vec6Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API BoxROI<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API BoxROI<Vec2Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API BoxROI<Vec1Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API BoxROI<Rigid3Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API BoxROI<Vec6Types>;
  
 
 } // namespace sofa::component::engine::boxroi

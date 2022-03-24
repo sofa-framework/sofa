@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_MESHBARYCENTRICMAPPERENGINE_CPP
 
-#include <SofaGeneralEngine/MeshBarycentricMapperEngine.inl>
+#include <sofa/component/engine/mesh/MeshBarycentricMapperEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -35,7 +35,7 @@ int MeshBarycentricMapperEngineClass = core::RegisterObject("This class maps a s
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API MeshBarycentricMapperEngine<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_MESH_API MeshBarycentricMapperEngine<Vec3Types>;
  
 
 

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_MeshBoundaryROI_CPP
-#include <SofaGeneralEngine/MeshBoundaryROI.h>
+#include <sofa/component/engine/roi/MeshBoundaryROI.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::engine

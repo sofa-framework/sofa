@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/data/config.h>
 
 
 
@@ -140,8 +140,8 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_VALUESFROMPOSITIONS_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API ValuesFromPositions<defaulttype::Vec3Types>;
-extern template class SOFA_SOFAGENERALENGINE_API ValuesFromPositions<defaulttype::Rigid3Types>; 
+extern template class SOFA_COMPONENT_ENGINE_DATA_API ValuesFromPositions<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_ENGINE_DATA_API ValuesFromPositions<defaulttype::Rigid3Types>; 
 #endif
 
 } //namespace sofa::component::engine

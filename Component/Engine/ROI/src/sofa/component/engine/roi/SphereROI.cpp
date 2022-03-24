@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_SPHEREROI_CPP
-#include <SofaGeneralEngine/SphereROI.inl>
+#include <sofa/component/engine/roi/SphereROI.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -36,8 +36,8 @@ int SphereROIClass = core::RegisterObject("Find the primitives (vertex/edge/tria
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API SphereROI<Vec3Types>;
-template class SOFA_SOFAGENERALENGINE_API SphereROI<Rigid3Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API SphereROI<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API SphereROI<Rigid3Types>;
  
 
 

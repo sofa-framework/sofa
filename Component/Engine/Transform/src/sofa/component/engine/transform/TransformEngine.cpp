@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_TRANSFORMENGINE_CPP
-#include <SofaGeneralEngine/TransformEngine.inl>
+#include <sofa/component/engine/transform/TransformEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::engine
@@ -35,10 +35,10 @@ int TransformEngineClass = core::RegisterObject("Transform position of 3d points
 
         ;
 
-template class SOFA_SOFAGENERALENGINE_API TransformEngine<defaulttype::Vec1Types>;
-template class SOFA_SOFAGENERALENGINE_API TransformEngine<defaulttype::Vec2Types>;
-template class SOFA_SOFAGENERALENGINE_API TransformEngine<defaulttype::Vec3Types>;
-template class SOFA_SOFAGENERALENGINE_API TransformEngine<defaulttype::Rigid2Types>;
-template class SOFA_SOFAGENERALENGINE_API TransformEngine<defaulttype::Rigid3Types>;
+template class SOFA_COMPONENT_ENGINE_TRANSFORM_API TransformEngine<defaulttype::Vec1Types>;
+template class SOFA_COMPONENT_ENGINE_TRANSFORM_API TransformEngine<defaulttype::Vec2Types>;
+template class SOFA_COMPONENT_ENGINE_TRANSFORM_API TransformEngine<defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_TRANSFORM_API TransformEngine<defaulttype::Rigid2Types>;
+template class SOFA_COMPONENT_ENGINE_TRANSFORM_API TransformEngine<defaulttype::Rigid3Types>;
 
 } //namespace sofa::component::engine

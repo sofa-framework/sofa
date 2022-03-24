@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaEngine/BoxROI.h>
+#include <sofa/component/engine/roi/BoxROI.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/BoundingBox.h>
 #include <limits>

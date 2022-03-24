@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/MergeVectors.h>
+#include <sofa/component/engine/data/MergeVectors.h>
 
 namespace sofa::component::engine
 {

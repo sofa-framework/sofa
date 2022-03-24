@@ -22,7 +22,7 @@
 
 #define SOFA_COMPONENT_ENGINE_COMPLEMENTARYROI_CPP
 
-#include <SofaGeneralEngine/ComplementaryROI.inl>
+#include <sofa/component/engine/roi/ComplementaryROI.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::engine
@@ -35,7 +35,7 @@ int ComplementaryROIClass = core::RegisterObject("Find the points that are NOT i
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API ComplementaryROI<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API ComplementaryROI<Vec3Types>;
  
 
 } //namespace sofa::component::engine

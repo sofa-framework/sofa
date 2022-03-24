@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_NORMENGINE_CPP
-#include <SofaGeneralEngine/NormEngine.inl>
+#include <sofa/component/engine/geometry/NormEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::engine
@@ -31,7 +31,7 @@ int NormEngineClass = core::RegisterObject("Convert Vec in Real")
 
         ;
 
-template class SOFA_SOFAGENERALENGINE_API NormEngine<type::Vec3d>;
+template class SOFA_COMPONENT_ENGINE_GEOMETRY_API NormEngine<type::Vec3d>;
 
 
 } //namespace sofa::component::engine

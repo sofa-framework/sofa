@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_MESHSAMPLER_CPP
-#include <SofaGeneralEngine/MeshSampler.inl>
+#include <sofa/component/engine/mesh/MeshSampler.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -32,7 +32,7 @@ int MeshSamplerClass = core::RegisterObject("Select uniformly distributed points
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API MeshSampler<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_MESH_API MeshSampler<Vec3Types>;
  
 
 

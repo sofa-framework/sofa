@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/data/config.h>
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -74,12 +74,12 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_MAPINDICES_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API MapIndices<int>;
-extern template class SOFA_SOFAGENERALENGINE_API MapIndices<unsigned int>;
-extern template class SOFA_SOFAGENERALENGINE_API MapIndices< type::fixed_array<unsigned int, 2> >;
-extern template class SOFA_SOFAGENERALENGINE_API MapIndices< type::fixed_array<unsigned int, 3> >;
-extern template class SOFA_SOFAGENERALENGINE_API MapIndices< type::fixed_array<unsigned int, 4> >;
-extern template class SOFA_SOFAGENERALENGINE_API MapIndices< type::fixed_array<unsigned int, 8> >;
+extern template class SOFA_COMPONENT_ENGINE_DATA_API MapIndices<int>;
+extern template class SOFA_COMPONENT_ENGINE_DATA_API MapIndices<unsigned int>;
+extern template class SOFA_COMPONENT_ENGINE_DATA_API MapIndices< type::fixed_array<unsigned int, 2> >;
+extern template class SOFA_COMPONENT_ENGINE_DATA_API MapIndices< type::fixed_array<unsigned int, 3> >;
+extern template class SOFA_COMPONENT_ENGINE_DATA_API MapIndices< type::fixed_array<unsigned int, 4> >;
+extern template class SOFA_COMPONENT_ENGINE_DATA_API MapIndices< type::fixed_array<unsigned int, 8> >;
 #endif
 
 } //namespace sofa::component::engine

@@ -25,7 +25,7 @@
 #include <vector>
 #include <limits>
 
-#include <SofaGeneralEngine/ProximityROI.h>
+#include <sofa/component/engine/roi/ProximityROI.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 

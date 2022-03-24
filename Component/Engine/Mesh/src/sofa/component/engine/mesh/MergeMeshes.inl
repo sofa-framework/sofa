@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/MergeMeshes.h>
+#include <sofa/component/engine/mesh/MergeMeshes.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::component::engine

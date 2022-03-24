@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/MathOp.h>
+#include <sofa/component/engine/math/MathOp.h>
 
 namespace sofa::component::engine
 {

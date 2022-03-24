@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMiscEngine/config.h>
+#include <sofa/component/engine/transform/config.h>
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/type/Vec.h>

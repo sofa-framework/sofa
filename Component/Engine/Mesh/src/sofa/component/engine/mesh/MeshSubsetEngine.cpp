@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_MeshSubsetEngine_CPP
-#include <SofaGeneralEngine/MeshSubsetEngine.inl>
+#include <sofa/component/engine/mesh/MeshSubsetEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::engine
@@ -30,7 +30,7 @@ int MeshSubsetEngineClass = core::RegisterObject("Extract a mesh subset based on
         .add< MeshSubsetEngine<defaulttype::Vec3Types> >(true) // default template
         ;
 
-template class SOFA_SOFAGENERALENGINE_API MeshSubsetEngine<defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_MESH_API MeshSubsetEngine<defaulttype::Vec3Types>;
  
 
 

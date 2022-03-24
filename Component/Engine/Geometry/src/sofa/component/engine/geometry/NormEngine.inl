@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/NormEngine.h>
+#include <sofa/component/engine/geometry/NormEngine.h>
 
 
 namespace sofa::component::engine

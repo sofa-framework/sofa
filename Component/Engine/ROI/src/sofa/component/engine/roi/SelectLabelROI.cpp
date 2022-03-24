@@ -35,9 +35,9 @@ int SelectLabelROIClass = core::RegisterObject("Select a subset of labeled point
         .add< SelectLabelROI<int> >()
         ;
 
-template class SOFA_SOFAGENERALENGINE_API SelectLabelROI<unsigned int>;
-template class SOFA_SOFAGENERALENGINE_API SelectLabelROI<unsigned char>;
-template class SOFA_SOFAGENERALENGINE_API SelectLabelROI<unsigned short>;
-template class SOFA_SOFAGENERALENGINE_API SelectLabelROI<int>;
+template class SOFA_COMPONENT_ENGINE_ROI_API SelectLabelROI<unsigned int>;
+template class SOFA_COMPONENT_ENGINE_ROI_API SelectLabelROI<unsigned char>;
+template class SOFA_COMPONENT_ENGINE_ROI_API SelectLabelROI<unsigned short>;
+template class SOFA_COMPONENT_ENGINE_ROI_API SelectLabelROI<int>;
 
 } //namespace sofa::component::engine

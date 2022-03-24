@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_CLUSTERINGENGINE_CPP
-#include <SofaGeneralEngine/ClusteringEngine.inl>
+#include <sofa/component/engine/geometry/ClusteringEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -34,7 +34,7 @@ int ClusteringEngineClass = core::RegisterObject("Group points into overlapping 
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API ClusteringEngine<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_GEOMETRY_API ClusteringEngine<Vec3Types>;
  
 
 

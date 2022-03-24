@@ -34,7 +34,7 @@ int JoinPointsClass = core::RegisterObject("?")
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API JoinPoints<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_DATA_API JoinPoints<Vec3Types>;
  
 
 } //namespace sofa::component::engine

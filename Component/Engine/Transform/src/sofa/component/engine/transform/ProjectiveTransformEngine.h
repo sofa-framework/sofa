@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMiscEngine/config.h>
+#include <sofa/component/engine/transform/config.h>
 
 
 
@@ -81,7 +81,7 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_CPP)
 
-extern template class SOFA_SOFAMISCENGINE_API ProjectiveTransformEngine<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API ProjectiveTransformEngine<defaulttype::Vec3Types>;
 
 #endif
 

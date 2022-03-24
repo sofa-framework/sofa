@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/data/config.h>
 
 
 
@@ -72,7 +72,7 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_JOINPOINTS_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API JoinPoints<sofa::defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_ENGINE_DATA_API JoinPoints<sofa::defaulttype::Vec3Types>;
  
 #endif
 

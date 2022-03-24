@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_RANDOMPOINTDISTRIBUTIONINSURFACE_CPP
-#include <SofaGeneralEngine/RandomPointDistributionInSurface.inl>
+#include <sofa/component/engine/geometry/RandomPointDistributionInSurface.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -34,7 +34,7 @@ int RandomPointDistributionInSurfaceClass = core::RegisterObject("This class tru
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API RandomPointDistributionInSurface<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_GEOMETRY_API RandomPointDistributionInSurface<Vec3Types>;
  
 
 

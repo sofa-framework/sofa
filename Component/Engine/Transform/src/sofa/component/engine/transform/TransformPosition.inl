@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/TransformPosition.h>
+#include <sofa/component/engine/transform/TransformPosition.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <cmath>
 #include <sofa/helper/RandomGenerator.h>

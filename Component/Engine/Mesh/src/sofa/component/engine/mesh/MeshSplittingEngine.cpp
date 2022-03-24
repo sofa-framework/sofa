@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_MeshSplittingEngine_CPP
-#include <SofaGeneralEngine/MeshSplittingEngine.inl>
+#include <sofa/component/engine/mesh/MeshSplittingEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::engine
@@ -30,7 +30,7 @@ int MeshSplittingEngineClass = core::RegisterObject("This class breaks a mesh in
         .add< MeshSplittingEngine<defaulttype::Vec3Types> >(true) // default template
         ;
 
-template class SOFA_SOFAGENERALENGINE_API MeshSplittingEngine<defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_MESH_API MeshSplittingEngine<defaulttype::Vec3Types>;
  
 
 

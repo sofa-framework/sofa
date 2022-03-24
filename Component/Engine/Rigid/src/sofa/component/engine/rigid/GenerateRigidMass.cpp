@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_GENERATERIGIDMASS_CPP
-#include <SofaGeneralEngine/GenerateRigidMass.inl>
+#include <sofa/component/engine/rigid/GenerateRigidMass.inl>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -34,7 +34,7 @@ int GenerateRigidMassClass = core::RegisterObject("An engine computing the Rigid
 
         ;
 
-template class SOFA_SOFAGENERALENGINE_API GenerateRigidMass<Rigid3Types, Rigid3Mass>;
+template class SOFA_COMPONENT_ENGINE_RIGID_API GenerateRigidMass<Rigid3Types, Rigid3Mass>;
 
 
 } //namespace sofa::component::engine

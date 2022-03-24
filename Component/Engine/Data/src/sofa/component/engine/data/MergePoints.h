@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/data/config.h>
 
 #include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -67,11 +67,11 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_MERGEPOINTS_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API MergePoints<defaulttype::Vec1Types>;
-extern template class SOFA_SOFAGENERALENGINE_API MergePoints<defaulttype::Vec2Types>;
-extern template class SOFA_SOFAGENERALENGINE_API MergePoints<defaulttype::Vec3Types>;
-extern template class SOFA_SOFAGENERALENGINE_API MergePoints<defaulttype::Rigid2Types>;
-extern template class SOFA_SOFAGENERALENGINE_API MergePoints<defaulttype::Rigid3Types>;
+extern template class SOFA_COMPONENT_ENGINE_DATA_API MergePoints<defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_ENGINE_DATA_API MergePoints<defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_ENGINE_DATA_API MergePoints<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_ENGINE_DATA_API MergePoints<defaulttype::Rigid2Types>;
+extern template class SOFA_COMPONENT_ENGINE_DATA_API MergePoints<defaulttype::Rigid3Types>;
  
 #endif
 

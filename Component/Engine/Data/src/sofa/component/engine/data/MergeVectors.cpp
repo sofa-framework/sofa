@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_MERGEVECTORS_CPP
-#include <SofaGeneralEngine/MergeVectors.inl>
+#include <sofa/component/engine/data/MergeVectors.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::engine
@@ -42,19 +42,19 @@ int MergeVectorsClass = core::RegisterObject("Apply a merge operation to combine
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<int> >;
-template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<bool> >;
-//template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<std::string> >;
-template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<type::Vec2u> >;
+template class SOFA_COMPONENT_ENGINE_DATA_API MergeVectors< type::vector<int> >;
+template class SOFA_COMPONENT_ENGINE_DATA_API MergeVectors< type::vector<bool> >;
+//template class SOFA_COMPONENT_ENGINE_DATA_API MergeVectors< type::vector<std::string> >;
+template class SOFA_COMPONENT_ENGINE_DATA_API MergeVectors< type::vector<type::Vec2u> >;
 
-template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<double> >;
-template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<type::Vec2d> >;
-template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<type::Vec3d> >;
-template class SOFA_SOFAGENERALENGINE_API MergeVectors< type::vector<type::Vec4d> >;
-template class SOFA_SOFAGENERALENGINE_API MergeVectors< defaulttype::Rigid2Types::VecCoord >;
-template class SOFA_SOFAGENERALENGINE_API MergeVectors< defaulttype::Rigid2Types::VecDeriv >;
-template class SOFA_SOFAGENERALENGINE_API MergeVectors< defaulttype::Rigid3Types::VecCoord >;
-template class SOFA_SOFAGENERALENGINE_API MergeVectors< defaulttype::Rigid3Types::VecDeriv >;
+template class SOFA_COMPONENT_ENGINE_DATA_API MergeVectors< type::vector<double> >;
+template class SOFA_COMPONENT_ENGINE_DATA_API MergeVectors< type::vector<type::Vec2d> >;
+template class SOFA_COMPONENT_ENGINE_DATA_API MergeVectors< type::vector<type::Vec3d> >;
+template class SOFA_COMPONENT_ENGINE_DATA_API MergeVectors< type::vector<type::Vec4d> >;
+template class SOFA_COMPONENT_ENGINE_DATA_API MergeVectors< defaulttype::Rigid2Types::VecCoord >;
+template class SOFA_COMPONENT_ENGINE_DATA_API MergeVectors< defaulttype::Rigid2Types::VecDeriv >;
+template class SOFA_COMPONENT_ENGINE_DATA_API MergeVectors< defaulttype::Rigid3Types::VecCoord >;
+template class SOFA_COMPONENT_ENGINE_DATA_API MergeVectors< defaulttype::Rigid3Types::VecDeriv >;
  
 
 

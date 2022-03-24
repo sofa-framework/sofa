@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/rigid/config.h>
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -97,7 +97,7 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_GENERATERIGIDMASS_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API GenerateRigidMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>;
+extern template class SOFA_COMPONENT_ENGINE_RIGID_API GenerateRigidMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>;
 
 #endif
 

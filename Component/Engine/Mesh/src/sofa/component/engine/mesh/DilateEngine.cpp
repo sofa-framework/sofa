@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralEngine/DilateEngine.inl>
+#include <sofa/component/engine/mesh/DilateEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::engine
@@ -31,6 +31,6 @@ int DilateEngineClass = core::RegisterObject("Dilates a given mesh by moving ver
         .add< DilateEngine<Vec3Types>>(true) // default template
                                       ;
 
-template class SOFA_SOFAGENERALENGINE_API DilateEngine<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_MESH_API DilateEngine<Vec3Types>;
 
 } //namespace sofa::component::engine

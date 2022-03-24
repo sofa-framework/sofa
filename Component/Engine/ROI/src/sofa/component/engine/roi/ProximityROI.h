@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/roi/config.h>
 
 
 
@@ -107,7 +107,7 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_PROXIMITYROI_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API ProximityROI<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_ENGINE_ROI_API ProximityROI<defaulttype::Vec3Types>;
  
 #endif
 

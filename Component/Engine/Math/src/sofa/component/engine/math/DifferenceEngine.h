@@ -21,7 +21,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/math/config.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/type/Vec.h>
 
@@ -60,8 +60,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_DifferenceEngine_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API DifferenceEngine<type::Vec1d>;
-extern template class SOFA_SOFAGENERALENGINE_API DifferenceEngine<type::Vec3d>;
+extern template class SOFA_COMPONENT_ENGINE_MATH_API DifferenceEngine<type::Vec1d>;
+extern template class SOFA_COMPONENT_ENGINE_MATH_API DifferenceEngine<type::Vec3d>;
 
 #endif
 

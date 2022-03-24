@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/IndexValueMapper.h>
+#include <sofa/component/engine/data/IndexValueMapper.h>
 #include <sofa/helper/narrow_cast.h>
 
 namespace sofa::component::engine

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMiscEngine/Distances.h>
+#include <sofa/component/engine/geometry/Distances.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaNonUniformFem/DynamicSparseGridGeometryAlgorithms.h>
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>

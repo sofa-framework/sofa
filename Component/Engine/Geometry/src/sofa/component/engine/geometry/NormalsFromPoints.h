@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/geometry/config.h>
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -65,7 +65,7 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_NormalsFromPoints_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API NormalsFromPoints<defaulttype::Vec3Types>; 
+extern template class SOFA_COMPONENT_ENGINE_GEOMETRY_API NormalsFromPoints<defaulttype::Vec3Types>; 
 #endif
 
 } //namespace sofa::component::engine

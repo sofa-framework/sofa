@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/math/config.h>
 
 #include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -78,15 +78,15 @@ protected:
 
 #if  !defined(SOFA_COMPONENT_ENGINE_MATHOP_CPP)
 
-extern template class SOFA_SOFAGENERALENGINE_API MathOp< type::vector<int> >;
-extern template class SOFA_SOFAGENERALENGINE_API MathOp< type::vector<bool> >;
-extern template class SOFA_SOFAGENERALENGINE_API MathOp< type::vector<double> >;
-extern template class SOFA_SOFAGENERALENGINE_API MathOp< type::vector<type::Vec2d> >;
-extern template class SOFA_SOFAGENERALENGINE_API MathOp< type::vector<type::Vec3d> >;
-extern template class SOFA_SOFAGENERALENGINE_API MathOp< defaulttype::Rigid2Types::VecCoord >;
-extern template class SOFA_SOFAGENERALENGINE_API MathOp< defaulttype::Rigid2Types::VecDeriv >;
-extern template class SOFA_SOFAGENERALENGINE_API MathOp< defaulttype::Rigid3Types::VecCoord >;
-extern template class SOFA_SOFAGENERALENGINE_API MathOp< defaulttype::Rigid3Types::VecDeriv >;
+extern template class SOFA_COMPONENT_ENGINE_MATH_API MathOp< type::vector<int> >;
+extern template class SOFA_COMPONENT_ENGINE_MATH_API MathOp< type::vector<bool> >;
+extern template class SOFA_COMPONENT_ENGINE_MATH_API MathOp< type::vector<double> >;
+extern template class SOFA_COMPONENT_ENGINE_MATH_API MathOp< type::vector<type::Vec2d> >;
+extern template class SOFA_COMPONENT_ENGINE_MATH_API MathOp< type::vector<type::Vec3d> >;
+extern template class SOFA_COMPONENT_ENGINE_MATH_API MathOp< defaulttype::Rigid2Types::VecCoord >;
+extern template class SOFA_COMPONENT_ENGINE_MATH_API MathOp< defaulttype::Rigid2Types::VecDeriv >;
+extern template class SOFA_COMPONENT_ENGINE_MATH_API MathOp< defaulttype::Rigid3Types::VecCoord >;
+extern template class SOFA_COMPONENT_ENGINE_MATH_API MathOp< defaulttype::Rigid3Types::VecDeriv >;
  
 #endif
 

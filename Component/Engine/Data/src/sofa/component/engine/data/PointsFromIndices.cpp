@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_POINTSFROMINDICES_CPP
-#include <SofaGeneralEngine/PointsFromIndices.inl>
+#include <sofa/component/engine/data/PointsFromIndices.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -36,8 +36,8 @@ int PointsFromIndicesClass = core::RegisterObject("Find the points given a list 
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API PointsFromIndices<Vec3Types>;
-// template class SOFA_SOFAGENERALENGINE_API PointsFromIndices<Rigid3Types>;
+template class SOFA_COMPONENT_ENGINE_DATA_API PointsFromIndices<Vec3Types>;
+// template class SOFA_COMPONENT_ENGINE_DATA_API PointsFromIndices<Rigid3Types>;
  
 
 

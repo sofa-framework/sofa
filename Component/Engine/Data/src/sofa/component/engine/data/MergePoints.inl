@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/MergePoints.h>
+#include <sofa/component/engine/data/MergePoints.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::component::engine

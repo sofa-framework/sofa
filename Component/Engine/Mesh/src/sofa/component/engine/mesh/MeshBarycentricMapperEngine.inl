@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGeneralEngine/MeshBarycentricMapperEngine.h>
+#include <sofa/component/engine/mesh/MeshBarycentricMapperEngine.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::component::engine

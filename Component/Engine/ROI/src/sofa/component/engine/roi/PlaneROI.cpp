@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_PLANEROI_CPP
-#include <SofaGeneralEngine/PlaneROI.inl>
+#include <sofa/component/engine/roi/PlaneROI.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
@@ -35,8 +35,8 @@ int PlaneROIClass = core::RegisterObject("Find the primitives inside a given pla
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API PlaneROI<Vec3Types>;
-template class SOFA_SOFAGENERALENGINE_API PlaneROI<Rigid3Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API PlaneROI<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API PlaneROI<Rigid3Types>;
  
 
 

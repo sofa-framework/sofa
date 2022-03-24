@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/mesh/config.h>
 
 #include <sofa/type/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -94,7 +94,7 @@ private:
 
 
 #if  !defined(SOFA_COMPONENT_ENGINE_MESHBARYCENTRICMAPPERENGINE_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API MeshBarycentricMapperEngine<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_ENGINE_MESH_API MeshBarycentricMapperEngine<defaulttype::Vec3Types>;
  
 #endif
 

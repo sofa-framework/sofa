@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_EXTRUDESURFACE_CPP
-#include <SofaGeneralEngine/ExtrudeSurface.inl>
+#include <sofa/component/engine/mesh/ExtrudeSurface.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -35,7 +35,7 @@ int ExtrudeSurfaceClass = core::RegisterObject("This class truns on spiral any t
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API ExtrudeSurface<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_MESH_API ExtrudeSurface<Vec3Types>;
  
 
 

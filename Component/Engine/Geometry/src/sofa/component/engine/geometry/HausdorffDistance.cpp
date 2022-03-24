@@ -39,11 +39,11 @@ int HausdorffDistanceClass = core::RegisterObject("Compute the Hausdorff distanc
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API HausdorffDistance<Vec1Types>;
-template class SOFA_SOFAGENERALENGINE_API HausdorffDistance<Vec2Types>;
-template class SOFA_SOFAGENERALENGINE_API HausdorffDistance<Vec3Types>;
-template class SOFA_SOFAGENERALENGINE_API HausdorffDistance<Rigid2Types>;
-template class SOFA_SOFAGENERALENGINE_API HausdorffDistance<Rigid3Types>;
+template class SOFA_COMPONENT_ENGINE_GEOMETRY_API HausdorffDistance<Vec1Types>;
+template class SOFA_COMPONENT_ENGINE_GEOMETRY_API HausdorffDistance<Vec2Types>;
+template class SOFA_COMPONENT_ENGINE_GEOMETRY_API HausdorffDistance<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_GEOMETRY_API HausdorffDistance<Rigid2Types>;
+template class SOFA_COMPONENT_ENGINE_GEOMETRY_API HausdorffDistance<Rigid3Types>;
  
 
 

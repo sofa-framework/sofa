@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/roi/config.h>
 
 
 
@@ -115,9 +115,9 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_PAIRBOXROI_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API PairBoxROI<defaulttype::Vec3Types>;
-extern template class SOFA_SOFAGENERALENGINE_API PairBoxROI<defaulttype::Rigid3Types>;
-extern template class SOFA_SOFAGENERALENGINE_API PairBoxROI<defaulttype::Vec6Types>; //Phuoc
+extern template class SOFA_COMPONENT_ENGINE_ROI_API PairBoxROI<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_ENGINE_ROI_API PairBoxROI<defaulttype::Rigid3Types>;
+extern template class SOFA_COMPONENT_ENGINE_ROI_API PairBoxROI<defaulttype::Vec6Types>; //Phuoc
  
 #endif
 

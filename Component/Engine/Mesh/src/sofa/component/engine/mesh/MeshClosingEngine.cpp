@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_MeshClosingEngine_CPP
-#include <SofaGeneralEngine/MeshClosingEngine.inl>
+#include <sofa/component/engine/mesh/MeshClosingEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::engine
@@ -30,7 +30,7 @@ int MeshClosingEngineClass = core::RegisterObject("Merge several meshes")
         .add< MeshClosingEngine<defaulttype::Vec3Types> >(true) // default template
         ;
 
-template class SOFA_SOFAGENERALENGINE_API MeshClosingEngine<defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_MESH_API MeshClosingEngine<defaulttype::Vec3Types>;
  
 
 

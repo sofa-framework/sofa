@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/SubsetTopology.h>
+#include <sofa/component/engine/roi/SubsetTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/BoundingBox.h>
 #include <sofa/type/RGBAColor.h>

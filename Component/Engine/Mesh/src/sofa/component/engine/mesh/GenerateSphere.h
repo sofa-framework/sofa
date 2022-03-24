@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/mesh/config.h>
 
 
 
@@ -94,7 +94,7 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_ENGINE_GENERATESPHERE_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API GenerateSphere<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_ENGINE_MESH_API GenerateSphere<defaulttype::Vec3Types>;
 
 #endif
 

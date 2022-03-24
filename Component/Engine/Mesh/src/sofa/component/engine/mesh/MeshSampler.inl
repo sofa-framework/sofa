@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/MeshSampler.h>
+#include <sofa/component/engine/mesh/MeshSampler.h>
 #include <iostream>
 
 

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/RigidToQuatEngine.h>
+#include <sofa/component/engine/rigid/RigidToQuatEngine.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::component::engine

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/PointsFromIndices.h>
+#include <sofa/component/engine/data/PointsFromIndices.h>
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa::component::engine

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_PAIRBOXROI_CPP
-#include <SofaGeneralEngine/PairBoxRoi.inl>
+#include <sofa/component/engine/roi/PairBoxRoi.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -36,9 +36,9 @@ int PairBoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/tri
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API PairBoxROI<Vec3Types>;
-template class SOFA_SOFAGENERALENGINE_API PairBoxROI<Rigid3Types>;
-template class SOFA_SOFAGENERALENGINE_API PairBoxROI<Vec6Types>; //Phuoc
+template class SOFA_COMPONENT_ENGINE_ROI_API PairBoxROI<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API PairBoxROI<Rigid3Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API PairBoxROI<Vec6Types>; //Phuoc
  
 
 

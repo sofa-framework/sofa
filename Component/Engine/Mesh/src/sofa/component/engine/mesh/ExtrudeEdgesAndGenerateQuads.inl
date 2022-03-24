@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/ExtrudeEdgesAndGenerateQuads.h>
+#include <sofa/component/engine/mesh/ExtrudeEdgesAndGenerateQuads.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/logging/Messaging.h>
 

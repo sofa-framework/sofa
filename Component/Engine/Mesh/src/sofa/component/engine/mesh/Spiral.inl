@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/Spiral.h>
+#include <sofa/component/engine/mesh/Spiral.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #ifndef M_PI_2

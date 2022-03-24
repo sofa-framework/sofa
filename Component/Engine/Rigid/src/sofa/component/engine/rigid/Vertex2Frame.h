@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/rigid/config.h>
 
 
 
@@ -77,7 +77,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_VERTEX2FRAME_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API Vertex2Frame<defaulttype::Rigid3Types>;
+extern template class SOFA_COMPONENT_ENGINE_RIGID_API Vertex2Frame<defaulttype::Rigid3Types>;
 #endif
 
 } //namespace sofa::component::engine

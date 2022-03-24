@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define QUATTORIGIDENGINE_CPP
 
-#include <SofaGeneralEngine/QuatToRigidEngine.inl>
+#include <sofa/component/engine/rigid/QuatToRigidEngine.inl>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -34,7 +34,7 @@ int QuatToRigidEngineClass = core::RegisterObject("Transform a vector of Rigids 
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API QuatToRigidEngine<sofa::defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_RIGID_API QuatToRigidEngine<sofa::defaulttype::Vec3Types>;
  
 
 

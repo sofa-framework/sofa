@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/RandomPointDistributionInSurface.h>
+#include <sofa/component/engine/geometry/RandomPointDistributionInSurface.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 #include <cstdlib>

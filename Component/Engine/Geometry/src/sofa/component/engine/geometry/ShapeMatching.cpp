@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_SHAPEMATCHING_CPP
 
-#include <SofaGeneralEngine/ShapeMatching.inl>
+#include <sofa/component/engine/geometry/ShapeMatching.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -38,8 +38,8 @@ int ShapeMatchingClass = core::RegisterObject("Compute target positions using sh
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API ShapeMatching<Vec3Types>;
-template class SOFA_SOFAGENERALENGINE_API ShapeMatching<Rigid3Types>;
+template class SOFA_COMPONENT_ENGINE_GEOMETRY_API ShapeMatching<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_GEOMETRY_API ShapeMatching<Rigid3Types>;
  
 
 

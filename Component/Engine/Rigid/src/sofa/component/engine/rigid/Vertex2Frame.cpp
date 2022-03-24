@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_VERTEX2FRAME_CPP
-#include <SofaGeneralEngine/Vertex2Frame.inl>
+#include <sofa/component/engine/rigid/Vertex2Frame.inl>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -35,7 +35,7 @@ int Vertex2FrameClass = core::RegisterObject("")
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API Vertex2Frame<Rigid3Types>;
+template class SOFA_COMPONENT_ENGINE_RIGID_API Vertex2Frame<Rigid3Types>;
  
 
 

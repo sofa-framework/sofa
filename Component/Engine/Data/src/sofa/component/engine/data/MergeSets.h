@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/data/config.h>
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -60,10 +60,10 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_MERGESETS_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API MergeSets<int>;
-extern template class SOFA_SOFAGENERALENGINE_API MergeSets<unsigned int>;
-//extern template class SOFA_SOFAGENERALENGINE_API MergeSets<long long>;
-//extern template class SOFA_SOFAGENERALENGINE_API MergeSets<unsigned long long>;
+extern template class SOFA_COMPONENT_ENGINE_DATA_API MergeSets<int>;
+extern template class SOFA_COMPONENT_ENGINE_DATA_API MergeSets<unsigned int>;
+//extern template class SOFA_COMPONENT_ENGINE_DATA_API MergeSets<long long>;
+//extern template class SOFA_COMPONENT_ENGINE_DATA_API MergeSets<unsigned long long>;
 #endif
 
 } //namespace sofa::component::engine

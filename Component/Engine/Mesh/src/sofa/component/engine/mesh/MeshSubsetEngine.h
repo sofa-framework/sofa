@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/mesh/config.h>
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -82,7 +82,7 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_MeshSubsetEngine_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API MeshSubsetEngine<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_ENGINE_MESH_API MeshSubsetEngine<defaulttype::Vec3Types>;
  
 #endif
 

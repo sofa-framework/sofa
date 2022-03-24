@@ -35,9 +35,9 @@ int SelectConnectedLabelsROIClass = core::RegisterObject("Select a subset of poi
         .add< SelectConnectedLabelsROI<int> >()
         ;
 
-template class SOFA_SOFAGENERALENGINE_API SelectConnectedLabelsROI<unsigned int>;
-template class SOFA_SOFAGENERALENGINE_API SelectConnectedLabelsROI<unsigned char>;
-template class SOFA_SOFAGENERALENGINE_API SelectConnectedLabelsROI<unsigned short>;
-template class SOFA_SOFAGENERALENGINE_API SelectConnectedLabelsROI<int>;
+template class SOFA_COMPONENT_ENGINE_ROI_API SelectConnectedLabelsROI<unsigned int>;
+template class SOFA_COMPONENT_ENGINE_ROI_API SelectConnectedLabelsROI<unsigned char>;
+template class SOFA_COMPONENT_ENGINE_ROI_API SelectConnectedLabelsROI<unsigned short>;
+template class SOFA_COMPONENT_ENGINE_ROI_API SelectConnectedLabelsROI<int>;
 
 } //namespace sofa::component::engine

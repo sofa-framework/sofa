@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaGeneralEngine/ShapeMatching.h>
+#include <sofa/component/engine/geometry/ShapeMatching.h>
 #include <sofa/helper/decompose.h>
 #include <iostream>
 #include <sofa/helper/IndexOpenMP.h>

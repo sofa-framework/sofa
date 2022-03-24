@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_CPP
-#include <SofaGeneralEngine/IndicesFromValues.inl>
+#include <sofa/component/engine/data/IndicesFromValues.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -46,20 +46,20 @@ int IndicesFromValuesClass = core::RegisterObject("Find the indices of a list of
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<std::string>;
-template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<int>;
-template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<unsigned int>;
-template class SOFA_SOFAGENERALENGINE_API IndicesFromValues< type::fixed_array<unsigned int, 2> >;
-template class SOFA_SOFAGENERALENGINE_API IndicesFromValues< type::fixed_array<unsigned int, 3> >;
-template class SOFA_SOFAGENERALENGINE_API IndicesFromValues< type::fixed_array<unsigned int, 4> >;
-template class SOFA_SOFAGENERALENGINE_API IndicesFromValues< type::fixed_array<unsigned int, 8> >;
-template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<double>;
-template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<type::Vec2d>;
-template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<type::Vec3d>;
-// template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<defaulttype::Rigid2Types::Coord>;
-// template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<defaulttype::Rigid2Types::Deriv>;
-// template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<defaulttype::Rigid3Types::Coord>;
-// template class SOFA_SOFAGENERALENGINE_API IndicesFromValues<defaulttype::Rigid3Types::Deriv>;
+template class SOFA_COMPONENT_ENGINE_DATA_API IndicesFromValues<std::string>;
+template class SOFA_COMPONENT_ENGINE_DATA_API IndicesFromValues<int>;
+template class SOFA_COMPONENT_ENGINE_DATA_API IndicesFromValues<unsigned int>;
+template class SOFA_COMPONENT_ENGINE_DATA_API IndicesFromValues< type::fixed_array<unsigned int, 2> >;
+template class SOFA_COMPONENT_ENGINE_DATA_API IndicesFromValues< type::fixed_array<unsigned int, 3> >;
+template class SOFA_COMPONENT_ENGINE_DATA_API IndicesFromValues< type::fixed_array<unsigned int, 4> >;
+template class SOFA_COMPONENT_ENGINE_DATA_API IndicesFromValues< type::fixed_array<unsigned int, 8> >;
+template class SOFA_COMPONENT_ENGINE_DATA_API IndicesFromValues<double>;
+template class SOFA_COMPONENT_ENGINE_DATA_API IndicesFromValues<type::Vec2d>;
+template class SOFA_COMPONENT_ENGINE_DATA_API IndicesFromValues<type::Vec3d>;
+// template class SOFA_COMPONENT_ENGINE_DATA_API IndicesFromValues<defaulttype::Rigid2Types::Coord>;
+// template class SOFA_COMPONENT_ENGINE_DATA_API IndicesFromValues<defaulttype::Rigid2Types::Deriv>;
+// template class SOFA_COMPONENT_ENGINE_DATA_API IndicesFromValues<defaulttype::Rigid3Types::Coord>;
+// template class SOFA_COMPONENT_ENGINE_DATA_API IndicesFromValues<defaulttype::Rigid3Types::Deriv>;
  
 
 } //namespace sofa::component::engine

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/roi/config.h>
 
 
 
@@ -37,7 +37,7 @@ namespace sofa::component::engine
  * This class merges a list of ROIs (vector<Indices>) into a single Data (vector<svector<Indices>>)
  */
 
-class SOFA_SOFAGENERALENGINE_API MergeROIs : public sofa::core::DataEngine
+class SOFA_COMPONENT_ENGINE_ROI_API MergeROIs : public sofa::core::DataEngine
 {
 public:
     typedef core::DataEngine Inherited;

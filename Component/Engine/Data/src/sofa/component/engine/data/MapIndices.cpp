@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_MAPINDICES_CPP
-#include <SofaGeneralEngine/MapIndices.inl>
+#include <sofa/component/engine/data/MapIndices.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -37,11 +37,11 @@ int MapIndicesClass = core::RegisterObject("Apply a permutation to a set of indi
         .add< MapIndices< type::fixed_array<unsigned int, 8> > >()
         ;
 
-template class SOFA_SOFAGENERALENGINE_API MapIndices<int>;
-template class SOFA_SOFAGENERALENGINE_API MapIndices<unsigned int>;
-template class SOFA_SOFAGENERALENGINE_API MapIndices< type::fixed_array<unsigned int, 2> >;
-template class SOFA_SOFAGENERALENGINE_API MapIndices< type::fixed_array<unsigned int, 3> >;
-template class SOFA_SOFAGENERALENGINE_API MapIndices< type::fixed_array<unsigned int, 4> >;
-template class SOFA_SOFAGENERALENGINE_API MapIndices< type::fixed_array<unsigned int, 8> >;
+template class SOFA_COMPONENT_ENGINE_DATA_API MapIndices<int>;
+template class SOFA_COMPONENT_ENGINE_DATA_API MapIndices<unsigned int>;
+template class SOFA_COMPONENT_ENGINE_DATA_API MapIndices< type::fixed_array<unsigned int, 2> >;
+template class SOFA_COMPONENT_ENGINE_DATA_API MapIndices< type::fixed_array<unsigned int, 3> >;
+template class SOFA_COMPONENT_ENGINE_DATA_API MapIndices< type::fixed_array<unsigned int, 4> >;
+template class SOFA_COMPONENT_ENGINE_DATA_API MapIndices< type::fixed_array<unsigned int, 8> >;
 
 } //namespace sofa::component::engine

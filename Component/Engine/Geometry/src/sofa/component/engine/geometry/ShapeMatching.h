@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/geometry/config.h>
 
 
 
@@ -96,8 +96,8 @@ private:
 
 
 #if  !defined(SOFA_COMPONENT_ENGINE_SHAPEMATCHING_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API ShapeMatching<defaulttype::Vec3Types>;
-extern template class SOFA_SOFAGENERALENGINE_API ShapeMatching<defaulttype::Rigid3Types>;
+extern template class SOFA_COMPONENT_ENGINE_GEOMETRY_API ShapeMatching<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_ENGINE_GEOMETRY_API ShapeMatching<defaulttype::Rigid3Types>;
  
 #endif
 

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/roi/config.h>
 
 
 
@@ -150,9 +150,9 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_MESHROI_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API MeshROI<defaulttype::Vec3Types>;
-extern template class SOFA_SOFAGENERALENGINE_API MeshROI<defaulttype::Rigid3Types>;
-extern template class SOFA_SOFAGENERALENGINE_API MeshROI<defaulttype::Vec6Types>; //Phuoc
+extern template class SOFA_COMPONENT_ENGINE_ROI_API MeshROI<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_ENGINE_ROI_API MeshROI<defaulttype::Rigid3Types>;
+extern template class SOFA_COMPONENT_ENGINE_ROI_API MeshROI<defaulttype::Vec6Types>; //Phuoc
  
 #endif
 

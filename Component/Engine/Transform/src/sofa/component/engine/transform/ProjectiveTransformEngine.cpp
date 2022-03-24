@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_CPP
-#include <SofaMiscEngine/ProjectiveTransformEngine.inl>
+#include <sofa/component/engine/transform/ProjectiveTransformEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::component::engine
@@ -30,7 +30,7 @@ int ProjectiveTransformEngineClass = core::RegisterObject("Project the position 
         .add< ProjectiveTransformEngine<defaulttype::Vec3Types> >(true) // default template
         ;
 
-template class SOFA_SOFAMISCENGINE_API ProjectiveTransformEngine<defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_TRANSFORM_API ProjectiveTransformEngine<defaulttype::Vec3Types>;
 
 
 } // namespace sofa::component::engine

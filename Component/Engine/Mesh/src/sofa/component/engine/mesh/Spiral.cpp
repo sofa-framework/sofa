@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_SPIRAL_CPP
-#include <SofaGeneralEngine/Spiral.inl>
+#include <sofa/component/engine/mesh/Spiral.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -35,7 +35,7 @@ int SpiralClass = core::RegisterObject("This class truns on spiral any topologic
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API Spiral<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_MESH_API Spiral<Vec3Types>;
  
 
 

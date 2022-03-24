@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_EXTRUDEQUADSANDGENERATEHEXAS_CPP
-#include <SofaGeneralEngine/ExtrudeQuadsAndGenerateHexas.inl>
+#include <sofa/component/engine/mesh/ExtrudeQuadsAndGenerateHexas.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -34,7 +34,7 @@ int ExtrudeQuadsAndGenerateHexasClass = core::RegisterObject("This engine extrud
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API ExtrudeQuadsAndGenerateHexas<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_MESH_API ExtrudeQuadsAndGenerateHexas<Vec3Types>;
  
 
 

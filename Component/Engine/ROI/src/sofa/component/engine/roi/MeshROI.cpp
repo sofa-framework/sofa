@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_MESHROI_CPP
-#include <SofaGeneralEngine/MeshROI.inl>
+#include <sofa/component/engine/roi/MeshROI.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -36,9 +36,9 @@ int MeshROIClass = core::RegisterObject("Find the primitives (vertex/edge/triang
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API MeshROI<Vec3Types>;
-template class SOFA_SOFAGENERALENGINE_API MeshROI<Rigid3Types>;
-template class SOFA_SOFAGENERALENGINE_API MeshROI<Vec6Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API MeshROI<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API MeshROI<Rigid3Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API MeshROI<Vec6Types>;
  
 
 

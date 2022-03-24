@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+
 #include <SofaGeneralEngine/DilateEngine.h>
 #include <sofa/helper/TriangleOctree.h>
 #include <sofa/helper/rmath.h> //M_PI

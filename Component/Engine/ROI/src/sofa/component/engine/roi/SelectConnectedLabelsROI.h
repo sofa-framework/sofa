@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/roi/config.h>
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/type/vector.h>
@@ -148,10 +148,10 @@ protected:
 };
 
 #ifndef SelectConnectedLabelsROI_CPP_
-extern template class SOFA_SOFAGENERALENGINE_API SelectConnectedLabelsROI<unsigned int>;
-extern template class SOFA_SOFAGENERALENGINE_API SelectConnectedLabelsROI<unsigned char>;
-extern template class SOFA_SOFAGENERALENGINE_API SelectConnectedLabelsROI<unsigned short>;
-extern template class SOFA_SOFAGENERALENGINE_API SelectConnectedLabelsROI<int>;
+extern template class SOFA_COMPONENT_ENGINE_ROI_API SelectConnectedLabelsROI<unsigned int>;
+extern template class SOFA_COMPONENT_ENGINE_ROI_API SelectConnectedLabelsROI<unsigned char>;
+extern template class SOFA_COMPONENT_ENGINE_ROI_API SelectConnectedLabelsROI<unsigned short>;
+extern template class SOFA_COMPONENT_ENGINE_ROI_API SelectConnectedLabelsROI<int>;
 #endif ///
 
 } //namespace sofa::component::engine

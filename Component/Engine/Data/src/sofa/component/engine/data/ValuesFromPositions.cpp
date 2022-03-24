@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_VALUESFROMPOSITIONS_CPP
-#include <SofaGeneralEngine/ValuesFromPositions.inl>
+#include <sofa/component/engine/data/ValuesFromPositions.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -35,8 +35,8 @@ int ValuesFromPositionsClass = core::RegisterObject("Assign values to primitives
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API ValuesFromPositions<Vec3Types>;
-template class SOFA_SOFAGENERALENGINE_API ValuesFromPositions<Rigid3Types>;
+template class SOFA_COMPONENT_ENGINE_DATA_API ValuesFromPositions<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_DATA_API ValuesFromPositions<Rigid3Types>;
  
 
 

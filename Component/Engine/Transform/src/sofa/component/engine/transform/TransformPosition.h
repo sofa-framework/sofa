@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/transform/config.h>
 
 
 
@@ -112,7 +112,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_TRANSFORMPOSITION_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API TransformPosition<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API TransformPosition<defaulttype::Vec3Types>;
  
 #endif
 

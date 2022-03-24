@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/transform/config.h>
 
 
 
@@ -69,11 +69,11 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_TRANSFORMENGINE_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API TransformEngine<defaulttype::Vec1Types>;
-extern template class SOFA_SOFAGENERALENGINE_API TransformEngine<defaulttype::Vec2Types>;
-extern template class SOFA_SOFAGENERALENGINE_API TransformEngine<defaulttype::Vec3Types>;
-extern template class SOFA_SOFAGENERALENGINE_API TransformEngine<defaulttype::Rigid2Types>;
-extern template class SOFA_SOFAGENERALENGINE_API TransformEngine<defaulttype::Rigid3Types>;
+extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API TransformEngine<defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API TransformEngine<defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API TransformEngine<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API TransformEngine<defaulttype::Rigid2Types>;
+extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API TransformEngine<defaulttype::Rigid3Types>;
 #endif
 
 } //namespace sofa::component::engine

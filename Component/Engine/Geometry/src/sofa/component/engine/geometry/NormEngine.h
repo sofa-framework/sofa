@@ -21,7 +21,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaGeneralEngine/config.h>
+#include <sofa/component/engine/geometry/config.h>
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/type/Vec.h>
@@ -69,7 +69,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_ENGINE_NORMENGINE_CPP)
-extern template class SOFA_SOFAGENERALENGINE_API NormEngine<type::Vec3d>;
+extern template class SOFA_COMPONENT_ENGINE_GEOMETRY_API NormEngine<type::Vec3d>;
 
 #endif
 

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_SUBSETTOPOLOGY_CPP
-#include <SofaGeneralEngine/SubsetTopology.inl>
+#include <sofa/component/engine/roi/SubsetTopology.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -36,8 +36,8 @@ int SubsetTopologyClass = core::RegisterObject("Engine used to create subset top
  
         ;
 
-template class SOFA_SOFAGENERALENGINE_API SubsetTopology<Vec3Types>;
-template class SOFA_SOFAGENERALENGINE_API SubsetTopology<Rigid3Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API SubsetTopology<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_ROI_API SubsetTopology<Rigid3Types>;
  
 
 

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMiscEngine/ProjectiveTransformEngine.h>
+#include <sofa/component/engine/transform/ProjectiveTransformEngine.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/rmath.h> //M_PI
 

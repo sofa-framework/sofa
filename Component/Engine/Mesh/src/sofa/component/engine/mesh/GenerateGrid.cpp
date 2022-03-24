@@ -35,8 +35,8 @@ int GenerateGridClass = core::RegisterObject("Generate a Grid Tetrahedral or Hex
         ;
 
 
-template class SOFA_SOFAGENERALENGINE_API GenerateGrid<Vec3Types>;
-template class SOFA_SOFAGENERALENGINE_API GenerateGrid<Vec2Types>;
+template class SOFA_COMPONENT_ENGINE_MESH_API GenerateGrid<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_MESH_API GenerateGrid<Vec2Types>;
  
 
 

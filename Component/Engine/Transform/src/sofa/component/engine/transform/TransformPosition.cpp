@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_TRANSFORMPOSITION_CPP
-#include <SofaGeneralEngine/TransformPosition.inl>
+#include <sofa/component/engine/transform/TransformPosition.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -34,7 +34,7 @@ int TransformPositionClass = core::RegisterObject("Transform position of 3d poin
         .add< TransformPosition<Vec3Types> >(true)
         ;
 
-template class SOFA_SOFAGENERALENGINE_API TransformPosition<Vec3Types>;
+template class SOFA_COMPONENT_ENGINE_TRANSFORM_API TransformPosition<Vec3Types>;
  
 
 
