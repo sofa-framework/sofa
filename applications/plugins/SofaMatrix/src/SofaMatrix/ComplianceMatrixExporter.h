@@ -20,40 +20,35 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <SofaMatrix/config.h>
+#include <sofa/simulation/BaseSimulationExporter.h>
+#include <SofaConstraint/ConstraintSolverImpl.h>
+#include <sofa/helper/OptionsGroup.h>
 
-#include <sofa/config.h>
+namespace sofa::component::constraintset
+{
 
-#cmakedefine01 SOFA_LINEARALGEBRA_HAVE_OPENMP
+/**
+ * @brief Exports the compliance matrix of a constraint solver into a file. The exporter allows to write the file
+ * under several formats.
+ *
+ * The class is designed so more file format can be supported.
+ */
+class SOFA_SOFAMATRIX_API ComplianceMatrixExporter : public sofa::simulation::BaseSimulationExporter
+{
+public:
+    SOFA_CLASS(ComplianceMatrixExporter, sofa::simulation::BaseSimulationExporter);
 
-#define SPARSEMATRIX_CHECK false
-#define SPARSEMATRIX_VERBOSE false
-#define COMPRESSEDROWSPARSEMATRIX_CHECK false
-#define COMPRESSEDROWSPARSEMATRIX_VERBOSE false
-#define FULLMATRIX_CHECK false
-#define FULLMATRIX_VERBOSE false
-#define EIGEN_CHECK false
+    bool write() override;
+    void doInit() override;
 
+protected:
+    Data<sofa::helper::OptionsGroup> d_fileFormat; ///< File format
+    Data<int> d_precision; ///< Number of digits used to write an entry of the matrix, default is 6
 
-#ifdef SOFA_BUILD_SOFA_LINEARALGEBRA
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_LINEARALGEBRA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_LINEARALGEBRA_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+    ComplianceMatrixExporter();
 
-// DEPRECATION MACROS
+    SingleLink<ComplianceMatrixExporter, sofa::component::constraintset::ConstraintSolverImpl, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_constraintSolver;
+};
 
-#define SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v21.12", "v22.06", \
-        "The type 'Bloc' has been renamed in 'Block'. ")
-#define SOFA_ATTRIBUTE_DISABLED__BLOCK_RENAMING_2404() \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v21.12", "v22.06", \
-        "The type 'Bloc' has been renamed in 'Block'. ")
-#define SOFA_MATRIXMANIPULATOR_DEPRECATED() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v22.06", "v22.12", "")
-#define SOFA_MATRIXMANIPULATOR_DISABLED() \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v22.12", "v23.06", "")
+} //namespace sofa::component::constraintset

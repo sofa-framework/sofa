@@ -20,26 +20,19 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaSimpleFem/TetrahedronDiffusionFEMForceField.h>
+#include <sofa/component/diffusion/TetrahedronDiffusionFEMForceField.h>
 
 #include <sofa/core/visual/VisualParams.h>
-
 #include <sofa/core/topology/TopologyData.inl>
-
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-
 #include <sofa/helper/AdvancedTimer.h>
 
-namespace sofa::component::forcefield
+namespace sofa::component::diffusion
 {
 
-   using namespace sofa::defaulttype;
-   using namespace core::topology;
-   using namespace core::objectmodel;
-   using core::topology::BaseMeshTopology;
-   typedef BaseMeshTopology::EdgesInTetrahedron		EdgesInTetrahedron;
-
+using core::topology::BaseMeshTopology;
+typedef BaseMeshTopology::EdgesInTetrahedron		EdgesInTetrahedron;
 
 template< class DataTypes>
 void TetrahedronDiffusionFEMForceField<DataTypes>::computeEdgeDiffusionCoefficient()
@@ -68,7 +61,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::computeEdgeDiffusionCoefficie
         // get a reference on the edge set of the ith added tetrahedron
         const EdgesInTetrahedron &te= m_topology->getEdgesInTetrahedron(i);
         //get a reference on the vertex set of the ith added tetrahedron
-        const Tetrahedron &t= m_topology->getTetrahedron(i);
+        const auto &t= m_topology->getTetrahedron(i);
 
         // store points
         for(j=0; j<4; ++j)
@@ -205,7 +198,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::init()
     d_tetraDiffusionCoefficient.endEdit();
 
     /// Get the mechanical object containing the mesh position in 3D
-    Tag mechanicalTag(d_tagMeshMechanics.getValue());
+    core::objectmodel::Tag mechanicalTag(d_tagMeshMechanics.getValue());
     this->getContext()->get(mechanicalObject, mechanicalTag,sofa::core::objectmodel::BaseContext::SearchUp);
     if (mechanicalObject==nullptr)
     {
@@ -459,7 +452,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
         for (sofa::Index i=0; i<surfaceTri.size(); ++i)
         {
             sofa::type::Vector3 point[3];
-            const Triangle& tri = m_topology->getTriangle(surfaceTri[i]);
+            const auto& tri = m_topology->getTriangle(surfaceTri[i]);
             for (unsigned int j=0; j<3; ++j)
                 point[j] = restPosition[tri[j]];
 
@@ -487,7 +480,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
             Real Ratio = d_tetraDiffusionCoefficient.getValue()[i] / maxDiffusion;
             auto tetraColor = sofa::type::RGBAColor(0.0f, float(Ratio), 0.5f-float(Ratio), 1.0f);
 
-            Tetrahedron tetra = m_topology->getTetrahedron(i);
+            const auto& tetra = m_topology->getTetrahedron(i);
             sofa::type::Vec3 point[4];
 
             for (sofa::Index j = 0; j<4; j++)
@@ -519,4 +512,4 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
 }
 
 
-} //namespace sofa::component::forcefield
+} // namespace sofa::component::diffusion

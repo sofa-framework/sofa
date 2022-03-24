@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaSimpleFem/config.h>
+#include <sofa/component/diffusion/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/type/fixed_array.h>
@@ -30,7 +30,7 @@
 #include <sofa/core/topology/TopologyData.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
-namespace sofa::component::forcefield
+namespace sofa::component::diffusion
 {
 
 template<class DataTypes>
@@ -129,10 +129,10 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_CPP)
-extern template class SOFA_SOFASIMPLEFEM_API TetrahedronDiffusionFEMForceField<defaulttype::Vec1Types>;
-extern template class SOFA_SOFASIMPLEFEM_API TetrahedronDiffusionFEMForceField<defaulttype::Vec2Types>;
-extern template class SOFA_SOFASIMPLEFEM_API TetrahedronDiffusionFEMForceField<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_DIFFUSION_API TetrahedronDiffusionFEMForceField<defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_DIFFUSION_API TetrahedronDiffusionFEMForceField<defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_DIFFUSION_API TetrahedronDiffusionFEMForceField<defaulttype::Vec3Types>;
  
 #endif
 
-} //namespace sofa::component::forcefield
+} // namespace sofa::component::diffusion

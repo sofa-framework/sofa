@@ -11,15 +11,12 @@ set(HEADER_FILES
     ${SOFASIMPLEFEM_SRC}/HexahedronFEMForceField.inl
     ${SOFASIMPLEFEM_SRC}/TetrahedronFEMForceField.h
     ${SOFASIMPLEFEM_SRC}/TetrahedronFEMForceField.inl
-    ${SOFASIMPLEFEM_SRC}/TetrahedronDiffusionFEMForceField.h
-    ${SOFASIMPLEFEM_SRC}/TetrahedronDiffusionFEMForceField.inl
 )
 
 set(SOURCE_FILES
     ${SOFASIMPLEFEM_SRC}/initSofaSimpleFem.cpp
     ${SOFASIMPLEFEM_SRC}/HexahedronFEMForceField.cpp
     ${SOFASIMPLEFEM_SRC}/TetrahedronFEMForceField.cpp
-    ${SOFASIMPLEFEM_SRC}/TetrahedronDiffusionFEMForceField.cpp
 )
 
 sofa_find_package(SofaBase REQUIRED) # SofaBaseTopology
@@ -27,6 +24,12 @@ sofa_find_package(SofaBaseLinearSolver REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaBaseLinearSolver)
+
+message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Diffusion instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.Diffusion REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Diffusion)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

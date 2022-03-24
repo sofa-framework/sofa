@@ -21,39 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/config.h>
+#include <sofa/component/diffusion/TetrahedronDiffusionFEMForceField.h>
 
-#cmakedefine01 SOFA_LINEARALGEBRA_HAVE_OPENMP
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/diffusion/TetrahedronDiffusionFEMForceField.h")
 
-#define SPARSEMATRIX_CHECK false
-#define SPARSEMATRIX_VERBOSE false
-#define COMPRESSEDROWSPARSEMATRIX_CHECK false
-#define COMPRESSEDROWSPARSEMATRIX_VERBOSE false
-#define FULLMATRIX_CHECK false
-#define FULLMATRIX_VERBOSE false
-#define EIGEN_CHECK false
+namespace sofa::component::forcefield
+{
+    template<class DataTypes>
+    using TetrahedronDiffusionFEMForceField = sofa::component::diffusion::TetrahedronDiffusionFEMForceField<DataTypes>;
 
-
-#ifdef SOFA_BUILD_SOFA_LINEARALGEBRA
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_LINEARALGEBRA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_LINEARALGEBRA_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-// DEPRECATION MACROS
-
-#define SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v21.12", "v22.06", \
-        "The type 'Bloc' has been renamed in 'Block'. ")
-#define SOFA_ATTRIBUTE_DISABLED__BLOCK_RENAMING_2404() \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v21.12", "v22.06", \
-        "The type 'Bloc' has been renamed in 'Block'. ")
-#define SOFA_MATRIXMANIPULATOR_DEPRECATED() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v22.06", "v22.12", "")
-#define SOFA_MATRIXMANIPULATOR_DISABLED() \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v22.12", "v23.06", "")
+} // namespace sofa::component::forcefield

@@ -20,40 +20,36 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <SofaMatrix/config.h>
 
-#include <sofa/config.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <SofaMatrix/BaseMatrixImageProxy.h>
+#include <SofaConstraint/ConstraintSolverImpl.h>
 
-#cmakedefine01 SOFA_LINEARALGEBRA_HAVE_OPENMP
+namespace sofa::component::constraintset
+{
 
-#define SPARSEMATRIX_CHECK false
-#define SPARSEMATRIX_VERBOSE false
-#define COMPRESSEDROWSPARSEMATRIX_CHECK false
-#define COMPRESSEDROWSPARSEMATRIX_VERBOSE false
-#define FULLMATRIX_CHECK false
-#define FULLMATRIX_VERBOSE false
-#define EIGEN_CHECK false
+/**
+ * Component to convert a BaseMatrix from the constraint solver into an image that can be visualized in the GUI.
+ * Use ComplianceMatrixExporter in order to save an image on the disk.
+ *
+ * Note that the compliance matrix is dense. It means all the entries will proably be non-zero
+ */
+class SOFA_SOFAMATRIX_API ComplianceMatrixImage : public core::objectmodel::BaseObject
+{
+public:
+    SOFA_CLASS(ComplianceMatrixImage, core::objectmodel::BaseObject);
 
+protected:
 
-#ifdef SOFA_BUILD_SOFA_LINEARALGEBRA
-#  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_LINEARALGEBRA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_LINEARALGEBRA_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+    ComplianceMatrixImage();
+    ~ComplianceMatrixImage() override;
 
-// DEPRECATION MACROS
+    void init() override;
+    void handleEvent(core::objectmodel::Event *event) override;
 
-#define SOFA_ATTRIBUTE_DEPRECATED__BLOCK_RENAMING_2404() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v21.12", "v22.06", \
-        "The type 'Bloc' has been renamed in 'Block'. ")
-#define SOFA_ATTRIBUTE_DISABLED__BLOCK_RENAMING_2404() \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v21.12", "v22.06", \
-        "The type 'Bloc' has been renamed in 'Block'. ")
-#define SOFA_MATRIXMANIPULATOR_DEPRECATED() \
-    SOFA_ATTRIBUTE_DEPRECATED( \
-        "v22.06", "v22.12", "")
-#define SOFA_MATRIXMANIPULATOR_DISABLED() \
-    SOFA_ATTRIBUTE_DISABLED( \
-        "v22.12", "v23.06", "")
+    Data< type::BaseMatrixImageProxy > d_bitmap; ///< A proxy to visualize the produced image in the GUI through a DataWidget
+    SingleLink<ComplianceMatrixImage, sofa::component::constraintset::ConstraintSolverImpl, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_constraintSolver;
+};
+
+} //namespace sofa::component::constraintset
