@@ -23,8 +23,9 @@
 
 #include <sofa/component/engine/geometry/Distances.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaNonUniformFem/DynamicSparseGridGeometryAlgorithms.h>
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/DynamicSparseGridTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/DynamicSparseGridGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/HexahedronSetGeometryAlgorithms.h>
 #include <sofa/core/loader/VoxelLoader.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/type/RGBAColor.h>
@@ -40,7 +41,7 @@ using std::queue;
 using sofa::core::loader::VoxelLoader;
 
 template<class DataTypes>
-Distances< DataTypes >::Distances ( sofa::component::topology::DynamicSparseGridTopologyContainer* hexaTopoContainer, core::behavior::MechanicalState<DataTypes>* targetPointSet ) :
+Distances< DataTypes >::Distances ( sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer* hexaTopoContainer, core::behavior::MechanicalState<DataTypes>* targetPointSet ) :
     showMapIndex ( initData ( &showMapIndex, (unsigned int)0, "showMapIndex","Frame DOF index on which display values." ) ),
     showDistanceMap ( initData ( &showDistanceMap, false, "showDistancesMap","show the dsitance for each point of the target point set." ) ),
     showGoalDistanceMap ( initData ( &showGoalDistanceMap, false, "showGoalDistancesMap","show the dsitance for each point of the target point set." ) ),

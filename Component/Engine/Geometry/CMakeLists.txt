@@ -33,10 +33,12 @@ set(SOURCE_FILES
     ${SOFACOMPONENTENGINEGEOMETRY_SOURCE_DIR}/RandomPointDistributionInSurface.cpp
 )
 
-sofa_find_package(SofaSimulationCore REQUIRED)
+sofa_find_package(Sofa.SimulationCore REQUIRED)
+sofa_find_package(Sofa.Component.Topology.Container.Dynamic REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.SimulationCore)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Topology.Container.Dynamic)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

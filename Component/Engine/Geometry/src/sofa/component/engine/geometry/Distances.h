@@ -25,9 +25,8 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <SofaNonUniformFem/DynamicSparseGridTopologyContainer.h>
-#include <SofaNonUniformFem/DynamicSparseGridGeometryAlgorithms.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/SVector.h>
 #include <sofa/helper/set.h>
 #include <sofa/helper/map.h>
@@ -39,6 +38,14 @@
 #define TYPE_STIFFNESS_DIFFUSION 2
 #define TYPE_VORONOI 3
 #define TYPE_HARMONIC_STIFFNESS 4
+
+namespace sofa::component::topology::container::dynamic
+{
+    class DynamicSparseGridTopologyContainer;
+
+    template<class DataTypes>
+    class DynamicSparseGridGeometryAlgorithms;
+}
 
 namespace sofa::component::engine
 {
@@ -70,7 +77,7 @@ protected:
     DistancesInternalData<DataTypes> data;
     friend class DistancesInternalData<DataTypes>;
 
-    Distances ( sofa::component::topology::DynamicSparseGridTopologyContainer* hexaTopoContainer, core::behavior::MechanicalState<DataTypes>* targetPointSet );
+    Distances ( sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer* hexaTopoContainer, core::behavior::MechanicalState<DataTypes>* targetPointSet );
 
     ~Distances() override {}
 
@@ -134,7 +141,7 @@ public:
         if (arg->findObject(arg->getAttribute("targetPath", "..")) == nullptr) {
             msg_error(context) << "Cannot create " << T::GetClass()->className << " as the target point set is missing.";
         }
-        if ( dynamic_cast<sofa::component::topology::DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) == nullptr )
+        if ( dynamic_cast<sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) == nullptr )
             return false;
         if ( dynamic_cast<core::behavior::MechanicalState<DataTypes>*> ( arg->findObject ( arg->getAttribute ( "targetPath",".." ) ) ) == nullptr )
             return false;
@@ -148,7 +155,7 @@ public:
     static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
     {
         typename T::SPtr obj = sofa::core::objectmodel::New<T>(
-                ( arg?dynamic_cast<sofa::component::topology::DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) :nullptr ),
+                ( arg?dynamic_cast<sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer*> ( arg->findObject ( arg->getAttribute ( "hexaContainerPath","../.." ) ) ) :nullptr ),
                 ( arg?dynamic_cast<core::behavior::MechanicalState<DataTypes>*> ( arg->findObject ( arg->getAttribute ( "targetPath",".." ) ) ) :nullptr ) );
 
         if ( context ) context->addObject ( obj );
@@ -177,8 +184,8 @@ private:
     core::behavior::MechanicalState<DataTypes>* target;
 
     Data<std::string> hexaContainerPath; ///< path to the grid used to compute the distances
-    sofa::component::topology::DynamicSparseGridTopologyContainer* hexaContainer;
-    sofa::component::topology::DynamicSparseGridGeometryAlgorithms< DataTypes >* hexaGeoAlgo;
+    sofa::component::topology::container::dynamic::DynamicSparseGridTopologyContainer* hexaContainer;
+    sofa::component::topology::container::dynamic::DynamicSparseGridGeometryAlgorithms< DataTypes >* hexaGeoAlgo;
     const unsigned char * densityValues; // Density values
     const unsigned char * segmentIDData; // Density values
 
