@@ -37,6 +37,20 @@ Components/topology/SparseGridRamificationTopology.scn 100 1e-4 0 1
 Components/mass/UniformMass.scn 100 1e-4 0 1
 Components/mass/DiagonalMass.scn 100 1e-4 0 1
 Components/mass/MeshMatrixMass.scn 100 1e-4 0 1
+Components/linearsolver/FEMBAR_CGLinearSolver.scn 100 1e-8 0 1
+Components/linearsolver/FEMBAR_CGLinearSolver_assembled.scn 100 1e-8 0 1
+Components/linearsolver/FEMBAR_MinResLinearSolver.scn 100 1e-8 0 1
+Components/linearsolver/FEMBAR_PrecomputedLinearSolver.scn 100 1e-8 0 1
+Components/linearsolver/FEMBAR_ShewchukPCGLinearSolver.scn 1e-8 0 1
+Components/linearsolver/FEMBAR_SparseCholeskySolver.scn 100 1e-8 0 1
+Components/linearsolver/FEMBAR_SparseLDLSolver.scn 100 1e-8 0 1
+Components/linearsolver/FEMBAR_SparseLUSolver.scn 100 1e-8 0 1
+Components/linearsolver/preconditioner/FEMBAR_PCG_BlockJacobiPreconditioner.scn 100 1e-8 0 1
+Components/linearsolver/preconditioner/FEMBAR_PCG_JacobiPreconditioner.scn 100 1e-8 0 1
+Components/linearsolver/preconditioner/FEMBAR_PCG_NoPreconditioner.scn 100 1e-8 0 1
+Components/linearsolver/preconditioner/FEMBAR_PCG_PrecomputedWarpPreconditioner.scn 100 1e-8 0 1
+Components/linearsolver/preconditioner/FEMBAR_PCG_SSORPreconditioner.scn 100 1e-8 0 1
+Components/linearsolver/preconditioner/FEMBAR_PCG_WarpPreconditioner.scn 100 1e-8 0 1
 
 
 ### Benchmark scenes ###
