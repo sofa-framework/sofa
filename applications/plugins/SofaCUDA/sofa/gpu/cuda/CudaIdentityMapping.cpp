@@ -19,15 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDAIDENTITYMAPPING_CPP
-#define SOFA_GPU_CUDA_CUDAIDENTITYMAPPING_CPP
+#define  SOFA_GPU_CUDA_CUDAIDENTITYMAPPING_CPP
 
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/gpu/cuda/CudaIdentityMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::mapping
+namespace sofa::component::mapping::linear
 {
 
 using namespace sofa::defaulttype;
@@ -56,7 +55,7 @@ template class SOFA_GPU_CUDA_API  IdentityMapping< CudaVec3fTypes, CudaVec3dType
 template class SOFA_GPU_CUDA_API  IdentityMapping< Vec3Types, CudaVec3dTypes>;
 #endif
 
-} // namespace sofa::component::mapping
+} // namespace sofa::component::mapping::linear
 
 
 namespace sofa::gpu::cuda
@@ -91,5 +90,3 @@ int IdentityMappingCudaClass = core::RegisterObject("Supports GPU-side computati
     ;
 
 } // namespace sofa::gpu::cuda
-
-#endif // SOFA_GPU_CUDA_CUDAIDENTITYMAPPING_CPP

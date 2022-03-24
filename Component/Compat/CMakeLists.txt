@@ -23,6 +23,10 @@ include(Sofa.Component.LinearSolver.Iterative.cmake)
 include(Sofa.Component.LinearSolver.Direct.cmake)
 include(Sofa.Component.LinearSolver.Preconditioner.cmake)
 include(Sofa.Component.Mass.cmake)
+include(Sofa.Component.Mapping.Linear.cmake)
+include(Sofa.Component.Mapping.NonLinear.cmake)
+include(Sofa.Component.Mapping.MappedMatrix.cmake)
+include(Sofa.Component.Visual.cmake)
 
 set(SOURCE_FILES
     ${SOFACOMPONENTCOMPATSRC_ROOT}/init.cpp
