@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/engine/roi/NearestPointROI.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::roi
 {
 
 template <class DataTypes>
@@ -179,4 +179,4 @@ void NearestPointROI<DataTypes>::computeNearestPointMaps(const VecCoord& x1, con
     }
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::roi

@@ -26,7 +26,7 @@
 #include <sofa/type/RGBAColor.h>
 #include <limits>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::roi
 {
 
 template <class DataTypes>
@@ -232,4 +232,4 @@ void PairBoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::roi

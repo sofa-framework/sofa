@@ -28,7 +28,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 /**
@@ -76,4 +76,4 @@ protected:
 extern template class SOFA_COMPONENT_ENGINE_MESH_API SmoothMeshEngine<defaulttype::Vec3Types>;
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

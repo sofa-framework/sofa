@@ -23,7 +23,7 @@
 #include <sofa/component/engine/mesh/ExtrudeQuadsAndGenerateHexas.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 template <class DataTypes>
@@ -197,4 +197,4 @@ void ExtrudeQuadsAndGenerateHexas<DataTypes>::draw(const core::visual::VisualPar
 }
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

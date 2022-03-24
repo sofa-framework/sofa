@@ -25,7 +25,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::geometry
 {
 
 template <class DataTypes>
@@ -128,4 +128,4 @@ void HausdorffDistance<DataTypes>::onBeginAnimationStep(const double /*dt*/)
         update();
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::geometry

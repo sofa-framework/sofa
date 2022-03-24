@@ -23,7 +23,7 @@
 #include <sofa/component/engine/math/MathOp.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::math
 {
 
 int MathOpClass = core::RegisterObject("Apply a math operation to combine several inputs")
@@ -52,4 +52,4 @@ template class SOFA_COMPONENT_ENGINE_MATH_API MathOp< defaulttype::Rigid3Types::
  
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::math

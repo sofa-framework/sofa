@@ -22,7 +22,7 @@
 #pragma once
 #include "MeshSplittingEngine.h"
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 template <class container>
@@ -105,4 +105,4 @@ void MeshSplittingEngine<DataTypes>::doUpdate()
 }
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

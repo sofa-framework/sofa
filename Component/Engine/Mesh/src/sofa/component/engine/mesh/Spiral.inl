@@ -26,7 +26,7 @@
 #ifndef M_PI_2
 #define M_PI_2 1.570796326794897f
 #endif
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 template <class DataTypes>
@@ -111,4 +111,4 @@ void Spiral<DataTypes>::draw(const core::visual::VisualParams* vparams)
         return;
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

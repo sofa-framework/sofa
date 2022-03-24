@@ -23,7 +23,7 @@
 #include <sofa/component/engine/transform/TransformEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::transform
 {
 
 int TransformEngineClass = core::RegisterObject("Transform position of 3d points")
@@ -41,4 +41,4 @@ template class SOFA_COMPONENT_ENGINE_TRANSFORM_API TransformEngine<defaulttype::
 template class SOFA_COMPONENT_ENGINE_TRANSFORM_API TransformEngine<defaulttype::Rigid2Types>;
 template class SOFA_COMPONENT_ENGINE_TRANSFORM_API TransformEngine<defaulttype::Rigid3Types>;
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::transform

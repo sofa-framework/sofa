@@ -47,7 +47,7 @@ namespace sofa::component::topology::container::dynamic
     class DynamicSparseGridGeometryAlgorithms;
 }
 
-namespace sofa::component::engine
+namespace sofa::component::engine::geometry
 {
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
@@ -215,4 +215,4 @@ private:
 extern template class SOFA_COMPONENT_ENGINE_GEOMETRY_API Distances<defaulttype::Vec3Types>; 
 #endif
 
-} // namespace sofa::component::engine
+} // namespace sofa::component::engine::geometry

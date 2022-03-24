@@ -25,7 +25,7 @@
 #include <numeric>
 
 
-namespace sofa::component::engine
+namespace sofa::component::engine::math
 {
 
 template <class DataTypes>
@@ -58,4 +58,4 @@ void SumEngine<DataType>::doUpdate()
     out.wref() = std::accumulate(in.begin(), in.end(), DataType() );
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::math

@@ -24,7 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::engine::boxroi
+namespace sofa::component::engine::roi::boxroi
 {
 
 using namespace sofa::defaulttype;
@@ -45,4 +45,4 @@ template class SOFA_COMPONENT_ENGINE_ROI_API BoxROI<Rigid3Types>;
 template class SOFA_COMPONENT_ENGINE_ROI_API BoxROI<Vec6Types>;
  
 
-} // namespace sofa::component::engine::boxroi
+} // namespace sofa::component::engine::roi::boxroi

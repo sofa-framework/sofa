@@ -24,7 +24,7 @@
 #include "DisplacementMatrixEngine.h"
 
 
-namespace sofa::component::engine
+namespace sofa::component::engine::transform
 {
 
 ///////////////////////////////////////////////////////////////
@@ -180,4 +180,4 @@ void DisplacementMatrixEngine< DataTypes >::doUpdate()
     this->d_displacements.endEdit();
 }
 
-} // namespace sofa::component::engine
+} // namespace sofa::component::engine::transform

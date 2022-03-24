@@ -27,7 +27,7 @@
 
 #include <cassert>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::transform
 {
 
 template <class DataTypes>
@@ -307,4 +307,4 @@ void TransformEngine<DataTypes>::doUpdate()
 
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::transform

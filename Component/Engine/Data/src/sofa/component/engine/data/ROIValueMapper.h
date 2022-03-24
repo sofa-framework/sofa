@@ -29,7 +29,7 @@
 #include <sofa/core/objectmodel/vectorData.h>
 
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 /**
@@ -136,4 +136,4 @@ protected:
 };
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

@@ -31,7 +31,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 /**
@@ -82,4 +82,4 @@ extern template class SOFA_COMPONENT_ENGINE_MESH_API ExtrudeEdgesAndGenerateQuad
  
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

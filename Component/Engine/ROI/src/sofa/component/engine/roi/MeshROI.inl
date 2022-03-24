@@ -26,7 +26,7 @@
 
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::roi
 {
 
 using sofa::core::objectmodel::BaseData;
@@ -743,4 +743,4 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
     vparams->drawTool()->restoreLastState();
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::roi

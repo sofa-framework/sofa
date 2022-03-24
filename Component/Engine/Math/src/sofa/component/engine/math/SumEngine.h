@@ -25,7 +25,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/type/Vec.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::math
 {
 
 /// Computing the Sum between two vector of dofs
@@ -58,4 +58,4 @@ extern template class SOFA_COMPONENT_ENGINE_MATH_API SumEngine<type::Vec1d>;
 extern template class SOFA_COMPONENT_ENGINE_MATH_API SumEngine<type::Vec3d>;
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::math

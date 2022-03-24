@@ -33,7 +33,7 @@
 #include <sofa/helper/TriangleOctree.h>
 #include <sofa/helper/RandomGenerator.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::geometry
 {
 
 /**
@@ -94,4 +94,4 @@ protected:
 extern template class SOFA_COMPONENT_ENGINE_GEOMETRY_API RandomPointDistributionInSurface<defaulttype::Vec3Types>;
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::geometry

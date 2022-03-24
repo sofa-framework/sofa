@@ -25,7 +25,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::roi
 {
 
 int SelectConnectedLabelsROIClass = core::RegisterObject("Select a subset of points or cells labeled from different sources, that are connected given a list of connection pairs")
@@ -40,4 +40,4 @@ template class SOFA_COMPONENT_ENGINE_ROI_API SelectConnectedLabelsROI<unsigned c
 template class SOFA_COMPONENT_ENGINE_ROI_API SelectConnectedLabelsROI<unsigned short>;
 template class SOFA_COMPONENT_ENGINE_ROI_API SelectConnectedLabelsROI<int>;
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::roi

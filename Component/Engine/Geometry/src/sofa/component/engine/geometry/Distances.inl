@@ -34,7 +34,7 @@
 #include <queue>
 #include <fstream>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::geometry
 {
 
 using std::queue;
@@ -718,4 +718,4 @@ void Distances< DataTypes >::draw(const core::visual::VisualParams* vparams)
 }
 
 
-} // namespace sofa::component::engine
+} // namespace sofa::component::engine::geometry

@@ -23,7 +23,7 @@
 #include <sofa/component/engine/data/MergeVectors.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 int MergeVectorsClass = core::RegisterObject("Apply a merge operation to combine several inputs")
@@ -58,4 +58,4 @@ template class SOFA_COMPONENT_ENGINE_DATA_API MergeVectors< defaulttype::Rigid3T
  
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

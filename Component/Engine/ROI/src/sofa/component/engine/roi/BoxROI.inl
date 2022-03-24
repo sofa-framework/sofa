@@ -28,7 +28,7 @@
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/helper/accessor.h>
 
-namespace sofa::component::engine::boxroi
+namespace sofa::component::engine::roi::boxroi
 {
 
 using core::behavior::BaseMechanicalState ;
@@ -1119,4 +1119,4 @@ void BoxROI<DataTypes>::handleEvent(Event *event)
     SOFA_UNUSED(event);
 }
 
-} // namespace sofa::component::engine::boxroi
+} // namespace sofa::component::engine::roi::boxroi

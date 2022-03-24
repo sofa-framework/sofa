@@ -23,7 +23,7 @@
 #include <sofa/component/engine/data/MergePoints.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 template <class DataTypes>
@@ -132,4 +132,4 @@ void MergePoints<DataTypes>::doUpdate()
     initDone=true;
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

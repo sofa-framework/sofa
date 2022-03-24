@@ -24,7 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::roi
 {
 
 using namespace sofa::defaulttype;
@@ -42,4 +42,4 @@ template class SOFA_COMPONENT_ENGINE_ROI_API PairBoxROI<Vec6Types>; //Phuoc
  
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::roi

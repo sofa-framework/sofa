@@ -25,7 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::math
 {
 
 using namespace sofa::defaulttype;
@@ -46,4 +46,4 @@ template class SOFA_COMPONENT_ENGINE_MATH_API AverageCoord<Rigid3Types>;
  
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::math

@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::roi
 {
 
 template <class DataTypes>
@@ -839,4 +839,4 @@ void SphereROI<defaulttype::Rigid3Types>::doUpdate()
 ////////////////////////////////////////////////////////////////////////////////////////
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::roi

@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/Quat.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::rigid
 {
 
 template <class DataTypes>
@@ -168,4 +168,4 @@ type::Quat<SReal>  Vertex2Frame<DataTypes>::computeOrientation(const CPos &xAxis
 }
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::rigid

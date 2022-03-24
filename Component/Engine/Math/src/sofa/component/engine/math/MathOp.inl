@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/engine/math/MathOp.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::math
 {
 
 template<typename T>
@@ -469,4 +469,4 @@ void MathOp<VecT>::doUpdate()
         msg_error() << "Operation " << op << " FAILED";
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::math

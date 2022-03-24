@@ -25,7 +25,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::geometry
 {
 
 using namespace sofa::defaulttype;
@@ -37,4 +37,4 @@ int DistancesClass = core::RegisterObject("Compute distances based on a grid.")
 
 template class SOFA_COMPONENT_ENGINE_GEOMETRY_API Distances<Vec3Types>;
  
-} // namespace sofa::component::engine
+} // namespace sofa::component::engine::geometry

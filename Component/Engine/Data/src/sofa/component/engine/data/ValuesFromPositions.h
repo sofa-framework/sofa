@@ -33,7 +33,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/OptionsGroup.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 /**
@@ -144,4 +144,4 @@ extern template class SOFA_COMPONENT_ENGINE_DATA_API ValuesFromPositions<default
 extern template class SOFA_COMPONENT_ENGINE_DATA_API ValuesFromPositions<defaulttype::Rigid3Types>; 
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

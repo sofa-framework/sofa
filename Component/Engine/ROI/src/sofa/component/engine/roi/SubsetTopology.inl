@@ -26,7 +26,7 @@
 #include <sofa/type/RGBAColor.h>
 #include <limits>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::roi
 {
 
 template <class DataTypes>
@@ -896,4 +896,4 @@ void SubsetTopology<DataTypes>::computeBBox(const core::ExecParams*  params , bo
     this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::roi

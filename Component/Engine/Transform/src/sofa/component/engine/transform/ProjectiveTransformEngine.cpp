@@ -23,7 +23,7 @@
 #include <sofa/component/engine/transform/ProjectiveTransformEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::transform
 {
 
 int ProjectiveTransformEngineClass = core::RegisterObject("Project the position of 3d points onto a plane according to a projection matrix")
@@ -33,5 +33,5 @@ int ProjectiveTransformEngineClass = core::RegisterObject("Project the position 
 template class SOFA_COMPONENT_ENGINE_TRANSFORM_API ProjectiveTransformEngine<defaulttype::Vec3Types>;
 
 
-} // namespace sofa::component::engine
+} // namespace sofa::component::engine::transform
 

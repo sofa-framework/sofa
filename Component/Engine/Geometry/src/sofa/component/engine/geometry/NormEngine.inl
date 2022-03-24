@@ -23,7 +23,7 @@
 #include <sofa/component/engine/geometry/NormEngine.h>
 
 
-namespace sofa::component::engine
+namespace sofa::component::engine::geometry
 {
 
 template <class DataTypes>
@@ -64,4 +64,4 @@ void NormEngine<DataType>::doUpdate()
 
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::geometry

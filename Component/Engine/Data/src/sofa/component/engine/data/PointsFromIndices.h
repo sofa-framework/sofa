@@ -30,7 +30,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 /**
@@ -70,4 +70,4 @@ extern template class SOFA_COMPONENT_ENGINE_DATA_API PointsFromIndices<defaultty
  
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

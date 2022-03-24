@@ -23,7 +23,7 @@
 #include <sofa/component/engine/mesh/MergeMeshes.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 template <class DataTypes>
@@ -160,4 +160,4 @@ void MergeMeshes<DataTypes>::doUpdate()
     msg_info() << " from " << nb << " input meshes.";
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

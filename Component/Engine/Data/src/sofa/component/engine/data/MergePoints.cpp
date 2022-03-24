@@ -23,7 +23,7 @@
 #include <sofa/component/engine/data/MergePoints.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 int MergePointsClass = core::RegisterObject("Merge 2 cordinate vectors")
@@ -43,4 +43,4 @@ template class SOFA_COMPONENT_ENGINE_DATA_API MergePoints<defaulttype::Rigid3Typ
  
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

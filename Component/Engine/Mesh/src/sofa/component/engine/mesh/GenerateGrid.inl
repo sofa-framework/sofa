@@ -22,7 +22,7 @@
 #pragma once
 #include "GenerateGrid.h"
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 template <class DataTypes>
@@ -188,4 +188,4 @@ void GenerateGrid<DataTypes>::doUpdate()
 }
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

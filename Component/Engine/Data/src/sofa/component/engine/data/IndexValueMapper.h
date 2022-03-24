@@ -27,7 +27,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/type/vector.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 template <class DataTypes>
@@ -68,4 +68,4 @@ extern template class SOFA_COMPONENT_ENGINE_DATA_API IndexValueMapper<sofa::defa
  
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

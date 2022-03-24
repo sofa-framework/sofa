@@ -27,7 +27,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::roi
 {
 
 using std::string;
@@ -128,4 +128,4 @@ void ComplementaryROI<DataTypes>::doUpdate()
     msg_info() << "Created ROI containing " << indices.size() << " points not in " << nbSet.ref() << " sets" ;
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::roi

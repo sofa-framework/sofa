@@ -22,7 +22,7 @@
 #include <sofa/component/engine/mesh/DilateEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 using namespace defaulttype;
@@ -33,4 +33,4 @@ int DilateEngineClass = core::RegisterObject("Dilates a given mesh by moving ver
 
 template class SOFA_COMPONENT_ENGINE_MESH_API DilateEngine<Vec3Types>;
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

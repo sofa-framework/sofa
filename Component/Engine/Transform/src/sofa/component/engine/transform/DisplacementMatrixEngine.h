@@ -27,7 +27,7 @@
 #include <sofa/type/Vec.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::transform
 {
 
 
@@ -127,4 +127,4 @@ public:
     type::vector<Matrix4x4> SxInverses;  ///< inverse initial positions
 };
 
-} // namespace sofa::component::engine
+} // namespace sofa::component::engine::transform

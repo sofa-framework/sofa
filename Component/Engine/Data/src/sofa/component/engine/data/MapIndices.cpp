@@ -25,7 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 int MapIndicesClass = core::RegisterObject("Apply a permutation to a set of indices")
@@ -44,4 +44,4 @@ template class SOFA_COMPONENT_ENGINE_DATA_API MapIndices< type::fixed_array<unsi
 template class SOFA_COMPONENT_ENGINE_DATA_API MapIndices< type::fixed_array<unsigned int, 4> >;
 template class SOFA_COMPONENT_ENGINE_DATA_API MapIndices< type::fixed_array<unsigned int, 8> >;
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

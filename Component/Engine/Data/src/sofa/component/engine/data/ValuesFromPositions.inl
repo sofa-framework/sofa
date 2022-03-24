@@ -27,7 +27,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 template <class DataTypes>
@@ -443,4 +443,4 @@ void ValuesFromPositions<DataTypes>::draw(const core::visual::VisualParams* vpar
     vparams->drawTool()->restoreLastState();
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

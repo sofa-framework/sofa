@@ -31,7 +31,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/loader/MeshLoader.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::roi
 {
 
 
@@ -162,4 +162,4 @@ extern template class SOFA_COMPONENT_ENGINE_ROI_API SphereROI<defaulttype::Vec3T
 extern template class SOFA_COMPONENT_ENGINE_ROI_API SphereROI<defaulttype::Rigid3Types>;
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::roi

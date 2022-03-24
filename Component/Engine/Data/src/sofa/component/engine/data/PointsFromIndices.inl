@@ -23,7 +23,7 @@
 #include <sofa/component/engine/data/PointsFromIndices.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 template <class DataTypes>
@@ -98,4 +98,4 @@ void PointsFromIndices<DataTypes>::doUpdate()
     f_indices_position.endEdit();
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

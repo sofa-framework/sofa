@@ -21,12 +21,12 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGeneralEngine/DilateEngine.h>
+#include <sofa/component/engine/mesh/DilateEngine.h>
 #include <sofa/helper/TriangleOctree.h>
 #include <sofa/helper/rmath.h> //M_PI
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 using helper::ReadAccessor;
@@ -168,4 +168,4 @@ void DilateEngine<DataTypes>::doUpdate()
 }
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

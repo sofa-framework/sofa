@@ -31,7 +31,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::transform
 {
 
 /**
@@ -76,4 +76,4 @@ extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API TransformEngine<defaul
 extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API TransformEngine<defaulttype::Rigid3Types>;
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::transform

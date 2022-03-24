@@ -29,7 +29,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::rigid
 {
 
 /**
@@ -80,4 +80,4 @@ protected:
 extern template class SOFA_COMPONENT_ENGINE_RIGID_API Vertex2Frame<defaulttype::Rigid3Types>;
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::rigid

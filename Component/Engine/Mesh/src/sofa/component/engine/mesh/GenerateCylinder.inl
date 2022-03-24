@@ -25,7 +25,7 @@
 
 #include <sofa/core/topology/Topology.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 using sofa::core::topology::edgesInTetrahedronArray;
@@ -688,4 +688,4 @@ void GenerateCylinder<DataTypes>::doUpdate()
 }
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

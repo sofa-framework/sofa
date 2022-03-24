@@ -23,7 +23,7 @@
 #include <sofa/component/engine/roi/NearestPointROI.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::roi
 {
 
 using namespace sofa::defaulttype;
@@ -43,4 +43,4 @@ template class SOFA_COMPONENT_ENGINE_ROI_API NearestPointROI<sofa::defaulttype::
 template class SOFA_COMPONENT_ENGINE_ROI_API NearestPointROI<sofa::defaulttype::Vec6Types>;
 template class SOFA_COMPONENT_ENGINE_ROI_API NearestPointROI<sofa::defaulttype::Rigid3Types>;
 template class SOFA_COMPONENT_ENGINE_ROI_API NearestPointROI<sofa::defaulttype::Rigid2Types>;
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::roi

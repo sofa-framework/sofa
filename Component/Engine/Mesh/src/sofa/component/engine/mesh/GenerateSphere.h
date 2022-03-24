@@ -30,7 +30,7 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 /*** This class creates a mesh on the sphere as the tessellation of a regular tetrahedron,
@@ -98,4 +98,4 @@ extern template class SOFA_COMPONENT_ENGINE_MESH_API GenerateSphere<defaulttype:
 
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

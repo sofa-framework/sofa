@@ -25,7 +25,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 using namespace sofa;
@@ -40,4 +40,4 @@ template class SOFA_COMPONENT_ENGINE_DATA_API Indices2ValuesMapper<Vec3Types>;
  
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

@@ -30,7 +30,7 @@
 #include <fstream>
 #include <algorithm>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::transform
 {
 
 template <class DataTypes>
@@ -495,4 +495,4 @@ void TransformPosition<DataTypes>::draw(const core::visual::VisualParams* vparam
 }
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::transform

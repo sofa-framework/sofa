@@ -32,7 +32,7 @@
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::roi
 {
 
 /**
@@ -156,4 +156,4 @@ extern template class SOFA_COMPONENT_ENGINE_ROI_API MeshROI<defaulttype::Vec6Typ
  
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::roi

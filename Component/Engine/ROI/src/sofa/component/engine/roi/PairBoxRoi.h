@@ -34,7 +34,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::roi
 {
 
 /**
@@ -121,4 +121,4 @@ extern template class SOFA_COMPONENT_ENGINE_ROI_API PairBoxROI<defaulttype::Vec6
  
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::roi

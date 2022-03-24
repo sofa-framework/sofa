@@ -25,7 +25,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/rmath.h> //M_PI
 
-namespace sofa::component::engine
+namespace sofa::component::engine::transform
 {
 
 template <class DataTypes>
@@ -88,4 +88,4 @@ void ProjectiveTransformEngine<DataTypes>::doUpdate()
     }
 }
 
-} // namespace sofa::component::engine
+} // namespace sofa::component::engine::transform

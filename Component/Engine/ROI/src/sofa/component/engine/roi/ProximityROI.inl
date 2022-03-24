@@ -29,7 +29,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::roi
 {
 
 template <class DataTypes>
@@ -289,4 +289,4 @@ void ProximityROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->restoreLastState();
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::roi

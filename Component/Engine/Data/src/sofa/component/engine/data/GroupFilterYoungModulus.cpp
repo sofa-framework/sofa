@@ -25,7 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 using namespace sofa::defaulttype;
@@ -39,4 +39,4 @@ template class SOFA_COMPONENT_ENGINE_DATA_API GroupFilterYoungModulus<Vec3Types>
  
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

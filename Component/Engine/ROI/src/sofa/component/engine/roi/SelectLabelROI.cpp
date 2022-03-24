@@ -25,7 +25,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::roi
 {
 
 int SelectLabelROIClass = core::RegisterObject("Select a subset of labeled points or cells stored in (vector<svector<label>>) given certain labels")
@@ -40,4 +40,4 @@ template class SOFA_COMPONENT_ENGINE_ROI_API SelectLabelROI<unsigned char>;
 template class SOFA_COMPONENT_ENGINE_ROI_API SelectLabelROI<unsigned short>;
 template class SOFA_COMPONENT_ENGINE_ROI_API SelectLabelROI<int>;
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::roi

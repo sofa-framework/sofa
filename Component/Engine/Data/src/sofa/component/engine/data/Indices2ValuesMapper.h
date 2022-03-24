@@ -28,7 +28,7 @@
 #include <sofa/type/vector.h>
 
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 
@@ -71,4 +71,4 @@ extern template class SOFA_COMPONENT_ENGINE_DATA_API Indices2ValuesMapper<sofa::
 #endif
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

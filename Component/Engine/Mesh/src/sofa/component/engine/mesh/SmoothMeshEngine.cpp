@@ -24,7 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 using namespace sofa::defaulttype;
@@ -38,4 +38,4 @@ template class SOFA_COMPONENT_ENGINE_MESH_API SmoothMeshEngine<Vec3Types>;
  
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

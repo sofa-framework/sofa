@@ -24,7 +24,7 @@
 #include <sofa/helper/logging/Messaging.h>
 
 
-namespace sofa::component::engine
+namespace sofa::component::engine::math
 {
 
 template <class DataTypes>
@@ -70,4 +70,4 @@ void DifferenceEngine<DataType>::doUpdate()
         out[i] = in[i] - sub[i];
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::math

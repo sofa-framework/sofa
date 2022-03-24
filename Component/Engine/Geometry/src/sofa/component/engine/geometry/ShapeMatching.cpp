@@ -27,7 +27,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/Vec.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::geometry
 {
 
 using namespace defaulttype;
@@ -54,4 +54,4 @@ void ShapeMatching<Rigid3Types>::doUpdate()
 
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::geometry

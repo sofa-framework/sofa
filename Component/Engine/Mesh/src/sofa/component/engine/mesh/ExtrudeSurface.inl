@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 template <class DataTypes>
@@ -267,4 +267,4 @@ void ExtrudeSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
     vparams->drawTool()->restoreLastState();
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

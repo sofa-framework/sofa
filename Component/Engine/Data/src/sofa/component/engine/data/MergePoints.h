@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 /**
@@ -75,4 +75,4 @@ extern template class SOFA_COMPONENT_ENGINE_DATA_API MergePoints<defaulttype::Ri
  
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

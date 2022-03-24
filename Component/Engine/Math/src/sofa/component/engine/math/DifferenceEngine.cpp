@@ -23,7 +23,7 @@
 #include "DifferenceEngine.inl"
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::math
 {
     
 using namespace sofa::type;
@@ -39,4 +39,4 @@ template class SOFA_COMPONENT_ENGINE_MATH_API DifferenceEngine<Vec1d>;
 template class SOFA_COMPONENT_ENGINE_MATH_API DifferenceEngine<Vec3d>;
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::math

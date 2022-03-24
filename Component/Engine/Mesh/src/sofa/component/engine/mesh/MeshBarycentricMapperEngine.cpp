@@ -26,7 +26,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 using namespace sofa::defaulttype;
 
@@ -40,4 +40,4 @@ template class SOFA_COMPONENT_ENGINE_MESH_API MeshBarycentricMapperEngine<Vec3Ty
 
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

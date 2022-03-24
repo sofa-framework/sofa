@@ -26,7 +26,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <list>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 template <class DataTypes>
@@ -144,4 +144,4 @@ void JoinPoints<DataTypes>::doUpdate()
     f_mergedPoints.endEdit();
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

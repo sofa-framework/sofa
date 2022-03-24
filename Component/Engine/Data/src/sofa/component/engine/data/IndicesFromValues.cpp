@@ -25,7 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 int IndicesFromValuesClass = core::RegisterObject("Find the indices of a list of values within a larger set of values")
@@ -62,4 +62,4 @@ template class SOFA_COMPONENT_ENGINE_DATA_API IndicesFromValues<type::Vec3d>;
 // template class SOFA_COMPONENT_ENGINE_DATA_API IndicesFromValues<defaulttype::Rigid3Types::Deriv>;
  
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

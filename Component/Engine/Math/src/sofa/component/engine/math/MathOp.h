@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/OptionsGroup.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::math
 {
 
 /**
@@ -90,4 +90,4 @@ extern template class SOFA_COMPONENT_ENGINE_MATH_API MathOp< defaulttype::Rigid3
  
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::math

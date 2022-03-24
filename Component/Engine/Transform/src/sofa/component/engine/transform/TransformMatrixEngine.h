@@ -30,7 +30,7 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::transform
 {
 
 class SOFA_COMPONENT_ENGINE_TRANSFORM_API AbstractTransformMatrixEngine : public core::DataEngine
@@ -138,4 +138,4 @@ protected:
     Data<type::Vector3> d_scale; ///< scale
 };
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::transform

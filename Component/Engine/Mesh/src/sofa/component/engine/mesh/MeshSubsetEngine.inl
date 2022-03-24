@@ -22,7 +22,7 @@
 #pragma once
 #include "MeshSubsetEngine.h"
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 template <class DataTypes>
@@ -102,4 +102,4 @@ void MeshSubsetEngine<DataTypes>::doUpdate()
 }
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

@@ -27,7 +27,7 @@
 #include <ctime>
 #include <climits>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::geometry
 {
 
 template <class DataTypes>
@@ -276,4 +276,4 @@ void RandomPointDistributionInSurface<DataTypes>::draw(const core::visual::Visua
     vparams->drawTool()->restoreLastState();
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::geometry

@@ -25,7 +25,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::transform
 {
 
 using namespace type;
@@ -71,4 +71,4 @@ int DisplacementMatrixEngineClass = core::RegisterObject("Converts a vector of R
     .add< DisplacementMatrixEngine<Rigid3Types> >()
 ;
 
-} // namespace sofa::component::engine
+} // namespace sofa::component::engine::transform

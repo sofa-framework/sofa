@@ -29,7 +29,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa::component::engine::boxroi
+namespace sofa::component::engine::roi::boxroi
 {
 
 /// This namespace is used to avoid the leaking of the 'using' on includes.
@@ -197,13 +197,13 @@ extern template class SOFA_COMPONENT_ENGINE_ROI_API BoxROI<defaulttype::Vec6Type
  
 #endif
 
-} // namespace sofa::component::engine::boxroi
+} // namespace sofa::component::engine::roi::boxroi
 
-namespace sofa::component::engine
+namespace sofa::component::engine::roi
 {
 
 /// Import sofa::component::engine::boxroi::BoxROI into
 /// into the sofa::component::engine namespace.
 using boxroi::BoxROI ;
 
-} // namespace sofa::component::engine
+} // namespace sofa::component::engine::roi

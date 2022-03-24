@@ -24,7 +24,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 using namespace sofa::defaulttype;
@@ -37,4 +37,4 @@ int JoinPointsClass = core::RegisterObject("?")
 template class SOFA_COMPONENT_ENGINE_DATA_API JoinPoints<Vec3Types>;
  
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

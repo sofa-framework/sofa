@@ -23,7 +23,7 @@
 #include <sofa/component/engine/rigid/QuatToRigidEngine.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::rigid
 {
 template <class DataTypes>
 QuatToRigidEngine<DataTypes>::QuatToRigidEngine()
@@ -109,4 +109,4 @@ void QuatToRigidEngine<DataTypes>::doUpdate()
     f_rigids.endEdit();
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::rigid

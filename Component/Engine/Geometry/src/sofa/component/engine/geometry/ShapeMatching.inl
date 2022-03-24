@@ -31,7 +31,7 @@
     #include <omp.h>
 #endif
 
-namespace sofa::component::engine
+namespace sofa::component::engine::geometry
 {
 template<class Real>
 inline const type::Vec<3,Real>& center(const type::Vec<3,Real>& c)
@@ -218,4 +218,4 @@ void ShapeMatching<DataTypes>::draw(const core::visual::VisualParams* /*vparams*
 }
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::geometry

@@ -31,7 +31,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/config.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::roi
 {
 
 /**
@@ -96,4 +96,4 @@ extern template class SOFA_COMPONENT_ENGINE_ROI_API NearestPointROI<defaulttype:
 extern template class SOFA_COMPONENT_ENGINE_ROI_API NearestPointROI<defaulttype::Rigid2Types>;
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::roi

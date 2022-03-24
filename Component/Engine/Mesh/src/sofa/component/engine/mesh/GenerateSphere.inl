@@ -24,7 +24,7 @@
 #include <sofa/helper/rmath.h> //M_PI
 #include <sofa/core/topology/Topology.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 
@@ -806,4 +806,4 @@ void GenerateSphere<DataTypes>::doUpdate()
 
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

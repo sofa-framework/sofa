@@ -25,7 +25,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/narrow_cast.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 template <class DataTypes>
@@ -182,4 +182,4 @@ void GroupFilterYoungModulus<DataTypes>::doUpdate()
     f_youngModulus.endEdit();
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

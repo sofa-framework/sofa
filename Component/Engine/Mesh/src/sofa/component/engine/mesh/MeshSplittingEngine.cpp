@@ -23,7 +23,7 @@
 #include <sofa/component/engine/mesh/MeshSplittingEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 int MeshSplittingEngineClass = core::RegisterObject("This class breaks a mesh in multiple parts, based on selected vertices or cells.")
@@ -34,4 +34,4 @@ template class SOFA_COMPONENT_ENGINE_MESH_API MeshSplittingEngine<defaulttype::V
  
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

@@ -23,7 +23,7 @@
 #include <sofa/component/engine/mesh/MergeMeshes.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 int MergeMeshesClass = core::RegisterObject("Merge several meshes")
@@ -43,4 +43,4 @@ template class SOFA_COMPONENT_ENGINE_MESH_API MergeMeshes<defaulttype::Rigid3Typ
  
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

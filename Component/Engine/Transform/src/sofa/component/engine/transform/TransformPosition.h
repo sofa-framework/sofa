@@ -34,7 +34,7 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/helper/OptionsGroup.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::transform
 {
 
 /**
@@ -116,4 +116,4 @@ extern template class SOFA_COMPONENT_ENGINE_TRANSFORM_API TransformPosition<defa
  
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::transform

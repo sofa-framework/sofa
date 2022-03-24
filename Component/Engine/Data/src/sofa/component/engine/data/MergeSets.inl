@@ -25,7 +25,7 @@
 
 #include <algorithm>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 template <class T>
@@ -99,4 +99,4 @@ void MergeSets<T>::doUpdate()
         out.push_back(*it);
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

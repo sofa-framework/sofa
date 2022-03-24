@@ -29,7 +29,7 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/system/FileRepository.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::geometry
 {
 
 using std::pair;
@@ -405,4 +405,4 @@ void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
 
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::geometry

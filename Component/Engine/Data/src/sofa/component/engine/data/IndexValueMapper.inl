@@ -23,7 +23,7 @@
 #include <sofa/component/engine/data/IndexValueMapper.h>
 #include <sofa/helper/narrow_cast.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 template <class DataTypes>
@@ -88,4 +88,4 @@ void IndexValueMapper<DataTypes>::doUpdate()
 }
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

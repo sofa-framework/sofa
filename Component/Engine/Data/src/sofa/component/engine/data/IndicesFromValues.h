@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 /**
@@ -89,4 +89,4 @@ extern template class SOFA_COMPONENT_ENGINE_DATA_API IndicesFromValues<type::Vec
  
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

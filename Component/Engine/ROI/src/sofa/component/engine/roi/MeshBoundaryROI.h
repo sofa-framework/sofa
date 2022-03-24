@@ -27,7 +27,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/type/SVector.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::roi
 {
 
 /**
@@ -79,4 +79,4 @@ public:
     inline bool inROI(const PointID& index) const;
 };
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::roi

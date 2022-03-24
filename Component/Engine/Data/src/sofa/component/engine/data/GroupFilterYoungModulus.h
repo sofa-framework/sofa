@@ -29,7 +29,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/type/PrimitiveGroup.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 /**
@@ -70,4 +70,4 @@ extern template class SOFA_COMPONENT_ENGINE_DATA_API GroupFilterYoungModulus<def
  
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

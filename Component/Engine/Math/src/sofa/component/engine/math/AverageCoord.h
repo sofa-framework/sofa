@@ -30,7 +30,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 
 
-namespace sofa::component::engine
+namespace sofa::component::engine::math
 {
 
 /**
@@ -77,4 +77,4 @@ extern template class SOFA_COMPONENT_ENGINE_MATH_API AverageCoord<defaulttype::R
  
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::math

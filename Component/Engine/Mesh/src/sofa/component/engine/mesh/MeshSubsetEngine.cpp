@@ -23,7 +23,7 @@
 #include <sofa/component/engine/mesh/MeshSubsetEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 int MeshSubsetEngineClass = core::RegisterObject("Extract a mesh subset based on selected vertices")
@@ -34,4 +34,4 @@ template class SOFA_COMPONENT_ENGINE_MESH_API MeshSubsetEngine<defaulttype::Vec3
  
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

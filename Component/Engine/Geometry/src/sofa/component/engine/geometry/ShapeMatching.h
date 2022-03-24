@@ -34,7 +34,7 @@
 #include <sofa/type/SVector.h>
 
 
-namespace sofa::component::engine
+namespace sofa::component::engine::geometry
 {
 
 /**
@@ -101,4 +101,4 @@ extern template class SOFA_COMPONENT_ENGINE_GEOMETRY_API ShapeMatching<defaultty
  
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::geometry

@@ -30,7 +30,7 @@
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/core/objectmodel/vectorData.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 /**
@@ -91,4 +91,4 @@ extern template class SOFA_COMPONENT_ENGINE_DATA_API MergeVectors< defaulttype::
  
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

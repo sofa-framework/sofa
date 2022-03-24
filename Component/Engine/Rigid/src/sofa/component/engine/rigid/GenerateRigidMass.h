@@ -28,7 +28,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/type/Vec.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::rigid
 {
 
 template <class DataTypes, class MassType>
@@ -101,4 +101,4 @@ extern template class SOFA_COMPONENT_ENGINE_RIGID_API GenerateRigidMass<defaultt
 
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::rigid

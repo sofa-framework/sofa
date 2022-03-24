@@ -24,7 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 using namespace sofa::defaulttype;
@@ -40,4 +40,4 @@ template class SOFA_COMPONENT_ENGINE_DATA_API ValuesFromPositions<Rigid3Types>;
  
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

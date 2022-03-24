@@ -23,7 +23,7 @@
 #include <sofa/component/engine/roi/MeshBoundaryROI.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::roi
 {
 
 int MeshBoundaryROIClass = core::RegisterObject("Outputs indices of boundary vertices of a triangle/quad mesh")
@@ -124,4 +124,4 @@ bool MeshBoundaryROI::inROI(const PointID& index) const
     return true;
 }
     
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::roi

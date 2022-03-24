@@ -27,7 +27,7 @@
 
 #include <set>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 /**
@@ -66,4 +66,4 @@ extern template class SOFA_COMPONENT_ENGINE_DATA_API MergeSets<unsigned int>;
 //extern template class SOFA_COMPONENT_ENGINE_DATA_API MergeSets<unsigned long long>;
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

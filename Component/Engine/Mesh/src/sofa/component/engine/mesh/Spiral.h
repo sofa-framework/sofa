@@ -31,7 +31,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 /**
@@ -69,4 +69,4 @@ public:
 extern template class SOFA_COMPONENT_ENGINE_MESH_API Spiral<defaulttype::Vec3Types>; 
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

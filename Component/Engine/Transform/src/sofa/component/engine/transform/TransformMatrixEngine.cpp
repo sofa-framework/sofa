@@ -27,7 +27,7 @@
 
 #include <sofa/type/Quat.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::transform
 {
 
 using namespace sofa::type;
@@ -175,4 +175,4 @@ void ScaleTransformMatrixEngine::doUpdate()
     (*outT) = (*inT) * myT;
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::transform

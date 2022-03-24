@@ -23,7 +23,7 @@
 #include <sofa/component/engine/data/IndicesFromValues.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 template <class T>
@@ -114,4 +114,4 @@ void IndicesFromValues<T>::doUpdate()
     }
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

@@ -30,7 +30,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
  /*
   * This engine computes barycentric coefficients from an input set of topology (and positions) and some other (mapped) positions
@@ -98,4 +98,4 @@ extern template class SOFA_COMPONENT_ENGINE_MESH_API MeshBarycentricMapperEngine
  
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

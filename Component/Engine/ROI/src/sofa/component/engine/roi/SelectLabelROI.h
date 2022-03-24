@@ -29,7 +29,7 @@
 #include <sofa/type/SVector.h>
 
 
-namespace sofa::component::engine
+namespace sofa::component::engine::roi
 {
 
 /**
@@ -107,4 +107,4 @@ protected:
 };
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::roi

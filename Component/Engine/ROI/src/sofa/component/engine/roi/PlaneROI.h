@@ -32,7 +32,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/loader/MeshLoader.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::roi
 {
 
 /**
@@ -141,4 +141,4 @@ extern template class SOFA_COMPONENT_ENGINE_ROI_API PlaneROI<defaulttype::Rigid3
  
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::roi

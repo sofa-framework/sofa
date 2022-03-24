@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 using type::vector;
@@ -172,4 +172,4 @@ void ExtrudeEdgesAndGenerateQuads<DataTypes>::doUpdate()
 
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

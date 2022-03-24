@@ -24,7 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::geometry
 {
 
 using namespace sofa::defaulttype;
@@ -39,4 +39,4 @@ template class SOFA_COMPONENT_ENGINE_GEOMETRY_API ClusteringEngine<Vec3Types>;
 
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::geometry

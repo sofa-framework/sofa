@@ -26,7 +26,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/type/Vec.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::geometry
 {
 
 /// convert a vector of Vecs in a vector of their l-norms
@@ -73,4 +73,4 @@ extern template class SOFA_COMPONENT_ENGINE_GEOMETRY_API NormEngine<type::Vec3d>
 
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::geometry

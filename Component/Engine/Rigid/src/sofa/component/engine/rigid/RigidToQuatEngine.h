@@ -29,7 +29,7 @@
 
 
 
-namespace sofa::component::engine
+namespace sofa::component::engine::rigid
 {
 
 /*
@@ -65,4 +65,4 @@ public:
 extern template class SOFA_COMPONENT_ENGINE_RIGID_API RigidToQuatEngine<defaulttype::Vec3Types>;
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::rigid

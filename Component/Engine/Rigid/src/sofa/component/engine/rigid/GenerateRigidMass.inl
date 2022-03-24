@@ -28,7 +28,7 @@
 #include <iostream>
 #include <fstream>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::rigid
 {
 
 
@@ -256,4 +256,4 @@ std::string GenerateRigidMass<DataTypes, MassType>::GetCustomTemplateName()
 }
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::rigid

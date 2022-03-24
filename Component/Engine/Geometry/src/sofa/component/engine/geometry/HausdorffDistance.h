@@ -28,7 +28,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 
 
-namespace sofa::component::engine
+namespace sofa::component::engine::geometry
 {
 
 /**
@@ -88,4 +88,4 @@ extern template class SOFA_COMPONENT_ENGINE_GEOMETRY_API HausdorffDistance<defau
  
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::geometry

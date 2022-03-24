@@ -25,7 +25,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::rigid
 {
 
 using namespace sofa::defaulttype;
@@ -39,4 +39,4 @@ template class SOFA_COMPONENT_ENGINE_RIGID_API Vertex2Frame<Rigid3Types>;
  
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::rigid

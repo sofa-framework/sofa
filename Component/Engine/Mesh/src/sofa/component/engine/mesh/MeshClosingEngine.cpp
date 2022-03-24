@@ -23,7 +23,7 @@
 #include <sofa/component/engine/mesh/MeshClosingEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 int MeshClosingEngineClass = core::RegisterObject("Merge several meshes")
@@ -34,4 +34,4 @@ template class SOFA_COMPONENT_ENGINE_MESH_API MeshClosingEngine<defaulttype::Vec
  
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

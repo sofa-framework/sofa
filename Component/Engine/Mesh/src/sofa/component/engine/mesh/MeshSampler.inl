@@ -24,7 +24,7 @@
 #include <iostream>
 
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 
@@ -223,4 +223,4 @@ void MeshSampler<DataTypes>::draw(const core::visual::VisualParams* /*vparams*/)
 
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

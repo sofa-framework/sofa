@@ -26,7 +26,7 @@
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::math
 {
 
 template <class DataTypes>
@@ -93,4 +93,4 @@ void AverageCoord<DataTypes>::onBeginAnimationStep(const double dt)
     update();
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::math

@@ -24,7 +24,7 @@
 #include <sofa/component/engine/mesh/MeshBarycentricMapperEngine.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 template <class DataTypes>
@@ -420,4 +420,4 @@ void MeshBarycentricMapperEngine<DataTypes>::addPointInCube(const Index /*cubeIn
     msg_error() << "addPointInCube not implemented";
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

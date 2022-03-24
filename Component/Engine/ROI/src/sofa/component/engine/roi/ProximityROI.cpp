@@ -25,7 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::roi
 {
 
 using namespace sofa::defaulttype;
@@ -40,4 +40,4 @@ template class SOFA_COMPONENT_ENGINE_ROI_API ProximityROI<Vec3Types>;
  
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::roi

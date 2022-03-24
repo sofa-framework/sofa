@@ -22,7 +22,7 @@
 #pragma once
 #include "MeshClosingEngine.h"
 
-namespace sofa::component::engine
+namespace sofa::component::engine::mesh
 {
 
 template <class DataTypes>
@@ -122,4 +122,4 @@ void MeshClosingEngine<DataTypes>::doUpdate()
 }
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::mesh

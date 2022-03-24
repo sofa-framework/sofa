@@ -25,7 +25,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/type/Vec.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::math
 {
 
 /// Computing the difference between two vector of dofs
@@ -65,4 +65,4 @@ extern template class SOFA_COMPONENT_ENGINE_MATH_API DifferenceEngine<type::Vec3
 
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::math

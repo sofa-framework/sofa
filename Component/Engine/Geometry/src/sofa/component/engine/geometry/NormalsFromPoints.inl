@@ -24,7 +24,7 @@
 #include <iostream>
 #include <cmath>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::geometry
 {
 
 template <class DataTypes>
@@ -131,4 +131,4 @@ void NormalsFromPoints<DataTypes>::doUpdate()
         waNormals[i].normalize();
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::geometry

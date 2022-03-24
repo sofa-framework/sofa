@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 /**
@@ -82,4 +82,4 @@ extern template class SOFA_COMPONENT_ENGINE_DATA_API MapIndices< type::fixed_arr
 extern template class SOFA_COMPONENT_ENGINE_DATA_API MapIndices< type::fixed_array<unsigned int, 8> >;
 #endif
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

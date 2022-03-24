@@ -22,7 +22,7 @@
 #pragma once
 #include <sofa/component/engine/data/MergeVectors.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::data
 {
 
 template <class VecT>
@@ -79,4 +79,4 @@ void MergeVectors<VecT>::doUpdate()
     core::objectmodel::vectorData<VecValue>::merge( f_output, vf_inputs );
 }
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::data

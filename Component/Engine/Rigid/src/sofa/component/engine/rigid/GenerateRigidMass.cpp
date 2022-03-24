@@ -24,7 +24,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::engine
+namespace sofa::component::engine::rigid
 {
 
 using namespace sofa::defaulttype;
@@ -37,4 +37,4 @@ int GenerateRigidMassClass = core::RegisterObject("An engine computing the Rigid
 template class SOFA_COMPONENT_ENGINE_RIGID_API GenerateRigidMass<Rigid3Types, Rigid3Mass>;
 
 
-} //namespace sofa::component::engine
+} //namespace sofa::component::engine::rigid
