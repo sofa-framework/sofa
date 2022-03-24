@@ -141,22 +141,13 @@ struct Triangle
         pvec = sofa::type::cross(direction, e1);
 
         det = sofa::type::dot(e0, pvec);
-        if constexpr(std::is_floating_point_v<TReal>)
+
+        if (std::fabs(det) <= epsilon)
         {
-            inv_det = one / det;
-            if (std::isnan(inv_det))
-            {
-                return false;
-            }
+            return false;
         }
-        else
-        {
-            if (std::abs(det) <= epsilon)
-            {
-                return false;
-            }
-            inv_det = one / det;
-        }
+
+        inv_det = one / det;
 
         tvec = origin - n0;
 
