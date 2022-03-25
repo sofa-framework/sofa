@@ -23,22 +23,12 @@
 #include "CudaPenalityContactForceField.inl"
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 int PenalityContactForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< sofa::component::solidmechanics::spring::PenalityContactForceField<CudaVec3fTypes> >()
-        .add< sofa::component::solidmechanics::spring::PenalityContactForceField<CudaVec3f1Types> >()
+        .add< sofa::component::interactionforcefield::PenalityContactForceField<CudaVec3fTypes> >()
+        .add< sofa::component::interactionforcefield::PenalityContactForceField<CudaVec3f1Types> >()
         ;
 
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
+} // namespace sofa::gpu::cuda
