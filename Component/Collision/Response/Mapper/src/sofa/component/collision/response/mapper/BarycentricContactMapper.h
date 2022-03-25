@@ -23,7 +23,7 @@
 #include <sofa/component/collision/response/mapper/config.h>
 
 #include <sofa/component/mapping/linear/BarycentricMapping.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/collision/response/mapper/BaseContactMapper.h>
 #include <sofa/component/collision/model/TriangleModel.h>
 #include <sofa/component/collision/model/LineModel.h>
@@ -43,9 +43,9 @@ public:
     typedef typename MCollisionModel::Topology InTopology;
     typedef core::behavior::MechanicalState< InDataTypes> InMechanicalState;
     typedef core::behavior::MechanicalState<  typename BarycentricContactMapper::DataTypes> MMechanicalState;
-    typedef component::container::MechanicalObject<typename BarycentricContactMapper::DataTypes> MMechanicalObject;
-    typedef mapping::BarycentricMapping< InDataTypes, typename BarycentricContactMapper::DataTypes > MMapping;
-    typedef mapping::TopologyBarycentricMapper<InDataTypes, typename BarycentricContactMapper::DataTypes> MMapper;
+    typedef component::statecontainer::MechanicalObject<typename BarycentricContactMapper::DataTypes> MMechanicalObject;
+    typedef mapping::linear::BarycentricMapping< InDataTypes, typename BarycentricContactMapper::DataTypes > MMapping;
+    typedef mapping::linear::TopologyBarycentricMapper<InDataTypes, typename BarycentricContactMapper::DataTypes> MMapper;
     MCollisionModel* model;
     typename MMapping::SPtr mapping;
     typename MMapper::SPtr mapper;
@@ -108,7 +108,7 @@ public:
 
 /// Mapper for LineModel
 template<class DataTypes>
-class ContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> : public BarycentricContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes>
+class ContactMapper<model::LineCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> : public BarycentricContactMapper<model::LineCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -129,7 +129,7 @@ public:
 
 /// Mapper for TriangleModel
 template<class DataTypes>
-class ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> : public BarycentricContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes>
+class ContactMapper<model::TriangleCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> : public BarycentricContactMapper<model::TriangleCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;

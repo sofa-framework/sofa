@@ -24,7 +24,7 @@
 
 #include <sofa/helper/Factory.h>
 #include <sofa/component/mapping/linear/SubsetMapping.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/component/collision/response/mapper/BaseContactMapper.h>
 
@@ -45,8 +45,8 @@ public:
     typedef typename MCollisionModel::InDataTypes InDataTypes;
     typedef core::behavior::MechanicalState<InDataTypes> InMechanicalState;
     typedef core::behavior::MechanicalState<typename SubsetContactMapper::DataTypes> MMechanicalState;
-    typedef component::container::MechanicalObject<typename SubsetContactMapper::DataTypes> MMechanicalObject;
-    typedef mapping::SubsetMapping< InDataTypes, typename SubsetContactMapper::DataTypes > MMapping;
+    typedef component::statecontainer::MechanicalObject<typename SubsetContactMapper::DataTypes> MMechanicalObject;
+    typedef mapping::linear::SubsetMapping< InDataTypes, typename SubsetContactMapper::DataTypes > MMapping;
     MCollisionModel* model;
     simulation::Node::SPtr child;
     typename MMapping::SPtr mapping;

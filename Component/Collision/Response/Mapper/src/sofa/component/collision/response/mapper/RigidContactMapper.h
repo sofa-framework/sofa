@@ -24,7 +24,7 @@
 
 #include <sofa/helper/Factory.h>
 #include <sofa/component/mapping/nonlinear/RigidMapping.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/collision/response/mapper/BaseContactMapper.h>
 #include <sofa/component/collision/model/SphereModel.h>
 #include <sofa/component/collision/model/CylinderModel.h>
@@ -46,8 +46,8 @@ public:
     typedef typename MCollisionModel::InDataTypes InDataTypes;
     typedef core::behavior::MechanicalState<InDataTypes> InMechanicalState;
     typedef core::behavior::MechanicalState<typename RigidContactMapper::DataTypes> MMechanicalState;
-    typedef component::container::MechanicalObject<typename RigidContactMapper::DataTypes> MMechanicalObject;
-    typedef mapping::RigidMapping< InDataTypes, typename RigidContactMapper::DataTypes > MMapping;
+    typedef component::statecontainer::MechanicalObject<typename RigidContactMapper::DataTypes> MMechanicalObject;
+    typedef mapping::nonlinear::RigidMapping< InDataTypes, typename RigidContactMapper::DataTypes > MMapping;
 
     using Index = sofa::Index;
 
@@ -120,7 +120,7 @@ public:
 
 
 template <class TVec3Types>
-class ContactMapper<RigidSphereModel,TVec3Types > : public RigidContactMapper<RigidSphereModel, TVec3Types >{
+class ContactMapper<model::RigidSphereModel,TVec3Types > : public RigidContactMapper<model::RigidSphereModel, TVec3Types >{
     public:
         sofa::Index addPoint(const typename TVec3Types::Coord & P, sofa::Index index,typename TVec3Types::Real & r)
         {
@@ -136,14 +136,14 @@ class ContactMapper<RigidSphereModel,TVec3Types > : public RigidContactMapper<Ri
 };
 
 template <class TVec3Types>
-class ContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3Types > : public RigidContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types >{
+class ContactMapper<model::CylinderCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3Types > : public RigidContactMapper<model::CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types >{
     public:
         sofa::Index addPoint(const typename TVec3Types::Coord & P, sofa::Index index,typename TVec3Types::Real & r)
         {
             const typename TVec3Types::Coord & cP = P - this->model->center(index);
             const type::Quat<SReal> & ori = this->model->orientation(index);
 
-            return RigidContactMapper<CylinderCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
+            return RigidContactMapper<model::CylinderCollisionModel<sofa::defaulttype::Rigid3Types>,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
         }
 };
 

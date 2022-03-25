@@ -24,8 +24,8 @@
 
 #include <sofa/helper/Factory.h>
 #include <sofa/component/mapping/linear/IdentityMapping.h>
-#include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/collision/mapper/BaseContactMapper.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+#include <sofa/component/collision/response/mapper/BaseContactMapper.h>
 #include <sofa/component/collision/model/SphereModel.h>
 #include <sofa/component/collision/model/PointModel.h>
 
@@ -43,8 +43,8 @@ public:
     typedef typename MCollisionModel::InDataTypes InDataTypes;
     typedef core::behavior::MechanicalState<InDataTypes> InMechanicalState;
     typedef core::behavior::MechanicalState<typename IdentityContactMapper::DataTypes> MMechanicalState;
-    typedef component::container::MechanicalObject<typename IdentityContactMapper::DataTypes> MMechanicalObject;
-    typedef mapping::IdentityMapping< InDataTypes, typename IdentityContactMapper::DataTypes > MMapping;
+    typedef component::statecontainer::MechanicalObject<typename IdentityContactMapper::DataTypes> MMechanicalObject;
+    typedef mapping::linear::IdentityMapping< InDataTypes, typename IdentityContactMapper::DataTypes > MMapping;
     MCollisionModel* model;
     typename MMapping::SPtr mapping;
     using Index = sofa::Index;
@@ -160,14 +160,14 @@ public:
 
 /// Mapper for PointModel
 template<class DataTypes>
-class ContactMapper<PointCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> : public IdentityContactMapper<PointCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes>
+class ContactMapper<model::PointCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> : public IdentityContactMapper<model::PointCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes>
 {
 public:
 };
 
 /// Mapper for SphereModel
 template<class DataTypes>
-class ContactMapper<SphereCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> : public IdentityContactMapper<SphereCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes>
+class ContactMapper<model::SphereCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> : public IdentityContactMapper<model::SphereCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
