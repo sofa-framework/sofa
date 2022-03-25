@@ -23,8 +23,6 @@
 
 #include <sofa/component/engine/geometry/Distances.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/topology/container/dynamic/DynamicSparseGridTopologyContainer.h>
-#include <sofa/component/topology/container/dynamic/DynamicSparseGridGeometryAlgorithms.h>
 #include <sofa/component/topology/container/dynamic/HexahedronSetGeometryAlgorithms.h>
 #include <sofa/core/loader/VoxelLoader.h>
 #include <sofa/helper/system/FileRepository.h>

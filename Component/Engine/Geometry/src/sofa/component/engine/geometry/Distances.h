@@ -31,6 +31,8 @@
 #include <sofa/helper/set.h>
 #include <sofa/helper/map.h>
 #include <sofa/helper/OptionsGroup.h>
+#include <sofa/component/topology/container/dynamic/DynamicSparseGridTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/DynamicSparseGridGeometryAlgorithms.h>
 #include <utility>
 
 #define TYPE_GEODESIC 0
@@ -38,14 +40,6 @@
 #define TYPE_STIFFNESS_DIFFUSION 2
 #define TYPE_VORONOI 3
 #define TYPE_HARMONIC_STIFFNESS 4
-
-namespace sofa::component::topology::container::dynamic
-{
-    class DynamicSparseGridTopologyContainer;
-
-    template<class DataTypes>
-    class DynamicSparseGridGeometryAlgorithms;
-}
 
 namespace sofa::component::engine::geometry
 {
