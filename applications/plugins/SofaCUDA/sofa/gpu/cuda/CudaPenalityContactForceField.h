@@ -22,10 +22,10 @@
 #pragma once
 
 #include "CudaTypes.h"
-#include <sofa/component/solidmechanics/spring/PenalityContactForceField.h>
+#include <SofaObjectInteraction/PenalityContactForceField.h>
 #include <sofa/gpu/cuda/CudaCollisionDetection.h>
 
-namespace sofa::component::solidmechanics::spring
+namespace sofa::component::interactionforcefield
 {
 
 using sofa::gpu::cuda::CudaVec3fTypes;
@@ -92,4 +92,4 @@ public:
     void draw(const core::visual::VisualParams*) override;
 };
 
-} // namespace sofa::component::solidmechanics::spring
+} // namespace sofa::component::interactionforcefield

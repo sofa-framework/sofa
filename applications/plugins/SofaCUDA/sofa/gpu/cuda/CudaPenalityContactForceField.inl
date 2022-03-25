@@ -22,7 +22,7 @@
 #pragma once
 
 #include "CudaPenalityContactForceField.h"
-#include <sofa/component/solidmechanics/spring/PenalityContactForceField.inl>
+#include <SofaObjectInteraction/PenalityContactForceField.inl>
 #include <sofa/gl/template.h>
 
 namespace sofa::gpu::cuda
@@ -37,7 +37,7 @@ extern "C"
 
 } // namespace sofa::gpu::cuda
 
-namespace sofa::component::solidmechanics::spring
+namespace sofa::component::interactionforcefield
 {
 
 using namespace gpu::cuda;
@@ -254,4 +254,4 @@ void PenalityContactForceField<CudaVec3fTypes>::draw(const core::visual::VisualP
 #endif // SOFACUDA_HAVE_SOFA_GL == 1
 }
 
-} // namespace sofa::component::solidmechanics::spring
+} // namespace sofa::component::interactionforcefield
