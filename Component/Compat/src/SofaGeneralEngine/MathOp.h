@@ -19,34 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
-#include <sofa/core/ObjectFactory.h>
-#include <SofaGeneralEngine/SphereROI.inl>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#pragma once
 
-namespace sofa::component::engine::roi
+#include <sofa/component/engine/math/MathOp.h>
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/engine/math/MathOp.h")
+
+namespace sofa::component::engine
 {
+    template< class VecT >
+    using MathOp = sofa::component::engine::math::MathOp<VecT>;
 
-template class SOFA_GPU_CUDA_API SphereROI<gpu::cuda::CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API SphereROI<gpu::cuda::CudaVec3f1Types>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API SphereROI<gpu::cuda::CudaVec3dTypes>;
-template class SOFA_GPU_CUDA_API SphereROI<gpu::cuda::CudaVec3d1Types>;
-#endif // SOFA_GPU_CUDA_DOUBLE
-
-} // namespace sofa::component::engine::roi
-
-namespace sofa::gpu::cuda
-{
-
-int SphereROICudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::engine::roi::SphereROI<CudaVec3fTypes> >()
-        .add< component::engine::roi::SphereROI<CudaVec3f1Types> >()
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::engine::roi::SphereROI<CudaVec3dTypes> >()
-        .add< component::engine::roi::SphereROI<CudaVec3d1Types> >()
-#endif // SOFA_GPU_CUDA_DOUBLE
-        ;
-
-} // namespace sofa::gpu::cuda
+} // namespace sofa::component::engine

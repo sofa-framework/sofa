@@ -1,0 +1,12 @@
+set(SOFAGENERALENGINE_SRC src/SofaGeneralEngine)
+
+list(APPEND HEADER_FILES
+    ${SOFAGENERALENGINE_SRC}/AverageCoord.h
+    ${SOFAGENERALENGINE_SRC}/AverageCoord.inl
+    ${SOFAGENERALENGINE_SRC}/DifferenceEngine.h
+    ${SOFAGENERALENGINE_SRC}/DifferenceEngine.inl
+    ${SOFAGENERALENGINE_SRC}/MathOp.h
+    ${SOFAGENERALENGINE_SRC}/MathOp.inl
+    ${SOFAGENERALENGINE_SRC}/SumEngine.h
+    ${SOFAGENERALENGINE_SRC}/SumEngine.inl
+)

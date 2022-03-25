@@ -45,6 +45,13 @@ include(Sofa.Component.Collision.Response.Mapper.cmake)
 include(Sofa.Component.Collision.Response.Contact.cmake)
 include(Sofa.Component.Setting.cmake)
 include(Sofa.Component.Controller.cmake)
+include(Sofa.Component.Engine.Data.cmake)
+include(Sofa.Component.Engine.Geometry.cmake)
+include(Sofa.Component.Engine.Math.cmake)
+include(Sofa.Component.Engine.Mesh.cmake)
+include(Sofa.Component.Engine.Rigid.cmake)
+include(Sofa.Component.Engine.ROI.cmake)
+include(Sofa.Component.Engine.Transform.cmake)
 
 set(SOURCE_FILES
     ${SOFACOMPONENTCOMPATSRC_ROOT}/init.cpp
