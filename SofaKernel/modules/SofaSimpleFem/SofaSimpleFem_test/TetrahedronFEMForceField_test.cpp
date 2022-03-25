@@ -239,7 +239,7 @@ public:
         createObject(m_root, "RegularGridTopology", { {"name", "grid"},
                     {"n", str(nbrGrid)}, {"min", "0 0 20"}, {"max", "10 40 30"} });
 
-        std::cout << "nbrGrid: "  << nbrGrid << std::endl;
+
         Node::SPtr FEMNode = sofa::simpleapi::createChild(m_root, "Beam");
         createObject(FEMNode, "EulerImplicitSolver");
         //createObject(FEMNode, "SparseLDLSolver", { {"name","solver"}, { "template", "CompressedRowSparseMatrixd" } });
@@ -426,7 +426,6 @@ public:
         if (m_root.get() == nullptr)
             return;
 
-        std::cout << "tjs la" << std::endl;
         int nbrStep = 1000;
         int nbrTest = 4;
         double diffTimeMs = 0;
@@ -635,18 +634,18 @@ TEST_F(FastTetrahedralCorotationalForceField3_test, checkFEMValues)
 
 // performances tests. Disabled by default
 
-TEST_F(TetrahedronFEMForceField3_test, testFEMPerformance)
+TEST_F(TetrahedronFEMForceField3_test, DISABLED_testFEMPerformance)
 {
     this->testFEMPerformance(0);
 }
 
-TEST_F(TetrahedralCorotationalFEMForceField3_test, testFEMPerformance)
+TEST_F(TetrahedralCorotationalFEMForceField3_test, DISABLED_testFEMPerformance)
 {
     this->testFEMPerformance(1);
 }
 
 
-TEST_F(FastTetrahedralCorotationalForceField3_test, testFEMPerformance)
+TEST_F(FastTetrahedralCorotationalForceField3_test, DISABLED_testFEMPerformance)
 {
     this->testFEMPerformance(2);
 }
