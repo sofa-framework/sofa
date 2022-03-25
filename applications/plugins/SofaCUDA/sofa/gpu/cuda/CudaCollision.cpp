@@ -40,7 +40,7 @@
 #include <SofaUserInteraction/RayContact.h>
 #include <SofaMeshCollision/BarycentricPenalityContact.inl>
 #include <SofaMeshCollision/BarycentricContactMapper.inl>
-#include <sofa/component/solidmechanics/spring/PenalityContactForceField.h>
+#include <SofaObjectInteraction/PenalityContactForceField.h>
 #include <sofa/component/solidmechanics/spring/VectorSpringForceField.h>
 #include <sofa/gl/gl.h>
 #include <sofa/helper/Factory.inl>
