@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaMiscCollision VERSION 1.0)
 
 sofa_find_package(SofaBaseCollision REQUIRED)
+sofa_find_package(SofaBaseMechanics REQUIRED)
 sofa_find_package(SofaBaseTopology REQUIRED)
 sofa_find_package(SofaGeneralMeshCollision REQUIRED)
 sofa_find_package(SofaGeneralDeformable REQUIRED)
@@ -102,7 +103,7 @@ list(APPEND SOURCE_FILES
 message(STATUS "SofaMiscModule: build all maintained sofa components.")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaGeneralMeshCollision SofaGeneralDeformable SofaConstraint SofaExplicitOdeSolver SofaGeneralExplicitOdeSolver SofaImplicitOdeSolver SofaBaseCollision)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaGeneralMeshCollision SofaGeneralDeformable SofaConstraint SofaExplicitOdeSolver SofaGeneralExplicitOdeSolver SofaImplicitOdeSolver SofaBaseCollision SofaBaseMechanics)
 if(SofaSphFluid_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaSphFluid)
 endif()
