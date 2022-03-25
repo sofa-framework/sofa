@@ -1675,7 +1675,7 @@ void MechanicalObject<DataTypes>::vAvail(const core::ExecParams* /* params */, c
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params, core::VecCoordId v)
+void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params, core::VecCoordId v, const std::string& idLabel)
 {
     SOFA_UNUSED(params);
 
@@ -1684,13 +1684,19 @@ void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params, core::V
         Data<VecCoord>* vec_d = this->write(v);
         vec_d->beginEdit()->resize(d_size.getValue());
         vec_d->endEdit();
+
+        if (!idLabel.empty())
+        {
+            vec_d->setName(idLabel + core::VecTypeLabels.at(core::V_COORD));
+            vec_d->setHelp("VecId: " + v.getName());
+        }
     }
 
     //vOp(v); // clear vector
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params, core::VecDerivId v)
+void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params, core::VecDerivId v, const std::string& idLabel)
 {
     SOFA_UNUSED(params);
 
@@ -1699,13 +1705,19 @@ void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params, core::V
         Data<VecDeriv>* vec_d = this->write(v);
         vec_d->beginEdit()->resize(d_size.getValue());
         vec_d->endEdit();
+
+        if (!idLabel.empty())
+        {
+            vec_d->setName(idLabel + core::VecTypeLabels.at(core::V_DERIV));
+            vec_d->setHelp("VecId: " + v.getName());
+        }
     }
 
     //vOp(v); // clear vector
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params, core::VecCoordId v)
+void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params, core::VecCoordId v, const std::string& idLabel)
 {
     SOFA_UNUSED(params);
 
@@ -1716,10 +1728,16 @@ void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params, core:
         vec_d->beginEdit()->resize(d_size.getValue());
         vec_d->endEdit();
     }
+
+    if (!idLabel.empty())
+    {
+        vec_d->setName(idLabel + core::VecTypeLabels.at(core::V_COORD));
+        vec_d->setHelp("VecId: " + v.getName());
+    }
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params, core::VecDerivId v)
+void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params, core::VecDerivId v, const std::string& idLabel)
 {
     SOFA_UNUSED(params);
 
@@ -1729,6 +1747,12 @@ void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params, core:
     {
         vec_d->beginEdit()->resize(d_size.getValue());
         vec_d->endEdit();
+    }
+
+    if (!idLabel.empty())
+    {
+        vec_d->setName(idLabel + core::VecTypeLabels.at(core::V_DERIV));
+        vec_d->setHelp("VecId: " + v.getName());
     }
 }
 

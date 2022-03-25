@@ -302,16 +302,16 @@ public:
     //virtual void vAvail(core::MatrixDerivId& v);
 
     /// Allocate a new temporary vector
-    void vAlloc(const core::ExecParams* params, core::VecCoordId v) override;
+    void vAlloc(const core::ExecParams* params, core::VecCoordId v, const std::string& idLabel = {}) override;
     /// Allocate a new temporary vector
-    void vAlloc(const core::ExecParams* params, core::VecDerivId v) override;
+    void vAlloc(const core::ExecParams* params, core::VecDerivId v, const std::string& idLabel = {}) override;
     /// Allocate a new temporary vector
     //virtual void vAlloc(core::MatrixDerivId v);
 
     /// Reallocate a new temporary vector
-    void vRealloc(const core::ExecParams* params, core::VecCoordId v) override;
+    void vRealloc(const core::ExecParams* params, core::VecCoordId v, const std::string& idLabel = {}) override;
     /// Reallocate a new temporary vector
-    void vRealloc(const core::ExecParams* params, core::VecDerivId v) override;
+    void vRealloc(const core::ExecParams* params, core::VecDerivId v, const std::string& idLabel = {}) override;
 
 
     /// Free a temporary vector

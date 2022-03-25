@@ -26,11 +26,9 @@
 #include <string>
 #include <sstream>
 #include <cassert>
+#include <unordered_map>
 
-namespace sofa
-{
-
-namespace core
+namespace sofa::core
 {
 
 /// Types of vectors that can be stored in State
@@ -40,6 +38,13 @@ enum VecType
     V_COORD,
     V_DERIV,
     V_MATDERIV,
+};
+
+static const std::unordered_map<VecType, std::string> VecTypeLabels {
+    {V_ALL, "(V_ALL)"},
+    {V_COORD, "(V_COORD)"},
+    {V_DERIV, "(V_DERIV)"},
+    {V_MATDERIV, "(V_MATDERIV)"}
 };
 
 /// Types of vectors that can be stored in State
@@ -88,7 +93,7 @@ public:
             result+= out.str();
             break;
         }
-        result+= "(V_COORD)";
+        result+= VecTypeLabels.at(V_COORD);
         return result;
     }
 };
@@ -138,7 +143,7 @@ public:
             result+= out.str();
             break;
         }
-        result+= "(V_DERIV)";
+        result+= VecTypeLabels.at(V_DERIV);
         return result;
     }
 };
@@ -400,9 +405,6 @@ typedef TVecId<V_MATDERIV, V_READ> ConstMatrixDerivId;
 typedef TVecId<V_MATDERIV, V_WRITE>     MatrixDerivId;
 
 static_assert(sizeof(VecId) == sizeof(VecCoordId), "");
-
-} // namespace core
-
 } // namespace sofa
 
 #endif

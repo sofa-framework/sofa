@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,50 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/core/VecId.h>
+#include <gtest/gtest.h>
 
-#include <sofa/simulation/BaseMechanicalVisitor.h>
-
-namespace sofa::simulation::mechanicalvisitor
+TEST(VecId, name)
 {
+    auto position = sofa::core::VecCoordId::position();
+    EXPECT_EQ(position.getName(), "position(V_COORD)");
 
-/** Reserve an auxiliary vector identified by a symbolic constant.
-*/
-template <sofa::core::VecType vtype>
-class SOFA_SIMULATION_CORE_API MechanicalVAllocVisitor : public BaseMechanicalVisitor
-{
-public:
-    typedef sofa::core::TMultiVecId<vtype, sofa::core::V_WRITE> MyMultiVecId;
-    MyMultiVecId v;
-    const std::string& m_label;
-    MechanicalVAllocVisitor( const sofa::core::ExecParams* params, MyMultiVecId v, const std::string& label = {} )
-            : BaseMechanicalVisitor(params) , v(v), m_label(label)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
-    Result fwdMechanicalState(simulation::Node* /*node*/,sofa::core::behavior::BaseMechanicalState* mm) override;
+    auto restPosition = sofa::core::VecCoordId::restPosition();
+    EXPECT_EQ(restPosition.getName(), "restPosition(V_COORD)");
 
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    const char* getClassName() const override { return "MechanicalVAllocVisitor"; }
-    virtual std::string getInfos() const override;
-    /// Specify whether this action can be parallelized.
-    bool isThreadSafe() const override
-    {
-        return true;
-    }
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors() override
-    {
-        addReadWriteVector(v);
-    }
-#endif
-};
+    auto freePosition = sofa::core::VecCoordId::freePosition();
+    EXPECT_EQ(freePosition.getName(), "freePosition(V_COORD)");
 
-#if !defined(SOFA_SIMULATION_MECHANICALVISITOR_MECHANICALVALLOCVISITOR_CPP)
-extern template class MechanicalVAllocVisitor<sofa::core::V_COORD>;
-extern template class MechanicalVAllocVisitor<sofa::core::V_DERIV>;
-#endif
+    auto resetPosition = sofa::core::VecCoordId::resetPosition();
+    EXPECT_EQ(resetPosition.getName(), "resetPosition(V_COORD)");
+
+
+
+    auto velocity = sofa::core::VecDerivId::velocity();
+    EXPECT_EQ(velocity.getName(), "velocity(V_DERIV)");
+
+    auto resetVelocity = sofa::core::VecDerivId::resetVelocity();
+    EXPECT_EQ(resetVelocity.getName(), "resetVelocity(V_DERIV)");
+
+    auto freeVelocity = sofa::core::VecDerivId::freeVelocity();
+    EXPECT_EQ(freeVelocity.getName(), "freeVelocity(V_DERIV)");
+
+    auto normal = sofa::core::VecDerivId::normal();
+    EXPECT_EQ(normal.getName(), "normal(V_DERIV)");
+
+    auto force = sofa::core::VecDerivId::force();
+    EXPECT_EQ(force.getName(), "force(V_DERIV)");
+
+    auto externalForce = sofa::core::VecDerivId::externalForce();
+    EXPECT_EQ(externalForce.getName(), "externalForce(V_DERIV)");
+
+    auto dx = sofa::core::VecDerivId::dx();
+    EXPECT_EQ(dx.getName(), "dx(V_DERIV)");
+
+    auto dforce = sofa::core::VecDerivId::dforce();
+    EXPECT_EQ(dforce.getName(), "dforce(V_DERIV)");
+
 }
