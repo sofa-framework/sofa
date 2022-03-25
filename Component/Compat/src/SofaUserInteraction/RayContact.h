@@ -20,70 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/collision/response/contact/config.h>
+#include <sofa/component/collision/response/contact/RayContact.h>
 
-#include <sofa/core/collision/Contact.h>
-#include <sofa/helper/Factory.h>
-
-//TODO: use fwd declaration
-#include <sofa/component/collision/model/RayModel.h>
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/contact/RayContact.h")
 
 namespace sofa::component::collision
 {
+    using BaseRayContact = sofa::component::collision::response::contact::BaseRayContact;
 
-class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseRayContact : public core::collision::Contact
-{
-public:
-    typedef model::RayCollisionModel CollisionModel1;
+    template<class CM2>
+    using RayContact = sofa::component::collision::response::contact::RayContact<CM2>;
 
-protected:
-    CollisionModel1* model1;
-    sofa::type::vector<core::collision::DetectionOutput*> collisions;
-
-
-    BaseRayContact(CollisionModel1* model1, core::collision::Intersection* instersectionMethod);
-
-    ~BaseRayContact() override;
-public:
-    const sofa::type::vector<core::collision::DetectionOutput*>& getDetectionOutputs() const { return collisions; }
-
-    void createResponse(core::objectmodel::BaseContext* /*group*/) override
-    {
-    }
-
-    void removeResponse() override
-    {
-    }
-
-};
-
-template<class CM2>
-class RayContact : public BaseRayContact
-{
-public:
-    typedef model::RayCollisionModel CollisionModel1;
-    typedef CM2 CollisionModel2;
-    typedef core::collision::Intersection Intersection;
-    typedef core::collision::TDetectionOutputVector<CollisionModel1, CollisionModel2> OutputVector;
-protected:
-    CollisionModel2* model2;
-    core::objectmodel::BaseContext* parent;
-public:
-    RayContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
-        : BaseRayContact(model1, intersectionMethod), model2(model2)
-    {
-    }
-
-    void setDetectionOutputs(core::collision::DetectionOutputVector* outputs) override
-    {
-        OutputVector* o = static_cast<OutputVector*>(outputs);
-        //collisions = outputs;
-        collisions.resize(o->size());
-        for (unsigned int i=0; i< o->size(); ++i)
-            collisions[i] = &(*o)[i];
-    }
-
-    std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() override { return std::make_pair(model1,model2); }
-};
-
-} //namespace sofa::component::collision
+} // namespace sofa::component::collision

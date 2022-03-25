@@ -32,9 +32,9 @@ using namespace sofa::core::collision;
 namespace sofa::component::collision
 {
 
-ContactMapperCreator< ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>> > CapsuleContactMapperClass("PenalityContactForceField", true);
-ContactMapperCreator< ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types> > RigidCapsuleContactMapperClass("PenalityContactForceField", true);
-template class SOFA_MISC_COLLISION_API ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
-template class SOFA_MISC_COLLISION_API ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types>;
+ContactMapperCreator< response::mapper::ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>> > CapsuleContactMapperClass("PenalityContactForceField", true);
+ContactMapperCreator< response::mapper::ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types> > RigidCapsuleContactMapperClass("PenalityContactForceField", true);
+template class SOFA_MISC_COLLISION_API response::mapper::ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+template class SOFA_MISC_COLLISION_API response::mapper::ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types>;
 
 } // namespace sofa::component::collision

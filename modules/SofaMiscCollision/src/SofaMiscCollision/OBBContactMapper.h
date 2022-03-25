@@ -22,6 +22,7 @@
 #pragma once
 #include <SofaMiscCollision/config.h>
 
+#include <SofaBaseCollision/BaseContactMapper.h>
 #include <SofaMeshCollision/BarycentricContactMapper.inl>
 #include <SofaMeshCollision/RigidContactMapper.inl>
 #include <SofaMiscCollision/OBBModel.h>
@@ -33,7 +34,7 @@ namespace sofa::component::collision
 
 
 template <class TVec3Types>
-class SOFA_MISC_COLLISION_API ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types > : public RigidContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types > {
+class SOFA_MISC_COLLISION_API response::mapper::ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types > : public RigidContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types > {
 public:
     sofa::Index addPoint(const typename TVec3Types::Coord& P, sofa::Index index, typename TVec3Types::Real& r)
     {
@@ -45,7 +46,7 @@ public:
 };
 
 #if !defined(SOFA_SOFAMISCCOLLISION_OBBCONTACTMAPPER_CPP)
-extern template class ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types>;
+extern template class response::mapper::ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types>;
 #endif // 
 
 } // namespace sofa::component::collision

@@ -33,7 +33,7 @@ namespace sofa::component::collision
 
 
 template <class DataTypes>
-class SOFA_MISC_COLLISION_API ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> : public BarycentricContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> {
+class SOFA_MISC_COLLISION_API response::mapper::ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> : public BarycentricContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> {
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     using Index = sofa::Index;
@@ -59,7 +59,7 @@ public:
 
 
 template <class TVec3Types>
-class SOFA_MISC_COLLISION_API ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types > : public RigidContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types > {
+class SOFA_MISC_COLLISION_API response::mapper::ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types > : public RigidContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types > {
 public:
     sofa::Index addPoint(const typename TVec3Types::Coord& P, sofa::Index index, typename TVec3Types::Real& r)
     {
@@ -71,7 +71,7 @@ public:
 };
 
 #if !defined(SOFA_SOFAMISCCOLLISION_CAPSULECONTACTMAPPER_CPP)
-extern template class SOFA_MISC_COLLISION_API ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
-extern template class SOFA_MISC_COLLISION_API ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_MISC_COLLISION_API response::mapper::ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_MISC_COLLISION_API response::mapper::ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types>;
 #endif
 } // namespace sofa::component::collision
