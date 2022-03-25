@@ -27,7 +27,6 @@
             <MechanicalObject template="Vec1d" position="@../../temperatureLoader.position"  name="gridTemperature" bbox="0 0 0 0 0 0" tags="heat" />
             <TetrahedronDiffusionFEMForceField template="Vec1d" name="DiffusionForceField" constantDiffusionCoefficient="1.0" tagMechanics="geom" tags="heat" topology="@../Container"/>
             <DiagonalMass template="Vec1d,Vec3d" name="Mass" massDensity="1.0" tags="heat"/>
-            <!-- <MeshMatrixMass name="Mass" template="Vec1d,Vec3d" lumping="0" massDensity="1.0" printLog="0" tags="heat" /> -->
             <LinearMovementConstraint template="Vec1d" keyTimes="0 998 999" movements="1 1 0" indices="@../../box-dirac.indices" />
             <FixedConstraint indices="@../../box-fixed.indices" />
         </Node>
