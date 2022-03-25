@@ -1052,7 +1052,7 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     // SofaGeneralObjectInteraction was deprecated in #2790 and ...
     { "AttachConstraint", CreatableMoved("v22.06", "SofaGeneralObjectInteraction", "Sofa.Component.Constraint.Projective") },
 
-    // SofaBoundaryCondition was deprecated in #2790 and ...
+    // SofaBoundaryCondition was deprecated in #2790 and #2759
     { "AffineMovementConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
     { "FixedConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
     { "FixedPlaneConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
@@ -1090,6 +1090,7 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "TrianglePressureForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
     { "UniformVelocityDampingForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
 
+<<<<<<< HEAD
     // SofaBaseCollision was deprecated in #2813
     { "BruteForceBroadPhase", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Detection.Algorithm") },
     { "BruteForceDetection", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Detection.Algorithm") },
@@ -1124,6 +1125,78 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
 
     // SofaObjectInteraction was deprecated in #2813
     { "PenalityContactForceField", CreatableMoved("v22.06", "SofaObjectInteraction", "Sofa.Component.Collision.Response.Contact") },
+
+    // SofaEngine was deprecated in #2812
+    { "BoxROI", CreatableMoved("v22.06", "SofaEngine", "Sofa.Component.Engine.ROI") },
+
+    // SofaGeneralEngine was deprecated in #2812
+    { "AverageCoord", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Math") },
+    { "BoxROI", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.ROI") },
+    { "ClusteringEngine", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Geometry") },
+    { "ComplementaryROI", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.ROI") },
+    { "DifferenceEngine", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Math") },
+    { "DilateEngine", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Mesh") },
+    { "DisplacementTransformEngine", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Transform") },
+    { "ExtrudeEdgesAndGenerateQuads", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Mesh") },
+    { "ExtrudeQuadsAndGenerateHexas", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Mesh") },
+    { "ExtrudeSurface", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Mesh") },
+    { "GenerateCylinder", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Mesh") },
+    { "GenerateGrid", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Mesh") },
+    { "GenerateRigidMass", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Rigid") },
+    { "GenerateSphere", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Mesh") },
+    { "GroupFilterYoungModulus", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Data") },
+    { "HausdorffDistance", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Geometry") },
+    { "IndexValueMapper", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Data") },
+    { "Indices2ValuesMapper", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Data") },
+    { "IndicesFromValues", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Data") },
+    { "InvertTransformMatrixEngine", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Transform") },
+    { "JoinPoints", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Data") },
+    { "MapIndices", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Data") },
+    { "MathOp", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Math") },
+    { "MergeMeshes", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Mesh") },
+    { "MergePoints", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Data") },
+    { "MergeROIs", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.ROI") },
+    { "MergeSets", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Data") },
+    { "MergeVectors", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Data") },
+    { "MeshBarycentricMapperEngine", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Mesh") },
+    { "MeshBoundaryROI", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.ROI") },
+    { "MeshClosingEngine", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Mesh") },
+    { "MeshROI", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.ROI") },
+    { "MeshSampler", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Mesh") },
+    { "MeshSplittingEngine", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Mesh") },
+    { "MeshSubsetEngine", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Mesh") },
+    { "NearestPointROI", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.ROI") },
+    { "NormEngine", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Geometry") },
+    { "NormalsFromPoints", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Geometry") },
+    { "PairBoxROI", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.ROI") },
+    { "PlaneROI", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.ROI") },
+    { "PointsFromIndices", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Data") },
+    { "ProximityROI", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.ROI") },
+    { "QuatToRigidEngine", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Rigid") },
+    { "ROIValueMapper", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Data") },
+    { "RandomPointDistributionInSurface", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Geometry") },
+    { "RigidToQuatEngine", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Rigid") },
+    { "RotateTransformMatrixEngine", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Transform") },
+    { "ScaleTransformMatrixEngine", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Transform") },
+    { "SelectConnectedLabelsROI", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.ROI") },
+    { "SelectLabelROI", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.ROI") },
+    { "ShapeMatching", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Geometry") },
+    { "SmoothMeshEngine", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Mesh") },
+    { "SphereROI", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.ROI") },
+    { "Spiral", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Mesh") },
+    { "SubsetTopology", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.ROI") },
+    { "SumEngine", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Math") },
+    { "TransformEngine", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Transform") },
+    { "TransformPosition", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Transform") },
+    { "TranslateTransformMatrixEngine", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Transform") },
+    { "ValuesFromIndices", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Data") },
+    { "ValuesFromPositions", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Data") },
+    { "Vertex2Frame", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Rigid") },
+
+    // SofaMiscEngine was deprecated in #2812
+    { "Distances", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Geometry") },
+    { "DisplacementMatrixEngine", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Transform") },
+    { "ProjectiveTransformEngine", CreatableMoved("v22.06", "SofaGeneralEngine", "Sofa.Component.Engine.Transform") },
 
 };
 
