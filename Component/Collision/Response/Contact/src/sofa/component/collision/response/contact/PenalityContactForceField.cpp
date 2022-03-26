@@ -25,7 +25,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::interactionforcefield
+namespace sofa::component::collision::response::contact
 {
 
 using namespace sofa::defaulttype;
@@ -38,4 +38,4 @@ int PenalityContactForceFieldClass = core::RegisterObject("Contact using repulsi
 template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API PenalityContactForceField<Vec3Types>;
 
 
-} // namespace sofa::component::interactionforcefield
+} // namespace sofa::component::collision::response::contact

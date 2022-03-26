@@ -23,7 +23,7 @@
 #include <SofaMeshCollision/LineModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::model
 {
 template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
 template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3f1Types>;
@@ -33,18 +33,18 @@ template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3dTy
 template class SOFA_GPU_CUDA_API LineCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::model
 
 
 namespace sofa::gpu::cuda
 {
 
 const int LineModelCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::collision::LineCollisionModel<CudaVec3fTypes> >()
-        .add< component::collision::LineCollisionModel<CudaVec3f1Types> >()
+        .add< component::collision::model::LineCollisionModel<CudaVec3fTypes> >()
+        .add< component::collision::model::LineCollisionModel<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::collision::LineCollisionModel<CudaVec3dTypes> >()
-        .add< component::collision::LineCollisionModel<CudaVec3d1Types> >()
+        .add< component::collision::model::LineCollisionModel<CudaVec3dTypes> >()
+        .add< component::collision::model::LineCollisionModel<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 

@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/type/RGBAColor.h>
 
-namespace sofa::component::interactionforcefield
+namespace sofa::component::collision::response::contact
 {
 
 template<class DataTypes>
@@ -249,4 +249,4 @@ void PenalityContactForceField<DataTypes>::grabPoint(
 
 }
 
-} // namespace sofa::component::interactionforcefield
+} // namespace sofa::component::collision::response::contact

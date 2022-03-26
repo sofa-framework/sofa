@@ -23,7 +23,7 @@
 #include <SofaBaseCollision/SphereModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::model
 {
 
 template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3fTypes>;
@@ -33,18 +33,18 @@ template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3d
 template class SOFA_GPU_CUDA_API SphereCollisionModel<sofa::gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::collision::model
 
 
 namespace sofa::gpu::cuda
 {
 
 const int CudaSphereModelClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::collision::SphereCollisionModel<CudaVec3fTypes> >()
-        .add< component::collision::SphereCollisionModel<CudaVec3f1Types> >()
+        .add< component::collision::model::SphereCollisionModel<CudaVec3fTypes> >()
+        .add< component::collision::model::SphereCollisionModel<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::collision::SphereCollisionModel<CudaVec3dTypes> >()
-        .add< component::collision::SphereCollisionModel<CudaVec3d1Types> >()
+        .add< component::collision::model::SphereCollisionModel<CudaVec3dTypes> >()
+        .add< component::collision::model::SphereCollisionModel<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         .addAlias("CudaSphere")
         .addAlias("CudaSphereModel");

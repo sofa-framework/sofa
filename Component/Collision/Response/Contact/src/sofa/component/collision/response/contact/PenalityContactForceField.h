@@ -28,7 +28,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <vector>
 
-namespace sofa::component::interactionforcefield
+namespace sofa::component::collision::response::contact
 {
 
 /** Distance-based, frictionless penalty force. The force is applied to vertices attached to collision elements.
@@ -129,4 +129,4 @@ extern template class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API PenalityCont
 
 #endif
 
-} // namespace sofa::component::interactionforcefield
+} // namespace sofa::component::collision::response::contact

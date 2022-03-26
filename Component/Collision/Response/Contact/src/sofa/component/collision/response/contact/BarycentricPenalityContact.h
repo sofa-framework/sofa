@@ -54,7 +54,7 @@ public:
     typedef core::behavior::MechanicalState<DataTypes2> MechanicalState2;
     typedef typename CollisionModel1::Element CollisionElement1;
     typedef typename CollisionModel2::Element CollisionElement2;
-    typedef interactionforcefield::PenalityContactForceField<ResponseDataTypes> ResponseForceField;
+    typedef PenalityContactForceField<ResponseDataTypes> ResponseForceField;
 protected:
     CollisionModel1* model1;
     CollisionModel2* model2;
