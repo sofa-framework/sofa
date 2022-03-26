@@ -395,6 +395,8 @@ bool MeshNewProximityIntersection::testIntersection(model::Triangle& e1, model::
 template<class T>
 int MeshNewProximityIntersection::computeIntersection(model::Triangle& e1, model::TSphere<T>& e2, OutputVector* contacts)
 {
+    using namespace model;
+
     int flags = e1.flags();
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e2.r();
     const SReal dist2 = alarmDist*alarmDist;
