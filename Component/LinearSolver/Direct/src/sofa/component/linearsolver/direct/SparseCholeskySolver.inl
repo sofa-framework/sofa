@@ -75,6 +75,8 @@ void SparseCholeskySolver<TMatrix,TVector>::solveT(double * x, double * b)
             cs_lsolve (N->L, tmp.data() );			//x = L\x
             cs_ltsolve (N->L, tmp.data() );			//x = L'\x/
             cs_pvec (n, perm.data() , tmp.data() , x );	 //b = P'*x , permutation on columns
+
+            cs_free(permuted_A); // prevent memory leak
             break;
 
         default:
@@ -115,6 +117,8 @@ void SparseCholeskySolver<TMatrix,TVector>::solveT(float * x, float * b)
             cs_lsolve (N->L, (double*) tmp.data() );			//x = L\x
             cs_ltsolve (N->L, (double*) tmp.data() );			//x = L'\x/
             cs_ipvec (n, perm.data() , (double*) tmp.data() , (double*) x );	 //b = P'*x , permutation on columns 
+
+            cs_free(permuted_A); // prevent memory leak
             break;
 
         default:
@@ -128,12 +132,25 @@ template<class TMatrix, class TVector>
 void SparseCholeskySolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vector& r)
 {
     solveT(z.ptr(),r.ptr());
+
+    Previous_rowind.clear();
+    Previous_colptr.resize(A.n +1);
+
+    for(int i=0 ; i<A.n ; i++)
+    {
+        Previous_colptr[i+1] = A.p[i+1];
+
+        for( int j=A.p[i] ; j < A.p[i+1] ; j++)
+        {
+            Previous_rowind.push_back(A.i[j]);
+        }
+    }
 }
 
 template<class TMatrix, class TVector>
 void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
 {
-    if (S) cs_sfree(S);
+    //if (S) cs_sfree(S);
     if (N) cs_nfree(N);
     M.compress();
 
@@ -155,29 +172,35 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
 
     sofa::helper::ScopedAdvancedTimer factorization_permTimer("factorization_perm");
 
+    need_factorization = need_symbolic_factorization( A.n , A.p , A.i, Previous_colptr.size()-1 , Previous_colptr.data() , Previous_rowind.data() );
+
     switch (d_typePermutation.getValue().getSelectedId() )
     {
         case 0:
         default://None->identity
-            S = symbolic_Chol (&A) ;		/* ordering and symbolic analysis */
-            N = cs_chol (&A, S) ;		/* numeric Cholesky factorization */
+            if( need_factorization ) { S = symbolic_Chol (&A) ;}		// ordering and symbolic analysis 
+            N = cs_chol (&A, S) ;		// numeric Cholesky factorization 
             break;
 
         case 1://SuiteSparse
             
-            S = cs_schol (&A, order) ;		/* ordering and symbolic analysis */
-            N = cs_chol (&A, S) ;		/* numeric Cholesky factorization */
+            if( need_factorization)  { S = cs_schol (&A, order) ; }		// ordering and symbolic analysis 
+            N = cs_chol (&A, S) ;		// numeric Cholesky factorization 
             break;
 
         case 2://METIS
-            perm.resize(A.n);
-            iperm.resize(A.n);
+            if( need_factorization )
+            {
+                perm.resize(A.n);
+                iperm.resize(A.n);
+                
+                fill_reducing_perm( A , iperm.data(), perm.data() ); // compute the fill reducing permutation
+            }
             
-            fill_reducing_perm(A , iperm.data(), perm.data() ); // compute the fill reducing permutation
+                permuted_A = cs_permute( &A , perm.data() , iperm.data() , 1);
+            if(need_factorization) { S = symbolic_Chol( permuted_A ); } // symbolic analysis 
     
-            permuted_A = cs_permute( &A , perm.data() , iperm.data() , 1);
-            S = symbolic_Chol( permuted_A ); // symbolic analysis  
-            N = cs_chol (permuted_A, S) ;		/* numeric Cholesky factorization */
+            N = cs_chol (permuted_A, S) ;		// numeric Cholesky factorization 
             break;
     }
 
@@ -218,5 +241,20 @@ css* SparseCholeskySolver<TMatrix,TVector>::symbolic_Chol(cs *A)
     return ((S->lnz >= 0) ? S : cs_sfree (S)) ;
 }
 
+template<class TMatrix, class TVector>
+bool SparseCholeskySolver<TMatrix,TVector>::need_symbolic_factorization(int s_M, int * M_colptr,int * M_rowind, int s_P, int * P_colptr,int * P_rowind) {
+    if (s_M != s_P) return true;
+    if (M_colptr[s_M] != P_colptr[s_M] ) return true;
+
+    for (int i=0;i<s_P;i++) {
+        if (M_colptr[i]!=P_colptr[i]) return true;
+    }
+
+    for (int i=0;i<M_colptr[s_M];i++) {
+        if (M_rowind[i]!=P_rowind[i]) return true;
+    }
+
+    return false;
+}
 
 } // namespace sofa::component::linearsolver::direct

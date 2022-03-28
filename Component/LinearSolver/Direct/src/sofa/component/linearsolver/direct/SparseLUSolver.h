@@ -43,14 +43,14 @@ public :
     cs A;
     cs* permuted_A;
     type::vector<int> perm,iperm; // fill reducing permutation
+    type::vector<int> Previous_colptr,Previous_rowind; // shape of the matrix at the previous step
     type::vector<sofa::Index> A_i, A_p;
     type::vector<Real> A_x;
     Real * tmp;
-    bool computePermutation;
+    bool need_factorization;
     SparseLUInvertData()
     {
         S=nullptr; N=nullptr; tmp=nullptr;
-        computePermutation=true;
     }
 
     ~SparseLUInvertData()
@@ -89,7 +89,8 @@ protected :
   
     void fill_reducing_perm(cs A, int * perm, int * invperm);
     css* symbolic_LU(cs *A);
-    
+    bool need_symbolic_factorization(int s_M, int * M_colptr,int * M_rowind, int s_P, int * P_colptr,int * P_rowind) ;
+
     MatrixInvertData * createInvertData() override {
         return new SparseLUInvertData<Real>();
     }

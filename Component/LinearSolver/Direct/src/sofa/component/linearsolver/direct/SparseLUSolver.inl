@@ -54,44 +54,60 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& x
     SparseLUInvertData<Real> * invertData = (SparseLUInvertData<Real>*) this->getMatrixInvertData(&M);
     int n = invertData->A.n;
 
-    switch( d_typePermutation.getValue().getSelectedId() )
     {
-        
-        case 0://None->Identity
-
+        sofa::helper::ScopedAdvancedTimer solveTimer("solve");
+        switch( d_typePermutation.getValue().getSelectedId() )
         {
-            sofa::helper::ScopedAdvancedTimer solveTimer("solve");
-            cs_ipvec (n, invertData->N->Pinv, b.ptr(), invertData->tmp) ;	/* x = P*b */
-            cs_lsolve (invertData->N->L, invertData->tmp) ;		/* x = L\x */
-            cs_usolve (invertData->N->U, invertData->tmp) ;		/* x = U\x */
-            cs_ipvec (n, invertData->S->Q, invertData->tmp, x.ptr()) ;	// used here to copy, Q=nullptr
-            break;
-        }
+            
+            case 0://None->Identity
 
-        case 1://SuiteSparse
-        {
-            sofa::helper::ScopedAdvancedTimer solveTimer("solve");
-            cs_ipvec (n, invertData->N->Pinv, b.ptr(), invertData->tmp) ;	/* x = P*b */
-            cs_lsolve (invertData->N->L, invertData->tmp) ;		/* x = L\x */
-            cs_usolve (invertData->N->U, invertData->tmp) ;		/* x = U\x */
-            cs_ipvec (n, invertData->S->Q, invertData->tmp, x.ptr()) ;	// b = Q*x fill reducing permutation on columns only
-            break;
-        }
-        
-        case 2://
-        {
-            sofa::helper::ScopedAdvancedTimer solveTimer("solve");
-            cs_ipvec (n, invertData->N->Pinv , invertData->tmp, invertData->tmp);// partial pivot
-            cs_pvec (n, invertData->perm.data() , b.ptr(), invertData->tmp) ; // x = P*b permutation on rows
-            cs_lsolve (invertData->N->L, invertData->tmp) ;		// x = L\x
-            cs_usolve (invertData->N->U, invertData->tmp) ;		// x = U\x
-            cs_pvec (n, invertData->iperm.data() , invertData->tmp , x.ptr()) ;	// b = Q*x permutation on columns
-            break;
-        }
+            {
+                cs_ipvec (n, invertData->N->Pinv, b.ptr(), invertData->tmp) ;	/* x = P*b */
+                cs_lsolve (invertData->N->L, invertData->tmp) ;		/* x = L\x */
+                cs_usolve (invertData->N->U, invertData->tmp) ;		/* x = U\x */
+                cs_ipvec (n, invertData->S->Q, invertData->tmp, x.ptr()) ;	// used here to copy, Q=nullptr
+                break;
+            }
 
-        default:
-            break;
+            case 1://SuiteSparse
+            {
+                cs_ipvec (n, invertData->N->Pinv, b.ptr(), invertData->tmp) ;	/* x = P*b */
+                cs_lsolve (invertData->N->L, invertData->tmp) ;		/* x = L\x */
+                cs_usolve (invertData->N->U, invertData->tmp) ;		/* x = U\x */
+                cs_ipvec (n, invertData->S->Q, invertData->tmp, x.ptr()) ;	// b = Q*x fill reducing permutation on columns only
+                break;
+            }
+            
+            case 2://METIS
+            {
+                cs_ipvec (n, invertData->N->Pinv , invertData->tmp, invertData->tmp);// partial pivot
+                cs_pvec (n, invertData->perm.data() , b.ptr(), invertData->tmp) ; // x = P*b permutation on rows
+                cs_lsolve (invertData->N->L, invertData->tmp) ;		// x = L\x
+                cs_usolve (invertData->N->U, invertData->tmp) ;		// x = U\x
+                cs_pvec (n, invertData->iperm.data() , invertData->tmp , x.ptr()) ;	// b = Q*x permutation on columns
+                break;
+            }
+
+            default:
+                break;
+        }
     }
+
+    // store the shape of the matrix
+    invertData->Previous_rowind.clear();
+    invertData->Previous_colptr.resize( (invertData->A.n) +1);
+
+    for(int i=0 ; i<invertData->A.n ; i++)
+    {
+        invertData->Previous_colptr[i+1] = invertData->A_p[i+1];
+
+        for( int j=invertData->A_p[i] ; j < (int)invertData->A_p[i+1] ; j++)
+        {
+            invertData->Previous_rowind.push_back(invertData->A_i[j]);
+        }
+    }
+
+
 }
 
 template<class TMatrix, class TVector,class TThreadManager>
@@ -99,7 +115,7 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
 {
     SparseLUInvertData<Real> * invertData = (SparseLUInvertData<Real>*) this->getMatrixInvertData(&M);
 
-    if (invertData->S) cs_sfree(invertData->S);
+    //if (invertData->S) cs_sfree(invertData->S);
     if (invertData->N) cs_nfree(invertData->N);
     if (invertData->tmp) cs_free(invertData->tmp);
     M.compress();
@@ -116,40 +132,41 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
     invertData->A.nz = -1;							// # of entries in triplet matrix, -1 for compressed-col
     cs_dropzeros( &invertData->A );
 
+    invertData->need_factorization = need_symbolic_factorization(invertData->A.n , (int*) invertData->A_p.data() , (int*) invertData->A_i.data(), (invertData->Previous_colptr.size())-1 ,invertData->Previous_colptr.data() ,invertData->Previous_rowind.data() );
+
     invertData->tmp = (Real *) cs_malloc (invertData->A.n, sizeof (Real)) ;
 
+    sofa::helper::ScopedAdvancedTimer factorizationTimer("factorization");
     switch( d_typePermutation.getValue().getSelectedId() )
     {
         case 0://None->Identity
-        {
-            sofa::helper::ScopedAdvancedTimer factorizationTimer("factorization");
-            invertData->S = symbolic_LU( &(invertData->A) );	/* ordering and symbolic analysis */
+        {  
+            if(invertData->need_factorization) { invertData->S = symbolic_LU( &(invertData->A) ) ;}	/* ordering and symbolic analysis */
             invertData->N = cs_lu (&invertData->A, invertData->S, f_tol.getValue()) ;		/* numeric LU factorization */
             break;
         }
 
         case 1://SuiteSparse
         {
-            sofa::helper::ScopedAdvancedTimer factorizationTimer("factorization");
             int order = -1;
-            invertData->S = cs_sqr (&invertData->A, order, 0) ;		/* ordering and symbolic analysis */
-            invertData->computePermutation=false;
+            if(invertData->need_factorization) { invertData->S = cs_sqr (&invertData->A, order, 0) ;}	/* ordering and symbolic analysis */
             invertData->N = cs_lu (&invertData->A, invertData->S, f_tol.getValue()) ;		/* numeric LU factorization */
             break;
         }
 
         case 2://Metis
         {
-            if(invertData->computePermutation)
+            if(invertData->need_factorization)
             {
                 invertData->perm.resize(invertData->A.n);
                 invertData->iperm.resize(invertData->A.n);
+
                 fill_reducing_perm(invertData->A, invertData->perm.data(), invertData->iperm.data() );
-                invertData->computePermutation=false;
             }
-            sofa::helper::ScopedAdvancedTimer factorizationTimer("factorization");
             invertData->permuted_A = cs_permute(&(invertData->A), invertData->iperm.data(), invertData->perm.data(), 1);
-            invertData->S = symbolic_LU( invertData->permuted_A );
+
+            if(invertData->need_factorization) {invertData->S = symbolic_LU( invertData->permuted_A );}
+            
             invertData->N = cs_lu ( invertData->permuted_A, invertData->S, f_tol.getValue()) ;		/* numeric LU factorization */
             break;
         }
@@ -187,6 +204,22 @@ css* SparseLUSolver<TMatrix,TVector,TThreadManager>::symbolic_LU(cs *A)
 	S->lnz = S->unz ;		    /* guess nnz(L) and nnz(U) */
     S->Q = nullptr; // should have been the fill permutation computed by SuiteSparse, not used here
     return S ;
+}
+
+template<class TMatrix, class TVector,class TThreadManager>
+bool SparseLUSolver<TMatrix,TVector,TThreadManager>::need_symbolic_factorization(int s_M, int * M_colptr,int * M_rowind, int s_P, int * P_colptr,int * P_rowind) {
+    if (s_M != s_P) return true;
+    if (M_colptr[s_M] != P_colptr[s_M] ) return true;
+
+    for (int i=0;i<s_P;i++) {
+        if (M_colptr[i]!=P_colptr[i]) return true;
+    }
+
+    for (int i=0;i<M_colptr[s_M];i++) {
+        if (M_rowind[i]!=P_rowind[i]) return true;
+    }
+
+    return false;
 }
 
 } // namespace sofa::component::linearsolver::direct

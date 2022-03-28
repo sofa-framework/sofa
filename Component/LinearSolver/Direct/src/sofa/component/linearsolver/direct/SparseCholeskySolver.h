@@ -56,10 +56,12 @@ public:
     cs* permuted_A;
     css *S;
     csn *N;
-    int * A_i;
-    int * A_p;
-    type::vector<int> perm,iperm;
+    int * A_i; // row indices, size nzmax
+    int * A_p; // column pointers (size n+1) or col indices (size nzmax)
+    type::vector<int> Previous_colptr,Previous_rowind; // shape of the matrix at the previous step
+    type::vector<int> perm,iperm; // fill reducing permutation
     type::vector<double> A_x,z_tmp,r_tmp,tmp;
+    bool need_factorization;
 
     Data<sofa::helper::OptionsGroup> d_typePermutation;
 
@@ -73,6 +75,7 @@ public:
 
     void fill_reducing_perm(const cs &A,int * perm,int * invperm);
     css* symbolic_Chol(cs *A);
+    bool need_symbolic_factorization(int s_M, int * M_colptr,int * M_rowind, int s_P, int * P_colptr,int * P_rowind) ;
 };
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_CPP)
