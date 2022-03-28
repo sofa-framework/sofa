@@ -509,7 +509,7 @@ inline void FFDDistanceGridCollisionElement::setGrid(DistanceGrid* surf) { retur
 
 /// Mapper for FFDDistanceGridCollisionModel
 template <class DataTypes>
-class ContactMapper<FFDDistanceGridCollisionModel,DataTypes> : public BarycentricContactMapper<FFDDistanceGridCollisionModel,DataTypes>
+class response::mapper::ContactMapper<FFDDistanceGridCollisionModel,DataTypes> : public BarycentricContactMapper<FFDDistanceGridCollisionModel,DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -528,7 +528,7 @@ public:
 
 /// Mapper for RigidDistanceGridCollisionModel
 template <class DataTypes>
-class ContactMapper<RigidDistanceGridCollisionModel,DataTypes> : public RigidContactMapper<RigidDistanceGridCollisionModel,DataTypes>
+class response::mapper::ContactMapper<RigidDistanceGridCollisionModel,DataTypes> : public RigidContactMapper<RigidDistanceGridCollisionModel,DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -615,15 +615,15 @@ public:
 
 #if  !defined(SOFA_COMPONENT_COLLISION_DISTANCEGRIDCOLLISIONMODEL_CPP)
 
-extern template class SOFA_SOFADISTANCEGRID_API ContactMapper<FFDDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
-extern template class SOFA_SOFADISTANCEGRID_API ContactMapper<RigidDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_SOFADISTANCEGRID_API response::mapper::ContactMapper<FFDDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_SOFADISTANCEGRID_API response::mapper::ContactMapper<RigidDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
 
 #  ifdef _MSC_VER
 // Manual declaration of non-specialized members, to avoid warnings from MSVC.
-extern template SOFA_SOFADISTANCEGRID_API void BarycentricContactMapper<FFDDistanceGridCollisionModel, defaulttype::Vec3Types>::cleanup();
-extern template SOFA_SOFADISTANCEGRID_API core::behavior::MechanicalState<defaulttype::Vec3Types>* BarycentricContactMapper<FFDDistanceGridCollisionModel, defaulttype::Vec3Types>::createMapping(const char*);
-extern template SOFA_SOFADISTANCEGRID_API void RigidContactMapper<RigidDistanceGridCollisionModel, defaulttype::Vec3Types>::cleanup();
-extern template SOFA_SOFADISTANCEGRID_API core::behavior::MechanicalState<defaulttype::Vec3Types>* RigidContactMapper<RigidDistanceGridCollisionModel, defaulttype::Vec3Types>::createMapping(const char*);
+extern template SOFA_SOFADISTANCEGRID_API void response::mapper::BarycentricContactMapper<FFDDistanceGridCollisionModel, defaulttype::Vec3Types>::cleanup();
+extern template SOFA_SOFADISTANCEGRID_API core::behavior::MechanicalState<defaulttype::Vec3Types>* response::mapper::BarycentricContactMapper<FFDDistanceGridCollisionModel, defaulttype::Vec3Types>::createMapping(const char*);
+extern template SOFA_SOFADISTANCEGRID_API void response::mapper::RigidContactMapper<RigidDistanceGridCollisionModel, defaulttype::Vec3Types>::cleanup();
+extern template SOFA_SOFADISTANCEGRID_API core::behavior::MechanicalState<defaulttype::Vec3Types>* response::mapper::RigidContactMapper<RigidDistanceGridCollisionModel, defaulttype::Vec3Types>::createMapping(const char*);
 #  endif
 #endif
 
