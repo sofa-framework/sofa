@@ -174,7 +174,7 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseTest
     {
         // For a Dirac heat of T=1 and a fixed BC T=0, the temperature at time = TTTT in the middle of the beam is:
         SReal temp = 1.0 / (4.0 * sqrt(timeEvaluation));
-        theorX[0] = 1.0 * std::erfc(temp);
+        theorX[0] = std::erfc(temp);
     }
 
 
