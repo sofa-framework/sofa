@@ -321,21 +321,10 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::addForce (const core::Mechani
         v0 = edges[i][0];
         v1 = edges[i][1];
 
-        //Case 1D Diffusion
-        if constexpr (DataTypes::spatial_dimensions == 1)
-        {
-            dp[0] = (x[v1][0] - x[v0][0]) * edgeDiffusionCoefficient[i];
+        dp = (x[v1] - x[v0]) * edgeDiffusionCoefficient[i];
 
-            f[v1][0] += dp[0];
-            f[v0][0] -= dp[0];
-        }
-        else //Case >1D Diffusion
-        {
-            dp = (x[v1] - x[v0]) * edgeDiffusionCoefficient[i];
-
-            f[v1] += dp;
-            f[v0] -= dp;
-        }
+        f[v1] += dp;
+        f[v0] -= dp;
     }
 
     sofa::helper::AdvancedTimer::stepEnd("addForceDiffusion");
@@ -359,21 +348,10 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::addDForce(const sofa::core::M
         v0 = edges[i][0];
         v1 = edges[i][1];
 
-        //Case 1D Diffusion
-        if constexpr (DataTypes::spatial_dimensions == 1)
-        {
-            dp[0] = (dx[v1][0]-dx[v0][0]) * edgeDiffusionCoefficient[i] * kFactor;
+        dp = (dx[v1]-dx[v0]) * edgeDiffusionCoefficient[i] * kFactor;
 
-            df[v1][0]+=dp[0];
-            df[v0][0]-=dp[0];
-        }
-        else //Case >1D Diffusion
-        {
-            dp = (dx[v1]-dx[v0]) * edgeDiffusionCoefficient[i] * kFactor;
-
-            df[v1]+=dp;
-            df[v0]-=dp;
-        }
+        df[v1]+=dp;
+        df[v0]-=dp;
     }
     sofa::helper::AdvancedTimer::stepEnd("addDForceDiffusion");
 }
