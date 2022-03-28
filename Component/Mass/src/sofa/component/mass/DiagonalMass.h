@@ -115,6 +115,8 @@ public:
 
     /// Link to be set to the topology container in the component graph. 
     SingleLink<DiagonalMass<DataTypes, GeometricalTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    /// Link to be set to the position container associated to the topology
+    SingleLink<DiagonalMass<DataTypes, GeometricalTypes>, sofa::core::behavior::MechanicalState<GeometricalTypes>, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_geometryState;
 
 protected:
     ////////////////////////// Inherited attributes ////////////////////////////
@@ -130,12 +132,6 @@ protected:
     class Loader;
     /// The type of topology to build the mass from the topology
     sofa::geometry::ElementType m_massTopologyType;
-
-    /// Pointer to the topology container. Will be set by link @sa l_topology
-    sofa::core::topology::BaseMeshTopology* m_topology;
-
-    /// Pointer to the state owning geometrical positions, associated with the topology
-    typename sofa::core::behavior::MechanicalState<GeometricalTypes>::SPtr m_geometryState;
 
 protected:
     DiagonalMass();

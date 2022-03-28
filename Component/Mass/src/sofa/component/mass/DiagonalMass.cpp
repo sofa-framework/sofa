@@ -131,14 +131,16 @@ template <class RigidTypes, class GeometricalTypes>
 template <class T>
 void DiagonalMass<RigidTypes, GeometricalTypes>::initRigidImpl()
 {
-    if(this->getContext()==nullptr){
+    if(this->getContext()==nullptr)
+    {
         dmsg_error(this) << "Calling the initRigidImpl function is only possible if the object has a valid associated context \n" ;
         this->d_componentState.setValue(ComponentState::Invalid) ;
 
         //return;
     }
 
-    if(this->mstate == nullptr ){
+    if(this->mstate == nullptr )
+    {
         msg_error(this) << "DiagonalComponent can only be used on node with an associated '<MechanicalObject>' \n"
                            "To remove this warning you can: add a <MechanicalObject> to the node. \n" ;
         this->d_componentState.setValue(ComponentState::Invalid) ;
@@ -146,23 +148,49 @@ void DiagonalMass<RigidTypes, GeometricalTypes>::initRigidImpl()
         //return;
     }
 
-
     if (l_topology.empty())
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
-
-    m_topology = l_topology.get();
-    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
-    
-    if(m_topology){
+        
+    if(!l_topology)
+    {
         msg_error(this) << "Unable to retreive a valid MeshTopology component in the current context. \n"
                              "The component cannot be initialized and thus is de-activated. \n "
                              "To supress this warning you can add a Topology component in the parent node of'<"<< this->getName() <<">'.\n" ;
         this->d_componentState.setValue(ComponentState::Invalid) ;
+    }
+    else
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-        //return;
+        if (l_geometryState.empty())
+        {
+            msg_info() << "link to position container (State) should be set to ensure right behavior. First container found from the topology context will be used.";
+            sofa::core::behavior::BaseMechanicalState::SPtr baseState;
+            l_topology->getContext()->get(baseState);
+
+            if (baseState == nullptr)
+            {
+                msg_error() << "No compatible state associated with the topology has been found.";
+                this->d_componentState.setValue(ComponentState::Invalid);
+            }
+            else
+            {
+                typename sofa::core::behavior::MechanicalState<GeometricalTypes>::SPtr geometryState = boost::dynamic_pointer_cast<sofa::core::behavior::MechanicalState<GeometricalTypes>>(baseState);
+                if (geometryState == nullptr)
+                {
+                    msg_error() << "A state associated with the topology has been found but is incompatible with the definition of the mass (templates mismatch).";
+                    this->d_componentState.setValue(ComponentState::Invalid);
+                }
+                else
+                {
+                    l_geometryState.set(geometryState);
+                    msg_info() << "Topology is associated with the state: '" << l_geometryState->getPathName() << "'";
+                }
+            }
+        }
     }
 
     if (!d_fileMass.getValue().empty())

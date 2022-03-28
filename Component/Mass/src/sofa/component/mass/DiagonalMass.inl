@@ -50,8 +50,8 @@ DiagonalMass<DataTypes, GeometricalTypes>::DiagonalMass()
     , d_showAxisSize( initData(&d_showAxisSize, 1.0f, "showAxisSizeFactor", "Factor length of the axis displayed (only used for rigids)" ) )
     , d_fileMass( initData(&d_fileMass,  "filename", "Xsp3.0 file to specify the mass parameters" ) )
     , l_topology(initLink("topology", "link to the topology container"))
+    , l_geometryState(initLink("geometryState", "link to the position container associated with the topology"))
     , m_massTopologyType(sofa::geometry::ElementType::UNKNOWN)
-    , m_topology(nullptr)
 {
     this->addAlias(&d_fileMass,"fileMass");
 }
@@ -81,7 +81,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyEdgeCreation(const sofa::ty
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::EDGE)
     {
-        const auto& restPositions = m_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
+        const auto& restPositions = l_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
 
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
@@ -93,7 +93,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyEdgeCreation(const sofa::ty
         for (i=0; i<edgeAdded.size(); ++i)
         {
             /// get the edge to be added
-            const Edge &e=this->m_topology->getEdge(edgeAdded[i]);
+            const Edge &e=this->l_topology->getEdge(edgeAdded[i]);
             // compute its mass based on the mass density and the edge length
             const auto& rpos0 = GeometricalTypes::getCPos(restPositions[e[0]]);
             const auto& rpos1 = GeometricalTypes::getCPos(restPositions[e[1]]);
@@ -118,7 +118,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyEdgeDestruction(const sofa:
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::EDGE)
     {
-        const auto& restPositions = m_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
+        const auto& restPositions = l_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
 
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
@@ -130,7 +130,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyEdgeDestruction(const sofa:
         for (i=0; i<edgeRemoved.size(); ++i)
         {
             /// get the edge to be added
-            const Edge &e= this->m_topology->getEdge(edgeRemoved[i]);
+            const Edge &e= this->l_topology->getEdge(edgeRemoved[i]);
             // compute its mass based on the mass density and the edge length
             const auto& rpos0 = GeometricalTypes::getCPos(restPositions[e[0]]);
             const auto& rpos1 = GeometricalTypes::getCPos(restPositions[e[1]]);
@@ -160,7 +160,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyTriangleCreation(const sofa
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::TRIANGLE)
     {
-        const auto& restPositions = m_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
+        const auto& restPositions = l_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
 
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
@@ -172,7 +172,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyTriangleCreation(const sofa
         for (i=0; i<triangleAdded.size(); ++i)
         {
             /// get the triangle to be added
-            const Triangle &t=this->m_topology->getTriangle(triangleAdded[i]);
+            const Triangle &t=this->l_topology->getTriangle(triangleAdded[i]);
             // compute its mass based on the mass density and the triangle area
             const auto& rpos0 = GeometricalTypes::getCPos(restPositions[t[0]]);
             const auto& rpos1 = GeometricalTypes::getCPos(restPositions[t[1]]);
@@ -201,7 +201,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyTriangleDestruction(const s
 
     if (this->getMassTopologyType() == sofa::geometry::ElementType::TRIANGLE)
     {
-        const auto& restPositions = m_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
+        const auto& restPositions = l_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
 
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
@@ -213,7 +213,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyTriangleDestruction(const s
         for (i = 0; i < triangleRemoved.size(); ++i)
         {
             /// get the triangle to be added
-            const Triangle& t = this->m_topology->getTriangle(triangleRemoved[i]);
+            const Triangle& t = this->l_topology->getTriangle(triangleRemoved[i]);
 
             /// compute its mass based on the mass density and the triangle area
             const auto& rpos0 = GeometricalTypes::getCPos(restPositions[t[0]]);
@@ -246,7 +246,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyQuadCreation(const sofa::ty
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::QUAD)
     {
-        const auto& restPositions = m_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
+        const auto& restPositions = l_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
 
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
@@ -258,7 +258,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyQuadCreation(const sofa::ty
         for (i = 0; i < quadAdded.size(); ++i)
         {
             /// get the quad to be added
-            const Quad& q = this->m_topology->getQuad(quadAdded[i]);
+            const Quad& q = this->l_topology->getQuad(quadAdded[i]);
 
             // compute its mass based on the mass density and the quad area
             const auto& pos0 = GeometricalTypes::getCPos(restPositions[q[0]]);
@@ -289,7 +289,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyQuadDestruction(const sofa:
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::QUAD)
     {
-        const auto& restPositions = m_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
+        const auto& restPositions = l_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
 
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
@@ -301,7 +301,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyQuadDestruction(const sofa:
         for (i = 0; i < quadRemoved.size(); ++i)
         {
             /// get the quad to be added
-            const Quad& q = this->m_topology->getQuad(quadRemoved[i]);
+            const Quad& q = this->l_topology->getQuad(quadRemoved[i]);
 
             /// compute its mass based on the mass density and the quad area
             const auto& pos0 = GeometricalTypes::getCPos(restPositions[q[0]]);
@@ -336,7 +336,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyTetrahedronCreation(const s
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::TETRAHEDRON)
     {
-        const auto& restPositions = m_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
+        const auto& restPositions = l_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
 
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
@@ -348,7 +348,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyTetrahedronCreation(const s
         for (i = 0; i < tetrahedronAdded.size(); ++i)
         {
             /// get the tetrahedron to be added
-            const Tetrahedron& t = this->m_topology->getTetrahedron(tetrahedronAdded[i]);
+            const Tetrahedron& t = this->l_topology->getTetrahedron(tetrahedronAdded[i]);
 
             /// compute its mass based on the mass density and the tetrahedron volume
             const auto& rpos0 = GeometricalTypes::getCPos(restPositions[t[0]]);
@@ -379,7 +379,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyTetrahedronDestruction(cons
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::TETRAHEDRON)
     {
-        const auto& restPositions = m_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
+        const auto& restPositions = l_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
 
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
@@ -391,7 +391,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyTetrahedronDestruction(cons
         for (i = 0; i < tetrahedronRemoved.size(); ++i)
         {
             /// get the tetrahedron to be added
-            const Tetrahedron& t = this->m_topology->getTetrahedron(tetrahedronRemoved[i]);
+            const Tetrahedron& t = this->l_topology->getTetrahedron(tetrahedronRemoved[i]);
 
             /// compute its mass based on the mass density and the tetrahedron volume
             const auto& rpos0 = GeometricalTypes::getCPos(restPositions[t[0]]);
@@ -426,7 +426,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyHexahedronCreation(const so
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::HEXAHEDRON)
     {
-        const auto& restPositions = m_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
+        const auto& restPositions = l_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
 
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
@@ -438,7 +438,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyHexahedronCreation(const so
         for (i = 0; i < hexahedronAdded.size(); ++i)
         {
             /// get the tetrahedron to be added
-            const Hexahedron& h = this->m_topology->getHexahedron(hexahedronAdded[i]);
+            const Hexahedron& h = this->l_topology->getHexahedron(hexahedronAdded[i]);
             // compute its mass based on the mass density and the tetrahedron volume
             const auto& rpos0 = GeometricalTypes::getCPos(restPositions[h[0]]);
             const auto& rpos1 = GeometricalTypes::getCPos(restPositions[h[1]]);
@@ -470,7 +470,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyHexahedronDestruction(const
 {
     if (this->getMassTopologyType() == sofa::geometry::ElementType::HEXAHEDRON)
     {
-        const auto& restPositions = m_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
+        const auto& restPositions = l_geometryState->read(core::ConstVecCoordId::restPosition())->getValue();
 
         helper::WriteAccessor<Data<MassVector> > masses(d_vertexMass);
         helper::WriteAccessor<Data<Real> > totalMass(d_totalMass);
@@ -482,7 +482,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::applyHexahedronDestruction(const
         for (i = 0; i < hexahedronRemoved.size(); ++i)
         {
             /// get the tetrahedron to be added
-            const Hexahedron& h = this->m_topology->getHexahedron(hexahedronRemoved[i]);
+            const Hexahedron& h = this->l_topology->getHexahedron(hexahedronRemoved[i]);
 
             // compute its mass based on the mass density and the tetrahedron volume
             const auto& rpos0 = GeometricalTypes::getCPos(restPositions[h[0]]);
@@ -658,7 +658,7 @@ template <class DataTypes, class GeometricalTypes>
 void DiagonalMass<DataTypes, GeometricalTypes>::initTopologyHandlers()
 {
     // add the functions to handle topology changes.
-    d_vertexMass.createTopologyHandler(m_topology);
+    d_vertexMass.createTopologyHandler(l_topology);
     d_vertexMass.setCreationCallback([this](Index pointIndex, MassType& m,
         const core::topology::BaseMeshTopology::Point& point,
         const sofa::type::vector< Index >& ancestors,
@@ -748,67 +748,73 @@ bool DiagonalMass<DataTypes, GeometricalTypes>::checkTopology()
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopologyLink());
-
     }
 
-    m_topology = l_topology.get();
-    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
-
-    if (m_topology == nullptr)
+    if (l_topology.get() == nullptr)
     {
         msg_error() << "No topology component found at path: " << l_topology.getLinkedPath() << ", nor in current context: " << this->getContext()->name;
-        return false;
-    }
-
-    sofa::core::behavior::BaseMechanicalState::SPtr baseState;
-    m_topology->getContext()->get(baseState);
-    if (baseState == nullptr)
-    {
-        msg_error() << "No state associated with the topology has been found.";
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return false;
     }
     else
     {
-        m_geometryState = boost::dynamic_pointer_cast<sofa::core::behavior::MechanicalState<GeometricalTypes>>(baseState);
-        if (m_geometryState == nullptr)
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
+    }
+
+    if (l_geometryState.empty())
+    {
+        msg_info() << "link to position container (State) should be set to ensure right behavior. First container found from the topology context will be used.";
+        sofa::core::behavior::BaseMechanicalState::SPtr baseState;
+        l_topology->getContext()->get(baseState);
+
+        if (baseState == nullptr)
         {
-            msg_error() << "A state associated with the topology has been found but is incompatible with the definition of the mass (templates mismatch).";
+            msg_error() << "No compatible state associated with the topology has been found.";
             return false;
         }
         else
         {
-            msg_info() << "Topology is associated with the state: '" << m_geometryState->getPathName() << "'";
+            typename sofa::core::behavior::MechanicalState<GeometricalTypes>::SPtr geometryState = boost::dynamic_pointer_cast<sofa::core::behavior::MechanicalState<GeometricalTypes>>(baseState);
+            if (geometryState == nullptr)
+            {
+                msg_error() << "A state associated with the topology has been found but is incompatible with the definition of the mass (templates mismatch).";
+                return false;
+            }
+            else
+            {
+                l_geometryState.set(geometryState);
+                msg_info() << "Topology is associated with the state: '" << l_geometryState->getPathName() << "'";
+            }
         }
-
     }
 
-    if (m_topology)
+    if (l_topology)
     {
-        if (m_topology->getNbHexahedra() > 0)
+        if (l_topology->getNbHexahedra() > 0)
         {
             msg_info() << "Hexahedral topology found.";
             m_massTopologyType = sofa::geometry::ElementType::HEXAHEDRON;
             return true;
         }
-        else if (m_topology->getNbTetrahedra() > 0)
+        else if (l_topology->getNbTetrahedra() > 0)
         {
             msg_info() << "Tetrahedral topology found.";
             m_massTopologyType = sofa::geometry::ElementType::TETRAHEDRON;
             return true;
         }
-        else if (m_topology->getNbQuads() > 0)
+        else if (l_topology->getNbQuads() > 0)
         {
             msg_info() << "Quad topology found.";
             m_massTopologyType = sofa::geometry::ElementType::QUAD;
             return true;
         }
-        else if (m_topology->getNbTriangles() > 0)
+        else if (l_topology->getNbTriangles() > 0)
         {
             msg_info() << "Triangular topology found."; 
             m_massTopologyType = sofa::geometry::ElementType::TRIANGLE;
             return true;
         }
-        else if (m_topology->getNbEdges() > 0)
+        else if (l_topology->getNbEdges() > 0)
         {
             msg_info() << "Edge topology found.";
             m_massTopologyType = sofa::geometry::ElementType::EDGE;
@@ -971,14 +977,14 @@ typename DiagonalMass<DataTypes, GeometricalTypes>::Real DiagonalMass<DataTypes,
 {
     Real total_mass = Real(0);
 
-    if (m_topology == nullptr)
+    if (l_topology == nullptr)
     {
         msg_warning() << "No topology set. DiagonalMass can't computeMass.";
         return total_mass;
     }
     
     core::ConstVecCoordId posid = d_computeMassOnRest.getValue() ? core::ConstVecCoordId::restPosition() : core::ConstVecCoordId::position();
-    const auto& positions = m_geometryState->read(posid)->getValue();
+    const auto& positions = l_geometryState->read(posid)->getValue();
 
     Real mass = Real(0);
     helper::WriteAccessor<Data<MassVector> > masses = d_vertexMass;
@@ -990,9 +996,9 @@ typename DiagonalMass<DataTypes, GeometricalTypes>::Real DiagonalMass<DataTypes,
     {
         if (m_massTopologyType == sofa::geometry::ElementType::EDGE)
         {
-            for (Topology::EdgeID i = 0; i < m_topology->getNbEdges(); ++i)
+            for (Topology::EdgeID i = 0; i < l_topology->getNbEdges(); ++i)
             {
-                const Edge& e = m_topology->getEdge(i);
+                const Edge& e = l_topology->getEdge(i);
 
                 const auto& pos0 = GeometricalTypes::getCPos(positions[e[0]]);
                 const auto& pos1 = GeometricalTypes::getCPos(positions[e[1]]);
@@ -1013,9 +1019,9 @@ typename DiagonalMass<DataTypes, GeometricalTypes>::Real DiagonalMass<DataTypes,
     {
         if (m_massTopologyType == sofa::geometry::ElementType::TRIANGLE)
         {
-            for (Topology::TriangleID i = 0; i < m_topology->getNbTriangles(); ++i)
+            for (Topology::TriangleID i = 0; i < l_topology->getNbTriangles(); ++i)
             {
-                const Triangle& t = m_topology->getTriangle(i);
+                const Triangle& t = l_topology->getTriangle(i);
 
                 const auto& pos0 = GeometricalTypes::getCPos(positions[t[0]]);
                 const auto& pos1 = GeometricalTypes::getCPos(positions[t[1]]);
@@ -1034,9 +1040,9 @@ typename DiagonalMass<DataTypes, GeometricalTypes>::Real DiagonalMass<DataTypes,
 
         if (m_massTopologyType == sofa::geometry::ElementType::QUAD)
         {
-            for (Topology::QuadID i = 0; i < m_topology->getNbQuads(); ++i)
+            for (Topology::QuadID i = 0; i < l_topology->getNbQuads(); ++i)
             {
-                const Quad& q = m_topology->getQuad(i);
+                const Quad& q = l_topology->getQuad(i);
 
                 const auto& pos0 = GeometricalTypes::getCPos(positions[q[0]]);
                 const auto& pos1 = GeometricalTypes::getCPos(positions[q[1]]);
@@ -1058,9 +1064,9 @@ typename DiagonalMass<DataTypes, GeometricalTypes>::Real DiagonalMass<DataTypes,
     {
         if (m_massTopologyType == sofa::geometry::ElementType::TETRAHEDRON)
         {
-            for (Topology::TetrahedronID i = 0; i < m_topology->getNbTetrahedra(); ++i)
+            for (Topology::TetrahedronID i = 0; i < l_topology->getNbTetrahedra(); ++i)
             {
-                const Tetrahedron& t = m_topology->getTetrahedron(i);
+                const Tetrahedron& t = l_topology->getTetrahedron(i);
 
                 /// compute its mass based on the mass density and the tetrahedron volume
                 const auto& rpos0 = GeometricalTypes::getCPos(positions[t[0]]);
@@ -1079,9 +1085,9 @@ typename DiagonalMass<DataTypes, GeometricalTypes>::Real DiagonalMass<DataTypes,
         }
         if (m_massTopologyType == sofa::geometry::ElementType::HEXAHEDRON)
         {
-            for (Topology::HexahedronID i = 0; i < m_topology->getNbHexahedra(); ++i)
+            for (Topology::HexahedronID i = 0; i < l_topology->getNbHexahedra(); ++i)
             {
-                const Hexahedron& h = m_topology->getHexahedron(i);
+                const Hexahedron& h = l_topology->getHexahedron(i);
 
                 /// compute its mass based on the mass density and the hexahedron volume
                 const auto& rpos0 = GeometricalTypes::getCPos(positions[h[0]]);
@@ -1144,9 +1150,9 @@ bool DiagonalMass<DataTypes, GeometricalTypes>::checkVertexMass()
     const MassVector &vertexMass = d_vertexMass.getValue();
 
     //Check size of the vector
-    if (vertexMass.size() != size_t(m_topology->getNbPoints()))
+    if (vertexMass.size() != size_t(l_topology->getNbPoints()))
     {
-        msg_warning() << "Inconsistent size of vertexMass vector ("<< vertexMass.size() <<") compared to the DOFs size ("<< m_topology->getNbPoints() <<").";
+        msg_warning() << "Inconsistent size of vertexMass vector ("<< vertexMass.size() <<") compared to the DOFs size ("<< l_topology->getNbPoints() <<").";
         return false;
     }
     else
@@ -1418,7 +1424,7 @@ void DiagonalMass<DataTypes, GeometricalTypes>::draw(const core::visual::VisualP
     if (masses.empty())
         return;
 
-    const auto& x = m_geometryState->read(core::ConstVecCoordId::position())->getValue();
+    const auto& x = l_geometryState->read(core::ConstVecCoordId::position())->getValue();
     type::Vector3 gravityCenter;
     Real totalMass=0.0;
 

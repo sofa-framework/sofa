@@ -111,6 +111,8 @@ public:
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<MeshMatrixMass<DataTypes, GeometricalTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    /// Link to be set to the position container associated to the topology
+    SingleLink<MeshMatrixMass<DataTypes, GeometricalTypes>, sofa::core::behavior::MechanicalState<GeometricalTypes>, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_geometryState;
 
 protected:
 
