@@ -1066,6 +1066,23 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "AttachConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
     { "SkeletalMotionConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
 
+    // SofaBoundaryCondition was deprecated in #2759 and ...
+    { "ConicalForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "ConstantForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "DiagonalVelocityDampingForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "EdgePressureForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "EllipsoidForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "LinearForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "OscillatingTorsionPressureForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "PlaneForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "QuadPressureForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "SphereForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "SurfacePressureForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "TaitSurfacePressureForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "TorsionForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "TrianglePressureForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+    { "UniformVelocityDampingForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+
 };
 
 } // namespace sofa::helper::lifecycle
