@@ -316,16 +316,21 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
 
     Coord displ[6],sv;
     Mat3x3 deformationGradient,S,R;
+    auto tetrahedra = m_topology->getTetrahedra();
 
+    Coord tetraVertex[4];
     for(i=0; i<nbTetrahedra; i++ )
     {
         TetrahedronRestInformation& tetraInfo = tetrahedronInf[i];
-        const core::topology::BaseMeshTopology::Tetrahedron &tetra = m_topology->getTetrahedron(i);
+        const core::topology::BaseMeshTopology::Tetrahedron &tetra = tetrahedra[i];
         
+        for (int j = 0; j < 4; ++j)
+            tetraVertex[j] = x[tetra[j]];
+
         // compute current tetrahedron displacement
         for (j=0; j<6; ++j)
         {
-            displ[j] = x[tetra[edgesInTetrahedronArray[j][1]]] - x[tetra[edgesInTetrahedronArray[j][0]]];
+            displ[j] = tetraVertex[edgesInTetrahedronArray[j][1]] - tetraVertex[edgesInTetrahedronArray[j][0]];
         }
 
         if (m_decompositionMethod == POLAR_DECOMPOSITION)
@@ -359,7 +364,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
         {
             /// perform QR decomposition
             computeQRRotation(S, displ);
-            R=S.transposed()*tetraInfo.restRotation;
+            R=S.multTranspose(tetraInfo.restRotation);
         } 
         else if (m_decompositionMethod == POLAR_DECOMPOSITION_MODIFIED) 
         {
@@ -445,11 +450,11 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
                 if (tetinfo.edgeOrientation[j]==1)
                 {
                     // store the two edge matrices since the stiffness matrix is not symmetric
-                    edgeDfDx[edgeID] += tetinfo.rotation.transposed()*tmp;
+                    edgeDfDx[edgeID] += tetinfo.rotation.multTranspose(tmp);
                 }
                 else
                 {
-                    edgeDfDx[edgeID] += tmp.transposed()*tetinfo.rotation;
+                    edgeDfDx[edgeID] += tmp.multTranspose(tetinfo.rotation);
                 }
             }
         }
@@ -458,14 +463,15 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
     const VecMat3x3& edgeDfDx = edgeInfo.getValue();
     Coord deltax;
 
+    auto edges = m_topology->getEdges();
     // use the already stored matrix
-    for(i=0; i<nbEdges; i++ )
+    for (i = 0; i < nbEdges; i++)
     {
-        const core::topology::BaseMeshTopology::Edge& edge = m_topology->getEdge(i);
+        const core::topology::BaseMeshTopology::Edge& edge = edges[i];
 
-        deltax= dx[edge[1]] -dx[edge[0]];
-        df[edge[1]]+= edgeDfDx[i] *(deltax * kFactor);
-        df[edge[0]]-= edgeDfDx[i].multTranspose(deltax * kFactor);
+        deltax = (dx[edge[1]] - dx[edge[0]]) * kFactor;
+        df[edge[1]] += edgeDfDx[i] * deltax;
+        df[edge[0]] -= edgeDfDx[i].multTranspose(deltax);
     }
 
     datadF.endEdit();
