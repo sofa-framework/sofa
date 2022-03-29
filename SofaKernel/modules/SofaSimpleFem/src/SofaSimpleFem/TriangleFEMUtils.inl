@@ -133,9 +133,13 @@ constexpr void TriangleFEMUtils<DataTypes>::computeStrainDisplacementGlobal(Stra
     const Coord ab_cross_ac = cross(pB - pA, pC - pA);
     const Real determinant = ab_cross_ac.norm();
     
-    Real invDet = 0.0;
-    if (abs(determinant) > std::numeric_limits<Real>::epsilon())
-        invDet = 1 / determinant;
+    if (abs(determinant) < std::numeric_limits<Real>::epsilon())
+    {
+        throw std::logic_error("Division by zero exception in computeStrainDisplacementGlobal");
+        return;
+    }
+
+    const Real invDet = 1 / determinant;
 
     const Real x13 = (pA[0] - pC[0]) * invDet;
     const Real x21 = (pB[0] - pA[0]) * invDet;
@@ -220,10 +224,13 @@ constexpr void TriangleFEMUtils<DataTypes>::computeStrainDisplacementLocal(Strai
 {
     // local computation taking into account that a = [0, 0, 0], b = [x, 0, 0], c = [y, y, 0]
     const Real determinant = pB[0] * pC[1];
-
-    Real invDet = 0.0;
-    if (abs(determinant) > std::numeric_limits<Real>::epsilon())
-        invDet = 1 / determinant;
+    
+    if (abs(determinant) < std::numeric_limits<Real>::epsilon())
+    {
+        throw std::logic_error("Division by zero exception in computeStrainDisplacementLocal");
+        return;
+    }
+    const Real invDet = 1 / determinant;
 
     J[0][0] = J[1][2] = -pC[1] * invDet;
     J[0][2] = J[1][1] = (pC[0] - pB[0]) * invDet;

@@ -156,8 +156,7 @@ void TriangularFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::initSmall(int i, Index& a, Index& b, Index& c)
 {
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
-
+    auto triangleInf = sofa::helper::getWriteOnlyAccessor(triangleInfo);
     TriangleInformation* tinfo = &triangleInf[i];
 
     tinfo->initialTransformation.identity();
@@ -176,13 +175,20 @@ void TriangularFEMForceField<DataTypes>::initSmall(int i, Index& a, Index& b, In
         tinfo->rotatedInitialElements[2] = pC - pA;
     }
 
-    m_triangleUtils.computeStrainDisplacementGlobal(tinfo->strainDisplacementMatrix, tinfo->rotatedInitialElements[0], tinfo->rotatedInitialElements[1], tinfo->rotatedInitialElements[2]);
+    try
+    {
+        m_triangleUtils.computeStrainDisplacementGlobal(tinfo->strainDisplacementMatrix, tinfo->rotatedInitialElements[0], tinfo->rotatedInitialElements[1], tinfo->rotatedInitialElements[2]);
+    }
+    catch (const std::exception& e)
+    {
+        msg_error() << e.what();
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     // store area of each triangle
     Real determinant = cross(tinfo->rotatedInitialElements[1], tinfo->rotatedInitialElements[2]).norm();
     tinfo->area = determinant * 0.5;
-
-    triangleInfo.endEdit();
 }
 
 // --------------------------------------------------------------------------------------
@@ -191,11 +197,10 @@ void TriangularFEMForceField<DataTypes>::initSmall(int i, Index& a, Index& b, In
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::initLarge(int i, Index& a, Index& b, Index& c)
 {
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginWriteOnly());
+    auto triangleInf = sofa::helper::getWriteOnlyAccessor(triangleInfo);
     if (sofa::Size(i) >= triangleInf.size())
     {
         msg_error() << "Try to access an element which indices bigger than the size of the vector: i=" << i << " and size=" << triangleInf.size();
-        triangleInfo.endEdit();
         return;
     }
 
@@ -216,7 +221,6 @@ void TriangularFEMForceField<DataTypes>::initLarge(int i, Index& a, Index& b, In
         {
             msg_error() << "Try to access an element which indices bigger than the size of the vector: a=" << a <<
                 " b=" << b << " and c=" << c << " and size=" << (initialPoints).size() << msgendl;
-            triangleInfo.endEdit();
             return;
         }
 
@@ -241,12 +245,19 @@ void TriangularFEMForceField<DataTypes>::initLarge(int i, Index& a, Index& b, In
         tinfo->rotatedInitialElements[2] = R_0_1 * pAC;
     }
 
-    m_triangleUtils.computeStrainDisplacementLocal(tinfo->strainDisplacementMatrix, tinfo->rotatedInitialElements[1], tinfo->rotatedInitialElements[2]);
+    try
+    {
+        m_triangleUtils.computeStrainDisplacementLocal(tinfo->strainDisplacementMatrix, tinfo->rotatedInitialElements[1], tinfo->rotatedInitialElements[2]);
+    }
+    catch (const std::exception& e)
+    {
+        msg_error() << e.what();
+        sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+        return;
+    }
 
     // store area of each triangle
     tinfo->area = tinfo->rotatedInitialElements[1][0] * tinfo->rotatedInitialElements[2][1] * 0.5;
-
-    triangleInfo.endEdit();
 }
 
 // --------------------------------------------------------------------------------------
@@ -752,17 +763,24 @@ void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3, Real>& stres
     Index b = tri[1];
     Index c = tri[2];
 
-    type::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
+    auto triangleInf = sofa::helper::getWriteOnlyAccessor(triangleInfo);
     if (method == SMALL)
     {
         // classic linear elastic method
         Coord deforme_b = p[b] - p[a];
         Coord deforme_c = p[c] - p[a];
         m_triangleUtils.computeDisplacementSmall(D, triangleInf[elementIndex].rotatedInitialElements, deforme_b, deforme_c);
-        if (_anisotropicMaterial)
+
+        try
+        {
             m_triangleUtils.computeStrainDisplacementLocal(J, deforme_b, deforme_c);
-        else
-            J = triangleInf[elementIndex].strainDisplacementMatrix;
+        }
+        catch (const std::exception& e)
+        {
+            msg_error() << e.what();
+            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            return;
+        }
         m_triangleUtils.computeStrain(strain, J, D, true);
         m_triangleUtils.computeStress(stress, triangleInf[elementIndex].materialMatrix, strain, true);
     }
@@ -780,7 +798,16 @@ void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3, Real>& stres
         Coord B = R_0_2 * (p[b] - p[a]);
         Coord C = R_0_2 * (p[c] - p[a]);
 
-        m_triangleUtils.computeStrainDisplacementLocal(J, B, C);
+        try
+        {
+            m_triangleUtils.computeStrainDisplacementLocal(J, B, C);
+        }
+        catch (const std::exception& e)
+        {
+            msg_error() << e.what();
+            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            return;
+        }
         m_triangleUtils.computeStrain(strain, J, D, _anisotropicMaterial);
         m_triangleUtils.computeStress(stress, triangleInf[elementIndex].materialMatrix, strain, _anisotropicMaterial);
     }
@@ -790,8 +817,6 @@ void TriangularFEMForceField<DataTypes>::computeStress(type::Vec<3, Real>& stres
     triangleInf[elementIndex].rotation = R_2_0;
     triangleInf[elementIndex].strain = strain;
     triangleInf[elementIndex].stress = stress;
-
-    triangleInfo.endEdit();
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------
@@ -993,23 +1018,32 @@ void TriangularFEMForceField<DataTypes>::accumulateForceSmall(VecCoord& f, const
         deforme_a = Coord(0, 0, 0);
 
         // displacements
-        Displacement Depl;
+        Displacement Depl(type::NOINIT);
         m_triangleUtils.computeDisplacementSmall(Depl, tInfo.rotatedInitialElements, deforme_b, deforme_c);
 
-        StrainDisplacement J;
-        m_triangleUtils.computeStrainDisplacementGlobal(J, deforme_a, deforme_b, deforme_c);
+        StrainDisplacement J(type::NOINIT);
+
+        try
+        {
+            m_triangleUtils.computeStrainDisplacementGlobal(J, deforme_a, deforme_b, deforme_c);
+        }
+        catch (const std::exception& e)
+        {
+            msg_error() << e.what();
+            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            break;
+        }        
 
         // compute strain
-        type::Vec<3, Real> strain;
+        type::Vec<3, Real> strain(type::NOINIT);
         m_triangleUtils.computeStrain(strain, J, Depl, true);
 
         // compute stress
-        type::Vec<3, Real> stress;
+        type::Vec<3, Real> stress(type::NOINIT);
         m_triangleUtils.computeStress(stress, tInfo.materialMatrix, strain, true);
 
         // compute force on element
-        Displacement F;
-        F = J * stress;
+        Displacement F = J * stress;
 
         f[a] += Coord(F[0], F[1], 0);
         f[b] += Coord(F[2], F[3], 0);
@@ -1048,7 +1082,7 @@ void TriangularFEMForceField<DataTypes>::accumulateForceLarge(VecCoord& f, const
         m_triangleUtils.computeRotationLarge(R_0_2, pA, pB, pC);
 
         // then compute displacement in this frame
-        Displacement Depl;
+        Displacement Depl(type::NOINIT);
         m_triangleUtils.computeDisplacementLarge(Depl, R_0_2, tInfo.rotatedInitialElements, pA, pB, pC);
 
         // positions of the deformed points in the local frame
@@ -1056,19 +1090,28 @@ void TriangularFEMForceField<DataTypes>::accumulateForceLarge(VecCoord& f, const
         const Coord deforme_c = R_0_2 * (pC - pA);
 
         // Strain-displacement matrix
-        StrainDisplacement J;
-        m_triangleUtils.computeStrainDisplacementLocal(J, deforme_b, deforme_c);
+        StrainDisplacement J(type::NOINIT);
+        try
+        {
+            m_triangleUtils.computeStrainDisplacementLocal(J, deforme_b, deforme_c);
+        }
+        catch (const std::exception& e)
+        {
+            msg_error() << e.what();
+            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            break;
+        }        
 
         // compute strain
-        type::Vec<3, Real> strain;
+        type::Vec<3, Real> strain(type::NOINIT);
         m_triangleUtils.computeStrain(strain, J, Depl, _anisotropicMaterial);
 
         // compute stress
-        type::Vec<3, Real> stress;
+        type::Vec<3, Real> stress(type::NOINIT);
         m_triangleUtils.computeStress(stress, tInfo.materialMatrix, strain, _anisotropicMaterial);
 
         // compute force on element, in local frame
-        Displacement F;
+        Displacement F(type::NOINIT);
         m_triangleUtils.computeForceLarge(F, J, stress);
 
         // transform force back into global ref. frame

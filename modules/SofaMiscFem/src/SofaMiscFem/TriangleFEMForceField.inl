@@ -292,7 +292,17 @@ void TriangleFEMForceField<DataTypes>::accumulateForceSmall(VecCoord& f, const V
         m_triangleUtils.computeDisplacementSmall(Depl, _rotatedInitialElements[elementIndex], deforme_b, deforme_c);
 
         StrainDisplacement J(type::NOINIT);
-        m_triangleUtils.computeStrainDisplacementLocal(J, deforme_b, deforme_c);
+        try
+        {
+            m_triangleUtils.computeStrainDisplacementLocal(J, deforme_b, deforme_c);
+        }
+        catch (const std::exception& e)
+        {
+            msg_error() << e.what();
+            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            break;
+        }
+        
         if (implicit)
             _strainDisplacements[elementIndex] = J;
 
@@ -390,7 +400,16 @@ void TriangleFEMForceField<DataTypes>::initLarge()
         _rotatedInitialElements[i][2] -= _rotatedInitialElements[i][0];
         _rotatedInitialElements[i][0] = Coord(0, 0, 0);
 
-        m_triangleUtils.computeStrainDisplacementLocal(_strainDisplacements[i], _rotatedInitialElements[i][1], _rotatedInitialElements[i][2]);
+        try
+        {
+            m_triangleUtils.computeStrainDisplacementLocal(_strainDisplacements[i], _rotatedInitialElements[i][1], _rotatedInitialElements[i][2]);
+        }
+        catch (const std::exception& e)
+        {
+            msg_error() << e.what();
+            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            return;
+        }
     }
 }
 
@@ -424,7 +443,16 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord& f, const V
 
         // Strain-displacement matrix
         StrainDisplacement J(type::NOINIT);
-        m_triangleUtils.computeStrainDisplacementLocal(J, deforme_b, deforme_c);
+        try
+        {
+            m_triangleUtils.computeStrainDisplacementLocal(J, deforme_b, deforme_c);
+        }
+        catch (const std::exception& e)
+        {
+            msg_error() << e.what();
+            sofa::core::objectmodel::BaseObject::d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
+            break;
+        }        
 
         // compute strain
         type::Vec<3, Real> strain(type::NOINIT);
