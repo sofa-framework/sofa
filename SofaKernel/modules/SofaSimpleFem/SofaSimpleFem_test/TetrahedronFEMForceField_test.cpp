@@ -926,11 +926,11 @@ TEST_F(FastTetrahedralCorotationalForceField3_test, checkCreation)
 //    this->checkWrongAttributes(0);
 //}
 
-//TEST_F(TetrahedronFEMForceField3_test, checkInit)
-//{
-//    this->checkInit(0);
-//}
-//
+TEST_F(TetrahedronFEMForceField3_test, checkInit)
+{
+    this->checkInit(0);
+}
+
 //TEST_F(TetrahedronFEMForceField3_test, checkFEMValues)
 //{
 //    this->checkFEMValues(0);
