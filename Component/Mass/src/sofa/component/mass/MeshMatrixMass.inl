@@ -1013,7 +1013,7 @@ sofa::core::topology::TopologyElementType MeshMatrixMass<DataTypes, GeometricalT
 {
     if (l_topology.empty())
     {
-        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        msg_warning() << "Link to the Topology \"topology\" should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
@@ -1030,7 +1030,7 @@ sofa::core::topology::TopologyElementType MeshMatrixMass<DataTypes, GeometricalT
 
     if (l_geometryState.empty())
     {
-        msg_info() << "link to position container (State) should be set to ensure right behavior. First container found from the topology context will be used.";
+        msg_warning() << "Link to position container \"geometryState\" should be set to ensure right behavior. First container found from the topology context will be used.";
         sofa::core::behavior::BaseMechanicalState::SPtr baseState;
         l_topology->getContext()->get(baseState);
 
