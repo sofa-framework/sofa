@@ -6,7 +6,6 @@ set(SOFABASECOLLISION_SRC "src/${PROJECT_NAME}")
 set(HEADER_FILES
     ${SOFABASECOLLISION_SRC}/config.h.in
     ${SOFABASECOLLISION_SRC}/initSofaBaseCollision.h
-    ${SOFABASECOLLISION_SRC}/Intersector.h
 
 )
 
@@ -19,7 +18,7 @@ sofa_find_package(SofaFramework REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore)
 
-message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Collision.Geometry, Sofa.Component.Collision.Detection.Algorithm, Sofa.Component.Collision.Detection.Intersection, Sofa.Component.Collision.Response.Mapper and Sofa.Component.Collision.Response.Contact instead.")
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. You may use Sofa.Component.Collision.Model, Sofa.Component.Collision.Detection.Algorithm, Sofa.Component.Collision.Detection.Intersection, Sofa.Component.Collision.Response.Mapper and Sofa.Component.Collision.Response.Contact instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.Collision.Geometry REQUIRED)
