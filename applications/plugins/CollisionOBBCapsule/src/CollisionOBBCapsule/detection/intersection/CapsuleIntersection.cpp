@@ -27,8 +27,8 @@
 #include <CollisionOBBCapsule/model/CapsuleModel.h>
 #include <CollisionOBBCapsule/model/RigidCapsuleModel.h>
 #include <CollisionOBBCapsule/model/OBBModel.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaUserInteraction/RayModel.h>
+#include <sofa/component/collision/model/SphereModel.h>
+#include <sofa/component/collision/model/RayModel.h>
 #include <SofaUserInteraction/FixParticlePerformer.h>
 
 namespace collisionobbcapsule::detection::intersection

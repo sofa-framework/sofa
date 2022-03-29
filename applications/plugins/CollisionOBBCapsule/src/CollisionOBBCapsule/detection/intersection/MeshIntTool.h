@@ -23,27 +23,27 @@
 #include <CollisionOBBCapsule/config.h>
 
 #include <sofa/core/collision/Intersection.h>
+#include <CollisionOBBCapsule/detection/intersection/IntrTriangleOBB.h>
+#include <sofa/component/collision/model/TriangleModel.h>
+#include <sofa/component/collision/model/PointModel.h>
+#include <sofa/component/collision/model/LineModel.h>
+#include <sofa/component/collision/model/SphereModel.h>
 #include <CollisionOBBCapsule/model/OBBModel.h>
 #include <CollisionOBBCapsule/model/CapsuleModel.h>
 #include <CollisionOBBCapsule/model/RigidCapsuleModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaMeshCollision/PointModel.h>
-#include <SofaMeshCollision/LineModel.h>
-#include <CollisionOBBCapsule/detection/intersection/IntrTriangleOBB.h>
-#include <SofaBaseCollision/SphereModel.h>
-
-namespace collisionobbcapsule::detection::intersection
-{
 
 using collisionobbcapsule::model::TCapsule;
 using collisionobbcapsule::model::OBB;
 using sofa::component::collision::model::Point;
 using sofa::component::collision::model::Line;
 using sofa::component::collision::model::Triangle;
+using sofa::component::collision::model::TSphere;
+
+namespace collisionobbcapsule::detection::intersection
+{
 
 class COLLISIONOBBCAPSULE_API MeshIntTool
 {
-
 
 public:
     typedef sofa::type::vector<sofa::core::collision::DetectionOutput> OutputVector;
@@ -79,26 +79,26 @@ public:
 
     //SPHERE - POINT
     template <class DataTypes>
-    static int computeIntersection(sofa::component::collision::TSphere<DataTypes> & sph, Point& pt,typename DataTypes::Real alarmDist,typename DataTypes::Real contactDist, OutputVector* contacts);
+    static int computeIntersection(TSphere<DataTypes> & sph, Point& pt,typename DataTypes::Real alarmDist,typename DataTypes::Real contactDist, OutputVector* contacts);
 
     template <class TReal>
-    static int computeIntersection(sofa::component::collision::TSphere<defaulttype::StdVectorTypes<type::Vec<3,TReal>,type::Vec<3,TReal>,TReal> > & sph, Point& pt,TReal alarmDist,TReal contactDist, OutputVector* contacts);
+    static int computeIntersection(TSphere<defaulttype::StdVectorTypes<type::Vec<3,TReal>,type::Vec<3,TReal>,TReal> > & sph, Point& pt,TReal alarmDist,TReal contactDist, OutputVector* contacts);
     ///
 
     //LINE - SPHERE
     template <class DataTypes>
-    static int computeIntersection(Line& e2, sofa::component::collision::TSphere<DataTypes>& e1,typename DataTypes::Real alarmDist,typename DataTypes::Real contactDist, OutputVector* contacts);
+    static int computeIntersection(Line& e2, TSphere<DataTypes>& e1,typename DataTypes::Real alarmDist,typename DataTypes::Real contactDist, OutputVector* contacts);
 
     template <class TReal>
-    static int computeIntersection(Line& e2, sofa::component::collision::TSphere<defaulttype::StdVectorTypes<type::Vec<3,TReal>,type::Vec<3,TReal>,TReal> >& e1,TReal alarmDist,TReal contactDist, OutputVector* contacts);
+    static int computeIntersection(Line& e2, TSphere<defaulttype::StdVectorTypes<type::Vec<3,TReal>,type::Vec<3,TReal>,TReal> >& e1,TReal alarmDist,TReal contactDist, OutputVector* contacts);
     ///
 
     //TRIANGLE - SPHERE
     template <class DataTypes>
-    static int computeIntersection(Triangle& tri, sofa::component::collision::TSphere<DataTypes>& sph,typename DataTypes::Real alarmDist,typename DataTypes::Real contactDist, OutputVector* contacts);
+    static int computeIntersection(Triangle& tri, TSphere<DataTypes>& sph,typename DataTypes::Real alarmDist,typename DataTypes::Real contactDist, OutputVector* contacts);
 
     template <class TReal>
-    static int computeIntersection(Triangle& tri, sofa::component::collision::TSphere<defaulttype::StdVectorTypes<type::Vec<3,TReal>,type::Vec<3,TReal>,TReal> >& sph,TReal alarmDist,TReal contactDist, OutputVector* contacts);
+    static int computeIntersection(Triangle& tri, TSphere<defaulttype::StdVectorTypes<type::Vec<3,TReal>,type::Vec<3,TReal>,TReal> >& sph,TReal alarmDist,TReal contactDist, OutputVector* contacts);
     ///
 
     //flags are the flags of the Triangle and p1 p2 p3 its vertices, to_be_projected is the point to be projected on the triangle, i.e.
@@ -114,7 +114,7 @@ inline int MeshIntTool::computeIntersection(Triangle& tri,OBB & obb,SReal alarmD
 }
 
 template <class DataTypes>
-int MeshIntTool::computeIntersection(sofa::component::collision::TSphere<DataTypes> & e1, Point& e2,typename DataTypes::Real alarmDist,typename DataTypes::Real contactDist, OutputVector* contacts){
+int MeshIntTool::computeIntersection(TSphere<DataTypes> & e1, Point& e2,typename DataTypes::Real alarmDist,typename DataTypes::Real contactDist, OutputVector* contacts){
     const typename DataTypes::Real myAlarmDist = alarmDist + e1.r();
 
     typename DataTypes::Coord P,Q,PQ;
@@ -149,7 +149,7 @@ int MeshIntTool::computeIntersection(sofa::component::collision::TSphere<DataTyp
 
 
 template <class DataTypes>
-int MeshIntTool::computeIntersection(Line& e2, sofa::component::collision::TSphere<DataTypes>& e1,typename DataTypes::Real alarmDist,typename DataTypes::Real contactDist, OutputVector* contacts){
+int MeshIntTool::computeIntersection(Line& e2, TSphere<DataTypes>& e1,typename DataTypes::Real alarmDist,typename DataTypes::Real contactDist, OutputVector* contacts){
     const typename DataTypes::Real myAlarmDist = alarmDist + e1.r();
 
     const typename DataTypes::Coord x32 = e2.p1()-e2.p2();
@@ -203,7 +203,7 @@ int MeshIntTool::computeIntersection(Line& e2, sofa::component::collision::TSphe
 
 
 template <class DataTypes>
-int MeshIntTool::computeIntersection(Triangle& tri, sofa::component::collision::TSphere<DataTypes>& sph,typename DataTypes::Real alarmDist,typename DataTypes::Real contactDist, OutputVector* contacts){
+int MeshIntTool::computeIntersection(Triangle& tri, TSphere<DataTypes>& sph,typename DataTypes::Real alarmDist,typename DataTypes::Real contactDist, OutputVector* contacts){
     const typename DataTypes::Coord sph_center = sph.p();
     typename DataTypes::Coord proj_p = sph_center;
     if(projectPointOnTriangle(tri.flags(),tri.p1(),tri.p2(),tri.p3(),proj_p)){

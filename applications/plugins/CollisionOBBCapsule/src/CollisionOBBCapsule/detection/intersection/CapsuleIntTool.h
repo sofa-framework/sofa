@@ -24,7 +24,7 @@
 
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseCollision/SphereModel.h>
+#include <sofa/component/collision/model/SphereModel.h>
 #include <CollisionOBBCapsule/model/OBBModel.h>
 #include <CollisionOBBCapsule/detection/intersection/IntrCapsuleOBB.h>
 
@@ -36,6 +36,7 @@ using namespace sofa;
 using collisionobbcapsule::model::OBB;
 using collisionobbcapsule::model::TCapsule;
 using collisionobbcapsule::model::Capsule;
+using sofa::component::collision::model::TSphere;
 
 class COLLISIONOBBCAPSULE_API CapsuleIntTool
 {
@@ -46,7 +47,7 @@ public:
     static int computeIntersection(TCapsule<DataTypes1>&, TCapsule<DataTypes2>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 
     template <class DataTypes1,class DataTypes2>
-    static int computeIntersection(TCapsule<DataTypes1>&, sofa::component::collision::TSphere<DataTypes2>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+    static int computeIntersection(TCapsule<DataTypes1>&, TSphere<DataTypes2>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 
     template <class DataTypes>
     static int computeIntersection(TCapsule<DataTypes>&, OBB&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
@@ -64,7 +65,7 @@ bool CapsuleIntTool::shareSameVertex(const TCapsule<DataTypes1>&, const TCapsule
 }
 
 template <class DataTypes1,class DataTypes2>
-int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & cap, sofa::component::collision::TSphere<DataTypes2> & sph,SReal alarmDist,SReal contactDist,OutputVector* contacts){
+int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & cap, TSphere<DataTypes2> & sph,SReal alarmDist,SReal contactDist,OutputVector* contacts){
     using namespace sofa::type;
     using namespace sofa::defaulttype;
     Vector3 sph_center = sph.center();

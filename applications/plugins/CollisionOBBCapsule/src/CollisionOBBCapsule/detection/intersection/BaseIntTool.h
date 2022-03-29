@@ -22,7 +22,7 @@
 #pragma once
 #include <CollisionOBBCapsule/config.h>
 
-#include <SofaBaseCollision/CubeModel.h>
+#include <sofa/component/collision/model/CubeModel.h>
 #include <CollisionOBBCapsule/detection/intersection/CapsuleIntTool.h>
 #include <CollisionOBBCapsule/detection/intersection/OBBIntTool.h>
 

@@ -23,7 +23,7 @@
 #include <CollisionOBBCapsule/config.h>
 
 #include <CollisionOBBCapsule/detection/intersection/IntrUtility3.h>
-#include <SofaMeshCollision/TriangleModel.h>
+#include <sofa/component/collision/model/TriangleModel.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace collisionobbcapsule::detection::intersection

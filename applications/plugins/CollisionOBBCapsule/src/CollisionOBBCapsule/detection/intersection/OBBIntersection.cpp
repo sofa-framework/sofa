@@ -24,10 +24,10 @@
 #include <sofa/core/collision/IntersectorFactory.h>
 #include <sofa/core/collision/Intersection.inl>
 
-#include <SofaBaseCollision/SphereModel.h>
+#include <sofa/component/collision/model/SphereModel.h>
 #include <CollisionOBBCapsule/model/OBBModel.h>
 #include <CollisionOBBCapsule/model/CapsuleModel.h>
-#include <SofaUserInteraction/RayModel.h>
+#include <sofa/component/collision/model/RayModel.h>
 
 #include <SofaUserInteraction/FixParticlePerformer.h>
 

@@ -22,7 +22,7 @@
 #include <CollisionOBBCapsule/model/RigidCapsuleModel.h>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseCollision/CubeModel.h>
+#include <sofa/component/collision/model/CubeModel.h>
 
 namespace collisionobbcapsule::model
 {

@@ -24,12 +24,12 @@
 
 #include <sofa/core/collision/Intersection.h>
 
-#include <SofaBaseCollision/DiscreteIntersection.h>
+#include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
+#include <sofa/component/collision/detection/intersection/MeshNewProximityIntersection.h>
+#include <sofa/component/collision/model/RayModel.h>
 #include <CollisionOBBCapsule/model/OBBModel.h>
 #include <CollisionOBBCapsule/detection/intersection/BaseIntTool.h>
 #include <CollisionOBBCapsule/detection/intersection/MeshIntTool.h>
-#include <SofaMeshCollision/MeshNewProximityIntersection.h>
-#include <SofaUserInteraction/RayModel.h>
 
 namespace collisionobbcapsule::detection::intersection
 {
