@@ -19,21 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_COLLISION_INIT_H
-#define SOFA_COMPONENT_MISC_COLLISION_INIT_H
+#pragma once
 #include <CollisionOBBCapsule/config.h>
 
-namespace sofa
+#include <sofa/component/collision/response/mapper/BaseContactMapper.h>
+#include <sofa/component/collision/response/mapper/BarycentricContactMapper.h>
+#include <sofa/component/collision/response/mapper/RigidContactMapper.h>
+#include <CollisionOBBCapsule/model/OBBModel.h>
+
+using namespace sofa;
+using namespace sofa::core::collision;
+using sofa::component::collision::response::mapper::ContactMapper;
+using sofa::component::collision::response::mapper::RigidContactMapper;
+using collisionobbcapsule::model::OBBCollisionModel;
+
+namespace collisionobbcapsule::response::mapper
 {
 
-namespace component
-{
-    
-COLLISIONOBBCAPSULE_API void initSofaMiscCollision();
+template <class TVec3Types>
+class COLLISIONOBBCAPSULE_API ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types > : public RigidContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types > {
+public:
+    sofa::Index addPoint(const typename TVec3Types::Coord& P, sofa::Index index, typename TVec3Types::Real& r)
+    {
+        const typename TVec3Types::Coord& cP = P - this->model->center(index);
+        const type::Quat<SReal>& ori = this->model->orientation(index);
 
-} // namespace component
+        return RigidContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, TVec3Types >::addPoint(ori.inverseRotate(cP), index, r);
+    }
+};
 
-} // namespace sofa
+#if !defined(SOFA_SOFAMISCCOLLISION_OBBCONTACTMAPPER_CPP)
+extern template class ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types>;
+#endif // 
 
-#endif
-
+} // namespace collisionobbcapsule::response::mapper

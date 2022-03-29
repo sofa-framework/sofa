@@ -19,21 +19,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_COLLISION_INIT_H
-#define SOFA_COMPONENT_MISC_COLLISION_INIT_H
-#include <CollisionOBBCapsule/config.h>
+#define SOFA_COMPONENT_COLLISION_INTRUTILITY3_CPP
+#include <CollisionOBBCapsule/detection/intersection/IntrUtility3.inl>
 
-namespace sofa
+namespace collisionobbcapsule::detection::intersection
 {
 
-namespace component
-{
-    
-COLLISIONOBBCAPSULE_API void initSofaMiscCollision();
+using namespace sofa::type;
+using namespace sofa::defaulttype;
 
-} // namespace component
+//----------------------------------------------------------------------------
+// Explicit instantiation.
+//----------------------------------------------------------------------------
+template struct COLLISIONOBBCAPSULE_API IntrUtil<SReal>;
 
-} // namespace sofa
+template struct COLLISIONOBBCAPSULE_API IntrUtil<model::TOBB<RigidTypes> >;
+template class COLLISIONOBBCAPSULE_API IntrConfiguration<SReal>;
+template struct COLLISIONOBBCAPSULE_API IntrConfigManager<SReal>;
+template struct COLLISIONOBBCAPSULE_API IntrConfigManager<model::TOBB<Rigid3Types> >;
+template class COLLISIONOBBCAPSULE_API IntrAxis<model::TOBB<Rigid3Types> >;
+template class COLLISIONOBBCAPSULE_API FindContactSet<model::TOBB<Rigid3Types> >;
+template COLLISIONOBBCAPSULE_API void ClipConvexPolygonAgainstPlane<SReal> (const Vec3&, SReal,int&, Vec3*);
+template COLLISIONOBBCAPSULE_API Vec3 GetPointFromIndex<SReal> (int, const MyBox<SReal>&);
+template COLLISIONOBBCAPSULE_API Vec<3,Rigid3Types::Real> getPointFromIndex<Rigid3Types> (int index, const model::TOBB<Rigid3Types>& box);
+template class COLLISIONOBBCAPSULE_API CapIntrConfiguration<SReal>;
 
-#endif
-
+//----------------------------------------------------------------------------
+} // namespace collisionobbcapsule::detection::intersection

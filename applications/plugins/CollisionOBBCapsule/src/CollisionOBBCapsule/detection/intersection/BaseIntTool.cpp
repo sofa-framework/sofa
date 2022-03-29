@@ -19,21 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_COLLISION_INIT_H
-#define SOFA_COMPONENT_MISC_COLLISION_INIT_H
-#include <CollisionOBBCapsule/config.h>
+#include <CollisionOBBCapsule/detection/intersection/BaseIntTool.h>
 
-namespace sofa
+namespace collisionobbcapsule::detection::intersection
 {
 
-namespace component
+//template<>
+bool BaseIntTool::testIntersection(sofa::component::collision::model::Cube &cube1, sofa::component::collision::model::Cube &cube2,SReal alarmDist)
 {
-    
-COLLISIONOBBCAPSULE_API void initSofaMiscCollision();
+    if (cube1 == cube2)
+    {
+        if (cube1.getConeAngle() < M_PI / 2)
+            return false;
+        else
+            return true;
+    }
 
-} // namespace component
+    const type::Vector3& minVect1 = cube1.minVect();
+    const type::Vector3& minVect2 = cube2.minVect();
+    const type::Vector3& maxVect1 = cube1.maxVect();
+    const type::Vector3& maxVect2 = cube2.maxVect();
 
-} // namespace sofa
+    for (int i = 0; i < 3; i++)
+    {
+        if ( minVect1[i] > maxVect2[i] + alarmDist || minVect2[i] > maxVect1[i] + alarmDist )
+            return false;
+    }
 
-#endif
+    return true;
+}
 
+class COLLISIONOBBCAPSULE_API BaseIntTool;
+
+} // namespace collisionobbcapsule::detection::intersection

@@ -19,21 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_COLLISION_INIT_H
-#define SOFA_COMPONENT_MISC_COLLISION_INIT_H
-#include <CollisionOBBCapsule/config.h>
+#define SOFA_COMPONENT_COLLISION_OBBMODEL_CPP
+#include <CollisionOBBCapsule/model/OBBModel.inl>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa
+namespace collisionobbcapsule::model
 {
 
-namespace component
-{
-    
-COLLISIONOBBCAPSULE_API void initSofaMiscCollision();
+using namespace sofa::defaulttype;
+using namespace sofa::core::collision;
 
-} // namespace component
+int OBBModelClass = sofa::core::RegisterObject("Collision model which represents a set of OBBs")
+        .add< OBBCollisionModel<Rigid3Types> >()
+        ;
 
-} // namespace sofa
+template class COLLISIONOBBCAPSULE_API OBBCollisionModel<Rigid3Types>;
+template class COLLISIONOBBCAPSULE_API TOBB<Rigid3Types>;
 
-#endif
-
+} // namespace collisionobbcapsule::model

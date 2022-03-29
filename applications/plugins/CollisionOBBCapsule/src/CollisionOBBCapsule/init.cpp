@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <CollisionOBB/init.h>
+#include <CollisionOBBCapsule/init.h>
 
 namespace sofa
 {
@@ -37,12 +37,12 @@ void initSofaMiscCollision()
 }
 
 extern "C" {
-COLLISIONOBB_API void initExternalModule();
-COLLISIONOBB_API const char* getModuleName();
-COLLISIONOBB_API const char* getModuleVersion();
-COLLISIONOBB_API const char* getModuleLicense();
-COLLISIONOBB_API const char* getModuleDescription();
-COLLISIONOBB_API const char* getModuleComponentList();
+COLLISIONOBBCAPSULE_API void initExternalModule();
+COLLISIONOBBCAPSULE_API const char* getModuleName();
+COLLISIONOBBCAPSULE_API const char* getModuleVersion();
+COLLISIONOBBCAPSULE_API const char* getModuleLicense();
+COLLISIONOBBCAPSULE_API const char* getModuleDescription();
+COLLISIONOBBCAPSULE_API const char* getModuleComponentList();
 }
 
 void initExternalModule()

@@ -19,21 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_COLLISION_INIT_H
-#define SOFA_COMPONENT_MISC_COLLISION_INIT_H
-#include <CollisionOBBCapsule/config.h>
+#define SOFA_SOFAMISCCOLLISION_OBBCONTACTMAPPER_CPP
+#include <CollisionOBBCapsule/response/mapper/OBBContactMapper.h>
 
-namespace sofa
+#include <sofa/component/collision/response/mapper/BarycentricContactMapper.inl>
+#include <sofa/component/collision/response/mapper/RigidContactMapper.inl>
+#include <CollisionOBBCapsule/model/OBBModel.h>
+
+using namespace sofa;
+using namespace sofa::core::collision;
+using namespace sofa::component::collision;
+using namespace sofa::component::collision::response::mapper;
+
+namespace collisionobbcapsule::response::mapper
 {
 
-namespace component
-{
-    
-COLLISIONOBBCAPSULE_API void initSofaMiscCollision();
+ContactMapperCreator< ContactMapper<model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types> > OBBContactMapperClass("PenalityContactForceField", true);
+template class ContactMapper<model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types>;
 
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} // namespace collisionobbcapsule::response::mapper

@@ -19,21 +19,53 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_COLLISION_INIT_H
-#define SOFA_COMPONENT_MISC_COLLISION_INIT_H
+#pragma once
 #include <CollisionOBBCapsule/config.h>
 
-namespace sofa
+#include <sofa/core/collision/Intersection.h>
+#include <CollisionOBBCapsule/model/OBBModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <CollisionOBBCapsule/detection/intersection/IntrMeshUtility.h>
+#include <CollisionOBBCapsule/detection/intersection/Intersector.h>
+
+namespace collisionobbcapsule::detection::intersection
 {
 
-namespace component
+/**
+  *TDataTypes is the sphere type and TDataTypes2 the OBB type.
+  */
+template <class TDataTypes,class TDataTypes2>
+class TIntrTriangleOBB : public Intersector<typename TDataTypes::Real>
 {
-    
-COLLISIONOBBCAPSULE_API void initSofaMiscCollision();
+public:
+    typedef TTriangle<TDataTypes> IntrTri;
+    typedef typename TDataTypes::Real Real;
+    typedef typename IntrTri::Coord Coord;
+    typedef TOBB<TDataTypes2> Box;
+    typedef type::Vec<3,Real> Vec3;
 
-} // namespace component
+    TIntrTriangleOBB (const IntrTri& tri, const Box & box);
 
-} // namespace sofa
+    bool Find(Real tmax,int tri_flg);
+
+    bool Find(Real tmax);
+private:
+    using Intersector<Real>::_is_colliding;
+    using Intersector<Real>::_pt_on_first;
+    using Intersector<Real>::_pt_on_second;
+    using Intersector<Real>::mContactTime;
+    using Intersector<Real>::_sep_axis;
+
+    // The objects to intersect.
+    const IntrTri* _tri;
+    const Box * mBox;
+};
+
+typedef TIntrTriangleOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types> IntrTriangleOBB;
+
+#if  !defined(SOFA_COMPONENT_COLLISION_INTRTRIANGLEOBB_CPP)
+extern template class COLLISIONOBBCAPSULE_API TIntrTriangleOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types>;
 
 #endif
 
+} // namespace collisionobbcapsule::detection::intersection

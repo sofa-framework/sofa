@@ -19,21 +19,40 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_COLLISION_INIT_H
-#define SOFA_COMPONENT_MISC_COLLISION_INIT_H
+#pragma once
 #include <CollisionOBBCapsule/config.h>
 
-namespace sofa
+#include <sofa/type/Vec.h>
+
+namespace collisionobbcapsule::detection::intersection
 {
 
-namespace component
-{
-    
-COLLISIONOBBCAPSULE_API void initSofaMiscCollision();
+template <class Real>
+class Intersector{
+public:
+    typedef sofa::type::Vec<3,Real> Vec3;
 
-} // namespace component
+    inline const Vec3 & separatingAxis()const{
+        return _sep_axis;
+    }
 
-} // namespace sofa
+    inline const Vec3 & pointOnFirst()const{
+        return _pt_on_first;
+    }
 
-#endif
+    inline const Vec3 & pointOnSecond()const{
+        return _pt_on_second;
+    }
 
+    inline bool colliding()const{
+        return _is_colliding;
+    }
+protected:
+    Vec3 _sep_axis;
+    Vec3 _pt_on_first;
+    Vec3 _pt_on_second;
+    Real mContactTime;
+    bool _is_colliding;
+};
+
+} // namespace collisionobbcapsule::detection::intersection

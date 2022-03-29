@@ -5,68 +5,70 @@ project(CollisionOBBCapsule VERSION 1.0 LANGUAGES CXX)
 set(COLLISIONOBBCAPSULE_SRC_DIR src/CollisionOBBCapsule)
 set(HEADER_FILES
     ${COLLISIONOBBCAPSULE_SRC_DIR}/config.h.in
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/init.h    
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/BaseIntTool.h
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/IntrUtility3.h
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/IntrUtility3.inl
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/IntrMeshUtility.h
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/IntrMeshUtility.inl
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/MeshIntTool.h
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/MeshIntTool.inl
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/OBBContactMapper.h    
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/OBBIntTool.h
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/OBBModel.h
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/OBBModel.inl
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/IntrOBBOBB.h
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/IntrOBBOBB.inl
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/IntrSphereOBB.h
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/IntrSphereOBB.inl
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/IntrTriangleOBB.h
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/IntrTriangleOBB.inl
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/OBBIntersection.h
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/Intersector.h
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/CapsuleIntTool.h
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/CapsuleIntTool.inl
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/CapsuleModel.h
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/CapsuleModel.inl
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/IntrCapsuleOBB.h
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/IntrCapsuleOBB.inl
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/RigidCapsuleModel.h
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/RigidCapsuleModel.inl
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/CapsuleContactMapper.h
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/CapsuleIntersection.h
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/init.h
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/BaseIntTool.h
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/CapsuleIntTool.h
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/CapsuleIntTool.inl
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/CapsuleIntersection.h
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/Intersector.h
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/IntrCapsuleOBB.h
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/IntrCapsuleOBB.inl
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/IntrMeshUtility.h
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/IntrMeshUtility.inl
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/IntrOBBOBB.h
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/IntrOBBOBB.inl
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/IntrSphereOBB.h
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/IntrSphereOBB.inl
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/IntrTriangleOBB.h
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/IntrTriangleOBB.inl
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/IntrUtility3.h
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/IntrUtility3.inl
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/MeshIntTool.h
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/MeshIntTool.inl
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/OBBIntTool.h
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/OBBIntersection.h
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/model/CapsuleModel.h
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/model/CapsuleModel.inl
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/model/OBBModel.h
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/model/OBBModel.inl
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/model/RigidCapsuleModel.h
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/model/RigidCapsuleModel.inl
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/response/mapper/CapsuleContactMapper.h
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/response/mapper/OBBContactMapper.h
     )
 
 set(SOURCE_FILES
     ${COLLISIONOBBCAPSULE_SRC_DIR}/init.cpp        
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/BaseIntTool.cpp
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/IntrUtility3.cpp
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/IntrMeshUtility.cpp
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/MeshIntTool.cpp
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/OBBIntersection.cpp
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/OBBContact.cpp
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/OBBContactMapper.h
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/OBBContactMapper.cpp
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/IntrOBBOBB.cpp
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/IntrSphereOBB.cpp
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/OBBIntTool.cpp
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/OBBModel.cpp
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/IntrTriangleOBB.cpp
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/CapsuleIntersection.cpp
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/CapsuleContact.cpp
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/CapsuleContactMapper.h
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/CapsuleContactMapper.cpp
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/CapsuleIntTool.cpp
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/CapsuleModel.cpp
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/IntrCapsuleOBB.cpp
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/RigidCapsuleModel.cpp
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/CapsuleIntersection.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/BaseIntTool.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/CapsuleIntTool.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/CapsuleIntersection.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/CapsuleIntersection.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/IntrCapsuleOBB.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/IntrMeshUtility.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/IntrOBBOBB.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/IntrSphereOBB.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/IntrTriangleOBB.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/IntrUtility3.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/MeshIntTool.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/OBBIntTool.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/OBBIntersection.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/model/CapsuleModel.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/model/OBBModel.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/model/RigidCapsuleModel.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/response/contact/CapsuleContact.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/response/contact/OBBContact.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/response/mapper/CapsuleContactMapper.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/response/mapper/CapsuleContactMapper.h
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/response/mapper/OBBContactMapper.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/response/mapper/OBBContactMapper.h
     )
 
 find_package(Sofa.Component.Collision REQUIRED)
+find_package(SofaUserInteraction REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

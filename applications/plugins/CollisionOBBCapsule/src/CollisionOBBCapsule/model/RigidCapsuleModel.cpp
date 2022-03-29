@@ -19,21 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_COLLISION_INIT_H
-#define SOFA_COMPONENT_MISC_COLLISION_INIT_H
-#include <CollisionOBBCapsule/config.h>
+#define SOFA_COMPONENT_COLLISION_RIGIDCAPSULECOLLISIONMODEL_CPP
+#include <CollisionOBBCapsule/model/RigidCapsuleModel.inl>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa
+namespace collisionobbcapsule::model
 {
 
-namespace component
-{
-    
-COLLISIONOBBCAPSULE_API void initSofaMiscCollision();
+using namespace sofa::defaulttype;
+using namespace sofa::core::collision;
 
-} // namespace component
+int RigidCapsuleCollisionModelClass = core::RegisterObject("Collision model which represents a set of rigid capsules")
+        .add<  CapsuleCollisionModel<defaulttype::Rigid3Types> >()
+        ;
 
-} // namespace sofa
+template class COLLISIONOBBCAPSULE_API model::TCapsule<defaulttype::Rigid3Types>;
+template class COLLISIONOBBCAPSULE_API CapsuleCollisionModel<defaulttype::Rigid3Types>;
 
-#endif
-
+} // namespace collisionobbcapsule::model

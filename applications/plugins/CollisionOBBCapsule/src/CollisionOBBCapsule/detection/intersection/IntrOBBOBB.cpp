@@ -19,21 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_COLLISION_INIT_H
-#define SOFA_COMPONENT_MISC_COLLISION_INIT_H
-#include <CollisionOBBCapsule/config.h>
+#define SOFA_COMPONENT_COLLISION_INTROBBOBB_CPP
+#include <CollisionOBBCapsule/detection/intersection/IntrOBBOBB.inl>
 
-namespace sofa
+namespace collisionobbcapsule::detection::intersection
 {
 
-namespace component
-{
-    
-COLLISIONOBBCAPSULE_API void initSofaMiscCollision();
+//----------------------------------------------------------------------------
+// Explicit instantiation.
+//----------------------------------------------------------------------------
+template class COLLISIONOBBCAPSULE_API TIntrOBBOBB<defaulttype::Rigid3Types>;
 
-} // namespace component
-
-} // namespace sofa
-
-#endif
+//----------------------------------------------------------------------------
+} // namespace collisionobbcapsule::detection::intersection
 

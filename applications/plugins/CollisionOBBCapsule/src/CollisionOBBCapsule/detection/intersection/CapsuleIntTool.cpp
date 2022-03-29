@@ -19,21 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_COLLISION_INIT_H
-#define SOFA_COMPONENT_MISC_COLLISION_INIT_H
-#include <CollisionOBBCapsule/config.h>
+#define SOFA_COMPONENT_COLLISION_CAPSULEINTTOOL_CPP
+#include <CollisionOBBCapsule/detection/intersection/CapsuleIntTool.inl>
 
-namespace sofa
+namespace collisionobbcapsule::detection::intersection
 {
+using namespace sofa::defaulttype;
+using namespace sofa::core::collision;
 
-namespace component
-{
-    
-COLLISIONOBBCAPSULE_API void initSofaMiscCollision();
+bool CapsuleIntTool::shareSameVertex(const model::Capsule & c1,const model::Capsule & c2){
+    return c1.shareSameVertex(c2);
+}
 
-} // namespace component
+template COLLISIONOBBCAPSULE_API int CapsuleIntTool::computeIntersection(model::TCapsule<Vec3Types>&, model::TCapsule<Vec3Types>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+template COLLISIONOBBCAPSULE_API int CapsuleIntTool::computeIntersection(model::TCapsule<Vec3Types>&, model::TCapsule<RigidTypes>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+template COLLISIONOBBCAPSULE_API int CapsuleIntTool::computeIntersection(model::TCapsule<RigidTypes>&, model::TCapsule<RigidTypes>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+template COLLISIONOBBCAPSULE_API int CapsuleIntTool::computeIntersection(model::TCapsule<RigidTypes> & cap, model::OBB& obb,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+template COLLISIONOBBCAPSULE_API int CapsuleIntTool::computeIntersection(model::TCapsule<Vec3Types> & cap, model::OBB& obb,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 
-} // namespace sofa
-
-#endif
-
+class COLLISIONOBBCAPSULE_API CapsuleIntTool;
+} // namespace collisionobbcapsule::detection::intersection
