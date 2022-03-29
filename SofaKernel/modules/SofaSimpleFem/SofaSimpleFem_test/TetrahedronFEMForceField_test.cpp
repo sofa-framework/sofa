@@ -165,6 +165,12 @@ public:
     using TetraCorotationalFEM = sofa::component::forcefield::TetrahedralCorotationalFEMForceField<DataTypes>;
     using FastTetraCorotationalFEM = sofa::component::forcefield::FastTetrahedralCorotationalForceField<DataTypes>;
 
+    using Transformation = type::Mat<3, 3, Real>;
+    using MaterialStiffness = type::Mat<6, 6, Real>;
+    using StrainDisplacement = type::Mat<12, 6, Real>;
+    using TetraCoord = type::fixed_array<Coord, 4>;
+    using Vec6 = type::Vec6;
+
 protected:
     simulation::Simulation* m_simulation = nullptr;
     simulation::Node::SPtr m_root;
@@ -423,7 +429,87 @@ public:
 
     void checkInit(int FEMType)
     {
-        // TODO
+        createSingleTetrahedronFEMScene(FEMType, 1000, 0.3, "large");
+
+        Transformation exp_initRot = { Vec3(0, 0.816497, 0.57735), Vec3(-0.707107, -0.408248, 0.57735), Vec3(0.707107, -0.408248, 0.57735) };
+        TetraCoord exp_initPos = { Coord(0, 0, 0), Coord(1.41421, 0, 0), Coord(0.707107, 1.22474, 0), Coord(0.707107, 0.408248, -0.57735) };
+
+        Transformation exp_curRot = { Vec3(0, 0.816497, 0.57735), Vec3(-0.707107, -0.408248, 0.57735), Vec3(0.707107, -0.408248, 0.57735) };
+
+        MaterialStiffness exp_stiffnessMat = { Vec6(224.359, 96.1538, 96.1538, 0, 0, 0), Vec6(96.1538, 224.359, 96.1538, 0, 0, 0), Vec6(96.1538, 96.1538, 224.359, 0, 0, 0), 
+            Vec6(0, 0, 0, 64.1026, 0, 0), Vec6(0, 0, 0, 0, 64.1026, 0), Vec6(0, 0, 0, 0, 0, 64.1026) };
+
+        StrainDisplacement exp_strainD = { Vec6(0.707107, 0, 0, 0.408248, 0, -0.57735),
+            Vec6(0, 0.408248, 0, 0.707107, -0.57735, 0),
+            Vec6(0, 0, -0.57735, 0, 0.408248, 0.707107),
+            Vec6(-0.707107, 0, 0, 0.408248, 0, -0.57735),
+            Vec6(0, 0.408248, 0, -0.707107, -0.57735, 0),
+            Vec6(0, 0, -0.57735, 0, 0.408248, -0.707107),
+            Vec6(-0, 0, 0, -0.816497, 0, -0.57735),
+            Vec6(0, -0.816497, 0, -0, -0.57735, 0),
+            Vec6(0, 0, -0.57735, 0, -0.816497, 0),
+            Vec6(0, 0, 0, -0, 0, 1.73205),
+            Vec6(0, 0, 0, 0, 1.73205, 0),
+            Vec6(0, 0, 1.73205, 0, 0, 0) };
+
+
+        if (FEMType == 0)
+        {
+            typename TetrahedronFEM::SPtr tetraFEM = m_root->getTreeObject<TetrahedronFEM>();
+            
+            const Transformation& initRot = tetraFEM->getInitialTetraRotation(0);
+            const TetraCoord& initPosition = tetraFEM->getRotatedInitialElements(0);
+            
+            const Transformation& curRot = tetraFEM->getActualTetraRotation(0);            
+
+            const MaterialStiffness& stiffnessMat = tetraFEM->getMaterialStiffness(0);
+            const StrainDisplacement& strainD = tetraFEM->getStrainDisplacement(0);
+
+            // check rotations
+            for (int i = 0; i < 3; ++i)
+            {
+                for (int j = 0; j < 3; ++j)
+                {
+                    EXPECT_NEAR(exp_initRot[i][j], initRot[i][j], 1e-4);
+                    EXPECT_NEAR(exp_curRot[i][j], curRot[i][j], 1e-4);
+                }
+            }
+
+            // check position
+            for (int i = 0; i < 4; ++i)
+            {
+                for (int j = 0; j < 3; ++j)
+                {
+                    EXPECT_NEAR(exp_initPos[i][j], initPosition[i][j], 1e-4);
+                }
+            }
+
+            // check stiffness
+            for (int i = 0; i < 6; ++i)
+            {
+                for (int j = 0; j < 6; ++j)
+                {
+                    EXPECT_NEAR(exp_stiffnessMat[i][j], stiffnessMat[i][j], 1e-4);
+                }
+            }
+
+            // check strain displacement
+            for (int i = 0; i < 12; ++i)
+            {
+                for (int j = 0; j < 6; ++j)
+                {
+                    EXPECT_NEAR(exp_strainD[i][j], strainD[i][j], 1e-4);
+                }
+            }
+
+
+            //std::cout << std::endl << "initRot: " << initRot << std::endl << std::endl;
+            //std::cout << "initPosition: " << initPosition << std::endl << std::endl;
+            //std::cout << "curRot: " << curRot << std::endl << std::endl;
+            //std::cout << "stiffnessMat: " << stiffnessMat << std::endl << std::endl;
+            //std::cout << "strainD: " << strainD << std::endl << std::endl;
+        }
+
     }
 
 
@@ -557,11 +643,11 @@ TEST_F(TetrahedronFEMForceField3_test, checkDefaultAttributes)
 //    this->checkWrongAttributes(0);
 //}
 
-//TEST_F(TetrahedronFEMForceField3_test, checkInit)
-//{
-//    this->checkInit(0);
-//}
-//
+TEST_F(TetrahedronFEMForceField3_test, checkInit)
+{
+    this->checkInit(0);
+}
+
 //TEST_F(TetrahedronFEMForceField3_test, checkFEMValues)
 //{
 //    this->checkFEMValues(0);
