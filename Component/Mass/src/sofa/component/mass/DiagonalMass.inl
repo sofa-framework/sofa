@@ -763,7 +763,7 @@ bool DiagonalMass<DataTypes, GeometricalTypes>::checkTopology()
 
     if (l_geometryState.empty())
     {
-        msg_info() << "link to position container (State) should be set to ensure right behavior. First container found from the topology context will be used.";
+        msg_warning() << "Link to position container \"geometryState\" should be set to ensure right behavior. First container found from the topology context will be used.";
         sofa::core::behavior::BaseMechanicalState::SPtr baseState;
         l_topology->getContext()->get(baseState);
 
