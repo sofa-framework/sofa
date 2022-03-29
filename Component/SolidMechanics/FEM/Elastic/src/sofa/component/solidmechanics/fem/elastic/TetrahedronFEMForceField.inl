@@ -2126,20 +2126,61 @@ void TetrahedronFEMForceField<DataTypes>::setYoungModulus(Real val)
 }
 
 template<class DataTypes>
-typename TetrahedronFEMForceField<DataTypes>::Transformation TetrahedronFEMForceField<DataTypes>::getActualTetraRotation(unsigned int index)
+const typename TetrahedronFEMForceField<DataTypes>::Transformation& TetrahedronFEMForceField<DataTypes>::getActualTetraRotation(unsigned int index)
 {
-    if (index < rotations.size() )
+    if (index < rotations.size())
         return rotations[index];
-    else { Transformation t; t.identity(); return t; }
+
+    msg_warning() << "Method getActualTetraRotation called with element index: " << index
+        << " which is out of bounds: [0, " << rotations.size() << "]. Returning default empty array of coordinates.";
+    return InvalidTransform;
 }
 
 template<class DataTypes>
-typename TetrahedronFEMForceField<DataTypes>::Transformation TetrahedronFEMForceField<DataTypes>::getInitialTetraRotation(unsigned int index)
-{
-    if (index < rotations.size() )
+const typename TetrahedronFEMForceField<DataTypes>::Transformation& TetrahedronFEMForceField<DataTypes>::getInitialTetraRotation(unsigned int index)
+{ 
+    if (index < _initialRotations.size())
         return _initialRotations[index];
-    else { Transformation t; t.identity(); return t; }
+
+    msg_warning() << "Method getInitialTetraRotation called with element index: " << index
+        << " which is out of bounds: [0, " << _initialRotations.size() << "]. Returning default empty array of coordinates.";
+    return InvalidTransform;
 }
+
+template<class DataTypes>
+const typename TetrahedronFEMForceField<DataTypes>::MaterialStiffness& TetrahedronFEMForceField<DataTypes>::getMaterialStiffness(TetrahedronID tetraId)
+{
+    if (tetraId != sofa::InvalidID && tetraId < materialsStiffnesses.size())
+        return materialsStiffnesses[tetraId];
+
+    msg_warning() << "Method getMaterialStiffness called with element index: " << tetraId
+        << " which is out of bounds: [0, " << materialsStiffnesses.size() << "]. Returning default empty array of coordinates.";
+    return InvalidMaterialStiffness;
+}
+
+template<class DataTypes>
+const typename TetrahedronFEMForceField<DataTypes>::StrainDisplacement& TetrahedronFEMForceField<DataTypes>::getStrainDisplacement(TetrahedronID tetraId)
+{
+    if (tetraId != sofa::InvalidID && tetraId < strainDisplacements.size())
+        return strainDisplacements[tetraId];
+
+    msg_warning() << "Method getStrainDisplacement called with element index: " << tetraId
+        << " which is out of bounds: [0, " << strainDisplacements.size() << "]. Returning default empty array of coordinates.";
+    return InvalidStrainDisplacement;
+}
+
+
+template<class DataTypes>
+const type::fixed_array<typename TetrahedronFEMForceField<DataTypes>::Coord, 4>& TetrahedronFEMForceField<DataTypes>::getRotatedInitialElements(TetrahedronID tetraId)
+{
+    if (tetraId != sofa::InvalidID && tetraId < _rotatedInitialElements.size())
+        return _rotatedInitialElements[tetraId];
+
+    msg_warning() << "Method getRotatedInitialElements called with element index: " << tetraId
+        << " which is out of bounds: [0, " << _rotatedInitialElements.size() << "]. Returning default empty array of coordinates.";
+    return InvalidCoords;
+}
+
 
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::setMethod(std::string methodName)

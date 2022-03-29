@@ -92,6 +92,7 @@ public:
     typedef core::topology::BaseMeshTopology::Tetra Element;
     typedef core::topology::BaseMeshTopology::SeqTetrahedra VecElement;
     typedef core::topology::BaseMeshTopology::Tetrahedron Tetrahedron;
+    using TetrahedronID = core::topology::BaseMeshTopology::TetrahedronID;
 
     enum { SMALL = 0,   ///< Symbol of small displacements tetrahedron solver
            LARGE = 1,   ///< Symbol of corotational large displacements tetrahedron solver based on a QR decomposition    -> Nesme et al 2005 "Efficient, Physically Plausible Finite Elements"
@@ -162,6 +163,11 @@ protected:
 
     Real m_restVolume;
     sofa::helper::ColorMap* m_VonMisesColorMap;
+
+    Transformation InvalidTransform;
+    type::fixed_array<Coord, 4> InvalidCoords;
+    MaterialStiffness InvalidMaterialStiffness;
+    StrainDisplacement InvalidStrainDisplacement;
 
 public:
     // get the volume of the mesh
@@ -240,8 +246,15 @@ public:
     void setComputeGlobalMatrix(bool val) { this->_assembling.setValue(val); }
 
     //for tetra mapping, should be removed in future
-    Transformation getActualTetraRotation(Index index);
-    Transformation getInitialTetraRotation(Index index);
+    const Transformation& getActualTetraRotation(Index index);
+    const Transformation& getInitialTetraRotation(Index index);
+
+    const MaterialStiffness& getMaterialStiffness(TetrahedronID tetraId);
+    const StrainDisplacement& getStrainDisplacement(TetrahedronID tetraId);
+
+    // large displacements method
+    const type::fixed_array<Coord, 4>& getRotatedInitialElements(TetrahedronID tetraId);
+
 
     void setMethod(std::string methodName);
     void setMethod(int val);
