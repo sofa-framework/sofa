@@ -26,12 +26,8 @@
 #include <SofaGeneralObjectInteraction/BoxStiffSpringForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
+namespace sofa::core::behavior
 {
-
-namespace core
-{
-namespace behavior {
 
 template class SOFA_GPU_CUDA_API PairInteractionForceField<sofa::gpu::cuda::CudaVec3fTypes>;
 template class SOFA_GPU_CUDA_API PairInteractionForceField<sofa::gpu::cuda::CudaVec3f1Types>;
@@ -41,46 +37,43 @@ template class SOFA_GPU_CUDA_API PairInteractionForceField<sofa::gpu::cuda::Cuda
 template class SOFA_GPU_CUDA_API PairInteractionForceField<sofa::gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-}
-}
+} // namespace sofa::core::behavior
 
-namespace component
+namespace sofa::component::interactionforcefield
 {
+template class SOFA_GPU_CUDA_API BoxStiffSpringForceField<gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API BoxStiffSpringForceField<gpu::cuda::CudaVec3f1Types>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class SOFA_GPU_CUDA_API BoxStiffSpringForceField<gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API BoxStiffSpringForceField<gpu::cuda::CudaVec3d1Types>;
+#endif // SOFA_GPU_CUDA_DOUBLE
+} // namespace sofa::component::interactionforcefield
 
-namespace interactionforcefield
+namespace sofa::component::solidmechanics::spring
 {
 
 template class SOFA_GPU_CUDA_API SpringForceField<sofa::gpu::cuda::CudaVec3fTypes>;
 template class SOFA_GPU_CUDA_API StiffSpringForceField<sofa::gpu::cuda::CudaVec3fTypes>;
 template class SOFA_GPU_CUDA_API MeshSpringForceField<sofa::gpu::cuda::CudaVec3fTypes>;
-template class SOFA_GPU_CUDA_API BoxStiffSpringForceField<gpu::cuda::CudaVec3fTypes>;
 
 template class SOFA_GPU_CUDA_API SpringForceField<sofa::gpu::cuda::CudaVec3f1Types>;
 template class SOFA_GPU_CUDA_API StiffSpringForceField<sofa::gpu::cuda::CudaVec3f1Types>;
 template class SOFA_GPU_CUDA_API MeshSpringForceField<sofa::gpu::cuda::CudaVec3f1Types>;
-template class SOFA_GPU_CUDA_API BoxStiffSpringForceField<gpu::cuda::CudaVec3f1Types>;
 
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 template class SOFA_GPU_CUDA_API SpringForceField<sofa::gpu::cuda::CudaVec3dTypes>;
 template class SOFA_GPU_CUDA_API StiffSpringForceField<sofa::gpu::cuda::CudaVec3dTypes>;
 template class SOFA_GPU_CUDA_API MeshSpringForceField<sofa::gpu::cuda::CudaVec3dTypes>;
-template class SOFA_GPU_CUDA_API BoxStiffSpringForceField<gpu::cuda::CudaVec3dTypes>;
 
 template class SOFA_GPU_CUDA_API SpringForceField<sofa::gpu::cuda::CudaVec3d1Types>;
 template class SOFA_GPU_CUDA_API StiffSpringForceField<sofa::gpu::cuda::CudaVec3d1Types>;
 template class SOFA_GPU_CUDA_API MeshSpringForceField<sofa::gpu::cuda::CudaVec3d1Types>;
-template class SOFA_GPU_CUDA_API BoxStiffSpringForceField<gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace forcefield
+} // namespace sofa::component::solidmechanics::spring
 
-} // namespace component
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 //int SpringForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
@@ -92,43 +85,43 @@ namespace cuda
 //#endif // SOFA_GPU_CUDA_DOUBLE
 //;
 
-int StiffSpringForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::interactionforcefield::StiffSpringForceField<CudaVec3fTypes> >()
-        .add< component::interactionforcefield::StiffSpringForceField<CudaVec3f1Types> >()
+int StiffSpringForceFieldCudaClass = sofa::core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< sofa::component::solidmechanics::spring::StiffSpringForceField<CudaVec3fTypes> >()
+        .add< sofa::component::solidmechanics::spring::StiffSpringForceField<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::interactionforcefield::StiffSpringForceField<CudaVec3dTypes> >()
-        .add< component::interactionforcefield::StiffSpringForceField<CudaVec3d1Types> >()
+        .add< sofa::component::solidmechanics::spring::StiffSpringForceField<CudaVec3dTypes> >()
+        .add< sofa::component::solidmechanics::spring::StiffSpringForceField<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
-int MeshSpringForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::interactionforcefield::MeshSpringForceField<CudaVec3fTypes> >()
-        .add< component::interactionforcefield::MeshSpringForceField<CudaVec3f1Types> >()
+int MeshSpringForceFieldCudaClass = sofa::core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< sofa::component::solidmechanics::spring::MeshSpringForceField<CudaVec3fTypes> >()
+        .add< sofa::component::solidmechanics::spring::MeshSpringForceField<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::interactionforcefield::MeshSpringForceField<CudaVec3dTypes> >()
-        .add< component::interactionforcefield::MeshSpringForceField<CudaVec3d1Types> >()
+        .add< sofa::component::solidmechanics::spring::MeshSpringForceField<CudaVec3dTypes> >()
+        .add< sofa::component::solidmechanics::spring::MeshSpringForceField<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
-int TriangleBendingSpringsCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::interactionforcefield::TriangleBendingSprings<CudaVec3fTypes> >()
-        .add< component::interactionforcefield::TriangleBendingSprings<CudaVec3f1Types> >()
+int TriangleBendingSpringsCudaClass = sofa::core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< sofa::component::solidmechanics::spring::TriangleBendingSprings<CudaVec3fTypes> >()
+        .add< sofa::component::solidmechanics::spring::TriangleBendingSprings<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::interactionforcefield::TriangleBendingSprings<CudaVec3dTypes> >()
-        .add< component::interactionforcefield::TriangleBendingSprings<CudaVec3d1Types> >()
+        .add< sofa::component::solidmechanics::spring::TriangleBendingSprings<CudaVec3dTypes> >()
+        .add< sofa::component::solidmechanics::spring::TriangleBendingSprings<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
-int QuadBendingSpringsCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::interactionforcefield::QuadBendingSprings<CudaVec3fTypes> >()
-        .add< component::interactionforcefield::QuadBendingSprings<CudaVec3f1Types> >()
+int QuadBendingSpringsCudaClass = sofa::core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< sofa::component::solidmechanics::spring::QuadBendingSprings<CudaVec3fTypes> >()
+        .add< sofa::component::solidmechanics::spring::QuadBendingSprings<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::interactionforcefield::QuadBendingSprings<CudaVec3dTypes> >()
-        .add< component::interactionforcefield::QuadBendingSprings<CudaVec3d1Types> >()
+        .add< sofa::component::solidmechanics::spring::QuadBendingSprings<CudaVec3dTypes> >()
+        .add< sofa::component::solidmechanics::spring::QuadBendingSprings<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
-int BoxStiffSpringForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+int BoxStiffSpringForceFieldCudaClass = sofa::core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::interactionforcefield::BoxStiffSpringForceField<CudaVec3fTypes> >()
         .add< component::interactionforcefield::BoxStiffSpringForceField<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -138,8 +131,4 @@ int BoxStiffSpringForceFieldCudaClass = core::RegisterObject("Supports GPU-side 
         ;
 
 
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
+} // namespace sofa::gpu::cuda

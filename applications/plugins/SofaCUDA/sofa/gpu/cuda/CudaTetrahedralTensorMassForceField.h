@@ -19,26 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDATETRAHEDRALTENSORMASSFORCEFIELD_H
-#define SOFA_GPU_CUDA_CUDATETRAHEDRALTENSORMASSFORCEFIELD_H
+#pragma once
 
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <SofaMiscFem/TetrahedralTensorMassForceField.h>
+#include <sofa/component/solidmechanics/tensormass/TetrahedralTensorMassForceField.h>
 
-namespace sofa
+namespace sofa::component::solidmechanics::tensormass
 {
-namespace gpu
-{
-namespace cuda
-{
-} //namespace cuda
-} //namespace gpu
-
-namespace component
-{
-namespace forcefield
-{
-
 template <>
 void TetrahedralTensorMassForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
 
@@ -79,7 +66,4 @@ inline sofa::gpu::cuda::CudaVector<float>& TetrahedralTensorMassForceField_contr
 	return contribEdge;
 }
 
-} // namespace forcefield
-} // namespace component
-} // namespace sofa
-#endif // SOFA_GPU_CUDA_CUDATETRAHEDRALTENSORMASSFORCEFIELD_H
+} // namespace sofa::component::solidmechanics::tensormass

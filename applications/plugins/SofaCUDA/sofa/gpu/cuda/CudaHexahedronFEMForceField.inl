@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/gpu/cuda/CudaHexahedronFEMForceField.h>
-#include <SofaSimpleFem/HexahedronFEMForceField.inl>
+#include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceField.inl>
 #include <sofa/gpu/cuda/mycuda.h>
 
 namespace sofa::gpu::cuda
@@ -67,7 +67,7 @@ public:
 } // namespace sofa::cuda::gpu
 
 
-namespace sofa::component::forcefield
+namespace sofa::component::solidmechanics::fem::elastic
 {
 
 using namespace gpu::cuda;
@@ -297,4 +297,4 @@ void HexahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::getRotations(linearalge
     }
 }
 
-} // namespace sofa::component::forcefield
+} // namespace sofa::component::solidmechanics::fem::elastic

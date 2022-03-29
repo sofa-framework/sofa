@@ -19,30 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDAPENALITYCONTACTFORCEFIELD_H
-#define SOFA_GPU_CUDA_CUDAPENALITYCONTACTFORCEFIELD_H
+#pragma once
 
 #include "CudaTypes.h"
 #include <SofaObjectInteraction/PenalityContactForceField.h>
 #include <sofa/gpu/cuda/CudaCollisionDetection.h>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
-{
-
-} // namespace cuda
-
-} // namespace gpu
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::interactionforcefield
 {
 
 using sofa::gpu::cuda::CudaVec3fTypes;
@@ -109,10 +92,4 @@ public:
     void draw(const core::visual::VisualParams*) override;
 };
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::interactionforcefield
