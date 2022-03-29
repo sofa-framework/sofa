@@ -106,17 +106,17 @@ class SofaWindowProfiler: public QDialog, public Ui_WindowProfiler
 public:
     SofaWindowProfiler(QWidget* parent);
 
-    /// method called when window is shown to activate advanceTimer recording.
+    /// method called when window is shown to activate AdvancedTimer recording.
     void activateATimer(bool activate);
 
-    /// main method to iterate on the advanceTimer Data and update the info in the widgets
+    /// main method to iterate on the AdvancedTimer Data and update the info in the widgets
     void pushStepData();
 
     /// Method to clear all Data and reset graph
     void resetGraph();
 
     /**
-     * @brief The AnimationSubStepData Internal class to store data for each step of the animation. Correspond to one AdvanceTimer::begin/end
+     * @brief The AnimationSubStepData Internal class to store data for each step of the animation. Correspond to one AdvancedTimer::begin/end
      * Data stored/computed will be step name, its time in ms and the corresponding % inside the whole step.
      * the total ms and percentage it represent if this step has substeps.
      * Buffer of AnimationSubStepData corresponding to its children substeps
@@ -147,7 +147,7 @@ public:
     };
 
     /**
-     * @brief The AnimationStepData internal class to store all info of a animation step recorded by advanceTimer
+     * @brief The AnimationStepData internal class to store all info of a animation step recorded by AdvancedTimer
      * Data stored/computed will be the step number, and the total time in ms of the step.
      * All Data will then be stored inside a tree of \sa AnimationSubStepData tree.
      */

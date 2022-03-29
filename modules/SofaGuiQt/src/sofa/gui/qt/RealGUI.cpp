@@ -460,7 +460,7 @@ RealGUI::RealGUI ( const char* viewername)
 
     createWindowVisitor();
 
-    createAdvanceTimerProfilerWindow();
+    createAdvancedTimerProfilerWindow();
 
     m_sofaMouseManager->hide();
     SofaVideoRecorderManager::getInstance()->hide();
@@ -1961,7 +1961,7 @@ void RealGUI::createWindowVisitor()
 #endif
 }
 
-void RealGUI::createAdvanceTimerProfilerWindow()
+void RealGUI::createAdvancedTimerProfilerWindow()
 {
 #if SOFAGUIQT_HAVE_QT5_CHARTS
     m_windowTimerProfiler = new SofaWindowProfiler(this);
