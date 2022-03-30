@@ -94,13 +94,18 @@ void SparseCholeskySolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vec
     Previous_rowind.clear();
     Previous_colptr.resize(A.n +1);
 
-    for(int i=0 ; i<A.n ; i++)
-    {
-        Previous_colptr[i+1] = A.p[i+1];
 
-        for( int j=A.p[i] ; j < A.p[i+1] ; j++)
+    // store the shape of the matrix
+    if ( need_factorization )
+    {
+        for(int i=0 ; i<A.n ; i++)
         {
-            Previous_rowind.push_back(A.i[j]);
+            Previous_colptr[i+1] = A.p[i+1];
+
+            for( int j=A.p[i] ; j < A.p[i+1] ; j++)
+            {
+                Previous_rowind.push_back(A.i[j]);
+            }
         }
     }
 }

@@ -94,19 +94,21 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& x
     }
 
     // store the shape of the matrix
-    invertData->Previous_rowind.clear();
-    invertData->Previous_colptr.resize( (invertData->A.n) +1);
-
-    for (int i=0 ; i<invertData->A.n ; i++)
+    if ( invertData->need_factorization )
     {
-        invertData->Previous_colptr[i+1] = invertData->A_p[i+1];
+        invertData->Previous_rowind.clear();
+        invertData->Previous_colptr.resize( (invertData->A.n) +1);
 
-        for ( int j = (int) invertData->A_p[i] ; j < (int)invertData->A_p[i+1] ; j++)
+        for (int i=0 ; i<invertData->A.n ; i++)
         {
-            invertData->Previous_rowind.push_back( invertData->A_i[j]);
+            invertData->Previous_colptr[i+1] = invertData->A_p[i+1];
+
+            for ( int j = (int) invertData->A_p[i] ; j < (int)invertData->A_p[i+1] ; j++)
+            {
+                invertData->Previous_rowind.push_back( invertData->A_i[j]);
+            }
         }
     }
-
 
 }
 
