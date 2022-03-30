@@ -150,7 +150,7 @@ void DiagonalMass<RigidTypes, GeometricalTypes>::initRigidImpl()
 
     if (l_topology.empty())
     {
-        msg_warning() << "Link to the Topology \"topology\" should be set to ensure right behavior. First Topology found in current context will be used.";
+        msg_warning() << "Link \"topology\" to the Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
         
@@ -167,7 +167,7 @@ void DiagonalMass<RigidTypes, GeometricalTypes>::initRigidImpl()
 
         if (l_geometryState.empty())
         {
-            msg_warning() << "Link to position container \"geometryState\" should be set to ensure right behavior. First container found from the topology context will be used.";
+            msg_warning() << "Link \"geometryState\" to the MechanicalObject associated to the geometry should be set to ensure right behavior. First container found from the topology context will be used.";
             sofa::core::behavior::BaseMechanicalState::SPtr baseState;
             l_topology->getContext()->get(baseState);
 
