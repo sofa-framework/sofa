@@ -546,7 +546,7 @@
             <item>
              <widget class="QCheckBox" name="displayTimeProfiler">
               <property name="text">
-               <string>Display AdvanceTimer profiler</string>
+               <string>Display AdvancedTimer profiler</string>
               </property>
              </widget>
             </item>
