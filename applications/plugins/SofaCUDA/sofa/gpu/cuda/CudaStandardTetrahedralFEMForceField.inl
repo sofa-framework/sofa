@@ -19,24 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDASTANDARDTETRAHEDRALFEMFORCEFIELD_INL
-#define SOFA_GPU_CUDA_CUDASTANDARDTETRAHEDRALFEMFORCEFIELD_INL
+#pragma once
 
 #include <sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.h>
-#include <SofaMiscFem/StandardTetrahedralFEMForceField.inl>
-
+#include <sofa/helper/AdvancedTimer.h>
 
 #define EDGEDEBUG 100
 
-namespace sofa
+namespace sofa::gpu::cuda
 {
-
-namespace gpu
-{
-
-namespace cuda
-{
-
 extern "C"
 {
 void StandardTetrahedralFEMForceFieldCuda3f_addForce(int nbTetra, int nbPoints, int nbMaxTetraPerNode, const void* neighbourhoodPoints, void* contribTetra, void* tetraInfo, void* f, const void* x, bool anisotropy, const void* anisoDirection, float paramArray0, float paramArray1);
@@ -47,14 +38,9 @@ void StandardTetrahedralFEMForceFieldCuda3d_addDForce(int nbTetra, int nbEdges, 
 #endif
 }
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::solidmechanics::fem::hyperelastic
 {
 
 using namespace gpu::cuda;
@@ -410,10 +396,4 @@ void StandardTetrahedralFEMForceField<CudaVec3dTypes>::initNeighbourhoodEdges()
     }    
 }
 #endif
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_GPU_CUDA_CUDASTANDARDTETRAHEDRALFEMFORCEFIELD_INL
+} // namespace sofa::component::solidmechanics::fem::hyperelastic

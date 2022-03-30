@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <SofaDeformable/initSofaDeformable.h>
 
+#include <sofa/helper/system/PluginManager.h>
+
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
@@ -32,6 +34,10 @@ void initSofaDeformable()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaDeformable") << "SofaDeformable is deprecated. It will be removed at v23.06. Use Sofa.Component.SolidMechanics.Spring instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.SolidMechanics.Spring");
+
         first = false;
     }
 }

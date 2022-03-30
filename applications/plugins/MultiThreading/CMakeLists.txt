@@ -32,9 +32,10 @@ set(SOURCE_FILES
 
 find_package(SofaMiscMapping REQUIRED)
 find_package(SofaSimulationCommon REQUIRED)
+find_package(SofaSimpleFem REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaBaseMechanics SofaMiscMapping SofaConstraint SofaSimulationCommon)
+target_link_libraries(${PROJECT_NAME} SofaBaseMechanics SofaMiscMapping SofaConstraint SofaSimulationCommon SofaSimpleFem)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_MULTITHREADING_PLUGIN")
 
 

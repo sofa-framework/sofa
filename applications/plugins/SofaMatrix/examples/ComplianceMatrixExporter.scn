@@ -2,7 +2,7 @@
     <RequiredPlugin name="SofaSparseSolver"/>
     <RequiredPlugin pluginName='SofaBoundaryCondition'/>
     <RequiredPlugin pluginName='SofaConstraint'/>
-    <RequiredPlugin pluginName='SofaGenáeralEngine'/>
+    <RequiredPlugin pluginName='SofaGeneralEngine'/>
     <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
     <RequiredPlugin pluginName='SofaMiscMapping'/>
     <RequiredPlugin name="SofaMatrix"/>

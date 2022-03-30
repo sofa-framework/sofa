@@ -32,8 +32,6 @@ list(APPEND HEADER_FILES
     ${SOFACONSTRAINT_SRC}/LinearSolverConstraintCorrection.h
     ${SOFACONSTRAINT_SRC}/LinearSolverConstraintCorrection.inl
     ${SOFACONSTRAINT_SRC}/LocalMinDistance.h
-    ${SOFACONSTRAINT_SRC}/MappingGeometricStiffnessForceField.h
-    ${SOFACONSTRAINT_SRC}/MappingGeometricStiffnessForceField.inl
     ${SOFACONSTRAINT_SRC}/PrecomputedConstraintCorrection.h
     ${SOFACONSTRAINT_SRC}/PrecomputedConstraintCorrection.inl
     ${SOFACONSTRAINT_SRC}/SlidingConstraint.h
@@ -64,7 +62,6 @@ list(APPEND SOURCE_FILES
     ${SOFACONSTRAINT_SRC}/LCPConstraintSolver.cpp
     ${SOFACONSTRAINT_SRC}/LinearSolverConstraintCorrection.cpp
     ${SOFACONSTRAINT_SRC}/LocalMinDistance.cpp
-    ${SOFACONSTRAINT_SRC}/MappingGeometricStiffnessForceField.cpp
     ${SOFACONSTRAINT_SRC}/PrecomputedConstraintCorrection.cpp
     ${SOFACONSTRAINT_SRC}/SlidingConstraint.cpp
     ${SOFACONSTRAINT_SRC}/StickContactConstraint.cpp
@@ -82,10 +79,11 @@ sofa_find_package(SofaUserInteraction REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaImplicitOdeSolver SofaUserInteraction SofaBaseLinearSolver)
 
-if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    # Silence attribute warnings (for example, ignored already defined external template)
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
-endif()
+message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Mapping.MappedMatrix instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.Mapping.MappedMatrix REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Mapping.MappedMatrix)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

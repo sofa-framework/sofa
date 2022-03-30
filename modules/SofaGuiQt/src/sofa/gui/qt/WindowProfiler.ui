@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>AdvanceTimer profiler window</string>
+   <string>AdvancedTimer profiler window</string>
   </property>
   <property name="sizeGripEnabled" stdset="0">
    <bool>false</bool>

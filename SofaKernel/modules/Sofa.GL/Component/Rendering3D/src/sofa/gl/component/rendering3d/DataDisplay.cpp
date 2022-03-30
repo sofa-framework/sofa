@@ -20,13 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#if defined(WIN32) && (_MSC_VER < 1800) // for all version anterior to Visual Studio 2013
-# include <float.h>
-# define isnan(x)  (_isnan(x))
-#else
-# include <cmath>
-# define isnan(x) (std::isnan(x))
-#endif
+#include <cmath>
 
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -261,7 +255,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             size_t nbTriangles = m_topology->getNbTriangles();
             for (unsigned int i=0; i<nbTriangles; i++)
             {
-                RGBAColor color = isnan(triData[i])
+                RGBAColor color = std::isnan(triData[i])
                     ? f_colorNaN.getValue()
                     : RGBAColor::fromVec4(eval(triData[i]));
                 color[3] = transparency;
@@ -281,15 +275,15 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             glBegin(GL_TRIANGLES);
             for (unsigned int i=0; i<nbTriangles; i++)
             {
-                RGBAColor color0 = isnan(pointTriData[i*3])
+                RGBAColor color0 = std::isnan(pointTriData[i*3])
                     ? f_colorNaN.getValue()
                     : RGBAColor::fromVec4(eval(pointTriData[i*3]));
                 color0[3] = transparency;
-                RGBAColor color1 = isnan(pointTriData[i*3+1])
+                RGBAColor color1 = std::isnan(pointTriData[i*3+1])
                         ? f_colorNaN.getValue()
                         : RGBAColor::fromVec4(eval(pointTriData[i*3+1]));
                 color1[3] = transparency;
-                RGBAColor color2 = isnan(pointTriData[i*3+2])
+                RGBAColor color2 = std::isnan(pointTriData[i*3+2])
                     ? f_colorNaN.getValue()
                     : RGBAColor::fromVec4(eval(pointTriData[i*3+2]));
                 color2[3] = transparency;
@@ -317,7 +311,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             size_t nbQuads = m_topology->getNbQuads();
             for (unsigned int i=0; i<nbQuads; i++)
             {
-                RGBAColor color = isnan(quadData[i])
+                RGBAColor color = std::isnan(quadData[i])
                     ? f_colorNaN.getValue()
                     : RGBAColor::fromVec4(eval(quadData[i]));
                 color[3] = transparency;
@@ -335,18 +329,18 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             glBegin(GL_QUADS);
             for (unsigned int i=0; i<nbQuads; i++)
             {
-                RGBAColor color0 = isnan(pointQuadData[i*4])
+                RGBAColor color0 = std::isnan(pointQuadData[i*4])
                     ? f_colorNaN.getValue()
                     : RGBAColor::fromVec4(eval(pointQuadData[i*4]));
-                RGBAColor color1 = isnan(pointQuadData[i*4+1])
+                RGBAColor color1 = std::isnan(pointQuadData[i*4+1])
                         ? f_colorNaN.getValue()
                         : RGBAColor::fromVec4(eval(pointQuadData[i*4+1]));
                 color1[3] = transparency;
-                RGBAColor color2 = isnan(pointQuadData[i*4+2])
+                RGBAColor color2 = std::isnan(pointQuadData[i*4+2])
                     ? f_colorNaN.getValue()
                     : RGBAColor::fromVec4(eval(pointQuadData[i*4+2]));
                 color2[3] = transparency;
-                RGBAColor color3 = isnan(pointQuadData[i*4+3])
+                RGBAColor color3 = std::isnan(pointQuadData[i*4+3])
                     ? f_colorNaN.getValue()
                     : RGBAColor::fromVec4(eval(pointQuadData[i*4+3]));
                 color1[3] = transparency;
@@ -379,7 +373,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         glPointSize(10);
         for (unsigned int i=0; i<x.size(); ++i)
         {
-            RGBAColor color = isnan(ptData[i])
+            RGBAColor color = std::isnan(ptData[i])
                 ? f_colorNaN.getValue()
                 : RGBAColor::fromVec4(eval(ptData[i]));
             color[3] = transparency;
@@ -397,7 +391,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             const Triangle &t = m_topology->getTriangle(i);
             RGBAColor color[3];
             for (int j=0; j<3; j++) {
-                color[j] = isnan(ptData[t[j]])
+                color[j] = std::isnan(ptData[t[j]])
                         ? f_colorNaN.getValue()
                         : RGBAColor::fromVec4(eval(ptData[t[j]]));
                 color[j][3] = transparency;
@@ -425,7 +419,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             RGBAColor color[4];
             for (int j=0; j<4; j++)
             {
-                color[j] = isnan(ptData[q[j]])
+                color[j] = std::isnan(ptData[q[j]])
                 ? f_colorNaN.getValue()
                 : RGBAColor::fromVec4(eval(ptData[q[j]]));
                 color[j][3] = transparency;

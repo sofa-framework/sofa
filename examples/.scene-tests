@@ -15,11 +15,7 @@ iterations "Components/linearsolver/MatrixContributions123.scn" "10"
 timeout "Components/linearsolver/MatrixContributions123.scn" "60"
 
 # [Slow] Dense solver: takes too long to compute even a single iteration
-ignore "Components/linearsolver/FEMBAR-SVDLinearSolver.scn"
-
-# [Slow] Long compute only a few iterations
-iterations "Components/mapping/SPHFluidSurfaceMapping.scn" "10"
-timeout "Components/mapping/SPHFluidSurfaceMapping.scn" "60"
+ignore "Components/linearsolver/FEMBAR_SVDLinearSolver.scn"
 
 # [Slow] Big, long, PrecomputedConstraintCorrection in this scene:
 iterations "Components/animationloop/FreeMotionAnimationLoop.scn" "10"

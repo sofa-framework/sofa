@@ -23,13 +23,7 @@
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::solidmechanics::fem::elastic
 {
 using namespace sofa::gpu::cuda;
 
@@ -40,27 +34,18 @@ template class SOFA_GPU_CUDA_API TetrahedronFEMForceField<CudaVec3dTypes>;
 template class SOFA_GPU_CUDA_API TetrahedronFEMForceField<CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-}
+} // namespace sofa::component::solidmechanics::fem::elastic
 
-}
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 int TetrahedronFEMForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::forcefield::TetrahedronFEMForceField<CudaVec3fTypes> >()
-        .add< component::forcefield::TetrahedronFEMForceField<CudaVec3f1Types> >()
+        .add< sofa::component::solidmechanics::fem::elastic::TetrahedronFEMForceField<CudaVec3fTypes> >()
+        .add< sofa::component::solidmechanics::fem::elastic::TetrahedronFEMForceField<CudaVec3f1Types> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::forcefield::TetrahedronFEMForceField<CudaVec3dTypes> >()
-        .add< component::forcefield::TetrahedronFEMForceField<CudaVec3d1Types> >()
+        .add< sofa::component::solidmechanics::fem::elastic::TetrahedronFEMForceField<CudaVec3dTypes> >()
+        .add< sofa::component::solidmechanics::fem::elastic::TetrahedronFEMForceField<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
+} // namespace sofa::gpu::cuda
