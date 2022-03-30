@@ -923,12 +923,14 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "SSORPreconditioner", CreatableMoved("v22.06", "SofaPreconditioner", "Sofa.Component.LinearSolver.Preconditioner") },
     { "WarpPreconditioner", CreatableMoved("v22.06", "SofaPreconditioner", "Sofa.Component.LinearSolver.Preconditioner") },
 
-    // SofaBaseMechanics was deprecated in #2752 and #2635
+    // SofaBaseMechanics was deprecated in #2752, #2635 and #2766
     { "DiagonalMass", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mass") },
     { "UniformMass", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mass") },
     { "BarycentricMapping", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mapping.Linear") },
     { "IdentityMapping", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mapping.Linear") },
     { "SubsetMapping", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.Mapping.Linear") },
+    { "MechanicalObject", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.StateContainer") },
+    { "MappedObject", CreatableMoved("v22.06", "SofaBaseMechanics", "Sofa.Component.StateContainer") },
     
     // SofaMiscForceField was deprecated in #2752 and ...
     { "MeshMatrixMass", CreatableMoved("v22.06", "SofaMiscForceField", "Sofa.Component.Mass") },

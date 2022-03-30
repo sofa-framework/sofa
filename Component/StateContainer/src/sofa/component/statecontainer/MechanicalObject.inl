@@ -20,7 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/behavior/MechanicalState.inl>
 #include <sofa/linearalgebra/SparseMatrix.h>
@@ -63,7 +64,7 @@ void renumber(V* v, V* tmp, const sofa::type::vector< sofa::Index > &index )
 } // anonymous namespace
 
 
-namespace sofa::component::container
+namespace sofa::component::statecontainer
 {
 
 template <class DataTypes>
@@ -2884,4 +2885,4 @@ bool MechanicalObject<DataTypes>::isIndependent() const
 }
 
 
-} // namespace sofa::component::container
+} // namespace sofa::component::statecontainer

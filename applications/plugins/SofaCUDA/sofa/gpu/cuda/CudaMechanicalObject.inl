@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDAMECHANICALOBJECT_INL
-#define SOFA_GPU_CUDA_CUDAMECHANICALOBJECT_INL
+#pragma once
 
 #include "CudaMechanicalObject.h"
-#include <SofaBaseMechanics/MechanicalObject.inl>
+#include <sofa/component/statecontainer/MechanicalObject.inl>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 extern "C"
@@ -275,10 +268,6 @@ extern "C"
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 } // extern "C"
-
-
-
-
 
 template<>
 class CudaKernelsMechanicalObject<CudaVec1fTypes>
@@ -818,14 +807,9 @@ public:
 };
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-namespace component
-{
-
-namespace container
+namespace sofa::component::statecontainer
 {
 
 using namespace gpu::cuda;
@@ -2418,17 +2402,4 @@ CudaMechanicalObject_ImplMethods(gpu::cuda::CudaRigid3dTypes)
 
 #undef CudaMechanicalObject_ImplMethods
 
-
-
-
-
-
-
-
-}
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::statecontainer

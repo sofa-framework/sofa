@@ -20,42 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaBaseMechanics/MappedObject.h>
+#include <sofa/component/statecontainer/MappedObject.inl>
 
-#include <sofa/core/behavior/BaseMechanicalState.h>
-
-namespace sofa::component::container
-{
-
-template <class DataTypes>
-MappedObject<DataTypes>::MappedObject()
-    : f_X( initData(&f_X, "position", "position vector") )
-    , f_V( initData(&f_V, "velocity", "velocity vector") )
-{
-}
-
-template <class DataTypes>
-MappedObject<DataTypes>::~MappedObject()
-{
-}
-
-template <class DataTypes>
-void MappedObject<DataTypes>::init()
-{
-    if (getSize() == 0)
-    {        
-        sofa::core::behavior::BaseMechanicalState* mstate = this->getContext()->getMechanicalState();
-        auto nbp = mstate->getSize();
-        if (nbp > 0)
-        {
-            VecCoord& x = *getX();
-            x.resize(nbp);
-            for (Index i=0; i<nbp; i++)
-            {
-                DataTypes::set(x[i], mstate->getPX(i), mstate->getPY(i), mstate->getPZ(i));
-            }
-        }
-    }
-}
-
-} // namespace sofa::component::container
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/statecontainer/MappedObject.inl")
