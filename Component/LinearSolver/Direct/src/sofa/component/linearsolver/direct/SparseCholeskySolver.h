@@ -70,13 +70,27 @@ public:
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void invert(Matrix& M) override;
 
-    void solveT(double * z, double * r);
-    void solveT(float * z, float * r);
+    void solveT(Vector& z, Vector& r);
 
     void fill_reducing_perm(const cs &A,int * perm,int * invperm);
     css* symbolic_Chol(cs *A);
-    bool need_symbolic_factorization(int s_M, int * M_colptr,int * M_rowind, int s_P, int * P_colptr,int * P_rowind) ;
 };
+
+
+inline bool need_symbolic_factorization(int s_M, int * M_colptr,int * M_rowind, int s_P, int * P_colptr,int * P_rowind) {
+    if (s_M != s_P) return true;
+    if (M_colptr[s_M] != P_colptr[s_M] ) return true;
+
+    for (int i=0;i<s_P;i++) {
+        if (M_colptr[i]!=P_colptr[i]) return true;
+    }
+
+    for (int i=0;i<M_colptr[s_M];i++) {
+        if (M_rowind[i]!=P_rowind[i]) return true;
+    }
+
+    return false;
+}
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_CPP)
 extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseCholeskySolver< sofa::linearalgebra::CompressedRowSparseMatrix<SReal>, sofa::linearalgebra::FullVector<SReal> >;

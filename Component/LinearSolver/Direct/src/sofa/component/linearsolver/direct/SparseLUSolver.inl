@@ -41,8 +41,8 @@ SparseLUSolver<TMatrix,TVector,TThreadManager>::SparseLUSolver()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , f_tol( initData(&f_tol,0.001,"tolerance","tolerance of factorization") )
     , d_typePermutation(initData(&d_typePermutation , "permutation", "Type of fill reducing permutation"))
-    , d_typePermutationOptions(3,"None", "SuiteSparse", "METIS")
 {
+    sofa::helper::OptionsGroup d_typePermutationOptions(3,"None", "SuiteSparse", "METIS");
     d_typePermutationOptions.setSelectedItem(1); // default SuiteSparse
     d_typePermutation.setValue(d_typePermutationOptions);
 }
@@ -97,13 +97,13 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& x
     invertData->Previous_rowind.clear();
     invertData->Previous_colptr.resize( (invertData->A.n) +1);
 
-    for(int i=0 ; i<invertData->A.n ; i++)
+    for (int i=0 ; i<invertData->A.n ; i++)
     {
         invertData->Previous_colptr[i+1] = invertData->A_p[i+1];
 
-        for( int j=invertData->A_p[i] ; j < (int)invertData->A_p[i+1] ; j++)
+        for ( int j = (int) invertData->A_p[i] ; j < (int)invertData->A_p[i+1] ; j++)
         {
-            invertData->Previous_rowind.push_back(invertData->A_i[j]);
+            invertData->Previous_rowind.push_back( invertData->A_i[j]);
         }
     }
 
@@ -115,7 +115,6 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
 {
     SparseLUInvertData<Real> * invertData = (SparseLUInvertData<Real>*) this->getMatrixInvertData(&M);
 
-    //if (invertData->S) cs_sfree(invertData->S);
     if (invertData->N) cs_nfree(invertData->N);
     if (invertData->tmp) cs_free(invertData->tmp);
     M.compress();
@@ -141,33 +140,49 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
     {
         case 0://None->Identity
         {  
-            if(invertData->need_factorization) { invertData->S = symbolic_LU( &(invertData->A) ) ;}	/* ordering and symbolic analysis */
-            invertData->N = cs_lu (&invertData->A, invertData->S, f_tol.getValue()) ;		/* numeric LU factorization */
+            if (invertData->need_factorization) 
+            { 
+                if (invertData->S) cs_sfree(invertData->S);
+                invertData->S = symbolic_LU( &(invertData->A) ) ;
+            }	// ordering and symbolic analysis 
+            invertData->N = cs_lu (&invertData->A, invertData->S, f_tol.getValue()) ;		// numeric LU factorization 
             break;
         }
 
         case 1://SuiteSparse
         {
             int order = -1;
-            if(invertData->need_factorization) { invertData->S = cs_sqr (&invertData->A, order, 0) ;}	/* ordering and symbolic analysis */
-            invertData->N = cs_lu (&invertData->A, invertData->S, f_tol.getValue()) ;		/* numeric LU factorization */
+            if (invertData->need_factorization) 
+            {
+                if (invertData->S) cs_sfree(invertData->S);
+                invertData->S = cs_sqr (&invertData->A, order, 0) ;
+            }	// ordering and symbolic analysis 
+            invertData->N = cs_lu (&invertData->A, invertData->S, f_tol.getValue()) ;		// numeric LU factorization 
             break;
         }
 
         case 2://Metis
         {
-            if(invertData->need_factorization)
+            if (invertData->need_factorization)
             {
                 invertData->perm.resize(invertData->A.n);
                 invertData->iperm.resize(invertData->A.n);
 
                 fill_reducing_perm(invertData->A, invertData->perm.data(), invertData->iperm.data() );
             }
+
             invertData->permuted_A = cs_permute(&(invertData->A), invertData->iperm.data(), invertData->perm.data(), 1);
 
-            if(invertData->need_factorization) {invertData->S = symbolic_LU( invertData->permuted_A );}
+            if (invertData->need_factorization) 
+            {
+                if (invertData->S) cs_sfree(invertData->S);
+                invertData->S = symbolic_LU( invertData->permuted_A );
+            }
             
-            invertData->N = cs_lu ( invertData->permuted_A, invertData->S, f_tol.getValue()) ;		/* numeric LU factorization */
+            invertData->N = cs_lu ( invertData->permuted_A, invertData->S, f_tol.getValue()) ;		// numeric LU factorization 
+
+            cs_free(invertData->permuted_A); // prevent memory leak
+
             break;
         }
 
@@ -204,22 +219,6 @@ css* SparseLUSolver<TMatrix,TVector,TThreadManager>::symbolic_LU(cs *A)
 	S->lnz = S->unz ;		    /* guess nnz(L) and nnz(U) */
     S->Q = nullptr; // should have been the fill permutation computed by SuiteSparse, not used here
     return S ;
-}
-
-template<class TMatrix, class TVector,class TThreadManager>
-bool SparseLUSolver<TMatrix,TVector,TThreadManager>::need_symbolic_factorization(int s_M, int * M_colptr,int * M_rowind, int s_P, int * P_colptr,int * P_rowind) {
-    if (s_M != s_P) return true;
-    if (M_colptr[s_M] != P_colptr[s_M] ) return true;
-
-    for (int i=0;i<s_P;i++) {
-        if (M_colptr[i]!=P_colptr[i]) return true;
-    }
-
-    for (int i=0;i<M_colptr[s_M];i++) {
-        if (M_rowind[i]!=P_rowind[i]) return true;
-    }
-
-    return false;
 }
 
 } // namespace sofa::component::linearsolver::direct
