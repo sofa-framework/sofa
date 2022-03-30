@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaSimpleFem/config.h>
+#include <sofa/component/solidmechanics/fem/elastic/config.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/ForceField.h>
@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 
-namespace sofa::component::forcefield
+namespace sofa::component::solidmechanics::fem::elastic
 {
 template<class DataTypes>
 class TriangleFEMUtils
@@ -67,4 +67,4 @@ public:
     constexpr void computeStress(type::Vec<3, Real>& stress, const MaterialStiffness& K, const type::Vec<3, Real>& strain, bool fullMethod = false) const;
 };
 
-} //namespace sofa::component::forcefield
+} //namespace sofa::component::solidmechanics::fem::elastic

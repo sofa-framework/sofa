@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
-#include <SofaSimpleFem/TriangleFEMUtils.h>
+#include <sofa/component/solidmechanics/fem/elastic/TriangleFEMUtils.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>

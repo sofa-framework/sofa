@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaSimpleFem/TriangleFEMUtils.h>
+#include <sofa/component/solidmechanics/fem/elastic/TriangleFEMUtils.h>
 
-namespace sofa::component::forcefield
+namespace sofa::component::solidmechanics::fem::elastic
 {
 
 
@@ -291,4 +291,4 @@ constexpr void TriangleFEMUtils<DataTypes>::computeStress(type::Vec<3, Real>& st
 }
 
 
-} //namespace sofa::component::forcefield
+} //namespace sofa::component::solidmechanics::fem::elastic

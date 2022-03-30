@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMUTILS_CPP
-#include <SofaSimpleFem/TriangleFEMUtils.inl>
+#include <sofa/component/solidmechanics/fem/elastic/TriangleFEMUtils.inl>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::forcefield
+namespace sofa::component::solidmechanics::fem::elastic
 {
 
-template class SOFA_SOFASIMPLEFEM_API TriangleFEMUtils<sofa::defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_API TriangleFEMUtils<sofa::defaulttype::Vec3Types>;
 
-} //namespace sofa::component::forcefield
+} //namespace sofa::component::solidmechanics::fem::elastic
