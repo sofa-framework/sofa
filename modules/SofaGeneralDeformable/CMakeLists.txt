@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(SofaGeneralDeformable LANGUAGES CXX)
 
-
 set(SOFAGENERALDEFORMABLE_SRC "src/${PROJECT_NAME}")
 
 set(HEADER_FILES
@@ -13,50 +12,16 @@ set(SOURCE_FILES
     ${SOFAGENERALDEFORMABLE_SRC}/initSofaGeneralDeformable.cpp
     )
 
-list(APPEND HEADER_FILES
-    ${SOFAGENERALDEFORMABLE_SRC}/FastTriangularBendingSprings.h
-    ${SOFAGENERALDEFORMABLE_SRC}/FastTriangularBendingSprings.inl
-    ${SOFAGENERALDEFORMABLE_SRC}/FrameSpringForceField.h
-    ${SOFAGENERALDEFORMABLE_SRC}/FrameSpringForceField.inl
-    ${SOFAGENERALDEFORMABLE_SRC}/QuadBendingSprings.h
-    ${SOFAGENERALDEFORMABLE_SRC}/QuadBendingSprings.inl
-    ${SOFAGENERALDEFORMABLE_SRC}/QuadularBendingSprings.h
-    ${SOFAGENERALDEFORMABLE_SRC}/QuadularBendingSprings.inl
-    ${SOFAGENERALDEFORMABLE_SRC}/RegularGridSpringForceField.h
-    ${SOFAGENERALDEFORMABLE_SRC}/RegularGridSpringForceField.inl
-    ${SOFAGENERALDEFORMABLE_SRC}/TriangleBendingSprings.h
-    ${SOFAGENERALDEFORMABLE_SRC}/TriangleBendingSprings.inl
-    ${SOFAGENERALDEFORMABLE_SRC}/TriangularBendingSprings.h
-    ${SOFAGENERALDEFORMABLE_SRC}/TriangularBendingSprings.inl
-    ${SOFAGENERALDEFORMABLE_SRC}/TriangularBiquadraticSpringsForceField.h
-    ${SOFAGENERALDEFORMABLE_SRC}/TriangularBiquadraticSpringsForceField.inl
-    ${SOFAGENERALDEFORMABLE_SRC}/TriangularQuadraticSpringsForceField.h
-    ${SOFAGENERALDEFORMABLE_SRC}/TriangularQuadraticSpringsForceField.inl
-    ${SOFAGENERALDEFORMABLE_SRC}/TriangularTensorMassForceField.h
-    ${SOFAGENERALDEFORMABLE_SRC}/TriangularTensorMassForceField.inl
-    ${SOFAGENERALDEFORMABLE_SRC}/VectorSpringForceField.h
-    ${SOFAGENERALDEFORMABLE_SRC}/VectorSpringForceField.inl
-    )
-list(APPEND SOURCE_FILES
-    ${SOFAGENERALDEFORMABLE_SRC}/FastTriangularBendingSprings.cpp
-    ${SOFAGENERALDEFORMABLE_SRC}/FrameSpringForceField.cpp
-    ${SOFAGENERALDEFORMABLE_SRC}/QuadBendingSprings.cpp
-    ${SOFAGENERALDEFORMABLE_SRC}/QuadularBendingSprings.cpp
-    ${SOFAGENERALDEFORMABLE_SRC}/RegularGridSpringForceField.cpp
-    ${SOFAGENERALDEFORMABLE_SRC}/TriangleBendingSprings.cpp
-    ${SOFAGENERALDEFORMABLE_SRC}/TriangularBendingSprings.cpp
-    ${SOFAGENERALDEFORMABLE_SRC}/TriangularBiquadraticSpringsForceField.cpp
-    ${SOFAGENERALDEFORMABLE_SRC}/TriangularQuadraticSpringsForceField.cpp
-    ${SOFAGENERALDEFORMABLE_SRC}/TriangularTensorMassForceField.cpp
-    ${SOFAGENERALDEFORMABLE_SRC}/VectorSpringForceField.cpp
-    )
-
-
-sofa_find_package(SofaBase REQUIRED) # SofaBaseTopology
-sofa_find_package(SofaDeformable REQUIRED)
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaDeformable)
+
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.SolidMechanics.Spring and Sofa.Component.SolidMechanics.TensorMass instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.SolidMechanics.Spring REQUIRED)
+sofa_find_package(Sofa.Component.SolidMechanics.TensorMass REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.SolidMechanics.Spring)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.SolidMechanics.TensorMass)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

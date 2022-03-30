@@ -25,7 +25,7 @@
 
 namespace sofa::gpu::cuda
 {
-    using namespace sofa::component::mapping;
+    using namespace sofa::component::mapping::linear;
 
     // Register in the Factory
     int SubsetMultiMappingCudaClass = core::RegisterObject("Compute a subset of the input MechanicalObjects according to a dof index list")
@@ -46,4 +46,4 @@ namespace sofa::component::mapping
     template class SOFA_GPU_CUDA_API SubsetMultiMapping< CudaRigid3Types, CudaVec3Types >;
 
 
-}//namespace sofa::component::mapping
+}//namespace sofa::component::mapping::linear

@@ -23,7 +23,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <SofaGeneralMeshCollision/TriangleOctree.h>
-#include <SofaMeshCollision/RayTriangleIntersection.h>
 
 #include <iostream>
 #include <algorithm>
@@ -124,8 +123,6 @@ void MeshTetraStuffing::init()
 #ifdef USE_OCTREE
     collision::TriangleOctreeRoot octree;
     octree.buildOctree(&inT, &inP);
-#else
-    collision::RayTriangleIntersection raytri;
 #endif
 
     Point p0 = (bb[0] + bb[1])/2;
@@ -210,7 +207,7 @@ void MeshTetraStuffing::init()
                 {
                     collision::TriangleOctree::traceResult r;
                     r.tid = t;
-                    if (raytri.NewComputation(inP[inT[t][0]],inP[inT[t][1]],inP[inT[t][2]],origin,direction,r.t,r.u,r.v))
+                    if (sofa::geometry::Triangle::rayIntersection(inP[inT[t][0]],inP[inT[t][1]],inP[inT[t][2]],origin,direction,r.t,r.u,r.v))
                         results.push_back(r);
                 }
 #endif

@@ -19,24 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDASPRINGFORCEFIELD_INL
-#define SOFA_GPU_CUDA_CUDASPRINGFORCEFIELD_INL
+#pragma once
 
 #include "CudaSpringForceField.h"
-#include <SofaDeformable/SpringForceField.inl>
-#include <SofaDeformable/StiffSpringForceField.inl>
-#include <SofaDeformable/MeshSpringForceField.inl>
-#include <SofaGeneralDeformable/TriangleBendingSprings.inl>
-#include <SofaGeneralDeformable/QuadBendingSprings.inl>
+#include <sofa/component/solidmechanics/spring/SpringForceField.inl>
+#include <sofa/component/solidmechanics/spring/StiffSpringForceField.inl>
+#include <sofa/component/solidmechanics/spring/MeshSpringForceField.inl>
+#include <sofa/component/solidmechanics/spring/TriangleBendingSprings.inl>
+#include <sofa/component/solidmechanics/spring/QuadBendingSprings.inl>
 #include <sofa/core/MechanicalParams.h>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 extern "C"
@@ -152,14 +145,9 @@ public:
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-namespace component
-{
-
-namespace interactionforcefield
+namespace sofa::component::solidmechanics::spring
 {
 
 using namespace gpu::cuda;
@@ -457,10 +445,4 @@ CudaSpringForceField_ImplMethods(gpu::cuda::CudaVec3d1Types);
 
 #undef CudaSpringForceField_ImplMethods
 
-} // namespace interactionforcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::solidmechanics::spring

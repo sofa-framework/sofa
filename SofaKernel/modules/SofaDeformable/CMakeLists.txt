@@ -6,42 +6,19 @@ set(SOFADEFORMABLE_SRC "src/${PROJECT_NAME}")
 set(HEADER_FILES
     ${SOFADEFORMABLE_SRC}/config.h.in
     ${SOFADEFORMABLE_SRC}/initSofaDeformable.h
-    ${SOFADEFORMABLE_SRC}/AngularSpringForceField.h
-    ${SOFADEFORMABLE_SRC}/AngularSpringForceField.inl
-    ${SOFADEFORMABLE_SRC}/MeshSpringForceField.h
-    ${SOFADEFORMABLE_SRC}/MeshSpringForceField.inl
-    ${SOFADEFORMABLE_SRC}/RestShapeSpringsForceField.h
-    ${SOFADEFORMABLE_SRC}/RestShapeSpringsForceField.inl
-    ${SOFADEFORMABLE_SRC}/PolynomialRestShapeSpringsForceField.h
-    ${SOFADEFORMABLE_SRC}/PolynomialRestShapeSpringsForceField.inl
-    ${SOFADEFORMABLE_SRC}/SpringForceField.h
-    ${SOFADEFORMABLE_SRC}/SpringForceField.inl
-    ${SOFADEFORMABLE_SRC}/StiffSpringForceField.h
-    ${SOFADEFORMABLE_SRC}/StiffSpringForceField.inl
-    ${SOFADEFORMABLE_SRC}/PolynomialSpringsForceField.h
-    ${SOFADEFORMABLE_SRC}/PolynomialSpringsForceField.inl
 )
 
 set(SOURCE_FILES
     ${SOFADEFORMABLE_SRC}/initSofaDeformable.cpp
-    ${SOFADEFORMABLE_SRC}/AngularSpringForceField.cpp
-    ${SOFADEFORMABLE_SRC}/MeshSpringForceField.cpp
-    ${SOFADEFORMABLE_SRC}/RestShapeSpringsForceField.cpp
-    ${SOFADEFORMABLE_SRC}/PolynomialRestShapeSpringsForceField.cpp
-    ${SOFADEFORMABLE_SRC}/SpringForceField.cpp
-    ${SOFADEFORMABLE_SRC}/StiffSpringForceField.cpp
-    ${SOFADEFORMABLE_SRC}/PolynomialSpringsForceField.cpp
 )
 
-sofa_find_package(SofaBaseTopology REQUIRED)
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)
 
-if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    # Silence attribute warnings (for example, ignored already defined external template)
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
-endif()
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Component.SolidMechanics.Spring instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.SolidMechanics.Spring REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.SolidMechanics.Spring)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

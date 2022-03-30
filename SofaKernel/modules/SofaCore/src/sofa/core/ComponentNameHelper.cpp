@@ -37,7 +37,7 @@ std::string ComponentNameHelper::resolveName(const std::string& type, const std:
 
 std::string ComponentNameHelper::resolveName(const std::string& type, Convention convention)
 {
-    std::string radix = helper::NameDecoder::shortName(type);
+    std::string radix = type;
     if (convention == Convention::xml)
     {
         return radix + std::to_string((m_instanceCounter[radix]++) + 1);

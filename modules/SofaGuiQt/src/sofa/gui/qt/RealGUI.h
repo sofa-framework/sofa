@@ -335,7 +335,7 @@ private:
     void createSimulationGraph();
     void createPropertyWidget();
     void createWindowVisitor();
-    void createAdvanceTimerProfilerWindow();
+    void createAdvancedTimerProfilerWindow();
 
 public slots:
     virtual void NewRootNode(sofa::simulation::Node* root, const char* path);

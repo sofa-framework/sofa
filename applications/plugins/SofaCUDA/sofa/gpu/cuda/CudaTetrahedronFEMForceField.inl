@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDATETRAHEDRONFEMFORCEFIELD_INL
-#define SOFA_GPU_CUDA_CUDATETRAHEDRONFEMFORCEFIELD_INL
+#pragma once
 
 #include "CudaTetrahedronFEMForceField.h"
-#include <SofaSimpleFem/TetrahedronFEMForceField.inl>
+#include <sofa/component/solidmechanics/fem/elastic/TetrahedronFEMForceField.inl>
 #include <sofa/core/MechanicalParams.h>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 extern "C"
@@ -131,14 +124,9 @@ public:
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::solidmechanics::fem::elastic
 {
 
 using namespace gpu::cuda;
@@ -671,10 +659,4 @@ CudaTetrahedronFEMForceField_ImplMethods(gpu::cuda::CudaVec3d1Types);
 
 #undef CudaTetrahedronFEMForceField_ImplMethods
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::solidmechanics::fem::elastic

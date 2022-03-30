@@ -19,17 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDATETRAHEDRALTENSORMASSFORCEFIELD_INL
-#define SOFA_GPU_CUDA_CUDATETRAHEDRALTENSORMASSFORCEFIELD_INL
+#pragma once
 
 #include <sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.h>
-#include <SofaMiscFem/TetrahedralTensorMassForceField.inl>
+#include <sofa/component/solidmechanics/tensormass/TetrahedralTensorMassForceField.inl>
 
-namespace sofa
-{
-namespace gpu
-{
-namespace cuda
+namespace sofa::gpu::cuda
 {
     extern "C"
     {
@@ -40,13 +35,9 @@ namespace cuda
         void TetrahedralTensorMassForceFieldCuda3d_addDForce(int nbPoints, int nbMaxEdgesPerNode, const void* neighbourhoodPoints, void* contribEdge, int nbEdges, void* df, const void* dx, const void* edgeInfo, double kFactor );
 #endif
     }
-} // namespace cuda
-} // namespace gpu
+} // namespace sofa::gpu::cuda
 
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::solidmechanics::tensormass
 {
 /*
 	// TODO: warning - we should have a TetrahedralTensorMassForceFieldData<DataType> because
@@ -225,7 +216,4 @@ using namespace gpu::cuda;
 #endif
 
 
-} // namespace forcefield
-} // namespace component
-} // namespace sofa
-#endif //SOFA_GPU_CUDA_CUDATETRAHEDRALTENSORMASSFORCEFIELD_INL
+} // namespace sofa::component::solidmechanics::tensormass

@@ -24,7 +24,7 @@
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <SofaBaseMechanics/IdentityMapping.h>
 
-namespace sofa::component::mapping
+namespace sofa::component::mapping::linear
 {
 
 template <>
@@ -88,4 +88,4 @@ extern template class SOFA_GPU_CUDA_API  IdentityMapping< Vec3Types, CudaVec3dTy
 #endif
 
 
-} // sofa::component::mapping
+} // namespace sofa::component::mapping::linear

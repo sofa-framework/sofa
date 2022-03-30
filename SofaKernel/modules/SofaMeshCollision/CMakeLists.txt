@@ -41,7 +41,6 @@ set(SOURCE_FILES
     ${SOFAMESHCOLLISION_SRC}/LineModel.cpp
     ${SOFAMESHCOLLISION_SRC}/MeshNewProximityIntersection.cpp
     ${SOFAMESHCOLLISION_SRC}/PointModel.cpp
-    ${SOFAMESHCOLLISION_SRC}/RayTriangleIntersection.cpp
     ${SOFAMESHCOLLISION_SRC}/RigidContactMapper.cpp
     ${SOFAMESHCOLLISION_SRC}/SubsetContactMapper.cpp
     ${SOFAMESHCOLLISION_SRC}/TriangleModel.cpp
