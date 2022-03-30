@@ -147,12 +147,12 @@ void GenericConstraintSolver::init()
     simulation::common::VectorOperations vop(sofa::core::execparams::defaultInstance(), this->getContext());
     {
         sofa::core::behavior::MultiVecDeriv lambda(&vop, m_lambdaId);
-        lambda.realloc(&vop,false,true, "lambda");
+        lambda.realloc(&vop,false,true, core::VecIdProperties{"lambda", GetClass()->className});
         m_lambdaId = lambda.id();
     }
     {
         sofa::core::behavior::MultiVecDeriv dx(&vop, m_dxId);
-        dx.realloc(&vop,false,true, "constraint_dx");
+        dx.realloc(&vop,false,true, core::VecIdProperties{"constraint_dx", GetClass()->className});
         m_dxId = dx.id();
     }
 
@@ -190,7 +190,7 @@ bool GenericConstraintSolver::prepareStates(const core::ConstraintParams *cParam
     
     {
         sofa::core::behavior::MultiVecDeriv lambda(&vop, m_lambdaId);
-        lambda.realloc(&vop,false,true, "lambda");
+        lambda.realloc(&vop,false,true, core::VecIdProperties{"lambda", GetClass()->className});
         m_lambdaId = lambda.id();
 
         clearMultiVecId(getContext(), cParams, m_lambdaId);
@@ -198,7 +198,7 @@ bool GenericConstraintSolver::prepareStates(const core::ConstraintParams *cParam
 
     {
         sofa::core::behavior::MultiVecDeriv dx(&vop, m_dxId);
-        dx.realloc(&vop,false,true, "constraint_dx");
+        dx.realloc(&vop,false,true, core::VecIdProperties{"constraint_dx", GetClass()->className});
         m_dxId = dx.id();
 
         clearMultiVecId(getContext(), cParams, m_dxId);

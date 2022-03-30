@@ -96,6 +96,19 @@ public:
         result+= VecTypeLabels.at(V_COORD);
         return result;
     }
+
+    static std::string getGroup(const MyVecId& v)
+    {
+        switch(v.getIndex())
+        {
+            case 0: return {}; //null
+            case 1: return "States"; //position
+            case 2: return "Rest States"; //restPosition
+            case 3: return "Free Motion"; //freePosition
+            case 4: return "States"; //
+            default: return {};
+        }
+    }
 };
 
 template <VecAccess vaccess>
@@ -146,6 +159,23 @@ public:
         result+= VecTypeLabels.at(V_DERIV);
         return result;
     }
+
+    static std::string getGroup(const MyVecId& v)
+    {
+        switch(v.getIndex())
+        {
+            case 0: return {}; //null
+            case 1: return "States"; //velocity
+            case 2: return "States"; //resetVelocity
+            case 3: return "Free Motion"; //freeVelocity
+            case 4: return "States"; //normal
+            case 5: return "Force"; //force
+            case 6: return "Force"; //externalForce
+            case 7: return "States"; //dx
+            case 8: return "Force"; //dforce
+            default: return {};
+        }
+    }
 };
 
 template <VecAccess vaccess>
@@ -180,6 +210,17 @@ public:
         }
         result+= "(V_MATDERIV)";
         return result;
+    }
+
+    static std::string getGroup(const MyVecId& v)
+    {
+        switch(v.getIndex())
+        {
+        case 0: return {}; //null
+            case 1: return "Jacobian"; //constraintJacobian
+            case 2: return "Jacobian"; //mappingJacobian
+            default: return {};
+        }
     }
 };
 
@@ -251,6 +292,12 @@ protected:
 /// wrongly applied for base classes without data members, and hopefully should not make anything worse for other compilers.
 /// @note Just in case, we have a static size assertion at the end of the file, so you will know if there is a problem.
 class VecIdAlignFix {};
+
+struct VecIdProperties
+{
+    std::string label;
+    std::string group;
+};
 
 /// Identify a vector of a given type stored in State
 /// This class is templated in order to create different variations (generic versus specific type, read-only vs write access)
@@ -329,6 +376,11 @@ public:
     {
         return TStandardVec<vtype, vaccess>::getName(*this);
     }
+    std::string getGroup() const
+    {
+        return TStandardVec<vtype, vaccess>::getGroup(*this);
+    }
+
     friend inline std::ostream& operator << ( std::ostream& out, const TVecId& v )
     {
         out << v.getName();
@@ -380,6 +432,10 @@ public:
     std::string getName() const
     {
         return TStandardVec<V_ALL, vaccess>::getName(*this);
+    }
+    std::string getGroup() const
+    {
+        return TStandardVec<V_ALL, vaccess>::getGroup(*this);
     }
     friend inline std::ostream& operator << ( std::ostream& out, const TVecId& v )
     {
