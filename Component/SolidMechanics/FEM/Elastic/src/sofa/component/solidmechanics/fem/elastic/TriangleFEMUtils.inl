@@ -135,7 +135,8 @@ constexpr void TriangleFEMUtils<DataTypes>::computeStrainDisplacementGlobal(Stra
     
     if (abs(determinant) < std::numeric_limits<Real>::epsilon())
     {
-        throw std::logic_error("Division by zero exception in computeStrainDisplacementGlobal");
+        msg_error("TriangleFEMUtils") << "determinant: " << determinant << " | " << std::numeric_limits<Real>::epsilon();
+        throw std::logic_error("Division by zero exception in computeStrainDisplacementGlobal ");
     }
 
     const Real invDet = 1 / determinant;
