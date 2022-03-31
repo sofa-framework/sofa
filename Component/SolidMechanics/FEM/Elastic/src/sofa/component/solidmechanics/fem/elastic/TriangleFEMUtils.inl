@@ -227,7 +227,7 @@ constexpr void TriangleFEMUtils<DataTypes>::computeStrainDisplacementLocal(Strai
     
     if (abs(determinant) < std::numeric_limits<float>::epsilon())
     {
-        msg_error("TriangleFEMUtils") << "determinant: " << determinant << " | " << std::numeric_limits<float>::epsilon();
+        msg_error("TriangleFEMUtils") << "determinant: " << abs(determinant) << " | " << std::numeric_limits<float>::epsilon();
         throw std::logic_error("Division by zero exception in computeStrainDisplacementLocal");
     }
     const Real invDet = 1 / determinant;
