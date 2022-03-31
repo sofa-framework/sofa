@@ -33,7 +33,7 @@ using sofa::component::collision::response::mapper::ContactMapper;
 using sofa::component::collision::response::mapper::RigidContactMapper;
 using collisionobbcapsule::model::OBBCollisionModel;
 
-namespace collisionobbcapsule::response::mapper
+namespace sofa::component::collision::response::mapper
 {
 
 template <class TVec3Types>
@@ -52,4 +52,4 @@ public:
 extern template class ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types>;
 #endif // 
 
-} // namespace collisionobbcapsule::response::mapper
+} // namespace sofa::component::collision::response::mapper

@@ -32,7 +32,7 @@ using sofa::component::collision::response::mapper::ContactMapper;
 using sofa::component::collision::response::mapper::RigidContactMapper;
 using collisionobbcapsule::model::CapsuleCollisionModel;
 
-namespace collisionobbcapsule::detection::intersection
+namespace sofa::component::collision::response::mapper
 {
 
 
@@ -78,4 +78,4 @@ public:
 extern template class COLLISIONOBBCAPSULE_API ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
 extern template class COLLISIONOBBCAPSULE_API ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types>;
 #endif
-} // namespace collisionobbcapsule::detection::intersection
+} // namespace sofa::component::collision::response::mapper

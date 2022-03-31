@@ -29,9 +29,8 @@
 
 using namespace sofa::core::collision;
 using namespace sofa::component::collision;
-using namespace sofa::component::collision::response::mapper;
 
-namespace collisionobbcapsule::response::mapper
+namespace sofa::component::collision::response::mapper
 {
 
 ContactMapperCreator< ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>> > CapsuleContactMapperClass("PenalityContactForceField", true);
@@ -39,4 +38,4 @@ ContactMapperCreator< ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rig
 template class COLLISIONOBBCAPSULE_API ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
 template class COLLISIONOBBCAPSULE_API ContactMapper<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types>;
 
-} // namespace collisionobbcapsule::response::mapper
+} // namespace sofa::component::collision::response::mapper

@@ -30,7 +30,7 @@
 #include <CollisionOBBCapsule/response/mapper/OBBContactMapper.h>
 
 
-namespace collisionobbcapsule::response::contact
+namespace sofa::component::collision::response::contact
 {
 
 using namespace sofa::core::collision;
@@ -51,17 +51,17 @@ Creator<Contact::Factory, FrictionContact<RigidSphereModel, OBBCollisionModel<so
 
 Creator<Contact::Factory, RayContact<OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > RayRigidBoxContactClass("RayContact", true); //cast not working
 
-template class COLLISIONOBB_API response::contact::BarycentricPenalityContact<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
-template class COLLISIONOBB_API response::contact::BarycentricPenalityContact<collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
-template class COLLISIONOBB_API response::contact::BarycentricPenalityContact<RigidSphereModel, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
-template class COLLISIONOBB_API response::contact::BarycentricPenalityContact<collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
-template class COLLISIONOBB_API response::contact::BarycentricPenalityContact<collision::geometry::CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
+template class COLLISIONOBBCAPSULE_API response::contact::BarycentricPenalityContact<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
+template class COLLISIONOBBCAPSULE_API response::contact::BarycentricPenalityContact<collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
+template class COLLISIONOBBCAPSULE_API response::contact::BarycentricPenalityContact<RigidSphereModel, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
+template class COLLISIONOBBCAPSULE_API response::contact::BarycentricPenalityContact<collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
+template class COLLISIONOBBCAPSULE_API response::contact::BarycentricPenalityContact<collision::geometry::CylinderCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
 
-template class COLLISIONOBB_API response::contact::FrictionContact<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
-template class COLLISIONOBB_API response::contact::FrictionContact<collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
-template class COLLISIONOBB_API response::contact::FrictionContact<collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
-template class COLLISIONOBB_API response::contact::FrictionContact<RigidSphereModel, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
+template class COLLISIONOBBCAPSULE_API response::contact::FrictionContact<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
+template class COLLISIONOBBCAPSULE_API response::contact::FrictionContact<collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
+template class COLLISIONOBBCAPSULE_API response::contact::FrictionContact<collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
+template class COLLISIONOBBCAPSULE_API response::contact::FrictionContact<RigidSphereModel, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
 
 template class COLLISIONOBBCAPSULE_API response::contact::RayContact<OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
 
-} // namespace collisionobbcapsule::response::contact
+} // namespace sofa::component::collision::response::contact

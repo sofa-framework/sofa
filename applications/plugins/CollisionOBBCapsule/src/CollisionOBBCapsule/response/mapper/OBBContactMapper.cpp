@@ -29,12 +29,12 @@
 using namespace sofa;
 using namespace sofa::core::collision;
 using namespace sofa::component::collision;
-using namespace sofa::component::collision::response::mapper;
+using namespace collisionobbcapsule::model;
 
-namespace collisionobbcapsule::response::mapper
+namespace sofa::component::collision::response::mapper
 {
 
-ContactMapperCreator< ContactMapper<model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types> > OBBContactMapperClass("PenalityContactForceField", true);
-template class ContactMapper<model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types>;
+ContactMapperCreator< ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types> > OBBContactMapperClass("PenalityContactForceField", true);
+template class ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types>;
 
-} // namespace collisionobbcapsule::response::mapper
+} // namespace sofa::component::collision::response::mapper
