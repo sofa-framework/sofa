@@ -93,7 +93,6 @@ void DDGNode::addInput(DDGNode* n)
 {
     if(std::find(inputs.begin(), inputs.end(), n) != inputs.end())
     {
-        assert(false && "trying to add a DDGNode that is already in the input set.");
         return;
     }
     doAddInput(n);
