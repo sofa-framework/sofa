@@ -34,6 +34,10 @@ IndicesFromValues<T>::IndicesFromValues()
     , f_otherIndices( initData(&f_otherIndices, "otherIndices","Output indices of the other values, (NOT the given ones) searched in global") )
     , f_recursiveSearch( initData(&f_recursiveSearch, false, "recursiveSearch", "if set to true, output are indices of the \"global\" data matching with one of the values"))
 {
+    addInput(&f_values);
+    addInput(&f_global);
+    addOutput(&f_indices);
+    addOutput(&f_otherIndices);
 }
 
 template <class T>
@@ -44,10 +48,6 @@ IndicesFromValues<T>::~IndicesFromValues()
 template <class T>
 void IndicesFromValues<T>::init()
 {
-    addInput(&f_values);
-    addInput(&f_global);
-    addOutput(&f_indices);
-    addOutput(&f_otherIndices);
     setDirtyValue();
 }
 

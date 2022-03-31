@@ -46,14 +46,15 @@ public:
         : Inherit1()
         , input(initData(&input,false,"input","input"))
         , output(initData(&output,(int)UNDEFINED,"output","output"))
-    {}
+    {
+        addInput(&input);
+        addOutput(&output);
+    }
 
     ~TestEngine() override {}
 
     void init() override
     {
-        addInput(&input);
-        addOutput(&output);
         setDirtyValue();
     }
 

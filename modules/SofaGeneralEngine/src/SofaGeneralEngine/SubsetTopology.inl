@@ -79,6 +79,40 @@ SubsetTopology<DataTypes>::SubsetTopology()
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
     typeROI = BOX;
+
+    addInput(&centers);
+    addInput(&radii);
+    addInput(&direction);
+    addInput(&normal);
+    addInput(&edgeAngle);
+    addInput(&triAngle);
+    addInput(&d_tetrahedraInput);
+
+    addInput(&f_X0);
+    addInput(&f_edges);
+    addInput(&f_triangles);
+    addInput(&f_quads);
+    addInput(&f_tetrahedra);
+    addInput(&f_hexahedra);
+
+    addOutput(&f_indices);
+    addOutput(&f_edgeIndices);
+    addOutput(&f_triangleIndices);
+    addOutput(&f_quadIndices);
+    addOutput(&f_tetrahedronIndices);
+    addOutput(&f_hexahedronIndices);
+    addOutput(&f_pointsInROI);
+    addOutput(&f_pointsOutROI);
+    addOutput(&f_edgesInROI);
+    addOutput(&f_edgesOutROI);
+    addOutput(&f_trianglesInROI);
+    addOutput(&f_trianglesOutROI);
+    addOutput(&f_quadsInROI);
+    addOutput(&f_quadsOutROI);
+    addOutput(&f_tetrahedraInROI);
+    addOutput(&f_tetrahedraOutROI);
+    addOutput(&f_hexahedraInROI);
+    addOutput(&f_hexahedraOutROI);
 }
 
 template <class DataTypes>
@@ -154,39 +188,6 @@ void SubsetTopology<DataTypes>::init()
         }
     }
 
-    addInput(&centers);
-    addInput(&radii);
-    addInput(&direction);
-    addInput(&normal);
-    addInput(&edgeAngle);
-    addInput(&triAngle);
-    addInput(&d_tetrahedraInput);
-
-    addInput(&f_X0);
-    addInput(&f_edges);
-    addInput(&f_triangles);
-    addInput(&f_quads);
-    addInput(&f_tetrahedra);
-    addInput(&f_hexahedra);
-
-    addOutput(&f_indices);
-    addOutput(&f_edgeIndices);
-    addOutput(&f_triangleIndices);
-    addOutput(&f_quadIndices);
-    addOutput(&f_tetrahedronIndices);
-    addOutput(&f_hexahedronIndices);
-    addOutput(&f_pointsInROI);
-    addOutput(&f_pointsOutROI);
-    addOutput(&f_edgesInROI);
-    addOutput(&f_edgesOutROI);
-    addOutput(&f_trianglesInROI);
-    addOutput(&f_trianglesOutROI);
-    addOutput(&f_quadsInROI);
-    addOutput(&f_quadsOutROI);
-    addOutput(&f_tetrahedraInROI);
-    addOutput(&f_tetrahedraOutROI);
-    addOutput(&f_hexahedraInROI);
-    addOutput(&f_hexahedraOutROI);
     setDirtyValue();
 }
 

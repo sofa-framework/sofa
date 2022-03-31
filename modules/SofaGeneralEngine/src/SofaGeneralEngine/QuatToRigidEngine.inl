@@ -37,6 +37,12 @@ QuatToRigidEngine<DataTypes>::QuatToRigidEngine()
     addAlias(&f_orientations,"orientation");
     addAlias(&f_colinearPositions,"colinearPosition");
     addAlias(&f_rigids,"rigid");
+
+    addInput(&f_positions);
+    addInput(&f_orientations);
+    addInput(&f_colinearPositions);
+
+    addOutput(&f_rigids);
 }
 
 template <class DataTypes>
@@ -48,12 +54,6 @@ QuatToRigidEngine<DataTypes>::~QuatToRigidEngine()
 template <class DataTypes>
 void QuatToRigidEngine<DataTypes>::init()
 {
-    addInput(&f_positions);
-    addInput(&f_orientations);
-    addInput(&f_colinearPositions);
-
-    addOutput(&f_rigids);
-
     setDirtyValue();
 }
 

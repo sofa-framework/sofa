@@ -45,12 +45,7 @@ DilateEngine<DataTypes>::DilateEngine()
     , d_minThickness( initData (&d_minThickness, (Real)0, "minThickness", "minimal thickness to enforce") )
 {
     addAlias(&d_inputX,"position");
-}
 
-
-template <class DataTypes>
-void DilateEngine<DataTypes>::init()
-{
     addInput(&d_inputX);
     addInput(&d_triangles);
     addInput(&d_quads);
@@ -59,6 +54,12 @@ void DilateEngine<DataTypes>::init()
     addOutput(&d_outputX);
     addOutput(&d_normals);
     addOutput(&d_thickness);
+}
+
+
+template <class DataTypes>
+void DilateEngine<DataTypes>::init()
+{
     setDirtyValue();
 }
 

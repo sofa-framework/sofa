@@ -35,15 +35,15 @@ ProjectiveTransformEngine<DataTypes>::ProjectiveTransformEngine()
     , proj_mat(initData(&proj_mat, "proj_mat", "projection matrix ") )
     , focal_distance(initData(&focal_distance, (Real)1,"focal_distance", "focal distance ") )
 {
+    addInput(&f_inputX);
+    addInput(&focal_distance);
+    addOutput(&f_outputX);
 }
 
 
 template <class DataTypes>
 void ProjectiveTransformEngine<DataTypes>::init()
 {
-    addInput(&f_inputX);
-    addInput(&focal_distance);
-    addOutput(&f_outputX);
     setDirtyValue();
 }
 
