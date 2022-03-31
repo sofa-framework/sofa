@@ -18,7 +18,7 @@
         <TriangleSetTopologyModifier name="Modifier" />
         <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
         <UniformMass totalMass="1"  />
-		<MeshSpringForceField name="Springs" trianglesStiffness="1000" tetrasDamping="0" />        
+        <MeshSpringForceField name="Springs" trianglesStiffness="1000" tetrasDamping="0" />        
         <BoxConstraint box="-0.05 -0.05 -0.05    0.05 0.05 0.05" drawBoxes="1"  />
         <BoxROI box="-0.05 -0.05 -0.05    0.05 1.05 0.05" drawBoxes="1" name="ProjectToPlane"/>
         <ProjectToPointConstraint point="0 0 0" indices="@[-1].indices" drawSize="0.03" />
