@@ -2,7 +2,7 @@
 <?php echo '<!-- Generated from benchmark_cubes.pscn -->';?>
 
 <Node name="root" dt="0.01" gravity="0 -9.81 0">
-    <Node name="pluginList"/>
+    <Node name="pluginList" >
         <RequiredPlugin name="SofaOpenglVisual"/>
         <RequiredPlugin name="SofaConstraint"/>
         <RequiredPlugin name="SofaMeshCollision"/>
