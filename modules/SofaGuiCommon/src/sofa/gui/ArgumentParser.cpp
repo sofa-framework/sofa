@@ -79,6 +79,8 @@ void ArgumentParser::parse()
     for (const auto& arg : vecArg)
     {
         m_parseResult.insert({ arg.key(), arg.value() });
+        if(arg.key() == "argv")
+            extra.push_back(arg.value());
 
         //go through all possible keys (because of the short/long names)
         for (const auto& callback : m_mapCallbacks)

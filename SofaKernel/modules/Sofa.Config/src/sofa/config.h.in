@@ -150,7 +150,7 @@ class DeprecatedAndRemoved {};
         SOFA_PRAGMA_WARNING( \
             "This header has been DEPRECATED since " deprecateDate ". " \
             "You have until " disableDate " to fix your code. " \
-            "It will not replaced by another one. " )
+            "It will not be replaced by another one. " )
 
     #define SOFA_DISABLED_HEADER_NOT_REPLACED(deprecateDate, disableDate) \
         SOFA_PRAGMA_ERROR( \
@@ -175,7 +175,7 @@ class DeprecatedAndRemoved {};
         SOFA_PRAGMA_WARNING( \
             This header has been DEPRECATED since deprecateDate. \
             You have until disableDate to fix your code. \
-            It will not replaced by another one. )
+            It will not be replaced by another one. )
 
     #define SOFA_DISABLED_HEADER_NOT_REPLACED(deprecateDate, disableDate) \
         SOFA_PRAGMA_ERROR( \

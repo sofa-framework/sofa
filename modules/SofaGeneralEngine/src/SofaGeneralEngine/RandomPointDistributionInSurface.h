@@ -30,7 +30,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaGeneralMeshCollision/TriangleOctree.h>
+#include <sofa/helper/TriangleOctree.h>
 #include <sofa/helper/RandomGenerator.h>
 
 namespace sofa::component::engine
@@ -82,7 +82,7 @@ public:
 
 protected:
     VecCoord directions;
-    collision::TriangleOctreeRoot trianglesOctree;
+    helper::TriangleOctreeRoot trianglesOctree;
     void getBBox(Vec3 &minBBox, Vec3 &maxBBox);
     void generateRandomDirections();
     Vec3 generateRandomPoint(const Vec3 &minBBox, const Vec3 &maxBBox);

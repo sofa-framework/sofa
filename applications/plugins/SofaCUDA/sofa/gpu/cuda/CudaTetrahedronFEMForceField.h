@@ -19,34 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDATETRAHEDRONFEMFORCEFIELD_H
-#define SOFA_GPU_CUDA_CUDATETRAHEDRONFEMFORCEFIELD_H
+#pragma once
 
 #include "CudaTypes.h"
-#include <SofaSimpleFem/TetrahedronFEMForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/TetrahedronFEMForceField.h>
 
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 template<class DataTypes>
 class CudaKernelsTetrahedronFEMForceField;
 
-} // namespace cuda
-
-} // namespace gpu
+} // namespace sofa::gpu::cuda
 
 
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::solidmechanics::fem::elastic
 {
 
 template <class TCoord, class TDeriv, class TReal>
@@ -305,10 +293,4 @@ CudaTetrahedronFEMForceField_DeclMethods(gpu::cuda::CudaVec3d1Types);
 
 #undef CudaTetrahedronFEMForceField_DeclMethods
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::solidmechanics::fem::elastic

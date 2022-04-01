@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <SofaConstraint/initSofaConstraint.h>
 
+#include <sofa/helper/system/PluginManager.h>
+
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
@@ -32,6 +34,10 @@ void initSofaConstraint()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaConstraint") << "SofaConstraint is deprecated. It will be removed at v23.06. You may use Sofa.Component.Mapping.MappedMatrix instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Mapping.MappedMatrix");
+
         first = false;
     }
 }

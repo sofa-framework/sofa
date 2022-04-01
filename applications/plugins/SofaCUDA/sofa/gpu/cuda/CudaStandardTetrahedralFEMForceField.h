@@ -19,30 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDASTANDARDTETRAHEDRALFEMFORCEFIELD_H
-#define SOFA_GPU_CUDA_CUDASTANDARDTETRAHEDRALFEMFORCEFIELD_H
+#pragma once
 
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <SofaMiscFem/StandardTetrahedralFEMForceField.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/StandardTetrahedralFEMForceField.h>
 
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
-{
-
-} // namespace cuda
-
-} // namespace gpu
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::solidmechanics::fem::hyperelastic
 {
 
 
@@ -105,10 +88,4 @@ inline sofa::gpu::cuda::CudaVector<float>& StandardTetrahedralFEMForceField_cont
 	return contribDfDx;
 }
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif //SOFA_GPU_CUDA_CUDASTANDARDTETRAHEDRALFEMFORCEFIELD_H
+} // namespace sofa::component::solidmechanics::fem::hyperelastic

@@ -22,6 +22,8 @@
 #pragma once
 #include <sofa/linearalgebra/config.h>
 
+SOFA_DEPRECATED_HEADER_NOT_REPLACED("v22.06", "v23.06")
+
 #include <sofa/type/vector.h>
 
 #include <Eigen/Core>
@@ -37,9 +39,8 @@ typedef Eigen::SparseMatrix<SReal>    SparseMatrixEigen;
 typedef Eigen::SparseVector<SReal>    SparseVectorEigen;
 typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1>       VectorEigen;
 
-struct LMatrixManipulator;
-
-struct SOFA_LINEARALGEBRA_API LLineManipulator
+SOFA_LINEARALGEBRA_API
+struct SOFA_MATRIXMANIPULATOR_DEPRECATED() LLineManipulator
 {
     typedef std::pair<unsigned int, SReal> LineCombination;
     typedef type::vector< LineCombination > InternalData;
@@ -73,7 +74,8 @@ protected:
     InternalData _data;
 };
 
-struct SOFA_LINEARALGEBRA_API LMatrixManipulator
+SOFA_LINEARALGEBRA_API
+struct SOFA_MATRIXMANIPULATOR_DEPRECATED() LMatrixManipulator
 {
     void init(const SparseMatrixEigen& L);
 

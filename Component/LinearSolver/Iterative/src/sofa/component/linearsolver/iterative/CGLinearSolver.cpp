@@ -38,13 +38,13 @@ using namespace sofa::defaulttype;
 using sofa::core::MultiVecDerivId;
 
 template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
-inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(const core::ExecParams* /*params*/, Vector& p, Vector& r, SReal beta)
+inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(const core::ExecParams* /*params*/, Vector& p, Vector& r, Real beta)
 {
     p.eq(r,p,beta); // p = p*beta + r
 }
 
 template<> SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API
-inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(const core::ExecParams* params, Vector& x, Vector& r, Vector& p, Vector& q, SReal alpha)
+inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(const core::ExecParams* params, Vector& x, Vector& r, Vector& p, Vector& q, Real alpha)
 {
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     x.peq(p,alpha);                 // x = x + alpha p

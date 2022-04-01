@@ -23,7 +23,7 @@
 #include <sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/ForceField.inl>
-#include <SofaMiscFem/StandardTetrahedralFEMForceField.inl>
+#include <sofa/component/solidmechanics/fem/hyperelastic/StandardTetrahedralFEMForceField.inl>
 
 namespace sofa
 {
@@ -35,9 +35,9 @@ namespace cuda
 {
 
 int StandardTetrahedralFEMForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-.add< component::forcefield::StandardTetrahedralFEMForceField<CudaVec3fTypes> >()
+.add< sofa::component::solidmechanics::fem::hyperelastic::StandardTetrahedralFEMForceField<CudaVec3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-.add< component::forcefield::StandardTetrahedralFEMForceField<CudaVec3dTypes> >()
+.add< sofa::component::solidmechanics::fem::hyperelastic::StandardTetrahedralFEMForceField<CudaVec3dTypes> >()
 #endif
 ;
 
@@ -47,9 +47,9 @@ int StandardTetrahedralFEMForceFieldCudaClass = core::RegisterObject("Supports G
 } // namespace gpu
 
 
-template class SOFA_GPU_CUDA_API component::forcefield::StandardTetrahedralFEMForceField<sofa::gpu::cuda::CudaVec3fTypes>;
+template class SOFA_GPU_CUDA_API sofa::component::solidmechanics::fem::hyperelastic::StandardTetrahedralFEMForceField<sofa::gpu::cuda::CudaVec3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class SOFA_GPU_CUDA_API component::forcefield::StandardTetrahedralFEMForceField<sofa::gpu::cuda::CudaVec3dTypes>;
+template class SOFA_GPU_CUDA_API sofa::component::solidmechanics::fem::hyperelastic::StandardTetrahedralFEMForceField<sofa::gpu::cuda::CudaVec3dTypes>;
 #endif
 
 } // namespace sofa

@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <SofaSimpleFem/initSofaSimpleFem.h>
 
+#include <sofa/helper/system/PluginManager.h>
+
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
@@ -32,6 +34,11 @@ void initSofaSimpleFem()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaSimpleFem") << "SofaSimpleFem is deprecated;. It will be removed at v23.06. You may use Sofa.Component.Diffusion and Sofa.Component.SolidMechanics.FEM.Elastic instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Diffusion");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.SolidMechanics.FEM.Elastic");
+
         first = false;
     }
 }

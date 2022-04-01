@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <SofaMiscMapping/initSofaMiscMapping.h>
 
+#include <sofa/helper/system/PluginManager.h>
+
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
@@ -32,6 +34,10 @@ void initSofaMiscMapping()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaMiscMapping") << "SofaMiscMapping is deprecated. It will be removed at v23.06. Use Sofa.Component.Mapping instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Mapping");
+
         first = false;
     }
 }

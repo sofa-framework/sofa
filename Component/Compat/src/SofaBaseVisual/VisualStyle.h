@@ -30,5 +30,4 @@ namespace sofa::component::visualmodel
     using VisualStyle = sofa::component::visual::VisualStyle;
 
     using sofa::component::visual::addVisualStyle;
-
 } // namespace sofa::component::visual

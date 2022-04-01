@@ -21,8 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <SofaGeneralEngine/DilateEngine.h>
-#include <SofaGeneralMeshCollision/TriangleOctree.h>
-#include <SofaMeshCollision/RayTriangleIntersection.h>
+#include <sofa/helper/TriangleOctree.h>
 #include <sofa/helper/rmath.h> //M_PI
 #include <sofa/helper/logging/Messaging.h>
 
@@ -31,8 +30,8 @@ namespace sofa::component::engine
 
 using helper::ReadAccessor;
 using helper::WriteOnlyAccessor;
+using helper::TriangleOctreeRoot;
 using type::vector;
-using collision::TriangleOctreeRoot;
 
 template <class DataTypes>
 DilateEngine<DataTypes>::DilateEngine()
@@ -134,7 +133,7 @@ void DilateEngine<DataTypes>::doUpdate()
             Coord origin = in[ip];
             Coord direction = -normals[ip];
             Real mindist = -1.0f;
-            vector< collision::TriangleOctree::traceResult > results;
+            vector< helper::TriangleOctree::traceResult > results;
             octree.octreeRoot->traceAll(origin, direction, results);
             for (unsigned int i=0; i<results.size(); ++i)
             {

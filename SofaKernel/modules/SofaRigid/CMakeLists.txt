@@ -6,35 +6,21 @@ set(SOFARIGID_SRC "src/${PROJECT_NAME}")
 set(HEADER_FILES
     ${SOFARIGID_SRC}/config.h.in
     ${SOFARIGID_SRC}/initSofaRigid.h
-    ${SOFARIGID_SRC}/JointSpring.h
-    ${SOFARIGID_SRC}/JointSpring.inl
-    ${SOFARIGID_SRC}/JointSpringForceField.h
-    ${SOFARIGID_SRC}/JointSpringForceField.inl
-    ${SOFARIGID_SRC}/RigidMapping.h
-    ${SOFARIGID_SRC}/RigidMapping.inl
-    ${SOFARIGID_SRC}/RigidRigidMapping.h
-    ${SOFARIGID_SRC}/RigidRigidMapping.inl
 )
 
 set(SOURCE_FILES
     ${SOFARIGID_SRC}/initSofaRigid.cpp
-    ${SOFARIGID_SRC}/JointSpring.cpp
-    ${SOFARIGID_SRC}/JointSpringForceField.cpp
-    ${SOFARIGID_SRC}/RigidMapping.cpp
-    ${SOFARIGID_SRC}/RigidRigidMapping.cpp
 )
 
-sofa_find_package(SofaBaseMechanics REQUIRED)
-sofa_find_package(Eigen3 REQUIRED)
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseMechanics)
-target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen)
 
-if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    # Silence attribute warnings (for example, ignored already defined external template)
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
-endif()
+message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Mapping and Sofa.Component.SolidMechanics.Spring instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.Mapping REQUIRED)
+sofa_find_package(Sofa.Component.SolidMechanics.Spring REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Mapping)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.SolidMechanics.Spring)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

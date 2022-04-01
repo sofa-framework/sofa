@@ -19,20 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDARIGIDMAPPING_INL
-#define SOFA_GPU_CUDA_CUDARIGIDMAPPING_INL
+#pragma once
 
 #include "CudaRigidMapping.h"
 #include <SofaRigid/RigidMapping.inl>
 #include <sofa/helper/accessor.h>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 using sofa::type::Mat3x3f;
@@ -45,14 +38,9 @@ extern "C"
     void RigidMappingCuda3f_applyJT(unsigned int size, unsigned int nbloc, void* out, const void* rotated, const void* in);
 }
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-namespace component
-{
-
-namespace mapping
+namespace sofa::component::mapping::nonlinear
 {
 
 using namespace gpu::cuda;
@@ -243,10 +231,4 @@ void RigidMapping<defaulttype::Rigid3fTypes, gpu::cuda::CudaVec3fTypes>::applyJT
     dOut.endEdit();
 }
 
-} // namespace mapping
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mapping::nonlinear

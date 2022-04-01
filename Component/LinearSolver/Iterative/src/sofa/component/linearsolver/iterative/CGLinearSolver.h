@@ -38,12 +38,13 @@ public:
     typedef TMatrix Matrix;
     typedef TVector Vector;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
+    using Real = typename Matrix::Real;
 
     Data<unsigned> d_maxIter; ///< maximum number of iterations of the Conjugate Gradient solution
-    Data<SReal> d_tolerance; ///< desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)
-    Data<SReal> d_smallDenominatorThreshold; ///< minimum value of the denominator in the conjugate Gradient solution
+    Data<Real> d_tolerance; ///< desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)
+    Data<Real> d_smallDenominatorThreshold; ///< minimum value of the denominator in the conjugate Gradient solution
     Data<bool> d_warmStart; ///< Use previous solution as initial solution
-    Data<std::map < std::string, sofa::type::vector<SReal> > > d_graph; ///< Graph of residuals at each iteration
+    Data<std::map < std::string, sofa::type::vector<Real> > > d_graph; ///< Graph of residuals at each iteration
 
 protected:
 
@@ -51,10 +52,10 @@ protected:
 
     /// This method is separated from the rest to be able to use custom/optimized versions depending on the types of vectors.
     /// It computes: p = p*beta + r
-    inline void cgstep_beta(const core::ExecParams* params, Vector& p, Vector& r, SReal beta);
+    inline void cgstep_beta(const core::ExecParams* params, Vector& p, Vector& r, Real beta);
     /// This method is separated from the rest to be able to use custom/optimized versions depending on the types of vectors.
     /// It computes: x += p*alpha, r -= q*alpha
-    inline void cgstep_alpha(const core::ExecParams* params, Vector& x, Vector& r, Vector& p, Vector& q, SReal alpha);
+    inline void cgstep_alpha(const core::ExecParams* params, Vector& x, Vector& r, Vector& p, Vector& q, Real alpha);
 
     int timeStepCount{0};
     bool equilibriumReached{false};
@@ -94,10 +95,10 @@ public:
 };
 
 template<>
-inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(const core::ExecParams* /*params*/, Vector& p, Vector& r, SReal beta);
+inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(const core::ExecParams* /*params*/, Vector& p, Vector& r, Real beta);
 
 template<>
-inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(const core::ExecParams* params, Vector& x, Vector& r, Vector& p, Vector& q, SReal alpha);
+inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(const core::ExecParams* params, Vector& x, Vector& r, Vector& p, Vector& q, Real alpha);
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_CGLINEARSOLVER_CPP)
 extern template class SOFA_COMPONENT_LINEARSOLVER_ITERATIVE_API CGLinearSolver< GraphScatteredMatrix, GraphScatteredVector >;

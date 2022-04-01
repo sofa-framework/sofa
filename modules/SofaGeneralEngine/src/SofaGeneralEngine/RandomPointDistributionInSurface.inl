@@ -154,7 +154,7 @@ bool RandomPointDistributionInSurface<DataTypes>::isInside(Coord p)
     const type::vector<BaseMeshTopology::Triangle>& triangles = f_triangles.getValue();
 
     unsigned int numberOfInsideTest=0;
-    collision::TriangleOctree::traceResult result;
+    helper::TriangleOctree::traceResult result;
 
     for (unsigned int i=0 ; i<numberOfTests.getValue() ; i++)
     {

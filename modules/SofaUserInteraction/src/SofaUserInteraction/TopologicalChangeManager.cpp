@@ -337,9 +337,9 @@ Index TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::coll
                 {
                     for (auto it=loc_items.begin(); it != loc_items.end(); ++it)
                     {
-                        vector<Index> indices;
-                        topoMap->getFromIndex( indices, *it);
-                        for(auto itIndices = indices.begin(); itIndices != indices.end(); ++itIndices)
+                        vector<Index> tmpindices;
+                        topoMap->getFromIndex( tmpindices, *it);
+                        for(auto itIndices = tmpindices.begin(); itIndices != tmpindices.end(); ++itIndices)
                         {
                             items.insert( *itIndices );
                         }

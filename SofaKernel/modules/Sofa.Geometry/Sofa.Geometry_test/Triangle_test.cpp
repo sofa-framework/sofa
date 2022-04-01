@@ -92,12 +92,12 @@ TYPED_TEST(Geometry3DTriangle_test, flat_area)
 }
 
 
-TEST(GeometryTriangle_test, normal3f)
+TYPED_TEST(Geometry3DTriangle_test, normal)
 {
     // normal case
-    const sofa::type::Vec3f a{ 0.f, 0.f, 0.f };
-    const sofa::type::Vec3f b{ 0.f, 2.f, 0.f };
-    const sofa::type::Vec3f c{ 0.f, 0.f, 2.f };
+    const TypeParam a{ 0.f, 0.f, 0.f };
+    const TypeParam b{ 0.f, 2.f, 0.f };
+    const TypeParam c{ 0.f, 0.f, 2.f };
 
     auto normal = sofa::geometry::Triangle::normal(a, b, c);
     EXPECT_FLOAT_EQ(normal[0], 4.f);
@@ -105,9 +105,9 @@ TEST(GeometryTriangle_test, normal3f)
     EXPECT_FLOAT_EQ(normal[2], 0.f);
 
     // flat triangle case
-    const sofa::type::Vec3f a2{ 0.f, 0.f, 0.f };
-    const sofa::type::Vec3f b2{ 0.f, 2.f, 0.f };
-    const sofa::type::Vec3f c2{ 0.f, 1.f, 0.f };
+    const TypeParam a2{ 0.f, 0.f, 0.f };
+    const TypeParam b2{ 0.f, 2.f, 0.f };
+    const TypeParam c2{ 0.f, 1.f, 0.f };
     
     normal = sofa::geometry::Triangle::normal(a2, b2, c2);
     EXPECT_FLOAT_EQ(normal[0], 0.f);
@@ -115,5 +115,22 @@ TEST(GeometryTriangle_test, normal3f)
     EXPECT_FLOAT_EQ(normal[2], 0.f);
 }
 
+TEST(GeometryTriangle_test, rayIntersectionVec3)
+{
+    const sofa::type::Vec3 a{ 0., 3., 0. };
+    const sofa::type::Vec3 b{ -0.5, 3., -1. };
+    const sofa::type::Vec3 c{ 0.5, 3., -1. };
+    const sofa::type::Vec3 origin{ 0. , 2., -1. };
+    sofa::type::Vec3 direction{ 0., 1., 0. };
+
+    SReal t{}, u{}, v{};
+    EXPECT_TRUE(sofa::geometry::Triangle::rayIntersection(a, b, c, origin, direction, t, u, v));
+    EXPECT_FLOAT_EQ(t, 1.0f);
+    EXPECT_FLOAT_EQ(u, 0.5f);
+    EXPECT_FLOAT_EQ(v, 0.5f);
+
+    direction = { 0., 1., 2. };
+    EXPECT_FALSE(sofa::geometry::Triangle::rayIntersection(a, b, c, origin, direction));
+}
 
 }// namespace sofa
