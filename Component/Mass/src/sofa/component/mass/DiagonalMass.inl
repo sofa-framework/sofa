@@ -746,7 +746,7 @@ bool DiagonalMass<DataTypes, GeometricalTypes>::checkTopology()
 {
     if (l_topology.empty())
     {
-        msg_warning() << "Link to the Topology \"topology\" should be set to ensure right behavior. First Topology found in current context will be used.";
+        msg_warning() << "Link \"topology\" to the Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
