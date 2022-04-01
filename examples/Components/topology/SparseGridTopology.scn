@@ -1,13 +1,17 @@
 <?xml version="1.0"?>
 <!-- SparseGrid examples -->
 <Node name="root" dt="0.02" gravity="0 -9 0">
-    <RequiredPlugin pluginName="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName='SofaEngine'/>
-    <RequiredPlugin pluginName='SofaLoader'/>
-    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
-    <RequiredPlugin pluginName='SofaDeformable'/>
-    <RequiredPlugin pluginName='SofaGeneralLoader'/> 
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/> 
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [MeshSpringForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [SparseGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="SofaEngine"/> <!-- Needed to use components [BoxROI] -->
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields showVisual" />
     <DefaultPipeline verbose="0" />

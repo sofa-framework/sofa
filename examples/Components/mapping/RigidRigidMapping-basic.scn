@@ -1,8 +1,11 @@
 <?xml version="1.0" ?>
 <Node name="Root" gravity="0 0 0" time="0" animate="0">
-    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaRigid'/> 
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidRigidMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [StaticSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <VisualStyle displayFlags="showBehaviorModels showMapping" />
     <Node name="parent node with independent DOFs">
         <!-- 		<EulerImplicitSolver name="ODE solver" printLog="0" verbose="0" rayleighStiffness="0.0" rayleighMass="0"/> -->

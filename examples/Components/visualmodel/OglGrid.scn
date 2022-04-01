@@ -1,6 +1,5 @@
 <Node name="root" dt="0.01">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName='SofaLoader'/>    
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
     <MeshOBJLoader name="meshLoader_0" filename="mesh/liver-smooth.obj" handleSeams="1" />
     <OglModel name="VisualModel" src="@meshLoader_0" color="red" />
     <OglGrid/>

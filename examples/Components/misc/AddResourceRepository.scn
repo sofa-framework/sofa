@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Node name="root" dt="0.01">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName='SofaLoader'/>
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
 
 	<MeshOBJLoader name="meshLoader_0" filename="data/mesh/add_repo_cube.obj" handleSeams="1" />
 	<OglModel name="VisualModel1" src="@meshLoader_0" />

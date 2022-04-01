@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <Node dt="0.02" gravity="9 0 0" name="root">
-	<RequiredPlugin pluginName='SofaBoundaryCondition'/>
-	<RequiredPlugin pluginName='SofaDeformable'/>
-	<RequiredPlugin pluginName='SofaGeneralRigid'/>
-	<RequiredPlugin pluginName='SofaGeneralTopology'/>
-	<RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
-	<RequiredPlugin pluginName='SofaMeshCollision'/>
-	<RequiredPlugin pluginName='SofaMiscMapping'/>
+	<RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+	<RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BeamLinearMapping] -->
+	<RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+	<RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+	<RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+	<RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+	<RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [PartialFixedConstraint] -->
 
     <VisualStyle displayFlags="showCollisionModels hideBehaviorModels hideForceFields" />
 

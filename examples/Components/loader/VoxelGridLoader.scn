@@ -1,6 +1,8 @@
 <Node>
-	<RequiredPlugin pluginName='SofaGeneralLoader'/>
-	<RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
+	<RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [VoxelGridLoader] -->
+	<RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+	<RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+	<RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
 	<EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
 	<CGLinearSolver  iterations="25" tolerance="1e-5" threshold="1e-5"/>
 	<Node>

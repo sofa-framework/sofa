@@ -2,15 +2,16 @@
 <!-- Generated from benchmark_cubes.pscn -->
 <Node name="root" dt="0.01" gravity="0 -9.81 0">
     <Node name="pluginList" >
-        <RequiredPlugin name="SofaOpenglVisual"/>
-        <RequiredPlugin name="SofaConstraint"/>
-        <RequiredPlugin name="SofaMeshCollision"/>
-        <RequiredPlugin name="SofaRigid"/>
-        <RequiredPlugin name="SofaImplicitOdeSolver"/>
-        <RequiredPlugin name="SofaLoader"/>
-        <RequiredPlugin name="SofaGeneralEngine"/>
-        <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/>
-        <RequiredPlugin name="SofaMiscCollision"/>
+        <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+        <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+        <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+        <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+        <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+        <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+        <RequiredPlugin name="Sofa.GL.Component.Rendering2D"/> <!-- Needed to use components [OglLabel] -->
+        <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglSceneFrame] -->
+        <RequiredPlugin name="SofaMeshCollision"/> <!-- Needed to use components [TriangleCollisionModel] -->
+        <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [OBBCollisionModel] -->
     </Node>
 
 

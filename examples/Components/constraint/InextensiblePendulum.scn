@@ -3,13 +3,16 @@
 <!-- A pendulum made of a string of particles connected by distance constraints -->
 <!-- Inspired by the CompliantPendulum.scn from the Compliant plugin -->
 <Node   name="Root" gravity="0 -10 0" time="0" animate="0"  dt="0.01" >
-    <RequiredPlugin name="SofaSparseSolver"/>
-    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
-    <RequiredPlugin pluginName='SofaConstraint'/>
-    <RequiredPlugin pluginName='SofaGeneralEngine'/> 
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaMiscMapping'/>
-    <RequiredPlugin name="Sofa.Component.IO.Mesh"/>
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [StringMeshCreator] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseCholeskySolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.MappedMatrix"/> <!-- Needed to use components [MappingGeometricStiffnessForceField] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [DistanceMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="SofaGeneralEngine"/> <!-- Needed to use components [TransformEngine] -->
 
     <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
     <FreeMotionAnimationLoop solveVelocityConstraintFirst="true" />

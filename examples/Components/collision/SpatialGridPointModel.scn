@@ -1,9 +1,11 @@
 <?xml version="1.0" ?>
 <Node dt="0.005" gravity="0 -10 0">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name="SofaSphFluid"/>
-    <RequiredPlugin name='SofaGeneralExplicitOdeSolver'/>
-    <RequiredPlugin name='SofaMeshCollision'/>
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Forward"/> <!-- Needed to use components [RungeKutta4Solver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultPipeline verbose="0" />
