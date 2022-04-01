@@ -50,7 +50,7 @@ DiagonalMass<DataTypes, GeometricalTypes>::DiagonalMass()
     , d_showAxisSize( initData(&d_showAxisSize, 1.0f, "showAxisSizeFactor", "Factor length of the axis displayed (only used for rigids)" ) )
     , d_fileMass( initData(&d_fileMass,  "filename", "Xsp3.0 file to specify the mass parameters" ) )
     , l_topology(initLink("topology", "link to the topology container"))
-    , l_geometryState(initLink("geometryState", "link to the position container associated with the topology"))
+    , l_geometryState(initLink("geometryState", "link to the MechanicalObject associated with the geometry"))
     , m_massTopologyType(sofa::geometry::ElementType::UNKNOWN)
 {
     this->addAlias(&d_fileMass,"fileMass");
@@ -763,7 +763,7 @@ bool DiagonalMass<DataTypes, GeometricalTypes>::checkTopology()
 
     if (l_geometryState.empty())
     {
-        msg_warning() << "Link to position container \"geometryState\" should be set to ensure right behavior. First container found from the topology context will be used.";
+        msg_warning() << "Link \"geometryState\" to the MechanicalObject associated with the geometry should be set to ensure right behavior. First container found from the topology context will be used.";
         sofa::core::behavior::BaseMechanicalState::SPtr baseState;
         l_topology->getContext()->get(baseState);
 

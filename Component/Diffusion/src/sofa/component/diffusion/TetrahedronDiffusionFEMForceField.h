@@ -93,7 +93,7 @@ public:
 
       /// Single value for diffusion coefficient (constant coefficient)
       Data<Real> d_constantDiffusionCoefficient;
-      /// Vector of diffusivities associated to all tetras
+      /// Vector of diffusivities associated with all tetras
       Data<sofa::type::vector<Real> > d_tetraDiffusionCoefficient;
       /// bool used to specify 1D diffusion
       /// This data is now useless, as it can be deduced from the template

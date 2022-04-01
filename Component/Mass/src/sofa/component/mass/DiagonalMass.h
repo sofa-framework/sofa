@@ -56,7 +56,7 @@ public :
 * @brief    This component computes the integral of this mass density over the volume of the object geometry but it supposes that the Mass matrix is diagonal.
 * @remark   Similar to MeshMatrixMass but it does not simplify the Mass Matrix as diagonal.
 * @remark   https://www.sofa-framework.org/community/doc/components/masses/diagonalmass/
-* @tparam   DataTypes type of the state associated to this mass
+* @tparam   DataTypes type of the state associated with this mass
 * @tparam   GeometricalTypes type of the geometry, i.e type of the state associated with the topology (if the topology and the mass relates to the same state, this will be the same as DataTypes)
 */
 template <class DataTypes, class GeometricalTypes = DataTypes>
@@ -115,7 +115,7 @@ public:
 
     /// Link to be set to the topology container in the component graph. 
     SingleLink<DiagonalMass<DataTypes, GeometricalTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
-    /// Link to be set to the position container associated to the topology
+    /// Link to be set to the MechanicalObject associated with the geometry
     SingleLink<DiagonalMass<DataTypes, GeometricalTypes>, sofa::core::behavior::MechanicalState<GeometricalTypes>, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_geometryState;
 
 protected:
