@@ -52,7 +52,7 @@ MeshMatrixMass<DataTypes, GeometricalTypes>::MeshMatrixMass()
     , d_printMass( initData(&d_printMass, false, "printMass","boolean if you want to check the mass conservation") )
     , f_graph( initData(&f_graph,"graph","Graph of the controlled potential") )
     , l_topology(initLink("topology", "link to the topology container"))
-    , l_geometryState(initLink("geometryState", "link to the position container associated with the topology"))
+    , l_geometryState(initLink("geometryState", "link to the MechanicalObject associated with the geometry"))
     , m_massTopologyType(TopologyElementType::UNKNOWN)
 {
     f_graph.setWidget("graph");
@@ -1013,7 +1013,7 @@ sofa::core::topology::TopologyElementType MeshMatrixMass<DataTypes, GeometricalT
 {
     if (l_topology.empty())
     {
-        msg_warning() << "Link to the Topology \"topology\" should be set to ensure right behavior. First Topology found in current context will be used.";
+        msg_warning() << "Link \"topology\" to the Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
 
