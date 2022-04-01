@@ -24,7 +24,7 @@
 
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <csparse.h>
-#include <sofa/component/linearsolver/direct/CSR_to_adj.h>
+#include <sofa/component/linearsolver/direct/SparseCommon.h>
 #include <sofa/helper/OptionsGroup.h>
 extern "C" {
 #include <metis.h>
@@ -47,7 +47,7 @@ public :
     type::vector<sofa::Index> A_i, A_p;
     type::vector<Real> A_x;
     Real * tmp;
-    bool need_factorization;
+    bool notSameShape;
     SparseLUInvertData()
     {
         S=nullptr; N=nullptr; tmp=nullptr;
@@ -85,8 +85,7 @@ public:
 protected :
 
     Data<sofa::helper::OptionsGroup> d_typePermutation;
-  
-    void fill_reducing_perm(cs A, int * perm, int * invperm);
+
     css* symbolic_LU(cs *A);
 
     MatrixInvertData * createInvertData() override {
@@ -95,21 +94,6 @@ protected :
 
 };
 
-
-inline bool need_symbolic_factorization(int s_M, int * M_colptr,int * M_rowind, int s_P, int * P_colptr,int * P_rowind) {
-    if (s_M != s_P) return true;
-    if (M_colptr[s_M] != P_colptr[s_M] ) return true;
-
-    for (int i=0;i<s_P;i++) {
-        if (M_colptr[i]!=P_colptr[i]) return true;
-    }
-
-    for (int i=0;i<M_colptr[s_M];i++) {
-        if (M_rowind[i]!=P_rowind[i]) return true;
-    }
-
-    return false;
-}
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSELUSOLVER_CPP)
 extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseLUSolver< sofa::linearalgebra::CompressedRowSparseMatrix< SReal>, sofa::linearalgebra::FullVector<SReal> >;

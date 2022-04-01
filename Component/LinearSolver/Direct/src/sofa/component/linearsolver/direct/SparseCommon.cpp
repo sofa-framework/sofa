@@ -1,4 +1,4 @@
-#include <sofa/component/linearsolver/direct/CSR_to_adj.h>
+#include <sofa/component/linearsolver/direct/SparseCommon.h>
 
 namespace sofa::component::linearsolver
 {
@@ -62,5 +62,16 @@ void CSR_to_adj(int n,int * M_colptr,int * M_rowind, type::vector<int>& adj, typ
         xadj[j+1] = adj.size();
     }
 }
+
+
+void fill_reducing_perm(const cs &A,int * perm,int * invperm)
+{
+    int n = A.n;
+    sofa::type::vector<int> adj, xadj, t_adj, t_xadj, tran_countvec;
+    CSR_to_adj( A.n, A.p , A.i , adj, xadj, t_adj, t_xadj, tran_countvec );
+    METIS_NodeND(&n, xadj.data(), adj.data(), nullptr, nullptr, perm, invperm);
+
+}
+
 
 }

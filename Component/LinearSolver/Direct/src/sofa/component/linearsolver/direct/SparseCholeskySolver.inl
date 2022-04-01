@@ -34,7 +34,7 @@ SparseCholeskySolver<TMatrix,TVector>::SparseCholeskySolver()
     , d_typePermutation(initData(&d_typePermutation, "permutation", "Type of fill reducing permutation"))
 {   
     sofa::helper::OptionsGroup d_typePermutationOptions(3,"None", "SuiteSparse", "METIS");
-    d_typePermutationOptions.setSelectedItem(1); // default SuiteSparse
+    d_typePermutationOptions.setSelectedItem(0); // default None
     d_typePermutation.setValue(d_typePermutationOptions);
  
 }
@@ -75,8 +75,6 @@ void SparseCholeskySolver<TMatrix,TVector>::solveT(Vector& x, Vector& b)
             cs_lsolve (N->L, tmp.data() );			//x = L\x
             cs_ltsolve (N->L, tmp.data() );			//x = L'\x/
             cs_pvec (n, perm.data() , tmp.data() , (double*)x.ptr() );	 //b = P'*x , permutation on columns
-
-            cs_free(permuted_A); // prevent memory leak
             break;
 
         default:
@@ -91,23 +89,6 @@ void SparseCholeskySolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vec
 {
     solveT(z ,r );
 
-    Previous_rowind.clear();
-    Previous_colptr.resize(A.n +1);
-
-
-    // store the shape of the matrix
-    if ( need_factorization )
-    {
-        for(int i=0 ; i<A.n ; i++)
-        {
-            Previous_colptr[i+1] = A.p[i+1];
-
-            for( int j=A.p[i] ; j < A.p[i+1] ; j++)
-            {
-                Previous_rowind.push_back(A.i[j]);
-            }
-        }
-    }
 }
 
 template<class TMatrix, class TVector>
@@ -130,64 +111,74 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
     A.nz = -1;							// # of entries in triplet matrix, -1 for compressed-col
     cs_dropzeros( &A );
     tmp.resize(A.n);
-    int order = -1;
+    int order = 0; // SuiteSparse compute permutation for Cholesky factorization
 
-    sofa::helper::ScopedAdvancedTimer factorization_permTimer("factorization_perm");
-
-    need_factorization = need_symbolic_factorization( A.n , A.p , A.i, Previous_colptr.size()-1 , Previous_colptr.data() , Previous_rowind.data() );
-
-    switch (d_typePermutation.getValue().getSelectedId() )
     {
-        case 0:
-        default://None->identity
-            if( need_factorization ) 
-            {   
-                if (S) cs_sfree(S);
-                S = symbolic_Chol (&A) ;
-            }		// ordering and symbolic analysis 
-            N = cs_chol (&A, S) ;		// numeric Cholesky factorization 
-            break;
+        sofa::helper::ScopedAdvancedTimer factorization_permTimer("factorization_perm");
 
-        case 1://SuiteSparse
-            
-            if( need_factorization)  
-            { 
-                if (S) cs_sfree(S);
-                S = cs_schol (&A, order) ; 
+        notSameShape = compareMatrixShape( A.n , A.p , A.i, Previous_colptr.size()-1 , Previous_colptr.data() , Previous_rowind.data() );
+
+        switch (d_typePermutation.getValue().getSelectedId() )
+        {
+            case 0:
+            default://None->identity
+                if( notSameShape ) 
+                {   
+                    if (S) cs_sfree(S);
+                    S = symbolic_Chol (&A) ;
                 }		// ordering and symbolic analysis 
-            N = cs_chol (&A, S) ;		// numeric Cholesky factorization 
-            break;
+                N = cs_chol (&A, S) ;		// numeric Cholesky factorization 
+                break;
 
-        case 2://METIS
-            if( need_factorization )
-            {
-                perm.resize(A.n);
-                iperm.resize(A.n);
+            case 1://SuiteSparse
                 
-                fill_reducing_perm( A , iperm.data(), perm.data() ); // compute the fill reducing permutation
-            }
-            
-            permuted_A = cs_permute( &A , perm.data() , iperm.data() , 1);
-            
-            if (need_factorization) 
-            { 
-                if (S) cs_sfree(S);
-                S = symbolic_Chol( permuted_A ); 
+                if( notSameShape )  
+                { 
+                    if (S) cs_sfree(S);
+                    S = cs_schol (&A, order) ; 
+                }		// ordering and symbolic analysis 
+                N = cs_chol (&A, S) ;		// numeric Cholesky factorization 
+                break;
+
+            case 2://METIS
+                if( notSameShape )
+                {
+                    perm.resize(A.n);
+                    iperm.resize(A.n);
+                    
+                    fill_reducing_perm( A , iperm.data(), perm.data() ); // compute the fill reducing permutation
+                }
+                
+                permuted_A = cs_permute( &A , perm.data() , iperm.data() , 1);
+                
+                if ( notSameShape ) 
+                { 
+                    if (S) cs_sfree(S);
+                    S = symbolic_Chol( permuted_A ); 
                 } // symbolic analysis 
-    
-            N = cs_chol (permuted_A, S) ;		// numeric Cholesky factorization 
-            break;
+        
+                N = cs_chol (permuted_A, S) ;		// numeric Cholesky factorization 
+
+                cs_free(permuted_A);
+                break;
+        }
     }
 
-}
+    // store the shape of the matrix
+    if ( notSameShape )
+    {
+        Previous_rowind.clear();
+        Previous_colptr.resize(A.n +1);
+        for(int i=0 ; i<A.n ; i++)
+        {
+            Previous_colptr[i+1] = A.p[i+1];
 
-template<class TMatrix, class TVector>
-void SparseCholeskySolver<TMatrix,TVector>::fill_reducing_perm(const cs &A,int * perm,int * invperm)
-{
-    int n = A.n;
-    sofa::type::vector<int> adj, xadj, t_adj, t_xadj, tran_countvec;
-    CSR_to_adj( A.n, A.p , A.i , adj, xadj, t_adj, t_xadj, tran_countvec );
-    METIS_NodeND(&n, xadj.data(), adj.data(), nullptr, nullptr, perm, invperm);
+            for( int j=A.p[i] ; j < A.p[i+1] ; j++)
+            {
+                Previous_rowind.push_back(A.i[j]);
+            }
+        }
+    }
 
 }
 

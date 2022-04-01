@@ -25,7 +25,9 @@
 
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
-#include <sofa/component/linearsolver/direct/CSR_to_adj.h>
+#include <sofa/component/linearsolver/direct/SparseCommon.h>
+#include <sofa/helper/OptionsGroup.h>
+#include <csparse.h>
 extern "C" {
 #include <metis.h>
 }
@@ -120,27 +122,13 @@ inline void CSPARSE_numeric(int n,int * M_colptr,int * M_rowind,Real * M_values,
             values[p] = l_ki ;
             Lnz[i]++ ;		    /* increment count of nonzeros in col i */
         }
+
         if (D[k] == 0.0)
         {
             msg_error("SparseLDLSolver") << "Failed to factorize, D(k,k) is zero" ;
             return;
         }
     }
-}
-
-inline bool CSPARSE_need_symbolic_factorization(int s_M, int * M_colptr,int * M_rowind, int s_P, int * P_colptr,int * P_rowind) {
-    if (s_M != s_P) return true;
-    if (M_colptr[s_M] != P_colptr[s_M] ) return true;
-
-    for (int i=0;i<s_P;i++) {
-        if (M_colptr[i]!=P_colptr[i]) return true;
-    }
-
-    for (int i=0;i<M_colptr[s_M];i++) {
-        if (M_rowind[i]!=P_rowind[i]) return true;
-    }
-
-    return false;
 }
 
 template<class TMatrix, class TVector, class TThreadManager>
@@ -200,10 +188,12 @@ protected :
         }
     }
 
-    void LDL_ordering(int n,int * M_colptr,int * M_rowind,int * perm,int * invperm)
+    void LDL_ordering(int n,int * M_colptr,int * M_rowind, Real * M_values,int * perm,int * invperm)
     {
+        cs *A;
         if( d_applyPermutation.getValue() )
         {
+            //METIS
             CSR_to_adj( n, M_colptr, M_rowind, adj, xadj, t_adj, t_xadj, tran_countvec );
 
             //int numflag = 0, options = 0;
@@ -212,17 +202,16 @@ protected :
             // If you have the error "SparseLDLSolver failure to factorize, D(k,k) is zero" that probably means that you use the previsou version of metis.
             // In this case you have to download and install the last version from : www.cs.umn.edu/~metis‎
 
-            METIS_NodeND(&n, xadj.data(), adj.data(), nullptr, nullptr, perm,invperm);
+            METIS_NodeND(&n , xadj.data(), adj.data(), nullptr, nullptr, perm,invperm);
         }
-        else
-        { // if the boolean is false, we store the identity
+        else 
+        {
             for(int j=0; j<n ;++j)
-            {
-                perm[j] = j ;
-                invperm[j] = j ;
-            }
+                {
+                    perm[j] = j ;
+                    invperm[j] = j ;
+                }
         }
-
     }
 
     void LDL_symbolic (int n,int * M_colptr,int * M_rowind,int * colptr,int * perm,int * invperm,int * Parent) {
@@ -245,7 +234,7 @@ protected :
 
     template<class VecInt,class VecReal>
     void factorize(int n,int * M_colptr, int * M_rowind, Real * M_values, SparseLDLImplInvertData<VecInt,VecReal> * data) {
-        data->new_factorization_needed = data->P_colptr.size() == 0 || data->P_rowind.size() == 0 || CSPARSE_need_symbolic_factorization(n, M_colptr, M_rowind, data->n,
+        data->new_factorization_needed = data->P_colptr.size() == 0 || data->P_rowind.size() == 0 || compareMatrixShape(n, M_colptr, M_rowind, data->n,
                                                                                                                                          (int *) data->P_colptr.data(),(int *) data->P_rowind.data());
 
         data->n = n;
@@ -271,7 +260,7 @@ protected :
             memcpy(data->P_rowind.data(),M_rowind,data->P_nnz * sizeof(int));
 
             //ordering function
-            LDL_ordering(data->n,M_colptr,M_rowind,data->perm.data(),data->invperm.data());
+            LDL_ordering(data->n,M_colptr,M_rowind,M_values,data->perm.data(),data->invperm.data());
 
             data->Parent.clear();
             data->Parent.resize(data->n);

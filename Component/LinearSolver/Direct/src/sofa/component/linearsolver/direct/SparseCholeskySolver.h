@@ -30,12 +30,8 @@
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 #include <sofa/helper/map.h>
 #include <cmath>
-#include <csparse.h>
-#include <sofa/component/linearsolver/direct/CSR_to_adj.h>
+#include <sofa/component/linearsolver/direct/SparseCommon.h>
 #include <sofa/helper/OptionsGroup.h>
-extern "C" {
-#include <metis.h>
-}
 
 namespace sofa::component::linearsolver::direct
 {
@@ -61,7 +57,7 @@ public:
     type::vector<int> Previous_colptr,Previous_rowind; // shape of the matrix at the previous step
     type::vector<int> perm,iperm; // fill reducing permutation
     type::vector<double> A_x,z_tmp,r_tmp,tmp;
-    bool need_factorization;
+    bool notSameShape;
 
     Data<sofa::helper::OptionsGroup> d_typePermutation;
 
@@ -72,25 +68,8 @@ public:
 
     void solveT(Vector& z, Vector& r);
 
-    void fill_reducing_perm(const cs &A,int * perm,int * invperm);
     css* symbolic_Chol(cs *A);
 };
-
-
-inline bool need_symbolic_factorization(int s_M, int * M_colptr,int * M_rowind, int s_P, int * P_colptr,int * P_rowind) {
-    if (s_M != s_P) return true;
-    if (M_colptr[s_M] != P_colptr[s_M] ) return true;
-
-    for (int i=0;i<s_P;i++) {
-        if (M_colptr[i]!=P_colptr[i]) return true;
-    }
-
-    for (int i=0;i<M_colptr[s_M];i++) {
-        if (M_rowind[i]!=P_rowind[i]) return true;
-    }
-
-    return false;
-}
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_CPP)
 extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseCholeskySolver< sofa::linearalgebra::CompressedRowSparseMatrix<SReal>, sofa::linearalgebra::FullVector<SReal> >;
