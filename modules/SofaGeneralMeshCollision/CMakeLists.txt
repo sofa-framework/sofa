@@ -21,7 +21,6 @@ list(APPEND HEADER_FILES
     ${SOFAGENERALMESHCOLLISION_SRC}/MeshDiscreteIntersection.inl
     ${SOFAGENERALMESHCOLLISION_SRC}/MeshMinProximityIntersection.h
     ${SOFAGENERALMESHCOLLISION_SRC}/RayTraceNarrowPhase.h
-    ${SOFAGENERALMESHCOLLISION_SRC}/TriangleOctree.h
     ${SOFAGENERALMESHCOLLISION_SRC}/TriangleOctreeModel.h
     )
 list(APPEND SOURCE_FILES
@@ -32,7 +31,6 @@ list(APPEND SOURCE_FILES
     ${SOFAGENERALMESHCOLLISION_SRC}/MeshDiscreteIntersection.cpp
     ${SOFAGENERALMESHCOLLISION_SRC}/MeshMinProximityIntersection.cpp
     ${SOFAGENERALMESHCOLLISION_SRC}/RayTraceNarrowPhase.cpp
-    ${SOFAGENERALMESHCOLLISION_SRC}/TriangleOctree.cpp
     ${SOFAGENERALMESHCOLLISION_SRC}/TriangleOctreeModel.cpp
     )
 

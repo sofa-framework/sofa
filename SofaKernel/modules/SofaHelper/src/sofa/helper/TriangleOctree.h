@@ -21,32 +21,39 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGeneralMeshCollision/config.h>
+#include <sofa/helper/config.h>
 
-#include <sofa/core/CollisionModel.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/type/Vec.h>
+#include <sofa/type/vector.h>
+#include <sofa/topology/Triangle.h>
+#include <set>
 
-/*THIS STATIC CUBE SIZE MUST BE CHANGE, it represents the size of the occtree cube*/
-#define CUBE_SIZE 800
-#define bb_max(a,b) (((a)>(b))?(a):(b))
-#define bb_max3(a,b,c) bb_max((bb_max(a,b)),c)
-
-#define bb_min(a,b) (((a)<(b))?(a):(b))
-#define bb_min3(a,b,c) bb_min(bb_min(a,b),c)
-
-namespace sofa::component::collision
+// fwd declaration for depreciation
+namespace sofa::core::visual
 {
+    class VisualParams;
+}
+
+namespace sofa::helper
+{
+
+namespace visual
+{
+    class DrawTool;
+}
 
 class TriangleOctree;
 
-class SOFA_SOFAGENERALMESHCOLLISION_API TriangleOctreeRoot
+class SOFA_HELPER_API TriangleOctreeRoot
 {
 public:
-    typedef sofa::core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
-    typedef sofa::core::topology::BaseMeshTopology::Triangle Tri;
-    typedef sofa::defaulttype::Vec3Types::VecCoord VecCoord;
-    typedef sofa::defaulttype::Vec3Types::Coord Coord;
+    /*THIS STATIC CUBE SIZE MUST BE CHANGED, it represents the size of the occtree cube*/
+    static constexpr int CUBE_SIZE = 800;
+
+    typedef sofa::topology::Triangle Tri;
+    typedef sofa::type::vector<sofa::topology::Triangle> SeqTriangles;
+    typedef sofa::type::Vector3 Coord;
+    typedef sofa::type::vector<sofa::type::Vec3> VecCoord;
     /// the triangles used as input to construct the octree
     const SeqTriangles* octreeTriangles;
     /// the positions of vertices used as input to construct the octree
@@ -60,7 +67,7 @@ public:
     ~TriangleOctreeRoot();
 
     void buildOctree();
-    void buildOctree(const sofa::core::topology::BaseMeshTopology::SeqTriangles* triangles, const sofa::defaulttype::Vec3Types::VecCoord* pos)
+    void buildOctree(const SeqTriangles* triangles, const VecCoord* pos)
     {
         this->octreeTriangles = triangles;
         this->octreePos = pos;
@@ -69,14 +76,16 @@ public:
 
 protected:
     /// used to add a triangle  to the octree
-    int fillOctree (int t, int d = 0, type::Vector3 v = type::Vector3 (0, 0, 0));
+    int fillOctree(int t, int d = 0, type::Vector3 v = { 0, 0, 0 });
     /// used to compute the Bounding Box for each triangle
     void calcTriangleAABB(int t, double* bb, double& size);
 };
 
-class SOFA_SOFAGENERALMESHCOLLISION_API TriangleOctree
+class SOFA_HELPER_API TriangleOctree
 {
 public:
+    static constexpr int CUBE_SIZE = TriangleOctreeRoot::CUBE_SIZE;
+
     class traceResult
     {
     public:
@@ -114,7 +123,10 @@ public:
             childVec[i] = nullptr;
     }
 
-    void draw (const core::visual::VisualParams* vparams);
+    void draw(sofa::helper::visual::DrawTool* drawtool);
+
+    SOFA_ATTRIBUTE_DISABLED("v22.06", "v22.12", "This function now takes directly a DrawTool instead of a VisualParams.")
+    void draw(const sofa::core::visual::VisualParams* vparams) = delete;
 
     /// Find the nearest triangle intersecting the given ray, or -1 of not found
     int trace (type::Vector3 origin, type::Vector3 direction, traceResult &result);
@@ -162,4 +174,4 @@ protected:
 
 };
 
-} // namespace sofa::component::collision
+} // namespace sofa::helper

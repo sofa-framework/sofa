@@ -22,7 +22,7 @@
 #include <SofaMiscExtra/MeshTetraStuffing.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include <SofaGeneralMeshCollision/TriangleOctree.h>
+#include <sofa/helper/TriangleOctree.h>
 
 #include <iostream>
 #include <algorithm>
@@ -121,7 +121,7 @@ void MeshTetraStuffing::init()
     msg_info() << "bbox = " << bb << " cell size = " << cellsize;
 
 #ifdef USE_OCTREE
-    collision::TriangleOctreeRoot octree;
+    helper::TriangleOctreeRoot octree;
     octree.buildOctree(&inT, &inP);
 #endif
 
@@ -187,7 +187,7 @@ void MeshTetraStuffing::init()
                 Point direction = outP[p1] - origin; //getEdgeDir(e);
                 //rays.push_back(origin);
                 //rays.push_back(origin+direction);
-                type::vector< collision::TriangleOctree::traceResult > results;
+                type::vector< helper::TriangleOctree::traceResult > results;
 #ifdef USE_OCTREE
                 octree.octreeRoot->traceAll(origin, direction, results);
                 std::set< int > tris;
@@ -205,7 +205,7 @@ void MeshTetraStuffing::init()
 #else
                 for (unsigned int t=0; t<inT.size(); ++t)
                 {
-                    collision::TriangleOctree::traceResult r;
+                    helper::TriangleOctree::traceResult r;
                     r.tid = t;
                     if (sofa::geometry::Triangle::rayIntersection(inP[inT[t][0]],inP[inT[t][1]],inP[inT[t][2]],origin,direction,r.t,r.u,r.v))
                         results.push_back(r);

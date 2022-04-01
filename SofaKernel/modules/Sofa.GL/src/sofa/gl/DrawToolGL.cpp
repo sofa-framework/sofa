@@ -40,7 +40,6 @@ template class SOFA_GL_API BasicShapesGL_FakeSphere< sofa::type::Vector3 >;
 
 
 using namespace sofa::type;
-using namespace sofa::defaulttype;
 using sofa::type::RGBAColor;
 
 DrawToolGL::DrawToolGL()
