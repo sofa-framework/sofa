@@ -21,13 +21,13 @@
 ******************************************************************************/
 #include <CollisionOBBCapsule/init.h>
 
-namespace sofa
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory;
+
+namespace collisionobbcapsule
 {
 
-namespace component
-{
-
-void initSofaMiscCollision()
+void init()
 {
     static bool first = true;
     if (first)
@@ -47,7 +47,7 @@ COLLISIONOBBCAPSULE_API const char* getModuleComponentList();
 
 void initExternalModule()
 {
-    initSofaMiscCollision();
+    init();
 }
 
 const char* getModuleName()
@@ -72,10 +72,9 @@ const char* getModuleDescription()
 
 const char* getModuleComponentList()
 {
-    return "DistanceGridCollisionModel FFDDistanceGridDiscreteIntersection RayDistanceGridContact "
-           "RigidDistanceGridDiscreteIntersection DistanceGridForceField";
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
 }
 
-} // component
-
-} // sofa
+} // namespace collisionobbcapsule

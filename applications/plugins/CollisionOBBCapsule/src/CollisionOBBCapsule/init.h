@@ -19,21 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_COLLISION_INIT_H
-#define SOFA_COMPONENT_MISC_COLLISION_INIT_H
+#pragma once
 #include <CollisionOBBCapsule/config.h>
 
-namespace sofa
-{
-
-namespace component
+namespace collisionobbcapsule
 {
     
-COLLISIONOBBCAPSULE_API void initSofaMiscCollision();
+COLLISIONOBBCAPSULE_API void init();
 
-} // namespace component
-
-} // namespace sofa
-
-#endif
-
+} // namespace collisionobbcapsule
