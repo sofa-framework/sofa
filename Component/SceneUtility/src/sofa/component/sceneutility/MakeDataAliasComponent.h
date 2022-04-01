@@ -43,7 +43,7 @@ public:
     SOFA_CLASS(MakeDataAliasComponent, core::objectmodel::BaseObject);
 
     MakeDataAliasComponent() ;
-    ~MakeDataAliasComponent() override{}
+    ~MakeDataAliasComponent() override;
 
     /// Inherited from BaseObject.
     /// Parse the given description to assign values to this object's fields and
@@ -53,6 +53,7 @@ public:
     Data<std::string>   d_componentname       ; ///< The component class for which to create an alias.
     Data<std::string>   d_dataname            ; ///< The data field for which to create an alias.
     Data<std::string>   d_alias               ; ///< The alias of the data field.
+    Data<bool>          d_keepAliasAfterDestruction;
 
     /// Returns the sofa class name. By default the name of the c++ class is exposed... but
     /// Here we want it to be MakeAlias so we need to customize it.
@@ -61,7 +62,9 @@ public:
     {
         return "MakeDataAlias" ;
     }
+protected:
 
+    bool m_hasAddedAlias { false };
 };
 
 } // namespace sofa::component::sceneutility::makedataaliascomponent
