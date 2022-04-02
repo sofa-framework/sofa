@@ -79,8 +79,6 @@ void MakeDataAliasComponent::parse ( core::objectmodel::BaseObjectDescription* a
                            "To remove this error message you need to add a targetcomponent attribute pointing to a valid component's ClassName.";
         return ;
     }
-    string sdataname(dataname) ;
-
 
     const char* alias=arg->getAttribute("alias") ;
     if(alias==nullptr)
