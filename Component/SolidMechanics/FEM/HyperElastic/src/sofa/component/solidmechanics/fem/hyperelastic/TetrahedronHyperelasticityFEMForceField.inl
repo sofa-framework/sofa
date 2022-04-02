@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/hyperelastic/TetrahedronHyperelasticityFEMForceField.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/TetrahedronHyperelasticityFEMDrawing.h>
 
 #include <sofa/component/solidmechanics/fem/hyperelastic/material/BoyceAndArruda.h>
 #include <sofa/component/solidmechanics/fem/hyperelastic/material/NeoHookean.h>
@@ -681,8 +682,6 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::computeBBox(const core:
     this->f_bbox.setValue(sofa::type::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
-
-
 template<class DataTypes>
 void TetrahedronHyperelasticityFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
@@ -697,99 +696,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::draw(const core::visual
     if (vparams->displayFlags().getShowWireFrame())
           vparams->drawTool()->setPolygonMode(0,true);
 
-
-    std::vector< Vector3 > points[4];
-    for(Topology::TetrahedronID i = 0 ; i<m_topology->getNbTetrahedra();++i)
-    {
-        const Tetrahedron t=m_topology->getTetrahedron(i);
-
-        Index a = t[0];
-        Index b = t[1];
-        Index c = t[2];
-        Index d = t[3];
-        Coord center = (x[a]+x[b]+x[c]+x[d])*0.125;
-        Coord pa = (x[a]+center)*(Real)0.666667;
-        Coord pb = (x[b]+center)*(Real)0.666667;
-        Coord pc = (x[c]+center)*(Real)0.666667;
-        Coord pd = (x[d]+center)*(Real)0.666667;
-
-        points[0].push_back(pa);
-        points[0].push_back(pb);
-        points[0].push_back(pc);
-
-        points[1].push_back(pb);
-        points[1].push_back(pc);
-        points[1].push_back(pd);
-
-        points[2].push_back(pc);
-        points[2].push_back(pd);
-        points[2].push_back(pa);
-
-        points[3].push_back(pd);
-        points[3].push_back(pa);
-        points[3].push_back(pb);
-    }
-
-    sofa::type::RGBAColor color1;
-    sofa::type::RGBAColor color2;
-    sofa::type::RGBAColor color3;
-    sofa::type::RGBAColor color4;
-
-    std::string material = d_materialName.getValue();
-    if (material=="ArrudaBoyce") {
-        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::type::RGBAColor(0.5,1.0,0.0,1.0);
-        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::type::RGBAColor(1.0,1.0,0.5,1.0);
-    }
-    else if (material=="StVenantKirchhoff"){
-        color1 = sofa::type::RGBAColor(1.0,0.0,0.0,1.0);
-        color2 = sofa::type::RGBAColor(1.0,0.0,0.5,1.0);
-        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::type::RGBAColor(1.0,0.5,1.0,1.0);
-    }
-    else if (material=="NeoHookean"){
-        color1 = sofa::type::RGBAColor(0.0,1.0,1.0,1.0);
-        color2 = sofa::type::RGBAColor(0.5,0.0,1.0,1.0);
-        color3 = sofa::type::RGBAColor(1.0,0.0,1.0,1.0);
-        color4 = sofa::type::RGBAColor(1.0,0.5,1.0,1.0);
-    }
-    else if (material=="MooneyRivlin"){
-        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::type::RGBAColor(0.0,1.0,0.5,1.0);
-        color3 = sofa::type::RGBAColor(0.0,1.0,1.0,1.0);
-        color4 = sofa::type::RGBAColor(0.5,1.0,1.0,1.0);
-    }
-    else if (material=="VerondaWestman"){
-        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::type::RGBAColor(0.5,1.0,0.0,1.0);
-        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::type::RGBAColor(1.0,1.0,0.5,1.0);
-    }
-    else if (material=="Costa"){
-        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::type::RGBAColor(0.5,1.0,0.0,1.0);
-        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::type::RGBAColor(1.0,1.0,0.5,1.0);
-    }
-    else if (material=="Ogden"){
-        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::type::RGBAColor(0.5,1.0,0.0,1.0);
-        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::type::RGBAColor(1.0,1.0,0.5,1.0);
-    }
-    else {
-        color1 = sofa::type::RGBAColor(0.0,1.0,0.0,1.0);
-        color2 = sofa::type::RGBAColor(0.5,1.0,0.0,1.0);
-        color3 = sofa::type::RGBAColor(1.0,1.0,0.0,1.0);
-        color4 = sofa::type::RGBAColor(1.0,1.0,0.5,1.0);
-    }
-
-
-    vparams->drawTool()->drawTriangles(points[0], color1);
-    vparams->drawTool()->drawTriangles(points[1], color2);
-    vparams->drawTool()->drawTriangles(points[2], color3);
-    vparams->drawTool()->drawTriangles(points[3], color4);
+    drawHyperelasticTets(vparams, x, m_topology, d_materialName.getValue());
 
     if (vparams->displayFlags().getShowWireFrame())
           vparams->drawTool()->setPolygonMode(0,false);

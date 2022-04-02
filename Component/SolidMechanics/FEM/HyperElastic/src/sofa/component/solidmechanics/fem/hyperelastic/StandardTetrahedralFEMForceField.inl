@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/hyperelastic/StandardTetrahedralFEMForceField.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/TetrahedronHyperelasticityFEMDrawing.h>
 
 #include <sofa/component/solidmechanics/fem/hyperelastic/material/BoyceAndArruda.h>
 #include <sofa/component/solidmechanics/fem/hyperelastic/material/NeoHookean.h>
@@ -600,6 +601,20 @@ void StandardTetrahedralFEMForceField<DataTypes>::draw(const core::visual::Visua
     //	unsigned int i;
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
+
+    vparams->drawTool()->saveLastState();
+
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+
+    if (vparams->displayFlags().getShowWireFrame())
+        vparams->drawTool()->setPolygonMode(0,true);
+
+    drawHyperelasticTets(vparams, x, m_topology, f_materialName.getValue());
+
+    if (vparams->displayFlags().getShowWireFrame())
+        vparams->drawTool()->setPolygonMode(0,false);
+
+    vparams->drawTool()->restoreLastState();
 }
 
 template<class DataTypes>
