@@ -21,32 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGeneralMeshCollision/config.h>
-
-#include <sofa/core/CollisionModel.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <SofaMeshCollision/TriangleModel.h>
 #include <sofa/helper/TriangleOctree.h>
+
+SOFA_DEPRECATED_HEADER("v22.06", "v22.12", "sofa/helper/TriangleOctree.h")
 
 namespace sofa::component::collision
 {
+    using TriangleOctreeRoot = sofa::helper::TriangleOctreeRoot;
+    using TriangleOctree = sofa::helper::TriangleOctree;
 
-class SOFA_SOFAGENERALMESHCOLLISION_API TriangleOctreeModel : public  TriangleCollisionModel<sofa::defaulttype::Vec3Types>, public helper::TriangleOctreeRoot
-{
-public:
-    SOFA_CLASS(TriangleOctreeModel, TriangleCollisionModel<sofa::defaulttype::Vec3Types>);
-protected:
-    TriangleOctreeModel();
-public:
-
-    /// the normals for each point
-    type::vector<type::Vector3> pNorms;
-    void draw(const core::visual::VisualParams* vparams) override;
-    void computeBoundingTree(int maxDepth=0) override;
-    void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
-    /// init the octree creation
-    void buildOctree ();
-};
-
-} // namespace sofa::component::collision
+} // namespace sofa::defaulttype
