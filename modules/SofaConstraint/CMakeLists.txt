@@ -48,7 +48,9 @@ message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed 
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.Mapping.MappedMatrix REQUIRED)
-sofa_find_package(Sofa.Component.Constraint.Lagrangian REQUIRED)
+sofa_find_package(Sofa.Component.Constraint.Lagrangian.Model REQUIRED)
+sofa_find_package(Sofa.Component.Constraint.Lagrangian.Correction REQUIRED)
+sofa_find_package(Sofa.Component.Constraint.Lagrangian.Solver REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Mapping.MappedMatrix)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Constraint.Lagrangian.Model)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Constraint.Lagrangian.Correction)
