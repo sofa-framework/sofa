@@ -33,7 +33,7 @@ extern "C" {
 namespace sofa::component::linearsolver
 {
 /** 
-compute the adjency matrix in CSR format from the matrix given in CSR format, we assume that the given matrix is syùetric
+compute the adjency matrix in CSR format from the matrix given in CSR format, we assume that the given matrix is symetric
 
 M_colptr[i+1]-M_colptr[i] is the number of non null values on the i-th line of the matrix
 M_rowind[M_colptr[i]] to M_rowind[M_colptr[i+1]] is the list of the indices of the columns containing a non null value on the i-th line
