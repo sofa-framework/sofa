@@ -188,13 +188,12 @@ protected :
         }
     }
 
-    void LDL_ordering(int n,int * M_colptr,int * M_rowind, Real * M_values,int * perm,int * invperm)
+    void LDL_ordering(int n,int * M_colptr,int * M_rowind,int * perm,int * invperm)
     {
-        cs *A;
         if( d_applyPermutation.getValue() )
         {
             /// METIS
-            CSR_to_adj( n, M_colptr, M_rowind, adj, xadj, t_adj, t_xadj, tran_countvec );
+            csrToAdj( n, M_colptr, M_rowind, adj, xadj, t_adj, t_xadj, tran_countvec );
 
             /**
             int numflag = 0, options = 0;
@@ -261,7 +260,7 @@ protected :
             memcpy(data->P_rowind.data(),M_rowind,data->P_nnz * sizeof(int));
 
             ///ordering function
-            LDL_ordering(data->n,M_colptr,M_rowind,M_values,data->perm.data(),data->invperm.data());
+            LDL_ordering( data->n , M_colptr , M_rowind , data->perm.data(), data->invperm.data() );
 
             data->Parent.clear();
             data->Parent.resize(data->n);

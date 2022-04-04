@@ -2,7 +2,7 @@
 
 namespace sofa::component::linearsolver
 {
-void CSR_to_adj(int n,int * M_colptr,int * M_rowind, type::vector<int>& adj, type::vector<int>& xadj , type::vector<int>& t_adj , type::vector<int>& t_xadj, type::vector<int>& tran_countvec)
+void csrToAdj(int n,int * M_colptr,int * M_rowind, type::vector<int>& adj, type::vector<int>& xadj , type::vector<int>& t_adj , type::vector<int>& t_xadj, type::vector<int>& tran_countvec)
 {
     ///Compute transpose in tran_colptr, tran_rowind, tran_values, tran_D
     tran_countvec.clear();
@@ -64,11 +64,11 @@ void CSR_to_adj(int n,int * M_colptr,int * M_rowind, type::vector<int>& adj, typ
 }
 
 
-void fill_reducing_perm(const cs &A,int * perm,int * invperm)
+void fillReducingPermutation(const cs &A,int * perm,int * invperm)
 {
     int n = A.n;
     sofa::type::vector<int> adj, xadj, t_adj, t_xadj, tran_countvec;
-    CSR_to_adj( A.n, A.p , A.i , adj, xadj, t_adj, t_xadj, tran_countvec );
+    csrToAdj( A.n, A.p , A.i , adj, xadj, t_adj, t_xadj, tran_countvec );
     METIS_NodeND(&n, xadj.data(), adj.data(), nullptr, nullptr, perm, invperm);
 
 }

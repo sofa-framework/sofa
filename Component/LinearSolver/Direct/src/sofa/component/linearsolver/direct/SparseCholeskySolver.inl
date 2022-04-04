@@ -66,7 +66,7 @@ void SparseCholeskySolver<TMatrix,TVector>::solveT(Vector& x, Vector& b)
             cs_ipvec (n, S->Pinv,  (double*)b.ptr() , (double*) tmp.data() );	///x = P*b , permutation on rows
             cs_lsolve (N->L, (double*) tmp.data() );			///x = L\x
             cs_ltsolve (N->L, (double*) tmp.data() );			///x = L'\x/
-            cs_pvec (n, S->Pinv, (double*) tmp.data() , (double*)x.ptr() );	 ///b = P'*x , permutation on columns
+            cs_pvec (n, S->Pinv, (double*) tmp.data() , (double*)x.ptr() );	 ///x = P'*x , permutation on columns
             break;
 
         case 2:///METIS
@@ -74,7 +74,7 @@ void SparseCholeskySolver<TMatrix,TVector>::solveT(Vector& x, Vector& b)
             cs_ipvec (n, perm.data(),  (double*)b.ptr() , tmp.data() );	///x = P*b , permutation on rows
             cs_lsolve (N->L, tmp.data() );			///x = L\x
             cs_ltsolve (N->L, tmp.data() );			///x = L'\x/
-            cs_pvec (n, perm.data() , tmp.data() , (double*)x.ptr() );	 ///b = P'*x , permutation on columns
+            cs_pvec (n, perm.data() , tmp.data() , (double*)x.ptr() );	 ///x = P'*x , permutation on columns
             break;
 
         default:
@@ -146,7 +146,7 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
                     perm.resize(A.n);
                     iperm.resize(A.n);
                     
-                    fill_reducing_perm( A , iperm.data(), perm.data() ); /// compute the fill reducing permutation
+                    fillReducingPermutation( A , iperm.data(), perm.data() ); /// compute the fill reducing permutation
                 }
                 
                 permuted_A = cs_permute( &A , perm.data() , iperm.data() , 1);

@@ -1,3 +1,25 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+
 #pragma once
 
 #include <sofa/component/linearsolver/direct/config.h>
@@ -10,9 +32,8 @@ extern "C" {
 
 namespace sofa::component::linearsolver
 {
-void CSR_to_adj(int n,int * M_colptr,int * M_rowind,type::vector<int>& adj,type::vector<int>& xadj,type::vector<int>& t_adj, type::vector<int>& t_xadj, type::vector<int>& tran_countvec ); 
 /** 
-compute the adjency matrix in CSR format from the matrix given in CSR format
+compute the adjency matrix in CSR format from the matrix given in CSR format, we assume that the given matrix is syùetric
 
 M_colptr[i+1]-M_colptr[i] is the number of non null values on the i-th line of the matrix
 M_rowind[M_colptr[i]] to M_rowind[M_colptr[i+1]] is the list of the indices of the columns containing a non null value on the i-th line
@@ -21,8 +42,10 @@ xadj[i+1]-xadj[i] is the number of neighbors of the i-th node
 adj[xadj[i]] is the first neighbor of the i-th node
 
 **/
+void csrToAdj(int n,int * M_colptr,int * M_rowind,type::vector<int>& adj,type::vector<int>& xadj,type::vector<int>& t_adj, type::vector<int>& t_xadj, type::vector<int>& tran_countvec ); 
 
-void fill_reducing_perm(const cs &A,int * perm,int * invperm); /// compute the fill reducing permutation via METIS
+/// compute the fill reducing permutation via METIS
+void fillReducingPermutation(const cs &A,int * perm,int * invperm); 
 
 inline bool compareMatrixShape(int s_M, int * M_colptr,int * M_rowind, int s_P, int * P_colptr,int * P_rowind) {
     if (s_M != s_P) return true;
