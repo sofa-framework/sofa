@@ -36,7 +36,7 @@
 namespace sofa::component::linearsolver::direct
 {
 
-/// Direct linear solver based on Sparse Cholesky factorization, implemented with the CSPARSE library
+// Direct linear solver based on Sparse Cholesky factorization, implemented with the CSPARSE library
 template<class TMatrix, class TVector>
 class SparseCholeskySolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
 {
@@ -52,8 +52,8 @@ public:
     cs* permuted_A;
     css *S;
     csn *N;
-    int * A_i; //< row indices, size nzmax
-    int * A_p; //< column pointers (size n+1) or col indices (size nzmax)
+    int * A_i; ///< row indices, size nzmax
+    int * A_p; ///< column pointers (size n+1) or col indices (size nzmax)
     type::vector<int> Previous_colptr,Previous_rowind; //<  shape of the matrix at the previous step
     type::vector<int> perm,iperm; //< fill reducing permutation
     type::vector<double> A_x,z_tmp,r_tmp,tmp;
@@ -75,4 +75,4 @@ public:
 extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseCholeskySolver< sofa::linearalgebra::CompressedRowSparseMatrix<SReal>, sofa::linearalgebra::FullVector<SReal> >;
 #endif
 
-} /// namespace sofa::component::linearsolver::direct
+} // namespace sofa::component::linearsolver::direct

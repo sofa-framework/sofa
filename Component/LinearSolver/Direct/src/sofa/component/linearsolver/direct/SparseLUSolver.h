@@ -30,17 +30,17 @@
 namespace sofa::component::linearsolver::direct
 {
 
-///defaut structure for a LU factorization
+//defaut structure for a LU factorization
 template<class Real>
 class SparseLUInvertData : public MatrixInvertData {
 public :
 
-    css *S; //< store the permutations and the number of non null values by rows and by lines of the LU factorization
-    csn *N; //< store the partial pivot and the LU factorization
+    css *S; ///< store the permutations and the number of non null values by rows and by lines of the LU factorization
+    csn *N; ///< store the partial pivot and the LU factorization
     cs A;
     cs* permuted_A;
-    type::vector<int> perm,iperm; //< fill reducing permutation
-    type::vector<int> Previous_colptr,Previous_rowind; //< shape of the matrix at the previous step
+    type::vector<int> perm,iperm; ///< fill reducing permutation
+    type::vector<int> Previous_colptr,Previous_rowind; ///< shape of the matrix at the previous step
     type::vector<sofa::Index> A_i, A_p;
     type::vector<Real> A_x;
     Real * tmp;
@@ -58,7 +58,7 @@ public :
     }
 };
 
-/// Direct linear solver based on Sparse LU factorization, implemented with the CSPARSE library
+// Direct linear solver based on Sparse LU factorization, implemented with the CSPARSE library
 template<class TMatrix, class TVector, class TThreadManager= NoThreadManager>
 class SparseLUSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,TThreadManager>
 {
@@ -96,4 +96,4 @@ protected :
 extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseLUSolver< sofa::linearalgebra::CompressedRowSparseMatrix< SReal>, sofa::linearalgebra::FullVector<SReal> >;
 #endif
 
-} /// namespace sofa::component::linearsolver::direct
+} // namespace sofa::component::linearsolver::direct

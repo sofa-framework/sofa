@@ -35,7 +35,7 @@ extern "C" {
 namespace sofa::component::linearsolver::direct
 {
 
-///defaut structure for a LDL factorization
+//defaut structure for a LDL factorization
 template<class VecInt,class VecReal>
 class SparseLDLImplInvertData : public MatrixInvertData {
 public :
@@ -51,23 +51,23 @@ inline void CSPARSE_symbolic (int n,int * M_colptr,int * M_rowind,int * colptr,i
 {
     for (int k = 0 ; k < n ; k++)
     {
-        Parent [k] = -1 ;	    /// parent of k is not yet known 
-        Flag [k] = k ;		    /// mark node k as visited 
-        Lnz [k] = 0 ;		    /// count of nonzeros in column k of L 
-        int kk = perm[k];  /// kth original, or permuted, column 
+        Parent [k] = -1 ;	    // parent of k is not yet known 
+        Flag [k] = k ;		    // mark node k as visited 
+        Lnz [k] = 0 ;		    // count of nonzeros in column k of L 
+        int kk = perm[k];  // kth original, or permuted, column 
         for (int p = M_colptr[kk] ; p < M_colptr[kk+1] ; p++)
         {
-            /// A (i,k) is nonzero (original or permuted A) 
+            // A (i,k) is nonzero (original or permuted A) 
             int i = invperm[M_rowind[p]];
             if (i < k)
             {
-                /// follow path from i to root of etree, stop at flagged node 
+                // follow path from i to root of etree, stop at flagged node 
                 for ( ; Flag [i] != k ; i = Parent [i])
                 {
-                    /// find parent of i if not yet determined 
+                    // find parent of i if not yet determined 
                     if (Parent [i] == -1) Parent [i] = k ;
-                    Lnz [i]++ ;				/// L (k,i) is nonzero 
-                    Flag [i] = k ;			/// mark i as visited 
+                    Lnz [i]++ ;				// L (k,i) is nonzero 
+                    Flag [i] = k ;			// mark i as visited 
                 }
             }
         }
@@ -85,42 +85,42 @@ inline void CSPARSE_numeric(int n,int * M_colptr,int * M_rowind,Real * M_values,
 
     for (int k = 0 ; k < n ; k++)
     {
-        Y [k] = 0.0 ;		    /// Y(0:k) is now all zero 
-        top = n ;		    /// stack for pattern is empty 
-        Flag [k] = k ;		    /// mark node k as visited 
-        Lnz [k] = 0 ;		    /// count of nonzeros in column k of L 
-        kk = perm[k];  /// kth original, or permuted, column 
+        Y [k] = 0.0 ;		    // Y(0:k) is now all zero 
+        top = n ;		    // stack for pattern is empty 
+        Flag [k] = k ;		    // mark node k as visited 
+        Lnz [k] = 0 ;		    // count of nonzeros in column k of L 
+        kk = perm[k];  // kth original, or permuted, column 
         for (p = M_colptr[kk] ; p < M_colptr[kk+1] ; p++)
         {
-            i = invperm[M_rowind[p]];	/// get A(i,k) 
+            i = invperm[M_rowind[p]];	// get A(i,k) 
             if (i <= k)
             {
-                Y[i] += M_values[p] ;  /// scatter A(i,k) into Y (sum duplicates) 
+                Y[i] += M_values[p] ;  // scatter A(i,k) into Y (sum duplicates) 
                 for (len = 0 ; Flag[i] != k ; i = Parent[i])
                 {
-                    Pattern [len++] = i ;   /// L(k,i) is nonzero 
-                    Flag [i] = k ;	    /// mark i as visited 
+                    Pattern [len++] = i ;   // L(k,i) is nonzero 
+                    Flag [i] = k ;	    // mark i as visited 
                 }
                 while (len > 0) Pattern[--top] = Pattern [--len] ;
             }
         }
-        /// compute numerical values kth row of L (a sparse triangular solve) 
-        D[k] = Y [k] ;		    /// get D(k,k) and clear Y(k) 
+        // compute numerical values kth row of L (a sparse triangular solve) 
+        D[k] = Y [k] ;		    // get D(k,k) and clear Y(k) 
         Y[k] = 0.0 ;
         for ( ; top < n ; top++)
         {
-            i = Pattern [top] ;	    /// Pattern [top:n-1] is pattern of L(:,k) 
-            yi = Y [i] ;	    /// get and clear Y(i) 
+            i = Pattern [top] ;	    // Pattern [top:n-1] is pattern of L(:,k) 
+            yi = Y [i] ;	    // get and clear Y(i) 
             Y [i] = 0.0 ;
             for (p = colptr[i] ; p < colptr[i] + Lnz [i] ; p++)
             {
                 Y[rowind[p]] -= values[p] * yi ;
             }
-            l_ki = yi / D[i] ;	    /// the nonzero entry L(k,i) 
+            l_ki = yi / D[i] ;	    // the nonzero entry L(k,i) 
             D[k] -= l_ki * yi ;
-            rowind[p] = k ;	    /// store L(k,i) in column form of L 
+            rowind[p] = k ;	    // store L(k,i) in column form of L 
             values[p] = l_ki ;
-            Lnz[i]++ ;		    /// increment count of nonzeros in col i 
+            Lnz[i]++ ;		    // increment count of nonzeros in col i 
         }
 
         if (D[k] == 0.0)
@@ -192,16 +192,16 @@ protected :
     {
         if( d_applyPermutation.getValue() )
         {
-            /// METIS
+            // METIS
             csrToAdj( n, M_colptr, M_rowind, adj, xadj, t_adj, t_xadj, tran_countvec );
 
-            /**
+            /*
             int numflag = 0, options = 0;
             The new API of metis requires pointers on numflag and "options" which are "structure" to parametrize the factorization
              We give NULL and NULL to use the default option (see doc of metis for details) !
              If you have the error "SparseLDLSolver failure to factorize, D(k,k) is zero" that probably means that you use the previsou version of metis.
              In this case you have to download and install the last version from : www.cs.umn.edu/~metis‎
-            **/
+            */
             METIS_NodeND(&n , xadj.data(), adj.data(), nullptr, nullptr, perm,invperm);
         }
         else 
@@ -242,7 +242,7 @@ protected :
         data->P_values.clear();data->P_values.fastResize(data->P_nnz);
         memcpy(data->P_values.data(),M_values,data->P_nnz * sizeof(Real));
 
-        /// we test if the matrix has the same struct as previous factorized matrix
+        // we test if the matrix has the same struct as previous factorized matrix
         if (data->new_factorization_needed  || !d_useSymbolicDecomposition.getValue() )
         {
             sofa::helper::ScopedAdvancedTimer factorizationTimer("symbolic_factorization");
@@ -259,13 +259,13 @@ protected :
             memcpy(data->P_colptr.data(),M_colptr,(data->n+1) * sizeof(int));
             memcpy(data->P_rowind.data(),M_rowind,data->P_nnz * sizeof(int));
 
-            ///ordering function
+            //ordering function
             LDL_ordering( data->n , M_colptr , M_rowind , data->perm.data(), data->invperm.data() );
 
             data->Parent.clear();
             data->Parent.resize(data->n);
 
-            ///symbolic factorization
+            //symbolic factorization
             LDL_symbolic(data->n,M_colptr,M_rowind,data->L_colptr.data(),
                          data->perm.data(),data->invperm.data(),data->Parent.data());
 
@@ -285,32 +285,32 @@ protected :
         int * tran_colptr = data->LT_colptr.data();
         Real * tran_values = data->LT_values.data();
 
-        ///Numeric Factorization
+        //Numeric Factorization
         {
             sofa::helper::ScopedAdvancedTimer factorizationTimer("numeric_factorization");
             LDL_numeric(data->n,M_colptr,M_rowind,M_values,colptr,rowind,values,D,
                         data->perm.data(),data->invperm.data(),data->Parent.data());
 
-            ///inverse the diagonal
+            //inverse the diagonal
             for (int i=0;i<data->n;i++) D[i] = 1.0/D[i];
         }
 
-        /// split the bloc diag in data->Bdiag
+        // split the bloc diag in data->Bdiag
 
         if (data->new_factorization_needed  || !d_useSymbolicDecomposition.getValue() ) {
-            ///Compute transpose in tran_colptr, tran_rowind, tran_values, tran_D
+            //Compute transpose in tran_colptr, tran_rowind, tran_values, tran_D
             tran_countvec.clear();
             tran_countvec.resize(data->n);
 
-            ///First we count the number of value on each row.
+            //First we count the number of value on each row.
             for (int j=0;j<data->L_nnz;j++) tran_countvec[rowind[j]]++;
 
-            ///Now we make a scan to build tran_colptr
+            //Now we make a scan to build tran_colptr
             tran_colptr[0] = 0;
             for (int j=0;j<data->n;j++) tran_colptr[j+1] = tran_colptr[j] + tran_countvec[j];
         }
 
-        ///we clear tran_countvec because we use it now to store how many values are written on each line
+        //we clear tran_countvec because we use it now to store how many values are written on each line
         tran_countvec.clear();
         tran_countvec.resize(data->n);
 
@@ -325,13 +325,13 @@ protected :
     }
 
     type::vector<Real> Tmp;
-protected : ///the folowing variables are used during the factorization they cannot be used in the main thread !
+protected : //the following variables are used during the factorization they cannot be used in the main thread !
     type::vector<int> xadj,adj,t_xadj,t_adj;
     type::vector<Real> Y;
     type::vector<int> Lnz,Flag,Pattern;
     type::vector<int> tran_countvec;
 };
 
-} /// namespace sofa::component::linearsolver::direct
+} // namespace sofa::component::linearsolver::direct
 
 #endif
