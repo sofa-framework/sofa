@@ -37,21 +37,10 @@ PartialFixedConstraint<DataTypes>::PartialFixedConstraint()
     : d_fixedDirections( initData(&d_fixedDirections,"fixedDirections","for each direction, 1 if fixed, 0 if free") )
     , d_projectVelocity(initData(&d_projectVelocity, false, "projectVelocity", "project velocity to ensure no drift of the fixed point"))
 {
-    // default to indice 0
-    this->d_indices.beginEdit()->push_back(0);
-    this->d_indices.endEdit();
-
     VecBool blockedDirection;
     for( unsigned i=0; i<NumDimensions; i++)
         blockedDirection[i] = true;
     d_fixedDirections.setValue(blockedDirection);
-
-    this->addUpdateCallback("updateIndices", { &this->d_indices}, [this](const core::DataTracker& t)
-    {
-        SOFA_UNUSED(t);
-        this->checkIndices();
-        return sofa::core::objectmodel::ComponentState::Valid;
-    }, {});
 }
 
 
