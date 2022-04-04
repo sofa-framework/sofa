@@ -39,7 +39,7 @@
 namespace sofa::component::mass
 {
 
-template<class DataTypes, class TMassType>
+template<class DataTypes, class TMassType, class GeometricalTypes>
 class DiagonalMassInternalData
 {
 public :
@@ -49,14 +49,21 @@ public :
 
     // In case of non 3D template
     typedef sofa::type::Vec<3,Real> Vec3;
-    typedef sofa::defaulttype::StdVectorTypes< Vec3, Vec3, Real > GeometricalTypes ; /// assumes the geometry object type is 3D
 };
 
-template <class DataTypes>
+/**
+* @class    DiagonalMass
+* @brief    This component computes the integral of this mass density over the volume of the object geometry but it supposes that the Mass matrix is diagonal.
+* @remark   Similar to MeshMatrixMass but it does not simplify the Mass Matrix as diagonal.
+* @remark   https://www.sofa-framework.org/community/doc/components/masses/diagonalmass/
+* @tparam   DataTypes type of the state associated with this mass
+* @tparam   GeometricalTypes type of the geometry, i.e type of the state associated with the topology (if the topology and the mass relates to the same state, this will be the same as DataTypes)
+*/
+template <class DataTypes, class GeometricalTypes = DataTypes>
 class DiagonalMass : public core::behavior::Mass<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(DiagonalMass,DataTypes), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE2(DiagonalMass,DataTypes, GeometricalTypes), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
 
     using TMassType = typename sofa::component::mass::MassType<DataTypes>::type;
 
@@ -70,9 +77,8 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef TMassType MassType;
 
-    typedef typename DiagonalMassInternalData<DataTypes,TMassType>::VecMass VecMass;
-    typedef typename DiagonalMassInternalData<DataTypes,TMassType>::MassVector MassVector;
-    typedef typename DiagonalMassInternalData<DataTypes,TMassType>::GeometricalTypes GeometricalTypes;
+    typedef typename DiagonalMassInternalData<DataTypes,TMassType,GeometricalTypes>::VecMass VecMass;
+    typedef typename DiagonalMassInternalData<DataTypes,TMassType,GeometricalTypes>::MassVector MassVector;
 
     VecMass d_vertexMass; ///< values of the particles masses
 
@@ -108,7 +114,9 @@ public:
     int m_initializationProcess;
 
     /// Link to be set to the topology container in the component graph. 
-    SingleLink<DiagonalMass<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    SingleLink<DiagonalMass<DataTypes, GeometricalTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
+    /// Link to be set to the MechanicalObject associated with the geometry
+    SingleLink<DiagonalMass<DataTypes, GeometricalTypes>, sofa::core::behavior::MechanicalState<GeometricalTypes>, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_geometryState;
 
 protected:
     ////////////////////////// Inherited attributes ////////////////////////////
@@ -124,9 +132,6 @@ protected:
     class Loader;
     /// The type of topology to build the mass from the topology
     sofa::geometry::ElementType m_massTopologyType;
-
-    /// Pointer to the topology container. Will be set by link @sa l_topology
-    sofa::core::topology::BaseMeshTopology* m_topology;
 
 protected:
     DiagonalMass();
@@ -192,7 +197,7 @@ protected:
     /** Method to update @sa d_vertexMass when a new Triangle is created.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when TRIANGLESADDED event is fired.
     */
-    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
+    template <typename T = GeometricalTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
     void applyTriangleCreation(const sofa::type::vector< TriangleID >& /*indices*/,
         const sofa::type::vector< Triangle >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< TriangleID > >& /*ancestors*/,
@@ -201,14 +206,14 @@ protected:
     /** Method to update @sa d_vertexMass when a Triangle is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when TRIANGLESREMOVED event is fired.
     */
-    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
+    template <typename T = GeometricalTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
     void applyTriangleDestruction(const sofa::type::vector<TriangleID>& /*indices*/);
 
 
     /** Method to update @sa d_vertexMass when a new Quad is created.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when QUADSADDED event is fired.
     */
-    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
+    template <typename T = GeometricalTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
     void applyQuadCreation(const sofa::type::vector< QuadID >& /*indices*/,
         const sofa::type::vector< Quad >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< QuadID > >& /*ancestors*/,
@@ -217,14 +222,14 @@ protected:
     /** Method to update @sa d_vertexMass when a Quad is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when QUADSREMOVED event is fired.
     */
-    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
+    template <typename T = GeometricalTypes, typename std::enable_if_t<T::spatial_dimensions >= 2, int > = 0 >
     void applyQuadDestruction(const sofa::type::vector<QuadID>& /*indices*/);
     
 
     /** Method to update @sa d_vertexMass when a new Tetrahedron is created.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when TETRAHEDRAADDED event is fired.
     */
-    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
+    template <typename T = GeometricalTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
     void applyTetrahedronCreation(const sofa::type::vector< TetrahedronID >& /*indices*/,
         const sofa::type::vector< Tetrahedron >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< TetrahedronID > >& /*ancestors*/,
@@ -233,14 +238,14 @@ protected:
     /** Method to update @sa d_vertexMass when a Tetrahedron is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when TETRAHEDRAREMOVED event is fired.
     */
-    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
+    template <typename T = GeometricalTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
     void applyTetrahedronDestruction(const sofa::type::vector<TetrahedronID>& /*indices*/);
 
 
     /** Method to update @sa d_vertexMass when a new Hexahedron is created.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when HEXAHEDRAADDED event is fired.
     */
-    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
+    template <typename T = GeometricalTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
     void applyHexahedronCreation(const sofa::type::vector< HexahedronID >& /*indices*/,
         const sofa::type::vector< Hexahedron >& /*elems*/,
         const sofa::type::vector< sofa::type::vector< HexahedronID > >& /*ancestors*/,
@@ -249,7 +254,7 @@ protected:
     /** Method to update @sa d_vertexMass when a Hexahedron is removed.
     * Will be set as callback in the PointData @sa d_vertexMass to update the mass vector when HEXAHEDRAREMOVED event is fired.
     */
-    template <typename T = DataTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
+    template <typename T = GeometricalTypes, typename std::enable_if_t<T::spatial_dimensions >= 3, int > = 0 >
     void applyHexahedronDestruction(const sofa::type::vector<HexahedronID>& /*indices*/);
 
 public:
@@ -329,9 +334,13 @@ public:
             auto splitTemplates = sofa::helper::split(std::string(arg->getAttribute("template")), ',');
             if (splitTemplates.size() > 1)
             {
-                msg_warning() << "MassType is not required anymore and the template is deprecated, please delete it from your scene." << msgendl
-                    << "As your mass is templated on " << DataTypes::Name() << ", MassType has been defined as " << sofa::helper::NameDecoder::getTypeName<MassType>() << " .";
-                msg_warning() << "If you want to set the template, you must write now \"template='" << DataTypes::Name() << "'\" .";
+                // check if the given 2nd template is the deprecated MassType one
+                if (splitTemplates[1] == "float" || splitTemplates[1] == "double" || splitTemplates[1].find("RigidMass") != std::string::npos)
+                {
+                    msg_warning() << "MassType is not required anymore and the template is deprecated, please delete it from your scene." << msgendl
+                        << "As your mass is templated on " << DataTypes::Name() << ", MassType has been defined as " << sofa::helper::NameDecoder::getTypeName<MassType>() << " .";
+                    msg_warning() << "If you want to set the template, you must write now \"template='" << DataTypes::Name() << "'\" .";
+                }
             }
         }
         if (arg->getAttribute("mass"))
@@ -393,10 +402,13 @@ type::Vector6 DiagonalMass<defaulttype::Rigid3Types>::getMomentum ( const core::
 #if  !defined(SOFA_COMPONENT_MASS_DIAGONALMASS_CPP)
 extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec2Types, defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec1Types, defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Vec1Types, defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Rigid3Types>;
 extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Rigid2Types>;
-
+extern template class SOFA_COMPONENT_MASS_API DiagonalMass<defaulttype::Rigid2Types, defaulttype::Rigid3Types>;
 #endif
 
 } // namespace sofa::component::mass

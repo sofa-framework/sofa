@@ -48,10 +48,10 @@ Vector6 MeshMatrixMass<Vec3Types>::getMomentum ( const core::MechanicalParams*, 
         for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
     }
 
-    for(size_t i=0 ; i<m_topology->getNbEdges() ; ++i )
+    for(size_t i=0 ; i<l_topology->getNbEdges() ; ++i )
     {
-        unsigned v0 = m_topology->getEdge(i)[0];
-        unsigned v1 = m_topology->getEdge(i)[1];
+        unsigned v0 = l_topology->getEdge(i)[0];
+        unsigned v1 = l_topology->getEdge(i)[1];
 
         // is it correct to share the edge mass between the 2 vertices?
         double m = edgeMass[i] * 0.5;
@@ -75,13 +75,18 @@ Vector6 MeshMatrixMass<Vec3Types>::getMomentum ( const core::MechanicalParams*, 
 int MeshMatrixMassClass = core::RegisterObject("Define a specific mass for each particle")
         .add< MeshMatrixMass<Vec3Types> >()
         .add< MeshMatrixMass<Vec2Types> >()
+        .add< MeshMatrixMass<Vec2Types, Vec3Types> >()
         .add< MeshMatrixMass<Vec1Types> >()
+        .add< MeshMatrixMass<Vec1Types, Vec2Types> >()
+        .add< MeshMatrixMass<Vec1Types, Vec3Types> >()
+;
 
-        ;
-
-template class SOFA_COMPONENT_MASS_API MeshMatrixMass<Vec3Types>;
-template class SOFA_COMPONENT_MASS_API MeshMatrixMass<Vec2Types>;
-template class SOFA_COMPONENT_MASS_API MeshMatrixMass<Vec1Types>;
+template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec2Types>;
+template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec2Types, defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec1Types>;
+template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec1Types, defaulttype::Vec2Types>;
+template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec1Types, defaulttype::Vec3Types>;
 
 
 
