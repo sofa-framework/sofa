@@ -19,41 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/constraint/lagrangian/config.h>
+#pragma once
 
-#include <sofa/component/constraint/lagrangian/model/init.h>
-#include <sofa/component/constraint/lagrangian/correction/init.h>
-#include <sofa/component/constraint/lagrangian/solver/init.h>
+#include <sofa/component/constraint/lagrangian/model/config.h>
 
-namespace sofa::component::constraint::lagrangian
+namespace sofa::component::constraint::lagrangian::model
 {
-
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
-
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::constraint::lagrangian::model::init();
-        sofa::component::constraint::lagrangian::correction::init();
-        sofa::component::constraint::lagrangian::solver::init();
-        first = false;
-    }
-}
-
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-void init()
-{
-    initExternalModule();
-}
-
-} // namespace sofa::component::constraint::lagrangian
+    SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API void init();
+} // namespace sofa::component::constraint::lagrangian::model

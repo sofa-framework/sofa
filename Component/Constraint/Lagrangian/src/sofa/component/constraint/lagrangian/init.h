@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/constraint/lagrangian/config.h>
+#include <sofa/component/constraint/config.h>
 
 namespace sofa::component::constraint::lagrangian
 {

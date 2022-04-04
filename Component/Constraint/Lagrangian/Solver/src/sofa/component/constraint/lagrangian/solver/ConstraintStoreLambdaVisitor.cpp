@@ -19,41 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/constraint/lagrangian/config.h>
+#include <sofa/core/behavior/BaseConstraint.h>
+#include <sofa/component/constraint/lagrangian/solver/ConstraintStoreLambdaVisitor.h>
+#include <sofa/core/ConstraintParams.h>
 
-#include <sofa/component/constraint/lagrangian/model/init.h>
-#include <sofa/component/constraint/lagrangian/correction/init.h>
-#include <sofa/component/constraint/lagrangian/solver/init.h>
-
-namespace sofa::component::constraint::lagrangian
+namespace sofa::component::constraint::lagrangian::solver
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+ConstraintStoreLambdaVisitor::ConstraintStoreLambdaVisitor(const sofa::core::ConstraintParams* cParams, const sofa::linearalgebra::BaseVector* lambda)
+:simulation::BaseMechanicalVisitor(cParams)
+,m_cParams(cParams)
+,m_lambda(lambda)
+{
 }
 
-void initExternalModule()
+simulation::Visitor::Result ConstraintStoreLambdaVisitor::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
 {
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::constraint::lagrangian::model::init();
-        sofa::component::constraint::lagrangian::correction::init();
-        sofa::component::constraint::lagrangian::solver::init();
-        first = false;
+    if (core::behavior::BaseConstraint *c = dynamic_cast<core::behavior::BaseConstraint*>(cSet) )
+    {
+        ctime_t t0 = begin(node, c);
+        c->storeLambda(m_cParams, m_cParams->lambda(), m_lambda);
+        end(node, c, t0);
     }
+    return RESULT_CONTINUE;
 }
 
-const char* getModuleName()
+void ConstraintStoreLambdaVisitor::bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
 {
-    return MODULE_NAME;
+    SOFA_UNUSED(node);
+
+    sofa::core::MechanicalParams mparams(*m_cParams);
+    mparams.setDx(m_cParams->dx());
+    mparams.setF(m_cParams->lambda());
+    map->applyJT(&mparams, m_cParams->lambda(), m_cParams->lambda());
 }
 
-void init()
+bool ConstraintStoreLambdaVisitor::stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
 {
-    initExternalModule();
+    SOFA_UNUSED(node);
+    SOFA_UNUSED(map);
+
+    return false;
 }
 
-} // namespace sofa::component::constraint::lagrangian
+} // namespace sofa::component::constraint::lagrangian::solver

@@ -19,41 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/constraint/lagrangian/config.h>
+#define SOFA_COMPONENT_CONSTRAINT_LINEARSOLVERCONSTRAINTCORRECTION_CPP
+#include <sofa/component/constraint/lagrangian/correction/LinearSolverConstraintCorrection.inl>
 
-#include <sofa/component/constraint/lagrangian/model/init.h>
-#include <sofa/component/constraint/lagrangian/correction/init.h>
-#include <sofa/component/constraint/lagrangian/solver/init.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::constraint::lagrangian
+namespace sofa::component::constraint::lagrangian::correction
 {
+using namespace sofa::defaulttype;
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
+int LinearSolverContactCorrectionClass = core::RegisterObject("")
+        .add< LinearSolverConstraintCorrection<Vec3Types> >()
+        .add< LinearSolverConstraintCorrection<Vec2Types> >()
+        .add< LinearSolverConstraintCorrection<Vec1Types> >()
+        .add< LinearSolverConstraintCorrection<Rigid3Types> >()
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::constraint::lagrangian::model::init();
-        sofa::component::constraint::lagrangian::correction::init();
-        sofa::component::constraint::lagrangian::solver::init();
-        first = false;
-    }
-}
+        ;
+template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API LinearSolverConstraintCorrection<Vec3Types>;
+template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API LinearSolverConstraintCorrection<Vec2Types>;
+template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API LinearSolverConstraintCorrection<Vec1Types>;
+template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_CORRECTION_API LinearSolverConstraintCorrection<Rigid3Types>;
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
 
-void init()
-{
-    initExternalModule();
-}
 
-} // namespace sofa::component::constraint::lagrangian
+} //namespace sofa::component::constraint::lagrangian::correction

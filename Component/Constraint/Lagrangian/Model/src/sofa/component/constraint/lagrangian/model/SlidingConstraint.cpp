@@ -19,41 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/constraint/lagrangian/config.h>
+#define SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_CPP
 
-#include <sofa/component/constraint/lagrangian/model/init.h>
-#include <sofa/component/constraint/lagrangian/correction/init.h>
-#include <sofa/component/constraint/lagrangian/solver/init.h>
+#include <sofa/component/constraint/lagrangian/model/SlidingConstraint.inl>
 
-namespace sofa::component::constraint::lagrangian
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/ObjectFactory.h>
+
+namespace sofa::component::constraint::lagrangian::model
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
+using namespace sofa::defaulttype;
+using namespace sofa::helper;
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::constraint::lagrangian::model::init();
-        sofa::component::constraint::lagrangian::correction::init();
-        sofa::component::constraint::lagrangian::solver::init();
-        first = false;
-    }
-}
+int SlidingConstraintClass = core::RegisterObject("TODO-SlidingConstraint")
+        .add< SlidingConstraint<Vec3Types> >(true);
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
+template class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_MODEL_API SlidingConstraint<Vec3Types>;
 
-void init()
-{
-    initExternalModule();
-}
 
-} // namespace sofa::component::constraint::lagrangian
+} //namespace sofa::component::constraint::lagrangian::model

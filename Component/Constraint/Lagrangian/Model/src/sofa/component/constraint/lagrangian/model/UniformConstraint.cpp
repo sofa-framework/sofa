@@ -19,41 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/constraint/lagrangian/config.h>
+#include <sofa/component/constraint/lagrangian/model/UniformConstraint.inl>
 
-#include <sofa/component/constraint/lagrangian/model/init.h>
-#include <sofa/component/constraint/lagrangian/correction/init.h>
-#include <sofa/component/constraint/lagrangian/solver/init.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::constraint::lagrangian
+namespace sofa::component::constraint::lagrangian::model
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
+int UniformConstraintClass = sofa::core::RegisterObject("A constraint equation applied on all dofs.")
+.add< UniformConstraint<sofa::defaulttype::Vec1Types> >()
+;
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::constraint::lagrangian::model::init();
-        sofa::component::constraint::lagrangian::correction::init();
-        sofa::component::constraint::lagrangian::solver::init();
-        first = false;
-    }
-}
+template class UniformConstraint<sofa::defaulttype::Vec1Types>;
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
 
-void init()
-{
-    initExternalModule();
-}
-
-} // namespace sofa::component::constraint::lagrangian
+} // namespace sofa::component::constraint::lagrangian::model

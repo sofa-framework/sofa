@@ -19,13 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/constraint/lagrangian/config.h>
-
-#include <sofa/component/constraint/lagrangian/model/init.h>
-#include <sofa/component/constraint/lagrangian/correction/init.h>
 #include <sofa/component/constraint/lagrangian/solver/init.h>
 
-namespace sofa::component::constraint::lagrangian
+namespace sofa::component::constraint::lagrangian::solver
 {
 
 extern "C" {
@@ -37,11 +33,7 @@ void initExternalModule()
 {
     static bool first = true;
     if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::constraint::lagrangian::model::init();
-        sofa::component::constraint::lagrangian::correction::init();
-        sofa::component::constraint::lagrangian::solver::init();
+    {
         first = false;
     }
 }
@@ -56,4 +48,4 @@ void init()
     initExternalModule();
 }
 
-} // namespace sofa::component::constraint::lagrangian
+} // namespace sofa::component::constraint::lagrangian::solver

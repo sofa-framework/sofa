@@ -19,41 +19,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/constraint/lagrangian/config.h>
 
-#include <sofa/component/constraint/lagrangian/model/init.h>
-#include <sofa/component/constraint/lagrangian/correction/init.h>
-#include <sofa/component/constraint/lagrangian/solver/init.h>
+#pragma once
+#include <sofa/component/constraint/lagrangian/solver/config.h>
 
-namespace sofa::component::constraint::lagrangian
+#include <sofa/simulation/MechanicalVisitor.h>
+
+
+namespace sofa::component::constraint::lagrangian::solver
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
-
-void initExternalModule()
+class SOFA_COMPONENT_CONSTRAINT_LAGRANGIAN_SOLVER_API ConstraintStoreLambdaVisitor : public simulation::BaseMechanicalVisitor
 {
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::constraint::lagrangian::model::init();
-        sofa::component::constraint::lagrangian::correction::init();
-        sofa::component::constraint::lagrangian::solver::init();
-        first = false;
-    }
-}
+public:
+    ConstraintStoreLambdaVisitor(const sofa::core::ConstraintParams* cParams, const sofa::linearalgebra::BaseVector* lambda);
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
+    Visitor::Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet) override;
 
-void init()
-{
-    initExternalModule();
-}
+    void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
 
-} // namespace sofa::component::constraint::lagrangian
+    bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map) override;
+
+private:
+    const sofa::core::ConstraintParams* m_cParams;
+    const sofa::linearalgebra::BaseVector* m_lambda;
+};
+
+
+} // namespace sofa::component::constraint::lagrangian::solver

@@ -19,41 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/constraint/lagrangian/config.h>
 
-#include <sofa/component/constraint/lagrangian/model/init.h>
-#include <sofa/component/constraint/lagrangian/correction/init.h>
-#include <sofa/component/constraint/lagrangian/solver/init.h>
+#include <sofa/component/constraint/lagrangian/solver/ConstraintSolverImpl.h>
 
-namespace sofa::component::constraint::lagrangian
+namespace sofa::component::constraint::lagrangian::solver
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
-
-void initExternalModule()
+ConstraintProblem::ConstraintProblem()
+    : tolerance(0.00001), maxIterations(1000),
+      dimension(0), problemId(0)
 {
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::constraint::lagrangian::model::init();
-        sofa::component::constraint::lagrangian::correction::init();
-        sofa::component::constraint::lagrangian::solver::init();
-        first = false;
-    }
 }
 
-const char* getModuleName()
+ConstraintProblem::~ConstraintProblem()
 {
-    return MODULE_NAME;
 }
 
-void init()
+void ConstraintProblem::clear(int nbConstraints)
 {
-    initExternalModule();
+    dimension = nbConstraints;
+    W.resize(nbConstraints, nbConstraints);
+    dFree.resize(nbConstraints);
+    f.resize(nbConstraints);
+
+    static unsigned int counter = 0;
+    problemId = ++counter;
 }
 
-} // namespace sofa::component::constraint::lagrangian
+unsigned int ConstraintProblem::getProblemId()
+{
+    return problemId;
+}
+
+} //namespace sofa::component::constraint::lagrangian::solver
