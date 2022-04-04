@@ -48,7 +48,20 @@ void csrToAdj(int n,int * M_colptr,int * M_rowind,type::vector<int>& adj,type::v
 void fillReducingPermutation(const cs &A,int * perm,int * invperm); 
 
 // compare the shape of two matrix given in CSR format, return false if the matrices have the same shape and return true if their shapes are different
-inline bool compareMatrixShape(int s_M, int * M_colptr,int * M_rowind, int s_P, int * P_colptr,int * P_rowind) ;
+inline bool compareMatrixShape(int s_M, int * M_colptr,int * M_rowind, int s_P, int * P_colptr,int * P_rowind) {
+    if (s_M != s_P) return true;
+    if (M_colptr[s_M] != P_colptr[s_M] ) return true;
+
+    for (int i=0;i<s_P;i++) {
+        if (M_colptr[i]!=P_colptr[i]) return true;
+    }
+
+    for (int i=0;i<M_colptr[s_M];i++) {
+        if (M_rowind[i]!=P_rowind[i]) return true;
+    }
+
+    return false;
+}
 
 }
 
