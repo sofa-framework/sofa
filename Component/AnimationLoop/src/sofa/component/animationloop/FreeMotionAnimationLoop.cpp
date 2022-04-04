@@ -22,7 +22,7 @@
 #include <sofa/component/animationloop/FreeMotionAnimationLoop.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/component/constraint/lagrangian/LCPConstraintSolver.h>
+#include <sofa/component/constraint/lagrangian/solver/LCPConstraintSolver.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/VecId.h>
@@ -89,7 +89,7 @@ void FreeMotionAnimationLoop::parse ( sofa::core::objectmodel::BaseObjectDescrip
 {
     simulation::CollisionAnimationLoop::parse(arg);
 
-    defaultSolver = sofa::core::objectmodel::New<constraint::lagrangian::LCPConstraintSolver>();
+    defaultSolver = sofa::core::objectmodel::New<constraint::lagrangian::solver::LCPConstraintSolver>();
     defaultSolver->parse(arg);
     defaultSolver->setName(defaultSolver->getContext()->getNameHelper().resolveName(defaultSolver->getClassName(), core::ComponentNameHelper::Convention::python));
 }
