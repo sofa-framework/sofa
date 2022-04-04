@@ -21,18 +21,18 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/constraint/lagrangian/UnilateralInteractionConstraint.h>
+#include <sofa/component/constraint/lagrangian/model/UnilateralInteractionConstraint.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/UnilateralInteractionConstraint.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/model/UnilateralInteractionConstraint.h")
 
 namespace sofa::component::constraintset
 {
-    using UnilateralConstraintResolution = sofa::component::constraint::lagrangian::UnilateralConstraintResolution;
-    using PreviousForcesContainer = sofa::component::constraint::lagrangian::PreviousForcesContainer;
-    using UnilateralConstraintResolutionWithFriction = sofa::component::constraint::lagrangian::UnilateralConstraintResolutionWithFriction;
+    using UnilateralConstraintResolution = sofa::component::constraint::lagrangian::model::UnilateralConstraintResolution;
+    using PreviousForcesContainer = sofa::component::constraint::lagrangian::model::PreviousForcesContainer;
+    using UnilateralConstraintResolutionWithFriction = sofa::component::constraint::lagrangian::model::UnilateralConstraintResolutionWithFriction;
     
     template<class DataTypes>
-    using UnilateralInteractionConstraint = sofa::component::constraint::lagrangian::UnilateralInteractionConstraint<DataTypes>;
+    using UnilateralInteractionConstraint = sofa::component::constraint::lagrangian::model::UnilateralInteractionConstraint<DataTypes>;
 
     
 } // namespace sofa::component::constraintset

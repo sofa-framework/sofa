@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/constraint/lagrangian/LCPConstraintSolver.h>
+#include <sofa/component/constraint/lagrangian/solver/LCPConstraintSolver.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/LCPConstraintSolver.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/solver/LCPConstraintSolver.h")
 
 namespace sofa::component::constraintset
 {
-    using LCPConstraintProblem = sofa::component::constraint::lagrangian::LCPConstraintProblem;
-    using LCPConstraintSolver = sofa::component::constraint::lagrangian::LCPConstraintSolver;
+    using LCPConstraintProblem = sofa::component::constraint::lagrangian::solver::LCPConstraintProblem;
+    using LCPConstraintSolver = sofa::component::constraint::lagrangian::solver::LCPConstraintSolver;
     
 } // namespace sofa::component::constraintset

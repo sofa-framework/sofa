@@ -963,17 +963,17 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
 
     // SofaConstraint was deprecated in #2635, #2790 and ...
     { "MappingGeometricStiffnessForceField", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Mapping.MappedMatrix") },
-    { "BilateralInteractionConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian") },
-    { "GenericConstraintCorrection", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian") },
-    { "GenericConstraintSolver", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian") },
-    { "LCPConstraintSolver", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian") },
-    { "LinearSolverConstraintCorrection", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian") },
-    { "PrecomputedConstraintCorrection", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian") },
-    { "SlidingConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian") },
-    { "StopperConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian") },
-    { "UncoupledConstraintCorrection", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian") },
-    { "UniformConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian") },
-    { "UnilateralInteractionConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian") },
+    { "BilateralInteractionConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Model") },
+    { "GenericConstraintCorrection", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Correction") },
+    { "GenericConstraintSolver", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Solver") },
+    { "LCPConstraintSolver", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Solver") },
+    { "LinearSolverConstraintCorrection", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Correction") },
+    { "PrecomputedConstraintCorrection", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Correction") },
+    { "SlidingConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Model") },
+    { "StopperConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Model") },
+    { "UncoupledConstraintCorrection", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Correction") },
+    { "UniformConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Model") },
+    { "UnilateralInteractionConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Model") },
 
     // SofaGeneralAnimationLoop was deprecated in #2635 and ...
     { "MechanicalMatrixMapper", CreatableMoved("v22.06", "SofaGeneralAnimationLoop", "Sofa.Component.Mapping.MappedMatrix") },

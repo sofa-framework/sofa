@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/constraint/lagrangian/SlidingConstraint.inl>
+#include <sofa/component/constraint/lagrangian/model/SlidingConstraint.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/SlidingConstraint.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/model/SlidingConstraint.inl")

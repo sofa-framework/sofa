@@ -21,15 +21,15 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/constraint/lagrangian/BilateralConstraintResolution.h>
+#include <sofa/component/constraint/lagrangian/model/BilateralConstraintResolution.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/BilateralConstraintResolution.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/model/BilateralConstraintResolution.h")
 
 namespace sofa::component::constraintset::bilateralconstraintresolution
 {
-    using BilateralConstraintResolution = sofa::component::constraint::lagrangian::BilateralConstraintResolution;
-    using BilateralConstraintResolution3Dof = sofa::component::constraint::lagrangian::BilateralConstraintResolution3Dof;
-    using BilateralConstraintResolutionNDof = sofa::component::constraint::lagrangian::BilateralConstraintResolutionNDof;
+    using BilateralConstraintResolution = sofa::component::constraint::lagrangian::model::BilateralConstraintResolution;
+    using BilateralConstraintResolution3Dof = sofa::component::constraint::lagrangian::model::BilateralConstraintResolution3Dof;
+    using BilateralConstraintResolutionNDof = sofa::component::constraint::lagrangian::model::BilateralConstraintResolutionNDof;
     
 } // namespace sofa::component::constraintset::bilateralconstraintresolution
 

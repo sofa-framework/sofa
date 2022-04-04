@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/constraint/lagrangian/PrecomputedConstraintCorrection.h>
+#include <sofa/component/constraint/lagrangian/correction/PrecomputedConstraintCorrection.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/PrecomputedConstraintCorrection.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/correction/PrecomputedConstraintCorrection.h")
 
 namespace sofa::component::constraintset
 {
     template<class TDataTypes>
-    using PrecomputedConstraintCorrection = sofa::component::constraint::lagrangian::PrecomputedConstraintCorrection<TDataTypes>;
+    using PrecomputedConstraintCorrection = sofa::component::constraint::lagrangian::correction::PrecomputedConstraintCorrection<TDataTypes>;
     
 } // namespace sofa::component::constraintset

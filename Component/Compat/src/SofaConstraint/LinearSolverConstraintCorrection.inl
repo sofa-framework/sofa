@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/constraint/lagrangian/LinearSolverConstraintCorrection.inl>
+#include <sofa/component/constraint/lagrangian/correction/LinearSolverConstraintCorrection.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/LinearSolverConstraintCorrection.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/correction/LinearSolverConstraintCorrection.inl")

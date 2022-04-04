@@ -32,7 +32,9 @@ include(Sofa.Component.SolidMechanics.FEM.HyperElastic.cmake)
 include(Sofa.Component.SolidMechanics.TensorMass.cmake)
 include(Sofa.Component.Visual.cmake)
 include(Sofa.Component.StateContainer.cmake)
-include(Sofa.Component.Constraint.Lagrangian.cmake)
+include(Sofa.Component.Constraint.Lagrangian.Model.cmake)
+include(Sofa.Component.Constraint.Lagrangian.Correction.cmake)
+include(Sofa.Component.Constraint.Lagrangian.Solver.cmake)
 include(Sofa.Component.Constraint.Projective.cmake)
 
 set(SOURCE_FILES

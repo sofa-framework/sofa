@@ -21,12 +21,12 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/constraint/lagrangian/ConstraintStoreLambdaVisitor.h>
+#include <sofa/component/constraint/lagrangian/solver/ConstraintStoreLambdaVisitor.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/ConstraintStoreLambdaVisitor.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/solver/ConstraintStoreLambdaVisitor.h")
 
 namespace sofa::simulation
 {
-    using ConstraintStoreLambdaVisitor = sofa::component::constraint::lagrangian::ConstraintStoreLambdaVisitor;
+    using ConstraintStoreLambdaVisitor = sofa::component::constraint::lagrangian::solver::ConstraintStoreLambdaVisitor;
     
 } // namespace sofa::simulation

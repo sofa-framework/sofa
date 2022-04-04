@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/constraint/lagrangian/LinearSolverConstraintCorrection.h>
+#include <sofa/component/constraint/lagrangian/correction/LinearSolverConstraintCorrection.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/LinearSolverConstraintCorrection.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/correction/LinearSolverConstraintCorrection.h")
 
 namespace sofa::component::constraintset
 {
     template<class TDataTypes>
-    using LinearSolverConstraintCorrection = sofa::component::constraint::lagrangian::LinearSolverConstraintCorrection<TDataTypes>;
+    using LinearSolverConstraintCorrection = sofa::component::constraint::lagrangian::correction::LinearSolverConstraintCorrection<TDataTypes>;
     
 } // namespace sofa::component::constraintset

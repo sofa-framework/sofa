@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/constraint/lagrangian/config.h>
+#include <sofa/component/constraint/lagrangian/init.h>
 
 #include <sofa/component/constraint/lagrangian/model/init.h>
 #include <sofa/component/constraint/lagrangian/correction/init.h>

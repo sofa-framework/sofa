@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/constraint/lagrangian/SlidingConstraint.h>
+#include <sofa/component/constraint/lagrangian/model/SlidingConstraint.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/SlidingConstraint.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/model/SlidingConstraint.h")
 
 namespace sofa::component::constraintset
 {
     template<class DataTypes>
-    using SlidingConstraint = sofa::component::constraint::lagrangian::SlidingConstraint<DataTypes>;
+    using SlidingConstraint = sofa::component::constraint::lagrangian::model::SlidingConstraint<DataTypes>;
     
 } // namespace sofa::component::constraintset

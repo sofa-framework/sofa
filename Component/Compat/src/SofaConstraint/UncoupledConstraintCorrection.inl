@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/constraint/lagrangian/UncoupledConstraintCorrection.inl>
+#include <sofa/component/constraint/lagrangian/correction/UncoupledConstraintCorrection.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/UncoupledConstraintCorrection.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/constraint/lagrangian/correction/UncoupledConstraintCorrection.inl")
