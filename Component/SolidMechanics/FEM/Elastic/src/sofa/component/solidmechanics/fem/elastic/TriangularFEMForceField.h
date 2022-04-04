@@ -22,6 +22,7 @@
 #pragma once
 
 #include <sofa/component/solidmechanics/fem/elastic/config.h>
+#include <sofa/component/solidmechanics/fem/elastic/TriangleFEMUtils.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -223,31 +224,23 @@ public:
 
 protected :
     /// Forcefield computations
-    void computeDisplacementSmall(Displacement &D, Index elementIndex, const VecCoord &p);
-    void computeDisplacementLarge(Displacement &D, Index elementIndex, const Transformation &R_2_0, const VecCoord &p);
-    void computeStrainDisplacement(StrainDisplacement &J, Index elementIndex, Coord a, Coord b, Coord c );
-    void computeStiffness(StrainDisplacement &J, Stiffness &K, MaterialStiffness &D);
-    void computeStrain(type::Vec<3,Real> &strain, const StrainDisplacement &J, const Displacement &D);
-    void computeStress(type::Vec<3,Real> &stress, const MaterialStiffness &K, const type::Vec<3,Real> &strain);
-    void computeForce(Displacement &F, Index elementIndex, const VecCoord &p);
+    void computeStiffness(Stiffness &K, const StrainDisplacement& J, const MaterialStiffness &D);
     void computePrincipalStrain(Index elementIndex, type::Vec<3,Real> &strain);
     void computePrincipalStress(Index elementIndex, type::Vec<3,Real> &stress);
 
-
     /// f += Kx where K is the stiffness matrix and x a displacement
-    virtual void applyStiffness( VecCoord& f, Real h, const VecCoord& x, const SReal &kFactor );
+    virtual void applyStiffness( VecCoord& f, Real h, const VecCoord& x, const Real &kFactor );
     virtual void computeMaterialStiffness(int i, Index& a, Index& b, Index& c);
 
     ////////////// small displacements method
     void initSmall(int i, Index&a, Index&b, Index&c);
-    void accumulateForceSmall( VecCoord& f, const VecCoord & p, Index elementIndex);
-    void applyStiffnessSmall( VecCoord& f, Real h, const VecCoord& x, const SReal &kFactor );
+    void accumulateForceSmall( VecCoord& f, const VecCoord & p);
+    void applyStiffnessSmall( VecCoord& f, Real h, const VecCoord& x, const Real &kFactor );
 
     ////////////// large displacements method
     void initLarge(int i, Index&a, Index&b, Index&c);
-    void computeRotationLarge( Transformation &r, const VecCoord &p, const Index &a, const Index &b, const Index &c);
-    void accumulateForceLarge( VecCoord& f, const VecCoord & p, Index elementIndex);
-    void applyStiffnessLarge( VecCoord& f, Real h, const VecCoord& x, const SReal &kFactor );
+    void accumulateForceLarge( VecCoord& f, const VecCoord & p);
+    void applyStiffnessLarge( VecCoord& f, Real h, const VecCoord& x, const Real &kFactor );
 
     bool updateMatrix;
 
@@ -295,6 +288,8 @@ public:
 private:
     bool p_computeDrawInfo;
     sofa::helper::ColorMap* p_drawColorMap;
+
+    TriangleFEMUtils<DataTypes> m_triangleUtils;
 };
 
 
