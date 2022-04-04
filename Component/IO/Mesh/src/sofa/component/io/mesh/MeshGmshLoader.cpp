@@ -217,7 +217,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
         file >> cmd;
         if (cmd.length() < 4 || cmd.substr(0, 4) != "$ELM") // can be "$ELM" or "$ELM\r"
         {
-            if (cmd.length() < 9 || cmd.substr(0, 4) != "$Elements") // can be "$ELM" or "$ELM\r"
+            if (cmd.length() < 9 || cmd.substr(0, 9) != "$Elements") // can be "$ELM" or "$ELM\r"
             {
                 msg_error() << "'$ELM' or '$Elements' expected, found '" << cmd << "'";
                 file.close();
