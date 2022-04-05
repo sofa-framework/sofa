@@ -34,12 +34,14 @@ void initSofaUserInteraction()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaUserInteraction") << "SofaUserInteraction is being deprecated;. It will be removed at v23.06. You may use Sofa.Component.Collision.Geometry, Sofa.Component.Collision.Detection.Algorithm, Sofa.Component.Collision.Detection.Intersection and Sofa.Component.Collision.Response.Contact instead.";
+        // msg_deprecated("SofaUserInteraction") << "SofaUserInteraction is being deprecated;. It will be removed at v23.06. You may use Sofa.Component.Collision.Geometry, Sofa.Component.Collision.Detection.Algorithm, Sofa.Component.Collision.Detection.Intersection. Sofa.Component.Collision.Response.Contact, Sofa.Component.UserInteraction.Performer and Sofa.Component.UserInteraction.Controller instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Geometry");
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Detection.Algorithm");
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Detection.Intersection");
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Response.Contact");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.UserInteraction.Performer");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.UserInteraction.Controller");
 
         first = false;
     }

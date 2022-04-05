@@ -19,69 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGraphComponent/initSofaGraphComponent.h>
+#include <sofa/component/userinteraction/configurationsetting/init.h>
 
-#include <sofa/helper/system/PluginManager.h>
-
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
-
-namespace sofa::component
+namespace sofa::component::userinteraction::configurationsetting
 {
-
-void initSofaGraphComponent()
-{
-    static bool first = true;
-    if (first)
-    {        
-        // msg_deprecated("SofaGraphComponent") << "SofaGraphComponent is deprecated. It will be removed at v23.06. Use Sofa.Component.SceneUtility and Sofa.Component.UserInteraction.ConfigurationSetting instead.";
-
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.SceneUtility");
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.UserInteraction.ConfigurationSetting");
-
-        first = false;
-    }
-}
 
 extern "C" {
-    SOFA_SOFAGRAPHCOMPONENT_API void initExternalModule();
-    SOFA_SOFAGRAPHCOMPONENT_API const char* getModuleName();
-    SOFA_SOFAGRAPHCOMPONENT_API const char* getModuleVersion();
-    SOFA_SOFAGRAPHCOMPONENT_API const char* getModuleLicense();
-    SOFA_SOFAGRAPHCOMPONENT_API const char* getModuleDescription();
-    SOFA_SOFAGRAPHCOMPONENT_API const char* getModuleComponentList();
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
 }
 
 void initExternalModule()
 {
-    initSofaGraphComponent();
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
 }
 
 const char* getModuleName()
 {
-    return sofa_tostring(SOFA_TARGET);
+    return MODULE_NAME;
 }
 
-const char* getModuleVersion()
+void init()
 {
-    return sofa_tostring(SOFAGRAPHCOMPONENT_VERSION);
+    initExternalModule();
 }
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This plugin contains contains features about General Visual.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-
-} // namespace sofa::component
+} // namespace sofa::component::userinteraction::configurationsetting

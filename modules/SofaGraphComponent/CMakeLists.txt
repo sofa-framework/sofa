@@ -16,15 +16,7 @@ set(SOURCE_FILES
 
 list(APPEND HEADER_FILES
     ${SOFAGRAPHCOMPONENT_SRC}/Gravity.h
-    ${SOFAGRAPHCOMPONENT_SRC}/AddFrameButtonSetting.h
-    ${SOFAGRAPHCOMPONENT_SRC}/AddRecordedCameraButtonSetting.h
-    ${SOFAGRAPHCOMPONENT_SRC}/AttachBodyButtonSetting.h
-    ${SOFAGRAPHCOMPONENT_SRC}/FixPickedParticleButtonSetting.h
     ${SOFAGRAPHCOMPONENT_SRC}/InteractingBehaviorModel.h
-    ${SOFAGRAPHCOMPONENT_SRC}/MouseButtonSetting.h
-    ${SOFAGRAPHCOMPONENT_SRC}/SofaDefaultPathSetting.h
-    ${SOFAGRAPHCOMPONENT_SRC}/StatsSetting.h
-    ${SOFAGRAPHCOMPONENT_SRC}/ViewerSetting.h
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheck.h
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckDeprecatedComponents.h
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckDuplicatedName.h
@@ -37,14 +29,6 @@ list(APPEND HEADER_FILES
     )
 list(APPEND SOURCE_FILES
     ${SOFAGRAPHCOMPONENT_SRC}/Gravity.cpp
-    ${SOFAGRAPHCOMPONENT_SRC}/AddFrameButtonSetting.cpp
-    ${SOFAGRAPHCOMPONENT_SRC}/AddRecordedCameraButtonSetting.cpp
-    ${SOFAGRAPHCOMPONENT_SRC}/AttachBodyButtonSetting.cpp
-    ${SOFAGRAPHCOMPONENT_SRC}/FixPickedParticleButtonSetting.cpp
-    ${SOFAGRAPHCOMPONENT_SRC}/MouseButtonSetting.cpp
-    ${SOFAGRAPHCOMPONENT_SRC}/SofaDefaultPathSetting.cpp
-    ${SOFAGRAPHCOMPONENT_SRC}/StatsSetting.cpp
-    ${SOFAGRAPHCOMPONENT_SRC}/ViewerSetting.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckDeprecatedComponents.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckDuplicatedName.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckMissingRequiredPlugin.cpp
@@ -59,11 +43,13 @@ list(APPEND SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaSimulationCore SofaBaseUtils SofaBaseCollision)
 
-message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.SceneUtility instead.")
+message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.SceneUtility and Sofa.Component.UserInteraction.ConfigurationSetting instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.SceneUtility REQUIRED)
+sofa_find_package(Sofa.Component.UserInteraction.ConfigurationSetting REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.SceneUtility)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.UserInteraction.ConfigurationSetting)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

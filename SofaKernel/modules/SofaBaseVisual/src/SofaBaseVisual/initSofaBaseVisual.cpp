@@ -34,9 +34,11 @@ void initSofaBaseVisual()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaBaseVisual") << "SofaBaseVisual is deprecated. It will be removed at v23.06. Use Sofa.Component.Visual and ... instead.";
+        // msg_deprecated("SofaBaseVisual") << "SofaBaseVisual is deprecated. It will be removed at v23.06. Use Sofa.Component.Visual and Sofa.Component.UserInteraction.ConfigurationSetting instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Visual");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.UserInteraction.ConfigurationSetting");
+        
         first = false;
     }
 }
