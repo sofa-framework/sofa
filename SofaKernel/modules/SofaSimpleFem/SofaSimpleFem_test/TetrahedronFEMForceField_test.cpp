@@ -490,10 +490,10 @@ public:
             ASSERT_TRUE(tetraFEM.get() != nullptr);
 
             const TetraCorotationalFEM::TetrahedronInformation& tetraInfo = tetraFEM->tetrahedronInfo.getValue()[0];
-            initRot = tetraInfo.initialTransformation;
+            initRot.transpose(tetraInfo.initialTransformation); // TODO check why transposed is stored in this version
             initPosition = tetraInfo.rotatedInitialElements;
 
-            curRot = tetraInfo.rotation;
+            curRot.transpose(tetraInfo.rotation);// TODO check why transposed is stored in this version
 
             stiffnessMat = tetraInfo.materialMatrix;
             strainD = tetraInfo.strainDisplacementTransposedMatrix;
