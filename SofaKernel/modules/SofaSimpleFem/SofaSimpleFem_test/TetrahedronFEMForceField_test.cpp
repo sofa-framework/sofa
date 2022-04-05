@@ -528,7 +528,112 @@ public:
 
     void checkFEMValues(int FEMType)
     {
-        // TODO
+        type::Vec3 grid = type::Vec3(4, 10, 4);
+
+        // load TetrahedronFEMForceField grid
+        createGridFEMScene(FEMType, grid);
+        if (m_root.get() == nullptr)
+            return;
+
+        // perform some steps
+        for (int i = 0; i < 100; i++)
+        {
+            m_simulation->animate(m_root.get(), 0.01);
+        }
+
+
+        Transformation initRot(type::NOINIT);
+        Transformation curRot(type::NOINIT);
+        MaterialStiffness stiffnessMat(type::NOINIT);
+        StrainDisplacement strainD(type::NOINIT);
+        TetraCoord initPosition;
+
+        if (FEMType == 0)
+        {
+            typename TetrahedronFEM::SPtr tetraFEM = m_root->getTreeObject<TetrahedronFEM>();
+            ASSERT_TRUE(tetraFEM.get() != nullptr);
+
+            initRot = tetraFEM->getInitialTetraRotation(100);
+            initPosition = tetraFEM->getRotatedInitialElements(100);
+
+            curRot = tetraFEM->getActualTetraRotation(100);
+
+            stiffnessMat = tetraFEM->getMaterialStiffness(100);
+            strainD = tetraFEM->getStrainDisplacement(100);
+        }
+        else if (FEMType == 1)
+        {
+            typename TetraCorotationalFEM::SPtr tetraFEM = m_root->getTreeObject<TetraCorotationalFEM>();
+            ASSERT_TRUE(tetraFEM.get() != nullptr);
+
+            const TetraCorotationalFEM::TetrahedronInformation& tetraInfo = tetraFEM->tetrahedronInfo.getValue()[100];
+            initRot.transpose(tetraInfo.initialTransformation); // TODO check why transposed is stored in this version
+            initPosition = tetraInfo.rotatedInitialElements;
+
+            curRot = tetraInfo.rotation;
+
+            stiffnessMat = tetraInfo.materialMatrix;
+            strainD = tetraInfo.strainDisplacementTransposedMatrix;
+        }
+        
+
+        Transformation exp_initRot = { Vec3(-1, 0, 0), Vec3(0, -0.8, -0.6), Vec3(0, -0.6, 0.8) };
+        TetraCoord exp_initPos = { Coord(0, 0, 0), Coord(3.33333, 0, 0), Coord(3.33333, 5.55556, 0), Coord(0, 3.55556, 2.66667) };
+
+        Transformation exp_curRot = { Vec3(-1, 8.01488e-06, 0.000541687), Vec3(-0.000320764, -0.814541, -0.580106), Vec3(0.000436576, -0.580106, 0.814541) };
+
+        MaterialStiffness exp_stiffnessMat = { Vec6(2.72596, 1.16827, 1.16827, 0, 0, 0), Vec6(1.16827, 2.72596, 1.16827, 0, 0, 0), Vec6(1.16827, 1.16827, 2.72596, 0, 0, 0),
+            Vec6(0, 0, 0, 0.778846, 0, 0), Vec6(0, 0, 0, 0, 0.778846, 0), Vec6(0, 0, 0, 0, 0, 0.778846) };
+
+        StrainDisplacement exp_strainD = { Vec6(-14.8148, 0, 0, 1.18424e-14, 0, -18.5185),
+            Vec6(0, 1.18424e-14, 0, -14.8148, -18.5185, 0),
+            Vec6(0, 0, -18.5185, 0, 1.18424e-14, -14.8148),
+            Vec6(14.8148, 0, 0, -8.88889, 0, 11.8519),
+            Vec6(0, -8.88889, 0, 14.8148, 11.8519, 0),
+            Vec6(0, 0, 11.8519, 0, -8.88889, 14.8148),
+            Vec6(-0, 0, 0, 8.88889, 0, -11.8519),
+            Vec6(0, 8.88889, 0, -0, -11.8519, 0),
+            Vec6(0, 0, -11.8519, 0, 8.88889, -0),
+            Vec6(0, 0, 0, -1.18424e-14, 0, 18.5185),
+            Vec6(0, -1.18424e-14, 0, 0, 18.5185, 0),
+            Vec6(0, 0, 18.5185, 0, -1.18424e-14, 0) };
+
+        // check rotations
+        for (int i = 0; i < 3; ++i)
+        {
+            for (int j = 0; j < 3; ++j)
+            {
+                EXPECT_NEAR(exp_initRot[i][j], initRot[i][j], 1e-4);
+                EXPECT_NEAR(exp_curRot[i][j], curRot[i][j], 1e-4);
+            }
+        }
+
+        // check position
+        for (int i = 0; i < 4; ++i)
+        {
+            for (int j = 0; j < 3; ++j)
+            {
+                EXPECT_NEAR(exp_initPos[i][j], initPosition[i][j], 1e-4);
+            }
+        }
+
+        // check stiffness
+        for (int i = 0; i < 6; ++i)
+        {
+            for (int j = 0; j < 6; ++j)
+            {
+                EXPECT_NEAR(exp_stiffnessMat[i][j], stiffnessMat[i][j], 1e-4);
+            }
+        }
+
+        // check strain displacement
+        for (int i = 0; i < 12; ++i)
+        {
+            for (int j = 0; j < 6; ++j)
+            {
+                EXPECT_NEAR(exp_strainD[i][j], strainD[i][j], 1e-4);
+            }
+        }
     }
 
 
@@ -661,10 +766,10 @@ TEST_F(TetrahedronFEMForceField3_test, checkInit)
     this->checkInit(0);
 }
 
-//TEST_F(TetrahedronFEMForceField3_test, checkFEMValues)
-//{
-//    this->checkFEMValues(0);
-//}
+TEST_F(TetrahedronFEMForceField3_test, checkFEMValues)
+{
+    this->checkFEMValues(0);
+}
 
 
 
@@ -701,10 +806,10 @@ TEST_F(TetrahedralCorotationalFEMForceField3_test, checkInit)
     this->checkInit(1);
 }
 
-//TEST_F(TetrahedralCorotationalFEMForceField3_test, checkFEMValues)
-//{
-//    this->checkFEMValues(1);
-//}
+TEST_F(TetrahedralCorotationalFEMForceField3_test, checkFEMValues)
+{
+    this->checkFEMValues(1);
+}
 
 
 
@@ -748,22 +853,21 @@ TEST_F(FastTetrahedralCorotationalForceField3_test, checkDefaultAttributes)
 
 
 // performances tests. Disabled by default
+TEST_F(TetrahedronFEMForceField3_test, DISABLED_testFEMPerformance)
+{
+    this->testFEMPerformance(0);
+}
 
-//TEST_F(TetrahedronFEMForceField3_test, DISABLED_testFEMPerformance)
-//{
-//    this->testFEMPerformance(0);
-//}
-//
-//TEST_F(TetrahedralCorotationalFEMForceField3_test, DISABLED_testFEMPerformance)
-//{
-//    this->testFEMPerformance(1);
-//}
-//
-//
-//TEST_F(FastTetrahedralCorotationalForceField3_test, DISABLED_testFEMPerformance)
-//{
-//    this->testFEMPerformance(2);
-//}
+TEST_F(TetrahedralCorotationalFEMForceField3_test, DISABLED_testFEMPerformance)
+{
+    this->testFEMPerformance(1);
+}
+
+
+TEST_F(FastTetrahedralCorotationalForceField3_test, DISABLED_testFEMPerformance)
+{
+    this->testFEMPerformance(2);
+}
 
 
 } // namespace sofa
