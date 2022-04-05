@@ -22,9 +22,9 @@
 #pragma once
 
 #include <sofa/gpu/cuda/CudaTypes.h>
-#include <SofaMiscFem/FastTetrahedralCorotationalForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/FastTetrahedralCorotationalForceField.h>
 
-namespace sofa::component::forcefield
+namespace sofa::component::solidmechanics::fem::elastic
 {
 
 template <class TCoord, class TDeriv, class TReal>
@@ -104,4 +104,4 @@ template <>
 void FastTetrahedralCorotationalForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace sofa::component::forcefield
+} // namespace sofa::component::solidmechanics::fem::elastic

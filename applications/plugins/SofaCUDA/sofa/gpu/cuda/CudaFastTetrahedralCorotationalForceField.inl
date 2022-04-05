@@ -22,7 +22,7 @@
 #pragma once
 
 #include <sofa/gpu/cuda/CudaFastTetrahedralCorotationalForceField.h>
-#include <SofaMiscFem/FastTetrahedralCorotationalForceField.inl>
+#include <sofa/component/solidmechanics/fem/elastic/FastTetrahedralCorotationalForceField.inl>
 
 namespace sofa::gpu::cuda
 {
@@ -52,7 +52,7 @@ void FastTetrahedralCorotationalForceFieldCuda3d_addDForce(unsigned int nbedges,
 
 } // namespace sofa::gpu::cuda
 
-namespace sofa::component::forcefield 
+namespace sofa::component::solidmechanics::fem::elastic
 {
 
 using namespace gpu::cuda;
@@ -189,4 +189,4 @@ void FastTetrahedralCorotationalForceField<gpu::cuda::CudaVec3dTypes>::addDForce
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace sofa::component::forcefield
+} // namespace sofa::component::solidmechanics::fem::elastic

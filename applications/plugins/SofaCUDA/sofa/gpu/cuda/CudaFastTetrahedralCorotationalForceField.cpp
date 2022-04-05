@@ -23,24 +23,25 @@
 #include <sofa/gpu/cuda/CudaFastTetrahedralCorotationalForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::forcefield
+namespace sofa::component::solidmechanics::fem::elastic
 {
+using namespace sofa::gpu::cuda;
 
 template class SOFA_GPU_CUDA_API FastTetrahedralCorotationalForceField<sofa::gpu::cuda::CudaVec3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
 template class SOFA_GPU_CUDA_API FastTetrahedralCorotationalForceField<sofa::gpu::cuda::CudaVec3dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // sofa::component::forcefield
+} // namespace sofa::component::solidmechanics::fem::elastic
 
 
 namespace sofa::gpu::cuda
 {
 
 int FastTetrahedralCorotationalForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-    .add< component::forcefield::FastTetrahedralCorotationalForceField<CudaVec3fTypes> >()
+    .add< sofa::component::solidmechanics::fem::elastic::FastTetrahedralCorotationalForceField<CudaVec3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-    .add< component::forcefield::FastTetrahedralCorotationalForceField<CudaVec3dTypes> >()
+    .add< sofa::component::solidmechanics::fem::elastic::FastTetrahedralCorotationalForceField<CudaVec3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
     ;
 
