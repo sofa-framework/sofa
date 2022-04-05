@@ -535,11 +535,27 @@ public:
         if (m_root.get() == nullptr)
             return;
 
+        // Access mstate
+        typename MState::SPtr dofs = m_root->getTreeObject<MState>();
+        ASSERT_TRUE(dofs.get() != nullptr);
+
+        // Access dofs
+        const VecCoord& positions = dofs->x.getValue();
+        ASSERT_EQ(positions.size(), 4 * 10 * 4);
+
+        EXPECT_NEAR(positions[159][0], 10, 1e-4);
+        EXPECT_NEAR(positions[159][1], 40, 1e-4);
+        EXPECT_NEAR(positions[159][2], 30, 1e-4);
+
         // perform some steps
         for (int i = 0; i < 100; i++)
         {
             m_simulation->animate(m_root.get(), 0.01);
         }
+
+        EXPECT_NEAR(positions[159][0], 9.99985, 1e-4);
+        EXPECT_NEAR(positions[159][1], 45.0487, 1e-4);
+        EXPECT_NEAR(positions[159][2], 30.0011, 1e-4);
 
 
         Transformation initRot(type::NOINIT);
