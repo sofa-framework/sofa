@@ -52,7 +52,7 @@ void generateMatrix(sofa::linearalgebra::CompressedRowSparseMatrix<TBlock, TVecB
 }
 
 /**
- * Two random matrices A and B are generated randomly as CompressedRowSparseMatrix.
+ * Two matrices A and B are generated randomly as CompressedRowSparseMatrix.
  * The test checks the consistency of the results of A^T * B, computed using 3 methods:
  * 1) CompressedRowSparseMatrix::mulTranspose
  * 2) Both A and B are converted to Eigen::SparseMatrix, then A.transpose() * B
