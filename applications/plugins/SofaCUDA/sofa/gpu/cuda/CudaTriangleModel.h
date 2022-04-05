@@ -28,8 +28,8 @@
 namespace sofa::gpu::cuda
 {
 
-SOFA_CUDA_ATTRIBUTE_DEPRECATED("v22.06 (PR #2673)", "CudaTriangleCollisionModel")
-CudaDeprecatedAndRemoved CudaTriangleModel;
+//SOFA_CUDA_ATTRIBUTE_DEPRECATED("v22.06 (PR #2673)", "CudaTriangleCollisionModel")
+//CudaDeprecatedAndRemoved CudaTriangleModel;
 
 using CudaTriangleCollisionModel = sofa::component::collision::TriangleCollisionModel<CudaVec3Types>;
 using CudaTriangleCollisionModelf1 = sofa::component::collision::TriangleCollisionModel<CudaVec3f1Types>;
