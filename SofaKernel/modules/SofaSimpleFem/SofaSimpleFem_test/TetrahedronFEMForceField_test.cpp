@@ -476,7 +476,7 @@ public:
             typename TetraCorotationalFEM::SPtr tetraFEM = m_root->getTreeObject<TetraCorotationalFEM>();
             ASSERT_TRUE(tetraFEM.get() != nullptr);
 
-            const TetraCorotationalFEM::TetrahedronInformation& tetraInfo = tetraFEM->tetrahedronInfo.getValue()[0];
+            const typename TetraCorotationalFEM::TetrahedronInformation& tetraInfo = tetraFEM->tetrahedronInfo.getValue()[0];
             initRot.transpose(tetraInfo.initialTransformation); // TODO check why transposed is stored in this version
             initPosition = tetraInfo.rotatedInitialElements;
 
@@ -566,7 +566,7 @@ public:
             typename TetraCorotationalFEM::SPtr tetraFEM = m_root->getTreeObject<TetraCorotationalFEM>();
             ASSERT_TRUE(tetraFEM.get() != nullptr);
 
-            const TetraCorotationalFEM::TetrahedronInformation& tetraInfo = tetraFEM->tetrahedronInfo.getValue()[100];
+            const typename TetraCorotationalFEM::TetrahedronInformation& tetraInfo = tetraFEM->tetrahedronInfo.getValue()[100];
             initRot.transpose(tetraInfo.initialTransformation); // TODO check why transposed is stored in this version
             initPosition = tetraInfo.rotatedInitialElements;
 
