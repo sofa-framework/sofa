@@ -27,14 +27,14 @@
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaMeshCollision/PointModel.h>
+#include <sofa/component/collision/model/SphereModel.h>
+#include <sofa/component/collision/model/PointModel.h>
+#include <sofa/component/collision/model/TriangleModel.h>
 
 #include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 
 /// a class to manage the handling of topological changes which have been requested from the Collision Model
@@ -124,19 +124,19 @@ private:
      *
      * @return bool - true if incision has been performed.
      */
-    bool incisionTriangleModel(TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model1,
+    bool incisionTriangleModel(collision::model::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model1,
                                Index idx1,
                                const sofa::type::Vec3& firstPoint,
-                               TriangleCollisionModel<sofa::defaulttype::Vec3Types> *model2,
+                               collision::model::TriangleCollisionModel<sofa::defaulttype::Vec3Types> *model2,
                                Index idx2,
                                const sofa::type::Vec3& secondPoint,
                                int snapingValue = 0,
                                int snapingBorderValue = 0);
 
 
-    Index removeItemsFromTriangleModel(sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const;
-    Index removeItemsFromPointModel(sofa::component::collision::PointCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const;
-    Index removeItemsFromSphereModel(sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const;
+    Index removeItemsFromTriangleModel(sofa::component::collision::model::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const;
+    Index removeItemsFromPointModel(sofa::component::collision::model::PointCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const;
+    Index removeItemsFromSphereModel(sofa::component::collision::model::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const;
 
 
 private:
@@ -158,4 +158,4 @@ private:
     }	incision;
 };
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::userinteraction::performer

@@ -26,7 +26,7 @@
 #include <sofa/core/BaseMapping.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 
 template <class DataTypes>
@@ -168,7 +168,7 @@ bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
         }
     }
 
-    using sofa::component::interactionforcefield::StiffSpringForceField;
+    using sofa::component::solidmechanics::spring::StiffSpringForceField;
 
     m_forcefield = sofa::core::objectmodel::New< StiffSpringForceField<DataTypes> >(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision);
     StiffSpringForceField< DataTypes >* stiffspringforcefield = static_cast< StiffSpringForceField< DataTypes >* >(m_forcefield.get());
@@ -186,4 +186,4 @@ bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
     return true;
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::userinteraction::performer

@@ -23,7 +23,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/Factory.inl>
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 template class SOFA_COMPONENT_USERINTERACTION_PERFORMER_API  SuturePointPerformer<defaulttype::Vec3Types>;
 
@@ -31,4 +31,4 @@ template class SOFA_COMPONENT_USERINTERACTION_PERFORMER_API  SuturePointPerforme
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, SuturePointPerformer<defaulttype::Vec3Types> >  SuturePointPerformerVec3Class("SuturePoints",true);
 
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::userinteraction::performer

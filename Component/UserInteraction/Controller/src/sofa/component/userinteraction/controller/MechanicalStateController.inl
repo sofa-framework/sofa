@@ -38,7 +38,7 @@ using sofa::simulation::mechanicalvisitor::MechanicalProjectPositionAndVelocityV
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionAndVelocityVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor;
 
-namespace sofa::component::controller
+namespace sofa::component::userinteraction::controller
 {
 
 template <class DataTypes>

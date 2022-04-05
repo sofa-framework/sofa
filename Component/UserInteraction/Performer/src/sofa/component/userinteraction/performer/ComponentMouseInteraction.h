@@ -24,11 +24,12 @@
 
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/component/userinteraction/performer/MouseInteractor.h>
-#include <SofaBaseMechanics/IdentityMapping.h>
+#include <sofa/component/mapping/linear/IdentityMapping.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/core/Mapping.h>
 #include <sofa/simulation/fwd.h>
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 
 
@@ -61,7 +62,7 @@ public:
     //Components
     simulation::NodeSPtr nodeRayPick;
     sofa::core::behavior::BaseMechanicalState::SPtr mouseInSofa;
-    sofa::component::collision::BaseMouseInteractor::SPtr mouseInteractor;
+    sofa::component::userinteraction::performer::BaseMouseInteractor::SPtr mouseInteractor;
 };
 
 
@@ -69,10 +70,10 @@ public:
 template <class DataTypes>
 class TComponentMouseInteraction : public ComponentMouseInteraction
 {
-    typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > MousePosition;
-    typedef sofa::component::container::MechanicalObject< DataTypes > MouseContainer;
-    typedef sofa::component::collision::MouseInteractor< DataTypes > Interactor;
-    typedef sofa::component::mapping::IdentityMapping< defaulttype::Vec3Types, DataTypes > IdentityMechanicalMapping;
+    typedef sofa::component::statecontainer::MechanicalObject< defaulttype::Vec3Types > MousePosition;
+    typedef sofa::component::statecontainer::MechanicalObject< DataTypes > MouseContainer;
+    typedef sofa::component::userinteraction::performer::MouseInteractor< DataTypes > Interactor;
+    typedef sofa::component::mapping::linear::IdentityMapping< defaulttype::Vec3Types, DataTypes > IdentityMechanicalMapping;
     typedef typename sofa::core::Mapping< defaulttype::Vec3Types, DataTypes >::SPtr MouseMapping;
 
 public:
@@ -91,7 +92,7 @@ extern template class SOFA_COMPONENT_USERINTERACTION_PERFORMER_API TComponentMou
 extern template class SOFA_COMPONENT_USERINTERACTION_PERFORMER_API TComponentMouseInteraction<defaulttype::Rigid3Types>;
 
 #endif
-} // namespace sofa::component::collision
+} // namespace sofa::component::userinteraction::performer
 
 
 

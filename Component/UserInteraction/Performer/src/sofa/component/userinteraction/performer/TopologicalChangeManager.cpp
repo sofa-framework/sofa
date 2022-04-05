@@ -21,33 +21,32 @@
 ******************************************************************************/
 #include "TopologicalChangeManager.h"
 
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaMeshCollision/PointModel.h>
-#include <SofaBaseCollision/SphereModel.h>
 
 #include <sofa/simulation/Node.h>
 
 #include <sofa/core/topology/TopologicalMapping.h>
-
-#include <SofaBaseTopology/PointSetTopologyContainer.h>
-#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
-#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/QuadSetTopologyContainer.h>
-#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
-
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <SofaTopologyMapping/Hexa2TetraTopologicalMapping.h>
+#include <sofa/component/topology/container/dynamic/PointSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/QuadSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/HexahedronSetTopologyContainer.h>
+#include <sofa/component/topology/mapping/Hexa2TetraTopologicalMapping.h>
+#include <sofa/component/collision/model/SphereModel.h>
+#include <sofa/component/collision/model/PointModel.h>
+#include <sofa/component/collision/model/TriangleModel.h>
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 
 using namespace sofa::type;
 using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
+using namespace sofa::component::topology::container::dynamic;
+using namespace sofa::component::collision::model;
 using type::vector;
 
 TopologicalChangeManager::TopologicalChangeManager()
@@ -60,7 +59,7 @@ TopologicalChangeManager::~TopologicalChangeManager()
 {
 }
 
-Index TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const
+Index TopologicalChangeManager::removeItemsFromTriangleModel(TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const
 {
     sofa::core::topology::BaseMeshTopology* topo_curr;
     topo_curr = model->getCollisionTopology();
@@ -87,7 +86,7 @@ Index TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::co
     else
     {
         //Quick HACK for Hexa2TetraMapping
-        sofa::component::topology::Hexa2TetraTopologicalMapping* badMapping;
+        sofa::component::topology::mapping::Hexa2TetraTopologicalMapping* badMapping;
         model->getContext()->get(badMapping, sofa::core::objectmodel::BaseContext::SearchUp);
         if(badMapping) //stop process
         {
@@ -168,7 +167,7 @@ Index TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::co
 }
 
 
-Index TopologicalChangeManager::removeItemsFromPointModel(sofa::component::collision::PointCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const
+Index TopologicalChangeManager::removeItemsFromPointModel(PointCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const
 {
     sofa::core::topology::BaseMeshTopology* topo_curr;
     topo_curr = model->getCollisionTopology();
@@ -216,7 +215,7 @@ Index TopologicalChangeManager::removeItemsFromPointModel(sofa::component::colli
     else
     {
         //Quick HACK for Hexa2TetraMapping
-        sofa::component::topology::Hexa2TetraTopologicalMapping* badMapping;
+        sofa::component::topology::mapping::Hexa2TetraTopologicalMapping* badMapping;
         model->getContext()->get(badMapping, sofa::core::objectmodel::BaseContext::SearchUp);
         if (badMapping) //stop process
         {
@@ -292,7 +291,7 @@ Index TopologicalChangeManager::removeItemsFromPointModel(sofa::component::colli
 }
 
 
-Index TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const
+Index TopologicalChangeManager::removeItemsFromSphereModel(SphereCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const
 {
     sofa::core::topology::BaseMeshTopology* topo_curr;
     topo_curr = model->getCollisionTopology();
@@ -499,13 +498,13 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleCollisionModel<sofa
     {
 
         // -- STEP 2: Try to catch the topology associated to the detected object (a TriangleSetTopology is expected)
-        sofa::component::topology::TriangleSetTopologyContainer* triangleContainer;
+        TriangleSetTopologyContainer* triangleContainer;
         currentTopology->getContext()->get(triangleContainer);
 
-        sofa::component::topology::TriangleSetTopologyModifier* triangleModifier;
+        TriangleSetTopologyModifier* triangleModifier;
         currentTopology->getContext()->get(triangleModifier);
 
-        sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeometry;
+        TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeometry;
         currentTopology->getContext()->get(triangleGeometry);
 
 
@@ -593,4 +592,4 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleCollisionModel<sofa
 }
 
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::userinteraction::performer

@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <map>
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 
 template <class DataTypes>
@@ -35,4 +35,4 @@ void MouseInteractor<DataTypes>::init()
     assert(mouseInSofa);
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::userinteraction::performer

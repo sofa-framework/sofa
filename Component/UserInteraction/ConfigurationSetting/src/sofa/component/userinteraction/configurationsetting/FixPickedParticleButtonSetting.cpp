@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::component::userinteraction::configurationsetting
 {
 
 int FixPickedParticleButtonSettingClass = core::RegisterObject("Fix a picked particle in space")
@@ -37,4 +37,4 @@ FixPickedParticleButtonSetting::FixPickedParticleButtonSetting():
 {
 }
 
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::component::userinteraction::configurationsetting

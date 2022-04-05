@@ -21,23 +21,17 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/userinteraction/performer/ComponentMouseInteraction.h>
-#include <sofa/core/visual/VisualParams.h>
 
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/component/collision/model/RayModel.h>
 #include <sofa/component/userinteraction/performer/MouseInteractor.inl>
-#include <SofaBaseMechanics/IdentityMapping.inl>
+#include <sofa/component/mapping/linear/IdentityMapping.inl>
 
-#include <sofa/simulation/InitVisitor.h>
-
-#include <sofa/type/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 
-using sofa::component::collision::BodyPicked;
+using sofa::component::userinteraction::performer::BodyPicked;
 
 template <class DataTypes>
 void TComponentMouseInteraction<DataTypes>::createInteractionComponents( sofa::simulation::Node* parent,  sofa::simulation::Node* current)
@@ -75,4 +69,4 @@ bool TComponentMouseInteraction<DataTypes>::isCompatible( core::objectmodel::Bas
     return (dynamic_cast<MouseContainer*>(context->getMechanicalState()) != nullptr);
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::userinteraction::performer

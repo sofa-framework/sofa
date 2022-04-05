@@ -26,7 +26,7 @@
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/type/Vec.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::component::userinteraction::configurationsetting
 {
 
 ///Class for the configuration of stats settings.
@@ -54,4 +54,4 @@ public:
 
 };
 
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::component::userinteraction::configurationsetting

@@ -27,7 +27,7 @@
 #include <sofa/type/Vec.h>
 #include <sofa/helper/OptionsGroup.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::component::userinteraction::configurationsetting
 {
 
 ///Class for the configuration of viewer settings.
@@ -61,4 +61,4 @@ public:
                                                              */
 };
 
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::component::userinteraction::configurationsetting

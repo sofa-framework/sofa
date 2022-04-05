@@ -33,7 +33,7 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 
 
-namespace sofa::component::controller
+namespace sofa::component::userinteraction::controller
 {
 
 
@@ -90,4 +90,4 @@ void Controller::handleEvent(core::objectmodel::Event *event)
     }
 }
 
-} //namespace sofa::component::controller
+} //namespace sofa::component::userinteraction::controller

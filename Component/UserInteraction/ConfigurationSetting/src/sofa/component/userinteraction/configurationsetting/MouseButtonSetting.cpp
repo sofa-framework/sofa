@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::component::userinteraction::configurationsetting
 {
 
 MouseButtonSetting::MouseButtonSetting():
@@ -34,4 +34,4 @@ MouseButtonSetting::MouseButtonSetting():
     button.setValue(buttonGroup);
 }
 
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::component::userinteraction::configurationsetting

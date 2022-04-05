@@ -24,8 +24,9 @@
 
 #include <sofa/component/userinteraction/performer/InteractionPerformer.h>
 
-#include <SofaDeformable/StiffSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
 #include <sofa/component/userinteraction/performer/MouseInteractor.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/simulation/Node.h>
 
 #include <unordered_map>
@@ -36,7 +37,7 @@ namespace sofa::simulation
     class Node;
 }
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 
 class FixParticlePerformerConfiguration
@@ -51,8 +52,8 @@ template <class DataTypes>
 class FixParticlePerformer: public TInteractionPerformer<DataTypes>, public FixParticlePerformerConfiguration
 {
 public:
-    typedef sofa::component::interactionforcefield::StiffSpringForceField< DataTypes >   MouseForceField;
-    typedef sofa::component::container::MechanicalObject< DataTypes >         MouseContainer;
+    typedef sofa::component::solidmechanics::spring::StiffSpringForceField< DataTypes >   MouseForceField;
+    typedef sofa::component::statecontainer::MechanicalObject< DataTypes >         MouseContainer;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
 
@@ -123,4 +124,4 @@ extern template class SOFA_COMPONENT_USERINTERACTION_PERFORMER_API FixParticlePe
 #endif
 
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::userinteraction::performer

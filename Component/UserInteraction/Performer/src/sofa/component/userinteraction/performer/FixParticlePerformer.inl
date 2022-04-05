@@ -28,7 +28,7 @@
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 
 template <class DataTypes>
@@ -107,7 +107,7 @@ FixParticlePerformer<DataTypes>::FixParticlePerformer(BaseMouseInteractor *i):TI
 
 
 template <class DataTypes>
-sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<DataTypes>::getFixationPoints(const BodyPicked &b, type::vector<Index> &points, Coord &fixPoint)
+sofa::component::statecontainer::MechanicalObject< DataTypes >* FixParticlePerformer<DataTypes>::getFixationPoints(const BodyPicked &b, type::vector<Index> &points, Coord &fixPoint)
 {
     const auto idx=b.indexCollisionElement;
     MouseContainer* collisionState=0;
@@ -138,4 +138,4 @@ sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<
     return collisionState;
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::userinteraction::performer

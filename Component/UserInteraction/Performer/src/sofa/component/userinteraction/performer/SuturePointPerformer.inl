@@ -27,7 +27,7 @@
 #include <sofa/component/collision/model/TriangleModel.h>
 
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 
 template <class DataTypes>
@@ -202,4 +202,4 @@ SuturePointPerformer<DataTypes>::~SuturePointPerformer()
         FixObject->removeConstraint(fixedIndex);
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::userinteraction::performer

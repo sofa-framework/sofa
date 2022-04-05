@@ -26,7 +26,7 @@
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/component/userinteraction/configurationsetting/MouseButtonSetting.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::component::userinteraction::configurationsetting
 {
 
 class SOFA_COMPONENT_USERINTERACTION_CONFIGURATIONSETTING_API FixPickedParticleButtonSetting: public MouseButtonSetting
@@ -41,4 +41,4 @@ public:
 
 };
 
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::component::userinteraction::configurationsetting

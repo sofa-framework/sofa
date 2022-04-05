@@ -32,10 +32,10 @@ using namespace sofa::simulation;
 
 namespace sofa::helper
 {
-    template class SOFA_COMPONENT_USERINTERACTION_PERFORMER_API Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
+    template class SOFA_COMPONENT_USERINTERACTION_PERFORMER_API Factory<std::string, sofa::component::userinteraction::performer::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
 }
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 
 
@@ -95,4 +95,4 @@ helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TCo
 helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<defaulttype::Rigid3Types> > ComponentMouseInteractionRigid3Class ("MouseSpringRigid3",true);
 
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::userinteraction::performer

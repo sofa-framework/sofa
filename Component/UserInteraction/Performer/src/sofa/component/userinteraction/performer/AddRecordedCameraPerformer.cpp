@@ -34,7 +34,7 @@
 
 using namespace sofa::core::objectmodel;
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 
 void AddRecordedCameraPerformer::start()
@@ -65,4 +65,4 @@ void AddRecordedCameraPerformer::start()
 
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AddRecordedCameraPerformer> AddRecordedCameraPerformerClass("AddRecordedCamera");
 
-}// namespace sofa::component::collision
+}// namespace sofa::component::userinteraction::performer

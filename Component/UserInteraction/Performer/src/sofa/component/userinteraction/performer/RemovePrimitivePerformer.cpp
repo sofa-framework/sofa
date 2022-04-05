@@ -23,7 +23,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/Factory.inl>
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 
 template class SOFA_COMPONENT_USERINTERACTION_PERFORMER_API RemovePrimitivePerformer<defaulttype::Vec3Types>;
@@ -32,4 +32,4 @@ template class SOFA_COMPONENT_USERINTERACTION_PERFORMER_API RemovePrimitivePerfo
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, RemovePrimitivePerformer<defaulttype::Vec3Types> >  RemovePrimitivePerformerVec3Class("RemovePrimitive",true);
 
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::userinteraction::performer

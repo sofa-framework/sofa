@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::component::userinteraction::configurationsetting
 {
 
 int AddRecordedCameraButtonSettingClass = core::RegisterObject("Save Camera's View Point Button configuration")
@@ -38,4 +38,4 @@ int StartNavigationButtonSettingClass = core::RegisterObject("Start Navigation B
         .addAlias("StartNavigationButton")
         ;
 
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::component::userinteraction::configurationsetting

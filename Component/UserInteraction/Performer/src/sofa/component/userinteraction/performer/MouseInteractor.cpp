@@ -25,7 +25,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 
 int MouseInteractorClass = core::RegisterObject("Perform tasks related to the interaction with the mouse")
@@ -106,4 +106,4 @@ void BaseMouseInteractor::draw(const core::visual::VisualParams* vparams)
     }
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::userinteraction::performer

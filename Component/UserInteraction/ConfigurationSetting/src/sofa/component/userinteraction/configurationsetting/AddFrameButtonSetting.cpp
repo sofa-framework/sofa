@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::component::userinteraction::configurationsetting
 {
 
 int AddFrameButtonSettingClass = core::RegisterObject("Add a frame to a skinned model")
@@ -36,4 +36,4 @@ AddFrameButtonSetting::AddFrameButtonSetting()
 {
 }
 
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::component::userinteraction::configurationsetting

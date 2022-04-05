@@ -23,14 +23,12 @@
 #include <sofa/component/userinteraction/performer/config.h>
 
 #include <sofa/component/userinteraction/performer/InteractionPerformer.h>
-#include <SofaBaseCollision/BaseContactMapper.h>
-#include <sofa/core/behavior/BaseForceField.h>
-#include <SofaDeformable/SpringForceField.h>
-#include <SofaDeformable/StiffSpringForceField.h>
 #include <sofa/component/userinteraction/configurationsetting/AttachBodyButtonSetting.h>
+#include <sofa/component/collision/response/mapper/BaseContactMapper.h>
+#include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/visual/DisplayFlags.h>
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 
 struct BodyPicked;
@@ -39,7 +37,7 @@ template <class DataTypes>
 class AttachBodyPerformer: public TInteractionPerformer<DataTypes>
 {
 public:
-    typedef sofa::component::collision::BaseContactMapper< DataTypes >        MouseContactMapper;
+    typedef collision::response::mapper::BaseContactMapper< DataTypes >        MouseContactMapper;
     typedef sofa::core::behavior::MechanicalState< DataTypes >         MouseContainer;
     typedef sofa::core::behavior::BaseForceField              MouseForceField;
 
@@ -90,4 +88,4 @@ extern template class SOFA_COMPONENT_USERINTERACTION_PERFORMER_API  AttachBodyPe
 extern template class SOFA_COMPONENT_USERINTERACTION_PERFORMER_API  AttachBodyPerformer<defaulttype::Rigid3Types>;
 #endif
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::userinteraction::performer

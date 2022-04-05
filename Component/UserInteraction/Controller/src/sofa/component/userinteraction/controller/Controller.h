@@ -36,7 +36,7 @@ namespace sofa::core::objectmodel
     class GUIEvent;
 }
 
-namespace sofa::component::controller
+namespace sofa::component::userinteraction::controller
 {
 
 /**

@@ -26,7 +26,7 @@
 #include <sofa/component/collision/model/TriangleModel.h>
 #include <sofa/component/collision/model/SphereModel.h>
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 using namespace sofa::component::collision::model;
 
@@ -40,4 +40,4 @@ int sphereFixParticle = FixParticlePerformer3d::RegisterSupportedModel<SphereCol
 int rigidSphereFixParticle = FixParticlePerformer3d::RegisterSupportedModel<SphereCollisionModel<defaulttype::Rigid3Types>>(&FixParticlePerformer3d::getFixationPointsSphere);
 
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::userinteraction::performer

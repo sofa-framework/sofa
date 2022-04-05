@@ -26,7 +26,7 @@
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/helper/OptionsGroup.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::component::userinteraction::configurationsetting
 {
 
 class SOFA_COMPONENT_USERINTERACTION_CONFIGURATIONSETTING_API MouseButtonSetting: public core::objectmodel::ConfigurationSetting
@@ -43,4 +43,4 @@ public:
 
 };
 
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::component::userinteraction::configurationsetting

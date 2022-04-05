@@ -24,7 +24,7 @@
 #include <sofa/core/topology/TopologicalMapping.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/topology/BaseTopology.h>
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 
 template <class DataTypes>
@@ -735,4 +735,4 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
 }
 
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::userinteraction::performer

@@ -27,7 +27,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
-namespace sofa::component::controller
+namespace sofa::component::userinteraction::controller
 {
 
 

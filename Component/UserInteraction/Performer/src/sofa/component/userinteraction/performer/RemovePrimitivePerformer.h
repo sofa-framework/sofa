@@ -29,7 +29,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/CollisionElement.h>
 */
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 
 /** Class to configure primitive removal. Several parameters:
@@ -127,7 +127,7 @@ protected:
 
 private:
     /// Class containing removal functions (given collision model)
-    sofa::component::collision::TopologicalChangeManager topologyChangeManager;
+    sofa::component::userinteraction::performer::TopologicalChangeManager topologyChangeManager;
     /// Point to collision class
     core::behavior::MechanicalState<DataTypes>* mstateCollision;
     /// Enum storing the type to current topolgy: TRIANGLE, QUAD, TETRAHEDRON or HEXAHEDRON
@@ -141,4 +141,4 @@ extern template class SOFA_COMPONENT_USERINTERACTION_PERFORMER_API RemovePrimiti
 
 #endif
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::userinteraction::performer

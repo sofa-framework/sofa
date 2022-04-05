@@ -21,12 +21,15 @@
 ******************************************************************************/
 #pragma once
 #include <sofa/component/userinteraction/performer/config.h>
+
 #include <sofa/component/userinteraction/performer/InteractionPerformer.h>
 #include <sofa/component/collision/model/RayModel.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/core/BehaviorModel.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-namespace sofa::component::collision
+
+namespace sofa::component::userinteraction::performer
 {
 
 /** @brief Represents a point on an object.
@@ -103,7 +106,7 @@ class MouseInteractor : public BaseMouseInteractor
 public:
     SOFA_CLASS(SOFA_TEMPLATE(MouseInteractor,DataTypes),BaseMouseInteractor);
 
-    typedef sofa::component::container::MechanicalObject< DataTypes > MouseContainer;
+    typedef sofa::component::statecontainer::MechanicalObject< DataTypes > MouseContainer;
     typedef typename DataTypes::Coord Coord;
 public:
     MouseInteractor():mouseInSofa(nullptr) {}
@@ -126,4 +129,4 @@ extern template class SOFA_COMPONENT_USERINTERACTION_PERFORMER_API MouseInteract
 
 
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::userinteraction::performer

@@ -26,7 +26,7 @@
 #include <sofa/component/userinteraction/performer/InteractionPerformer.h>
 
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 
 class SOFA_COMPONENT_USERINTERACTION_PERFORMER_API StartNavigationPerformer: public InteractionPerformer
@@ -43,4 +43,4 @@ public:
 
 };
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::userinteraction::performer

@@ -30,7 +30,7 @@ namespace sofa::component::configurationsetting
     class MouseButtonSetting;
 }
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 
 class BaseMouseInteractor;
@@ -82,9 +82,9 @@ public:
 
 };
 
-} //namespace sofa::component::collision
+} //namespace sofa::component::userinteraction::performer
 
 namespace sofa::helper
 {
-extern template class SOFA_COMPONENT_USERINTERACTION_PERFORMER_API Factory<std::string, component::collision::InteractionPerformer, component::collision::BaseMouseInteractor*>;
+extern template class SOFA_COMPONENT_USERINTERACTION_PERFORMER_API Factory<std::string, sofa::component::userinteraction::performer::InteractionPerformer, sofa::component::userinteraction::performer::BaseMouseInteractor*>;
 } //namespace sofa::helper

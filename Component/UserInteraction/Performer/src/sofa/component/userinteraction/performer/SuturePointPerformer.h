@@ -22,14 +22,14 @@
 #pragma once
 #include <sofa/component/userinteraction/performer/config.h>
 
-#include <sofa/component/userinteraction/performer/InteractionPerformer.h>
-#include <SofaDeformable/StiffSpringForceField.h>
-#include <SofaDeformable/SpringForceField.h>
-#include <SofaBoundaryCondition/FixedConstraint.h>
+#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/SpringForceField.h>
+#include <sofa/component/constraint/projective/FixedConstraint.h>
 
+#include <sofa/component/userinteraction/performer/InteractionPerformer.h>
 #include <sofa/component/userinteraction/performer/MouseInteractor.h>
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 
 class SuturePointPerformerConfiguration
@@ -49,9 +49,9 @@ class SOFA_COMPONENT_USERINTERACTION_PERFORMER_API SuturePointPerformer: public 
 {
 public:
     typedef typename DataTypes::Real Real;
-    typedef sofa::component::interactionforcefield::LinearSpring<Real> Spring;
-    typedef sofa::component::interactionforcefield::StiffSpringForceField<DataTypes> SpringObjectType;
-    typedef sofa::component::projectiveconstraintset::FixedConstraint<DataTypes> FixObjectType;
+    typedef sofa::component::solidmechanics::spring::LinearSpring<Real> Spring;
+    typedef sofa::component::solidmechanics::spring::StiffSpringForceField<DataTypes> SpringObjectType;
+    typedef sofa::component::constraint::projective::FixedConstraint<DataTypes> FixObjectType;
 
     SuturePointPerformer(BaseMouseInteractor *i);
     ~SuturePointPerformer();
@@ -75,4 +75,4 @@ extern template class SOFA_COMPONENT_USERINTERACTION_PERFORMER_API  SuturePointP
 
 #endif
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::userinteraction::performer

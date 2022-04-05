@@ -25,14 +25,12 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/Factory.inl>
-#include <SofaRigid/JointSpringForceField.inl>
-#include <SofaDeformable/SpringForceField.inl>
-#include <SofaDeformable/StiffSpringForceField.inl>
+#include <sofa/component/solidmechanics/spring/JointSpringForceField.inl>
+#include <sofa/component/solidmechanics/spring/StiffSpringForceField.inl>
 
-using namespace sofa::component::interactionforcefield;
 using namespace sofa::core::objectmodel;
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 
 template class SOFA_COMPONENT_USERINTERACTION_PERFORMER_API  AttachBodyPerformer<defaulttype::Vec2Types>;
@@ -43,4 +41,4 @@ helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPer
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3Types> >  AttachBodyPerformerVec3dClass("AttachBody",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Rigid3Types> >  AttachBodyPerformerRigid3dClass("AttachBody",true);
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::userinteraction::performer

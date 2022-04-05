@@ -23,7 +23,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::component::userinteraction::configurationsetting
 {
 
 int BackgroundSettingClass = core::RegisterObject("Background setting")
@@ -37,4 +37,4 @@ BackgroundSetting::BackgroundSetting():
 {
 }
 
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::component::userinteraction::configurationsetting

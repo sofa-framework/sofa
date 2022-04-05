@@ -27,7 +27,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 
 
-namespace sofa::component::controller
+namespace sofa::component::userinteraction::controller
 {
 
 using namespace sofa::defaulttype;
@@ -194,4 +194,4 @@ void MechanicalStateController<Rigid3Types>::onMouseEvent(core::objectmodel::Mou
     }
 }
 
-} //namespace sofa::component::controller
+} //namespace sofa::component::userinteraction::controller

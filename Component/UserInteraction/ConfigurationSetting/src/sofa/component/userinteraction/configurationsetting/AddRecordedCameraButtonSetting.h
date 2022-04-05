@@ -26,7 +26,7 @@
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/component/userinteraction/configurationsetting/MouseButtonSetting.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::component::userinteraction::configurationsetting
 {
 
 class SOFA_COMPONENT_USERINTERACTION_CONFIGURATIONSETTING_API AddRecordedCameraButtonSetting: public MouseButtonSetting
@@ -50,4 +50,4 @@ public:
     std::string getOperationType() override {return "Start navigation if some view poins have been saved";}
 };
 
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::component::userinteraction::configurationsetting

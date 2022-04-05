@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::component::userinteraction::configurationsetting
 {
 
 int AttachBodyButtonSettingClass = core::RegisterObject("Attach Body Button configuration")
@@ -39,4 +39,4 @@ AttachBodyButtonSetting::AttachBodyButtonSetting():
 {
 }
 
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::component::userinteraction::configurationsetting

@@ -24,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::component::userinteraction::configurationsetting
 {
 
 int SofaDefaultPathSettingClass = core::RegisterObject("Default Paths for Sofa Application")
@@ -38,4 +38,4 @@ SofaDefaultPathSetting::SofaDefaultPathSetting():
 {
 
 }
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::component::userinteraction::configurationsetting

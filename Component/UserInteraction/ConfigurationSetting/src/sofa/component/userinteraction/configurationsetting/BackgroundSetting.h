@@ -26,7 +26,7 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/type/RGBAColor.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::component::userinteraction::configurationsetting
 {
 
 ///Class for the configuration of background settings.
@@ -44,4 +44,4 @@ public:
 
 };
 
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::component::userinteraction::configurationsetting

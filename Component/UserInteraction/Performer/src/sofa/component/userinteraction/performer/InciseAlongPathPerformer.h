@@ -27,7 +27,7 @@
 #include <sofa/component/userinteraction/performer/TopologicalChangeManager.h>
 #include <sofa/component/userinteraction/performer/MouseInteractor.h>
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 class InciseAlongPathPerformerConfiguration
 {
@@ -89,4 +89,4 @@ protected:
     unsigned int initialNbTriangles;
     unsigned int initialNbPoints;
 };
-} // namespace sofa::component::collision
+} // namespace sofa::component::userinteraction::performer

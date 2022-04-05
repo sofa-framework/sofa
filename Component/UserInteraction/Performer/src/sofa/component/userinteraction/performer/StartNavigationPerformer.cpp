@@ -22,14 +22,14 @@
 #define SOFA_COMPONENT_COLLISION_STARTNAVIGATIONPERFORMER_CPP
 
 #include <sofa/component/userinteraction/performer/StartNavigationPerformer.h>
-#include <SofaGeneralVisual/RecordedCamera.h>
+#include <sofa/component/visual/RecordedCamera.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/cast.h>
 #include <sofa/simulation/Node.h>
 
 using namespace sofa::core::objectmodel;
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
     helper::Creator<InteractionPerformer::InteractionPerformerFactory, StartNavigationPerformer> StartNavigationPerformerClass("StartNavigation");
 
@@ -38,7 +38,7 @@ namespace sofa::component::collision
         sofa::simulation::Node::SPtr root = down_cast<sofa::simulation::Node>( interactor->getContext()->getRootContext() );
         if(root)
         {
-            sofa::component::visualmodel::RecordedCamera* currentCamera = root->getNodeObject<sofa::component::visualmodel::RecordedCamera>();
+            sofa::component::visual::RecordedCamera* currentCamera = root->getNodeObject<sofa::component::visual::RecordedCamera>();
 
             if(currentCamera)
             {
@@ -48,4 +48,4 @@ namespace sofa::component::collision
         }
     }
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::userinteraction::performer
