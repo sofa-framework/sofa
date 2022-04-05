@@ -918,6 +918,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::initLarge(int i, Index&a, 
     tetrahedronInf[i].rotatedInitialElements[3] = R_0_1*(X0)[d];
 
     tetrahedronInf[i].initialTransformation = R_0_1;
+    tetrahedronInf[i].rotation = R_0_1;
 
     tetrahedronInf[i].rotatedInitialElements[1] -= tetrahedronInf[i].rotatedInitialElements[0];
     tetrahedronInf[i].rotatedInitialElements[2] -= tetrahedronInf[i].rotatedInitialElements[0];
