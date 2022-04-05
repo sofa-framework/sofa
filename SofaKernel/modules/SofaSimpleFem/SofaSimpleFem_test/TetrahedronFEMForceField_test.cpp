@@ -931,10 +931,10 @@ TEST_F(TetrahedronFEMForceField3_test, checkInit)
     this->checkInit(0);
 }
 
-//TEST_F(TetrahedronFEMForceField3_test, checkFEMValues)
-//{
-//    this->checkFEMValues(0);
-//}
+TEST_F(TetrahedronFEMForceField3_test, checkFEMValues)
+{
+    this->checkFEMValues(0);
+}
 
 
 
@@ -971,10 +971,10 @@ TEST_F(TetrahedralCorotationalFEMForceField3_test, checkDefaultAttributes)
 //    this->checkInit(1);
 //}
 //
-//TEST_F(TetrahedralCorotationalFEMForceField3_test, checkFEMValues)
-//{
-//    this->checkFEMValues(1);
-//}
+TEST_F(TetrahedralCorotationalFEMForceField3_test, checkFEMValues)
+{
+    this->checkFEMValues(1);
+}
 
 
 
@@ -1018,21 +1018,20 @@ TEST_F(FastTetrahedralCorotationalForceField3_test, checkDefaultAttributes)
 
 
 // performances tests. Disabled by default
-//TEST_F(TetrahedronFEMForceField3_test, DISABLED_testFEMPerformance)
-//{
-//    this->testFEMPerformance(0);
-//}
-//
-//TEST_F(TetrahedralCorotationalFEMForceField3_test, DISABLED_testFEMPerformance)
-//{
-//    this->testFEMPerformance(1);
-//}
-//
-//
-//TEST_F(FastTetrahedralCorotationalForceField3_test, DISABLED_testFEMPerformance)
-//{
-//    this->testFEMPerformance(2);
-//}
+TEST_F(TetrahedronFEMForceField3_test, DISABLED_testFEMPerformance)
+{
+    this->testFEMPerformance(0);
+}
+TEST_F(TetrahedralCorotationalFEMForceField3_test, DISABLED_testFEMPerformance)
+{
+    this->testFEMPerformance(1);
+}
+
+
+TEST_F(FastTetrahedralCorotationalForceField3_test, DISABLED_testFEMPerformance)
+{
+    this->testFEMPerformance(2);
+}
 
 
 } // namespace sofa
