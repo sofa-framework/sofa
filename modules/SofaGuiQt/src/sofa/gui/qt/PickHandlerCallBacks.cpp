@@ -41,7 +41,7 @@ InformationOnPickCallBack::InformationOnPickCallBack(RealGUI *g)
 {
 }
 
-void InformationOnPickCallBack::execute(const sofa::component::collision::BodyPicked &body)
+void InformationOnPickCallBack::execute(const sofa::component::userinteraction::performer::BodyPicked &body)
 {
     if(!gui) return;
     core::objectmodel::BaseObject *objectPicked=nullptr;

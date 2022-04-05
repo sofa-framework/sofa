@@ -250,8 +250,8 @@ public:
     void centerWindow() override;
     void setBackgroundColor(const sofa::type::RGBAColor& c) override;
     virtual void setBackgroundImage(const std::string& i) override;
-    void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* viewerConf) override;
-    void setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting *button) override;
+    void setViewerConfiguration(sofa::component::userinteraction::configurationsetting::ViewerSetting* viewerConf) override;
+    void setMouseButtonConfiguration(sofa::component::userinteraction::configurationsetting::MouseButtonSetting *button) override;
 
     //Configuration methods
     void setDumpState(bool) override;

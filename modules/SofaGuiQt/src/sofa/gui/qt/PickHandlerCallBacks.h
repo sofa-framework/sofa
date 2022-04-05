@@ -24,10 +24,10 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/gui/ColourPickingVisitor.h>
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
     struct BodyPicked;
-} // namespace sofa::component::collision
+} // namespace sofa::component::userinteraction::performer
 
 namespace sofa::gui::qt::viewer
 {
@@ -43,7 +43,7 @@ class InformationOnPickCallBack: public CallBackPicker
 public:
     InformationOnPickCallBack();
     InformationOnPickCallBack(RealGUI *g);
-    void execute(const sofa::component::collision::BodyPicked &body) override;
+    void execute(const sofa::component::userinteraction::performer::BodyPicked &body) override;
 protected:
     RealGUI *gui;
 };

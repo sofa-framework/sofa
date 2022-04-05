@@ -1362,7 +1362,7 @@ void RealGUI::setBackgroundImage(const std::string& c)
 
 //------------------------------------
 
-void RealGUI::setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* viewerConf)
+void RealGUI::setViewerConfiguration(sofa::component::userinteraction::configurationsetting::ViewerSetting* viewerConf)
 {
     const type::Vec<2,int> &res=viewerConf->resolution.getValue();
 
@@ -1375,7 +1375,7 @@ void RealGUI::setViewerConfiguration(sofa::component::configurationsetting::View
 
 //------------------------------------
 
-void RealGUI::setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting *button)
+void RealGUI::setMouseButtonConfiguration(sofa::component::userinteraction::configurationsetting::MouseButtonSetting *button)
 {
     m_sofaMouseManager->updateOperation(button);
 }

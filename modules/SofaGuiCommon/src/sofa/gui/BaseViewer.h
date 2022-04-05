@@ -35,11 +35,11 @@
 
 #include <string>
 
-namespace sofa::component::configurationsetting
+namespace sofa::component::userinteraction::configurationsetting
 {
     class ViewerSetting;
 
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::component::userinteraction::configurationsetting
 
 namespace sofa::gui
 {
@@ -84,7 +84,7 @@ public:
     virtual void viewAll(void) = 0;
 
     //Allow to configure your viewer using the Sofa Component, ViewerSetting
-    virtual void configure(sofa::component::configurationsetting::ViewerSetting* viewerConf);
+    virtual void configure(sofa::component::userinteraction::configurationsetting::ViewerSetting* viewerConf);
 
     //Fonctions needed to take a screenshot
     virtual const std::string screenshotName();

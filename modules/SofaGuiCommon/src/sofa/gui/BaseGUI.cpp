@@ -27,10 +27,11 @@
 #include <sofa/helper/system/FileSystem.h>
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <sofa/component/userinteraction/configurationsetting/ViewerSetting.h>
+#include <sofa/component/userinteraction/configurationsetting/MouseButtonSetting.h>
+
 #include <SofaBaseVisual/BackgroundSetting.h>
-#include <SofaGraphComponent/ViewerSetting.h>
 #include <SofaGraphComponent/StatsSetting.h>
-#include <SofaGraphComponent/MouseButtonSetting.h>
 #include <SofaGraphComponent/SofaDefaultPathSetting.h>
 
 #include <algorithm>
@@ -105,15 +106,15 @@ void BaseGUI::configureGUI(sofa::simulation::Node::SPtr groot)
     }
 
     //Viewer Dimension TODO in viewer !
-    sofa::component::configurationsetting::ViewerSetting *viewerConf;
+    sofa::component::userinteraction::configurationsetting::ViewerSetting *viewerConf;
     groot->get(viewerConf, sofa::core::objectmodel::BaseContext::SearchRoot);
     if (viewerConf) setViewerConfiguration(viewerConf);
 
     //TODO: Video Recorder Configuration
 
     //Mouse Manager using ConfigurationSetting component...
-    sofa::type::vector< sofa::component::configurationsetting::MouseButtonSetting*> mouseConfiguration;
-    groot->get<sofa::component::configurationsetting::MouseButtonSetting>(&mouseConfiguration, sofa::core::objectmodel::BaseContext::SearchRoot);
+    sofa::type::vector< sofa::component::userinteraction::configurationsetting::MouseButtonSetting*> mouseConfiguration;
+    groot->get<sofa::component::userinteraction::configurationsetting::MouseButtonSetting>(&mouseConfiguration, sofa::core::objectmodel::BaseContext::SearchRoot);
 
     for (unsigned int i=0; i<mouseConfiguration.size(); ++i)  setMouseButtonConfiguration(mouseConfiguration[i]);
 
