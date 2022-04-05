@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaConstraint/ConstraintAttachBodyPerformer.h>
+#include <sofa/component/userinteraction/performer/ConstraintAttachBodyPerformer.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaUserInteraction/MouseInteractor.h>
+#include <sofa/component/userinteraction/performer/MouseInteractor.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 
 template <class DataTypes>
@@ -45,7 +45,7 @@ void ConstraintAttachBodyPerformer<DataTypes>::start()
 
     double distanceFromMouse=picked.rayLength;
     this->interactor->setDistanceFromMouse(distanceFromMouse);
-    Ray ray = this->interactor->getMouseRayModel()->getRay(0);
+    collision::model::Ray ray = this->interactor->getMouseRayModel()->getRay(0);
     ray.setOrigin(ray.origin() + ray.direction()*distanceFromMouse);
     sofa::core::BaseMapping *mapping;
     this->interactor->getContext()->get(mapping); assert(mapping);
@@ -173,9 +173,9 @@ bool ConstraintAttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& p
     type::Vec3d point1;
     type::Vec3d point2;
 
-    using constraintset::BilateralInteractionConstraint;
+    using sofa::component::constraint::lagrangian::model::BilateralInteractionConstraint;
 
-    m_constraint = sofa::core::objectmodel::New<constraintset::BilateralInteractionConstraint<sofa::defaulttype::Vec3Types> >(mstate1, mstate2);
+    m_constraint = sofa::core::objectmodel::New<BilateralInteractionConstraint<sofa::defaulttype::Vec3Types> >(mstate1, mstate2);
     BilateralInteractionConstraint< DataTypes >* bconstraint = static_cast< BilateralInteractionConstraint< sofa::defaulttype::Vec3Types >* >(m_constraint.get());
     bconstraint->setName("Constraint-Mouse-Contact");
 
@@ -191,4 +191,4 @@ bool ConstraintAttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& p
     return true;
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::userinteraction::performer

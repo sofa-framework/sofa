@@ -20,24 +20,22 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaConstraint/config.h>
+#include <sofa/component/userinteraction/performer/config.h>
 
-#include <SofaUserInteraction/InteractionPerformer.h>
-#include <SofaBaseCollision/BaseContactMapper.h>
-#include <SofaDeformable/SpringForceField.h>
-#include <SofaDeformable/StiffSpringForceField.h>
-#include <SofaGraphComponent/AttachBodyButtonSetting.h>
+#include <sofa/component/userinteraction/performer/InteractionPerformer.h>
+#include <sofa/component/collision/response/mapper/BaseContactMapper.h>
+#include <sofa/component/userinteraction/configurationsetting/AttachBodyButtonSetting.h>
+#include <sofa/component/constraint/lagrangian/model/BilateralInteractionConstraint.h>
+
 #include <sofa/core/visual/DisplayFlags.h>
-#include <SofaConstraint/BilateralInteractionConstraint.h>
-#include <SofaGraphComponent/AttachBodyButtonSetting.h>
 
-namespace sofa::component::collision
+namespace sofa::component::userinteraction::performer
 {
 
-class ConstraintAttachBodyButtonSetting : public sofa::component::configurationsetting::AttachBodyButtonSetting
+class ConstraintAttachBodyButtonSetting : public configurationsetting::AttachBodyButtonSetting
 {
 public:
-    SOFA_CLASS(ConstraintAttachBodyButtonSetting,sofa::component::configurationsetting::AttachBodyButtonSetting);
+    SOFA_CLASS(ConstraintAttachBodyButtonSetting, configurationsetting::AttachBodyButtonSetting);
 protected:
     ConstraintAttachBodyButtonSetting() {}
 public:
@@ -48,13 +46,13 @@ public:
 struct BodyPicked;
 
 template <class DataTypes>
-class SOFA_SOFACONSTRAINT_API ConstraintAttachBodyPerformer: public TInteractionPerformer<DataTypes>
+class ConstraintAttachBodyPerformer: public TInteractionPerformer<DataTypes>
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
-    typedef sofa::component::collision::BaseContactMapper< DataTypes >        MouseContactMapper;
+    typedef sofa::component::collision::response::mapper::BaseContactMapper< DataTypes >        MouseContactMapper;
     typedef sofa::core::behavior::MechanicalState< DataTypes >         MouseContainer;
-//        typedef sofa::component::constraintset::BilateralInteractionConstraint< DataTypes > MouseConstraint;
+//        typedef sofa::component::constraint::lagrangian::model::BilateralInteractionConstraint< DataTypes > MouseConstraint;
 
 //        typedef sofa::core::behavior::BaseForceField              MouseForceField;
 
@@ -88,7 +86,7 @@ protected:
     virtual bool start_partial(const BodyPicked& picked);
 
     MouseContactMapper  *mapper;
-    constraintset::BilateralInteractionConstraint<defaulttype::Vec3Types>::SPtr m_constraint;
+    sofa::component::constraint::lagrangian::model::BilateralInteractionConstraint<defaulttype::Vec3Types>::SPtr m_constraint;
 
     core::visual::DisplayFlags flags;
 
@@ -96,7 +94,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_CONSTRAINTATTACHBODYPERFORMER_CPP)
-extern template class SOFA_SOFACONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_USERINTERACTION_PERFORMER_API ConstraintAttachBodyPerformer<defaulttype::Vec3Types>;
 #endif
 
-} // namespace sofa::component::collision
+} // namespace sofa::component::userinteraction::performer

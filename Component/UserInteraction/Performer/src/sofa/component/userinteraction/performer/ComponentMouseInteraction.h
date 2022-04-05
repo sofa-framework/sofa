@@ -99,6 +99,6 @@ extern template class SOFA_COMPONENT_USERINTERACTION_PERFORMER_API TComponentMou
 #if  !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
 namespace sofa::helper
 {
-extern template class SOFA_COMPONENT_USERINTERACTION_PERFORMER_API Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
+extern template class SOFA_COMPONENT_USERINTERACTION_PERFORMER_API Factory<std::string, component::userinteraction::performer::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
 } // namespace sofa::helper
 #endif

@@ -22,13 +22,9 @@
 #pragma once
 #include <sofa/component/userinteraction/performer/config.h>
 
+#include <sofa/component/userinteraction/configurationsetting/MouseButtonSetting.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/core/fwd.h>
-
-namespace sofa::component::configurationsetting
-{
-    class MouseButtonSetting;
-}
 
 namespace sofa::component::userinteraction::performer
 {

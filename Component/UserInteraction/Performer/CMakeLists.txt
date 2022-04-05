@@ -9,6 +9,8 @@ set(HEADER_FILES
     ${SOFACOMPONENTUSERINTERACTIONPERFORMER_SOURCE_DIR}/AddRecordedCameraPerformer.h
     ${SOFACOMPONENTUSERINTERACTIONPERFORMER_SOURCE_DIR}/AttachBodyPerformer.h
     ${SOFACOMPONENTUSERINTERACTIONPERFORMER_SOURCE_DIR}/AttachBodyPerformer.inl
+    ${SOFACOMPONENTUSERINTERACTIONPERFORMER_SOURCE_DIR}/ConstraintAttachBodyPerformer.h
+    ${SOFACOMPONENTUSERINTERACTIONPERFORMER_SOURCE_DIR}/ConstraintAttachBodyPerformer.inl
     ${SOFACOMPONENTUSERINTERACTIONPERFORMER_SOURCE_DIR}/ComponentMouseInteraction.h
     ${SOFACOMPONENTUSERINTERACTIONPERFORMER_SOURCE_DIR}/ComponentMouseInteraction.inl
     ${SOFACOMPONENTUSERINTERACTIONPERFORMER_SOURCE_DIR}/FixParticlePerformer.h
@@ -30,6 +32,7 @@ set(SOURCE_FILES
     ${SOFACOMPONENTUSERINTERACTIONPERFORMER_SOURCE_DIR}/AddRecordedCameraPerformer.cpp
     ${SOFACOMPONENTUSERINTERACTIONPERFORMER_SOURCE_DIR}/AttachBodyPerformer.cpp    
     ${SOFACOMPONENTUSERINTERACTIONPERFORMER_SOURCE_DIR}/ComponentMouseInteraction.cpp
+    ${SOFACOMPONENTUSERINTERACTIONPERFORMER_SOURCE_DIR}/ConstraintAttachBodyPerformer.cpp
     ${SOFACOMPONENTUSERINTERACTIONPERFORMER_SOURCE_DIR}/FixParticlePerformer.cpp
     ${SOFACOMPONENTUSERINTERACTIONPERFORMER_SOURCE_DIR}/InciseAlongPathPerformer.cpp
     ${SOFACOMPONENTUSERINTERACTIONPERFORMER_SOURCE_DIR}/InteractionPerformer.cpp    
@@ -45,6 +48,7 @@ sofa_find_package(Sofa.Component.UserInteraction.ConfigurationSetting REQUIRED)
 sofa_find_package(Sofa.Component.Visual REQUIRED)
 sofa_find_package(Sofa.Component.SolidMechanics.Spring REQUIRED)
 sofa_find_package(Sofa.Component.Constraint.Projective REQUIRED)
+sofa_find_package(Sofa.Component.Constraint.Lagrangian.Model REQUIRED)
 sofa_find_package(Sofa.Component.Collision.Model REQUIRED)
 sofa_find_package(Sofa.Component.Collision.Response.Mapper REQUIRED)
 sofa_find_package(Sofa.Component.StateContainer REQUIRED)
@@ -57,6 +61,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.UserInteraction.Conf
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Visual)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.SolidMechanics.Spring)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Constraint.Projective)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Constraint.Lagrangian.Model)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Model)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Response.Mapper)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.StateContainer)
