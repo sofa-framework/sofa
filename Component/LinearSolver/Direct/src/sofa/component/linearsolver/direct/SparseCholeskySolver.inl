@@ -47,7 +47,7 @@ SparseCholeskySolver<TMatrix,TVector>::~SparseCholeskySolver()
 }
 
 template<class TMatrix, class TVector>
-void SparseCholeskySolver<TMatrix,TVector>::solveT(Vector& x, Vector& b)
+void SparseCholeskySolver<TMatrix,TVector>::solveT( Vector& x, Vector& b)
 {
     int n = A.n;
 
@@ -56,9 +56,10 @@ void SparseCholeskySolver<TMatrix,TVector>::solveT(Vector& x, Vector& b)
     switch( d_typePermutation.getValue().getSelectedId() )
     {
         case 0://None->identity
-            cs_lsolve (N->L, (double*) b.ptr() );			//x = L\x
-            cs_ltsolve (N->L, (double*) b.ptr() );			//x = L'\x/
-            cs_pvec (n, S->Pinv, (double*) b.ptr() , (double*) x.ptr() );	 //used here to copy, Pinv = Id
+            cs_ipvec (n, S->Pinv,  (double*)b.ptr() , (double*) tmp.data() );	//x = P*b , permutation on rows
+            cs_lsolve (N->L, (double*) tmp.data() );			//x = L\x
+            cs_ltsolve (N->L, (double*) tmp.data() );			//x = L'\x/
+            cs_pvec (n, S->Pinv, (double*) tmp.data() , (double*) x.ptr() );	 //used here to copy, Pinv = Id
             break;
     
         case 1://SuiteSparse
@@ -111,7 +112,6 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
     A.nz = -1;							// # of entries in triplet matrix, -1 for compressed-col
     cs_dropzeros( &A );
     tmp.resize(A.n);
-    int order = 0; // SuiteSparse compute permutation for Cholesky factorization
 
     {
         sofa::helper::ScopedAdvancedTimer factorization_permTimer("factorization_perm");
@@ -121,12 +121,9 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
         switch (d_typePermutation.getValue().getSelectedId() )
         {
             case 0:
-            default:// None->identity
-                if( notSameShape ) 
-                {   
-                    if (S) cs_sfree(S);
-                    S = symbolic_Chol (&A) ;
-                }		// ordering and symbolic analysis 
+            default:// None->identity 
+                if (S) cs_sfree(S);
+                S = cs_schol (&A, -1) ;// SuiteSparse does not compute permutation 
                 N = cs_chol (&A, S) ;		// numeric Cholesky factorization 
                 break;
 
@@ -135,8 +132,8 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
                 if( notSameShape )  
                 { 
                     if (S) cs_sfree(S);
-                    S = cs_schol (&A, order) ; 
-                }		// ordering and symbolic analysis 
+                    S = cs_schol (&A, 0) ; // SuiteSparse compute permutation for Cholesky factorization
+                }
                 N = cs_chol (&A, S) ;		// numeric Cholesky factorization 
                 break;
 

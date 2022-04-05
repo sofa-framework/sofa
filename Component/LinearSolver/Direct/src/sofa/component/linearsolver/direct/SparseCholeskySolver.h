@@ -66,8 +66,8 @@ public:
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void invert(Matrix& M) override;
 
-    void solveT(Vector& z, Vector& r);
-
+    void solveT(Vector& x, Vector& b);
+    
     css* symbolic_Chol(cs *A);
 };
 
