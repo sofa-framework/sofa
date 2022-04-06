@@ -2,15 +2,17 @@
 <Node name="root" dt="0.05" showBoundingTree="0" gravity="0 -0.9 0">
     <VisualStyle displayFlags="hideCollisionModels showBehaviorModels" />
     
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name='SofaSparseSolver'/>
-    <RequiredPlugin name="SofaConstraint"/>
-    <RequiredPlugin name="SofaGeneralVisual"/>
-    <RequiredPlugin name="SofaImplicitOdeSolver"/>
-    <RequiredPlugin name="SofaLoader"/>
-    <RequiredPlugin name="SofaMeshCollision"/>
-    <RequiredPlugin name="SofaSimpleFem"/>
-    <RequiredPlugin name="SofaTopologyMapping"/>
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [SparseGridRamificationTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2QuadTopologicalMapping] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
 
     <FreeMotionAnimationLoop />
     <GenericConstraintSolver unbuilt="false" tolerance="1e-3" maxIt="200" printLog="0" multithreading="true"/>

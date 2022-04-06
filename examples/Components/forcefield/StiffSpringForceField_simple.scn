@@ -1,9 +1,13 @@
 <?xml version="1.0"?>
 <Node name="root" dt="0.005">
-    <RequiredPlugin name="SofaBoundaryCondition"/>
-    <RequiredPlugin name="SofaDeformable"/>
-    <RequiredPlugin name="SofaImplicitOdeSolver"/>
-    <RequiredPlugin name="SofaSparseSolver"/>
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [StiffSpringForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="SofaBaseCollision"/> <!-- Needed to use components [SphereCollisionModel] -->
+    <RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [FixedConstraint] -->
 
     <VisualStyle displayFlags="showCollision showInteractionForceFields showForceFields" />
 

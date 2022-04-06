@@ -1,10 +1,13 @@
 <Node name="root" dt="0.02">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName='SofaGeneralLoader'/>
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaLoader'/>
-    <RequiredPlugin pluginName='SofaMiscCollision'/>
-    <RequiredPlugin pluginName='SofaSimpleFem'/> 
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollision" />
     <DefaultPipeline verbose="0" />

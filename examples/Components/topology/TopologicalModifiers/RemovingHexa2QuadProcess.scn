@@ -1,14 +1,18 @@
 <!-- Automatic Hexahedron removing with Hexa2Quad mapping example: Element removed are define in: ./RemovingHexa2QuadProcess.txt -->
 <Node name="root" dt="0.01" showBoundingTree="0" gravity="0 -9.81 0">
-    <RequiredPlugin pluginName="SofaMiscCollision" />
-    <RequiredPlugin pluginName="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName='SofaMiscTopology'/>
-    <RequiredPlugin pluginName='SofaTopologyMapping'/>
-    <RequiredPlugin pluginName='SofaGeneralSimpleFem'/>
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
-    <RequiredPlugin pluginName='SofaGeneralDeformable'/>
-    <RequiredPlugin pluginName='SofaMeshCollision'/> 
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedralFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [QuadularBendingSprings] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Hexa2QuadTopologicalMapping] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Utility"/> <!-- Needed to use components [TopologicalChangeProcessor] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="SofaMeshCollision"/> <!-- Needed to use components [TriangleCollisionModel] -->
+    <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
 
     <VisualStyle displayFlags="showBehaviorModels" />
     <DefaultPipeline verbose="0" />

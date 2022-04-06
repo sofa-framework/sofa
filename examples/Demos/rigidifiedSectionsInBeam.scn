@@ -15,13 +15,19 @@ The distances do not vary over time for the rigidified beam, whereas we can obse
 <Node name="root" dt="0.02" gravity="0 -10 0">
     <VisualStyle displayFlags="showBehaviorModels showWireframe" />
 
-    <RequiredPlugin name="SofaBoundaryCondition"/>
-    <RequiredPlugin name="SofaGeneralEngine"/>
-    <RequiredPlugin name="SofaImplicitOdeSolver"/>
-    <RequiredPlugin name="SofaMiscForceField"/>
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin name="SofaRigid"/>
-    <RequiredPlugin name="SofaSimpleFem"/>
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [MeshMatrixMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [HexahedronSetGeometryAlgorithms] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering2D"/> <!-- Needed to use components [OglLabel] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [FixedConstraint] -->
 
     <DefaultAnimationLoop/>
     <DefaultVisualManagerLoop/>
