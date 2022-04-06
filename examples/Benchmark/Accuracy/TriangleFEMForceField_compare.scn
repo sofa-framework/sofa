@@ -1,11 +1,16 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.01" gravity="0 10 0">
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Quad2TriangleTopologicalMapping] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaBaseCollision"/> <!-- Needed to use components [DefaultPipeline] -->
     <RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [FixedConstraint] -->
-    <RequiredPlugin name="SofaGeneralSimpleFem"/> <!-- Needed to use components [TriangularFEMForceFieldOptim] -->
-    <RequiredPlugin name="SofaImplicitOdeSolver"/> <!-- Needed to use components [EulerImplicitSolver] -->
-    <RequiredPlugin name="SofaMiscFem"/> <!-- Needed to use components [TriangleFEMForceField, TriangularFEMForceField] -->
-    <RequiredPlugin name="SofaOpenglVisual"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaTopologyMapping"/> <!-- Needed to use components [Quad2TriangleTopologicalMapping] -->
 
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <DefaultPipeline verbose="0" />
