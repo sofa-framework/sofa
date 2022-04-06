@@ -1104,8 +1104,8 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
                 localRigid = meshTransformationRigid.mult(localRigid);
 
                 // apply the mesh transformation to each channel if the skeleton root joint contains animation
-                for(std::size_t i = 0; i < currentSkeletonJoint.mChannels.size(); ++i)
-                    currentSkeletonJoint.mChannels[i] = meshTransformationRigid.mult(currentSkeletonJoint.mChannels[i]);
+                for(std::size_t kk = 0; kk < currentSkeletonJoint.mChannels.size(); ++kk)
+                    currentSkeletonJoint.mChannels[kk] = meshTransformationRigid.mult(currentSkeletonJoint.mChannels[kk]);
             }
 
             currentSkeletonJoint.setRestPosition(localRigid);
