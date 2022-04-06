@@ -21,9 +21,9 @@
 ******************************************************************************/
 #include <SofaGui/initSofaGui.h>
 
-#include <sofa/gui/GUIManager.h>
+#include <sofa/gui/common/GUIManager.h>
 
-#include <sofa/gui/BatchGUI.h>
+#include <sofa/gui/common/BatchGUI.h>
 #if SOFAGUI_HAVE_SOFAGUIQT
 #include <sofa/gui/qt/RealGUI.h>
 #endif

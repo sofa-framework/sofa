@@ -206,6 +206,8 @@ if(SOFA_WITH_OPENGL)
     add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.GL)
 endif()
 
+add_subdirectory(GUI)
+
 ## Modules
 ## in the consortium convention a module is a similar to a plugin the difference is that
 ## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
