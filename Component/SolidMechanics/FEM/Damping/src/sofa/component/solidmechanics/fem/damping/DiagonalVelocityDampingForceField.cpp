@@ -21,12 +21,13 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_DIAGONALVELOCITYDAMPINGFORCEFIELD_CPP
 
-#include "DiagonalVelocityDampingForceField.inl"
+#include <sofa/component/solidmechanics/fem/damping/DiagonalVelocityDampingForceField.inl>
+
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa::component::mechanicalload
+namespace sofa::component::solidmechanics::fem::damping
 {
 
 using namespace sofa::defaulttype;
@@ -41,11 +42,11 @@ int DiagonalVelocityDampingForceFieldClass = core::RegisterObject("Diagonal velo
 
 ;
 
-template class SOFA_COMPONENT_MECHANICALLOAD_API DiagonalVelocityDampingForceField<Vec3Types>;
-template class SOFA_COMPONENT_MECHANICALLOAD_API DiagonalVelocityDampingForceField<Vec2Types>;
-template class SOFA_COMPONENT_MECHANICALLOAD_API DiagonalVelocityDampingForceField<Vec1Types>;
-template class SOFA_COMPONENT_MECHANICALLOAD_API DiagonalVelocityDampingForceField<Vec6Types>;
-template class SOFA_COMPONENT_MECHANICALLOAD_API DiagonalVelocityDampingForceField<Rigid3Types>;
-template class SOFA_COMPONENT_MECHANICALLOAD_API DiagonalVelocityDampingForceField<Rigid2Types>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_DAMPING_API DiagonalVelocityDampingForceField<Vec3Types>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_DAMPING_API DiagonalVelocityDampingForceField<Vec2Types>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_DAMPING_API DiagonalVelocityDampingForceField<Vec1Types>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_DAMPING_API DiagonalVelocityDampingForceField<Vec6Types>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_DAMPING_API DiagonalVelocityDampingForceField<Rigid3Types>;
+template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_DAMPING_API DiagonalVelocityDampingForceField<Rigid2Types>;
 
-} // namespace sofa::component::mechanicalload
+} // namespace sofa::component::solidmechanics::fem::damping

@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/mechanicalload/DiagonalVelocityDampingForceField.inl>
+#include <sofa/component/solidmechanics/fem/damping/DiagonalVelocityDampingForceField.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mechanicalload/DiagonalVelocityDampingForceField.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/damping/DiagonalVelocityDampingForceField.inl")

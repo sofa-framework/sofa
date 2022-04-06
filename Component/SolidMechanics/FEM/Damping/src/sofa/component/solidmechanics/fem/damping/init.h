@@ -21,13 +21,9 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/solidmechanics/fem/damping/DiagonalVelocityDampingForceField.h>
+#include <sofa/component/solidmechanics/fem/damping/config.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/damping/DiagonalVelocityDampingForceField.h")
-
-namespace sofa::component::forcefield
+namespace sofa::component::solidmechanics::fem::damping
 {
-    template<class DataTypes>
-    using DiagonalVelocityDampingForceField = sofa::component::solidmechanics::fem::damping::DiagonalVelocityDampingForceField<DataTypes>;
-
-} // namespace sofa::component::forcefield
+	SOFA_COMPONENT_SOLIDMECHANICS_FEM_DAMPING_API void init();
+} // namespace sofa::component::solidmechanics::fem::damping

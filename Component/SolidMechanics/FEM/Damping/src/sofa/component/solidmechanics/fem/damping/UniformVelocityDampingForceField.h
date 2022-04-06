@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/mechanicalload/config.h>
+#include <sofa/component/solidmechanics/fem/damping/config.h>
 
 #include <sofa/core/behavior/ForceField.h>
 
-namespace sofa::component::mechanicalload
+namespace sofa::component::solidmechanics::fem::damping
 {
 
 /// Apply damping forces to given degrees of freedom.
@@ -72,13 +72,13 @@ public:
 
 
 #if  !defined(SOFA_COMPONENT_FORCEFIELD_UNIFORMVELOCITYDAMPINGFORCEFIELD_CPP)
-extern template class SOFA_COMPONENT_MECHANICALLOAD_API UniformVelocityDampingForceField<defaulttype::Vec3Types>;
-extern template class SOFA_COMPONENT_MECHANICALLOAD_API UniformVelocityDampingForceField<defaulttype::Vec2Types>;
-extern template class SOFA_COMPONENT_MECHANICALLOAD_API UniformVelocityDampingForceField<defaulttype::Vec1Types>;
-extern template class SOFA_COMPONENT_MECHANICALLOAD_API UniformVelocityDampingForceField<defaulttype::Vec6Types>;
-extern template class SOFA_COMPONENT_MECHANICALLOAD_API UniformVelocityDampingForceField<defaulttype::Rigid3Types>;
-extern template class SOFA_COMPONENT_MECHANICALLOAD_API UniformVelocityDampingForceField<defaulttype::Rigid2Types>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_DAMPING_API UniformVelocityDampingForceField<defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_DAMPING_API UniformVelocityDampingForceField<defaulttype::Vec2Types>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_DAMPING_API UniformVelocityDampingForceField<defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_DAMPING_API UniformVelocityDampingForceField<defaulttype::Vec6Types>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_DAMPING_API UniformVelocityDampingForceField<defaulttype::Rigid3Types>;
+extern template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_DAMPING_API UniformVelocityDampingForceField<defaulttype::Rigid2Types>;
 
 #endif
 
-} // namespace sofa::component::mechanicalload
+} // namespace sofa::component::solidmechanics::fem::damping
