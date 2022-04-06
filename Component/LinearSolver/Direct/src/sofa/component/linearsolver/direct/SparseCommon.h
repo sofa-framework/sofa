@@ -63,5 +63,5 @@ inline bool compareMatrixShape(int s_M, int * M_colptr,int * M_rowind, int s_P, 
     return false;
 }
 
-} // naùespace sofa::component::linearsolver::direct
+} // namespace sofa::component::linearsolver::direct
 
