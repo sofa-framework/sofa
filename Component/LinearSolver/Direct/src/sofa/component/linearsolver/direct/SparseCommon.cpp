@@ -23,9 +23,9 @@
 
 #include <sofa/component/linearsolver/direct/SparseCommon.h>
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::direct
 {
-void csrToAdj(int n,int * M_colptr,int * M_rowind, type::vector<int>& adj, type::vector<int>& xadj , type::vector<int>& t_adj , type::vector<int>& t_xadj, type::vector<int>& tran_countvec)
+void csrToAdj(int n, int * M_colptr, int * M_rowind, type::vector<int>& adj, type::vector<int>& xadj , type::vector<int>& t_adj , type::vector<int>& t_xadj, type::vector<int>& tran_countvec)
 {
     //Compute transpose in tran_colptr, tran_rowind, tran_values, tran_D
     tran_countvec.clear();

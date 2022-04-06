@@ -124,7 +124,10 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
         {
             case 0://None->Identity
             {  
-                if (invertData->S) cs_sfree(invertData->S);
+                if (invertData->S) 
+                {
+                    cs_sfree(invertData->S);
+                }
                 invertData->S = symbolic_LU( &(invertData->A) ) ;	// ordering and symbolic analysis 
                 invertData->N = cs_lu (&invertData->A, invertData->S, f_tol.getValue()) ;		// numeric LU factorization 
                 break;
@@ -134,7 +137,10 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
             {
                 if (invertData->notSameShape ) 
                 {
-                    if (invertData->S) cs_sfree(invertData->S);
+                    if (invertData->S) 
+                    {
+                        cs_sfree(invertData->S);
+                    }
                     invertData->S = cs_sqr (&invertData->A, 1 , 0) ; // Suitsparse compute fill reducing permutation for LU decomposition
                 }
                 invertData->N = cs_lu (&invertData->A, invertData->S, f_tol.getValue()) ;		// numeric LU factorization 
@@ -155,7 +161,10 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
 
                 if (invertData->notSameShape ) 
                 {
-                    if (invertData->S) cs_sfree(invertData->S);
+                    if (invertData->S) 
+                    {
+                        cs_sfree(invertData->S);
+                    }
                     invertData->S = symbolic_LU( invertData->permuted_A );
                 }
                 

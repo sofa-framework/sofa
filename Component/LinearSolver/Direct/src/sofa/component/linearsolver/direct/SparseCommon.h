@@ -30,7 +30,7 @@ extern "C" {
 #include <metis.h>
 }
 
-namespace sofa::component::linearsolver
+namespace sofa::component::linearsolver::direct
 {
 /** 
 compute the adjency matrix in CSR format from the matrix given in CSR format, we assume that the given matrix is symmetric
@@ -42,7 +42,7 @@ xadj[i+1]-xadj[i] is the number of neighbors of the i-th node
 adj[xadj[i]] is the first neighbor of the i-th node
 
 **/
-void csrToAdj(int n,int * M_colptr,int * M_rowind,type::vector<int>& adj,type::vector<int>& xadj,type::vector<int>& t_adj, type::vector<int>& t_xadj, type::vector<int>& tran_countvec ); 
+void csrToAdj(int n, int * M_colptr, int * M_rowind, type::vector<int>& adj, type::vector<int>& xadj, type::vector<int>& t_adj, type::vector<int>& t_xadj, type::vector<int>& tran_countvec ); 
 
 // compute the fill reducing permutation via METIS
 void fillReducingPermutation(const cs &A,int * perm,int * invperm); 
@@ -63,5 +63,5 @@ inline bool compareMatrixShape(int s_M, int * M_colptr,int * M_rowind, int s_P, 
     return false;
 }
 
-}
+} // naùespace sofa::component::linearsolver::direct
 

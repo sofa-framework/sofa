@@ -124,17 +124,23 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
             default:// None->identity 
                 if ( notSameShape)
                 {
-                    if (S) cs_sfree(S);
+                    if (S) 
+                    {
+                        cs_sfree(S);
+                    }
                     S = cs_schol (&A, -1) ;// SuiteSparse does not compute permutation 
                 }
-                    N = cs_chol (&A, S) ;		// numeric Cholesky factorization 
+                N = cs_chol (&A, S) ;		// numeric Cholesky factorization 
                 break;
 
             case 1:// SuiteSparse
                 
                 if( notSameShape )  
                 { 
-                    if (S) cs_sfree(S);
+                    if (S) 
+                    {
+                        cs_sfree(S);
+                    }
                     S = cs_schol (&A, 0) ; // SuiteSparse compute permutation for Cholesky factorization
                 }
                 N = cs_chol (&A, S) ;		// numeric Cholesky factorization 
