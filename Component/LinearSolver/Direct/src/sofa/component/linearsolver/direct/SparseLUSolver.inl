@@ -62,7 +62,7 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& x
             case 0://None->Identity
 
             {   
-                cs_ipvec (n, invertData->N->Pinv, b.ptr(), x.ptr()) ;	// x = P*b 
+                cs_ipvec (n, nullptr,  b.ptr(), x.ptr()) ;	// copy
                 cs_lsolve (invertData->N->L, x.ptr() ) ;		// x = L\x 
                 cs_usolve (invertData->N->U, x.ptr() ) ;		// x = U\x 
                 break;
@@ -70,7 +70,7 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& x
 
             case 1://SuiteSparse
             {
-                cs_ipvec (n, invertData->N->Pinv, b.ptr(), invertData->tmp) ;	// x = P*b 
+                cs_ipvec (n, invertData->N->Pinv, b.ptr(), invertData->tmp) ;	// x = P*b , partial pivot
                 cs_lsolve (invertData->N->L, invertData->tmp) ;		// x = L\x 
                 cs_usolve (invertData->N->U, invertData->tmp) ;		// x = U\x 
                 cs_ipvec (n, invertData->S->Q, invertData->tmp, x.ptr()) ;	// x = Q*x fill reducing permutation on columns only
@@ -101,7 +101,7 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
     if (invertData->N) cs_nfree(invertData->N);
     if (invertData->tmp) cs_free(invertData->tmp);
     M.compress();
-    //remplir A avec M
+    //build A with M
     invertData->A.nzmax = M.getColsValue().size();	// maximum number of entries
     invertData->A.m = M.rowBSize();					// number of rows
     invertData->A.n = M.colBSize();					// number of columns
@@ -175,22 +175,22 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
     switch( d_typePermutation.getValue().getSelectedId() ){
         case 1://SuiteSparse
         case 2://Metis
-        if ( invertData->notSameShape )
-        {
-            invertData->Previous_rowind.clear();
-            invertData->Previous_colptr.resize( (invertData->A.n) +1);
-
-            for (int i=0 ; i<invertData->A.n ; i++)
+            if ( invertData->notSameShape )
             {
-                invertData->Previous_colptr[i+1] = invertData->A_p[i+1];
+                invertData->Previous_rowind.clear();
+                invertData->Previous_colptr.resize( (invertData->A.n) +1);
 
-                for ( int j = (int) invertData->A_p[i] ; j < (int)invertData->A_p[i+1] ; j++)
+                for (int i=0 ; i<invertData->A.n ; i++)
                 {
-                    invertData->Previous_rowind.push_back( invertData->A_i[j]);
+                    invertData->Previous_colptr[i+1] = invertData->A_p[i+1];
+
+                    for ( int j = (int) invertData->A_p[i] ; j < (int)invertData->A_p[i+1] ; j++)
+                    {
+                        invertData->Previous_rowind.push_back( invertData->A_i[j]);
+                    }
                 }
             }
-        }
-        break;
+            break;
         default://None
             break;
     }
