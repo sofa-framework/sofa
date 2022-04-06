@@ -21,8 +21,11 @@
 ******************************************************************************/
 #include <sofa/component/solidmechanics/fem/init.h>
 
+#include <sofa/component/solidmechanics/fem/damping/init.h>
 #include <sofa/component/solidmechanics/fem/elastic/init.h>
 #include <sofa/component/solidmechanics/fem/hyperelastic/init.h>
+#include <sofa/component/solidmechanics/fem/nonuniform/init.h>
+
 
 namespace sofa::component::solidmechanics::fem
 {
@@ -38,8 +41,10 @@ void initExternalModule()
     if (first)
     {
         // force dependencies at compile-time
+        sofa::component::solidmechanics::fem::damping::init();
         sofa::component::solidmechanics::fem::elastic::init();
         sofa::component::solidmechanics::fem::hyperelastic::init();
+        sofa::component::solidmechanics::fem::nonuniform::init();
 
         first = false;
     }

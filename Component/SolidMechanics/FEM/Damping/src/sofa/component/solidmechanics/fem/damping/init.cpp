@@ -19,15 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#include <sofa/component/solidmechanics/fem/damping/init.h>
 
-#include <sofa/component/solidmechanics/fem/damping/DiagonalVelocityDampingForceField.h>
-
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/damping/DiagonalVelocityDampingForceField.h")
-
-namespace sofa::component::forcefield
+namespace sofa::component::solidmechanics::fem::damping
 {
-    template<class DataTypes>
-    using DiagonalVelocityDampingForceField = sofa::component::solidmechanics::fem::damping::DiagonalVelocityDampingForceField<DataTypes>;
+    
+extern "C" {
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+}
 
-} // namespace sofa::component::forcefield
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
+const char* getModuleName()
+{
+    return MODULE_NAME;
+}
+
+void init()
+{
+    initExternalModule();
+}
+
+} // namespace sofa::component::solidmechanics::fem::damping

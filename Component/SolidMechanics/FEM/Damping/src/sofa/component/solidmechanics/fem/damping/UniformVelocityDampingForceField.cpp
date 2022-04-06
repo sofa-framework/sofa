@@ -19,15 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
+#define SOFA_COMPONENT_FORCEFIELD_UNIFORMVELOCITYDAMPINGFORCEFIELD_CPP
 
-#include <sofa/component/solidmechanics/fem/damping/DiagonalVelocityDampingForceField.h>
+#include <sofa/component/solidmechanics/fem/damping/UniformVelocityDampingForceField.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/damping/DiagonalVelocityDampingForceField.h")
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa::component::forcefield
+namespace sofa::component::solidmechanics::fem::damping
 {
-    template<class DataTypes>
-    using DiagonalVelocityDampingForceField = sofa::component::solidmechanics::fem::damping::DiagonalVelocityDampingForceField<DataTypes>;
 
-} // namespace sofa::component::forcefield
+using namespace sofa::defaulttype;
+
+int UniformVelocityDampingForceFieldClass = core::RegisterObject("Uniform velocity damping")
+.add< UniformVelocityDampingForceField<Vec3Types> >()
+.add< UniformVelocityDampingForceField<Vec2Types> >()
+.add< UniformVelocityDampingForceField<Vec1Types> >()
+.add< UniformVelocityDampingForceField<Vec6Types> >()
+.add< UniformVelocityDampingForceField<Rigid3Types> >()
+.add< UniformVelocityDampingForceField<Rigid2Types> >()
+
+;
+
+
+    template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_DAMPING_API UniformVelocityDampingForceField<Vec3Types>;
+    template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_DAMPING_API UniformVelocityDampingForceField<Vec2Types>;
+    template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_DAMPING_API UniformVelocityDampingForceField<Vec1Types>;
+    template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_DAMPING_API UniformVelocityDampingForceField<Vec6Types>;
+    template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_DAMPING_API UniformVelocityDampingForceField<Rigid3Types>;
+    template class SOFA_COMPONENT_SOLIDMECHANICS_FEM_DAMPING_API UniformVelocityDampingForceField<Rigid2Types>;
+
+
+} // namespace sofa::component::solidmechanics::fem::damping
