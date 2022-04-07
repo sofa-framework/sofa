@@ -240,6 +240,8 @@ public:
     Data<bool> exportAtBegin; ///< export file at the initialization
     Data<bool> exportAtEnd; ///< export file when the simulation is finished
 
+    bool firstStep = true;
+
     ImageExporter()	: Inherited()
         , image(initData(&image,ImageTypes(),"image","image"))
         , transform(initData(&transform, TransformType(), "transform" , ""))
@@ -261,9 +263,7 @@ public:
 
     ~ImageExporter() override {}
 
-    	void cleanup() override { if (exportAtEnd.getValue()) write();	}
-
-    void bwdInit() override { if (exportAtBegin.getValue())	write(); }
+    void cleanup() override { if (exportAtEnd.getValue()) write();	}
 
 protected:
 
@@ -320,6 +320,14 @@ protected:
 
             if (guiEvent->getValueName().compare("ImageExport") == 0)
                 write();
+        }
+        else if ( /*simulation::AnimateBeginEvent* ev =*/ simulation::AnimateBeginEvent::checkEventType(event))
+        {
+            if (firstStep && exportAtBegin.getValue())
+            {
+                write();
+                firstStep = false;
+            }
         }
     }
 

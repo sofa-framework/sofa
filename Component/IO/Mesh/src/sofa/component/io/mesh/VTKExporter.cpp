@@ -23,6 +23,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 
@@ -973,19 +974,22 @@ void VTKExporter::handleEvent(sofa::core::objectmodel::Event *event)
                 writeVTKSimple();
         }
     }
+    else if ( /*simulation::AnimateBeginEvent* ev =*/ simulation::AnimateBeginEvent::checkEventType(event))
+    {
+        if (isFirstStep && exportAtBegin.getValue())
+        {
+            (fileFormat.getValue()) ? writeVTKXML() : writeVTKSimple();
+            isFirstStep = false;
+        }
+    }
 }
 
 void VTKExporter::cleanup()
 {
     if (exportAtEnd.getValue())
+    {
         (fileFormat.getValue()) ? writeVTKXML() : writeVTKSimple();
-
-}
-
-void VTKExporter::bwdInit()
-{
-    if (exportAtBegin.getValue())
-        (fileFormat.getValue()) ? writeVTKXML() : writeVTKSimple();
+    }
 }
 
 } // namespace sofa::component::_vtkexporter_

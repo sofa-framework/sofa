@@ -58,7 +58,6 @@ public:
     ~DilateEngine() override {}
 
     void init() override;
-    void bwdInit() override;
     void reinit() override;
     void doUpdate() override;
 

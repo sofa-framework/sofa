@@ -158,7 +158,6 @@ public:
     bool m_partialListSegment;
     bool m_updateStiffnessMatrix;
     bool m_assembling;
-    SReal m_lastUpdatedStep;
 
     Quat<SReal>& beamQuat(int i);
 
@@ -171,7 +170,6 @@ public:
 public:
 
     void init() override;
-    void bwdInit() override;
     void reinit() override;
     virtual void reinitBeam(Index i);
     void addForce(const MechanicalParams* mparams, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) override;

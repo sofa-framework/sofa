@@ -65,17 +65,6 @@ void DilateEngine<DataTypes>::init()
 
 
 template <class DataTypes>
-void DilateEngine<DataTypes>::bwdInit()
-{
-    if((d_triangles.getValue().size()==0) && (d_quads.getValue().size()==0))
-        msg_warning(this) << "No input mesh";
-
-    if(d_inputX.getValue().size()==0)
-        msg_warning(this) << "No input position";
-}
-
-
-template <class DataTypes>
 void DilateEngine<DataTypes>::reinit()
 {
     update();
@@ -91,12 +80,21 @@ void DilateEngine<DataTypes>::doUpdate()
     const Real minThickness = d_minThickness.getValue();
 
     WriteOnlyAccessor<Data<VecCoord> > out = d_outputX;
+    WriteOnlyAccessor<Data<VecCoord> > normals = d_normals;
 
     const int nbp = in.size();
     const int nbt = triangles.size();
     const int nbq = quads.size();
 
-    WriteOnlyAccessor<Data<VecCoord> > normals = d_normals;
+    if((nbt==0) && (nbq==0))
+    {
+        msg_warning() << "No input mesh";
+    }
+    if(nbp==0)
+    {
+        msg_warning() << "No input mesh";
+    }
+
     normals.resize(nbp);
     for (int i=0; i<nbp; ++i)
         normals[i].clear();

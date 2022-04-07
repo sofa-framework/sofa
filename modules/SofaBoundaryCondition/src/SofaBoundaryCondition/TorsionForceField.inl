@@ -39,19 +39,19 @@ TorsionForceField<DataTypes>::TorsionForceField() :
 	m_axis(initData(&m_axis, "axis", "direction of the axis (will be normalized)")),
 	m_origin(initData(&m_origin, "origin", "origin of the axis"))
 {
+    /// Update the normalized axis from m_axis
+    this->addUpdateCallback("updateNormalAxis", {&m_axis}, [this](const core::DataTracker& )
+    {
+        m_u = m_axis.getValue();
+        m_u.normalize();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {&m_indices});
 }
 
 template<typename DataTypes>
 TorsionForceField<DataTypes>::~TorsionForceField()
 {
 
-}
-
-template<typename DataTypes>
-void TorsionForceField<DataTypes>::bwdInit()
-{
-	m_u = m_axis.getValue();
-	m_u.normalize();
 }
 
 template<typename DataTypes>

@@ -94,6 +94,14 @@ void BaseSimulationExporter::handleEvent(Event *event){
             }
         }
     }
+    else if (AnimateBeginEvent::checkEventType(event))
+    {
+        if (firstStep && d_isEnabled.getValue() && d_exportAtBegin.getValue())
+        {
+            write();
+            firstStep = false;
+        }
+    }
 
     BaseObject::handleEvent(event) ;
 }
@@ -128,13 +136,6 @@ void BaseSimulationExporter::updateFromDataField()
 void BaseSimulationExporter::cleanup()
 {
     if (d_isEnabled.getValue() && d_exportAtEnd.getValue())
-        write();
-}
-
-
-void BaseSimulationExporter::bwdInit()
-{
-    if (d_isEnabled.getValue() && d_exportAtBegin.getValue())
         write();
 }
 

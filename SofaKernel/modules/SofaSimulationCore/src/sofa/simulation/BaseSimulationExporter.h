@@ -62,7 +62,6 @@ public:
     void reinit() final ;
 
     void cleanup() override ;
-    void bwdInit() override ;
     void handleEvent(Event *event) override ;
 
     virtual void doInit() {}
@@ -77,6 +76,7 @@ protected:
     const std::string getOrCreateTargetPath(const std::string& filename, bool autonumbering) ;
     void updateFromDataField() ;
     unsigned int       m_stepCounter {0} ;
+    bool firstStep = true;
 };
 
 } /// namespace _baseexporter_
