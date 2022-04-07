@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaConstraint/config.h>
+#include <sofa/component/animationloop/config.h>
 
 
 #include <sofa/helper/map.h>
@@ -41,7 +41,7 @@
 namespace sofa::component::animationloop
 {
 
-class SOFA_SOFACONSTRAINT_API MechanicalGetConstraintResolutionVisitor : public simulation::BaseMechanicalVisitor
+class SOFA_COMPONENT_ANIMATIONLOOP_API MechanicalGetConstraintResolutionVisitor : public simulation::BaseMechanicalVisitor
 {
 public:
     MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params, std::vector<core::behavior::ConstraintResolution*>& res, unsigned int offset)
@@ -59,7 +59,7 @@ private:
 };
 
 
-class SOFA_SOFACONSTRAINT_API MechanicalSetConstraint : public simulation::BaseMechanicalVisitor
+class SOFA_COMPONENT_ANIMATIONLOOP_API MechanicalSetConstraint : public simulation::BaseMechanicalVisitor
 {
 public:
     MechanicalSetConstraint(const core::ConstraintParams* _cparams, core::MultiMatrixDerivId _res, unsigned int &_contactId)
@@ -85,7 +85,7 @@ protected:
 };
 
 
-class SOFA_SOFACONSTRAINT_API MechanicalAccumulateConstraint2 : public simulation::BaseMechanicalVisitor
+class SOFA_COMPONENT_ANIMATIONLOOP_API MechanicalAccumulateConstraint2 : public simulation::BaseMechanicalVisitor
 {
 public:
     MechanicalAccumulateConstraint2(const core::ConstraintParams* _cparams, core::MultiMatrixDerivId _res)
@@ -109,7 +109,7 @@ protected:
 };
 
 
-class SOFA_SOFACONSTRAINT_API ConstraintProblem
+class SOFA_COMPONENT_ANIMATIONLOOP_API ConstraintProblem
 {
 protected:
     sofa::linearalgebra::LPtrFullMatrix<double> _W;
@@ -139,7 +139,7 @@ public:
 
 
 
-class SOFA_SOFACONSTRAINT_API ConstraintAnimationLoop : public sofa::simulation::CollisionAnimationLoop
+class SOFA_COMPONENT_ANIMATIONLOOP_API ConstraintAnimationLoop : public sofa::simulation::CollisionAnimationLoop
 {
 public:
     typedef sofa::simulation::CollisionAnimationLoop Inherit;

@@ -19,7 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralAnimationLoop/MultiStepAnimationLoop.h>
+#include <sofa/component/animationloop/MultiStepAnimationLoop.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/MechanicalVisitor.h>
@@ -33,8 +34,6 @@
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
-#include <cmath>
-#include <iostream>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
@@ -145,4 +144,3 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
 }
 
 } // namespace sofa::component::animationloop
-

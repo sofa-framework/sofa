@@ -21,45 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGeneralAnimationLoop/config.h>
+#include <sofa/component/animationloop/FreeMotionTask.h>
 
-#include <sofa/core/behavior/BaseAnimationLoop.h>
-#include <sofa/simulation/CollisionAnimationLoop.h>
-
-namespace sofa::component::animationloop
-{
-
-/** Simple animation loop that given a list of tags, animate the graph one tag after another.
-*/
-class SOFA_SOFAGENERALANIMATIONLOOP_API MultiTagAnimationLoop : public sofa::simulation::CollisionAnimationLoop
-{
-public:
-    typedef sofa::simulation::CollisionAnimationLoop Inherit;
-    SOFA_CLASS(MultiTagAnimationLoop,sofa::simulation::CollisionAnimationLoop);
-
-    MultiTagAnimationLoop(simulation::Node* gnode);
-
-    void init() override;
-
-    virtual void clear();
-
-    ~MultiTagAnimationLoop() override;
-
-    void step (const sofa::core::ExecParams* params, SReal dt) override;
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
-    {
-        simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
-        return obj;
-    }
-
-private:
-    sofa::core::objectmodel::TagSet tagList;
-};
-
-} // namespace sofa::component::animationloop
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/animationloop/FreeMotionTask.h")
