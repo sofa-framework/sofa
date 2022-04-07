@@ -37,6 +37,7 @@ class TNewMatMatrix : public Mat, public linearalgebra::BaseMatrix
 {
 public:
     typedef Mat M;
+    typedef NEWMAT::Real Real;
     //typedef NEWMAT::Matrix SubMatrixType;
     typedef TNewMatMatrix<NEWMAT::Matrix> SubMatrixType;
     typedef TNewMatMatrix<NEWMAT::Matrix> InvMatrixType;
