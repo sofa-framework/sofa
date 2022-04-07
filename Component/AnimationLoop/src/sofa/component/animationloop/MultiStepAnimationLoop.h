@@ -19,51 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #pragma once
 
-#include <sofa/simulation/CpuTask.h>
+#include <sofa/component/animationloop/config.h>
 
-#include <sofa/simulation/fwd.h>
-#include <sofa/core/fwd.h>
-#include <sofa/core/MultiVecId.h>
+#include <sofa/core/behavior/BaseAnimationLoop.h>
+#include <sofa/simulation/CollisionAnimationLoop.h>
 
 namespace sofa::component::animationloop
 {
 
-class FreeMotionTask : public sofa::simulation::CpuTask
+class SOFA_COMPONENT_ANIMATIONLOOP_API MultiStepAnimationLoop : public sofa::simulation::CollisionAnimationLoop
 {
 public:
-    FreeMotionTask(
-            sofa::simulation::Node* node,
-            const sofa::core::ExecParams* params,
-            const core::ConstraintParams* cparams,
-            SReal dt,
-            sofa::core::MultiVecId pos,
-            sofa::core::MultiVecId freePos,
-            sofa::core::MultiVecDerivId freeVel,
-            simulation::common::MechanicalOperations* mop,
-            sofa::core::objectmodel::BaseContext* context,
-            sofa::simulation::CpuTask::Status* status,
-            bool parallelSolve = false);
-    ~FreeMotionTask() override = default;
-    sofa::simulation::Task::MemoryAlloc run() final;
+    typedef sofa::simulation::CollisionAnimationLoop Inherit;
+    SOFA_CLASS(MultiStepAnimationLoop, sofa::simulation::CollisionAnimationLoop);
+protected:
+    MultiStepAnimationLoop(simulation::Node* gnode);
 
-private:
-    sofa::simulation::Node* m_node;
-    const sofa::core::ExecParams* m_params;
-    const core::ConstraintParams* m_cparams;
-    SReal m_dt;
+    ~MultiStepAnimationLoop() override;
+public:
+    void step (const sofa::core::ExecParams* params, SReal dt) override;
 
-    sofa::core::MultiVecId m_pos;
-    sofa::core::MultiVecId m_freePos;
-    sofa::core::MultiVecDerivId m_freeVel;
+    /// Construction method called by ObjectFactory.
+    template<class T>
+    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
+    {
+        simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
+        typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
+        if (context) context->addObject(obj);
+        if (arg) obj->parse(arg);
+        return obj;
+    }
 
-    simulation::common::MechanicalOperations* m_mop;
-
-    sofa::core::objectmodel::BaseContext* m_context;
-
-    bool m_parallelSolve {false };
+    Data<int> collisionSteps; ///< number of collision steps between each frame rendering
+    Data<int> integrationSteps; ///< number of integration steps between each collision detection
 };
 
-}
+} // namespace sofa::component::animationloop

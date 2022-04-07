@@ -19,7 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaGeneralAnimationLoop/MultiTagAnimationLoop.h>
+#include <sofa/component/animationloop/MultiTagAnimationLoop.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/MechanicalVisitor.h>
@@ -33,8 +34,6 @@
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
-#include <cmath>
-#include <iostream>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalResetConstraintVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalResetConstraintVisitor;
@@ -156,7 +155,5 @@ void MultiTagAnimationLoop::clear()
         tagList.clear();
     }
 }
-
-
 
 } // namespace sofa::component::animationloop

@@ -20,31 +20,34 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaConstraint/config.h>
 
+#include <sofa/component/animationloop/config.h>
+
+#include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/simulation/CollisionAnimationLoop.h>
-#include <sofa/core/MultiVecId.h>
-
-namespace sofa::core::behavior
-{
-    class ConstraintSolver;
-}
 
 namespace sofa::component::animationloop
 {
 
-class SOFA_SOFACONSTRAINT_API FreeMotionAnimationLoop : public sofa::simulation::CollisionAnimationLoop
+/** Simple animation loop that given a list of tags, animate the graph one tag after another.
+*/
+class SOFA_COMPONENT_ANIMATIONLOOP_API MultiTagAnimationLoop : public sofa::simulation::CollisionAnimationLoop
 {
 public:
-    SOFA_CLASS(FreeMotionAnimationLoop, sofa::simulation::CollisionAnimationLoop);
+    typedef sofa::simulation::CollisionAnimationLoop Inherit;
+    SOFA_CLASS(MultiTagAnimationLoop,sofa::simulation::CollisionAnimationLoop);
 
-public:
-    void step (const sofa::core::ExecParams* params, SReal dt) override;
+    MultiTagAnimationLoop(simulation::Node* gnode);
+
     void init() override;
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
-    /// Construction method called by ObjectFactory. An animation loop can only
-    /// be created if
+    virtual void clear();
+
+    ~MultiTagAnimationLoop() override;
+
+    void step (const sofa::core::ExecParams* params, SReal dt) override;
+
+    /// Construction method called by ObjectFactory.
     template<class T>
     static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
     {
@@ -55,26 +58,8 @@ public:
         return obj;
     }
 
-    Data<bool> m_solveVelocityConstraintFirst; ///< solve separately velocity constraint violations before position constraint violations
-    Data<bool> d_threadSafeVisitor; ///< If true, do not use realloc and free visitors in fwdInteractionForceField.
-    Data<bool> d_parallelCollisionDetectionAndFreeMotion; ///<If true, executes free motion and collision detection in parallel
-    Data<bool> d_parallelODESolving; ///<If true, executes all free motions in parallel
-
-protected:
-    FreeMotionAnimationLoop(simulation::Node* gnode);
-    ~FreeMotionAnimationLoop() override ;
-
-    ///< pointer towards a default ConstraintSolver (LCPConstraintSolver) used in case none was found in the scene graph
-    sofa::core::sptr<sofa::core::behavior::ConstraintSolver> defaultSolver;
-
-    ///< The ConstraintSolver used in this animation loop (required)
-    SingleLink<FreeMotionAnimationLoop, sofa::core::behavior::ConstraintSolver, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_constraintSolver;
-
-    void FreeMotionAndCollisionDetection(const sofa::core::ExecParams* params, const core::ConstraintParams& cparams, SReal dt,
-                                         sofa::core::MultiVecId pos,
-                                         sofa::core::MultiVecId freePos,
-                                         sofa::core::MultiVecDerivId freeVel,
-                                         simulation::common::MechanicalOperations* mop);
+private:
+    sofa::core::objectmodel::TagSet tagList;
 };
 
 } // namespace sofa::component::animationloop

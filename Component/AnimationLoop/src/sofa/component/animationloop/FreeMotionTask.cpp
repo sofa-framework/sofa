@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaConstraint/FreeMotionTask.h>
+#include <sofa/component/animationloop/FreeMotionTask.h>
 
 #include <sofa/helper/ScopedAdvancedTimer.h>
 #include <sofa/simulation/SolveVisitor.h>
@@ -31,7 +31,8 @@
 #include <sofa/simulation/mechanicalvisitor/MechanicalVOpVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalVOpVisitor;
 
-namespace sofa::component::animationloop {
+namespace sofa::component::animationloop 
+{
 
 FreeMotionTask::FreeMotionTask(sofa::simulation::Node* node,
                                const sofa::core::ExecParams* params,
@@ -80,4 +81,4 @@ sofa::simulation::Task::MemoryAlloc FreeMotionTask::run()
     return simulation::Task::Stack;
 }
 
-}
+} // namespace sofa::component::animationloop
