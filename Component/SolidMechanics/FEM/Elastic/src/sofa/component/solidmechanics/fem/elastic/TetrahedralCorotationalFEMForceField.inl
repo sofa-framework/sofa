@@ -103,6 +103,12 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::init()
         this->d_componentState.setValue(sofa::core::objectmodel::ComponentState::Invalid);
         return;
     }
+
+    if (m_topology->getNbTetrahedra() == 0)
+    {
+        msg_warning() << "No tetrahedra found in linked Topology.";
+    }
+
     reinit(); // compute per-element stiffness matrices and other precomputed values
 }
 

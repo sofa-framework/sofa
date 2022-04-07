@@ -108,6 +108,8 @@ protected:
         }
     };
 
+
+public:
     /// Topology Data
     typedef typename VecCoord::template rebind<TetrahedronRestInformation>::other VecTetrahedronRestInformation;
     typedef typename VecCoord::template rebind <Mat3x3>::other VecMat3x3;
@@ -116,19 +118,7 @@ protected:
     core::topology::EdgeData<VecMat3x3 > edgeInfo; ///< Internal edge data
     core::topology::TetrahedronData<VecTetrahedronRestInformation > tetrahedronInfo; ///< Internal tetrahedron data
 
-    /** Method to initialize @sa TetrahedronRestInformation when a new Tetrahedron is created.
-    * Will be set as creation callback in the TetrahedronData @sa tetrahedronInfo
-    */
-    void createTetrahedronRestInformation(Index, TetrahedronRestInformation& t,
-        const core::topology::BaseMeshTopology::Tetrahedron&,
-        const sofa::type::vector<Index>&,
-        const sofa::type::vector<SReal>&);
-
-    sofa::core::topology::BaseMeshTopology* m_topology;
     VecCoord  _initialPoints;///< the intial positions of the points
-
-    bool updateMatrix;
-
     Data<std::string> f_method; ///< the computation method of the displacements
     RotationDecompositionMethod m_decompositionMethod;
 
@@ -193,8 +183,20 @@ public:
 protected :
     static void computeQRRotation( Mat3x3 &r, const Coord *dp);
 
+    /** Method to initialize @sa TetrahedronRestInformation when a new Tetrahedron is created.
+    * Will be set as creation callback in the TetrahedronData @sa tetrahedronInfo
+    */
+    void createTetrahedronRestInformation(Index, TetrahedronRestInformation& t,
+        const core::topology::BaseMeshTopology::Tetrahedron&,
+        const sofa::type::vector<Index>&,
+        const sofa::type::vector<SReal>&);
+
     core::topology::EdgeData< VecMat3x3 > &getEdgeInfo() {return edgeInfo;}
     
+    sofa::core::topology::BaseMeshTopology* m_topology;    
+
+    bool updateMatrix;
+
     typedef FastTetrahedralCorotationalForceFieldData<DataTypes> ExtraData;
     ExtraData m_data;
 };
