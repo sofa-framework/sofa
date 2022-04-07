@@ -413,8 +413,8 @@ public:
         {
             typename FastTetraCorotationalFEM::SPtr tetraFEM = m_root->getTreeObject<FastTetraCorotationalFEM>();
             ASSERT_TRUE(tetraFEM.get() != nullptr);
-            ASSERT_FLOAT_EQ(tetraFEM->f_poissonRatio.getValue(), 0.45);
-            ASSERT_FLOAT_EQ(tetraFEM->f_youngModulus.getValue(), 5000);
+            ASSERT_FLOAT_EQ(tetraFEM->f_poissonRatio.getValue(), 0.3); // TODO need to unify this value with other tetrahedronFEM
+            ASSERT_FLOAT_EQ(tetraFEM->f_youngModulus.getValue(), 1000); // TODO need to unify this value with other tetrahedronFEM
             ASSERT_EQ(tetraFEM->f_method.getValue(), "qr");
         }
     }
