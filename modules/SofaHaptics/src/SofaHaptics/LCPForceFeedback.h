@@ -28,14 +28,13 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <mutex>
 
+#include <SofaConstraint/ConstraintSolverImpl.h>
+
 namespace sofa
 {
 
 namespace component
 {
-
-namespace constraintset { class ConstraintProblem; class ConstraintSolverImpl; }
-
 
 namespace controller
 {

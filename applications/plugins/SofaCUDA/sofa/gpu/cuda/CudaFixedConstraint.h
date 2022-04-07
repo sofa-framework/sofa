@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDAFIXEDCONSTRAINT_H
-#define SOFA_GPU_CUDA_CUDAFIXEDCONSTRAINT_H
+#pragma once
 
 #include "CudaTypes.h"
 #include <SofaBoundaryCondition/FixedConstraint.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::constraint::projective
 {
 
 template<class TCoord, class TDeriv, class TReal>
@@ -115,10 +108,4 @@ CudaFixedConstraint_DeclMethods(gpu::cuda::CudaRigid3dTypes);
 
 #undef CudaFixedConstraint_DeclMethods
 
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::constraint::projective

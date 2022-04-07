@@ -25,12 +25,9 @@
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
-namespace sofa
+
+namespace sofa::core::behavior
 {
-
-
-namespace core {
-namespace behavior {
     template class SOFA_GPU_CUDA_API ProjectiveConstraintSet<gpu::cuda::CudaVec6fTypes>;
     template class SOFA_GPU_CUDA_API ProjectiveConstraintSet<gpu::cuda::CudaRigid3fTypes>;
 
@@ -38,26 +35,9 @@ namespace behavior {
     template class SOFA_GPU_CUDA_API ProjectiveConstraintSet<gpu::cuda::CudaVec6dTypes>;
     template class SOFA_GPU_CUDA_API ProjectiveConstraintSet<gpu::cuda::CudaRigid3dTypes>;
 #endif
-}
+} // namespace sofa::core::behavior
 
-}
-
-// namespace component
-// {
-//
-// namespace projectiveconstraintset
-// {
-//
-// template class SOFA_GPU_CUDA_API LinearMovementConstraint<gpu::cuda::CudaRigid3fTypes>;
-//
-// }// namespace projectiveconstraintset
-//
-// }// namespace component
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 
@@ -74,8 +54,4 @@ int LinearMovementConstraintCudaClass = core::RegisterObject("Supports GPU-side 
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
+} // namespace sofa::gpu::cuda
