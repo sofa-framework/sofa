@@ -452,19 +452,6 @@ public:
             Vec6(0, 0, 0, 0, 1.73205, 0),
             Vec6(0, 0, 1.73205, 0, 0, 0) };
 
-        //initRot: [0 - 0.707107 0.707107, 0.816497 - 0.408248 - 0.408248, 0.57735 0.57735 0.57735]
-
-        //initPosition : 0 0 0 1.41421 0 0 0.707107 1.22474 0 0.707107 0.408248 - 0.57735
-
-        //curRot : [0 0 0, 0 0 0, 0 0 0]
-
-        //stiffnessMat : [224.359 96.1538 96.1538 0 0 0, 96.1538 224.359 96.1538 0 0 0, 96.1538 96.1538 224.359 0 0 0, 0 0 0 64.1026 0 0, 0 0 0 0 64.1026 0, 0 0 0 0 0 64.1026]
-
-        //strainD : [0.707107 0 0 0.408248 0 - 0.57735, 0 0.408248 0 0.707107 - 0.57735 0, 0 0 - 0.57735 0 0.408248 0.707107, -0.707107 0 0 0.408248 0 - 0.57735, 0 0.408248 0 - 0.707107 - 0.57735 0, 0 0 - 0.57735 0 0.408248 - 0.707107, -0 0 0 - 0.816497 0 - 0.57735, 0 - 0.816497 0 - 0 - 0.57735 0, 0 0 - 0.57735 0 - 0.816497 - 0, 0 0 0 - 0 0 1.73205, 0 - 0 0 0 1.73205 0, 0 0 1.73205 0 - 0 0]
-
-
-
-
         Transformation initRot (type::NOINIT);
         Transformation curRot(type::NOINIT);
         MaterialStiffness stiffnessMat(type::NOINIT);
@@ -493,16 +480,10 @@ public:
             initRot.transpose(tetraInfo.initialTransformation); // TODO check why transposed is stored in this version
             initPosition = tetraInfo.rotatedInitialElements;
 
-            curRot.transpose(tetraInfo.rotation);// TODO check why transposed is stored in this version
+            curRot = initRot; // TODO check why this is not computed at start
 
             stiffnessMat = tetraInfo.materialMatrix;
             strainD = tetraInfo.strainDisplacementTransposedMatrix;
-                
-            std::cout << std::endl << "initRot: " << initRot << std::endl << std::endl;
-            std::cout << "initPosition: " << initPosition << std::endl << std::endl;
-            std::cout << "curRot: " << curRot << std::endl << std::endl;
-            std::cout << "stiffnessMat: " << stiffnessMat << std::endl << std::endl;
-            std::cout << "strainD: " << strainD << std::endl << std::endl;
         }
             
         // check rotations
