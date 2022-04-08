@@ -179,7 +179,28 @@ void UniformMass<DataTypes>::initDefaultImpl()
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
         d_indices.createTopologyHandler(meshTopology);
-        d_indices.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::ENDING_EVENT, [this](const core::topology::TopologyChange* eventTopo) {
+        /// Computations to be done when points are added
+        d_indices.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::POINTSADDED, [this](const core::topology::TopologyChange* eventTopo) {
+            WriteAccessor<Data<SetIndexArray > > indices = d_indices;
+            const core::topology::PointsAdded* pointsAdded = static_cast<const core::topology::PointsAdded*>(eventTopo);
+            auto& addedIndices = pointsAdded->getIndexArray();
+
+            for (unsigned i = 0; i<addedIndices.size(); i++)
+            {
+                indices.push_back(addedIndices[i]);
+            }
+            updateMassOnResize(d_indices.getValue().size());
+        });
+        /// Computations to be done when points are removed
+        d_indices.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::POINTSREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
+            WriteAccessor<Data<SetIndexArray > > indices = d_indices;
+            const core::topology::PointsRemoved* pointsRemoved = static_cast<const core::topology::PointsRemoved*>(eventTopo);
+            auto& removedIndices = pointsRemoved->getArray();
+
+            for (unsigned i = 0; i<removedIndices.size(); i++)
+            {
+                std::remove(indices.begin(), indices.end(), removedIndices[i]);
+            }
             updateMassOnResize(d_indices.getValue().size());
         });
     }
