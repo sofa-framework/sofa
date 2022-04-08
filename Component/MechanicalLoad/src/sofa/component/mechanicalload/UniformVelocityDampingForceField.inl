@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/solidmechanics/fem/damping/UniformVelocityDampingForceField.h>
 
+#include "UniformVelocityDampingForceField.h"
 #include <sofa/linearalgebra/BaseMatrix.h>
 #include <sofa/core/MechanicalParams.h>
 
-namespace sofa::component::solidmechanics::fem::damping
+namespace sofa::component::mechanicalload
 {
 
 
@@ -87,4 +87,4 @@ SReal UniformVelocityDampingForceField<DataTypes>::getPotentialEnergy(const core
 }
 
 
-} // namespace sofa::component::solidmechanics::fem::damping
+} // namespace sofa::component::mechanicalload

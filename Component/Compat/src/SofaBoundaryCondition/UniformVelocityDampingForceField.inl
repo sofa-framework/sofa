@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/solidmechanics/fem/damping/UniformVelocityDampingForceField.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/damping/UniformVelocityDampingForceField.inl")
+#include <sofa/component/mechanicalload/UniformVelocityDampingForceField.inl>
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mechanicalload/UniformVelocityDampingForceField.inl")
