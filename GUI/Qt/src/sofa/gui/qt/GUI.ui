@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <exportmacro>SOFA_GUI_QT_API</exportmacro>
  <class>GUI</class>
  <widget class="QMainWindow" name="GUI">
   <property name="geometry">

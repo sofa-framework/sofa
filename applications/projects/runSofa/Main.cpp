@@ -43,8 +43,6 @@ using sofa::simulation::Node;
 #include <SofaGraphComponent/SceneCheckerListener.h>
 using sofa::simulation::scenechecking::SceneCheckerListener;
 
-#include <SofaBase/initSofaBase.h>
-
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/cast.h>
@@ -54,11 +52,11 @@ using sofa::simulation::scenechecking::SceneCheckerListener;
 using sofa::helper::system::FileSystem;
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/Utils.h>
-#include <sofa/gui/GUIManager.h>
+#include <sofa/gui/common/GUIManager.h>
 using sofa::gui::GUIManager;
 
 #include <SofaGui/initSofaGui.h>
-#include <sofa/gui/BatchGUI.h>  // For the default number of iterations
+#include <sofa/gui/common/BatchGUI.h>  // For the default number of iterations
 
 using sofa::core::ExecParams ;
 
@@ -82,7 +80,7 @@ using  sofa::helper::logging::MainPerComponentLoggingMessageHandler ;
 
 #include <sofa/helper/AdvancedTimer.h>
 
-#include <sofa/gui/GuiDataRepository.h>
+#include <sofa/gui/common/GuiDataRepository.h>
 using sofa::gui::GuiDataRepository ;
 
 using sofa::helper::system::DataRepository;
@@ -98,7 +96,7 @@ using sofa::helper::logging::ClangMessageHandler ;
 #include <sofa/helper/logging/ExceptionMessageHandler.h>
 using sofa::helper::logging::ExceptionMessageHandler;
 
-#include <sofa/gui/ArgumentParser.h>
+#include <sofa/gui/common/ArgumentParser.h>
 
 
 
@@ -320,7 +318,6 @@ int main(int argc, char** argv)
     // Note that initializations must be done after ArgumentParser that can exit the application (without cleanup)
     // even if everything is ok e.g. asking for help
     sofa::simulation::graph::init();
-    sofa::component::initSofaBase();
 
     if (simulationType == "tree")
         msg_warning("runSofa") << "Tree based simulation, switching back to graph simulation.";
