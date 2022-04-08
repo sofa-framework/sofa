@@ -1639,7 +1639,7 @@ void RealGUI::eventNewTime()
     {
         double time = root->getTime();
         char buf[100];
-        sprintf ( buf, "Time: %.3g", time );
+        sprintf ( buf, "Time: %.3g,   Steps:  %o", time, frameCounter );
         timeLabel->setText ( buf );
     }
 #endif
@@ -2132,7 +2132,6 @@ void RealGUI::playpauseGUI ( bool startSimulation )
         SimulationStopEvent startEvt;
         root->propagateEvent(core::execparams::defaultInstance(), &startEvt);
         m_clockBeforeLastStep = 0;
-        frameCounter=0;
         timerStep->start(0);
         return;
     }
