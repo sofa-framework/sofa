@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/solidmechanics/fem/damping/DiagonalVelocityDampingForceField.h>
 
+#include "DiagonalVelocityDampingForceField.h"
 #include <sofa/core/MechanicalParams.h>
 
 
-namespace sofa::component::solidmechanics::fem::damping
+namespace sofa::component::mechanicalload
 {
 
 template<class DataTypes>
@@ -72,4 +72,4 @@ SReal DiagonalVelocityDampingForceField<DataTypes>::getPotentialEnergy(const cor
     return 0;
 }
 
-} // namespace sofa::component::solidmechanics::fem::damping
+} // namespace sofa::component::mechanicalload

@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/solidmechanics/fem/damping/UniformVelocityDampingForceField.h>
+#include <sofa/component/mechanicalload/UniformVelocityDampingForceField.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/solidmechanics/fem/damping/UniformVelocityDampingForceField.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/mechanicalload/UniformVelocityDampingForceField.h")
 
 namespace sofa::component::forcefield
 {
     template<class DataTypes>
-    using UniformVelocityDampingForceField = sofa::component::solidmechanics::fem::damping::UniformVelocityDampingForceField<DataTypes>;
+    using UniformVelocityDampingForceField = sofa::component::mechanicalload::UniformVelocityDampingForceField<DataTypes>;
 
 } // namespace sofa::component::forcefield
