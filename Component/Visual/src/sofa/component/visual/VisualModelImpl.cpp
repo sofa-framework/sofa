@@ -766,28 +766,24 @@ void VisualModelImpl::applyScale(const SReal sx, const SReal sy, const SReal sz)
 
 void VisualModelImpl::applyUVTranslation(const Real dU, const Real dV)
 {
-    float dUf = float(dU);
-    float dVf = float(dV);
-    VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
-    for (std::size_t i = 0; i < vtexcoords.size(); i++)
+    auto vtexcoords = sofa::helper::getWriteOnlyAccessor(m_vtexcoords);
+
+    for (auto& vtexcoord : vtexcoords)
     {
-        vtexcoords[i][0] += dUf;
-        vtexcoords[i][1] += dVf;
+        vtexcoord[0] += dU;
+        vtexcoord[1] += dV;
     }
-    m_vtexcoords.endEdit();
 }
 
 void VisualModelImpl::applyUVScale(const Real scaleU, const Real scaleV)
 {
-    float scaleUf = float(scaleU);
-    float scaleVf = float(scaleV);
-    VecTexCoord& vtexcoords = *(m_vtexcoords.beginEdit());
-    for (std::size_t i = 0; i < vtexcoords.size(); i++)
+    auto vtexcoords = sofa::helper::getWriteOnlyAccessor(m_vtexcoords);
+
+    for (auto& vtexcoord : vtexcoords)
     {
-        vtexcoords[i][0] *= scaleUf;
-        vtexcoords[i][1] *= scaleVf;
+        vtexcoord[0] *= scaleU;
+        vtexcoord[1] *= scaleV;
     }
-    m_vtexcoords.endEdit();
 }
 
 
@@ -1294,8 +1290,8 @@ void VisualModelImpl::computeUVSphereProjection()
 
         Coord pos = m_sphereV[i] - center;
         pos.normalize();
-        vtexcoords[i][0] = float(0.5 + atan2(pos[1], pos[0]) / (2 * R_PI));
-        vtexcoords[i][1] = float(0.5 - asin(pos[2]) / R_PI);
+        vtexcoords[i][0] = (0.5 + atan2(pos[1], pos[0]) / (2 * R_PI));
+        vtexcoords[i][1] = (0.5 - asin(pos[2]) / R_PI);
     }
 
     m_vtexcoords.endEdit();
@@ -1340,14 +1336,14 @@ void VisualModelImpl::flipFaces()
     m_quads.endEdit();
 }
 
-void VisualModelImpl::setColor(float r, float g, float b, float a)
+void VisualModelImpl::setColor(Real r, Real g, Real b, Real a)
 {
     Material M = material.getValue();
     M.setColor(r,g,b,a);
     material.setValue(M);
 }
 
-void VisualModelImpl::setColor(std::string color)
+void VisualModelImpl::setColor(const std::string& color)
 {
     if (color.empty())
         return;
