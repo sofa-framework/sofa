@@ -56,7 +56,7 @@ void TriangleOctreeModel::draw (const core::visual::VisualParams* vparams)
         vparams->drawTool()->setMaterial(color);
 
         if(octreeRoot)
-            octreeRoot->draw(vparams);
+            octreeRoot->draw(vparams->drawTool());
 
         vparams->drawTool()->disableLighting();
         if (vparams->displayFlags().getShowWireFrame ())

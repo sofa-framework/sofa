@@ -1,13 +1,18 @@
 <Node name="root" dt="0.02">
     <Node name="requiredPlugins">
-        <RequiredPlugin name="SofaBoundaryCondition"/>
-        <RequiredPlugin name="SofaConstraint"/>
-        <RequiredPlugin name="SofaDeformable"/>
-        <RequiredPlugin name="SofaEngine"/>
-        <RequiredPlugin name="SofaGeneralEngine"/>
-        <RequiredPlugin name="SofaImplicitOdeSolver"/>
-        <RequiredPlugin name="SofaMiscMapping"/>
-        <RequiredPlugin name="SofaSimpleFem"/>
+        <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+        <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [SubsetMultiMapping] -->
+        <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+        <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+        <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TetrahedronFEMForceField] -->
+        <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [MeshSpringForceField] -->
+        <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+        <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [EdgeSetTopologyContainer] -->
+        <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [RegularGridTopology] -->
+        <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+        <RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [FixedConstraint] -->
+        <RequiredPlugin name="SofaEngine"/> <!-- Needed to use components [BoxROI] -->
+        <RequiredPlugin name="SofaGeneralEngine"/> <!-- Needed to use components [NearestPointROI] -->
     </Node>
 
     <VisualStyle displayFlags="showBehaviorModels showForceFields showInteractionForceFields" />

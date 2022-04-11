@@ -1,9 +1,15 @@
 <!-- Mechanical TriangularFEMForceFieldOptim Example -->
 <Node name="root" dt="0.05" gravity="0 10 10" showBoundingTree="0">
-    <RequiredPlugin pluginName="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
-    <RequiredPlugin pluginName='SofaGeneralSimpleFem'/> 
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [TriangularFEMForceFieldOptim] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [FixedConstraint] -->
     
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showWireframe" />
     <!-- Activate this loader to use a square mesh with only two triangles (useful to debug base equations) -->

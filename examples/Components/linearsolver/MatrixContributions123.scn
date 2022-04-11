@@ -4,14 +4,15 @@
 	Accuracy of matrix computation can compare with the iterative solver (CG) 
 -->
 <Node name="root" gravity="0 0 -9.8" dt="0.01">
-    <RequiredPlugin pluginName="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName="SofaValidation"/>
-    <RequiredPlugin pluginName="SofaNewmat"/>
-    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
-    <RequiredPlugin pluginName='SofaDeformable'/>
-    <RequiredPlugin pluginName='SofaGeneralSimpleFem'/>
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaMiscCollision'/>
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [DiagonalMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [StiffSpringForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
+    <RequiredPlugin name="SofaNewmat"/> <!-- Needed to use components [LULinearSolver] -->
   
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultPipeline name="default21" verbose="0" />

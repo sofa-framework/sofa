@@ -39,17 +39,6 @@ using sofa::testing::BaseTest;
 #include <SofaEngine/initSofaEngine.h>
 #include <SofaMeshCollision/initSofaMeshCollision.h>
 #include <SofaImplicitOdeSolver/initSofaImplicitOdeSolver.h>
- 
-
-#if defined(WIN32) && _MSC_VER<=1700  // before or equal to visual studio 2012
-   #include <boost/math/special_functions/erf.hpp>
-   #define ERFC(x) boost::math::erfc(x)
-#else
-   #define ERFC(x) std::erfc(x)
-#endif
-
-
-
 
 namespace sofa {
 
@@ -185,7 +174,7 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseTest
     {
         // For a Dirac heat of T=1 and a fixed BC T=0, the temperature at time = TTTT in the middle of the beam is:
         SReal temp = 1.0 / (4.0 * sqrt(timeEvaluation));
-        theorX[0] = 1.0 * ERFC( temp );
+        theorX[0] = std::erfc(temp);
     }
 
 

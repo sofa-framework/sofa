@@ -1,4 +1,4 @@
 <Node name="root">
-    <RequiredPlugin name="SofaOpenglVisual"/>
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <OglModel name="dragon" filename="mesh/dragon.obj" />
 </Node>

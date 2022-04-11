@@ -37,9 +37,9 @@ using sofa::core::objectmodel::ComponentState ;
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 
-template <class RigidTypes>
+template <class RigidTypes, class GeometricalTypes>
 template <class T>
-SReal DiagonalMass<RigidTypes>::getPotentialEnergyRigidImpl( const MechanicalParams* mparams,
+SReal DiagonalMass<RigidTypes, GeometricalTypes>::getPotentialEnergyRigidImpl( const MechanicalParams* mparams,
                                                                         const DataVecCoord& x) const
 {
     SOFA_UNUSED(mparams) ;
@@ -59,9 +59,9 @@ SReal DiagonalMass<RigidTypes>::getPotentialEnergyRigidImpl( const MechanicalPar
 }
 
 
-template <class RigidTypes>
+template <class RigidTypes, class GeometricalTypes>
 template <class T>
-void DiagonalMass<RigidTypes>::drawRigid3dImpl(const VisualParams* vparams)
+void DiagonalMass<RigidTypes, GeometricalTypes>::drawRigid3dImpl(const VisualParams* vparams)
 {
     const MassVector &masses= d_vertexMass.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
@@ -107,9 +107,9 @@ void DiagonalMass<RigidTypes>::drawRigid3dImpl(const VisualParams* vparams)
 }
 
 
-template <class RigidTypes>
+template <class RigidTypes, class GeometricalTypes>
 template <class T>
-void DiagonalMass<RigidTypes>::drawRigid2dImpl(const VisualParams* vparams)
+void DiagonalMass<RigidTypes, GeometricalTypes>::drawRigid2dImpl(const VisualParams* vparams)
 {
     const MassVector &masses= d_vertexMass.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
@@ -127,18 +127,20 @@ void DiagonalMass<RigidTypes>::drawRigid2dImpl(const VisualParams* vparams)
     }
 }
 
-template <class RigidTypes>
+template <class RigidTypes, class GeometricalTypes>
 template <class T>
-void DiagonalMass<RigidTypes>::initRigidImpl()
+void DiagonalMass<RigidTypes, GeometricalTypes>::initRigidImpl()
 {
-    if(this->getContext()==nullptr){
+    if(this->getContext()==nullptr)
+    {
         dmsg_error(this) << "Calling the initRigidImpl function is only possible if the object has a valid associated context \n" ;
         this->d_componentState.setValue(ComponentState::Invalid) ;
 
         //return;
     }
 
-    if(this->mstate == nullptr ){
+    if(this->mstate == nullptr )
+    {
         msg_error(this) << "DiagonalComponent can only be used on node with an associated '<MechanicalObject>' \n"
                            "To remove this warning you can: add a <MechanicalObject> to the node. \n" ;
         this->d_componentState.setValue(ComponentState::Invalid) ;
@@ -146,23 +148,49 @@ void DiagonalMass<RigidTypes>::initRigidImpl()
         //return;
     }
 
-
     if (l_topology.empty())
     {
-        msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
+        msg_warning() << "Link \"topology\" to the Topology container should be set to ensure right behavior. First Topology found in current context will be used.";
         l_topology.set(this->getContext()->getMeshTopologyLink());
     }
-
-    m_topology = l_topology.get();
-    msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
-    
-    if(m_topology){
+        
+    if(!l_topology)
+    {
         msg_error(this) << "Unable to retreive a valid MeshTopology component in the current context. \n"
                              "The component cannot be initialized and thus is de-activated. \n "
                              "To supress this warning you can add a Topology component in the parent node of'<"<< this->getName() <<">'.\n" ;
         this->d_componentState.setValue(ComponentState::Invalid) ;
+    }
+    else
+    {
+        msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
-        //return;
+        if (l_geometryState.empty())
+        {
+            msg_warning() << "Link \"geometryState\" to the MechanicalObject associated with the geometry should be set to ensure right behavior. First container found from the topology context will be used.";
+            sofa::core::behavior::BaseMechanicalState::SPtr baseState;
+            l_topology->getContext()->get(baseState);
+
+            if (baseState == nullptr)
+            {
+                msg_error() << "No compatible state associated with the topology has been found.";
+                this->d_componentState.setValue(ComponentState::Invalid);
+            }
+            else
+            {
+                typename sofa::core::behavior::MechanicalState<GeometricalTypes>::SPtr geometryState = boost::dynamic_pointer_cast<sofa::core::behavior::MechanicalState<GeometricalTypes>>(baseState);
+                if (geometryState == nullptr)
+                {
+                    msg_error() << "A state associated with the topology has been found but is incompatible with the definition of the mass (templates mismatch).";
+                    this->d_componentState.setValue(ComponentState::Invalid);
+                }
+                else
+                {
+                    l_geometryState.set(geometryState);
+                    msg_info() << "Topology is associated with the state: '" << l_geometryState->getPathName() << "'";
+                }
+            }
+        }
     }
 
     if (!d_fileMass.getValue().empty())
@@ -186,9 +214,9 @@ void DiagonalMass<RigidTypes>::initRigidImpl()
     this->d_componentState.setValue(ComponentState::Valid) ;
 }
 
-template <class RigidTypes>
+template <class RigidTypes, class GeometricalTypes>
 template <class T>
-type::Vector6 DiagonalMass<RigidTypes>::getMomentumRigid3Impl ( const MechanicalParams*,
+type::Vector6 DiagonalMass<RigidTypes, GeometricalTypes>::getMomentumRigid3Impl ( const MechanicalParams*,
                                                                     const DataVecCoord& vx,
                                                                     const DataVecDeriv& vv ) const
 {
@@ -211,9 +239,9 @@ type::Vector6 DiagonalMass<RigidTypes>::getMomentumRigid3Impl ( const Mechanical
     return momentum;
 }
 
-template <class Vec3Types>
+template <class Vec3Types, class GeometricalTypes >
 template <class T>
-type::Vector6 DiagonalMass<Vec3Types>::getMomentumVec3Impl( const MechanicalParams*,
+type::Vector6 DiagonalMass<Vec3Types, GeometricalTypes>::getMomentumVec3Impl( const MechanicalParams*,
                                                                 const DataVecCoord& vx,
                                                                 const DataVecDeriv& vv ) const
 {
@@ -307,17 +335,24 @@ type::Vector6 DiagonalMass<Rigid3Types>::getMomentum ( const MechanicalParams* m
 // Register in the Factory
 int DiagonalMassClass = core::RegisterObject("Define a specific mass for each particle")
         .add< DiagonalMass<Vec3Types> >()
-        .add< DiagonalMass<Vec2Types> >()
+        .add< DiagonalMass<Vec2Types, Vec3Types> >()
         .add< DiagonalMass<Vec1Types> >()
+        .add< DiagonalMass<Vec1Types, Vec2Types> >()
+        .add< DiagonalMass<Vec1Types, Vec3Types> >()
         .add< DiagonalMass<Rigid3Types> >()
         .add< DiagonalMass<Rigid2Types> >()
+        .add< DiagonalMass<Rigid2Types, Rigid3Types> >()
 
         ;
 
 template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec3Types>;
 template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec2Types>;
+template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec2Types, Vec3Types>;
 template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec1Types>;
+template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec1Types, Vec2Types>;
+template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec1Types, Vec3Types>;
 template class SOFA_COMPONENT_MASS_API DiagonalMass<Rigid3Types>;
 template class SOFA_COMPONENT_MASS_API DiagonalMass<Rigid2Types>;
+template class SOFA_COMPONENT_MASS_API DiagonalMass<Rigid2Types, Rigid3Types>;
 
 } // namespace sofa::component::mass

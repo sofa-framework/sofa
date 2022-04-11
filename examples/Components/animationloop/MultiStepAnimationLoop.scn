@@ -1,12 +1,16 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="1.0">
-    <RequiredPlugin name="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName='SofaGeneralAnimationLoop'/>
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaLoader'/>
-    <RequiredPlugin pluginName='SofaMeshCollision'/>
-    <RequiredPlugin pluginName='SofaMiscCollision'/>
-    <RequiredPlugin pluginName='SofaRigid'/>
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaGeneralAnimationLoop"/> <!-- Needed to use components [MultiStepAnimationLoop] -->
+    <RequiredPlugin name="SofaMeshCollision"/> <!-- Needed to use components [TriangleCollisionModel] -->
+    <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [DefaultCollisionGroupManager] -->
 
     <DefaultPipeline depth="6" verbose="0" draw="0" />
     <BruteForceBroadPhase/>

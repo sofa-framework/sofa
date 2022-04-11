@@ -26,13 +26,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace projectiveconstraintset
+namespace sofa::component::constraint::projective
 {
 
 template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaVec1fTypes>;
@@ -48,16 +42,10 @@ template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaVec6dTypes>;
 template class SOFA_GPU_CUDA_API FixedConstraint<gpu::cuda::CudaRigid3dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace projectiveconstraintset
+} // namespace sofa::component::constraint::projective
 
-} // namespace component
-
-namespace gpu
+namespace sofa::gpu::cuda
 {
-
-namespace cuda
-{
-
 
 int FixedConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::projectiveconstraintset::FixedConstraint<CudaVec1fTypes> >()
@@ -73,8 +61,4 @@ int FixedConstraintCudaClass = core::RegisterObject("Supports GPU-side computati
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
+} // namespace sofa::gpu::cuda

@@ -1,14 +1,18 @@
 <?xml version="1.0" ?>
 <!-- Automatic Tetrahedron adding example with Tetra2Triangle mapping: Element added are define in: ./AddingTetrahedraProcess.txt -->
 <Node name="root" gravity="0 0 -9" dt="0.01">
-    <RequiredPlugin pluginName="SofaOpenglVisual"/>
-    <RequiredPlugin pluginName='SofaMiscTopology'/>
-    <RequiredPlugin pluginName='SofaMiscFem'/>
-    <RequiredPlugin pluginName='SofaTopologyMapping'/>
-    <RequiredPlugin pluginName='SofaImplicitOdeSolver'/>
-    <RequiredPlugin pluginName='SofaGeneralSimpleFem'/>
-    <RequiredPlugin pluginName='SofaBoundaryCondition'/>
-    <RequiredPlugin pluginName='SofaMeshCollision'/>
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Mapping"/> <!-- Needed to use components [Tetra2TriangleTopologicalMapping] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Utility"/> <!-- Needed to use components [TopologicalChangeProcessor] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="SofaMeshCollision"/> <!-- Needed to use components [TriangleCollisionModel] -->
 
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showWireframe" />
     <DefaultPipeline verbose="0" />

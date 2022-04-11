@@ -152,7 +152,8 @@ FastTetrahedralCorotationalForceField<DataTypes>::FastTetrahedralCorotationalFor
     , drawColor4(initData(&drawColor4, sofa::type::RGBAColor(0.5f, 1.0f, 1.0f, 1.0f), "drawColor4", " draw color for faces 4"))
     , l_topology(initLink("topology", "link to the topology container"))
 {
-
+    f_poissonRatio.setRequired(true);
+    f_youngModulus.setRequired(true);
 }
 
 template <class DataTypes> 

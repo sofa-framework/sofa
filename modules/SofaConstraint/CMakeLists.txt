@@ -13,62 +13,21 @@ set(SOURCE_FILES
     )
 
 list(APPEND HEADER_FILES
-    ${SOFACONSTRAINT_SRC}/BilateralConstraintResolution.h
-    ${SOFACONSTRAINT_SRC}/BilateralInteractionConstraint.h
-    ${SOFACONSTRAINT_SRC}/BilateralInteractionConstraint.inl
-    ${SOFACONSTRAINT_SRC}/ConstraintAnimationLoop.h
     ${SOFACONSTRAINT_SRC}/ConstraintAttachBodyPerformer.h
     ${SOFACONSTRAINT_SRC}/ConstraintAttachBodyPerformer.inl
-    ${SOFACONSTRAINT_SRC}/ConstraintSolverImpl.h
-    ${SOFACONSTRAINT_SRC}/ConstraintStoreLambdaVisitor.h
     ${SOFACONSTRAINT_SRC}/ContactIdentifier.h
-    ${SOFACONSTRAINT_SRC}/FreeMotionAnimationLoop.h
-    ${SOFACONSTRAINT_SRC}/FreeMotionTask.h
     ${SOFACONSTRAINT_SRC}/FrictionContact.h
     ${SOFACONSTRAINT_SRC}/FrictionContact.inl
-    ${SOFACONSTRAINT_SRC}/GenericConstraintCorrection.h
-    ${SOFACONSTRAINT_SRC}/GenericConstraintSolver.h
-    ${SOFACONSTRAINT_SRC}/LCPConstraintSolver.h
-    ${SOFACONSTRAINT_SRC}/LinearSolverConstraintCorrection.h
-    ${SOFACONSTRAINT_SRC}/LinearSolverConstraintCorrection.inl
     ${SOFACONSTRAINT_SRC}/LocalMinDistance.h
-    ${SOFACONSTRAINT_SRC}/PrecomputedConstraintCorrection.h
-    ${SOFACONSTRAINT_SRC}/PrecomputedConstraintCorrection.inl
-    ${SOFACONSTRAINT_SRC}/SlidingConstraint.h
-    ${SOFACONSTRAINT_SRC}/SlidingConstraint.inl
     ${SOFACONSTRAINT_SRC}/StickContactConstraint.h
     ${SOFACONSTRAINT_SRC}/StickContactConstraint.inl
-    ${SOFACONSTRAINT_SRC}/StopperConstraint.h
-    ${SOFACONSTRAINT_SRC}/StopperConstraint.inl
-    ${SOFACONSTRAINT_SRC}/UncoupledConstraintCorrection.h
-    ${SOFACONSTRAINT_SRC}/UncoupledConstraintCorrection.inl
-    ${SOFACONSTRAINT_SRC}/UniformConstraint.h
-    ${SOFACONSTRAINT_SRC}/UniformConstraint.inl
-    ${SOFACONSTRAINT_SRC}/UnilateralInteractionConstraint.h
-    ${SOFACONSTRAINT_SRC}/UnilateralInteractionConstraint.inl
     )
 list(APPEND SOURCE_FILES
-    ${SOFACONSTRAINT_SRC}/BilateralInteractionConstraint.cpp
-    ${SOFACONSTRAINT_SRC}/ConstraintAnimationLoop.cpp
     ${SOFACONSTRAINT_SRC}/ConstraintAttachBodyPerformer.cpp
-    ${SOFACONSTRAINT_SRC}/ConstraintSolverImpl.cpp
-    ${SOFACONSTRAINT_SRC}/ConstraintStoreLambdaVisitor.cpp
     ${SOFACONSTRAINT_SRC}/ContactIdentifier.cpp
-    ${SOFACONSTRAINT_SRC}/FreeMotionAnimationLoop.cpp
-    ${SOFACONSTRAINT_SRC}/FreeMotionTask.cpp
     ${SOFACONSTRAINT_SRC}/FrictionContact.cpp
-    ${SOFACONSTRAINT_SRC}/GenericConstraintCorrection.cpp
-    ${SOFACONSTRAINT_SRC}/GenericConstraintSolver.cpp
-    ${SOFACONSTRAINT_SRC}/LCPConstraintSolver.cpp
-    ${SOFACONSTRAINT_SRC}/LinearSolverConstraintCorrection.cpp
     ${SOFACONSTRAINT_SRC}/LocalMinDistance.cpp
-    ${SOFACONSTRAINT_SRC}/PrecomputedConstraintCorrection.cpp
-    ${SOFACONSTRAINT_SRC}/SlidingConstraint.cpp
     ${SOFACONSTRAINT_SRC}/StickContactConstraint.cpp
-    ${SOFACONSTRAINT_SRC}/StopperConstraint.cpp
-    ${SOFACONSTRAINT_SRC}/UncoupledConstraintCorrection.cpp
-    ${SOFACONSTRAINT_SRC}/UniformConstraint.cpp
-    ${SOFACONSTRAINT_SRC}/UnilateralInteractionConstraint.cpp
     )
 
 sofa_find_package(SofaBase REQUIRED) # SofaBaseLinearSolver
@@ -79,11 +38,19 @@ sofa_find_package(SofaUserInteraction REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaImplicitOdeSolver SofaUserInteraction SofaBaseLinearSolver)
 
-message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Mapping.MappedMatrix instead.")
+message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Mapping.MappedMatrix, Sofa.Component.Constraint.Lagrangian.Model, Sofa.Component.Constraint.Lagrangian.Correction, Sofa.Component.Constraint.Lagrangian.Solver and Sofa.Component.AnimationLoop instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.Mapping.MappedMatrix REQUIRED)
+sofa_find_package(Sofa.Component.Constraint.Lagrangian.Model REQUIRED)
+sofa_find_package(Sofa.Component.Constraint.Lagrangian.Correction REQUIRED)
+sofa_find_package(Sofa.Component.Constraint.Lagrangian.Solver REQUIRED)
+sofa_find_package(Sofa.Component.AnimationLoop REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Mapping.MappedMatrix)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Constraint.Lagrangian.Model)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Constraint.Lagrangian.Correction)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Constraint.Lagrangian.Solver)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.AnimationLoop)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

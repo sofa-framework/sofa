@@ -34,9 +34,13 @@ void initSofaConstraint()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaConstraint") << "SofaConstraint is deprecated. It will be removed at v23.06. You may use Sofa.Component.Mapping.MappedMatrix instead.";
+        // msg_deprecated("SofaConstraint") << "SofaConstraint is deprecated. It will be removed at v23.06. You may use Sofa.Component.Mapping.MappedMatrix, Sofa.Component.Constraint.Lagrangian.Model, Sofa.Component.Constraint.Lagrangian.Correction, Sofa.Component.Constraint.Lagrangian.Solver and Sofa.Component.AnimationLoop instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Mapping.MappedMatrix");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Constraint.Lagrangian.Model");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Constraint.Lagrangian.Correction");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Constraint.Lagrangian.Solver");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.AnimationLoop");
 
         first = false;
     }

@@ -68,6 +68,8 @@ protected:
 
 inline void StateAccessor::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
+    SOFA_UNUSED(params);
+
     if( !onlyVisible ) return;
 
     static constexpr SReal max_real = std::numeric_limits<SReal>::max();
