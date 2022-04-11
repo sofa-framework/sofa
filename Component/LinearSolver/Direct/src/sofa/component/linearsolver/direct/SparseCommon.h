@@ -19,60 +19,49 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+
 #pragma once
 
 #include <sofa/component/linearsolver/direct/config.h>
-
-#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
-#include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/linearalgebra/SparseMatrix.h>
-#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
-#include <sofa/helper/map.h>
-#include <cmath>
-#include <sofa/component/linearsolver/direct/SparseCommon.h>
-#include <sofa/helper/OptionsGroup.h>
+#include <csparse.h>
+
+extern "C" {
+#include <metis.h>
+}
 
 namespace sofa::component::linearsolver::direct
 {
+/** 
+compute the adjency matrix in CSR format from the matrix given in CSR format, we assume that the given matrix is symmetric
 
-// Direct linear solver based on Sparse Cholesky factorization, implemented with the CSPARSE library
-template<class TMatrix, class TVector>
-class SparseCholeskySolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE2(SparseCholeskySolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
+M_colptr[i+1]-M_colptr[i] is the number of non null values on the i-th line of the matrix
+M_rowind[M_colptr[i]] to M_rowind[M_colptr[i+1]] is the list of the indices of the columns containing a non null value on the i-th line
 
-    typedef TMatrix Matrix;
-    typedef TVector Vector;
-    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
+xadj[i+1]-xadj[i] is the number of neighbors of the i-th node
+adj[xadj[i]] is the first neighbor of the i-th node
 
-    Data<bool> f_verbose; ///< Dump system state at each iteration
-    cs A;
-    cs* permuted_A;
-    css *S;
-    csn *N;
-    int * A_i; ///< row indices, size nzmax
-    int * A_p; ///< column pointers (size n+1) or col indices (size nzmax)
-    type::vector<int> Previous_colptr,Previous_rowind; //<  shape of the matrix at the previous step
-    type::vector<int> perm,iperm; //< fill reducing permutation
-    type::vector<double> A_x,z_tmp,r_tmp,tmp;
-    bool notSameShape;
+**/
+void csrToAdj(int n, int * M_colptr, int * M_rowind, type::vector<int>& adj, type::vector<int>& xadj, type::vector<int>& t_adj, type::vector<int>& t_xadj, type::vector<int>& tran_countvec ); 
 
-    Data<sofa::helper::OptionsGroup> d_typePermutation;
+// compute the fill reducing permutation via METIS
+void fillReducingPermutation(const cs &A,int * perm,int * invperm); 
 
-    SparseCholeskySolver();
-    ~SparseCholeskySolver();
-    void solve (Matrix& M, Vector& x, Vector& b) override;
-    void invert(Matrix& M) override;
+// compare the shape of two matrix given in CSR format, return false if the matrices have the same shape and return true if their shapes are different
+inline bool compareMatrixShape(int s_M, int * M_colptr,int * M_rowind, int s_P, int * P_colptr,int * P_rowind) {
+    if (s_M != s_P) return true;
+    if (M_colptr[s_M] != P_colptr[s_M] ) return true;
 
-    void solveT(Vector& x, Vector& b);
-    
-    css* symbolic_Chol(cs *A);
-};
+    for (int i=0;i<s_P;i++) {
+        if (M_colptr[i]!=P_colptr[i]) return true;
+    }
 
-#if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_CPP)
-extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseCholeskySolver< sofa::linearalgebra::CompressedRowSparseMatrix<SReal>, sofa::linearalgebra::FullVector<SReal> >;
-#endif
+    for (int i=0;i<M_colptr[s_M];i++) {
+        if (M_rowind[i]!=P_rowind[i]) return true;
+    }
+
+    return false;
+}
 
 } // namespace sofa::component::linearsolver::direct
+
