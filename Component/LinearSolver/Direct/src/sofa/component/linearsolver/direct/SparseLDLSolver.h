@@ -41,7 +41,7 @@
 namespace sofa::component::linearsolver::direct
 {
 
-/// Direct linear solver based on Sparse LDL^T factorization, implemented with the CSPARSE library
+// Direct linear solver based on Sparse LDL^T factorization, implemented with the CSPARSE library
 template<class TMatrix, class TVector, class TThreadManager = NoThreadManager>
 class SparseLDLSolver : public SparseLDLSolverImpl<TMatrix,TVector, TThreadManager>
 {
