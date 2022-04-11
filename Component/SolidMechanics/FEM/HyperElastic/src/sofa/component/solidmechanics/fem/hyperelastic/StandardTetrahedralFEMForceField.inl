@@ -541,57 +541,27 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 template<class DataTypes>
 void  StandardTetrahedralFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal kFact, unsigned int &offset)
 {
-    unsigned int nbEdges=m_topology->getNbEdges();
-    const type::vector< Edge> &edgeArray=m_topology->getEdges() ;
-    edgeInformationVector& edgeInf = *(edgeInfo.beginEdit());
-    EdgeInformation *einfo;
-    unsigned int i,j,N0, N1, l;
-    Index noeud0, noeud1;
-    if (sofa::linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,Real> > * crsmat = dynamic_cast<sofa::linearalgebra::CompressedRowSparseMatrix<type::Mat<3,3,Real> > * >(mat))
+    const unsigned int nbEdges=m_topology->getNbEdges();
+    const type::vector< Edge>& edgeArray=m_topology->getEdges();
+
+    const edgeInformationVector& edgeInf = edgeInfo.getValue();
+
+    for (unsigned int l = 0; l < nbEdges; ++l)
     {
-        int offd3 = offset/3;
+        const auto& einfo = edgeInf[l];
+        const Index node0 = edgeArray[l][0];
+        const Index node1 = edgeArray[l][1];
+        const unsigned int N0 = offset + 3 * node0;
+        const unsigned int N1 = offset + 3 * node1;
 
-        for(l=0; l<nbEdges; l++ )
-        {
-            einfo=&edgeInf[l];
-            noeud0=edgeArray[l][0];
-            noeud1=edgeArray[l][1];
-            N0 = offd3+noeud0;
-            N1 = offd3+noeud1;
-            Matrix3 stiff= einfo->DfDx*(Real)kFact;
-            Matrix3 stiffTransposed= einfo->DfDx.transposed()*(Real)kFact;
+        const Matrix3 stiff = einfo.DfDx * (Real)kFact;
+        const Matrix3 stiffTransposed = stiff.transposed();
 
-            *crsmat->wbloc(N0,N0,true) += stiffTransposed;
-            *crsmat->wbloc(N1,N1,true) += stiff;
-            *crsmat->wbloc(N0,N1,true) -= stiffTransposed;
-            *crsmat->wbloc(N1,N0,true) -= stiff;
-        }
-    } else {
-        for(l=0; l<nbEdges; l++ )
-        {
-
-            einfo=&edgeInf[l];
-            noeud0=edgeArray[l][0];
-            noeud1=edgeArray[l][1];
-            N0 = offset+3*noeud0;
-            N1 = offset+3*noeud1;
-
-            for (i=0; i<3; i++)
-            {
-                for(j=0; j<3; j++)
-                {
-
-                    mat->add(N0+i, N0+j,  einfo->DfDx[j][i]*kFact);
-                    mat->add(N0+i, N1+j, - einfo->DfDx[j][i]*kFact);
-                    mat->add(N1+i, N0+j, - einfo->DfDx[i][j]*kFact);
-                    mat->add(N1+i, N1+j, + einfo->DfDx[i][j]*kFact);
-
-                }
-            }
-
-        }
+        mat->add(N0,N0,  stiffTransposed);
+        mat->add(N1,N1,  stiff);
+        mat->add(N0,N1, -stiffTransposed);
+        mat->add(N1,N0, -stiff);
     }
-    edgeInfo.endEdit();
 }
 
 template<class DataTypes>
