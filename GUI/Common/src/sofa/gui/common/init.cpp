@@ -19,14 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/config.h>
+#include <sofa/gui/common/init.h>
 
-#include <sofa/gui/headlessrecorder/init.h>
-
-namespace sofa::gui::hrecorder
+namespace sofa::gui::common
 {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void exportSymbol() 
+
+void init()
+{
+    static bool first = true;
+    if (first)
     {
-        sofa::gui::hrecorder::init();
+        first = false;
     }
-} // namespace sofa::gui::hrecorder
+}
+
+} // namespace sofa::gui::common

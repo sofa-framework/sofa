@@ -8,7 +8,9 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 
 find_package(Sofa.GUI.Common REQUIRED)
+find_package(Sofa.GUI.Batch REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GUI.Common)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GUI.Batch)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

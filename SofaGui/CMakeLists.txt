@@ -27,6 +27,20 @@ if(Sofa.GUI.HeadlessRecorder_FOUND)
     list(APPEND SOFAGUI_TARGETS Sofa.GUI.HeadlessRecorder)
 endif()
 
+# Keep legacy modules for compatibility
+# they merely redirect to the new modules
+# legacy (deprecated) module
+add_subdirectory(../modules/SofaGuiCommon ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiCommon)
+    list(APPEND SOFAGUI_TARGETS SofaGuiCommon)
+if(Sofa.GUI.Qt_FOUND)
+    add_subdirectory(../modules/SofaGuiQt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
+    list(APPEND SOFAGUI_TARGETS SofaGuiQt)
+endif()
+if(Sofa.GUI.HeadlessRecorder_FOUND)
+    add_subdirectory(../modules/SofaHeadlessRecorder ${CMAKE_CURRENT_BINARY_DIR}/SofaHeadlessRecorder)
+    list(APPEND SOFAGUI_TARGETS SofaHeadlessRecorder)
+endif()
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAGUI_TARGETS})
 

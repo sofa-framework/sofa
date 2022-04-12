@@ -17,10 +17,8 @@ set(SOFAGUIQT_HAVE_TINYXML @SOFAGUIQT_HAVE_TINYXML@)
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_LIST_DIR}/..")
 
 
-find_package(SofaBaseVisual QUIET REQUIRED)
-find_package(SofaLoader QUIET REQUIRED)
-find_package(SofaMiscForceField QUIET REQUIRED)
-find_package(SofaGuiCommon QUIET REQUIRED)
+find_package(Sofa.Component.Visual QUIET REQUIRED)
+find_package(Sofa.Component.SceneUtility QUIET REQUIRED)
 
 if(SOFAGUIQT_HAVE_QT5)
     find_package(Qt5 QUIET REQUIRED Core Gui OpenGL)

@@ -8,13 +8,13 @@ sofa_find_package(Sofa.GUI.Common REQUIRED)
 find_package(FFMPEG_exec)
 
 # X11
-# sofa_find_package(X11 QUIET)
-# if(X11_FOUND)
-#     message("Found X11 libraries")
-#     include_directories(${X11_INCLUDE_DIR})
-# else()
-#     message(SEND_ERROR "Can't find X11 libraries.")
-# endif()
+sofa_find_package(X11 QUIET)
+if(X11_FOUND)
+    message("Found X11 libraries")
+    include_directories(${X11_INCLUDE_DIR})
+else()
+    message(SEND_ERROR "Can't find X11 libraries.")
+endif()
 
 set(SRC_ROOT src/sofa/gui/headlessrecorder)
 

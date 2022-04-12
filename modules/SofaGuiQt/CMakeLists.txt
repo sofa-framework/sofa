@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaGuiQt)
+project(SofaGuiQt LANGUAGES CXX)
 
 set(SOURCE_FILES
     empty.cpp

@@ -3,15 +3,16 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-set(SOFAGUICOMMON_HAVE_SOFA_GL @SOFAGUICOMMON_HAVE_SOFA_GL@)
+set(SOFA_GUI_COMMON_HAVE_SOFA_GL @SOFA_GUI_COMMON_HAVE_SOFA_GL@)
 
-find_package(SofaBase QUIET REQUIRED)
-find_package(SofaUserInteraction QUIET REQUIRED)
-find_package(SofaGraphComponent QUIET REQUIRED)
-find_package(SofaSimulationCommon QUIET REQUIRED)
+find_package(SofaSimulationCommon REQUIRED)
+find_package(Sofa.Component.UserInteraction.ConfigurationSetting QUIET REQUIRED)
+find_package(Sofa.Component.UserInteraction.Performer QUIET REQUIRED)
+find_package(Sofa.Component.Collision.Response.Contact QUIET REQUIRED)
 sofa_find_package(cxxopts QUIET REQUIRED)
 
-if(SOFAGUICOMMON_HAVE_SOFA_GL)
+
+if(SOFA_GUI_COMMON_HAVE_SOFA_GL)
     find_package(Sofa.GL QUIET REQUIRED)
 endif()
 

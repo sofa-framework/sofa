@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(Sofa.GUI.Qt)
+project(Sofa.GUI.Qt LANGUAGES CXX)
 
 # Qt dependencies
 set(QT_TARGETS "")

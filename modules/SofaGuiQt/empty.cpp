@@ -21,7 +21,12 @@
 ******************************************************************************/
 #include <sofa/config.h>
 
+#include <sofa/gui/qt/init.h>
+
 namespace sofa::gui::qt
 {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void exportSymbol() {}
+    SOFA_EXPORT_DYNAMIC_LIBRARY void exportSymbol() 
+    {
+        sofa::gui::qt::init();
+    }
 } // namespace sofa::gui::qt

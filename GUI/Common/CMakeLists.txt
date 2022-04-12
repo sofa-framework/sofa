@@ -34,6 +34,7 @@ set(SOFAGUICOMMON_ROOT src/sofa/gui/common)
 
 set(HEADER_FILES
     ${SOFAGUICOMMON_ROOT}/config.h.in
+    ${SOFAGUICOMMON_ROOT}/init.h
     ${SOFAGUICOMMON_ROOT}/BaseGUI.h
     ${SOFAGUICOMMON_ROOT}/BaseViewer.h
     ${SOFAGUICOMMON_ROOT}/ColourPickingVisitor.h
@@ -48,6 +49,7 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
+    ${SOFAGUICOMMON_ROOT}/init.cpp
     ${SOFAGUICOMMON_ROOT}/BaseGUI.cpp
     ${SOFAGUICOMMON_ROOT}/BaseViewer.cpp
     ${SOFAGUICOMMON_ROOT}/ColourPickingVisitor.cpp

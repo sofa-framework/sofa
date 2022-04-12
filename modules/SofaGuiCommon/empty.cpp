@@ -21,7 +21,14 @@
 ******************************************************************************/
 #include <sofa/config.h>
 
-namespace sofa::gui::common
+#include <sofa/gui/common/init.h>
+#include <sofa/gui/batch/init.h>
+
+namespace sofa::gui
 {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void exportSymbol() {}
-} // namespace sofa::gui::common
+    SOFA_EXPORT_DYNAMIC_LIBRARY void exportSymbol() 
+    { 
+        sofa::gui::common::init(); 
+        sofa::gui::batch::init();
+    }
+} // namespace sofa::gui

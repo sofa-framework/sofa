@@ -35,7 +35,7 @@ using sofa::helper::system::SetDirectory;
 #include <thread>
 #include <chrono>
 
-namespace sofa::gui::headlessrecorder
+namespace sofa::gui::hrecorder
 {
 
 GLsizei HeadlessRecorder::s_width = 1920;
@@ -656,4 +656,4 @@ void HeadlessRecorder::setBackgroundColor(const type::RGBAColor &color)
     glClearColor(m_backgroundColor.r(), m_backgroundColor.g(), m_backgroundColor.b(), m_backgroundColor.a());
 }
 
-} // namespace sofa::gui::headlessrecorder
+} // namespace sofa::gui::hrecorder

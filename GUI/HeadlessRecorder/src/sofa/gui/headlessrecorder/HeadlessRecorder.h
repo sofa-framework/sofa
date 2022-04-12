@@ -49,7 +49,7 @@
 #include <sofa/gl/VideoRecorderFFMPEG.h>
 #include <sofa/gl/Capture.h>
 
-namespace sofa::gui::headlessrecorder
+namespace sofa::gui::hrecorder
 {
 
 enum class RecordMode { wallclocktime, simulationtime, timeinterval };
@@ -129,4 +129,4 @@ private:
     static float skipTime;
 };
 
-} // namespace sofa::gui::headlessrecorder
+} // namespace sofa::gui::hrecorder
