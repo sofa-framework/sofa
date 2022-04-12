@@ -107,51 +107,37 @@ public:
     ///// Apply removing function on moved elements.
     //virtual void ApplyTopologyChange(const EMoved_Removing* event) override;
 
-    /** Public fonction to apply creation and destruction functions */
-    /// Apply removing current elementType elements
-    virtual void applyDestroyFunction(Index, value_type&) {}
-
-    /// Apply adding current elementType elements
-    virtual void applyCreateFunction(Index, value_type& t,
-        const sofa::type::vector< Index >&,
-        const sofa::type::vector< SReal >&)
-    {
-        t = m_defaultValue;
-    }
-
-    /// WARNING NEED TO UNIFY THIS
-    /// Apply adding current elementType elements
-    virtual void applyCreateFunction(Index i, value_type& t, const TopologyElementType&,
-        const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< SReal >& coefs)
-    {
-        applyCreateFunction(i, t, ancestors, coefs);
-    }
-
-    virtual void applyCreateFunction(Index i, value_type& t, const TopologyElementType& e,
-        const sofa::type::vector< Index >& ancestors,
-        const sofa::type::vector< SReal >& coefs,
-        const AncestorElem* /*ancestorElem*/)
-    {
-        applyCreateFunction(i, t, e, ancestors, coefs);
-    }
-
-
-
-    // update the default value used during creation
-    void setDefaultValue(const value_type& v) {
-        m_defaultValue = v;
-    }
 
 
     ////////////////////////////////////// DEPRECATED ///////////////////////////////////////////
-    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2171)", "v21.06 (PR#2171)", "This method has been removed as it has never been used and is not needed. Use applyCreateFunction to add a callback.")
+
+    SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#)", "v22.06 (PR#)", "This method to remove current elements has been removed, Destroy/Create function have been replaced by TopologyChangeCallback.")
+    virtual void applyDestroyFunction(Index, value_type&) = delete;
+
+    SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#)", "v22.06 (PR#)", "This method to add elements has been removed, Destroy/Create function have been replaced by TopologyChangeCallback.")
+    virtual void applyCreateFunction(Index, value_type& t,
+        const sofa::type::vector< Index >&,
+        const sofa::type::vector< SReal >&) = delete;
+
+    SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#)", "v22.06 (PR#)", "This method to add elements has been removed, Destroy/Create function have been replaced by TopologyChangeCallback.")
+    virtual void applyCreateFunction(Index i, value_type& t, const TopologyElementType&,
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< SReal >& coefs) = delete;
+
+    SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#)", "v22.06 (PR#)", "This method to add elements has been removed, Destroy/Create function have been replaced by TopologyChangeCallback.")
+    virtual void applyCreateFunction(Index i, value_type& t, const TopologyElementType& e,
+        const sofa::type::vector< Index >& ancestors,
+        const sofa::type::vector< SReal >& coefs,
+        const AncestorElem* /*ancestorElem*/) = delete;
+
+    SOFA_ATTRIBUTE_DISABLED("v22.06 (PR#)", "v22.06 (PR#)", "This method has been removed as it has never been used and is not needed. Use TopologyChangeCallback to add a callback.")
+    void setDefaultValue(const value_type& v) = delete;
+    
+    SOFA_ATTRIBUTE_DISABLED("v21.06 (PR#2171)", "v21.06 (PR#2171)", "This method has been removed as it has never been used and is not needed. Use TopologyChangeCallback to add a callback.")
     bool applyTestCreateFunction(Index /*index*/, const sofa::type::vector< Index >& /*ancestors*/, const sofa::type::vector< SReal >& /*coefs*/) = delete;
 
 protected:
     t_topologicalData* m_topologyData;
-    value_type m_defaultValue; // default value when adding an element (by set as value_type() by default)
-
 
 public:
     bool m_pointsLinked;

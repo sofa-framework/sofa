@@ -43,7 +43,6 @@ TopologyDataHandler< TopologyElementType, VecT>::TopologyDataHandler(t_topologic
     value_type defaultValue)
     : TopologyHandler()
     , m_topologyData(_topologicalData)
-    , m_defaultValue(defaultValue)
     , m_pointsLinked(false), m_edgesLinked(false), m_trianglesLinked(false)
     , m_quadsLinked(false), m_tetrahedraLinked(false), m_hexahedraLinked(false)
 {
