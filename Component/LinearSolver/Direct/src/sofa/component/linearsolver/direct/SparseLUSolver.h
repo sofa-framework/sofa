@@ -89,6 +89,8 @@ protected :
         return new SparseLUInvertData<Real>();
     }
 
+    sofa::linearalgebra::CompressedRowSparseMatrix<Real> Mfiltered;
+
 };
 
 

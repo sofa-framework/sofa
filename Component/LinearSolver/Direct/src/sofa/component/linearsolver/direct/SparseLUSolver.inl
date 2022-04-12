@@ -98,18 +98,21 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
 {
     SparseLUInvertData<Real> * invertData = (SparseLUInvertData<Real>*) this->getMatrixInvertData(&M);
 
+    Mfiltered.copyNonZeros(M);
+    Mfiltered.compress();
+
     if (invertData->N) cs_nfree(invertData->N);
     if (invertData->tmp) cs_free(invertData->tmp);
-    M.compress();
+
     //build A with M
-    invertData->A.nzmax = M.getColsValue().size();	// maximum number of entries
-    invertData->A.m = M.rowBSize();					// number of rows
-    invertData->A.n = M.colBSize();					// number of columns
-    invertData->A_p = M.getRowBegin();
+    invertData->A.nzmax = Mfiltered.getColsValue().size();	// maximum number of entries
+    invertData->A.m = Mfiltered.rowSize();					// number of rows
+    invertData->A.n = Mfiltered.colSize();					// number of columns
+    invertData->A_p = Mfiltered.getRowBegin();
     invertData->A.p = (int *) &(invertData->A_p[0]);							// column pointers (size n+1) or col indices (size nzmax)
-    invertData->A_i = M.getColsIndex();
+    invertData->A_i = Mfiltered.getColsIndex();
     invertData->A.i = (int *) &(invertData->A_i[0]);							// row indices, size nzmax
-    invertData->A_x = M.getColsValue();
+    invertData->A_x = Mfiltered.getColsValue();
     invertData->A.x = (Real *) &(invertData->A_x[0]);				// numerical values, size nzmax
     invertData->A.nz = -1;							// # of entries in triplet matrix, -1 for compressed-col
     cs_dropzeros( &invertData->A );
