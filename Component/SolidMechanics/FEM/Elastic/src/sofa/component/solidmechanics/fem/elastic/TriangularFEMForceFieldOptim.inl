@@ -403,14 +403,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::addDForce(const core::MechanicalPa
 template <class DataTypes>
 void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    linearsolver::BlocMatrixWriter<MatBloc> writer;
-    writer.addKToMatrix(this, mparams, matrix->getMatrix(this->mstate));
-}
-
-template<class DataTypes>
-template<class MatrixWriter>
-void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrixT(const core::MechanicalParams* mparams, MatrixWriter mwriter)
-{
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+    
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleState > > triState = d_triangleState;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecTriangleInfo > > triInfo = d_triangleInfo;
     const Real kFactor = (Real)sofa::core::mechanicalparams::kFactorIncludingRayleighDamping(mparams, this->rayleighStiffness.getValue());
@@ -419,21 +413,23 @@ void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrixT(const core::Mechanic
     const Real gamma = this->gamma;
     const Real mu = this->mu;
 
+    constexpr auto S = DataTypes::deriv_total_size;
+
     for ( Index i=0; i<nbTriangles; i+=1)
     {
         Triangle t = triangles[i];
         const TriangleInfo& ti = triInfo[i];
         const TriangleState& ts = triState[i];
-        sofa::type::Mat<3,4,Real> KJt;
-        Real factor = -kFactor * ti.ss_factor;
-        Real fG = factor * gamma;
-        Real fGM = factor * (gamma+mu);
-        Real fM_2 = factor * (0.5f*mu);
+        sofa::type::MatNoInit<3,4,Real> KJt;
+        const Real factor = -kFactor * ti.ss_factor;
+        const Real fG = factor * gamma;
+        const Real fGM = factor * (gamma+mu);
+        const Real fM_2 = factor * (0.5f*mu);
         KJt[0][0] = fGM  *  ti.cy ;    KJt[0][1] = fG   *(-ti.cx);    KJt[0][2] = 0;    KJt[0][3] = fG   *ti.bx;
         KJt[1][0] = fG   *  ti.cy ;    KJt[1][1] = fGM  *(-ti.cx);    KJt[1][2] = 0;    KJt[1][3] = fGM  *ti.bx;
         KJt[2][0] = fM_2 *(-ti.cx);    KJt[2][1] = fM_2 *( ti.cy);    KJt[2][2] = fM_2 *ti.bx;    KJt[2][3] = 0;
 
-        sofa::type::Mat<2,2,Real> JKJt11, JKJt12, JKJt22;
+        sofa::type::MatNoInit<2,2,Real> JKJt11, JKJt12, JKJt22;
         JKJt11[0][0] = ti.cy*KJt[0][0] - ti.cx*KJt[2][0];
         JKJt11[0][1] = ti.cy*KJt[0][1] - ti.cx*KJt[2][1];
         JKJt11[1][0] = JKJt11[0][1]; //ti.cy*KJt[2][0] - ti.cx*KJt[1][0];
@@ -449,7 +445,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrixT(const core::Mechanic
         JKJt22[1][0] = 0; //ti.bx*KJt[1][2];
         JKJt22[1][1] = ti.bx*KJt[1][3];
 
-        sofa::type::Mat<2,2,Real> JKJt00, JKJt01, JKJt02;
+        sofa::type::MatNoInit<2,2,Real> JKJt00, JKJt01, JKJt02;
         // fA = -fB-fC, dxB/dxA = -1, dxC/dxA = -1
         // dfA/dxA = -dfB/dxA - dfC/dxA
         //         = -dfB/dxB * dxB/dxA -dfB/dxC * dxC/dxA   -dfC/dxB * dxB/dxA -dfC/dxC * dxC/dxA
@@ -462,17 +458,21 @@ void TriangularFEMForceFieldOptim<DataTypes>::addKToMatrixT(const core::Mechanic
 
         Transformation frame = ts.frame;
 
-        mwriter.add(t[0],t[0],frame.multTranspose(JKJt00*frame));
-        MatBloc M01 = frame.multTranspose(JKJt01*frame);
-        mwriter.add(t[0],t[1],M01);    mwriter.add(t[1],t[0],M01.transposed());
-        MatBloc M02 = frame.multTranspose(JKJt02*frame);
-        mwriter.add(t[0],t[2],M02);    mwriter.add(t[2],t[0],M02.transposed());
+        r.matrix->add(r.offset + S * t[0], r.offset + S * t[0], frame.multTranspose(JKJt00*frame));
 
-        mwriter.add(t[1],t[1],frame.multTranspose(JKJt11*frame));
-        MatBloc M12 = frame.multTranspose(JKJt12*frame);
-        mwriter.add(t[1],t[2],M12);    mwriter.add(t[2],t[1],M12.transposed());
+        const MatBloc M01 = frame.multTranspose(JKJt01*frame);
+        r.matrix->add(r.offset + S * t[0], r.offset + S * t[1], M01);
+        r.matrix->add(r.offset + S * t[1], r.offset + S * t[0], M01.transposed());
 
-        mwriter.add(t[2],t[2],frame.multTranspose(JKJt22*frame));
+        const MatBloc M02 = frame.multTranspose(JKJt02*frame);
+        r.matrix->add(r.offset + S * t[0], r.offset + S * t[2], M02);
+        r.matrix->add(r.offset + S * t[2], r.offset + S * t[0], M02.transposed());
+        r.matrix->add(r.offset + S * t[1], r.offset + S * t[1], frame.multTranspose(JKJt11*frame));
+
+        const MatBloc M12 = frame.multTranspose(JKJt12*frame);
+        r.matrix->add(r.offset + S * t[1], r.offset + S * t[2], M12);
+        r.matrix->add(r.offset + S * t[2], r.offset + S * t[1], M12.transposed());
+        r.matrix->add(r.offset + S * t[2], r.offset + S * t[2], frame.multTranspose(JKJt22*frame));
     }
 }
 
