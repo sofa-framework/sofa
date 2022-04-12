@@ -1157,9 +1157,10 @@ void VisualModelImpl::computeTangents()
     const VecVisualQuad& quads = m_quads.getValue();
     const VecCoord& vertices = getVertices();
     const VecTexCoord& texcoords = m_vtexcoords.getValue();
-    VecCoord& normals = *(m_vnormals.beginEdit());
-    VecCoord& tangents = *(m_vtangents.beginEdit());
-    VecCoord& bitangents = *(m_vbitangents.beginEdit());
+    const auto& normals = m_vnormals.getValue();
+
+    auto tangents = sofa::helper::getWriteOnlyAccessor(m_vtangents);
+    auto bitangents = sofa::helper::getWriteOnlyAccessor(m_vbitangents);
 
     tangents.resize(vertices.size());
     bitangents.resize(vertices.size());
@@ -1172,22 +1173,22 @@ void VisualModelImpl::computeTangents()
     const bool fixMergedUVSeams = m_fixMergedUVSeams.getValue();
     for (std::size_t i = 0; i < triangles.size() ; i++)
     {
-        const Coord v1 = vertices[triangles[i][0]];
-        const Coord v2 = vertices[triangles[i][1]];
-        const Coord v3 = vertices[triangles[i][2]];
-        TexCoord t1 = texcoords[triangles[i][0]];
+        const Coord& v1 = vertices[triangles[i][0]];
+        const Coord& v2 = vertices[triangles[i][1]];
+        const Coord& v3 = vertices[triangles[i][2]];
+        const TexCoord& t1 = texcoords[triangles[i][0]];
         TexCoord t2 = texcoords[triangles[i][1]];
         TexCoord t3 = texcoords[triangles[i][2]];
         if (fixMergedUVSeams)
         {
-            for (Size j=0; j<t1.size(); ++j)
+            for (Size j=0; j<TexCoord::size(); ++j)
             {
                 t2[j] += helper::rnear(t1[j]-t2[j]);
                 t3[j] += helper::rnear(t1[j]-t3[j]);
             }
         }
-        Coord t = computeTangent(v1, v2, v3, t1, t2, t3);
-        Coord b = computeBitangent(v1, v2, v3, t1, t2, t3);
+        const Coord t = computeTangent(v1, v2, v3, t1, t2, t3);
+        const Coord b = computeBitangent(v1, v2, v3, t1, t2, t3);
 
         tangents[triangles[i][0]] += t;
         tangents[triangles[i][1]] += t;
@@ -1199,14 +1200,14 @@ void VisualModelImpl::computeTangents()
 
     for (std::size_t i = 0; i < quads.size() ; i++)
     {
-        const Coord & v1 = vertices[quads[i][0]];
-        const Coord & v2 = vertices[quads[i][1]];
-        const Coord & v3 = vertices[quads[i][2]];
-        const Coord & v4 = vertices[quads[i][3]];
-        const TexCoord t1 = texcoords[quads[i][0]];
-        const TexCoord t2 = texcoords[quads[i][1]];
-        const TexCoord t3 = texcoords[quads[i][2]];
-        const TexCoord t4 = texcoords[quads[i][3]];
+        const Coord& v1 = vertices[quads[i][0]];
+        const Coord& v2 = vertices[quads[i][1]];
+        const Coord& v3 = vertices[quads[i][2]];
+        const Coord& v4 = vertices[quads[i][3]];
+        const TexCoord& t1 = texcoords[quads[i][0]];
+        const TexCoord& t2 = texcoords[quads[i][1]];
+        const TexCoord& t3 = texcoords[quads[i][2]];
+        const TexCoord& t4 = texcoords[quads[i][3]];
 
         // Too many options how to split a quad into two triangles...
         Coord t123 = computeTangent  (v1, v2, v3, t1, t2, t3);
@@ -1232,15 +1233,14 @@ void VisualModelImpl::computeTangents()
     }
     for (std::size_t i = 0; i < vertices.size(); i++)
     {
-        Coord n = normals[i];
+        const Coord& n = normals[i];
         Coord& t = tangents[i];
         Coord& b = bitangents[i];
 
         b = sofa::type::cross(n, t.normalized());
         t = sofa::type::cross(b, n);
     }
-    m_vtangents.endEdit();
-    m_vbitangents.endEdit();
+
 }
 
 void VisualModelImpl::computeBBox(const core::ExecParams*, bool)
