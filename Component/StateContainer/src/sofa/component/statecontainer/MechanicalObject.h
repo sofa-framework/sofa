@@ -35,10 +35,6 @@
 
 #include <fstream>
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-#include <sofa/core/topology/TopologyData.h>
-#endif // SOFA_HAVE_NEW_TOPOLOGYCHANGES
-
 namespace sofa::component::statecontainer
 {
 
@@ -89,39 +85,10 @@ protected:
 public:
     void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES    
-    PointData< VecCoord > x; ///< position coordinates of the degrees of freedom
-    PointData< VecDeriv > v; ///< velocity coordinates of the degrees of freedom
-    PointData< VecDeriv > f; ///< force vector of the degrees of freedom
-    PointData< VecCoord > x0; ///< rest position coordinates of the degrees of freedom
-
-    class MOPointHandler : public sofa::core::topology::TopologyDataHandler<sofa::core::topology::Point,VecCoord >
-    {
-    public:
-        typedef typename MechanicalObject<DataTypes>::VecCoord VecCoord;
-        typedef typename MechanicalObject<DataTypes>::Coord Coord;
-        MOPointHandler(MechanicalObject<DataTypes>* _obj, sofa::core::topology::PointData<VecCoord>* _data) : sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point, VecCoord >(_data), obj(_obj) {}
-
-        void applyCreateFunction(unsigned int /*pointIndex*/, Coord& /*dest*/,
-                const sofa::type::vector< unsigned int > &ancestors,
-                const sofa::type::vector< double > &coefs);
-
-        void applyDestroyFunction(unsigned int, Coord& );
-
-    protected:
-        MechanicalObject<DataTypes>* obj;
-    };
-
-    //static void PointCreationFunction (int , void* , Coord &, const sofa::type::vector< unsigned int > & ,   const sofa::type::vector< double >&);
-
-    //static void PointDestroyFunction (int, void*, Coord&);
-
-#else
     Data< VecCoord > x; ///< position coordinates of the degrees of freedom
     Data< VecDeriv > v; ///< velocity coordinates of the degrees of freedom
     Data< VecDeriv > f; ///< force vector of the degrees of freedom
     Data< VecCoord > x0; ///< rest position coordinates of the degrees of freedom
-#endif
 
     Data< VecDeriv > externalForces; ///< externalForces vector of the degrees of freedom
     Data< VecDeriv > dx; ///< dx vector of the degrees of freedom
