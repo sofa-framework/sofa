@@ -89,7 +89,7 @@ protected :
         return new SparseLUInvertData<Real>();
     }
 
-    sofa::linearalgebra::CompressedRowSparseMatrix<Real> Mfiltered;
+    std::unique_ptr<sofa::linearalgebra::CompressedRowSparseMatrix<Real> > Mfiltered;
 
 };
 
