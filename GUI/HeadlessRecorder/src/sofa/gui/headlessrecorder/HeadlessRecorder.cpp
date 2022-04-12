@@ -30,12 +30,12 @@ using sofa::helper::system::SetDirectory;
 #include <sofa/simulation/Node.h>
 #include <sofa/gl/Texture.h>
 
-#include <sofa/gui/ArgumentParser.h>
+#include <sofa/gui/common/ArgumentParser.h>
 #include <SofaBaseVisual/InteractiveCamera.h>
 #include <thread>
 #include <chrono>
 
-namespace sofa::gui::hRecorder
+namespace sofa::gui::headlessrecorder
 {
 
 GLsizei HeadlessRecorder::s_width = 1920;
@@ -656,5 +656,4 @@ void HeadlessRecorder::setBackgroundColor(const type::RGBAColor &color)
     glClearColor(m_backgroundColor.r(), m_backgroundColor.g(), m_backgroundColor.b(), m_backgroundColor.a());
 }
 
-} // namespace sofa::gui::hRecorder
-
+} // namespace sofa::gui::headlessrecorder

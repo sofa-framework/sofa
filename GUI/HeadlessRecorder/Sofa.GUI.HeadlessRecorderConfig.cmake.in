@@ -3,7 +3,11 @@
 @PACKAGE_GUARD@
 @PACKAGE_INIT@
 
-find_package(Sofa.GUI.Qt QUIET REQUIRED)
+find_package(SofaGuiCommon QUIET REQUIRED)
+find_package(Sofa.GL QUIET REQUIRED)
+find_package(FFMPEG_exec)
+find_package(X11 QUIET REQUIRED)
+
 
 if(NOT TARGET @PROJECT_NAME@)
     include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")

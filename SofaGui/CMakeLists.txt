@@ -8,7 +8,7 @@ set(SOFAGUI_TARGETS "")
 sofa_find_package(Sofa.GUI.Common REQUIRED)
 sofa_find_package(Sofa.GUI.Batch REQUIRED)
 sofa_find_package(Sofa.GUI.Qt QUIET)
-# sofa_find_package(Sofa.GUI.Headless QUIET)
+sofa_find_package(Sofa.GUI.HeadlessRecorder QUIET)
 
 set(SOFAGUI_SRC src/${PROJECT_NAME})
 set(HEADER_FILES
@@ -22,6 +22,9 @@ set(SOURCE_FILES
 set(SOFAGUI_TARGETS Sofa.GUI.Common Sofa.GUI.Batch)
 if(Sofa.GUI.Qt_FOUND)
     list(APPEND SOFAGUI_TARGETS Sofa.GUI.Qt)
+endif()
+if(Sofa.GUI.HeadlessRecorder_FOUND)
+    list(APPEND SOFAGUI_TARGETS Sofa.GUI.HeadlessRecorder)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

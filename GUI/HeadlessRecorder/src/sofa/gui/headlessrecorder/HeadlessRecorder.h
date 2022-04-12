@@ -19,10 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_HEADLESSRECORDER_H
-#define SOFA_GUI_HEADLESSRECORDER_H
+#pragma once
 
-#include <sofa/gui/BaseGUI.h>
+#include <sofa/gui/common/BaseGUI.h>
 
 #include <sofa/simulation/fwd.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -41,7 +40,7 @@
 // OPENGL
 #define GL_GLEXT_PROTOTYPES 1
 #include <GL/gl.h>
-#include <GL/glx.h>
+//#include <GL/glx.h>
 
 // SCREENSHOT
 #include <sofa/helper/io/Image.h>
@@ -50,7 +49,7 @@
 #include <sofa/gl/VideoRecorderFFMPEG.h>
 #include <sofa/gl/Capture.h>
 
-namespace sofa::gui::hRecorder
+namespace sofa::gui::headlessrecorder
 {
 
 enum class RecordMode { wallclocktime, simulationtime, timeinterval };
@@ -130,6 +129,4 @@ private:
     static float skipTime;
 };
 
-} // namespace sofa
-
-#endif
+} // namespace sofa::gui::headlessrecorder

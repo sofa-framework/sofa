@@ -24,12 +24,11 @@
 #include <sofa/gui/common/GUIManager.h>
 
 #include <sofa/gui/batch/init.h>
-
 #if SOFAGUI_HAVE_SOFA_GUI_QT
 #include <sofa/gui/qt/init.h>
 #endif
 #if SOFAGUI_HAVE_SOFA_GUI_HEADLESSRECORDER
-#include <SofaHeadlessRecorder/HeadlessRecorder.h>
+#include <sofa/gui/headlessrecorder/init.h>
 #endif
 
 namespace sofa::gui
@@ -44,12 +43,11 @@ void initSofaGui()
 #if SOFAGUI_HAVE_SOFA_GUI_QT
         sofa::gui::qt::init();
 #endif
+#if SOFAGUI_HAVE_SOFA_GUI_HEADLESSRECORDER
+        sofa::gui::headlessrecorder::init();
+#endif
         first = false;
     }
 }
-
-#if SOFAGUI_HAVE_SOFA_GUI_HEADLESSRECORDER
-int HeadlessRecorderClass = GUIManager::RegisterGUI("hRecorder", &hRecorder::HeadlessRecorder::CreateGUI, &hRecorder::HeadlessRecorder::RegisterGUIParameters, 2);
-#endif
 
 } // namespace sofa::gui
