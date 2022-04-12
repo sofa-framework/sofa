@@ -19,23 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gui/batch/init.h>
+#pragma once
 
-#include <sofa/gui/common/GUIManager.h>
-#include <sofa/gui/batch/BatchGUI.h>
+#include <sofa/gui/qt/config.h>
 
-int BatchGUIClass = sofa::gui::GUIManager::RegisterGUI("batch", &sofa::gui::batch::BatchGUI::CreateGUI, &sofa::gui::batch::BatchGUI::RegisterGUIParameters, -1);
-
-namespace sofa::gui::batch
+namespace sofa::gui::qt
 {
 
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
+    void SOFA_GUI_QT_API init();
 
-} // namespace sofa::gui::batch
+} // namespace sofa::gui::qt

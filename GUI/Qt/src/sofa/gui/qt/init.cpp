@@ -19,14 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gui/batch/init.h>
+#include <sofa/gui/qt/init.h>
 
 #include <sofa/gui/common/GUIManager.h>
-#include <sofa/gui/batch/BatchGUI.h>
+#include <sofa/gui/qt/RealGUI.h>
 
-int BatchGUIClass = sofa::gui::GUIManager::RegisterGUI("batch", &sofa::gui::batch::BatchGUI::CreateGUI, &sofa::gui::batch::BatchGUI::RegisterGUIParameters, -1);
+#if SOFA_GUI_QT_HAVE_QGLVIEWER
+int QGLViewerGUIClass = sofa::gui::GUIManager::RegisterGUI("qglviewer", &sofa::gui::qt::RealGUI::CreateGUI, nullptr, 3);
+#endif
 
-namespace sofa::gui::batch
+#if SOFA_GUI_QT_HAVE_QTVIEWER
+int QtGUIClass = sofa::gui::GUIManager::RegisterGUI("qt", &sofa::gui::qt::RealGUI::CreateGUI, nullptr, 2);
+#endif
+
+namespace sofa::gui::qt
 {
 
 void init()
@@ -38,4 +44,4 @@ void init()
     }
 }
 
-} // namespace sofa::gui::batch
+} // namespace sofa::gui::qt

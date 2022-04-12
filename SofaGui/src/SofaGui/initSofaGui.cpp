@@ -23,18 +23,16 @@
 
 #include <sofa/gui/common/GUIManager.h>
 
-#include <sofa/gui/common/BatchGUI.h>
-#if SOFAGUI_HAVE_SOFAGUIQT
-#include <sofa/gui/qt/RealGUI.h>
+#include <sofa/gui/batch/init.h>
+
+#if SOFAGUI_HAVE_SOFA_GUI_QT
+#include <sofa/gui/qt/init.h>
 #endif
-#if SOFAGUI_HAVE_SOFAHEADLESSRECORDER
+#if SOFAGUI_HAVE_SOFA_GUI_HEADLESSRECORDER
 #include <SofaHeadlessRecorder/HeadlessRecorder.h>
 #endif
 
-namespace sofa
-{
-
-namespace gui
+namespace sofa::gui
 {
 
 void initSofaGui()
@@ -42,26 +40,16 @@ void initSofaGui()
     static bool first = true;
     if (first)
     {
+        sofa::gui::batch::init();
+#if SOFAGUI_HAVE_SOFA_GUI_QT
+        sofa::gui::qt::init();
+#endif
         first = false;
     }
 }
 
-
-int BatchGUIClass = GUIManager::RegisterGUI("batch", &BatchGUI::CreateGUI, &BatchGUI::RegisterGUIParameters, -1);
-
-#if SOFAGUI_HAVE_SOFAHEADLESSRECORDER
+#if SOFAGUI_HAVE_SOFA_GUI_HEADLESSRECORDER
 int HeadlessRecorderClass = GUIManager::RegisterGUI("hRecorder", &hRecorder::HeadlessRecorder::CreateGUI, &hRecorder::HeadlessRecorder::RegisterGUIParameters, 2);
 #endif
 
-#if SOFAGUIQT_HAVE_QGLVIEWER
-int QGLViewerGUIClass = GUIManager::RegisterGUI("qglviewer", &qt::RealGUI::CreateGUI, nullptr, 3);
-#endif
-
-#if SOFAGUIQT_HAVE_QTVIEWER
-int QtGUIClass = GUIManager::RegisterGUI("qt", &qt::RealGUI::CreateGUI, nullptr, 2);
-#endif
-
-
-} // namespace gui
-
-} // namespace sofa
+} // namespace sofa::gui

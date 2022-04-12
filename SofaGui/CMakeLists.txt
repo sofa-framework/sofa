@@ -5,29 +5,10 @@ sofa_find_package(SofaFramework REQUIRED)
 
 set(SOFAGUI_TARGETS "")
 
-# SofaGuiCommon
-add_subdirectory(../modules/SofaGuiCommon ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiCommon)
-list(APPEND SOFAGUI_TARGETS SofaGuiCommon)
-
-# SofaGuiQt
-option(SOFAGUI_QT "Compile the Qt GUI" ON)
-if(SOFAGUI_QT)
-    list(APPEND SOFAGUI_TARGETS SofaGuiQt)
-    add_subdirectory(../modules/SofaGuiQt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
-endif()
-sofa_set_01(SOFAGUI_HAVE_SOFAGUIQT VALUE ${SOFAGUI_QT}) # see config.h.in
-
-# SofaHeadlessRecorder
-option(SOFAGUI_HEADLESS_RECORDER "Compile the headless recorder (Linux only)" OFF)
-if(SOFAGUI_HEADLESS_RECORDER)
-    list(APPEND SOFAGUI_TARGETS SofaHeadlessRecorder)
-    add_subdirectory(../modules/SofaHeadlessRecorder ${CMAKE_CURRENT_BINARY_DIR}/SofaHeadlessRecorder)
-endif()
-sofa_set_01(SOFAGUI_HAVE_SOFAHEADLESSRECORDER VALUE ${SOFAGUI_HEADLESS_RECORDER}) # see config.h.in
-
-foreach(target ${SOFAGUI_TARGETS})
-    set_target_properties(${target} PROPERTIES FOLDER SofaGui)
-endforeach()
+sofa_find_package(Sofa.GUI.Common REQUIRED)
+sofa_find_package(Sofa.GUI.Batch REQUIRED)
+sofa_find_package(Sofa.GUI.Qt QUIET)
+# sofa_find_package(Sofa.GUI.Headless QUIET)
 
 set(SOFAGUI_SRC src/${PROJECT_NAME})
 set(HEADER_FILES
@@ -38,9 +19,17 @@ set(SOURCE_FILES
     ${SOFAGUI_SRC}/initSofaGui.cpp
     )
 
+set(SOFAGUI_TARGETS Sofa.GUI.Common Sofa.GUI.Batch)
+if(Sofa.GUI.Qt_FOUND)
+    list(APPEND SOFAGUI_TARGETS Sofa.GUI.Qt)
+endif()
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAGUI_TARGETS})
 
+foreach(ui_target ${SOFAGUI_TARGETS})
+    set_target_properties(${ui_target} PROPERTIES FOLDER SofaGui)
+endforeach()
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER SofaGui)
 
 sofa_create_package_with_targets(

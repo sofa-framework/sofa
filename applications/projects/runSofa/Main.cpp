@@ -56,7 +56,7 @@ using sofa::helper::system::FileSystem;
 using sofa::gui::GUIManager;
 
 #include <SofaGui/initSofaGui.h>
-#include <sofa/gui/common/BatchGUI.h>  // For the default number of iterations
+#include <sofa/gui/batch/BatchGUI.h>  // For the default number of iterations
 
 using sofa::core::ExecParams ;
 
@@ -66,7 +66,7 @@ using sofa::helper::Utils;
 using sofa::simulation::graph::DAGSimulation;
 using sofa::helper::system::SetDirectory;
 using sofa::core::objectmodel::BaseNode ;
-using sofa::gui::BatchGUI;
+using sofa::gui::batch::BatchGUI;
 using sofa::gui::BaseGUI;
 
 #include <sofa/helper/logging/ConsoleMessageHandler.h>

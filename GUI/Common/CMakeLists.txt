@@ -36,7 +36,6 @@ set(HEADER_FILES
     ${SOFAGUICOMMON_ROOT}/config.h.in
     ${SOFAGUICOMMON_ROOT}/BaseGUI.h
     ${SOFAGUICOMMON_ROOT}/BaseViewer.h
-    ${SOFAGUICOMMON_ROOT}/BatchGUI.h
     ${SOFAGUICOMMON_ROOT}/ColourPickingVisitor.h
     ${SOFAGUICOMMON_ROOT}/FilesRecentlyOpenedManager.h
     ${SOFAGUICOMMON_ROOT}/GuiDataRepository.h
@@ -51,7 +50,6 @@ set(HEADER_FILES
 set(SOURCE_FILES
     ${SOFAGUICOMMON_ROOT}/BaseGUI.cpp
     ${SOFAGUICOMMON_ROOT}/BaseViewer.cpp
-    ${SOFAGUICOMMON_ROOT}/BatchGUI.cpp
     ${SOFAGUICOMMON_ROOT}/ColourPickingVisitor.cpp
     ${SOFAGUICOMMON_ROOT}/FilesRecentlyOpenedManager.cpp
     ${SOFAGUICOMMON_ROOT}/GuiDataRepository.cpp

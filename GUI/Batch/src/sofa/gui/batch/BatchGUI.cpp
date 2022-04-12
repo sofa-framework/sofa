@@ -35,7 +35,7 @@
 #include <string>
 #include <iomanip>
 
-namespace sofa::gui
+namespace sofa::gui::batch
 {
 
 using sofa::helper::AdvancedTimer;
@@ -235,4 +235,4 @@ void BatchGUI::exportJson(const std::string &timerOutputStr, int iterationNumber
     out.close();
 }
 
-} // namespace sofa::gui
+} // namespace sofa::gui::batch

@@ -29,8 +29,11 @@
 
 namespace sofa::gui
 {
+    class ArgumentParser;
+}
 
-class ArgumentParser;
+namespace sofa::gui::batch
+{
 
 class SOFA_GUI_BATCH_API BatchGUI : public BaseGUI
 {
@@ -86,4 +89,4 @@ protected:
     void exportJson(const std::string& timerOutputStr, int iterationNumber) const;
 };
 
-} // namespace sofa::gui
+} // namespace sofa::gui::batch
