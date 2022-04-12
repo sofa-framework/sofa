@@ -26,7 +26,7 @@
 #include <iostream>
 #include <map>
 
-namespace sofa::gui
+namespace sofa::gui::common
 {
 
 class OperationCreator
@@ -44,8 +44,6 @@ public:
     Operation* create() const override {return new RealOperation();}
     std::string getDescription() const override { return RealOperation::getDescription();}
 };
-
-
 
 class SOFA_GUI_COMMON_API OperationFactory
 {
@@ -108,4 +106,4 @@ public:
 };
 
 
-} // namespace sofa::gui
+} // namespace sofa::gui::common

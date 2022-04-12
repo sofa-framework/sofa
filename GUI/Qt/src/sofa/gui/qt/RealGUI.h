@@ -93,13 +93,13 @@ class SofaViewer;
 }
 
 
-class SOFA_GUI_QT_API RealGUI : public QMainWindow, public Ui::GUI, public sofa::gui::BaseGUI
+class SOFA_GUI_QT_API RealGUI : public QMainWindow, public Ui::GUI, public sofa::gui::common::BaseGUI
 {
     Q_OBJECT    
 
 //-----------------STATIC METHODS------------------------{
 public:
-    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = nullptr, const char* filename = nullptr);
+    static common::BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = nullptr, const char* filename = nullptr);
 
     static void SetPixmap(std::string pixmap_filename, QPushButton* b);
 
@@ -180,7 +180,7 @@ protected:
     int _animationOBJcounter;// save a succession of .obj indexed by _animationOBJcounter
     bool m_displayComputationTime;
     bool m_fullScreen;
-    BaseViewer* mViewer;
+    common::BaseViewer* mViewer;
     // Clock before the last simulation step (or zero if the
     // simulation hasn't run yet).
     clock_t m_clockBeforeLastStep;
@@ -267,9 +267,9 @@ public:
     virtual void createViewer(const char* _viewerName, bool _updateViewerList=false);
 
     /// Used to directly replace the current viewer
-    void registerViewer(BaseViewer* _viewer) override;
+    void registerViewer(common::BaseViewer* _viewer) override;
 
-    BaseViewer* getViewer() override;
+    common::BaseViewer* getViewer() override;
 
     /// A way to know if our viewer is embedded or not... (see initViewer)
     /// TODO: Find a better way to do this
@@ -296,7 +296,7 @@ protected:
     void stopDumpVisitor();
 
     /// init the viewer for the GUI (embeded or not we have to connect some info about viewer in the GUI)
-    void initViewer(BaseViewer* _viewer) override;
+    void initViewer(common::BaseViewer* _viewer) override;
 
     /// Our viewer is a QObject SofaViewer
     void isEmbeddedViewer(bool _onOff)

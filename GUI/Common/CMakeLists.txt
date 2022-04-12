@@ -64,6 +64,18 @@ set(SOURCE_FILES
 set (COMPATSOFAGUICOMMON_ROOT "compat/")
 set (COMPAT_HEADER_FILES
     ${COMPATSOFAGUICOMMON_ROOT}/sofa/helper/ArgumentParser.h
+    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/ArgumentParser.h
+    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/BaseGUI.h
+    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/BatchGUI.h
+    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/BaseViewer.h
+    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/ColourPickingVisitor.h
+    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/FilesRecentlyOpenedManager.h
+    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/GuiDataRepository.h
+    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/GUIManager.h
+    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/MouseOperations.h
+    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/OperationFactory.h
+    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/PickHandler.h
+    ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/ViewerFactory.h
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})

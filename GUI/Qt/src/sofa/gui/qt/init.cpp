@@ -25,11 +25,11 @@
 #include <sofa/gui/qt/RealGUI.h>
 
 #if SOFA_GUI_QT_HAVE_QGLVIEWER
-int QGLViewerGUIClass = sofa::gui::GUIManager::RegisterGUI("qglviewer", &sofa::gui::qt::RealGUI::CreateGUI, nullptr, 3);
+int QGLViewerGUIClass = sofa::gui::common::GUIManager::RegisterGUI("qglviewer", &sofa::gui::qt::RealGUI::CreateGUI, nullptr, 3);
 #endif
 
 #if SOFA_GUI_QT_HAVE_QTVIEWER
-int QtGUIClass = sofa::gui::GUIManager::RegisterGUI("qt", &sofa::gui::qt::RealGUI::CreateGUI, nullptr, 2);
+int QtGUIClass = sofa::gui::common::GUIManager::RegisterGUI("qt", &sofa::gui::qt::RealGUI::CreateGUI, nullptr, 2);
 #endif
 
 namespace sofa::gui::qt

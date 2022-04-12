@@ -28,6 +28,8 @@
 
 #include <QStatusBar>
 
+using namespace sofa::gui::common;
+
 namespace sofa::gui::qt
 {
 

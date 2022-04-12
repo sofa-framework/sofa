@@ -43,7 +43,7 @@ public:
 
     void updateContent();
 
-    void setPickHandler(PickHandler *);
+    void setPickHandler(common::PickHandler *);
 
     std::map< int, std::string >& getMapIndexOperation()
     {
@@ -51,18 +51,18 @@ public:
     }
 
     void updateOperation( sofa::component::configurationsetting::MouseButtonSetting* setting);
-    void updateOperation( MOUSE_BUTTON button, const std::string &id);
+    void updateOperation(common::MOUSE_BUTTON button, const std::string &id);
 
 
 public slots:
     void selectOperation(int);
 
 protected:
-    void updateOperation(Operation* op);
-    PickHandler *pickHandler;
+    void updateOperation(common::Operation* op);
+    common::PickHandler *pickHandler;
     std::map< int, std::string > mapIndexOperation;
 
-    type::fixed_array< std::string,NONE > usedOperations;
+    type::fixed_array< std::string, common::NONE > usedOperations;
 };
 
 

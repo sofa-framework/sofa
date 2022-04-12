@@ -26,7 +26,7 @@
 #include <sofa/component/collision/model/fwd.h>
 #include <SofaUserInteraction/MouseInteractor.h>
 
-namespace sofa::gui
+namespace sofa::gui::common
 {
 
 void SOFA_GUI_COMMON_API decodeCollisionElement( const sofa::type::Vec4f colour, sofa::component::collision::BodyPicked& body );
@@ -84,4 +84,4 @@ private:
     ColourCode method;
 };
 
-} // namespace sofa::gui
+} // namespace sofa::gui::common

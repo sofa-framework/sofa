@@ -39,6 +39,7 @@ namespace sofa::gui::batch
 {
 
 using sofa::helper::AdvancedTimer;
+using namespace sofa::gui::common;
 
 constexpr signed int BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS = 1000;
 signed int BatchGUI::nbIter = BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;

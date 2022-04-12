@@ -22,7 +22,7 @@
 #include <sofa/gui/common/ArgumentParser.h>
 #include <sofa/helper/logging/Messaging.h>
 
-namespace sofa::gui
+namespace sofa::gui::common
 {
 
 std::vector<std::string> ArgumentParser::extra = std::vector<std::string>();
@@ -125,4 +125,4 @@ const std::unordered_map<std::string, std::string>& ArgumentParser::getMap() con
     return m_parseResult;
 }
 
-} // namespace sofa::gui
+} // namespace sofa::gui::common

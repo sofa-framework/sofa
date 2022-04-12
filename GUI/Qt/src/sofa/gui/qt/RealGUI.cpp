@@ -81,7 +81,7 @@ using sofa::helper::Utils;
 using sofa::helper::system::DataRepository;
 
 #include <sofa/gui/common/GuiDataRepository.h>
-using sofa::gui::GuiDataRepository;
+using sofa::gui::common::GuiDataRepository;
 
 #include <sofa/simulation/SceneLoaderFactory.h>
 using sofa::simulation::SceneLoaderFactory;
@@ -151,6 +151,8 @@ using sofa::core::ExecParams;
 #ifdef SOFA_PML
 using namespace sofa::gui::filemanager::pml;
 #endif
+
+using namespace sofa::gui::common;
 
 namespace sofa::gui::qt
 {
@@ -347,7 +349,7 @@ RealGUI::RealGUI ( const char* viewername)
       timerStep(nullptr),
       backgroundImage(nullptr),
       pluginManager_dialog(nullptr),
-      recentlyOpenedFilesManager(sofa::gui::BaseGUI::getConfigDirectoryPath() + "/runSofa.ini"),
+      recentlyOpenedFilesManager(BaseGUI::getConfigDirectoryPath() + "/runSofa.ini"),
       saveReloadFile(false),
       displayFlag(nullptr),
 #if(SOFA_GUI_QT_HAVE_QT5_WEBENGINE)
@@ -822,7 +824,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
 
     if( currentSimulation() ) this->unloadScene();
 
-    const std::vector<std::string> sceneArgs = sofa::gui::ArgumentParser::extra_args();
+    const std::vector<std::string> sceneArgs = ArgumentParser::extra_args();
     mSimulation = sofa::simulation::getSimulation()->load ( filename, reload, sceneArgs );
 
     simulation::getSimulation()->init ( mSimulation.get() );
@@ -1456,7 +1458,7 @@ void RealGUI::createViewer(const char* _viewerName, bool _updateViewerList/*=fal
 void RealGUI::registerViewer(BaseViewer* _viewer)
 {
     // Change our viewer
-    sofa::gui::BaseViewer* old = mViewer;
+    BaseViewer* old = mViewer;
     mViewer = _viewer;
     if(mViewer != nullptr)
         delete old;

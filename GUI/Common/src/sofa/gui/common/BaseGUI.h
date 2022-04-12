@@ -30,7 +30,7 @@
 #include <SofaGraphComponent/ViewerSetting.h>
 #include <SofaGraphComponent/MouseButtonSetting.h>
 
-namespace sofa::gui
+namespace sofa::gui::common
 {
 
 class BaseViewer;
@@ -119,4 +119,4 @@ protected:
     static ArgumentParser* mArgumentParser;
 };
 
-} // namespace sofa::gui
+} // namespace sofa::gui::common

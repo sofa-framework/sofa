@@ -19,23 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gui/batch/init.h>
+#pragma once
+#include <sofa/gui/common/MouseOperations.h>
 
-#include <sofa/gui/common/GUIManager.h>
-#include <sofa/gui/batch/BatchGUI.h>
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/common/MouseOperations.h")
 
-int BatchGUIClass = sofa::gui::common::GUIManager::RegisterGUI("batch", &sofa::gui::batch::BatchGUI::CreateGUI, &sofa::gui::batch::BatchGUI::RegisterGUIParameters, -1);
-
-namespace sofa::gui::batch
+namespace sofa::gui
 {
+    using MousePosition = sofa::gui::common::MousePosition;
+    using Operation = sofa::gui::common::Operation;
+    using AttachOperation = sofa::gui::common::AttachOperation;
+    using ConstraintAttachOperation = sofa::gui::common::ConstraintAttachOperation;
+    using FixOperation = sofa::gui::common::FixOperation;
+    using AddFrameOperation = sofa::gui::common::AddFrameOperation;
+    using AddRecordedCameraOperation = sofa::gui::common::AddRecordedCameraOperation;
+    using StartNavigationOperation = sofa::gui::common::StartNavigationOperation;
+    using InciseOperation = sofa::gui::common::InciseOperation;
+    using TopologyOperation = sofa::gui::common::TopologyOperation;
+    using AddSutureOperation = sofa::gui::common::AddSutureOperation;
 
-void init()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-} // namespace sofa::gui::batch
+} // namespace sofa::gui

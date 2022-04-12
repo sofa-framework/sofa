@@ -29,7 +29,7 @@
 #include <list>
 
 
-namespace sofa::gui
+namespace sofa::gui::common
 {
 
 class BaseGUI;
@@ -102,4 +102,4 @@ public:
     static BaseGUI* getGUI();
 };
 
-} // namespace sofa::gui
+} // namespace sofa::gui::common

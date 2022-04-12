@@ -54,7 +54,7 @@ namespace sofa::gui::headlessrecorder
 
 enum class RecordMode { wallclocktime, simulationtime, timeinterval };
 
-class HeadlessRecorder : public sofa::gui::BaseGUI
+class HeadlessRecorder : public sofa::gui::common::BaseGUI
 {
 
 public:
@@ -81,8 +81,8 @@ public:
     virtual void setBackgroundColor(const sofa::type::RGBAColor& color) override;
 
     // Needed for the registration
-    static BaseGUI* CreateGUI(const char* name, sofa::simulation::NodeSPtr groot = nullptr, const char* filename = nullptr);
-    static int RegisterGUIParameters(ArgumentParser* argumentParser);
+    static common::BaseGUI* CreateGUI(const char* name, sofa::simulation::NodeSPtr groot = nullptr, const char* filename = nullptr);
+    static int RegisterGUIParameters(common::ArgumentParser* argumentParser);
     static void parseRecordingModeOption();
 
     static int recordTimeInSeconds; // public for SIGTERM

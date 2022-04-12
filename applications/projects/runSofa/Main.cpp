@@ -52,11 +52,11 @@ using sofa::simulation::scenechecking::SceneCheckerListener;
 using sofa::helper::system::FileSystem;
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/Utils.h>
-#include <sofa/gui/common/GUIManager.h>
+#include <sofa/gui/GUIManager.h>
 using sofa::gui::GUIManager;
 
 #include <SofaGui/initSofaGui.h>
-#include <sofa/gui/batch/BatchGUI.h>  // For the default number of iterations
+#include <sofa/gui/BatchGUI.h>  // For the default number of iterations
 
 using sofa::core::ExecParams ;
 
@@ -66,7 +66,9 @@ using sofa::helper::Utils;
 using sofa::simulation::graph::DAGSimulation;
 using sofa::helper::system::SetDirectory;
 using sofa::core::objectmodel::BaseNode ;
-using sofa::gui::batch::BatchGUI;
+using sofa::gui::BatchGUI;
+
+#include <sofa/gui/BaseGUI.h>
 using sofa::gui::BaseGUI;
 
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
@@ -80,7 +82,7 @@ using  sofa::helper::logging::MainPerComponentLoggingMessageHandler ;
 
 #include <sofa/helper/AdvancedTimer.h>
 
-#include <sofa/gui/common/GuiDataRepository.h>
+#include <sofa/gui/GuiDataRepository.h>
 using sofa::gui::GuiDataRepository ;
 
 using sofa::helper::system::DataRepository;
@@ -96,7 +98,7 @@ using sofa::helper::logging::ClangMessageHandler ;
 #include <sofa/helper/logging/ExceptionMessageHandler.h>
 using sofa::helper::logging::ExceptionMessageHandler;
 
-#include <sofa/gui/common/ArgumentParser.h>
+#include <sofa/gui/ArgumentParser.h>
 
 
 

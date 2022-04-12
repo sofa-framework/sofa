@@ -41,6 +41,8 @@ using sofa::helper::system::FileSystem ;
 
 #include <iostream>
 
+using namespace sofa::gui::common;
+
 namespace sofa::gui::qt 
 {
 
@@ -177,7 +179,7 @@ DocBrowser::DocBrowser(RealGUI* g) : QDialog(g)
     verticalLayout->addWidget(bg) ;
 
     QPushButton* prev=new QPushButton() ;
-    prev->setIcon(QIcon(asQStr( GuiDataRepository.getFile("icons/back.png")))) ;
+    prev->setIcon(QIcon(asQStr(common::GuiDataRepository.getFile("icons/back.png")))) ;
     connect(prev, SIGNAL(clicked()), this, SLOT(goToPrev()));
     bgl->addWidget(prev);
 
@@ -186,7 +188,7 @@ DocBrowser::DocBrowser(RealGUI* g) : QDialog(g)
     bgl->addWidget(m_lineEdit);
 
     QPushButton* home=new QPushButton();
-    home->setIcon(QIcon(asQStr( GuiDataRepository.getFile("icons/home.png"))));
+    home->setIcon(QIcon(asQStr(common::GuiDataRepository.getFile("icons/home.png"))));
     connect(home, SIGNAL(clicked()), this, SLOT(goToHome()));
     bgl->addWidget(home) ;
 

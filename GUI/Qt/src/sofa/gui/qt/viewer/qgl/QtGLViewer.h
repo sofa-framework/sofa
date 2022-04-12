@@ -89,10 +89,10 @@ private:
 
 public:
 
-    static QtGLViewer* create(QtGLViewer*, sofa::gui::BaseViewerArgument& arg)
+    static QtGLViewer* create(QtGLViewer*, sofa::gui::common::BaseViewerArgument& arg)
     {
-        BaseViewerArgument* pArg = &arg;
-        ViewerQtArgument* viewerArg = dynamic_cast<ViewerQtArgument*>(pArg);
+        common::BaseViewerArgument* pArg = &arg;
+        common::ViewerQtArgument* viewerArg = dynamic_cast<common::ViewerQtArgument*>(pArg);
         return viewerArg ?
                 new QtGLViewer(viewerArg->getParentWidget(), viewerArg->getName().c_str(), viewerArg->getNbMSAASamples() ) :
                 new QtGLViewer(nullptr, pArg->getName().c_str(), pArg->getNbMSAASamples() )
@@ -103,7 +103,7 @@ public:
 
     static const char* acceleratedName()  { return "&QGLViewer (QtGLViewer)"; }
 
-    virtual void drawColourPicking (ColourPickingVisitor::ColourCode code) override;
+    virtual void drawColourPicking (common::ColourPickingVisitor::ColourCode code) override;
 
     QtGLViewer( QWidget* parent, const char* name="", const unsigned int nbMSAASamples = 1 );
     ~QtGLViewer() override;

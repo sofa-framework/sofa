@@ -46,7 +46,7 @@ helper::Creator<InteractionPerformer::InteractionPerformerFactory, SuturePointPe
 #endif
 } // namespace sofa
 
-namespace sofa::gui
+namespace sofa::gui::common
 {
 
 //*******************************************************************************************
@@ -322,4 +322,4 @@ void AddSutureOperation::configurePerformer(InteractionPerformer* performer)
     }
 }
 
-} // namespace sofa::gui
+} // namespace sofa::gui::common

@@ -25,7 +25,7 @@
 using sofa::helper::system::FileRepository;
 using sofa::helper::Utils;
 
-namespace sofa::gui
+namespace sofa::gui::common
 {
 
 FileRepository GuiDataRepository(
@@ -38,4 +38,4 @@ FileRepository GuiDataRepository(
         }
 );
 
-} // namespace sofa::gui
+} // namespace sofa::gui::common

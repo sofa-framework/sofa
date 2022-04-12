@@ -107,7 +107,7 @@ void HeadlessRecorder::parseRecordingModeOption()
    }
 }
 
-int HeadlessRecorder::RegisterGUIParameters(ArgumentParser* argumentParser)
+int HeadlessRecorder::RegisterGUIParameters(common::ArgumentParser* argumentParser)
 {
     auto in_time_t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     std::stringstream ss;
@@ -136,7 +136,7 @@ int HeadlessRecorder::RegisterGUIParameters(ArgumentParser* argumentParser)
     return 0;
 }
 
-BaseGUI* HeadlessRecorder::CreateGUI(const char* name, sofa::simulation::Node::SPtr groot, const char* filename)
+common::BaseGUI* HeadlessRecorder::CreateGUI(const char* name, sofa::simulation::Node::SPtr groot, const char* filename)
 {
     SOFA_UNUSED(name);
     SOFA_UNUSED(groot);

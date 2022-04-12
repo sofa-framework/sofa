@@ -45,7 +45,7 @@ namespace sofa::component::setting
 } // namespace sofa::component::setting
 
 
-namespace sofa::gui
+namespace sofa::gui::common
 {
 
 using simulation::Node;
@@ -165,4 +165,4 @@ protected:
     double m_defaultLength;
 };
 
-} // namespace sofa::gui
+} // namespace sofa::gui::common

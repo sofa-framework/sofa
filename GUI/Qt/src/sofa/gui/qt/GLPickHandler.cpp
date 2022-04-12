@@ -39,13 +39,11 @@
 #include <limits>
 
 
-namespace sofa
+namespace sofa::gui::qt
 {
+
+using namespace sofa::gui::common;
 using namespace component::collision;
-
-
-namespace gui
-{
 
 GLPickHandler::GLPickHandler(double defaultLength)
     : Inherit(defaultLength)
@@ -138,10 +136,4 @@ component::collision::BodyPicked GLPickHandler::findCollisionUsingColourCoding(c
     return result;
 }
 
-
-
-
-
-}
-}
-
+} // namespace sofa::gui::qt

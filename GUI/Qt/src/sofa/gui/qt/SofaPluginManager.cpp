@@ -267,13 +267,13 @@ void SofaPluginManager::updateDescription()
 
 void SofaPluginManager::savePluginsToIniFile()
 {
-    const std::string pluginsIniFile = sofa::gui::BaseGUI::getConfigDirectoryPath() + "/loadedPlugins.ini";
+    const std::string pluginsIniFile = sofa::gui::common::BaseGUI::getConfigDirectoryPath() + "/loadedPlugins.ini";
     sofa::helper::system::PluginManager::getInstance().writeToIniFile(pluginsIniFile);
 }
 
 void SofaPluginManager::loadPluginsFromIniFile()
 {
-    const std::string pluginsIniFile = sofa::gui::BaseGUI::getConfigDirectoryPath() + "/loadedPlugins.ini";
+    const std::string pluginsIniFile = sofa::gui::common::BaseGUI::getConfigDirectoryPath() + "/loadedPlugins.ini";
     sofa::helper::system::PluginManager::getInstance().readFromIniFile(pluginsIniFile);
 }
 

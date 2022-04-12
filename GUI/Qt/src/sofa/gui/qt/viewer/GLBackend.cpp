@@ -41,12 +41,12 @@ GLBackend::~GLBackend()
 {
 }
 
-void GLBackend::setPickingMethod(sofa::gui::PickHandler* pick, sofa::component::configurationsetting::ViewerSetting* viewerConf)
+void GLBackend::setPickingMethod(sofa::gui::common::PickHandler* pick, sofa::component::configurationsetting::ViewerSetting* viewerConf)
 {
-    if ( viewerConf->objectPickingMethod.getValue().getSelectedId() == gui::PickHandler::RAY_CASTING)
-        pick->setPickingMethod( gui::PickHandler::RAY_CASTING );
+    if ( viewerConf->objectPickingMethod.getValue().getSelectedId() == gui::common::PickHandler::RAY_CASTING)
+        pick->setPickingMethod( gui::common::PickHandler::RAY_CASTING );
     else
-        pick->setPickingMethod( gui::PickHandler::SELECTION_BUFFER);
+        pick->setPickingMethod( gui::common::PickHandler::SELECTION_BUFFER);
 }
 
 void GLBackend::setPrefix(const std::string& prefix)

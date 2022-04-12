@@ -28,7 +28,7 @@
 
 using sofa::helper::system::FileSystem;
 
-namespace sofa::gui
+namespace sofa::gui::common
 {
 
 FilesRecentlyOpenedManager::FilesRecentlyOpenedManager(const std::string &configFile):
@@ -86,4 +86,4 @@ void FilesRecentlyOpenedManager::openFile(const std::string &path)
     writeFiles();
 }
 
-} // namespace sofa::gui
+} // namespace sofa::gui::common

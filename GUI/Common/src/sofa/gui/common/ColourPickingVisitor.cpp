@@ -32,7 +32,7 @@
 #include <sofa/gl/BasicShapes.h>
 #endif // SOFAGUICOMMON_HAVE_SOFA_GL  == 1
 
-namespace sofa::gui
+namespace sofa::gui::common
 {
 
 using namespace sofa::type;
@@ -214,4 +214,4 @@ void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::com
 #endif // SOFAGUICOMMON_HAVE_SOFA_GL  == 1
 }
 
-} // namespace sofa::gui
+} // namespace sofa::gui::common

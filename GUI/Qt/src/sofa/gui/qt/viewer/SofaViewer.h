@@ -20,9 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/gui/qt/config.h>
+
 #include <sofa/gui/common/BaseViewer.h>
 #include <sofa/gui/qt/PickHandlerCallBacks.h>
-#include <sofa/gui/qt/config.h>
 #include <sofa/gui/qt/SofaVideoRecorderManager.h>
 #include <sofa/gui/qt/viewer/EngineBackend.h>
 
@@ -43,7 +44,7 @@ enum
     BTLEFT_MODE = 101, BTRIGHT_MODE = 102, BTMIDDLE_MODE = 103,
 };
 
-class SOFA_GUI_QT_API SofaViewer : public sofa::gui::BaseViewer
+class SOFA_GUI_QT_API SofaViewer : public sofa::gui::common::BaseViewer
 {
 
 public:

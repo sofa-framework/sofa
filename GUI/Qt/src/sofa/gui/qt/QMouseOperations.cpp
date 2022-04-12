@@ -31,6 +31,7 @@
 #include <QGridLayout>
 #include <QLabel>
 
+using namespace sofa::gui::common;
 
 namespace sofa::gui::qt
 {

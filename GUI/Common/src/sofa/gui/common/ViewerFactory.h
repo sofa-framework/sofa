@@ -26,7 +26,7 @@
 
 class QWidget;
 
-namespace sofa::gui
+namespace sofa::gui::common
 {
 
 class BaseViewerArgument
@@ -68,27 +68,27 @@ protected:
     QWidget* parent;
 };
 
-} // namespace sofa::gui
+} // namespace sofa::gui::common
 
 namespace sofa::helper
 {
 
 template < >
-class SOFA_GUI_COMMON_API BaseCreator< sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument&>
+class SOFA_GUI_COMMON_API BaseCreator< sofa::gui::common::BaseViewer, sofa::gui::common::BaseViewerArgument&>
 {
 public:
     virtual ~BaseCreator() { }
-    virtual sofa::gui::BaseViewer *createInstance(sofa::gui::BaseViewerArgument& arg) = 0;
+    virtual sofa::gui::common::BaseViewer *createInstance(sofa::gui::common::BaseViewerArgument& arg) = 0;
     virtual const std::type_info& type() = 0;
     virtual const char* viewerName() = 0;
     virtual const char* acceleratedName() = 0;
 };
 
 
-class SOFA_GUI_COMMON_API SofaViewerFactory : public sofa::helper::Factory< std::string, sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument& >
+class SOFA_GUI_COMMON_API SofaViewerFactory : public sofa::helper::Factory< std::string, sofa::gui::common::BaseViewer, sofa::gui::common::BaseViewerArgument& >
 {
 public:
-    typedef sofa::helper::Factory< std::string, sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument& > Inherited;
+    typedef sofa::helper::Factory< std::string, sofa::gui::common::BaseViewer, sofa::gui::common::BaseViewerArgument& > Inherited;
     typedef Inherited::Key Key;
     typedef Inherited::Argument ArgumentRef;
     typedef Inherited::Object Object;
@@ -156,7 +156,7 @@ public:
 };
 
 #if !defined(SOFA_BUILD_SOFAGUICOMMON)
-extern template class SOFA_GUI_COMMON_API Factory< std::string, sofa::gui::BaseViewer, sofa::gui::BaseViewerArgument& >;
+extern template class SOFA_GUI_COMMON_API Factory< std::string, sofa::gui::common::BaseViewer, sofa::gui::common::BaseViewerArgument& >;
 #endif
 
 

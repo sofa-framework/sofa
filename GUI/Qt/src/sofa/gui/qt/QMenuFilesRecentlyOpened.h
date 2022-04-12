@@ -28,10 +28,10 @@
 namespace sofa::gui::qt
 {
 
-class SOFA_GUI_QT_API QMenuFilesRecentlyOpened: public FilesRecentlyOpenedManager
+class SOFA_GUI_QT_API QMenuFilesRecentlyOpened: public common::FilesRecentlyOpenedManager
 {
 public:
-    QMenuFilesRecentlyOpened(const std::string &configFile):FilesRecentlyOpenedManager(configFile),menuRecentlyOpenedFiles(nullptr) {}
+    QMenuFilesRecentlyOpened(const std::string &configFile):common::FilesRecentlyOpenedManager(configFile),menuRecentlyOpenedFiles(nullptr) {}
     ~QMenuFilesRecentlyOpened() override {if (menuRecentlyOpenedFiles) delete menuRecentlyOpenedFiles;}
     void openFile(const std::string &file) override;
 

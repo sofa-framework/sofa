@@ -50,12 +50,12 @@ public slots:
     void WidgetDirty(bool);
 };
 
-class QAttachOperation : public QMouseOperation, public AttachOperation
+class QAttachOperation : public QMouseOperation, public common::AttachOperation
 {
     Q_OBJECT
 public:
     QAttachOperation();
-    void configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button) override;
+    void configure(common::PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button) override;
 
 protected:
     DataWidget *stiffnessWidget;
@@ -63,28 +63,28 @@ protected:
     DataWidget *showSizeFactorWidget;
 };
 
-class QAddRecordedCameraOperation : public QMouseOperation, public AddRecordedCameraOperation
+class QAddRecordedCameraOperation : public QMouseOperation, public common::AddRecordedCameraOperation
 {
     Q_OBJECT
 public:
     QAddRecordedCameraOperation();
-    void configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button) override;
+    void configure(common::PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button) override;
 };
 
-class QStartNavigationOperation : public QMouseOperation, public StartNavigationOperation  
+class QStartNavigationOperation : public QMouseOperation, public common::StartNavigationOperation
 {
     Q_OBJECT
 public:
     QStartNavigationOperation();
-    void configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button) override;
+    void configure(common::PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button) override;
 };
 
-class QFixOperation : public QMouseOperation, public FixOperation
+class QFixOperation : public QMouseOperation, public common::FixOperation
 {
     Q_OBJECT
 public:
     QFixOperation();
-    void configure(PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button) override;
+    void configure(common::PickHandler *picker, sofa::component::configurationsetting::MouseButtonSetting* button) override;
 
 protected:
     DataWidget *stiffnessWidget;
@@ -93,7 +93,7 @@ protected:
 
 
 
-class QInciseOperation : public QWidget, public InciseOperation
+class QInciseOperation : public QWidget, public common::InciseOperation
 {
     Q_OBJECT
 public:
@@ -105,7 +105,7 @@ public:
     bool getCompleteIncision () override {return finishIncision;}
     bool getKeepPoint () override {return keepPoint;}
 
-    void configure(PickHandler *picker, MOUSE_BUTTON b) override
+    void configure(common::PickHandler *picker, common::MOUSE_BUTTON b) override
     {
         InciseOperation::configure(picker, b);
     }
@@ -138,7 +138,7 @@ protected:
 
 
 
-class QTopologyOperation : public QWidget, public TopologyOperation
+class QTopologyOperation : public QWidget, public common::TopologyOperation
 {
     Q_OBJECT
 public:
@@ -149,9 +149,9 @@ public:
 
 
 
-    void configure(PickHandler *picker, MOUSE_BUTTON b) override
+    void configure(common::PickHandler *picker, common::MOUSE_BUTTON b) override
     {
-        TopologyOperation::configure(picker, b);
+        common::TopologyOperation::configure(picker, b);
     }
 
 public slots:
@@ -169,7 +169,7 @@ protected:
 };
 
 
-class QAddSutureOperation : public QWidget, public AddSutureOperation
+class QAddSutureOperation : public QWidget, public common::AddSutureOperation
 {
     Q_OBJECT
 public:
@@ -177,9 +177,9 @@ public:
     double getStiffness() const override;
     double getDamping() const override;
 
-    void configure(PickHandler *picker, MOUSE_BUTTON b) override
+    void configure(common::PickHandler *picker, common::MOUSE_BUTTON b) override
     {
-        AddSutureOperation::configure(picker, b);
+        common::AddSutureOperation::configure(picker, b);
     }
 
 protected:

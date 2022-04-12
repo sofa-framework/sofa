@@ -36,7 +36,7 @@
 using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;
 
-namespace sofa::gui
+namespace sofa::gui::common
 {
 
 /*STATIC FIELD DEFINITIONS */
@@ -317,4 +317,4 @@ void GUIManager::SaveScreenshot(const char* filename)
 }
 
 
-} // namespace sofa::gui
+} // namespace sofa::gui::common

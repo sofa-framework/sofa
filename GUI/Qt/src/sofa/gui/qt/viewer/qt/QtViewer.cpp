@@ -58,6 +58,7 @@ using std::cout;
 using std::endl;
 using namespace sofa::type;
 using namespace sofa::defaulttype;
+using namespace sofa::gui::common;
 
 using sofa::simulation::getSimulation;
 

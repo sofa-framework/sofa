@@ -34,10 +34,10 @@ namespace sofa::component::collision::model
     class RayCollisionModel;
 } // namespace sofa::component::collision::model
 
-namespace sofa::gui
+namespace sofa::gui::qt
 {
 
-class SOFA_GUI_QT_API GLPickHandler : public PickHandler
+class SOFA_GUI_QT_API GLPickHandler : public common::PickHandler
 {
     typedef PickHandler Inherit;
     typedef sofa::component::collision::model::RayCollisionModel MouseCollisionModel;
@@ -56,7 +56,7 @@ public:
     void allocateSelectionBuffer(int width, int height) override;
     void destroySelectionBuffer() override;
 
-    BodyPicked findCollisionUsingColourCoding(const type::Vector3& origin, const type::Vector3& direction) override;
+    common::BodyPicked findCollisionUsingColourCoding(const type::Vector3& origin, const type::Vector3& direction) override;
 
 protected:
     bool _fboAllocated;
@@ -65,4 +65,4 @@ protected:
 
 };
 
-} // namespace sofa::gui
+} // namespace sofa::gui::qt

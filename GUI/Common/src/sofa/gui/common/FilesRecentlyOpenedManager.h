@@ -27,7 +27,7 @@
 #include <string>
 
 
-namespace sofa::gui
+namespace sofa::gui::common
 {
 class SOFA_GUI_COMMON_API FilesRecentlyOpenedManager
 {
@@ -59,4 +59,4 @@ protected:
 };
 
 
-} // namespace sofa::gui
+} // namespace sofa::gui::common

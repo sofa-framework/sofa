@@ -38,7 +38,7 @@ namespace sofa::gui::qt
 {
 class RealGUI;
 
-class InformationOnPickCallBack: public CallBackPicker
+class InformationOnPickCallBack: public common::CallBackPicker
 {
 public:
     InformationOnPickCallBack();
@@ -49,12 +49,12 @@ protected:
 };
 
 
-class ColourPickingRenderCallBack : public sofa::gui::CallBackRender
+class ColourPickingRenderCallBack : public sofa::gui::common::CallBackRender
 {
 public:
     ColourPickingRenderCallBack();
     ColourPickingRenderCallBack(viewer::SofaViewer* viewer);
-    void render(ColourPickingVisitor::ColourCode code) override;
+    void render(common::ColourPickingVisitor::ColourCode code) override;
 protected:
     viewer::SofaViewer* _viewer;
 

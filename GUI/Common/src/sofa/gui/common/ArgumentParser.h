@@ -30,7 +30,7 @@
 
 #include <cxxopts.hpp>
 
-namespace sofa::gui
+namespace sofa::gui::common
 {
 
 /** Command line parser
@@ -141,4 +141,4 @@ private:
     std::unordered_map<std::string, std::string> m_parseResult;
 };
 
-} // namespace sofa::gui
+} // namespace sofa::gui::common

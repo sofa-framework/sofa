@@ -29,11 +29,13 @@
 #include <sofa/gui/qt/PickHandlerCallBacks.h>
 #include <sofa/gui/common/BaseGUI.h>
 
+using namespace sofa::gui::common;
+
 namespace sofa::gui::qt::viewer
 {
 
 SofaViewer::SofaViewer()
-    : sofa::gui::BaseViewer()
+    : BaseViewer()
     , m_isControlPressed(false)
 {
     colourPickingRenderCallBack = ColourPickingRenderCallBack(this);
@@ -512,7 +514,7 @@ const std::string SofaViewer::screenshotName()
 
 void SofaViewer::setPrefix(const std::string& prefix, bool prependDirectory)
 {
-    const std::string fullPrefix = (prependDirectory) ? sofa::gui::BaseGUI::getScreenshotDirectoryPath() + "/" + prefix
+    const std::string fullPrefix = (prependDirectory) ? sofa::gui::common::BaseGUI::getScreenshotDirectoryPath() + "/" + prefix
                                                       : prefix;
 
     m_backend->setPrefix(fullPrefix);

@@ -45,7 +45,7 @@ using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;
 
 using namespace sofa::simulation;
-namespace sofa::gui
+namespace sofa::gui::common
 {
 
 const char* BaseGUI::mProgramName = nullptr;
@@ -183,4 +183,4 @@ void BaseGUI::setScreenshotDirectoryPath(const std::string& path, bool createIfN
 }
 
 
-} // namespace sofa::gui
+} // namespace sofa::gui::common

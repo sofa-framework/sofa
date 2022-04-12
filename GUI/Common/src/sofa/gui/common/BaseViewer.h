@@ -41,7 +41,7 @@ namespace sofa::component::setting
 
 } // namespace sofa::component::setting
 
-namespace sofa::gui
+namespace sofa::gui::common
 {
 
 class PickHandler;
@@ -155,4 +155,4 @@ protected:
     std::string _screenshotDirectory;
 };
 
-} // namespace sofa::gui
+} // namespace sofa::gui::common

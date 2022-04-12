@@ -37,7 +37,7 @@ namespace sofa::component::collision
     class InteractionPerformer;
 } // namespace sofa::component::collision
 
-namespace sofa::gui
+namespace sofa::gui::common
 {
 enum MOUSE_BUTTON {LEFT, MIDDLE, RIGHT,NONE};
 enum MOUSE_STATUS {PRESSED,RELEASED, ACTIVATED, DEACTIVATED};
@@ -119,7 +119,7 @@ protected:
 };
 
 
-class SOFA_GUI_COMMON_API ConstraintAttachOperation : public sofa::gui::AttachOperation
+class SOFA_GUI_COMMON_API ConstraintAttachOperation : public sofa::gui::common::AttachOperation
 {
 public:
     static std::string getDescription() { return "Attach an object to the mouse using a bilateral interaction constraint"; }
@@ -262,4 +262,4 @@ protected:
     double damping;
 };
 
-} // namespace sofa::gui
+} // namespace sofa::gui::common

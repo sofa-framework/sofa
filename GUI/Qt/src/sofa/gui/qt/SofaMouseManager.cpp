@@ -28,6 +28,8 @@
 
 #include <iostream>
 
+using namespace sofa::gui::common;
+
 namespace sofa::gui::qt
 {
 SofaMouseManager::SofaMouseManager(QWidget *parent)

@@ -27,7 +27,7 @@
 #include <string>
 #include <sstream>
 
-namespace sofa::gui
+namespace sofa::gui::common
 {
     class ArgumentParser;
 }
@@ -35,7 +35,7 @@ namespace sofa::gui
 namespace sofa::gui::batch
 {
 
-class SOFA_GUI_BATCH_API BatchGUI : public BaseGUI
+class SOFA_GUI_BATCH_API BatchGUI : public common::BaseGUI
 {
 
 public:
@@ -61,8 +61,8 @@ public:
     /// @{
 
     static BaseGUI* CreateGUI(const char* name, sofa::simulation::NodeSPtr groot = nullptr, const char* filename = nullptr);
-    static int RegisterGUIParameters(ArgumentParser* argumentParser);
-    static void OnNbIterChange(const ArgumentParser*, const std::string& strValue);
+    static int RegisterGUIParameters(common::ArgumentParser* argumentParser);
+    static void OnNbIterChange(const common::ArgumentParser*, const std::string& strValue);
 
 
     static const signed int DEFAULT_NUMBER_OF_ITERATIONS;

@@ -3,27 +3,33 @@
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gui/common/config.h>
+#pragma once
+#include <sofa/gui/common/OperationFactory.h>
 
-#include <sofa/helper/system/FileRepository.h>
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/common/OperationFactory.h")
 
-namespace sofa::gui::common
+namespace sofa::gui
 {
-    extern SOFA_GUI_COMMON_API sofa::helper::system::FileRepository GuiDataRepository;
-} // namespace sofa::gui::common
+    using OperationCreator = sofa::gui::common::OperationCreator;
+    template<class RealOperation>
+    using TOperationCreator = sofa::gui::common::TOperationCreator<RealOperation>;
+    using OperationFactory = sofa::gui::common::OperationFactory;
+    using RegisterOperation = sofa::gui::common::RegisterOperation;
+
+} // namespace sofa::gui

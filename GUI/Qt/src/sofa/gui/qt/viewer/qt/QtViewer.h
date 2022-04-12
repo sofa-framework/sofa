@@ -129,10 +129,10 @@ public:
     static const std::string VIEW_FILE_EXTENSION;
 
 
-    static QtViewer* create(QtViewer*, BaseViewerArgument& arg)
+    static QtViewer* create(QtViewer*, common::BaseViewerArgument& arg)
     {
-        BaseViewerArgument* pArg = &arg;
-        ViewerQtArgument* viewerArg = dynamic_cast<ViewerQtArgument*>(pArg);
+        common::BaseViewerArgument* pArg = &arg;
+        common::ViewerQtArgument* viewerArg = dynamic_cast<common::ViewerQtArgument*>(pArg);
         return viewerArg ?
                 new QtViewer(viewerArg->getParentWidget(), viewerArg->getName().c_str(), viewerArg->getNbMSAASamples() ) :
                 new QtViewer(nullptr, pArg->getName().c_str(), pArg->getNbMSAASamples() )
@@ -183,7 +183,7 @@ public slots:
     virtual void newView() override ;
     virtual void moveView(const type::Vector3& pos, const type::Quat<SReal> &ori) override ;
     virtual void captureEvent()  override { SofaViewer::captureEvent(); }
-    virtual void drawColourPicking (ColourPickingVisitor::ColourCode code) override ;
+    virtual void drawColourPicking (common::ColourPickingVisitor::ColourCode code) override ;
     virtual void fitNodeBBox(sofa::core::objectmodel::BaseNode * node )  override { SofaViewer::fitNodeBBox(node); }
     virtual void fitObjectBBox(sofa::core::objectmodel::BaseObject * obj)  override { SofaViewer::fitObjectBBox(obj); }
 

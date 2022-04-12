@@ -30,7 +30,7 @@
 #include <SofaBaseVisual/InteractiveCamera.h>
 #include <sofa/core/ComponentNameHelper.h>
 
-namespace sofa::gui
+namespace sofa::gui::common
 {
 
 BaseViewer::BaseViewer()
@@ -278,4 +278,4 @@ void BaseViewer::fitObjectBBox(sofa::core::objectmodel::BaseObject * object)
     redraw();
 }
 
-} // namespace sofa::gui
+} // namespace sofa::gui::common

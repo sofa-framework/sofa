@@ -57,6 +57,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::gl;
 using sofa::simulation::getSimulation;
 using namespace sofa::simulation;
+using namespace sofa::gui::common;
 
 helper::SofaViewerCreator<QtGLViewer> QtGLViewer_class("qglviewer",false);
 // ---------------------------------------------------------
@@ -1018,7 +1019,7 @@ void QtGLViewer::resetView()
     {
         //Test if we have a specific view point for the QGLViewer
         //That case, the camera will be well placed
-        std::string viewFileName = sceneFileName+"."+sofa::gui::BaseGUI::GetGUIName()+".view";
+        std::string viewFileName = sceneFileName+"."+BaseGUI::GetGUIName()+".view";
         std::ifstream in(viewFileName.c_str());
         if (!in.fail())
         {
@@ -1080,7 +1081,7 @@ void QtGLViewer::saveView()
 {
     if (!sceneFileName.empty())
     {
-        std::string viewFileName = sceneFileName+"."+sofa::gui::BaseGUI::GetGUIName()+".view";
+        std::string viewFileName = sceneFileName+"."+BaseGUI::GetGUIName()+".view";
         std::ofstream out(viewFileName.c_str());
         if (!out.fail())
         {

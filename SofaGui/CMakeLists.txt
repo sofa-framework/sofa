@@ -31,9 +31,9 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAGUI_TARGETS})
 
 foreach(ui_target ${SOFAGUI_TARGETS})
-    set_target_properties(${ui_target} PROPERTIES FOLDER SofaGui)
+    set_target_properties(${ui_target} PROPERTIES FOLDER GUI)
 endforeach()
-set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER SofaGui)
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER GUI)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

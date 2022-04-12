@@ -39,7 +39,7 @@ using sofa::simulation::mechanicalvisitor::MechanicalPickParticlesVisitor;
 #include <iostream>
 #include <limits>
 
-namespace sofa::gui
+namespace sofa::gui::common
 {
 
 PickHandler::PickHandler(double defaultLength):
@@ -477,4 +477,4 @@ component::collision::BodyPicked PickHandler::findCollisionUsingColourCoding(con
     return result;
 }
 
-} // namespace sofa::gui
+} // namespace sofa::gui::common
