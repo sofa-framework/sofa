@@ -27,12 +27,8 @@
 #include <sofa/type/Vec.h>
 #include <sofa/simulation/fwd.h>
 
-namespace sofa::component::userinteraction::configurationsetting
-{
-    class ViewerSetting;
-    class MouseButtonSetting;
-
-} // namespace sofa::component::userinteraction::configurationsetting
+#include <SofaGraphComponent/ViewerSetting.h>
+#include <SofaGraphComponent/MouseButtonSetting.h>
 
 namespace sofa::gui
 {
@@ -74,7 +70,7 @@ public:
     virtual void setGnuplotPath(const std::string & /*path*/) {}
 
     virtual void initViewer(BaseViewer* /*viewer*/) {}
-    virtual void setViewerConfiguration(sofa::component::userinteraction::configurationsetting::ViewerSetting* /*viewerConf*/) {}
+    virtual void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* /*viewerConf*/) {}
     virtual void setViewerResolution(int /* width */, int /* height */) {}
     virtual void setFullScreen() {}
     virtual void centerWindow() {}

@@ -1362,7 +1362,7 @@ void RealGUI::setBackgroundImage(const std::string& c)
 
 //------------------------------------
 
-void RealGUI::setViewerConfiguration(sofa::component::userinteraction::configurationsetting::ViewerSetting* viewerConf)
+void RealGUI::setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* viewerConf)
 {
     const type::Vec<2,int> &res=viewerConf->resolution.getValue();
 
