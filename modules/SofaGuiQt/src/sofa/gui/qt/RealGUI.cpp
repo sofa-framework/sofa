@@ -1639,7 +1639,7 @@ void RealGUI::eventNewTime()
     {
         double time = root->getTime();
         char buf[100];
-        sprintf ( buf, "Time: %.3g,   Steps:  %o", time, frameCounter );
+        sprintf ( buf, "Time: %.3g,   Steps:  %i", time, frameCounter );
         timeLabel->setText ( buf );
     }
 #endif
