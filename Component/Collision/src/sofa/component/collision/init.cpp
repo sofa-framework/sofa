@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/component/collision/init.h>
 
-#include <sofa/component/collision/model/init.h>
+#include <sofa/component/collision/geometry/init.h>
 #include <sofa/component/collision/detection/init.h>
 
 namespace sofa::component::collision
@@ -38,7 +38,7 @@ void initExternalModule()
     if (first)
     {        
         // force dependencies at compile-time
-        sofa::component::collision::model::init();
+        sofa::component::collision::geometry::init();
         sofa::component::collision::detection::init();
 
         first = false;

@@ -34,4 +34,4 @@
 namespace sofa::component::collision::detection::algorithm
 {
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-} // namespace sofa::component::collision::model::algorithm
+} // namespace sofa::component::collision::geometry::algorithm

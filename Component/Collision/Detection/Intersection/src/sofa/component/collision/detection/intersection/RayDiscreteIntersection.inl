@@ -32,7 +32,7 @@ namespace sofa::component::collision::detection::intersection
 
 
 template<class T>
-bool RayDiscreteIntersection::testIntersection(model::Ray & ray1, model::TSphere<T>& sph2)
+bool RayDiscreteIntersection::testIntersection(collision::geometry::Ray & ray1, collision::geometry::TSphere<T>& sph2)
 {
     // Center of the sphere
     const type::Vector3 sph2Pos(sph2.center());
@@ -50,7 +50,7 @@ bool RayDiscreteIntersection::testIntersection(model::Ray & ray1, model::TSphere
 }
 
 template<class T>
-int RayDiscreteIntersection::computeIntersection(model::Ray& ray1, model::TSphere<T>& sph2, OutputVector* contacts)
+int RayDiscreteIntersection::computeIntersection(collision::geometry::Ray& ray1, collision::geometry::TSphere<T>& sph2, OutputVector* contacts)
 {
     // Center of the sphere
     const type::Vector3 sph2Pos(sph2.center());

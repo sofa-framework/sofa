@@ -25,9 +25,9 @@
 
 #include <sofa/core/collision/Intersection.h>
 
-#include <sofa/component/collision/model/LineModel.h>
-#include <sofa/component/collision/model/TriangleModel.h>
-#include <sofa/component/collision/model/SphereModel.h>
+#include <sofa/component/collision/geometry/LineModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/collision/geometry/SphereModel.h>
 
 namespace sofa::component::collision::detection::intersection
 {
@@ -41,11 +41,11 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API MeshDiscreteIntersecti
 public:
     MeshDiscreteIntersection(DiscreteIntersection* object, bool addSelf=true);
 
-    bool testIntersection(model::Triangle&, model::Line&);
-    template<class T> bool testIntersection(model::TSphere<T>&, model::Triangle&);
+    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Line&);
+    template<class T> bool testIntersection(collision::geometry::TSphere<T>&, collision::geometry::Triangle&);
 
-    int computeIntersection(model::Triangle& e1, model::Line& e2, OutputVector* contacts);
-    template<class T> int computeIntersection(model::TSphere<T>&, model::Triangle&, OutputVector*);
+    int computeIntersection(collision::geometry::Triangle& e1, collision::geometry::Line& e2, OutputVector* contacts);
+    template<class T> int computeIntersection(collision::geometry::TSphere<T>&, collision::geometry::Triangle&, OutputVector*);
 
 protected:
     DiscreteIntersection* intersection;

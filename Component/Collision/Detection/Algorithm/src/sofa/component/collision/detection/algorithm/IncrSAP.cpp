@@ -26,8 +26,8 @@
 namespace sofa::component::collision::detection::algorithm
 {
 
-using sofa::component::collision::model::Cube;
-using sofa::component::collision::model::CubeCollisionModel;
+using sofa::component::collision::geometry::Cube;
+using sofa::component::collision::geometry::CubeCollisionModel;
 
 inline EndPointID & ISAPBox::min(int dim){return *(_min[dim]);}
 inline const EndPointID & ISAPBox::min(int dim)const{return *(_min[dim]);}

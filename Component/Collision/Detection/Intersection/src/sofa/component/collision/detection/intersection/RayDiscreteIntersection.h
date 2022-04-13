@@ -25,12 +25,12 @@
 #include <sofa/core/collision/Intersection.h>
 
 #include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
-#include <sofa/component/collision/model/SphereModel.h>
-#include <sofa/component/collision/model/PointModel.h>
-#include <sofa/component/collision/model/LineModel.h>
-#include <sofa/component/collision/model/TriangleModel.h>
-#include <sofa/component/collision/model/CubeModel.h>
-#include <sofa/component/collision/model/RayModel.h>
+#include <sofa/component/collision/geometry/SphereModel.h>
+#include <sofa/component/collision/geometry/PointModel.h>
+#include <sofa/component/collision/geometry/LineModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/collision/geometry/CubeModel.h>
+#include <sofa/component/collision/geometry/RayModel.h>
 
 namespace sofa::component::collision::detection::intersection
 {
@@ -42,11 +42,11 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API RayDiscreteIntersectio
 public:
     RayDiscreteIntersection(DiscreteIntersection* object, bool addSelf=true);
 
-    template<class T> bool testIntersection(model::Ray&, model::TSphere<T>&);
-    bool testIntersection(model::Ray&, model::Triangle&);
+    template<class T> bool testIntersection(collision::geometry::Ray&, collision::geometry::TSphere<T>&);
+    bool testIntersection(collision::geometry::Ray&, collision::geometry::Triangle&);
 
-    template<class T> int computeIntersection(model::Ray&, model::TSphere<T>&, OutputVector*);
-    int computeIntersection(model::Ray&, model::Triangle&, OutputVector*);
+    template<class T> int computeIntersection(collision::geometry::Ray&, collision::geometry::TSphere<T>&, OutputVector*);
+    int computeIntersection(collision::geometry::Ray&, collision::geometry::Triangle&, OutputVector*);
 
 protected:
 

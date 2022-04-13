@@ -22,5 +22,5 @@
 #pragma once
 #include <sofa/config.h>
 
-SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/component/collision/model/TriangleModel.h")
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/component/collision/geometry/TriangleModel.h")
 

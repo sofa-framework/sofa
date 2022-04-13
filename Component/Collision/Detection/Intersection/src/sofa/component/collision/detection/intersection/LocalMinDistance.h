@@ -24,12 +24,12 @@
 
 #include <sofa/component/collision/detection/intersection/BaseProximityIntersection.h>
 
-#include <sofa/component/collision/model/SphereModel.h>
-#include <sofa/component/collision/model/TriangleModel.h>
-#include <sofa/component/collision/model/LineModel.h>
-#include <sofa/component/collision/model/PointModel.h>
-#include <sofa/component/collision/model/CubeModel.h>
-#include <sofa/component/collision/model/RayModel.h>
+#include <sofa/component/collision/geometry/SphereModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/collision/geometry/LineModel.h>
+#include <sofa/component/collision/geometry/PointModel.h>
+#include <sofa/component/collision/geometry/CubeModel.h>
+#include <sofa/component/collision/geometry/RayModel.h>
 
 namespace sofa::component::collision::detection::intersection
 {
@@ -72,39 +72,39 @@ protected:
 public:
     void init() override;
 
-    bool testIntersection(model::Cube& ,model::Cube&) override;
+    bool testIntersection(collision::geometry::Cube& ,collision::geometry::Cube&) override;
 
-    bool testIntersection(model::Point&, model::Point&);
-    bool testIntersection(model::Sphere&, model::Point&);
-    bool testIntersection(model::Sphere&, model::Sphere&) override;
-    bool testIntersection(model::Line&, model::Point&);
-    bool testIntersection(model::Line&, model::Sphere&);
-    bool testIntersection(model::Line&, model::Line&);
-    bool testIntersection(model::Triangle&, model::Point&);
-    bool testIntersection(model::Triangle&, model::Sphere&);
-    bool testIntersection(model::Ray&, model::Sphere&);
-    bool testIntersection(model::Ray&, model::Triangle&);
+    bool testIntersection(collision::geometry::Point&, collision::geometry::Point&);
+    bool testIntersection(collision::geometry::Sphere&, collision::geometry::Point&);
+    bool testIntersection(collision::geometry::Sphere&, collision::geometry::Sphere&) override;
+    bool testIntersection(collision::geometry::Line&, collision::geometry::Point&);
+    bool testIntersection(collision::geometry::Line&, collision::geometry::Sphere&);
+    bool testIntersection(collision::geometry::Line&, collision::geometry::Line&);
+    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Point&);
+    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Sphere&);
+    bool testIntersection(collision::geometry::Ray&, collision::geometry::Sphere&);
+    bool testIntersection(collision::geometry::Ray&, collision::geometry::Triangle&);
 
-    int computeIntersection(model::Cube&, model::Cube&, OutputVector*) override;
-    int computeIntersection(model::Point&, model::Point&, OutputVector*);
-    int computeIntersection(model::Sphere&, model::Point&, OutputVector*);
-    int computeIntersection(model::Sphere&, model::Sphere&, OutputVector*) override;
-    int computeIntersection(model::Line&, model::Point&, OutputVector*);
-    int computeIntersection(model::Line&, model::Sphere&, OutputVector*);
-    int computeIntersection(model::Line&, model::Line&, OutputVector*);
-    int computeIntersection(model::Triangle&, model::Point&, OutputVector*);
-    int computeIntersection(model::Triangle&, model::Sphere&, OutputVector*);
-    int computeIntersection(model::Ray&, model::Sphere&, OutputVector*);
-    int computeIntersection(model::Ray&, model::Triangle&, OutputVector*);
+    int computeIntersection(collision::geometry::Cube&, collision::geometry::Cube&, OutputVector*) override;
+    int computeIntersection(collision::geometry::Point&, collision::geometry::Point&, OutputVector*);
+    int computeIntersection(collision::geometry::Sphere&, collision::geometry::Point&, OutputVector*);
+    int computeIntersection(collision::geometry::Sphere&, collision::geometry::Sphere&, OutputVector*) override;
+    int computeIntersection(collision::geometry::Line&, collision::geometry::Point&, OutputVector*);
+    int computeIntersection(collision::geometry::Line&, collision::geometry::Sphere&, OutputVector*);
+    int computeIntersection(collision::geometry::Line&, collision::geometry::Line&, OutputVector*);
+    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Point&, OutputVector*);
+    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Sphere&, OutputVector*);
+    int computeIntersection(collision::geometry::Ray&, collision::geometry::Sphere&, OutputVector*);
+    int computeIntersection(collision::geometry::Ray&, collision::geometry::Triangle&, OutputVector*);
 
     /// These methods check the validity of a found intersection.
     /// According to the local configuration around the found intersected primitive,
     /// we build a "Region Of Interest" geometric cone.
     /// Pertinent intersections have to belong to this cone, others are not taking into account anymore.
-    bool testValidity(model::Sphere&, const type::Vector3&) const { return true; }
-    bool testValidity(model::Point&, const type::Vector3&) const;
-    bool testValidity(model::Line&, const type::Vector3&) const;
-    bool testValidity(model::Triangle&, const type::Vector3&) const;
+    bool testValidity(collision::geometry::Sphere&, const type::Vector3&) const { return true; }
+    bool testValidity(collision::geometry::Point&, const type::Vector3&) const;
+    bool testValidity(collision::geometry::Line&, const type::Vector3&) const;
+    bool testValidity(collision::geometry::Triangle&, const type::Vector3&) const;
 
 };
 

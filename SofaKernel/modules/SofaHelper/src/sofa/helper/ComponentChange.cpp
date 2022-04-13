@@ -1090,16 +1090,16 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "DiscreteIntersection", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Detection.Intersection") },
     { "MinProximityIntersection", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Detection.Intersection") },
     { "NewProximityIntersection", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Detection.Intersection") },
-    { "CubeCollisionModel", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Model") },
-    { "SphereCollisionModel", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Model") },
-    { "CylinderCollisionModel", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Model") },
+    { "CubeCollisionModel", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Geometry") },
+    { "SphereCollisionModel", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Geometry") },
+    { "CylinderCollisionModel", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Geometry") },
     { "DefaultContactManager", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Response.Contact") },
     { "ContactListener", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Response.Contact") },
 
     // SofaMeshCollision was deprecated in #2813
-    { "PointCollisionModel", CreatableMoved("v22.06", "SofaMeshCollision", "Sofa.Component.Collision.Model") },
-    { "LineCollisionModel", CreatableMoved("v22.06", "SofaMeshCollision", "Sofa.Component.Collision.Model") },
-    { "TriangleCollisionModel", CreatableMoved("v22.06", "SofaMeshCollision", "Sofa.Component.Collision.Model") },
+    { "PointCollisionModel", CreatableMoved("v22.06", "SofaMeshCollision", "Sofa.Component.Collision.Geometry") },
+    { "LineCollisionModel", CreatableMoved("v22.06", "SofaMeshCollision", "Sofa.Component.Collision.Geometry") },
+    { "TriangleCollisionModel", CreatableMoved("v22.06", "SofaMeshCollision", "Sofa.Component.Collision.Geometry") },
 
     // SofaGeneralMeshCollision was deprecated in #2813
     { "DirectSAP", CreatableMoved("v22.06", "SofaGeneralMeshCollision", "Sofa.Component.Collision.Detection.Algorithm") },
@@ -1107,10 +1107,10 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "IncrSAPClassSofaVector", CreatableMoved("v22.06", "SofaGeneralMeshCollision", "Sofa.Component.Collision.Detection.Algorithm") },
     { "RayTraceNarrowPhase", CreatableMoved("v22.06", "SofaGeneralMeshCollision", "Sofa.Component.Collision.Detection.Algorithm") },
     { "RayTraceDetection", CreatableMoved("v22.06", "SofaGeneralMeshCollision", "Sofa.Component.Collision.Detection.Algorithm") },
-    { "TriangleOctreeModel", CreatableMoved("v22.06", "SofaGeneralMeshCollision", "Sofa.Component.Collision.Model") },
+    { "TriangleOctreeModel", CreatableMoved("v22.06", "SofaGeneralMeshCollision", "Sofa.Component.Collision.Geometry") },
 
     // SofaUserInteraction was deprecated in #2813
-    { "RayCollisionModel", CreatableMoved("v22.06", "SofaUserInteraction", "Sofa.Component.Collision.Model") },
+    { "RayCollisionModel", CreatableMoved("v22.06", "SofaUserInteraction", "Sofa.Component.Collision.Geometry") },
 
     // SofaObjectInteraction was deprecated in #2813
     { "PenalityContactForceField", CreatableMoved("v22.06", "SofaObjectInteraction", "Sofa.Component.Collision.Response.Contact") },

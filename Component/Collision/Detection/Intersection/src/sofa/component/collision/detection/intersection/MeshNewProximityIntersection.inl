@@ -120,7 +120,7 @@ inline int MeshNewProximityIntersection::doIntersectionLinePoint(SReal dist2, co
 
 inline int MeshNewProximityIntersection::doIntersectionTrianglePoint2(SReal dist2, int flags, const type::Vector3& p1, const type::Vector3& p2, const type::Vector3& p3, const type::Vector3& /*n*/, const type::Vector3& q, OutputVector* contacts, int id, bool swapElems)
 {
-    using model::TriangleCollisionModel;
+    using collision::geometry::TriangleCollisionModel;
 
     const type::Vector3 AB = p2-p1;
     const type::Vector3 AC = p3-p1;
@@ -224,7 +224,7 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint2(SReal dist
 
 inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2, int flags, const type::Vector3& p1, const type::Vector3& p2, const type::Vector3& p3, const type::Vector3& /*n*/, const type::Vector3& q, OutputVector* contacts, int id, bool swapElems, bool /*useNormal*/)
 {
-    using model::TriangleCollisionModel;
+    using collision::geometry::TriangleCollisionModel;
 
     const type::Vector3 AB = p2-p1;
     const type::Vector3 AC = p3-p1;
@@ -330,7 +330,7 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2
 }
 
 template <class T>
-bool MeshNewProximityIntersection::testIntersection(model::TSphere<T>& e1, model::Point& e2)
+bool MeshNewProximityIntersection::testIntersection(collision::geometry::TSphere<T>& e1, collision::geometry::Point& e2)
 {
     OutputVector contacts;
     const double alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r();
@@ -339,7 +339,7 @@ bool MeshNewProximityIntersection::testIntersection(model::TSphere<T>& e1, model
 }
 
 template<class T>
-int MeshNewProximityIntersection::computeIntersection(model::TSphere<T>& e1, model::Point& e2, OutputVector* contacts)
+int MeshNewProximityIntersection::computeIntersection(collision::geometry::TSphere<T>& e1, collision::geometry::Point& e2, OutputVector* contacts)
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r();
     int n = intersection->doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.p(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex());
@@ -356,7 +356,7 @@ int MeshNewProximityIntersection::computeIntersection(model::TSphere<T>& e1, mod
 }
 
 template <class T>
-bool MeshNewProximityIntersection::testIntersection(model::Line& e1, model::TSphere<T>& e2)
+bool MeshNewProximityIntersection::testIntersection(collision::geometry::Line& e1, collision::geometry::TSphere<T>& e2)
 {
     SOFA_UNUSED(e1);
     SOFA_UNUSED(e2);
@@ -366,7 +366,7 @@ bool MeshNewProximityIntersection::testIntersection(model::Line& e1, model::TSph
 }
 
 template<class T>
-int MeshNewProximityIntersection::computeIntersection(model::Line& e1, model::TSphere<T>& e2, OutputVector* contacts)
+int MeshNewProximityIntersection::computeIntersection(collision::geometry::Line& e1, collision::geometry::TSphere<T>& e2, OutputVector* contacts)
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e2.r();
     int n = doIntersectionLinePoint(alarmDist*alarmDist, e1.p1(),e1.p2(), e2.center(), contacts, e2.getIndex());
@@ -383,7 +383,7 @@ int MeshNewProximityIntersection::computeIntersection(model::Line& e1, model::TS
 }
 
 template <class T>
-bool MeshNewProximityIntersection::testIntersection(model::Triangle& e1, model::TSphere<T>& e2)
+bool MeshNewProximityIntersection::testIntersection(collision::geometry::Triangle& e1, collision::geometry::TSphere<T>& e2)
 {
     SOFA_UNUSED(e1);
     SOFA_UNUSED(e2);
@@ -393,7 +393,7 @@ bool MeshNewProximityIntersection::testIntersection(model::Triangle& e1, model::
 }
 
 template<class T>
-int MeshNewProximityIntersection::computeIntersection(model::Triangle& e1, model::TSphere<T>& e2, OutputVector* contacts)
+int MeshNewProximityIntersection::computeIntersection(collision::geometry::Triangle& e1, collision::geometry::TSphere<T>& e2, OutputVector* contacts)
 {
     int flags = e1.flags();
     const SReal alarmDist = intersection->getAlarmDistance() + e1.getProximity() + e2.getProximity() + e2.r();
@@ -426,21 +426,21 @@ int MeshNewProximityIntersection::computeIntersection(model::Triangle& e1, model
         if (pAB < 0.000001 && pAC < 0.0000001)
         {
             // closest point is A
-            if (!(flags&model::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P1)) return 0; // this corner is not considered
+            if (!(flags&collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P1)) return 0; // this corner is not considered
             alpha = 0.0;
             beta = 0.0;
         }
         else if (pAB < 0.999999 && beta < 0.000001)
         {
             // closest point is on AB
-            if (!(flags&model::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E12)) return 0; // this edge is not considered
+            if (!(flags&collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E12)) return 0; // this edge is not considered
             alpha = pAB;
             beta = 0.0;
         }
         else if (pAC < 0.999999 && alpha < 0.000001)
         {
             // closest point is on AC
-            if (!(flags&model::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E12)) return 0; // this edge is not considered
+            if (!(flags&collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E12)) return 0; // this edge is not considered
             alpha = 0.0;
             beta = pAC;
         }
@@ -452,21 +452,21 @@ int MeshNewProximityIntersection::computeIntersection(model::Triangle& e1, model
             if (pBC < 0.000001)
             {
                 // closest point is B
-                if (!(flags&model::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P2)) return 0; // this edge is not considered
+                if (!(flags&collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P2)) return 0; // this edge is not considered
                 alpha = 1.0;
                 beta = 0.0;
             }
             else if (pBC > 0.999999)
             {
                 // closest point is C
-                if (!(flags&model::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P3)) return 0; // this edge is not considered
+                if (!(flags&collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_P3)) return 0; // this edge is not considered
                 alpha = 0.0;
                 beta = 1.0;
             }
             else
             {
                 // closest point is on BC
-                if (!(flags&model::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E31)) return 0; // this edge is not considered
+                if (!(flags&collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_E31)) return 0; // this edge is not considered
                 alpha = 1.0-pBC;
                 beta = pBC;
             }

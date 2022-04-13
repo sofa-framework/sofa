@@ -28,7 +28,7 @@
 
 namespace sofa::component::collision::detection::algorithm
 {
-using namespace sofa::component::collision::model;
+using namespace sofa::component::collision::geometry;
 
 DirectSAPNarrowPhase::DirectSAPNarrowPhase()
         : d_draw(initData(&d_draw, false, "draw", "enable/disable display of results"))

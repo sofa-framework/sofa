@@ -25,7 +25,7 @@
 
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 
-namespace sofa::component::collision::model
+namespace sofa::component::collision::geometry
 {
     class CubeCollisionModel;
 }
@@ -54,7 +54,7 @@ public:
     void addCollisionPair (const std::pair < core::CollisionModel *,
             core::CollisionModel * >&cmPair) override;
 
-    void findPairsVolume (model::CubeCollisionModel * cm1, model::CubeCollisionModel* cm2);
+    void findPairsVolume (collision::geometry::CubeCollisionModel * cm1, collision::geometry::CubeCollisionModel* cm2);
 
     void draw (const core::visual::VisualParams* vparams) override;
     void setDraw (bool val)

@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/collision/model/PointModel.inl>
+#include <sofa/component/collision/geometry/PointModel.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/model/PointModel.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/geometry/PointModel.inl")

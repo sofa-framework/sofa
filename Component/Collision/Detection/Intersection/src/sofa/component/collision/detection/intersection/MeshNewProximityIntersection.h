@@ -23,9 +23,9 @@
 #include <sofa/component/collision/detection/intersection/config.h>
 
 #include <sofa/component/collision/detection/intersection/NewProximityIntersection.h>
-#include <sofa/component/collision/model/TriangleModel.h>
-#include <sofa/component/collision/model/LineModel.h>
-#include <sofa/component/collision/model/PointModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/collision/geometry/LineModel.h>
+#include <sofa/component/collision/geometry/PointModel.h>
 
 namespace sofa::component::collision::detection::intersection
 {
@@ -37,31 +37,31 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API MeshNewProximityInters
 public:
     MeshNewProximityIntersection(NewProximityIntersection* object, bool addSelf=true);
 
-    bool testIntersection(model::Point&, model::Point&);
-    int computeIntersection(model::Point&, model::Point&, OutputVector*);
-    bool testIntersection(model::Line&, model::Point&);
-    int computeIntersection(model::Line&, model::Point&, OutputVector*);
-    bool testIntersection(model::Line&, model::Line&);
-    int computeIntersection(model::Line&, model::Line&, OutputVector*);
-    bool testIntersection(model::Triangle&, model::Point&);
-    int computeIntersection(model::Triangle&, model::Point&, OutputVector*);
-    bool testIntersection(model::Triangle&, model::Line&);
-    int computeIntersection(model::Triangle&, model::Line&, OutputVector*);
-    bool testIntersection(model::Triangle&, model::Triangle&);
-    int computeIntersection(model::Triangle&, model::Triangle&, OutputVector*);
+    bool testIntersection(collision::geometry::Point&, collision::geometry::Point&);
+    int computeIntersection(collision::geometry::Point&, collision::geometry::Point&, OutputVector*);
+    bool testIntersection(collision::geometry::Line&, collision::geometry::Point&);
+    int computeIntersection(collision::geometry::Line&, collision::geometry::Point&, OutputVector*);
+    bool testIntersection(collision::geometry::Line&, collision::geometry::Line&);
+    int computeIntersection(collision::geometry::Line&, collision::geometry::Line&, OutputVector*);
+    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Point&);
+    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Point&, OutputVector*);
+    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Line&);
+    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Line&, OutputVector*);
+    bool testIntersection(collision::geometry::Triangle&, collision::geometry::Triangle&);
+    int computeIntersection(collision::geometry::Triangle&, collision::geometry::Triangle&, OutputVector*);
 
     template <class T>
-    bool testIntersection(model::TSphere<T>& sph, model::Point& pt);
+    bool testIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Point& pt);
     template <class T> 
-    int computeIntersection(model::TSphere<T>& sph, model::Point& pt, OutputVector*);
+    int computeIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Point& pt, OutputVector*);
     template <class T>
-    bool testIntersection(model::Line&, model::TSphere<T>&);
+    bool testIntersection(collision::geometry::Line&, collision::geometry::TSphere<T>&);
     template <class T> 
-    int computeIntersection(model::Line& line, model::TSphere<T>& sph, OutputVector*);
+    int computeIntersection(collision::geometry::Line& line, collision::geometry::TSphere<T>& sph, OutputVector*);
     template <class T>
-    bool testIntersection(model::Triangle&, model::TSphere<T>&);
+    bool testIntersection(collision::geometry::Triangle&, collision::geometry::TSphere<T>&);
     template <class T> 
-    int computeIntersection(model::Triangle& tri, model::TSphere<T>& sph, OutputVector*);
+    int computeIntersection(collision::geometry::Triangle& tri, collision::geometry::TSphere<T>& sph, OutputVector*);
 
     static inline int doIntersectionLineLine(SReal dist2, const type::Vector3& p1, const type::Vector3& p2, const type::Vector3& q1, const type::Vector3& q2, OutputVector* contacts, int id, const type::Vector3& n=type::Vector3(), bool useNormal=false);
     static inline int doIntersectionLinePoint(SReal dist2, const type::Vector3& p1, const type::Vector3& p2, const type::Vector3& q, OutputVector* contacts, int id, bool swapElems = false);

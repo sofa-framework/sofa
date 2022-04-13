@@ -49,7 +49,7 @@ void BruteForceBroadPhase::reinit()
     }
     else
     {
-        if (!boxModel) boxModel = sofa::core::objectmodel::New<model::CubeCollisionModel>();
+        if (!boxModel) boxModel = sofa::core::objectmodel::New<collision::geometry::CubeCollisionModel>();
         boxModel->resize(1);
         boxModel->setParentOf(0, box.getValue()[0], box.getValue()[1]);
     }

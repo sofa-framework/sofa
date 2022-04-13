@@ -26,7 +26,7 @@
 #include <sofa/helper/Factory.h>
 
 //TODO: use fwd declaration
-#include <sofa/component/collision/model/RayModel.h>
+#include <sofa/component/collision/geometry/RayModel.h>
 
 namespace sofa::component::collision::response::contact
 {
@@ -34,7 +34,7 @@ namespace sofa::component::collision::response::contact
 class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API BaseRayContact : public core::collision::Contact
 {
 public:
-    typedef model::RayCollisionModel CollisionModel1;
+    typedef collision::geometry::RayCollisionModel CollisionModel1;
 
 protected:
     CollisionModel1* model1;
@@ -61,7 +61,7 @@ template<class CM2>
 class RayContact : public BaseRayContact
 {
 public:
-    typedef model::RayCollisionModel CollisionModel1;
+    typedef collision::geometry::RayCollisionModel CollisionModel1;
     typedef CM2 CollisionModel2;
     typedef core::collision::Intersection Intersection;
     typedef core::collision::TDetectionOutputVector<CollisionModel1, CollisionModel2> OutputVector;

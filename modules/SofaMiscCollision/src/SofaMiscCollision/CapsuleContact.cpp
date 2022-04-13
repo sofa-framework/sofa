@@ -32,7 +32,7 @@ using namespace sofa::core::collision;
 namespace sofa::component::collision
 {
 
-using namespace sofa::component::collision::model;
+using namespace sofa::component::collision::geometry;
 
 Creator<Contact::Factory, BarycentricPenalityContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > CapsuleTriangleContactClass("PenalityContactForceField", true);
 Creator<Contact::Factory, BarycentricPenalityContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>> > CapsuleLinePenalityContactClass("PenalityContactForceField", true);

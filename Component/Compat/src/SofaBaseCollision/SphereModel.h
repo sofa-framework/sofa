@@ -21,16 +21,16 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/collision/model/SphereModel.h>
+#include <sofa/component/collision/geometry/SphereModel.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/model/SphereModel.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/geometry/SphereModel.h")
 
 namespace sofa::component::collision
 {
     template<class DataTypes>
-    using TSphere = sofa::component::collision::model::TSphere<DataTypes>;
+    using TSphere = sofa::component::collision::geometry::TSphere<DataTypes>;
     template<class DataTypes>
-    using SphereCollisionModel = sofa::component::collision::model::SphereCollisionModel<DataTypes>;
+    using SphereCollisionModel = sofa::component::collision::geometry::SphereCollisionModel<DataTypes>;
 
     using Sphere = TSphere<sofa::defaulttype::Vec3Types>;
     using RigidSphere = TSphere<sofa::defaulttype::Rigid3Types>;

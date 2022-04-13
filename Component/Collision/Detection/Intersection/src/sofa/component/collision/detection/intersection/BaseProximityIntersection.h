@@ -23,7 +23,7 @@
 #include <sofa/component/collision/detection/intersection/config.h>
 
 #include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
-#include <sofa/component/collision/model/CubeModel.h>
+#include <sofa/component/collision/geometry/CubeModel.h>
 
 namespace sofa::component::collision::detection::intersection
 {
@@ -59,8 +59,8 @@ public:
     void setContactDistance(SReal v) override { contactDistance.setValue(v); }
 
     /// Intersectors for cubes using proximities
-    bool testIntersection(model::Cube& cube1, model::Cube& cube2) override;
-    int computeIntersection(model::Cube& cube1, model::Cube& cube2, OutputVector* contacts) override;
+    bool testIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2) override;
+    int computeIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, OutputVector* contacts) override;
 
 };
 

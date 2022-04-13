@@ -31,7 +31,7 @@ namespace sofa::component::collision::detection::intersection
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
-using namespace sofa::component::collision::model;
+using namespace sofa::component::collision::geometry;
 
 IntersectorCreator<NewProximityIntersection, MeshNewProximityIntersection> MeshNewProximityIntersectors("Mesh");
 

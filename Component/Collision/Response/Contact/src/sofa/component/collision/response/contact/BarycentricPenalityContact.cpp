@@ -29,7 +29,7 @@ namespace sofa::component::collision::response::contact
 {
 
 using namespace core::collision;
-using namespace sofa::component::collision::model;
+using namespace sofa::component::collision::geometry;
 using simulation::Node;
 
 Creator<Contact::Factory, BarycentricPenalityContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > SphereSpherePenalityContactClass("PenalityContactForceField",true);

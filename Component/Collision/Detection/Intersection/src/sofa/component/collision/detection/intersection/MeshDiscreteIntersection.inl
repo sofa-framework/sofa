@@ -29,7 +29,7 @@ namespace sofa::component::collision::detection::intersection
 
 
 template<class T>
-bool MeshDiscreteIntersection::testIntersection(model::TSphere<T>& sph, model::Triangle& triangle)
+bool MeshDiscreteIntersection::testIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Triangle& triangle)
 {
     double EPSILON = 0.00001;
     //Vertices of the triangle:
@@ -80,7 +80,7 @@ bool MeshDiscreteIntersection::testIntersection(model::TSphere<T>& sph, model::T
 }
 
 template<class T>
-int MeshDiscreteIntersection::computeIntersection(model::TSphere<T>& sph, model::Triangle& triangle, OutputVector* contacts)
+int MeshDiscreteIntersection::computeIntersection(collision::geometry::TSphere<T>& sph, collision::geometry::Triangle& triangle, OutputVector* contacts)
 {
     double EPSILON = 0.00001;
     //Vertices of the triangle:

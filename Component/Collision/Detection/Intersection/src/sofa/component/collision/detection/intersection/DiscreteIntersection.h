@@ -24,8 +24,8 @@
 
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/collision/IntersectorFactory.h>
-#include <sofa/component/collision/model/SphereModel.h>
-#include <sofa/component/collision/model/CubeModel.h>
+#include <sofa/component/collision/geometry/SphereModel.h>
+#include <sofa/component/collision/geometry/CubeModel.h>
 
 namespace sofa::component::collision::detection::intersection
 {
@@ -47,16 +47,16 @@ public:
 
     //Intersectors
     // Cube
-    virtual bool testIntersection(model::Cube& cube1, model::Cube& cube2);
-    virtual int computeIntersection(model::Cube& cube1, model::Cube& cube2, OutputVector* contacts);
+    virtual bool testIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2);
+    virtual int computeIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, OutputVector* contacts);
 
     //Sphere
-    virtual bool testIntersection(model::Sphere& sph1, model::Sphere& sph2);
-    virtual int computeIntersection(model::Sphere& sph1, model::Sphere& sph2, OutputVector* contacts);
-    virtual bool testIntersection(model::RigidSphere& sph1, model::RigidSphere& sph2);
-    virtual int computeIntersection(model::RigidSphere& sph1, model::RigidSphere& sph2, OutputVector* contacts);
-    virtual bool testIntersection(model::Sphere& sph1, model::RigidSphere& sph2);
-    virtual int computeIntersection(model::Sphere& sph1, model::RigidSphere& sph2, OutputVector* contacts);
+    virtual bool testIntersection(collision::geometry::Sphere& sph1, collision::geometry::Sphere& sph2);
+    virtual int computeIntersection(collision::geometry::Sphere& sph1, collision::geometry::Sphere& sph2, OutputVector* contacts);
+    virtual bool testIntersection(collision::geometry::RigidSphere& sph1, collision::geometry::RigidSphere& sph2);
+    virtual int computeIntersection(collision::geometry::RigidSphere& sph1, collision::geometry::RigidSphere& sph2, OutputVector* contacts);
+    virtual bool testIntersection(collision::geometry::Sphere& sph1, collision::geometry::RigidSphere& sph2);
+    virtual int computeIntersection(collision::geometry::Sphere& sph1, collision::geometry::RigidSphere& sph2, OutputVector* contacts);
 
 protected:
 

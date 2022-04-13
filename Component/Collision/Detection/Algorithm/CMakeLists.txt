@@ -36,11 +36,11 @@ set(SOURCE_FILES
 )
 
 sofa_find_package(Sofa.SimulationCore REQUIRED)
-sofa_find_package(Sofa.Component.Collision.Model REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Geometry REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${WRAPPER_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.SimulationCore)
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Model)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Geometry)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

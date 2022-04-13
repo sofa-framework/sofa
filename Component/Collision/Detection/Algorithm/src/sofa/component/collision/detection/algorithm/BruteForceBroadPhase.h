@@ -23,7 +23,7 @@
 
 #include <sofa/component/collision/detection/algorithm/config.h>
 #include <sofa/core/collision/BroadPhaseDetection.h>
-#include <sofa/component/collision/model/CubeModel.h>
+#include <sofa/component/collision/geometry/CubeModel.h>
 
 namespace sofa::component::collision::detection::algorithm
 {
@@ -81,7 +81,7 @@ protected:
     /// Return true if the provided CollisionModel intersect boxModel, false otherwise
     bool intersectWithBoxModel(core::CollisionModel *cm) const;
 
-    model::CubeCollisionModel::SPtr boxModel;
+    collision::geometry::CubeCollisionModel::SPtr boxModel;
 
     /// A data structure to store a pair of collision models
     /// They both describe the same object

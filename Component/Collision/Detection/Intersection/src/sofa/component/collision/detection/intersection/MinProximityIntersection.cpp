@@ -36,7 +36,7 @@ namespace sofa::component::collision::detection::intersection
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
-using namespace sofa::component::collision::model;
+using namespace sofa::component::collision::geometry;
 using namespace helper;
 
 int MinProximityIntersectionClass = core::RegisterObject("A set of methods to compute if two primitives are close enough to consider they collide")

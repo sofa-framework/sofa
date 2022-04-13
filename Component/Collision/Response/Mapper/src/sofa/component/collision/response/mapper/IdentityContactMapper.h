@@ -26,8 +26,8 @@
 #include <sofa/component/mapping/linear/IdentityMapping.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/component/collision/response/mapper/BaseContactMapper.h>
-#include <sofa/component/collision/model/SphereModel.h>
-#include <sofa/component/collision/model/PointModel.h>
+#include <sofa/component/collision/geometry/SphereModel.h>
+#include <sofa/component/collision/geometry/PointModel.h>
 
 namespace sofa::component::collision::response::mapper
 {
@@ -160,14 +160,14 @@ public:
 
 /// Mapper for PointModel
 template<class DataTypes>
-class ContactMapper<model::PointCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> : public IdentityContactMapper<model::PointCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes>
+class ContactMapper<collision::geometry::PointCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> : public IdentityContactMapper<collision::geometry::PointCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes>
 {
 public:
 };
 
 /// Mapper for SphereModel
 template<class DataTypes>
-class ContactMapper<model::SphereCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> : public IdentityContactMapper<model::SphereCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes>
+class ContactMapper<collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes> : public IdentityContactMapper<collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>, DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -176,15 +176,15 @@ public:
 
     Index addPoint(const Coord& /*P*/, Index index, Real& r)
     {
-        model::Sphere e(this->model, index);
+        collision::geometry::Sphere e(this->model, index);
         r = e.r();
         return index;
     }
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_CPP)
-extern template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper<model::SphereCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
-extern template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper<model::PointCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper<collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper<collision::geometry::PointCollisionModel<sofa::defaulttype::Vec3Types>, sofa::defaulttype::Vec3Types>;
 #endif
 
 } //namespace sofa::component::collision::response::mapper

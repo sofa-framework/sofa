@@ -21,16 +21,16 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/collision/model/CylinderModel.h>
+#include <sofa/component/collision/geometry/CylinderModel.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/model/CylinderModel.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/geometry/CylinderModel.h")
 
 namespace sofa::component::collision
 {
     template<class DataTypes>
-    using TCylinder = sofa::component::collision::model::TCylinder<DataTypes>;
+    using TCylinder = sofa::component::collision::geometry::TCylinder<DataTypes>;
     template<class DataTypes>
-    using CylinderCollisionModel = sofa::component::collision::model::CylinderCollisionModel<DataTypes>;
+    using CylinderCollisionModel = sofa::component::collision::geometry::CylinderCollisionModel<DataTypes>;
 
 
 } // namespace sofa::component::collision

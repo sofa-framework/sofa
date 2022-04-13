@@ -29,7 +29,7 @@ namespace sofa::component::collision::response::contact
 
 using namespace defaulttype;
 using namespace sofa::helper;
-using namespace sofa::component::collision::model;
+using namespace sofa::component::collision::geometry;
 using simulation::Node;
 
 Creator<sofa::core::collision::Contact::Factory, FrictionContact<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > PointPointFrictionContactClass("FrictionContactConstraint",true);

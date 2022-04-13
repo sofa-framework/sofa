@@ -23,12 +23,12 @@
 #include <sofa/component/collision/detection/intersection/config.h>
 
 #include <sofa/component/collision/detection/intersection/NewProximityIntersection.h>
-#include <sofa/component/collision/model/SphereModel.h>
-#include <sofa/component/collision/model/TriangleModel.h>
-#include <sofa/component/collision/model/LineModel.h>
-#include <sofa/component/collision/model/PointModel.h>
-#include <sofa/component/collision/model/CubeModel.h>
-#include <sofa/component/collision/model/RayModel.h>
+#include <sofa/component/collision/geometry/SphereModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/collision/geometry/LineModel.h>
+#include <sofa/component/collision/geometry/PointModel.h>
+#include <sofa/component/collision/geometry/CubeModel.h>
+#include <sofa/component/collision/geometry/RayModel.h>
 
 namespace sofa::component::collision::detection::intersection
 {
@@ -40,12 +40,12 @@ class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API RayNewProximityInterse
 public:
     RayNewProximityIntersection(NewProximityIntersection* object, bool addSelf=true);
 
-	bool testIntersection(model::Ray & t1, model::Triangle& t2);
-    int computeIntersection(model::Ray& t1, model::Triangle& t2, OutputVector*);
+	bool testIntersection(collision::geometry::Ray & t1, collision::geometry::Triangle& t2);
+    int computeIntersection(collision::geometry::Ray& t1, collision::geometry::Triangle& t2, OutputVector*);
 
     // why rigidsphere has a different collision detection compared to RayDiscreteIntersection?
-    bool testIntersection(model::Ray& rRay, model::RigidSphere& rSphere);
-    int computeIntersection(model::Ray& rRay, model::RigidSphere& rSphere, OutputVector*);
+    bool testIntersection(collision::geometry::Ray& rRay, collision::geometry::RigidSphere& rSphere);
+    int computeIntersection(collision::geometry::Ray& rRay, collision::geometry::RigidSphere& rSphere, OutputVector*);
 
 
 protected:

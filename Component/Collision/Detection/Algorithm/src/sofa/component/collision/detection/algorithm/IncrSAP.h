@@ -31,11 +31,11 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/component/collision/detection/algorithm/EndPoint.h>
 #include <sofa/component/collision/detection/algorithm/CollisionPM.h>
-#include <sofa/component/collision/model/CubeModel.h>
-#include <sofa/component/collision/model/TriangleModel.h>
-#include <sofa/component/collision/model/LineModel.h>
-#include <sofa/component/collision/model/PointModel.h>
-#include <sofa/component/collision/model/SphereModel.h>
+#include <sofa/component/collision/geometry/CubeModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/component/collision/geometry/LineModel.h>
+#include <sofa/component/collision/geometry/PointModel.h>
+#include <sofa/component/collision/geometry/SphereModel.h>
 
 #include <vector>
 #include <set>
@@ -58,7 +58,7 @@ class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API ISAPBox{
 public:
     ISAPBox(){}
 
-    ISAPBox(model::Cube c) : cube(c){}
+    ISAPBox(collision::geometry::Cube c) : cube(c){}
 
     /**
      * Returns true if this overlaps other along the dimension axis.
@@ -138,7 +138,7 @@ public:
     /// It checks only the field data.
     bool endPointsAreAlright(int ID);
 
-    model::Cube cube;
+    collision::geometry::Cube cube;
     EndPointID * _min[3];
     EndPointID * _max[3];
 
@@ -213,7 +213,7 @@ private:
 
     Data< type::fixed_array<type::Vector3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 
-    model::CubeCollisionModel::SPtr boxModel;
+    collision::geometry::CubeCollisionModel::SPtr boxModel;
 
     std::vector<ISAPBox> _boxes;
     EndPointList _end_points[3];

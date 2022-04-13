@@ -4,11 +4,11 @@
 @PACKAGE_INIT@
 get_property(@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE SET)
 if(NOT @PROJECT_NAME@_SENT_DEPRECATION_MESSAGE)
-    message(WARNING "@PROJECT_NAME@ module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Collision.Model, Sofa.Component.Collision.Detection.Algorithm and Sofa.Component.Collision.Detection.Intersection instead.")
+    message(WARNING "@PROJECT_NAME@ module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Collision.Geometry, Sofa.Component.Collision.Detection.Algorithm and Sofa.Component.Collision.Detection.Intersection instead.")
 endif()
 set_property(GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE TRUE)
 
-find_package(Sofa.Component.Collision.Model QUIET REQUIRED)
+find_package(Sofa.Component.Collision.Geometry QUIET REQUIRED)
 find_package(Sofa.Component.Collision.Detection.Algorithm QUIET REQUIRED)
 find_package(Sofa.Component.Collision.Detection.Intersection QUIET REQUIRED)
 

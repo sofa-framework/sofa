@@ -24,7 +24,7 @@
 
 #include <sofa/component/collision/detection/intersection/BaseProximityIntersection.h>
 
-#include <sofa/component/collision/model/CubeModel.h>
+#include <sofa/component/collision/geometry/CubeModel.h>
 
 namespace sofa::component::collision::detection::intersection
 {
@@ -66,8 +66,8 @@ public:
     doIntersectionPointPoint(SReal dist2, const type::Vector3& p, const type::Vector3& q,
                              OutputVector* contacts, int id);
 
-    bool testIntersection(model::Cube& cube1, model::Cube& cube2) override;
-    int computeIntersection(model::Cube& cube1, model::Cube& cube2, OutputVector* contacts) override;
+    bool testIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2) override;
+    int computeIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, OutputVector* contacts) override;
 
     template<typename SphereType1, typename SphereType2>
     bool testIntersection(SphereType1& sph1, SphereType2& sph2);

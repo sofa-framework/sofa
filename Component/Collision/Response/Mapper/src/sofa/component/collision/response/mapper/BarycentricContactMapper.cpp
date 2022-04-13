@@ -27,7 +27,7 @@ namespace sofa::component::collision::response::mapper
 {
 
 using namespace defaulttype;
-using namespace sofa::component::collision::model;
+using namespace sofa::component::collision::geometry;
 
 ContactMapperCreator< ContactMapper<LineCollisionModel<sofa::defaulttype::Vec3Types>> > LineContactMapperClass("PenalityContactForceField",true);
 ContactMapperCreator< ContactMapper<TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > TriangleContactMapperClass("PenalityContactForceField",true);

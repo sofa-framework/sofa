@@ -69,8 +69,8 @@ public:
 
     bool getUseSurfaceNormals() const;
 
-    bool testIntersection(model::Cube& cube1, model::Cube& cube2) override;
-    int computeIntersection(model::Cube& cube1, model::Cube& cube2, OutputVector* contacts) override;
+    bool testIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2) override;
+    int computeIntersection(collision::geometry::Cube& cube1, collision::geometry::Cube& cube2, OutputVector* contacts) override;
 
     template<typename SphereType1, typename SphereType2>
     bool testIntersection(SphereType1& sph1, SphereType2& sph2)

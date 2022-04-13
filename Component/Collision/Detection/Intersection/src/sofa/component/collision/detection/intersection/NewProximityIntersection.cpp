@@ -35,7 +35,7 @@ namespace sofa::component::collision::detection::intersection
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
-using namespace sofa::component::collision::model;
+using namespace sofa::component::collision::geometry;
 using namespace helper;
 
 int NewProximityIntersectionClass = core::RegisterObject("Optimized Proximity Intersection based on Triangle-Triangle tests, ignoring Edge-Edge cases")

@@ -3,7 +3,7 @@ project(Sofa.Component.Collision LANGUAGES CXX)
 
 set(SOFACOMPONENTCOLLISION_SOURCE_DIR "src/sofa/component/collision")
 
-set(SOFACOMPONENTCOLLISION_DIRS Model Detection Response)
+set(SOFACOMPONENTCOLLISION_DIRS Geometry Detection Response)
 set(SOFACOMPONENTCOLLISION_TARGETS)
 foreach(collision_dir ${SOFACOMPONENTCOLLISION_DIRS})
 	sofang_add_component_subdirectory(${collision_dir} ${PROJECT_NAME}.${collision_dir})

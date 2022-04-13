@@ -37,7 +37,7 @@ namespace collision
 using namespace defaulttype;
 using simulation::Node;
 using namespace sofa::core::collision;
-using namespace sofa::component::collision::model;
+using namespace sofa::component::collision::geometry;
 
 Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronCollisionModel, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronSpherePenalityContactClass("PenalityContactForceField",true);
 Creator<Contact::Factory, BarycentricPenalityContact<TetrahedronCollisionModel, PointCollisionModel<sofa::defaulttype::Vec3Types>> > TetrahedronPointPenalityContactClass("PenalityContactForceField",true);

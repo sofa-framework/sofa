@@ -21,6 +21,6 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/collision/model/Ray.h>
+#include <sofa/component/collision/geometry/Ray.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/model/Ray.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/geometry/Ray.h")

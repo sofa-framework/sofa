@@ -20,6 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/collision/model/config.h>
+#include <sofa/component/collision/geometry/config.h>
 
-SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/component/collision/model/SphereModel.h")
+SOFA_DISABLED_HEADER("v21.06", "v21.12", "sofa/component/collision/geometry/SphereModel.h")

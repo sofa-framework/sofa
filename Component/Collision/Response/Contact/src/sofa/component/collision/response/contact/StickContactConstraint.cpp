@@ -28,7 +28,7 @@ using namespace defaulttype;
 using namespace sofa::helper;
 using simulation::Node;
 using namespace sofa::core::collision;
-using namespace sofa::component::collision::model;
+using namespace sofa::component::collision::geometry;
 
 Creator<Contact::Factory, StickContactConstraint<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > PointPointStickContactConstraintClass("StickContactConstraint",true);
 Creator<Contact::Factory, StickContactConstraint<LineCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > LineSphereStickContactConstraintClass("StickContactConstraint",true);

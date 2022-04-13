@@ -27,14 +27,14 @@ set(SOURCE_FILES
 )
 
 sofa_find_package(Sofa.SimulationCore REQUIRED)
-sofa_find_package(Sofa.Component.Collision.Model REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Geometry REQUIRED)
 sofa_find_package(Sofa.Component.Mapping.Linear REQUIRED)
 sofa_find_package(Sofa.Component.Mapping.NonLinear REQUIRED)
 sofa_find_package(Sofa.Component.StateContainer REQUIRED) # BarycentricMapper needs MechanicalObject
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.SimulationCore)
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Model)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Geometry)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Mapping.Linear)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Mapping.NonLinear)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.StateContainer)

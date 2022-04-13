@@ -23,7 +23,7 @@
 
 #include <sofa/component/collision/detection/algorithm/config.h>
 
-#include <sofa/component/collision/model/CubeModel.h>
+#include <sofa/component/collision/geometry/CubeModel.h>
 
 namespace sofa::component::collision::detection::algorithm
 {
@@ -40,7 +40,7 @@ class EndPoint;
 class SOFA_COMPONENT_COLLISION_DETECTION_ALGORITHM_API DSAPBox
 {
 public:
-    explicit DSAPBox(const model::Cube &c, EndPoint *mi = nullptr, EndPoint *ma = nullptr) : cube(c), min(mi), max(ma)
+    explicit DSAPBox(const collision::geometry::Cube &c, EndPoint *mi = nullptr, EndPoint *ma = nullptr) : cube(c), min(mi), max(ma)
     {}
 
     void update(int axis, double alarmDist);
@@ -54,7 +54,7 @@ public:
 
     void show() const;
 
-    model::Cube cube;
+    collision::geometry::Cube cube;
     EndPoint *min{nullptr};
     EndPoint *max{nullptr};
 };

@@ -21,15 +21,15 @@
 ******************************************************************************/
 #include <sofa/component/collision/response/contact/RayContact.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/model/RayModel.h>
-#include <sofa/component/collision/model/SphereModel.h>
-#include <sofa/component/collision/model/TriangleModel.h>
+#include <sofa/component/collision/geometry/RayModel.h>
+#include <sofa/component/collision/geometry/SphereModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
 
 namespace sofa::component::collision::response::contact
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::component::collision::model;
+using namespace sofa::component::collision::geometry;
 
 Creator<core::collision::Contact::Factory, RayContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>> > RaySphereContactClass("RayContact",true);
 Creator<core::collision::Contact::Factory, RayContact<RigidSphereModel> > RayRigidSphereContactClass("RayContact",true);

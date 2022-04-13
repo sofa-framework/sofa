@@ -21,16 +21,16 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/collision/model/PointModel.h>
+#include <sofa/component/collision/geometry/PointModel.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/model/PointModel.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/geometry/PointModel.h")
 
 namespace sofa::component::collision
 {
     template<class DataTypes>
-    using TPoint = sofa::component::collision::model::TPoint<DataTypes>;
+    using TPoint = sofa::component::collision::geometry::TPoint<DataTypes>;
     template<class DataTypes>
-    using PointCollisionModel = sofa::component::collision::model::PointCollisionModel<DataTypes>;
+    using PointCollisionModel = sofa::component::collision::geometry::PointCollisionModel<DataTypes>;
 
     using Point = TPoint<sofa::defaulttype::Vec3Types>;
 

@@ -21,13 +21,13 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/collision/model/CubeModel.h>
+#include <sofa/component/collision/geometry/CubeModel.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/model/CubeModel.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/geometry/CubeModel.h")
 
 namespace sofa::component::collision
 {
-    using Cube = sofa::component::collision::model::Cube;
-    using CubeCollisionModel = sofa::component::collision::model::CubeCollisionModel;
+    using Cube = sofa::component::collision::geometry::Cube;
+    using CubeCollisionModel = sofa::component::collision::geometry::CubeCollisionModel;
 
 } // namespace sofa::component::collision

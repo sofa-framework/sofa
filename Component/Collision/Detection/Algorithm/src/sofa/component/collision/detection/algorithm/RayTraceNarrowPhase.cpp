@@ -23,13 +23,13 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/model/CubeModel.h>
-#include <sofa/component/collision/model/TriangleOctreeModel.h>
-#include <sofa/component/collision/model/TriangleModel.h>
+#include <sofa/component/collision/geometry/CubeModel.h>
+#include <sofa/component/collision/geometry/TriangleOctreeModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
 
 namespace sofa::component::collision::detection::algorithm
 {
-using namespace sofa::component::collision::model;
+using namespace sofa::component::collision::geometry;
 
 using sofa::core::collision::TDetectionOutputVector;
 using sofa::helper::TriangleOctree;

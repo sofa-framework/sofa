@@ -24,7 +24,7 @@
 namespace sofa::component::collision::detection::intersection
 {
 
-using namespace sofa::component::collision::model;
+using namespace sofa::component::collision::geometry;
 
 BaseProximityIntersection::BaseProximityIntersection()
     : alarmDistance(initData(&alarmDistance, (SReal)1.0, "alarmDistance","Proximity detection distance"))
