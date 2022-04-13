@@ -16,7 +16,7 @@ sofa_find_package(SofaSimpleFem REQUIRED)
 
 add_definitions("-DSOFASIMPLEFEM_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaSimpleFem SofaBase SofaEngine SofaMeshCollision SofaImplicitOdeSolver SceneCreator)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaSimpleFem SofaBase SofaEngine SofaMeshCollision SofaImplicitOdeSolver SceneCreator SofaGeneralSimpleFem SofaMiscFem)
 
 # allow use ForceFieldTestCreation to other tests
 target_include_directories(${PROJECT_NAME} PUBLIC ..)
