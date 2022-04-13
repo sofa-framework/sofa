@@ -29,12 +29,12 @@ using sofa::testing::BaseSimulationTest;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 
-#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
-#include <SofaGeneralImplicitOdeSolver/VariationalSymplecticSolver.h>
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
+#include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
+#include <sofa/component/odesolver/backward/VariationalSymplecticSolver.h>
+#include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
-#include <SofaBaseMechanics/UniformMass.h>
-#include <SofaExporter/WriteState.h>
+#include <sofa/component/mass/UniformMass.h>
+#include <sofa/component/playback//WriteState.h>
 #include <sofa/simulation/Node.h>
 
 namespace sofa {
@@ -55,7 +55,7 @@ namespace sofa {
         typedef typename DataTypes::VecDeriv VecDeriv;
         typedef statecontainer::MechanicalObject<DataTypes> MechanicalObject;
         typedef component::mass::UniformMass<DataTypes> UniformMass;
-        typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
+        typedef component::linearsolver::iterative::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
         /// Root of the scene graph
         simulation::Node::SPtr root=nullptr;
@@ -87,12 +87,12 @@ namespace sofa {
 
             if(symplectic)
             {
-                sofa::component::odesolver::VariationalSymplecticSolver::SPtr variationalSolver = New<sofa::component::odesolver::VariationalSymplecticSolver>();
+                sofa::component::odesolver::backward::VariationalSymplecticSolver::SPtr variationalSolver = New<sofa::component::odesolver::backward::VariationalSymplecticSolver>();
                 root->addObject(variationalSolver);
             }
             else
             {
-                sofa::component::odesolver::EulerImplicitSolver::SPtr eulerSolver = New<sofa::component::odesolver::EulerImplicitSolver>();
+                sofa::component::odesolver::backward::EulerImplicitSolver::SPtr eulerSolver = New<sofa::component::odesolver::backward::EulerImplicitSolver>();
                 root->addObject(eulerSolver);
             }
             CGLinearSolver::SPtr cgLinearSolver = New<CGLinearSolver> ();
@@ -110,23 +110,23 @@ namespace sofa {
             mass->setTotalMass(1.0);
             childNode->addObject(mass);
 
-            sofa::component::misc::WriteState::SPtr writeState =New<sofa::component::misc::WriteState>();
+            sofa::component::playback::WriteState::SPtr writeState =New<sofa::component::playback::WriteState>();
             type::vector<double> time;
             time.resize(1);
             time[0] = 0.0;
             writeState->d_period.setValue(timeStep);
 
-            std::cout<<"SOFAEXPORTER_BUILD_DIR = "<<SOFAEXPORTER_BUILD_DIR<<std::endl;
+            std::cout<<"SOFA_COMPONENT_PLAYBACK_TEST_BUILD_DIR = "<<SOFA_COMPONENT_PLAYBACK_TEST_BUILD_DIR<<std::endl;
 
             if(symplectic)
             {
-                writeState->d_filename.setValue(std::string(SOFAEXPORTER_BUILD_DIR)+"particleGravityX.data");
+                writeState->d_filename.setValue(std::string(SOFA_COMPONENT_PLAYBACK_TEST_BUILD_DIR)+"particleGravityX.data");
                 writeState->d_writeX.setValue(true);
                 writeState->d_writeV.setValue(false);
             }
             else
             {
-                writeState->d_filename.setValue(std::string(SOFAEXPORTER_BUILD_DIR)+"particleGravityV.data");
+                writeState->d_filename.setValue(std::string(SOFA_COMPONENT_PLAYBACK_TEST_BUILD_DIR)+"particleGravityV.data");
                 writeState->d_writeX.setValue(false);
                 writeState->d_writeV.setValue(true);
             }
@@ -183,13 +183,13 @@ namespace sofa {
             std::string createdFile, referenceFile;
             if(symplectic)
             {
-                createdFile = std::string(SOFAEXPORTER_BUILD_DIR)+"particleGravityX.data";
-                referenceFile = std::string(SOFAEXPORTER_TESTFILES_DIR)+"particleGravityX-reference.data";
+                createdFile = std::string(SOFA_COMPONENT_PLAYBACK_TEST_BUILD_DIR)+"particleGravityX.data";
+                referenceFile = std::string(SOFA_COMPONENT_PLAYBACK_TEST_FILES_DIR)+"particleGravityX-reference.data";
             }
             else
             {
-                createdFile = std::string(SOFAEXPORTER_BUILD_DIR)+"particleGravityV.data";
-                referenceFile = std::string(SOFAEXPORTER_TESTFILES_DIR)+"particleGravityV-reference.data";
+                createdFile = std::string(SOFA_COMPONENT_PLAYBACK_TEST_BUILD_DIR)+"particleGravityV.data";
+                referenceFile = std::string(SOFA_COMPONENT_PLAYBACK_TEST_FILES_DIR)+"particleGravityV-reference.data";
             }
 
             std::ifstream f1(createdFile, std::ifstream::binary|std::ifstream::ate);

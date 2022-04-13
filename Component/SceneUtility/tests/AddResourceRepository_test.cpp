@@ -29,8 +29,9 @@ using sofa::testing::BaseTest;
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 
-#include <SofaBaseUtils/AddResourceRepository.h>
-#include <SofaBase/initSofaBase.h>
+#include <sofa/component/sceneutility/AddResourceRepository.h>
+
+#include <SofaSimulationGraph/SimpleApi.h>
 
 namespace sofa
 {
@@ -45,9 +46,9 @@ struct AddResourceRepository_test : public BaseTest
 
     void SetUp() override
     {
-        sofa::component::initSofaBase();
+        sofa::simpleapi::importPlugin("Sofa.Component.SceneUtility");
 
-        m_testRepoDir = std::string(SOFABASEUTILS_TEST_RESOURCES_DIR) + std::string("/repo");
+        m_testRepoDir = std::string(SOFA_COMPONENT_SCENEUTILITY_TEST_RESOURCES_DIR) + std::string("/repo");
     }
 
     void buildScene(const std::string& repoType, const std::string& repoPath)

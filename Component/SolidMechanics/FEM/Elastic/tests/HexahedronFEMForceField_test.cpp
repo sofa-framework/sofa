@@ -52,7 +52,7 @@ struct HexahedronFEMForceField_test : public ForceField_test<_HexahedronFEMForce
     VecCoord x;
     VecDeriv v,f;
 
-    HexahedronFEMForceField_test():Inherited::ForceField_test(std::string(SOFASIMPLEFEM_TEST_SCENES_DIR) + "/" + "HexahedronFEMForceField.scn")
+    HexahedronFEMForceField_test():Inherited::ForceField_test(std::string(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_TEST_SCENES_DIR) + "/" + "HexahedronFEMForceField.scn")
     {
         //Position
         x.resize(8);

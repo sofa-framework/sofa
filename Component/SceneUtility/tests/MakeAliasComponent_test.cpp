@@ -27,8 +27,6 @@ using std::string ;
 #include <sofa/testing/BaseTest.h>
 #include <sofa/testing/TestMessageHandler.h>
 
-#include <SofaBase/initSofaBase.h>
-
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
 
@@ -56,6 +54,8 @@ using sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 
 using sofa::core::objectmodel::ComponentState ;
 
+#include <SofaSimulationGraph/SimpleApi.h>
+
 //TODO(dmarchal): handle properly the memory cycle of the simulation objects.
 // now it is soo ugly...
 
@@ -72,7 +72,7 @@ bool inited = doInit();
 
 void perTestInit()
 {
-    sofa::component::initSofaBase();
+    sofa::simpleapi::importPlugin("Sofa.Component.SceneUtility");
 
     if(theSimulation==nullptr){
         theSimulation = new DAGSimulation();

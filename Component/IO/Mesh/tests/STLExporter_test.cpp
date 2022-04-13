@@ -47,8 +47,6 @@ using sofa::core::execparams::defaultInstance;
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem ;
 
-#include <SofaBaseUtils/initSofaBaseUtils.h>
-
 #include <filesystem>
 namespace {
 std::string tempdir = std::filesystem::temp_directory_path().string() ;
@@ -61,8 +59,7 @@ public:
 
     void SetUp() override
     {
-        sofa::component::initSofaBaseUtils(); // needed to instanciate RequiredPlugin
-        sofa::simpleapi::importPlugin("SofaOpenglVisual");
+        sofa::simpleapi::importPlugin("Sofa.Component.Visual");
     }
 
     void TearDown() override
@@ -87,7 +84,7 @@ public:
                 "   <RequiredPlugin name='SofaLoader' />                           \n"
                 "   <MechanicalObject position='0 1 2 3 4 5 6 7 8 9'/>             \n"
                 "   <MeshOBJLoader name='loader' filename='mesh/liver-smooth.obj'/> \n"
-                "   <OglModel src='@loader'/>                                      \n"
+                "   <VisualModel src='@loader'/>                                      \n"
                 "   <STLExporter name='exporter1' printLog='true' filename='"<< filename << "' exportAtBegin='true' /> \n"
                 "</Node>                                                           \n" ;
 
@@ -120,7 +117,7 @@ public:
                 "   <DefaultAnimationLoop/>                                        \n"
                 "   <MechanicalObject position='0 1 2 3 4 5 6 7 8 9'/>             \n"
                 "   <MeshOBJLoader name='loader' filename='mesh/liver-smooth.obj'/> \n"
-                "   <OglModel src='@loader'/>                                      \n"
+                "   <VisualModel src='@loader'/>                                      \n"
                 "   <STLExporter name='exporterA' printLog='true' filename='"<< filename << "' exportEveryNumberOfSteps='5' /> \n"
                 "</Node>                                                           \n" ;
 

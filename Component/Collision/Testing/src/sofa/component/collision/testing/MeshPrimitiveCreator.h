@@ -21,10 +21,10 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaBaseTopology/MeshTopology.h>
+#include <sofa/component/topology/container/constant/MeshTopology.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 
-#include <SofaMeshCollision/TriangleModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
 
 #include<sofa/simulation/Node.h>
 using sofa::simulation::Node;
@@ -44,7 +44,7 @@ using namespace sofa::defaulttype;
 namespace sofa::collision_test
 {
 
-inline sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr makeTri(const Vec3& p0, const Vec3& p1, const Vec3& p2, const Vec3& v, sofa::simulation::Node::SPtr& father)
+inline sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr makeTri(const Vec3& p0, const Vec3& p1, const Vec3& p2, const Vec3& v, sofa::simulation::Node::SPtr& father)
 {
     //creating node containing TriangleModel
     sofa::simulation::Node::SPtr tri = father->createChild("tri");
@@ -77,7 +77,7 @@ inline sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec
     tri->addObject(triDOF);
 
     //creating a topology necessary for capsule
-    sofa::component::topology::MeshTopology::SPtr bmt = New<sofa::component::topology::MeshTopology>();
+    sofa::component::topology::container::constant::MeshTopology::SPtr bmt = New<sofa::component::topology::container::constant::MeshTopology>();
     bmt->addTriangle(0, 1, 2);
     bmt->addEdge(0, 1);
     bmt->addEdge(1, 2);
@@ -85,7 +85,7 @@ inline sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec
     tri->addObject(bmt);
 
     //creating an OBBCollisionModel<sofa::defaulttype::Rigid3Types> and attaching it to the same node than obbDOF
-    sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr triCollisionModel = New<sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>>();
+    sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr triCollisionModel = New<sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>>();
     tri->addObject(triCollisionModel);
 
 

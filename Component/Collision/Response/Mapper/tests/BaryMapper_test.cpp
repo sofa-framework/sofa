@@ -21,24 +21,24 @@
 ******************************************************************************/
 
 #include <SofaSimulationGraph/DAGNode.h>
-#include <SofaMeshCollision/BarycentricContactMapper.h>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperMeshTopology.h>
-#include <SofaBaseTopology/PointSetTopologyContainer.h>
-#include <SofaBaseTopology/MeshTopology.h>
+#include <sofa/component/collision/response/mapper/BarycentricContactMapper.h>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperMeshTopology.h>
+#include <sofa/component/topology/container/dynamic/PointSetTopologyContainer.h>
+#include <sofa/component/topology/container/constant/MeshTopology.h>
 
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
 
-#include "MeshPrimitiveCreator.h"
+#include <sofa/component/collision/testing/MeshPrimitiveCreator.h>
 
 namespace sofa {
 
 using type::Vector3;
 using core::objectmodel::New;
 
-typedef sofa::component::topology::MeshTopology MeshTopology;
+typedef sofa::component::topology::container::constant::MeshTopology MeshTopology;
 typedef sofa::simulation::Node::SPtr NodePtr;
-typedef sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types> TriangleModel;
+typedef sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types> TriangleModel;
 typedef sofa::defaulttype::Vec3Types DataTypes;
 typedef DataTypes::VecCoord VecCoord;
 
@@ -87,7 +87,7 @@ bool BaryMapperTest::test_inside(SReal alpha,SReal beta){
     sofa::simulation::Node::SPtr father = New<sofa::simulation::graph::DAGNode>();
     MeshTopology * topo = initMesh(father);
     //makeTri()
-    component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo,(component::topology::PointSetTopologyContainer*)0x0);
+    component::mapping::linear::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::linear::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo, (component::topology::container::dynamic::PointSetTopologyContainer*)0x0);
 
     Vector3 the_point = ((SReal)(1.0) - alpha - beta) * triPts[0] + alpha * triPts[1] + beta * triPts[2];
     Vector3 the_point_trans = the_point + (SReal)(10.0) * norm;
@@ -106,7 +106,7 @@ bool BaryMapperTest::test_outside(int index){
     sofa::simulation::Node::SPtr father = New<sofa::simulation::graph::DAGNode>();
     MeshTopology * topo = initMesh(father);
     //makeTri()
-    component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo,(component::topology::PointSetTopologyContainer*)0x0);
+    component::mapping::linear::BarycentricMapperMeshTopology<DataTypes, DataTypes>::SPtr mapper = sofa::core::objectmodel::New<component::mapping::linear::BarycentricMapperMeshTopology<DataTypes, DataTypes> >(topo,(component::topology::container::dynamic::PointSetTopologyContainer*)0x0);
 
     Vector3 the_point = (SReal)(2.0) * triPts[index] + (SReal)(10.0) * norm;
 

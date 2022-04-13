@@ -73,7 +73,7 @@ struct TetrahedronFEMForceField_stepTest : public ForceField_test<_TetrahedronFE
     /** @name Test_Cases
       For each of these cases, we check if the accurate forces are computed
     */
-    TetrahedronFEMForceField_stepTest():Inherited::ForceField_test(std::string(SOFASIMPLEFEM_TEST_SCENES_DIR) + "/" + "TetrahedronFEMForceFieldRegularTetra.scn")
+    TetrahedronFEMForceField_stepTest():Inherited::ForceField_test(std::string(SOFA_COMPONENT_SOLIDMECHANICS_FEM_ELASTIC_TEST_SCENES_DIR) + "/" + "TetrahedronFEMForceFieldRegularTetra.scn")
     {
         //Position
         x.resize(4);

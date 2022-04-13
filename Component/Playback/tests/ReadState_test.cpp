@@ -35,10 +35,10 @@ public:
     bool testDefaultBehavior()
     {
         double dt = 0.01;
-        sofa::simpleapi::importPlugin("SofaComponentAll") ;
         auto simulation = sofa::simpleapi::createSimulation();
         Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
-        sofa::simpleapi::createObject(root, "RequiredPlugin", { { "name","SofaGeneralLoader" } });
+        sofa::simpleapi::createObject(root, "RequiredPlugin", { { "name","Sofa.Component.Playback" } });
+        sofa::simpleapi::createObject(root, "RequiredPlugin", { { "name","Sofa.Component.StateContainer" } });
 
         /// no need of gravity, the file .data is just read
         root->setGravity(Vec3(0.0,0.0,0.0));
@@ -50,7 +50,7 @@ public:
                                                   {{"size", "1"}});
 
         sofa::simpleapi::createObject(childNode, "ReadState",
-                                      {{"filename", std::string(SOFAGENERALLOADER_TESTFILES_DIR)+"particleGravityX.data"}});
+                                      {{"filename", std::string(SOFA_COMPONENT_PLAYBACK_TEST_FILES_DIR)+"particleGravityX.data"}});
 
         simulation->init(root.get());
         for(int i=0; i<7; i++)
@@ -66,9 +66,10 @@ public:
     /// Run seven steps of simulation then check results
     bool testLoadFailure()
     {
-        sofa::simpleapi::importPlugin("SofaComponentAll") ;
         auto simulation = sofa::simpleapi::createSimulation();
         Node::SPtr root = sofa::simpleapi::createRootNode(simulation, "root");
+        sofa::simpleapi::createObject(root, "RequiredPlugin", { { "name","Sofa.Component.Playback" } });
+        sofa::simpleapi::createObject(root, "RequiredPlugin", { { "name","Sofa.Component.StateContainer" } });
 
         auto meca = sofa::simpleapi::createObject(root, "MechanicalObject",
                                                   {{"size", "1"}});
@@ -76,7 +77,7 @@ public:
         {
             EXPECT_MSG_EMIT(Error);
             sofa::simpleapi::createObject(root, "ReadState",
-                                      {{"filename", std::string(SOFAGENERALLOADER_TESTFILES_DIR)+"invalidFile.txt"}});
+                                      {{"filename", std::string(SOFA_COMPONENT_PLAYBACK_TEST_FILES_DIR)+"invalidFile.txt"}});
             simulation->init(root.get());
         }
 

@@ -19,26 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/testing/BaseTest.h>
-using sofa::testing::BaseTest;
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
-#include <SceneCreator/SceneCreator.h>
 
 #include <sofa/component/statecontainer/MechanicalObject.h>
-#include <SofaBaseTopology/RegularGridTopology.h>
-#include <SofaSimpleFem/TetrahedronDiffusionFEMForceField.h>
-#include <SofaBaseMechanics/DiagonalMass.h>
+#include <sofa/component/topology/container/grid/RegularGridTopology.h>
+#include <sofa/component/diffusion/TetrahedronDiffusionFEMForceField.h>
+#include <sofa/component/mass/DiagonalMass.h>
 
 #include <sofa/type/Vec.h>
 
 #include <iostream>
 #include <fstream>
-
-#include <SofaBase/initSofaBase.h>
-#include <SofaEngine/initSofaEngine.h>
-#include <SofaMeshCollision/initSofaMeshCollision.h>
-#include <SofaImplicitOdeSolver/initSofaImplicitOdeSolver.h>
 
 namespace sofa {
 
@@ -48,7 +42,7 @@ namespace sofa {
  *
  */
 template <typename _ForceFieldType>
-struct TetrahedronDiffusionFEMForceField_test : public BaseTest
+struct TetrahedronDiffusionFEMForceField_test : public BaseSimulationTest
 {
     typedef _ForceFieldType ForceField;
     typedef typename ForceField::DataTypes DataTypes;
@@ -59,8 +53,8 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseTest
     typedef typename Coord::value_type Real;
 
     typedef component::statecontainer::MechanicalObject<DataTypes> DOF;
-    typedef typename component::topology::RegularGridTopology RegularGridTopology;
-    typedef typename component::forcefield::TetrahedronDiffusionFEMForceField<DataTypes> TetrahedronDiffusionFEMForceField;
+    typedef typename component::topology::container::grid::RegularGridTopology RegularGridTopology;
+    typedef typename component::diffusion::TetrahedronDiffusionFEMForceField<DataTypes> TetrahedronDiffusionFEMForceField;
     typedef typename component::mass::DiagonalMass<DataTypes> DiagonalMass;
 
     /// @name Scene elements
@@ -92,7 +86,7 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseTest
 
 
     TetrahedronDiffusionFEMForceField_test()
-        : sceneFilename(std::string(SOFASIMPLEFEM_TEST_SCENES_DIR) + "/" + "TetrahedronDiffusionFEMForceField.scn")
+        : sceneFilename(std::string(SOFA_COMPONENT_DIFFUSION_TEST_SCENES_DIR) + "/" + "TetrahedronDiffusionFEMForceField.scn")
         , diffusionCoefficient( 1.0 )
         , massDensity( 1.0 )
         , beamDimension(1.0, 0.5, 0.5)
@@ -115,12 +109,7 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseTest
 
 
     void init_scene()
-    {
-        sofa::component::initSofaBase();
-        sofa::component::initSofaEngine();
-        sofa::component::initSofaMeshCollision();
-        sofa::component::initSofaImplicitOdeSolver();
-        
+    {        
         tetraNode = root->getChild("Tetra");
         temperatureNode = tetraNode->getChild("Temperature");
 
@@ -193,7 +182,7 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseTest
 
 // ========= Define the list of types to instanciate.
 //using ::testing::Types;
-typedef ::testing::Types<component::forcefield::TetrahedronDiffusionFEMForceField<defaulttype::Vec1Types> > TestTypes; // the types to instanciate.
+typedef ::testing::Types<component::diffusion::TetrahedronDiffusionFEMForceField<defaulttype::Vec1Types> > TestTypes; // the types to instanciate.
 
 
 // ========= Tests to run for each instanciated type

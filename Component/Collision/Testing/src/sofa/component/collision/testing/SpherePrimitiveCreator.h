@@ -21,10 +21,9 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaBaseTopology/MeshTopology.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
 
-#include <SofaBaseCollision/SphereModel.h>
+#include <sofa/component/collision/geometry/SphereModel.h>
 
 #include<sofa/simulation/Node.h>
 using sofa::simulation::Node;
@@ -45,7 +44,7 @@ using namespace sofa::defaulttype;
 namespace sofa::collision_test
 {
 
-inline sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr makeRigidSphere(const Vec3& p, SReal radius, const Vec3& v, const double* angles, const int* order,
+inline sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr makeRigidSphere(const Vec3& p, SReal radius, const Vec3& v, const double* angles, const int* order,
     sofa::simulation::Node::SPtr& father)
 {
     //creating node containing OBBModel
@@ -99,12 +98,12 @@ inline sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Rigid
     sphere->addObject(sphereDOF);
 
     //creating an RigidSphereModel and attaching it to the same node than obbDOF
-    sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr sphereCollisionModel = New<sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Rigid3Types>>();
+    sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr sphereCollisionModel = New<sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>>();
     sphere->addObject(sphereCollisionModel);
 
     //editing the RigidSphereModel
     sphereCollisionModel->init();
-    sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::VecReal& vecRad = *(sphereCollisionModel->radius.beginEdit());
+    sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::VecReal& vecRad = *(sphereCollisionModel->radius.beginEdit());
 
     vecRad[0] = radius;
 
@@ -113,7 +112,7 @@ inline sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Rigid
     return sphereCollisionModel;
 }
 
-sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>::SPtr makeSphere(const Vec3& p, SReal radius, const Vec3& v, sofa::simulation::Node::SPtr& father)
+inline sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>::SPtr makeSphere(const Vec3& p, SReal radius, const Vec3& v, sofa::simulation::Node::SPtr& father)
 {
     //creating node containing OBBModel
     sofa::simulation::Node::SPtr sphere = father->createChild("sphere");
@@ -142,12 +141,12 @@ sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>::
     sphere->addObject(sphereDOF);
 
     //creating an RigidSphereModel and attaching it to the same node than obbDOF
-    sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>::SPtr sphereCollisionModel = New<sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>>();
+    sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>::SPtr sphereCollisionModel = New<sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>>();
     sphere->addObject(sphereCollisionModel);
 
     //editting the RigidSphereModel
     sphereCollisionModel->init();
-    sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>::VecReal& vecRad = *(sphereCollisionModel->radius.beginEdit());
+    sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>::VecReal& vecRad = *(sphereCollisionModel->radius.beginEdit());
 
     vecRad[0] = radius;
 

@@ -27,8 +27,6 @@ using std::string ;
 #include <sofa/testing/BaseTest.h>
 #include <sofa/testing/TestMessageHandler.h>
 
-#include <SofaBase/initSofaBase.h>
-
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
 
@@ -46,9 +44,11 @@ using sofa::component::logging::MessageHandlerComponent ;
 
 using sofa::helper::logging::MessageDispatcher ;
 
+#include <SofaSimulationGraph/SimpleApi.h>
+
 bool perTestInit()
 {
-    sofa::component::initSofaBase();
+    sofa::simpleapi::importPlugin("Sofa.Component.SceneUtility");
 
     /// THE TESTS HERE ARE NOT INHERITING FROM SOFA TEST SO WE NEED TO MANUALLY INSTALL THE HANDLER
     /// DO NO REMOVE

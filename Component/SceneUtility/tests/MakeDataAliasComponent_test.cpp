@@ -27,8 +27,6 @@ using std::string ;
 #include <sofa/testing/BaseTest.h>
 #include <sofa/testing/TestMessageHandler.h>
 
-#include <SofaBase/initSofaBase.h>
-
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
 
@@ -58,6 +56,8 @@ using sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 
 using sofa::core::objectmodel::ComponentState ;
 
+#include <SofaSimulationGraph/SimpleApi.h>
+
 namespace makedataaliascomponent_test
 {
 
@@ -72,7 +72,8 @@ bool inited = doInit();
 
 void perTestInit()
 {
-    sofa::component::initSofaBase();
+    sofa::simpleapi::importPlugin("Sofa.Component.SceneUtility");
+    sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
 
     if(theSimulation==nullptr){
         theSimulation = new DAGSimulation();

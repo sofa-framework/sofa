@@ -1,20 +1,41 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
 #include <SofaBaseCollision/MinProximityIntersection.h>
-#include <SofaGeneralMeshCollision/MeshMinProximityIntersection.h>
-using sofa::component::collision::MeshMinProximityIntersection;
+#include <sofa/component/collision/detection/intersection/MeshMinProximityIntersection.h>
+using sofa::component::collision::detection::intersection::MeshMinProximityIntersection;
 
-#include <SofaMeshCollision/MeshNewProximityIntersection.inl>
-using sofa::component::collision::MeshNewProximityIntersection;
+#include <sofa/component/collision/detection/intersection/MeshNewProximityIntersection.inl>
+using sofa::component::collision::detection::intersection::MeshNewProximityIntersection;
 
-#include <SofaMeshCollision/TriangleModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
 
 using sofa::core::execparams::defaultInstance;
 using sofa::core::objectmodel::New;
-#include <SofaBaseCollision/SphereModel.h>
-using sofa::component::collision::Sphere;
-using sofa::component::collision::SphereCollisionModel;
-using sofa::component::collision::RigidSphere;
-using sofa::component::collision::TriangleCollisionModel;
+#include <sofa/component/collision/geometry/SphereModel.h>
+using sofa::component::collision::geometry::Sphere;
+using sofa::component::collision::geometry::SphereCollisionModel;
+using sofa::component::collision::geometry::RigidSphere;
+using sofa::component::collision::geometry::TriangleCollisionModel;
 
 
 using sofa::core::collision::DetectionOutput;
@@ -28,8 +49,8 @@ using sofa::testing::BaseTest;
 
 #include <SofaSimulationGraph/DAGNode.h>
 
-#include "MeshPrimitiveCreator.h"
-#include <SofaBaseCollision_test/SpherePrimitiveCreator.h>
+#include <sofa/component/collision/testing/MeshPrimitiveCreator.h>
+#include <sofa/component/collision/testing/SpherePrimitiveCreator.h>
 
 namespace sofa 
 {
@@ -71,7 +92,7 @@ bool TestTriangle::rigidTriangle(Intersector& bi) {
 
     //we construct the OBB and the capsule from the OBBCollisionModel<sofa::defaulttype::Rigid3Types> and the CapsuleModel
     RigidSphere sph(sphmodel.get(), 0);
-    sofa::component::collision::Triangle tri(trimodel.get(), 0);
+    sofa::component::collision::geometry::Triangle tri(trimodel.get(), 0);
 
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
@@ -110,7 +131,7 @@ bool TestTriangle::softTriangle(Intersector& bi) {
 
     //we construct the OBB and the capsule from the OBBCollisionModel<sofa::defaulttype::Rigid3Types> and the CapsuleModel
     Sphere sph(sphmodel.get(), 0);
-    sofa::component::collision::Triangle tri(trimodel.get(), 0);
+    sofa::component::collision::geometry::Triangle tri(trimodel.get(), 0);
 
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
@@ -136,10 +157,10 @@ bool TestTriangle::softTriangle(Intersector& bi) {
     return true;
 }
 
-component::collision::MinProximityIntersection::SPtr minProx = New<component::collision::MinProximityIntersection>();
+component::collision::detection::intersection::MinProximityIntersection::SPtr minProx = New<component::collision::detection::intersection::MinProximityIntersection>();
 MeshMinProximityIntersection meshMin(minProx.get());
 
-component::collision::NewProximityIntersection::SPtr newProx = New<component::collision::NewProximityIntersection>();
+component::collision::detection::intersection::NewProximityIntersection::SPtr newProx = New<component::collision::detection::intersection::NewProximityIntersection>();
 MeshNewProximityIntersection meshNew(newProx.get());
 
 TEST_F(TestTriangle, rigid_sphere_triangle_min_prox) { ASSERT_TRUE(rigidTriangle<MeshMinProximityIntersection >(meshMin)); }

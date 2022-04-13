@@ -31,8 +31,6 @@ using sofa::core::execparams::defaultInstance;
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
 
-#include <SofaBaseCollision/initSofaBaseCollision.h>
-
 #include<SofaBaseCollision/DefaultPipeline.h>
 using sofa::component::collision::DefaultPipeline ;
 
@@ -53,6 +51,7 @@ using sofa::helper::BackTrace;
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
 
+#include <SofaSimulationGraph/SimpleApi.h>
 
 namespace defaultpipeline_test
 {
@@ -78,7 +77,7 @@ public:
 
     void SetUp() override
     {
-        sofa::component::initSofaBaseCollision();
+        sofa::simpleapi::importPlugin("Sofa.Component.Collision");
     }
 
     void TearDown() override
