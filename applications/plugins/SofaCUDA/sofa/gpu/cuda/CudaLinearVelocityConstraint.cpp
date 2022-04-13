@@ -43,8 +43,8 @@ int LinearVelocityConstraintCudaClass = core::RegisterObject("Supports GPU-side 
         .add< sofa::component::constraint::projective::LinearVelocityConstraint<CudaVec6fTypes> >()
         .add< sofa::component::constraint::projective::LinearVelocityConstraint<CudaRigid3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::projectiveconstraintset::LinearVelocityConstraint<CudaVec6dTypes> >()
-        .add< component::projectiveconstraintset::LinearVelocityConstraint<CudaRigid3dTypes> >()
+        .add< sofa::component::constraint::projective::LinearVelocityConstraint<CudaVec6dTypes> >()
+        .add< sofa::component::constraint::projective::LinearVelocityConstraint<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
