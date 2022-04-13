@@ -208,10 +208,16 @@ public:
     std::vector< sofa::component::container::ArticulationCenter* > articulationCenters;
 
     container::ArticulatedHierarchyContainer* ahc;
+
 private:
     core::State<In>* m_fromModel;
     core::State<Out>* m_toModel;
     core::State<InRoot>* m_fromRootModel;
+
+    SingleLink<ArticulatedSystemMapping<TIn, TInRoot, TOut>,
+                sofa::component::container::ArticulatedHierarchyContainer,
+                BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK>            l_container;
+    Data<unsigned int> d_indexFromRoot; ///< Corresponding index if the base of the articulated system is attached to input2. Default is last index.
 
     sofa::type::Vec<1,sofa::type::Quat<SReal>> Buf_Rotation;
     std::vector< sofa::type::Vec<3,OutReal> > ArticulationAxis;

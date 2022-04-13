@@ -37,6 +37,8 @@ template <class TIn, class TInRoot, class TOut>
 ArticulatedSystemMapping<TIn, TInRoot, TOut>::ArticulatedSystemMapping ()
     : ahc(nullptr)
     , m_fromModel(nullptr), m_toModel(nullptr), m_fromRootModel(nullptr)
+    , l_container(initLink("container", "Path to ArticulatedHierarchyContainer."))
+    , d_indexFromRoot(initData(&d_indexFromRoot, (unsigned int)0, "indexInput2", "Corresponding index if the base of the articulated system is attached to input2. Default is last index."))
 {
 
 }
@@ -101,7 +103,12 @@ template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::bwdInit()
 {
     //make sure that articulatedHierarchyContainer has been initialized before
-    m_fromModel->getContext()->get(ahc, sofa::core::objectmodel::BaseContext::SearchDown);
+    if(l_container.get()!=nullptr){
+        ahc = l_container.get();
+    } else {
+        m_fromModel->getContext()->get(ahc, sofa::core::objectmodel::BaseContext::SearchDown);
+    }
+
     if (!ahc)
     {
         msg_error("ArticulatedSystemMapping::bwdInit") << "ArticulatedSystemMapping needs a ArticulatedHierarchyContainer, but it could not find it.";
@@ -149,7 +156,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
     // Copy the root position if a rigid root model is present
     if (m_fromRootModel && inroot)
     {
-        out[0] = (*inroot)[m_fromRootModel->getSize()-1];
+        int index = (d_indexFromRoot.isSet())? d_indexFromRoot.getValue(): m_fromRootModel->getSize()-1;
+        out[0] = (*inroot)[index];
     }
 
     type::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
@@ -204,7 +212,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
                     dq.axisToQuat(axis, value.x());
                     out[child].getCenter() += (*ac)->translateChild(dq, out[child].getOrientation());
                     out[child].getOrientation() += dq;
-
                 }
                 if ((*a)->translation.getValue())
                 {
@@ -334,9 +341,10 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
     out.resize(xto.size());
 
     // Copy the root position if a rigid root model is present
-    if (m_fromRootModel && inroot)
-        out[0] = (*inroot)[m_fromRootModel->getSize()-1];
-    else
+    if (m_fromRootModel && inroot){
+        int index = (d_indexFromRoot.isSet())? d_indexFromRoot.getValue(): m_fromRootModel->getSize()-1;
+        out[0] = (*inroot)[index];
+    } else
         out[0] = OutDeriv();
 
     type::vector< sofa::component::container::ArticulationCenter* >::const_iterator ac = articulationCenters.begin();
@@ -435,7 +443,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
 
     if (outroot && m_fromRootModel)
     {
-        (*outroot)[m_fromRootModel->getSize()-1] += fObjects6DBuf[0];
+        int index = (d_indexFromRoot.isSet())? d_indexFromRoot.getValue(): m_fromRootModel->getSize()-1;
+        (*outroot)[index] += fObjects6DBuf[0];
     }
 }
 
@@ -514,7 +523,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, 
 
                 if(m_fromRootModel && outRoot)
                 {
-                    unsigned int indexT = m_fromRootModel->getSize() - 1; // On applique sur le dernier noeud
+                    unsigned int indexT = (d_indexFromRoot.isSet())? d_indexFromRoot.getValue(): m_fromRootModel->getSize()-1;
                     sofa::type::Vec<3,OutReal> posRoot = xto[indexT].getCenter();
 
                     OutDeriv T;
