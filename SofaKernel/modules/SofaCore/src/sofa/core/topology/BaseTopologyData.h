@@ -113,7 +113,10 @@ public:
     }
 
     /// to handle PointSubsetData
-    void setDataSetArraySize(const Index s) { m_lastElementIndex = s - 1; }
+    void setDataSetArraySize(const Index s) 
+    { 
+        m_lastElementIndex = (s == 0) ? 0 : s-1; 
+    }
 
     /// Return the last element index of the topolgy buffer this Data is linked to. @sa m_lastElementIndex
     Index getLastElementIndex() const { return m_lastElementIndex; }
