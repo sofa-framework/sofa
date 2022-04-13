@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/sceneutility/RequiredPlugin.h>
+#include <sofa/simulation/RequiredPlugin.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/sceneutility/RequiredPlugin.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/simulation/RequiredPlugin.h")
 
 namespace sofa::component::misc
 {
 
-    using RequiredPlugin = sofa::component::sceneutility::RequiredPlugin;
+    using RequiredPlugin = sofa::simulation::RequiredPlugin;
 
 } // namespace sofa::component::misc

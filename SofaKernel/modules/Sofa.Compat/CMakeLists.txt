@@ -102,6 +102,7 @@ set(HEADER_FILES
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/CRSMultiMatrixAccessor.h
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/SingleMatrixAccessor.h
     ${SOFACOMPATSRC_ROOT}/SofaGeneralMeshCollision/TriangleOctree.h
+    ${SOFACOMPATSRC_ROOT}/SofaBaseUtils/RequiredPlugin.h
 )
 
 set(SOURCE_FILES
