@@ -77,7 +77,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     MultiVecCoord pos(&vop, core::VecCoordId::position() );
     MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
     MultiVecDeriv f(&vop, core::VecDerivId::force() );
-    MultiVecDeriv b(&vop);
+    MultiVecDeriv b(&vop, true, core::VecIdProperties{"RHS", GetClass()->className});
     MultiVecCoord newPos(&vop, xResult );
     MultiVecDeriv newVel(&vop, vResult );
 
@@ -89,7 +89,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     MultiVecDeriv dx(&vop, core::VecDerivId::dx());
     dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
 
-    x.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
+    x.realloc(&vop, !d_threadSafeVisitor.getValue(), true, core::VecIdProperties{"solution", GetClass()->className});
 
 
 #ifdef SOFA_DUMP_VISITOR_INFO
