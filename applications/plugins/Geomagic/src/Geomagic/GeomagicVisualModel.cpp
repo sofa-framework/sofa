@@ -104,7 +104,7 @@ void GeomagicVisualModel::initDisplay(sofa::simulation::Node::SPtr node, const s
         std::string sectionName(visualNodeNames[i]);
 
         // load mesh model 
-        visualNode[i].loader = sofa::core::objectmodel::New<sofa::component::loader::MeshOBJLoader>();
+        visualNode[i].loader = sofa::core::objectmodel::New<sofa::component::io::mesh::MeshOBJLoader>();
         visualNode[i].node->addObject(visualNode[i].loader);
         visualNode[i].loader->setName(sectionName + "_loader");
         visualNode[i].loader->setFilename(visualNodeFiles[i]);
