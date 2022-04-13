@@ -32,7 +32,7 @@
             0.0 0.0 0.75 
             0.375 0.0 0.75"  />
         
-        <UniformMass name="M1" totalMass="1.0" handleTopologicalChanges="1"/>
+        <UniformMass name="M1" totalMass="1.0" />
         <PointSetTopologyContainer name="con" />
         <PointSetTopologyModifier name="mod" />
         
