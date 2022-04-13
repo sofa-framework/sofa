@@ -34,7 +34,6 @@ namespace sofa::core::topology
 template <typename TopologyElementType, typename VecT>
 TopologySubsetData <TopologyElementType, VecT>::TopologySubsetData(const typename sofa::core::topology::BaseTopologyData< VecT >::InitData& data)
     : sofa::core::topology::TopologyData< TopologyElementType, VecT >(data)
-    , m_isConcerned(false)
 {
 
 }
@@ -82,7 +81,8 @@ void TopologySubsetData <TopologyElementType, VecT>::add(sofa::Size nbElements,
     const sofa::type::vector<sofa::type::vector<Index> >& ancestors,
     const sofa::type::vector<sofa::type::vector<SReal> >& coefs)
 {
-    if (!this->getSparseDataStatus()) {
+    // if no new element are added to this subset. Just update the lastElementIndex for future deletion
+    if (!this->isNewElementsSupported()) {
         this->m_lastElementIndex += nbElements;
         return;
     }
