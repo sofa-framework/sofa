@@ -32,7 +32,7 @@ namespace sofa::simulation::mechanicalvisitor
 template< sofa::core::VecType vtype>
 Visitor::Result MechanicalVReallocVisitor<vtype>::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState *mm)
 {
-    mm->vRealloc( this->params, this->getId(mm) );
+    mm->vRealloc( this->params, this->getId(mm), m_properties);
     return RESULT_CONTINUE;
 }
 
@@ -41,7 +41,7 @@ Visitor::Result MechanicalVReallocVisitor<vtype>::fwdMappedMechanicalState(simul
 {
     if (m_propagate)
     {
-        mm->vRealloc(this->params, this->getId(mm) );
+        mm->vRealloc(this->params, this->getId(mm), m_properties);
     }
 
     return RESULT_CONTINUE;
@@ -54,7 +54,7 @@ Visitor::Result MechanicalVReallocVisitor<vtype>::fwdInteractionForceField(simul
     {
         for (auto* mm : ff->getMechanicalStates())
         {
-            mm->vRealloc( this->params, this->getId(mm) );
+            mm->vRealloc( this->params, this->getId(mm), m_properties);
         }
     }
 
