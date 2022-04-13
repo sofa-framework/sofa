@@ -19,16 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseMechanics/BarycentricMapping.h>
-#include <SofaBaseMechanics/BarycentricMappers/BarycentricMapperTriangleSetTopology.h>
-using sofa::component::mapping::BarycentricMapperTriangleSetTopology;
-using sofa::component::mapping::BarycentricMapping;
+#include <sofa/component/mapping/linear/BarycentricMapping.h>
+#include <sofa/component/mapping/linear/BarycentricMappers/BarycentricMapperTriangleSetTopology.h>
+using sofa::component::mapping::linear::BarycentricMapperTriangleSetTopology;
+using sofa::component::mapping::linear::BarycentricMapping;
 
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyContainer.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-using sofa::component::topology::TriangleSetTopologyContainer;
-using sofa::component::topology::TetrahedronSetTopologyContainer;
+using sofa::component::topology::container::dynamic::TriangleSetTopologyContainer;
+using sofa::component::topology::container::dynamic::TetrahedronSetTopologyContainer;
 using sofa::core::topology::BaseMeshTopology;
 
 #include <sofa/testing/BaseTest.h>
@@ -47,8 +47,8 @@ using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
 
-#include <SofaBaseMechanics/MechanicalObject.h>
-using sofa::component::container::MechanicalObject ;
+#include <sofa/component/statecontainer/MechanicalObject.h>
+using sofa::component::statecontainer::MechanicalObject ;
 
 #include <sofa/simulation/Node.h>
 

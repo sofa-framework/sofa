@@ -30,8 +30,8 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/simulation/Node.h>
 
 // Including mechanical object
-#include <SofaBaseMechanics/MechanicalObject.h>
-using MechanicalObject3 = sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> ;
+#include <sofa/component/statecontainer/MechanicalObject.h>
+using MechanicalObject3 = sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> ;
 
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -57,7 +57,7 @@ struct VariationalSymplecticExplicitSolverDynamic_test : public component::odeso
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
 
-    typedef container::MechanicalObject<DataTypes> MechanicalObject;
+    typedef statecontainer::MechanicalObject<DataTypes> MechanicalObject;
 
     /// Position and velocity array
     type::vector<Real> positionsArray;
@@ -119,7 +119,7 @@ struct VariationalSymplecticExplicitSolverDynamic_test : public component::odeso
 
         // Get mechanical object
         simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
-        typename container::MechanicalObject<_DataTypes>::SPtr dofs = massNode->get<container::MechanicalObject<_DataTypes>>(m_si.root->SearchDown);
+        typename statecontainer::MechanicalObject<_DataTypes>::SPtr dofs = massNode->get<container::MechanicalObject<_DataTypes>>(m_si.root->SearchDown);
 
         // Animate
         do

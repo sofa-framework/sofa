@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #include <sofa/simulation/Node.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
@@ -33,7 +33,7 @@
 namespace sofa
 {
 
-typedef component::container::MechanicalObject<defaulttype::Vec3Types> MechanicalObject3;
+typedef component::statecontainer::MechanicalObject<defaulttype::Vec3Types> MechanicalObject3;
 
 /// Structure which contains the nodes and the pointers useful for the patch test
 template<class T>
@@ -41,7 +41,7 @@ struct PatchTestStruct
 {
     simulation::Node::SPtr SquareNode;
     typename component::projectiveconstraintset::AffineMovementConstraint<T>::SPtr affineConstraint;
-    typename component::container::MechanicalObject<T>::SPtr dofs;
+    typename component::statecontainer::MechanicalObject<T>::SPtr dofs;
 };
 
 /// Create a scene with a regular grid and an affine constraint for patch test
@@ -61,7 +61,7 @@ PatchTestStruct<DataTypes> createRegularGridScene(
     // Definitions
     PatchTestStruct<DataTypes> patchStruct;
     typedef typename DataTypes::Real Real;
-    typedef typename component::container::MechanicalObject<DataTypes> MechanicalObject;
+    typedef typename component::statecontainer::MechanicalObject<DataTypes> MechanicalObject;
     typedef typename sofa::component::mass::UniformMass <DataTypes> UniformMass;
     typedef component::topology::RegularGridTopology RegularGridTopology;
     typedef typename component::engine::BoxROI<DataTypes> BoxRoi;

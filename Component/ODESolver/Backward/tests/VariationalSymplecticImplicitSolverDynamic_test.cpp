@@ -33,8 +33,8 @@ using sofa::testing::NumericTest;
 #include <sofa/simulation/Node.h>
 
 // Including mechanical object
-#include <SofaBaseMechanics/MechanicalObject.h>
-using MechanicalObject3 = sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> ;
+#include <sofa/component/statecontainer/MechanicalObject.h>
+using MechanicalObject3 = sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> ;
 
 // Solvers
 #include <SofaGeneralImplicitOdeSolver/VariationalSymplecticSolver.h>
@@ -62,7 +62,7 @@ struct VariationalSymplecticImplicitSolverDynamic_test : public component::odeso
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
 
-    typedef container::MechanicalObject<DataTypes> MechanicalObject;
+    typedef statecontainer::MechanicalObject<DataTypes> MechanicalObject;
     typedef component::odesolver::VariationalSymplecticSolver VariationalSymplecticSolver;
 
     /// Position and velocity array
@@ -139,7 +139,7 @@ struct VariationalSymplecticImplicitSolverDynamic_test : public component::odeso
 
         // Get mechanical object
         simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
-        typename container::MechanicalObject<_DataTypes>::SPtr dofs = massNode->get<container::MechanicalObject<_DataTypes>>(m_si.root->SearchDown);
+        typename statecontainer::MechanicalObject<_DataTypes>::SPtr dofs = massNode->get<container::MechanicalObject<_DataTypes>>(m_si.root->SearchDown);
         typename VariationalSymplecticSolver::SPtr variationalSolver = m_si.root->get<VariationalSymplecticSolver>(m_si.root->SearchDown);
         
 

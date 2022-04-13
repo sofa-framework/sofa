@@ -22,11 +22,9 @@
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 //#include <sofa/defaulttype/RigidTypes.h>
-#include <SofaMiscMapping/SubsetMultiMapping.h>
+#include <sofa/component/mapping/linear/SubsetMultiMapping.h>
 
-#include <SofaBaseMechanics_test/MultiMappingTestCreation.h>
-
-#include <SofaBase/initSofaBase.h>
+#include <sofa/component/mapping/testing/MultiMappingTestCreation.h>
 
 namespace sofa {
 namespace {
@@ -51,7 +49,7 @@ struct SubsetMultiMappingTest : public MultiMapping_test<_SubsetMultiMapping>
     typedef typename InDataTypes::VecDeriv InVecDeriv;
     typedef typename InDataTypes::Coord InCoord;
     typedef typename InDataTypes::Deriv InDeriv;
-    typedef container::MechanicalObject<InDataTypes> InMechanicalObject;
+    typedef statecontainer::MechanicalObject<InDataTypes> InMechanicalObject;
     typedef typename InMechanicalObject::ReadVecCoord  ReadInVecCoord;
     typedef typename InMechanicalObject::WriteVecCoord WriteInVecCoord;
     typedef typename InMechanicalObject::WriteVecDeriv WriteInVecDeriv;
@@ -64,7 +62,7 @@ struct SubsetMultiMappingTest : public MultiMapping_test<_SubsetMultiMapping>
     typedef typename OutDataTypes::VecDeriv OutVecDeriv;
     typedef typename OutDataTypes::Coord OutCoord;
     typedef typename OutDataTypes::Deriv OutDeriv;
-    typedef container::MechanicalObject<OutDataTypes> OutMechanicalObject;
+    typedef statecontainer::MechanicalObject<OutDataTypes> OutMechanicalObject;
     typedef typename OutMechanicalObject::WriteVecCoord WriteOutVecCoord;
     typedef typename OutMechanicalObject::WriteVecDeriv WriteOutVecDeriv;
     typedef typename OutMechanicalObject::ReadVecCoord ReadOutVecCoord;
@@ -72,7 +70,6 @@ struct SubsetMultiMappingTest : public MultiMapping_test<_SubsetMultiMapping>
 
     void SetUp() override
     {
-        sofa::component::initSofaBase();
     }
 
     /** @name Test_Cases
@@ -117,8 +114,8 @@ struct SubsetMultiMappingTest : public MultiMapping_test<_SubsetMultiMapping>
 // Define the list of types to instanciate. We do not necessarily need to test all combinations.
 using ::testing::Types;
 typedef Types<
-mapping::SubsetMultiMapping<defaulttype::Rigid3Types,defaulttype::Rigid3Types>,
-mapping::SubsetMultiMapping<defaulttype::Vec3Types,defaulttype::Vec3Types>
+mapping::linear::SubsetMultiMapping<defaulttype::Rigid3Types,defaulttype::Rigid3Types>,
+mapping::linear::SubsetMultiMapping<defaulttype::Vec3Types,defaulttype::Vec3Types>
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations

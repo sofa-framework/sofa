@@ -33,9 +33,8 @@ using sofa::testing::NumericTest;
 
 #include <sofa/linearalgebra/FullVector.h>
 #include <sofa/linearalgebra/EigenSparseMatrix.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
-#include <SceneCreator/SceneCreator.h>
 #include <sofa/core/Mapping.h>
 
 #include <sofa/helper/logging/Messaging.h>
@@ -73,7 +72,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
 {
     typedef _Mapping Mapping;
     typedef typename Mapping::In In;
-    typedef component::container::MechanicalObject<In> InDOFs;
+    typedef component::statecontainer::MechanicalObject<In> InDOFs;
     typedef typename InDOFs::Real  Real;
     typedef typename InDOFs::Coord  InCoord;
     typedef typename InDOFs::Deriv  InDeriv;
@@ -89,7 +88,7 @@ struct Mapping_test: public BaseSimulationTest, NumericTest<typename _Mapping::I
     typedef Data<InMatrixDeriv> InDataMatrixDeriv;
 
     typedef typename Mapping::Out Out;
-    typedef component::container::MechanicalObject<Out> OutDOFs;
+    typedef component::statecontainer::MechanicalObject<Out> OutDOFs;
     typedef typename OutDOFs::Coord     OutCoord;
     typedef typename OutDOFs::Deriv     OutDeriv;
     typedef typename OutDOFs::VecCoord  OutVecCoord;

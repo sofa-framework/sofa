@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <SofaMiscFem/TriangleFEMForceField.h>
 #include <SofaMiscFem/TriangularFEMForceField.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
@@ -48,7 +48,7 @@ namespace sofa
 {
 using namespace sofa::defaulttype;
 using namespace sofa::simpleapi;
-using sofa::component::container::MechanicalObject;
+using sofa::component::statecontainer::MechanicalObject;
 using sofa::helper::system::thread::ctime_t;
 
 template <class DataTypes>

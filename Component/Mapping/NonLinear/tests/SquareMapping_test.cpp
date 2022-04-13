@@ -19,10 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/component/mapping/nonlinear/SquareMapping.h>
 
-#include <SofaMiscMapping/SquareMapping.h>
-
-#include <SofaBaseMechanics_test/MappingTestCreation.h>
+#include <sofa/component/mapping/testing/MappingTestCreation.h>
 
 namespace sofa {
 namespace {
@@ -73,7 +72,7 @@ struct SquareMappingTest : public sofa::mapping_test::Mapping_test<SquareMapping
 // Define the list of types to instanciate.
 using ::testing::Types;
 typedef Types<
-component::mapping::SquareMapping<defaulttype::Vec1Types,defaulttype::Vec1Types>
+component::mapping::nonlinear::SquareMapping<defaulttype::Vec1Types,defaulttype::Vec1Types>
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations

@@ -19,12 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseMechanics/UniformMass.h>
+#include <sofa/component/mass/UniformMass.h>
 
 #include <string>
 using std::string ;
 
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 using namespace sofa::defaulttype ;
 
 using sofa::component::mass::UniformMass ;
@@ -42,7 +42,7 @@ using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::core::ExecParams ;
-using sofa::component::container::MechanicalObject ;
+using sofa::component::statecontainer::MechanicalObject ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;

@@ -4,8 +4,8 @@ using std::vector;
 #include <string>
 using std::string;
 
-#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
-using sofa::helper::testing::BaseSimulationTest;
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
@@ -22,17 +22,18 @@ using sofa::component::collision::LocalMinDistance ;
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository ;
 
+using namespace sofa::testing;
+using namespace sofa::helper::logging;
+
 namespace
 {
 
 struct TestLocalMinDistance : public BaseSimulationTest {
     void SetUp()
     {
-        DataRepository.addFirstPath(FRAMEWORK_EXAMPLES_DIR);
     }
     void TearDown()
     {
-        DataRepository.removePath(FRAMEWORK_EXAMPLES_DIR);
     }
 
     void checkAttributes();
@@ -64,17 +65,13 @@ void TestLocalMinDistance::checkBasicIntersectionTests()
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
-    BaseObject* lmd = root->getTreeNode("Level 1")->getObject("lmd") ;
+    auto* lmd = root->getTreeNode("Level 1")->getObject("lmd") ;
     ASSERT_NE(lmd, nullptr) ;
 
     LocalMinDistance* lmdt = dynamic_cast<LocalMinDistance*>(lmd);
     ASSERT_NE(lmdt, nullptr) ;
-
-    sofa::component::collision::Point p1;
-    sofa::component::collision::Point p2;
-
 
     sofa::simulation::getSimulation()->unload(root);
 }
@@ -99,9 +96,9 @@ void TestLocalMinDistance::checkMissingRequiredAttributes()
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
-    BaseObject* lmd = root->getTreeNode("Level 1")->getObject("lmd") ;
+    auto* lmd = root->getTreeNode("Level 1")->getObject("lmd") ;
     ASSERT_NE(lmd, nullptr) ;
 
     sofa::simulation::getSimulation()->unload(root);
@@ -124,9 +121,9 @@ void TestLocalMinDistance::checkAttributes()
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
-    BaseObject* lmd = root->getTreeNode("Level 1")->getObject("lmd") ;
+    auto* lmd = root->getTreeNode("Level 1")->getObject("lmd") ;
     ASSERT_NE(lmd, nullptr) ;
 
     /// List of the supported attributes the user expect to find
@@ -159,9 +156,9 @@ void TestLocalMinDistance::checkDoubleInit()
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
-    BaseObject* lmd = root->getTreeNode("Level 1")->getObject("lmd") ;
+    auto* lmd = root->getTreeNode("Level 1")->getObject("lmd") ;
     ASSERT_NE(lmd, nullptr) ;
 
     lmd->init() ;
@@ -190,9 +187,9 @@ void TestLocalMinDistance::checkInitReinit()
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
-    root->init(ExecParams::defaultInstance()) ;
+    root->init(sofa::core::execparams::defaultInstance()) ;
 
-    BaseObject* lmd = root->getTreeNode("Level 1")->getObject("lmd") ;
+    auto* lmd = root->getTreeNode("Level 1")->getObject("lmd") ;
     ASSERT_NE(lmd, nullptr) ;
 
     lmd->reinit() ;

@@ -66,7 +66,7 @@ struct TetrahedronFEMForceField_stepTest : public ForceField_test<_TetrahedronFE
     typedef typename ForceType::Deriv Deriv;
     typedef typename Coord::value_type Real;
     typedef type::Vec<3,Real> Vec3;
-    
+
     VecCoord x;
     VecDeriv v,f;
 

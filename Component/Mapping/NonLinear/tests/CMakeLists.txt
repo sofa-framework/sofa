@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(Sofa.Component.Topology.Mapping.NonLinear_test)
+project(Sofa.Component.Mapping.NonLinear_test)
 
 set(SOURCE_FILES
     DistanceMapping_test.cpp
@@ -11,6 +11,9 @@ set(SOURCE_FILES
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} Sofa.Testing Sofa.Component.Topology.Mapping.NonLinear Sofa.Component.Topology.Mapping.Testing)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing Sofa.Component.Mapping.Testing)
+target_link_libraries(${PROJECT_NAME} Sofa.Component.Mapping.NonLinear Sofa.Component.Topology.Container.Dynamic Sofa.Component.StateContainer)
+target_link_libraries(${PROJECT_NAME} SceneCreator)
+
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

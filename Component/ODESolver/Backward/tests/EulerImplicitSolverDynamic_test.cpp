@@ -28,8 +28,8 @@ using sofa::testing::BaseSimulationTest;
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 
-#include <SofaBaseMechanics/MechanicalObject.h>
-typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
+#include <sofa/component/statecontainer/MechanicalObject.h>
+typedef sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
 
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -113,7 +113,7 @@ struct EulerImplicitDynamic_test : public component::odesolver::testing::ODESolv
 
         // Get mechanical object
         simulation::Node::SPtr massNode = m_si.root->getChild("MassNode");
-        typename container::MechanicalObject<_DataTypes>::SPtr dofs = massNode->get<container::MechanicalObject<_DataTypes>>(m_si.root->SearchDown);
+        typename statecontainer::MechanicalObject<_DataTypes>::SPtr dofs = massNode->get<container::MechanicalObject<_DataTypes>>(m_si.root->SearchDown);
 
         // Animate
         do

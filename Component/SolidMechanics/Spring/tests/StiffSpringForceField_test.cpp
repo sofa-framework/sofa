@@ -83,7 +83,7 @@ struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceFiel
     typedef type::Vec<3,Real> Vec3;
 
     typedef ForceType Spring;
-    typedef component::container::MechanicalObject<DataTypes> DOF;
+    typedef component::statecontainer::MechanicalObject<DataTypes> DOF;
 
 
     /** @name Test_Cases

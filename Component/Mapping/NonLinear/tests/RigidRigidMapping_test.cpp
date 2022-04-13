@@ -28,11 +28,10 @@ using sofa::testing::NumericTest;
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <SofaRigid/RigidRigidMapping.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/mapping/nonlinear/RigidRigidMapping.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 
-#include <SofaBaseMechanics_test/MappingTestCreation.h>
-#include <SofaComponentAll/initSofaComponentAll.h>
+#include <sofa/component/mapping/testing/MappingTestCreation.h>
 
 namespace sofa {
 namespace {
@@ -58,7 +57,7 @@ struct RigidRigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidRig
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
     typedef typename In::Coord::Pos InCoordPos;
-    typedef container::MechanicalObject<In> InMechanicalObject;
+    typedef statecontainer::MechanicalObject<In> InMechanicalObject;
     typedef typename InMechanicalObject::ReadVecCoord  ReadInVecCoord;
     typedef typename InMechanicalObject::WriteVecCoord WriteInVecCoord;
     typedef typename InMechanicalObject::WriteVecDeriv WriteInVecDeriv;
@@ -74,7 +73,7 @@ struct RigidRigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidRig
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
     typedef typename Out::Coord::Pos OutCoordPos;
-    typedef container::MechanicalObject<Out> OutMechanicalObject;
+    typedef statecontainer::MechanicalObject<Out> OutMechanicalObject;
     typedef typename OutMechanicalObject::WriteVecCoord WriteOutVecCoord;
     typedef typename OutMechanicalObject::WriteVecDeriv WriteOutVecDeriv;
     typedef typename OutMechanicalObject::ReadVecCoord ReadOutVecCoord;
@@ -84,7 +83,6 @@ struct RigidRigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidRig
 
     void SetUp() override
     {
-        sofa::component::initSofaComponentAll(); 
     }
 
     RigidRigidMappingTest()
@@ -289,7 +287,7 @@ struct RigidRigidMappingTest : public sofa::mapping_test::Mapping_test<_RigidRig
 
 // Define the list of types to instanciate. We do not necessarily need to test all combinations.
 using ::testing::Types;
-typedef Types<mapping::RigidRigidMapping<defaulttype::Rigid3Types,defaulttype::Rigid3Types> > DataTypes; // the types to instanciate.
+typedef Types<mapping::nonlinear::RigidRigidMapping<defaulttype::Rigid3Types,defaulttype::Rigid3Types> > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
 TYPED_TEST_SUITE(RigidRigidMappingTest, DataTypes);

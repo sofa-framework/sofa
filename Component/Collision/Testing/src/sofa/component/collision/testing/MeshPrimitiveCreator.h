@@ -22,7 +22,7 @@
 #pragma once
 
 #include <SofaBaseTopology/MeshTopology.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 
 #include <SofaMeshCollision/TriangleModel.h>
 
@@ -33,12 +33,12 @@ using sofa::simulation::Node;
 
 using sofa::type::Vec3;
 
-typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
-typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> MechanicalObjectRigid3;
+typedef sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
+typedef sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::Rigid3Types> MechanicalObjectRigid3;
 
 using sofa::core::objectmodel::Data;
 using sofa::core::objectmodel::New;
-using sofa::component::container::MechanicalObject;
+using sofa::component::statecontainer::MechanicalObject;
 using namespace sofa::defaulttype;
 
 namespace sofa::collision_test

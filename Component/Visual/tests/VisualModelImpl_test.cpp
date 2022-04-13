@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #include <gtest/gtest.h>
-#include <SofaBaseVisual/VisualModelImpl.h>
+#include <sofa/component/visual/VisualModelImpl.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa {
@@ -38,7 +38,7 @@ struct VisualModelImpl_test : public ::testing::Test
 
 };
 
-struct StubVisualModelImpl : public component::visualmodel::VisualModelImpl {};
+struct StubVisualModelImpl : public component::visual::VisualModelImpl {};
 
 // Define the list of DataTypes to instanciate
 using testing::Types;

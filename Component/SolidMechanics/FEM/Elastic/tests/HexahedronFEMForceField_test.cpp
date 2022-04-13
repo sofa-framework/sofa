@@ -47,7 +47,7 @@ struct HexahedronFEMForceField_test : public ForceField_test<_HexahedronFEMForce
     typedef helper::Vec<3,Real> Vec3;
 
     typedef ForceType Spring;
-    typedef component::container::MechanicalObject<DataTypes> DOF;
+    typedef component::statecontainer::MechanicalObject<DataTypes> DOF;
 
     VecCoord x;
     VecDeriv v,f;

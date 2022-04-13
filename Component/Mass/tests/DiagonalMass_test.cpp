@@ -19,26 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseMechanics/DiagonalMass.h>
+#include <sofa/component/mass/DiagonalMass.h>
 
 using sofa::core::ExecParams ;
 
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
-#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/EdgeSetTopologyModifier.h>
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
-#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/QuadSetTopologyContainer.h>
-#include <SofaBaseTopology/QuadSetTopologyModifier.h>
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyModifier.h>
-#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+#include <sofa/component/topology/container/dynamic/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/EdgeSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/EdgeSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/QuadSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/QuadSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/QuadSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/HexahedronSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/HexahedronSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/HexahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyModifier.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.h>
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
@@ -59,12 +59,12 @@ using sofa::testing::BaseTest;
 
 
 using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
+using namespace sofa::component::topology::container::dynamic;
 
 using sofa::core::objectmodel::New;
 using sofa::core::objectmodel::BaseObject;
 using sofa::component::mass::DiagonalMass;
-using sofa::component::container::MechanicalObject;
+using sofa::component::statecontainer::MechanicalObject;
 
 
 namespace sofa {

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <SofaBaseTopology/TriangleSetTopologyModifier.h>
 #include <SofaGeneralDeformable/TriangularBendingSprings.h>
@@ -43,7 +43,7 @@ namespace sofa
 {
 using namespace sofa::defaulttype;
 using namespace sofa::simpleapi;
-using sofa::component::container::MechanicalObject;
+using sofa::component::statecontainer::MechanicalObject;
 
 template <class DataTypes>
 class TriangularBendingSprings_test : public BaseTest

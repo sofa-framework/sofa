@@ -28,8 +28,8 @@ using namespace sofa::simpleapi;
 #include <SofaDeformable/RestShapeSpringsForceField.h>
 #include <sofa/simulation/Node.h>
 
-#include <SofaBaseMechanics/MechanicalObject.h>
-using sofa::component::container::MechanicalObject;
+#include <sofa/component/statecontainer/MechanicalObject.h>
+using sofa::component::statecontainer::MechanicalObject;
 
 using sofa::defaulttype::Vec3Types;
 using sofa::defaulttype::Rigid3dTypes;

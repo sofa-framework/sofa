@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <SofaGeneralSimpleFem/BeamFEMForceField.h>
 #include <SofaBaseTopology/EdgeSetTopologyModifier.h>
 #include <sofa/core/topology/TopologyData.inl>
@@ -42,7 +42,7 @@ namespace sofa
 {
 using namespace sofa::defaulttype;
 using namespace sofa::simpleapi;
-using sofa::component::container::MechanicalObject;
+using sofa::component::statecontainer::MechanicalObject;
 
 template <class DataTypes>
 class BeamFEMForceField_test : public BaseTest

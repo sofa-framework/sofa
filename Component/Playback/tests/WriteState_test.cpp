@@ -32,7 +32,7 @@ using sofa::testing::BaseSimulationTest;
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaGeneralImplicitOdeSolver/VariationalSymplecticSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SofaExporter/WriteState.h>
 #include <sofa/simulation/Node.h>
@@ -53,7 +53,7 @@ namespace sofa {
         typedef typename DataTypes::Coord Coord;
         typedef typename DataTypes::VecCoord VecCoord;
         typedef typename DataTypes::VecDeriv VecDeriv;
-        typedef container::MechanicalObject<DataTypes> MechanicalObject;
+        typedef statecontainer::MechanicalObject<DataTypes> MechanicalObject;
         typedef component::mass::UniformMass<DataTypes> UniformMass;
         typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 

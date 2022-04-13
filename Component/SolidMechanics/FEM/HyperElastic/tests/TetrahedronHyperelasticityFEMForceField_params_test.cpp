@@ -26,7 +26,7 @@
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <SofaMiscFem/TetrahedronHyperelasticityFEMForceField.h>
 
 #include <SofaBase/initSofaBase.h>
@@ -60,7 +60,7 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public BaseSimulati
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
 
-    typedef sofa::component::container::MechanicalObject<DataTypes> DOF;
+    typedef sofa::component::statecontainer::MechanicalObject<DataTypes> DOF;
     typedef typename sofa::component::forcefield::TetrahedronHyperelasticityFEMForceField<DataTypes> TetrahedronHyperelasticityFEMForceField;
 
     /// @name Scene elements

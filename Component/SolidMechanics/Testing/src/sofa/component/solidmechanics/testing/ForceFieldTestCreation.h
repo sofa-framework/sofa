@@ -34,7 +34,7 @@ using sofa::testing::NumericTest;
 #include <SceneCreator/SceneCreator.h>
 #include <SceneCreator/SceneUtils.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/core/behavior/BaseForceField.h>
 
 #include <SofaBaseMechanics/initSofaBaseMechanics.h>
@@ -71,7 +71,7 @@ struct ForceField_test : public BaseSimulationTest, NumericTest<typename _ForceF
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
 
-    typedef component::container::MechanicalObject<DataTypes> DOF;
+    typedef component::statecontainer::MechanicalObject<DataTypes> DOF;
 
     /// @name Scene elements
     /// {

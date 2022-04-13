@@ -30,7 +30,7 @@ using sofa::testing::NumericTest;
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/linearalgebra/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
 #include <sofa/helper/vector.h>
@@ -65,7 +65,7 @@ struct Multi2Mapping_test : public BaseSimulationTest, NumericTest<typename _Mul
     typedef typename In1Type::Deriv In1Deriv;
     typedef typename Mapping::In1DataVecCoord In1DataVecCoord;
     typedef typename Mapping::In1DataVecDeriv In1DataVecDeriv;
-    typedef container::MechanicalObject<In1Type> In1DOFs;
+    typedef statecontainer::MechanicalObject<In1Type> In1DOFs;
     typedef typename In1DOFs::ReadVecCoord  ReadIn1VecCoord;
     typedef typename In1DOFs::WriteVecCoord WriteIn1VecCoord;
     typedef typename In1DOFs::WriteVecDeriv WriteIn1VecDeriv;
@@ -79,7 +79,7 @@ struct Multi2Mapping_test : public BaseSimulationTest, NumericTest<typename _Mul
     typedef typename In2Type::Deriv In2Deriv;
     typedef typename Mapping::In2DataVecCoord In2DataVecCoord;
     typedef typename Mapping::In2DataVecDeriv In2DataVecDeriv;
-    typedef container::MechanicalObject<In2Type> In2DOFs;
+    typedef statecontainer::MechanicalObject<In2Type> In2DOFs;
     typedef typename In2DOFs::ReadVecCoord  ReadIn2VecCoord;
     typedef typename In2DOFs::WriteVecCoord WriteIn2VecCoord;
     typedef typename In2DOFs::WriteVecDeriv WriteIn2VecDeriv;
@@ -92,7 +92,7 @@ struct Multi2Mapping_test : public BaseSimulationTest, NumericTest<typename _Mul
     typedef typename OutType::Deriv OutDeriv;
     typedef typename Mapping::OutDataVecCoord OutDataVecCoord;
     typedef typename Mapping::OutDataVecDeriv OutDataVecDeriv;
-    typedef container::MechanicalObject<OutType> OutDOFs;
+    typedef statecontainer::MechanicalObject<OutType> OutDOFs;
     typedef typename OutDOFs::WriteVecCoord WriteOutVecCoord;
     typedef typename OutDOFs::WriteVecDeriv WriteOutVecDeriv;
     typedef typename OutDOFs::ReadVecCoord ReadOutVecCoord;

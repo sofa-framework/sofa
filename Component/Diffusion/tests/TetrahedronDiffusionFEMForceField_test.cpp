@@ -25,7 +25,7 @@ using sofa::testing::BaseTest;
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
 
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaSimpleFem/TetrahedronDiffusionFEMForceField.h>
 #include <SofaBaseMechanics/DiagonalMass.h>
@@ -58,7 +58,7 @@ struct TetrahedronDiffusionFEMForceField_test : public BaseTest
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
 
-    typedef component::container::MechanicalObject<DataTypes> DOF;
+    typedef component::statecontainer::MechanicalObject<DataTypes> DOF;
     typedef typename component::topology::RegularGridTopology RegularGridTopology;
     typedef typename component::forcefield::TetrahedronDiffusionFEMForceField<DataTypes> TetrahedronDiffusionFEMForceField;
     typedef typename component::mass::DiagonalMass<DataTypes> DiagonalMass;

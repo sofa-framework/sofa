@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
@@ -33,7 +33,7 @@ namespace
 // Test types
 
 template<typename T>
-struct StubMechanicalObject : public component::container::MechanicalObject<T>
+struct StubMechanicalObject : public component::statecontainer::MechanicalObject<T>
 {};
 
 template<typename T>
