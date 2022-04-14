@@ -109,7 +109,7 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public BaseSimulati
         this->scene_load();
 
         // Add a Mooney-Rivlin constitutive law
-        TetrahedronHyperelasticityFEMForceField::SPtr FF = sofa::core::objectmodel::New< TetrahedronHyperelasticityFEMForceField >();
+        typename TetrahedronHyperelasticityFEMForceField::SPtr FF = sofa::core::objectmodel::New< TetrahedronHyperelasticityFEMForceField >();
         sofa::type::vector<Real> param_vector;
         param_vector.resize(3);
         // Experimental data gave a deflexion of y=-0.11625 with the following parameters (C01 = 151065.460 ; C10 = 101709.668 1e07 ; D0 = 1e07)
