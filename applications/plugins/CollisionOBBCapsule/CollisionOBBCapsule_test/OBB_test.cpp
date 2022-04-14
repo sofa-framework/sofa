@@ -25,13 +25,12 @@
 #include <CollisionOBBCapsule/detection/intersection/MeshIntTool.h>
 
 #include <SofaSimulationGraph/DAGNode.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
 
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
 
+#include <sofa/component/collision/testing/MeshPrimitiveCreator.h>
 #include "OBBCapsPrimitiveCreator.h"
-#include <SofaMeshCollision_test/MeshPrimitiveCreator.h>
 
 using namespace sofa::defaulttype;
 
@@ -82,7 +81,7 @@ struct TestTriOBB : public ::testing::Test{
     bool vertexEdge();
 };
 
-typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdRigidTypes<3, double> > MechanicalObjectRigid3d;
+typedef sofa::component::statecontainer::MechanicalObject<sofa::defaulttype::StdRigidTypes<3, double> > MechanicalObjectRigid3d;
 typedef MechanicalObjectRigid3d MechanicalObjectRigid3;
 
 sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr TestSphereOBB::makeMyRSphere(const Vec3 & center,double radius,const Vec3 & v,

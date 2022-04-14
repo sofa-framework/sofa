@@ -25,8 +25,6 @@ using sofa::testing::NumericTest;
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <SofaRigid/RigidMapping.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
 
 
 namespace sofa {
@@ -75,8 +73,8 @@ typedef Types<defaulttype::Rigid3Types> DataTypes; // the types to instanciate.
 TYPED_TEST_SUITE(QuaternionIntegrationTest, DataTypes);
 
 // first test case
-TYPED_TEST( QuaternionIntegrationTest, quaternion_angle) {
-    EXPECT_MSG_NOEMIT(Error) ;
+TYPED_TEST(QuaternionIntegrationTest, quaternion_angle) {
+    EXPECT_MSG_NOEMIT(Error);
     this->test_quaternion_angle();
 }
 

@@ -40,7 +40,6 @@ typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3Ty
 
 using sofa::core::objectmodel::Data;
 using sofa::core::objectmodel::New;
-using sofa::component::container::MechanicalObject;
 using namespace sofa::defaulttype;
 
 namespace sofa

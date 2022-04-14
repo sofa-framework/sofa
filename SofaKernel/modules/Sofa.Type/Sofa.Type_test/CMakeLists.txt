@@ -10,7 +10,6 @@ set(SOURCE_FILES
     vector_test.cpp
     MatTypes_test.cpp
     VecTypes_test.cpp
-    QuaternionIntegration_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

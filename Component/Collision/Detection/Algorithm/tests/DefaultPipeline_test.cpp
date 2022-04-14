@@ -48,8 +48,8 @@ using sofa::core::ExecParams ;
 #include <sofa/helper/BackTrace.h>
 using sofa::helper::BackTrace;
 
-#include <sofa/testing/BaseTest.h>
-using sofa::testing::BaseTest;
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 #include <SofaSimulationGraph/SimpleApi.h>
 
@@ -64,7 +64,7 @@ int initMessage(){
 
 int messageInited = initMessage();
 
-class TestDefaultPipeLine : public BaseTest {
+class TestDefaultPipeLine : public BaseSimulationTest {
 public:
     Node::SPtr root;
 
@@ -77,6 +77,7 @@ public:
 
     void SetUp() override
     {
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer"); 
         sofa::simpleapi::importPlugin("Sofa.Component.Collision");
     }
 
