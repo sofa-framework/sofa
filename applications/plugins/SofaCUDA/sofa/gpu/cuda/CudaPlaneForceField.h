@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDAPLANEFORCEFIELD_H
-#define SOFA_GPU_CUDA_CUDAPLANEFORCEFIELD_H
+#pragma once
 
 #include "CudaTypes.h"
 #include <SofaBoundaryCondition/PlaneForceField.h>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 template<class real>
@@ -43,14 +36,9 @@ struct GPUPlane
     real damping;
 };
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::mechanicalload
 {
 
 template<class TCoord, class TDeriv, class TReal>
@@ -95,10 +83,4 @@ void PlaneForceField<gpu::cuda::CudaVec3d1Types>::addDForce(const core::Mechanic
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mechanicalload

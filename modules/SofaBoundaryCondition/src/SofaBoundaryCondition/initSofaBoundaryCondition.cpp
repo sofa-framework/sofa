@@ -34,9 +34,10 @@ void initSofaBoundaryCondition()
     static bool first = true;
     if (first)
     {
-        // msg_deprecated("SofaBoundaryCondition") << "SofaBoundaryCondition is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Constraint.Projective instead.";
+        // msg_deprecated("SofaBoundaryCondition") << "SofaBoundaryCondition is deprecated. It will be removed at v23.06. You may use Sofa.Component.Constraint.Projective and Sofa.Component.MechanicalLoad instead.";
 
         sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Constraint.Projective");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.MechanicalLoad");
 
         first = false;
     }

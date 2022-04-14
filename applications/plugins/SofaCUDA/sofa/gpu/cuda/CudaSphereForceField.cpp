@@ -24,13 +24,7 @@
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 int SphereForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
@@ -38,8 +32,4 @@ int SphereForceFieldCudaClass = core::RegisterObject("Supports GPU-side computat
         .add< component::forcefield::SphereForceField<CudaVec3f1Types> >()
         ;
 
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
+} // namespace sofa::gpu::cuda

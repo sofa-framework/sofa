@@ -19,30 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 #include "CudaTypes.h"
 #include <SofaBoundaryCondition/LinearForceField.h>
 #include <sofa/core/behavior/ForceField.inl>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 template<class DataTypes>
 class CudaKernelsLinearForceField;
 
-}// namespace cuda
+}// namespace sofa::gpu::cuda
 
-}// namespace gpu
 
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::mechanicalload
 {
 
 
@@ -95,8 +86,4 @@ template<>
 SReal LinearForceField< gpu::cuda::CudaRigid3dTypes >::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
 #endif // SOFA_GPU_CUDA_SReal
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
+} // namespace sofa::component::mechanicalload
