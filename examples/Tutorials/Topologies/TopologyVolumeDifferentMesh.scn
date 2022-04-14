@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <!-- See https://wiki.sofa-framework.org/wiki/TutorialTopologyVolumeMesh -->
 <Node name="root" gravity="0 -9.86 0" dt="0.05">
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshGmshLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [IdentityMapping] -->
@@ -13,7 +14,6 @@
     <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [CylinderGridTopology] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [FixedConstraint] -->
     <!-- Basic Components to perform the collision detection -->
     <VisualStyle displayFlags="showBehaviorModels showVisual showWireframe" />
     <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" />
