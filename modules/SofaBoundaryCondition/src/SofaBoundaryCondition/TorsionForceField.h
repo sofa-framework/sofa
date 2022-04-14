@@ -41,19 +41,6 @@ using sofa::core::MechanicalParams;
 using sofa::defaulttype::Vec3Types;
 using sofa::defaulttype::Rigid3Types;
 
-template<typename DataTypes>
-struct TorsionForceFieldTraits
-{
-	typedef typename DataTypes::Real Real;
-	typedef typename DataTypes::Coord Coord;
-	typedef typename DataTypes::Deriv Deriv;
-	typedef type::vector<Coord> VecCoord;
-	typedef type::vector<Deriv> VecDeriv;
-	enum { deriv_total_size = Coord::total_size };
-	typedef Mat<deriv_total_size, deriv_total_size, Real> MatrixBlock;
-};
-
-
 ///
 ///	\brief TorsionForceField
 ///
@@ -68,13 +55,11 @@ public:
 	SOFA_CLASS(SOFA_TEMPLATE(TorsionForceField,DataTypes),SOFA_TEMPLATE(sofa::core::behavior::ForceField,DataTypes));
 
 	typedef ForceField<DataTypes> Inherit;
-	typedef TorsionForceFieldTraits<DataTypes> Traits;
-	typedef typename Traits::Real Real;
-	typedef typename Traits::Coord Coord;
-	typedef typename Traits::Deriv Deriv;
-	typedef typename Traits::VecCoord VecCoord;
-	typedef typename Traits::VecDeriv VecDeriv;
-	typedef typename Traits::MatrixBlock MatrixBlock;
+	typedef typename DataTypes::Real Real;
+	typedef typename DataTypes::Coord Coord;
+	typedef typename DataTypes::Deriv Deriv;
+	typedef typename DataTypes::VecCoord VecCoord;
+	typedef typename DataTypes::VecDeriv VecDeriv;
 	typedef typename DataTypes::CPos Pos;
 //	typedef TorsionForceFieldUtility<DataTypes> FFUtil;
 	typedef Data<VecCoord> DataVecCoord;
