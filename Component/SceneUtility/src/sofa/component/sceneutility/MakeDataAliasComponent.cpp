@@ -37,14 +37,13 @@ MakeDataAliasComponent::MakeDataAliasComponent()
     : d_componentname(initData(&d_componentname, "componentname", "The component class for which to create an alias."))
     , d_dataname(initData(&d_dataname, "dataname", "The data field for which to create an alias."))
     , d_alias(initData(&d_alias, "alias", "The alias of the data field."))
-    , d_keepAliasAfterDestruction(initData(&d_keepAliasAfterDestruction, false, "keepAliasAfterDestruction", "If true, the alias continues to be active after the destruction of this component. Otherwise, it is removed."))
 {
     d_componentState.setValue(ComponentState::Invalid) ;
 }
 
 MakeDataAliasComponent::~MakeDataAliasComponent()
 {
-    if (m_hasAddedAlias && !d_keepAliasAfterDestruction.getValue())
+    if (m_hasAddedAlias)
     {
         ObjectFactory::ClassEntry& creatorentry = ObjectFactory::getInstance()->getEntry(d_componentname.getValue());
         auto& aliases = creatorentry.m_dataAlias[d_dataname.getValue()];
