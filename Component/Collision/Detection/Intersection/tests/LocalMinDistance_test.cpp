@@ -1,3 +1,25 @@
+/******************************************************************************
+*                 SOFA, Simulation Open-Framework Architecture                *
+*                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+
 #include <vector>
 using std::vector;
 
@@ -16,11 +38,15 @@ using sofa::simulation::Node ;
 using sofa::simulation::SceneLoaderXML ;
 using sofa::core::ExecParams ;
 
-#include <SofaConstraint/LocalMinDistance.h>
-using sofa::component::collision::LocalMinDistance ;
+#include <sofa/component/collision/detection/intersection/LocalMinDistance.h>
+using sofa::component::collision::detection::intersection::LocalMinDistance ;
 
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository ;
+
+#include <SofaSimulationGraph/SimpleApi.h>
+
+#include <gtest/gtest-spi.h> // for expected non fatal
 
 using namespace sofa::testing;
 using namespace sofa::helper::logging;
@@ -31,6 +57,7 @@ namespace
 struct TestLocalMinDistance : public BaseSimulationTest {
     void SetUp()
     {
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
     }
     void TearDown()
     {
@@ -163,9 +190,8 @@ void TestLocalMinDistance::checkDoubleInit()
 
     lmd->init() ;
 
-    //TODO(dmarchal) ask consortium what is the status for double call.
-    FAIL() << "TODO: Calling init twice does not produce any warning message" ;
-
+    FAIL() << "TODO: Calling init twice does not produce any warning message";
+ 
     sofa::simulation::getSimulation()->unload(root);
 }
 
@@ -208,13 +234,7 @@ TEST_F(TestLocalMinDistance, checkBasicIntersectionTests_OpenIssue)
     checkBasicIntersectionTests();
 }
 
-//TODO(dmarchal): restore the two tests when the double call status will be clarified. deprecated after (14/11/2016)+6 month
-TEST_F(TestLocalMinDistance, checkInitReinit_OpenIssue)
-{
-    checkInitReinit();
-}
-
-TEST_F(TestLocalMinDistance, checkDoubleInit_OpenIssue)
+TEST_F(TestLocalMinDistance, DISABLED_checkDoubleInit_OpenIssue)
 {
     checkDoubleInit();
 }

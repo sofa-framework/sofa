@@ -45,6 +45,8 @@ using sofa::core::execparams::defaultInstance;
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem ;
 
+#include <SofaSimulationGraph/SimpleApi.h>
+
 using ::testing::Types;
 
 #include <filesystem>
@@ -57,6 +59,12 @@ class MeshExporter_test : public BaseSimulationTest,
 public:
     /// remove the file created...
     std::vector<string> dataPath ;
+
+    void SetUp() override
+    {
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Grid");
+    }
 
     void TearDown() override
     {

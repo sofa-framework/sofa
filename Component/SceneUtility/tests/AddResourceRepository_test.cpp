@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/testing/BaseTest.h>
-using sofa::testing::BaseTest;
+#include <sofa/testing/BaseSimulationTest.h>
+using sofa::testing::BaseSimulationTest;
 
 #include <sofa/helper/BackTrace.h>
 
@@ -39,7 +39,7 @@ namespace sofa
 const std::string& START_STR("<Node name=\"root\"  >");
 const std::string& END_STR("</Node>");
 
-struct AddResourceRepository_test : public BaseTest
+struct AddResourceRepository_test : public BaseSimulationTest
 {
     sofa::simulation::Node::SPtr m_root;
     std::string m_testRepoDir;

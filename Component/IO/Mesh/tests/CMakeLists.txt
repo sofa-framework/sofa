@@ -14,7 +14,7 @@ set(SOURCE_FILES
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-add_definitions("-DSOFA_COMPONENT_IO_MESH_TEST_FILES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/files\"")
+add_definitions("-DSOFA_COMPONENT_IO_MESH_TEST_FILES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/files/\"")
 target_link_libraries(${PROJECT_NAME} Sofa.Testing Sofa.Component.IO.Mesh)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

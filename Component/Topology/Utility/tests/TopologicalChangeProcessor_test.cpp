@@ -347,12 +347,12 @@ struct AddTetrahedronProcessor_test : TopologicalChangeProcessor_test
 };
 
 
-TEST_F(RemoveTetrahedronProcessor_test, RemoveTretrahedra)
+TEST_F(RemoveTetrahedronProcessor_test, RemoveTetrahedra)
 {
     ASSERT_TRUE(this->testTopologyChanges());
 }
 
-TEST_F(AddTetrahedronProcessor_test, AddTretrahedra)
+TEST_F(AddTetrahedronProcessor_test, AddTetrahedra)
 {
     ASSERT_TRUE(this->testTopologyChanges());
 }

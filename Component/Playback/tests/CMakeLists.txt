@@ -8,7 +8,7 @@ set(SOURCE_FILES
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-add_definitions("-DSOFA_COMPONENT_PLAYBACK_TEST_FILES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/files\"")
+add_definitions("-DSOFA_COMPONENT_PLAYBACK_TEST_FILES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/files/\"")
 add_definitions("-DSOFA_COMPONENT_PLAYBACK_TEST_BUILD_DIR=\"${CMAKE_BINARY_DIR}/\"")
 
 target_link_libraries(${PROJECT_NAME} Sofa.Testing)

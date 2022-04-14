@@ -59,6 +59,7 @@ public:
 
     void SetUp() override
     {
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
         sofa::simpleapi::importPlugin("Sofa.Component.Visual");
     }
 

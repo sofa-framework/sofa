@@ -1,10 +1,15 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.02" showBoundingTree="0">		
-        <RequiredPlugin name="SofaSparseSolver"/>       
-        <RequiredPlugin name="SofaMiscFem"/>      
-        <RequiredPlugin name="SofaLoader"/>
-        <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels" />
-
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.HyperElastic"/>
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/>
+    <RequiredPlugin name="Sofa.Component.Collision"/>
+    <RequiredPlugin name="Sofa.Component.Mass"/>
+    <RequiredPlugin name="Sofa.Component.Topology"/>
+    <RequiredPlugin name="Sofa.Component.ODESolver"/>
+    <RequiredPlugin name="Sofa.Component.LinearSolver"/>
+    <RequiredPlugin name="Sofa.Component.Constraint"/>
+    <RequiredPlugin name="SofaEngine"/>
+    
         <Node name="MooneyRivlin-Model" activated="1">
             <EulerImplicitSolver rayleighMass="0.1" rayleighStiffness="0.1"/>
             <SparseLDLSolver saveMatrixToFile="0" />

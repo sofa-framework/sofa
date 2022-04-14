@@ -41,8 +41,8 @@ using sofa::simulation::SceneLoaderXML ;
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaGeneralSimpleFem/TetrahedralCorotationalFEMForceField.h>
-#include <SofaMiscFem/FastTetrahedralCorotationalForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/TetrahedralCorotationalFEMForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/FastTetrahedralCorotationalForceField.h>
 
 using sofa::core::execparams::defaultInstance; 
 
@@ -147,6 +147,7 @@ struct TetrahedronFEMForceField_stepTest : public ForceField_test<_TetrahedronFE
 
 
 using sofa::helper::system::thread::ctime_t;
+using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::simpleapi;
 using sofa::testing::BaseTest;
@@ -160,9 +161,9 @@ public:
     using VecCoord = typename DataTypes::VecCoord;
 
     using MState = sofa::component::container::MechanicalObject<DataTypes>;
-    using TetrahedronFEM = sofa::component::forcefield::TetrahedronFEMForceField<DataTypes>;
-    using TetraCorotationalFEM = sofa::component::forcefield::TetrahedralCorotationalFEMForceField<DataTypes>;
-    using FastTetraCorotationalFEM = sofa::component::forcefield::FastTetrahedralCorotationalForceField<DataTypes>;
+    using TetrahedronFEM = sofa::component::solidmechanics::fem::elastic::TetrahedronFEMForceField<DataTypes>;
+    using TetraCorotationalFEM = sofa::component::solidmechanics::fem::elastic::TetrahedralCorotationalFEMForceField<DataTypes>;
+    using FastTetraCorotationalFEM = sofa::component::solidmechanics::fem::elastic::FastTetrahedralCorotationalForceField<DataTypes>;
 
     using Transformation = type::Mat<3, 3, Real>;
     using MaterialStiffness = type::Mat<6, 6, Real>;
@@ -180,7 +181,6 @@ public:
 
     void SetUp() override
     {
-        sofa::simpleapi::importPlugin("SofaComponentAll");
         simulation::setSimulation(m_simulation = new simulation::graph::DAGSimulation());
     }
 

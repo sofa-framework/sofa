@@ -52,8 +52,10 @@ public:
         m_simu = createSimulation("DAG");
         m_root = createRootNode(m_simu, "root");
 
-        createObject(m_root, "RequiredPlugin", {
-            { "name", "SofaLoader" } });
+        sofa::simpleapi::importPlugin("Sofa.Component.IO.Mesh");
+        sofa::simpleapi::importPlugin("Sofa.Component.StateContainer");
+        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Constant");
+        sofa::simpleapi::importPlugin("Sofa.Component.Topology.Container.Dynamic");
 
         std::string loaderType = "MeshOBJLoader";
         if (m_topoType == TopologyElementType::TETRAHEDRON || m_topoType == TopologyElementType::HEXAHEDRON)

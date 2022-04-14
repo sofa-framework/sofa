@@ -8,6 +8,8 @@
     <RequiredPlugin name="SofaBaseVisual" />
     <RequiredPlugin name="SofaBaseMechanics" />
     <RequiredPlugin name="SofaBaseLinearSolver" />
+    <RequiredPlugin name="SofaEngine" />
+    <RequiredPlugin name="SofaMeshCollision" />
 
     <VisualStyle displayFlags="showBehaviorModels"/>
     <DefaultAnimationLoop />
