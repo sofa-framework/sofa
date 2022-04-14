@@ -21,20 +21,26 @@
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaTypes.h>
 #include <sofa/core/ObjectFactory.h>
-#include <SofaConstraint/UncoupledConstraintCorrection.h>
-#include <SofaConstraint/UncoupledConstraintCorrection.inl>
+#include <sofa/component/constraint/lagrangian/correction/UncoupledConstraintCorrection.h>
+#include <sofa/component/constraint/lagrangian/correction/UncoupledConstraintCorrection.inl>
 #include <sofa/core/behavior/ConstraintCorrection.inl>
 
-namespace sofa::component::constraintset
+namespace sofa::component::constraint::lagrangian::correction
 {
 using namespace sofa::gpu::cuda;
 
 template class SOFA_GPU_CUDA_API UncoupledConstraintCorrection< CudaVec3fTypes >;
 template class SOFA_GPU_CUDA_API UncoupledConstraintCorrection< CudaVec3f1Types >;
 
+} // namespace sofa::component::constraint::lagrangian::correction
+
+namespace sofa::gpu::cuda
+{
+using namespace sofa::component::constraint::lagrangian::correction;
+
 const int CudaUncoupledConstraintCorrectionClass = core::RegisterObject("Supports GPU-side computations using CUDA.")
 .add< UncoupledConstraintCorrection< CudaVec3fTypes > >()
 .add< UncoupledConstraintCorrection< CudaVec3f1Types > >()
 ;
 
-} // namespace sofa::component::constraintset
+} // namespace sofa::gpu::cuda
