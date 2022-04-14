@@ -1017,11 +1017,6 @@ TEST_F(FastTetrahedralCorotationalForceField3_test, checkDefaultAttributes)
 //}
 
 
-// performances tests. Disabled by default
-TEST_F(TetrahedronFEMForceField3_test, DISABLED_testFEMPerformance)
-{
-    this->testFEMPerformance(0);
-}
 TEST_F(TetrahedralCorotationalFEMForceField3_test, DISABLED_testFEMPerformance)
 {
     this->testFEMPerformance(1);
