@@ -1685,7 +1685,7 @@ void MechanicalObject<DataTypes>::setVecIdProperties(core::TVecId<vtype, vaccess
 {
     if (!properties.label.empty())
     {
-        vec_d->setName(properties.label + core::VecTypeLabels.at(core::V_COORD));
+        vec_d->setName(properties.label + core::VecTypeLabels.at(vtype));
         vec_d->setHelp("VecId: " + v.getName());
     }
     if (!properties.group.empty())
