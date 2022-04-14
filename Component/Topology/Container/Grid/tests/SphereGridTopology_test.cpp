@@ -22,12 +22,12 @@
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
 
-#include <SofaGeneralTopology/SphereGridTopology.h>
+#include <sofa/component/topology/container/grid/SphereGridTopology.h>
 
 namespace sofa
 {
 
-using namespace sofa::component::topology;
+using namespace sofa::component::topology::container::grid;
 
 struct SphereGridTopology_test : public BaseTest
 {

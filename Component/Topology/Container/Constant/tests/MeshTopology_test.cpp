@@ -20,20 +20,21 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "fake_TopologyScene.h"
+#include <sofa/component/topology/testing/fake_TopologyScene.h>
 #include <sofa/testing/BaseTest.h>
 
-#include <SofaBaseTopology/MeshTopology.h>
-#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/QuadSetTopologyContainer.h>
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
-#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/container/constant/MeshTopology.h>
+#include <sofa/component/topology/container/dynamic/HexahedronSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/QuadSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/EdgeSetTopologyContainer.h>
 
 
 #include <sofa/helper/system/FileRepository.h>
 
-using namespace sofa::component::topology;
+using namespace sofa::component::topology::container::dynamic;
+using namespace sofa::component::topology::container::constant;
 using namespace sofa::core::topology;
 using namespace sofa::testing;
 

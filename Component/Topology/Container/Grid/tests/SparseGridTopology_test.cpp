@@ -24,17 +24,17 @@
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
 
-#include <SofaBaseTopology/SparseGridTopology.h>
+#include <sofa/component/topology/container/grid/SparseGridTopology.h>
 
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository;
 
-#include <SofaGeneralLoader/MeshSTLLoader.h>
-using sofa::component::loader::MeshSTLLoader;
+#include <sofa/component/io/mesh/MeshSTLLoader.h>
+using sofa::component::io::mesh::MeshSTLLoader;
 
 using sofa::core::objectmodel::New ;
 using sofa::type::Vector3 ;
-using namespace sofa::component::topology;
+using namespace sofa::component::topology::container::grid;
 using namespace sofa::testing;
 
 

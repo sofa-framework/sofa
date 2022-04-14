@@ -8,6 +8,8 @@ set(SOURCE_FILES
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} Sofa.Testing Sofa.Component.SolidMechanics.FEM.HyperElastic)
+add_definitions("-DSOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
+target_link_libraries(${PROJECT_NAME} Sofa.Testing)
+target_link_libraries(${PROJECT_NAME} Sofa.Component.SolidMechanics.FEM.HyperElastic Sofa.Component.StateContainer Sofa.Component.ODESolver.Backward)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

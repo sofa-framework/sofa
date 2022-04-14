@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "fake_TopologyScene.h"
+#include <sofa/component/topology/testing/fake_TopologyScene.h>
 #include <sofa/testing/BaseTest.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.h>
 #include <sofa/helper/system/FileRepository.h>
 
-using namespace sofa::component::topology;
+using namespace sofa::component::topology::container::dynamic;
 using namespace sofa::testing;
 
 
@@ -412,7 +412,7 @@ bool TetrahedronSetTopology_test::checkTopology()
 
 bool TetrahedronSetTopology_test::testTetrahedronGeometry()
 {
-    typedef sofa::component::topology::TetrahedronSetGeometryAlgorithms<sofa::defaulttype::Vec3Types> TetraAlgo3;
+    typedef sofa::component::topology::container::dynamic::TetrahedronSetGeometryAlgorithms<sofa::defaulttype::Vec3Types> TetraAlgo3;
 
     fake_TopologyScene* scene = new fake_TopologyScene("mesh/6_tetra_bad.msh", sofa::core::topology::TopologyElementType::TETRAHEDRON);
 

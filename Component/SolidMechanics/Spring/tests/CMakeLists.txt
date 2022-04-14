@@ -10,6 +10,7 @@ set(SOURCE_FILES
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} Sofa.Testing Sofa.Component.SolidMechanics.Spring)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing Sofa.Component.SolidMechanics.Testing)
+target_link_libraries(${PROJECT_NAME} Sofa.Component.SolidMechanics.Spring Sofa.Component.StateContainer Sofa.Component.ODESolver.Backward Sofa.Component.LinearSolver.Iterative Sofa.Component.Topology.Container.Dynamic)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

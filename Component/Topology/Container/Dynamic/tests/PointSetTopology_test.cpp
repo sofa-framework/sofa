@@ -21,9 +21,9 @@
 ******************************************************************************/
 
 #include <gtest/gtest.h>
-#include <SofaBaseTopology/PointSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/PointSetTopologyContainer.h>
 
-using namespace sofa::component::topology;
+using namespace sofa::component::topology::container::dynamic;
 
 
 namespace

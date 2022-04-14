@@ -26,9 +26,9 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/set.h>
 // Including constraint, force and mass
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/NumericalIntegrationDescriptor.h>
-#include <SofaBaseTopology/CommonAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/NumericalIntegrationDescriptor.h>
+#include <sofa/component/topology/container/dynamic/CommonAlgorithms.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/testing/NumericTest.h>
@@ -54,15 +54,15 @@ struct TriangleNumericalIntegration_test : public NumericTest<typename _DataType
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
-    typedef typename sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes> TriangleSetGeometryAlgorithms;
-    typedef typename sofa::component::topology::NumericalIntegrationDescriptor<Real, 3> NumericalIntegrationDescriptor;
+    typedef typename sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<DataTypes> TriangleSetGeometryAlgorithms;
+    typedef typename sofa::component::topology::container::dynamic::NumericalIntegrationDescriptor<Real, 3> NumericalIntegrationDescriptor;
     //  typedef typename sofa::component::topology::lfactorial lfactorial;
     /// Root of the scene graph
     simulation::Node::SPtr root;
     /// Simulation
     simulation::Simulation* simulation;
     // the geometry algorithm algorithm
-    typename sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>::SPtr geo;
+    typename sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<DataTypes>::SPtr geo;
 
     // Create the context for the scene
     void SetUp() override
@@ -120,8 +120,10 @@ struct TriangleNumericalIntegration_test : public NumericTest<typename _DataType
                 /// use the classical integration formula on the tetrahedron with barycentric coordinates i.e.
                 /// int_{\tetrahedron} L_1^a  L_2^b  L_3^c   dV= (a! b! c!) *2V / (a+b+c+2)!
                 /// where L1 , L2 , L3  are the 3 barycentric coordinates.
-                Real realIntegral = (Real)sofa::component::topology::lfactorial(randomPolynomial[0])*
-                    sofa::component::topology::lfactorial(randomPolynomial[1])*sofa::component::topology::lfactorial(randomPolynomial[2]) / (sofa::component::topology::lfactorial((*itio) + 2));
+                using sofa::component::topology::container::dynamic::lfactorial;
+
+                Real realIntegral = (Real)lfactorial(randomPolynomial[0])*
+                    lfactorial(randomPolynomial[1])*lfactorial(randomPolynomial[2]) / (lfactorial((*itio) + 2));
                 if (fabs(realIntegral - integral) > 1e-8) {
                     ADD_FAILURE() << "Error in numerical integration on triangle for integration method " << (*itio) <<
                         "  and integration order " << (*itio) << " for polynomial defined by " << randomPolynomial << std::endl

@@ -59,7 +59,7 @@ struct TopologyChecker_test: public BaseSimulationTest
     {
         sofa::simpleapi::importPlugin("SofaComponentAll");
         // Load the scene from the xml file
-        std::string filePath = std::string(SOFAMISCTOPOLOGY_TEST_SCENES_DIR) + "/" + m_fileName;
+        std::string filePath = std::string(SOFA_COMPONENT_TOPOLOGY_UTILITY_TEST_SCENES_DIR) + "/" + m_fileName;
         m_instance = BaseSimulationTest::SceneInstance();
         // Load scene
         m_instance.loadSceneFile(filePath);

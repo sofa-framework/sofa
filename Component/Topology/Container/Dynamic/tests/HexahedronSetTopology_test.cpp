@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "fake_TopologyScene.h"
+#include <sofa/component/topology/testing/fake_TopologyScene.h>
 #include <sofa/testing/BaseTest.h>
-#include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/HexahedronSetTopologyContainer.h>
 #include <sofa/helper/system/FileRepository.h>
 
-using namespace sofa::component::topology;
+using namespace sofa::component::topology::container::dynamic;
 using namespace sofa::testing;
 
 

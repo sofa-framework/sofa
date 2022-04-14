@@ -21,9 +21,9 @@
 ******************************************************************************/
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
-#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
-#include <SofaGeneralDeformable/TriangularBendingSprings.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyModifier.h>
+#include <sofa/component/solidmechanics/spring/TriangularBendingSprings.h>
 #include <sofa/core/topology/TopologyData.inl>
 
 #include <SofaSimulationGraph/SimpleApi.h>
@@ -53,8 +53,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef MechanicalObject<DataTypes> MState;
-    using TriangleBS = sofa::component::forcefield::TriangularBendingSprings<DataTypes>;
-    using TriangleModifier = sofa::component::topology::TriangleSetTopologyModifier;
+    using TriangleBS = sofa::component::solidmechanics::spring::TriangularBendingSprings<DataTypes>;
+    using TriangleModifier = sofa::component::topology::container::dynamic::TriangleSetTopologyModifier;
     typedef typename TriangleBS::EdgeInformation EdgeInfo;
     typedef typename type::vector<EdgeInfo> VecEdgeInfo;
     using Vec3 = type::Vec<3, Real>;

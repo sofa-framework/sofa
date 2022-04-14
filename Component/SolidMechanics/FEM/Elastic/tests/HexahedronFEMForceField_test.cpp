@@ -19,14 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/component/solidmechanics/fem/elastic/HexahedronFEMForceField.h>
 
-#include <SofaSimpleFem/HexahedronFEMForceField.h>
+#include <sofa/component/solidmechanics/testing/ForceFieldTestCreation.h>
 
-#include "ForceFieldTestCreation.h"
+namespace sofa 
+{
 
-namespace sofa {
-
-using namespace modeling;
 
 /**  Test suite for HexahedronFEMForceField: we check if the accurate forces are computed
   */
@@ -127,7 +126,7 @@ struct HexahedronFEMForceField_test : public ForceField_test<_HexahedronFEMForce
 // ========= Define the list of types to instanciate.
 //using ::testing::Types;
 typedef ::testing::Types<
-component::forcefield::HexahedronFEMForceField<defaulttype::Vec3Types>
+sofa::component::solidmechanics::fem::elastic::HexahedronFEMForceField<defaulttype::Vec3Types>
 > TestTypes; // the types to instanciate.
 
 

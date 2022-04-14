@@ -26,9 +26,9 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/set.h>
 // Including constraint, force and mass
-#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
-#include <SofaBaseTopology/NumericalIntegrationDescriptor.h>
-#include <SofaBaseTopology/CommonAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/TetrahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/container/dynamic/NumericalIntegrationDescriptor.h>
+#include <sofa/component/topology/container/dynamic/CommonAlgorithms.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/testing/NumericTest.h>
@@ -53,15 +53,15 @@ struct TetrahedronNumericalIntegration_test : public NumericTest<typename _DataT
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
-    typedef typename sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes> TetrahedronSetGeometryAlgorithms;
-    typedef typename sofa::component::topology::NumericalIntegrationDescriptor<Real,4> NumericalIntegrationDescriptor;
+    typedef typename sofa::component::topology::container::dynamic::TetrahedronSetGeometryAlgorithms<DataTypes> TetrahedronSetGeometryAlgorithms;
+    typedef typename sofa::component::topology::container::dynamic::NumericalIntegrationDescriptor<Real,4> NumericalIntegrationDescriptor;
 //	typedef typename sofa::component::topology::lfactorial lfactorial;
     /// Root of the scene graph
     simulation::Node::SPtr root;
     /// Simulation
     simulation::Simulation* simulation;
     // the geometry algorithm algorithm
-    typename sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes>::SPtr geo;
+    typename sofa::component::topology::container::dynamic::TetrahedronSetGeometryAlgorithms<DataTypes>::SPtr geo;
 
     // Create the context for the scene
     void SetUp() override
@@ -119,9 +119,11 @@ struct TetrahedronNumericalIntegration_test : public NumericTest<typename _DataT
                 /// use the classical integration formula on the tetrahedron with barycentric coordinates i.e.
                 /// int_{\tetrahedron} L_1^a  L_2^b  L_3^c  L_4^d dV= (a! b! c! d!) *6V / (a+b+c+d+3)!
                 /// where L1 , L2 , L3 , L4 are the 4 barycentric coordinates.
-                Real realIntegral=(Real)sofa::component::topology::lfactorial(randomPolynomial[0])*
-                    sofa::component::topology::lfactorial(randomPolynomial[1])*sofa::component::topology::lfactorial(randomPolynomial[2])*
-                    sofa::component::topology::lfactorial(randomPolynomial[3])/(sofa::component::topology::lfactorial((*itio)+3));
+                using sofa::component::topology::container::dynamic::lfactorial;
+
+                Real realIntegral=(Real)lfactorial(randomPolynomial[0])*
+                    lfactorial(randomPolynomial[1])*lfactorial(randomPolynomial[2])*
+                    lfactorial(randomPolynomial[3])/(lfactorial((*itio)+3));
                 if (fabs(realIntegral-integral)>1e-8) {
                     ADD_FAILURE() << "Error in numerical integration on tetrahedron for integration method " <<(*itio)<<
                         "  and integration order " <<(*itio)  << " for polynomial defined by "<< randomPolynomial<< std::endl

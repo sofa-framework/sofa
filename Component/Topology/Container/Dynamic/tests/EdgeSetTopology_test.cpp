@@ -21,12 +21,12 @@
 ******************************************************************************/
 
 #include <sofa/testing/BaseTest.h>
-#include "fake_TopologyScene.h"
-#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
+#include <sofa/component/topology/testing/fake_TopologyScene.h>
+#include <sofa/component/topology/container/dynamic/EdgeSetTopologyContainer.h>
 #include <sofa/helper/system/FileRepository.h>
 
 
-using namespace sofa::component::topology;
+using namespace sofa::component::topology::container::dynamic;
 using namespace sofa::testing;
 
 

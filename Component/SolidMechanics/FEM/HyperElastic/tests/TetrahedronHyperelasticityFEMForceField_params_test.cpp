@@ -19,21 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_STANDARDTEST_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD__TEST_CPP
-#define SOFA_STANDARDTEST_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD__TEST_CPP
-
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/testing/BaseSimulationTest.h>
 using sofa::testing::BaseSimulationTest;
 
 #include <sofa/component/statecontainer/MechanicalObject.h>
-#include <SofaMiscFem/TetrahedronHyperelasticityFEMForceField.h>
+#include <sofa/component/solidmechanics/fem/hyperelastic/TetrahedronHyperelasticityFEMForceField.h>
 
-#include <SofaBase/initSofaBase.h>
-#include <SofaImplicitOdeSolver/initSofaImplicitOdeSolver.h>
-#include <SofaBoundaryCondition/initSofaBoundaryCondition.h>
-#include <SofaMiscForceField/initSofaMiscForceField.h>
-#include <SofaEngine/initSofaEngine.h>
 #include <sofa/type/Vec.h>
 
 #include <iostream>
@@ -61,7 +53,7 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public BaseSimulati
     typedef typename Coord::value_type Real;
 
     typedef sofa::component::statecontainer::MechanicalObject<DataTypes> DOF;
-    typedef typename sofa::component::forcefield::TetrahedronHyperelasticityFEMForceField<DataTypes> TetrahedronHyperelasticityFEMForceField;
+    typedef typename sofa::component::solidmechanics::fem::hyperelastic::TetrahedronHyperelasticityFEMForceField<DataTypes> TetrahedronHyperelasticityFEMForceField;
 
     /// @name Scene elements
     /// {
@@ -84,15 +76,11 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public BaseSimulati
 
     void SetUp() override
     {
-        sofa::component::initSofaBase();
-        sofa::component::initSofaImplicitOdeSolver();
-        sofa::component::initSofaBoundaryCondition();
-        sofa::component::initSofaMiscForceField();
-        sofa::component::initSofaEngine();
+
     }
 
     TetrahedronHyperelasticityFEMForceField_params_test()
-        : sceneFilename(std::string(SOFAMISCFEM_TEST_SCENES_DIR) + "/" + "TetrahedronHyperelasticityFEMForceField_base.scn")
+        : sceneFilename(std::string(SOFA_COMPONENT_SOLIDMECHANICS_FEM_HYPERELASTIC_TEST_SCENES_DIR) + "/" + "TetrahedronHyperelasticityFEMForceField_base.scn")
     {
         timeStep = 0.02;
 
@@ -121,7 +109,7 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public BaseSimulati
         this->scene_load();
 
         // Add a Mooney-Rivlin constitutive law
-        typename sofa::component::forcefield::TetrahedronHyperelasticityFEMForceField<DataTypes>::SPtr FF = sofa::core::objectmodel::New< sofa::component::forcefield::TetrahedronHyperelasticityFEMForceField<DataTypes> >();
+        TetrahedronHyperelasticityFEMForceField::SPtr FF = sofa::core::objectmodel::New< TetrahedronHyperelasticityFEMForceField >();
         sofa::type::vector<Real> param_vector;
         param_vector.resize(3);
         // Experimental data gave a deflexion of y=-0.11625 with the following parameters (C01 = 151065.460 ; C10 = 101709.668 1e07 ; D0 = 1e07)
@@ -146,7 +134,7 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public BaseSimulati
 
 // ========= Define the list of types to instanciate.
 //using ::testing::Types;
-typedef ::testing::Types<component::forcefield::TetrahedronHyperelasticityFEMForceField<defaulttype::Vec3Types> > TestTypes; // the types to instanciate.
+typedef ::testing::Types<sofa::component::solidmechanics::fem::hyperelastic::TetrahedronHyperelasticityFEMForceField<defaulttype::Vec3Types> > TestTypes; // the types to instanciate.
 
 
 // ========= Tests to run for each instanciated type
@@ -164,6 +152,3 @@ TYPED_TEST( TetrahedronHyperelasticityFEMForceField_params_test , extension )
 
 
 } // namespace sofa
-
-
-#endif /* SOFA_STANDARDTEST_TETRAHEDRONHYPERELASTICITYFEMFORCEFIELD__TEST_CPP */

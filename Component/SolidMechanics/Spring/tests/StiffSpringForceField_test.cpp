@@ -19,18 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaDeformable/StiffSpringForceField.h>
+#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
-#include <SofaBaseLinearSolver/CGLinearSolver.h>
+#include <sofa/component/odesolver/backward/EulerImplicitSolver.h>
+#include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 
-#include <SofaSimpleFem_test/ForceFieldTestCreation.h>
+#include <sofa/component/solidmechanics/testing/ForceFieldTestCreation.h>
 
 namespace sofa {
 
 using namespace modeling;
-typedef component::odesolver::EulerImplicitSolver EulerImplicitSolver;
-typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
+typedef component::odesolver::backward::EulerImplicitSolver EulerImplicitSolver;
+typedef component::linearsolver::iterative::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
 /** Used to rotate points and vectors in space for tests
  *
@@ -207,8 +207,8 @@ struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceFiel
 // ========= Define the list of types to instanciate.
 //using ::testing::Types;
 typedef ::testing::Types<
-component::interactionforcefield::StiffSpringForceField<defaulttype::Vec2Types>,  // 2D
-component::interactionforcefield::StiffSpringForceField<defaulttype::Vec3Types>   // 3D
+component::solidmechanics::spring::StiffSpringForceField<defaulttype::Vec2Types>,  // 2D
+component::solidmechanics::spring::StiffSpringForceField<defaulttype::Vec3Types>   // 3D
 > TestTypes; // the types to instanciate.
 
 

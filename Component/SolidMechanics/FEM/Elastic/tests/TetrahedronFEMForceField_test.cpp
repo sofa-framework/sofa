@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimpleFem/TetrahedronFEMForceField.h>
+#include <sofa/component/solidmechanics/fem/elastic/TetrahedronFEMForceField.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::core::objectmodel::ComponentState ;
@@ -30,7 +30,7 @@ using sofa::simulation::Node ;
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
-#include "ForceFieldTestCreation.h"
+#include <sofa/component/solidmechanics/testing/ForceFieldTestCreation.h>
 #include <sofa/testing/BaseTest.h>
 #include <SofaSimulationGraph/SimpleApi.h>
 #include <sofa/helper/system/thread/CTime.h>
@@ -48,7 +48,6 @@ using sofa::core::execparams::defaultInstance;
 
 namespace sofa {
 
-using namespace modeling;
 
 /**  Test suite for TetrahedronFEMForceField.
   */
@@ -849,7 +848,7 @@ public:
 // ========= Define the list of types to instanciate.
 //using ::testing::Types;
 typedef ::testing::Types<
-component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3Types>
+sofa::component::solidmechanics::fem::elastic::TetrahedronFEMForceField<defaulttype::Vec3Types>
 > TestTypes; // the types to instanciate.
 
 

@@ -14,4 +14,4 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC src/)
 
-target_link_libraries(${PROJECT_NAME} Sofa.Config Sofa.SimulationCore)
+target_link_libraries(${PROJECT_NAME} Sofa.Config Sofa.SimulationCore SceneCreator)

@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_TOPOLOGY_TEST_FAKE_TOPOLOGYSCENE_H
-#define SOFA_COMPONENT_TOPOLOGY_TEST_FAKE_TOPOLOGYSCENE_H
-
+#pragma once
+#include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/Utils.h>
 #include <sofa/core/topology/Topology.h>
 #include <SofaSimulationGraph/SimpleApi.h>
 #include <sofa/simulation/Node.h>
@@ -32,10 +32,80 @@ public:
     /**
     * Default constructor, take the filepath of the mesh file to load, the type of topology and if the topology is static (MeshTopology)
     */
-    fake_TopologyScene(const std::string& filename, sofa::core::topology::TopologyElementType topoType, bool staticTopo = false);
+    fake_TopologyScene(const std::string& filename, sofa::core::topology::TopologyElementType topoType, bool staticTopo = false)
+        : m_topoType(topoType)
+        , m_filename(filename)
+        , m_staticTopology(staticTopo)
+    {
+        //force load sofabase
+        sofa::helper::system::DataRepository.addFirstPath(SOFA_COMPONENT_TOPOLOGY_TESTING_RESOURCES_DIR);
+
+        loadMeshFile();
+    }
 
     /// Method to load the mesh and fill the topology asked
-    bool loadMeshFile();
+    bool loadMeshFile()
+    {
+        using namespace sofa::simpleapi;
+        using namespace sofa::core::topology;
+
+        m_simu = createSimulation("DAG");
+        m_root = createRootNode(m_simu, "root");
+
+        createObject(m_root, "RequiredPlugin", {
+            { "name", "SofaLoader" } });
+
+        std::string loaderType = "MeshOBJLoader";
+        if (m_topoType == TopologyElementType::TETRAHEDRON || m_topoType == TopologyElementType::HEXAHEDRON)
+            loaderType = "MeshGmshLoader";
+
+
+        auto loader = createObject(m_root, loaderType, {
+            { "name","loader" },
+            { "filename", sofa::helper::system::DataRepository.getFile(m_filename) } });
+
+        auto meca = createObject(m_root, "MechanicalObject", {
+            { "name", "dof" },
+            { "position", "@loader.position"} });
+
+
+        if (m_staticTopology)
+        {
+            auto topo = createObject(m_root, "MeshTopology", {
+                { "name", "topoCon" },
+                { "src", "@loader" }
+                });
+        }
+        else
+        {
+            std::string topoType = "";
+            if (m_topoType == TopologyElementType::POINT)
+                topoType = "Point";
+            else if (m_topoType == TopologyElementType::EDGE)
+                topoType = "Edge";
+            else if (m_topoType == TopologyElementType::TRIANGLE)
+                topoType = "Triangle";
+            else if (m_topoType == TopologyElementType::QUAD)
+                topoType = "Quad";
+            else if (m_topoType == TopologyElementType::TETRAHEDRON)
+                topoType = "Tetrahedron";
+            else if (m_topoType == TopologyElementType::HEXAHEDRON)
+                topoType = "Hexahedron";
+
+            // create topology components
+            auto topo = createObject(m_root, topoType + "SetTopologyContainer", {
+                { "name", "topoCon" },
+                { "src", "@loader" }
+                });
+
+            createObject(m_root, topoType + "SetTopologyModifier", { { "name", "topoMod" } });
+            createObject(m_root, topoType + "SetGeometryAlgorithms", { { "name", "topoGeo" } });
+        }
+
+        m_simu->init(m_root.get());
+
+        return true;
+    }
 
     /// Method to get acces to node containing the meshLoader and the toplogy container.
     sofa::simulation::Node::SPtr getNode() { return m_root; }
@@ -53,6 +123,3 @@ protected:
     /// Bool storing if static or dynamyc topology.
     bool m_staticTopology;
 };
-
-
-#endif // SOFA_COMPONENT_TOPOLOGY_TEST_FAKE_TOPOLOGYSCENE_H

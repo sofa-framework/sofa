@@ -20,8 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/testing/BaseSimulationTest.h>
-#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
-#include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic/TriangleSetTopologyContainer.h>
+#include <sofa/component/topology/container/dynamic//TetrahedronSetTopologyContainer.h>
 
 #include <SofaSimulationGraph/SimpleApi.h>
 #include <sofa/simulation/Node.h>
@@ -31,7 +31,7 @@ using sofa::testing::BaseSimulationTest;
 namespace 
 {
 
-using namespace sofa::component::topology;
+using namespace sofa::component::topology::container::dynamic;
 using namespace sofa::simulation;
 
 /**  Test TopologicalChangeProcessor incise process
@@ -48,9 +48,8 @@ struct TopologicalChangeProcessor_test: public BaseSimulationTest
     /// Method use at start to load the scene file    
     void SetUp() override
     {
-        sofa::simpleapi::importPlugin("SofaComponentAll");
         // Load the scene from the xml file
-        std::string filePath = std::string(SOFAMISCTOPOLOGY_TEST_SCENES_DIR) + "/" + m_fileName;
+        std::string filePath = std::string(SOFA_COMPONENT_TOPOLOGY_UTILITY_TEST_SCENES_DIR) + "/" + m_fileName;
         m_instance = BaseSimulationTest::SceneInstance();
         // Load scene
         m_instance.loadSceneFile(filePath);

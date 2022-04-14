@@ -25,7 +25,7 @@ using sofa::testing::BaseTest;
 #include <SofaSimulationGraph/SimpleApi.h>
 using namespace sofa::simpleapi;
 
-#include <SofaDeformable/RestShapeSpringsForceField.h>
+#include <sofa/component/solidmechanics/spring/RestShapeSpringsForceField.h>
 #include <sofa/simulation/Node.h>
 
 #include <sofa/component/statecontainer/MechanicalObject.h>
