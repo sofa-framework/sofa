@@ -179,28 +179,22 @@ void UniformMass<DataTypes>::initDefaultImpl()
         msg_info() << "Topology path used: '" << l_topology.getLinkedPath() << "'";
 
         d_indices.createTopologyHandler(meshTopology);
-        /// Computations to be done when points are added
-        d_indices.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::POINTSADDED, [this](const core::topology::TopologyChange* eventTopo) {
-            WriteAccessor<Data<SetIndexArray > > indices = d_indices;
-            const core::topology::PointsAdded* pointsAdded = static_cast<const core::topology::PointsAdded*>(eventTopo);
-            auto& addedIndices = pointsAdded->getIndexArray();
+        d_indices.supportNewElements(true);
 
-            for (unsigned i = 0; i<addedIndices.size(); i++)
-            {
-                indices.push_back(addedIndices[i]);
-            }
-            updateMassOnResize(d_indices.getValue().size());
+        // Need to create a call back to assign index of new point into the topologySubsetData. Deletion is automatically handle.
+        d_indices.setCreationCallback([this](Index dataIndex, Index& valueIndex,
+            const core::topology::BaseMeshTopology::Point& point,
+            const sofa::type::vector< Index >& ancestors,
+            const sofa::type::vector< SReal >& coefs)
+        {
+            SOFA_UNUSED(point);
+            SOFA_UNUSED(ancestors);
+            SOFA_UNUSED(coefs);
+            valueIndex = dataIndex;
         });
-        /// Computations to be done when points are removed
-        d_indices.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::POINTSREMOVED, [this](const core::topology::TopologyChange* eventTopo) {
-            WriteAccessor<Data<SetIndexArray > > indices = d_indices;
-            const core::topology::PointsRemoved* pointsRemoved = static_cast<const core::topology::PointsRemoved*>(eventTopo);
-            auto& removedIndices = pointsRemoved->getArray();
 
-            for (unsigned i = 0; i<removedIndices.size(); i++)
-            {
-                std::remove(indices.begin(), indices.end(), removedIndices[i]);
-            }
+        d_indices.addTopologyEventCallBack(sofa::core::topology::TopologyChangeType::ENDING_EVENT, [this](const core::topology::TopologyChange* eventTopo) 
+        {
             updateMassOnResize(d_indices.getValue().size());
         });
     }
