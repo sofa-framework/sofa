@@ -6,6 +6,8 @@ To speed up the collision detection, replace BVHNarrowPhase by ParallelBVHNarrow
 -->
 
 <Node name="root" dt="0.01" gravity="0 981 0">
+    <RequiredPlugin name="Sofa.Component.AnimationLoop"/> <!-- Needed to use components [FreeMotionAnimationLoop] -->
+    <RequiredPlugin name="Sofa.Component.Constraint.Lagrangian.Solver"/> <!-- Needed to use components [LCPConstraintSolver] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
     <RequiredPlugin name="Sofa.Component.Mapping.NonLinear"/> <!-- Needed to use components [RigidMapping] -->
@@ -16,6 +18,7 @@ To speed up the collision detection, replace BVHNarrowPhase by ParallelBVHNarrow
     <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
     <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaConstraint"/> <!-- Needed to use components [LocalMinDistance] -->
 
     <VisualStyle displayFlags="showBehaviorModels"/>
     <FreeMotionAnimationLoop parallelCollisionDetectionAndFreeMotion="true"/>
