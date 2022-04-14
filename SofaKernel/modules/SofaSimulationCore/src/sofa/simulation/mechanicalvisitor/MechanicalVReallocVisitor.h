@@ -42,16 +42,18 @@ public:
     DestMultiVecId *v;
     bool m_propagate;
     bool m_interactionForceField;
+    const core::VecIdProperties& m_properties;
 
     /// Default constructor
     /// \param v output vector
     /// \param propagate sets to true propagates vector initialization to mapped mechanical states
     /// \param interactionForceField sets to true also initializes external mechanical states linked by an interaction force field
-    MechanicalVReallocVisitor(const sofa::core::ExecParams* params, DestMultiVecId *v, bool interactionForceField=false, bool propagate=false)
+    MechanicalVReallocVisitor(const sofa::core::ExecParams* params, DestMultiVecId *v, bool interactionForceField=false, bool propagate=false, const core::VecIdProperties& properties = {})
             : BaseMechanicalVisitor(params)
             , v(v)
             , m_propagate(propagate)
             , m_interactionForceField(interactionForceField)
+            , m_properties(properties)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();

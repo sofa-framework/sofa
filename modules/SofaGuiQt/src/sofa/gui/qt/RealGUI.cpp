@@ -429,7 +429,7 @@ RealGUI::RealGUI ( const char* viewername)
     fpsLabel->setMinimumSize ( fpsLabel->sizeHint() );
     fpsLabel->clear();
 
-    timeLabel = new QLabel ( "Time: 999.9999 s", statusBar() );
+    timeLabel = new QLabel ( "Time: 999.9999", statusBar() );
     timeLabel->setMinimumSize ( timeLabel->sizeHint() );
     timeLabel->clear();
     statusBar()->addWidget ( fpsLabel );
@@ -1639,7 +1639,7 @@ void RealGUI::eventNewTime()
     {
         double time = root->getTime();
         char buf[100];
-        sprintf ( buf, "Time: %.3g s", time );
+        sprintf ( buf, "Time: %.3g,   Steps:  %i", time, frameCounter );
         timeLabel->setText ( buf );
     }
 #endif
@@ -2132,7 +2132,6 @@ void RealGUI::playpauseGUI ( bool startSimulation )
         SimulationStopEvent startEvt;
         root->propagateEvent(core::execparams::defaultInstance(), &startEvt);
         m_clockBeforeLastStep = 0;
-        frameCounter=0;
         timerStep->start(0);
         return;
     }

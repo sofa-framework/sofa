@@ -92,16 +92,16 @@ public:
     //virtual void vAvail(MatrixDerivId& v) = 0;
 
     /// Allocate a new temporary vector
-    virtual void vAlloc(const ExecParams* params, VecCoordId v) = 0;
+    virtual void vAlloc(const ExecParams* params, VecCoordId v, const core::VecIdProperties& properties = {}) = 0;
     /// Allocate a new temporary vector
-    virtual void vAlloc(const ExecParams* params, VecDerivId v) = 0;
+    virtual void vAlloc(const ExecParams* params, VecDerivId v, const core::VecIdProperties& properties = {}) = 0;
     /// Allocate a new temporary vector
     //virtual void vAlloc(MatrixDerivId v) = 0;
 
     /// Reallocate a new temporary vector
-    virtual void vRealloc(const ExecParams* params, VecCoordId v) = 0;
+    virtual void vRealloc(const ExecParams* params, VecCoordId v, const core::VecIdProperties& properties = {}) = 0;
     /// Reallocate a new temporary vector
-    virtual void vRealloc(const ExecParams* params, VecDerivId v) = 0;
+    virtual void vRealloc(const ExecParams* params, VecDerivId v, const core::VecIdProperties& properties = {}) = 0;
 
 
     /// Free a temporary vector

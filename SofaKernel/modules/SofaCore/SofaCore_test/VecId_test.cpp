@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                 SOFA, Simulation Open-Framework Architecture                *
 *                    (c) 2006 INRIA, USTL, UJF, CNRS, MGH                     *
 *                                                                             *
@@ -19,29 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_SIMULATION_MECHANICALVISITOR_MECHANICALVALLOCVISITOR_CPP
-#include <sofa/simulation/mechanicalvisitor/MechanicalVAllocVisitor.h>
+#include <sofa/core/VecId.h>
+#include <gtest/gtest.h>
 
-#include <sofa/core/behavior/BaseMechanicalState.h>
-
-namespace sofa::simulation::mechanicalvisitor
+TEST(VecId, name)
 {
+    auto position = sofa::core::VecCoordId::position();
+    EXPECT_EQ(position.getName(), "position(V_COORD)");
 
-template< sofa::core::VecType vtype>
-Visitor::Result MechanicalVAllocVisitor<vtype>::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-{
-    mm->vAlloc(this->params, v.getId(mm), m_properties );
-    return RESULT_CONTINUE;
-}
+    auto restPosition = sofa::core::VecCoordId::restPosition();
+    EXPECT_EQ(restPosition.getName(), "restPosition(V_COORD)");
+
+    auto freePosition = sofa::core::VecCoordId::freePosition();
+    EXPECT_EQ(freePosition.getName(), "freePosition(V_COORD)");
+
+    auto resetPosition = sofa::core::VecCoordId::resetPosition();
+    EXPECT_EQ(resetPosition.getName(), "resetPosition(V_COORD)");
 
 
-template< sofa::core::VecType vtype>
-std::string  MechanicalVAllocVisitor<vtype>::getInfos() const
-{
-    std::string name="[" + v.getName() + "]";
-    return name;
-}
 
-template class SOFA_SIMULATION_CORE_API MechanicalVAllocVisitor<sofa::core::V_COORD>;
-template class SOFA_SIMULATION_CORE_API MechanicalVAllocVisitor<sofa::core::V_DERIV>;
+    auto velocity = sofa::core::VecDerivId::velocity();
+    EXPECT_EQ(velocity.getName(), "velocity(V_DERIV)");
+
+    auto resetVelocity = sofa::core::VecDerivId::resetVelocity();
+    EXPECT_EQ(resetVelocity.getName(), "resetVelocity(V_DERIV)");
+
+    auto freeVelocity = sofa::core::VecDerivId::freeVelocity();
+    EXPECT_EQ(freeVelocity.getName(), "freeVelocity(V_DERIV)");
+
+    auto normal = sofa::core::VecDerivId::normal();
+    EXPECT_EQ(normal.getName(), "normal(V_DERIV)");
+
+    auto force = sofa::core::VecDerivId::force();
+    EXPECT_EQ(force.getName(), "force(V_DERIV)");
+
+    auto externalForce = sofa::core::VecDerivId::externalForce();
+    EXPECT_EQ(externalForce.getName(), "externalForce(V_DERIV)");
+
+    auto dx = sofa::core::VecDerivId::dx();
+    EXPECT_EQ(dx.getName(), "dx(V_DERIV)");
+
+    auto dforce = sofa::core::VecDerivId::dforce();
+    EXPECT_EQ(dforce.getName(), "dforce(V_DERIV)");
+
 }

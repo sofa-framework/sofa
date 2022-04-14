@@ -23,6 +23,7 @@ set(SOURCE_FILES
     ObjectFactory_test.cpp
     PathResolver_test.cpp
     TrackedData_test.cpp
+    VecId_test.cpp
 )
 
 set(HEADER_FILES

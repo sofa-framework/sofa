@@ -236,6 +236,7 @@ void ArticulatedHierarchyContainer::init ()
     else
     {
         context->getTreeObjects<ArticulationCenter>(&articulationCenters);
+        msg_info() << "Found " << articulationCenters.size() << " centers";
         type::vector<ArticulationCenter*>::const_iterator ac = articulationCenters.begin();
         type::vector<ArticulationCenter*>::const_iterator acEnd = articulationCenters.end();
         for (; ac != acEnd; ac++)
@@ -252,7 +253,6 @@ void ArticulatedHierarchyContainer::init ()
             (*ac)->H_p_pLc.set((*ac)->posOnParent.getValue(),q);
             (*ac)->H_c_cLp.set((*ac)->posOnChild.getValue(), q);
             (*ac)->H_pLc_cLp.identity();
-
         }
     }
 }

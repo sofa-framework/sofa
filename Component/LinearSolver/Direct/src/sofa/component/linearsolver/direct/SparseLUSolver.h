@@ -24,6 +24,8 @@
 
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <csparse.h>
+#include <sofa/component/linearsolver/direct/SparseCommon.h>
+#include <sofa/helper/OptionsGroup.h>
 
 namespace sofa::component::linearsolver::direct
 {
@@ -33,12 +35,16 @@ template<class Real>
 class SparseLUInvertData : public MatrixInvertData {
 public :
 
-    css *S;
-    csn *N;
+    css *S; ///< store the permutations and the number of non null values by rows and by lines of the LU factorization
+    csn *N; ///< store the partial pivot and the LU factorization
     cs A;
+    cs* permuted_A;
+    type::vector<int> perm,iperm; ///< fill reducing permutation
+    type::vector<int> Previous_colptr,Previous_rowind; ///< shape of the matrix at the previous step
     type::vector<sofa::Index> A_i, A_p;
     type::vector<Real> A_x;
     Real * tmp;
+    bool notSameShape;
     SparseLUInvertData()
     {
         S=nullptr; N=nullptr; tmp=nullptr;
@@ -52,7 +58,7 @@ public :
     }
 };
 
-/// Direct linear solver based on Sparse LU factorization, implemented with the CSPARSE library
+// Direct linear solver based on Sparse LU factorization, implemented with the CSPARSE library
 template<class TMatrix, class TVector, class TThreadManager= NoThreadManager>
 class SparseLUSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,TThreadManager>
 {
@@ -67,18 +73,24 @@ public:
 
     Data<bool> f_verbose; ///< Dump system state at each iteration
     Data<double> f_tol; ///< tolerance of factorization
-
-    SparseLUSolver();
+    
     void solve (Matrix& M, Vector& x, Vector& b) override;
     void invert(Matrix& M) override;
 
+    SparseLUSolver();
+
 protected :
+
+    Data<sofa::helper::OptionsGroup> d_typePermutation;
+
+    css* symbolic_LU(cs *A);
 
     MatrixInvertData * createInvertData() override {
         return new SparseLUInvertData<Real>();
     }
 
 };
+
 
 #if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSELUSOLVER_CPP)
 extern template class SOFA_COMPONENT_LINEARSOLVER_DIRECT_API SparseLUSolver< sofa::linearalgebra::CompressedRowSparseMatrix< SReal>, sofa::linearalgebra::FullVector<SReal> >;

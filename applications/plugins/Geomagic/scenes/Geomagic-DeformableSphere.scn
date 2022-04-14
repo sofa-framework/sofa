@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.05" showBoundingTree="0" gravity="0 0 0">
+    <RequiredPlugin name='Geomagic'/>
     <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
@@ -8,12 +9,20 @@
     <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [RestShapeSpringsForceField] -->
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
     <RequiredPlugin name="SofaConstraint"/> <!-- Needed to use components [FreeMotionAnimationLoop, LCPConstraintSolver, LinearSolverConstraintCorrection, LocalMinDistance] -->
+    <RequiredPlugin name="SofaHaptics"/> <!-- Needed to use components [LCPForceFeedback] -->
     <RequiredPlugin name="SofaMeshCollision"/> <!-- Needed to use components [LineCollisionModel, PointCollisionModel, TriangleCollisionModel] -->
     <RequiredPlugin name="SofaUserInteraction"/> <!-- Needed to use components [MechanicalStateController] -->
-    <RequiredPlugin name="SofaHaptics"/> <!-- Needed to use components [LCPForceFeedback] -->
-    <RequiredPlugin name='Geomagic'/>
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/> <!-- Needed to use components [HexahedronFEMForceField] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/> <!-- Needed to use components [TriangleSetGeometryAlgorithms, TriangleSetTopologyContainer, TriangleSetTopologyModifier] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Grid"/> <!-- Needed to use components [SparseGridRamificationTopology] -->
+    <RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [FixedConstraint] -->
+    <RequiredPlugin name="SofaEngine"/> <!-- Needed to use components [BoxROI] -->
+
+    
+    <VisualStyle displayFlags="showVisualModels showBehaviorModels hideCollisionModels" />
     
     <DefaultVisualManagerLoop />
     <DefaultPipeline name="pipeline" depth="6" verbose="0"/>
@@ -21,41 +30,52 @@
     <BVHNarrowPhase/>
     <DefaultContactManager name="response" response="FrictionContactConstraint" />
     <LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" angleCone="0.1" />
-    <FreeMotionAnimationLoop/>
     
+    <FreeMotionAnimationLoop/>
     <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
     
 	<GeomagicDriver name="GeomagicDevice" deviceName="Default Device" scale="1" positionBase="0 0 0" orientationBase="0 0.707 0 -0.707"
-    drawDevice="1" drawDeviceFrame="1" forceFeedBack="@Instrument/LCPFF1" drawDebug="1"/>	
-	
-	<Node name="CubeStatic1">
-		<MeshOBJLoader name="loaderC" filename="mesh/cube.obj" scale3d="4 6 1" translation="-2 -2 -8" />
-        <MechanicalObject name="Cube"  position="@loaderC.position" />     
-		<MeshTopology name="grid" src="@loaderC" />
-		<TriangleCollisionModel simulated="0" moving="0" bothSide="false" group="1"/>
-		<LineCollisionModel simulated="0" moving="0" group="1"/>
-		<PointCollisionModel simulated="0" moving="0" group="1"/>
-		<Node name="CubeVisu">
-			<OglModel name="CubeVisualModel"/>
-			<IdentityMapping input="@../" output="@CubeVisualModel" />
+    drawDevice="0" drawDeviceFrame="1" forceFeedBack="@Instrument/LCPFF1" manualStart="false" drawDebug="1"/>	
+    
+    
+    <Node name="DeformableSphere">		
+        <EulerImplicitSolver rayleighMass="0.01" rayleighStiffness="0.1" /> 
+        <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d"/>
+        
+        <MeshOBJLoader name="loaderS" filename="mesh/sphere_05.obj" scale3d="0.05 0.05 0.05" translation="0 0 2" />
+        <SparseGridRamificationTopology name="grid" n="6 6 6" src="@./loaderS" nbVirtualFinerLevels="3" finestConnectivity="0"/>
+        
+        <MechanicalObject name="gridDof" position="@grid.position"/>
+		
+        <TetrahedronFEMForceField name="FEM" youngModulus="80000" poissonRatio="0.45" method="large" />
+        <DiagonalMass totalMass="10.0" topology="@grid" geometryState="@gridDof"/>
+        
+        <BoxROI name="boxRoi1" box="-0.6 -0.6 1.4   0.6 0.6 2.6" drawBoxes="1"/>
+        <FixedConstraint indices="@boxRoi1.indices" />
+            
+        <LinearSolverConstraintCorrection />
+        <Node name="MappingSphere">
+            <MechanicalObject name="dofs" position="@../loaderS.position"/>
+            
+            <TriangleSetTopologyContainer name="Container1" src="@../loaderS"/>
+            <TriangleSetTopologyModifier />
+            <TriangleSetGeometryAlgorithms template="Vec3d" />
+
+            <TriangleCollisionModel bothSide="false" group="1" contactStiffness="100000"/>
+            <LineCollisionModel group="1" contactStiffness="100000"/>
+            <PointCollisionModel group="1" contactStiffness="100000"/>
+
+            <BarycentricMapping input="@../gridDof" output="@dofs" />            
+
+            <Node name="VisuSurface">
+                <OglModel name="Visual" color="red" />
+                <IdentityMapping input="@.." output="@Visual" />
+            </Node>
 		</Node>
     </Node>
     
-    <Node name="CubeStatic2">
-		<MeshOBJLoader name="loaderC2" filename="mesh/cube.obj" scale3d="4 6 1" translation="-2 -2 8" />
-        <MechanicalObject position="@loaderC2.position"/>
-        <MeshTopology name="grid" src="@loaderC2" />
-		
-        <TriangleCollisionModel bothSide="false"/>
-		<LineCollisionModel />
-		<PointCollisionModel />
-        <Node name="Cube2Visu">
-			<OglModel name="Cube2VisualModel"/>
-			<IdentityMapping input="@../" output="@Cube2VisualModel" />
-		</Node>
-    </Node>
 	
-	<Node name="Floor">
+    <Node name="Floor">
         <MeshOBJLoader name="loaderF" filename="mesh/cube.obj" scale3d="20 0.5 20" translation="0 -10 0"/>
         <MeshTopology src="@loaderF" />
         <MechanicalObject src="@loaderF" />
@@ -69,18 +89,16 @@
     </Node>
 
 	
-    <!-- ADDED: the Mechanical state Controller gathers events from the Omni driver and populates the Mechanical state -->
     <Node name="Omni">
         <MechanicalObject template="Rigid3" name="DOFs" position="@GeomagicDevice.positionDevice"/>
-        <MechanicalStateController template="Rigid3" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
     </Node>
 	
 	<Node name="Instrument" >
-        <EulerImplicitSolver name="ODE solver" rayleighStiffness="0.01" rayleighMass="0.01" />
-        <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d"/>
+        <EulerImplicitSolver rayleighMass="0.01" rayleighStiffness="0.1" />
+		<SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d"/>
         
-		<MechanicalObject name="instrumentState" template="Rigid3" />
-		<UniformMass name="mass" totalMass="0.5" />
+		<MechanicalObject name="instrumentState" template="Rigid3" tags="GeomagicDevice" />
+		<UniformMass name="mass" totalMass="1" />
 		
 		<RestShapeSpringsForceField stiffness='1000000' angularStiffness='1000000' external_rest_shape='@../Omni/DOFs' points='0' external_points='0'/>
         <LCPForceFeedback name="LCPFF1" activate="true" forceCoef="0.0001"/> 
@@ -96,8 +114,8 @@
             <MeshOBJLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
             <MeshTopology src="@loader" name="InstrumentCollisionModel" />
             <MechanicalObject src="@loader" name="instrumentCollisionState"  ry="-180" rz="-90" dz="3.5" dx="-0.3" />
-            <LineCollisionModel contactStiffness="100"/>			
-            <PointCollisionModel contactStiffness="100"/>
+            <LineCollisionModel />			
+            <PointCollisionModel />
             <RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />		
         </Node>
     </Node> 

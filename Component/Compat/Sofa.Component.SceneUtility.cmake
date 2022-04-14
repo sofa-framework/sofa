@@ -7,7 +7,6 @@ list(APPEND HEADER_FILES
     ${SOFABASEUTILS_SRC}/MakeAliasComponent.h
     ${SOFABASEUTILS_SRC}/MakeDataAliasComponent.h
     ${SOFABASEUTILS_SRC}/messageHandlerComponent.h
-    ${SOFABASEUTILS_SRC}/RequiredPlugin.h
     ${SOFAGRAPHCOMPONENT_SRC}/APIVersion.h
     ${SOFAGRAPHCOMPONENT_SRC}/PauseAnimation.h
     ${SOFAGRAPHCOMPONENT_SRC}/PauseAnimationOnEvent.h

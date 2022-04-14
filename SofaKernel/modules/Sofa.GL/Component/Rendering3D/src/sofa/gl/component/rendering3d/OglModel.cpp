@@ -427,7 +427,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
             glBindBuffer(GL_ARRAY_BUFFER, vbo);
-            glTexCoordPointer(3, GL_FLOAT, 0,
+            glTexCoordPointer(3, GL_DOUBLE, 0,
                               reinterpret_cast<void*>(vertexArrayByteSize + normalArrayByteSize + textureArrayByteSize));
             glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -435,7 +435,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
             glBindBuffer(GL_ARRAY_BUFFER, vbo);
-            glTexCoordPointer(3, GL_FLOAT, 0,
+            glTexCoordPointer(3, GL_DOUBLE, 0,
                               reinterpret_cast<void*>(vertexArrayByteSize + normalArrayByteSize
                               + textureArrayByteSize + tangentArrayByteSize));
             glBindBuffer(GL_ARRAY_BUFFER, 0);

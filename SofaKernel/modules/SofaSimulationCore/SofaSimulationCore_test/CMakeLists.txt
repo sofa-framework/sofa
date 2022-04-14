@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaSimulationCore_test)
 
 set(SOURCE_FILES
+    RequiredPlugin_test.cpp
     TaskSchedulerTests.cpp
     TaskSchedulerTestTasks.h
     TaskSchedulerTestTasks.cpp

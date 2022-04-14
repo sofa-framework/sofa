@@ -105,44 +105,17 @@ void TorsionForceField<DataTypes>::addKToMatrix(linearalgebra::BaseMatrix* matri
 	const VecId& indices = m_indices.getValue();
 	const Real& tau = m_torque.getValue();
 
-	const auto nNodes = indices.size();
-
-	MatrixBlock D;
+	sofa::type::MatNoInit<3,3, Real> D;
 	D(0,0) = 1 - m_u(0)*m_u(0) ;	D(0,1) = -m_u(1)*m_u(0) ;		D(0,2) = -m_u(2)*m_u(0);
 	D(1,0) = -m_u(0)*m_u(1) ;		D(1,1) = 1 - m_u(1)*m_u(1) ;	D(1,2) = -m_u(2)*m_u(1);
 	D(2,0) = -m_u(0)*m_u(2) ;		D(2,1) = -m_u(1)*m_u(2) ;		D(2,2) = 1 - m_u(3)*m_u(3);
 	D *= (tau * kFact);
 
-	if( CompressedRowSparseMatrix<MatrixBlock>* m = dynamic_cast<CompressedRowSparseMatrix<MatrixBlock>*>(matrix) )
+	for (const auto id : indices)
 	{
-
-		for(Size n = 0 ; n < nNodes ; ++n)
-		{
-			PointId id = indices[n];
-			*m->wbloc(id, id, true) += D;
-		}
+		const unsigned int c = offset + Deriv::total_size * id;
+		matrix->add(c, c, D);
 	}
-	else
-	{
-		for(Size n = 0 ; n < nNodes ; ++n)
-		{
-			PointId id = indices[n];
-			const unsigned int c = offset + Deriv::total_size*id;
-
-			matrix->add(c+0, c+0, D(0,0));
-			matrix->add(c+0, c+1, D(0,1));
-			matrix->add(c+0, c+2, D(0,2));
-
-			matrix->add(c+1, c+0, D(1,0));
-			matrix->add(c+1, c+1, D(1,1));
-			matrix->add(c+1, c+2, D(1,2));
-
-			matrix->add(c+2, c+0, D(2,0));
-			matrix->add(c+2, c+1, D(2,1));
-			matrix->add(c+2, c+2, D(2,2));
-		}
-	}
-
 }
 
 template<typename DataTypes>
