@@ -541,7 +541,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 template<class DataTypes>
 void  StandardTetrahedralFEMForceField<DataTypes>::addKToMatrix(sofa::linearalgebra::BaseMatrix * mat, SReal kFact, unsigned int &offset)
 {
-    const unsigned int nbEdges=m_topology->getNbEdges();
+    const sofa::Size nbEdges = m_topology->getNbEdges();
     const type::vector< Edge>& edgeArray=m_topology->getEdges();
 
     const edgeInformationVector& edgeInf = edgeInfo.getValue();
