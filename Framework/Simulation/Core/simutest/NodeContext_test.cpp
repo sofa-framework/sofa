@@ -26,8 +26,8 @@ using sofa::simulation::Node ;
 using sofa::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
-#include <SofaBaseUtils/InfoComponent.h>
-using sofa::component::InfoComponent;
+#include <sofa/component/sceneutility/InfoComponent.h>
+using sofa::component::sceneutility::InfoComponent;
 
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;

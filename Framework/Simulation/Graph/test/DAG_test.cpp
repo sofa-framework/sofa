@@ -24,17 +24,15 @@
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest ;
 
-#include <SceneCreator/SceneCreator.h>
 #include <sofa/simulation/Visitor.h>
 
-#include <SofaSimulationGraph/DAGNode.h>
+#include <sofa/simulation/graph/DAGNode.h>
 using sofa::simulation::graph::DAGNode;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 
 namespace sofa {
 
-using namespace modeling;
 using namespace simulation;
 
 
@@ -154,7 +152,8 @@ Expected output: RAABBR
      */
     void traverse_simple_tree()
     {
-        Node::SPtr root = clearScene();
+        Node::SPtr root = Simulation::theSimulation->createNewGraph("");
+
         root->setName("R");
         root->createChild("A");
         root->createChild("B");
@@ -178,7 +177,7 @@ Expected output: RABCCBAR
      */
     void traverse_simple_diamond()
     {
-        Node::SPtr root = clearScene();
+        Node::SPtr root = Simulation::theSimulation->createNewGraph("");
         root->setName("R");
         Node::SPtr A = root->createChild("A");
         Node::SPtr B = root->createChild("B");
@@ -206,7 +205,7 @@ Expected output: RABCDEEDCBAR
      */
     void traverse_complex()
     {
-        Node::SPtr root = clearScene();
+        Node::SPtr root = Simulation::theSimulation->createNewGraph("");
         root->setName("R");
         Node::SPtr A = root->createChild("A");
         Node::SPtr B = root->createChild("B");
@@ -234,7 +233,7 @@ Expected output: RABCDEEDCBAR
      */
     void traverse_morecomplex()
     {
-        Node::SPtr root = clearScene();
+        Node::SPtr root = Simulation::theSimulation->createNewGraph("");
         root->setName("R");
         Node::SPtr A = root->createChild("A");
         Node::SPtr B = root->createChild("B");
@@ -266,7 +265,7 @@ Expected output: RABCDEEDCBAR
      */
     void traverse_morecomplex2()
     {
-        Node::SPtr root = clearScene();
+        Node::SPtr root = Simulation::theSimulation->createNewGraph("");
         root->setName("R");
         Node::SPtr A = root->createChild("A");
         Node::SPtr B = root->createChild("B");
@@ -303,7 +302,7 @@ Expected output: RABCDEEDCBAR
 
     void getObject()
     {
-        Node::SPtr A = clearScene();
+        Node::SPtr A = Simulation::theSimulation->createNewGraph("");
         A->setName("A");
 
         Node::SPtr B = A->createChild("B");

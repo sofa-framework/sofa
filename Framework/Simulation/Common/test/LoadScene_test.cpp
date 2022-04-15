@@ -28,8 +28,6 @@ using sofa::testing::BaseTest;
 #include <sofa/helper/system/SetDirectory.h>
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 
-#include <SofaComponentAll/initSofaComponentAll.h>
-
 namespace sofa {
 
 /** Test a scene: load a given scene with the xml file contained in the sub-directories Scenes and init it.
@@ -84,8 +82,6 @@ struct LoadScene_test: public BaseTest
 
 TEST_F( LoadScene_test,PatchTestConstraint)
 {
-    sofa::component::initSofaComponentAll();
-
     ASSERT_TRUE(this->LoadScene("PatchTestConstraint.scn"));
     ASSERT_TRUE(this->initScene("PatchTestConstraint.scn"));
     ASSERT_NO_THROW(this->initScene("PatchTestConstraint.scn"));

@@ -22,10 +22,8 @@
 #include <sofa/testing/BaseTest.h>
 using sofa::testing::BaseTest;
 
-#include <SceneCreator/SceneCreator.h>
-
-#include <SofaSimulationGraph/DAGSimulation.h>
-#include <SofaSimulationGraph/DAGNode.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGNode.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/MutationListener.h>
 using sofa::simulation::MutationListener;
@@ -33,7 +31,6 @@ using sofa::core::objectmodel::BaseObject;
 using sofa::simulation::Simulation;
 using sofa::simulation::Node;
 using sofa::simulation::graph::DAGNode;
-using sofa::modeling::addNew;
 
 
 class TestMutationListener : public MutationListener

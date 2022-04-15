@@ -25,19 +25,19 @@ using sofa::testing::NumericTest ;
 #include <sofa/defaulttype/VecTypes.h>
 using sofa::defaulttype::Vec3Types ;
 
-#include <SofaBaseMechanics/MechanicalObject.h>
-typedef sofa::component::container::MechanicalObject<Vec3Types> MechanicalObject3;
+#include <sofa/component/statecontainer/MechanicalObject.h>
+typedef sofa::component::statecontainer::MechanicalObject<Vec3Types> MechanicalObject3;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/core/objectmodel/BaseNode.h>
-#include <SceneCreator/SceneCreator.h>
-#include <SofaBaseMechanics/UniformMass.h>
+#include <sofa/component/mass/UniformMass.h>
 
 #include <sofa/simulation/DefaultAnimationLoop.h>
 
+#include <sofa/simulation/Node.h>
+
 namespace sofa {
-using namespace modeling;
 
 static int objectCounter;
 
@@ -97,7 +97,7 @@ struct Scene_test: public NumericTest<SReal>
 
         // end create scene
         //*********
-        initScene(root);
+        sofa::simulation::getSimulation()->init(root.get());
         //*********
 
         type::Vector3 sceneMinBBox, sceneMaxBBox;

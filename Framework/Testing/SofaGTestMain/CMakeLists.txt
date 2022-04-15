@@ -2,11 +2,11 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaGTestMain)
 
 ## Dependencies
-sofa_find_package(SofaSimulationGraph REQUIRED)
+sofa_find_package(Sofa.Simulation.Graph REQUIRED)
 sofa_find_package(GTest CONFIG REQUIRED)
 
 add_library(${PROJECT_NAME} SofaGTestMain.cpp)
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaSimulationGraph)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.Simulation.Graph)
 target_link_libraries(${PROJECT_NAME} PUBLIC gtest)
 
 ## Install rules for the library; CMake package configurations files
