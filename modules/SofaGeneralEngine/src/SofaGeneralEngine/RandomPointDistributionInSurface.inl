@@ -45,6 +45,10 @@ RandomPointDistributionInSurface<DataTypes>::RandomPointDistributionInSurface()
     , f_outPoints( initData (&f_outPoints, "outPoints", "Points outside the surface") )
     , safeCounter(0), safeLimit(UINT_MAX)
 {
+    addInput(&f_triangles);
+    addInput(&f_vertices);
+
+    addOutput(&f_inPoints);
 }
 
 template <class DataTypes>
@@ -69,11 +73,6 @@ void RandomPointDistributionInSurface<DataTypes>::init()
     generateRandomDirections();
 
     safeLimit = numberOfInPoints.getValue()*numberOfInPoints.getValue()*numberOfInPoints.getValue()*numberOfInPoints.getValue();
-
-    addInput(&f_triangles);
-    addInput(&f_vertices);
-
-    addOutput(&f_inPoints);
 
     setDirtyValue();
 }

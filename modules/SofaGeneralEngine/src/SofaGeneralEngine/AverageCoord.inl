@@ -36,15 +36,16 @@ AverageCoord<DataTypes>::AverageCoord()
     , d_average( initData (&d_average, "average", "average of the values with the given indices in the given coordinate vector \n"
                                                    "(default value corresponds to the average coord of the mechanical context)") )
 {
+    addInput(&d_indices);
+    addInput(&d_vecId);
+    addOutput(&d_average);
 }
 
 template <class DataTypes>
 void AverageCoord<DataTypes>::init()
 {
     mstate = dynamic_cast< sofa::core::behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
-    addInput(&d_indices);
-    addInput(&d_vecId);
-    addOutput(&d_average);
+
     setDirtyValue();
 }
 

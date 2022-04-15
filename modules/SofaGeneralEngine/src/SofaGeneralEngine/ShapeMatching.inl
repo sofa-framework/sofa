@@ -72,17 +72,18 @@ ShapeMatching<DataTypes>::ShapeMatching()
     , oldRestPositionSize(0)
     , oldfixedweight(0)
 {
+    addInput(&fixedPosition0);
+    addInput(&fixedPosition);
+    addInput(&position);
+    addInput(&cluster);
+    addOutput(&targetPosition);
 }
 
 template <class DataTypes>
 void ShapeMatching<DataTypes>::init()
 {
     mstate = dynamic_cast< sofa::core::behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
-    addInput(&fixedPosition0);
-    addInput(&fixedPosition);
-    addInput(&position);
-    addInput(&cluster);
-    addOutput(&targetPosition);
+
     setDirtyValue();
 
     //- Topology Container

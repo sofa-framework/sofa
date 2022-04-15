@@ -36,18 +36,17 @@ FillReducingOrdering<DataTypes>::FillReducingOrdering()
     , d_hexahedra(initData(&d_hexahedra, "hexahedra", "Reordered hexahedra"))
     , d_tetrahedra(initData(&d_tetrahedra, "tetrahedra", "Reordered tetrahedra"))
 {
+    addOutput(&d_permutation);
+    addOutput(&d_invPermutation);
+    addOutput(&d_position);
+    addOutput(&d_hexahedra);
+    addOutput(&d_tetrahedra);
 }
 
 template <class DataTypes>
 void FillReducingOrdering<DataTypes>::init()
 {
     DataEngine::init();
-
-    addOutput(&d_permutation);
-    addOutput(&d_invPermutation);
-    addOutput(&d_position);
-    addOutput(&d_hexahedra);
-    addOutput(&d_tetrahedra);
 
     if (!l_mstate)
     {

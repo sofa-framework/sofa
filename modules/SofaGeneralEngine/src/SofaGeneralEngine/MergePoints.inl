@@ -36,17 +36,17 @@ MergePoints<DataTypes>::MergePoints()
     , f_points( initData (&f_points, "points", "position coordinates of the merge") )
     , f_noUpdate( initData (&f_noUpdate, false, "noUpdate", "do not update the output at eacth time step (false)") )
 {
-}
-
-template <class DataTypes>
-void MergePoints<DataTypes>::init()
-{
     addInput(&f_X1);
     addInput(&f_X2);
     addInput(&f_X2_mapping);
     addOutput(&f_indices1);
     addOutput(&f_indices2);
     addOutput(&f_points);
+}
+
+template <class DataTypes>
+void MergePoints<DataTypes>::init()
+{
     setDirtyValue();
 }
 

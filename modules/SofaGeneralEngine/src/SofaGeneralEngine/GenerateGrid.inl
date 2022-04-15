@@ -37,12 +37,7 @@ GenerateGrid<DataTypes>::GenerateGrid()
     , d_resolution( initData (&d_resolution,Vec3Int(3,3,3), "resolution", "the number of cubes in the x,y,z directions. If resolution in the z direction is  0 then a 2D grid is generated") )
 {
     addAlias(&d_outputX,"position");
-}
 
-
-template <class DataTypes>
-void GenerateGrid<DataTypes>::init()
-{
     addInput(&d_minCorner);
     addInput(&d_maxCorner);
     addInput(&d_resolution);
@@ -51,6 +46,12 @@ void GenerateGrid<DataTypes>::init()
     addOutput(&d_hexahedron);
     addOutput(&d_quad);
     addOutput(&d_triangle);
+}
+
+
+template <class DataTypes>
+void GenerateGrid<DataTypes>::init()
+{
     setDirtyValue();
 }
 

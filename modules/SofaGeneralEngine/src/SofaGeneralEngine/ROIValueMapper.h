@@ -58,11 +58,9 @@ public:
 
     void init() override
     {
-        addInput(&nbROIs);
         f_indices.resize(nbROIs.getValue());
         f_value.resize(nbROIs.getValue());
 
-        addOutput(&f_outputValues);
         setDirtyValue();
     }
 
@@ -99,6 +97,8 @@ protected:
         , f_outputValues(initData(&f_outputValues, "outputValues", "New vector of values"))
         , p_defaultValue(initData(&p_defaultValue, (Real) 0.0, "defaultValue", "Default value for indices out of ROIs"))
     {
+        addInput(&nbROIs);
+        addOutput(&f_outputValues);
     }
 
     ~ROIValueMapper() override {}

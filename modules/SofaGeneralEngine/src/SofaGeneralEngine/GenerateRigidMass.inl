@@ -46,16 +46,6 @@ GenerateRigidMass<DataTypes,MassType>::GenerateRigidMass()
     , massCenter(  initData(&massCenter,"massCenter","output: the gravity center of the mesh") )
     , centerToOrigin(  initData(&centerToOrigin,"centerToOrigin","output: vector going from the mass center to the space origin") )
 {
-}
-
-template <class DataTypes, class MassType>
-GenerateRigidMass<DataTypes,MassType>::~GenerateRigidMass()
-{
-}
-
-template <class DataTypes, class MassType>
-void  GenerateRigidMass<DataTypes, MassType>::init()
-{
     addInput(&m_density);
     addInput(&m_positions);
     addInput(&m_triangles);
@@ -68,7 +58,16 @@ void  GenerateRigidMass<DataTypes, MassType>::init()
     addOutput(&inertiaMatrix);
     addOutput(&massCenter);
     addOutput(&centerToOrigin);
+}
 
+template <class DataTypes, class MassType>
+GenerateRigidMass<DataTypes,MassType>::~GenerateRigidMass()
+{
+}
+
+template <class DataTypes, class MassType>
+void  GenerateRigidMass<DataTypes, MassType>::init()
+{
     setDirtyValue();
 
     reinit();

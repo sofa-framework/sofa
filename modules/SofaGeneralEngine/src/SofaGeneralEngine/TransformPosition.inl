@@ -68,6 +68,17 @@ TransformPosition<DataTypes>::TransformPosition()
         "affine",
         "fromFile");
     f_method.endEdit();
+
+    addInput(&f_inputX);
+    addInput(&f_origin);
+    addInput(&f_normal);
+    addInput(&f_translation);
+    addInput(&f_rotation);
+    addInput(&f_scale);
+    addInput(&f_affineMatrix);
+    addInput(&f_fixedIndices);
+
+    addOutput(&f_outputX);
 }
 
 template <class DataTypes>
@@ -142,17 +153,6 @@ void TransformPosition<DataTypes>::init()
         normal/=normal.norm();
 
     f_normal.endEdit();
-
-    addInput(&f_inputX);
-    addInput(&f_origin);
-    addInput(&f_normal);
-    addInput(&f_translation);
-    addInput(&f_rotation);
-    addInput(&f_scale);
-    addInput(&f_affineMatrix);
-    addInput(&f_fixedIndices);
-
-    addOutput(&f_outputX);
 
     setDirtyValue();
 }

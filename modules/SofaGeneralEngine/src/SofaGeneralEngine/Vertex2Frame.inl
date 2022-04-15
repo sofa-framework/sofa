@@ -41,11 +41,6 @@ Vertex2Frame<DataTypes>::Vertex2Frame():
     , d_rotation( initData (&d_rotation, 0, "rotation", "Apply a local rotation on the frames. If 0 a x-axis rotation is applied. If 1 a y-axis rotation is applied, If 2 a z-axis rotation is applied.") )
     , d_rotationAngle( initData (&d_rotationAngle, 0.0, "rotationAngle", "Angle rotation") )
 {
-}
-
-template <class DataTypes>
-void Vertex2Frame<DataTypes>::init()
-{
     addInput(&d_vertices);
     addInput(&d_texCoords);
     addInput(&d_normals);
@@ -53,7 +48,11 @@ void Vertex2Frame<DataTypes>::init()
     addInput(&d_rotationAngle);
 
     addOutput(&d_frames);
+}
 
+template <class DataTypes>
+void Vertex2Frame<DataTypes>::init()
+{
     setDirtyValue();
 }
 

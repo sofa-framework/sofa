@@ -33,15 +33,14 @@ DifferenceEngine<DataTypes>::DifferenceEngine()
     , d_substractor ( initData (&d_substractor, "substractor", "vector to substract to input") )
     , d_output( initData (&d_output, "output", "output vector = input-substractor") )
 {
-
+    addInput(&d_input);
+    addInput(&d_substractor);
+    addOutput(&d_output);
 }
 
 template <class DataType>
 void DifferenceEngine<DataType>::init()
 {
-    addInput(&d_input);
-    addInput(&d_substractor);
-    addOutput(&d_output);
     setDirtyValue();
 }
 

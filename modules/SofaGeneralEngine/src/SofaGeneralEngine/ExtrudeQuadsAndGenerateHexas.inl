@@ -42,11 +42,6 @@ ExtrudeQuadsAndGenerateHexas<DataTypes>::ExtrudeQuadsAndGenerateHexas()
     , f_extrudedQuads( initData (&f_extrudedQuads, "extrudedQuads", "List of all quads generated during the extrusion") )
     , f_extrudedHexas( initData (&f_extrudedHexas, "extrudedHexas", "List of hexahedra generated during the extrusion") )
 {
-}
-
-template <class DataTypes>
-void ExtrudeQuadsAndGenerateHexas<DataTypes>::init()
-{
     addInput(&f_surfaceQuads);
     addInput(&f_surfaceVertices);
 
@@ -54,7 +49,11 @@ void ExtrudeQuadsAndGenerateHexas<DataTypes>::init()
     addOutput(&f_extrudedSurfaceQuads);
     addOutput(&f_extrudedQuads);
     addOutput(&f_extrudedHexas);
+}
 
+template <class DataTypes>
+void ExtrudeQuadsAndGenerateHexas<DataTypes>::init()
+{
     setDirtyValue();
 }
 
