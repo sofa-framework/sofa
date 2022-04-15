@@ -61,7 +61,7 @@ public:
     {
         return "MakeDataAlias" ;
     }
-protected:
+private:
 
     bool m_hasAddedAlias { false };
 };
