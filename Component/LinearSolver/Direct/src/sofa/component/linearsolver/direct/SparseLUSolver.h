@@ -82,6 +82,7 @@ public:
 protected :
 
     Data<sofa::helper::OptionsGroup> d_typePermutation;
+    Data<int> d_L_nnz;
 
     css* symbolic_LU(cs *A);
 

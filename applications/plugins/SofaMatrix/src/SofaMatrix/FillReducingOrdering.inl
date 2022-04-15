@@ -23,6 +23,8 @@
 
 #include <SofaMatrix/FillReducingOrdering.h>
 
+#include <Eigen/Sparse>
+
 namespace sofa::component::linearsolver
 {
 
@@ -30,6 +32,7 @@ template <class DataTypes>
 FillReducingOrdering<DataTypes>::FillReducingOrdering()
     : l_mstate(initLink("mstate", "Mechanical state to reorder"))
     , l_topology(initLink("topology", "Topology to reorder"))
+    , d_orderingMethod(initData(&d_orderingMethod, sofa::helper::OptionsGroup(2, "Metis", "AMD"), "orderingMethod", "Ordering method. AMD means Approximate minimum degree."))
     , d_permutation(initData(&d_permutation, "permutation", "Output vector of indices mapping the reordered vertices to the initial list"))
     , d_invPermutation(initData(&d_invPermutation, "invPermutation", "Output vector of indices mapping the initial vertices to the reordered list"))
     , d_position(initData(&d_position, "position", "Reordered position vector"))
@@ -41,6 +44,8 @@ FillReducingOrdering<DataTypes>::FillReducingOrdering()
     addOutput(&d_position);
     addOutput(&d_hexahedra);
     addOutput(&d_tetrahedra);
+
+    sofa::helper::getWriteAccessor(d_orderingMethod)->setSelectedItem(0);
 }
 
 template <class DataTypes>
@@ -77,7 +82,60 @@ void FillReducingOrdering<DataTypes>::reinit()
 }
 
 template <class DataTypes>
+void FillReducingOrdering<DataTypes>::reorderByEigen()
+{
+    Eigen::SparseMatrix<SReal, Eigen::ColMajor> meshMatrix;
+
+    sofa::type::vector<Eigen::Triplet<SReal> > triplets;
+    for (const auto& edge : l_topology->getEdges())
+    {
+        for (std::size_t i = 0; i < edge.static_size; ++i)
+        {
+            for (std::size_t j = 0; j < edge.static_size; ++j)
+            {
+                triplets.emplace_back(edge[i], edge[j], 1.);
+            }
+        }
+    }
+
+    const auto matrixSize = l_mstate->getSize();
+    meshMatrix.resize(matrixSize, matrixSize);
+
+    meshMatrix.setFromTriplets(triplets.begin(), triplets.end());
+
+    Eigen::AMDOrdering<decltype(meshMatrix)::StorageIndex> ordering;
+    decltype(ordering)::PermutationType permutation;
+    ordering(meshMatrix, permutation);
+
+    auto invPerm = sofa::helper::getWriteOnlyAccessor(d_invPermutation);
+    auto perm = sofa::helper::getWriteOnlyAccessor(d_permutation);
+    invPerm.resize(permutation.indices().size());
+    perm.resize(permutation.indices().size());
+    std::size_t i {};
+    for (const auto ind : permutation.indices())
+    {
+        perm[i] = ind;
+        invPerm[ind] = i++;
+    }
+
+    updateMesh();
+}
+
+template <class DataTypes>
 void FillReducingOrdering<DataTypes>::doUpdate()
+{
+    if (d_orderingMethod.getValue().getSelectedId() == 1)
+    {
+        reorderByEigen();
+    }
+    else
+    {
+        reorderByMetis();
+    }
+}
+
+template <class DataTypes>
+void FillReducingOrdering<DataTypes>::reorderByMetis()
 {
     // The number of elements in the mesh
     idx_t ne = l_topology->getNbHexahedra() + l_topology->getNbTetrahedra();
@@ -124,20 +182,7 @@ void FillReducingOrdering<DataTypes>::doUpdate()
         return;
     }
 
-    // Update topology
-    updateElements(l_topology->getHexahedra(), d_hexahedra);
-    updateElements(l_topology->getTetrahedra(), d_tetrahedra);
-
-    // Update mechanical state
-    auto pos = helper::getWriteOnlyAccessor(d_position);
-    pos.clear();
-
-    auto previousPos = l_mstate->readPositions();
-
-    for (unsigned int i = 0; i < previousPos.size(); ++i)
-    {
-        pos.push_back(previousPos[perm[i]]);
-    }
+    updateMesh();
 }
 
 template <class DataTypes>
@@ -176,4 +221,24 @@ void FillReducingOrdering<DataTypes>::updateElements(
     }
 }
 
+template <class DataTypes>
+void FillReducingOrdering<DataTypes>::updateMesh()
+{
+    // Update topology
+    updateElements(l_topology->getHexahedra(), d_hexahedra);
+    updateElements(l_topology->getTetrahedra(), d_tetrahedra);
+
+    // Update mechanical state
+    auto pos = helper::getWriteOnlyAccessor(d_position);
+    pos.clear();
+
+    auto previousPos = l_mstate->readPositions();
+
+    auto perm = helper::getReadAccessor(d_permutation);
+
+    for (unsigned int i = 0; i < previousPos.size(); ++i)
+    {
+        pos.push_back(previousPos[perm[i]]);
+    }
+}
 } // namespace sofa::component::linearsolver

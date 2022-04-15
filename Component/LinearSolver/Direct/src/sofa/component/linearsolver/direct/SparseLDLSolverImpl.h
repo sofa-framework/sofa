@@ -148,10 +148,12 @@ protected :
 
     Data<bool> d_useSymbolicDecomposition ;
     Data<bool> d_applyPermutation ;
+    Data<int> d_L_nnz;
 
     SparseLDLSolverImpl() : Inherit() 
     , d_useSymbolicDecomposition(initData(&d_useSymbolicDecomposition, true ,"useSymbolicDecomposition", "If true the solver will reuse the precomputed symbolic decomposition. Otherwise it will recompute it at each step."))
     , d_applyPermutation(initData(&d_applyPermutation, true ,"applyPermutation", "If true the solver will apply a fill-reducing permutation to the matrix of the system."))
+    , d_L_nnz(initData(&d_L_nnz, 0, "L_nnz", "Number of non-zero values in the lower triangular matrix of the factorization. The lower, the faster the system is solved.", true, true))
     {}
 
     template<class VecInt,class VecReal>
@@ -270,6 +272,7 @@ protected :
                          data->perm.data(),data->invperm.data(),data->Parent.data());
 
             data->L_nnz = data->L_colptr[data->n];
+            d_L_nnz.setValue(data->L_nnz);
 
             data->L_rowind.clear();data->L_rowind.fastResize(data->L_nnz);
             data->L_values.clear();data->L_values.fastResize(data->L_nnz);
