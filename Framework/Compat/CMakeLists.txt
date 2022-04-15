@@ -135,9 +135,18 @@ set(HEADER_FILES
     ${SOFACOMPATSRC_ROOT}/SofaSimulationCommon/SceneLoaderPHP.h
     ${SOFACOMPATSRC_ROOT}/SofaSimulationCommon/SceneLoaderXML.h
     ${SOFACOMPATSRC_ROOT}/SofaSimulationCommon/TransformationVisitor.h
+    ${SOFACOMPATSRC_ROOT}/SofaSimulationCommon/xml/AttributeElement.h
+    ${SOFACOMPATSRC_ROOT}/SofaSimulationCommon/xml/BaseElement.h
+    ${SOFACOMPATSRC_ROOT}/SofaSimulationCommon/xml/BaseMultiMappingElement.h
+    ${SOFACOMPATSRC_ROOT}/SofaSimulationCommon/xml/DataElement.h
+    ${SOFACOMPATSRC_ROOT}/SofaSimulationCommon/xml/Element.h
+    ${SOFACOMPATSRC_ROOT}/SofaSimulationCommon/xml/Element.inl
+    ${SOFACOMPATSRC_ROOT}/SofaSimulationCommon/xml/ElementNameHelper.h
+    ${SOFACOMPATSRC_ROOT}/SofaSimulationCommon/xml/NodeElement.h
+    ${SOFACOMPATSRC_ROOT}/SofaSimulationCommon/xml/ObjectElement.h
+    ${SOFACOMPATSRC_ROOT}/SofaSimulationCommon/xml/XML.h
     ${SOFACOMPATSRC_ROOT}/SofaSimulationGraph/DAGNode.h
     ${SOFACOMPATSRC_ROOT}/SofaSimulationGraph/DAGSimulation.h
-    ${SOFACOMPATSRC_ROOT}/SofaSimulationGraph/init.h
     ${SOFACOMPATSRC_ROOT}/SofaSimulationGraph/SimpleApi.h
 )
 

@@ -20,6 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/simulation/graph/init.h>
+#include <sofa/simulation/common/xml/ElementNameHelper.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/simulation/graph/init.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/simulation/common/xml/ElementNameHelper.h")

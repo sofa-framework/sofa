@@ -9,14 +9,4 @@ if(NOT @PROJECT_NAME@_SENT_DEPRECATION_MESSAGE)
 endif()
 set_property(GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE TRUE)
 
-# Create alias to support compatibility, starting from v21.06
-# This alias will be deleted in v22.06
-if(NOT TARGET SofaSimulationCommon) # test if alias was not already created
-    get_target_property(Sofa.SimulationCommon_IMPORTED Sofa.SimulationCommon IMPORTED)
-    if(Sofa.SimulationCommon_IMPORTED)
-        set_target_properties(Sofa.SimulationCommon PROPERTIES IMPORTED_GLOBAL TRUE)
-    endif()
-    add_library(SofaSimulationCommon ALIAS Sofa.SimulationCommon)
-endif()
-
 find_package(Sofa.Simulation.Common QUIET REQUIRED)

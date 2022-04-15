@@ -1,20 +1,25 @@
 cmake_minimum_required(VERSION 3.12)
-project(Sofa.SimulationCommon)
+project(SofaSimulationCommon)
 
-set(SOURCE_FILES
-    empty.cpp
+set(SRC_DIR "src/SofaSimulationCommon")
+
+set(HEADER_FILES
+    ${SRC_DIR}/config.h.in
+    ${SRC_DIR}/init.h
+    ${SRC_DIR}/initSofaSimulationCommon.h
 )
 
-add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
+set(SOURCE_FILES
+    ${SRC_DIR}/init.cpp
+    ${SRC_DIR}/initSofaSimulationCommon.cpp
+)
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Simulation.Common instead.")
 
 sofa_find_package(Sofa.Simulation.Common REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Common)
-
-# Create alias to support compatibility, starting from v21.06
-# This alias will be deleted in v21.12
-add_library(SofaSimulationCommon ALIAS Sofa.SimulationCommon)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
