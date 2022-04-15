@@ -53,6 +53,17 @@ ProximityROI<DataTypes>::ProximityROI()
 
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
+
+    addInput(&f_X0);
+
+    addInput(&centers);
+    addInput(&radii);
+    addInput(&f_num);
+
+    addOutput(&f_indices);
+    addOutput(&f_pointsInROI);
+    addOutput(&f_distanceInROI);
+    addOutput(&f_indicesOut);
 }
 
 template <class DataTypes>
@@ -86,17 +97,6 @@ void ProximityROI<DataTypes>::init()
             }
         }
     }
-
-    addInput(&f_X0);
-
-    addInput(&centers);
-    addInput(&radii);
-    addInput(&f_num);
-
-    addOutput(&f_indices);
-    addOutput(&f_pointsInROI);
-    addOutput(&f_distanceInROI);
-    addOutput(&f_indicesOut);
 
     setDirtyValue();
 }

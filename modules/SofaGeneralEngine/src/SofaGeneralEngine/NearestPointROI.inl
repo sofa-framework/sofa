@@ -39,6 +39,11 @@ NearestPointROI<DataTypes>::NearestPointROI(core::behavior::MechanicalState<Data
     , d_indexPairs(initData(&d_indexPairs, "indexPairs", "list of couples (parent index + index in the parent)"))
     , d_distances(initData(&d_distances, "distances", "List of distances between pairs of points"))
 {
+    addOutput(&f_indices1);
+    addOutput(&f_indices2);
+    addOutput(&d_edges);
+    addOutput(&d_indexPairs);
+    addOutput(&d_distances);
 }
 
 template <class DataTypes>
@@ -67,12 +72,6 @@ void NearestPointROI<DataTypes>::init()
         addInput(this->mstate1->findData("position"));
         addInput(this->mstate2->findData("position"));
     }
-
-    addOutput(&f_indices1);
-    addOutput(&f_indices2);
-    addOutput(&d_edges);
-    addOutput(&d_indexPairs);
-    addOutput(&d_distances);
 }
 
 template <class DataTypes>

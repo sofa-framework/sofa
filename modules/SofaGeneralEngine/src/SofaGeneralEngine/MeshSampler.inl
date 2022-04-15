@@ -42,17 +42,17 @@ MeshSampler<DataTypes>::MeshSampler()
     , outputIndices(initData(&outputIndices,"outputIndices","Computed sample indices."))
     , outputPosition(initData(&outputPosition,"outputPosition","Computed sample coordinates."))
 {
-}
-
-template <class DataTypes>
-void MeshSampler<DataTypes>::init()
-{
     addInput(&number);
     addInput(&position);
     addInput(&f_edges);
     addInput(&maxIter);
     addOutput(&outputIndices);
     addOutput(&outputPosition);
+}
+
+template <class DataTypes>
+void MeshSampler<DataTypes>::init()
+{
     setDirtyValue();
 }
 

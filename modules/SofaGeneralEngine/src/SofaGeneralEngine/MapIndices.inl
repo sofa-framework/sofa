@@ -34,6 +34,11 @@ MapIndices<T>::MapIndices()
     , f_outStr( initData (&f_outStr, "outStr", "Output indices, converted as a string"))
     , f_transpose( initData (&f_transpose, false, "transpose", "Should the transposed mapping be used ?"))
 {
+    f_outStr.setParent(&f_out);
+    addInput(&f_in);
+    addInput(&f_indices);
+    addInput(&f_transpose);
+    addOutput(&f_out);
 }
 
 template <class T>
@@ -44,11 +49,6 @@ MapIndices<T>::~MapIndices()
 template <class T>
 void MapIndices<T>::init()
 {
-    f_outStr.setParent(&f_out);
-    addInput(&f_in);
-    addInput(&f_indices);
-    addInput(&f_transpose);
-    addOutput(&f_out);
     setDirtyValue();
 }
 

@@ -38,14 +38,14 @@ GroupFilterYoungModulus<DataTypes>::GroupFilterYoungModulus()
     , p_defaultModulus( initData (&p_defaultModulus, (Real) 10000.0, "defaultYoungModulus", "Default value if the primitive is not in a group") )
     , p_groupMod( initData (&p_groupMod, "groupModulus", "list of young modulus for each group") )
 {
+    addInput(&f_groups);
+    addInput(&f_primitives);
+    addOutput(&f_youngModulus);
 }
 
 template <class DataTypes>
 void GroupFilterYoungModulus<DataTypes>::init()
 {
-    addInput(&f_groups);
-    addInput(&f_primitives);
-    addOutput(&f_youngModulus);
     setDirtyValue();
 }
 

@@ -64,16 +64,18 @@ public:
       , d_indices ( initData ( &d_indices,"indices","selected point/cell indices" ) )
     {
         d_labels.resize(d_nbLabels.getValue());
+
+        addInput(&d_nbLabels);
+        addInput(&d_connectLabels);
+        addOutput(&d_indices);
     }
 
     ~SelectConnectedLabelsROI() override {}
 
     void init() override
     {
-        addInput(&d_nbLabels);
         d_labels.resize(d_nbLabels.getValue());
-        addInput(&d_connectLabels);
-        addOutput(&d_indices);
+
         setDirtyValue();
     }
 

@@ -83,13 +83,6 @@ protected:
       , closingPosition(initData(&closingPosition,"closingPosition","Vertices of the closing parts"))
       , closingTriangles(initData(&closingTriangles,"closingTriangles","Triangles of the closing parts"))
     {
-    }
-
-    ~MeshClosingEngine() override {}
-
-public:
-    void init() override
-    {
         addInput(&inputPosition);
         addInput(&inputTriangles);
         addInput(&inputQuads);
@@ -99,6 +92,13 @@ public:
         addOutput(&indices);
         addOutput(&closingPosition);
         addOutput(&closingTriangles);
+    }
+
+    ~MeshClosingEngine() override {}
+
+public:
+    void init() override
+    {
         setDirtyValue();
     }
 

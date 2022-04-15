@@ -74,15 +74,6 @@ protected:
 public:
     void init() override
     {
-        addInput(&inputPosition);
-        addInput(&inputEdges);
-        addInput(&inputTriangles);
-        addInput(&inputQuads);
-        addInput(&indices);
-        addOutput(&position);
-        addOutput(&edges);
-        addOutput(&triangles);
-        addOutput(&quads);
         setDirtyValue();
     }
 

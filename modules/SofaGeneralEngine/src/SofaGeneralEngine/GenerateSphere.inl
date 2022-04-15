@@ -127,28 +127,28 @@ GenerateSphere<DataTypes>::GenerateSphere()
 {
     addAlias(&f_outputTetrahedraPositions,"position");
     addAlias(&f_outputTetrahedraPositions,"output_position");
+
+    addInput(&f_tessellationDegree);
+    addInput(&f_origin);
+    addInput(&f_platonicSolidName);
+
+
+    addOutput(&f_triangles);
+    addOutput(&f_outputTrianglesPositions);
+    addOutput(&f_bezierTriangleWeight);
+    addOutput(&f_isBezierTriangleRational);
+
+
+    addOutput(&f_tetrahedra);
+    addOutput(&f_outputTetrahedraPositions);
+    addOutput(&f_bezierTetrahedronWeight);
+    addOutput(&f_isBezierTetrahedronRational);
 }
 
 
 template <class DataTypes>
 void GenerateSphere<DataTypes>::init()
 {
-    addInput(&f_tessellationDegree);
-    addInput(&f_origin);
-    addInput(&f_platonicSolidName);
-
-
-	addOutput(&f_triangles);
-    addOutput(&f_outputTrianglesPositions);
-    addOutput(&f_bezierTriangleWeight);
-	addOutput(&f_isBezierTriangleRational);
-
-
-    addOutput(&f_tetrahedra);
-    addOutput(&f_outputTetrahedraPositions);
-	addOutput(&f_bezierTetrahedronWeight);
-	addOutput(&f_isBezierTetrahedronRational);
-
     setDirtyValue();
 
 	if (f_platonicSolidName.getValue() == "icosahedron"){
