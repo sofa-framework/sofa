@@ -316,7 +316,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
 
     Coord displ[6],sv;
     Mat3x3NoInit deformationGradient,S,R;
-    auto tetrahedra = m_topology->getTetrahedra();
+    const auto& tetrahedra = m_topology->getTetrahedra();
 
     Coord tetraVertex[4];
     for(i=0; i<nbTetrahedra; i++ )
@@ -463,7 +463,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
     const VecMat3x3& edgeDfDx = edgeInfo.getValue();
     Coord deltax;
 
-    auto edges = m_topology->getEdges();
+    const auto& edges = m_topology->getEdges();
     // use the already stored matrix
     for (i = 0; i < nbEdges; i++)
     {
