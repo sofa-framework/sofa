@@ -77,7 +77,7 @@ TEST(UtilsTest, upcaseString)
 TEST(UtilsTest, getExecutablePath)
 {
     const std::string path = Utils::getExecutablePath();
-    EXPECT_TRUE(path.find("SofaHelper_test") != std::string::npos);
+    EXPECT_TRUE(path.find("Sofa.Helper_test") != std::string::npos);
 }
 
 TEST(UtilsTest, getExecutableDirectory)
