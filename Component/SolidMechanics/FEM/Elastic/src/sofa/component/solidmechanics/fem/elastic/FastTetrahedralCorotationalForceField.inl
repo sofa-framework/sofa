@@ -124,7 +124,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::createTetrahedronRestInfo
         // compute the rotation matrix of the initial tetrahedron for the QR decomposition
         computeQRRotation(my_tinfo.restRotation,my_tinfo.restEdgeVector);
     } else 	if (m_decompositionMethod ==POLAR_DECOMPOSITION_MODIFIED) {
-        Mat3x3 Transformation;
+        Mat3x3NoInit Transformation;
         Transformation[0]=point[1]-point[0];
         Transformation[1]=point[2]-point[0];
         Transformation[2]=point[3]-point[0];
@@ -315,7 +315,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
 
 
     Coord displ[6],sv;
-    Mat3x3 deformationGradient,S,R;
+    Mat3x3NoInit deformationGradient,S,R;
     auto tetrahedra = m_topology->getTetrahedra();
 
     Coord tetraVertex[4];
@@ -425,7 +425,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
         helper::WriteOnlyAccessor< Data< VecMat3x3 > > edgeDfDx = edgeInfo;
 
         int nbTetrahedra=m_topology->getNbTetrahedra();
-        Mat3x3 tmp;
+        Mat3x3NoInit tmp;
 
         updateMatrix=false;
 
@@ -503,7 +503,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::linear
     helper::WriteOnlyAccessor< Data< VecMat3x3 > > edgeDfDx = edgeInfo;
     helper::WriteOnlyAccessor< Data< VecMat3x3 > > pointDfDx = pointInfo;
 
-    Mat3x3 tmp;
+    Mat3x3NoInit tmp;
     if (updateMatrix==true) {
         /// if not done in addDForce: update off-diagonal blocks ("edges") of each element matrix
         updateMatrix=false;
