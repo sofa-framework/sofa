@@ -1,0 +1,70 @@
+cmake_minimum_required(VERSION 3.12)
+project(Sofa.Testing LANGUAGES CXX)
+
+# Enable testing features of cmake, like the add_test() command.
+enable_testing()
+
+# add gtest library
+# set(gtest_disable_pthreads ON CACHE INTERNAL "")
+add_subdirectory(extlibs/gtest)
+# add custom gtest main
+add_subdirectory(SofaGTestMain)
+
+set(SOFATESTINGSRC_ROOT "src/sofa/testing")
+
+set(HEADER_FILES
+    ${SOFATESTINGSRC_ROOT}/config.h.in
+    ${SOFATESTINGSRC_ROOT}/initSofa.Testing.h
+    ${SOFATESTINGSRC_ROOT}/BaseTest.h
+    ${SOFATESTINGSRC_ROOT}/NumericTest.h
+    ${SOFATESTINGSRC_ROOT}/TestMessageHandler.h
+    ${SOFATESTINGSRC_ROOT}/BaseSimulationTest.h
+)
+
+set(SOURCE_FILES
+    ${SOFATESTINGSRC_ROOT}/initSofa.Testing.cpp
+    ${SOFATESTINGSRC_ROOT}/BaseTest.cpp
+    ${SOFATESTINGSRC_ROOT}/NumericTest.cpp
+    ${SOFATESTINGSRC_ROOT}/TestMessageHandler.cpp
+    ${SOFATESTINGSRC_ROOT}/BaseSimulationTest.cpp
+)
+
+
+# Compatibility files
+set (COMPATSRC_ROOT "compat/")
+set (COMPAT_HEADER_FILES
+    ${COMPATSRC_ROOT}/sofa/helper/testing/BaseTest.h
+	${COMPATSRC_ROOT}/sofa/helper/testing/NumericTest.h
+	${COMPATSRC_ROOT}/sofa/helper/testing/TestMessageHandler.h
+    ${COMPATSRC_ROOT}/SofaSimulationGraph/testing/BaseSimulationTest.h
+)
+
+find_package(Sofa.Helper REQUIRED)
+sofa_find_package(Sofa.DefaultType REQUIRED)
+sofa_find_package(Sofa.Core REQUIRED)
+sofa_find_package(Sofa.SimulationGraph REQUIRED)
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Helper Sofa.DefaultType Sofa.Core Sofa.SimulationGraph gtest SofaGTestMain )
+set(SOFA_TESTING_RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
+
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSRC_ROOT}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include/Sofa.Testing/Sofa.Testing/compat>")
+source_group("compat" FILES ${COMPAT_HEADER_FILES} )
+
+sofa_create_package_with_targets(
+    PACKAGE_NAME ${PROJECT_NAME}
+    PACKAGE_VERSION ${Sofa_VERSION}
+    TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
+    INCLUDE_SOURCE_DIR "src"
+    INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
+)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Testing)
+
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFA_TESTING_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFA_TESTING_BUILD_TESTS)
+    add_subdirectory(test)
+endif()
