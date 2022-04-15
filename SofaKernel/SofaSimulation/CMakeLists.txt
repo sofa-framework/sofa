@@ -2,12 +2,20 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaSimulation)
 
 set(SOFASIMULATION_MODULES
-    Sofa.Simulation.Common
-    Sofa.Simulation.Graph
-    )
+    Sofa.SimulationCommon
+    Sofa.SimulationGraph
+)
+
+set(SOFASIMULATION_MODULEDIRS
+    SofaSimulationCommon
+    SofaSimulationGraph
+)
+
+foreach(MODULEDIR ${SOFASIMULATION_MODULEDIRS})
+    add_subdirectory(../modules/${MODULEDIR} ${CMAKE_CURRENT_BINARY_DIR}/${MODULEDIR})
+endforeach()
 
 foreach(MODULE ${SOFASIMULATION_MODULES})
-    find_package(${MODULE} REQUIRED)
     set_target_properties(${MODULE} PROPERTIES FOLDER SofaSimulation)
 endforeach()
 

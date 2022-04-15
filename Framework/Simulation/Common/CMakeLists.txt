@@ -47,14 +47,6 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Core Sofa.Simulation.Core)
 target_link_libraries(${PROJECT_NAME} PRIVATE tinyxml) # Private because not exported in API
 
-# Create alias to support compatibility, starting from v21.06
-# This alias will be deleted in v21.12
-add_library(SofaSimulationCommon ALIAS Sofa.Simulation.Common)
-# Create alias to support compatibility, starting from v22.06
-# This alias will be deleted in v22.12
-add_library(Sofa.SimulationCommon ALIAS Sofa.Simulation.Common)
-
-
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
     PACKAGE_VERSION ${Sofa_VERSION}

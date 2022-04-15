@@ -16,9 +16,21 @@ set(SOFAFRAMEWORK_MODULES
     Sofa.Simulation.Core
     )
 
+set(SOFAFRAMEWORK_LEGACYMODULEDIRS
+    SofaHelper 
+    SofaDefaultType
+    SofaCore 
+    SofaSimulationCore
+)
+
 # add subprojects into a IDE folder called SofaFramework
 foreach(module ${SOFAFRAMEWORK_MODULES})
+    sofa_find_package(${module})
     set_target_properties(${module} PROPERTIES FOLDER SofaFramework) # IDE folder
+endforeach()
+
+foreach(module ${SOFAFRAMEWORK_LEGACYMODULEDIRS})
+    add_subdirectory(../modules/${module} ${CMAKE_CURRENT_BINARY_DIR}/${module})
 endforeach()
 
 set(SOFAFRAMEWORK_SRC src/SofaFramework)

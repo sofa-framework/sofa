@@ -1,0 +1,22 @@
+# CMake package configuration file for the @PROJECT_NAME@ module
+
+@PACKAGE_GUARD@
+@PACKAGE_INIT@
+
+get_property(@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE SET)
+if(NOT @PROJECT_NAME@_SENT_DEPRECATION_MESSAGE)
+    message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. Use Sofa.Simulation.Graph instead.")
+endif()
+set_property(GLOBAL PROPERTY PROPERTY_@PROJECT_NAME@_SENT_DEPRECATION_MESSAGE TRUE)
+
+# Create alias to support compatibility, starting from v21.06
+# This alias will be deleted in v22.06
+if(NOT TARGET SofaSimulationGraph) # test if alias was not already created
+    get_target_property(Sofa.SimulationGraph_IMPORTED Sofa.SimulationGraph IMPORTED)
+    if(Sofa.SimulationGraph_IMPORTED)
+        set_target_properties(Sofa.SimulationGraph PROPERTIES IMPORTED_GLOBAL TRUE)
+    endif()
+    add_library(SofaSimulationGraph ALIAS Sofa.SimulationGraph)
+endif()
+
+find_package(Sofa.Simulation.Graph QUIET REQUIRED)
