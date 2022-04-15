@@ -76,7 +76,7 @@ file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/lib/cmake)
 file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/etc/sofa/python.d)
 
 # Sofa.Config sets the environment (options, compiler flags, global variables)
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Config ${CMAKE_CURRENT_BINARY_DIR}/Sofa.Config)
+add_subdirectory(Framework/Config ${CMAKE_CURRENT_BINARY_DIR}/Sofa.Config)
 
 ## Custom Environment
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
@@ -184,16 +184,18 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
     message("Using legacy headers is enabled.")
     message("Headers from v21.12 are usable, but it is advised to change your code to use the new headers introduced in v22.06.")
 
-    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Compat)
+    add_subdirectory(Framework/Compat)
     add_subdirectory(Component/Compat)
 endif()
 
+add_subdirectory(Framework)
+# Deprecated (hollow) modules
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
 
-if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
-    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Testing)
-endif()
+# if(SOFA_BUILD_TESTS OR SOFA_BUILD_RELEASE_PACKAGE)
+#     add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.Testing)
+# endif()
 
 # SOFA-NG Components
 add_subdirectory(Component)

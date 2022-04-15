@@ -13,24 +13,8 @@ set(SOFAFRAMEWORK_MODULES
     Sofa.LinearAlgebra
     Sofa.DefaultType
     Sofa.Core
-    Sofa.SimulationCore
+    Sofa.Simulation.Core
     )
-
-# Temporary: to remove once the folders have been renamed
-set(SOFAFRAMEWORK_LEGACYMODULES 
-    Sofa.Type 
-    Sofa.Topology 
-    Sofa.Geometry 
-    SofaHelper 
-    Sofa.LinearAlgebra
-    SofaDefaultType
-    SofaCore 
-    SofaSimulationCore
-)
-
-foreach(module ${SOFAFRAMEWORK_LEGACYMODULES})
-    add_subdirectory(../modules/${module} ${CMAKE_CURRENT_BINARY_DIR}/${module})
-endforeach()
 
 # add subprojects into a IDE folder called SofaFramework
 foreach(module ${SOFAFRAMEWORK_MODULES})

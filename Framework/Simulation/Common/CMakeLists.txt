@@ -1,49 +1,59 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaSimulationCommon LANGUAGES CXX)
+project(Sofa.Simulation.Common LANGUAGES CXX)
 
-set(SOFASIMULATIONCOMMON_SRC "src/${PROJECT_NAME}")
-
-sofa_find_package(TinyXML REQUIRED)
+set(SOFA_SIMULATION_COMMON_SRC "src/sofa/simulation/common")
 
 set(HEADER_FILES
-    ${SOFASIMULATIONCOMMON_SRC}/config.h.in
-    ${SOFASIMULATIONCOMMON_SRC}/init.h
-    ${SOFASIMULATIONCOMMON_SRC}/initSofaSimulationCommon.h
-    ${SOFASIMULATIONCOMMON_SRC}/FindByTypeVisitor.h
-    ${SOFASIMULATIONCOMMON_SRC}/SceneLoaderPHP.h
-    ${SOFASIMULATIONCOMMON_SRC}/SceneLoaderXML.h
-    ${SOFASIMULATIONCOMMON_SRC}/TransformationVisitor.h
-    ${SOFASIMULATIONCOMMON_SRC}/xml/AttributeElement.h
-    ${SOFASIMULATIONCOMMON_SRC}/xml/BaseElement.h
-    ${SOFASIMULATIONCOMMON_SRC}/xml/BaseMultiMappingElement.h
-    ${SOFASIMULATIONCOMMON_SRC}/xml/DataElement.h
-    ${SOFASIMULATIONCOMMON_SRC}/xml/ElementNameHelper.h
-    ${SOFASIMULATIONCOMMON_SRC}/xml/Element.h
-    ${SOFASIMULATIONCOMMON_SRC}/xml/Element.inl
-    ${SOFASIMULATIONCOMMON_SRC}/xml/NodeElement.h
-    ${SOFASIMULATIONCOMMON_SRC}/xml/ObjectElement.h
-    ${SOFASIMULATIONCOMMON_SRC}/xml/XML.h
+    ${SOFA_SIMULATION_COMMON_SRC}/config.h.in
+    ${SOFA_SIMULATION_COMMON_SRC}/init.h
+    ${SOFA_SIMULATION_COMMON_SRC}/initSofaSimulationCommon.h
+    ${SOFA_SIMULATION_COMMON_SRC}/FindByTypeVisitor.h
+    ${SOFA_SIMULATION_COMMON_SRC}/SceneLoaderPHP.h
+    ${SOFA_SIMULATION_COMMON_SRC}/SceneLoaderXML.h
+    ${SOFA_SIMULATION_COMMON_SRC}/TransformationVisitor.h
+    ${SOFA_SIMULATION_COMMON_SRC}/xml/AttributeElement.h
+    ${SOFA_SIMULATION_COMMON_SRC}/xml/BaseElement.h
+    ${SOFA_SIMULATION_COMMON_SRC}/xml/BaseMultiMappingElement.h
+    ${SOFA_SIMULATION_COMMON_SRC}/xml/DataElement.h
+    ${SOFA_SIMULATION_COMMON_SRC}/xml/ElementNameHelper.h
+    ${SOFA_SIMULATION_COMMON_SRC}/xml/Element.h
+    ${SOFA_SIMULATION_COMMON_SRC}/xml/Element.inl
+    ${SOFA_SIMULATION_COMMON_SRC}/xml/NodeElement.h
+    ${SOFA_SIMULATION_COMMON_SRC}/xml/ObjectElement.h
+    ${SOFA_SIMULATION_COMMON_SRC}/xml/XML.h
 )
 
 set(SOURCE_FILES
-    ${SOFASIMULATIONCOMMON_SRC}/SceneLoaderPHP.cpp
-    ${SOFASIMULATIONCOMMON_SRC}/SceneLoaderXML.cpp
-    ${SOFASIMULATIONCOMMON_SRC}/TransformationVisitor.cpp
-    ${SOFASIMULATIONCOMMON_SRC}/init.cpp
-    ${SOFASIMULATIONCOMMON_SRC}/initSofaSimulationCommon.cpp
-    ${SOFASIMULATIONCOMMON_SRC}/xml/AttributeElement.cpp
-    ${SOFASIMULATIONCOMMON_SRC}/xml/BaseElement.cpp
-    ${SOFASIMULATIONCOMMON_SRC}/xml/BaseMultiMappingElement.cpp
-    ${SOFASIMULATIONCOMMON_SRC}/xml/DataElement.cpp
-    ${SOFASIMULATIONCOMMON_SRC}/xml/ElementNameHelper.cpp
-    ${SOFASIMULATIONCOMMON_SRC}/xml/NodeElement.cpp
-    ${SOFASIMULATIONCOMMON_SRC}/xml/ObjectElement.cpp
-    ${SOFASIMULATIONCOMMON_SRC}/xml/XML.cpp
+    ${SOFA_SIMULATION_COMMON_SRC}/SceneLoaderPHP.cpp
+    ${SOFA_SIMULATION_COMMON_SRC}/SceneLoaderXML.cpp
+    ${SOFA_SIMULATION_COMMON_SRC}/TransformationVisitor.cpp
+    ${SOFA_SIMULATION_COMMON_SRC}/init.cpp
+    ${SOFA_SIMULATION_COMMON_SRC}/initSofaSimulationCommon.cpp
+    ${SOFA_SIMULATION_COMMON_SRC}/xml/AttributeElement.cpp
+    ${SOFA_SIMULATION_COMMON_SRC}/xml/BaseElement.cpp
+    ${SOFA_SIMULATION_COMMON_SRC}/xml/BaseMultiMappingElement.cpp
+    ${SOFA_SIMULATION_COMMON_SRC}/xml/DataElement.cpp
+    ${SOFA_SIMULATION_COMMON_SRC}/xml/ElementNameHelper.cpp
+    ${SOFA_SIMULATION_COMMON_SRC}/xml/NodeElement.cpp
+    ${SOFA_SIMULATION_COMMON_SRC}/xml/ObjectElement.cpp
+    ${SOFA_SIMULATION_COMMON_SRC}/xml/XML.cpp
 )
 
+find_package(Sofa.Core REQUIRED)
+sofa_find_package(Sofa.Simulation.Core REQUIRED)
+sofa_find_package(TinyXML REQUIRED)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Core Sofa.Simulation.Core)
 target_link_libraries(${PROJECT_NAME} PRIVATE tinyxml) # Private because not exported in API
+
+# Create alias to support compatibility, starting from v21.06
+# This alias will be deleted in v21.12
+add_library(SofaSimulationCommon ALIAS Sofa.Simulation.Common)
+# Create alias to support compatibility, starting from v22.06
+# This alias will be deleted in v22.12
+add_library(Sofa.SimulationCommon ALIAS Sofa.Simulation.Common)
+
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
@@ -55,8 +65,7 @@ sofa_create_package_with_targets(
 
 # Tests
 # If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
-cmake_dependent_option(SOFASIMULATIONCOMMON_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
-if(SOFASIMULATIONCOMMON_BUILD_TESTS)
-    enable_testing()
-    add_subdirectory(${PROJECT_NAME}_test)
+cmake_dependent_option(SOFA_SIMULATION_COMMON_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFA_SIMULATION_COMMON_BUILD_TESTS)
+    add_subdirectory(test)
 endif()

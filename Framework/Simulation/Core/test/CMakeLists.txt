@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(SofaSimulationCore_test)
+project(Sofa.Simulation.Core_test)
 
 set(SOURCE_FILES
     RequiredPlugin_test.cpp
@@ -10,6 +10,6 @@ set(SOURCE_FILES
     )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} Sofa.Testing SofaHelper)
+target_link_libraries(${PROJECT_NAME} Sofa.Testing Sofa.Simulation.Core)
 
-add_test(NAME SofaSimulationCore_test COMMAND SofaSimulationCore_test)
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

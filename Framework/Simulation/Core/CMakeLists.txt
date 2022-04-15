@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(Sofa.SimulationCore)
+project(Sofa.Simulation.Core)
 
 set(SRC_ROOT "src/sofa/simulation")
 
@@ -254,12 +254,16 @@ set(SOURCE_FILES
     ${SRC_ROOT}/mechanicalvisitor/MechanicalVSizeVisitor.cpp
 )
 
-sofa_find_package(Sofa.Core REQUIRED)
+find_package(Sofa.Core REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+
 # Create alias to support compatibility, starting from v21.06
 # This alias will be deleted in v21.12
-add_library(SofaSimulationCore ALIAS Sofa.SimulationCore)
+add_library(SofaSimulationCore ALIAS Sofa.Simulation.Core)
+# Create alias to support compatibility, starting from v22.06
+# This alias will be deleted in v22.12
+add_library(Sofa.SimulationCore ALIAS Sofa.Simulation.Core)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Core)
 
@@ -278,10 +282,10 @@ sofa_create_package_with_targets(
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
 )
 
-# Create alias
-add_library(SofaSimulationCore ALIAS ${PROJECT_NAME})
-
-if(SOFA_BUILD_TESTS)
-    add_subdirectory(SofaSimulationCore_test)
-    add_subdirectory(SofaSimulationCore_simutest)
+# Tests
+# If SOFA_BUILD_TESTS exists and is OFF, then these tests will be auto-disabled
+cmake_dependent_option(SOFA_SIMULATION_CORE_BUILD_TESTS "Compile the automatic tests" ON "SOFA_BUILD_TESTS OR NOT DEFINED SOFA_BUILD_TESTS" OFF)
+if(SOFA_SIMULATION_GRAPH_BUILD_TESTS)
+    add_subdirectory(test)
+    add_subdirectory(simutest)
 endif()
