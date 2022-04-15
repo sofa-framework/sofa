@@ -234,6 +234,7 @@ target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${JS
 # STB (header only) for Image
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${STB_INCLUDE_DIR}>")
 
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

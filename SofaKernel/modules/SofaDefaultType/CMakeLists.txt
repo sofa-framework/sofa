@@ -11,6 +11,8 @@ message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23
 sofa_find_package(Sofa.DefaultType REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.DefaultType)
 
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER SofaFramework) # IDE folder
+
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
     PACKAGE_VERSION ${Sofa_VERSION}

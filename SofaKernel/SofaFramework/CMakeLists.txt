@@ -26,7 +26,6 @@ set(SOFAFRAMEWORK_LEGACYMODULEDIRS
 # add subprojects into a IDE folder called SofaFramework
 foreach(module ${SOFAFRAMEWORK_MODULES})
     sofa_find_package(${module})
-    set_target_properties(${module} PROPERTIES FOLDER SofaFramework) # IDE folder
 endforeach()
 
 foreach(module ${SOFAFRAMEWORK_LEGACYMODULEDIRS})

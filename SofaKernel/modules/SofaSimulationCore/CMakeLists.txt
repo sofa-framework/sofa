@@ -16,6 +16,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core)
 # This alias will be deleted in v21.12
 add_library(SofaSimulationCore ALIAS Sofa.SimulationCore)
 
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER SofaFramework) # IDE folder
+
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
     PACKAGE_VERSION ${Sofa_VERSION}

@@ -131,6 +131,14 @@ set(HEADER_FILES
     ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/OBBModel.inl
     ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/RigidCapsuleModel.h
     ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/RigidCapsuleModel.inl
+    ${SOFACOMPATSRC_ROOT}/SofaSimulationCommon/FindByTypeVisitor.h
+    ${SOFACOMPATSRC_ROOT}/SofaSimulationCommon/SceneLoaderPHP.h
+    ${SOFACOMPATSRC_ROOT}/SofaSimulationCommon/SceneLoaderXML.h
+    ${SOFACOMPATSRC_ROOT}/SofaSimulationCommon/TransformationVisitor.h
+    ${SOFACOMPATSRC_ROOT}/SofaSimulationGraph/DAGNode.h
+    ${SOFACOMPATSRC_ROOT}/SofaSimulationGraph/DAGSimulation.h
+    ${SOFACOMPATSRC_ROOT}/SofaSimulationGraph/init.h
+    ${SOFACOMPATSRC_ROOT}/SofaSimulationGraph/SimpleApi.h
 )
 
 set(SOURCE_FILES

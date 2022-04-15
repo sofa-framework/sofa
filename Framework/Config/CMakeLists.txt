@@ -305,7 +305,7 @@ else()
     target_link_options(${PROJECT_NAME} PUBLIC "${SOFACONFIG_LINK_OPTIONS}")
 endif()
 
-set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER SofaFramework) # IDE folder
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
 
 # Attach Sofa Version into properties
 set_target_properties(${PROJECT_NAME} PROPERTIES Sofa_VERSION "${Sofa_VERSION}")
