@@ -20,15 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaSimulationCommon/config.h>
-#include <SofaSimulationCommon/xml/BaseElement.h>
+#include <sofa/simulation/common/config.h>
+#include <sofa/simulation/common/xml/BaseElement.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
 #include <sofa/simulation/fwd.h>
 
 namespace sofa::simulation
 {
 
-class SOFA_SOFASIMULATIONCOMMON_API SceneLoaderXML : public SceneLoader
+class SOFA_SIMULATION_COMMON_API SceneLoaderXML : public SceneLoader
 {
 public:
     /// Pre-loading check

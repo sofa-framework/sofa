@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaSimulationCommon/config.h>
+#include <sofa/simulation/common/config.h>
 #include <sofa/simulation/Visitor.h>
 #include <sofa/type/Vec.h>
 #include <sofa/type/Quat.h>
@@ -30,7 +30,7 @@ namespace sofa::simulation
 {
 
 
-class SOFA_SOFASIMULATIONCOMMON_API TransformationVisitor : public Visitor
+class SOFA_SIMULATION_COMMON_API TransformationVisitor : public Visitor
 {
 public:
     using Vector3 = sofa::type::Vector3;

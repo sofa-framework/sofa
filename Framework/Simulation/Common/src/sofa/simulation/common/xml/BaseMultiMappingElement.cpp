@@ -19,14 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimulationCommon/xml/BaseMultiMappingElement.h>
+#include <sofa/simulation/common/xml/BaseMultiMappingElement.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/BaseState.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/simulation/Node.h>
-#include <SofaSimulationCommon/xml/NodeElement.h>
-#include <SofaSimulationCommon/xml/Element.h>
+#include <sofa/simulation/common/xml/NodeElement.h>
+#include <sofa/simulation/common/xml/Element.h>
 
 namespace sofa::simulation::xml
 {

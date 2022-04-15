@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaSimulationCommon/config.h>
+#include <sofa/simulation/common/config.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
 
 namespace sofa::simulation
 {
 
-class SOFA_SOFASIMULATIONCOMMON_API SceneLoaderPHP : public SceneLoader
+class SOFA_SIMULATION_COMMON_API SceneLoaderPHP : public SceneLoader
 {
 public:
     /// Pre-loading check

@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaSimulationCommon/init.h>
+#include <sofa/simulation/common/init.h>
 
 namespace sofa::component
 {
 
-SOFA_SOFASIMULATIONCOMMON_API void initSofaSimulationCommon();
+SOFA_SIMULATION_COMMON_API void initSofaSimulationCommon();
 
 } // namespace sofa::component

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimulationGraph/initSofaSimulationGraph.h>
+#include <sofa/simulation/graph/initSofaSimulationGraph.h>
 
 namespace sofa::component
 {

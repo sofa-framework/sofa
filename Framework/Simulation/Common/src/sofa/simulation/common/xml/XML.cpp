@@ -22,7 +22,7 @@
 #include <string>
 #include <typeinfo>
 #include <cstdlib>
-#include <SofaSimulationCommon/xml/XML.h>
+#include <sofa/simulation/common/xml/XML.h>
 #include <sofa/helper/logging/Message.h>
 #include <sofa/helper/system/Locale.h>
 #include <sofa/helper/system/FileRepository.h>

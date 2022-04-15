@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimulationCommon/SceneLoaderPHP.h>
+#include <sofa/simulation/common/SceneLoaderPHP.h>
 #include <sofa/simulation/Node.h>
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 #include <sofa/helper/system/PipeProcess.h>
-#include <SofaSimulationCommon/xml/NodeElement.h>
+#include <sofa/simulation/common/xml/NodeElement.h>
 #include <sofa/helper/system/FileRepository.h>
 
 namespace sofa::simulation

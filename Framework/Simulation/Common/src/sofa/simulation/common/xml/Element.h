@@ -21,7 +21,7 @@
 ******************************************************************************/
 #pragma once
 #include <vector>
-#include <SofaSimulationCommon/xml/BaseElement.h>
+#include <sofa/simulation/common/xml/BaseElement.h>
 #include <sofa/helper/Factory.h>
 
 namespace sofa::simulation::xml
@@ -49,4 +49,4 @@ public:
 
 } // namespace sofa::simulation::xml
 
-#include <SofaSimulationCommon/xml/Element.inl>
+#include <sofa/simulation/common/xml/Element.inl>

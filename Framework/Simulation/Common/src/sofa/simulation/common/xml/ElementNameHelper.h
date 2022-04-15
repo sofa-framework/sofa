@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaSimulationCommon/config.h>
+#include <sofa/simulation/common/config.h>
 #include <map>
 #include <string>
 

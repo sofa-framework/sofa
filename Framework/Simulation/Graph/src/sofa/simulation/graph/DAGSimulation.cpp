@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 
-#include <SofaSimulationCommon/xml/BaseElement.h>
-#include <SofaSimulationGraph/DAGNode.h>
-#include <SofaSimulationGraph/init.h>
+#include <sofa/simulation/common/xml/BaseElement.h>
+#include <sofa/simulation/graph/DAGNode.h>
+#include <sofa/simulation/graph/init.h>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/Factory.h>

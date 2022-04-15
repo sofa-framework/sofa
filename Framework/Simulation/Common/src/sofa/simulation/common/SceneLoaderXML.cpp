@@ -19,14 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimulationCommon/SceneLoaderXML.h>
+#include <sofa/simulation/common/SceneLoaderXML.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/Locale.h>
 #include <sofa/helper/cast.h>
 
-#include <SofaSimulationCommon/xml/XML.h>
-#include <SofaSimulationCommon/xml/NodeElement.h>
-#include <SofaSimulationCommon/FindByTypeVisitor.h>
+#include <sofa/simulation/common/xml/XML.h>
+#include <sofa/simulation/common/xml/NodeElement.h>
+#include <sofa/simulation/common/FindByTypeVisitor.h>
 
 namespace sofa::simulation
 {

@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimulationCommon/xml/ObjectElement.h>
-#include <SofaSimulationCommon/xml/Element.h>
+#include <sofa/simulation/common/xml/ObjectElement.h>
+#include <sofa/simulation/common/xml/Element.h>
 #include <sofa/core/ObjectFactory.h>
 
 

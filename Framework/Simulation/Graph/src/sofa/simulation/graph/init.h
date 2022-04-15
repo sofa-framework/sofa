@@ -20,26 +20,26 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaSimulationGraph/config.h>
+#include <sofa/simulation/graph/config.h>
 
 namespace sofa::simulation::graph
 {
 
 /// @brief Initialize the SofaSimulationGraph library, as well as its
 /// dependencies: SofaSimulationCommon, SofaCore, SofaDefaultType, SofaHelper.
-SOFA_SOFASIMULATIONGRAPH_API void init();
+SOFA_SIMULATION_GRAPH_API void init();
 
 /// @brief Return true if and only if the SofaSimulationGraph library has been
 /// initialized.
-SOFA_SOFASIMULATIONGRAPH_API bool isInitialized();
+SOFA_SIMULATION_GRAPH_API bool isInitialized();
 
 /// @brief Clean up the resources used by the SofaSimulationGraph library, as
 /// well as its dependencies: SofaSimulationCommon, SofaCore, SofaDefaultType,
 /// SofaHelper.
-SOFA_SOFASIMULATIONGRAPH_API void cleanup();
+SOFA_SIMULATION_GRAPH_API void cleanup();
 
 /// @brief Return true if and only if the SofaSimulationGraph library has been
 /// cleaned up.
-SOFA_SOFASIMULATIONGRAPH_API bool isCleanedUp();
+SOFA_SIMULATION_GRAPH_API bool isCleanedUp();
 
 } // namespace sofa::simulation::graph

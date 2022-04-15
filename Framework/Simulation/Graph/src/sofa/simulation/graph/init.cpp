@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimulationGraph/config.h>
-#include <SofaSimulationCommon/init.h>
+#include <sofa/simulation/graph/config.h>
+#include <sofa/simulation/common/init.h>
 #include <sofa/helper/init.h>
 
 namespace sofa::simulation::graph
@@ -29,7 +29,7 @@ namespace sofa::simulation::graph
 static bool s_initialized = false;
 static bool s_cleanedUp = false;
 
-SOFA_SOFASIMULATIONGRAPH_API void init()
+SOFA_SIMULATION_GRAPH_API void init()
 {
     if (!s_initialized)
     {
@@ -38,12 +38,12 @@ SOFA_SOFASIMULATIONGRAPH_API void init()
     }
 }
 
-SOFA_SOFASIMULATIONGRAPH_API bool isInitialized()
+SOFA_SIMULATION_GRAPH_API bool isInitialized()
 {
     return s_initialized;
 }
 
-SOFA_SOFASIMULATIONGRAPH_API void cleanup()
+SOFA_SIMULATION_GRAPH_API void cleanup()
 {
     if (!s_cleanedUp)
     {
@@ -52,7 +52,7 @@ SOFA_SOFASIMULATIONGRAPH_API void cleanup()
     }
 }
 
-SOFA_SOFASIMULATIONGRAPH_API bool isCleanedUp()
+SOFA_SIMULATION_GRAPH_API bool isCleanedUp()
 {
     return s_cleanedUp;
 }

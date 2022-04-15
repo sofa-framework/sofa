@@ -24,13 +24,13 @@
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory ;
 
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
 
-#include <SofaSimulationGraph/DAGNode.h>
+#include <sofa/simulation/graph/DAGNode.h>
 using sofa::simulation::graph::DAGNode;
 
-#include <SofaSimulationGraph/SimpleApi.h>
+#include <sofa/simulation/graph/SimpleApi.h>
 using sofa::core::objectmodel::BaseObjectDescription ;
 
 #include <sofa/simulation/XMLPrintVisitor.h>

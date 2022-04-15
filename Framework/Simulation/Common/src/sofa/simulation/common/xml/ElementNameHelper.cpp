@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimulationCommon/xml/ElementNameHelper.h>
+#include <sofa/simulation/common/xml/ElementNameHelper.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa::simulation::xml

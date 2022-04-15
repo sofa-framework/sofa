@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaSimulationGraph/config.h>
+#include <sofa/simulation/graph/config.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/simulation/Visitor.h>
@@ -37,7 +37,7 @@ namespace sofa::simulation::graph
  *
  * Note that nodes created during a traversal are not traversed if they are created upper than the current node during the top-down traversal or if they are created during the bottom-up traversal.
  */
-class SOFA_SOFASIMULATIONGRAPH_API DAGNode : public simulation::Node
+class SOFA_SIMULATION_GRAPH_API DAGNode : public simulation::Node
 {
 public:
     typedef Node::DisplayFlags DisplayFlags;

@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_SIMULATION_COMMON_XML_BASEELEMENT_CPP
-#include <SofaSimulationCommon/xml/BaseElement.h>
+#include <sofa/simulation/common/xml/BaseElement.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/system/SetDirectory.h>
 #include <cstring>
 
-template class SOFA_SOFASIMULATIONCOMMON_API sofa::helper::Factory< std::string, sofa::simulation::xml::BaseElement, std::pair<std::string, std::string> >;
+template class SOFA_SIMULATION_COMMON_API sofa::helper::Factory< std::string, sofa::simulation::xml::BaseElement, std::pair<std::string, std::string> >;
 
 namespace sofa::simulation::xml
 {

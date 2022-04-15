@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaSimulationCommon/xml/Element.h>
+#include <sofa/simulation/common/xml/Element.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
 namespace sofa::simulation::xml
 {
 
-class SOFA_SOFASIMULATIONCOMMON_API DataElement : public Element<core::objectmodel::BaseObject>
+class SOFA_SIMULATION_COMMON_API DataElement : public Element<core::objectmodel::BaseObject>
 {
 public:
     DataElement(const std::string& name, const std::string& type, BaseElement* parent=nullptr);

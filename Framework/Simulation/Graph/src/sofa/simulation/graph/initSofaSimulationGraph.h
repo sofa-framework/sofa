@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaSimulationGraph/init.h>
+#include <sofa/simulation/graph/init.h>
 
 namespace sofa::component
 {
 
-SOFA_SOFASIMULATIONGRAPH_API void initSofaSimulationGraph();
+SOFA_SIMULATION_GRAPH_API void initSofaSimulationGraph();
 
 } // namespace sofa::component

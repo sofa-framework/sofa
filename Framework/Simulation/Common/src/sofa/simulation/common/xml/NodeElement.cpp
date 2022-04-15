@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimulationCommon/xml/NodeElement.h>
-//#include <SofaSimulationCommon/xml/ObjectElement.h>
-#include <SofaSimulationCommon/xml/Element.h>
+#include <sofa/simulation/common/xml/NodeElement.h>
+//#include <sofa/simulation/common/xml/ObjectElement.h>
+#include <sofa/simulation/common/xml/Element.h>
 #include <sofa/helper/logging/Messaging.h>
 
 namespace sofa::simulation::xml

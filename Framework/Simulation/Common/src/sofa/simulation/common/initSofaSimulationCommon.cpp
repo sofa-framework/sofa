@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimulationCommon/initSofaSimulationCommon.h>
+#include <sofa/simulation/common/initSofaSimulationCommon.h>
 
 namespace sofa::component
 {

@@ -19,14 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimulationCommon/init.h>
+#include <sofa/simulation/common/init.h>
 
 #include <sofa/core/init.h>
 #include <sofa/helper/init.h>
 #include <sofa/simulation/init.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/simulation/Node.inl>
-#include <SofaSimulationCommon/xml/NodeElement.h>
+#include <sofa/simulation/common/xml/NodeElement.h>
 
 namespace sofa::simulation::common
 {
@@ -35,9 +35,9 @@ static bool s_initialized = false;
 static bool s_cleanedUp = false;
 
 //create method of Node called if the user wants the default node. The object created will depend on the simulation currently in use.
-SOFA_SOFASIMULATIONCOMMON_API sofa::helper::Creator<xml::NodeElement::Factory, Node> NodeClass("default");
+SOFA_SIMULATION_COMMON_API sofa::helper::Creator<xml::NodeElement::Factory, Node> NodeClass("default");
 
-SOFA_SOFASIMULATIONCOMMON_API void init()
+SOFA_SIMULATION_COMMON_API void init()
 {
     if (!s_initialized)
     {
@@ -46,12 +46,12 @@ SOFA_SOFASIMULATIONCOMMON_API void init()
     }
 }
 
-SOFA_SOFASIMULATIONCOMMON_API bool isInitialized()
+SOFA_SIMULATION_COMMON_API bool isInitialized()
 {
     return s_initialized;
 }
 
-SOFA_SOFASIMULATIONCOMMON_API void cleanup()
+SOFA_SIMULATION_COMMON_API void cleanup()
 {
     if (!s_cleanedUp)
     {
@@ -60,7 +60,7 @@ SOFA_SOFASIMULATIONCOMMON_API void cleanup()
     }
 }
 
-SOFA_SOFASIMULATIONCOMMON_API bool isCleanedUp()
+SOFA_SIMULATION_COMMON_API bool isCleanedUp()
 {
     return s_cleanedUp;
 }

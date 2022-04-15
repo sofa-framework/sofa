@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaSimulationCommon/xml/ObjectElement.h>
+#include <sofa/simulation/common/xml/ObjectElement.h>
 
 namespace sofa::core
 {
@@ -37,7 +37,7 @@ namespace sofa::simulation
 namespace sofa::simulation::xml
 {
 
-class SOFA_SOFASIMULATIONCOMMON_API BaseMultiMappingElement : public ObjectElement
+class SOFA_SIMULATION_COMMON_API BaseMultiMappingElement : public ObjectElement
 {
 public:
     BaseMultiMappingElement(const std::string& name, const std::string& type, BaseElement* parent=nullptr);
