@@ -82,7 +82,7 @@ public:
 protected :
 
     Data<sofa::helper::OptionsGroup> d_typePermutation;
-    Data<int> d_L_nnz;
+    Data<int> d_L_nnz; ///< Number of non-zero values in the lower triangular matrix of the factorization. The lower, the faster the system is solved.
 
     css* symbolic_LU(cs *A);
 
