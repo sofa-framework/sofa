@@ -23,14 +23,14 @@
 
 #include <sofa/config.h>
 
-#if __has_include(<CollisionOBBCapsule/model/OBBModel.h>)
-#include <CollisionOBBCapsule/model/OBBModel.h>
+#if __has_include(<CollisionOBBCapsule/geometry/OBBModel.h>)
+#include <CollisionOBBCapsule/geometry/OBBModel.h>
 #define COLLISIONOBBOBB_OBBMODEL
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/model/OBBModel.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/geometry/OBBModel.h")
 
 #else
-#error "OBB and OBB-related contents has been moved to CollisionOBBOBB. Include <CollisionOBBCapsule/model/OBBModel.h> instead of this one."
+#error "OBB and OBB-related contents has been moved to CollisionOBBOBB. Include <CollisionOBBCapsule/geometry/OBBModel.h> instead of this one."
 #endif
 
 #ifdef COLLISIONOBBOBB_OBBMODEL
@@ -38,12 +38,12 @@
 namespace sofa::component::collision
 {
 	template<class TDataTypes>
-	using TOBB = collisionobbcapsule::model::TOBB<TDataTypes>;
+	using TOBB = collisionobbcapsule::geometry::TOBB<TDataTypes>;
 
 	template<class DataTypes>
-	using OBBCollisionModel = collisionobbcapsule::model::OBBCollisionModel<DataTypes>;
+	using OBBCollisionModel = collisionobbcapsule::geometry::OBBCollisionModel<DataTypes>;
 
-	using OBB = collisionobbcapsule::model::OBB;
+	using OBB = collisionobbcapsule::geometry::OBB;
 
 } // namespace sofa::component::collision
 

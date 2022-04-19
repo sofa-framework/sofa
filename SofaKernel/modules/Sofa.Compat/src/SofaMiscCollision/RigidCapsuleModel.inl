@@ -23,11 +23,11 @@
 
 #include <sofa/config.h>
 
-#if __has_include(<CollisionOBBCapsule/model/RigidCapsuleModel.inl>)
-#include <CollisionOBBCapsule/model/RigidCapsuleModel.inl>
+#if __has_include(<CollisionOBBCapsule/geometry/RigidCapsuleModel.inl>)
+#include <CollisionOBBCapsule/geometry/RigidCapsuleModel.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/model//RigidCapsuleModel.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionOBBCapsule/geometry//RigidCapsuleModel.inl")
 
 #else
-#error "OBB and Capsule-related contents has been moved to CollisionOBBCapsule. Include <CollisionOBBCapsule/model/RigidCapsuleModel.inl> instead of this one."
+#error "OBB and Capsule-related contents has been moved to CollisionOBBCapsule. Include <CollisionOBBCapsule/geometry/RigidCapsuleModel.inl> instead of this one."
 #endif

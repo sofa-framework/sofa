@@ -23,14 +23,14 @@
 
 #include <sofa/config.h>
 
-#if __has_include(<CollisionCapsuleCapsule/model/CapsuleModel.h>)
-#include <CollisionCapsuleCapsule/model/CapsuleModel.h>
+#if __has_include(<CollisionCapsuleCapsule/geometry/CapsuleModel.h>)
+#include <CollisionCapsuleCapsule/geometry/CapsuleModel.h>
 #define COLLISIONOBBCAPSULE_CAPSULEMODEL
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionCapsuleCapsule/model/CapsuleModel.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "CollisionCapsuleCapsule/geometry/CapsuleModel.h")
 
 #else
-#error "Capsule and Capsule-related contents has been moved to CollisionCapsuleCapsule. Include <CollisionCapsuleCapsule/model/CapsuleModel.h> instead of this one."
+#error "Capsule and Capsule-related contents has been moved to CollisionCapsuleCapsule. Include <CollisionCapsuleCapsule/geometry/CapsuleModel.h> instead of this one."
 #endif
 
 #ifdef COLLISIONOBBCAPSULE_CAPSULEMODEL
@@ -38,9 +38,9 @@
 namespace sofa::component::collision
 {
 	template<class TDataTypes>
-	using TCapsule = collisionobbcapsule::model::TCapsule<TDataTypes>;
-	using CapsuleCollisionModel = collisionobbcapsule::model::CapsuleCollisionModel;
-	using CapsuleModel = collisionobbcapsule::model::CapsuleModel;
+	using TCapsule = collisionobbcapsule::geometry::TCapsule<TDataTypes>;
+	using CapsuleCollisionModel = collisionobbcapsule::geometry::CapsuleCollisionModel;
+	using CapsuleModel = collisionobbcapsule::geometry::CapsuleModel;
 
 } // namespace sofa::component::collision
 
