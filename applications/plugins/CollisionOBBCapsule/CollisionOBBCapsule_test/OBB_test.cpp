@@ -58,7 +58,7 @@ struct TestCapOBB  : public ::testing::Test{
 };
 
 struct TestSphereOBB : public ::testing::Test{
-    sofa::component::collision::model::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr makeMyRSphere(const Vec3 & center,double radius,const Vec3 & v,
+    sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr makeMyRSphere(const Vec3 & center,double radius,const Vec3 & v,
                                                                        sofa::simulation::Node::SPtr & father);
 
     bool vertex();
@@ -85,7 +85,7 @@ struct TestTriOBB : public ::testing::Test{
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdRigidTypes<3, double> > MechanicalObjectRigid3d;
 typedef MechanicalObjectRigid3d MechanicalObjectRigid3;
 
-sofa::component::collision::model::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr TestSphereOBB::makeMyRSphere(const Vec3 & center,double radius,const Vec3 & v,
+sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr TestSphereOBB::makeMyRSphere(const Vec3 & center,double radius,const Vec3 & v,
                                                                    sofa::simulation::Node::SPtr & father){
     //creating node containing SphereModel
     sofa::simulation::Node::SPtr sph = father->createChild("cap");
@@ -112,14 +112,14 @@ sofa::component::collision::model::SphereCollisionModel<sofa::defaulttype::Rigid
     sph->addObject(sphDOF);
 
     //creating an OBBCollisionModel<sofa::defaulttype::Rigid3Types> and attaching it to the same node than obbDOF
-    sofa::component::collision::model::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr sphCollisionModel = New<sofa::component::collision::model::RigidSphereModel >();
+    sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr sphCollisionModel = New<sofa::component::collision::geometry::RigidSphereModel >();
     sph->addObject(sphCollisionModel);
 
 
     //editting the OBBModel
     sphCollisionModel->init();
-    Data<sofa::component::collision::model::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::VecReal> & dVecReal = sphCollisionModel->radius;
-    sofa::component::collision::model::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::VecReal & vecReal = *(dVecReal.beginEdit());
+    Data<sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::VecReal> & dVecReal = sphCollisionModel->radius;
+    sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::VecReal & vecReal = *(dVecReal.beginEdit());
 
     vecReal[0] = radius;
 
@@ -143,7 +143,7 @@ bool TestOBB::faceVertex(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel0 = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel0 = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //the second OBB which is moving, one OBB must move, if not, there is no collision (OBB collision algorithm is like that)
@@ -153,11 +153,11 @@ bool TestOBB::faceVertex(){
     angles[0] = 0;
     angles[1] = acos(1/sqrt(3.0));
     angles[2] = M_PI_4;
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel1 = makeOBB(Vec3(0,0,sqrt(3.0) + 0.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel1 = makeOBB(Vec3(0,0,sqrt(3.0) + 0.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
 
     //we construct OBBs from OBBModels
-    collisionobbcapsule::model::OBB obb0(obbmodel0.get(),0);
-    collisionobbcapsule::model::OBB obb1(obbmodel1.get(),0);
+    collisionobbcapsule::geometry::OBB obb0(obbmodel0.get(),0);
+    collisionobbcapsule::geometry::OBB obb1(obbmodel1.get(),0);
 
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
@@ -214,11 +214,11 @@ bool TestOBB::vertexVertex(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel0 = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel1 = makeOBB(Vec3(0,0,sqrt(3.0) + 0.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel0 = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel1 = makeOBB(Vec3(0,0,sqrt(3.0) + 0.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
 
-    collisionobbcapsule::model::OBB obb0(obbmodel0.get(),0);
-    collisionobbcapsule::model::OBB obb1(obbmodel1.get(),0);
+    collisionobbcapsule::geometry::OBB obb0(obbmodel0.get(),0);
+    collisionobbcapsule::geometry::OBB obb1(obbmodel1.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
@@ -253,11 +253,11 @@ bool TestOBB::faceFace(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel0 = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel1 = makeOBB(Vec3(0,1,1.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel0 = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel1 = makeOBB(Vec3(0,1,1.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
 
-    collisionobbcapsule::model::OBB obb0(obbmodel0.get(),0);
-    collisionobbcapsule::model::OBB obb1(obbmodel1.get(),0);
+    collisionobbcapsule::geometry::OBB obb0(obbmodel0.get(),0);
+    collisionobbcapsule::geometry::OBB obb1(obbmodel1.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
@@ -300,7 +300,7 @@ bool TestOBB::faceEdge(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel0 = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel0 = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     order[0] = 2;
     order[1] = 1;
@@ -308,10 +308,10 @@ bool TestOBB::faceEdge(){
     angles[0] = 0;
     angles[1] = M_PI_2;
     angles[2] = M_PI_4;
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel1 = makeOBB(Vec3(0,0,sqrt(2.0) + 0.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel1 = makeOBB(Vec3(0,0,sqrt(2.0) + 0.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
 
-    collisionobbcapsule::model::OBB obb0(obbmodel0.get(),0);
-    collisionobbcapsule::model::OBB obb1(obbmodel1.get(),0);
+    collisionobbcapsule::geometry::OBB obb0(obbmodel0.get(),0);
+    collisionobbcapsule::geometry::OBB obb1(obbmodel1.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
@@ -361,11 +361,11 @@ bool TestOBB::edgeEdge(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel0 = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel1 = makeOBB(Vec3(0,0,sqrt(2.0) + 0.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel0 = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel1 = makeOBB(Vec3(0,0,sqrt(2.0) + 0.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
 
-    collisionobbcapsule::model::OBB obb0(obbmodel0.get(),0);
-    collisionobbcapsule::model::OBB obb1(obbmodel1.get(),0);
+    collisionobbcapsule::geometry::OBB obb0(obbmodel0.get(),0);
+    collisionobbcapsule::geometry::OBB obb1(obbmodel1.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
@@ -393,7 +393,7 @@ bool TestOBB::edgeVertex(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel0 = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel0 = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     order[0] = 2;
     order[1] = 1;
@@ -401,10 +401,10 @@ bool TestOBB::edgeVertex(){
     angles[0] = 0;
     angles[1] = acos(1/sqrt(3.0));
     angles[2] = M_PI_4;
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel1 = makeOBB(Vec3(0,0,sqrt(3.0) + 0.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel1 = makeOBB(Vec3(0,0,sqrt(3.0) + 0.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
 
-    collisionobbcapsule::model::OBB obb0(obbmodel0.get(),0);
-    collisionobbcapsule::model::OBB obb1(obbmodel1.get(),0);
+    collisionobbcapsule::geometry::OBB obb0(obbmodel0.get(),0);
+    collisionobbcapsule::geometry::OBB obb1(obbmodel1.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
 
@@ -425,16 +425,16 @@ bool TestCapOBB::faceVertex(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel =
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel =
             makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    collisionobbcapsule::model::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr capmodel = makeCap(Vec3(0,0,1 + 0.01),Vec3(0,0,2),1,Vec3(0,0,-10),scn);
+    collisionobbcapsule::geometry::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr capmodel = makeCap(Vec3(0,0,1 + 0.01),Vec3(0,0,2),1,Vec3(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBCollisionModel<sofa::defaulttype::Rigid3Types> and the CapsuleModel
-    collisionobbcapsule::model::OBB obb(obbmodel.get(),0);
-    collisionobbcapsule::model::Capsule cap(capmodel.get(),0);
+    collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
+    collisionobbcapsule::geometry::Capsule cap(capmodel.get(),0);
 
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
@@ -465,16 +465,16 @@ bool TestCapOBB::faceEdge(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel =
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel =
             makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    collisionobbcapsule::model::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr capmodel = makeCap(Vec3(-1,0,1 + 0.01),Vec3(1,0,1 + 0.01),1,Vec3(0,0,-10),scn);
+    collisionobbcapsule::geometry::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr capmodel = makeCap(Vec3(-1,0,1 + 0.01),Vec3(1,0,1 + 0.01),1,Vec3(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBCollisionModel<sofa::defaulttype::Rigid3Types> and the CapsuleModel
-    collisionobbcapsule::model::OBB obb(obbmodel.get(),0);
-    collisionobbcapsule::model::Capsule cap(capmodel.get(),0);
+    collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
+    collisionobbcapsule::geometry::Capsule cap(capmodel.get(),0);
 
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
@@ -513,16 +513,16 @@ bool TestCapOBB::edgeVertex(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel =
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel =
             makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    collisionobbcapsule::model::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr capmodel = makeCap(Vec3(0,0,1 + 0.01),Vec3(0,0,2),1,Vec3(0,0,-10),scn);
+    collisionobbcapsule::geometry::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr capmodel = makeCap(Vec3(0,0,1 + 0.01),Vec3(0,0,2),1,Vec3(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBCollisionModel<sofa::defaulttype::Rigid3Types> and the CapsuleModel
-    collisionobbcapsule::model::OBB obb(obbmodel.get(),0);
-    collisionobbcapsule::model::Capsule cap(capmodel.get(),0);
+    collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
+    collisionobbcapsule::geometry::Capsule cap(capmodel.get(),0);
 
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
@@ -561,16 +561,16 @@ bool TestCapOBB::edgeEdge(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel =
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel =
             makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    collisionobbcapsule::model::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr capmodel = makeCap(Vec3(-0.5,0,1 + 0.01),Vec3(0.5,0,1 + 0.01),1,Vec3(0,0,-10),scn);
+    collisionobbcapsule::geometry::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr capmodel = makeCap(Vec3(-0.5,0,1 + 0.01),Vec3(0.5,0,1 + 0.01),1,Vec3(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBCollisionModel<sofa::defaulttype::Rigid3Types> and the CapsuleModel
-    collisionobbcapsule::model::OBB obb(obbmodel.get(),0);
-    collisionobbcapsule::model::Capsule cap(capmodel.get(),0);
+    collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
+    collisionobbcapsule::geometry::Capsule cap(capmodel.get(),0);
 
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
@@ -610,15 +610,15 @@ bool TestCapOBB::vertexEdge(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    collisionobbcapsule::model::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr capmodel = makeCap(Vec3(-0.5,0,1 + 0.01),Vec3(0.5,0,1 + 0.01),1,Vec3(0,0,-10),scn);
+    collisionobbcapsule::geometry::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr capmodel = makeCap(Vec3(-0.5,0,1 + 0.01),Vec3(0.5,0,1 + 0.01),1,Vec3(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBCollisionModel<sofa::defaulttype::Rigid3Types> and the CapsuleModel
-    collisionobbcapsule::model::OBB obb(obbmodel.get(),0);
-    collisionobbcapsule::model::Capsule cap(capmodel.get(),0);
+    collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
+    collisionobbcapsule::geometry::Capsule cap(capmodel.get(),0);
 
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
@@ -658,15 +658,15 @@ bool TestCapOBB::vertexVertex(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    collisionobbcapsule::model::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr capmodel = makeCap(Vec3(0,0,1 + 0.01),Vec3(0,0,2),1,Vec3(0,0,-10),scn);
+    collisionobbcapsule::geometry::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr capmodel = makeCap(Vec3(0,0,1 + 0.01),Vec3(0,0,2),1,Vec3(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBCollisionModel<sofa::defaulttype::Rigid3Types> and the CapsuleModel
-    collisionobbcapsule::model::OBB obb(obbmodel.get(),0);
-    collisionobbcapsule::model::Capsule cap(capmodel.get(),0);
+    collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
+    collisionobbcapsule::geometry::Capsule cap(capmodel.get(),0);
 
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
@@ -704,15 +704,15 @@ bool TestSphereOBB::vertex(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    sofa::component::collision::model::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr sphmodel = makeMyRSphere(Vec3(0,0,1 + 0.01),1,Vec3(0,0,-10),scn);
+    sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr sphmodel = makeMyRSphere(Vec3(0,0,1 + 0.01),1,Vec3(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBCollisionModel<sofa::defaulttype::Rigid3Types> and the CapsuleModel
-    collisionobbcapsule::model::OBB obb(obbmodel.get(),0);
-    sofa::component::collision::model::RigidSphere sph(sphmodel.get(),0);
+    collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
+    sofa::component::collision::geometry::RigidSphere sph(sphmodel.get(),0);
 
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
@@ -754,15 +754,15 @@ bool TestSphereOBB::edge(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    sofa::component::collision::model::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr sphmodel = makeMyRSphere(Vec3(0,0,1 + 0.01),1,Vec3(0,0,-10),scn);
+    sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr sphmodel = makeMyRSphere(Vec3(0,0,1 + 0.01),1,Vec3(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBCollisionModel<sofa::defaulttype::Rigid3Types> and the CapsuleModel
-    collisionobbcapsule::model::OBB obb(obbmodel.get(),0);
-    sofa::component::collision::model::RigidSphere sph(sphmodel.get(),0);
+    collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
+    sofa::component::collision::geometry::RigidSphere sph(sphmodel.get(),0);
 
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
@@ -795,15 +795,15 @@ bool TestSphereOBB::face(){
     int order[3] = {0,1,2};
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling capsule
-    sofa::component::collision::model::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr sphmodel = makeMyRSphere(Vec3(0,0,1 + 0.01),1,Vec3(0,0,-10),scn);
+    sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr sphmodel = makeMyRSphere(Vec3(0,0,1 + 0.01),1,Vec3(0,0,-10),scn);
 
     //we construct the OBB and the capsule from the OBBCollisionModel<sofa::defaulttype::Rigid3Types> and the CapsuleModel
-    collisionobbcapsule::model::OBB obb(obbmodel.get(),0);
-    sofa::component::collision::model::RigidSphere sph(sphmodel.get(),0);
+    collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
+    sofa::component::collision::geometry::RigidSphere sph(sphmodel.get(),0);
 
     //collision configuration is such that the face defined by 3,2,6,7 vertices of obb0 (not moving) is intersected
     //at its center by the vertex 0 of obb1 (moving)
@@ -833,12 +833,12 @@ bool TestTriOBB::faceFace(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
     sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(-2,-2,0.01),Vec3(-2,2,0.01),Vec3(2,0,0.01),Vec3(0,0,-10),scn);
 
-    collisionobbcapsule::model::OBB obb(obbmodel.get(),0);
+    collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
@@ -863,12 +863,12 @@ bool TestTriOBB::faceVertex_out(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(-1.01,0,1.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(-1.01,0,1.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
     sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(0,0,0),Vec3(2,2,0),Vec3(2,-2,0),Vec3(0,0,0),scn);
 
-    collisionobbcapsule::model::OBB obb(obbmodel.get(),0);
+    collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
@@ -898,12 +898,12 @@ bool TestTriOBB::faceVertex_out2(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(-1.01,0,-1.01),angles,order,Vec3(0,0,10),Vec3(1,1,1),scn);
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(-1.01,0,-1.01),angles,order,Vec3(0,0,10),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
     sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(0,0,0),Vec3(2,2,0),Vec3(2,-2,0),Vec3(0,0,0),scn);
 
-    collisionobbcapsule::model::OBB obb(obbmodel.get(),0);
+    collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
@@ -933,12 +933,12 @@ bool TestTriOBB::faceEdge(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
     sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(0,-2,0.01),Vec3(0,2,0.01),Vec3(2,0,2),Vec3(0,0,-10),scn);
 
-    collisionobbcapsule::model::OBB obb(obbmodel.get(),0);
+    collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
@@ -963,12 +963,12 @@ bool TestTriOBB::faceVertex(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
     sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(0,-2,2),Vec3(0,2,2),Vec3(0,0,0.01),Vec3(0,0,-10),scn);
 
-    collisionobbcapsule::model::OBB obb(obbmodel.get(),0);
+    collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
@@ -1000,12 +1000,12 @@ bool TestTriOBB::edgeFace(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
     sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(-2,-2,0.01),Vec3(-2,2,0.01),Vec3(2,0,0.01),Vec3(0,0,-10),scn);
 
-    collisionobbcapsule::model::OBB obb(obbmodel.get(),0);
+    collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
@@ -1037,12 +1037,12 @@ bool TestTriOBB::edgeEdge(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
     sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(0,-2,0.01),Vec3(0,2,0.01),Vec3(2,0,2),Vec3(0,0,-10),scn);
 
-    collisionobbcapsule::model::OBB obb(obbmodel.get(),0);
+    collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
@@ -1074,12 +1074,12 @@ bool TestTriOBB::edgeEdge2(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
     sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(-1,0,0.01),Vec3(1,0,0.01),Vec3(2,0,2),Vec3(0,0,-10),scn);
 
-    collisionobbcapsule::model::OBB obb(obbmodel.get(),0);
+    collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
@@ -1110,12 +1110,12 @@ bool TestTriOBB::edgeVertex(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
     sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(0,0,0.01),Vec3(1,0,2),Vec3(-1,0,2),Vec3(0,0,-10),scn);
 
-    collisionobbcapsule::model::OBB obb(obbmodel.get(),0);
+    collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
@@ -1147,12 +1147,12 @@ bool TestTriOBB::vertexFace(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
     sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(-2,-2,0.01),Vec3(-2,2,0.01),Vec3(2,0,0.01),Vec3(0,0,-10),scn);
 
-    collisionobbcapsule::model::OBB obb(obbmodel.get(),0);
+    collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
@@ -1184,12 +1184,12 @@ bool TestTriOBB::vertexEdge(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
     sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(-1,0,0.01),Vec3(1,0,0.01),Vec3(2,0,2),Vec3(0,0,-10),scn);
 
-    collisionobbcapsule::model::OBB obb(obbmodel.get(),0);
+    collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;
@@ -1221,12 +1221,12 @@ bool TestTriOBB::vertexVertex(){
     angles[2] = M_PI_4;
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::graph::DAGNode>();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_POINTS | sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::FLAG_EDGES;
     sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr trimodel = sofa::collision_test::makeTri(Vec3(0,0,0.01),Vec3(1,0,2),Vec3(-1,0,2),Vec3(0,0,-10),scn);
 
-    collisionobbcapsule::model::OBB obb(obbmodel.get(),0);
+    collisionobbcapsule::geometry::OBB obb(obbmodel.get(),0);
     sofa::component::collision::Triangle tri(trimodel.get(),0);
 
     sofa::type::vector<sofa::core::collision::DetectionOutput> detectionOUTPUT;

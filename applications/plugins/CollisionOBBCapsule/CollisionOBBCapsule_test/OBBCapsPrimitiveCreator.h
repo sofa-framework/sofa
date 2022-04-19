@@ -24,8 +24,8 @@
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
-#include <CollisionOBBCapsule/model/OBBModel.h>
-#include <CollisionOBBCapsule/model/CapsuleModel.h>
+#include <CollisionOBBCapsule/geometry/OBBModel.h>
+#include <CollisionOBBCapsule/geometry/CapsuleModel.h>
 
 #include<sofa/simulation/Node.h>
 using sofa::simulation::Node;
@@ -46,7 +46,7 @@ using namespace sofa::defaulttype;
 namespace sofa
 {
     
-inline collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr makeOBB(const Vec3 & p,const double *angles,const int *order,const Vec3 &v,const Vec3 &extents, sofa::simulation::Node::SPtr &father){
+inline collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr makeOBB(const Vec3 & p,const double *angles,const int *order,const Vec3 &v,const Vec3 &extents, sofa::simulation::Node::SPtr &father){
     //creating node containing OBBModel
     sofa::simulation::Node::SPtr obb = father->createChild("obb");
 
@@ -97,13 +97,13 @@ inline collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Ty
     obb->addObject(obbDOF);
 
     //creating an OBBCollisionModel<sofa::defaulttype::Rigid3Types> and attaching it to the same node than obbDOF
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbCollisionModel = New<collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>>();
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::SPtr obbCollisionModel = New<collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>>();
     obb->addObject(obbCollisionModel);
 
     //editting the OBBModel
     obbCollisionModel->init();
-    Data<collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::VecCoord> & dVecCoord = obbCollisionModel->writeExtents();
-    collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::VecCoord & vecCoord = *(dVecCoord.beginEdit());
+    Data<collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::VecCoord> & dVecCoord = obbCollisionModel->writeExtents();
+    collisionobbcapsule::geometry::OBBCollisionModel<sofa::defaulttype::Rigid3Types>::VecCoord & vecCoord = *(dVecCoord.beginEdit());
 
     vecCoord[0] = extents;
 
@@ -113,7 +113,7 @@ inline collisionobbcapsule::model::OBBCollisionModel<sofa::defaulttype::Rigid3Ty
 }
 
 
-inline collisionobbcapsule::model::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr makeCap(const Vec3& p0, const Vec3& p1, double radius, const Vec3& v,
+inline collisionobbcapsule::geometry::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr makeCap(const Vec3& p0, const Vec3& p1, double radius, const Vec3& v,
     sofa::simulation::Node::SPtr& father) {
     //creating node containing OBBModel
     sofa::simulation::Node::SPtr cap = father->createChild("cap");
@@ -148,14 +148,14 @@ inline collisionobbcapsule::model::CapsuleCollisionModel<sofa::defaulttype::Vec3
     cap->addObject(bmt);
 
     //creating an OBBCollisionModel<sofa::defaulttype::Rigid3Types> and attaching it to the same node than obbDOF
-    collisionobbcapsule::model::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr capCollisionModel = New<collisionobbcapsule::model::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>>();
+    collisionobbcapsule::geometry::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::SPtr capCollisionModel = New<collisionobbcapsule::geometry::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>>();
     cap->addObject(capCollisionModel);
 
 
     //editting the OBBModel
     capCollisionModel->init();
-    Data<collisionobbcapsule::model::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::VecReal>& dVecReal = capCollisionModel->writeRadii();
-    collisionobbcapsule::model::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::VecReal& vecReal = *(dVecReal.beginEdit());
+    Data<collisionobbcapsule::geometry::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::VecReal>& dVecReal = capCollisionModel->writeRadii();
+    collisionobbcapsule::geometry::CapsuleCollisionModel<sofa::defaulttype::Vec3Types>::VecReal& vecReal = *(dVecReal.beginEdit());
 
     vecReal[0] = radius;
 
