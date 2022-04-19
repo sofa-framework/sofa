@@ -819,11 +819,9 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 {
     if (!m->externalForces.getValue().empty())
     {
-        //dmsg_info(m) << "ADD: external forces, size = "<< m->externalForces->size() ;
         Kernels::vAssign(m->externalForces.getValue().size(),m->f.beginEdit()->deviceWrite(),m->externalForces.getValue().deviceRead());
         m->f.endEdit();
     }
-    //else dmsg_info(m) << "NO external forces" ;
 }
 
 template<class TCoord, class TDeriv, class TReal>
@@ -856,7 +854,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
         msg_error(m) << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")";
         return;
     }
-    //dmsg_info(m) << "> vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")";
+
     if (a.isNull())
     {
         if (b.isNull())
@@ -1147,7 +1145,6 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
             }
         }
     }
-    //dmsg_info(m) << "< vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")";
 }
 
 template<class TCoord, class TDeriv, class TReal>
@@ -1657,11 +1654,9 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::accumul
 {
     if (!m->externalForces.getValue().empty())
     {
-        //dmsg_info(m) << "ADD: external forces, size = "<< m->externalForces->size() ;
         Kernels::vAssignDeriv(m->externalForces.getValue().size(),m->f.beginEdit()->deviceWrite(),m->externalForces.getValue().deviceRead());
         m->f.endEdit();
     }
-    //else dmsg_info(m) << "NO external forces" ;
 }
 
 
@@ -1695,7 +1690,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::vOp(Mai
         msg_error(m) << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")";
         return;
     }
-    //dmsg_info(m) << "> vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")";
+
     if (a.isNull())
     {
         if (b.isNull())
@@ -1984,15 +1979,12 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::vOp(Mai
             }
         }
     }
-    //dmsg_info(m) << "< vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")";
 }
 
 template<int N, class real>
 void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::vMultiOp(Main* m, const core::ExecParams* params, const VMultiOp& ops)
 {
-#ifdef DEBUG
-	msg_error(m) << "MechanicalObjectInternalData::vMultiOp currently not implemented for CudaRigidTypes !";
-#endif
+	dmsg_error(m) << "MechanicalObjectInternalData::vMultiOp currently not implemented for CudaRigidTypes !";
     // TODO : make corresponding kernels
 
     // optimize common integration case: v += a*dt, x += v*dt
