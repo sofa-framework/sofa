@@ -40,7 +40,7 @@
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/iterative/CGLinearSolver.h>
 
-#include <sofa/component/linearsolver/direct/SparseCholeskySolver.h>
+#include <sofa/component/linearsolver/direct/SparseCholeskySolver.inl>
 #include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
 
 #include <sofa/simulation/Node.h>
