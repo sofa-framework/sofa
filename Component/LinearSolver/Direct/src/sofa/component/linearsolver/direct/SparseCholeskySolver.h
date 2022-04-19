@@ -26,10 +26,6 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/iterative/MatrixLinearSolver.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/linearalgebra/SparseMatrix.h>
-#include <sofa/linearalgebra/CompressedRowSparseMatrix.h>
-#include <sofa/helper/map.h>
-#include <cmath>
 #include <sofa/component/linearsolver/direct/SparseCommon.h>
 #include <sofa/helper/OptionsGroup.h>
 
@@ -45,7 +41,14 @@ public:
 
     typedef TMatrix Matrix;
     typedef TVector Vector;
-    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
+
+    SparseCholeskySolver();
+    ~SparseCholeskySolver() override;
+
+    void solve (Matrix& M, Vector& x, Vector& b) override;
+    void invert(Matrix& M) override;
+
+protected:
 
     Data<bool> f_verbose; ///< Dump system state at each iteration
     cs A;
@@ -54,20 +57,15 @@ public:
     csn *N;
     int * A_i; ///< row indices, size nzmax
     int * A_p; ///< column pointers (size n+1) or col indices (size nzmax)
-    type::vector<int> Previous_colptr,Previous_rowind; //<  shape of the matrix at the previous step
-    type::vector<int> perm,iperm; //< fill reducing permutation
+    type::vector<int> Previous_colptr,Previous_rowind; ///<  shape of the matrix at the previous step
+    type::vector<int> perm,iperm; ///< fill reducing permutation
     type::vector<double> A_x,z_tmp,r_tmp,tmp;
     bool notSameShape;
 
     Data<sofa::helper::OptionsGroup> d_typePermutation;
 
-    SparseCholeskySolver();
-    ~SparseCholeskySolver();
-    void solve (Matrix& M, Vector& x, Vector& b) override;
-    void invert(Matrix& M) override;
+    void suiteSparseFactorization(bool applyPermutation);
 
-    void solveT(Vector& x, Vector& b);
-    
     css* symbolic_Chol(cs *A);
 };
 
