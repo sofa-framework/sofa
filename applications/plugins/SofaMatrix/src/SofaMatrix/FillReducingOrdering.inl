@@ -111,11 +111,11 @@ void FillReducingOrdering<DataTypes>::reorderByEigen()
     auto perm = sofa::helper::getWriteOnlyAccessor(d_permutation);
     invPerm.resize(permutation.indices().size());
     perm.resize(permutation.indices().size());
-    std::size_t i {};
-    for (const auto ind : permutation.indices())
+    for (Eigen::Index i = 0; i < permutation.indices().rows(); ++i)
     {
+        const auto ind = permutation.indices()(i);
         perm[i] = ind;
-        invPerm[ind] = i++;
+        invPerm[ind] = i;
     }
 
     updateMesh();
