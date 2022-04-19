@@ -24,7 +24,7 @@
 
 #include <sofa/core/collision/Intersection.h>
 #include <CollisionOBBCapsule/model/OBBModel.h>
-#include <sofa/component/collision/model/TriangleModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
 #include <CollisionOBBCapsule/detection/intersection/IntrMeshUtility.h>
 #include <CollisionOBBCapsule/detection/intersection/Intersector.h>
 

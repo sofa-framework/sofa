@@ -22,7 +22,7 @@
 #pragma once
 #include <CollisionOBBCapsule/config.h>
 
-#include <sofa/component/collision/model/SphereModel.h>
+#include <sofa/component/collision/geometry/SphereModel.h>
 #include <CollisionOBBCapsule/model/OBBModel.h>
 #include <CollisionOBBCapsule/detection/intersection/IntrUtility3.h>
 #include <CollisionOBBCapsule/detection/intersection/Intersector.h>
@@ -36,7 +36,7 @@ template <typename TDataTypes,typename TDataTypes2>
 class TIntrSphereOBB : public Intersector<typename TDataTypes::Real>
 {
 public:
-    typedef sofa::component::collision::model::TSphere<TDataTypes> IntrSph;
+    typedef sofa::component::collision::geometry::TSphere<TDataTypes> IntrSph;
     typedef typename IntrSph::Real Real;
     typedef typename IntrSph::Coord Coord;
     typedef model::TOBB<TDataTypes2> Box;

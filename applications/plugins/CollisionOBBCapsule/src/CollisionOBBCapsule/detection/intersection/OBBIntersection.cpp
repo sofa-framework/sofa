@@ -24,10 +24,10 @@
 #include <sofa/core/collision/IntersectorFactory.h>
 #include <sofa/core/collision/Intersection.inl>
 
-#include <sofa/component/collision/model/SphereModel.h>
+#include <sofa/component/collision/geometry/SphereModel.h>
 #include <CollisionOBBCapsule/model/OBBModel.h>
 #include <CollisionOBBCapsule/model/CapsuleModel.h>
-#include <sofa/component/collision/model/RayModel.h>
+#include <sofa/component/collision/geometry/RayModel.h>
 
 #include <SofaUserInteraction/FixParticlePerformer.h>
 
@@ -37,7 +37,7 @@ namespace collisionobbcapsule::detection::intersection
 using namespace sofa::type;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
-using namespace sofa::component::collision::model;
+using namespace sofa::component::collision::geometry;
 using namespace collisionobbcapsule::model;
 
 IntersectorCreator<DiscreteIntersection, RigidDiscreteIntersection> RigidDiscreteIntersectors("Rigid");

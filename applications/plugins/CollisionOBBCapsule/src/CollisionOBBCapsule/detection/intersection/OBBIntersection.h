@@ -26,14 +26,14 @@
 
 #include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
 #include <sofa/component/collision/detection/intersection/MeshNewProximityIntersection.h>
-#include <sofa/component/collision/model/RayModel.h>
+#include <sofa/component/collision/geometry/RayModel.h>
 #include <CollisionOBBCapsule/model/OBBModel.h>
 #include <CollisionOBBCapsule/detection/intersection/BaseIntTool.h>
 #include <CollisionOBBCapsule/detection/intersection/MeshIntTool.h>
 
 namespace collisionobbcapsule::detection::intersection
 {
-using sofa::component::collision::model::Ray;
+using sofa::component::collision::geometry::Ray;
 using sofa::component::collision::detection::intersection::DiscreteIntersection;
 using sofa::component::collision::detection::intersection::NewProximityIntersection;
 

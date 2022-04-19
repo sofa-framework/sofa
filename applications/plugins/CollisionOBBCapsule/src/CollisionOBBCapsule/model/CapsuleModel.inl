@@ -25,7 +25,7 @@
 #include <sofa/core/visual/DisplayFlags.h>
 
 #include <sofa/type/Vec.h>
-#include <sofa/component/collision/model/CubeModel.h>
+#include <sofa/component/collision/geometry/CubeModel.h>
 
 namespace collisionobbcapsule::model
 {
@@ -117,7 +117,7 @@ void CapsuleCollisionModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     using namespace sofa::type;
     using namespace sofa::defaulttype;
-    sofa::component::collision::model::CubeCollisionModel* cubeModel = createPrevious<sofa::component::collision::model::CubeCollisionModel>();
+    sofa::component::collision::geometry::CubeCollisionModel* cubeModel = createPrevious<sofa::component::collision::geometry::CubeCollisionModel>();
     const auto ncap = l_topology.get()->getNbEdges();
     bool updated = false;
     if (ncap != size)

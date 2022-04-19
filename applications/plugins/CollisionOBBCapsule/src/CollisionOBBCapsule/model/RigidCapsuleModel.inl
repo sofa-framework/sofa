@@ -22,7 +22,7 @@
 #include <CollisionOBBCapsule/model/RigidCapsuleModel.h>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/model/CubeModel.h>
+#include <sofa/component/collision/geometry/CubeModel.h>
 
 namespace collisionobbcapsule::model
 {
@@ -105,7 +105,7 @@ Size CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::nbCap()
 template <class MyReal>
 void CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::computeBoundingTree(int maxDepth)
 {
-    sofa::component::collision::model::CubeCollisionModel* cubeModel = createPrevious<sofa::component::collision::model::CubeCollisionModel>();
+    sofa::component::collision::geometry::CubeCollisionModel* cubeModel = createPrevious<sofa::component::collision::geometry::CubeCollisionModel>();
     const auto ncap = _mstate->getSize();
 
     bool updated = false;

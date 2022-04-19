@@ -22,7 +22,7 @@
 #pragma once
 #include <CollisionOBBCapsule/model/OBBModel.h>
 
-#include <sofa/component/collision/model/CubeModel.h>
+#include <sofa/component/collision/geometry/CubeModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -86,7 +86,7 @@ void OBBCollisionModel<DataTypes>::resize(sofa::Size size){
 
 template<class DataTypes>
 void OBBCollisionModel<DataTypes>::computeBoundingTree(int maxDepth){
-    sofa::component::collision::model::CubeCollisionModel* cubeModel = createPrevious<sofa::component::collision::model::CubeCollisionModel>();
+    sofa::component::collision::geometry::CubeCollisionModel* cubeModel = createPrevious<sofa::component::collision::geometry::CubeCollisionModel>();
     const auto npoints = _mstate->getSize();
     bool updated = false;
     if (npoints != size)

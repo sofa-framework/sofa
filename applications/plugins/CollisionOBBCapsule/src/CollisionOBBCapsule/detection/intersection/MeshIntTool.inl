@@ -112,7 +112,7 @@ int MeshIntTool::doCapLineInt(model::TCapsule<DataTypes> & cap,const type::Vecto
 template <class DataTypes>
 int MeshIntTool::computeIntersection(model::TCapsule<DataTypes>& cap, Triangle& tri,SReal alarmDist,SReal contactDist,OutputVector* contacts)
 {
-    using sofa::component::collision::model::TriangleCollisionModel;
+    using sofa::component::collision::geometry::TriangleCollisionModel;
 
     const int tri_flg = tri.flags();
 

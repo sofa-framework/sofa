@@ -33,7 +33,7 @@ TIntrTriangleOBB<TDataTypes,TDataTypes2>::TIntrTriangleOBB (const IntrTri& tri, 
 template <typename TDataTypes,typename TDataTypes2>
 bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax,int tri_flg)
 {
-    using sofa::component::collision::model::TriangleCollisionModel;
+    using sofa::component::collision::geometry::TriangleCollisionModel;
 
     bool config_modified;
 

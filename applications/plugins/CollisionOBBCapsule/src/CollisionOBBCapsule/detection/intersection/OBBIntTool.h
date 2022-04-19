@@ -40,11 +40,11 @@ public:
     static int computeIntersection(model::OBB&, model::OBB&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 
     template <class DataTypes>
-    static int computeIntersection(sofa::component::collision::model::TSphere<DataTypes> &sph1, model::OBB &box,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+    static int computeIntersection(sofa::component::collision::geometry::TSphere<DataTypes> &sph1, model::OBB &box,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 };
 
 template <class DataTypes>
-int OBBIntTool::computeIntersection(sofa::component::collision::model::TSphere<DataTypes> & sphere,model::OBB & box,SReal alarmDist,SReal contactDist,OutputVector* contacts){
+int OBBIntTool::computeIntersection(sofa::component::collision::geometry::TSphere<DataTypes> & sphere,model::OBB & box,SReal alarmDist,SReal contactDist,OutputVector* contacts){
     TIntrSphereOBB<DataTypes,model::OBB::DataTypes> intr(sphere,box);
     //double max_time = helper::rsqrt((alarmDist * alarmDist)/((box1.lvelocity() - box0.lvelocity()).norm2()));
     if(/*intr.Find(max_time,box0.lvelocity(),box1.lvelocity())*/intr.Find()){

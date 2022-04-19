@@ -190,7 +190,7 @@ int MeshIntTool::doCapLineInt(const Vector3 & p1,const Vector3 & p2,SReal cap_ra
 
 int MeshIntTool::doIntersectionTrianglePoint(SReal dist2, int flags, const Vector3& p1, const Vector3& p2, const Vector3& p3,const Vector3& q, OutputVector* contacts,bool swapElems)
 {
-    using sofa::component::collision::model::TriangleCollisionModel;
+    using sofa::component::collision::geometry::TriangleCollisionModel;
 
     const Vector3 AB = p2-p1;
     const Vector3 AC = p3-p1;
@@ -327,7 +327,7 @@ int MeshIntTool::computeIntersection(Triangle& tri,int flags,OBB & obb,SReal ala
 
 int MeshIntTool::projectPointOnTriangle(int flags, const Vector3& p1, const Vector3& p2, const Vector3& p3, Vector3 & to_be_projected)
 {
-    using sofa::component::collision::model::TriangleCollisionModel;
+    using sofa::component::collision::geometry::TriangleCollisionModel;
 
     const Vector3 AB = p2-p1;
     const Vector3 AC = p3-p1;

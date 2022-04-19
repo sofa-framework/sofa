@@ -27,8 +27,8 @@
 #include <CollisionOBBCapsule/model/CapsuleModel.h>
 #include <CollisionOBBCapsule/model/RigidCapsuleModel.h>
 #include <CollisionOBBCapsule/model/OBBModel.h>
-#include <sofa/component/collision/model/SphereModel.h>
-#include <sofa/component/collision/model/RayModel.h>
+#include <sofa/component/collision/geometry/SphereModel.h>
+#include <sofa/component/collision/geometry/RayModel.h>
 #include <SofaUserInteraction/FixParticlePerformer.h>
 
 namespace collisionobbcapsule::detection::intersection
@@ -36,7 +36,7 @@ namespace collisionobbcapsule::detection::intersection
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
-using namespace sofa::component::collision::model;
+using namespace sofa::component::collision::geometry;
 using namespace collisionobbcapsule::model;
 
 IntersectorCreator<DiscreteIntersection, CapsuleDiscreteIntersection> CapsuleDiscreteIntersectors("Capsule");

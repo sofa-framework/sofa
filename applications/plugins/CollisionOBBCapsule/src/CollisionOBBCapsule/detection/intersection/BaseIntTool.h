@@ -22,7 +22,7 @@
 #pragma once
 #include <CollisionOBBCapsule/config.h>
 
-#include <sofa/component/collision/model/CubeModel.h>
+#include <sofa/component/collision/geometry/CubeModel.h>
 #include <CollisionOBBCapsule/detection/intersection/CapsuleIntTool.h>
 #include <CollisionOBBCapsule/detection/intersection/OBBIntTool.h>
 
@@ -42,18 +42,18 @@ public:
         return false;
     }
 
-    static bool testIntersection(sofa::component::collision::model::Cube &cube1, sofa::component::collision::model::Cube &cube2,SReal alarmDist);
+    static bool testIntersection(sofa::component::collision::geometry::Cube &cube1, sofa::component::collision::geometry::Cube &cube2,SReal alarmDist);
 
 
     template <class DataTypes1,class DataTypes2>
-    static bool testIntersection(sofa::component::collision::model::TSphere<DataTypes1>& sph1, sofa::component::collision::model::TSphere<DataTypes2>& sph2,SReal alarmDist)
+    static bool testIntersection(sofa::component::collision::geometry::TSphere<DataTypes1>& sph1, sofa::component::collision::geometry::TSphere<DataTypes2>& sph2,SReal alarmDist)
     {
-        typename sofa::component::collision::model::TSphere<DataTypes1>::Real r = sph1.r() + sph2.r() + alarmDist;
+        typename sofa::component::collision::geometry::TSphere<DataTypes1>::Real r = sph1.r() + sph2.r() + alarmDist;
         return ( sph1.center() - sph2.center() ).norm2() <= r*r;
     }
 
     template <class DataTypes1,class DataTypes2>
-    static int computeIntersection(sofa::component::collision::model::TSphere<DataTypes1>& sph1, sofa::component::collision::model::TSphere<DataTypes2>& sph2,SReal alarmDist,SReal contactDist,OutputVector* contacts)
+    static int computeIntersection(sofa::component::collision::geometry::TSphere<DataTypes1>& sph1, sofa::component::collision::geometry::TSphere<DataTypes2>& sph2,SReal alarmDist,SReal contactDist,OutputVector* contacts)
     {
         SReal r = sph1.r() + sph2.r();
         SReal myAlarmDist = alarmDist + r;
@@ -86,7 +86,7 @@ public:
     }
 
     template <class DataTypes1,class DataTypes2>
-    inline static int computeIntersection(model::TCapsule<DataTypes1> &cap, sofa::component::collision::model::TSphere<DataTypes2> &sph, SReal alarmDist, SReal contactDist, OutputVector *contacts){
+    inline static int computeIntersection(model::TCapsule<DataTypes1> &cap, sofa::component::collision::geometry::TSphere<DataTypes2> &sph, SReal alarmDist, SReal contactDist, OutputVector *contacts){
         return CapsuleIntTool::computeIntersection(cap,sph,alarmDist,contactDist,contacts);
     }
 
@@ -100,11 +100,11 @@ public:
     }
 
     template <class DataType>
-    inline static int computeIntersection(sofa::component::collision::model::TSphere<DataType> &sph, model::OBB &obb, SReal alarmDist, SReal contactDist, OutputVector *contacts){
+    inline static int computeIntersection(sofa::component::collision::geometry::TSphere<DataType> &sph, model::OBB &obb, SReal alarmDist, SReal contactDist, OutputVector *contacts){
         return OBBIntTool::computeIntersection(sph,obb,alarmDist,contactDist,contacts);
     }
 
-    inline static int computeIntersection(sofa::component::collision::model::Cube&, sofa::component::collision::model::Cube&, SReal, SReal, OutputVector *){
+    inline static int computeIntersection(sofa::component::collision::geometry::Cube&, sofa::component::collision::geometry::Cube&, SReal, SReal, OutputVector *){
         return 0;
     }
 

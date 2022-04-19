@@ -25,7 +25,7 @@ namespace collisionobbcapsule::detection::intersection
 {
 
 //template<>
-bool BaseIntTool::testIntersection(sofa::component::collision::model::Cube &cube1, sofa::component::collision::model::Cube &cube2,SReal alarmDist)
+bool BaseIntTool::testIntersection(sofa::component::collision::geometry::Cube &cube1, sofa::component::collision::geometry::Cube &cube2,SReal alarmDist)
 {
     if (cube1 == cube2)
     {

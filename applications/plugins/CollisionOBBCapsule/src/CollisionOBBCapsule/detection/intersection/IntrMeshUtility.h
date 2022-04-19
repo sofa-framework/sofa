@@ -23,12 +23,12 @@
 #include <CollisionOBBCapsule/config.h>
 
 #include <CollisionOBBCapsule/detection/intersection/IntrUtility3.h>
-#include <sofa/component/collision/model/TriangleModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace collisionobbcapsule::detection::intersection
 {
-using sofa::component::collision::model::TTriangle;
+using sofa::component::collision::geometry::TTriangle;
 using collisionobbcapsule::model::TOBB;
 
 template <class DataType>
