@@ -77,6 +77,7 @@ void SSORPreconditioner<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vecto
 
 }
 
+/*
 template<>
 void SSORPreconditioner<linearalgebra::SparseMatrix<double>, linearalgebra::FullVector<double> >::solve (Matrix& M, Vector& z, Vector& r)
 {
@@ -85,7 +86,7 @@ void SSORPreconditioner<linearalgebra::SparseMatrix<double>, linearalgebra::Full
     const Index n = M.rowSize();
     const Real w = (Real)f_omega.getValue();
 
-    //Solve (D/w+U) * t = r;
+    Solve (D/w+U) * t = r;
     for (Index j=n-1; j>=0; j--)
     {
         double temp = 0.0;
@@ -98,7 +99,7 @@ void SSORPreconditioner<linearalgebra::SparseMatrix<double>, linearalgebra::Full
         z[j] = (r[j] - temp) * w * data->inv_diag[j];
     }
 
-    //Solve (I + w * D^-1 * L) * z = t
+    Solve (I + w * D^-1 * L) * z = t
     for (Index j=0; j<n; j++)
     {
         double temp = 0.0;
@@ -109,7 +110,7 @@ void SSORPreconditioner<linearalgebra::SparseMatrix<double>, linearalgebra::Full
             temp += z[i] * e;
         }
         z[j] -= temp * w * data->inv_diag[j];
-        // we can reuse z because all values that we read are updated
+        we can reuse z because all values that we read are updated
     }
 
     if (w != (Real)1.0)
@@ -125,10 +126,10 @@ void SSORPreconditioner<linearalgebra::CompressedRowSparseMatrix<double>, linear
     const Index n = M.rowSize();
     const Real w = (Real)f_omega.getValue();
 
-    //const Matrix::VecIndex& rowIndex = M.getRowIndex();
+    const Matrix::VecIndex& rowIndex = M.getRowIndex();
     const Matrix::VecIndex& colsIndex = M.getColsIndex();
     const Matrix::VecBlock& colsValue = M.getColsValue();
-    //Solve (D/w+U) * t = r;
+    Solve (D/w+U) * t = r;
     for (Index j=n-1; j>=0; j--)
     {
         double temp = 0.0;
@@ -144,7 +145,7 @@ void SSORPreconditioner<linearalgebra::CompressedRowSparseMatrix<double>, linear
         z[j] = (r[j] - temp) * w * data->inv_diag[j];
     }
 
-    //Solve (I + w D^-1 * L) * z = t
+    Solve (I + w D^-1 * L) * z = t
     for (Index j=0; j<n; j++)
     {
         double temp = 0.0;
@@ -157,7 +158,7 @@ void SSORPreconditioner<linearalgebra::CompressedRowSparseMatrix<double>, linear
             temp += z[i] * e;
         }
         z[j] -= temp * w * data->inv_diag[j];
-        // we can reuse z because all values that we read are updated
+        we can reuse z because all values that we read are updated
     }
 
     if (w != (Real)1.0)
@@ -168,20 +169,20 @@ void SSORPreconditioner<linearalgebra::CompressedRowSparseMatrix<double>, linear
 #define B 3
 #define Real double
 #define typename
-//template<int B, class Real>
+template<int B, class Real>
 template<>
 void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<B,B,Real> >, linearalgebra::FullVector<Real> >::solve(Matrix& M, Vector& z, Vector& r)
 {
     SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) this->getMatrixInvertData(&M);
 
-    //const Index n = M.rowSize();
+    const Index n = M.rowSize();
     const Index nb = M.rowBSize();
     const Real w = (Real)f_omega.getValue();
 
-    //const Matrix::VecIndex& rowIndex = M.getRowIndex();
+    const Matrix::VecIndex& rowIndex = M.getRowIndex();
     const typename Matrix::VecIndex& colsIndex = M.getColsIndex();
     const typename Matrix::VecBlock& colsValue = M.getColsValue();
-    //Solve (D+U) * t = r;
+    Solve (D+U) * t = r;
     for (Index jb=nb-1; jb>=0; jb--)
     {
         Index j0 = jb*B;
@@ -189,16 +190,16 @@ void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<B,B
         typename Matrix::Range rowRange = M.getRowRange(jb);
         Index xi = rowRange.begin();
         while (xi < rowRange.end() && (Index)colsIndex[xi] < jb) ++xi;
-        // bloc on the diagonal
+        bloc on the diagonal
         const typename Matrix::Block& bdiag = colsValue[xi];
-        // upper triangle matrix
+        upper triangle matrix
         for (++xi; xi < rowRange.end(); ++xi)
         {
             Index i0 = colsIndex[xi]*B;
             const typename Matrix::Block& b = colsValue[xi];
             for (Index j1=0; j1<B; ++j1)
             {
-                //Index j = j0+j1;
+                Index j = j0+j1;
                 for (Index i1=0; i1<B; ++i1)
                 {
                     Index i = i0+i1;
@@ -206,7 +207,7 @@ void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<B,B
                 }
             }
         }
-        // then the diagonal
+        then the diagonal
         {
             const typename Matrix::Block& b = bdiag;
             for (Index j1=B-1; j1>=0; j1--)
@@ -222,21 +223,21 @@ void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<B,B
         }
     }
 
-    //Solve (I + D^-1 * L) * z = t
+    Solve (I + D^-1 * L) * z = t
     for (Index jb=0; jb<nb; jb++)
     {
         Index j0 = jb*B;
         type::Vec<B,Real> temp;
         typename Matrix::Range rowRange = M.getRowRange(jb);
         Index xi = rowRange.begin();
-        // lower triangle matrix
+        lower triangle matrix
         for (; xi < rowRange.end() && (Index)colsIndex[xi] < jb; ++xi)
         {
             Index i0 = colsIndex[xi]*B;
             const typename Matrix::Block& b = colsValue[xi];
             for (Index j1=0; j1<B; ++j1)
             {
-                //Index j = j0+j1;
+                Index j = j0+j1;
                 for (Index i1=0; i1<B; ++i1)
                 {
                     Index i = i0+i1;
@@ -244,7 +245,7 @@ void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<B,B
                 }
             }
         }
-        // then the diagonal
+        then the diagonal
         {
             const typename Matrix::Block& b = colsValue[xi];
             for (Index j1=0; j1<B; ++j1)
@@ -255,7 +256,7 @@ void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<B,B
                     Index i = j0+i1;
                     temp[j1] += z[i] * b[j1][i1];
                 }
-                // we can reuse z because all values that we read are updated
+                we can reuse z because all values that we read are updated
                 z[j] -= temp[j1] * w * data->inv_diag[j];
             }
         }
@@ -264,7 +265,7 @@ void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<B,B
 
 #undef B
 #undef Real
-#undef typename
+#undef typename*/
 
 
 template<class TMatrix, class TVector, class TThreadManager>

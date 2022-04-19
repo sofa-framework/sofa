@@ -39,7 +39,7 @@ int SSORPreconditionerClass = core::RegisterObject("Linear system solver / preco
         .addAlias("SSORSolver")
         ;
 
-template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API SSORPreconditioner< CompressedRowSparseMatrix<SReal>, FullVector<SReal> >;
-template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API SSORPreconditioner< CompressedRowSparseMatrix< type::Mat<3, 3, SReal> >, FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix<SReal>, linearalgebra::FullVector<SReal> >;
+template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<3, 3, SReal> >, linearalgebra::FullVector<SReal> >;
 
 } // namespace sofa::component::linearsolver::preconditioner
