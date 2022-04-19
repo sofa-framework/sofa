@@ -35,16 +35,15 @@ JoinPoints<DataTypes>::JoinPoints()
     , f_distance(initData(&f_distance, "distance", "Distance to merge points"))
     , f_mergedPoints(initData(&f_mergedPoints, "mergedPoints", "Merged Points"))
 {
+    addInput(&f_points);
+    addInput(&f_distance);
+
+    addOutput(&f_mergedPoints);
 }
 
 template <class DataTypes>
 void JoinPoints<DataTypes>::init()
 {
-    addInput(&f_points);
-    addInput(&f_distance);
-
-    addOutput(&f_mergedPoints);
-
     setDirtyValue();
 }
 

@@ -60,6 +60,20 @@ PlaneROI<DataTypes>::PlaneROI()
 
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
+
+    addInput(&f_X0);
+    addInput(&f_edges);
+    addInput(&f_triangles);
+    addInput(&f_tetrahedra);
+
+    addOutput(&f_indices);
+    addOutput(&f_edgeIndices);
+    addOutput(&f_triangleIndices);
+    addOutput(&f_tetrahedronIndices);
+    addOutput(&f_pointsInROI);
+    addOutput(&f_edgesInROI);
+    addOutput(&f_trianglesInROI);
+    addOutput(&f_tetrahedraInROI);
 }
 
 template <class DataTypes>
@@ -131,19 +145,6 @@ void PlaneROI<DataTypes>::init()
         }
     }
 
-    addInput(&f_X0);
-    addInput(&f_edges);
-    addInput(&f_triangles);
-    addInput(&f_tetrahedra);
-
-    addOutput(&f_indices);
-    addOutput(&f_edgeIndices);
-    addOutput(&f_triangleIndices);
-    addOutput(&f_tetrahedronIndices);
-    addOutput(&f_pointsInROI);
-    addOutput(&f_edgesInROI);
-    addOutput(&f_trianglesInROI);
-    addOutput(&f_tetrahedraInROI);
     setDirtyValue();
 }
 

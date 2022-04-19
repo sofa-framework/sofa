@@ -33,12 +33,26 @@ using std::string;
 namespace sofa::component::sceneutility::makedataaliascomponent
 {
 
-MakeDataAliasComponent::MakeDataAliasComponent() :
-   d_componentname(initData(&d_componentname, "componentname", "The component class for which to create an alias."))
-  ,d_dataname(initData(&d_dataname, "dataname", "The data field for which to create an alias."))
-  ,d_alias(initData(&d_alias, "alias", "The alias of the data field."))
+MakeDataAliasComponent::MakeDataAliasComponent()
+    : d_componentname(initData(&d_componentname, "componentname", "The component class for which to create an alias."))
+    , d_dataname(initData(&d_dataname, "dataname", "The data field for which to create an alias."))
+    , d_alias(initData(&d_alias, "alias", "The alias of the data field."))
 {
     d_componentState.setValue(ComponentState::Invalid) ;
+}
+
+MakeDataAliasComponent::~MakeDataAliasComponent()
+{
+    if (m_hasAddedAlias)
+    {
+        ObjectFactory::ClassEntry& creatorentry = ObjectFactory::getInstance()->getEntry(d_componentname.getValue());
+        auto& aliases = creatorentry.m_dataAlias[d_dataname.getValue()];
+        const auto it = std::find(aliases.begin(), aliases.end(), d_alias.getValue());
+        if (it != aliases.end())
+        {
+            aliases.erase(std::remove(aliases.begin(), aliases.end(), d_alias.getValue()), aliases.end());
+        }
+    }
 }
 
 void MakeDataAliasComponent::parse ( core::objectmodel::BaseObjectDescription* arg )
@@ -64,8 +78,6 @@ void MakeDataAliasComponent::parse ( core::objectmodel::BaseObjectDescription* a
                            "To remove this error message you need to add a targetcomponent attribute pointing to a valid component's ClassName.";
         return ;
     }
-    string sdataname(dataname) ;
-
 
     const char* alias=arg->getAttribute("alias") ;
     if(alias==nullptr)
@@ -85,12 +97,15 @@ void MakeDataAliasComponent::parse ( core::objectmodel::BaseObjectDescription* a
     }
 
     ObjectFactory::ClassEntry& creatorentry = ObjectFactory::getInstance()->getEntry(scomponent);
-    if(creatorentry.m_dataAlias.find(dataname) != creatorentry.m_dataAlias.end()){
-        creatorentry.m_dataAlias[dataname] = std::vector<std::string>();
+    auto& aliases = creatorentry.m_dataAlias[dataname];
+    const auto it = std::find(aliases.begin(), aliases.end(), salias);
+    if (it != aliases.end())
+    {
+        aliases.push_back(salias);
+        m_hasAddedAlias = true;
     }
-    creatorentry.m_dataAlias[dataname].push_back(salias) ;
 
-    d_componentState.setValue(ComponentState::Valid) ;
+    d_componentState.setValue(ComponentState::Valid);
 }
 
 int MakeDataAliasComponentClass = RegisterObject("This object create an alias to a data field. ")

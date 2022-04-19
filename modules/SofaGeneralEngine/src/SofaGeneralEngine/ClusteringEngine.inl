@@ -55,6 +55,13 @@ ClusteringEngine<DataTypes>::ClusteringEngine()
     , output_filename(initData(&output_filename,"outFile","export clusters"))
     , topo(nullptr)
 {
+    addInput(&d_radius);
+    addInput(&d_fixedRadius);
+    addInput(&d_nbClusters);
+    addInput(&d_fixedPosition);
+    addInput(&d_position);
+    addInput(&input_filename);
+    addOutput(&d_cluster);
 }
 
 template <class DataTypes>
@@ -65,13 +72,6 @@ void ClusteringEngine<DataTypes>::init()
     if(this->mstate==nullptr)
         msg_info(this) << "This component requires a mechanical state in its context for output visualization.";
 
-    addInput(&d_radius);
-    addInput(&d_fixedRadius);
-    addInput(&d_nbClusters);
-    addInput(&d_fixedPosition);
-    addInput(&d_position);
-    addInput(&input_filename);
-    addOutput(&d_cluster);
     setDirtyValue();
 
     //- Topology Container

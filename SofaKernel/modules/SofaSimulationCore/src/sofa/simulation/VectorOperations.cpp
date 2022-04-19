@@ -66,7 +66,7 @@ VectorOperations::VectorOperations(const sofa::core::ExecParams* params, sofa::c
 {
 }
 
-void VectorOperations::v_alloc(sofa::core::MultiVecCoordId& v)
+void VectorOperations::v_alloc(sofa::core::MultiVecCoordId& v, const core::VecIdProperties& properties)
 {
     /* template < VecType vtype > MechanicalVAvailVisitor;  */
     /* this can be probably merged in a single operation with the MultiVecId design */
@@ -77,17 +77,17 @@ void VectorOperations::v_alloc(sofa::core::MultiVecCoordId& v)
     executeVisitor( &avail );
     //v.assign(id);
     v.setId(avail.states, id);
-    executeVisitor( MechanicalVAllocVisitor<core::V_COORD>(params, v) );
+    executeVisitor( MechanicalVAllocVisitor<core::V_COORD>(params, v, properties) );
 }
 
-void VectorOperations::v_alloc(sofa::core::MultiVecDerivId& v)
+void VectorOperations::v_alloc(sofa::core::MultiVecDerivId& v, const core::VecIdProperties& properties)
 {
     core::VecDerivId id(core::VecDerivId::V_FIRST_DYNAMIC_INDEX);
     MechanicalVAvailVisitor<core::V_DERIV> avail(params, id);
     executeVisitor( &avail );
     //v.assign(id);
     v.setId(avail.states, id);
-    executeVisitor(  MechanicalVAllocVisitor<core::V_DERIV>(params, v) );
+    executeVisitor(  MechanicalVAllocVisitor<core::V_DERIV>(params, v, properties) );
 }
 
 void VectorOperations::v_free(sofa::core::MultiVecCoordId& id, bool interactionForceField, bool propagate)
@@ -100,7 +100,7 @@ void VectorOperations::v_free(sofa::core::MultiVecDerivId& id, bool interactionF
     if( !id.isNull() ) executeVisitor( MechanicalVFreeVisitor<core::V_DERIV>(params, id, interactionForceField, propagate) );
 }
 
-void VectorOperations::v_realloc(sofa::core::MultiVecCoordId& v, bool interactionForceField, bool propagate)
+void VectorOperations::v_realloc(sofa::core::MultiVecCoordId& v, bool interactionForceField, bool propagate, const core::VecIdProperties& properties)
 {
     if( v.isNull() )
     {
@@ -110,10 +110,10 @@ void VectorOperations::v_realloc(sofa::core::MultiVecCoordId& v, bool interactio
         //v.assign(id);
         v.setId(avail.states, id);
     }
-    executeVisitor( MechanicalVReallocVisitor<core::V_COORD>(params, &v, interactionForceField, propagate) );
+    executeVisitor( MechanicalVReallocVisitor<core::V_COORD>(params, &v, interactionForceField, propagate, properties) );
 }
 
-void VectorOperations::v_realloc(sofa::core::MultiVecDerivId& v, bool interactionForceField, bool propagate)
+void VectorOperations::v_realloc(sofa::core::MultiVecDerivId& v, bool interactionForceField, bool propagate, const core::VecIdProperties& properties)
 {
     if( v.isNull() )
     {
@@ -123,7 +123,7 @@ void VectorOperations::v_realloc(sofa::core::MultiVecDerivId& v, bool interactio
         //v.assign(id);
         v.setId(avail.states, id);
     }
-    executeVisitor( MechanicalVReallocVisitor<core::V_DERIV>(params, &v, interactionForceField, propagate) );
+    executeVisitor( MechanicalVReallocVisitor<core::V_DERIV>(params, &v, interactionForceField, propagate, properties) );
 }
 
 

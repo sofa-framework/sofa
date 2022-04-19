@@ -35,10 +35,6 @@
 
 #include <fstream>
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-#include <sofa/core/topology/TopologyData.h>
-#endif // SOFA_HAVE_NEW_TOPOLOGYCHANGES
-
 namespace sofa::component::statecontainer
 {
 
@@ -89,39 +85,10 @@ protected:
 public:
     void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES    
-    PointData< VecCoord > x; ///< position coordinates of the degrees of freedom
-    PointData< VecDeriv > v; ///< velocity coordinates of the degrees of freedom
-    PointData< VecDeriv > f; ///< force vector of the degrees of freedom
-    PointData< VecCoord > x0; ///< rest position coordinates of the degrees of freedom
-
-    class MOPointHandler : public sofa::core::topology::TopologyDataHandler<sofa::core::topology::Point,VecCoord >
-    {
-    public:
-        typedef typename MechanicalObject<DataTypes>::VecCoord VecCoord;
-        typedef typename MechanicalObject<DataTypes>::Coord Coord;
-        MOPointHandler(MechanicalObject<DataTypes>* _obj, sofa::core::topology::PointData<VecCoord>* _data) : sofa::component::topology::TopologyDataHandler<sofa::core::topology::Point, VecCoord >(_data), obj(_obj) {}
-
-        void applyCreateFunction(unsigned int /*pointIndex*/, Coord& /*dest*/,
-                const sofa::type::vector< unsigned int > &ancestors,
-                const sofa::type::vector< double > &coefs);
-
-        void applyDestroyFunction(unsigned int, Coord& );
-
-    protected:
-        MechanicalObject<DataTypes>* obj;
-    };
-
-    //static void PointCreationFunction (int , void* , Coord &, const sofa::type::vector< unsigned int > & ,   const sofa::type::vector< double >&);
-
-    //static void PointDestroyFunction (int, void*, Coord&);
-
-#else
     Data< VecCoord > x; ///< position coordinates of the degrees of freedom
     Data< VecDeriv > v; ///< velocity coordinates of the degrees of freedom
     Data< VecDeriv > f; ///< force vector of the degrees of freedom
     Data< VecCoord > x0; ///< rest position coordinates of the degrees of freedom
-#endif
 
     Data< VecDeriv > externalForces; ///< externalForces vector of the degrees of freedom
     Data< VecDeriv > dx; ///< dx vector of the degrees of freedom
@@ -303,16 +270,16 @@ public:
     //virtual void vAvail(core::MatrixDerivId& v);
 
     /// Allocate a new temporary vector
-    void vAlloc(const core::ExecParams* params, core::VecCoordId v) override;
+    void vAlloc(const core::ExecParams* params, core::VecCoordId v, const core::VecIdProperties& properties = {}) override;
     /// Allocate a new temporary vector
-    void vAlloc(const core::ExecParams* params, core::VecDerivId v) override;
+    void vAlloc(const core::ExecParams* params, core::VecDerivId v, const core::VecIdProperties& properties = {}) override;
     /// Allocate a new temporary vector
     //virtual void vAlloc(core::MatrixDerivId v);
 
     /// Reallocate a new temporary vector
-    void vRealloc(const core::ExecParams* params, core::VecCoordId v) override;
+    void vRealloc(const core::ExecParams* params, core::VecCoordId v, const core::VecIdProperties& properties = {}) override;
     /// Reallocate a new temporary vector
-    void vRealloc(const core::ExecParams* params, core::VecDerivId v) override;
+    void vRealloc(const core::ExecParams* params, core::VecDerivId v, const core::VecIdProperties& properties = {}) override;
 
 
     /// Free a temporary vector
@@ -411,17 +378,17 @@ protected :
     /**
      * @brief Inserts VecCoord DOF coordinates vector at index in the vectorsCoord container.
      */
-    void setVecCoord(unsigned int /*index*/, Data< VecCoord >* /*vCoord*/);
+    void setVecCoord(core::ConstVecCoordId /*vecId*/, Data< VecCoord >* /*vCoord*/);
 
     /**
      * @brief Inserts VecDeriv DOF derivates vector at index in the vectorsDeriv container.
      */
-    void setVecDeriv(unsigned int /*index*/, Data< VecDeriv >* /*vDeriv*/);
+    void setVecDeriv(core::ConstVecDerivId /*vecId*/, Data< VecDeriv >* /*vDeriv*/);
 
     /**
      * @brief Inserts MatrixDeriv DOF  at index in the MatrixDeriv container.
      */
-    void setVecMatrixDeriv(unsigned int /*index*/, Data< MatrixDeriv> * /*mDeriv*/);
+    void setVecMatrixDeriv(core::ConstMatrixDerivId /*vecId*/, Data< MatrixDeriv> * /*mDeriv*/);
 
 
     /// @}
@@ -440,6 +407,9 @@ protected :
     // unsigned int getIdxConstraintFromId(unsigned int id) const;
 
     MechanicalObjectInternalData<DataTypes> data;
+
+    template <core::VecType vtype, core::VecAccess vaccess>
+    static void setVecIdProperties(core::TVecId<vtype, vaccess> v, const core::VecIdProperties& properties, core::BaseData* vec_d);
 
     friend class MechanicalObjectInternalData<DataTypes>;
 

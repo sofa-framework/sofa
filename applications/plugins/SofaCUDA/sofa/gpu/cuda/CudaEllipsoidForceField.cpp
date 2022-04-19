@@ -25,13 +25,7 @@
 #include <SofaBoundaryCondition/EllipsoidForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 int EllipsoidForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
@@ -39,8 +33,4 @@ int EllipsoidForceFieldCudaClass = core::RegisterObject("Supports GPU-side compu
         .add< component::forcefield::EllipsoidForceField<CudaVec3f1Types> >()
         ;
 
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
+} // namespace sofa::gpu::cuda

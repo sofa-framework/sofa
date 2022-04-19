@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <Node name="root" gravity="-1.8 0 100" dt="0.1">
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/> <!-- Needed to use components [FixedConstraint] -->
     <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/> <!-- Needed to use components [CGLinearSolver] -->
     <RequiredPlugin name="Sofa.Component.Mapping.Linear"/> <!-- Needed to use components [BarycentricMapping] -->
     <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
@@ -9,7 +10,6 @@
     <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
     <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
     <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
-    <RequiredPlugin name="SofaBoundaryCondition"/> <!-- Needed to use components [FixedConstraint] -->
     <Node name="Reference">
         <MeshOBJLoader name="meshLoader_3" filename="mesh/truthcylinder1-bent.obj" scale="0.95" handleSeams="1" />
         <OglModel src="@meshLoader_3" dx="0" dy="-1" dz="0" color="green" />

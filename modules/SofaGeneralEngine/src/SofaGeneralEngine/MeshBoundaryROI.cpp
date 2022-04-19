@@ -35,15 +35,14 @@ MeshBoundaryROI::MeshBoundaryROI(): Inherited()
                                     , d_inputROI(initData(&d_inputROI,"inputROI","optional subset of the input mesh"))
                                     , d_indices(initData(&d_indices,"indices","Index lists of the closing vertices"))
 {
-}
-
-void MeshBoundaryROI::init()
-{
     addInput(&d_triangles);
     addInput(&d_quads);
     addInput(&d_inputROI);
     addOutput(&d_indices);
+}
 
+void MeshBoundaryROI::init()
+{
     setDirtyValue();
 }
 

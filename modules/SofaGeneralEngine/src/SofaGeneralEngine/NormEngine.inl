@@ -32,15 +32,14 @@ NormEngine<DataTypes>::NormEngine()
     , d_output( initData (&d_output, "output", "output array of scalar norms") )
     , d_normType( initData (&d_normType, 2, "normType", "The type of norm. Use a negative value for the infinite norm.") )
 {
-
+    addInput(&d_input);
+    addOutput(&d_output);
+    addInput(&d_normType);
 }
 
 template <class DataType>
 void NormEngine<DataType>::init()
 {
-    addInput(&d_input);
-    addOutput(&d_output);
-    addInput(&d_normType);
     setDirtyValue();
 }
 

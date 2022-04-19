@@ -1,10 +1,21 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.05" showBoundingTree="0" gravity="0 0 0">
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/> <!-- Needed to use components [MeshOBJLoader] -->
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Direct"/> <!-- Needed to use components [SparseLDLSolver] -->
+    <RequiredPlugin name="Sofa.Component.Mass"/> <!-- Needed to use components [UniformMass] -->
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/> <!-- Needed to use components [EulerImplicitSolver] --> 
+    <RequiredPlugin name="Sofa.Component.SceneUtility"/> <!-- Needed to use components [RequiredPlugin] -->
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.Spring"/> <!-- Needed to use components [RestShapeSpringsForceField] -->
+    <RequiredPlugin name="Sofa.Component.StateContainer"/> <!-- Needed to use components [MechanicalObject] -->
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglModel] -->
+    <RequiredPlugin name="SofaConstraint"/> <!-- Needed to use components [FreeMotionAnimationLoop, LCPConstraintSolver, LinearSolverConstraintCorrection, LocalMinDistance] -->
+    <RequiredPlugin name="SofaMeshCollision"/> <!-- Needed to use components [LineCollisionModel, PointCollisionModel, TriangleCollisionModel] -->
+    <RequiredPlugin name="SofaUserInteraction"/> <!-- Needed to use components [MechanicalStateController] -->
+    <RequiredPlugin name="SofaHaptics"/> <!-- Needed to use components [LCPForceFeedback] -->
     <RequiredPlugin name='Geomagic'/>
-    <RequiredPlugin name='SofaOpenglVisual'/>
-    <RequiredPlugin name='SofaHaptics'/>
-    <RequiredPlugin name='SofaSparseSolver'/>
     
+    <DefaultVisualManagerLoop />
     <DefaultPipeline name="pipeline" depth="6" verbose="0"/>
     <BruteForceBroadPhase/>
     <BVHNarrowPhase/>
@@ -15,7 +26,7 @@
     <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
     
 	<GeomagicDriver name="GeomagicDevice" deviceName="Default Device" scale="1" positionBase="0 0 0" orientationBase="0 0.707 0 -0.707"
-    drawDevice="1" drawDeviceFrame="1" forceFeedBack="@Instrument/LCPFF1"/>	
+    drawDevice="1" drawDeviceFrame="1" forceFeedBack="@Instrument/LCPFF1" drawDebug="1"/>	
 	
 	<Node name="CubeStatic1">
 		<MeshOBJLoader name="loaderC" filename="mesh/cube.obj" scale3d="4 6 1" translation="-2 -2 -8" />
@@ -66,7 +77,7 @@
 	
 	<Node name="Instrument" >
         <EulerImplicitSolver name="ODE solver" rayleighStiffness="0.01" rayleighMass="0.01" />
-        <SparseLDLSolver />
+        <SparseLDLSolver template="CompressedRowSparseMatrixMat3x3d"/>
         
 		<MechanicalObject name="instrumentState" template="Rigid3" />
 		<UniformMass name="mass" totalMass="0.5" />
@@ -88,7 +99,7 @@
             <LineCollisionModel contactStiffness="100"/>			
             <PointCollisionModel contactStiffness="100"/>
             <RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />		
-        </Node>       
+        </Node>
     </Node> 
 
 </Node>

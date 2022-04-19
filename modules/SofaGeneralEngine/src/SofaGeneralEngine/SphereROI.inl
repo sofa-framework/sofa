@@ -71,6 +71,30 @@ SphereROI<DataTypes>::SphereROI()
 
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
+
+    addInput(&f_X0);
+    addInput(&f_edges);
+    addInput(&f_triangles);
+    addInput(&f_quads);
+    addInput(&f_tetrahedra);
+
+    addInput(&centers);
+    addInput(&radii);
+    addInput(&direction);
+    addInput(&normal);
+    addInput(&edgeAngle);
+    addInput(&triAngle);
+
+    addOutput(&f_indices);
+    addOutput(&f_edgeIndices);
+    addOutput(&f_triangleIndices);
+    addOutput(&f_quadIndices);
+    addOutput(&f_pointsInROI);
+    addOutput(&f_edgesInROI);
+    addOutput(&f_trianglesInROI);
+    addOutput(&f_quadsInROI);
+    addOutput(&f_tetrahedraInROI);
+    addOutput(&f_indicesOut);
 }
 
 template <class DataTypes>
@@ -151,30 +175,6 @@ void SphereROI<DataTypes>::init()
             }
         }
     }
-
-    addInput(&f_X0);
-    addInput(&f_edges);
-    addInput(&f_triangles);
-    addInput(&f_quads);
-    addInput(&f_tetrahedra);
-
-    addInput(&centers);
-    addInput(&radii);
-    addInput(&direction);
-    addInput(&normal);
-    addInput(&edgeAngle);
-    addInput(&triAngle);
-
-    addOutput(&f_indices);
-    addOutput(&f_edgeIndices);
-    addOutput(&f_triangleIndices);
-    addOutput(&f_quadIndices);
-    addOutput(&f_pointsInROI);
-    addOutput(&f_edgesInROI);
-    addOutput(&f_trianglesInROI);
-    addOutput(&f_quadsInROI);
-    addOutput(&f_tetrahedraInROI);
-    addOutput(&f_indicesOut);
 
     setDirtyValue();
 }

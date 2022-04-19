@@ -38,6 +38,15 @@ MeshSubsetEngine<DataTypes>::MeshSubsetEngine()
     , triangles(initData(&triangles,"triangles","Triangles of mesh subset"))
     , quads(initData(&quads,"quads","Quads of mesh subset"))
 {
+    addInput(&inputPosition);
+    addInput(&inputEdges);
+    addInput(&inputTriangles);
+    addInput(&inputQuads);
+    addInput(&indices);
+    addOutput(&position);
+    addOutput(&edges);
+    addOutput(&triangles);
+    addOutput(&quads);
 }
 
 template <class DataTypes>

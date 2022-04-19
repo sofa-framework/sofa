@@ -46,6 +46,10 @@ PairBoxROI<DataTypes>::PairBoxROI()
     addAlias(&f_pointsInROI,"pointsInBox");
     addAlias(&f_X0,"rest_position");
 
+    addInput(&f_X0);
+
+    addOutput(&f_indices);
+    addOutput(&f_pointsInROI);
 }
 
 template <class DataTypes>
@@ -91,11 +95,6 @@ void PairBoxROI<DataTypes>::init()
             }
         }
     }
-
-    addInput(&f_X0);
-
-    addOutput(&f_indices);
-    addOutput(&f_pointsInROI);
 
     setDirtyValue();
 

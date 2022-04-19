@@ -26,7 +26,7 @@
 
 namespace sofa::gpu::cuda
 {
-    using namespace sofa::component::forcefield;
+    using namespace sofa::component::mechanicalload;
 
     // Register in the Factory
     int ConstantForceFieldCudaClass = core::RegisterObject("Constant forces applied to given degrees of freedom")
@@ -35,9 +35,9 @@ namespace sofa::gpu::cuda
         .add< ConstantForceField<CudaVec1Types> >()
         .add< ConstantForceField<CudaVec6Types> >()
     ;
-}
+} // namespace sofa::gpu::cuda
 
-namespace sofa::component::forcefield
+namespace sofa::component::mechanicalload
 {
     using namespace sofa::gpu::cuda;
 
@@ -45,4 +45,4 @@ namespace sofa::component::forcefield
     template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec2Types>;
     template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec1Types>;
     template class SOFA_GPU_CUDA_API ConstantForceField<CudaVec6Types>;
-}
+} // namespace sofa::component::mechanicalload

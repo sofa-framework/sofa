@@ -35,6 +35,10 @@ MergeSets<T>::MergeSets()
     , f_out( initData (&f_out, "out", "merged set of indices") )
     , f_op( initData (&f_op, std::string("union"), "op", "name of operation to compute (union, intersection, difference, symmetric_difference)") )
 {
+    addInput(&f_in1);
+    addInput(&f_in2);
+    addInput(&f_op);
+    addOutput(&f_out);
 }
 
 template <class T>
@@ -45,10 +49,6 @@ MergeSets<T>::~MergeSets()
 template <class T>
 void MergeSets<T>::init()
 {
-    addInput(&f_in1);
-    addInput(&f_in2);
-    addInput(&f_op);
-    addOutput(&f_out);
     setDirtyValue();
 }
 

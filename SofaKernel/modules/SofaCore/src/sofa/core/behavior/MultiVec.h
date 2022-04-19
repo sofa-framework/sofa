@@ -64,10 +64,10 @@ public:
     {}
 
     /// Allocate a new temporary vector with the given type (sofa::core::V_COORD or sofa::core::V_DERIV).
-    TMultiVec( BaseVectorOperations* vop, bool dynamic=true) : vop(vop), v(MyMultiVecId::null()), dynamic(dynamic)
+    TMultiVec( BaseVectorOperations* vop, bool dynamic=true, const VecIdProperties& properties = {}) : vop(vop), v(MyMultiVecId::null()), dynamic(dynamic)
     {
         static_assert(vtype == V_COORD || vtype == V_DERIV, "");
-        vop->v_alloc( v );
+        vop->v_alloc( v, properties);
     }
 
 
@@ -90,10 +90,10 @@ public:
 
     /// allocates vector for every newly appeared mechanical states (initializing them to 0 and does not modify already allocated mechanical states)
     /// \param interactionForceField set to true, also allocate external mechanical states linked by an InteractionForceField (TODO remove this option by seeing external mmstates as abstract null vectors)
-    void realloc( BaseVectorOperations* _vop, bool interactionForceField=false, bool propagate=false )
+    void realloc( BaseVectorOperations* _vop, bool interactionForceField=false, bool propagate=false, const VecIdProperties& properties = {} )
     {
         vop = _vop;
-        vop->v_realloc(v, interactionForceField, propagate);
+        vop->v_realloc(v, interactionForceField, propagate, properties);
     }
 
     /// v = 0
