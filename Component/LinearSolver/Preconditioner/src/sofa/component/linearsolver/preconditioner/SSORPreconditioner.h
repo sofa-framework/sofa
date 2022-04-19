@@ -76,8 +76,8 @@ protected :
 };
 
 #if !defined(SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_SSORPRECONDITIONER_CPP)
-extern template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API SSORPreconditioner< linealgebra::CompressedRowSparseMatrix<SReal>, linealgebra::FullVector<SReal> >;
-extern template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API SSORPreconditioner< linealgebra::CompressedRowSparseMatrix< type::Mat<3, 3, SReal> >, linealgebra::FullVector<SReal> >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix<SReal>, linearalgebra::FullVector<SReal> >;
+extern template class SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_API SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<3, 3, SReal> >, linearalgebra::FullVector<SReal> >;
 #endif // !defined(SOFA_COMPONENT_LINEARSOLVER_PRECONDITIONER_SSORPRECONDITIONER_CPP)
 
 } // namespace sofa::component::linearsolver::preconditioner
