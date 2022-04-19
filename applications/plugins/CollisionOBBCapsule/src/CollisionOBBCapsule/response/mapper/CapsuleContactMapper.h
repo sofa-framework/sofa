@@ -24,13 +24,13 @@
 
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.h>
 #include <sofa/component/collision/response/mapper/RigidContactMapper.h>
-#include <CollisionOBBCapsule/model/CapsuleModel.h>
+#include <CollisionOBBCapsule/geometry/CapsuleModel.h>
 
 using namespace sofa;
 using namespace sofa::core::collision;
 using sofa::component::collision::response::mapper::ContactMapper;
 using sofa::component::collision::response::mapper::RigidContactMapper;
-using collisionobbcapsule::model::CapsuleCollisionModel;
+using collisionobbcapsule::geometry::CapsuleCollisionModel;
 
 namespace sofa::component::collision::response::mapper
 {

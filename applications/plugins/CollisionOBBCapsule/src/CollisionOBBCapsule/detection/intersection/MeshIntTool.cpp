@@ -29,17 +29,17 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
 
-template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(model::TCapsule<Vec3Types>& cap, Point& pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapPointInt(model::TCapsule<Vec3Types>& cap, const Vector3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(model::TCapsule<Vec3Types>& cap, Line& lin,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapLineInt(model::TCapsule<Vec3Types>& cap,const Vector3 & q1,const Vector3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1,bool ignore_p2);
-template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(model::TCapsule<Vec3Types>& cap, Triangle& tri,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(geometry::TCapsule<Vec3Types>& cap, Point& pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapPointInt(geometry::TCapsule<Vec3Types>& cap, const Vector3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(geometry::TCapsule<Vec3Types>& cap, Line& lin,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapLineInt(geometry::TCapsule<Vec3Types>& cap,const Vector3 & q1,const Vector3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1,bool ignore_p2);
+template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(geometry::TCapsule<Vec3Types>& cap, Triangle& tri,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 
-template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(model::TCapsule<Rigid3Types>& cap, Point& pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapPointInt(model::TCapsule<Rigid3Types>& cap, const Vector3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(model::TCapsule<Rigid3Types>& cap, Line& lin,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapLineInt(model::TCapsule<Rigid3Types>& cap,const Vector3 & q1,const Vector3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1,bool ignore_p2);
-template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(model::TCapsule<Rigid3Types>& cap, Triangle& tri,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(geometry::TCapsule<Rigid3Types>& cap, Point& pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapPointInt(geometry::TCapsule<Rigid3Types>& cap, const Vector3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(geometry::TCapsule<Rigid3Types>& cap, Line& lin,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+template COLLISIONOBBCAPSULE_API int MeshIntTool::doCapLineInt(geometry::TCapsule<Rigid3Types>& cap,const Vector3 & q1,const Vector3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1,bool ignore_p2);
+template COLLISIONOBBCAPSULE_API int MeshIntTool::computeIntersection(geometry::TCapsule<Rigid3Types>& cap, Triangle& tri,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 
 int MeshIntTool::doCapLineInt(const Vector3 & p1,const Vector3 & p2,SReal cap_rad,
                          const Vector3 & q1, const Vector3 & q2,SReal alarmDist,SReal contactDist,OutputVector *contacts, bool ignore_p1, bool ignore_p2){

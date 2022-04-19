@@ -27,7 +27,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-namespace collisionobbcapsule::model
+namespace collisionobbcapsule::geometry
 {
 
 using namespace sofa;
@@ -273,4 +273,4 @@ extern template class COLLISIONOBBCAPSULE_API TOBB<sofa::defaulttype::Rigid3Type
 extern template class COLLISIONOBBCAPSULE_API OBBCollisionModel<sofa::defaulttype::Rigid3Types>;
 #endif
 
-} // namespace collisionobbcapsule::model
+} // namespace collisionobbcapsule::geometry

@@ -24,12 +24,12 @@
 
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.inl>
 #include <sofa/component/collision/response/mapper/RigidContactMapper.inl>
-#include <CollisionOBBCapsule/model/OBBModel.h>
+#include <CollisionOBBCapsule/geometry/OBBModel.h>
 
 using namespace sofa;
 using namespace sofa::core::collision;
 using namespace sofa::component::collision;
-using namespace collisionobbcapsule::model;
+using namespace collisionobbcapsule::geometry;
 
 namespace sofa::component::collision::response::mapper
 {

@@ -33,15 +33,15 @@ using namespace sofa::defaulttype;
 //----------------------------------------------------------------------------
 template struct COLLISIONOBBCAPSULE_API IntrUtil<SReal>;
 
-template struct COLLISIONOBBCAPSULE_API IntrUtil<model::TOBB<RigidTypes> >;
+template struct COLLISIONOBBCAPSULE_API IntrUtil<geometry::TOBB<RigidTypes> >;
 template class COLLISIONOBBCAPSULE_API IntrConfiguration<SReal>;
 template struct COLLISIONOBBCAPSULE_API IntrConfigManager<SReal>;
-template struct COLLISIONOBBCAPSULE_API IntrConfigManager<model::TOBB<Rigid3Types> >;
-template class COLLISIONOBBCAPSULE_API IntrAxis<model::TOBB<Rigid3Types> >;
-template class COLLISIONOBBCAPSULE_API FindContactSet<model::TOBB<Rigid3Types> >;
+template struct COLLISIONOBBCAPSULE_API IntrConfigManager<geometry::TOBB<Rigid3Types> >;
+template class COLLISIONOBBCAPSULE_API IntrAxis<geometry::TOBB<Rigid3Types> >;
+template class COLLISIONOBBCAPSULE_API FindContactSet<geometry::TOBB<Rigid3Types> >;
 template COLLISIONOBBCAPSULE_API void ClipConvexPolygonAgainstPlane<SReal> (const Vec3&, SReal,int&, Vec3*);
 template COLLISIONOBBCAPSULE_API Vec3 GetPointFromIndex<SReal> (int, const MyBox<SReal>&);
-template COLLISIONOBBCAPSULE_API Vec<3,Rigid3Types::Real> getPointFromIndex<Rigid3Types> (int index, const model::TOBB<Rigid3Types>& box);
+template COLLISIONOBBCAPSULE_API Vec<3,Rigid3Types::Real> getPointFromIndex<Rigid3Types> (int index, const geometry::TOBB<Rigid3Types>& box);
 template class COLLISIONOBBCAPSULE_API CapIntrConfiguration<SReal>;
 
 //----------------------------------------------------------------------------

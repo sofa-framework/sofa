@@ -27,12 +27,12 @@ set(HEADER_FILES
     ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/MeshIntTool.inl
     ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/OBBIntTool.h
     ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/OBBIntersection.h
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/model/CapsuleModel.h
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/model/CapsuleModel.inl
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/model/OBBModel.h
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/model/OBBModel.inl
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/model/RigidCapsuleModel.h
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/model/RigidCapsuleModel.inl
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/geometry/CapsuleModel.h
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/geometry/CapsuleModel.inl
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/geometry/OBBModel.h
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/geometry/OBBModel.inl
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/geometry/RigidCapsuleModel.h
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/geometry/RigidCapsuleModel.inl
     ${COLLISIONOBBCAPSULE_SRC_DIR}/response/mapper/CapsuleContactMapper.h
     ${COLLISIONOBBCAPSULE_SRC_DIR}/response/mapper/OBBContactMapper.h
     )
@@ -52,9 +52,9 @@ set(SOURCE_FILES
     ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/MeshIntTool.cpp
     ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/OBBIntTool.cpp
     ${COLLISIONOBBCAPSULE_SRC_DIR}/detection/intersection/OBBIntersection.cpp
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/model/CapsuleModel.cpp
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/model/OBBModel.cpp
-    ${COLLISIONOBBCAPSULE_SRC_DIR}/model/RigidCapsuleModel.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/geometry/CapsuleModel.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/geometry/OBBModel.cpp
+    ${COLLISIONOBBCAPSULE_SRC_DIR}/geometry/RigidCapsuleModel.cpp
     ${COLLISIONOBBCAPSULE_SRC_DIR}/response/contact/CapsuleContact.cpp
     ${COLLISIONOBBCAPSULE_SRC_DIR}/response/contact/OBBContact.cpp
     ${COLLISIONOBBCAPSULE_SRC_DIR}/response/mapper/CapsuleContactMapper.cpp

@@ -27,15 +27,15 @@ namespace collisionobbcapsule::detection::intersection
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
-bool CapsuleIntTool::shareSameVertex(const model::Capsule & c1,const model::Capsule & c2){
+bool CapsuleIntTool::shareSameVertex(const geometry::Capsule & c1,const geometry::Capsule & c2){
     return c1.shareSameVertex(c2);
 }
 
-template COLLISIONOBBCAPSULE_API int CapsuleIntTool::computeIntersection(model::TCapsule<Vec3Types>&, model::TCapsule<Vec3Types>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-template COLLISIONOBBCAPSULE_API int CapsuleIntTool::computeIntersection(model::TCapsule<Vec3Types>&, model::TCapsule<RigidTypes>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-template COLLISIONOBBCAPSULE_API int CapsuleIntTool::computeIntersection(model::TCapsule<RigidTypes>&, model::TCapsule<RigidTypes>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-template COLLISIONOBBCAPSULE_API int CapsuleIntTool::computeIntersection(model::TCapsule<RigidTypes> & cap, model::OBB& obb,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-template COLLISIONOBBCAPSULE_API int CapsuleIntTool::computeIntersection(model::TCapsule<Vec3Types> & cap, model::OBB& obb,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+template COLLISIONOBBCAPSULE_API int CapsuleIntTool::computeIntersection(geometry::TCapsule<Vec3Types>&, geometry::TCapsule<Vec3Types>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+template COLLISIONOBBCAPSULE_API int CapsuleIntTool::computeIntersection(geometry::TCapsule<Vec3Types>&, geometry::TCapsule<RigidTypes>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+template COLLISIONOBBCAPSULE_API int CapsuleIntTool::computeIntersection(geometry::TCapsule<RigidTypes>&, geometry::TCapsule<RigidTypes>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+template COLLISIONOBBCAPSULE_API int CapsuleIntTool::computeIntersection(geometry::TCapsule<RigidTypes> & cap, geometry::OBB& obb,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+template COLLISIONOBBCAPSULE_API int CapsuleIntTool::computeIntersection(geometry::TCapsule<Vec3Types> & cap, geometry::OBB& obb,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 
 class COLLISIONOBBCAPSULE_API CapsuleIntTool;
 } // namespace collisionobbcapsule::detection::intersection

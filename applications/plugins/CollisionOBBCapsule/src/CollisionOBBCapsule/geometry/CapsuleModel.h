@@ -27,7 +27,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-namespace collisionobbcapsule::model
+namespace collisionobbcapsule::geometry
 {
 
 template<class DataTypes>
@@ -197,4 +197,4 @@ extern template class COLLISIONOBBCAPSULE_API TCapsule<sofa::defaulttype::Vec3Ty
 extern template class COLLISIONOBBCAPSULE_API CapsuleCollisionModel<sofa::defaulttype::Vec3Types>;
 #endif
 
-} // namespace collisionobbcapsule::model
+} // namespace collisionobbcapsule::geometry

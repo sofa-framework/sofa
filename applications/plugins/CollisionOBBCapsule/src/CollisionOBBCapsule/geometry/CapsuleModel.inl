@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <CollisionOBBCapsule/model/CapsuleModel.h>
+#include <CollisionOBBCapsule/geometry/CapsuleModel.h>
 
 #include <sofa/helper/visual/DrawTool.h>
 #include <sofa/core/visual/DisplayFlags.h>
@@ -27,7 +27,7 @@
 #include <sofa/type/Vec.h>
 #include <sofa/component/collision/geometry/CubeModel.h>
 
-namespace collisionobbcapsule::model
+namespace collisionobbcapsule::geometry
 {
 
 template<class DataTypes>
@@ -327,4 +327,4 @@ Data<typename CapsuleCollisionModel<DataTypes>::VecReal > & CapsuleCollisionMode
     return _capsule_radii;
 }
 
-} // namespace collisionobbcapsule::model
+} // namespace collisionobbcapsule::geometry

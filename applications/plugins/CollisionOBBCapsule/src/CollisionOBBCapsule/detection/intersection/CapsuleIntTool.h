@@ -25,7 +25,7 @@
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/collision/geometry/SphereModel.h>
-#include <CollisionOBBCapsule/model/OBBModel.h>
+#include <CollisionOBBCapsule/geometry/OBBModel.h>
 #include <CollisionOBBCapsule/detection/intersection/IntrCapsuleOBB.h>
 
 namespace collisionobbcapsule::detection::intersection
@@ -33,9 +33,9 @@ namespace collisionobbcapsule::detection::intersection
 
 using namespace sofa;
 
-using collisionobbcapsule::model::OBB;
-using collisionobbcapsule::model::TCapsule;
-using collisionobbcapsule::model::Capsule;
+using collisionobbcapsule::geometry::OBB;
+using collisionobbcapsule::geometry::TCapsule;
+using collisionobbcapsule::geometry::Capsule;
 using sofa::component::collision::geometry::TSphere;
 
 class COLLISIONOBBCAPSULE_API CapsuleIntTool

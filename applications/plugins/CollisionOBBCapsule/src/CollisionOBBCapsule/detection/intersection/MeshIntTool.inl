@@ -24,7 +24,7 @@
 namespace collisionobbcapsule::detection::intersection
 {
 template <class DataTypes>
-int MeshIntTool::computeIntersection(model::TCapsule<DataTypes> & cap, Point & pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts){
+int MeshIntTool::computeIntersection(geometry::TCapsule<DataTypes> & cap, Point & pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts){
     if(doCapPointInt(cap,pnt.p(),alarmDist,contactDist,contacts)){
         DetectionOutput *detection = &*(contacts->end()-1);
 
@@ -37,7 +37,7 @@ int MeshIntTool::computeIntersection(model::TCapsule<DataTypes> & cap, Point & p
 }
 
 template <class DataTypes>
-int MeshIntTool::doCapPointInt(model::TCapsule<DataTypes>& cap, const type::Vector3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts){
+int MeshIntTool::doCapPointInt(geometry::TCapsule<DataTypes>& cap, const type::Vector3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts){
     const type::Vector3 p1 = cap.point1();
     const type::Vector3 p2 = cap.point2();
     const type::Vector3 AB = p2-p1;
@@ -79,7 +79,7 @@ int MeshIntTool::doCapPointInt(model::TCapsule<DataTypes>& cap, const type::Vect
 }
 
 template <class DataTypes>
-int MeshIntTool::computeIntersection(model::TCapsule<DataTypes> & cap, Line & lin,SReal alarmDist,SReal contactDist,OutputVector* contacts)
+int MeshIntTool::computeIntersection(geometry::TCapsule<DataTypes> & cap, Line & lin,SReal alarmDist,SReal contactDist,OutputVector* contacts)
 {
     SReal cap_rad = cap.radius();
     const type::Vector3 p1 = cap.point1();
@@ -99,7 +99,7 @@ int MeshIntTool::computeIntersection(model::TCapsule<DataTypes> & cap, Line & li
 }
 
 template <class DataTypes>
-int MeshIntTool::doCapLineInt(model::TCapsule<DataTypes> & cap,const type::Vector3 & q1,const type::Vector3 & q2 ,SReal alarmDist,SReal contactDist,OutputVector* contacts, bool ignore_p1, bool ignore_p2)
+int MeshIntTool::doCapLineInt(geometry::TCapsule<DataTypes> & cap,const type::Vector3 & q1,const type::Vector3 & q2 ,SReal alarmDist,SReal contactDist,OutputVector* contacts, bool ignore_p1, bool ignore_p2)
 {
     SReal cap_rad = cap.radius();
     const type::Vector3 p1 = cap.point1();
@@ -110,7 +110,7 @@ int MeshIntTool::doCapLineInt(model::TCapsule<DataTypes> & cap,const type::Vecto
 
 
 template <class DataTypes>
-int MeshIntTool::computeIntersection(model::TCapsule<DataTypes>& cap, Triangle& tri,SReal alarmDist,SReal contactDist,OutputVector* contacts)
+int MeshIntTool::computeIntersection(geometry::TCapsule<DataTypes>& cap, Triangle& tri,SReal alarmDist,SReal contactDist,OutputVector* contacts)
 {
     using sofa::component::collision::geometry::TriangleCollisionModel;
 

@@ -27,7 +27,7 @@
 #include <CollisionOBBCapsule/config.h>
 
 #include <sofa/type/Vec.h>
-#include <CollisionOBBCapsule/model/OBBModel.h>
+#include <CollisionOBBCapsule/geometry/OBBModel.h>
 
 using namespace sofa;
 
@@ -184,9 +184,9 @@ public:
 };
 
 template <class DataType>
-struct IntrUtil<model::TOBB<DataType> >{
+struct IntrUtil<geometry::TOBB<DataType> >{
     typedef typename DataType::Real Real;
-    typedef model::TOBB<DataType> Box;
+    typedef geometry::TOBB<DataType> Box;
 
     /**
       *Project pt on the Box box, caution,  works only if pt is outside the box.
@@ -208,12 +208,12 @@ class IntrAxis;
 *TDataTypes is the data type of the OBB.
 */
 template <class TDataTypes>
-class IntrAxis<model::TOBB<TDataTypes> >
+class IntrAxis<geometry::TOBB<TDataTypes> >
 {
 public:
     typedef typename TDataTypes::Real Real;
-    typedef model::TOBB<TDataTypes> Box;
-    typedef typename model::TOBB<TDataTypes>::Coord Coord;
+    typedef geometry::TOBB<TDataTypes> Box;
+    typedef typename geometry::TOBB<TDataTypes>::Coord Coord;
     typedef IntrConfiguration<Real> IntrConf;
 
     static bool Find (const Coord& axis,
@@ -239,8 +239,8 @@ template <typename TDataType>
 struct IntrConfigManager;
 
 template<class TDataTypes>
-struct IntrConfigManager<model::TOBB<TDataTypes> >{
-    typedef model::TOBB<TDataTypes> Box;
+struct IntrConfigManager<geometry::TOBB<TDataTypes> >{
+    typedef geometry::TOBB<TDataTypes> Box;
     typedef typename Box::Real Real;
 
     static void init(const type::Vec<3,Real> & axis,
@@ -276,11 +276,11 @@ class FindContactSet;
   *TDataTypes is the OBB type.
   */
 template <class TDataTypes>
-class  FindContactSet<model::TOBB<TDataTypes> >
+class  FindContactSet<geometry::TOBB<TDataTypes> >
 {
 public:
     typedef typename TDataTypes::Real Real;
-    typedef model::TOBB<TDataTypes> Box;
+    typedef geometry::TOBB<TDataTypes> Box;
 
     FindContactSet (const type::Vec<3,Real> segment[2], Real radius,const Box& box,const type::Vec<3,Real> & axis,
         int side, CapIntrConfiguration<Real> &capCfg,
@@ -319,22 +319,22 @@ template <typename TReal>
 type::Vec<3,TReal> GetPointFromIndex (int index, const MyBox<TReal>& box);
 
 template <typename TDataTypes>
-type::Vec<3,typename TDataTypes::Real> getPointFromIndex (int index, const model::TOBB<TDataTypes>& box);
+type::Vec<3,typename TDataTypes::Real> getPointFromIndex (int index, const geometry::TOBB<TDataTypes>& box);
 //----------------------------------------------------------------------------
 
 #if  !defined(SOFA_COMPONENT_COLLISION_INTRUTILITY3_CPP)
 
 extern template struct COLLISIONOBBCAPSULE_API IntrUtil<SReal>;
 
-extern template struct COLLISIONOBBCAPSULE_API IntrUtil<model::TOBB<defaulttype::Rigid3Types> >;
-extern template class COLLISIONOBBCAPSULE_API FindContactSet<model::TOBB<defaulttype::Rigid3Types> >;
-extern template class COLLISIONOBBCAPSULE_API IntrAxis<model::TOBB<defaulttype::Rigid3Types> >;
+extern template struct COLLISIONOBBCAPSULE_API IntrUtil<geometry::TOBB<defaulttype::Rigid3Types> >;
+extern template class COLLISIONOBBCAPSULE_API FindContactSet<geometry::TOBB<defaulttype::Rigid3Types> >;
+extern template class COLLISIONOBBCAPSULE_API IntrAxis<geometry::TOBB<defaulttype::Rigid3Types> >;
 extern template class COLLISIONOBBCAPSULE_API IntrConfiguration<SReal>;
 extern template struct COLLISIONOBBCAPSULE_API IntrConfigManager<SReal>;
-extern template struct COLLISIONOBBCAPSULE_API IntrConfigManager<model::TOBB<defaulttype::Rigid3Types> >;
+extern template struct COLLISIONOBBCAPSULE_API IntrConfigManager<geometry::TOBB<defaulttype::Rigid3Types> >;
 extern template COLLISIONOBBCAPSULE_API void ClipConvexPolygonAgainstPlane(const type::Vec3&, SReal, int&,type::Vec3*);
 extern template COLLISIONOBBCAPSULE_API type::Vec3 GetPointFromIndex (int, const MyBox<SReal>& );
-extern template COLLISIONOBBCAPSULE_API type::Vec<3,defaulttype::Rigid3Types::Real> getPointFromIndex (int, const model::TOBB<defaulttype::Rigid3Types>& );
+extern template COLLISIONOBBCAPSULE_API type::Vec<3,defaulttype::Rigid3Types::Real> getPointFromIndex (int, const geometry::TOBB<defaulttype::Rigid3Types>& );
 extern template class COLLISIONOBBCAPSULE_API CapIntrConfiguration<SReal>;
 
 #endif

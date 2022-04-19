@@ -28,7 +28,7 @@
 #include <sofa/component/collision/detection/intersection/MinProximityIntersection.h>
 #include <sofa/component/collision/detection/intersection/NewProximityIntersection.h>
 #include <sofa/component/collision/detection/intersection/MeshNewProximityIntersection.h>
-#include <CollisionOBBCapsule/model/CapsuleModel.h>
+#include <CollisionOBBCapsule/geometry/CapsuleModel.h>
 #include <CollisionOBBCapsule/detection/intersection/BaseIntTool.h>
 #include <CollisionOBBCapsule/detection/intersection/MeshIntTool.h>
 

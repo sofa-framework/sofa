@@ -81,26 +81,26 @@ public:
 
 
     template <class DataTypes1,class DataTypes2>
-    inline static int computeIntersection(collisionobbcapsule::model::TCapsule<DataTypes1> &c1, model::TCapsule<DataTypes2> &c2, SReal alarmDist, SReal contactDist, OutputVector *contacts){
+    inline static int computeIntersection(collisionobbcapsule::geometry::TCapsule<DataTypes1> &c1, geometry::TCapsule<DataTypes2> &c2, SReal alarmDist, SReal contactDist, OutputVector *contacts){
         return CapsuleIntTool::computeIntersection(c1,c2,alarmDist,contactDist,contacts);
     }
 
     template <class DataTypes1,class DataTypes2>
-    inline static int computeIntersection(model::TCapsule<DataTypes1> &cap, sofa::component::collision::geometry::TSphere<DataTypes2> &sph, SReal alarmDist, SReal contactDist, OutputVector *contacts){
+    inline static int computeIntersection(geometry::TCapsule<DataTypes1> &cap, sofa::component::collision::geometry::TSphere<DataTypes2> &sph, SReal alarmDist, SReal contactDist, OutputVector *contacts){
         return CapsuleIntTool::computeIntersection(cap,sph,alarmDist,contactDist,contacts);
     }
 
     template <class DataTyes>
-    inline static int computeIntersection(model::TCapsule<DataTyes> &cap, model::OBB & obb, SReal alarmDist, SReal contactDist, OutputVector *contacts){
+    inline static int computeIntersection(geometry::TCapsule<DataTyes> &cap, geometry::OBB & obb, SReal alarmDist, SReal contactDist, OutputVector *contacts){
         return CapsuleIntTool::computeIntersection(cap,obb,alarmDist,contactDist,contacts);
     }
 
-    inline static int computeIntersection(model::OBB &obb0, model::OBB &obb1, SReal alarmDist, SReal contactDist, OutputVector *contacts){
+    inline static int computeIntersection(geometry::OBB &obb0, geometry::OBB &obb1, SReal alarmDist, SReal contactDist, OutputVector *contacts){
         return OBBIntTool::computeIntersection(obb0,obb1,alarmDist,contactDist,contacts);
     }
 
     template <class DataType>
-    inline static int computeIntersection(sofa::component::collision::geometry::TSphere<DataType> &sph, model::OBB &obb, SReal alarmDist, SReal contactDist, OutputVector *contacts){
+    inline static int computeIntersection(sofa::component::collision::geometry::TSphere<DataType> &sph, geometry::OBB &obb, SReal alarmDist, SReal contactDist, OutputVector *contacts){
         return OBBIntTool::computeIntersection(sph,obb,alarmDist,contactDist,contacts);
     }
 

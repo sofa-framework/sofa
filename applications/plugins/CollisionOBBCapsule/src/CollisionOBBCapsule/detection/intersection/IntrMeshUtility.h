@@ -29,7 +29,7 @@
 namespace collisionobbcapsule::detection::intersection
 {
 using sofa::component::collision::geometry::TTriangle;
-using collisionobbcapsule::model::TOBB;
+using collisionobbcapsule::geometry::TOBB;
 
 template <class DataType>
 struct IntrUtil<TTriangle<DataType> >{

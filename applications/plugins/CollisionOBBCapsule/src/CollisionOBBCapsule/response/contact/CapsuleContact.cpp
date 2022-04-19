@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <CollisionOBBCapsule/model/CapsuleModel.h>
-#include <CollisionOBBCapsule/model/RigidCapsuleModel.h>
-#include <CollisionOBBCapsule/model/OBBModel.h>
+#include <CollisionOBBCapsule/geometry/CapsuleModel.h>
+#include <CollisionOBBCapsule/geometry/RigidCapsuleModel.h>
+#include <CollisionOBBCapsule/geometry/OBBModel.h>
 #include <CollisionOBBCapsule/response/mapper/OBBContactMapper.h>
 #include <CollisionOBBCapsule/response/mapper/CapsuleContactMapper.h>
 #include <sofa/component/collision/response/mapper/BarycentricContactMapper.inl>
@@ -35,7 +35,7 @@ namespace sofa::component::collision::response::contact
 
 using namespace sofa::component::collision::geometry;
 using namespace sofa::component::collision::response::contact;
-using namespace collisionobbcapsule::model;
+using namespace collisionobbcapsule::geometry;
 
 Creator<Contact::Factory, BarycentricPenalityContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, TriangleCollisionModel<sofa::defaulttype::Vec3Types>> > CapsuleTriangleContactClass("PenalityContactForceField", true);
 Creator<Contact::Factory, BarycentricPenalityContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, LineCollisionModel<sofa::defaulttype::Vec3Types>> > CapsuleLinePenalityContactClass("PenalityContactForceField", true);

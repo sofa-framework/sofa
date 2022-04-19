@@ -27,14 +27,14 @@
 #include <CollisionOBBCapsule/config.h>
 
 #include <CollisionOBBCapsule/detection/intersection/Intersector.h>
-#include <CollisionOBBCapsule/model/CapsuleModel.h>
-#include <CollisionOBBCapsule/model/RigidCapsuleModel.h>
-#include <CollisionOBBCapsule/model/OBBModel.h>
+#include <CollisionOBBCapsule/geometry/CapsuleModel.h>
+#include <CollisionOBBCapsule/geometry/RigidCapsuleModel.h>
+#include <CollisionOBBCapsule/geometry/OBBModel.h>
 
 namespace collisionobbcapsule::detection::intersection
 {
 
-using collisionobbcapsule::model::TOBB;
+using collisionobbcapsule::geometry::TOBB;
 /**
   *TDataTypes is the capsule type and TDataTypes2 the OBB type.
   */
@@ -42,7 +42,7 @@ template <typename TDataTypes,typename TDataTypes2>
 class TIntrCapsuleOBB : public Intersector<typename TDataTypes::Real>
 {
 public:
-    typedef model::TCapsule<TDataTypes> IntrCap;
+    typedef geometry::TCapsule<TDataTypes> IntrCap;
     typedef typename IntrCap::Real Real;
     typedef typename IntrCap::Coord Coord;
     typedef TOBB<TDataTypes2> Box;

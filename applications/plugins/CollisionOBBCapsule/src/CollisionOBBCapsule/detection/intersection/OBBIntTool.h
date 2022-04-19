@@ -22,10 +22,10 @@
 #pragma once
 #include <CollisionOBBCapsule/config.h>
 
-#include <CollisionOBBCapsule/model/OBBModel.h>
+#include <CollisionOBBCapsule/geometry/OBBModel.h>
 #include <CollisionOBBCapsule/detection/intersection/IntrOBBOBB.h>
 #include <sofa/core/collision/DetectionOutput.h>
-#include <CollisionOBBCapsule/model/CapsuleModel.h>
+#include <CollisionOBBCapsule/geometry/CapsuleModel.h>
 #include <CollisionOBBCapsule/detection/intersection/IntrSphereOBB.h>
 
 namespace collisionobbcapsule::detection::intersection
@@ -37,18 +37,18 @@ public:
     typedef sofa::type::vector<sofa::core::collision::DetectionOutput> OutputVector;
     typedef sofa::core::collision::DetectionOutput DetectionOutput;
 
-    static int computeIntersection(model::OBB&, model::OBB&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+    static int computeIntersection(geometry::OBB&, geometry::OBB&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 
     template <class DataTypes>
-    static int computeIntersection(sofa::component::collision::geometry::TSphere<DataTypes> &sph1, model::OBB &box,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+    static int computeIntersection(sofa::component::collision::geometry::TSphere<DataTypes> &sph1, geometry::OBB &box,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 };
 
 template <class DataTypes>
-int OBBIntTool::computeIntersection(sofa::component::collision::geometry::TSphere<DataTypes> & sphere,model::OBB & box,SReal alarmDist,SReal contactDist,OutputVector* contacts){
-    TIntrSphereOBB<DataTypes,model::OBB::DataTypes> intr(sphere,box);
+int OBBIntTool::computeIntersection(sofa::component::collision::geometry::TSphere<DataTypes> & sphere,geometry::OBB & box,SReal alarmDist,SReal contactDist,OutputVector* contacts){
+    TIntrSphereOBB<DataTypes,geometry::OBB::DataTypes> intr(sphere,box);
     //double max_time = helper::rsqrt((alarmDist * alarmDist)/((box1.lvelocity() - box0.lvelocity()).norm2()));
     if(/*intr.Find(max_time,box0.lvelocity(),box1.lvelocity())*/intr.Find()){
-        model::OBB::Real dist = intr.distance();
+        geometry::OBB::Real dist = intr.distance();
         if((!intr.colliding()) && dist > alarmDist)
             return 0;
 

@@ -28,12 +28,12 @@
 #include <sofa/component/collision/geometry/PointModel.h>
 #include <sofa/component/collision/geometry/LineModel.h>
 #include <sofa/component/collision/geometry/SphereModel.h>
-#include <CollisionOBBCapsule/model/OBBModel.h>
-#include <CollisionOBBCapsule/model/CapsuleModel.h>
-#include <CollisionOBBCapsule/model/RigidCapsuleModel.h>
+#include <CollisionOBBCapsule/geometry/OBBModel.h>
+#include <CollisionOBBCapsule/geometry/CapsuleModel.h>
+#include <CollisionOBBCapsule/geometry/RigidCapsuleModel.h>
 
-using collisionobbcapsule::model::TCapsule;
-using collisionobbcapsule::model::OBB;
+using collisionobbcapsule::geometry::TCapsule;
+using collisionobbcapsule::geometry::OBB;
 using sofa::component::collision::geometry::Point;
 using sofa::component::collision::geometry::Line;
 using sofa::component::collision::geometry::Triangle;

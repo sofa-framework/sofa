@@ -23,7 +23,7 @@
 #include <CollisionOBBCapsule/config.h>
 
 #include <sofa/component/collision/geometry/SphereModel.h>
-#include <CollisionOBBCapsule/model/OBBModel.h>
+#include <CollisionOBBCapsule/geometry/OBBModel.h>
 #include <CollisionOBBCapsule/detection/intersection/IntrUtility3.h>
 #include <CollisionOBBCapsule/detection/intersection/Intersector.h>
 
@@ -39,7 +39,7 @@ public:
     typedef sofa::component::collision::geometry::TSphere<TDataTypes> IntrSph;
     typedef typename IntrSph::Real Real;
     typedef typename IntrSph::Coord Coord;
-    typedef model::TOBB<TDataTypes2> Box;
+    typedef geometry::TOBB<TDataTypes2> Box;
     typedef type::Vec<3,Real> Vec3;
 
     TIntrSphereOBB (const IntrSph& sphere, const Box & box);

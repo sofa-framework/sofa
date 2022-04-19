@@ -25,11 +25,11 @@ namespace collisionobbcapsule::detection::intersection
 {
 
 
-int OBBIntTool::computeIntersection(model::OBB & box0, model::OBB & box1,SReal alarmDist,SReal contactDist,OutputVector* contacts){
-//    model::OBB::Real r02 = box0.extent(0)* box0.extent(0) + box0.extent(1)* box0.extent(1) + box0.extent(2)* box0.extent(2);
-//    model::OBB::Real r12 = box1.extent(0)* box1.extent(0) + box1.extent(1)* box1.extent(1) + box1.extent(2)* box1.extent(2);
-//    model::OBB::Real r0 = helper::rsqrt(r02);
-//    model::OBB::Real r1 = helper::rsqrt(r12);
+int OBBIntTool::computeIntersection(geometry::OBB & box0, geometry::OBB & box1,SReal alarmDist,SReal contactDist,OutputVector* contacts){
+//    geometry::OBB::Real r02 = box0.extent(0)* box0.extent(0) + box0.extent(1)* box0.extent(1) + box0.extent(2)* box0.extent(2);
+//    geometry::OBB::Real r12 = box1.extent(0)* box1.extent(0) + box1.extent(1)* box1.extent(1) + box1.extent(2)* box1.extent(2);
+//    geometry::OBB::Real r0 = helper::rsqrt(r02);
+//    geometry::OBB::Real r1 = helper::rsqrt(r12);
 //    if((box0.center() - box1.center()).norm2() > r02 + 2*r0*r1 + r12){
 //        return 0;
 //    }
@@ -37,7 +37,7 @@ int OBBIntTool::computeIntersection(model::OBB & box0, model::OBB & box1,SReal a
     //SReal max_time = helper::rsqrt((alarmDist * alarmDist)/((box1.lvelocity() - box0.lvelocity()).norm2()));
     if(/*intr.Find(max_time,box0.lvelocity(),box1.lvelocity())*/intr.Find(alarmDist)){
         type::Vector3 P0P1(intr.pointOnSecond() - intr.pointOnFirst());
-        model::OBB::Real dist2 = P0P1.norm2();
+        geometry::OBB::Real dist2 = P0P1.norm2();
         if((!intr.colliding()) && dist2 > alarmDist * alarmDist)
             return 0;        
 

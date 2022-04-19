@@ -19,21 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_OBBMODEL_CPP
-#include <CollisionOBBCapsule/model/OBBModel.inl>
+#define SOFA_COMPONENT_COLLISION_RIGIDCAPSULECOLLISIONMODEL_CPP
+#include <CollisionOBBCapsule/geometry/RigidCapsuleModel.inl>
 #include <sofa/core/ObjectFactory.h>
 
-namespace collisionobbcapsule::model
+namespace collisionobbcapsule::geometry
 {
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
-int OBBModelClass = sofa::core::RegisterObject("Collision model which represents a set of OBBs")
-        .add< OBBCollisionModel<Rigid3Types> >()
+int RigidCapsuleCollisionModelClass = core::RegisterObject("Collision model which represents a set of rigid capsules")
+        .add<  CapsuleCollisionModel<defaulttype::Rigid3Types> >()
         ;
 
-template class COLLISIONOBBCAPSULE_API OBBCollisionModel<Rigid3Types>;
-template class COLLISIONOBBCAPSULE_API TOBB<Rigid3Types>;
+template class COLLISIONOBBCAPSULE_API geometry::TCapsule<defaulttype::Rigid3Types>;
+template class COLLISIONOBBCAPSULE_API CapsuleCollisionModel<defaulttype::Rigid3Types>;
 
-} // namespace collisionobbcapsule::model
+} // namespace collisionobbcapsule::geometry

@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <CollisionOBBCapsule/model/OBBModel.h>
+#include <CollisionOBBCapsule/geometry/OBBModel.h>
 #include <sofa/component/collision/geometry/SphereModel.h>
 #include <sofa/component/collision/geometry/CylinderModel.h>
 #include <sofa/component/collision/geometry/TriangleModel.h>
@@ -36,7 +36,7 @@ namespace sofa::component::collision::response::contact
 using namespace sofa::core::collision;
 using namespace sofa::component::collision::geometry;
 using namespace sofa::component::collision::response::contact;
-using namespace collisionobbcapsule::model;
+using namespace collisionobbcapsule::geometry;
 
 Creator<Contact::Factory, BarycentricPenalityContact<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > OBBOBBPenalityContactClass("PenalityContactForceField", true);
 Creator<Contact::Factory, BarycentricPenalityContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>> > SphereOBBPenalityContactClass("PenalityContactForceField", true);

@@ -78,7 +78,7 @@ CapIntrConfiguration<Real>::CapIntrConfiguration(){
 }
 //----------------------------------------------------------------------------
 template <class TDataTypes>
-bool IntrAxis<model::TOBB<TDataTypes> >::Find (const Coord& axis,
+bool IntrAxis<geometry::TOBB<TDataTypes> >::Find (const Coord& axis,
     const Box& box0, const Box& box1,
     Real dmax, Real& dfirst,
     int& side, IntrConfiguration<Real>& box0CfgFinal,
@@ -95,7 +95,7 @@ bool IntrAxis<model::TOBB<TDataTypes> >::Find (const Coord& axis,
 }
 //----------------------------------------------------------------------------
 template <class TDataTypes>
-bool IntrAxis<model::TOBB<TDataTypes> >::Find(const Coord& axis,
+bool IntrAxis<geometry::TOBB<TDataTypes> >::Find(const Coord& axis,
     const type::Vec<3,Real> segment[2],Real radius, const Box& box,
     Real dmax, Real& dfirst,
     int& side, CapIntrConfiguration<Real>& capCfgFinal,
@@ -184,7 +184,7 @@ void IntrConfigManager<Real>::init(const type::Vec<3,Real> & axis,
 }
 //----------------------------------------------------------------------------
 template <class TDataTypes>
-void IntrConfigManager<model::TOBB<TDataTypes> >::init (const type::Vec<3,Real> & axis,
+void IntrConfigManager<geometry::TOBB<TDataTypes> >::init (const type::Vec<3,Real> & axis,
     const Box & box, IntrConfiguration<Real>& cfg)
 {
     // Description of coordinate ordering scheme for IntrConfiguration.mIndex.
@@ -593,7 +593,7 @@ bool IntrConfigManager<Real>::Find (const Config0& cfg0Start,
 }
 //----------------------------------------------------------------------------
 template <class TDataTypes>
-void FindContactSet<model::TOBB<TDataTypes> >::FindContactConfig(const type::Vec<3,Real> & axis,const type::Vec<3,Real> & segP0, Real radius,const Box & box,CapIntrConfiguration<Real> &capCfg,
+void FindContactSet<geometry::TOBB<TDataTypes> >::FindContactConfig(const type::Vec<3,Real> & axis,const type::Vec<3,Real> & segP0, Real radius,const Box & box,CapIntrConfiguration<Real> &capCfg,
     int side,type::Vec<3, Real> & pt_on_capsule, type::Vec<3, Real> &pt_on_box){
     bool adjust = false;
     pt_on_box = box.center();
@@ -641,7 +641,7 @@ void FindContactSet<model::TOBB<TDataTypes> >::FindContactConfig(const type::Vec
 
 
 template <class TDataTypes>
-FindContactSet<model::TOBB<TDataTypes> >::FindContactSet (const type::Vec<3,Real> segment[2], Real radius,const Box& box,const type::Vec<3,Real> & axis,
+FindContactSet<geometry::TOBB<TDataTypes> >::FindContactSet (const type::Vec<3,Real> segment[2], Real radius,const Box& box,const type::Vec<3,Real> & axis,
     int side, CapIntrConfiguration<Real> &capCfg,
     const IntrConfiguration<Real>& boxCfg,
     Real tfirst, type::Vec<3,Real> & pt_on_capsule,type::Vec<3,Real> & pt_on_box){
@@ -966,7 +966,7 @@ void IntrUtil<Real>::segNearestPoints(const type::Vec<3,Real> * p, const type::V
 
 //----------------------------------------------------------------------------
 template <class TDataTypes>
-FindContactSet<model::TOBB<TDataTypes> >::FindContactSet (const Box& box0,
+FindContactSet<geometry::TOBB<TDataTypes> >::FindContactSet (const Box& box0,
     const Box& box1,const type::Vec<3,Real> & axis,int side, const IntrConfiguration<Real>& box0Cfg,
     const IntrConfiguration<Real>& box1Cfg,
     Real tfirst,type::Vec<3,Real> & pt_on_first,type::Vec<3,Real> & pt_on_second)
@@ -1745,7 +1745,7 @@ bool IntrUtil<Real>::inf(Real a,Real b){
 }
 
 template <class TDataTypes>
-void IntrUtil<model::TOBB<TDataTypes> >::project(type::Vec<3,Real> & point,const Box & box){
+void IntrUtil<geometry::TOBB<TDataTypes> >::project(type::Vec<3,Real> & point,const Box & box){
     int min_ind = -1;
     bool neg = false;
     bool is_in = true;
@@ -2002,7 +2002,7 @@ type::Vec<3,TReal> GetPointFromIndex (int index, const MyBox<TReal> &box)
 }
 
 template <typename TDataTypes>
-type::Vec<3,typename TDataTypes::Real> getPointFromIndex(int index, const model::TOBB<TDataTypes>& box)
+type::Vec<3,typename TDataTypes::Real> getPointFromIndex(int index, const geometry::TOBB<TDataTypes>& box)
 {
     type::Vec<3,typename TDataTypes::Real> point = box.center();
 

@@ -26,7 +26,7 @@
 #include <CollisionOBBCapsule/config.h>
 
 #include <CollisionOBBCapsule/detection/intersection/Intersector.h>
-#include <CollisionOBBCapsule/model/OBBModel.h>
+#include <CollisionOBBCapsule/geometry/OBBModel.h>
 
 namespace collisionobbcapsule::detection::intersection
 {
@@ -38,7 +38,7 @@ class TIntrOBBOBB : public Intersector<typename TDataTypes::Real>
 public:
     typedef typename TDataTypes::Real Real;
     typedef typename TDataTypes::Deriv TVector;
-    typedef model::TOBB<TDataTypes> Box;
+    typedef geometry::TOBB<TDataTypes> Box;
     typedef typename Box::Coord Coord;
 
     TIntrOBBOBB (const Box& box0, const Box& box1);

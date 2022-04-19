@@ -24,7 +24,7 @@
 namespace collisionobbcapsule::detection::intersection
 {
 template <class DataTypes1,class DataTypes2>
-int CapsuleIntTool::computeIntersection(model::TCapsule<DataTypes1> & e1,model::TCapsule<DataTypes2> & e2,SReal alarmDist,SReal contactDist,OutputVector * contacts){
+int CapsuleIntTool::computeIntersection(geometry::TCapsule<DataTypes1> & e1,geometry::TCapsule<DataTypes2> & e2,SReal alarmDist,SReal contactDist,OutputVector * contacts){
     using namespace sofa::type;
     using namespace sofa::defaulttype;
     if(shareSameVertex(e1,e2))
@@ -208,7 +208,7 @@ int CapsuleIntTool::computeIntersection(model::TCapsule<DataTypes1> & e1,model::
 }
 
 template <class DataTypes>
-int CapsuleIntTool::computeIntersection(model::TCapsule<DataTypes> & cap, OBB& obb,SReal alarmDist,SReal contactDist,OutputVector* contacts){
+int CapsuleIntTool::computeIntersection(geometry::TCapsule<DataTypes> & cap, OBB& obb,SReal alarmDist,SReal contactDist,OutputVector* contacts){
     using namespace sofa::defaulttype;
     TIntrCapsuleOBB<DataTypes,RigidTypes> intr(cap,obb);
     if(intr.Find(alarmDist)){

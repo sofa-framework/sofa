@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <CollisionOBBCapsule/model/OBBModel.h>
+#include <CollisionOBBCapsule/geometry/OBBModel.h>
 
 #include <sofa/component/collision/geometry/CubeModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace collisionobbcapsule::model
+namespace collisionobbcapsule::geometry
 {
 
 template<class DataTypes>
@@ -454,4 +454,4 @@ void OBBCollisionModel<DataTypes>::computeBBox(const core::ExecParams*, bool onl
 
 }
 
-} // namespace collisionobbcapsule::model
+} // namespace collisionobbcapsule::geometry

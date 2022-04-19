@@ -19,12 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <CollisionOBBCapsule/model/RigidCapsuleModel.h>
+#include <CollisionOBBCapsule/geometry/RigidCapsuleModel.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/component/collision/geometry/CubeModel.h>
 
-namespace collisionobbcapsule::model
+namespace collisionobbcapsule::geometry
 {
 
 template<class MyReal>
@@ -273,4 +273,4 @@ Data<typename CapsuleCollisionModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >
     return d_capsule_radii;
 }
 
-} // namespace collisionobbcapsule::model
+} // namespace collisionobbcapsule::geometry
