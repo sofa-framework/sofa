@@ -9,6 +9,8 @@
   <RequiredPlugin name="Sofa.Component.Topology.Container.Constant"/> <!-- Needed to use components [MeshTopology] -->
   <RequiredPlugin name="Sofa.Component.Visual"/> <!-- Needed to use components [VisualStyle] -->
   <RequiredPlugin name="SofaMeshCollision"/> <!-- Needed to use components [TriangleCollisionModel] -->
+  <RequiredPlugin name="CollisionOBBCapsule"/>
+  
   <VisualStyle name="displayFlags"  displayFlags="showAll" />
   <DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
   <BruteForceBroadPhase/>
