@@ -73,6 +73,7 @@ class Robot:
                     [160.8, 442.5, 160.8, 0,0,0,1]
                     ]
 
+        # You can change the joint angles here
         initAngles = [0,0,0,0,0,0]
 
         # Robot node
@@ -81,7 +82,6 @@ class Robot:
         robot.addObject('EulerImplicitSolver')
         robot.addObject('SparseLDLSolver', template="CompressedRowSparseMatrixMat3x3d")
         robot.addObject('GenericConstraintCorrection')
-        robot.addData(name='release', type='bool', value=False)
 
         # Articulations node
         articulations = robot.addChild('Articulations')
@@ -123,14 +123,12 @@ class Robot:
 def createScene(rootNode):
 
     from header import addHeader
-    from robotGUI import RobotGUI
+    # from robotGUI import RobotGUI  # Uncomment this if you want to use the GUI
 
     addHeader(rootNode)
 
     # Robot
     robot = Robot(rootNode).addRobot()
-
-    # Comment this if you don't want to use the GUI
-    robot.addObject(RobotGUI(robot=robot))
+    # robot.addObject(RobotGUI(robot=robot))  # Uncomment this if you want to use the GUI
 
     return

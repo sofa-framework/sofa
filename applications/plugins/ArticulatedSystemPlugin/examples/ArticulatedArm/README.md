@@ -12,11 +12,13 @@ To use a GUI to control the robot you need to install [tkinter](https://docs.pyt
 
 `sudo apt-install python-tk`
 
-If you don't want to install tkinter just comment the following line in `robot.py`:
+and uncomment the following lines in `robot.py`:
 
 ```python
-    # Comment this if you don't want to use the GUI
-    robot.addObject(RobotGUI(robot=robot))
+    from robotGUI import RobotGUI  # Uncomment this if you want to use the GUI
+```
+```python
+    robot.addObject(RobotGUI(robot=robot))  # Uncomment this if you want to use the GUI
 ```
 
 ## How to run the simulation
