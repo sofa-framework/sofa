@@ -215,9 +215,6 @@ public:
         computeTriangleRotation(result,x0[t[0]], x0[t[1]], x0[t[2]]);
     }
 
-    template<class MatrixWriter>
-    void addKToMatrixT(const core::MechanicalParams* mparams, MatrixWriter m);
-
     void getTriangleVonMisesStress(Index i, Real& stressValue);
     void getTrianglePrincipalStress(Index i, Real& stressValue, Deriv& stressDirection, Real& stressValue2, Deriv& stressDirection2);
 
