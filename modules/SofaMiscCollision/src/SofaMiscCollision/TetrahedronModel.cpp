@@ -289,9 +289,9 @@ void TetrahedronCollisionModel::computeBoundingTree(int maxDepth)
     }
 }
 
-ContactMapperCreator< ContactMapper<TetrahedronCollisionModel> > TetrahedronContactMapperClass("PenalityContactForceField",true);
+ContactMapperCreator< response::mapper::ContactMapper<TetrahedronCollisionModel> > TetrahedronContactMapperClass("PenalityContactForceField",true);
 
-template class SOFA_MISC_COLLISION_API ContactMapper<TetrahedronCollisionModel, sofa::defaulttype::Vec3Types>;
+template class SOFA_MISC_COLLISION_API response::mapper::ContactMapper<TetrahedronCollisionModel, sofa::defaulttype::Vec3Types>;
 
 } // namespace collision
 

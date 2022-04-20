@@ -7,43 +7,10 @@ set(HEADER_FILES
     ${SOFAMESHCOLLISION_SRC}/config.h.in
     ${SOFAMESHCOLLISION_SRC}/fwd.h
     ${SOFAMESHCOLLISION_SRC}/initSofaMeshCollision.h
-    ${SOFAMESHCOLLISION_SRC}/BarycentricContactMapper.h
-    ${SOFAMESHCOLLISION_SRC}/BarycentricContactMapper.inl
-    ${SOFAMESHCOLLISION_SRC}/BarycentricPenalityContact.h
-    ${SOFAMESHCOLLISION_SRC}/BarycentricPenalityContact.inl
-    ${SOFAMESHCOLLISION_SRC}/CollisionPM.h
-    ${SOFAMESHCOLLISION_SRC}/EndPoint.h
-    ${SOFAMESHCOLLISION_SRC}/IdentityContactMapper.h
-    ${SOFAMESHCOLLISION_SRC}/IdentityContactMapper.inl
-    ${SOFAMESHCOLLISION_SRC}/Line.h
-    ${SOFAMESHCOLLISION_SRC}/LineModel.h
-    ${SOFAMESHCOLLISION_SRC}/LineModel.inl
-    ${SOFAMESHCOLLISION_SRC}/MeshNewProximityIntersection.h
-    ${SOFAMESHCOLLISION_SRC}/MeshNewProximityIntersection.inl
-    ${SOFAMESHCOLLISION_SRC}/Point.h
-    ${SOFAMESHCOLLISION_SRC}/PointModel.h
-    ${SOFAMESHCOLLISION_SRC}/PointModel.inl
     ${SOFAMESHCOLLISION_SRC}/RayTriangleIntersection.h
-    ${SOFAMESHCOLLISION_SRC}/RigidContactMapper.h
-    ${SOFAMESHCOLLISION_SRC}/RigidContactMapper.inl
-    ${SOFAMESHCOLLISION_SRC}/SubsetContactMapper.h
-    ${SOFAMESHCOLLISION_SRC}/SubsetContactMapper.inl
-    ${SOFAMESHCOLLISION_SRC}/Triangle.h
-    ${SOFAMESHCOLLISION_SRC}/TriangleModel.h
-    ${SOFAMESHCOLLISION_SRC}/TriangleModel.inl
 )
-
 set(SOURCE_FILES
     ${SOFAMESHCOLLISION_SRC}/initSofaMeshCollision.cpp
-    ${SOFAMESHCOLLISION_SRC}/BarycentricContactMapper.cpp
-    ${SOFAMESHCOLLISION_SRC}/BarycentricPenalityContact.cpp
-    ${SOFAMESHCOLLISION_SRC}/IdentityContactMapper.cpp
-    ${SOFAMESHCOLLISION_SRC}/LineModel.cpp
-    ${SOFAMESHCOLLISION_SRC}/MeshNewProximityIntersection.cpp
-    ${SOFAMESHCOLLISION_SRC}/PointModel.cpp
-    ${SOFAMESHCOLLISION_SRC}/RigidContactMapper.cpp
-    ${SOFAMESHCOLLISION_SRC}/SubsetContactMapper.cpp
-    ${SOFAMESHCOLLISION_SRC}/TriangleModel.cpp
 )
 
 sofa_find_package(SofaBaseMechanics REQUIRED)
@@ -55,10 +22,17 @@ sofa_find_package(SofaRigid REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaObjectInteraction SofaRigid SofaBaseCollision SofaBaseMechanics SofaBaseTopology)
 
-if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    # Silence attribute warnings (for example, ignored already defined external template)
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-attributes)
-endif()
+message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Collision.Geometry, Sofa.Component.Collision.Detection.Intersection, Sofa.Component.Collision.Response.Mapper and Sofa.Component.Collision.Response.Contact instead.")
+
+# forward to the new sofang module
+sofa_find_package(Sofa.Component.Collision.Geometry REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Detection.Intersection REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Response.Mapper REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Response.Contact REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Geometry)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Detection.Intersection)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Response.Mapper)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Response.Contact)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
@@ -66,7 +40,6 @@ sofa_create_package_with_targets(
     TARGETS ${PROJECT_NAME} AUTO_SET_TARGET_PROPERTIES
     INCLUDE_SOURCE_DIR "src"
     INCLUDE_INSTALL_DIR "${PROJECT_NAME}"
-    RELOCATABLE "plugins"
 )
 
 # Tests

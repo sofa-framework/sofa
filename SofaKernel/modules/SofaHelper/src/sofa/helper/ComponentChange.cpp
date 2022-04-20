@@ -961,7 +961,7 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "TubularMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.Linear") },
     { "VoidMapping", CreatableMoved("v22.06", "SofaMiscMapping", "Sofa.Component.Mapping.Linear") },
 
-    // SofaConstraint was deprecated in #2635, #2790 and #2796
+    // SofaConstraint was deprecated in #2635, #2790, #2796, #2813 and ...
     { "MappingGeometricStiffnessForceField", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Mapping.MappedMatrix") },
     { "BilateralInteractionConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Model") },
     { "GenericConstraintCorrection", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Correction") },
@@ -976,6 +976,7 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "UnilateralInteractionConstraint", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Constraint.Lagrangian.Model") },
     { "ConstraintAnimationLoop", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.AnimationLoop") },
     { "FreeMotionAnimationLoop", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.AnimationLoop") },
+    { "LocalMinDistance", CreatableMoved("v22.06", "SofaConstraint", "Sofa.Component.Collision.Detection.Intersection") },
 
     // SofaGeneralAnimationLoop was deprecated in #2635 and #2796
     { "MechanicalMatrixMapper", CreatableMoved("v22.06", "SofaGeneralAnimationLoop", "Sofa.Component.Mapping.MappedMatrix") },
@@ -1065,8 +1066,6 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "ProjectToPointConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
     { "AttachConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
     { "SkeletalMotionConstraint", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.Constraint.Projective") },
-
-    // SofaBoundaryCondition was deprecated in #2759 and ...
     { "ConicalForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
     { "ConstantForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
     { "DiagonalVelocityDampingForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
@@ -1082,6 +1081,39 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "TorsionForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
     { "TrianglePressureForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
     { "UniformVelocityDampingForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
+
+    // SofaBaseCollision was deprecated in #2813
+    { "BruteForceBroadPhase", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Detection.Algorithm") },
+    { "BruteForceDetection", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Detection.Algorithm") },
+    { "BVHNarrowPhase", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Detection.Algorithm") },
+    { "DefaultPipeline", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Detection.Algorithm") },
+    { "DiscreteIntersection", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Detection.Intersection") },
+    { "MinProximityIntersection", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Detection.Intersection") },
+    { "NewProximityIntersection", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Detection.Intersection") },
+    { "CubeCollisionModel", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Geometry") },
+    { "SphereCollisionModel", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Geometry") },
+    { "CylinderCollisionModel", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Geometry") },
+    { "DefaultContactManager", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Response.Contact") },
+    { "ContactListener", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Response.Contact") },
+
+    // SofaMeshCollision was deprecated in #2813
+    { "PointCollisionModel", CreatableMoved("v22.06", "SofaMeshCollision", "Sofa.Component.Collision.Geometry") },
+    { "LineCollisionModel", CreatableMoved("v22.06", "SofaMeshCollision", "Sofa.Component.Collision.Geometry") },
+    { "TriangleCollisionModel", CreatableMoved("v22.06", "SofaMeshCollision", "Sofa.Component.Collision.Geometry") },
+
+    // SofaGeneralMeshCollision was deprecated in #2813
+    { "DirectSAP", CreatableMoved("v22.06", "SofaGeneralMeshCollision", "Sofa.Component.Collision.Detection.Algorithm") },
+    { "DirectSAPNarrowPhase", CreatableMoved("v22.06", "SofaGeneralMeshCollision", "Sofa.Component.Collision.Detection.Algorithm") },
+    { "IncrSAPClassSofaVector", CreatableMoved("v22.06", "SofaGeneralMeshCollision", "Sofa.Component.Collision.Detection.Algorithm") },
+    { "RayTraceNarrowPhase", CreatableMoved("v22.06", "SofaGeneralMeshCollision", "Sofa.Component.Collision.Detection.Algorithm") },
+    { "RayTraceDetection", CreatableMoved("v22.06", "SofaGeneralMeshCollision", "Sofa.Component.Collision.Detection.Algorithm") },
+    { "TriangleOctreeModel", CreatableMoved("v22.06", "SofaGeneralMeshCollision", "Sofa.Component.Collision.Geometry") },
+
+    // SofaUserInteraction was deprecated in #2813
+    { "RayCollisionModel", CreatableMoved("v22.06", "SofaUserInteraction", "Sofa.Component.Collision.Geometry") },
+
+    // SofaObjectInteraction was deprecated in #2813
+    { "PenalityContactForceField", CreatableMoved("v22.06", "SofaObjectInteraction", "Sofa.Component.Collision.Response.Contact") },
 
 };
 

@@ -164,7 +164,7 @@ inline type::Vec3 Tetrahedron::getDCoord(const type::Vec3& b) const { return mod
 
 /// Mapper for TetrahedronCollisionModel
 template<class DataTypes>
-class ContactMapper<TetrahedronCollisionModel, DataTypes> : public BarycentricContactMapper<TetrahedronCollisionModel, DataTypes>
+class response::mapper::ContactMapper<TetrahedronCollisionModel, DataTypes> : public BarycentricContactMapper<TetrahedronCollisionModel, DataTypes>
 {
 public:
     using Index = sofa::Index;
@@ -179,12 +179,12 @@ public:
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_TETRAHEDRONCOLLISIONMODEL_CPP)
-extern template class SOFA_MISC_COLLISION_API ContactMapper<TetrahedronCollisionModel, sofa::defaulttype::Vec3Types>;
+extern template class SOFA_MISC_COLLISION_API response::mapper::ContactMapper<TetrahedronCollisionModel, sofa::defaulttype::Vec3Types>;
 
 #  ifdef _MSC_VER
 // Manual declaration of non-specialized members, to avoid warnings from MSVC.
-extern template SOFA_MISC_COLLISION_API void BarycentricContactMapper<TetrahedronCollisionModel, defaulttype::Vec3Types>::cleanup();
-extern template SOFA_MISC_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* BarycentricContactMapper<TetrahedronCollisionModel, defaulttype::Vec3Types>::createMapping(const char*);
+extern template SOFA_MISC_COLLISION_API void response::mapper::BarycentricContactMapper<TetrahedronCollisionModel, defaulttype::Vec3Types>::cleanup();
+extern template SOFA_MISC_COLLISION_API core::behavior::MechanicalState<defaulttype::Vec3Types>* response::mapper::BarycentricContactMapper<TetrahedronCollisionModel, defaulttype::Vec3Types>::createMapping(const char*);
 #  endif
 #endif
 

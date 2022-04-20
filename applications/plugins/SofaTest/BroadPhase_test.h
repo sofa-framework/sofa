@@ -8,6 +8,8 @@
 #include <SofaMiscCollision/OBBModel.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 
+#include <SofaBaseCollision/CubeModel.h>
+
 #include <gtest/gtest.h>
 
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;

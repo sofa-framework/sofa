@@ -31,6 +31,8 @@ using sofa::core::execparams::defaultInstance;
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
 
+#include <SofaBaseCollision/initSofaBaseCollision.h>
+
 #include<SofaBaseCollision/DefaultPipeline.h>
 using sofa::component::collision::DefaultPipeline ;
 
@@ -74,6 +76,11 @@ public:
     void checkDefaultPipelineWithMissingContactManager();
     int checkDefaultPipelineWithMonkeyValueForDepth(int value);
 
+    void SetUp() override
+    {
+        sofa::component::initSofaBaseCollision();
+    }
+
     void TearDown() override
     {
         if (root)
@@ -99,6 +106,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithNoAttributes()
     root = SceneLoaderXML::loadFromMemory ("testscene",
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
+    
     ASSERT_NE(root.get(), nullptr) ;
     root->init(sofa::core::execparams::defaultInstance()) ;
 

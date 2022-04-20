@@ -5,9 +5,14 @@
     <RequiredPlugin name='SofaImplicitOdeSolver'/>
     <RequiredPlugin name='SofaBaseLinearSolver'/>
     <RequiredPlugin name='SofaBaseTopology'/>
+    <RequiredPlugin name="SofaBaseVisual" />
+    <RequiredPlugin name="SofaBaseMechanics" />
+    <RequiredPlugin name="SofaBaseLinearSolver" />
 
+    <VisualStyle displayFlags="showBehaviorModels"/>
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
+
     <MeshOBJLoader name="temperatureLoader" filename="beamTemperatures.obj" />
     <RegularGridTopology name="grid" n="21 11 11"  p0="0 0 0" min="0 0 0" max="1 0.5 0.5" drawHexahedra="1" tags="geom"/>
     <MechanicalObject template="Vec3d"  name="gridDOFs" tags="geom" />

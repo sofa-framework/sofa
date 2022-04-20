@@ -22,6 +22,7 @@
 
 #include <gtest/gtest.h>
 
+#include <SofaMeshCollision/MeshNewProximityIntersection.h>
 #include <SofaMeshCollision/MeshNewProximityIntersection.inl>
 
 #include <sofa/testing/BaseTest.h>

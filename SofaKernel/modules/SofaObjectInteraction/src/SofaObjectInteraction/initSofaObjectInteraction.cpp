@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <SofaObjectInteraction/initSofaObjectInteraction.h>
 
+#include <sofa/helper/system/PluginManager.h>
+
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
@@ -32,6 +34,10 @@ void initSofaObjectInteraction()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaObjectInteraction") << "SofaObjectInteraction is deprecated. It will be removed at v23.06. Use Sofa.Component.Collision.Response.Contactinstead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Response.Contact");
+
         first = false;
     }
 }
