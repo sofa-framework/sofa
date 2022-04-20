@@ -33,46 +33,6 @@ using namespace sofa::core::objectmodel;
 using namespace sofa::linearalgebra;
 
 template<>
-void SSORPreconditioner<linearalgebra::SparseMatrix<SReal>, linearalgebra::FullVector<SReal> >::solve (Matrix& M, Vector& z, Vector& r)
-{
-    SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) this->getMatrixInvertData(&M);
-
-    const Index n = M.rowSize();
-    const Real w = (Real)f_omega.getValue();
-
-    // Solve (D/w+U) * t = r;
-    for (Index j=n-1; j>=0; j--)
-    {
-        double temp = 0.0;
-        for (Matrix::LElementConstIterator it = ++M[j].find(j), end = M[j].end(); it != end; ++it)
-        {
-            Index i = it->first;
-            double e = it->second;
-            temp += z[i] * e;
-        }
-        z[j] = (r[j] - temp) * w * data->inv_diag[j];
-    }
-
-    // Solve (I + w * D^-1 * L) * z = t
-    for (Index j=0; j<n; j++)
-    {
-        double temp = 0.0;
-        for (Matrix::LElementConstIterator it = M[j].begin(), end = M[j].find(j); it != end; ++it)
-        {
-            Index i = it->first;
-            double e = it->second;
-            temp += z[i] * e;
-        }
-        z[j] -= temp * w * data->inv_diag[j];
-        // we can reuse z because all values that we read are updated
-    }
-
-    if (w != (Real)1.0)
-        for (Index j=0; j<M.rowSize(); j++)
-            z[j] *= 2-w;
-}
-
-template<>
 void SSORPreconditioner<linearalgebra::CompressedRowSparseMatrix<SReal>, linearalgebra::FullVector<SReal> >::solve (Matrix& M, Vector& z, Vector& r)
 {
     SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) this->getMatrixInvertData(&M);
