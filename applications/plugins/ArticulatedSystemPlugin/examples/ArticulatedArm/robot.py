@@ -1,16 +1,16 @@
 import os
-path=os.path.dirname(os.path.abspath(__file__))+'/data/robot/Parts/'
+path=os.path.dirname(os.path.abspath(__file__))+'/data/'
 basePath = path+'RobotBase.stl'
-part11Path = path+'RobotPart (1).stl'
-part12Path = path+'RobotPart (3).stl'
-part21Path = path+'RobotPart (2).stl'
-part22Path = path+'RobotPart (4).stl'
-part3Path = path+'RobotPart (6).stl'
-part41Path = path+'RobotPart (5).stl'
-part42Path = path+'RobotPart (9).stl'
-part51Path = path+'RobotPart (7).stl'
-part52Path = path+'RobotPart (8).stl'
-part6Path = path+'RobotPart (10).stl'
+part11Path = path+'RobotPart1.stl'
+part12Path = path+'RobotPart3.stl'
+part21Path = path+'RobotPart2.stl'
+part22Path = path+'RobotPart4.stl'
+part3Path = path+'RobotPart6.stl'
+part41Path = path+'RobotPart5.stl'
+part42Path = path+'RobotPart9.stl'
+part51Path = path+'RobotPart7.stl'
+part52Path = path+'RobotPart8.stl'
+part6Path = path+'RobotPart10.stl'
 
 
 def addVisu(node, index, filename, translation=[0, 0, 0]):

@@ -2,12 +2,7 @@
 def addHeader(rootNode):
 
     rootNode.addObject('VisualStyle', displayFlags='showVisualModels hideBehaviorModels hideForceFields hideWireframe')
-    rootNode.addObject('RequiredPlugin', name='SofaPlugins', pluginName=['ArticulatedSystemPlugin',
-     'SofaGeneralAnimationLoop', 'SofaPython3', 'SofaSparseSolver', 'SofaPreconditioner', 'SuctionCup',
-     'SofaOpenglVisual', 'SofaBoundaryCondition', 'SofaGeneralRigid', 'SofaConstraint',
-     'SofaMiscMapping', 'SofaImplicitOdeSolver', 'SofaLoader', 'SofaSimpleFem', 'SofaTopologyMapping',
-     'SofaDeformable', 'SofaEngine', 'SofaRigid', 'SofaGeneralLinearSolver', 'SofaMeshCollision',
-     'SofaGeneralEngine'])
+    rootNode.addObject('RequiredPlugin', name='SofaPlugins', pluginName=['ArticulatedSystemPlugin', 'SofaPython3'])
 
     rootNode.addObject('DefaultVisualManagerLoop')
     rootNode.addObject('FreeMotionAnimationLoop')
