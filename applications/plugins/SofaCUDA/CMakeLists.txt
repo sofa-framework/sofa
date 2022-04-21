@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaCUDA)
+project(SofaCUDA LANGUAGES CUDA CXX)
 
 set(SOFACUDA_MAJOR_VERSION 0)
 set(SOFACUDA_MINOR_VERSION 1)
@@ -235,8 +235,6 @@ else()
 endif()
 
 set(README_FILES README.md)
-
-find_package(CUDA REQUIRED)
 
 find_package(SofaGeneralEngine REQUIRED)
 find_package(SofaGeneralDeformable REQUIRED)
