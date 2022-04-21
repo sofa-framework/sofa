@@ -1,5 +1,0 @@
-class TopologyAlgorithms
-!!!354992.cpp!!!	init() : void
-		this->getContext()->get(m_topologyContainer);
-!!!355120.cpp!!!	addTopologyChange(in topologyChange : TopologyChange) : void
-		m_topologyContainer->addTopologyChange(topologyChange);

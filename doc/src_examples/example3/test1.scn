@@ -1,6 +1,0 @@
-<Scene dt="0.005" showBehaviorModels="1" showCollisionModels="1" showMappings="1" showForceFields="1">
-	<Group>
-		<Solver type="RungeKutta4"/>
-		<DynamicModel type="MassObject1d" name="M1" position="0 1 2 3 4 5" fixed="5" gravity="-9.8"/>
-	</Group>
-</Scene>
