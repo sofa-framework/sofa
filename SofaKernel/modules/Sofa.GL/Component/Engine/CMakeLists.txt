@@ -16,10 +16,10 @@ set(SOURCE_FILES
 )
 
 sofa_find_package(Sofa.GL REQUIRED)
-sofa_find_package(Sofa.SimulationCore REQUIRED)
+sofa_find_package(Sofa.Simulation.Core REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.SimulationCore Sofa.GL)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core Sofa.GL)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

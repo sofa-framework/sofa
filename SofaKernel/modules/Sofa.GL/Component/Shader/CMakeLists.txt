@@ -48,12 +48,12 @@ set(SOURCE_FILES
     ${SOFAGLCOMPONENTONSHADER_SOURCE_DIR}/VisualManagerSecondaryPass.cpp
 )
 
-sofa_find_package(SofaSimulationCore REQUIRED)
+sofa_find_package(Sofa.Simulation.Core REQUIRED)
 sofa_find_package(Sofa.GL REQUIRED)
 sofa_find_package(Sofa.GL.Component.Rendering3D REQUIRED) # for OglModel
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore Sofa.GL Sofa.GL.Component.Rendering3D)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Simulation.Core Sofa.GL Sofa.GL.Component.Rendering3D)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
