@@ -15,6 +15,7 @@ if(SOFA_ENABLE_LEGACY_HEADERS)
     message("Headers from v21.12 are usable, but it is advised to change your code to use the new headers introduced in v22.06.")
 
     add_subdirectory(Compat)
+    add_subdirectory(Component/Compat)
 endif()
 
 add_subdirectory(Type)
@@ -31,7 +32,4 @@ add_subdirectory(Testing)
 add_subdirectory(Framework)
 
 ### Component
-if(SOFA_ENABLE_LEGACY_HEADERS)
-    add_subdirectory(Component/Compat)
-endif()
 add_subdirectory(Component)

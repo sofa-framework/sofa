@@ -165,16 +165,18 @@ add_subdirectory(extlibs)
 # SOFA-NG
 add_subdirectory(Sofa)
 
+# Deprecated (hollow) modules
+add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
+add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
+add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
+
 # SOFA-NG Plugins
 option(SOFA_WITH_OPENGL "Compile Sofa with OpenGL support. This will define the SOFA_WITH_OPENGL and SOFA_NO_OPENGL CMake variables." ON)
 if(SOFA_WITH_OPENGL)
     add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/modules/Sofa.GL)
 endif()
 
-# Deprecated (hollow) modules
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
+
 
 ## Modules
 ## in the consortium convention a module is a similar to a plugin the difference is that
