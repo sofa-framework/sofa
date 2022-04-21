@@ -43,7 +43,7 @@ public:
     SOFA_CLASS(MakeDataAliasComponent, core::objectmodel::BaseObject);
 
     MakeDataAliasComponent() ;
-    ~MakeDataAliasComponent() override{}
+    ~MakeDataAliasComponent() override;
 
     /// Inherited from BaseObject.
     /// Parse the given description to assign values to this object's fields and
@@ -61,7 +61,9 @@ public:
     {
         return "MakeDataAlias" ;
     }
+private:
 
+    bool m_hasAddedAlias { false };
 };
 
 } // namespace sofa::component::sceneutility::makedataaliascomponent

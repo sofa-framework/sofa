@@ -52,12 +52,7 @@ GenerateCylinder<DataTypes>::GenerateCylinder()
 {
     addAlias(&f_outputTetrahedraPositions,"position");
     addAlias(&f_outputTetrahedraPositions,"output_position");
-}
 
-
-template <class DataTypes>
-void GenerateCylinder<DataTypes>::init()
-{
     addInput(&f_radius);
     addInput(&f_height);
     addInput(&f_origin);
@@ -76,6 +71,12 @@ void GenerateCylinder<DataTypes>::init()
     addOutput(&f_outputTetrahedraPositions);
     addOutput(&f_bezierTetrahedronWeight);
     addOutput(&f_isBezierTetrahedronRational);
+}
+
+
+template <class DataTypes>
+void GenerateCylinder<DataTypes>::init()
+{
     setDirtyValue();
 }
 

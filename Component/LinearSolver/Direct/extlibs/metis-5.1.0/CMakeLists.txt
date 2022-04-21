@@ -15,6 +15,14 @@ endif()
 add_library(${PROJECT_NAME} STATIC ${metis_sources} ${GKlib_sources})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/GKlib>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/libmetis>")
+
+# Disable warnings coming from the metis library
+target_compile_options(${PROJECT_NAME} PRIVATE
+     $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
+          -w>
+     $<$<CXX_COMPILER_ID:MSVC>:
+          /w>)
+
 if(UNIX)
     target_link_libraries(${PROJECT_NAME} m)
 endif()

@@ -91,4 +91,5 @@ template class COLLISIONOBBCAPSULE_API FrictionContact<CapsuleCollisionModel<sof
 template class COLLISIONOBBCAPSULE_API FrictionContact<CapsuleCollisionModel<sofa::defaulttype::Vec3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
 template class COLLISIONOBBCAPSULE_API FrictionContact<CapsuleCollisionModel<sofa::defaulttype::Rigid3Types>, OBBCollisionModel<sofa::defaulttype::Rigid3Types>>;
 
+
 } // namespace sofa::component::collision::response::contact

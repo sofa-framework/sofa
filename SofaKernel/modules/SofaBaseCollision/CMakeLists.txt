@@ -6,7 +6,6 @@ set(SOFABASECOLLISION_SRC "src/${PROJECT_NAME}")
 set(HEADER_FILES
     ${SOFABASECOLLISION_SRC}/config.h.in
     ${SOFABASECOLLISION_SRC}/initSofaBaseCollision.h
-
 )
 
 set(SOURCE_FILES

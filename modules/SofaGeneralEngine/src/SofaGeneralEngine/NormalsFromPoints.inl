@@ -37,17 +37,17 @@ NormalsFromPoints<DataTypes>::NormalsFromPoints()
     , useAngles( initData (&useAngles, false, "useAngles", "Use incident angles to weight faces normal contributions at each vertex") )
 
 {
-}
-
-template <class DataTypes>
-void NormalsFromPoints<DataTypes>::init()
-{
     addInput(&position);
     addInput(&triangles);
     addInput(&quads);
     addInput(&invertNormals);
     addInput(&useAngles);
     addOutput(&normals);
+}
+
+template <class DataTypes>
+void NormalsFromPoints<DataTypes>::init()
+{
     setDirtyValue();
 }
 

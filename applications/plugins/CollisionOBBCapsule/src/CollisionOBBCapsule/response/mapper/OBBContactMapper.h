@@ -49,7 +49,7 @@ public:
 };
 
 #if !defined(SOFA_SOFAMISCCOLLISION_OBBCONTACTMAPPER_CPP)
-extern template class ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types>;
+extern template class response::mapper::ContactMapper<OBBCollisionModel<sofa::defaulttype::Rigid3Types>, sofa::defaulttype::Vec3Types>;
 #endif // 
 
 } // namespace sofa::component::collision::response::mapper

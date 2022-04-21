@@ -33,14 +33,13 @@ SumEngine<DataTypes>::SumEngine()
     : d_input ( initData (&d_input, "input", "input vector") )
     , d_output( initData (&d_output, "output", "output sum") )
 {
-
+    addInput(&d_input);
+    addOutput(&d_output);
 }
 
 template <class DataType>
 void SumEngine<DataType>::init()
 {
-    addInput(&d_input);
-    addOutput(&d_output);
     setDirtyValue();
 }
 

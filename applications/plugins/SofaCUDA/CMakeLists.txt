@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(SofaCUDA)
+project(SofaCUDA LANGUAGES CUDA CXX)
 
 set(SOFACUDA_MAJOR_VERSION 0)
 set(SOFACUDA_MINOR_VERSION 1)
@@ -64,8 +64,7 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.inl
     sofa/gpu/cuda/CudaTetrahedronFEMForceField.h
     sofa/gpu/cuda/CudaTetrahedronFEMForceField.inl
-    #sofa/gpu/cuda/CudaTetrahedronTLEDForceField.h
-    #sofa/gpu/cuda/CudaTetrahedronTLEDForceField.inl
+    sofa/gpu/cuda/CudaTetrahedronTLEDForceField.h
     sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.h
     sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.inl
 
@@ -136,7 +135,7 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.cpp
     sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.cpp
     sofa/gpu/cuda/CudaTetrahedronFEMForceField.cpp
-    #sofa/gpu/cuda/CudaTetrahedronTLEDForceField.cpp
+    sofa/gpu/cuda/CudaTetrahedronTLEDForceField.cpp
     sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cpp
 
     ### ForceFields
@@ -236,8 +235,6 @@ else()
 endif()
 
 set(README_FILES README.md)
-
-find_package(CUDA REQUIRED)
 
 find_package(SofaGeneralEngine REQUIRED)
 find_package(SofaGeneralDeformable REQUIRED)

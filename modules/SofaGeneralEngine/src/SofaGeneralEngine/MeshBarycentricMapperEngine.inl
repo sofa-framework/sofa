@@ -38,6 +38,11 @@ MeshBarycentricMapperEngine<DataTypes>::MeshBarycentricMapperEngine()
     , d_interpolationValues(initData(&d_interpolationValues, "linearInterpolationValues", "Values of a linear interpolation"))
     , l_topology(initLink("topology", "Name of the master topology"))
 {
+    addInput(&d_inputPositions);
+    addInput(&d_mappedPointPositions);
+
+    addOutput(&d_barycentricPositions);
+    addOutput(&d_tableElements);
 }
 
 
@@ -62,12 +67,6 @@ void MeshBarycentricMapperEngine<DataTypes>::init()
         }
     }
 
-
-    addInput(&d_inputPositions);
-    addInput(&d_mappedPointPositions);
-
-    addOutput(&d_barycentricPositions);
-    addOutput(&d_tableElements);
     setDirtyValue();
 
     d_componentState.setValue(sofa::core::objectmodel::ComponentState::Valid);

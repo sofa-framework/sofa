@@ -39,15 +39,13 @@ SmoothMeshEngine<DataTypes>::SmoothMeshEngine()
     , l_topology(initLink("topology", "link to the topology container"))
     , m_topology(nullptr)
 {
-
+    addInput(&input_position);
+    addOutput(&output_position);
 }
 
 template <class DataTypes>
 void SmoothMeshEngine<DataTypes>::init()
 {
-    addInput(&input_position);
-    addOutput(&output_position);
-
     if (l_topology.empty())
     {
         msg_info() << "link to Topology container should be set to ensure right behavior. First Topology found in current context will be used.";

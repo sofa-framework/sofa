@@ -35,6 +35,10 @@ ValuesFromIndices<T>::ValuesFromIndices()
 {
     addAlias(&f_in, "input");
     addAlias(&f_out, "output");
+
+    addInput(&f_in);
+    addInput(&f_indices);
+    addOutput(&f_out);
 }
 
 template <class T>
@@ -46,9 +50,7 @@ template <class T>
 void ValuesFromIndices<T>::init()
 {
     f_outStr.setParent(&f_out);
-    addInput(&f_in);
-    addInput(&f_indices);
-    addOutput(&f_out);
+
     setDirtyValue();
 }
 
