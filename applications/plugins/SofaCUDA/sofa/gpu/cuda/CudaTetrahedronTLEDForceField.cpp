@@ -166,7 +166,7 @@ void CudaTetrahedronTLEDForceField::reinit()
             inputElems.push_back(Tetra(c[6],c[7],c[0],c[5]));
             inputElems.push_back(Tetra(c[7],c[5],c[4],c[0]));
         }
-        std::cout << "WARNING(CudaTetrahedronTLEDForceField): each hexahedron has been split into 6 tetrahedra. You might want to use CudaHexahedronTLEDForceField instead." << std::endl;
+        msg_warning() << "each hexahedron has been split into 6 tetrahedra. You might want to use CudaHexahedronTLEDForceField instead.";
     }
 
     // Gets the number of elements

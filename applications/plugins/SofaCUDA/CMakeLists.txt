@@ -64,8 +64,7 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.inl
     sofa/gpu/cuda/CudaTetrahedronFEMForceField.h
     sofa/gpu/cuda/CudaTetrahedronFEMForceField.inl
-    #sofa/gpu/cuda/CudaTetrahedronTLEDForceField.h
-    #sofa/gpu/cuda/CudaTetrahedronTLEDForceField.inl
+    sofa/gpu/cuda/CudaTetrahedronTLEDForceField.h
     sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.h
     sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.inl
 
@@ -136,7 +135,7 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.cpp
     sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.cpp
     sofa/gpu/cuda/CudaTetrahedronFEMForceField.cpp
-    #sofa/gpu/cuda/CudaTetrahedronTLEDForceField.cpp
+    sofa/gpu/cuda/CudaTetrahedronTLEDForceField.cpp
     sofa/gpu/cuda/CudaTriangularFEMForceFieldOptim.cpp
 
     ### ForceFields
