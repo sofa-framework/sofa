@@ -48,7 +48,6 @@ ParticleSource<DataTypes>::ParticleSource()
     , d_stop(initData(&d_stop, (Real)1e10, "stop", "Source stopping time"))
     , m_numberParticles(0)
     , m_lastparticles(initData(&m_lastparticles, "lastparticles", "lastparticles indices"))
-    , m_pointHandler(nullptr)
 {
     this->f_listening.setValue(true);
     d_center.beginEdit()->push_back(Coord()); d_center.endEdit();
@@ -58,8 +57,7 @@ ParticleSource<DataTypes>::ParticleSource()
 template<class DataTypes>
 ParticleSource<DataTypes>::~ParticleSource()
 {
-    if (m_pointHandler)
-        delete m_pointHandler;
+
 }
 
 
@@ -83,8 +81,12 @@ void ParticleSource<DataTypes>::init()
     sofa::core::topology::BaseMeshTopology* _topology = this->getContext()->getMeshTopology();
     if (_topology != nullptr)
     {
-        m_pointHandler = new PSPointHandler(this, &m_lastparticles);
-        // m_lastparticles.createTopologyHandler(_topology, m_pointHandler);
+        m_lastparticles.createTopologyHandler(_topology);
+        m_lastparticles.setDestructionCallback([this](Index pointIndex, Index& val)
+        {
+            m_lastpos[pointIndex] = m_lastpos[m_lastpos.size() - 1];
+            m_lastpos.pop_back();
+        });
     }
 
     msg_info() << " center = " << d_center.getValue() << msgendl
