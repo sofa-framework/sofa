@@ -1090,7 +1090,6 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "TrianglePressureForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
     { "UniformVelocityDampingForceFieldClass", CreatableMoved("v22.06", "SofaBoundaryCondition", "Sofa.Component.MechanicalLoad") },
 
-<<<<<<< HEAD
     // SofaBaseCollision was deprecated in #2813
     { "BruteForceBroadPhase", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Detection.Algorithm") },
     { "BruteForceDetection", CreatableMoved("v22.06", "SofaBaseCollision", "Sofa.Component.Collision.Detection.Algorithm") },
