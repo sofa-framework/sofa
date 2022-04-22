@@ -17,10 +17,10 @@ set(SOURCE_FILES
     ${SOFAFRAMEWORK_SOURCE_DIR}/init.cpp
 )
 
-set(TARGET_NAME ${PROJECT_NAME})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_MODULES})
 
-add_library(${TARGET_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${TARGET_NAME} PUBLIC ${SOFAFRAMEWORK_MODULES})
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Sofa.Framework) # IDE folder
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}
