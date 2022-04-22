@@ -199,7 +199,7 @@ public:
             // just clear the matrix
             for (Index i=0; i < (Index)colsValue.size(); ++i)
                 traits::clear(colsValue[i]);
-            compressed = colsValue.empty();
+            compressed = btemp.empty();
             btemp.clear();
         }
         else
