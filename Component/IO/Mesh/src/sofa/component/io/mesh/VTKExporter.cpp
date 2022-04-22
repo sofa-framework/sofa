@@ -92,6 +92,9 @@ void VTKExporter::init()
         fetchDataFields(cellsData, cellsDataObject, cellsDataField, cellsDataName);
     }
 
+    /// Activate the listening to the event in order to be able to export file at first step or the nth-step
+    if(exportEveryNbSteps.getValue() != 0 || exportAtBegin.getValue())
+        this->f_listening.setValue(true);
 }
 
 void VTKExporter::fetchDataFields(const type::vector<std::string>& strData, type::vector<std::string>& objects, type::vector<std::string>& fields, type::vector<std::string>& names)
