@@ -103,6 +103,34 @@ set(HEADER_FILES
     ${SOFACOMPATSRC_ROOT}/SofaBaseLinearSolver/SingleMatrixAccessor.h
     ${SOFACOMPATSRC_ROOT}/SofaGeneralMeshCollision/TriangleOctree.h
     ${SOFACOMPATSRC_ROOT}/SofaBaseUtils/RequiredPlugin.h
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/BaseIntTool.h
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/CapsuleContactMapper.h
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/CapsuleIntersection.h
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/CapsuleIntTool.h
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/CapsuleIntTool.inl
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/CapsuleModel.h
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/CapsuleModel.inl
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/IntrCapsuleOBB.h
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/IntrCapsuleOBB.inl
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/IntrMeshUtility.h
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/IntrMeshUtility.inl
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/IntrOBBOBB.h
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/IntrOBBOBB.inl
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/IntrSphereOBB.h
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/IntrSphereOBB.inl
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/IntrTriangleOBB.h
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/IntrTriangleOBB.inl
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/IntrUtility3.h
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/IntrUtility3.inl
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/MeshIntTool.h
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/MeshIntTool.inl
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/OBBContactMapper.h
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/OBBIntersection.h
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/OBBIntTool.h
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/OBBModel.h
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/OBBModel.inl
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/RigidCapsuleModel.h
+    ${SOFACOMPATSRC_ROOT}/SofaMiscCollision/RigidCapsuleModel.inl
 )
 
 set(SOURCE_FILES
