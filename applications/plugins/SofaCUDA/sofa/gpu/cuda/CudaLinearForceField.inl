@@ -23,13 +23,7 @@
 #include "CudaLinearForceField.h"
 #include <SofaBoundaryCondition/LinearForceField.inl>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 extern "C"
@@ -62,15 +56,10 @@ public:
 }; //CudaKernelsLinearForceField< CudaRigid3dTypes >
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace cuda
-
-} // namespace gpu
+} // namespace sofa::gpu::cuda
 
 
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::mechanicalload
 {
 
 using namespace gpu::cuda;
@@ -191,8 +180,4 @@ SReal LinearForceField<sofa::gpu::cuda::CudaRigid3dTypes>::getPotentialEnergy(co
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-}// namespace forcefield
-
-}// namespace component
-
-}// namespace sofa
+}// namespace sofa::component::mechanicalload

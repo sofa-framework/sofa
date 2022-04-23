@@ -23,6 +23,10 @@
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <SofaMeshCollision/BarycentricContactMapper.inl>
 
+#include <SofaMeshCollision/PointModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaBaseCollision/SphereModel.h>
+
 #include "DistanceGridCollisionModel.h"
 
 namespace sofa

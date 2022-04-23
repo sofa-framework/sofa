@@ -28,8 +28,8 @@
 namespace sofa::component::linearsolver
 {
 	template<class TMatrix, class TVector>
-    using BlockJacobiPreconditioner = sofa::component::linearsolver::preconditioner::BlockJacobiPreconditioner<TMatrix, TVector>;
-    template<class TVector>
-	class BlockJacobiPreconditionerInternalData = sofa::component::linearsolver::preconditioner::BlockJacobiPreconditionerInternalData<TVector>;
+    	using BlockJacobiPreconditioner = sofa::component::linearsolver::preconditioner::BlockJacobiPreconditioner<TMatrix, TVector>;
+    	template<class TVector>
+	using BlockJacobiPreconditionerInternalData = sofa::component::linearsolver::preconditioner::BlockJacobiPreconditionerInternalData<TVector>;
 
 } // namespace sofa::component::linearsolver

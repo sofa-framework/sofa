@@ -19,19 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_CUDAELLIPSOIDFORCEFIELD_H
-#define SOFA_GPU_CUDA_CUDAELLIPSOIDFORCEFIELD_H
+#pragma once
 
 #include "CudaTypes.h"
 #include <SofaBoundaryCondition/EllipsoidForceField.h>
 
-namespace sofa
-{
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 struct GPUEllipsoid
@@ -42,14 +35,9 @@ struct GPUEllipsoid
     float damping;
 };
 
-} // namespace cuda
+} // namespace sofa::gpu::cuda
 
-} // namespace gpu
-
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::mechanicalload
 {
 
 template <>
@@ -80,10 +68,4 @@ void EllipsoidForceField<gpu::cuda::CudaVec3f1Types>::addForce(const core::Mecha
 template <>
 void EllipsoidForceField<gpu::cuda::CudaVec3f1Types>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
 
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::mechanicalload

@@ -12,7 +12,7 @@ set(SOURCE_FILES
     ${SOFASIMPLEFEM_SRC}/initSofaSimpleFem.cpp
 )
 
-sofa_find_package(SofaBase REQUIRED) # SofaBaseTopology
+sofa_find_package(SofaBaseTopology REQUIRED)
 sofa_find_package(SofaBaseLinearSolver REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

@@ -47,6 +47,12 @@ ComplementaryROI<DataTypes>::ComplementaryROI()
     , d_pointsInROI(initData(&d_pointsInROI, "pointsInROI", "points in the ROI"))
 {
     vd_setIndices.resize(d_nbSet.getValue());
+
+    addInput(&d_position);
+    addInput(&d_nbSet);
+
+    addOutput(&d_indices);
+    addOutput(&d_pointsInROI);
 }
 
 template <class DataTypes>
@@ -72,14 +78,7 @@ void ComplementaryROI<DataTypes>::parseFields ( const map<string,string*>& str )
 template <class DataTypes>
 void ComplementaryROI<DataTypes>::init()
 {
-    addInput(&d_position);
-    addInput(&d_nbSet);
-
     vd_setIndices.resize(d_nbSet.getValue());
-
-    addOutput(&d_indices);
-    addOutput(&d_pointsInROI);
-
     setDirtyValue();
 }
 

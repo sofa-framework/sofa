@@ -43,18 +43,17 @@ ExtrudeEdgesAndGenerateQuads<DataTypes>::ExtrudeEdgesAndGenerateQuads()
     , d_extrudedEdges( initData (&d_extrudedEdges, "extrudedEdges", "List of all edges generated during the extrusion") )
     , d_extrudedQuads( initData (&d_extrudedQuads, "extrudedQuads", "List of all quads generated during the extrusion") )
 {
-}
-
-template <class DataTypes>
-void ExtrudeEdgesAndGenerateQuads<DataTypes>::init()
-{
     addInput(&d_curveVertices);
     addInput(&d_curveEdges);
 
     addOutput(&d_extrudedVertices);
     addOutput(&d_extrudedEdges);
     addOutput(&d_extrudedQuads);
+}
 
+template <class DataTypes>
+void ExtrudeEdgesAndGenerateQuads<DataTypes>::init()
+{
     setDirtyValue();
 }
 

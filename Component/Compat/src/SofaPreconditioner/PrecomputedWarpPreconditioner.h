@@ -28,8 +28,8 @@
 namespace sofa::component::linearsolver
 {
 	template<class TDataTypes>
-    using PrecomputedWarpPreconditioner = sofa::component::linearsolver::preconditioner::PrecomputedWarpPreconditioner<TDataTypes>;
+    	using PrecomputedWarpPreconditioner = sofa::component::linearsolver::preconditioner::PrecomputedWarpPreconditioner<TDataTypes>;
 	template<class TDataTypes>
-	class PrecomputedWarpPreconditionerInternalData = sofa::component::linearsolver::preconditioner::PrecomputedWarpPreconditionerInternalData<TDataTypes>;
+	using PrecomputedWarpPreconditionerInternalData = sofa::component::linearsolver::preconditioner::PrecomputedWarpPreconditionerInternalData<TDataTypes>;
 	
 } // namespace sofa::component::linearsolver

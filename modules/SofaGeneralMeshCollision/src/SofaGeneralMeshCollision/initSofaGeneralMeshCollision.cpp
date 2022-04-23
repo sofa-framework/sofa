@@ -21,6 +21,8 @@
 ******************************************************************************/
 #include <SofaGeneralMeshCollision/initSofaGeneralMeshCollision.h>
 
+#include <sofa/helper/system/PluginManager.h>
+
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;
 
@@ -32,6 +34,12 @@ void initSofaGeneralMeshCollision()
     static bool first = true;
     if (first)
     {
+        // msg_deprecated("SofaGeneralMeshCollision") << "SofaGeneralMeshCollision is being deprecated;. It will be removed at v23.06. You may use Sofa.Component.Collision.Geometry, Sofa.Component.Collision.Detection.Algorithm and Sofa.Component.Collision.Detection.Intersection instead.";
+
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Geometry");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Detection.Algorithm");
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Collision.Detection.Intersection");
+
         first = false;
     }
 }

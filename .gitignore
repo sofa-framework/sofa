@@ -19,11 +19,17 @@
 .*.swp
 .*.swo
 
+# emacs projectile files
+.dir-locals.el
+
 # git diff temporary files
 *.orig
 
-# Backup files
+# Backup & Auto-Save files
 *~
+.*~
+\#*
+.\#*
 
 # Python byte code
 *.pyc
@@ -40,6 +46,13 @@ CMakeLists.txt.user*
 
 # custom cmake file
 custom.cmake
+
+# caching dirs (clangd, ccls....)
+.cache
+.ccls-cache
+
+# compile commands for clangd and other language servers
+compile_commands.json
 
 # Ignore other .gitignore
 .gitignore

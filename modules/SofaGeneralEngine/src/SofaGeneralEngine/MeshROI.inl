@@ -81,11 +81,7 @@ MeshROI<DataTypes>::MeshROI()
 {
     d_indices.beginEdit()->push_back(0);
     d_indices.endEdit();
-}
 
-template <class DataTypes>
-void MeshROI<DataTypes>::init()
-{
     addInput(&d_X0);
     addInput(&d_edges);
     addInput(&d_triangles);
@@ -113,7 +109,11 @@ void MeshROI<DataTypes>::init()
     addOutput(&d_edgeOutIndices);
     addOutput(&d_triangleOutIndices);
     addOutput(&d_tetrahedronOutIndices);
+}
 
+template <class DataTypes>
+void MeshROI<DataTypes>::init()
+{
     setDirtyValue();
 
     checkInputData();

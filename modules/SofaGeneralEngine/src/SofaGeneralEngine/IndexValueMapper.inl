@@ -34,17 +34,16 @@ IndexValueMapper<DataTypes>::IndexValueMapper()
     , f_outputValues(initData(&f_outputValues, "outputValues", "New map between indices and values"))
     , p_defaultValue(initData(&p_defaultValue, (Real) 1.0, "defaultValue", "Default value for indices without any value"))
 {
-}
-
-template <class DataTypes>
-void IndexValueMapper<DataTypes>::init()
-{
     addInput(&f_inputValues);
     addInput(&f_indices);
     addInput(&f_value);
 
     addOutput(&f_outputValues);
+}
 
+template <class DataTypes>
+void IndexValueMapper<DataTypes>::init()
+{
     setDirtyValue();
 }
 

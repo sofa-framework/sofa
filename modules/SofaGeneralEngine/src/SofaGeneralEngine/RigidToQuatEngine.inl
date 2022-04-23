@@ -36,6 +36,12 @@ RigidToQuatEngine<DataTypes>::RigidToQuatEngine()
     addAlias(&f_positions,"position");
     addAlias(&f_orientations,"orientation");
     addAlias(&f_rigids,"rigid");
+
+    addInput(&f_rigids);
+
+    addOutput(&f_positions);
+    addOutput(&f_orientations);
+    addOutput(&f_orientationsEuler);
 }
 
 template <class DataTypes>
@@ -47,12 +53,6 @@ RigidToQuatEngine<DataTypes>::~RigidToQuatEngine()
 template <class DataTypes>
 void RigidToQuatEngine<DataTypes>::init()
 {
-    addInput(&f_rigids);
-
-    addOutput(&f_positions);
-    addOutput(&f_orientations);
-    addOutput(&f_orientationsEuler);
-
     setDirtyValue();
 }
 

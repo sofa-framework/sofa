@@ -25,7 +25,7 @@
 #include <SofaObjectInteraction/PenalityContactForceField.h>
 #include <sofa/gpu/cuda/CudaCollisionDetection.h>
 
-namespace sofa::component::interactionforcefield
+namespace sofa::component::collision::response::contact
 {
 
 using sofa::gpu::cuda::CudaVec3fTypes;
@@ -92,4 +92,4 @@ public:
     void draw(const core::visual::VisualParams*) override;
 };
 
-} // namespace sofa::component::interactionforcefield
+} // namespace sofa::component::collision::response::contact

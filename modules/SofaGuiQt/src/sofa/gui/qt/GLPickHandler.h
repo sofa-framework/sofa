@@ -29,10 +29,12 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/gl/FrameBufferObject.h>
 
+// TODO: fwd decl
+#include <SofaUserInteraction/RayModel.h>
+
 namespace sofa::component::collision
 {
     class ComponentMouseInteraction;
-    class RayCollisionModel;
 } // namespace sofa::component::collision
 
 namespace sofa::component::configurationsetting

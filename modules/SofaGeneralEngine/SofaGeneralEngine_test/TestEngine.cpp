@@ -47,13 +47,14 @@ TestEngine::TestEngine()
     counter = 0;
     instance++;
     this->identifier =  instance;
+
+    addInput(&f_factor);
+    addInput(&f_numberToMultiply);
+    addOutput(&f_result);
 }
 
 void TestEngine::init()
 {
-    addInput(&f_factor);
-    addInput(&f_numberToMultiply);
-    addOutput(&f_result);
     setDirtyValue();
 }
 

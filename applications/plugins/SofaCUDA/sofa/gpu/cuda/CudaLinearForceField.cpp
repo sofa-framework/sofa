@@ -24,13 +24,8 @@
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
-namespace sofa
-{
 
-namespace component
-{
-
-namespace forcefield
+namespace sofa::component::mechanicalload
 {
 
 template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaVec6fTypes>;
@@ -41,14 +36,9 @@ template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaVec6dTypes>;
 template class SOFA_GPU_CUDA_API LinearForceField<gpu::cuda::CudaRigid3dTypes>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
-}// namespace forcefield
+}// namespace sofa::component::mechanicalload
 
-}// namespace component
-
-namespace gpu
-{
-
-namespace cuda
+namespace sofa::gpu::cuda
 {
 
 int LinearForceFieldCudaClass = core::RegisterObject("Supports GPU-side computation using CUDA")
@@ -61,8 +51,4 @@ int LinearForceFieldCudaClass = core::RegisterObject("Supports GPU-side computat
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
-}// namespace cuda
-
-}// namespace gpu
-
-}// namespace sofa
+}// namespace sofa::gpu::cuda

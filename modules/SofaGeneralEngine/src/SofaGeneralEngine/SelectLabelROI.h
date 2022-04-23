@@ -60,9 +60,6 @@ public:
 
     void init() override
     {
-        addInput(&d_labels);
-        addInput(&d_selectLabels);
-        addOutput(&d_indices);
         setDirtyValue();
     }
 
@@ -78,6 +75,9 @@ protected:
       , d_selectLabels ( initData ( &d_selectLabels,"selectLabels","list of selected labels" ) )
       , d_indices ( initData ( &d_indices,"indices","selected point/cell indices" ) )
     {
+        addInput(&d_labels);
+        addInput(&d_selectLabels);
+        addOutput(&d_indices);
     }
 
     ~SelectLabelROI() override {}

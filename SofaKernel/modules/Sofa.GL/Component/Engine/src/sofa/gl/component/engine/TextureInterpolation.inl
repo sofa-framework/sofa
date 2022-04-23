@@ -44,14 +44,15 @@ TextureInterpolation<DataTypes>::TextureInterpolation()
     ,f_graph( initData(&f_graph,"graph","Vertex state value per iteration") )
 {
     f_graph.setWidget("graph");
+
+    addInput(&_inputField);
+    addOutput(&_outputCoord);
 }
 
 
 template <class DataTypes>
 void TextureInterpolation<DataTypes>::init()
 {
-    addInput(&_inputField);
-    addOutput(&_outputCoord);
     setDirtyValue();
 
     if (!_inputField.isSet())

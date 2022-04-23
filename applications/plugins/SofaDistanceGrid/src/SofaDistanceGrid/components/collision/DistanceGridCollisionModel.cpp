@@ -789,14 +789,14 @@ void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpara
 #endif // SOFADISTANCEGRID_HAVE_SOFA_GL == 1
 }
 
-ContactMapperCreator< ContactMapper<FFDDistanceGridCollisionModel> > FFDDistanceGridContactMapperClass("PenalityContactForceField", true);
+ContactMapperCreator< response::mapper::ContactMapper<FFDDistanceGridCollisionModel> > FFDDistanceGridContactMapperClass("PenalityContactForceField", true);
 
-template class SOFA_SOFADISTANCEGRID_API ContactMapper<FFDDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
+template class SOFA_SOFADISTANCEGRID_API response::mapper::ContactMapper<FFDDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
 
 
-ContactMapperCreator< ContactMapper<RigidDistanceGridCollisionModel> > DistanceGridContactMapperClass("PenalityContactForceField", true);
+ContactMapperCreator< response::mapper::ContactMapper<RigidDistanceGridCollisionModel> > DistanceGridContactMapperClass("PenalityContactForceField", true);
 
-template class SOFA_SOFADISTANCEGRID_API ContactMapper<RigidDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
+template class SOFA_SOFADISTANCEGRID_API response::mapper::ContactMapper<RigidDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
 
 } // namespace collision
 

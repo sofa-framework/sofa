@@ -43,12 +43,11 @@ using sofa::component::collision::MinProximityIntersection;
 
 using sofa::core::execparams::defaultInstance; 
 using sofa::core::objectmodel::New;
+
+#include <SofaBaseCollision/SphereModel.h>
 using sofa::component::collision::Sphere;
 using sofa::component::collision::SphereCollisionModel ;
 using sofa::component::collision::RigidSphere;
-
-#include <SofaMiscCollision/BaseIntTool.h>
-using sofa::component::collision::BaseIntTool;
 
 using sofa::core::collision::DetectionOutput;
 using sofa::type::Vec3d;

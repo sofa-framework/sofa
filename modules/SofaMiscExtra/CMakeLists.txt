@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(SofaMiscExtra LANGUAGES CXX)
 
 sofa_find_package(SofaMiscTopology REQUIRED)
+sofa_find_package(SofaMeshCollision REQUIRED)
 sofa_find_package(SofaGeneralMeshCollision REQUIRED)
 sofa_find_package(SofaTopologyMapping REQUIRED)
 
@@ -24,7 +25,7 @@ list(APPEND SOURCE_FILES
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaGeneralMeshCollision SofaMiscTopology SofaTopologyMapping)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaGeneralMeshCollision SofaMiscTopology SofaTopologyMapping)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

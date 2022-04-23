@@ -37,7 +37,7 @@ extern "C"
 
 } // namespace sofa::gpu::cuda
 
-namespace sofa::component::interactionforcefield
+namespace sofa::component::collision::response::contact
 {
 
 using namespace gpu::cuda;
@@ -254,4 +254,4 @@ void PenalityContactForceField<CudaVec3fTypes>::draw(const core::visual::VisualP
 #endif // SOFACUDA_HAVE_SOFA_GL == 1
 }
 
-} // namespace sofa::component::interactionforcefield
+} // namespace sofa::component::collision::response::contact

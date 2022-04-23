@@ -40,10 +40,6 @@
 #include <algorithm>
 #include <cassert>
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-#include <sofa/core/topology/TopologyData.inl>
-#endif // SOFA_HAVE_NEW_TOPOLOGYCHANGES
-
 namespace
 {
 
@@ -190,46 +186,6 @@ MechanicalObject<DataTypes>::~MechanicalObject()
         if( vectorsMatrixDeriv[i] != nullptr )  { delete vectorsMatrixDeriv[i]; vectorsMatrixDeriv[i]=nullptr; }
 }
 
-#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-template <class DataTypes>
-void MechanicalObject<DataTypes>::MOPointHandler::applyCreateFunction(unsigned int /*pointIndex*/, Coord& /*dest*/,
-                                                                      const sofa::type::vector< unsigned int > &ancestors,
-                                                                      const sofa::type::vector< double > &coefs)
-{
-    if (!obj)
-        return;
-
-    if (!ancestors.empty() )
-    {
-        const unsigned int prevSizeMechObj = obj->getSize();
-        obj->d_size.setValue( prevSizeMechObj + 1 );
-
-        obj->computeWeightedValue( prevSizeMechObj + 1, ancestors, coefs );
-    }
-    else
-    {
-        // No ancestors specified, resize DOFs vectors and set new values to the reset default value.
-        obj->d_size.setValue( obj->getSize() + 1 );
-    }
-}
-
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::MOPointHandler::applyDestroyFunction(unsigned int, Coord &)
-{
-    if (!obj)
-        return;
-
-    unsigned int prevSizeMechObj   = obj->getSize();
-    //unsigned int lastIndexMech = prevSizeMechObj - 1;
-
-    obj->d_size.setValue( prevSizeMechObj - 1 );
-    //obj->replaceValue(lastIndexMech, index );
-    //obj->resize( prevSizeMechObj - 1 );
-}
-
-#endif
-
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::initGnuplot(const std::string path)
@@ -340,47 +296,6 @@ void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDes
 
 }
 
-
-#if 0 //SOFA_HAVE_NEW_TOPOLOGYCHANGES
-template <class DataTypes>
-void MechanicalObject<DataTypes>::PointCreationFunction(int , void * param, Coord & , const sofa::type::vector<unsigned int> & ancestors, const sofa::type::vector<double> & coefs)
-{
-    MechanicalObject<DataTypes> *meca = (MechanicalObject<DataTypes>*) param;
-
-    if (!meca)
-        return;
-
-    if (!ancestors.empty() )
-    {
-        const unsigned int prevSizeMechObj = meca->getSize();
-        meca->d_size.setValue( prevSizeMechObj + 1 );
-
-        meca->computeWeightedValue( prevSizeMechObj + 1, ancestors, coefs );
-    }
-    else
-    {
-        // No ancestors specified, resize DOFs vectors and set new values to the reset default value.
-        meca->d_size.setValue( meca->getSize() + 1 );
-    }
-}
-
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::PointDestroyFunction(int , void * param, Coord &)
-{
-    MechanicalObject<DataTypes> *meca = (MechanicalObject<DataTypes>*) param;
-    if (!meca)
-        return;
-
-    unsigned int prevSizeMechObj   = meca->getSize();
-    //unsigned int lastIndexMech = prevSizeMechObj - 1;
-
-    meca->d_size.setValue( prevSizeMechObj - 1 );
-    //meca->replaceValue(lastIndexMech, index );
-    //meca->resize( prevSizeMechObj - 1 );
-}
-
-#endif
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::handleStateChange()
@@ -1210,28 +1125,6 @@ void MechanicalObject<DataTypes>::init()
     }
 
 
-#if 0// SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    x0.createTopologyHandler(l_topology);
-    //x0.setCreateFunction(PointCreationFunction);
-    //x0.setDestroyFunction(PointDestroyFunction);
-    //x0.setCreateParameter( (void *) this );
-    //x0.setDestroyParameter( (void *) this );
-    x0.registerTopologicalData();
-
-    x.createTopologyHandler(l_topology);
-    x.setCreateFunction(PointCreationFunction);
-    x.setDestroyFunction(PointDestroyFunction);
-    x.setCreateParameter( (void *) this );
-    x.setDestroyParameter( (void *) this );
-    x.registerTopologicalData();
-
-    v.createTopologyHandler(l_topology);
-    v.registerTopologicalData();
-
-    f.createTopologyHandler(l_topology);
-    f.registerTopologicalData();
-#endif
-
     const Vector3& _rotation2 = rotation2.getValue();
     const Vector3& _translation2 = translation2.getValue();
     this->applyRotation(_rotation2[0],_rotation2[1],_rotation2[2]);
@@ -1792,7 +1685,7 @@ void MechanicalObject<DataTypes>::setVecIdProperties(core::TVecId<vtype, vaccess
 {
     if (!properties.label.empty())
     {
-        vec_d->setName(properties.label + core::VecTypeLabels.at(core::V_COORD));
+        vec_d->setName(properties.label + core::VecTypeLabels.at(vtype));
         vec_d->setHelp("VecId: " + v.getName());
     }
     if (!properties.group.empty())

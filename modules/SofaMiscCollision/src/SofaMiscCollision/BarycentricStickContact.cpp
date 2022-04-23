@@ -34,6 +34,8 @@ namespace component
 namespace collision
 {
 
+using namespace sofa::component::collision::geometry;
+
 Creator<Contact::Factory, BarycentricStickContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, SphereCollisionModel<sofa::defaulttype::Vec3Types>> > SphereSphereStickContactClass("StickContactForceField",true);
 Creator<Contact::Factory, BarycentricStickContact<SphereCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > SpherePointStickContactClass("StickContactForceField",true);
 Creator<Contact::Factory, BarycentricStickContact<PointCollisionModel<sofa::defaulttype::Vec3Types>, PointCollisionModel<sofa::defaulttype::Vec3Types>> > PointPointStickContactClass("StickContactForceField",true);

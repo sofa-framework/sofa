@@ -23,16 +23,6 @@
 
 #include <sofa/config.h>
 
-namespace sofa::component::collision
-{
-
-template<class DataTypes>
-class TriangleCollisionModel;
-
-template<class TDataTypes>
-class TTriangle;
-
-template<class DataTypes>
-class PointCollisionModel;
-
-}
+#include <SofaMeshCollision/PointModel.h>
+#include <SofaMeshCollision/LineModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
