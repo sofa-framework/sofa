@@ -42,8 +42,9 @@
 namespace sofa::gui::qt
 {
 
+using namespace sofa::component::collision::geometry;
 using namespace sofa::gui::common;
-using namespace component::collision;
+using namespace sofa::gui::component::performer;
 
 GLPickHandler::GLPickHandler(double defaultLength)
     : Inherit(defaultLength)
@@ -101,7 +102,7 @@ void GLPickHandler::destroySelectionBuffer()
 }
 
 //WARNING: do not use this method with Ogre
-component::collision::BodyPicked GLPickHandler::findCollisionUsingColourCoding(const type::Vector3& origin,
+BodyPicked GLPickHandler::findCollisionUsingColourCoding(const type::Vector3& origin,
         const type::Vector3& direction)
 {
     assert(_fboAllocated);

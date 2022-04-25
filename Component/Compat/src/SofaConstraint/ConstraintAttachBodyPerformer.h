@@ -20,15 +20,30 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/userinteraction/performer/ConstraintAttachBodyPerformer.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/userinteraction/performer/ConstraintAttachBodyPerformer.h")
+#include <sofa/config.h>
+
+#if __has_include(<sofa/gui/component/performer/ConstraintAttachBodyPerformer.h>)
+#include <sofa/gui/component/performer/ConstraintAttachBodyPerformer.h>
+#define SOFA_GUI_COMPONENT_CONSTRAINTATTACHBODYPERFORMER
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/ConstraintAttachBodyPerformer.h")
+
+#else
+#error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/performer/ConstraintAttachBodyPerformer.h> instead of this one."
+#endif
+
+
+#ifdef SOFA_GUI_COMPONENT_CONSTRAINTATTACHBODYPERFORMER
 
 namespace sofa::component::collision
-{ 
-    using ConstraintAttachBodyButtonSetting = sofa::component::userinteraction::performer::ConstraintAttachBodyButtonSetting;
+{
+    using ConstraintAttachBodyButtonSetting = sofa::component::userinteraction::ConstraintAttachBodyButtonSetting;
     
     template <class DataTypes>
-    using ConstraintAttachBodyPerformer = sofa::component::userinteraction::performer::ConstraintAttachBodyPerformer<DataTypes>;
+    using ConstraintAttachBodyPerformer = sofa::gui::component::performer::ConstraintAttachBodyPerformer<DataTypes>;
 
 } // namespace sofa::component::collision
+
+
+#endif // SOFA_GUI_COMPONENT_CONSTRAINTATTACHBODYPERFORMER

@@ -20,12 +20,29 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/userinteraction/configurationsetting/AddFrameButtonSetting.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/userinteraction/configurationsetting/AddFrameButtonSetting.h")
+#include <sofa/config.h>
+
+#if __has_include(<sofa/gui/component/AddFrameButtonSetting.h>)
+#include <sofa/gui/component/AddFrameButtonSetting.h>
+#define SOFA_GUI_COMPONENT_ADDFRAMEBUTTONSETTING
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/AddFrameButtonSetting.h")
+
+#else
+#error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/AddFrameButtonSetting.h> instead of this one."
+#endif
+
+
+#ifdef SOFA_GUI_COMPONENT_ADDFRAMEBUTTONSETTING
 
 namespace sofa::component::configurationsetting
-{ 
-    using AddFrameButtonSetting = sofa::component::userinteraction::configurationsetting::AddFrameButtonSetting;
+{
+    using AddFrameButtonSetting = sofa::gui::component::AddFrameButtonSetting;
 
 } // namespace sofa::component::configurationsetting
+
+
+#endif // SOFA_GUI_COMPONENT_ADDFRAMEBUTTONSETTING
+
+#undef SOFA_GUI_COMPONENT_ADDFRAMEBUTTONSETTING

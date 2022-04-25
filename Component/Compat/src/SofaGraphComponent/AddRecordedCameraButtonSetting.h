@@ -20,13 +20,30 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/userinteraction/configurationsetting/AddRecordedCameraButtonSetting.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/userinteraction/configurationsetting/AddRecordedCameraButtonSetting.h")
+#include <sofa/config.h>
+
+#if __has_include(<sofa/gui/component/AddRecordedCameraButtonSetting.h>)
+#include <sofa/gui/component/AddRecordedCameraButtonSetting.h>
+#define SOFA_GUI_COMPONENT_ADDRECORDEDCAMERABUTTONSETTING
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/AddRecordedCameraButtonSetting.h")
+
+#else
+#error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/AddRecordedCameraButtonSetting.h> instead of this one."
+#endif
+
+
+#ifdef SOFA_GUI_COMPONENT_ADDRECORDEDCAMERABUTTONSETTING
 
 namespace sofa::component::configurationsetting
-{ 
-    using AddRecordedCameraButtonSetting = sofa::component::userinteraction::configurationsetting::AddRecordedCameraButtonSetting;
-    using StartNavigationButtonSetting = sofa::component::userinteraction::configurationsetting::StartNavigationButtonSetting;
+{
+    using AddRecordedCameraButtonSetting = sofa::gui::component::AddRecordedCameraButtonSetting;
+    using StartNavigationButtonSetting = sofa::gui::component::StartNavigationButtonSetting;
 
 } // namespace sofa::component::configurationsetting
+
+
+#endif // SOFA_GUI_COMPONENT_ADDRECORDEDCAMERABUTTONSETTING
+
+#undef SOFA_GUI_COMPONENT_ADDRECORDEDCAMERABUTTONSETTING

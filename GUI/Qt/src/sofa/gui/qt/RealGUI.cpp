@@ -64,7 +64,7 @@
 #include <sofa/gui/common/BaseViewer.h>
 #include <SofaSimulationCommon/xml/XML.h>
 #include <sofa/simulation/DeactivatedNodeVisitor.h>
-#include <SofaBaseVisual/VisualStyle.h>
+#include <sofa/component/visual/VisualStyle.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/ScopedAdvancedTimer.h>
 
@@ -1562,7 +1562,7 @@ void RealGUI::createDisplayFlags(Node::SPtr root)
         displayFlag = nullptr;
     }
 
-    component::visualmodel::VisualStyle* visualStyle = nullptr;
+    sofa::component::visual::VisualStyle* visualStyle = nullptr;
 
     if( root )
     {

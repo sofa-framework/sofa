@@ -23,16 +23,16 @@
 #include <sofa/gui/common/config.h>
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/model/fwd.h>
-#include <SofaUserInteraction/MouseInteractor.h>
+#include <sofa/component/collision/geometry/fwd.h>
+#include <sofa/gui/component/performer/MouseInteractor.h>
 
 namespace sofa::gui::common
 {
 
-void SOFA_GUI_COMMON_API decodeCollisionElement( const sofa::type::Vec4f colour, sofa::component::collision::BodyPicked& body );
-void SOFA_GUI_COMMON_API decodePosition( sofa::component::collision::BodyPicked& body, const sofa::type::Vec4f colour, const component::collision::model::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model,
+void SOFA_GUI_COMMON_API decodeCollisionElement( const sofa::type::Vec4f colour, sofa::gui::component::performer::BodyPicked& body );
+void SOFA_GUI_COMMON_API decodePosition( sofa::gui::component::performer::BodyPicked& body, const sofa::type::Vec4f colour, const sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model,
         const unsigned int index);
-void SOFA_GUI_COMMON_API decodePosition( sofa::component::collision::BodyPicked& body, const sofa::type::Vec4f colour, const component::collision::model::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model,
+void SOFA_GUI_COMMON_API decodePosition( sofa::gui::component::performer::BodyPicked& body, const sofa::type::Vec4f colour, const sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model,
         const unsigned int index);
 
 
@@ -77,8 +77,8 @@ public:
 
 private:
 
-    void processTriangleModel(simulation::Node*, sofa::component::collision::model::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* );
-    void processSphereModel(simulation::Node*, sofa::component::collision::model::SphereCollisionModel<sofa::defaulttype::Vec3Types>*);
+    void processTriangleModel(simulation::Node*, sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* );
+    void processSphereModel(simulation::Node*, sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>*);
 
     const core::visual::VisualParams* vparams;
     ColourCode method;

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/gui/common/PickHandler.h>
 
-#include <SofaUserInteraction/ComponentMouseInteraction.h>
+#include <sofa/gui/component/performer/ComponentMouseInteraction.h>
 #include <sofa/component/collision/response/contact/RayContact.h>
 
 #include <sofa/simulation/DeleteVisitor.h>
@@ -36,8 +36,12 @@ using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionVisito
 #include <sofa/simulation/mechanicalvisitor/MechanicalPickParticlesVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalPickParticlesVisitor;
 
+#include <sofa/gui/component/performer/ComponentMouseInteraction.h>
+
 #include <iostream>
 #include <limits>
+
+using sofa::gui::component::performer::BodyPicked;
 
 namespace sofa::gui::common
 {
@@ -118,7 +122,7 @@ void PickHandler::init(core::objectmodel::BaseNode* root)
     mouseContainer->init();
     mouseCollision->init();
 
-    typedef sofa::component::collision::ComponentMouseInteraction::ComponentMouseInteractionFactory MouseFactory;
+    typedef sofa::gui::component::performer::ComponentMouseInteraction::ComponentMouseInteractionFactory MouseFactory;
     const MouseFactory *factory = MouseFactory::getInstance();
     for (MouseFactory::const_iterator it = factory->begin(); it != factory->end(); ++it)
     {
@@ -158,7 +162,7 @@ void PickHandler::unload()
 
 }
 
-Operation *PickHandler::changeOperation(sofa::component::configurationsetting::MouseButtonSetting* setting)
+Operation *PickHandler::changeOperation(sofa::component::userinteraction::configurationsetting::MouseButtonSetting* setting)
 {
     if (operations[setting->button.getValue().getSelectedId()])
     {
@@ -342,7 +346,7 @@ ComponentMouseInteraction *PickHandler::getInteraction()
 }
 
 
-component::collision::BodyPicked PickHandler::findCollision()
+BodyPicked PickHandler::findCollision()
 {
     BodyPicked result;
     switch( pickingMethod)
@@ -350,9 +354,11 @@ component::collision::BodyPicked PickHandler::findCollision()
     case RAY_CASTING:
         if (useCollisions)
         {
-            component::collision::BodyPicked picked=findCollisionUsingPipeline();
-            if (picked.body) result = picked;
-            else result = findCollisionUsingBruteForce();
+            BodyPicked picked = findCollisionUsingPipeline();
+            if (picked.body) 
+                result = picked;
+            else 
+                result = findCollisionUsingBruteForce();
         }
         else
             result = findCollisionUsingBruteForce();
@@ -366,7 +372,7 @@ component::collision::BodyPicked PickHandler::findCollision()
     return result;
 }
 
-component::collision::BodyPicked PickHandler::findCollisionUsingPipeline()
+BodyPicked PickHandler::findCollisionUsingPipeline()
 {
     BodyPicked result;
 
@@ -426,7 +432,7 @@ component::collision::BodyPicked PickHandler::findCollisionUsingPipeline()
     return result;
 }
 
-component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce()
+BodyPicked PickHandler::findCollisionUsingBruteForce()
 {
     const type::Vector3& origin          = mouseCollision->getRay(0).origin();
     const type::Vector3& direction       = mouseCollision->getRay(0).direction();
@@ -435,7 +441,7 @@ component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce()
     return findCollisionUsingBruteForce(origin, direction, maxLength, mouseNode->getRoot());
 }
 
-component::collision::BodyPicked PickHandler::findCollisionUsingColourCoding()
+BodyPicked PickHandler::findCollisionUsingColourCoding()
 {
     const type::Vector3& origin          = mouseCollision->getRay(0).origin();
     const type::Vector3& direction       = mouseCollision->getRay(0).direction();
@@ -444,7 +450,7 @@ component::collision::BodyPicked PickHandler::findCollisionUsingColourCoding()
 
 }
 
-component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce(const type::Vector3& origin,
+BodyPicked PickHandler::findCollisionUsingBruteForce(const type::Vector3& origin,
         const type::Vector3& direction,
         double maxLength, core::objectmodel::BaseNode* rootNode)
 {
@@ -464,7 +470,7 @@ component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce(const
 }
 
 //WARNING: do not use this method with Ogre
-component::collision::BodyPicked PickHandler::findCollisionUsingColourCoding(const type::Vector3& origin,
+BodyPicked PickHandler::findCollisionUsingColourCoding(const type::Vector3& origin,
         const type::Vector3& direction)
 {
     SOFA_UNUSED(origin);

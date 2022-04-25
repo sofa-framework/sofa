@@ -9,6 +9,7 @@ set(HEADER_FILES
     )
 
 set(SOURCE_FILES
+    ${SOFAUSERINTERACTION_SRC}/initSofaUserInteraction.cpp
     )
 
 list(APPEND HEADER_FILES

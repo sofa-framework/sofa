@@ -27,17 +27,17 @@
 #include <sofa/simulation/Node.h>
 
 #include <sofa/gui/common/ColourPickingVisitor.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 
 namespace sofa::component::collision::geometry
 {
     class RayCollisionModel;
 } // namespace sofa::component::collision::geometry
 
-namespace sofa::component::collision
+namespace sofa::gui::component::performer
 {
     class ComponentMouseInteraction;
-} // sofa::component::collision
+} // namespace sofa::gui::component::performer
 
 namespace sofa::component::setting
 {
@@ -49,14 +49,14 @@ namespace sofa::gui::common
 {
 
 using simulation::Node;
-using sofa::component::collision::BodyPicked;
-using sofa::component::collision::ComponentMouseInteraction;
+using sofa::gui::component::performer::BodyPicked;
+using sofa::gui::component::performer::ComponentMouseInteraction;
 
 class CallBackPicker
 {
 public:
     virtual ~CallBackPicker() {}
-    virtual void execute(const sofa::component::collision::BodyPicked &body)=0;
+    virtual void execute(const BodyPicked &body)=0;
 };
 
 class CallBackRender
@@ -69,7 +69,7 @@ public:
 class SOFA_GUI_COMMON_API PickHandler
 {
     typedef sofa::component::collision::geometry::RayCollisionModel MouseCollisionModel;
-    typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > MouseContainer;
+    typedef sofa::component::statecontainer::MechanicalObject< defaulttype::Vec3Types > MouseContainer;
 
 public:
     enum PickingMethod
@@ -108,7 +108,7 @@ public:
 
     Operation *getOperation(MOUSE_BUTTON button) {return operations[button];}
 
-    Operation *changeOperation(sofa::component::configurationsetting::MouseButtonSetting* setting);
+    Operation *changeOperation(sofa::component::userinteraction::configurationsetting::MouseButtonSetting* setting);
     Operation *changeOperation(MOUSE_BUTTON button, const std::string &op);
 
     void addCallBack(CallBackPicker *c) {callbacks.push_back(c);}

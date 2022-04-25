@@ -41,9 +41,10 @@ class RealGUI;
 class InformationOnPickCallBack: public common::CallBackPicker
 {
 public:
+    using BodyPicked = sofa::gui::component::performer::BodyPicked;
     InformationOnPickCallBack();
     InformationOnPickCallBack(RealGUI *g);
-    void execute(const sofa::component::collision::BodyPicked &body) override;
+    void execute(const BodyPicked &body) override;
 protected:
     RealGUI *gui;
 };

@@ -24,10 +24,11 @@
 #include "BaseGUI.h"
 
 #include <sofa/helper/Factory.inl>
-#include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/component/setting/ViewerSetting.h>
-#include <SofaBaseVisual/InteractiveCamera.h>
+#include <sofa/component/visual/VisualStyle.h>
+#include <sofa/component/visual/InteractiveCamera.h>
+
 #include <sofa/core/ComponentNameHelper.h>
 
 namespace sofa::gui::common
@@ -207,18 +208,18 @@ bool BaseViewer::load()
         groot->get(currentCamera);
         if (!currentCamera)
         {
-            currentCamera = sofa::core::objectmodel::New<component::visualmodel::InteractiveCamera>();
+            currentCamera = sofa::core::objectmodel::New<sofa::component::visual::InteractiveCamera>();
             currentCamera->setName(groot->getNameHelper().resolveName(currentCamera->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
             groot->addObject(currentCamera);
             //currentCamera->p_position.forceSet();
             //currentCamera->p_orientation.forceSet();
             currentCamera->bwdInit();
         }
-        component::visualmodel::VisualStyle::SPtr visualStyle = nullptr;
+        sofa::component::visual::VisualStyle::SPtr visualStyle = nullptr;
         groot->get(visualStyle);
         if (!visualStyle)
         {
-            visualStyle = sofa::core::objectmodel::New<component::visualmodel::VisualStyle>();
+            visualStyle = sofa::core::objectmodel::New<sofa::component::visual::VisualStyle>();
             visualStyle->setName(groot->getNameHelper().resolveName(visualStyle->getClassName(), sofa::core::ComponentNameHelper::Convention::python));
 
             core::visual::DisplayFlags* displayFlags = visualStyle->displayFlags.beginEdit();

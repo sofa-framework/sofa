@@ -19,8 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-
 #pragma once
 #include <sofa/gui/common/PickHandler.h>
 #include <QDialog>
@@ -50,7 +48,7 @@ public:
         return mapIndexOperation;
     }
 
-    void updateOperation( sofa::component::configurationsetting::MouseButtonSetting* setting);
+    void updateOperation( sofa::component::userinteraction::configurationsetting::MouseButtonSetting* setting);
     void updateOperation(common::MOUSE_BUTTON button, const std::string &id);
 
 

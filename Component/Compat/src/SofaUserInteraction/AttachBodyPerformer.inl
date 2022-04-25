@@ -20,6 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/userinteraction/performer/AttachBodyPerformer.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/userinteraction/performer/AttachBodyPerformer.inl")
+#include <sofa/config.h>
+
+#if __has_include(<sofa/gui/component/performer/AttachBodyPerformer.inl>)
+#include <sofa/gui/component/performer/AttachBodyPerformer.inl>
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/AttachBodyPerformer.inl")
+
+#else
+#error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/performer/AttachBodyPerformer.inl> instead of this one."
+#endif

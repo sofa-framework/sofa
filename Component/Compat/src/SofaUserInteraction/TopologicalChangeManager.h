@@ -20,12 +20,29 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/userinteraction/performer/TopologicalChangeManager.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/userinteraction/performer/TopologicalChangeManager.h")
+#include <sofa/config.h>
+
+#if __has_include(<sofa/gui/component/performer/TopologicalChangeManager.h>)
+#include <sofa/gui/component/performer/TopologicalChangeManager.h>
+#define SOFA_GUI_COMPONENT_TOPOLOGICALCHANGEMANAGER
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/performer/TopologicalChangeManager.h")
+
+#else
+#error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/performer/TopologicalChangeManager.h> instead of this one."
+#endif
+
+
+#ifdef SOFA_GUI_COMPONENT_TOPOLOGICALCHANGEMANAGER
 
 namespace sofa::component::collision
-{ 
-    using TopologicalChangeManager = sofa::component::userinteraction::performer::TopologicalChangeManager;
+{
+    using TopologicalChangeManager = sofa::gui::component::performer::TopologicalChangeManager;
 
 } // namespace sofa::component::collision
+
+
+#endif // SOFA_GUI_COMPONENT_TOPOLOGICALCHANGEMANAGER
+
+#undef SOFA_GUI_COMPONENT_TOPOLOGICALCHANGEMANAGER

@@ -20,12 +20,30 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/userinteraction/configurationsetting/AttachBodyButtonSetting.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/userinteraction/configurationsetting/AttachBodyButtonSetting.h")
+#include <sofa/config.h>
+
+#if __has_include(<sofa/gui/component/AttachBodyButtonSetting.h>)
+#include <sofa/gui/component/AttachBodyButtonSetting.h>
+#define SOFA_GUI_COMPONENT_ATTACHBODYBUTTONSETTING
+
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/gui/component/AttachBodyButtonSetting.h")
+
+#else
+#error "This component has been moved to Sofa.GUI.Component. Include <sofa/gui/component/AttachBodyButtonSetting.h> instead of this one."
+#endif
+
+
+#ifdef SOFA_GUI_COMPONENT_ATTACHBODYBUTTONSETTING
 
 namespace sofa::component::configurationsetting
-{ 
-    using AttachBodyButtonSetting = sofa::component::userinteraction::configurationsetting::AttachBodyButtonSetting;
+{
+    using AttachBodyButtonSetting = sofa::gui::component::AttachBodyButtonSetting;
 
 } // namespace sofa::component::configurationsetting
+
+
+#endif // SOFA_GUI_COMPONENT_ATTACHBODYBUTTONSETTING
+
+#undef SOFA_GUI_COMPONENT_ATTACHBODYBUTTONSETTING
+

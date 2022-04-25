@@ -24,7 +24,7 @@
 #include "viewer/SofaViewer.h"
 #include "QSofaListView.h"
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <SofaUserInteraction/MouseInteractor.h>
+#include <sofa/gui/component/performer/MouseInteractor.h>
 
 #include <QStatusBar>
 
@@ -43,7 +43,7 @@ InformationOnPickCallBack::InformationOnPickCallBack(RealGUI *g)
 {
 }
 
-void InformationOnPickCallBack::execute(const sofa::component::collision::BodyPicked &body)
+void InformationOnPickCallBack::execute(const BodyPicked &body)
 {
     if(!gui) return;
     core::objectmodel::BaseObject *objectPicked=nullptr;

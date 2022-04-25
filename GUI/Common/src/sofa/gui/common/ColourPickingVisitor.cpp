@@ -24,8 +24,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Node.h>
 
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
+#include <sofa/component/collision/geometry/SphereModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
 
 #if SOFAGUICOMMON_HAVE_SOFA_GL == 1
 #include <sofa/gl/gl.h>
@@ -36,17 +36,18 @@ namespace sofa::gui::common
 {
 
 using namespace sofa::type;
-using namespace sofa::component::collision;
+using namespace sofa::component::collision::geometry;
 using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
+using sofa::gui::component::performer::BodyPicked;
 
 namespace
 {
 constexpr float threshold = std::numeric_limits<float>::min();
 }
 
-void decodeCollisionElement(const sofa::type::Vec4f colour,  sofa::component::collision::BodyPicked& body)
+void decodeCollisionElement(const sofa::type::Vec4f colour, BodyPicked& body)
 {
 
     if( colour[0] > threshold || colour[1] > threshold || colour[2] > threshold  ) // make sure we are not picking the background...
@@ -75,7 +76,7 @@ void decodePosition(BodyPicked& body, const sofa::type::Vec4f colour, const Tria
 
     if( colour[0] > threshold || colour[1] > threshold || colour[2] > threshold  )
     {
-        component::collision::Triangle t(const_cast<TriangleCollisionModel<sofa::defaulttype::Vec3Types>*>(model),index);
+        sofa::component::collision::geometry::Triangle t(const_cast<TriangleCollisionModel<sofa::defaulttype::Vec3Types>*>(model),index);
         body.point = (t.p1()*colour[0]) + (t.p2()*colour[1]) + (t.p3()*colour[2]) ;
 
     }
@@ -107,7 +108,7 @@ void ColourPickingVisitor::processCollisionModel(simulation::Node*  node , core:
         processSphereModel(node,smodel);
 }
 
-void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types> * tmodel)
+void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types> * tmodel)
 {
 #if SOFAGUICOMMON_HAVE_SOFA_GL  == 1
     using namespace sofa::core::collision;
@@ -168,7 +169,7 @@ void ColourPickingVisitor::processTriangleModel(simulation::Node * node, sofa::c
 #endif // SOFAGUICOMMON_HAVE_SOFA_GL  == 1
 }
 
-void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types> * smodel)
+void ColourPickingVisitor::processSphereModel(simulation::Node * node, sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types> * smodel)
 {
 #if SOFAGUICOMMON_HAVE_SOFA_GL  == 1
     typedef Sphere::Coord Coord;
