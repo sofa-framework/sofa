@@ -1,2 +1,2 @@
 # this script uses tkinter which is not installed by default
-ignore "robotGUI.py"
+ignore "ArticulatedArm/robotGUI.py"
