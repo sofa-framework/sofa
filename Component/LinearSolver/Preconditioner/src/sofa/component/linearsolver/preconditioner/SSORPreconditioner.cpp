@@ -32,6 +32,149 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::objectmodel;
 using namespace sofa::linearalgebra;
 
+template<>
+void SSORPreconditioner<linearalgebra::CompressedRowSparseMatrix<SReal>, linearalgebra::FullVector<SReal> >::solve (Matrix& M, Vector& z, Vector& r)
+{
+    SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) this->getMatrixInvertData(&M);
+
+    const Index n = M.rowSize();
+    const Real w = (Real)f_omega.getValue();
+
+    const Matrix::VecIndex& rowIndex = M.getRowIndex();
+    const Matrix::VecIndex& colsIndex = M.getColsIndex();
+    const Matrix::VecBlock& colsValue = M.getColsValue();
+    // Solve (D/w+U) * t = r;
+    for (Index j=n-1; j>=0; j--)
+    {
+        double temp = 0.0;
+        Matrix::Range rowRange = M.getRowRange(j);
+        Index xi = rowRange.begin();
+        while (xi < rowRange.end() && (Index)colsIndex[xi] <= j) ++xi;
+        for (; xi < rowRange.end(); ++xi)
+        {
+            Index i = colsIndex[xi];
+            double e = colsValue[xi];
+            temp += z[i] * e;
+        }
+        z[j] = (r[j] - temp) * w * data->inv_diag[j];
+    }
+
+    // Solve (I + w D^-1 * L) * z = t
+    for (Index j=0; j<n; j++)
+    {
+        double temp = 0.0;
+        Matrix::Range rowRange = M.getRowRange(j);
+        Index xi = rowRange.begin();
+        for (; xi < rowRange.end() && (Index)colsIndex[xi] < j; ++xi)
+        {
+            Index i = colsIndex[xi];
+            double e = colsValue[xi];
+            temp += z[i] * e;
+        }
+        z[j] -= temp * w * data->inv_diag[j];
+        // we can reuse z because all values that we read are updated
+    }
+
+    if (w != (Real)1.0)
+        for (Index j=0; j<M.rowSize(); j++)
+            z[j] *= 2-w;
+}
+
+template<>
+void SSORPreconditioner< linearalgebra::CompressedRowSparseMatrix< type::Mat<3,3, SReal> >, linearalgebra::FullVector<SReal> >::solve(Matrix& M, Vector& z, Vector& r)
+{
+    SSORPreconditionerInvertData * data = (SSORPreconditionerInvertData *) this->getMatrixInvertData(&M);
+
+    static constexpr std::size_t BlocSize = 3;
+
+    const Index n = M.rowSize();
+    const Index nb = M.rowBSize();
+    const Real w = (Real)f_omega.getValue();
+
+    const Matrix::VecIndex& rowIndex = M.getRowIndex();
+    const typename Matrix::VecIndex& colsIndex = M.getColsIndex();
+    const typename Matrix::VecBlock& colsValue = M.getColsValue();
+    // Solve (D+U) * t = r;
+    for (Index jb=nb-1; jb>=0; jb--)
+    {
+        Index j0 = jb*BlocSize;
+        type::Vec<BlocSize, SReal> temp;
+        typename Matrix::Range rowRange = M.getRowRange(jb);
+        Index xi = rowRange.begin();
+        while (xi < rowRange.end() && (Index)colsIndex[xi] < jb) ++xi;
+        // bloc on the diagonal
+        const typename Matrix::Block& bdiag = colsValue[xi];
+        // upper triangle matrix
+        for (++xi; xi < rowRange.end(); ++xi)
+        {
+            Index i0 = colsIndex[xi]*BlocSize;
+            const typename Matrix::Block& b = colsValue[xi];
+            for (Index j1=0; j1<BlocSize; ++j1)
+            {
+                Index j = j0+j1;
+                for (Index i1=0; i1<BlocSize; ++i1)
+                {
+                    Index i = i0+i1;
+                    temp[j1] += z[i] * b[j1][i1];
+                }
+            }
+        }
+        // then the diagonal
+        {
+            const typename Matrix::Block& b = bdiag;
+            for (Index j1=BlocSize-1; j1>=0; j1--)
+            {
+                Index j = j0+j1;
+                for (Index i1=j1+1; i1<BlocSize; ++i1)
+                {
+                    Index i = j0+i1;
+                    temp[j1]+= z[i] * b[j1][i1];
+                }
+                z[j] = (r[j] - temp[j1]) * w * data->inv_diag[j];
+            }
+        }
+    }
+
+    // Solve (I + D^-1 * L) * z = t
+    for (Index jb=0; jb<nb; jb++)
+    {
+        Index j0 = jb*BlocSize;
+        type::Vec<BlocSize, SReal> temp;
+        typename Matrix::Range rowRange = M.getRowRange(jb);
+        Index xi = rowRange.begin();
+        // lower triangle matrix
+        for (; xi < rowRange.end() && (Index)colsIndex[xi] < jb; ++xi)
+        {
+            Index i0 = colsIndex[xi]*BlocSize;
+            const typename Matrix::Block& b = colsValue[xi];
+            for (Index j1=0; j1<BlocSize; ++j1)
+            {
+                Index j = j0+j1;
+                for (Index i1=0; i1<BlocSize; ++i1)
+                {
+                    Index i = i0+i1;
+                    temp[j1] += z[i] * b[j1][i1];
+                }
+            }
+        }
+        // then the diagonal
+        {
+            const typename Matrix::Block& b = colsValue[xi];
+            for (Index j1=0; j1<BlocSize; ++j1)
+            {
+                Index j = j0+j1;
+                for (Index i1=0; i1<j1; ++i1)
+                {
+                    Index i = j0+i1;
+                    temp[j1] += z[i] * b[j1][i1];
+                }
+                // we can reuse z because all values that we read are updated
+                z[j] -= temp[j1] * w * data->inv_diag[j];
+            }
+        }
+    }
+}
+
 int SSORPreconditionerClass = core::RegisterObject("Linear system solver / preconditioner based on Symmetric Successive Over-Relaxation (SSOR). If the matrix is decomposed as $A = D + L + L^T$, this solver computes $(1/(2-w))(D/w+L)(D/w)^{-1}(D/w+L)^T x = b, or $(D+L)D^{-1}(D+L)^T x = b$ if $w=1$.")
         .add< SSORPreconditioner< CompressedRowSparseMatrix<SReal>, FullVector<SReal> > >(true)
         .add< SSORPreconditioner< CompressedRowSparseMatrix< type::Mat<3,3,SReal> >, FullVector<SReal> > >()
