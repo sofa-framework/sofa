@@ -62,7 +62,8 @@ public:
     typedef Data<VecCoord>                  DataVecCoord;
     typedef Data<VecDeriv>                  DataVecDeriv;
 
-    typedef type::Mat<3,3,Real>       Mat3x3  ;
+    using Mat3x3 = type::Mat<3, 3, Real>;
+    using Mat3x3NoInit = type::MatNoInit<3, 3, Real>;
 
     typedef enum
     {
