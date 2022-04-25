@@ -1,12 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(Sofa.GUI.Common LANGUAGES CXX)
 
-find_package(SofaSimulationCommon REQUIRED)
-sofa_find_package(Sofa.Component.UserInteraction.ConfigurationSetting REQUIRED)
-sofa_find_package(Sofa.Component.UserInteraction.Performer REQUIRED)
-sofa_find_package(Sofa.Component.Collision.Response.Contact REQUIRED)
-sofa_find_package(Sofa.GL QUIET) # ColourPickingVisitor
-
 include(FetchContent)
 FetchContent_Declare(cxxopts
         GIT_REPOSITORY https://github.com/jarro2783/cxxopts
@@ -80,11 +74,17 @@ set (COMPAT_HEADER_FILES
     ${COMPATSOFAGUICOMMON_ROOT}/sofa/gui/ViewerFactory.h
 )
 
+find_package(SofaSimulationCommon REQUIRED)
+sofa_find_package(Sofa.Component.UserInteraction.ConfigurationSetting REQUIRED)
+sofa_find_package(Sofa.Component.Collision.Response.Contact REQUIRED)
+sofa_find_package(Sofa.GUI.Component REQUIRED)
+sofa_find_package(Sofa.GL QUIET) # ColourPickingVisitor
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${COMPAT_HEADER_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.UserInteraction.ConfigurationSetting)
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.UserInteraction.Performer)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Response.Contact)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.GUI.Component)
 target_link_libraries(${PROJECT_NAME} PUBLIC cxxopts)
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${COMPATSOFAGUICOMMON_ROOT}>")
