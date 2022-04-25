@@ -20,9 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+
 #include <sofa/gui/component/performer/AttachBodyPerformer.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/gui/component/performer/MouseInteractor.h>
+#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/simulation/Node.h>
 

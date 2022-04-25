@@ -27,6 +27,7 @@
 #include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
 #include <sofa/gui/component/performer/MouseInteractor.h>
 #include <sofa/component/statecontainer/MechanicalObject.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
 #include <sofa/simulation/Node.h>
 
 #include <unordered_map>
