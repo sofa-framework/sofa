@@ -45,7 +45,6 @@ include(Sofa.Component.Collision.Response.Mapper.cmake)
 include(Sofa.Component.Collision.Response.Contact.cmake)
 include(Sofa.Component.UserInteraction.ConfigurationSetting.cmake)
 include(Sofa.Component.UserInteraction.Controller.cmake)
-include(Sofa.Component.UserInteraction.Performer.cmake)
 
 set(SOURCE_FILES
     ${SOFACOMPONENTCOMPATSRC_ROOT}/init.cpp

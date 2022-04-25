@@ -19,40 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/userinteraction/init.h>
+#include <SofaUserInteraction/SuturePointPerformer.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/Factory.inl>
 
-#include <sofa/component/userinteraction/controller/init.h>
-#include <sofa/component/userinteraction/configurationsetting/init.h>
-
-namespace sofa::component::userinteraction
+namespace sofa::component::collision
 {
+template class SOFA_SOFAUSERINTERACTION_API  SuturePointPerformer<defaulttype::Vec3Types>;
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::userinteraction::controller::init();
-        sofa::component::userinteraction::configurationsetting::init();
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, SuturePointPerformer<defaulttype::Vec3Types> >  SuturePointPerformerVec3Class("SuturePoints",true);
 
-        first = false;
-    }
-}
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-void init()
-{
-    initExternalModule();
-}
-
-} // namespace sofa::component::userinteraction
+} // namespace sofa::component::collision

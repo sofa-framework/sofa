@@ -19,40 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/userinteraction/init.h>
+#define SOFA_COMPONENT_COLLISION_STARTNAVIGATIONPERFORMER_CPP
 
-#include <sofa/component/userinteraction/controller/init.h>
-#include <sofa/component/userinteraction/configurationsetting/init.h>
+#include <SofaUserInteraction/StartNavigationPerformer.h>
+#include <SofaGeneralVisual/RecordedCamera.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/helper/Factory.inl>
+#include <SofaRigid/JointSpringForceField.inl>
+#include <SofaDeformable/SpringForceField.inl>
+#include <SofaDeformable/StiffSpringForceField.inl>
+#include <sofa/helper/cast.h>
+#include <sofa/simulation/Node.h>
 
-namespace sofa::component::userinteraction
+using namespace sofa::component::interactionforcefield;
+using namespace sofa::core::objectmodel;
+
+namespace sofa::component::collision
 {
+    helper::Creator<InteractionPerformer::InteractionPerformerFactory, StartNavigationPerformer> StartNavigationPerformerClass("StartNavigation");
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
+    void StartNavigationPerformer::start()
+    {
+        sofa::simulation::Node::SPtr root = down_cast<sofa::simulation::Node>( interactor->getContext()->getRootContext() );
+        if(root)
+        {
+            sofa::component::visualmodel::RecordedCamera* currentCamera = root->getNodeObject<sofa::component::visualmodel::RecordedCamera>();
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::userinteraction::controller::init();
-        sofa::component::userinteraction::configurationsetting::init();
-
-        first = false;
+            if(currentCamera)
+            {
+                // The navigation mode of Recorded Camera is set to true
+                currentCamera->m_navigationMode.setValue(!currentCamera->m_navigationMode.getValue());
+            }
+        }
     }
-}
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-void init()
-{
-    initExternalModule();
-}
-
-} // namespace sofa::component::userinteraction
+} // namespace sofa::component::collision

@@ -19,40 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/userinteraction/init.h>
+#define SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_CPP
 
-#include <sofa/component/userinteraction/controller/init.h>
-#include <sofa/component/userinteraction/configurationsetting/init.h>
+#include <SofaUserInteraction/AttachBodyPerformer.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/helper/Factory.inl>
+#include <SofaRigid/JointSpringForceField.inl>
+#include <SofaDeformable/SpringForceField.inl>
+#include <SofaDeformable/StiffSpringForceField.inl>
 
-namespace sofa::component::userinteraction
+using namespace sofa::component::interactionforcefield;
+using namespace sofa::core::objectmodel;
+
+namespace sofa::component::collision
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
+template class SOFA_SOFAUSERINTERACTION_API  AttachBodyPerformer<defaulttype::Vec2Types>;
+template class SOFA_SOFAUSERINTERACTION_API  AttachBodyPerformer<defaulttype::Vec3Types>;
+template class SOFA_SOFAUSERINTERACTION_API  AttachBodyPerformer<defaulttype::Rigid3Types>;
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::userinteraction::controller::init();
-        sofa::component::userinteraction::configurationsetting::init();
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec2Types> >  AttachBodyPerformerVec2dClass("AttachBody",true);
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3Types> >  AttachBodyPerformerVec3dClass("AttachBody",true);
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Rigid3Types> >  AttachBodyPerformerRigid3dClass("AttachBody",true);
 
-        first = false;
-    }
-}
-
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-void init()
-{
-    initExternalModule();
-}
-
-} // namespace sofa::component::userinteraction
+} // namespace sofa::component::collision

@@ -19,40 +19,60 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/userinteraction/init.h>
+#pragma once
+#include <SofaUserInteraction/config.h>
 
-#include <sofa/component/userinteraction/controller/init.h>
-#include <sofa/component/userinteraction/configurationsetting/init.h>
+#include <SofaUserInteraction/InteractionPerformer.h>
+#include <SofaDeformable/StiffSpringForceField.h>
+#include <SofaDeformable/SpringForceField.h>
+#include <SofaBoundaryCondition/FixedConstraint.h>
 
-namespace sofa::component::userinteraction
+#include <SofaUserInteraction/MouseInteractor.h>
+
+namespace sofa::component::collision
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
-
-void initExternalModule()
+class SuturePointPerformerConfiguration
 {
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::userinteraction::controller::init();
-        sofa::component::userinteraction::configurationsetting::init();
+public:
+    void setStiffness (double f) {stiffness=f;}
+    void setDamping (double f) {damping=f;}
 
-        first = false;
-    }
-}
+protected:
+    double stiffness;
+    double damping;
+};
 
-const char* getModuleName()
+
+template <class DataTypes>
+class SOFA_SOFAUSERINTERACTION_API SuturePointPerformer: public TInteractionPerformer<DataTypes>, public SuturePointPerformerConfiguration
 {
-    return MODULE_NAME;
-}
+public:
+    typedef typename DataTypes::Real Real;
+    typedef sofa::component::interactionforcefield::LinearSpring<Real> Spring;
+    typedef sofa::component::interactionforcefield::StiffSpringForceField<DataTypes> SpringObjectType;
+    typedef sofa::component::projectiveconstraintset::FixedConstraint<DataTypes> FixObjectType;
 
-void init()
-{
-    initExternalModule();
-}
+    SuturePointPerformer(BaseMouseInteractor *i);
+    ~SuturePointPerformer();
 
-} // namespace sofa::component::userinteraction
+    void start();
+    void execute() {}
+
+protected:
+    bool first;
+    unsigned int fixedIndex;
+
+    sofa::type::vector<Spring> addedSprings;
+
+    BodyPicked firstPicked;
+    SpringObjectType *SpringObject;
+    FixObjectType *FixObject;
+};
+
+#if  !defined(SOFA_COMPONENT_COLLISION_SUTUREPOINTPERFORMER_CPP)
+extern template class SOFA_SOFAUSERINTERACTION_API  SuturePointPerformer<defaulttype::Vec3Types>;
+
+#endif
+
+} // namespace sofa::component::collision

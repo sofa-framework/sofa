@@ -19,40 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/userinteraction/init.h>
 
-#include <sofa/component/userinteraction/controller/init.h>
-#include <sofa/component/userinteraction/configurationsetting/init.h>
+#include <SofaGraphComponent/AddRecordedCameraButtonSetting.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::userinteraction
+namespace sofa::component::configurationsetting
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
+int AddRecordedCameraButtonSettingClass = core::RegisterObject("Save Camera's View Point Button configuration")
+        .add< AddRecordedCameraButtonSetting >()
+        .addAlias("AddRecordedCameraButton")
+        ;
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::userinteraction::controller::init();
-        sofa::component::userinteraction::configurationsetting::init();
 
-        first = false;
-    }
-}
+int StartNavigationButtonSettingClass = core::RegisterObject("Start Navigation Button configuration")
+        .add< StartNavigationButtonSetting >()
+        .addAlias("StartNavigationButton")
+        ;
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-void init()
-{
-    initExternalModule();
-}
-
-} // namespace sofa::component::userinteraction
+} // namespace sofa::component::configurationsetting

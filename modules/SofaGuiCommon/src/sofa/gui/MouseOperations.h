@@ -32,10 +32,10 @@
 #include <iostream>
 #include <vector>
 
-namespace sofa::component::userinteraction::performer
+namespace sofa::component::collision
 {
     class InteractionPerformer;
-} // namespace sofa::component::userinteraction::performer
+} // namespace sofa::component::collision
 
 namespace sofa::gui
 {
@@ -82,10 +82,10 @@ protected:
     sofa::component::configurationsetting::MouseButtonSetting::SPtr mbsetting;
 public:
     virtual void setSetting(sofa::component::configurationsetting::MouseButtonSetting* s) { mbsetting = s; }
-    sofa::component::userinteraction::performer::InteractionPerformer *performer;
+    sofa::component::collision::InteractionPerformer *performer;
     virtual std::string defaultPerformerType() { return ""; }
-    virtual sofa::component::userinteraction::performer::InteractionPerformer *createPerformer();
-    virtual void configurePerformer(sofa::component::userinteraction::performer::InteractionPerformer* p);
+    virtual sofa::component::collision::InteractionPerformer *createPerformer();
+    virtual void configurePerformer(sofa::component::collision::InteractionPerformer* p);
     MOUSE_BUTTON getMouseButton() const { return button; }
     std::string getId() { return id; }
 protected:
@@ -113,7 +113,7 @@ public:
 protected:
     void setSetting(sofa::component::configurationsetting::MouseButtonSetting* s) override { Operation::setSetting(s); setting = down_cast<sofa::component::configurationsetting::AttachBodyButtonSetting>(s); }
     virtual std::string defaultPerformerType() override;
-    void configurePerformer(sofa::component::userinteraction::performer::InteractionPerformer* p) override;
+    void configurePerformer(sofa::component::collision::InteractionPerformer* p) override;
 
     sofa::component::configurationsetting::AttachBodyButtonSetting::SPtr setting;
 };
@@ -141,7 +141,7 @@ public:
     static std::string getDescription() {return "Fix Picked particle";}
 protected:
     virtual std::string defaultPerformerType() override;
-    void configurePerformer(sofa::component::userinteraction::performer::InteractionPerformer* p) override;
+    void configurePerformer(sofa::component::collision::InteractionPerformer* p) override;
 
     sofa::component::configurationsetting::FixPickedParticleButtonSetting::SPtr setting;
 };
@@ -152,7 +152,7 @@ public:
     static std::string getDescription() {return "Add a Frame to a Skinned model";}
 protected:
     virtual std::string defaultPerformerType() override;
-    void configurePerformer(sofa::component::userinteraction::performer::InteractionPerformer* p) override;
+    void configurePerformer(sofa::component::collision::InteractionPerformer* p) override;
 };
 
 class SOFA_SOFAGUICOMMON_API AddRecordedCameraOperation : public Operation
@@ -163,7 +163,7 @@ public:
 	static std::string getDescription() {return "Save camera's view points for navigation ";}
 protected:
     virtual std::string defaultPerformerType() override;
-	void configurePerformer(sofa::component::userinteraction::performer::InteractionPerformer* p) override;
+	void configurePerformer(sofa::component::collision::InteractionPerformer* p) override;
 	sofa::component::configurationsetting::AddRecordedCameraButtonSetting::SPtr setting;
 };
 
@@ -175,7 +175,7 @@ public:
 	static std::string getDescription() {return "Start navigation if camera's view points have been saved";}
 protected:
     virtual std::string defaultPerformerType() override;
-	void configurePerformer(sofa::component::userinteraction::performer::InteractionPerformer* p) override;
+	void configurePerformer(sofa::component::collision::InteractionPerformer* p) override;
 	sofa::component::configurationsetting::StartNavigationButtonSetting::SPtr setting;
 };
 
@@ -203,7 +203,7 @@ public:
 
     static std::string getDescription() {return "Incise along a path";}
 protected:
-    sofa::component::userinteraction::performer::InteractionPerformer *startPerformer;
+    sofa::component::collision::InteractionPerformer *startPerformer;
 
     int method;
     int snapingBorderValue;
@@ -256,7 +256,7 @@ public:
     static std::string getDescription() {return "Add a spring to suture two points.";}
 protected:
     virtual std::string defaultPerformerType() override;
-    void configurePerformer(sofa::component::userinteraction::performer::InteractionPerformer* p) override;
+    void configurePerformer(sofa::component::collision::InteractionPerformer* p) override;
 
     double stiffness;
     double damping;

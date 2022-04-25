@@ -19,40 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/userinteraction/init.h>
+#include <SofaUserInteraction/RemovePrimitivePerformer.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/Factory.inl>
 
-#include <sofa/component/userinteraction/controller/init.h>
-#include <sofa/component/userinteraction/configurationsetting/init.h>
-
-namespace sofa::component::userinteraction
+namespace sofa::component::collision
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
+template class SOFA_SOFAUSERINTERACTION_API RemovePrimitivePerformer<defaulttype::Vec3Types>;
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::userinteraction::controller::init();
-        sofa::component::userinteraction::configurationsetting::init();
 
-        first = false;
-    }
-}
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, RemovePrimitivePerformer<defaulttype::Vec3Types> >  RemovePrimitivePerformerVec3Class("RemovePrimitive",true);
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
 
-void init()
-{
-    initExternalModule();
-}
-
-} // namespace sofa::component::userinteraction
+} // namespace sofa::component::collision

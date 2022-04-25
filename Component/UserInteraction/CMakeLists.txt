@@ -3,7 +3,7 @@ project(Sofa.Component.UserInteraction LANGUAGES CXX)
 
 set(SOFACOMPONENTUSERINTERACTION_SOURCE_DIR "src/sofa/component/userinteraction")
 
-set(SOFACOMPONENTUSERINTERACTION_DIRS ConfigurationSetting Controller Performer)
+set(SOFACOMPONENTUSERINTERACTION_DIRS ConfigurationSetting Controller)
 set(SOFACOMPONENTUSERINTERACTION_TARGETS)
 foreach(userinteraction_dir ${SOFACOMPONENTUSERINTERACTION_DIRS})
     sofang_add_component_subdirectory(${userinteraction_dir} ${PROJECT_NAME}.${userinteraction_dir})

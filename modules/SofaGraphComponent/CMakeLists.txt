@@ -15,6 +15,10 @@ set(SOURCE_FILES
     )
 
 list(APPEND HEADER_FILES
+    ${SOFAGRAPHCOMPONENT_SRC}/AddFrameButtonSetting.h
+    ${SOFAGRAPHCOMPONENT_SRC}/AddRecordedCameraButtonSetting.h
+    ${SOFAGRAPHCOMPONENT_SRC}/AttachBodyButtonSetting.h
+    ${SOFAGRAPHCOMPONENT_SRC}/FixPickedParticleButtonSetting.h
     ${SOFAGRAPHCOMPONENT_SRC}/Gravity.h
     ${SOFAGRAPHCOMPONENT_SRC}/InteractingBehaviorModel.h
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheck.h
@@ -28,6 +32,10 @@ list(APPEND HEADER_FILES
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckerListener.h
     )
 list(APPEND SOURCE_FILES
+    ${SOFAGRAPHCOMPONENT_SRC}/AddFrameButtonSetting.cpp
+    ${SOFAGRAPHCOMPONENT_SRC}/AddRecordedCameraButtonSetting.cpp
+    ${SOFAGRAPHCOMPONENT_SRC}/AttachBodyButtonSetting.cpp
+    ${SOFAGRAPHCOMPONENT_SRC}/FixPickedParticleButtonSetting.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/Gravity.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckDeprecatedComponents.cpp
     ${SOFAGRAPHCOMPONENT_SRC}/SceneCheckDuplicatedName.cpp

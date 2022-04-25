@@ -19,40 +19,35 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/userinteraction/init.h>
+#pragma once
 
-#include <sofa/component/userinteraction/controller/init.h>
-#include <sofa/component/userinteraction/configurationsetting/init.h>
+#include <SofaGraphComponent/config.h>
 
-namespace sofa::component::userinteraction
+#include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <SofaGraphComponent/MouseButtonSetting.h>
+
+namespace sofa::component::configurationsetting
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
-
-void initExternalModule()
+class SOFA_SOFAGRAPHCOMPONENT_API AddRecordedCameraButtonSetting: public MouseButtonSetting
 {
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::userinteraction::controller::init();
-        sofa::component::userinteraction::configurationsetting::init();
+public:
+    SOFA_CLASS(AddRecordedCameraButtonSetting,MouseButtonSetting);
+protected:
+    AddRecordedCameraButtonSetting(){};
+public:
+    std::string getOperationType() override {return "Add recorded camera's position and orientation";}
 
-        first = false;
-    }
-}
+};
 
-const char* getModuleName()
+class SOFA_SOFAGRAPHCOMPONENT_API StartNavigationButtonSetting: public MouseButtonSetting
 {
-    return MODULE_NAME;
-}
+public:
+    SOFA_CLASS(StartNavigationButtonSetting,MouseButtonSetting);
+protected:
+    StartNavigationButtonSetting(){};
+public:
+    std::string getOperationType() override {return "Start navigation if some view poins have been saved";}
+};
 
-void init()
-{
-    initExternalModule();
-}
-
-} // namespace sofa::component::userinteraction
+} // namespace sofa::component::configurationsetting

@@ -19,40 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/userinteraction/init.h>
+#pragma once
+#include <SofaUserInteraction/config.h>
 
-#include <sofa/component/userinteraction/controller/init.h>
-#include <sofa/component/userinteraction/configurationsetting/init.h>
+#include <SofaUserInteraction/MouseInteractor.h>
+#include <SofaUserInteraction/InteractionPerformer.h>
+#include <SofaBaseCollision/BaseContactMapper.h>
+#include <sofa/core/behavior/BaseForceField.h>
+#include <SofaDeformable/SpringForceField.h>
+#include <SofaDeformable/StiffSpringForceField.h>
+#include <SofaGraphComponent/AddRecordedCameraButtonSetting.h>
+#include <sofa/core/visual/DisplayFlags.h>
 
-namespace sofa::component::userinteraction
+namespace sofa::component::collision
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
-
-void initExternalModule()
+class SOFA_SOFAUSERINTERACTION_API StartNavigationPerformer: public InteractionPerformer
 {
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::userinteraction::controller::init();
-        sofa::component::userinteraction::configurationsetting::init();
+public:
+    StartNavigationPerformer(BaseMouseInteractor *i)
+        : InteractionPerformer(i) {};
 
-        first = false;
-    }
-}
+    ~StartNavigationPerformer() override{};
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
+    // Save the current camera's position and orientation in the appropriated Data of Recorded Camera for navigation. 
+    void start() override;
+    void execute() override{};
 
-void init()
-{
-    initExternalModule();
-}
+};
 
-} // namespace sofa::component::userinteraction
+} // namespace sofa::component::collision

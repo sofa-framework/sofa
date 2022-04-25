@@ -19,40 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/userinteraction/init.h>
 
-#include <sofa/component/userinteraction/controller/init.h>
-#include <sofa/component/userinteraction/configurationsetting/init.h>
+#include <SofaGraphComponent/AttachBodyButtonSetting.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::userinteraction
+namespace sofa::component::configurationsetting
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
+int AttachBodyButtonSettingClass = core::RegisterObject("Attach Body Button configuration")
+        .add< AttachBodyButtonSetting >()
+        .addAlias("AttachBodyButton")
+        ;
 
-void initExternalModule()
+AttachBodyButtonSetting::AttachBodyButtonSetting():
+    stiffness(initData(&stiffness, (SReal)1000.0, "stiffness", "Stiffness of the spring to attach a particule"))
+    , arrowSize(initData(&arrowSize, (SReal)0.0, "arrowSize", "Size of the drawn spring: if >0 an arrow will be drawn"))
+    , showFactorSize(initData(&showFactorSize, (SReal)1.0, "showFactorSize", "Show factor size of the JointSpringForcefield  when interacting with rigids"))
 {
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::userinteraction::controller::init();
-        sofa::component::userinteraction::configurationsetting::init();
-
-        first = false;
-    }
 }
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-void init()
-{
-    initExternalModule();
-}
-
-} // namespace sofa::component::userinteraction
+} // namespace sofa::component::configurationsetting

@@ -19,40 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/userinteraction/init.h>
+#pragma once
+#include <SofaUserInteraction/MouseInteractor.h>
+#include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/component/userinteraction/controller/init.h>
-#include <sofa/component/userinteraction/configurationsetting/init.h>
-
-namespace sofa::component::userinteraction
+#include <map>
+namespace sofa::component::collision
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
-
-void initExternalModule()
+template <class DataTypes>
+void MouseInteractor<DataTypes>::init()
 {
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::userinteraction::controller::init();
-        sofa::component::userinteraction::configurationsetting::init();
-
-        first = false;
-    }
+    BaseMouseInteractor::init();
+    mouseInSofa = dynamic_cast< MouseContainer*>(this->getContext()->getMechanicalState());
+    assert(mouseInSofa);
 }
 
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-void init()
-{
-    initExternalModule();
-}
-
-} // namespace sofa::component::userinteraction
+} // namespace sofa::component::collision

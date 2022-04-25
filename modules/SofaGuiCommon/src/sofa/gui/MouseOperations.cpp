@@ -22,21 +22,21 @@
 #include <sofa/gui/MouseOperations.h>
 #include <sofa/gui/PickHandler.h>
 
-#include <sofa/component/userinteraction/performer/InteractionPerformer.h>
+#include <SofaUserInteraction/InteractionPerformer.h>
 
-#include <sofa/component/userinteraction/performer/ComponentMouseInteraction.h>
-#include <sofa/component/userinteraction/performer/AttachBodyPerformer.h>
-#include <sofa/component/userinteraction/performer/FixParticlePerformer.h>
-#include <sofa/component/userinteraction/performer/RemovePrimitivePerformer.h>
-#include <sofa/component/userinteraction/performer/InciseAlongPathPerformer.h>
-#include <sofa/component/userinteraction/performer/AddRecordedCameraPerformer.h>
-#include <sofa/component/userinteraction/performer/StartNavigationPerformer.h>
-#include <sofa/component/userinteraction/performer/SuturePointPerformer.h>
+#include <SofaUserInteraction/ComponentMouseInteraction.h>
+#include <SofaUserInteraction/AttachBodyPerformer.h>
+#include <SofaUserInteraction/FixParticlePerformer.h>
+#include <SofaUserInteraction/RemovePrimitivePerformer.h>
+#include <SofaUserInteraction/InciseAlongPathPerformer.h>
+#include <SofaUserInteraction/AddRecordedCameraPerformer.h>
+#include <SofaUserInteraction/StartNavigationPerformer.h>
+#include <SofaUserInteraction/SuturePointPerformer.h>
 
 namespace sofa
 {
 
-using namespace component::userinteraction::performer;
+using namespace sofa::component::collision;
 
 #ifdef WIN32
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3Types> >  AttachBodyPerformerVec3Class("AttachBody",true);

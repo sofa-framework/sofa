@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/gui/PickHandler.h>
 
-#include <sofa/component/userinteraction/performer/ComponentMouseInteraction.h>
+#include <SofaUserInteraction/ComponentMouseInteraction.h>
 #include <sofa/component/collision/response/contact/RayContact.h>
 
 #include <sofa/simulation/DeleteVisitor.h>
@@ -118,7 +118,7 @@ void PickHandler::init(core::objectmodel::BaseNode* root)
     mouseContainer->init();
     mouseCollision->init();
 
-    typedef component::userinteraction::performer::ComponentMouseInteraction::ComponentMouseInteractionFactory MouseFactory;
+    typedef sofa::component::collision::ComponentMouseInteraction::ComponentMouseInteractionFactory MouseFactory;
     const MouseFactory *factory = MouseFactory::getInstance();
     for (MouseFactory::const_iterator it = factory->begin(); it != factory->end(); ++it)
     {

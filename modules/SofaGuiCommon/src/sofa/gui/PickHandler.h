@@ -29,15 +29,15 @@
 #include <sofa/gui/ColourPickingVisitor.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
-namespace sofa::component::collision::model
+namespace sofa::component::collision::geometry
 {
     class RayCollisionModel;
-} // namespace sofa::component::collision::model
+} // namespace sofa::component::collision::geometry
 
-namespace sofa::component::userinteraction::performer
+namespace sofa::component::collision
 {
     class ComponentMouseInteraction;
-} // namespace sofa::component::userinteraction::performer
+} // sofa::component::collision
 
 namespace sofa::component::userinteraction::configurationsetting
 {
@@ -50,7 +50,7 @@ namespace sofa::gui
 
 using simulation::Node;
 using sofa::component::collision::BodyPicked;
-using sofa::component::userinteraction::performer::ComponentMouseInteraction;
+using sofa::component::collision::ComponentMouseInteraction;
 
 class CallBackPicker
 {
@@ -68,7 +68,7 @@ public:
 
 class SOFA_SOFAGUICOMMON_API PickHandler
 {
-    typedef sofa::component::collision::model::RayCollisionModel MouseCollisionModel;
+    typedef sofa::component::collision::geometry::RayCollisionModel MouseCollisionModel;
     typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > MouseContainer;
 
 public:
@@ -129,7 +129,7 @@ protected:
 
     sofa::simulation::NodeSPtr     mouseNode;
     MouseContainer::SPtr      mouseContainer;
-    MouseCollisionModel::SPtr mouseCollision;
+    sofa::core::sptr<MouseCollisionModel> mouseCollision;
 
     MousePosition             mousePosition;
 

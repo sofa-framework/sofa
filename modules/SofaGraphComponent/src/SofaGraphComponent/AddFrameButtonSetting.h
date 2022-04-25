@@ -19,40 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/userinteraction/init.h>
+#pragma once
 
-#include <sofa/component/userinteraction/controller/init.h>
-#include <sofa/component/userinteraction/configurationsetting/init.h>
+#include <SofaGraphComponent/config.h>
 
-namespace sofa::component::userinteraction
+#include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <SofaGraphComponent/MouseButtonSetting.h>
+
+namespace sofa::component::configurationsetting
 {
 
-extern "C" {
-    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
-    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
-}
-
-void initExternalModule()
+class SOFA_SOFAGRAPHCOMPONENT_API AddFrameButtonSetting: public MouseButtonSetting
 {
-    static bool first = true;
-    if (first)
-    {        
-        // force dependencies at compile-time
-        sofa::component::userinteraction::controller::init();
-        sofa::component::userinteraction::configurationsetting::init();
+public:
+    SOFA_CLASS(AddFrameButtonSetting,MouseButtonSetting);
+protected:
+    AddFrameButtonSetting();
+public:
+    std::string getOperationType() override {return "AddFrame";}
+};
 
-        first = false;
-    }
-}
-
-const char* getModuleName()
-{
-    return MODULE_NAME;
-}
-
-void init()
-{
-    initExternalModule();
-}
-
-} // namespace sofa::component::userinteraction
+} // namespace sofa::component::configurationsetting
