@@ -29,15 +29,16 @@
 #include "CudaSphereModel.h"
 #include "CudaPointModel.h"
 
-#include <SofaUserInteraction/MouseInteractor.inl>
+#include <sofa/gui/component/performer/MouseInteractor.inl>
+#include <sofa/gui/component/performer/ComponentMouseInteraction.inl>
+#include <sofa/gui/component/performer/AttachBodyPerformer.inl>
+#include <sofa/gui/component/performer/FixParticlePerformer.inl>
+
 #include <SofaBaseCollision/NewProximityIntersection.inl>
 #include <SofaMeshCollision/MeshNewProximityIntersection.inl>
 #include <SofaUserInteraction/RayDiscreteIntersection.h>
 #include <SofaUserInteraction/RayDiscreteIntersection.inl>
 #include <SofaBaseCollision/DiscreteIntersection.h>
-#include <SofaUserInteraction/ComponentMouseInteraction.inl>
-#include <SofaUserInteraction/AttachBodyPerformer.inl>
-#include <SofaUserInteraction/FixParticlePerformer.inl>
 #include <SofaUserInteraction/RayContact.h>
 #include <SofaMeshCollision/BarycentricPenalityContact.inl>
 #include <SofaMeshCollision/BarycentricContactMapper.inl>
@@ -55,6 +56,7 @@ using namespace sofa::gpu::cuda;
 using namespace sofa::component::collision;
 using namespace sofa::component::collision::geometry;
 using namespace sofa::component::collision::response::mapper;
+using namespace sofa::gui::component::performer;
 
 template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3fTypes>;
 template class SOFA_GPU_CUDA_API TComponentMouseInteraction< CudaVec3fTypes >;

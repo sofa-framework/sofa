@@ -5,6 +5,7 @@ sofa_find_package(SofaFramework REQUIRED)
 
 set(SOFAGUI_TARGETS "")
 
+sofa_find_package(Sofa.GUI.Component REQUIRED)
 sofa_find_package(Sofa.GUI.Common REQUIRED)
 sofa_find_package(Sofa.GUI.Batch REQUIRED)
 sofa_find_package(Sofa.GUI.Qt QUIET)
@@ -19,7 +20,7 @@ set(SOURCE_FILES
     ${SOFAGUI_SRC}/initSofaGui.cpp
     )
 
-set(SOFAGUI_TARGETS Sofa.GUI.Common Sofa.GUI.Batch)
+set(SOFAGUI_TARGETS Sofa.GUI.Component Sofa.GUI.Common Sofa.GUI.Batch)
 if(Sofa.GUI.Qt_FOUND)
     list(APPEND SOFAGUI_TARGETS Sofa.GUI.Qt)
 endif()
