@@ -24,14 +24,14 @@
 #include <sofa/config.h>
 #include <sofa/config/sharedlibrary_defines.h>
 
-#ifdef SOFA_BUILD_SOFA_COMPONENT_DIFFUSION
+#ifdef SOFA_BUILD_SOFA_GUI_COMPONENT
 #  define SOFA_TARGET @PROJECT_NAME@
-#  define SOFA_COMPONENT_DIFFUSION_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#  define SOFA_GUI_COMPONENT_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_COMPONENT_DIFFUSION_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_GUI_COMPONENT_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-namespace sofa::component::diffusion
+namespace sofa::gui::component
 {
 	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
-} // namespace sofa::component::diffusion
+} // namespace sofa::gui::component

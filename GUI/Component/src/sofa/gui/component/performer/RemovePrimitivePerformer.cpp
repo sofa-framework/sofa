@@ -19,17 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaUserInteraction/RemovePrimitivePerformer.inl>
+#include <sofa/gui/component/performer/RemovePrimitivePerformer.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/Factory.inl>
 
-namespace sofa::component::collision
+namespace sofa::gui::component::performer
 {
 
-template class SOFA_SOFAUSERINTERACTION_API RemovePrimitivePerformer<defaulttype::Vec3Types>;
+template class SOFA_GUI_COMPONENT_API RemovePrimitivePerformer<defaulttype::Vec3Types>;
 
 
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, RemovePrimitivePerformer<defaulttype::Vec3Types> >  RemovePrimitivePerformerVec3Class("RemovePrimitive",true);
 
 
-} // namespace sofa::component::collision
+} // namespace sofa::gui::component::performer

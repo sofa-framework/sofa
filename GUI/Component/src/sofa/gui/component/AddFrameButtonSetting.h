@@ -21,22 +21,22 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGraphComponent/config.h>
+#include <sofa/gui/component/config.h>
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <SofaGraphComponent/MouseButtonSetting.h>
+#include <sofa/component/userinteraction/configurationsetting/MouseButtonSetting.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::gui::component
 {
 
-class SOFA_SOFAGRAPHCOMPONENT_API AddFrameButtonSetting: public MouseButtonSetting
+class SOFA_GUI_COMPONENT_API AddFrameButtonSetting: public sofa::component::userinteraction::configurationsetting::MouseButtonSetting
 {
 public:
-    SOFA_CLASS(AddFrameButtonSetting,MouseButtonSetting);
+    SOFA_CLASS(AddFrameButtonSetting, sofa::component::userinteraction::configurationsetting::MouseButtonSetting);
 protected:
     AddFrameButtonSetting();
 public:
     std::string getOperationType() override {return "AddFrame";}
 };
 
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::gui::component

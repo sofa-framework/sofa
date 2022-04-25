@@ -21,21 +21,15 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_STARTNAVIGATIONPERFORMER_CPP
 
-#include <SofaUserInteraction/StartNavigationPerformer.h>
-#include <SofaGeneralVisual/RecordedCamera.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/gui/component/performer/StartNavigationPerformer.h>
+#include <sofa/component/visual/RecordedCamera.h>
 #include <sofa/helper/Factory.inl>
-#include <SofaRigid/JointSpringForceField.inl>
-#include <SofaDeformable/SpringForceField.inl>
-#include <SofaDeformable/StiffSpringForceField.inl>
 #include <sofa/helper/cast.h>
 #include <sofa/simulation/Node.h>
 
-using namespace sofa::component::interactionforcefield;
 using namespace sofa::core::objectmodel;
 
-namespace sofa::component::collision
+namespace sofa::gui::component::performer
 {
     helper::Creator<InteractionPerformer::InteractionPerformerFactory, StartNavigationPerformer> StartNavigationPerformerClass("StartNavigation");
 
@@ -44,7 +38,7 @@ namespace sofa::component::collision
         sofa::simulation::Node::SPtr root = down_cast<sofa::simulation::Node>( interactor->getContext()->getRootContext() );
         if(root)
         {
-            sofa::component::visualmodel::RecordedCamera* currentCamera = root->getNodeObject<sofa::component::visualmodel::RecordedCamera>();
+            sofa::component::visual::RecordedCamera* currentCamera = root->getNodeObject<sofa::component::visual::RecordedCamera>();
 
             if(currentCamera)
             {
@@ -54,4 +48,4 @@ namespace sofa::component::collision
         }
     }
 
-} // namespace sofa::component::collision
+} // namespace sofa::gui::component::performer

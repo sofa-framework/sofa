@@ -19,13 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaUserInteraction/InciseAlongPathPerformer.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
+#include <sofa/gui/component/performer/InciseAlongPathPerformer.h>
 
+#include <sofa/component/topology/container/dynamic/TriangleSetGeometryAlgorithms.h>
+
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/Factory.inl>
 
-namespace sofa::component::collision
+namespace sofa::gui::component::performer
 {
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, InciseAlongPathPerformer>  InciseAlongPathPerformerClass("InciseAlongPath");
 
@@ -157,7 +158,7 @@ void InciseAlongPathPerformer::PerformCompleteIncision()
 
 
     // Get new coordinate of first incision point:
-    sofa::component::container::MechanicalObject<defaulttype::Vec3Types>* MechanicalObject=nullptr;
+    sofa::component::statecontainer::MechanicalObject<defaulttype::Vec3Types>* MechanicalObject=nullptr;
     startBody.body->getContext()->get(MechanicalObject, sofa::core::objectmodel::BaseContext::SearchRoot);
     const auto& positions = MechanicalObject->read(core::ConstVecCoordId::position())->getValue();
     const sofa::type::Vector3& the_point = positions[initialNbPoints];
@@ -215,7 +216,7 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
 
     BodyPicked currentBody=this->interactor->getBodyPicked();
 
-    sofa::component::topology::TriangleSetGeometryAlgorithms<defaulttype::Vec3Types>* topoGeo;
+    sofa::component::topology::container::dynamic::TriangleSetGeometryAlgorithms<defaulttype::Vec3Types>* topoGeo;
     firstBody.body->getContext()->get(topoGeo);
 
     if (!topoGeo)
@@ -284,4 +285,4 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* vparams)
 }
 
 
-} // namespace sofa::component::collision
+} // namespace sofa::gui::component::performer

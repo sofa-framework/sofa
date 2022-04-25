@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/diffusion/init.h>
+#include <sofa/gui/component/init.h>
 
-namespace sofa::component::diffusion
+namespace sofa::gui::component
 {
     
 extern "C" {
@@ -48,4 +48,4 @@ void init()
     initExternalModule();
 }
 
-} // namespace sofa::component::diffusion
+} // namespace sofa::gui::component

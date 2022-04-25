@@ -21,9 +21,9 @@
 ******************************************************************************/
 #pragma once
 
-#include <sofa/component/diffusion/config.h>
+#include <sofa/gui/component/config.h>
 
-namespace sofa::component::diffusion
+namespace sofa::gui::component
 {
-	SOFA_COMPONENT_DIFFUSION_API void init();
-} // namespace sofa::component::diffusion
+	SOFA_GUI_COMPONENT_API void init();
+} // namespace sofa::gui::component

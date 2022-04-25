@@ -19,12 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaUserInteraction/RemovePrimitivePerformer.h>
+#include <sofa/gui/component/performer/RemovePrimitivePerformer.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologicalMapping.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/topology/BaseTopology.h>
-namespace sofa::component::collision
+namespace sofa::gui::component::performer
 {
 
 template <class DataTypes>
@@ -735,4 +735,4 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
 }
 
 
-} // namespace sofa::component::collision
+} // namespace sofa::gui::component::performer

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_INTERACTIONPERFORMER_CPP
-#include <SofaUserInteraction/InteractionPerformer.h>
+#include <sofa/gui/component/performer/InteractionPerformer.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/Factory.inl>
@@ -28,5 +28,5 @@
 namespace sofa::helper
 {
 //explicit instanciation of our factory class.
-template class SOFA_SOFAUSERINTERACTION_API Factory<std::string, component::collision::InteractionPerformer, component::collision::BaseMouseInteractor*>;
+template class SOFA_GUI_COMPONENT_API Factory<std::string, sofa::gui::component::performer::InteractionPerformer, sofa::gui::component::performer::BaseMouseInteractor*>;
 } //namespace sofa::helper

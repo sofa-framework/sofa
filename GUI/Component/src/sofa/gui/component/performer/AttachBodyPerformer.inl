@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaUserInteraction/AttachBodyPerformer.h>
+#include <sofa/gui/component/performer/AttachBodyPerformer.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaUserInteraction/MouseInteractor.h>
+#include <sofa/gui/component/performer/MouseInteractor.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa::component::collision
+namespace sofa::gui::component::performer
 {
 
 template <class DataTypes>
@@ -44,7 +44,7 @@ void AttachBodyPerformer<DataTypes>::start()
 
     double distanceFromMouse=picked.rayLength;
     this->interactor->setDistanceFromMouse(distanceFromMouse);
-    Ray ray = this->interactor->getMouseRayModel()->getRay(0);
+    sofa::component::collision::geometry::Ray ray = this->interactor->getMouseRayModel()->getRay(0);
     ray.setOrigin(ray.origin() + ray.direction()*distanceFromMouse);
     sofa::core::BaseMapping *mapping;
     this->interactor->getContext()->get(mapping); assert(mapping);
@@ -168,7 +168,7 @@ bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
         }
     }
 
-    using sofa::component::interactionforcefield::StiffSpringForceField;
+    using sofa::component::solidmechanics::spring::StiffSpringForceField;
 
     m_forcefield = sofa::core::objectmodel::New< StiffSpringForceField<DataTypes> >(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision);
     StiffSpringForceField< DataTypes >* stiffspringforcefield = static_cast< StiffSpringForceField< DataTypes >* >(m_forcefield.get());
@@ -186,4 +186,4 @@ bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
     return true;
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::gui::component::performer

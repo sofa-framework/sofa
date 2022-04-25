@@ -21,21 +21,20 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_ADDRECORDEDCAMERAPERFORMER_CPP
 
-#include <SofaUserInteraction/AddRecordedCameraPerformer.h>
-#include <SofaGeneralVisual/RecordedCamera.h>
+#include <sofa/gui/component/performer/AddRecordedCameraPerformer.h>
+
+#include <sofa/helper/cast.h>
+#include <sofa/helper/Factory.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/Factory.inl>
-#include <SofaRigid/JointSpringForceField.inl>
-#include <SofaDeformable/SpringForceField.inl>
-#include <SofaDeformable/StiffSpringForceField.inl>
-#include <sofa/helper/cast.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/component/visual/RecordedCamera.h>
+#include <sofa/gui/component/performer/MouseInteractor.h>
 
-using namespace sofa::component::interactionforcefield;
+
 using namespace sofa::core::objectmodel;
 
-namespace sofa::component::collision
+namespace sofa::gui::component::performer
 {
 
 void AddRecordedCameraPerformer::start()
@@ -43,19 +42,19 @@ void AddRecordedCameraPerformer::start()
     sofa::simulation::Node::SPtr root = down_cast<sofa::simulation::Node>( interactor->getContext()->getRootContext() );
     if(root)
     {
-        sofa::component::visualmodel::RecordedCamera* currentCamera = root->getNodeObject<sofa::component::visualmodel::RecordedCamera>();
+        sofa::component::visual::RecordedCamera* currentCamera = root->getNodeObject<sofa::component::visual::RecordedCamera>();
 
         if(currentCamera)
         {
             // Set the current camera's position in recorded camera for navigation
-            sofa::component::visualmodel::RecordedCamera::Vec3 _pos = currentCamera->p_position.getValue();
-            sofa::type::vector<sofa::component::visualmodel::RecordedCamera::Vec3> posis = currentCamera->m_translationPositions.getValue();
+            sofa::component::visual::RecordedCamera::Vec3 _pos = currentCamera->p_position.getValue();
+            sofa::type::vector<sofa::component::visual::RecordedCamera::Vec3> posis = currentCamera->m_translationPositions.getValue();
             posis.push_back(_pos);
             currentCamera->m_translationPositions.setValue(posis);
 
             // Set the current camera's orientation in recorded camera for navigation
-            sofa::component::visualmodel::RecordedCamera::Quat _ori = currentCamera->p_orientation.getValue();
-            sofa::type::vector<sofa::component::visualmodel::RecordedCamera::Quat>oris = currentCamera->m_translationOrientations.getValue();//push_back(m_vectorOrientations);
+            sofa::component::visual::RecordedCamera::Quat _ori = currentCamera->p_orientation.getValue();
+            sofa::type::vector<sofa::component::visual::RecordedCamera::Quat>oris = currentCamera->m_translationOrientations.getValue();//push_back(m_vectorOrientations);
             oris.push_back(_ori);
             currentCamera->m_translationOrientations.setValue(oris);
 
@@ -66,4 +65,4 @@ void AddRecordedCameraPerformer::start()
 
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AddRecordedCameraPerformer> AddRecordedCameraPerformerClass("AddRecordedCamera");
 
-}// namespace sofa::component::collision
+}// namespace sofa::gui::component::performer

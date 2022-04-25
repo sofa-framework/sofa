@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaUserInteraction/MouseInteractor.h>
+#include <sofa/gui/component/performer/MouseInteractor.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <map>
-namespace sofa::component::collision
+namespace sofa::gui::component::performer
 {
 
 template <class DataTypes>
@@ -35,4 +35,4 @@ void MouseInteractor<DataTypes>::init()
     assert(mouseInSofa);
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::gui::component::performer

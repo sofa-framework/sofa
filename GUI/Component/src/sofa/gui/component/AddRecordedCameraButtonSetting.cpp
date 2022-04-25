@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaGraphComponent/AddRecordedCameraButtonSetting.h>
+#include <sofa/gui/component/AddRecordedCameraButtonSetting.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::gui::component
 {
 
 int AddRecordedCameraButtonSettingClass = core::RegisterObject("Save Camera's View Point Button configuration")
@@ -38,4 +38,4 @@ int StartNavigationButtonSettingClass = core::RegisterObject("Start Navigation B
         .addAlias("StartNavigationButton")
         ;
 
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::gui::component

@@ -20,17 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaUserInteraction/config.h>
+#include <sofa/gui/component/config.h>
 
-#include <SofaUserInteraction/InteractionPerformer.h>
-#include <SofaBaseCollision/BaseContactMapper.h>
+#include <sofa/gui/component/performer/InteractionPerformer.h>
+#include <sofa/gui/component/AttachBodyButtonSetting.h>
+#include <sofa/component/collision/response/mapper/BaseContactMapper.h>
 #include <sofa/core/behavior/BaseForceField.h>
-#include <SofaDeformable/SpringForceField.h>
-#include <SofaDeformable/StiffSpringForceField.h>
-#include <SofaGraphComponent/AttachBodyButtonSetting.h>
 #include <sofa/core/visual/DisplayFlags.h>
 
-namespace sofa::component::collision
+namespace sofa::gui::component::performer
 {
 
 struct BodyPicked;
@@ -39,7 +37,7 @@ template <class DataTypes>
 class AttachBodyPerformer: public TInteractionPerformer<DataTypes>
 {
 public:
-    typedef sofa::component::collision::BaseContactMapper< DataTypes >        MouseContactMapper;
+    typedef sofa::component::collision::response::mapper::BaseContactMapper< DataTypes >        MouseContactMapper;
     typedef sofa::core::behavior::MechanicalState< DataTypes >         MouseContainer;
     typedef sofa::core::behavior::BaseForceField              MouseForceField;
 
@@ -55,9 +53,9 @@ public:
     void setArrowSize(float s) {size=s;}
     void setShowFactorSize(float s) {showFactorSize = s;}
 
-    virtual void configure(configurationsetting::MouseButtonSetting* setting)
+    virtual void configure(sofa::component::userinteraction::configurationsetting::MouseButtonSetting* setting)
     {
-        configurationsetting::AttachBodyButtonSetting* s = dynamic_cast<configurationsetting::AttachBodyButtonSetting*>(setting);
+       auto* s = dynamic_cast<sofa::gui::component::AttachBodyButtonSetting*>(setting);
         if (s)
         {
             setStiffness(s->stiffness.getValue());
@@ -85,9 +83,9 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_CPP)
-extern template class SOFA_SOFAUSERINTERACTION_API  AttachBodyPerformer<defaulttype::Vec2Types>;
-extern template class SOFA_SOFAUSERINTERACTION_API  AttachBodyPerformer<defaulttype::Vec3Types>;
-extern template class SOFA_SOFAUSERINTERACTION_API  AttachBodyPerformer<defaulttype::Rigid3Types>;
+extern template class SOFA_GUI_COMPONENT_API  AttachBodyPerformer<defaulttype::Vec2Types>;
+extern template class SOFA_GUI_COMPONENT_API  AttachBodyPerformer<defaulttype::Vec3Types>;
+extern template class SOFA_GUI_COMPONENT_API  AttachBodyPerformer<defaulttype::Rigid3Types>;
 #endif
 
-} // namespace sofa::component::collision
+} // namespace sofa::gui::component::performer

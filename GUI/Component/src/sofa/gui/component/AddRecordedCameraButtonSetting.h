@@ -21,18 +21,18 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGraphComponent/config.h>
+#include <sofa/gui/component/config.h>
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <SofaGraphComponent/MouseButtonSetting.h>
+#include <sofa/component/userinteraction/configurationsetting/MouseButtonSetting.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::gui::component
 {
 
-class SOFA_SOFAGRAPHCOMPONENT_API AddRecordedCameraButtonSetting: public MouseButtonSetting
+class SOFA_GUI_COMPONENT_API AddRecordedCameraButtonSetting: public sofa::component::userinteraction::configurationsetting::MouseButtonSetting
 {
 public:
-    SOFA_CLASS(AddRecordedCameraButtonSetting,MouseButtonSetting);
+    SOFA_CLASS(AddRecordedCameraButtonSetting, sofa::component::userinteraction::configurationsetting::MouseButtonSetting);
 protected:
     AddRecordedCameraButtonSetting(){};
 public:
@@ -40,7 +40,7 @@ public:
 
 };
 
-class SOFA_SOFAGRAPHCOMPONENT_API StartNavigationButtonSetting: public MouseButtonSetting
+class SOFA_GUI_COMPONENT_API StartNavigationButtonSetting: public sofa::component::userinteraction::configurationsetting::MouseButtonSetting
 {
 public:
     SOFA_CLASS(StartNavigationButtonSetting,MouseButtonSetting);
@@ -50,4 +50,4 @@ public:
     std::string getOperationType() override {return "Start navigation if some view poins have been saved";}
 };
 
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::gui::component

@@ -20,24 +20,18 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaUserInteraction/ComponentMouseInteraction.h>
-#include <sofa/core/visual/VisualParams.h>
+#include <sofa/gui/component/performer/ComponentMouseInteraction.h>
 
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaUserInteraction/RayModel.h>
-#include <SofaUserInteraction/MouseInteractor.inl>
-#include <SofaBaseMechanics/IdentityMapping.inl>
+#include <sofa/gui/component/performer/MouseInteractor.inl>
+#include <sofa/component/mapping/linear/IdentityMapping.inl>
 
-#include <sofa/simulation/InitVisitor.h>
-
-#include <sofa/type/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa::component::collision
+namespace sofa::gui::component::performer
 {
 
-using sofa::component::collision::BodyPicked;
+using sofa::gui::component::performer::BodyPicked;
 
 template <class DataTypes>
 void TComponentMouseInteraction<DataTypes>::createInteractionComponents( sofa::simulation::Node* parent,  sofa::simulation::Node* current)
@@ -75,4 +69,4 @@ bool TComponentMouseInteraction<DataTypes>::isCompatible( core::objectmodel::Bas
     return (dynamic_cast<MouseContainer*>(context->getMechanicalState()) != nullptr);
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::gui::component::performer

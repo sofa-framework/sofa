@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP
-#include <SofaUserInteraction/ComponentMouseInteraction.inl>
+#include <sofa/gui/component/performer/ComponentMouseInteraction.inl>
 
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/DeleteVisitor.h>
@@ -32,10 +32,10 @@ using namespace sofa::simulation;
 
 namespace sofa::helper
 {
-    template class SOFA_SOFAUSERINTERACTION_API Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
+    template class SOFA_GUI_COMPONENT_API Factory<std::string, sofa::gui::component::performer::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
 }
 
-namespace sofa::component::collision
+namespace sofa::gui::component::performer
 {
 
 
@@ -95,4 +95,4 @@ helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TCo
 helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<defaulttype::Rigid3Types> > ComponentMouseInteractionRigid3Class ("MouseSpringRigid3",true);
 
 
-} // namespace sofa::component::collision
+} // namespace sofa::gui::component::performer

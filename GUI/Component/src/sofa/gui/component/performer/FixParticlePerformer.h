@@ -20,14 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaUserInteraction/config.h>
+#include <sofa/gui/component/config.h>
 
-#include <SofaUserInteraction/InteractionPerformer.h>
+#include <sofa/gui/component/performer/InteractionPerformer.h>
 
-#include <SofaDeformable/StiffSpringForceField.h>
-#include <SofaUserInteraction/MouseInteractor.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
+#include <sofa/component/solidmechanics/spring/StiffSpringForceField.h>
+#include <sofa/gui/component/performer/MouseInteractor.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/simulation/Node.h>
 
 #include <unordered_map>
@@ -38,7 +37,7 @@ namespace sofa::simulation
     class Node;
 }
 
-namespace sofa::component::collision
+namespace sofa::gui::component::performer
 {
 
 class FixParticlePerformerConfiguration
@@ -53,8 +52,8 @@ template <class DataTypes>
 class FixParticlePerformer: public TInteractionPerformer<DataTypes>, public FixParticlePerformerConfiguration
 {
 public:
-    typedef sofa::component::interactionforcefield::StiffSpringForceField< DataTypes >   MouseForceField;
-    typedef sofa::component::container::MechanicalObject< DataTypes >         MouseContainer;
+    typedef sofa::component::solidmechanics::spring::StiffSpringForceField< DataTypes >   MouseForceField;
+    typedef sofa::component::statecontainer::MechanicalObject< DataTypes >         MouseContainer;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
 
@@ -91,7 +90,7 @@ public:
     {
         auto* triangle = static_cast<TTriangleCollisionModel*>(model.get());
 
-        Triangle t(triangle, idx);
+        sofa::component::collision::geometry::Triangle t(triangle, idx);
         fixPoint = (t.p1() + t.p2() + t.p3()) / 3.0;
         points.push_back(t.p1Index());
         points.push_back(t.p2Index());
@@ -120,9 +119,9 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_FIXPARTICLEPERFORMER_CPP)
-extern template class SOFA_SOFAUSERINTERACTION_API FixParticlePerformer<defaulttype::Vec3Types>;
+extern template class SOFA_GUI_COMPONENT_API FixParticlePerformer<defaulttype::Vec3Types>;
 
 #endif
 
 
-} // namespace sofa::component::collision
+} // namespace sofa::gui::component::performer

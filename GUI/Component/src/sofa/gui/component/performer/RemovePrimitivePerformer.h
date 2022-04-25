@@ -20,16 +20,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaUserInteraction/config.h>
+#include <sofa/gui/component/config.h>
 
-#include <SofaUserInteraction/InteractionPerformer.h>
-#include <SofaUserInteraction/TopologicalChangeManager.h>
-#include <SofaUserInteraction/MouseInteractor.h>
+#include <sofa/gui/component/performer/InteractionPerformer.h>
+#include <sofa/gui/component/performer/TopologicalChangeManager.h>
+#include <sofa/gui/component/performer/MouseInteractor.h>
 /*
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/CollisionElement.h>
 */
-namespace sofa::component::collision
+namespace sofa::gui::component::performer
 {
 
 /** Class to configure primitive removal. Several parameters:
@@ -60,7 +60,7 @@ protected:
 /** Class to perform removing of topological elements (either one element or a an area) and handling topological mapping
   */
 template <class DataTypes>
-class SOFA_SOFAUSERINTERACTION_API RemovePrimitivePerformer: public       TInteractionPerformer<DataTypes>, public RemovePrimitivePerformerConfiguration
+class SOFA_GUI_COMPONENT_API RemovePrimitivePerformer: public       TInteractionPerformer<DataTypes>, public RemovePrimitivePerformerConfiguration
 {
     using Index = sofa::Index;
 
@@ -127,7 +127,7 @@ protected:
 
 private:
     /// Class containing removal functions (given collision model)
-    sofa::component::collision::TopologicalChangeManager topologyChangeManager;
+    sofa::gui::component::performer::TopologicalChangeManager topologyChangeManager;
     /// Point to collision class
     core::behavior::MechanicalState<DataTypes>* mstateCollision;
     /// Enum storing the type to current topolgy: TRIANGLE, QUAD, TETRAHEDRON or HEXAHEDRON
@@ -137,8 +137,8 @@ private:
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_REMOVEPRIMITIVEPERFORMER_CPP)
-extern template class SOFA_SOFAUSERINTERACTION_API RemovePrimitivePerformer<defaulttype::Vec3Types>;
+extern template class SOFA_GUI_COMPONENT_API RemovePrimitivePerformer<defaulttype::Vec3Types>;
 
 #endif
 
-} // namespace sofa::component::collision
+} // namespace sofa::gui::component::performer

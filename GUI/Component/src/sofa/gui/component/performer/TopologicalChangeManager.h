@@ -20,27 +20,25 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaUserInteraction/config.h>
+#include <sofa/gui/component/config.h>
 
 #include <sofa/core/CollisionElement.h>
 
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaMeshCollision/PointModel.h>
-#include <SofaBaseCollision/SphereModel.h>
+#include <sofa/component/collision/geometry/SphereModel.h>
+#include <sofa/component/collision/geometry/PointModel.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
 
 #include <sofa/type/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <SofaBaseMechanics/MechanicalObject.h>
-
-namespace sofa::component::collision
+namespace sofa::gui::component::performer
 {
 
 /// a class to manage the handling of topological changes which have been requested from the Collision Model
-class SOFA_SOFAUSERINTERACTION_API TopologicalChangeManager
+class SOFA_GUI_COMPONENT_API TopologicalChangeManager
 {
 public:
     using Index = sofa::Index;
@@ -126,19 +124,19 @@ private:
      *
      * @return bool - true if incision has been performed.
      */
-    bool incisionTriangleModel(TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model1,
+    bool incisionTriangleModel(sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model1,
                                Index idx1,
                                const sofa::type::Vec3& firstPoint,
-                               TriangleCollisionModel<sofa::defaulttype::Vec3Types> *model2,
+                               sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types> *model2,
                                Index idx2,
                                const sofa::type::Vec3& secondPoint,
                                int snapingValue = 0,
                                int snapingBorderValue = 0);
 
 
-    Index removeItemsFromTriangleModel(sofa::component::collision::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const;
-    Index removeItemsFromPointModel(sofa::component::collision::PointCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const;
-    Index removeItemsFromSphereModel(sofa::component::collision::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const;
+    Index removeItemsFromTriangleModel(sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const;
+    Index removeItemsFromPointModel(sofa::component::collision::geometry::PointCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const;
+    Index removeItemsFromSphereModel(sofa::component::collision::geometry::SphereCollisionModel<sofa::defaulttype::Vec3Types>* model, const type::vector<Index>& indices) const;
 
 
 private:
@@ -160,4 +158,4 @@ private:
     }	incision;
 };
 
-} //namespace sofa::component::collision
+} //namespace sofa::gui::component::performer

@@ -20,41 +20,44 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaConstraint/config.h>
+#include <sofa/gui/component/config.h>
 
-#include <SofaUserInteraction/InteractionPerformer.h>
-#include <SofaBaseCollision/BaseContactMapper.h>
-#include <SofaDeformable/SpringForceField.h>
-#include <SofaDeformable/StiffSpringForceField.h>
-#include <SofaGraphComponent/AttachBodyButtonSetting.h>
+#include <sofa/gui/component/performer/InteractionPerformer.h>
+#include <sofa/component/collision/response/mapper/BaseContactMapper.h>
+#include <sofa/gui/component/AttachBodyButtonSetting.h>
+#include <sofa/component/constraint/lagrangian/model/BilateralInteractionConstraint.h>
+
 #include <sofa/core/visual/DisplayFlags.h>
-#include <SofaConstraint/BilateralInteractionConstraint.h>
-#include <SofaGraphComponent/AttachBodyButtonSetting.h>
 
-namespace sofa::component::collision
+namespace sofa::gui::component
 {
 
-class ConstraintAttachBodyButtonSetting : public sofa::component::configurationsetting::AttachBodyButtonSetting
+class ConstraintAttachBodyButtonSetting : public sofa::gui::component::AttachBodyButtonSetting
 {
 public:
-    SOFA_CLASS(ConstraintAttachBodyButtonSetting,sofa::component::configurationsetting::AttachBodyButtonSetting);
+    SOFA_CLASS(ConstraintAttachBodyButtonSetting, sofa::gui::component::AttachBodyButtonSetting);
 protected:
     ConstraintAttachBodyButtonSetting() {}
 public:
-//        Data<SReal> snapDistance;
-    std::string getOperationType() override {return  "ConstraintAttachBody";}
+    //        Data<SReal> snapDistance;
+    std::string getOperationType() override { return  "ConstraintAttachBody"; }
 };
+
+} // namespace sofa::gui::component
+
+namespace sofa::gui::component::performer
+{
 
 struct BodyPicked;
 
 template <class DataTypes>
-class SOFA_SOFACONSTRAINT_API ConstraintAttachBodyPerformer: public TInteractionPerformer<DataTypes>
+class ConstraintAttachBodyPerformer: public TInteractionPerformer<DataTypes>
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
-    typedef sofa::component::collision::BaseContactMapper< DataTypes >        MouseContactMapper;
+    typedef sofa::component::collision::response::mapper::BaseContactMapper< DataTypes >        MouseContactMapper;
     typedef sofa::core::behavior::MechanicalState< DataTypes >         MouseContainer;
-//        typedef sofa::component::constraintset::BilateralInteractionConstraint< DataTypes > MouseConstraint;
+//        typedef sofa::component::constraint::lagrangian::model::BilateralInteractionConstraint< DataTypes > MouseConstraint;
 
 //        typedef sofa::core::behavior::BaseForceField              MouseForceField;
 
@@ -70,9 +73,9 @@ public:
     void setArrowSize(float s) {size=s;}
     void setShowFactorSize(float s) {showFactorSize = s;}
 
-    virtual void configure(configurationsetting::MouseButtonSetting* setting)
+    virtual void configure(sofa::component::userinteraction::configurationsetting::MouseButtonSetting * setting)
     {
-        if (ConstraintAttachBodyButtonSetting* s = dynamic_cast<ConstraintAttachBodyButtonSetting*>(setting))
+        if (auto* s = dynamic_cast<sofa::gui::component::ConstraintAttachBodyButtonSetting*>(setting))
         {
             setStiffness((double)s->stiffness.getValue());
             setArrowSize((float)s->arrowSize.getValue());
@@ -88,7 +91,7 @@ protected:
     virtual bool start_partial(const BodyPicked& picked);
 
     MouseContactMapper  *mapper;
-    constraintset::BilateralInteractionConstraint<defaulttype::Vec3Types>::SPtr m_constraint;
+    sofa::component::constraint::lagrangian::model::BilateralInteractionConstraint<defaulttype::Vec3Types>::SPtr m_constraint;
 
     core::visual::DisplayFlags flags;
 
@@ -96,7 +99,7 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_CONSTRAINTATTACHBODYPERFORMER_CPP)
-extern template class SOFA_SOFACONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Vec3Types>;
+extern template class SOFA_GUI_COMPONENT_API ConstraintAttachBodyPerformer<defaulttype::Vec3Types>;
 #endif
 
-} // namespace sofa::component::collision
+} // namespace sofa::gui::component::performer

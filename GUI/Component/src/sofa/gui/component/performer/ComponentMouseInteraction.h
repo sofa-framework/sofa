@@ -20,19 +20,20 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaUserInteraction/config.h>
+#include <sofa/gui/component/config.h>
 
 #include <sofa/simulation/DeleteVisitor.h>
-#include <SofaUserInteraction/MouseInteractor.h>
-#include <SofaBaseMechanics/IdentityMapping.h>
+#include <sofa/gui/component/performer/MouseInteractor.h>
+#include <sofa/component/mapping/linear/IdentityMapping.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
 #include <sofa/core/Mapping.h>
 #include <sofa/simulation/fwd.h>
 
-namespace sofa::component::collision
+namespace sofa::gui::component::performer
 {
 
 
-class SOFA_SOFAUSERINTERACTION_API ComponentMouseInteraction
+class SOFA_GUI_COMPONENT_API ComponentMouseInteraction
 {
 public:
     ComponentMouseInteraction();
@@ -61,7 +62,7 @@ public:
     //Components
     simulation::NodeSPtr nodeRayPick;
     sofa::core::behavior::BaseMechanicalState::SPtr mouseInSofa;
-    sofa::component::collision::BaseMouseInteractor::SPtr mouseInteractor;
+    sofa::gui::component::performer::BaseMouseInteractor::SPtr mouseInteractor;
 };
 
 
@@ -69,10 +70,10 @@ public:
 template <class DataTypes>
 class TComponentMouseInteraction : public ComponentMouseInteraction
 {
-    typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > MousePosition;
-    typedef sofa::component::container::MechanicalObject< DataTypes > MouseContainer;
-    typedef sofa::component::collision::MouseInteractor< DataTypes > Interactor;
-    typedef sofa::component::mapping::IdentityMapping< defaulttype::Vec3Types, DataTypes > IdentityMechanicalMapping;
+    typedef sofa::component::statecontainer::MechanicalObject< defaulttype::Vec3Types > MousePosition;
+    typedef sofa::component::statecontainer::MechanicalObject< DataTypes > MouseContainer;
+    typedef sofa::gui::component::performer::MouseInteractor< DataTypes > Interactor;
+    typedef sofa::component::mapping::linear::IdentityMapping< defaulttype::Vec3Types, DataTypes > IdentityMechanicalMapping;
     typedef typename sofa::core::Mapping< defaulttype::Vec3Types, DataTypes >::SPtr MouseMapping;
 
 public:
@@ -86,18 +87,18 @@ protected :
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
-extern template class SOFA_SOFAUSERINTERACTION_API TComponentMouseInteraction<defaulttype::Vec2Types>;
-extern template class SOFA_SOFAUSERINTERACTION_API TComponentMouseInteraction<defaulttype::Vec3Types>;
-extern template class SOFA_SOFAUSERINTERACTION_API TComponentMouseInteraction<defaulttype::Rigid3Types>;
+extern template class SOFA_GUI_COMPONENT_API TComponentMouseInteraction<defaulttype::Vec2Types>;
+extern template class SOFA_GUI_COMPONENT_API TComponentMouseInteraction<defaulttype::Vec3Types>;
+extern template class SOFA_GUI_COMPONENT_API TComponentMouseInteraction<defaulttype::Rigid3Types>;
 
 #endif
-} // namespace sofa::component::collision
+} // namespace sofa::gui::component::performer
 
 
 
 #if  !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
 namespace sofa::helper
 {
-extern template class SOFA_SOFAUSERINTERACTION_API Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
+extern template class SOFA_GUI_COMPONENT_API Factory<std::string, component::userinteraction::performer::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
 } // namespace sofa::helper
 #endif

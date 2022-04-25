@@ -20,14 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaUserInteraction/config.h>
+#include <sofa/gui/component/config.h>
 
-#include <SofaUserInteraction/InteractionPerformer.h>
+#include <sofa/gui/component/performer/InteractionPerformer.h>
 
-#include <SofaUserInteraction/TopologicalChangeManager.h>
-#include <SofaUserInteraction/MouseInteractor.h>
+#include <sofa/gui/component/performer/TopologicalChangeManager.h>
+#include <sofa/gui/component/performer/MouseInteractor.h>
 
-namespace sofa::component::collision
+namespace sofa::gui::component::performer
 {
 class InciseAlongPathPerformerConfiguration
 {
@@ -49,7 +49,7 @@ protected:
 };
 
 
-class SOFA_SOFAUSERINTERACTION_API InciseAlongPathPerformer: public InteractionPerformer, public InciseAlongPathPerformerConfiguration
+class SOFA_GUI_COMPONENT_API InciseAlongPathPerformer: public InteractionPerformer, public InciseAlongPathPerformerConfiguration
 {
 public:
     using Index = sofa::Index;
@@ -89,4 +89,4 @@ protected:
     unsigned int initialNbTriangles;
     unsigned int initialNbPoints;
 };
-} // namespace sofa::component::collision
+} // namespace sofa::gui::component::performer

@@ -20,15 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaUserInteraction/FixParticlePerformer.h>
+#include <sofa/gui/component/performer/FixParticlePerformer.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBoundaryCondition/FixedConstraint.h>
+#include <sofa/component/constraint/projective/FixedConstraint.h>
 
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/Node.h>
 
-namespace sofa::component::collision
+namespace sofa::gui::component::performer
 {
 
 template <class DataTypes>
@@ -62,7 +62,7 @@ void FixParticlePerformer<DataTypes>::start()
 
 
     //Fix all the points
-    typename projectiveconstraintset::FixedConstraint<DataTypes>::SPtr fixFixation = sofa::core::objectmodel::New< projectiveconstraintset::FixedConstraint<DataTypes> >();
+    typename sofa::component::constraint::projective::FixedConstraint<DataTypes>::SPtr fixFixation = sofa::core::objectmodel::New< sofa::component::constraint::projective::FixedConstraint<DataTypes> >();
     fixFixation->d_fixAll.setValue(true);
     nodeFixation->addObject(fixFixation);
 
@@ -107,7 +107,7 @@ FixParticlePerformer<DataTypes>::FixParticlePerformer(BaseMouseInteractor *i):TI
 
 
 template <class DataTypes>
-sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<DataTypes>::getFixationPoints(const BodyPicked &b, type::vector<Index> &points, Coord &fixPoint)
+sofa::component::statecontainer::MechanicalObject< DataTypes >* FixParticlePerformer<DataTypes>::getFixationPoints(const BodyPicked &b, type::vector<Index> &points, Coord &fixPoint)
 {
     const auto idx=b.indexCollisionElement;
     MouseContainer* collisionState=0;
@@ -138,4 +138,4 @@ sofa::component::container::MechanicalObject< DataTypes >* FixParticlePerformer<
     return collisionState;
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::gui::component::performer

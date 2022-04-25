@@ -21,20 +21,16 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_CONSTRAINTATTACHBODYPERFORMER_CPP
 
-#include <SofaConstraint/ConstraintAttachBodyPerformer.inl>
+#include <sofa/gui/component/performer/ConstraintAttachBodyPerformer.inl>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/Factory.inl>
-#include <SofaRigid/JointSpringForceField.inl>
-#include <SofaDeformable/StiffSpringForceField.inl>
 
 
-using namespace sofa::component::interactionforcefield;
 using namespace sofa::core::objectmodel;
-namespace sofa::component::collision
+namespace sofa::gui::component::performer
 {
 
-template class SOFA_SOFACONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Vec3Types>;
+template class SOFA_GUI_COMPONENT_API ConstraintAttachBodyPerformer<defaulttype::Vec3Types>;
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, ConstraintAttachBodyPerformer<defaulttype::Vec3Types> >  ConstraintAttachBodyPerformerVec3dClass("ConstraintAttachBody",true);
 
-} // namespace sofa::component::collision
+} // namespace sofa::gui::component::performer

@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_CPP
-#include <SofaUserInteraction/MouseInteractor.inl>
+#include <sofa/gui/component/performer/MouseInteractor.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::collision
+namespace sofa::gui::component::performer
 {
 
 int MouseInteractorClass = core::RegisterObject("Perform tasks related to the interaction with the mouse")
@@ -38,9 +38,9 @@ int MouseInteractorRigidClass = core::RegisterObject("Perform tasks related to t
 
         ;
 
-template class SOFA_SOFAUSERINTERACTION_API MouseInteractor<defaulttype::Vec2Types>;
-template class SOFA_SOFAUSERINTERACTION_API MouseInteractor<defaulttype::Vec3Types>;
-template class SOFA_SOFAUSERINTERACTION_API MouseInteractor<defaulttype::Rigid3Types>;
+template class SOFA_GUI_COMPONENT_API MouseInteractor<defaulttype::Vec2Types>;
+template class SOFA_GUI_COMPONENT_API MouseInteractor<defaulttype::Vec3Types>;
+template class SOFA_GUI_COMPONENT_API MouseInteractor<defaulttype::Rigid3Types>;
 
 
 
@@ -106,4 +106,4 @@ void BaseMouseInteractor::draw(const core::visual::VisualParams* vparams)
     }
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::gui::component::performer

@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaGraphComponent/FixPickedParticleButtonSetting.h>
+#include <sofa/gui/component/FixPickedParticleButtonSetting.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::gui::component
 {
 
 int FixPickedParticleButtonSettingClass = core::RegisterObject("Fix a picked particle in space")
@@ -37,4 +37,4 @@ FixPickedParticleButtonSetting::FixPickedParticleButtonSetting():
 {
 }
 
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::gui::component

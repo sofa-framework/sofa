@@ -19,14 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaUserInteraction/SuturePointPerformer.h>
+#include <sofa/gui/component/performer/SuturePointPerformer.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaMeshCollision/TriangleModel.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <sofa/component/statecontainer/MechanicalObject.h>
+#include <sofa/component/collision/geometry/TriangleModel.h>
 
-namespace sofa::component::collision
+
+namespace sofa::gui::component::performer
 {
 
 template <class DataTypes>
@@ -44,7 +45,7 @@ void SuturePointPerformer<DataTypes>::start()
     if (first) //first click
     {
         BodyPicked picked = this->interactor->getBodyPicked();
-        TriangleCollisionModel<sofa::defaulttype::Vec3Types>* CollisionModel = dynamic_cast< TriangleCollisionModel<sofa::defaulttype::Vec3Types>* >(picked.body);
+        auto* CollisionModel = dynamic_cast<sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* >(picked.body);
 
         if (picked.body == nullptr || CollisionModel == nullptr)
         {
@@ -58,7 +59,7 @@ void SuturePointPerformer<DataTypes>::start()
     else // second click
     {
         BodyPicked picked = this->interactor->getBodyPicked();
-        TriangleCollisionModel<sofa::defaulttype::Vec3Types>* CollisionModel = dynamic_cast< TriangleCollisionModel<sofa::defaulttype::Vec3Types>* >(picked.body);
+        auto* CollisionModel = dynamic_cast<sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>* >(picked.body);
 
         if (picked.body == nullptr || CollisionModel == nullptr)
         {
@@ -71,7 +72,7 @@ void SuturePointPerformer<DataTypes>::start()
         sofa::core::topology::BaseMeshTopology* triangleContainer;
         CollisionModel->getContext()->get (triangleContainer);
 
-        sofa::component::container::MechanicalObject <defaulttype::Vec3Types>* MechanicalObject;
+        sofa::component::statecontainer::MechanicalObject <defaulttype::Vec3Types>* MechanicalObject;
         CollisionModel->getContext()->get (MechanicalObject,  sofa::core::objectmodel::BaseContext::SearchRoot);
 
         CollisionModel->getContext()->get (FixObject, sofa::core::objectmodel::BaseContext::SearchRoot);
@@ -201,4 +202,4 @@ SuturePointPerformer<DataTypes>::~SuturePointPerformer()
         FixObject->removeConstraint(fixedIndex);
 }
 
-} // namespace sofa::component::collision
+} // namespace sofa::gui::component::performer

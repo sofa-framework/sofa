@@ -19,16 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaUserInteraction/SuturePointPerformer.inl>
+#include <sofa/gui/component/performer/SuturePointPerformer.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/Factory.inl>
 
-namespace sofa::component::collision
+namespace sofa::gui::component::performer
 {
-template class SOFA_SOFAUSERINTERACTION_API  SuturePointPerformer<defaulttype::Vec3Types>;
+template class SOFA_GUI_COMPONENT_API  SuturePointPerformer<defaulttype::Vec3Types>;
 
 
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, SuturePointPerformer<defaulttype::Vec3Types> >  SuturePointPerformerVec3Class("SuturePoints",true);
 
 
-} // namespace sofa::component::collision
+} // namespace sofa::gui::component::performer

@@ -21,15 +21,15 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGraphComponent/config.h>
+#include <sofa/gui/component/config.h>
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <SofaGraphComponent/MouseButtonSetting.h>
+#include <sofa/component/userinteraction/configurationsetting/MouseButtonSetting.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::gui::component
 {
 
-class SOFA_SOFAGRAPHCOMPONENT_API FixPickedParticleButtonSetting: public MouseButtonSetting
+class SOFA_GUI_COMPONENT_API FixPickedParticleButtonSetting: public sofa::component::userinteraction::configurationsetting::MouseButtonSetting
 {
 public:
     SOFA_CLASS(FixPickedParticleButtonSetting,MouseButtonSetting);
@@ -41,4 +41,4 @@ public:
 
 };
 
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::gui::component

@@ -21,18 +21,18 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGraphComponent/config.h>
+#include <sofa/gui/component/config.h>
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <SofaGraphComponent/MouseButtonSetting.h>
+#include <sofa/component/userinteraction/configurationsetting/MouseButtonSetting.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::gui::component
 {
 
-class SOFA_SOFAGRAPHCOMPONENT_API AttachBodyButtonSetting: public MouseButtonSetting
+class SOFA_GUI_COMPONENT_API AttachBodyButtonSetting: public sofa::component::userinteraction::configurationsetting::MouseButtonSetting
 {
 public:
-    SOFA_CLASS(AttachBodyButtonSetting,MouseButtonSetting);
+    SOFA_CLASS(AttachBodyButtonSetting, sofa::component::userinteraction::configurationsetting::MouseButtonSetting);
 protected:
     AttachBodyButtonSetting();
 public:
@@ -42,4 +42,4 @@ public:
     Data<SReal> showFactorSize; ///< Show factor size of the JointSpringForcefield  when interacting with rigids
 };
 
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::gui::component

@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaGraphComponent/AddFrameButtonSetting.h>
+#include <sofa/gui/component/AddFrameButtonSetting.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::gui::component
 {
 
 int AddFrameButtonSettingClass = core::RegisterObject("Add a frame to a skinned model")
@@ -36,4 +36,4 @@ AddFrameButtonSetting::AddFrameButtonSetting()
 {
 }
 
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::gui::component

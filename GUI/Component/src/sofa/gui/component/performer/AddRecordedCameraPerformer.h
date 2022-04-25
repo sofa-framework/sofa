@@ -20,21 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaUserInteraction/config.h>
+#include <sofa/gui/component/config.h>
 
-#include <SofaUserInteraction/MouseInteractor.h>
-#include <SofaUserInteraction/InteractionPerformer.h>
-#include <SofaBaseCollision/BaseContactMapper.h>
-#include <sofa/core/behavior/BaseForceField.h>
-#include <SofaDeformable/SpringForceField.h>
-#include <SofaDeformable/StiffSpringForceField.h>
-#include <SofaGraphComponent/AddRecordedCameraButtonSetting.h>
+#include <sofa/gui/component/performer/InteractionPerformer.h>
 #include <sofa/core/visual/DisplayFlags.h>
 
-namespace sofa::component::collision
+namespace sofa::gui::component::performer
 {
 
-class SOFA_SOFAUSERINTERACTION_API AddRecordedCameraPerformer: public InteractionPerformer
+class SOFA_GUI_COMPONENT_API AddRecordedCameraPerformer: public InteractionPerformer
 {
 public:
     AddRecordedCameraPerformer(BaseMouseInteractor *i)
@@ -48,4 +42,4 @@ public:
 
 };
 
-} // namespace sofa::component::collision
+} // namespace sofa::gui::component::performer

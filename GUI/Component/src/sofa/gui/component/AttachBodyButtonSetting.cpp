@@ -20,11 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaGraphComponent/AttachBodyButtonSetting.h>
+#include <sofa/gui/component/AttachBodyButtonSetting.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::gui::component
 {
 
 int AttachBodyButtonSettingClass = core::RegisterObject("Attach Body Button configuration")
@@ -39,4 +39,4 @@ AttachBodyButtonSetting::AttachBodyButtonSetting():
 {
 }
 
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::gui::component

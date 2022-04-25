@@ -20,13 +20,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaUserInteraction/config.h>
-#include <SofaUserInteraction/InteractionPerformer.h>
-#include <SofaUserInteraction/RayModel.h>
+#include <sofa/gui/component/config.h>
+
+#include <sofa/gui/component/performer/InteractionPerformer.h>
+#include <sofa/component/collision/geometry/RayModel.h>
+#include <sofa/component/statecontainer/MechanicalObject.h>
+
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/core/BehaviorModel.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-namespace sofa::component::collision
+
+namespace sofa::gui::component::performer
 {
 
 /** @brief Represents a point on an object.
@@ -45,11 +48,11 @@ struct BodyPicked
     operator bool() { return mstate != nullptr; }
 };
 
-class SOFA_SOFAUSERINTERACTION_API BaseMouseInteractor : public core::BehaviorModel
+class SOFA_GUI_COMPONENT_API BaseMouseInteractor : public core::BehaviorModel
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseMouseInteractor, core::BehaviorModel);
-    typedef sofa::component::collision::RayCollisionModel MouseCollisionModel;
+    typedef sofa::component::collision::geometry::RayCollisionModel MouseCollisionModel;
     typedef type::vector< InteractionPerformer* > VecPerformer;
 protected:
     BaseMouseInteractor(): isAttached(false),distanceFromMouse(0) {}
@@ -103,7 +106,7 @@ class MouseInteractor : public BaseMouseInteractor
 public:
     SOFA_CLASS(SOFA_TEMPLATE(MouseInteractor,DataTypes),BaseMouseInteractor);
 
-    typedef sofa::component::container::MechanicalObject< DataTypes > MouseContainer;
+    typedef sofa::component::statecontainer::MechanicalObject< DataTypes > MouseContainer;
     typedef typename DataTypes::Coord Coord;
 public:
     MouseInteractor():mouseInSofa(nullptr) {}
@@ -118,12 +121,12 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_CPP)
-extern template class SOFA_SOFAUSERINTERACTION_API MouseInteractor<defaulttype::Vec2Types>;
-extern template class SOFA_SOFAUSERINTERACTION_API MouseInteractor<defaulttype::Vec3Types>;
-extern template class SOFA_SOFAUSERINTERACTION_API MouseInteractor<defaulttype::Rigid3Types>;
+extern template class SOFA_GUI_COMPONENT_API MouseInteractor<defaulttype::Vec2Types>;
+extern template class SOFA_GUI_COMPONENT_API MouseInteractor<defaulttype::Vec3Types>;
+extern template class SOFA_GUI_COMPONENT_API MouseInteractor<defaulttype::Rigid3Types>;
 
 #endif
 
 
 
-} //namespace sofa::component::collision
+} //namespace sofa::gui::component::performer

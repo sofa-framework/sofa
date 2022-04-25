@@ -20,12 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaUserInteraction/config.h>
+#include <sofa/gui/component/config.h>
 
-#include <SofaGraphComponent/MouseButtonSetting.h>
+#include <sofa/component/userinteraction/configurationsetting/MouseButtonSetting.h>
 #include <sofa/helper/Factory.h>
+#include <sofa/core/fwd.h>
 
-namespace sofa::component::collision
+namespace sofa::gui::component::performer
 {
 
 class BaseMouseInteractor;
@@ -33,7 +34,7 @@ template <class DataTypes>
 class MouseInteractor;
 
 
-class SOFA_SOFAUSERINTERACTION_API InteractionPerformer
+class SOFA_GUI_COMPONENT_API InteractionPerformer
 {
 public:
     typedef helper::Factory<std::string, InteractionPerformer, BaseMouseInteractor*> InteractionPerformerFactory;
@@ -41,7 +42,7 @@ public:
     InteractionPerformer(BaseMouseInteractor *i):interactor(i),freezePerformer(0) {}
     virtual ~InteractionPerformer() {}
 
-    virtual void configure(configurationsetting::MouseButtonSetting* /*setting*/) {}
+    virtual void configure(sofa::component::userinteraction::configurationsetting::MouseButtonSetting* /*setting*/) {}
 
     virtual void start()=0;
     virtual void execute()=0;
@@ -77,9 +78,9 @@ public:
 
 };
 
-} //namespace sofa::component::collision
+} //namespace sofa::gui::component::performer
 
 namespace sofa::helper
 {
-extern template class SOFA_SOFAUSERINTERACTION_API Factory<std::string, component::collision::InteractionPerformer, component::collision::BaseMouseInteractor*>;
+extern template class SOFA_GUI_COMPONENT_API Factory<std::string, sofa::gui::component::performer::InteractionPerformer, sofa::gui::component::performer::BaseMouseInteractor*>;
 } //namespace sofa::helper
