@@ -1121,7 +1121,6 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
     { "RayCollisionModel", CreatableMoved("v22.06", "SofaUserInteraction", "Sofa.Component.Collision.Geometry") },
     { "Controller", CreatableMoved("v22.06", "SofaUserInteraction", "Sofa.Component.UserInteraction.Controller") },
     { "MechanicalStateController", CreatableMoved("v22.06", "SofaUserInteraction", "Sofa.Component.UserInteraction.Controller") },
-    { "MouseInteractor", CreatableMoved("v22.06", "SofaUserInteraction", "Sofa.Component.UserInteraction.Performer") },
 
     // SofaObjectInteraction was deprecated in #2813
     { "PenalityContactForceField", CreatableMoved("v22.06", "SofaObjectInteraction", "Sofa.Component.Collision.Response.Contact") },
