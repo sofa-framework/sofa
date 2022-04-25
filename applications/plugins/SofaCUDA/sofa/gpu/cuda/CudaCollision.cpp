@@ -53,7 +53,7 @@ namespace sofa::component::userinteraction::performer
 
 using namespace sofa::gpu::cuda;
 using namespace sofa::component::collision;
-using namespace sofa::component::collision::model;
+using namespace sofa::component::collision::geometry;
 using namespace sofa::component::collision::response::mapper;
 
 template class SOFA_GPU_CUDA_API MouseInteractor<CudaVec3fTypes>;
@@ -82,7 +82,7 @@ helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePe
 
 using FixParticlePerformerCuda3d = FixParticlePerformer<gpu::cuda::CudaVec3Types>;
 
-int triangleFixParticle = FixParticlePerformerCuda3d::RegisterSupportedModel<TriangleCollisionModel<gpu::cuda::Vec3Types>>(&FixParticlePerformerCuda3d::getFixationPointsTriangle<TriangleCollisionModel<gpu::cuda::Vec3Types>>);
+int triangleFixParticle = FixParticlePerformerCuda3d::RegisterSupportedModel<geometry::TriangleCollisionModel<gpu::cuda::Vec3Types>>(&FixParticlePerformerCuda3d::getFixationPointsTriangle<geometry::TriangleCollisionModel<gpu::cuda::Vec3Types>>);
 
 
 } //namespace sofa::component::collision
@@ -92,7 +92,7 @@ namespace sofa::gpu::cuda
 {
 
 using namespace sofa::component::collision;
-using namespace sofa::component::collision::model;
+using namespace sofa::component::collision::geometry;
 using namespace sofa::component::userinteraction::performer;
 
 
@@ -117,7 +117,7 @@ public:
         RayDiscreteIntersection* rayIntersector = new RayDiscreteIntersection(this, false);
         intersectors.add<RayCollisionModel,        CudaSphereCollisionModel,   RayDiscreteIntersection>(rayIntersector);
         MeshNewProximityIntersection* meshIntersector = new MeshNewProximityIntersection(this, false);
-        intersectors.add<TriangleCollisionModel<sofa::defaulttype::Vec3Types>,   CudaSphereCollisionModel,   MeshNewProximityIntersection>(meshIntersector);
+        intersectors.add<sofa::component::collision::geometry::TriangleCollisionModel<sofa::defaulttype::Vec3Types>,   CudaSphereCollisionModel,   MeshNewProximityIntersection>(meshIntersector);
     }
 
 };
