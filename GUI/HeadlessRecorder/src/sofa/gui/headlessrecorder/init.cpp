@@ -24,7 +24,7 @@
 #include <sofa/gui/common/GUIManager.h>
 #include <sofa/gui/headlessrecorder/HeadlessRecorder.h>
 
-int HeadlessRecorderClass = sofa::gui::common::GUIManager::RegisterGUI("hRecorder", &sofa::gui::headlessrecorder::HeadlessRecorder::CreateGUI, &sofa::gui::headlessrecorder::HeadlessRecorder::RegisterGUIParameters, 2);
+int HeadlessRecorderClass = sofa::gui::common::GUIManager::RegisterGUI("hRecorder", &sofa::gui::hrecorder::HeadlessRecorder::CreateGUI, &sofa::gui::hrecorder::HeadlessRecorder::RegisterGUIParameters, 2);
 
 namespace sofa::gui::headlessrecorder
 {
