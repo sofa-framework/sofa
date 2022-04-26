@@ -90,6 +90,13 @@ OglModel::OglModel()
     primitiveTypeOptions->setNames(4, "DEFAULT", "LINES_ADJACENCY", "PATCHES", "POINTS");
     primitiveTypeOptions->setSelectedItem(0);
     primitiveType.endEdit();
+
+    this->addUpdateCallback("updatePositions", { &this->m_positions}, [this](const core::DataTracker& t)
+    {
+        SOFA_UNUSED(t);
+        initVisual();
+        return sofa::core::objectmodel::ComponentState::Valid;
+    }, {&this->m_vnormals, &this->m_vtangents, &this->m_vbitangents});
 }
 
 void OglModel::deleteTextures()
