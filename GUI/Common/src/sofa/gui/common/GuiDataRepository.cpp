@@ -34,7 +34,7 @@ FileRepository GuiDataRepository(
             Utils::getSofaPathTo("share/sofa/gui/qt")
         },
         {
-            { Utils::getSofaPathTo("etc/SofaGuiQt.ini").c_str(), {"RESOURCES_DIR"} }
+            { Utils::getSofaPathTo("etc/Sofa.Gui.Qt.ini").c_str(), {"RESOURCES_DIR"} }
         }
 );
 
