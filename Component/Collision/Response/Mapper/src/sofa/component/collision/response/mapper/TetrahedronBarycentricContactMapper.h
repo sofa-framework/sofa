@@ -31,7 +31,7 @@ namespace sofa::component::collision::response::mapper
 
 /// Mapper for TetrahedronCollisionModel
 template<class DataTypes>
-class response::mapper::ContactMapper<collision::geometry::TetrahedronCollisionModel, DataTypes> : public BarycentricContactMapper<collision::geometry::TetrahedronCollisionModel, DataTypes>
+class ContactMapper<collision::geometry::TetrahedronCollisionModel, DataTypes> : public BarycentricContactMapper<collision::geometry::TetrahedronCollisionModel, DataTypes>
 {
 public:
     using Index = sofa::Index;
