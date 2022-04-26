@@ -19,49 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_TETRAHEDRONDISCRETEINTERSECTION_H
-#define SOFA_COMPONENT_COLLISION_TETRAHEDRONDISCRETEINTERSECTION_H
-#include <SofaMiscCollision/config.h>
+#define SOFA_COMPONENT_COLLISION_TETRAHEDRONBARYCENTRICCONTACTMAPPER_CPP
+#include <sofa/component/collision/response/mapper/TetrahedronBarycentricContactMapper.h>
 
-#include <sofa/core/collision/Intersection.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/CollisionElement.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/component/collision/geometry/CubeModel.h>
+#include <SofaMeshCollision/BarycentricContactMapper.inl>
+#include <sofa/helper/Factory.inl>
 
-#include <SofaMeshCollision/PointModel.h>
-#include <SofaUserInteraction/RayModel.h>
-#include <SofaMiscCollision/TetrahedronModel.h>
-#include <SofaBaseCollision/DiscreteIntersection.h>
-
-namespace sofa
+namespace sofa::component::collision::response::mapper
 {
 
-namespace component
-{
+ContactMapperCreator< ContactMapper<collision::geometry::TetrahedronCollisionModel> > TetrahedronContactMapperClass("PenalityContactForceField",true);
 
-namespace collision
-{
-class SOFA_MISC_COLLISION_API TetrahedronDiscreteIntersection : public core::collision::BaseIntersector
-{
+template class SOFA_COMPONENT_COLLISION_RESPONSE_MAPPER_API ContactMapper<collision::geometry::TetrahedronCollisionModel, sofa::defaulttype::Vec3Types>;
 
-    typedef DiscreteIntersection::OutputVector OutputVector;
-
-public:
-    TetrahedronDiscreteIntersection(DiscreteIntersection* object);
-
-    bool testIntersection(Tetrahedron&, Point&);
-    bool testIntersection(Ray&, Tetrahedron&);
-
-    int computeIntersection(Tetrahedron&, Point&, OutputVector*);
-    int computeIntersection(Ray&, Tetrahedron&, OutputVector*);
-
-protected:
-
-    DiscreteIntersection* intersection;
-
-};
-
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::collision::response::mapper

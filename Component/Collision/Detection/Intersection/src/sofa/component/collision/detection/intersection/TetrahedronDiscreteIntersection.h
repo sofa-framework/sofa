@@ -19,44 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_TRIANGLEMODELINREGULARGRID_H
-#define SOFA_COMPONENT_COLLISION_TRIANGLEMODELINREGULARGRID_H
-#include <SofaMiscCollision/config.h>
+#pragma once
+#include <sofa/component/collision/detection/intersection/config.h>
 
-#include <SofaMeshCollision/TriangleModel.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/collision/Intersection.h>
 
-namespace sofa
+#include <sofa/component/collision/geometry/PointModel.h>
+#include <sofa/component/collision/geometry/RayModel.h>
+#include <sofa/component/collision/geometry/TetrahedronModel.h>
+#include <sofa/component/collision/detection/intersection/DiscreteIntersection.h>
+
+namespace sofa::component::collision::detection::intersection
 {
-
-namespace component
+class SOFA_COMPONENT_COLLISION_DETECTION_INTERSECTION_API TetrahedronDiscreteIntersection : public core::collision::BaseIntersector
 {
+    typedef DiscreteIntersection::OutputVector OutputVector;
 
-namespace collision
-{
-
-
-class TriangleModelInRegularGrid : public TriangleCollisionModel<sofa::defaulttype::Vec3Types>
-{
 public:
-    SOFA_CLASS(TriangleModelInRegularGrid, TriangleCollisionModel<sofa::defaulttype::Vec3Types>);
+    TetrahedronDiscreteIntersection(DiscreteIntersection* object);
 
-    void init() override;
-    void computeBoundingTree ( int maxDepth=0 ) override;
+    bool testIntersection(collision::geometry::Tetrahedron&, collision::geometry::Point&);
+    bool testIntersection(collision::geometry::Ray&, collision::geometry::Tetrahedron&);
 
-    sofa::core::topology::BaseMeshTopology* _topology;
-    sofa::core::topology::BaseMeshTopology* _higher_topo;
-    core::behavior::MechanicalState<defaulttype::Vec3Types>* _higher_mstate;
+    int computeIntersection(collision::geometry::Tetrahedron&, collision::geometry::Point&, OutputVector*);
+    int computeIntersection(collision::geometry::Ray&, collision::geometry::Tetrahedron&, OutputVector*);
 
 protected:
-    TriangleModelInRegularGrid();
-    ~TriangleModelInRegularGrid();
+    DiscreteIntersection* intersection;
+
 };
 
-}
-
-}
-
-}
-
-#endif
+} // namespace sofa::component::collision::detection::intersection

@@ -21,10 +21,10 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaMiscCollision/BarycentricStickContact.h>
+#include <sofa/component/collision/response/contact/BarycentricStickContact.h>
 #include <sofa/core/visual/VisualParams.h>
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::contact
 {
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
@@ -239,4 +239,4 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
         ff->addTag(*it);
 }
 
-} //namespace sofa::component::collision
+} // namespace sofa::component::collision::response::contact

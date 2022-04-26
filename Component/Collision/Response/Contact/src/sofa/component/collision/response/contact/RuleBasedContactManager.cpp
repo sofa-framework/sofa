@@ -19,17 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaMiscCollision/RuleBasedContactManager.h>
+#include <sofa/component/collision/response/contact/RuleBasedContactManager.h>
+
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace collision
+namespace sofa::component::collision::response::contact
 {
 
 int RuleBasedContactManagerClass = core::RegisterObject("Create different response to the collisions based on a set of rules")
@@ -155,9 +150,4 @@ void RuleBasedContactManager::parse ( sofa::core::objectmodel::BaseObjectDescrip
     Inherit1::parse(arg);
 }
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
+} // namespace sofa::component::collision::response::contact

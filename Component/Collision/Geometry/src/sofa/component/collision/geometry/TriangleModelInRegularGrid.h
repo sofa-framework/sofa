@@ -19,29 +19,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaUserInteraction/RayContact.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <SofaUserInteraction/RayModel.h>
-#include <SofaMiscCollision/TetrahedronModel.h>
-#include <sofa/helper/Factory.inl>
+#pragma once
+#include <sofa/component/collision/geometry/config.h>
 
-namespace sofa
+#include <sofa/component/collision/geometry/TriangleModel.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+
+namespace sofa::component::collision::geometry
 {
 
-namespace component
+
+class SOFA_COMPONENT_COLLISION_GEOMETRY_API TriangleModelInRegularGrid : public TriangleCollisionModel<sofa::defaulttype::Vec3Types>
 {
+public:
+    SOFA_CLASS(TriangleModelInRegularGrid, TriangleCollisionModel<sofa::defaulttype::Vec3Types>);
 
-namespace collision
-{
+    void init() override;
+    void computeBoundingTree ( int maxDepth=0 ) override;
 
-using namespace sofa::defaulttype;
+    sofa::core::topology::BaseMeshTopology* _topology;
+    sofa::core::topology::BaseMeshTopology* _higher_topo;
+    core::behavior::MechanicalState<defaulttype::Vec3Types>* _higher_mstate;
 
-Creator<core::collision::Contact::Factory, RayContact<TetrahedronCollisionModel> > RayTetrahedronContactClass("RayContact",true);
+protected:
+    TriangleModelInRegularGrid();
+    ~TriangleModelInRegularGrid();
+};
 
-template class SOFA_MISC_COLLISION_API response::contact::RayContact<TetrahedronCollisionModel>;
-
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+}  // namespace sofa::component::collision::geometry

@@ -19,22 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_RULEBASEDCONTACTMANAGER_H
-#define SOFA_COMPONENT_COLLISION_RULEBASEDCONTACTMANAGER_H
-#include <SofaMiscCollision/config.h>
+#pragma once
+#include <sofa/component/collision/response/contact/config.h>
 
-#include <SofaBaseCollision/DefaultContactManager.h>
+#include <sofa/component/collision/response/contact/DefaultContactManager.h>
 
-namespace sofa
+namespace sofa::component::collision::response::contact
 {
 
-namespace component
-{
-
-namespace collision
-{
-
-class SOFA_MISC_COLLISION_API RuleBasedContactManager : public DefaultContactManager
+class SOFA_COMPONENT_COLLISION_RESPONSE_CONTACT_API RuleBasedContactManager : public DefaultContactManager
 {
 public:
     SOFA_CLASS(RuleBasedContactManager, DefaultContactManager);
@@ -127,10 +120,4 @@ protected:
     std::string replaceVariables(std::string response);
 };
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
-#endif
+} // namespace sofa::component::collision::response::contact

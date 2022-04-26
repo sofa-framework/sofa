@@ -20,16 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-
-#include <SofaMiscCollision/config.h>
+#include <sofa/component/collision/response/contact/config.h>
 
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/Intersection.h>
-#include <SofaBaseCollision/BaseContactMapper.h>
-#include <SofaGeneralDeformable/VectorSpringForceField.h>
+#include <sofa/component/collision/response/mapper/BaseContactMapper.h>
+#include <sofa/component/solidmechanics/spring/VectorSpringForceField.h>
 
 
-namespace sofa::component::collision
+namespace sofa::component::collision::response::contact
 {
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes = sofa::defaulttype::Vec3Types >
@@ -48,15 +47,15 @@ public:
     typedef core::behavior::MechanicalState<DataTypes2> MechanicalState2;
     typedef typename CollisionModel1::Element CollisionElement1;
     typedef typename CollisionModel2::Element CollisionElement2;
-    typedef interactionforcefield::VectorSpringForceField<ResponseDataTypes> ResponseForceField;
+    typedef sofa::component::solidmechanics::spring::VectorSpringForceField<ResponseDataTypes> ResponseForceField;
 
 protected:
     CollisionModel1* model1;
     CollisionModel2* model2;
     Intersection* intersectionMethod;
 
-    ContactMapper<CollisionModel1,DataTypes1> mapper1;
-    ContactMapper<CollisionModel2,DataTypes2> mapper2;
+    mapper::ContactMapper<CollisionModel1, DataTypes1> mapper1;
+    mapper::ContactMapper<CollisionModel2, DataTypes2> mapper2;
 
     typename ResponseForceField::SPtr ff;
     core::objectmodel::BaseContext* parent;
@@ -93,5 +92,4 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 };
 
-} // namespace sofa::component::collision
-
+} // namespace sofa::component::collision::response::contact
