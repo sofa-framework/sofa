@@ -61,7 +61,7 @@ public:
     typedef helper::WriteOnlyAccessor<Data< ImageTypes > > waImage;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
 
-    Data< ImageTypes > inputImage;  ///< input image
+    Data< ImageTypes > inputImage; ///< input image
     Data< ImageTypes > outputImage; ///< ouput image
 
     TestImageEngine() :   Inherited()

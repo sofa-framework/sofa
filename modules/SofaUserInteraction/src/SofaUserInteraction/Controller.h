@@ -109,7 +109,7 @@ public:
 
 protected:
 
-    Data< bool > handleEventTriggersUpdate; ///< Event reception triggers object update ?
+    Data< bool > handleEventTriggersUpdate; ///< Event handling frequency controls the controller update frequency
 
 public:
 

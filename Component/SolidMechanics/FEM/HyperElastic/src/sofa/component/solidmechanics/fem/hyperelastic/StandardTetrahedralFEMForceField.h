@@ -143,7 +143,7 @@ public :
    VecCoord  _initialPoints;	/// the intial positions of the points
    bool updateMatrix;
    bool  _meshSaved ;
-   Data<std::string> f_materialName; ///< the name of the material
+   Data<std::string> f_materialName; ///< the name of the material to be used
    Data<SetParameterArray> f_parameterSet; ///< The global parameters specifying the material
    Data<SetAnisotropyDirectionArray> f_anisotropySet; ///< The global directions of anisotropy of the material
    Data<std::string> f_parameterFileName; ///< the name of the file describing the material parameters for all tetrahedra

@@ -494,7 +494,7 @@ public:
 
     Data< sofa::type::BoundingBox > f_bbox; ///< this object bounding box
 
-    Data< sofa::core::objectmodel::ComponentState >  d_componentState; ///< the object state
+    Data< sofa::core::objectmodel::ComponentState >  d_componentState; ///< The state of the component among (Dirty, Valid, Undefined, Loading, Invalid).
 
     SOFA_ATTRIBUTE_DISABLED__COMPONENTSTATE("To fix your code, use d_componentState")
     DeprecatedAndRemoved m_componentstate{};

@@ -181,7 +181,7 @@ protected:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    Data<bool> useMBK; ///< if true, compute and use MBK matrix
+    Data<bool> useMBK; ///< compute MBK and use it in addMBKdx, instead of using addDForce and addMDx.
 
     /** Matrix-vector product for implicit methods with iterative solvers.
         If the MBK matrix is ill-conditionned, recompute it, and correct it to avoid too small singular values.

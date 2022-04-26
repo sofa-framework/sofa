@@ -83,7 +83,7 @@ public:
     typedef type::Mat<NOut, NIn, Real> MBloc;
     typedef sofa::linearalgebra::CompressedRowSparseMatrix<MBloc> MatrixType;
 
-    Data<VecCoord> points;    ///< mapped points in local coordinates
+    Data<VecCoord> points; ///< Local Coordinates of the points
     VecCoord rotatedPoints;   ///< vectors from frame origin to mapped points, projected to world coordinates
     RigidMappingInternalData<In, Out> data;
     Data<sofa::Index> index; ///< input DOF index

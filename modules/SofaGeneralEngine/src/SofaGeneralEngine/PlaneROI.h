@@ -106,7 +106,7 @@ public:
     Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
     Data<type::vector<Edge> > f_edges; ///< Edge Topology
     Data<type::vector<Triangle> > f_triangles; ///< Triangle Topology
-    Data<type::vector<Tetra> > f_tetrahedra; ///< NOT YET
+    Data<type::vector<Tetra> > f_tetrahedra; ///< Tetrahedron Topology
     Data<bool> f_computeEdges; ///< If true, will compute edge list and index list inside the ROI.
     Data<bool> f_computeTriangles; ///< If true, will compute triangle list and index list inside the ROI.
     Data<bool> f_computeTetrahedra; ///< If true, will compute tetrahedra list and index list inside the ROI.

@@ -71,29 +71,29 @@ protected:
 
 public:
 
-    Data< Real > m_p0;                  ///< IN: Rest pressure when V = V0
-    Data< Real > m_B;                   ///< IN: Bulk modulus (resistance to uniform compression)
-    Data< Real > m_gamma;               ///< IN: Bulk modulus (resistance to uniform compression)
-    Data< Real > m_injectedVolume;      ///< IN: Injected (or extracted) volume since the start of the simulation
-    Data< Real > m_maxInjectionRate;    ///< IN: Maximum injection rate (volume per second)
+    Data< Real > m_p0; ///< IN: Rest pressure when V = V0
+    Data< Real > m_B; ///< IN: Bulk modulus (resistance to uniform compression)
+    Data< Real > m_gamma; ///< IN: Bulk modulus (resistance to uniform compression)
+    Data< Real > m_injectedVolume; ///< IN: Injected (or extracted) volume since the start of the simulation
+    Data< Real > m_maxInjectionRate; ///< IN: Maximum injection rate (volume per second)
 
-    Data< Real > m_initialVolume;       ///< OUT: Initial volume, as computed from the surface rest position
+    Data< Real > m_initialVolume; ///< OUT: Initial volume, as computed from the surface rest position
     Data< Real > m_currentInjectedVolume; ///< OUT: Current injected (or extracted) volume (taking into account maxInjectionRate)
-    Data< Real > m_v0;                  ///< OUT: Rest volume (as computed from initialVolume + currentInjectedVolume)
-    Data< Real > m_currentVolume;       ///< OUT: Current volume, as computed from the last surface position
-    Data< Real > m_currentPressure;     ///< OUT: Current pressure, as computed from the last surface position
-    Data< Real > m_currentStiffness;    ///< OUT: dP/dV at current volume and pressure
+    Data< Real > m_v0; ///< OUT: Rest volume (as computed from initialVolume + injectedVolume)
+    Data< Real > m_currentVolume; ///< OUT: Current volume, as computed from the last surface position
+    Data< Real > m_currentPressure; ///< OUT: Current pressure, as computed from the last surface position
+    Data< Real > m_currentStiffness; ///< OUT: dP/dV at current volume and pressure
 
     Data< SeqTriangles > m_pressureTriangles; ///< OUT: list of triangles where a pressure is applied (mesh triangles + tesselated quads)
 
-    Data< Real > m_initialSurfaceArea;  ///< OUT: Initial surface area, as computed from the surface rest position
-    Data< Real > m_currentSurfaceArea;  ///< OUT: Current surface area, as computed from the last surface position
+    Data< Real > m_initialSurfaceArea; ///< OUT: Initial surface area, as computed from the surface rest position
+    Data< Real > m_currentSurfaceArea; ///< OUT: Current surface area, as computed from the last surface position
 
-    Data< Real > m_drawForceScale;  ///< DEBUG: scale used to render force vectors
-    Data< sofa::type::RGBAColor > m_drawForceColor;  ///< DEBUG: color used to render force vectors
+    Data< Real > m_drawForceScale; ///< DEBUG: scale used to render force vectors
+    Data< sofa::type::RGBAColor > m_drawForceColor; ///< DEBUG: color used to render force vectors
 
-    Data< Real > m_volumeAfterTC;  ///< OUT: Volume after a topology change
-    Data< Real > m_surfaceAreaAfterTC;  ///< OUT: Surface area after a topology change
+    Data< Real > m_volumeAfterTC; ///< OUT: Volume after a topology change
+    Data< Real > m_surfaceAreaAfterTC; ///< OUT: Surface area after a topology change
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<TaitSurfacePressureForceField<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;

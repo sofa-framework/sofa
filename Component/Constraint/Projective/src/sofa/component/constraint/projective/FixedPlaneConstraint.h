@@ -67,9 +67,9 @@ public:
     typedef type::vector<Index> SetIndexArray;
     typedef core::topology::TopologySubsetIndices SetIndex;
 public:
-    Data<Coord> d_direction; ///< direction on which the constraint applied
-    Data<Real> d_dmin; ///< coordinates min of the plane for the vertex selection
-    Data<Real> d_dmax; ///< coordinates max of the plane for the vertex selection
+    Data<Coord> d_direction; ///< normal direction of the plane
+    Data<Real> d_dmin; ///< Minimum plane distance from the origin
+    Data<Real> d_dmax; ///< Maximum plane distance from the origin
     SetIndex   d_indices; ///< the set of vertex indices
 
     /// Link to be set to the topology container in the component graph.

@@ -49,13 +49,13 @@ protected:
     ViewerSetting();
 public:
 
-    Data<sofa::type::Vec<2,int> > resolution;                           ///< Screen resolution (width, height).
-    Data<bool> fullscreen;                                  ///< True if viewer should be fullscreen.
-    Data<sofa::helper::OptionsGroup> cameraMode;                          ///< Camera mode.
+    Data<sofa::type::Vec<2,int> > resolution; ///< resolution of the Viewer
+    Data<bool> fullscreen; ///< Fullscreen mode
+    Data<sofa::helper::OptionsGroup> cameraMode; ///< Camera mode
                                                             /**<    \arg Perspective.
                                                              *      \arg Orthographic.
                                                              */
-    Data<sofa::helper::OptionsGroup> objectPickingMethod;                 ///< Picking Method.
+    Data<sofa::helper::OptionsGroup> objectPickingMethod; ///< The method used to pick objects
                                                             /**<    \arg Ray casting.
                                                              *      \arg Selection Buffer.
                                                              */

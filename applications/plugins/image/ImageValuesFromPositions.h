@@ -146,11 +146,11 @@ public:
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     Data< SeqPositions > position; ///< input positions
 
-    Data< helper::OptionsGroup > Interpolation;  ///< nearest, linear, cubic
+    Data< helper::OptionsGroup > Interpolation; ///< Interpolation method.
 
     typedef type::vector<Real> valuesType;
     typedef helper::WriteOnlyAccessor<Data< valuesType > > waValues;
-    Data< valuesType > values;  ///< output interpolated values
+    Data< valuesType > values; ///< Interpolated values.
     Data< Real > outValue; ///< default value outside image
 
     ImageValuesFromPositions()    :   Inherited()

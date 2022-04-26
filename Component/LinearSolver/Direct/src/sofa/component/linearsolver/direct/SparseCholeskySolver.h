@@ -59,7 +59,7 @@ public:
     type::vector<double> A_x,z_tmp,r_tmp,tmp;
     bool notSameShape;
 
-    Data<sofa::helper::OptionsGroup> d_typePermutation;
+    Data<sofa::helper::OptionsGroup> d_typePermutation; ///< Type of fill reducing permutation
 
     SparseCholeskySolver();
     ~SparseCholeskySolver();

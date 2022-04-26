@@ -59,7 +59,7 @@ public:
     Data< VecCoord > position; ///< Vertices of the mesh
     Data< type::vector< type::fixed_array <unsigned int,3> > > triangles; ///< Triangles of the mesh
     Data< type::vector< type::fixed_array <unsigned int,4> > > quads; ///< Quads of the mesh
-    Data< VecCoord > normals;       ///< result
+    Data< VecCoord > normals; ///< Computed vertex normals of the mesh
     Data<bool> invertNormals; ///< Swap normals
     Data<bool> useAngles; ///< Use incident angles to weight faces normal contributions at each vertex
 };

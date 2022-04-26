@@ -67,14 +67,14 @@ public:
 public:
     Data< Real > d_particleRadius; ///< Radius of a Particle
     Data< Real > d_particleMass; ///< Mass of a Particle
-    Data< Real > d_pressureStiffness; ///< 100 - 1000 m2/s2
-    Data< Real > d_density0; ///< 1000 kg/m3 for water
+    Data< Real > d_pressureStiffness; ///< Pressure
+    Data< Real > d_density0; ///< Density
     Data< Real > d_viscosity; ///< Viscosity
     Data< Real > d_surfaceTension; ///< Surface Tension
     //Data< int  > pressureExponent;
     Data< int > d_kernelType; ///< 0 = default kernels, 1 = cubic spline
     Data< int > d_pressureType; ///< 0 = none, 1 = default pressure
-    Data< int > d_viscosityType; ///< 0 = none, 1 = default viscosity using kernel Laplacian, 2 = artificial viscosity
+    Data< int > d_viscosityType; ///< 0 = none, 1 = default d_viscosity using kernel Laplacian, 2 = artificial d_viscosity
     Data< int > d_surfaceTensionType; ///< 0 = none, 1 = default surface tension using kernel Laplacian, 2 = cohesion forces surface tension from Becker et al. 2007
     Data< bool > d_debugGrid; ///< If true will store additionnal information on the grid to check neighbors and draw them
 protected:

@@ -37,7 +37,7 @@ public :
     SOFA_CLASS(DefaultContactManager,sofa::core::collision::ContactManager);
 
     Data<sofa::helper::OptionsGroup> response; ///< contact response class
-    Data<std::string> responseParams; ///< contact response parameters (syntax: name1=value1    Data<std::string> responseParams;name2=value2    Data<std::string> responseParams;...)
+    Data<std::string> responseParams; ///< contact response parameters (syntax: name1=value1    Data<std::string> responseParams;name2=value2    Data<std::string> responseParams; ///< contact response parameters (syntax: name1=value1&name2=value2&...)
 
     /// outputsVec fixes the reproducibility problems by storing contacts in the collision detection saved order
     /// if not given, it is still working but with eventual reproducibility problems
@@ -80,7 +80,7 @@ public :
                     << "for data \"response\" has been renamed since v21.12 (PR#2522). "
                     << "You have until v22.06 to fix your scene. "
                     << "Use \"" << it->second << "\" instead.";
-                helper::WriteAccessor< Data<sofa::helper::OptionsGroup>  > responseAccessor = obj->response;
+                helper::WriteAccessor< Data<sofa::helper::OptionsGroup>  > responseAccessor = obj->response; ///< contact response class
                 responseAccessor->setSelectedItem(it->second);
             }
         }

@@ -62,7 +62,7 @@ public:
 
     Data<Real> d_ks; ///< uniform stiffness for the all springs
     Data<Real> d_kd; ///< uniform damping for the all springs
-    Data<bool> d_showSprings; ///< Option to enable/disable the spring display when showForceField is on. True by default
+    Data<bool> d_showSprings; ///< option to draw springs
 
     /// Link to be set to the topology container in the component graph.
     SingleLink<TriangularBendingSprings<DataTypes>, sofa::core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_topology;
@@ -96,7 +96,7 @@ public:
         }
     };
 
-    sofa::core::topology::EdgeData<type::vector<EdgeInformation> > edgeInfo; ///< Internal Edge data storing @sa EdgeInformation per edge
+    sofa::core::topology::EdgeData<type::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
 
 protected:
     TriangularBendingSprings();

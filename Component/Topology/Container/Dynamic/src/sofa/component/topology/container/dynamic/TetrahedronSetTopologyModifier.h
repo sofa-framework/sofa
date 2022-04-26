@@ -54,7 +54,7 @@ public:
     typedef Tetra Tetrahedron;
 
 
-    Data< bool > removeIsolated; ///< Controlled DOF index.
+    Data< bool > removeIsolated; ///< remove Isolated dof
 protected:
     TetrahedronSetTopologyModifier()
         : TriangleSetTopologyModifier()

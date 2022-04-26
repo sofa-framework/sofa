@@ -168,10 +168,10 @@ public:
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     Data< SeqPositions > position; ///< input positions
 
-    Data< helper::OptionsGroup > Interpolation;  ///< nearest, linear, cubic
+    Data< helper::OptionsGroup > Interpolation; ///< Interpolation method.
 
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waValues;
-    Data< SeqPositions > values;  ///< output interpolated values
+    Data< SeqPositions > values; ///< Interpolated values.
     Data< Real > outValue; ///< default value outside image
 
     Data< bool > addPosition; ///< add positions to interpolated values (to get translated positions)

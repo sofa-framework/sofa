@@ -60,7 +60,7 @@ protected:
 
     ~Constraint() override;
 public:
-    Data<Real> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
+    Data<Real> endTime; ///< The constraint stops acting after the given value. Use a negative value for infinite constraints
     virtual bool isActive() const; ///< if false, the constraint does nothing
 
     using BaseConstraintSet::getConstraintViolation;

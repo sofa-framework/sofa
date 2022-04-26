@@ -66,7 +66,7 @@ public:
 
     typedef SReal Real;
 
-    Data< type::vector<Real> > voxelSize; ///< should be a Vec<3,Real>, but it is easier to be backward-compatible that way
+    Data< type::vector<Real> > voxelSize; ///< voxel Size (redondant with and not priority over nbVoxels)
     typedef helper::WriteOnlyAccessor<Data< type::vector<Real> > > waVecReal;
     Data< type::Vec<3,unsigned> > nbVoxels; ///< number of voxel (redondant with and priority over voxelSize)
     Data< bool > rotateImage; ///< orient the image bounding box according to the mesh (OBB)

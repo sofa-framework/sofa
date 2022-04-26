@@ -44,7 +44,7 @@ public:
     friend class PointSetGeometryAlgorithms;
 
     typedef core::topology::BaseMeshTopology::PointID PointID;
-    Data<bool> d_propagateToDOF; ///< propagate changes to Mechanical object DOFs
+    Data<bool> d_propagateToDOF; ///<  propagate changes to MEchanical object DOFs if true
 
 protected:
     PointSetTopologyModifier()

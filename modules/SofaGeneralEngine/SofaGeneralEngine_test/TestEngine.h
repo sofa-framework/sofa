@@ -62,9 +62,9 @@ public:
 
     void printUpdateCallList();
 
-    Data<SReal> f_numberToMultiply;    ///< number to multiply
-    Data<SReal> f_factor;  ///< multiplication factor
-    Data<SReal> f_result;       ///< result
+    Data<SReal> f_numberToMultiply; ///< number that will be multiplied by the factor
+    Data<SReal> f_factor; ///< multiplication factor
+    Data<SReal> f_result; ///< result of the multiplication of numberToMultiply by factor
 
     int counter;
 

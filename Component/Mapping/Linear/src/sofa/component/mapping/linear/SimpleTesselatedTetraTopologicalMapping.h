@@ -90,11 +90,11 @@ public:
     const type::vector<Index>& getPointSource() const { return d_pointSource.getValue(); }
 
 protected:
-    core::topology::TetrahedronData< sofa::type::vector<sofa::type::fixed_array<Index, 8> > > tetrahedraMappedFromTetra; ///< Each Tetrahedron of the input topology is mapped to the 8 tetrahedrons in which it can be divided.
-    core::topology::TetrahedronData< sofa::type::vector<Index> > tetraSource; ///<Which tetra from the input topology map to a given tetra in the output topology (INVALID_INDEX if none)
+    core::topology::TetrahedronData< sofa::type::vector<sofa::type::fixed_array<Index, 8> > > tetrahedraMappedFromTetra; ///< Each Tetrahedron of the input topology is mapped to the 8 tetrahedrons in which it can be divided
+    core::topology::TetrahedronData< sofa::type::vector<Index> > tetraSource; ///< Which tetra from the input topology map to a given tetra in the output topology (sofa::InvalidID if none)
 
-    Data< type::vector<Index> > d_pointMappedFromPoint; ///< Each point of the input topology is mapped to the same point.
-    Data< type::vector<Index> > d_pointMappedFromEdge; ///< Each edge of the input topology is mapped to his midpoint.
+    Data< type::vector<Index> > d_pointMappedFromPoint; ///< Each point of the input topology is mapped to the same point
+    Data< type::vector<Index> > d_pointMappedFromEdge; ///< Each edge of the input topology is mapped to his midpoint
     Data< type::vector<Index> > d_pointSource; ///< Which input topology element map to a given point in the output topology : 0 -> none, > 0 -> point index + 1, < 0 , - edge index -1
 
     void swapOutputPoints(Index i1, Index i2);

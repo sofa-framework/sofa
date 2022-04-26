@@ -59,12 +59,12 @@ public:
 protected:
     void doUpdate() override;
 
-    Data<VecCoord> f_inputX; ///< input position
-    Data<VecCoord> f_outputX; ///< ouput position
-    Data<type::Vector3> translation; ///< translation
-    Data<type::Vector3> rotation; ///< rotation
-    Data<type::Quat<SReal>> quaternion; ///< quaternion rotation
-    Data<type::Vector3> scale; ///< scale
+    Data<VecCoord> f_inputX; ///< input array of 3d points
+    Data<VecCoord> f_outputX; ///< output array of 3d points
+    Data<type::Vector3> translation; ///< translation vector 
+    Data<type::Vector3> rotation; ///< rotation vector 
+    Data<type::Quat<SReal>> quaternion; ///< rotation quaternion 
+    Data<type::Vector3> scale; ///< scale factor
     Data<bool> inverse; ///< true to apply inverse transformation
 };
 

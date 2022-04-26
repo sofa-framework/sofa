@@ -39,7 +39,7 @@ protected:
     BackgroundSetting();                                         ///< Default constructor
 
 public:
-    Data<sofa::type::RGBAColor> color;                          ///< Color of the Background of the Viewer.
+    Data<sofa::type::RGBAColor> color; ///< Color of the background
     sofa::core::objectmodel::DataFileName image;                 ///< Image to be used as background of the viewer.
 
 };

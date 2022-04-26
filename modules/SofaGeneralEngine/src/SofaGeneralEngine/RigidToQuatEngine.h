@@ -57,7 +57,7 @@ public:
 
     Data<type::vector<Vec3 > > f_positions; ///< Positions (Vector of 3)
     Data<type::vector<Quat> > f_orientations; ///< Orientations (Quaternion)
-    Data<type::vector<Vec3> > f_orientationsEuler; ///< Orientation (Euler angle)
+    Data<type::vector<Vec3> > f_orientationsEuler; ///< Orientations (Euler angle)
     Data<type::vector<RigidVec3> > f_rigids; ///< Rigid (Position + Orientation)
 };
 

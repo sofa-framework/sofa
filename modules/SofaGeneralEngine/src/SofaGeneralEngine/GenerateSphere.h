@@ -72,22 +72,22 @@ public:
     void doUpdate() override;
 
 public:
-    Data<VecCoord> f_outputTetrahedraPositions; ///< Output tetrahedra positions
-    Data<SeqTetrahedra> f_tetrahedra; ///< Output tetrahedra
-    Data<VecCoord> f_outputTrianglesPositions; ///< Output triangle positions
-    Data<SeqTriangles> f_triangles; ///< Output triangles
+    Data<VecCoord> f_outputTetrahedraPositions; ///< output array of 3d points of tetrahedra mesh
+    Data<SeqTetrahedra> f_tetrahedra; ///< output mesh tetrahedra
+    Data<VecCoord> f_outputTrianglesPositions; ///< output array of 3d points of triangle mesh
+    Data<SeqTriangles> f_triangles; ///< output triangular mesh
 
-    Data<size_t> f_bezierTetrahedronDegree; ///< Degree of Bezier tetrahedra
-    Data<sofa::type::vector<Real> > f_bezierTetrahedronWeight; ///<  Output weight for rational Bezier triangles
-    Data<sofa::type::vector<bool> > f_isBezierTetrahedronRational; ///<  For each Bezier tetrahedron, indicates if it is rational
-    Data<size_t> f_bezierTriangleDegree; ///< Degree of Bezier triangles
-    Data<sofa::type::vector<Real> > f_bezierTriangleWeight; ///< Output weight for rational Bezier triangles
-    Data<sofa::type::vector<bool> > f_isBezierTriangleRational; ///< For each Bezier triangle indicates, if it is rational or integral
+    Data<size_t> f_bezierTetrahedronDegree; ///< order of Bezier tetrahedra
+    Data<sofa::type::vector<Real> > f_bezierTetrahedronWeight; ///< weights of rational Bezier tetrahedra
+    Data<sofa::type::vector<bool> > f_isBezierTetrahedronRational; ///< booleans indicating if each Bezier tetrahedron is rational or integral
+    Data<size_t> f_bezierTriangleDegree; ///< order of Bezier triangles
+    Data<sofa::type::vector<Real> > f_bezierTriangleWeight; ///< weights of rational Bezier triangles
+    Data<sofa::type::vector<bool> > f_isBezierTriangleRational; ///< booleans indicating if each Bezier triangle is rational or integral
 
-    Data<Real > f_radius; ///< Radius of the sphere
-    Data<Coord> f_origin; ///< Origin
-    Data<size_t > f_tessellationDegree; ///< Degree of tessellation of each platonic triangle 
-    Data<std::string>     f_platonicSolidName; ///< Name of the platonics solid 
+    Data<Real > f_radius; ///< input sphere radius
+    Data<Coord> f_origin; ///< sphere center point
+    Data<size_t > f_tessellationDegree; ///< Degree of tessellation of each Platonic triangulation
+    Data<std::string>     f_platonicSolidName; ///< name of the Platonic triangulation used to create the spherical dome : either "tetrahedron", "octahedron" or "icosahedron"
 
     PlatonicTriangulation platonicSolid; ///< the type of platonic solid used for the tessellation
 };

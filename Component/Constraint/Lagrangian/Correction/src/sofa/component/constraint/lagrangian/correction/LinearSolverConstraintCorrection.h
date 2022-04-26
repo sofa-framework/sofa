@@ -94,7 +94,7 @@ public:
     /// @{
 
     Data< bool > wire_optimization; ///< constraints are reordered along a wire-like topology (from tip to base)
-    Data< type::vector< std::string > >  solverName; ///< name of the constraint solver
+    Data< type::vector< std::string > >  solverName; ///< search for the following names upward the scene graph
 
     void verify_constraints();
 

@@ -107,7 +107,7 @@ public:
     /// to display the center of gravity of the system
     Data< bool > d_showCenterOfGravity;
 
-    Data< float > d_showAxisSize; ///< factor length of the axis displayed (only used for rigids)
+    Data< float > d_showAxisSize; ///< Factor length of the axis displayed (only used for rigids)
     core::objectmodel::DataFileName d_fileMass; ///< an Xsp3.0 file to specify the mass parameters
 
     /// value defining the initialization process of the mass (0 : totalMass, 1 : massDensity, 2 : vertexMass)

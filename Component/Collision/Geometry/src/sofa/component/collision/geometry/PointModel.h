@@ -100,7 +100,7 @@ public:
 
     const Deriv& velocity(Index index) const;
 
-    Data<bool> bothSide; ///< to activate collision on both side of the point model (when surface normals are defined on these points)
+    Data<bool> bothSide; ///< activate collision on both side of the point model (when surface normals are defined on these points)
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
