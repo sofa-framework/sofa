@@ -1,7 +1,0 @@
-class Event
-!!!327472.cpp!!!	Event()
-	m_handled = false;
-!!!327728.cpp!!!	setHandled() : void
-    m_handled = true;
-!!!327856.cpp!!!	isHandled() : bool
-    return m_handled;
