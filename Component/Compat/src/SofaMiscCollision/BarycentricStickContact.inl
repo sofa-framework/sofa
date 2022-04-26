@@ -23,3 +23,6 @@
 #include <sofa/component/collision/response/contact/BarycentricStickContact.inl>
 
 // SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/collision/response/contact/BarycentricStickContact.inl")
+
+// some code include the inl only
+#include <SofaMiscCollision/BarycentricStickContact.h>
