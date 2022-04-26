@@ -23,10 +23,10 @@
 
 #include <sofa/gui/headlessrecorder/init.h>
 
-namespace sofa::gui::hrecorder
+namespace sofa::gui::headlessrecorder
 {
     SOFA_EXPORT_DYNAMIC_LIBRARY void exportSymbol() 
     {
-        sofa::gui::hrecorder::init();
+        sofa::gui::headlessrecorder::init();
     }
-} // namespace sofa::gui::hrecorder
+} // namespace sofa::gui::headlessrecorder

@@ -23,9 +23,9 @@
 
 #include <sofa/gui/headlessrecorder/config.h>
 
-namespace sofa::gui::hrecorder
+namespace sofa::gui::headlessrecorder
 {
 
 void SOFA_GUI_HEADLESSRECORDER_API init();
 
-} // namespace sofa::gui::hrecorder
+} // namespace sofa::gui::headlessrecorder
