@@ -233,15 +233,15 @@ void FillReducingOrdering<DataTypes>::updateMesh()
 
     // Update mechanical state
     auto pos = helper::getWriteOnlyAccessor(d_position);
-    pos.clear();
 
     auto previousPos = l_mstate->readPositions();
+    pos.resize(previousPos.size());
 
-    auto perm = helper::getReadAccessor(d_permutation);
+    const auto perm = helper::getReadAccessor(d_permutation);
 
     for (unsigned int i = 0; i < previousPos.size(); ++i)
     {
-        pos.push_back(previousPos[perm[i]]);
+        pos[i] = previousPos[perm[i]];
     }
 }
 } // namespace sofa::component::linearsolver
