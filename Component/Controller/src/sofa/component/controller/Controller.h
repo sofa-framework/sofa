@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaUserInteraction/config.h>
+#include <sofa/component/controller/config.h>
 
 #include <sofa/core/behavior/BaseController.h>
 
@@ -45,7 +45,7 @@ namespace sofa::component::controller
  * Provides also an interface for BeginAnimation and EndAnimation events
  * launched at the beginning and the end of a time step.
  */
-class SOFA_SOFAUSERINTERACTION_API Controller : public core::behavior::BaseController
+class SOFA_COMPONENT_CONTROLLER_API Controller : public core::behavior::BaseController
 {
 
 public:

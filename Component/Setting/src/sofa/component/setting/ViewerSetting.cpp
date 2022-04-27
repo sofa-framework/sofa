@@ -19,69 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseVisual/initSofaBaseVisual.h>
 
-#include <sofa/helper/system/PluginManager.h>
-
+#include <sofa/component/setting/ViewerSetting.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
 
-namespace sofa::component
+namespace sofa::component::setting
 {
 
-void initSofaBaseVisual()
+using namespace sofa::type;
+using namespace sofa::helper;
+
+int ViewerSettingClass = core::RegisterObject("Configuration for the Viewer of your application")
+        .add< ViewerSetting >()
+        .addAlias("Viewer")
+        ;
+
+ViewerSetting::ViewerSetting():
+    resolution(initData(&resolution, Vec<2,int>(800,600), "resolution", "resolution of the Viewer"))
+  ,fullscreen(initData(&fullscreen, false, "fullscreen", "Fullscreen mode"))
+  ,cameraMode(initData(&cameraMode, "cameraMode", "Camera mode"))
+  ,objectPickingMethod(initData(&objectPickingMethod, "objectPickingMethod","The method used to pick objects"))
 {
-    static bool first = true;
-    if (first)
-    {
-        // msg_deprecated("SofaBaseVisual") << "SofaBaseVisual is deprecated. It will be removed at v23.06. Use Sofa.Component.Visual and Sofa.Component.Setting instead.";
-
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Visual");
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Setting");
-        
-        first = false;
-    }
+    OptionsGroup mode(2,"Perspective","Orthographic");
+    cameraMode.setValue(mode);
+    OptionsGroup pickmethod(2,"Ray casting","Selection buffer");
+    objectPickingMethod.setValue(pickmethod);
 }
 
-extern "C" {
-    SOFA_SOFABASEVISUAL_API void initExternalModule();
-    SOFA_SOFABASEVISUAL_API const char* getModuleName();
-    SOFA_SOFABASEVISUAL_API const char* getModuleVersion();
-    SOFA_SOFABASEVISUAL_API const char* getModuleLicense();
-    SOFA_SOFABASEVISUAL_API const char* getModuleDescription();
-    SOFA_SOFABASEVISUAL_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{
-    initSofaBaseVisual();
-}
-
-const char* getModuleName()
-{
-    return sofa_tostring(SOFA_TARGET);
-}
-
-const char* getModuleVersion()
-{
-    return sofa_tostring(SOFABASEVISUAL_VERSION);
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This plugin contains contains features about Base Visual.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-
-} // namespace sofa::component
+} // namespace sofa::component::setting

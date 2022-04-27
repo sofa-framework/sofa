@@ -19,69 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseVisual/initSofaBaseVisual.h>
 
-#include <sofa/helper/system/PluginManager.h>
-
+#include <sofa/component/setting/StatsSetting.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory;
 
-namespace sofa::component
+namespace sofa::component::setting
 {
 
-void initSofaBaseVisual()
+int StatsSettingClass = core::RegisterObject("Stats settings")
+        .add< StatsSetting >()
+        .addAlias("Stats")
+        ;
+
+StatsSetting::StatsSetting():
+    dumpState(initData(&dumpState,false,"dumpState", "Dump state vectors at each time step of the simulation"))
+    , logTime(initData(&logTime, false, "logTime", "Output in the console an average of the time spent during different stages of the simulation"))
+    , exportState(initData(&exportState, false, "exportState", "Create GNUPLOT files with the positions, velocities and forces of all the simulated objects of the scene"))
+#ifdef SOFA_DUMP_VISITOR_INFO
+    , traceVisitors(initData(&traceVisitors, "traceVisitors", "Trace the time spent by each visitor, and allows to profile precisely one step of a simulation"))
+#endif
 {
-    static bool first = true;
-    if (first)
-    {
-        // msg_deprecated("SofaBaseVisual") << "SofaBaseVisual is deprecated. It will be removed at v23.06. Use Sofa.Component.Visual and Sofa.Component.Setting instead.";
-
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Visual");
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("Sofa.Component.Setting");
-        
-        first = false;
-    }
 }
 
-extern "C" {
-    SOFA_SOFABASEVISUAL_API void initExternalModule();
-    SOFA_SOFABASEVISUAL_API const char* getModuleName();
-    SOFA_SOFABASEVISUAL_API const char* getModuleVersion();
-    SOFA_SOFABASEVISUAL_API const char* getModuleLicense();
-    SOFA_SOFABASEVISUAL_API const char* getModuleDescription();
-    SOFA_SOFABASEVISUAL_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{
-    initSofaBaseVisual();
-}
-
-const char* getModuleName()
-{
-    return sofa_tostring(SOFA_TARGET);
-}
-
-const char* getModuleVersion()
-{
-    return sofa_tostring(SOFABASEVISUAL_VERSION);
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This plugin contains contains features about Base Visual.";
-}
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    static std::string classes = ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
-    return classes.c_str();
-}
-
-} // namespace sofa::component
+} // namespace sofa::component::setting

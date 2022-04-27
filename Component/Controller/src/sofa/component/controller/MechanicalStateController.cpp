@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_CPP
-#include <SofaUserInteraction/MechanicalStateController.inl>
+#include <sofa/component/controller/MechanicalStateController.inl>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -38,8 +38,8 @@ int MechanicalStateControllerClass = core::RegisterObject("Provides a Mouse & Ke
         .add< MechanicalStateController<Rigid3Types> >()
         ;
 
-template class SOFA_SOFAUSERINTERACTION_API MechanicalStateController<Vec1Types>;
-template class SOFA_SOFAUSERINTERACTION_API MechanicalStateController<Rigid3Types>;
+template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Vec1Types>;
+template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<Rigid3Types>;
 
 
 template <>

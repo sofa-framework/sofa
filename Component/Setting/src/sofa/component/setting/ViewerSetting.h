@@ -21,26 +21,44 @@
 ******************************************************************************/
 #pragma once
 
-#include <SofaGraphComponent/config.h>
+#include <sofa/component/setting/config.h>
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <sofa/type/Vec.h>
 #include <sofa/helper/OptionsGroup.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::component::setting
 {
 
-class SOFA_SOFAGRAPHCOMPONENT_API MouseButtonSetting: public core::objectmodel::ConfigurationSetting
+///Class for the configuration of viewer settings.
+class SOFA_COMPONENT_SETTING_API ViewerSetting: public sofa::core::objectmodel::ConfigurationSetting
 {
 public:
-    SOFA_CLASS(MouseButtonSetting,core::objectmodel::ConfigurationSetting);
+    SOFA_CLASS(ViewerSetting,ConfigurationSetting); ///< Sofa macro to define typedef.
 protected:
-    MouseButtonSetting();
+
+    /**
+     * @brief Default constructor.
+     *
+     * By default :
+     *  - @ref resolution is set to 800x600.
+     *  - @ref fullscreen is set to false.
+     *  - @ref cameraMode is set to projective.
+     *  - @ref objectPickingMethod is set to ray casting.
+     */
+    ViewerSetting();
 public:
-    virtual std::string getOperationType()=0;
 
-
-    core::objectmodel::Data<sofa::helper::OptionsGroup> button; ///< Mouse button used
-
+    Data<sofa::type::Vec<2,int> > resolution;                           ///< Screen resolution (width, height).
+    Data<bool> fullscreen;                                  ///< True if viewer should be fullscreen.
+    Data<sofa::helper::OptionsGroup> cameraMode;                          ///< Camera mode.
+                                                            /**<    \arg Perspective.
+                                                             *      \arg Orthographic.
+                                                             */
+    Data<sofa::helper::OptionsGroup> objectPickingMethod;                 ///< Picking Method.
+                                                            /**<    \arg Ray casting.
+                                                             *      \arg Selection Buffer.
+                                                             */
 };
 
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::component::setting

@@ -20,25 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
+#include <sofa/component/setting/ViewerSetting.h>
 
-#include <SofaGraphComponent/config.h>
-
-#include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/core/objectmodel/DataFileName.h>
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/setting/ViewerSetting.h")
 
 namespace sofa::component::configurationsetting
-{
-
-///Class for the configuration of default path for sofa application.
-class SOFA_SOFAGRAPHCOMPONENT_API SofaDefaultPathSetting: public core::objectmodel::ConfigurationSetting
-{
-public:
-    SOFA_CLASS(SofaDefaultPathSetting,core::objectmodel::ConfigurationSetting); ///< Sofa macro to define typedef.
-protected:
-    SofaDefaultPathSetting();   ///<Default constructor.
-public:
-    sofa::core::objectmodel::Data<std::string> recordPath;  ///<Path where will be saved the data of the recorded simulation.
-    sofa::core::objectmodel::Data<std::string> gnuplotPath; ///<Path where will be saved the gnuplot files.
-};
+{ 
+    using ViewerSetting = sofa::component::setting::ViewerSetting;
 
 } // namespace sofa::component::configurationsetting

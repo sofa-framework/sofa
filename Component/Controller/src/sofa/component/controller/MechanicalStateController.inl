@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaUserInteraction/MechanicalStateController.h>
+#include <sofa/component/controller/MechanicalStateController.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
@@ -233,13 +233,13 @@ void MechanicalStateController<DataTypes>::onMouseEvent(core::objectmodel::Mouse
 
 
 template <>
-SOFA_SOFAUSERINTERACTION_API void MechanicalStateController<defaulttype::Vec1Types>::applyController();
+SOFA_COMPONENT_CONTROLLER_API void MechanicalStateController<defaulttype::Vec1Types>::applyController();
 
 template <>
-SOFA_SOFAUSERINTERACTION_API void MechanicalStateController<defaulttype::Vec1Types>::onMouseEvent(core::objectmodel::MouseEvent *mev);
+SOFA_COMPONENT_CONTROLLER_API void MechanicalStateController<defaulttype::Vec1Types>::onMouseEvent(core::objectmodel::MouseEvent *mev);
 
 template <>
-SOFA_SOFAUSERINTERACTION_API void MechanicalStateController<defaulttype::Rigid3Types>::onMouseEvent(core::objectmodel::MouseEvent *mev);
+SOFA_COMPONENT_CONTROLLER_API void MechanicalStateController<defaulttype::Rigid3Types>::onMouseEvent(core::objectmodel::MouseEvent *mev);
 
 
 

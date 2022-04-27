@@ -19,19 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/component/controller/init.h>
 
-#include <SofaGraphComponent/MouseButtonSetting.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ObjectFactory.h>
-
-namespace sofa::component::configurationsetting
+namespace sofa::component::controller
 {
 
-MouseButtonSetting::MouseButtonSetting():
-    button(initData(&button, "button", "Mouse button used"))
-{
-    sofa::helper::OptionsGroup buttonGroup(3,"Left","Middle","Right");
-    button.setValue(buttonGroup);
+extern "C" {
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
 }
 
-} // namespace sofa::component::configurationsetting
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
+const char* getModuleName()
+{
+    return MODULE_NAME;
+}
+
+void init()
+{
+    initExternalModule();
+}
+
+} // namespace sofa::component::controller

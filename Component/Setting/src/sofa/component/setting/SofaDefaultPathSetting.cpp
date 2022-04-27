@@ -19,29 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <SofaBaseVisual/config.h>
 
-#include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/type/RGBAColor.h>
+#include <sofa/component/setting/SofaDefaultPathSetting.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::component::setting
 {
 
-///Class for the configuration of background settings.
-class SOFA_SOFABASEVISUAL_API BackgroundSetting: public core::objectmodel::ConfigurationSetting
+int SofaDefaultPathSettingClass = core::RegisterObject("Default Paths for Sofa Application")
+        .add< SofaDefaultPathSetting >()
+        .addAlias("SofaDefaultPath")
+        ;
+
+SofaDefaultPathSetting::SofaDefaultPathSetting():
+    recordPath(initData(&recordPath, "recordPath", "Path where will be saved the data of the recorded simulation"))
+    , gnuplotPath(initData(&gnuplotPath, "gnuplotPath", "Path where will be saved the gnuplot files"))
 {
-public:
-    SOFA_CLASS(BackgroundSetting,core::objectmodel::ConfigurationSetting);  ///< Sofa macro to define typedef.
 
-protected:
-    BackgroundSetting();                                         ///< Default constructor
-
-public:
-    Data<sofa::type::RGBAColor> color;                          ///< Color of the Background of the Viewer.
-    sofa::core::objectmodel::DataFileName image;                 ///< Image to be used as background of the viewer.
-
-};
-
-} // namespace sofa::component::configurationsetting
+}
+} // namespace sofa::component::setting

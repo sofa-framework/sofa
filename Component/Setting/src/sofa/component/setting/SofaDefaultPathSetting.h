@@ -19,22 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseVisual/BackgroundSetting.h>
+#pragma once
 
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/component/setting/config.h>
 
-namespace sofa::component::configurationsetting
+#include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <sofa/core/objectmodel/DataFileName.h>
+
+namespace sofa::component::setting
 {
 
-int BackgroundSettingClass = core::RegisterObject("Backgrounds setting")
-        .add< BackgroundSetting >()
-        .addAlias("Background")
-        ;
-
-BackgroundSetting::BackgroundSetting():
-      color(initData(&color, "color", "Color of the background"))
-    , image(initData(&image, "image", "Image to be used as background"))
+///Class for the configuration of default path for sofa application.
+class SOFA_COMPONENT_SETTING_API SofaDefaultPathSetting: public core::objectmodel::ConfigurationSetting
 {
-}
+public:
+    SOFA_CLASS(SofaDefaultPathSetting,core::objectmodel::ConfigurationSetting); ///< Sofa macro to define typedef.
+protected:
+    SofaDefaultPathSetting();   ///<Default constructor.
+public:
+    sofa::core::objectmodel::Data<std::string> recordPath;  ///<Path where will be saved the data of the recorded simulation.
+    sofa::core::objectmodel::Data<std::string> gnuplotPath; ///<Path where will be saved the gnuplot files.
+};
 
-} // namespace sofa::component::configurationsetting
+} // namespace sofa::component::setting

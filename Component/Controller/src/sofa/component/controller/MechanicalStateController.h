@@ -20,9 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <SofaUserInteraction/config.h>
+#include <sofa/component/controller/config.h>
 
-#include <SofaUserInteraction/Controller.h>
+#include <sofa/component/controller/Controller.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -150,8 +150,8 @@ protected:
 };
 
 #if  !defined(SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_CPP)
-extern template class SOFA_SOFAUSERINTERACTION_API MechanicalStateController<defaulttype::Vec1Types>;
-extern template class SOFA_SOFAUSERINTERACTION_API MechanicalStateController<defaulttype::Rigid3Types>;
+extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_CONTROLLER_API MechanicalStateController<defaulttype::Rigid3Types>;
 #endif
 
 } //namespace sofa::component::collision

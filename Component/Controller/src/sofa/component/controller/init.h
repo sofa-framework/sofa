@@ -19,23 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#pragma once
 
-#include <SofaGraphComponent/SofaDefaultPathSetting.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/component/controller/config.h>
 
-namespace sofa::component::configurationsetting
+namespace sofa::component::controller
 {
-
-int SofaDefaultPathSettingClass = core::RegisterObject("Default Paths for Sofa Application")
-        .add< SofaDefaultPathSetting >()
-        .addAlias("SofaDefaultPath")
-        ;
-
-SofaDefaultPathSetting::SofaDefaultPathSetting():
-    recordPath(initData(&recordPath, "recordPath", "Path where will be saved the data of the recorded simulation"))
-    , gnuplotPath(initData(&gnuplotPath, "gnuplotPath", "Path where will be saved the gnuplot files"))
-{
-
-}
-} // namespace sofa::component::configurationsetting
+    SOFA_COMPONENT_CONTROLLER_API void init();
+} // namespace sofa::component::controller
