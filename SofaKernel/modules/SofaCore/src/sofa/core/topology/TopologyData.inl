@@ -213,10 +213,6 @@ void TopologyData <TopologyElementType, VecT>::remove(const sofa::type::vector<I
     {
         for (std::size_t i = 0; i < index.size(); ++i)
         {
-            if (this->m_topologyHandler) {
-                this->m_topologyHandler->applyDestroyFunction(index[i], data[index[i]]);
-            }
-
             if (p_onDestructionCallback)
             {
                 p_onDestructionCallback(index[i], data[index[i]]);
@@ -255,23 +251,15 @@ void TopologyData <TopologyElementType, VecT>::add(const sofa::type::vector<Inde
     data.resize(i0 + nbElements);
     this->m_lastElementIndex += sofa::Index(nbElements);
 
-    if (this->m_topologyHandler)
+    if (p_onCreationCallback)
     {
         for (Index i = 0; i < nbElements; ++i)
         {
             value_type& t = data[i0 + i];
-        
-            this->m_topologyHandler->applyCreateFunction(Index(i0 + i), t, elems[i],
-                    (ancestors.empty() || coefs.empty()) ? s_empty_ancestors : ancestors[i],
-                    (ancestors.empty() || coefs.empty()) ? s_empty_coefficients : coefs[i],
-                    (ancestorElems.empty()) ? nullptr : &ancestorElems[i]);
-            
-            if (p_onCreationCallback)
-            {
-                p_onCreationCallback(Index(i0 + i), t, elems[i],
-                    (ancestors.empty() || coefs.empty()) ? s_empty_ancestors : ancestors[i],
-                    (ancestors.empty() || coefs.empty()) ? s_empty_coefficients : coefs[i]);
-            }
+
+            p_onCreationCallback(Index(i0 + i), t, elems[i],
+                (ancestors.empty() || coefs.empty()) ? s_empty_ancestors : ancestors[i],
+                (ancestors.empty() || coefs.empty()) ? s_empty_coefficients : coefs[i]);
         }
     }
 }
@@ -284,12 +272,16 @@ void TopologyData <TopologyElementType, VecT>::move(const sofa::type::vector<Ind
 {
     helper::WriteOnlyAccessor<Data< container_type > > data = this;
 
-    if (this->m_topologyHandler)
+    for (std::size_t i = 0; i < indexList.size(); i++)
     {
-        for (std::size_t i = 0; i < indexList.size(); i++)
+        if (p_onDestructionCallback)
         {
-            this->m_topologyHandler->applyDestroyFunction(indexList[i], data[indexList[i]]);
-            this->m_topologyHandler->applyCreateFunction(indexList[i], data[indexList[i]], ancestors[i], coefs[i]);
+            p_onDestructionCallback(indexList[i], data[indexList[i]]);
+        }
+
+        if (p_onCreationCallback)
+        {
+            p_onCreationCallback(indexList[i], data[indexList[i]], TopologyElementType(), ancestors[i], coefs[i]);
         }
     }
 }
@@ -318,12 +310,12 @@ void TopologyData <TopologyElementType, VecT>::addOnMovedPosition(const sofa::ty
     coefs.push_back(1.0);
     ancestors.resize(1);
 
-    if (this->m_topologyHandler)
+    if (p_onCreationCallback)
     {
         for (std::size_t i = 0; i < indexList.size(); i++)
         {
             ancestors[0] = indexList[i];
-            this->m_topologyHandler->applyCreateFunction(indexList[i], data[indexList[i]], elems[i], ancestors, coefs);
+            p_onCreationCallback(indexList[i], data[indexList[i]], elems[i], ancestors, coefs);
         }
     }
     this->m_lastElementIndex += sofa::Index(indexList.size());
@@ -335,15 +327,15 @@ void TopologyData <TopologyElementType, VecT>::removeOnMovedPosition(const sofa:
 {
     helper::WriteOnlyAccessor<Data< container_type > > data = this;
 
-    if (this->m_topologyHandler)
+    if (p_onDestructionCallback)
     {
-        for (std::size_t i = 0; i < indices.size(); i++) {
-            this->m_topologyHandler->applyDestroyFunction(indices[i], data[indices[i]]);
-        }
+        for (std::size_t i = 0; i < indices.size(); i++) 
+        {
+            p_onDestructionCallback(indices[i], data[indices[i]]);
+        }       
     }
 
     this->m_lastElementIndex -= sofa::Index(indices.size());
-    
 }
 
 
