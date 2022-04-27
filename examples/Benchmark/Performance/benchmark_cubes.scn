@@ -14,7 +14,7 @@
         <RequiredPlugin name="Sofa.GL.Component.Rendering2D"/> <!-- Needed to use components [OglLabel] -->
         <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/> <!-- Needed to use components [OglSceneFrame] -->
         <RequiredPlugin name="SofaMeshCollision"/> <!-- Needed to use components [TriangleCollisionModel] -->
-        <RequiredPlugin name="SofaMiscCollision"/> <!-- Needed to use components [OBBCollisionModel] -->
+        <RequiredPlugin name="CollisionOBBCapsule"/> <!-- Needed to use components [OBBCollisionModel] -->
     </Node>
 
 
