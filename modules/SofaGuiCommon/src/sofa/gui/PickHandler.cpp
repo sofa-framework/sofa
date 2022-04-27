@@ -28,7 +28,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/core/collision/Pipeline.h>
 
-#include <sofa/component/userinteraction/configurationsetting/MouseButtonSetting.h>
+#include <sofa/component/setting/MouseButtonSetting.h>
 
 #include <sofa/simulation/mechanicalvisitor/MechanicalPropagateOnlyPositionVisitor.h>
 using sofa::simulation::mechanicalvisitor::MechanicalPropagateOnlyPositionVisitor;

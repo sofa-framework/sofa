@@ -19,13 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/component/setting/BackgroundSetting.h>
+#include <sofa/component/controller/init.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/setting/BackgroundSetting.h")
+namespace sofa::component::controller
+{
 
-namespace sofa::component::configurationsetting
-{ 
-    using BackgroundSetting = sofa::component::setting::BackgroundSetting;
+extern "C" {
+    SOFA_EXPORT_DYNAMIC_LIBRARY void initExternalModule();
+    SOFA_EXPORT_DYNAMIC_LIBRARY const char* getModuleName();
+}
 
-} // namespace sofa::component::configurationsetting
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
+const char* getModuleName()
+{
+    return MODULE_NAME;
+}
+
+void init()
+{
+    initExternalModule();
+}
+
+} // namespace sofa::component::controller

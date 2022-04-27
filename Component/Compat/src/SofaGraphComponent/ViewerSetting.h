@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/userinteraction/configurationsetting/ViewerSetting.h>
+#include <sofa/component/setting/ViewerSetting.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/userinteraction/configurationsetting/ViewerSetting.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/setting/ViewerSetting.h")
 
 namespace sofa::component::configurationsetting
 { 
-    using ViewerSetting = sofa::component::userinteraction::configurationsetting::ViewerSetting;
+    using ViewerSetting = sofa::component::setting::ViewerSetting;
 
 } // namespace sofa::component::configurationsetting

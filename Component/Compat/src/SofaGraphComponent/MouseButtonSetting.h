@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/userinteraction/configurationsetting/MouseButtonSetting.h>
+#include <sofa/component/setting/MouseButtonSetting.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/userinteraction/configurationsetting/MouseButtonSetting.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/setting/MouseButtonSetting.h")
 
 namespace sofa::component::configurationsetting
 { 
-    using MouseButtonSetting = sofa::component::userinteraction::configurationsetting::MouseButtonSetting;
+    using MouseButtonSetting = sofa::component::setting::MouseButtonSetting;
 
 } // namespace sofa::component::configurationsetting

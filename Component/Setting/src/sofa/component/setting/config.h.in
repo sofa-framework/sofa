@@ -20,12 +20,18 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/setting/BackgroundSetting.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/setting/BackgroundSetting.h")
+#include <sofa/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
-namespace sofa::component::configurationsetting
-{ 
-    using BackgroundSetting = sofa::component::setting::BackgroundSetting;
+#ifdef SOFA_BUILD_SOFA_COMPONENT_SETTING
+#  define SOFA_TARGET @PROJECT_NAME@
+#  define SOFA_COMPONENT_SETTING_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_COMPONENT_SETTING_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-} // namespace sofa::component::configurationsetting
+namespace sofa::component::setting
+{
+	constexpr const char* MODULE_NAME = "@PROJECT_NAME@";
+} // namespace sofa::component::setting

@@ -20,12 +20,28 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/setting/BackgroundSetting.h>
+#include <sofa/component/setting/config.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/setting/BackgroundSetting.h")
+#include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/type/RGBAColor.h>
 
-namespace sofa::component::configurationsetting
-{ 
-    using BackgroundSetting = sofa::component::setting::BackgroundSetting;
+namespace sofa::component::setting
+{
 
-} // namespace sofa::component::configurationsetting
+///Class for the configuration of background settings.
+class SOFA_COMPONENT_SETTING_API BackgroundSetting: public core::objectmodel::ConfigurationSetting
+{
+public:
+    SOFA_CLASS(BackgroundSetting,core::objectmodel::ConfigurationSetting);  ///< Sofa macro to define typedef.
+
+protected:
+    BackgroundSetting();                                         ///< Default constructor
+
+public:
+    Data<sofa::type::RGBAColor> color;                          ///< Color of the Background of the Viewer.
+    sofa::core::objectmodel::DataFileName image;                 ///< Image to be used as background of the viewer.
+
+};
+
+} // namespace sofa::component::setting

@@ -20,12 +20,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/userinteraction/controller/Controller.h>
+#include <sofa/component/controller/Controller.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/userinteraction/controller/Controller.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/controller/Controller.h")
 
 namespace sofa::component::controller
 { 
-    using Controller = sofa::component::userinteraction::controller::Controller;
+    using Controller = sofa::component::controller::Controller;
 
 } // namespace sofa::component::controller

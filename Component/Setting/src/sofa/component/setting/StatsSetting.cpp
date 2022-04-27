@@ -19,13 +19,27 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/component/setting/BackgroundSetting.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/setting/BackgroundSetting.h")
+#include <sofa/component/setting/StatsSetting.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::configurationsetting
-{ 
-    using BackgroundSetting = sofa::component::setting::BackgroundSetting;
+namespace sofa::component::setting
+{
 
-} // namespace sofa::component::configurationsetting
+int StatsSettingClass = core::RegisterObject("Stats settings")
+        .add< StatsSetting >()
+        .addAlias("Stats")
+        ;
+
+StatsSetting::StatsSetting():
+    dumpState(initData(&dumpState,false,"dumpState", "Dump state vectors at each time step of the simulation"))
+    , logTime(initData(&logTime, false, "logTime", "Output in the console an average of the time spent during different stages of the simulation"))
+    , exportState(initData(&exportState, false, "exportState", "Create GNUPLOT files with the positions, velocities and forces of all the simulated objects of the scene"))
+#ifdef SOFA_DUMP_VISITOR_INFO
+    , traceVisitors(initData(&traceVisitors, "traceVisitors", "Trace the time spent by each visitor, and allows to profile precisely one step of a simulation"))
+#endif
+{
+}
+
+} // namespace sofa::component::setting

@@ -26,7 +26,7 @@
 #include <sofa/helper/Factory.inl>
 #include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/core/visual/DisplayFlags.h>
-#include <sofa/component/userinteraction/configurationsetting/ViewerSetting.h>
+#include <sofa/component/setting/ViewerSetting.h>
 #include <SofaBaseVisual/InteractiveCamera.h>
 #include <sofa/core/ComponentNameHelper.h>
 
@@ -92,7 +92,7 @@ void BaseViewer::wait()
 {
 }
 
-void BaseViewer::configure(sofa::component::userinteraction::configurationsetting::ViewerSetting* viewerConf)
+void BaseViewer::configure(sofa::component::setting::ViewerSetting* viewerConf)
 {
     using namespace core::visual;
     if (viewerConf->cameraMode.getValue().getSelectedId() == VisualParams::ORTHOGRAPHIC_TYPE)

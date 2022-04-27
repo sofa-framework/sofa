@@ -59,19 +59,19 @@ sofa_find_package(SofaGraphComponent REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaGeneralMeshCollision SofaGeneralVisual SofaTopologyMapping SofaDeformable SofaBoundaryCondition SofaGraphComponent)
 
-message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Collision.Geometry, Sofa.Component.Collision.Detection.Algorithm, Sofa.Component.Collision.Detection.Intersection, Sofa.Component.Collision.Response.Contact and Sofa.Component.UserInteraction.Controller instead.")
+message(WARNING "${PROJECT_NAME} module is being deprecated. It will be removed at v23.06. You may use Sofa.Component.Collision.Geometry, Sofa.Component.Collision.Detection.Algorithm, Sofa.Component.Collision.Detection.Intersection, Sofa.Component.Collision.Response.Contact and Sofa.Component.Controller instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.Collision.Geometry REQUIRED)
 sofa_find_package(Sofa.Component.Collision.Detection.Algorithm REQUIRED)
 sofa_find_package(Sofa.Component.Collision.Detection.Intersection REQUIRED)
 sofa_find_package(Sofa.Component.Collision.Response.Contact REQUIRED)
-sofa_find_package(Sofa.Component.UserInteraction.Controller REQUIRED)
+sofa_find_package(Sofa.Component.Controller REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Geometry)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Detection.Algorithm)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Detection.Intersection)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Collision.Response.Contact)
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.UserInteraction.Controller)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Controller)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

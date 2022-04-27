@@ -81,7 +81,7 @@ public:
     virtual void registerViewer(BaseViewer* /*viewer*/) {}
     virtual bool saveScreenshot(const std::string& filename, int compression_level =-1);
 
-    virtual void setMouseButtonConfiguration(sofa::component::userinteraction::configurationsetting::MouseButtonSetting* /*button*/) {}
+    virtual void setMouseButtonConfiguration(sofa::component::setting::MouseButtonSetting* /*button*/) {}
     /// @}
 
     /// @name methods to communicate with the GUI

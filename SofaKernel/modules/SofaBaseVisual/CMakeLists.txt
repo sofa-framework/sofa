@@ -17,13 +17,13 @@ sofa_find_package(Sofa.SimulationCore REQUIRED)
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore)
 
-message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. You may use Sofa.Component.Visual and Sofa.Component.UserInteraction.ConfigurationSetting instead.")
+message(WARNING "${PROJECT_NAME} module is deprecated. It will be removed at v23.06. You may use Sofa.Component.Visual and Sofa.Component.Setting instead.")
 
 # forward to the new sofang module
 sofa_find_package(Sofa.Component.Visual REQUIRED)
-sofa_find_package(Sofa.Component.UserInteraction.ConfigurationSetting REQUIRED)
+sofa_find_package(Sofa.Component.Setting REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Visual)
-target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.UserInteraction.ConfigurationSetting)
+target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Setting)
 
 sofa_create_package_with_targets(
     PACKAGE_NAME ${PROJECT_NAME}

@@ -19,13 +19,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/component/setting/BackgroundSetting.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/setting/BackgroundSetting.h")
+#include <sofa/component/setting/MouseButtonSetting.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::configurationsetting
-{ 
-    using BackgroundSetting = sofa::component::setting::BackgroundSetting;
+namespace sofa::component::setting
+{
 
-} // namespace sofa::component::configurationsetting
+MouseButtonSetting::MouseButtonSetting():
+    button(initData(&button, "button", "Mouse button used"))
+{
+    sofa::helper::OptionsGroup buttonGroup(3,"Left","Middle","Right");
+    button.setValue(buttonGroup);
+}
+
+} // namespace sofa::component::setting

@@ -743,13 +743,13 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
 
     // SofaGraphComponent was deprecated in #2582 and #XXXX
     { "AddFrameButtonSetting", CreatableMoved("v22.06", "SofaGraphComponent", "Sofa.Component.SceneUtility") },
-    { "AddRecordedCameraButtonSetting", CreatableMoved("v22.06", "SofaGraphComponent", "Sofa.Component.UserInteraction.ConfigurationSetting") },
-    { "StartNavigationButtonSetting", CreatableMoved("v22.06", "SofaGraphComponent", "Sofa.Component.UserInteraction.ConfigurationSetting") },
-    { "AttachBodyButtonSetting", CreatableMoved("v22.06", "SofaGraphComponent", "Sofa.Component.UserInteraction.ConfigurationSetting") },
-    { "FixPickedParticleButtonSetting", CreatableMoved("v22.06", "SofaGraphComponent", "Sofa.Component.UserInteraction.ConfigurationSetting") },
-    { "SofaDefaultPathSetting", CreatableMoved("v22.06", "SofaGraphComponent", "Sofa.Component.UserInteraction.ConfigurationSetting") },
-    { "StatsSetting", CreatableMoved("v22.06", "SofaGraphComponent", "Sofa.Component.UserInteraction.ConfigurationSetting") },
-    { "ViewerSetting", CreatableMoved("v22.06", "SofaGraphComponent", "Sofa.Component.UserInteraction.ConfigurationSetting") },
+    { "AddRecordedCameraButtonSetting", CreatableMoved("v22.06", "SofaGraphComponent", "Sofa.Component.Setting") },
+    { "StartNavigationButtonSetting", CreatableMoved("v22.06", "SofaGraphComponent", "Sofa.Component.Setting") },
+    { "AttachBodyButtonSetting", CreatableMoved("v22.06", "SofaGraphComponent", "Sofa.Component.Setting") },
+    { "FixPickedParticleButtonSetting", CreatableMoved("v22.06", "SofaGraphComponent", "Sofa.Component.Setting") },
+    { "SofaDefaultPathSetting", CreatableMoved("v22.06", "SofaGraphComponent", "Sofa.Component.Setting") },
+    { "StatsSetting", CreatableMoved("v22.06", "SofaGraphComponent", "Sofa.Component.Setting") },
+    { "ViewerSetting", CreatableMoved("v22.06", "SofaGraphComponent", "Sofa.Component.Setting") },
 
     // SofaBaseTopology was deprecated in #2612
     { "EdgeSetGeometryAlgorithms", CreatableMoved("v22.06", "SofaBaseTopology", "Sofa.Component.Topology.Container.Dynamic") },
@@ -1119,8 +1119,8 @@ const std::map< std::string, CreatableMoved, std::less<> > movedComponents =
 
     // SofaUserInteraction was deprecated in #2813
     { "RayCollisionModel", CreatableMoved("v22.06", "SofaUserInteraction", "Sofa.Component.Collision.Geometry") },
-    { "Controller", CreatableMoved("v22.06", "SofaUserInteraction", "Sofa.Component.UserInteraction.Controller") },
-    { "MechanicalStateController", CreatableMoved("v22.06", "SofaUserInteraction", "Sofa.Component.UserInteraction.Controller") },
+    { "Controller", CreatableMoved("v22.06", "SofaUserInteraction", "Sofa.Component.Controller") },
+    { "MechanicalStateController", CreatableMoved("v22.06", "SofaUserInteraction", "Sofa.Component.Controller") },
 
     // SofaObjectInteraction was deprecated in #2813
     { "PenalityContactForceField", CreatableMoved("v22.06", "SofaObjectInteraction", "Sofa.Component.Collision.Response.Contact") },

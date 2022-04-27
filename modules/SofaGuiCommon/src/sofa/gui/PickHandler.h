@@ -39,10 +39,10 @@ namespace sofa::component::collision
     class ComponentMouseInteraction;
 } // sofa::component::collision
 
-namespace sofa::component::userinteraction::configurationsetting
+namespace sofa::component::setting
 {
     class MouseButtonSetting;
-} // namespace sofa::component::userinteraction::configurationsetting
+} // namespace sofa::component::setting
 
 
 namespace sofa::gui

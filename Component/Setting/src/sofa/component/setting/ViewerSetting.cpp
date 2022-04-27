@@ -19,13 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/component/setting/BackgroundSetting.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/setting/BackgroundSetting.h")
+#include <sofa/component/setting/ViewerSetting.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::configurationsetting
-{ 
-    using BackgroundSetting = sofa::component::setting::BackgroundSetting;
+namespace sofa::component::setting
+{
 
-} // namespace sofa::component::configurationsetting
+using namespace sofa::type;
+using namespace sofa::helper;
+
+int ViewerSettingClass = core::RegisterObject("Configuration for the Viewer of your application")
+        .add< ViewerSetting >()
+        .addAlias("Viewer")
+        ;
+
+ViewerSetting::ViewerSetting():
+    resolution(initData(&resolution, Vec<2,int>(800,600), "resolution", "resolution of the Viewer"))
+  ,fullscreen(initData(&fullscreen, false, "fullscreen", "Fullscreen mode"))
+  ,cameraMode(initData(&cameraMode, "cameraMode", "Camera mode"))
+  ,objectPickingMethod(initData(&objectPickingMethod, "objectPickingMethod","The method used to pick objects"))
+{
+    OptionsGroup mode(2,"Perspective","Orthographic");
+    cameraMode.setValue(mode);
+    OptionsGroup pickmethod(2,"Ray casting","Selection buffer");
+    objectPickingMethod.setValue(pickmethod);
+}
+
+} // namespace sofa::component::setting

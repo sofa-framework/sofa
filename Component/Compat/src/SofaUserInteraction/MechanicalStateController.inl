@@ -20,6 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/userinteraction/controller/MechanicalStateController.inl>
+#include <sofa/component/controller/MechanicalStateController.inl>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/userinteraction/controller/MechanicalStateController.inl")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/controller/MechanicalStateController.inl")

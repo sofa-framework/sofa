@@ -19,13 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
-#include <sofa/component/setting/BackgroundSetting.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/setting/BackgroundSetting.h")
+#include <sofa/component/setting/SofaDefaultPathSetting.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::configurationsetting
-{ 
-    using BackgroundSetting = sofa::component::setting::BackgroundSetting;
+namespace sofa::component::setting
+{
 
-} // namespace sofa::component::configurationsetting
+int SofaDefaultPathSettingClass = core::RegisterObject("Default Paths for Sofa Application")
+        .add< SofaDefaultPathSetting >()
+        .addAlias("SofaDefaultPath")
+        ;
+
+SofaDefaultPathSetting::SofaDefaultPathSetting():
+    recordPath(initData(&recordPath, "recordPath", "Path where will be saved the data of the recorded simulation"))
+    , gnuplotPath(initData(&gnuplotPath, "gnuplotPath", "Path where will be saved the gnuplot files"))
+{
+
+}
+} // namespace sofa::component::setting

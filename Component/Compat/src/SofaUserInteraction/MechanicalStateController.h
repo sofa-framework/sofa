@@ -20,13 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #pragma once
-#include <sofa/component/userinteraction/controller/MechanicalStateController.h>
+#include <sofa/component/controller/MechanicalStateController.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/userinteraction/controller/MechanicalStateController.h")
+// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/controller/MechanicalStateController.h")
 
 namespace sofa::component::controller
 { 
     template<class DataTypes>
-    using MechanicalStateController = sofa::component::userinteraction::controller::MechanicalStateController<DataTypes>;
+    using MechanicalStateController = sofa::component::controller::MechanicalStateController<DataTypes>;
     
 } // namespace sofa::component::controller

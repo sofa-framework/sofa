@@ -19,13 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#pragma once
 #include <sofa/component/setting/BackgroundSetting.h>
 
-// SOFA_DEPRECATED_HEADER("v22.06", "v23.06", "sofa/component/setting/BackgroundSetting.h")
+#include <sofa/core/ObjectFactory.h>
 
-namespace sofa::component::configurationsetting
-{ 
-    using BackgroundSetting = sofa::component::setting::BackgroundSetting;
+namespace sofa::component::setting
+{
 
-} // namespace sofa::component::configurationsetting
+int BackgroundSettingClass = core::RegisterObject("Background setting")
+        .add< BackgroundSetting >()
+        .addAlias("Background")
+        ;
+
+BackgroundSetting::BackgroundSetting():
+      color(initData(&color, "color", "Color of the background"))
+    , image(initData(&image, "image", "Image to be used as background"))
+{
+}
+
+} // namespace sofa::component::setting
